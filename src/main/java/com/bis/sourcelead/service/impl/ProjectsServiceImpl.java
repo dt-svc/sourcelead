@@ -56,6 +56,7 @@ import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MasterCandidate;
+import com.bis.sourcelead.entity.NewContractCustomFieldData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -68,6 +69,7 @@ import com.bis.sourcelead.entity.ProjectDocumentFolder;
 import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
+import com.bis.sourcelead.entity.ProjectMembersRateHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
@@ -93,6 +95,7 @@ import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectCustomFieldDataService;
 import com.bis.sourcelead.service.ProjectDocumentFolderService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
+import com.bis.sourcelead.service.ProjectMembersRateHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -229,6 +232,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 
 	 @Autowired
 	 ExpensesApprovalService expensesApprovalService;
+	 
+	 @Autowired
+	 ProjectMembersRateHistoryService projectMembersRateHistoryService;
 
 	private UserDTO userStatus;
 	 
@@ -562,22 +568,24 @@ public class ProjectsServiceImpl implements ProjectsService{
 		Projects updatedProjects = saveProject(projects);
 		
 		
-		
 		if(projectsDTO.getCustomFormData() !=null) {
 			for( CustomFormFieldDTO customFields:projectsDTO.getCustomFormData()) {
-				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
-				ProjectCustomFieldData projectCustomFields = new ProjectCustomFieldData();
-				projectCustomFields.setProjects(updatedProjects);
-				 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
-				 projectCustomFields.setOrglocationsFormFields(orgFormField);
-				 projectCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
-				 projectCustomFieldDataService.saveProjectCustomFieldData(projectCustomFields);
+				if(customFields != null && customFields.getCustomFormFieldId() > 0) {
+					ProjectCustomFieldData projectsCustomFields = null;
+					if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+						projectsCustomFields = projectCustomFieldDataService.getprojectFieldDataById(customFields.getEntityId());
+					}else {
+						projectsCustomFields = new ProjectCustomFieldData();
+					}
+				projectsCustomFields.setProjects(updatedProjects);
+				OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+				projectsCustomFields.setOrglocationsFormFields(orgFormField);
+				projectsCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+				projectCustomFieldDataService.saveProjectCustomFieldData(projectsCustomFields);
 				}
 				
 			}	
 		}
-		
-		
 		
 		/*
 		 * Saving Project DB data as ElasticSearch Documents
@@ -927,13 +935,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 		UserRole userStatus = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),locationsId);
 		if("ACTIVE".equalsIgnoreCase(userStatus.getUserState().toString())) {
 		Set<Projects> projectsSet = new HashSet<>();
+		
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 StringBuilder fromNameSB = new StringBuilder();
-		 emailMessage.setFromName(fromNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+		 emailMessage.setFromName(Constants.SOURCELEAD_ADMIN_UNIQUE);
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -1736,6 +1745,26 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    }
 				
 			    
+			    if(projectDTO.getCustomFormData() !=null) {
+					for( CustomFormFieldDTO customFields:projectDTO.getCustomFormData()) {
+						if(customFields != null && customFields.getCustomFormFieldId() > 0) {
+							ProjectCustomFieldData projectsCustomFields = null;
+							if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+								projectsCustomFields = projectCustomFieldDataService.getprojectFieldDataById(customFields.getEntityId());
+							}else {
+								projectsCustomFields = new ProjectCustomFieldData();
+							}
+						projectsCustomFields.setProjects(projects);
+						OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+						projectsCustomFields.setOrglocationsFormFields(orgFormField);
+						projectsCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+						projectCustomFieldDataService.saveProjectCustomFieldData(projectsCustomFields);
+						}
+						
+					}	
+				}
+			    
+			    
 			  /*  Set<ProjectMembers>  projectMemberList = projectMembersService.prepareProjectMembersListByJson(jsonObj,request, projects);
 				projects.setProjectMembers(projectMemberList);*/
 				 /*
@@ -2167,6 +2196,38 @@ public class ProjectsServiceImpl implements ProjectsService{
 	                
 	                
 	       	 }	
+	       	 
+	       	 
+	       	 List<ProjectMembersRateHistory> pmrhList = projectMembersRateHistoryService.getProjectMembersRateHistoryListByProjectMemberId(pm.getId());
+	       	 if(pmrhList != null && !pmrhList.isEmpty()) {
+	       		Date date = commonUtil.orgLocationCommonDate(new Date(), loginOrgLocation);
+	       		for(ProjectMembersRateHistory pmrh : pmrhList) {
+	       			if(pmrh.getPayRateEndDate() != null && date.before((pmrh.getPayRateEndDate()))) {
+	       				pm.setPayRate(pmrh.getPayRate());
+	       				pm.setPayRateCurrency(pmrh.getPayRateCurrency());
+	       				pm.setPayRateType(pmrh.getPayRateType());
+	       				
+	       				break;
+	       			}
+	       		}
+	       		
+	       		
+	       		for(ProjectMembersRateHistory pmrh : pmrhList) {
+	       			if(pmrh.getBillRateEndDate() != null && date.before((pmrh.getBillRateEndDate()))) {
+	       				pm.setCurrentBillRate(pmrh.getBillRate());
+	       				pm.setBillRateCurrency(pmrh.getBillRateCurrency());
+	       				pm.setRateType(pmrh.getBillRateType());
+	       				
+	       				break;
+	       			}
+	       		}
+	       		 
+	       		pm.setRateHistroyList(Constants.YES);
+	       	 }else {
+	       		pm.setRateHistroyList(Constants.NO);
+	       	 }
+	       	 
+	       	 
 			 projectMembersArrList.add(pm);
 		 }
 		}
@@ -2187,14 +2248,14 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 	     }
 	     if(user != null){
 	    	 UserRole userStatus = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),orgLocations.getId());
-	    	 if(userStatus.getUserState().toString().equalsIgnoreCase("ACTIVE")) {
+	    	 if("ACTIVE".equalsIgnoreCase(userStatus.getUserState().toString())){
 	    	 StringBuilder fNameStringBuilder=new StringBuilder();
 			 EmailMessage emailMessage = new EmailMessage();
 			 emailMessage.setFirstName(user.getFirstName());
 			 emailMessage.setLastName(user.getLastName());
 			 emailMessage.setToEmail(user.getEmail());
 			 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
-			 emailMessage.setFromName(fNameStringBuilder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+			 emailMessage.setFromName(Constants.SOURCELEAD_ADMIN_UNIQUE);
 			// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -2951,6 +3012,10 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				return projects;
 			}
 
+			@Override
+			public Projects getProjectByProjectName(String projectName) throws Exception {
+				return projectsDao.getProjectByProjectName(projectName);
+			}
 
 
 }

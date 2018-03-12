@@ -18,7 +18,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,13 +42,13 @@ import com.bis.sourcelead.dao.LeaveDao;
 import com.bis.sourcelead.dao.LeaveManagementHistoryDao;
 import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.dao.OptionsDao;
+import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dao.RestrictDayDao;
 import com.bis.sourcelead.dao.ShiftDao;
 import com.bis.sourcelead.dto.HolidayDTO;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.LeaveReportsDTO;
 import com.bis.sourcelead.dto.LeaveTypeDTO;
-import com.bis.sourcelead.dto.NotificationDTO;
 import com.bis.sourcelead.dto.OptionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.RestrictDayDTO;
@@ -64,9 +63,12 @@ import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveManagementHistory;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Option;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Shift;
@@ -77,9 +79,11 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OptionsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RestrictDayService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.ShiftService;
@@ -88,6 +92,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.LeaveManagementUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 
@@ -170,6 +175,18 @@ public class LeaveManagementRestController {
 	@Autowired
 	LeaveManagementUtil leaveManagementUtil;
 	
+	@Autowired
+	private ProjectsService projectsService;
+	
+	@Autowired
+	private LookUpDataService lookUpDataService;
+	
+	@Autowired
+	private ProjectTasksDao projectTasksDao;
+	
+	@Autowired
+	private TimesheetRestController timesheetRestController;
+	
 	/**
 	 * returns Pending leaves jsp
 	 * @param request
@@ -177,11 +194,19 @@ public class LeaveManagementRestController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/pendingLeaves")
-	public ModelAndView pendingLeavesJsp(HttpServletRequest request,HttpServletResponse response) {
-		   ModelAndView model = new ModelAndView();
-		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   model.setViewName("leavemanagement/pendingLeaves");
-	       return model;
+	public ModelAndView pendingLeavesJsp(@RequestParam(value = "notifyLink", required = false) String notifyLink,
+			@RequestParam(value = "leaveUUID", required = false) String leaveUUID,
+			@RequestParam(value = "orgLocationId", required = false) String orgLocationId,
+			@RequestParam(value = "status", required = false) String status, HttpServletRequest request,
+			HttpServletResponse response) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("notifyLink", notifyLink);
+		model.addObject("leaveUUID", leaveUUID);
+		model.addObject("orgLocationId", orgLocationId);
+		model.addObject("status", status);
+		model.setViewName("leavemanagement/pendingLeaves");
+		return model;
 	}
 	
 	/**
@@ -191,11 +216,17 @@ public class LeaveManagementRestController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/approvedLeaves")
-	public ModelAndView approvedLeavesJsp(HttpServletRequest request,HttpServletResponse response) {
-		   ModelAndView model = new ModelAndView();
-		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   model.setViewName("leavemanagement/approvedLeaves");
-	       return model;
+	public ModelAndView approvedLeavesJsp(@RequestParam(value = "notifyLink", required = false) String notifyLink,
+			@RequestParam(value = "leaveUUID", required = false) String leaveUUID,
+			@RequestParam(value = "orgLocationId", required = false) String orgLocationId, HttpServletRequest request,
+			HttpServletResponse response) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("notifyLink", notifyLink);
+		model.addObject("leaveUUID", leaveUUID);
+		model.addObject("orgLocationId", orgLocationId);
+		model.setViewName("leavemanagement/approvedLeaves");
+		return model;
 	}
 	
 	/**
@@ -205,11 +236,17 @@ public class LeaveManagementRestController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/rejectedLeaves")
-	public ModelAndView rejectedLeavesJsp(HttpServletRequest request,HttpServletResponse response) {
-		   ModelAndView model = new ModelAndView();
-		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   model.setViewName("leavemanagement/rejectedLeaves");
-	       return model;
+	public ModelAndView rejectedLeavesJsp(@RequestParam(value = "notifyLink", required = false) String notifyLink,
+			@RequestParam(value = "leaveUUID", required = false) String leaveUUID,
+			@RequestParam(value = "orgLocationId", required = false) String orgLocationId, HttpServletRequest request,
+			HttpServletResponse response) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("notifyLink", notifyLink);
+		model.addObject("leaveUUID", leaveUUID);
+		model.addObject("orgLocationId", orgLocationId);
+		model.setViewName("leavemanagement/rejectedLeaves");
+		return model;
 	}
 	
 	/**
@@ -219,11 +256,17 @@ public class LeaveManagementRestController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/cancelLeaves")
-	public ModelAndView cancelLeavesJsp(HttpServletRequest request,HttpServletResponse response) {
-		   ModelAndView model = new ModelAndView();
-		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   model.setViewName("leavemanagement/cancelLeaves");
-	       return model;
+	public ModelAndView cancelLeavesJsp(@RequestParam(value = "notifyLink", required = false) String notifyLink,
+			@RequestParam(value = "leaveUUID", required = false) String leaveUUID,
+			@RequestParam(value = "orgLocationId", required = false) String orgLocationId, HttpServletRequest request,
+			HttpServletResponse response) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("notifyLink", notifyLink);
+		model.addObject("leaveUUID", leaveUUID);
+		model.addObject("orgLocationId", orgLocationId);
+		model.setViewName("leavemanagement/cancelLeaves");
+		return model;
 	}
 	
 	
@@ -662,10 +705,37 @@ public class LeaveManagementRestController {
 	public @ResponseBody String saveHoliday(HolidayDTO holidayDTO,HttpServletRequest request)
 			throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if(orgLocations.getId() != null)
 			holidayDTO.setOrgLocationId(orgLocations.getId().toString());
+		Holiday savedHoliday = null;
 		if(holidayDTO != null)
-		holidayService.storeHoliday(holidayDTO);
+		 savedHoliday = holidayService.storeHoliday(holidayDTO);
+		
+		List<Projects> projectsList = projectsService.getAllProjectByOrgLocationsId(orgLocations.getId());
+		if(projectsList != null && projectsList.size() > 0) {
+			for(Projects projects : projectsList) {
+				ProjectTasks  tasks  = new ProjectTasks();
+				LookUpData taskType = lookUpDataService.getTasksTypeByUniqueKey(Constants.GENERAL);
+				tasks.setGeneratedId(commonUtil.getProjectTaskGenaratedId(projects));
+				tasks.setProjectTasksUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+				tasks.setTaskName(holidayDTO.getHolidayName());
+				tasks.setDescription(holidayDTO.getHolidayName());
+				tasks.setBillableType("Billable");
+				tasks.setProjectId(projects);
+				tasks.setTaskType(taskType);
+				tasks.setHoliday(savedHoliday);
+				LookUpData taskStatus = lookUpDataService.getTasksById(Constants.TaskStatusID);
+				tasks.setTaskStatus(taskStatus);
+				tasks.setStatus(String.valueOf(Constants.CANDIDATE_ACTIVE));
+				tasks.setCreatedBy(user.getUserCode());
+				tasks.setCreatedDate(new Date());
+				tasks.setUpdatedBy(user.getUserCode());
+				tasks.setUpdatedDate(new Date());
+				projectTasksDao.addTasks(tasks);
+			}
+		}
+		timesheetRestController.linkHolidaysWithTimeSheet(user,orgLocations,savedHoliday);
 		return "success";
 	}
 	
@@ -1001,11 +1071,18 @@ public class LeaveManagementRestController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_APPROVE_LEAVE')")
 	@RequestMapping(value = "/employeeRequestedLeaves")
-	public ModelAndView employeeRequestedLeavesJsp(HttpServletRequest request,HttpServletResponse response) {
-		   ModelAndView model = new ModelAndView();
-		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   model.setViewName("leavemanagement/employeeRequestedLeaves");
-	       return model;
+	public ModelAndView employeeRequestedLeavesJsp(
+			@RequestParam(value = "notifyLink", required = false) String notifyLink,
+			@RequestParam(value = "leaveUUID", required = false) String leaveUUID,
+			@RequestParam(value = "orgLocationId", required = false) String orgLocationId, HttpServletRequest request,
+			HttpServletResponse response) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("notifyLink", notifyLink);
+		model.addObject("leaveUUID", leaveUUID);
+		model.addObject("orgLocationId", orgLocationId);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("leavemanagement/employeeRequestedLeaves");
+		return model;
 	}
 	
 	/**
@@ -1329,6 +1406,8 @@ public class LeaveManagementRestController {
 			if (leaveDto == null) {
 				leaveDto = new LeaveDTO();
 				totalLeaves = 0;
+			}else {
+				totalLeaves = leaveDto.getNoOfDays();
 			}
 			StringBuilder sb = new StringBuilder();
 			if (StringUtils.isNotBlank(leave.getUser().getLastName())) {
@@ -1816,8 +1895,7 @@ public class LeaveManagementRestController {
 	public void getLeaveExportList(LeaveDTO leaveDTO, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 
 		File file = leaveService.getLeaveExport(orgLocations,leaveDTO);
 		

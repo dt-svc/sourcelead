@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 
 public interface AssetService {
@@ -22,6 +23,13 @@ public interface AssetService {
 	 * This method used in BackOfficeRestController
 	 */
 	Asset getAssetById(Long Id) throws Exception;
+	
+	public Asset getAssetByAssetSnoAndId(String assetSno, Long assetId, Long orgLocationsId) throws Exception;
+	
+	public Asset validateAssetSno(String assetSno, Long orgLocationsId) throws Exception;
+	
+	public Boolean validateAssetId(String assetSno, Long orgLocationsId) throws Exception;
+
 	
 	/**
 	 * 

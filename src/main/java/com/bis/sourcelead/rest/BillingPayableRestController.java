@@ -132,6 +132,10 @@ public class BillingPayableRestController {
 		    		invoice.setDueDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),invoice.getDueDate()));	
 		    	}
 		    	
+		    	if(invoice.getParentInvoiceId() != null) {
+		    		invoice.setInvoiceParentId(invoice.getParentInvoiceId().getId());
+		    	}else
+		    		invoice.setInvoiceParentId(null);
 		    	List<InvoiceLineItems> invoiceLineItemsList = invoiceLineItemService.getInvoiceLineItemsByInvoiceId(invoice.getId());
 		    	List<InvoiceLineItems> lineItemsList = new ArrayList<InvoiceLineItems>();
 		    	

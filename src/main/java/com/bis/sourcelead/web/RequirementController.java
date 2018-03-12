@@ -592,7 +592,7 @@ public class RequirementController {
 	@RequestMapping(value = "/requirementSummary")
 	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementUUID", required=false)String requirementUUID,
 			@RequestParam(value="type", required=false) String type,@RequestParam(value="candidateUUID", required=false) String candidateUUID,
-			@RequestParam(value="submissionId", required=false) String submissionId) throws Exception {
+			@RequestParam(value="submissionId", required=false) String submissionId,@RequestParam(value="candidateKeyword", required=false)String candidateKeyword,@RequestParam(value="submissionStatus", required=false)String submissionStatus) throws Exception {
 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org loginOrg= (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -797,6 +797,9 @@ public class RequirementController {
 				if(!isNullOrEmpty(submissionId)){
 					model.addObject("submissionId", submissionId);
 				}
+				if(!isNullOrEmpty(submissionStatus)){
+					model.addObject("submissionStatus", submissionStatus);
+				}
 				
 			}
 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqsummaryMsg");
@@ -816,6 +819,9 @@ public class RequirementController {
 			
 			if(!isNullOrEmpty(submissionId)){
 				model.addObject("submissionId", submissionId);
+			}
+			if(!isNullOrEmpty(candidateKeyword)){
+				model.addObject("candidateKeyword", candidateKeyword);
 			}
 			 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_REQUIREMENT);
 		     model.addObject("actionId",action.getId());

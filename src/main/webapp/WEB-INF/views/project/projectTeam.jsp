@@ -24,6 +24,24 @@ left: 115px !important;
 .prRight.prRight_new {
     right: 280px; top: 40px;
 }
+.edit_member_pop {
+	top:12% !important; left: 35%; margin: 0px auto; z-index: 15500; width: 520px;
+	position: fixed !important; background-color: #f9f9f9; box-shadow: 0px 0px 5px rgba(0,0,0,0.3); padding: 15px;
+}
+.edit_member_pop .footerBtns input {
+    width: 50%; border: none; height: 30px; font-size: 14px; font-weight: 500; color: #FFF; background-color: #ff4b4b;
+}
+.edit_member_pop .footerBtns input.u_can_color {
+    background-color: #375d81;
+}
+.edit_member_pop h4 {
+background-color: #dcdcdc; padding: 10px; margin: 0; margin-bottom: 15px; font-size: 15px;
+}
+
+.member_rate_history_pop {
+	top:30% !important; left: 25%; margin: 0px auto; z-index: 15500; width: 850px;
+	position: fixed !important; background-color: #f9f9f9; box-shadow: 0px 0px 5px rgba(0,0,0,0.3); padding: 15px;
+}
 </style>
  <style type="text/css">
  table#assignEmployeePagination tr th {
@@ -414,13 +432,13 @@ function filterStatus() {
 		        		}
 		        		
 		        		
-		        		if(opt.currentBillRate != null && opt.currentBillRate != 'undefined' && opt.currentBillRate != ''){
+		        		if(opt.currentBillRate != null && opt.currentBillRate != 'undefined'){
 		        			billRate = opt.billRateCurrency+" "+opt.currentBillRate+" /"+opt.rateType
 		        		}else{
 		        			billRate = "-----";
 		        		}
 		        		
-		        		if(opt.payRate != null && opt.payRate != 'undefined' && opt.payRate != ''){
+		        		if(opt.payRate != null && opt.payRate != 'undefined'){
 		        			payRate = opt.payRateCurrency+" "+opt.payRate+" /"+opt.payRateType
 		        		}else{
 		        			payRate = "-----";
@@ -479,15 +497,23 @@ function filterStatus() {
 		                if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}' || '${isClientOrgActive}' == "N"){
 		                	
 		                	 if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
-				                	result = result + '	<td><div>';
+				                	result = result + '	<td><div class="tbldata-dotdot_80">';
 				                	if(status != 'COMPLETED'){
+				                		
+				                		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\')">'; 
+				                		   
+				                		 if(opt.rateHistroyList == 'Y'){
+				                			 result = result + '<span title="Edit Employee"><i class="glyphicon fa fa-money" onClick="getRateTable('+opt.id+'\,\''+opt.candidateName+'\')";></i></span>&nbsp;&nbsp;';
+				                		  }  
+				                		     result = result + '<span title="Edit Employee"><i class="glyphicon glyphicon-edit" onClick="editProjectAssignedMember('+opt.id+'\,\''+opt.candidateName+'\')";></i></span>&nbsp;&nbsp;';
+				                		 '</sec:authorize>';
+				                		
 				                		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
-
-				                		result = result + '<span title="delete employee"><i class="glyphicon glyphicon-trash" onClick="deleteProject('+opt.id+'\,\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\')";></i></span>';
+				                		   result = result + '<span title="Delete Employee"><i class="glyphicon glyphicon-trash" onClick="deleteProject('+opt.id+'\,\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\')";></i></span>';
 				                		'</sec:authorize>';
 				                		
 				                		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
-				                		result = result + '---';
+				                		      result = result + '---';
 				                		'</sec:authorize>';
 				                	}
 				                	result = result +'</div></td>';
@@ -647,6 +673,506 @@ function inlineEditForEndDate(id,projectMemberId){
 	 });  
 }
 </script>
+
+
+<script>
+function getRateTable(projectMemberId,candidateName){
+	$("#projectMemberDetailsPopUp").empty();
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/getProjectMemberRateTablesList?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId,
+		    success: function(data) {
+		    	
+		    	  var result = "";
+		    	  
+		    	  result = result +' <div class="project_inn_mask"></div>'; 
+		    	  result = result +' <div id="edit_member_pop" class="member_rate_history_pop">';
+		    	  
+		    	  result = result +' <div class="row">';
+		    	  result = result +" <p class='col-md-10'>Emp Name : <strong>"+candidateName+"</strong></p>";
+		    	  result = result + '<p class="col-md-2"><i class="pull-right fa fa-times text-danger pull-right cursorPointer"  onClick="closerateHistorydiv();"></i></p>';
+		    	  result = result +' </div>';
+		    	  
+		    	  result = result + '<section class="tbl-scroll project_tabs_inn_table">';
+  			      result = result + '  <table>';
+                  result = result + '    <thead>';
+                  result = result + '      <tr>';
+                  result = result + '        <th>Pay Start Date</th>';
+                  result = result + '        <th>Pay End Date</th>';
+                  result = result + '        <th>Pay Rate</th>';
+                  result = result + '        <th>Bill Start Date</th>';
+                  result = result + '        <th>Bill End Date</th>';
+                  result = result + '        <th>Bill Rate</th>';
+                  result = result + '        <th>Created By</th>';
+                  result = result + '      </tr>';
+                  result = result + '    </thead>';
+                  result = result + '    <tbody>';
+                  
+                 
+                  for (var i=0; i<data.length; i++){
+                	 
+                	  var history = data[i];
+                	  var payRate = '';
+                	  var billRate = '';
+                	  var billStartDate = '';
+                	  var billEndDate = '';
+                	  var payStartDate = '';
+                	  var payEndDate = '';
+                	  
+                	  if(history.payRate != null){
+                		  payRate = history.payRateCurrency+" "+history.payRate+"/ "+history.payRateType;
+                	  }else{
+                		  payRate = "------"
+                	  }
+                	  
+                	  if(history.billRate != null){
+                		  billRate = history.billRateCurrency+" "+history.billRate+"/ "+history.billRateType;
+                	  }else{
+                		  billRate = "------"
+                	  }
+                	  
+                	  if(history.payRateStartDate != null){
+                		  payStartDate = history.payRateStartDate;
+                	  }else{
+                		  payStartDate = "------"
+                	  }
+                	  
+                	  if(history.payRateEndDate != null){
+                		  payEndDate = history.payRateEndDate;
+                	  }else{
+                		  payEndDate = "------"
+                	  }
+                	  
+                	  if(history.billRateStartDate != null){
+                		  billStartDate = history.billRateStartDate;
+                	  }else{
+                		  billStartDate = "------"
+                	  }
+                	  
+                	  if(history.billRateEndDate != null){
+                		 billEndDate = history.billRateEndDate;
+                	  }else{
+                		  billEndDate = "------"
+                	  }
+                	  
+                	  result = result + '<tr class="redtxt">';
+                	  result = result + ' <td><div class="tblminwidth-80">'+payStartDate+'</div></td>';
+                	  result = result + ' <td><div class="tblminwidth-80">'+payEndDate+'</div></td>';
+                	  result = result + ' <td><div class="tblminwidth-80">'+payRate+'</div></td>';
+                	  result = result + ' <td><div class="tblminwidth-80">'+billStartDate+'</div></td>';
+                	  result = result + ' <td><div class="tblminwidth-80">'+billEndDate+'</div></td>';
+                	  result = result + ' <td><div class="tblminwidth-80">'+billRate+'</div></td>';
+                	  result = result + ' <td><div class="tblminwidth-80">'+history.createdBy+'</div></td>'; 
+                	  result = result + '</tr>'; 
+                  }
+                	  
+                  
+                  result = result + '    </tbody>';
+                  result = result + '  </table>';
+                  result = result + '</section>'
+                  
+              	 $("#projectMemberRateHistoryPopUp").append(result);
+                 $("#edit_member_pop").slideDown(200);
+                 $(".project_inn_mask").fadeIn(200); 
+		    }
+	     });
+}
+
+function closerateHistorydiv(){
+	 $("#projectMemberRateHistoryPopUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+
+<script>
+function editProjectAssignedMember(projectMemberId,candidateName){
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/editProjectAssignedProjectMember?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId,
+		    success: function(data) {
+		    	loadProjectMembersDetails(data,candidateName);
+		    }
+	     });
+}
+
+
+
+function loadProjectMembersDetails(data,candidateName){
+	  $("#projectMemberRateHistoryPopUp").empty();
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatAssignEmpUpdate = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatAssignEmpUpdate = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatAssignEmpUpdate = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatAssignEmpUpdate = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatAssignEmpUpdate = 'yy-dd-mm'; 
+	  }
+	
+	var payrate = '';
+    var billrate = '';
+    var projectStartDate = '';
+    var projectEndDate = '';
+    var estHours = '';
+    var estBudget = '';
+    
+    var payRateEstdDate = '';
+    var billRateEstdDate = '';
+    
+    if(data.payRate != null && data.payRate != 'undefined'){
+    	payrate = data.payRate;
+    }
+    
+    if(data.billRate != null  && data.billRate != 'undefined'){
+    	billrate = data.billRate;
+    }
+    
+    if(data.projectStartDate != null && data.projectStartDate != '' && data.projectStartDate != 'undefined'){
+    	projectStartDate = data.projectStartDate;
+    }
+    
+    if(data.projectEndDate != null && data.projectEndDate != '' && data.projectEndDate != 'undefined'){
+    	projectEndDate = data.projectEndDate;
+    }
+    
+    if(data.estHours != null && data.estHours != '' && data.estHours != 'undefined'){
+    	estHours = data.estHours;
+    }
+    
+    if(data.estBudget != null && data.estBudget != '' && data.estBudget != 'undefined'){
+    	estBudget = data.estBudget;
+    }
+    
+    if(data.payRateEstimatedDate != null && data.payRateEstimatedDate != '' && data.payRateEstimatedDate != 'undefined'){
+    	payRateEstdDate = data.payRateEstimatedDate;
+    }
+    
+    if(data.billRateEstimatedDate != null && data.billRateEstimatedDate != '' && data.billRateEstimatedDate != 'undefined'){
+    	billRateEstdDate = data.billRateEstimatedDate;
+    }
+	
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	
+	result = result +" <div id='edit_member_pop' class='edit_member_pop'>";
+	result = result +"	<h4>Edit Team Member</h4>";
+	result = result +"	<p>Emp Name : <strong>"+candidateName+"</strong></p>";
+	result = result + '<div class="form-horizontal clearfix">';
+	result = result + '<form id="editProjectMemberform" name="editProjectMemberform">';
+	result = result +" <div id='editMemberLoading'></div>"; 
+	result = result + '<input type="hidden" id="projectMemberId" name="projectMemberId" value="'+data.projectMemberId+'">';
+	
+	
+	result = result + '<div class="clearfix mb10 row mt">';
+	
+	result = result + '<div class="col-md-8 paddingRight">';
+	result = result + '<div class="row">';
+	result = result + '<label class="clearfix col-md-12">Pay Rate<span class="text-danger">&nbsp;*</span></label>';
+	
+	result = result + '<div class="col-md-3 padding_right dropdown-select drpdownCurrency">';
+	result = result + '<select id="payRateCurrency" name="payRateCurrency">';
+	result = result + '<option value="INR">INR</option>';
+	result = result + '<option value="AUD">AUD</option>';
+	result = result + '<option value="USD">USD</option>';
+	result = result + '<option value="GBP">GBP</option>';
+	result = result + '<option value="SGD">SGD</option>';
+	result = result + '<option value="EUR">EUR</option>';
+	result = result + '</select>';
+	result = result + '</div>';
+	
+	result = result + '<div class="col-md-4 padding_right padding_left inputRate">';
+	result = result + '<input class="form-control" type="text" id="payRate" name="payRate" value = "'+payrate+'" field-name="Pay Rate" data-validation="required validate_Space validate_float validate_length length1-15">';
+	result = result + '</div>';
+	
+	result = result + '<div class="col-md-5 padding_left drpdownMonthly dropdown-select">';
+	result = result + '<select id="payRateRateType" name="payRateRateType">';
+	result = result + '<option value="Hourly">Hourly</option>';
+	result = result + '<option value="Weekly">Weekly</option>';
+	result = result + '<option value="Bi-weekly">Bi-weekly</option>';
+	result = result + '<option value="Semi-Monthly">Semi-Monthly</option>';
+	result = result + '<option value="Monthly">Monthly</option>';
+	result = result + '<option value="Bi-Monthly">Bi-Monthly</option>';
+	result = result + '<option value="Yearly">Yearly</option>';
+	result = result + '</select>';
+	result = result + '</div>';
+	result = result + '</div>';
+	result = result + '</div>';
+	
+	
+	result = result + '<div class="col-md-4 paddingLeft" id="payRateEstdDiv">';
+	result = result + '<label class="clearfix">Estimated Date<span class="text-danger">&nbsp;*</span></label>';
+	result = result + '<div class="padding_right padding_left inputRate">';
+	result = result + '<input type="text" class="form-control calendar"  id="payRateEstimatedDate" value="'+payRateEstdDate+'"  readonly name="payRateEstimatedDate" field-name="Estd Date"  data-validation="required">';
+	result = result + '</div>';
+	result = result + '</div>';
+	
+	result = result + '</div>';
+	
+	result = result + '<div class="clearfix mb10 row mt">';
+	
+	result = result + '<div class="col-md-8 paddingRight">';
+	result = result + '<div class="row">';
+	result = result + '<label class="clearfix col-md-12">Bill Rate<span class="text-danger">&nbsp;*</span></label>';
+	result = result + '<div class="col-md-3 padding_right dropdown-select drpdownCurrency">';
+	result = result + '<select id="billRateCurrency" name="billRateCurrency">';
+	result = result + '<option value="INR">INR</option>';
+	result = result + '<option value="AUD">AUD</option>';
+	result = result + '<option value="USD">USD</option>';
+	result = result + '<option value="GBP">GBP</option>';
+	result = result + '<option value="SGD">SGD</option>';
+	result = result + '<option value="EUR">EUR</option>';
+	result = result + '</select>';
+	result = result + '</div>';
+	
+	result = result + '<div class="col-md-4 padding_right padding_left inputRate">';
+	result = result + '<input class="form-control" type="text" id="billRate" name="billRate" value = "'+billrate+'" field-name="Bill Rate"  data-validation="required validate_Space validate_float validate_length length1-15">';
+	result = result + '</div>';
+	
+	result = result + '<div class="col-md-5 padding_left drpdownMonthly dropdown-select">';
+	result = result + '<select id="billRateRateType" name="billRateRateType">';
+	result = result + '<option value="Hourly">Hourly</option>';
+	result = result + '<option value="Weekly">Weekly</option>';
+	result = result + '<option value="Bi-weekly">Bi-weekly</option>';
+	result = result + '<option value="Semi-Monthly">Semi-Monthly</option>';
+	result = result + '<option value="Monthly">Monthly</option>';
+	result = result + '<option value="Bi-Monthly">Bi-Monthly</option>';
+	result = result + '<option value="Yearly">Yearly</option>';
+	result = result + '</select>';
+	result = result + '</div>';
+	result = result + '</div>';
+	result = result + '</div>';
+	
+	
+	result = result + '<div class="col-md-4 paddingLeft" id="billRateEstdDiv">';
+	result = result + '<label class="clearfix">Estimated Date<span class="text-danger">&nbsp;*</span></label>';
+	result = result + '<div class="padding_right padding_left inputRate">';
+	result = result + '<input type="text" class="form-control calendar"  id="billRateEstimatedDate" value="'+billRateEstdDate+'" placeholder="" readonly name="billRateEstimatedDate" field-name="Estd Date"  data-validation="required">';
+	result = result + '</div>';
+	result = result + '</div>';
+	
+	result = result + '</div>';
+	
+	result = result + '	    <div class="row">';
+	
+	result = result + '	    <div class="col-md-6 mb10" id="startDateDiv">';
+	result = result + '	      <label class="clearfix">Project Start Date<span class="text-danger">&nbsp;*</span></label>';
+	result = result + '	      <div class="">';
+	result = result + '	        <input type="text" class="form-control input-sm calendar" value="'+projectStartDate+'" readonly id="projectStartDate"  name="memberStartDate" field-name="Start Date"  data-validation="required">';
+	result = result + '	      </div>';
+	result = result + '	    </div>';
+	
+	result = result + '	    <div class="col-md-6 mb10" id="endDateDiv">';
+	result = result + '	      <label class="clearfix">Project End Date</label>';
+	result = result + '	      <div class="">';
+	result = result + '	        <input type="text" class="form-control input-sm calendar"  value="'+projectEndDate+'" id="projectEndDate" readonly name="memberEndDate" field-name="End Date"  data-validation-optional="true">';
+	result = result + '	      </div>';
+	result = result + '	    </div>';
+	
+	result = result + '	    </div>';
+	
+	result = result + '	    <div class="row">';
+	
+	result = result + '	    <div class="clearfix mb10 col-md-6">';
+	result = result + '	      <label class="clearfix">Estimated Hours</label>';
+	result = result + '	      <div class="">';
+	result = result + '	        <input type="text" class="form-control inlineField"  id="estHours" value="'+estHours+'" name="estHours" field-name="Estimated Hours"  data-validation-optional="true" data-validation="validate_Space validate_int">';
+	result = result + '	      </div>';
+	result = result + '	    </div>';
+	
+	result = result + '	    <div class="clearfix mb10 col-md-6">';
+	result = result + '	      <label class="clearfix">Estimated Budget</label>';
+	result = result + '	      <div class="">';
+	result = result + '	        <input type="text" class="form-control inlineField"  id="estBudget" value="'+estBudget+'"  name="estBudget" field-name="Estimated Budget"  data-validation-optional="true" data-validation="validate_Space validate_int">';
+	result = result + '	      </div>';
+	result = result + '	    </div>';
+	result = result + '	    </div>';
+	
+	
+	result = result + ' <div id="reasonForProjectDiv" class="footerBtns">';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Update" onclick="updateProjectMember();"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelEditProjectMember();"></b>';
+	result = result +"	</div>";
+	result = result +"	</div>";
+	
+	result = result + '</form>';
+	
+	$("#projectMemberDetailsPopUp").append(result);
+	$("#edit_member_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200); 
+	
+	
+	if(data.billRateCurrency != null && data.billRateCurrency != '' && data.billRateCurrency != 'undefined'){
+		$('#billRateCurrency').val(data.billRateCurrency);
+	}else{
+		$('#billRateCurrency').val('${SourceLeadWeb_currencyCode}');
+	}
+	
+	if(data.billRateRateType != null && data.billRateRateType != '' && data.billRateRateType != 'undefined'){
+		$('#billRateRateType').val(data.billRateRateType);
+	}
+	
+	
+	if(data.payRateCurrency != null && data.payRateCurrency != '' && data.payRateCurrency != 'undefined'){
+		$('#payRateCurrency').val(data.payRateCurrency);
+	}else{
+		$('#payRateCurrency').val('${SourceLeadWeb_currencyCode}');
+	}
+	
+	if(data.payRateRateType != null && data.payRateRateType != '' && data.payRateRateType != 'undefined'){
+		$('#payRateRateType').val(data.payRateRateType);
+	}
+	
+	  if(data.projectStartDate == null || data.projectStartDate == '' || data.projectStartDate == 'undefined'){	
+			$("#projectStartDate").datepicker({
+				dateFormat : finalDateFormatAssignEmpUpdate,
+				changeMonth: true,
+				changeYear: true, 
+				minDate:projectStartDate,
+				 
+		        onClose : function(selected) {
+		        	var dt = $(this).datepicker('getDate', '+1d');
+					dt.setDate(dt.getDate() + 1);
+					$("#projectStartDate").datepicker("option", "minDate", dt);
+					removeStartDateValidation();
+					getEstimatedHours();
+				}
+			});
+	  }
+	  
+		$("#projectEndDate").datepicker({
+			dateFormat : finalDateFormatAssignEmpUpdate,
+			changeMonth: true,
+			changeYear: true, 
+			minDate: projectStartDate,
+	        onClose : function(selected) {
+	        	 var dt = $(this).datepicker('getDate', '-1d');
+					dt.setDate(dt.getDate() - 1);
+					$("#projectEndDate").datepicker("option", "maxDate", dt);
+					removeEndDateValidation();
+					getEstimatedHours();
+			}
+		});
+		
+		$("#billRateEstimatedDate").datepicker({
+			dateFormat : finalDateFormatAssignEmpUpdate,
+			changeMonth: true,
+			changeYear: true, 
+	        onClose : function(selected) {
+	        	removebillRateEstdValidation();
+			}
+		});
+		
+		$("#payRateEstimatedDate").datepicker({
+			dateFormat : finalDateFormatAssignEmpUpdate,
+			changeMonth: true,
+			changeYear: true, 
+	        onClose : function(selected) {
+	        	removePayRateEstdValidation();
+			}
+		});
+		
+		
+		
+	
+}
+
+function removeStartDateValidation(rowId){
+	$('#startDateDiv').find('p.jquery_form_error_message').remove();
+}
+
+function removeEndDateValidation(rowId){
+	$('#endDateDiv').find('p.jquery_form_error_message').remove();
+}
+
+function removebillRateEstdValidation(rowId){
+	$('#billRateEstdDiv').find('p.jquery_form_error_message').remove();
+}
+
+function removePayRateEstdValidation(rowId){
+	$('#payRateEstdDiv').find('p.jquery_form_error_message').remove();
+}
+
+
+
+
+function cancelEditProjectMember(){
+	$("#projectMemberDetailsPopUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+	 $(".vendor_wrap_mask").fadeOut(200);
+}
+
+
+
+function getEstimatedHours(){
+	var startDate = document.getElementById("projectStartDate").value;
+	var endDate = document.getElementById("projectEndDate").value;
+	var locationId = '${SourceLeadWeb_orgLocationId}';
+	if(startDate && endDate){
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 var averageWorkingHours = '${SourceLeadWeb_orgLocations.averageWorkingHours}';
+		 $("#editMemberLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getEstimatedHoursForResourceRequest?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours+"&locationId="+locationId, 
+		        success: function(estimatedHours) {
+		        	
+		        	$('#estHours').val(estimatedHours);
+		        	 $("#editMemberLoading").removeAttr("style"); 
+		        	
+		        }
+		        
+		 });
+	}
+}
+
+</script>
+
+
+<script>
+function updateProjectMember(){
+	
+	 var validationSettings = {
+				errorMessagePosition : 'element',
+				borderColorOnError : '',
+				scrollToTopOnError : true,
+			}; 
+		
+		 if ($('#editProjectMemberform').validate(false, validationSettings)) {
+				 var sourceleadUrl = '${sourceleadUrl}';
+				 var formData = getFormData("editProjectMemberform");
+				
+				 var projectUUID = '${projectUUID}';
+				 var projectClientUUID = '${projectClientUUID}';
+				 
+				 
+				 $("#editMemberLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			 	 $.ajax({
+							type : "POST",
+							data :formData,
+							url : sourceleadUrl+"/updateProjectMemberDetails?${_csrf.parameterName}=${_csrf.token}",
+							success : function(result) {
+							
+								location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&projectClientUUID="+projectClientUUID+"&tabType=team");
+							},
+						}); 
+				return true;
+			} else {
+				return false;
+			}
+	}
+	$('body').on('blur', '#editProjectMemberform', function() {
+		$("#editProjectMemberform").showHelpOnFocus();;
+		$("#editProjectMemberform").validateOnBlur(false, validationSettings);  
+	}); 
+</script>
+
+
+
+
 
 <!-- this script is for Employee Terminate functionality at Projects screen -->
 <script>

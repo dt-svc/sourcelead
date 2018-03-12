@@ -19,12 +19,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateComments;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateCommentsService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
@@ -62,6 +64,9 @@ public class ProfessionalProfileController {
 	
 	@Autowired
 	OrgLocationService orgLocationService;
+	
+	@Autowired
+	CandidateCommentsService candidateCommentsService;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -163,6 +168,8 @@ public class ProfessionalProfileController {
 		        if(candidate.getConsultantUser() != null) {
 		        	 candidate.getConsultantUser().setPassword(null);
 		        }
+		        List<CandidateComments> candidateCommentsList = candidateCommentsService.getAllCommentsOnCandidateByCandidateIdAndOrgLocation(candidate.getId(), orgLocations);
+		        candidate.setCommentsCount(String.valueOf(candidateCommentsList.size()));
 				return candidate;
 	}
 	 

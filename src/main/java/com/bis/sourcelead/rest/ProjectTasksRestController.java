@@ -660,10 +660,10 @@ public class ProjectTasksRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/updateAssignTaskUsers", method = RequestMethod.POST)
-	public String updateAssignTaskUsers(@RequestParam(value = "assignValue", required = false) String assignValue,
+	public String updateAssignTaskUsers(ProjectTasksDTO projectTasksDTO,@RequestParam(value = "assignValue", required = false) String assignValue,
 			@RequestParam(value = "taskId", required = false) String projectTaskId,
 			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
-		projectAssignTasksService.inlineUpdateAssignTaskUsers(assignValue, projectTaskId, userId);
+		projectAssignTasksService.inlineUpdateAssignTaskUsers(projectTasksDTO,assignValue, projectTaskId, userId);
 		return "success";
 	}
 

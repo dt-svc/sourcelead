@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 public class ProjectMembersDTO implements Serializable {
@@ -38,8 +39,12 @@ public class ProjectMembersDTO implements Serializable {
 	private String billRateRateType;
 	
 	private String memberStartDate;
-	
+
 	private String memberEndDate;
+	
+	private String billRateEstimatedDate;
+	
+	private String payRateEstimatedDate;
 	
 	private Double estHours;
 	
@@ -241,6 +246,21 @@ public class ProjectMembersDTO implements Serializable {
 	{
 		this.orgRelationUUID = orgRelationUUID;
 	}
-	
+
+	public String getBillRateEstimatedDate() {
+		return billRateEstimatedDate;
+	}
+
+	public void setBillRateEstimatedDate(String billRateEstimatedDate) {
+		this.billRateEstimatedDate = billRateEstimatedDate;
+	}
+
+	public String getPayRateEstimatedDate() {
+		return payRateEstimatedDate;
+	}
+
+	public void setPayRateEstimatedDate(String payRateEstimatedDate) {
+		this.payRateEstimatedDate = payRateEstimatedDate;
+	}
 	
 }

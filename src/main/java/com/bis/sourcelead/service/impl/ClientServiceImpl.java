@@ -953,7 +953,11 @@ public class ClientServiceImpl implements ClientService {
 
 				orgLocations.setState("");
 			}
-
+			if(StringUtils.isNotBlank(clientDTO.getCountry())){
+				orgLocations.setCountry(clientDTO.getCountry());
+			}else{
+				orgLocations.setCountry("");
+			}
 			if (StringUtils.isNotBlank(clientDTO.getLocation())) {
 				orgLocations.setLocation(clientDTO.getLocation());
 			} else {
@@ -1315,6 +1319,7 @@ public class ClientServiceImpl implements ClientService {
 			throws NumberFormatException, Exception {
 		User changedUser = userService.getUserById(Long.parseLong(owner));
 		OrgSpoc orgSpocLocation = orgSpocService.getOrgSpocById(spocId);
+		User spocUser = userService.getUserById(orgSpocLocation.getVendorUser().getId());
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(changedUser.getFirstName());
 		emailMessage.setLastName(changedUser.getLastName());
@@ -1362,7 +1367,9 @@ public class ClientServiceImpl implements ClientService {
 
 		EmailScenario noificationEmailScenario = emailScenarioService
 				.getEmailScenarioByUniqueName(Constants.CLIENT_OWNER_UPDATEMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
-		String actionLink = "";
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		//String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("vendorsList?type=listbyContact&spocId="+spocId+"&ownerId="+changedUser.getId()+"&spocUserId="+orgSpocLocation.getVendorUser().getId()+"&spocName="+spocUser.getFirstName()+"&tempOwnerId="+changedUser.getId()+"&spocLocationId="+orgSpocLocation.getVendorLocationId().getId()+"&orgRelationId="+orgSpocLocation.getOrgRelations().getId()+"&userId="+orgSpocLocation.getVendorUser().getId()).toString();
+		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("vendorsList?contactsTab=contactsTab&orgRelationUUID="+orgSpocLocation.getOrgRelations().getUUID()).toString();
 		String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(), globalVarsMap);
 		noificationEmailScenario.setBody(notificationbody);
 
@@ -1438,7 +1445,9 @@ public class ClientServiceImpl implements ClientService {
 
 		EmailScenario noificationEmailScenario = emailScenarioService
 				.getEmailScenarioByUniqueName(Constants.EDIT_CLIENTCONTACT, Constants.ENTITY_TYPE_NOTIFICATION);
-		String actionLink = "";
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		//&clientOrgLocationId="+orgSpoc.getOrgRelations().getResponderLocationId()+"&orgRelationId="+orgSpoc.getOrgRelations().getId()+"&clientName="+"reject client"
+		 String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("clientDashboard?type=Client").toString();		
 		String rejectActionLink = "";
 		String spocUUID = "";
 		String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(), globalVarsMap);
