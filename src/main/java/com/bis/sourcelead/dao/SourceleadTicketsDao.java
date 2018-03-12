@@ -26,6 +26,8 @@ public interface SourceleadTicketsDao {
 	SourceleadTickets getSourceleadTicketsByTicketUUID(String ticketUUID);
 	
 	Long getTicketGeneratedIdByGeneratedIdcount(Integer generatedIdCount);
+	
+	List<OrgLocations> getSourceleadTicketRequestedOrgLocatons()throws Exception;
 
 	//attchment related
 	List<SourceleadTicketsAttachments> getSourceleadTicketsAttachmentsListByTicketId(Long ticketId) throws Exception;

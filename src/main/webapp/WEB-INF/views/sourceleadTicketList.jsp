@@ -10,8 +10,19 @@ $(function() {
 	 var loginRoleName = '${SourceLeadWeb_loginUserRole}'
 	  if(loginRoleName != 'ROLE_SOURCELEAD_ADMIN'){
 		  $('#dynamicTicketListView').DataTable().column(0).visible(false);
+		  $('#dynamicTicketListView').DataTable().column(6).visible(false);
 	  }
 	 
+	 $("#filter1ApprovePop").click(function(){
+			$("#filter1ApprovedPop").slideToggle(200);
+			 $("#filter2ApprovedPop,.action-pop").slideUp(200);
+		});
+	    $("html").click(function() {
+	        $("#filter1ApprovedPop").slideUp(200);
+	    });
+	    $("#filter1ApprovedPop, #filter1ApprovePop").click(function(e) {  
+	        e.stopPropagation();
+	    });	
 	
 });
 
@@ -83,6 +94,18 @@ function getTicketCustomDates(){
 						
 						        </div>
 								</li>
+								<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_SOURCELEAD_ADMIN'}">
+								<li id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Company</span><i class="glyphicon glyphicon-play"  ></i>|
+				                	<div id="filter1ApprovedPop" class="approved_pop">
+				                    	<ul>
+				                    	  <c:forEach var="orgList" items="${orgLocationsList}">  
+				                        	<li><input  id="companyName${orgList.id}" name="selectCompanyById" value ="${orgList.id}"  onclick="getSourceleadTicketList();"  type="checkbox"><label for="companyName${orgList.id}">${orgList.orgLocationName}</label></li>
+										  </c:forEach>
+				                        </ul>
+				                    </div>                	
+				                </li>
+				                </c:if>
+								
 								<li> <a href="<c:url value='${appPath}/addSourceleadTicket'/>"  title="Add Ticket"><i class="fa fa-plus paddingRight"></i>Add Ticket</a> </li>
 								<div class="clearfix"></div>
 								</ul>
@@ -179,11 +202,17 @@ function getTicketCustomDates(){
 		  }
 		  
 	  }
+	  var selectCompanyIds = [];
+		$('input:checkbox[name=selectCompanyById]:checked').each(function() 
+	     {
+			selectCompanyIds.push($(this).val());
+		 });
+		
 	  if(flag){
 	  var sourceleadUrl = '${sourceleadUrl}';
 		var searchValue = $("#ticketDataTableSearch").val();
 		 searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getSourceleadTicketList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&dateSelection="+dateSelection;
+		var url = sourceleadUrl+"/getSourceleadTicketList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&dateSelection="+dateSelection+"&selectCompanyIds="+selectCompanyIds;
 		prepareSourceleadTicketList(url);
 	  }
   }
@@ -205,6 +234,7 @@ function prepareSourceleadTicketList(url){
         result = result + ' <th>Module</th>';
         result = result + ' <th>Requested on</th>';
         result = result + ' <th>Requested by</th>';
+        result = result + ' <th>Company Name</th>';
         result = result + ' <th>Status</th>';
 		result = result + '<th>Action</th>';
 		result = result + '</tr>';
@@ -234,7 +264,7 @@ function dynamicTicketListPagination(url){
 		  	"data": "",
 		  	"render": function(data, type, report, meta) {
 		  		var result = "";
-				result = result + ' <td><div class="tbldata-dotdot-vsm" title = "'+report.ticketGeneratedId+'">'+report.ticketGeneratedId+' </div></td>';
+				result = result + ' <td><div class="tbldata-dotdot-100" title = "'+report.ticketGeneratedId+'">'+report.ticketGeneratedId+' </div></td>';
 	             return result;
 		  	}
 	  },{
@@ -284,10 +314,24 @@ function dynamicTicketListPagination(url){
 	  {
 		  	"targets": colIndex++,
 		  	"data": "",
-// 		  	"sortable": false,
+		  	"sortable": false,
 		  	"render": function(data, type, report, meta) {
 		  		var result = "";
-				result = result + ' <td><div class="tbldata-dotdot-sm" title = "'+report.requestedBy+'">'+report.requestedBy+'</div></td>';
+		  		if(loginRoleName == 'ROLE_SOURCELEAD_ADMIN'){
+					result = result + ' <td><div class="tbldata-dotdot-100" title = "'+report.requestedBy+'">'+report.requestedBy+'</div></td>';
+		  		}else{
+					result = result + ' <td><div class="tbldata-dotdot-sm" title = "'+report.requestedBy+'">'+report.requestedBy+'</div></td>';
+		  		}
+	             return result;
+		  	}
+	  },
+	  {
+		  	"targets": colIndex++,
+		  	"data": "",
+		  	"sortable": false,
+		  	"render": function(data, type, report, meta) {
+		  		var result = "";
+				result = result + ' <td><div class="tbldata-dotdot-100" title = "'+report.companyName+'">'+report.companyName+'</div></td>';
 	             return result;
 		  	}
 	  },

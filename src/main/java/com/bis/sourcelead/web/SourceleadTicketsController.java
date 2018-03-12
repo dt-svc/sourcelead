@@ -49,6 +49,12 @@ public class SourceleadTicketsController {
    	 public ModelAndView sourceleadTicketList( HttpServletRequest request) throws Exception {
    	    ModelAndView model = new ModelAndView();
    	    commonUtil.highLightMenu(Constants.Dashboard, request);
+   	    
+   	    List<OrgLocations> orgLocationsList = sourceleadTicketService.getSourceleadTicketRequestedOrgLocatons();
+   	    if(orgLocationsList != null) {
+   	        model.addObject("orgLocationsList", orgLocationsList);
+   	    }
+   	    
    		model.setViewName("sourceleadTicketList");
    		model.addObject("sourceleadUrl", sourceleadUrl);
    		return model;

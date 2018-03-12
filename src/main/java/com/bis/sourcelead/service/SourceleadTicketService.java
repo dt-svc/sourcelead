@@ -22,6 +22,8 @@ public interface SourceleadTicketService {
 	
 	SourceleadTickets getSourceleadTicketsByTicketUUID(String ticketUUID);
 	
+	List<OrgLocations> getSourceleadTicketRequestedOrgLocatons()throws Exception;
+	
 //	void sendEmailSourceleadTicketToSourceleadAdmin(SourceleadTickets sourceleadTickets,OrgLocations orgLocation);
 	
 	//attachments related
