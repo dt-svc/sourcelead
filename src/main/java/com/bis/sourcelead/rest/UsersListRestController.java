@@ -729,6 +729,7 @@ public class UsersListRestController {
 				if(null != userRole1){
 					user.setUserType(userRole1.getUserType());
 				}
+				
 		  }
 		 userRole.setAllReportingManagers(userList);
 		 
@@ -739,7 +740,11 @@ public class UsersListRestController {
 			 userRole.setCurrencyConversionWithCountry(countries.getCurrency());
 		 }
 		 
-		 
+		 if (userRole.getUser().getDateOfBirth() != null) {
+				userRole.setDateofBirthStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),userRole.getUser().getDateOfBirth()));
+			} else {
+				userRole.setDateofBirthStr("");
+			}
 		 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_USER);
 		 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
 		 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();

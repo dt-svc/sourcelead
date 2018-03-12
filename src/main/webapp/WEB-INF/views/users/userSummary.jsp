@@ -274,7 +274,11 @@ $(document).ready(function(){
 				result = result + '				 <strong>First Name:</strong><span class="fix" title="'+json.user.firstName+'">'+json.user.firstName+'</span><div class="clearfix"></div>';
 				result = result + ' 		</div>';
 				
-					
+				if(json.user.middelName != null && json.user.middelName != "" && json.user.middelName != 'undefined'){
+					result = result + ' 		<div class="project_details_cta">';
+					result = result + '				 <strong>Middle Name:</strong><span class="fix" title="'+json.user.middelName+'">'+json.user.middelName+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+				}	
 				
 				
 				if(json.user.lastName != null && json.user.lastName != "" && json.user.lastName != 'undefined'){
@@ -295,6 +299,11 @@ $(document).ready(function(){
 					result = result + ' 		</div>';
 				}
 				
+				if(json.user.gender != null && json.user.gender != "" && json.user.gender != 'undefined'){
+					result = result + ' 		<div class="project_details_cta">';
+					result = result + '				 <strong>Gender:</strong><span class="fix" title="'+json.user.gender+'">'+json.user.gender+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+				}
 				
 				if(json.user.extensionNumber != null && json.user.extensionNumber !='' && json.user.extensionNumber !='undefined'){
 					
@@ -365,6 +374,12 @@ $(document).ready(function(){
 				if(json.hireDateStr != null && json.hireDateStr != "" && json.hireDateStr != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				<strong>Date of joining:</strong><span class="fix">'+json.hireDateStr+'</span><div class="clearfix"></div>';
+					result = result + '			</div>';
+				}
+				
+				if(json.dateofBirthStr != null && json.dateofBirthStr != "" && json.dateofBirthStr != 'undefined'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				<strong>Date of Birth:</strong><span class="fix">'+json.dateofBirthStr+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
 				}
 				

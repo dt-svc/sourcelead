@@ -173,6 +173,10 @@ public class UserRole implements Serializable {
 	@Transient
 	@JsonProperty
 	private String hireDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String dateofBirthStr;
 
 	@Transient
 	@JsonProperty
@@ -917,6 +921,14 @@ public class UserRole implements Serializable {
 
 	public void setUserCustomFieldlabelNameAndValue(Map<Long, String> userCustomFieldlabelNameAndValue) {
 		this.userCustomFieldlabelNameAndValue = userCustomFieldlabelNameAndValue;
+	}
+
+	public String getDateofBirthStr() {
+		return dateofBirthStr;
+	}
+
+	public void setDateofBirthStr(String dateofBirthStr) {
+		this.dateofBirthStr = dateofBirthStr;
 	}
 
 	
