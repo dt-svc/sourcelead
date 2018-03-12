@@ -135,17 +135,20 @@
             	<h4 class="col-md-12 mb margin-top0">3. Beneficiary  details</h4>
            <div class="clearfix"></div>
 
-            <div class="form-group">
-              <label class="col-md-4">Assocaite (Beneficiary)</label>
-              <div class="col-md-8">
-                <select class="form-control chosen-select">
-                    <option>--Select Beneficiary--</option>
-                    <option>Beneficiary-1</option>
-                    <option>Beneficiary-2</option>
-                    <option>Beneficiary-3</option>
-                 </select>
-              </div>
-            </div>                                                                                                                                       
+             <div class="form-group">
+								<label class="col-md-3"><span class="pull-left">Associate (Beneficiary)</span><span
+									class="text-danger pull-left" id="man1">*</span></label>
+								<div class="col-md-9 chooRadius" id="errorAttorney">
+								<div class="input-group col-md-10 pull-left chooRadius">
+									<select class="chosen-select form-control" name="attorneys"
+										id="candidates" placeholder="Select Beneficiary" field-name="Attorney Name" data-validation="required" onChange="updateCandiateInfo();">
+									</select>
+								 <span class="input-group-addon cursorPointer bg-blue" onclick="getCandidatesByOrgLocation();"><i class="fa fa-refresh "></i></span>
+									
+								</div>
+							</div>
+							</div>
+                                                                                                                                             
          <div class="form-group">
               <label class="col-md-4">First Name<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
@@ -561,6 +564,35 @@
 			
 		 };
 	</script>
+	
+<script>
+function getCandidatesByOrgLocation(){
+	 console.log(" before getCandidatesByOrgLocation function calling ---->");
+	 urltest = sourceleadUrl+immiModulePath+"/getAllActiveCandidatesByLocation";
+	 console.log(urltest);
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+immiModulePath+"/getAllActiveCandidatesByLocation", 
+		        success: function(data) {
+		        	 var json = JSON.parse(data);
+		        	 temp =json;
+		        	console.log(" inside success ---->");
+		        	$('#candidates').empty();
+		        	$('#candidates').append('<option value="">--Select Beneficiary --</option>');
+		        	//jsonObjMap = {};
+		            for(var i=0;i<json.length;i++){
+		            	  var opt = json[i];
+		            	//  jsonObjMap[opt.id]= opt;
+		            	  
+		            		$('#candidates').append('<option value='+opt.id+' >'+opt.firstName+'</option>');
+		            }
+		            $('#candidates').trigger("chosen:updated");
+		           
+		            updateCandiateInfo();
+		   }
+   });
+}
+</script>
 	<script>
  function getAttorneysByOrgLocation(){
 	 console.log(" before function calling ---->");
@@ -729,6 +761,7 @@
 		  // 
 		  
 		  getAttorneysByOrgLocation();
+		  getCandidatesByOrgLocation();
  });
    </script>
    <script>
@@ -790,4 +823,10 @@ function  removeValidationAttorneyContact() {
 	   $("#"+nationalityId).val(address.country).change();
 	 });
 	 }
+	 </script>
+	 <script>
+	 function updateCandiateInfo(){
+		 console.log("inside update candidate info event ----> :::: ");
+	 }
+	 
 	 </script>
