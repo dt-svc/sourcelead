@@ -54,6 +54,8 @@ public class SourceleadTicketDTO extends SearchDTO implements Serializable{
 	
 	private String companyName;
 	
+	private String createdByUserId;
+	
 	public String getId() {
 		return id;
 	}
@@ -236,5 +238,13 @@ public class SourceleadTicketDTO extends SearchDTO implements Serializable{
 
 	public void setCompanyName(String companyName) {
 		this.companyName = companyName;
+	}
+
+	public String getCreatedByUserId() {
+		return createdByUserId;
+	}
+
+	public void setCreatedByUserId(String createdByUserId) {
+		this.createdByUserId = createdByUserId;
 	}
 }
