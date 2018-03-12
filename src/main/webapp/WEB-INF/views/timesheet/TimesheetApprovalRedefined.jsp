@@ -17,11 +17,13 @@
 			var totalHours = '${totalHours}';
 			var from = '${from}';
 			var requestFrom = "notifyLink";
+			alert("hi");
 			$("#notificationCurrentFrequency").attr("value",currentTimeFrequency);
 			timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,projectMemberId,masterCandidateId,totalHours,from,requestFrom);
 			}
 	});
 </script>
+
 
 <section class="content-wraper">
 		  <section class="content-header clearfix">

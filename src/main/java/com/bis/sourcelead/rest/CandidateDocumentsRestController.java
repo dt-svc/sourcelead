@@ -96,17 +96,17 @@ public class CandidateDocumentsRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/saveCandidateDocument", method = RequestMethod.POST)
-	public @ResponseBody String saveCandidateDocument(CandidateDocumentsDTO candidateDocumentsDTO, @RequestParam(value = "candidateId", required = false) Long candidateId, @RequestParam(value = "documentUUID", required = false) String documentUUID, HttpServletRequest request) throws Exception
+	@RequestMapping(value = {"/saveCandidateDocument","rest/saveCandidateDocument"}, method = RequestMethod.POST)
+	public @ResponseBody String saveCandidateDocument(CandidateDocumentsDTO candidateDocumentsDTO, HttpServletRequest request) throws Exception
 	{
 		
 		candidateDocumentsDTO.setStaticPath(staticPath);
 		//FileUploadUtil.fillUploadedFileInfo(candidateDocumentsDTO, candidateDocumentsDTO.getFileInfo());
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		if(null !=candidateId){
-			candidateDocumentsService.storeCandidateDocuments(candidateDocumentsDTO, candidateId,documentUUID, orgLocation.getId(), user);
-			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		if(null != candidateDocumentsDTO.getCandidateId()){
+			candidateDocumentsService.storeCandidateDocuments(candidateDocumentsDTO, Long.parseLong(candidateDocumentsDTO.getCandidateId()),candidateDocumentsDTO.getDocumentUUID(), orgLocation.getId(), user);
+			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateDocumentsDTO.getCandidateId()));
 			Integer percentage = candidateService.getCandidatePercentage(candidate,orgLocation);
 			return percentage.toString();
 		}else{
