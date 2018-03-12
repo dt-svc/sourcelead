@@ -206,14 +206,17 @@ public class CandidateCertificationsRestController {
 		 * 
 		 * @throws Exception
 		 */
-		 @RequestMapping(value = "/updateCandidateCertificationsBycandidateIdandcandidateCertificateId", method = RequestMethod.POST)
-	     public @ResponseBody String updateCandidateCertificationsBycandidateIdandcandidateCertificateId(CandidateCertificationDTO candidateCertificationDTO,@RequestParam(value="candidateId", required=false) Long candidateId ,HttpServletRequest request) throws Exception {
+		 @RequestMapping(value = {"/updateCandidateCertificationsBycandidateIdandcandidateCertificateId","rest/updateCandidateCertificationsBycandidateIdandcandidateCertificateId"}, method = RequestMethod.POST)
+	     public @ResponseBody String updateCandidateCertificationsBycandidateIdandcandidateCertificateId(CandidateCertificationDTO candidateCertificationDTO,HttpServletRequest request) throws Exception {
 
+			String isUpdated = "false";
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User users = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			candidateCertificationsService.storeCandidateCertifications(candidateCertificationDTO,users,loginOrgLocation,candidateId);
-			//SourceLeadSessionManager.setSessionAttribute(request, "editCertification", "Certification details updated ");
-			return "success";
+			CandidateCertifications candidateCertifications = candidateCertificationsService.storeCandidateCertifications(candidateCertificationDTO,users,loginOrgLocation,Long.parseLong(candidateCertificationDTO.getCandidateId()));
+			if(candidateCertifications != null) {
+				isUpdated = "true";	
+			}
+			return isUpdated;
 		 }
 
 }

@@ -39,6 +39,8 @@ public class CandidateResumeDTO {
     private String updatedDate;
     
     private String candidateResumeUpdateDateToString;
+    
+    private String resumeId;
 
 	public Long getId()
 	{
@@ -188,6 +190,16 @@ public class CandidateResumeDTO {
 	public void setCandidateResumeUpdateDateToString(String candidateResumeUpdateDateToString)
 	{
 		this.candidateResumeUpdateDateToString = candidateResumeUpdateDateToString;
+	}
+
+	public String getResumeId()
+	{
+		return resumeId;
+	}
+
+	public void setResumeId(String resumeId)
+	{
+		this.resumeId = resumeId;
 	} 
 
 	
