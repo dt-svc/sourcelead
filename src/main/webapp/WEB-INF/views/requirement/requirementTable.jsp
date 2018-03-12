@@ -324,6 +324,7 @@ function jpagination(url,sourceleadUrl){
 	        {
 	            "targets": colIndex++,
 	            "data": "rate",
+	            "sortable": false,
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
            		   if((opt.rate != null && opt.rate != '' && opt.rate != 'undefined') || (opt.maxRate != null && opt.maxRate != '' && opt.maxRate != 'undefined')){
@@ -347,6 +348,7 @@ function jpagination(url,sourceleadUrl){
 	        {
 	            "targets": colIndex++,
 	            "data": "billRate",
+	            "sortable": false,
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
 	            		if((opt.clientRate != null && opt.clientRate != '' && opt.clientRate != 'undefined') || (opt.clientMaxRate != null && opt.clientMaxRate != '' && opt.clientMaxRate != 'undefined')){
@@ -638,7 +640,7 @@ function jpagination(url,sourceleadUrl){
            ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[8,'desc']],
+	    	"aaSorting": [[10,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
