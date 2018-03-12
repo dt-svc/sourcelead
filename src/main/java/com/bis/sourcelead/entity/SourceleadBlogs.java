@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -55,6 +56,9 @@ public class SourceleadBlogs {
 	@Column(name = "STATUS")
 	private Integer status;
 	
+	@Column(name = "BLOG_STATUS")
+	private String blogStatus;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CREATED_BY", nullable = false)
 	@JsonBackReference
@@ -72,6 +76,16 @@ public class SourceleadBlogs {
 	private Date updatedDate;
 	
 	
+	@Transient
+	private String blogImage;
+
+	public String getBlogImage() {
+		return blogImage;
+	}
+
+	public void setBlogImage(String blogImage) {
+		this.blogImage = blogImage;
+	}
 
 	public Long getId() {
 		return id;
@@ -191,6 +205,14 @@ public class SourceleadBlogs {
 
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	public String getBlogStatus() {
+		return blogStatus;
+	}
+
+	public void setBlogStatus(String blogStatus) {
+		this.blogStatus = blogStatus;
 	}
 	
 }
