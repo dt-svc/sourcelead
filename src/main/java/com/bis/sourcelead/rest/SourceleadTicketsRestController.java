@@ -211,21 +211,26 @@ public class SourceleadTicketsRestController {
 		
 		 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		 Collection<Tabs> tabsList = new ArrayList<>();
-		 Tabs tabs = tabsService.getTabListByTabId(1L);
+		 Collection<Tabs> modulesList = new ArrayList<>();
+		 Tabs dashobardTab = tabsService.getTabListByTabId(1L);
 		 if(!userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")) {
 			 tabsList = (Collection<Tabs>) SourceLeadSessionManager.getSessionAttribute(request, "tabsList");
-			 tabsList.add(tabs);
 		 }else{
 			 if(orgLocationId != null && userId != null) {
 				 OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 				 List<Long> modulesId = modulesService.getOrgRegisteredModulesByOrgLocationId(orgLocations);
 				 UserRole orgUserRole = userRoleService.getUserDetailsByUserIdAndLocationId(userId, orgLocationId);
 				 tabsList = tabsService.getTabsListByOrgLocationId(modulesId, orgUserRole.getRoles().getId(), orgLocations.getId());
-				 tabsList.add(tabs);
+				
 			 }
 		 }
 		 
-		 return tabsList;
+		 modulesList.add(dashobardTab);
+		 for(Tabs tabs : tabsList) {
+			 modulesList.add(tabs);
+		 }
+		 
+		 return modulesList;
 		
 	   } 
 	 
