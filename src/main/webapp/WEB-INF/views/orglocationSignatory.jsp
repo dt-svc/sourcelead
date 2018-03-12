@@ -288,7 +288,12 @@ function getAssociatesForSignatory(){
 		output = output + "<option value=''>-- Select Associate --</option>";
      	   for(var i=0; i<data.length;i++){
      		  var opt = data[i];
- 				output = output + "<option value='" +opt.userId+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+     		  if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
+     			 output = output + "<option value='" +opt.userId+ "'>"+opt.firstName+" "+opt.lastName+"</option>"; 
+     		  }else{
+     			 output = output + "<option value='" +opt.userId+ "'>"+opt.firstName+"</option>";
+     		  }
+ 				
      	   }
      	   $("#signatoryAssociate").empty();
      	  $("#signatoryAssociate").append(output);
