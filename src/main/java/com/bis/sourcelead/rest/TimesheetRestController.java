@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -55,10 +54,12 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
@@ -71,6 +72,7 @@ import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ExportTimesheetEntries;
+import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -87,7 +89,6 @@ import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
-import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimeSheetPdfUtil;
 import com.bis.sourcelead.util.TimesheetApprovalFrequencyGeneratorUtil;
@@ -115,9 +116,6 @@ public class TimesheetRestController {
 	
 	@Autowired
 	public TimeSheetExcelView timeSheetExcelView;
-	
-	@Autowired
-	private ExportTimesheetEntries exportTimesheetEntries;
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -171,9 +169,6 @@ public class TimesheetRestController {
 	ProjectMembersHistoryService projectMembersHistoryService;
 	
 	@Autowired
-	private PdfConversionUtil pdfConversionUtil;
-	
-	@Autowired
 	private OrgLocationService orgLocationService;
 	
 	@Autowired
@@ -184,6 +179,9 @@ public class TimesheetRestController {
 	
 	@Autowired
 	private LeaveTypeService leaveTypeService;
+	
+	@Autowired
+	private HolidayService holidayService;
 	
 	/***
 	 * @purpose : Getting ProjectList For Login User (Step - 1)
@@ -449,7 +447,14 @@ public class TimesheetRestController {
 							count++;
 	                	
 	                }
-					pmDTOList.add(ProjectMemberDTOConverter.getProjectMembersDTOFromProjectMembers(pm));
+	                 ProjectMembersHistory projectmemberHistory = projectMembersHistoryService.getProjectMembersHistoryByProjectMemberIdAndOrgLoctionId(pm.getId(), orgLocations.getId());
+	                if(projectmemberHistory.getProjectAssignedDate()!= null) {
+	                	pm.setProjectAssignedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), projectmemberHistory.getProjectAssignedDate()));
+	                }
+	                if(projectmemberHistory.getProjectTerminationDate()!= null) {
+	                	pm.setProjectEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), projectmemberHistory.getProjectTerminationDate()));
+	                }
+	                pmDTOList.add(ProjectMemberDTOConverter.getProjectMembersDTOFromProjectMembers(pm));
 				}
 			}
 		timesheetEntryDetailsDTO.setTimeFrequencies(timesheetFrequencyMap);
@@ -2522,6 +2527,27 @@ public class TimesheetRestController {
 					String leaveDate[] = dateList.split(",");
 					for(int i=0;i<leaveDate.length;i++) {
 						addTimesheetDayEntriesByProjectIdAndProjectMemberId(projectTask.getProjectId().getId(), projectMember.getId(), projectTask.getProjectTasksUUID(), leaveDate[i],CalendarUtil.getTimesheetHoursDisplayFormat(orgLocations.getAverageWorkingHours().floatValue()).replace(".", ":"), leave.getReason(), leaveApproverUserId, orgLocations);
+						}
+					}
+				}
+			}
+		}
+		
+		
+		public void linkHolidaysWithTimeSheet(User user, OrgLocations orgLocations, Holiday holiday) throws Exception {
+			List<ProjectTasks> projectTaskList = holidayService.getHolidayProjectTaskByorgLocationIdAndHolidayId(orgLocations.getId(),holiday.getId());
+			if(projectTaskList != null && !projectTaskList.isEmpty()) {
+			for(ProjectTasks projectTask: projectTaskList) {
+				List<ProjectMembers> projectMemberList = projectMembersService.getAllProjectsByOrgLocationId(orgLocations.getId());
+					if(projectMemberList != null && !projectMemberList.isEmpty() && holiday != null) {
+						for(ProjectMembers projectMember:projectMemberList) {
+						if(projectMember!= null) {
+							String dateList = commonUtil.getDaysBetweenDates(holiday.getFromDate(), holiday.getToDate(), orgLocations.getDateFormat());
+							String holidayDate[] = dateList.split(",");
+							for(int i=0;i<holidayDate.length;i++) {
+								addTimesheetDayEntriesByProjectIdAndProjectMemberId(projectTask.getProjectId().getId(), projectMember.getId(), projectTask.getProjectTasksUUID(), holidayDate[i],CalendarUtil.getTimesheetHoursDisplayFormat(orgLocations.getAverageWorkingHours().floatValue()).replace(".", ":"), holiday.getHolidayName(), user, orgLocations);
+								}
+							}
 						}
 					}
 				}
