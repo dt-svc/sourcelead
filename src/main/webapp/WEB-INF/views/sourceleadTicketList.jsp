@@ -364,7 +364,7 @@ function dynamicTicketListPagination(url){
 		  		var loginUserId = '${SourceLeadWeb_user.id}'
 				result = result + ' <td><div class="tblminwidth-75 text-center">';
 				  result = result + '<ul class="list-unstyled list-inline clearfix actionList-vdse">';
-				  if(loginRoleName == 'ROLE_ADMIN' || loginUserId == report.userId){
+				  if(loginRoleName == 'ROLE_ADMIN' || loginUserId == report.userId || loginUserId == report.createdByUserId){
 					  result = result + ' <li><a href="<c:url value="'+sourceleadUrl+'/addSourceleadTicket?ticketUUID='+report.ticketUUID+'"/>"  title="Add Ticket" class="fa fa-pencil" ></a></li>';
 				  }
 				  result = result + ' <li><a href="javascript:void(0)" title="Comment" class="fa fa-comments" onClick="ticketComment(\''+report.ticketUUID+'\')"></a></li>';

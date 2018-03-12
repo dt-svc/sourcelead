@@ -239,7 +239,8 @@ public class SourceleadTicketServiceImpl implements SourceleadTicketService{
 				 std.setTitcketType(sourceleadTickets.getTicketType());
 				 std.setTicketTabs(sourceleadTickets.getTabId().getTabName());
 				 std.setTicketStatus(sourceleadTickets.getTicketStatus());
-				 std.setUserId(sourceleadTickets.getCreatedBy().getId().toString());
+				 std.setUserId(sourceleadTickets.getUserId().getId().toString());
+				 std.setCreatedByUserId(sourceleadTickets.getCreatedBy().getId().toString());
 				 std.setCompanyName(sourceleadTickets.getOrgLocationId().getOrgLocationName());
 				 std.setRequestedBy(sourceleadTickets.getUserId().getFullName());
 				 std.setRequestedOn(commonUtil.dateStrFromOrgDateFormatter(sourceleadTickets.getOrgLocationId().getDateFormat(), sourceleadTickets.getCreatedDate()));
