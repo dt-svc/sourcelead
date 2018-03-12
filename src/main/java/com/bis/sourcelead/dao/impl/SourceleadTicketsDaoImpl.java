@@ -127,7 +127,7 @@ public class SourceleadTicketsDaoImpl implements SourceleadTicketsDao{
 			subQuery = " and ((:varZero  IN (:orgLocationList)) OR (:varZero NOT IN (:orgLocationList) and st.orgLocationId.id IN (:orgLocationList)))";
 			
 			
-			String query = "from SourceleadTickets st  where  date(st.createdDate) BETWEEN :fromDate and :endDate "+query1+" "+subQuery+" "+sortingQry+"";
+			String query = "from SourceleadTickets st  where date(st.createdDate) BETWEEN :fromDate and :endDate "+query1+" "+subQuery+" "+sortingQry+"";
 		    ticketList = session.createQuery(query.toString()).setParameter("fromDate", fromDate).setParameter("endDate", endDate).setLong("varZero", 0).setParameterList("orgLocationList", orgLocationList).setFirstResult(sourceleadTicketDTO.getStart()).setMaxResults(sourceleadTicketDTO.getLength()).list();
 		    
 		    String countQuery = "select count(*) from SourceleadTickets st where date(st.createdDate) BETWEEN :fromDate and :endDate "+query1+" "+subQuery+" "+sortingQry+"";
@@ -135,11 +135,11 @@ public class SourceleadTicketsDaoImpl implements SourceleadTicketsDao{
 		    
 		}else {
 			//org list query
-			String query = "from SourceleadTickets st   where st.userId.id =:userId and date(st.createdDate) BETWEEN :fromDate and :endDate "+query1+" "+sortingQry+"";
-		    ticketList = session.createQuery(query.toString()).setLong("userId", userId).setParameter("fromDate", fromDate).setParameter("endDate", endDate).setFirstResult(sourceleadTicketDTO.getStart()).setMaxResults(sourceleadTicketDTO.getLength()).list();
+			String query = "from SourceleadTickets st   where st.orgLocationId.id = :orgLocationId and st.userId.id =:userId and date(st.createdDate) BETWEEN :fromDate and :endDate "+query1+" "+sortingQry+"";
+		    ticketList = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocations.getId()).setParameter("fromDate", fromDate).setParameter("endDate", endDate).setFirstResult(sourceleadTicketDTO.getStart()).setMaxResults(sourceleadTicketDTO.getLength()).list();
 		    
-		    String countQuery = "select count(*) from SourceleadTickets st where st.userId.id =:userId and date(st.createdDate) BETWEEN :fromDate and :endDate "+query1+" "+sortingQry+"";
-		    countlist = session.createQuery(countQuery.toString()).setLong("userId", userId).setParameter("fromDate", fromDate).setParameter("endDate", endDate).list();
+		    String countQuery = "select count(*) from SourceleadTickets st where st.orgLocationId.id = :orgLocationId and st.userId.id =:userId and date(st.createdDate) BETWEEN :fromDate and :endDate "+query1+" "+sortingQry+"";
+		    countlist = session.createQuery(countQuery.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocations.getId()).setParameter("fromDate", fromDate).setParameter("endDate", endDate).list();
 		    
 		}
 		

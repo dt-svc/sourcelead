@@ -459,7 +459,7 @@ function closeComment() {
 function saveTicketComments(ticketUUID){
 	if ($('#sourceleadTicketComment_form').validate(false, validationSettings)) {
 		var sourceleadUrl = '${sourceleadUrl}';
-		var formData = getFormData("sourceleadTicketComment_form")[0];
+		var formData = getFormData("sourceleadTicketComment_form");
 		$.ajax({
 			 type : "POST",
 			 data: formData,

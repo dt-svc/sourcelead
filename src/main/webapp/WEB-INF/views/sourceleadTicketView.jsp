@@ -25,7 +25,11 @@
 			<!--  Tab1 -->
 			 <div class="project_tabs_inn" id="tab-1">
 			    <div class="require_one">
-               
+			    <c:if test="${SourceLeadWeb_loginUserRole = 'ROLE_ADMIN' || SourceLeadWeb_user.id == sourceleadTicket.userId.id}">
+	               <div class="clearfix">
+	               	<a href="${appPath}/addSourceleadTicket?ticketUUID=${sourceleadTicket.ticketUUID}" class="pull-right anchor-black"><i class="fa fa-pencil paddingRight" title="Edit"></i>Edit</a>
+	               </div>
+	              </c:if> 
                 <div class="clearfix"></div>
                 <div class="require_wrap_details_cta width100percnt">
                  <label><strong>Title :</strong></label> ${sourceleadTicket.ticketTitle}
@@ -65,12 +69,13 @@
                    <c:if test="${!empty sourceleadTicketsAttachmentsList}">
 			          <div id="timesheetDocumentsId">
 				         <div class="timesheet_week_comm invoiceDocs invoiceDocsInput">
-					         <span>
+					         <span class="pull-left">
 						         <c:forEach var="attachmentList" items="${sourceleadTicketsAttachmentsList}">
 							         <strong id='ticketDocument${attachmentList.id}'>
 					    		     <i class=''><a class='glyphicon glyphicon-save' href="${attachmentList.fileURL}" title='download'></a></i>
-									 <input type='button' title="${attachmentList.fileName}"   value='${attachmentList.fileName}'>
-									 </strong>
+									 <input type='button' title="${attachmentList.fileName}"   value='${attachmentList.fileName}' style="cursor:initial !important">
+									  <a href="javascript:void(0)" class="fa fa-eye pull-left paddingLeft ml5 mt anchorBlack" title="view attachment" onclick="viewFile('${attachmentList.fileURL}','${attachmentList.fileName}','${attachmentList.fileType}')"></a>
+									  </strong>
 						         </c:forEach>
 					         </span>
 				         </div>
@@ -170,35 +175,39 @@ function getSourceleadTicketCommets(ticketId){
 		 url : sourceleadUrl+ "/getSourceleadTicketComments?${_csrf.parameterName}=${_csrf.token}&id="+ticketId,
 		 success : function(json) {
 	        	var result = "";
-	        	 for (var i=0; i<json.length; i++)
-   				{
-	        		 var report = json[i];
-			        result = result +'	 <div class="comments-div comments-inner clearfix">';
-					result = result +'		<div class="commentsimg">';
-					result = result +'			<i class="fa fa-comments"></i>';
-					if(report.userImage != null && report.userImage != "" && report.userImage != "undefined"){
-						result = result +'			<div class="commentsimg-inner"> <img onerror="predefineProfileImage(this);" src="'+report.userImage+'"></div>';
-					}else{
-						result = result +'			<div class="commentsimg-inner"> <img onerror="predefineProfileImage(this);" src="/resources/images/userprofile-img.png"></div>';
+	        	if(json.length > 0 ){
+	        		 for (var i=0; i<json.length; i++)
+	    				{
+	 	        		 var report = json[i];
+	 			        result = result +'	 <div class="comments-div comments-inner clearfix">';
+	 					result = result +'		<div class="commentsimg">';
+	 					result = result +'			<i class="fa fa-comments"></i>';
+	 					if(report.userImage != null && report.userImage != "" && report.userImage != "undefined"){
+	 						result = result +'			<div class="commentsimg-inner"> <img onerror="predefineProfileImage(this);" src="'+report.userImage+'"></div>';
+	 					}else{
+	 						result = result +'			<div class="commentsimg-inner"> <img onerror="predefineProfileImage(this);" src="/resources/images/userprofile-img.png"></div>';
 
-					}
-					result = result +'		</div>';
-					result = result +'		<div class="customCommentarea">';
-					result = result +'		<div class="row">';
-					result = result +'			<div class="col-md-12">';
-					result = result +'				<p class="comment-by">';
-					result = result +'					By <span class="text-danger">'+report.userName+'</span>';
-					result = result +'					 <span class="small mr">'+report.createdDateTime+'</span>';
-					result = result +'					 <span class="small">('+report.createdDateStr+')</span>';
-					result = result +'				</p>';
-					result = result +'				<div class="commentText commentText-styles">'+report.description+'</div>';
-					result = result +'			</div>';
-					result = result +'			</div>';
-					result = result +'		</div>';
-					result = result +'	</div>';
-   				} 
-	        	 $("#ticketCommentListDivId").empty();
-	        	 $("#ticketCommentListDivId").append(result);
+	 					}
+	 					result = result +'		</div>';
+	 					result = result +'		<div class="customCommentarea">';
+	 					result = result +'		<div class="row">';
+	 					result = result +'			<div class="col-md-12">';
+	 					result = result +'				<p class="comment-by">';
+	 					result = result +'					By <span class="text-danger">'+report.userName+'</span>';
+	 					result = result +'					 <span class="small mr">'+report.createdDateTime+'</span>';
+	 					result = result +'					 <span class="small">('+report.createdDateStr+')</span>';
+	 					result = result +'				</p>';
+	 					result = result +'				<div class="commentText commentText-styles">'+report.description+'</div>';
+	 					result = result +'			</div>';
+	 					result = result +'			</div>';
+	 					result = result +'		</div>';
+	 					result = result +'	</div>';
+	    				} 
+	        	}else{
+	        		result = result +'<div class="dataTables_empty">  </div>';
+	        	}
+	        	$("#ticketCommentListDivId").empty();
+	        	$("#ticketCommentListDivId").append(result);
 		},
 	});
 }
