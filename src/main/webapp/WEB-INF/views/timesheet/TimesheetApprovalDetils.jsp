@@ -204,14 +204,20 @@ $("#dataTableSearchExpenses").keyup(function(event) {
 });
 </script>
 
- <script>
+<script>
+ var selectedRecords = {};
   $(document).ready(function () {
 	    $("#selectAllTimeSheetCheckBoxForSubmitForApproval").click(function () {
 	        $(".checkBoxForSubmitForApproval").prop('checked', $(this).prop('checked'));
+	        $(".checkBoxForSubmitForApproval").each(function() {
+	        	selectedRecords[$(this).val()] = $(this).is(":checked");
+	        });
 	        displayAcceptRejectButtonOnHedder();
 	    });
 	});
  </script>
+ 
+ 
  <script type="text/javascript">
 function displayAcceptRejectButtonOnHedder() {
 	if($('[name="checkBoxForSubmitForApproval"]:checked').length > 0){

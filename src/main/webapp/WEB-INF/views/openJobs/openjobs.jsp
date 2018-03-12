@@ -153,8 +153,10 @@ window.onload = function () {
 
 $(document).scroll(function(e){
     // grab the scroll amount and the window height
+  
     var scrollAmount = $(window).scrollTop();
     var documentHeight = $(document).height();
+    var searchType = $("#searchType").val();
     offset = $("#orgOffset").val();
     // calculate the percentage the user has scrolled down the page
     if($(window).scrollTop() == $(document).height() - $(window).height()) {
@@ -163,8 +165,11 @@ $(document).scroll(function(e){
     	$("#openJobsOffset").val(avilableCount);
     	 //getConnectionsList("scroll");
     	 //requirementsFilter("scroll");
-	if('${requirementUUID}' == null || '${requirementUUID}' == '' || '${requirementUUID}' == 'undefined'){
+	if(('${requirementUUID}' == null || '${requirementUUID}' == '' || '${requirementUUID}' == 'undefined') &&(searchType !='advancesearch')){
     	 getOpenJobsELKList('',"scroll")
+	}
+	else if(searchType == 'mainsearch'){
+		getOpenJobsELKList('',"scroll")
 	}
     }
     
@@ -705,9 +710,8 @@ top: 21px;height: 32px; line-height: 18px;
 						<div class="row">
 							<div class="col-md-6">
 								<label>Rate</label>
-								<div class="input-group">
-									<div class="input-group-btn selp-custom-min custommin">
-										<select class="selectpicker" id="currencyCode"
+								<div class="clearfix jobAddSear">
+										<select class="form-control input-sm btn-primary" id="currencyCode"
 											name="currencyCode">
 											<option selected disabled>INR</option>
 											<option>AUD</option>
@@ -716,18 +720,16 @@ top: 21px;height: 32px; line-height: 18px;
 											<option>SGD</option>
 											<option>EUR</option>
 										</select>
-									</div>
 									<input type="text" class="form-control input-sm" name="minRate"
 										id="minRate" value="" placeholder="Min Rate">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<label>&nbsp;</label>
-								<div class="input-group">
+								<div class="input-group clearfix jobAddSear">
 									<input type="text" class="form-control input-sm" value=""
 										name="maxRate" id="maxRate" placeholder="Max Rate">
-									<div class="input-group-btn selp-custom-min custommin">
-										<select class="selectpicker">
+										<select class="form-control input-sm btn-primary">
 											<option selected disabled>Per</option>
 											<option>Hourly</option>
 											<option>Weekly</option>
@@ -737,7 +739,6 @@ top: 21px;height: 32px; line-height: 18px;
 											<option>Bi-Monthly</option>
 											<option>Yearly</option>
 										</select>
-									</div>
 								</div>
 							</div>
 						</div>
@@ -1315,6 +1316,7 @@ function prepareOpenJobsElkList(data,offset){
 				result = result +'	<div class="jobResultsCta job_container">';
 				result = result +'	<div class="jobResultsInn">';
 				result = result +'<input type="hidden" id="maxJobCount" value="'+json.length+'"/>';
+				result = result +'<input type="hidden" id="searchType" value="mainsearch"/>';
 // 				result = result +'	<h3 style="color:#368ee0;" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');">'+requirements.jobTitle+'</h3>';
 				result = result +'	<a target="_blank" href="'+sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId+'"><h3 style="color:#368ee0;">	'+requirements.jobTitle+'</h3></a>';
 				description =  description+'Job Title:'+requirements.jobTitle+";";
@@ -1436,9 +1438,10 @@ function prepareOpenJobsElkList(data,offset){
 	        }, 500);
 			
 			
-			$("#openJobsRequirementTitleId").val('');
-			$("#openJobsLocationId").val('');
-			$("#openJobsExperienceId").val('');
+			//commented by sathish -- due to populating the values in main search fields
+// 			$("#openJobsRequirementTitleId").val('');
+// 			$("#openJobsLocationId").val('');
+// 			$("#openJobsExperienceId").val('');
 			
 			}
 		}
@@ -1917,6 +1920,7 @@ function openJobSearchRequirement(){
 						 				var picture="";
 						 				var description='';
 						 				var comment='';
+						 				result = result +'<input type="hidden" id="searchType" value="advancesearch"/>';
 						 				result = result +'	<div class="jobResultsCta">';
 										result = result +'	<div class="jobResultsInn">';
 										result = result +'	<a target="_blank" class="block" href="'+sourceleadUrl+'/ws/'+requirements.url+'--'+requirements.requirementId+'"><h3 style="color:#368ee0;">	'+requirements.jobTitle+'</h3></a>';
@@ -1971,8 +1975,14 @@ function openJobSearchRequirement(){
 										result = result +'	</div>';
 										$("#openJobsRequirementsSummary").empty();
 										$("#openJobsRequirementsList").append(result); 
+										$('#loadMoreDiv').empty();
+						 				$('#loadMoreDiv').append('<div class="loadWrap">No More Records..</div>');
 								}
 							}
+						   	else{
+							   	$('#loadMoreDiv').empty();
+				 				$('#loadMoreDiv').append('<div class="loadWrap">No More Records..</div>');
+							   	 }
 					}
 				});
 			}
@@ -3049,4 +3059,5 @@ function forgotPassword(){
  }
  </script>                                                                                     
    <script type="text/javascript" src="http://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5a60382a93e935c2"></script>
+   <script src="/resources/js/formvalidator.js"></script>
 <jsp:include page="../socialinviterscripts.jsp" />

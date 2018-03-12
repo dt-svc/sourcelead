@@ -58,9 +58,11 @@ public class SourceleadFormSectionsServiceImpl  implements SourceleadFormSection
 			sectionDTO.setSourceleadActionName(slFormSections.getSourceleadActions().getActionName());
 			sectionDTO.setTabID(slFormSections.getTabs().getId());
 			sectionDTO.setTabName(slFormSections.getTabs().getTabName());
+			sectionDTO.setIsDefaultVisible(slFormSections.getIsDefaultVisible());
 			sectionDTO.setSectionName(slFormSections.getSectionName());
 			sectionDTO.setSectionDescription(slFormSections.getSectionDesc());
 			sectionDTO.setStatus(slFormSections.getStatus());
+			
 		}
 		List<SourceleadFormFieldsDTO> fieldsDTOList = new ArrayList<>();
 		if(fieldsList != null && !fieldsList.isEmpty()) {
