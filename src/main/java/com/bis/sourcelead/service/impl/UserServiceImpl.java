@@ -1285,6 +1285,11 @@ public class UserServiceImpl implements UserService {
 	public User getUserByEmailAndUserType(String email, String userType) throws Exception {
 		return userDao.getUserByEmailAndUserType(email, userType);
 	}
+	
+	@Override
+	public User getUserByEmail(String email) throws Exception {
+		return userDao.getUserByEmail(email);
+	}
 
 	@Override
 	public User getUserByUserName(String userName) throws Exception {
