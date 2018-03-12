@@ -2258,11 +2258,15 @@ public class TimesheetRestController {
 	    	ArrayList<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
 	    	List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectMemberMasterCandidateIdAndProjectId(projectMember.getMasterCandidateId().getId(), projectMember.getProjects().getId());
 	    	HashSet<SubmissionApproverHierarchy> saHierarchyList = new HashSet<SubmissionApproverHierarchy>();
-	        if(hierarchyList != null && !hierarchyList.isEmpty()){
+	        outer:{
+	    	if(hierarchyList != null && !hierarchyList.isEmpty()){
 					for(ProjectApproverHierarchy hierarchy : hierarchyList){
 						SubmissionApproverHierarchy saHierarchy = null;
 						if(timesheetSubmissions != null && timesheetSubmissions.getId() != null) {
 							saHierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchyForApprover(timesheetSubmissions.getId(), hierarchy.getApproverUserId().getId());
+						   if(saHierarchy.getSubmissionApprovalStatus()== Submission_ApprovalStatus.APPROVED) {
+							   break outer;
+						   }
 						}
 					    if(saHierarchy == null){
 					    	saHierarchy = new SubmissionApproverHierarchy();
@@ -2330,6 +2334,7 @@ public class TimesheetRestController {
 				timesheetSubmissions.setNonBillableHours(actualNonBillableTimeString);
 				timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
 			}
+           }
        }
         
        
@@ -2538,7 +2543,7 @@ public class TimesheetRestController {
 			List<ProjectTasks> projectTaskList = holidayService.getHolidayProjectTaskByorgLocationIdAndHolidayId(orgLocations.getId(),holiday.getId());
 			if(projectTaskList != null && !projectTaskList.isEmpty()) {
 			for(ProjectTasks projectTask: projectTaskList) {
-				List<ProjectMembers> projectMemberList = projectMembersService.getAllProjectsByOrgLocationId(orgLocations.getId());
+				List<ProjectMembers> projectMemberList = projectMembersService.getAllProjectMembersByProjectId(projectTask.getProjectId().getId());
 					if(projectMemberList != null && !projectMemberList.isEmpty() && holiday != null) {
 						for(ProjectMembers projectMember:projectMemberList) {
 						if(projectMember!= null) {
