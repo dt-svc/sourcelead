@@ -177,7 +177,7 @@
 					</div>
 					<div class="col-md-4 minHeight80">
 						<label>Branch</label>
-						<input type="text" class="form-control" value="" placeholder="Branch">
+						<input type="text" class="form-control" value="" id="idValue" onClick="refreshGoogleApiLocation('idValue')">
 					</div>
 					<div class="col-md-4 minHeight80">
 						<label>Rank</label>
@@ -198,16 +198,7 @@
 	</div>
 </section> 
 <script type="text/javascript">
-	/* $(document).on('focus', '#startDate, #endDate', function(){
-		/* var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		var finalDateFormat = getJSDateFormat(locationDate); 
-		$(this).datepicker({
-			dateFormat: finalDateFormat, 
-		    changeMonth: true,
-			changeYear: true, 
-		 	maxDate: '0'
-		});
-	}); */
+
 	function showEndDatePicker(id){
 		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		var finalDateFormat = getJSDateFormat(locationDate);  
@@ -264,7 +255,7 @@
 		divValue = "";
 		divValue = divValue + '<div id="employeeChildDiv'+empCount+'" class="EmplWrapCta"><div class="immigration-head clearfix"><h4 class="pull-left">Employer '+empCount+'</h4>'+dynamicStatusValue+'</div>';
 		divValue = divValue + '<div class="clearfix"><div class="mt clearfix"></div><div class="col-md-4 minHeight80"><label>Employer Full Name</label><input type="text" class="form-control" value="'+name+'" placeholder="Employer Full Name"></div>';
-		divValue = divValue + '<div class="col-md-4 minHeight80"><label>Address</label><input type="text" class="form-control" value="'+address+'" placeholder="Address"></div>';
+		divValue = divValue + '<div class="col-md-4 minHeight80"><label>Address</label><input type="text" class="form-control" value="'+address+'" id="address'+empCount+'" onClick="refreshGoogleApiLocation(\'address'+empCount+'\'); callGoogleApiMethod2(\'address'+empCount+'\');" placeholder="Address"></div>';
 		divValue = divValue + '<div class="col-md-4 minHeight80"><label>Tax Id</label><input type="text" class="form-control" value="'+taxId+'" placeholder="Tax Id"></div>';
 		divValue = divValue + '<div class="col-md-4 minHeight80"><label>Job Title</label><input type="text" class="form-control" value="'+jobTitle+'" placeholder="Job Title"></div>';
 		divValue = divValue + '<div class="col-md-4 minHeight80"><label>Employment Type</label><div class="dropdown-select"><select class="form-control" value="'+employmentType+'"></select></div></div>';
@@ -283,7 +274,14 @@
 		$("#employeeChildDiv"+empCount).remove();
 		empCountValue--;
 	}
-	
+	/* function callGoogleApiMethod2(id){
+		window.onload = function () {
+			initLocationAuto(id);
+		 };
+	} */
+	window.onload = function () {
+		initLocationAuto('idValue');
+	 };
 	/* $( function() {
 		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		// written common method in slead-common.js for date formats start

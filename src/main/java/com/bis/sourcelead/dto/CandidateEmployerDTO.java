@@ -26,11 +26,17 @@ public class CandidateEmployerDTO {
 	
 	private String candidateEmployeeId;
 	
+
 	private String taxId;
 	
 	private String jobTitle;
 	
 	private String employmentType;
+
+	private long candidateId;
+	
+	private String candidateExperianceId;
+
 
 	public Long getId()
 	{
@@ -152,6 +158,7 @@ public class CandidateEmployerDTO {
 		this.candidateEmployeeId = candidateEmployeeId;
 	}
 
+
 	public String getTaxId() {
 		return taxId;
 	}
@@ -175,5 +182,28 @@ public class CandidateEmployerDTO {
 	public void setEmploymentType(String employmentType) {
 		this.employmentType = employmentType;
 	}
+
+
+	public long getCandidateId()
+	{
+		return candidateId;
+	}
+
+	public void setCandidateId(long candidateId)
+	{
+		this.candidateId = candidateId;
+	}
+
+	public String getCandidateExperianceId()
+	{
+		return candidateExperianceId;
+	}
+
+	public void setCandidateExperianceId(String candidateExperianceId)
+	{
+		this.candidateExperianceId = candidateExperianceId;
+	}
+
+	
 
 }
