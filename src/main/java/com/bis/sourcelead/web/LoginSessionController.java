@@ -1187,7 +1187,7 @@ public class LoginSessionController {
   
 
   @RequestMapping(value = "/app/ws/userEnrolledOrgLocations" , method = RequestMethod.POST)
-  public ModelAndView userEnrolledOrgLocations(@RequestParam(value = "userName", required = false) String userName,@RequestParam(value = "password", required = false) String password ,@RequestParam(value = "requirementUUID", required = false) String requirementUUID) throws Exception {
+  public ModelAndView userEnrolledOrgLocations(@RequestParam(value = "userName", required = false) String userName,@RequestParam(value = "password", required = false) String password ,@RequestParam(value = "requirementUUID", required = false) String requirementUUID,HttpServletRequest request) throws Exception {
 	  ModelAndView model = new ModelAndView();
 	  User user = userService.findByUserName(userName);
 
