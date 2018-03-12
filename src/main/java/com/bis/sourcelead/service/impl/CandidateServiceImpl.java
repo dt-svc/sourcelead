@@ -1652,6 +1652,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			candidate.setCandidateType(Constants.CANDIDATE);
 			candidate.setFirstName(candidateUser.getFirstName());
 			candidate.setLastName(candidateUser.getLastName());
+			candidate.setMiddelName(candidateUser.getMiddelName());
+			candidate.setGender(candidateUser.getGender());
 			candidate.setCountry(orgLocations.getCountry());
 			candidate.setIsAssociate(Constants.YES);
 			candidate.setEmail(candidateUser.getEmail());
@@ -1724,6 +1726,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			candidate.setConsultantUser(candidateUser);
 			candidate.setMasterCandidateId(masterCandidate);
 		}
+		if(candidateUser.getDateOfBirth() != null){
+			candidate.setDateOfBirth(commonUtil.orgLocationCommonDate(candidateUser.getDateOfBirth(),orgLocations));
+			}
 		candidateDao.storeCandidate(candidate);
 		saveOrUpdateCandidateElkDocument(candidate);
 		return candidate;
