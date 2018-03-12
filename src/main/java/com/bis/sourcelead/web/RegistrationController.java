@@ -122,9 +122,39 @@ public class RegistrationController {
 
 	 }
 	 
+	 
+	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	 @RequestMapping(value = "/app/requestedOrgs")
+		public ModelAndView requestedOrgs(HttpServletRequest request) {
+		 
+		    commonUtil.highLightMenu(Constants.OrgSettings, request);
+		    
+			ModelAndView model = new ModelAndView();
+			model.setViewName("registration/requestedOrgs");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			
+			return model;
+
+	 }
+	 
+	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	 @RequestMapping(value = "/app/demoRequests")
+		public ModelAndView demoRequests(HttpServletRequest request) {
+		 
+		    commonUtil.highLightMenu(Constants.OrgSettings, request);
+		    
+			ModelAndView model = new ModelAndView();
+			model.setViewName("registration/demoRequests");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			
+			return model;
+
+	 }
+	 
+	 
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	 @RequestMapping(value = "/app/enrollOrg")
-		public ModelAndView registration() {
+		public ModelAndView registration(HttpServletRequest request) {
 			ModelAndView model = new ModelAndView();
 			List<Modules> modulesList = null;
 			List<Modules> requirementSubModulesList = null;
@@ -141,6 +171,8 @@ public class RegistrationController {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			
+			commonUtil.highLightMenu(Constants.OrgSettings, request);
 			
 			model.setViewName("registration/enrollOrg");
 

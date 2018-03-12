@@ -397,16 +397,19 @@ public class VendorOnboardRestController {
 		 
 		    List<VendorOnboardingTemplateDocumentDTO> documentsDTOList = new ArrayList<>();
 		    VendorOnboarding vendorOnboarding = vendorOnboardService.getVendorOnboardingByOrgRelationId(orgRelationId);
-			List<VendorOnboardingTemplateDocuments> documentsList = vendorOnboardTemplateDocumentsService.getVendorOnboaringTemplateDocumentsByVendorOnboardId(vendorOnboarding.getId());
-		    if(documentsList != null && documentsList.size() > 0) {
-		    	for(VendorOnboardingTemplateDocuments documents : documentsList) {
-		    		VendorOnboardingTemplateDocumentDTO docsDTO = new VendorOnboardingTemplateDocumentDTO();
-					docsDTO.setDocumentName(documents.getDocumentName());
-					docsDTO.setUploadedFileUrl(documents.getUploadedFileUrl());
-					docsDTO.setUploadedFileName(documents.getUploadedFileName());
-					documentsDTOList.add(docsDTO);
-		    	}
-		    }
+			if(vendorOnboarding != null) {
+				List<VendorOnboardingTemplateDocuments> documentsList = vendorOnboardTemplateDocumentsService.getVendorOnboaringTemplateDocumentsByVendorOnboardId(vendorOnboarding.getId());
+			    if(documentsList != null && documentsList.size() > 0) {
+			    	for(VendorOnboardingTemplateDocuments documents : documentsList) {
+			    		VendorOnboardingTemplateDocumentDTO docsDTO = new VendorOnboardingTemplateDocumentDTO();
+						docsDTO.setDocumentName(documents.getDocumentName());
+						docsDTO.setUploadedFileUrl(documents.getUploadedFileUrl());
+						docsDTO.setUploadedFileName(documents.getUploadedFileName());
+						documentsDTOList.add(docsDTO);
+			    	}
+			    }
+			}
+		    
 			
 			return documentsDTOList;
 		

@@ -24,5 +24,7 @@ public interface ProjectClientDao {
 	ProjectClients getProjectClientsByProjectID(Long projectId) throws Exception;
 	
 	public List<ProjectClients> getAllProjectsByOrgLocationIdAndStatusInProgressAndNotStarted(Long orgLocationsId) throws Exception;
+	
+	List<Long> getProjectClientsListByOrgRelationsListAndOrgLocationsId(List<Long> orgRelationId, Long orgLocationsId) throws Exception;
 
 }
