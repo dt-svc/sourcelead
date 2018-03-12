@@ -52,10 +52,10 @@ $(function() {
 		      <div class="form-group">
 		          <label class="col-md-3">Type<span class="text-danger paddingLeft">&nbsp;*</span></label>
 		          <div class="col-md-9">
-		            <select class="form-control selectpicker"  id="titcketType" name="titcketType" field-name="Type" data-validation="required">
+		            <select class="form-control"  id="titcketType" name="titcketType" field-name="Type" data-validation="required">
 		            	<option value="Information" ${sourceleadTicket.ticketType == 'Information' ? 'selected' : ''}>Information</option>
 		            	<option value="Bug" ${sourceleadTicket.ticketType == 'Bug' ? 'selected' : ''}>Bug</option>
-		            	<option value="Enhanceme" ${sourceleadTicket.ticketType == 'Enhanceme' ? 'selected' : ''}>Enhanceme</option>
+		            	<option value="Enhancement" ${sourceleadTicket.ticketType == 'Enhancement' ? 'selected' : ''}>Enhancement</option>
 		            </select>
 		          </div>
 		        </div>
@@ -63,10 +63,10 @@ $(function() {
                  
                  <c:if test="${SourceLeadWeb_orgLocationId == 1}">
 		        <div class="form-group">
-		          <label class="col-md-3">Select Company</label>
+		          <label class="col-md-3">Company<span class="text-danger paddingLeft">&nbsp;*</span></label>
 		          <div class="col-md-9">
-		            <select class="form-control selectpicker" data-live-search="true" id="orgLocationsId" name="orgLocationsId" onchange="getUserList();">
-		            <option selected>Select Company</option>
+		            <select class="form-control selectpicker" data-live-search="true" id="orgLocationsId" name="orgLocationsId" data-validation="required" field-name="Company" onchange="getUserList();">
+		            <option selected value="">Select Company</option>
 			            <c:forEach var="org" items="${orgLocationList}">
 		                    <option value="${org.id}" ${sourceleadTicket.orgLocationId.id  == org.id ? 'selected' : ''}>${org.orgLocationName}</option>
 	                     </c:forEach>
@@ -75,10 +75,10 @@ $(function() {
 		        </div>
 		        
 		        <div class="form-group">
-		          <label class="col-md-3">Select User</label>
+		          <label class="col-md-3">User<span class="text-danger paddingLeft">&nbsp;*</span></label>
 		          <div class="col-md-9">
-		            <select class="form-control selectpicker" placeholder="Select User" data-live-search="true" id="userId" name="userId" onchange="getUserModules();">
-		           <option selected>Select User</option>
+		            <select class="form-control selectpicker" placeholder="Select User" data-live-search="true" id="userId" name="userId" data-validation="required" field-name="User" onchange="getUserModules();">
+		           <option selected  value="">Select User</option>
 		            </select>
 		          </div>
 		        </div>
@@ -278,7 +278,7 @@ function getUserList(){
 	    url: sourceleadUrl+"/getAllUserListByOrgLocationId?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId, 	   
 		    success: function(json) {
 		    	var result = "";
-		    	result = result +'<option val="">Select user</option>';
+		    	result = result +'<option  value="">Select user</option>';
 	        	  for (var i=0; i<json.length; i++)
   				{
 	        		 var report = json[i];
