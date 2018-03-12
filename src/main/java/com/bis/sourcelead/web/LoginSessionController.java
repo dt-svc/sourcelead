@@ -400,7 +400,7 @@ public class LoginSessionController {
 				}else{
 					
 					CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(userRole.getUser().getId(), orgLocations.getId());
-					if(null != candidateOnBoarding){
+					if(null != candidateOnBoarding && requirementUUID == null){
 						SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding", candidateOnBoarding);
 						if(candidateOnBoarding.getManagerUserId()!=null){
 							SourceLeadSessionManager.setSessionAttribute(request, "OnboardingManagerUserId", candidateOnBoarding.getManagerUserId().getId());
@@ -415,7 +415,7 @@ public class LoginSessionController {
 							model.setViewName("dashboard");
 						}
 					}
-					else if(requirementUUID !=null && requirementUUID != "" && candidateOnBoarding == null ){
+					else if(requirementUUID !=null && requirementUUID != ""){
 						StringBuilder redirectUrl = new StringBuilder();
 						response.sendRedirect(redirectUrl.append("requirementProfileDetails?requirementUUID=").append(requirementUUID).toString());
 						model.setViewName("professional/professionalRequirements");
