@@ -822,6 +822,7 @@ public class TimesheetRestController {
 			 timesheetEntryDetailsDTO.setEmployeeName(pm.getProjectMemberCandidteId().getFullName());
 			 timesheetEntryDetailsDTO.setEmployeeEmail(pm.getProjectMemberCandidteId().getEmail());
 			 timesheetEntryDetailsDTO.setEmployeePhoneNo(pm.getProjectMemberCandidteId().getMobilePhone());
+			 timesheetEntryDetailsDTO.setProjectNameForSubmissionPageDisplay(pm.getProjects().getProjectName());
 			 List<ProjectTasks> projectsTasks = projectTasksService.getAllTasksByProjectId(eedDTO.getProjectsId());
 			 TimeSheetSubmissionDTO tsDTO =  getTimesheetSubmissionDetails(eedDTO, request);
 			 model.addObject("timesheetSubmissionDTO",tsDTO);
@@ -2242,7 +2243,8 @@ public class TimesheetRestController {
        }
        
        private void addTimesheetDayEntry(ProjectMembers projectMember,Date actualStartDate,Date actualEndDate,Date frequencyStartDate,Date frequencyEndDate,User loginUser,Date timesheetDate,String hours,String comments,String taskUUID,String dateformat) throws Exception{
-    	    TimesheetSubmissions timesheetSubmissions  = timesheetSubmissionsService.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(actualStartDate,actualEndDate,projectMember.getProjects().getId(),projectMember.getMasterCandidateId().getId());
+    	  if(projectMember!= null && projectMember.getProjects()!= null && projectMember.getMasterCandidateId()!= null) {
+    	   TimesheetSubmissions timesheetSubmissions  = timesheetSubmissionsService.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(actualStartDate,actualEndDate,projectMember.getProjects().getId(),projectMember.getMasterCandidateId().getId());
 	    	if(timesheetSubmissions == null){
 	    		timesheetSubmissions =  new TimesheetSubmissions();
 		    	timesheetSubmissions.setStartDate(actualStartDate);
@@ -2337,8 +2339,8 @@ public class TimesheetRestController {
 				timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
 			}
            }
-       }
-        
+    	 }
+       }  
        
        private HashMap<String,Long> addTimesheetDateDayEntries(Date actualStartDate,Date actualEndDate,Date timesheetDate,String dateFormat,String taskUUID,String hours,String comments,TimesheetSubmissions timesheetSubmissions,User loginUser) throws Exception{
     	   Long total = 0l;

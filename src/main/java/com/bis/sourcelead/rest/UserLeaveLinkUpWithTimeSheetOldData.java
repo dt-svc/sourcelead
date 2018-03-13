@@ -97,7 +97,7 @@ public class UserLeaveLinkUpWithTimeSheetOldData {
 				}
 			}
 		}
-		
+		System.out.println("added leave type to project task");
 		
 		
 		List<Leave> leaves = leaveService.getAllLeave();
@@ -112,7 +112,38 @@ public class UserLeaveLinkUpWithTimeSheetOldData {
 				}
 			}
 		}
+		System.out.println("added old leave type to timesheet");
+		
 		List<Holiday> holidayList = holidayService.getAllHoliday();
+		if(holidayList != null && !holidayList.isEmpty()) {
+		for(Holiday holiday:holidayList) {
+			List<Projects> projectsList = projectsService.getAllProjectByOrgLocationsId(holiday.getOrgLocations().getId());
+			if(projectsList != null && projectsList.size() > 0) {
+				for(Projects projects : projectsList) {
+					ProjectTasks  tasks  = new ProjectTasks();
+					LookUpData taskType = lookUpDataService.getTasksTypeByUniqueKey(Constants.GENERAL);
+					tasks.setGeneratedId(commonUtil.getProjectTaskGenaratedId(projects));
+					tasks.setProjectTasksUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+					tasks.setTaskName(holiday.getHolidayName());
+					tasks.setDescription(holiday.getHolidayName());
+					tasks.setBillableType("Billable");
+					tasks.setProjectId(projects);
+					tasks.setTaskType(taskType);
+					tasks.setHoliday(holiday);
+					LookUpData taskStatus = lookUpDataService.getTasksById(Constants.TaskStatusID);
+					tasks.setTaskStatus(taskStatus);
+					tasks.setStatus(String.valueOf(Constants.CANDIDATE_ACTIVE));
+					tasks.setCreatedBy(holiday.getCreatedBy());
+					tasks.setCreatedDate(new Date());
+					tasks.setUpdatedBy(holiday.getCreatedBy());
+					tasks.setUpdatedDate(new Date());
+					projectTasksDao.addTasks(tasks);
+					
+				}
+			}
+		}
+	}
+		System.out.println("added holiday to projectTask");
 		if(holidayList != null && !holidayList.isEmpty()) {
 			for(Holiday holiday:holidayList) {
 				if(holiday != null) {
@@ -123,6 +154,7 @@ public class UserLeaveLinkUpWithTimeSheetOldData {
 				}
 			}
 		}
+		System.out.println("added old holiday data to timesheet");
 		
 		return "success";
 		
