@@ -1083,6 +1083,13 @@ function notificationStatusAsRead(){
   </div>
 <!--  Theme Swithcer div ends  -->
 
+<!--  Support div -->
+  <div id="mySidenav" class="sidenav">
+	<a href="/app/sourceleadTicketList" title="Report Issue"><span class="fa fa-ticket"></span></a>
+<!--   <a href="add-ticket.html">Support</a> -->
+</div>
+<!--  Support div ends  -->
+
 
 <script type="text/javascript">
 	function saveTask() {
