@@ -9,6 +9,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
 <meta name="description" content="Sourcelead is an integrated human resource solution which provides an automated process for the talent search. Be it a niche profile or a generic role, you have access to marketplace.">
 <meta name="keywords" content="Application tracking system, ats software, top applicant tracking systems, payroll software, vendor management, client management, onboard candidate, offboard candidate, top hr tracking software"> <meta name="robots" content="index, follow">
+	
+	<link rel="stylesheet" href="/resources/css/bootstrap-select.min.css">
+	<link href="/resources/css/jquery-ui.css" rel="stylesheet">
+	<link rel="stylesheet" href="/resources/css/jquery.timepicker.css">
+	
 	<link rel="stylesheet" href="/resources/static-web/css/prettyPhoto.css" type="text/css"/>
 	<link rel="stylesheet" href="/resources/static-web/css/owl.carousel.min.css">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">

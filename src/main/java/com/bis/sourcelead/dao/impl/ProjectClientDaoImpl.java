@@ -196,5 +196,19 @@ public class ProjectClientDaoImpl implements ProjectClientDao{
 		List<ProjectClients> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).list();
 		return projectsList;
 	}
+
+	@Override
+	@Transactional
+	public List<Long> getProjectClientsListByOrgRelationsListAndOrgLocationsId(List<Long> orgRelationId,
+			Long orgLocationsId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select pc.id from ProjectClients pc where pc.status = '1' "
+				+ "and (pc.projectId.projectStatus = 'INPROGRESS' or pc.projectId.projectStatus = 'NOTSTARTED') "
+				+ " and pc.orgRelationId.id IN (:orgRelationId) and pc.orgLocationsId = :orgLocationsId "; 
+		List<Long> projectClientsIdLis =  session.createQuery(query.toString()).setParameterList("orgRelationId", orgRelationId).setLong("orgLocationsId", orgLocationsId).list();
+		return projectClientsIdLis;
+		
+	}
 	
 }

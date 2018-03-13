@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 public class ProjectMembersDTO implements Serializable {
@@ -38,7 +39,7 @@ public class ProjectMembersDTO implements Serializable {
 	private String billRateRateType;
 	
 	private String memberStartDate;
-	
+
 	private String memberEndDate;
 	
 	private String billRateEstimatedDate;
@@ -261,6 +262,5 @@ public class ProjectMembersDTO implements Serializable {
 	public void setPayRateEstimatedDate(String payRateEstimatedDate) {
 		this.payRateEstimatedDate = payRateEstimatedDate;
 	}
-	
 	
 }

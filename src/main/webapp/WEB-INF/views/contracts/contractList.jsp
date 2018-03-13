@@ -107,6 +107,36 @@ $(document).ready(function(){
 			Check('Applicants');
 		}
 	}
+	
+	if(status == "sign"){
+		$("#draft").removeClass("draft"); 
+	    $("#approve").removeClass("wApp");
+	    $("#sign").addClass("wSig");
+	    $("#contractStage").val("WAITING_TO_BE_SIGNED");
+	   if(contractType == "Vendor MSA" || contractType == "Vendor SOW"){
+		   $("#Vendor1").addClass("active"); 
+			getTemplateList();
+			Check('Vendors');
+		}
+	   if(contractType == "Vendor NDA" || contractType == "Vendor NSA"){
+		   $("#Vendor1").addClass("active"); 
+			getTemplateList();
+			Check('Vendors');
+		}
+		if(contractType == "Client MSA" || contractType == "Client SOW"){
+			$("#Vendor1").addClass("active"); 
+// 			$("#Client1").addClass("active"); 
+			getTemplateList();
+			Check('Vendors');
+		}
+		if(contractType == "Full time offer"){
+			$("#Vendor1").removeClass("active"); 
+			$("#Client1").removeClass("active");
+			$("#Applicants1").addClass("active");
+			getTemplateList();
+			Check('Applicants');
+		}
+	}
    $("#contractStage").val("DRAFT");
    getTemplateList();
    getStageCounts();
