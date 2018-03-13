@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <link rel="stylesheet" href="/resources/css/bootstrap-multiselect.css?staticTime=${staticTime}" type="text/css">
 <link rel="stylesheet" href="/resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css">
@@ -41,12 +42,28 @@ z-index: 1040 !important;
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-3 padding_left">Choose Campaign<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-9 padding_right clearfix">
+              		
+              		<sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN') and hasRole('ROLE_JOB_CAMPAIGN')">
               		<div class="col-md-6 padding_left">
               			<input type="radio" id="hotlistRadio" value="hotlistCampaign" onclick="clearRecipantsList(this);"  name="campaignType"><label for="hotlistRadio">&nbsp;Hot List Campaign</label>
               		</div>
               		<div class="col-md-6">
               			<input type="radio" id="jobRadio" value="jobCampaign" onclick="clearRecipantsList(this);"  name="campaignType"><label for="jobRadio">&nbsp;Job Campaign</label>
-              		</div>              		
+              		</div>   
+              		</sec:authorize>  
+              		
+              		<sec:authorize access="!hasRole('ROLE_HOTLIST_CAMPAIGN') and hasRole('ROLE_JOB_CAMPAIGN')">
+              		<div class="col-md-6 padding_left">
+              			<input type="radio" id="jobRadio" value="jobCampaign" checked="checked" onclick="clearRecipantsList(this);"  name="campaignType"><label for="jobRadio">&nbsp;Job Campaign</label>
+              		</div>
+              		</sec:authorize>
+              		
+              		<sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN') and !hasRole('ROLE_JOB_CAMPAIGN')">
+              		<div class="col-md-6 padding_left">
+              			<input type="radio" id="hotlistRadio" value="hotlistCampaign" checked="checked" onclick="clearRecipantsList(this);"  name="campaignType"><label for="hotlistRadio">&nbsp;Hot List Campaign</label>
+              		</div>
+              		</sec:authorize>    
+              		         		
 				</div>
 			</div>
 			
