@@ -99,8 +99,12 @@
         </div>
         <div class="modal-body">
           <div class="clearfix"></div>
-          <div class="clearfix mt">
+          <div class="clearfix mt" id="signinDiv">
           	<jsp:include page="../SignIn.jsp"></jsp:include>
+          </div>
+          
+          <div class="clearfix mt" id="forgotPasswordDiv" style="display:none">
+          	<jsp:include page="../forgotPasswords.jsp"></jsp:include>
           </div>
         </div>
         <div class="modal-footer">
@@ -677,7 +681,7 @@ top: 21px;height: 32px; line-height: 18px;
 				<div class="col-md-8">
 					<label>Keyword</label>
 						<div class="clearfix">
-						<select class="chosen-select form-control input-sm" multiple id="requirementTitle" name="requirementTitle"></select>
+						<select class="chosen-select form-control input-sm" multiple id="anyKeyWord" name="anyKeyWord"></select>
 						</div>
 				</div>
 				<div class="col-md-4">
@@ -1820,9 +1824,9 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 		        }, 500);
 				
 				$("#openJobsRequirementsSummary").append(result);
-				if(requirementUUID != null){
-				$("#noResultsDiv").css("display", "block");
-				}
+// 				if(requirementUUID != null){
+// 				$("#noResultsDiv").css("display", "block");
+// 				}
 				
 				
 	   	   	   }
@@ -1861,6 +1865,9 @@ function openJobSearchRequirement(){
 		    var jsonData = encodeURIComponent(con);
 			var form = $('#openJobsAdvancedForm')[0];
    		    var formData = new FormData(form);
+   		 if(sourceleadUrl.indexOf("/app")!=-1){
+				sourceleadUrl = sourceleadUrl.split("/app")[0];
+			}
 			//It will escape all the special characters
 			$("#advancedOpenJobsSearch").attr("disabled", "disabled");
 			$("#advancedOpenJobsSearch").addClass('button').val('Processing..');
@@ -1872,7 +1879,7 @@ function openJobSearchRequirement(){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl + "/ws/openJobsRequiremetsAdvancedSearch?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl + "/app/ws/openJobsRequiremetsAdvancedSearch?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 						success : function(data) {
 							 $("#advancedOpenJobsSearch").addClass('button').val('Search');
 							 $("#advancedOpenJobsSearch").removeAttr("disabled");
@@ -1923,9 +1930,9 @@ function openJobSearchRequirement(){
 						 				result = result +'<input type="hidden" id="searchType" value="advancesearch"/>';
 						 				result = result +'	<div class="jobResultsCta">';
 										result = result +'	<div class="jobResultsInn">';
-										result = result +'	<a target="_blank" class="block" href="'+sourceleadUrl+'/ws/'+requirements.url+'--'+requirements.requirementId+'"><h3 style="color:#368ee0;">	'+requirements.jobTitle+'</h3></a>';
+										result = result +'	<a target="_blank" class="block" href="'+sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId+'"><h3 style="color:#368ee0;">	'+requirements.jobTitle+'</h3></a>';
 // 										result = result +'	<a href="<c:url value="/app/ws/openRequirementsSummary?requirementUUID='+requirements.requirementUUID+'"/>"><h3>'+requirements.jobTitle+'</h3>';
-										result = result +'<a target="_blank" class="block" href="'+sourceleadUrl+'/ws/'+requirements.postedOrg+'-'+requirements.orgLocationId+'"><h4 class="orgLink">'+requirements.postedOrg+'</h4></a>';
+										result = result +'<a target="_blank" class="block" href="'+sourceleadUrl+'/app/ws/'+requirements.postedOrg+'-'+requirements.orgLocationId+'"><h4 class="orgLink">'+requirements.postedOrg+'</h4></a>';
 // 										result = result +'	<h4>'+requirements.postedOrg+'</h4>';
 
 										result = result +'	<div class="clearfix"></div>';
@@ -1969,7 +1976,8 @@ function openJobSearchRequirement(){
 										result = result +'	</div>';
 										
 										result = result +'	<div class="jobApply"><a title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="alertFunction();createAlert(\''+requirements.requirementUUID+'\');"><i class="fa fa-bell-o"></i></a>';
-										result = result +'   <a href="/login?requirementUUID='+requirements.requirementUUID+'">Apply</a>';
+										result = result +'   <a onClick="applyJob(\''+requirements.requirementUUID+'\');">Apply</a>';
+// 										result = result +'   <a href="/login?requirementUUID='+requirements.requirementUUID+'">Apply123</a>';
 										result = result +'	<a href="/login" style="background-color:#eb821c;">Refer</a></div>';
 													
 										result = result +'	</div>';
@@ -2034,7 +2042,7 @@ $.noConflict();
     				  '.chosen-select-width'     : {width:"95%"}
     	   }
 			//Adding Customized Any Of Keyword to the list 
-		   /*  var select, chosen;
+		    var select, chosen;
 		    select = $("#anyKeyWord");
 		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    chosen = select.data('chosen');
@@ -2056,7 +2064,7 @@ $.noConflict();
 		        }
 		    });
 		   
-		    var selectone, chosenone;
+		    /*  var selectone, chosenone;
 		    selectone = $("#allReqKeyWord");
 		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    chosenone = selectone.data('chosen');
@@ -2099,10 +2107,10 @@ $.noConflict();
 	        		$("#excludeReqKeyWord").trigger("chosen:updated");
 	        		
 		        }
-		    }); */
+		    }); 
 		    
 		    
-		    var selecttwo, chosentwo;
+		/*     var selecttwo, chosentwo;
 		    selecttwo = $("#requirementTitle");
 		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    chosentwo = selecttwo.data('chosen');
@@ -2122,7 +2130,7 @@ $.noConflict();
 	        		$("#requirementTitle").trigger("chosen:updated");
 	        		
 		        }
-		    });
+		    }); */
 		    
 		    
 		    var selectthree, chosenthree;
@@ -3017,17 +3025,28 @@ Please mail us at </p>
 
 <script>
 function applyJob(requirementUUID){
+	$("#requirementUUID").val(requirementUUID);
+	/*  if('${SourceLeadWeb_user.id}' == null && '${SourceLeadWeb_user.id}' == ''){
+		 $(".modal.modalApplyjob").fadeIn();
+		$(".comMask").fadeIn();
+		loginPopup(requirementUUID)
+	 } */	
     if('${SourceLeadWeb_user.id}' != null && '${SourceLeadWeb_user.id}' != ''){
-        location.replace(sourceleadUrl+"/dashboard");  
+    	location.replace(sourceleadUrl+"/dashboard"+"?requirementUUID="+requirementUUID);  
     }else{
-        $(".modal.modalApplyjob").fadeIn();
+    	$(".modal.modalApplyjob").fadeIn();
         $(".comMask").fadeIn();
         loginPopup(requirementUUID)
     }
+
 }
 function closeApplyJob(){
 	$(".modal.modalApplyjob").fadeOut();
 	$(".comMask").fadeOut();
+	$(".signWrap").addClass("orgOutWrap");
+	$(".signWrap").removeClass("forPassOut");
+	$(".ForPasSlide").attr("style","display:none");
+	$("#signinDiv").attr("style","display:block");
 }
 </script>
  

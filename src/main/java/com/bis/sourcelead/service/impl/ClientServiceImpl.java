@@ -1447,7 +1447,8 @@ public class ClientServiceImpl implements ClientService {
 				.getEmailScenarioByUniqueName(Constants.EDIT_CLIENTCONTACT, Constants.ENTITY_TYPE_NOTIFICATION);
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		//&clientOrgLocationId="+orgSpoc.getOrgRelations().getResponderLocationId()+"&orgRelationId="+orgSpoc.getOrgRelations().getId()+"&clientName="+"reject client"
-		 String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("clientDashboard?type=Client").toString();		
+		 //String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("clientDashboard?type=Client").toString();
+		 String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("vendorsList?contactsTab=contactsTab&orgRelationUUID="+orgSpoc.getOrgRelations().getUUID()).toString();
 		String rejectActionLink = "";
 		String spocUUID = "";
 		String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(), globalVarsMap);

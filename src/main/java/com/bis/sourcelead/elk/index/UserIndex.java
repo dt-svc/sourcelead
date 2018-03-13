@@ -31,6 +31,8 @@ public class UserIndex implements Serializable {
 	private String middleName;
 
 	private String gender;
+	
+	private String maritalStatus;
 
 	private String dateofBirth;
 
@@ -315,5 +317,14 @@ public class UserIndex implements Serializable {
 	public void setDateofBirth(String dateofBirth) {
 		this.dateofBirth = dateofBirth;
 	}
+
+	public String getMaritalStatus() {
+		return maritalStatus;
+	}
+
+	public void setMaritalStatus(String maritalStatus) {
+		this.maritalStatus = maritalStatus;
+	}
+	
 	
 }

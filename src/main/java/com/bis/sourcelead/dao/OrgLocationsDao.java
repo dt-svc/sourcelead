@@ -23,6 +23,8 @@ public interface OrgLocationsDao {
 	public OrgLocations getOrgLocationsByOrgLocationName(String orgLocationName) throws Exception;
     
 	public List<OrgLocations> getAllOrgLocations()throws Exception; 
+	
+	public List<OrgLocations> getAllOrgLocationsByOrgTypeCompany() throws Exception;
     
 	public  OrgLocations getOrgLocationsByLocationCode(String  locationCode) throws Exception;
     

@@ -8,7 +8,7 @@ public class OrgLocationDTO implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
-	private Long id;
+	private long id;
 	
 	private String orgName;
 	
@@ -16,11 +16,11 @@ public class OrgLocationDTO implements Serializable{
 	
 	private String orgCode;
 	
-	private Long orgId;
+	private long orgId;
 	
-	private Long orgLocationId;
+	private long orgLocationId;
 	
-	private Long candidateId;
+	private long candidateId;
 	
 	private String orgImageUrl;
 	
@@ -44,13 +44,37 @@ public class OrgLocationDTO implements Serializable{
 	
 	List<String> menuIconsList;
 	
-	private Long vendorOrgLocationId;
+	private long vendorOrgLocationId;
 	
-	private Long vendorOrgRelationId;
+	private long vendorOrgRelationId;
 	
-	private Long vendorOnboardId;
+	private long vendorOnboardId;
 	
+	private int recommSkill;
 	
+	private int recommLocation;
+	
+	private int recommNoticePeriod;
+	
+	private int recommExp;
+	
+	private int recommVisaType;
+	
+	private int recommEducation;
+	
+	private int recommRate;
+	
+	private int recommKeywords;
+
+	public long getId()
+	{
+		return id;
+	}
+
+	public void setId(long id)
+	{
+		this.id = id;
+	}
 
 	public String getOrgName()
 	{
@@ -80,6 +104,36 @@ public class OrgLocationDTO implements Serializable{
 	public void setOrgCode(String orgCode)
 	{
 		this.orgCode = orgCode;
+	}
+
+	public long getOrgId()
+	{
+		return orgId;
+	}
+
+	public void setOrgId(long orgId)
+	{
+		this.orgId = orgId;
+	}
+
+	public long getOrgLocationId()
+	{
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(long orgLocationId)
+	{
+		this.orgLocationId = orgLocationId;
+	}
+
+	public long getCandidateId()
+	{
+		return candidateId;
+	}
+
+	public void setCandidateId(long candidateId)
+	{
+		this.candidateId = candidateId;
 	}
 
 	public String getOrgImageUrl()
@@ -152,7 +206,6 @@ public class OrgLocationDTO implements Serializable{
 		this.isPrimaryOrg = isPrimaryOrg;
 	}
 
-	
 	public String getUserType()
 	{
 		return userType;
@@ -173,81 +226,123 @@ public class OrgLocationDTO implements Serializable{
 		this.menuList = menuList;
 	}
 
-/*	public List<String> getRoleActionsList()
+	public List<String> getMenuIconsList()
 	{
-		return roleActionsList;
-	}
-
-	public void setRoleActionsList(List<String> roleActionsList)
-	{
-		this.roleActionsList = roleActionsList;
-	}
-*/
-	public List<String> getMenuIconsList() {
 		return menuIconsList;
 	}
 
-	public void setMenuIconsList(List<String> menuIconsList) {
+	public void setMenuIconsList(List<String> menuIconsList)
+	{
 		this.menuIconsList = menuIconsList;
 	}
 
-	public Long getOrgId() {
-		return orgId;
-	}
-
-	public void setOrgId(Long orgId) {
-		this.orgId = orgId;
-	}
-
-	public Long getOrgLocationId() {
-		return orgLocationId;
-	}
-
-	public void setOrgLocationId(Long orgLocationId) {
-		this.orgLocationId = orgLocationId;
-	}
-
-	public Long getCandidateId() {
-		return candidateId;
-	}
-
-	public void setCandidateId(Long candidateId) {
-		this.candidateId = candidateId;
-	}
-
-	public Long getVendorOrgLocationId() {
+	public long getVendorOrgLocationId()
+	{
 		return vendorOrgLocationId;
 	}
 
-	public void setVendorOrgLocationId(Long vendorOrgLocationId) {
+	public void setVendorOrgLocationId(long vendorOrgLocationId)
+	{
 		this.vendorOrgLocationId = vendorOrgLocationId;
 	}
 
-	public Long getVendorOrgRelationId() {
+	public long getVendorOrgRelationId()
+	{
 		return vendorOrgRelationId;
 	}
 
-	public void setVendorOrgRelationId(Long vendorOrgRelationId) {
+	public void setVendorOrgRelationId(long vendorOrgRelationId)
+	{
 		this.vendorOrgRelationId = vendorOrgRelationId;
 	}
 
-	public Long getVendorOnboardId() {
+	public long getVendorOnboardId()
+	{
 		return vendorOnboardId;
 	}
 
-	public void setVendorOnboardId(Long vendorOnboardId) {
+	public void setVendorOnboardId(long vendorOnboardId)
+	{
 		this.vendorOnboardId = vendorOnboardId;
 	}
 
-	public Long getId() {
-		return id;
+	public int getRecommSkill()
+	{
+		return recommSkill;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setRecommSkill(int recommSkill)
+	{
+		this.recommSkill = recommSkill;
 	}
 
-	
+	public int getRecommLocation()
+	{
+		return recommLocation;
+	}
 
-	
+	public void setRecommLocation(int recommLocation)
+	{
+		this.recommLocation = recommLocation;
+	}
+
+	public int getRecommNoticePeriod()
+	{
+		return recommNoticePeriod;
+	}
+
+	public void setRecommNoticePeriod(int recommNoticePeriod)
+	{
+		this.recommNoticePeriod = recommNoticePeriod;
+	}
+
+	public int getRecommExp()
+	{
+		return recommExp;
+	}
+
+	public void setRecommExp(int recommExp)
+	{
+		this.recommExp = recommExp;
+	}
+
+	public int getRecommVisaType()
+	{
+		return recommVisaType;
+	}
+
+	public void setRecommVisaType(int recommVisaType)
+	{
+		this.recommVisaType = recommVisaType;
+	}
+
+	public int getRecommEducation()
+	{
+		return recommEducation;
+	}
+
+	public void setRecommEducation(int recommEducation)
+	{
+		this.recommEducation = recommEducation;
+	}
+
+	public int getRecommRate()
+	{
+		return recommRate;
+	}
+
+	public void setRecommRate(int recommRate)
+	{
+		this.recommRate = recommRate;
+	}
+
+	public int getRecommKeywords()
+	{
+		return recommKeywords;
+	}
+
+	public void setRecommKeywords(int recommKeywords)
+	{
+		this.recommKeywords = recommKeywords;
+	}
 }

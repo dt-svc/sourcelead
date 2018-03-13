@@ -34,13 +34,19 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
@@ -67,6 +73,14 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	@Autowired
 	OrgLocationService orgLocationService;
 	
+	@Autowired
+	OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	TeamService teamService;
+	
+	@Autowired
+	DepartmentService departmentService;
 	
 	
 	/**
@@ -117,9 +131,40 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		}
 		model.addObject("rolesList", rolesList);
 		
-		
 		Integer orgLocationsCount = orgLocationService.getRegisteredOrgLoctionsCountByOrgId(org.getId());
 		model.addObject("orgLocationsCount", orgLocationsCount);
+		
+		
+        List<OrgRelations> orgClientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
+        for(OrgRelations orgRelations:orgClientList){
+        	if(null != orgRelations.getLocationId() && orgRelations.getLocationId().getId() != null && orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+				if(orgRelations.getResponderLocationId() != null){
+					orgRelations.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
+				}
+			}
+			if(null != orgRelations.getResponderLocationId() && null != orgRelations.getResponderLocationId().getId() && orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+				if(orgRelations.getLocationId() != null){
+					orgRelations.setClientName(orgRelations.getLocationId().getOrgLocationName());
+				}
+			}
+			
+			
+        }
+        model.addObject("clientsList", orgClientList);
+        model.addObject("clientListSize", orgClientList.size());
+        
+        
+        List<User> reportingManagersList = userRoleService.getAllReportingManagersAssignedToAssociates(orgLocations.getId());
+        model.addObject("reportingManagersList", reportingManagersList);
+        model.addObject("reportingManagersListSize", reportingManagersList.size());
+        
+        List<Team> teamsList = teamService.getTeamListByOrgLocationID(orgLocations.getId());
+        model.addObject("teamsList", teamsList);
+        model.addObject("teamsListSize", teamsList.size());
+        
+        List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(orgLocations.getId());
+        model.addObject("departmentList", departmentList);
+        model.addObject("departmentListSize", departmentList.size());
 		
 		return model;
 
@@ -148,6 +193,10 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		 List<UserRole> activeList = null;
 		 List<UserRole> inactiveList = null;
 		 List<UserRole> notLoggedInList = null;
+		 List<Long> managerUserIds = new ArrayList<>();
+		 List<Long> teamsList = new ArrayList<>();
+		 List<Long> departmentsList = new ArrayList<>();
+		 List<Long> orgRelationsList = new ArrayList<>();
 		
 		 Workbook createExcelworkbook =  new XSSFWorkbook();
 		 StringBuilder excelSB = new StringBuilder();
@@ -156,7 +205,6 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
  		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
  		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
  		ArrayList<UserRole> userRolesList = new ArrayList<UserRole>();
-// 		List<UserRole> rolesList = new ArrayList<UserRole>();
  		Long userRoleType ;
 		if(!"".equalsIgnoreCase(userDTO.getUserRole())){
 			userRoleType = Long.parseLong(userDTO.getUserRole());
@@ -165,7 +213,37 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		}
  		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("users ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
  		try {
-			ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId(userDTO,userRoleDTO,userRoleType, orgLocations.getId(), userDTO.getUserState(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode());
+ 			
+ 			if(userRoleDTO.getOrgClients() != null && !userRoleDTO.getOrgClients().isEmpty()) {
+ 				String[] orgClients = userRoleDTO.getOrgClients().split(",");
+ 				for(int i=0; i < orgClients.length; i++) {
+ 					orgRelationsList.add(Long.parseLong(orgClients[i]));
+ 				}
+ 			}
+ 			
+ 			if(userRoleDTO.getOrgManagers() != null && !userRoleDTO.getOrgManagers().isEmpty()) {
+ 				String[] orgManagers = userRoleDTO.getOrgManagers().split(",");
+ 				for(int i=0; i < orgManagers.length; i++) {
+ 					managerUserIds.add(Long.parseLong(orgManagers[i]));
+ 				}
+ 			}
+ 			
+ 			if(userRoleDTO.getOrgTeams() != null && !userRoleDTO.getOrgTeams().isEmpty()) {
+ 				String[] orgTeams = userRoleDTO.getOrgTeams().split(",");
+ 				for(int i=0; i < orgTeams.length; i++) {
+ 					teamsList.add(Long.parseLong(orgTeams[i]));
+ 				}
+ 			}
+ 			
+ 			if(userRoleDTO.getOrgDepartments() != null && !userRoleDTO.getOrgDepartments().isEmpty()) {
+ 				String[] orgDepts = userRoleDTO.getOrgDepartments().split(",");
+ 				for(int i=0; i < orgDepts.length; i++) {
+ 					departmentsList.add(Long.parseLong(orgDepts[i]));
+ 				}
+ 			}
+ 				
+ 			
+			ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId(userDTO, userRoleDTO, orgLocations.getId(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode(),orgRelationsList,managerUserIds,teamsList,departmentsList);
  			if(null != rolesList){
  				for(UserRole role : rolesList.getData()){
  					role.setUserRoleName(role.getRoles().getDisplayName());

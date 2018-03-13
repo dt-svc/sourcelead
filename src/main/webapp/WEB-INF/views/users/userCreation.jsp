@@ -162,6 +162,16 @@
 					</div>
 					
 					<div class="form-group">
+						<label class="col-md-3">Marital Status</label>
+						<div class="col-md-9">
+						<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>
+						<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>
+						<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>
+						<label class="paddingLeft paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>
+						</div>
+					</div>
+					
+					<div class="form-group">
                       <label class="col-md-3">Date of Birth</label>
                          <div class="col-md-9">
                            <div class="input-group">
@@ -966,6 +976,7 @@ function getAssociateUserDetails(){
 	      dateFormat: finalDateFormat,
 	      changeMonth: true,
 	  	  changeYear: true, 
+	  	  maxDate:0
 	      //minDate: 0  this line for to restrict selection of previous dates
 	  });
 	  

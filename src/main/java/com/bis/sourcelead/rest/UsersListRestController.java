@@ -72,6 +72,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.OrglocationFormFields;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
@@ -98,6 +99,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -226,6 +228,9 @@ public class UsersListRestController {
 	@Autowired
 	private SourceleadActionsService sourceleadActionsService;
 	
+	@Autowired
+	ProjectClientService projectClientService;
+	
 	
 	/**
 	 * To get All the Users by filtering
@@ -240,13 +245,19 @@ public class UsersListRestController {
 
 
 	/* this method is used to display the users list onload */
-	@RequestMapping(value = "/detDynamicUserList", method = RequestMethod.POST)
-	public @ResponseBody   ResponseList<UserRoleDTO> detDynamicUserList(UserDTO userDTO,UserRoleDTO userRoleDto,HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/getDynamicUserList", method = RequestMethod.POST)
+	public @ResponseBody   ResponseList<UserRoleDTO> getDynamicUserList(UserDTO userDTO,UserRoleDTO userRoleDto,HttpServletRequest request) throws Exception {
 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		List<Long> orgRelationsList = new ArrayList<>();
+		List<Long> projectAssignedUserIds = new ArrayList<>();
+		List<Long> projectClientsList = new ArrayList<>();
+		List<Long> managerUserIds = new ArrayList<>();
+		List<Long> teamsList = new ArrayList<>();
+		List<Long> departmentsList = new ArrayList<>();
 		
-		String[] tableColumns = {"userName", "email", "mobilePhone", "displayName","","userEmploymentType"};
+		String[] tableColumns = {"firstName", "email", "mobilePhone", "displayName","","userEmploymentType"};
 	    int sortColumnIndex = 5; //by default sorting using updated date
 		String sortColumnOrder = "asc"; //by default descending order
 		if(userRoleDto.getOrder() != null && !userRoleDto.getOrder().isEmpty()) {
@@ -258,23 +269,51 @@ public class UsersListRestController {
 		
 		ResponseList<UserRoleDTO> response = new ResponseList<UserRoleDTO>();
 		List<UserRoleDTO> userRolesList = new ArrayList<>();
-			Long userRoleType ;
-			if(!"".equalsIgnoreCase(userDTO.getUserRole())){
-				 userRoleType = Long.parseLong(userDTO.getUserRole());
-			}else{
-				 userRoleType = null;
+		
+		
+		if(userRoleDto.getOrgClients() != null && !userRoleDto.getOrgClients().isEmpty()) {
+			String[] orgClients = userRoleDto.getOrgClients().split(",");
+			for(int i=0; i < orgClients.length; i++) {
+				orgRelationsList.add(Long.parseLong(orgClients[i]));
 			}
-			ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId(userDTO, userRoleDto, userRoleType, orgLocations.getId(), userDTO.getUserState(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode());
+		}
+		
+		if(userRoleDto.getOrgManagers() != null && !userRoleDto.getOrgManagers().isEmpty()) {
+			String[] orgManagers = userRoleDto.getOrgManagers().split(",");
+			for(int i=0; i < orgManagers.length; i++) {
+				managerUserIds.add(Long.parseLong(orgManagers[i]));
+			}
+		}
+		
+		if(userRoleDto.getOrgTeams() != null && !userRoleDto.getOrgTeams().isEmpty()) {
+			String[] orgTeams = userRoleDto.getOrgTeams().split(",");
+			for(int i=0; i < orgTeams.length; i++) {
+				teamsList.add(Long.parseLong(orgTeams[i]));
+			}
+		}
+		
+		if(userRoleDto.getOrgDepartments() != null && !userRoleDto.getOrgDepartments().isEmpty()) {
+			String[] orgDepts = userRoleDto.getOrgDepartments().split(",");
+			for(int i=0; i < orgDepts.length; i++) {
+				departmentsList.add(Long.parseLong(orgDepts[i]));
+			}
+		}
+			
+			
+			    ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId(userDTO, userRoleDto, orgLocations.getId(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode(),orgRelationsList,managerUserIds,teamsList,departmentsList);
 				for(UserRole role : rolesList.getData()){
 					UserRoleDTO userRoleDTO = new UserRoleDTO();
 					StringBuilder userName = new StringBuilder();
 					
 					userRoleDTO.setUserRoleName(role.getRoles().getDisplayName());
 					userRoleDTO.setIsMailSent(role.getIsMailSent().toString());
-					if(!isNullOrEmpty(role.getUser().getLastName())){
-						userName = userName.append(role.getUser().getFirstName()).append(" ").append(role.getUser().getLastName());
+					if(!isNullOrEmpty(role.getUser().getLastName()) && !isNullOrEmpty(role.getUser().getMiddelName())){
+						userName = userName.append(role.getUser().getFirstName()).append(" ").append(role.getUser().getMiddelName()).append(" ").append(role.getUser().getLastName());
 						userRoleDTO.setUserName(userName.toString());
 						
+					}else if(!isNullOrEmpty(role.getUser().getLastName())){
+						userName = userName.append(role.getUser().getFirstName()).append(" ").append(role.getUser().getLastName());
+						userRoleDTO.setUserName(userName.toString());
 					}else{
 						userRoleDTO.setUserName(role.getUser().getFirstName());
 					}
@@ -1936,6 +1975,7 @@ public class UsersListRestController {
 			user.setLastName(addUserDTO.getLastName());
 			user.setMiddelName(addUserDTO.getMiddleName());
 			user.setGender(addUserDTO.getGender());
+			user.setMaritalStatus(addUserDTO.getMaritalStatus());
 			user.setMobilePhone(addUserDTO.getPhoneNumber());
 			user.setExtensionNumber(addUserDTO.getExtensionNumber());
 			if (StringUtils.isNotBlank(addUserDTO.getReportingManager())) {
@@ -1952,6 +1992,8 @@ public class UsersListRestController {
 					} catch (Exception e) {
 					  e.printStackTrace();
 					}
+			}else{
+				user.setDateOfBirth(null);
 			}
 			isUserActive = userRoleService.isUserActive(user.getId());
 			if (isUserActive == false && !emailId.equalsIgnoreCase(addUserDTO.getEmail())) {
@@ -2085,6 +2127,7 @@ public class UsersListRestController {
 			candidate.setMiddelName(addUserDTO.getMiddleName());
 			candidate.setGender(addUserDTO.getGender());
 			candidate.setMobilePhone(addUserDTO.getPhoneNumber());
+			candidate.setMaritalStatus(addUserDTO.getMaritalStatus());
 			
 			candidateService.saveOrUpdateCandidate(candidate);
 			candidateService.saveOrUpdateCandidateElkDocument(candidate);

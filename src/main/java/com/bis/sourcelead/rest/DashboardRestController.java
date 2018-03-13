@@ -1214,13 +1214,13 @@ public class DashboardRestController {
 			int Days;
 			 switch (postedDateRange) {
 			 	 case "today" :
-			 		 numberOfDays = "0";
-			 		 break;
-			 	 case "yesterday" :
 			 		 numberOfDays = "1";
 			 		 break;
+			 	 case "yesterday" :
+			 		 numberOfDays = "2";
+			 		 break;
 			 	 case "week" :
-					 numberOfDays = "6";
+					 numberOfDays = "7";
 				      break;
 				 case "twoweeks" :
 					 Days  = (2 * 7);
@@ -1234,7 +1234,7 @@ public class DashboardRestController {
 					 numberOfDays = Integer.toString(Days);
 				     break;
 				 default:
-					 numberOfDays = "0";
+					 numberOfDays = "1";
 			 }
 			 
 			String resultJson;
