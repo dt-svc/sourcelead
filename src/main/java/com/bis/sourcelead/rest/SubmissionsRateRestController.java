@@ -570,12 +570,14 @@ public class SubmissionsRateRestController {
 						StringBuilder rateAndType = new StringBuilder();
 						requirementRateSubmission.setRateAndType(rateAndType.append(requirementSubmissionTemplateFields.getExpectedCTC()).append(" ").append(requirementSubmissionTemplateFields.getExpectedRatePer()).toString());	
 					}
+					if(requirementSubmissionTemplateFields.getCreatedBy() != null){
 					User proposedByUser = userService.getUserDetailsByUserCode(requirementSubmissionTemplateFields.getCreatedBy());
 					if(null != proposedByUser.getFirstName() && null != proposedByUser.getLastName() && !"".equalsIgnoreCase(proposedByUser.getFirstName()) && !"".equalsIgnoreCase(proposedByUser.getLastName())){
 						 StringBuilder sb = new StringBuilder();
 						 requirementRateSubmission.setProposeByName(sb.append(proposedByUser.getFirstName()).append(" ").append(proposedByUser.getLastName()).toString());
 					}else{
 						requirementRateSubmission.setProposeByName(proposedByUser.getFirstName());
+					}
 					}
 					//DateFormat date = LoginSessionController.DATEFORMAT;
 					String commonDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmissionTemplateFields.getCreatedDate());
