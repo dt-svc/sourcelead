@@ -157,6 +157,9 @@ public class User implements Serializable{
 	@Column(name = "GENDER")
 	private String gender;
 	
+	@Column(name = "MARITAL_STATUS")
+	private String maritalStatus;
+	
 	
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
@@ -870,6 +873,14 @@ public class User implements Serializable{
 
 	public void setGender(String gender) {
 		this.gender = gender;
+	}
+
+	public String getMaritalStatus() {
+		return maritalStatus;
+	}
+
+	public void setMaritalStatus(String maritalStatus) {
+		this.maritalStatus = maritalStatus;
 	}
 
 	

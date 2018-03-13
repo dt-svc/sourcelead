@@ -113,6 +113,8 @@ import com.bis.sourcelead.entity.UserRole;
 		
 		private String gender;
 		
+		private String maritalStatus;
+		
 		private String dateofBirth;
 
 		private String isPrimary;
@@ -741,6 +743,14 @@ import com.bis.sourcelead.entity.UserRole;
 
 		public void setDateofBirth(String dateofBirth) {
 			this.dateofBirth = dateofBirth;
+		}
+
+		public String getMaritalStatus() {
+			return maritalStatus;
+		}
+
+		public void setMaritalStatus(String maritalStatus) {
+			this.maritalStatus = maritalStatus;
 		}
 			
 		

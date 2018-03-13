@@ -498,6 +498,12 @@ public class UserServiceImpl implements UserService {
 	    	 user.setGender(null);
 	    }
 	    
+	    if(StringUtils.isNotBlank(addUserDTO.getMaritalStatus())) {
+			  user.setMaritalStatus(addUserDTO.getMaritalStatus());
+	    }else{
+	    	 user.setMaritalStatus(null);
+	    }
+	    
 	    if(StringUtils.isNotBlank(addUserDTO.getDateofBirth())){
 			try {
 				user.setDateOfBirth(commonUtil.orgLocationDateFormat(addUserDTO.getDateFormat(), addUserDTO.getDateofBirth()));

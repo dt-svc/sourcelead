@@ -271,10 +271,13 @@ public class UsersListRestController {
 					
 					userRoleDTO.setUserRoleName(role.getRoles().getDisplayName());
 					userRoleDTO.setIsMailSent(role.getIsMailSent().toString());
-					if(!isNullOrEmpty(role.getUser().getLastName())){
-						userName = userName.append(role.getUser().getFirstName()).append(" ").append(role.getUser().getLastName());
+					if(!isNullOrEmpty(role.getUser().getLastName()) && !isNullOrEmpty(role.getUser().getMiddelName())){
+						userName = userName.append(role.getUser().getFirstName()).append(" ").append(role.getUser().getMiddelName()).append(" ").append(role.getUser().getLastName());
 						userRoleDTO.setUserName(userName.toString());
 						
+					}else if(!isNullOrEmpty(role.getUser().getLastName())){
+						userName = userName.append(role.getUser().getFirstName()).append(" ").append(role.getUser().getLastName());
+						userRoleDTO.setUserName(userName.toString());
 					}else{
 						userRoleDTO.setUserName(role.getUser().getFirstName());
 					}
@@ -1936,6 +1939,7 @@ public class UsersListRestController {
 			user.setLastName(addUserDTO.getLastName());
 			user.setMiddelName(addUserDTO.getMiddleName());
 			user.setGender(addUserDTO.getGender());
+			user.setMaritalStatus(addUserDTO.getMaritalStatus());
 			user.setMobilePhone(addUserDTO.getPhoneNumber());
 			user.setExtensionNumber(addUserDTO.getExtensionNumber());
 			if (StringUtils.isNotBlank(addUserDTO.getReportingManager())) {
@@ -1952,6 +1956,8 @@ public class UsersListRestController {
 					} catch (Exception e) {
 					  e.printStackTrace();
 					}
+			}else{
+				user.setDateOfBirth(null);
 			}
 			isUserActive = userRoleService.isUserActive(user.getId());
 			if (isUserActive == false && !emailId.equalsIgnoreCase(addUserDTO.getEmail())) {
@@ -2085,6 +2091,7 @@ public class UsersListRestController {
 			candidate.setMiddelName(addUserDTO.getMiddleName());
 			candidate.setGender(addUserDTO.getGender());
 			candidate.setMobilePhone(addUserDTO.getPhoneNumber());
+			candidate.setMaritalStatus(addUserDTO.getMaritalStatus());
 			
 			candidateService.saveOrUpdateCandidate(candidate);
 			candidateService.saveOrUpdateCandidateElkDocument(candidate);

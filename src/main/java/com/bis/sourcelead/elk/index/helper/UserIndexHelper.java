@@ -33,6 +33,7 @@ public class UserIndexHelper {
 			userIndex.setLastName(user.getLastName());
 			userIndex.setMiddleName(user.getMiddelName());
 			userIndex.setGender(user.getGender());
+			userIndex.setMaritalStatus(user.getMaritalStatus());
 			userIndex.setOrgLocationId(userRole.getOrgLocations().getId());
 			userIndex.setEmail(user.getEmail());
 			userIndex.setMobilePhone(user.getMobilePhone());

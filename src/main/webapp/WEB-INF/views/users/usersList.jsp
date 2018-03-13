@@ -463,8 +463,9 @@ function getUserSummary(userId){
 	 			for(var i=0; i<json.length; i++){
 	 				
 			 				var userRole = json[i];
-			 				var mobilePhone = ""
-			 				var lastName = ""
+			 				var mobilePhone = "";
+			 				var lastName = "";
+			 				var middleName = "";
 			 			    if(userRole.mobilePhone != null && userRole.mobilePhone != ''){
 			 			    	mobilePhone = userRole.mobilePhone;
 			 			    }else{
@@ -474,6 +475,10 @@ function getUserSummary(userId){
 			 					lastName = userRole.lastName;
 			 			    }else{
 			 			    	lastName = " "
+			 			    }if(userRole.middelName != null && userRole.middelName != ''){
+			 			    	middleName = userRole.middelName;
+			 			    }else{
+			 			    	middleName = " "
 			 			    }
 			       	    	result = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>";
 			       	    	result = result +"<div class='user-profile'>";
@@ -489,11 +494,11 @@ function getUserSummary(userId){
 			       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
 			       	    	
 			       	     '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE\',\'ROLE_VIEW_EDIT_ASSOCIATE\',\'ROLE_VIEW_DELETE_ASSOCIATE\')">' 
-			       	         	result = result +"<h4><a href='<c:url value='/app/userSummary/"+userRole.userId+"'/>''> <span title='"+userRole.firstName+" "+lastName+"'> "+userRole.firstName+" "+lastName+" </span> </a> </h4>";
+			       	         	result = result +"<h4><a href='<c:url value='/app/userSummary/"+userRole.userId+"'/>''> <span title='"+userRole.firstName+" "+middleName+" "+lastName+"'> "+userRole.firstName+" "+middleName+" "+lastName+" </span> </a> </h4>";
 			       	    	'</sec:authorize>';
 			       	    	
 			       	     '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_ASSOCIATE\',\'ROLE_VIEW_EDIT_ASSOCIATE\',\'ROLE_VIEW_DELETE_ASSOCIATE\')">' 
-		       	         	   result = result +"<h4><a href='#'> "+userRole.firstName+" " " "+lastName+"</a> </h4>";
+		       	         	   result = result +"<h4><a href='#'> "+userRole.firstName+" "+middleName+" "+lastName+"</a> </h4>";
 		       	    	    '</sec:authorize>';
 			       	    	
 			       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp;<span title='"+userRole.email+"'> "+userRole.email+"</span></lable></p>";
