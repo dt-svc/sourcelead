@@ -46,7 +46,7 @@ $(function() {
 		        <div class="form-group">
 		          <label class="col-md-3">Issue Title<span class="text-danger paddingLeft">&nbsp;*</span></label>
 		          <div class="col-md-9">
-		            <input type="text" class="form-control" id="ticketTitle" placeholder="Issue Tile" value="${sourceleadTicket.ticketTitle}" name="ticketTitle" field-name="Issue Title" data-validation="required validate_Space validate_length length1-250" >
+		            <input type="text" class="form-control" id="ticketTitle" placeholder="Issue Title" value="${sourceleadTicket.ticketTitle}" name="ticketTitle" field-name="Issue Title" data-validation="required validate_Space validate_length length1-250" >
 		          </div>
 		        </div>
 		      <div class="form-group">
