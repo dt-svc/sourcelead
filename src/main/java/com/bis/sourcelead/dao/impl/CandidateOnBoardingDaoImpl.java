@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -258,22 +259,29 @@ public class CandidateOnBoardingDaoImpl  implements CandidateOnBoardingDao{
 						
 			}
 			
-			query = "from CandidateOnBoarding onboarding where onboarding.orgLocationId.id = :orgLocationsId ";
+			String sortingQry = "";
+			if(StringUtils.isNotBlank(candidateOnBoardingDTO.getSortColumn())) {
+					sortingQry = " order by onboarding."+ candidateOnBoardingDTO.getSortColumn() +" "+candidateOnBoardingDTO.getSortOrder();
+			}
+			
+			query = "from CandidateOnBoarding onboarding where onboarding.orgLocationId.id = :orgLocationsId "+sortingQry+"";
 			if(query1.toString() != null && !query1.toString().isEmpty()){
 				 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+" ");
 			}else{
 				 queryObj = session.createQuery(query + query1.toString()+" ");
 			}
 			
+			
+			
 			queryObj.setFirstResult(candidateOnBoardingDTO.getStart());
 			queryObj.setMaxResults(candidateOnBoardingDTO.getLength());
 			queryObj.setLong("orgLocationsId", orgLocations.getId()).list();
 			onboardingList = queryObj.list();
 			if(query1.toString() != null && !query1.toString().isEmpty()){
-				countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+")").setLong("orgLocationsId", orgLocations.getId()).list();
+				countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+") ").setLong("orgLocationsId", orgLocations.getId()).list();
 				filterCount = countlist.iterator().next().intValue();
 			}else {
-				countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocations.getId()).list();
+				countlist = session.createQuery("select count(*) " + query ).setLong("orgLocationsId", orgLocations.getId()).list();
 				filterCount = countlist.iterator().next().intValue();
 			}
 			
