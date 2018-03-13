@@ -289,28 +289,20 @@
              <div class="form-group">
               <label class="col-md-4">Experience</label>
               <div class="col-md-4 dropdown-select">
-                <select>
+                <select id="experienceValue">
                 	<option>--Select Year--</option>
-                	<option>Year-1</option>
-                	<option>Year-2</option>
-                	<option>Year-3</option>
+                	<c:forEach begin="0" end="25" varStatus="loop">
+				    	<option value="${loop.index}" >${loop.index}</option>
+					</c:forEach>
+                	<option value="25+" >25+</option>
                 </select>
               </div>
              <div class="col-md-4 dropdown-select">
-                <select>
+                <select id="expMonthValue">
                 	<option>--Select Month--</option>
-                	<option>0</option>
-                	<option>1</option>
-                	<option>2</option>
-                	<option>3</option>
-                	<option>4</option>
-                	<option>5</option>
-                	<option>6</option>
-                	<option>7</option>
-                	<option>8</option>
-                	<option>9</option>
-                	<option>10</option>
-                	<option>11</option>
+                	<c:forEach begin="0" end="11" varStatus="loop">
+				    	<option value="${loop.index}" >${loop.index}</option>
+					</c:forEach>
                 </select>
               </div>
             </div> 
@@ -322,7 +314,8 @@
              <div class="form-group">
               <label class="col-md-4">Job Title</label>
               <div class="col-md-8">
-                 <input type="text" class="form-control" name="" value="">
+               <select id="jobTitleDropdown" class="form-control">
+                  </select>
               </div>
           </div>  
             
@@ -580,6 +573,14 @@ function getCandidatesByOrgLocation(){
 		   }
    });
 }
+
+$("#experienceValue").change(function () {
+    if(this.value == '25+'){
+    	$("#expMonthValue").prop("disabled", true);
+    }else{
+    	$("#expMonthValue").prop("disabled", false);
+    }
+});
 </script>
 	<script>
 	
@@ -631,6 +632,21 @@ function getCandidatesByOrgLocation(){
 		 });
 	}
 	
+	function jobTitleDropDown(){
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+immiModulePath+"/getJobTitleDropDown", 
+		        success: function(data) {
+		        	$('#jobTitleDropdown').empty();
+		        	$('#jobTitleDropdown').append('<option value="">--Select Type --</option>');
+		            for(var i=0;i<data.length;i++){
+		            	  var opt = data[i];
+		            		$('#jobTitleDropdown').append('<option value='+opt.id+' >'+opt.jobTitle+'</option>');
+		            }
+		            $('#jobTitleDropdown').trigger("chosen:updated");		        	
+		        }
+		 });
+	}
 	
 	
  function getAttorneysByOrgLocation(){
@@ -673,7 +689,13 @@ function getCandidatesByOrgLocation(){
 	 }
  </script>
    <script type="text/javascript">
-	  $( document ).ready(function() {	
+	  $( document ).ready(function() {
+		  getAttorneysByOrgLocation();
+		  getCandidatesByOrgLocation();
+		  getPetitionTypeDropDown();
+		  getUscisTypeDropDown();
+		  employmentLevelDropDown();
+		  jobTitleDropDown();
 		  
 		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
@@ -799,11 +821,19 @@ function getCandidatesByOrgLocation(){
 		  });
 		  // 
 		  
-		  getAttorneysByOrgLocation();
-		  getCandidatesByOrgLocation();
-		  getPetitionTypeDropDown();
-		  getUscisTypeDropDown();
-		  employmentLevelDropDown();
+		  /* $('#jobTitleValues').autocomplete({
+				serviceUrl:  sourceleadUrl+immiModulePath+'/getJobTitleAutoComplete',
+				paramName: "searchValue",
+				delimiter: ",",
+			   transformResult: function(response) {
+				return {
+				  //must convert json to javascript object before process
+				  suggestions: $.map($.parseJSON(response), function(item) {
+				      return { value: item.jobTitle, data: item.id };
+				   })
+				 };
+		      }
+		}); */
  });
    </script>
    <script>
