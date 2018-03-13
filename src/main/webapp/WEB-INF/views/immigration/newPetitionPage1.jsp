@@ -290,7 +290,7 @@
               <label class="col-md-4">Experience</label>
               <div class="col-md-4 dropdown-select">
                 <select id="experienceValue">
-                	<option>--Select Year--</option>
+                	<option value="">--Select Year--</option>
                 	<c:forEach begin="0" end="25" varStatus="loop">
 				    	<option value="${loop.index}" >${loop.index}</option>
 					</c:forEach>
@@ -299,7 +299,7 @@
               </div>
              <div class="col-md-4 dropdown-select">
                 <select id="expMonthValue">
-                	<option>--Select Month--</option>
+                	<option value="">--Select Month--</option>
                 	<c:forEach begin="0" end="11" varStatus="loop">
 				    	<option value="${loop.index}" >${loop.index}</option>
 					</c:forEach>
@@ -576,6 +576,7 @@ function getCandidatesByOrgLocation(){
 
 $("#experienceValue").change(function () {
     if(this.value == '25+'){
+    	$("#expMonthValue").val("");
     	$("#expMonthValue").prop("disabled", true);
     }else{
     	$("#expMonthValue").prop("disabled", false);
