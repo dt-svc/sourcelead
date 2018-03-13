@@ -208,7 +208,7 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 	public List<OrgLocations> getAllOrgLocationsByOrgId(Long orgId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 
-		String query = "from OrgLocations orgLocations where orgLocations.org.id IN (select org.id from Org org where org.id = :orgId and org.orgCode != 'slead')";
+		String query = "from OrgLocations orgLocations where orgLocations.org.id IN (select org.id from Org org where org.id = :orgId and org.orgCode != 'slead') ";
 		
 		List orgList = session.createQuery(query).setLong("orgId", orgId).list();
 		return orgList;
