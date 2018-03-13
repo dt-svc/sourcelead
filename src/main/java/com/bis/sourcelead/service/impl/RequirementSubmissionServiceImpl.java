@@ -2545,8 +2545,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			emailMessage.setSubmissionId(submissionId);
 			
 			emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray,attachmentList);
-			StringBuilder actionLinkBuilder = new StringBuilder();                          
-			String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=SUBMIT_TO_CLIENT&requirementUUID="+reqSub.getRequirement().getRequirementUUID()).toString();	 
+			StringBuilder actionLinkBuilder = new StringBuilder();   
+			String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=all&requirementUUID="+reqSub.getRequirement().getParentRequirement().getRequirementUUID()+"&submissionId="+reqSub.getId()).toString();	 
+//			String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=SUBMIT_TO_CLIENT&requirementUUID="+reqSub.getRequirement().getRequirementUUID()).toString();	 
 			emailScenerioUtil.sendNotification(actionLink, user, toUser,reqSub.getRequirement().getSpocId().getClientLocationId(), notificationScenario);
 		}
 
