@@ -1684,6 +1684,8 @@ function calculateTaxDiscount(){
 		    	if(taxValue){
 		    		first = parseFloat(taxValue);
 			        $("#"+i+"taxTotal").val(first.toFixed(2));
+		    	}else{
+		    		$("#"+i+"taxTotal").val("00.00");
 		    	}
 		    	
 		    }
