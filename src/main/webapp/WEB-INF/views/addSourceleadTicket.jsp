@@ -278,7 +278,7 @@ function getUserList(){
 	    url: sourceleadUrl+"/getAllUserListByOrgLocationId?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId, 	   
 		    success: function(json) {
 		    	var result = "";
-		    	result = result +'<option  value="">Select user</option>';
+		    	result = result +'<option  value="">Select User</option>';
 	        	  for (var i=0; i<json.length; i++)
   				{
 	        		 var report = json[i];

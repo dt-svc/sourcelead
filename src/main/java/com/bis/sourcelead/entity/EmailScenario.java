@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -66,6 +68,10 @@ public class EmailScenario implements Serializable{
 	
 	@Column(name="USE_LOGO")
 	private String useLogo;
+	
+	@ManyToOne
+	@JoinColumn(name = "TAB_ID")
+	private Tabs tabId;
 	
 	@Column(name="ORG_CODE")
 	private String orgCode;
@@ -197,6 +203,16 @@ public class EmailScenario implements Serializable{
 
 	public void setUseLogo(String useLogo) {
 		this.useLogo = useLogo;
+	}
+
+	public Tabs getTabId()
+	{
+		return tabId;
+	}
+
+	public void setTabId(Tabs tabId)
+	{
+		this.tabId = tabId;
 	}
 
 	public String getOrgCode() {

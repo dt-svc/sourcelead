@@ -737,9 +737,11 @@
 
 <script>
 function getCustomDependentField(sectionId){
+	var contractId = '${contract.id}';
+	
 	 $.ajax({
 			type : "POST" , 
-				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId+"&contractId="+contractId+"&requestFrom=contract",
 				 success: function(data) {
 		        	$('#customDiv'+sectionId).empty();
 		        	$('#customDiv'+sectionId).append(data);

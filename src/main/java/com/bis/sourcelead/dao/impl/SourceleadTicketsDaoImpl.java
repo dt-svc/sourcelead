@@ -135,10 +135,10 @@ public class SourceleadTicketsDaoImpl implements SourceleadTicketsDao{
 		    
 		}else {
 			//org list query
-			String query = "from SourceleadTickets st   where st.orgLocationId.id = :orgLocationId and st.userId.id =:userId and date(st.createdDate) BETWEEN :fromDate and :endDate "+query1+" "+sortingQry+"";
+			String query = "from SourceleadTickets st  where st.orgLocationId.id = :orgLocationId and st.userId.id = :userId and date(st.createdDate) BETWEEN :fromDate and :endDate "+query1+" "+sortingQry+"";
 		    ticketList = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocations.getId()).setParameter("fromDate", fromDate).setParameter("endDate", endDate).setFirstResult(sourceleadTicketDTO.getStart()).setMaxResults(sourceleadTicketDTO.getLength()).list();
 		    
-		    String countQuery = "select count(*) from SourceleadTickets st where st.orgLocationId.id = :orgLocationId and st.userId.id =:userId and date(st.createdDate) BETWEEN :fromDate and :endDate "+query1+" "+sortingQry+"";
+		    String countQuery = "select count(*) from SourceleadTickets st where st.orgLocationId.id = :orgLocationId and st.userId.id = :userId and date(st.createdDate) BETWEEN :fromDate and :endDate "+query1+" "+sortingQry+"";
 		    countlist = session.createQuery(countQuery.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocations.getId()).setParameter("fromDate", fromDate).setParameter("endDate", endDate).list();
 		    
 		}
@@ -167,7 +167,7 @@ public class SourceleadTicketsDaoImpl implements SourceleadTicketsDao{
 	@Transactional(rollbackFor = { Exception.class })	
 	public SourceleadTickets getSourceleadTicketsByTicketUUID(String ticketUUID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<SourceleadTickets> tickets = session.createQuery("from SourceleadTickets  st where st.ticketUUID =:ticketUUID" ).setString("ticketUUID", ticketUUID).list();
+		List<SourceleadTickets> tickets = session.createQuery("from SourceleadTickets st left join fetch st.userId left join fetch st.orgLocationId where st.ticketUUID =:ticketUUID" ).setString("ticketUUID", ticketUUID).list();
 		if (tickets.size() > 0) {
 			return tickets.get(0);
 		} else {

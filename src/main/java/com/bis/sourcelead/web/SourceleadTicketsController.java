@@ -88,6 +88,7 @@ public class SourceleadTicketsController {
         String createddateStr = commonUtil.dateStrFromOrgDateFormatter(sourceleadTicket.getOrgLocationId().getDateFormat(), sourceleadTicket.getCreatedDate());
         model.addObject("createddateStr", createddateStr);
         model.addObject("sourceleadTicket", sourceleadTicket);
+        model.addObject("userId", sourceleadTicket.getUserId().getId());
         
         List<SourceleadTicketsAttachments> sourceleadTicketsAttachmentsList = sourceleadTicketService.getSourceleadTicketsAttachmentsListByTicketId(sourceleadTicket.getId());
         model.addObject("sourceleadTicketsAttachmentsList", sourceleadTicketsAttachmentsList);

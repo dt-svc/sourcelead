@@ -196,6 +196,11 @@ public class CandidateController {
 		    model.addObject("candidateIdSearchId",candidateIdSearchId);
 		}
 		
+		if(candidateKeyword != null && !candidateKeyword.equalsIgnoreCase("undefined") && candidateKeyword.equalsIgnoreCase("requestedDocumentNotification")){
+		    model.addObject("candidateKeyword", candidateKeyword);
+		    model.addObject("candidateIdSearchId",candidateIdSearchId);
+		}
+		
 		if(searchResult != null && !searchResult.equalsIgnoreCase("undefined") && searchResult.equalsIgnoreCase("universalCanddateList")){
 		    model.addObject("universalCanddateList", "universalCanddateList");
 		    model.addObject("serachValue",searchValue);

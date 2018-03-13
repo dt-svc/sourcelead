@@ -72,6 +72,7 @@ jQuery(document).ready(function($) {
 	var rate = '${rate}';
 	var noticePeriod = '${noticePeriod}';
 	var visaTypes = '${visaTypes}';
+	var postedOrg='{postedOrg}'
 	if(sourceleadUrl.indexOf("/app")!=-1){
 		sourceleadUrl = sourceleadUrl.split("/app")[0];
 	}
@@ -94,6 +95,15 @@ jQuery(document).ready(function($) {
 				
 				<div class="clearfix"></div>
 				<div class="skills mb">
+				<strong>Posted Org :</strong>
+				<c:if test="${!empty postedOrg}">
+				<span>${postedOrg}</span>
+				</c:if>
+				<c:if test="${empty postedOrg}">
+				<span>--</span>
+				</c:if>
+				</div>	
+				<div class="skills mb">
 				<strong>Skills :</strong>
 				<c:if test="${!empty skills}">
 				<span>${skills}</span>
@@ -102,7 +112,6 @@ jQuery(document).ready(function($) {
 				<span>--</span>
 				</c:if>
 				</div>	
-
 				<div class="skills mb">
 				<strong class="pull-left">Location(s) :</strong>
 				<ul class="list-unstyled list-inline joblocations-li">
@@ -258,14 +267,14 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		result = result + '	 </div>';
 		result = result + '	 </div>';
 		
-	    result = result + '<div class="row">';
+	   /*  result = result + '<div class="row">';
 	    result = result + '	<div class="col-md-6 upresume mb" id="primarySkillDiv" style="display: none;">';
 		result = result + '<label class="col-md-4">Primary Skill</label>';
 		result = result + '<div class="col-md-8">';
-		result = result + '<input type="text" class="form-control" id="primarySkill" name="primarySkill"  field-name="Primary Skill">';
+		result = result + '<input type="text" class="form-control" id="primarySkill"   field-name="Primary Skill">';
 		result = result + '</div>';
 		result = result + '</div>';
-		result = result + '</div>'; 
+		result = result + '</div>';  */
 		
 	    result = result + '<div class="row">';
 	    result = result + '	<div class="col-md-6 upresume mb" id="employmentTypeDiv" style="display: none;">';
@@ -429,7 +438,7 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 <script>
 var sourceleadUrl = '${sourceleadUrl}';
 function importAddApplicantDoc(){
-	fileUpload("uploadBtn", "guestAddApplicants", "guestApplicant_form", '${orgId}', '${orgLocationId}');
+	fileUpload("uploadBtn", "guestAddApplicants", "guestApplicant_form",'', '${orgId}', '${locationId}');
 	var uploadfiles = $("#uploadBtn").val();
 	$('#uploadFile').val(uploadfiles.replace(/C:\\fakepath\\/i, ''));
 }

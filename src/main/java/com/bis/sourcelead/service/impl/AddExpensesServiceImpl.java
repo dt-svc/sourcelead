@@ -380,7 +380,10 @@ public void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLoc
 		//calling the sendNotification method of emailScenerioUtil
 			String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 			notificationScenario.setBody(notificationBody);
-			String actionLink = "";
+			 StringBuilder notificationLink = new StringBuilder();
+			 String actionLink="";
+		     actionLink = notificationLink.append(sourceleadUrl).append("/").append("addApprovalExpense?expenseId="+expenses.getExpenseId()+"&expenseLocationCode="+expenses.getLocationsCode()+"&type=view").toString();
+
 			emailScenerioUtil.sendNotification(actionLink, loginUser, managerUser, orgLoc, notificationScenario);
 	}
 }

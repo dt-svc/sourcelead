@@ -25,7 +25,7 @@
 			<!--  Tab1 -->
 			 <div class="project_tabs_inn" id="tab-1">
 			    <div class="require_one">
-			    <c:if test="${SourceLeadWeb_loginUserRole = 'ROLE_ADMIN' || SourceLeadWeb_user.id == sourceleadTicket.userId.id}">
+			    <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_ADMIN' || SourceLeadWeb_user.id == sourceleadTicket.userId.id || SourceLeadWeb_user.id == sourceleadTicket.createdBy.id}">
 	               <div class="clearfix">
 	               	<a href="${appPath}/addSourceleadTicket?ticketUUID=${sourceleadTicket.ticketUUID}" class="pull-right anchor-black"><i class="fa fa-pencil paddingRight" title="Edit"></i>Edit</a>
 	               </div>

@@ -8,6 +8,12 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		getCancelledLeavesList();
+		if ('${notifyLink}' == "notifyLink") 
+		{
+		var leaveUUID = '${leaveUUID}';
+		var orgLocationId = '${orgLocationId}';
+		getRequestedAproveSummary(leaveUUID,orgLocationId);
+		}
 	});
 </script>
 

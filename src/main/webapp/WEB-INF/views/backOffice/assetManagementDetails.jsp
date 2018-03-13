@@ -159,16 +159,18 @@ function assetNotesList(assetId){
 }
 </script>
 <script type="text/javascript">
- function validateAssetSno() {
+ function validateAssetSno(assetId) {
+	
 	 var assetSno = document.getElementById("sno").value; 
+	  
 	 if(assetSno != null && assetSno != ""){
 		 $("#add_asset").attr("disabled", "disabled");
          //$("#create_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateAssetSno?"+tokenParamName+"="+tokenValue+"&assetSno="+assetSno, 
+		        url: sourceleadUrl+"/validateAssetSno?"+tokenParamName+"="+tokenValue+"&assetSno="+assetSno+"&assetId="+assetId, 
 		        success: function(data) {
-		        	if(data == 'true'){
+		        	if(data == true){
 		        		  $('#SnoEditDiv').find('p.jquery_form_error_message').remove();
 						  $("input#sno").after("<p class='jquery_form_error_message'>"+assetSno+" is Already Existed</span>");
 						  document.getElementById("sno").setAttribute('record-exist','yes');
@@ -512,7 +514,7 @@ function editAssetManagement(assetId){
 			result = result + '<div class="form-horizontal clearfix">';
 			
 			result = result + '<div class="col-md-3 minHeight50" id="SnoEditDiv">';
-			result = result + ' <input type="text" class="form-control input-sm" id = "sno" name="sno" value="'+json.sno+'" field-name="Serial / Port Number" onkeyup = "validateAssetSno();" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length1-200" placeholder="Serial / Port Number *">';
+			result = result + ' <input type="text" class="form-control input-sm" id = "sno" name="sno" value="'+json.sno+'" field-name="Serial / Port Number" onkeyup = "validateAssetSno('+assetId+');" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length1-200" placeholder="Serial / Port Number *">';
 			result = result + '</div>';
 			
 			result = result + '<div class="assetaddpop-ul col-md-3 minHeight50" id="workingStatusDiv">';

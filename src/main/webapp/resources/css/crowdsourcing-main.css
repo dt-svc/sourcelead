@@ -84,19 +84,19 @@ textarea {
     margin-left: -22px;
 }
 .outsoucing-registaion > ul.nav-tabs{
-    /* float: left; */
+    float: left;
     border: none;
 }
 .outsoucing-registaion > ul.nav-tabs li{
-    float: left;
+    float: none;
     margin: 0;
     padding: 0;
     border: 0;
     outline: none;
-    margin-bottom: 0px;
+    margin-bottom: 5px;
 }
 
-.outsoucing-registaion div.tab-content	 h4{
+.outsoucing-registaion div.tab-content h4{
     margin-top: 0;
 }
 .outsoucing-registaion .nav-tabs li a {
@@ -133,7 +133,7 @@ textarea {
     -moz-box-shadow: 0 0 5px rgba(0,0,0,.6); -webkit-box-shadow: 0 0 5px rgba(0,0,0,.6); box-shadow: 0 0 5px rgba(0,0,0,.6); */
     min-height: 150px;
     padding:10px; border-radius: 0px 3px 3px 3px; box-shadow: 5px 5px 1px rgba(0,0,0,0.4);
-} 
+}
 .outsoucing-registaion div.tab-content{
     border-radius:8px;
     background-color: #fff;
@@ -341,7 +341,6 @@ background-color: #fff; border-radius: 5px; box-shadow: 0px 0px 10px rgba(0,0,0,
 background-color:#a31e23; border-color: #a31e23;
 }
 
-
 .form-control.formControlCustom {
 border: 1px solid #ccc !important;
 }
@@ -365,11 +364,14 @@ min-width: 125px; border-radius:3px; margin: 0 15px; font-size: 15px;
 .regDemoFields .col-md-6 {
 	min-height: 55px;
 }
+.regDemoFields .col-md-6 {
+	min-height: 55px;
+}
 .locationCountryDiv-drop .btn-default {
-	border-color: transparent;
+border-color: transparent;
 }
 .locationCountryDiv-drop .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
-	margin-left: 15px; width: 200px;
+margin-left: 15px; width: 200px;
 }
 .companyLogo {
 	width: 250px; height: auto; margin-top: 10px;

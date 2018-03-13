@@ -324,10 +324,11 @@ function jpagination(url,sourceleadUrl){
 	        {
 	            "targets": colIndex++,
 	            "data": "rate",
+	            "sortable": false,
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
            		   if((opt.rate != null && opt.rate != '' && opt.rate != 'undefined') || (opt.maxRate != null && opt.maxRate != '' && opt.maxRate != 'undefined')){
-           				result = result +"<div class='tbldata-dotdot-big'>"+opt.currencyCode+" ";
+           				result = result +"<div class='tbldata-dotdot'>"+opt.currencyCode+" ";
            				if(opt.rate != null && opt.rate != '' && opt.rate != 'undefined'){
            					result = result + opt.rate;
            				}
@@ -347,10 +348,11 @@ function jpagination(url,sourceleadUrl){
 	        {
 	            "targets": colIndex++,
 	            "data": "billRate",
+	            "sortable": false,
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
 	            		if((opt.clientRate != null && opt.clientRate != '' && opt.clientRate != 'undefined') || (opt.clientMaxRate != null && opt.clientMaxRate != '' && opt.clientMaxRate != 'undefined')){
-	           				result = result +"<div class='tbldata-dotdot-big'>"+opt.clientCurrencyCode+" ";
+	           				result = result +"<div class='tbldata-dotdot'>"+opt.clientCurrencyCode+" ";
 	           				if(opt.clientRate != null && opt.clientRate != '' && opt.clientRate != 'undefined'){
 	           					result = result + opt.clientRate;
 	           				}
@@ -638,7 +640,7 @@ function jpagination(url,sourceleadUrl){
            ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[8,'desc']],
+	    	"aaSorting": [[10,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,

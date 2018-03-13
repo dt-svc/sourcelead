@@ -304,14 +304,15 @@ var validationSettings = {
  <script type="text/javascript">
  function validateAssetSno() {
 	 var assetSno = document.getElementById("sno").value; 
+	var assetId = '';
 	 if(assetSno != null && assetSno != ""){
 		 $("#add_asset").attr("disabled", "disabled");
          //$("#create_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateAssetSno?"+tokenParamName+"="+tokenValue+"&assetSno="+assetSno, 
+		        url: sourceleadUrl+"/validateAssetSno?"+tokenParamName+"="+tokenValue+"&assetSno="+assetSno+"&assetId="+assetId, 
 		        success: function(data) {
-		        	if(data == 'true'){
+		        	if(data == true){
 		        		  $('#snoDiv').find('p.jquery_form_error_message').remove();
 						  $("input#sno").after("<p class='jquery_form_error_message'>"+assetSno+" is Already Existed</span>");
 						  document.getElementById("sno").setAttribute('record-exist','yes');

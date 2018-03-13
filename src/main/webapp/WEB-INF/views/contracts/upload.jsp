@@ -24,7 +24,8 @@
 <script>
 	$(document).ready(function() {
 		var data = '${type}';
-		Signer.uploadDoc(data);
+		var permission = '${permission}';
+		Signer.uploadDoc(data,permission);
 		/* var firstName = '${SourceLeadWeb_user.firstName}';
 		var lastName = '${SourceLeadWeb_user.lastName}';
 		$("#txtsignname").val(firstName);
