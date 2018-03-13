@@ -63,6 +63,7 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -91,6 +92,7 @@ import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -184,6 +186,9 @@ public class RequirementListRestController {
 	
 	@Autowired
 	OrgSpocService orgSpocService;
+	
+	@Autowired
+	LookUpDataService lookUpDataService;
 	
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
@@ -2129,6 +2134,22 @@ public class RequirementListRestController {
 		List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
 		resultJson = commonUtil.toJSON(timezoneList);
 		return resultJson;
+	}
+	
+	@RequestMapping(value = "/getDemoTimezonesList", method = RequestMethod.POST)
+	public @ResponseBody String getDemoTimezonesList(HttpServletRequest request) throws Exception
+	{
+		String resultJson = null;
+		List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
+		resultJson = commonUtil.toJSON(timezoneList);
+		return resultJson;
+	}
+	
+	@RequestMapping(value = "/getDemoModulesList", method = RequestMethod.POST)
+	public @ResponseBody List<LookUpData> getDemoModulesList(HttpServletRequest request) throws Exception
+	{
+		List<LookUpData> requestOrgList = lookUpDataService.getLookUpDataByCategory(Constants.REQUEST_ORG);
+		return requestOrgList;
 	}
 	
 	
