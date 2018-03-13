@@ -34,9 +34,9 @@ $(function() {
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
-      <h2>Add New Ticket</h2>
+      <h2>Add New Issue</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/app/sourceleadTicketList'/>"> Ticket List</a> &raquo; Add New Ticket</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/app/sourceleadTicketList'/>"> Issue List</a> &raquo; Add New Issue</div>
   </section>
   <div class="content-area content-new clearfix">
   <form:form id="sourceleadTicket_form" name="sourceleadTicket_form" method="post">
@@ -44,9 +44,9 @@ $(function() {
     <input type="hidden" id="ticketUUID" name="ticketUUID" value="${sourceleadTicket.ticketUUID}">
            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
 		        <div class="form-group">
-		          <label class="col-md-3">Ticket Title<span class="text-danger paddingLeft">&nbsp;*</span></label>
+		          <label class="col-md-3">Issue Title<span class="text-danger paddingLeft">&nbsp;*</span></label>
 		          <div class="col-md-9">
-		            <input type="text" class="form-control" id="ticketTitle" placeholder="Ticket Tile" value="${sourceleadTicket.ticketTitle}" name="ticketTitle" field-name="Title" data-validation="required validate_Space validate_length length1-250" >
+		            <input type="text" class="form-control" id="ticketTitle" placeholder="Issue Title" value="${sourceleadTicket.ticketTitle}" name="ticketTitle" field-name="Issue Title" data-validation="required validate_Space validate_length length1-250" >
 		          </div>
 		        </div>
 		      <div class="form-group">
@@ -278,7 +278,7 @@ function getUserList(){
 	    url: sourceleadUrl+"/getAllUserListByOrgLocationId?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId, 	   
 		    success: function(json) {
 		    	var result = "";
-		    	result = result +'<option  value="">Select user</option>';
+		    	result = result +'<option  value="">Select User</option>';
 	        	  for (var i=0; i<json.length; i++)
   				{
 	        		 var report = json[i];

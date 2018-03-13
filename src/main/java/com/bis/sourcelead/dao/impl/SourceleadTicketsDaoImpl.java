@@ -167,7 +167,7 @@ public class SourceleadTicketsDaoImpl implements SourceleadTicketsDao{
 	@Transactional(rollbackFor = { Exception.class })	
 	public SourceleadTickets getSourceleadTicketsByTicketUUID(String ticketUUID) {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<SourceleadTickets> tickets = session.createQuery("from SourceleadTickets  st where st.ticketUUID =:ticketUUID" ).setString("ticketUUID", ticketUUID).list();
+		List<SourceleadTickets> tickets = session.createQuery("from SourceleadTickets st left join fetch st.userId left join fetch st.orgLocationId where st.ticketUUID =:ticketUUID" ).setString("ticketUUID", ticketUUID).list();
 		if (tickets.size() > 0) {
 			return tickets.get(0);
 		} else {

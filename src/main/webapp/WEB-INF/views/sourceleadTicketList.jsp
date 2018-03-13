@@ -49,9 +49,9 @@ function getTicketCustomDates(){
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Ticket List</h2>
+        <h2>Issues List</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; Ticket List</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; Issues List</div>
     </section>
 		    <div class="content-area content-new clearfix">
 		      <div class="clearfix form-horizontal">
@@ -106,7 +106,7 @@ function getTicketCustomDates(){
 				                </li>
 				                </c:if>
 								
-								<li> <a href="<c:url value='${appPath}/addSourceleadTicket'/>"  title="Add Ticket"><i class="fa fa-plus paddingRight"></i>Add Ticket</a> </li>
+								<li> <a href="<c:url value='${appPath}/addSourceleadTicket'/>"  title="Add Issue"><i class="fa fa-plus paddingRight"></i>Add Issue</a> </li>
 								<div class="clearfix"></div>
 								</ul>
 								<div class="clearfix"></div>
@@ -364,7 +364,7 @@ function dynamicTicketListPagination(url){
 		  		var loginUserId = '${SourceLeadWeb_user.id}'
 				result = result + ' <td><div class="tblminwidth-75 text-center">';
 				  result = result + '<ul class="list-unstyled list-inline clearfix actionList-vdse">';
-				  if(loginRoleName == 'ROLE_ADMIN' || loginUserId == report.userId){
+				  if(loginRoleName == 'ROLE_ADMIN' || loginUserId == report.userId || loginUserId == report.createdByUserId){
 					  result = result + ' <li><a href="<c:url value="'+sourceleadUrl+'/addSourceleadTicket?ticketUUID='+report.ticketUUID+'"/>"  title="Add Ticket" class="fa fa-pencil" ></a></li>';
 				  }
 				  result = result + ' <li><a href="javascript:void(0)" title="Comment" class="fa fa-comments" onClick="ticketComment(\''+report.ticketUUID+'\')"></a></li>';
