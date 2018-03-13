@@ -30,12 +30,14 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -79,6 +81,9 @@ public class ImmigrationRestController {
 	
 	@Autowired
 	private CandidateService candidateService;
+	
+	@Autowired
+	private RequirementService requirementService;
 
 	// ====================immigration view startviewImmigration if you don't
 	// required comment below code start here==============================
@@ -485,6 +490,15 @@ public @ResponseBody ResponseList<ImmigrationTemplateListDTO> getAlltemplateList
 	public List<LookUpData> getEmploymentLevelDropDown(HttpServletRequest request) {
 		List<LookUpData> caEmployerDTOs = immigrationTemplateService.getLookupDataByType(Constants.EMPLOYMENT_LEVEL);
 		return caEmployerDTOs;
+	}
+	
+	
+	@RequestMapping(value = { "/getJobTitleDropDown" })
+	public List<Requirement> getJobTitleDropDown(HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		List<Requirement> jobList= requirementService.getAllRequirementsByOrglocationId(orgLocations.getId());
+		return jobList;
 	}
 
 }
