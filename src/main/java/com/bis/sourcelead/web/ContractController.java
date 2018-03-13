@@ -690,6 +690,12 @@ public class ContractController {
 	public ModelAndView docusignRedirect(@RequestParam(value="contractUUID", required=false)String contractUUID,@RequestParam(value="type", required=false) String type) throws Exception {
 		ModelAndView model = new ModelAndView();
 		Contracts contract = contractsTemplateService.getContractByContractUUID(contractUUID);
+		String permission = "";
+		if("public".equalsIgnoreCase(type) && (Constants.WAITING_TO_BE_VERIFY.equalsIgnoreCase(contract.getTemplateSubmissionStatus()) || Constants.FINALIZED.equalsIgnoreCase(contract.getTemplateSubmissionStatus()))){
+			permission = "No";
+			model.addObject("permission", permission);
+		}
+		
 		model.addObject("contract", contract);
 		if(StringUtils.isNotBlank(contract.getContactUser().getLastName())) {
 			StringBuilder sb = new StringBuilder();

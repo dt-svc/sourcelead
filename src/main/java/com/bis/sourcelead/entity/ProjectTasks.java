@@ -136,6 +136,10 @@ public class ProjectTasks implements Serializable{
 	@JoinColumn(name = "LEAVE_TYPE_ID")
 	private LeaveType leaveType;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "HOLIDAY_ID")
+	private Holiday holiday;
+	
     @OneToMany(mappedBy="projectTaskId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     @JsonBackReference
@@ -623,5 +627,14 @@ public class ProjectTasks implements Serializable{
 	public void setLeaveType(LeaveType leaveType) {
 		this.leaveType = leaveType;
 	}
+
+	public Holiday getHoliday() {
+		return holiday;
+	}
+
+	public void setHoliday(Holiday holiday) {
+		this.holiday = holiday;
+	}
+	
 	
 }

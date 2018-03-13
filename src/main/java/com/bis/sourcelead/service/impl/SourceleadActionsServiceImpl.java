@@ -70,4 +70,10 @@ public class SourceleadActionsServiceImpl implements SourceleadActionsService {
 		return sourceleadActionsDao.getSourceleadActionsByActionRole(actionRole);
 	}
 
+	@Override
+	public List<SourceleadActions> getAllSourceleadActionsForEnrollByOrgLocationIdAndOrgId(OrgLocations orgLocations,Org org)
+			throws Exception {
+		return sourceleadActionsDao.getAllSourceleadActionsForEnrollByOrgLocationIdAndOrgId(orgLocations,org);
+	}
+
 }
