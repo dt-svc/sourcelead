@@ -228,6 +228,7 @@ public class LoginSessionController {
 		Integer associatesTabsCount = 0; 
 		Integer billingTabsCount = 0;
 		Integer expensesTabCount = 0;
+		Integer resourcesTabCount = 0;
 		
 		UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) request.getSession().getAttribute("userLoginSession");
 		if(userLoginSession != null){
@@ -261,16 +262,16 @@ public class LoginSessionController {
 				tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
 				for(Tabs tabs : tabsList){
 					
-					/*if(tabs.getTabName().equalsIgnoreCase("Associates List") || tabs.getTabName().equalsIgnoreCase("On & Off Boarding")){
-						associatesTabsCount = associatesTabsCount+1;
-					}*/
-					
 					if(tabs.getTabName().equalsIgnoreCase("Receivable") || tabs.getTabName().equalsIgnoreCase("Payables")){
 						billingTabsCount = billingTabsCount+1;
 					}
 					
 					if(tabs.getTabName().equalsIgnoreCase("My Expenses") || tabs.getTabName().equalsIgnoreCase("Expenses Approval")){
 						expensesTabCount = expensesTabCount+1;
+					}
+					
+					if(tabs.getTabName().equalsIgnoreCase("Blog") || tabs.getTabName().equalsIgnoreCase("User Manuals")){
+						resourcesTabCount = resourcesTabCount+1;
 					}
 				}
 				
@@ -296,6 +297,7 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "associatesTabsCount", associatesTabsCount);
 			SourceLeadSessionManager.setSessionAttribute(request, "billingTabsCount", billingTabsCount);
 			SourceLeadSessionManager.setSessionAttribute(request, "expensesTabCount", expensesTabCount);
+			SourceLeadSessionManager.setSessionAttribute(request, "resourcesTabCount", resourcesTabCount);
 			
 			Candidate candidate = candidateService.getCandidateByConsultantUserId(userRole.getUser().getId(), orgLocations.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
@@ -400,7 +402,7 @@ public class LoginSessionController {
 				}else{
 					
 					CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(userRole.getUser().getId(), orgLocations.getId());
-					if(null != candidateOnBoarding){
+					if(null != candidateOnBoarding && requirementUUID == null){
 						SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding", candidateOnBoarding);
 						if(candidateOnBoarding.getManagerUserId()!=null){
 							SourceLeadSessionManager.setSessionAttribute(request, "OnboardingManagerUserId", candidateOnBoarding.getManagerUserId().getId());
@@ -414,9 +416,16 @@ public class LoginSessionController {
 						}else{
 							model.setViewName("dashboard");
 						}
-					}else{
+					}
+					else if(requirementUUID !=null && requirementUUID != ""){
+						StringBuilder redirectUrl = new StringBuilder();
+						response.sendRedirect(redirectUrl.append("requirementProfileDetails?requirementUUID=").append(requirementUUID).toString());
+						model.setViewName("professional/professionalRequirements");
+					}
+					else{
 						model.setViewName("dashboard");
 					}
+					
 				}
 			}
 			
@@ -522,6 +531,7 @@ public class LoginSessionController {
 				if(!isNullOrEmpty(requirementUUID)){
 					StringBuilder redirectUrl = new StringBuilder();
 					response.sendRedirect(redirectUrl.append("/app/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
+					model.setViewName("professional/professionalRequirements");
 				}else{
 					model.setViewName("recruiter/recruiterDashboard");
 				}
@@ -1177,11 +1187,12 @@ public class LoginSessionController {
     }
   
   
-	@RequestMapping(value = "/app/ws/userEnrolledOrgLocations", method = RequestMethod.POST)
-	public ModelAndView userEnrolledOrgLocations(@RequestParam(value = "userName", required = false) String userName, @RequestParam(value = "password", required = false) String password,HttpServletRequest request) throws Exception
-	{
-		ModelAndView model = new ModelAndView();
-		User user = userService.findByUserName(userName);
+
+  @RequestMapping(value = "/app/ws/userEnrolledOrgLocations" , method = RequestMethod.POST)
+  public ModelAndView userEnrolledOrgLocations(@RequestParam(value = "userName", required = false) String userName,@RequestParam(value = "password", required = false) String password ,@RequestParam(value = "requirementUUID", required = false) String requirementUUID,HttpServletRequest request) throws Exception {
+	  ModelAndView model = new ModelAndView();
+	  User user = userService.findByUserName(userName);
+
 		List<UserRole> userSpocRolesList = null;
 		if (user != null)
 			userSpocRolesList = userRoleService.getUserSpocsListByUserId(user.getId());
@@ -1193,10 +1204,12 @@ public class LoginSessionController {
 		model.addObject("username", userName);
 //		model.addObject("password", password);
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("requirementUUID", requirementUUID);
 		model.addObject("roleList", userSpocRolesList);
 		model.setViewName("userEnrolledLocations");
 		return model;
 	}
+
   
   
   

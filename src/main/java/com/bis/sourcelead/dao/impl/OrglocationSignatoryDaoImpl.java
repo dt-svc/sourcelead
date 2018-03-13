@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.OrglocationSignatoryDao;
+import com.bis.sourcelead.dto.OrglocationSignatoryDTO;
 import com.bis.sourcelead.entity.OrglocationSignatory;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -76,12 +77,22 @@ public class OrglocationSignatoryDaoImpl implements OrglocationSignatoryDao{
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from OrglocationSignatory signatory left join fetch signatory.userRoleId userRole left join fetch userRole.user left join fetch userRole.roles "
-				+ " where signatory.uuid = :uuid and signatory.status = '1' ";  
+				+ " where signatory.uuid = :uuid ";  
 		List<OrglocationSignatory> orglocationSignatoryList =  session.createQuery(query).setString("uuid", uuid).list();
 		OrglocationSignatory orglocationSignatory = null;
 		if (orglocationSignatoryList != null && orglocationSignatoryList.size() > 0) {
 			orglocationSignatory = (OrglocationSignatory) orglocationSignatoryList.iterator().next();
 		}
 		return orglocationSignatory;
+	}
+	
+	@Override
+	@Transactional
+	public List<OrglocationSignatory> getAllSignatoriesByLocationId(Long locationId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from OrglocationSignatory signatory where signatory.orgLocationId.id = :locationId";  
+		List<OrglocationSignatory> orglocationSignatoryList =  session.createQuery(query).setLong("locationId", locationId).list();
+		return orglocationSignatoryList;
 	}
 }

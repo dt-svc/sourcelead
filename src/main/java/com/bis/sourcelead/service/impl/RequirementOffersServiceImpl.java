@@ -530,7 +530,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             String url = sourceleadUrl;
             
             String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
-           notificationScenario.setBody(notificationbody);
+            notificationScenario.setBody(notificationbody);
 
 
             // construct HTML template using required data
@@ -674,7 +674,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             String url = sourceleadUrl;
             
             String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getSubject(), globalVarsMap);
-            notificationScenario.setSubject(notificationbody);
+            notificationScenario.setBody(notificationbody);
 
 
             // construct HTML template using required data

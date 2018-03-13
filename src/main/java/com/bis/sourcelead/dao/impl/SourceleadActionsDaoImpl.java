@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.SourceleadActionsDao;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
@@ -204,6 +205,32 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	@Transactional
+	public List<SourceleadActions> getAllSourceleadActionsForEnrollByOrgLocationIdAndOrgId(OrgLocations orgLocations,
+			Org org) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<SourceleadActions> actionsList = null;
+		 List<Long> modulesList = new ArrayList<Long>();
+			for (String s : orgLocations.getModulesId().split(",")){
+				modulesList.add(Long.parseLong(s));
+			 }
+      
+			if(org.getOrgCode().equalsIgnoreCase("slead")) {
+				 String query = "from SourceleadActions sa where sa.actionRole != 'ROLE_ENROLL_ORG' and sa.tabs.id NOT IN (13) "
+				    		+ "and sa.id IN(select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId)) and sa.status = '1' ";
+				    actionsList = session.createQuery(query.toString()).setParameterList("modulesId", modulesList).list();
+			}else {
+				 String query = "from SourceleadActions sa where sa.actionRole != 'ROLE_ENROLL_ORG' and sa.tabs.id NOT IN (13,26,28,29) "
+				    		+ "and sa.id IN(select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId)) and sa.status = '1' ";
+				    actionsList = session.createQuery(query.toString()).setParameterList("modulesId", modulesList).list();
+			}
+	   
+   
+	    return actionsList;
 	}
 
 }
