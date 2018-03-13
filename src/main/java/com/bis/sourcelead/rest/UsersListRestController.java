@@ -307,14 +307,11 @@ public class UsersListRestController {
 					
 					userRoleDTO.setUserRoleName(role.getRoles().getDisplayName());
 					userRoleDTO.setIsMailSent(role.getIsMailSent().toString());
-					if(!isNullOrEmpty(role.getUser().getLastName()) && !isNullOrEmpty(role.getUser().getMiddelName())){
-						userName = userName.append(role.getUser().getFirstName()).append(" ").append(role.getUser().getMiddelName()).append(" ").append(role.getUser().getLastName());
-						userRoleDTO.setUserName(userName.toString());
-						
-					}else if(!isNullOrEmpty(role.getUser().getLastName())){
+					if(!isNullOrEmpty(role.getUser().getLastName())){
 						userName = userName.append(role.getUser().getFirstName()).append(" ").append(role.getUser().getLastName());
 						userRoleDTO.setUserName(userName.toString());
-					}else{
+					}
+					else{
 						userRoleDTO.setUserName(role.getUser().getFirstName());
 					}
 					userRoleDTO.setUserEmail(role.getUser().getEmail());
