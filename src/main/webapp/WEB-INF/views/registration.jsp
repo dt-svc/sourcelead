@@ -119,6 +119,7 @@ window.onload = function () {
     	});
     	return indexed_array;
     }
+    
 </script>
  <div  id="loadTime"></div> 
 <div class="logMask"></div>
@@ -196,23 +197,7 @@ window.onload = function () {
 		                  <b></b>
 		              </span>
 		            </div> 
-<!-- 		            </div>  -->
-		            
-		            <!-- <div id="pwdDiv">
-	                	<div class="col-xs-12 col-md-12 mb10">
-		                    <i class="fa fa-unlock-alt"></i>
-		                    <label>Password <span class="text-danger">*</span></label>
-		                    <input type="password" id="password" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" >
-		                    <b></b>
-		                </div>
-		                <div class="col-xs-12 col-md-12 mb10" id="passwordDiv">
-		                    <i class="fa fa-unlock-alt"></i>
-		                    <label>Confirm Password <span class="text-danger">*</span></label>
-		                    <input type="password" id="confirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).checkPass();" data-validation="required validate_length length6-100" >
-		                    <b></b>
-		                </div>
-		           </div> -->
-		            
+
 		            
 		            </div>
 		            <div class="col-md-12 clearfix">
@@ -399,10 +384,14 @@ window.onload = function () {
                 </div>
                 <div class="clearfix"></div>
                 <div id="pwdDiv">
-
-                <div class="col-xs-12 col-md-6 mb10">
-
-                <div class="col-xs-12 col-md-12 mb10 posiRela">
+                <!-- <div class="col-xs-12 col-md-6 mb10">
+	                    <i class="fa fa-unlock-alt"></i>
+	                    <label>Password <span class="text-danger">*</span></label>
+	                    <input type="password" id="password" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" >
+	                    <b></b>
+	                </div> -->
+	                
+	                   <div class="col-xs-12 col-md-6 mb10 posiRela">
 
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Password <span class="text-danger">*</span></label>
@@ -422,7 +411,7 @@ window.onload = function () {
 	                <div class="col-xs-12 col-md-6 mb10" id="passwordDiv">
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Confirm Password <span class="text-danger">*</span></label>
-	                    <input type="password" id="confirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).checkPass();" data-validation="required validate_length length6-100" >
+	                    <input type="password" id="jsconfirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).checkProfPass();" data-validation="required validate_length length6-100" >
 	                    <b></b>
 	                </div>
 	           </div>
@@ -450,7 +439,6 @@ window.onload = function () {
             </div>
             </form:form>
         </div>
-
         <div id="recruiter" class="tab-pane fade">
         
         <form:form class="login-form clearfix"  id="recruiterRegistration_form"  name="recruiterRegistration_form" method="post" >     
@@ -510,10 +498,7 @@ window.onload = function () {
                 </div>
                 <div class="clearfix"></div>
                 <div id="recpwdDiv">
-
-                <div class="col-xs-12 col-md-6 mb10">
-
-                <div class="col-xs-12 col-md-12 mb10 posiRela" >
+                <div class="col-xs-12 col-md-6 mb10 posiRela" >
 
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Password <span class="text-danger">*</span></label>
@@ -745,23 +730,9 @@ window.onload = function () {
 </body>
 
 <script>
-
 function removeCompanyCountryValidation(){
 	$('#locationCompanyCountryDiv').find('p.jquery_form_error_message').remove();
 }
-
-$(document).ready(function(){
-	$(".posiRela input").focus(function(){
-		$(".passHint").show();
-	});
-	$(".posiRela input").blur(function(){
-		$(".passHint").hide();
-	});	
-});
-</script>
-
-<script>
-
 function removeValidation(){
 	$('#locationCountryDiv').find('p.jquery_form_error_message').remove(); 
 }
@@ -805,19 +776,13 @@ function removeValidationNameRecPop(){
 function resetCredentials(type){
 	//Write by laxman start
 	if(type == "Professional"){
-		$(".actTe").removeClass("actTe");
 		document.getElementById("professionalRegistration_form").reset();
 		$("professionalRegistration_form").validate().resetForm();
 	}else if(type == "Recruiter"){
-		$(".actTe").removeClass("actTe");
 		document.getElementById("recruiterRegistration_form").reset();
 		$("recruiterRegistration_form").validate().resetForm();
 	}else if(type == "Employer"){
-
 		$(".regDemoFields label").removeClass('test');
-
-		$(".actTe").removeClass("actTe");
-
 		googleApiLocation('companyAddress','requestCountry');
 		$("#employerRegister_button").removeAttr("disabled");
 		document.getElementById("employerRegistration_form").reset();
@@ -882,6 +847,7 @@ function resetCredentials(type){
 	$.fn.checkPass = function() {   
 		var pass1 = document.getElementById('password');  
 	    var pass2 = document.getElementById('confirmPassword');
+	    
 	    $("#submit_button").attr("disabled", "disabled");
 	    
 	    if(pass1.value == pass2.value){
@@ -899,6 +865,39 @@ function resetCredentials(type){
     	    $("input#confirmPassword").after("<p class='jquery_form_error_message'> Passwords not matched</span>");
 			$('input#confirmPassword').attr('record-exist','yes');
 			$('input#confirmPassword').attr('record-exist-errorMsg','Passwords Not Matched'); 
+	    }
+   }
+	
+    $.fn.clear = function() {   
+    	 $('#confirmPassword').val('');
+    	
+	 return false;
+    }
+})(jQuery);
+</script>
+
+<script type="text/javascript">
+(function($) {
+	$.fn.checkProfPass = function() {   
+		var pass1 = document.getElementById('jsPassword');  
+	    var pass2 = document.getElementById('jsconfirmPassword');
+	    
+	    $("#submit_button").attr("disabled", "disabled");
+	    if(pass1.value == pass2.value){
+			 $("#submit_button").removeAttr("disabled");
+			 $('input#jsconfirmPassword').removeAttr( "record-exist record-exist-errormsg");
+    		 $('#passwordDiv').find('p.jquery_form_error_message').remove(); 
+			 $( "#submit_button" ).removeAttr("style");
+			 $( "#submit_button" ).click(function() {
+			 if ($(this).validate(false, validationSettings)){
+			 }
+			});
+	    }
+	    else{ 
+		    $('#passwordDiv').find('p.jquery_form_error_message').remove(); 
+    	    $("input#jsconfirmPassword").after("<p class='jquery_form_error_message'> Passwords not matched</span>");
+			$('input#jsconfirmPassword').attr('record-exist','yes');
+			$('input#jsconfirmPassword').attr('record-exist-errorMsg','Passwords Not Matched'); 
 	    }
    }
 	
@@ -1663,6 +1662,7 @@ function validateOrgRequestCompanyName(){
 
 </script>
 
+
 <script>
 function passwordValidation(idValue,letter,capital,number,special,length){
 	var myInput = $("#"+idValue).val();
@@ -1709,6 +1709,18 @@ function passwordValidation(idValue,letter,capital,number,special,length){
 // When the user starts to type something inside the password field
 
 </script>
+
+<script>
+$(document).ready(function(){
+	$(".posiRela input").focus(function(){
+		$(".passHint").show();
+	});
+	$(".posiRela input").blur(function(){
+		$(".passHint").hide();
+	});	
+});
+</script>
+
 <jsp:include page="socialinviterscripts.jsp" />
 <!--    Ends of validating the Company Email i,e removing duplicate values-->
 </html>
