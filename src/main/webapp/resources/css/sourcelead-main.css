@@ -8298,6 +8298,9 @@ max-height: 100%;
 .dynamic_search.dynamic_search-new {
 position: absolute; top:12px; right: 15px;
 }
+.clearUpload.clearUpload-timesheet:after {
+top: 16px; left: 54%; right:inherit; bottom:inherit; color: #fff; background-color: transparent;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
