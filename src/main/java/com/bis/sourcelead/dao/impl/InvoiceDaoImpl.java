@@ -25,6 +25,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoicePayment;
@@ -51,6 +52,26 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}
 		return invoice;
 	}
+	
+	
+	@Override
+	@Transactional
+	public Boolean getInvoiceByInvoiceId(String invoiceId, Long orgLocationsId) throws Exception {
+		
+			Session session = this.sessionFactory.getCurrentSession();
+			
+			String query = "from Invoice invoice where invoice.orgLocation.id = :orgLocationsId and invoice.invoiceId = :invoiceId and invoice.status='1'";
+			List<Invoice> invoiceList = session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setString("invoiceId", invoiceId).list();
+
+					if (invoiceList.size() > 0) {
+						return true;
+					} else {
+						return false;
+					}
+			 
+		}
+		
+		
 
 
 	@Override

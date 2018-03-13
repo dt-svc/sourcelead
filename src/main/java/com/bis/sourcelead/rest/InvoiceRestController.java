@@ -59,7 +59,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoicePaymentDTO;
-
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -276,6 +276,19 @@ public class InvoiceRestController {
 		}
 		return invoiceSaved;	
 	} 
+	
+	
+	@RequestMapping(value = "/validateInvoiceId",  method = RequestMethod.POST)
+    public @ResponseBody Boolean validateInvoiceId(@RequestParam(value="invoiceId", required=false) String invoiceId,
+    		HttpServletRequest request) throws Exception {
+	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	       Boolean flag = false;
+	       if(null != invoiceId){
+	        flag = invoiceService.getInvoiceByInvoiceId(invoiceId, orgLocation.getId());
+	       }
+	      return flag;
+		 
+	    }
 	
 	@RequestMapping(value = "/getInvoiceAssociatesList", method = RequestMethod.GET)
 	public @ResponseBody String getInvoiceAssociatesList(@RequestParam(value = "selectedAssociates", required = false) String selectedAssociates, @RequestParam(value = "orgRelationId", required = false) Long orgRelationId, @RequestParam(value = "contractType", required = false) String contractType, HttpServletRequest request, HttpServletResponse response) throws Exception
