@@ -30,7 +30,7 @@
 <script>
 window.onload = function() {
 	var userName = '${username}';
-	var password = '${password}';
+	var password = '';
 	var sourceleadUrl ='${sourceleadUrl}';
 	var userRoleId = "";
 	if("${redirect_to_login_2_Step_Process}" != ''){
@@ -73,8 +73,9 @@ $(document).ready(function(){
 
 
 <div id="forgotPasswordDiv" style="display:none">
+<jsp:include page="forgotPasswords.jsp"></jsp:include>
 <!--  Forgot Pass  -->		
-<div class="signin_wrap ForPasSlide">
+<%-- <div class="signin_wrap ForPasSlide">
 	<div class="backBtn">
 		<a onclick="backToLogin();"><u class="fa fa-arrow-left OrBak"></u></a>
 	</div>
@@ -87,9 +88,9 @@ $(document).ready(function(){
 	            </span>
 	            </div>
 	            <input type="submit" value="Submit" id="submit_button" class="sign_btn sign_btn_for" />
-<%-- 	            <div class="cancel_for"><a href="<c:url value='/login'/>">Cancel</a></div>   --%>
+	            <div class="cancel_for"><a href="<c:url value='/login'/>">Cancel</a></div>  
             </form:form>     
-  </div> 
+  </div>  --%>
 <!--  Forgot Pass  -->	
 </div>
 
@@ -102,7 +103,7 @@ $(document).ready(function(){
  <script>
 function directLoginValidateWhiteListIp(userRoleId,userName,password){
 	var userName = '${username}';
-	var password = '${password}';
+	var password = '';
 	var sourceleadUrl ='${sourceleadUrl}';
 	var userRoleId = 0;
 // 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -150,19 +151,19 @@ function getUserDetailsByUserRoleIdfromLogin(id,userName,password){
 </script>
 
 <script>
-function backToLogin(){
+/* function backToLogin(){
 	$(".signWrap").removeClass("forPassOut");
 	$("#signinDiv").removeAttr("style");
 	$("#signinDiv").attr("style","display:block");
 	$("#forgotPasswordDiv").attr("style","display:none");
 	$(".ForPasSlide").attr("style","display:none");
-}
+} */
 function logout(url){
 	location.href = "/logout";
 }
 </script>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
         $('#forgetPassword_form')
            .submit(function(e) {
         	    e.preventDefault(); 
@@ -217,6 +218,6 @@ function logout(url){
        return o;
    };
 })(jQuery);
-</script>
+</script> -->
 
 <script type="text/javascript" src="https://cdn.ywxi.net/js/1.js" async></script>

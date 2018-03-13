@@ -253,7 +253,7 @@ function getNotificationsByuserId(){
 				result = result + ' <li>';
 				result = result + '<div class="clearfix msg">';
 				result = result + '<div class="msg-img"> <span>';
-				if(opt.userType !=null && opt.userType !='' && opt.userType !='undefined'){
+				if(opt.userType !=null && opt.userType !='' && opt.userType !='undefined' && opt.fileUrl !=null && opt.fileUrl !='' && opt.fileUrl !='undefined'){
 				result = result + ' <img class="img-circle" title='+opt.firstName+' alt='+opt.userType+' onerror="predefineProfileImage(this);" src='+opt.fileUrl+'>';
 				}
 				result = result + ' </span> </div>';
@@ -693,20 +693,25 @@ function preventTabkey(e){
 	              <ul class="list-unstyled">
 	                     
 	                     
-	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG')"> 
-	                     <li><a href="<c:url value="/app/enrolledOrgsList" />"><i class="fa fa-cubes" aria-hidden="true"></i>View Orgs</a></li>
-	                     </sec:authorize>
+	                     
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG')"> 
 	                     <li><a href="<c:url value='${sourceleadUrl}/loadScheduleMaintenance'/>" id="scheduleMPopup"><i class="fa fa-cubes" aria-hidden="true"></i>Schedule Maintenance</a></li>
 	                     </sec:authorize>
+	                     
+	                     <sec:authorize access="!hasRole('ROLE_ENROLL_ORG')"> 
 	                      <li><a id="subMenu" href="javascript:void(0)"><i class="fa fa-upload"></i>Bulk Import<i class="fa fa-caret-down arrRight"></i></a>
 						 	<div class="subMenuView">
 		                     <a href="<c:url value="/app/bulk-resume-import.html" />" target="_blank">Bulk Import</a>
 		                     <a data-toggle="modal" href="javascript:void(0)" id='bulkImport'>Process File(s)</a>
 	                     	</div>
 	                     </li>
+
+                       </sec:authorize>
+	                     
+
 <%-- 	                     <li><a href="<c:url value="/app/license" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>License</a></li> --%>
 						 
+
 	                     <li><a href="<c:url value="/app/orgChart" />"><i class="fa fa-sitemap" aria-hidden="true"></i>Org Chart</a></li>
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
 	                        <li><a href="<c:url value="/app/orgRolesList" />"><i class="fa fa-key" aria-hidden="true"></i>Role Configuration</a></li>
@@ -728,22 +733,20 @@ function preventTabkey(e){
 						  	<li><a href="<c:url value="/app/leaveConfiguration" />"><i class="fa fa-key" aria-hidden="true"></i>Leave Configure</a></li>
 						  </sec:authorize>
 						  
-						  	<li><a href="<c:url value="/app/customFields" />"><i class="fa fa-align-justify" aria-hidden="true"></i>Custom Fields</a></li>
-						  	
-						 <li><a id="campSubMenu" href="javascript:void(0)"><i class="fa fa-bullhorn"></i>Campaigns <i class="fa fa-caret-down arrRight"></i></a>
-						 	<div class="campsubMenuView">
+					  	<sec:authorize access="!hasRole('ROLE_ENROLL_ORG')"> 
+					  	<li><a href="<c:url value="/app/customFields" />"><i class="fa fa-align-justify" aria-hidden="true"></i>Custom Fields</a></li>
+					  	</sec:authorize>
 						 
-						 	<sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN')">
-			
-			                    <a href="<c:url value='${appPath}/campaignSendersList'/>"><i class="fa fa-circle-o" title="Senders"></i>Senders</a>
-								<a href="<c:url value='${appPath}/recipientsList'/>"><i class="fa fa-circle-o" title="Recipients"></i>Recipients</a>
-		 
-			         </sec:authorize>
-						 	
-								
-							</div>
-						 </li> 	
-						  
+						 <sec:authorize access="hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_JOB_CAMPAIGN')">
+							 <li><a id="campSubMenu" href="javascript:void(0)"><i class="fa fa-bullhorn"></i>Campaigns <i class="fa fa-caret-down arrRight"></i></a>
+							 	<div class="campsubMenuView">
+				
+				                    <a href="<c:url value='${appPath}/campaignSendersList'/>"><i class="fa fa-circle-o" title="Senders"></i>Senders</a>
+									<a href="<c:url value='${appPath}/recipientsList'/>"><i class="fa fa-circle-o" title="Recipients"></i>Recipients</a>
+									
+								</div>
+							 </li> 	
+						   </sec:authorize>
 	              </ul>
 	            </div>
 	          </li>
@@ -1079,6 +1082,13 @@ function notificationStatusAsRead(){
     </ul>
   </div>
 <!--  Theme Swithcer div ends  -->
+
+<!--  Support div -->
+  <div id="mySidenav" class="sidenav">
+	<a href="/app/sourceleadTicketList" title="Report Issue"><span class="fa fa-ticket"></span></a>
+<!--   <a href="add-ticket.html">Support</a> -->
+</div>
+<!--  Support div ends  -->
 
 
 <script type="text/javascript">

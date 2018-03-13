@@ -1,10 +1,12 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,16 +16,21 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgRequestDao;
+import com.bis.sourcelead.dto.EmployerRegistrationDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRequest;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgRequestService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 
@@ -48,6 +55,8 @@ public class OrgRequestServiceImpl implements OrgRequestService{
 	@Autowired
 	UserService userService;
 	
+	@Autowired
+	TimeZoneService timeZoneService;
 	
 	@Override
 	public OrgRequest saveOrgRequest(OrgRequest orgRequest) throws Exception {
@@ -73,15 +82,33 @@ public class OrgRequestServiceImpl implements OrgRequestService{
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("companyName",orgRequest.getCompanyName());
 		 globalVarsMap.put("companyWebsite", orgRequest.getCompanywebsite());
-		 globalVarsMap.put("companyLocation",orgRequest.getCountry());
+		 globalVarsMap.put("companyLocation",orgRequest.getCompanyAddress());
 		 globalVarsMap.put("companyEmail",orgRequest.getEmail());
 		  
-
+		 
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		 
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ORGREQUEST_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+		 EmailScenario  emailScenario = null;
+		 if(orgRequest.getOrgType().equalsIgnoreCase("Demo")) {
+			 if(orgRequest.getDemoDate() != null) {
+		         Date date = orgRequest.getDemoDate();  
+	             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");  
+	             String strDate = dateFormat.format(date);  
+				 globalVarsMap.put("demoDate",strDate);
+			 }
+			 if(orgRequest.getDemoTime() != null) {
+				 globalVarsMap.put("demoTime",orgRequest.getDemoTime());
+			 }
+			 if(orgRequest.getTimezone() != null) {
+				 Timezone timeZone = timeZoneService.getTimezone(orgRequest.getTimezone().getId());
+				 globalVarsMap.put("demoTimeZone",timeZone.getTimeZoneId());
+			 }
+			   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ORGDEMO_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+		 }else {
+			   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ORGREQUEST_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+		 }
 		
 		 //covert subject,body and signature
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
@@ -107,6 +134,17 @@ public class OrgRequestServiceImpl implements OrgRequestService{
 		 
 		 emailScenerioUtil.sendNotification(actionLink, sourceLeadAdmin, null, new OrgLocations(), noificationEmailScenario);*/
 		
+	}
+
+	@Override
+	public ResponseList<EmployerRegistrationDTO> getDemoRequestsList(EmployerRegistrationDTO employerRegistrationDTO, OrgLocations orgLocations, String orgType)
+			throws Exception {
+		return orgRequestDao.getDemoRequestsList(employerRegistrationDTO, orgLocations, orgType);
+	}
+
+	@Override
+	public OrgRequest getOrgRequestById(Long id) throws Exception {
+		return orgRequestDao.getOrgRequestById(id);
 	}
 
 	

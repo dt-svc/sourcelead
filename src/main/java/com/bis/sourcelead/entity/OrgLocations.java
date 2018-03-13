@@ -200,6 +200,30 @@ public class OrgLocations implements Serializable{
 	
 	@Column(name="FINANCIAL_YEAR_END_MONTH")
 	private String endMonth;
+	
+	@Column(name = "RECOMMENDED_SKILL_PERCENT")
+	private Integer recommendedSkillPercent;
+	
+	@Column(name = "RECOMMENDED_LOCATION_PERCENT")
+	private Integer recommendedLocationPercent;
+	
+	@Column(name = "RECOMMENDED_NOTICE_PERCENT")
+	private Integer recommendedNoticePercent;
+	
+	@Column(name = "RECOMMENDED_EXP_PERCENT")
+	private Integer recommendedExpPercent;
+	
+	@Column(name = "RECOMMENDED_VISATYPE_PERCENT")
+	private Integer recommendedVisatypePercent;
+	
+	@Column(name = "RECOMMENDED_EDUCATION_PERCENT")
+	private Integer recommendedEducationPercent;
+	
+	@Column(name = "RECOMMENDED_RATE_PERCENT")
+	private Integer recommendedRatePercent;
+	
+	@Column(name = "RECOMMENDED_KEYWORDS_PERCENT")
+	private Integer recommendedKeywordsPercent;
     
     @Transient
     private String orgName;
@@ -847,6 +871,83 @@ public class OrgLocations implements Serializable{
 		this.endMonth = endMonth;
 	}
 
-	
-	
+	public Integer getRecommendedSkillPercent()
+	{
+		return recommendedSkillPercent;
+	}
+
+	public void setRecommendedSkillPercent(Integer recommendedSkillPercent)
+	{
+		this.recommendedSkillPercent = recommendedSkillPercent;
+	}
+
+	public Integer getRecommendedLocationPercent()
+	{
+		return recommendedLocationPercent;
+	}
+
+	public void setRecommendedLocationPercent(Integer recommendedLocationPercent)
+	{
+		this.recommendedLocationPercent = recommendedLocationPercent;
+	}
+
+	public Integer getRecommendedNoticePercent()
+	{
+		return recommendedNoticePercent;
+	}
+
+	public void setRecommendedNoticePercent(Integer recommendedNoticePercent)
+	{
+		this.recommendedNoticePercent = recommendedNoticePercent;
+	}
+
+	public Integer getRecommendedExpPercent()
+	{
+		return recommendedExpPercent;
+	}
+
+	public void setRecommendedExpPercent(Integer recommendedExpPercent)
+	{
+		this.recommendedExpPercent = recommendedExpPercent;
+	}
+
+	public Integer getRecommendedVisatypePercent()
+	{
+		return recommendedVisatypePercent;
+	}
+
+	public void setRecommendedVisatypePercent(Integer recommendedVisatypePercent)
+	{
+		this.recommendedVisatypePercent = recommendedVisatypePercent;
+	}
+
+	public Integer getRecommendedEducationPercent()
+	{
+		return recommendedEducationPercent;
+	}
+
+	public void setRecommendedEducationPercent(Integer recommendedEducationPercent)
+	{
+		this.recommendedEducationPercent = recommendedEducationPercent;
+	}
+
+	public Integer getRecommendedRatePercent()
+	{
+		return recommendedRatePercent;
+	}
+
+	public void setRecommendedRatePercent(Integer recommendedRatePercent)
+	{
+		this.recommendedRatePercent = recommendedRatePercent;
+	}
+
+	public Integer getRecommendedKeywordsPercent()
+	{
+		return recommendedKeywordsPercent;
+	}
+
+	public void setRecommendedKeywordsPercent(Integer recommendedKeywordsPercent)
+	{
+		this.recommendedKeywordsPercent = recommendedKeywordsPercent;
+	}
 }
