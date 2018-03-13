@@ -32,9 +32,11 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 
@@ -74,6 +76,8 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	@Autowired
 	ProjectMembersDao projectMembersDao;
 	
+	@Autowired
+	private UserRoleService userRoleService;
 	
 	@Override
 	public SubmissionApproverHierarchy addSubmissionApproverHierarchy(
@@ -224,10 +228,14 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 				notificationScenario.setBody(notificationBody);
 				StringBuilder actionLinkBuilder = new StringBuilder();
-				//timesheetApprovalPopUpByProjectMemberId('19-02-2018To25-02-2018','20','8','64','16.0','approver');
-				//timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,projectMemberId,masterCandidateId,totalHours,from)  
-				String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("timesheetApproval?notifyLink=notifyLink&currentTimeFrequency="+timesheetFrequency+"&projectId="+clientProjectMember.getProjects().getId()+"&projectMemberId="+clientProjectMember.getId()+"&masterCandidateId="+clientProjectMember.getMasterCandidateId().getId()+"&totalHours="+totalHours+"&from=approver").toString();
-				emailScenerioUtil.sendNotification(actionLink, loginUser, pah.getApproverUserId(), orgLocations, notificationScenario);
+				//TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getSubmissionDetailsByProjectIdMasterCandiDateIdStartDateandEndDate(projectId,masterCanidateId,frequencyStartDate,frequencyEndDate);
+				 StringBuilder  currentTimeFrequency = new StringBuilder();
+				 currentTimeFrequency.append(weekStartDate).append("To").append(weekEndDate);
+				 String actionLink = "";
+				 if(clientProjectMember!= null &&  clientProjectMember.getProjects() != null && clientProjectMember.getMasterCandidateId() != null){
+					 actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("timesheetApproval?&currentTimeFrequency="+currentTimeFrequency.toString()+"&projectId="+clientProjectMember.getProjects().getId()+"&masterCandidateId="+clientProjectMember.getMasterCandidateId().getId()+"&projectMemberId="+clientProjectMember.getId()+"&totalHours="+totalHours+"&from=approver&notifyLink=notifyLink").toString();
+				 }
+				emailScenerioUtil.sendNotification(actionLink , loginUser, pah.getApproverUserId(), pah.getProjectClientsId().getOrgLocationsId(), notificationScenario);
 			 }
 	}
 	
@@ -319,7 +327,8 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				//calling the sendNotification method of emailScenerioUtil
 				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 				notificationScenario.setBody(notificationBody);
-				emailScenerioUtil.sendNotification(actionLink, loginUser, reopenedUser, orgLocations, notificationScenario);
+				UserRole userRole = userRoleService.getUserByUserId(reopenedUser.getId());
+				emailScenerioUtil.sendNotification(actionLink, loginUser, reopenedUser, userRole.getOrgLocations(), notificationScenario);
 	}
 
 	@Override

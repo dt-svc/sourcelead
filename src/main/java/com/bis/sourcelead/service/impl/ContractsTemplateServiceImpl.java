@@ -50,6 +50,7 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractRequestDocumentsService;
 import com.bis.sourcelead.service.ContractsTemplateService;
@@ -61,6 +62,7 @@ import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -132,7 +134,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	@Autowired
 	private OrglocationFormFieldsService orglocationFormFieldsService;
 	
-	
+	@Autowired
+	UserRoleService userRoleService;
 	
 	@Override
 	public ContractsTemplate saveContractTemplate(ContractTemplateDTO contractTemplateDTO, JSONObject jsonObj, User user, OrgLocations orgLocation) throws Exception {
@@ -3133,6 +3136,22 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 
 	 emailScenerioUtil.sendNotification(actionLink,owner,receiver, contracts.getContractOrgLocationId(), notificationScenario);
 		
+	}
+
+	@Override
+	public List<User> getSigningAuthoritiesForContract(Long orgLocationsId, Long tabId) throws Exception
+	{
+		List<User> userList = null;
+		userList = contractsTemplateDao.getSigningAuthoritiesForContract(orgLocationsId, tabId);
+		if(null != userList && !userList.isEmpty()){
+			for (User user : userList) {
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),orgLocationsId);
+				if(null != userRole){
+					user.setUserType(userRole.getUserType());
+				}
+			}
+		}
+		return userList;
 	}
 	
 }

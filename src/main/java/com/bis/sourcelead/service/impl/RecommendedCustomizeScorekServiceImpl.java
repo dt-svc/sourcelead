@@ -110,16 +110,16 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 		if(null != requirement.getSkills()){
 			res.setCustomizeSkills(requirement.getSkills());	
 		}
-		if("" != requirement.getRate() && null != requirement.getRate()){
+		if("".equalsIgnoreCase(requirement.getRate()) && null != requirement.getRate()){
 			res.setCustomizeRate(requirement.getRate());
 		}
-		if("" != requirement.getMinExp() && null != requirement.getMinExp()){
+		if("".equalsIgnoreCase(requirement.getMinExp()) && null != requirement.getMinExp()){
 			res.setCustomizeMinExperience(requirement.getMinExp());	
 		}
-		if("" != null && null != requirement.getRateType()){
+		if("".equalsIgnoreCase(requirement.getRateType()) && null != requirement.getRateType()){
 			res.setCustomizeRatetype(requirement.getRateType());	
 		}
-		if("" != null && null != requirement.getNoticePeriod()){
+		if("".equalsIgnoreCase(requirement.getNoticePeriod()) && null != requirement.getNoticePeriod()){
 			res.setCustomizeNoticeperiod(requirement.getNoticePeriod());	
 		}
 		
@@ -130,14 +130,14 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 			res.setCustomizeEducation(requirement.getEducation());
 		}
 		
-		res.setCustomizeSkillScore(Constants.SCORE_20);
-		res.setCustomizeRateScore(Constants.SCORE_10);
-		res.setCustomizeExperienceScore(Constants.SCORE_10);
-		res.setCustomizeLocationScore(Constants.SCORE_10);
-		res.setCustomizeNoticeperiodScore(Constants.SCORE_10);
-		res.setCustomizeKeywordsScore(Constants.SCORE_20);
-		res.setCustomizeVisatypecore(Constants.SCORE_10);
-		res.setCustomizeEducationScore(Constants.SCORE_10);
+		res.setCustomizeSkillScore(String.valueOf(orgLocations.getRecommendedSkillPercent()));
+		res.setCustomizeRateScore(String.valueOf(orgLocations.getRecommendedRatePercent()));
+		res.setCustomizeExperienceScore(String.valueOf(orgLocations.getRecommendedExpPercent()));
+		res.setCustomizeLocationScore(String.valueOf(orgLocations.getRecommendedLocationPercent()));
+		res.setCustomizeNoticeperiodScore(String.valueOf(orgLocations.getRecommendedNoticePercent()));
+		res.setCustomizeKeywordsScore(String.valueOf(orgLocations.getRecommendedKeywordsPercent()));
+		res.setCustomizeVisatypecore(String.valueOf(orgLocations.getRecommendedVisatypePercent()));
+		res.setCustomizeEducationScore(String.valueOf(orgLocations.getRecommendedEducationPercent()));
 		
 		if("" != requirement.getMaxExp() && null != requirement.getMaxExp()){
 			res.setCustomizeMaxExperience(requirement.getMaxExp());	
