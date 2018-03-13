@@ -1,3 +1,4 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <section class="addImmiWrap">
 	<div class="addImmiInnWrap">
 		<div class="immiStepsHead clearfix">
@@ -249,17 +250,24 @@
 		var taxId = (dataValues.taxId == null) ? "" : dataValues.taxId;
 		var jobTitle = (dataValues.jobTitle == null) ? "" : dataValues.jobTitle;
 		var employmentType = (dataValues.employmentType == null) ? "" : dataValues.employmentType;
-		var isCurrentPosition = (dataValues.isCurrentPosition == null) ? "" : dataValues.isCurrentPosition;
+		if(dataValues.isCurrentPosition == 'Y'){
+			$("#isCurrentPosition"+empCount).prop('checked', true);
+		}else if(dataValues.isCurrentPosition == 'N'){
+			$("#isCurrentPosition"+empCount).prop('checked', false);
+		}
+		//var isCurrentPosition = (dataValues.isCurrentPosition == null) ? "" : dataValues.isCurrentPosition;
 		var startDate = (dataValues.startDate == null) ? "" : dataValues.startDate;
 		var endDate = (dataValues.endDate == null) ? "" : dataValues.endDate;
 		divValue = "";
 		divValue = divValue + '<div id="employeeChildDiv'+empCount+'" class="EmplWrapCta"><div class="immigration-head clearfix"><h4 class="pull-left">Employer '+empCount+'</h4>'+dynamicStatusValue+'</div>';
 		divValue = divValue + '<div class="clearfix"><div class="mt clearfix"></div><div class="col-md-4 minHeight80"><label>Employer Full Name</label><input type="text" class="form-control" value="'+name+'" placeholder="Employer Full Name"></div>';
-		divValue = divValue + '<div class="col-md-4 minHeight80"><label>Address</label><input type="text" class="form-control" value="'+address+'" id="address'+empCount+'" onClick="refreshGoogleApiLocation(\'address'+empCount+'\'); callGoogleApiMethod2(\'address'+empCount+'\');" placeholder="Address"></div>';
+		divValue = divValue + '<div class="col-md-4 minHeight80"><label>Address</label><input type="text" class="form-control" value="'+address+'" id="address'+empCount+'" placeholder="Address"></div>';
 		divValue = divValue + '<div class="col-md-4 minHeight80"><label>Tax Id</label><input type="text" class="form-control" value="'+taxId+'" placeholder="Tax Id"></div>';
 		divValue = divValue + '<div class="col-md-4 minHeight80"><label>Job Title</label><input type="text" class="form-control" value="'+jobTitle+'" placeholder="Job Title"></div>';
-		divValue = divValue + '<div class="col-md-4 minHeight80"><label>Employment Type</label><div class="dropdown-select"><select class="form-control" value="'+employmentType+'"></select></div></div>';
-		divValue = divValue + '<div class="col-md-4 minHeight80"><label>&nbsp;</label><div class="checkBox"><input type="checkbox" value="'+isCurrentPosition+'">Is Current Job ?</div></div>';
+		divValue = divValue + '<div class="col-md-4 minHeight80"><label>Employment Type</label><div class="dropdown-select"><select id="employmentTypeId'+empCount+'" class="form-control" value="'+employmentType+'">';
+		getEmploymentTypeList(empCount);
+		divValue = divValue + ' </select></div></div>';
+		divValue = divValue + '<div class="col-md-4 minHeight80"><label>&nbsp;</label><div class="checkBox"><input type="checkbox" id="isCurrentPosition'+empCount+'" value="">Is Current Job ?</div></div>';
 		divValue = divValue + '<div class="col-md-4 minHeight80"><div class="row"><div class="col-md-6 padding_right"><label>From</label><input type="text" id="startDate'+empCount+'" class="form-control calendar" onclick="showStartDatePicker('+empCount+');" value="'+startDate+'" placeholder="From"></div>';
 		divValue = divValue + '<div class="col-md-6 paddingLeft"><label>To</label><input type="text" id="endDate'+empCount+'" class="form-control calendar" value="'+endDate+'" onclick="showEndDatePicker('+empCount+');" placeholder="To"></div></div></div></div></div>';
 		return divValue;
@@ -282,6 +290,29 @@
 	window.onload = function () {
 		initLocationAuto('idValue');
 	 };
+	 
+	 function getEmploymentTypeList(id){
+			$.ajax({
+			   	type: "GET",
+			    url: sourceleadUrl+immiModulePath+"/getEmploymentTypeList?${_csrf.parameterName}=${_csrf.token}",	    	   
+			    success: function(json) {
+			    	 var result = "";
+			    	 $('#employmentTypeId'+id)
+	                 .append($("<option></option>")
+	                            .attr("value","")
+	                            .attr("selected","selected")
+	                            .text("--Select Option--"));
+		        	 for (var i=0; i<json.length; i++){
+		        		 var report = json[i];
+		        		 $('#employmentTypeId'+id)
+		                 .append($("<option></option>")
+		                            .attr("value",report.id)
+		                            .text(report.name));
+		        		 $('#employmentTypeId'+id).trigger("chosen:updated");
+		        	 }
+			    }
+			});
+	 }
 	/* $( function() {
 		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		// written common method in slead-common.js for date formats start

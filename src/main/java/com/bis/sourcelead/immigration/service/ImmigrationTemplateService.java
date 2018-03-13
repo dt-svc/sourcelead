@@ -11,6 +11,7 @@ import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -46,5 +47,7 @@ public interface ImmigrationTemplateService {
 	int savePetitionTemplateDetailsValues(String templateId);
 
 	List<CandidateEmployerDTO> getPetitionTemplateEmployers(Long id);
-	
+
+	List<LookUpData> getLookupDataByType(String type);
+
 }

@@ -1060,5 +1060,10 @@ public class Constants {
 
 	public static final String[] UNSUBSCRIPTION_TABID_LISTED = {"3","4","8","16","20","23" };
 
+	
+	public static final String EMPLOYMENT_TYPE_PETITION = "EmploymentType";
+	public static final String PETITION_TYPE = "PetitionType";
+	public static final String USCIS_STATUS = "USCISStatus";
+	public static final String EMPLOYMENT_LEVEL = "EmploymentLevel";
 
 }

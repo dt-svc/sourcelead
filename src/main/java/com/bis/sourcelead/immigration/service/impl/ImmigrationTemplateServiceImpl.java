@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
 import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
@@ -311,4 +312,11 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 		}
 		return employerDTOs;
 	}
+
+	@Override
+	public List<LookUpData> getLookupDataByType(String type) {
+		List<LookUpData> lookUpDatas = immigrationTemplateDao.getLookupDataByType(type);
+		return lookUpDatas;
+	}
+
 }

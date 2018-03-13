@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.io.Writer;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,11 +33,17 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.google.gson.Gson;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
 @RequestMapping("/app/immigration")
@@ -69,6 +76,9 @@ public class ImmigrationRestController {
 	
 	@Autowired
 	private ImmigrationCommonService immigrationCommonService;
+	
+	@Autowired
+	private CandidateService candidateService;
 
 	// ====================immigration view startviewImmigration if you don't
 	// required comment below code start here==============================
@@ -100,7 +110,16 @@ public class ImmigrationRestController {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
 			List<ImmigrationTemplate> templateList = immigrationCommonService.getImmigrationTemplateList(orgLocations);
+			try {
+				List<Candidate> candidateList = candidateService.getAllActiveCandidatesByLocation(orgLocations.getId());
+				System.out.println("candidateList size in controller is-->"+candidateList.size());
+				model.addObject("candidateList",candidateList);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			System.out.println("templateList size in controller is-->"+templateList.size());
+			
 			model.addObject("templateList",templateList);
 		} else if (status.equalsIgnoreCase("two")) {
 			model.setViewName("/immigration/newPetitionPage2");
@@ -118,10 +137,45 @@ public class ImmigrationRestController {
 		return model;
 	}
 	
+	
+
+	@RequestMapping(value = { "getAllActiveCandidatesByLocation" }, method = RequestMethod.GET)
+	public String getAllActiveCandidatesByLocation(HttpServletRequest request) {
+		List<Candidate> candidateList = null;
+		String resultJson = null;
+		System.out.println("inside getAllActiveCandidatesByLocation");
+		try {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			 candidateList = candidateService.getAllActiveCandidatesByLocation(orgLocations.getId());
+			System.out.println("candidateList size in getAllActiveCandidatesByLocation controller is-->"+candidateList.size());
+			 } catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		resultJson = toJSON(candidateList);
+	//	System.out.println(candidateList);
+		return resultJson;
+	}
+	public String toJSON(Object obj){
+        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
+            public HierarchicalStreamWriter createWriter(Writer writer) {
+                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+            }
+        });
+        return xstream.toXML(obj);
+    }
+	
 	@RequestMapping(value = { "/getPetitionTemplateEmployers" })
 	public List<CandidateEmployerDTO> getPetitionTemplateEmployers(HttpServletRequest request) {
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		List<CandidateEmployerDTO> caEmployerDTOs = immigrationTemplateService.getPetitionTemplateEmployers(candidate.getId());
+		return caEmployerDTOs;
+	}
+	
+	@RequestMapping(value = { "/getEmploymentTypeList" })
+	public List<LookUpData> getEmploymentTypeList(HttpServletRequest request) {
+		List<LookUpData> caEmployerDTOs = immigrationTemplateService.getLookupDataByType(Constants.EMPLOYMENT_TYPE_PETITION);
 		return caEmployerDTOs;
 	}
 	
@@ -413,6 +467,24 @@ public @ResponseBody ResponseList<ImmigrationTemplateListDTO> getAlltemplateList
 			request.getSession().setAttribute("success", message);
 		}
 		return message;
+	}
+	
+	@RequestMapping(value = { "/getPetitionTypeDropDown" })
+	public List<LookUpData> getPetitionTypeDropDown(HttpServletRequest request) {
+		List<LookUpData> caEmployerDTOs = immigrationTemplateService.getLookupDataByType(Constants.PETITION_TYPE);
+		return caEmployerDTOs;
+	}
+	
+	@RequestMapping(value = { "/getUscisTypeDropDown" })
+	public List<LookUpData> getUscisTypeDropDown(HttpServletRequest request) {
+		List<LookUpData> caEmployerDTOs = immigrationTemplateService.getLookupDataByType(Constants.USCIS_STATUS);
+		return caEmployerDTOs;
+	}
+	
+	@RequestMapping(value = { "/getEmploymentLevelDropDown" })
+	public List<LookUpData> getEmploymentLevelDropDown(HttpServletRequest request) {
+		List<LookUpData> caEmployerDTOs = immigrationTemplateService.getLookupDataByType(Constants.EMPLOYMENT_LEVEL);
+		return caEmployerDTOs;
 	}
 
 }
