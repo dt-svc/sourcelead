@@ -122,6 +122,7 @@ function candidateSideBar(candidateId){
 			            var city = '';
 			            var currencyCodes = '';
 			            var generatedId = '';
+			            var middleName = '';
          			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
          			 		experienceMonths = json.experienceMonths+'Month(s)';            			 		
          			 	}else{
@@ -144,6 +145,11 @@ function candidateSideBar(candidateId){
          			 		lastName = json.lastName;
          			 	}else{
          			 		lastName = "";
+         			 	}
+         			 	if(json.middelName != null && json.middelName !='' && json.middelName != 'undefined'){
+         			 		middleName = json.middelName;
+         			 	}else{
+         			 		middleName = "";
          			 	}
 
          			 	
@@ -308,7 +314,7 @@ function candidateSideBar(candidateId){
 			             result = result+'                     </div>'; */
 			             result = result+'<div class="media-body candidate-details candidateDetails padding_left">';
 			            /*  result = result+'<h4 class="media-heading" title = "">'+json.generatedId+'</h4>'; */
-			             result = result+'<h4 class="media-heading" title = "'+json.firstName+' '+lastName+'">'+json.firstName+' '+lastName+'</h4>';
+			             result = result+'<h4 class="media-heading" title = "'+json.firstName+' '+middleName+' '+lastName+'">'+json.firstName+' '+middleName+' '+lastName+'</h4>';
 			            
 			             result = result+'<ul class="list-unstyled">';
 			             
