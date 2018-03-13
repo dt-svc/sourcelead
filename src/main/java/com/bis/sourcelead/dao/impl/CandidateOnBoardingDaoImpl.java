@@ -264,11 +264,11 @@ public class CandidateOnBoardingDaoImpl  implements CandidateOnBoardingDao{
 					sortingQry = " order by onboarding."+ candidateOnBoardingDTO.getSortColumn() +" "+candidateOnBoardingDTO.getSortOrder();
 			}
 			
-			query = "from CandidateOnBoarding onboarding where onboarding.orgLocationId.id = :orgLocationsId "+sortingQry+"";
+			query = "from CandidateOnBoarding onboarding where onboarding.orgLocationId.id = :orgLocationsId ";
 			if(query1.toString() != null && !query1.toString().isEmpty()){
-				 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+" ");
+				 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+" "+sortingQry+" ");
 			}else{
-				 queryObj = session.createQuery(query + query1.toString()+" ");
+				 queryObj = session.createQuery(query + query1.toString()+" "+sortingQry+" ");
 			}
 			
 			
@@ -278,10 +278,10 @@ public class CandidateOnBoardingDaoImpl  implements CandidateOnBoardingDao{
 			queryObj.setLong("orgLocationsId", orgLocations.getId()).list();
 			onboardingList = queryObj.list();
 			if(query1.toString() != null && !query1.toString().isEmpty()){
-				countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+") ").setLong("orgLocationsId", orgLocations.getId()).list();
+				countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+") "+sortingQry+" ").setLong("orgLocationsId", orgLocations.getId()).list();
 				filterCount = countlist.iterator().next().intValue();
 			}else {
-				countlist = session.createQuery("select count(*) " + query ).setLong("orgLocationsId", orgLocations.getId()).list();
+				countlist = session.createQuery("select count(*) " + query +sortingQry).setLong("orgLocationsId", orgLocations.getId()).list();
 				filterCount = countlist.iterator().next().intValue();
 			}
 			

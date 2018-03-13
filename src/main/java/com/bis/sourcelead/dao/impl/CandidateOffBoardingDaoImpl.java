@@ -200,12 +200,12 @@ public class CandidateOffBoardingDaoImpl implements CandidateOffBoardingDao {
 				sortingQry = " order by offboarding."+ candidateOffBoardingDTO.getSortColumn() +" "+candidateOffBoardingDTO.getSortOrder();
 		}
 		
-		query = "from CandidateOffBoarding offboarding where offboarding.orgLocationId.id = :orgLocationsId "+sortingQry+" ";
+		query = "from CandidateOffBoarding offboarding where offboarding.orgLocationId.id = :orgLocationsId ";
 		
 		if(query1.toString() != null && !query1.toString().isEmpty()){
-			 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+" ");
+			 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+" "+sortingQry+" ");
 		}else{
-			 queryObj = session.createQuery(query + query1.toString()+" ");
+			 queryObj = session.createQuery(query + query1.toString()+" "+sortingQry+" ");
 		}
 		
 		queryObj.setFirstResult(candidateOffBoardingDTO.getStart());
@@ -213,10 +213,10 @@ public class CandidateOffBoardingDaoImpl implements CandidateOffBoardingDao {
 		queryObj.setLong("orgLocationsId", orgLocations.getId()).list();
 		offboardingList = queryObj.list();
 		if(query1.toString() != null && !query1.toString().isEmpty()){
-			countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+")").setLong("orgLocationsId", orgLocations.getId()).list();
+			countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+") "+sortingQry+" ").setLong("orgLocationsId", orgLocations.getId()).list();
 			filterCount = countlist.iterator().next().intValue();
 		}else {
-			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocations.getId()).list();
+			countlist = session.createQuery("select count(*) " + query +sortingQry).setLong("orgLocationsId", orgLocations.getId()).list();
 			filterCount = countlist.iterator().next().intValue();
 		}
 		

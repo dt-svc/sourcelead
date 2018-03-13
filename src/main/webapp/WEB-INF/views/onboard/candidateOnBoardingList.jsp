@@ -229,6 +229,7 @@ function onboardPagination(url,sourceleadUrl){
 	          },{
 		    	  "targets": colIndex++,
 	              "data": "onboardDocuments",
+	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	  result = result +"<td><div><span>"+opt.documentsAcceptedCount+" / "+opt.documentsCount+"</span></div></td>";
@@ -237,6 +238,7 @@ function onboardPagination(url,sourceleadUrl){
 		     },{
 		    	  "targets": colIndex++,
 	              "data": "onboardStatus",
+	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	           		   if(opt.onboardSubmitted != 'Y'){
@@ -268,6 +270,7 @@ function onboardPagination(url,sourceleadUrl){
 		     }, {
 		    	  "targets": colIndex++,
 	              "data": "actions",
+	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            		 if(opt.candidateOnBoardStatus == 'Accepted'){
@@ -289,7 +292,6 @@ function onboardPagination(url,sourceleadUrl){
 		     
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[1,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
@@ -429,6 +431,7 @@ function offboardPagination(url,sourceleadUrl){
 		     },{
 		    	  "targets": colIndex++,
 	              "data": "stage",
+	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    result = result +"<td><div><span>"+opt.offBoardStatus+"</span></div></td>";
@@ -437,6 +440,7 @@ function offboardPagination(url,sourceleadUrl){
 		     }, {
 		    	  "targets": colIndex++,
 	              "data": "offboardStage",
+	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.offboardSubmitted == 'Y'){
@@ -450,7 +454,6 @@ function offboardPagination(url,sourceleadUrl){
 		     
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[1,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
@@ -470,136 +473,6 @@ function offboardPagination(url,sourceleadUrl){
 }
 
 </script>
- 
- 
- <!-- <script>
- function getOffboardCandidatesList(){
-	 
-	  var sourceleadUrl ='${sourceleadUrl}';
-	  var locationCode = '${SourceLeadWeb_locationCode}'
-	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	
-	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
-	  if(locationList.match("yyyy-MM-dd")){
-		  candOffBoardListDate = 'YYYY-MM-DD';
-	  }if(locationList.match("dd-MM-yyyy")){
-		  candOffBoardListDate = 'DD-MM-YYYY'; 
-	  }if(locationList.match("MM-dd-yyyy")){
-		  candOffBoardListDate = 'MM-DD-YYYY'; 
-	  }if(locationList.match("yyyy-dd-MM")){
-		  candOffBoardListDate = 'YYYY-DD-MM'; 
-	  }
-	  
-	  $.ajax({
-           type : "POST",
-           url: sourceleadUrl+"/getOffboardCandidateList?${_csrf.parameterName}=${_csrf.token}&locationCode="+locationCode,    
-            success :function(json) {
-               		
-			    	     $("#onboardingLoading").removeAttr("style");
-	                	 $("#onboardingCandidatesList").empty();
-	                	 $("#offboardingCandidatesList").empty();
-	                	 
-	                	 var result = "";
-	                	 result = result +"<table id='offboardingPagination' class='display' cellspacing='0' width='99.9%' >"; 
-	                     result = result +"<thead>"; 
-	                     result = result +"  <tr>"; 
-	                     result = result +"    <th>Candidate Name</th>";
-	                     result = result +"    <th>Type</th>";
-	                     result = result +"    <th>End Date<br>(<small class='custom-small'>"+candOffBoardListDate+"</small>)</th>";
-	                     result = result +"    <th>Effective Date<br>(<small class='custom-small'>"+candOffBoardListDate+"</small>)</th>";
-	                     result = result +"    <th>Stage</th>"; 
-	                     result = result +"    <th>Offboard Stage</th>"; 
-	                     result = result +"  </tr>"; 
-	                     result = result +"</thead>";
-	                     result = result +"<tbody>"; 
-	                     
-	                    	 for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i]; 
-	                    	 var joiningDate = '';
-	                    	 
-	                    		                    	     
-	                    	 result = result +"<tr>";
-	                    	 
-	                    	 result = result +"<td>";
-	                    	 result = result +"<div class='width300px'>";
-	                    	 result = result +"<div class='tbldata-dotdot-big pull-left' title='"+opt.candidateName+"'>"+opt.candidateName+"</div>";
-	                    	 
-	                   	  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_ON_BOARD_USER\')">'
-		                    	 if(opt.offboardSubmitted == 'N'){
-		                    		 result = result +"<b class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOffboardCandidateDetails?offboardUUID="+opt.offboardUUID+"'> <i class='fa fa-binoculars'></i> </a> </b> </div>";
-		                    	 }else if(opt.offboardSubmitted == 'Y'){
-		                    		 result = result +"<b class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOffboardCandidateSummaryDetails?offboardUUID="+opt.offboardUUID+"'> <i class='fa fa-binoculars'></i> </a> </b> </div>";
-		                    	 }
-	                  
-	                    	 '</sec:authorize>';
-	                    	 result = result +"</td>";
-	                    	 
-	                    	 
-                    		 result = result +"<td><div><span>Offboard</span></div></td>";
-                    		 result = result +"<td><div><span>"+opt.endDateStr+"</span></div></td>";
-                    		 result = result +"<td><div><span>"+opt.effectiveDateStr+"</span></div></td>";
-                    		 result = result +"<td><div><span>"+opt.offBoardStatus+"</span></div></td>";
-                    		 
-                    		 if(opt.offboardSubmitted == 'Y'){
-                    			 result = result +"<td><div><span class='text-success'>Completed</span></div></td>";
-                    		 }else{
-                    			 result = result +"<td><div><span class='text-warning'>Pending</span></div></td>";
-                    		 }
-                    
-		                     
-		                     result = result +"</tr>";
-		                     result = result +"</tr>";
-	                     }
-	                     result = result +" </tbody>";
-	                     result = result +"</table>"; 
-	                     $("#onboardingLoading").removeAttr("style");
-	                     $("#offboardingCandidatesList").append(result); 
-	                     
-	                     offboardingPagenation(); 
-                    
-          },
-            
-       }); 
- }
- </script>
- 
- 
- <script>
-function onboardingPagenation(){ 
-	 $('#onboardingPagination').DataTable( { 
-	    	"scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-	    	"bLengthChange": true,
-	    	"bDestroy": true,
-	    	"ordering": true,
-	    	"aoColumnDefs": [{
-		           'bSortable': false,
-		           'aTargets': 5
-				}],
-	    	"oLanguage": {
-	            "sSearch": "",
-	            "sZeroRecords": "", "sEmptyTable": ""
-	       }
-	    } );
-}
-</script>
-
-<script>
-function offboardingPagenation(){ 
-	 $('#offboardingPagination').DataTable( { 
-	    	"scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-	    	"bLengthChange": true,
-	    	"bDestroy": true,
-	    	"ordering": true,
-	    	"oLanguage": {
-	            "sSearch": "",
-	            "sZeroRecords": "", "sEmptyTable": ""
-	       }
-	    } );
-}
-</script> -->
-
 
 
 <script>
