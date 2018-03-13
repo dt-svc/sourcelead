@@ -132,7 +132,7 @@
 								<div class="col-md-9 chooRadius" id="errorAttorney">
 								<div class="input-group col-md-10 pull-left chooRadius">
 									<select class="chosen-select form-control" name="attorneys"
-										id="candidates" placeholder="Select Beneficiary" field-name="Attorney Name" data-validation="required" onChange="updateCandiateInfo();">
+										id="candidates" placeholder="Select Beneficiary" field-name="Attorney Name" data-validation="required" onchange="updateCandiateInfo($(this));">
 									</select>
 								 <span class="input-group-addon cursorPointer bg-blue" onclick="getCandidatesByOrgLocation();"><i class="fa fa-refresh "></i></span>
 									
@@ -143,7 +143,7 @@
          <div class="form-group">
               <label class="col-md-4">First Name<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="" value="">
+					<input type="text" class="form-control" id="candidateFirstName" name="">
               </div>
           </div>
           <div class="form-group">
@@ -155,7 +155,7 @@
           <div class="form-group">
               <label class="col-md-4">Last Name<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="" value="">
+					<input type="text" class="form-control" name="" id="candidateLastName" value="">
               </div>
           </div>  
 
@@ -547,6 +547,7 @@
 	</script>
 	
 <script>
+var candidateByOrgObject = {};
 function getCandidatesByOrgLocation(){
 	 console.log(" before getCandidatesByOrgLocation function calling ---->");
 	 urltest = sourceleadUrl+immiModulePath+"/getAllActiveCandidatesByLocation";
@@ -562,14 +563,12 @@ function getCandidatesByOrgLocation(){
 		        	$('#candidates').append('<option value="">--Select Beneficiary --</option>');
 		        	//jsonObjMap = {};
 		            for(var i=0;i<json.length;i++){
-		            	  var opt = json[i];
-		            	//  jsonObjMap[opt.id]= opt;
-		            	  
-		            		$('#candidates').append('<option value='+opt.id+' >'+opt.firstName+'</option>');
+		            	 var opt = json[i];
+		            	 candidateByOrgObject[opt.id]= opt;
+		            	$('#candidates').append('<option value='+opt.id+' >'+opt.firstName+'</option>');
 		            }
 		            $('#candidates').trigger("chosen:updated");
-		           
-		            updateCandiateInfo();
+		           /*  updateCandiateInfo(); */
 		   }
    });
 }
@@ -898,8 +897,15 @@ function  removeValidationAttorneyContact() {
 	 }
 	 </script>
 	 <script>
-	 function updateCandiateInfo(){
-		 console.log("inside update candidate info event ----> :::: ");
+	/*  $(document).on("change", "#candidates", function() {
+		alert(this.val()) 
+	 }); */
+	 //$( "#myselect option:selected" ).val()
+	 function updateCandiateInfo(obj){
+		var candidateObj=candidateByOrgObject[obj.val()];
+		$("#candidateFirstName").val(candidateObj.firstName);
+		$("#candidateLastName").val(candidateObj.lastName);
+		 
 	 }
-	 
+ 
 	 </script>
