@@ -5,7 +5,10 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-
+<script src="https://cdn.datatables.net/plug-ins/1.10.16/features/searchHighlight/dataTables.searchHighlight.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.10.16/features/searchHighlight/dataTables.searchHighlight.css"></script>
+<script src="https://bartaz.github.io/sandbox.js/jquery.highlight.js"></script>
+	
 <style type="text/css">
 #loadMoreDiv{
 text-align: center;
@@ -49,6 +52,15 @@ margin-right: 15px;
  .approvedPop1 ul li {
  clear: both; width: 100%; margin: 0;
  }
+ table.dataTable span.highlight {
+  background-color: #FFFF88; border-radius: 0.28571429rem; position: relative; top:4px; color:#a21e23;
+  
+}
+
+table.dataTable span.column_highlight {
+  background-color: #FFFF88; color:#a21e23;
+  border-radius: 0.28571429rem;
+}
 </style>
 
 
@@ -1201,12 +1213,14 @@ function prepareDynamicUserList(url){
 }
 </script>
 <script>
+var table = '';
 function dynamicUserListPagination(url){
 	var colIndex = 0;
-    $('#dynamicUserListView').DataTable( { 
+	table = $('#dynamicUserListView').DataTable( { 
 	  "processing": true,
       "serverSide": true,
       "searching": false,
+      "searchHighlight": true,
       "ajax": $.fn.dataTable.pipeline( {
           url: url,
           method: 'POST',
@@ -1336,7 +1350,12 @@ function dynamicUserListPagination(url){
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
 	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
-	     }
+	     },
+    	  drawCallback: function(){
+    	      $('a.paginate_button', this.api().table().container()).on('click', function(){
+    	    	  searchHighlight();
+    	         }); 
+    	   }
     } );
     $("#dynamicUserListView").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
@@ -1345,10 +1364,30 @@ function dynamicUserListPagination(url){
 $("#dynamicUserDataTableSearch").keydown(function(e) {
 	   if(e.which === 13) {
 		   getDynamciUserList();
+		   searchHighlight();
 	   }
 	});
 </script> 
- 
+ <script>
+ function searchHighlight(){
+	 setTimeout(function () {
+ 		var body = $( table.table().body() );
+	        body.unhighlight();
+	        body.highlight( $("#dynamicUserDataTableSearch").val() );   
+			
+			}, 1000); 
+ }
+ </script>
+ <script>
+	$(document).on( 'init.dt.dth', function (e, settings, json) {
+    table = new $.fn.dataTable.Api( settings );
+    var body = $( table.table().body() );
+    if ( $( table.table().node() ).hasClass( 'searchHighlight' ) || settings.oInit.searchHighlight ||  $.fn.dataTable.defaults.searchHighlight ) {
+	
+	}
+} );
+	</script>
+	
 <script>
 function getActions(){
 	$(".action-pop").slideToggle(200);
