@@ -233,6 +233,11 @@ public class HolidayServiceImpl implements HolidayService{
 	public List<ProjectTasks> getHolidayProjectTaskByorgLocationIdAndHolidayId(Long orglocationId, Long holidayId) {
 		return holidayDAO.getHolidayProjectTaskByorgLocationIdAndHolidayId(orglocationId,holidayId);
 	}
+
+	@Override
+	public List<Holiday> getAllHoliday() {
+		return holidayDAO.getAllHoliday();
+	}
 	
 	
 }
