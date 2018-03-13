@@ -89,9 +89,13 @@
         <div class="clearfix"></div>  
           
           
-          <div class="candidate_wrap_table datatable_filter">
+          <div class="candidate_wrap_table datatable_filter positionRelative">
 	          <div id="onboardingLoading"></div>
-	          <div id="onboardingCandidatesList" class="datatable_filter"></div>
+	         
+		    <div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew pdtop">
+		    	<div id="onboardingCandidatesList" class="datatable_filter"></div>
+			</div>	  
+	         
 	          <div id="offboardingCandidatesList" class="datatable_filter"></div>
 	          
 	          <div class="vendor_wrap_mask"></div>
@@ -104,6 +108,208 @@
  
  
  <script>
+ function getOnboardCandidatesList(){
+	 
+	 $("#onboardingCandidatesList").empty();
+	 $("#offboardingCandidatesList").empty();
+	 
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  var locationCode = '${SourceLeadWeb_locationCode}';
+	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	
+	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  candOnBoardListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  candOnBoardListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  candOnBoardListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  candOnBoardListDate = 'YYYY-DD-MM'; 
+	  }
+	  
+	  
+	  var result = "";
+	 	result = result +" <div class='remove_search' style='top:-20px;'>";
+	 	result = result +" <input type='text' placeholder='Search' id='onboardDataTableSearch'/>";
+	 	result = result +"</div>";
+	 	
+	 	result = result + '<table id="onboardListTable" class="display" cellspacing="0" width="100%" >';
+		result = result + '<thead>';
+		result = result + '<tr>';
+		result = result +'	<th>Candidate Name</th>';
+	  	result = result +'     <th>Date Of Join<br>(<small class="custom-small">'+candOnBoardListDate+'</small>)</th>';
+	  	result = result +'      <th>Onboard Documents</th>';
+	  	result = result +'      <th>Onboard Status</th>';
+	  	result = result +'       <th>Actions</th>';
+		result = result + '</tr>';
+		result = result + '</thead>	';
+	    result = result +"</table>";
+	    $("#onboardingCandidatesList").empty();
+	    $("#onboardingCandidatesList").append(result);
+	    
+	    onboardDataTableList();
+	  
+ }
+ </script>
+ 
+ <script>
+function onboardDataTableList(){
+	
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var searchValue = $("#onboardDataTableSearch").val();
+	 var locationCode = '${SourceLeadWeb_locationCode}';
+	 searchValue = searchValue ? searchValue : "";
+	 var url = sourceleadUrl+"/getOnboardCandidateList?searchValue="+searchValue+"&locationCode="+locationCode;
+	 onboardPagination(url,sourceleadUrl);
+	 $("#onboardingLoading").removeAttr("style");
+}
+</script>
+
+
+<script>
+function onboardPagination(url,sourceleadUrl){
+	var colIndex = 0;
+    $('#onboardListTable').DataTable( { 
+	  "processing": true,
+      "serverSide": true,
+      "searching": false,
+      "ajax": $.fn.dataTable.pipeline( {
+          url: url,
+          method: 'POST',
+          pages: 1
+        }),
+        "columns": [
+            { "data": "candidateName" },
+            { "data": "startDate"},
+            { "data": "onboardDocuments"},
+            { "data": "onboardStatus" },
+            { "data": "actions"}
+        ],
+        "columnDefs": [ {
+	    	  	"targets": colIndex++,
+	    	  	"data": "candidateName",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		  var result = "";
+	    	  	   	 result = result +"<td>";
+                	 result = result +"<div class='width300px'>";
+                	 result = result +"<div class='tbldata-dotdot-big pull-left' title='"+opt.candidateName+"'>"+opt.candidateName+"</div>";
+                	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_ON_BOARD_USER\')">'	 
+                	 if(opt.candidateOnBoardStatus == 'Draft'){
+                    		 result = result +"<div class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOnboardCandidateDetails?onboardUUID="+opt.onboardCandidateUUID+"'> <i class='fa fa-binoculars'></i> </a> </div> </div>";
+                    	 }
+                    	 else if(opt.candidateOnBoardStatus == 'Finished' || opt.candidateOnBoardStatus == 'Submitted' || opt.candidateOnBoardStatus == 'Rejected' || opt.candidateOnBoardStatus == 'Accepted'){
+                    		 result = result +"<div class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOnboardCandidateSummary?onboardUUID="+opt.onboardCandidateUUID+"'> <i class='fa fa-binoculars'></i> </a> </div> </div>";
+                    	 }
+                    	 '</sec:authorize>'
+                	 
+                	 result = result +"</td>";
+		             return result;
+	    	  	}
+	      },{
+	    	  "targets": colIndex++,
+              "data": "startDate",
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+            	  var joiningDate = '';
+             	 
+             	 if(opt.joiningDateStr != null && opt.joiningDateStr != '' && opt.joiningDateStr != 'undefined'){
+             		 joiningDate = opt.joiningDateStr;
+             	 }else{
+             		 joiningDate = "----";
+             	 }
+            	  
+             	 result = result +"<td><div><span>"+joiningDate+"</span></div></td>";
+	             return result;
+              		
+              }
+	      
+	          },{
+		    	  "targets": colIndex++,
+	              "data": "onboardDocuments",
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  result = result +"<td><div><span>"+opt.documentsAcceptedCount+" / "+opt.documentsCount+"</span></div></td>";
+	            	  return result;
+	              }
+		     },{
+		    	  "targets": colIndex++,
+	              "data": "onboardStatus",
+	              "render": function ( data, type, opt, meta ) {
+	            	    var result = "";
+	           		   if(opt.onboardSubmitted != 'Y'){
+            			 if(opt.candidateOnBoardStatus == 'Finished'){
+                			 result = result +"<td><div><span>Sent</span></div></td>";
+                		 }else{
+                			 if(opt.candidateOnBoardStatus == 'Rejected'){
+                				 if(opt.rejectedReason != null && opt.rejectedReason != '' && opt.rejectedReason != 'undefined'){
+                				 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div><i class='glyphicon glyphicon-comment edit-reason'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i></td>";
+                				 }
+                			 }else if(opt.candidateOnBoardStatus == 'Accepted'){
+                    			 result = result +"<td><div>Completed</div></td>";
+                    		 }else{
+                				 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div></td>";
+                			 }
+                			 
+                		 }
+            		 }else{
+            			 if(opt.candidateOnBoardStatus == 'Accepted'){
+            				 result = result +"<td><div>Completed</div></td>"
+            			 }else{
+            				 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div></td>";
+            			 }
+            			 
+            			
+            		 }
+	            		return result;
+	              }
+		     }, {
+		    	  "targets": colIndex++,
+	              "data": "actions",
+	              "render": function ( data, type, opt, meta ) {
+	            	    var result = "";
+	            		 if(opt.candidateOnBoardStatus == 'Accepted'){
+                			 result = result +"<td><div><span class='text-success'>"+opt.candidateOnBoardStatus+"</span></div></td>";
+                		 }else  if(opt.candidateOnBoardStatus == 'Rejected'){
+                			 result = result +"<td><div><span class='text-danger'>"+opt.candidateOnBoardStatus+"</span></div></td>";
+                		 }else{
+                			 if(opt.onboardSubmitted == 'Y'){
+                				 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_ON_BOARD_USER\')">'
+                    			 result = result	+ '<td><div class="tblminwidth-50 pull-left ml"><div class="pull-left"><a><i class="fa fa-check text-success" onclick="acceptOnboardingCandiate(\''+opt.onboardCandidateUUID+'\');"></i></a></div> <div class="pull-left mt2 ml5"><a><i class="fa fa-close text-danger" onclick="rejectedReason(\''+opt.onboardCandidateUUID+'\',\''+opt.candidateName+'\',\''+opt.userEmail+'\');"></i></a></div></div></td>';
+                    			 '</sec:authorize>';
+                			 }else{
+                    			 result = result	+ '<td><div>-----</div></td>';
+                    		 }
+                		 }
+	            		return result;
+	              }
+		     }],
+		     
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"aaSorting": [[1,'desc']],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     }
+    } );
+    $("#onboardListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("input[type=search]").hide();
+    $("#onboardDataTableSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+    		   onboardDataTableList();
+    	   }
+    	});
+}
+
+</script>
+ 
+ 
+ <!-- <script>
  function getOnboardCandidatesList(){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var locationCode = '${SourceLeadWeb_locationCode}';
@@ -228,7 +434,7 @@
             
        }); 
  }
- </script>
+ </script> -->
  
  
  <script>
