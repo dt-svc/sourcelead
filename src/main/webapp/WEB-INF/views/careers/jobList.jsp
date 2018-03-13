@@ -21,7 +21,7 @@
                 <select class="form-control select-styles" id="jobLocation">
                     <option value="0">--Select Location--</option>
                     <core:forEach items="${locations}" var='l'>
-                        <option value="${l.id}">${l.city}${l.state != null || l.state.isEmpty() ? "" : ", ".concat(l.state)}${l.country != null || l.country.isEmpty() ? "" : ", ".concat(l.country)}</option>
+                        <option value="${l.id}">${l.city}${l.state == null || l.state.isEmpty() ? "" : ", ".concat(l.state)}${l.country == null || l.country.isEmpty() ? "" : ", ".concat(l.country)}</option>
                     </core:forEach>
                 </select>
             </div>

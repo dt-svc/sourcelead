@@ -255,6 +255,7 @@ public class CandidateListRestController {
 		if (excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()) {
 			BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
 			for (String keywd : excludeKeyWordArray) {
+				if(StringUtils.isNotBlank(keywd)){
 				BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
 				List<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
 				if (QueryBuilderList != null && !QueryBuilderList.isEmpty()) {
@@ -263,6 +264,7 @@ public class CandidateListRestController {
 					}
 					excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
 				}
+			  }
 			}
 			boolQueryBuilder.mustNot(excludeBoolQueryBuilder);
 		}
@@ -278,6 +280,7 @@ public class CandidateListRestController {
 		if (anyKeyWordArray != null && !anyKeyWordArray.isEmpty()) {
 			BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 			for (String keywd : anyKeyWordArray) {
+				if(StringUtils.isNotBlank(keywd)){
 				BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
 				List<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
 				if (QueryBuilderList != null && !QueryBuilderList.isEmpty()) {
@@ -299,6 +302,7 @@ public class CandidateListRestController {
 					
 					anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 				}
+			  }
 			}
 			boolQueryBuilder.must(anyBoolQueryBuilder);
 		}
@@ -313,6 +317,7 @@ public class CandidateListRestController {
 		if (allKeyWordArray != null && !allKeyWordArray.isEmpty()) {
 			BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 			for (String keywd : allKeyWordArray) {
+				if(StringUtils.isNotBlank(keywd)){
 				BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
 				List<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
 				if (QueryBuilderList != null && !QueryBuilderList.isEmpty()) {
@@ -321,6 +326,7 @@ public class CandidateListRestController {
 					}
 					allBoolQueryBuilder.must(allBoolSubQueryBuilder);
 				}
+			  }
 			}
 			boolQueryBuilder.must(allBoolQueryBuilder);
 		}

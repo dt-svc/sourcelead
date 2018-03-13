@@ -360,12 +360,24 @@
 			$('#startDate'+maxRowNum).datepicker({
 				dateFormat : finalDateFormatResourceReqSave,
 				changeMonth: true,
-				changeYear: true
+				changeYear: true,
+				onSelect: function (selected) {
+		            //var dt = new Date(selected);
+		            var dt = $(this).datepicker('getDate', '+1d');
+		            dt.setDate(dt.getDate() + 1);
+		            $('#endDate'+maxRowNum).datepicker("option", "minDate", dt);
+		        }
 			});
 			$('#endDate'+maxRowNum).datepicker({
 				dateFormat : finalDateFormatResourceReqSave,
 				changeMonth: true,
-				changeYear: true
+				changeYear: true,
+				onSelect: function (selected) {
+		            //var dt = new Date(selected);
+					var dt = $(this).datepicker('getDate', '-1d');
+		            dt.setDate(dt.getDate() - 1);
+		            $('#startDate'+maxRowNum).datepicker("option", "maxDate", dt);
+		        }
 			});
 			$(".addResource").removeAttr('style');
 			$(".addResource").attr('style','display:block');
