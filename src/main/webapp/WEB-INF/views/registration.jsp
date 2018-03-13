@@ -329,13 +329,13 @@ window.onload = function () {
   <div class="container">
       
     <div class="outsoucing-registaion registerwith">
-        <div class="company_logo pull-left mb10"><a href="<c:url value='/'/>"><img src="/resources/images/SourceLead-logo.png" alt="Sourcelead Logo" title="Sourcelead Logo" class="img-responsive" width="300"></a></div>
+        <div class="company_logo companyLogo pull-left mb10"><a href="<c:url value='/'/>"><img src="/resources/images/SourceLead-logo.png" alt="Sourcelead Logo" title="Sourcelead Logo" class="img-responsive" width="300"></a></div>
       <div class="clearfix"></div>
       <ul class="nav nav-tabs">
           <li class="active"><a data-toggle="tab" href="#professional" onclick="resetCredentials('Professional')"><i class="fa fa-user"></i>&nbsp;&nbsp;Job Seeker</a></li>
           <c:if test="${empty contactUUID}">
-          <li><a data-toggle="tab" href="#recruiter" onclick="resetCredentials('Recruiter')"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;<span class="hidden-xs">Freelance</span> Recruiter</a></li>
-          <li><a data-toggle="tab" href="#employee" onclick="resetCredentials('Employer')"><i class="fa fa-address-book-o"></i>&nbsp;&nbsp;Employer</a></li>
+          <li><a data-toggle="tab" href="#recruiter" onclick="resetCredentials('Recruiter')"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;<span class="hidden-xs">Freelance</span></a></li>
+          <li><a data-toggle="tab" href="#employee" onclick="resetCredentials('Employer')"><i class="fa fa-address-book-o"></i>&nbsp;&nbsp;Company</a></li>
           </c:if>
           <input type="hidden" id="tabType" />
       </ul>
@@ -363,28 +363,28 @@ window.onload = function () {
             <div class=" text-muted small mb10 text-center clearfix">
             -------------------------------------------------- ( OR ) --------------------------------------------------
             </div>
-            <div class="row mt10">
+            <div class="row mt10 regDemoFields">
             <div class="form-group clearfix">
-                <div class="col-xs-12 col-md-12 mb10" id="firstNameDiv">
-                    <i class="fa fa-user-circle"></i>
+                <div class="col-xs-12 col-md-6 mb10" id="firstNameDiv">
+                    <i class="fa fa-user"></i>
                     <label>First Name <span class="text-danger">*</span></label>
                     <input type="text" name="firstName" field-name="First Name" id="firstName" value='${firstName}' data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" onkeydown="removeValidationNameDiv();">
                     <b></b>
                 </div>
-                <div class="col-xs-12 col-md-12 mb10" id="lastNameDiv">
-                    <i class="fa fa-user-circle"></i>
+                <div class="col-xs-12 col-md-6 mb10" id="lastNameDiv">
+                    <i class="fa fa-user"></i>
                     <label>Last Name</label>
                     <input type="text" name="lastName" field-name="Last Name" id="lastName" value='${lastName}'  data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100">
                     <b></b>
                 </div>
                 
-                <div class="col-xs-12 col-md-12 mb10" id="emailDiv">
+                <div class="col-xs-12 col-md-6 mb10" id="emailDiv">
                     <i class="fa fa-envelope"></i>
                     <label>Email <span class="text-danger">*</span></label>
                     <input type="text" name="email" field-name="Email" value='${email}' onblur="validateEmail('Professional');" id="email"  data-validation="required validate_Space validate_length length2-100 validate_email" >
                     <b></b>
                 </div>
-                <div class="col-xs-12 col-md-12 select-field mb10" id="locationCountryDiv">
+                <div class="col-xs-12 col-md-6 select-field mb10" id="locationCountryDiv">
                     <i class="fa fa-map-marker"></i>
                     <select class="form-control chosen-select" name="location" id="location" field-name="Country" data-validation="required" onchange="removeValidation();">
                         <option disabled selected>Country</option>
@@ -397,15 +397,15 @@ window.onload = function () {
                     </select>
                     <b></b>
                 </div>
-                
+                <div class="clearfix"></div>
                 <div id="pwdDiv">
-                <div class="col-xs-12 col-md-12 mb10">
+                <div class="col-xs-12 col-md-6 mb10">
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Password <span class="text-danger">*</span></label>
 	                    <input type="password" id="password" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" >
 	                    <b></b>
 	                </div>
-	                <div class="col-xs-12 col-md-12 mb10" id="passwordDiv">
+	                <div class="col-xs-12 col-md-6 mb10" id="passwordDiv">
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Confirm Password <span class="text-danger">*</span></label>
 	                    <input type="password" id="confirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).checkPass();" data-validation="required validate_length length6-100" >
@@ -429,8 +429,8 @@ window.onload = function () {
                         <span class="text-center"><i class="fa fa-paper-plane"></i>Register</span></button>
             </div>
             </div>
-                <div class="col-md-12 text-center mt bg-info">
-                    <span class="text-muted">Already have an Account:</span><a href="/login" class="btn" title="Login">Login</a><br/>
+                <div class="col-md-12 text-center mt10">
+                    <span class="text-muted">Already have an Account:</span><a href="/login" class="btn" title="Login"><strong>Login</strong></a><br/>
                 </div>
                 
             </div>
@@ -459,28 +459,28 @@ window.onload = function () {
             <div class=" text-muted small mb10 text-center clearfix">
             -------------------------------------------------- ( OR ) --------------------------------------------------
             </div>
-            <div class="row mt10">
+            <div class="row mt10 regDemoFields">
             <div class="form-group clearfix">
-                <div class="col-xs-12 col-md-12 mb10" id="firstNameDivRec">
-                    <i class="fa fa-user-circle"></i>
+                <div class="col-xs-12 col-md-6 mb10" id="firstNameDivRec">
+                    <i class="fa fa-user"></i>
                     <label>First Name <span class="text-danger">*</span></label>
                     <input type="text" name="firstName" field-name="First Name" id="recruiterFirstName" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" onkeydown="removeValidationNameDivRec();">
                     <b></b>
                 </div>
-                <div class="col-xs-12 col-md-12 mb10">
-                    <i class="fa fa-user-circle"></i>
+                <div class="col-xs-12 col-md-6 mb10">
+                    <i class="fa fa-user"></i>
                     <label>Last Name</label>
                     <input type="text" name="lastName" field-name="Last Name" id="recruiterLastName" data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100">
                     <b></b>
                 </div>
                 
-                <div class="col-xs-12 col-md-12 mb10" id="recruiterEmailDiv">
+                <div class="col-xs-12 col-md-6 mb10" id="recruiterEmailDiv">
                     <i class="fa fa-envelope"></i>
                     <label>Email <span class="text-danger">*</span></label>
                     <input type="text" name="email" field-name="Email"  id="recruiterEmail"  onblur="validateRecruiterEmail('Recruiter');" data-validation="required validate_Space validate_length length2-100 validate_email" >
                     <b></b>
                 </div>
-                <div class="col-xs-12 col-md-12 select-field mb10" id="locationCountryDivRec">
+                <div class="col-xs-12 col-md-6 select-field mb10" id="locationCountryDivRec">
                     <i class="fa fa-map-marker"></i>
                     <select class="form-control chosen-select" name="location" id="location" field-name="Country" data-validation="required" onchange="removeValidationRec();">
                         <option disabled selected>Country</option>
@@ -493,15 +493,15 @@ window.onload = function () {
                     </select>
                     <b></b>
                 </div>
-                
+                <div class="clearfix"></div>
                 <div id="recpwdDiv">
-                <div class="col-xs-12 col-md-12 mb10">
+                <div class="col-xs-12 col-md-6 mb10">
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Password <span class="text-danger">*</span></label>
 	                    <input type="password" id="recpassword" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" >
 	                    <b></b>
 	                </div>
-	                <div class="col-xs-12 col-md-12 mb10" id="recpasswordDiv">
+	                <div class="col-xs-12 col-md-6 mb10" id="recpasswordDiv">
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Confirm Password <span class="text-danger">*</span></label>
 	                    <input type="password" id="recconfirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).reccheckPass();" data-validation="required validate_length length6-100" >
@@ -525,8 +525,8 @@ window.onload = function () {
                         <span class="text-center"><i class="fa fa-paper-plane"></i>Register</span></button>
             </div>
             </div>
-                <div class="col-md-12 text-center mt bg-info">
-                    <span class="text-muted">Already have an Account:</span><a href="/login" class="btn" title="Login">Login</a><br/>
+                <div class="col-md-12 text-center mt10">
+                    <span class="text-muted">Already have an Account:</span><a href="/login" class="btn" title="Login"><strong>Login</strong></a><br/>
                 </div>
                 
             </div>
@@ -537,13 +537,13 @@ window.onload = function () {
 	            <div class="row">
 	            <div class="form-group clearfix">
 	                <div class="col-xs-12 col-md-12">
-	                    <i class="fa fa-user-circle"></i>
+	                    <i class="fa fa-user"></i>
 	                    <label>First Name <span class="text-danger">*</span></label>
 	                    <input type="text" name="firstName" field-name="First Name" id="recruiterFirstName" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
 	                    <b></b>
 	                </div>
 	                <div class="col-xs-12 col-md-12">
-	                    <i class="fa fa-user-circle"></i>
+	                    <i class="fa fa-user"></i>
 	                    <label>Last Name</label>
 	                    <input type="text" name="lastName" field-name="Last Name" id="recruiterLastName" data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100">
 	                    <b></b>
@@ -587,7 +587,7 @@ window.onload = function () {
         </div>
       
       <div id="employee" class="tab-pane fade">
-       <form:form   id="employerRegistration_form"  name="employerRegistration_form" method="post" >     
+       <form:form  id="employerRegistration_form"  name="employerRegistration_form" method="post" >     
         <div class="row mt10">
             <div class="form-group clearfix noMar">
             <input type="hidden" id="orgType" name="orgType" value="Request">
@@ -595,13 +595,13 @@ window.onload = function () {
             <div class="clearfix paddRight regDemoFields">
                 
                 <div class="col-xs-12 col-md-6" id="firstNameDiv">
-                    <i class="fa fa-user-circle"></i>
-                    <label>First Name <span class="text-danger">*</span></label>
+                    <i class="fa fa-user"></i>
+                    <label>First Name<span class="text-danger">*</span></label>
                     <input type="text" name="firstName" field-name="First Name" id="firstName" value='${firstName}' data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" onkeydown="removeValidationNameDiv();">
                     <b></b>
                 </div>
                 <div class="col-xs-12 col-md-6" id="lastNameDiv">
-                    <i class="fa fa-user-circle"></i>
+                    <i class="fa fa-user"></i>
                     <label>Last Name</label>
                     <input type="text" name="lastName" field-name="Last Name" id="lastName" value='${lastName}'  data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100">
                     <b></b>
@@ -641,9 +641,9 @@ window.onload = function () {
                     <b></b>
                 </div>
                 
-                <div class="col-xs-12 col-md-6 locationCountryDiv-drop" id="locationCountryDiv">
+                <div class="col-xs-12 col-md-6 locationCountryDiv-drop" id="locationCompanyCountryDiv">
                     <i class="fa fa-map-marker"></i>
-                    <select class="selectpicker" name="country" id="requestCountry" field-name="Country" data-validation="required" onchange="removeValidation();"  data-live-search="true">
+                    <select class="selectpicker" name="country" id="requestCountry" field-name="Country" data-validation="required" onchange="removeCompanyCountryValidation();"  data-live-search="true">
                         <option disabled selected>Country</option>
                         <option value="Australia">Australia</option>
 		                <option value="France">France</option>
@@ -679,11 +679,11 @@ window.onload = function () {
 	            </div>
 	            <div class="col-md-12 mt10">
 	                  <button type="submit" id="employerRegister_button"  class="btn btn-primary btn_styles btn-block" title="Register" onclick="saveEmployer();">
-	                  <span class="text-center"><i class="fa fa-paper-plane" ></i>Request</span></button>
+	                  <span class="text-center"><i class="fa fa-paper-plane" ></i>Submit</span></button>
 	            </div>
 	            </div>
-                <div class="col-md-12 text-center mt bg-info">
-                    <span class="text-muted">Already have an Account:</span><a href="/login" class="btn" title="Login">Login</a><br/>
+                <div class="col-md-12 text-center mt10">
+                    <span class="text-muted">Already have an Account:</span><a href="/login" class="btn" title="Login"><strong>Login</strong></a><br/>
                 </div>
               </div>
             </div>
@@ -715,6 +715,9 @@ window.onload = function () {
 </body>
 
 <script>
+function removeCompanyCountryValidation(){
+	$('#locationCompanyCountryDiv').find('p.jquery_form_error_message').remove();
+}
 function removeValidation(){
 	$('#locationCountryDiv').find('p.jquery_form_error_message').remove(); 
 }
@@ -764,6 +767,7 @@ function resetCredentials(type){
 		document.getElementById("recruiterRegistration_form").reset();
 		$("recruiterRegistration_form").validate().resetForm();
 	}else if(type == "Employer"){
+		$(".regDemoFields label").removeClass('test');
 		googleApiLocation('companyAddress','requestCountry');
 		$("#employerRegister_button").removeAttr("disabled");
 		document.getElementById("employerRegistration_form").reset();
@@ -1384,8 +1388,9 @@ function applyInputSlide() {
     $(".regis_wrap_styles div input").on('blur', function () {
         if ($(this).val().trim() === "")
             $(this).parent(".regis_wrap_styles div").find('label').removeClass('test');
-    });	    
+    });
 }
+
 </script>
     
     
