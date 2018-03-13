@@ -43,15 +43,21 @@ public class UserMailUnsubscribeServiceImpl implements UserMailUnsubscribeServic
 	}
 
 	@Override
-	public UserMailUnsubscribe getUserMailUnsubscriptionByUserIdAndOrgLocationId(Long userId, Long orgLocationId) throws Exception
+	public UserMailUnsubscribe getUserMailUnsubscriptionByUserId(Long userId) throws Exception
 	{
-		return userMailUnsubscribeDao.getUserMailUnsubscriptionByUserIdAndOrgLocationId(userId, orgLocationId);
+		return userMailUnsubscribeDao.getUserMailUnsubscriptionByUserId(userId);
 	}
 	
 	@Override
-	public UserMailUnsubscribe getUserMailUnsubscriptionByUserEmailAndOrgLocationId(String userEmail, Long orgLocationId) throws Exception
+	public UserMailUnsubscribe getUserMailUnsubscriptionByUserEmail(String userEmail) throws Exception
 	{
-		return userMailUnsubscribeDao.getUserMailUnsubscriptionByUserEmailAndOrgLocationId(userEmail, orgLocationId);
+		return userMailUnsubscribeDao.getUserMailUnsubscriptionByUserEmail(userEmail);
+	}
+
+	@Override
+	public UserMailUnsubscribe getUserMailUnsubscriptionByUserEmailAndOrgLocationCode(String userEmail, String locationCode) throws Exception
+	{
+		return userMailUnsubscribeDao.getUserMailUnsubscriptionByUserEmailAndOrgLocationCode(userEmail, locationCode);
 	}
 	
 }
