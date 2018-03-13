@@ -63,6 +63,7 @@ import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveManagementHistory;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
+import com.bis.sourcelead.entity.MonthlyLeaves;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Option;
 import com.bis.sourcelead.entity.Org;
@@ -346,20 +347,27 @@ public class LeaveManagementRestController {
 				
 				totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(type,emp,orgLocations,loginUser);
 				float totalbalanceLeaveCounts = totalLeaves;
+				float calculatedTotalNonCarryforwardLeaves = 0;
 				List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getId(),orgLocations.getId(), loginUser.getId());
+				
 				for (Leave leave : totalleavesTaken) {
 					float appliedLeaveCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
+					
 					if(Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
 //						totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
 						pendingLeaveCounts = pendingLeaveCounts + Integer.valueOf(leave.getNumberOfDays());
 					}
 					if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
 						totalbalanceLeaveCounts = totalbalanceLeaveCounts - (appliedLeaveCount - leave.getExtraLeavesTaken());
-//						else
-//							totalLeaves = totalLeaves - leave.getNumberOfDays();
 						
 						takenLeaveCounts = takenLeaveCounts + appliedLeaveCount;
 					}
+				}
+				if("Monthly".equalsIgnoreCase(type.getPeriod()) && Constants.NO.equalsIgnoreCase(type.getLeavesCarryforward())){
+					calculatedTotalNonCarryforwardLeaves = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(type,totalbalanceLeaveCounts);
+					totalbalanceLeaveCounts = calculatedTotalNonCarryforwardLeaves;
+				}else{
+					balanceLeaveCounts += totalbalanceLeaveCounts;
 				}
 				
 				balanceLeaveCounts += totalbalanceLeaveCounts;

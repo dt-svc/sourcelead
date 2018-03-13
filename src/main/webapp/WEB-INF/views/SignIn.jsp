@@ -81,7 +81,7 @@
 		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
         <input type="hidden" name="UUID" value="${UUID}" />
         <input type="hidden" name="spocUUID" value="${spocUUID}" />
-        <input type="hidden" name="requirementUUID" value="${requirementUUID}" />
+        <input type="hidden" id="requirementUUID" name="requirementUUID" value="${requirementUUID}" />
         <input type="hidden" name="referUUID" value="${referUUID}" />
 	            
 		<div class="for-pas-text"><strong id="FgPas" onclick="forgotPassword();">Forgot Password</strong><i class="fa fa-question"></i></div>

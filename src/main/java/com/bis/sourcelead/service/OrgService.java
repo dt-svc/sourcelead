@@ -3,6 +3,8 @@ package com.bis.sourcelead.service;
 import java.util.List;
 
 import com.bis.sourcelead.dto.CompanyRegistrationDTO;
+import com.bis.sourcelead.dto.OrgDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Org;
 
@@ -40,6 +42,7 @@ public interface OrgService {
 	
 	public List<Org> getEnrolledOrgs(Long orgId,String userState,String searchByName,Integer offSet) throws Exception;
 	
+	public ResponseList<Org> getDynamicEnrolledOrgs(Long orgId,OrgDTO orgDTO) throws Exception;
 	
 	public boolean isOrgNameExisted(String orgName) throws Exception;
 	

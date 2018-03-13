@@ -547,7 +547,6 @@ function getTimezonesList(){
 		}else{
 			$("select[name = 'dateFormat']").val('MM-dd-yyyy');
 		}
-		
 		 $.ajax({
 		    	type: "POST",
 		    	url : sourceleadUrl+"/getTimezonesList?${_csrf.parameterName}=${_csrf.token}", 
