@@ -155,7 +155,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			}
 			
 			for (InternetAddress toAddressEmail : iAdressArray) {
-				UserMailUnsubscribe unsubscriptionUser = userMailUnsubscribeService.getUserMailUnsubscriptionByUserEmailAndOrgLocationId(toAddressEmail.getAddress(), locationsId);
+				UserMailUnsubscribe unsubscriptionUser = userMailUnsubscribeService.getUserMailUnsubscriptionByUserEmail(toAddressEmail.getAddress());
 				if (unsubscriptionUser != null && StringUtils.isNotEmpty(unsubscriptionUser.getTabIds())) {
 					String[] tabIdsArray = unsubscriptionUser.getTabIds().split(",");
 					if (StringUtils.isNotEmpty(tabDivGroup)) {
