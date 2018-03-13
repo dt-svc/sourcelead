@@ -56,7 +56,7 @@ public interface ImmigrationTemplateDao {
 
 	List<CandidateEmployers> getPetitionTemplateEmployers(Long id);
 
-	List<LookUpData> getEmployersLookupData();
+	List<LookUpData> getLookupDataByType(String type);
 	
 	
 }

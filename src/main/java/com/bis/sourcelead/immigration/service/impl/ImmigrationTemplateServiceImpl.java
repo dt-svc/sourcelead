@@ -314,8 +314,9 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 	}
 
 	@Override
-	public List<LookUpData> getEmploymentTypeList() {
-		List<LookUpData> lookUpDatas = immigrationTemplateDao.getEmployersLookupData();
+	public List<LookUpData> getLookupDataByType(String type) {
+		List<LookUpData> lookUpDatas = immigrationTemplateDao.getLookupDataByType(type);
 		return lookUpDatas;
 	}
+
 }

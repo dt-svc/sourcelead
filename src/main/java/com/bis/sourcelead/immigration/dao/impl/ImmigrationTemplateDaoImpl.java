@@ -486,10 +486,10 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<LookUpData> getEmployersLookupData() {
+	public List<LookUpData> getLookupDataByType(String type) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from LookUpData lud where lud.category = :category";
-		List<LookUpData> candidateEmployers = session.createQuery(query).setString("category", "EmploymentType").list();
+		List<LookUpData> candidateEmployers = session.createQuery(query).setString("category", type).list();
 		return candidateEmployers;
 	}
 }

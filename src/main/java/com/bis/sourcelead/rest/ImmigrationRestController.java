@@ -175,7 +175,7 @@ public class ImmigrationRestController {
 	
 	@RequestMapping(value = { "/getEmploymentTypeList" })
 	public List<LookUpData> getEmploymentTypeList(HttpServletRequest request) {
-		List<LookUpData> caEmployerDTOs = immigrationTemplateService.getEmploymentTypeList();
+		List<LookUpData> caEmployerDTOs = immigrationTemplateService.getLookupDataByType(Constants.EMPLOYMENT_TYPE_PETITION);
 		return caEmployerDTOs;
 	}
 	
@@ -467,6 +467,24 @@ public @ResponseBody ResponseList<ImmigrationTemplateListDTO> getAlltemplateList
 			request.getSession().setAttribute("success", message);
 		}
 		return message;
+	}
+	
+	@RequestMapping(value = { "/getPetitionTypeDropDown" })
+	public List<LookUpData> getPetitionTypeDropDown(HttpServletRequest request) {
+		List<LookUpData> caEmployerDTOs = immigrationTemplateService.getLookupDataByType(Constants.PETITION_TYPE);
+		return caEmployerDTOs;
+	}
+	
+	@RequestMapping(value = { "/getUscisTypeDropDown" })
+	public List<LookUpData> getUscisTypeDropDown(HttpServletRequest request) {
+		List<LookUpData> caEmployerDTOs = immigrationTemplateService.getLookupDataByType(Constants.USCIS_STATUS);
+		return caEmployerDTOs;
+	}
+	
+	@RequestMapping(value = { "/getEmploymentLevelDropDown" })
+	public List<LookUpData> getEmploymentLevelDropDown(HttpServletRequest request) {
+		List<LookUpData> caEmployerDTOs = immigrationTemplateService.getLookupDataByType(Constants.EMPLOYMENT_LEVEL);
+		return caEmployerDTOs;
 	}
 
 }

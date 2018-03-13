@@ -48,6 +48,6 @@ public interface ImmigrationTemplateService {
 
 	List<CandidateEmployerDTO> getPetitionTemplateEmployers(Long id);
 
-	List<LookUpData> getEmploymentTypeList();
-	
+	List<LookUpData> getLookupDataByType(String type);
+
 }

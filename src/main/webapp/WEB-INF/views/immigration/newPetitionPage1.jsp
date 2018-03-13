@@ -24,12 +24,7 @@
          	<div class="form-group">
               <label class="col-md-4">Petition type<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8 dropdown-select">
-                  <select class="form-control">
-                    <option>--Select Petition--</option>
-                    <option>H1B Filing (Initial Cap filing) or H1 Transfer</option>
-                    <option>H1B Filing (Amendment)</option>
-                    <option>H1B Filing (Extension)</option>
-                    <option>Green Card</option>
+                  <select id="petitionTypeDropdown" class="form-control">
                   </select>
               </div>
           </div> 
@@ -47,12 +42,8 @@
             <div class="form-group">
               <label class="col-md-4">Current USCIS Status</label>
               <div class="col-md-8 dropdown-select">
-                <select class="form-control">
-                    <option>--Select Petition--</option>
-                    <option>H1B Filing (Initial Cap filing) or H1 Transfer</option>
-                    <option>H1B Filing (Amendment)</option>
-                    <option>H1B Filing (Extension)</option>
-                    <option>Green Card</option>
+                <select id="uscisDropDown" class="form-control">
+                    
                   </select>
               </div>
             </div>
@@ -340,10 +331,7 @@
             <div class="form-group">
               <label class="col-md-4">Employment Level</label>
               <div class="col-md-8">
-                <select class="chosen-select form-control">
-                    <option>Level 1</option>
-                    <option>Level 2</option>
-                    <option>Level 3</option>
+                <select id="employmentLevelDropDown" class="chosen-select form-control">
                   </select>
               </div>
             </div>
@@ -594,6 +582,57 @@ function getCandidatesByOrgLocation(){
 }
 </script>
 	<script>
+	
+	function getPetitionTypeDropDown(){
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+immiModulePath+"/getPetitionTypeDropDown", 
+		        success: function(data) {
+		        	$('#petitionTypeDropdown').empty();
+		        	$('#petitionTypeDropdown').append('<option value="">--Select Type --</option>');
+		            for(var i=0;i<data.length;i++){
+		            	  var opt = data[i];
+		            		$('#petitionTypeDropdown').append('<option value='+opt.id+' >'+opt.name+'</option>');
+		            }
+		            $('#petitionTypeDropdown').trigger("chosen:updated");		        	
+		        }
+		 });
+	}
+	
+	function getUscisTypeDropDown(){
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+immiModulePath+"/getUscisTypeDropDown", 
+		        success: function(data) {
+		        	$('#uscisDropDown').empty();
+		        	$('#uscisDropDown').append('<option value="">--Select Type --</option>');
+		            for(var i=0;i<data.length;i++){
+		            	  var opt = data[i];
+		            		$('#uscisDropDown').append('<option value='+opt.id+' >'+opt.name+'</option>');
+		            }
+		            $('#uscisDropDown').trigger("chosen:updated");		        	
+		        }
+		 });
+	}
+	
+	function employmentLevelDropDown(){
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+immiModulePath+"/getEmploymentLevelDropDown", 
+		        success: function(data) {
+		        	$('#employmentLevelDropDown').empty();
+		        	$('#employmentLevelDropDown').append('<option value="">--Select Type --</option>');
+		            for(var i=0;i<data.length;i++){
+		            	  var opt = data[i];
+		            		$('#employmentLevelDropDown').append('<option value='+opt.id+' >'+opt.name+'</option>');
+		            }
+		            $('#employmentLevelDropDown').trigger("chosen:updated");		        	
+		        }
+		 });
+	}
+	
+	
+	
  function getAttorneysByOrgLocation(){
 	 console.log(" before function calling ---->");
 		 $.ajax({
@@ -762,6 +801,9 @@ function getCandidatesByOrgLocation(){
 		  
 		  getAttorneysByOrgLocation();
 		  getCandidatesByOrgLocation();
+		  getPetitionTypeDropDown();
+		  getUscisTypeDropDown();
+		  employmentLevelDropDown();
  });
    </script>
    <script>
