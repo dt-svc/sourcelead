@@ -121,8 +121,8 @@
 			   <li class="${tsf.key ==  timesheetSubmissionDTO.timeSubFrequency ? 'current' : ''} ${fn:contains(timesheetEntryDetailsDTO.filledTimeSubFrequencies, tsf.key) ? 'subColor' : ''}">
 					<a href="#" onclick="timesheetDivByFrequency('${tsf.key}');">${tsf.value}</a>
 				</li>
-				<div class="clearfix"></div>
 		   </c:forEach>
+		   <div class="clearfix"></div>
 		</ul>
 			<div id="timesheetDivByTab">
 				<div class="project_tabs">
