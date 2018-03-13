@@ -8275,6 +8275,26 @@ top: 10%; left: 12.5%; width: 1024px; border-radius:3px;
 .letterheadHeader .companyAddress p{
 	margin-bottom: 0;
 }
+
+.filterSearch li {
+	padding:3px 0;
+}
+.filterSearch li input[type="checkbox"] {
+	position: absolute; left: 0; top: 0; z-index: 99;
+}
+.filterSearch li label {
+	padding-left: 25px; position: relative; top:-1px;
+}
+ .filterSearch-ul  {
+ min-height: 100px; max-height: 300px; overflow-y:auto; margin-bottom: 15px;
+ }
+ .dynamic_search.filterDynamicsearch input {
+ width: 100% !important;
+  }
+  .advancedsearch-popup.filterDynamic-Search {
+  	top: 10%; left: 12.5%; width: 1024px; border-radius:3px;
+  }
+  
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
@@ -8692,4 +8712,3 @@ z-index: -800;
 .remove_uservalidation p.jquery_form_error_message {
 	position: absolute; bottom: 32px;
 }
-
