@@ -313,7 +313,7 @@ public class UserProfileRestController {
 		
 		//UserMailUnsubscribe userMailUnsubscribe = userMailUnsubscribeService.getUserMailUnsubscription(userMailUnsubscribeDTO);
 		
-		UserMailUnsubscribe userMailUnsubscribe = userMailUnsubscribeService.getUserMailUnsubscriptionByUserIdAndOrgLocationId(user.getId(), orgLocations.getId());
+		UserMailUnsubscribe userMailUnsubscribe = userMailUnsubscribeService.getUserMailUnsubscriptionByUserId(user.getId());
 		if(userMailUnsubscribe != null) {
 			userMailUnsubscribe.setTabIds(userMailUnsubscribeDTO.getTabIds());
 			userMailUnsubscribe.setOrgLocationId(orgLocations);

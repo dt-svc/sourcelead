@@ -29,6 +29,7 @@ import com.bis.sourcelead.dao.TeamMemberDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.CandidateOnBoardingDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.UserIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -862,6 +863,12 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 	public CandidateOnBoarding getCandidateOnBoardingByCandidateIdAndLocationId(Long candidateId, Long orgLocationId)
 			throws Exception {
 		return candidateOnBoardingDao.getCandidateOnBoardingByCandidateIdAndLocationId(candidateId, orgLocationId);
+	}
+
+	@Override
+	public ResponseList<CandidateOnBoardingDTO> getCandidateOnBoardingList(
+			CandidateOnBoardingDTO candidateOnBoardingDTO, OrgLocations orgLocations) throws Exception {
+		return candidateOnBoardingDao.getCandidateOnBoardingList(candidateOnBoardingDTO, orgLocations);
 	}
 
 	
