@@ -411,7 +411,11 @@ public class TimesheetSubmissionsRestController {
 			notificationScenario.setBody(notificationBody);
 			notificationScenario.setOrgCode(loginOrgLocation.getLocationCode());
 			//String url = null;
-			String actionLink = "";
+			
+			StringBuilder actionLinkBuilder = new StringBuilder();
+			StringBuilder currentTimeFrequency = new StringBuilder();
+			currentTimeFrequency.append(startDate).append("To").append(endDate);
+			String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("timesheetApproval?&currentTimeFrequency="+currentTimeFrequency.toString()+"&projectMemberId="+projectMember.getId()+"&projectId="+projectMember.getProjects().getId()+"&masterCandidateId="+projectMember.getMasterCandidateId().getId()+"&from=approver"+"&notifyLink=notifyLink").toString();	
 			emailScenerioUtil.sendNotification(actionLink, loginUser, approver.getApproverUserId(), approver.getProjectClientsId().getOrgLocationsId(), notificationScenario);
 			
 		}

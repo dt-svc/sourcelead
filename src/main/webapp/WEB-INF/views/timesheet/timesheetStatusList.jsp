@@ -190,7 +190,7 @@ function filter(){
 				  var pageCount = $('#pageCount').val();
 				  var pageSize = $("#pageSize").val();
 				  $("#currentPageNumber").val(pageNo);
-				  var searchData = '${timesheetApprovalDTO.searchValue}';
+				  var searchData = $('#searchData').val();
 			      if(totalRows !=null && totalRows != '' && totalRows != 'undefined' && totalRows != 0){
 					  $('#paginationDiv').show();
 					  $('#dataTableSearchExpenses123').val('') ;
@@ -207,7 +207,7 @@ function filter(){
 				              ellipsePageSet :false,
 				              cssStyle: 'light-theme',
 				               onPageClick: function (pageNumber, event) {
-				            	   getStatusListData(""+pageNumber+"","");
+				            	   getStatusListData(""+pageNumber+"",searchData);
 				              }
 			      };
 			      $("#pagination-demo").pagination(options);

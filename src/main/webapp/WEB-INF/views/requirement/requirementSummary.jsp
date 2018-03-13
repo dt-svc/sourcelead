@@ -7,7 +7,6 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <link href="/resources/css/requirement-summary.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
- 
 <script>
 $(document).ready(function() {
 	 var requirementId = '${requirementId}';
@@ -1179,7 +1178,7 @@ function assignedMemberList(requirementId){
 	var url = sourceleadUrl+"/getRequirementAssignedListByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId;
 	
 		var result = '';
-		result = result +'     <div class="clearfix mt5 mb require_wrap_table datatable_filter">';
+		result = result +'     <div class="clearfix mt5 mb project_wrap_table datatable_filter dataTablesPaginate">';
 		  /* result = result + " <div class='remove_search searchCustom'>";
 			result = result
 					+ " <input type='text' placeholder='Search' id='assignedToDataTableSearch'/>";
