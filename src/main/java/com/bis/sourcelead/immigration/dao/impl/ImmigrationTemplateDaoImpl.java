@@ -29,6 +29,7 @@ import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
 import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.ImmigrationTemplateView;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
@@ -480,6 +481,15 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from CandidateEmployers ce where ce.candidateId.id = :candidateId";
 		List<CandidateEmployers> candidateEmployers = session.createQuery(query).setLong("candidateId", id).list();
+		return candidateEmployers;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<LookUpData> getEmployersLookupData() {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from LookUpData lud where lud.category = :category";
+		List<LookUpData> candidateEmployers = session.createQuery(query).setString("category", "EmploymentType").list();
 		return candidateEmployers;
 	}
 }

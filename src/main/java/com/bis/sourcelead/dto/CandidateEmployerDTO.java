@@ -1,5 +1,9 @@
 package com.bis.sourcelead.dto;
 
+import java.util.List;
+
+import com.bis.sourcelead.entity.LookUpData;
+
 public class CandidateEmployerDTO {
 
 	private Long id;
@@ -26,7 +30,6 @@ public class CandidateEmployerDTO {
 	
 	private String candidateEmployeeId;
 	
-
 	private String taxId;
 	
 	private String jobTitle;
@@ -36,6 +39,8 @@ public class CandidateEmployerDTO {
 	private long candidateId;
 	
 	private String candidateExperianceId;
+	
+	private List<LookUpData> candidateEmpLookup; 
 
 
 	public Long getId()
@@ -204,6 +209,11 @@ public class CandidateEmployerDTO {
 		this.candidateExperianceId = candidateExperianceId;
 	}
 
-	
+	public List<LookUpData> getCandidateEmpLookup() {
+		return candidateEmpLookup;
+	}
 
+	public void setCandidateEmpLookup(List<LookUpData> candidateEmpLookup) {
+		this.candidateEmpLookup = candidateEmpLookup;
+	}
 }

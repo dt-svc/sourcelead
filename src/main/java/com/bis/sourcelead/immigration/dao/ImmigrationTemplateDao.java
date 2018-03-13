@@ -12,6 +12,7 @@ import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
 import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.User;
 /**
  * @author Srinivas.Sabbu
@@ -54,6 +55,8 @@ public interface ImmigrationTemplateDao {
 	int savePetitionTemplateDetailsValues(String templateId);
 
 	List<CandidateEmployers> getPetitionTemplateEmployers(Long id);
+
+	List<LookUpData> getEmployersLookupData();
 	
 	
 }

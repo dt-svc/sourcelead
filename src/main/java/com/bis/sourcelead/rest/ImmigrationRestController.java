@@ -125,6 +125,12 @@ public class ImmigrationRestController {
 		return caEmployerDTOs;
 	}
 	
+	@RequestMapping(value = { "/getEmploymentTypeList" })
+	public List<LookUpData> getEmploymentTypeList(HttpServletRequest request) {
+		List<LookUpData> caEmployerDTOs = immigrationTemplateService.getEmploymentTypeList();
+		return caEmployerDTOs;
+	}
+	
 
 	@RequestMapping(value = { "/viewImmigration" })
 	public ModelAndView viewImmigration(HttpServletRequest request) {
