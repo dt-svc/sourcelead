@@ -5,11 +5,19 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.bis.sourcelead.util.SourceLeadSessionManager;
+
 @Controller
+@PropertySource("${propertyLocation:app.properties}")
 public class StaticWebController {
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
 	
 	@RequestMapping("/about-us.html")
 	public String aboutUs() {
@@ -168,14 +176,13 @@ public class StaticWebController {
 	}
 	
 	@RequestMapping("/sourceleadJobPage.html")
-	public String sourceleadJobPage(HttpServletRequest request) {
-	    Map<String,String> map =new HashMap();
-	    map.put("SourceleadStaticUrl", request.getRequestURL().toString().split(request.getRequestURI())[0]);
+	public String sourceleadJobPage() {
 		return "openJobs/sourceleadJobPage";
 	}
 	
 	@RequestMapping(value={ "/","/index.html"})
-	public String index() {
+	public String index(HttpServletRequest request) {
+		SourceLeadSessionManager.setSessionAttribute(request, "sourceleadUrl", sourceleadUrl);
 		return "static-web/index";
 	}
 	
