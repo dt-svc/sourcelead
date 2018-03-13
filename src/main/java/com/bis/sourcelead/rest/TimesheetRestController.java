@@ -822,6 +822,7 @@ public class TimesheetRestController {
 			 timesheetEntryDetailsDTO.setEmployeeName(pm.getProjectMemberCandidteId().getFullName());
 			 timesheetEntryDetailsDTO.setEmployeeEmail(pm.getProjectMemberCandidteId().getEmail());
 			 timesheetEntryDetailsDTO.setEmployeePhoneNo(pm.getProjectMemberCandidteId().getMobilePhone());
+			 timesheetEntryDetailsDTO.setProjectNameForSubmissionPageDisplay(pm.getProjects().getProjectName());
 			 List<ProjectTasks> projectsTasks = projectTasksService.getAllTasksByProjectId(eedDTO.getProjectsId());
 			 TimeSheetSubmissionDTO tsDTO =  getTimesheetSubmissionDetails(eedDTO, request);
 			 model.addObject("timesheetSubmissionDTO",tsDTO);
@@ -2098,7 +2099,9 @@ public class TimesheetRestController {
 			
 			StringBuilder actionLinkBuilder = new StringBuilder();
 			TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getSubmissionDetailsByProjectIdMasterCandiDateIdStartDateandEndDate(projectId,masterCanidateId,frequencyStartDate,frequencyEndDate);
-			actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("timesheetApproval?&currentTimeFrequency="+currentTimeFrequency.toString()+"&projectId="+projectId+"&masterCandidateId="+masterCanidateId+"&projectMemberId="+timesheetSubmissions.getProjectMembers().getId()+"&totalHours="+timesheetSubmissions.getTotalHours()+"&from=approver&notifyLink=notifyLink").toString();	
+			if(timesheetSubmissions!= null && timesheetSubmissions.getProjectMembers()!= null && timesheetSubmissions.getTotalHours()!= null) {
+				actionLink =actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheetApproval?&currentTimeFrequency="+currentTimeFrequency.toString()+"&projectId="+projectId+"&masterCandidateId="+masterCanidateId+"&projectMemberId="+timesheetSubmissions.getProjectMembers().getId()+"&totalHours="+timesheetSubmissions.getTotalHours()+"&from=approver&notifyLink=notifyLink").toString();
+			}
 			emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, loginOrgLocation, notificationScenario);
 			
 		}
@@ -2240,7 +2243,8 @@ public class TimesheetRestController {
        }
        
        private void addTimesheetDayEntry(ProjectMembers projectMember,Date actualStartDate,Date actualEndDate,Date frequencyStartDate,Date frequencyEndDate,User loginUser,Date timesheetDate,String hours,String comments,String taskUUID,String dateformat) throws Exception{
-    	    TimesheetSubmissions timesheetSubmissions  = timesheetSubmissionsService.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(actualStartDate,actualEndDate,projectMember.getProjects().getId(),projectMember.getMasterCandidateId().getId());
+    	  if(projectMember!= null && projectMember.getProjects()!= null && projectMember.getMasterCandidateId()!= null) {
+    	   TimesheetSubmissions timesheetSubmissions  = timesheetSubmissionsService.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(actualStartDate,actualEndDate,projectMember.getProjects().getId(),projectMember.getMasterCandidateId().getId());
 	    	if(timesheetSubmissions == null){
 	    		timesheetSubmissions =  new TimesheetSubmissions();
 		    	timesheetSubmissions.setStartDate(actualStartDate);
@@ -2258,11 +2262,15 @@ public class TimesheetRestController {
 	    	ArrayList<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
 	    	List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectMemberMasterCandidateIdAndProjectId(projectMember.getMasterCandidateId().getId(), projectMember.getProjects().getId());
 	    	HashSet<SubmissionApproverHierarchy> saHierarchyList = new HashSet<SubmissionApproverHierarchy>();
-	        if(hierarchyList != null && !hierarchyList.isEmpty()){
+	        outer:{
+	    	if(hierarchyList != null && !hierarchyList.isEmpty()){
 					for(ProjectApproverHierarchy hierarchy : hierarchyList){
 						SubmissionApproverHierarchy saHierarchy = null;
 						if(timesheetSubmissions != null && timesheetSubmissions.getId() != null) {
 							saHierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchyForApprover(timesheetSubmissions.getId(), hierarchy.getApproverUserId().getId());
+						   if(saHierarchy.getSubmissionApprovalStatus()== Submission_ApprovalStatus.APPROVED) {
+							   break outer;
+						   }
 						}
 					    if(saHierarchy == null){
 					    	saHierarchy = new SubmissionApproverHierarchy();
@@ -2330,8 +2338,9 @@ public class TimesheetRestController {
 				timesheetSubmissions.setNonBillableHours(actualNonBillableTimeString);
 				timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
 			}
-       }
-        
+           }
+    	 }
+       }  
        
        private HashMap<String,Long> addTimesheetDateDayEntries(Date actualStartDate,Date actualEndDate,Date timesheetDate,String dateFormat,String taskUUID,String hours,String comments,TimesheetSubmissions timesheetSubmissions,User loginUser) throws Exception{
     	   Long total = 0l;
@@ -2538,7 +2547,7 @@ public class TimesheetRestController {
 			List<ProjectTasks> projectTaskList = holidayService.getHolidayProjectTaskByorgLocationIdAndHolidayId(orgLocations.getId(),holiday.getId());
 			if(projectTaskList != null && !projectTaskList.isEmpty()) {
 			for(ProjectTasks projectTask: projectTaskList) {
-				List<ProjectMembers> projectMemberList = projectMembersService.getAllProjectsByOrgLocationId(orgLocations.getId());
+				List<ProjectMembers> projectMemberList = projectMembersService.getAllProjectMembersByProjectId(projectTask.getProjectId().getId());
 					if(projectMemberList != null && !projectMemberList.isEmpty() && holiday != null) {
 						for(ProjectMembers projectMember:projectMemberList) {
 						if(projectMember!= null) {
