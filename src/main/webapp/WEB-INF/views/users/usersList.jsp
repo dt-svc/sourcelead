@@ -178,8 +178,7 @@ function getUsersSearchResult(searchValue){
 			
 			<a href="javascript:void(0)" class="btn btn-primary btn-sm"
 				title="Filter Search"
-				onClick="openPop();"> Filter
-				Search&nbsp;&nbsp; <i class="fa fa-filter"></i>
+				onClick="openPop();"> Filter&nbsp;&nbsp; <i class="fa fa-filter"></i>
 			</a>
 	    </div>
 	    
@@ -197,9 +196,9 @@ function getUsersSearchResult(searchValue){
 							<label><strong>Status</strong></label>
 							 <div class="clearfix">
 								<ul class="list-unstyled" id="statusFilter">
-		                    	    <li class="checkBox positionRelative"><input   type="checkbox" name="userState" id="activeStatus" value ="ACTIVE" checked onclick="getDynamciUserList();"><label>&nbsp;Active</label></li>
-									<li class="checkBox positionRelative"><input   type="checkbox" name="userState" id="notloggedInStatus" value ="NOT_LOGGEDIN" checked onclick="getDynamciUserList();"><label>&nbsp;Not Logged In</label></li>
-									<li class="checkBox positionRelative"><input   type="checkbox" name="userState" id="inactiveStatus" value ="INACTIVE"   onclick="getDynamciUserList();"><label>&nbsp;In Active</label></li>
+		                    	    <li class="checkBox positionRelative"><input   type="checkbox" name="userState" id="activeStatus" value ="ACTIVE" checked ><label>&nbsp;Active</label></li>
+									<li class="checkBox positionRelative"><input   type="checkbox" name="userState" id="notloggedInStatus" value ="NOT_LOGGEDIN" checked ><label>&nbsp;Not Logged In</label></li>
+									<li class="checkBox positionRelative"><input   type="checkbox" name="userState" id="inactiveStatus" value ="INACTIVE" ><label>&nbsp;In Active</label></li>
 		               				
 		                        </ul>
 							 </div>
@@ -209,15 +208,15 @@ function getUsersSearchResult(searchValue){
 								<label><strong>Employment Type</strong></label>
 								 <div class="clearfix">
 									<ul class="list-unstyled" id="employmentTypeFilter">
-			                    	    <li class="checkBox positionRelative"><input   type="checkbox" name="employmentType"  value ="C2C"  onclick="getDynamciUserList();"><label>&nbsp;C2C</label></li>
-										<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType"  value ="C2C-1099"  onclick="getDynamciUserList();"><label>&nbsp;C2C-1099</label></li>
-										<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="W-2"   onclick="getDynamciUserList();"><label>&nbsp;W-2</label></li>
-			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="C2H"   onclick="getDynamciUserList();"><label>&nbsp;C2H</label></li>
-			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="C2H-1099"   onclick="getDynamciUserList();"><label>&nbsp;C2H-1099</label></li>
-			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Offshore C2C"   onclick="getDynamciUserList();"><label>&nbsp;Offshore C2C</label></li>
-			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Part Time"   onclick="getDynamciUserList();"><label>&nbsp;Part Time</label></li>
-			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Full Time"   onclick="getDynamciUserList();"><label>&nbsp;Full Time</label></li>
-			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Others"   onclick="getDynamciUserList();"><label>&nbsp;Others</label></li>
+			                    	    <li class="checkBox positionRelative"><input   type="checkbox" name="employmentType"  value ="C2C"><label>&nbsp;C2C</label></li>
+										<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType"  value ="C2C-1099" ><label>&nbsp;C2C-1099</label></li>
+										<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="W-2" ><label>&nbsp;W-2</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="C2H"><label>&nbsp;C2H</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="C2H-1099"><label>&nbsp;C2H-1099</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Offshore C2C"><label>&nbsp;Offshore C2C</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Part Time"><label>&nbsp;Part Time</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Full Time"><label>&nbsp;Full Time</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Others"><label>&nbsp;Others</label></li>
 			                        </ul>
 								 </div>
 							 </div> 
@@ -234,7 +233,7 @@ function getUsersSearchResult(searchValue){
 									 <div class="clearfix filterSearch-ul">
 										<ul class="list-unstyled positionRelative filterSearch mt5" id="myManagersUL">
 											<c:forEach var="manager" items="${reportingManagersList}">
-											<li class="checkBox positionRelative"><input  type="checkbox" name="orgManagers" value ="${manager.id}"  onclick="getDynamciUserList();"><label>${manager.fullName}</label></li>
+											<li class="checkBox positionRelative"><input  type="checkbox" name="orgManagers" value ="${manager.id}" ><label>${manager.fullName}</label></li>
 											</c:forEach>
 										</ul>
 									 </div> 
@@ -249,7 +248,7 @@ function getUsersSearchResult(searchValue){
 							 <div class="clearfix filterSearch-ul">
 								<ul class="list-unstyled positionRelative filterSearch mt5" id="myRolesUL">
 									<c:forEach var="roles" items="${rolesList}">
-									<li class="checkBox positionRelative"><input  type="checkbox" name="userRole" value ="${roles.id}"  onclick="getDynamciUserList();"><label>${roles.displayName}</label></li>
+									<li class="checkBox positionRelative"><input  type="checkbox" name="userRole" value ="${roles.id}" ><label>${roles.displayName}</label></li>
 									</c:forEach>
 								</ul>
 							 </div> 
@@ -264,7 +263,7 @@ function getUsersSearchResult(searchValue){
 							 <div class="clearfix filterSearch-ul">
 								<ul class="list-unstyled positionRelative filterSearch mt5" id="myClientsUL">
 									<c:forEach var="client" items="${clientsList}">
-									<li class="checkBox positionRelative"><input  type="checkbox" name="orgClients" value ="${client.id}"  onclick="getDynamciUserList();"><label>${client.clientName}</label></li>
+									<li class="checkBox positionRelative"><input  type="checkbox" name="orgClients" value ="${client.id}" ><label>${client.clientName}</label></li>
 									</c:forEach>
 								</ul>
 							 </div> 
@@ -283,7 +282,7 @@ function getUsersSearchResult(searchValue){
 							 <div class="clearfix filterSearch-ul">
 								<ul class="list-unstyled positionRelative filterSearch mt5" id="myTeamsUL">
 									<c:forEach var="team" items="${teamsList}">
-									<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="${team.id}"  onclick="getDynamciUserList();"><label>${team.name}</label></li>
+									<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="${team.id}" ><label>${team.name}</label></li>
 									</c:forEach>
 								</ul>
 							 </div> 
@@ -299,7 +298,7 @@ function getUsersSearchResult(searchValue){
 							 <div class="clearfix filterSearch-ul">
 								<ul class="list-unstyled positionRelative filterSearch mt5" id="myDepartmentUL">
 									<c:forEach var="dep" items="${departmentList}">
-									<li class="checkBox positionRelative"><input  type="checkbox" name="orgDepartments" value ="${dep.id}"  onclick="getDynamciUserList();"><label>${dep.departmentName}</label></li>
+									<li class="checkBox positionRelative"><input  type="checkbox" name="orgDepartments" value ="${dep.id}"><label>${dep.departmentName}</label></li>
 									</c:forEach>
 								</ul>
 							 </div> 
@@ -311,12 +310,10 @@ function getUsersSearchResult(searchValue){
 					</div>
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
-						<input type="button" value="Reset" id="clear_search"
+							<input type="button" value="Apply" id="search_requiremet"
+								onclick="closePop();getDynamciUserList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search"
 								onclick="resetFilter();" class="btn btn-sm btn-primary" />
-								
-							<input type="button" value="Ok" id="search_requiremet"
-								onclick="closePop()" class="btn btn-sm btn-success" />
-							
 						</div>
 					</div>
 				</div>
