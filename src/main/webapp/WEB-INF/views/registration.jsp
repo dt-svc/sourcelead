@@ -119,6 +119,7 @@ window.onload = function () {
     	});
     	return indexed_array;
     }
+    
 </script>
  <div  id="loadTime"></div> 
 <div class="logMask"></div>
@@ -196,23 +197,7 @@ window.onload = function () {
 		                  <b></b>
 		              </span>
 		            </div> 
-<!-- 		            </div>  -->
-		            
-		            <!-- <div id="pwdDiv">
-	                	<div class="col-xs-12 col-md-12 mb10">
-		                    <i class="fa fa-unlock-alt"></i>
-		                    <label>Password <span class="text-danger">*</span></label>
-		                    <input type="password" id="password" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" >
-		                    <b></b>
-		                </div>
-		                <div class="col-xs-12 col-md-12 mb10" id="passwordDiv">
-		                    <i class="fa fa-unlock-alt"></i>
-		                    <label>Confirm Password <span class="text-danger">*</span></label>
-		                    <input type="password" id="confirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).checkPass();" data-validation="required validate_length length6-100" >
-		                    <b></b>
-		                </div>
-		           </div> -->
-		            
+
 		            
 		            </div>
 		            <div class="col-md-12 clearfix">
@@ -399,16 +384,34 @@ window.onload = function () {
                 </div>
                 <div class="clearfix"></div>
                 <div id="pwdDiv">
-                <div class="col-xs-12 col-md-6 mb10">
+                <!-- <div class="col-xs-12 col-md-6 mb10">
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Password <span class="text-danger">*</span></label>
 	                    <input type="password" id="password" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" >
 	                    <b></b>
+	                </div> -->
+	                
+	                   <div class="col-xs-12 col-md-6 mb10 posiRela">
+
+	                    <i class="fa fa-unlock-alt"></i>
+	                    <label>Password <span class="text-danger">*</span></label>
+	                    <input type="password" class="registePassword"  id="jsPassword" name="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d.*)(?=.*\W.*)[a-zA-Z0-9\S]{8,}$" filed-name="Password" field-name="Password" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" data-validation="required validate_length length6-100" onkeyup="passwordValidation('jsPassword','js_letter','js_capital','js_number','js_special','js_length');" >
+	                    <b></b>
+	                    
+						<div id="js_message" class="passHint">
+				 			<h3>Password must contain the following:</h3>
+				  			<p  id="js_letter" class="invalid">A lowercase letter</p>
+				  			<p  id="js_capital" class="invalid">A capital (uppercase) letter</p>
+				  			<p  id="js_number" class="invalid">A number</p>
+				  			<p  id="js_special" class="invalid">A special</p>
+				  			<p  id="js_length" class="invalid">Minimum 8 characters</p>
+						</div>      
+	                    
 	                </div>
 	                <div class="col-xs-12 col-md-6 mb10" id="passwordDiv">
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Confirm Password <span class="text-danger">*</span></label>
-	                    <input type="password" id="confirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).checkPass();" data-validation="required validate_length length6-100" >
+	                    <input type="password" id="jsconfirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).checkProfPass();" data-validation="required validate_length length6-100" >
 	                    <b></b>
 	                </div>
 	           </div>
@@ -495,11 +498,23 @@ window.onload = function () {
                 </div>
                 <div class="clearfix"></div>
                 <div id="recpwdDiv">
-                <div class="col-xs-12 col-md-6 mb10">
+                <div class="col-xs-12 col-md-6 mb10 posiRela" >
+
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Password <span class="text-danger">*</span></label>
-	                    <input type="password" id="recpassword" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" >
+	                    <!-- <input type="password" id="recpassword" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" >
+	                    -->
+	                     <input type="password" class="registePassword"  id="recpassword" name="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d.*)(?=.*\W.*)[a-zA-Z0-9\S]{8,}$" filed-name="Password" field-name="Password" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" data-validation="required validate_length length6-100" onkeyup="passwordValidation('recpassword','fr_letter','fr_capital','fr_number','fr_special','fr_length');" >
+	                   
 	                    <b></b>
+	                    <div id="fr_message" class="passHint">
+ 							<h3>Password must contain the following:</h3>
+  							<p  id="fr_letter" class="invalid">A lowercase letter</p>
+  							<p  id="fr_capital" class="invalid">A capital (uppercase) letter</p>
+  							<p  id="fr_number" class="invalid">A number</p>
+  							<p  id="fr_special" class="invalid">A special</p>
+  							<p  id="fr_length" class="invalid">Minimum 8 characters</p>
+						</div> 
 	                </div>
 	                <div class="col-xs-12 col-md-6 mb10" id="recpasswordDiv">
 	                    <i class="fa fa-unlock-alt"></i>
@@ -832,6 +847,7 @@ function resetCredentials(type){
 	$.fn.checkPass = function() {   
 		var pass1 = document.getElementById('password');  
 	    var pass2 = document.getElementById('confirmPassword');
+	    
 	    $("#submit_button").attr("disabled", "disabled");
 	    
 	    if(pass1.value == pass2.value){
@@ -849,6 +865,39 @@ function resetCredentials(type){
     	    $("input#confirmPassword").after("<p class='jquery_form_error_message'> Passwords not matched</span>");
 			$('input#confirmPassword').attr('record-exist','yes');
 			$('input#confirmPassword').attr('record-exist-errorMsg','Passwords Not Matched'); 
+	    }
+   }
+	
+    $.fn.clear = function() {   
+    	 $('#confirmPassword').val('');
+    	
+	 return false;
+    }
+})(jQuery);
+</script>
+
+<script type="text/javascript">
+(function($) {
+	$.fn.checkProfPass = function() {   
+		var pass1 = document.getElementById('jsPassword');  
+	    var pass2 = document.getElementById('jsconfirmPassword');
+	    
+	    $("#submit_button").attr("disabled", "disabled");
+	    if(pass1.value == pass2.value){
+			 $("#submit_button").removeAttr("disabled");
+			 $('input#jsconfirmPassword').removeAttr( "record-exist record-exist-errormsg");
+    		 $('#passwordDiv').find('p.jquery_form_error_message').remove(); 
+			 $( "#submit_button" ).removeAttr("style");
+			 $( "#submit_button" ).click(function() {
+			 if ($(this).validate(false, validationSettings)){
+			 }
+			});
+	    }
+	    else{ 
+		    $('#passwordDiv').find('p.jquery_form_error_message').remove(); 
+    	    $("input#jsconfirmPassword").after("<p class='jquery_form_error_message'> Passwords not matched</span>");
+			$('input#jsconfirmPassword').attr('record-exist','yes');
+			$('input#jsconfirmPassword').attr('record-exist-errorMsg','Passwords Not Matched'); 
 	    }
    }
 	
@@ -1612,6 +1661,66 @@ function validateOrgRequestCompanyName(){
 
 
 </script>
+
+
+<script>
+function passwordValidation(idValue,letter,capital,number,special,length){
+	var myInput = $("#"+idValue).val();
+	 
+	if(myInput.match(/[a-z]/g)){
+		$("#"+letter).removeClass("invalid");
+		$("#"+letter).addClass("actTe");
+	}else{
+		$("#"+letter).removeClass("actTe");
+		$("#"+letter).addClass("invalid");
+	} 
+	if(myInput.match(/[A-Z]/g)){
+		$("#"+capital).removeClass("invalid");
+		$("#"+capital).addClass("actTe");
+	}else{
+		$("#"+capital).removeClass("actTe");
+		$("#"+capital).addClass("invalid");
+	}
+	if(myInput.match(/[0-9]/g)){
+		$("#"+number).removeClass("invalid");
+		$("#"+number).addClass("actTe");
+	}else{
+		$("#"+number).removeClass("actTe");
+		$("#"+number).addClass("invalid");
+	}
+	if(myInput.match(/[$&+,:;=?@#|'<>.^*()%!-]/g)){
+		$("#"+special).removeClass("invalid");
+		$("#"+special).addClass("actTe");
+	}else{
+		$("#"+special).removeClass("actTe");
+		$("#"+special).addClass("invalid");
+	}
+	if(myInput.length >= 8){
+		$("#"+length).removeClass("invalid");
+		$("#"+length).addClass("actTe");
+	}else{
+		$("#"+length).removeClass("actTe");
+		$("#"+length).addClass("invalid");
+	}
+	
+}
+
+
+// When the user starts to type something inside the password field
+
+</script>
+
+<script>
+$(document).ready(function(){
+	$(".posiRela input").focus(function(){
+		$(".passHint").show();
+	});
+	$(".posiRela input").blur(function(){
+		$(".passHint").hide();
+	});	
+});
+</script>
+
 <jsp:include page="socialinviterscripts.jsp" />
 <!--    Ends of validating the Company Email i,e removing duplicate values-->
 </html>
