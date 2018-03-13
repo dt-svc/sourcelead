@@ -20,6 +20,12 @@ public class ProjectMemberDTOConverter {
 			    if(projectMembers.getProjects().getEndDateStr() != null) {
 			    	pmDTO.setProjectEndDate(projectMembers.getProjects().getEndDateStr());
 			    }
+			    if(projectMembers.getProjectAssignedDateStr() != null) {
+			    	pmDTO.setMemberStartDate(projectMembers.getProjectAssignedDateStr());
+			    }
+			    if(projectMembers.getProjectEndDateStr() != null) {
+			    	pmDTO.setMemberEndDate(projectMembers.getProjectEndDateStr());
+			    }
 		}
 		pmDTO.setMasterCandidateId(projectMembers.getMasterCandidateId().getId());
 		return pmDTO;

@@ -414,7 +414,7 @@ function deleteSelectedResume(candidateId, resumeId){
     			 $("#popUpDivResume").removeClass("edit-details-active");
     			 deleteResumePopUp();
     			 resumesMsgFadein();
-    			 
+    			 location.reload();
 		    	}
 		    },
      });

@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.HolidayDAO;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
@@ -134,6 +135,15 @@ public class HolidayDaoImpl  implements HolidayDAO{
 			holiday = holidayList.get(0);
 		}
 		return holiday;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectTasks> getHolidayProjectTaskByorgLocationIdAndHolidayId(Long orglocationId, Long holidayId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query="from ProjectTasks proTask left join fetch proTask.holiday holiday left join fetch holiday.orgLocations orgLoc  where holiday.id = :holidayId and orgLoc.id = :orglocationId";
+		List<ProjectTasks> projectTasks = session.createQuery(query).setLong("orglocationId", orglocationId).setLong("holidayId", holidayId).list();
+		return projectTasks;
 	}
 
 
