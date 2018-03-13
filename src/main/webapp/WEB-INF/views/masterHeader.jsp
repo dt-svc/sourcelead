@@ -737,7 +737,7 @@ function preventTabkey(e){
 					  	<li><a href="<c:url value="/app/customFields" />"><i class="fa fa-align-justify" aria-hidden="true"></i>Custom Fields</a></li>
 					  	</sec:authorize>
 						 
-						 <sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN')">
+						 <sec:authorize access="hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_JOB_CAMPAIGN')">
 							 <li><a id="campSubMenu" href="javascript:void(0)"><i class="fa fa-bullhorn"></i>Campaigns <i class="fa fa-caret-down arrRight"></i></a>
 							 	<div class="campsubMenuView">
 				
@@ -1082,6 +1082,13 @@ function notificationStatusAsRead(){
     </ul>
   </div>
 <!--  Theme Swithcer div ends  -->
+
+<!--  Support div -->
+  <div id="mySidenav" class="sidenav">
+	<a href="/app/sourceleadTicketList" title="Report Issue"><span class="fa fa-ticket"></span></a>
+<!--   <a href="add-ticket.html">Support</a> -->
+</div>
+<!--  Support div ends  -->
 
 
 <script type="text/javascript">
