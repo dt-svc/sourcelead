@@ -150,14 +150,14 @@ public class OrgSettingsController {
 		List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
 	    model.addObject("rolesList", rolesList);
 		
-		OrglocationSignatory signatory = orglocationSignatoryService.getOrglocationSignatoryByOrglocationId(orgLocations.getId());
+		/*OrglocationSignatory signatory = orglocationSignatoryService.getOrglocationSignatoryByOrglocationId(orgLocations.getId());
 		if(signatory != null) {
 			model.addObject("signatoryUser", signatory.getUserId().getId());
 			if(!signatory.getUserId().getId().equals(user.getId())) {
 				model.addObject("signatory", signatory);
 				model.addObject("role",signatory.getUserRoleId().getRoles().getDisplayName());
 			}
-		}
+		}*/
 		
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		if(countries != null){
@@ -217,7 +217,6 @@ public class OrgSettingsController {
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
-		commonUtil.highLightMenu(Constants.OrgSettings, request);
 		List<RoleHierarchy> hierarchyList = null;
 		try {
 			hierarchyList = roleHierarchyService.getRoleHierarchyByOrgLocationId(orgLocations.getId());
@@ -291,7 +290,7 @@ public class OrgSettingsController {
 		Roles roles = rolesService.getRolesByIdAndOrgLocationId(roleId, orgLocations.getId());
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		if (null != roles) {
-			List<SourceleadActions> actionsList = sourceleadActionsService.getAllSourceleadActionsByOrgLocationId(orgLocations);
+			List<SourceleadActions> actionsList = sourceleadActionsService.getAllSourceleadActionsForEnrollByOrgLocationIdAndOrgId(orgLocations,org);
 			if (null != roles.getActionId()) {
 				ArrayList<SourceleadActions> sourceleadActionsList = new ArrayList<SourceleadActions>();
 				List<Long> roleActonList = new ArrayList<Long>();

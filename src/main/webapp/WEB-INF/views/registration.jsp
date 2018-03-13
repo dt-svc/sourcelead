@@ -1,6 +1,5 @@
 
 <!DOCTYPE html>
-
 <html>
 <head>
      <meta charset="utf-8">
@@ -19,11 +18,12 @@
     <title>::. Registration .::</title>
     <link rel="icon" type="/resources/image/png" href="/resources/images/fav.png" />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/resources/css/bootstrap-select.min.css">
     <link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
     <link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
     <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
     <link href="/resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
-     <link href="/resources/css/crowdsourcing-main.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+    <link href="/resources/css/crowdsourcing-main.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
     
 </head>
 
@@ -590,54 +590,60 @@ window.onload = function () {
        <form:form   id="employerRegistration_form"  name="employerRegistration_form" method="post" >     
         <div class="row mt10">
             <div class="form-group clearfix noMar">
+            <input type="hidden" id="orgType" name="orgType" value="Request">
             
-            <div class="col-md-6 paddRight" >
-                <div class="col-xs-12 col-md-12 mb" id="firstNameDiv">
+            <div class="clearfix paddRight regDemoFields">
+                
+                <div class="col-xs-12 col-md-6" id="firstNameDiv">
                     <i class="fa fa-user-circle"></i>
                     <label>First Name <span class="text-danger">*</span></label>
                     <input type="text" name="firstName" field-name="First Name" id="firstName" value='${firstName}' data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" onkeydown="removeValidationNameDiv();">
                     <b></b>
                 </div>
-                <div class="col-xs-12 col-md-12 mb" id="lastNameDiv">
+                <div class="col-xs-12 col-md-6" id="lastNameDiv">
                     <i class="fa fa-user-circle"></i>
                     <label>Last Name</label>
                     <input type="text" name="lastName" field-name="Last Name" id="lastName" value='${lastName}'  data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100">
                     <b></b>
                 </div>
                 
-                <div class="col-xs-12 col-md-12 mb" id="emailDiv">
+                <div class="col-xs-12 col-md-6" id="emailDiv">
                     <i class="fa fa-envelope"></i>
                     <label>Email <span class="text-danger">*</span></label>
-                    <input type="text" name="email" field-name="Email" value='${email}' onblur="validateEmail('Professional');" id="email"  data-validation="required validate_Space validate_length length2-100 validate_email" >
+                    <input type="text" name="email" field-name="Email" value='${email}'  id="email"  data-validation="required validate_Space validate_length length2-100 validate_email" >
                     <b></b>
                 </div>
                 
-                <div class="col-xs-12 col-md-12 mb">
+                <div class="col-xs-12 col-md-6">
                     <i class="fa fa-mobile fa-2x"></i>
                     <label>Phone Number</label>
-                    <input type="text" name="phoneNumber" field-name="Phone Number"  id="mobileNumber"  data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">
+                    <input type="text" name="phoneNumber" field-name="Phone Number"  id="mobileNumber"  data-validation="required validate_Space validate_phone validate_length length9-20">
                     <b></b>
                 </div>
-                </div>
-               
-               <div class="col-md-6 paddLeft" >
-                <div class="col-xs-12 col-md-12 mb" id="companyNameDiv">
+                <div class="col-xs-12 col-md-6" id="companyNameDiv">
                     <i class="fa fa-building"></i>
                     <label>Company Name <span class="text-danger">*</span></label>
                     <input type="text" name="companyName" field-name="Company Name"   id="companyName" onblur="validateOrgRequestCompanyName();" data-validation="required validate_Space validate_length length2-250" >
                     <b></b>
                 </div>
                 
-                <div class="col-xs-12 col-md-12 mb" >
+                <div class="col-xs-12 col-md-6" >
                     <i class="fa fa-globe"></i>
                     <label>Company Website </label>
                     <input type="text" name="companyWebsite" field-name="Company Website"  id="companyWebsite"  data-validation="required validate_Space validate_domain validate_length length2-100" >
                     <b></b>
                 </div>
                 
-                <div class="col-xs-12 col-md-12 select-field mb" id="locationCountryDiv">
+                <div class="col-xs-12 col-md-6">
+                <i class="fa fa-map-marker"></i>
+                   <!--  <label>Company Location</label> -->
+                    <input type="text" name="companyAddress" field-name="Company Location" id="companyAddress"  data-validation="required" >
+                    <b></b>
+                </div>
+                
+                <div class="col-xs-12 col-md-6 locationCountryDiv-drop" id="locationCountryDiv">
                     <i class="fa fa-map-marker"></i>
-                    <select class="form-control seleFild" name="country" id="location" field-name="Country" data-validation="required" onchange="removeValidation();">
+                    <select class="selectpicker" name="country" id="requestCountry" field-name="Country" data-validation="required" onchange="removeValidation();"  data-live-search="true">
                         <option disabled selected>Country</option>
                         <option value="Australia">Australia</option>
 		                <option value="France">France</option>
@@ -648,28 +654,17 @@ window.onload = function () {
                     </select>
                     <b></b>
                 </div>
+                
                 </div>
               </div>
               
-                <div class="col-xs-12 col-md-12 mb">
-                <div class="col-md-12">
-                    <textarea class="form-control formControlCustom " placeholder="Company Address" name="companyAddress" field-name="Company Address"   id="companyAddress" data-validation-optional="true" data-validation="required validate_Space validate_length length2-250" ></textarea>
-                    <b></b>
-                    </div>
-                </div>
+                
 			  <div class="CheckWrap">
-				<h2>Interested In</h2> 
+				<h2><strong>Interested In</strong></h2> 
 				 <c:forEach var="requestOrg" items="${requestOrgList}"> 
 				  <label class="checkbox-area">${requestOrg.name} <input type="checkbox" value="${requestOrg.id}" name="modules" onblur="moduleCheckValidation(this)"> <span class="checkmark"></span> </label>
 				 </c:forEach>   
 			
-				<!-- <label class="checkbox-area">ATS <input type="checkbox" value="ATS" name="modules" onblur="moduleCheckValidation(this)"> <span class="checkmark"></span> </label>
-				<label class="checkbox-area">VMS <input type="checkbox" name="modules" value="VMS" onblur="moduleCheckValidation(this)"><span class="checkmark"></span> </label>
-				<label class="checkbox-area">TIMESHEETS<input type="checkbox" value="TIMESHEETS" name="modules" onblur="moduleCheckValidation(this)"><span class="checkmark"></span> </label> -->
-				<!-- <label class="checkbox-area">HRMS <input type="checkbox"> <span class="checkmark"></span> </label>
-				<label class="checkbox-area">PMS <input type="checkbox"> <span class="checkmark"></span> </label>
-				<label class="checkbox-area">IMS <input type="checkbox"> <span class="checkmark"></span> </label> -->
-				
 				<input type="hidden"  id="moduleValue" name="module"  field-name="Module" data-validation="required"/> 			    
 				
 				 <div class="clear"></div>           	
@@ -684,7 +679,7 @@ window.onload = function () {
 	            </div>
 	            <div class="col-md-12 mt10">
 	                  <button type="submit" id="employerRegister_button"  class="btn btn-primary btn_styles btn-block" title="Register" onclick="saveEmployer();">
-	                  <span class="text-center"><i class="fa fa-paper-plane" ></i>Register</span></button>
+	                  <span class="text-center"><i class="fa fa-paper-plane" ></i>Request</span></button>
 	            </div>
 	            </div>
                 <div class="col-md-12 text-center mt bg-info">
@@ -757,7 +752,8 @@ function removeValidationNameRecPop(){
 	}
 }
 </script>
-
+<script src="/resources/js/bootstrap-select.min.js"></script>
+<script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
 <script>
 function resetCredentials(type){
 	//Write by laxman start
@@ -768,6 +764,7 @@ function resetCredentials(type){
 		document.getElementById("recruiterRegistration_form").reset();
 		$("recruiterRegistration_form").validate().resetForm();
 	}else if(type == "Employer"){
+		googleApiLocation('companyAddress','requestCountry');
 		$("#employerRegister_button").removeAttr("disabled");
 		document.getElementById("employerRegistration_form").reset();
 		$("employerRegistration_form").validate().resetForm();
@@ -1441,7 +1438,7 @@ var config = {
    };
 })(jQuery);
 </script>
-
+<jsp:include page="googleApiLocation.jsp" />
 <div class="logMask"></div>
 <div class="terms_conditions">
 <div class="loPopClose" onclick="closeProfileDetailsPop();"><i class="fa fa-times"></i></div>

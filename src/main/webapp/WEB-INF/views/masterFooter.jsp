@@ -4,7 +4,12 @@
  </c:if>
 </div>
 <!-- Footer Area -->
-  <footer class="footer-area clearfix text-center">
+<footer class="footer-area clearfix text-center">
+<div id="mySidenav" class="sidenav">
+	<span>+</span>
+	<a href="<c:url value='${appPath}/sourceleadTicketList'/>" >Support</a>
+<!--   <a href="add-ticket.html">Support</a> -->
+</div>
     <div class="clearfix">&copy; 2017 SourceLead<sup class="paddingRight paddingLeft">&reg;</sup>, All Rights Reserved</div>
 <!--     <div class="powered-by"> Powered by: businessintelli.com </div>
  -->  </footer>

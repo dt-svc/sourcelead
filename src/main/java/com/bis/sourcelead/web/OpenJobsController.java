@@ -72,7 +72,7 @@ public class OpenJobsController {
 		model.addObject("jobType", req.getJobType());
 		model.addObject("minExperience", req.getMinExp());
 		model.addObject("maxExperience", req.getMaxExp());
-		
+		model.addObject("postedOrg", req.getPostedOrgName());
 		List<String> requirementLocationsList = new ArrayList<>();
 		List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(req.getId());
 		if(locationsList != null && !locationsList.isEmpty()) {
