@@ -407,7 +407,7 @@ function onholdBudgetRequaet(budgetRequestedId,requestType){
 	result = result +"		<p>Are you sure you want to On-Hold ?</p>";
 	result = result +"		<textarea  id='reasonForProjectBudget' name='reasonForProjectBudget'  placeholder='Comments here' field-name='Reason' data-validation='required validate_length length2-5000' ></textarea>";
 	result = result +"</form>";
-	result = result +'		<b href="javascript:void(0)"><input id="onHold_budget-id" type="button" value="Delete" onclick="saveOnHoldBudgetReason(\''+requestType+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="onHold_budget-id" type="button" value="On-Hold" onclick="saveOnHoldBudgetReason(\''+requestType+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 
 	$("#popUp").append(result);
