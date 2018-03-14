@@ -296,7 +296,7 @@
 	                </c:if> 
 	                
 	                <c:if test="${userTabs.tabName == 'Support'}">
-	                   <li class="${sessionData.nav == 'Support' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/supportManagement'/>" title="Support"><span><i class="fa fa-ticket"></i></span><i class="subMenu">Support</i></a></li>
+	                   <li class="${sessionData.nav == 'Support' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/sourceleadTicketList'/>" title="Support"><span><i class="fa fa-ticket"></i></span><i class="subMenu">Support</i></a></li>
 	                </c:if> 
 	                
 	                
@@ -341,7 +341,9 @@
 	                 </c:if>
 	                
 	                
-	                 
+	                <c:if test="${userTabs.tabName == 'Campaigns'}">
+                         <li class="${sessionData.nav == 'Campaigns' || sessionData.nav == 'CampaignSender' || sessionData.nav == 'CampaignRecipient' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/campaigns/hotcampaigns'/>" title="Campaigns"><span><i class="fa fa-bullhorn"></i></span><i class="subMenu">Campaigns</i></a></li>			  
+			         </c:if>
             	   
 
           </c:forEach>
@@ -383,23 +385,7 @@
 		 
 			</sec:authorize> --%>
 			
-          	<sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN')">
-			
-<%-- 			<li class="${sessionData.nav == 'Campaigns' || sessionData.nav == 'CampaignSender' || sessionData.nav == 'CampaignRecipient' ? 'side-nav-active' : ''}">
-														  
-							  <a href="#" class="campaignsli" title="Expenses">
-								<span><i class="fa fa-bullhorn"></i></span>
-								<li class="${sessionData.nav == 'Campaigns' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/campaigns/hotcampaigns'/>" title="Campaigns">Campaigns</a></li>
-							<!-- <i class="subMenu">Campaigns</i> --> 
-							  </a>
-                              
-			  </li> --%>
-			  
-<li class="${sessionData.nav == 'Campaigns' || sessionData.nav == 'CampaignSender' || sessionData.nav == 'CampaignRecipient' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/campaigns/hotcampaigns'/>" title="Campaigns"><span><i class="fa fa-bullhorn"></i></span><i class="subMenu">Campaigns</i></a></li>			  
-			  
-			  
-		 
-			</sec:authorize>			
+          				
 	
           	
         </ul>

@@ -23,6 +23,7 @@
 	});
 </script>
 
+
 <section class="content-wraper">
 		  <section class="content-header clearfix">
 		       <div class="pull-left"><h2>Timesheet approval</h2></div>
@@ -82,6 +83,9 @@
 	        		    	  $("#loadTimeHead").removeAttr('style');
 	        		    	  $("#timeApprovaldiv").empty();
 	        		    	  $("#timeApprovaldiv").append(data);
+	        		    	  $(".checkBoxForSubmitForApproval").click(function () {
+			             	    	selectedRecords[$(this).val()] = $(this).is(":checked");
+			             	  });
 	        		    	  prepareChosenScripts();
 	        		    	  preparePagination(1);
 	        		      }

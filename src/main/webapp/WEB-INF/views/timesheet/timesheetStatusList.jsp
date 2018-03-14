@@ -121,6 +121,9 @@ function filter(){
 		        	   if(data != null && data != 'undefined' && data != ""){
 			                	 $("#timesheetApprList").empty();
 			                     $("#timesheetApprList").append(data); 
+			                     $(".checkBoxForSubmitForApproval").click(function () {
+				             	    	selectedRecords[$(this).val()] = $(this).is(":checked");
+				             	    });
 			                     $("#TimeshgeetStatusListIdLoading").empty();
 			                     $("#TimeshgeetStatusListIdLoading").removeAttr('style');
 			                     $("#timesheetApprHead").removeAttr('style');
@@ -157,6 +160,20 @@ function filter(){
 						        	   if(data != null && data !='undefined' && data != ''){
 							                	 $("#timesheetApprList").empty();
 							                     $("#timesheetApprList").append(data); 
+							                     $("#selectAllTimeSheetCheckBoxForSubmitForApproval").removeProp('checked');
+							                     $(".checkBoxForSubmitForApproval").each(function() {
+							                    	 for(var e in selectedRecords) {
+							                    		 if($(this).val() === e) {
+							                    			 if(selectedRecords[e])
+							                    			 	$(this).prop('checked', selectedRecords[e]);
+							                    			 break;
+							                    		 }
+							                    	 }
+							         	        });
+
+							             	    $(".checkBoxForSubmitForApproval").click(function () {
+							             	    	selectedRecords[$(this).val()] = $(this).is(":checked");
+							             	    });
 							                     $("#TimeshgeetStatusListIdLoading").empty();
 							                     $("#TimeshgeetStatusListIdLoading").removeAttr('style');
 							                     $("#timesheetApprHead").removeAttr('style');
@@ -173,7 +190,7 @@ function filter(){
 				  var pageCount = $('#pageCount').val();
 				  var pageSize = $("#pageSize").val();
 				  $("#currentPageNumber").val(pageNo);
-				  var searchData = '${timesheetApprovalDTO.searchValue}';
+				  var searchData = $('#searchData').val();
 			      if(totalRows !=null && totalRows != '' && totalRows != 'undefined' && totalRows != 0){
 					  $('#paginationDiv').show();
 					  $('#dataTableSearchExpenses123').val('') ;
@@ -190,7 +207,7 @@ function filter(){
 				              ellipsePageSet :false,
 				              cssStyle: 'light-theme',
 				               onPageClick: function (pageNumber, event) {
-				            	   getStatusListData(""+pageNumber+"","");
+				            	   getStatusListData(""+pageNumber+"",searchData);
 				              }
 			      };
 			      $("#pagination-demo").pagination(options);
@@ -215,9 +232,13 @@ function filter(){
 
 
  <script>
+ var selectedRecords = {};
   $(document).ready(function () {
 	    $("#selectAllTimeSheetCheckBoxForSubmitForApproval").click(function () {
 	        $(".checkBoxForSubmitForApproval").prop('checked', $(this).prop('checked'));
+	        $(".checkBoxForSubmitForApproval").each(function() {
+	        	selectedRecords[$(this).val()] = $(this).is(":checked");
+	        });
 	        displayAcceptRejectButtonOnHedder();
 	    });
 	});

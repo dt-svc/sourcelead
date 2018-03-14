@@ -59,6 +59,8 @@
 						<ul class="dropdown-menu">
 						  <sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN')">
 						  	<li><a href="${sourceleadUrl}/hotlistMail">Hotlist Campaign</a></li>
+						  	 </sec:authorize>
+						  	<sec:authorize access="hasRole('ROLE_JOB_CAMPAIGN')">
 						  	<li><a href="${sourceleadUrl}/joblistMail">Job Campaign</a></li>
 						  </sec:authorize>
 						</ul>

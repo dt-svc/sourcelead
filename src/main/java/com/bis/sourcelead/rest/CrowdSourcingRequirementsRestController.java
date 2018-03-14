@@ -211,7 +211,26 @@ public class CrowdSourcingRequirementsRestController {
 	    if(isNullOrEmpty(requirementType) || (!isNullOrEmpty(requirementType) && !requirementType.equalsIgnoreCase("ReferredToMe") && !requirementType.equalsIgnoreCase("SavedJobs"))){
 	    
 	    BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-	     if(requirementType.equalsIgnoreCase("OpenJobs")){
+	     
+	     if(requirementType.equalsIgnoreCase("allJobs")){
+	    	 BoolQueryBuilder allJobsBoolQueryBuilder = QueryBuilders.boolQuery();
+	    	  if(!loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+	    		  allJobsBoolQueryBuilder.should(QueryBuilders.matchQuery("isPublicJob", "Y"));
+	    	  }
+	    	 
+	    	 allJobsBoolQueryBuilder.should(QueryBuilders.matchQuery("isCrowdSourcingJob", "Y"));
+	    	 boolQueryBuilder.must(allJobsBoolQueryBuilder);
+	    	 
+	    	 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("appliedProfessionals", user.getId()));
+	    	 List<RequirementRefer> referList = requirementReferService.getLoginUserReferToMeListByUserId(user.getId());
+	    	 if(null != referList && referList.size() > 0){
+	    		 for(RequirementRefer refer : referList){
+	    			 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementId", refer.getRequirementId().getId()));
+	    		 }
+	    	 }
+	     }
+	    
+	    if(requirementType.equalsIgnoreCase("OpenJobs")){
 	    	 boolQueryBuilder.must(QueryBuilders.matchQuery("isPublicJob", "Y"));
 	    	 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("appliedProfessionals", user.getId()));
 	    	 List<RequirementRefer> referList = requirementReferService.getLoginUserReferToMeListByUserId(user.getId());

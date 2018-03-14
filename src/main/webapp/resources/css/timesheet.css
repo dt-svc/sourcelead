@@ -1315,7 +1315,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 /********************* Back To Top *******************/
        
 .backtotop {
-    width:30px; position:fixed; bottom:20px; right:10px; cursor:pointer; display: none; outline:none !important; z-index:30; text-align:center;
+    width:30px; position:fixed; bottom:90px; right:10px; cursor:pointer; display: none; outline:none !important; z-index:30; text-align:center;
 }
 .backtotop img { width:100%;}
        
@@ -3372,6 +3372,7 @@ font-size: 20px; color: #FF4141; padding: 4px 0px 0px 0px; display: inline-block
 .welcoBg {
     width:100%; height: 100%; position: fixed; background-image: url(../images/mainBg.jpg); background-repeat: no-repeat;
     background-position: center; background-attachment: fixed; top: 0px; left: 0px; overflow-y: auto;
+	background-size:cover;
 }
 .welcoInn {
     width:1000px; margin: 10px auto; position: relative;
@@ -6114,6 +6115,7 @@ background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
 .comLogBg {
     width:100%; height: 100%; position: fixed; background-image: url(../images/mainBg.jpg); background-repeat: no-repeat;
     background-position: center; background-attachment: fixed; top: 0px; left: 0px; overflow-y: auto;
+	background-size:cover;
 }
 .comLogInn {
     width:1000px; margin: 10px auto; position: relative;
@@ -7561,6 +7563,184 @@ font-weight: 500;
 .emailvaluesNew {
 	position: fixed !important; left: 100px !important; right: 0px !important; margin: 0px auto !important; top: 35% !important;
 }
+
+.text-primary, .text-primary a {
+	color: #337ab7 !important;
+}
+
+.newAccBtn {
+	padding: 2px 0px 0px 0px;
+}
+.newAccBtn a {
+	font-size: 19px; padding: 4px 5px; margin: 0px 2px; color: #30c453;
+}
+.newAccBtn a i.fa-times {
+	color: #f04d4d;
+}
+
+	/*   New Company List  */
+
+.comNewListOut {
+	width: 100%; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); border-radius: 3px; padding: 15px;
+	background-color: #fff;
+}
+.comNewFil {
+	width: 100%; padding: 0px 0px 10px 0px;
+}
+.comNewFil ul {
+	margin: 0px 0px; padding: 0px 0px;
+}
+.comNewFil ul li {
+	list-style-type: none; float: left; width: 150px; padding: 2px;
+}
+.comNewFil ul li a {
+	display: block; border: 1px solid #cfcfcf; text-align: center; padding: 5px 15px; border-radius: 2px;
+	color: #787878; font-size: 12px; font-weight: 400; background-color: #f5f5f5;
+}
+.comNewFil ul li a.filAct {
+	background-color: #fff; border: 1px solid #f39ea1;
+}
+.comNewList {
+	border-bottom: 1px solid #ededed; padding: 15px 5px;
+}
+.comNewList ul {
+	padding: 0px 0px; margin: 0px 0px;
+}
+.comNewList ul li {
+	list-style-type: none; float: left; width: 15%;
+}
+.comNewList ul li:first-child + li  {
+	width: 25%;
+}
+.comNewList ul li:first-child + li + li {
+	width: 45%;
+}
+.comNewList ul li:first-child + li + li + li {
+	text-align: center; width: 15%;
+}
+.comNewList ul li h2, .comNewList ul li h3 {
+	margin: 0px 0px; font-size: 14px; font-weight: 500; color: #333; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+	width: 100%; padding: 0px 15px 0px 0px; 
+}
+.comNewList ul li h3 {
+	color: #999;
+}
+.comNewList ul li h3 span {
+	color: #0cc2aa; display: inline-block; padding: 0px 0px 0px 5px;
+}
+.comNewLogo, .comNewCli, .comNewRev {
+	padding: 15px 0px 0px 0px;
+}
+.comNewLogo img {
+	border: 1px solid #ccc; padding: 2px; width: 80px; max-width: 80px; height: 80px; max-height: 80px; background-color: #fff;
+}
+.comNewCli a{
+	display: inline-block; width: 40%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px;
+	padding: 0px 0px; margin: 0px 0px; line-height: unset;
+}
+.comNewRev p {
+	display: inline-block; width: 95%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px;
+	padding: 0px 0px; margin: 0px 0px; line-height: unset; color: #666;
+}
+.comNewRev a {
+	font-size: 13px; padding: 0px 0px; margin: 0px 0px; text-decoration: underline;
+}
+.comNewBtn {
+	padding: 28px 0px 0px 0px;
+}
+.comNewBtn a {
+	width: 60%; display: block; margin: 0px auto 5px; padding: 5px 0px; background-color: #fff;
+	border-radius: 2px; border: 1px solid #dedede; color: #666; font-size: 13px;
+}
+.comNewBtn a:hover {
+	background-color: #f1f1f1;
+}
+
+.viewAll {
+	padding: 10px 0px 0px 0px; 
+}
+.viewAll a {
+	display: inline-block; margin: 0px auto 5px; padding: 6px 30px; background-color: #fff;
+	border-radius: 2px; border: 1px solid #dedede; color: #666; font-size: 13px;
+}
+.viewAll a:hover {
+	background-color: #f1f1f1;
+}
+
+.comNewVerOut {
+	width: 100%; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); border-radius: 3px; padding: 15px;
+	background-color: #fff;
+}
+.comNewVerHead {
+	padding: 0px 0px 8px; border-bottom: 1px solid #ededed;
+}
+.comNewVerLoca {
+	position: relative; width: 150px; float: left;
+}
+.comNewVerLocaPop {
+	position: absolute; width: 700px; background-color: #fff; height: 400px; box-shadow: 0px 0px 5px rgba(0,0,0,0.2);
+	border-radius: 2px; z-index: 100; padding: 15px; max-height: 400px; overflow-y: auto; left: 0px; top: 34px;
+	display: none;
+}
+.comNewVerLocaPopInn {
+	position: relative; padding: 0px 0px 15px 0px;
+}
+.comNewVerLocaPop h2 {
+	padding: 5px 0px 0px 6px; margin: 0px 0px; position: absolute; font-size: 20px; font-weight: 500; color: #454545;
+}
+.comNewVerLocaPop ul {
+	padding: 0px 0px 0px 45px; margin: 0px 0px;
+}
+.comNewVerLocaPop ul li {
+	list-style-type: none; float: left; width: 20%; padding: 0px 10px 0px 0px;
+}
+.comNewVerLoca a {
+	display: block; padding: 7px 15px; background-color: #fff; border-radius: 2px; border: 1px solid #dedede;
+	color: #666; font-size: 14px; background-image:url(../images/arrow-d-g.png); background-repeat: no-repeat;
+	background-size: 11px; background-position: 92% center;
+}
+.comNewVerLocaPop ul li a {
+	padding: 3px 5px; border: none; background: none; font-size: 13px; margin: 1px;
+}
+.comNewVerLocaPop ul li a.actFil {
+	background-color: #f1f1f1;
+}
+.conNewVerFil {
+	float: left; padding: 0px 0px 0px 10px;
+}
+.conNewVerFil a {
+	padding: 5px 10px; background-color: #f5f5f5; display: inline-block; margin: 2px 2px 0px 0px;
+	border-radius: 2px; border: 1px solid #ededed; color: #666; font-size: 13px;
+}
+.conNewVerFil a i {
+	display: inline-block; padding: 0px 0px 0px 10px; color: #D76769;
+}
+.comNewVer {
+	padding: 10px 0px 5px;
+}
+.comNewVer a {
+	display: block; float: left; width: 100px; margin: 5px; padding: 5px 5px 10px; border: 1px solid #f1f1f1; color: #454545;
+}
+.comNewVer a img {
+	width: 60px; max-width: 60px; height:60px;  margin: 0px auto 5px; display: block;
+}
+.comNewVer a span {
+	display: block; padding: 0px 5px; width: 100%; font-size: 13px; white-space: nowrap; text-overflow: ellipsis;
+	overflow: hidden;
+}
+.comNewVer a:hover {
+	color: #368ee0; border: 1px solid #368ee0;
+}
+
+
+
+
+
+
+
+
+
+
 
 
 

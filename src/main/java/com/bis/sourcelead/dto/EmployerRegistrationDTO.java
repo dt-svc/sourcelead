@@ -28,6 +28,7 @@ public class EmployerRegistrationDTO {
 	 private String requestedBy;
 	 private String requestedModules;
 	 private String orgRequestStatus;
+	 private String filterStatus;
      
 		public long getId() {
 		  return id;
@@ -174,5 +175,13 @@ public class EmployerRegistrationDTO {
 		}
 		public void setOrgRequestStatus(String orgRequestStatus) {
 			this.orgRequestStatus = orgRequestStatus;
+		}
+
+		public String getFilterStatus() {
+			return filterStatus;
+		}
+
+		public void setFilterStatus(String filterStatus) {
+			this.filterStatus = filterStatus;
 		}
 }

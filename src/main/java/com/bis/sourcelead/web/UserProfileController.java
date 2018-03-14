@@ -21,9 +21,11 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserMailUnsubscribe;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.UserMailUnsubscribeService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -44,10 +46,22 @@ public class UserProfileController {
 	@Autowired
 	CommonUtil commonUtil;
 	
+	@Autowired
+	UserMailUnsubscribeService userMailUnsubscribeService;
+	
 
     @RequestMapping(value = "/userProfile")
- 	 public ModelAndView userProfile(HttpServletRequest request) {
+ 	 public ModelAndView userProfile(HttpServletRequest request) throws Exception {
  			ModelAndView model = new ModelAndView();
+ 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+ 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+ 			
+ 			UserMailUnsubscribe userMailUnsubscribe = userMailUnsubscribeService.getUserMailUnsubscriptionByUserId(user.getId());
+ 			if(userMailUnsubscribe != null && StringUtils.isNotEmpty(userMailUnsubscribe.getTabIds())) {
+ 				model.addObject("unsubscriptionTabIds", userMailUnsubscribe.getTabIds());
+ 			}else {
+ 				model.addObject("unsubscriptionTabIds", "");
+ 			}
  			commonUtil.highLightMenu(Constants.OrgSettings, request);
  			model.setViewName("userProfile");
  			model.addObject("sourceleadUrl", sourceleadUrl);

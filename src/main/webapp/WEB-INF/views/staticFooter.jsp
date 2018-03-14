@@ -109,7 +109,7 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
    <div class="Rdemo getDemo">
 		<div class="clearfix">
 			<div class="clearfix">
-				<h4 class="modal-title mb">Get A Demo</h4>
+				<h4 class="modal-title mb">Request a Demo</h4>
 			</div>
 		    <div class="clearfix mt">
 				<div class="freeTrialTop getAdemo">
@@ -152,8 +152,8 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
 				            	<input type="text" class="form-control" placeholder="Location *" id="companyAddress" name="companyAddress" field-name="Location"  data-validation="required">
 				            	</div>
 				            </div>
-				            <div class="col-md-6 selectpicker-dropdowndDemo">
-				                 <select class="form-control selectpicker" name="country" id="country" field-name="Country" data-validation="required" onchange="getTimezonesList();" data-live-search="true" title="Select Coountry">
+				            <div class="col-md-6 selectpicker-dropdowndDemo" id="demoCountryDivId">
+				                 <select class="form-control selectpicker" name="country" id="country" field-name="Country" data-validation="required" onchange="getTimezonesList();removeCountryValidation();" data-live-search="true" title="Select Coountry">
 			                        <option disabled selected>Select Country *</option>
 			                        <option value="Australia">Australia</option>
 					                <option value="France">France</option>
@@ -216,6 +216,9 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
 <script src="/resources/static-web/js/customscripts.js" type="text/javascript"></script>
 
 <script>
+function removeCountryValidation(){
+	$('#demoCountryDivId').find('p.jquery_form_error_message').remove();
+}
 $(document).ready(function(){
 	// MarQ Script 
 	$(".marQ").hide();
@@ -280,7 +283,7 @@ function removeValidationDate(){
 <jsp:include page="googleApiLocation.jsp" />
 <script>
 function getTimezonesList(){
-	var sourceleadUrl ='http://localhost:8080/app';
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	var country = $('#country').val();
 	if(country){
 		if(country == "India"){
@@ -338,7 +341,7 @@ function getTimezonesList(){
 }
 
 function getDemoModules(){
-	var sourceleadUrl ='http://localhost:8080/app';
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	$.ajax({
     	type: "POST",
     	url : sourceleadUrl+"/getDemoModulesList?${_csrf.parameterName}=${_csrf.token}", 
