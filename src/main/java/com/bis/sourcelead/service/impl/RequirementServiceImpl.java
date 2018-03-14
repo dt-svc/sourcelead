@@ -3797,7 +3797,8 @@ public class RequirementServiceImpl implements RequirementService {
 		String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(), globalVarsMap);
 		notificationScenario.setBody(notificationBody);
 		StringBuilder actionLinkBuilder = new StringBuilder();
-		String actionLink = actionLinkBuilder.append(sourceleadUrl).append("/requirementSummary?requirementUUID=").append(requirement.getRequirementUUID()).toString();
+		String actionLink = actionLinkBuilder.append(sourceleadUrl).append("/requirementProfile/").append(requirement.getRequirementUUID()).toString();
+		if(candidate.getConsultantUser() != null)
 		emailScenerioUtil.sendNotification(actionLink, loginUser, candidate.getConsultantUser(), orgLocation, notificationScenario);
 
 	}

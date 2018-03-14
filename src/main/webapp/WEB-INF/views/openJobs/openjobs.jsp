@@ -588,7 +588,7 @@ top: 21px;height: 32px; line-height: 18px;
 		<!-- 			<div class="noResults" id="noResultsDiv" style="display: none;"></div> -->
 		<div id="loadinggif"></div>
 		<div id="openJobsRequirementsList"></div>
-<!-- 		<div class="jobResultsNoRecords" id="noResultsDiv"></div> -->
+		<div class="jobResultsNoRecords" id="noResultsDiv"></div>
 		<div id="loadMoreDiv"></div>
 		<div class="loadJob" onClick="loadMoreReq();" id="loadMoreReq"
 			style="display: none; cursor: pointer;">View more</div>
@@ -1824,9 +1824,9 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 		        }, 500);
 				
 				$("#openJobsRequirementsSummary").append(result);
-				if(requirementUUID != null){
-				$("#noResultsDiv").css("display", "block");
-				}
+// 				if(requirementUUID != null){
+// 				$("#noResultsDiv").css("display", "block");
+// 				}
 				
 				
 	   	   	   }
@@ -3043,6 +3043,10 @@ function applyJob(requirementUUID){
 function closeApplyJob(){
 	$(".modal.modalApplyjob").fadeOut();
 	$(".comMask").fadeOut();
+	$(".signWrap").addClass("orgOutWrap");
+	$(".signWrap").removeClass("forPassOut");
+	$(".ForPasSlide").attr("style","display:none");
+	$("#signinDiv").attr("style","display:block");
 }
 </script>
  
