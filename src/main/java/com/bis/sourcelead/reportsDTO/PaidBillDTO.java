@@ -12,7 +12,7 @@ public class PaidBillDTO extends SearchDTO {
 	private String projectName;
 	private String billDate;
 	private String payDate;
-	private String amount;
+	private double amount;
 	private String billType;
 	private String orgName;
 	private int numberOfAssociates;
@@ -56,12 +56,12 @@ public class PaidBillDTO extends SearchDTO {
 		this.payDate = payDate;
 	}
 	
-	public String getAmount()
+	public double getAmount()
 	{
 		return amount;
 	}
 	
-	public void setAmount(String amount)
+	public void setAmount(double amount)
 	{
 		this.amount = amount;
 	}
