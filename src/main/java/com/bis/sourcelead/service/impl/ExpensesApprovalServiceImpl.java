@@ -810,5 +810,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 		return expensesApprovalDao.saveExpensesApproverHierarchy(expensesApproverHierarchy);
 	}
 
+
+	@Override
+	public ExpensesApproverHierarchy getApprovedExpenseByExpenseIdAndLocationId(Long expenseId, Long locationsId)
+	{
+		return expensesApprovalDao.getApprovedExpenseByExpenseIdAndLocationId(expenseId, locationsId);
+	}
+
 	
 }
