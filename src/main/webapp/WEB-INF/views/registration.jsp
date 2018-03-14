@@ -956,7 +956,7 @@ function validateEmail(type){
 					     if(data == 'Invalid'){
 					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
 					    	    $('#pwdDiv').attr("style" , "display : none"); 
-					    	    $('#confirmPassword').removeAttr('data-validation');
+					    	    $('#jsconfirmPassword').removeAttr('data-validation');
 						 		$('#confirmPassword').attr('data-validation-optional',"true");
 						 		$('#password').removeAttr('data-validation');
 						 		$('#password').attr('data-validation-optional',"true");
@@ -974,20 +974,20 @@ function validateEmail(type){
 					     }else if(data == 'Not found'){
 					    	 $("#register_button").removeAttr("disabled");
 					    	 	$('#pwdDiv').attr("style" , "display : block"); 
-						 		$('#confirmPassword').removeAttr('data-validation-optional');
-								$('#confirmPassword').attr("data-validation","required");
-								$('#password').removeAttr('data-validation-optional');
-								$('#password').attr("data-validation","required");
+						 		$('#jsconfirmPassword').removeAttr('data-validation-optional');
+								$('#jsconfirmPassword').attr("data-validation","required");
+								$('#jsPassword').removeAttr('data-validation-optional');
+								$('#jsPassword').attr("data-validation","required");
 								$('#emailDiv').find('p.jquery_form_error_message').remove(); 
 								$('input#email').removeAttr('record-exist');
 			    				$('input#email').removeAttr('record-exist-errorMsg'); 
 					     }
 				       	else{
 				       		 $('#pwdDiv').attr("style" , "display : none"); 
-				       		$('#confirmPassword').removeAttr('data-validation');
-					 		$('#confirmPassword').attr('data-validation-optional',"true");
-					 		$('#password').removeAttr('data-validation');
-					 		$('#password').attr('data-validation-optional',"true");
+				       		$('#jsconfirmPassword').removeAttr('data-validation');
+					 		$('#jsconfirmPassword').attr('data-validation-optional',"true");
+					 		$('#jsPassword').removeAttr('data-validation');
+					 		$('#jsPassword').attr('data-validation-optional',"true");
 					 		
 				       		 $("#register_button").removeAttr("disabled");
 							 $('input#email').removeAttr( "record-exist record-exist-errormsg");
@@ -1156,18 +1156,11 @@ function validatepopRecruiterEmail(type){
 
 
 <script type="text/javascript">
-var validationSettings = {
-        errorMessagePosition : 'element',
-       borderColorOnError : '',
-		scrollToTopOnError : true,
-		dateFormat : 'yyyy/mm/dd' 
-   };  
          $('body').on('submit', '#professionalRegistration_form', function(e){
         	  $("#professionalRegistrationErrorMsg").val('');
         	  if($("#professionalRegistrationCheckTermsId").is(':checked')){
         		  $("#professionalRegistrationErrorMsg").val('NO');
         	  }
-        	 
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
             	/* var frm = $('#professionalRegistration_form').serializeFormJSON();
@@ -1227,8 +1220,10 @@ var validationSettings = {
             	return false;	
                }
             });
-         $('#professionalRegistration_form').showHelpOnFocus();
-            
+         $('body').on('blur', '#professionalRegistration_form', function() {
+        		$("#professionalRegistration_form").showHelpOnFocus();
+        		$("#professionalRegistration_form").validateOnBlur(false, validationSettings);
+        	});  
      
 	</script>
 	
@@ -1294,8 +1289,10 @@ var validationSettings = {
             	return false;	
                }
             });
-         $('#recruiterRegistration_form').showHelpOnFocus();
-            
+         $('body').on('blur', '#recruiterRegistration_form', function() {
+     		$("#recruiterRegistration_form").showHelpOnFocus();
+     		$("#recruiterRegistration_form").validateOnBlur(false, validationSettings);
+     	});     
      
 	</script>
 	
@@ -1707,7 +1704,14 @@ function passwordValidation(idValue,letter,capital,number,special,length){
 // When the user starts to type something inside the password field
 
 </script>
-
+<script>
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   };  
+</script>
 <script>
 $(document).ready(function(){
 	$(".posiRela input").focus(function(){

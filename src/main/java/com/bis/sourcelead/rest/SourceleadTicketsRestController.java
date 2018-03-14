@@ -126,7 +126,7 @@ public class SourceleadTicketsRestController {
 				}
 			}
 			
-		 ResponseList<SourceleadTicketDTO> sourceleadTicketList = sourceleadTicketService.getSourceleadTicketListByOrgLocationId(sourceleadTicketDTO, user.getId(),orgLocation,searchDates[0],searchDates[1]);
+		 ResponseList<SourceleadTicketDTO> sourceleadTicketList = sourceleadTicketService.getSourceleadTicketListByOrgLocationId(sourceleadTicketDTO, user.getId(),orgLocation,searchDates);
 		 return sourceleadTicketList;
 	   }
 	 
