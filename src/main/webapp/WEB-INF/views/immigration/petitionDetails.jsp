@@ -938,6 +938,12 @@ function  removeValidationAttorneyContact() {
 		$("#experienceYears").val(candidateObj.experienceYears);
 		$("#experienceMonths").val(candidateObj.experienceMonths);
 		
+		// setting the date for the date of birth field.
+		console.log(candidateObj.dateOfBirth);
+		if(typeof  candidateObj.dateOfBirth != 'undefined' && candidateObj.dateOfBirth!=''){
+			var dateOfBirth =  moment(candidateObj.dateOfBirth).format("DD-MM-YYYY");
+		   $("#birthDate").val(dateOfBirth);
+		}
 	 }
  
 	 </script>

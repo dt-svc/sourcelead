@@ -118,6 +118,7 @@ public class ImmigrationRestController {
 			try {
 				List<Candidate> candidateList = candidateService.getAllActiveCandidatesByLocation(orgLocations.getId());
 				System.out.println("candidateList size in controller is-->"+candidateList.size());
+				
 				model.addObject("candidateList",candidateList);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -147,29 +148,22 @@ public class ImmigrationRestController {
 	@RequestMapping(value = { "getAllActiveCandidatesByLocation" }, method = RequestMethod.GET)
 	public String getAllActiveCandidatesByLocation(HttpServletRequest request) {
 		List<Candidate> candidateList = null;
-		String resultJson = null;
 		System.out.println("inside getAllActiveCandidatesByLocation");
 		try {
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-					"orgLocations");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			 candidateList = candidateService.getAllActiveCandidatesByLocation(orgLocations.getId());
 			System.out.println("candidateList size in getAllActiveCandidatesByLocation controller is-->"+candidateList.size());
 			 } catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		resultJson = toJSON(candidateList);
-	//	System.out.println(candidateList);
-		return resultJson;
+		Gson gson=new Gson();
+	    String gsondata=gson.toJson(candidateList).replace("\\", "\\\\");
+	   // System.out.println("gsondata----> ");
+	 //	System.out.println(gsondata);
+		return gsondata;
 	}
-	public String toJSON(Object obj){
-        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-            public HierarchicalStreamWriter createWriter(Writer writer) {
-                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-            }
-        });
-        return xstream.toXML(obj);
-    }
+	
 	
 	@RequestMapping(value = { "/getPetitionTemplateEmployers" })
 	public List<CandidateEmployerDTO> getPetitionTemplateEmployers(HttpServletRequest request) {
