@@ -87,6 +87,8 @@ function getUnsubscribeList(){
 }
 </script>
 
+
+
 <body>
   <!-- Content Area -->
   <!-- Tab for Profile setting-area starts -->
@@ -271,26 +273,26 @@ function getUnsubscribeList(){
 						  <input type="password" id="currentPassword" name="currentPassword" field-name="Current Password"   class="form-control"  onblur="validateCurrentPassword();" data-validation="required" />
 						</div>
 						</div>
-						<div class="form-group" id="newPwdDiv">
+						<div class="form-group " id="newPwdDiv">
 						<label class="col-md-4">New Password<span class="text-danger paddingLeft">*</span></label>
 						
-						<div class="col-md-6 posiRela">
+						<div class="col-md-6 posiRela positionRelative">
 						  <input type="password" name="password" id="password" field-name="New Password" class="form-control" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d.*)(?=.*\W.*)[a-zA-Z0-9\S]{8,}$" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" data-validation="required validate_length length6-100"  onkeyup="passwordValidation_pf('password','np_letter','np_capital','np_number','np_special','np_length');" />
-	             			
 	             	    <div id="np_message" class="passHintNew">
-				  			<p  id="np_letter" class="invalid">A lowercase letter</p>
-				  			<p  id="np_capital" class="invalid">A capital (uppercase) letter</p>
-				  			<p  id="np_number" class="invalid">A number</p>
-				  			<p  id="np_special" class="invalid">A special</p>
-				  			<p  id="np_length" class="invalid">Minimum 8 characters</p>
+				  			<p  id="np_letter" class="invalid">At least one lowercase letter</p>
+				  			<p  id="np_capital" class="invalid">At least one uppercase letter</p>
+				  			<p  id="np_number" class="invalid">At least one number</p>
+				  			<p  id="np_special" class="invalid">At least one special character</p>
+				  			<p  id="np_length" class="invalid">Minimum 8 characters required</p>
 						</div>
-	             			
-						</div>
+	             			<i class="fa fa-eye showPassword-usr" onclick="showPassword();"></i>
+						</div> 
 				       </div>
 					  <div class="form-group" id="confirmPwdDiv">
 						<label class="col-md-4">Confirm Password<span class="text-danger paddingLeft">*</span></label>
-						<div class="col-md-6">
+						<div class="col-md-6 positionRelative">
 						<input type="password"  value="" id="confirmPassword" class="form-control" field-name="Confirm Password" onblur="checkPass();" data-validation="required"/>
+						<i class="fa fa-eye showPassword-usr" onclick="showConfirmPassword();"></i>
 						</div>
 				      </div>
 				     </div> 
@@ -453,6 +455,31 @@ function getUnsubscribeList(){
   <!-- Content Area Ends--> 
 
 <jsp:include page="masterFooter.jsp" />
+
+<script>
+function showPassword(){
+	var passwordInput = document.getElementById('password');
+	if(passwordInput.type === "password"){
+		passwordInput.type = "text"
+	}else{
+		passwordInput.type = "password"
+	}
+	
+	
+}
+</script>
+
+<script>
+function showConfirmPassword(){
+	var confPasswordInput = document.getElementById('confirmPassword');
+	if(confPasswordInput.type === "password"){
+		confPasswordInput.type = "text"
+	}else{
+		confPasswordInput.type = "password"
+	}
+	
+}
+</script>
 
 
 <script type="text/javascript">

@@ -376,3 +376,11 @@ margin-left: 15px; width: 200px;
 .companyLogo {
 	width: 250px; height: auto; margin-top: 10px;
 }
+
+.showPassword-reg-usr {
+     	top: 0; right: 15px; font-size: 15px !important; padding: 5px !important;
+     	position:absolute; height: 34px; line-height: 25px; width: 30px; text-align: center;  cursor: pointer;
+     	border-radius:0 3px 3px 0;
+}
+
+
