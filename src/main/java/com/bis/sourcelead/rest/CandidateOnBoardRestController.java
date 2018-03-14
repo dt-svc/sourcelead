@@ -756,6 +756,16 @@ public class CandidateOnBoardRestController {
 				candidateOnBoardingDTO.setCandidateName(candidateName.append(candidateOnBoarding.getFirstName()).toString());
 			}
 			
+			Candidate candidate = candidateService.getCandidateByCandidateId(candidateOnBoarding.getCandidateId().getId());
+			if(candidate.getOrgRelationId() != null) {
+				candidateOnBoardingDTO.setVendors(candidate.getOrgRelationId().getId().toString());
+			}
+			
+			if(candidate.getSpocId() != null) {
+				candidateOnBoardingDTO.setVendorContact(candidate.getSpocId().getId().toString());
+			}
+			
+			
 		}
 		
 		return candidateOnBoardingDTO;
