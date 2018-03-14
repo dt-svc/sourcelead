@@ -73,6 +73,7 @@ public class AddElkCandidate{
 			    	candidateIndex.setOrgLocationId(rs.getLong("ORG_LOCATION_ID"));
 					candidateIndex.setFirstName(rs.getString("FIRST_NAME"));
 					candidateIndex.setLastName(rs.getString("LAST_NAME"));
+					String createdBy =  rs.getString("CREATED_BY");
 					
 					if(!isNullOrEmpty(rs.getString("LAST_NAME"))){
 						candidateIndex.setFullName(rs.getString("FIRST_NAME")+" "+rs.getString("LAST_NAME"));
@@ -267,6 +268,22 @@ public class AddElkCandidate{
 									 candidateIndex.setFileUrl(rs4.getString("FILE_URL"));
 									 candidateIndex.setFileContentType(rs4.getString("FILE_CONTENT_TYPE"));
 									 candidateIndex.setResumeName(rs4.getString("FILE_NAME"));
+							    }
+		    	           }
+							
+							String sql6 = "SELECT * FROM sourcelead.USER  user where  user.USER_CODE = '"+createdBy+"' ";
+							Statement stmt6 = conn.createStatement();
+							ResultSet rs6 = stmt6.executeQuery(sql6);
+							if(rs6 != null){
+								 while(rs6.next()){
+									 candidateIndex.setCreatedBy(createdBy);
+									   if(null != rs6.getString("FIRST_NAME") && null != rs6.getString("LAST_NAME")){
+										   StringBuilder sb =  new StringBuilder();
+										   candidateIndex.setCreatedBy(sb.append(rs6.getString("FIRST_NAME")).append(" ").append(rs6.getString("LAST_NAME")).toString());
+									   }else if(null != rs6.getString("FIRST_NAME")){
+										   StringBuilder sb =  new StringBuilder();
+										   candidateIndex.setCreatedBy(sb.append(rs6.getString("FIRST_NAME")).toString());
+									   }
 							    }
 		    	           }
 		    	    }
