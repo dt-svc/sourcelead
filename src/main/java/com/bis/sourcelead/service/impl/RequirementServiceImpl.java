@@ -819,10 +819,13 @@ public class RequirementServiceImpl implements RequirementService {
 					UUIDList.add(savedLocationDTO.getLocationUUID());
 					}
 				}
+			}
 				
-				
+			if(UUIDList != null && !UUIDList.isEmpty()) {
 				UUIDList.retainAll(savedUUIDList);
 				savedUUIDList.removeAll(UUIDList);
+			}
+			    
 				
 				if(savedUUIDList != null && !savedUUIDList.isEmpty()) {
 					for(String UUID : savedUUIDList) {
@@ -831,7 +834,7 @@ public class RequirementServiceImpl implements RequirementService {
 					}
 				}
 				
-			}
+			
 		}
 		
 		

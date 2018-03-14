@@ -183,7 +183,6 @@ function getTicketCustomDates(){
 	  if(dateSelection == 'custom'){
 		   fromDate = $("#fromDate").val();
 		   toDate = $("#toDate").val();
-		  
 		  if(fromDate == '' || toDate == ''){
 			  flag = false;
 			  if(fromDate == ''){
@@ -212,7 +211,7 @@ function getTicketCustomDates(){
 	  var sourceleadUrl = '${sourceleadUrl}';
 		var searchValue = $("#ticketDataTableSearch").val();
 		 searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getSourceleadTicketList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&dateSelection="+dateSelection+"&selectCompanyIds="+selectCompanyIds;
+		var url = sourceleadUrl+"/getSourceleadTicketList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&dateSelection="+dateSelection+"&selectCompanyIds="+selectCompanyIds+"&fromDate="+fromDate+"&toDate="+toDate;
 		prepareSourceleadTicketList(url);
 	  }
   }
