@@ -668,26 +668,24 @@ public class FinanceDaoImpl implements FinanceDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Invoice> invoiceList = null;
 		ResponseList<Invoice> response = new ResponseList<>();
-		String query = "from Invoice invoice where invoice.orgRelationID.id = :orgRelationId";
-		String countQuery = "from Invoice invoice where invoice.orgRelationID.id = :orgRelationId";
+		String query = "from Invoice invoice where invoice.orgRelationID.id = :orgRelationId and invoice.invoiceType = :billType";
+		String countQuery = "from Invoice invoice where invoice.orgRelationID.id = :orgRelationId and invoice.invoiceType = :billType";
 		StringBuilder query1 = new StringBuilder("");
 		Query queryObj = session.createQuery(query + query1.toString());
 		if (paidBillDTO != null && paidBillDTO.getLength() > 0) {
 			queryObj.setFirstResult(paidBillDTO.getStart());
 			queryObj.setMaxResults(paidBillDTO.getLength());
 		}
-		invoiceList = queryObj.setLong("orgRelationId", paidBillDTO.getOrgRelationId()).list();
+		invoiceList = queryObj.setLong("orgRelationId", paidBillDTO.getOrgRelationId()).setString("billType", paidBillDTO.getBillType()).list();
 		int count = 0;
 		int filteredCount = 0;
-		List<Long> countlist = session.createQuery("select count(*) "
-				+ countQuery).setLong("orgRelationId", paidBillDTO.getOrgRelationId()).list();
+		List<Long> countlist = session.createQuery("select count(*) "+ countQuery).setLong("orgRelationId", paidBillDTO.getOrgRelationId()).setString("billType", paidBillDTO.getBillType()).list();
 		if (countlist != null && !countlist.isEmpty()) {
 			count = countlist.iterator().next().intValue();
 		}
 		response.setRecordsTotal(count);
 		if (paidBillDTO != null) {
-			List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery
-					+ query1.toString()).setLong("orgRelationId", paidBillDTO.getOrgRelationId()).list();
+			List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery+ query1.toString()).setLong("orgRelationId", paidBillDTO.getOrgRelationId()).setString("billType", paidBillDTO.getBillType()).list();
 			if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
 				filteredCount = filteredCountlist.iterator().next().intValue();
 			}
