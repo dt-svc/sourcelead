@@ -26,6 +26,8 @@
     <link href="/resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
      <link href="/resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
      
+     
+     
 </head>
 
 <body>
@@ -50,27 +52,28 @@
             </span>
             <div class="clearfix"></div>
             <div class="col-xs-12 col-md-12 mb10 posiRela">
-             <span>
+             <span class="positionRelative">
             	<label>Password</label>
-                <input type="Password" class="signin_fild" name="password" field-name="Password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d.*)(?=.*\W.*)[a-zA-Z0-9\S]{8,}$" data-validation="required validate_length length6-100" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" value="${password}" id="password" onkeydown="$(this).clear();" onkeyup="passwordValidation('password','fp_letter','fp_capital','fp_number','fp_special','fp_length');" />
-	                   
+                <input type="password" class="signin_fild" name="password" field-name="Password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d.*)(?=.*\W.*)[a-zA-Z0-9\S]{8,}$" data-validation="required validate_length length6-100" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" value="${password}" id="password" onkeydown="$(this).clear();" onkeyup="passwordValidation('password','fp_letter','fp_capital','fp_number','fp_special','fp_length');" />
                 <b></b>
-            </span>
+                <i class="fa fa-eye showPassword" onclick="showPassword();"></i>
+            </span>  
             
             			<div id="fp_message" class="passHint" style="left:-310px; box-shadow: 1px 1px 1px 2px #ddd; top:-10px;">
-				  			<p  id="fp_letter" class="invalid">A lowercase letter</p>
-				  			<p  id="fp_capital" class="invalid">A capital (uppercase) letter</p>
-				  			<p  id="fp_number" class="invalid">A number</p>
-				  			<p  id="fp_special" class="invalid">A special</p>
-				  			<p  id="fp_length" class="invalid">Minimum 8 characters</p>
+				  			<p  id="fp_letter" class="invalid">At least one lowercase letter</p>
+				  			<p  id="fp_capital" class="invalid">At least one uppercase letter</p>
+				  			<p  id="fp_number" class="invalid">At least one number</p>
+				  			<p  id="fp_special" class="invalid">At least one special character</p>
+				  			<p  id="fp_length" class="invalid">Minimum 8 characters required</p>
 						</div> 
             </div>
            
             <div class="clearfix"></div>
-            <span>
+            <span class="positionRelative">
             	<label>Confirm Password</label>
-                <input type="Password" class="signin_fild" value="" data-validation="required" field-name="Confirm Password" id="confirmPassword" onblur="$(this).checkPass();" />
+                <input type="password" class="signin_fild" value="" data-validation="required" field-name="Confirm Password" id="confirmPassword" onblur="$(this).checkPass();" />
                 <b></b>
+                  <i class="fa fa-eye showPassword" onclick="showConfirmPassword();"></i>
             </span>
             <div class="clearfix"></div>
             </div>
@@ -90,6 +93,31 @@
     
     
 </body>
+
+<script>
+function showPassword(){
+	var passwordInput = document.getElementById('password');
+	if(passwordInput.type === "password"){
+		passwordInput.type = "text"
+	}else{
+		passwordInput.type = "password"
+	}
+	
+	
+}
+</script>
+
+<script>
+function showConfirmPassword(){
+	var confPasswordInput = document.getElementById('confirmPassword');
+	if(confPasswordInput.type === "password"){
+		confPasswordInput.type = "text"
+	}else{
+		confPasswordInput.type = "password"
+	}
+	
+}
+</script>
 
 <script>
 $(function () {
