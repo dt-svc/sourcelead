@@ -41,6 +41,8 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OnboardTasks;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Tasks;
@@ -54,6 +56,8 @@ import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -128,6 +132,12 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 	@Autowired
 	RegistrationService registrationService;
 	
+	@Autowired
+	OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	OrgSpocService orgSpocService;
+	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
@@ -155,11 +165,11 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		
 		String[] onboardCandiate = candidateOnBoardingDTO.getOnboardCandiate().split(",");
 		
-		Candidate candidate = new Candidate();
-		candidate.setId(Long.valueOf(onboardCandiate[0]));
 		
 		RequirementOffers offer = new RequirementOffers();
 		offer.setId(Long.valueOf(onboardCandiate[1]));
+		
+		Candidate candidate = candidateService.getCandidateByCandidateId(Long.valueOf(onboardCandiate[0]));
 		
 		candidateOnBoarding.setCandidateId(candidate);
 		candidateOnBoarding.setOfferId(offer);
@@ -269,6 +279,24 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		
 		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getEmploymentType())){
 			candidateOnBoarding.setEmploymentType(candidateOnBoardingDTO.getEmploymentType());
+			if(candidateOnBoardingDTO.getEmploymentType().equalsIgnoreCase("C2C")) {
+				OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(candidateOnBoardingDTO.getVendors()));
+				candidate.setOrgRelationId(orgRelation);
+				Candidate vendorCandidate = commonUtil.getC2CVendorCandidate(candidate, orgRelation, orgLocations, user);
+				candidate.setParentCandidateId(vendorCandidate);
+				
+			    OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(candidateOnBoardingDTO.getVendorContact()));
+			    candidate.setSpocId(orgspoc);
+				  
+			}else {
+				candidate.setParentCandidateId(null);
+				candidate.setSpocId(null);
+			}
+			candidate.setDesignationType(candidateOnBoardingDTO.getEmploymentType());
+			candidateService.addCandidate(candidate);
+			candidateService.saveOrUpdateCandidate(candidate);
+  			candidateService.saveOrUpdateCandidateElkDocument(candidate);
+			
 		}else{
 			candidateOnBoarding.setEmploymentType(null);
 			candidateOnBoarding.setEmploymentOtherType(null);
@@ -619,7 +647,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 	    return userRole;
 	}
 	
-	private Employees saveOnboardingEmployee(CandidateOnBoarding candidateOnBoarding,User onboardingUser,User loginUser,OrgLocations orgLocations){
+	private Employees saveOnboardingEmployee(CandidateOnBoarding candidateOnBoarding,User onboardingUser,User loginUser,OrgLocations orgLocations) throws Exception{
 		    
 		    Employees employees = new Employees();
 		    employees.setUser(onboardingUser);
@@ -641,6 +669,16 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		    employees.setCreatedDate(commonUtil.currentDate());
 		    employees.setUpdatedBy(loginUser.getUserCode());
 		    employees.setUpdatedDate(commonUtil.currentDate());
+		    
+		    Candidate candidate = candidateService.getCandidateByCandidateId(candidateOnBoarding.getCandidateId().getId());
+		    if(candidate.getOrgRelationId() != null) {
+		    	employees.setOrgRelationId(candidate.getOrgRelationId());
+		    }
+		    
+		    if(candidate.getSpocId() != null) {
+		    	employees.setSpocId(candidate.getSpocId());
+		    }
+		    
 		    return employees;
 	}
 	
