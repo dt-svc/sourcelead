@@ -719,12 +719,14 @@ public class ExpensesRestController {
 		List<Expenses> expensesList = expensesService.getTotalMyExpensesListByMasterCandidateIdForEmployeeLogin(candidate.getMasterCandidateId().getId(), expenseStatus);
 		for (Expenses ex : expensesList) {
 			ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(ex.getMasterCandidateId().getId(),ex.getProjects().getId(),orgLoc.getId());
-			if (null != ex.getProjectMembers()) {
-				ex.setProjectName(pm.getProjects().getProjectName());
+			if(pm != null) {
+				if (null != ex.getProjectMembers()) {
+					ex.setProjectName(pm.getProjects().getProjectName());
+				}
+				if(pm.getProjectClientsId()!=null && pm.getProjectClientsId().getOrgRelationId()!= null){
+					ex.setClientName(pm.getProjectClientsId().getOrgRelationId().getClientName());	
+	            }
 			}
-			if(pm.getProjectClientsId()!=null && pm.getProjectClientsId().getOrgRelationId()!= null){
-				ex.setClientName(pm.getProjectClientsId().getOrgRelationId().getClientName());	
-            }
 			if (null != ex.getStartDate()) {
 				ex.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),ex.getStartDate()));
 			}

@@ -524,8 +524,10 @@ function getInvoiceList(){
 <script>
 function prepareInvoiceList(url,locationdateForList){
  	var result = "";
- 	result = result +" <div class='remove_search'>";
+ 	result = result +" <div class='dynamic_search dynamic_search-new'>";
  	result = result +" <input type='text' placeholder='Search' id='invoiceDataTableSearch'/>";
+ 	result = result +"  <span class='cursorPointer' title='Search'><i class='fa fa-search' onclick='getInvoiceList();'></i></span>";     
+
  	result = result +"</div>";
  	result = result + '<table id="invoiceListTable" class="display" cellspacing="0" width="100%" >';
 	result = result + '<thead>';
@@ -1054,12 +1056,28 @@ function cancelbtn(){
 <script>
 function removeMask(){
 	 $("#customeAmount").removeAttr("readonly");
-	 $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+	/*  $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
 	        $(this).val($(this).val().replace(/[^0-9\.]/g,''));
 	            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
 	                event.preventDefault();
 	            }
-	        });
+	        }); */
+	        
+	 $("#customeAmount").keydown(function (e) {
+	        // Allow: backspace, delete, tab, escape, enter and .
+	        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+	             // Allow: Ctrl+A, Command+A
+	            (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) || 
+	             // Allow: home, end, left, right, down, up
+	            (e.keyCode >= 35 && e.keyCode <= 40)) {
+	                 // let it happen, don't do anything
+	                 return;
+	        }
+	        // Ensure that it is a number and stop the keypress
+	        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+	            e.preventDefault();
+	        }
+	    });
 	 
 	 
 }
