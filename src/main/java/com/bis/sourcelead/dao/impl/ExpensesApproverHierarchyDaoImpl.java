@@ -139,4 +139,6 @@ public class ExpensesApproverHierarchyDaoImpl implements ExpensesApproverHierarc
         }
 		return query.list();
 	}
+
+	
 }

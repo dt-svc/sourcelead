@@ -59,7 +59,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoicePaymentDTO;
-
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -276,6 +276,19 @@ public class InvoiceRestController {
 		}
 		return invoiceSaved;	
 	} 
+	
+	
+	@RequestMapping(value = "/validateInvoiceId",  method = RequestMethod.POST)
+    public @ResponseBody Boolean validateInvoiceId(@RequestParam(value="invoiceId", required=false) String invoiceId,
+    		HttpServletRequest request) throws Exception {
+	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	       Boolean flag = false;
+	       if(null != invoiceId){
+	        flag = invoiceService.getInvoiceByInvoiceId(invoiceId, orgLocation.getId());
+	       }
+	      return flag;
+		 
+	    }
 	
 	@RequestMapping(value = "/getInvoiceAssociatesList", method = RequestMethod.GET)
 	public @ResponseBody String getInvoiceAssociatesList(@RequestParam(value = "selectedAssociates", required = false) String selectedAssociates, @RequestParam(value = "orgRelationId", required = false) Long orgRelationId, @RequestParam(value = "contractType", required = false) String contractType, HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -795,6 +808,10 @@ public class InvoiceRestController {
 		}
 		if (null != sahList && sahList.size() > 0) {
 			for (SubmissionApproverHierarchy sah : sahList) {
+				String status = sah.getSubmissionStatus().getValue();
+				if(!status.equalsIgnoreCase("APPROVED")){
+					continue;
+				}
 				ProjectMembers projectMember = sah.getSubmissionId().getProjectMembers();
 //				Candidate candidate = candidateService.getCandidateByParentCandidateId(projectMember.getProjectMemberCandidteId().getId());
 				Candidate candidate = projectMember.getProjectMemberCandidteId();
@@ -1785,7 +1802,7 @@ public class InvoiceRestController {
 	public List<Expenses> getExpensesByProjectMemberId(
 			@RequestParam(value = "memberId", required = false) Long projectMemberId,
 			@RequestParam(value = "invoiceType", required = false) String invoiceType) throws Exception {
-
+		
 		List<Expenses> expensesList = expensesService.getExpensesByProjectMemberId(projectMemberId,invoiceType);
 		return expensesList;
 
@@ -1799,8 +1816,9 @@ public class InvoiceRestController {
 	 */
 	@RequestMapping(value = "/getExpensesEntries", method = RequestMethod.GET)
 	@ResponseBody
-	public  List<ExpensesEntriesDTO> getExpensesEntries(@RequestParam(value = "expensesId", required = false) Long expenseId)throws Exception {
-		List<ExpensesEntriesDTO> expensesEntriesDTOList = expensesService.getApprovedExpenses(expenseId);
+	public  List<ExpensesEntriesDTO> getExpensesEntries(@RequestParam(value = "expensesId", required = false) Long expenseId,HttpServletRequest request)throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<ExpensesEntriesDTO> expensesEntriesDTOList = expensesService.getApprovedExpenses(expenseId,orgLocation.getId());
 		return expensesEntriesDTOList;
 	}
 	
