@@ -887,12 +887,12 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 
 		 emailScenerioUtil.sendEmail(emailMessage,orglocations.getId(),iAdressArray,attachmentList);
 		 StringBuilder notificationLink = new StringBuilder();
-		 String actionLink="";
-		 Invoice notificationInvoice=getInvoicetByParentId(invoice.getId());
+		 String actionLink = "";
+		 Invoice notificationInvoice = getInvoicetByParentId(invoice.getId());
 		 if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
 	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="+notificationInvoice.getInvoiceUUID()+"&invoiceType=Payables").toString();
 		 }else{
-			 actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="+notificationInvoice.getInvoiceUUID()+"&invoiceType=Receivable").toString();
+		 actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="+notificationInvoice.getInvoiceUUID()+"&invoiceType=Receivable").toString();
 			 
 		 }
 		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario);
@@ -2611,8 +2611,8 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 
 		invoiceDao.saveInvoce(invoice);
 		if (Constants.SENT.equalsIgnoreCase(saveType)) {
-			sendInvoiceMail(user, orgLocation, invoice, invoiceType, docusList);
 			saveParentInvoice(invoice, loginOrgCurrencyCode, vendorOrgLocation);
+			sendInvoiceMail(user, orgLocation, invoice, invoiceType, docusList);
 		}
 
 		if (null != invoiceLineItemsIdsList && invoiceLineItemsIdsList.size() > 0) {
