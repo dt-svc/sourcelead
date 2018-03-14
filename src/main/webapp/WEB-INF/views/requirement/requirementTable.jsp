@@ -5,13 +5,6 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
- <%--search Highlight color script  --%>
-<script src="https://cdn.datatables.net/plug-ins/1.10.16/features/searchHighlight/dataTables.searchHighlight.min.js"></script>
-<script src="https://cdn.datatables.net/plug-ins/1.10.16/features/searchHighlight/dataTables.searchHighlight.css"></script>
-<script src="https://bartaz.github.io/sandbox.js/jquery.highlight.js"></script>
-
-
- 
 <script>
 function requirementListCheck(searchValue,universalRequirementSearchList,searchType,sourceleadUrl){
 	if(universalRequirementSearchList != null && universalRequirementSearchList != '' && universalRequirementSearchList != 'undefined' 
