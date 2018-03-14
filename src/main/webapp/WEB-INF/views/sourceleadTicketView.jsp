@@ -48,8 +48,12 @@
                 </div>
                 
                 <div class="require_wrap_details_cta width100percnt">
-                 <label><strong>URL:</strong></label>
-                  <a href="${sourceleadTicket.ticketURL}" target="_blank">${sourceleadTicket.ticketURL}</a>
+                 <label><strong>Ticket Status :</strong></label>  ${sourceleadTicket.ticketStatus}
+                </div>
+                
+                <div class="require_wrap_details_cta width100percnt">
+                 <label><strong>URL :</strong></label>
+                  ${sourceleadTicket.ticketURL}
                 </div>
                 
                  <div class="require_wrap_details_cta width100percnt">
