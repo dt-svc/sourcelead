@@ -88,12 +88,12 @@ textarea {
     border: none;
 }
 .outsoucing-registaion > ul.nav-tabs li{
-    float: none;
+    float: left;
     margin: 0;
     padding: 0;
     border: 0;
     outline: none;
-    margin-bottom: 5px;
+    margin-bottom: 0px;
 }
 
 .outsoucing-registaion div.tab-content h4{
