@@ -107,11 +107,11 @@ public class ImmigrationRestController {
 
 	@RequestMapping(value = { "/loadNewPetitionPage" })
 	public ModelAndView loagNewPetitionPageView(HttpServletRequest request,
-			@RequestParam(value = "status", required = false) String status) {
+			@RequestParam(value = "forward", required = false) String forward) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		if (status.equalsIgnoreCase("one")) {
-			model.setViewName("/immigration/newPetitionPage1");
+		if (forward.equalsIgnoreCase("petitionDetails")) {
+			model.setViewName("/immigration/petitionDetails");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
 			List<ImmigrationTemplate> templateList = immigrationCommonService.getImmigrationTemplateList(orgLocations);
@@ -126,17 +126,17 @@ public class ImmigrationRestController {
 			System.out.println("templateList size in controller is-->"+templateList.size());
 			
 			model.addObject("templateList",templateList);
-		} else if (status.equalsIgnoreCase("two")) {
+		} else if (forward.equalsIgnoreCase("two")) {
 			model.setViewName("/immigration/newPetitionPage2");
-		} else if (status.equalsIgnoreCase("three")) {
+		} else if (forward.equalsIgnoreCase("three")) {
 			model.setViewName("/immigration/newPetitionPage3");
-		} else if (status.equalsIgnoreCase("four")) {
+		} else if (forward.equalsIgnoreCase("four")) {
 			model.setViewName("/immigration/newPetitionPage4");
-		} else if (status.equalsIgnoreCase("five")) {
+		} else if (forward.equalsIgnoreCase("five")) {
 			model.setViewName("/immigration/newPetitionPage5");
-		} else if (status.equalsIgnoreCase("six")) {
+		} else if (forward.equalsIgnoreCase("six")) {
 			model.setViewName("/immigration/newPetitionPage6");
-		} else if (status.equalsIgnoreCase("seven")) {
+		} else if (forward.equalsIgnoreCase("seven")) {
 			model.setViewName("/immigration/newPetitionPage7");
 		}
 		return model;
