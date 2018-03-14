@@ -385,6 +385,8 @@ function deleteResumePopUp(){
 </script>
 
 
+
+
 <script>
 function deleteSelectedResume(candidateId, resumeId){
 	var loginUserId = '${SourceLeadWeb_userId}';
@@ -413,9 +415,10 @@ function deleteSelectedResume(candidateId, resumeId){
      			 $("#resumeMsgDiv").html("Resume deleted");
     			 $("#popUpDivResume").removeClass("edit-details-active");
     			 deleteResumePopUp();
+    			  			
     			 candidateResumesList(candidateId);
-    			 resumesMsgFadein();
-    			  	}
+				  resumesMsgFadein();
+		    	}
 		    },
      });
 }

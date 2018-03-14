@@ -21,7 +21,7 @@ public interface SourceleadTicketsDao {
 	//ticket related
 	SourceleadTickets saveSourceleadTickets(SourceleadTickets sourceleadTickets) throws Exception;
 	
-	ResponseList<SourceleadTickets> getSourceleadTicketListByOrgLocationId(SourceleadTicketDTO sourceleadTicketDTO,Long userId,OrgLocations orgLocation,Date fromDate,Date endDate)throws Exception;
+	ResponseList<SourceleadTickets> getSourceleadTicketListByOrgLocationId(SourceleadTicketDTO sourceleadTicketDTO,Long userId,OrgLocations orgLocation,Date[] searchDates)throws Exception;
 
 	SourceleadTickets getSourceleadTicketsByTicketUUID(String ticketUUID);
 	
