@@ -951,6 +951,10 @@ $(document).ready(function(){
 	}else{
 		getVendors();
 		getProjectsList();
+		$("#invoiceId").val("");
+		$("#paymentFrequency").val("");
+		$("#paymentFrequency").trigger("chosen:updated");
+		$("#dueDate").val("");
 	}
 	
 });
