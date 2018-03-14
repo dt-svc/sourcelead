@@ -18,7 +18,7 @@ public interface SourceleadTicketService {
 
 	public String saveSourceleadTickets(SourceleadTicketDTO sourceleadTicketDTO,User user, OrgLocations orgLocation) throws Exception;
 
-	ResponseList<SourceleadTicketDTO> getSourceleadTicketListByOrgLocationId(SourceleadTicketDTO sourceleadTicketDTO,Long userId,OrgLocations orgLocation,Date fromDate,Date endDate)throws Exception;
+	ResponseList<SourceleadTicketDTO> getSourceleadTicketListByOrgLocationId(SourceleadTicketDTO sourceleadTicketDTO,Long userId,OrgLocations orgLocation,Date[] searchDates)throws Exception;
 	
 	SourceleadTickets getSourceleadTicketsByTicketUUID(String ticketUUID);
 	
