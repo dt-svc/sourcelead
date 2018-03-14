@@ -34,7 +34,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.WhiteListIpAddressDao;
+import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CompanyRegistrationDTO;
+import com.bis.sourcelead.dto.OrgLocationDTO;
+import com.bis.sourcelead.dto.OrglocationSignatoryDTO;
 import com.bis.sourcelead.dto.WhiteListIPAddressDTO;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.Modules;
@@ -58,6 +61,7 @@ import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadSignatureService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.WhiteListIpAddressService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -98,6 +102,10 @@ public class OrgSettingsRestController {
 	private ExpensesService expensesService;
 	@Autowired
 	private AddExpensesService addExpensesService;
+
+	@Autowired
+	UserService userService;
+
 	@Value("${static.path}")
 	private String staticPath;
 	
@@ -672,6 +680,44 @@ public class OrgSettingsRestController {
 		return "Success";
 	}
 	
+
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
+	@RequestMapping(value = "/app/saveCustomRecommendation", method = RequestMethod.POST)
+	public String saveCustomRecommendation(OrgLocationDTO locationDto, HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		orgLocations.setRecommendedSkillPercent(locationDto.getRecommSkill());
+		orgLocations.setRecommendedEducationPercent(locationDto.getRecommEducation());
+		orgLocations.setRecommendedLocationPercent(locationDto.getRecommLocation());
+		orgLocations.setRecommendedNoticePercent(locationDto.getRecommNoticePeriod());
+		orgLocations.setRecommendedExpPercent(locationDto.getRecommExp());
+		orgLocations.setRecommendedVisatypePercent(locationDto.getRecommVisaType());
+		orgLocations.setRecommendedRatePercent(locationDto.getRecommRate());
+		orgLocations.setRecommendedKeywordsPercent(locationDto.getRecommKeywords());
+		orgLocationService.updateOrgLocations(orgLocations);
+		
+		return "Success";
+	}
+	
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
+	@RequestMapping(value = "/app/getAssociatesForSignatory", method = RequestMethod.GET)
+	public List<AddUserDTO> getAssociatesForSignatory(HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<User> associatesList = userService.getUsersListByOrglocationId(orgLocations.getId());
+		List<AddUserDTO> userDtoList = new ArrayList<>();
+		for(User user : associatesList){
+			AddUserDTO userdto = new AddUserDTO();
+			userdto.setUserId(user.getId().toString());
+			userdto.setFirstName(user.getFirstName());
+			if(StringUtils.isNotBlank(user.getLastName()))
+				userdto.setLastName(user.getLastName());
+			userDtoList.add(userdto);
+		}
+		return userDtoList;
+	}
+	
+
 	@RequestMapping(value = "/app/generate-career-page-key", method = RequestMethod.POST)
 	public String generateCareerPageKey(HttpServletRequest request) throws Exception
 	{
@@ -708,4 +754,5 @@ public class OrgSettingsRestController {
 		}
 		return "failed";
 	}
+
 }

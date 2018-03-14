@@ -11,7 +11,7 @@
 <script>
 window.onload = function() {
 	var userName = '${username}';
-	var password = '${password}';
+	var password = '';
 	var sourceleadUrl ='${sourceleadUrl}';
 	var requirementUUID ='${requirementUUID}';
 	userName = userName.trim();
