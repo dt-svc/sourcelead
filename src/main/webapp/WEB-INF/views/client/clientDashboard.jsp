@@ -448,9 +448,11 @@ function clearSearch(){
 	$('#allKeywords').val('').trigger('chosen:updated');
 	$('#excludeKeyWord').val('').trigger('chosen:updated');
 	$('#orgNameAdvanced').val('').trigger('chosen:updated');
-	$('#countrySearch').val('').trigger('chosen:updated'); 
-	$('#stateSearch').val('').trigger('chosen:updated');
-	$('#citySearch').val('').trigger('chosen:updated');
+	$('#countrySearch').val('').trigger('chosen:updated');
+	//$('#stateSearch').val('').trigger('chosen:updated');
+	getStates();
+	//$('#citySearch').val('').trigger('chosen:updated');
+	getCities();
 	$('#tierAdvanced').val('').trigger('chosen:updated');
 	$('#createdByAdvanced').val('').trigger('chosen:updated');
 	$('#emailAdvanced').val('').trigger('chosen:updated');
@@ -461,6 +463,7 @@ function clearSearch(){
 	$('#contactNameAdvanced').val('').trigger('chosen:updated');
 	$('#phoneNumberAdvanced').val('').trigger('chosen:updated');
 }
+
 </script>
 
 <script>
