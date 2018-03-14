@@ -273,8 +273,18 @@ function getUnsubscribeList(){
 						</div>
 						<div class="form-group" id="newPwdDiv">
 						<label class="col-md-4">New Password<span class="text-danger paddingLeft">*</span></label>
-						<div class="col-md-6">
-						  <input type="password" name="password" id="password" field-name="New Password" class="form-control" data-validation="required validate_length length6-100"   />
+						
+						<div class="col-md-6 posiRela">
+						  <input type="password" name="password" id="password" field-name="New Password" class="form-control" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d.*)(?=.*\W.*)[a-zA-Z0-9\S]{8,}$" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" data-validation="required validate_length length6-100"  onkeyup="passwordValidation_pf('password','np_letter','np_capital','np_number','np_special','np_length');" />
+	             			
+	             	    <div id="np_message" class="passHintNew">
+				  			<p  id="np_letter" class="invalid">A lowercase letter</p>
+				  			<p  id="np_capital" class="invalid">A capital (uppercase) letter</p>
+				  			<p  id="np_number" class="invalid">A number</p>
+				  			<p  id="np_special" class="invalid">A special</p>
+				  			<p  id="np_length" class="invalid">Minimum 8 characters</p>
+						</div>
+	             			
 						</div>
 				       </div>
 					  <div class="form-group" id="confirmPwdDiv">
@@ -815,6 +825,62 @@ function getLoginUserProfile(){
 		    }
 	   });
 }
+</script>
+
+<script>
+$(document).ready(function(){
+	$(".posiRela input").focus(function(){
+		$(".passHintNew").show();
+	});
+	$(".posiRela input").blur(function(){
+		$(".passHintNew").hide();
+	});	
+});
+</script>
+
+<script>
+function passwordValidation_pf(idValue,np_letter,np_capital,np_number,np_special,np_length){
+	var myInput = $("#"+idValue).val();
+	 
+	if(myInput.match(/[a-z]/g)){
+		$("#"+np_letter).removeClass("invalid");
+		$("#"+np_letter).addClass("actTe");
+	}else{
+		$("#"+np_letter).removeClass("actTe");
+		$("#"+np_letter).addClass("invalid");
+	} 
+	if(myInput.match(/[A-Z]/g)){
+		$("#"+np_capital).removeClass("invalid");
+		$("#"+np_capital).addClass("actTe");
+	}else{
+		$("#"+np_capital).removeClass("actTe");
+		$("#"+np_capital).addClass("invalid");
+	}
+	if(myInput.match(/[0-9]/g)){
+		$("#"+np_number).removeClass("invalid");
+		$("#"+np_number).addClass("actTe");
+	}else{
+		$("#"+np_number).removeClass("actTe");
+		$("#"+np_number).addClass("invalid");
+	}
+	if(myInput.match(/[$&+,:;=?@#|'<>.^*()%!-]/g)){
+		$("#"+np_special).removeClass("invalid");
+		$("#"+np_special).addClass("actTe");
+	}else{
+		$("#"+np_special).removeClass("actTe");
+		$("#"+np_special).addClass("invalid");
+	}
+	if(myInput.length >= 8){
+		$("#"+np_length).removeClass("invalid");
+		$("#"+np_length).addClass("actTe");
+	}else{
+		$("#"+np_length).removeClass("actTe");
+		$("#"+np_length).addClass("invalid");
+	}
+	
+}
+
+
 </script>
 
 
