@@ -328,13 +328,6 @@ function validateShortCode(){
 							</div>
 						</div>
 						
-						<div class="clearfix mb"></div>
-			            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
-			               <c:if test="${sectionOrder.index == 0}">
-			                  <div id="customDiv${section.id}"></div>
-			               </c:if>
-			            </c:forEach>
-						
 						<div class="form-group">
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
@@ -370,6 +363,15 @@ function validateShortCode(){
 								</div>
 							</div>
 						</div>
+						
+						<div class="clearfix mb">
+			            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+			               <c:if test="${sectionOrder.index == 0}">
+			                  <div id="customDiv${section.id}"></div>
+			               </c:if>
+			            </c:forEach>
+						</div>
+						
 					</div>
 				</div>
 				
@@ -1190,19 +1192,25 @@ function getBudgetApprover(approverUserId){
 
 <script>
 	$(document).ready(function() {
-		$("#txtEditor").Editor().trim();
-		$("#txtEditor").find(".Editor-editor").data-validation('validate_length length2-5000');
-		$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
 		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 		  var sectionId = '${section.id}';
 		  getCustomDependentField(sectionId);
 		 </c:forEach>
 	});
 </script>
+
+
+<script>
+	$(document).ready(function() {
+		$("#txtEditor").Editor();
+		$("#txtEditor").find(".Editor-editor").data-validation('validate_length length2-5000');
+		$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
+	});
+</script>
  
 <script>
 function getCustomDependentField(sectionId){
-	 $.ajax({
+	$.ajax({
 			type : "POST" , 
 				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
 				 success: function(data) {

@@ -58,7 +58,7 @@ margin-right: 15px;
       <div class="reportsCount req_Crowd clearfix">
           <ul class="clearfix">
           <li id="crowd"><label class="mr10"><span><i class="fa fa-registered"></i></span><b id="crowdActive"><input class="myCheckbox valid" type="radio" checked name="sourceleadOrgType" id="sourceleadOrg" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/enrolledOrgsList'/>'" >&nbsp;Registered Companies</label></b></li>
-          <li id="crowd"><label class="mr10"><span><i class="fa fa-cubes"></i></span><b id="savedActive"><input class="myCheckbox valid" type="radio" name="sourceleadOrgType" id="sourceleadOrg" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/requestedOrgs'/>'" >&nbsp;Requested Companies</label></b></li>
+          <li id="crowd"><label class="mr10"><span><i class="fa fa-cubes"></i></span><b id="savedActive"><input class="myCheckbox valid" type="radio" name="sourceleadOrgType" id="sourceleadOrg" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/requestedOrgs'/>'" >&nbsp;Registration Requests</label></b></li>
           <li id="crowd"><label class="mr10"><span><i class="fa fa-laptop"></i></span><b id="savedActive"><input class="myCheckbox valid" type="radio" name="sourceleadOrgType" id="sourceleadOrg" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/demoRequests'/>'">&nbsp;Demo Requests</label></b></li>
           </ul>
       </div> 
@@ -195,7 +195,12 @@ function dynamicOrgListPagination(url){
 			  	"data": "",
 			  	"render": function(data, type, org, meta) {
 			  		var result = "";
-					result = result + ' <td><div class="tbldata-dotdot-big" title = "'+org.location+'">'+org.location+'</div></td>';
+			  		if(org.location != null && org.location != '' && org.location != 'undefined'){
+			  			result = result + ' <td><div class="tbldata-dotdot-big" title = "'+org.location+'">'+org.location+'</div></td>';
+			  		}else{
+			  			result = result + ' <td><div class="tbldata-dotdot-big">--</div></td>';
+			  		}
+					
 
 		             return result;
 			  	}

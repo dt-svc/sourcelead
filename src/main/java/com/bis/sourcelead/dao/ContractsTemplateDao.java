@@ -58,4 +58,6 @@ public interface ContractsTemplateDao {
 	Boolean getVendorMsaCreatedOrNot(Long vendorLocationId, Long loginLocatonId);
 
 	List<Contracts> getContractByLocationId(Long orgLocationId);
+
+	List<User> getSigningAuthoritiesForContract(Long orgLocationsId, Long tabId);
 }

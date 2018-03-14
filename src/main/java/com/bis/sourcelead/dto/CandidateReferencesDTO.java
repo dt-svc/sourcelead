@@ -18,8 +18,13 @@ public class CandidateReferencesDTO {
 	private String comment;
 	
 	private long id;
+    
+	private long userId;
 
-
+	private String locationCode;
+	
+	private long candidateId;
+	
 	public String getName()
 	{
 		return name;
@@ -99,5 +104,36 @@ public class CandidateReferencesDTO {
 	{
 		this.id = id;
 	}
+
+	public long getUserId()
+	{
+		return userId;
+	}
+
+	public void setUserId(long userId)
+	{
+		this.userId = userId;
+	}
+
+	public String getLocationCode()
+	{
+		return locationCode;
+	}
+
+	public void setLocationCode(String locationCode)
+	{
+		this.locationCode = locationCode;
+	}
+
+	public long getCandidateId()
+	{
+		return candidateId;
+	}
+
+	public void setCandidateId(long candidateId)
+	{
+		this.candidateId = candidateId;
+	}
+	
 	
 }

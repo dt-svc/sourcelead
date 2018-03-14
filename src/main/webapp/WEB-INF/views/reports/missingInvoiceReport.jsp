@@ -297,7 +297,7 @@ function getMissingInvoiceCustomDates() {
 
 <script>
   $( function() {
-		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		 /* var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormatProjectSave = '';
 		  if(locationDate.match("yyyy-MM-dd")){
 			  finalDateFormatProjectSave = 'yy-mm-dd';
@@ -307,10 +307,10 @@ function getMissingInvoiceCustomDates() {
 			  finalDateFormatProjectSave = 'mm-dd-yy'; 
 		  }if(locationDate.match("yyyy-dd-MM")){
 			  finalDateFormatProjectSave = 'yy-dd-mm'; 
-		  }
+		  } */
     
 	  $('#fromDate').datepicker({
-			dateFormat : finalDateFormatProjectSave,
+			dateFormat : "yy-mm-dd",
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
@@ -321,7 +321,7 @@ function getMissingInvoiceCustomDates() {
 		});
 	  
 	  $('#toDate').datepicker({
-			dateFormat : finalDateFormatProjectSave,
+			dateFormat : "yy-mm-dd",
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {

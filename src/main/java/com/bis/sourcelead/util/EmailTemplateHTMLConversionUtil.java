@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Tabs;
 
 
 /**
@@ -18,7 +19,7 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 	
 	private static final long serialVersionUID = -3317550653234933840L;
 	
-	public static String convertBodyOfEmailTemplateToHTML(String body , String signature ,String callToActionText , String ButtonText , String url, EmailMessage emailMessage, Org org,OrgLocations orgLocations) {	
+	public static String convertBodyOfEmailTemplateToHTML(String body , String signature ,String callToActionText , String ButtonText , String url, EmailMessage emailMessage, Org org,OrgLocations orgLocations, Tabs tabs) {	
 		 
 		StringBuilder tempHTML = new StringBuilder();
 		/*
@@ -108,6 +109,12 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 	tempHTML.append("</td>");
  tempHTML.append("</tr>");
 tempHTML.append("</table>");
+
+if(tabs != null) {
+	tempHTML.append("<div style='display:none;'><tabIdDiv>").append(tabs.getId().toString()).append("</tabIdDiv>").append("</div>");
+}else {
+	tempHTML.append("<div style='display:none;'><tabIdDiv>").append("</tabIdDiv>").append("</div>");
+}
 
 		 return tempHTML.toString();
 	}

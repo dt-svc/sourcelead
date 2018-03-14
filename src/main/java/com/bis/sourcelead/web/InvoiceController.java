@@ -250,7 +250,7 @@ public class InvoiceController {
 	
 	
 	
-	@PreAuthorize("hasAnyRole('ROLE_ADD_INVOICE')")
+//	@PreAuthorize("hasAnyRole('ROLE_ADD_INVOICE')")
 	@RequestMapping(value = "/createInvoiceProjectBased")
 	public ModelAndView createInvoiceProjectBased(HttpServletRequest request,@RequestParam(value="orgRelationId", required=false) Long orgRelationId) throws Exception {
 		
@@ -283,7 +283,7 @@ public class InvoiceController {
 	return model;
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_ADD_INVOICE')")
+//	@PreAuthorize("hasAnyRole('ROLE_ADD_INVOICE')")
 	@RequestMapping(value = "/createInvoiceProjectPayableBased")
 	public ModelAndView createInvoiceProjectPayableBased(@RequestParam(value="orgRelationId", required=false) Long orgRelationId,HttpServletRequest request) throws Exception {
 		

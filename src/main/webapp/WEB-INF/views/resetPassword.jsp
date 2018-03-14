@@ -57,8 +57,7 @@
                 <b></b>
             </span>
             
-            			<div id="fp_message" class="passHint">
-				 			<h3>Password must contain the following:</h3>
+            			<div id="fp_message" class="passHint" style="left:-310px; box-shadow: 1px 1px 1px 2px #ddd; top:-10px;">
 				  			<p  id="fp_letter" class="invalid">A lowercase letter</p>
 				  			<p  id="fp_capital" class="invalid">A capital (uppercase) letter</p>
 				  			<p  id="fp_number" class="invalid">A number</p>

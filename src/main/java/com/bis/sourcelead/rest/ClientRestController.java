@@ -2340,9 +2340,12 @@ public class ClientRestController {
 								
 								
 								OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(clientVendorContactsIndex.getId());
-								Notifications notifications = notificationsService.getNotificationBySpocUUID(orgSpoc.getUUID());
-								if(notifications != null) {
-									clientVendorContactsIndex.setNotificationUUID(notifications.getUUID());
+								if(orgSpoc != null) {
+									Notifications notifications = notificationsService.getNotificationBySpocUUID(orgSpoc.getUUID());
+									if(notifications != null) {
+										clientVendorContactsIndex.setNotificationUUID(notifications.getUUID());
+									}
+									
 								}
 								
 								

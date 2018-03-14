@@ -376,7 +376,7 @@ public class CommonUtil {
 			if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
 				for(TimesheetSubmissions ts :timesheetSubmissionsList){
 					List<TimeSheetDayEntries> tdeList = null;
-					if(terminationDate.before(ts.getStartDate())) {
+					if(!CalendarUtil.isGivenDateBetweenDateRange(ts.getStartDate(), ts.getEndDate(), terminationDate)) {
 						ts.setStatus(Constants.MEMBER_IN_ACTIVE);
 					    tdeList = timeSheetDayEntriesService.getAllTimeSheetDayEntriesBySubmissionId(ts.getId());
 					}else {
@@ -385,6 +385,9 @@ public class CommonUtil {
 					if(tdeList != null && !tdeList.isEmpty()) {
 						for(TimeSheetDayEntries tde :tdeList) {
 							tde.setStatus(Integer.parseInt(Constants.MEMBER_IN_ACTIVE));
+							tde.setTotalHours("00:00");
+							tde.setBillableHours("00:00");
+							tde.setNonBillableHours("00:00");
 							timeSheetDayEntriesService.saveTimesheetDayEntries(tde);
 						}
 					}
@@ -1664,6 +1667,50 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 				candidate.setStatus(1);
 	  			candidateService.saveOrUpdateCandidate(candidate);
 	  			candidateService.saveOrUpdateCandidateElkDocument(candidate);
+			  }
+			  
+			  return candidate;
+		  }
+		
+		
+
+		public Candidate getC2CVendorCandidate(Candidate vendorCandidate,OrgRelations orgRelation,OrgLocations orgLocations,User loginUser) throws Exception{
+			  Candidate candidate = null;
+			  OrgLocations vendorOrgLocation = null;
+			  if(orgRelation.getInitiatorType().equalsIgnoreCase("Client") && orgRelation.getLocationId().getId().equals(orgLocations.getId())){
+				  vendorOrgLocation = orgRelation.getResponderLocationId();
+			  }else if(orgRelation.getInitiatorType().equalsIgnoreCase("Vendor") && orgRelation.getResponderLocationId().getId().equals(orgLocations.getId())){
+				  vendorOrgLocation = orgRelation.getLocationId();
+			  }
+			  
+			  candidate = candidateService.findByCandidateEmail(vendorCandidate.getEmail(),vendorOrgLocation.getId());
+			  
+			  if(candidate == null){
+				  candidate = new Candidate();
+				 
+					candidate.setMasterCandidateId(vendorCandidate.getMasterCandidateId());
+				  
+					candidate.setOrgLocationId(vendorOrgLocation);
+					candidate.setCandidateType("Candidate");
+					candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+					
+					candidate.setFirstName(vendorCandidate.getFirstName());
+					candidate.setLastName(vendorCandidate.getLastName());
+					candidate.setEmail(vendorCandidate.getEmail());
+					candidate.setLocation(vendorCandidate.getLocation());
+					candidate.setCountry(vendorCandidate.getCountry());
+					candidate.setState(vendorCandidate.getState());
+					candidate.setCity(vendorCandidate.getCity());
+					candidate.setZipCode(vendorCandidate.getZipCode());
+					candidate.setMobilePhone(vendorCandidate.getMobilePhone());
+					candidate.setAlternateMobilePhone(vendorCandidate.getAlternateMobilePhone());
+					candidate.setDesignationType("Full Time");
+					candidate.setSkillsName(vendorCandidate.getSkills());
+					 
+					candidate.setIsAssociate(Constants.NO);
+					candidate.setStatus(1);
+		  			candidateService.saveOrUpdateCandidate(candidate);
+		  			candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			  }
 			  
 			  return candidate;

@@ -20,6 +20,17 @@
  .approvedPop ul li {
  clear: both; width: 100%; margin: 0;
  }
+ 
+ 
+ .approvedPop1 {
+    position:absolute; z-index:100; width:150px; top:35px; right:2px; display:none; background-color: #fff;
+    }
+.approvedPop1 ul {
+ width:100% !important; float: none; padding: 0;
+ }
+ .approvedPop1 ul li {
+ clear: both; width: 100%; margin: 0;
+ }
 </style>
 
 <script type="text/javascript">
@@ -53,11 +64,24 @@
                 <li id="filterDropDown"><i class="fa fa-filter"></i><span>Requested</span><i class="glyphicon glyphicon-play" ></i>|
                 	<div id="filter1ApprovePop" class="approvedPop">
                     	<ul>
+                    	    <li><input id="c6"  type="radio" name="requestedStatus" value ="All"  onclick="getDemoOrgsList();"><label for="c7">&nbsp;All</label></li>
                         	<li><input id="c7"  type="radio" name="requestedStatus" value ="Today"  onclick="getDemoOrgsList();"><label for="c7">&nbsp;Today</label></li>
 							<li><input id="c9" type="radio" name="requestedStatus" value ="1 Week Ago"  onclick="getDemoOrgsList();"><label for="c9">&nbsp;1 Week Ago</label></li>
 							<li><input id="c8" type="radio"  name="requestedStatus"   value ="2 Weeks Ago"  onclick="getDemoOrgsList();"><label for="c8">&nbsp;2 Weeks Ago</label></li>
                				<li><input id="c6" type="radio"  name="requestedStatus"  value ="1 month ago"  onclick="getDemoOrgsList();"><label for="c6">&nbsp;1 month ago</label></li>
                				<li><input id="c10" type="radio"  name="requestedStatus"   value ="3 Months Ago"  onclick="getDemoOrgsList();"><label for="c10">&nbsp;3 Months Ago</label></li>
+               				
+                        </ul>
+                    </div>                	
+                </li>
+                
+                
+                <li id="filterDropDown1"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" ></i>|
+                	<div id="filter1ApprovePop1" class="approvedPop1">
+                    	<ul>
+                    	    <li><input id="c6"  type="checkbox" name="filterStatus" value ="Requested"  onclick="getDemoOrgsList();"><label for="c7">&nbsp;Requested</label></li>
+                        	<li><input id="c7"  type="checkbox" name="filterStatus" value ="Onhold"  onclick="getDemoOrgsList();"><label for="c7">&nbsp;Onhold</label></li>
+							<li><input id="c9" type="checkbox" name="filterStatus" value ="Completed"  onclick="getDemoOrgsList();"><label for="c9">&nbsp;Completed</label></li>
                				
                         </ul>
                     </div>                	
@@ -80,12 +104,24 @@
 $(document).ready(function() {
     $("#filterDropDown").click(function(){
 		$(".approvedPop").slideToggle(200);
+		$(".approvedPop1").slideUp(200);
 	});
-    $("html").click(function() {
-        $(".approvedPop").slideUp(200);
-    });
-    $("#filterDropDown, .approvedPop").click(function(e) {  
+    
+    $("#filterDropDown, .approvedPop, .approvedPop1").click(function(e) {  
         e.stopPropagation();
+    });
+    
+    
+    $("#filterDropDown1").click(function(){
+		$(".approvedPop1").slideToggle(200);
+		$(".approvedPop").slideUp(200);
+	});
+    $("#filterDropDown1, .approvedPop1, .approvedPop").click(function(e) {  
+        e.stopPropagation();
+    });
+    
+    $("html").click(function() {
+        $(".approvedPop, .approvedPop1").slideUp(200);
     });
     
 }); 
@@ -137,14 +173,22 @@ function requestedOrgsDataTableList(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#reqOrgDataTableSearch").val();
 	 
-	 var requestedStatus = [];
+	   var requestedStatus = [];
 		$('input:radio[name=requestedStatus]:checked').each(function() 
 	    {
 			requestedStatus.push($(this).val());
 	    });
 		
+		
+		var filterStatus = [];
+		$('input:checkbox[name=filterStatus]:checked').each(function() 
+	    {
+			filterStatus.push($(this).val());
+	    });
+		
+		
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getDemoOrgsList?searchValue="+searchValue+"&requestedStatus="+requestedStatus;
+	 var url = sourceleadUrl+"/getDemoOrgsList?searchValue="+searchValue+"&requestedStatus="+requestedStatus+"&filterStatus="+filterStatus;
 	 demoOrgsListPagination(url,sourceleadUrl);
 }
 

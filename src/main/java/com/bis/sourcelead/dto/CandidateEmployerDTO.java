@@ -25,6 +25,10 @@ public class CandidateEmployerDTO {
 	private String endDate;
 	
 	private String candidateEmployeeId;
+	
+	private long candidateId;
+	
+	private String candidateExperianceId;
 
 	public Long getId()
 	{
@@ -144,6 +148,26 @@ public class CandidateEmployerDTO {
 	public void setCandidateEmployeeId(String candidateEmployeeId)
 	{
 		this.candidateEmployeeId = candidateEmployeeId;
+	}
+
+	public long getCandidateId()
+	{
+		return candidateId;
+	}
+
+	public void setCandidateId(long candidateId)
+	{
+		this.candidateId = candidateId;
+	}
+
+	public String getCandidateExperianceId()
+	{
+		return candidateExperianceId;
+	}
+
+	public void setCandidateExperianceId(String candidateExperianceId)
+	{
+		this.candidateExperianceId = candidateExperianceId;
 	}
 
 	

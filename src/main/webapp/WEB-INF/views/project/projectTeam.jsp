@@ -226,7 +226,6 @@ function filterStatus() {
 		    result = result + '	<li><a onClick="filterStatus()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>';
 		    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
 			result = result + '       	<ul>';
-			result = result + '           	<li><input id="c5" type="checkbox" name="employeeStatus" checked="true" value ="All" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c5">All</label></li>'; 
 			result = result + '				<li><input id="c6" type="checkbox"   name="employeeStatus" value ="Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c6">Active</label></li>';
 			result = result + '				<li><input id="c7" name="employeeStatus" type="checkbox" value ="In-Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c7">In-Active</label></li> ';
 			result = result + '           </ul>';
@@ -349,8 +348,6 @@ function filterStatus() {
 				    {
 						values.push($(this).val());
 				    });
-	 }else{
-		 values = "All";
 	 }
 	 
 	 var roleIds = [];
@@ -472,19 +469,7 @@ function filterStatus() {
 		                if(status == 'COMPLETED'){
 		                	result = result + '<td><div>'+projectEndDateStr+'</div></td>';
 		                }else{
-		                	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\')">'; 
-		                	if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
-			                	result = result + '	     <td><div><input type="text" value="'+projectEndDateStr+'" class="project_inline_field project_inline_field_enddate" id="endDate'+opt.id+'" name = "endDate'+opt.id+'"  readonly="readonly"></div></td>';
-			                }
-			                else{
-			                	  result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+projectEndDateStr+'">'+projectEndDateStr+'</span></div></td>';
-			                }
-		                	'</sec:authorize>';
-		                	
-		                	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\')">'; 
 		                	  result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+projectEndDateStr+'">'+projectEndDateStr+'</span></div></td>';
-	                	   '</sec:authorize>';
-		                	
 		                }
 		                
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+billRate+'">'+billRate+'</span></div></td>';
@@ -492,7 +477,6 @@ function filterStatus() {
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+estimatedHours+'">'+estimatedHours+'</span></div></td>';
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+estimatedBudget+'">'+estimatedBudget+'</span></div></td>';
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.approvedHrs+'">'+opt.approvedHrs+'</span></div></td>';
-		                
 		                
 		                if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}' || '${isClientOrgActive}' == "N"){
 		                	
@@ -1035,7 +1019,6 @@ function loadProjectMembersDetails(data,candidateName){
 				 
 		        onClose : function(selected) {
 		        	var dt = $(this).datepicker('getDate', '+1d');
-					dt.setDate(dt.getDate() + 1);
 					$("#projectStartDate").datepicker("option", "minDate", dt);
 					removeStartDateValidation();
 					getEstimatedHours();
@@ -1050,7 +1033,6 @@ function loadProjectMembersDetails(data,candidateName){
 			minDate: projectStartDate,
 	        onClose : function(selected) {
 	        	 var dt = $(this).datepicker('getDate', '-1d');
-					dt.setDate(dt.getDate() - 1);
 					$("#projectEndDate").datepicker("option", "maxDate", dt);
 					removeEndDateValidation();
 					getEstimatedHours();

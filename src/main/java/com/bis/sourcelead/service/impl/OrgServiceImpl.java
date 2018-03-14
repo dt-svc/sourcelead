@@ -95,6 +95,11 @@ public class OrgServiceImpl implements OrgService {
 	public Org getOrgByOrgCode(String orgCode) throws Exception {
 		return orgDao.getOrgByOrgCode(orgCode);
 	}
+	
+	@Override
+	public Org getOrgByCareerPageKey(String careerPageKey) throws Exception {
+		return orgDao.getOrgByCareerPageKey(careerPageKey);
+	}
 
 	@Override
 	public boolean isClientNameValid(String clientName ,Long orgLocationId,String responderType) throws Exception {
@@ -142,7 +147,20 @@ public class OrgServiceImpl implements OrgService {
 	}
 
 	@Override
+
 	public ResponseList<Org> getDynamicEnrolledOrgs(Long orgId, OrgDTO orgDTO) throws Exception {
 		return orgDao.getDynamicEnrolledOrgs(orgId, orgDTO);
 	}
+
+	@Override
+    public String generateCareerPageKey(Long id, String orgName) throws Exception {
+        return orgDao.generateCareerPageKey(id, orgName);
+    }
+
+    @Override
+    public int changeCareerPageKeyStatus(Long id) throws Exception {
+        return orgDao.changeCareerPageKeyStatus(id);
+    }
+	
+
 }

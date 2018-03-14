@@ -78,7 +78,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.LoginSessionController;
-import com.itextpdf.text.ListItem;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
@@ -176,6 +175,7 @@ public class ExpensesRestController {
                         if(pc.getOrgRelationId() != null && pc.getOrgRelationId().getId() != null) {
                         OrgRelations orgRelations = orgRelationsService.getOrgRelationById(pc.getOrgRelationId().getId());
             			expenses.setOrgRelationUUID(orgRelations.getUUID());
+            			expenses.setExpensesRejectedReason(eah.getRejectedReason());
                         }
                     }
                 }

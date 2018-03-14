@@ -141,8 +141,8 @@ function getBudgetRequestList(requestType){
 					
 					if(requestType == 'Waiting For Approval'){
 						result = result + '     <td><div class="tblminwidth-90">';
-						result = result + '     <i class="fa fa-check text-success" alt="Approve" title="Approved" onclick="acceptBudgetRequset(\''+report.id+'\',\''+requestType+'\')"></i>|';
-						result = result + '     <i class="fa fa-times text-danger" alt="Rejected" title="Rejected" onclick="deleteBudgetRequaet(\''+report.id+'\',\''+requestType+'\');"></i>|';
+						result = result + '     <i class="fa fa-check text-success" alt="Approve" title="Approve" onclick="acceptBudgetRequset(\''+report.id+'\',\''+requestType+'\')"></i>|';
+						result = result + '     <i class="fa fa-times text-danger" alt="Rejected" title="Reject" onclick="deleteBudgetRequaet(\''+report.id+'\',\''+requestType+'\');"></i>|';
 						result = result + '     <i class="fa fa-clock-o text-primary" alt="On hold" title="On hold" onclick="onholdBudgetRequaet(\''+report.id+'\',\''+requestType+'\');"></i></div></td>';
 					}
 					
@@ -166,8 +166,8 @@ function getBudgetRequestList(requestType){
 						result = result + '     <td><div class="tblminwidth-75 paTp">';
 						 result = result+"  <i class='glyphicon glyphicon-comment colB' id='"+report.id+"' onclick='rejectedMessage(\""+report.rejectedReason+"\");'>";
 					 	 result = result+" <div class='app_error_mes' id='rejectedMessage"+report.id+"'>"+report.rejectedReason+"</div></i>|";
-					 	result = result + '     <i class="fa fa-check text-success" alt="Approve" title="Approved" onclick="acceptBudgetRequset(\''+report.id+'\',\''+requestType+'\')"></i>|';
-						result = result + '     <i class="fa fa-times text-danger" alt="Rejected" title="Rejected" onclick="deleteBudgetRequaet(\''+report.id+'\',\''+requestType+'\');"></i>';
+					 	result = result + '     <i class="fa fa-check text-success" alt="Approve" title="Approve" onclick="acceptBudgetRequset(\''+report.id+'\',\''+requestType+'\')"></i>|';
+						result = result + '     <i class="fa fa-times text-danger" alt="Rejected" title="Reject" onclick="deleteBudgetRequaet(\''+report.id+'\',\''+requestType+'\');"></i>';
 						result = result + '     </div></td>';
 												
 						

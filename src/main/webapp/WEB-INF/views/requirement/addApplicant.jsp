@@ -147,7 +147,7 @@ function getAddApplicant(requirementId){
     result = result + '	<div class="col-md-6 upresume mb" id="vendorsDiv" style="display: none;">';
 	result = result + '<label class="col-md-4">Vendors</label>';
 	result = result + '<div class="col-md-8">';
-	result = result + '<select class="chosen-select form-control" id="vendors" name="vendors" onchange="getAddApplicantVendorContactList();" field-name="Vendors">';
+	result = result + '<select class="chosen-select form-control" id="vendors" data-validation-optional="true" name="vendors" onchange="getAddApplicantVendorContactList();" field-name="Vendors">';
 	result = result + '</select>';
 	result = result + '</div>';
 	result = result + '</div>';
@@ -158,7 +158,7 @@ function getAddApplicant(requirementId){
     result = result + '	<div class="col-md-6 upresume mb" id="vendorContactsDiv" style="display: none;">';
 	result = result + '<label class="col-md-4">Vendor Contacts</label>';
 	result = result + '<div class="col-md-8">';
-	result = result + '<select class="chosen-select form-control" id="vendorContact" name="vendorContact"  field-name="vendor Contacts">';
+	result = result + '<select class="chosen-select form-control" id="vendorContact" data-validation-optional="true" name="vendorContact"  field-name="vendor Contacts">';
 	result = result + '<option value="">--Select Vendor Contacts--</option>';
 	result = result + '</select>';
 	result = result + '</div>';
@@ -2596,11 +2596,7 @@ function validate_fileupload(fileName)
 		 document.getElementById("vendorContactsDiv").style.display="";
 		 document.getElementById("employmentOtherTypeDiv").style.display="none";
 		
-		 $('#vendors').removeAttr("data-validation-optional"); 
-		 $('#vendorContact').removeAttr("data-validation-optional"); 
-		 
-		 $('#vendors').attr("data-validation","required"); 
-		 $('#vendorContact').attr("data-validation","required");  
+		
 		 
 		 $('#designationOtherType').removeAttr("data-validation"); 
 		 $('#designationOtherType').attr("data-validation-optional", "true"); 
@@ -2613,12 +2609,7 @@ function validate_fileupload(fileName)
 		 document.getElementById("vendorContactsDiv").style.display="";
 		 document.getElementById("employmentOtherTypeDiv").style.display="none";
 		
-		 $('#vendors').removeAttr("data-validation"); 
-		 $('#vendorContact').removeAttr("data-validation"); 
-		 
-		 $('#vendors').attr("data-validation-optional", "true"); 
-		 $('#vendorContact').attr("data-validation-optional", "true"); 
-		 
+		
 		 $('#designationOtherType').removeAttr("data-validation"); 
 		 $('#designationOtherType').attr("data-validation-optional", "true"); 
 		 $('#designationOtherType').attr("data-validation","validate_Space validate_length length2-250"); 
@@ -2630,11 +2621,7 @@ function validate_fileupload(fileName)
 		 document.getElementById("vendorContactsDiv").style.display="none";
 		 document.getElementById("employmentOtherTypeDiv").style.display="";
 		 
-		 $('#vendors').removeAttr("data-validation"); 
-		 $('#vendorContact').removeAttr("data-validation"); 
-		 
-		 $('#vendors').attr("data-validation-optional", "true"); 
-		 $('#vendorContact').attr("data-validation-optional", "true");  
+		
 		 
 		 $('#designationOtherType').removeAttr("data-validation-optional"); 
 		 $('#designationOtherType').attr("data-validation","required validate_Space validate_length length2-250"); 
@@ -2647,11 +2634,7 @@ function validate_fileupload(fileName)
 		 document.getElementById("vendorsDiv").style.display="none";
 		 document.getElementById("vendorContactsDiv").style.display="none";
 		 
-		 $('#vendors').removeAttr("data-validation"); 
-		 $('#vendorContact').removeAttr("data-validation"); 
-		 
-		 $('#vendors').attr("data-validation-optional", "true"); 
-		 $('#vendorContact').attr("data-validation-optional", "true");   
+		    
 		 
 		 $('#designationOtherType').removeAttr("data-validation"); 
 		 $('#designationOtherType').attr("data-validation-optional", "true"); 
