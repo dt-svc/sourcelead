@@ -130,14 +130,54 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 			res.setCustomizeEducation(requirement.getEducation());
 		}
 		
-		res.setCustomizeSkillScore(String.valueOf(orgLocations.getRecommendedSkillPercent()));
-		res.setCustomizeRateScore(String.valueOf(orgLocations.getRecommendedRatePercent()));
-		res.setCustomizeExperienceScore(String.valueOf(orgLocations.getRecommendedExpPercent()));
-		res.setCustomizeLocationScore(String.valueOf(orgLocations.getRecommendedLocationPercent()));
-		res.setCustomizeNoticeperiodScore(String.valueOf(orgLocations.getRecommendedNoticePercent()));
-		res.setCustomizeKeywordsScore(String.valueOf(orgLocations.getRecommendedKeywordsPercent()));
-		res.setCustomizeVisatypecore(String.valueOf(orgLocations.getRecommendedVisatypePercent()));
-		res.setCustomizeEducationScore(String.valueOf(orgLocations.getRecommendedEducationPercent()));
+		if(orgLocations.getRecommendedSkillPercent() != null) {
+			res.setCustomizeSkillScore(String.valueOf(orgLocations.getRecommendedSkillPercent()));
+		}else {
+			res.setCustomizeSkillScore(Constants.SCORE_20);
+		}
+		
+		if(orgLocations.getRecommendedRatePercent() != null) {
+			res.setCustomizeRateScore(String.valueOf(orgLocations.getRecommendedRatePercent()));
+		}else {
+			res.setCustomizeRateScore(Constants.SCORE_10);
+		}
+		
+		if(orgLocations.getRecommendedExpPercent() != null) {
+			res.setCustomizeExperienceScore(String.valueOf(orgLocations.getRecommendedExpPercent()));
+		}else {
+			res.setCustomizeExperienceScore(Constants.SCORE_10);
+		}
+		
+		if(orgLocations.getRecommendedLocationPercent() != null) {
+			res.setCustomizeLocationScore(String.valueOf(orgLocations.getRecommendedLocationPercent()));
+		}else {
+			res.setCustomizeLocationScore(Constants.SCORE_10);
+		}
+		
+		if(orgLocations.getRecommendedNoticePercent() != null) {
+			res.setCustomizeNoticeperiodScore(String.valueOf(orgLocations.getRecommendedNoticePercent()));
+		}else {
+			res.setCustomizeNoticeperiodScore(Constants.SCORE_10);
+		}
+		
+		if(orgLocations.getRecommendedKeywordsPercent() != null) {
+			res.setCustomizeKeywordsScore(String.valueOf(orgLocations.getRecommendedKeywordsPercent()));
+		}else {
+			res.setCustomizeKeywordsScore(Constants.SCORE_20);
+		}
+		
+		if(orgLocations.getRecommendedVisatypePercent() != null) {
+			res.setCustomizeVisatypecore(String.valueOf(orgLocations.getRecommendedVisatypePercent()));
+		}else {
+			res.setCustomizeVisatypecore(Constants.SCORE_10);
+		}
+		
+		if(orgLocations.getRecommendedEducationPercent() != null) {
+			res.setCustomizeEducationScore(String.valueOf(orgLocations.getRecommendedEducationPercent()));
+		}else {
+			res.setCustomizeEducationScore(Constants.SCORE_10);
+		}
+		
 		
 		if("" != requirement.getMaxExp() && null != requirement.getMaxExp()){
 			res.setCustomizeMaxExperience(requirement.getMaxExp());	
