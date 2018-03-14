@@ -422,7 +422,7 @@ function ticketComment(ticketUUID) {
 	result = result + '<div class="modal-content">';
 	result = result + '<div class="modal-header">';
 	result = result + '<a href="javascript:void(0)" class="close" onClick="closeComment()">&times;</a>';
-	result = result + '<h4>Ticket Comment</h4>';
+	result = result + '<h4>Issue Comment</h4>';
 	result = result + '</div>';
 	result = result  +'<form  id="sourceleadTicketComment_form" name="sourceleadTicketComment_form" method="post" > ';
 	result = result + '<div class="modal-body">';
