@@ -399,7 +399,6 @@ window.onload = function () {
 	                    <b></b>
 	                    
 						<div id="js_message" class="passHint">
-				 			<h3>Password must contain the following:</h3>
 				  			<p  id="js_letter" class="invalid">A lowercase letter</p>
 				  			<p  id="js_capital" class="invalid">A capital (uppercase) letter</p>
 				  			<p  id="js_number" class="invalid">A number</p>
@@ -508,7 +507,6 @@ window.onload = function () {
 	                   
 	                    <b></b>
 	                    <div id="fr_message" class="passHint">
- 							<h3>Password must contain the following:</h3>
   							<p  id="fr_letter" class="invalid">A lowercase letter</p>
   							<p  id="fr_capital" class="invalid">A capital (uppercase) letter</p>
   							<p  id="fr_number" class="invalid">A number</p>
