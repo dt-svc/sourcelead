@@ -1961,12 +1961,12 @@ function maskme(){
     $.mask.definitions['p'] = "[Mm]";
     $(".inline_field").mask("Hhh:Mm"); 
 	
-    $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
-    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
-        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
-            event.preventDefault();
-        }
-    });
+//     $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+//     $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+//         if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+//             event.preventDefault();
+//         }
+//     });
 }
 </script>
 

@@ -1718,6 +1718,8 @@ function calculateTaxDiscount(){
 		    	if(taxValue){
 		    		first = parseFloat(taxValue);
 			        $("#"+i+"taxTotal").val(first.toFixed(2));
+		    	}else{
+		    		$("#"+i+"taxTotal").val("00.00");
 		    	}
 		    	
 		    }
@@ -2110,23 +2112,30 @@ function maskme(){
     $.mask.definitions['p'] = "[Mm]";
     $(".inline_field").mask("Hhh:Mm"); 
     
-    $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
-    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
-        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
-            event.preventDefault();
-        }
+    $(".allownumericwithdecimal").on("keypress keyup blur",function (evt) {
+    	
+    	var charCode = (evt.which) ? evt.which : event.keyCode
+    	         if (charCode > 31 && (charCode < 48 || charCode > 57))
+    	            return false;
+    	         return true;
+    	
+    	
+//     $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+//         if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+//             event.preventDefault();
+//         }
     });
 }
 </script>
 
-<script>
+<!-- <script>
 $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
 $(this).val($(this).val().replace(/[^0-9\.]/g,''));
     if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
         event.preventDefault();
     }
 });
-</script>
+</script> -->
 <script type="text/javascript">
 function cancel(){
 	$("#popUp").empty();

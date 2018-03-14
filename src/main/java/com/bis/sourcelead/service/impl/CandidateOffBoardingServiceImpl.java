@@ -24,6 +24,7 @@ import com.bis.sourcelead.dao.OffboardTasksDao;
 import com.bis.sourcelead.dao.TaskDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.CandidateOffBoardingDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -504,6 +505,13 @@ public void mailToOffboardCandidate(CandidateOffBoarding candidateOffBoarding, U
 	public CandidateOffBoarding getCandidateOffBoardingByUserIdAndLocationId(Long offboardingUser, Long orgLocationId)
 			throws Exception {
 		return candidateOffBoardingDao.getCandidateOffBoardingByUserIdAndLocationId(offboardingUser, orgLocationId);
+	}
+
+
+	@Override
+	public ResponseList<CandidateOffBoardingDTO> getCandidateOffBoardingList(
+			CandidateOffBoardingDTO candidateOffBoardingDTO, OrgLocations orgLocations) throws Exception {
+		return candidateOffBoardingDao.getCandidateOffBoardingList(candidateOffBoardingDTO, orgLocations);
 	}
 
 }

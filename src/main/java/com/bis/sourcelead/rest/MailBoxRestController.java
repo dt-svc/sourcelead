@@ -152,7 +152,7 @@ public class MailBoxRestController {
 	}
 	
 	
-	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
+	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_JOB_CAMPAIGN')")
 	@RequestMapping(value = "/getClientContactsEmailsByOrgRelationId", method = RequestMethod.POST)
 	@ResponseBody String getClientContactsEmailsByOrgRelationId(ClientVendorDTO clientVendorDTO,
 			HttpServletRequest request) throws Exception {
@@ -188,7 +188,7 @@ public class MailBoxRestController {
 		return spocEmails;
 	}
 	
-	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
+	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_JOB_CAMPAIGN')")
 	@RequestMapping(value = "/getVendorContactsEmailsByOrgRelationId", method = RequestMethod.POST)
 	@ResponseBody String getVendorContactsEmailsByOrgRelationId(@RequestParam(value = "orgRelationIds", required = false) String orgRelationIds,
 			HttpServletRequest request) throws Exception {
@@ -196,7 +196,7 @@ public class MailBoxRestController {
 		
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		    
+	    String spocEmails = "";
 		String[] relationsId = orgRelationIds.split(",");
 		StringBuilder emails  = new StringBuilder();
 		for(int i=0 ; i < relationsId.length; i++){
@@ -206,15 +206,17 @@ public class MailBoxRestController {
 			}
 		}
 		emails.toString();
-		
-		 String spocEmails =  emails.substring(0,emails.length()-1);
+		if(emails.length() > 0) {
+			spocEmails =  emails.substring(0,emails.length()-1);
+		}
+		 
 		 
 		return commonUtil.toJSON(spocEmails);
 	}
 	
 	
 	
-	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
+	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_JOB_CAMPAIGN')")
 	@RequestMapping(value = "/sendHotListCampaign", method = RequestMethod.POST)
 	public String sendHotListCampaign(HotListEmailCampaignDTO hotListEmailCampaignDTO,MultipartHttpServletRequest  request) throws Exception {
 		
@@ -274,7 +276,7 @@ public class MailBoxRestController {
 		return "success";
 	}
 	
-	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
+	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX','ROLE_JOB_CAMPAIGN')")
 	@RequestMapping(value = "/saveUserSignature", method = RequestMethod.POST)
 	public String saveUserSignature(@RequestParam(value = "json", required = false) String json,HttpServletRequest request) throws Exception {
 		
@@ -301,7 +303,7 @@ public class MailBoxRestController {
 	}
 	
 	
-	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
+	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX','ROLE_JOB_CAMPAIGN')")
 	@RequestMapping(value = "/saveMailAsFavourite", method = RequestMethod.POST)
 	public String saveMailAsFavourite(@RequestParam(value = "mailboxId", required = false) String mailboxId) throws Exception {
 		
@@ -322,7 +324,7 @@ public class MailBoxRestController {
 	}
 	
 	
-	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
+	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX','ROLE_JOB_CAMPAIGN')")
 	@RequestMapping(value = "/sendMailsToTrash", method = RequestMethod.POST)
 	public String sendMailsToTrash(@RequestParam(value = "mailIds", required = false) String mailIds,HttpServletRequest request) throws Exception {
 		
@@ -361,7 +363,7 @@ public class MailBoxRestController {
 	}
 	
 	
-	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
+	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX','ROLE_JOB_CAMPAIGN')")
 	@RequestMapping(value = "/getHotListedCandidateDetailsByUUID")
 	public @ResponseBody String getHotListedCandidateDetailsByUUID(@RequestParam(value = "UUID", required = false) String UUID,
 			@RequestParam(value = "type", required = false) String type,
@@ -384,7 +386,7 @@ public class MailBoxRestController {
 	}
 	
 	
-	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
+	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX','ROLE_JOB_CAMPAIGN')")
 	@RequestMapping(value = "/getEmailDetails")
 	public @ResponseBody String getEmailDetails(@RequestParam(value = "UUID", required = false) String UUID,
 			@RequestParam(value = "type", required = false) String type,
@@ -437,7 +439,7 @@ public class MailBoxRestController {
 		return resultJson;
 	}
 	
-	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
+	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX','ROLE_JOB_CAMPAIGN')")
 	@RequestMapping(value = "/downloadMailAttachment", method = RequestMethod.GET)
     public void downloadMailAttachment(@RequestParam(value="UUID", required=false) String UUID ,HttpServletResponse response) throws Exception {
 		
@@ -489,7 +491,7 @@ public class MailBoxRestController {
 	}
 	
 	
-	 @PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
+	 @PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX','ROLE_JOB_CAMPAIGN')")
 	 @RequestMapping(value = "/getSignatures", method = RequestMethod.POST)
 		public @ResponseBody String getSignatures(HttpServletRequest request) throws Exception {
 			String resultJson = null;
@@ -501,7 +503,7 @@ public class MailBoxRestController {
 		}
 	 
 	 
-	 @PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
+	 @PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX','ROLE_JOB_CAMPAIGN')")
 	 @RequestMapping(value = "/deleteReadMail", method = RequestMethod.POST)
 		public String deleteReadMail(@RequestParam(value = "UUID", required = false) String UUID,
 				@RequestParam(value = "type", required = false) String type,HttpServletRequest request) throws Exception {

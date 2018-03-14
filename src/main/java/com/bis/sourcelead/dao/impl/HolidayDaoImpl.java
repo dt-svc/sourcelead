@@ -142,5 +142,14 @@ public class HolidayDaoImpl  implements HolidayDAO{
 		return projectTasks;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Holiday> getAllHoliday() {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query="from Holiday holiday";
+		List<Holiday> holidayList = session.createQuery(query).list();
+		return holidayList;
+	}
+
 
 }
