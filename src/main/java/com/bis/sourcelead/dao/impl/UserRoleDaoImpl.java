@@ -1103,8 +1103,8 @@ public class UserRoleDaoImpl implements UserRoleDao {
 				subQuery7 = subQuery7 + "emp.userEmploymentType = 'Full Time' or ";
 			}
 			
-			if (Arrays.asList(employementType).contains("Others")) {
-				subQuery7 = subQuery7 + "emp.userEmploymentType = 'Others' or ";
+			if (Arrays.asList(employementType).contains("Other")) {
+				subQuery7 = subQuery7 + "emp.userEmploymentType = 'Other' or ";
 			}
 			
 			subQuery7 = "and (" + subQuery7.substring(0, subQuery7.length() - 4) + ")";
