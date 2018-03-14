@@ -17,8 +17,6 @@ public interface ConnectionsService {
 
 	List<ConnectionsDTO> getConnectionsListByStatus(String searchValue, Integer offset, Long userId, String status) throws Exception;
 
-	int acceptConnection(User user, User toUser, String status);
-
 	Long getConnectionReceivedCount(Long id);
 	
 	Connections getConnectionByUUID(String connectionUUID) throws Exception;

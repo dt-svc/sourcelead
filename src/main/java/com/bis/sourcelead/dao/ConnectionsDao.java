@@ -17,7 +17,7 @@ public interface ConnectionsDao {
 
 	List<ConnectionsDTO> getConnectionsListByStatus(String searchValue, Integer offset, Long userId, String connectionStatus) throws Exception;
 
-	int acceptConnection(User user, User toUser, String status);
+	/*int acceptConnection(User user, User toUser, String status);*/
 
 	Long getConnectionReceivedCount(Long id);
 	
