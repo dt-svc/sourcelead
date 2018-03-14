@@ -1,0 +1,64 @@
+package com.bis.sourcelead.dao;
+
+import java.util.List;
+
+import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserManualsDTO;
+import com.bis.sourcelead.entity.UserManualAttachment;
+import com.bis.sourcelead.entity.UserManualLevelOne;
+import com.bis.sourcelead.entity.UserManualLevelThree;
+import com.bis.sourcelead.entity.UserManualLevelTwo;
+
+public interface UserManualDao {
+	
+	public void storeUserManuals(UserManualLevelOne userManualLevelOne) throws Exception;
+	
+	public void storeUserManualstwo(UserManualLevelTwo userManualLevelTwo) throws Exception;
+	
+	public UserManualLevelThree storeUserManualsThree(UserManualLevelThree userManualLevelThree) throws Exception;
+	
+	public UserManualAttachment storeUserManualAttachment(UserManualAttachment userManualAttachment)throws Exception;
+	
+	UserManualLevelOne getUserManualByTitle(Long orgLocationsId, String UserManTitle) throws Exception;
+	
+	UserManualLevelOne getUserManualById(Long userManId) throws Exception;
+	
+	UserManualLevelTwo getUserManualTwoById(Long userManId) throws Exception;
+	
+	UserManualLevelThree getUserManualThreeById(Long userManId) throws Exception;
+	
+	UserManualLevelOne getLevelOneByUUId(String id) throws Exception;
+	
+	UserManualLevelTwo getLevelTwoByUUId(String id) throws Exception;
+	
+	UserManualLevelThree getLevelThreeByUUId(String id) throws Exception;
+	
+	UserManualLevelTwo getUserManual2ByIds(Long userMan1Id,Long userMan2Id) throws Exception;
+	
+	List<UserManualLevelOne> getAllUserManualls() throws Exception;
+	
+	ResponseList<UserManualLevelOne> getAllUserManuallsForDynamicList(UserManualsDTO userManualsDTO) throws Exception;
+	
+	ResponseList<UserManualLevelTwo> getAllLevelTwoDynamicList(UserManualsDTO userManualsDTO,Long id) throws Exception;
+	
+	ResponseList<UserManualLevelThree> getAllLevelThreeDynamicList(UserManualsDTO userManualsDTO,Long id) throws Exception;
+	
+	List<UserManualLevelTwo> getAllUserManuallsTwoById(Long id) throws Exception;
+	
+	public void deleteUserManualThree(UserManualLevelThree userManualLevelThree)throws Exception;
+	
+	public void deleteUserManualTwo(UserManualLevelTwo userManualLevelTwo)throws Exception;
+	
+	public void deleteUserManualOne(UserManualLevelOne UserManualLevelOne)throws Exception;
+	
+	//attachments
+	
+	List<UserManualAttachment> getUsermanualAttachmentList(Long levelThreeId);
+	
+	UserManualAttachment getUserManualAttchListById(Long id);
+	
+	public void deleteUserManualAttachments(UserManualAttachment UserManualAttachments) throws Exception;
+
+
+}
