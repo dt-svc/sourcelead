@@ -578,8 +578,9 @@ function getPayableInvoiceList(){
 <script>
 function preparePayableList(url,orgLocationDate){
  	var result = "";
- 	result = result +" <div class='remove_search'>";
+ 	result = result +" <div class='dynamic_search dynamic_search-new'>";
  	result = result +" <input type='text' placeholder='Search' id='payableDataTableSearch'/>";
+ 	result = result +"  <span class='cursorPointer' title='Search'><i class='fa fa-search' onclick='getPayableInvoiceList();'></i></span>";     
  	result = result +"</div>";
  	result = result + '<table id="payableListTable" class="display" cellspacing="0" width="100%" >';
 	result = result + '<thead>';
