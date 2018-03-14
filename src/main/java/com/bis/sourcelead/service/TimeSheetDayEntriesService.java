@@ -1,0 +1,31 @@
+package com.bis.sourcelead.service;
+
+import java.util.Date;
+import java.util.List;
+
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.TimeSheetDayEntries;
+import com.bis.sourcelead.entity.TimesheetSubmissions;
+
+public interface TimeSheetDayEntriesService {
+
+ public TimeSheetDayEntries saveTimesheetDayEntries(TimeSheetDayEntries dayentries) throws Exception;
+	 
+	 public List<Long> getAllTimeSheetDayEntryIdsBySubmissionId(Long submissionId) throws Exception;
+	 
+	 public Boolean deleteTimeSheetDayEntries(Long id)throws Exception;
+	 
+	 public TimeSheetDayEntries getTimesheetDayEntriesById(Long id) throws Exception;
+	 
+	 public TimeSheetDayEntries getTimesheetDayEntriesBySubmissionIdTaskIdAndTimesheetDate(Long submissionId,Long taskId,Date timesheetDate) throws Exception;
+	 
+	 public List<TimeSheetDayEntries> getAllTimeSheetDayEntriesBySubmissionId(Long submissionId) throws Exception;
+	 
+	 public List<TimeSheetDayEntries> getAllTimeSheetDayEntriesBySubmissionIdWithStartDateAndEndDate(Long submissionId,Date startDate,Date endDate) throws Exception;
+	 
+	 public ResponseList<TimeSheetDayEntries> getTimesheetDayEntriesByTaskUUIDAndUserId(String taskUUID, Long userId,Long locationId,int start, int length, String searchValue) throws Exception;
+
+	 public Float getTotalHoursByProjectIdMasteCandidateIdandTimesheetDate(Long projectId, Long masterCandidateId,Date timesheetDate);
+	 
+	TimeSheetDayEntries getTimesheetDayEntryByProjectIdMasteCandidateIdandTimesheetDate(Long projectId,Long masterCandidateId, Date timesheetDate, Long projectTaskId);
+}

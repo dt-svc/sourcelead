@@ -10,6 +10,10 @@ public interface UserLoginLogoutSessionService  {
 	
 	UserLoginLogoutSession getUserLoginLogoutSessionById(Long userSessionId);
 	
+	UserLoginLogoutSession getUserLoginLogoutSessionByActionUUID(String actionUUID);
+
+	boolean validatePreviouslyAuthenticatedByUserIdAndIpAddress(String ipAddress, Long userId);
+	
 	
 	
 }	

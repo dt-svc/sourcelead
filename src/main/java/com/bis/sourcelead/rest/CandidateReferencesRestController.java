@@ -1,5 +1,8 @@
 package com.bis.sourcelead.rest;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -15,10 +18,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateReferencesDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateReferences;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateReferencesService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
@@ -31,6 +39,7 @@ import com.bis.sourcelead.util.CommonUtil;
  *
  */
 @RestController
+@RequestMapping("/app")
 public class CandidateReferencesRestController {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateReferencesRestController.class);
 	@Value("${sourceleadUrl}")
@@ -45,6 +54,13 @@ public class CandidateReferencesRestController {
 	private OrgLocationService orgLocationService;
 	@Autowired
 	CandidateActivityCommonUtil candidateActivityCommonUtil;
+	
+	@Autowired
+	private CandidateService candidateService;
+	
+	@Autowired
+	private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	 
 	
 	/**
 	 * @author Prasad K
@@ -89,15 +105,11 @@ public class CandidateReferencesRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getCandidateReferencesListByCandidateId")
-	public List<CandidateReferences> getCandidateReferencesListByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId, @RequestParam("locationCode") String locationCode) throws Exception
+	@RequestMapping(value = {"/getCandidateReferencesListByCandidateId","rest/getCandidateReferencesListByCandidateId"},method=RequestMethod.POST)
+	public ResponseList<CandidateReferencesDTO> getCandidateReferencesListByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId, @RequestParam("locationCode") String locationCode) throws Exception
 	{
-		// OrgLocations loginOrgLocation = (OrgLocations)
-			// SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		/* String resultJson; */
 		OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
-		List<CandidateReferences> candidateReferencesList = candidateReferencesService.getCandidateReferencesListByCandidateIdAndOrgLocationID(Long.parseLong(candidateId), orgLocation.getId());
-		/* resultJson = commonUtil.toJSON(candidateReferencesList); */
+		ResponseList<CandidateReferencesDTO> candidateReferencesList = candidateReferencesService.getCandidateReferencesListByCandidateIdAndOrgLocationID(Long.parseLong(candidateId), orgLocation.getId());
 		return candidateReferencesList;
 	}
 	
@@ -122,6 +134,7 @@ public class CandidateReferencesRestController {
 			// SourceLeadSessionManager.getSessionAttribute(request, "user");
 		User user = userService.getUserById(loginUserId);
 		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
+		Candidate candidate =candidateService.getCandidateById(candidateId);
 		CandidateReferences candidateReferences = candidateReferencesService.getCandidateReferenceByReferenceId(Long.parseLong(refId));
 		if (candidateReferences != null) {
 			candidateReferences.setStatus(Constants.CANDIDATE_IN_ACTIVE);
@@ -132,6 +145,16 @@ public class CandidateReferencesRestController {
 		    activitySummary.append("Name").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateReferences.getName()).append(Constants.NEW_VALUE_TAG_END);
 			candidateActivityCommonUtil.storeCandidateReferencesHistory(candidateReferences, user);
 			candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidateReferences.getCandidateId(), "", Constants.CANDIDATE_DELETED_REFERENCES, activitySummary.toString(), "CANDIDATE");
+		    
+			if (null != candidate && null != candidate.getId()) {
+				 CandidateIndex candidateIndex = new CandidateIndex();
+				 candidateIndex.setCandidateId(candidate.getId());
+				 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				 candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
+				 sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE, candidate.getId().toString());
+			}
+		
+		
 		}
 		return "success";
 	}
@@ -149,21 +172,17 @@ public class CandidateReferencesRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/updateCandidateReferenceBycandidateIdAndReferenceId", method = RequestMethod.POST)
-	public @ResponseBody CandidateReferencesDTO updateCandidateReferenceBycandidateIdAndReferenceId(CandidateReferencesDTO candidateReferencesDTO, @RequestParam("candidateId") Long candidateId, @RequestParam("userId") Long userId, @RequestParam("locationCode") String locationCode) throws Exception
+	@RequestMapping(value = {"/updateCandidateReferenceBycandidateIdAndReferenceId","rest/updateCandidateReferenceBycandidateIdAndReferenceId"}, method = RequestMethod.POST)
+	public @ResponseBody String updateCandidateReferenceBycandidateIdAndReferenceId(CandidateReferencesDTO candidateReferencesDTO) throws Exception
 	{
-		/*
-		 * OrgLocations loginOrgLocation = (OrgLocations)
-		 * SourceLeadSessionManager.getSessionAttribute(request,
-		 * "orgLocations"); User users = (User)
-		 * SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 */
-		/* String json1 = "{"+json+"}"; */
-		User user = userService.getUserById(userId);
-		OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
-		//JSONObject jsonObject = new JSONObject(json);
-		candidateReferencesService.storeCandidateReferences(candidateReferencesDTO, candidateId, orgLocation.getId(), user);
-		return candidateReferencesDTO;
+		String isUpdated = "fasle";
+		User user = userService.getUserById(candidateReferencesDTO.getUserId());
+		OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(candidateReferencesDTO.getLocationCode());
+		CandidateReferences candidateReferences = candidateReferencesService.storeCandidateReferences(candidateReferencesDTO, candidateReferencesDTO.getCandidateId(), orgLocation.getId(), user);
+		if(candidateReferences != null) {
+			isUpdated = "true";
+		}
+		return isUpdated;
 	}
 	
 	/**
@@ -188,4 +207,12 @@ public class CandidateReferencesRestController {
 		resultJson = commonUtil.toJSON(candidateReferencesList);
 		return resultJson;
 	}
+	
+	// to validate Project SequeneNumber
+		@RequestMapping(value = "/validateReferenceEmailByCadidateId", method = RequestMethod.POST)
+		public @ResponseBody Boolean validateProjectSequeneNumber( @RequestParam(value = "email", required = false) String email,
+				@RequestParam("candidateId") Long candidateId,@RequestParam(value = "candidateReferenceId", required = false) Long candidateReferenceId) throws Exception {
+				return candidateReferencesService.validateReferenceEmail(email, candidateId,candidateReferenceId);
+		}
+		
 }

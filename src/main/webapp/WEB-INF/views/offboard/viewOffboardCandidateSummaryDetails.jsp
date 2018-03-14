@@ -6,9 +6,9 @@
 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<link rel="stylesheet" href="resources/css/style.css" />
-<script src="resources/js/offboardCheckListBuilder.js" type="text/javascript" ></script> <!-- form builder -->
-<script src="resources/js/offboardCheckList-view-generator.js" type="text/javascript" ></script> <!-- form generator -->
+<link rel="stylesheet" href="/resources/css/style.css" />
+<script src="/resources/js/offboardCheckListBuilder.js" type="text/javascript" ></script> <!-- form builder -->
+<script src="/resources/js/offboardCheckList-view-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
 
 <style type="text/css">
@@ -34,7 +34,7 @@ padding-left: 25px;
       <div class="pull-left">
           <h2 id="candidateName"></h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Candidate Offboarding Summary</a> &raquo; Candidate Offboarding Summary </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='${appPath}/candidateOnBoardingList'/>">Candidate Offboarding Summary</a> &raquo; Employee Offboard Summary </div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="applicant_accept">
@@ -110,14 +110,12 @@ padding-left: 25px;
 	    var offboardUUID = '${offboardUUID}';
 	    var sourceleadUrl ='${sourceleadUrl}';
 	    var locationCode='${SourceLeadWeb_locationCode}'; 
-	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/loadOffboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&offBoardingUUID="+offboardUUID+"&locationCode="+locationCode,
-	        success: function(data) {
+	        success: function(json) {
 	        	
-	        	  var json = JSON.parse(data);
-	        	 
 	        	 var result = "";
 				 result = result +'	 <div class="col-md-12 onboardLabel"> ';                                                                                         
 				 result = result +'   <div class="form-horizontal">';
@@ -208,8 +206,8 @@ padding-left: 25px;
 				 if(json.explanation != null && json.explanation != '' && json.explanation != 'undefined'){
 					 result = result +'     <div class="form-group">';
 					 result = result +'       <label class="col-md-3 control-label">Explanation</label> ';
-					 result = result +'       <div class="col-md-6">';
-					 result = result +'           <label>'+json.explanation+'</label>';
+					 result = result +'       <div class="col-md-9 minHeight75">';
+					 result = result +'         <textarea readonly rows="5">'+json.explanation+'</textarea>';
 					 result = result +'       </div>';
 					 result = result +'     </div>';
 				 }
@@ -235,7 +233,11 @@ padding-left: 25px;
 						 result = result +'     <div class="form-group">';
 						 result = result +'       <label class="col-md-3 control-label">Have to work in notice period</label> ';
 						 result = result +'       <div class="col-md-6">';
-						 result = result +'           <label>'+json.haveToWorkInNoticePeriod+'</label>';
+						 if(json.haveToWorkInNoticePeriod == "Y"){
+							 result = result +'           <label>Yes</label>';
+						 }else{
+							 result = result +'           <label>No</label>';
+						 }
 						 result = result +'       </div>';
 						 result = result +'     </div>';
 					 }
@@ -261,13 +263,15 @@ padding-left: 25px;
 						 result = result +'     </div>'; 
 					 }
 					 
+					 if(json.rating != null && json.rating != "" && json.rating != "undefined"){
+						 result = result +'     <div class="form-group">';
+						 result = result +'       <label class="col-md-3 control-label">Rating</label>';
+						 result = result +'       <div class="col-md-6">';
+						 result = result +'           <label>'+json.rating+'</label>';
+						 result = result +'       </div>';
+						 result = result +'     </div>'; 
+					 }
 					 
-					 result = result +'     <div class="form-group">';
-					 result = result +'       <label class="col-md-3 control-label">Rating</label>';
-					 result = result +'       <div class="col-md-6">';
-					 result = result +'           <label>'+json.rating+'</label>';
-					 result = result +'       </div>';
-					 result = result +'     </div>'; 
 					 
 					 result = result +'</div>';
 					 result = result +'</div>'; 
@@ -292,7 +296,7 @@ padding-left: 25px;
 	   var sourceleadUrl = '${sourceleadUrl}';
 	   var offboardUUID = '${offboardUUID}';
 	  
-	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	   
 	    getOffboardCheckList(sourceleadUrl,offboardUUID);
 	   
@@ -320,7 +324,7 @@ padding-left: 25px;
 	   var offboardUUID = '${offboardUUID}';
 	    var sourceleadUrl ='${sourceleadUrl}'; 
 	    var locationCode ='${SourceLeadWeb_locationCode}';
-	    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    $.ajax({
 	    	type: "GET",
 	    	 url: sourceleadUrl+"/getOffboardCandidateTasksByOffboardUUID?${_csrf.parameterName}=${_csrf.token}&offboardUUID="+offboardUUID+"&locationCode="+locationCode, 
@@ -436,7 +440,7 @@ padding-left: 25px;
 	 				{
 	 	        		var report = json.resignationDocumentsList[i];
 	 	        		result = result +'    <div class="col-md-2 text-center mb10">';
-						result = result +'      <a href=\"'+sourceleadUrl+'/downloadOffboardDocument?documentUUID='+report.documentUUID+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
+						result = result +'      <a target="_blank" href=\"'+report.fileURL+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
 						result = result +'        <p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>                        ';
 						result = result +'    </div></a>';
 						result = result +'    </div>';  
@@ -465,7 +469,7 @@ padding-left: 25px;
 		 				{
 		 	        		var report = json.offboardPackDocumentsList[i];
 		 	        		result = result +'    <div class="col-md-2 text-center mb10">';
-							result = result +'      <a href=\"'+sourceleadUrl+'/downloadOffboardDocument?documentUUID='+report.documentUUID+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
+		 	        		result = result +'      <a target="_blank" href=\"'+report.fileURL+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
 							result = result +'        <p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>                        ';
 							result = result +'    </div></a>';
 							result = result +'    </div>';  

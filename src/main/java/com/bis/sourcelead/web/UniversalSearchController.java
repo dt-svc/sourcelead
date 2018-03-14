@@ -15,6 +15,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/app")
 public class UniversalSearchController {
 //	/universalSearch
 	@Value("${sourceleadUrl}")

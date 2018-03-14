@@ -2,6 +2,7 @@ package com.bis.sourcelead.dto;
 
 public class CandidateEmployerDTO {
 
+	private Long id;
 	
 	private String name ;
 	
@@ -24,6 +25,20 @@ public class CandidateEmployerDTO {
 	private String endDate;
 	
 	private String candidateEmployeeId;
+	
+	private long candidateId;
+	
+	private String candidateExperianceId;
+
+	public Long getId()
+	{
+		return id;
+	}
+
+	public void setId(Long id)
+	{
+		this.id = id;
+	}
 
 	public String getName()
 	{
@@ -75,16 +90,6 @@ public class CandidateEmployerDTO {
 		this.startMonth = startMonth;
 	}
 
-	public String getStartDate()
-	{
-		return startDate;
-	}
-
-	public void setStartDate(String startDate)
-	{
-		this.startDate = startDate;
-	}
-
 	public String getEndMonth()
 	{
 		return endMonth;
@@ -93,6 +98,16 @@ public class CandidateEmployerDTO {
 	public void setEndMonth(String endMonth)
 	{
 		this.endMonth = endMonth;
+	}
+
+	public String getStartDate()
+	{
+		return startDate;
+	}
+
+	public void setStartDate(String startDate)
+	{
+		this.startDate = startDate;
 	}
 
 	public String getStartYear()
@@ -135,4 +150,25 @@ public class CandidateEmployerDTO {
 		this.candidateEmployeeId = candidateEmployeeId;
 	}
 
+	public long getCandidateId()
+	{
+		return candidateId;
+	}
+
+	public void setCandidateId(long candidateId)
+	{
+		this.candidateId = candidateId;
+	}
+
+	public String getCandidateExperianceId()
+	{
+		return candidateExperianceId;
+	}
+
+	public void setCandidateExperianceId(String candidateExperianceId)
+	{
+		this.candidateExperianceId = candidateExperianceId;
+	}
+
+	
 }

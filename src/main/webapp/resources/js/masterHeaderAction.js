@@ -5,6 +5,7 @@
 			$('.content-wraper').toggleClass("content-wraper-active");
 			$('.footer-area').toggleClass("footer-area-active");
 			$('.theme_sideMenu').toggleClass('themeSideMenu_Active');
+			$('.cusFieldHeadFixed').toggleClass('cusFieldHeadFixedAct');
 			$(".collapses").hide();
 			});
 		$('.srch-btn-xs').click(function(){
@@ -93,39 +94,53 @@
        
        $(".tree-view").click(function(){
     	   $(this).next('ul').slideToggle();
-           $(".usersLi, .billingLi, .backofficeLi, .timesheetLi, .associatesLi, .expencesLi ").next('ul').slideUp();
+           $(".usersLi, .billingLi, .backofficeLi, .timesheetLi, .associatesLi, .expencesLi, .campaignsli, .resourcesli ").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".usersLi, .billingLi, .expencesLi").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".usersLi, .billingLi, .backofficeLi, .timesheetLi, .associatesLi, .expencesLi, .campaignsli, .resourcesli ").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });
        $(".backofficeLi").click(function(){
     	   $(this).next('ul').slideToggle();
-           $(".tree-view, .billingLi, .associatesLi, .timesheetLi, .expencesLi").next('ul').slideUp();
+           $(".tree-view, .billingLi, .associatesLi, .timesheetLi, .expencesLi, .campaignsli, .resourcesli").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".tree-view, .billingLi, .associatesLi, .timesheetLi, .expencesLis").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".tree-view, .billingLi, .associatesLi, .timesheetLi, .expencesLi, .campaignsli, .resourcesli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });
        $(".timesheetLi").click(function(){
     	   $(this).next('ul').slideToggle();
-           $(".tree-view, .billingLi, .associatesLi, .backofficeLi, .expencesLi").next('ul').slideUp();
+           $(".tree-view, .billingLi, .associatesLi, .backofficeLi, .expencesLi, .campaignsli, .resourcesli").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".tree-view, .billingLi, .associatesLi, .backofficeLi, .expencesLi").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".tree-view, .billingLi, .associatesLi, .backofficeLi, .expencesLi, .campaignsli, .resourcesli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });	
        $(".associatesLi").click(function(){
     	   $(this).next('ul').slideToggle();
-           $(".tree-view, .billingLi, .timesheetLi, .backofficeLi, .expencesLi").next('ul').slideUp();
+           $(".tree-view, .billingLi, .timesheetLi, .backofficeLi, .expencesLi, .campaignsli, .resourcesli").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".tree-view, .billingLi, .timesheetLi, .backofficeLi, .expencesLi").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".tree-view, .billingLi, .timesheetLi, .backofficeLi, .expencesLi, .campaignsli, .resourcesli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });
        $(".billingLi").click(function(){
     	   $(this).next('ul').slideToggle();
-           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .expencesLi").next('ul').slideUp();
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .expencesLi, .campaignsli, .resourcesli").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .expencesLi").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .expencesLi, .campaignsli, .resourcesli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });
        $(".expencesLi").click(function(){
     	   $(this).next('ul').slideToggle();
-           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi").next('ul').slideUp();
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .campaignsli, .resourcesli").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .campaignsli, .resourcesli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+       });
+       
+       $(".campaignsli").click(function(){
+    	   $(this).next('ul').slideToggle();
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .resourcesli").next('ul').slideUp();
+           $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .resourcesli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+       });
+       
+       $(".resourcesli").click(function(){
+    	   $(this).next('ul').slideToggle();
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .campaignsli").next('ul').slideUp();
+           $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .campaignsli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });
        
        

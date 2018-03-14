@@ -123,18 +123,18 @@
                 <input type="text" class="form-control calendar" name='endDateREPLACEROWID' id='endDateREPLACEROWID' placeholder="End Date" readonly>
               </div>  
               <div class="col-md-3">
-               <label>Estimated Hours<span class="text-danger paddingLeft">*</span></label>
-                <input type="text" class="form-control timeicon" name='estimatedHoursREPLACEROWID' id='estimatedHoursREPLACEROWID' field-name="Estimated Hours" data-validation="required validate_length length1-10 validate_int">
+               <label>Estimated Hours</label>
+                <input type="text" class="form-control timeicon" name='estimatedHoursREPLACEROWID' id='estimatedHoursREPLACEROWID' field-name="Estimated Hours" data-validation="validate_length length1-10 validate_int" data-validation-optional="true">
               </div>  
               <div class="col-md-3 currencySymbol">
-                  <label>Estimated Budget<span class="text-danger paddingLeft">*</span></label>
+                  <label>Estimated Budget</label>
                   <div class="positionRelative">
-                <input type="text" class="form-control" name='estimatedBudgetREPLACEROWID' id='estimatedBudgetREPLACEROWID' field-name="Estimated Budget" data-validation="required validate_length length1-10 validate_int">
+                <input type="text" class="form-control" name='estimatedBudgetREPLACEROWID' id='estimatedBudgetREPLACEROWID' field-name="Estimated Budget" data-validation="validate_length length1-10 validate_int" data-validation-optional="true">
                  <span class="currencyValue" value="${currencyCode}" id="budgetCurrencyREPLACEROWID" name="budgetCurrencyREPLACEROWID">${currencyCode}</span>
                       </div>
               </div>
                <div class="col-md-3 dropdown-select">
-               <label>Consulting <span class="text-danger paddingLeft">*</span></label>
+               <label>Consulting <span class="text-danger paddingLeft">* </span><i class='fa fa-info-circle' title='The type of requests such as on-shore or off-shore'></i></label>
                 <select class="form-control" name='consultingREPLACEROWID' id='consultingREPLACEROWID' field-name="Consulting" data-validation="required">
                   <option selected value="">--Select--</option>
                         <option value="OffSite">Off Site</option>
@@ -161,14 +161,15 @@
          <h2 class="pull-left">New Resource Request</h2>
         <c:if test="${!empty msg}">
 	        <div class="success_pop" id="selector" style="display: block;">
-		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+		         <i class="fa fa-check-circle"></i><span>${msg}</span> 
 			</div>
 	     </c:if>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/projectDashboard'/>">Projects List</a> &raquo;Project Summary</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/projectDashboard'/>">Projects List</a> &raquo;<a href="<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=resources'/>">Project Summary</a> &raquo; New Resource Request</div>
         </section>
 	   
 		   <div class="content-area content-new clearfix">
 		   <div id="associateRequestLoading"></div>	
+		   <div id="choicepopUp"></div>	
 		     <form:form id="add_newResource_form" name="add_newResource_form" >
 		        <input type="hidden" id="estimatedBudgetCurrencyType" name="estimatedBudgetCurrencyType" value="${currencyCode}"> 	 
 			    <div class="row form-horizontal mt myForm">
@@ -180,13 +181,13 @@
 								<div class="col-md-9">
 					                  <div class="form-icon">
 					                   <input class="form-control pull-left" name="requestId" id="requestId" field-name="Request Id" data-validation="required validate_Space validate_length length1-15 validate_int" >
-					                   <i class="fa fa-refresh btn btn-default formic1" title="Request Id"></i>
+					                   <i class="fa fa-refresh btn btn-default formic1" title="Request Id" onclick='$("#requestId").val("");'></i>
 					                   <div class="clearfix"></div>
 					                   </div>
 					           </div>            
 					     </div>
 			            <div class="form-group">
-			            <label class="col-md-3">Approver <span class="text-danger paddingLeft">*</span></label>
+			            <label class="col-md-3">Approver <span class="text-danger paddingLeft">* </span><i class='fa fa-info-circle' title='The person who will approve the new resource request'></i></label>
 			            <div class="col-md-9" id="errApprover">
 			             <select class="chosen-select form-control" data-validation="required" id="approver" name="approver" field-name="Approver" onchange="removeValidation();">
 		                <option selected value=''>--Select Approver--</option>
@@ -209,6 +210,7 @@
 			
 			<div class="project_side_wrap_inn_tabs mt clearfix">
 			    <input type="hidden"  name="maxRecCount" id="maxRecCount" value="1">
+			    <input type="hidden"  name="maxRowCount" id="maxRowCount" value="0">
 			    <div class="project_tabs_inn_head">
 			        <a href="javascript:addResourceInfo()" class="AdRes"><i class="glyphicon glyphicon-plus"></i>Add</a>
 			    </div>
@@ -251,7 +253,7 @@
 					<div class="pull-right">
 					  <input type="button" value="Draft" class="btn btn-warning mr" onclick="saveNewResourceRequest('Draft');">
 					  <input type="button" value="Send" class="btn btn-primary" onclick="saveNewResourceRequest('Send');">
-					  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/projectSummary?projectUUID=${projectUUID}&tabType=resources'/>'" class="btn btn-default ml">
+					  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=resources'/>'" class="btn btn-default ml">
 					</div>
 				  </div>
 			</div>    	    
@@ -358,12 +360,24 @@
 			$('#startDate'+maxRowNum).datepicker({
 				dateFormat : finalDateFormatResourceReqSave,
 				changeMonth: true,
-				changeYear: true
+				changeYear: true,
+				onSelect: function (selected) {
+		            //var dt = new Date(selected);
+		            var dt = $(this).datepicker('getDate', '+1d');
+		            dt.setDate(dt.getDate() + 1);
+		            $('#endDate'+maxRowNum).datepicker("option", "minDate", dt);
+		        }
 			});
 			$('#endDate'+maxRowNum).datepicker({
 				dateFormat : finalDateFormatResourceReqSave,
 				changeMonth: true,
-				changeYear: true
+				changeYear: true,
+				onSelect: function (selected) {
+		            //var dt = new Date(selected);
+					var dt = $(this).datepicker('getDate', '-1d');
+		            dt.setDate(dt.getDate() - 1);
+		            $('#startDate'+maxRowNum).datepicker("option", "maxDate", dt);
+		        }
 			});
 			$(".addResource").removeAttr('style');
 			$(".addResource").attr('style','display:block');
@@ -391,6 +405,11 @@
 			
 			$("#cancelResourceRequestButton"+maxRowNum).removeAttr('onclick');
 			$("#cancelResourceRequestButton"+maxRowNum).attr('onclick','hideAndShowDetailsRow('+maxRowNum+',"Hide")');
+			
+			
+			
+			var maxRowCount = parseInt($("input[name = 'maxRowCount']").val());
+			$("input[name = 'maxRowCount']").val(maxRowCount + 1);
 			
 			
 			//role
@@ -502,7 +521,7 @@
 			divRowTd7Str = divRowTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
 			var estimatedHours =  $('#estimatedHours'+maxRowNum).val();
 			if(estimatedHours == null || estimatedHours == '' || estimatedHours == 'undefined'){
-				estimatedHours = "--";
+				estimatedHours = "0";
 			}
 			divRowTd7Str = divRowTd7Str.replace(/ESTIMATEDHOURSVALUE/g,estimatedHours);
 			cell7.innerHTML = divRowTd7Str;
@@ -513,7 +532,7 @@
 			divRowTd8Str = divRowTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
 			var estimatedBudget =  $('#estimatedBudget'+maxRowNum).val();
 			if(estimatedBudget == null || estimatedBudget == '' || estimatedBudget == 'undefined'){
-				estimatedBudget = "--";
+				estimatedBudget = "0";
 			}
 			divRowTd8Str = divRowTd8Str.replace(/ESTIMATEDBUDGETVALUE/g,estimatedBudget);
 			cell8.innerHTML = divRowTd8Str;
@@ -630,13 +649,25 @@
 		
 		//Estimated Hours
 		var estimatedHours =  $('#estimatedHours'+rowId).val();
-		$('#estimatedHoursRow'+rowId).empty();
-		$('#estimatedHoursRow'+rowId).html(estimatedHours);
+		if(estimatedHours != ""){
+			$('#estimatedHoursRow'+rowId).empty();
+			$('#estimatedHoursRow'+rowId).html(estimatedHours);
+		}else{
+			$('#estimatedHoursRow'+rowId).empty();
+			$('#estimatedHoursRow'+rowId).html(0);
+		}
+		
 		
 		//Estimated Budget
 		var estimatedBudget =  $('#estimatedBudget'+rowId).val();
-		$('#estimatedBudgetRow'+rowId).empty();
-		$('#estimatedBudgetRow'+rowId).html(estimatedBudget);
+		if(estimatedBudget != ""){
+			$('#estimatedBudgetRow'+rowId).empty();
+			$('#estimatedBudgetRow'+rowId).html(estimatedBudget);
+		}else{
+			$('#estimatedBudgetRow'+rowId).empty();
+			$('#estimatedBudgetRow'+rowId).html(0);
+		}
+		
 		
 		totalResoursec(rowId);
 		totalEstimatedHours(rowId);
@@ -731,6 +762,10 @@ function removeRow(rowId){
 	var totalBudget = totalEstimatedBudget - estimatedBudget; 
 	$("#totalEstBudget").val(totalBudget);
 	
+	var maxRowCount = parseInt($("input[name = 'maxRowCount']").val());
+	$("input[name = 'maxRowCount']").val(maxRowCount - 1);
+
+	
 	
 	$("#resourceInfoContent"+rowId).empty();
 	document.getElementById('divResourceTsRow' + rowId).style.display = 'none';
@@ -823,20 +858,32 @@ function saveNewResourceRequest(saveType){
 		  	formData.append("json",jsonData);
   			var sourceleadUrl ='${sourceleadUrl}';
   			var projectUUID = '${projectUUID}';
-	  		$("#associateRequestLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	  		$.ajax({
-					type : "POST",
-	  	    	    data: formData,
-	  	    	    contentType : 'application/json; charset=utf-8',
-	  		        processData: false,
-	  		        contentType:false, 
-	  	    	    dataType : 'json',
-					url : sourceleadUrl+"/saveNewResourceRequest?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&saveType="+saveType, 
-					success : function(result) {
-						location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&tabType=resources");
-					},
-				});  
-  		       return true;
+  			var projectClientUUID = '${projectClientUUID}';
+	  		
+  			var maxRowCount = $("#maxRowCount").val();
+			
+  			if(maxRowCount > 0){
+  				$("#associateRequestLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+  		  		$.ajax({
+  						type : "POST",
+  		  	    	    data: formData,
+  		  	    	    contentType : 'application/json; charset=utf-8',
+  		  		        processData: false,
+  		  		        contentType:false, 
+  		  	    	    dataType : 'json',
+  						url : sourceleadUrl+"/saveNewResourceRequest?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&saveType="+saveType, 
+  						success : function(result) {
+  							location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&projectClientUUID="+projectClientUUID+"&tabType=resources");
+  						},
+  					});
+  		  	return true;
+  			
+  			}else{
+  	 			 alertMessage();
+  	 			 return false;
+  			}
+  		  
+  		       
 	      }else{
 		       return false;
 	    }
@@ -846,6 +893,30 @@ $('body').on('blur', '#add_newResource_form', function() {
 	$("#add_newResource_form").validateOnBlur(false, validationSettings);
 });
 
+</script>
+
+
+<script type="text/javascript">
+function alertMessage(){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Add atleast one resource request</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#choicepopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#choicepopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
 </script>
 	
 <script type="text/javascript">
@@ -875,7 +946,6 @@ function loadRequestDetails(){
 	        	 $("textarea[name = 'description']").val(json.description);
 	        	 getApproversList(json.approverId);
 	        	 $("#savedPlanningRequestUUID").val(json.requestUUID);
-	        	  
 	        	 loadResourceRequestsList(json.newResourceRequestList,json.estimatedHours,json.estimatedBudget,json.requestedResources);
 	        	 
 	        	 
@@ -1023,7 +1093,8 @@ function loadResourceRequestsList(newResourceRequestList,estimatedHours,estimate
 			divRowTd7Str = divRowTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
 			var estimatedHours =  report.estimatedHours;
 			if(estimatedHours == null || estimatedHours == '' || estimatedHours == 'undefined'){
-				estimatedHours = "--";
+				estimatedHours = "0";
+				$("#estimatedHours"+maxRowNum).val("");
 			}
 			divRowTd7Str = divRowTd7Str.replace(/ESTIMATEDHOURSVALUE/g,estimatedHours);
 			cell7.innerHTML = divRowTd7Str;
@@ -1034,7 +1105,8 @@ function loadResourceRequestsList(newResourceRequestList,estimatedHours,estimate
 			divRowTd8Str = divRowTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
 			var estimatedBudget =  report.estimatedBudget;
 			if(estimatedBudget == null || estimatedBudget == '' || estimatedBudget == 'undefined'){
-				estimatedBudget = "--";
+				estimatedBudget = "0";
+				$("#estimatedBudget"+maxRowNum).val("");
 			}
 			divRowTd8Str = divRowTd8Str.replace(/ESTIMATEDBUDGETVALUE/g,estimatedBudget);
 			cell8.innerHTML = divRowTd8Str;
@@ -1054,7 +1126,7 @@ function loadResourceRequestsList(newResourceRequestList,estimatedHours,estimate
 			totalEstimatedHours(maxRowNum);
 			totalEstimatedBudget(maxRowNum);			
 	 }
-	 
+	     $("input[name = 'maxRowCount']").val(newResourceRequestList.length);
 	    $("#totalResourcesId").val(requestedResources);
 		$("#totalEstHours").val(estimatedHours);
 		$("#totalEstBudget").val(estimatedBudget);
@@ -1064,28 +1136,22 @@ function loadResourceRequestsList(newResourceRequestList,estimatedHours,estimate
 function getApproversList(approverId){
 var sourceleadUrl ='${sourceleadUrl}';
 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
+var actionType = "ROLE_RESOURCE_REQUEST_APPROVER";
 	$.ajax({
 	    	type: "GET",
-	    	 url: sourceleadUrl+"/getResourceRequestApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
-	    		success: function(data) {
-	        	var json = JSON.parse(data);
+	    	 url: sourceleadUrl+"/getSourceLeadActionApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&actionType="+actionType,
+	    		success: function(json) {
 	     		var output = "";
 	     			output = output + "<option value=''>--Select Approver--</option>";
 	     		for (var i=0; i<json.length; i++)
 	     		{
 		     		var opt = json[i];
-		     		var fullname = '';
-		     		if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
-		     			fullname = opt.firstName+" "+opt.lastName;
-		     		}else{
-		     			fullname = opt.firstName;
-		     		}
-		     		
+		     				     		
 		     		if(approverId != null && approverId != '' && approverId != 'undefined' && approverId == opt.id){
 		     			var selected = 'selected';
-		     			output = output + "<option value='" +opt.id+ "' "+selected+">"+fullname+" ("+opt.userType+")</option>";
+		     			output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.name+" ("+opt.userRole+")</option>";
 		     		}else{
-		     			output = output + "<option value='" +opt.id+ "'>"+fullname+" ("+opt.userType+")</option>";
+		     			output = output + "<option value='" +opt.id+ "'>"+opt.name+" ("+opt.userRole+")</option>";
 		     		} 
 	     		}
 	     		$("#approver").empty();
@@ -1241,14 +1307,14 @@ var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 			divRowTd2_0Str = divRowTd2_0Str +'          </div>  ';
 			
 			divRowTd2_0Str = divRowTd2_0Str +'          <div class="col-md-3">';
-			divRowTd2_0Str = divRowTd2_0Str +'           <label>Estimated Hours<span class="text-danger paddingLeft">*</span></label>';
-			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control timeicon" value="'+report.estimatedHours+'" name="estimatedHours'+maxRowNum+'" id="estimatedHours'+maxRowNum+'" field-name="Estimated Hours" data-validation="required validate_length length1-10 validate_int">';
+			divRowTd2_0Str = divRowTd2_0Str +'           <label>Estimated Hours</label>';
+			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control timeicon" value="'+report.estimatedHours+'" name="estimatedHours'+maxRowNum+'" id="estimatedHours'+maxRowNum+'" field-name="Estimated Hours" data-validation="validate_length length1-10 validate_int" data-validation-optional="true">';
 			divRowTd2_0Str = divRowTd2_0Str +'          </div>  ';
 			
 			divRowTd2_0Str = divRowTd2_0Str +'          <div class="col-md-3 currencySymbol">';
-			divRowTd2_0Str = divRowTd2_0Str +'              <label>Estimated Budget<span class="text-danger paddingLeft">*</span></label>';
+			divRowTd2_0Str = divRowTd2_0Str +'              <label>Estimated Budget</label>';
 			divRowTd2_0Str = divRowTd2_0Str +'              <div class="positionRelative">';
-			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control" value="'+report.estimatedBudget+'" name="estimatedBudget'+maxRowNum+'" id="estimatedBudget'+maxRowNum+'" field-name="Estimated Budget" data-validation="required validate_length length1-10 validate_int">';
+			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control" value="'+report.estimatedBudget+'" name="estimatedBudget'+maxRowNum+'" id="estimatedBudget'+maxRowNum+'" field-name="Estimated Budget" data-validation="validate_length length1-10 validate_int" data-validation-optional="true">';
 			divRowTd2_0Str = divRowTd2_0Str +'             <span class="currencyValue" value="'+report.estimatedBudgetCurrency+'" id="budgetCurrency'+maxRowNum+'" name="budgetCurrency">${currencyCode}</span>';
 			divRowTd2_0Str = divRowTd2_0Str +'                  </div>';
 			divRowTd2_0Str = divRowTd2_0Str +'          </div>';
@@ -1311,8 +1377,6 @@ function editChangeRole(e,rowId){
 function removeValidation(){
 	$('#errApprover').find('p.jquery_form_error_message').remove(); 
 }
-
-
 </script>
  <jsp:include page="../masterFooter.jsp" />	
 </html>

@@ -63,6 +63,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  */
 
 @RestController
+@RequestMapping("/app")
 public class RequirementOfferRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(RequirementOfferRestController.class);
@@ -207,6 +208,9 @@ public class RequirementOfferRestController {
 		RequirementOffers  requirementOffers =null;
 		
 		List<RequirementOfferHistory> offersList = requirementOfferHistoryService.getRequirementInternalAndIsClientOfferssBySubmissionIdAndOrgLocationsId(submissionId, orgLocations.getId());
+		for(RequirementOfferHistory offers : offersList) {
+			offers.setSubmissionStatusStr(offers.getSubmissionId().getSubmissionStatus().toString());
+		}
 		return resultJson = commonUtil.toJSON(offersList);
 		
 		/*requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
@@ -300,7 +304,7 @@ public class RequirementOfferRestController {
 	* 
 	* @throws Exception
 	*/
-	@RequestMapping(value = "/downloadOfferAttachment", method = RequestMethod.GET)
+	@RequestMapping(value = "/ws/downloadOfferAttachment", method = RequestMethod.GET)
     public void downloadOfferAttachment(@RequestParam(value="offerId", required=false) Long offerId ,HttpServletResponse response) throws Exception {
 		
 		
@@ -329,7 +333,7 @@ public class RequirementOfferRestController {
 			} 
 		}
 	
-	@RequestMapping(value = "/acceptOrRejectOffer")
+	@RequestMapping(value = "/ws/acceptOrRejectOffer")
     @ResponseBody  String acceptOrRejectOffer(@RequestParam(value="offerStatus", required=false) String offerStatus,
                            @RequestParam(value = "offerId", required = false) Long offerId,
                            @RequestParam(value="rejectedReason", required=false) String rejectedReason,
@@ -386,6 +390,7 @@ public class RequirementOfferRestController {
 						    requirementOffers.setUpdatedDate(commonUtil.currentDate());
 						    requirementOffersService.saveOfferStatus(requirementOffers);
 				      }
+					  requirementOffersService.sendApplicantOfferRejectMail(requirementOffers);
 					  setofferStatus ="success";
 			    }
 			 }

@@ -27,9 +27,7 @@ import org.hibernate.annotations.Type;
  */
 
 @Entity
-@Table(name = "CANDIDATE_DOCUMENTS", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateDocuments")
-
+@Table(name = "CANDIDATE_DOCUMENTS")
 public class CandidateDocuments implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -40,12 +38,12 @@ public class CandidateDocuments implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="REQUESTED_DOC_ID")        
     private RequestedDocuments requestedDocumentsId;
@@ -63,7 +61,7 @@ public class CandidateDocuments implements Serializable{
 	@Type(type="text")
 	private String requestedDocRejectedReason;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID", nullable=false)
 	private Candidate candidateId;
@@ -77,10 +75,6 @@ public class CandidateDocuments implements Serializable{
 	@Column(name = "DESCRIPTION ")
 	@Type(type="text")
 	private String description ;
-	
-	@Column(name = " DOC_FILE",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] docFile;
 	
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
@@ -153,14 +147,6 @@ public class CandidateDocuments implements Serializable{
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public byte[] getDocFile() {
-		return docFile;
-	}
-
-	public void setDocFile(byte[] docFile) {
-		this.docFile = docFile;
 	}
 
 	public String getFileContentType() {

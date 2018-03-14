@@ -5,22 +5,28 @@
 
 <script>
 	$(document).ready(function() {
-		initLocationAuto('orgLocation','orgCountry','orgState','orgCity','orgZipCode','orgLatitude','orgLongitude','invite');
+		initLocationAuto('orgLocation','orgCountry','orgState','orgCity','orgZipCode','orgLatitude','orgLongitude','invite','address');
 		document.getElementById("createOrg_form").reset();
 		getTimezonesList();
 	});
 </script>
+<script>
+function changeCountry(){
+	 $("#errCountryMsg").find("p.jquery_form_error_message").remove();
+}
 
+</script>
   <!-- Content Area -->
   <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
       <h2>Org Registration</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; <a href="enrolledOrgsList">Orgs List</a> &raquo; Org Registration </div>
+    <div class="pull-right brud-crum"><a href="${appPath}/dashboard">Home</a> &raquo; <a href="${appPath}/enrolledOrgsList">Orgs List</a> &raquo; Org Registration </div>
   </section>
   <div class="content-area clearfix">
   <div id="loading"></div>
+   <div id="enrollOrgLoading"></div>
     <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
       <form:form class="login-form clearfix"  id="createOrg_form"  name="createOrg_form" method="post" > 
       <div class="row">
@@ -45,7 +51,7 @@
             <div class="form-group">
 	            <label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
 	            <div class="col-md-9">
-	              <input type="text" name="email" id="email"   value="${email}" onblur="validateCompanyEmail();validateWebsite();getUserDetails();" field-name="Email" data-validation="required validate_Space validate_email validate_length length2-100" class="form-control"  />
+	              <input type="text" name="email" id="companyEmail"   value="${email}" onblur="validateCompanyEmail();validateWebsite();getUserDetails();" field-name="Email" data-validation="required validate_Space validate_email validate_length length2-100" class="form-control"  />
 	            <span class="hidden">Email</span>
 	            </div>
             </div>
@@ -108,34 +114,33 @@
           <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             
             <div class="form-group">
-				<label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
+				<label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>
 				 <div class="col-md-9" id="locationField">
 			          <div class="positionRelative">
-				          <input class="form-control positionRelative" id="orgLocation" name="location" placeholder="Enter your Location"  type="text" field-name="Location" data-validation="required"></input>
-				          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('orgLocation','orgCountry','orgState','orgCity','orgZipCode');resetdate();"></i>
+				          <input class="form-control positionRelative" id="orgLocation" name="location" placeholder="Enter your Address"  type="text" field-name="Address" data-validation="required"></input>
+				          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('orgLocation','orgCountry','orgState','orgCity','orgZipCode','address');resetdate();"></i>
 				        </div>
 		          </div>
 			 </div>
 			 
-	        
 	        <div class="form-group">
-	          <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
-	          <div class="col-md-9">
-	          <input class="form-control" id="orgCountry" name="country" placeholder="Country" field-name="Country" value ="${country}" type="text" data-validation="required" readonly></input>
-	          </div>
-	        </div>
-	        
-	        <div class="form-group">
-	          <label class="col-md-3">State<span class="text-danger">&nbsp;*</span></label>
-	          <div class="col-md-9">
-	          <input class="form-control" id="orgState" name="state" placeholder="State" type="text" field-name="State" data-validation="required" readonly></input>
-	          </div>
-	        </div>
-	        
-	        <div class="form-group">
+			  <label class="col-md-3">Street Address</label>
+				<div class="col-md-9">
+				 <input type="text" name="address" id="address" field-name="Street Address" data-validation-optional="true" placeholder="Enter your Street Addres" data-validation="validate_length length5-5000" class="form-control"/>
+				</div>
+			 </div>
+			 
+			  <div class="form-group">
 	          <label class="col-md-3">City<span class="text-danger">&nbsp;*</span></label>
 	          <div class="col-md-9">
-	          <input class="form-control" id="orgCity" name="city" placeholder="City" field-name="City" type="text" data-validation="required" readonly></input>
+	          <input class="form-control" id="orgCity" name="city" placeholder="City" field-name="City" type="text" data-validation="required" ></input>
+	          </div>
+	        </div>
+	        
+	         <div class="form-group">
+	          <label class="col-md-3">State<span class="text-danger">&nbsp;*</span></label>
+	          <div class="col-md-9">
+	          <input class="form-control" id="orgState" name="state" placeholder="State" type="text" field-name="State" data-validation="required" ></input>
 	          </div>
 	        </div>
 	        
@@ -145,13 +150,26 @@
 	          <input class="form-control" id="orgZipCode" name="zipCode" placeholder="Enter your Zip code" type="text"></input>
 	          </div>
 	        </div>
+	        
+	        <div class="form-group" id="errCountryMsg">
+	          <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
+	          <div class="col-md-9">
+<%-- 	          <input class="form-control" id="orgCountry" name="country" placeholder="Country" field-name="Country" value ="${country}" type="text" data-validation="required" readonly></input> --%>
+	               <select class="form-control" name="country" id="orgCountry" field-name="Country" data-validation="required" onchange="changeCountry(); getTimezonesList();" >
+		                    <option value="">Select Country</option>
+		                    <option value="Australia">Australia</option>
+			                <option value="France">France</option>
+			                <option value="India">India</option>
+			                <option value="Singapore">Singapore</option>
+			                <option value="United Kingdom">United Kingdom</option>
+			                <option value="United States">United States</option>
+		          </select>
+	          </div>
+	        </div>
+	        
+	     
 			
-			<div class="form-group">
-			  <label class="col-md-3">Address</label>
-				<div class="col-md-9">
-				 <input type="text" name="address" id="address" field-name="Address" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control"/>
-				</div>
-			 </div>
+			
                <div class="form-group">
 	            <label class="col-md-3">Time Zone<span class="text-danger">&nbsp;*</span></label>
 	            <div class="col-md-9">
@@ -180,7 +198,7 @@
       <div class="col-lg-12">
         <div class="pull-right">
           <input type="submit" value="Register" class="btn btn-primary" id="register_button" onclick="createOrg();">
-          <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/enrolledOrgsList'/>'"  class="btn btn-default ml">
+          <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/enrolledOrgsList'/>'"  class="btn btn-default ml">
         </div>
       </div>
     </div>
@@ -238,13 +256,8 @@ var validationSettings = {
          $('body').on('submit', '#createOrg_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
-            	
-        		var frm = $('#createOrg_form').serializeFormJSON();
-            	var con = JSON.stringify(frm);
-			    con = con.replace(/[{}]/g, ""); 
-			    var jsonData = encodeURIComponent(con);
+        		var formData = getFormData("createOrg_form");
          		var sourceleadUrl ='${sourceleadUrl}';
-         		
          		 var modulesList = [];
          		 $("input[name='modulesList[]']:checked").each( function (i) {
          			modulesList[i] = $(this).val();
@@ -256,12 +269,12 @@ var validationSettings = {
          			submodulesList[i] = $(this).val();
          		});
          		
-         		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-         		 	$.ajax({
+         		$("#enrollOrgLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+         		 	
+          		$.ajax({
           	      type: "POST",
-          	      contentType : 'application/json; charset=utf-8',
-          	      dataType : 'json',
-                	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&json="+jsonData,
+          	    	data: formData,
+                	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList,
                 			  
                 			  
                   	success: function(result) {
@@ -269,12 +282,15 @@ var validationSettings = {
 			        		location.replace(sourceleadUrl+"/enrolledOrgsList");  
 			        	}
 			        	else if((result == 'Invalid Sub Modules')){
-			        		$("#loading").removeAttr("style");
+			        		$("#enrollOrgLoading").removeAttr("style");
 			        		document.getElementById("subModule").style.display="";
+			        	}else if((result == 'DataMissing')){
+			        		showError("Invalid data");
+			        		$("#enrollOrgLoading").removeAttr('style');
 			        	}
 			        	
 			        },  
-               });  
+               });   
                 
             	    return true;
             }
@@ -301,7 +317,6 @@ function validateCompanyName(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 if(companyName != null && companyName != ''){
 		 $("#register_button").attr("disabled", "disabled");
-		 $( "#register_button" ).addClass('button').val('Processing..');
 			 $.ajax({
 				    type: "GET",
        	            url: sourceleadUrl+"/validateCompanyName?companyName="+companyName,
@@ -314,7 +329,6 @@ function validateCompanyName(){
 		    	    		$("input#companyName").closest('b').after("<p class='jquery_form_error_message'> "+company+" "+result+"</p>");
 		    				$('input#companyName').attr('record-exist','yes');
 		    				$('input#companyName').attr('record-exist-errorMsg',company+' '+result+''); 
-		    				$( "#register_button" ).addClass('sign_btn').val('Register');
 		    				$("#register_button").removeAttr("disabled");
 			        	}
 			        	else{
@@ -324,7 +338,6 @@ function validateCompanyName(){
 							$('#companyNameDiv').find('p.jquery_form_error_message').remove();
 							$('input#companyName').attr('class','valid form-control');
 							$( "#register_button" ).removeAttr("style");
-							$( "#register_button" ).addClass('sign_btn').val('Register');
 							$( "#register_button" ).click(function() {
 							 if ($(this).validate(false, validationSettings)){
 							 }
@@ -347,10 +360,9 @@ function validateWebsite (){
 	 if(website != null && website != ''){
 		
 		 $("#register_button").attr("disabled", "disabled");
-		 $( "#register_button" ).addClass('button').val('Processing..');
 			 $.ajax({
 				    type: "GET",
-       	            url: sourceleadUrl+"/ws/validateOrgWebsite?website="+website+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites,
+       	            url: sourceleadUrl+"/validateOrgWebsite?website="+website+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites,
 			        success: function(data) {
 			        	 var result = data;
 			        		if (result == "Website Duplicated" || result == "Invalid Website") {
@@ -360,7 +372,6 @@ function validateWebsite (){
 		    	    		$("input#companyWebsite").closest('b').after("<p class='jquery_form_error_message'> "+website+" "+result+"</p>");
 		    				$('input#companyWebsite').attr('record-exist','yes');
 		    				$('input#companyWebsite').attr('record-exist-errorMsg',website+' '+result+''); 
-		    				$( "#register_button" ).addClass('sign_btn').val('Register');
 		    				$("#register_button").removeAttr("disabled");
 			        	}
 			        	else{
@@ -370,7 +381,6 @@ function validateWebsite (){
 							$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
 							$('input#companyWebsite').attr('class','valid form-control');
 							$( "#register_button" ).removeAttr("style");
-							$( "#register_button" ).addClass('sign_btn').val('Register');
 							$( "#register_button" ).click(function() {
 							 if ($(this).validate(false, validationSettings)){
 							 }
@@ -386,7 +396,7 @@ function validateWebsite (){
 
 <script type="text/javascript">
 function getUserDetails(){
-	var email = document.getElementById("email").value;
+	var email = document.getElementById("companyEmail").value;
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(email){
 		$.ajax({
@@ -442,44 +452,41 @@ function getUserDetails(){
 <script type="text/javascript">
 function validateCompanyEmail(){
     var websiteValue = document.getElementById("companyWebsite").value;
-    var emailValue = document.getElementById("email").value;
+    var emailValue = document.getElementById("companyEmail").value;
     var sourceleadBLockedwebsites ='${sourceLeadBlockedSocialDomains}'; 
     var sourceleadUrl ='${sourceleadUrl}';
 		if((websiteValue != null && websiteValue != '') && (emailValue != null && emailValue != '')){
 		$.ajax({
 		   	type: "GET",
-		       url: sourceleadUrl+"/ws/emailAndWebsiteRegistrationValidation?website="+websiteValue+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites+"&email="+emailValue,
+		       url: sourceleadUrl+"/emailAndWebsiteRegistrationValidation?website="+websiteValue+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites+"&email="+emailValue,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid Email'){
 					    	    //Invalid Email
 					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
-			    	    		$('input#email').attr('class','error form-control');
-			    	    		$("input#email").closest('b').after("<p class='jquery_form_error_message'> "+emailValue+" is Invalid</p>");
-			    				$('input#email').attr('record-exist','yes');
-			    				$('input#email').attr('record-exist-errorMsg',emailValue+' is Invalid'); 
-			    				$( "#register_button" ).addClass('sign_btn').val('Register');
+			    	    		$('input#companyEmail').attr('class','error form-control');
+			    	    		$("input#companyEmail").closest('b').after("<p class='jquery_form_error_message'> "+emailValue+" is Invalid</p>");
+			    				$('input#companyEmail').attr('record-exist','yes');
+			    				$('input#companyEmail').attr('record-exist-errorMsg',emailValue+' is Invalid'); 
 			    				$("#register_button").removeAttr("disabled");
 					     } 
 					     else if(data == 'Existed Email'){
 					    	   //Existed Email
 					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
-			    	    		$('input#email').attr('class','error form-control');
-			    	    		$("input#email").closest('b').after("<p class='jquery_form_error_message'> "+emailValue+" is Already Existed</p>");
-			    				$('input#email').attr('record-exist','yes');
-			    				$('input#email').attr('record-exist-errorMsg',emailValue+' is Already Existed'); 
-			    				$( "#register_button" ).addClass('sign_btn').val('Register');
+			    	    		$('input#companyEmail').attr('class','error form-control');
+			    	    		$("input#companyEmail").closest('b').after("<p class='jquery_form_error_message'> "+emailValue+" is Already Existed</p>");
+			    				$('input#companyEmail').attr('record-exist','yes');
+			    				$('input#companyEmail').attr('record-exist-errorMsg',emailValue+' is Already Existed'); 
 			    				$("#register_button").removeAttr("disabled");
 					    	 
 					     }
 				       	else{
 				       		//Valid Email
 				       		$("#register_button").removeAttr("disabled");
-				    		$('input#email').removeAttr( "class record-exist record-exist-errormsg");
+				    		$('input#companyEmail').removeAttr( "class record-exist record-exist-errormsg");
 							$('#emailDiv').find('p.jquery_form_error_message').remove();
-							$('input#email').attr('class','valid form-control');
+							$('input#companyEmail').attr('class','valid form-control');
 							$( "#register_button" ).removeAttr("style");
-							$( "#register_button" ).addClass('sign_btn').val('Register');
 							$( "#register_button" ).click(function() {
 							 if ($(this).validate(false, validationSettings)){
 							 }
@@ -540,7 +547,6 @@ function getTimezonesList(){
 		}else{
 			$("select[name = 'dateFormat']").val('MM-dd-yyyy');
 		}
-		
 		 $.ajax({
 		    	type: "POST",
 		    	url : sourceleadUrl+"/getTimezonesList?${_csrf.parameterName}=${_csrf.token}", 
@@ -584,7 +590,8 @@ $(function(){
 			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 			  '.chosen-select-width'     : {width:"95%"}
 			}
-	      
+	    
+           
 	       $('.chosen-select').each(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});

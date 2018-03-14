@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.Validate;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -38,10 +40,15 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AddAssociateDTO;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
+import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserProfileDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
@@ -60,6 +67,7 @@ import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -72,6 +80,7 @@ import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ModulesService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
@@ -95,12 +104,17 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 
 @RestController
+@RequestMapping("/app")
 public class UserRestController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(UserRestController.class);
+private static final Logger logger = LoggerFactory.getLogger(UserRestController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	
 	 
 	@Autowired
 	UserService userService;
@@ -108,6 +122,8 @@ public class UserRestController {
 	@Autowired
 	private ProjectsService projectsService;
 	
+	@Autowired
+	private OrgLocationService orgLocationService;
 	
 	@Autowired
 	private ProjectMembersHistoryService projectMembersHistoryService;
@@ -172,6 +188,8 @@ public class UserRestController {
 	
 	@Autowired
 	CandidateOffBoardingService candidateOffBoardingService;
+
+	private Org org;
 	
 	/**
 	 * To get All Approvers
@@ -267,18 +285,25 @@ public class UserRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	 @PreAuthorize("hasRole('ROLE_CREATE_USER')")
+	 @PreAuthorize("hasRole('ROLE_CREATE_ASSOCIATE')")
 	 @RequestMapping(value = "/createUser" , method = RequestMethod.POST)
 	public String createUser(AddUserDTO addUserDTO, CandidateDTO candidateDTO, HttpServletRequest request)
 			throws Exception {
-
+		if(Validator.validate(addUserDTO) || Validator.validate(candidateDTO)){
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		addUserDTO.setDateFormat(orgLocations.getDateFormat());
+		candidateDTO.setDateFormat(orgLocations.getDateFormat());
+		commonUtil.onboardCreationCandidateGeneratedIdUpdated(candidate,orgLocations);
 		userService.storeUser(addUserDTO, candidateDTO, user, orgLocations, "CREATEUSER", "", new Org());
-		// userService.createUser(jsonObj,user,orgLocations.getId());
-		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success !!New user created");
+		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success !!New associate created");
 		return "usersList";
 	}
+	 else{
+		 return "DataMissing";
+	 }
+}
 	 
 	 /**
 	  * To get the Project Manager Name by using projectId
@@ -326,11 +351,22 @@ public class UserRestController {
 	 
 	 
 	 @RequestMapping(value = "/getUserByUserEmail" , method = RequestMethod.POST)
-	 public @ResponseBody  String getUserByUserEmail(@RequestParam(value="EmailId", required=false) String EmailId, HttpServletRequest request) throws Exception {
-		 	String resultJson = null;
+	 public @ResponseBody  UserDTO getUserByUserEmail(@RequestParam(value="EmailId", required=false) String EmailId, HttpServletRequest request) throws Exception {
 		 	User user = userService.findByEmail(EmailId);
-		 	resultJson = toJSON(user);
-			return resultJson;
+		 	UserDTO userDTO = new UserDTO();
+		 	if(user != null) {
+		 		userDTO.setFirstName(user.getFirstName());
+			 	userDTO.setLastName(user.getLastName());
+			 	userDTO.setMobilePhone(user.getMobilePhone());
+		 	}else {
+		 		Candidate candidate = candidateService.getCandidateByEmail(EmailId);
+		 		if(candidate != null) {
+		 			userDTO.setFirstName(candidate.getFirstName());
+				 	userDTO.setLastName(candidate.getLastName());
+				 	userDTO.setMobilePhone(candidate.getMobilePhone());
+		 		}
+		 	}
+			return userDTO;
 	   }
 	 
 	 
@@ -392,20 +428,23 @@ public class UserRestController {
 		  * @throws Exception
 		  */
 		@RequestMapping(value = "/getApproversByUserId", method = RequestMethod.POST)
-		public @ResponseBody String getApproversByUserId(
+		public @ResponseBody List<User> getApproversByUserId(
 				@RequestParam(value = "currentApproverId", required = false) Long currentApproverId,
 				HttpServletRequest request) throws Exception {
-			String resultJson = null;
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
-			/*List<User> userList = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(currentApproverId,
-					orgLocations.getId());*/
-			
+			List<User> usersList = new ArrayList<>();
 			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(currentApproverId,orgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
-			
-			
-			resultJson = toJSON(userList);
-			return resultJson;
+			if(null != userList && !userList.isEmpty()){
+				for (User user : userList) {
+					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),orgLocations.getId());
+					if(null != userRole){
+						user.setUserType(userRole.getUserType());
+					}
+					usersList.add(user);
+				}
+			}
+			return usersList;
 		}
 
 		/**
@@ -465,7 +504,6 @@ public class UserRestController {
 	 			if(isUserActive == false){
 	 				user.setPassword(sourceleadPasswordEncoder.encode(password));
 	 			}
-	 			user.setIsMailSent(Status.Y);
 	 			userService.addUser(user);
 	 			
 	 			// mail should forward user when action done in sourcelead admin 
@@ -483,6 +521,9 @@ public class UserRestController {
 	    			  if(null != employee){
 	    				  userService.saveOrUpdateUserElkDocument(userRole,employee,user.getUserCode());
 	    			  }
+	    			  
+	    			  userRole.setIsMailSent(Status.Y);
+	    			  userRoleService.addUserRole(userRole);
 	 			  }
 	 		}
 		
@@ -501,9 +542,9 @@ public class UserRestController {
 		 @RequestMapping(value = "/getProjectDetailsById", method = RequestMethod.POST)
 		 @ResponseBody String getProjectDetailsById(HttpServletRequest request,
 					@RequestParam(value = "userId", required = false) Long userId,
-					@RequestParam(value = "filterValue", required = false) String filterValue) throws Exception {
+					@RequestParam(value = "filterValue", required = false) String filterValue,@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
 
-				List<ProjectMembers> allProjectsList = projectMembersService.getAllProjectsByUserIdAndStatus(userId, filterValue);
+				List<ProjectMembers> allProjectsList = projectMembersService.getAllProjectsByUserIdAndStatus(userId, filterValue,orgLocationId);
 				return toJSON(allProjectsList);
 
 			}
@@ -557,7 +598,7 @@ public class UserRestController {
 				pmhList.add(pmh);
 				
 				if (employee.getRate() != null && !"".equalsIgnoreCase(employee.getRate())) {
-					projectMembers.setCurrentBillRate(Float.parseFloat(employee.getRate()));
+					projectMembers.setCurrentBillRate(Double.parseDouble(employee.getRate()));
 				}
 				// need change role
 				projectMembers.setRole(user.getUserType());
@@ -573,6 +614,25 @@ public class UserRestController {
 				//commonUtil.storeTimesheetSubmissionRecords(user);
 				return "success";
 			}
+			
+			@RequestMapping(value = "/rest/refreshSessionAttributes", method = RequestMethod.GET)
+	         public int refreshSessionAttributes(@RequestParam(value="userId", required=false) Long userId,@RequestParam(value="locationCode", required=true) String locationCode,HttpServletRequest request) throws Exception {
+	             int output =  HttpServletResponse.SC_NOT_FOUND;
+				 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	             if(loginUser == null && userId != null){
+	            	 loginUser = userService.getUserById(userId);
+	             }
+	             OrgLocations orgLoc = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+	             if(loginUser != null && orgLoc != null){
+	            	 SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLoc);
+	            	 Candidate candidate = candidateService.getCandidateByConsultantUserId(loginUser.getId(), orgLoc.getId());
+					 SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
+					 output =  HttpServletResponse.SC_OK;
+	             }
+	             return output;
+	         }
+			
+			
 			/**
 			 * to save the reason when we terminate the user from project 
 			 * @param projectMemberId
@@ -582,53 +642,80 @@ public class UserRestController {
 			@PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_PROJECT_EMPLOYEES')")
 			@RequestMapping(value = "/saveReason", method = RequestMethod.POST)
 			@ResponseBody String saveReason(
-					@RequestParam(value = "projectMemberId", required = false) Long projectMemberId,
-					@RequestParam(value = "projectId", required = false) Long projectId,
-					@RequestParam(value = "reason", required = false) String reason,HttpServletRequest request) {
+					@RequestParam(value = "projectMemberId", required = true) Long projectMemberId,
+					@RequestParam(value = "projectId", required = true) Long projectId,
+					@RequestParam(value = "reason", required = true) String reason,HttpServletRequest request) {
 				   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 							"orgLocations");
 				   Integer updatedCount =  0;
 				   try {
-				  	  ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
-				  	  if(projectMembers != null){
-				  		  String status = Constants.MEMBER_IN_ACTIVE;
-					  	  projectMembers.setTerminateReason(reason);
-						  projectMembers.setUpdatedDate(new Date());
-						  projectMembers.setUpdatedBy(user.getUserCode());
-						  projectMembers.setStatus(status);
-						  projectMembersService.saveProjectMember(projectMembers);
-					  	  ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
-						  if(pmh != null){
-							  pmh.setProjectTerminationDate(new Date());
-							  pmh.setUpdatedDate(new Date());
-							  pmh.setUpdatedBy(user.getUserCode());
-							  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
-							  pmh =  projectMembersHistoryService.updateProjectMembersHistory(pmh);
-						  }
-						  
-						  commonUtil.terminateProjectMemberByProjectMemberId(projectMemberId,Primary.Yes);
-					      updatedCount = 1;
-					      terminatedMailToEmployee(user,pmh,orgLocations);
-					      
-					      List<ProjectApproverHierarchy>  mangerList = projectApproverHierarchyService.getApproverUsersByProjectId(pmh.getProjectMemberId().getProjects().getId());
-					      for(ProjectApproverHierarchy pah : mangerList){
-					    	  if(user.getId() != pah.getApproverUserId().getId()){
-					    		  employeeTerminationMailToProjectManager(user,pmh,orgLocations);
-					    	  }
-					      }
-					      
-					      
-				  	   }
-					   if(null != projectId){
-							Projects projects = projectsService.getProjectById(projectId);
-							if(null != projects){
-								Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projectId);
-								ProjectsIndex projectsIndex = projectsIndexHelper.getProjectsIndexFromProjects(projects, null, projectMembersList);
-								//Elastic Search Document Saving
-								sourceleadELKBaseIndexer.saveOrUpdateElkDocument(projectsIndex, Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,projects.getId().toString());
-							}
-					   }
+					   ProjectMembers pm = projectMembersService.getProjectMemberById(projectMemberId);
+					   List<ProjectMembers> pmList = projectMembersService.getAllProjectMembersByMasterCandidateId(pm.getMasterCandidateId().getId(), projectId);
+				  	 // ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
+				  	 if(pmList != null && !pmList.isEmpty()) {
+					   for(ProjectMembers projectMembers: pmList) {
+					  		  String status = Constants.MEMBER_IN_ACTIVE;
+						  	  projectMembers.setTerminateReason(reason);
+							  projectMembers.setUpdatedDate(new Date());
+							  projectMembers.setUpdatedBy(user.getUserCode());
+							  projectMembers.setStatus(status);
+							  projectMembersService.saveProjectMember(projectMembers);
+						  	  
+							  List<ProjectMembersHistory> pmhList = projectMembersHistoryService.getProjectMembersHistoryListByProjectMemberId(projectMembers.getId());
+							  int sendEmailCount = 1;
+							  if(pmhList != null && pmhList.size() > 0){
+								  for(ProjectMembersHistory pmh : pmhList){
+									  pmh.setProjectTerminationDate(new Date());
+									  pmh.setUpdatedDate(new Date());
+									  pmh.setUpdatedBy(user.getUserCode());
+									  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
+									  pmh =  projectMembersHistoryService.updateProjectMembersHistory(pmh);
+									  if(sendEmailCount == 1){
+										  terminatedMailToEmployee(user,pmh,orgLocations);
+									  }
+									  
+									  if(pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId().getId().equals(orgLocations.getId())){
+										   /*List<ProjectApproverHierarchy>  mangerList = projectApproverHierarchyService.getApproverUsersByProjectId(pmh.getProjectMemberId().getProjects().getId());
+										      for(ProjectApproverHierarchy pah : mangerList){
+										    	  if(user.getId() != pah.getApproverUserId().getId()){
+										    		  employeeTerminationMailToProjectManager(user,pmh,orgLocations);
+										    	  }
+										      }*/
+										  employeeTerminationMailToProjectManager(user,pmh,orgLocations);
+									  }else{
+										  employeeTerminationMailToProjectManager(pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId().getUser(),pmh,pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId());
+									  }
+									  commonUtil.inactivateTimesheetSubmissionsBasedOnMemberIdAndMemberTerminationDate(projectMemberId,new Date());
+									  sendEmailCount = sendEmailCount+1;
+								  }
+							  }
+							  
+							  
+							  
+							 /* ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
+							  if(pmh != null){
+								  pmh.setProjectTerminationDate(new Date());
+								  pmh.setUpdatedDate(new Date());
+								  pmh.setUpdatedBy(user.getUserCode());
+								  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
+								  pmh =  projectMembersHistoryService.updateProjectMembersHistory(pmh);
+							  }
+							  
+							  commonUtil.terminateProjectMemberByProjectMemberId(projectMemberId,Primary.Yes);
+						      updatedCount = 1;*/
+						      
+						   if(null != projectId){
+								Projects projects = projectsService.getProjectById(projectId);
+								if(null != projects){
+									Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projectId);
+									ProjectsIndex projectsIndex = projectsIndexHelper.getProjectsIndexFromProjects(projects, null, projectMembersList);
+									//Elastic Search Document Saving
+									sourceleadELKBaseIndexer.saveOrUpdateElkDocument(projectsIndex, Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,projects.getId().toString());
+								}
+						   }
+				  	  }
+				  	 }
 				    } catch (Exception e) {
 				   }
 				return "success";
@@ -705,7 +792,7 @@ public class UserRestController {
 					}
 				 
 				 StringBuilder linkBuild = new StringBuilder();
-			     globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			     globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			   
 				 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 				
@@ -731,7 +818,10 @@ public class UserRestController {
 				 
 				 //calling the sendEmail method of emailScenerioUtil
 				 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+				 StringBuilder notificationLink = new StringBuilder();
 				 String actionLink="";
+			     actionLink = notificationLink.append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+pmh.getProjectMemberId().getProjects().getProjectUUID()+"&projectClientUUID="+pmh.getProjectMemberId().getProjectClientUUID()+"&tabType=team").toString();
+
 				 emailScenerioUtil.sendNotification(actionLink, loginUser,user, projectApproverHierarchy.getProjectId().getOrgLocationsId(), notificationScenario);
 				 }
 				}
@@ -821,7 +911,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 
 
 			 StringBuilder linkBuild = new StringBuilder();
-		     globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		     globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		   
 			
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -880,6 +970,8 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 					
 					if (endDate != null && !"".equals(endDate) && !endDate.equalsIgnoreCase("--")) {
 						ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
+						
+						 //List<ProjectMembers> pmList = projectMembersService.getAllProjectMembersByMasterCandidateId(projectMembers.getMasterCandidateId().getId(), projectMembers.getProjects().getId());
 						if(pmh == null){
 							pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMembers.getId());
 						}
@@ -1011,10 +1103,10 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
      	     userProfileDTO.setLastName(user.getLastName());
      	     userProfileDTO.setUserId(user.getId());
      	  
-     	     if(user.getDocFile() != null && user.getFileContentType() != null){
-        	    userProfileDTO.setProfileImageUrl(sourceleadUrl+"/displayUserImage/"+user.getId());
+     	     if(StringUtils.isNoneBlank(user.getFileUrl())){
+        	    userProfileDTO.setProfileImageUrl(user.getFileUrl());
    			 }else{
-   				userProfileDTO.setProfileImageUrl(sourceleadUrl+"/resources/images/userprofile-img.png");
+   				userProfileDTO.setProfileImageUrl("/resources/images/userprofile-img.png");
    			 }
      	     
 	         try {
@@ -1052,6 +1144,8 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 	        		        	    OrgLocationDTO orgLocationDTO =  getOrgLocationDetails(orgLocations,userRole);
 	        		        	    orgLocationDTO.setMenuList(tabNamesList);
 	        		        	    orgLocationDTO.setMenuIconsList(tabIconsList);
+	        		        	    Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+	        		        	    orgLocationDTO.setCandidateId(candidate.getId());
 	        		        	    //orgLocationDTO.setRoleActionsList(actionRolesList);
 	        		        	    orgLocationDTO.setUserType(userRole.getUserType());
 	        		        	    orgLocationsList.add(orgLocationDTO);
@@ -1075,6 +1169,8 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		 private OrgLocationDTO getOrgLocationDetails(OrgLocations orgLocations,UserRole useRole){
 			 OrgLocationDTO orgLocationDTO = new OrgLocationDTO();
 			 orgLocationDTO.setOrgName(orgLocations.getOrgLocationName());
+			 orgLocationDTO.setOrgLocationId(orgLocations.getId());
+			 orgLocationDTO.setOrgId(orgLocations.getOrg().getId());
 			 orgLocationDTO.setLocationCode(orgLocations.getLocationCode());
 			 orgLocationDTO.setOrgCode(orgLocations.getOrg().getOrgCode());
 			 if(orgLocations.getOrg().getDocFile() != null && orgLocations.getOrg().getFileContentType() != null){
@@ -1156,11 +1252,9 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		 * @throws Exception
 		 */
 		@RequestMapping(value = "/saveReAssignProject", method = RequestMethod.POST)
-		@ResponseBody String saveReAssignProject(@RequestParam(value = "json", required = false) String json,
+		@ResponseBody String saveReAssignProject(ProjectsDTO projectsDTO,
 				@RequestParam(value = "projectMemberId", required = false) Long projectMemberId, HttpServletRequest request)
 						throws Exception {
-			json = "{" + json + "}";
-			JSONObject jsonObj = new JSONObject(json);
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -1178,12 +1272,12 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 			  		  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
 			  		  //String pattern = "dd-MM-yyyy";
 		    	     // SimpleDateFormat format = new SimpleDateFormat(pattern);
-		    	      if(jsonObj.has("Re-StartDate") && !isNullOrEmpty(jsonObj.getString("Re-StartDate"))){
-		    	    	  Date startDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("Re-StartDate"));
+		    	      if(!isNullOrEmpty(projectsDTO.getReStartDate())){
+		    	    	  Date startDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectsDTO.getReStartDate());
 						  pmh.setProjectAssignedDate(startDate);
 		    	      }
-		    	      if(jsonObj.has("Re-EndDate") && !isNullOrEmpty(jsonObj.getString("Re-EndDate"))){
-		    	    	  Date endDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("Re-EndDate"));
+		    	      if(!isNullOrEmpty(projectsDTO.getReEndDate())){
+		    	    	  Date endDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectsDTO.getReEndDate());
 						  pmh.setProjectTerminationDate(endDate);
 		    	      }
 		    	      pmh.setCreatedDate(commonUtil.currentDate());
@@ -1322,7 +1416,10 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 			 
 			 //calling the sendEmail method of emailScenerioUtil
 			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+			 StringBuilder notificationLink = new StringBuilder();
 			 String actionLink="";
+		     actionLink = notificationLink.append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+pmh.getProjectMemberId().getProjects().getProjectUUID()+"&projectClientUUID="+pmh.getProjectMemberId().getProjectClientUUID()).toString();
+		     
 			emailScenerioUtil.sendNotification(actionLink, loginUser,toUser, pmh.getProjectMemberId().getEmployee().getOrgLocations(), notificationScenario);
 
 		}
@@ -1333,7 +1430,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		 * @return
 		 * @throws Exception
 		 */
-		@PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_USER','ROLE_CREATE_USER')")
+		@PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_ASSOCIATE','ROLE_CREATE_ASSOCIATE')")
 		@RequestMapping(value = "/reActiveUser", method = RequestMethod.POST)
         public String reActiveUser(@RequestParam(value = "userId", required = false) String userID, HttpServletRequest request) throws Exception {
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -1448,9 +1545,94 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 	 */
 	@RequestMapping(value = { "/getAssignedProjectsListForUser",
 			"/rest/getAssignedProjectsListForUser" }, method = RequestMethod.GET)
-	public @ResponseBody List<ProjectMembers> getAssignedProjectsListForUser(@RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception
+	public @ResponseBody List<ProjectMembers> getAssignedProjectsListForUser(@RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "fromType", required = false) String fromType) throws Exception
 	{
-		List<ProjectMembers> projectMembersList = projectMembersService.getAllAssignedProjectsForUser(userId, orgLocationId);
+		List<ProjectMembers> projectMembersList = projectMembersService.getAllAssignedProjectsForUser(userId, orgLocationId,fromType);
 		return projectMembersList;
 	}
+	
+	 @RequestMapping(value = "/refreshRoleList", method = RequestMethod.POST)
+		public @ResponseBody List<Roles> refreshRoleList(HttpServletRequest request, Long roleHierarchyId) throws Exception {
+		  roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
+		  	Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+	    	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    	List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
+            return 	rolesList;	   
+		    
+		   
+		} 
+	 
+	 @RequestMapping(value = "/rest/loginUserImageUrl", method = RequestMethod.GET)
+     public String getLoginUserImageUrl(@RequestParam(value="userId", required=false) Long userId,HttpServletRequest request) throws Exception {
+         User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+         String imageUrl = "";
+         if(loginUser == null){
+                loginUser = userService.getUserById(userId);
+                imageUrl = loginUser.getFileUrl();
+         }else{
+             imageUrl = loginUser.getFileUrl();
+         }
+         if(StringUtils.isBlank(imageUrl))
+             imageUrl ="/resources/images/userprofile-img.png";
+         return imageUrl;
+     }
+	 
+	 
+	 @RequestMapping(value = "/getOrgLocationAssociatesList", method = RequestMethod.GET)
+	 public @ResponseBody ResponseList<CandidateDTO>  getOrgLocationAssociatesList(CandidateDTO candidateDTO,HttpServletRequest request) throws Exception{ 
+		 
+		
+		List<Long> roleIds = null; 
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");		
+		
+		String[] tableColumns = {"ischeck","name", "email","role", "rate", "manager", "resume"};
+	    int sortColumnIndex = 1; //by default sorting using updated date
+		String sortColumnOrder = "desc"; //by default referContactsDTO order
+		if(candidateDTO.getOrder() != null && !candidateDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(candidateDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = candidateDTO.getOrder().get(0).get("dir");
+		}
+		candidateDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		candidateDTO.setSortOrder(sortColumnOrder);
+		
+		if(!isNullOrEmpty(candidateDTO.getRoles())){
+			roleIds = new ArrayList<Long>();
+			 String[] rolesList = candidateDTO.getRoles().split(",");
+			 for(int i=0; i < rolesList.length; i++){
+				 roleIds.add(Long.valueOf(rolesList[i]));
+			 }
+			 
+		}
+		
+		List<Long> associateIds = null; 
+		if(!isNullOrEmpty(candidateDTO.getSelectedAssociates())){
+			associateIds = new ArrayList<Long>();
+			 String[] associateIdsList = candidateDTO.getSelectedAssociates().split(",");
+			 for(int i=0; i < associateIdsList.length; i++){
+				 associateIds.add(Long.valueOf(associateIdsList[i]));
+			 }
+		}
+		
+		 
+		ResponseList<CandidateDTO> candidateDTOList = candidateService.getLocationCandidatesList(candidateDTO, candidateDTO.getOrgLocationId(), roleIds, associateIds, orgLocations.getId());
+		
+		return candidateDTOList;
+	  }
+	 
+	 
+	 
+	 @PreAuthorize("hasRole('ROLE_CREATE_ASSOCIATE')")
+	 @RequestMapping(value = "/saveLocationAssociate" , method = RequestMethod.POST)
+	 public String saveLocationAssociate(AddAssociateDTO addAssociateDTO, HttpServletRequest request)
+			throws Exception {
+		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+           User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	       candidateService.saveOrglocationAsssociate(addAssociateDTO, loginUser, orgLocations, org); 
+         
+           return "success";
+	 
+	 }
+	 
+	 
+	 
 }

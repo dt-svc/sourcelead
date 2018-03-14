@@ -18,7 +18,7 @@ import com.bis.sourcelead.entity.User;
 public interface ClientService {
 	
 
-	public void storeClient(ClientDTO clientDTO,AddUserDTO AddUserDTO,CandidateDTO candidateDTO,User user,OrgLocations orgLocations,String responderType,Org org) throws Exception;
+	public OrgLocations storeClient(ClientDTO clientDTO,AddUserDTO AddUserDTO,CandidateDTO candidateDTO,User user,OrgLocations orgLocations,String responderType,Org org) throws Exception;
 
 	public void updateClientDetails(ClientDTO clientDTO,Long orgRelationId, Long clientLocationId, Long loginLocationId, User user) throws Exception;
 

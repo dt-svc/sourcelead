@@ -3,7 +3,8 @@ package com.bis.sourcelead.dao;
 import java.util.Date;
 import java.util.List;
 
-import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 
@@ -17,15 +18,23 @@ public interface ProjectsDao {
 	
 	List<Projects> getProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
 	
+	List<Projects> getAllProjectByOrgLocationsId(Long orgLocationId) throws Exception;
+	
+	List<Projects> getEndClientProjectByOrgLocationsIdAndClientOrgLocationId(Long orgLocationsId,Long clientOrgLocationId) throws Exception;
+	
 	List<Projects> getProjectByOrgLocationsIdAndEndDateGraterthanCurrentDate(Long orgLocationsId, Long loginUserId) throws Exception;
 	
 	List<Projects> getAllProjectsEndDateGraterthanCurrentDate() throws Exception;
 	
 	Projects getPrimaryProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
 	
+	Projects getProjectByOrgLocationsIdAndProjectName(Long orgLocationsId,String projectName) throws Exception;
+	
 	public Boolean deleteProjectById(Long id) throws Exception;
 	
 	public Boolean validateProjectSequeneNumber(String projectSequeneNumber, Long orgLocationsId) throws Exception;
+	
+	Boolean validateProjectShortCode(String shortCode, Long orgLocationsId) throws Exception;
 	
 	public Integer projectIdValidation(Long projectId) throws Exception;
 	
@@ -45,6 +54,8 @@ public interface ProjectsDao {
 
 	List<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId,String clients,String status,Long orgLocationId) throws Exception;
 	
+	ResponseList<ProjectsDTO> getProjectsListByClientsAndStatus(ProjectsDTO projectsDTO,Long userId,String clients,String status,Long orgLocationId,String userRole,Long candidateId) throws Exception;
+	
 	public List<Projects> getProjectByOrgLocationsIdAndUserId(Long id, Long userId);
 	
 	public List<Projects> getProjectsByOrgLocationsIdAndApproverUserId(Long id, Long userId);
@@ -54,6 +65,9 @@ public interface ProjectsDao {
 	public Integer getUserAssignedProjectsCount(Long userId,Long orgLocationId);
 	
 	//public HashSet<User> getAllUserTimeSheetSubmissionStatus() throws Exception;
+	
+	Integer getProjectCountByOrgLocationIdAndUserCode(Long orgLocationId,String userCode)throws Exception;
+
 	
 	public void saveAllProjects(List<Projects> projectsList) throws Exception;
 	
@@ -67,8 +81,6 @@ public interface ProjectsDao {
 	
 	Integer getProjectApproversCountByUserIdAndOrgLocationId(Long userId,Long orgLocationId)throws Exception;
 	
-	List<Projects> getProjectBasedClientsByOrgLocationsIdAndApproverUserId(Long orgLocationsId, Long userId) throws Exception;
-
 	List<Long> getProjectIdsByOrgLocationsId(Long orgLocationsId) throws Exception;
 	
 	Integer getProjectCountByOrgLocationId(Long orgLocationId)throws Exception;
@@ -80,5 +92,9 @@ public interface ProjectsDao {
 	public List<Projects> getAllProjectsByOrgLocationIdAndStatus(Long orgLocationId)throws Exception;
 	
 	Projects getProjectByProjectUUID(String projectUUID) throws Exception;
+	
+	List<Projects> getAllProjectsByOrgLocationIdAndStatusForTransfer(Long orgLocationId,String projectClientUUID) throws Exception ;
+
+	Projects getProjectByProjectName(String projectName) throws Exception;
 
 }

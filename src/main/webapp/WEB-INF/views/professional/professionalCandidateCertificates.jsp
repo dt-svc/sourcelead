@@ -106,35 +106,15 @@ function storeCertificate(candidateId){
 			 
 			 $.post(sourceleadUrl+"/storeCandidateCertifications?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
 				 closeCertificatePopup();
+				 $("#selector5").removeAttr("style");
+     			 $("#selector5").css({ display: "block" });
+     			 $("#cerMsgDiv").html("Success!! New Certification added");
+            		candidateCertificateList(candidateId);
 				 candidateCertificateList(candidateId);
-            		//cerMsgFadein();
+            		cerMsgFadein();
             		qwikCertificates(candidateId);
 			 });
-				/* $.ajax({
-						type : "POST",
-						url : sourceleadUrl
-								+ "/storeCandidateCertifications?${_csrf.parameterName}=${_csrf.token}&json="
-								+ jsonData + "&candidateId=" + candidateId,
-						success : function(data) {
-							if (data != null && data != 'undefined'
-									&& data != "") {
-								if (data.indexOf('Sign In') >= 0) {
-									location.replace(sourceleadUrl);
-								} else if (data.indexOf('exception') >= 0) {
-									location.replace(sourceleadUrl+ "/errorPage");
-								}
-								else{
-									$("#popUpDivEmp").removeClass("edit-details-active");
-			            			$("#selector5").removeAttr("style");
-			            			$("#selector5").css({ display: "block" });
-			            			$("#cerMsgDiv").html("Success!! New Certification added");
-				               		candidateCertificateList(candidateId);
-				               		cerMsgFadein();
-				               		qwikCertificates(candidateId);
-							    	}
-							   }
-						},
-					}); */
+				
 			return true;
 		} else {
 			return false;
@@ -196,23 +176,8 @@ function candidateCertificateList(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-          success :function(data) {
-        	  var json = JSON.parse(data);
-               /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
-             			 
-             			/* var json = JSON.parse(data);
-	                      for (var i = 0; i < 1; i++) {
-	                             var val= json[i];
-	                             var opt = "";
-	                                     if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
-	                                             opt  = opt + '<div class="success_pop" id="selector1" style="display: block;">';
-	                                             opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
-	                                             opt  = opt + '</div>';
-	                                             }
-	                                     $("#msgDiv").empty();
-	                                     $("#msgDiv").append(opt);
-	                             } */
-	                      
+          success :function(json) {
+//         	  var json = JSON.parse(data);
 	                	 $("#candidateCertificateList").empty();
 	                	 var result = "";
 	                	
@@ -231,8 +196,8 @@ function candidateCertificateList(candidateId){
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
 	                      
-	                     for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i];  
+	                     for (var i = 0; i < json.data.length; i++) { 
+	                    	 var opt = json.data[i];  
 	                    	 var score = "";
 	                    	 var scoreType ="";
 	                    	 var description ="";
@@ -327,6 +292,10 @@ function certificationPagination(){
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 7
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -384,15 +353,21 @@ function addCertification(candidateId) {
 		result  = result + '                   </div>';
 		result  = result + '                 </div>';
 		result  = result + '                 <div class="clearfix mb10">';
-		result  = result + '                   <div class="col-md-6 positionRelative">';
+		result  = result + '                   <div class="col-md-6">';
+		result  = result + '                   <div>';
 		result  = result + '                     <input type="text" class="form-control input-sm"  value="" name ="validFrom" placeholder="Valid From" ';
 		result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDate" readonly>';
 		result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+		result  = result + '					<div class="clearDate" onClick="clearProfCertFromtDate();"></div>';
 		result  = result + '                   </div>';
-		result  = result + '                   <div class="col-md-6 positionRelative">';
+		result  = result + '                   </div>';
+		result  = result + '                   <div class="col-md-6">';
+		result  = result + '                   <div>';
 		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="validTo" placeholder="Valid To" ';
 		result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDate" readonly>';
 		result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+		result  = result + '					<div class="clearDate" onClick="clearProfCertEndDate();"></div>';
+		result  = result + '                   </div>';
 		result  = result + '                   </div>';
 		result  = result + '                 </div>';
 		result  = result + '                 <div class="clearfix mr">';
@@ -421,16 +396,8 @@ function addCertification(candidateId) {
 		 
 
 		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatCerAdd = '';
-		  if(locationDate.match("yyyy-MM-dd")){
-			  finalDateFormatCerAdd = 'yy-mm-dd';
-		  }if(locationDate.match("dd-MM-yyyy")){
-			  finalDateFormatCerAdd = 'dd-mm-yy'; 
-		  }if(locationDate.match("MM-dd-yyyy")){
-			  finalDateFormatCerAdd = 'mm-dd-yy'; 
-		  }if(locationDate.match("yyyy-dd-MM")){
-			  finalDateFormatCerAdd = 'yy-dd-mm'; 
-		  }
+		  var finalDateFormatCerAdd = getJSDateFormat(locationDate);
+		  
 		  $('#StartDate').datepicker({
 		      dateFormat: finalDateFormatCerAdd,
 		      changeMonth: true,
@@ -538,29 +505,43 @@ function addCertification(candidateId) {
 								result  = result + '                   <div class="col-md-6 positionRelative">';
 								if(json.candidatevalidFromDateToString !=null && json.candidatevalidFromDateToString!='undefined'&& json.candidatevalidFromDateToString !=''){
 									
+									result  = result + '                   <div>';
 									result  = result + '                     <input type="text" class="form-control input-sm"  value="'+ json.candidatevalidFromDateToString+ '" name ="validFrom" placeholder="Valid From" ';
 									result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDateEdit" readonly>';
 									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+									result  = result + '					<div class="clearDate" onClick="editProfCandCertStartDate();"></div>';
+									result  = result + '                   </div>';
+
 								}else{
-									
+									result  = result + '                   <div>';
 									result  = result + '                     <input type="text" class="form-control input-sm"  value="" name ="validFrom" placeholder="Valid From" ';
 									result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDateEdit" readonly>';
 									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
-									
+									result  = result + '					<div class="clearDate" onClick="editProfCandCertStartDate();"></div>';
+									result  = result + '                   </div>';
+
 								}
 								
 								result  = result + '                   </div>';
 								result  = result + '                   <div class="col-md-6 positionRelative">';
 								if(json.candidatevalidToDateToString !=null && json.candidatevalidToDateToString!='undefined'&& json.candidatevalidToDateToString !=''){
 									
+									result  = result + '                   <div>';
 									result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.candidatevalidToDateToString+ '" name="validTo" placeholder="Valid To" ';
 									result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDateEdit" readonly>';
 									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+									result  = result + '					<div class="clearDate" onClick="editProfCandCertEndDate();"></div>';
+									result  = result + '                   </div>';
+
 								}else{
 									
+									result  = result + '                   <div>';
 									result  = result + '                     <input type="text" class="form-control input-sm" value = "" name="validTo" placeholder="Valid To" ';
 									result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDateEdit" readonly>';
 									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+									result  = result + '					<div class="clearDate" onClick="editProfCandCertEndDate();"></div>';
+									result  = result + '                   </div>';
+
 								}
 								
 								
@@ -586,79 +567,19 @@ function addCertification(candidateId) {
 									 e.stopPropagation();
 								 });
 					 
-								 
-								 
-								/*  $('html').click(function(){
-									$(".edit-details").removeClass("edit-details-active");
-								   });	
-								 */
-								
-								/*  $(".addUser-org").click(function(){
-									 $(".edit-details").toggleClass("edit-details-active");
-								 });  */
-								/* $(".edit-details").toggleClass("edit-details-active");
-								 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
-									 e.stopPropagation();
-								 }); */
-							 /* $('html').click(function(){
-								$(".edit-details").removeClass("edit-details-active");
-							   });	 */
-
 							    var proCertificateStartDate = $("#StartDateEdit").val();
 								var proCertificateEndDate = $("#EndDateEdit").val(); 
 
 								 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-								 var proCertificateStartDateSplit = proCertificateStartDate.split("-");
-								 var proCertificateEndDateSplit = proCertificateEndDate.split("-");
-								 
-								 var finalDateFormatEduEditOneSave = '';
-								  var proCertificateStartDateEdit = '';
-								  var proCertificateEndDateEdit = '';
-								  
-								  if(locationDate.match("yyyy-MM-dd")){
-									  finalDateFormatEduEditOneSave = 'yy-mm-dd';
-									  proCertificateStartDateEdit = new Date(proCertificateStartDateSplit[0], parseInt(proCertificateStartDateSplit[1])-parseInt(1), parseInt(proCertificateStartDateSplit[2])+parseInt(1));
-								  }if(locationDate.match("dd-MM-yyyy")){
-									  finalDateFormatEduEditOneSave = 'dd-mm-yy'; 
-									  proCertificateStartDateEdit = new Date(proCertificateStartDateSplit[2], parseInt(proCertificateStartDateSplit[1])-parseInt(1), parseInt(proCertificateStartDateSplit[0])+parseInt(1));
-								  }if(locationDate.match("MM-dd-yyyy")){
-									  finalDateFormatEduEditOneSave = 'mm-dd-yy'; 
-									  proCertificateStartDateEdit = new Date(proCertificateStartDateSplit[2], parseInt(proCertificateStartDateSplit[0])-parseInt(1), parseInt(proCertificateStartDateSplit[1])+parseInt(1));
-								  }if(locationDate.match("yyyy-dd-MM")){
-									  finalDateFormatEduEditOneSave = 'yy-dd-mm';
-									  proCertificateStartDateEdit = new Date(proCertificateStartDateSplit[0], parseInt(proCertificateStartDateSplit[2])-parseInt(1), parseInt(proCertificateStartDateSplit[1])+parseInt(1));
-								  }
-								  
-								  if(locationDate.match("yyyy-MM-dd")){
-									  finalDateFormatEduEditOneSave = 'yy-mm-dd';
-									  proCertificateEndDateEdit = new Date(proCertificateEndDateSplit[0], parseInt(proCertificateEndDateSplit[1])-parseInt(1), parseInt(proCertificateEndDateSplit[2])-parseInt(1));
-								  }if(locationDate.match("dd-MM-yyyy")){
-									  finalDateFormatEduEditOneSave = 'dd-mm-yy'; 
-									  proCertificateEndDateEdit = new Date(proCertificateEndDateSplit[2], parseInt(proCertificateEndDateSplit[1])-parseInt(1), parseInt(proCertificateEndDateSplit[0])-parseInt(1));
-								  }if(locationDate.match("MM-dd-yyyy")){
-									  finalDateFormatEduEditOneSave = 'mm-dd-yy'; 
-									  proCertificateEndDateEdit = new Date(proCertificateEndDateSplit[2], parseInt(proCertificateEndDateSplit[0])-parseInt(1), parseInt(proCertificateEndDateSplit[1])-parseInt(1));
-								  }if(locationDate.match("yyyy-dd-MM")){
-									  finalDateFormatEduEditOneSave = 'yy-dd-mm';
-									  proCertificateEndDateEdit = new Date(proCertificateEndDateSplit[0], parseInt(proCertificateEndDateSplit[2])-parseInt(1), parseInt(proCertificateEndDateSplit[1])-parseInt(1));
-								  }
-								  var finalDateFormatCerEdit = '';
-								  if(locationDate.match("yyyy-MM-dd")){
-									  finalDateFormatCerEdit = 'yy-mm-dd';
-								  }if(locationDate.match("dd-MM-yyyy")){
-									  finalDateFormatCerEdit = 'dd-mm-yy'; 
-								  }if(locationDate.match("MM-dd-yyyy")){
-									  finalDateFormatCerEdit = 'mm-dd-yy'; 
-								  }if(locationDate.match("yyyy-dd-MM")){
-									  finalDateFormatCerEdit = 'yy-dd-mm'; 
-								  }
-								 
-								/* var datepickerStartDate = toDate("#StartDateEdit");
-								datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
 								
-								var datepickerEndDate = toDate("#EndDateEdit");
-								datepickerEndDate.setDate(datepickerEndDate.getDate() - 1); */
-							   
+								 // written common method in slead-common.js for date formats start
+								  var proCertificateStartDateEdit = getJSDate(proCertificateStartDate,locationDate);
+								  var proCertificateEndDateEdit = getJSDate(proCertificateEndDate,locationDate);
+								  
+								  
+								  var finalDateFormatCerEdit = getJSDateFormat(locationDate);
+								  // end
+								 
 							  $('#StartDateEdit').datepicker({
 							      dateFormat: finalDateFormatCerEdit,
 							      changeMonth: true,
@@ -729,25 +650,14 @@ function addCertification(candidateId) {
 			 
 			 $.post(sourceleadUrl+"/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
 				 closeCertificatePopup();
+				 $("#selector5").removeAttr("style");
+     			 $("#selector5").css({ display: "block" });
+     			 $("#cerMsgDiv").html("Certification details updated");
 				 candidateCertificateList(candidateId);
-            		//cerMsgFadein();
+            		cerMsgFadein();
             		qwikCertificates(candidateId);
 			 });
 
-			/* $.ajax({
-						type : "POST",
-						url : sourceleadUrl
-								+ "/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&candidateId=" + candidateId	+ "&candidateCertificationId"+ candidateCertificationId,
-						success : function(data) {
-							closeCertificatePopup();
-	            			$("#selector5").removeAttr("style");
-	            			$("#selector5").css({ display: "block" });
-	            			$("#cerMsgDiv").html("Certification details updated");
-							candidateCertificateList(candidateId);
-							cerMsgFadein();
-							qwikCertificates(candidateId);
-						},
-					}); */
 			return true;
 		} else {
 			return false;
@@ -854,7 +764,11 @@ function  deleteSelectedCertification(candidateCertificationId,candidateId){
 --%>
 <script type="text/javascript">
 function selectScoreType(){
-	
+	var str = document.getElementById("candidateScore").value;
+	if (str == 'a' || str == 'b' || str == 'c' || str == 'd' || str == 'e') {
+		var strToUpper = str.toUpperCase();
+		$('#candidateScore').val(strToUpper);
+	}
 	 var selectedText = document.getElementById("scoreType").value;
 	 var canScore = document.getElementById("candidateScore").value;
 	 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
@@ -957,4 +871,20 @@ function toDate(selector) {
 }
 </script>
 
-<!-- script for dateformat in datepicker End -->             
+<!-- script for dateformat in datepicker End -->     
+<script>
+function clearProfCertFromtDate(){
+	$("#StartDate").val("");
+	};
+function clearProfCertEndDate(){
+	$("#EndDate").val("");
+	};
+</script>  
+<script>
+function editProfCandCertStartDate(){
+	$("#StartDateEdit").val("");
+	};
+ function editProfCandCertEndDate(){
+	$("#EndDateEdit").val("");
+	}; 
+</script>      

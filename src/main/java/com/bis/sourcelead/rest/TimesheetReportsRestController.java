@@ -24,6 +24,7 @@ import com.bis.sourcelead.service.TimesheetReportService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController 
+@RequestMapping("/app")
 public class TimesheetReportsRestController {
 
 	@Value("${sourceleadUrl}")
@@ -33,7 +34,7 @@ public class TimesheetReportsRestController {
  	private TimesheetReportService timesheetReportService;
 	
 	
-	@RequestMapping(value = "/timesheetReportsDiv", method = RequestMethod.POST )   
+	//@RequestMapping(value = "/timesheetReportsDiv", method = RequestMethod.POST )   
 	public @ResponseBody String newTimesheet(HttpServletRequest request,
 		   @RequestParam(value="frequencyYear", required=false) String frequencyYear,
 		   @RequestParam(value="frequencyMonth", required=false) String frequencyMonth) throws Exception {
@@ -43,42 +44,5 @@ public class TimesheetReportsRestController {
 		return prepareTimeSheetDiv;
 	}
 	
-	@RequestMapping(value = "/timeSheetReportExportList")   
-	public @ResponseBody void timeSheetReportExportList(HttpServletRequest request,HttpServletResponse response,
-		   @RequestParam(value="frequencyYear", required=false) String frequencyYear,
-		   @RequestParam(value="frequencyMonth", required=false) String frequencyMonth,
-		   @RequestParam(value="exportType", required=false) String exportType) throws Exception {
-		   File timesheetReportFile = null;
-		   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		   
-		   if(exportType.equalsIgnoreCase("pdf")){
-		    timesheetReportFile = timesheetReportService.prepareTimeSheetExport(frequencyYear,frequencyMonth,user,orgLocations);
-		   }else{
-			timesheetReportFile = timesheetReportService.prepareTimeSheetExportExcel(frequencyYear,frequencyMonth,user,orgLocations);   
-		   }
-		   String mimeType = URLConnection.guessContentTypeFromName(timesheetReportFile.getName());
-			if (mimeType == null) {
-				mimeType = "application/octet-stream";
-			}
-			response.setContentType(mimeType);
-			StringBuilder fileName = new StringBuilder();
-			StringBuilder timesheetfileName = new StringBuilder();
-			int pos = timesheetReportFile.getName().lastIndexOf("-");
-			String result = timesheetReportFile.getName().substring(fileName.length(), pos);
-			int index = timesheetReportFile.getName().lastIndexOf(".");
-			String fileType = timesheetReportFile.getName().substring(index, timesheetReportFile.getName().length());
-			String tsFileName = timesheetfileName.append(result).append(fileType).toString();
-			
-			response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(tsFileName).append("\"").toString());
-			response.setContentLength((int) timesheetReportFile.length());
-			InputStream inputStream = new BufferedInputStream(new FileInputStream(timesheetReportFile));
-			FileCopyUtils.copy(inputStream, response.getOutputStream());
-			inputStream.close();
-			response.getOutputStream().close();
-			response.getOutputStream().flush();
-		   
-		  
-	}
 	
 }

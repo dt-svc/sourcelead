@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Writer;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +14,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -29,6 +33,8 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,35 +45,59 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ProjectTasksDao;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.SourceleadSectionDTO;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.ContractsTemplate;
+import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.MasterCandidate;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.entity.VendorOnboardingTemplate;
+import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
+import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.ContractsTemplateService;
+import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.service.TimeSheetDayEntriesService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.VendorOnboardTemplateDocumentsService;
+import com.bis.sourcelead.service.VendorOnboardTemplateService;
+import com.ibm.icu.text.DecimalFormat;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -94,6 +124,9 @@ public class CommonUtil {
 	
 	@Autowired
 	private TimesheetSubmissionsService timesheetSubmissionsService;
+	
+	@Autowired
+	private TimeSheetDayEntriesService timeSheetDayEntriesService;
 	
 	@Autowired
 	private SubmissionApproverHierarchyService submissionApproverHierarchyService;
@@ -124,6 +157,34 @@ public class CommonUtil {
 	@Autowired
     private SourceleadELKBaseIndexer<ClientVendorIndex> sourceleadELKBaseIndexer;
 	
+	@Autowired
+	VendorOnboardTemplateService vendorOnboardTemplateService;
+	
+	@Autowired
+	VendorOnboardTemplateDocumentsService vendorOnboardTemplateDocumentsService;
+	
+	@Autowired
+	CandidateService candidateService;
+	
+	@Autowired
+	MasterCandidateService masterCandidateService;
+	
+	@Autowired
+	ContractsTemplateService contractsTemplateService;
+
+	@Autowired
+	SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired
+	ProjectClientService projectClientService;
+	
+	@Autowired
+	private SourceleadFormSectionsService sourceleadFormSectionsService;
+	
+	@Autowired
+	private ProjectTasksDao tasksDao;
+	
+	
 	
 	/**
 	 * This method is used to store pre-defined sourcelead tasks for the particular project
@@ -147,6 +208,20 @@ public class CommonUtil {
 			SimpleDateFormat df = new SimpleDateFormat(orgDateFormat);
 			dateStr = df.format(date);
 		}
+		return dateStr;
+	}
+	
+	/**
+	 * converting Date to String
+	 * 
+	 * @param date
+	 * @return
+	 */
+	public String dateStrFromDate(Date date)
+	{
+		String dateStr = null;
+		SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+		dateStr = df.format(date);
 		return dateStr;
 	}
 	
@@ -181,6 +256,14 @@ public class CommonUtil {
 			return date;
 	}
 	
+	public Date orgLocationCommonDate(Date date, OrgLocations loginOrgLocation){
+		DateTime dt = new DateTime(date);
+		DateTimeZone dtZone = DateTimeZone.forID(loginOrgLocation.getTimezone().getTimeZoneId());
+		DateTime dtus = dt.withZone(dtZone); 
+		Date dateWithTimezone = dtus.toLocalDateTime().toDate();
+		return dateWithTimezone;
+	}
+	
 	
 	public  Date  dateFromElk(String dateString){
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd"); 
@@ -193,21 +276,94 @@ public class CommonUtil {
 		return date;
 	}
 	
+	/**
+	 *  returns current date based on orglocation date format
+	 * @param orgDateFormat
+	 * @param dateStr
+	 * @return Date
+	 * @throws ParseException 
+	 */
+	public Date getOrgLocationCurrentDate(String orgDateFormat, Date date) throws ParseException{
+		DateFormat dateFormat = new SimpleDateFormat(orgDateFormat);
+			return dateFormat.parse(dateFormat.format(date));
+	}
+	
+	
 	
 	public void storeSourceleadTasks(User user,Projects projects) throws Exception{
 		Collection<ProjectTasks> tasksList = projectTasksService.getAllSourceleadTasks();
 		if(tasksList != null && !tasksList.isEmpty()){
+			Integer generatedIdcount = 1;
 			for(ProjectTasks task :tasksList){
 				task.setProjectId(projects);
+				if (!Constants.HOLIDAY.equalsIgnoreCase(task.getTaskName()) && !Constants.COMPENSATORY_LEAVE.equalsIgnoreCase(task.getTaskName()) && !Constants.WORK_FROM_HOME.equalsIgnoreCase(task.getTaskName())) {
+					task.setBillableType(Constants.TASK_NON_BILLABLE);
+				} else {
+					task.setBillableType(Constants.TASK_BILLABLE);
+				}
+				LookUpData taskTypeLookUpData = new LookUpData();
+				taskTypeLookUpData.setId(1060L);
+				task.setTaskType(taskTypeLookUpData);
+				LookUpData taskStatusLookUpData = new LookUpData();
+				taskStatusLookUpData.setId(1069L);
+				task.setTaskStatus(taskStatusLookUpData);
+				task.setProjectTasksUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 				task.setCreatedBy(user.getCreatedBy());
+				task.setStatus(String.valueOf(Constants.CANDIDATE_ACTIVE));
+				task.setGeneratedId(getProjectTaskGenaratedId(projects,generatedIdcount));
 				task.setCreatedDate(new Date());
 				task.setUpdatedDate(new Date());
 				task.setUpdatedBy(user.getCreatedBy());
+				generatedIdcount++;
 			}
 		}
 		projectTasksService.saveAll(tasksList);
 	}
 	
+	/**
+	 * This method is used to Get the Project task generatedIds
+	 * @author Laxman
+	 * @param projects
+	 * @param generatedIdcount2 
+	 * @return
+	 * @throws Exception
+	 */
+	
+	public String getProjectTaskGenaratedId(Projects projects, Integer number) throws Exception {
+		StringBuilder sbuilder = new StringBuilder();
+		sbuilder.append(projects.getProjectShortCode());
+		final DecimalFormat decimalFormat = new DecimalFormat("0");
+		String convetredRequirementsId = decimalFormat.format(number);
+		return sbuilder.append(convetredRequirementsId).toString();
+	}
+	/**
+	 * This method is used to Get the Approver User of Time or Expense Reopen Requests
+	 * @author: Naresh Bolisetty
+	 * 
+	 */
+	public Boolean isSuperAdminForProjectMemberToReopenTimeOrExpenseses(Long projectMemberId,User loginUser,OrgLocations loginLocation) throws Exception{
+		ProjectMembers clientProjectMember = projectMembersService.getClientProjectMemberByProjectMemberId(projectMemberId);
+	    ProjectApproverHierarchy pah =  null;
+	    Boolean isSuperUser = false;
+	    if(null != clientProjectMember && null != clientProjectMember.getProjects() && null != clientProjectMember.getProjectClientsId())
+	    {
+	    	UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(loginUser.getId(), loginLocation.getId());
+	    	pah =  projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId());
+		    if(     
+		    		//If the Login User As Location Admin Of Client
+		    		(null != clientProjectMember.getProjectClientsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser()
+		    		  && clientProjectMember.getProjectClientsId().getOrgLocationsId().getId().longValue() == loginLocation.getId().longValue() && userRole != null && StringUtils.isNotEmpty(userRole.getUserType()) && userRole.getUserType().equalsIgnoreCase("Admin"))
+		    		||
+		    		//If the Login User As Top-Level(Level2) Approver Of Client
+		    		(null != pah && null != pah.getApproverUserId() && null != pah.getApproverUserId().getId()
+		    		  && pah.getApproverUserId().getId().longValue() == loginUser.getId().longValue())
+		    		
+		      ){
+		    	isSuperUser = true;
+		     }
+	    }
+	    return isSuperUser;
+	}
 	/**
 	 * This method is used to in-activate timesheet submissions based on projectmemberId and terminationdate
 	 * @author: Naresh Bolisetty
@@ -219,12 +375,27 @@ public class CommonUtil {
 			timesheetSubmissionsList = timesheetSubmissionsService.getAllTimesheetSubmissionsGreaterThanProjectMemberTerminatedDateAndMemberId(memberId,terminationDate);
 			if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
 				for(TimesheetSubmissions ts :timesheetSubmissionsList){
-					ts.setStatus(Constants.MEMBER_IN_ACTIVE);
+					List<TimeSheetDayEntries> tdeList = null;
+					if(!CalendarUtil.isGivenDateBetweenDateRange(ts.getStartDate(), ts.getEndDate(), terminationDate)) {
+						ts.setStatus(Constants.MEMBER_IN_ACTIVE);
+					    tdeList = timeSheetDayEntriesService.getAllTimeSheetDayEntriesBySubmissionId(ts.getId());
+					}else {
+					    tdeList = timeSheetDayEntriesService.getAllTimeSheetDayEntriesBySubmissionIdWithStartDateAndEndDate(ts.getId(), CalendarUtil.getNextDate(terminationDate), ts.getEndDate());
+					}
+					if(tdeList != null && !tdeList.isEmpty()) {
+						for(TimeSheetDayEntries tde :tdeList) {
+							tde.setStatus(Integer.parseInt(Constants.MEMBER_IN_ACTIVE));
+							tde.setTotalHours("00:00");
+							tde.setBillableHours("00:00");
+							tde.setNonBillableHours("00:00");
+							timeSheetDayEntriesService.saveTimesheetDayEntries(tde);
+						}
+					}
+					
 				}
 			}
 			timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
+		}catch (Exception e) {
 			e.printStackTrace();
 		}
 			
@@ -453,7 +624,7 @@ public class CommonUtil {
 										Calendar terminateDateCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 										terminateDateCal.setLenient(false);
 										terminateDateCal.setTime(pmh.getProjectTerminationDate());
-										Calendar terminatedDateMonday = CalendarUtil.getPreviousWeekDayByCalendar(terminateDateCal, "MON");
+										Calendar terminatedDateMonday = CalendarUtil.getPreviousWeekDayByCalendar(terminateDateCal, "MON",projectMember.getProjects().getOrgLocationsId().getDateFormat());
 										terminatedDate = terminatedDateMonday.getTime();
 									 
 									  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
@@ -861,6 +1032,21 @@ public class CommonUtil {
 		    return outputFormatter.print(dateTime);
 		}
 		
+		/**
+		 * convertTimeZones is used to convert to UTC timezone 
+		 * @author Laxman
+		 * @param toTimeZoneString
+		 * @param fromDateTime
+		 * @return
+		 */
+		public static String convertTimeUTC(final String toTimeZoneString, final String fromDateTime) {
+		    final DateTimeZone toTimeZone = DateTimeZone.forID(toTimeZoneString);
+		    final DateTime dateTime = new DateTime(fromDateTime);
+
+		    final DateTimeFormatter outputFormatter  = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").withZone(toTimeZone);
+		    return outputFormatter.print(dateTime);
+		}
+		
 		
 		public static Float getCombinedHours(Float hours1,Float hours2){
 			float cthHours = hours1;
@@ -940,6 +1126,27 @@ public class CommonUtil {
 			requirementDTO.setProjectDurationYears(requirement.getProjectDurationYears());
 			requirementDTO.setIsreceivingApplicants(requirement.getIsreceivingApplicants());
 			requirementDTO.setGeneratedId(requirement.getGeneratedId());
+			if(requirement.getProjectClientID() != null){
+			requirementDTO.setProjectClientID(requirement.getProjectClientID().toString());
+			}
+			if(requirement.getMedicalClearence() !=null){
+			requirementDTO.setMedicalClearence(requirement.getMedicalClearence());
+		}
+			if(requirement.getSecurityClearance() !=null){
+			requirementDTO.setSecurityClearance(requirement.getSecurityClearance());
+		}
+			if(requirement.getOverTime() !=null){
+			requirementDTO.setOverTime(requirement.getOverTime());
+		}
+			if(requirement.getBackgroundCheck() !=null){
+			requirementDTO.setBackgroundCheck(requirement.getBackgroundCheck());
+			}
+			if(requirement.getGender() !=null){
+			requirementDTO.setGender(requirement.getGender());
+			}
+			if(requirement.getExperienceLevel() !=null){
+			requirementDTO.setExperienceLevel(requirement.getExperienceLevel().toString());
+			}
 			if (null != requirement.getDescription() && !"".equals(requirement.getDescription())) {
 				requirementDTO.setDescription(requirement.getDescription());
 			}
@@ -1150,4 +1357,452 @@ public class CommonUtil {
 			}
 			return bytesArray;
 		}
+		/**
+		 * Get Number of days Between two given dates
+		 * @param fromDate
+		 * @param toDate
+		 * @return
+		 * @throws ParseException
+		 */
+		public int getNumberOfDaysBetweenTwoDates(Date fromDate, Date toDate) throws ParseException {
+				long diff = toDate.getTime() - fromDate.getTime();
+				int  nuberOfDays = (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+				return nuberOfDays+1;
+			}
+		
+		
+		public  Date[] getStartDateEndDateByYear(int year){
+			Date[] dates = new Date[2];
+		    Calendar calendarStart=Calendar.getInstance();
+		    calendarStart.set(Calendar.YEAR,year);
+		    calendarStart.set(Calendar.MONTH,0);
+		    calendarStart.set(Calendar.DAY_OF_MONTH,1);
+		    // returning the first date
+		    dates[0] = calendarStart.getTime();
+		    Calendar calendarEnd=Calendar.getInstance();
+		    calendarEnd.set(Calendar.YEAR,year);
+		    calendarEnd.set(Calendar.MONTH,11);
+		    calendarEnd.set(Calendar.DAY_OF_MONTH,31);
+		    // returning the last date
+		    dates[1] = calendarEnd.getTime();
+			return dates;
+		}
+		
+		public  Date[] getMonthStartDateEndDateByMonth(int month) {
+			Date[] dates = new Date[2];
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.MONTH, month);
+			cal.set(Calendar.DATE, 1);
+			cal.set(Calendar.DATE, cal.get(Calendar.DAY_OF_MONTH));
+			dates[0] = cal.getTime();
+			cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+			dates[1] = cal.getTime();
+			return dates;
+	}
+		public  Date[] getMonthStartDateEndDateByYearAndMonth(int year,int month) {
+			Calendar calendar = Calendar.getInstance();
+			Date[] dates = new Date[2];
+//			int yearpart = 2017;
+//			int monthPart = 9;
+			int dateDay = 1;
+			calendar.set(year, month, dateDay);
+			int numOfDaysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+			dates[0] = calendar.getTime();
+			calendar.add(Calendar.DAY_OF_MONTH, numOfDaysInMonth-1);
+			dates[1] = calendar.getTime();
+			return dates;
+	}
+		
+		
+		
+		public Candidate getVendorCandidateForCandidateCreation(CandidateDTO candidateDTO,OrgRelations orgRelation,OrgLocations orgLocations,User loginUser) throws Exception{
+			  Candidate candidate = null;
+			  OrgLocations vendorOrgLocation = null;
+			  if(orgRelation.getInitiatorType().equalsIgnoreCase("Client") && orgRelation.getLocationId().getId().equals(orgLocations.getId())){
+				  vendorOrgLocation = orgRelation.getResponderLocationId();
+			  }else if(orgRelation.getInitiatorType().equalsIgnoreCase("Vendor") && orgRelation.getResponderLocationId().getId().equals(orgLocations.getId())){
+				  vendorOrgLocation = orgRelation.getLocationId();
+			  }
+			  
+			  if(StringUtils.isNotBlank(candidateDTO.getEmail())){
+				  candidate = candidateService.findByCandidateEmail(candidateDTO.getEmail().trim(),vendorOrgLocation.getId());
+			  }else if(StringUtils.isNotBlank(candidateDTO.getEmailId())){
+				  candidate = candidateService.findByCandidateEmail(candidateDTO.getEmailId().trim(),vendorOrgLocation.getId());
+			  }
+			  
+			  if(candidate == null){
+				  candidate = new Candidate();
+				  
+				  MasterCandidate masterCandidate = null;
+					masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
+					if(null == masterCandidate){
+						masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDTO, loginUser);
+					}
+					candidate.setMasterCandidateId(masterCandidate);
+				  
+					candidate.setOrgLocationId(vendorOrgLocation);
+					candidate.setCandidateType("Candidate");
+					candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+					
+					if(StringUtils.isNotBlank(candidateDTO.getFirstName())){
+						candidate.setFirstName(candidateDTO.getFirstName());
+					}
+				
+					if(StringUtils.isNotBlank(candidateDTO.getLastName())){
+						candidate.setLastName(candidateDTO.getLastName());
+					}
+					
+					if(StringUtils.isNotBlank(candidateDTO.getEmail())){
+						candidate.setEmail(candidateDTO.getEmail());
+					}
+					
+					if(StringUtils.isNotBlank(candidateDTO.getCountry())){
+						candidate.setCountry(candidateDTO.getCountry());
+					}
+				
+				candidate.setIsAssociate(Constants.NO);
+				
+				candidate.setStatus(1);
+	  			Candidate savedCandidate = candidateService.saveOrUpdateCandidate(candidate);
+	  			candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
+			  }
+			  
+			  return candidate;
+		  }
+		
+public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocations) throws Exception{
+			
+			VendorOnboardingTemplate onboardTemplate = vendorOnboardTemplateService.getVendorOnBoardingTemplateById(1L);
+			if(onboardTemplate != null) {
+				 VendorOnboardingTemplate vendorOnboardTemplate = new VendorOnboardingTemplate();
+				 vendorOnboardTemplate.setTemplateName(orgLocations.getOrgLocationName()+" Default Vendor Onboard Template");
+			 	 vendorOnboardTemplate.setOrgLocationId(orgLocations);
+				 vendorOnboardTemplate.setTemplateStatus("Finished");
+				 vendorOnboardTemplate.setIsDefaultTemplate(Constants.YES);
+				 vendorOnboardTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+				 vendorOnboardTemplate.setTemplateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			 	 vendorOnboardTemplate.setCreatedBy(user);
+			 	 vendorOnboardTemplate.setCreatedDate(new Date());
+			 	 vendorOnboardTemplate.setUpdatedBy(user);
+			 	 vendorOnboardTemplate.setUpdatedDate(new Date());
+			 	 Set<VendorOnboardingTemplateDocuments> templateDocumentsList = storeOnboardDocuments(user,orgLocations,vendorOnboardTemplate,onboardTemplate);
+			 	 vendorOnboardTemplate.setOnboardTemplateDocuments(templateDocumentsList);
+			 	 vendorOnboardTemplateService.saveVendorOnBoardingTemplate(vendorOnboardTemplate);
+			 	 
+			}
+			
+		}
+		
+		
+		private Set<VendorOnboardingTemplateDocuments> storeOnboardDocuments(User user,OrgLocations orgLocations,VendorOnboardingTemplate vendorOnboardTemplate,VendorOnboardingTemplate onboardTemplate) throws  Exception {
+			
+			 HashSet<VendorOnboardingTemplateDocuments> docuemntsList = new HashSet<VendorOnboardingTemplateDocuments>(); 
+			 
+			 List<VendorOnboardingTemplateDocuments> onboardDocumentsList = vendorOnboardTemplateDocumentsService.getVendorOnBoardTemplateDocumentsByTemplateId(onboardTemplate.getId());
+			 if(onboardDocumentsList != null && onboardDocumentsList.size() > 0) {
+				
+				 
+				 for(VendorOnboardingTemplateDocuments onboardDoc : onboardDocumentsList) {
+					 VendorOnboardingTemplateDocuments documents = new VendorOnboardingTemplateDocuments();
+					    documents.setVendorOnboardingTemplateId(vendorOnboardTemplate);
+					    documents.setDocumentType("Documents");
+					    documents.setDocumentName(onboardDoc.getDocumentName());
+					    documents.setIsRequired(onboardDoc.getIsRequired());
+		                documents.setStatus(Constants.CANDIDATE_ACTIVE);
+		                documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		                documents.setCreatedDate(CommonUtil.currentDate());
+		                documents.setCreatedBy(user);
+		                documents.setUpdatedDate(CommonUtil.currentDate());
+		                documents.setUpdatedBy(user);
+		                docuemntsList.add(documents);
+				 }
+			 }
+			 return docuemntsList;
+		}
+		
+		
+		public Candidate getVendorCandidate(JSONObject jsonObj,OrgRelations orgRelation,OrgLocations orgLocations,User loginUser) throws Exception{
+			  Candidate candidate = null;
+			  OrgLocations vendorOrgLocation = null;
+			  if(orgRelation.getInitiatorType().equalsIgnoreCase("Client") && orgRelation.getLocationId().getId().equals(orgLocations.getId())){
+				  vendorOrgLocation = orgRelation.getResponderLocationId();
+			  }else if(orgRelation.getInitiatorType().equalsIgnoreCase("Vendor") && orgRelation.getResponderLocationId().getId().equals(orgLocations.getId())){
+				  vendorOrgLocation = orgRelation.getLocationId();
+			  }
+			  
+			  if(jsonObj.has("email") && jsonObj.getString("email") != null){
+				  candidate = candidateService.findByCandidateEmail(jsonObj.getString("email").trim(),vendorOrgLocation.getId());
+			  }else if(jsonObj.has("EmailId") && jsonObj.getString("EmailId") != null){
+				  candidate = candidateService.findByCandidateEmail(jsonObj.getString("EmailId").trim(),vendorOrgLocation.getId());
+			  }
+			  
+			  if(candidate == null){
+				  candidate = new Candidate();
+				  
+				  MasterCandidate masterCandidate = null;
+					masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+					if(null == masterCandidate){
+						masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, loginUser,orgLocations);
+					}
+					candidate.setMasterCandidateId(masterCandidate);
+				  
+					candidate.setOrgLocationId(vendorOrgLocation);
+					candidate.setCandidateType("Candidate");
+					candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+					
+					if(jsonObj.has("firstName") && jsonObj.getString("firstName") !=null){
+						candidate.setFirstName(jsonObj.getString("firstName"));
+					}else if(jsonObj.has("FirstName") && jsonObj.getString("FirstName") !=null){
+						candidate.setFirstName(jsonObj.getString("FirstName"));
+					}
+				
+					if(jsonObj.has("lastName") && jsonObj.getString("lastName") !=null){
+						candidate.setLastName(jsonObj.getString("lastName"));
+					}else if(jsonObj.has("LastName") && jsonObj.getString("LastName") !=null){
+						candidate.setLastName(jsonObj.getString("LastName"));
+					}
+					
+					if(jsonObj.has("email") && jsonObj.getString("email") !=null){
+						candidate.setEmail(jsonObj.getString("email"));
+					}else if(jsonObj.has("EmailId") && jsonObj.getString("EmailId") != null && !jsonObj.getString("EmailId").isEmpty()){
+						candidate.setEmail(jsonObj.getString("EmailId"));
+					}
+					
+					if(jsonObj.has("location") && jsonObj.getString("location") != null && !jsonObj.getString("location").isEmpty()){
+			        	candidate.setLocation(jsonObj.getString("location"));
+					}
+						
+			        if(jsonObj.has("country") && jsonObj.getString("country") != null && !jsonObj.getString("country").isEmpty()){
+			        	candidate.setCountry(jsonObj.getString("country"));
+					}
+					 
+					if(jsonObj.has("state") && jsonObj.getString("state") != null && !jsonObj.getString("state").isEmpty()){
+						 candidate.setState(jsonObj.getString("state"));
+					}
+					 
+					if(jsonObj.has("city") && jsonObj.getString("city") != null && !jsonObj.getString("city").isEmpty()){
+						 candidate.setCity(jsonObj.getString("city"));
+					}
+					
+					 if(jsonObj.has("zipcode") && jsonObj.getString("zipcode") != null && !jsonObj.getString("zipcode").isEmpty()){
+				        	candidate.setZipCode(jsonObj.getString("zipcode"));
+					}
+					 
+					 if(jsonObj.has("PhoneNumber") && jsonObj.getString("PhoneNumber") != null && !jsonObj.getString("PhoneNumber").isEmpty()){
+						 candidate.setMobilePhone(jsonObj.getString("PhoneNumber"));
+					}
+					
+					if(jsonObj.has("AlternateNumber") && jsonObj.getString("AlternateNumber") != null && !jsonObj.getString("AlternateNumber").isEmpty()){
+						 candidate.setAlternateMobilePhone(jsonObj.getString("AlternateNumber"));
+					}
+					
+					
+					if(jsonObj.has("currentCTCRateType") && jsonObj.getString("currentCTCRateType") != null && !jsonObj.getString("currentCTCRateType").isEmpty()){
+						candidate.setCurrentRateCurrency(jsonObj.getString("currentCTCRateType"));
+					}
+					
+					if(jsonObj.has("CurrentCTC") && jsonObj.getString("CurrentCTC") != null && !jsonObj.getString("CurrentCTC").isEmpty()){
+						candidate.setCurrentRate(jsonObj.getString("CurrentCTC"));
+					}
+					
+					if(jsonObj.has("currentCTCRatePer") && jsonObj.getString("currentCTCRatePer") != null && !jsonObj.getString("currentCTCRatePer").isEmpty()){
+						 candidate.setCurrentRateType(jsonObj.getString("currentCTCRatePer"));
+					}
+					
+					if(jsonObj.has("expectedCTCRateType") && jsonObj.getString("expectedCTCRateType") != null && !jsonObj.getString("expectedCTCRateType").isEmpty()){
+						 candidate.setExpectedRateCurrencey(jsonObj.getString("expectedCTCRateType"));
+						 
+					}
+					 
+					if(jsonObj.has("ExpectedCTC") && jsonObj.getString("ExpectedCTC") != null && !jsonObj.getString("ExpectedCTC").isEmpty()){
+						 candidate.setExpectedRate(jsonObj.getString("ExpectedCTC"));
+						 
+					}
+					
+					if(jsonObj.has("expectedCTCRatePer") && jsonObj.getString("expectedCTCRatePer") != null && !jsonObj.getString("expectedCTCRatePer").isEmpty()){
+						 candidate.setRateType(jsonObj.getString("expectedCTCRatePer"));
+					}
+					
+					if(jsonObj.has("NoticePeriod") && jsonObj.getString("NoticePeriod") != null && !jsonObj.getString("NoticePeriod").isEmpty()){
+						 candidate.setNoticePeriod(jsonObj.getString("NoticePeriod"));
+						 
+					}
+					
+					if(jsonObj.has("Designation") && jsonObj.getString("Designation") != null && !jsonObj.getString("Designation").isEmpty()){
+						candidate.setDesignation(jsonObj.getString("Designation"));
+					}
+					 if(jsonObj.has("WorkExperience") && jsonObj.getString("WorkExperience") != null && !jsonObj.getString("WorkExperience").isEmpty()){
+						 candidate.setExperienceYears(jsonObj.getString("WorkExperience"));
+					 }
+					 
+					 if(jsonObj.has("monthExp") && jsonObj.getString("monthExp") != null && !jsonObj.getString("monthExp").isEmpty()){
+						 candidate.setExperienceMonths(jsonObj.getString("monthExp"));
+					 }
+					 
+					 candidate.setDesignationType("Full Time");
+					
+					if(jsonObj.has("primarySkill") && jsonObj.getString("primarySkill") != null && !jsonObj.getString("primarySkill").isEmpty()){
+						 candidate.setPrimarySkill(jsonObj.getString("primarySkill"));
+					}
+					 
+					 if(jsonObj.has("candidateSkills") && jsonObj.getString("candidateSkills") != null && !jsonObj.getString("candidateSkills").isEmpty()){
+						  
+						 String candidateSkills = null;
+							try{
+					    		   JSONArray jsonArray = jsonObj.getJSONArray("candidateSkills");
+					    		   candidateSkills = jsonArray.toString();
+					    	  }
+					    	  catch(JSONException e){
+					    		  candidateSkills= jsonObj.getString("candidateSkills");
+					    	  }
+							candidateSkills = candidateSkills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]","");
+							
+						 
+						 candidate.setSkillsName(candidateSkills);
+						 
+					
+					 }
+				
+				candidate.setIsAssociate(Constants.NO);
+				candidate.setStatus(1);
+	  			candidateService.saveOrUpdateCandidate(candidate);
+	  			candidateService.saveOrUpdateCandidateElkDocument(candidate);
+			  }
+			  
+			  return candidate;
+		  }
+
+		/**
+		 * returns all the dates between two dates as String
+		 * @param startDate
+		 * @param endDate
+		 * @return String
+		 * @throws ParseException
+		 */
+	public String getDaysBetweenDates(Date startDate, Date endDate,String orgFormat) throws ParseException {
+		List<Date> dates = new ArrayList<Date>();
+		List<String> dateStr = new ArrayList<>();
+		DateFormat formatter;
+		formatter = new SimpleDateFormat(orgFormat);
+		long interval = 24 * 1000 * 60 * 60; // 1 hour in millis
+		long endTime = endDate.getTime(); // create your endtime here, possibly using Calendar or Date
+		long curTime = startDate.getTime();
+		while (curTime <= endTime) {
+			dates.add(new Date(curTime));
+			curTime += interval;
+		}
+		for (int i = 0; i < dates.size(); i++) {
+			Date lDate = (Date) dates.get(i);
+			String ds = formatter.format(lDate);
+			dateStr.add(ds);
+		}
+		String datesStrLisr = dateStr.stream().collect(Collectors.joining(","));
+		return datesStrLisr;
+	}
+	
+	public void onboardCreationCandidateGeneratedIdUpdated(Candidate candidate, OrgLocations locations) throws Exception{
+		
+		if(candidate!= null && (candidate.getGeneratedId() == null || candidate.getGeneratedId().isEmpty())){
+			StringBuilder generatedIDBuild = new StringBuilder();
+			candidate.setGeneratedId(generatedIDBuild.append(locations.getGeneratedUserId()).append("CD1").toString());
+			candidateService.saveOrUpdateCandidate(candidate);
+			candidateService.saveOrUpdateCandidateElkDocument(candidate);
+		}
+		
+	}
+	
+	public void saveDefaultContractTemplate(Org org, OrgLocations orgLocations, User user,String template,String templateType) throws Exception {
+		 ContractsTemplate contractsTemplate = new ContractsTemplate();
+		 contractsTemplate.setTemplateName(templateType);
+		 contractsTemplate.setDescription(templateType);
+		 contractsTemplate.setTemplateContent(DefaultContractTemplateUtil.getDefaultTemplates(templateType));
+		 contractsTemplate.setOrgLocationId(orgLocations);
+		 contractsTemplate.setTemplateType(templateType);
+		 contractsTemplate.setTemplateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		 contractsTemplate.setTemplateStatus(Constants.MEMBER_IN_ACTIVE);
+		 contractsTemplate.setUpdatedBy(user.getUserCode());
+		 contractsTemplate.setUpdatedDate(new Date());
+		 contractsTemplate.setCreatedBy(user.getUserCode());
+		 contractsTemplate.setCreatedDate(new Date());
+		 contractsTemplateService.saveContractTemplate(contractsTemplate);
+	}
+	
+	public List<UserDTO> getRoleActionUsers(String roleActionName,Long orgLocationId) throws Exception{
+		
+		List<UserDTO> usersDTOList = new ArrayList<>();
+		SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(roleActionName);
+		List<User> usersList = userService.getUserListByRoleActionIdAndOrgLocationId(action.getId(), orgLocationId);
+		for(User user : usersList) {
+			UserDTO userDTO = new UserDTO();
+			userDTO.setId(user.getId());
+			userDTO.setName(user.getFullName());
+			UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocationId);
+			userDTO.setUserRole(userRole.getRoles().getDisplayName());
+			usersDTOList.add(userDTO);
+		}
+		return usersDTOList;
+	}
+	
+	public boolean isProjectAccessableToUser(String projectUUID,String projectClientUUID,User loginUser,OrgLocations orgLocations,String loginUserRole,Long candidateId) {
+		boolean flag = false;
+		try {
+			ProjectClients projectClients = projectClientService.getProjectClientsByUUID(projectClientUUID);
+			if(projectClients != null) {
+				if(projectClients.getOrgLocationsId().getId().equals(orgLocations.getId())) {
+					if(StringUtils.isNotBlank(loginUserRole) && (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN"))) {
+						ProjectApproverHierarchy approverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(loginUser.getId(), projectClients.getId());
+						ProjectMembers pm = projectMembersService.getProjectMembersByCandidateIdAndProjectClientId(candidateId, projectClients.getId());
+						if(approverHierarchy != null || pm != null) {
+							flag = true;
+						}
+					}else {
+						flag = true;
+					}
+					
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return flag;
+	}
+	
+	public List<SourceleadSectionDTO> getSourceleadFormSectionsByActionId(HttpServletRequest request,Long actionId) throws Exception{
+	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(actionId,orgLocations.getId());
+	return sections;
+	}
+	
+	
+	
+	
+	public String getProjectTaskGenaratedId(Projects projects) throws Exception {
+		Integer generatedIdcount = 0;
+		Long number = 1L;
+		String requirementId = null;
+	
+		StringBuilder sbuilder = new StringBuilder();
+		sbuilder.append(projects.getProjectShortCode());
+		String generatedUsreId = sbuilder.toString();
+		for (int i = 0; i < generatedUsreId.length(); i++) {
+			char ch = generatedUsreId.charAt(i);
+			if (Character.isAlphabetic(ch)) {
+				generatedIdcount++;
+			}
+		}
+		generatedIdcount = generatedIdcount + 1;
+		Integer checkNumber = tasksDao.getProjectTasksCountByProjectId(projects.getId()); 
+		if (checkNumber == null) {
+			requirementId = number.toString();
+		} else {
+			Integer reqId = checkNumber + 1;
+			requirementId = reqId.toString();
+		}
+		final DecimalFormat decimalFormat = new DecimalFormat("0");
+		String convetredRequirementsId = decimalFormat.format(Long.parseLong(requirementId));
+		
+		return sbuilder.append(convetredRequirementsId).toString();
+	}
+		
 }

@@ -55,7 +55,7 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 		logger.debug("In RequirementSubmissionHistoryDaoImpl class getRequirementHistoryByLocationIdAndStage method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementSubmissionHistory requirementSubmissionHistory where requirementSubmissionHistory.submissionId.id = :submissionId and requirementSubmissionHistory.toStage = :toStage and requirementSubmissionHistory.submissionId.orgLocations.id = :orgLocationID ";
-		return  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationID", orgLocationID).setString("toStage", submissionType).setCacheable(true).list();
+		return  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationID", orgLocationID).setString("toStage", submissionType).list();
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 		logger.debug("In RequirementSubmissionHistoryDaoImpl class getRequirementHistoryByLocationIdAndStage method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementSubmissionHistory requirementSubmissionHistory where requirementSubmissionHistory.submissionId.id = :submissionId";
-		List submissionHistoryList = session.createQuery(query).setLong("submissionId", submissionId).setCacheable(true).list();
+		List submissionHistoryList = session.createQuery(query).setLong("submissionId", submissionId).list();
 		
 		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 		if(submissionHistoryList != null && !submissionHistoryList.isEmpty())
@@ -80,7 +80,7 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 			Long candidateId, Long orgLocationId, Long requirementId, Long submissionId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementSubmissionHistory rsh where rsh.submissionId.id = :submissionId and rsh.submissionId.candidate.id =:candidateId and rsh.submissionId.requirement.id =:requirementId and rsh.submissionId.orgLocations =:orgLocationId ORDER BY rsh.createdDate DESC";
-	     List<RequirementSubmissionHistory> requirementHistoryList = session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setLong("requirementId", requirementId).setLong("submissionId", submissionId).setCacheable(true).list();
+	     List<RequirementSubmissionHistory> requirementHistoryList = session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setLong("requirementId", requirementId).setLong("submissionId", submissionId).list();
 	  return requirementHistoryList;
 	}
 	
@@ -117,7 +117,7 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementSubmissionHistory rsh where rsh.submissionId.id IN (:submissionIds)";
-		return session.createQuery(query).setParameterList("submissionIds", submissionIds).setCacheable(true).list();
+		return session.createQuery(query).setParameterList("submissionIds", submissionIds).list();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -128,7 +128,7 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 		Session session = this.sessionFactory.getCurrentSession();
 		List<RequirementSubmissionHistory> rhl = new ArrayList<RequirementSubmissionHistory>();
 		 String queryString ="from RequirementSubmissionHistory rsh left join fetch rsh.submissionId rs left join fetch rsh.interviewerId  where rs.orgLocations.id =:orgLocationID and rsh.toStage =:toStage and rsh.createdBy =:userCode and (rsh.createdDate >= :startDateUTC and rsh.createdDate <= :endDateUTC)";
-		 rhl = session.createQuery(queryString).setString("userCode", user.getUserCode()).setLong("orgLocationID", orgLocationId).setString("toStage", submissionStage).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
+		 rhl = session.createQuery(queryString).setString("userCode", user.getUserCode()).setLong("orgLocationID", orgLocationId).setString("toStage", submissionStage).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
        return (long) rhl.size();
 	}
 
@@ -139,7 +139,21 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 		logger.debug("In RequirementSubmissionHistoryDaoImpl class getRequirementHistoryByLocationIdAndSubId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementSubmissionHistory requirementSubmissionHistory where requirementSubmissionHistory.submissionId.id = :submissionId and requirementSubmissionHistory.submissionId.orgLocations.id = :orgLocationID";
-		return  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationID", orgLocationID).setCacheable(true).list();
+		return  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationID", orgLocationID).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementSubmissionHistory addRequirementHistory(RequirementSubmissionHistory requirementSubmissionHistory)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		try{
+			session.saveOrUpdate(requirementSubmissionHistory);
+		}catch(Exception ex){
+			logger.error(ExceptionUtils.getFullStackTrace(ex)); 
+		}
+		logger.info("updated requirement history..!!");
+		return requirementSubmissionHistory;
 	}
 
 }

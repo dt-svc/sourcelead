@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.TimesheetEntryDetailsDTO;
+import com.bis.sourcelead.dto.TimesheetExpenseEntryDetailsUtilDTO;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -32,6 +34,7 @@ import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.rest.TimesheetRestController;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
@@ -46,6 +49,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  
 
 @Controller 
+@RequestMapping("/app")
 public class TimesheetController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(TimesheetController.class);
@@ -82,6 +86,9 @@ public class TimesheetController {
 	@Autowired
 	private PdfConversionUtil pdfConversionUtil;
 	
+	@Autowired
+	private TimesheetRestController timesheetRestController;
+	
 	/**
 	 * @author naresh bolisetty and sarath kumar
 	 * @since  jan 27 2017
@@ -98,7 +105,10 @@ public class TimesheetController {
 	
 	@RequestMapping(value = "/timesheet")
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS')")
-	public ModelAndView newTimesheet(HttpServletRequest request) throws Exception {
+	public ModelAndView newTimesheet(HttpServletRequest request
+			,@RequestParam(value="currentTimeFrequency",required =false)String currentTimeFrequency
+			,@RequestParam(value="projectMembersId",required =false)String projectMembersId
+			,@RequestParam(value="notifyLink",required=false)String notifyLink) throws Exception {
 			ModelAndView model = new ModelAndView();
 			
 			commonUtil.highLightMenu(Constants.TimeSheet, request);
@@ -124,14 +134,20 @@ public class TimesheetController {
 			List<ProjectMembers> projectMembersList =  projectMembersService.getProjectMembersListByOrgLocationsIdAndEmpUserId(orgLoc.getId(), loginUser.getId());
 			model.addObject("ProjectMembersList", projectMembersList);
 			
+			if(notifyLink!=null && StringUtils.isNotEmpty(notifyLink) && notifyLink.equalsIgnoreCase("notifyLink")) {
+				model.addObject("currentTimeFrequency", currentTimeFrequency);
+				model.addObject("projectMembersId", projectMembersId);
+				model.addObject("notifyLink", notifyLink);
+			}
+			
 			model.addObject("sourceleadUrl", sourceleadUrl);
-			model.setViewName("timesheet/timesheet");
+			model.setViewName("timesheet/timesheetRedefined");
 			return model;
 
 	}
 	
 	
-	@RequestMapping(value = "/acceptOrRejectReopenTimeSheet")
+	@RequestMapping(value = "/ws/acceptOrRejectReopenTimeSheet")
 	@ResponseBody  ModelAndView acceptOrRejectReopenTimeSheet(@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
 			@RequestParam(value="userId", required=false) Long userId,
 			@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency,
@@ -150,7 +166,7 @@ public class TimesheetController {
 		  	 String weekEndDateTimeSheet = frequencyDate[1].trim();
 		  	 Date startDateTimeSheet = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),weekStartDateTimeSheet.replaceAll("/", "-"));
 			 Date endDateTimeSheet = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),weekEndDateTimeSheet.replaceAll("/", "-"));
-			SubmissionApproverHierarchy subApproverHierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(userId, projectMemberId, startDateTimeSheet, endDateTimeSheet);
+			SubmissionApproverHierarchy subApproverHierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(userId, projectMembers.getProjects().getId(),projectMembers.getMasterCandidateId().getId(),orgLocations.getId(),startDateTimeSheet, endDateTimeSheet);
 			String approvalStatus = subApproverHierarchy.getSubmissionApprovalStatus().getValue();
 		    	//DateFormat format = simpleDateFormat;
 			if(approvalStatus.equalsIgnoreCase("new") || subApproverHierarchy.getReopenRejectedReason() != null){

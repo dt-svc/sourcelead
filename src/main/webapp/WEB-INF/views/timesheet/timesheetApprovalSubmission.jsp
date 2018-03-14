@@ -1,0 +1,189 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+
+<script src="/resources/js/jquery.simplePagination.js"></script>
+<c:if test="${!empty timesheetApprovalDTO.timesheetSubmission}">
+<div id="loadingCotentDiv"></div>
+<div id="tableContent" class="timesheetRep-table timesheet_appr_table" style="overflow: auto;">
+ <table id='exampleApprover' class='display'>
+	<thead> 
+    <tr>
+    <th><input type="checkbox" id="selectAllTimeSheetCheckBoxForSubmitForApproval"></th>
+    <th>Employee</th>
+	<th>Employment Type</th>
+	<th>Project</th>
+	<th>Client</th>
+		<c:forEach var="weekFrequency" items="${timesheetApprovalDTO.dataTableWeekDateList}" >
+			<th>${weekFrequency}</th>
+		</c:forEach>
+	<th>Total</th>
+	<th>Stage</th>
+	<th>Action</th>
+    </tr> 
+    </thead>
+    <tbody id="approvalTableData">
+    	 <jsp:include page="timesheetApprovalTableData.jsp"></jsp:include>
+   </tbody>
+  </table>
+</div>
+</c:if>
+<c:if test="${empty timesheetApprovalDTO.timesheetSubmission}">
+    <div class="dataTables_empty">   </div>
+</c:if>
+<div id= "paginationDiv" class="clearfix">
+	<div class="col-md-6">
+		<div class="pull-left mt5">
+			<label class="pull-left"><span class="pull-left mt10 mr5">Show</span>
+				<div class="dropdown-select pull-left mr5 tblminwidth-50">
+					<select id="pageSize" onchange="getTableDataByPageSize()">
+						<option value="5" >5</option>
+						<option value="10" >10</option>
+						<option value="15" >15</option>
+						<option value="20" >20</option>
+					</select>
+				</div> <span class="pull-left mt10">entries</span> </label>
+				 <span class="pull-left mt10 ml" id="pageMsg"></span>
+		</div>
+	</div>
+	<div id="paginationholder" class="col-md-6 pagiPad">
+		<ul id="pagination-demo" class="pagination-sm pull-right pagination"></ul>
+	</div>
+</div>
+<script>
+function exportTimeSheetToPdfOrExcel(exportType){
+	 	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+		var frequencyMonth = $("#frequencyMonth").val();
+		var timesheetFrequency = $('#timesheetFrequency').val();
+		var stage = $('#stage').val();
+		var client = $('#client').val();
+		var weekFrequency = $('#weekFrequency').val();
+		if(weekFrequency != null && weekFrequency !='undefined'){
+		var date = weekFrequency.split("To");
+		var startDate = date[0];
+		var endDate = date[1];
+		}
+		window.location.href = sourceleadUrl
+				+ "/getExportTimeSheetForApprovalMechanizm?&startDate="
+				+ startDate + "&endDate=" + endDate + "&client=" + client
+				+ "&stage=" + stage + "&timesheetFrequency="
+				+ timesheetFrequency +"&frequencyMonth="+frequencyMonth+"&weekFrequency="+weekFrequency+"&exportType=" + exportType;
+	}
+</script>
+
+<script>
+ function dropDown(){
+	$("#exporrt").slideToggle(200);
+} 
+ $("html").click(function() {
+     $("#exporrt").slideUp(100);
+ });
+ $("#exporrt, .dropexport").click(function(e) {
+     e.stopPropagation();
+ });
+</script>  
+
+ <script>
+      function getTableDataByPageSize(){
+    	//  $('#pagination-demo').twbsPagination('destroy'); 
+    	  getTableData(1);
+      }
+	  function getTableData(pageNo) {
+		  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+          var locationCode ='${SourceLeadWeb_locationCode}';
+          var userId = '${SourceLeadWeb_user.id}';
+          var frequencyMonth = $("#frequencyMonth").val();
+	      var timesheetFrequency = $('#timesheetFrequency').val();
+	      var weekFrequency = $('#weekFrequency').val();
+          var stage = $('#stage').val();
+          var client = $('#client').val();
+          var pageSize = $("#pageSize").val();
+          var start = parseInt(pageNo*pageSize)-parseInt(pageSize);
+          var frequencyStartDate = '${timesheetApprovalDTO.frequencyStartDate}';
+          var frequencyEndDate = '${timesheetApprovalDTO.frequencyEndDate}';
+          $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+		  $.ajax({
+          	          type : "POST",
+          	        url: sourceleadUrl+"/timesheetEmployeeSubmissionDetails?frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency+"&weekFrequency="+weekFrequency+"&client="+client+"&stage="+stage+"&frequencyStartDate="+frequencyStartDate+"&frequencyEndDate="+frequencyEndDate+"&locationCode="+locationCode+"&userId="+userId+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,		
+        		      success :function(data) {
+        		    	  $("#approvalTableData").empty();
+        		    	  $("#approvalTableData").append(data);
+        		    	  $("#selectAllTimeSheetCheckBoxForSubmitForApproval").removeProp('checked');
+		                     $(".checkBoxForSubmitForApproval").each(function() {
+		                    	 for(var e in selectedRecords) {
+		                    		 if($(this).val() === e) {
+		                    			 if(selectedRecords[e])
+		                    			 	$(this).prop('checked', selectedRecords[e]);
+		                    			 break;
+		                    		 }
+		                    	 }
+		         	        });
+
+		             	    $(".checkBoxForSubmitForApproval").click(function () {
+		             	    	selectedRecords[$(this).val()] = $(this).is(":checked");
+		             	    });
+        		    	  var totalRows =  $('#totalRows').val();
+        		    		  $("#loadTime").removeAttr('style');
+            		    	  preparePagination(pageNo);
+        		    	 
+        		      }
+        	     });  
+      }
+	  function preparePagination(pageNo) {
+		  var totalRows =  $('#totalRows').val();
+		  var pageMsg = '';
+		  var searchData = '${timesheetApprovalDTO.searchValue}';
+		  if(totalRows !=null && totalRows != '' && totalRows != 'undefined'){
+			  $('#paginationDiv').show();
+			  var pageCount = $('#pageCount').val();
+			  var pageSize = $("#pageSize").val();
+			  $('#dataTableSearchExpenses').val('') ;
+			  $('#dataTableSearchExpenses').val(searchData); 
+			  var startingRecord = parseInt((pageNo*pageSize-pageSize)+1);
+			  var endingRecord = parseInt(pageNo*pageSize);
+			  if(endingRecord > totalRows){
+				  endingRecord = totalRows;
+			  }
+			  $('#timesheetApproverCurrentPageNumber').val(pageNo);
+			  var options = {
+					      currentPage:pageNo,
+					      items: totalRows,
+			              itemsOnPage: pageSize,
+			              ellipsePageSet :false,
+			              cssStyle: 'light-theme',
+			               onPageClick: function (pageNumber, event) {
+			                 getTableData(""+pageNumber+"");
+			              }
+		      };
+		      $("#pagination-demo").pagination(options);
+		      pageMsg = " Showing "+startingRecord+" to "+endingRecord+" of "+totalRows+" entries ";
+		  }
+		  else{
+			  $("#tableContent").empty();
+	    	  $("#tableContent").append('<div class="dataTables_empty">  <input type="hidden" id="hideExportApproval" value="EmptyList">  </div>');
+			  $('#dataTableSearchExpenses').val('') ;
+			  $('#dataTableSearchExpenses').val(searchData);
+			  $('#paginationDiv').hide();
+			  
+			  
+		  }
+	      $('#pageMsg').html('');
+	      $('#pageMsg').html(pageMsg);
+	 }
+  </script> 
+  
+  
+   
+ <jsp:include page="timesheetApprovalCommonScriptsRedefined.jsp"></jsp:include>
+
+
+
+
+
+
+
+
+
+
+ 

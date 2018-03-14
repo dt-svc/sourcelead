@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -22,14 +23,17 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.annotations.Type;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_PLANNING_REQUREST")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectPlanningRequest")
 public class ProjectPlanningRequest implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -45,13 +49,20 @@ public class ProjectPlanningRequest implements Serializable{
     @Column(name = "DESCRIPTION", columnDefinition = "LONGTEXT default NULL")
     private String description;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
    	@JoinColumn(name = "PROJECT_ID")
   	private Projects projectId;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
+    @Column(name = "PROJECT_NAME")
+	@Type(type="text")
+	private String projectName;
+    
+    
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
    	@JoinColumn(name = "APPROVER_USER_ID")
   	private User approverUser;
     
@@ -79,8 +90,9 @@ public class ProjectPlanningRequest implements Serializable{
     @Column(name = "REQUESTED_USER")
    	private String requestedUser;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
    	@JoinColumn(name = "ORG_LOCATION_ID")
   	private OrgLocations orgLocationId;
     
@@ -102,23 +114,28 @@ public class ProjectPlanningRequest implements Serializable{
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
     
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
    	@JoinColumn(name = "CREATED_BY")
   	private User createdBy;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
    	@JoinColumn(name = "UPDATED_BY")
   	private User updatedBy;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "projectPlanningRequestId")
+	@Fetch(FetchMode.SELECT)
 	private Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
+	@JsonBackReference
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "projectPlanningRequestId")
 	private Set<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList;
+	
 	
 	@Transient
 	@JsonProperty
@@ -134,7 +151,11 @@ public class ProjectPlanningRequest implements Serializable{
 	
 	@Transient
 	@JsonProperty
-    private String projectName;
+	List<ProjectPlanningNewResourceRequest> newResourceRequestList;
+	
+	/*@Transient
+	@JsonProperty
+    private String projectName;*/
 	
 	@Transient
 	@JsonProperty
@@ -152,10 +173,7 @@ public class ProjectPlanningRequest implements Serializable{
 	@JsonProperty
     private Integer onholdCount;
     
-	@Transient
-	@JsonProperty
-	List<ProjectPlanningNewResourceRequest> newResourceRequestList;
-    
+	
     public Long getId() {
 		return id;
 	}
@@ -325,6 +343,7 @@ public class ProjectPlanningRequest implements Serializable{
 		this.updatedBy = updatedBy;
 	}
 
+
 	public Set<ProjectPlanningResourceRequest> getProjectPlanningResourceRequestList() {
 		return projectPlanningResourceRequestList;
 	}
@@ -332,6 +351,15 @@ public class ProjectPlanningRequest implements Serializable{
 	public void setProjectPlanningResourceRequestList(
 			Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList) {
 		this.projectPlanningResourceRequestList = projectPlanningResourceRequestList;
+	}
+
+	public Set<ProjectPlanningNewResourceRequest> getProjectPlanningNewResourceRequestList() {
+		return projectPlanningNewResourceRequestList;
+	}
+
+	public void setProjectPlanningNewResourceRequestList(
+			Set<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList) {
+		this.projectPlanningNewResourceRequestList = projectPlanningNewResourceRequestList;
 	}
 
 	public String getRequestedDateStr() {
@@ -349,14 +377,7 @@ public class ProjectPlanningRequest implements Serializable{
 	}
 
 
-	public Set<ProjectPlanningNewResourceRequest> getProjectPlanningNewResourceRequestList() {
-		return projectPlanningNewResourceRequestList;
-	}
-
-	public void setProjectPlanningNewResourceRequestList(
-			Set<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList) {
-		this.projectPlanningNewResourceRequestList = projectPlanningNewResourceRequestList;
-	}
+	
 
 	public Long getApproverId() {
 		if(approverUser != null && approverUser.getId() != null){
@@ -369,31 +390,8 @@ public class ProjectPlanningRequest implements Serializable{
 		this.approverId = approverId;
 	}
 
-	public List<ProjectPlanningResourceRequest> getResourceRequestList() {
-		resourceRequestList = new ArrayList<>();
-		if(projectPlanningResourceRequestList != null && !projectPlanningResourceRequestList.isEmpty()){
-			resourceRequestList.addAll(projectPlanningResourceRequestList);
-		}
-		return resourceRequestList;
-	}
 
-	public void setResourceRequestList(List<ProjectPlanningResourceRequest> resourceRequestList) {
-		this.resourceRequestList = resourceRequestList;
-	}
-	
-	public List<ProjectPlanningNewResourceRequest> getNewResourceRequestList() {
-		newResourceRequestList = new ArrayList<>();
-		if(projectPlanningNewResourceRequestList != null && !projectPlanningNewResourceRequestList.isEmpty()){
-			newResourceRequestList.addAll(projectPlanningNewResourceRequestList);
-		}
-		return newResourceRequestList;
-	}
-
-	public void setNewResourceRequestList(List<ProjectPlanningNewResourceRequest> newResourceRequestList) {
-		this.newResourceRequestList = newResourceRequestList;
-	}
-
-	public String getProjectName() {
+	/*public String getProjectName() {
 		if(projectId != null && projectId.getId() != null){
 			projectName = projectId.getProjectName();
 		}
@@ -402,15 +400,13 @@ public class ProjectPlanningRequest implements Serializable{
 
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
-	}
+	}*/
 
 	public String getRejectedReason() {
         if(rejectedReason == null || rejectedReason.isEmpty()){
-        	resourceRequestList = new ArrayList<>();
         	if(projectPlanningResourceRequestList != null && !projectPlanningResourceRequestList.isEmpty()){
-        		resourceRequestList.addAll(projectPlanningResourceRequestList);
         		StringBuilder reason = new StringBuilder();
-        		for(ProjectPlanningResourceRequest resourceRequest : resourceRequestList ){
+        		for(ProjectPlanningResourceRequest resourceRequest : projectPlanningResourceRequestList ){
         			if(resourceRequest.getRejectedReason() != null && !resourceRequest.getRejectedReason().isEmpty()){
         				reason = reason.append("<br/>").append("Reason for ").append(resourceRequest.getCandidateName()).append(" : ").append(resourceRequest.getRejectedReason()).append("<br/>");
         			}
@@ -457,8 +453,31 @@ public class ProjectPlanningRequest implements Serializable{
 	public void setOnholdCount(Integer onholdCount) {
 		this.onholdCount = onholdCount;
 	}
-	
-	
+
+	public List<ProjectPlanningNewResourceRequest> getNewResourceRequestList() {
+		return newResourceRequestList;
+	}
+
+	public void setNewResourceRequestList(List<ProjectPlanningNewResourceRequest> newResourceRequestList) {
+		this.newResourceRequestList = newResourceRequestList;
+	}
+
+	public List<ProjectPlanningResourceRequest> getResourceRequestList() {
+		return resourceRequestList;
+	}
+
+	public void setResourceRequestList(List<ProjectPlanningResourceRequest> resourceRequestList) {
+		this.resourceRequestList = resourceRequestList;
+	}
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
 	
 	
 	

@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<script src="resources/js/formvalidator.js"></script>
+<script src="/resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
@@ -56,11 +56,11 @@ $(document).ready(function(){
 			</div>
 		</c:if>
 		<div class="pull-left">
-			<h2>Payables</h2>
+			<h2>Bills</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
-			&raquo; Payables List
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
+			&raquo; Bill List
 		</div>
 	</section>
 	<div class="content-area content-new clearfix">
@@ -215,7 +215,7 @@ $(document).ready(function(){
 													<li><input type="checkbox" id="" value="Partial Paid"
 														name="paymentStatus" onclick="getPayableInvoiceList();">
 														<label for="onboard2">Partially Paid</label></li>
-													<li><input type="checkbox" id="" value="OverDue"
+													<li><input type="checkbox" id="" value="Overdue"
 														name="paymentStatus" onclick="getPayableInvoiceList();">
 														<label for="onboard4">OverDue</label></li>
 													<li><input type="checkbox" value="Unpaid"
@@ -265,11 +265,11 @@ $(document).ready(function(){
 				onClick="closeCandidate()">&times;</a>
 			<div class="col-md-4 mt25">
 				<div class="small-widget bgGreen">
-					<a href="<c:url value='/createPayables'/>"
+					<a href="<c:url value='${appPath}/createPayables'/>"
 						title="Create Vendor Based Bill">
 
 						<div class="clearfix mb10">
-							<img src="resources/images/invoice_icon.png" class="text-center"
+							<img src="/resources/images/invoice_icon.png" class="text-center"
 								alt="create_receivables">
 						</div> <strong class="clearfix">Vendor Based</strong>
 					</a>
@@ -278,11 +278,11 @@ $(document).ready(function(){
 
 			<div class="col-md-4 mt25">
 				<div class="small-widget bg-yellow">
-					<a href="<c:url value='/createInvoiceProjectPayableBased'/>"
+					<a href="<c:url value='${appPath}/createInvoiceProjectPayableBased'/>"
 						title="Create Project Based Bill">
 						<div class="clearfix mb10">
 							<!--<i class="fa fa-usd fa-3x"></i>-->
-							<img src="resources/images/invoice_icon.png" class="text-center"
+							<img src="/resources/images/invoice_icon.png" class="text-center"
 								alt="Invoice">
 						</div> <strong class="clearfix">Project Based </strong>
 					</a>
@@ -291,10 +291,10 @@ $(document).ready(function(){
 
 			 <div class="col-md-4 mt25">
 		          <div class="small-widget bg-purple"> <a href="other_receivables.html" title="Create other invoice">
-		            <a href="<c:url value='/createExpensesPayableBill'/>" title="Create Other Bill">
+		            <a href="<c:url value='${appPath}/createExpensesPayableBill'/>" title="Create Other Bill">
 		            <div class="clearfix mb10">
 		              <i class="fa fa-usd fa-3x"></i>             
-		             <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
+		             <img src="/resources/images/invoice_icon.png" class="text-center" alt="Invoice">
 		              </div>
 		            <strong class="clearfix">Other</strong> </a> </div>
 		        </div>
@@ -533,6 +533,7 @@ $('body').on('blur', '#receivePayment-form', function() {
 function getPayableInvoiceList(){
 	var invoice = [];
 	var payment = [];
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var dayWisetype = $("#dayWiseTypeId").val();
 	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
@@ -568,7 +569,7 @@ function getPayableInvoiceList(){
 	 });
 	var searchValue = $("#payableDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getInvoiceList?&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceType=payables&searchValue="+searchValue;
+	var url = sourceleadUrl+"/getInvoiceList?&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceType=payables&searchValue="+searchValue+"&orgLocationId="+orgLocationId;
 	preparePayableList(url,orgLocationDate);
 }
 
@@ -583,7 +584,7 @@ function preparePayableList(url,orgLocationDate){
  	result = result + '<table id="payableListTable" class="display" cellspacing="0" width="100%" >';
 	result = result + '<thead>';
 	result = result +'       <tr>                             ';
-	result = result +'         <th>ID</th>                    ';
+	result = result +'         <th>Reference Id</th>                    ';
 	result = result +'         <th>Vendor Name</th>           ';
 	result = result +'         <th>Contact</th>               ';
 	result = result +'         <th>Project Name</th>          ';
@@ -677,7 +678,7 @@ function payablePagination(url){
 					}
 					if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked"){
 						'<sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')">';
-						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
+						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/app/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
 						'</sec:authorize>';
 					}
 					
@@ -691,8 +692,16 @@ function payablePagination(url){
               "render": function ( data, type, report, meta ) {
             	  var result = "";
             	  result = result +'         <td>   ';
-  				result = result +'           <div class="tbldata-dotdot-vsm" title="'+report.clientName+'">'+report.clientName+'</div>';
-  				result = result +'         </td> ';
+            	 
+            	  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
+            	   result = result +'<div class="tbldata-dotdot-vsm" title="'+report.clientName+'"><a href="'+sourceleadUrl+'/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.clientName+'"> '+report.clientName+' </a></div>';
+            	  '</sec:authorize>';
+            	  
+            	  '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
+	           	   result = result +' <div class="tbldata-dotdot-vsm" title="'+report.clientName+'">'+report.clientName+'</div>';
+	           	  '</sec:authorize>';
+           	  
+            	  result = result +'         </td> ';
 	              return result;
               		
               }
@@ -803,12 +812,13 @@ function payablePagination(url){
                     },{
                         "targets": colIndex++,
                         "data": "action",
+                        "sortable": false,
                         "render": function ( data, type, report, meta ) {
                         	var result = "";
             				result = result +'         <td> ';
             				result = result +'     <div class="tblminwidth-90">';
             				 result = result +'  <div class="pull-right positionRelative menuWidget" >';
-            				if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted"){
+            				if(report.invoiceStatus != "Received" && report.invoiceStatus != "Rejected"){
             					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp('+report.id+',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\',\''+report.fileUrl+'\');" ></i>  ';
             						result = result +'  <div id="popupDiv'+report.id+'"></div>';
             				} 
@@ -818,41 +828,41 @@ function payablePagination(url){
             						if(report.paymentStatus == "Paid"){
             							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';
             						}else if(report.invoiceStatus == "DRAFT"){
-            							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer" title="Remove Bill" onClick="deleteBill('+report.id+');";></i></td>          ';
+            							result = result +'           <span class="successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill('+report.id+');";></i></td>          ';
             						}else if(report.invoiceStatus == "Rejected"){
-            							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Send</span> </td>          ';
+            							result = result +'           <div class="successBtn primary pull-left bg-red">Rejected</div>   ';	
             						}
             							
             					}else{
             						if(report.invoiceStatus == "Accepted"){
-            							result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>';
-            						}else{
-            							if(report.invoiceStatus == "Rejected"){
-            								result = result +'           <span class="text-danger successBtn primary pull-left" >Rejected</span> </td>          ';	
-            							}else if(report.invoiceStatus == "Linked"){
-            								result = result +' <a class="text-primary successBtn primary pull-left cursorPointer" onClick="unLinkBill('+report.id+')">UnLink</a>  ';
+            							result = result +'           <span class="receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>';
+            						}else if(report.invoiceStatus == "Linked"){
+            								result = result +' <a class="successBtn primary pull-left cursorPointer" onClick="unLinkBill('+report.id+')">UnLink</a>  ';
             							}else{
             								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
             							}
             							
-            						}
             					}
             					
             				}else{
-            					if((report.paymentStatus == "Paid" && report.invoiceStatus != "Linked") || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
+            					if((report.paymentStatus == "Paid" && report.invoiceStatus != "Linked") || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected" || report.invoiceStatus == "SENT"){
             						if(report.paymentStatus == "Paid"){
-            							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
+            							result = result +'           <span class="successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
             						}else if(report.invoiceStatus == "DRAFT"){
-            							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer" title="Remove Bill" onClick="deleteBill('+report.id+');";></i></td>          ';
-            						}else{
-            							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Send</span> </td>          ';
+            							result = result +'           <span class="successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill('+report.id+');";></i></td>          ';
+            						}else if(report.invoiceStatus == "SENT"){
+            							result = result +'           <span class="successBtn primary pull-left" title="Paid" >Sent</span> </td>          ';
+            						}else if(report.invoiceStatus == "Rejected"){
+            							result = result +'           <div class="successBtn primary pull-left bg-red">Rejected</div>   ';
             						}
             							
             					}else{
             						if(report.invoiceStatus == "Linked"){
-            							result = result +' <a class="text-primary successBtn primary pull-left" onClick="unLinkBill('+report.id+')">UnLink</a>  ';
+            							result = result +' <a class="successBtn primary pull-left" onClick="unLinkBill('+report.id+')">UnLink</a>  ';
+            						}else if(report.invoiceStatus == "Received"){
+            							result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
             						}else{
-            							result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>          ';
+            							result = result +'           <span class="receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>          ';
             						}
             					}
             					
@@ -882,7 +892,7 @@ function payablePagination(url){
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
     $("#payableListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
@@ -904,23 +914,23 @@ function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount,fileUrl){
 	     if(invoiceParentId == 'undefined'){
 	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_2"> ';
 	     }else{
-	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_3"> ';
+	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_2"> ';
 	     }
 		 result = result+' <i class="fa fa-close close-div closediv-small" onClick="removePopup();"></i>';
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+id+'"> ';
-		 if(invoiceParentId == 'undefined'){
+		 if((invoiceParentId == 'undefined' || invoiceParentId == 'null') && invoiceStatus != 'DRAFT'){
 			 '<sec:authorize access="hasAnyRole(\'ROLE_SEND_BILL_REMINDER\')">';
 			 result = result +'<li onclick="sendReminder('+id+');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</li> ';
 			 '</sec:authorize>'
 		 }
 		 '<sec:authorize access="hasAnyRole(\'ROLE_PRINT_BILL\')">';
 // 	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
-		result = result+' <a class="fa fa-print paddingLeft paddingRight" href="'+fileUrl+'" title="Print">Print</a>';
+		result = result+' <a class="" href="'+fileUrl+'" title="Print"><i class="fa fa-print paddingLeft paddingRight"></i>Print</a>';
 	     '</sec:authorize>'
 	     
 	     '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_BILL\')">';
 // 	     result = result +'      <li onclick="downloadInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
- 		 result = result+' <a class="fa fa-download paddingLeft paddingRight" href="'+fileUrl+'" title="Download">Download</a>';
+ 		 result = result+' <a href="'+fileUrl+'" title="Download"><i class="fa fa-download paddingLeft paddingRight"></i>Download</a>';
 	     '</sec:authorize>'
 	     result = result +'      <li onclick="linkPayableInvoice('+id+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Bill"></i>Link Bill</li>';
 	     result = result +'    </ul>';
@@ -996,9 +1006,9 @@ function rejectInvoice(id){
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	//result = result +"		<p>Do you want to delete this vendor contact?</p>";
-	result = result +"		<textarea id='reasonForDelete' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result +"		<textarea id='reasonForDelete' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Reject Reason' rows='2'></textarea>";
 	result = result + ' <div id="reasonForRejectDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReasonforPayable("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Reject' onclick='saveReasonforPayable("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -1427,9 +1437,9 @@ function linkPayableInvoice(invoiceId,totalAmount){
 			result = result +'          </tr>                                                                                                               ';
 			}
 			}else{
-				result = result +'          <tr>';
-				result = result +'                <td valign="top" colspan="10" class="dataTables_empty"></td>';
-				result = result +'          </tr>';
+				result = result +' <div class="col-md-12" style="display:none">';
+				result = result +' <div class="dataTables_empty"></div>';
+				result = result +' </div>';
 			}
 			result = result +'        </tbody>                                                                                                              ';
 			result = result +'      </table>                                                                                                                ';
@@ -1563,7 +1573,7 @@ function cancelExport(){
 
 <script type="text/javascript">
 function generateAutomaticInvoice(){
-	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',

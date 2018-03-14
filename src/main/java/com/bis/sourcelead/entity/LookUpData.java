@@ -21,7 +21,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  */
 @Entity
 @Table(name="LOOKUP_DATA")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="lookupdata")
 public class LookUpData implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -45,6 +44,10 @@ public class LookUpData implements Serializable{
 	
 	@Column(name = "CREATED_BY")
     private String createdBy;
+	
+	@Column(name = "UNIQUE_KEY")
+	private String uniqueKey;
+	
 
 	public Long getId() {
 		return id;
@@ -93,7 +96,12 @@ public class LookUpData implements Serializable{
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
-	
-	
 
+	public String getUniqueKey() {
+		return uniqueKey;
+	}
+
+	public void setUniqueKey(String uniqueKey) {
+		this.uniqueKey = uniqueKey;
+	}
 }

@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,15 +11,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Entity for CONTRACTS_TEMPLATE
@@ -27,8 +27,7 @@ import org.hibernate.annotations.NotFoundAction;
  */
 
 @Entity
-@Table(name = "CONTRACTS", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "contracts")
+@Table(name = "CONTRACTS")
 public class Contracts {
 	
 	private static final long serialVersionUID = 1L;
@@ -47,13 +46,13 @@ public class Contracts {
 	@Column(name = "TYPE_OF_CONTRACT")
 	private String typeOfContract;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne 
+	
+	@ManyToOne(fetch = FetchType.LAZY) 
     @JoinColumn(name="TEMPLATE_ID", nullable=false )  
 	private ContractsTemplate contractsTemplate; 
 	 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "OWNER_USER_ID")
 	private User ownerUserId;
 	
@@ -72,36 +71,41 @@ public class Contracts {
 	@Column(name = "INITIATOR_TYPE")
 	private String initiatorType;
 	
+	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )     
 	private OrgLocations orgLocationId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="PARENT_CONTRACT_ID")     
 	private Contracts parentContractId;
 	
+	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="CONTRACT_ORG_LOCATION_ID", nullable=false )     
 	private OrgLocations contractOrgLocationId;
 	
+	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONTACT_USER_ID")
 	private User contactUser;
 	
+	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_RELATION_ID")
 	private OrgRelations orgRelations;
 	
 	/*@Column(name = "STATE_OF_JURISDICTION")
 	private String stateOfJurisdiction;*/
 	
+	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "APPROVER_USER_ID") 
 	private User approverUser;
 	
@@ -141,13 +145,13 @@ public class Contracts {
 	@Column(name = "TAX_TYPE")
 	private String taxType;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="REQUIREMENT_SUBMISSION_ID")     
 	private RequirementSubmission requirementSubmission;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="CANDIDATE_ID")     
 	private Candidate candidate;
 	
@@ -193,10 +197,6 @@ public class Contracts {
 	@Column(name = "FILE_NAME", columnDefinition = "TEXT default NULL")
 	private String fileName;
 	
-	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] docFile;
-	
 	@Column(name = "FILE_TYPE")
 	private String fileType;
 	
@@ -205,6 +205,9 @@ public class Contracts {
 	
 	@Column(name = "REJECTED_REASON" , columnDefinition = "TEXT default NULL")
 	private String rejectedReason;
+	
+	@Column(name = "TEMPLATE_FILE_URL")
+	private String templateFileURL;
 	
 	@Transient
 	private String ownerName;
@@ -317,6 +320,18 @@ public class Contracts {
 	@Transient
 	private Long ownerUser;
 	
+	@Transient
+	@JsonProperty
+	private String orgRelationUUID;
+	
+	@Transient
+	@JsonProperty
+	private String spocUUID;
+	
+	@Transient
+	@JsonProperty
+	private Map<Long,String> newContractCustomFieldlabelNameAndValue;
+	
 	
 	public List<ContractRequestDocuments> getContractRequestDocumentsList()
 	{
@@ -412,14 +427,6 @@ public class Contracts {
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
-	}
-
-	public byte[] getDocFile() {
-		return docFile;
-	}
-
-	public void setDocFile(byte[] docFile) {
-		this.docFile = docFile;
 	}
 
 	public String getFileType() {
@@ -1068,4 +1075,39 @@ public class Contracts {
 		this.fileURL = fileURL;
 	}
 
+	public String getOrgRelationUUID()
+	{
+		return orgRelationUUID;
+	}
+
+	public void setOrgRelationUUID(String orgRelationUUID)
+	{
+		this.orgRelationUUID = orgRelationUUID;
+	}
+
+	public String getSpocUUID()
+	{
+		return spocUUID;
+	}
+
+	public void setSpocUUID(String spocUUID)
+	{
+		this.spocUUID = spocUUID;
+	}
+	public String getTemplateFileURL() {
+		return templateFileURL;
+	}
+
+	public void setTemplateFileURL(String templateFileURL) {
+		this.templateFileURL = templateFileURL;
+	}
+
+	public Map<Long, String> getNewContractCustomFieldlabelNameAndValue() {
+		return newContractCustomFieldlabelNameAndValue;
+	}
+
+	public void setNewContractCustomFieldlabelNameAndValue(Map<Long, String> newContractCustomFieldlabelNameAndValue) {
+		this.newContractCustomFieldlabelNameAndValue = newContractCustomFieldlabelNameAndValue;
+	}
+	
 }

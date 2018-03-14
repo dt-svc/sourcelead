@@ -15,7 +15,7 @@ font-size: 1.5em;
       <div class="pull-left">
         <h2>Department List</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="orgRolesList">Roles List</a> &raquo;  Department List </div>
+      <div class="pull-right brud-crum"><a href="${appPath}/orgRolesList">Roles List</a> &raquo;  Department List </div>
     </section>
 <script type="text/javascript">
 $(document).ready(function(){

@@ -6,6 +6,9 @@
 .chosen-container {
     width: 100% !important;
 }
+.add_inter  .customchosen-select .chosen-container {
+width: 100% !important;
+}
 .validationError p.jquery_form_error_message {
 width: 75px; padding: 0 !important;
 }
@@ -25,9 +28,24 @@ width: 75px; padding: 0 !important;
         </div>
         
       <!-- show Calendar -->
-            <div class="col-xs-12 col-md-7 mb eventCalendr_content alert alert-dismissable positionRelative" id ="dashboardEventsDiv">
+            <div class="col-xs-12 col-md-7 mb alert alert-dismissable positionRelative" id ="dashboardEventsDiv">
+                  
+                  <div class="eventHeader">                                               
+				        <div class="media">                                               
+				          <div class="media-left bg-success paddingRight">                
+				              <i class="fa fa-calendar fa-3x"></i>                        
+				          </div>                                                          
+				          <div class="media-body paddingLeft">                            
+				            <h4 class="media-heading" id="dayOfweek"></h4>             
+				            <p class="small" id="selectedDate"></p>                    
+				          </div>                                                          
+				        </div>                                                            
+  			  </div>			                                                      
+
+            <div class="eventCalendr_content">
             	<div id ="interviewDiv"></div>
            	 	<div id ="taskDiv"></div>
+           	 	</div>
 	     </div>
       </div>
 		<div class="add_inter_wrap">
@@ -38,13 +56,54 @@ width: 75px; padding: 0 !important;
 <script type="text/javascript">
 window.onload = function() { 
 	getInterviewsandTasks();
+	getInterviewsDates();
 	}
+</script>
+
+<script>
+function getInterviewsDates(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var dates = {}
+	 $.ajax({
+		type: "POST",
+        url: sourceleadUrl+"/getInterviewsTaskDates?${_csrf.parameterName}=${_csrf.token}",
+        success: function(data) {
+       	 if(data.length > 0){
+       		 for(var i=0; i<data.length; i++){
+       			dates[new Date(data[i]).getTime()]='visible';
+       		 }
+       	 }
+       	eventCalendar(dates);
+        }
+	}); 
+	
+	    
+	  
+
+}
 </script>
 
 <script type="text/javascript">
 	function getInterviewsandTasks() {
 		var sourceleadUrl ='${sourceleadUrl}';
+		var date = '';
 		var date = $("#eventCalendar").val();
+		if(date == null || date == '' || date == 'undefined'){
+			date = new Date(); 
+			var month = parseInt(date.getMonth())+parseInt(1);
+			  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+			  if(locationDate.match("yyyy-MM-dd")){
+			      date = date.getFullYear()+"-"+month+"-"+date.getDate();
+			  }if(locationDate.match("dd-MM-yyyy")){
+				  date = date.getDate()+"-"+month+"-"+date.getFullYear();
+			  }if(locationDate.match("MM-dd-yyyy")){
+				  date = month+"-"+date.getDate()+"-"+date.getFullYear();
+			  }if(locationDate.match("yyyy-dd-MM")){
+				  date = date.getFullYear()+"-"+date.getDate()+"-"+month;
+			  }
+		}
+		
+		
 		$.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getInterviewsandTasks?${_csrf.parameterName}=${_csrf.token}&dateRange="+date,
@@ -52,18 +111,9 @@ window.onload = function() {
 	        	 var json = JSON.parse(data);
 	        	 var result = "";
 	        	 var opt = "";
-	        	 
-				     result = result + '    <div class="eventHeader">                                                      ';
-				     result = result + '          <div class="media">                                                      ';
-				     result = result + '            <div class="media-left bg-success paddingRight">                       ';
-				     result = result + '                <i class="fa fa-calendar fa-3x"></i>                               ';
-				     result = result + '            </div>                                                                 ';
-				     result = result + '            <div class="media-body paddingLeft">                                   ';
-				     result = result + '              <h4 class="media-heading">'+json.dayOfweek+'</h4>                               ';
-				     result = result + '              <p class="small">'+json.selectedDate+'</p>                               ';
-				     result = result + '            </div>                                                                 ';
-				     result = result + '          </div>                                                                   ';
-				     result = result + '    </div>																		   ';
+	        	 $("#dayOfweek").text(json.dayOfweek);
+	        	 $("#selectedDate").text(json.selectedDate);
+ 
 	        	 for(var i=0; i<json.interviewerList.length; i++)
 					{
 	        		 
@@ -72,7 +122,9 @@ window.onload = function() {
 	        		 if(report.clientName != null && report.clientName != "" && report.clientName != 'undefined' && report.interviewSourceType != 'INTERVIEW'){
  		       			clientName = report.clientName;
  		       		}
-			         result = result + '   <div class="eventList clearfix">  ';
+	        		 
+	        		 result = result + '   <div class="clearfix">  ';
+	        		 result = result + '   <div class="eventList clearfix">  ';
 					 result = result + '      <div class="media">              ';
 					 result = result + '          <div class="media-left">     ';
 					 result = result + '              <div>'+report.startTimeStr+'</div>       ';
@@ -80,7 +132,7 @@ window.onload = function() {
 					 result = result + '          </div>                       ';
 					 result = result + '              <div class="media-body paddingLeft">   ';
 					 result = result + '                  <figure class="pull-left">         ';
-					 result = result + '                  <img src="resources/images/interview_icons.png" class="img-responsive" width="40">    ';
+					 result = result + '                  <img src="/resources/images/interview_icons.png" class="img-responsive" width="40">    ';
 					 result = result + '                  </figure>                                                                   ';
 					 result = result + '                      <div class="pull-left event_details form-horizontal">                   ';
 					 result = result + '                          <p><label class="text-muted small col-md-2">Name:</label>'+report.candidateName+' </p>    ';
@@ -91,27 +143,12 @@ window.onload = function() {
 					 result = result + ' 									<p><i class="fa fa-phone"></i><label>'+report.candidatePhoneNumber+'</label></p>                 ';
 					 result = result + ' 									</div>                                                                         ';
 					 result = result + ' 								</div>                                                                         ';
-					 result = result + '                          <p><label class="text-muted small col-md-2">Req.:</label> <a href="'+sourceleadUrl+"/requirementSummaryView?requirementUUID="+report.requirementUUID+"&interviewId="+report.interviewId.id+'">'+report.requirementTitle+'</a></p>';
+					 result = result + '                          <p><label class="text-muted small col-md-2">Job:</label> <a href="'+sourceleadUrl+"/requirementSummaryView?requirementUUID="+report.requirementUUID+"&interviewId="+report.interviewId.id+'">'+report.requirementTitle+'</a></p>';
 					 result = result + '                          <p><label class="text-muted small col-md-2">Client:</label> '+clientName+'</p>    ';
 					 result = result + '                          <div class="feedBack"> ';
 					
 					 
-					 /*  if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN"){
-						
-						  if(report.interviewerId != null  &&  report.interviewerId !='' && report.interviewerId !='undefined'){
-						      result = result+'	 <a title="Feedback Given" href="'+sourceleadUrl+'/'+'dashboardInterviewFeedBackTemplate?templateId='+report.interviewTemplateid+'&requirementInterviewid='+report.interviewerId+'" >';
-						  if(report.feedbackDate != null && report.feedbackDate != '' && report.feedbackDate != 'undefined'){
-                        	   result = result+'<i class="fa fa-handshake-o success_color"></i>';
-						  }else{
-							  result = result+'<i class="fa fa-handshake-o"></i>';
-						  }
-						  result = result+'</a>';
-						  }else{
-							  alert("hello1111");
-							  result = result+'<a title="Feedback Not Given" onClick="feedbackView('+report.requirementIntervieweId+',\''+report.interviewTemplateid+'\')"><i class="fa fa-handshake-o warning_color"></i></a>';
-							  
-						  }
-                      }else */ if(report.interviewerId != null  &&  report.interviewerId !='' && report.interviewerId !='undefined' && report.interviewTemplateid != null && report.interviewTemplateid != '' && report.interviewTemplateid != 'undefined'){
+					  if(report.interviewerId != null  &&  report.interviewerId !='' && report.interviewerId !='undefined' && report.interviewTemplateid != null && report.interviewTemplateid != '' && report.interviewTemplateid != 'undefined'){
                     	  result = result+'	 <a  href="'+sourceleadUrl+'/'+'dashboardInterviewFeedBackTemplate?templateId='+report.interviewTemplateid+'&requirementInterviewid='+report.interviewerId+'" >';
 						  if(report.feedbackDate != null && report.feedbackDate != '' && report.feedbackDate != 'undefined'){
                         	   result = result+'<i class="fa fa-handshake-o success_color"></i>';
@@ -121,11 +158,7 @@ window.onload = function() {
 						  result = result+'</a>';
                       }   
 					  
-// 					  result = result+'<a title="Feedback Not Given" onClick="feedbackView('+report.requirementIntervieweId+',\''+report.interviewTemplateid+'\')"><i class="fa fa-handshake-o warning_color"></i></a>';
-					  
-					  
-					 //result = result + '                          <a href="javascript:void(0)" title="FeedBack"><i class="fa fa-handshake-o"></i></a>    ';
-					 result = result + '                          </div>                                                                               ';
+ 				 result = result + '                          </div>                                                                               ';
 					 result = result + '                      </div>                                                                                   ';
 					 result = result + '              </div>                                                                                           ';
 					 result = result + '      </div>   ';
@@ -161,7 +194,7 @@ window.onload = function() {
 					 	 opt = opt + '         </div>                          ';
 					 	 opt = opt + '             <div class="media-body paddingLeft"> ';
 					 	 opt = opt + '                 <figure class="pull-left">       ';
-					 	 opt = opt + '                 <img src="resources/images/task-icon.png" class="img-responsive" width="40">    ';
+					 	 opt = opt + '                 <img src="/resources/images/task-icon.png" class="img-responsive" width="40">    ';
 					 	 opt = opt + '                 </figure>                                                             ';
 					 	 opt = opt + '                     <div class="pull-left event_details">                             ';
 					 	 opt = opt + '                         <p><label class="text-muted small col-md-2">Subject:</label> '+report.subject+'</p>         ';
@@ -186,7 +219,8 @@ window.onload = function() {
 			        	result = result + '<div class="row">                                            ';
 						result = result + '	<div class="dataTables_empty" style="border: 1px solid #ddd;margin: 0px 15px;">                                     ';
 						result = result + '	</div>                                                      ';
-						result = result + ' </div>                                                      ';
+						result = result + ' </div>                                                    ';
+						result = result + ' </div>                                                    ';
 	        	 }
 	        	 result = result + '<div class="mask_inner"></div>';
 	        	 $("#interviewDiv").empty();
@@ -197,6 +231,7 @@ window.onload = function() {
 		});
 		
 	}
+	
 </script>
 
 
@@ -326,15 +361,15 @@ function dashboardAddInterview(){
 	
 	result = result + '<div class="row pad2">';
 	result = result + '<div class="col-md-12 mt10">';
-	result = result + '<div class="ne-ch">';
+	result = result + '<div class="ne-ch row">';
 	result = result + '<label><input type="checkbox" name="notificationToApplicant" value="Y" checked="checked" ><b>Notify to Applicants</b></label>';
 	result = result + '<label><input type="checkbox" name="proposeTime" value="Y" checked="checked" ><b>Propose time</b></label>';
 	result = result + '</div>';
 	
 	
-	result = result + '<div id="emptyTemplate" style="dispaly:none">';
+	result = result + '<div id="emptyTemplate" style="dispaly:none" class="row">';
 	result = result + '<strong class="clearfix col-md-12">Interview Template</strong>';
-	result = result + '<div class="chosen-select col-md-3 select-field">';
+	result = result + '<div class="chosen-select col-md-4 customchosen-select">';
 	result = result + '<select class="form-control mt10" id="interviewSubmissionTemplate" name="interviewSubmissionTemplate">';
 	result = result + '</select>';
 	result = result + '</div>';
@@ -393,15 +428,17 @@ function interviewTemplate(){
 	 $.ajax({
 	    	type: "POST",
 	    	url : sourceleadUrl+"/getInterviewFeedbackTemplatesList?${_csrf.parameterName}=${_csrf.token}", 
-	        success: function(data) {
-	        var json = JSON.parse(data);
+	        success: function(json) {
 	        var output = "";
 	        if(json.length > 0){
 	         	for (var i=0; i<json.length; i++)
 	 			{
 	 	        		var opt = json[i];
-	 	        		
-	 	        		output = output + "<option value='" +opt.id+ "'>"+opt.templateName+"</option>";
+	 	        		if(opt.isDefault == "Y"){
+	 	        			output = output + "<option value='" +opt.id+ "' selected>"+opt.templateName+"</option>";
+	 	        		}else{
+		 	        		output = output + "<option value='" +opt.id+ "'>"+opt.templateName+"</option>";
+	 	        		} 
 	 			}
 	         	$("#interviewSubmissionTemplate").empty();
 	 	        $("#interviewSubmissionTemplate").append(output);
@@ -576,7 +613,7 @@ function getRequirements(){
               if(data != null && data != 'undefined' && data != "" && data != '[]'){
             	  var json = JSON.parse(data);
             	  var result = "";
-            	  result = result + '<option value="">--- Select Requirement ---</option>';
+            	  result = result + '<option value="">--- Select Job ---</option>';
                   for (var i = 0; i < json.length; i++) {
                  	 var opt = json[i]; 
                  	var jobId = "";
@@ -620,6 +657,7 @@ function getRequirements(){
 
 <script>
 function selectAndGetApplicantsForRequirement(){
+	$("#reqDiv").find('p.text-primary').empty();
 		$('#isClientInterview').attr('checked', false);
 		$("#isClientInterviewDiv").hide();
 		getApplicantsForRequirement();
@@ -798,7 +836,7 @@ function cancelAddInterviewDiv(){
         if(selectedInterviewApplicants <= 50){
 	        $("#add_interview").attr("disabled", "disabled");
 	 		$("#add_interview" ).addClass('button').val('Processing..');
-	 		$("#interviewLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 		$("#interviewLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	   	     $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/saveInterview?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
@@ -835,7 +873,7 @@ function cancelAddInterviewDiv(){
 </script>
 	
   <script>
-  $(function() {
+  function eventCalendar(dates) {
 	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatEDashboardeventCalendar = '';
 	  if(locationDate.match("yyyy-MM-dd")){
@@ -847,20 +885,34 @@ function cancelAddInterviewDiv(){
 	  }if(locationDate.match("yyyy-dd-MM")){
 		  finalDateFormatEDashboardeventCalendar = 'yy-dd-mm'; 
 	  }
+	  
     $("#eventCalendar" ).datepicker({
 	  changeMonth: true,
       changeYear: true,
       dateFormat : finalDateFormatEDashboardeventCalendar,
       onSelect : function(selected) {
   		getInterviewsandTasks();
-	   }
+	   },
+	    beforeShowDay: function(date) {
+	  	  var hlText = dates[date.getTime()];
+	        return (hlText)?[true, "Highlighted", '']: [true, '', ''];
+	  	}
     });
-  });
+  } 
       
-      $(function(){
+ $(function(){
    $('#example').timepicker(); 
 });
-  </script> 	
+  </script>  
+ 
+  <style>
+  .Highlighted a{
+	   background-color : #9ACD32 !important;
+	   font-weight:bold !important;
+	   font-size: 12pt;
+}
+  </style>
+  	
  <!-- <script>
  function personalInfo(){
      $(".userdetails").toggle();

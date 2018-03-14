@@ -25,4 +25,7 @@ public interface TabsDao {
 	
 	List<String> getTabsNamesListByActionsIds(List<Long> actionIdsList) throws Exception;
 
+	Tabs getTabListByTabId(Long tabId);
+
+	
 }

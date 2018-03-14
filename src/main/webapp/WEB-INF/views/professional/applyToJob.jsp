@@ -4,7 +4,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
@@ -12,13 +11,16 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
   
-<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
-<script src="resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
-<script src="resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
+<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
+<script src="/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
+<script src="/resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
 
 <script type="text/javascript">
    var sourceleadUrl ='${sourceleadUrl}';
+   var tokenParamName = "${_csrf.parameterName}";
+   var tokenValue = "${_csrf.token}";
 </script>
+
 
 <style>
 .viewTemplate {
@@ -82,7 +84,7 @@ function getRequirementSubmissionDetails(jobTitle,submissionId,candidateId,requi
 	var loginUserId = '${SourceLeadWeb_userId}';
 	$.ajax({ 
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getProfessionalSubmissionDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,
+	    	  url: sourceleadUrl+"/getProfessionalSubmissionDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId, 
 	    			
 	    	  success: function(data) {
     		  var result = "";
@@ -407,7 +409,7 @@ function getOfferDetails(submissionId){
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<div class="action-nav">';
 	                    	 result = result + '<span id="'+report.offerId.id+'offerActionDiv">';
-	                    	 if(report.offerId.offerStatus != "OFFERACCEPTED"  && report.offerId.offerStatus != "OFFERREJECTED" ){
+	                    	 if(report.submissionStatusStr != "REJECTED" && report.offerId.offerStatus != "OFFERACCEPTED"  && report.offerId.offerStatus != "OFFERREJECTED" ){
 	                    		 	result = result + '<a  href="javascript:void(0)" title="Accept" onClick="acceptingOffer(\''+accept+'\' ,\''+submissionId+'\',\''+report.offerId.id+'\');"   >&nbsp;&nbsp;<i class="fa fa-check text-success"></i></a>';
 	                        	 	result = result + '<a  href="javascript:void(0)"  title="Reject"  onClick="rejectOffer( \''+reject+'\' ,\''+submissionId+'\',\''+report.offerId.id+'\');"  >&nbsp;&nbsp;<i class="fa fa-close text-danger"></i></a>';
 	                    	 }
@@ -498,7 +500,7 @@ function getOfferDetails(submissionId){
 	                        	 result = result + '<label class="col-md-5">';
 	                        	 result = result + '<strong>Attachment</strong>';
 	                        	 result = result + '</label>';
-	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.fileName+'<a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOfferAttachment?offerId='+report.offerId.id+'\"></a></p>';
+	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.fileName+'<a download class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/ws/downloadOfferAttachment?offerId='+report.offerId.id+'\"></a></p>';
 	                        	 result = result + '</div>';
 	                    	 }else{
 	                    		 result = result + '<div class="row clearfix">';
@@ -553,7 +555,7 @@ function getOfferDetails(submissionId){
 function changeInterviewStatus(submissionId,interviewId,interviewStatus){
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/acceptOrRejectInterview?${_csrf.parameterName}=${_csrf.token}&interviewStatus="+interviewStatus+"&requirementInterviewId="+interviewId,	    	   
+		    url: sourceleadUrl+"/ws/acceptOrRejectInterview?${_csrf.parameterName}=${_csrf.token}&interviewStatus="+interviewStatus+"&requirementInterviewId="+interviewId,	    	   
 		    success: function(data) {
 		    	 jQuery("#"+(interviewId)+"actionDiv").css("display","none");
 		    	 if(interviewStatus == "Attending"){
@@ -689,7 +691,18 @@ function uploadAddApplicantRecrutierDoc() {
 <script>
 function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 	 var candidateId = '${candidateId}';
-	 generateOrgSubmissionForm(sourceleadUrl,requirementId) 
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatScript = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatScript = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatScript = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatScript = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatScript = 'yy-dd-mm'; 
+	  }
+	 generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript); 
 	 
 	 var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	 var result = "";
@@ -744,7 +757,7 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 		result = result + '<div class="col-md-8">';
 		result = result + '<select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">';
 		result = result + '<c:forEach var="skill" items="${skillsList}">';
-		result = result + '<option value="${skill.name}">${skill.name}</option>';
+		result = result + "<option value='${skill.name}'>${skill.name}</option>";
 		result = result + ' </c:forEach>';
 		result = result + '</select>';
 		result = result + '		 </div>';
@@ -831,7 +844,7 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 		result = result + '<div class="col-md-8">';
 		result = result + '<select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">';
 		result = result + '<c:forEach var="skill" items="${skillsList}">';
-		result = result + '<option value="${skill.name}">${skill.name}</option>';
+		result = result + "<option value='${skill.name}'>${skill.name}</option>";
 		result = result + ' </c:forEach>';
 		result = result + '</select>';
 		result = result + '		 </div>';
@@ -881,7 +894,6 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 		result = result + '</div>';
 		result = result + '</div>';  
 		result = result + '</form>';
-		result = result + '</form>';
 		
 		getCandidatesList(requirementId,'Candidate');
 	}
@@ -892,7 +904,7 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 	$("#applytoJobDiv").append(result);
 	
 	if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
-		$("#detailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#detailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		    setTimeout(function () {
 			getResumesList();
 			getCandidateDetails();
@@ -1017,7 +1029,6 @@ function ApplicantNotifyRequiremnentProRecruter(){
 	 if($("#notifyToApplicantId").is(':checked')){
 		  $("#notifyToApplicantId").val("Y");
 	 }else{
-		 alert("hello else");
 		 $("#notifyToApplicantId").val("N");
 	 }
 }
@@ -1225,7 +1236,7 @@ function ApplicantNotifyRequiremnentProRecruter(){
 	 $('#uploadFile').val(this.value.split( '\\' ).pop());
 	 $("#uploadFile").focus();
  	 if(validate_fileupload(this.value)){
- 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+ 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var form = $('#submitCandidateToJob_form')[0];
   		var formData = new FormData(form); 
 		   $.ajax({
@@ -1374,12 +1385,16 @@ function getResumesList(){
 </script>
 
 <script type="text/javascript">
-function getRecruiterCandidateDetails(){
-	var candidateId = document.getElementById("candidateId").value
+    function getRecruiterCandidateDetails(){
+	
+	    var candidateId = document.getElementById("candidateId").value
+	    var requirementId = $("#requirementId").val();
+		var orgLocationId ='${SourceLeadWeb_orgLocationId}';
+	
 	if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
+		        url: sourceleadUrl+"/getCandidateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId,		
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	
@@ -1550,10 +1565,14 @@ function getRecruiterCandidateDetails(){
 
 <script>
 function getCandidateDetails(){
+	
      var candidateId = '${SourceLeadWeb_candidateId}'; 
+     var requirementId = $("#requirementId").val();
+ 	 var orgLocationId ='${SourceLeadWeb_orgLocationId}';
+ 	 
      $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
+	        url: sourceleadUrl+"/getCandidateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId,		   
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	
@@ -1847,7 +1866,7 @@ function getCandidateCities(stateName,city){
 	}
 	
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
@@ -2012,7 +2031,7 @@ $('body').on('submit', '#applyToJob_form', function(e){
      
       var requirementUUID = '${requirementUUID}';
 		
-       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
       
   	    $.ajax({
 	    	type: "POST",
@@ -2036,7 +2055,7 @@ $('body').on('submit', '#applyToJob_form', function(e){
 		    			document.getElementById('requirementType').value = 'AppliedJobs';
 			    		document.getElementById('appliedjobs').checked = true;
 			    		document.getElementById('appliedActive').className = 'activeBackground'
-			    		document.getElementById("crowdActive").removeAttribute("class")
+			    		//document.getElementById("crowdActive").removeAttribute("class")
 			       		document.getElementById("openActive").removeAttribute("class");
 			        	
 			       		requirementsList(0);
@@ -2179,7 +2198,7 @@ $('body').on('submit', '#submitCandidateToJob_form', function(e){
       
       con = encodeURIComponent(con);
       
-        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
       
   	     $.ajax({
 	    	type: "POST",
@@ -2226,11 +2245,11 @@ $('body').on('submit', '#submitCandidateToJob_form', function(e){
 
 <script>
   function dobDatePicker() {
-	  $('#DOB').datepicker({
+	 /*  $('#DOB').datepicker({
 	      dateFormat: 'yy-mm-dd',
 	      changeMonth: true,
 	  	  changeYear: true, 
-	  });
+	  }); */
 	  
   }
 </script>
@@ -2268,7 +2287,7 @@ function setRateTypesByLocation(){
 	 $('#uploadFile').val(this.value.split( '\\' ).pop());
 	 $("#uploadFile").focus();
  	 if(validate_fileupload(this.value)){
- 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+ 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var form = $('#applyToJob_form')[0];
   		var formData = new FormData(form); 
 		   $.ajax({
@@ -2356,7 +2375,31 @@ function init(){
     setRateTypesByLocation();
 }
 </script>
-
+ <script>
+ function changeRateLabels(){
+	 
+	 var currentRate = document.getElementById("currentRate").textContent;
+	 var currentstringLength = currentRate.length; 
+	 var currentRatelastChar = currentRate.charAt(currentstringLength - 1);
+	 
+	 if(currentRatelastChar == "*"){
+		 $("#currentRate").html("Current Rate *"); 
+	 }else{
+		 $("#currentRate").html("Current Rate");
+	 }
+	 
+	 var expectedRate = document.getElementById("expectedRate").textContent;
+	 var expectedstringLength = expectedRate.length; 
+	 var expectedRatelastChar = expectedRate.charAt(expectedstringLength - 1);
+	 
+	 if(expectedRatelastChar == "*"){
+		 $("#expectedRate").html("Expected Rate *"); 
+	 }else{
+		 $("#expectedRate").html("Expected Rate");
+	 }
+	 
+ }
+ </script>
 
 
 <script>

@@ -106,7 +106,7 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 					StringBuilder interviewStringBuilder=new StringBuilder();
 					interviewHistory.setRemainderTime(interviewStringBuilder.append(hours).append(" : ").append( minutes).append(" minutes").toString());
 				}
-				
+				 
 			    if(requirementInterview.getDateOfInterview() != null){
 
 					String currentTimeStr = Constants.TZ_DF.format(requirementInterview.getStartTime());
@@ -278,17 +278,20 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 				}
 			}
 			
+			if(interviewHistory.getSubmissionId().getRequirement() != null) {
+				if(interviewHistory.getSubmissionId() != null && interviewHistory.getSubmissionId().getRequirement().getJobTitle() != null){
+					requirementTitle = interviewHistory.getSubmissionId().getRequirement().getJobTitle();
+				}
+				if(interviewHistory.getSubmissionId() != null && interviewHistory.getSubmissionId().getRequirement().getRequirementUUID() != null){
+					interviewHistory.setRequirementUUID(interviewHistory.getSubmissionId().getRequirement().getRequirementUUID());
+				}
+				
+				if(null != interviewHistory.getInterviewId().getInterviewTemplateId()){
+					interviewHistory.setInterviewTemplateid(interviewHistory.getInterviewId().getInterviewTemplateId().getId());
+				}
+			}
 			
-			if(interviewHistory.getSubmissionId() != null && interviewHistory.getSubmissionId().getRequirement().getJobTitle() != null){
-				requirementTitle = interviewHistory.getSubmissionId().getRequirement().getJobTitle();
-			}
-			if(interviewHistory.getSubmissionId() != null && interviewHistory.getSubmissionId().getRequirement().getRequirementUUID() != null){
-				interviewHistory.setRequirementUUID(interviewHistory.getSubmissionId().getRequirement().getRequirementUUID());
-			}
 			
-			if(null != interviewHistory.getInterviewId().getInterviewTemplateId()){
-				interviewHistory.setInterviewTemplateid(interviewHistory.getInterviewId().getInterviewTemplateId().getId());
-			}
 			
 	/*		if(Constants.ADMIN.equalsIgnoreCase(userType)){
 				List<RequirementInterviewer> reqiremList = requirementInterviewerService.getInterviwersListByInterviewId(interviewHistory.getInterviewId().getId());
@@ -320,7 +323,9 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 			
 			interviewHistory.setRequirementTitle(requirementTitle);
 			
-			interviewHistory.setRequirementId(interviewHistory.getSubmissionId().getRequirement().getId().toString());
+			if(interviewHistory.getSubmissionId().getRequirement() != null) {
+				interviewHistory.setRequirementId(interviewHistory.getSubmissionId().getRequirement().getId().toString());
+			}
 			
 			List<RequirementInterviewer> interviewers = requirementInterviewerService.getInterviwersListByInterviewId(interviewHistory.getInterviewId().getId());
 			for(RequirementInterviewer interviewer:interviewers){
@@ -539,4 +544,8 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 	}
 
 	
+	@Override
+	public Long getCountOfAllInterviewAssignedToLoginUser(OrgLocations loginOrgLocations, String userType, Long userId, String userCode) throws Exception {
+		return requirementInterviewHistoryDao.getCountOfAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), userType, userId, userCode);
+	}
 }

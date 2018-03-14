@@ -16,14 +16,14 @@
       <div class="pull-left">
         <h2>View Request Associates</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/projectDashboard'/>">Home</a> &raquo; <a href="<c:url value='/projectSummary?projectUUID=${projectUUID}&tabType=resources'/>">Planning</a> &raquo; View Request Associates</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/projectDashboard'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=resources'/>">Planning</a> &raquo; View Request Associates</div>
 </section>
 
  <div class="content-area content-new clearfix">
    <div id="requestedAssociatesList" class="col-md-12"></div>
    <div class="clearfix"></div>
    <div class="modal-footer">
-   <button class="btn btn-primary" type="button" value="Back to list" onClick="javascript:window.location.href = '<c:url value='/projectSummary?projectUUID=${projectUUID}&tabType=resources'/>'" >Back to list</button>
+   <button class="btn btn-primary" type="button" value="Back to list" onClick="javascript:window.location.href = '<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=resources'/>'" >Back to list</button>
    </div>
 					
  </div>
@@ -86,12 +86,12 @@ function getRequestedAssociatesList(){
 				result = result +' </div>';    
 				result = result +'</div>';
 				
-				result = result +'<div class="col-md-6">'; 
+				/* result = result +'<div class="col-md-6">'; 
 				result = result +'<label class="col-md-4 control-label">Status :</label>';
 				result = result +'<div class="col-md-8">';
 				result = result +'<label><strong>'+json.requestStatus+'</strong></label>  ';
 				result = result +' </div>';    
-				result = result +'</div>';
+				result = result +'</div>'; */
 				
 				result = result +'</div>';
 				result = result +'</div> ';  
@@ -117,7 +117,16 @@ function getRequestedAssociatesList(){
 				
 				 for(var i=0; i<json.resourceRequestList.length; i++){
 					 var opt = json.resourceRequestList[i];
-					 
+					 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != "undefined"){
+						 startDateStr = opt.startDateStr;
+					 }else{
+						 startDateStr = "--";
+					 }
+					 if(opt.endDateStr != null && opt.endDateStr != "" && opt.endDateStr != "undefined"){
+						 endDateStr = opt.endDateStr;
+					 }else{
+						 endDateStr = "--";
+					 }
 					 result = result +'<tr>';
 					    
 					    result = result +'<td>';
@@ -137,11 +146,11 @@ function getRequestedAssociatesList(){
 						result = result +'</td>';
 						
 						result = result +'<td>';
-					 	result = result +'<div class="tblminwidth-100" title="'+opt.startDateStr+'">'+opt.startDateStr+'</div>';
+					 	result = result +'<div class="tblminwidth-100" title="'+startDateStr+'">'+startDateStr+'</div>';
 						result = result +'</td>';
 						
 						result = result +'<td>';
-					 	result = result +'<div class="tblminwidth-100" title="'+opt.endDateStr+'">'+opt.endDateStr+'</div>';
+					 	result = result +'<div class="tblminwidth-100" title="'+endDateStr+'">'+endDateStr+'</div>';
 						result = result +'</td>';
 						
 						result = result +'<td>';
@@ -160,7 +169,7 @@ function getRequestedAssociatesList(){
 						if(opt.resourceStatus == null){
 							result = result +'<div class="tbldata-dotdot_vsm text-warning">Sent For Approval</div>';
 						}else{
-							result = result +'<div class="tbldata-dotdot_80 text-success" title="'+opt.resourceStatus+'"><strong>'+opt.resourceStatus+'<strong></div>';
+							result = result +'<div class="tbldata-dotdot_80" title="'+opt.resourceStatus+'"><strong>'+opt.resourceStatus+'<strong></div>';
 						}
 					 	
 						result = result +'</td>';
@@ -174,8 +183,6 @@ function getRequestedAssociatesList(){
 					
 				$("#requestedAssociatesList").empty();  
 			    $("#requestedAssociatesList").append(result);
-				
-        	 
         	
         	 
          }

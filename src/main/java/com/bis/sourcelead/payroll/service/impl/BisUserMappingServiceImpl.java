@@ -74,7 +74,6 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 			FileInputStream fis = new FileInputStream(file);
 			workbook = WorkbookFactory.create(fis);
 			int numberOfSheets = workbook.getNumberOfSheets();
-			int isValid = 0;
 			int version;
 			version = getBisUserMappingVersionByLocationId(orgLocation.getId());
 			version += 1;
@@ -153,14 +152,14 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 							String comments = getCellValueAsString(row.getCell(13), fileName);
 							bisUserMapping.setComments(comments);
 						}
-//						if (row.getCell(14) != null && !"".equalsIgnoreCase(row.getCell(14).toString())) {
-//							advanceHp = Float.parseFloat(getCellValueAsString(row.getCell(14), fileName));
-//							bisUserMapping.setAdvanceHcp(Math.round(advanceHp * 100D) / 100D);
-//						}
-//						if (row.getCell(15) != null && !"".equalsIgnoreCase(row.getCell(15).toString())) {
-//							balance = Float.parseFloat(getCellValueAsString(row.getCell(15), fileName));
-//							bisUserMapping.setBalance(Math.round(balance * 100D) / 100D);
-//						}
+						if (row.getCell(14) != null && !"".equalsIgnoreCase(row.getCell(14).toString())) {
+						 advanceHp = Float.parseFloat(getCellValueAsString(row.getCell(14), fileName));
+							bisUserMapping.setAdvanceHcp(Math.round(advanceHp * 100D) / 100D);
+						}
+						if (row.getCell(15) != null && !"".equalsIgnoreCase(row.getCell(15).toString())) {
+							balance = Float.parseFloat(getCellValueAsString(row.getCell(15), fileName));
+							bisUserMapping.setBalance(Math.round(balance * 100D) / 100D);
+						}
 						bisUserMapping.setCreatedBy(user.getUserCode());
 						bisUserMapping.setCreatedDate(new Date());
 						bisUserMapping.setUpdatedBy(user.getUserCode());
@@ -225,6 +224,8 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 						double generalExpenses = 0;
 						double payrollChecks = 0;
 						double amount = 0;
+						boolean notEmpty = checkRowEmptyOrNot(row);
+						if(notEmpty) {
 						if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 							String empId = getCellValueAsString(row.getCell(0), fileName);
 							checks.setEmpId(empId.split("\\.")[0]);
@@ -275,21 +276,25 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 							checks.setVendorPayments(Math.round(vendorPayments * 100D) / 100D);
 						}
 						if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
-//							electronicWithDrawals = Double.parseDouble(getCellValueAsString(row.getCell(10), fileName));
-//							checks.setElectronicWithdrawals(Math.round(electronicWithDrawals * 100D) / 100D);
 							checks.setElectronicWithdrawals(getCellValueAsString(row.getCell(10), fileName));
 						}
 						if (row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())) {
-							payrollChecks = Double.parseDouble(getCellValueAsString(row.getCell(11), fileName));
-							checks.setPayrollChecks(Math.round(payrollChecks * 100D) / 100D);
+							checks.setHealthInsurance(getCellValueAsString(row.getCell(11), fileName));
 						}
 						if (row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString())) {
-							amount = Double.parseDouble(getCellValueAsString(row.getCell(12), fileName));
+							checks.setImmigration(getCellValueAsString(row.getCell(12), fileName));
+						}
+						if (row.getCell(13) != null && !"".equalsIgnoreCase(row.getCell(13).toString())) {
+							payrollChecks = Double.parseDouble(getCellValueAsString(row.getCell(13), fileName));
+							checks.setPayrollChecks(Math.round(payrollChecks * 100D) / 100D);
+						}
+						if (row.getCell(14) != null && !"".equalsIgnoreCase(row.getCell(14).toString())) {
+							amount = Double.parseDouble(getCellValueAsString(row.getCell(14), fileName));
 							checks.setAmount(Math.round(amount * 100D) / 100D);
 							;
 						}
-						if (row.getCell(13) != null && !"".equalsIgnoreCase(row.getCell(13).toString())) {
-							String checkNumber = getCellValueAsString(row.getCell(13), fileName);
+						if (row.getCell(15) != null && !"".equalsIgnoreCase(row.getCell(15).toString())) {
+							String checkNumber = getCellValueAsString(row.getCell(15), fileName);
 							checks.setCheckNo(checkNumber.split("\\.")[0]);
 						}
 						checks.setCreatedBy(user.getUserCode());
@@ -301,6 +306,7 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 						if (savedChecks != null) {
 							count++;
 						}
+					}
 					}
 				}
 
@@ -415,5 +421,32 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 	{
 		return bisUserMappingDao.getChecksVersionByLocationId(locationId);
 	}
+  
+	/**
+	 * check the rows empty or not
+	 * 
+	 * @param row
+	 * @return boolean
+	 */
 
+	private boolean checkRowEmptyOrNot(Row row) {
+		if     (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString()) 
+				|| row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString()) 
+				|| row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())
+				|| row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString()) 
+				|| row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString()) 
+				|| row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())
+				|| row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString()) 
+				|| row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString()) 
+				|| row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString()) 
+				|| row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())
+				|| row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())
+				|| row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString()) 
+				|| row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString()) 
+				|| row.getCell(13) != null && !"".equalsIgnoreCase(row.getCell(13).toString())) {
+
+			return true;
+		}
+		return false;
+	}
 }

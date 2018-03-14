@@ -4,17 +4,41 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script type="text/javascript">
 window.onload = function () {
-	getOrgsList();
+	getDynamicOrgList();
  };
 </script>
+<style type="text/css">
+#loadMoreDiv{
+text-align: center;
+font-size: 18px;
+font-weight: bold;
+vertical-align: middle;
+padding: 20px 15px;
+clear: both;
+display: inline-block;
+margin: auto;
+width: 100%;
 
+}
+#loadMoreDiv .fa-spinner{
+margin-right: 15px;
+}
+
+.reportsCount.req_Crowd ul li {
+    width: 25% !important;
+}
+</style>
 <script>
 	function predefineOrgImage(imageId){
-		$(imageId).attr('src','resources/images/office-image.jpg');
+		$(imageId).attr('src','/resources/images/office-image.jpg');
 	}
 </script>
 
+<!--success msg -->
 
+<div class="success_pop" id="mailMsg" style="display: none;">
+	<i class="fa fa-check-circle"></i><span>Invitation sent successfully</span>
+</div>
   <!-- Content Area -->
   
   <section class="content-wraper">
@@ -29,13 +53,24 @@ window.onload = function () {
       <div class="pull-left">
         <h2>Orgs List</h2>
       </div>
+       <div class="pull-right brud-crum"><a href="${appPath}/dashboard">Home</a> &raquo; Orgs List </div>
+      <div class="clearfix"></div> 
+      <div class="reportsCount req_Crowd clearfix">
+          <ul class="clearfix">
+          <li id="crowd"><label class="mr10"><span><i class="fa fa-registered"></i></span><b id="crowdActive"><input class="myCheckbox valid" type="radio" checked name="sourceleadOrgType" id="sourceleadOrg" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/enrolledOrgsList'/>'" >&nbsp;Registered Companies</label></b></li>
+          <li id="crowd"><label class="mr10"><span><i class="fa fa-cubes"></i></span><b id="savedActive"><input class="myCheckbox valid" type="radio" name="sourceleadOrgType" id="sourceleadOrg" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/requestedOrgs'/>'" >&nbsp;Registration Requests</label></b></li>
+          <li id="crowd"><label class="mr10"><span><i class="fa fa-laptop"></i></span><b id="savedActive"><input class="myCheckbox valid" type="radio" name="sourceleadOrgType" id="sourceleadOrg" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/demoRequests'/>'">&nbsp;Demo Requests</label></b></li>
+          </ul>
+      </div> 
       
-    <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; Orgs List </div>
+    <input id="searchOrgElement" type="hidden"></input>
     </section>
-      <section class="clearfix section-action-btns">
+    <div class="project_wrap_table datatable_filter backgroundWhite">
+       <section class="clearfix section-action-btns">
         <ul class="pull-right list-unstyled list-inline">
+        
           <li><i class="fa fa-filter"></i>&nbsp;
-               <select id="userState" onchange="getOrgsList();">
+               <select id="userState" onchange="getDynamicOrgList();">
 				<option value="" selected>--Select Status--</option>
 				<option value="ALL" >All</option>
 				<option value="ACTIVE" >Active</option>
@@ -44,50 +79,225 @@ window.onload = function () {
 			   </select>
           
           </li>
-		   
-		 <li>
-			  <a href="javascript:void(0)"></a>
-			  
-				<span class="action-search"><input type="text" id="searchByName"></span>
-				<span class="action-search" onclick="getOrgsList();"><i class="fa fa-search"></i></span>
+          <li><a href="<c:url value='${appPath}/enrollOrg'/>"><i class="fa fa-cubes"></i>&nbsp;Create</a></li>
+		 <li class="positionRelative">
+		 <div class="dynamic_search">
+	   			<input type='text' placeholder='Search' id='dynamicOrgDataTableSearch'/>
+	   			<span class="cursorPointer" title="Search"><i class="fa fa-search" onClick="getDynamicOrgList();"></i></span>
+			  </div>
 		  </li> 
-		
-		  <li><a href="<c:url value='/enrollOrg'/>"><i class="fa fa-cubes"></i>&nbsp;Create</a></li>
+		  
         </ul>
-      </section>
-      <div class="clearfix form-area form-horizontal toggle-div remove-div">
-      <div class="row">
-          <div id="orgListBody"></div> 
-      </div>
-      <div id="orgListEmptyBody"></div>
+      </section> 
+            <div id="dynamicOrgList"></div>
       </div>
       </div>
   </section>
   
       <!-- Content Area Ends--> 
-	<div class="backtotop"><img src="resources/images/backtotop.png"></div>  
+	<div class="backtotop"><img src="/resources/images/backtotop.png"></div>  
       <jsp:include page="../masterFooter.jsp" />
       
       
-      
-      
+
+
+
+
+
+<!-- ============================ Laxman Dynamic OrgList functionality ================================= -->
+
+<script>
+function getDynamicOrgList(){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var userState = $("#userState").val();
+	var searchValue = $("#dynamicOrgDataTableSearch").val();
+	 searchValue = searchValue ? searchValue : "";
+	var url = sourceleadUrl+"/getDynamicOrgsList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&userState="+userState;
+	prepareDynamicOrgList(url);
+    			 
+}
+</script>
+<script>
+function prepareDynamicOrgList(url){
+	 	var result = "";
+		result = result	+ '<div class="clearfix minHeight35 hidden">';
+	    result = result	+ '<div class="remove_search">';
+		result = result	+ '</div>';
+		result = result	+ '</div>';
+		result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
+		result = result + '<table id="dynamicOrgListView" class="display" cellspacing="0" width="100%" >';
+		result = result + '<thead>';
+		result = result + '<tr>';
+		result = result + '<th>Company Name</th>';
+		result = result + '<th>Email Id</th>';
+		result = result + '<th>Phone No.</th>';
+		result = result + '<th>Location</th>';
+		result = result + '<th>Action</th>';
+		result = result + '</tr>';
+		result = result + '</thead>';
+		result = result + '</table>';
+		result = result	+ '</div>';
+		$("#dynamicOrgList").empty();
+		$("#dynamicOrgList").append(result);
+		dynamicOrgListPagination(url);
+}
+function dynamicOrgListPagination(url){
+	var colIndex = 0;
+    $('#dynamicOrgListView').DataTable( { 
+	  "processing": true,
+      "serverSide": true,
+      "searching": false,
+      "ajax": $.fn.dataTable.pipeline( {
+          url: url,
+          method: 'POST',
+          pages: 10
+        }),
+        "columnDefs": [{
+    	  	"targets": colIndex++,
+    	  	"data": "",
+    	  	"render": function(data, type, org, meta) {
+    	  		var result = "";
+    	  		result = result +"<td><div class='tbldata-dotdot-200 UserTextLeft'>";
+       	    	result = result +"<img onerror='predefineOrgImage(this);' class='m-t-xs' data-id='orgLogoImage' src="+org.fileUrl+" alt='image'>";
+       	    	result = result +"<a href='<c:url value='/app/orgSummary/"+org.id+"'/>' title='"+org.orgName+"'>"+org.orgName+" </a>";
+       	    	result = result + '</div></td>'; 
+       	    	return result;
+    	  	}
+	      },{
+	  	  	"targets": colIndex++,
+		  	"data": "",
+		  	"render": function(data, type, org, meta) {
+		  		if(org.email != null && org.email != "" && org.email != "undefined"){
+		  			email = org.email;
+		  		}else{
+		  			email = "--";
+		  		}
+		  		var result = "";
+				result = result + ' <td><div class="tbldata-dotdot" title = "'+email+'">'+email+'</div></td>';
+	             return result;
+		  	}
+		  },{
+			  	"targets": colIndex++,
+			  	"data": "",
+			  	"render": function(data, type, org, meta) {
+			  		if(org.mobilePhone != null && org.mobilePhone != "" && org.mobilePhone != "undefined"){
+			  			mobilePhone = org.mobilePhone;
+			  		}else{
+			  			mobilePhone = "--";
+			  		}
+			  		var result = "";
+					result = result + ' <td><div class="tbldata-dotdot-100" title = "'+mobilePhone+'">'+mobilePhone+'</div></td>';
+
+		             return result;
+			  	}
+		  },{
+			  	"targets": colIndex++,
+			  	"data": "",
+			  	"render": function(data, type, org, meta) {
+			  		var result = "";
+			  		if(org.location != null && org.location != '' && org.location != 'undefined'){
+			  			result = result + ' <td><div class="tbldata-dotdot-big" title = "'+org.location+'">'+org.location+'</div></td>';
+			  		}else{
+			  			result = result + ' <td><div class="tbldata-dotdot-big">--</div></td>';
+			  		}
+					
+
+		             return result;
+			  	}
+		  } 
+		  ,{
+			  	"targets": colIndex++,
+			  	"data": "",
+			  	"render": function(data, type, org, meta) {
+			  		var result = "";
+	    	  		result = result +"<td><div class='tbldata-dotdot_80'>";
+			  		if(org.user != null &&(org.isMailSent != null && org.isMailSent != "" && org.isMailSent == 'Y') &&
+	 			    		(org.userState != null && org.userState != "" && org.userState == 'NOT_LOGGEDIN') ){
+	 			    	 result = result +"<p><label id='user"+org.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+org.registeredUserId+","+org.id+");'>&nbsp;&nbsp;Resend</a></label></p>";
+	 			    }else if(org.user != null && org.userState != null && org.userState != "" && org.userState == 'ACTIVE'){
+	 			    	result = result +"<b class='activeGren'>&nbsp;&nbsp;Active</b>";
+	 			    }else if(org.user != null && org.userState != null && org.userState != "" && org.userState == 'INACTIVE'){
+	 			    	result = result +"<b class='activeGray'>&nbsp;&nbsp;In-active</b>";
+	 			    }else if(org.user == null ){
+	 			    	result = result +"<b>&nbsp;&nbsp;Guest Org</b>";
+	 			    } 
+	    	  		result = result +"</td></div>";
+
+		             return result;
+			  	}
+		  }],
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+// 	    	"aaSorting": [[1,'desc']],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     }
+	    	 
+    } );
+    $("#dynamicOrgListView").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("input[type=search]").hide();
+    $("#dynamicOrgDataTableSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+    		   getDynamicOrgList();
+    	   }
+    	});
+	
+}
+</script>
+
 <script type="text/javascript">
-	function getOrgsList(){
-		
+function resendInvitation(userId,orgId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(userId != null && userId != ""){
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			 $.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgId="+orgId,  
+			        success: function(result) {
+			        	$("#user"+userId).html("<i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)'  onClick='resendInvitation("+userId+", "+orgId+");'>&nbsp;Resend</a>");
+			        	$("#loading").removeAttr("style"); 
+			        	$("#mailMsg").fadeIn(200);
+		   		        $('#mailMsg').delay(2000).fadeOut('slow');
+			        },
+			    });
+		 }
+	}
+  
+</script>
+
+<script type="text/javascript">
+	function getOrgsList1(type){
 		var sourceleadUrl = '${sourceleadUrl}';
 		var searchByName = document.getElementById("searchByName").value;
 		var userState = document.getElementById("userState").value;
 		
+		if(type == "scroll"){
+			offset = $("#orgOffset").val();
+			var searchByName =  document.getElementById("searchOrgElement").innerHTML
+    	}
+		if(type == "manual"){
+			$('#orgListEmptyBody').empty();
+			$('#orgListBody').empty();
+    		$("#orgOffset").val(0);
+    		$("#searchOrgElement").val("");
+    		var searchByName = document.getElementById("searchByName").value;
+   		     $('#searchOrgElement').append(searchByName);
+    		 offset = 0;
+    	}
 		
+	    /* $('#orgListBody').empty();
+        $('#orgListEmptyBody').empty(); */
 		
-	    $('#orgListBody').empty();
-        $('#orgListEmptyBody').empty();
-		
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		
 		 $.ajax({ 
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getOrgsList?${_csrf.parameterName}=${_csrf.token}&searchByName="+searchByName+"&userState="+userState,
+	    	url: "/app/getOrgsList?${_csrf.parameterName}=${_csrf.token}&searchByName="+searchByName+"&userState="+userState+"&offset="+offset,
 	    			 
             success: function(data) {
 	        var json = JSON.parse(data);
@@ -95,7 +305,7 @@ window.onload = function () {
 	        
 	    	 if(json.length > 0)
 	   		{
-	    		
+	    		 $('#loadMoreDiv').empty();
 	 			for(var i=0; i<json.length; i++){
 		       	 
 	 				var org = json[i];
@@ -119,13 +329,13 @@ window.onload = function () {
 	       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
 	       	    	result = result +"<div class='text-center image-parent'>";
 	       	    	result = result +"<div class='imageParent'>";
-	       	    	result = result +"<img onerror='predefineOrgImage(this);' class='m-t-xs' src='"+sourceleadUrl+"/displayOrgImage/"+org.orgCode+"' alt='image'>";
+	       	    	result = result +"<img onerror='predefineOrgImage(this);' class='m-t-xs' data-id='orgLogoImage' src="+org.fileUrl+" alt='image'>";
 	       	    	result = result +"</div>";
 	       	    	
 	       	    	result = result +"</div>";
 	       	    	result = result +"</div>";
 	       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
-	       	    	result = result +"<h4><a href='<c:url value='/orgSummary/"+org.id+"'/>' title='"+org.orgName+"'>"+org.orgName+" </a> </h4>";
+	       	    	result = result +"<h4><a href='<c:url value='/app/orgSummary/"+org.id+"'/>' title='"+org.orgName+"'>"+org.orgName+" </a> </h4>";
 	       	    	result = result +"<p><label><i class='fa fa-map-marker' aria-hidden='true'></i>&nbsp;&nbsp;&nbsp; "+org.location+" </lable></p>";
 	       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp; "+email+" </lable></p>";
 	       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp; "+mobilePhone+" </label></p>";
@@ -147,65 +357,45 @@ window.onload = function () {
 	       	    	result = result +"</div>";
 	       	    	
 	       	    	$("#loading").removeAttr("style"); 
-	       	 	    $('#orgListBody').append(result);
-	       	 	    $("#searchByName").val("");
-				   }
+	       	 	    
+	       	 	if(type == "manual"){
+            		$('#orgListBody').append(result);
+            		 $("#searchByName").val("");
+            	}else{
+            		$('#orgListBody').append(result);
+            		 $("#searchByName").val("");
+            	}
 	   		    }
-	    	else{
+	 			result = result + '<div class="clear"></div>';
+	 			$("#noOrgsList").val("")
+	   		}else if(type == "scroll"){
+            	$("#noOrgsList").val("noOrgsList")
+            	$('#loadMoreDiv').empty(); 
+            	$("#loading").removeAttr("style");
+            	var result ="";
+	         	result = result + '<div id="loadMoreDiv" >No More Records..</div>';
+	         	$('#loadMoreDiv').append(result);
+	         	$("#noOrgsList").val("")
+            }else{
+            	$("#noOrgsList").val("noOrgsList")
+            	$('#loadMoreDiv').empty(); 
+            	$("#loading").removeAttr("style");
+            	var result ="";
+	         	result = result + '<div id="loadMoreDiv" >No  Records..</div>';
+	         	$('#loadMoreDiv').append(result);
+            }
+	    	/* else{
 	    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-user'></i><h3>Orgs List is Empty</h3></div>";
 	    		$('#orgListBody').empty();
 	    		$("#loading").removeAttr("style");
 	    		$('#orgListEmptyBody').append(result);
        	 	    $("#searchByName").val("");
-	    	} 
+	    	}  */
 
 			 },
 	        error: function(e){
 	        }
 	    });  
 	}
-</script>
-
-
-<script type="text/javascript">
-function resendInvitation(userId,orgId){
-	var sourceleadUrl ='${sourceleadUrl}';
-	if(userId != null && userId != ""){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			 $.ajax({
-			    	type: "POST",
-			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgId="+orgId,  
-			        success: function(result) {
-			        	$("#user"+userId).html("<i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)'  onClick='resendInvitation("+userId+", "+orgId+");'>&nbsp;Resend</a>");
-			        	$("#loading").removeAttr("style"); 
-			        	$("#mailMsg").fadeIn(200);
-		   		        $('#mailMsg').delay(2000).fadeOut('slow');
-			        },
-			    });
-		 }
-	}
-  
-</script>
-
-
-<script>
-// Back To Top 
-    $(window).scroll(function() {
-        if ($(this).scrollTop() > 50) {
-            $('.backtotop').fadeIn('slow');
-        } else {
-            $('.backtotop').fadeOut('slow');
-        }
-    });
-    $('.backtotop').click(function() {
-        $("html, body").animate({scrollTop: 0}, 500);
-        return false;
-    });
 </script> 
-   
-
-<script>
-  $('#selector').delay(2000).fadeOut('slow');
-</script> 
-
     

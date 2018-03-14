@@ -2,11 +2,13 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -17,8 +19,11 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ReferContactsDao;
+import com.bis.sourcelead.dto.ReferContactsDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.ContactsGroup;
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.ReferContacts;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -126,7 +131,7 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 		referContacts = session
 				.createQuery(
 						"from ReferContacts contacts left join fetch contacts.referFromUser where contacts.contactUserUUID =:contactUUID")
-				.setString("contactUUID", contactUUID).setCacheable(true).list();
+				.setString("contactUUID", contactUUID).list();
 		logger.debug("getReferContactsByUUID end");
 		if (referContacts.size() > 0) {
 			return referContacts.get(0);
@@ -144,7 +149,7 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 		logger.debug("getReferContactsByEmails start");
 		referContacts = session
 				.createQuery("from ReferContacts contacts left join fetch contacts.referFromUser user where user.id =:userId and contacts.contactUserEmail = :toEmail")
-				.setLong("userId", userId).setString("toEmail", toEmail).setCacheable(true).list();
+				.setLong("userId", userId).setString("toEmail", toEmail).list();
 		logger.debug("getReferContactsByEmails end");
 		if (referContacts.size() > 0) {
 			return referContacts.get(0);
@@ -155,11 +160,103 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public List<ReferContacts> getReferContactsListByUserIdAndOrglocationId(Long userId, Long orgLocationId) throws Exception {
+	public ResponseList<ReferContactsDTO> getReferContactsListByUserIdAndOrglocationId(ReferContactsDTO contactsDTO,Long userId, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from  ReferContacts contacts  where contacts.referFromUser.id =:userId  ";
-		List<ReferContacts> referContactsList  =   session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true) .list();
-		return referContactsList;
+		Query queryObj = null;
+		String query = null;
+		Integer filterCount = 0;
+		StringBuilder query1 = new StringBuilder("");
+		ResponseList<ReferContactsDTO> response = new ResponseList<>();
+		List<ReferContactsDTO> contactsDTOList = new ArrayList<>();
+		List<Long> groupIdsList = new ArrayList<>();
+		List<Long> countlist = null;
+		
+		if(contactsDTO.getSearchValue() !=null && !"".equalsIgnoreCase(contactsDTO.getSearchValue())) {
+			 query1.append(" contacts.contactUserEmail like '%" + contactsDTO.getSearchValue() + "%' ")
+					.append("OR contacts.firstName like '%" + contactsDTO.getSearchValue() + "%' ")
+					.append("OR contacts.lastName like '%" + contactsDTO.getSearchValue() + "%' ")
+					.append("OR contacts.contactUserPhone like '%" + contactsDTO.getSearchValue() + "%' ")
+					.append("OR (concat( contacts.firstName, contacts.lastName) like '%" + contactsDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')" )
+					.append("OR contacts.contactSource like '%" + contactsDTO.getSearchValue() + "%' ");
+						
+			}
+		
+		if(contactsDTO.getGroupIdsList() != null && !contactsDTO.getGroupIdsList().isEmpty()){
+			String[] groupIds = contactsDTO.getGroupIdsList().split(",");
+			for(int i=0; i < groupIds.length; i++){
+				groupIdsList.add(Long.parseLong(groupIds[i]));
+			}
+			
+			query = "from  ReferContacts contacts  where contacts.referFromUser.id =:userId and "
+					+ "contacts.id IN (select cl.id from ContactsGroup cg join cg.contactsList cl where cg.id IN (:groupIdsList))";
+		}else{
+			query = "from  ReferContacts contacts  where contacts.referFromUser.id =:userId ";
+		}
+		
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")");
+		}else{
+			 queryObj = session.createQuery(query + query1.toString());
+		}
+		
+		queryObj.setFirstResult(contactsDTO.getStart());
+		queryObj.setMaxResults(contactsDTO.getLength());
+		
+		if(groupIdsList != null && groupIdsList.size() > 0){
+			queryObj.setLong("userId", userId).setParameterList("groupIdsList", groupIdsList).list();
+			countlist = session.createQuery("select count(*) " + query).setLong("userId", userId).setParameterList("groupIdsList", groupIdsList).list();
+		}else{
+			queryObj.setLong("userId", userId).list();
+			countlist = session.createQuery("select count(*) " + query).setLong("userId", userId).list();
+		}
+		List<ReferContacts> referContactsList = queryObj.list();
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			filterCount = referContactsList.size();
+		}
+		
+        int totalCount = 0;
+
+		
+		if (contactsDTO != null) {
+			if(countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+			}
+		} 
+		response.setRecordsTotal(totalCount);
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			response.setRecordsFiltered(filterCount);
+		}else {
+			response.setRecordsFiltered(totalCount);
+		}
+		
+		if(referContactsList != null && referContactsList.size() > 0) {
+  			for(ReferContacts contacts : referContactsList) {
+  				ReferContactsDTO referContactsDTO = new ReferContactsDTO();
+  				referContactsDTO.setFullName(contacts.getFullName());
+  				referContactsDTO.setEmail(contacts.getContactUserEmail());
+  				referContactsDTO.setSource(contacts.getContactSource().toString());
+  				referContactsDTO.setId(contacts.getId());
+  				referContactsDTO.setPhone(contacts.getContactUserPhone());
+  				List<ContactsGroup> groupList = contacts.getGroupList();
+  				
+  				if(groupList != null && groupList.size() > 0 ){
+  					List<String> groupsList = new ArrayList<>();
+  					for(ContactsGroup contactsGroup : groupList){
+  	  					groupsList.add(contactsGroup.getGroupName());
+  					}
+  					referContactsDTO.setGroupsList(groupsList);
+  				}
+  				contactsDTOList.add(referContactsDTO);
+  			}
+  		}
+		
+		
+		response.setData(contactsDTOList);
+		return response;
+		
 	}
 
 	@Override
@@ -170,7 +267,7 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from  ReferContacts contacts  where contacts.referFromUser.id = :userId and "
 				+ "contacts.contactUserEmail NOT IN (select refer.referToEmail from RequirementRefer refer where refer.referFromUser.id = :userId and refer.requirementId.id = :requirementId) ";
-		List<ReferContacts> referContactsList  =   session.createQuery(query.toString()).setLong("userId", userId).setLong("requirementId", requirementId).setCacheable(true) .list();
+		List<ReferContacts> referContactsList  =   session.createQuery(query.toString()).setLong("userId", userId).setLong("requirementId", requirementId) .list();
 		return referContactsList;
 	}
 
@@ -184,8 +281,61 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 		referContacts = session
 				.createQuery(
 						"from ReferContacts contacts left join fetch contacts.referFromUser where contacts.id =:id")
-				.setLong("id", id).setCacheable(true).list();
+				.setLong("id", id).list();
 		logger.debug("getReferContactsById end");
+		if (referContacts.size() > 0) {
+			return referContacts.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public Boolean validateGoogleEamil(String email, Long loginUserId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+		 if(email != null && loginUserId != null) {
+			 String query = "from ReferContacts referContacts where referContacts.referFromUser.id = :loginUserId and referContacts.contactUserEmail = :email ";
+				Collection<ReferContacts> referContactsList = session.createQuery(query.toString()).setLong("loginUserId", loginUserId).setString("email", email).list();
+				if (referContactsList != null && referContactsList.size() > 0) {
+					flag = true;
+				}
+		 }
+		 return flag;
+	}
+
+	@Override
+	@Transactional
+	public ReferContacts findByEmail(String recipientMail) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ReferContacts> referContacts = new ArrayList<ReferContacts>();
+		logger.debug("getReferContactsByEmails start");
+		referContacts = session
+				.createQuery("from ReferContacts contacts where contacts.contactUserEmail = :recipientMail")
+				.setString("recipientMail", recipientMail).list();
+		logger.debug("getReferContactsByEmails end");
+		if (referContacts.size() > 0) {
+			return referContacts.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	@Transactional
+	public ReferContacts getReferContactsByFromUserIdAndToUserId(Long fromUserId, Long toUserId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ReferContacts> referContacts = new ArrayList<ReferContacts>();
+		logger.debug("getReferContactsByFromUserIdAndToUserId start");
+		referContacts = session
+				.createQuery("from ReferContacts contacts left join fetch contacts.referFromUser fromUser left join fetch contacts.contactUser toUser "
+						+ " where fromUser.id = :fromUserId and toUser.id = :toUserId ")
+				.setLong("fromUserId", fromUserId).setLong("toUserId", fromUserId).list();
+		logger.debug("getReferContactsByFromUserIdAndToUserId end");
 		if (referContacts.size() > 0) {
 			return referContacts.get(0);
 		} else {

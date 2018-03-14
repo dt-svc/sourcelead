@@ -17,6 +17,7 @@ import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -50,6 +51,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementInterviewer;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -63,6 +65,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
@@ -90,6 +93,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
  *
  */
 @RestController
+//@RequestMapping("/app")
 public class CandidateRestController {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateRestController.class);
 	@Value("${sourceleadUrl}")
@@ -134,6 +138,9 @@ public class CandidateRestController {
 	@Autowired
 	OrgLocationService orgLocationService;
 	
+	@Autowired
+	RequirementLocationsService requirementLocationsService;
+	
 	protected boolean isNullOrEmpty(String str)
 	{
 		return (str == null || "".equals(str.trim()));
@@ -141,7 +148,7 @@ public class CandidateRestController {
 	
 	/**
 	 * @author prasad k
-	 * @since sep 1 2016
+         * @since sep 1 2016
 	 * @version 0.0.1
 	 * 
 	 *          This method is used to store/save candidate in candidate table.
@@ -151,24 +158,12 @@ public class CandidateRestController {
 	 *          store/save in candidateResumes in candidateResumes table .
 	 *          4.internalley store/save in candidateEmployers in
 	 *          candidateEmployers table .
-	 * 
-	 * 
-	 * 
-	 * @param jsonObj
-	 *            This is the first paramter to storeCandidate method
-	 * @param orgLocations
-	 *            This is the second paramter to storeCandidate method
-	 * @param user
-	 *            This is the third paramter to storeCandidate method
-	 * @param multiFile
-	 *            This is the fourth paramter to storeCandidate method
-	 * 
+	 * @param candidateDto
+         * @param request
 	 * @return Candidate
-	 * 
-	 * @throws NullPointer
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_VIEW_CANDIDATE','ROLE_VIEW_EDIT_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_CANDIDATES')")
-	@RequestMapping(value = "/storeCandidate", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/storeCandidate", method = RequestMethod.POST)
 	public @ResponseBody String storeCandidate(CandidateDTO candidateDto, HttpServletRequest request) throws Exception
 	{
 		if(Validator.validate(candidateDto)) {
@@ -180,10 +175,12 @@ public class CandidateRestController {
 		} else{
 			return "DataMissing";
 		}
+		 SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", "Success new candidate is created");
+		
 		return "success";
 	}
 	
-	@RequestMapping(value = "/parseResume", method = RequestMethod.POST)
+	@RequestMapping(value = {"/parseResume","/app/parseResume"}, method = RequestMethod.POST)
 	public @ResponseBody String parseResume(@RequestParam(value = "json", required = false) String json, MultipartHttpServletRequest request, @RequestParam(value = "locationMapFile", required = false) CommonsMultipartFile locationMapFileData) throws Exception
 	{
 		MultipartFile multiFile = null;
@@ -193,7 +190,8 @@ public class CandidateRestController {
 		}
 		String resumeDetails = null;
 		if (null != multiFile) {
-			resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResume(multiFile.getBytes(), request);
+			String country = (String) SourceLeadSessionManager.getSessionAttribute(request, "country");
+			resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResume(multiFile.getBytes(), country);
 		}
 		return resumeDetails;
 	}
@@ -205,7 +203,7 @@ public class CandidateRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/validateCandidateEmail", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/validateCandidateEmail", method = RequestMethod.POST)
 	public @ResponseBody String validateCandidateEmail(@RequestParam(value = "email", required = false) String email, @RequestParam(value = "candidateType", required = false) String candidateType, HttpServletRequest request) throws Exception
 	{
 		String result = null;
@@ -231,7 +229,7 @@ public class CandidateRestController {
 	 * candidateSkillsService.validateSkillName(skillName); } return flag; }
 	 */
 	
-	@RequestMapping(value = "/getCandidatesList", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/getCandidatesList", method = RequestMethod.POST)
 	public @ResponseBody String getCandidatesList(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateType", required = false) String candidateType, @RequestParam(value = "isAssociate", required = false) String isAssociate, HttpServletRequest request) throws Exception
 	{
 		String resultJson = null;
@@ -268,7 +266,7 @@ public class CandidateRestController {
 		}
 		if (null != isAssociate && isAssociate.equalsIgnoreCase(Constants.YES)) {
 			boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", isAssociate));
-			boolQueryBuilder.must(QueryBuilders.matchQuery("isFavouriteAssociate", "1"));
+			boolQueryBuilder.must(QueryBuilders.matchQuery("isFavourite", "1"));
 		}
 		else {
 			boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", isAssociate));
@@ -299,7 +297,7 @@ public class CandidateRestController {
 	 * 
 	 * @throws NullPointer
 	 */
-	@RequestMapping(value = "/checkCandidateState", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/checkCandidateState", method = RequestMethod.POST)
 	public @ResponseBody String checkCandidateState(@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request) throws Exception
 	{
 		String resultJson = null;
@@ -321,7 +319,7 @@ public class CandidateRestController {
 	 * @return string
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/downloadCandidateResume", method = RequestMethod.GET)
+	@RequestMapping(value = "/app/downloadCandidateResume", method = RequestMethod.GET)
 	public @ResponseBody void downloadCandidateResume(@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		CandidateResumes candidateResume = candidateResumesService.getCandidateLatesResumes(candidateId, 1);
@@ -345,7 +343,7 @@ public class CandidateRestController {
 		}
 	}
 	
-	@RequestMapping(value = "/getUserByRoleId", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/getUserByRoleId", method = RequestMethod.POST)
 	public @ResponseBody String getUserByRoleId(@RequestParam(value = "roleId", required = false) Long roleId, HttpServletRequest request) throws Exception
 	{
 		String resultJson = null;
@@ -355,7 +353,7 @@ public class CandidateRestController {
 		return resultJson;
 	}
 	
-	@RequestMapping(value = "/getAllRoleUsers", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/getAllRoleUsers", method = RequestMethod.POST)
 	public @ResponseBody String getAllRoleUsers(HttpServletRequest request) throws Exception
 	{
 		String resultJson = null;
@@ -372,7 +370,7 @@ public class CandidateRestController {
 		return resultJson;
 	}
 	
-	@RequestMapping(value = "/getConsultantUserDetailsById", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/getConsultantUserDetailsById", method = RequestMethod.POST)
 	public @ResponseBody String getConsultantUserDetailsById(@RequestParam(value = "userId", required = false) Long userId)
 	{
 		ArrayList<String> userList = new ArrayList<String>();
@@ -391,7 +389,7 @@ public class CandidateRestController {
 		return commonUtil.toJSON(userList);
 	}
 	
-	@RequestMapping(value = "/getCandidatesListByCandidateType", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/getCandidatesListByCandidateType", method = RequestMethod.POST)
 	public @ResponseBody String getCandidatesListByCandidateType(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateType", required = false) String candidateType, @RequestParam(value = "applicantSearch", required = false) String applicantSearch, HttpServletRequest request) throws Exception
 	{
 		List<Candidate> candidatesList = null;
@@ -418,7 +416,7 @@ public class CandidateRestController {
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')")
-	@RequestMapping(value = "/getTeams", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/getTeams", method = RequestMethod.POST)
 	public @ResponseBody String getTeams(HttpServletRequest request) throws Exception
 	{
 		String resultJson = null;
@@ -435,7 +433,7 @@ public class CandidateRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/verifyCoolingOffPeriod")
+	@RequestMapping(value = "/app/verifyCoolingOffPeriod")
 	public String verifyCoolingOffPeriod(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateEmail", required = false) String candidateEmail, @RequestParam(value = "reqCoolingOffPeriod", required = false) String reqCoolingOffPeriod, Long orgLocationId) throws Exception
 	{
 		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
@@ -445,6 +443,12 @@ public class CandidateRestController {
 		if (reqCoolingOffPeriod != null && !reqCoolingOffPeriod.isEmpty() && reqCoolingOffPeriod != "undefined") {
 			coolingOffArr = reqCoolingOffPeriod.split(" ");
 			period = coolingOffArr[1];
+		}else {
+			Requirement requirement =  requirementService.getRequirementByRequirementId(requirementId);
+			if(requirement != null && StringUtils.isNotBlank(requirement.getReqCoolingOffPeriod())) {
+				coolingOffArr = requirement.getReqCoolingOffPeriod().split(" ");
+				period = coolingOffArr[1];
+			}
 		}
 		String reqCoolingOffPeriodDays;
 		int Days;
@@ -489,7 +493,7 @@ public class CandidateRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getRequirementHistoryListByCandidateId")
+	@RequestMapping(value = "/app/getRequirementHistoryListByCandidateId")
 
 	public String getRequirementHistoryListByCandidateId(@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
 		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -508,7 +512,15 @@ public class CandidateRestController {
 			 }else{
 				 req.setOwnerName(req.getRequirement().getManagerUserId().getFirstName());
 			 }
-			
+			 List<String> requirementLocationsList = new ArrayList<>();
+				List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(req.getRequirement().getId());
+				if(locationsList != null && !locationsList.isEmpty()) {
+					for(RequirementLocations location : locationsList) {
+						requirementLocationsList.add(location.getLocation());
+					}
+				}
+				req.setLocationsList(requirementLocationsList);
+				
 			 if(null != req.getRequirement().getSpocId()){
 				 if(!"".equalsIgnoreCase(req.getRequirement().getSpocId().getClientUser().getLastName()) && null != req.getRequirement().getSpocId().getClientUser().getLastName() ){
 					 req.setClientName(req.getRequirement().getSpocId().getClientUser().getFirstName() +""+req.getRequirement().getSpocId().getClientUser().getLastName());
@@ -533,7 +545,7 @@ public class CandidateRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getRequirementHistoryDetailsByCandidateId")
+	@RequestMapping(value = "/app/getRequirementHistoryDetailsByCandidateId")
 	public String getRequirementHistoryDetailsByCandidateId(@RequestParam(value = "candidateId", required = false) Long candidateId, @RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request) throws Exception
 	{
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -544,10 +556,13 @@ public class CandidateRestController {
 			RequirementOffers ros = requirementOffersService.getRequirementOfferSubmissionById(rsh.getSubmissionId().getId());
 			if (null != ros) {
 				rsh.setOfferResumeid(ros.getId());
+				
 			}
 			if (null != rsh.getSubmissionId().getCandidateResumes()) {
-				rsh.setResumeid(rsh.getSubmissionId().getCandidateResumes().getResumeUUID());
+				rsh.setResumeid(rsh.getSubmissionId().getCandidateResumes().getFileURL());
 				rsh.setFileName(rsh.getSubmissionId().getCandidateResumes().getFileName());
+				rsh.setFileUrl(rsh.getSubmissionId().getCandidateResumes().getFileURL());
+				rsh.setContentType(rsh.getSubmissionId().getCandidateResumes().getFileContentType());
 			}
 			if (!"".equalsIgnoreCase(rsh.getSubmissionId().getOrgLocations().getOrg().toString())
 					&& null != rsh.getSubmissionId().getOrgLocations().getOrg()) {
@@ -600,6 +615,10 @@ public class CandidateRestController {
 				Object object = getCnadidateHistoryTimeConversion(diff, roh);
 				roh = (RequirementOfferHistory) object;
 				roh.setOfferResumeId(roh.getOfferId().getId());
+				if(roh.getOfferId().getDocFile() != null){
+				roh.setDocFile(roh.getOfferId().getDocFile());
+				roh.setFileContentType(roh.getOfferId().getFileContentType());
+			}
 				roh.setOfferSourceType(roh.getOfferSourceType());
 				roh.setNotifyToVendor(roh.getNotifyToVendor());
 				rsh.setRequirementOfferHistoryList(requirementOfferHistory);
@@ -742,7 +761,7 @@ public class CandidateRestController {
 		return null;
 	}
 	
-	@RequestMapping(value = "/profileBySkillSet", method = RequestMethod.POST)
+	@RequestMapping(value = {"/app/ws/profileBySkillSet", "/app/profileBySkillSet"}, method = RequestMethod.POST)
 	public @ResponseBody String profileBySkillSet(@RequestParam(value = "allSkills", required = false) String allSkills, HttpServletRequest request) throws Exception
 	{
 		String[] mySkills = allSkills.split(",");

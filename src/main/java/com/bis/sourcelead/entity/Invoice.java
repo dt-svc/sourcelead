@@ -20,6 +20,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
@@ -27,8 +29,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 @Entity
-@Table(name = "INVOICE", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "invoice")
+@Table(name = "INVOICE")
 public class Invoice {
 	
 	private static final long serialVersionUID = 1L;
@@ -38,35 +39,36 @@ public class Invoice {
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
-    @JoinColumn(name="ORG_RELATION_ID", nullable=false )     
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="ORG_RELATION_ID", nullable=false )
+	@Fetch(FetchMode.JOIN)
 	private OrgRelations orgRelationID;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONTACT_USER_ID")
 	private User contactUser;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )     
 	private OrgLocations orgLocation;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="OWNER_USER_ID", nullable=false )     
 	private User ownerUserId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="RESPONDER_LOCATION_ID", nullable=false )     
 	private OrgLocations responderLocationId;
 	
 	@Column(name = "INVOICE_ID")
 	private String invoiceId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne
     @JoinColumn(name="PROJECT_ID", nullable=true) 
 	private Projects projectID;
@@ -74,8 +76,8 @@ public class Invoice {
 	@Column(name = "INVOICE_TYPE")
 	private String invoiceType;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="PARENT_INVOICE_ID")        
 	private Invoice parentInvoiceId;
 	
@@ -175,10 +177,8 @@ public class Invoice {
 	@Column(name = "PREVIOUS_INVOICE_STATUS")
 	private String previousInvoiceStatus;
 	
-	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
-	
-	@Lob private byte[] docFile;
-	@Column(name = "DOC_FILENAME") private String fileName; 
+	@Column(name = "DOC_FILENAME") 
+	private String fileName; 
 	
 	@Column(name = "SUBMISSION_APPROVER_HIERARCHY_ID")
 	private String submissionApproverHierarchyId;
@@ -189,28 +189,27 @@ public class Invoice {
 	@Column(name = "EXPENSES_INVOICES")
 	private String expensesInvoices;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="EXPENSES_ID", nullable=true) 
 	private Expenses expensesId;
 	
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="PROJECT_MEMBER_ID", nullable=true) 
 	private ProjectMembers projectMemberId;
 	
 	@Column(name = "IS_GENERATE_AUTOMATIC_INVOICE")
 	private String isAutomaticGenerateInvoice;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
 	private Set<InvoiceLineItems> invoiceLineItems;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
 	private Set<InvoiceTax> invoiceTax;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
 	private Set<InvoiceDocument> invoiceDocumentSet;
 	
@@ -330,6 +329,10 @@ public class Invoice {
 	@Transient
 	@JsonProperty
 	private String expId;
+	
+	@Transient
+	@JsonProperty
+	private String orgRelationUUID;
 	
 	
 	public Long getId()
@@ -826,16 +829,6 @@ public class Invoice {
 		this.projectName = projectName;
 	}
 
-	public byte[] getDocFile()
-	{
-		return docFile;
-	}
-
-	public void setDocFile(byte[] docFile)
-	{
-		this.docFile = docFile;
-	}
-
 	public String getFileName()
 	{
 		return fileName;
@@ -1089,6 +1082,14 @@ public class Invoice {
 		this.fileUrl = fileUrl;
 	}
 
-	
+	public String getOrgRelationUUID()
+	{
+		return orgRelationUUID;
+	}
+
+	public void setOrgRelationUUID(String orgRelationUUID)
+	{
+		this.orgRelationUUID = orgRelationUUID;
+	}
 	
 }

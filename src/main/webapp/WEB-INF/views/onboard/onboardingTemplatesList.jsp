@@ -3,15 +3,20 @@
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<script src="resources/js/formvalidator.js"></script>
+<script src="/resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="resources/js/formvalidator.js"></script>
+<script src="/resources/js/formvalidator.js"></script>
 
 
 <section class="content-wraper">
     <div id="onboardingLoading"></div>
     <section class="content-header clearfix">
+     <c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
           <div class="pull-left">
       <!-- <h2>Submission Templates</h2> -->
       <h2 class="pull-left">Onboard Templates</h2>
@@ -22,7 +27,7 @@
 			</div>
 		</div>
     </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/orgTemplates'/>"> Templates</a> &raquo; Onboard Templates List</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo; Onboard Templates List</div>
  <div class="clearfix"></div>
     </section>
     
@@ -31,7 +36,7 @@
 			<div class="timesheet_head">
 			<ul>
 			 <sec:authorize access="hasRole('ROLE_CREATE_ON_BOARD_TEMPLATE')"> 
-			 	<li><a href="<c:url value='/addNewOnboardTemplate'/>"><i class="fa fa-plus"></i>Add Template</a></li>
+			 	<li><a href="<c:url value='${appPath}/addNewOnboardTemplate'/>"><i class="fa fa-plus"></i>Add Template</a></li>
 		 	 </sec:authorize>
 			</ul>
 			     
@@ -51,12 +56,16 @@ $(document).ready(function(){
 	onboardingTemplatesList();
 });
 </script>
-
+<script>
+  $("#selector").fadeIn(200);
+  $('#selector').delay(2000).fadeOut('slow');
+	      
+</script>
 
 <script>
 function onboardingTemplatesList(){  
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getOnboardingTemplatesList?${_csrf.parameterName}=${_csrf.token}",    

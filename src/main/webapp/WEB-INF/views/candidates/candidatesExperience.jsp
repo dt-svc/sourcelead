@@ -95,7 +95,30 @@ function closeCertificatePopup(){
 		if ($('#employers_form').validate(false, validationSettings)) {
 			
 			var formData = getFormData("employers_form");
+			var startYear = document.getElementById("startYear").value;
+			var endYear = document.getElementById("endYear").value;
 			
+			var startMonth= document.getElementById("startMonth").value;
+			var endMonth= document.getElementById("endMonth").value;
+			
+			var SMdata = startMonth.split('&');
+			var sMonthNumber = SMdata[0];
+			
+			var EMdata = endMonth.split('&');
+			var eMonthNumber = EMdata[0];
+			
+			 if( (startMonth > endMonth) && (startYear == endYear) ){
+				 $("#startYear").parent().after("<p class='jquery_form_error_message' id='err'><span>Start Month Should be less than end Month</span></p>");
+		
+			}
+			
+		     else if((startYear > endYear )&&(endYear != '' && endYear != null && endYear != 'undefined')){
+				document.getElementById("endYearValidation").style.display="block";
+				$("#endYearValidation").empty().append("End year should be greater than Start year") ; 
+				
+			}
+			
+			else{
 			$("#candidateEmployersAdd").attr("disabled", "disabled");
 			$("#candidateEmployersAdd").addClass('button').val('Processing..'); 
 	        $.post(sourceleadUrl+"/storeCandidateEmployers?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(data) {
@@ -138,14 +161,17 @@ function closeCertificatePopup(){
         			$("#selector3").css({ display: "block" });
         			$("#empMsgDiv").html("Success!! New Employer added");
 					candidateEmployersList(candidateId);
-					empMsgFadein();
 					qvemployeeSubmission(candidateId);
+					empMsgFadein();
+					setTimeout(function(){
+			 			candidateList();					 			
+			 		},100);
 				}
 	        	}
 			
 	        });
 			
-			
+			}
 			return true;
 		} else {
 			return false;
@@ -176,7 +202,7 @@ function closeCertificatePopup(){
 		result = result	+ '	             <div class="form-horizontal clearfix">';
 		result = result + '	               <div class="clearfix mb10">';
 		result = result + '	                 <div class="col-md-12">';
-		result = result	+ '	                  <input type="text" class="form-control"  placeholder="Employer *" name="name" data-validation="required validate_Space validate_length length2-100" field-name="Employer Name" value=""> <span class="hidden">Employer Name</span>';
+		result = result	+ '	                  <input type="text" class="form-control input-sm"  placeholder="Employer *" name="name" data-validation="required validate_Space validate_length length2-100" field-name="Employer Name" value=""> <span class="hidden">Employer Name</span>';
 		result = result + '	                 </div>';
 		result = result + '	               </div>';
 		result = result + '	               <div class="clearfix mb10">';
@@ -187,7 +213,7 @@ function closeCertificatePopup(){
 		result = result + '	               </div>';
 		result = result + '	               <div class="clearfix mb10">';
 		result = result + '	                 <div class="col-md-12">';
-		result = result	+ '	                    <input type="text" class="form-control"  placeholder="Employer Designation" name="designation" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Employer Designation" value=""> <span class="hidden">Employer Designation</span>';
+		result = result	+ '	                    <input type="text" class="form-control input-sm"  placeholder="Employer Designation" name="designation" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Employer Designation" value=""> <span class="hidden">Employer Designation</span>';
 		result = result + '	                 </div>';
 		result = result + '	               </div>';
 		result = result + '	               <div class="clearfix mb10">';
@@ -195,25 +221,10 @@ function closeCertificatePopup(){
 		result = result + '	                  <input type="text" class="form-control input-sm" placeholder="Address" name="address" data-validation="required validate_Space validate_length length2-250"  data-validation-optional="true" field-name="Address" value=""> <span 	class="hidden">Address</span>';
 		result = result + '	                 </div>';
 		result = result + '	               </div>';
-		
-		/* result = result + '	               <div class="clearfix mb10 dates">';
-		
-		result = result + '	                   <div class="col-md-6" id="startYearDiv">';
-		result = result + '	                    <p>Start Date</p>';
-		result = result	+ '	                   <input type="text" max class="form-control calendar" value="" id="startYear" name="startYear"  placeholder="Start Date"  field-name="Start Date" readonly>';
-		result = result + '	                 </div>';
-		
-		result = result + '	                   <div class="col-md-6 endDate" id="endDateDiv" >';
-		result = result + '	                  <p>End Date</p>';
-		result = result	+ '	                   <input type="text" max class="form-control calendar" id="endYear" name="endYear" field-name="End Year"  placeholder="End Date" readonly>';
-		result = result + '	                 </div>';
-		
-		result = result + '	                 </div> '; */
-		
 		result = result + '	               <div class="clearfix mb10">';
 		result = result + '	                 <p class="ml">Start Date</p>';
 		result = result + '	                 <div class="col-md-6">';
-		result = result	+ '	                   <select class="chosen-select"  name="startMonth" id="startMonth" onClick="" onChange="monthIfYearRequired();">';
+		result = result	+ '	                   <select class="newSelect"  name="startMonth" id="startMonth" onChange="monthIfYearRequired();">';
 		result = result	+ '	                       <option value="">Select Month</option>';
 		result = result	+ ' 					   <option value="1&January">January</option>';
 		result = result	+ '	                       <option value="2&February">February</option>';
@@ -229,15 +240,18 @@ function closeCertificatePopup(){
 		result = result	+ '	                       <option value="12&December">December</option>';
 		result = result + '	                   </select>';
 		result = result + '	                   </div>';
-		result = result + '	                   <div class="col-md-6" id="startYearDiv">';
-		result = result	+ '	                   <input type="text" max class="form-control" value="" id="startYear" name="startYear"  placeholder="Enter Year"  field-name="Start Year" data-validation="validate_Space validate_int validate_length length4" data-validation-optional="true"  >';
+		result = result + '	                   <div class="col-md-6 padding_left" id="startYearDiv">';
+		result = result	+ '	                   <input type="text" max class="form-control input-sm" value="" id="startYear" name="startYear"  placeholder="Enter Year"  field-name="Start Year" data-validation="validate_Space validate_extno validate_length length4-4" data-validation-optional="true"  >';
 		result = result + '	                 </div>';
 		result = result + '	                 </div>';
+		
 		result = result + '	                 <div id="endDateDiv">';
+		
 		result = result + '	                 <div class="clearfix mb10 endDate">';
 		result = result + '	                 <p class="ml">End Date</p>';
-		result = result	+ '	                 <div class="col-md-6 id = "endMR"">';
-		result = result	+ '	                    <select class="chosen-select" class="required" name="endMonth" id="endMonth" onChange="monthIfYearRequired();">';
+		
+		result = result	+ '	                 <div class="col-md-6 id = "endMR">';
+		result = result	+ '	                    <select class="newSelect" class="required" field-name="End Month" name="endMonth" id="endMonth" onChange="monthIfYearRequired();">';
 		result = result	+ '	                       <option value="">Select Month</option>';
 		result = result	+ '	                       <option value="1&January">January</option>';
 		result = result	+ '	                       <option value="2&February">February</option>';
@@ -252,10 +266,16 @@ function closeCertificatePopup(){
 		result = result	+ '	                       <option value="11&November">November</option>';
 		result = result	+ '	                       <option value="12&December">December</option>';
 		result = result + '	                   </select>';
+	
 		result = result + '	                   </div>';
-		result = result + '	                   <div class="col-md-6" >';
-		result = result	+ '	                   <input type="text" max class="form-control" id="endYear" name="endYear" field-name="End Year"  placeholder="Enter Year" data-validation="validate_Space validate_int validate_length length4" data-validation-optional="true" >';
+		
+		result = result + '	                   <div class="col-md-6 padding_left" >';
+		result = result	+ '	                   <input type="text" max class="form-control input-sm" id="endYear" name="endYear" field-name="End Year"  placeholder="Enter Year" data-validation="validate_Space validate_extno validate_length length4-4" data-validation-optional="true" >';
+		result = result + '	                <div><p id="endYearValidation" class="text-danger small" style="display: none"></p>';
+		
 		result = result + '	                 </div>';
+		
+		result = result + '	                 </div> ';
 		result = result + '	                 </div> ';
 		result = result + '	                 </div> ';
 		
@@ -279,9 +299,9 @@ function closeCertificatePopup(){
 				.click(function(e) {
 					e.stopPropagation();
 				});
-		$('html').click(function() {
+		/* $('html').click(function() {
 			$(".edit-details").removeClass("edit-details-active");
-		});
+		}); */
 
 	}
 </script>
@@ -297,7 +317,7 @@ function closeCertificatePopup(){
 					success : function(data) {
 
 						var json = JSON.parse(data);
-
+                    
 						if (data != null && data != 'undefined' && data != "") {
 
 							if (data.indexOf('Sign In') >= 0) {
@@ -313,7 +333,7 @@ function closeCertificatePopup(){
 								result = result	+ '	             <div class="form-horizontal clearfix">';
 								result = result + '	               <div class="clearfix mb10">';
 								result = result + '	                 <div class="col-md-12">';
-								result = result	+ '	                  <input type="text" class="form-control"  placeholder="Employer *" name="name" data-validation="required validate_Space validate_length length2-100" field-name="Employer Name" value="'+json.name+'"> <span class="hidden">Employer Name</span>';
+								result = result	+ '	                  <input type="text" class="form-control input-sm"  placeholder="Employer *" name="name" data-validation="required validate_Space validate_length length2-100" field-name="Employer Name" value="'+json.name+'"> <span class="hidden">Employer Name</span>';
 								result = result + '	                 </div>';
 								result = result + '	               </div>';
 								result = result	+ '	               <div class="clearfix mb10">';
@@ -330,9 +350,9 @@ function closeCertificatePopup(){
 								result = result	+ '	               <div class="clearfix mb10">';
 								result = result	+ '	                 <div class="col-md-12">';
 								if (json.designation != null && json.designation != '' && json.designation != 'undefined') {
-									result = result + '	                    <input type="text" class="form-control"  placeholder="Employer Designation" name="designation" value="'+json.designation+'" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Employer Designation" > <span class="hidden">Employer Designation</span>';
+									result = result + '	                    <input type="text" class="form-control input-sm"  placeholder="Employer Designation" name="designation" value="'+json.designation+'" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Employer Designation" > <span class="hidden">Employer Designation</span>';
 								}else{
-									result = result + '	                    <input type="text" class="form-control"  placeholder="Employer Designation" name="designation"  value="" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Employer Designation" > <span class="hidden">Employer Designation</span>';
+									result = result + '	                    <input type="text" class="form-control input-sm"  placeholder="Employer Designation" name="designation"  value="" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Employer Designation" > <span class="hidden">Employer Designation</span>';
 								}
 								result = result + '	                 </div>';
 								result = result + '	               </div>';
@@ -349,11 +369,12 @@ function closeCertificatePopup(){
 								result = result	+ '	               <div class="clearfix mb10">';
 								result = result + '	                 <p class="ml">Start Date</p>';
 								result = result	+ '	                 <div class="col-md-6">';
-								result = result	+ '	                   <select class="chosen-select"  value="'+json.startMonth+'" name="startMonth" id="startMonth" onchange="monthIfYearRequired();">';
+								result = result	+ '	                   <select class="newSelect"  name="startMonth" id="startMonth" onchange="monthIfYearRequired();">';
+								result = result	+ '<option value="">Select Month</option>';
 								if (json.startMonth == "January") {
 									result = result + ' <option '+ (json.startMonth == "January" ? "selected" : '') +' value="January">January</option>';
 								} else {
-									result = result + ' <option '+ (json.startMonth == "1&January" ? "selected" : '') +' value="1&January">May</option>';
+									result = result + ' <option '+ (json.startMonth == "1&January" ? "selected" : '') +' value="1&January">January</option>';
 								}
 								
 								if (json.startMonth == "February") {
@@ -421,25 +442,25 @@ function closeCertificatePopup(){
 								result = result + '</div>';
 								result = result	+ '<div class="col-md-6">';
 								if (json.startYear != null && json.startYear != '' && json.startYear != 'undefined') {
-									result = result	+ '<input type="text" max class="form-control" value="'+json.startYear+'" id="startYear" name="startYear"   placeholder="Enter Year"  field-name="Start Date" data-validation="required" data-validation-optional="true" >';
+									result = result	+ '<input type="text" max class="form-control input-sm" value="'+json.startYear+'" id="startYear" name="startYear"   placeholder="Enter Year"  field-name="Start Date" data-validation="required validate_Space validate_extno validate_length length4-4" data-validation-optional="true" >';
 								}else{
-									result = result	+ '<input type="text" max class="form-control" value="" id="startYear" name="startYear"   placeholder="Enter Year"  field-name="Start Date" data-validation="required" data-validation-optional="true" >';
+									result = result	+ '<input type="text" max class="form-control input-sm" value="" id="startYear" name="startYear"   placeholder="Enter Year"  field-name="Start Date" data-validation="required" data-validation-optional="true" >';
 								}
 								result = result + '</div>';
 								result = result + '</div>';
 								
 								result = result	+ '<div id="endDateEditDiv">';
-								result = result	+ '<div class="clearfix mb10 endDate >';
+								result = result	+ '<div class="clearfix mb10 endDate">';
 								result = result	+ '<p class="ml">End Date</p>';
-								result = result	+ '<div class="col-md-6 id = "endMR"">';
-								result = result	+ '<select class="chosen-select" selected  class="required" name="endMonth" id="endMonthEdit" onchange="monthIfYearRequired();">';
+								result = result	+ '<div class="col-md-6 id = "endMR">';
+								result = result	+ '<select class="newSelect" selected  class="required" field-name="End Month" name="endMonth" id="endMonth" onchange="monthIfYearRequired();">';
 								result = result	+ '<option value="">Select Month</option>';
 								
 								
 								if (json.endMonth == "January") {
 									result = result + ' <option '+ (json.endMonth == "January" ? "selected" : '') +' value="January">January</option>';
 								} else {
-									result = result + ' <option '+ (json.endMonth == "1&January" ? "selected" : '') +' value="1&January">May</option>';
+									result = result + ' <option '+ (json.endMonth == "1&January" ? "selected" : '') +' value="1&January">January</option>';
 								}
 								
 								if (json.endMonth == "February") {
@@ -451,7 +472,7 @@ function closeCertificatePopup(){
 								if (json.endMonth == "March") {
 									result = result + ' <option '+ (json.endMonth == "March" ? "selected" : '') +' value="March">March</option>';
 								} else {
-									result = result + ' <option '+ (json.endMonth == "3&March" ? "selected" : '') +' value="3&March">May</option>';
+									result = result + ' <option '+ (json.endMonth == "3&March" ? "selected" : '') +' value="3&March">March</option>';
 								}
 								if (json.endMonth == "April") {
 									result = result + ' <option '+ (json.endMonth == "April" ? "selected" : '') +' value="April">April</option>';
@@ -508,10 +529,11 @@ function closeCertificatePopup(){
 								result = result	+ '<div class="col-md-6">';
 								
 								if (json.endYear != null && json.endYear != '' && json.endYear != 'undefined') {
-									result = result	+ '<input type="text" max class="form-control" value="'+json.endYear+'" id="endYearEdit1" name="endYear"   placeholder="Enter Year"  field-name="end Year" data-validation="required" data-validation-optional="true" >';
+									result = result	+ '<input type="text" max class="form-control input-sm" value="'+json.endYear+'" id="endYear" name="endYear"   placeholder="Enter Year"  field-name="end Year" data-validation="required validate_Space validate_extno validate_length length4-4" data-validation-optional="true" >';
 								}else{
-									result = result	+ '<input type="text" max class="form-control" value="" id="endYearEdit" name="endYear"   placeholder="Enter Year"  field-name="end Year" data-validation="required" data-validation-optional="true" >';
+									result = result	+ '<input type="text" max class="form-control input-sm" value="" id="endYear" name="endYear"   placeholder="Enter Year"  field-name="end Year" data-validation="required" data-validation-optional="true" >';
 								}
+								result = result + '	                <div><p id="endYearValidation" class="small text-danger" style="display: none"></p>';
 								result = result + '</div>';
 								result = result + '</div>';
 								result = result + '	                 </div> ';
@@ -519,7 +541,7 @@ function closeCertificatePopup(){
 								result = result	+ '	               <div class="clearfix mr">';
 								result = result	+ '	                   <input type="hidden"  value="'+candidateEmpId+'" id="candidateEmpId"  name="candidateEmployeeId" >';
 								result = result	+ '	                   <input type="hidden"  value="'+candidateId+'" id="candidateId" >';
-								result = result + '	                 <button type="button" id ="candidateEmployersAdd" onClick ="updateCandidateEmployers('+ candidateId+ ','+ candidateEmpId+ ');"class="btn btn-sm btn-primary pull-right">Add</button>';
+								result = result + '	                 <button type="button" id ="candidateEmployersAdd" onClick ="updateCandidateEmployers('+ candidateId+ ','+ candidateEmpId+ ');"class="btn btn-sm btn-primary pull-right">Update</button>';
 								result = result + '	               </div>';
 								result = result + '	             </div>';
 								result = result + '	        </form> ';
@@ -536,10 +558,10 @@ function closeCertificatePopup(){
 										.click(function(e) {
 											e.stopPropagation();
 										});
-								$('html').click(function() {
+								/* $('html').click(function() {
 											$(".edit-details").removeClass(
 													"edit-details-active");
-										});
+										}); */
 								
 							}
 						}
@@ -600,25 +622,10 @@ function closeCertificatePopup(){
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="
 							+ candidateId,
-					success : function(data) {
-					/* 	if (data != null && data != 'undefined' && data != "" && data != '[]') {
-							if (data.indexOf('Sign In') >= 0) {
-								location.replace(sourceleadUrl);
-							} else if (data.indexOf('exception') >= 0) {
-								location.replace(sourceleadUrl + "/errorPage");
-							} else { */
-								var json = JSON.parse(data);
-		             			/* for (var i = 0; i < 1; i++) {
-		                            var val= json[i];
-		                            var opt = "";
-		                                    if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
-		                                            opt  = opt + '<div class="success_pop" id="selector3" style="display: block;">';
-		                                            opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
-		                                            opt  = opt + '</div>';
-		                                            }
-		                                    $("#msgDiv2").empty();
-		                                    $("#msgDiv2").append(opt);
-		                            } */
+					success : function(json) {
+					
+// 								var json = JSON.parse(data);
+		             			
 								$("#candidateEmployersList").empty();
 								var result = "";
 								result = result	+ "<table id='candidateEmployersPagination' class='display' cellspacing='0' width='100%' >";
@@ -633,8 +640,8 @@ function closeCertificatePopup(){
 								result = result + "  </tr>";
 								result = result + "</thead>";
 								result = result + "<tbody>";
-								for (var i = 0; i < json.length; i++) {
-									var opt = json[i];
+								for (var i = 0; i < json.data.length; i++) {
+									var opt = json.data[i];
 									result = result + '         <tr>';
 									if (opt.name != null && opt.name != ''
 											&& opt.name != 'undefined') {
@@ -690,24 +697,7 @@ function closeCertificatePopup(){
 								$("#candidateEmployersList").append(result);
 								employeePagination();
 								msgFadein2();
-						/* 	}
-						} else {
-							var result = "";
-							result = result + "   <div class='row'>";
-							result = result + "	<div class='col-lg-12'>";
-							result = result + "		<div class='content-area clearfix'>";
-							result = result + "			<div class='blank-pages'>";
-							result = result
-									+ "			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-							result = result
-									+ "			        <p>No Candidate Employers Found</p>";
-							result = result + "			 </div>";
-							result = result + "		</div>";
-							result = result + "	</div>";
-							result = result + "  </div> ";
-							$("#candidateEmployersList").empty();
-							$("#candidateEmployersList").append(result);
-						} */
+						
 					},
 
 				});
@@ -814,7 +804,11 @@ function removeEmployer(candidateemployerId, candidateId){
 								 $("#popUpDivEmp").removeClass("edit-details-active");
 								 $("#remove_user_pop_emp, .project_inn_mask").fadeOut();
 								 candidateEmployersList(candidateId);
+								 qvemployeeSubmission(candidateId);
 								 empMsgFadein();
+								 setTimeout(function(){
+							 			candidateList();					 			
+							 	 },100);
 							}
 						}
 					},
@@ -839,13 +833,32 @@ function removeEmployer(candidateemployerId, candidateId){
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd'
 		};
-		if ($('#candidateExperianceEdit_form').validate(false,
-				validationSettings)) {
-
-			var frm = $('#candidateExperianceEdit_form').serializeFormJSON();
-
+		if ($('#candidateExperianceEdit_form').validate(false,validationSettings)) {
 			var formData = getFormData("candidateExperianceEdit_form");
-	        $.post(sourceleadUrl+"/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateExperianceId="+candidateExperianceId, formData, function(data) {
+			var startYear = document.getElementById("startYear").value;
+			var endYear = document.getElementById("endYear").value;
+			var startMonth= document.getElementById("startMonth").value;
+			var endMonth= document.getElementById("endMonth").value;
+			
+			var SMdata = startMonth.split('&');
+			var sMonthNumber = SMdata[0];
+			
+			var EMdata = endMonth.split('&');
+			var eMonthNumber = EMdata[0];
+			
+			 if( (startMonth > endMonth) && (startYear == endYear) ){
+				
+				 $("#startYear").parent().after("<p class='jquery_form_error_message' id='err'><span>Start Month Should be less than end Month</span></p>");
+		
+			}
+			
+			 else if((startYear > endYear )&&(endYear != '' && endYear != null && endYear != 'undefined')){
+				document.getElementById("endYearValidation").style.display="block";
+				$("#endYearValidation").empty().append("End year should be greater than Start year") ; 
+				
+			}
+			else{
+				$.post(sourceleadUrl+"/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateExperianceId="+candidateExperianceId, formData, function(data) {
 	        	
 	        	$(".edit-details").toggleClass("edit-details-active");
 				$(".close-div")	.click(function() {
@@ -862,10 +875,11 @@ function removeEmployer(candidateemployerId, candidateId){
 				candidateEmployersList(candidateId);
 				empMsgFadein();
 				qvemployeeSubmission(candidateId);
+				setTimeout(function(){
+		 			candidateList();					 			
+		 		},100);
 	        });
-			
-			
-			
+			}
 			return true;
 		} else {
 			return false;
@@ -897,8 +911,8 @@ function removeEmployer(candidateemployerId, candidateId){
 		} else if (document.getElementById("endDateDiv").style.display == 'none') {
 			
 			document.getElementById("endDateDiv").style.display = 'block';
-			$("#endYear").attr("data-validation", "required");
-			$("#endMonth").attr("data-validation", "required");
+			/* $("#endYear").attr("data-validation", "required");
+			$("#endMonth").attr("data-validation", "required"); */
 		}
 
 	}
@@ -917,12 +931,12 @@ function removeEmployer(candidateemployerId, candidateId){
 			$("#urrentPositionEdit" ).val( 'Y' );
 			document.getElementById("endDateEditDiv").style.display = 'none';
 			$('#endYearEdit').removeAttr('data-validation');
-			$('#endMonthEdit').removeAttr('data-validation');
+			$('#endMonth').removeAttr('data-validation');
 		}else {
 			
 			document.getElementById("endDateEditDiv").style.display = '';
-			$("#endYearEdit").attr("data-validation", "required");
-			$("#endMonthEdit").attr("data-validation", "required");
+		/* 	$("#endYearEdit").attr("data-validation", "required");
+			$("#endMonthEdit").attr("data-validation", "required"); */
 			
 			 var exisitngEndYear;
 			 if ($('#exisitngEndYear').length)
@@ -935,9 +949,6 @@ function removeEmployer(candidateemployerId, candidateId){
 				 $("#endYearEdit" ).val( '' );
 			 }
 			 
-			/* if(exisitngEndYear == null || exisitngEndYear == '' || exisitngEndYear =='undefined'){
-				$("#endYearEdit" ).val( '' );
-			} */
 		}
 
 	}
@@ -950,10 +961,11 @@ function removeEmployer(candidateemployerId, candidateId){
 <script type="text/javascript">
 function monthIfYearRequired(){
 	
+	
 	var startMonth= document.getElementById("startMonth").value;
-	if(startMonth != null && startMonth != "" && startMonth != null){
+	if(startMonth != null && startMonth != "" && startMonth != "undefined"){
 		 $('#startYear').removeAttr('data-validation-optional');
-	     $('#startYear').attr("data-validation","required"); 
+	     $('#startYear').attr("data-validation","required validate_Space validate_extno validate_length length4-4"); 
 	}else{
 		 $('#startYear').removeAttr('data-validation');
 		 $('#startYear').attr("data-validation-optional","true"); 
@@ -961,13 +973,36 @@ function monthIfYearRequired(){
 	
 	var endMonth= document.getElementById("endMonth").value;
 	
-	if(endMonth != null && endMonth != "" && endMonth != null){
+	if(endMonth != null && endMonth != "" && endMonth != "undefined"){
 			 $('#endYear').removeAttr('data-validation-optional');
-		     $('#endYear').attr("data-validation","required"); 
+		     $('#endYear').attr("data-validation","required validate_Space validate_extno validate_length length4-4"); 
 		}else{
 			 $('#endYear').removeAttr('data-validation');
 			 $('#endYear').attr("data-validation-optional","true"); 
 		}
+
+	var startYear= document.getElementById("startYear").value;
+	var endYear= document.getElementById("endYear").value;
+	var SMdata = startMonth.split('&');
+	var sMonthNumber = SMdata[0];
+	
+	var EMdata = endMonth.split('&');
+	var eMonthNumber = EMdata[0];
+	
+	
+	if((startYear != '' && startYear != null && startYear != 'undefined' )&&(endYear != '' && endYear != null && endYear != 'undefined')){
+	
+	 if((sMonthNumber> eMonthNumber) && (startYear==endYear) ){
+		$("#err").empty();
+		 $("#startYear").parent().after("<p class='jquery_form_error_message' id='err'><span>Start Month Should be less than end Month</span></p>");
+			 
+		}
+	 if(sMonthNumber< eMonthNumber)
+		 {
+		 $('#startYearDiv').parent().find('p.jquery_form_error_message').remove(); 
+		 }
+
+	}
 	
 	
 }
@@ -991,7 +1026,7 @@ function validYear(){
 	 if( (startMonth > endMonth) && (startYear == endYear) ){
 			 
 		 $("#startYear").parent().after("<p class='jquery_form_error_message'><span>Start Month Should be less then end Month</span></p>");
-	}else if((startYear > endYear )&&(endYear != '' && endYear!=null && endYear!='undefined')){
+	}else if((startYear > endYear )&&(endYear != '' && endYear != null && endYear != 'undefined')){
 		$("input#startYear").parent().after("<p class='jquery_form_error_message'><span>Start Month Should be less then end Month</span></p>");
 	}else{
 		$('#startYearDiv').parent().find('p.jquery_form_error_message').remove(); 

@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.dto.RequirementInterviewerDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementInterviewer;
 
@@ -20,4 +21,6 @@ public interface RequirementInterviewerDao {
 			List<Long> interviewerIds,Date startUTCDate, Date endUTCDate);
 	
 	public Boolean isInterviwerForByRequirementIdInterviewIdAndUserId(String reqUUID, Long requirementInterviewerId, Long userId);
+
+	List<RequirementInterviewerDTO> getInterviwersListByInterviewIdFromDTO(Long requirementInterviewId);
 }

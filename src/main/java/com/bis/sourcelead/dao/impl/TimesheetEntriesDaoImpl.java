@@ -109,7 +109,7 @@ public class TimesheetEntriesDaoImpl implements TimesheetEntriesDao {
 	public List<TimesheetEntries> getAllTimesheetEntries() throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(TimesheetEntries.class);
-		List<TimesheetEntries> adItemsList = crit.setCacheable(true).list(); 
+		List<TimesheetEntries> adItemsList = crit.list(); 
 		return adItemsList;
 	}
 
