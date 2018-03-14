@@ -1187,25 +1187,20 @@ function projectStatus(){
 		var sourceleadUrl = '${sourceleadUrl}';
 		var currentApproverId = currentApproverId;
 		var manager2 = manager2;
-		$
-				.ajax({
+		$ .ajax({
 					type : "POST",
-					url : sourceleadUrl
-							+ "/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="
-							+ currentApproverId,
+					url : sourceleadUrl + "/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+ currentApproverId,
 					success : function(json) {
 						var output = "";
-						output = output
-								+ "<option value=''>-Select Manager-</option>";
+						output = output + "<option value=''>-Select Manager-</option>";
 						for (var i = 0; i < json.length; i++) {
-
 							var opt = json[i];
-							if (manager2 == opt.id) {
+							/* if (manager2 == opt.id) {
 								selected = 'selected';
 								output = output + "<option "+selected+" value='" +opt.id+ "'>" + opt.firstName + " " + opt.lastName + "  ("+opt.userType+")</option>";
-							} else {
+							} else { */
 								output = output + "<option value='" +opt.id+ "'>" + opt.firstName + " " + opt.lastName + "  ("+opt.userType+")</option>";
-							}
+// 							}
 
 						}
 						$("#level2Manager").empty();
@@ -1261,25 +1256,20 @@ function showLevel2Div(){
 		if (currentApproverId == manager2) {
 			if (currentApproverId != null && currentApproverId != ''
 					&& currentApproverId != 'undefined') {
-				$
-						.ajax({
-							type : "POST",
-							url : sourceleadUrl + "/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId=" + currentApproverId,
-							success : function(json) {
-								var output = "";
-								output = output
-										+ "<option value=''>-Select Manager-</option>";
-								for (var i = 0; i < json.length; i++) {
-									var opt = json[i];
-									output = output + "<option value='" +opt.id+ "'>" + opt.firstName + " " + opt.lastName + " ("+opt.userType+")</option>";
-								}
-								$("#level2Manager").empty();
-								$("#level2Manager").append(output);
-							},
-							error : function(e) {
-
-							}
-						});
+				$.ajax({ 
+					type : "POST",
+					url : sourceleadUrl + "/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId=" + currentApproverId,
+					success : function(json) {
+						var output = "";
+						output = output + "<option value=''>-Select Manager-</option>";
+						for (var i = 0; i < json.length; i++) {
+							var opt = json[i];
+							output = output + "<option value='" +opt.id+ "'>" + opt.firstName + " " + opt.lastName + " ("+opt.userType+")</option>";
+						}
+						$("#level2Manager").empty();
+						$("#level2Manager").append(output);
+					},
+				});
 			}
 		} else {
 			getApproversLevel2(currentApproverId, manager2);
