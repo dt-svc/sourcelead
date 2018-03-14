@@ -34,14 +34,6 @@
 </style>
 
 
-<style type="text/css">
-     .showPassword-reg-usr {
-     	top: 0; right: 15px; font-size: 15px !important; padding: 5px !important;
-     	position:absolute; height: 34px; line-height: 25px; width: 30px; text-align: center;  cursor: pointer;
-     	border-radius:0 3px 3px 0;
-     }
-     </style>
-
 <script>
  function getProfileDetails(response,service){
 		var activeElement = $('.tab-pane.fade.in.active').attr('id');

@@ -26,12 +26,7 @@
     <link href="/resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
      <link href="/resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
      
-     <style type="text/css">
-     .showPassword {
-     	top: 0; right: 0; font-size: 15px !important; background-color: #ccc; padding: 5px !important;
-    height: 34px; line-height: 34px; width: 20px; text-align: center; border-left: 1px solid #c5c5c5; cursor: pointer;
-     }
-     </style>
+     
      
 </head>
 

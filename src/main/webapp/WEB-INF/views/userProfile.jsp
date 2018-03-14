@@ -87,13 +87,7 @@ function getUnsubscribeList(){
 }
 </script>
 
-<style type="text/css">
-     .showPassword-usr {
-     	top: 0; right: 15px; font-size: 15px !important; background-color: #ccc; padding: 5px !important;
-     	position:absolute; height: 34px; line-height: 25px; width: 30px; text-align: center; border-left: 1px solid #c5c5c5; cursor: pointer;
-     	border-radius:0 3px 3px 0;
-     }
-     </style>
+
 
 <body>
   <!-- Content Area -->
