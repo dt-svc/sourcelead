@@ -1223,14 +1223,12 @@ z-index: 100; border-radius: 3px; color: #fff; text-align: center;
 .bgGReen {
 background-color: #1ab394 !important; color: #fff;
 }
-
 .activeGren {
 background-color: #28a745 !important; color: #fff;
 }
 .activeGray {
 background-color: #ddd !important; color: #909090 !important;
 }
-
 .bg-orange {
 	background: #FF8F00; color: #fff;
 }
@@ -5781,7 +5779,7 @@ select.selectborder {
 }
 /* For SideNav Inner Scroll */
 .sidenav_inner {
-    position: relative; /* max-height: 575px; overflow-y: auto;*/  padding-bottom: 10px;
+    position: relative; /* max-height: 575px; overflow-y: auto;*/  padding-bottom: 150px;
 }
 .side-bar-active .sidenav_inner {
      overflow-y:inherit;
@@ -8303,13 +8301,13 @@ position: absolute; top:12px; right: 15px;
 .clearUpload.clearUpload-timesheet:after {
 top: 16px; left: 54%; right:inherit; bottom:inherit; color: #fff; background-color: transparent;
 }
+.showPassword-usr {
+top: 0; right: 15px; font-size: 15px !important; background-color: #ccc; padding: 5px !important;
+position:absolute; height: 34px; line-height: 25px; width: 30px; text-align: center; border-left: 1px solid #c5c5c5; cursor: pointer;
+border-radius:0 3px 3px 0;
+}
 
- .showPassword-usr {
-     	top: 0; right: 15px; font-size: 15px !important; background-color: #ccc; padding: 5px !important;
-     	position:absolute; height: 34px; line-height: 25px; width: 30px; text-align: center; border-left: 1px solid #c5c5c5; cursor: pointer;
-     	border-radius:0 3px 3px 0;
- }
- 
+
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
