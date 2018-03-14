@@ -216,7 +216,7 @@ function getUsersSearchResult(searchValue){
 			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Offshore C2C"><label>&nbsp;Offshore C2C</label></li>
 			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Part Time"><label>&nbsp;Part Time</label></li>
 			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Full Time"><label>&nbsp;Full Time</label></li>
-			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Others"><label>&nbsp;Others</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Other"><label>&nbsp;Others</label></li>
 			                        </ul>
 								 </div>
 							 </div> 
