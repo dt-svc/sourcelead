@@ -5,10 +5,6 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="https://cdn.datatables.net/plug-ins/1.10.16/features/searchHighlight/dataTables.searchHighlight.min.js"></script>
-<script src="https://cdn.datatables.net/plug-ins/1.10.16/features/searchHighlight/dataTables.searchHighlight.css"></script>
-<script src="https://bartaz.github.io/sandbox.js/jquery.highlight.js"></script>
-	
 <style type="text/css">
 #loadMoreDiv{
 text-align: center;
@@ -52,15 +48,7 @@ margin-right: 15px;
  .approvedPop1 ul li {
  clear: both; width: 100%; margin: 0;
  }
- table.dataTable span.highlight {
-  background-color: #FFFF88; border-radius: 0.28571429rem; position: relative; top:4px; color:#a21e23;
-  
-}
-
-table.dataTable span.column_highlight {
-  background-color: #FFFF88; color:#a21e23;
-  border-radius: 0.28571429rem;
-}
+ 
 </style>
 
 
