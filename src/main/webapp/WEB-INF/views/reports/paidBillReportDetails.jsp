@@ -175,9 +175,10 @@ $(document).ready(function(){
 function getPaidBillDetailReport(){
 	    var orgRelationId = '${orgRelationId}';
 		var sourceleadUrl ='${sourceleadUrl}';
+		var billType ='${billType}';
 		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getPaidBillDetailReport?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId;
+		var url = sourceleadUrl+"/getPaidBillDetailReport?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&billType="+billType;
 		getPaidBillDetailReportList(url);
 }
 </script>
