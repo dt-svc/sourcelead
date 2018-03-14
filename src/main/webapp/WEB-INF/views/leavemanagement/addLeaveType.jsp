@@ -345,7 +345,7 @@
 						<div class="form-group" id="noOfDaysDiv">
 							<label class="col-md-4">No Of Days<span class="text-danger paddingLeft" >*</span></label>
 							<div class="col-md-3">
-								<input type="text" id="noOfDays" name="noOfDays" field-name="No Of Days" class="form-control" value="${leaveType.noOfDays}">
+								<input type="text" id="noOfDays" name="noOfDays" field-name="No Of Days" placeholder="Enter no of Days" class="form-control" value="${leaveType.noOfDays}">
 							</div>
 						</div>
 				
@@ -354,7 +354,7 @@
 						<div class="form-group" id="newJoineeDiv">
 							<label class="col-md-4">New Joinee<span class="text-danger paddingLeft" >*</span></label>
 							<div class="col-md-3">
-								<input type="text" id="newJoinee" name="newJoinee" field-name="New Joinee" class="form-control" value="${leaveType.newJoinee}">
+								<input type="text" id="newJoinee" name="newJoinee" placeholder="Enter no.of Days" field-name="New Joinee" class="form-control" value="${leaveType.newJoinee}">
 							</div>
 						</div>
 						
@@ -363,7 +363,7 @@
 							<div class="col-md-6">
 								<div class="row">
 								<div class="col-md-3 padding_right">
-									<input type="text" class="form-control" id="experiencedDuration" name="experiencedDuration" field-name="Duration" value="${leaveType.experiencedDuration}">
+									<input type="text" class="form-control" id="experiencedDuration" name="experiencedDuration" placeholder="Experience" field-name="Duration" value="${leaveType.experiencedDuration}">
 								</div>
 								<div class="col-md-5 dropdown-select padding_left">
 									<select id="experiencedType" name="experiencedType" field-name="experiencedType" >
@@ -373,7 +373,7 @@
 									</select>
 								</div>
 								<div class="col-md-4" id="experiencedApplicableDaysDiv">
-								<input type="text" class="form-control" id="experiencedApplicableDays" name="experiencedApplicableDays" field-name="ApplicableDays" value="${leaveType.experiencedApplicableDays}">
+								<input type="text" class="form-control" id="experiencedApplicableDays" name="experiencedApplicableDays" placeholder="No.of Days for exp" field-name="ApplicableDays" value="${leaveType.experiencedApplicableDays}">
 								</div>
 								
 							</div>
