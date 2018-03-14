@@ -112,18 +112,8 @@ public class ImmigrationRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		if (forward.equalsIgnoreCase("petitionDetails")) {
 			model.setViewName("/immigration/petitionDetails");
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-					"orgLocations");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			List<ImmigrationTemplate> templateList = immigrationCommonService.getImmigrationTemplateList(orgLocations);
-			try {
-				List<Candidate> candidateList = candidateService.getAllActiveCandidatesByLocation(orgLocations.getId());
-				System.out.println("candidateList size in controller is-->"+candidateList.size());
-				
-				model.addObject("candidateList",candidateList);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			System.out.println("templateList size in controller is-->"+templateList.size());
 			
 			model.addObject("templateList",templateList);
