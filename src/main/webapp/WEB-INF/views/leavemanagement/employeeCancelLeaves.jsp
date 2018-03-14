@@ -40,8 +40,10 @@ $(document).ready(function(){
       </div>
     <div id="loading"></div> 
     <div class="clients_wrap_table datatable_filter">
-    <div class='remove_search mt10'>
+    <div class='dynamic_search dynamic_search-new mt10'>
 		 <input type='text' placeholder='Search' id='cancelledLeavesTableSearch'/>
+		  <span class="cursorPointer" title="Search"><i class="fa fa-search" onclick="getCancelledEmployeesList();"></i></span>    
+		 
 		</div>
     <div id="cancelledLeavesDiv"></div>
   </div>

@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.IntStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -27,7 +26,6 @@ import javax.mail.Authenticator;
 import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -54,7 +52,6 @@ import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailNotification;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SubmissionXls;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserMailUnsubscribe;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.EmailMessageService;
@@ -155,7 +152,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			}
 			
 			for (InternetAddress toAddressEmail : iAdressArray) {
-				UserMailUnsubscribe unsubscriptionUser = userMailUnsubscribeService.getUserMailUnsubscriptionByUserEmailAndOrgLocationId(toAddressEmail.getAddress(), locationsId);
+				UserMailUnsubscribe unsubscriptionUser = userMailUnsubscribeService.getUserMailUnsubscriptionByUserEmail(toAddressEmail.getAddress());
 				if (unsubscriptionUser != null && StringUtils.isNotEmpty(unsubscriptionUser.getTabIds())) {
 					String[] tabIdsArray = unsubscriptionUser.getTabIds().split(",");
 					if (StringUtils.isNotEmpty(tabDivGroup)) {

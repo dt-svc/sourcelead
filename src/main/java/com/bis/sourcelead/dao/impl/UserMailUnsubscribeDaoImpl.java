@@ -77,22 +77,32 @@ public class UserMailUnsubscribeDaoImpl implements UserMailUnsubscribeDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public UserMailUnsubscribe getUserMailUnsubscriptionByUserIdAndOrgLocationId(Long userId, Long orgLocationId) throws Exception
+	public UserMailUnsubscribe getUserMailUnsubscriptionByUserId(Long userId) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from UserMailUnsubscribe umus where umus.userId.id =:userId and umus.orgLocationId.id =:orgLocationId ";
-		UserMailUnsubscribe unsubscription = (UserMailUnsubscribe) session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).uniqueResult();
+		String query = "from UserMailUnsubscribe umus where umus.userId.id =:userId ";
+		UserMailUnsubscribe unsubscription = (UserMailUnsubscribe) session.createQuery(query).setLong("userId", userId).uniqueResult();
 		return unsubscription;
 	}
 	
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public UserMailUnsubscribe getUserMailUnsubscriptionByUserEmailAndOrgLocationId(String userEmail, Long orgLocationId) throws Exception
+	public UserMailUnsubscribe getUserMailUnsubscriptionByUserEmail(String userEmail) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from UserMailUnsubscribe umus where umus.userId.email =:userEmail and umus.orgLocationId.id =:orgLocationId ";
-		UserMailUnsubscribe unsubscription = (UserMailUnsubscribe) session.createQuery(query).setString("userEmail", userEmail).setLong("orgLocationId", orgLocationId).uniqueResult();
+		String query = "from UserMailUnsubscribe umus where umus.userId.email =:userEmail ";
+		UserMailUnsubscribe unsubscription = (UserMailUnsubscribe) session.createQuery(query).setString("userEmail", userEmail).uniqueResult();
+		return unsubscription;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public UserMailUnsubscribe getUserMailUnsubscriptionByUserEmailAndOrgLocationCode(String userEmail, String orgLocationCode) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserMailUnsubscribe umus where umus.userId.email =:userEmail and umus.orgLocationId.locationCode =:orgLocationCode ";
+		UserMailUnsubscribe unsubscription = (UserMailUnsubscribe) session.createQuery(query).setString("userEmail", userEmail).setString("orgLocationCode", orgLocationCode).uniqueResult();
 		return unsubscription;
 	}
 	

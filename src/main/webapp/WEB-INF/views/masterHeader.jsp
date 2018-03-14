@@ -48,6 +48,7 @@
 <link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="stylesheet" href="/resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
 <link rel="stylesheet" href="/resources/css/bootstrap-datetimepicker.min.css?staticTime=${staticTime}" type="text/css" >
+<link rel="stylesheet" href="/resources/css/dataTables.searchHighlight.css?staticTime=${staticTime}" type="text/css" >
 <c:set scope="request" var="viewPage" value='${pageContext.request.servletPath.toString().replaceFirst("/WEB-INF/views/","").replaceFirst(".jsp","")}'></c:set>
  <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -139,6 +140,8 @@
 <script src="/resources/js/datetime-moment.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/bootstrap-datetimepicker.min.js?staticTime=${staticTime}"></script>
 
+<script src="/resources/js/dataTables.searchHighlight.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.highlight.js?staticTime=${staticTime}"></script>
 
 <!--  Data tables script files -->
 <!-- <script src="/resources/js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script> -->
@@ -737,7 +740,7 @@ function preventTabkey(e){
 					  	<li><a href="<c:url value="/app/customFields" />"><i class="fa fa-align-justify" aria-hidden="true"></i>Custom Fields</a></li>
 					  	</sec:authorize>
 						 
-						 <sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN')">
+						 <sec:authorize access="hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_JOB_CAMPAIGN')">
 							 <li><a id="campSubMenu" href="javascript:void(0)"><i class="fa fa-bullhorn"></i>Campaigns <i class="fa fa-caret-down arrRight"></i></a>
 							 	<div class="campsubMenuView">
 				
@@ -1082,6 +1085,13 @@ function notificationStatusAsRead(){
     </ul>
   </div>
 <!--  Theme Swithcer div ends  -->
+
+<!--  Support div -->
+  <div id="mySidenav" class="sidenav">
+	<a href="/app/sourceleadTicketList" title="Report Issue"><span class="fa fa-ticket"></span></a>
+<!--   <a href="add-ticket.html">Support</a> -->
+</div>
+<!--  Support div ends  -->
 
 
 <script type="text/javascript">

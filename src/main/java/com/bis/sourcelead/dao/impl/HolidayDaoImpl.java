@@ -59,11 +59,7 @@ public class HolidayDaoImpl  implements HolidayDAO{
 	public List<Holiday> getAllHolidaysListBasedOnYear(Long id,Long reportYear) {
 		String status = "1";
 		Session session = this.sessionFactory.getCurrentSession();
-//		Date[] dates = commonUtil.getStartDateEndDateByYear(reportYear.intValue());
-//		java.sql.Date satrtDate = new java.sql.Date(dates[0].getTime());
-//		java.sql.Date endDate = new java.sql.Date(dates[1].getTime());
-	
-		String from = "from Holiday holiday where holiday.orgLocations.id =:id  and holiday.status =:status and (year(holiday.fromDate)='"+reportYear+"'  OR year(holiday.toDate)= '"+reportYear+"')";
+        String from = "from Holiday holiday where holiday.orgLocations.id =:id  and holiday.status =:status and (year(holiday.fromDate)='"+reportYear+"'  OR year(holiday.toDate)= '"+reportYear+"') ORDER BY holiday.fromDate ASC";
 		//String from = "from Holiday holiday where holiday.orgLocations.id =:id  and holiday.status =:status and holiday.fromDate >= '"+satrtDate+"' AND holiday.toDate <= '"+endDate+"'";
 		List<Holiday> holidayList = session.createQuery(from).setLong("id", id).setString("status", status).list();
 		return holidayList;
@@ -144,6 +140,15 @@ public class HolidayDaoImpl  implements HolidayDAO{
 		String query="from ProjectTasks proTask left join fetch proTask.holiday holiday left join fetch holiday.orgLocations orgLoc  where holiday.id = :holidayId and orgLoc.id = :orglocationId";
 		List<ProjectTasks> projectTasks = session.createQuery(query).setLong("orglocationId", orglocationId).setLong("holidayId", holidayId).list();
 		return projectTasks;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Holiday> getAllHoliday() {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query="from Holiday holiday";
+		List<Holiday> holidayList = session.createQuery(query).list();
+		return holidayList;
 	}
 
 

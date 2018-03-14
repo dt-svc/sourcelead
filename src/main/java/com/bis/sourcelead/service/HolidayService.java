@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.bis.sourcelead.dto.HolidayDTO;
 import com.bis.sourcelead.entity.Holiday;
-import com.bis.sourcelead.entity.Option;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
 
@@ -27,5 +26,7 @@ public interface HolidayService {
 	public Holiday getHolidaysByUUID(String holidayUUID);
 
 	public List<ProjectTasks> getHolidayProjectTaskByorgLocationIdAndHolidayId(Long orglocationId, Long holidayId);
+
+	public List<Holiday> getAllHoliday();
 
 }

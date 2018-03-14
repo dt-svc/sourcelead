@@ -1223,12 +1223,14 @@ z-index: 100; border-radius: 3px; color: #fff; text-align: center;
 .bgGReen {
 background-color: #1ab394 !important; color: #fff;
 }
+
 .activeGren {
 background-color: #28a745 !important; color: #fff;
 }
 .activeGray {
 background-color: #ddd !important; color: #909090 !important;
 }
+
 .bg-orange {
 	background: #FF8F00; color: #fff;
 }
@@ -5779,7 +5781,7 @@ select.selectborder {
 }
 /* For SideNav Inner Scroll */
 .sidenav_inner {
-    position: relative; max-height: 575px; overflow-y: auto; padding-bottom: 10px;
+    position: relative; /* max-height: 575px; overflow-y: auto;*/  padding-bottom: 10px;
 }
 .side-bar-active .sidenav_inner {
      overflow-y:inherit;
@@ -8137,13 +8139,14 @@ margin: 6px; float:left;
 float: left; position: relative; top: 5px; width: 10%;
 }
 #mySidenav {
-position: absolute; bottom: 20px; right: 190px; z-index: 99;
+position: fixed; top: 165px; right: 0px; z-index: 99;
 }
 #mySidenav span {
-padding:15px 5px; line-height:5px; width:35px; min-height:10px; display:block; text-align:center; color:#fff; font-size:20px; border-radius:50%; cursor:pointer; z-index:1; background-color: #a21e23; z-index:99;
+padding: 12px 5px; line-height:5px; width:30px; min-height:10px; display:block; text-align:center; color:#fff; font-size:18px;
+border-radius: 5px 0 0 5px; cursor:pointer; background-color: #a21e23; z-index:99; 
 position:relative; transition:all 0.5s ease-in-out;
 }
-#mySidenav a {
+/*#mySidenav a {
 transition:all 0.3s ease-in-out; padding:5px 10px 5px 10px; width: 100px; text-decoration: none;
 color: #fff; right:20px !important; border-radius:20px 0px 0px 20px; background:#ababab; bottom:0; position: absolute; 
 z-index:0; bottom: 0px;
@@ -8153,7 +8156,7 @@ right:15px !important; color:#fff;
 }
 #mySidenav:hover span {
 transform: rotate(180deg);
-}
+}*/
 .applicant_accept.enrollOrg-tabs .tab-content {
 	background-color: #fff;
 }
@@ -8261,7 +8264,7 @@ top: 10%; left: 12.5%; width: 1024px; border-radius:3px;
 	font-size: 13px;
 }
 .letterheadHeader .headerDetails {
-	
+	float: left; width: 50%;
 }
 .letterheadHeader .cmpLogo {
 	width: 150px; height: 50px;
@@ -8275,26 +8278,38 @@ top: 10%; left: 12.5%; width: 1024px; border-radius:3px;
 .letterheadHeader .companyAddress p{
 	margin-bottom: 0;
 }
+.letterheadContentbody p {
+	line-height: 24px;	
+}
+.user_details_cta.user_detailscta_custom {
+    width: 75%;
+}
+.user_details_cta.user_detailscta_custom .project_details_cta {
+    float: left; width:50%;
+}
+.dataTablesPaginate .dataTables_paginate a {
+float: none;
+}
+.userSettingImages {
+position: absolute; right:-9px; top:-13px; width:25px; height: 25px; background-color: #337ab7;
+border-radius:3px; padding: 2px;
+}
+.userSettingImages img {
+max-height: 100%;
+}
+.dynamic_search.dynamic_search-new {
+position: absolute; top:12px; right: 15px;
+}
+.clearUpload.clearUpload-timesheet:after {
+top: 16px; left: 54%; right:inherit; bottom:inherit; color: #fff; background-color: transparent;
+}
 
-.filterSearch li {
-	padding:3px 0;
-}
-.filterSearch li input[type="checkbox"] {
-	position: absolute; left: 0; top: 0; z-index: 99;
-}
-.filterSearch li label {
-	padding-left: 25px; position: relative; top:-1px;
-}
- .filterSearch-ul  {
- min-height: 100px; max-height: 300px; overflow-y:auto; margin-bottom: 15px;
+ .showPassword-usr {
+     	top: 0; right: 15px; font-size: 15px !important; background-color: #ccc; padding: 5px !important;
+     	position:absolute; height: 34px; line-height: 25px; width: 30px; text-align: center; border-left: 1px solid #c5c5c5; cursor: pointer;
+     	border-radius:0 3px 3px 0;
  }
- .dynamic_search.filterDynamicsearch input {
- width: 100% !important;
-  }
-  .advancedsearch-popup.filterDynamic-Search {
-  	top: 10%; left: 12.5%; width: 1024px; border-radius:3px;
-  }
-  
+ 
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
@@ -8712,3 +8727,4 @@ z-index: -800;
 .remove_uservalidation p.jquery_form_error_message {
 	position: absolute; bottom: 32px;
 }
+

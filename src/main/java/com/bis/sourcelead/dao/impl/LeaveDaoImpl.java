@@ -546,8 +546,8 @@ public class LeaveDaoImpl implements LeaveDao{
 		else if("LeaveType".equalsIgnoreCase(fromTable))
 			subQuery = " and frm.name = :name ";
 			
-		String query = "from "+fromTable+" frm where frm.orgLocations.id = :orgLocationId and frm.status = '1' "+subQuery+" and frm.id <> :id";
-		List<Long> found = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("name", name).setString("id", id).list();
+		String query = "from "+fromTable+" frm where frm.orgLocations.id = :orgLocationId "+subQuery+" and frm.id <> :id";
+		List<Long> found = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("name", name.replaceAll("\\s+"," ").trim()).setString("id", id).list();
 		if(found.size() > 0){
 			return true;
 		}else{

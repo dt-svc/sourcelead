@@ -49,9 +49,9 @@ function getTicketCustomDates(){
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Ticket List</h2>
+        <h2>Issues List</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; Ticket List</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; Issues List</div>
     </section>
 		    <div class="content-area content-new clearfix">
 		      <div class="clearfix form-horizontal">
@@ -106,7 +106,7 @@ function getTicketCustomDates(){
 				                </li>
 				                </c:if>
 								
-								<li> <a href="<c:url value='${appPath}/addSourceleadTicket'/>"  title="Add Ticket"><i class="fa fa-plus paddingRight"></i>Add Ticket</a> </li>
+								<li> <a href="<c:url value='${appPath}/addSourceleadTicket'/>"  title="Add Issue"><i class="fa fa-plus paddingRight"></i>Add Issue</a> </li>
 								<div class="clearfix"></div>
 								</ul>
 								<div class="clearfix"></div>
@@ -183,7 +183,6 @@ function getTicketCustomDates(){
 	  if(dateSelection == 'custom'){
 		   fromDate = $("#fromDate").val();
 		   toDate = $("#toDate").val();
-		  
 		  if(fromDate == '' || toDate == ''){
 			  flag = false;
 			  if(fromDate == ''){
@@ -212,7 +211,7 @@ function getTicketCustomDates(){
 	  var sourceleadUrl = '${sourceleadUrl}';
 		var searchValue = $("#ticketDataTableSearch").val();
 		 searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getSourceleadTicketList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&dateSelection="+dateSelection+"&selectCompanyIds="+selectCompanyIds;
+		var url = sourceleadUrl+"/getSourceleadTicketList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&dateSelection="+dateSelection+"&selectCompanyIds="+selectCompanyIds+"&fromDate="+fromDate+"&toDate="+toDate;
 		prepareSourceleadTicketList(url);
 	  }
   }
@@ -422,7 +421,7 @@ function ticketComment(ticketUUID) {
 	result = result + '<div class="modal-content">';
 	result = result + '<div class="modal-header">';
 	result = result + '<a href="javascript:void(0)" class="close" onClick="closeComment()">&times;</a>';
-	result = result + '<h4>Ticket Comment</h4>';
+	result = result + '<h4>Issue Comment</h4>';
 	result = result + '</div>';
 	result = result  +'<form  id="sourceleadTicketComment_form" name="sourceleadTicketComment_form" method="post" > ';
 	result = result + '<div class="modal-body">';

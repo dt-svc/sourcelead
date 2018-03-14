@@ -601,62 +601,23 @@ public class CandidateOnBoardRestController {
 	 
 	 
 	 @RequestMapping(value = {"/getOnboardCandidateList","rest/getOnboardCandidateList"})
-	 public List<CandidateOnBoardingDTO> getOnboardCandidateList(@RequestParam("locationCode") String locationCode) throws Exception {
+	 public ResponseList<CandidateOnBoardingDTO> getOnboardCandidateList(CandidateOnBoardingDTO candidateOnBoardingDTO,@RequestParam("locationCode") String locationCode) throws Exception {
 
 		OrgLocations loginOrgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
-		//SimpleDateFormat format = loginOrgLocation.getLocFullFormDateFormatter();
-		List<CandidateOnBoarding> candidateOnBoardingList = candidateOnBoardingService.getCandidateOnBoardingListByOrgLocationId(loginOrgLocation.getId());
-		List<CandidateOnBoardingDTO> onBoardingList = new ArrayList<CandidateOnBoardingDTO>();
 		
-		if(null != candidateOnBoardingList && candidateOnBoardingList.size() > 0){
-			for(CandidateOnBoarding candidateOnBoarding : candidateOnBoardingList){
-				
-				CandidateOnBoardingDTO candidateOnBoardingDTO=new CandidateOnBoardingDTO();
-				
-				if(null != candidateOnBoarding.getStartDate()){
-					candidateOnBoardingDTO.setJoiningDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),candidateOnBoarding.getStartDate()));
-				}
-				
-				StringBuilder candidateName = new StringBuilder();
-				
-				if(null != candidateOnBoarding.getLastName()){
-					candidateOnBoardingDTO.setCandidateName(candidateName.append(candidateOnBoarding.getFirstName()).append(" ").append(candidateOnBoarding.getLastName()).toString());
-				}else{
-					candidateOnBoardingDTO.setCandidateName(candidateName.append(candidateOnBoarding.getFirstName()).toString());
-				}
-				if(null != candidateOnBoarding.getCandidateOnBoardStatus()){
-					candidateOnBoardingDTO.setCandidateOnBoardStatus(candidateOnBoarding.getCandidateOnBoardStatus());
-				}
-				if(null != candidateOnBoarding.getOnboardCandidateUUID()){
-					candidateOnBoardingDTO.setOnboardCandidateUUID(candidateOnBoarding.getOnboardCandidateUUID());
-				}
-				if(null != candidateOnBoarding.getOnboardSubmitted()){
-					candidateOnBoardingDTO.setOnboardSubmitted(candidateOnBoarding.getOnboardSubmitted());
-				}
-				
-				if(null != candidateOnBoarding.getOnboardingUser()){
-					candidateOnBoardingDTO.setUserEmail(candidateOnBoarding.getOnboardingUser().getEmail());
-				}
-				
-				if(null != candidateOnBoarding.getRejectedReason()){
-					candidateOnBoardingDTO.setRejectedReason(candidateOnBoarding.getRejectedReason());
-				}
-				
-				Integer documentsCount = onBoardingTemplateDocumentsService.getCandidateOnboardingDocumentsCountByCandidateOnboardingIdExpectSupportDocs(candidateOnBoarding.getId());
-				candidateOnBoardingDTO.setDocumentsCount(documentsCount);
-				Integer acceptedDocumentsCount = onBoardingTemplateDocumentsService.getCandidateAcceptedOnboardingDocumentsCountByCandidateOnboardingId(candidateOnBoarding.getId());
-				candidateOnBoardingDTO.setDocumentsAcceptedCount(acceptedDocumentsCount);
-				
-				onBoardingList.add(candidateOnBoardingDTO);
-				
-			}
+		String[] tableColumns = {"firstName", "startDate", "onboardDocuments", "onboardStatus"};
+	    int sortColumnIndex = 1; //by default sorting using updated date
+		String sortColumnOrder = "desc"; //by default descending order
+		if(candidateOnBoardingDTO.getOrder() != null && !candidateOnBoardingDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(candidateOnBoardingDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = candidateOnBoardingDTO.getOrder().get(0).get("dir");
 		}
+		candidateOnBoardingDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		candidateOnBoardingDTO.setSortOrder(sortColumnOrder);
+		ResponseList<CandidateOnBoardingDTO> candidateOnBoardingList = candidateOnBoardingService.getCandidateOnBoardingList(candidateOnBoardingDTO,loginOrgLocation);
 		
-		return onBoardingList;
+		return candidateOnBoardingList;
 	 }
-	 
-	 
-	 
 	 
 	 
 	 
@@ -794,6 +755,16 @@ public class CandidateOnBoardRestController {
 			}else{
 				candidateOnBoardingDTO.setCandidateName(candidateName.append(candidateOnBoarding.getFirstName()).toString());
 			}
+			
+			Candidate candidate = candidateService.getCandidateByCandidateId(candidateOnBoarding.getCandidateId().getId());
+			if(candidate.getOrgRelationId() != null) {
+				candidateOnBoardingDTO.setVendors(candidate.getOrgRelationId().getId().toString());
+			}
+			
+			if(candidate.getSpocId() != null) {
+				candidateOnBoardingDTO.setVendorContact(candidate.getSpocId().getId().toString());
+			}
+			
 			
 		}
 		
