@@ -56,7 +56,7 @@ public class UserProfileController {
  			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
  			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
  			
- 			UserMailUnsubscribe userMailUnsubscribe = userMailUnsubscribeService.getUserMailUnsubscriptionByUserIdAndOrgLocationId(user.getId(), orgLocations.getId());
+ 			UserMailUnsubscribe userMailUnsubscribe = userMailUnsubscribeService.getUserMailUnsubscriptionByUserId(user.getId());
  			if(userMailUnsubscribe != null && StringUtils.isNotEmpty(userMailUnsubscribe.getTabIds())) {
  				model.addObject("unsubscriptionTabIds", userMailUnsubscribe.getTabIds());
  			}else {

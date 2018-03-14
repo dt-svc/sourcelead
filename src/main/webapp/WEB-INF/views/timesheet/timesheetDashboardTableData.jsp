@@ -6,6 +6,7 @@
 <tr style="display:none">
 	       <input type="hidden" id="totalRows" name="totalRows" value="${timesheetApprovalDTO.totalRows}">
 	       <input type="hidden" id="pageCount" name="totalRows" value="${timesheetApprovalDTO.pageCount}">
+	       <input type="hidden" id="searchData" name="searchData" value="${timesheetApprovalDTO.searchValue}">
  </tr>
 <c:forEach var="timesheetSubmissionDTO" items="${timesheetApprovalDTO.timesheetSubmission}" varStatus="submissionStatus" >
           <c:if test="${submissionStatus.index == 0}">
