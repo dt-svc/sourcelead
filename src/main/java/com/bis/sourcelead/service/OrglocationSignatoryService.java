@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service;
 
+import java.util.List;
+
 import com.bis.sourcelead.dto.OrglocationSignatoryDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationSignatory;
@@ -14,4 +16,6 @@ public interface OrglocationSignatoryService {
 	OrglocationSignatory getOrglocationSignatoryByOrglocationId(Long orgLocationId) throws Exception;
 	
 	OrglocationSignatory getOrglocationSignatoryByUUID(String uuid) throws Exception;
+
+	List<OrglocationSignatoryDTO> getAllSignatoriesByLocationId(Long locationId) throws Exception;
 }

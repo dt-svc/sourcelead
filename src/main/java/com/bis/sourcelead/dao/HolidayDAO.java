@@ -28,6 +28,8 @@ public interface HolidayDAO {
 
 	List<ProjectTasks> getHolidayProjectTaskByorgLocationIdAndHolidayId(Long orglocationId, Long holidayId);
 
+	List<Holiday> getAllHoliday();
+
 	
 	
 }
