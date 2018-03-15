@@ -253,10 +253,14 @@ public class OpenJobsRestController {
 			if (null != Locations) {
 				BoolQueryBuilder orgOpenJobsBuilder = QueryBuilders.boolQuery();
 				for (String locationId : Locations) {
-					BoolQueryBuilder openJobscombinedOrgQueryBuilder = QueryBuilders.boolQuery();
-					openJobscombinedOrgQueryBuilder
-							.should(QueryBuilders.matchQuery("orgLocationId", Long.parseLong(locationId)));
-					orgOpenJobsBuilder.should(openJobscombinedOrgQueryBuilder);
+					List<OrgLocations> list=orgLocationService.getAllOrgLocationsByOrgId(Long.parseLong(locationId));
+					for(OrgLocations loc:list){
+						BoolQueryBuilder openJobscombinedOrgQueryBuilder = QueryBuilders.boolQuery();
+						openJobscombinedOrgQueryBuilder
+								.should(QueryBuilders.matchQuery("orgLocationId", loc.getId()));
+						orgOpenJobsBuilder.should(openJobscombinedOrgQueryBuilder);
+					}
+					
 				}
 				boolQueryBuilder.must(orgOpenJobsBuilder);
 			}
