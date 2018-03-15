@@ -664,7 +664,6 @@
 <script type="text/javascript">
 	function submitLeaveType() {
 		validateName();
-		window.setTimeout(function() {
 			var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 			var locationId = '${SourceLeadWeb_orgLocationId}';
 			var loginUserId = '${SourceLeadWeb_user.id}';
@@ -682,7 +681,6 @@
 
 				return true;
 			}
-	        }, 1500);
 	}
 	$('body').on('blur', '#addLeaveType_form', function() {
 		$("#addLeaveType_form").showHelpOnFocus();
