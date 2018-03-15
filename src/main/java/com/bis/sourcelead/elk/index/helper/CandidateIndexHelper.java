@@ -15,13 +15,18 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
+import com.bis.sourcelead.service.UserService;
 
 @Component
 public class CandidateIndexHelper {
 	
 	@Autowired
     CandidateResumesService candidateResumesService;
+	
+	@Autowired
+	UserService userService;
 	
 	public CandidateIndex getCandidateIndexFromCandidate(Candidate candidate) throws Exception{
 		CandidateIndex candidateIndex = null;
@@ -194,7 +199,19 @@ public class CandidateIndexHelper {
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 				candidateIndex.setCreatedDate(df.format(new Date(candidate.getCreatedDate().getTime())));
 			}
-			candidateIndex.setCreatedBy(candidate.getCreatedBy());
+			
+			
+			if(candidate.getCreatedBy() != null && !candidate.getCreatedBy().isEmpty()) {
+				User user = userService.getUserByUserCode(candidate.getCreatedBy());
+				StringBuilder sb = new StringBuilder();
+				if(user.getLastName() != null){
+					candidateIndex.setCreatedBy(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+				}else{
+					candidateIndex.setCreatedBy(sb.append(user.getFirstName()).append(" ").toString());
+				}
+			}
+			
+			
 			if(candidate.getUpdatedDate() != null){
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 				candidateIndex.setUpdatedDate(df.format(new Date(candidate.getUpdatedDate().getTime())));

@@ -664,23 +664,25 @@
 <script type="text/javascript">
 	function submitLeaveType() {
 		validateName();
-		var ee = $("#txtEditor").val($('.Editor-editor').html()); 
-		var locationId = '${SourceLeadWeb_orgLocationId}';
-		var loginUserId = '${SourceLeadWeb_user.id}';
-		if ($('#addLeaveType_form').validate(false, validationSettings)) {
-			var formData = $($('#addLeaveType_form')[0]).serialize();
-			$("#loading")
-					.attr(
-							'style',
-							'position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			$.post(sourceleadUrl + "/saveNewLeaveType?&orgLocationId=" + locationId	+ "&loginUserId=" + loginUserId, formData, function(data) {
-				if (data == "success") {
-					location.replace(sourceleadUrl + "/viewLeaveTypes");
-				}
-			});
+		window.setTimeout(function() {
+			var ee = $("#txtEditor").val($('.Editor-editor').html()); 
+			var locationId = '${SourceLeadWeb_orgLocationId}';
+			var loginUserId = '${SourceLeadWeb_user.id}';
+			if ($('#addLeaveType_form').validate(false, validationSettings)) {
+				var formData = $($('#addLeaveType_form')[0]).serialize();
+				$("#loading")
+						.attr(
+								'style',
+								'position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+				$.post(sourceleadUrl + "/saveNewLeaveType?&orgLocationId=" + locationId	+ "&loginUserId=" + loginUserId, formData, function(data) {
+					if (data == "success") {
+						location.replace(sourceleadUrl + "/viewLeaveTypes");
+					}
+				});
 
-			return true;
-		}
+				return true;
+			}
+	        }, 1500);
 	}
 	$('body').on('blur', '#addLeaveType_form', function() {
 		$("#addLeaveType_form").showHelpOnFocus();
