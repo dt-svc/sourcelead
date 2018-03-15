@@ -92,6 +92,16 @@ public class ContactsGroupServiceImpl implements ContactsGroupService{
 	{
 		return contactsGroupDao.findByContactsGroupAndUserId(groupName, userId);
 	}
+
+	@Override
+	public ContactsGroup validateGrouppNameByGroupNameAndGroupId(String groupName, Long groupId) throws Exception {
+		return contactsGroupDao.validateGrouppNameByGroupNameAndGroupId(groupName, groupId);
+	}
+
+	@Override
+	public Boolean validateGroupNameByGroupNameAndUserId(String groupName, Long userId) throws Exception {
+		return contactsGroupDao.validateGroupNameByGroupNameAndUserId(groupName, userId);
+	}
 	
 
 }

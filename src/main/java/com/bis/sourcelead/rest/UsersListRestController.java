@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -49,16 +50,16 @@ import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
-import com.bis.sourcelead.dto.OrgSpocDTO;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
-import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
+import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
+import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
@@ -72,7 +73,6 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.OrglocationFormFields;
-import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
@@ -82,13 +82,10 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
-import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Status;
-import com.bis.sourcelead.model.ConnectionBean;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.DepartmentService;
@@ -230,6 +227,9 @@ public class UsersListRestController {
 	
 	@Autowired
 	ProjectClientService projectClientService;
+	
+	@Autowired
+    ProjectsIndexHelper projectsIndexHelper;
 	
 	
 	/**
@@ -1217,28 +1217,75 @@ public class UsersListRestController {
 						.getAllProjectsAssigendToUserByIdAndStatus(userId, Constants.MEMBER_ACTIVE);
 				if (null != projectmembersList) {
 					for (ProjectMembers pm : projectmembersList) {
-
-						ProjectMembersHistory projectMembersHistory = projectMembersHistoryService
-								.getProjectMembersOpenHistoryByProjectMemberId(pm.getId());
-
-						if (null != projectMembersHistory) {
-							projectMembersHistory.setProjectTerminationDate(new Date());
-							projectMembersHistoryService.updateProjectMembersHistory(projectMembersHistory);
-						}
-
-						commonUtil.terminateProjectMemberByProjectMemberId(pm.getId(), Primary.Yes);
-
-						List<TimesheetSubmissions> submissionsList = timesheetSubmissionsService
-								.getTimeSheetSubmissionByProjectMemberId(pm.getId());
-						if (null != submissionsList) {
-							for (TimesheetSubmissions submissions : submissionsList) {
-								submissions.setStatus(Constants.MEMBER_IN_ACTIVE);
-								submissions.setUpdatedBy(user.getUserCode());
-								submissions.setUpdatedDate(new Date());
-								timesheetSubmissionsService.addTimesheetSubmissions(submissions);
-							}
-						}
-
+						   try {
+							   List<ProjectMembers> pmList = projectMembersService.getAllProjectMembersByMasterCandidateId(pm.getMasterCandidateId().getId(), pm.getProjects().getId());
+						  	 // ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
+						  	 if(pmList != null && !pmList.isEmpty()) {
+							   for(ProjectMembers projectMembers: pmList) {
+							  		  String status = Constants.MEMBER_IN_ACTIVE;
+								  	  projectMembers.setTerminateReason(addUserDTO.getTerminateReason());
+									  projectMembers.setUpdatedDate(new Date());
+									  projectMembers.setUpdatedBy(user.getUserCode());
+									  projectMembers.setStatus(status);
+									  projectMembersService.saveProjectMember(projectMembers);
+								  	  
+									  List<ProjectMembersHistory> pmhList = projectMembersHistoryService.getProjectMembersHistoryListByProjectMemberId(projectMembers.getId());
+									  int sendEmailCount = 1;
+									  if(pmhList != null && pmhList.size() > 0){
+										  for(ProjectMembersHistory pmh : pmhList){
+											  pmh.setProjectTerminationDate(new Date());
+											  pmh.setUpdatedDate(new Date());
+											  pmh.setUpdatedBy(user.getUserCode());
+											  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
+											  pmh =  projectMembersHistoryService.updateProjectMembersHistory(pmh);
+											  if(sendEmailCount == 1){
+												  commonUtil.terminatedMailToEmployee(user,pmh,orgLocations);
+											  }
+											  
+											  if(pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId().getId().equals(orgLocations.getId())){
+												   /*List<ProjectApproverHierarchy>  mangerList = projectApproverHierarchyService.getApproverUsersByProjectId(pmh.getProjectMemberId().getProjects().getId());
+												      for(ProjectApproverHierarchy pah : mangerList){
+												    	  if(user.getId() != pah.getApproverUserId().getId()){
+												    		  employeeTerminationMailToProjectManager(user,pmh,orgLocations);
+												    	  }
+												      }*/
+												  commonUtil.employeeTerminationMailToProjectManager(user,pmh,orgLocations);
+											  }else{
+												  commonUtil.employeeTerminationMailToProjectManager(pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId().getUser(),pmh,pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId());
+											  }
+											  commonUtil.inactivateTimesheetSubmissionsBasedOnMemberIdAndMemberTerminationDate(pm.getId(),new Date());
+											  sendEmailCount = sendEmailCount+1;
+										  }
+									  }
+									  
+									  
+									  
+									 /* ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
+									  if(pmh != null){
+										  pmh.setProjectTerminationDate(new Date());
+										  pmh.setUpdatedDate(new Date());
+										  pmh.setUpdatedBy(user.getUserCode());
+										  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
+										  pmh =  projectMembersHistoryService.updateProjectMembersHistory(pmh);
+									  }
+									  
+									  commonUtil.terminateProjectMemberByProjectMemberId(projectMemberId,Primary.Yes);
+								      updatedCount = 1;*/
+								      
+								   if(null != pm.getProjects() && pm.getProjects().getId() != null){
+										Projects projects = projectsService.getProjectById(pm.getProjects().getId());
+										if(null != projects){
+											Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(pm.getProjects().getId());
+											ProjectsIndex projectsIndex = projectsIndexHelper.getProjectsIndexFromProjects(projects, null, projectMembersList);
+											//Elastic Search Document Saving
+											sourceleadELKBaseIndexer.saveOrUpdateElkDocument(projectsIndex, Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,projects.getId().toString());
+										}
+								   }
+						  	  }
+						  	 }
+						    } catch (Exception e) {
+						   }
+					    
 					}
 				}
 			}

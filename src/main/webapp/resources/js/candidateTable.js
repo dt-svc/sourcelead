@@ -105,6 +105,7 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
           result = result +"    <th>Mobile Number</th>"; 
           result = result +"    <th>Location</th>"; 
           result = result +"    <th>Last Update</th>"; 
+          result = result +"    <th>Created By</th>"; 
           result = result +"  </tr>"; 
           result = result +"</thead>";
           result = result +"<tbody>"; 
@@ -157,7 +158,8 @@ function cpagination(url){
             { "data": "email" },
             { "data": "mobilePhone" },
             { "data": "country"},
-            { "data": "updatedDate" }
+            { "data": "updatedDate" },
+            { "data": "createdBy" }
         ],
         "columnDefs": [ {
     	  	"targets": colIndex++,
@@ -321,10 +323,23 @@ function cpagination(url){
 			            	}
       	              return result;
                   }
-                } ],
+                } , {
+                    "targets": colIndex++,
+                    "data": "createdBy",
+                    "className": "tblminwidth-75",
+                    "render": function ( data, type, opt, meta ) {
+                    		var result = "";
+                    		if(opt.createdBy != null && opt.createdBy != 'undefined' && opt.createdBy != ""){
+                    			result = "<div>"+opt.createdBy+"</div>"; 
+  			            	}else{
+  			            		result = "<div>---</div>";
+  			            	}
+        	              return result;
+                    }
+                  } ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[9,'desc']],
+	    	"aaSorting": [[10,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
