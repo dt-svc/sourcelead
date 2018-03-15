@@ -703,7 +703,7 @@ $("#experienceValue").change(function () {
    <script type="text/javascript">
 	  $( document ).ready(function() {
 		  getAttorneysByOrgLocation();
-		//  getCandidatesByOrgLocation();
+		  getCandidatesByOrgLocation();
 		  getPetitionTypeDropDown();
 		  getUscisTypeDropDown();
 		  employmentLevelDropDown();

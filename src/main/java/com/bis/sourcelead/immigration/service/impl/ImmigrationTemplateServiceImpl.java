@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.CandidateEmployerDTO;
 import com.bis.sourcelead.dto.FileInfo;
@@ -46,6 +47,7 @@ import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.itextpdf.text.log.SysoCounter;
 
 /**
  * @author Srinivas.Sabbu
@@ -56,7 +58,10 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 
 	@Autowired
 	ImmigrationTemplateDao immigrationTemplateDao;
-
+	
+	@Autowired
+	CandidateDao candidateDao;
+	
 	@Autowired
 	private UserDao userDao;
 
@@ -362,8 +367,8 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 		
 		/*end Immigration here*/
 		/*Candidate Starts Here*/
-		Candidate candidate = new Candidate();
-		candidate.setId(Long.parseLong(immigrationDTO.getCandidateId()));
+		Candidate candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(immigrationDTO.getCandidateId()));
+		//candidate.setId(Long.parseLong(immigrationDTO.getCandidateId()));
 		candidate.setFirstName(immigrationDTO.getFirstName());
 		candidate.setMiddelName(immigrationDTO.getMiddleName());
 		candidate.setLastName(immigrationDTO.getLastName());
@@ -400,10 +405,12 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 		/*CandidateIdentities ends here */
 		
 		CandidateResumes candidateResume = new CandidateResumes();
+		if(immigrationDTO.getResumeInfo()!= null) {
 		candidateResume.setCandidateId(candidate);
 		candidateResume.setFileName(immigrationDTO.getResumeInfo().getFileName());
 		candidateResume.setFileURL(immigrationDTO.getResumeInfo().getFileURL());
 		candidateResume.setFileContentType(immigrationDTO.getResumeInfo().getContentType());
+		}
 		/*candidateResume ends here */
 		List<CandidateLcaI94Summary> lcaSummaryLst  = new ArrayList<CandidateLcaI94Summary>();
 		CandidateLcaI94Summary lcaSummaryCurr  = new CandidateLcaI94Summary();

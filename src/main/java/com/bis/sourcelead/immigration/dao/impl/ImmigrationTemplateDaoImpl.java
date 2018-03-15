@@ -509,6 +509,9 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 			if (candidate != null) {
 					session.saveOrUpdate(candidate);
 			}
+			if (immigration != null) {
+				session.saveOrUpdate(immigration);
+			}
 			if(candidateIdendities != null) {
 				session.saveOrUpdate(candidateIdendities);
 			}
