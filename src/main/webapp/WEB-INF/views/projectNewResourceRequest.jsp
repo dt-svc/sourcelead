@@ -341,6 +341,7 @@ function rejectNewAssociate(requestUUID,roleName){
 
 <script>
 function cancelRejectedReason(){
+	$("#resourceRejectedReasonDiv").empty();
 	$(".settPop").slideUp(200);
 	$(".vendor_wrap_mask").fadeOut(200);
 }
