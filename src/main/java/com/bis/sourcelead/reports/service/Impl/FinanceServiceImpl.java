@@ -556,10 +556,22 @@ public class FinanceServiceImpl implements FinanceService{
 	 * @return int
 	 */
 	private int getNumberOfAssociates(List<Invoice> invoiceList) {
-		Set<Long> set = new HashSet<>();
+		Set<Long> set = null;
 		for(Invoice invoice : invoiceList ) {
-			for(InvoiceLineItems inlineItems : invoice.getInvoiceLineItems()) {
-				set.add(inlineItems.getCandidate().getId());
+			if(Constants.PAYABLES.equalsIgnoreCase(invoice.getInvoiceType())){
+				set = invoice.getParentInvoiceId().getInvoiceLineItems().stream()
+					              .map(InvoiceLineItems::getId)
+					              .collect(Collectors.toSet());
+//				for(InvoiceLineItems inlineItems : invoice.getParentInvoiceId().getInvoiceLineItems()) {
+//					set.add(inlineItems.getCandidate().getId());
+//				}
+			}else{
+				set  = invoice.getInvoiceLineItems().stream()
+			              .map(InvoiceLineItems::getId)
+			              .collect(Collectors.toSet());
+				/*for(InvoiceLineItems inlineItems : invoice.getInvoiceLineItems()) {
+					set.add(inlineItems.getCandidate().getId());
+				}*/
 			}
 			
 		}
