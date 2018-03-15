@@ -545,7 +545,7 @@
 			initLocationAuto('entryPlace');
  			initLocationAuto('jobLocation');
  			initLocationAuto('birthPlace');
- 			initLocationAuto('location','country','state','city','zipCode','','','','address');
+ 			initLocationAuto('location','country','state','city','zipcode','','','','address');
 			
 		 };
 	</script>
