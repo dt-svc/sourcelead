@@ -21,12 +21,12 @@ $(document).ready(function() {
  if(submissionId != null && submissionId != '' && submissionId != 'undefined' && candidateId != null && candidateId != '' && candidateId != 'undefined'){
 	 requirementPipeline(requirementId,type);
 	 }
- else if(submissionStatus == 'all'){
+  else if(submissionStatus == 'all'){
 	 $("#detailsTab").removeClass("current");
 	 $('li[name=applicantNotification]').addClass("current");
 	 requirementStatusBar(requirementId);
 	 requirementPipeline(requirementId,"all");
-	 } 
+	 }  
  else if(submissionId != null && submissionId != '' && submissionId != 'undefined' && requirementId != null && requirementId != '' && requirementId != 'undefined'){
 	 requirementPipeline(requirementId,type);
 		 }
