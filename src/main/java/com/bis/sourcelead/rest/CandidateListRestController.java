@@ -209,7 +209,7 @@ public class CandidateListRestController {
 		/*
 		 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
 		 */
-		String[] tableColumns = {"","isAssociate", "generatedId.keyword","firstName.keyword", "primarySkill.keyword", "designationType.keyword", "email.keyword", "mobilePhone.keyword", "country.keyword", "updatedDate"};
+		String[] tableColumns = {"","isAssociate", "generatedId.keyword","firstName.keyword", "primarySkill.keyword", "designationType.keyword", "email.keyword", "mobilePhone.keyword", "country.keyword", "updatedDate", "createdBy.keyword"};
 		
 		int sortColumnIndex = 9; //by default sorting using updated date
 		boolean sortColumnOrder = false; //by default descending order
@@ -474,6 +474,17 @@ public class CandidateListRestController {
 			// boolQueryBuilder.must(QueryBuilders.matchQuery("designationType",
 			// jsonObj.getString("designationType")));
 		}
+		
+		// Created By
+				List<String> createdByArray = search.getCreatedBy(); // getSearchKeywordsFromChosenSelectField(jsonObj, "createdByAdvanced");
+				if(createdByArray != null && !createdByArray.isEmpty()){
+					BoolQueryBuilder createdByBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : createdByArray){
+						createdByBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("createdBy", keywd));
+					}
+					boolQueryBuilder.must(createdByBoolQueryBuilder);
+				}
+
 
 		// updatedOn
 		if (StringUtils.isNotEmpty(search.getUpdatedOn())) {
@@ -595,7 +606,9 @@ public class CandidateListRestController {
 						Date date1 = commonUtil.dateFromElk(candidateIndex.getUpdatedDate());
 						String updatedDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),date1);
 						candidateIndex.setCandidateUpdateDateToString(updatedDate);
+						
 					}
+					candidateIndex.setCreatedBy(candidateIndex.getCreatedBy());
 					candidatesList.add(candidateIndex);
 				}
 				response.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
@@ -639,6 +652,7 @@ public class CandidateListRestController {
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("certifications", keywd));
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("candidateType", keywd));
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("noticePriod", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("createdBy", keywd));
 		// QueryBuilderList.add(QueryBuilders.matchQuery("currentResumeName",
 		// keywd));
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("resumeContent", keywd));

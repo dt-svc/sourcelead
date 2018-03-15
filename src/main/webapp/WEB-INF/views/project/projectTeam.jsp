@@ -415,6 +415,7 @@ function filterStatus() {
 		        		var estimatedHours = '';
 		        		var estimatedBudget = '';
 		        		
+		        		
 						if (opt.userRoleType != null && opt.userRoleType != '' && opt.userRoleType != 'undefined') {
 							role = opt.userRoleType;
 						} else {
@@ -504,15 +505,27 @@ function filterStatus() {
 			                     }
 			                     else{
 			                    	 result = result + '<td><div class="tblminwidth-50">';
+			                    	 if(opt.rateHistroyList == 'Y'){
+			                			 result = result + '<span title="Edit Employee"><i class="glyphicon fa fa-money" onClick="getRateTable('+opt.id+'\,\''+opt.candidateName+'\')";></i></span>&nbsp;&nbsp;';
+			                		  } 
 			                    	 if(status != 'COMPLETED'){
 			                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\',\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">'; 
-			                    		    result = result + '<a  onclick="reActiveProject(\''+opt.id+'\',\''+opt.empName+'\',\''+opt.projectAssignedDateStr+'\',\''+projectEndDateStr+'\',\''+opt.endDate+'\');flushReProject()" data-target="#Re-AssignProject" data-toggle="modal">Re-Assign &nbsp;</a><span class="show-reason">';
-				                    	if(opt.terminateReason != null && opt.terminateReason != '' && opt.terminateReason != 'undefined'){
+			                    		
+			                    		 if(opt.projectMemberStatus != 'INACTIVE'){
+			                    			 result = result + '<a  onclick="reActiveProject(\''+opt.id+'\',\''+opt.empName+'\',\''+opt.projectAssignedDateStr+'\',\''+projectEndDateStr+'\',\''+opt.endDate+'\');flushReProject()" data-target="#Re-AssignProject" data-toggle="modal"><i class="fa fa-retweet" title="Re Assign"></i> &nbsp;</a>'; 
+			                    		 }
+			                    		
+			                    		 result = result + '<span class="show-reason">';
+			                    		if(opt.terminateReason != null && opt.terminateReason != '' && opt.terminateReason != 'undefined'){
 				                    		result = result + '<b class="glyphicon glyphicon-comment text-success"></b><b class="reason edit-status">'+opt.terminateReason+'</b>';
 				                    	}else{
 				                    		result = result + '';	
 				                    	}
 				                      '</sec:authorize>';
+				                      
+				                      if(opt.projectMemberStatus == 'INACTIVE' && (opt.terminateReason == null || opt.terminateReason == '' || opt.terminateReason == 'undefined')){
+				                    	  result = result + '<font color="red">&nbsp;Terminated</font>';
+				                      }
 				                      
 				                      '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\',\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">'; 
 				                        result = result + '---';

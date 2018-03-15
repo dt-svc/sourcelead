@@ -8301,12 +8301,15 @@ position: absolute; top:12px; right: 15px;
 .clearUpload.clearUpload-timesheet:after {
 top: 16px; left: 54%; right:inherit; bottom:inherit; color: #fff; background-color: transparent;
 }
+.budgetModalpop {
+	position: fixed !important; background-color: #fff; top:10%; left: 25%; width:500px; padding:15px 0 0;
+	display: none; z-index: 99999 !important; border-radius:5px !important;
+}
 .showPassword-usr {
 top: 0; right: 15px; font-size: 15px !important; background-color: #ccc; padding: 5px !important;
 position:absolute; height: 34px; line-height: 25px; width: 30px; text-align: center; border-left: 1px solid #c5c5c5; cursor: pointer;
 border-radius:0 3px 3px 0;
 }
-
 
 /* media 320px */
 @media (max-width: 320px) {
