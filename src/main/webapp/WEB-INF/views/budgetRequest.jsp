@@ -312,7 +312,7 @@ function editBudgetrequest(budgetRequestedId,requestType){
 				url : sourceleadUrl+"/getBudgetRequestDetailsById?${_csrf.parameterName}=${_csrf.token}&budgetRequestedId="+budgetRequestedId,
 				success : function(json) {
 					var result = "";
-					result = result + '	<div class="collapse-div-adduser prRight col-md-4 show-div prRight_new popOut"> <i class="fa fa-close close-div" onClick="editCloseDiv();"></i>';
+					result = result + '	<div class="budgetModalpop"> <i class="fa fa-close close-div" onClick="editCloseDiv();"></i>';
 					result = result + '		<div class="form-horizontal clearfix">';
 					result = result + '<form id="budgetRequest-form" name="budgetRequest-form">';
 					result = result + '	    <input type="hidden" id="projectUUID" name="projectUUID" value="'+json.projectIdUUID+'">';
@@ -379,7 +379,9 @@ function editBudgetrequest(budgetRequestedId,requestType){
 						  $(selector).chosen(config[selector]);
 						}
 				    
-					$(".vendor_wrap_mask").fadeIn(200); 			    
+					$(".vendor_wrap_mask").fadeIn(200);
+					$(".budgetModalpop").fadeIn(200);
+					
 				    
 						$('.chosen-select').each(function() {
 							var $this = $(this);
@@ -393,7 +395,7 @@ function editBudgetrequest(budgetRequestedId,requestType){
 			
 }
 function editCloseDiv(){
-	$(".popOut").hide();
+	$(".budgetModalpop").hide();
 	$(".vendor_wrap_mask").hide(); 	
 }
 
