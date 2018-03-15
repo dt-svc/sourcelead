@@ -81,7 +81,7 @@
     	$("#rolesDiv").find("p.jquery_form_error_message").remove();
     }
     	function validateColor(){
-    		$("#cp").find("p.jquery_form_error_message").remove();
+    	$("#cp").find("p.jquery_form_error_message").remove();
     	}
     	
     </script>
@@ -367,8 +367,8 @@
 								</div>
 								<div class="col-md-5 dropdown-select padding_left">
 									<select id="experiencedType" name="experiencedType" field-name="experiencedType" >
-									<option ${leaveType.experiencedType == 'Year' ? 'selected' : ''}>Year</option>
-									<option ${leaveType.experiencedType == 'Month' ? 'selected' : ''}>Month</option>
+									<option ${leaveType.experiencedType == 'Year' ? 'selected' : ''}>Year's</option>
+									<option ${leaveType.experiencedType == 'Month' ? 'selected' : ''}>Month's</option>
 									<option ${leaveType.experiencedType == 'Days' ? 'selected' : ''}>Days</option>
 									</select>
 								</div>
@@ -393,8 +393,8 @@
 									class="input-group colorpicker-component errorInptgroup">
 									<input type="text" name="colorCode" field-name="Color Picker"
 										placeholder="Select Color Picker" readonly="readonly"
-										value="${leaveType.colorCode}" class="form-control" id="colorCode"
-										data-validation="required" > <span class="input-group-addon colPicBox"><i>
+										value="${leaveType.colorCode}" class="form-control" id="colorCode" 
+										data-validation="required" > <span class="input-group-addon colPicBox" onclick="validateColor();"><i>
 										
 										</i></span>
 								</div>
@@ -822,13 +822,13 @@
 	}
 	function showExperienced() {
 		$('#newJoinee').removeAttr('data-validation-optional');
-		$('#newJoinee').attr('data-validation', "required validate_int");
+		$('#newJoinee').attr('data-validation', "required validate_int validate_length length1-3");
 		$('#experiencedType').removeAttr('data-validation-optional');
 		$('#experiencedType').attr('data-validation', "required");
 		$('#experiencedDuration').removeAttr('data-validation-optional');
-		$('#experiencedDuration').attr('data-validation', "required validate_int");
+		$('#experiencedDuration').attr('data-validation', "required validate_int validate_length length1-2");
 		$('#experiencedApplicableDays').removeAttr('data-validation-optional');
-		$('#experiencedApplicableDays').attr('data-validation', "required validate_int");
+		$('#experiencedApplicableDays').attr('data-validation', "required validate_int validate_length length1-3");
 		$("#experiencedGroup").show();
 		$("#noOfDays").val("");
 		$("#noOfDaysDiv").hide();

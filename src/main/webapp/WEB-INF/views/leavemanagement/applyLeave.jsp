@@ -9,6 +9,9 @@
 window.onload = function() { 
 	getPieChartBasedOnUser();
 	getApproversList();
+   if($("#checkbox-1").is(':checked')){
+	   $("#checkbox-1").prop('checked', false);
+	}
 	}
 </script>
 
