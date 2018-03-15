@@ -2602,7 +2602,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	            	
 	            }
 	    		
-	    		Query countQuery = session.createQuery(fromQuryCount);
+	    		Query countQuery = session.createQuery(fromQuryCount+" "+whereCondition+" "+query1+"");
 
 	    		for (String str : countQuery.getNamedParameters())
 	            {

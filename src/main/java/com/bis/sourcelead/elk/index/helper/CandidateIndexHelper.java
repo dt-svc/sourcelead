@@ -201,13 +201,16 @@ public class CandidateIndexHelper {
 			}
 			
 			
-			User user = userService.getUserByUserCode(candidate.getCreatedBy());
-			StringBuilder sb = new StringBuilder();
-			if(user.getLastName() != null){
-				candidateIndex.setCreatedBy(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-			}else{
-				candidateIndex.setCreatedBy(sb.append(user.getFirstName()).append(" ").toString());
+			if(candidate.getCreatedBy() != null && !candidate.getCreatedBy().isEmpty()) {
+				User user = userService.getUserByUserCode(candidate.getCreatedBy());
+				StringBuilder sb = new StringBuilder();
+				if(user.getLastName() != null){
+					candidateIndex.setCreatedBy(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+				}else{
+					candidateIndex.setCreatedBy(sb.append(user.getFirstName()).append(" ").toString());
+				}
 			}
+			
 			
 			if(candidate.getUpdatedDate() != null){
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");

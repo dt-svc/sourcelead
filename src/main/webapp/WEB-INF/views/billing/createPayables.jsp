@@ -30,6 +30,10 @@ $(document).ready(function(){
 		loadInvoiceDetails(invoiceUUID);
 	}else{
 		getVendors();
+		$("#invoiceId").val("");
+		$("#paymentFrequency").val("");
+		$("#paymentFrequency").trigger("chosen:updated");
+		$("#dueDate").val("");
 	}
 	
 });
