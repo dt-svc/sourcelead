@@ -242,7 +242,8 @@ public class ConnectionsRestController {
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, locationId, iAdressArray, new ArrayList<EmailAttachment>());
 		 String actionLink = "";
-		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, locations, noificationEmailScenario);
+		 UserRole role = userRoleService.getUserRoleByUserId(toUser.getId());
+		 emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, role.getOrgLocations(), noificationEmailScenario);
 	}
 	
 	
