@@ -770,7 +770,6 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		for (ProjectMembers projectMember : projectMembersList) {
 			try {
 				ProjectMembersHistory pmh = null;
-				System.out.println(projectMember.getProjects().getProjectName());
 				pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMember.getId());
 				if(pmh == null) {
 					pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMember.getId());
