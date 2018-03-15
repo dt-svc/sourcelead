@@ -49,7 +49,10 @@ function campaignSender(ele,senderId, fromType) {
 				 $('#replyMailDiv').find('p.jquery_form_error_message').remove();
 				 $('#nickNameDiv').find('p.jquery_form_error_message').remove();
 				 $("#capn_add_sender")[0].reset();
-				 $("#recipientEmail").empty();
+				 $("#cpnReplyMail").val('');
+				 $("#cpnNickName").val('');
+				 $("#cpnSenderFromMail").val('');
+				 $("#cpnSenderName").val('');
 				  $("#recipientEmail").trigger("chosen:updated");
 			 });
 			
@@ -103,13 +106,13 @@ function validateNickName(senderId){
 
 function validateFromMail(toWhom,id){
 	var email = document.getElementById("cpnSenderFromMail").value;
-	if(email != null && email != null && email !='undefined' ){
+	 if(email != null && email != null && email !='undefined' ){
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/validateFromMail?"+tokenParamName+"="+tokenValue+"&email="+email+"&toWhom="+toWhom+"&id"+id,
+			url : sourceleadUrl + "/validateFromMail?"+tokenParamName+"="+tokenValue+"&email="+email+"&toWhom="+toWhom+"&id="+id,
 			success : function(data) {
 				var result = data;
-				if(result == true) {
+				 if(result == true) {
 					$('#fromMailDiv').find('p.jquery_form_error_message').remove();
 					$("input#cpnSenderFromMail").after( "<p class='jquery_form_error_message'>You already have a sender identity with the same email.</span>");
 					document.getElementById("cpnSenderFromMail").setAttribute( 'record-exist', 'yes');
@@ -120,11 +123,14 @@ function validateFromMail(toWhom,id){
 					$('input#cpnSenderFromMail').attr('class','valid form-control');
 					$('#fromMailDiv').find('p.jquery_form_error_message').remove();
 					
+					
 				}
 			},
 
 		});
 	}
+	 
+	
 }
 
 
@@ -133,7 +139,7 @@ function validateReplyMail(toWhom,id){
 	if(email != null && email != null && email !='undefined' ){
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/validateFromMail?"+tokenParamName+"="+tokenValue+"&email="+email+"&toWhom="+toWhom+"&id"+id,
+			url : sourceleadUrl + "/validateFromMail?"+tokenParamName+"="+tokenValue+"&email="+email+"&toWhom="+toWhom+"&id="+id,
 			success : function(data) {
 				var result = data;
 				if(result == true) {
@@ -152,6 +158,7 @@ function validateReplyMail(toWhom,id){
 
 		});
 	}
+	
 }
 
 function maxAlertSenderPopUp(){

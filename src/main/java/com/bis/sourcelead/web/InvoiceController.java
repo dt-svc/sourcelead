@@ -164,7 +164,7 @@ public class InvoiceController {
 	 * @return modelView
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_INVOICE')")
+//	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_INVOICE')")
 	@RequestMapping(value = "/viewInvoice")
 	public ModelAndView viewInvoice(@RequestParam(value="invoiceUUID", required=false) String invoiceUUID,@RequestParam(value="invoiceType", required=false) String invoiceType,HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
