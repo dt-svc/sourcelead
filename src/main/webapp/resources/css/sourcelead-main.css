@@ -506,7 +506,7 @@ ul.timesheet-menu li a:hover, ul.backoffice-menu li a:hover, ul.associates-menu 
 }
 /* hide time sheet */
 .side-bar.side-bar-active {
- width: 50px;
+ width: 50px; overflow: inherit;
 }
 .side-bar-inner {
  width: 190px;
@@ -5779,7 +5779,7 @@ select.selectborder {
 }
 /* For SideNav Inner Scroll */
 .sidenav_inner {
-    position: relative; /* max-height: 575px; overflow-y: auto;*/  padding-bottom: 150px;
+    position: relative; /* max-height: 575px; overflow-y: auto;*/  padding-bottom: 15px;
 }
 .side-bar-active .sidenav_inner {
      overflow-y:inherit;
