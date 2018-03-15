@@ -110,7 +110,6 @@ margin-right: 15px;
 function getDynamicOrgList(){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var userState = $("#userState").val();
-	alert(userState);
 	var searchValue = $("#dynamicOrgDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
 	var url = sourceleadUrl+"/getDynamicOrgsList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&userState="+userState;
