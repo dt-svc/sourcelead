@@ -159,10 +159,35 @@ function Immigration(){
   }
 	// immigration view navigation if don't required comment below code start here.
 	this. savePageOneContinue = function (status){
-		$("#newPetitionTemplateDiv").empty();
+		//$("#newPetitionTemplateDiv").empty();
 		if(status == 'petitionDetails'){
 			$("#newPetitionTemplateDiv").load("/app"+immiModulePath+"/loadNewPetitionPage?forward=petitionDetails");
 		}else if(status == 'two'){
+			if ($("#petitionDetailsForm").validate(false, validationSettings)) {
+				var formData = getFormData("petitionDetailsForm");
+				console.log(formData);
+				$.ajax({
+				       url: sourceleadUrl+immiModulePath+"/savePetitionDetailsPage",
+				       type : "POST",
+				       data: formData,
+				       success: function(data) {
+				    	  /* console.log("inside savePetitionTemplateDocDetails success");
+				    	   if(data == 'success'){
+				    		   if(status == 'saveContinue'){
+						    	   $("#addNewPetitionTemplateDiv").empty();
+						    	   $("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/gotoTemplatePreviousPage?status=formDetails");
+				    		   }
+				    		   else if(status == 'save'){
+				    			   $("#addNewPetitionTemplateDiv").empty();
+						    	   $("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/gotoTemplatePreviousPage?status=docDetails");
+				    		   }
+				    	   }*/
+				       }
+				});
+				return true;
+				} else {
+					return false;
+				}
 			$("#newPetitionTemplateDiv").load("/app"+immiModulePath+"/loadNewPetitionPage?forward=two");
 		}else if(status == 'three'){
 			$("#newPetitionTemplateDiv").load("/app"+immiModulePath+"/loadNewPetitionPage?forward=three");

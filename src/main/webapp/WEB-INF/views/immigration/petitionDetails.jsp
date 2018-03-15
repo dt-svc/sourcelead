@@ -17,14 +17,15 @@
 		</div>
 		
 		<div class="addImmiContent clearfix">
-
+			<form id="petitionDetailsForm" name="petitionDetailsForm">
           <div class="col-md-12 col-lg-12 myForm margin-top0">
+          
             <h4 class="col-md-12 mb clearfix">1. Petition detail</h4>
             <div class="clearfix"></div>         
          	<div class="form-group">
               <label class="col-md-4">Petition type<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8 dropdown-select">
-                  <select id="petitionType" class="form-control">
+                  <select id="petitionType" name="petitionType" class="form-control" field-name="Petition type" data-validation="required">
                   </select>
               </div>
           </div> 
@@ -33,7 +34,7 @@
               <label class="col-md-4">Open date<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" id ="openDate" class="form-control calendar" name="" placeholder="Open Date">
+                <input type="text" id ="openDate" class="form-control calendar" name="openDate" placeholder="Open Date" field-name="Open date" data-validation="required"/>
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('openDate');"></i></span>
               </div>
             </div>
@@ -42,17 +43,17 @@
             <div class="form-group">
               <label class="col-md-4">Current USCIS Status</label>
               <div class="col-md-8 dropdown-select">
-                <select id="currUscisStatus" class="form-control">
+                <select id="currUscisStatus" name="currUscisStatus" class="form-control">
                     
                   </select>
               </div>
             </div>
-
+		
             <div class="form-group">
               <label class="col-md-4">Date of arrival</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" id="arrivalDate" class="form-control calendar" name="" placeholder="Date of arrival">
+                <input type="text" id="arrivalDate" class="form-control calendar" name="arrivalDate" placeholder="Date of arrival"/>
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('arrivalDate');"></i></span>
               </div>
               </div>
@@ -72,7 +73,7 @@
             <div class="form-group">
               <label class="col-md-4">Choose Template</label>
               <div class="col-md-8">
-               <select class="chosen-select form-control" id="TemplateId" name="TemplateId" data-placeholder="Choose Template">
+               <select class="chosen-select form-control" id="templateId" name="templateId" data-placeholder="Choose Template">
                	
                	<option value="" selected>--Choose Template--</option>
 							<c:forEach var="item" items="${templateList}">
@@ -81,7 +82,7 @@
                </select>
               </div>
             </div>
-            
+          
             <div class="clearfix"></div>
             <h4 class="col-md-12 mb">2. Attorney Details</h4>
             <div class="clearfix"></div>
@@ -121,7 +122,7 @@
 								</div>
 								
 							</div>
-            
+              
            <div class="clearfix"></div>
             	<h4 class="col-md-12 mb margin-top0">3. Beneficiary  details</h4>
            <div class="clearfix"></div>
@@ -132,7 +133,7 @@
 								<div class="col-md-9 chooRadius" id="errorAttorney">
 								<div class="input-group col-md-10 pull-left chooRadius">
 									<select class="chosen-select form-control" name="candidateId"
-										id="candidateId" placeholder="Select Beneficiary" field-name="Beneficiary Name" data-validation="required" onchange="updateCandiateInfo($(this));">
+										id="candidateId" placeholder="Select Beneficiary" onchange="updateCandiateInfo($(this));">
 									</select>
 								 <span class="input-group-addon cursorPointer bg-blue" onclick="getCandidatesByOrgLocation();"><i class="fa fa-refresh "></i></span>
 									
@@ -143,19 +144,19 @@
          <div class="form-group">
               <label class="col-md-4">First Name<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
-					<input type="text" class="form-control" id="firstName" name="firstName">
+					<input type="text" class="form-control" id="firstName" name="firstName" field-name="First Name" data-validation="required"/>
               </div>
           </div>
           <div class="form-group">
               <label class="col-md-4">Middle Name</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="middleName" id="middleName" value="">
+					<input type="text" class="form-control" name="middleName" id="middleName">
               </div>
           </div> 
           <div class="form-group">
               <label class="col-md-4">Last Name<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="lastName" id="lastName" value="">
+					<input type="text" class="form-control" name="lastName" id="lastName" field-name="Last Name" data-validation="required">
               </div>
           </div>  
          <div class="form-group">
@@ -164,35 +165,35 @@
 						<label class="paddingRight"><input type="radio"  value="Male"  name="gender"><span class="mr5"></span>Male</label>
 						<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</label>
 						<label class="paddingRight"><input type="radio"  value="Transgender" name="gender" ><span class="mr5"></span>Transgender</label>
-						<input type="hidden"  id="genderValue" name="genderValue"  field-name="Gender" data-validation="required"/> 		
+						<!-- <input type="hidden"  id="genderValue" name="genderValue"/> --> 		
 			</div>
 			</div>
           <div class="form-group">
               <label class="col-md-4">Email<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="email" id="email" value="">
+					<input type="text" class="form-control" name="email" id="email" field-name="Email" data-validation="required">
               </div>
           </div>
                       	
           <div class="form-group">
               <label class="col-md-4">Mobile</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="mobile" id="mobile" value="">
+					<input type="text" class="form-control" name="mobile" id="mobile">
               </div>
           </div>
           
            <div class="form-group">
               <label class="col-md-4">Alternative Mobile</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="alternateMobile" id="alternateMobile"  value="">
+					<input type="text" class="form-control" name="alternateMobile" id="alternateMobile">
               </div>
           </div> 
-          
+            
            <div class="form-group">
               <label class="col-md-4">DOB<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
 					<div class="input-group">
-                <input type="text" class="form-control calendar" name="birthDate" id="birthDate" placeholder="Date Of Birth">
+                <input type="text" class="form-control calendar" name="birthDate" id="birthDate" placeholder="Date Of Birth" field-name="Date Of Birth" data-validation="required">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onClick="clearDateValue('birthDate');"></i></span>
               </div>
               </div>
@@ -201,17 +202,17 @@
               <label class="col-md-4">Place of Birth</label>
               <div class="col-md-8">
                    <div class="positionRelative">
-          			<input class="form-control positionRelative" id="birthPlace" name="birthPlace" placeholder="Place of Birth"  type="text" field-name="Place of Birth" data-validation="required"></input>
+          			<input class="form-control positionRelative" id="birthPlace" name="birthPlace" type="text" field-name="Place of Birth"></input>
           				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('birthPlace');"></i>
          			</div>
               </div>
             </div>   
-            
+          
             <div class="form-group">
               <label class="col-md-4">Nationality</label>
               <div class="col-md-8">
                   <div class="positionRelative">
-          			<input class="form-control positionRelative" id="nationality" name="nationality" value="${loginCountryName}" placeholder="Select Country"  type="text" field-name="Nationality" data-validation="required"></input>
+          			<input class="form-control positionRelative" id="nationality" name="nationality" value="${loginCountryName}" placeholder="Select Country"  type="text"></input>
           				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('nationality');"></i>
          			</div>
               </div>
@@ -228,33 +229,33 @@
              <div class="form-group">
               <label class="col-md-4">SSN</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="ssnNumber" id="ssnNumber" value="" placeholder="000-00-0000">
+                <input type="text" class="form-control" name="ssnNumber" id="ssnNumber" placeholder="000-00-0000">
               </div>
             </div>
              <div class="form-group">
               <label class="col-md-4">I-94 Number</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="i_94_number" id ="i_94_number"  value="" placeholder="XXXXXXXXX-XX">
+                <input type="text" class="form-control" name="i_94_number" id ="i_94_number" placeholder="XXXXXXXXX-XX">
               </div>
             </div>
            
              <div class="form-group">
               <label class="col-md-4">I-20 SEVIS Number If Student</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="i_20_number"  id="i_20_number" value="" placeholder="N-XXXXXXXXXX">
+					<input type="text" class="form-control" name="i_20_number"  id="i_20_number" placeholder="N-XXXXXXXXXX">
               </div>
             </div>
                          
             <div class="form-group">
               <label class="col-md-4">EAD Number If Student</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="eadNumber" id="eadNumber" value="" placeholder="">
+                <input type="text" class="form-control" name="eadNumber" id="eadNumber" placeholder="">
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-4">Previous LCA Number</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="prevLcaNumber" id="prevLcaNumber" value="" placeholder="I-XXX-XXXXX-XXXXXX">
+                <input type="text" class="form-control" name="prevLcaNumber" id="prevLcaNumber" placeholder="I-XXX-XXXXX-XXXXXX">
               </div>
             </div>
             
@@ -278,22 +279,30 @@
               </div>
             </div>
             
-           <div class="form-group">
+           <div class="form-group"  id="resumeEmpty">
               <label class="col-md-4">Upload Resume</label><!-- need to updated  -->
                <div class="col-md-8">
-				<div class="input-group col-md-12 clearUploads" style="margin:0 auto">
+				<div class="input-group col-md-12 clearUploads" id="clearUploads" style="margin:0 auto">
 					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-					  <input type="file" style="display: none;" multiple id="uploadBtn" class="upload">
+					  <input type="file" style="display: none;" id="uploadBtn" class="upload">
 					  </span></label>
-					<input type="text" class="form-control" readonly id="uploadFile" placeholder="Attachment">
+					<input type="text" class="form-control" name="docFile" readonly id="uploadFile" placeholder="Attachment">
 				  </div>
               </div>
             </div>
             
+            <div class="col-md-3 mt10" id="resumeDoc" style="display:none;">
+			 <label id="documentName"  class="text-primary tbldata-dotdot-vsm pull-left">${item.fileName}</label>&nbsp;&nbsp;<span id="delete_file" onclick = "deleteDoc()"><i class="fa fa-trash removeIcon"></i></span>
+			<input  type="hidden" id="generalExisitingFile" name = "generalExisitingFile" value="${item.fileName}">
+			  <a  class="glyphicon glyphicon-download-alt"  href="${item.fileUrl}" download title="Download"></a>
+			  </div>
+            
+            
+            
              <div class="form-group">
               <label class="col-md-4">Experience</label>
               <div class="col-md-4 dropdown-select">
-                <select id="experienceYears">
+                <select id="experienceYears" name="experienceYears">
                 	<option value="">--Select Year--</option>
                 	<c:forEach begin="0" end="25" varStatus="loop">
 				    	<option value="${loop.index}" >${loop.index}</option>
@@ -302,7 +311,7 @@
                 </select>
               </div>
              <div class="col-md-4 dropdown-select">
-                <select id="experienceMonths">
+                <select id="experienceMonths" name="experienceMonths">
                 	<option value="">--Select Month--</option>
                 	<c:forEach begin="0" end="11" varStatus="loop">
 				    	<option value="${loop.index}" >${loop.index}</option>
@@ -338,7 +347,7 @@
             <div class="form-group">
               <label class="col-md-4">Employer</label>
               <div class="col-md-8">
-                <input type="text"  class="form-control" name="employer" id="employer" value="">
+                <input type="text"  class="form-control" name="employer" id="employer">
               </div>
             </div>
             
@@ -346,7 +355,7 @@
               <label class="col-md-4">Location</label>
               <div class="col-md-8">
                  <div class="positionRelative">
-          			<input class="form-control positionRelative" id="jobLocation" name="jobLocation" placeholder="Enter your Location"  type="text" field-name="Location" data-validation="required"></input>
+          			<input class="form-control positionRelative" id="jobLocation" name="jobLocation" placeholder="Enter your Location"  type="text"></input>
           				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('jobLocation');"></i>
          			</div>
               </div>
@@ -358,8 +367,8 @@
 							<div class="input-group er ratetype">
 								<div class="input-group-btn tblminwidth-75">
 
-									<select class="selectpicker" id="currentRateCurrency"
-										name="currentRateCurrency">
+									<select class="selectpicker" id="rateCurrency"
+										name="rateCurrency">
 
 										<option>INR</option>
 										<option>AUD</option>
@@ -371,13 +380,13 @@
 									</select>
 
 								</div>
-								<input type="text" id="currentRate" name="currentRate"
+								<input type="text" id="rate" name="rate"
 									value="" field-name="Current Rate"
 									data-validation="validate_Space validate_float validate_length length1-8"
 									data-validation-optional="true" value="" class="form-control">
 								<div class="input-group-btn tblminwidth-75 ratetype">
-									<select class="selectpicker" id="currentRateType"
-										name="currentRateType" field-name="Rate Per">
+									<select class="selectpicker" id="rateType"
+										name="rateType" field-name="Rate Per">
 										 <option value="">Rate Per</option>
 										<option>Hourly</option>
 										<option>Weekly</option>
@@ -417,7 +426,7 @@
              <div class="form-group">
               <label class="col-md-4">LCA Number</label>
               <div class="col-md-8">
-                 <input type="text" class="form-control" name="lcaNumber" id="lcaNumber" value="" placeholder="I-XXX-XXXXX-XXXXXX">
+                 <input type="text" class="form-control" name="lcaNumber" id="lcaNumber" placeholder="I-XXX-XXXXX-XXXXXX">
               </div>
           </div>
             
@@ -453,8 +462,7 @@
                   <div class="positionRelative">
 								<input class="form-control positionRelative"
 									id="location" name="location"
-									placeholder="Enter Location" type="text"
-									field-name="Address" data-validation="required"></input> <i
+									placeholder="Enter Location" type="text"></input> <i
 									class="fa fa-refresh btn btn-primary refresh-icon"
 									title="Refresh"
 									onClick="refreshGoogleApiLocation('location','country','state','city','zipCode','address');"></i>
@@ -485,7 +493,7 @@
             <div class="form-group">
               <label class="col-md-4">Country</label>
               <div class="col-md-8">
-                  <input class="form-control" id="country" name="country" placeholder="Country" field-name="Country"  data-validation="required"  value="${loginCountryName}" type="text" ></input>
+                  <input class="form-control" id="country" name="country" placeholder="Country" value="${loginCountryName}" type="text" ></input>
               </div>
             </div>                                                                                               
 		    <div class="form-group">
@@ -535,7 +543,7 @@
 			<div class="clearfix"></div>
 		</div>
 	</div>
-
+	</form>
    </div>
    </div>
    </section>
@@ -594,7 +602,7 @@ $("#experienceValue").change(function () {
 		        url: sourceleadUrl+immiModulePath+"/getPetitionTypeDropDown", 
 		        success: function(data) {
 		        	$('#petitionType').empty();
-		        	$('#petitionType').append('<option value="">--Select Type --</option>');
+		        	$('#petitionType').append('<option selected value="">--Select Type --</option>');
 		            for(var i=0;i<data.length;i++){
 		            	  var opt = data[i];
 		            		$('#petitionType').append('<option value='+opt.id+' >'+opt.name+'</option>');
@@ -695,7 +703,7 @@ $("#experienceValue").change(function () {
    <script type="text/javascript">
 	  $( document ).ready(function() {
 		  getAttorneysByOrgLocation();
-		  getCandidatesByOrgLocation();
+		//  getCandidatesByOrgLocation();
 		  getPetitionTypeDropDown();
 		  getUscisTypeDropDown();
 		  employmentLevelDropDown();
@@ -945,5 +953,16 @@ function  removeValidationAttorneyContact() {
 		   $("#birthDate").val(dateOfBirth);
 		}
 	 }
- 
+	 $(function() {
+			$("#uploadBtn").change(function() {
+				fileUpload("uploadBtn", "immigrationPetition", "petitionDetailsForm");
+			});
+		 });
+		 document.getElementById("uploadBtn").onchange = function () {
+		     $('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+		 };
+	     
+	     $("#clearUploads").click(function(){
+	    	 $("#uploadFile").val("");
+	     });
 	 </script>

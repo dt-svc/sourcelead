@@ -1,13 +1,6 @@
 package com.bis.sourcelead.dto;
 
-import java.util.Date;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
-
-import com.bis.sourcelead.annotations.Email;
-import com.bis.sourcelead.annotations.Phone;
-import com.bis.sourcelead.annotations.Required;
 
 public class ImmigrationDTO extends SearchDTO {
 
@@ -18,11 +11,13 @@ public class ImmigrationDTO extends SearchDTO {
 
 	private Long id;
 
-	@Required(desc = "candidate id")
+	//@Required(desc = "candidate id")
 	private String candidateId;
 
 	private String orgloationId;
-
+	
+	private String staticPath;
+	
 	private String fileUrl;
 
 	private String fileName;
@@ -33,28 +28,28 @@ public class ImmigrationDTO extends SearchDTO {
 
 	private String candidateType;
 	
-	@Required(desc = "Petition type")
-	private Long petitionType;
+	//@Required(desc = "Petition type")
+	private String petitionType;
 	
 	private String receiptNo;
 
-	@Required(desc = "Current USCIS Status")
-	private Long currUscisStatus;
+	//@Required(desc = "Current USCIS Status")
+	private String currUscisStatus;
 
-	@Required(desc = "Petition open date")
-	private Date openDate;
+	//@Required(desc = "Petition open date")
+	private String openDate;
 	
-	private Date arrivalDate;
+	private String arrivalDate;
 	
 	private String entryPlace;
 
-	private Long TemplateId;
+	private String templateId;
 
-	private Long attorneyId;
+	private String attorneyId;
 
-	private Long attorneyContact;
+	private String attorneyContact;
 
-	@Required(desc = "first name")
+	//@Required(desc = "first name")
 	private String firstName;
 
 	private String middleName;
@@ -63,18 +58,18 @@ public class ImmigrationDTO extends SearchDTO {
 
 	private String gender;
 
-	@Required(desc = "email")
-	@Email
+	//@Required(desc = "email")
+	//@Email
 	private String email;
 
-	@Phone
+	//@Phone
 	private String mobile;
 
-	@Phone
+	//@Phone
 	private String alternateMobile;
 
-	@Required(desc = "Date of Birth")
-	private Date birthDate;
+	//@Required(desc = "Date of Birth")
+	private String birthDate;
 
 	private String birthPlace;
 
@@ -90,25 +85,31 @@ public class ImmigrationDTO extends SearchDTO {
 
 	private String prevLcaNumber;
 
-	private Date prevLcaStartDate;
+	private String prevLcaStartDate;
 
-	private Date prevLcaEndDate;
+	private String prevLcaEndDate;
 
 	private String experienceYears;
 
 	private String experienceMonths;
 
-	private Long jobId;
+	private String jobId;
 
 	private String employmentLevel;
 
 	private String employer;
 
 	private String jobLocation;
+	
+	private String rate;
+	
+	private String rateCurrency;
+	
+	private String rateType;
+	
+	private String jobStartDate;
 
-	private Date jobStartDate;
-
-	private Date jobEndDate;
+	private String jobEndDate;
 
 	private String lcaNumber;
 
@@ -116,9 +117,7 @@ public class ImmigrationDTO extends SearchDTO {
 
 	private String lcaEndDate;
 
-	private String lcaCurrentStatus;
-
-	@Required(desc = "country")
+	//@Required(desc = "country")
 	private String country;
 
 	private String state;
@@ -133,9 +132,9 @@ public class ImmigrationDTO extends SearchDTO {
 
 	private String isCurrResidence;
 
-	private Date residenceStartDate;
+	private String residenceStartDate;
 
-	private Date residenceEndtDate;
+	private String residenceEndDate;
 	
 	private String militaryServiceCountry;
 	
@@ -143,9 +142,9 @@ public class ImmigrationDTO extends SearchDTO {
 	
 	private String militartBranch;
 
-	private Date militaryServiceStartDate;
+	private String militaryServiceStartDate;
 
-	private Date militaryServiceEndtDate;
+	private String militaryServiceEndtDate;
 
 	private String status;
 
@@ -156,6 +155,7 @@ public class ImmigrationDTO extends SearchDTO {
 	private String updatedDate;
 
 	private String updatedBy;
+	
 
 	public Long getId() {
 		return id;
@@ -187,6 +187,14 @@ public class ImmigrationDTO extends SearchDTO {
 
 	public void setFileUrl(String fileUrl) {
 		this.fileUrl = fileUrl;
+	}
+
+	public String getStaticPath() {
+		return staticPath;
+	}
+
+	public void setStaticPath(String staticPath) {
+		this.staticPath = staticPath;
 	}
 
 	public String getFileName() {
@@ -221,14 +229,6 @@ public class ImmigrationDTO extends SearchDTO {
 		this.candidateType = candidateType;
 	}
 
-	public Long getPetitionType() {
-		return petitionType;
-	}
-
-	public void setPetitionType(Long petitionType) {
-		this.petitionType = petitionType;
-	}
-
 	public String getReceiptNo() {
 		return receiptNo;
 	}
@@ -237,64 +237,12 @@ public class ImmigrationDTO extends SearchDTO {
 		this.receiptNo = receiptNo;
 	}
 
-	public Long getCurrUscisStatus() {
-		return currUscisStatus;
-	}
-
-	public void setCurrUscisStatus(Long currUscisStatus) {
-		this.currUscisStatus = currUscisStatus;
-	}
-
-	
-
-	public Date getOpenDate() {
-		return openDate;
-	}
-
-	public void setOpenDate(Date openDate) {
-		this.openDate = openDate;
-	}
-
-	public Date getArrivalDate() {
-		return arrivalDate;
-	}
-
-	public void setArrivalDate(Date arrivalDate) {
-		this.arrivalDate = arrivalDate;
-	}
-
 	public String getEntryPlace() {
 		return entryPlace;
 	}
 
 	public void setEntryPlace(String entryPlace) {
 		this.entryPlace = entryPlace;
-	}
-
-	public Long getTemplateId() {
-		return TemplateId;
-	}
-
-	public void setTemplateId(Long templateId) {
-		TemplateId = templateId;
-	}
-
-	public Long getAttorneyId() {
-		return attorneyId;
-	}
-
-	public void setAttorneyId(Long attorneyId) {
-		this.attorneyId = attorneyId;
-	}
-
-	
-
-	public Long getAttorneyContact() {
-		return attorneyContact;
-	}
-
-	public void setAttorneyContact(Long attorneyContact) {
-		this.attorneyContact = attorneyContact;
 	}
 
 	public String getFirstName() {
@@ -355,11 +303,11 @@ public class ImmigrationDTO extends SearchDTO {
 	}
 
 
-	public Date getBirthDate() {
+	public String getBirthDate() {
 		return birthDate;
 	}
 
-	public void setBirthDate(Date birthDate) {
+	public void setBirthDate(String birthDate) {
 		this.birthDate = birthDate;
 	}
 
@@ -427,22 +375,6 @@ public class ImmigrationDTO extends SearchDTO {
 		this.prevLcaNumber = prevLcaNumber;
 	}
 
-	public Date getPrevLcaStartDate() {
-		return prevLcaStartDate;
-	}
-
-	public void setPrevLcaStartDate(Date prevLcaStartDate) {
-		this.prevLcaStartDate = prevLcaStartDate;
-	}
-
-	public Date getPrevLcaEndDate() {
-		return prevLcaEndDate;
-	}
-
-	public void setPrevLcaEndDate(Date prevLcaEndDate) {
-		this.prevLcaEndDate = prevLcaEndDate;
-	}
-
 	public String getExperienceYears() {
 		return experienceYears;
 	}
@@ -458,15 +390,6 @@ public class ImmigrationDTO extends SearchDTO {
 	public void setExperienceMonths(String experienceMonths) {
 		this.experienceMonths = experienceMonths;
 	}
-
-	public Long getJobId() {
-		return jobId;
-	}
-
-	public void setJobId(Long jobId) {
-		this.jobId = jobId;
-	}
-
 
 	public String getEmploymentLevel() {
 		return employmentLevel;
@@ -492,22 +415,6 @@ public class ImmigrationDTO extends SearchDTO {
 		this.jobLocation = jobLocation;
 	}
 
-	public Date getJobStartDate() {
-		return jobStartDate;
-	}
-
-	public void setJobStartDate(Date jobStartDate) {
-		this.jobStartDate = jobStartDate;
-	}
-
-	public Date getJobEndDate() {
-		return jobEndDate;
-	}
-
-	public void setJobEndDate(Date jobEndDate) {
-		this.jobEndDate = jobEndDate;
-	}
-
 	public String getLcaNumber() {
 		return lcaNumber;
 	}
@@ -530,14 +437,6 @@ public class ImmigrationDTO extends SearchDTO {
 
 	public void setLcaEndDate(String lcaEndDate) {
 		this.lcaEndDate = lcaEndDate;
-	}
-
-	public String getLcaCurrentStatus() {
-		return lcaCurrentStatus;
-	}
-
-	public void setLcaCurrentStatus(String lcaCurrentStatus) {
-		this.lcaCurrentStatus = lcaCurrentStatus;
 	}
 
 	public String getCountry() {
@@ -598,22 +497,6 @@ public class ImmigrationDTO extends SearchDTO {
 		this.isCurrResidence = isCurrResidence;
 	}
 
-	public Date getResidenceStartDate() {
-		return residenceStartDate;
-	}
-
-	public void setResidenceStartDate(Date residenceStartDate) {
-		this.residenceStartDate = residenceStartDate;
-	}
-
-	public Date getResidenceEndtDate() {
-		return residenceEndtDate;
-	}
-
-	public void setResidenceEndtDate(Date residenceEndtDate) {
-		this.residenceEndtDate = residenceEndtDate;
-	}
-
 	public String getMilitaryServiceCountry() {
 		return militaryServiceCountry;
 	}
@@ -636,22 +519,6 @@ public class ImmigrationDTO extends SearchDTO {
 
 	public void setMilitartBranch(String militartBranch) {
 		this.militartBranch = militartBranch;
-	}
-
-	public Date getMilitaryServiceStartDate() {
-		return militaryServiceStartDate;
-	}
-
-	public void setMilitaryServiceStartDate(Date militaryServiceStartDate) {
-		this.militaryServiceStartDate = militaryServiceStartDate;
-	}
-
-	public Date getMilitaryServiceEndtDate() {
-		return militaryServiceEndtDate;
-	}
-
-	public void setMilitaryServiceEndtDate(Date militaryServiceEndtDate) {
-		this.militaryServiceEndtDate = militaryServiceEndtDate;
 	}
 
 	public String getStatus() {
@@ -693,6 +560,157 @@ public class ImmigrationDTO extends SearchDTO {
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-	
+
+	public String getRate() {
+		return rate;
+	}
+
+	public void setRate(String rate) {
+		this.rate = rate;
+	}
+
+	public String getRateCurrency() {
+		return rateCurrency;
+	}
+
+	public void setRateCurrency(String rateCurrency) {
+		this.rateCurrency = rateCurrency;
+	}
+
+	public String getRateType() {
+		return rateType;
+	}
+
+	public void setRateType(String rateType) {
+		this.rateType = rateType;
+	}
+
+	public String getPetitionType() {
+		return petitionType;
+	}
+
+	public void setPetitionType(String petitionType) {
+		this.petitionType = petitionType;
+	}
+
+	public String getCurrUscisStatus() {
+		return currUscisStatus;
+	}
+
+	public void setCurrUscisStatus(String currUscisStatus) {
+		this.currUscisStatus = currUscisStatus;
+	}
+
+	public String getOpenDate() {
+		return openDate;
+	}
+
+	public void setOpenDate(String openDate) {
+		this.openDate = openDate;
+	}
+
+	public String getArrivalDate() {
+		return arrivalDate;
+	}
+
+	public void setArrivalDate(String arrivalDate) {
+		this.arrivalDate = arrivalDate;
+	}
+
+	public String getTemplateId() {
+		return templateId;
+	}
+
+	public void setTemplateId(String templateId) {
+		this.templateId = templateId;
+	}
+
+	public String getAttorneyId() {
+		return attorneyId;
+	}
+
+	public void setAttorneyId(String attorneyId) {
+		this.attorneyId = attorneyId;
+	}
+
+	public String getAttorneyContact() {
+		return attorneyContact;
+	}
+
+	public void setAttorneyContact(String attorneyContact) {
+		this.attorneyContact = attorneyContact;
+	}
+
+	public String getPrevLcaStartDate() {
+		return prevLcaStartDate;
+	}
+
+	public void setPrevLcaStartDate(String prevLcaStartDate) {
+		this.prevLcaStartDate = prevLcaStartDate;
+	}
+
+	public String getPrevLcaEndDate() {
+		return prevLcaEndDate;
+	}
+
+	public void setPrevLcaEndDate(String prevLcaEndDate) {
+		this.prevLcaEndDate = prevLcaEndDate;
+	}
+
+	public String getJobId() {
+		return jobId;
+	}
+
+	public void setJobId(String jobId) {
+		this.jobId = jobId;
+	}
+
+	public String getJobStartDate() {
+		return jobStartDate;
+	}
+
+	public void setJobStartDate(String jobStartDate) {
+		this.jobStartDate = jobStartDate;
+	}
+
+	public String getJobEndDate() {
+		return jobEndDate;
+	}
+
+	public void setJobEndDate(String jobEndDate) {
+		this.jobEndDate = jobEndDate;
+	}
+
+	public String getResidenceStartDate() {
+		return residenceStartDate;
+	}
+
+	public void setResidenceStartDate(String residenceStartDate) {
+		this.residenceStartDate = residenceStartDate;
+	}
+
+	public String getResidenceEndDate() {
+		return residenceEndDate;
+	}
+
+	public void setResidenceEndDate(String residenceEndDate) {
+		this.residenceEndDate = residenceEndDate;
+	}
+
+	public String getMilitaryServiceStartDate() {
+		return militaryServiceStartDate;
+	}
+
+	public void setMilitaryServiceStartDate(String militaryServiceStartDate) {
+		this.militaryServiceStartDate = militaryServiceStartDate;
+	}
+
+	public String getMilitaryServiceEndtDate() {
+		return militaryServiceEndtDate;
+	}
+
+	public void setMilitaryServiceEndtDate(String militaryServiceEndtDate) {
+		this.militaryServiceEndtDate = militaryServiceEndtDate;
+	}
 
 }

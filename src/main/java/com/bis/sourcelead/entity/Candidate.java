@@ -265,6 +265,9 @@ public class Candidate implements Serializable{
 	@Column(name = "DATE_OF_BIRTH")
 	private Date dateOfBirth;
 	
+	@Column(name = "PLACE_OF_BIRTH")
+	private String placeOfBirth;
+	
 	@Column(name = "GENDER")
 	private String gender;
 	
@@ -1795,8 +1798,14 @@ public class Candidate implements Serializable{
 	public void setDateofBirthString(String dateofBirthString) {
 		this.dateofBirthString = dateofBirthString;
 	}
-	
-	
 
+	public String getPlaceOfBirth() {
+		return placeOfBirth;
+	}
+
+	public void setPlaceOfBirth(String placeOfBirth) {
+		this.placeOfBirth = placeOfBirth;
+	}
+	
 }
 
