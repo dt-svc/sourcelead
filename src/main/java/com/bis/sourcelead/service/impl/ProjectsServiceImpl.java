@@ -2150,6 +2150,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 					 if(userRole != null){
 						 pm.setUserRoleType(userRole.getUserType());
 						 pm.setUserRoleId(userRole.getId());
+						 pm.setProjectMemberStatus(userRole.getUserState().name());
 					 } 
 				 }else{
 					 pm.setUserRoleType("Candidate");

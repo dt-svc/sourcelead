@@ -281,7 +281,7 @@ function getRequestedAssociatesList(){
 
 <script>
 function rejectAssociate(requestUUID){
-	
+	$("#newRequestOnHoldReasonDiv").empty();
 	var result = "";
 	result = result + '	<div class="settPop">';
 	result = result + '	<div id="loading"></div>';
@@ -362,6 +362,7 @@ function saveRejectAssociate(requestUUID){
 function cancelRejectedReason(){
 	$(".settPop").slideUp(200);
 	$(".vendor_wrap_mask").fadeOut(200);
+	$("#rejectedReasonDiv").empty();
 }
 </script>
 
