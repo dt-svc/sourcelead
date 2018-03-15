@@ -1067,7 +1067,7 @@ public class LeaveServiceImpl implements LeaveService{
 		UserRole roleId = userRoleService.getUserRoleByUserId(userId);
 		User user = userService.getUserById(userId);
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		UserRole userRole = userRoleService.getUserRoleByUserId(userId);
+		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocationId);
 		Employees emp = employeesService.getEmployeeByUserId(user.getId());
 
 		LeaveDTO leaveDto = new LeaveDTO();

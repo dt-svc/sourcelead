@@ -478,8 +478,10 @@ function saveSignatory(){
   function signatoryFormDiv(){
 	  $(".signatoryFormDiv").fadeOut();
 	  $(".sideMask").fadeOut();  
+	  $('#signatory_form')[0].reset();
+	  $(".chosen-select").trigger("chosen:updated");
+	  $('signatory_form').validate().resetForm();
   }
-  
   </script>
   
   <script>

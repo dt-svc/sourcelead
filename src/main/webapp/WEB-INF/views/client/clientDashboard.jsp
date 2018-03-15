@@ -348,8 +348,9 @@ z-index: 1;
 						<div class="clearfix"></div>
 					</ul>
 					<div class="clearfix"></div>
-					 <div class='remove_search'>
-        		          <input type='text' placeholder='search' id='dataTableSearch'/>
+					 <div class='dynamic_search dynamic_search-new'>
+        		          <input type='text' placeholder='Search' id='dataTableSearch'/>
+        		          <span class="cursorPointer" title="Search"><i class="fa fa-search" onclick="getClientList();"></i></span>    
                 </div> 
                 
 				</div>
@@ -448,9 +449,11 @@ function clearSearch(){
 	$('#allKeywords').val('').trigger('chosen:updated');
 	$('#excludeKeyWord').val('').trigger('chosen:updated');
 	$('#orgNameAdvanced').val('').trigger('chosen:updated');
-	$('#countrySearch').val('').trigger('chosen:updated'); 
-	$('#stateSearch').val('').trigger('chosen:updated');
-	$('#citySearch').val('').trigger('chosen:updated');
+	$('#countrySearch').val('').trigger('chosen:updated');
+	//$('#stateSearch').val('').trigger('chosen:updated');
+	getStates();
+	//$('#citySearch').val('').trigger('chosen:updated');
+	getCities();
 	$('#tierAdvanced').val('').trigger('chosen:updated');
 	$('#createdByAdvanced').val('').trigger('chosen:updated');
 	$('#emailAdvanced').val('').trigger('chosen:updated');
@@ -461,6 +464,7 @@ function clearSearch(){
 	$('#contactNameAdvanced').val('').trigger('chosen:updated');
 	$('#phoneNumberAdvanced').val('').trigger('chosen:updated');
 }
+
 </script>
 
 <script>
