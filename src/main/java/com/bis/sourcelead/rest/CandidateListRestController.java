@@ -606,8 +606,9 @@ public class CandidateListRestController {
 						Date date1 = commonUtil.dateFromElk(candidateIndex.getUpdatedDate());
 						String updatedDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),date1);
 						candidateIndex.setCandidateUpdateDateToString(updatedDate);
+						
 					}
-					candidateIndex.setCreatedBy(user.getFullName());
+					candidateIndex.setCreatedBy(candidateIndex.getCreatedBy());
 					candidatesList.add(candidateIndex);
 				}
 				response.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
