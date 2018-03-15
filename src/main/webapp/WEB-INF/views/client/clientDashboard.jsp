@@ -348,8 +348,9 @@ z-index: 1;
 						<div class="clearfix"></div>
 					</ul>
 					<div class="clearfix"></div>
-					 <div class='remove_search'>
-        		          <input type='text' placeholder='search' id='dataTableSearch'/>
+					 <div class='dynamic_search dynamic_search-new'>
+        		          <input type='text' placeholder='Search' id='dataTableSearch'/>
+        		          <span class="cursorPointer" title="Search"><i class="fa fa-search" onclick="getClientList();"></i></span>    
                 </div> 
                 
 				</div>
