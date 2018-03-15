@@ -2823,6 +2823,9 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 					
 					
 				}
+				
+				projects.setIsTimesheetAttachmentRequired(1);
+				projectsDao.updateProject(projects);
 				return projects;
 			}
 
