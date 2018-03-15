@@ -1643,7 +1643,9 @@ public class InvoiceRestController {
 			OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
 			StringBuilder sb = new StringBuilder();
 			String estimatedHours = null;
+			
 			try {
+
 				Date requestStartDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),startDate);
 				Calendar startCal = Calendar.getInstance();
 				startCal.setTime(requestStartDate); 
@@ -1653,14 +1655,16 @@ public class InvoiceRestController {
 				endCal.setTime(requestEndDate); 
 				
 				int workDays = 0;
+				
 			    if (startCal.getTimeInMillis() > endCal.getTimeInMillis()) {
 			        startCal.setTime(requestEndDate);
 			        endCal.setTime(requestStartDate);
 			    }
+
 			    do {
-//			        if (startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+			        if (startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
 			            ++workDays;
-//			        }
+			        }
 			        startCal.add(Calendar.DATE, 1);
 			    } while (startCal.getTimeInMillis() <= endCal.getTimeInMillis()); 
 
@@ -1679,7 +1683,9 @@ public class InvoiceRestController {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
 			StringBuilder sb = new StringBuilder();
 			String estimatedHours = null;
+			
 			try {
+
 				Date requestStartDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),startDate);
 				Calendar startCal = Calendar.getInstance();
 				startCal.setTime(requestStartDate); 
@@ -1689,14 +1695,16 @@ public class InvoiceRestController {
 				endCal.setTime(requestEndDate); 
 				
 				int workDays = 0;
+				
 			    if (startCal.getTimeInMillis() > endCal.getTimeInMillis()) {
 			        startCal.setTime(requestEndDate);
 			        endCal.setTime(requestStartDate);
 			    }
+
 			    do {
-//			        if (startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+			        if (startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
 			            ++workDays;
-//			        }
+			        }
 			        startCal.add(Calendar.DATE, 1);
 			    } while (startCal.getTimeInMillis() <= endCal.getTimeInMillis()); 
 
