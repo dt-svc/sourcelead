@@ -49,7 +49,10 @@ function campaignSender(ele,senderId, fromType) {
 				 $('#replyMailDiv').find('p.jquery_form_error_message').remove();
 				 $('#nickNameDiv').find('p.jquery_form_error_message').remove();
 				 $("#capn_add_sender")[0].reset();
-				 $("#recipientEmail").empty();
+				 $("#cpnReplyMail").val('');
+				 $("#cpnNickName").val('');
+				 $("#cpnSenderFromMail").val('');
+				 $("#cpnSenderName").val('');
 				  $("#recipientEmail").trigger("chosen:updated");
 			 });
 			
