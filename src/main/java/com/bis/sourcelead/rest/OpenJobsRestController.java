@@ -89,7 +89,7 @@ public class OpenJobsRestController {
 			@RequestParam(value = "dates", required = false, defaultValue = "") String dates,
 			@RequestParam(value = "country", required = false, defaultValue = "") String country,
 			@RequestParam(value = "companies", required = false, defaultValue = "") String companies,
-			@RequestParam(value = "postedOrgName", required = false, defaultValue = "") Long postedOrgName,
+			@RequestParam(value = "postedOrgName", required = false, defaultValue = "") String postedOrgName,
 			HttpServletRequest request) throws Exception {
 
 		boolean isELKSearchEnable = true;
@@ -266,9 +266,9 @@ public class OpenJobsRestController {
 			}
 			
 			// for jobs filter when clicked on org name
-			if (postedOrgName != null) {
+			if (postedOrgName != null && !"".equalsIgnoreCase(postedOrgName)) {
 				BoolQueryBuilder postedOrgJobsBuilder = QueryBuilders.boolQuery();
-				postedOrgJobsBuilder.should(QueryBuilders.matchQuery("orgLocationId", postedOrgName));
+				postedOrgJobsBuilder.should(QueryBuilders.matchQuery("postedOrg", postedOrgName));
 				boolQueryBuilder.must(postedOrgJobsBuilder);
 			}
 
