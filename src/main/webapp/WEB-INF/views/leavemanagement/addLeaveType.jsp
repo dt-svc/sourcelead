@@ -345,7 +345,7 @@
 						<div class="form-group" id="noOfDaysDiv">
 							<label class="col-md-4">No Of Days<span class="text-danger paddingLeft" >*</span></label>
 							<div class="col-md-3">
-								<input type="text" id="noOfDays" name="noOfDays" field-name="No Of Days" class="form-control" value="${leaveType.noOfDays}">
+								<input type="text" id="noOfDays" name="noOfDays" field-name="No Of Days" placeholder="Enter no of Days" class="form-control" value="${leaveType.noOfDays}">
 							</div>
 						</div>
 				
@@ -354,7 +354,7 @@
 						<div class="form-group" id="newJoineeDiv">
 							<label class="col-md-4">New Joinee<span class="text-danger paddingLeft" >*</span></label>
 							<div class="col-md-3">
-								<input type="text" id="newJoinee" name="newJoinee" field-name="New Joinee" class="form-control" value="${leaveType.newJoinee}">
+								<input type="text" id="newJoinee" name="newJoinee" placeholder="Enter no.of Days" field-name="New Joinee" class="form-control" value="${leaveType.newJoinee}">
 							</div>
 						</div>
 						
@@ -363,7 +363,7 @@
 							<div class="col-md-6">
 								<div class="row">
 								<div class="col-md-3 padding_right">
-									<input type="text" class="form-control" id="experiencedDuration" name="experiencedDuration" field-name="Duration" value="${leaveType.experiencedDuration}">
+									<input type="text" class="form-control" id="experiencedDuration" name="experiencedDuration" placeholder="Experience" field-name="Duration" value="${leaveType.experiencedDuration}">
 								</div>
 								<div class="col-md-5 dropdown-select padding_left">
 									<select id="experiencedType" name="experiencedType" field-name="experiencedType" >
@@ -373,7 +373,7 @@
 									</select>
 								</div>
 								<div class="col-md-4" id="experiencedApplicableDaysDiv">
-								<input type="text" class="form-control" id="experiencedApplicableDays" name="experiencedApplicableDays" field-name="ApplicableDays" value="${leaveType.experiencedApplicableDays}">
+								<input type="text" class="form-control" id="experiencedApplicableDays" name="experiencedApplicableDays" placeholder="No.of Days for exp" field-name="ApplicableDays" value="${leaveType.experiencedApplicableDays}">
 								</div>
 								
 							</div>
@@ -664,23 +664,25 @@
 <script type="text/javascript">
 	function submitLeaveType() {
 		validateName();
-		var ee = $("#txtEditor").val($('.Editor-editor').html()); 
-		var locationId = '${SourceLeadWeb_orgLocationId}';
-		var loginUserId = '${SourceLeadWeb_user.id}';
-		if ($('#addLeaveType_form').validate(false, validationSettings)) {
-			var formData = $($('#addLeaveType_form')[0]).serialize();
-			$("#loading")
-					.attr(
-							'style',
-							'position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			$.post(sourceleadUrl + "/saveNewLeaveType?&orgLocationId=" + locationId	+ "&loginUserId=" + loginUserId, formData, function(data) {
-				if (data == "success") {
-					location.replace(sourceleadUrl + "/viewLeaveTypes");
-				}
-			});
+		window.setTimeout(function() {
+			var ee = $("#txtEditor").val($('.Editor-editor').html()); 
+			var locationId = '${SourceLeadWeb_orgLocationId}';
+			var loginUserId = '${SourceLeadWeb_user.id}';
+			if ($('#addLeaveType_form').validate(false, validationSettings)) {
+				var formData = $($('#addLeaveType_form')[0]).serialize();
+				$("#loading")
+						.attr(
+								'style',
+								'position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+				$.post(sourceleadUrl + "/saveNewLeaveType?&orgLocationId=" + locationId	+ "&loginUserId=" + loginUserId, formData, function(data) {
+					if (data == "success") {
+						location.replace(sourceleadUrl + "/viewLeaveTypes");
+					}
+				});
 
-			return true;
-		}
+				return true;
+			}
+	        }, 1500);
 	}
 	$('body').on('blur', '#addLeaveType_form', function() {
 		$("#addLeaveType_form").showHelpOnFocus();

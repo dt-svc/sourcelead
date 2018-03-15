@@ -2096,7 +2096,7 @@ public class TimesheetRestController {
 			StringBuilder currentTimeFrequency = new StringBuilder();
 			currentTimeFrequency.append(startDateStr).append(" To ").append(endDateStr);
 			String actionLink = "";
-			
+		
 			StringBuilder actionLinkBuilder = new StringBuilder();
 			if(approver.getProjectClientsId() != null && approver.getProjectClientsId().getOrgLocationsId() != null){
 				ProjectMembers projectMember = projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(masterCanidateId,projectId,approver.getProjectClientsId().getOrgLocationsId().getId());
@@ -2104,7 +2104,10 @@ public class TimesheetRestController {
 					actionLink =actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheetApproval?&currentTimeFrequency="+currentTimeFrequency.toString()+"&projectId="+projectId+"&masterCandidateId="+masterCanidateId+"&projectMemberId="+projectMember.getId()+"&totalHours=0&from=approver&notifyLink=notifyLink").toString();
 					emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, approver.getProjectClientsId().getOrgLocationsId(), notificationScenario);
 				}
-			}
+			
+		
+			emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, loginOrgLocation, notificationScenario);
+
 			
 		}
 	}
