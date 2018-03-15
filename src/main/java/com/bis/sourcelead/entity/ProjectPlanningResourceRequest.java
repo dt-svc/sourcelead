@@ -142,7 +142,10 @@ public class ProjectPlanningResourceRequest implements Serializable{
     @JsonProperty
     private String candidateLocation;
 
-	
+    @Transient
+	@JsonProperty
+	private String requestedUser;
+    
 	
 
 	public Long getId() {
@@ -439,6 +442,12 @@ public class ProjectPlanningResourceRequest implements Serializable{
 	public void setCandidateLocation(String candidateLocation) {
 		this.candidateLocation = candidateLocation;
 	}
-	
-	
+
+	public String getRequestedUser() {
+		return requestedUser;
+	}
+
+	public void setRequestedUser(String requestedUser) {
+		this.requestedUser = requestedUser;
+	}
 }

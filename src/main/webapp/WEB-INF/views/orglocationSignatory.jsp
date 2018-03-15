@@ -209,7 +209,7 @@
 // 	  if (document.getElementById('legalSigner').checked) {
 // 		  $("#legalUserFormDiv").empty();
 // 	  }else{
-		  loadLeagelSignerForm();
+		  
 // 	  }
   }
   </script>
@@ -474,6 +474,7 @@ function saveSignatory(){
   function addSignatoryDiv(){
 	  $(".signatoryFormDiv").fadeIn();
 	  $(".sideMask").fadeIn();
+	  loadLeagelSignerForm();
   }
   function signatoryFormDiv(){
 	  $(".signatoryFormDiv").fadeOut();

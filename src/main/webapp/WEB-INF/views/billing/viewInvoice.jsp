@@ -842,8 +842,9 @@ function paymentHistroy(){
 					result = result +'              <td>                                                          ';
 					result = result +'                <a class="tbldata-dotdot-vsm download_attachment" title="Download Attachment">      ';
 // 					result = result +'                <p class="pull-left">'+fileName+'</p>                           ';
-					if(report.fileName != null && report.fileName != '' && report.fileName != 'undefined'){
-					result = result +" <span class='pull-right'> <i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadInvoicePaymentDocument?paymentHistoryId="+report.id+"\"></a></i>";
+					if(report.fileURL != null && report.fileURL != '' && report.fileURL != 'undefined'){
+// 					result = result +" <span class='pull-right'> <i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadInvoicePaymentDocument?paymentHistoryId="+report.id+"\"></a></i>";
+					result = result+' <a download class="glyphicon glyphicon-download-alt" href="'+report.fileURL+'" title="Download"></a>';
 					}else{
 						result = result +" --";	
 					}
