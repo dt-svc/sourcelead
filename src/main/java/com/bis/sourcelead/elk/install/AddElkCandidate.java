@@ -271,21 +271,23 @@ public class AddElkCandidate{
 							    }
 		    	           }
 							
-							String sql6 = "SELECT * FROM sourcelead.USER  user where  user.USER_CODE = '"+createdBy+"' ";
-							Statement stmt6 = conn.createStatement();
-							ResultSet rs6 = stmt6.executeQuery(sql6);
-							if(rs6 != null){
-								 while(rs6.next()){
-									 candidateIndex.setCreatedBy(createdBy);
-									   if(null != rs6.getString("FIRST_NAME") && null != rs6.getString("LAST_NAME")){
-										   StringBuilder sb =  new StringBuilder();
-										   candidateIndex.setCreatedBy(sb.append(rs6.getString("FIRST_NAME")).append(" ").append(rs6.getString("LAST_NAME")).toString());
-									   }else if(null != rs6.getString("FIRST_NAME")){
-										   StringBuilder sb =  new StringBuilder();
-										   candidateIndex.setCreatedBy(sb.append(rs6.getString("FIRST_NAME")).toString());
-									   }
-							    }
-		    	           }
+							if(createdBy != null && !createdBy.isEmpty()) {
+								String sql6 = "SELECT * FROM sourcelead.USER  user where  user.USER_CODE = '"+createdBy+"' ";
+								Statement stmt6 = conn.createStatement();
+								ResultSet rs6 = stmt6.executeQuery(sql6);
+								if(rs6 != null){
+									 while(rs6.next()){
+										   if(null != rs6.getString("FIRST_NAME") && null != rs6.getString("LAST_NAME") && !rs6.getString("LAST_NAME").isEmpty()){
+											   StringBuilder sb =  new StringBuilder();
+											   candidateIndex.setCreatedBy(sb.append(rs6.getString("FIRST_NAME")).append(" ").append(rs6.getString("LAST_NAME")).toString());
+										   }else if(null != rs6.getString("FIRST_NAME")){
+											   StringBuilder sb =  new StringBuilder();
+											   candidateIndex.setCreatedBy(sb.append(rs6.getString("FIRST_NAME")).toString());
+										   }
+								    }
+			    	           }
+							}
+						
 		    	    }
 		    	    candidateIndexsList.add(candidateIndex);
 			    }
