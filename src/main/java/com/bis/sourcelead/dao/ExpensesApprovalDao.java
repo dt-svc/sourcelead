@@ -34,6 +34,8 @@ public interface ExpensesApprovalDao {
     ExpensesApproverHierarchy getexpensesApproverHierarchyForEmployeeByExpenseId(Long expenseId);
     
     void updateExpenseStatusByExpenseId(Long expenseId,String status);
+    
+    public ExpensesApproverHierarchy getApprovedExpenseByExpenseIdAndLocationId(Long expenseId,Long locationsId);
 
     //ExpensesApproverHierarchy getExpensesApproverHierarchyByExpenseIdAndApproverUserId(Long expenseId,Long approverUserId);
 }
