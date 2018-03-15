@@ -18,7 +18,9 @@ public class ExpensesEntriesDTOConverter {
 		ExpensesEntriesDTO expensesEntriesDTO = new ExpensesEntriesDTO();
 		expensesEntriesDTO.setId(expensesEntries.getId());
 		expensesEntriesDTO.setDateOccurred(dateFormat.format(expensesEntries.getExpenseDate()));
-		expensesEntriesDTO.setPaymentMode(expensesEntries.getPaymentMode().getValue());
+		if(expensesEntries.getPaymentMode()!= null) {
+			expensesEntriesDTO.setPaymentMode(expensesEntries.getPaymentMode().getValue());
+		}
 		expensesEntriesDTO.setReceiptIssuedBy(expensesEntries.getReceiptIssuedBy());
 		expensesEntriesDTO.setCategoryAmountType(expensesEntries.getCurrencyType());
 		expensesEntriesDTO.setCategoryAmount(String.valueOf(expensesEntries.getAmount()));
