@@ -184,6 +184,7 @@ function jpagination(url,sourceleadUrl){
    		"processing": true,
        "serverSide": true,
        "searching": false,
+       "searchHighlight": true,
        "ajax": $.fn.dataTable.pipeline( {
            url: url,
            method: 'POST',
@@ -654,7 +655,12 @@ function jpagination(url,sourceleadUrl){
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
 	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
-	     }
+	     },
+	     drawCallback: function(){
+   	      $('a.paginate_button', this.api().table().container()).on('click', function(){
+   	    	jobSearchHighlight();
+   	         }); 
+   	   }
   
    } );
    
@@ -665,10 +671,32 @@ function jpagination(url,sourceleadUrl){
    $("#dataTableSearch").keyup(function(e) {
    	   if(e.which === 13) {
    		 requirementList('list',sourceleadUrl);
+   		jobSearchHighlight();
    	   }
    	});
  }
 </script>
+
+<script>
+ function jobSearchHighlight(){
+	 setTimeout(function () {
+ 		var body = $( table.table().body() );
+	        body.unhighlight();
+	        body.highlight( $("#dataTableSearch").val() );   
+			
+			}, 1000); 
+ }
+ </script>
+ <script>
+	$(document).on( 'init.dt.dth', function (e, settings, json) {
+    table = new $.fn.dataTable.Api( settings );
+    var body = $( table.table().body() );
+    if ( $( table.table().node() ).hasClass( 'searchHighlight' ) || settings.oInit.searchHighlight ||  $.fn.dataTable.defaults.searchHighlight ) {
+	
+	}
+} );
+	</script>
+
 <script>
 function getAssignedMembersDiv(reqId){
 	$("#summaryButtonsDiv").hide();
