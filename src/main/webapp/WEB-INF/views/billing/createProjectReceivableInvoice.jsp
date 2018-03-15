@@ -1906,9 +1906,7 @@ function errInvoiceDate(){
 
 <script type="text/javascript">
 function attachFile(id){
-	alert(id);
 	fileUpload(""+id+"invoicedocFile", "invoiceDocuments", "project_invoice_form","fileInfo");
-	alert("end");
 }
 </script>
 <script>
