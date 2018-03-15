@@ -242,7 +242,7 @@ function prepareBill(url){
 	    	  	"data": "orgName",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
-	    	  		result += '<td><div class="tbldata-dotdot"><a href="'+sourceleadUrl+'/paidBillDetails?&orgRelationId='+opt.orgRelationId+'">'+opt.orgName+'</a> </div></td>';
+	    	  		result += '<td><div class="tbldata-dotdot"><a href="'+sourceleadUrl+'/paidBillDetails?&orgRelationId='+opt.orgRelationId+'&billType=Receivable"">'+opt.orgName+'</a> </div></td>';
 					/*  result = result + ' <td><div class="tblminwidth-75">'+opt.orgName+'</div></td>';  */ 
 		             return result;
 	    	  	}

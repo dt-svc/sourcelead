@@ -20,9 +20,9 @@ border:none; background-color: none !important; padding:0 5px !important;
 .NewStyleFullWidth .form-group {
 	width: 50%; margin-bottom: 15px; float: left; padding: 0px 2%;
 }
-
-
-
+.dynamic_search .fa-search {
+position: absolute !important;
+}
 </style>
     <!-- Content Area -->
       <section class="content-wraper">
@@ -371,11 +371,11 @@ border:none; background-color: none !important; padding:0 5px !important;
 				    </div>
 		            </li> 
 		          </sec:authorize>
-		            
             </ul>
             <div class="clearfix"></div>
-             <div class='remove_search'>
-        		          <input type='text' placeholder='search' id='dataTableSearch'/>
+             <div class='dynamic_search dynamic_search-new'>
+        		   <input type='text' placeholder='Search' id='dataTableSearch'/>
+        		   <span class="cursorPointer" title="Search"><i class="fa fa-search" onclick="getVendorList();"></i></span>     
                 </div> 
         </div>
         

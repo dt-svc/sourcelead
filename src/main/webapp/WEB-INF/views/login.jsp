@@ -34,7 +34,7 @@ window.onload = function() {
 	var sourceleadUrl ='${sourceleadUrl}';
 	var userRoleId = "";
 	if("${redirect_to_login_2_Step_Process}" != ''){
- 	   directLoginValidateWhiteListIp(userRoleId,userName,password);
+		validateUserAlreadyAuthenticated(userRoleId,userName,password);
 	}
 }
 </script>
@@ -101,6 +101,25 @@ $(document).ready(function(){
  </div>
  
  <script>
+ 
+function validateUserAlreadyAuthenticated(userRoleId,userName,password){
+	var userName = '${username}';
+	var password = '';
+	var sourceleadUrl ='${sourceleadUrl}';
+	var userRoleId = 0;
+	$.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/ws/validateUserAlreadyAuthenticated?userRoleId="+userRoleId+"&name="+userName,        
+	       success :function(result) {
+	    	 if(result == true){
+	    		 redirectToDashbord(userRoleId,userName,password);
+	    	 }else{
+	    		 directLoginValidateWhiteListIp(userRoleId,userName,password);
+	    	 }
+	      },
+	  }); 
+ }
+ 
 function directLoginValidateWhiteListIp(userRoleId,userName,password){
 	var userName = '${username}';
 	var password = '';
@@ -122,6 +141,19 @@ function directLoginValidateWhiteListIp(userRoleId,userName,password){
 	    	 }
 	      },
 	  }); 
+}
+
+function redirectToDashbord(userRoleId,userName,password){
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+		      type : "POST",
+		       url: sourceleadUrl+"/ws/verificationDone?userName="+userName+"&password="+password+"&userRoleId="+userRoleId+"&verfDone=Y",        
+		       success :function(result) {
+		    	 if(result == "true"){
+		    		 location.replace(sourceleadUrl+"/dashboard");  
+		    	 }
+		      },
+		  });
 }
 </script>
  

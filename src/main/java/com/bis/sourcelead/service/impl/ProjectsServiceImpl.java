@@ -2397,7 +2397,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				//setting the class filed values
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
 				 	 User termentaedUserName = userService.getUserById(userId);
-					 globalVarsMap.put("loginUser", loginUser.getFirstName());
+					 globalVarsMap.put("loginUser", loginUser.getFullName());
 					 globalVarsMap.put("assignedUser", assUserName.getFirstName());
 					 globalVarsMap.put("reqCount", projectApproverCount.toString());
 					 globalVarsMap.put("terminatedUser",termentaedUserName.getFirstName());
