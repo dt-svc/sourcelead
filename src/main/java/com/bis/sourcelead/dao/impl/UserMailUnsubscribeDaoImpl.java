@@ -81,8 +81,12 @@ public class UserMailUnsubscribeDaoImpl implements UserMailUnsubscribeDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from UserMailUnsubscribe umus where umus.userId.id =:userId ";
-		UserMailUnsubscribe unsubscription = (UserMailUnsubscribe) session.createQuery(query).setLong("userId", userId).uniqueResult();
-		return unsubscription;
+		List<UserMailUnsubscribe> unsubscriptionList =  session.createQuery(query).setLong("userId", userId).list();
+		UserMailUnsubscribe UserMailUnsubscribe = null;
+		if(unsubscriptionList != null && !unsubscriptionList.isEmpty()) {
+			UserMailUnsubscribe = unsubscriptionList.iterator().next();
+		}
+		return UserMailUnsubscribe;
 	}
 	
 	
@@ -92,8 +96,12 @@ public class UserMailUnsubscribeDaoImpl implements UserMailUnsubscribeDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from UserMailUnsubscribe umus where umus.userId.email =:userEmail ";
-		UserMailUnsubscribe unsubscription = (UserMailUnsubscribe) session.createQuery(query).setString("userEmail", userEmail).uniqueResult();
-		return unsubscription;
+		List<UserMailUnsubscribe> unsubscriptionList = session.createQuery(query).setString("userEmail", userEmail).list();
+		UserMailUnsubscribe UserMailUnsubscribe = null;
+		if(unsubscriptionList != null && !unsubscriptionList.isEmpty()) {
+			UserMailUnsubscribe = unsubscriptionList.iterator().next();
+		}
+		return UserMailUnsubscribe;
 	}
 
 	@Override
@@ -102,8 +110,12 @@ public class UserMailUnsubscribeDaoImpl implements UserMailUnsubscribeDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from UserMailUnsubscribe umus where umus.userId.email =:userEmail and umus.orgLocationId.locationCode =:orgLocationCode ";
-		UserMailUnsubscribe unsubscription = (UserMailUnsubscribe) session.createQuery(query).setString("userEmail", userEmail).setString("orgLocationCode", orgLocationCode).uniqueResult();
-		return unsubscription;
+		List<UserMailUnsubscribe> unsubscriptionList = session.createQuery(query).setString("userEmail", userEmail).setString("orgLocationCode", orgLocationCode).list();
+		UserMailUnsubscribe UserMailUnsubscribe = null;
+		if(unsubscriptionList != null && !unsubscriptionList.isEmpty()) {
+			UserMailUnsubscribe = unsubscriptionList.iterator().next();
+		}
+		return UserMailUnsubscribe;
 	}
 	
 }
