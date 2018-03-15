@@ -1802,7 +1802,7 @@ public class InvoiceRestController {
 	public List<Expenses> getExpensesByProjectMemberId(
 			@RequestParam(value = "memberId", required = false) Long projectMemberId,
 			@RequestParam(value = "invoiceType", required = false) String invoiceType) throws Exception {
-
+		
 		List<Expenses> expensesList = expensesService.getExpensesByProjectMemberId(projectMemberId,invoiceType);
 		return expensesList;
 
@@ -1816,8 +1816,9 @@ public class InvoiceRestController {
 	 */
 	@RequestMapping(value = "/getExpensesEntries", method = RequestMethod.GET)
 	@ResponseBody
-	public  List<ExpensesEntriesDTO> getExpensesEntries(@RequestParam(value = "expensesId", required = false) Long expenseId)throws Exception {
-		List<ExpensesEntriesDTO> expensesEntriesDTOList = expensesService.getApprovedExpenses(expenseId);
+	public  List<ExpensesEntriesDTO> getExpensesEntries(@RequestParam(value = "expensesId", required = false) Long expenseId,HttpServletRequest request)throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<ExpensesEntriesDTO> expensesEntriesDTOList = expensesService.getApprovedExpenses(expenseId,orgLocation.getId());
 		return expensesEntriesDTOList;
 	}
 	

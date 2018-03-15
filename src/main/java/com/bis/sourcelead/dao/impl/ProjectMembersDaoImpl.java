@@ -1169,7 +1169,9 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		 Session session = this.sessionFactory.getCurrentSession();
 		 List<ProjectMembers> pmList = null;
 		 ArrayList<ProjectMembers> projectsMembersList = new ArrayList<ProjectMembers>();
-//	        List<ProjectMembers> projectsMembersList = null;
+		 if(StringUtils.isBlank(status)) {
+			 status = "All";
+		 }
 	        String[] tokens = status.split(",");
 	        String [] roleId = null;
 	        String [] teamId = null;

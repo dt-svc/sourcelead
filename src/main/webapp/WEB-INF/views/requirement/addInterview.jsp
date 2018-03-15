@@ -915,7 +915,7 @@ function interviewTemplate(){
 	        success: function(json) {
 	        var output = "";
 	        if(json.length > 0){
-	        	output = output + "<option value=''>--select Template--</option>";
+	        	/* output = output + "<option value=''>--select Template--</option>"; */
 	         	for (var i=0; i<json.length; i++)
 	 			{
 	 	        		var opt = json[i];

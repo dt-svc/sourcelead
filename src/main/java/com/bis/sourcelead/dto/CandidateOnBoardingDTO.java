@@ -127,6 +127,10 @@ public class CandidateOnBoardingDTO implements Serializable {
 	
 	private String sortOrder;
 	
+	private String vendors;
+	
+	private String vendorContact;
+	
 	public String getCandidateOnBoardStatus() {
 		return candidateOnBoardStatus;
 	}
@@ -601,6 +605,22 @@ public class CandidateOnBoardingDTO implements Serializable {
 
 	public void setSortOrder(String sortOrder) {
 		this.sortOrder = sortOrder;
+	}
+
+	public String getVendors() {
+		return vendors;
+	}
+
+	public void setVendors(String vendors) {
+		this.vendors = vendors;
+	}
+
+	public String getVendorContact() {
+		return vendorContact;
+	}
+
+	public void setVendorContact(String vendorContact) {
+		this.vendorContact = vendorContact;
 	}
 	
 	

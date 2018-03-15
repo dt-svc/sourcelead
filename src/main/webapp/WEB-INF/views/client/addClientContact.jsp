@@ -316,6 +316,7 @@ function getOrgDetails()
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd'
 			};
+		
 			if ($('#client_contact_form').validate(false, validationSettings)) {
 		        var formData = $($('#client_contact_form')[0]).serialize();
 				var sourceleadUrl = '${sourceleadUrl}';
@@ -350,8 +351,8 @@ function validateEmail(){
 				if(result == 'Invalid Email') {
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
 					$("input#emailId").after( "<p class='jquery_form_error_message'>Email  should not your org users email</span>");
-					document.getElementById("emailId").setAttribute( 'record-exist', 'yes');
-					document.getElementById("emailId").setAttribute( 'record-exist-errorMsg', "Email should not your org users email");
+					//document.getElementById("emailId").setAttribute( 'record-exist', 'yes');
+					//document.getElementById("emailId").setAttribute( 'record-exist-errorMsg', "Email should not your org users email");
 					
 				}else if(result == 'Valid Email') {
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
