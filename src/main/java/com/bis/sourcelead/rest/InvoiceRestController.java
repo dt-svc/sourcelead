@@ -561,21 +561,14 @@ public class InvoiceRestController {
     
 
 	@RequestMapping(value = "/saveInvoicePayment", method = RequestMethod.POST)
-	public @ResponseBody String saveInvoicePayment(InvoicePaymentDTO invoicePaymentDTO,@RequestParam(value = "json", required = false) String json,@RequestParam(value = "invoiceId", required = false) Long invoiceId,HttpServletRequest request) throws Exception {
+	public @ResponseBody String saveInvoicePayment(InvoicePaymentDTO invoicePaymentDTO,@RequestParam(value = "invoiceId", required = false) Long invoiceId,HttpServletRequest request) throws Exception {
 
-//		String json1 = "{" + json + "}";
 		String invoicePaymentSaved = "failed";
-//		JSONObject jsonObj = new JSONObject(json1);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-//		MultipartFile multiFile = null;
-//		Iterator<String> itrator = request.getFileNames();
-//		if(itrator.hasNext()){
-//	        multiFile = request.getFile(itrator.next());
-//		}
 		invoicePaymentDTO.setStaticPath(staticPath);
-		InvoicePayment invoicePayment = invoicePaymentService.saveInvoicePayment(invoicePaymentDTO,null, user, orgLocation, null,invoiceId);
+		InvoicePayment invoicePayment = invoicePaymentService.saveInvoicePayment(invoicePaymentDTO, user, orgLocation, null,invoiceId);
 		if(null !=invoicePayment){
 			invoicePaymentSaved = "success";
 		}
