@@ -16,6 +16,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +32,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class AddElkRequirement {
-	
-	@Autowired
-	private CommonUtil commonUtil;
 	
 	private static final Logger logger = LoggerFactory.getLogger(AddElkRequirement.class);
 	private ComboPooledDataSource comboPooledDataSource;
@@ -71,7 +69,7 @@ public class AddElkRequirement {
 				if(null != rs.getString("ORG_LOCATION_ID") && !"".equalsIgnoreCase(rs.getString("ORG_LOCATION_ID"))){
 					requirementIndex.setOrgLocationId(Long.parseLong(rs.getString("ORG_LOCATION_ID")));
 				}
-				requirementIndex.setJobTitle(commonUtil.firstLetterCapitalizedString(rs.getString("JOB_TITLE")));
+				requirementIndex.setJobTitle(firstLetterCapitalizedString(rs.getString("JOB_TITLE")));
 				requirementIndex.setJobId(rs.getString("JOB_ID"));
 				requirementIndex.setCurrentRateCurrency(rs.getString("CURRENCY_CODE"));
 				requirementIndex.setNumberOfPositions(rs.getString("POSITIONS"));
@@ -579,4 +577,9 @@ public class AddElkRequirement {
 				e.printStackTrace();
 			}
 		}
+	 
+	 public String firstLetterCapitalizedString(String name){
+		 String finalString = WordUtils.capitalizeFully(name);
+		return finalString;
+	}
 }
