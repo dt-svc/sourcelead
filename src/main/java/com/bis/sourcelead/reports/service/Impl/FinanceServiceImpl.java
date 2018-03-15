@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
@@ -583,8 +584,14 @@ public class FinanceServiceImpl implements FinanceService{
 				if (paymentDate != null) {
 					paidBill.setPayDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paymentDate));
 				}
-				paidBill.setAmount(invoice.getTotal());
-				double total = getPaidAmountByInvoiceId(invoice.getId());
+				
+				double total = 0;
+				if(Constants.PAYABLES.equalsIgnoreCase(paidBillDTO.getBillType())) {
+					 total = getPaidAmountByInvoiceId(invoice.getId());
+				}else {
+					 total = getPaidAmountByInvoiceId(invoice.getParentInvoiceId().getId());
+				}
+				paidBill.setAmount(total);
 				totalAmount = totalAmount + total;
 				paidBill.setTotalAmount(totalAmount);
 				paidBillList.add(paidBill);
