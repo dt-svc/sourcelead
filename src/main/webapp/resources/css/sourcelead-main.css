@@ -506,7 +506,7 @@ ul.timesheet-menu li a:hover, ul.backoffice-menu li a:hover, ul.associates-menu 
 }
 /* hide time sheet */
 .side-bar.side-bar-active {
- width: 50px;
+ width: 50px; overflow: inherit;
 }
 .side-bar-inner {
  width: 190px;
@@ -1223,14 +1223,12 @@ z-index: 100; border-radius: 3px; color: #fff; text-align: center;
 .bgGReen {
 background-color: #1ab394 !important; color: #fff;
 }
-
 .activeGren {
 background-color: #28a745 !important; color: #fff;
 }
 .activeGray {
 background-color: #ddd !important; color: #909090 !important;
 }
-
 .bg-orange {
 	background: #FF8F00; color: #fff;
 }
@@ -5781,7 +5779,7 @@ select.selectborder {
 }
 /* For SideNav Inner Scroll */
 .sidenav_inner {
-    position: relative; /* max-height: 575px; overflow-y: auto;*/  padding-bottom: 10px;
+    position: relative; /* max-height: 575px; overflow-y: auto;*/  padding-bottom: 15px;
 }
 .side-bar-active .sidenav_inner {
      overflow-y:inherit;
@@ -8307,6 +8305,12 @@ top: 16px; left: 54%; right:inherit; bottom:inherit; color: #fff; background-col
 	position: fixed !important; background-color: #fff; top:10%; left: 25%; width:500px; padding:15px 0 0;
 	display: none; z-index: 99999 !important; border-radius:5px !important;
 }
+.showPassword-usr {
+top: 0; right: 15px; font-size: 15px !important; background-color: #ccc; padding: 5px !important;
+position:absolute; height: 34px; line-height: 25px; width: 30px; text-align: center; border-left: 1px solid #c5c5c5; cursor: pointer;
+border-radius:0 3px 3px 0;
+}
+
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

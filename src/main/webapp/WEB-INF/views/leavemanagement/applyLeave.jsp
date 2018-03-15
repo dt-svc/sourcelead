@@ -463,10 +463,10 @@ function getLeaveDetails(finalDateFormatEndDate){
 		    	if(report.duration == "Half Day"){
 		    		$("#fromHalfDayDiv").hide();
 		    		$("#toHalfDayDiv").hide();
-		    	}/* else{
+		    	}else{
 		    		$("#fromHalfDayDiv").show();
 		    		$("#toHalfDayDiv").show();
-		    	}  */
+		    	} 
 		    	
 		    	if(report.reasonRequired == "Y"){
 			 		$("#reason").attr('data-validation',"required");
