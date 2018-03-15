@@ -249,6 +249,7 @@ public class ProjectPlanningRestController {
 		  if(planningResourceRequestList != null && planningResourceRequestList.size() > 0) {
 			  List<ProjectPlanningResourceRequest> resourceRequestList = new ArrayList<>();
 			  for(ProjectPlanningResourceRequest resourceRequest : planningResourceRequestList) {
+				  resourceRequest.setRequestedUser(resourceRequest.getProjectPlanningRequestId().getRequestedUser());
 				  resourceRequestList.add(resourceRequest);
 			  }
 			  projectPlanningRequest.setResourceRequestList(resourceRequestList);

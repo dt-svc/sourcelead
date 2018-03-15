@@ -18,6 +18,7 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Component
 public class CandidateIndexHelper {
@@ -28,24 +29,27 @@ public class CandidateIndexHelper {
 	@Autowired
 	UserService userService;
 	
+	@Autowired
+	private CommonUtil commonUtil;
+	
 	public CandidateIndex getCandidateIndexFromCandidate(Candidate candidate) throws Exception{
 		CandidateIndex candidateIndex = null;
 		if(null != candidate && null != candidate.getId()){
 			candidateIndex = new CandidateIndex();
 			candidateIndex.setCandidateId(candidate.getId());
 			candidateIndex.setOrgLocationId(candidate.getOrgLocationId().getId());
-			candidateIndex.setFirstName(candidate.getFirstName());
-			candidateIndex.setLastName(candidate.getLastName());
+			candidateIndex.setFirstName(commonUtil.firstLetterCapitalizedString(candidate.getFirstName()));
+			candidateIndex.setLastName(commonUtil.firstLetterCapitalizedString(candidate.getLastName()));
 			
 			if(StringUtils.isNoneBlank(candidate.getLastName())) {
 				StringBuilder fullName = new StringBuilder();
-				fullName = fullName.append(candidate.getFirstName()).append(" ").append(candidate.getLastName());
+				fullName = fullName.append(commonUtil.firstLetterCapitalizedString(candidate.getFirstName())).append(" ").append(commonUtil.firstLetterCapitalizedString(candidate.getLastName()));
 				candidateIndex.setFullName(fullName.toString());
 			}else {
-				candidateIndex.setFullName(candidate.getFirstName());
+				candidateIndex.setFullName(commonUtil.firstLetterCapitalizedString(candidate.getFirstName()));
 			}
 			
-			candidateIndex.setEmail(candidate.getEmail());
+			candidateIndex.setEmail(candidate.getEmail().toLowerCase());
 			candidateIndex.setAlternateEmail(candidate.getAlternateEmail());
 			candidateIndex.setMobilePhone(candidate.getMobilePhone());
 			candidateIndex.setAlternateMobilePhone(candidate.getAlternateMobilePhone());
