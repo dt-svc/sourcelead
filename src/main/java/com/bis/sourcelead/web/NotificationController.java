@@ -115,6 +115,13 @@ public class NotificationController {
 				if(StringUtils.isNotBlank(nl.getSpocUUID())){
 					OrgSpoc orgSpoc = orgSpocService.getOrgSpocByUUID(nl.getSpocUUID());
 					nl.setSpocInvitationStatus(orgSpoc.getInvitationStatus());
+					nl.setOrgRelationUUID(orgSpoc.getOrgRelations().getUUID());
+					String responderType = "";
+					if(userId.longValue() == orgSpoc.getClientUser().getId().longValue())
+						responderType = "vendor";
+					else
+						responderType = "client";
+					nl.setResponderType(responderType);
 				}
 			}
 		}
