@@ -367,8 +367,8 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 					 Float decApprovedTotal = 0f;
 					 Float decUnApprovedTotal = 0f;
 				 for(Expenses exp:expenses){
-					 if(null != projectMember.getProjectMemberCandidteId()){
-							if(null != projectMember.getEmployee().getEmployeeId()){
+					 if(projectMember!=  null && null != projectMember.getProjectMemberCandidteId()){
+							if(projectMember.getEmployee()!= null && null != projectMember.getEmployee().getEmployeeId()){
 								expensesArray[0] = (exp.getProjectMembers().getEmployee().getEmployeeId());
 							}else {
 								expensesArray[0] = ("--");
@@ -1012,7 +1012,7 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 					 
 				 for(Expenses exp:expenses){
 					 if(null != projectMember.getProjectMemberCandidteId()){
-							if(null != projectMember.getEmployee().getEmployeeId()){
+							if(projectMember.getEmployee()!= null && null != projectMember.getEmployee().getEmployeeId()){
 								writeRow.createCell(0).setCellValue(exp.getProjectMembers().getEmployee().getEmployeeId());
 								 createExcelsheet.autoSizeColumn(0);
 							}

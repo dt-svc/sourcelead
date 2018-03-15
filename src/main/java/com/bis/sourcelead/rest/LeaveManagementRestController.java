@@ -322,7 +322,7 @@ public class LeaveManagementRestController {
 		
 		   OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		   User loginUser = userService.getUserById(userId);
-		   UserRole userRole = userRoleService.getUserRoleByUserId(userId);
+		   UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocationId);
 
 		   Employees emp = employeesService.getEmployeeByUserId(loginUser.getId());
 		   float balanceLeaveCounts = 0;
