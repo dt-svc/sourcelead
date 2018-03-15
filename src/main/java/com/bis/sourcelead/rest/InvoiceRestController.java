@@ -574,6 +574,7 @@ public class InvoiceRestController {
 //		if(itrator.hasNext()){
 //	        multiFile = request.getFile(itrator.next());
 //		}
+		invoicePaymentDTO.setStaticPath(staticPath);
 		InvoicePayment invoicePayment = invoicePaymentService.saveInvoicePayment(invoicePaymentDTO,null, user, orgLocation, null,invoiceId);
 		if(null !=invoicePayment){
 			invoicePaymentSaved = "success";
