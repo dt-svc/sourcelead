@@ -409,14 +409,14 @@ function editCandidate(candidateId){
 							
 						    result = result + '<span class="" id="hideVendor" style="display:none">'; 
 							result = result + '<div class="col-md-6 custom-fields select-arrow" id="errorvendor">';
-							result = result + '<select  class="chosen-select form-control select-bg" name="vendors"  id="vendorName" value="'+vendorName+'" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();">';
+							result = result + '<select  class="chosen-select form-control select-bg" name="vendors" data-validation-optional="true"  id="vendorName" value="'+vendorName+'" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();">';
 							result = result + '</select>';
 							result = result + '<input type="hidden" name="updateVendorName" id="updateVendorName" value="'+vendorName+'" />';
 							result = result + '<input type="hidden" name="updateVendorOrgRelationId" id="updateVendorOrgRelationId" value="'+json.vendorOrgRelationId+'" />';
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow mt" id="errorvendorContact">';
-							result = result + '<select  class="chosen-select form-control select-bg" name="vendorcontact"  value="'+json.vendorContactName+'" id="vendorcontactName" field-name="Vendor Contact"  placeholder="select Vendor Contact" onchange="removeValiationVendorContact();">';
+							result = result + '<select  class="chosen-select form-control select-bg" name="vendorcontact" data-validation-optional="true"  value="'+json.vendorContactName+'" id="vendorcontactName" field-name="Vendor Contact"  placeholder="select Vendor Contact" onchange="removeValiationVendorContact();">';
 							result = result + '</select>';
 							result = result + '<input type="hidden" name="updateVendorContactName" id="updateVendorContactName" value="'+json.vendorContactName+'" />';
 							result = result + '<input type="hidden" name="updateSpocId" id="updateSpocId" value="'+json.vendorSpocId+'" />';
@@ -1616,13 +1616,9 @@ function employementType(){
 			 getVendorsByOrgLocation(); */
 			 if(employementType == preval){
 					document.getElementById("hideVendor").style.display="block";
-					 $('#vendorName').attr("data-validation","required"); 
-					 $('#vendorcontactName').attr("data-validation","required");
 					 getVendorsByOrgLocation();
 				}else{
 					document.getElementById("hideVendor").style.display="block";
-				 $('#vendorName').attr("data-validation","required"); 
-				 $('#vendorcontactName').attr("data-validation","required"); 
 				  $('#vendorName').val(''); 
 				 
 		            $('#vendorName').trigger("chosen:updated");
@@ -1633,8 +1629,6 @@ function employementType(){
 			 
 		}else{
 			 document.getElementById("hideVendor").style.display="none";
-			 $('#vendorName').removeAttr("data-validation","required"); 
-			 $('#vendorcontactName').removeAttr("data-validation","required"); 
 			 
 			 $('#vendorName').val(''); 
 			 $('#vendorcontactName').val(''); 
@@ -1648,13 +1642,9 @@ function employementType(){
 		if(employementType == 'C2C-1099'){
 			if(employementType == preval){
 				document.getElementById("hideVendor").style.display="block";
-				 $('#vendorName').removeAttr("data-validation-optional", "true"); 
-				 $('#vendorcontactName').removeAttr("data-validation-optional", "true"); 
 				 getVendorsByOrgLocation();
 			}else{
 				document.getElementById("hideVendor").style.display="block";
-				$('#vendorName').removeAttr("data-validation-optional", "true"); 
-				 $('#vendorcontactName').removeAttr("data-validation-optional", "true");  
 			    $('#vendorName').val(''); 
 			 
 	            $('#vendorName').trigger("chosen:updated");
@@ -1662,8 +1652,6 @@ function employementType(){
 	            $('#vendorcontactName').trigger("chosen:updated");
 			} 
 		}else{
-			 $('#vendorName').removeAttr("data-validation-optional", "true"); 
-			 $('#vendorcontactName').removeAttr("data-validation-optional", "true");  
 			 
 			 $('#vendorName').val(''); 
 			 $('#vendorcontactName').val(''); 

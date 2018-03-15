@@ -1019,11 +1019,10 @@ function documentTableList(){
 	   		 	    result  = result + '               <td><div class="tblminwidth-50"><a href="javascript:void(0)" onclick="viewFile(\''+report.fileURL+'\',\''+report.fileName+'\', \''+report.fileType+'\');" class="fa fa-eye ml10 paddingRight" title="view"></a><a class="paddingLeft glyphicon glyphicon-download-alt" href=\"'+report.fileURL+'\" title="Download" download></a></div></td>';
 	   		 	    result  = result + '               <td><div>';
 	   		 	    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_DOCUMENTS\')">';
-	   		 	       result  = result + '    <a class="glyphicon glyphicon-pencil padddigRight" title="Edit" onclick="getEditTaskDocument('+report.id+');"></a>';
+	   		 	    result  = result + '    <a class="glyphicon glyphicon-pencil padddigRight" title="Edit" onclick="getEditTaskDocument('+report.id+');"></a>';
 	   		 	    '</sec:authorize>'; 
-	   		 	   
 	   		 	    '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_TASK_DOCUMENTS\')">';
-	   		 	       result  = result + ' <i title="Delete" class="glyphicon glyphicon-trash paddingLeft" onclick="removeProjectTaskDocuments('+report.id+');"></i>';
+	   		 	     result  = result + ' <i title="Delete" class="glyphicon glyphicon-trash paddingLeft" onclick="removeProjectTaskDocuments('+report.id+');"></i>';
 	   		 	    '</sec:authorize>'; 
 	   		 	    
 	   		 	    '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_DOCUMENTS\',\'ROLE_DELETE_TASK_DOCUMENTS\')">';
@@ -1085,7 +1084,7 @@ function getEditTaskDocument(projectTaskDocId){
 					result  = result + '	    <div class="col-md-7" id="uploadDocDiv" style="display: none;">';
 					result  = result + '	      <div class="row">';
 					result  = result + '	        <div class="col-md-12 clearfix">';
-					result  = result + '	                <div class="input-group col-md-10 pull-left errorInptgroup">';
+					result  = result + '	                <div class="input-group positionRelative errorInptgroup" id="uploadEditFileGroup">';
 					result  = result + '	                  <label class="input-group-btn"> <span class="btn btn-primary" onchange="editUploadFile();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file"  id="uploadBtn" style="display: none;"   class="upload">';
 					result  = result + '	                    </span> </label>';
 					result  = result + '	                  <input class="form-control" readonly id="uploadFile" name="docFile"  placeholder="Attachment" type="text" field-name="Document" >';
@@ -1128,10 +1127,10 @@ function getEditTaskDocument(projectTaskDocId){
 				    var selectedFile = document.getElementById("uploadBtn");
 				    selectedFile.addEventListener("change", function() {
 				      var docSize = this.files[0].size;
-				      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
+				      $("#uploadEditFileGroup").find('p.jquery_form_error_message').remove();
 				      if(docSize > 2097152){
 				    	  document.getElementById("uploadFile").value = '';
-				    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
+				    	  $("#uploadEditFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
 				      }
 				    });
 				    

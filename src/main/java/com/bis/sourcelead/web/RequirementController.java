@@ -17,6 +17,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -797,9 +798,17 @@ public class RequirementController {
 				if(!isNullOrEmpty(submissionId)){
 					model.addObject("submissionId", submissionId);
 				}
+				if(submissionId != null && StringUtils.isNotEmpty(submissionId)){
+				 RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId));
+				 String subStatus  = requirementSubmission.getSubmissionStatus().toString();
+				 model.addObject("subStatus", subStatus);
+				}
 				if(!isNullOrEmpty(submissionStatus)){
 					model.addObject("submissionStatus", submissionStatus);
 				}
+				
+				
+				
 				
 			}
 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqsummaryMsg");
