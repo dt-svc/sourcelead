@@ -456,6 +456,10 @@ public class ProjectMembers implements Serializable {
 	@JsonProperty
 	private int timeReportsTotalCountValue;
 	
+	@Transient
+	@JsonProperty
+	private String projectMemberStatus;
+	
 	public Long getSubmissionInvoiceId() {
 		return submissionInvoiceId;
 	}
@@ -1542,6 +1546,14 @@ public class ProjectMembers implements Serializable {
 
 	public void setRateHistroyList(String rateHistroyList) {
 		this.rateHistroyList = rateHistroyList;
+	}
+
+	public String getProjectMemberStatus() {
+		return projectMemberStatus;
+	}
+
+	public void setProjectMemberStatus(String projectMemberStatus) {
+		this.projectMemberStatus = projectMemberStatus;
 	}
 
 }
