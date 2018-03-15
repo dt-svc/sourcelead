@@ -2094,7 +2094,7 @@ public class CrowdSourcingRequirementsRestController {
 						rs.setEmployeeType(rs.getRequirement().getJobType());
 						
 						List<String> requirementLocationsList = new ArrayList<>();
-						 List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(rs.getId());
+						 List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(rs.getRequirement().getId());
 						 if(locationsList != null && !locationsList.isEmpty()) {
 						 for(RequirementLocations location : locationsList) {
 						 requirementLocationsList.add(location.getLocation());
