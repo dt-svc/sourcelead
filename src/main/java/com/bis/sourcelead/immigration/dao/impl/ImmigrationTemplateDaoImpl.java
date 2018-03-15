@@ -23,7 +23,12 @@ import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.CandidateIdendities;
+import com.bis.sourcelead.entity.CandidateLcaI94Summary;
+import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
@@ -491,5 +496,33 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 		String query = "from LookUpData lud where lud.category = :category";
 		List<LookUpData> candidateEmployers = session.createQuery(query).setString("category", type).list();
 		return candidateEmployers;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void savePetitionDetails(Immigration immigration, Candidate candidate,
+			CandidateIdendities candidateIdendities, CandidateResumes candidateResume,
+			List<CandidateLcaI94Summary> lcaSummaryLst) throws Exception {
+		logger.debug("saveConnection");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (candidate != null) {
+					session.saveOrUpdate(candidate);
+			}
+			if(candidateIdendities != null) {
+				session.saveOrUpdate(candidateIdendities);
+			}
+			if(candidateResume!= null && candidateResume.getFileURL() != null) {
+				session.saveOrUpdate(candidateResume);
+			}
+			if(lcaSummaryLst.size() != 0) {
+				for(CandidateLcaI94Summary candidateLcaI94Summary : lcaSummaryLst) {
+					session.saveOrUpdate(candidateLcaI94Summary);
+				}
+			}
+		} catch (Exception exception) {
+			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"Connections"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
 	}
 }

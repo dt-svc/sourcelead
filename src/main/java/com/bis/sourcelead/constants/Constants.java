@@ -1065,5 +1065,7 @@ public class Constants {
 	public static final String PETITION_TYPE = "PetitionType";
 	public static final String USCIS_STATUS = "USCISStatus";
 	public static final String EMPLOYMENT_LEVEL = "EmploymentLevel";
+	
+	public static final String ID_TYPE_SSN = "SSN";
 
 }

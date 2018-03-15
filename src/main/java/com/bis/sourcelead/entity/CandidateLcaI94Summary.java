@@ -40,6 +40,12 @@ public class CandidateLcaI94Summary {
 	@Column(name = "EMPLOYMENT_LEVEL")
 	private String employmentLevel;
 	
+	@Column(name = "EMPLOYER_NAME")
+	private String employerName;
+	
+	@Column(name = "EMPLOYER_LOCATION")
+	private String employerLocation;
+	
 	@Column(name = "CURR_STATUS")
 	private String currentStatus;
 	
@@ -229,8 +235,21 @@ public class CandidateLcaI94Summary {
 	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
 	}
-	
-	
-	
 
+	public String getEmployerName() {
+		return employerName;
+	}
+
+	public void setEmployerName(String employerName) {
+		this.employerName = employerName;
+	}
+
+	public String getEmployerLocation() {
+		return employerLocation;
+	}
+
+	public void setEmployerLocation(String employerLocation) {
+		this.employerLocation = employerLocation;
+	}
+	
 }

@@ -6,6 +6,7 @@ package com.bis.sourcelead.immigration.service;
 import java.util.List;
 
 import com.bis.sourcelead.dto.CandidateEmployerDTO;
+import com.bis.sourcelead.dto.ImmigrationDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
@@ -49,5 +50,7 @@ public interface ImmigrationTemplateService {
 	List<CandidateEmployerDTO> getPetitionTemplateEmployers(Long id);
 
 	List<LookUpData> getLookupDataByType(String type);
+
+	void savePetitionDetails(ImmigrationDTO immigrationDTO, User user) throws Exception;
 
 }

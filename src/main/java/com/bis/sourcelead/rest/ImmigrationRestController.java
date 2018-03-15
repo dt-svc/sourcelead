@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateEmployerDTO;
+import com.bis.sourcelead.dto.ImmigrationDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
@@ -483,6 +484,14 @@ public @ResponseBody ResponseList<ImmigrationTemplateListDTO> getAlltemplateList
 				"orgLocations");
 		List<Requirement> jobList= requirementService.getAllRequirementsByOrglocationId(orgLocations.getId());
 		return jobList;
+	}
+	
+	
+	@RequestMapping(value = { "/savePetitionDetailsPage" }, method = RequestMethod.POST)
+	public String savePetitionDetailsPage(ImmigrationDTO immigrationDTO, HttpServletRequest request) throws Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		immigrationTemplateService.savePetitionDetails(immigrationDTO, user);
+		return null;
 	}
 
 }

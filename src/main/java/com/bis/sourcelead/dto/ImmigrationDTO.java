@@ -24,7 +24,7 @@ public class ImmigrationDTO extends SearchDTO {
 
 	private String fileContentType;
 
-	private List<FileInfo> resumeInfo;
+	private FileInfo resumeInfo;
 
 	private String candidateType;
 	
@@ -213,11 +213,11 @@ public class ImmigrationDTO extends SearchDTO {
 		this.fileContentType = fileContentType;
 	}
 
-	public List<FileInfo> getResumeInfo() {
+	public FileInfo getResumeInfo() {
 		return resumeInfo;
 	}
 
-	public void setResumeInfo(List<FileInfo> resumeInfo) {
+	public void setResumeInfo(FileInfo resumeInfo) {
 		this.resumeInfo = resumeInfo;
 	}
 
