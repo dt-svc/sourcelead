@@ -8303,6 +8303,10 @@ position: absolute; top:12px; right: 15px;
 .clearUpload.clearUpload-timesheet:after {
 top: 16px; left: 54%; right:inherit; bottom:inherit; color: #fff; background-color: transparent;
 }
+.budgetModalpop {
+	position: fixed !important; background-color: #fff; top:10%; left: 25%; width:500px; padding:15px 0 0;
+	display: none; z-index: 99999 !important; border-radius:5px !important;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
