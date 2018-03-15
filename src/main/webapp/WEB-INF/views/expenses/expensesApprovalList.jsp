@@ -214,7 +214,7 @@ var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';
  
 var searchvalue = '';
 if(searchData != null && searchData !='' && searchData!='undefined'){
-	searchValue = searchData;
+	searchValue = encodeURIComponent(searchData);
 }else{
 	searchValue = '';
  }

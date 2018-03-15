@@ -916,11 +916,11 @@ public class InvoiceRestController {
 		}
 		if(null !=sahList && sahList.size() >0){
 			for(SubmissionApproverHierarchy sah : sahList){
-				ProjectMembers projectMember = sah.getSubmissionId().getProjectMembers();
+				ProjectMembers subPm = sah.getSubmissionId().getProjectMembers();
+				ProjectMembers projectMember = projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(subPm.getMasterCandidateId().getId(), Long.parseLong(projectId), orgLocation.getId());
 //				Candidate candidate = candidateService.getCandidateByParentCandidateId(projectMember.getProjectMemberCandidteId().getId());
 				Candidate candidate = projectMember.getProjectMemberCandidteId();
-				
-				if(candidate != null) {
+				if(candidate != null && "C2C".equalsIgnoreCase(candidate.getDesignationType())) {
 				projectMember.setSubmissionApproverHierarchyId(sah.getId());
 				projectMember.setSubmissionInvoiceId(sah.getSubmissionId().getId());
 				/*Employees employee = employeesService.getEmployeByUserIdAndOrgRelationId(projectMember.getEmployee().getUser().getId(),orgRelationId);
