@@ -21,13 +21,13 @@ $(document).ready(function() {
  if(submissionId != null && submissionId != '' && submissionId != 'undefined' && candidateId != null && candidateId != '' && candidateId != 'undefined'){
 	 requirementPipeline(requirementId,type);
 	 }
-if(submissionStatus='all'){
+ else if(submissionStatus == 'all'){
 	 $("#detailsTab").removeClass("current");
 	 $('li[name=applicantNotification]').addClass("current");
 	 requirementStatusBar(requirementId);
 	 requirementPipeline(requirementId,"all");
 	 } 
- if(submissionId != null && submissionId != '' && submissionId != 'undefined' && requirementId != null && requirementId != '' && requirementId != 'undefined'){
+ else if(submissionId != null && submissionId != '' && submissionId != 'undefined' && requirementId != null && requirementId != '' && requirementId != 'undefined'){
 	 requirementPipeline(requirementId,type);
 		 }
 });	
@@ -734,7 +734,7 @@ function requirementPipeline(requirementId,submissionType){
 
 <script>
 function requirementPipelineList(url, requirementId, submissionType){
-	  var clientSubmissions = '${clientSubmissions}';
+	var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	  $("#status-data").removeAttr("style");
