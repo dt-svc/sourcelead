@@ -1,7 +1,6 @@
 package com.bis.sourcelead.elk.install;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
-import java.io.Writer;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,21 +9,14 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.xcontent.XContentType;
-import org.elasticsearch.index.engine.DocumentMissingException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -34,14 +26,15 @@ import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKTC;
+import com.bis.sourcelead.util.CommonUtil;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import com.thoughtworks.xstream.io.json.JsonWriter;
 
 
 public class AddElkCandidate{
+	
+	@Autowired
+	private CommonUtil commonUtil;
+	
 	private static final Logger logger = LoggerFactory.getLogger(AddElkCandidate.class);
 	private ComboPooledDataSource comboPooledDataSource;
 	private SourceleadELKTC<CandidateIndex> client;
@@ -71,17 +64,17 @@ public class AddElkCandidate{
 			    	CandidateIndex candidateIndex = new CandidateIndex();
 			    	candidateIndex.setCandidateId(rs.getLong("ID"));
 			    	candidateIndex.setOrgLocationId(rs.getLong("ORG_LOCATION_ID"));
-					candidateIndex.setFirstName(rs.getString("FIRST_NAME"));
-					candidateIndex.setLastName(rs.getString("LAST_NAME"));
+					candidateIndex.setFirstName(commonUtil.firstLetterCapitalizedString(rs.getString("FIRST_NAME")));
+					candidateIndex.setLastName(commonUtil.firstLetterCapitalizedString(rs.getString("LAST_NAME")));
 					String createdBy =  rs.getString("CREATED_BY");
 					
 					if(!isNullOrEmpty(rs.getString("LAST_NAME"))){
-						candidateIndex.setFullName(rs.getString("FIRST_NAME")+" "+rs.getString("LAST_NAME"));
+						candidateIndex.setFullName(commonUtil.firstLetterCapitalizedString(rs.getString("FIRST_NAME"))+" "+commonUtil.firstLetterCapitalizedString(rs.getString("LAST_NAME")));
 					}else {
-						candidateIndex.setFullName(rs.getString("FIRST_NAME"));
+						candidateIndex.setFullName(commonUtil.firstLetterCapitalizedString(rs.getString("FIRST_NAME")));
 					}
 					
-					candidateIndex.setEmail(rs.getString("EMAIL"));
+					candidateIndex.setEmail(rs.getString("EMAIL").toLowerCase());
 					candidateIndex.setAlternateEmail(rs.getString("ALTERNATE_EMAIL"));
 					candidateIndex.setMobilePhone(rs.getString("MOBILE_PHONE"));
 					candidateIndex.setAlternateMobilePhone(rs.getString("ALTERNATE_MOBILE_PHONE"));

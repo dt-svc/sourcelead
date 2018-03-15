@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -209,6 +210,16 @@ public class CommonUtil {
 			dateStr = df.format(date);
 		}
 		return dateStr;
+	}
+	
+	/**
+	 * Convert String to Capitalized String
+	 * @param name
+	 * @return
+	 */
+	public String firstLetterCapitalizedString(String name){
+		 String finalString = WordUtils.capitalizeFully(name);
+		return finalString;
 	}
 	
 	/**
