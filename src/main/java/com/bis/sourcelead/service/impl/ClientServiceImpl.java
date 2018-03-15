@@ -589,7 +589,7 @@ public class ClientServiceImpl implements ClientService {
 		}
 		
 		if(newlyRegistred.equalsIgnoreCase(Constants.YES)){
-			saveOrgLocationDefaultProject(clientOrgLocations, spocUser);
+			saveOrgLocationDefaultProject(clientOrgLocations, spocUser,responderType);
 			commonUtil.storeVendorOnboardDefaultTemplate(spocUser, clientOrgLocations);
 		}
 
@@ -606,7 +606,7 @@ public class ClientServiceImpl implements ClientService {
 	
 	
 	
-	 public Projects  saveOrgLocationDefaultProject(OrgLocations orgLocations,User approverUser) throws Exception {
+	 public Projects  saveOrgLocationDefaultProject(OrgLocations orgLocations,User approverUser,String responderType) throws Exception {
 		 	
 	    	Projects projects = new Projects();
 	    	StringBuilder defaultProjectName = new  StringBuilder();
@@ -622,6 +622,10 @@ public class ClientServiceImpl implements ClientService {
 	    	Date projStartDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(),startDate);
 	    	
 	    	projects.setStartDate(projStartDate);
+	    	
+	    	if (responderType.equalsIgnoreCase("Client")) {
+	    		projects.setIsTimesheetAttachmentRequired(1);
+	    	}
 
 	    	projects.setInvoiceFrequency(Constants.WEEKLY);
 	    	projects.setProjectStatus(Project_Status.INPROGRESS);
