@@ -186,8 +186,12 @@ public class RegistrationRestController {
 				for(Org regOrg : orgsList.getData()){
 					OrgDTO orgDto = new OrgDTO();
 						OrgLocations orglocations = orgLocationService.getPrimaryOrgLocationByOrgId(regOrg.getId());
+						UserRole userRole = null;
 						if(null != regOrg.getUser()){
-							UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(regOrg.getUser().getId(),orglocations.getId());
+							 userRole = userRoleService.getUserDetailsByUserIdAndLocationId(regOrg.getUser().getId(),orglocations.getId());
+						}
+						if(null != userRole){
+							
 							orgDto.setId(regOrg.getId());
 							orgDto.setOrgName(regOrg.getOrgName());
 							orgDto.setEmail(regOrg.getUser().getEmail());
