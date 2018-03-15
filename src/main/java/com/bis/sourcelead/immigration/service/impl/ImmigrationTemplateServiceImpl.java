@@ -338,6 +338,11 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 
 	@Override
 	public void savePetitionDetails(ImmigrationDTO immigrationDTO, User user) throws Exception {
+		
+		
+		/*get the candidate details*/
+		Candidate candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(immigrationDTO.getCandidateId()));
+		//candidate.setId(Long.parseLong(immigrationDTO.getCandidateId()));
 		Immigration immigration = new Immigration();
 		immigration.setPetitionType(Long.parseLong(immigrationDTO.getPetitionType()));
 		DateFormat dateFormat = new SimpleDateFormat ("dd-MM-yyyy");
@@ -360,15 +365,18 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 		OrgSpoc orgSpoc = new OrgSpoc();
 		orgSpoc.setId(Long.parseLong(immigrationDTO.getAttorneyContact()));
 		immigration.setOrgSpoc(orgSpoc);
+		immigration.setCandidate(candidate);
+		
+		Requirement requirement = new Requirement();
+		requirement.setId(Long.parseLong(immigrationDTO.getJobId()));
+		
+		immigration.setJob(requirement);
+		immigration.setStatus(1);
 		immigration.setCreatedBy(user);
 		immigration.setCreatedDate(new Date());
 		immigration.setUpdatedBy(user);
 		immigration.setUpdatedDate(new Date());
-		
 		/*end Immigration here*/
-		/*Candidate Starts Here*/
-		Candidate candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(immigrationDTO.getCandidateId()));
-		//candidate.setId(Long.parseLong(immigrationDTO.getCandidateId()));
 		candidate.setFirstName(immigrationDTO.getFirstName());
 		candidate.setMiddelName(immigrationDTO.getMiddleName());
 		candidate.setLastName(immigrationDTO.getLastName());
@@ -398,6 +406,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 		candidateIdendities.setCandidateId(candidate);
 		candidateIdendities.setIdNumber(immigrationDTO.getSsnNumber());
 		candidateIdendities.setIdType(Constants.ID_TYPE_SSN);
+		candidateIdendities.setStatus(1);
 		candidateIdendities.setCreatedBy(user);
 		candidateIdendities.setCreatedDate(new Date());
 		candidateIdendities.setUpdatedBy(user);
@@ -422,8 +431,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 			lcaSummaryCurr.setEndDate(dateFormat.parse(immigrationDTO.getLcaEndDate()));
 			lcaSummaryCurr.setIsCurrent(Constants.YES);
 		}
-		Requirement requirement = new Requirement();
-		requirement.setId(Long.parseLong(immigrationDTO.getJobId()));
+		
 		lcaSummaryCurr.setRequirementId(requirement);
 		lcaSummaryCurr.setCandidateId(candidate);
 		lcaSummaryCurr.setCreatedBy(user);
@@ -434,11 +442,13 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 		lcaSummaryCurr.setRateCurrency(immigrationDTO.getRateCurrency());
 		lcaSummaryCurr.setRate(immigrationDTO.getRate());
 		lcaSummaryCurr.setRateType(immigrationDTO.getRateType());
+		lcaSummaryCurr.setStatus(1);
+		lcaSummaryCurr.setIdType(Constants.ID_TYPE_LCA);
 		lcaSummaryCurr.setCreatedDate(new Date());
 		lcaSummaryCurr.setUpdatedDate(new Date());
 		
-		//lcaSummaryCurr.set
-		///lcaSummaryLst.add(lcaSummaryCurr);
+		lcaSummaryLst.add(lcaSummaryCurr); // add current lca
+		
 		CandidateLcaI94Summary lcaSummaryPrev  = new CandidateLcaI94Summary();
 		lcaSummaryPrev.setIdNumber(immigrationDTO.getPrevLcaNumber());
 		if(immigrationDTO.getPrevLcaStartDate()!=null && !StringUtils.isEmpty(immigrationDTO.getPrevLcaStartDate())) {
@@ -461,11 +471,15 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 		lcaSummaryPrev.setRateCurrency(immigrationDTO.getRateCurrency());
 		lcaSummaryPrev.setRate(immigrationDTO.getRate());
 		lcaSummaryPrev.setRateType(immigrationDTO.getRateType());
+		lcaSummaryPrev.setStatus(1);
+		lcaSummaryPrev.setIdType(Constants.ID_TYPE_LCA);
 		lcaSummaryPrev.setCreatedBy(user);
 		lcaSummaryPrev.setUpdatedBy(user);
-		lcaSummaryCurr.setCreatedDate(new Date());
-		lcaSummaryCurr.setUpdatedDate(new Date());
-		lcaSummaryLst.add(lcaSummaryPrev);
+		lcaSummaryPrev.setCreatedDate(new Date());
+		lcaSummaryPrev.setUpdatedDate(new Date());
+		
+		lcaSummaryLst.add(lcaSummaryPrev); // add previous lca
+		
 		immigrationTemplateDao.savePetitionDetails(immigration,candidate,candidateIdendities,candidateResume,lcaSummaryLst);
 		
 	}	

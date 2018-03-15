@@ -524,7 +524,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 				}
 			}
 		} catch (Exception exception) {
-			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"Connections"));
+			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"Immigration"));
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 	}

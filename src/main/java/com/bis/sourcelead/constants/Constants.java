@@ -1067,5 +1067,6 @@ public class Constants {
 	public static final String EMPLOYMENT_LEVEL = "EmploymentLevel";
 	
 	public static final String ID_TYPE_SSN = "SSN";
+	public static final String ID_TYPE_LCA = "LCA";
 
 }
