@@ -67,6 +67,7 @@ import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.impl.RequirementSubmissionServiceImpl;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -144,6 +145,9 @@ public class SubmissionsRestController {
 	
 	@Autowired
 	CandidateEmployersService candidateEmployersService;
+	
+	@Autowired
+	RequirementSubmissionServiceImpl requirementSubmissionServiceImpl;
 	
 	@Autowired
 	CandidateCommentsService candidateCommentsService;
@@ -1085,6 +1089,14 @@ public class SubmissionsRestController {
 		if(requirementSubmission.getPreviousSubmissionStatus()!=null){
 		requirementSubmissionHistory.setToStage(requirementSubmission.getPreviousSubmissionStatus().toString());
 		}
+		
+		if ("Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit())
+				&& requirementSubmission.getPreviousSubmissionStatus() != null
+				&& ApplicantSubmissionStatus.REQUEST_SENT.getValue().equalsIgnoreCase(requirementSubmission.getPreviousSubmissionStatus().getValue())
+				&& requirementSubmission.getSubmissionStatus() != null
+				&& ApplicantSubmissionStatus.REJECTED.getValue().equalsIgnoreCase(requirementSubmission.getSubmissionStatus().getValue())) {
+			requirementSubmissionServiceImpl.applicantReceiveMailAboutRequirement(requirementSubmission.getId(), requirementSubmission.getRequirement(), requirementSubmission.getCandidate(), user, orgLocations);
+		}
 
 		// to update Submission status
 		requirementSubmission.setSubmissionStatus(requirementSubmission.getPreviousSubmissionStatus());
@@ -1095,7 +1107,7 @@ public class SubmissionsRestController {
 		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,
 				requirementSubmissionHistory);
-
+		
 		return "success";
 	}
 	

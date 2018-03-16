@@ -93,6 +93,22 @@ public class CandidateReferencesRestController {
 		}
 	}
 	
+	
+	
+	@RequestMapping(value = "/validateReferEmail", method = RequestMethod.POST)
+	public @ResponseBody Boolean validateReferEmail(@RequestParam("candidateId") Long candidateId, @RequestParam("referId") Long referId, @RequestParam("email") String email) throws Exception
+	{
+		CandidateReferences cr = null;
+		if(referId != null){
+			cr = candidateReferencesService.validateReferenceEmailByReferEmailAndReferId(email, referId);
+		}
+		 Boolean flag = false;
+		 if(null == cr) {
+			 flag = candidateReferencesService.validateReferenceEmailByReferEmailAndCandidateId(email, candidateId);
+		 }
+	 return flag;
+	}
+	
 	/**
 	 * This Method is for getting candidate references
 	 * 
