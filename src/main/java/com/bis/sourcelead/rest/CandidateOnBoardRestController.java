@@ -541,9 +541,16 @@ public class CandidateOnBoardRestController {
 		 
 		 	OrgLocations locations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 		 	//SimpleDateFormat dateFormat = locations.getLocFullFormDateFormatter();
-			RequirementOffers offer = requirementOffersService.getRequirementOfferId(offerId);
+			RequirementOffers offer = requirementOffersService.getOnboardRequirementOfferId(offerId);
 			if(null != offer.getDateOfJoining()){
 				offer.setDateOfJoiningStr(commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),offer.getDateOfJoining()));
+				if(offer.getSubmissionId().getCandidate().getOrgRelationId() != null) {
+					offer.setOrgRelationId(offer.getSubmissionId().getCandidate().getOrgRelationId().getId());
+				}
+				
+				if(offer.getSubmissionId().getCandidate().getSpocId() != null) {
+					offer.setSpocId(offer.getSubmissionId().getCandidate().getSpocId().getId());
+				}
 			}
 			
 			
