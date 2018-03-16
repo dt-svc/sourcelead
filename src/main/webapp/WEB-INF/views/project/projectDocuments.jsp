@@ -842,7 +842,7 @@ $('body').on('blur', '#reNameFile_form', function() {
           <div class="row" >
           	<label class="col-md-3">Create Folder<span class="text-danger">&nbsp;*</span></label>
           	<div class="col-md-9" id="rmoveErrMsgCF">
-          		<input type="text" class="form-control input-sm" placeholder="Create Folder" id="folderName" name="folderName" field-name="Folder Name" data-validation="required validate_length length2-100" onkeyUp="validateFolderName()">
+          		<input type="text" class="form-control input-sm" placeholder="Create Folder" id="folderName" name="folderName" field-name="Folder Name" data-validation="required validate_AlphaNumber validate_length length2-100" onkeyUp="validateFolderName()">
           	</div>
           </div>
         </div>
