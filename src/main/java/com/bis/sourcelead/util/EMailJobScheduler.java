@@ -2168,7 +2168,7 @@ public class EMailJobScheduler {
 							globalVarsMap);
 					notificationScenario.setBody(notificationBody);
 					StringBuilder actionLinkBuilder = new StringBuilder();
-					String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("viewHoliday").toString();
+					String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("leaveManagementReports").toString();
 					emailScenerioUtil.sendNotification(actionLink, orgLocations.getOrg().getUser(), user, orgLocations,notificationScenario);
 
 				}
