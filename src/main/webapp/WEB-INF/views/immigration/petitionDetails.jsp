@@ -1,6 +1,4 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<link rel="stylesheet" href="/resources/css/bootstrap-select.min.css">
-<script src="/resources/js/bootstrap-select.min.js"></script>
 <section class="addImmiWrap">
 	<div class="addImmiInnWrap">
 		<div class="immiStepsHead clearfix">
@@ -834,8 +832,10 @@ $("#experienceValue").change(function () {
  </script>
    <script type="text/javascript">
 	  $( document ).ready(function() {
+		  $('#rateCurrency').selectpicker('refresh'); 
+		  $('#rateType').selectpicker('refresh');
 		  getAttorneysByOrgLocation();
-		  getCandidatesByOrgLocation();
+		 // getCandidatesByOrgLocation();
 		  getPetitionTypeDropDown();
 		  getUscisTypeDropDown();
 		  employmentLevelDropDown();
