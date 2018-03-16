@@ -427,6 +427,8 @@ function saveSignatory(){
 		         result += '    <td>';
 		         if(report.authorizedAmount != null && report.authorizedAmount != '' && report.authorizedAmount != 'undefined'){
 	        		 result += '        <div title="'+report.authorizedAmount+'" class="tblminwidth-75">'+report.authorizedAmount+'</div>'; 
+		         }else{
+		        	 result += '        <div class="tblminwidth-75"> --- </div>';
 		         }
 		         result += '    </td>';
 		         result += '    <td>';
