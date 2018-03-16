@@ -346,7 +346,8 @@ public class LeaveManagementRestController {
 				int totalLeaves = 0;
 				
 				totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(type,emp,orgLocations,loginUser);
-				float totalbalanceLeaveCounts = totalLeaves;
+				float leaves = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(type, totalLeaves,emp);
+				float totalbalanceLeaveCounts = leaves;
 				float calculatedTotalNonCarryforwardLeaves = 0;
 				List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getId(),orgLocations.getId(), loginUser.getId());
 				
@@ -364,7 +365,7 @@ public class LeaveManagementRestController {
 					}
 				}
 				if("Monthly".equalsIgnoreCase(type.getPeriod()) && Constants.NO.equalsIgnoreCase(type.getLeavesCarryforward())){
-					calculatedTotalNonCarryforwardLeaves = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(type,totalbalanceLeaveCounts);
+					calculatedTotalNonCarryforwardLeaves = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(type,totalbalanceLeaveCounts,emp);
 					totalbalanceLeaveCounts = calculatedTotalNonCarryforwardLeaves;
 				}else{
 					balanceLeaveCounts += totalbalanceLeaveCounts;
