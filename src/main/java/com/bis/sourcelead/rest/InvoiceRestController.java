@@ -717,6 +717,7 @@ public class InvoiceRestController {
 	     		ip.setPaymentDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),ip.getPaymentDate()));
 	     		ip.setPaymentMethod(ip.getPaymentMethod());
 	     		ip.setPaymentReferenceNumber(ip.getPaymentReferenceNumber());
+	     		ip.setFileURL(ip.getFileURL());
 	     		ip.setFileName(ip.getFileName());
 	     		ip.setPaymentComment(ip.getPaymentComment());
 	     		ip.setPaymentAmount(ip.getPaymentAmount());
