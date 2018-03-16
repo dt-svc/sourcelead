@@ -137,7 +137,7 @@ function getBudgetRequestList(requestType){
 	    			result = result + '     <td><div class="tbldata-dotdot_80" title="'+estimatedBudgetValue+'">'+estimatedBudgetValue+'</div></td>';
 					result = result + '     <td><div  class="tbldata-dotdot_80">'+estimatedHours+'</div></td>';
 					result = result + '     <td><div  class="tbldata-dotdot-vsm" title="'+report.createdUserName+'">'+report.createdUserName+'</div></td>';
-					result = result + '     <td><div  class="tbldata-dotdot_80">'+report.createdStr+'</div></td>';
+					result = result + '     <td><div  class="tblminwidth-100">'+report.createdStr+'</div></td>';
 					
 					if(requestType == 'Waiting For Approval'){
 						result = result + '     <td><div class="tblminwidth-90">';
@@ -491,7 +491,7 @@ function budgetRequsetPagination(){
      		"sZeroRecords": "", "sEmptyTable": ""
      	}
     });
-    $('#planningRequestsList').wrap("<div class='overflow_Auto'></div>");
+    $('#budgetRequestsPaginationList').wrap("<div class='overflow_Auto'></div>");
 }
 </script>
 <script>

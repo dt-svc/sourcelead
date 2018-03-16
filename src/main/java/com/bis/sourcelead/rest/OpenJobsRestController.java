@@ -240,36 +240,38 @@ public class OpenJobsRestController {
 				boolQueryBuilder.must(openJobsBuilder);
 			}
 
-			// for org specific job filter
-			String[] Locations = null;
-			if (null != companies && !"".equals(companies)) {
-				Locations = companies.split(",");
-			}
-			
-			if (null != orgLocationIds && !"".equals(orgLocationIds)) {
-				Locations = orgLocationIds.split("--");
-			}
-			
-			if (null != Locations) {
-				BoolQueryBuilder orgOpenJobsBuilder = QueryBuilders.boolQuery();
-				for (String locationId : Locations) {
-					List<OrgLocations> list=orgLocationService.getAllOrgLocationsByOrgId(Long.parseLong(locationId));
-					for(OrgLocations loc:list){
-						BoolQueryBuilder openJobscombinedOrgQueryBuilder = QueryBuilders.boolQuery();
-						openJobscombinedOrgQueryBuilder
-								.should(QueryBuilders.matchQuery("orgLocationId", loc.getId()));
-						orgOpenJobsBuilder.should(openJobscombinedOrgQueryBuilder);
-					}
-					
-				}
-				boolQueryBuilder.must(orgOpenJobsBuilder);
-			}
 			
 			// for jobs filter when clicked on org name
 			if (postedOrgName != null && !"".equalsIgnoreCase(postedOrgName)) {
 				BoolQueryBuilder postedOrgJobsBuilder = QueryBuilders.boolQuery();
 				postedOrgJobsBuilder.should(QueryBuilders.matchQuery("postedOrg", postedOrgName));
 				boolQueryBuilder.must(postedOrgJobsBuilder);
+			}
+			else{
+				// for org specific job filter
+				String[] Locations = null;
+				if (null != companies && !"".equals(companies)) {
+					Locations = companies.split(",");
+				}
+				
+				if (null != orgLocationIds && !"".equals(orgLocationIds)) {
+					Locations = orgLocationIds.split("--");
+				}
+				
+				if (null != Locations) {
+					BoolQueryBuilder orgOpenJobsBuilder = QueryBuilders.boolQuery();
+					for (String locationId : Locations) {
+						List<OrgLocations> list=orgLocationService.getAllOrgLocationsByOrgId(Long.parseLong(locationId));
+						for(OrgLocations loc:list){
+							BoolQueryBuilder openJobscombinedOrgQueryBuilder = QueryBuilders.boolQuery();
+							openJobscombinedOrgQueryBuilder
+									.should(QueryBuilders.matchQuery("orgLocationId", loc.getId()));
+							orgOpenJobsBuilder.should(openJobscombinedOrgQueryBuilder);
+						}
+						
+					}
+					boolQueryBuilder.must(orgOpenJobsBuilder);
+				}
 			}
 
 		}

@@ -64,7 +64,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 	ConversionUtil conversionUtil;
 
 	@Override
-	public InvoicePayment saveInvoicePayment(InvoicePaymentDTO invoicePaymentDTO,JSONObject jsonObj, User user, OrgLocations orgLocation,
+	public InvoicePayment saveInvoicePayment(InvoicePaymentDTO invoicePaymentDTO, User user, OrgLocations orgLocation,
 			MultipartFile multiFile, Long invoiceId) throws Exception {
 
 		Invoice invoice = invoiceDao.getInvoicetById(invoiceId);

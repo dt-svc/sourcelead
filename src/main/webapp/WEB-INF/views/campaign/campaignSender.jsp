@@ -59,7 +59,7 @@
 		<div class="popupFoot">
             <input value="Save" class="btn btn-primary" id="saveCampaignSender" name="" type="button">
             <input value="Reset" class="btn btn-primary" type="button" id="resetForm">
-            <input onclick="senderClose();" value="Cancel" class="btn btn-default ml" type="button">
+            <input onclick="senderClose();" value="Cancel" class="btn btn-default" type="button">
           </div>		
 		
 		</form:form>

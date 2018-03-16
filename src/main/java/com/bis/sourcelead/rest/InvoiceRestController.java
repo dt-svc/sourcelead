@@ -561,21 +561,14 @@ public class InvoiceRestController {
     
 
 	@RequestMapping(value = "/saveInvoicePayment", method = RequestMethod.POST)
-	public @ResponseBody String saveInvoicePayment(InvoicePaymentDTO invoicePaymentDTO,@RequestParam(value = "json", required = false) String json,@RequestParam(value = "invoiceId", required = false) Long invoiceId,HttpServletRequest request) throws Exception {
+	public @ResponseBody String saveInvoicePayment(InvoicePaymentDTO invoicePaymentDTO,@RequestParam(value = "invoiceId", required = false) Long invoiceId,HttpServletRequest request) throws Exception {
 
-//		String json1 = "{" + json + "}";
 		String invoicePaymentSaved = "failed";
-//		JSONObject jsonObj = new JSONObject(json1);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-//		MultipartFile multiFile = null;
-//		Iterator<String> itrator = request.getFileNames();
-//		if(itrator.hasNext()){
-//	        multiFile = request.getFile(itrator.next());
-//		}
 		invoicePaymentDTO.setStaticPath(staticPath);
-		InvoicePayment invoicePayment = invoicePaymentService.saveInvoicePayment(invoicePaymentDTO,null, user, orgLocation, null,invoiceId);
+		InvoicePayment invoicePayment = invoicePaymentService.saveInvoicePayment(invoicePaymentDTO, user, orgLocation, null,invoiceId);
 		if(null !=invoicePayment){
 			invoicePaymentSaved = "success";
 		}
@@ -916,11 +909,11 @@ public class InvoiceRestController {
 		}
 		if(null !=sahList && sahList.size() >0){
 			for(SubmissionApproverHierarchy sah : sahList){
-				ProjectMembers projectMember = sah.getSubmissionId().getProjectMembers();
+				ProjectMembers subPm = sah.getSubmissionId().getProjectMembers();
+				ProjectMembers projectMember = projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(subPm.getMasterCandidateId().getId(), Long.parseLong(projectId), orgLocation.getId());
 //				Candidate candidate = candidateService.getCandidateByParentCandidateId(projectMember.getProjectMemberCandidteId().getId());
 				Candidate candidate = projectMember.getProjectMemberCandidteId();
-				
-				if(candidate != null) {
+				if(candidate != null && "C2C".equalsIgnoreCase(candidate.getDesignationType())) {
 				projectMember.setSubmissionApproverHierarchyId(sah.getId());
 				projectMember.setSubmissionInvoiceId(sah.getSubmissionId().getId());
 				/*Employees employee = employeesService.getEmployeByUserIdAndOrgRelationId(projectMember.getEmployee().getUser().getId(),orgRelationId);
@@ -1644,7 +1637,9 @@ public class InvoiceRestController {
 			OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
 			StringBuilder sb = new StringBuilder();
 			String estimatedHours = null;
+			
 			try {
+
 				Date requestStartDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),startDate);
 				Calendar startCal = Calendar.getInstance();
 				startCal.setTime(requestStartDate); 
@@ -1654,14 +1649,16 @@ public class InvoiceRestController {
 				endCal.setTime(requestEndDate); 
 				
 				int workDays = 0;
+				
 			    if (startCal.getTimeInMillis() > endCal.getTimeInMillis()) {
 			        startCal.setTime(requestEndDate);
 			        endCal.setTime(requestStartDate);
 			    }
+
 			    do {
-//			        if (startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+			        if (startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
 			            ++workDays;
-//			        }
+			        }
 			        startCal.add(Calendar.DATE, 1);
 			    } while (startCal.getTimeInMillis() <= endCal.getTimeInMillis()); 
 
@@ -1680,7 +1677,9 @@ public class InvoiceRestController {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
 			StringBuilder sb = new StringBuilder();
 			String estimatedHours = null;
+			
 			try {
+
 				Date requestStartDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),startDate);
 				Calendar startCal = Calendar.getInstance();
 				startCal.setTime(requestStartDate); 
@@ -1690,14 +1689,16 @@ public class InvoiceRestController {
 				endCal.setTime(requestEndDate); 
 				
 				int workDays = 0;
+				
 			    if (startCal.getTimeInMillis() > endCal.getTimeInMillis()) {
 			        startCal.setTime(requestEndDate);
 			        endCal.setTime(requestStartDate);
 			    }
+
 			    do {
-//			        if (startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+			        if (startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
 			            ++workDays;
-//			        }
+			        }
 			        startCal.add(Calendar.DATE, 1);
 			    } while (startCal.getTimeInMillis() <= endCal.getTimeInMillis()); 
 
