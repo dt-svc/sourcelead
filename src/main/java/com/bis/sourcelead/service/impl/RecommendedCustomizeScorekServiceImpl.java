@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -298,6 +299,15 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 					&& !"".equalsIgnoreCase(requirement.getLocation())) {
 				candidateCompare.setJobLocation(requirement.getLocation());
 			}
+			
+			if (requirement.getRequirementLocations() != null) {
+				List<String> rls = new ArrayList<>();
+				for(RequirementLocations rl : requirement.getRequirementLocations()) {
+					rls.add(rl.getLocation());
+				}
+				candidateCompare.setJobLocationList(rls);
+			}
+			
 			if (requirement.getMinExp() != null
 					&& !"".equalsIgnoreCase(requirement.getMinExp())) {
 				candidateCompare.setJobMinExp(requirement.getMinExp());

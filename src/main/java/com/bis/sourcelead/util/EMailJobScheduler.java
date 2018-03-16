@@ -2088,8 +2088,7 @@ public class EMailJobScheduler {
 	  * cron runs every day at 9 AM to send notifications email  about holiday to all users
 	  * @throws Exception
 	  */
-	//@Scheduled(cron = "0 0 9 1/1 * ?")
-	 @Scheduled(cron = "0 0/1 * 1/1 * ?")
+	@Scheduled(cron = "0 0 9 1/1 * ?")
 	@Async
 	public void holidayNotificationToUsers() throws Exception {
 		DateTime zoned = new DateTime();
