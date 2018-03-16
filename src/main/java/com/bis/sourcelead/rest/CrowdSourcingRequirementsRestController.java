@@ -2595,37 +2595,19 @@ public class CrowdSourcingRequirementsRestController {
 			}
 		
 		   @RequestMapping(value = "/validateGroupName",  method = RequestMethod.GET)
-		   public @ResponseBody String validateGroupName(@RequestParam(value="groupName", required=false) String groupName,
+		   public @ResponseBody Boolean validateGroupName(@RequestParam(value="groupName", required=false) String groupName,
 				   @RequestParam(value="groupId", required=false) Long groupId,HttpServletRequest request) throws Exception {
-			  
 			    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			    String result = "valid";
 			    ContactsGroup contactsGroup = null;
-			    
-				if(groupId != null){
-					contactsGroup  = contactsGroupService.getContactsGroupByGroupId(groupId);
-					if(contactsGroup.getGroupName().equalsIgnoreCase(groupName)){
-						result = "valid";
-					}else{
-						contactsGroup = contactsGroupService.findByContactsGroupAndUserId(groupName, user.getId());
-						if(null != contactsGroup){
-							result = "invalid";
-						}else{
-							result = "valid";
-						}
-					}
-				}
-				
-				else{
-					contactsGroup = contactsGroupService.findByContactsGroupAndUserId(groupName, user.getId());
-					if(null != contactsGroup){
-						result = "Invalid";
-					}else{
-						result = "valid";
-					}
-				}
-			   
-				return result;
+			    if(groupId != null){
+			    	contactsGroup =contactsGroupService.validateGrouppNameByGroupNameAndGroupId(groupName, groupId);
+			    }
+			    Boolean flag = false;
+		    	   if(null == contactsGroup){
+		    		   flag = contactsGroupService.validateGroupNameByGroupNameAndUserId(groupName, user.getId());
+		    		   
+		    	   }
+				return flag;
 		   }
 			
 		@RequestMapping(value = "/getContactsGroupList", method = RequestMethod.POST)

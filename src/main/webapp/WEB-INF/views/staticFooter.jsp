@@ -192,7 +192,7 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
 				            </div>
 			            </div>
 			            <div class="clearfix mt">
-			            <input type="button" value="Reauest Demo" class="btn btn-danger" onclick="saveRequestDemo();"> 
+			            <input type="button" value="Request Demo" class="btn btn-danger" onclick="saveRequestDemo();"> 
 			            </div>                                           
 			        </div>
 			        </div> 

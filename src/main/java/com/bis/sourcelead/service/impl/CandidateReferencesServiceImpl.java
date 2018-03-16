@@ -190,4 +190,14 @@ public class CandidateReferencesServiceImpl implements CandidateReferencesServic
 		return candidateReferencesDao.validateReferenceEmail(referenceEmail,candidateId,candidateReferenceId);
 	}
 
+	@Override
+	public CandidateReferences validateReferenceEmailByReferEmailAndReferId(String referEmail, Long referId) throws Exception {
+		return candidateReferencesDao.validateReferenceEmailByReferEmailAndReferId(referEmail, referId);
+	}
+
+	@Override
+	public Boolean validateReferenceEmailByReferEmailAndCandidateId(String referenceEmail, Long candidateId) throws Exception {
+		return candidateReferencesDao.validateReferenceEmailByReferEmailAndCandidateId(referenceEmail, candidateId);
+	}
+
 }
