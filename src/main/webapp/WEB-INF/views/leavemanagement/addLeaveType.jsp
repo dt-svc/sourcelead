@@ -367,8 +367,8 @@
 								</div>
 								<div class="col-md-5 dropdown-select padding_left">
 									<select id="experiencedType" name="experiencedType" field-name="experiencedType" >
-									<option ${leaveType.experiencedType == 'Year' ? 'selected' : ''}>Year's</option>
-									<option ${leaveType.experiencedType == 'Month' ? 'selected' : ''}>Month's</option>
+									<option ${leaveType.experiencedType == 'Year' ? 'selected' : ''}>Year</option>
+									<option ${leaveType.experiencedType == 'Month' ? 'selected' : ''}>Month</option>
 									<option ${leaveType.experiencedType == 'Days' ? 'selected' : ''}>Days</option>
 									</select>
 								</div>
