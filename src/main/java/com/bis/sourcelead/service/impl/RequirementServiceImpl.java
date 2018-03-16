@@ -3800,7 +3800,7 @@ public class RequirementServiceImpl implements RequirementService {
 		String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(), globalVarsMap);
 		notificationScenario.setBody(notificationBody);
 		StringBuilder actionLinkBuilder = new StringBuilder();
-		String actionLink = actionLinkBuilder.append(sourceleadUrl).append("/requirementProfile/").append(requirement.getRequirementUUID()).toString();
+		String actionLink = actionLinkBuilder.append(sourceleadUrl).append("/jobCampaignSummary?requirementUUID=").append(requirement.getRequirementUUID()).toString();
 		if(candidate.getConsultantUser() != null)
 		emailScenerioUtil.sendNotification(actionLink, loginUser, candidate.getConsultantUser(), orgLocation, notificationScenario);
 
@@ -3815,7 +3815,7 @@ public class RequirementServiceImpl implements RequirementService {
 		List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirementId);
 		if(locationsList != null && !locationsList.isEmpty()) {
 			for(RequirementLocations location : locationsList) {
-				tempHTML = tempHTML + "<p><span><img src='"+url+"/resources/images/location-icon.png' style='width:20px;height: 20px;position: relative;top: 5px;' alet='Location' title='Location'></span>"+location.getLocation()+"</p>";
+				tempHTML = tempHTML + "<span><span><img src='"+url+"/resources/images/location-icon.png' style='width:20px;height: 20px;position: relative;top: 5px;' alet='Location' title='Location'></span>"+location.getLocation()+"</span>";
 			}
 		}
 		return tempHTML;
