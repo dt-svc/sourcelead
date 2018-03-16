@@ -222,13 +222,12 @@ public class TimeSheetPdfUtil {
 		    		String SundayDate =  CalendarUtil.getNextDate(SaturdayDate,orgLocations.getDateFormat());
 				 
 				 Collection<TimeSheetDayEntries>  timeSheetDayEntriesList =   getAllTimeSheetDayEntriesBySubmissionId(ts.getId());
-					if(timeSheetDayEntriesList != null && !timeSheetDayEntriesList.isEmpty()){
+					if(timeSheetDayEntriesList != null){
 						    HashMap<Long,TimesheetHours> taskMap = new HashMap<>();
 								//Integer maxCount = timeSheetDayEntriesList.size();
 								//maxCount = maxCount+1;
 								for(TimeSheetDayEntries timesheetDayEntries   : timeSheetDayEntriesList){
-									if(timesheetDayEntries.getProjectTask() ==null)
-										continue;
+								  if(timesheetDayEntries!= null && timesheetDayEntries.getProjectTask() != null) {
 									Long weekTotHours = 0L;
 								    Long monHours = 0L;
 									Long tueHours = 0L;
@@ -326,6 +325,7 @@ public class TimeSheetPdfUtil {
 					            	  
 						              
 						       }
+						}
 						  map.put(projectMember.getProjects().getProjectName(), hoursList);
 					 }
 					Long totalHours = monTotHours+tueTotHours+wedTotHours+thuTotHours+friTotHours+satTotHours+sunTotHours;
@@ -350,60 +350,76 @@ public class TimeSheetPdfUtil {
 				        	 PdfPTable table2 = getPdfTable(headers2,width2,k);
 				        	 PdfPTable table3 = getPdfTable(headers3,width3,k);
 //				        	 java.util.List<Employee> = entry.getValue();
-				        	for(TimesheetHours hours:entry1.getValue()){
-				        		String innerTable [] = new String[headers2.length];
-				        		if(hours.getTaskName() != null && !"".equalsIgnoreCase(hours.getTaskName())){
-				        			innerTable[0] = hours.getTaskName();
-				        		}else{
-				        			innerTable[0] = "--";
-				        		}
-				        		if(hours.getMonDayHours() !=null && !"".equalsIgnoreCase(hours.getMonDayHours())){
-				        			innerTable[1] = hours.getMonDayHours();
-				        		}else{
-				        			innerTable[1] = "--";
-				        		}
-				        		if(hours.getTueDayHours() !=null && !"".equalsIgnoreCase(hours.getTueDayHours())){
-				        			innerTable[2] = hours.getTueDayHours();
-				        		}else{
-				        			innerTable[2] = "--";
-				        		}
-				        		if(hours.getWedDayHours() !=null && !"".equalsIgnoreCase(hours.getWedDayHours())){
-				        			innerTable[3] = hours.getWedDayHours();
-				        		}else{
-				        			innerTable[3] = "--";
-				        		}
-				        		if(hours.getThuDayHours() !=null && !"".equalsIgnoreCase(hours.getThuDayHours())){
-				        			innerTable[4] = hours.getThuDayHours();
-				        		}else{
-				        			innerTable[4] = "--";
-				        		}
-				        		if(hours.getFriDayHours() !=null && !"".equalsIgnoreCase(hours.getFriDayHours())){
-				        			innerTable[5] = hours.getFriDayHours();
-				        		}else{
-				        			innerTable[5] = "--";
-				        		}
-				        		if(hours.getFriDayHours() !=null && !"".equalsIgnoreCase(hours.getFriDayHours())){
-				        			innerTable[5] = hours.getFriDayHours();
-				        		}else{
-				        			innerTable[5] = "--";
-				        		}
-				        		if(hours.getSatDayHours() !=null && !"".equalsIgnoreCase(hours.getSatDayHours())){
-				        			innerTable[6] = hours.getSatDayHours();
-				        		}else{
-				        			innerTable[6] = "--";
-				        		}
-				        		if(hours.getSunDayHours() !=null && !"".equalsIgnoreCase(hours.getSunDayHours())){
-				        			innerTable[7] = hours.getSunDayHours();
-				        		}else{
-				        			innerTable[7] = "--";
-				        		}
-				        		if(hours.getWeekTotal() !=null){
-				        			innerTable[8] = hours.getWeekTotal().toString();
-				        		}else{
-				        			innerTable[8] = "--";
-				        		}
-				        		innerTableArrayData.add(innerTable);
-				        	}
+				        	 if(entry1.getValue() != null && entry1.getValue().size() >0) {
+				        		 for(TimesheetHours hours:entry1.getValue()){
+						        		String innerTable [] = new String[headers2.length];
+						        		if(hours.getTaskName() != null && !"".equalsIgnoreCase(hours.getTaskName())){
+						        			innerTable[0] = hours.getTaskName();
+						        		}else{
+						        			innerTable[0] = "--";
+						        		}
+						        		if(hours.getMonDayHours() !=null && !"".equalsIgnoreCase(hours.getMonDayHours())){
+						        			innerTable[1] = hours.getMonDayHours();
+						        		}else{
+						        			innerTable[1] = "--";
+						        		}
+						        		if(hours.getTueDayHours() !=null && !"".equalsIgnoreCase(hours.getTueDayHours())){
+						        			innerTable[2] = hours.getTueDayHours();
+						        		}else{
+						        			innerTable[2] = "--";
+						        		}
+						        		if(hours.getWedDayHours() !=null && !"".equalsIgnoreCase(hours.getWedDayHours())){
+						        			innerTable[3] = hours.getWedDayHours();
+						        		}else{
+						        			innerTable[3] = "--";
+						        		}
+						        		if(hours.getThuDayHours() !=null && !"".equalsIgnoreCase(hours.getThuDayHours())){
+						        			innerTable[4] = hours.getThuDayHours();
+						        		}else{
+						        			innerTable[4] = "--";
+						        		}
+						        		if(hours.getFriDayHours() !=null && !"".equalsIgnoreCase(hours.getFriDayHours())){
+						        			innerTable[5] = hours.getFriDayHours();
+						        		}else{
+						        			innerTable[5] = "--";
+						        		}
+						        		if(hours.getFriDayHours() !=null && !"".equalsIgnoreCase(hours.getFriDayHours())){
+						        			innerTable[5] = hours.getFriDayHours();
+						        		}else{
+						        			innerTable[5] = "--";
+						        		}
+						        		if(hours.getSatDayHours() !=null && !"".equalsIgnoreCase(hours.getSatDayHours())){
+						        			innerTable[6] = hours.getSatDayHours();
+						        		}else{
+						        			innerTable[6] = "--";
+						        		}
+						        		if(hours.getSunDayHours() !=null && !"".equalsIgnoreCase(hours.getSunDayHours())){
+						        			innerTable[7] = hours.getSunDayHours();
+						        		}else{
+						        			innerTable[7] = "--";
+						        		}
+						        		if(hours.getWeekTotal() !=null){
+						        			innerTable[8] = hours.getWeekTotal().toString();
+						        		}else{
+						        			innerTable[8] = "--";
+						        		}
+						        		innerTableArrayData.add(innerTable);
+						        	}	 
+				        	 }else {
+				        			String innerTable [] = new String[headers2.length];
+					        			innerTable[0] = "--";
+					        			innerTable[1] = "--";
+					        			innerTable[2] = "--";
+					        			innerTable[3] = "--";
+					        			innerTable[4] = "--";
+					        			innerTable[5] = "--";
+					        			innerTable[5] = "--";
+					        			innerTable[6] = "--";
+					        			innerTable[7] = "--";
+					        			innerTable[8] = "--";
+					        		innerTableArrayData.add(innerTable);
+					        	}	
+				        	
 				        	for (String[] timeSheetArray: innerTableArrayData) {
 				              for (int i = 0; i < timeSheetArray.length; i++) {
 				                  String datum = timeSheetArray[i];
