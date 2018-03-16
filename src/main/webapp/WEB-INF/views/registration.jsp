@@ -351,26 +351,26 @@ window.onload = function () {
             </div>
             <div class="row mt10 regDemoFields">
             <div class="form-group clearfix">
-                <div class="col-xs-12 col-md-6 mb10" id="firstNameDiv">
+                <div class="col-xs-12 col-md-6" id="firstNameDiv">
                     <i class="fa fa-user"></i>
                     <label>First Name <span class="text-danger">*</span></label>
                     <input type="text" name="firstName" field-name="First Name" id="firstName" value='${firstName}' data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" onkeydown="removeValidationNameDiv();">
                     <b></b>
                 </div>
-                <div class="col-xs-12 col-md-6 mb10" id="lastNameDiv">
+                <div class="col-xs-12 col-md-6" id="lastNameDiv">
                     <i class="fa fa-user"></i>
                     <label>Last Name</label>
                     <input type="text" name="lastName" field-name="Last Name" id="lastName" value='${lastName}'  data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100">
                     <b></b>
                 </div>
                 
-                <div class="col-xs-12 col-md-6 mb10" id="emailDiv">
+                <div class="col-xs-12 col-md-6" id="emailDiv">
                     <i class="fa fa-envelope"></i>
                     <label>Email <span class="text-danger">*</span></label>
                     <input type="text" name="email" field-name="Email" value='${email}' onblur="validateEmail('Professional');" id="email"  data-validation="required validate_Space validate_length length2-100 validate_email" >
                     <b></b>
                 </div>
-                <div class="col-xs-12 col-md-6 select-field mb10" id="locationCountryDiv">
+                <div class="col-xs-12 col-md-6 select-field" id="locationCountryDiv">
                     <i class="fa fa-map-marker"></i>
                     <select class="form-control chosen-select" name="location" id="location" field-name="Country" data-validation="required" onchange="removeValidation();">
                         <option disabled selected>Country</option>
@@ -392,7 +392,7 @@ window.onload = function () {
 	                    <b></b>
 	                </div> -->
 	                
-	                   <div class="col-xs-12 col-md-6 mb10 posiRela">
+	                   <div class="col-xs-12 col-md-6  posiRela">
 
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Password <span class="text-danger">*</span></label>
@@ -408,7 +408,7 @@ window.onload = function () {
 						</div>      
 	                    <i class="fa fa-eye showPassword-reg-usr" onclick="showProfPassword();"></i>
 	                </div>
-	                <div class="col-xs-12 col-md-6 mb10" id="passwordDiv">
+	                <div class="col-xs-12 col-md-6" id="passwordDiv">
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Confirm Password <span class="text-danger">*</span></label>
 	                    <input type="password" id="jsconfirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).checkProfPass();" data-validation="required validate_length length6-100" >
@@ -465,26 +465,26 @@ window.onload = function () {
             </div>
             <div class="row mt10 regDemoFields">
             <div class="form-group clearfix">
-                <div class="col-xs-12 col-md-6 mb10" id="firstNameDivRec">
+                <div class="col-xs-12 col-md-6" id="firstNameDivRec">
                     <i class="fa fa-user"></i>
                     <label>First Name <span class="text-danger">*</span></label>
                     <input type="text" name="firstName" field-name="First Name" id="recruiterFirstName" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" onkeydown="removeValidationNameDivRec();">
                     <b></b>
                 </div>
-                <div class="col-xs-12 col-md-6 mb10">
+                <div class="col-xs-12 col-md-6">
                     <i class="fa fa-user"></i>
                     <label>Last Name</label>
                     <input type="text" name="lastName" field-name="Last Name" id="recruiterLastName" data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100">
                     <b></b>
                 </div>
                 
-                <div class="col-xs-12 col-md-6 mb10" id="recruiterEmailDiv">
+                <div class="col-xs-12 col-md-6" id="recruiterEmailDiv">
                     <i class="fa fa-envelope"></i>
                     <label>Email <span class="text-danger">*</span></label>
                     <input type="text" name="email" field-name="Email"  id="recruiterEmail"  onblur="validateRecruiterEmail('Recruiter');" data-validation="required validate_Space validate_length length2-100 validate_email" >
                     <b></b>
                 </div>
-                <div class="col-xs-12 col-md-6 select-field mb10" id="locationCountryDivRec">
+                <div class="col-xs-12 col-md-6 select-field" id="locationCountryDivRec">
                     <i class="fa fa-map-marker"></i>
                     <select class="form-control chosen-select" name="location" id="location" field-name="Country" data-validation="required" onchange="removeValidationRec();">
                         <option disabled selected>Country</option>
@@ -499,7 +499,7 @@ window.onload = function () {
                 </div>
                 <div class="clearfix"></div>
                 <div id="recpwdDiv">
-                <div class="col-xs-12 col-md-6 mb10 posiRela" >
+                <div class="col-xs-12 col-md-6 posiRela" >
 
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Password <span class="text-danger">*</span></label>
@@ -517,7 +517,7 @@ window.onload = function () {
 						</div> 
 						 <i class="fa fa-eye showPassword-reg-usr" onclick="showRecPassword();"></i>
 	                </div>
-	                <div class="col-xs-12 col-md-6 mb10" id="recpasswordDiv">
+	                <div class="col-xs-12 col-md-6" id="recpasswordDiv">
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Confirm Password <span class="text-danger">*</span></label>
 	                    <input type="password" id="recconfirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).reccheckPass();" data-validation="required validate_length length6-100" >

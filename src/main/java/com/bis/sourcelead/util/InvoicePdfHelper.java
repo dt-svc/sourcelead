@@ -1071,7 +1071,13 @@ public class InvoicePdfHelper {
 		}
 
 		if (null != invoice.getInvoiceStatus() && !"".equalsIgnoreCase(invoice.getInvoiceStatus())) {
-			billingArray[10] = invoice.getInvoiceStatus();
+			if(Constants.SENT.equalsIgnoreCase(invoice.getInvoiceStatus())){
+				billingArray[10] = "Sent";
+			}else if(Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus())){
+				billingArray[10] = "Draft";
+			}else{
+				billingArray[10] = invoice.getInvoiceStatus();
+			}
 		} else {
 			billingArray[10] = "--";
 		}
