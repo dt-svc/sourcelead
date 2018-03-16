@@ -282,22 +282,20 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 		expensesApproverHierarchyDto.setExpenseId(expensesApproverHierarchy.getExpenseId().getExpenseId());
 		expensesApproverHierarchyDto.setExpensesStatus(expensesApproverHierarchy.getExpenseStatus().getValue());
 		expensesApproverHierarchyDto.setExpenseApprovalStatus(expensesApproverHierarchy.getExpenseApprovalStatus().toString());
-		if(StringUtils.isNotBlank(expensesApproverHierarchy.getEmpType()) &&(expensesApproverHierarchy.getEmpType().equalsIgnoreCase("C2C") || expensesApproverHierarchy.getEmpType().equalsIgnoreCase("C2C-1099")) ) {
-			if(null != projectMember && 
-					 null != projectMember.getProjectClientsId().getOrgRelationId()){
-		    	 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(projectMember.getProjectClientsId().getOrgRelationId().getId());
-		   	 if(null != projectMember.getProjectClientsId().getOrgRelationId().getLocationId() && projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getId() != null && projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-						if(orgRelations.getResponderLocationId() != null){
-							expensesApproverHierarchyDto.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
-						}
+		 if(null != projectMember && 
+				 null != projectMember.getProjectClientsId().getOrgRelationId()){
+	    	 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(projectMember.getProjectClientsId().getOrgRelationId().getId());
+	   	 if(null != projectMember.getProjectClientsId().getOrgRelationId().getLocationId() && projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getId() != null && projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					if(orgRelations.getResponderLocationId() != null){
+						expensesApproverHierarchyDto.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
 					}
-					if(null != projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId() && null != projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId() && projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-						if(orgRelations.getLocationId() != null){
-							expensesApproverHierarchyDto.setClientName(orgRelations.getLocationId().getOrgLocationName());
-						}
+				}
+				if(null != projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId() && null != projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId() && projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					if(orgRelations.getLocationId() != null){
+						expensesApproverHierarchyDto.setClientName(orgRelations.getLocationId().getOrgLocationName());
 					}
-		    }
-		}
+				}
+	    }
 		expensesApproverHierarchyDto.setTotalAmount(expensesApproverHierarchy.getExpenseId().getTotalAmount());
 		expensesApproverHierarchyDto.setTdSpanLength("9");
 		if(expensesApproverHierarchy.getActionbyorglocid()!= null) {
