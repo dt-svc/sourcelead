@@ -957,14 +957,14 @@ function loadProjectMembersDetails(data,candidateName){
 	result = result + '	    <div class="row">';
 	
 	result = result + '	    <div class="col-md-6 mb10" id="startDateDiv">';
-	result = result + '	      <label class="clearfix">Project Start Date<span class="text-danger">&nbsp;*</span></label>';
+	result = result + '	      <label class="clearfix">Start Date<span class="text-danger">&nbsp;*</span></label>';
 	result = result + '	      <div class="">';
 	result = result + '	        <input type="text" class="form-control input-sm calendar" value="'+projectStartDate+'" readonly id="projectStartDate"  name="memberStartDate" field-name="Start Date"  data-validation="required">';
 	result = result + '	      </div>';
 	result = result + '	    </div>';
 	
 	result = result + '	    <div class="col-md-6 mb10" id="endDateDiv">';
-	result = result + '	      <label class="clearfix">Project End Date</label>';
+	result = result + '	      <label class="clearfix">End Date</label>';
 	result = result + '	      <div class="">';
 	result = result + '	        <input type="text" class="form-control input-sm calendar"  value="'+projectEndDate+'" id="projectEndDate" readonly name="memberEndDate" field-name="End Date"  data-validation-optional="true">';
 	result = result + '	      </div>';

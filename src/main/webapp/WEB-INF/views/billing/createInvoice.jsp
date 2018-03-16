@@ -538,8 +538,8 @@ if(selectedTextInvoice =='percentage'){
 			   			 document.getElementById("sendButtonId").style.display="none";
 			   			 document.getElementById("saveButtonId").style.display="none";
 			       	}else{
-			       		document.getElementById("sendButtonId").style.display="block";
-			   			document.getElementById("saveButtonId").style.display="block";
+			       		document.getElementById("sendButtonId").style.display="inline-block";
+			   			document.getElementById("saveButtonId").style.display="inline-block";
 			       	}
 		        	
 		        	
