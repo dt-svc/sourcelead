@@ -993,6 +993,13 @@ function validateUploadFile(id)
 				    	 
 				    	 if(json['positionType'] = 'C2C'){
 				    		 getEmploymentType();
+				    		 
+				    		 if(json['orgRelationId'] != null && json['orgRelationId'] != '' && json['orgRelationId'] != 'undefined' 
+			    				 && json['spocId'] != null && json['spocId'] != '' && json['spocId'] != 'undefined'){
+				    			 getVendorsByOrgLocationForAddApplicant(json['orgRelationId']);
+				    		     getAddApplicantVendorContactList(json['orgRelationId'],json['spocId']);
+				    		 }
+			    			
 				    	 }
 			    		
 			    	 }else{
