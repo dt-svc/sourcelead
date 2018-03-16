@@ -1,4 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<link rel="stylesheet" href="/resources/css/bootstrap-select.min.css">
+<script src="/resources/js/bootstrap-select.min.js"></script>
 <section class="addImmiWrap">
 	<div class="addImmiInnWrap">
 		<div class="immiStepsHead clearfix">
@@ -63,8 +65,8 @@
           		<label class="col-md-4">Place of entry<span class="text-danger">&nbsp;*</span></label>
          			 <div class="col-md-8" id="locationField">
           			<div class="positionRelative">
-          			<input class="form-control positionRelative" id="entryPlace" name="entryPlace" placeholder="Enter your Location"  type="text" field-name="Place Of Entry" data-validation="required"></input>
-          				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('entryPlace');"></i>
+          			<input class="form-control positionRelative" id="entryPlace" name="entryPlace" onclick="initLocationAuto('entryPlace');" placeholder="Enter your Location"  type="text" field-name="Place Of Entry" data-validation="required"></input>
+          				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onclick="refreshGoogleApiLocation('entryPlace');"></i>
          				 </div>
         			  </div>
        			 </div>
@@ -87,9 +89,9 @@
             <h4 class="col-md-12 mb">2. Attorney Details</h4>
             <div class="clearfix"></div>
 							<div class="form-group">
-								<label class="col-md-3"><span class="pull-left">Attorney Name</span><span
+								<label class="col-md-4"><span class="pull-left">Attorney Name</span><span
 									class="text-danger pull-left" id="man1">*</span></label>
-								<div class="col-md-9 chooRadius" id="errorAttorney">
+								<div class="col-md-8 chooRadius" id="errorAttorney">
 								<div class="input-group col-md-10 pull-left chooRadius">
 									<select class="chosen-select form-control" name="attorneyId"
 										id="attorneyId" placeholder="Select Attorney" field-name="Attorney Name" data-validation="required"
@@ -105,8 +107,8 @@
 							</div>
 
 							<div class="form-group">
-								<label class="col-md-3"><span class="pull-left">Attorney Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
-								<div class="col-md-9 chooRadius" id="errorAttorneyContact">
+								<label class="col-md-4"><span class="pull-left">Attorney Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
+								<div class="col-md-8 chooRadius" id="errorAttorneyContact">
 								<div class="input-group col-md-10 pull-left chooRadius">
 									<select class="chosen-select form-control" name="attorneyContact" data-validation="required"
 										id="attorneyContact" field-name="Attorney Contact"
@@ -128,9 +130,9 @@
            <div class="clearfix"></div>
 
              <div class="form-group">
-								<label class="col-md-3"><span class="pull-left">Associate (Beneficiary)</span><span
+								<label class="col-md-4"><span class="pull-left">Associate (Beneficiary)</span><span
 									class="text-danger pull-left" id="man1">*</span></label>
-								<div class="col-md-9 chooRadius" id="errorAttorney">
+								<div class="col-md-8 chooRadius" id="errorAttorney">
 								<div class="input-group col-md-10 pull-left chooRadius">
 									<select class="chosen-select form-control" name="candidateId"
 										id="candidateId" placeholder="Select Beneficiary" onchange="updateCandiateInfo($(this));">
@@ -202,7 +204,7 @@
               <label class="col-md-4">Place of Birth</label>
               <div class="col-md-8">
                    <div class="positionRelative">
-          			<input class="form-control positionRelative" id="birthPlace" name="birthPlace" type="text" field-name="Place of Birth"></input>
+          			<input class="form-control positionRelative" id="birthPlace" name="birthPlace" onclick="initLocationAuto('birthPlace');" type="text" field-name="Place of Birth"></input>
           				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('birthPlace');"></i>
          			</div>
               </div>
@@ -212,7 +214,7 @@
               <label class="col-md-4">Nationality</label>
               <div class="col-md-8">
                   <div class="positionRelative">
-          			<input class="form-control positionRelative" id="nationality" name="nationality" value="${loginCountryName}" placeholder="Select Country"  type="text"></input>
+          			<input class="form-control positionRelative" id="nationality" onclick="editOrgLocationAuto('nationality');" name="nationality" value="" placeholder="Select Country"  type="text"></input>
           				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('nationality');"></i>
          			</div>
               </div>
@@ -355,7 +357,7 @@
               <label class="col-md-4">Location</label>
               <div class="col-md-8">
                  <div class="positionRelative">
-          			<input class="form-control positionRelative" id="jobLocation" name="jobLocation" placeholder="Enter your Location"  type="text"></input>
+          			<input class="form-control positionRelative" id="jobLocation" name="jobLocation" onclick="initLocationAuto('jobLocation');" placeholder="Enter your Location"  type="text"></input>
           				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('jobLocation');"></i>
          			</div>
               </div>
@@ -367,7 +369,7 @@
 							<div class="input-group er ratetype">
 								<div class="input-group-btn tblminwidth-75">
 
-									<select class="selectpicker" id="rateCurrency"
+									<select class="form-control selectpicker" id="rateCurrency"
 										name="rateCurrency">
 
 										<option>INR</option>
@@ -385,7 +387,7 @@
 									data-validation="validate_Space validate_float validate_length length1-8"
 									data-validation-optional="true" value="" class="form-control">
 								<div class="input-group-btn tblminwidth-75 ratetype">
-									<select class="selectpicker" id="rateType"
+									<select class="selectpicker form-control" id="rateType"
 										name="rateType" field-name="Rate Per">
 										 <option value="">Rate Per</option>
 										<option>Hourly</option>
@@ -452,7 +454,7 @@
            <div class="clearfix"></div>
            	<div class="col-md-12 mb margin-top0">
             	<h4 class="pull-left">5. Residence</h4>
-            	<button type="button" class="btn btn-default pull-right"><i class="fa fa-plus paddingRight"></i>Add Residence</button>
+            	<button type="button" class="btn btn-default pull-right" onclick="appendDynamicResidenceDiv();"><i class="fa fa-plus paddingRight"></i>Add Residence</button>
             	</div>
            <div class="clearfix"></div>
             
@@ -461,11 +463,11 @@
               <div class="col-md-8">
                   <div class="positionRelative">
 								<input class="form-control positionRelative"
-									id="location" name="location"
+									id="location" name="location" onclick="initLocationAuto('location','country','state','city','zipcode','','','','address');"
 									placeholder="Enter Location" type="text"></input> <i
 									class="fa fa-refresh btn btn-primary refresh-icon"
 									title="Refresh"
-									onClick="refreshGoogleApiLocation('location','country','state','city','zipCode','address');"></i>
+									onClick="refreshGoogleApiLocation('location','country','state','city','zipcode','address');"></i>
 					</div>
               </div>
             </div>
@@ -473,7 +475,7 @@
               <label class="col-md-4">Street Address</label>
               <div class="col-md-8">
                   <input type="text" class="form-control" id="address"
-								name="address" value="${address}" field-name="Street Address" placeholder="Enter Street Addres"
+								name="address" value="" field-name="Street Address" placeholder="Enter Street Addres"
 								data-validation="validate_Space validate_length length2-250"
 								data-validation-optional="true">
               </div>
@@ -507,7 +509,7 @@
             <div class="form-group">
               <label class="col-md-4">Is current residence</label>
               <div class="col-md-8">
-                  <input type="checkbox" name="isCurrResidence" id="isCurrResidence">
+                  <input type="checkbox" name="isCurrResidence" value="Y" id="isCurrResidence"  checked disabled>
               </div>
             </div>
 			<div class="clearfix"></div>
@@ -515,7 +517,7 @@
               <label class="col-md-4">Start Date</label>
               <div class="col-md-8">
 					<div class="input-group">
-                <input type="text" class="form-control calendar" id="residenceStartDate" name="residenceStartDate" placeholder="Start Date">
+                <input type="text" class="form-control calendar" id="residenceStartDate"  name="residenceStartDate" placeholder="Start Date">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('residenceStartDate')"></i></span>
               </div>
               </div>
@@ -525,12 +527,15 @@
               <label class="col-md-4">End Date</label>
               <div class="col-md-8">
 					<div class="input-group">
-                <input type="text" class="form-control calendar" id="residenceEndDate" name="residenceEndDate" placeholder="End Date">
+                <input type="text" class="form-control calendar" id="residenceEndDate"  name="residenceEndDate" placeholder="End Date">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('residenceEndDate')"></i></span>
               </div>
               </div>
           </div>
-
+         
+         <div id ="dynamicResidenceGroupDiv" ><!--  dynamic div start -->
+          
+         </div> <!--  dynamic div end -->
 		<div class="clearfix"></div>
 		<div class="addImmiFoot">
 			<!--<a href="javascript:void(0)" class="pull-left">Prev</a>-->
@@ -547,18 +552,145 @@
    </div>
    </div>
    </section>
+    <script type="text/javascript">
+    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
+	function showStartDatePicker(id){
+	  $("#residenceStartDate"+id).datepicker({
+	      dateFormat: finalDateFormatPetitionSave,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	      onSelect: function (selected) {
+	            //var dt = new Date(selected);
+	            var dt = $(this).datepicker('getDate', '+1d');
+	            dt.setDate(dt.getDate() + 1);
+	            $("#residenceEndDate"+id).datepicker("option", "minDate", dt);
+	        }
+	  }).datepicker("show");
+	} 
+	function showEndDatePicker(id){
+	  $("#residenceEndDate"+id).datepicker({
+	      dateFormat: finalDateFormatPetitionSave,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	        onSelect: function (selected) {
+	            //var dt = new Date(selected);
+	            var dt = $(this).datepicker('getDate', '-1d');
+	            dt.setDate(dt.getDate() - 1);
+	            $("#residenceStartDate"+id).datepicker("option", "maxDate", dt);
+	        }
+	  }).datepicker("show");
+	}
+    function prepareDynamicResidenceDiv(rowId){
+	   var prepareResidencediv =''; 
+		   
+		   
+	   prepareResidencediv =prepareResidencediv+ "<div id ='dynamicResidenceDiv"+rowId+"'>";
+	   prepareResidencediv =prepareResidencediv+ "   <div class='clearfix'></div>";
+	   prepareResidencediv =prepareResidencediv+ "     	<div class='col-md-12 mb margin-top0'>";
+	   prepareResidencediv =prepareResidencediv+ "   <h4 class='pull-left'>Residence</h4> <button type='button' class='btn btn-default pull-right' onclick='removeDynamicResidenceDiv("+rowId+")'><i class='fa fa-remove text-danger paddingRight'></i>Remove Residence</button>";
+	   prepareResidencediv =prepareResidencediv+ "   </div>";
+	   prepareResidencediv =prepareResidencediv+ "   <div class='clearfix'></div>";
+	   prepareResidencediv =prepareResidencediv+ " <div class='form-group'>";
+	   prepareResidencediv =prepareResidencediv+ "     <label class='col-md-4'>Location</label>";
+	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
+	   prepareResidencediv =prepareResidencediv+ "           <div class='positionRelative'>";
+	   prepareResidencediv =prepareResidencediv+ ' 						<input class="form-control positionRelative"';
+	   prepareResidencediv =prepareResidencediv+ ' 						id="location'+rowId+'" name="residenceList['+rowId+'].location"';
+	   prepareResidencediv =prepareResidencediv+ ' 							placeholder="Enter Location" type="text" onClick="initLocationAuto(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipcode'+rowId+'\',\'\',\'\',\'\',\'address'+rowId+'\'); refreshGoogleApiLocation(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipcode'+rowId+'\',\'\',\'\',\'\',\'address'+rowId+'\');"></input> <i';
+	   prepareResidencediv =prepareResidencediv+ ' 							class="fa fa-refresh btn btn-primary refresh-icon"';
+	   prepareResidencediv =prepareResidencediv+ ' 							title="Refresh"';
+	   prepareResidencediv =prepareResidencediv+ ' 							onClick="refreshGoogleApiLocation(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipcode'+rowId+'\',\'\',\'\',\'\',\'address'+rowId+'\');"></i>';
+	   prepareResidencediv =prepareResidencediv+ " 			</div>";
+	   prepareResidencediv =prepareResidencediv+ "       </div>";
+	   prepareResidencediv =prepareResidencediv+ "     </div>";
+	   prepareResidencediv =prepareResidencediv+ "    <div class='form-group'>";
+	   prepareResidencediv =prepareResidencediv+ "      <label class='col-md-4'>Street Address</label>";
+	   prepareResidencediv =prepareResidencediv+ "      <div class='col-md-8'>";
+	   prepareResidencediv =prepareResidencediv+ "           <input type='text' class='form-control' id='address"+rowId+"'";
+	   prepareResidencediv =prepareResidencediv+ " 						name='residenceList["+rowId+"].address' value='${address}' field-name='Street Address' placeholder='Enter Street Addres'";
+	   prepareResidencediv =prepareResidencediv+ " 						data-validation='validate_Space validate_length length2-250'";
+	   prepareResidencediv =prepareResidencediv+ " 						data-validation-optional='true'>";
+	   prepareResidencediv =prepareResidencediv+ "       </div>";
+	   prepareResidencediv =prepareResidencediv+ "     </div>";
+	   prepareResidencediv =prepareResidencediv+ "     <div class='form-group'>";
+	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>City</label>";
+	   prepareResidencediv =prepareResidencediv+ "        <div class='col-md-8'>";
+	   prepareResidencediv =prepareResidencediv+ "           <input class='form-control' id='city"+rowId+"' name='residenceList["+rowId+"].city' placeholder='City' type='text'></input>";
+	   prepareResidencediv =prepareResidencediv+ "       </div>";
+	   prepareResidencediv =prepareResidencediv+ "      </div>";
+	   prepareResidencediv =prepareResidencediv+ "     <div class='form-group'>";
+	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>State</label>";
+	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
+	   prepareResidencediv =prepareResidencediv+ "           <input class='form-control' id='state"+rowId+"' name='residenceList["+rowId+"].state' placeholder='State' type='text' ></input>";
+	   prepareResidencediv =prepareResidencediv+ "       </div>";
+	   prepareResidencediv =prepareResidencediv+ "     </div>";
+	   prepareResidencediv =prepareResidencediv+ "     <div class='form-group'>";
+	   prepareResidencediv =prepareResidencediv+ "        <label class='col-md-4'>Country</label>";
+	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
+	   prepareResidencediv =prepareResidencediv+ "           <input class='form-control' id='country"+rowId+"' name='residenceList["+rowId+"].country' placeholder='Country' value='${loginCountryName}' type='text' ></input>";
+	   prepareResidencediv =prepareResidencediv+ "       </div>";
+	   prepareResidencediv =prepareResidencediv+ "     </div> ";                                                                                              
+	   prepareResidencediv =prepareResidencediv+ "     <div class='form-group'>";
+	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>Zip Code</label>";
+	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
+	   prepareResidencediv =prepareResidencediv+ "          <input class='form-control' id='zipcode"+rowId+"' name='residenceList["+rowId+"].zipcode'";
+	   prepareResidencediv =prepareResidencediv+ " 						placeholder='Zip code' type='text' ></input>";
+	   prepareResidencediv =prepareResidencediv+ "       </div>";
+	   prepareResidencediv =prepareResidencediv+ "     </div>";
+	   prepareResidencediv =prepareResidencediv+ "    	<div class='clearfix'></div>";
+	   prepareResidencediv =prepareResidencediv+ "  <div class='form-group'>";
+	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>Start Date</label>";
+	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
+	   prepareResidencediv =prepareResidencediv+ " 			<div class='input-group'>";
+	   prepareResidencediv =prepareResidencediv+ "         <input type='text' class='form-control calendar' id='residenceStartDate"+rowId+"' onClick='showStartDatePicker("+rowId+")' name='residenceList["+rowId+"].residenceStartDate' placeholder='Start Date'>";
+	   prepareResidencediv =prepareResidencediv+ "         <span class='input-group-addon'><i class='fa fa-times text-danger cursorPointer' onclick='clearDateValue(\"residenceStartDate"+rowId+"\")'></i></span>";
+	   prepareResidencediv =prepareResidencediv+ "       </div>";
+	   prepareResidencediv =prepareResidencediv+ "       </div>";
+	   prepareResidencediv =prepareResidencediv+ "  </div>";
+         
+	   prepareResidencediv =prepareResidencediv+ "  <div class='form-group'>";
+	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>End Date</label>";
+	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
+	   prepareResidencediv =prepareResidencediv+ " 			<div class='input-group'>";
+	   prepareResidencediv =prepareResidencediv+ "        <input type='text' class='form-control calendar' id='residenceEndDate"+rowId+"' onClick='showEndDatePicker("+rowId+")'  name='residenceList["+rowId+"].residenceEndDate' placeholder='End Date'>";
+	   prepareResidencediv =prepareResidencediv+ "        <span class='input-group-addon'><i class='fa fa-times text-danger cursorPointer' onclick='clearDateValue(\"residenceEndDate"+rowId+"\")'></i></span>";
+	   prepareResidencediv =prepareResidencediv+ "      </div>";
+	   prepareResidencediv =prepareResidencediv+ "       </div>";
+	   prepareResidencediv =prepareResidencediv+ "   </div>";
+	   prepareResidencediv =prepareResidencediv+ "   </div>";
+	   
+		return prepareResidencediv; 
+   }
+	
+ //  var rowId ='<c:out value ="${rowIndex}"/>'// set the value for dyamic row when clicked on add button in UI.
+  var rowId =0;
+   function appendDynamicResidenceDiv(){
+	   console.log("rowId value is --->"+rowId);
+	   $("#dynamicResidenceGroupDiv").append(prepareDynamicResidenceDiv(rowId++)); 
+   }
+   //var deletedResicenceListIds = new Array();
+   function removeDynamicResidenceDiv(id){
+	   /* if($("#templateId"+id).val() !==  undefined ){
+		   deletedResicenceListIds.push($("#templateId"+id).val());   
+	   } */
+	   $("#dynamicResidenceDiv"+id).remove();
+	   rowId--;// decrement rowid when deleted in UI.
+   } 
+   	</script>
    <script type="text/javascript">
 		window.onload = function () {
-			editOrgLocationAuto('nationality');
-			initLocationAuto('entryPlace');
- 			initLocationAuto('jobLocation');
- 			initLocationAuto('birthPlace');
- 			initLocationAuto('location','country','state','city','zipcode','','','','address');
+			//editOrgLocationAuto('nationality');
+			//initLocationAuto('entryPlace');
+ 		//	initLocationAuto('jobLocation');
+ 			//initLocationAuto('birthPlace');
+ 			//initLocationAuto('location','country','state','city','zipcode','','','','address');
 			
 		 };
 	</script>
 	
 <script>
+
 var candidateByOrgObject = {};
 function getCandidatesByOrgLocation(){
 	 console.log(" before getCandidatesByOrgLocation function calling ---->");
@@ -709,8 +841,7 @@ $("#experienceValue").change(function () {
 		  employmentLevelDropDown();
 		  jobTitleDropDown();
 		  
-		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
+		 
 		  $('#openDate').datepicker({
 		      dateFormat: finalDateFormatPetitionSave,
 		      changeMonth: true,
@@ -808,7 +939,10 @@ $("#experienceValue").change(function () {
 		  ///
 		  
 		// residence start date and end date  
-		  $('#residenceStartDate').datepicker({
+		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
+	
+		  $("#residenceStartDate").datepicker({
 		      dateFormat: finalDateFormatPetitionSave,
 		      changeMonth: true,
 		  	  changeYear: true, 
@@ -816,11 +950,12 @@ $("#experienceValue").change(function () {
 		            //var dt = new Date(selected);
 		            var dt = $(this).datepicker('getDate', '+1d');
 		            dt.setDate(dt.getDate() + 1);
-		            $("#residenceEndDate").datepicker("option", "minDate", dt);
+		            $("#residenceEndDate"+id).datepicker("option", "minDate", dt);
 		        }
-		  });
-		  
-		  $('#residenceEndDate').datepicker({
+		  })
+		
+	
+		  $("#residenceEndDate").datepicker({
 		      dateFormat: finalDateFormatPetitionSave,
 		      changeMonth: true,
 		  	  changeYear: true, 
@@ -828,9 +963,9 @@ $("#experienceValue").change(function () {
 		            //var dt = new Date(selected);
 		            var dt = $(this).datepicker('getDate', '-1d');
 		            dt.setDate(dt.getDate() - 1);
-		            $("#residenceStartDate").datepicker("option", "maxDate", dt);
+		            $("#residenceStartDate"+id).datepicker("option", "maxDate", dt);
 		        }
-		  });
+		  })
 		  // 
 		  
 		  /* $('#jobTitleValues').autocomplete({
@@ -966,3 +1101,4 @@ function  removeValidationAttorneyContact() {
 	    	 $("#uploadFile").val("");
 	     });
 	 </script>
+	

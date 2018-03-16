@@ -156,7 +156,7 @@ public class ImmigrationDTO extends SearchDTO {
 
 	private String updatedBy;
 	
-
+    private List<ImmigrationResidenceDTO> residenceList;
 	public Long getId() {
 		return id;
 	}
@@ -711,6 +711,14 @@ public class ImmigrationDTO extends SearchDTO {
 
 	public void setMilitaryServiceEndtDate(String militaryServiceEndtDate) {
 		this.militaryServiceEndtDate = militaryServiceEndtDate;
+	}
+
+	public List<ImmigrationResidenceDTO> getResidenceList() {
+		return residenceList;
+	}
+
+	public void setResidenceList(List<ImmigrationResidenceDTO> residenceList) {
+		this.residenceList = residenceList;
 	}
 
 }
