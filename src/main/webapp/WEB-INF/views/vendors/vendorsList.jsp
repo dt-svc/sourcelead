@@ -439,8 +439,10 @@ function clearSearch(){
 	$('#excludeKeyWord').val('').trigger('chosen:updated');
 	$('#orgNameAdvanced').val('').trigger('chosen:updated');
  	$('#country').val('').trigger('chosen:updated'); 
-	$('#state').val('').trigger('chosen:updated');
-	$('#city').val('').trigger('chosen:updated');
+	//$('#state').val('').trigger('chosen:updated');
+	 getStates();
+	//$('#city').val('').trigger('chosen:updated');
+	 getCities();
 	$('#tierAdvanced').val('').trigger('chosen:updated');
 	$('#createdByAdvanced').val('').trigger('chosen:updated');
 	$('#emailAdvanced').val('').trigger('chosen:updated');
