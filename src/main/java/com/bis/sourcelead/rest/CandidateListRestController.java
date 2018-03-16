@@ -647,6 +647,7 @@ public class CandidateListRestController {
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("summary", keywd));
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("education", keywd));
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("skillsName", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("primarySkill", keywd));
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("visaType", keywd));
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("employer", keywd));
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("certifications", keywd));
