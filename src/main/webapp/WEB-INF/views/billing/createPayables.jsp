@@ -475,8 +475,8 @@ function remove(){
 			   			 document.getElementById("sendInvoiceId").style.display="none";
 			   			 document.getElementById("saveInvoiceId").style.display="none";
 			       	}else{
-			       		document.getElementById("sendInvoiceId").style.display="block";
-			   			document.getElementById("saveInvoiceId").style.display="block";
+			       		document.getElementById("sendInvoiceId").style.display="inline-block";
+			   			document.getElementById("saveInvoiceId").style.display="inline-block";
 			       	}
 		        	
 		        	
