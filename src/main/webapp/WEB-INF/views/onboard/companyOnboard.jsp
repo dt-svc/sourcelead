@@ -190,7 +190,7 @@ right: 15px;
 				   <img id="orgImage" data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" onerror="predefineOrgImage(this);" alt="Org Image" class="comp-image img-responsive">
 				   </c:if>
 				   <c:if test="${empty SourceLeadWeb_org.fileContentType}">
-				   <img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value='/resources/images/office-image.jpg'/>" alt="Org Image" class="comp-image img-responsive">
+				   <img id="orgImage" data-id="orgLogoImage" onerror="predefineOrgImage(this);" src="<c:url value='/resources/images/office-image.jpg'/>" alt="Org Image" class="comp-image img-responsive">
 				   </c:if>
 				  <div class="btn-group uploadfile-onboard">
 					  <button type="button" class="btn btn-primary">

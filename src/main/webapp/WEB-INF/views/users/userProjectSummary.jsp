@@ -136,7 +136,7 @@ function prepareAssignedProjectsData(data){
 	
 	result = result +"<td>";
    	if(opt.projectStatus != '' && opt.projectStatus != null && opt.projectStatus != 'undefined'){
-   		if(opt.projectStatus == "CLOSED"){
+   		if(opt.projectStatus == 'CLOSED'){
    			result = result +"<div class='tbldata-dotdot_50' title='Inactive'>Inactive</span></div>";
    		}else{
    			result = result +"<div class='tbldata-dotdot_50' title='Active'>Active</span></div>";
