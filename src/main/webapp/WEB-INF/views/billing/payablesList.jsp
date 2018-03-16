@@ -843,11 +843,11 @@ function payablePagination(url){
             				if(report.invoiceType=="Payables" && report.invoiceParentId != null && report.invoiceParentId != '' && report.invoiceParentId != "undefined"){
             					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
             						if(report.paymentStatus == "Paid"){
-            							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';
+            							result = result +'           <span class="text-primary primary pull-left" title="Paid" >Paid</span> </td>          ';
             						}else if(report.invoiceStatus == "DRAFT"){
             							result = result +'           <span class="successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill('+report.id+');";></i></td>          ';
             						}else if(report.invoiceStatus == "Rejected"){
-            							result = result +'           <div class="successBtn primary pull-left bg-red">Rejected</div>   ';	
+            							result = result +'           <div class="primary pull-left bg-red">Rejected</div>   ';	
             						}
             							
             					}else{
@@ -864,13 +864,13 @@ function payablePagination(url){
             				}else{
             					if((report.paymentStatus == "Paid" && report.invoiceStatus != "Linked") || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected" || report.invoiceStatus == "SENT"){
             						if(report.paymentStatus == "Paid"){
-            							result = result +'           <span class="successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
+            							result = result +'           <span class=" primary pull-left" title="Paid" >Paid</span> </td>          ';	
             						}else if(report.invoiceStatus == "DRAFT"){
             							result = result +'           <span class="successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill('+report.id+');";></i></td>          ';
             						}else if(report.invoiceStatus == "SENT"){
-            							result = result +'           <span class="successBtn primary pull-left" title="Paid" >Sent</span> </td>          ';
+            							result = result +'           <span class=" primary pull-left" title="Paid" >Sent</span> </td>          ';
             						}else if(report.invoiceStatus == "Rejected"){
-            							result = result +'           <div class="successBtn primary pull-left bg-red">Rejected</div>   ';
+            							result = result +'           <div class=" primary pull-left bg-red">Rejected</div>   ';
             						}
             							
             					}else{
