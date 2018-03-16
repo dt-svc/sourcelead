@@ -707,7 +707,7 @@ function getCandidatesByOrgLocation(){
 		            for(var i=0;i<json.length;i++){
 		            	 var opt = json[i];
 		            	 candidateByOrgObject[opt.id]= opt;
-		            	$('#candidateId').append('<option value='+opt.id+' >'+opt.firstName+'</option>');
+		            	$('#candidateId').append('<option value='+opt.id+' >'+opt.firstName+" "+opt.lastName+'</option>');
 		            }
 		            $('#candidateId').trigger("chosen:updated");
 		           /*  updateCandiateInfo(); */
@@ -835,7 +835,7 @@ $("#experienceValue").change(function () {
 		  $('#rateCurrency').selectpicker('refresh'); 
 		  $('#rateType').selectpicker('refresh');
 		  getAttorneysByOrgLocation();
-		 // getCandidatesByOrgLocation();
+		  getCandidatesByOrgLocation();
 		  getPetitionTypeDropDown();
 		  getUscisTypeDropDown();
 		  employmentLevelDropDown();
