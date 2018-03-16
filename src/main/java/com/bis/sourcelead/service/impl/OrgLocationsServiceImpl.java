@@ -381,4 +381,9 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	public Integer getRegisteredOrgLoctionsCountByOrgId(Long orgId) throws Exception {
 		return orgLocationsDao.getRegisteredOrgLoctionsCountByOrgId(orgId);
 	}
+
+	@Override
+	public List<OrgLocations> getAllOrgLocationsByOrgTypeCompany() throws Exception {
+		return orgLocationsDao.getAllOrgLocationsByOrgTypeCompany();
+	}
 }

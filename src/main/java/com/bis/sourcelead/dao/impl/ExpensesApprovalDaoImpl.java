@@ -30,6 +30,8 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
@@ -262,6 +264,28 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		List<ExpensesApproverHierarchy> tslist = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).list();
 		return tslist;*/
 	}
+	
+	@Override	
+	@Transactional(rollbackFor = { Exception.class })
+	public ExpensesApproverHierarchy getApprovedExpenseByExpenseIdAndLocationId(Long expenseId,Long locationsId){
+		Session session = this.sessionFactory.getCurrentSession();
+		// Getting Max Hierarchy Level for which employee is Assigned
+		String subQueryForMaxLevel = " select MAX(eah.hierarchyId.level) from ExpensesApproverHierarchy eah where eah.expenseId.id = :expenseId and eah.hierarchyId.projectClientsId.orgLocationsId.id = :locationsId";
+		String query = "from ExpensesApproverHierarchy eah left join fetch eah.hierarchyId hierarchy left join fetch hierarchy.projectClientsId pclient  "
+				+ " where pclient.orgLocationsId.id = :locationsId and eah.expenseId.id = :expenseId "
+				+ " and ( hierarchy.level IN(" + subQueryForMaxLevel
+				+ ")) and eah.expenseApprovalStatus = :approvalStatus ";
+		
+		@SuppressWarnings("unchecked")
+		List<ExpensesApproverHierarchy> eahList = session.createQuery(query.toString())
+				.setLong("expenseId", expenseId).setLong("locationsId", locationsId).setParameter("approvalStatus", Submission_Status.APPROVED).list();
+		ExpensesApproverHierarchy eah = null;
+		if(eahList != null && !eahList.isEmpty()) {
+			eah = eahList.iterator().next();
+		}
+		return eah;
+	}
+	
 	
 	@Override	
 	@Transactional(rollbackFor = { Exception.class })

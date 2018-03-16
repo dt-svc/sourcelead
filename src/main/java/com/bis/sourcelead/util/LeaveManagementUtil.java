@@ -20,8 +20,10 @@ import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveType;
+import com.bis.sourcelead.entity.MonthlyLeaves;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.LeaveService;
 
 @Component
@@ -32,6 +34,9 @@ public class LeaveManagementUtil {
 	
 	@Autowired
 	LeaveService leaveService;
+	
+	@Autowired
+	EmployeesService employeesService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(LeaveManagementUtil.class);
 	
@@ -55,8 +60,9 @@ public class LeaveManagementUtil {
 			return dateFormat.parse(dateFormat.format(date));
 	}
 
-	public int getBalanceCountForLeaveType(LeaveType type, Employees emp, OrgLocations orgLocations, User loginUser) throws ParseException
+	public int getBalanceCountForLeaveType(LeaveType type, Employees employee, OrgLocations orgLocations, User loginUser) throws ParseException
 	{
+		Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(loginUser.getId(), orgLocations.getId());
 		int totalLeaves = 0;
 		if(type.getPeriod() != null){
 			if("Annually".equalsIgnoreCase(type.getPeriod())){
@@ -344,5 +350,18 @@ public class LeaveManagementUtil {
 			actualApplied = days - halfday;
 		}
 		return actualApplied;
+	}
+
+	public float getTotalBalanceLeavesForNonCarryforwardLeaveType(LeaveType leaveType, float totalbalanceLeaveCounts)
+	{
+		int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
+//		totalbalanceLeaveCounts = totalbalanceLeaveCounts - ((currentMonth) * leave.getLeaveType().getNoOfDays());
+		float totalLeaveCount = 0;
+		int monthlyAllowedLeaves = leaveType.getNoOfDays();
+		for(int i=0; i<currentMonth;i++){
+			totalLeaveCount += monthlyAllowedLeaves;
+		}
+		totalbalanceLeaveCounts = totalbalanceLeaveCounts - totalLeaveCount;
+		return totalbalanceLeaveCounts;
 	}
 }

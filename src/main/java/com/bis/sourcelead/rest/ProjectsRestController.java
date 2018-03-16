@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -33,6 +36,9 @@ import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -44,6 +50,7 @@ import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -506,12 +513,13 @@ public class ProjectsRestController {
 	    	  projectMebersDTO.setPayRateCurrency(projectMebers.getPayRateCurrency());
 	    	  SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 	    	  
-	    	  if(projectMebers.getProjectAssignedDate() != null) {
-	    		  projectMebersDTO.setProjectStartDate(dateFormat.format(projectMebers.getProjectAssignedDate()));
+	    	  ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMebers.getId());
+	    	  if(pmh.getProjectAssignedDate() != null) {
+	    		  projectMebersDTO.setProjectStartDate(dateFormat.format(pmh.getProjectAssignedDate()));
 	    	  }
 	    	 
-	    	  if(projectMebers.getProjectEndDate() != null) {
-	    		  projectMebersDTO.setProjectEndDate(dateFormat.format(projectMebers.getProjectEndDate()));
+	    	  if(pmh.getProjectTerminationDate() != null) {
+	    		  projectMebersDTO.setProjectEndDate(dateFormat.format(pmh.getProjectTerminationDate()));
 	    	  }
 	    	
 	    	  
@@ -596,11 +604,6 @@ public class ProjectsRestController {
 	    			projectMembers.setProjectAssignedDate(projectAssignedStartDate);
 	    		}
 	    		
-	    		if(StringUtils.isNotBlank(projectMembersDTO.getMemberEndDate())){
-	    			Date projectAssignedEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getMemberEndDate());
-	    			projectMembers.setProjectEndDate(projectAssignedEndDate);
-	    		}
-	    		
 	    		if(projectMembersDTO.getEstBudget() != null){
 	    			projectMembers.setEstimatedBudget(projectMembersDTO.getEstBudget());
 	    		}else {
@@ -615,19 +618,37 @@ public class ProjectsRestController {
 	    		
 	    		projectMembersService.saveProjectMember(projectMembers);
 	    		
-	    		ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
-	    		
-	    		if(StringUtils.isNotBlank(projectMembersDTO.getMemberStartDate())){
-	    			Date projectAssignedStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getMemberStartDate());
-	    			pmh.setProjectAssignedDate(projectAssignedStartDate);
-	    		}
-	    		
 	    		if(StringUtils.isNotBlank(projectMembersDTO.getMemberEndDate())){
-	    			Date projectAssignedEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getMemberEndDate());
-	    			pmh.setProjectTerminationDate(projectAssignedEndDate);
+
+					ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
+					
+					if(pmh == null){
+						pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMembers.getId());
+					}
+					Date endDate1 = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getMemberEndDate());
+					if(pmh.getProjectTerminationDate()== null){
+						projectMembersHistoryService.updateEndDateOfProjectMemberId(endDate1, projectMembers.getId());
+					}
+
+					if (pmh.getProjectTerminationDate() != null && pmh.getProjectTerminationDate().compareTo(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getMemberEndDate())) != 0) {
+						projectMembersHistoryService.updateEndDateOfProjectMemberId(endDate1, projectMembers.getId());
+						
+					}
+					// mail forward to members inline end date edit
+					projectEnddatechangetoEmployee(projectMembers,user, orgLocations, projectMembersDTO.getMemberEndDate());
+					
+					Date terminationDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getMemberEndDate());
+					Date currentDate = new  Date();
+					
+					if(currentDate.after(terminationDate) && !currentDate.equals(terminationDate)){
+						commonUtil.terminateProjectMemberByProjectMemberId(projectMembers.getId(),Primary.Yes);
+					}
+					else{
+						commonUtil.inactivateTimesheetSubmissionsBasedOnMemberIdAndMemberTerminationDate(projectMembers.getId(), terminationDate);
+					}
+	    			
 	    		}
 	    		
-	    		projectMembersHistoryService.updateProjectMembersHistory(pmh);
 	    		
 	    		
 	    		
@@ -682,6 +703,72 @@ public class ProjectsRestController {
 	    	
 	    	return "success";
 	    }
+	    
+	    
+	    
+	    private void projectEnddatechangetoEmployee(ProjectMembers emp, User loginUser,  OrgLocations loginOrgLocation, String changedEndDate) throws Exception {
+			 Projects projects = projectsService.getProjectById(emp.getProjects().getId());
+			 //SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+			 StringBuilder fromNameBuilder=new StringBuilder();
+		     EmailMessage emailMessage = new EmailMessage();
+			 emailMessage.setFirstName(emp.getEmployee().getUser().getFirstName());
+			 emailMessage.setLastName(emp.getEmployee().getUser().getLastName());
+			 emailMessage.setToEmail(emp.getEmployee().getUser().getEmail());
+			 emailMessage.setFromEmail(loginUser.getEmail());
+			 emailMessage.setCreatedBy(loginUser.getUserCode());
+			 emailMessage.setFromName(fromNameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+			 //setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 
+			 globalVarsMap.put("projectStartdate",commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),projects.getStartDate()));
+			 globalVarsMap.put("projectEnddate",changedEndDate);
+			 
+			 if(loginUser.getFirstName() != null && loginUser.getLastName()!=null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())){
+				 StringBuilder userBuild = new StringBuilder();
+				 globalVarsMap.put("loginUser",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+				 }else{
+					 globalVarsMap.put("loginUser",loginUser.getFirstName());
+				}
+			 if(emailMessage.getFirstName() != null && emailMessage.getLastName()!=null && !"".equalsIgnoreCase(emailMessage.getFirstName()) && !"".equalsIgnoreCase(emailMessage.getLastName())){
+				 StringBuilder userBuild = new StringBuilder();
+				 globalVarsMap.put("employeeName",userBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
+				 }else{
+					 globalVarsMap.put("employeeName",emailMessage.getFirstName());
+				}
+			 globalVarsMap.put("projectName", projects.getProjectName());
+			 globalVarsMap.put("loginOrgName",loginOrgLocation.getOrg().getOrgName());
+			 
+			 //setting the Recipient information
+			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+			 
+			 //getting the current EmailScenario by EmailScenario unique name and entity type
+			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EDITPROJECT_MAIL_TEAMMEMBER,Constants.ENTITY_TYPE_EMAIL);
+			
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+			 String url = sourceleadUrl;
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 
+			 //calling the sendEmail method of emailScenerioUtil
+			 if(null != projects.getOrgLocationsId())
+			 emailScenerioUtil.sendEmail(emailMessage,projects.getOrgLocationsId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+			 
+			 
+			//calling the sendNotification method of emailScenerioUtil
+			EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EDITPROJECT_MAIL_TEAMMEMBER,Constants.ENTITY_TYPE_NOTIFICATION);
+			String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+			notificationScenario.setBody(notificationBody);
+			//String url = null;
+			String actionLink = "";
+			emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getEmployee().getUser(), loginOrgLocation, notificationScenario);
+		}
 	    
 	    
 	    public ProjectMembersRateHistory getProjectMembersRateHistoryDetails(ProjectMembers projectMembers, User user) {

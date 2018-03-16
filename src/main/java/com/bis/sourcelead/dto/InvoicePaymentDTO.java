@@ -5,6 +5,7 @@ import java.util.List;
 public class InvoicePaymentDTO {
 	private String invoiceId;
 	private String paymentDate;
+	private String staticPath;
 	private String paymentMethod;
 	private String referenceNumber;
 	private String totalAmount;
@@ -101,6 +102,16 @@ public class InvoicePaymentDTO {
 	public void setTotalAmount(String totalAmount)
 	{
 		this.totalAmount = totalAmount;
+	}
+
+	public String getStaticPath()
+	{
+		return staticPath;
+	}
+
+	public void setStaticPath(String staticPath)
+	{
+		this.staticPath = staticPath;
 	}
 	
 }

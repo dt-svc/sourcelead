@@ -72,6 +72,7 @@ jQuery(document).ready(function($) {
 	var rate = '${rate}';
 	var noticePeriod = '${noticePeriod}';
 	var visaTypes = '${visaTypes}';
+	var postedOrg='{postedOrg}'
 	if(sourceleadUrl.indexOf("/app")!=-1){
 		sourceleadUrl = sourceleadUrl.split("/app")[0];
 	}
@@ -94,6 +95,15 @@ jQuery(document).ready(function($) {
 				
 				<div class="clearfix"></div>
 				<div class="skills mb">
+				<strong>Posted Org :</strong>
+				<c:if test="${!empty postedOrg}">
+				<span>${postedOrg}</span>
+				</c:if>
+				<c:if test="${empty postedOrg}">
+				<span>--</span>
+				</c:if>
+				</div>	
+				<div class="skills mb">
 				<strong>Skills :</strong>
 				<c:if test="${!empty skills}">
 				<span>${skills}</span>
@@ -102,7 +112,6 @@ jQuery(document).ready(function($) {
 				<span>--</span>
 				</c:if>
 				</div>	
-
 				<div class="skills mb">
 				<strong class="pull-left">Location(s) :</strong>
 				<ul class="list-unstyled list-inline joblocations-li">
@@ -258,14 +267,14 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		result = result + '	 </div>';
 		result = result + '	 </div>';
 		
-	    result = result + '<div class="row">';
+	   /*  result = result + '<div class="row">';
 	    result = result + '	<div class="col-md-6 upresume mb" id="primarySkillDiv" style="display: none;">';
 		result = result + '<label class="col-md-4">Primary Skill</label>';
 		result = result + '<div class="col-md-8">';
-		result = result + '<input type="text" class="form-control" id="primarySkill" name="primarySkill"  field-name="Primary Skill">';
+		result = result + '<input type="text" class="form-control" id="primarySkill"   field-name="Primary Skill">';
 		result = result + '</div>';
 		result = result + '</div>';
-		result = result + '</div>'; 
+		result = result + '</div>';  */
 		
 	    result = result + '<div class="row">';
 	    result = result + '	<div class="col-md-6 upresume mb" id="employmentTypeDiv" style="display: none;">';
@@ -316,7 +325,7 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 
 		result = result + '<div class="form-footer clearfix mt">';
 		result = result + '<div class="pull-right mr">';
-		result = result + '<button type="button" id="save_button"  class="btn btn-default ml" onClick="guestCancel();">Cancel</button>';
+		result = result + '<button type="button" id="cancel_button"  class="btn btn-default ml" onClick="guestCancel();">Cancel</button>';
 		result = result + '</div>';
 		result = result + '<div class="pull-right mr">';
 		result = result + '<button type="button" id="save_button"  class="btn btn-sm btn-primary " onclick="addApplicantSubmission();">SUBMIT</button>';
@@ -465,7 +474,7 @@ function uploadAddApplicantCandidateDoc(){
 	 	sourceleadUrl = sourceleadUrl.split("/app")[0];
 	 }
 	 if(validate_fileupload(this.value)){
-	 var docFileSize = $('#uploadFile');
+		 var docFileSize = $('#uploadFile');
  		 var docSize = this.files[0].size;
 	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
 	      if(docSize > 2097152){
@@ -640,7 +649,7 @@ function validate_fileupload(fileName)
 				}
 			});
 			return o;
-		};
+		};   
 	})(jQuery);
 </script>
  

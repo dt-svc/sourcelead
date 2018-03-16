@@ -9,6 +9,9 @@
 window.onload = function() { 
 	getPieChartBasedOnUser();
 	getApproversList();
+   if($("#checkbox-1").is(':checked')){
+	   $("#checkbox-1").prop('checked', false);
+	}
 	}
 </script>
 
@@ -450,18 +453,23 @@ function getLeaveDetails(finalDateFormatEndDate){
 	var leaveTypeUUID = $("#leaveType").val();
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
+	var skipPolicy = false;
+	var policy = $("#termsAndConditions").text();
+	if(policy != null && policy != '' && policy !='undefined'){
+		skipPolicy = true;
+	}
 	if(leaveTypeUUID !=null && leaveTypeUUID != '' && leaveTypeUUID !='undefined'){
 		$.ajax({
 		   	type: "POST",
 		   	url: sourceleadUrl+"/leaveTypeSummary?&leaveTypeUUID="+leaveTypeUUID,	 
 		    success: function(report) {
-		    	/* if(report.duration == "Full Day"){
+		    	if(report.duration == "Half Day"){
 		    		$("#fromHalfDayDiv").hide();
 		    		$("#toHalfDayDiv").hide();
 		    	}else{
 		    		$("#fromHalfDayDiv").show();
 		    		$("#toHalfDayDiv").show();
-		    	} */
+		    	} 
 		    	
 		    	if(report.reasonRequired == "Y"){
 			 		$("#reason").attr('data-validation',"required");
@@ -506,10 +514,13 @@ function getLeaveDetails(finalDateFormatEndDate){
 		        }else{
 		    		$("#applyId").prop("disabled", false);
 		        }
-		    	if(report.policyDescription !=null && report.policyDescription !='' && report.policyDescription !='undefined'){
-	 				$("#termsAndConditions").html(report.policyDescription);
-	 				document.getElementById("termsModel").style.display="block";
-	 			}
+		    	if(skipPolicy != true){
+		    		if(report.policyDescription !=null && report.policyDescription !='' && report.policyDescription !='undefined'){
+		 				$("#termsAndConditions").html(report.policyDescription);
+		 				document.getElementById("termsModel").style.display="block";
+		 			}
+		    	}
+		    	
 		    }
 		});
 	}

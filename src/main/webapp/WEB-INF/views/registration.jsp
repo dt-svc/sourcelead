@@ -1,6 +1,5 @@
 
 <!DOCTYPE html>
-
 <html>
 <head>
      <meta charset="utf-8">
@@ -19,11 +18,12 @@
     <title>::. Registration .::</title>
     <link rel="icon" type="/resources/image/png" href="/resources/images/fav.png" />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/resources/css/bootstrap-select.min.css">
     <link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
     <link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
     <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
     <link href="/resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
-     <link href="/resources/css/crowdsourcing-main.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+    <link href="/resources/css/crowdsourcing-main.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
     
 </head>
 
@@ -32,6 +32,7 @@
     padding-left: 0px;
 }
 </style>
+
 
 <script>
  function getProfileDetails(response,service){
@@ -119,6 +120,7 @@ window.onload = function () {
     	});
     	return indexed_array;
     }
+    
 </script>
  <div  id="loadTime"></div> 
 <div class="logMask"></div>
@@ -196,23 +198,7 @@ window.onload = function () {
 		                  <b></b>
 		              </span>
 		            </div> 
-<!-- 		            </div>  -->
-		            
-		            <!-- <div id="pwdDiv">
-	                	<div class="col-xs-12 col-md-12 mb10">
-		                    <i class="fa fa-unlock-alt"></i>
-		                    <label>Password <span class="text-danger">*</span></label>
-		                    <input type="password" id="password" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" >
-		                    <b></b>
-		                </div>
-		                <div class="col-xs-12 col-md-12 mb10" id="passwordDiv">
-		                    <i class="fa fa-unlock-alt"></i>
-		                    <label>Confirm Password <span class="text-danger">*</span></label>
-		                    <input type="password" id="confirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).checkPass();" data-validation="required validate_length length6-100" >
-		                    <b></b>
-		                </div>
-		           </div> -->
-		            
+
 		            
 		            </div>
 		            <div class="col-md-12 clearfix">
@@ -329,13 +315,13 @@ window.onload = function () {
   <div class="container">
       
     <div class="outsoucing-registaion registerwith">
-        <div class="company_logo pull-left mb10"><a href="<c:url value='/'/>"><img src="/resources/images/SourceLead-logo.png" alt="Sourcelead Logo" title="Sourcelead Logo" class="img-responsive" width="300"></a></div>
+        <div class="company_logo companyLogo pull-left mb10"><a href="<c:url value='/'/>"><img src="/resources/images/SourceLead-logo.png" alt="Sourcelead Logo" title="Sourcelead Logo" class="img-responsive" width="300"></a></div>
       <div class="clearfix"></div>
       <ul class="nav nav-tabs">
           <li class="active"><a data-toggle="tab" href="#professional" onclick="resetCredentials('Professional')"><i class="fa fa-user"></i>&nbsp;&nbsp;Job Seeker</a></li>
           <c:if test="${empty contactUUID}">
-          <li><a data-toggle="tab" href="#recruiter" onclick="resetCredentials('Recruiter')"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;<span class="hidden-xs">Freelance</span> Recruiter</a></li>
-          <li><a data-toggle="tab" href="#employee" onclick="resetCredentials('Employer')"><i class="fa fa-address-book-o"></i>&nbsp;&nbsp;Employer</a></li>
+          <li><a data-toggle="tab" href="#recruiter" onclick="resetCredentials('Recruiter')"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;<span class="hidden-xs">Freelance</span></a></li>
+          <li><a data-toggle="tab" href="#employee" onclick="resetCredentials('Employer')"><i class="fa fa-address-book-o"></i>&nbsp;&nbsp;Company</a></li>
           </c:if>
           <input type="hidden" id="tabType" />
       </ul>
@@ -363,28 +349,28 @@ window.onload = function () {
             <div class=" text-muted small mb10 text-center clearfix">
             -------------------------------------------------- ( OR ) --------------------------------------------------
             </div>
-            <div class="row mt10">
+            <div class="row mt10 regDemoFields">
             <div class="form-group clearfix">
-                <div class="col-xs-12 col-md-12 mb10" id="firstNameDiv">
-                    <i class="fa fa-user-circle"></i>
+                <div class="col-xs-12 col-md-6" id="firstNameDiv">
+                    <i class="fa fa-user"></i>
                     <label>First Name <span class="text-danger">*</span></label>
                     <input type="text" name="firstName" field-name="First Name" id="firstName" value='${firstName}' data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" onkeydown="removeValidationNameDiv();">
                     <b></b>
                 </div>
-                <div class="col-xs-12 col-md-12 mb10" id="lastNameDiv">
-                    <i class="fa fa-user-circle"></i>
+                <div class="col-xs-12 col-md-6" id="lastNameDiv">
+                    <i class="fa fa-user"></i>
                     <label>Last Name</label>
                     <input type="text" name="lastName" field-name="Last Name" id="lastName" value='${lastName}'  data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100">
                     <b></b>
                 </div>
                 
-                <div class="col-xs-12 col-md-12 mb10" id="emailDiv">
+                <div class="col-xs-12 col-md-6" id="emailDiv">
                     <i class="fa fa-envelope"></i>
                     <label>Email <span class="text-danger">*</span></label>
                     <input type="text" name="email" field-name="Email" value='${email}' onblur="validateEmail('Professional');" id="email"  data-validation="required validate_Space validate_length length2-100 validate_email" >
                     <b></b>
                 </div>
-                <div class="col-xs-12 col-md-12 select-field mb10" id="locationCountryDiv">
+                <div class="col-xs-12 col-md-6 select-field" id="locationCountryDiv">
                     <i class="fa fa-map-marker"></i>
                     <select class="form-control chosen-select" name="location" id="location" field-name="Country" data-validation="required" onchange="removeValidation();">
                         <option disabled selected>Country</option>
@@ -397,18 +383,36 @@ window.onload = function () {
                     </select>
                     <b></b>
                 </div>
-                
+                <div class="clearfix"></div>
                 <div id="pwdDiv">
-                <div class="col-xs-12 col-md-12 mb10">
+                <!-- <div class="col-xs-12 col-md-6 mb10">
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Password <span class="text-danger">*</span></label>
 	                    <input type="password" id="password" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" >
 	                    <b></b>
+	                </div> -->
+	                
+	                   <div class="col-xs-12 col-md-6  posiRela">
+
+	                    <i class="fa fa-unlock-alt"></i>
+	                    <label>Password <span class="text-danger">*</span></label>
+	                    <input type="password" class="registePassword"  id="jsPassword" name="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d.*)(?=.*\W.*)[a-zA-Z0-9\S]{8,}$" filed-name="Password" field-name="Password" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" data-validation="required validate_length length6-100" onkeyup="passwordValidation('jsPassword','js_letter','js_capital','js_number','js_special','js_length');" >
+	                    <b></b>
+	                    
+						<div id="js_message" class="passHint">
+				  			<p  id="js_letter" class="invalid">At least one lowercase letter</p>
+				  			<p  id="js_capital" class="invalid">At least one uppercase letter</p>
+				  			<p  id="js_number" class="invalid">At least one number</p>
+				  			<p  id="js_special" class="invalid">At least one special character</p>
+				  			<p  id="js_length" class="invalid">Minimum 8 characters required</p>
+						</div>      
+	                    <i class="fa fa-eye showPassword-reg-usr" onclick="showProfPassword();"></i>
 	                </div>
-	                <div class="col-xs-12 col-md-12 mb10" id="passwordDiv">
+	                <div class="col-xs-12 col-md-6" id="passwordDiv">
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Confirm Password <span class="text-danger">*</span></label>
-	                    <input type="password" id="confirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).checkPass();" data-validation="required validate_length length6-100" >
+	                    <input type="password" id="jsconfirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).checkProfPass();" data-validation="required validate_length length6-100" >
+	                     <i class="fa fa-eye showPassword-reg-usr" onclick="showProfConfirmPassword();"></i>
 	                    <b></b>
 	                </div>
 	           </div>
@@ -429,8 +433,8 @@ window.onload = function () {
                         <span class="text-center"><i class="fa fa-paper-plane"></i>Register</span></button>
             </div>
             </div>
-                <div class="col-md-12 text-center mt bg-info">
-                    <span class="text-muted">Already have an Account:</span><a href="/login" class="btn" title="Login">Login</a><br/>
+                <div class="col-md-12 text-center mt10">
+                    <span class="text-muted">Already have an Account:</span><a href="/login" class="btn" title="Login"><strong>Login</strong></a><br/>
                 </div>
                 
             </div>
@@ -459,28 +463,28 @@ window.onload = function () {
             <div class=" text-muted small mb10 text-center clearfix">
             -------------------------------------------------- ( OR ) --------------------------------------------------
             </div>
-            <div class="row mt10">
+            <div class="row mt10 regDemoFields">
             <div class="form-group clearfix">
-                <div class="col-xs-12 col-md-12 mb10" id="firstNameDivRec">
-                    <i class="fa fa-user-circle"></i>
+                <div class="col-xs-12 col-md-6" id="firstNameDivRec">
+                    <i class="fa fa-user"></i>
                     <label>First Name <span class="text-danger">*</span></label>
                     <input type="text" name="firstName" field-name="First Name" id="recruiterFirstName" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" onkeydown="removeValidationNameDivRec();">
                     <b></b>
                 </div>
-                <div class="col-xs-12 col-md-12 mb10">
-                    <i class="fa fa-user-circle"></i>
+                <div class="col-xs-12 col-md-6">
+                    <i class="fa fa-user"></i>
                     <label>Last Name</label>
                     <input type="text" name="lastName" field-name="Last Name" id="recruiterLastName" data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100">
                     <b></b>
                 </div>
                 
-                <div class="col-xs-12 col-md-12 mb10" id="recruiterEmailDiv">
+                <div class="col-xs-12 col-md-6" id="recruiterEmailDiv">
                     <i class="fa fa-envelope"></i>
                     <label>Email <span class="text-danger">*</span></label>
                     <input type="text" name="email" field-name="Email"  id="recruiterEmail"  onblur="validateRecruiterEmail('Recruiter');" data-validation="required validate_Space validate_length length2-100 validate_email" >
                     <b></b>
                 </div>
-                <div class="col-xs-12 col-md-12 select-field mb10" id="locationCountryDivRec">
+                <div class="col-xs-12 col-md-6 select-field" id="locationCountryDivRec">
                     <i class="fa fa-map-marker"></i>
                     <select class="form-control chosen-select" name="location" id="location" field-name="Country" data-validation="required" onchange="removeValidationRec();">
                         <option disabled selected>Country</option>
@@ -493,18 +497,31 @@ window.onload = function () {
                     </select>
                     <b></b>
                 </div>
-                
+                <div class="clearfix"></div>
                 <div id="recpwdDiv">
-                <div class="col-xs-12 col-md-12 mb10">
+                <div class="col-xs-12 col-md-6 posiRela" >
+
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Password <span class="text-danger">*</span></label>
-	                    <input type="password" id="recpassword" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" >
+	                    <!-- <input type="password" id="recpassword" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" >
+	                    -->
+	                     <input type="password" class="registePassword"  id="recpassword" name="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d.*)(?=.*\W.*)[a-zA-Z0-9\S]{8,}$" filed-name="Password" field-name="Password" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" data-validation="required validate_length length6-100" onkeyup="passwordValidation('recpassword','fr_letter','fr_capital','fr_number','fr_special','fr_length');" >
+	                   
 	                    <b></b>
+	                    <div id="fr_message" class="passHint">
+  							<p  id="fr_letter" class="invalid">At least one lowercase letter</p>
+  							<p  id="fr_capital" class="invalid">At least one uppercase letter</p>
+  							<p  id="fr_number" class="invalid">At least one number</p>
+  							<p  id="fr_special" class="invalid">At least one special character</p>
+  							<p  id="fr_length" class="invalid">Minimum 8 characters required</p>
+						</div> 
+						 <i class="fa fa-eye showPassword-reg-usr" onclick="showRecPassword();"></i>
 	                </div>
-	                <div class="col-xs-12 col-md-12 mb10" id="recpasswordDiv">
+	                <div class="col-xs-12 col-md-6" id="recpasswordDiv">
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Confirm Password <span class="text-danger">*</span></label>
 	                    <input type="password" id="recconfirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).reccheckPass();" data-validation="required validate_length length6-100" >
+	                     <i class="fa fa-eye showPassword-reg-usr" onclick="showRecConfirmPassword();"></i>
 	                    <b></b>
 	                </div>
                 </div>
@@ -525,8 +542,8 @@ window.onload = function () {
                         <span class="text-center"><i class="fa fa-paper-plane"></i>Register</span></button>
             </div>
             </div>
-                <div class="col-md-12 text-center mt bg-info">
-                    <span class="text-muted">Already have an Account:</span><a href="/login" class="btn" title="Login">Login</a><br/>
+                <div class="col-md-12 text-center mt10">
+                    <span class="text-muted">Already have an Account:</span><a href="/login" class="btn" title="Login"><strong>Login</strong></a><br/>
                 </div>
                 
             </div>
@@ -537,13 +554,13 @@ window.onload = function () {
 	            <div class="row">
 	            <div class="form-group clearfix">
 	                <div class="col-xs-12 col-md-12">
-	                    <i class="fa fa-user-circle"></i>
+	                    <i class="fa fa-user"></i>
 	                    <label>First Name <span class="text-danger">*</span></label>
 	                    <input type="text" name="firstName" field-name="First Name" id="recruiterFirstName" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
 	                    <b></b>
 	                </div>
 	                <div class="col-xs-12 col-md-12">
-	                    <i class="fa fa-user-circle"></i>
+	                    <i class="fa fa-user"></i>
 	                    <label>Last Name</label>
 	                    <input type="text" name="lastName" field-name="Last Name" id="recruiterLastName" data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100">
 	                    <b></b>
@@ -587,57 +604,63 @@ window.onload = function () {
         </div>
       
       <div id="employee" class="tab-pane fade">
-       <form:form   id="employerRegistration_form"  name="employerRegistration_form" method="post" >     
+       <form:form  id="employerRegistration_form"  name="employerRegistration_form" method="post" >     
         <div class="row mt10">
             <div class="form-group clearfix noMar">
+            <input type="hidden" id="orgType" name="orgType" value="Request">
             
-            <div class="col-md-6 paddRight" >
-                <div class="col-xs-12 col-md-12 mb" id="firstNameDiv">
-                    <i class="fa fa-user-circle"></i>
-                    <label>First Name <span class="text-danger">*</span></label>
+            <div class="clearfix paddRight regDemoFields">
+                
+                <div class="col-xs-12 col-md-6" id="firstNameDiv">
+                    <i class="fa fa-user"></i>
+                    <label>First Name<span class="text-danger">*</span></label>
                     <input type="text" name="firstName" field-name="First Name" id="firstName" value='${firstName}' data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" onkeydown="removeValidationNameDiv();">
                     <b></b>
                 </div>
-                <div class="col-xs-12 col-md-12 mb" id="lastNameDiv">
-                    <i class="fa fa-user-circle"></i>
+                <div class="col-xs-12 col-md-6" id="lastNameDiv">
+                    <i class="fa fa-user"></i>
                     <label>Last Name</label>
                     <input type="text" name="lastName" field-name="Last Name" id="lastName" value='${lastName}'  data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100">
                     <b></b>
                 </div>
                 
-                <div class="col-xs-12 col-md-12 mb" id="emailDiv">
+                <div class="col-xs-12 col-md-6" id="emailDiv">
                     <i class="fa fa-envelope"></i>
                     <label>Email <span class="text-danger">*</span></label>
-                    <input type="text" name="email" field-name="Email" value='${email}' onblur="validateEmail('Professional');" id="email"  data-validation="required validate_Space validate_length length2-100 validate_email" >
+                    <input type="text" name="email" field-name="Email" value='${email}'  id="email"  data-validation="required validate_Space validate_length length2-100 validate_email" >
                     <b></b>
                 </div>
                 
-                <div class="col-xs-12 col-md-12 mb">
+                <div class="col-xs-12 col-md-6">
                     <i class="fa fa-mobile fa-2x"></i>
                     <label>Phone Number</label>
-                    <input type="text" name="phoneNumber" field-name="Phone Number"  id="mobileNumber"  data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">
+                    <input type="text" name="phoneNumber" field-name="Phone Number"  id="mobileNumber"  data-validation="required validate_Space validate_phone validate_length length9-20">
                     <b></b>
                 </div>
-                </div>
-               
-               <div class="col-md-6 paddLeft" >
-                <div class="col-xs-12 col-md-12 mb" id="companyNameDiv">
+                <div class="col-xs-12 col-md-6" id="companyNameDiv">
                     <i class="fa fa-building"></i>
                     <label>Company Name <span class="text-danger">*</span></label>
                     <input type="text" name="companyName" field-name="Company Name"   id="companyName" onblur="validateOrgRequestCompanyName();" data-validation="required validate_Space validate_length length2-250" >
                     <b></b>
                 </div>
                 
-                <div class="col-xs-12 col-md-12 mb" >
+                <div class="col-xs-12 col-md-6" >
                     <i class="fa fa-globe"></i>
                     <label>Company Website </label>
                     <input type="text" name="companyWebsite" field-name="Company Website"  id="companyWebsite"  data-validation="required validate_Space validate_domain validate_length length2-100" >
                     <b></b>
                 </div>
                 
-                <div class="col-xs-12 col-md-12 select-field mb" id="locationCountryDiv">
+                <div class="col-xs-12 col-md-6">
+                <i class="fa fa-map-marker"></i>
+                   <!--  <label>Company Location</label> -->
+                    <input type="text" name="companyAddress" field-name="Company Location" id="companyAddress"  data-validation="required" >
+                    <b></b>
+                </div>
+                
+                <div class="col-xs-12 col-md-6 locationCountryDiv-drop" id="locationCompanyCountryDiv">
                     <i class="fa fa-map-marker"></i>
-                    <select class="form-control seleFild" name="country" id="location" field-name="Country" data-validation="required" onchange="removeValidation();">
+                    <select class="selectpicker" name="country" id="requestCountry" field-name="Country" data-validation="required" onchange="removeCompanyCountryValidation();"  data-live-search="true">
                         <option disabled selected>Country</option>
                         <option value="Australia">Australia</option>
 		                <option value="France">France</option>
@@ -648,28 +671,17 @@ window.onload = function () {
                     </select>
                     <b></b>
                 </div>
+                
                 </div>
               </div>
               
-                <div class="col-xs-12 col-md-12 mb">
-                <div class="col-md-12">
-                    <textarea class="form-control formControlCustom " placeholder="Company Address" name="companyAddress" field-name="Company Address"   id="companyAddress" data-validation-optional="true" data-validation="required validate_Space validate_length length2-250" ></textarea>
-                    <b></b>
-                    </div>
-                </div>
+                
 			  <div class="CheckWrap">
-				<h2>Interested In</h2> 
+				<h2><strong>Interested In</strong></h2> 
 				 <c:forEach var="requestOrg" items="${requestOrgList}"> 
 				  <label class="checkbox-area">${requestOrg.name} <input type="checkbox" value="${requestOrg.id}" name="modules" onblur="moduleCheckValidation(this)"> <span class="checkmark"></span> </label>
 				 </c:forEach>   
 			
-				<!-- <label class="checkbox-area">ATS <input type="checkbox" value="ATS" name="modules" onblur="moduleCheckValidation(this)"> <span class="checkmark"></span> </label>
-				<label class="checkbox-area">VMS <input type="checkbox" name="modules" value="VMS" onblur="moduleCheckValidation(this)"><span class="checkmark"></span> </label>
-				<label class="checkbox-area">TIMESHEETS<input type="checkbox" value="TIMESHEETS" name="modules" onblur="moduleCheckValidation(this)"><span class="checkmark"></span> </label> -->
-				<!-- <label class="checkbox-area">HRMS <input type="checkbox"> <span class="checkmark"></span> </label>
-				<label class="checkbox-area">PMS <input type="checkbox"> <span class="checkmark"></span> </label>
-				<label class="checkbox-area">IMS <input type="checkbox"> <span class="checkmark"></span> </label> -->
-				
 				<input type="hidden"  id="moduleValue" name="module"  field-name="Module" data-validation="required"/> 			    
 				
 				 <div class="clear"></div>           	
@@ -684,11 +696,11 @@ window.onload = function () {
 	            </div>
 	            <div class="col-md-12 mt10">
 	                  <button type="submit" id="employerRegister_button"  class="btn btn-primary btn_styles btn-block" title="Register" onclick="saveEmployer();">
-	                  <span class="text-center"><i class="fa fa-paper-plane" ></i>Register</span></button>
+	                  <span class="text-center"><i class="fa fa-paper-plane" ></i>Submit</span></button>
 	            </div>
 	            </div>
-                <div class="col-md-12 text-center mt bg-info">
-                    <span class="text-muted">Already have an Account:</span><a href="/login" class="btn" title="Login">Login</a><br/>
+                <div class="col-md-12 text-center mt10">
+                    <span class="text-muted">Already have an Account:</span><a href="/login" class="btn" title="Login"><strong>Login</strong></a><br/>
                 </div>
               </div>
             </div>
@@ -720,6 +732,9 @@ window.onload = function () {
 </body>
 
 <script>
+function removeCompanyCountryValidation(){
+	$('#locationCompanyCountryDiv').find('p.jquery_form_error_message').remove();
+}
 function removeValidation(){
 	$('#locationCountryDiv').find('p.jquery_form_error_message').remove(); 
 }
@@ -757,7 +772,8 @@ function removeValidationNameRecPop(){
 	}
 }
 </script>
-
+<script src="/resources/js/bootstrap-select.min.js"></script>
+<script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
 <script>
 function resetCredentials(type){
 	//Write by laxman start
@@ -768,6 +784,8 @@ function resetCredentials(type){
 		document.getElementById("recruiterRegistration_form").reset();
 		$("recruiterRegistration_form").validate().resetForm();
 	}else if(type == "Employer"){
+		$(".regDemoFields label").removeClass('test');
+		googleApiLocation('companyAddress','requestCountry');
 		$("#employerRegister_button").removeAttr("disabled");
 		document.getElementById("employerRegistration_form").reset();
 		$("employerRegistration_form").validate().resetForm();
@@ -831,6 +849,7 @@ function resetCredentials(type){
 	$.fn.checkPass = function() {   
 		var pass1 = document.getElementById('password');  
 	    var pass2 = document.getElementById('confirmPassword');
+	    
 	    $("#submit_button").attr("disabled", "disabled");
 	    
 	    if(pass1.value == pass2.value){
@@ -848,6 +867,39 @@ function resetCredentials(type){
     	    $("input#confirmPassword").after("<p class='jquery_form_error_message'> Passwords not matched</span>");
 			$('input#confirmPassword').attr('record-exist','yes');
 			$('input#confirmPassword').attr('record-exist-errorMsg','Passwords Not Matched'); 
+	    }
+   }
+	
+    $.fn.clear = function() {   
+    	 $('#confirmPassword').val('');
+    	
+	 return false;
+    }
+})(jQuery);
+</script>
+
+<script type="text/javascript">
+(function($) {
+	$.fn.checkProfPass = function() {   
+		var pass1 = document.getElementById('jsPassword');  
+	    var pass2 = document.getElementById('jsconfirmPassword');
+	    
+	    $("#submit_button").attr("disabled", "disabled");
+	    if(pass1.value == pass2.value){
+			 $("#submit_button").removeAttr("disabled");
+			 $('input#jsconfirmPassword').removeAttr( "record-exist record-exist-errormsg");
+    		 $('#passwordDiv').find('p.jquery_form_error_message').remove(); 
+			 $( "#submit_button" ).removeAttr("style");
+			 $( "#submit_button" ).click(function() {
+			 if ($(this).validate(false, validationSettings)){
+			 }
+			});
+	    }
+	    else{ 
+		    $('#passwordDiv').find('p.jquery_form_error_message').remove(); 
+    	    $("input#jsconfirmPassword").after("<p class='jquery_form_error_message'> Passwords not matched</span>");
+			$('input#jsconfirmPassword').attr('record-exist','yes');
+			$('input#jsconfirmPassword').attr('record-exist-errorMsg','Passwords Not Matched'); 
 	    }
    }
 	
@@ -908,7 +960,7 @@ function validateEmail(type){
 					     if(data == 'Invalid'){
 					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
 					    	    $('#pwdDiv').attr("style" , "display : none"); 
-					    	    $('#confirmPassword').removeAttr('data-validation');
+					    	    $('#jsconfirmPassword').removeAttr('data-validation');
 						 		$('#confirmPassword').attr('data-validation-optional',"true");
 						 		$('#password').removeAttr('data-validation');
 						 		$('#password').attr('data-validation-optional',"true");
@@ -926,20 +978,20 @@ function validateEmail(type){
 					     }else if(data == 'Not found'){
 					    	 $("#register_button").removeAttr("disabled");
 					    	 	$('#pwdDiv').attr("style" , "display : block"); 
-						 		$('#confirmPassword').removeAttr('data-validation-optional');
-								$('#confirmPassword').attr("data-validation","required");
-								$('#password').removeAttr('data-validation-optional');
-								$('#password').attr("data-validation","required");
+						 		$('#jsconfirmPassword').removeAttr('data-validation-optional');
+								$('#jsconfirmPassword').attr("data-validation","required");
+								$('#jsPassword').removeAttr('data-validation-optional');
+								$('#jsPassword').attr("data-validation","required");
 								$('#emailDiv').find('p.jquery_form_error_message').remove(); 
 								$('input#email').removeAttr('record-exist');
 			    				$('input#email').removeAttr('record-exist-errorMsg'); 
 					     }
 				       	else{
 				       		 $('#pwdDiv').attr("style" , "display : none"); 
-				       		$('#confirmPassword').removeAttr('data-validation');
-					 		$('#confirmPassword').attr('data-validation-optional',"true");
-					 		$('#password').removeAttr('data-validation');
-					 		$('#password').attr('data-validation-optional',"true");
+				       		$('#jsconfirmPassword').removeAttr('data-validation');
+					 		$('#jsconfirmPassword').attr('data-validation-optional',"true");
+					 		$('#jsPassword').removeAttr('data-validation');
+					 		$('#jsPassword').attr('data-validation-optional',"true");
 					 		
 				       		 $("#register_button").removeAttr("disabled");
 							 $('input#email').removeAttr( "record-exist record-exist-errormsg");
@@ -1108,18 +1160,11 @@ function validatepopRecruiterEmail(type){
 
 
 <script type="text/javascript">
-var validationSettings = {
-        errorMessagePosition : 'element',
-       borderColorOnError : '',
-		scrollToTopOnError : true,
-		dateFormat : 'yyyy/mm/dd' 
-   };  
          $('body').on('submit', '#professionalRegistration_form', function(e){
         	  $("#professionalRegistrationErrorMsg").val('');
         	  if($("#professionalRegistrationCheckTermsId").is(':checked')){
         		  $("#professionalRegistrationErrorMsg").val('NO');
         	  }
-        	 
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
             	/* var frm = $('#professionalRegistration_form').serializeFormJSON();
@@ -1179,8 +1224,10 @@ var validationSettings = {
             	return false;	
                }
             });
-         $('#professionalRegistration_form').showHelpOnFocus();
-            
+         $('body').on('blur', '#professionalRegistration_form', function() {
+        		$("#professionalRegistration_form").showHelpOnFocus();
+        		$("#professionalRegistration_form").validateOnBlur(false, validationSettings);
+        	});  
      
 	</script>
 	
@@ -1246,8 +1293,10 @@ var validationSettings = {
             	return false;	
                }
             });
-         $('#recruiterRegistration_form').showHelpOnFocus();
-            
+         $('body').on('blur', '#recruiterRegistration_form', function() {
+     		$("#recruiterRegistration_form").showHelpOnFocus();
+     		$("#recruiterRegistration_form").validateOnBlur(false, validationSettings);
+     	});     
      
 	</script>
 	
@@ -1387,8 +1436,9 @@ function applyInputSlide() {
     $(".regis_wrap_styles div input").on('blur', function () {
         if ($(this).val().trim() === "")
             $(this).parent(".regis_wrap_styles div").find('label').removeClass('test');
-    });	    
+    });
 }
+
 </script>
     
     
@@ -1441,7 +1491,7 @@ var config = {
    };
 })(jQuery);
 </script>
-
+<jsp:include page="googleApiLocation.jsp" />
 <div class="logMask"></div>
 <div class="terms_conditions">
 <div class="loPopClose" onclick="closeProfileDetailsPop();"><i class="fa fa-times"></i></div>
@@ -1610,6 +1660,121 @@ function validateOrgRequestCompanyName(){
 
 
 </script>
+
+
+<script>
+function passwordValidation(idValue,letter,capital,number,special,length){
+	var myInput = $("#"+idValue).val();
+	 
+	if(myInput.match(/[a-z]/g)){
+		$("#"+letter).removeClass("invalid");
+		$("#"+letter).addClass("actTe");
+	}else{
+		$("#"+letter).removeClass("actTe");
+		$("#"+letter).addClass("invalid");
+	} 
+	if(myInput.match(/[A-Z]/g)){
+		$("#"+capital).removeClass("invalid");
+		$("#"+capital).addClass("actTe");
+	}else{
+		$("#"+capital).removeClass("actTe");
+		$("#"+capital).addClass("invalid");
+	}
+	if(myInput.match(/[0-9]/g)){
+		$("#"+number).removeClass("invalid");
+		$("#"+number).addClass("actTe");
+	}else{
+		$("#"+number).removeClass("actTe");
+		$("#"+number).addClass("invalid");
+	}
+	if(myInput.match(/[$&+,:;=?@#|'<>.^*()%!-]/g)){
+		$("#"+special).removeClass("invalid");
+		$("#"+special).addClass("actTe");
+	}else{
+		$("#"+special).removeClass("actTe");
+		$("#"+special).addClass("invalid");
+	}
+	if(myInput.length >= 8){
+		$("#"+length).removeClass("invalid");
+		$("#"+length).addClass("actTe");
+	}else{
+		$("#"+length).removeClass("actTe");
+		$("#"+length).addClass("invalid");
+	}
+	
+}
+
+
+// When the user starts to type something inside the password field
+
+</script>
+
+<script>
+function showProfPassword(){
+	var passwordInput = document.getElementById('jsPassword');
+	if(passwordInput.type === "password"){
+		passwordInput.type = "text"
+	}else{
+		passwordInput.type = "password"
+	}
+	
+	
+}
+
+
+function showProfConfirmPassword(){
+	var confPasswordInput = document.getElementById('jsconfirmPassword');
+	if(confPasswordInput.type === "password"){
+		confPasswordInput.type = "text"
+	}else{
+		confPasswordInput.type = "password"
+	}
+	
+}
+
+function showRecPassword(){
+	var passwordInput = document.getElementById('recpassword');
+	if(passwordInput.type === "password"){
+		passwordInput.type = "text"
+	}else{
+		passwordInput.type = "password"
+	}
+	
+	
+}
+
+
+function showRecConfirmPassword(){
+	var confPasswordInput = document.getElementById('recconfirmPassword');
+	if(confPasswordInput.type === "password"){
+		confPasswordInput.type = "text"
+	}else{
+		confPasswordInput.type = "password"
+	}
+	
+}
+</script>
+
+
+<script>
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   };  
+</script>
+<script>
+$(document).ready(function(){
+	$(".posiRela input").focus(function(){
+		$(".passHint").show();
+	});
+	$(".posiRela input").blur(function(){
+		$(".passHint").hide();
+	});	
+});
+</script>
+
 <jsp:include page="socialinviterscripts.jsp" />
 <!--    Ends of validating the Company Email i,e removing duplicate values-->
 </html>

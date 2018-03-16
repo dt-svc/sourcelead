@@ -18,7 +18,7 @@
         </p>
         <a href="mailto:info@sourcelead.com"><i class="fa fa-envelope"></i>info@sourcelead.com</a><br>
         <a href="mailto:support@sourcelead.com"><i class="fa fa-envelope"></i>support@sourcelead.com</a><br>
-        <a href="tel:(214) 295-5535"><i class="fa fa-phone"></i>Phone : (214) 295-5535</a><br>
+        <a href="tel:(214) 295-5535"><i class="fa fa-phone"></i>Phone :  +1 972 999 2656</a><br>
         <a href="tel:(972) 559-3641"><i class="fa fa-fax"></i>FAX &nbsp; &nbsp; : (972) 559-3641</a>
     </div>
 
