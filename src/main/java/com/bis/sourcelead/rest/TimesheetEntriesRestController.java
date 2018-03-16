@@ -297,9 +297,11 @@ public class TimesheetEntriesRestController {
 	public void ExportTimeShhet(HttpServletRequest request,@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
 			@RequestParam(value="startDate", required=false) String startDate,
 			@RequestParam(value="endDate", required=false) String endDate,
-			@RequestParam(value="exportType", required=false) String exportType, 
+			@RequestParam(value="exportType", required=false) String exportType,
+			@RequestParam(value="requestFrom", required=false) String requestFrom,
 			HttpServletResponse response) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ProjectMembers projectMember =  null;
 		if(null != projectMemberId){
 			projectMember = projectMembersService.getProjectMemberById(projectMemberId);
@@ -307,9 +309,9 @@ public class TimesheetEntriesRestController {
 		
 		File file = null;
 		if(!"pdf".equalsIgnoreCase(exportType)){
-			file = exportTimesheetEntries.exportTimesheets(projectMember,startDate,endDate,orgLocations);
+			file = exportTimesheetEntries.exportTimesheets(projectMember,startDate,endDate,orgLocations,requestFrom,loginUser);
 		}else{
-			file = timeSheetPdfUtil.exportTimesheetPdf(projectMember,startDate,endDate,orgLocations);
+			file = timeSheetPdfUtil.exportTimesheetPdf(projectMember,startDate,endDate,orgLocations,requestFrom,loginUser);
 		}
 		
 		if(file != null){
