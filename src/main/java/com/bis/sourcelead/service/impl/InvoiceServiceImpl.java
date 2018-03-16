@@ -1274,9 +1274,14 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Invoice invoi
 	}
 	
 	if(null != invoice.getInvoiceStatus() && !"".equalsIgnoreCase(invoice.getInvoiceStatus())){
+		if(Constants.SENT.equalsIgnoreCase(invoice.getInvoiceStatus())){
+			writeRow.createCell(10).setCellValue("Sent");
+		}else if(Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus())){
+			writeRow.createCell(10).setCellValue("Draft");
+		}else{
 		 writeRow.createCell(10).setCellValue(invoice.getInvoiceStatus());
 	}
-	
+	}
 	if(null != invoice.getPaymentStatus() && !"".equalsIgnoreCase(invoice.getPaymentStatus())){
 		writeRow.createCell(11).setCellValue(invoice.getPaymentStatus());
 	}

@@ -163,7 +163,14 @@ function compareRecommendedUsersdiv(data,requirementId){
 	result = result +'<li><label>Rate : </label><span title="'+rate+'">'+rate+'</span></li>';
 	result = result +'<li><label>Experience : </label><span title="'+minexp+'-'+maxexp+'">'+minexp+''+maxexp+'Year(s)</span></li>';
 	result = result +'<li><label>Notice Period : </label><span title="'+jobNoticePeriod+'">'+jobNoticePeriod+'</span></li>';
-	result = result +'<li class="MultLi"><label>Location : </label><span title="'+jobLocation+'">'+jobLocation+'</span></li>';
+	result = result +'<li class="locationLi"><label>Location : </label>';
+	
+	result = result +'<div class="scrollDiv">';
+	for(var e in data.jobLocationList) {
+		result = result +'<span title="'+data.jobLocationList[e]+'">'+data.jobLocationList[e]+'</span><br/>';
+	}
+	result = result +'</div>';
+	result = result +'</li>';
 	result = result +'<li class="MultLi"><label>Education : </label><span title="'+jobEducation+'">'+jobEducation+'</span></li>';
 	result = result +'<li class="MultLi"><label>Visa : </label><span title="'+jobVisa+'">'+jobVisa+'</span></li>';
 	result = result +'<li class="MultLi"><label>Skills : </label><span title="'+jobSkills+'">'+jobSkills+'</span></li>';
@@ -390,7 +397,7 @@ function prepareCandidateGrid(data,requirementId){
     	    		opt = opt +'<li title="'+rate+'">'+rate+'</li>';
     	    		opt = opt +'<li title="'+totalExp+'">'+totalExp+'</li>';
     	    		opt = opt +'<li title="'+noticePriod+'">'+noticePriod+'</li>';
-    	    		opt = opt +'<li title="'+location+'" class="MultLi">'+location+'</li>';
+    	    		opt = opt +'<li title="'+location+'" class="locationLi">'+location+'</li>';
     	    		opt = opt +'<li title="'+candieducation+'" class="MultLi">'+candieducation+'</li>';
     	    		opt = opt +'<li title="'+candivisaType+'" class="MultLi">'+candivisaType+'</li>';
     	    		opt = opt +'<li title="'+skillsName+'" class="MultLi">'+skillsName+'</li>';
