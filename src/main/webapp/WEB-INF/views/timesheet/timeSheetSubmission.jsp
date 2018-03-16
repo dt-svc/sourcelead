@@ -1250,8 +1250,13 @@ function timesheetEntriesExport(exportType){
 	var endDate = dateFrequency[1];
 	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	var status = '${timesheetSubmissionDTO.timesheetStatus}';
+	 var tableFor = $("#tableFor").val();
+	 var requestFrom = "employee";
+	 if(tableFor != null && tableFor != 'undefined' && tableFor != ''){
+		 requestFrom = tableFor;
+	 }
 	if(status != null && status != 'undefined' && status != '' && status != 'NEW' && status != 'new'){
-		window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType;
+		window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&requestFrom="+requestFrom;
 	}else{
 		alert("Please fill the TimeSheets..");
 	}

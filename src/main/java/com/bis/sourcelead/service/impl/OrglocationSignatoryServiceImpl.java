@@ -142,7 +142,8 @@ public class OrglocationSignatoryServiceImpl implements OrglocationSignatoryServ
 			signDto.setRoleType(sign.getUserRoleId().getRoles().getDisplayName());
 			if(sign.getUserId().getSsn() != null)
 				signDto.setSsn(sign.getUserId().getSsn().toString());
-			signDto.setAuthorizedAmount(sign.getAuthorizedAmount().toString());
+			if(sign.getAuthorizedAmount() != null)
+				signDto.setAuthorizedAmount(sign.getAuthorizedAmount().toString());
 			signDto.setUuid(sign.getUuid());
 			signDto.setStatus(sign.getStatus());
 			list.add(signDto);
