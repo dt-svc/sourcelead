@@ -196,9 +196,11 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 					 ProjectMembers projectMember = projectMembersDao.getProjectMembersByMasterCandidateIdAndProjectIdLocationIdForExpences(expensesApproverHierarchy.getExpenseId().getProjectMembers().getMasterCandidateId().getId(), expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjects().getId(),orgLoc.getId());
 							 //expensesApproverHierarchy.getExpenseId().getProjectMembers();
 					 ProjectMembers pmWithUser =projectMembersDao.getConsultantUserProjectMemberByProjectMemberId(expensesApproverHierarchy.getExpenseId().getProjectMembers().getId());
-					if (projectMember != null && null != projectMember.getProjectMemberCandidteId()) {
+					
+					 if (projectMember != null && null != projectMember.getProjectMemberCandidteId()) {
 							if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && StringUtils.isNotBlank(projectMember.getProjectMemberCandidteId().getDesignationType())){
-								String empType = projectMember.getProjectMemberCandidteId().getDesignationType();
+								 String empType = null; empType = projectMember.getProjectMemberCandidteId().getDesignationType();
+								 expensesApproverHierarchy.setEmpType(empType);
 								if(empType.equalsIgnoreCase("C2C") || empType.equalsIgnoreCase("C2C-1099")){
 									OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
 									if(orgRelation !=  null && orgRelation.getResponderLocationId() != null && StringUtils.isNotBlank(orgRelation.getResponderLocationId().getOrgLocationName())) {
@@ -280,20 +282,22 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 		expensesApproverHierarchyDto.setExpenseId(expensesApproverHierarchy.getExpenseId().getExpenseId());
 		expensesApproverHierarchyDto.setExpensesStatus(expensesApproverHierarchy.getExpenseStatus().getValue());
 		expensesApproverHierarchyDto.setExpenseApprovalStatus(expensesApproverHierarchy.getExpenseApprovalStatus().toString());
-		 if(null != projectMember && 
-				 null != projectMember.getProjectClientsId().getOrgRelationId()){
-	    	 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(projectMember.getProjectClientsId().getOrgRelationId().getId());
-	   	 if(null != projectMember.getProjectClientsId().getOrgRelationId().getLocationId() && projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getId() != null && projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-					if(orgRelations.getResponderLocationId() != null){
-						expensesApproverHierarchyDto.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
+		if(StringUtils.isNotBlank(expensesApproverHierarchy.getEmpType()) &&(expensesApproverHierarchy.getEmpType().equalsIgnoreCase("C2C") || expensesApproverHierarchy.getEmpType().equalsIgnoreCase("C2C-1099")) ) {
+			if(null != projectMember && 
+					 null != projectMember.getProjectClientsId().getOrgRelationId()){
+		    	 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(projectMember.getProjectClientsId().getOrgRelationId().getId());
+		   	 if(null != projectMember.getProjectClientsId().getOrgRelationId().getLocationId() && projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getId() != null && projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+						if(orgRelations.getResponderLocationId() != null){
+							expensesApproverHierarchyDto.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
+						}
 					}
-				}
-				if(null != projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId() && null != projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId() && projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-					if(orgRelations.getLocationId() != null){
-						expensesApproverHierarchyDto.setClientName(orgRelations.getLocationId().getOrgLocationName());
+					if(null != projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId() && null != projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId() && projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+						if(orgRelations.getLocationId() != null){
+							expensesApproverHierarchyDto.setClientName(orgRelations.getLocationId().getOrgLocationName());
+						}
 					}
-				}
-	    }
+		    }
+		}
 		expensesApproverHierarchyDto.setTotalAmount(expensesApproverHierarchy.getExpenseId().getTotalAmount());
 		expensesApproverHierarchyDto.setTdSpanLength("9");
 		if(expensesApproverHierarchy.getActionbyorglocid()!= null) {

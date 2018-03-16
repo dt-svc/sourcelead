@@ -171,9 +171,9 @@ $("#loadingId").attr('style','position:absolute; width:100%; height:100%; backgr
 $.ajax({
     type : "POST",
      url: sourceleadUrl+"/getExpensesReportList?"+tokenParamName+"="+tokenValue+"&datequarterly="+datequarterly,       
-     success :function(data) {
+     success :function(json) {
     	 $("#loadingId").removeAttr('style');
-    	 	var json = JSON.parse(data);
+    	 	//var json = JSON.parse(data);
     	 if(json != null && json != '' && json != 'undefined'){
     	 	var result = '';
     	 	var  dateresult="";
@@ -186,9 +186,11 @@ $.ajax({
  			var months = [];
  			for (var i = 0; i < 1; i++) {
  				var opt = json[i].monthsStringFormat;
- 				for (var j = 0; j < opt.length; j++) {
- 					result=result+'<th>'+opt[j]+'</th>';
- 					months.push(opt[j]);
+ 				if(opt != null && opt!='' && opt !='undefined'){
+ 					for (var j = 0; j < opt.length; j++) {
+ 	 					result=result+'<th>'+opt[j]+'</th>';
+ 	 					months.push(opt[j]);
+ 	 				}
  				}
 		    	 /* for (var key in optMap.monthsStringFormat) {
 		    		  if (optMap.monthsStringFormat.hasOwnProperty(key)) {
