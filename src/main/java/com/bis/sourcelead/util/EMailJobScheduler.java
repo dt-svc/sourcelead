@@ -2091,7 +2091,7 @@ public class EMailJobScheduler {
 	@Scheduled(cron = "0 0 9 1/1 * ?")
 	@Async
 	public void holidayNotificationToUsers() throws Exception {
-		DateTime zoned = new DateTime();
+		DateTime zoned = new DateTime();	
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
 		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
 		DateFormat ts = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

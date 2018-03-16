@@ -63,7 +63,6 @@ import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveManagementHistory;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
-import com.bis.sourcelead.entity.MonthlyLeaves;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Option;
 import com.bis.sourcelead.entity.Org;
@@ -1087,10 +1086,24 @@ public class LeaveManagementRestController {
 			HttpServletResponse response) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("notifyLink", notifyLink);
-		model.addObject("leaveUUID", leaveUUID);
+		
+		if(StringUtils.isNotBlank(leaveUUID)){
+			Leave leave = leaveService.getLeaveByLeaveUUId(leaveUUID);
+			model.addObject("leaveUUID", leaveUUID);
+			if ("APPROVED".equalsIgnoreCase(leave.getStatus())) {
+				model.setViewName("leavemanagement/employeeApprovedLeaves");
+			} else if ("REJECTED".equalsIgnoreCase(leave.getStatus())) {
+				model.setViewName("leavemanagement/employeeRejectedLeaves");
+			} else {
+				model.setViewName("leavemanagement/employeeRequestedLeaves");
+			}
+		}else{
+			model.setViewName("leavemanagement/employeeRequestedLeaves");
+		}
+		
 		model.addObject("orgLocationId", orgLocationId);
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("leavemanagement/employeeRequestedLeaves");
+		
 		return model;
 	}
 	

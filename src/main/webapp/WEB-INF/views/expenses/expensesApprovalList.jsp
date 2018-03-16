@@ -223,7 +223,7 @@ $.ajax({
     type : "POST",
      url: sourceleadUrl+"/getExpensesApprovalList?"+tokenParamName+"="+tokenValue+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate+"&searchValue="+searchValue,      
      success :function(data) {
-    	$("#approverDataExpensesDiv").empty();
+    	 $("#approverDataExpensesDiv").empty(); 
 		$("#approverDataExpensesDiv").append(data);
 		$("#loadingId").removeAttr('style');
 		preparePagination(1);
