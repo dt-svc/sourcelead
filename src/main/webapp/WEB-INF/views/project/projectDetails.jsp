@@ -1037,6 +1037,9 @@ function projectStatus(){
 							$("#empTab").removeAttr("onClick");
 			   		    	$("#empTab").attr("onclick","projectEmployee('"+projectId+"', '"+json.startDateStr+"', '"+json.endDateStr+"', '"+json.projectStatus+"', '"+json.projectName+"')");
 			   		    	
+			   		    	$("#teamTab").removeAttr("onClick");
+			   		    	$("#teamTab").attr("onclick","projectTeam('"+projectId+"', '"+json.startDateStr+"', '"+json.endDateStr+"', '"+json.projectStatus+"', '"+json.projectName+"')");
+			   		    	
 			   		    	$("#taskTab").removeAttr("onClick");
 			   		    	$("#taskTab").attr("onclick","projectTask('"+projectId+"', '"+json.projectStatus+"')");
 						}
@@ -1075,6 +1078,9 @@ function projectStatus(){
 							var json = JSON.parse(data);
 							$("#empTab").removeAttr("onClick");
 			   		    	$("#empTab").attr("onclick","projectEmployee('"+projectId+"', '"+json.startDateStr+"', '"+json.endDateStr+"', '"+json.projectStatus+"', '"+json.projectName+"')");
+			   		    	
+			   		    	$("#teamTab").removeAttr("onClick");
+			   		    	$("#teamTab").attr("onclick","projectTeam('"+projectId+"', '"+json.startDateStr+"', '"+json.endDateStr+"', '"+json.projectStatus+"', '"+json.projectName+"')");
 			   		    	
 			   		    	$("#taskTab").removeAttr("onClick");
 			   		    	$("#taskTab").attr("onclick","projectTask('"+projectId+"', '"+json.projectStatus+"')");

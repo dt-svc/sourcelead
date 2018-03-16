@@ -2150,6 +2150,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 					 if(userRole != null){
 						 pm.setUserRoleType(userRole.getUserType());
 						 pm.setUserRoleId(userRole.getId());
+						 pm.setProjectMemberStatus(userRole.getUserState().name());
 					 } 
 				 }else{
 					 pm.setUserRoleType("Candidate");
@@ -2822,6 +2823,9 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 					
 					
 				}
+				
+				projects.setIsTimesheetAttachmentRequired(1);
+				projectsDao.updateProject(projects);
 				return projects;
 			}
 

@@ -1533,12 +1533,14 @@ function changeValidationType() {
 	
 	if(isVisible == 'N'){
 		$("div[name=fieldVisible] input").each(function() {
-			if($(this).attr('data-validation') && $(this).attr('data-validation') === "required") {
-				$(this).attr('data-validation-optional', 'true');
-				$(this).removeAttr('data-validation');
-			} else if($(this).attr('data-validation-optional')) {
-				$(this).attr('data-validation', 'required');
-				$(this).removeAttr('data-validation-optional');
+			if($(this).attr('data-check') && ($(this).attr('data-check') === true || $(this).attr('data-check') === "true")){
+				if($(this).attr('data-validation') && $(this).attr('data-validation') === "required") {
+					$(this).attr('data-validation-optional', 'true');
+					$(this).removeAttr('data-validation');
+				} else if($(this).attr('data-validation-optional')) {
+					$(this).attr('data-validation', 'required');
+					$(this).removeAttr('data-validation-optional');
+				}
 			}
 		});
 	}
