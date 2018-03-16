@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -18,6 +19,7 @@ import com.bis.sourcelead.dao.ContactsGroupDao;
 import com.bis.sourcelead.dao.ReferContactsDao;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ContactsGroup;
+import com.bis.sourcelead.entity.ProjectDocumentFolder;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -165,6 +167,33 @@ public class ContactsGroupDaoImpl implements ContactsGroupDao {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return null;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ContactsGroup validateGrouppNameByGroupNameAndGroupId(String groupName, Long groupid) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ContactsGroup cg  where cg.id =:groupid and cg.groupName =:groupName ";
+		List<ContactsGroup> contactsGroupList =session.createQuery(query) .setString("groupName", groupName).setLong("groupid", groupid).list();
+		ContactsGroup contactsGroup = null;
+		if(contactsGroupList != null && !contactsGroupList.isEmpty())
+		{
+			contactsGroup = (ContactsGroup) contactsGroupList.iterator().next();
+		}
+		return contactsGroup;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validateGroupNameByGroupNameAndUserId(String groupName, Long userId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+			 String query = "from ContactsGroup cg  where cg.groupName =:groupName and cg.createdUser.id =:userId ";
+				Collection<ContactsGroup> contactsGroupList = session.createQuery(query) .setString("groupName", groupName).setLong("userId", userId).list();
+				if (contactsGroupList != null && contactsGroupList.size() > 0) {
+					flag = true;
+				}
+		return flag;
 	}
 
 
