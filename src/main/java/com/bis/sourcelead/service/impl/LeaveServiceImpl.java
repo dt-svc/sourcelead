@@ -211,6 +211,7 @@ public class LeaveServiceImpl implements LeaveService{
 		if(savedLeave !=null) {
 			LeaveManagementHistory leaveManagementHistory = leaveManagementHistoryService.saveLeaveManagementHistory(leave,user);
 			for(String approverUserId :leaveDTO.getApproverUser()){
+				leaveDTO.setLeaveUUID(savedLeave.getLeaveUUID());
 			User approverUser = userService.getUserById(Long.parseLong(approverUserId));
 			if(user.getId().longValue() != approverUser.getId().longValue())
 			sendLeaveEmailToApprovers(user, leaveDTO, orgLocations,approverUser);
