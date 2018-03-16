@@ -2088,7 +2088,8 @@ public class EMailJobScheduler {
 	  * cron runs every day at 9 AM to send notifications email  about holiday to all users
 	  * @throws Exception
 	  */
-	@Scheduled(cron = "0 0 9 1/1 * ?")
+	//@Scheduled(cron = "0 0 9 1/1 * ?")
+	 @Scheduled(cron = "0 0/1 * 1/1 * ?")
 	@Async
 	public void holidayNotificationToUsers() throws Exception {
 		DateTime zoned = new DateTime();
@@ -2168,7 +2169,7 @@ public class EMailJobScheduler {
 							globalVarsMap);
 					notificationScenario.setBody(notificationBody);
 					StringBuilder actionLinkBuilder = new StringBuilder();
-					String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("viewHoliday").toString();
+					String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("leaveManagementReports").toString();
 					emailScenerioUtil.sendNotification(actionLink, orgLocations.getOrg().getUser(), user, orgLocations,notificationScenario);
 
 				}
