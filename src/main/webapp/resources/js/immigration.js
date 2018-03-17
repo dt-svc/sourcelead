@@ -22,7 +22,6 @@ function Immigration(){
 		       type : "POST",
 		       data: formData,
 		       success: function(data) {
-		    	   console.log("inside success");
 		    	   eval("jsonObj="+data);
 		    	   if(jsonObj.status =='success'){
 		    		   immTemplId=jsonObj.id;
@@ -48,13 +47,11 @@ function Immigration(){
 		if ($('#PetitionTemplateDocDetails').validate(false, validationSettings)) {
 		var formData = getFormData("PetitionTemplateDocDetails");
 		formData.immigrationDocDeletedListIds = deletedDocListIds.join();
-		console.log(formData);
 		$.ajax({
 		       url: sourceleadUrl+immiModulePath+"/savePetitionTemplateDocDetails",
 		       type : "POST",
 		       data: formData,
 		       success: function(data) {
-		    	   console.log("inside savePetitionTemplateDocDetails success");
 		    	   if(data == 'success'){
 		    		   if(status == 'saveContinue'){
 				    	   $("#addNewPetitionTemplateDiv").empty();
@@ -82,7 +79,6 @@ function Immigration(){
 		       type : "POST",
 		       data: formData,
 		       success: function(data) {
-		    	   console.log("inside savePetitionTemplateFormDetails success");
 		    	   if(data == 'success'){
 		    		   if(status == 'saveContinue'){
 			    	   $("#addNewPetitionTemplateDiv").empty();
@@ -119,7 +115,6 @@ function Immigration(){
 		       processData: false,
 			   contentType:false,
 		       success: function(data) {
-		    	   console.log("inside savePetitionTemplateTaskDetails success");
 		    	   $(".popMask").fadeOut(200);
 				   $("#taskViewPopup").fadeOut(100);
 		    	   if(data == 'success'){
@@ -165,7 +160,6 @@ function Immigration(){
 		}else if(status == 'two'){
 			if ($("#petitionDetailsForm").validate(false, validationSettings)) {
 				var formData = getFormData("petitionDetailsForm");
-				console.log(formData);
 				$.ajax({
 				       url: sourceleadUrl+immiModulePath+"/savePetitionDetailsPage",
 				       type : "POST",

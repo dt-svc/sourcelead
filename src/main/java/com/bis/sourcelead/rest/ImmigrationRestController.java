@@ -42,11 +42,6 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.google.gson.Gson;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
 @RequestMapping("/app/immigration")
@@ -137,9 +132,8 @@ public class ImmigrationRestController {
 	
 
 	@RequestMapping(value = { "getAllActiveCandidatesByLocation" }, method = RequestMethod.GET)
-	public String getAllActiveCandidatesByLocation(HttpServletRequest request) {
+	public @ResponseBody List<Candidate>  getAllActiveCandidatesByLocation(HttpServletRequest request) {
 		List<Candidate> candidateList = null;
-		System.out.println("inside getAllActiveCandidatesByLocation");
 		try {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			 candidateList = candidateService.getAllActiveCandidatesByLocation(orgLocations.getId());
@@ -148,11 +142,9 @@ public class ImmigrationRestController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Gson gson=new Gson();
-	    String gsondata=gson.toJson(candidateList).replace("\\", "\\\\");
-	   // System.out.println("gsondata----> ");
-	 //	System.out.println(gsondata);
-		return gsondata;
+		// Gson gson=new Gson();
+	   //  gsondata=gson.toJson(candidateList);//.replace("\\", "\\\\");
+		return candidateList;
 	}
 	
 	

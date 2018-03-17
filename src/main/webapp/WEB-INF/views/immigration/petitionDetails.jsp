@@ -693,23 +693,18 @@ var candidateByOrgObject = {};
 function getCandidatesByOrgLocation(){
 	 console.log(" before getCandidatesByOrgLocation function calling ---->");
 	 urltest = sourceleadUrl+immiModulePath+"/getAllActiveCandidatesByLocation";
-	 console.log(urltest);
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+immiModulePath+"/getAllActiveCandidatesByLocation", 
 		        success: function(data) {
-		        	 var json = JSON.parse(data);
-		        	 temp =json;
-		        	console.log(" inside success ---->");
-		        	$('#candidateId').empty();
+		        	 $('#candidateId').empty();
 		        	$('#candidateId').append('<option value="">--Select Beneficiary --</option>');
-		        	//jsonObjMap = {};
-		            for(var i=0;i<json.length;i++){
-		            	 var opt = json[i];
+		            for(var i=0;i<data.length;i++){
+		            	 var opt = data[i];
 		            	 candidateByOrgObject[opt.id]= opt;
 		            	$('#candidateId').append('<option value='+opt.id+' >'+opt.firstName+" "+opt.lastName+'</option>');
 		            }
-		            $('#candidateId').trigger("chosen:updated");
+		            $('#candidateId').trigger("chosen:updated"); 
 		           /*  updateCandiateInfo(); */
 		   }
    });
@@ -798,7 +793,6 @@ $("#experienceValue").change(function () {
 		        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
-		        	console.log(" inside success ---->");
 		        	$('#attorneyId').empty();
 		        	$('#attorneyId').append('<option value="">--Select Attorney --</option>');
 		            for(var i=0;i<json.length;i++){
@@ -832,10 +826,10 @@ $("#experienceValue").change(function () {
  </script>
    <script type="text/javascript">
 	  $( document ).ready(function() {
-		  $('#rateCurrency').selectpicker('refresh'); 
+		  $('#rateCurrency').selectpicker('refresh');  // manually refreshing select picker due to bootstrap css loading issue.
 		  $('#rateType').selectpicker('refresh');
 		  getAttorneysByOrgLocation();
-		  getCandidatesByOrgLocation();
+		 getCandidatesByOrgLocation();
 		  getPetitionTypeDropDown();
 		  getUscisTypeDropDown();
 		  employmentLevelDropDown();
@@ -1050,7 +1044,6 @@ function  removeValidationAttorneyContact() {
 	 //$( "#myselect option:selected" ).val()
 	 function updateCandiateInfo(obj){
 		var candidateObj=candidateByOrgObject[obj.val()];
-		console.log(candidateObj);
 		
 		$("#firstName").val(candidateObj.firstName);
 		$("#lastName").val(candidateObj.lastName);
@@ -1068,7 +1061,6 @@ function  removeValidationAttorneyContact() {
 		$('input[name="maritalStatus"]').prop('checked', false); // reset the value 
 	
 		if(typeof candidateObj.maritalStatus !='undefined' && candidateObj.maritalStatus!=''){ // set the value if not empty
-			console.log("candidateObj.maritalStatus"+candidateObj.maritalStatus);
 		$('input:radio[name=maritalStatus][value='+candidateObj.maritalStatus+']').click();
 		}
 		// set the residenc details
@@ -1082,7 +1074,6 @@ function  removeValidationAttorneyContact() {
 		$("#experienceMonths").val(candidateObj.experienceMonths);
 		
 		// setting the date for the date of birth field.
-		console.log(candidateObj.dateOfBirth);
 		if(typeof  candidateObj.dateOfBirth != 'undefined' && candidateObj.dateOfBirth!=''){
 			var dateOfBirth =  moment(candidateObj.dateOfBirth).format("DD-MM-YYYY");
 		   $("#birthDate").val(dateOfBirth);
