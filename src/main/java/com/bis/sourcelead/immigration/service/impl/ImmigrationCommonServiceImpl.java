@@ -19,9 +19,11 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ImmigrationDTO;
+import com.bis.sourcelead.dto.ImmigrationResidenceDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateLcaI94Summary;
+import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
@@ -66,6 +68,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	public void savePetitionDetails(ImmigrationDTO immigrationDTO, User user,OrgLocations orgLocations){
 		
 		try {
+			
 		/*get the candidate details*/
 		Candidate candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(immigrationDTO.getCandidateId()));
 		//candidate.setId(Long.parseLong(immigrationDTO.getCandidateId()));
@@ -120,7 +123,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		candidate.setI94No(immigrationDTO.getI_94_number());
 		candidate.setUpdatedBy(user.getId().toString());
 		candidate.setUpdatedDate(new Date());
-		candidate.setLocation(immigrationDTO.getLocation());
+		candidate.setLocation(immigrationDTO.getLocation()); // considered as a primary residence address.
 		candidate.setAddress(immigrationDTO.getAddress());
 		candidate.setCity(immigrationDTO.getCity());
 		candidate.setState(immigrationDTO.getState());
@@ -215,8 +218,38 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		lcaSummaryPrev.setUpdatedDate(date);
 		
 		lcaSummaryLst.add(lcaSummaryPrev); // add previous lca
+		List<CandidateResidence> residenceList = new ArrayList<CandidateResidence>(); // add residences to immigration candidate tables
+			if (immigrationDTO.getResidenceList() != null) { 
+				List<ImmigrationResidenceDTO> residenceDtoLst = immigrationDTO.getResidenceList();
+				for (ImmigrationResidenceDTO residenceDto : residenceDtoLst) {
+					if(StringUtils.isEmpty(residenceDto.getCountry()) ) continue; // skip the empty records if one of the required field value
+					CandidateResidence residenceEntity = new CandidateResidence();
+					residenceEntity.setCandidate(candidate);
+					residenceEntity.setCity(residenceDto.getCity());
+					residenceEntity.setCountry(residenceDto.getCountry());
+					residenceEntity.setLocation(residenceDto.getLocation());
+					residenceEntity.setStreetAddress(residenceDto.getAddress());
+					residenceEntity.setState(residenceDto.getState());
+					residenceEntity.setZipcode(residenceDto.getZipcode());
+					if(!StringUtils.isEmpty(residenceDto.getResidenceStartDate())){
+					residenceEntity.setStartDate((commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
+							residenceDto.getResidenceStartDate())));
+					}
+					if(!StringUtils.isEmpty(residenceDto.getResidenceEndDate())){
+					residenceEntity.setEndDate((commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
+							residenceDto.getResidenceEndDate())));
+					}
+					residenceEntity.setIsCurrAddress(Constants.NO); // default No for multiple residences treated as secondary residences.
+					residenceEntity.setStatus(1);
+					residenceEntity.setCreatedDate(new Date());
+					residenceEntity.setUpdatedDate(new Date());
+					residenceEntity.setCreatedBy(user);
+					residenceEntity.setUpdatedBy(user);
+					residenceList.add(residenceEntity);
+				}
+			}
 		
-		immigrationCommonDao.savePetitionDetails(immigration,candidate,candidateIdendities,candidateResume,lcaSummaryLst);
+		immigrationCommonDao.savePetitionDetails(immigration,candidate,candidateIdendities,candidateResume,lcaSummaryLst, residenceList);
 		}catch(Exception e) {
 			logger.error("Exception caugth in savePetitionDetails service"+ e.getMessage());
 			e.printStackTrace();

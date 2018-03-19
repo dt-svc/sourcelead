@@ -19,51 +19,53 @@ import com.bis.sourcelead.entity.ImmigrationTemplateForms;
 import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.User;
+
 /**
  * @author Srinivas.Sabbu
  *
  */
 public interface ImmigrationTemplateDao {
 
-	Long savePetitionTemplateDetails(ImmigrationTemplate immigrationTemplate, String templateId);
-	
-	ImmigrationTemplateDTO getPetitionTemplateDetails(Long templateId);
-	
-	ImmigrationTemplateDocs savePetitionTemplateDocDetails(ImmigrationTemplateDocs immigrationTemplateDocs);
-	
-	void savePetitionTemplateTaskDetails(ImmigrationTemplateTasks immigrationTemplateTask);
-	
-	void deletePetitionTemplateDocDetails(String remainingDocsIds);
-	
-	void deletePetitionTemplateFormDetails(String remainingFormIds);
-	
-	ResponseList<ImmigrationTemplateListDTO> getAllTemplateDetails(ImmigrationTemplateListDTO templateListDTO, String searchValue,Long orgLocationId);
-	
-	ImmigrationTemplateForms savePetitionTemplateFormDetails(ImmigrationTemplateForms immigrationTemplateForms);
+    Long savePetitionTemplateDetails(ImmigrationTemplate immigrationTemplate, String templateId);
 
-	ImmigrationTemplateForms getImmigrationTemplateFormsById(Long immigrationId);
+    ImmigrationTemplateDTO getPetitionTemplateDetails(Long templateId);
 
-	ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO, String searchValue) throws Exception;
+    ImmigrationTemplateDocs savePetitionTemplateDocDetails(ImmigrationTemplateDocs immigrationTemplateDocs);
 
-	ImmigrationTemplateTasks editImmigrationTaskList(String id);
-	
-	List<ImmigrationTemplateDocDTO> getImmigrationTemplateDocsListById(Long templateId);
-	
-	List<ImmigrationTemplateFormDTO> getImmigrationTemplateformsListById(Long templateId);
-	
-	void deleteAllPetitionTemplateDetailsById(Long templateId);
+    void savePetitionTemplateTaskDetails(ImmigrationTemplateTasks immigrationTemplateTask);
 
-	User getUserById(Long Id) throws Exception;
+    void deletePetitionTemplateDocDetails(String remainingDocsIds);
 
-	void deleteImmigrationTaskList(String id);
+    void deletePetitionTemplateFormDetails(String remainingFormIds);
 
-	int savePetitionTemplateDetailsValues(String templateId);
+    ResponseList<ImmigrationTemplateListDTO> getAllTemplateDetails(ImmigrationTemplateListDTO templateListDTO, String searchValue, Long orgLocationId);
 
-	List<CandidateEmployers> getPetitionTemplateEmployers(Long id);
+    ImmigrationTemplateForms savePetitionTemplateFormDetails(ImmigrationTemplateForms immigrationTemplateForms);
 
-	List<LookUpData> getLookupDataByType(String type);
+    ImmigrationTemplateForms getImmigrationTemplateFormsById(Long immigrationId);
 
-	
-	
-	
+    ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO, String searchValue) throws Exception;
+
+    ImmigrationTemplateTasks editImmigrationTaskList(String id);
+
+    List<ImmigrationTemplateDocDTO> getImmigrationTemplateDocsListById(Long templateId);
+
+    List<ImmigrationTemplateFormDTO> getImmigrationTemplateformsListById(Long templateId);
+
+    void deleteAllPetitionTemplateDetailsById(Long templateId);
+
+    User getUserById(Long Id) throws Exception;
+
+    void deleteImmigrationTaskList(String id);
+
+    int savePetitionTemplateDetailsValues(String templateId);
+
+    List<CandidateEmployers> getPetitionTemplateEmployers(Long id);
+
+    List<LookUpData> getLookupDataByType(String type);
+
+    void savePetitionDetails(Immigration immigration, Candidate candidate, CandidateIdendities candidateIdendities,
+            CandidateResumes candidateResume, List<CandidateLcaI94Summary> lcaSummaryLst) throws Exception;
+
+    public boolean validateTemplateNameExistance(String templateName, Long templateId);
 }
