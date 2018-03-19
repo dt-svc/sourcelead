@@ -1585,7 +1585,7 @@ public class LeaveServiceImpl implements LeaveService{
 		ResponseList<Leave> leaveResponse = getTopLeavetakers(orgLocations, leaveDTO);
 		
 		List<Leave> leaveList = leaveResponse.getData();
-		HashMap<Long, Float> reportMap = new HashMap<>();
+		HashMap<Long, LeaveDTO> reportMap = new HashMap<>();
 		int column = 0;
 		float totalbalanceLeaveCounts = 0;
 		
@@ -1594,7 +1594,10 @@ public class LeaveServiceImpl implements LeaveService{
 			int totalLeaves = 0;
 			
 			if(reportMap.containsKey(leave.getUser().getId())){
-				totalbalanceLeaveCounts = reportMap.get(leave.getUser().getId());
+				if(leave.getLeaveType().getName().equalsIgnoreCase(reportMap.get(leave.getUser().getId()).getLeaveType())) 
+					totalbalanceLeaveCounts = Float.valueOf(reportMap.get(leave.getUser().getId()).getBalanceleaves());
+				else
+					totalbalanceLeaveCounts = leave.getLeaveType().getNoOfDays();
 			}else {
 				totalbalanceLeaveCounts = leave.getLeaveType().getNoOfDays();
 			}
@@ -1619,6 +1622,7 @@ public class LeaveServiceImpl implements LeaveService{
 				totalbalanceLeaveCounts = totalbalanceLeaveCounts - (appliedLeaveCount - leave.getExtraLeavesTaken());
 			}
 			
+//			leaveDto.setLeaveTypeNoOfDays(leave.getLeaveType().getNoOfDays());
 			leaveDto.setDuration(date.toString());
 			leaveDto.setUserId(String.valueOf(leave.getUser().getId()));
 			leaveDto.setEmpName(sb.toString());
@@ -1630,7 +1634,7 @@ public class LeaveServiceImpl implements LeaveService{
 			totalLeaves = totalLeaves + leave.getNumberOfDays();
 			leaveDto.setNoOfDays(totalLeaves);
 			
-			reportMap.put(leave.getUser().getId(), totalbalanceLeaveCounts);
+			reportMap.put(leave.getUser().getId(), leaveDto);
 			leaveDtoList.add(leaveDto);
 			
 		}
