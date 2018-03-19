@@ -474,7 +474,7 @@ public class FinanceReportRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/paidBillDetails")
-	public ModelAndView paidBillDetails(@RequestParam(value = "orgRelationId",required = false) Long orgRelationId,HttpServletRequest request) throws Exception
+	public ModelAndView paidBillDetails(@RequestParam(value = "orgRelationId",required = false) Long orgRelationId,@RequestParam(value = "billType",required = false) String billType,HttpServletRequest request) throws Exception
 	{
 		 ModelAndView model = new ModelAndView();
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -487,6 +487,7 @@ public class FinanceReportRestController {
 				orgName = orgRelations.getLocationId().getOrgLocationName();
 			}
 		 model.addObject("orgRelationId",orgRelationId);
+		 model.addObject("billType",billType);
 		 model.addObject("orgName",orgName);
 		 model.setViewName("reports/paidBillReportDetails");
 		 model.addObject("sourceleadUrl", sourceleadUrl);

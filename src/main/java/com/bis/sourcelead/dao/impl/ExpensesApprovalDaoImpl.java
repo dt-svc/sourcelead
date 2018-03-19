@@ -30,6 +30,8 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
@@ -167,12 +169,14 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		String from = "from  ExpensesApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.projectClientsId pc left join fetch pc.orgRelationId orgRelation left join fetch hierarchy.approverUserId approver left join fetch sah.expenseId exp  left join fetch exp.projectMembers pm left join fetch pm.projects projects"
 				+ " left join fetch pm.masterCandidateId mc left join fetch pm.employee emp left join fetch emp.user user where "
 			+ " pc.orgLocationsId.id = :orgLocationId"
-			+ " and ( ("
+				
+           + "  and   ((hierarchy.approverUserId.id = :userId ) "     
+			/*+ " and ( ("
 			+ "      hierarchy.approverUserId.id = :userId and "
-			+ "       (     (((emp.user.id IS NULL) OR (emp.user.id IS NOT NULL and hierarchy.level = '2' and emp.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id and subeah.hierarchyId.level = '2')))) "
-			+ "          OR (((emp.user.id IS NULL) OR (emp.user.id  IS NOT NULL and hierarchy.level = '1' and emp.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id)) )) "
+			+ "       (     (((emp IS NULL OR emp.user.id IS NULL) OR (emp.user.id IS NOT NULL and hierarchy.level = '2' and emp.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id and subeah.hierarchyId.level = '2')))) "
+			+ "          OR (((emp IS NULL OR  emp.user.id IS NULL) OR (emp.user.id  IS NOT NULL and hierarchy.level = '1' and emp.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id)) )) "
 			+ "       )"
-			+ "      ) "
+			+ "      ) "*/
 		     /*
 			 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 			 */
@@ -183,12 +187,13 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		if(length>0) {
 			     countFrom = "Select count(*) from  ExpensesApproverHierarchy sah where"
 					+ " sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId"
-					+ " and ( ("
+					+ " and ( (sah.hierarchyId.approverUserId.id = :userId  )"
+				/*	+ " and ( ("
 					+ "      sah.hierarchyId.approverUserId.id = :userId and "
-					+ "       (     (((sah.expenseId.projectMembers.employee.user.id IS NULL) OR (sah.expenseId.projectMembers.employee.user.id IS NOT NULL and sah.hierarchyId.level = '2' and sah.expenseId.projectMembers.employee.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id and subeah.hierarchyId.level = '2')))) "
-					+ "          OR (((sah.expenseId.projectMembers.employee.user.id IS NULL) OR (sah.expenseId.projectMembers.employee.user.id  IS NOT NULL and sah.hierarchyId.level = '1' and sah.expenseId.projectMembers.employee.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id)) )) "
+					+ "       (     (((sah.expenseId.projectMembers.employee IS NULL OR sah.expenseId.projectMembers.employee.user.id IS NULL) OR (sah.expenseId.projectMembers.employee.user.id IS NOT NULL and sah.hierarchyId.level = '2' and sah.expenseId.projectMembers.employee.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id and subeah.hierarchyId.level = '2')))) "
+					+ "          OR (((sah.expenseId.projectMembers.employee IS NULL OR  sah.expenseId.projectMembers.employee.user.id IS NULL) OR (sah.expenseId.projectMembers.employee.user.id  IS NOT NULL and sah.hierarchyId.level = '1' and sah.expenseId.projectMembers.employee.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id)) )) "
 					+ "       )"
-					+ "      ) "
+					+ "      ) "*/
 				    /*
 					 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 					 */
@@ -262,6 +267,28 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		List<ExpensesApproverHierarchy> tslist = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).list();
 		return tslist;*/
 	}
+	
+	@Override	
+	@Transactional(rollbackFor = { Exception.class })
+	public ExpensesApproverHierarchy getApprovedExpenseByExpenseIdAndLocationId(Long expenseId,Long locationsId){
+		Session session = this.sessionFactory.getCurrentSession();
+		// Getting Max Hierarchy Level for which employee is Assigned
+		String subQueryForMaxLevel = " select MAX(eah.hierarchyId.level) from ExpensesApproverHierarchy eah where eah.expenseId.id = :expenseId and eah.hierarchyId.projectClientsId.orgLocationsId.id = :locationsId";
+		String query = "from ExpensesApproverHierarchy eah left join fetch eah.hierarchyId hierarchy left join fetch hierarchy.projectClientsId pclient  "
+				+ " where pclient.orgLocationsId.id = :locationsId and eah.expenseId.id = :expenseId "
+				+ " and ( hierarchy.level IN(" + subQueryForMaxLevel
+				+ ")) and eah.expenseApprovalStatus = :approvalStatus ";
+		
+		@SuppressWarnings("unchecked")
+		List<ExpensesApproverHierarchy> eahList = session.createQuery(query.toString())
+				.setLong("expenseId", expenseId).setLong("locationsId", locationsId).setParameter("approvalStatus", Submission_Status.APPROVED).list();
+		ExpensesApproverHierarchy eah = null;
+		if(eahList != null && !eahList.isEmpty()) {
+			eah = eahList.iterator().next();
+		}
+		return eah;
+	}
+	
 	
 	@Override	
 	@Transactional(rollbackFor = { Exception.class })

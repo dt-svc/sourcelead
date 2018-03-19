@@ -54,6 +54,7 @@ public class SourceleadResumeParser {
 		// System.out.println(parsedString);
 		ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
 		String name = nameFinderFromParsedTextFile(parsedString);
+		name = name.trim();
 		if (StringUtils.isNotEmpty(name) && name.lastIndexOf(" ") > 0) {
 			String firstName = name.substring(0, name.lastIndexOf(" "));
 			String lastName = name.substring(name.lastIndexOf(" ") + 1);
@@ -84,6 +85,7 @@ public class SourceleadResumeParser {
 			// System.out.println(parsedString);
 
 			String name = nameFinderFromParsedTextFile(parsedString);
+			name = name.trim();
 			if (StringUtils.isNotEmpty(name) && name.lastIndexOf(" ") > 0) {
 				String firstName = name.substring(0, name.lastIndexOf(" "));
 				String lastName = name.substring(name.lastIndexOf(" ") + 1);
@@ -143,12 +145,57 @@ public class SourceleadResumeParser {
 		String[] totalLines = parsedString.split("\n");
 		String firstTenLines = "";
 		String name = "";
-		// boolean nameMatchFound = false;
-		String finalLine = "";
 		String lineSeparator = "";
 		String ecludeNameRegex = "((?i)Name|name|NAME|\\.)";
 		int count = 0;
+		 boolean nameMatchFound = false;
 		for (String line : totalLines) {
+			String nameRegex = "((?i)Name|name|NAME)(\\:|\\-|\\.|\\s)+";
+			if(line.matches("(\\W*)" + nameRegex + ".*")) {
+				// nameMatchFound =true;
+				String[] nameLineArray = line.split(nameRegex);
+				if (nameLineArray.length > 1) {
+					String nameContent = nameLineArray[1].replaceAll("[^a-zA-Z0-9\\s]+", "").trim();
+					if (StringUtils.isNotEmpty(nameContent) && Character.isUpperCase(nameContent.charAt(0))) {
+						name = nameLineArray[1].replaceAll("[^a-zA-Z\\s\\.]+", "").trim();
+						// nameMatchFound = false;
+					}
+
+				}
+				name = name.replaceAll(ecludeNameRegex, "");
+				if(StringUtils.isNotEmpty(name)) {
+					break;
+				}else {
+					nameMatchFound = true;
+					continue;
+				}
+				
+			}else if(nameMatchFound) {
+				String regex = "[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}";
+				Matcher nameMatcher = Pattern.compile(regex).matcher(line);
+				if (nameMatcher.find()) {
+					if (StringUtils.containsIgnoreCase(nameMatcher.group(), "curriculum")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "objective")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "resume")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "cell")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "mobile")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "email")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "Summary")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "Profile")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "Address")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "Date")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "page")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "engineer")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "text"))
+						continue;
+					name = nameMatcher.group();
+					name = name.replaceAll(ecludeNameRegex, "");
+					break ;
+				}else {
+					continue;
+				}
+			}
+			
 			if (count < 10) {
 				
 				if (StringUtils.isNotEmpty(firstTenLines)) {
@@ -164,7 +211,14 @@ public class SourceleadResumeParser {
 								|| StringUtils.containsIgnoreCase(words[i], "resume")
 								|| StringUtils.containsIgnoreCase(words[i], "cell")
 								|| StringUtils.containsIgnoreCase(words[i], "mobile")
-								|| StringUtils.containsIgnoreCase(words[i], "email"))
+								|| StringUtils.containsIgnoreCase(words[i], "email")
+								|| StringUtils.containsIgnoreCase(words[i], "Summary")
+								|| StringUtils.containsIgnoreCase(words[i], "Profile")
+								|| StringUtils.containsIgnoreCase(words[i], "Address")
+								|| StringUtils.containsIgnoreCase(words[i], "Date")
+								|| StringUtils.containsIgnoreCase(words[i], "page")
+								|| StringUtils.containsIgnoreCase(words[i], "engineer")
+								|| StringUtils.containsIgnoreCase(words[i], "text"))
 							continue;
 						line = line + System.getProperty("line.separator") + words[i];
 					}
@@ -173,28 +227,7 @@ public class SourceleadResumeParser {
 				firstTenLines = firstTenLines + lineSeparator + line.replaceAll("[^a-zA-Z0-9\\s\\@\\.\\_]+", "").trim();
 				count++;
 			}
-			String nameRegex = "((?i)Name|name|NAME)[\\s]+(\\:|\\-|\\.)+";
-			if (line.matches("(\\W*)" + nameRegex + ".*")) {
-				// nameMatchFound =true;
-				String[] nameLineArray = line.split(nameRegex);
-				if (nameLineArray.length > 1) {
-					String nameContent = nameLineArray[1].replaceAll("[^a-zA-Z0-9\\s]+", "").trim();
-					if (StringUtils.isNotEmpty(nameContent) && Character.isUpperCase(nameContent.charAt(0))) {
-						name = nameLineArray[1].replaceAll("[^a-zA-Z\\s\\.]+", "").trim();
-						// nameMatchFound = false;
-					}
-
-				}
-				name = name.replaceAll(ecludeNameRegex, "");
-			}
-			/*
-			 * else if(nameMatchFound){ String nameContent
-			 * =line.replaceAll("[^a-zA-Z0-9\\s\\@\\.\\_]+", "").trim();
-			 * if(StringUtils.isNotEmpty(nameContent) &&
-			 * Character.isUpperCase(nameContent.charAt(0))) name =
-			 * nameContent.replaceAll("[^a-zA-Z\\s\\.]+", "").trim();
-			 * nameMatchFound = false; }
-			 */
+			
 		}
 
 		if (!StringUtils.isNotEmpty(name)) {
@@ -206,23 +239,6 @@ public class SourceleadResumeParser {
 				for (String line : tenLines) {
 					String regex = "[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}";
 					Matcher nameMatcher = Pattern.compile(regex).matcher(line);
-					// Matcher nameMatcher =
-					// Pattern.compile("([A-Z]{1}[A-Z]{1,30}[-
-					// ]{0,}|[A-Z]{1}[a-z]{1,30}[- ]{0,}|[A-Z]{1}[-
-					// \']{1}[A-Z]{0,1} [a-z]{1,30}[- ]{0,1}|[a-z]{1,2}[
-					// -\']{1}[A-Z]{1}[a-z]{1,30}){2,}").matcher(line);
-					// Matcher nameMatcher =
-					// Pattern.compile("([A-Z]{1}[a-z]{1,30}[.
-					// -\']{1}[A-Z]{1,2}|[A-Z]{1}[A-Z]{1,30}[-
-					// ]{0,}|[A-Z]{1}[a-z]{1,30}[- ]{0,}|[A-Z]{1}[-
-					// \']{1}[A-Z]{0,1} [a-z]{1,30}[- ]{0,1}|[A-Z]{1,2}[.
-					// -\']{1}[A-Z]{1}[a-z]{1,30}|[a-z]{1,2}[
-					// -\']{1}[A-Z]{1}[a-z]{1,30})").matcher(firstTenLines);
-					// Matcher nameMatcher = Pattern.compile("([A-Z]{1,30}[-
-					// ]{0,}|[A-Z]{1}[A-Z]{1,30}[- ]{0,}|[A-Z]{1}[a-z]{1,30}[-
-					// ]{0,}|[A-Z]{1}[- \']{1}[A-Z]{0,1} [a-z]{1,30}[-
-					// ]{0,1}|[a-z]{1,2}[
-					// -\']{1}[A-Z]{1}[a-z]{1,30}){2,}").matcher(firstTenLines);
 					if (nameMatcher.find()) {
 						if (StringUtils.containsIgnoreCase(nameMatcher.group(), "curriculum")
 								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "objective")
@@ -233,24 +249,14 @@ public class SourceleadResumeParser {
 								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "Summary")
 								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "Profile")
 								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "Address")
-								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "Date"))
+								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "Date")
+								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "page")
+								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "engineer")
+								|| StringUtils.containsIgnoreCase(nameMatcher.group(),  "text"))
 							continue;
 						name = nameMatcher.group();
 						break outerloop;
 					}
-					/*
-					 * else{ nameMatcher = Pattern.
-					 * compile("([A-Z]{1}[a-z]{1,30}[. -\']{1}[A-Z]{1,2}|[A-Z]{1,2}[. -\']{1}[A-Z]{1}[a-z]{1,30})"
-					 * ).matcher(line); while(nameMatcher.find()){
-					 * if(StringUtils.containsIgnoreCase(nameMatcher.group(),
-					 * "curriculum") ||
-					 * StringUtils.containsIgnoreCase(nameMatcher.group(),
-					 * "objective") ||
-					 * StringUtils.containsIgnoreCase(nameMatcher.group(),
-					 * "resume")) continue; name = nameMatcher.group(); break
-					 * outerloop; } }
-					 */
-
 				}
 			}
 

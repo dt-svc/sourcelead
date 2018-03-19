@@ -37,11 +37,6 @@ public class ConnectionsServiceImpl implements ConnectionsService {
 	}
 
 	@Override
-	public int acceptConnection(User user, User toUser, String status) {
-		return connectionsDao.acceptConnection(user, toUser, status);
-	}
-
-	@Override
 	public Long getConnectionReceivedCount(Long id) {
 		return connectionsDao.getConnectionReceivedCount(id);
 	}
