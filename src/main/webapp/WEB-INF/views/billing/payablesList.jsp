@@ -395,7 +395,7 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'              <label><strong>Attachments</strong></label>                         ';
 	result = result +'              <div class="timesheet_week_comm col-md-12 ">                        ';
 	result = result +'                <div class="form-group"> <span>                                   ';
-	result = result +'                  <input type="file"  id="paymentAttachment" name="paymentAttachment">                                            ';
+	result = result +'                  <input type="file"  id="paymentAttachment" name="paymentAttachment" onchange="getfileUrl()">                                            ';
 // 	result = result +'                  <i class="fa fa-plus"></i></span> </div>                        ';
 	result = result +'              </div>                                                              ';
 	result = result +'            </div>                                                                ';
@@ -428,6 +428,10 @@ function receivePaymentPop1(invoiceId,total){
 			removeValidate();
 		}
 	});
+}
+
+function getfileUrl(){
+	fileUpload("paymentAttachment", "incoiceDocuments", "receivePayment-form");
 }
 
 </script>

@@ -162,6 +162,9 @@ private String expenseLocationCode;
 @JsonProperty
 private String userFileUrl; 
 
+@Transient
+private String empType; 
+
 public Long getId()
 {
 	return id;
@@ -405,7 +408,13 @@ public void setActionbyorglocid(Long actionbyorglocid) {
 	this.actionbyorglocid = actionbyorglocid;
 }
 
+public String getEmpType() {
+	return empType;
+}
 
+public void setEmpType(String empType) {
+	this.empType = empType;
+}
 
 
 }	
