@@ -485,6 +485,7 @@ public class ImmigrationRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		immigrationDTO.setStaticPath(staticPath);
+		System.out.println("Candidate ID ----> :  "+immigrationDTO.getCandidateId());
 		try {
 			immigrationCommonService.savePetitionDetails(immigrationDTO, user, orgLocations);
 		} catch (Exception e) {

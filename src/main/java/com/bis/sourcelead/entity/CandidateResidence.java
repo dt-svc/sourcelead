@@ -47,6 +47,9 @@ public class CandidateResidence implements Serializable {
 	@Column(name = "STATE")
 	private String state;
 	
+	@Column(name = "ZIP_CODE")
+	private String zipcode;
+	
 	@Column(name = "IS_CURR_ADDRESS")
 	private String isCurrAddress;
 	
@@ -127,6 +130,14 @@ public class CandidateResidence implements Serializable {
 
 	public void setState(String state) {
 		this.state = state;
+	}
+
+	public String getZipcode() {
+		return zipcode;
+	}
+
+	public void setZipcode(String zipcode) {
+		this.zipcode = zipcode;
 	}
 
 	public String getIsCurrAddress() {
