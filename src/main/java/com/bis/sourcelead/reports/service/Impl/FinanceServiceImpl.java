@@ -559,16 +559,28 @@ public class FinanceServiceImpl implements FinanceService{
 		Set<Long> set = null;
 		for(Invoice invoice : invoiceList ) {
 			if(Constants.PAYABLES.equalsIgnoreCase(invoice.getInvoiceType())){
-				set = invoice.getParentInvoiceId().getInvoiceLineItems().stream()
-					              .map(InvoiceLineItems::getId)
-					              .collect(Collectors.toSet());
+				if(null != invoice.getParentInvoiceId()) {
+					set = invoice.getParentInvoiceId().getInvoiceLineItems().stream()
+				              .map(InvoiceLineItems::getId)
+				              .collect(Collectors.toSet());
+				}else {
+					set = invoice.getInvoiceLineItems().stream()
+				              .map(InvoiceLineItems::getId)
+				              .collect(Collectors.toSet());
+				}
 //				for(InvoiceLineItems inlineItems : invoice.getParentInvoiceId().getInvoiceLineItems()) {
 //					set.add(inlineItems.getCandidate().getId());
 //				}
 			}else{
-				set  = invoice.getInvoiceLineItems().stream()
-			              .map(InvoiceLineItems::getId)
-			              .collect(Collectors.toSet());
+				if(null != invoice.getParentInvoiceId()) {
+					set  = invoice.getParentInvoiceId().getInvoiceLineItems().stream()
+				              .map(InvoiceLineItems::getId)
+				              .collect(Collectors.toSet());
+				}else {
+					set  = invoice.getInvoiceLineItems().stream()
+				              .map(InvoiceLineItems::getId)
+				              .collect(Collectors.toSet());
+				}
 				/*for(InvoiceLineItems inlineItems : invoice.getInvoiceLineItems()) {
 					set.add(inlineItems.getCandidate().getId());
 				}*/

@@ -947,7 +947,7 @@ top: 21px;height: 32px; line-height: 18px;
     <div class="copyrightOut">
         <div class="copyright">
             <b>� 2018 SourceLead. All rights reserved.</b> <span> <a
-                href="/privacy.html">Privacy Policy</a> <a href="/terms.html">Terms
+                href="/privacypolicy.html">Privacy Policy</a> <a href="/termsofuse.html">Terms
                     of Use</a>
             </span>
             <div class="clear"></div>
@@ -1223,6 +1223,8 @@ function getOpenJobsELKList(orgLocationId,type){
 		url+="&reqType="+reqType;
 	if(orgLocationIds)
 		url+="&orgLocationIds="+orgLocationIds;
+	if('${postedOrgName}' != '')
+		url+="&postedOrgName="+'${postedOrgName}';
 	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 // 	location.href = "app/getOpenJobsELK/"+title+"/"+location+"/"+experience;
 	  $.ajax({ 
