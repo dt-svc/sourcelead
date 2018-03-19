@@ -395,7 +395,7 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'              <label><strong>Attachments</strong></label>                         ';
 	result = result +'              <div class="timesheet_week_comm col-md-12 ">                        ';
 	result = result +'                <div class="form-group"> <span>                                   ';
-	result = result +'                  <input type="file"  id="paymentAttachment" name="paymentAttachment">                                            ';
+	result = result +'                  <input type="file"  id="paymentAttachment" name="paymentAttachment" onchange="getfileUrl()">                                            ';
 // 	result = result +'                  <i class="fa fa-plus"></i></span> </div>                        ';
 	result = result +'              </div>                                                              ';
 	result = result +'            </div>                                                                ';
@@ -428,6 +428,10 @@ function receivePaymentPop1(invoiceId,total){
 			removeValidate();
 		}
 	});
+}
+
+function getfileUrl(){
+	fileUpload("paymentAttachment", "incoiceDocuments", "receivePayment-form");
 }
 
 </script>
@@ -843,11 +847,11 @@ function payablePagination(url){
             				if(report.invoiceType=="Payables" && report.invoiceParentId != null && report.invoiceParentId != '' && report.invoiceParentId != "undefined"){
             					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
             						if(report.paymentStatus == "Paid"){
-            							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';
+            							result = result +'           <span class="text-primary primary pull-left" title="Paid" >Paid</span> </td>          ';
             						}else if(report.invoiceStatus == "DRAFT"){
             							result = result +'           <span class="successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill('+report.id+');";></i></td>          ';
             						}else if(report.invoiceStatus == "Rejected"){
-            							result = result +'           <div class="successBtn primary pull-left bg-red">Rejected</div>   ';	
+            							result = result +'           <div class="primary pull-left bg-red">Rejected</div>   ';	
             						}
             							
             					}else{
@@ -864,13 +868,13 @@ function payablePagination(url){
             				}else{
             					if((report.paymentStatus == "Paid" && report.invoiceStatus != "Linked") || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected" || report.invoiceStatus == "SENT"){
             						if(report.paymentStatus == "Paid"){
-            							result = result +'           <span class="successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
+            							result = result +'           <span class=" primary pull-left" title="Paid" >Paid</span> </td>          ';	
             						}else if(report.invoiceStatus == "DRAFT"){
             							result = result +'           <span class="successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill('+report.id+');";></i></td>          ';
             						}else if(report.invoiceStatus == "SENT"){
-            							result = result +'           <span class="successBtn primary pull-left" title="Paid" >Sent</span> </td>          ';
+            							result = result +'           <span class=" primary pull-left" title="Paid" >Sent</span> </td>          ';
             						}else if(report.invoiceStatus == "Rejected"){
-            							result = result +'           <div class="successBtn primary pull-left bg-red">Rejected</div>   ';
+            							result = result +'           <div class=" primary pull-left bg-red">Rejected</div>   ';
             						}
             							
             					}else{
