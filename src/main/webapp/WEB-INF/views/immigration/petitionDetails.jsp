@@ -284,7 +284,7 @@
 					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 					  <input type="file" style="display: none;" id="uploadBtn" class="upload">
 					  </span></label>
-					<input type="text" class="form-control" name="resumeInfo" readonly id="uploadFile" placeholder="Attachment">
+					<input type="text" class="form-control" name="docFile" readonly id="uploadFile" placeholder="Attachment">
 				  </div>
               </div>
             </div>
@@ -834,7 +834,8 @@ $("#experienceValue").change(function () {
 		  getUscisTypeDropDown();
 		  employmentLevelDropDown();
 		  jobTitleDropDown();
-		  
+		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
 		 
 		  $('#openDate').datepicker({
 		      dateFormat: finalDateFormatPetitionSave,
@@ -933,8 +934,6 @@ $("#experienceValue").change(function () {
 		  ///
 		  
 		// residence start date and end date  
-		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
 	
 		  $("#residenceStartDate").datepicker({
 		      dateFormat: finalDateFormatPetitionSave,
@@ -944,7 +943,7 @@ $("#experienceValue").change(function () {
 		            //var dt = new Date(selected);
 		            var dt = $(this).datepicker('getDate', '+1d');
 		            dt.setDate(dt.getDate() + 1);
-		            $("#residenceEndDate"+id).datepicker("option", "minDate", dt);
+		            $("#residenceEndDate").datepicker("option", "minDate", dt);
 		        }
 		  })
 		
@@ -957,7 +956,7 @@ $("#experienceValue").change(function () {
 		            //var dt = new Date(selected);
 		            var dt = $(this).datepicker('getDate', '-1d');
 		            dt.setDate(dt.getDate() - 1);
-		            $("#residenceStartDate"+id).datepicker("option", "maxDate", dt);
+		            $("#residenceStartDate").datepicker("option", "maxDate", dt);
 		        }
 		  })
 		  // 
@@ -1081,7 +1080,7 @@ function  removeValidationAttorneyContact() {
 	 }
 	 $(function() {
 			$("#uploadBtn").change(function() {
-				fileUpload("uploadBtn", "immigrationPetition", "petitionDetailsForm");
+				fileUpload("uploadBtn", "resumes", "petitionDetailsForm","resumeInfo");
 			});
 		 });
 		 document.getElementById("uploadBtn").onchange = function () {

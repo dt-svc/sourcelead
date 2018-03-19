@@ -71,13 +71,13 @@ public class ImmigrationRestController {
 
 	@Autowired
 	private ImmigrationTemplateService immigrationTemplateService;
-	
+
 	@Autowired
 	private ImmigrationCommonService immigrationCommonService;
-	
+
 	@Autowired
 	private CandidateService candidateService;
-	
+
 	@Autowired
 	private RequirementService requirementService;
 
@@ -108,11 +108,12 @@ public class ImmigrationRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		if (forward.equalsIgnoreCase("petitionDetails")) {
 			model.setViewName("/immigration/petitionDetails");
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
 			List<ImmigrationTemplate> templateList = immigrationCommonService.getImmigrationTemplateList(orgLocations);
-			System.out.println("templateList size in controller is-->"+templateList.size());
-			
-			model.addObject("templateList",templateList);
+			System.out.println("templateList size in controller is-->" + templateList.size());
+
+			model.addObject("templateList", templateList);
 		} else if (forward.equalsIgnoreCase("two")) {
 			model.setViewName("/immigration/newPetitionPage2");
 		} else if (forward.equalsIgnoreCase("three")) {
@@ -128,39 +129,39 @@ public class ImmigrationRestController {
 		}
 		return model;
 	}
-	
-	
 
 	@RequestMapping(value = { "getAllActiveCandidatesByLocation" }, method = RequestMethod.GET)
-	public @ResponseBody List<Candidate>  getAllActiveCandidatesByLocation(HttpServletRequest request) {
+	public @ResponseBody List<Candidate> getAllActiveCandidatesByLocation(HttpServletRequest request) {
 		List<Candidate> candidateList = null;
 		try {
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			 candidateList = candidateService.getAllActiveCandidatesByLocation(orgLocations.getId());
-			System.out.println("candidateList size in getAllActiveCandidatesByLocation controller is-->"+candidateList.size());
-			 } catch (Exception e) {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			candidateList = candidateService.getAllActiveCandidatesByLocation(orgLocations.getId());
+			System.out.println(
+					"candidateList size in getAllActiveCandidatesByLocation controller is-->" + candidateList.size());
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		// Gson gson=new Gson();
-	   //  gsondata=gson.toJson(candidateList);//.replace("\\", "\\\\");
+		// gsondata=gson.toJson(candidateList);//.replace("\\", "\\\\");
 		return candidateList;
 	}
-	
-	
+
 	@RequestMapping(value = { "/getPetitionTemplateEmployers" })
 	public List<CandidateEmployerDTO> getPetitionTemplateEmployers(HttpServletRequest request) {
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
-		List<CandidateEmployerDTO> caEmployerDTOs = immigrationTemplateService.getPetitionTemplateEmployers(candidate.getId());
+		List<CandidateEmployerDTO> caEmployerDTOs = immigrationTemplateService
+				.getPetitionTemplateEmployers(candidate.getId());
 		return caEmployerDTOs;
 	}
-	
+
 	@RequestMapping(value = { "/getEmploymentTypeList" })
 	public List<LookUpData> getEmploymentTypeList(HttpServletRequest request) {
-		List<LookUpData> caEmployerDTOs = immigrationTemplateService.getLookupDataByType(Constants.EMPLOYMENT_TYPE_PETITION);
+		List<LookUpData> caEmployerDTOs = immigrationTemplateService
+				.getLookupDataByType(Constants.EMPLOYMENT_TYPE_PETITION);
 		return caEmployerDTOs;
 	}
-	
 
 	@RequestMapping(value = { "/viewImmigration" })
 	public ModelAndView viewImmigration(HttpServletRequest request) {
@@ -264,10 +265,10 @@ public class ImmigrationRestController {
 		return model;
 	}
 
-@RequestMapping(value="/getImmigrationTemplateList")
-public @ResponseBody ResponseList<ImmigrationTemplateListDTO> getAlltemplateList(ImmigrationTemplateListDTO templateListDTO,
-		@RequestParam(value = "searchValue", required = false) String searchValue,
-							HttpServletRequest request) {
+	@RequestMapping(value = "/getImmigrationTemplateList")
+	public @ResponseBody ResponseList<ImmigrationTemplateListDTO> getAlltemplateList(
+			ImmigrationTemplateListDTO templateListDTO,
+			@RequestParam(value = "searchValue", required = false) String searchValue, HttpServletRequest request) {
 		ResponseList<ImmigrationTemplateListDTO> templateListDTOList = null;
 		try {
 			String[] tableColumns = { "name", "description", "docsCount", "formsCount", "tasksCount" };// should be
@@ -297,14 +298,15 @@ public @ResponseBody ResponseList<ImmigrationTemplateListDTO> getAlltemplateList
 		return templateListDTOList;
 	}
 
-
 	@RequestMapping(value = "/deleteImmigrationTemplateDetatils")
 	public String deleteTemplateDetailsById(@RequestParam(value = "deleteId", required = true) Long deleteId,
 			HttpServletRequest request) {
 		try {
-			immigrationTemplateService.deleteAllPetitionTemplateDetailsById(deleteId);// only soft delete operation in Database.
-			//System.out.println("inside delete controller method calling ----->>>>>>>: "+deleteId);
-			logger.debug("inside delete controller method calling ----->>>>>>>: "+deleteId);
+			immigrationTemplateService.deleteAllPetitionTemplateDetailsById(deleteId);// only soft delete operation in
+																						// Database.
+			// System.out.println("inside delete controller method calling ----->>>>>>>:
+			// "+deleteId);
+			logger.debug("inside delete controller method calling ----->>>>>>>: " + deleteId);
 		} catch (Exception e) {
 			logger.error(" Exception while deleting template deitails in controller -->" + deleteId);
 			e.printStackTrace();
@@ -312,7 +314,7 @@ public @ResponseBody ResponseList<ImmigrationTemplateListDTO> getAlltemplateList
 		return "success";
 	}
 
-	@RequestMapping(value={"/addPetitionTemplate"})
+	@RequestMapping(value = { "/addPetitionTemplate" })
 	public ModelAndView addPetitionTemplatePage(HttpServletRequest request,
 			@RequestParam(value = "forwardTo", required = false) String forwardTo) {
 		ModelAndView model = new ModelAndView();
@@ -410,7 +412,8 @@ public @ResponseBody ResponseList<ImmigrationTemplateListDTO> getAlltemplateList
 
 	@RequestMapping(value = { "/getTemplateTaskList" }, method = RequestMethod.POST)
 	public @ResponseBody ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO,
-			HttpServletRequest request, @RequestParam(value = "templateId", required = false) String templateId, @RequestParam(value = "searchValue", required = false) String searchValue) throws Exception {
+			HttpServletRequest request, @RequestParam(value = "templateId", required = false) String templateId,
+			@RequestParam(value = "searchValue", required = false) String searchValue) throws Exception {
 		ResponseList<ImmigrationTemplateDTO> immiTemplateList = new ResponseList<>();
 		String[] tableColumns = { "taskName", "assignedTo", "priority", "taskRepeat" };
 		int sortColumnIndex = 3; // by default sorting using updated date
@@ -432,60 +435,60 @@ public @ResponseBody ResponseList<ImmigrationTemplateListDTO> getAlltemplateList
 		ImmigrationTemplateDTO templateDTO = immigrationTemplateService.editImmigrationTaskList(id);
 		return templateDTO;
 	}
-	
+
 	@RequestMapping(value = { "/deleteImmigrationTaskList" })
 	public void deleteImmigrationTaskList(HttpServletRequest request,
-			@RequestParam(value = "id", required = false) String id){
+			@RequestParam(value = "id", required = false) String id) {
 		immigrationTemplateService.deleteImmigrationTaskList(id);
 	}
-	
+
 	@RequestMapping(value = { "/savePetitionTemplateDetailsValues" })
 	public String savePetitionTemplateDetailsValues(HttpServletRequest request,
-			@RequestParam(value = "templateId", required = false) String templateId){
+			@RequestParam(value = "templateId", required = false) String templateId) {
 		int value = immigrationTemplateService.savePetitionTemplateDetailsValues(templateId);
 		String message = "failed";
-		if(value != 0) {
+		if (value != 0) {
 			message = "success";
 			request.getSession().setAttribute("success", message);
 		}
 		return message;
 	}
-	
+
 	@RequestMapping(value = { "/getPetitionTypeDropDown" })
 	public List<LookUpData> getPetitionTypeDropDown(HttpServletRequest request) {
 		List<LookUpData> caEmployerDTOs = immigrationTemplateService.getLookupDataByType(Constants.PETITION_TYPE);
 		return caEmployerDTOs;
 	}
-	
+
 	@RequestMapping(value = { "/getUscisTypeDropDown" })
 	public List<LookUpData> getUscisTypeDropDown(HttpServletRequest request) {
 		List<LookUpData> caEmployerDTOs = immigrationTemplateService.getLookupDataByType(Constants.USCIS_STATUS);
 		return caEmployerDTOs;
 	}
-	
+
 	@RequestMapping(value = { "/getEmploymentLevelDropDown" })
 	public List<LookUpData> getEmploymentLevelDropDown(HttpServletRequest request) {
 		List<LookUpData> caEmployerDTOs = immigrationTemplateService.getLookupDataByType(Constants.EMPLOYMENT_LEVEL);
 		return caEmployerDTOs;
 	}
-	
-	
+
 	@RequestMapping(value = { "/getJobTitleDropDown" })
 	public List<Requirement> getJobTitleDropDown(HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-		List<Requirement> jobList= requirementService.getAllRequirementsByOrglocationId(orgLocations.getId());
+		List<Requirement> jobList = requirementService.getAllRequirementsByOrglocationId(orgLocations.getId());
 		return jobList;
 	}
-	
-	
+
 	@RequestMapping(value = { "/savePetitionDetailsPage" }, method = RequestMethod.POST)
-	public String savePetitionDetailsPage(ImmigrationDTO immigrationDTO, HttpServletRequest request){
+	public String savePetitionDetailsPage(ImmigrationDTO immigrationDTO, HttpServletRequest request) {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		immigrationDTO.setStaticPath(staticPath);
 		try {
-			immigrationCommonService.savePetitionDetails(immigrationDTO, user);
-		}catch(Exception e) {
-			logger.error("Exception caugth in savePetitionDetailsPage controller"+ e.getMessage());
+			immigrationCommonService.savePetitionDetails(immigrationDTO, user, orgLocations);
+		} catch (Exception e) {
+			logger.error("Exception caugth in savePetitionDetailsPage controller" + e.getMessage());
 			e.printStackTrace();
 		}
 		return null;
