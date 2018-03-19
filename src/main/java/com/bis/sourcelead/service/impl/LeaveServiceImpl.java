@@ -417,7 +417,8 @@ public class LeaveServiceImpl implements LeaveService{
 
 					leaveDto.setEmpName(sb.toString());
 				}
-					emp = employeesService.getEmployeeByUserId(leave.getUser().getId());
+					emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(leave.getUser().getId(), orgLocations.getId());
+					
 				
 				durationSb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate()))
 						.append(System.getProperty("line.separator")).append(" to ")
@@ -430,7 +431,9 @@ public class LeaveServiceImpl implements LeaveService{
 				leaveDto.setLeaveUUID(leave.getLeaveUUID());
 				
 				int totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(),emp,orgLocations,leave.getUser());
-				float balLeaves = totalLeaves - leavesTaken + nuberOfLeavestaken.get("numberOfExtraLeaves");
+				float leaves = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(leave.getLeaveType(), totalLeaves,emp);
+				
+				float balLeaves = leaves - leavesTaken + nuberOfLeavestaken.get("numberOfExtraLeaves");
 				
 				leaveDto.setTotalBalLeaves(balLeaves);
 				leaveDto.setOrgLocationId(String.valueOf(leave.getOrgLocations().getId()));
@@ -1069,7 +1072,7 @@ public class LeaveServiceImpl implements LeaveService{
 		User user = userService.getUserById(userId);
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocationId);
-		Employees emp = employeesService.getEmployeeByUserId(user.getId());
+		Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(userId, orgLocationId);
 
 		LeaveDTO leaveDto = new LeaveDTO();
 		List<Leave> leavesList = leaveDao.getAllSelfLeavesCounts(orgLocationId,userId);
@@ -1107,7 +1110,8 @@ public class LeaveServiceImpl implements LeaveService{
 				int totalLeaves = 0;
 				
 				totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(type,emp,orgLocations,user);
-				float totalbalanceLeaveCounts = totalLeaves;
+				float leaves = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(type, totalLeaves,emp);
+				float totalbalanceLeaveCounts = leaves;
 				List<Leave> totalleavesTaken = getLeavesListByTypeIdAndLocationIdAndUserId(type.getId(),orgLocations.getId(), user.getId());
 				for (Leave leave : totalleavesTaken) {
 					 float appliedLeaveCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
@@ -1120,7 +1124,7 @@ public class LeaveServiceImpl implements LeaveService{
 						}
 				}
 				if("Monthly".equalsIgnoreCase(type.getPeriod()) && Constants.NO.equalsIgnoreCase(type.getLeavesCarryforward())){
-					totalbalanceLeaveCounts = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(type,totalbalanceLeaveCounts);
+					totalbalanceLeaveCounts = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(type,totalbalanceLeaveCounts,emp);
 				}
 				balanceLeaveCounts += totalbalanceLeaveCounts;
 //				type.setBalanceLeaveCounts(balanceLeaveCounts);

@@ -16,8 +16,11 @@
 <script src="/resources/js/bootstrap3-wysihtml5.all.min.js?staticTime=${staticTime}"></script> 
 <script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
 
-<!-- newly added end -->
-
+<style type="text/css">
+.add_inter table tr td {
+ vertical-align: middle;
+}
+</style>
 <script>
 function submitToClient(requirementId){
 	$('.action-pop').slideUp();
@@ -221,7 +224,8 @@ function SCpagination(){
      	 "sZeroRecords": "", "sEmptyTable": ""
      	}
 		
-    } );
+    });
+    $('#SCPagination').wrap("<div class='overflow_Auto width100Percnt'></div>")
 }
 </script>
 
