@@ -208,7 +208,9 @@ function cancelRejectSubmission(projectMemberId){
 function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 	var submissionIDs = [];
 	for(var e in selectedRecords) {
-		submissionIDs.push(e);
+		if(selectedRecords[e]){
+			submissionIDs.push(e);
+		}
 	}
 	var data = submissionIDs.toString().split(',');
 	for(var i=0; i<=data.length;i++){
@@ -265,9 +267,12 @@ function rejectTimeSheetSubmissionBySubmissionId(tableFor){
 }
 
 function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
-	var submissionIDs = $('input[name="checkBoxForSubmitForApproval"]:checked').map(function() {
-	    return this.value;
-	}).get();
+	var submissionIDs = [];
+	for(var e in selectedRecords) {
+		if(selectedRecords[e]){
+			submissionIDs.push(e);
+		}
+	}
 	var dataOne = submissionIDs.toString().split(',');
 	for(var i=0; i<=dataOne.length;i++){
 		var dataTwo = dataOne[i].split('!');

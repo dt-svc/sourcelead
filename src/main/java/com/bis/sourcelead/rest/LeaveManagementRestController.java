@@ -63,7 +63,6 @@ import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveManagementHistory;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
-import com.bis.sourcelead.entity.MonthlyLeaves;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Option;
 import com.bis.sourcelead.entity.Org;
@@ -322,9 +321,9 @@ public class LeaveManagementRestController {
 		
 		   OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		   User loginUser = userService.getUserById(userId);
-		   UserRole userRole = userRoleService.getUserRoleByUserId(userId);
+		   UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocationId);
 
-		   Employees emp = employeesService.getEmployeeByUserId(loginUser.getId());
+		   Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(loginUser.getId(), orgLocationId);
 		   float balanceLeaveCounts = 0;
 		   int pendingLeaveCounts = 0;
 		   float takenLeaveCounts = 0;
@@ -346,7 +345,8 @@ public class LeaveManagementRestController {
 				int totalLeaves = 0;
 				
 				totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(type,emp,orgLocations,loginUser);
-				float totalbalanceLeaveCounts = totalLeaves;
+				float leaves = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(type, totalLeaves,emp);
+				float totalbalanceLeaveCounts = leaves;
 				float calculatedTotalNonCarryforwardLeaves = 0;
 				List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getId(),orgLocations.getId(), loginUser.getId());
 				
@@ -364,7 +364,7 @@ public class LeaveManagementRestController {
 					}
 				}
 				if("Monthly".equalsIgnoreCase(type.getPeriod()) && Constants.NO.equalsIgnoreCase(type.getLeavesCarryforward())){
-					calculatedTotalNonCarryforwardLeaves = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(type,totalbalanceLeaveCounts);
+					calculatedTotalNonCarryforwardLeaves = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(type,totalbalanceLeaveCounts,emp);
 					totalbalanceLeaveCounts = calculatedTotalNonCarryforwardLeaves;
 				}else{
 					balanceLeaveCounts += totalbalanceLeaveCounts;
@@ -1086,10 +1086,24 @@ public class LeaveManagementRestController {
 			HttpServletResponse response) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("notifyLink", notifyLink);
-		model.addObject("leaveUUID", leaveUUID);
+		
+		if(StringUtils.isNotBlank(leaveUUID)){
+			Leave leave = leaveService.getLeaveByLeaveUUId(leaveUUID);
+			model.addObject("leaveUUID", leaveUUID);
+			if ("APPROVED".equalsIgnoreCase(leave.getStatus())) {
+				model.setViewName("leavemanagement/employeeApprovedLeaves");
+			} else if ("REJECTED".equalsIgnoreCase(leave.getStatus())) {
+				model.setViewName("leavemanagement/employeeRejectedLeaves");
+			} else {
+				model.setViewName("leavemanagement/employeeRequestedLeaves");
+			}
+		}else{
+			model.setViewName("leavemanagement/employeeRequestedLeaves");
+		}
+		
 		model.addObject("orgLocationId", orgLocationId);
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("leavemanagement/employeeRequestedLeaves");
+		
 		return model;
 	}
 	

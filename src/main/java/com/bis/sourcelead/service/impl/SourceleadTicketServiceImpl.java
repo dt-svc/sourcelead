@@ -84,12 +84,14 @@ public class SourceleadTicketServiceImpl implements SourceleadTicketService{
 		}else {
 			sourceleadTickets = new SourceleadTickets();
 			sourceleadTickets.setTicketGeneratedId(getTicketGeneratedId(orgLocation));
+			sourceleadTickets.setTicketUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());
+			sourceleadTickets.setCreatedBy(user);
+			sourceleadTickets.setCreatedDate(new Date());
 		}
 		sourceleadTickets.setTicketTitle(sourceleadTicketDTO.getTicketTitle());
 		sourceleadTickets.setTicketType(sourceleadTicketDTO.getTitcketType());
 		sourceleadTickets.setTicketURL(sourceleadTicketDTO.getTicketUrl());
 		sourceleadTickets.setDescription(sourceleadTicketDTO.getDescription());
-		sourceleadTickets.setTicketUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		  if(!sourceleadTicketDTO.getTicketTabs().isEmpty()) {
 			 Tabs tab =  tabsService.getTabListByTabId(Long.valueOf(sourceleadTicketDTO.getTicketTabs()));
 			 sourceleadTickets.setTabId(tab);
@@ -111,9 +113,6 @@ public class SourceleadTicketServiceImpl implements SourceleadTicketService{
 
 		  }
 		  sourceleadTickets.setStatus(Constants.RECORD_ACTIVE);
-		  sourceleadTickets.setCreatedBy(user);
-		  sourceleadTickets.setCreatedDate(new Date());
-		  
 		  if(sourceleadTicketDTO.getFileInfo() !=null && !sourceleadTicketDTO.getFileInfo().isEmpty()){
 				Set<SourceleadTicketsAttachments> ticketDocumentsSet = getTicketDocuments(sourceleadTicketDTO,user,sourceleadTickets);	
 				sourceleadTickets.setSourceleadTicketsAttachments(ticketDocumentsSet);
@@ -225,9 +224,9 @@ public class SourceleadTicketServiceImpl implements SourceleadTicketService{
 	}
 
 	@Override
-	public ResponseList<SourceleadTicketDTO> getSourceleadTicketListByOrgLocationId(SourceleadTicketDTO sourceleadTicketDTO, Long userId,OrgLocations orgLocation,Date fromDate,Date endDate) throws Exception {
+	public ResponseList<SourceleadTicketDTO> getSourceleadTicketListByOrgLocationId(SourceleadTicketDTO sourceleadTicketDTO, Long userId,OrgLocations orgLocation,Date[] searchDates) throws Exception {
 		 ResponseList<SourceleadTicketDTO> responseList = new ResponseList<>();
-		 ResponseList<SourceleadTickets> sourceleadTicketsList = sourceleadTicketDao.getSourceleadTicketListByOrgLocationId(sourceleadTicketDTO, userId,orgLocation,fromDate,endDate);
+		 ResponseList<SourceleadTickets> sourceleadTicketsList = sourceleadTicketDao.getSourceleadTicketListByOrgLocationId(sourceleadTicketDTO, userId,orgLocation,searchDates);
 		 List<SourceleadTicketDTO> sourceleadTicketDTOList = new ArrayList<>();
 		 if(sourceleadTicketsList != null) {
 			 for(SourceleadTickets sourceleadTickets : sourceleadTicketsList.getData()){

@@ -280,10 +280,10 @@
        <c:if test="${SourceLeadWeb_userType != 'Recruiter'}">
        <div class="clearfix" id="hideVendor" style="display:none">
        <div class="form-group">
-			<label class="col-md-3" ><span class="pull-left">Vendor</span><span class="text-danger pull-left" id="man1">*</span></label>
+			<label class="col-md-3" ><span class="pull-left">Vendor</span></label>
 			<div class="col-md-9 chooRadius" id="errorvendor">
 			     <div class="input-group col-md-10 pull-left chooRadius">
-			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="Select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();" >
+			     <select  class="chosen-select form-control" name="vendors" id="vendors" data-validation-optional="true" placeholder="Select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();" >
                  </select>
             	 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocation();candidateEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
                </div>  
@@ -297,10 +297,10 @@
 		</div>
 		
 		 <div class="form-group">
-			<label class="col-md-3" ><span class="pull-left">Vendor Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
+			<label class="col-md-3" ><span class="pull-left">Vendor Contact</span></label>
 			<div class="col-md-9 chooRadius" id="errorvendorContact">
 			<div class="input-group col-md-10 pull-left chooRadius">
-			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="Select Vendor Contact" onchange="removeValiationVendorContact();">
+			     <select  class="chosen-select form-control" name="vendorcontact" data-validation-optional="true" id="vendorcontact" field-name="Vendor Contact"  placeholder="Select Vendor Contact" onchange="removeValiationVendorContact();">
                  </select>
                 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorContactList();"><i class="fa fa-refresh "></i></span>
                  
@@ -723,31 +723,17 @@ function getDesignationType(designationType){
 	
 	if(designationType.value == 'C2C'){
 		 document.getElementById("hideVendor").style.display="block";
-		 $('#vendors').attr("data-validation","required"); 
-		 $('#vendorcontact').attr("data-validation","required"); 
-		 document.getElementById("man1").style.display="block";
-		 document.getElementById("man2").style.display="block";
 		  getVendorsByOrgLocation();
 	}else{
 		 document.getElementById("hideVendor").style.display="none";
-		 $('#vendors').removeAttr("data-validation","required"); 
-		 $('#vendorcontact').removeAttr("data-validation","required"); 
 	}
 	
 	if(designationType.value == 'C2C-1099'){
 		 document.getElementById("hideVendor").style.display="block";
-		 document.getElementById("man1").style.display="none";
-		 document.getElementById("man2").style.display="none";
-		 $('#vendors').attr("data-validation-optional", "true"); 
-		 $('#vendorcontact').attr("data-validation-optional", "true");  
 		 $("#errorvendor").find("p.jquery_form_error_message").remove();
 			$("#errorvendorContact").find("p.jquery_form_error_message").remove();
 		  getVendorsByOrgLocation();
-	}else{
-		// document.getElementById("hideVendor").style.display="none";
-		 $('#vendors').removeAttr("data-validation-optional", "true"); 
-		 $('#vendorcontact').removeAttr("data-validation-optional", "true");  
-	} 
+	}
 	
 	
 	

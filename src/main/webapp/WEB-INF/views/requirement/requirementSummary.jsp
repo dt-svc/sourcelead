@@ -12,6 +12,7 @@ $(document).ready(function() {
 	 var requirementId = '${requirementId}';
 	 var submissionId = '${submissionId}';
 	 var candidateId = '${candidateId}';
+	 var submissionStatus='${submissionStatus}'
 	 var type = '${type}';
 	 if(type != null && type != '' && type != 'undefined'){
 		 sideBar(requirementId,type);
@@ -20,8 +21,14 @@ $(document).ready(function() {
  if(submissionId != null && submissionId != '' && submissionId != 'undefined' && candidateId != null && candidateId != '' && candidateId != 'undefined'){
 	 requirementPipeline(requirementId,type);
 	 }
- if(submissionId != null && submissionId != '' && submissionId != 'undefined' && requirementId != null && requirementId != '' && requirementId != 'undefined'){
-		 requirementPipeline(requirementId,type);
+  else if(submissionStatus == 'all'){
+	 $("#detailsTab").removeClass("current");
+	 $('li[name=applicantNotification]').addClass("current");
+	 requirementStatusBar(requirementId);
+	 requirementPipeline(requirementId,"all");
+	 }  
+ else if(submissionId != null && submissionId != '' && submissionId != 'undefined' && requirementId != null && requirementId != '' && requirementId != 'undefined'){
+	 requirementPipeline(requirementId,type);
 		 }
 });	
 </script>
@@ -727,7 +734,7 @@ function requirementPipeline(requirementId,submissionType){
 
 <script>
 function requirementPipelineList(url, requirementId, submissionType){
-	  var clientSubmissions = '${clientSubmissions}';
+	var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	  $("#status-data").removeAttr("style");

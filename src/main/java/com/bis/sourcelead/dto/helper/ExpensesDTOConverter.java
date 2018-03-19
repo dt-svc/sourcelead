@@ -46,7 +46,9 @@ public class ExpensesDTOConverter {
 		TreeMap<Long,ExpensesEntriesDTO> eeDTOMap = new TreeMap<>();
 		if(expenses.getExpensesEntries() != null && !expenses.getExpensesEntries().isEmpty() && expenses.getExpensesEntries().size() > 0){
 			for(ExpensesEntries ee : expenses.getExpensesEntries()){
-				eeDTOMap.put(ee.getId(), ExpensesEntriesDTOConverter.getExpensesEntriesDTOFromExpensesEntries(ee, expensesDTO));
+				if(ee != null) {
+					eeDTOMap.put(ee.getId(), ExpensesEntriesDTOConverter.getExpensesEntriesDTOFromExpensesEntries(ee, expensesDTO));
+				}
 			}
 		}
 		if(expenses.getProjectMembers() != null && expenses.getProjectMembers().getProjectMemberCandidteId() != null){
