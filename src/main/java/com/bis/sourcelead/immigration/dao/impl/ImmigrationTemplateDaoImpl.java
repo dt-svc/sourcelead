@@ -498,34 +498,4 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 		return candidateEmployers;
 	}
 
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public void savePetitionDetails(Immigration immigration, Candidate candidate,
-			CandidateIdendities candidateIdendities, CandidateResumes candidateResume,
-			List<CandidateLcaI94Summary> lcaSummaryLst) throws Exception {
-		logger.debug("saveConnection");
-		Session session = this.sessionFactory.getCurrentSession();
-		try {
-			if (candidate != null) {
-					session.saveOrUpdate(candidate);
-			}
-			if (immigration != null) {
-				session.saveOrUpdate(immigration);
-			}
-			if(candidateIdendities != null) {
-				session.saveOrUpdate(candidateIdendities);
-			}
-			if(candidateResume!= null && candidateResume.getFileURL() != null) {
-				session.saveOrUpdate(candidateResume);
-			}
-			if(lcaSummaryLst.size() != 0) {
-				for(CandidateLcaI94Summary candidateLcaI94Summary : lcaSummaryLst) {
-					session.saveOrUpdate(candidateLcaI94Summary);
-				}
-			}
-		} catch (Exception exception) {
-			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"Immigration"));
-				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
-		}
-	}
 }

@@ -51,6 +51,4 @@ public interface ImmigrationTemplateService {
 
 	List<LookUpData> getLookupDataByType(String type);
 
-	void savePetitionDetails(ImmigrationDTO immigrationDTO, User user) throws Exception;
-
 }

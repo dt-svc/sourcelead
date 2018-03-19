@@ -63,8 +63,7 @@ public interface ImmigrationTemplateDao {
 
 	List<LookUpData> getLookupDataByType(String type);
 
-	void savePetitionDetails(Immigration immigration, Candidate candidate, CandidateIdendities candidateIdendities,
-			CandidateResumes candidateResume, List<CandidateLcaI94Summary> lcaSummaryLst) throws Exception;
+	
 	
 	
 }

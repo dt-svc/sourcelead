@@ -2,6 +2,10 @@ package com.bis.sourcelead.dto;
 
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Email;
+import com.bis.sourcelead.annotations.Phone;
+import com.bis.sourcelead.annotations.Required;
+
 public class ImmigrationDTO extends SearchDTO {
 
 	/**
@@ -11,7 +15,7 @@ public class ImmigrationDTO extends SearchDTO {
 
 	private Long id;
 
-	//@Required(desc = "candidate id")
+	@Required(desc = "candidate id")
 	private String candidateId;
 
 	private String orgloationId;
@@ -28,15 +32,15 @@ public class ImmigrationDTO extends SearchDTO {
 
 	private String candidateType;
 	
-	//@Required(desc = "Petition type")
+	@Required(desc = "Petition type")
 	private String petitionType;
 	
 	private String receiptNo;
 
-	//@Required(desc = "Current USCIS Status")
+	@Required(desc = "Current USCIS Status")
 	private String currUscisStatus;
 
-	//@Required(desc = "Petition open date")
+	@Required(desc = "Petition open date")
 	private String openDate;
 	
 	private String arrivalDate;
@@ -49,7 +53,7 @@ public class ImmigrationDTO extends SearchDTO {
 
 	private String attorneyContact;
 
-	//@Required(desc = "first name")
+	@Required(desc = "first name")
 	private String firstName;
 
 	private String middleName;
@@ -58,17 +62,16 @@ public class ImmigrationDTO extends SearchDTO {
 
 	private String gender;
 
-	//@Required(desc = "email")
-	//@Email
+	@Required(desc = "email")
+	@Email
 	private String email;
 
-	//@Phone
+	@Phone
 	private String mobile;
 
-	//@Phone
 	private String alternateMobile;
 
-	//@Required(desc = "Date of Birth")
+	@Required(desc = "Date of Birth")
 	private String birthDate;
 
 	private String birthPlace;
@@ -117,7 +120,7 @@ public class ImmigrationDTO extends SearchDTO {
 
 	private String lcaEndDate;
 
-	//@Required(desc = "country")
+	@Required(desc = "country")
 	private String country;
 
 	private String state;

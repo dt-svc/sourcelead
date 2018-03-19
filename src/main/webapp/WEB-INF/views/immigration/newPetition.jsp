@@ -17,6 +17,7 @@
       <div class="pull-right brud-crum">Home &raquo; <a href="/app/immigration/viewImmigrationList">Immigrations List</a>&raquo; New Petition</div>
 	<div class="clearfix"></div>
     </section>
+    <div id="loadingPetitionDiv"></div>
     <div id="newPetitionTemplateDiv"></div>
     <%-- <div id = "newPetitonPageOneDiv">
     <jsp:include page="newPetitionPage1.jsp" />

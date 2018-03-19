@@ -480,9 +480,14 @@ public @ResponseBody ResponseList<ImmigrationTemplateListDTO> getAlltemplateList
 	
 	
 	@RequestMapping(value = { "/savePetitionDetailsPage" }, method = RequestMethod.POST)
-	public String savePetitionDetailsPage(ImmigrationDTO immigrationDTO, HttpServletRequest request) throws Exception {
+	public String savePetitionDetailsPage(ImmigrationDTO immigrationDTO, HttpServletRequest request){
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		immigrationTemplateService.savePetitionDetails(immigrationDTO, user);
+		try {
+			immigrationCommonService.savePetitionDetails(immigrationDTO, user);
+		}catch(Exception e) {
+			logger.error("Exception caugth in savePetitionDetailsPage controller"+ e.getMessage());
+			e.printStackTrace();
+		}
 		return null;
 	}
 

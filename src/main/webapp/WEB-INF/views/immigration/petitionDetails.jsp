@@ -108,9 +108,7 @@
 								<label class="col-md-4"><span class="pull-left">Attorney Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
 								<div class="col-md-8 chooRadius" id="errorAttorneyContact">
 								<div class="input-group col-md-10 pull-left chooRadius">
-									<select class="chosen-select form-control" name="attorneyContact" data-validation="required"
-										id="attorneyContact" field-name="Attorney Contact"
-										placeholder="Select Attorney Contact"
+									<select class="chosen-select form-control" name="attorneyContact" id="attorneyContact" placeholder="Select Attorney Contact"
 										onchange="removeValidationAttorneyContact();">
 									</select>
                   <span class="input-group-addon cursorPointer bg-blue" onclick="getAttorneysByOrgLocation();addCandiadateEmptyAttorneyContact();"><i class="fa fa-refresh "></i></span>
@@ -286,7 +284,7 @@
 					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 					  <input type="file" style="display: none;" id="uploadBtn" class="upload">
 					  </span></label>
-					<input type="text" class="form-control" name="docFile" readonly id="uploadFile" placeholder="Attachment">
+					<input type="text" class="form-control" name="resumeInfo" readonly id="uploadFile" placeholder="Attachment">
 				  </div>
               </div>
             </div>
@@ -692,6 +690,7 @@
 var candidateByOrgObject = {};
 function getCandidatesByOrgLocation(){
 	 console.log(" before getCandidatesByOrgLocation function calling ---->");
+	 $("#loadingPetitionDiv").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 urltest = sourceleadUrl+immiModulePath+"/getAllActiveCandidatesByLocation";
 		 $.ajax({
 		    	type: "GET",
@@ -706,6 +705,7 @@ function getCandidatesByOrgLocation(){
 		            }
 		            $('#candidateId').trigger("chosen:updated"); 
 		           /*  updateCandiateInfo(); */
+		            $("#loadingPetitionDiv").removeAttr("style"); 
 		   }
    });
 }

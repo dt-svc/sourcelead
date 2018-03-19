@@ -1,5 +1,6 @@
 package com.bis.sourcelead.immigration.dao.impl;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,8 +14,14 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateIdendities;
+import com.bis.sourcelead.entity.CandidateLcaI94Summary;
+import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.immigration.dao.ImmigrationCommonDao;
 
 
@@ -62,6 +69,37 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 				exception.printStackTrace();
 		}
 		return templateLst;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void savePetitionDetails(Immigration immigration, Candidate candidate,
+			CandidateIdendities candidateIdendities, CandidateResumes candidateResume,
+			List<CandidateLcaI94Summary> lcaSummaryLst) throws Exception {
+		logger.debug("saveConnection");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (candidate != null) {
+					session.saveOrUpdate(candidate);
+			}
+			if (immigration != null) {
+				session.saveOrUpdate(immigration);
+			}
+			if(candidateIdendities != null) {
+				session.saveOrUpdate(candidateIdendities);
+			}
+			if(candidateResume!= null && candidateResume.getFileURL() != null) {
+				session.saveOrUpdate(candidateResume);
+			}
+			if(lcaSummaryLst.size() != 0) {
+				for(CandidateLcaI94Summary candidateLcaI94Summary : lcaSummaryLst) {
+					session.saveOrUpdate(candidateLcaI94Summary);
+				}
+			}
+		} catch (Exception exception) {
+			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"Immigration"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
 	}
 
 }
