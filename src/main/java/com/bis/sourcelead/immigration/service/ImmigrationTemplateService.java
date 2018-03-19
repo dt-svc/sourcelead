@@ -54,6 +54,4 @@ public interface ImmigrationTemplateService {
 
     public boolean validateTemplateNameExistance(String templateName, Long templateId);
 
-	void savePetitionDetails(ImmigrationDTO immigrationDTO, User user) throws Exception;
-
 }

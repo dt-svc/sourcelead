@@ -68,5 +68,4 @@ public interface ImmigrationTemplateDao {
             CandidateResumes candidateResume, List<CandidateLcaI94Summary> lcaSummaryLst) throws Exception;
 
     public boolean validateTemplateNameExistance(String templateName, Long templateId);
-
 }
