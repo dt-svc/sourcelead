@@ -70,11 +70,12 @@
 <script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
 <!--  Amcharts -->
 <c:if test='${viewPage == "reports/reportsDashboard"}'>
-	 <script src="/resources/js/pie.js?staticTime=${staticTime}"></script> 
-	 <script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script> 
-	 <script src="/resources/js/serial.js?staticTime=${staticTime}"></script> 
-	 <script src="/resources/reports/export.min.js?staticTime=${staticTime}"></script> 
-	 <script src="/resources/js/themes/light.js?staticTime=${staticTime}"></script> 
+	<script src="/resources/amcharts/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="/resources/amcharts/serial.js?staticTime=${staticTime}"></script>
+	<script src="/resources/amcharts/plugins/export/export.min.js?staticTime=${staticTime}"></script>
+	<link rel="stylesheet" href="/resources/amcharts/plugins/export/export.css?staticTime=${staticTime}" type="text/css" media="all" />
+	<script src="/resources/amcharts/themes/light.js?staticTime=${staticTime}"></script>
+ 
  </c:if>
  
  <c:if test='${viewPage == "reports/applicantsReport"}'>
@@ -96,6 +97,7 @@
 	<script src="/resources/reports/export.min.js?staticTime=${staticTime}"></script>
 	<link rel="stylesheet" href="/resources/reports/export.css?staticTime=${staticTime}" type="text/css" media="all" /> 
 	<script src="/resources/reports/light.js?staticTime=${staticTime}"></script>
+	
 </c:if>
 
 <c:if test='${viewPage == "reports/requirementAssignToReports" || viewPage == "reports/requirementAssignToReports" || viewPage == "reports/vendorsReport" || viewPage == "reports/paidBillReportGraph" || viewPage == "reports/receivedInvoiceReportGraph"}'>
