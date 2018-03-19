@@ -549,34 +549,7 @@
    </div>
    </section>
     <script type="text/javascript">
-    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	  var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
-	function showStartDatePicker(id){
-	  $("#residenceStartDate"+id).datepicker({
-	      dateFormat: finalDateFormatPetitionSave,
-	      changeMonth: true,
-	  	  changeYear: true, 
-	      onSelect: function (selected) {
-	            //var dt = new Date(selected);
-	            var dt = $(this).datepicker('getDate', '+1d');
-	            dt.setDate(dt.getDate() + 1);
-	            $("#residenceEndDate"+id).datepicker("option", "minDate", dt);
-	        }
-	  }).datepicker("show");
-	} 
-	function showEndDatePicker(id){
-	  $("#residenceEndDate"+id).datepicker({
-	      dateFormat: finalDateFormatPetitionSave,
-	      changeMonth: true,
-	  	  changeYear: true, 
-	        onSelect: function (selected) {
-	            //var dt = new Date(selected);
-	            var dt = $(this).datepicker('getDate', '-1d');
-	            dt.setDate(dt.getDate() - 1);
-	            $("#residenceStartDate"+id).datepicker("option", "maxDate", dt);
-	        }
-	  }).datepicker("show");
-	}
+   
     function prepareDynamicResidenceDiv(rowId){
 	   var prepareResidencediv =''; 
 		   
@@ -1090,5 +1063,33 @@ function  removeValidationAttorneyContact() {
 	     $("#clearUploads").click(function(){
 	    	 $("#uploadFile").val("");
 	     });
+	     //var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  //var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
+		function showStartDatePicker(id){
+		  $("#residenceStartDate"+id).datepicker({
+		      dateFormat: finalDateFormatPetitionSave,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		      onSelect: function (selected) {
+		            //var dt = new Date(selected);
+		            var dt = $(this).datepicker('getDate', '+1d');
+		            dt.setDate(dt.getDate() + 1);
+		            $("#residenceEndDate"+id).datepicker("option", "minDate", dt);
+		        }
+		  }).datepicker("show");
+		} 
+		function showEndDatePicker(id){
+		  $("#residenceEndDate"+id).datepicker({
+		      dateFormat: finalDateFormatPetitionSave,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		        onSelect: function (selected) {
+		            //var dt = new Date(selected);
+		            var dt = $(this).datepicker('getDate', '-1d');
+		            dt.setDate(dt.getDate() - 1);
+		            $("#residenceStartDate"+id).datepicker("option", "maxDate", dt);
+		        }
+		  }).datepicker("show");
+		}
 	 </script>
 	

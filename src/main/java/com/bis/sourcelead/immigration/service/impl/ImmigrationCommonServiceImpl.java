@@ -35,6 +35,7 @@ import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.rest.ImmigrationRestController;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 /**
  * @author Srinivas.Sabbu
@@ -68,6 +69,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		/*get the candidate details*/
 		Candidate candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(immigrationDTO.getCandidateId()));
 		//candidate.setId(Long.parseLong(immigrationDTO.getCandidateId()));
+		Date date = new Date();
 		Immigration immigration = new Immigration();
 		immigration.setPetitionType(Long.parseLong(immigrationDTO.getPetitionType()));
 		//DateFormat dateFormat = new SimpleDateFormat ("dd-MM-yyyy");
@@ -98,9 +100,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		immigration.setJob(requirement);
 		immigration.setStatus(1);
 		immigration.setCreatedBy(user);
-		immigration.setCreatedDate(new Date());
+		immigration.setCreatedDate(date);
 		immigration.setUpdatedBy(user);
-		immigration.setUpdatedDate(new Date());
+		immigration.setUpdatedDate(date);
 		/*end Immigration here*/
 		candidate.setFirstName(immigrationDTO.getFirstName());
 		candidate.setMiddelName(immigrationDTO.getMiddleName());
@@ -133,9 +135,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		candidateIdendities.setIdType(Constants.ID_TYPE_SSN);
 		candidateIdendities.setStatus(1);
 		candidateIdendities.setCreatedBy(user);
-		candidateIdendities.setCreatedDate(new Date());
+		candidateIdendities.setCreatedDate(date);
 		candidateIdendities.setUpdatedBy(user);
-		candidateIdendities.setUpdatedDate(new Date());
+		candidateIdendities.setUpdatedDate(date);
 		/*CandidateIdentities ends here */
 		
 		CandidateResumes candidateResume = new CandidateResumes();
@@ -145,6 +147,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		candidateResume.setFileName(fileInfo.getFileName());
 		candidateResume.setFileURL(fileInfo.getFileURL());
 		candidateResume.setFileContentType(fileInfo.getContentType());
+		candidateResume.setOrgLocationId(orgLocations);
+		candidateResume.setStatus(Constants.RECORD_ACTIVE);
+		candidateResume.setCreatedDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), date));
+		candidateResume.setUpdatedDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), date));
+		candidateResume.setCreatedBy(user.getUserCode());
+		candidateResume.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		FileUploadUtil.moveFile(immigrationDTO.getStaticPath(), fileInfo, "resumes");
 		}
 		/*candidateResume ends here */
@@ -171,9 +179,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		lcaSummaryCurr.setRateType(immigrationDTO.getRateType());
 		lcaSummaryCurr.setStatus(1);
 		lcaSummaryCurr.setIdType(Constants.ID_TYPE_LCA);
-		Date date = new Date();
-		lcaSummaryCurr.setCreatedDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), date));
-		lcaSummaryCurr.setUpdatedDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), date));
+		
+		lcaSummaryCurr.setCreatedDate(date);
+		lcaSummaryCurr.setUpdatedDate(date);
 		
 		lcaSummaryLst.add(lcaSummaryCurr); // add current lca
 		
@@ -199,12 +207,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		lcaSummaryPrev.setRateCurrency(immigrationDTO.getRateCurrency());
 		lcaSummaryPrev.setRate(immigrationDTO.getRate());
 		lcaSummaryPrev.setRateType(immigrationDTO.getRateType());
-		lcaSummaryPrev.setStatus(1);
+		lcaSummaryPrev.setStatus(Constants.RECORD_ACTIVE);
 		lcaSummaryPrev.setIdType(Constants.ID_TYPE_LCA);
 		lcaSummaryPrev.setCreatedBy(user);
 		lcaSummaryPrev.setUpdatedBy(user);
-		lcaSummaryPrev.setCreatedDate(new Date());
-		lcaSummaryPrev.setUpdatedDate(new Date());
+		lcaSummaryPrev.setCreatedDate(date);
+		lcaSummaryPrev.setUpdatedDate(date);
 		
 		lcaSummaryLst.add(lcaSummaryPrev); // add previous lca
 		
