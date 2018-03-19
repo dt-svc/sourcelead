@@ -276,7 +276,7 @@ public class ImmigrationRestController {
             String[] tableColumns = {"name", "description", "docsCount", "formsCount", "tasksCount", "status", "id"};// should be
             // entity names
             int sortColumnIndex = 0; // by default sorting using updated date
-            String sortColumnOrder = "asc"; // by default ascending order
+            String sortColumnOrder = "desc"; // by default ascending order
             if (templateListDTO.getOrder() != null && !templateListDTO.getOrder().isEmpty()) {
                 sortColumnIndex = Integer.parseInt(templateListDTO.getOrder().get(0).get("column"));
                 sortColumnOrder = templateListDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means direction

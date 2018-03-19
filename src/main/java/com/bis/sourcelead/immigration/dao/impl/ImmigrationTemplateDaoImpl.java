@@ -212,10 +212,10 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
             sortingQry = " order by tempView.name ";
         }
 
-        String listQuery = "from ImmigrationTemplateView tempView  where tempView.orgLocationId=:orgLocationId and tempView.status =1 ";
+        String listQuery = "from ImmigrationTemplateView tempView  where tempView.orgLocationId=:orgLocationId " + (templateListDTO.getStatus() >= 0 ? "and tempView.status =" + templateListDTO.getStatus() + " " : " ");
 
         ImmigrationTemplateViewLst = session.createQuery(listQuery + query1 + sortingQry).setLong("orgLocationId", orgLocationId).list();
-        String listQueryCount = "select count(*) from ImmigrationTemplateView tempView where tempView.orgLocationId=:orgLocationId and tempView.status =1 ";
+        String listQueryCount = "select count(*) from ImmigrationTemplateView tempView where tempView.orgLocationId=:orgLocationId " + (templateListDTO.getStatus() >= 0 ? "and tempView.status =" + templateListDTO.getStatus() + " " : " ");
         countlist = session.createQuery(listQueryCount + query1).setLong("orgLocationId", orgLocationId).setFirstResult(templateListDTO.getStart())
                 .setMaxResults(templateListDTO.getLength()).list();
         int totalCount = 0;
