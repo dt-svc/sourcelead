@@ -682,6 +682,22 @@ function getCandidatesByOrgLocation(){
 		   }
    });
 }
+// to get the resume details for the candidate.
+function getCandidatesResumeDetailsById(){
+	 console.log(" before getCandidatesResumeDetailsById function calling ---->");
+	 $("#loadingPetitionDiv").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 urltest = sourceleadUrl+immiModulePath+"/getAllActiveCandidatesByLocation";
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+immiModulePath+"/getCandidatesResumeDetailsById", 
+		        data:$('#candidateId').val(),
+		        success: function(data) {
+		            console.log("inside sucess function");
+		            console.log(data);
+		            
+		   }
+   });
+}
 
 $("#experienceValue").change(function () {
     if(this.value == '25+'){
@@ -1046,7 +1062,7 @@ function  removeValidationAttorneyContact() {
 		$("#experienceMonths").val(candidateObj.experienceMonths);
 		
 		// setting the date for the date of birth field.
-		if(typeof  candidateObj.dateOfBirth != 'undefined' && candidateObj.dateOfBirth!=''){
+		if(candidateObj.dateOfBirth != null && typeof  candidateObj.dateOfBirth != 'undefined' && candidateObj.dateOfBirth!=''){
 			var dateOfBirth =  moment(candidateObj.dateOfBirth).format("DD-MM-YYYY");
 		   $("#birthDate").val(dateOfBirth);
 		}
@@ -1063,8 +1079,8 @@ function  removeValidationAttorneyContact() {
 	     $("#clearUploads").click(function(){
 	    	 $("#uploadFile").val("");
 	     });
-	     //var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  //var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
+	     var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		 var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
 		function showStartDatePicker(id){
 		  $("#residenceStartDate"+id).datepicker({
 		      dateFormat: finalDateFormatPetitionSave,

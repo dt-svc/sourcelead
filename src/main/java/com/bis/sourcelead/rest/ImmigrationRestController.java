@@ -1,6 +1,7 @@
 package com.bis.sourcelead.rest;
 
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateEmployerDTO;
+import com.bis.sourcelead.dto.CandidateResumeDTO;
 import com.bis.sourcelead.dto.ImmigrationDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
@@ -28,6 +30,7 @@ import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ResponseList;
 
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -35,12 +38,14 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
+import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -78,6 +83,12 @@ public class ImmigrationRestController {
 
     @Autowired
     private CandidateService candidateService;
+    
+    @Autowired
+	CandidateResumesService candidateResumesService;
+
+	@Autowired
+	private CommonUtil commonUtil;
 
     @Autowired
     private RequirementService requirementService;
@@ -506,5 +517,29 @@ public class ImmigrationRestController {
             @RequestParam(value = "templateId", defaultValue = "0") Long templateId) {
         OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
         return immigrationTemplateService.validateTemplateNameExistance(templateName, templateId);
+    }
+    
+    
+    @RequestMapping(value = {"/getCandidatesResumeDetailsById"})
+    public @ResponseBody CandidateResumeDTO getCandidatesResumeDetailsById(Long candidateId, HttpServletRequest request) throws Exception {
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+                "orgLocations");
+		Integer status = Constants.CANDIDATE_ACTIVE;
+		CandidateResumeDTO candidateResumeDTO  =new CandidateResumeDTO();
+		if (candidateId != null) {
+			List<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesListByCandidateIdAndStatus(candidateId, status);
+			if(candidateResumesList != null && candidateResumesList.size()>0) {
+				CandidateResumes candidateResume = candidateResumesList.get(0);
+	             candidateResumeDTO = new CandidateResumeDTO();
+				candidateResumeDTO.setId(candidateResume.getId());
+				candidateResumeDTO.setTitle(candidateResume.getTitle());
+				candidateResumeDTO.setDescription(candidateResume.getDescription());
+				candidateResumeDTO.setCreatedBy(candidateResume.getCreatedBy());
+				candidateResumeDTO.setFileContentType(candidateResume.getFileContentType());
+				candidateResumeDTO.setFileName(candidateResume.getFileName());
+				candidateResumeDTO.setFileURL(candidateResume.getFileURL());
+			}
+		}
+		return candidateResumeDTO;
     }
 }
