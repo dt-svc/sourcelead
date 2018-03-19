@@ -131,7 +131,7 @@
 								<div class="col-md-8 chooRadius" id="errorAttorney">
 								<div class="input-group col-md-10 pull-left chooRadius">
 									<select class="chosen-select form-control" name="candidateId"
-										id="candidateId" placeholder="Select Beneficiary" onchange="updateCandiateInfo($(this));">
+										id="candidateId" placeholder="Select Beneficiary" onchange="getCandidatesResumeDetailsById($(this).val());updateCandiateInfo($(this));">
 									</select>
 								 <span class="input-group-addon cursorPointer bg-blue" onclick="getCandidatesByOrgLocation();"><i class="fa fa-refresh "></i></span>
 									
@@ -276,10 +276,17 @@
             </div>
               </div>
             </div>
-            
-           <div class="form-group"  id="resumeEmpty">
+             
+                                            
+                                            
+           <div class="form-group" >
               <label class="col-md-4">Upload Resume</label><!-- need to updated  -->
-               <div class="col-md-8">
+              <div class="col-md-3 mt10" id="docNameDiv" style="display: none;">
+                    <label id="documentName"  class="text-primary tbldata-dotdot-vsm pull-left" title=""></label>&nbsp;&nbsp;<span id="delete_file" onclick = "deleteResumeDoc()"><i class="fa fa-trash removeIcon"></i></span>
+                   <input  type="hidden" id="generalExisitingFile" name = "" value="">
+                   <a  class="glyphicon glyphicon-download-alt" id="downloadBrowseFile" href="" download title="Download"></a>
+             </div>
+               <div class="col-md-8"  id="resumeEmpty">
 				<div class="input-group col-md-12 clearUploads" id="clearUploads" style="margin:0 auto">
 					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 					  <input type="file" style="display: none;" id="uploadBtn" class="upload">
@@ -288,15 +295,6 @@
 				  </div>
               </div>
             </div>
-            
-            <div class="col-md-3 mt10" id="resumeDoc" style="display:none;">
-			 <label id="documentName"  class="text-primary tbldata-dotdot-vsm pull-left">${item.fileName}</label>&nbsp;&nbsp;<span id="delete_file" onclick = "deleteDoc()"><i class="fa fa-trash removeIcon"></i></span>
-			<input  type="hidden" id="generalExisitingFile" name = "generalExisitingFile" value="${item.fileName}">
-			  <a  class="glyphicon glyphicon-download-alt"  href="${item.fileUrl}" download title="Download"></a>
-			  </div>
-            
-            
-            
              <div class="form-group">
               <label class="col-md-4">Experience</label>
               <div class="col-md-4 dropdown-select">
@@ -682,16 +680,31 @@ function getCandidatesByOrgLocation(){
 		   }
    });
 }
+
+function deleteResumeDoc(){
+	$("#docNameDiv").hide();
+	$("#resumeEmpty").show();
+	$("#documentName").html("");
+	$("#downloadBrowseFile").attr("href","");
+}
 // to get the resume details for the candidate.
-function getCandidatesResumeDetailsById(){
-	 console.log(" before getCandidatesResumeDetailsById function calling ---->");
-	 $("#loadingPetitionDiv").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+function getCandidatesResumeDetailsById(candidateId){
+	 console.log(" before getCandidatesResumeDetailsById function calling ---->"+candidateId);
 	 urltest = sourceleadUrl+immiModulePath+"/getAllActiveCandidatesByLocation";
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+immiModulePath+"/getCandidatesResumeDetailsById", 
-		        data:$('#candidateId').val(),
+		        url: sourceleadUrl+immiModulePath+"/getCandidatesResumeDetailsById?candidateId="+candidateId, 
+		        /* data:, */
 		        success: function(data) {
+		        	if(data.fileName != null){
+		        		$("#docNameDiv").show();
+		        		$("#resumeEmpty").hide();
+			        	$("#documentName").html(data.fileName);
+			        	$("#downloadBrowseFile").attr("href",data.fileURL);
+		        	}else{
+		        		$("#docNameDiv").hide();
+		        		$("#resumeEmpty").show();
+		        	}
 		            console.log("inside sucess function");
 		            console.log(data);
 		            

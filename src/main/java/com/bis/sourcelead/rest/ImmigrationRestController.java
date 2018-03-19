@@ -521,7 +521,7 @@ public class ImmigrationRestController {
     
     
     @RequestMapping(value = {"/getCandidatesResumeDetailsById"})
-    public @ResponseBody CandidateResumeDTO getCandidatesResumeDetailsById(Long candidateId, HttpServletRequest request) throws Exception {
+    public @ResponseBody CandidateResumeDTO getCandidatesResumeDetailsById(@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request) throws Exception {
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
                 "orgLocations");
 		Integer status = Constants.CANDIDATE_ACTIVE;
