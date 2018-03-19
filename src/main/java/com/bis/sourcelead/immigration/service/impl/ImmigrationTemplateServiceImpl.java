@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.bis.sourcelead.immigration.service.impl;
 
@@ -56,286 +56,291 @@ import com.itextpdf.text.log.SysoCounter;
 @Service
 public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateService {
 
-	@Autowired
-	ImmigrationTemplateDao immigrationTemplateDao;
-	
-	@Autowired
-	CandidateDao candidateDao;
-	
-	@Autowired
-	private UserDao userDao;
+    @Autowired
+    ImmigrationTemplateDao immigrationTemplateDao;
 
-	@Override
-	public Long savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, User user, OrgLocations orgLocations,
-			String templateId) {
-		ImmigrationTemplate immigrationTemplate = new ImmigrationTemplate();
-		if (!templateId.equalsIgnoreCase("null") && !templateId.isEmpty()) {
-			immigrationTemplate.setId(Long.parseLong(templateId));
-		}
-		immigrationTemplate.setOrgLocations(orgLocations);
-		immigrationTemplate.setName(templateDTO.getTemplateName());
-		immigrationTemplate.setDescription(templateDTO.getTemplateDescription());
-		immigrationTemplate.setCreatedBy(user);
-		immigrationTemplate.setCreatedDate(new Date());
-		immigrationTemplate.setUpdatedBy(user);
-		immigrationTemplate.setUpdatedDate(new Date());
-		immigrationTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-		immigrationTemplate.setStatus(0);
-		return immigrationTemplateDao.savePetitionTemplateDetails(immigrationTemplate, templateId);
+    @Autowired
+    CandidateDao candidateDao;
 
-	}
+    @Autowired
+    private UserDao userDao;
 
-	@Override
-	public List<ImmigrationTemplateDocDTO> savePetitionTemplateDocDetails(ImmigrationTemplateDTO templateDTO,
-			User user) {
+    @Override
+    public Long savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, User user, OrgLocations orgLocations,
+            String templateId) {
+        ImmigrationTemplate immigrationTemplate = new ImmigrationTemplate();
+        if (!templateId.equalsIgnoreCase("null") && !templateId.isEmpty()) {
+            immigrationTemplate.setId(Long.parseLong(templateId));
+        }
+        immigrationTemplate.setOrgLocations(orgLocations);
+        immigrationTemplate.setName(templateDTO.getTemplateName());
+        immigrationTemplate.setDescription(templateDTO.getTemplateDescription());
+        immigrationTemplate.setCreatedBy(user);
+        immigrationTemplate.setCreatedDate(new Date());
+        immigrationTemplate.setUpdatedBy(user);
+        immigrationTemplate.setUpdatedDate(new Date());
+        immigrationTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+        immigrationTemplate.setStatus(0);
+        return immigrationTemplateDao.savePetitionTemplateDetails(immigrationTemplate, templateId);
 
-		List<ImmigrationTemplateDocDTO> docsList = templateDTO.getImmigrationDocList();
-		ImmigrationTemplate immiTemplate = new ImmigrationTemplate();
-		immiTemplate.setId(templateDTO.getId());
-		if (!StringUtils.isEmpty(templateDTO.getImmigrationDocDeletedListIds())) {
-			immigrationTemplateDao.deletePetitionTemplateDocDetails(templateDTO.getImmigrationDocDeletedListIds());
-		}
-		List<ImmigrationTemplateDocDTO> docsListAfterSave = new ArrayList<ImmigrationTemplateDocDTO>();
-		for (ImmigrationTemplateDocDTO tempObj : docsList) {
-			if (tempObj.getDocumentType() == null)
-				continue;
-			ImmigrationTemplateDocs immigrationTemplateDocs = new ImmigrationTemplateDocs();
-			immigrationTemplateDocs.setId(tempObj.getId());
-			immigrationTemplateDocs.setImmigrationTempId(immiTemplate);
-			immigrationTemplateDocs.setCreatedDate(new Date());
-			immigrationTemplateDocs.setCreatedBy(user);
-			immigrationTemplateDocs.setUpdatedDate(new Date());
-			immigrationTemplateDocs.setUpdatedBy(user);
-			immigrationTemplateDocs.setDocumentType(tempObj.getDocumentType());
-			immigrationTemplateDocs.setDescription(tempObj.getDescription());
-			if (tempObj.getIsRequired() != null && "Y".equalsIgnoreCase(tempObj.getIsRequired())) {
-				immigrationTemplateDocs.setIsRequired(tempObj.getIsRequired());
-			} else {
-				immigrationTemplateDocs.setIsRequired(Constants.NO);
-			}
-			if (tempObj.getMultiple() != null && "Y".equalsIgnoreCase(tempObj.getMultiple())) {
-				immigrationTemplateDocs.setIsMultipleRequired(tempObj.getMultiple());
-			} else {
-				immigrationTemplateDocs.setIsMultipleRequired(Constants.NO);
-			}
-			immigrationTemplateDocs.setStatus(1);// active
-			ImmigrationTemplateDocs docs = immigrationTemplateDao
-					.savePetitionTemplateDocDetails(immigrationTemplateDocs);
-			tempObj.setId(docs.getId());
-			tempObj.setIsRequired(docs.getIsRequired());
-			tempObj.setMultiple(docs.getIsMultipleRequired());
-			docsListAfterSave.add(tempObj);
-		}
-		return docsListAfterSave;
+    }
 
-	}
+    @Override
+    public List<ImmigrationTemplateDocDTO> savePetitionTemplateDocDetails(ImmigrationTemplateDTO templateDTO,
+            User user) {
 
-	@Override
-	public void savePetitionTemplateTaskDetails(ImmigrationTemplateDTO templateDTO, User user) {
+        List<ImmigrationTemplateDocDTO> docsList = templateDTO.getImmigrationDocList();
+        ImmigrationTemplate immiTemplate = new ImmigrationTemplate();
+        immiTemplate.setId(templateDTO.getId());
+        if (!StringUtils.isEmpty(templateDTO.getImmigrationDocDeletedListIds())) {
+            immigrationTemplateDao.deletePetitionTemplateDocDetails(templateDTO.getImmigrationDocDeletedListIds());
+        }
+        List<ImmigrationTemplateDocDTO> docsListAfterSave = new ArrayList<ImmigrationTemplateDocDTO>();
+        for (ImmigrationTemplateDocDTO tempObj : docsList) {
+            if (tempObj.getDocumentType() == null) {
+                continue;
+            }
+            ImmigrationTemplateDocs immigrationTemplateDocs = new ImmigrationTemplateDocs();
+            immigrationTemplateDocs.setId(tempObj.getId());
+            immigrationTemplateDocs.setImmigrationTempId(immiTemplate);
+            immigrationTemplateDocs.setCreatedDate(new Date());
+            immigrationTemplateDocs.setCreatedBy(user);
+            immigrationTemplateDocs.setUpdatedDate(new Date());
+            immigrationTemplateDocs.setUpdatedBy(user);
+            immigrationTemplateDocs.setDocumentType(tempObj.getDocumentType());
+            immigrationTemplateDocs.setDescription(tempObj.getDescription());
+            if (tempObj.getIsRequired() != null && "Y".equalsIgnoreCase(tempObj.getIsRequired())) {
+                immigrationTemplateDocs.setIsRequired(tempObj.getIsRequired());
+            } else {
+                immigrationTemplateDocs.setIsRequired(Constants.NO);
+            }
+            if (tempObj.getMultiple() != null && "Y".equalsIgnoreCase(tempObj.getMultiple())) {
+                immigrationTemplateDocs.setIsMultipleRequired(tempObj.getMultiple());
+            } else {
+                immigrationTemplateDocs.setIsMultipleRequired(Constants.NO);
+            }
+            immigrationTemplateDocs.setStatus(1);// active
+            ImmigrationTemplateDocs docs = immigrationTemplateDao
+                    .savePetitionTemplateDocDetails(immigrationTemplateDocs);
+            tempObj.setId(docs.getId());
+            tempObj.setIsRequired(docs.getIsRequired());
+            tempObj.setMultiple(docs.getIsMultipleRequired());
+            docsListAfterSave.add(tempObj);
+        }
+        return docsListAfterSave;
 
-		ImmigrationTemplate immiTemplate = new ImmigrationTemplate();
-		immiTemplate.setId(templateDTO.getTemplateId());
-		ImmigrationTemplateTasks immigrationTemplateTask = new ImmigrationTemplateTasks();
-		immigrationTemplateTask.setImmigrationTempId(immiTemplate);
-		if (templateDTO.getId() != null) {
-			immigrationTemplateTask.setId(templateDTO.getId());
-		}
-		immigrationTemplateTask.setTaskName(templateDTO.getTaskName());
-		if (StringUtils.isNotBlank(templateDTO.getPetitionAssignedTo())) {
-			immigrationTemplateTask.setAssignToUsers(templateDTO.getPetitionAssignedTo());
-			immigrationTemplateTask.setAssignToCandidate(null);
-		} else {
-			immigrationTemplateTask.setAssignToCandidate(Constants.YES);
-			immigrationTemplateTask.setAssignToUsers(null);
-		}
-		immigrationTemplateTask.setTaskReminder(templateDTO.getTaskReminder());
-		immigrationTemplateTask.setPriority(templateDTO.getPriority());
-		immigrationTemplateTask.setDueAfterMonths(templateDTO.getDueAfterMonths());
-		immigrationTemplateTask.setDueAfterDays(templateDTO.getDueAfterDays());
-		immigrationTemplateTask.setTaskRepeat(templateDTO.getTaskRepeat());
-		immigrationTemplateTask.setTaskEmail(templateDTO.getTaskEmail());
-		immigrationTemplateTask.setTaskNotification(templateDTO.getTaskNotification());
-		immigrationTemplateTask.setDescription(templateDTO.getTaskDescription());
-		immigrationTemplateTask.setStatus(Constants.RECORD_ACTIVE);// 1 for active
+    }
 
-		immigrationTemplateTask.setCreatedDate(new Date());
-		immigrationTemplateTask.setCreatedBy(user);
-		immigrationTemplateTask.setUpdatedDate(new Date());
-		immigrationTemplateTask.setUpdatedBy(user);
+    @Override
+    public void savePetitionTemplateTaskDetails(ImmigrationTemplateDTO templateDTO, User user) {
 
-		immigrationTemplateDao.savePetitionTemplateTaskDetails(immigrationTemplateTask);
-	}
+        ImmigrationTemplate immiTemplate = new ImmigrationTemplate();
+        immiTemplate.setId(templateDTO.getTemplateId());
+        ImmigrationTemplateTasks immigrationTemplateTask = new ImmigrationTemplateTasks();
+        immigrationTemplateTask.setImmigrationTempId(immiTemplate);
+        if (templateDTO.getId() != null) {
+            immigrationTemplateTask.setId(templateDTO.getId());
+        }
+        immigrationTemplateTask.setTaskName(templateDTO.getTaskName());
+        if (StringUtils.isNotBlank(templateDTO.getPetitionAssignedTo())) {
+            immigrationTemplateTask.setAssignToUsers(templateDTO.getPetitionAssignedTo());
+            immigrationTemplateTask.setAssignToCandidate(null);
+        } else {
+            immigrationTemplateTask.setAssignToCandidate(Constants.YES);
+            immigrationTemplateTask.setAssignToUsers(null);
+        }
+        immigrationTemplateTask.setTaskReminder(templateDTO.getTaskReminder());
+        immigrationTemplateTask.setPriority(templateDTO.getPriority());
+        immigrationTemplateTask.setDueAfterMonths(templateDTO.getDueAfterMonths());
+        immigrationTemplateTask.setDueAfterDays(templateDTO.getDueAfterDays());
+        immigrationTemplateTask.setTaskRepeat(templateDTO.getTaskRepeat());
+        immigrationTemplateTask.setTaskEmail(templateDTO.getTaskEmail());
+        immigrationTemplateTask.setTaskNotification(templateDTO.getTaskNotification());
+        immigrationTemplateTask.setDescription(templateDTO.getTaskDescription());
+        immigrationTemplateTask.setStatus(Constants.RECORD_ACTIVE);// 1 for active
 
-	@Override
-	public ResponseList<ImmigrationTemplateListDTO> getAllTemplateDetails(ImmigrationTemplateListDTO templateListDTO,
-			String searchValue, Long orgLocationId) {
-		ResponseList<ImmigrationTemplateListDTO> templateList = immigrationTemplateDao
-				.getAllTemplateDetails(templateListDTO, searchValue, orgLocationId);
-		return templateList;
-	}
+        immigrationTemplateTask.setCreatedDate(new Date());
+        immigrationTemplateTask.setCreatedBy(user);
+        immigrationTemplateTask.setUpdatedDate(new Date());
+        immigrationTemplateTask.setUpdatedBy(user);
 
-	@Override
-	public List<ImmigrationTemplateFormDTO> savePetitionTemplateFormDetails(ImmigrationTemplateDTO templateDTO,
-			User user) {
-		List<ImmigrationTemplateFormDTO> formsList = templateDTO.getImmigrationFormList();
-		ImmigrationTemplate immiTemplate = new ImmigrationTemplate();
-		immiTemplate.setId(templateDTO.getId());
+        immigrationTemplateDao.savePetitionTemplateTaskDetails(immigrationTemplateTask);
+    }
 
-		List<ImmigrationTemplateFormDTO> savedFormList = new ArrayList<ImmigrationTemplateFormDTO>();
+    @Override
+    public ResponseList<ImmigrationTemplateListDTO> getAllTemplateDetails(ImmigrationTemplateListDTO templateListDTO,
+            String searchValue, Long orgLocationId) {
+        ResponseList<ImmigrationTemplateListDTO> templateList = immigrationTemplateDao
+                .getAllTemplateDetails(templateListDTO, searchValue, orgLocationId);
+        return templateList;
+    }
 
-		if (!StringUtils.isEmpty(templateDTO.getImmigrationFormDeletedListIds())) {
-			immigrationTemplateDao.deletePetitionTemplateFormDetails(templateDTO.getImmigrationFormDeletedListIds());
-		}
+    @Override
+    public List<ImmigrationTemplateFormDTO> savePetitionTemplateFormDetails(ImmigrationTemplateDTO templateDTO,
+            User user) {
+        List<ImmigrationTemplateFormDTO> formsList = templateDTO.getImmigrationFormList();
+        ImmigrationTemplate immiTemplate = new ImmigrationTemplate();
+        immiTemplate.setId(templateDTO.getId());
 
-		for (ImmigrationTemplateFormDTO tempObj : formsList) {
-			ImmigrationTemplateForms immigrationTemplateForms = null;
-			if (tempObj.getFormName() == null)
-				continue;
-			/*
-			 * if(tempObj.getId() != null){ immigrationTemplateForms.setId(tempObj.getId());
-			 * }
-			 */
-			if (tempObj.getId() != null) {
-				immigrationTemplateForms = getImmigrationTemplateFormsById(tempObj.getId());
-			} else {
-				immigrationTemplateForms = new ImmigrationTemplateForms();
-			}
-			immigrationTemplateForms.setImmigrationTempId(immiTemplate);
-			immigrationTemplateForms.setFormName(tempObj.getFormName());
-			immigrationTemplateForms.setDescription(tempObj.getFormDescription());
-			if (tempObj.getIsRequired() != null && "Y".equalsIgnoreCase(tempObj.getIsRequired())) {
-				immigrationTemplateForms.setIsRequired(tempObj.getIsRequired());
-			} else {
-				immigrationTemplateForms.setIsRequired(Constants.NO);
-			}
-			immigrationTemplateForms.setCreatedDate(new Date());
-			immigrationTemplateForms.setCreatedBy(user);
-			immigrationTemplateForms.setUpdatedDate(new Date());
-			immigrationTemplateForms.setUpdatedBy(user);
-			immigrationTemplateForms.setStatus(Constants.RECORD_ACTIVE);
-			immigrationTemplateForms.setFormUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-			if (tempObj.getImmigrationFormFileInfo() != null && !tempObj.getImmigrationFormFileInfo().isEmpty()) {
-				FileInfo info = tempObj.getImmigrationFormFileInfo().get(0);
+        List<ImmigrationTemplateFormDTO> savedFormList = new ArrayList<ImmigrationTemplateFormDTO>();
 
-				if (info != null && info.getFileURL() != null) {
-					immigrationTemplateForms.setFileName(info.getFileName());
-					immigrationTemplateForms.setFileUrl(info.getFileURL());
-					immigrationTemplateForms.setFileContentType(info.getContentType());
+        if (!StringUtils.isEmpty(templateDTO.getImmigrationFormDeletedListIds())) {
+            immigrationTemplateDao.deletePetitionTemplateFormDetails(templateDTO.getImmigrationFormDeletedListIds());
+        }
 
-					try {
+        for (ImmigrationTemplateFormDTO tempObj : formsList) {
+            ImmigrationTemplateForms immigrationTemplateForms = null;
+            if (tempObj.getFormName() == null) {
+                continue;
+            }
+            /*
+             * if(tempObj.getId() != null){ immigrationTemplateForms.setId(tempObj.getId());
+             * }
+             */
+            if (tempObj.getId() != null) {
+                immigrationTemplateForms = getImmigrationTemplateFormsById(tempObj.getId());
+            } else {
+                immigrationTemplateForms = new ImmigrationTemplateForms();
+            }
+            immigrationTemplateForms.setImmigrationTempId(immiTemplate);
+            immigrationTemplateForms.setFormName(tempObj.getFormName());
+            immigrationTemplateForms.setDescription(tempObj.getFormDescription());
+            if (tempObj.getIsRequired() != null && "Y".equalsIgnoreCase(tempObj.getIsRequired())) {
+                immigrationTemplateForms.setIsRequired(tempObj.getIsRequired());
+            } else {
+                immigrationTemplateForms.setIsRequired(Constants.NO);
+            }
+            immigrationTemplateForms.setCreatedDate(new Date());
+            immigrationTemplateForms.setCreatedBy(user);
+            immigrationTemplateForms.setUpdatedDate(new Date());
+            immigrationTemplateForms.setUpdatedBy(user);
+            immigrationTemplateForms.setStatus(Constants.RECORD_ACTIVE);
+            immigrationTemplateForms.setFormUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+            if (tempObj.getImmigrationFormFileInfo() != null && !tempObj.getImmigrationFormFileInfo().isEmpty()) {
+                FileInfo info = tempObj.getImmigrationFormFileInfo().get(0);
 
-						FileUploadUtil.moveFile(templateDTO.getStaticPath(), info, "ImmigrationFormDocs");
-					} catch (java.io.IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+                if (info != null && info.getFileURL() != null) {
+                    immigrationTemplateForms.setFileName(info.getFileName());
+                    immigrationTemplateForms.setFileUrl(info.getFileURL());
+                    immigrationTemplateForms.setFileContentType(info.getContentType());
 
-				}
-			}
-			ImmigrationTemplateForms immigrationForms = immigrationTemplateDao
-					.savePetitionTemplateFormDetails(immigrationTemplateForms);
+                    try {
 
-			tempObj.setId(immigrationForms.getId());
-			tempObj.setFileName(immigrationForms.getFileName());
-			tempObj.setFileUrl(immigrationForms.getFileUrl());
-			tempObj.setIsRequired(immigrationForms.getIsRequired());
-			savedFormList.add(tempObj);
-		}
+                        FileUploadUtil.moveFile(templateDTO.getStaticPath(), info, "ImmigrationFormDocs");
+                    } catch (java.io.IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
 
-		return savedFormList;
-	}
+                }
+            }
+            ImmigrationTemplateForms immigrationForms = immigrationTemplateDao
+                    .savePetitionTemplateFormDetails(immigrationTemplateForms);
 
-	private ImmigrationTemplateForms getImmigrationTemplateFormsById(Long immigrationId) {
-		return immigrationTemplateDao.getImmigrationTemplateFormsById(immigrationId);
-	}
+            tempObj.setId(immigrationForms.getId());
+            tempObj.setFileName(immigrationForms.getFileName());
+            tempObj.setFileUrl(immigrationForms.getFileUrl());
+            tempObj.setIsRequired(immigrationForms.getIsRequired());
+            savedFormList.add(tempObj);
+        }
 
-	@Override
-	public ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO,
-			String searchValue) throws Exception {
-		ResponseList<ImmigrationTemplateDTO> responseList = immigrationTemplateDao.getTemplateTaskList(templateDTO,
-				searchValue);
-		return responseList;
-	}
+        return savedFormList;
+    }
 
-	@Override
-	public ImmigrationTemplateDTO editImmigrationTaskList(String id) throws Exception {
-		ImmigrationTemplateTasks templateTasks = immigrationTemplateDao.editImmigrationTaskList(id);
-		ImmigrationTemplateDTO templateDTO = new ImmigrationTemplateDTO();
-		if (templateTasks != null) {
-			BeanUtils.copyProperties(templateTasks, templateDTO);
-			templateDTO.setTemplateId(templateTasks.getImmigrationTempId().getId());
-			/*
-			 * templateDTO.setId(templateTasks.getId());
-			 * templateDTO.setTaskName(templateTasks.getTaskName());
-			 * templateDTO.setPriority(templateTasks.getPriority().trim());
-			 * templateDTO.setTaskRepeat(templateTasks.getTaskRepeat());
-			 * templateDTO.setTaskReminder(templateTasks.getTaskReminder());
-			 * templateDTO.setTaskEmail(templateTasks.getTaskEmail());
-			 * templateDTO.setDueAfterMonths(templateTasks.getDueAfterMonths());
-			 * templateDTO.setDueAfterDays(templateTasks.getDueAfterDays());
-			 */
-			if (templateTasks.getAssignToUsers() != null) {
-				// User user =
-				// userDao.getUserById(Long.parseLong(templateTasks.getAssignToUsers()));
-				// templateDTO.setPetitionAssignedTo(user.getFullName());
-				templateDTO.setPetitionAssignedTo(templateTasks.getAssignToUsers());
-			} else if (templateTasks.getAssignToCandidate() != null) {
-				templateDTO.setAssignedTo(Constants.CANDIDATE);
-			}
-			templateDTO.setTaskDescription(templateTasks.getDescription());
-		}
-		return templateDTO;
-	}
+    private ImmigrationTemplateForms getImmigrationTemplateFormsById(Long immigrationId) {
+        return immigrationTemplateDao.getImmigrationTemplateFormsById(immigrationId);
+    }
 
-	@Override
-	public ImmigrationTemplateDTO getPetitionTemplateDetails(Long templateId) {
-		return immigrationTemplateDao.getPetitionTemplateDetails(templateId);
-	}
+    @Override
+    public ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO,
+            String searchValue) throws Exception {
+        ResponseList<ImmigrationTemplateDTO> responseList = immigrationTemplateDao.getTemplateTaskList(templateDTO,
+                searchValue);
+        return responseList;
+    }
 
-	@Override
-	public List<ImmigrationTemplateDocDTO> getImmigrationTemplateDocsListById(Long templateId) {
-		return immigrationTemplateDao.getImmigrationTemplateDocsListById(templateId);
-	}
+    @Override
+    public ImmigrationTemplateDTO editImmigrationTaskList(String id) throws Exception {
+        ImmigrationTemplateTasks templateTasks = immigrationTemplateDao.editImmigrationTaskList(id);
+        ImmigrationTemplateDTO templateDTO = new ImmigrationTemplateDTO();
+        if (templateTasks != null) {
+            BeanUtils.copyProperties(templateTasks, templateDTO);
+            templateDTO.setTemplateId(templateTasks.getImmigrationTempId().getId());
+            /*
+             * templateDTO.setId(templateTasks.getId());
+             * templateDTO.setTaskName(templateTasks.getTaskName());
+             * templateDTO.setPriority(templateTasks.getPriority().trim());
+             * templateDTO.setTaskRepeat(templateTasks.getTaskRepeat());
+             * templateDTO.setTaskReminder(templateTasks.getTaskReminder());
+             * templateDTO.setTaskEmail(templateTasks.getTaskEmail());
+             * templateDTO.setDueAfterMonths(templateTasks.getDueAfterMonths());
+             * templateDTO.setDueAfterDays(templateTasks.getDueAfterDays());
+             */
+            if (templateTasks.getAssignToUsers() != null) {
+                // User user =
+                // userDao.getUserById(Long.parseLong(templateTasks.getAssignToUsers()));
+                // templateDTO.setPetitionAssignedTo(user.getFullName());
+                templateDTO.setPetitionAssignedTo(templateTasks.getAssignToUsers());
+            } else if (templateTasks.getAssignToCandidate() != null) {
+                templateDTO.setAssignedTo(Constants.CANDIDATE);
+            }
+            templateDTO.setTaskDescription(templateTasks.getDescription());
+        }
+        return templateDTO;
+    }
 
-	@Override
-	public List<ImmigrationTemplateFormDTO> getImmigrationTemplateformsListById(Long templateId) {
-		return immigrationTemplateDao.getImmigrationTemplateformsListById(templateId);
-	}
+    @Override
+    public ImmigrationTemplateDTO getPetitionTemplateDetails(Long templateId) {
+        return immigrationTemplateDao.getPetitionTemplateDetails(templateId);
+    }
 
-	@Override
-	public void deleteAllPetitionTemplateDetailsById(Long templateId) {
-		immigrationTemplateDao.deleteAllPetitionTemplateDetailsById(templateId);
-	}
+    @Override
+    public List<ImmigrationTemplateDocDTO> getImmigrationTemplateDocsListById(Long templateId) {
+        return immigrationTemplateDao.getImmigrationTemplateDocsListById(templateId);
+    }
 
-	@Override
-	public void deleteImmigrationTaskList(String id) {
-		immigrationTemplateDao.deleteImmigrationTaskList(id);
+    @Override
+    public List<ImmigrationTemplateFormDTO> getImmigrationTemplateformsListById(Long templateId) {
+        return immigrationTemplateDao.getImmigrationTemplateformsListById(templateId);
+    }
 
-	}
+    @Override
+    public void deleteAllPetitionTemplateDetailsById(Long templateId) {
+        immigrationTemplateDao.deleteAllPetitionTemplateDetailsById(templateId);
+    }
 
-	@Override
-	public int savePetitionTemplateDetailsValues(String templateId) {
-		return immigrationTemplateDao.savePetitionTemplateDetailsValues(templateId);
-	}
+    @Override
+    public void deleteImmigrationTaskList(String id) {
+        immigrationTemplateDao.deleteImmigrationTaskList(id);
 
-	@Override
-	public List<CandidateEmployerDTO> getPetitionTemplateEmployers(Long id) {
-		List<CandidateEmployers> candidateEmployers = immigrationTemplateDao.getPetitionTemplateEmployers(id);
-		List<CandidateEmployerDTO> employerDTOs = new ArrayList<>();
-		for(CandidateEmployers source: candidateEmployers) {
-			CandidateEmployerDTO target = new CandidateEmployerDTO();
-			BeanUtils.copyProperties(source, target);
-			employerDTOs.add(target);
-		}
-		return employerDTOs;
-	}
+    }
 
-	@Override
-	public List<LookUpData> getLookupDataByType(String type) {
-		List<LookUpData> lookUpDatas = immigrationTemplateDao.getLookupDataByType(type);
-		return lookUpDatas;
-	}
+    @Override
+    public int savePetitionTemplateDetailsValues(String templateId) {
+        return immigrationTemplateDao.savePetitionTemplateDetailsValues(templateId);
+    }
 
-	
+    @Override
+    public List<CandidateEmployerDTO> getPetitionTemplateEmployers(Long id) {
+        List<CandidateEmployers> candidateEmployers = immigrationTemplateDao.getPetitionTemplateEmployers(id);
+        List<CandidateEmployerDTO> employerDTOs = new ArrayList<>();
+        for (CandidateEmployers source : candidateEmployers) {
+            CandidateEmployerDTO target = new CandidateEmployerDTO();
+            BeanUtils.copyProperties(source, target);
+            employerDTOs.add(target);
+        }
+        return employerDTOs;
+    }
+
+    @Override
+    public List<LookUpData> getLookupDataByType(String type) {
+        List<LookUpData> lookUpDatas = immigrationTemplateDao.getLookupDataByType(type);
+        return lookUpDatas;
+    }
+
+    @Override
+    public boolean validateTemplateNameExistance(String templateName, Long templateId) {
+        return immigrationTemplateDao.validateTemplateNameExistance(templateName, templateId);
+    }
 
 }

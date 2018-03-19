@@ -13,10 +13,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.ImmigrationResidenceDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateLcaI94Summary;
+import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
@@ -75,7 +78,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public void savePetitionDetails(Immigration immigration, Candidate candidate,
 			CandidateIdendities candidateIdendities, CandidateResumes candidateResume,
-			List<CandidateLcaI94Summary> lcaSummaryLst) throws Exception {
+			List<CandidateLcaI94Summary> lcaSummaryLst, List<CandidateResidence> residenceList) throws Exception {
 		logger.debug("saveConnection");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
@@ -94,6 +97,11 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			if(lcaSummaryLst.size() != 0) {
 				for(CandidateLcaI94Summary candidateLcaI94Summary : lcaSummaryLst) {
 					session.saveOrUpdate(candidateLcaI94Summary);
+				}
+			}
+			if(residenceList != null && residenceList.size() != 0) { // saving multiple residence for candidates only for immigration
+				for(CandidateResidence residence : residenceList) {
+					session.saveOrUpdate(residence);
 				}
 			}
 		} catch (Exception exception) {

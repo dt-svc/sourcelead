@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.bis.sourcelead.immigration.service;
 
@@ -21,34 +21,37 @@ import com.bis.sourcelead.entity.User;
  *
  */
 public interface ImmigrationTemplateService {
-	Long savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, User user, OrgLocations orgLocations, String templateId);
-	
-	ImmigrationTemplateDTO getPetitionTemplateDetails(Long templateId);
-	
-	List<ImmigrationTemplateDocDTO> savePetitionTemplateDocDetails(ImmigrationTemplateDTO templateDTO, User user);
-	
-	void savePetitionTemplateTaskDetails(ImmigrationTemplateDTO templateDTO, User user);
-	
-	ResponseList<ImmigrationTemplateListDTO> getAllTemplateDetails(ImmigrationTemplateListDTO templateListDTO, String searchValue, Long orgLocationId);
-	
-	List<ImmigrationTemplateFormDTO> savePetitionTemplateFormDetails(ImmigrationTemplateDTO templateDTO, User user);
 
-	ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO, String searchValue) throws Exception;
+    Long savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, User user, OrgLocations orgLocations, String templateId);
 
-	ImmigrationTemplateDTO editImmigrationTaskList(String id) throws Exception;
-	
-	List<ImmigrationTemplateDocDTO> getImmigrationTemplateDocsListById(Long templateId);
-	
-	List<ImmigrationTemplateFormDTO> getImmigrationTemplateformsListById(Long templateId);
-	
-	void deleteAllPetitionTemplateDetailsById(Long templateId);
+    ImmigrationTemplateDTO getPetitionTemplateDetails(Long templateId);
 
-	void deleteImmigrationTaskList(String id);
+    List<ImmigrationTemplateDocDTO> savePetitionTemplateDocDetails(ImmigrationTemplateDTO templateDTO, User user);
 
-	int savePetitionTemplateDetailsValues(String templateId);
+    void savePetitionTemplateTaskDetails(ImmigrationTemplateDTO templateDTO, User user);
 
-	List<CandidateEmployerDTO> getPetitionTemplateEmployers(Long id);
+    ResponseList<ImmigrationTemplateListDTO> getAllTemplateDetails(ImmigrationTemplateListDTO templateListDTO, String searchValue, Long orgLocationId);
 
-	List<LookUpData> getLookupDataByType(String type);
+    List<ImmigrationTemplateFormDTO> savePetitionTemplateFormDetails(ImmigrationTemplateDTO templateDTO, User user);
+
+    ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO, String searchValue) throws Exception;
+
+    ImmigrationTemplateDTO editImmigrationTaskList(String id) throws Exception;
+
+    List<ImmigrationTemplateDocDTO> getImmigrationTemplateDocsListById(Long templateId);
+
+    List<ImmigrationTemplateFormDTO> getImmigrationTemplateformsListById(Long templateId);
+
+    void deleteAllPetitionTemplateDetailsById(Long templateId);
+
+    void deleteImmigrationTaskList(String id);
+
+    int savePetitionTemplateDetailsValues(String templateId);
+
+    List<CandidateEmployerDTO> getPetitionTemplateEmployers(Long id);
+
+    List<LookUpData> getLookupDataByType(String type);
+
+    public boolean validateTemplateNameExistance(String templateName, Long templateId);
 
 }
