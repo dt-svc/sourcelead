@@ -3,11 +3,10 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/serial.js"></script>
-
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
-<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css">
+<script src="/resources/amcharts/amcharts.js"></script>
+<script src="/resources/amcharts/serial.js"></script>
+<script src="/resources/amcharts/plugins/export/export.min.js"></script>
+<link rel="stylesheet" href="/resources/amcharts/plugins/export/export.css" type="text/css" media="all" />
 
 <script type="text/javascript">
 $(document).ready(function(){
@@ -145,7 +144,8 @@ function prepareapagingGraph(data){
 				"enabled": true
 			},
 			"export": {
-				"enabled": true
+				"enabled": true.
+				"fileName":"A/P Aging"
 			},
 			"categoryAxis": {
 				"autoRotateAngle": 30,
