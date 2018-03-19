@@ -17,14 +17,15 @@
 		</div>
 		
 		<div class="addImmiContent clearfix">
-
+			<form id="petitionDetailsForm" name="petitionDetailsForm">
           <div class="col-md-12 col-lg-12 myForm margin-top0">
+          
             <h4 class="col-md-12 mb clearfix">1. Petition detail</h4>
             <div class="clearfix"></div>         
          	<div class="form-group">
               <label class="col-md-4">Petition type<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8 dropdown-select">
-                  <select id="petitionTypeDropdown" class="form-control">
+                  <select id="petitionType" name="petitionType" class="form-control" field-name="Petition type" data-validation="required">
                   </select>
               </div>
           </div> 
@@ -33,7 +34,7 @@
               <label class="col-md-4">Open date<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" id ="openDate" class="form-control calendar" name="" placeholder="Open Date">
+                <input type="text" id ="openDate" class="form-control calendar" name="openDate" placeholder="Open Date" field-name="Open date" data-validation="required"/>
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('openDate');"></i></span>
               </div>
             </div>
@@ -42,17 +43,17 @@
             <div class="form-group">
               <label class="col-md-4">Current USCIS Status</label>
               <div class="col-md-8 dropdown-select">
-                <select id="uscisDropDown" class="form-control">
+                <select id="currUscisStatus" name="currUscisStatus" class="form-control">
                     
                   </select>
               </div>
             </div>
-
+		
             <div class="form-group">
               <label class="col-md-4">Date of arrival</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" id="arrivalDate" class="form-control calendar" name="" placeholder="Date of arrival">
+                <input type="text" id="arrivalDate" class="form-control calendar" name="arrivalDate" placeholder="Date of arrival"/>
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('arrivalDate');"></i></span>
               </div>
               </div>
@@ -62,8 +63,8 @@
           		<label class="col-md-4">Place of entry<span class="text-danger">&nbsp;*</span></label>
          			 <div class="col-md-8" id="locationField">
           			<div class="positionRelative">
-          			<input class="form-control positionRelative" id="petitionerPlace" name="petitionerPlace" placeholder="Enter your Location"  type="text" field-name="Place Of Entry" data-validation="required"></input>
-          				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('petitionerPlace');"></i>
+          			<input class="form-control positionRelative" id="entryPlace" name="entryPlace" onclick="initLocationAuto('entryPlace');" placeholder="Enter your Location"  type="text" field-name="Place Of Entry" data-validation="required"></input>
+          				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onclick="refreshGoogleApiLocation('entryPlace');"></i>
          				 </div>
         			  </div>
        			 </div>
@@ -72,7 +73,7 @@
             <div class="form-group">
               <label class="col-md-4">Choose Template</label>
               <div class="col-md-8">
-               <select class="chosen-select form-control" data-placeholder="Choose Template">
+               <select class="chosen-select form-control" id="templateId" name="templateId" data-placeholder="Choose Template">
                	
                	<option value="" selected>--Choose Template--</option>
 							<c:forEach var="item" items="${templateList}">
@@ -81,17 +82,17 @@
                </select>
               </div>
             </div>
-            
+          
             <div class="clearfix"></div>
             <h4 class="col-md-12 mb">2. Attorney Details</h4>
             <div class="clearfix"></div>
 							<div class="form-group">
-								<label class="col-md-3"><span class="pull-left">Attorney Name</span><span
+								<label class="col-md-4"><span class="pull-left">Attorney Name</span><span
 									class="text-danger pull-left" id="man1">*</span></label>
-								<div class="col-md-9 chooRadius" id="errorAttorney">
+								<div class="col-md-8 chooRadius" id="errorAttorney">
 								<div class="input-group col-md-10 pull-left chooRadius">
-									<select class="chosen-select form-control" name="attorneys"
-										id="attorneys" placeholder="Select Attorney" field-name="Attorney Name" data-validation="required"
+									<select class="chosen-select form-control" name="attorneyId"
+										id="attorneyId" placeholder="Select Attorney" field-name="Attorney Name" data-validation="required"
 										onchange="getAttorneyContactList();removeValidationAttorney();">
 									</select>
 								 <span class="input-group-addon cursorPointer bg-blue" onclick="getAttorneysByOrgLocation();addCandiadateEmptyAttorneyContact();"><i class="fa fa-refresh "></i></span>
@@ -104,8 +105,8 @@
 							</div>
 
 							<div class="form-group">
-								<label class="col-md-3"><span class="pull-left">Attorney Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
-								<div class="col-md-9 chooRadius" id="errorAttorneyContact">
+								<label class="col-md-4"><span class="pull-left">Attorney Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
+								<div class="col-md-8 chooRadius" id="errorAttorneyContact">
 								<div class="input-group col-md-10 pull-left chooRadius">
 									<select class="chosen-select form-control" name="attorneyContact" data-validation="required"
 										id="attorneyContact" field-name="Attorney Contact"
@@ -121,18 +122,18 @@
 								</div>
 								
 							</div>
-            
+              
            <div class="clearfix"></div>
             	<h4 class="col-md-12 mb margin-top0">3. Beneficiary  details</h4>
            <div class="clearfix"></div>
 
              <div class="form-group">
-								<label class="col-md-3"><span class="pull-left">Associate (Beneficiary)</span><span
+								<label class="col-md-4"><span class="pull-left">Associate (Beneficiary)</span><span
 									class="text-danger pull-left" id="man1">*</span></label>
-								<div class="col-md-9 chooRadius" id="errorAttorney">
+								<div class="col-md-8 chooRadius" id="errorAttorney">
 								<div class="input-group col-md-10 pull-left chooRadius">
-									<select class="chosen-select form-control" name="attorneys"
-										id="candidates" placeholder="Select Beneficiary" field-name="Attorney Name" data-validation="required" onchange="updateCandiateInfo($(this));">
+									<select class="chosen-select form-control" name="candidateId"
+										id="candidateId" placeholder="Select Beneficiary" onchange="updateCandiateInfo($(this));">
 									</select>
 								 <span class="input-group-addon cursorPointer bg-blue" onclick="getCandidatesByOrgLocation();"><i class="fa fa-refresh "></i></span>
 									
@@ -143,48 +144,56 @@
          <div class="form-group">
               <label class="col-md-4">First Name<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
-					<input type="text" class="form-control" id="candidateFirstName" name="">
+					<input type="text" class="form-control" id="firstName" name="firstName" field-name="First Name" data-validation="required"/>
               </div>
           </div>
           <div class="form-group">
               <label class="col-md-4">Middle Name</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="" value="">
+					<input type="text" class="form-control" name="middleName" id="middleName">
               </div>
           </div> 
           <div class="form-group">
               <label class="col-md-4">Last Name<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="" id="candidateLastName" value="">
+					<input type="text" class="form-control" name="lastName" id="lastName" field-name="Last Name" data-validation="required">
               </div>
           </div>  
-
+         <div class="form-group">
+						<label class="col-md-4">Gender</label>
+						<div class="col-md-8" id= "errorGenderMsg">
+						<label class="paddingRight"><input type="radio"  value="Male"  name="gender"><span class="mr5"></span>Male</label>
+						<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</label>
+						<label class="paddingRight"><input type="radio"  value="Transgender" name="gender" ><span class="mr5"></span>Transgender</label>
+						<!-- <input type="hidden"  id="genderValue" name="genderValue"/> --> 		
+			</div>
+			</div>
           <div class="form-group">
               <label class="col-md-4">Email<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="" value="">
+					<input type="text" class="form-control" name="email" id="email" field-name="Email" data-validation="required">
               </div>
           </div>
                       	
           <div class="form-group">
               <label class="col-md-4">Mobile</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="" value="">
+					<input type="text" class="form-control" name="mobile" id="mobile">
               </div>
           </div>
           
            <div class="form-group">
               <label class="col-md-4">Alternative Mobile</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="" value="">
+					<input type="text" class="form-control" name="alternateMobile" id="alternateMobile">
               </div>
           </div> 
-          
+            
            <div class="form-group">
               <label class="col-md-4">DOB<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
 					<div class="input-group">
-                <input type="text" class="form-control calendar" name="birthDate" id="birthDate" placeholder="Date Of Birth">
+                <input type="text" class="form-control calendar" name="birthDate" id="birthDate" placeholder="Date Of Birth" field-name="Date Of Birth" data-validation="required">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onClick="clearDateValue('birthDate');"></i></span>
               </div>
               </div>
@@ -193,60 +202,60 @@
               <label class="col-md-4">Place of Birth</label>
               <div class="col-md-8">
                    <div class="positionRelative">
-          			<input class="form-control positionRelative" id="petitionerBirthPlace" name="petitionerBirthPlace" placeholder="Place of Birth"  type="text" field-name="Place of Birth" data-validation="required"></input>
-          				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('petitionerBirthPlace');"></i>
+          			<input class="form-control positionRelative" id="birthPlace" name="birthPlace" onclick="initLocationAuto('birthPlace');" type="text" field-name="Place of Birth"></input>
+          				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('birthPlace');"></i>
          			</div>
               </div>
             </div>   
-            
+          
             <div class="form-group">
               <label class="col-md-4">Nationality</label>
               <div class="col-md-8">
                   <div class="positionRelative">
-          			<input class="form-control positionRelative" id="petitionerNationality" name="petitionerNationality" value="${loginCountryName}" placeholder="Select Country"  type="text" field-name="Nationality" data-validation="required"></input>
-          				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('petitionerNationality');"></i>
+          			<input class="form-control positionRelative" id="nationality" onclick="editOrgLocationAuto('nationality');" name="nationality" value="" placeholder="Select Country"  type="text"></input>
+          				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('nationality');"></i>
          			</div>
               </div>
             </div> 
             <div class="form-group">
               <label class="col-md-4">Marital status</label>
               <div class="col-md-8">
-                  <label class="radioIput paddingRight"><input type="radio" name="ms">Single</label>
-                  <label class="radioIput paddingLeft"><input type="radio" name="ms">Married</label>
-                  <label class="radioIput paddingLeft"><input type="radio" name="ms">Divorced</label>
-                  <label class="radioIput paddingLeft"><input type="radio" name="ms">Separated</label>
+                  <label class="radioIput paddingRight"><input type="radio" value="Single" name="maritalStatus">Single</label>
+                  <label class="radioIput paddingLeft"><input type="radio" value="Married"  name="maritalStatus">Married</label>
+                  <label class="radioIput paddingLeft"><input type="radio" value="Divorced"  name="maritalStatus">Divorced</label>
+                  <label class="radioIput paddingLeft"><input type="radio" value="Separated"  name="maritalStatus">Separated</label>
               </div>
             </div>  
              <div class="form-group">
               <label class="col-md-4">SSN</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="" value="" placeholder="000-00-0000">
+                <input type="text" class="form-control" name="ssnNumber" id="ssnNumber" placeholder="000-00-0000">
               </div>
             </div>
              <div class="form-group">
               <label class="col-md-4">I-94 Number</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="" value="" placeholder="XXXXXXXXX-XX">
+                <input type="text" class="form-control" name="i_94_number" id ="i_94_number" placeholder="XXXXXXXXX-XX">
               </div>
             </div>
            
              <div class="form-group">
               <label class="col-md-4">I-20 SEVIS Number If Student</label>
               <div class="col-md-8">
-<input type="text" class="form-control" name="" value="" placeholder="N-XXXXXXXXXX">
+					<input type="text" class="form-control" name="i_20_number"  id="i_20_number" placeholder="N-XXXXXXXXXX">
               </div>
             </div>
                          
             <div class="form-group">
               <label class="col-md-4">EAD Number If Student</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="" value="" placeholder="">
+                <input type="text" class="form-control" name="eadNumber" id="eadNumber" placeholder="">
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-4">Previous LCA Number</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="" value="" placeholder="I-XXX-XXXXX-XXXXXX">
+                <input type="text" class="form-control" name="prevLcaNumber" id="prevLcaNumber" placeholder="I-XXX-XXXXX-XXXXXX">
               </div>
             </div>
             
@@ -270,26 +279,30 @@
               </div>
             </div>
             
-           <div class="form-group">
-              <label class="col-md-4">Upload Resume</label>
+           <div class="form-group"  id="resumeEmpty">
+              <label class="col-md-4">Upload Resume</label><!-- need to updated  -->
                <div class="col-md-8">
-				<div class="input-group col-md-12 clearUploads" style="margin:0 auto">
+				<div class="input-group col-md-12 clearUploads" id="clearUploads" style="margin:0 auto">
 					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-					  <input type="file" style="display: none;" multiple id="uploadBtn" class="upload">
+					  <input type="file" style="display: none;" id="uploadBtn" class="upload">
 					  </span></label>
-					<input type="text" class="form-control" readonly id="uploadFile" placeholder="Attachment">
+					<input type="text" class="form-control" name="docFile" readonly id="uploadFile" placeholder="Attachment">
 				  </div>
               </div>
             </div>
             
+            <div class="col-md-3 mt10" id="resumeDoc" style="display:none;">
+			 <label id="documentName"  class="text-primary tbldata-dotdot-vsm pull-left">${item.fileName}</label>&nbsp;&nbsp;<span id="delete_file" onclick = "deleteDoc()"><i class="fa fa-trash removeIcon"></i></span>
+			<input  type="hidden" id="generalExisitingFile" name = "generalExisitingFile" value="${item.fileName}">
+			  <a  class="glyphicon glyphicon-download-alt"  href="${item.fileUrl}" download title="Download"></a>
+			  </div>
             
             
-
             
              <div class="form-group">
               <label class="col-md-4">Experience</label>
               <div class="col-md-4 dropdown-select">
-                <select id="experienceValue">
+                <select id="experienceYears" name="experienceYears">
                 	<option value="">--Select Year--</option>
                 	<c:forEach begin="0" end="25" varStatus="loop">
 				    	<option value="${loop.index}" >${loop.index}</option>
@@ -298,7 +311,7 @@
                 </select>
               </div>
              <div class="col-md-4 dropdown-select">
-                <select id="expMonthValue">
+                <select id="experienceMonths" name="experienceMonths">
                 	<option value="">--Select Month--</option>
                 	<c:forEach begin="0" end="11" varStatus="loop">
 				    	<option value="${loop.index}" >${loop.index}</option>
@@ -314,7 +327,7 @@
              <div class="form-group">
               <label class="col-md-4">Job Title</label>
               <div class="col-md-8">
-               <select id="jobTitleDropdown" class="form-control">
+               <select id="jobId" name="jobId" class="form-control">
                   </select>
               </div>
           </div>  
@@ -324,7 +337,7 @@
             <div class="form-group">
               <label class="col-md-4">Employment Level</label>
               <div class="col-md-8">
-                <select id="employmentLevelDropDown" class="chosen-select form-control">
+                <select id="employmentLevel"  name="employmentLevel" class="chosen-select form-control">
                   </select>
               </div>
             </div>
@@ -334,7 +347,7 @@
             <div class="form-group">
               <label class="col-md-4">Employer</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="" value="">
+                <input type="text"  class="form-control" name="employer" id="employer">
               </div>
             </div>
             
@@ -342,8 +355,8 @@
               <label class="col-md-4">Location</label>
               <div class="col-md-8">
                  <div class="positionRelative">
-          			<input class="form-control positionRelative" id="petitionerJobLocation" name="petitionerJobLocation" placeholder="Enter your Location"  type="text" field-name="Location" data-validation="required"></input>
-          				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('petitionerJobLocation');"></i>
+          			<input class="form-control positionRelative" id="jobLocation" name="jobLocation" onclick="initLocationAuto('jobLocation');" placeholder="Enter your Location"  type="text"></input>
+          				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('jobLocation');"></i>
          			</div>
               </div>
             </div>
@@ -354,8 +367,8 @@
 							<div class="input-group er ratetype">
 								<div class="input-group-btn tblminwidth-75">
 
-									<select class="selectpicker" id="currentRateCurrency"
-										name="currentRateCurrency">
+									<select class="form-control selectpicker" id="rateCurrency"
+										name="rateCurrency">
 
 										<option>INR</option>
 										<option>AUD</option>
@@ -367,13 +380,13 @@
 									</select>
 
 								</div>
-								<input type="text" id="currentRate" name="currentRate"
+								<input type="text" id="rate" name="rate"
 									value="" field-name="Current Rate"
 									data-validation="validate_Space validate_float validate_length length1-8"
 									data-validation-optional="true" value="" class="form-control">
 								<div class="input-group-btn tblminwidth-75 ratetype">
-									<select class="selectpicker" id="currentRateType"
-										name="currentRateType" field-name="Rate Per">
+									<select class="selectpicker form-control" id="rateType"
+										name="rateType" field-name="Rate Per">
 										 <option value="">Rate Per</option>
 										<option>Hourly</option>
 										<option>Weekly</option>
@@ -413,7 +426,7 @@
              <div class="form-group">
               <label class="col-md-4">LCA Number</label>
               <div class="col-md-8">
-                 <input type="text" class="form-control" name="" value="" placeholder="I-XXX-XXXXX-XXXXXX">
+                 <input type="text" class="form-control" name="lcaNumber" id="lcaNumber" placeholder="I-XXX-XXXXX-XXXXXX">
               </div>
           </div>
             
@@ -439,7 +452,7 @@
            <div class="clearfix"></div>
            	<div class="col-md-12 mb margin-top0">
             	<h4 class="pull-left">5. Residence</h4>
-            	<button type="button" class="btn btn-default pull-right"><i class="fa fa-plus paddingRight"></i>Add Residence</button>
+            	<button type="button" class="btn btn-default pull-right" onclick="appendDynamicResidenceDiv();"><i class="fa fa-plus paddingRight"></i>Add Residence</button>
             	</div>
            <div class="clearfix"></div>
             
@@ -448,12 +461,11 @@
               <div class="col-md-8">
                   <div class="positionRelative">
 								<input class="form-control positionRelative"
-									id="petitionerLocation" name="petitionerLocation"
-									placeholder="Enter Location" type="text"
-									field-name="Address" data-validation="required"></input> <i
+									id="location" name="location" onclick="initLocationAuto('location','country','state','city','zipcode','','','','address');"
+									placeholder="Enter Location" type="text"></input> <i
 									class="fa fa-refresh btn btn-primary refresh-icon"
 									title="Refresh"
-									onClick="refreshGoogleApiLocation('petitionerLocation','petitionerCountry','petitionerState','petitionerCity','petitionerZipCode','address');"></i>
+									onClick="refreshGoogleApiLocation('location','country','state','city','zipcode','address');"></i>
 					</div>
               </div>
             </div>
@@ -461,7 +473,7 @@
               <label class="col-md-4">Street Address</label>
               <div class="col-md-8">
                   <input type="text" class="form-control" id="address"
-								name="address" value="${address}" field-name="Street Address" placeholder="Enter Street Addres"
+								name="address" value="" field-name="Street Address" placeholder="Enter Street Addres"
 								data-validation="validate_Space validate_length length2-250"
 								data-validation-optional="true">
               </div>
@@ -469,25 +481,25 @@
             <div class="form-group">
               <label class="col-md-4">City</label>
               <div class="col-md-8">
-                  <input class="form-control" id="petitionerCity" name="city" placeholder="City" type="text"></input>
+                  <input class="form-control" id="city" name="city" placeholder="City" type="text"></input>
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-4">State</label>
               <div class="col-md-8">
-                  <input class="form-control" id="petitionerState" name="state" placeholder="State" type="text" ></input>
+                  <input class="form-control" id="state" name="state" placeholder="State" type="text" ></input>
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-4">Country</label>
               <div class="col-md-8">
-                  <input class="form-control" id="petitionerCountry" name="country" placeholder="Country" field-name="Country"  data-validation="required"  value="${loginCountryName}" type="text" ></input>
+                  <input class="form-control" id="country" name="country" placeholder="Country" value="${loginCountryName}" type="text" ></input>
               </div>
             </div>                                                                                               
 		    <div class="form-group">
               <label class="col-md-4">Zip Code</label>
               <div class="col-md-8">
-                  <input class="form-control" id="petitionerZipCode" name="zipcode"
+                  <input class="form-control" id="zipcode" name="zipcode"
 								placeholder="Zip code" type="text" ></input>
               </div>
             </div>
@@ -495,7 +507,7 @@
             <div class="form-group">
               <label class="col-md-4">Is current residence</label>
               <div class="col-md-8">
-                  <input type="checkbox" name="currentResidence">
+                  <input type="checkbox" name="isCurrResidence" value="Y" id="isCurrResidence"  checked disabled>
               </div>
             </div>
 			<div class="clearfix"></div>
@@ -503,8 +515,8 @@
               <label class="col-md-4">Start Date</label>
               <div class="col-md-8">
 					<div class="input-group">
-                <input type="text" class="form-control calendar" id="resiStartDate" name="resiStartDate" placeholder="Start Date">
-                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('resiStartDate')"></i></span>
+                <input type="text" class="form-control calendar" id="residenceStartDate"  name="residenceStartDate" placeholder="Start Date">
+                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('residenceStartDate')"></i></span>
               </div>
               </div>
           </div>
@@ -513,12 +525,15 @@
               <label class="col-md-4">End Date</label>
               <div class="col-md-8">
 					<div class="input-group">
-                <input type="text" class="form-control calendar" id="resiEndDate" name="resiEndDate" placeholder="End Date">
-                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('resiEndDate')"></i></span>
+                <input type="text" class="form-control calendar" id="residenceEndDate"  name="residenceEndDate" placeholder="End Date">
+                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('residenceEndDate')"></i></span>
               </div>
               </div>
           </div>
-
+         
+         <div id ="dynamicResidenceGroupDiv" ><!--  dynamic div start -->
+          
+         </div> <!--  dynamic div end -->
 		<div class="clearfix"></div>
 		<div class="addImmiFoot">
 			<!--<a href="javascript:void(0)" class="pull-left">Prev</a>-->
@@ -531,22 +546,149 @@
 			<div class="clearfix"></div>
 		</div>
 	</div>
-
+	</form>
    </div>
    </div>
    </section>
+    <script type="text/javascript">
+    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
+	function showStartDatePicker(id){
+	  $("#residenceStartDate"+id).datepicker({
+	      dateFormat: finalDateFormatPetitionSave,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	      onSelect: function (selected) {
+	            //var dt = new Date(selected);
+	            var dt = $(this).datepicker('getDate', '+1d');
+	            dt.setDate(dt.getDate() + 1);
+	            $("#residenceEndDate"+id).datepicker("option", "minDate", dt);
+	        }
+	  }).datepicker("show");
+	} 
+	function showEndDatePicker(id){
+	  $("#residenceEndDate"+id).datepicker({
+	      dateFormat: finalDateFormatPetitionSave,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	        onSelect: function (selected) {
+	            //var dt = new Date(selected);
+	            var dt = $(this).datepicker('getDate', '-1d');
+	            dt.setDate(dt.getDate() - 1);
+	            $("#residenceStartDate"+id).datepicker("option", "maxDate", dt);
+	        }
+	  }).datepicker("show");
+	}
+    function prepareDynamicResidenceDiv(rowId){
+	   var prepareResidencediv =''; 
+		   
+		   
+	   prepareResidencediv =prepareResidencediv+ "<div id ='dynamicResidenceDiv"+rowId+"'>";
+	   prepareResidencediv =prepareResidencediv+ "   <div class='clearfix'></div>";
+	   prepareResidencediv =prepareResidencediv+ "     	<div class='col-md-12 mb margin-top0'>";
+	   prepareResidencediv =prepareResidencediv+ "   <h4 class='pull-left'>Residence</h4> <button type='button' class='btn btn-default pull-right' onclick='removeDynamicResidenceDiv("+rowId+")'><i class='fa fa-remove text-danger paddingRight'></i>Remove Residence</button>";
+	   prepareResidencediv =prepareResidencediv+ "   </div>";
+	   prepareResidencediv =prepareResidencediv+ "   <div class='clearfix'></div>";
+	   prepareResidencediv =prepareResidencediv+ " <div class='form-group'>";
+	   prepareResidencediv =prepareResidencediv+ "     <label class='col-md-4'>Location</label>";
+	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
+	   prepareResidencediv =prepareResidencediv+ "           <div class='positionRelative'>";
+	   prepareResidencediv =prepareResidencediv+ ' 						<input class="form-control positionRelative"';
+	   prepareResidencediv =prepareResidencediv+ ' 						id="location'+rowId+'" name="residenceList['+rowId+'].location"';
+	   prepareResidencediv =prepareResidencediv+ ' 							placeholder="Enter Location" type="text" onClick="initLocationAuto(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipcode'+rowId+'\',\'\',\'\',\'\',\'address'+rowId+'\'); refreshGoogleApiLocation(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipcode'+rowId+'\',\'\',\'\',\'\',\'address'+rowId+'\');"></input> <i';
+	   prepareResidencediv =prepareResidencediv+ ' 							class="fa fa-refresh btn btn-primary refresh-icon"';
+	   prepareResidencediv =prepareResidencediv+ ' 							title="Refresh"';
+	   prepareResidencediv =prepareResidencediv+ ' 							onClick="refreshGoogleApiLocation(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipcode'+rowId+'\',\'\',\'\',\'\',\'address'+rowId+'\');"></i>';
+	   prepareResidencediv =prepareResidencediv+ " 			</div>";
+	   prepareResidencediv =prepareResidencediv+ "       </div>";
+	   prepareResidencediv =prepareResidencediv+ "     </div>";
+	   prepareResidencediv =prepareResidencediv+ "    <div class='form-group'>";
+	   prepareResidencediv =prepareResidencediv+ "      <label class='col-md-4'>Street Address</label>";
+	   prepareResidencediv =prepareResidencediv+ "      <div class='col-md-8'>";
+	   prepareResidencediv =prepareResidencediv+ "           <input type='text' class='form-control' id='address"+rowId+"'";
+	   prepareResidencediv =prepareResidencediv+ " 						name='residenceList["+rowId+"].address' value='${address}' field-name='Street Address' placeholder='Enter Street Addres'";
+	   prepareResidencediv =prepareResidencediv+ " 						data-validation='validate_Space validate_length length2-250'";
+	   prepareResidencediv =prepareResidencediv+ " 						data-validation-optional='true'>";
+	   prepareResidencediv =prepareResidencediv+ "       </div>";
+	   prepareResidencediv =prepareResidencediv+ "     </div>";
+	   prepareResidencediv =prepareResidencediv+ "     <div class='form-group'>";
+	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>City</label>";
+	   prepareResidencediv =prepareResidencediv+ "        <div class='col-md-8'>";
+	   prepareResidencediv =prepareResidencediv+ "           <input class='form-control' id='city"+rowId+"' name='residenceList["+rowId+"].city' placeholder='City' type='text'></input>";
+	   prepareResidencediv =prepareResidencediv+ "       </div>";
+	   prepareResidencediv =prepareResidencediv+ "      </div>";
+	   prepareResidencediv =prepareResidencediv+ "     <div class='form-group'>";
+	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>State</label>";
+	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
+	   prepareResidencediv =prepareResidencediv+ "           <input class='form-control' id='state"+rowId+"' name='residenceList["+rowId+"].state' placeholder='State' type='text' ></input>";
+	   prepareResidencediv =prepareResidencediv+ "       </div>";
+	   prepareResidencediv =prepareResidencediv+ "     </div>";
+	   prepareResidencediv =prepareResidencediv+ "     <div class='form-group'>";
+	   prepareResidencediv =prepareResidencediv+ "        <label class='col-md-4'>Country</label>";
+	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
+	   prepareResidencediv =prepareResidencediv+ "           <input class='form-control' id='country"+rowId+"' name='residenceList["+rowId+"].country' placeholder='Country' value='${loginCountryName}' type='text' ></input>";
+	   prepareResidencediv =prepareResidencediv+ "       </div>";
+	   prepareResidencediv =prepareResidencediv+ "     </div> ";                                                                                              
+	   prepareResidencediv =prepareResidencediv+ "     <div class='form-group'>";
+	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>Zip Code</label>";
+	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
+	   prepareResidencediv =prepareResidencediv+ "          <input class='form-control' id='zipcode"+rowId+"' name='residenceList["+rowId+"].zipcode'";
+	   prepareResidencediv =prepareResidencediv+ " 						placeholder='Zip code' type='text' ></input>";
+	   prepareResidencediv =prepareResidencediv+ "       </div>";
+	   prepareResidencediv =prepareResidencediv+ "     </div>";
+	   prepareResidencediv =prepareResidencediv+ "    	<div class='clearfix'></div>";
+	   prepareResidencediv =prepareResidencediv+ "  <div class='form-group'>";
+	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>Start Date</label>";
+	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
+	   prepareResidencediv =prepareResidencediv+ " 			<div class='input-group'>";
+	   prepareResidencediv =prepareResidencediv+ "         <input type='text' class='form-control calendar' id='residenceStartDate"+rowId+"' onClick='showStartDatePicker("+rowId+")' name='residenceList["+rowId+"].residenceStartDate' placeholder='Start Date'>";
+	   prepareResidencediv =prepareResidencediv+ "         <span class='input-group-addon'><i class='fa fa-times text-danger cursorPointer' onclick='clearDateValue(\"residenceStartDate"+rowId+"\")'></i></span>";
+	   prepareResidencediv =prepareResidencediv+ "       </div>";
+	   prepareResidencediv =prepareResidencediv+ "       </div>";
+	   prepareResidencediv =prepareResidencediv+ "  </div>";
+         
+	   prepareResidencediv =prepareResidencediv+ "  <div class='form-group'>";
+	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>End Date</label>";
+	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
+	   prepareResidencediv =prepareResidencediv+ " 			<div class='input-group'>";
+	   prepareResidencediv =prepareResidencediv+ "        <input type='text' class='form-control calendar' id='residenceEndDate"+rowId+"' onClick='showEndDatePicker("+rowId+")'  name='residenceList["+rowId+"].residenceEndDate' placeholder='End Date'>";
+	   prepareResidencediv =prepareResidencediv+ "        <span class='input-group-addon'><i class='fa fa-times text-danger cursorPointer' onclick='clearDateValue(\"residenceEndDate"+rowId+"\")'></i></span>";
+	   prepareResidencediv =prepareResidencediv+ "      </div>";
+	   prepareResidencediv =prepareResidencediv+ "       </div>";
+	   prepareResidencediv =prepareResidencediv+ "   </div>";
+	   prepareResidencediv =prepareResidencediv+ "   </div>";
+	   
+		return prepareResidencediv; 
+   }
+	
+ //  var rowId ='<c:out value ="${rowIndex}"/>'// set the value for dyamic row when clicked on add button in UI.
+  var rowId =0;
+   function appendDynamicResidenceDiv(){
+	   console.log("rowId value is --->"+rowId);
+	   $("#dynamicResidenceGroupDiv").append(prepareDynamicResidenceDiv(rowId++)); 
+   }
+   //var deletedResicenceListIds = new Array();
+   function removeDynamicResidenceDiv(id){
+	   /* if($("#templateId"+id).val() !==  undefined ){
+		   deletedResicenceListIds.push($("#templateId"+id).val());   
+	   } */
+	   $("#dynamicResidenceDiv"+id).remove();
+	   rowId--;// decrement rowid when deleted in UI.
+   } 
+   	</script>
    <script type="text/javascript">
 		window.onload = function () {
-			editOrgLocationAuto('petitionerNationality');
-			initLocationAuto('petitionerPlace');
- 			initLocationAuto('petitionerJobLocation');
- 			initLocationAuto('petitionerBirthPlace');
- 			initLocationAuto('petitionerLocation','petitionerCountry','petitionerState','petitionerCity','petitionerZipCode','','','','address');
+			//editOrgLocationAuto('nationality');
+			//initLocationAuto('entryPlace');
+ 		//	initLocationAuto('jobLocation');
+ 			//initLocationAuto('birthPlace');
+ 			//initLocationAuto('location','country','state','city','zipcode','','','','address');
 			
 		 };
 	</script>
 	
 <script>
+
 var candidateByOrgObject = {};
 function getCandidatesByOrgLocation(){
 	 console.log(" before getCandidatesByOrgLocation function calling ---->");
@@ -559,15 +701,15 @@ function getCandidatesByOrgLocation(){
 		        	 var json = JSON.parse(data);
 		        	 temp =json;
 		        	console.log(" inside success ---->");
-		        	$('#candidates').empty();
-		        	$('#candidates').append('<option value="">--Select Beneficiary --</option>');
+		        	$('#candidateId').empty();
+		        	$('#candidateId').append('<option value="">--Select Beneficiary --</option>');
 		        	//jsonObjMap = {};
 		            for(var i=0;i<json.length;i++){
 		            	 var opt = json[i];
 		            	 candidateByOrgObject[opt.id]= opt;
-		            	$('#candidates').append('<option value='+opt.id+' >'+opt.firstName+'</option>');
+		            	$('#candidateId').append('<option value='+opt.id+' >'+opt.firstName+" "+opt.lastName+'</option>');
 		            }
-		            $('#candidates').trigger("chosen:updated");
+		            $('#candidateId').trigger("chosen:updated");
 		           /*  updateCandiateInfo(); */
 		   }
    });
@@ -589,13 +731,13 @@ $("#experienceValue").change(function () {
 		    	type: "GET",
 		        url: sourceleadUrl+immiModulePath+"/getPetitionTypeDropDown", 
 		        success: function(data) {
-		        	$('#petitionTypeDropdown').empty();
-		        	$('#petitionTypeDropdown').append('<option value="">--Select Type --</option>');
+		        	$('#petitionType').empty();
+		        	$('#petitionType').append('<option selected value="">--Select Type --</option>');
 		            for(var i=0;i<data.length;i++){
 		            	  var opt = data[i];
-		            		$('#petitionTypeDropdown').append('<option value='+opt.id+' >'+opt.name+'</option>');
+		            		$('#petitionType').append('<option value='+opt.id+' >'+opt.name+'</option>');
 		            }
-		            $('#petitionTypeDropdown').trigger("chosen:updated");		        	
+		            $('#petitionType').trigger("chosen:updated");		        	
 		        }
 		 });
 	}
@@ -605,13 +747,13 @@ $("#experienceValue").change(function () {
 		    	type: "GET",
 		        url: sourceleadUrl+immiModulePath+"/getUscisTypeDropDown", 
 		        success: function(data) {
-		        	$('#uscisDropDown').empty();
-		        	$('#uscisDropDown').append('<option value="">--Select Type --</option>');
+		        	$('#currUscisStatus').empty();
+		        	$('#currUscisStatus').append('<option value="">--Select Type --</option>');
 		            for(var i=0;i<data.length;i++){
 		            	  var opt = data[i];
-		            		$('#uscisDropDown').append('<option value='+opt.id+' >'+opt.name+'</option>');
+		            		$('#currUscisStatus').append('<option value='+opt.id+' >'+opt.name+'</option>');
 		            }
-		            $('#uscisDropDown').trigger("chosen:updated");		        	
+		            $('#currUscisStatus').trigger("chosen:updated");		        	
 		        }
 		 });
 	}
@@ -621,13 +763,13 @@ $("#experienceValue").change(function () {
 		    	type: "GET",
 		        url: sourceleadUrl+immiModulePath+"/getEmploymentLevelDropDown", 
 		        success: function(data) {
-		        	$('#employmentLevelDropDown').empty();
-		        	$('#employmentLevelDropDown').append('<option value="">--Select Type --</option>');
+		        	$('#employmentLevel').empty();
+		        	$('#employmentLevel').append('<option value="">--Select Type --</option>');
 		            for(var i=0;i<data.length;i++){
 		            	  var opt = data[i];
-		            		$('#employmentLevelDropDown').append('<option value='+opt.id+' >'+opt.name+'</option>');
+		            		$('#employmentLevel').append('<option value='+opt.id+' >'+opt.name+'</option>');
 		            }
-		            $('#employmentLevelDropDown').trigger("chosen:updated");		        	
+		            $('#employmentLevel').trigger("chosen:updated");		        	
 		        }
 		 });
 	}
@@ -637,13 +779,13 @@ $("#experienceValue").change(function () {
 		    	type: "GET",
 		        url: sourceleadUrl+immiModulePath+"/getJobTitleDropDown", 
 		        success: function(data) {
-		        	$('#jobTitleDropdown').empty();
-		        	$('#jobTitleDropdown').append('<option value="">--Select Type --</option>');
+		        	$('#jobId').empty();
+		        	$('#jobId').append('<option value="">--Select Type --</option>');
 		            for(var i=0;i<data.length;i++){
 		            	  var opt = data[i];
-		            		$('#jobTitleDropdown').append('<option value='+opt.id+' >'+opt.jobTitle+'</option>');
+		            		$('#jobId').append('<option value='+opt.id+' >'+opt.jobTitle+'</option>');
 		            }
-		            $('#jobTitleDropdown').trigger("chosen:updated");		        	
+		            $('#jobId').trigger("chosen:updated");		        	
 		        }
 		 });
 	}
@@ -657,13 +799,13 @@ $("#experienceValue").change(function () {
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	console.log(" inside success ---->");
-		        	$('#attorneys').empty();
-		        	$('#attorneys').append('<option value="">--Select Attorney --</option>');
+		        	$('#attorneyId').empty();
+		        	$('#attorneyId').append('<option value="">--Select Attorney --</option>');
 		            for(var i=0;i<json.length;i++){
 		            	  var opt = json[i];
-		            		$('#attorneys').append('<option value='+opt.id+' >'+opt.orgName+'</option>');
+		            		$('#attorneyId').append('<option value='+opt.id+' >'+opt.orgName+'</option>');
 		            }
-		            $('#attorneys').trigger("chosen:updated");
+		            $('#attorneyId').trigger("chosen:updated");
 		            //getVendorContactList();
 		            
 		        }
@@ -671,7 +813,7 @@ $("#experienceValue").change(function () {
  }
  
  function getAttorneyContactList(){
-		var orgRelationID = $('#attorneys').val();
+		var orgRelationID = $('#attorneyId').val();
 			 $.ajax({
 				    type: "POST",
 			        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
@@ -690,6 +832,8 @@ $("#experienceValue").change(function () {
  </script>
    <script type="text/javascript">
 	  $( document ).ready(function() {
+		  $('#rateCurrency').selectpicker('refresh'); 
+		  $('#rateType').selectpicker('refresh');
 		  getAttorneysByOrgLocation();
 		  getCandidatesByOrgLocation();
 		  getPetitionTypeDropDown();
@@ -697,8 +841,7 @@ $("#experienceValue").change(function () {
 		  employmentLevelDropDown();
 		  jobTitleDropDown();
 		  
-		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
+		 
 		  $('#openDate').datepicker({
 		      dateFormat: finalDateFormatPetitionSave,
 		      changeMonth: true,
@@ -796,7 +939,10 @@ $("#experienceValue").change(function () {
 		  ///
 		  
 		// residence start date and end date  
-		  $('#resiStartDate').datepicker({
+		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
+	
+		  $("#residenceStartDate").datepicker({
 		      dateFormat: finalDateFormatPetitionSave,
 		      changeMonth: true,
 		  	  changeYear: true, 
@@ -804,11 +950,12 @@ $("#experienceValue").change(function () {
 		            //var dt = new Date(selected);
 		            var dt = $(this).datepicker('getDate', '+1d');
 		            dt.setDate(dt.getDate() + 1);
-		            $("#resiEndDate").datepicker("option", "minDate", dt);
+		            $("#residenceEndDate"+id).datepicker("option", "minDate", dt);
 		        }
-		  });
-		  
-		  $('#resiEndDate').datepicker({
+		  })
+		
+	
+		  $("#residenceEndDate").datepicker({
 		      dateFormat: finalDateFormatPetitionSave,
 		      changeMonth: true,
 		  	  changeYear: true, 
@@ -816,9 +963,9 @@ $("#experienceValue").change(function () {
 		            //var dt = new Date(selected);
 		            var dt = $(this).datepicker('getDate', '-1d');
 		            dt.setDate(dt.getDate() - 1);
-		            $("#resiStartDate").datepicker("option", "maxDate", dt);
+		            $("#residenceStartDate"+id).datepicker("option", "maxDate", dt);
 		        }
-		  });
+		  })
 		  // 
 		  
 		  /* $('#jobTitleValues').autocomplete({
@@ -903,9 +1050,55 @@ function  removeValidationAttorneyContact() {
 	 //$( "#myselect option:selected" ).val()
 	 function updateCandiateInfo(obj){
 		var candidateObj=candidateByOrgObject[obj.val()];
-		$("#candidateFirstName").val(candidateObj.firstName);
-		$("#candidateLastName").val(candidateObj.lastName);
-		 
+		console.log(candidateObj);
+		
+		$("#firstName").val(candidateObj.firstName);
+		$("#lastName").val(candidateObj.lastName);
+		$("#middleName").val(candidateObj.middelName);
+		$("#email").val(candidateObj.email);
+		$("#mobile").val(candidateObj.mobilePhone);
+		$("#alternateMobile").val(candidateObj.alternateMobilePhone);
+		
+		// gender radio button  
+		$('input[name="gender"]').prop('checked', false); // reset the value 
+		if(typeof candidateObj.gender !='undefined' && candidateObj.gender!=''){  // set the value if not empty
+		$('input:radio[name=gender][value='+candidateObj.gender+']').click();
+		}
+		//  radio button  maritalStatus
+		$('input[name="maritalStatus"]').prop('checked', false); // reset the value 
+	
+		if(typeof candidateObj.maritalStatus !='undefined' && candidateObj.maritalStatus!=''){ // set the value if not empty
+			console.log("candidateObj.maritalStatus"+candidateObj.maritalStatus);
+		$('input:radio[name=maritalStatus][value='+candidateObj.maritalStatus+']').click();
+		}
+		// set the residenc details
+		$("#country").val(candidateObj.country);
+		$("#state").val(candidateObj.state);
+		$("#city").val(candidateObj.city);
+		$("#address").val(candidateObj.address);
+		$("#zipcode").val(candidateObj.zipCode);
+		$("#location").val(candidateObj.location);
+		$("#experienceYears").val(candidateObj.experienceYears);
+		$("#experienceMonths").val(candidateObj.experienceMonths);
+		
+		// setting the date for the date of birth field.
+		console.log(candidateObj.dateOfBirth);
+		if(typeof  candidateObj.dateOfBirth != 'undefined' && candidateObj.dateOfBirth!=''){
+			var dateOfBirth =  moment(candidateObj.dateOfBirth).format("DD-MM-YYYY");
+		   $("#birthDate").val(dateOfBirth);
+		}
 	 }
- 
+	 $(function() {
+			$("#uploadBtn").change(function() {
+				fileUpload("uploadBtn", "immigrationPetition", "petitionDetailsForm");
+			});
+		 });
+		 document.getElementById("uploadBtn").onchange = function () {
+		     $('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+		 };
+	     
+	     $("#clearUploads").click(function(){
+	    	 $("#uploadFile").val("");
+	     });
 	 </script>
+	

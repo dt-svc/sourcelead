@@ -190,7 +190,7 @@
       	</div>
 		
 		<div class="addImmiFoot">
-			<a href="javascript:void(0)" onclick="immigration.savePageOneContinue('one')" class="pull-left">Prev</a>
+			<a href="javascript:void(0)" onclick="immigration.savePageOneContinue('petitionDetails')" class="pull-left">Prev</a>
 			<a href="javascript:void(0)" onclick="immigration.savePageOneContinue('three')" class="nextBtn">Save &amp; Continue</a>
 			<a href="javascript:void(0)" class="nextBtn">Save</a>
 			<a href="javascript:void(0)">Skip</a>

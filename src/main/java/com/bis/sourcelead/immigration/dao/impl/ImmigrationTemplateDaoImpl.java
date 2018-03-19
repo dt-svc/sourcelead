@@ -23,7 +23,12 @@ import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.CandidateIdendities;
+import com.bis.sourcelead.entity.CandidateLcaI94Summary;
+import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
@@ -166,22 +171,22 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
     }
 
     /*@SuppressWarnings("unchecked")
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public List<ImmigrationTemplateListDTO> getAllTemplateDetails(ImmigrationTemplateListDTO templateListDTO, String searchValue) {
-		logger.debug("fetching template details-->");
-		Session session = this.sessionFactory.getCurrentSession();
-		List<ImmigrationTemplateListDTO>  templateDtoList= null;
-		try {
-			  Query query= session.createQuery("from ImmigrationTemplateView");
-			  templateDtoList = query.list();
-			 
-		} catch (Exception exception) {
-			logger.error("Error Occured  while fetching template details-->");
-			   exception.printStackTrace();
-			}
-		return templateDtoList;
-	}
+    @Override
+    @Transactional(rollbackFor = { Exception.class })
+    public List<ImmigrationTemplateListDTO> getAllTemplateDetails(ImmigrationTemplateListDTO templateListDTO, String searchValue) {
+        logger.debug("fetching template details-->");
+        Session session = this.sessionFactory.getCurrentSession();
+        List<ImmigrationTemplateListDTO>  templateDtoList= null;
+        try {
+              Query query= session.createQuery("from ImmigrationTemplateView");
+              templateDtoList = query.list();
+             
+        } catch (Exception exception) {
+            logger.error("Error Occured  while fetching template details-->");
+               exception.printStackTrace();
+            }
+        return templateDtoList;
+    }
 
      */
     @Override
@@ -376,7 +381,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
             }
 
         } catch (Exception e) {
-            //s	System.out.println("extption caught while getting template docs list"+e.getMessage());
+            //s System.out.println("extption caught while getting template docs list"+e.getMessage());
             logger.error("extption caught while getting template docs list" + e.getMessage());
             e.printStackTrace();
         }
@@ -486,6 +491,37 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
         String query = "from LookUpData lud where lud.category = :category";
         List<LookUpData> candidateEmployers = session.createQuery(query).setString("category", type).list();
         return candidateEmployers;
+    }
+
+    @Override
+    @Transactional(rollbackFor = {Exception.class})
+    public void savePetitionDetails(Immigration immigration, Candidate candidate,
+            CandidateIdendities candidateIdendities, CandidateResumes candidateResume,
+            List<CandidateLcaI94Summary> lcaSummaryLst) throws Exception {
+        logger.debug("saveConnection");
+        Session session = this.sessionFactory.getCurrentSession();
+        try {
+            if (candidate != null) {
+                session.saveOrUpdate(candidate);
+            }
+            if (immigration != null) {
+                session.saveOrUpdate(immigration);
+            }
+            if (candidateIdendities != null) {
+                session.saveOrUpdate(candidateIdendities);
+            }
+            if (candidateResume != null && candidateResume.getFileURL() != null) {
+                session.saveOrUpdate(candidateResume);
+            }
+            if (lcaSummaryLst.size() != 0) {
+                for (CandidateLcaI94Summary candidateLcaI94Summary : lcaSummaryLst) {
+                    session.saveOrUpdate(candidateLcaI94Summary);
+                }
+            }
+        } catch (Exception exception) {
+            StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "Immigration"));
+            throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
+        }
     }
 
     @Override

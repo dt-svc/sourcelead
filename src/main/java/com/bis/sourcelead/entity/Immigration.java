@@ -34,7 +34,9 @@ public class Immigration implements Serializable {
 	@Column(name = "CURRENT_USCIS_STATUS")
 	private Long currUscisStauts;
 
-
+	@Column(name = "OPEN_DATE")
+	private Date openDate;
+	
 	@Column(name = "DATE_OF_ARRIVAL ")
 	private Date dateOfArrival;
 	
@@ -87,6 +89,9 @@ public class Immigration implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "UPDATED_BY")
 	private User updatedBy;
+	
+	
+	
 
 	public Long getId() {
 		return id;
@@ -233,7 +238,11 @@ public class Immigration implements Serializable {
 		this.updatedBy = updatedBy;
 	}
 
-	
-	
+	public Date getOpenDate() {
+		return openDate;
+	}
 
+	public void setOpenDate(Date openDate) {
+		this.openDate = openDate;
+	}
 }

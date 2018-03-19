@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateEmployerDTO;
+import com.bis.sourcelead.dto.ImmigrationDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
@@ -108,36 +109,27 @@ public class ImmigrationRestController {
 
     @RequestMapping(value = {"/loadNewPetitionPage"})
     public ModelAndView loagNewPetitionPageView(HttpServletRequest request,
-            @RequestParam(value = "status", required = false) String status) {
+            @RequestParam(value = "forward", required = false) String forward) {
         ModelAndView model = new ModelAndView();
         model.addObject("sourceleadUrl", sourceleadUrl);
-        if (status.equalsIgnoreCase("one")) {
-            model.setViewName("/immigration/newPetitionPage1");
-            OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-                    "orgLocations");
+        if (forward.equalsIgnoreCase("petitionDetails")) {
+            model.setViewName("/immigration/petitionDetails");
+            OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
             List<ImmigrationTemplate> templateList = immigrationCommonService.getImmigrationTemplateList(orgLocations);
-            try {
-                List<Candidate> candidateList = candidateService.getAllActiveCandidatesByLocation(orgLocations.getId());
-                System.out.println("candidateList size in controller is-->" + candidateList.size());
-                model.addObject("candidateList", candidateList);
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
             System.out.println("templateList size in controller is-->" + templateList.size());
 
             model.addObject("templateList", templateList);
-        } else if (status.equalsIgnoreCase("two")) {
+        } else if (forward.equalsIgnoreCase("two")) {
             model.setViewName("/immigration/newPetitionPage2");
-        } else if (status.equalsIgnoreCase("three")) {
+        } else if (forward.equalsIgnoreCase("three")) {
             model.setViewName("/immigration/newPetitionPage3");
-        } else if (status.equalsIgnoreCase("four")) {
+        } else if (forward.equalsIgnoreCase("four")) {
             model.setViewName("/immigration/newPetitionPage4");
-        } else if (status.equalsIgnoreCase("five")) {
+        } else if (forward.equalsIgnoreCase("five")) {
             model.setViewName("/immigration/newPetitionPage5");
-        } else if (status.equalsIgnoreCase("six")) {
+        } else if (forward.equalsIgnoreCase("six")) {
             model.setViewName("/immigration/newPetitionPage6");
-        } else if (status.equalsIgnoreCase("seven")) {
+        } else if (forward.equalsIgnoreCase("seven")) {
             model.setViewName("/immigration/newPetitionPage7");
         }
         return model;
@@ -146,29 +138,20 @@ public class ImmigrationRestController {
     @RequestMapping(value = {"getAllActiveCandidatesByLocation"}, method = RequestMethod.GET)
     public String getAllActiveCandidatesByLocation(HttpServletRequest request) {
         List<Candidate> candidateList = null;
-        String resultJson = null;
         System.out.println("inside getAllActiveCandidatesByLocation");
         try {
-            OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-                    "orgLocations");
+            OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
             candidateList = candidateService.getAllActiveCandidatesByLocation(orgLocations.getId());
             System.out.println("candidateList size in getAllActiveCandidatesByLocation controller is-->" + candidateList.size());
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        resultJson = toJSON(candidateList);
-        //	System.out.println(candidateList);
-        return resultJson;
-    }
-
-    public String toJSON(Object obj) {
-        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-            public HierarchicalStreamWriter createWriter(Writer writer) {
-                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-            }
-        });
-        return xstream.toXML(obj);
+        Gson gson = new Gson();
+        String gsondata = gson.toJson(candidateList).replace("\\", "\\\\");
+        // System.out.println("gsondata----> ");
+        // System.out.println(gsondata);
+        return gsondata;
     }
 
     @RequestMapping(value = {"/getPetitionTemplateEmployers"})
@@ -214,9 +197,9 @@ public class ImmigrationRestController {
                 // dropdown
                 // values in UI.
                 /*
-				 * List<ImmigrationTemplateDTO> templateDTO =
-				 * (List<ImmigrationTemplateDTO>)request.getSession().getAttribute("templateDTO"
-				 * ); model.addObject("templateDTO", );
+                 * List<ImmigrationTemplateDTO> templateDTO =
+                 * (List<ImmigrationTemplateDTO>)request.getSession().getAttribute("templateDTO"
+                 * ); model.addObject("templateDTO", );
                  */
                 model.addObject("educationsList", educationsList);
                 model.setViewName("/immigration/petitionTemplateDocDetails");
@@ -268,15 +251,6 @@ public class ImmigrationRestController {
         return model;
     }
 
-    @RequestMapping(value = "/validateTemplateName", method = RequestMethod.POST)
-    @ResponseBody
-    public boolean validateTemplateName(HttpServletRequest request,
-            @RequestParam(value = "templateName") String templateName,
-            @RequestParam(value = "templateId", defaultValue = "0") Long templateId) {
-        OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-        return immigrationTemplateService.validateTemplateNameExistance(templateName, templateId);
-    }
-
     @RequestMapping(value = {"/viewImmigrationTemplateList"})
     public ModelAndView loadViewPetitionTemplate(HttpServletRequest request) {
         ModelAndView model = new ModelAndView();
@@ -284,12 +258,12 @@ public class ImmigrationRestController {
         User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
         model.setViewName("/immigration/immigrationTemplateList");
         /*
-		 * try { // List<ImmigrationTemplateView> templateList=
-		 * immigrationTemplateService.getAllTemplateDetails();
-		 * System.out.println("template list size is "+templateList.size());
-		 * model.addObject("templateList", templateList); } catch (Exception e) {
-		 * logger.error("Exception occured while getting template list-->"+e.getMessage(
-		 * )); e.printStackTrace(); }
+         * try { // List<ImmigrationTemplateView> templateList=
+         * immigrationTemplateService.getAllTemplateDetails();
+         * System.out.println("template list size is "+templateList.size());
+         * model.addObject("templateList", templateList); } catch (Exception e) {
+         * logger.error("Exception occured while getting template list-->"+e.getMessage(
+         * )); e.printStackTrace(); }
          */
         return model;
     }
@@ -301,10 +275,10 @@ public class ImmigrationRestController {
             HttpServletRequest request) {
         ResponseList<ImmigrationTemplateListDTO> templateListDTOList = null;
         try {
-            String[] tableColumns = {"name", "description", "docsCount", "formsCount", "tasksCount", "status", "id"};// should be
+            String[] tableColumns = {"name", "description", "docsCount", "formsCount", "tasksCount"};// should be
             // entity names
             int sortColumnIndex = 0; // by default sorting using updated date
-            String sortColumnOrder = "desc"; // by default descending order
+            String sortColumnOrder = "asc"; // by default ascending order
             if (templateListDTO.getOrder() != null && !templateListDTO.getOrder().isEmpty()) {
                 sortColumnIndex = Integer.parseInt(templateListDTO.getOrder().get(0).get("column"));
                 sortColumnOrder = templateListDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means direction
@@ -509,4 +483,19 @@ public class ImmigrationRestController {
         return jobList;
     }
 
+    @RequestMapping(value = {"/savePetitionDetailsPage"}, method = RequestMethod.POST)
+    public String savePetitionDetailsPage(ImmigrationDTO immigrationDTO, HttpServletRequest request) throws Exception {
+        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+        immigrationTemplateService.savePetitionDetails(immigrationDTO, user);
+        return null;
+    }
+
+    @RequestMapping(value = "/validateTemplateName", method = RequestMethod.POST)
+    @ResponseBody
+    public boolean validateTemplateName(HttpServletRequest request,
+            @RequestParam(value = "templateName") String templateName,
+            @RequestParam(value = "templateId", defaultValue = "0") Long templateId) {
+        OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+        return immigrationTemplateService.validateTemplateNameExistance(templateName, templateId);
+    }
 }

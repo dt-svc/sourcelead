@@ -38,6 +38,9 @@ public class ImmigrationTemplateView implements Serializable {
 	@Column(name = "STATUS")
 	private Integer status;
 
+	@Column(name = "UPDATED_DATE")
+	private Date updateDate;
+	
 	@Column(name = "DOCS_COUNT ")
 	private Long docsCount;
 
@@ -85,6 +88,14 @@ public class ImmigrationTemplateView implements Serializable {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public Date getUpdateDate() {
+		return updateDate;
+	}
+
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
 	}
 
 	public Long getDocsCount() {
