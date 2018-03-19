@@ -261,7 +261,7 @@ function getProfessionalInfo(){
 				 result = result +'	    <div class="col-md-4">';
 				 
 				
-				 result = result +'	         <div class="reportsH profileanchor pull-right"><a title="Account Settings" href="<c:url value='${sourceleadUrl}/userProfile'/>"><i class="fa fa-user-circle"></i></a>';
+				 result = result +'	         <div class="reportsH profileanchor pull-right"><a title="Account Settings" href="<c:url value='${sourceleadUrl}/userProfile'/>"><i class="userSettingImages"><img src="/resources/images/usersetting-img.png" alt="User settings image"></i></a>';
 				 result = result +'	            </div>';
 				 
 				 result = result +'	        <h5>Primary Skill</h5>';

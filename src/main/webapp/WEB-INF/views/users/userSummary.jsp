@@ -3070,8 +3070,11 @@ function profileDetails(candidateId){
 						result = result+' progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%">  ';
 						result = result+'     <p id="disVal">'+json.profilePercentage+'%</p>                                                                                                                                                                      ';
 						result = result+'   </div>  ';
-						result = result+' </div>                 ';                                                                                                                                                      
+						result = result+' </div> '; 
+						
 						result = result+' </div> ';
+						 
+						
 						 
 						 /*  result = result+'  <div class="pull-right" style="position:relative; top:10px; right:-10px;">';
 						 result = result+'  <a href="#" title="Save"><i class="fa fa-check-circle" onClick="saveCandidateImage('+candidateId+');" ></i></a>';
@@ -3083,6 +3086,7 @@ function profileDetails(candidateId){
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Size should not more than 200kb</p>';
 						 */ 
 						 result = result+' </div>';
+
 						 result = result+'<div class="socialnetwork-details">';
 			             result = result+'<ul class="list-inline list-unstyled">';
 			             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.facebook != null && json.consultantUser.facebook !="undefined" && json.consultantUser.facebook != ""){
@@ -3098,8 +3102,12 @@ function profileDetails(candidateId){
 				             result = result+'<li class="bg-linked" title="Linkedin"><a target="_blank" href=\"'+json.consultantUser.linkedIn+'\"> <i class="fa fa-linkedin-square" ></i></a></li>';
 				             }
 			             result = result+'</ul>';
-			             result = result+'                 </div>';
+
+			             result = result+' </div>';
+			             
+
 						 result = result+' </div>';
+						
 						 result = result+'</form>';
 						  
 			             /*  result = result+'                     <div class="media-left image-parent">';
@@ -3222,6 +3230,10 @@ function profileDetails(candidateId){
 			            result = result+'        	<img data-id="userProfileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}"/>';
 			            result = result+'        </div>';
 			            result = result+'    </div>';
+			            
+			           
+			            
+			            
 			            result = result+'     <div class="comments-content">';
 			            result = result+'         <div class="pull-left">';
 			            result = result+'         <p class="comment-by"></p>';
@@ -3244,10 +3256,11 @@ function profileDetails(candidateId){
 			            }
 			 		    /* New comments div creation Nov 8th, 2016 */
 			             
-			             
-			             
+			            
+			 		    
 			             result = result+'               </div>';
 			             result = result+'			</div>';
+			            
 			             result = result+'   <div class="proj_close"></div>';
 			             result = result+'   <div class="project_side_wrap_inn_tabs">';
 			             result = result+'     <ul class="project-tabs-menu custom_tab">'; 

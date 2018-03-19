@@ -226,7 +226,6 @@ function filterStatus() {
 		    result = result + '	<li><a onClick="filterStatus()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>';
 		    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
 			result = result + '       	<ul>';
-			result = result + '           	<li><input id="c5" type="checkbox" name="employeeStatus" checked="true" value ="All" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c5">All</label></li>'; 
 			result = result + '				<li><input id="c6" type="checkbox"   name="employeeStatus" value ="Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c6">Active</label></li>';
 			result = result + '				<li><input id="c7" name="employeeStatus" type="checkbox" value ="In-Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c7">In-Active</label></li> ';
 			result = result + '           </ul>';
@@ -349,8 +348,6 @@ function filterStatus() {
 				    {
 						values.push($(this).val());
 				    });
-	 }else{
-		 values = "All";
 	 }
 	 
 	 var roleIds = [];
@@ -418,6 +415,7 @@ function filterStatus() {
 		        		var estimatedHours = '';
 		        		var estimatedBudget = '';
 		        		
+		        		
 						if (opt.userRoleType != null && opt.userRoleType != '' && opt.userRoleType != 'undefined') {
 							role = opt.userRoleType;
 						} else {
@@ -481,7 +479,6 @@ function filterStatus() {
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+estimatedBudget+'">'+estimatedBudget+'</span></div></td>';
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.approvedHrs+'">'+opt.approvedHrs+'</span></div></td>';
 		                
-		                
 		                if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}' || '${isClientOrgActive}' == "N"){
 		                	
 		                	 if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
@@ -508,15 +505,27 @@ function filterStatus() {
 			                     }
 			                     else{
 			                    	 result = result + '<td><div class="tblminwidth-50">';
+			                    	 if(opt.rateHistroyList == 'Y'){
+			                			 result = result + '<span title="Edit Employee"><i class="glyphicon fa fa-money" onClick="getRateTable('+opt.id+'\,\''+opt.candidateName+'\')";></i></span>&nbsp;&nbsp;';
+			                		  } 
 			                    	 if(status != 'COMPLETED'){
 			                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\',\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">'; 
-			                    		    result = result + '<a  onclick="reActiveProject(\''+opt.id+'\',\''+opt.empName+'\',\''+opt.projectAssignedDateStr+'\',\''+projectEndDateStr+'\',\''+opt.endDate+'\');flushReProject()" data-target="#Re-AssignProject" data-toggle="modal">Re-Assign &nbsp;</a><span class="show-reason">';
-				                    	if(opt.terminateReason != null && opt.terminateReason != '' && opt.terminateReason != 'undefined'){
+			                    		
+			                    		 if(opt.projectMemberStatus != 'INACTIVE'){
+			                    			 result = result + '<a  onclick="reActiveProject(\''+opt.id+'\',\''+opt.empName+'\',\''+opt.projectAssignedDateStr+'\',\''+projectEndDateStr+'\',\''+opt.endDate+'\');flushReProject()" data-target="#Re-AssignProject" data-toggle="modal"><i class="fa fa-retweet" title="Re Assign"></i> &nbsp;</a>'; 
+			                    		 }
+			                    		
+			                    		 result = result + '<span class="show-reason">';
+			                    		if(opt.terminateReason != null && opt.terminateReason != '' && opt.terminateReason != 'undefined'){
 				                    		result = result + '<b class="glyphicon glyphicon-comment text-success"></b><b class="reason edit-status">'+opt.terminateReason+'</b>';
 				                    	}else{
 				                    		result = result + '';	
 				                    	}
 				                      '</sec:authorize>';
+				                      
+				                      if(opt.projectMemberStatus == 'INACTIVE' && (opt.terminateReason == null || opt.terminateReason == '' || opt.terminateReason == 'undefined')){
+				                    	  result = result + '<font color="red">&nbsp;Terminated</font>';
+				                      }
 				                      
 				                      '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\',\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">'; 
 				                        result = result + '---';
@@ -948,14 +957,14 @@ function loadProjectMembersDetails(data,candidateName){
 	result = result + '	    <div class="row">';
 	
 	result = result + '	    <div class="col-md-6 mb10" id="startDateDiv">';
-	result = result + '	      <label class="clearfix">Project Start Date<span class="text-danger">&nbsp;*</span></label>';
+	result = result + '	      <label class="clearfix">Start Date<span class="text-danger">&nbsp;*</span></label>';
 	result = result + '	      <div class="">';
 	result = result + '	        <input type="text" class="form-control input-sm calendar" value="'+projectStartDate+'" readonly id="projectStartDate"  name="memberStartDate" field-name="Start Date"  data-validation="required">';
 	result = result + '	      </div>';
 	result = result + '	    </div>';
 	
 	result = result + '	    <div class="col-md-6 mb10" id="endDateDiv">';
-	result = result + '	      <label class="clearfix">Project End Date</label>';
+	result = result + '	      <label class="clearfix">End Date</label>';
 	result = result + '	      <div class="">';
 	result = result + '	        <input type="text" class="form-control input-sm calendar"  value="'+projectEndDate+'" id="projectEndDate" readonly name="memberEndDate" field-name="End Date"  data-validation-optional="true">';
 	result = result + '	      </div>';
@@ -1023,7 +1032,6 @@ function loadProjectMembersDetails(data,candidateName){
 				 
 		        onClose : function(selected) {
 		        	var dt = $(this).datepicker('getDate', '+1d');
-					dt.setDate(dt.getDate() + 1);
 					$("#projectStartDate").datepicker("option", "minDate", dt);
 					removeStartDateValidation();
 					getEstimatedHours();
@@ -1038,7 +1046,6 @@ function loadProjectMembersDetails(data,candidateName){
 			minDate: projectStartDate,
 	        onClose : function(selected) {
 	        	 var dt = $(this).datepicker('getDate', '-1d');
-					dt.setDate(dt.getDate() - 1);
 					$("#projectEndDate").datepicker("option", "maxDate", dt);
 					removeEndDateValidation();
 					getEstimatedHours();

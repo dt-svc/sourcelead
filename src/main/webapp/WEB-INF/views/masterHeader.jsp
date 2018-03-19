@@ -48,6 +48,7 @@
 <link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="stylesheet" href="/resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
 <link rel="stylesheet" href="/resources/css/bootstrap-datetimepicker.min.css?staticTime=${staticTime}" type="text/css" >
+<link rel="stylesheet" href="/resources/css/dataTables.searchHighlight.css?staticTime=${staticTime}" type="text/css" >
 <c:set scope="request" var="viewPage" value='${pageContext.request.servletPath.toString().replaceFirst("/WEB-INF/views/","").replaceFirst(".jsp","")}'></c:set>
  <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -139,6 +140,8 @@
 <script src="/resources/js/datetime-moment.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/bootstrap-datetimepicker.min.js?staticTime=${staticTime}"></script>
 
+<script src="/resources/js/dataTables.searchHighlight.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.highlight.js?staticTime=${staticTime}"></script>
 
 <!--  Data tables script files -->
 <!-- <script src="/resources/js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script> -->
@@ -434,11 +437,11 @@ function preventTabkey(e){
 				<div class="text-logo">
 				 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
 					<c:if test="${!empty SourceLeadWeb_orgName}">
-					<span class="tbldata-dotdot" title="${SourceLeadWeb_orgName}">${SourceLeadWeb_orgName}</span>
+					<span class="tbldata-dotdot" data-id="orgLogoImage" title="${SourceLeadWeb_orgName}">${SourceLeadWeb_orgName}</span>
 					</c:if>
 				</c:if>
 				<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-				<span class="tbldata-dotdot" title="${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}">${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}</span>
+				<span class="tbldata-dotdot" data-id="orgLogoImage" title="${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}">${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}</span>
 				</c:if>
 				</div>
 	</c:if>

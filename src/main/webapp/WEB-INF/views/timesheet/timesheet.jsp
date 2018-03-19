@@ -1246,8 +1246,9 @@ function dropDownExport(){
 function timesheetEntriesExport(startDate,endDate,projectMemberId,exportType,submissionStatus){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var status = $("#timesheetSubmissionStatus").val();
+	var requestFrom = "employee";
 	if(status != null && status != 'undefined' && status != '' && status != 'NEW' && status != 'new'){
-		window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType;
+		window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&requestFrom="+requestFrom;
 	}else{
 		alert("Please fill the TimeSheets..");
 	}

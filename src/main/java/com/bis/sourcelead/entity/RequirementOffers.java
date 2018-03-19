@@ -133,6 +133,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@JsonProperty
     private String spocUserCode;
 	
+	@Transient
+	@JsonProperty
+    private Long spocId;
+	
 	public Long getId() {
 		return id;
 	}
@@ -381,4 +385,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setSpocUserCode(String spocUserCode) {
 		this.spocUserCode = spocUserCode;
 	}
+
+	public Long getSpocId() {
+		return spocId;
+	}
+
+	public void setSpocId(Long spocId) {
+		this.spocId = spocId;
+	}
+
+	
 }

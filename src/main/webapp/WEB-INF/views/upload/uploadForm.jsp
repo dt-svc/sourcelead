@@ -88,6 +88,7 @@ margin:10px 220px 0;
 			  <label><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</label>
 			  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Role</label>
 			  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Manager(Email)</label>
+			  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Employment Type</label>
 			  </p>
 			  </span>
             </div>
