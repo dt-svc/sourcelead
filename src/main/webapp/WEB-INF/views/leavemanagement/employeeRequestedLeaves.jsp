@@ -6,6 +6,12 @@
 <script>
 $(document).ready(function(){
    getRequestedEmployeesList();
+   if ('${notifyLink}' == "notifyLink") 
+	{
+	var leaveUUID = '${leaveUUID}';
+	var orgLocationId = '${orgLocationId}';
+    getRequestedAproveSummary(leaveUUID,orgLocationId);
+	}
 });
 </script>
  
@@ -44,8 +50,10 @@ $(document).ready(function(){
     </div>
      <div id="appRejLoading"></div>
     <div class="clients_wrap_table datatable_filter">
-    <div class='remove_search mt10'>
+    <div class='dynamic_search dynamic_search-new mt10'>
 		 <input type='text' placeholder='Search' id='requestedEmployeesTableSearch'/>
+		  <span class="cursorPointer" title="Search"><i class="fa fa-search" onclick="getRequestedEmployeesList();"></i></span>    
+		 
 		</div>
     <div id="requestedLeavesDiv"></div>
     
@@ -174,7 +182,7 @@ function requestedEmployeesPagination(url){
               "data": "noOfDays",
               "render": function ( data, type, opt, meta ) {
             	   var result = "";
-            	      result = result + '     <div class="tblminwidth-75">'+opt.noOfDays+' day(s)</div>';	 
+            	      result = result + '     <div class="tblminwidth-75">'+opt.appliedNoOfDays+' day(s)</div>';	 
             	    return result; 
               }
             },/* {
@@ -190,7 +198,7 @@ function requestedEmployeesPagination(url){
                 "data": "leavesTaken",
                 "render": function ( data, type, opt, meta ) {
                 		 var result = "";
-                		result = result + '     <div class="tblminwidth-75">'+opt.leavesTaken+'</div>';
+                		result = result + '     <div class="tblminwidth-75">'+opt.actualLeavesTaken+'</div>';
     	                return result; 
                 }
           },{
@@ -198,7 +206,7 @@ function requestedEmployeesPagination(url){
 	    	  	"data": "thisMonthLeaves",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
-	    	  		result = result + '     <div class="tblminwidth-75">'+opt.thisMonthLeaves+'</div>';
+	    	  		result = result + '     <div class="tblminwidth-75">'+opt.thisMonthLeavesTaken+'</div>';
   	                return result; 
 	    	  	}
 	    	  },{
@@ -206,7 +214,7 @@ function requestedEmployeesPagination(url){
 	    	  	"data": "balanceleaves",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
-	    	  		result = result + ' <div class="tblminwidth-75">'+opt.balanceleaves+'</div>';
+	    	  		result = result + ' <div class="tblminwidth-75">'+opt.totalBalLeaves+'</div>';
 	    	  		return result; 
 	    	  	}
 	    	  }, {
@@ -407,8 +415,8 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
              result = result +' <div class="col-md-8">';
-        	 if(data.leavesTaken != null && data.leavesTaken !='' && data.leavesTaken !='undefined'){
-				 result = result +'<span>'+data.leavesTaken+'</span>';
+        	 if(data.actualLeavesTaken != null && data.actualLeavesTaken !='' && data.actualLeavesTaken !='undefined'){
+				 result = result +'<span>'+data.actualLeavesTaken+'</span>';
 			 }else{
 	            	result = result +' <span>--</span>';
 	            }
@@ -417,8 +425,8 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>This month:</b></label>';
              result = result +'<div class="col-md-8">';
-             if(data.thisMonthLeaves != null && data.thisMonthLeaves !='' && data.thisMonthLeaves !='undefined'){
-				 result = result +'<span>'+data.thisMonthLeaves+'</span>';
+             if(data.thisMonthLeavesTaken != null && data.thisMonthLeavesTaken !='' && data.thisMonthLeavesTaken !='undefined'){
+				 result = result +'<span>'+data.thisMonthLeavesTaken+'</span>';
 			 }else{
 	            	result = result +' <span>--</span>';
 	            }
@@ -427,8 +435,8 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Balance leaves:</b></label>';
              result = result +'<div class="col-md-8">';
-             if(data.balanceleaves != null && data.balanceleaves !='' && data.balanceleaves !='undefined'){
-				 result = result +'<span>'+data.balanceleaves+'</span>';
+             if(data.totalBalLeaves != null && data.totalBalLeaves !='' && data.totalBalLeaves !='undefined'){
+				 result = result +'<span>'+data.totalBalLeaves+'</span>';
 			 }else{
 	            	result = result +' <span>--</span>';
 	            }

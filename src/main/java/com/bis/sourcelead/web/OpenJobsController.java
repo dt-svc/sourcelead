@@ -1,12 +1,10 @@
 package com.bis.sourcelead.web;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.core.internal.resources.MoveDeleteHook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -14,7 +12,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
@@ -22,9 +19,11 @@ import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -43,6 +42,9 @@ public class OpenJobsController {
 	private CommonUtil commonUtil;
 	@Autowired
 	private OrgLocationService orgLocationService;
+	
+	@Autowired
+	RequirementLocationsService requirementLocationsService;
 	
 	@RequestMapping(value = "/openJobs")
 	public ModelAndView openJobs() throws Exception
@@ -70,7 +72,16 @@ public class OpenJobsController {
 		model.addObject("jobType", req.getJobType());
 		model.addObject("minExperience", req.getMinExp());
 		model.addObject("maxExperience", req.getMaxExp());
-		model.addObject("location", req.getLocation());
+		model.addObject("postedOrg", req.getPostedOrgName());
+		List<String> requirementLocationsList = new ArrayList<>();
+		List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(req.getId());
+		if(locationsList != null && !locationsList.isEmpty()) {
+			for(RequirementLocations location : locationsList) {
+				requirementLocationsList.add(location.getLocation());
+			}
+		}
+		req.setLocationsList(requirementLocationsList);
+		model.addObject("location", req.getLocationsList());
 		model.addObject("minRate", req.getRate());
 		model.addObject("maxRate", req.getMaxRate());
 		model.addObject("rateType",req.getRateType());

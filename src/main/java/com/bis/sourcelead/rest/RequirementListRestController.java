@@ -63,6 +63,7 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -91,6 +92,7 @@ import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -184,6 +186,9 @@ public class RequirementListRestController {
 	
 	@Autowired
 	OrgSpocService orgSpocService;
+	
+	@Autowired
+	LookUpDataService lookUpDataService;
 	
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
@@ -1615,9 +1620,9 @@ public class RequirementListRestController {
 		/*
 		 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
 		 */
-		String[] tableColumns = {"", "generatedId.keyword","jobTitle.keyword", "client.keyword", "jobType.keyword", "country.keyword", "", "manager.keyword", "createdDate", ""};
+		String[] tableColumns = {"", "generatedId.keyword","jobTitle.keyword", "client.keyword","","", "jobType.keyword", "country.keyword", "", "manager.keyword", "createdDate", ""};
 		
-		int sortColumnIndex = 8; //by default sorting using updated date
+		int sortColumnIndex = 10; //by default sorting using updated date
 		boolean sortColumnOrder = false; //by default descending order
 		if(search.getOrder() != null && !search.getOrder().isEmpty()) {
 			sortColumnIndex = Integer.parseInt(search.getOrder().get(0).get("column"));
@@ -1757,9 +1762,21 @@ public class RequirementListRestController {
 			} 
 		}
 			
-
+		
+		//requirementAssignTo
+		if(StringUtils.isNotEmpty(search.getFilterAssignTo()) && "Myjobs".equalsIgnoreCase(search.getFilterAssignTo())){
+			String assignTo = user.getId().toString();
+			BoolQueryBuilder reqAssignToBoolQueryBuilder = new BoolQueryBuilder();
+			reqAssignToBoolQueryBuilder.must(QueryBuilders.termQuery("teamAssignUserId", assignTo));
+			boolQueryBuilder.must(reqAssignToBoolQueryBuilder);
+			if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
+				boolQueryBuilderForCount.must(reqAssignToBoolQueryBuilder);
+			}
+		}
+		
 		  //requirementPriority
-				if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterStatus())){
+
+			/*	if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterStatus())){
 					String priority = "";
 					if(StringUtils.isNotEmpty(search.getRequirementStatus())){
 						priority = search.getRequirementStatus();
@@ -1782,7 +1799,7 @@ public class RequirementListRestController {
 				}
 				
 				//requirementPriority
-				if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterStatus())){
+				if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterJobType())){
 					String jobType = "";
 					if(StringUtils.isNotEmpty(search.getRequirementStatus())){
 						jobType = search.getRequirementStatus();
@@ -1802,7 +1819,7 @@ public class RequirementListRestController {
 							boolQueryBuilderForCount.must(reqJobTypeBoolQueryBuilder);
 						}
 					} 
-				}
+				}*/
 				
 			
 		if(StringUtils.isNotEmpty(search.getUpdatedOn())){
@@ -2010,6 +2027,32 @@ public class RequirementListRestController {
       	String convertedStirng = requirementIndex.getCreatedDate();
       	requirement.setOrgRelationId(requirementIndex.getOrgRelationId());
       	
+      	if(null != requirementIndex.getCurrentRateCurrency() && !"".equalsIgnoreCase(requirementIndex.getCurrentRateCurrency())){
+      		requirement.setCurrencyCode(requirementIndex.getCurrentRateCurrency());
+		}
+      	if (null != requirementIndex.getMaxRate()) {
+      		requirement.setMaxRate(requirementIndex.getMaxRate().toString());
+		}
+		if (null != requirementIndex.getRate()) {
+			requirement.setRate(requirementIndex.getRate().toString());
+		}
+		if (null != requirementIndex.getRateType() && !"".equals(requirementIndex.getRateType())) {
+			requirement.setRateType(requirementIndex.getRateType());
+		}
+		
+		if(null != requirementIndex.getClientCurrencyCode() && !"".equalsIgnoreCase(requirementIndex.getClientCurrencyCode())){
+			requirement.setClientCurrencyCode(requirementIndex.getClientCurrencyCode());
+		}
+		if(null != requirementIndex.getClientMaxRate()){
+			requirement.setClientMaxRate(requirementIndex.getClientMaxRate().toString());
+		}
+		if(null != requirementIndex.getClientRate()){
+			requirement.setClientRate(requirementIndex.getClientRate().toString());
+		}
+		if(null != requirementIndex.getClientRateType() && !"".equalsIgnoreCase(requirementIndex.getClientRateType())){
+			requirement.setClientRateType(requirementIndex.getClientRateType());
+		}
+      	
       	
       	DateFormat elkFormat = new SimpleDateFormat("yyyy-MM-dd"); 
       	Date elkDate = elkFormat.parse(convertedStirng);
@@ -2026,6 +2069,7 @@ public class RequirementListRestController {
       	}
       	requirement.setPostedOnStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),elkDate));
       	requirement.setClientName(requirementIndex.getClient());
+      	requirement.setClientContactName(requirementIndex.getClientContactName());
       	requirement.setCountry(requirementIndex.getCountry());
       	requirement.setState(requirementIndex.getState());
       	requirement.setCity(requirementIndex.getCity());
@@ -2090,6 +2134,22 @@ public class RequirementListRestController {
 		List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
 		resultJson = commonUtil.toJSON(timezoneList);
 		return resultJson;
+	}
+	
+	@RequestMapping(value = "/getDemoTimezonesList", method = RequestMethod.POST)
+	public @ResponseBody String getDemoTimezonesList(HttpServletRequest request) throws Exception
+	{
+		String resultJson = null;
+		List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
+		resultJson = commonUtil.toJSON(timezoneList);
+		return resultJson;
+	}
+	
+	@RequestMapping(value = "/getDemoModulesList", method = RequestMethod.POST)
+	public @ResponseBody List<LookUpData> getDemoModulesList(HttpServletRequest request) throws Exception
+	{
+		List<LookUpData> requestOrgList = lookUpDataService.getLookUpDataByCategory(Constants.REQUEST_ORG);
+		return requestOrgList;
 	}
 	
 	

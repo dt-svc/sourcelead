@@ -93,6 +93,22 @@ public class CandidateReferencesRestController {
 		}
 	}
 	
+	
+	
+	@RequestMapping(value = "/validateReferEmail", method = RequestMethod.POST)
+	public @ResponseBody Boolean validateReferEmail(@RequestParam("candidateId") Long candidateId, @RequestParam("referId") Long referId, @RequestParam("email") String email) throws Exception
+	{
+		CandidateReferences cr = null;
+		if(referId != null){
+			cr = candidateReferencesService.validateReferenceEmailByReferEmailAndReferId(email, referId);
+		}
+		 Boolean flag = false;
+		 if(null == cr) {
+			 flag = candidateReferencesService.validateReferenceEmailByReferEmailAndCandidateId(email, candidateId);
+		 }
+	 return flag;
+	}
+	
 	/**
 	 * This Method is for getting candidate references
 	 * 
@@ -172,21 +188,17 @@ public class CandidateReferencesRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/updateCandidateReferenceBycandidateIdAndReferenceId", method = RequestMethod.POST)
-	public @ResponseBody CandidateReferencesDTO updateCandidateReferenceBycandidateIdAndReferenceId(CandidateReferencesDTO candidateReferencesDTO, @RequestParam("candidateId") Long candidateId, @RequestParam("userId") Long userId, @RequestParam("locationCode") String locationCode) throws Exception
+	@RequestMapping(value = {"/updateCandidateReferenceBycandidateIdAndReferenceId","rest/updateCandidateReferenceBycandidateIdAndReferenceId"}, method = RequestMethod.POST)
+	public @ResponseBody String updateCandidateReferenceBycandidateIdAndReferenceId(CandidateReferencesDTO candidateReferencesDTO) throws Exception
 	{
-		/*
-		 * OrgLocations loginOrgLocation = (OrgLocations)
-		 * SourceLeadSessionManager.getSessionAttribute(request,
-		 * "orgLocations"); User users = (User)
-		 * SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 */
-		/* String json1 = "{"+json+"}"; */
-		User user = userService.getUserById(userId);
-		OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
-		//JSONObject jsonObject = new JSONObject(json);
-		candidateReferencesService.storeCandidateReferences(candidateReferencesDTO, candidateId, orgLocation.getId(), user);
-		return candidateReferencesDTO;
+		String isUpdated = "fasle";
+		User user = userService.getUserById(candidateReferencesDTO.getUserId());
+		OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(candidateReferencesDTO.getLocationCode());
+		CandidateReferences candidateReferences = candidateReferencesService.storeCandidateReferences(candidateReferencesDTO, candidateReferencesDTO.getCandidateId(), orgLocation.getId(), user);
+		if(candidateReferences != null) {
+			isUpdated = "true";
+		}
+		return isUpdated;
 	}
 	
 	/**

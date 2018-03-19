@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.bis.sourcelead.dto.LeaveTypeDTO;
 import com.bis.sourcelead.entity.LeaveType;
+import com.bis.sourcelead.entity.ProjectTasks;
 
 public interface LeaveTypeService {
 	
@@ -15,6 +16,8 @@ public interface LeaveTypeService {
 
 	List<LeaveType> getLeaveTypeListByLocationIdAndStatus(String orgLocationId);
 
-	public LeaveType getLeaveTypeByUUID(String leaveTypeUUID);
+	public LeaveType getLeaveTypeByUUID(String leaveTypeUUID) throws Exception;
+
+	public List<ProjectTasks> getProjectTaskByorgLocationIdAndLeaveTypeId(Long id, Long leaveTypeId);
 
 }

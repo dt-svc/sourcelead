@@ -299,7 +299,7 @@ public class ProjectsController {
 						if(projects.getEndDate() != null){
 							model.addObject("projectEndDate", commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),projects.getEndDate()));
 						}
-						List<ProjectMembers> projectAssignMemberList = projectsService.getProjectEmployeeListByProjectIdAndStatus(projects.getId(),"All",orgLocations,"");
+						List<ProjectMembers> projectAssignMemberList = projectsService.getProjectEmployeeListByProjectIdAndStatus(projects.getId(),"All",orgLocations,"","");
 						model.addObject("projectAssignMemberList", projectAssignMemberList);
 						model.addObject("projectStatus", projects.getProjectStatus());
 						
@@ -369,6 +369,11 @@ public class ProjectsController {
 					 
 					commonUtil.highLightMenu(Constants.Projects, request);
 					 
+					 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_PROJECT);
+				     model.addObject("actionId",action.getId());
+				     List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
+					 model.addObject("sourceleadSectionList",sections);
+					
 					model.setViewName("project/projectSummary");
 				}else {
 					model.setViewName("registration/persmissionDenied");
@@ -394,7 +399,10 @@ public class ProjectsController {
 					request.getSession().setAttribute("sessionData",sessionData);
 				
 				 ProjectTasks projectTask = projectTasksService.getProjectTasksByUUID(taskUUID);
-				 OrgLocations locations=orgLocationService.getOrgLocations(projectTask.getProjectId().getOrgLocationsId().getId());
+				 
+				 ProjectClients projectClient = projectClientService.getProjectClientsByUUID(projectClientUUID);
+				 OrgLocations locations=orgLocationService.getOrgLocations(projectClient.getOrgLocationsId().getId());
+					 
 				 if(projectTask.getProjectId() != null) {
 					 model.addObject("projectUUID", projectTask.getProjectId().getProjectUUID());
 					 model.addObject("projectId", projectTask.getProjectId().getId());

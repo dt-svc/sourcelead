@@ -10,6 +10,19 @@ overflow-x: auto;
 .dropdown-select.paddingNone select {
 border:none; background-color: none !important; padding:0 5px !important;
 }
+
+.NewStyleFullWidth {
+	width: 100%; padding: 0px 0px; margin: 0px auto;
+}
+.NewStyleFullWidth .col-md-9 {
+	width: 100%; padding: 0px 0px;
+}
+.NewStyleFullWidth .form-group {
+	width: 50%; margin-bottom: 15px; float: left; padding: 0px 2%;
+}
+.dynamic_search .fa-search {
+position: absolute !important;
+}
 </style>
     <!-- Content Area -->
       <section class="content-wraper">
@@ -33,7 +46,7 @@ border:none; background-color: none !important; padding:0 5px !important;
                 </span>            	
             </h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Vendors list </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/vendorsList'/>"> Vendor List</a></div>
         </section>
 		<!-- Project -->
 		 <div id="loading"></div>
@@ -128,7 +141,7 @@ border:none; background-color: none !important; padding:0 5px !important;
                 <div class="col-md-4">
                   <label>Country </label>
                   <div class="clearfix">
-                    <select class="chosen-select" name="country" id="country" field-name="Country"  >
+                    <select class="chosen-select" name="searchCountry" id="country" field-name="Country">
                           <option value="" selected>---select country---</option>
 						     <c:forEach var="cntry" items="${countryList}">
 					                     <option value="${cntry.name}">${cntry.name}</option>
@@ -140,18 +153,18 @@ border:none; background-color: none !important; padding:0 5px !important;
              <div class="col-md-4"> 
 							  <label>State</label>
 							  <div class="clearfix">
-								  <select  class="chosen-select" name="state" id="state" field-name="State"  >
-								        <option value="">---select state---</option>
-								        <c:forEach var="state" items="${statesList}">
+								  <select  class="chosen-select" name="searchState" id="state" field-name="State"  >
+								         <option value="">---select state---</option>
+								       <%-- <c:forEach var="state" items="${statesList}">
 							                     <option value="${state.stateName}">${state.stateName}</option>
-						                </c:forEach>
+						                </c:forEach> --%>
                                  </select>
 							  </div>
 						  </div>
 						  <div class="col-md-4">
 							  <label>City</label>
 							  <div class="clearfix">
-								  <select  class="chosen-select" name="city" id="city" field-name="City"  >
+								  <select  class="chosen-select" name="searchCity" id="city" field-name="City"  >
 								      <option value="">---select city---</option>
                                   </select>
 							  </div>
@@ -358,11 +371,11 @@ border:none; background-color: none !important; padding:0 5px !important;
 				    </div>
 		            </li> 
 		          </sec:authorize>
-		            
             </ul>
             <div class="clearfix"></div>
-             <div class='remove_search'>
-        		          <input type='text' placeholder='search' id='dataTableSearch'/>
+             <div class='dynamic_search dynamic_search-new'>
+        		   <input type='text' placeholder='Search' id='dataTableSearch'/>
+        		   <span class="cursorPointer" title="Search"><i class="fa fa-search" onclick="getVendorList();"></i></span>     
                 </div> 
         </div>
         
@@ -425,9 +438,11 @@ function clearSearch(){
 	$('#allKeywords').val('').trigger('chosen:updated');
 	$('#excludeKeyWord').val('').trigger('chosen:updated');
 	$('#orgNameAdvanced').val('').trigger('chosen:updated');
-/* 	$('#country').val('').trigger('chosen:updated'); */
-	$('#state').val('').trigger('chosen:updated');
-	$('#city').val('').trigger('chosen:updated');
+ 	$('#country').val('').trigger('chosen:updated'); 
+	//$('#state').val('').trigger('chosen:updated');
+	 getStates();
+	//$('#city').val('').trigger('chosen:updated');
+	 getCities();
 	$('#tierAdvanced').val('').trigger('chosen:updated');
 	$('#createdByAdvanced').val('').trigger('chosen:updated');
 	$('#emailAdvanced').val('').trigger('chosen:updated');
@@ -565,263 +580,13 @@ function clearSearch(){
   
   	       
 <script type="text/javascript">
-    	   /* var config = {
-    				  '.chosen-select'           : {},
-    				  '.chosen-select-deselect'  : {allow_single_deselect:true},
-    				  '.chosen-select-no-single' : {disable_search_threshold:10},
-    				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-    				  '.chosen-select-width'     : {width:"95%"}
-    	   }
-			//Adding Customized Any Of Keyword to the list 
-		    var select, chosen;
-		    select = $("#anyOfKeyword");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab  To Add Keyword:' });
-		    chosen = select.data('chosen');
-		    chosen.search_field.on('keydown keyup', function(e)
-		    {
-		    	var anyKeyword = this.value.replace(",","");
-		        if (tagItBykeyForSkills(e) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
-		        {
-		        	preventTabkey(e); 
-		        	var par = this.parent;
-		            var option = $("<option>").val(anyKeyword).text(anyKeyword);
-		            select.append(option);
-		            select.find(option).prop('selected', true);
-                    $("#anyOfKeyword option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#anyOfKeyword").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		  //Adding Customized Any Of Keyword to the list
-		    var selectone, chosenone;
-		    selectone = $("#allKeywords");
-		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab  To Add Keyword:' });
-		    chosenone = selectone.data('chosen');
-		    chosenone.search_field.on('keydown keyup', function(e1)
-		    {
-		    	var allKeyword = this.value.replace(",","");
-		        if (tagItBykeyForSkills(e1) && (allKeyword != null  && allKeyword != '' && allKeyword != 'undefined'))
-		        {
-		        	preventTabkey(e1); 
-		        	var par = this.parent;
-		            var option = $("<option>").val(allKeyword).text(allKeyword);
-		            selectone.append(option);
-		            selectone.find(option).prop('selected', true);
-                    $("#allKeywords option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#allKeywords").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    
-		    var selecttwo, chosentwo;
-		    selecttwo = $("#excludeKeyWord");
-		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab  To Add Keyword:' });
-		    chosentwo = selecttwo.data('chosen');
-		    chosentwo.search_field.on('keydown keyup', function(e2)
-		    {
-		    	var excludeKeyword = this.value.replace(",","");
-		        if (tagItBykeyForSkills(e2) && (excludeKeyword != null  && excludeKeyword != '' && excludeKeyword != 'undefined'))
-		        {
-		        	preventTabkey(e2); 
-		        	var par = this.parent;
-		            var option = $("<option>").val(excludeKeyword).text(excludeKeyword);
-		            selecttwo.append(option);
-		            selecttwo.find(option).prop('selected', true);
-                    $("#excludeKeyWord option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#excludeKeyWord").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    
-		    // These are choosen fields for vendor List Multiselect
-		    
-		    
-		    // This is for vendorName 
-		    
-		    var selectthree, chosenthree;
-		    selectthree = $("#orgNameAdvanced");
-		    selectthree.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab  To Add Vendor Name:' });
-		    chosenthree = selectthree.data('chosen');
-		    chosenthree.search_field.on('keydown keyup', function(e3)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if (tagItBykeyForSkills(e3) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	preventTabkey(e3); 
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectthree.append(option);
-		            selectthree.find(option).prop('selected', true);
-                    $("#orgNameAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#orgNameAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    
-		   // This is for Created By 
-		    var selectcreatedByAdvanced, chosencreatedByAdvanced;
-		    selectcreatedByAdvanced = $("#createdByAdvanced");
-		    selectcreatedByAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Document Type:' });
-		    chosencreatedByAdvanced = selectcreatedByAdvanced.data('chosen');
-		    chosencreatedByAdvanced.search_field.on('keydown keyup', function(e4)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if (tagItBykeyForSkills(e4) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	preventTabkey(e4); 
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectcreatedByAdvanced.append(option);
-		            selectcreatedByAdvanced.find(option).prop('selected', true);
-                    $("#createdByAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#createdByAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    
-		    
-		    
-		    //  This is for contact Name
-		    var selectcontactNameAdvanced, chosencontactNameAdvanced;
-		    selectcontactNameAdvanced = $("#contactNameAdvanced");
-		    selectcontactNameAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Contact Name:' });
-		    chosencontactNameAdvanced = selectcontactNameAdvanced.data('chosen');
-		    chosencontactNameAdvanced.search_field.on('keyup', function(e3)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectcontactNameAdvanced.append(option);
-		            selectcontactNameAdvanced.find(option).prop('selected', true);
-                    $("#contactNameAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#contactNameAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    //  This is for Email
-		    var selectemailAdvanced, chosenemailAdvanced;
-		    selectemailAdvanced = $("#emailAdvanced");
-		    selectemailAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Email:' });
-		    chosenemailAdvanced = selectemailAdvanced.data('chosen');
-		    chosenemailAdvanced.search_field.on('keyup', function(e3)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectemailAdvanced.append(option);
-		            selectemailAdvanced.find(option).prop('selected', true);
-                    $("#emailAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#emailAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    
-		    //  This is for Phone Number
-		    var selectphoneNumberAdvanced, chosenphoneNumberAdvanced;
-		    selectphoneNumberAdvanced = $("#phoneNumberAdvanced");
-		    selectphoneNumberAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Phone Number:' });
-		    chosenphoneNumberAdvanced = selectphoneNumberAdvanced.data('chosen');
-		    chosenphoneNumberAdvanced.search_field.on('keyup', function(e3)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectphoneNumberAdvanced.append(option);
-		            selectphoneNumberAdvanced.find(option).prop('selected', true);
-                    $("#phoneNumberAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#phoneNumberAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    //  This is for Owner
-		    var selectownerAdvanced, chosenownerAdvanced;
-		    selectownerAdvanced = $("#ownerAdvanced");
-		    selectownerAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Owner:' });
-		    chosenownerAdvanced = selectownerAdvanced.data('chosen');
-		    chosenownerAdvanced.search_field.on('keyup', function(e3)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectownerAdvanced.append(option);
-		            selectownerAdvanced.find(option).prop('selected', true);
-                    $("#ownerAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#ownerAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		//  This is for Vendor
-		    var selectvendorAdvanced, chosenvendorAdvanced;
-		    selectvendorAdvanced = $("#orgAdvanced");
-		    selectvendorAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Vendor:' });
-		    chosenvendorAdvanced = selectvendorAdvanced.data('chosen');
-		    chosenvendorAdvanced.search_field.on('keyup', function(e3)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectvendorAdvanced.append(option);
-		            selectvendorAdvanced.find(option).prop('selected', true);
-                    $("#orgAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#orgAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		     */
-		    
-		  
-		      $("#country").on('change', function (e) {
-		    	   getStates();
-		       });
-		       $("#state").on('change', function (e) {
-		    	   getCities();
-		       });
-				/* for (var selector in config) {
-				  $(selector).chosen(config[selector]);
-				}
-				$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-				}) */
+     $("#country").on('change', function (e) {
+  	   getStates();
+     });
+     $("#state").on('change', function (e) {
+  	   getCities();
+     });
+				 
 </script> 
 
 
@@ -1775,7 +1540,7 @@ function getVendorDashboardName(vendorDashboardName){
 		result = result + '<li class="current"><a href="#tab-1" onClick="vendorDetailsbyLocationId(' + vendorLocationId + ','+ orgRelationId + ');">Details</a></li>';
 		'</sec:authorize>';
 		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
-		result = result + '<li><a href="#tab-2" onclick="vendorContacts('+ orgRelationId + ','+vendorLocationId+');">Contacts</a></li>'; 
+		result = result + '<li id="vendorContactsLi"><a href="#tab-2" onclick="vendorContacts('+ orgRelationId + ','+vendorLocationId+');">Contacts</a></li>'; 
 		'</sec:authorize>';
 		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_DOCUMENT\")">';
 		result = result + '<li><a href="#tab-3" onclick="vendorDocuments('+orgRelationId+','+vendorLocationId+');">Documents</a></li>'; 
@@ -1871,7 +1636,15 @@ function getVendorDashboardName(vendorDashboardName){
 		$(".side_mask").fadeIn(200);
 		$("body").css('overflow-y', 'hidden');
 		
-		vendorDetailsbyLocationId(vendorLocationId,orgRelationId);
+		if ('${contactsTab}' == "contactsTab") {
+			$(".project-tabs-menu li").removeClass("current");
+			$("#vendorContactsLi").addClass("current");
+			$("#tab-2").show();
+			vendorContacts(orgRelationId, vendorLocationId);
+		} else {
+			vendorDetailsbyLocationId(vendorLocationId, orgRelationId);
+		}
+
 	}
 </script>
 
@@ -1889,7 +1662,7 @@ function getVendorOrgname(vendorOrgname){
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId,
+					url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId+"&requestType=Vendor",
 					success : function(json) {
 						
 						getVendorOrgname(json.orgName);
@@ -2181,16 +1954,14 @@ function getVendorOrgname(vendorOrgname){
 							result = result + '</div>';
 							}
 							
-							for (var key in json.clientCustomFieldlabelNameAndValue) {
-								result = result + '<div class="project_details_cta">';
-								result = result + '<strong>'+key+' :</strong>';
-								if(json.clientCustomFieldlabelNameAndValue != null && json.clientCustomFieldlabelNameAndValue !='' && json.clientCustomFieldlabelNameAndValue !='undefined'){
-									result = result + '<span>'+json.clientCustomFieldlabelNameAndValue[key]+'</span><div class="clearfix"></div>';
-								}else{
-									result = result + '<span> --- </span><div class="clearfix"></div>';
-								}
-								result = result + '</div>';
-							}
+							if(json.clientCustomFieldlabelNameAndValue != null && json.clientCustomFieldlabelNameAndValue != "" && json.clientCustomFieldlabelNameAndValue != 'undefined'){
+					              $.each(json.clientCustomFieldlabelNameAndValue, function(key, value) {
+					            	  var labelNameAndlabelData = value.split("$");
+					            	  result = result + '	<div class="project_details_cta">';
+					            	  result = result + '	<strong>'+labelNameAndlabelData[0]+':</strong><span class="fix">'+labelNameAndlabelData[1]+'</span><div class="clearfix"></div>';
+					            	  result = result + '	</div>';
+					              });
+				              }
 							
 							result = result + ' <div class="user_summary_edit user_summary_edit_a" id="editVendorDetailsDiv"></div>';
 							result = result + '</div>';

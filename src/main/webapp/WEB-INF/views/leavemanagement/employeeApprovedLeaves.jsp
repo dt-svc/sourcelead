@@ -42,8 +42,10 @@ $(document).ready(function(){
     </div>
        <div id="loading"></div>
     <div class="clients_wrap_table datatable_filter">
-		<div class='remove_search mt10'>
+		<div class='dynamic_search dynamic_search-new mt10'>
 		 <input type='text' placeholder='Search' id='approvedLeavesTableSearch'/>
+        <span class="cursorPointer" title="Search"><i class="fa fa-search" onclick="getApprovedEmployeesList();"></i></span>    
+		 
 		</div>
     <div id="approvedLeavesDiv"></div>
   </div>
@@ -169,7 +171,7 @@ function approvedEmployeesPagination(url){
               "data": "noOfDays",
               "render": function ( data, type, opt, meta ) {
             	   var result = "";
-            	   result = result + '     <div class="tblminwidth-75">'+opt.noOfDays+'</div>';		 
+            	   result = result + '     <div class="tblminwidth-75">'+opt.appliedNoOfDays+'</div>';		 
             	    return result; 
               }
             },{
@@ -185,7 +187,7 @@ function approvedEmployeesPagination(url){
                 "data": "leavesTaken",
                 "render": function ( data, type, opt, meta ) {
                 		 var result = "";
-                		result = result + '     <div class="tblminwidth-75">'+opt.leavesTaken+'</div>';
+                		result = result + '     <div class="tblminwidth-75">'+opt.actualLeavesTaken+'</div>';
     	                return result; 
                 }
           },{
@@ -193,7 +195,11 @@ function approvedEmployeesPagination(url){
 	    	  	"data": "approvedBy",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
-	    	  		result = result + '     <div title="'+opt.approvedBy+'" class="tblminwidth-75">'+opt.approvedBy+'</div>';
+	    	  		 if(opt.approvedBy != null && opt.approvedBy != 'undefined' && opt.approvedBy != ''){
+	    	  			result = result + '     <div title="'+opt.approvedBy+'" class="tblminwidth-75">'+opt.approvedBy+'</div>';
+	    	  		 }else{
+	    	  			result = result + '     <div class="tblminwidth-75">System Approved</div>';
+	    	  		 }
   	                return result; 
 	    	  	}
 	    	  },{
@@ -402,8 +408,8 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
              result = result +' <div class="col-md-8">';
-             if(data.leavesTaken != null && data.leavesTaken !='' && data.leavesTaken !='undefined'){
-				 result = result +'<span>'+data.leavesTaken+'</span>';
+             if(data.actualLeavesTaken != null && data.actualLeavesTaken !='' && data.actualLeavesTaken !='undefined'){
+				 result = result +'<span>'+data.actualLeavesTaken+'</span>';
 			 }else{
 	            	result = result +' <span>--</span>';
 	            }
@@ -412,8 +418,8 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>This month:</b></label>';
              result = result +'<div class="col-md-8">';
-             if(data.thisMonthLeaves != null && data.thisMonthLeaves !='' && data.thisMonthLeaves !='undefined'){
-				 result = result +'<span>'+data.thisMonthLeaves+'</span>';
+             if(data.thisMonthLeavesTaken != null && data.thisMonthLeavesTaken !='' && data.thisMonthLeavesTaken !='undefined'){
+				 result = result +'<span>'+data.thisMonthLeavesTaken+'</span>';
 			 }else{
 	            	result = result +' <span>--</span>';
 	            }
@@ -422,8 +428,8 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Balance leaves:</b></label>';
              result = result +'<div class="col-md-8">';
-             if(data.balanceleaves != null && data.balanceleaves !='' && data.balanceleaves !='undefined'){
-				 result = result +'<span>'+data.balanceleaves+'</span>';
+             if(data.totalBalLeaves != null && data.totalBalLeaves !='' && data.totalBalLeaves !='undefined'){
+				 result = result +'<span>'+data.totalBalLeaves+'</span>';
 			 }else{
 	            	result = result +' <span>--</span>';
 	            }

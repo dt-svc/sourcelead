@@ -819,10 +819,13 @@ public class RequirementServiceImpl implements RequirementService {
 					UUIDList.add(savedLocationDTO.getLocationUUID());
 					}
 				}
+			}
 				
-				
+			if(UUIDList != null && !UUIDList.isEmpty()) {
 				UUIDList.retainAll(savedUUIDList);
 				savedUUIDList.removeAll(UUIDList);
+			}
+			    
 				
 				if(savedUUIDList != null && !savedUUIDList.isEmpty()) {
 					for(String UUID : savedUUIDList) {
@@ -831,7 +834,7 @@ public class RequirementServiceImpl implements RequirementService {
 					}
 				}
 				
-			}
+			
 		}
 		
 		
@@ -965,7 +968,7 @@ public class RequirementServiceImpl implements RequirementService {
 		
 		if(requirementDTO.getCustomFormData() !=null) {
 			for( CustomFormFieldDTO customFields:requirementDTO.getCustomFormData()) {
-				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+				if(customFields != null && customFields.getCustomFormFieldId() > 0) {
 					JobCustomFieldData jobCustomFields = null;
 					if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
 						jobCustomFields = jobCustomFieldDataService.getJobCustomFieldDataById(customFields.getEntityId());
@@ -1353,7 +1356,9 @@ public class RequirementServiceImpl implements RequirementService {
 		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-		String actionLink = "";
+		 StringBuilder notificationLink = new StringBuilder();
+		 String actionLink="";
+	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();
 		emailScenerioUtil.sendNotification(actionLink, loginUser, managerUser, loginOrgLocation, notificationScenario);
 	}
 	
@@ -1937,7 +1942,8 @@ public class RequirementServiceImpl implements RequirementService {
 		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-		String actionLink = "";
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();
 		emailScenerioUtil.sendNotification(actionLink, loginUser, intiatorUser, orgLocations, notificationScenario);
 	}
 	
@@ -2114,6 +2120,7 @@ public class RequirementServiceImpl implements RequirementService {
 	@Override
 	public void mailRequirementtoManager(User loginUser, User managerUser, Requirement requirement, StringBuilder location, OrgLocations loginOrgLocation) throws Exception
 	{
+		
 		if (requirement.getManagerUserId() != null) {
 			managerUser = userService.getUserById(requirement.getManagerUserId().getId());
 		}
@@ -2266,7 +2273,8 @@ public class RequirementServiceImpl implements RequirementService {
 		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-		String actionLink = "";
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();		 
 		emailScenerioUtil.sendNotification(actionLink, loginUser, managerUser, loginOrgLocation, notificationScenario);
 	}
 	
@@ -2422,7 +2430,8 @@ public class RequirementServiceImpl implements RequirementService {
 		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-		String actionLink = "";
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();		 
 		emailScenerioUtil.sendNotification(actionLink, loginUser, assUser, orgLocations, notificationScenario);
 	}
 	
@@ -2536,7 +2545,12 @@ public class RequirementServiceImpl implements RequirementService {
 		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-		String actionLink = "";
+
+		StringBuilder notificationLink = new StringBuilder();
+		 String actionLink="";
+	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();
+
+		
 		emailScenerioUtil.sendNotification(actionLink, loginUser, requirement.getManagerUserId(), loginOrgLocation, notificationScenario);
 	}
 	
@@ -2650,7 +2664,8 @@ public class RequirementServiceImpl implements RequirementService {
 		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-		String actionLink = "";
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();	 
 		emailScenerioUtil.sendNotification(actionLink, loginUser, requirement.getManagerUserId(), loginOrgLocation, notificationScenario);
 	}
 	
@@ -2784,7 +2799,8 @@ public class RequirementServiceImpl implements RequirementService {
 		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-		String actionLink = "";
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();	 
 		emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario);
 	}
 	
@@ -3173,6 +3189,13 @@ public class RequirementServiceImpl implements RequirementService {
 		else {
 			reqTemplate.setMinExp(null);
 		}
+		if (StringUtils.isNotBlank(requirementDTO.getProjectDurationYears())) {
+			reqTemplate.setProjectDurationYears(requirementDTO.getProjectDurationYears());
+		}
+		if (StringUtils.isNotBlank(requirementDTO.getProjectDurationMonths())) {
+			reqTemplate.setProjectDurationMonths(requirementDTO.getProjectDurationMonths());
+		}
+	
 		if (StringUtils.isNotBlank(requirementDTO.getRate())) {
 			reqTemplate.setRate(requirementDTO.getRate());
 		}
@@ -3761,6 +3784,8 @@ public class RequirementServiceImpl implements RequirementService {
 		globalVarsMap.put("viewJobLink", linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("jobCampaignSummary?requirementUUID=").append(requirement.getRequirementUUID()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View Job</div></a>").toString());
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SHARE_RECOMENDED_APPLICANT, Constants.ENTITY_TYPE_EMAIL);
+		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SHARE_RECOMENDED_APPLICANT_NOTIFICATION,
+				Constants.ENTITY_TYPE_NOTIFICATION);
 		 
 		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
 		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
@@ -3771,7 +3796,14 @@ public class RequirementServiceImpl implements RequirementService {
 		emailMessage.setSubject(subject);
 		emailMessage.setMessageBody(emailTemplate);
 		emailScenerioUtil.sendEmail(emailMessage, orgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-	
+		// calling the sendNotification method of emailScenerioUtil
+		String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(), globalVarsMap);
+		notificationScenario.setBody(notificationBody);
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink = actionLinkBuilder.append(sourceleadUrl).append("/jobCampaignSummary?requirementUUID=").append(requirement.getRequirementUUID()).toString();
+		if(candidate.getConsultantUser() != null)
+		emailScenerioUtil.sendNotification(actionLink, loginUser, candidate.getConsultantUser(), orgLocation, notificationScenario);
+
 	}
 
 	private String getloaactionList(Long requirementId) throws Exception {
@@ -3783,7 +3815,7 @@ public class RequirementServiceImpl implements RequirementService {
 		List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirementId);
 		if(locationsList != null && !locationsList.isEmpty()) {
 			for(RequirementLocations location : locationsList) {
-				tempHTML = tempHTML + "<p><span><img src='"+url+"/resources/images/location-icon.png' style='width:20px;height: 20px;position: relative;top: 5px;' alet='Location' title='Location'></span>"+location.getLocation()+"</p>";
+				tempHTML = tempHTML + "<span><span><img src='"+url+"/resources/images/location-icon.png' style='width:20px;height: 20px;position: relative;top: 5px;' alet='Location' title='Location'></span>"+location.getLocation()+"</span>";
 			}
 		}
 		return tempHTML;
@@ -3799,5 +3831,12 @@ public class RequirementServiceImpl implements RequirementService {
 	{
 		return requirementDao.getRequirementByAccessibleUserIdAndRequirementUUID(userId, requirementUUID);
 	}
+
+    @Override
+    public ResponseList<RequirementDTO> getRequirementList(Long id, String search, Long location, String employmentType, int pageNo, int pageSize) {
+        return requirementDao.getRequirementList(id, search, location, employmentType, pageNo, pageSize);
+    }
+        
+        
 	
 }

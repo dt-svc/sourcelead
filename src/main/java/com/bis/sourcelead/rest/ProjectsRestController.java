@@ -1,10 +1,15 @@
 package com.bis.sourcelead.rest;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -25,22 +30,27 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ClientProjectDTO;
 import com.bis.sourcelead.dto.ProjectAdditionalDetailsDTO;
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
+import com.bis.sourcelead.dto.ProjectMembersDTO;
+import com.bis.sourcelead.dto.ProjectMembersRateHistoryDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
+import com.bis.sourcelead.entity.ProjectMembersRateHistory;
 import com.bis.sourcelead.entity.ProjectQuestionnaire;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -49,6 +59,7 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
+import com.bis.sourcelead.service.ProjectMembersRateHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectQuestionnaireService;
 import com.bis.sourcelead.service.ProjectTasksService;
@@ -58,7 +69,6 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
-import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -131,6 +141,9 @@ public class ProjectsRestController {
 	
 	@Autowired
 	ProjectClientService projectClientService;
+	
+	@Autowired
+	ProjectMembersRateHistoryService projectMembersRateHistoryService;
 
 	/**
 	 * This method for save the project by json
@@ -206,7 +219,7 @@ public class ProjectsRestController {
 		public  List<ProjectMembers> getProjectAssignedMembesListByProjectId(@RequestParam(value="projectId", required=true) Long projectId,HttpServletRequest request) throws Exception {
     	   
     	   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-    	   List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdAndStatus(projectId,"Active",orgLocations,"");
+    	   List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdAndStatus(projectId,"Active",orgLocations,"","");
 		   return projectMembersList;
 	    }
        
@@ -479,6 +492,364 @@ public class ProjectsRestController {
 	    	
 	    	
 	       return "success";
+	    }
+	    
+	    
+	    @RequestMapping(value = "/editProjectAssignedProjectMember", method = RequestMethod.POST)
+		public  ProjectMembersDTO editProjectAssignedProjectMember(@RequestParam(value="projectMemberId", required=true) Long projectMemberId,
+				HttpServletRequest request) throws Exception {
+	    
+	      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+	     
+	      ProjectMembersDTO projectMebersDTO = new ProjectMembersDTO();
+	      ProjectMembers projectMebers = projectMembersService.getProjectMemberById(projectMemberId);
+	      if(projectMebers != null) {
+	    	  projectMebersDTO.setBillRateRateType(projectMebers.getRateType());
+	    	  projectMebersDTO.setBillRateCurrency(projectMebers.getBillRateCurrency());
+	    	  projectMebersDTO.setBillRate(projectMebers.getCurrentBillRate());
+	    	  
+	    	  projectMebersDTO.setPayRate(projectMebers.getPayRate());
+	    	  projectMebersDTO.setPayRateRateType(projectMebers.getPayRateType());
+	    	  projectMebersDTO.setPayRateCurrency(projectMebers.getPayRateCurrency());
+	    	  SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
+	    	  
+	    	  ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMebers.getId());
+	    	  if(pmh.getProjectAssignedDate() != null) {
+	    		  projectMebersDTO.setProjectStartDate(dateFormat.format(pmh.getProjectAssignedDate()));
+	    	  }
+	    	 
+	    	  if(pmh.getProjectTerminationDate() != null) {
+	    		  projectMebersDTO.setProjectEndDate(dateFormat.format(pmh.getProjectTerminationDate()));
+	    	  }
+	    	
+	    	  
+	    	  projectMebersDTO.setEstHours(projectMebers.getEstimatedHours());
+	    	  projectMebersDTO.setEstBudget(projectMebers.getEstimatedBudget());
+	    	  
+	    	  projectMebersDTO.setProjectMemberId(projectMebers.getId());
+	    	  
+	    	  ProjectMembersRateHistory pmrh = projectMembersRateHistoryService.getProjectMembersRateHistoryByMemberIdAndStatus(projectMebers.getId());
+	    	  if(pmrh != null) {
+	    		  if(pmrh.getPayRateStartDate() != null) {
+	    			  projectMebersDTO.setPayRateEstimatedDate(dateFormat.format(pmrh.getPayRateStartDate()));
+	    		  }
+	    		  
+	    		  if(pmrh.getBillRateStartDate() != null) {
+	    			  projectMebersDTO.setBillRateEstimatedDate(dateFormat.format(pmrh.getBillRateStartDate()));
+	    		  }
+	    	  }
+	      }
+	    	
+	       return projectMebersDTO;
+	    }
+	    
+	    @RequestMapping(value = "/updateProjectMemberDetails", method = RequestMethod.POST)
+		public String updateProjectMemberDetails(ProjectMembersDTO projectMembersDTO,
+				HttpServletRequest request) throws Exception {
+	    	 
+	    	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+	    	User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+	    	
+	    	ProjectMembers projectMembers = projectMembersService.getProjectMemberById(projectMembersDTO.getProjectMemberId()); 
+	    	ProjectMembersRateHistory pmrh = null;
+	    	
+	    	boolean flag = projectMembersService.getPayRateOrBillRateChanges(projectMembers, projectMembersDTO);
+	    	
+	    	ProjectMembersRateHistory projectMembersRateHistory = null;
+	    	
+	    	if(projectMembers != null) {
+	    		
+	    		
+	    		if(flag == true) {
+		         pmrh = projectMembersRateHistoryService.getProjectMembersRateHistoryByMemberIdAndStatus(projectMembers.getId());
+		    		if(pmrh == null) {
+		    			pmrh = getProjectMembersRateHistoryDetails(projectMembers, user);
+		    			if(projectMembers.getProjectAssignedDate() != null) {
+		    				pmrh.setPayRateStartDate(projectMembers.getProjectAssignedDate());
+		    				pmrh.setBillRateStartDate(projectMembers.getProjectAssignedDate());
+		    			}else {
+		    				Date projectAssignedStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getMemberStartDate());
+		    				pmrh.setPayRateStartDate(projectAssignedStartDate);
+		    				pmrh.setBillRateStartDate(projectAssignedStartDate);
+		    			}
+		    			
+		    			Date payRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getPayRateEstimatedDate());
+		    			Calendar cal = Calendar.getInstance();
+		    			cal.setTime(payRateEstimatedDate);
+		    			cal.add( Calendar.DAY_OF_YEAR, -1);
+		    			pmrh.setPayRateEndDate(cal.getTime());
+		    			
+		    			Date billRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getBillRateEstimatedDate());
+		    			Calendar cal1 = Calendar.getInstance();
+		    			cal1.setTime(billRateEstimatedDate);
+		    			cal1.add( Calendar.DAY_OF_YEAR, -1);
+		    			pmrh.setBillRateEndDate(cal1.getTime());
+		    			
+		    			pmrh.setStatus(0);
+		    			pmrh = projectMembersRateHistoryService.saveProjectMembersRateHistory(pmrh);
+		    		}
+	    		}
+	    		
+	    		
+	    		projectMembers.setPayRate(projectMembersDTO.getPayRate());
+	    		projectMembers.setPayRateType(projectMembersDTO.getPayRateRateType());
+	    		projectMembers.setPayRateCurrency(projectMembersDTO.getPayRateCurrency());
+	    		
+	    		projectMembers.setCurrentBillRate(projectMembersDTO.getBillRate());
+	    		projectMembers.setRateType(projectMembersDTO.getBillRateRateType());
+	    		projectMembers.setBillRateCurrency(projectMembersDTO.getBillRateCurrency());
+	    		
+	    		if(StringUtils.isNotBlank(projectMembersDTO.getMemberStartDate())){
+	    			Date projectAssignedStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getMemberStartDate());
+	    			projectMembers.setProjectAssignedDate(projectAssignedStartDate);
+	    		}
+	    		
+	    		if(projectMembersDTO.getEstBudget() != null){
+	    			projectMembers.setEstimatedBudget(projectMembersDTO.getEstBudget());
+	    		}else {
+	    			projectMembers.setEstimatedBudget(null);
+	    		}
+	    		
+	    		if(projectMembersDTO.getEstHours() != null){
+	    			projectMembers.setEstimatedHours(projectMembersDTO.getEstHours());
+	    		}else {
+	    			projectMembers.setEstimatedHours(null);
+	    		}
+	    		
+	    		projectMembersService.saveProjectMember(projectMembers);
+	    		
+	    		if(StringUtils.isNotBlank(projectMembersDTO.getMemberEndDate())){
+
+					ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
+					
+					if(pmh == null){
+						pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMembers.getId());
+					}
+					Date endDate1 = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getMemberEndDate());
+					if(pmh.getProjectTerminationDate()== null){
+						projectMembersHistoryService.updateEndDateOfProjectMemberId(endDate1, projectMembers.getId());
+					}
+
+					if (pmh.getProjectTerminationDate() != null && pmh.getProjectTerminationDate().compareTo(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getMemberEndDate())) != 0) {
+						projectMembersHistoryService.updateEndDateOfProjectMemberId(endDate1, projectMembers.getId());
+						
+					}
+					// mail forward to members inline end date edit
+					projectEnddatechangetoEmployee(projectMembers,user, orgLocations, projectMembersDTO.getMemberEndDate());
+					
+					Date terminationDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getMemberEndDate());
+					Date currentDate = new  Date();
+					
+					if(currentDate.after(terminationDate) && !currentDate.equals(terminationDate)){
+						commonUtil.terminateProjectMemberByProjectMemberId(projectMembers.getId(),Primary.Yes);
+					}
+					else{
+						commonUtil.inactivateTimesheetSubmissionsBasedOnMemberIdAndMemberTerminationDate(projectMembers.getId(), terminationDate);
+					}
+	    			
+	    		}
+	    		
+	    		
+	    		
+	    		
+	    		if(flag == true) {
+		    		projectMembersRateHistory = getProjectMembersRateHistoryDetails(projectMembers, user);
+		    		Date payRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getPayRateEstimatedDate());
+		    		projectMembersRateHistory.setPayRateStartDate(payRateEstimatedDate);
+		    		Date billRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getBillRateEstimatedDate());
+	    			projectMembersRateHistory.setBillRateStartDate(billRateEstimatedDate);
+	    			projectMembersRateHistory.setStatus(1);
+	    			projectMembersRateHistory.setRateHistoryId(pmrh);
+		    		projectMembersRateHistoryService.saveProjectMembersRateHistory(projectMembersRateHistory);
+	    		}
+	    		
+	    		if(flag == false) {
+	    			
+	    			pmrh = projectMembersRateHistoryService.getProjectMembersRateHistoryByMemberIdAndStatus(projectMembers.getId());
+	    			if(pmrh != null && pmrh.getRateHistoryId() != null) {
+	    				
+	    				ProjectMembersRateHistory parentRateHistory = projectMembersRateHistoryService.getProjectMembersRateHistoryById(pmrh.getRateHistoryId().getId());
+	    				
+	    				Date payRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getPayRateEstimatedDate());
+	    				Date billRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getBillRateEstimatedDate());
+	    				
+	    				if(!pmrh.getPayRateStartDate().equals(payRateEstimatedDate)) {
+	    					pmrh.setPayRateStartDate(payRateEstimatedDate);
+	    					Calendar cal1 = Calendar.getInstance();
+			    			cal1.setTime(payRateEstimatedDate);
+			    			cal1.add( Calendar.DAY_OF_YEAR, -1);
+			    			parentRateHistory.setPayRateEndDate(cal1.getTime());
+	    				}
+	    				
+	    				if(!pmrh.getBillRateStartDate().equals(billRateEstimatedDate)) {
+	    					pmrh.setBillRateStartDate(billRateEstimatedDate);
+	    					Calendar cal1 = Calendar.getInstance();
+			    			cal1.setTime(billRateEstimatedDate);
+			    			cal1.add( Calendar.DAY_OF_YEAR, -1);
+			    			parentRateHistory.setBillRateEndDate(cal1.getTime());
+	    				}
+			    		
+			    		projectMembersRateHistoryService.saveProjectMembersRateHistory(pmrh);
+			    		projectMembersRateHistoryService.saveProjectMembersRateHistory(parentRateHistory);
+			    		
+	    				
+	    			}
+	    			
+	    			
+	    		}
+	    		
+	    	}
+	    	
+	    	
+	    	return "success";
+	    }
+	    
+	    
+	    
+	    private void projectEnddatechangetoEmployee(ProjectMembers emp, User loginUser,  OrgLocations loginOrgLocation, String changedEndDate) throws Exception {
+			 Projects projects = projectsService.getProjectById(emp.getProjects().getId());
+			 //SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+			 StringBuilder fromNameBuilder=new StringBuilder();
+		     EmailMessage emailMessage = new EmailMessage();
+			 emailMessage.setFirstName(emp.getEmployee().getUser().getFirstName());
+			 emailMessage.setLastName(emp.getEmployee().getUser().getLastName());
+			 emailMessage.setToEmail(emp.getEmployee().getUser().getEmail());
+			 emailMessage.setFromEmail(loginUser.getEmail());
+			 emailMessage.setCreatedBy(loginUser.getUserCode());
+			 emailMessage.setFromName(fromNameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+			 //setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 
+			 globalVarsMap.put("projectStartdate",commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),projects.getStartDate()));
+			 globalVarsMap.put("projectEnddate",changedEndDate);
+			 
+			 if(loginUser.getFirstName() != null && loginUser.getLastName()!=null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())){
+				 StringBuilder userBuild = new StringBuilder();
+				 globalVarsMap.put("loginUser",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+				 }else{
+					 globalVarsMap.put("loginUser",loginUser.getFirstName());
+				}
+			 if(emailMessage.getFirstName() != null && emailMessage.getLastName()!=null && !"".equalsIgnoreCase(emailMessage.getFirstName()) && !"".equalsIgnoreCase(emailMessage.getLastName())){
+				 StringBuilder userBuild = new StringBuilder();
+				 globalVarsMap.put("employeeName",userBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
+				 }else{
+					 globalVarsMap.put("employeeName",emailMessage.getFirstName());
+				}
+			 globalVarsMap.put("projectName", projects.getProjectName());
+			 globalVarsMap.put("loginOrgName",loginOrgLocation.getOrg().getOrgName());
+			 
+			 //setting the Recipient information
+			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+			 
+			 //getting the current EmailScenario by EmailScenario unique name and entity type
+			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EDITPROJECT_MAIL_TEAMMEMBER,Constants.ENTITY_TYPE_EMAIL);
+			
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+			 String url = sourceleadUrl;
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 
+			 //calling the sendEmail method of emailScenerioUtil
+			 if(null != projects.getOrgLocationsId())
+			 emailScenerioUtil.sendEmail(emailMessage,projects.getOrgLocationsId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+			 
+			 
+			//calling the sendNotification method of emailScenerioUtil
+			EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EDITPROJECT_MAIL_TEAMMEMBER,Constants.ENTITY_TYPE_NOTIFICATION);
+			String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+			notificationScenario.setBody(notificationBody);
+			//String url = null;
+			String actionLink = "";
+			emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getEmployee().getUser(), loginOrgLocation, notificationScenario);
+		}
+	    
+	    
+	    public ProjectMembersRateHistory getProjectMembersRateHistoryDetails(ProjectMembers projectMembers, User user) {
+	    	
+	    	ProjectMembersRateHistory projectMembersRateHistory = new ProjectMembersRateHistory();
+    		projectMembersRateHistory.setProjectMemberId(projectMembers);
+    		projectMembersRateHistory.setCandidateId(projectMembers.getProjectMemberCandidteId());
+    		
+    		if(projectMembers.getCurrentBillRate() != null) {
+    			projectMembersRateHistory.setBillRate(projectMembers.getCurrentBillRate());
+    		}
+    		
+    		projectMembersRateHistory.setBillRateCurrency(projectMembers.getBillRateCurrency());
+    		projectMembersRateHistory.setBillRateType(projectMembers.getRateType());
+    		
+    		if(projectMembers.getPayRate() != null) {
+    			projectMembersRateHistory.setPayRate(projectMembers.getPayRate());
+    		}
+    		
+    		projectMembersRateHistory.setPayRateCurrency(projectMembers.getPayRateCurrency());
+    		projectMembersRateHistory.setPayRateType(projectMembers.getPayRateType());
+    		
+    		projectMembersRateHistory.setCreatedBy(user);
+    		projectMembersRateHistory.setCreatedDate(new Date());
+    		projectMembersRateHistory.setUpdatedDate(new Date());
+    		
+    		return projectMembersRateHistory;
+	    }
+	    
+	    
+	    
+	    @RequestMapping(value = "/getProjectMemberRateTablesList", method = RequestMethod.POST)
+		public  List<ProjectMembersRateHistoryDTO> getProjectMemberRateTablesList(@RequestParam(value="projectMemberId", required=true) Long projectMemberId,
+				HttpServletRequest request) throws Exception {
+	    	
+	    	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+	    	List<ProjectMembersRateHistoryDTO> pmrhDTOList = new ArrayList<>();
+	    	List<ProjectMembersRateHistory> pmrhList = projectMembersRateHistoryService.getProjectMembersRateHistoryListByProjectMemberId(projectMemberId);
+	    	
+	    	if(pmrhList != null && !pmrhList.isEmpty()) {
+	    		
+	    		for(ProjectMembersRateHistory pmrh : pmrhList) {
+	    			ProjectMembersRateHistoryDTO  pmrhDTO = new ProjectMembersRateHistoryDTO();
+	    			pmrhDTO.setBillRate(pmrh.getBillRate());
+	    			pmrhDTO.setBillRateCurrency(pmrh.getBillRateCurrency());
+	    			pmrhDTO.setBillRateType(pmrh.getBillRateType());
+	    			if(pmrh.getBillRateStartDate() != null) {
+	    				pmrhDTO.setBillRateStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), pmrh.getBillRateStartDate()));
+	    			}
+	    			
+	    			if(pmrh.getBillRateEndDate() != null) {
+	    				pmrhDTO.setBillRateEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), pmrh.getBillRateEndDate()));
+	    			}
+	    			
+	    			
+	    			pmrhDTO.setPayRate(pmrh.getPayRate());
+	    			pmrhDTO.setPayRateCurrency(pmrh.getPayRateCurrency());
+	    			pmrhDTO.setPayRateType(pmrh.getPayRateType());
+	    			if(pmrh.getPayRateStartDate() != null) {
+	    				pmrhDTO.setPayRateStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), pmrh.getPayRateStartDate()));
+	    			}
+	    			
+	    			if(pmrh.getPayRateEndDate() != null) {
+	    				pmrhDTO.setPayRateEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), pmrh.getPayRateEndDate()));
+	    			}
+	    			
+	    			User createdUser = pmrh.getCreatedBy();
+	    			StringBuilder userName = new StringBuilder();
+	    			if(StringUtils.isNotBlank(createdUser.getLastName())) {
+	    				pmrhDTO.setCreatedBy(userName.append(createdUser.getFirstName()).append(" ").append(createdUser.getLastName()).toString());
+	    			}else {
+	    				pmrhDTO.setCreatedBy(userName.append(createdUser.getFirstName()).toString());
+	    			}
+	    			
+	    			pmrhDTOList.add(pmrhDTO);
+	    			
+	    		}
+	    	}
+	    	
+	    	return pmrhDTOList;
+	    	
 	    }
 	  
 

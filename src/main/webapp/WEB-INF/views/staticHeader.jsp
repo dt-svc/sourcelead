@@ -2,11 +2,20 @@
 <html lang="en">
 <head>
   <title>.::Welcome to SourceLead Website::.</title>
+  <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<meta name="google-site-verification" content="lRRPwOWi0M3yAREOGoDPAjQ4cj4otBXHl_uTWJd93rI" />
+<meta name="msvalidate.01" content="D6B1571D75BB0A86C42A01713002F6FF" />
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
-<meta name="Description" content="SourceLead">
-<meta name="Keywords" content="">
+<meta name="description" content="Sourcelead is an integrated human resource solution which provides an automated process for the talent search. Be it a niche profile or a generic role, you have access to marketplace.">
+<meta name="keywords" content="Application tracking system, ats software, top applicant tracking systems, payroll software, vendor management, client management, onboard candidate, offboard candidate, top hr tracking software"> <meta name="robots" content="index, follow">
+	
+	<link rel="stylesheet" href="/resources/css/bootstrap-select.min.css">
+	<link href="/resources/css/jquery-ui.css" rel="stylesheet">
+	<link rel="stylesheet" href="/resources/css/jquery.timepicker.css">
+	
 	<link rel="stylesheet" href="/resources/static-web/css/prettyPhoto.css" type="text/css"/>
 	<link rel="stylesheet" href="/resources/static-web/css/owl.carousel.min.css">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -22,8 +31,23 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <!-- <script src="/resources/js/jquery-2.1.4.min.js"></script> --> 
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-115098165-1"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'UA-115098165-1');
+</script>
 </head>
 <body>
+<div class="marQ">
+        <marquee behavior="scroll" direction="left">
+        <p id="maintenanceStatus"></p>
+        </marquee>
+    </div>
 <nav class="navbar navbar-default customNavBar" id="navHeader-scroll">
 	  <div class="container-fluid">
 		

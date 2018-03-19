@@ -32,6 +32,7 @@ import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateComments;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -49,6 +50,7 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import com.bis.sourcelead.service.CandidateCommentsService;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
@@ -65,6 +67,7 @@ import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.impl.RequirementSubmissionServiceImpl;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -143,7 +146,11 @@ public class SubmissionsRestController {
 	@Autowired
 	CandidateEmployersService candidateEmployersService;
 	
+	@Autowired
+	RequirementSubmissionServiceImpl requirementSubmissionServiceImpl;
 	
+	@Autowired
+	CandidateCommentsService candidateCommentsService;
 
 	@RequestMapping(value = "/app/getCandidateResumes")
 	public String getCandidateResumes(@RequestParam(value = "candidateId", required = false) Long candidateId,
@@ -710,6 +717,10 @@ public class SubmissionsRestController {
 				"orgLocations");
 		int percentage = candidateService.getCandidatePercentage(submission.getCandidate(),orgLocations);
 		submission.setProfilePercentage(percentage);
+		
+		List<CandidateComments> candidateCommentsList = candidateCommentsService.getAllCommentsOnCandidateByCandidateIdAndOrgLocation(submission.getCandidate().getId(), orgLocations);
+		submission.setCandidateCommentsCount(String.valueOf(candidateCommentsList.size()));
+		
 		resultJson = toJSON(submission);
 		return resultJson;
 
@@ -878,7 +889,8 @@ public class SubmissionsRestController {
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocations.getId(), iAdressArray,
 				new ArrayList<EmailAttachment>());
-		String actionLink="";
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();	 
 		emailScenerioUtil.sendNotification(actionLink, user,requirement.getManagerUserId(), loginOrgLocations, notificationScenario);
 
 	}
@@ -1077,6 +1089,14 @@ public class SubmissionsRestController {
 		if(requirementSubmission.getPreviousSubmissionStatus()!=null){
 		requirementSubmissionHistory.setToStage(requirementSubmission.getPreviousSubmissionStatus().toString());
 		}
+		
+		if ("Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit())
+				&& requirementSubmission.getPreviousSubmissionStatus() != null
+				&& ApplicantSubmissionStatus.REQUEST_SENT.getValue().equalsIgnoreCase(requirementSubmission.getPreviousSubmissionStatus().getValue())
+				&& requirementSubmission.getSubmissionStatus() != null
+				&& ApplicantSubmissionStatus.REJECTED.getValue().equalsIgnoreCase(requirementSubmission.getSubmissionStatus().getValue())) {
+			requirementSubmissionServiceImpl.applicantReceiveMailAboutRequirement(requirementSubmission.getId(), requirementSubmission.getRequirement(), requirementSubmission.getCandidate(), user, orgLocations);
+		}
 
 		// to update Submission status
 		requirementSubmission.setSubmissionStatus(requirementSubmission.getPreviousSubmissionStatus());
@@ -1087,7 +1107,7 @@ public class SubmissionsRestController {
 		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,
 				requirementSubmissionHistory);
-
+		
 		return "success";
 	}
 	

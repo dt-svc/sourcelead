@@ -25,7 +25,7 @@
       <div class="pull-left">
         <h2>Assign Project Members <span id="projectName"></span></h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/projectDashboard'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=projectMembers'/>">Project Members</a> &raquo; Request Associates</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=team'/>">Project Members</a> &raquo; Request Associates</div>
     </section>
     
     <div class="content-area content-new clearfix">
@@ -83,7 +83,7 @@
                      </select>
                   </div>
                   <div class="pull-left inputRate">
-                      <input class="form-control input-sm" type="text" id="REPLACEROWIDpayRate" name="projectMembers[REPLACEROWID].payRate" field-name="Pay Rate" data-validation-optional="true" data-validation="validate_Space validate_float validate_length length1-15">
+                      <input class="form-control input-sm" type="text" id="REPLACEROWIDpayRate" name="projectMembers[REPLACEROWID].payRate" field-name="Pay Rate"  data-validation="required validate_Space validate_float validate_length length1-15">
                   </div>
                   
                   <div class="pull-left drpdownMonthly dropdown-select">
@@ -114,7 +114,7 @@
                      </select>
                   </div>
                   <div class="pull-left inputRate">
-                      <input class="form-control input-sm" type="text" id="REPLACEROWIDbillRate" name="projectMembers[REPLACEROWID].billRate" data-validation-optional="true"  data-validation="validate_Space validate_float validate_length length1-15">
+                      <input class="form-control input-sm" type="text" id="REPLACEROWIDbillRate" name="projectMembers[REPLACEROWID].billRate" field-name="Bill Rate" value="0" data-validation="required validate_Space validate_float validate_length length1-15">
                   </div>
                   <div class="pull-left drpdownMonthly dropdown-select">
                   <select id="REPLACEROWIDbillRateRateType" name="projectMembers[REPLACEROWID].billRateRateType">
@@ -237,8 +237,8 @@ function getAssignedMembers(){
 	 
 	 $("#searchAssociatesList").empty();
      $("#searchAssociatesList").append(result);
-     
-     loadProjectAssignedMembers(projectId);
+     emptyRecordsList();
+    // loadProjectAssignedMembers(projectId);
      
 }
 </script>
@@ -513,7 +513,16 @@ function getAssociates(){
 	      
 	result = result +'<ul class="pull-right">';
 	
-
+	result = result +'<li class="dropdown">';
+	result = result +'<span class="dropdown-toggle" id="menu4" data-toggle="dropdown">';
+	result = result +'<i class="fa fa-filter"></i><span>Team</span><i class="glyphicon glyphicon-play"></i></span>|';
+	          
+	result = result +'<div class="dropdown-menu bootstrap_dropdownMenu" role="menu" aria-labelledby="menu1">';
+	result = result +'<ul class="location-filter">';
+	result = result +'<div id="orgLocationTeams"></div>';  
+	result = result +'</ul>';
+	result = result +'</div>';
+	result = result +'</li>'; 
 	        
 	result = result +'<li class="dropdown">';
 	result = result +'<span class="dropdown-toggle" id="menu3" data-toggle="dropdown">';
@@ -556,6 +565,7 @@ function getAssociates(){
 	 $("#associatesList").empty();
      $("#associatesList").append(result);
      getOrgLocationRoles();
+     getOrgLocationTeams();
  	
 }
 </script>
@@ -578,6 +588,33 @@ function getOrgLocationRoles(){
 	        	$("#orgLocationRoles").empty();
 		        $("#orgLocationRoles").append(output);
 		        getAssociatesFilter();
+	        }
+	        
+	 });
+}
+
+function getOrgLocationTeams(){
+	var orgLocations = '${SourceLeadWeb_orgLocations.id}';
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getOrgLocationTeamList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,  
+	        success: function(json) {
+	        	
+	        	var output = "";
+	        	if(json.length > 0){
+	        		for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + '<li><input value="'+opt.id+'" name="teams"  type="checkbox" onclick="getAssociatesFilter()"><label>'+opt.name+'</label></li>';
+					}
+	        	}else{
+	        		output = output + '<li><label>&nbsp;&nbsp;&nbsp;<font color="red">No teams configured</font></label></li>';
+	        	}
+	        	
+	        	$("#orgLocationTeams").empty();
+		        $("#orgLocationTeams").append(output);
 	        }
 	        
 	 });
@@ -637,6 +674,12 @@ function candidatesDataTableList(){
 		roles.push($(this).val());
 	    });
 	
+	var teams = [];
+	$('input:checkbox[name=teams]:checked').each(function() 
+		    {
+		teams.push($(this).val());
+	    });
+	
 	var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 	
 	var resourceType = [];
@@ -662,7 +705,7 @@ function candidatesDataTableList(){
 	  
 	     var searchValue = $("#candidateDataTableSearch").val();
 		 searchValue = searchValue ? searchValue : "";
-		 var url = sourceleadUrl+"/getRequestedAssociatesList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&roles="+roles+"&resourceType="+resourceType+"&selectedAssociates="+selectedAssociates+"&projectUUID="+projectUUID;
+		 var url = sourceleadUrl+"/getRequestedAssociatesList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&roles="+roles+"&teams="+teams+"&resourceType="+resourceType+"&selectedAssociates="+selectedAssociates+"&projectUUID="+projectUUID;
 		 candidatesPagination(sourceleadUrl,url);
 	
 }
@@ -1021,7 +1064,7 @@ function removeStartDateValidation(rowId){
 			var startDateText = "";
 			var cell3 = row.insertCell(3);
 			startDateText = startDateText+"<div  class='tbldata-dotdot-100' id='"+maxRowNum+"startDate' >";
-			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" onchange="getEstimatedHours('+maxRowNum+')"  data-validation="required" value="'+projectStartDate+'" field-name="Start Date" id="'+maxRowNum+'memberStartDate"  name="projectMembers['+maxRowNum+'].memberStartDate" >';
+			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" onchange="getEstimatedHours('+maxRowNum+')"  data-validation="required" value="'+projectStartDate+'" field-name="Start Date" id="'+maxRowNum+'memberStartDate"  name="projectMembers['+maxRowNum+'].memberStartDate" readonly>';
 			startDateText = startDateText+'</div>';
 			cell3.innerHTML = startDateText;
 			
@@ -1029,7 +1072,7 @@ function removeStartDateValidation(rowId){
 			var endDateText = "";
 			var cell4 = row.insertCell(4);
 			endDateText = endDateText+"<div  class='tbldata-dotdot-100'>";
-			endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" onchange="getEstimatedHours('+maxRowNum+')"  id="'+maxRowNum+'memberEndDate" value="'+projectEndDate+'" name="projectMembers['+maxRowNum+'].memberEndDate" >';
+			endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" onchange="getEstimatedHours('+maxRowNum+')"  id="'+maxRowNum+'memberEndDate" value="'+projectEndDate+'" name="projectMembers['+maxRowNum+'].memberEndDate" readonly>';
 			endDateText = endDateText+'</div>';
 			cell4.innerHTML = endDateText;
 			

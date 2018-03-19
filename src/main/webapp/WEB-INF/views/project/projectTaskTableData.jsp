@@ -16,5 +16,15 @@
 	    <td><div><span>${timeDayEntry.hours}</span></div></td>
 	    <td><div class="tbldata-dotdot-me" title="${timeDayEntry.comments}">${timeDayEntry.comments}</div></td>
 	    <td><div><span>${timeDayEntry.approvalStatus}</span></div></td>
+	    
+	    <c:if test="${timeDayEntry.projectMemberId eq projectMemID and timeDayEntry.approvalStatus ne 'APPROVED'}">
+	    	<td><div class="fa fa-edit" id="editTimeDayEntry" onclick="editProjectTaskTimesheetDayEntry('${timeDayEntry.timesheetDate}');"></div></td>
+	    </c:if>
+	    <c:if test="${timeDayEntry.projectMemberId eq projectMemID and timeDayEntry.approvalStatus eq 'APPROVED'}">
+	    	<td><div>--</div></td>
+	    </c:if>
+	    <c:if test="${timeDayEntry.projectMemberId ne projectMemID}">
+	    	<td><div>--</div></td>
+	    </c:if>
 </tr>
 </c:forEach>

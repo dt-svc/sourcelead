@@ -3,6 +3,19 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+	<c:if test="${timesheetSubmission.submissionStatus eq 'SUBMITTED FOR APPROVAL'}">
+		<td>
+			<input class="checkBoxForSubmitForApproval"  name="checkBoxForSubmitForApproval" type="checkbox" value="${timesheetSubmission.projectMemberId}!${timesheetSubmission.actualStartDate}!${timesheetSubmission.actualEndDate}!${timesheetSubmission.tdSpanLength}!'approval'" onclick="displayAcceptRejectButtonOnHedder();">
+		</td>
+	</c:if>
+	<c:if test="${timesheetSubmission.submissionStatus ne 'SUBMITTED FOR APPROVAL'}">
+		<td>
+		     <small class="positionRelative disbledCheckbox-timesheet">
+			<input type="checkbox" disabled="disabled">
+			<i class="fa fa-ban"></i>
+			</small>
+		</td>
+	</c:if>
 	<td class="sorting_1">
 		<div class="time_appr_user">
 			<img id="userImage" onerror="predefineProfileImage(this);" src="${timesheetSubmission.profileImageFileUrl}" alt="Profile Image" class="img-circle img-responsive"> 

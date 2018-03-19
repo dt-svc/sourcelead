@@ -80,7 +80,7 @@ display: none;
           <label class="col-md-2 control-label text-primary small">To</label>
           <div class="col-md-9 positionRelative disable-choosen-dropdown">
             
-			<div class="input-group  col-md-12 noPad">
+			<div class="input-group  col-md-12 noPad" onclick="manuallyEnterJoblistToEmail();">
   				<select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" data-validation="required" name="Toemails"></select>
             	
 <!--             	<span class="refreshicon-new input-group-addon cursorPointer bg-blue" onclick="getRecipients();"><i class="fa fa-refresh "></i></span>	 -->
@@ -248,6 +248,9 @@ display: none;
   <script src="/resources/js/nicEdit.js"></script> 
   
    <script type="text/javascript">
+   function manuallyEnterJoblistToEmail(){
+		  $('#emailsList_chosen ul li input').attr('readonly', true);
+	  }
 	function sendJobListCampaign() {
 		
 		if ($('#joblistCampaign_form').validate(false, validationSettings)){ 
@@ -373,7 +376,7 @@ function jobsDataTableList(type){
 	 var searchValue = $("#jobsDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
 	 var url = sourceleadUrl+"/getJobsForCampaign?searchValue="+searchValue+"&jobCampaignType="+type;
-	 jobsPagination(url,type);
+   jobsPagination(url,type);
 }
 </script>
 
@@ -424,7 +427,7 @@ function jobsPagination(url,type){
 	    	  		  var result = "";
 	    	  		  var jobId = "";
 	    	  	 	 if(opt.jobId != null && opt.jobId != 'undefined' && opt.jobId != ""){
-		           		 jobId = opt.jobId+" "+opt.jobId ;
+		           		 jobId = opt.jobId ;
 		           	 }else{
 		           		 jobId = "----";
 		           	 }
@@ -461,13 +464,37 @@ function jobsPagination(url,type){
 	              "data": "location",
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
-	            	    var location="";
-	            	    if(opt.location != null && opt.location !='' && opt.location != 'undefined'){
-	            	    	location = opt.location;
-	            	    }else{
+	            	    result = result +'<td>';
+	   		        	result = result +'<div class="positionRelative">';
+		   		         for(var k=0; k<1; k++){
+		   		        	result = result + '<p class="tbldata-dotdot-me pull-left">'+opt.locationsList[k]+'</p>';
+		   		         }
+	   		    	
+		   		        result = result +'<div class="show_Empdetails showjoblist">';
+	   		        	result = result +'<i class="fa fa-ellipsis-v"></i>';
+
+	   		        	result = result +'<div class="emailvalues emailvaluesNew">';
+	   		        	
+							for(var k=0; k<opt.locationsList.length; k++){
+								result = result +'<p><i class="fa fa-map-marker"></i>'+opt.locationsList[k]+'</p>';
+			   		        	
+	   		    	 	}
+	   		        	result = result +'</div>';
+	   		        	result = result +'</div>';
+	   
+
+   		        	result = result +'</div>';
+   		        	result = result +'</td>';
+            		
+	            	   /* var location="";
+	            	    if(opt.locationsList != null && opt.locationsList !='' && opt.locationsList != 'undefined'){
+	            	    	
+	            	      location = opt.locationsList;
+							
+	            	     }else{
 	            	    	location = "----";
 	            	    }
-	            		result = result + '<td><div class="tblminwidth-75"><span title="'+location+'">'+location+'</span></div></td>';
+	            		result = result + '<td><div class="tblminwidth-75"><span title="'+location+'">'+location+'</span></div></td>';*/
 	            		return result;
 	              }
 		     },{
@@ -1365,11 +1392,14 @@ function getRecipantsContacts(){
 	
 	
 	var internalOutput = "";
-	
-	var internalOutput = "";
 	 for(var e in recepiantscontactsList) {
 		 var checkbox_value = recepiantscontactsList[e].split(",");
+		 var elist=$("#emailsList").chosen().find("option:selected" ).text();
+		 var searchString=elist.search(checkbox_value[1]);
+		 if(searchString==-1)
+			{
 		 internalOutput = internalOutput+"<option value='" +checkbox_value[0]+ "' selected>"+checkbox_value[1]+"</option>";
+			}
 	  }
 	
 	
@@ -1473,7 +1503,7 @@ function getSenders(){
 
 <script>
 function getRecipients(){
-	alert("hai")
+
 		$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getRecipients?"+tokenParamName+"="+tokenValue,

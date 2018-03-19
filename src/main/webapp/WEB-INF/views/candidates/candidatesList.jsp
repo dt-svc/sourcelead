@@ -98,7 +98,7 @@
 <script>
 var candidateStatusGlobal ="";
 function candidateSideBar(candidateId){
-	  var loginUserId = '${SourceLeadWeb_userId}';
+	var loginUserId = '${SourceLeadWeb_userId}';
 	  var candidateType = "Candidates";
 	  var locationCode = '${SourceLeadWeb_locationCode}';
 	  $.ajax({
@@ -356,7 +356,7 @@ function candidateSideBar(candidateId){
 			             
 			             result = result+'</ul>';
 			             result = result+'</div>';
-			             result = result+'<div class="socialnetwork-details">';
+			             result = result+'<div class="socialnetwork-details socialnetworkIcons">';
 			             result = result+'<ul class="list-inline list-unstyled">';
 			             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.facebook != null && json.consultantUser.facebook !="undefined" && json.consultantUser.facebook != ""){
 				             result = result+'<li class="bg-facebook" title="Facebook"><a target="_blank" href=\"'+json.consultantUser.facebook+'\" > <i class="fa fa-facebook-square" ></i></a></li>';
@@ -421,7 +421,7 @@ function candidateSideBar(candidateId){
 			            result = result+'            <div class="add-comment">';
 			            result = result+'            </div>';
 			            result = result+'          </span>';
-			            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+');">View more <span class="label label-warning">0</span></a>';
+			            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+');">View more <span class="label label-warning">'+json.commentsCount+'</span></a>';
 			 			result = result+'		</div>';
 			            result = result+'     </div>';
 			            result = result+'</div>';
@@ -513,12 +513,24 @@ function candidateSideBar(candidateId){
 				 		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
 						 $(".side_mask").fadeIn(200);
 						 $("body").css('overflow-y', 'hidden');
-						 candidateProfile(candidateId,candidateType);
+						 
+						 if("${candidateKeyword}" == "requestedDocumentNotification"){
+						    	$("#quickview").removeClass("active in");
+						    	$("#timelineview").removeClass("active in");
+						    	$("#detailview").addClass("active in");
+						    	$("#candQuickView").removeClass("active");
+						    	$("#candTimelineView").removeClass("active");
+						    	$("#candDetailView").addClass("active");
+					 	    	candidateDocuments(candidateId);
+						    }else{
+						    	candidateProfile(candidateId,candidateType);
+						    }
 						 
 						 var output = "";
 						 output = output + '<a data-toggle="tab" href="#timelineview" onclick="getActivityDiv('+candidateId+')">Timeline</a>';
 						 $("#candTimelineView").empty();  
 			 		     $("#candTimelineView").append(output);
+			 		   
                 }else{
                	 $("#candidateSideDiv").removeAttr("style");
  	    	         var result ="";
@@ -1045,9 +1057,9 @@ function cancel(candidateId){
 							  <div class="clearfix">
 								  <select  class="chosen-select" name="state" id="state" field-name="State"  >
 								        <option value="">---select state---</option>
-								        <c:forEach var="state" items="${statesList}">
+								        <%-- <c:forEach var="state" items="${statesList}">
 							                     <option value="${state.stateName}">${state.stateName}</option>
-						                </c:forEach>
+						                </c:forEach> --%>
                                  </select>
 							  </div>
 						  </div>

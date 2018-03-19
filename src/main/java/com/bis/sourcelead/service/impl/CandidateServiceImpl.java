@@ -38,6 +38,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateTimelineActivityDao;
 import com.bis.sourcelead.dao.EmployeesDao;
+import com.bis.sourcelead.dao.OrgSpocDao;
 import com.bis.sourcelead.dao.RolesDao;
 import com.bis.sourcelead.dto.AddAssociateDTO;
 import com.bis.sourcelead.dto.AddUserDTO;
@@ -198,6 +199,7 @@ public class CandidateServiceImpl implements CandidateService {
     @Autowired
     private CandidateCustomFieldDataService candidateCustomFieldDataService;
     
+       
     protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
@@ -339,44 +341,62 @@ public class CandidateServiceImpl implements CandidateService {
 		candidate.setOrgLocationId(orgLocations);
 		}
 		if(candidateDto.getFirstName() != null){
-			if(candidate.getFirstName() != null){
+			if(candidate.getFirstName() != null && candidate.getFirstName() != "" && !candidateDto.getFirstName().equalsIgnoreCase(candidate.getFirstName())){
 				activitySummary.append("First Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getFirstName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getFirstName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if(candidate.getFirstName() != null && candidate.getFirstName() != "" && candidateDto.getFirstName().equalsIgnoreCase(candidate.getFirstName())){
+				activitySummary.append("First Name").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getFirstName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("First Name").append(" : ").append("---").append(" ");
 		candidate.setFirstName(candidateDto.getFirstName());
 		}
 		
 		if(candidateDto.getLastName() != null){
-			if(candidate.getLastName() != null ){
+			if(candidate.getLastName() != null && !candidateDto.getLastName().equalsIgnoreCase(candidate.getLastName())){
 				activitySummary.append("Last Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getLastName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getLastName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getLastName() != null || candidate.getLastName() != "" ||  candidateDto.getLastName().equalsIgnoreCase(candidate.getLastName())) && candidateDto.getLastName() !="" ){
+				activitySummary.append("Last Name").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getLastName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Last Name").append(" : ").append("---").append(" ");
 		candidate.setLastName(candidateDto.getLastName());
 		}
 		
 		if(candidateDto.getCountry() != null){
-			if(candidate.getCountry() != null){
+			if(candidate.getCountry() != null && candidate.getCountry() != "" && !candidateDto.getCountry().equalsIgnoreCase(candidate.getCountry())){
 				activitySummary.append("Country").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getCountry()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCountry()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getCountry() != null || candidate.getCountry() != "" ||  candidateDto.getCountry().equalsIgnoreCase(candidate.getCountry())) && candidateDto.getCountry() !="" ){
+				activitySummary.append("Country").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCountry()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Country").append(" : ").append("---").append(" ");
 		candidate.setCountry(candidateDto.getCountry());
 		}
 		if(candidateDto.getState() != null){
-			if(candidate.getState() != null ){
+			if( candidate.getState() != null && candidate.getState() != "" && !candidateDto.getState().equalsIgnoreCase(candidate.getState())){
 				activitySummary.append("State").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getState()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getState()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getState() != null || candidate.getState() != "" ||  candidateDto.getState().equalsIgnoreCase(candidate.getState())) && candidateDto.getState() !="" ){
+				activitySummary.append("State").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getState()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("State").append(" : ").append("---").append(" ");
 		candidate.setState(candidateDto.getState());
 		}
-		if(candidateDto.getCity() != null){
-			if(candidate.getCity() != null ){
+		if(candidateDto.getCity() != null  ){
+			if(candidate.getCity() != null && candidate.getCity() != "" && !candidateDto.getCity().equalsIgnoreCase(candidate.getCity())){
 				activitySummary.append("City").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getCity()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCity()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getCity() != null || candidate.getCity() != "" ||  candidateDto.getCity().equalsIgnoreCase(candidate.getCity())) && candidateDto.getCity() !="" ){
+				activitySummary.append("City").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCity()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("City").append(" : ").append("---").append(" ");
 		candidate.setCity(candidateDto.getCity());
 		}
 		if(candidateDto.getLocation() != null){
 			candidate.setLocation(candidateDto.getLocation());
 		}
 		if(candidateDto.getZipcode()!= null){
-			if(candidate.getZipCode() != null){
+			if(candidate.getZipCode() != null && candidate.getZipCode() != "" &&  !candidateDto.getZipcode().equalsIgnoreCase(candidate.getZipCode())){
 				activitySummary.append("Zip Code").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getZipCode()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getZipcode()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getZipCode() != null || candidate.getZipCode() != "" ||  candidateDto.getZipcode().equalsIgnoreCase(candidate.getZipCode())) && candidateDto.getZipcode() !="" ){
+				activitySummary.append("Zip Code").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getZipcode()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Zip Code").append(" : ").append("---").append(" ");
 			candidate.setZipCode(candidateDto.getZipcode());
 		}
 		
@@ -392,116 +412,167 @@ public class CandidateServiceImpl implements CandidateService {
 		}
 		
 		if(candidateDto.getMobilePhone() != null){
-			if(candidate.getMobilePhone() != null ){
+			if(candidate.getMobilePhone() != null && candidate.getMobilePhone() != "" && !candidateDto.getMobilePhone().equalsIgnoreCase(candidate.getMobilePhone())){
 				activitySummary.append("Mobile Phone").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getMobilePhone()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getMobilePhone()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getMobilePhone() != null || candidate.getMobilePhone() != "" ||  candidateDto.getMobilePhone().equalsIgnoreCase(candidate.getMobilePhone())) && candidateDto.getMobilePhone() !="" ){
+				activitySummary.append("Mobile Phone").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getMobilePhone()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Mobile Phone").append(" : ").append("---").append(" ");
 		candidate.setMobilePhone(candidateDto.getMobilePhone());
 		}
-		if(candidateDto.getAlternateMobilePhone() != null){
-			if(candidate.getAlternateMobilePhone() != null){
+		if(candidateDto.getAlternateMobilePhone() != null ){
+			if(candidate.getAlternateMobilePhone() != null && candidate.getAlternateMobilePhone() != "" && !candidateDto.getAlternateMobilePhone().equalsIgnoreCase(candidate.getAlternateMobilePhone())){
 				activitySummary.append("Alternate Mobile Phone").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getAlternateMobilePhone()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getAlternateMobilePhone()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getAlternateMobilePhone() != null || candidate.getAlternateMobilePhone() != "" ||  candidateDto.getAlternateMobilePhone().equalsIgnoreCase(candidate.getAlternateMobilePhone())) && candidateDto.getAlternateMobilePhone() !="" ){
+				activitySummary.append("Alternate Mobile Phone").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getAlternateMobilePhone()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Alternate Mobile Phone").append(" : ").append("---").append(" ");
 			candidate.setAlternateMobilePhone(candidateDto.getAlternateMobilePhone());
 		}
 		if(candidateDto.getEmail() != null){
-			if(candidate.getEmail() != null){
+			if(candidate.getEmail() != null && candidate.getEmail() != "" && !candidateDto.getEmail().equalsIgnoreCase(candidate.getEmail())){
 				activitySummary.append("Email").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getEmail()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getEmail()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
-		candidate.setEmail(candidateDto.getEmail().trim());
+			}else if((candidate.getEmail() != null || candidate.getEmail() != "" ||  candidateDto.getEmail().equalsIgnoreCase(candidate.getEmail())) && candidateDto.getEmail() !="" ){
+				activitySummary.append("Email").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getEmail()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Email").append(" : ").append("---").append(" ");
+				candidate.setEmail(candidateDto.getEmail().trim());
 		}
 		if(candidateDto.getCurrentRate() !=null){
-			if(candidate.getCurrentRate() != null ){
+			if(candidate.getCurrentRate() != null && candidate.getCurrentRate() != "" && !candidateDto.getCurrentRate().equalsIgnoreCase(candidate.getCurrentRate())){
 				activitySummary.append("Current Rate").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getCurrentRate()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCurrentRate()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getCurrentRate() != null || candidate.getCurrentRate() != "" ||  candidateDto.getCurrentRate().equalsIgnoreCase(candidate.getCurrentRate())) && candidateDto.getCurrentRate() !="" ){
+				activitySummary.append("Current Rate").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCurrentRate()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Current Rate").append(" : ").append("---");
 		candidate.setCurrentRate(candidateDto.getCurrentRate());
 		}
 		
 		if(candidateDto.getCurrentRateType() != null){
-			if(candidate.getCurrentRateType() != null){
+			if(candidate.getCurrentRateType() != null && candidate.getCurrentRateType() != "" && !candidateDto.getCurrentRateType().equalsIgnoreCase(candidate.getCurrentRateType())){
 				activitySummary.append("Current Rate Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getCurrentRateType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCurrentRateType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getCurrentRateType() != null || candidate.getCurrentRateType() != "" ||  candidateDto.getCurrentRateType().equalsIgnoreCase(candidate.getCurrentRateType())) && candidateDto.getCurrentRateType() !="" ){
+				activitySummary.append("Current Rate Type").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCurrentRateType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Current Rate Type").append(" : ").append("---").append(" ");
 			candidate.setCurrentRateType(candidateDto.getCurrentRateType());
 			}
 		
 		if(candidateDto.getCurrentRateCurrency() !=null){
-			if(candidate.getCurrentRateCurrency() != null){
+			if(candidate.getCurrentRateCurrency() != null  && candidate.getCurrentRateCurrency() != "" && !candidateDto.getCurrentRateCurrency().equalsIgnoreCase(candidate.getCurrentRateCurrency())){
 				activitySummary.append("Current Rate Currency").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getCurrentRateCurrency()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCurrentRateCurrency()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getCurrentRateCurrency() != null || candidate.getCurrentRateCurrency() != "" ||  candidateDto.getCurrentRateCurrency().equalsIgnoreCase(candidate.getCurrentRateCurrency())) && candidateDto.getCurrentRateCurrency() !="" ){
+				activitySummary.append("Current Rate Currency").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCurrentRateCurrency()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Current Rate Currency").append(" : ").append("---").append(" ");
 		candidate.setCurrentRateCurrency(candidateDto.getCurrentRateCurrency());
 		}
 		if(candidateDto.getDesignation() !=null){
-			if(candidate.getDesignation() != null){
+			if(candidate.getDesignation() != null && candidate.getDesignation() != "" && !candidateDto.getDesignation().equalsIgnoreCase(candidate.getDesignation())){
 				activitySummary.append("Designation").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getDesignation()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getDesignation()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getDesignation() != null || candidate.getDesignation() != "" ||  candidateDto.getDesignation().equalsIgnoreCase(candidate.getDesignation())) && candidateDto.getDesignation() !="" ){
+				activitySummary.append("Designation").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getDesignation()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Designation").append(" : ").append("---").append(" ");
 		candidate.setDesignation(candidateDto.getDesignation());
 		}
 		
-		if(candidateDto.getDesignationOtherType() !=null){
-			if(candidate.getDesignationOtherType() != null){
+		/*if(candidateDto.getDesignationOtherType() !=null){
+			if(candidate.getDesignationOtherType() != null && candidate.getDesignationOtherType() != "" && !candidateDto.getDesignationOtherType().equalsIgnoreCase(candidate.getDesignationOtherType())){
 				activitySummary.append("Designation Other Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getDesignationOtherType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getDesignationOtherType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else
+				
+			activitySummary.append("Designation Other Type").append(" : ").append(" -- ");
+			
 			candidate.setDesignationOtherType(candidateDto.getDesignationOtherType());
 		}else{
 			candidate.setDesignationOtherType(null);
-		}
+		}*/
 		
 		if(candidateDto.getExpectedRate() !=null ){
-			if(candidate.getExpectedRate() != null){
+			if(candidate.getExpectedRate() != null  && candidate.getExpectedRate() != "" && !candidateDto.getExpectedRate().equalsIgnoreCase(candidate.getExpectedRate())){
 				activitySummary.append("Expected Rate").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getExpectedRate()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getExpectedRate()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getExpectedRate() != null || candidate.getExpectedRate() != "" ||  candidateDto.getExpectedRate().equalsIgnoreCase(candidate.getExpectedRate())) && candidateDto.getExpectedRate() !="" ){
+				activitySummary.append("Expected Rate").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getExpectedRate()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Expected Rate").append(" : ").append("---").append(" ");
 		candidate.setExpectedRate(candidateDto.getExpectedRate());
 		}
 		
 		if(candidateDto.getRateType() != null){
-			if(candidate.getRateType() != null){
+			if(candidate.getRateType() != null  && candidate.getRateType() != "" && !candidateDto.getRateType().equalsIgnoreCase(candidate.getRateType())){
 				activitySummary.append("Rate Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getRateType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getRateType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getRateType() != null || candidate.getRateType() != "" ||  candidateDto.getRateType().equalsIgnoreCase(candidate.getRateType())) && candidateDto.getRateType() !="" ){
+				activitySummary.append("Rate Type").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getRateType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Rate Type").append(" : ").append("---").append(" ");
 			candidate.setRateType(candidateDto.getRateType());
 			}
 		
 		if(candidateDto.getExpectedRateCurrencey() !=null ){
-			if(candidate.getExpectedRateCurrencey() != null ){
+			if(candidate.getExpectedRateCurrencey() != null  && candidate.getExpectedRateCurrencey() != "" && !candidateDto.getExpectedRateCurrencey().equalsIgnoreCase(candidate.getExpectedRateCurrencey())){
 				activitySummary.append("Expected Rate Currencey").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getExpectedRateCurrencey()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getExpectedRateCurrencey()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getExpectedRateCurrencey() != null || candidate.getExpectedRateCurrencey() != "" ||  candidateDto.getExpectedRateCurrencey().equalsIgnoreCase(candidate.getExpectedRateCurrencey())) && candidateDto.getExpectedRateCurrencey() !="" ){
+				activitySummary.append("Expected Rate Currencey").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getExpectedRateCurrencey()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Expected Rate Currencey").append(" : ").append("---").append(" ");
 			candidate.setExpectedRateCurrencey(candidateDto.getExpectedRateCurrencey());
 		}
 		
 		if(candidateDto.getSummary() !=null){
-			if(candidate.getSummary() != null){
+			if(candidate.getSummary() != null && candidate.getSummary() != "" && !candidateDto.getSummary().equalsIgnoreCase(candidate.getSummary())){
 				activitySummary.append("Summary").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getSummary()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getSummary()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getSummary() != null || candidate.getSummary() != "" ||  candidateDto.getSummary().equalsIgnoreCase(candidate.getSummary())) && candidateDto.getSummary() !="" ){
+				activitySummary.append("Summary").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getSummary()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Summary").append(" : ").append("---").append(" ");
 		candidate.setSummary(candidateDto.getSummary());
 		}
 		
-			if(candidate.getDesignationType() != null ){
-				activitySummary.append("Designation Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getDesignationType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getDesignationType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			if(candidate.getDesignationType() != null  && candidate.getDesignationType() != "" && !candidateDto.getDesignationType().equalsIgnoreCase(candidate.getDesignationType()) ){
+				activitySummary.append("Employment Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getDesignationType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getDesignationType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else if((candidate.getDesignationType() != null || candidate.getDesignationType() != "" ||  candidateDto.getDesignationType().equalsIgnoreCase(candidate.getDesignationType())) && candidateDto.getDesignationType() !="" ){
+				activitySummary.append("Employment Type").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getDesignationType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Employment Type").append(" : ").append("---").append(" ");
 		candidate.setDesignationType(candidateDto.getDesignationType());
 		
-			if(candidate.getExperienceYears() != null ){
+			if(candidate.getExperienceYears() != null  && candidate.getExperienceYears() != "" && !candidateDto.getExperienceYears().equalsIgnoreCase(candidate.getExperienceYears())){
 				activitySummary.append("Experience Years").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getExperienceYears()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getExperienceYears()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getExperienceYears() != null || candidate.getExperienceYears() != "" ||  candidateDto.getExperienceYears().equalsIgnoreCase(candidate.getExperienceYears())) && candidateDto.getExperienceYears() !="" ){
+				activitySummary.append("Experience Years").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getExperienceYears()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Experience Years").append(" : ").append("---").append(" ");
 		candidate.setExperienceYears(candidateDto.getExperienceYears());
 		
 		
 		if(StringUtils.isNotBlank(candidateDto.getExperienceMonths())){
-			if(candidate.getExperienceMonths() != null){
+			if(candidate.getExperienceMonths() != null  && candidate.getExperienceMonths() != "" && !candidateDto.getExperienceMonths().equalsIgnoreCase(candidate.getExperienceMonths())){
 				activitySummary.append("Experience Months").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getExperienceMonths()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getExperienceMonths()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getExperienceMonths() != null || candidate.getExperienceMonths() != "" ||  candidateDto.getExperienceMonths().equalsIgnoreCase(candidate.getExperienceMonths())) && candidateDto.getExperienceMonths() !="" ){
+				activitySummary.append("Experience Months").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getExperienceMonths()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Experience Months").append(" : ").append("---").append(" ");
 			candidate.setExperienceMonths(candidateDto.getExperienceMonths());	
 		}else{
 			candidate.setExperienceMonths(null);	
 		}
 		
-			if(candidate.getNoticePeriod() != null){
+			if(candidate.getNoticePeriod() != null  && candidate.getNoticePeriod() != "" && !candidateDto.getNoticePeriod().equalsIgnoreCase(candidate.getNoticePeriod())){
 				activitySummary.append("Notice Period").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getNoticePeriod()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getNoticePeriod()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getNoticePeriod() != null || candidate.getNoticePeriod() != "" ||  candidateDto.getNoticePeriod().equalsIgnoreCase(candidate.getNoticePeriod())) && candidateDto.getNoticePeriod() !="" ){
+				activitySummary.append("Notice Period").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getNoticePeriod()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Notice Period").append(" : ").append("---").append(" ");
 			candidate.setNoticePeriod(candidateDto.getNoticePeriod());	
 		
 		if(candidateDto.getAddress() !=null){
-			if(candidate.getAddress() != null ){
+			if(candidate.getAddress() != null   && candidate.getAddress() != "" && !candidateDto.getAddress().equalsIgnoreCase(candidate.getAddress())){
 				activitySummary.append("Address").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getAddress()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getAddress()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getAddress() != null || candidate.getAddress() != "" ||  candidateDto.getAddress().equalsIgnoreCase(candidate.getAddress())) && candidateDto.getAddress() !="" ){
+				activitySummary.append("Address").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getAddress()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Address").append(" : ").append("---").append(" ");
 			candidate.setAddress(candidateDto.getAddress());
 		}
 		
@@ -512,24 +583,33 @@ public class CandidateServiceImpl implements CandidateService {
 		
 		if(StringUtils.isNotBlank(candidateDto.getCandidateSkills())){
 			
-			if(candidate.getSkillsName() != null){
+			if(candidate.getSkillsName() != null  && candidate.getSkillsName() != "" && !candidateDto.getCandidateSkills().equalsIgnoreCase(candidate.getSkillsName())){
 				activitySummary.append("Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getSkillsName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCandidateSkills()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if(candidate.getSkillsName() != null || candidate.getSkillsName() != "" || candidateDto.getCandidateSkills().equalsIgnoreCase(candidate.getSkillsName())){
+				activitySummary.append("Skills").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCandidateSkills()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Skills").append(" : ").append("---").append(" ");
 			candidate.setSkillsName(candidateDto.getCandidateSkills());
 		}
 		
 		if(StringUtils.isNotBlank(candidateDto.getVisa())){
 			
-			if(candidate.getVisaType() != null){
+			if(candidate.getVisaType() != null  && candidate.getVisaType() != "" && !candidateDto.getVisa().equalsIgnoreCase(candidate.getVisaType())) {
 				activitySummary.append("Immigration Status").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getVisaType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getVisa()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getVisaType() != null || candidate.getVisaType() != "" ||  candidateDto.getVisa().equalsIgnoreCase(candidate.getVisaType())) && candidateDto.getVisa() !="" ){
+				activitySummary.append("Immigration Status").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getVisa()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Immigration Status").append(" : ").append("---").append(" ");
 			candidate.setVisaType(candidateDto.getVisa());
 	  	 
 		}
 		
-			if(candidate.getPrimarySkill() != null){
+			if(candidate.getPrimarySkill() != null   && candidate.getPrimarySkill() != "" && !candidateDto.getPrimarySkill().equalsIgnoreCase(candidate.getPrimarySkill())){
 				activitySummary.append("Primary Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getPrimarySkill()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getPrimarySkill()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}
+			}else if((candidate.getPrimarySkill() != null || candidate.getPrimarySkill() != "" ||  candidateDto.getPrimarySkill().equalsIgnoreCase(candidate.getPrimarySkill())) && candidateDto.getPrimarySkill() !="" ){
+				activitySummary.append("Primary Skills").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getPrimarySkill()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else
+				activitySummary.append("Primary Skills").append(" : ").append("---").append(" ");
 			candidate.setPrimarySkill(candidateDto.getPrimarySkill());
 
 		if(StringUtils.isNotBlank(candidateDto.getVendors())){
@@ -581,7 +661,7 @@ public class CandidateServiceImpl implements CandidateService {
 		
 		if(candidateDto.getCustomFormData() !=null) {
 			for( CustomFormFieldDTO customFields:candidateDto.getCustomFormData()) {
-				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+				if(customFields != null && customFields.getCustomFormFieldId() > 0 ) {
 					CandidateCustomFieldData candidateCustomFields = null;
 					if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
 						candidateCustomFields = candidateCustomFieldDataService.getCandidateCustomFieldDataById(customFields.getEntityId());
@@ -1679,9 +1759,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 
 
 	@Override
-	public ResponseList<CandidateDTO>  getRequestedCandidatesList(CandidateDTO candidateDTO,Long orgLocationsId, List<Long> roleIds,
+	public ResponseList<CandidateDTO>  getRequestedCandidatesList(CandidateDTO candidateDTO,Long orgLocationsId, List<Long> roleIds,List<Long> teamIds,
 			String resourceType,List<Long> associatesIds,Long projectId) throws Exception {
-		return candidateDao.getRequestedCandidatesList(candidateDTO,orgLocationsId, roleIds, resourceType,associatesIds,projectId);
+		return candidateDao.getRequestedCandidatesList(candidateDTO,orgLocationsId, roleIds,teamIds, resourceType,associatesIds,projectId);
 	}
 
 	@Override
@@ -1841,6 +1921,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 							 }
 							 
 							 clientService.saveOrUpdateClientVendorElkDocument(null, vendorOrgLocation, "Vendor", orgSpoc, orgRelations,null, user, orgLocations);
+							 orgSpocService.addClientVendorContactsELK(orgSpoc);
     					
 						}
 						
@@ -1983,6 +2064,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public Candidate getCandidateByEmailAndOrgLocationId(String email, Long orgLocationId) throws Exception {
 		return candidateDao.getCandidateByEmailAndOrgLocationId(email, orgLocationId);
+	}
+
+	@Override
+	public Candidate getCandidateByEmail(String email) throws Exception {
+		return candidateDao.getCandidateByEmail(email);
 	}
 
 }

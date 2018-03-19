@@ -23,6 +23,7 @@
 
 <script>
  window.onload = function() {
+// 	 getContractTemplates();
 	 changeSaveButton();
 	 var relationId = '${orgRelationId}';
 	 var spocUserCode = '${spocUserCode}';
@@ -736,9 +737,11 @@
 
 <script>
 function getCustomDependentField(sectionId){
+	var contractId = '${contract.id}';
+	
 	 $.ajax({
 			type : "POST" , 
-				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId+"&contractId="+contractId+"&requestFrom=contract",
 				 success: function(data) {
 		        	$('#customDiv'+sectionId).empty();
 		        	$('#customDiv'+sectionId).append(data);
@@ -2186,7 +2189,6 @@ function flush(){
 	document.getElementById("submissionOffersList").value="";
 	document.getElementById("startDate").value="";
 	document.getElementById("endDate").value="";
-	
 	document.getElementById("orgRelationId").value="";
 	
 	document.getElementById("vendorContact").value="";

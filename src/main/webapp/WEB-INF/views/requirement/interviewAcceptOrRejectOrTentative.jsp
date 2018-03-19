@@ -45,7 +45,7 @@
 			if(intervewStartTime != "interviewStartTime" && intervewEndTime != "interviewEndTime"){
 				$("#expire").removeAttr("style");
 			}else{
-				if(interviewStatus == 'Attending'){     
+				if(interviewStatus == 'Attending'){ 
 					$("#accept").removeAttr("style");
 				}else if(interviewStatus == 'Not_Attending'){
 					$("#reject").removeAttr("style");

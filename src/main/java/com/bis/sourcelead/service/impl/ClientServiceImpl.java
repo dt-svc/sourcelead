@@ -336,7 +336,7 @@ public class ClientServiceImpl implements ClientService {
 			
 			if(clientDTO.getCustomFormData() !=null) {
 				for( CustomFormFieldDTO customFields:clientDTO.getCustomFormData()) {
-					if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+					if(customFields != null && customFields.getCustomFormFieldId() > 0) {
 					ClientCustomFieldData clientCustomFields = new ClientCustomFieldData();
 					 clientCustomFields.setOrg(savedClient);
 					 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
@@ -589,7 +589,7 @@ public class ClientServiceImpl implements ClientService {
 		}
 		
 		if(newlyRegistred.equalsIgnoreCase(Constants.YES)){
-			saveOrgLocationDefaultProject(clientOrgLocations, spocUser);
+			saveOrgLocationDefaultProject(clientOrgLocations, spocUser,responderType);
 			commonUtil.storeVendorOnboardDefaultTemplate(spocUser, clientOrgLocations);
 		}
 
@@ -606,7 +606,7 @@ public class ClientServiceImpl implements ClientService {
 	
 	
 	
-	 public Projects  saveOrgLocationDefaultProject(OrgLocations orgLocations,User approverUser) throws Exception {
+	 public Projects  saveOrgLocationDefaultProject(OrgLocations orgLocations,User approverUser,String responderType) throws Exception {
 		 	
 	    	Projects projects = new Projects();
 	    	StringBuilder defaultProjectName = new  StringBuilder();
@@ -622,6 +622,10 @@ public class ClientServiceImpl implements ClientService {
 	    	Date projStartDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(),startDate);
 	    	
 	    	projects.setStartDate(projStartDate);
+	    	
+	    	if (responderType.equalsIgnoreCase("Client")) {
+	    		projects.setIsTimesheetAttachmentRequired(1);
+	    	}
 
 	    	projects.setInvoiceFrequency(Constants.WEEKLY);
 	    	projects.setProjectStatus(Project_Status.INPROGRESS);
@@ -953,7 +957,11 @@ public class ClientServiceImpl implements ClientService {
 
 				orgLocations.setState("");
 			}
-
+			if(StringUtils.isNotBlank(clientDTO.getCountry())){
+				orgLocations.setCountry(clientDTO.getCountry());
+			}else{
+				orgLocations.setCountry("");
+			}
 			if (StringUtils.isNotBlank(clientDTO.getLocation())) {
 				orgLocations.setLocation(clientDTO.getLocation());
 			} else {
@@ -978,6 +986,22 @@ public class ClientServiceImpl implements ClientService {
 				orgLocations.setBillingAddress("");
 			}
 			orgLocationForELk = orgLocationService.updateOrgLocations(orgLocations);
+			
+			if(clientDTO.getCustomFormData() !=null) {
+				for( CustomFormFieldDTO customFields:clientDTO.getCustomFormData()) {
+					if(customFields != null && customFields.getCustomFormFieldId() > 0 ) {
+					ClientCustomFieldData clientCustomFields = new ClientCustomFieldData();
+					 clientCustomFields.setOrg(orgLocationForELk.getOrg());
+					 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+					 clientCustomFields.setOrglocationsFormFields(orgFormField);
+					 clientCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+					 clientCustomFieldDataService.saveUserCustomFieldData(clientCustomFields);
+					}
+					
+				}	
+			}
+			
+			
 		} else {
 			StringBuilder message = new StringBuilder(MessageFormat.format(statusUpdate, "ORG RELATIONS"));
 			throw new SourceLeadObjectNotFoundException(message.toString());
@@ -1113,6 +1137,27 @@ public class ClientServiceImpl implements ClientService {
 			 * orgLocations.setEmail(""); }
 			 */
 			orgLocationsForElk = orgLocationService.updateOrgLocations(orgLocations);
+			
+			if(clientDTO.getCustomFormData() !=null) {
+				for( CustomFormFieldDTO customFields:clientDTO.getCustomFormData()) {
+					if(customFields!= null && customFields.getCustomFormFieldId() > 0) {
+						ClientCustomFieldData clientCustomFields = null;
+						if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+							clientCustomFields = clientCustomFieldDataService.getClientCustomFieldDataById(customFields.getEntityId());
+						}else {
+							clientCustomFields = new ClientCustomFieldData();
+						}
+					clientCustomFields.setOrg(orgLocationsForElk.getOrg());
+					OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+					clientCustomFields.setOrglocationsFormFields(orgFormField);
+					clientCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+					clientCustomFieldDataService.saveUserCustomFieldData(clientCustomFields);
+					}
+					
+				}	
+			}
+			
+			
 		} else {
 			StringBuilder message = new StringBuilder(MessageFormat.format(statusUpdate, "ORG RELATIONS"));
 			throw new SourceLeadObjectNotFoundException(message.toString());
@@ -1238,7 +1283,7 @@ public class ClientServiceImpl implements ClientService {
 
 				if (null != orgSpoc.getTempOwnerId()&& orgSpoc.getTempOwnerId().longValue() != orgSpoc.getVendorUser().getId().longValue()) {
 					user = userService.getUserById(Long.parseLong(owners));
-					sendEmailToClientContact(user, editUser, orgLocation, loginUser, orgSpoc);
+					sendEmailToClientContact(user, editUser, orgLocation, loginUser, orgSpoc, type);
 				}
 				}
 			} else if (null != type && !"".equalsIgnoreCase(type) && "Vendor".equalsIgnoreCase(type)) {
@@ -1255,7 +1300,7 @@ public class ClientServiceImpl implements ClientService {
 				if (null != orgSpoc.getTempOwnerId()
 						&& orgSpoc.getTempOwnerId().longValue() != orgSpoc.getClientUser().getId().longValue()) {
 					user = userService.getUserById(Long.parseLong(owners));
-					sendEmailToClientContact(user, editUser, orgLocation, loginUser, orgSpoc);
+					sendEmailToClientContact(user, editUser, orgLocation, loginUser, orgSpoc, type);
 				}
 			}
 			}
@@ -1267,17 +1312,18 @@ public class ClientServiceImpl implements ClientService {
 		for(String owners : clientDTO.getOwner()){
 		User changedUser = userService.getUserById(Long.parseLong(owners));
 		if (!loginUser.getId().equals(changedUser.getId())) {
-			sendupdatedownerMailTopocUser(loginUser, spocId, owners, orgLocation);
+			sendupdatedownerMailTopocUser(loginUser, spocId, owners, orgLocation, type);
 		}
 		}
 		return orgSpoc;
 
 	}
 
-	private void sendupdatedownerMailTopocUser(User loginUser, Long spocId, String owner, OrgLocations orgLocation)
+	private void sendupdatedownerMailTopocUser(User loginUser, Long spocId, String owner, OrgLocations orgLocation,String type)
 			throws NumberFormatException, Exception {
 		User changedUser = userService.getUserById(Long.parseLong(owner));
 		OrgSpoc orgSpocLocation = orgSpocService.getOrgSpocById(spocId);
+		User spocUser = userService.getUserById(orgSpocLocation.getVendorUser().getId());
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(changedUser.getFirstName());
 		emailMessage.setLastName(changedUser.getLastName());
@@ -1325,7 +1371,12 @@ public class ClientServiceImpl implements ClientService {
 
 		EmailScenario noificationEmailScenario = emailScenarioService
 				.getEmailScenarioByUniqueName(Constants.CLIENT_OWNER_UPDATEMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink = "";
+		if("Client".equalsIgnoreCase(type))
+			actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("clientDashboard").toString();
+		else
+			actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("vendorsList?contactsTab=contactsTab&orgRelationUUID="+orgSpocLocation.getOrgRelations().getUUID()).toString();
 		String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(), globalVarsMap);
 		noificationEmailScenario.setBody(notificationbody);
 
@@ -1334,7 +1385,7 @@ public class ClientServiceImpl implements ClientService {
 	}
 
 	private void sendEmailToClientContact(User user, User editUser, OrgLocations orgLocation, User loginUser,
-			OrgSpoc orgSpoc) throws Exception {
+			OrgSpoc orgSpoc,String type) throws Exception {
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(editUser.getFirstName());
 		emailMessage.setLastName(editUser.getLastName());
@@ -1401,8 +1452,14 @@ public class ClientServiceImpl implements ClientService {
 
 		EmailScenario noificationEmailScenario = emailScenarioService
 				.getEmailScenarioByUniqueName(Constants.EDIT_CLIENTCONTACT, Constants.ENTITY_TYPE_NOTIFICATION);
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		//&clientOrgLocationId="+orgSpoc.getOrgRelations().getResponderLocationId()+"&orgRelationId="+orgSpoc.getOrgRelations().getId()+"&clientName="+"reject client"
 		String actionLink = "";
-		String rejectActionLink = "";
+		if("Client".equalsIgnoreCase(type))
+			  actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("vendorsList?contactsTab=contactsTab&orgRelationUUID="+orgSpoc.getOrgRelations().getUUID()).toString();
+		else
+			actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("clientDashboard").toString();
+		 String rejectActionLink = "";
 		String spocUUID = "";
 		String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(), globalVarsMap);
 		noificationEmailScenario.setBody(notificationbody);

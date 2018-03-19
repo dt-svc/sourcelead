@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.payroll.entity.AccountDeductions;
@@ -121,9 +122,9 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		
 		StringBuilder query1 = new StringBuilder("");
 			if(contractTemplateDTO.getSearchValue() !=null && !"".equalsIgnoreCase(contractTemplateDTO.getSearchValue())) {
-			query1.append(" and ct.templateName like '%" + contractTemplateDTO.getSearchValue() + "%' ")
+			query1.append(" and (ct.templateName like '%" + contractTemplateDTO.getSearchValue() + "%' ")
 					.append("OR ct.templateType like '%" + contractTemplateDTO.getSearchValue() + "%' ")
-					.append("OR ct.description like '%" + contractTemplateDTO.getSearchValue() + "%' ");
+					.append("OR ct.description like '%" + contractTemplateDTO.getSearchValue() + "%' )");
 			}
 		Query queryObj = session.createQuery(query + query1.toString());
 		if (contractTemplateDTO != null && contractTemplateDTO.getLength() > 0) {
@@ -704,6 +705,39 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		return contractsList;
 		}
 		return null;
+	}
+
+	@Override
+	@Transactional
+	public List<User> getSigningAuthoritiesForContract(Long orgLocationsId, Long tabId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		 String actionsQuery = "select sa.id from SourceleadActions sa where sa.tabs.id = :tabId  ";
+	     List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong( "tabId", tabId).list();
+	     
+	     String rolesQuery = "from Roles roles where roles.orgLocations.id = :orgLocationsId ";
+	     List<Roles> rolesList = session.createQuery(rolesQuery.toString()).setLong( "orgLocationsId", orgLocationsId).list();
+	     List<Long> ownerRolesList = new ArrayList<Long>();
+	     
+	     for(Roles roles : rolesList){
+	    	 if(null != roles.getActionId()){
+	    		 List<Long> roleActionsList = new ArrayList<Long>();
+	    		 for (String s : roles.getActionId().split(",")){
+	        		 roleActionsList.add(Long.parseLong(s));
+	        	 }
+	        	 
+	        	 roleActionsList.retainAll(tabActionsIds);
+	        	 if(roleActionsList.size() > 0){
+	        		 ownerRolesList.add(roles.getId());
+	        	 }
+	    	 }
+	    	 
+	     }
+		 
+	     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)) and user.id IN (Select ols.userId.id from OrglocationSignatory ols where ols.authorizedType LIKE '%,Contracts,%')";
+	     List<User> userRoleList = session.createQuery(query.toString()).setParameterList("ownerRolesList", ownerRolesList).list();
+	     return userRoleList;
 	}
 
 	

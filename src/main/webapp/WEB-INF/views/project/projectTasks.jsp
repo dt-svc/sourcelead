@@ -1,4 +1,4 @@
-<meta http-equiv="Pragma" content="private">
+	<meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -47,7 +47,34 @@ function taskNameValidation(){
 }
 </script>
  
-
+<script>
+function getTasksOrgLocationTeams(){
+	var orgLocations = '${SourceLeadWeb_orgLocations.id}';
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getOrgLocationTeamList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,  
+	        success: function(json) {
+	        	
+	        	var output = "";
+	        	if(json.length > 0){
+	        		for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + '<li><input value="'+opt.id+'" name="teams"  type="checkbox" onclick="projectTaskList()"><label>'+opt.name+'</label></li>';
+					}
+	        	}else{
+	        		output = output + '<li><label>&nbsp;&nbsp;&nbsp;<font color="red">No teams configured</font></label></li>';
+	        	}
+	        	
+	        	$("#tasksOrgLocationTeams").empty();
+		        $("#tasksOrgLocationTeams").append(output);
+	        }
+	        
+	 });
+}
+</script>
 <script>
 function projectTask(projectId, status) {
 	var result = "";
@@ -64,6 +91,16 @@ function projectTask(projectId, status) {
 		result = result	+ '</span>';
 		result = result +'</li>';
 	}
+	
+		result = result	+ '	<li class="dropdown"><div class="dropdown-toggle pull-left" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Team</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|</div>';
+		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding checkBox scroll-dropdown">';
+		result = result	+ '	    	<ul>';
+		result = result +'<div id="tasksOrgLocationTeams"></div>';  
+		result = result	+ '	        </ul>';
+		result = result	+ '	    </div>';                	
+		result = result	+ '	</li>';
+		
+
 	
 		result = result	+ '	<li class="dropdown"><div class="dropdown-toggle pull-left" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Assigned To</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|</div>';
 		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding checkBox scroll-dropdown">';
@@ -136,7 +173,7 @@ function projectTask(projectId, status) {
 				$(tab).fadeIn();
 			});
 	projectTaskList();
-	
+	getTasksOrgLocationTeams();
 }
 </script>
 
@@ -165,9 +202,15 @@ function projectTask(projectId, status) {
 			assignedMembers.push($(this).val());
 	    });
 		
+		var teams = [];
+		$('input:checkbox[name=teams]:checked').each(function() 
+	    {
+			teams.push($(this).val());
+		});
+		
 		var searchValue = $("#taskDataTableSearch").val();
 		 searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl	+"/getAllProjectTasks?searchValue="+searchValue+"&projectId="+projectId+"&projectTaskStatus="+projectTaskStatus+"&projectTaskType="+projectTaskType+"&assignedMembers="+assignedMembers;
+		var url = sourceleadUrl	+"/getAllProjectTasks?searchValue="+searchValue+"&projectId="+projectId+"&projectTaskStatus="+projectTaskStatus+"&projectTaskType="+projectTaskType+"&assignedMembers="+assignedMembers+"&teams="+teams;
 		prepareTasksList(url);
 	}
 </script>
@@ -634,14 +677,14 @@ function editCancel(){
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Assign To</label>';
+			result = result	+ '           <label class="col-md-4">Assign To <i class="fa fa-info-circle" title="Select the project team members who will handle this task (can be assigned to multiple members)"></i></label>';
 			result = result	+ '           <div class="col-md-8">';
 			result = result	+ '             <select class="form-control chosen-select choose" multiple  id="assignTaskId" name="assignTaskId" data-placeholder="Select Assign To">';
 			result = result	+ '             </select>';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Due Date</label>';
+			result = result	+ '           <label class="col-md-4">Due Date <i class="fa fa-info-circle" title="The deadline for the assigned project task"></i></label>';
 			result = result	+ '           <div class="col-md-8">';
 			result = result +'<div class="input-group">';
 			result = result	+ '             <input class="form-control calendar" value="" name="duDate" id="dueDate" placeholder="Due Date" type="text" readonly>';
@@ -661,7 +704,7 @@ function editCancel(){
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Estimated Time</label>';
+			result = result	+ '           <label class="col-md-4">Estimated Time <i class="fa fa-info-circle" title="The estimated of time taken for the project task"></i></label>';
 			result = result	+ '           <div class="col-md-8">';
 			result = result	+ '             <input class="form-control"  placeholder="Estimated Time" type="text" id="estimatedTime" name="estimatedTime" field-name="Estimated Time"  data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true" >';
 			result = result	+ '           </div>';
@@ -825,7 +868,7 @@ function editCancel(){
 		$(".tasks_side_wrap").removeClass("tasks_side_wrap_active");
 		$(".side_mask").fadeOut(200);
 		$("body").css('overflow-y', 'auto');
-		$("#txtEditor").val($('.Editor-editor').text('')); 
+		$("#txtEditor").val($('.Editor-editor').html('')); 
 		$("div.row-fluid .Editor-container").remove();
 		document.getElementById("projectTask_form").reset();
 		$("projectTask_form").validate().resetForm();
@@ -893,13 +936,14 @@ function tasksAssignList(projectId){
 
 <script>
 function saveTasks(){
-	var ee = $("#txtEditor").val($('.Editor-editor').text()); 
+	var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 	 if ($('#projectTask_form').validate(false, validationSettings)) {
 		var form = $('#projectTask_form')[0];
 		var formData = new FormData(form);
 		var projectId = $("#projectId").val();
 		var userId = '${SourceLeadWeb_userId}';
-	  	
+		var projectClientUUID = '${projectClientUUID}';
+		
 	  	$("#save_task").attr("disabled", "disabled");
 		$("#save_task").addClass('button').val('Processing..');
 		$.ajax({
@@ -907,7 +951,7 @@ function saveTasks(){
 			 data: formData,
 	         processData: false,
 	         contentType:false, 
-    	     url : sourceleadUrl + "/ProjectTasks/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&userId="+userId,
+	         url : sourceleadUrl + "/ProjectTasks/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&userId="+userId+"&projectClientUUID="+projectClientUUID,
 			  success : function(data) {
 				var status = $("#projectStatus").val();
 				projectTask(projectId, status);

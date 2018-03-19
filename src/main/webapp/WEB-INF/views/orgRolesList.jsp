@@ -34,6 +34,10 @@ padding-right: 254px; padding-top: 10px;
 			<div class="project_tabs_inn_head">
 			  <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
 			  	 <div class="role_header">
+			  	 <sec:authorize access="hasAnyRole('ROLE_ADD_TEAM')">
+						<a href="<c:url value='${appPath}/team'/>"><i
+								class="fa fa-plus"></i>Team</a>
+					</sec:authorize>
 			  	 <a href="<c:url value='${appPath}/addDepartment'/>"><i class="fa fa-plus"></i>Department</a>
 			     <a href="<c:url value='${appPath}/roleHierarchy'/>"><i class="fa fa-plus"></i>Hierarchy</a>
                  <a href="javascript:void(0)" class="addcon-pop"><i class="glyphicon glyphicon-plus"></i>Add Role</a>
@@ -47,7 +51,7 @@ padding-right: 254px; padding-top: 10px;
                         <form:form id="addRole_form"  name="addRole_form" method="post">                             
                             <div class="clearfix mb10">
                               <div class="col-md-12" id="roleDiv">
-                                <input type="text" data-validation="required" field-name="Role Name" onblur="validateRoleName()" name="roleName" id="roleName" class="form-control input-sm"  placeholder="Role Name">
+                                <input type="text" data-validation="required" field-name="Role Name" onblur="validateRoleName();" onkeyup="validateRoleName();" name="roleName" id="roleName" class="form-control input-sm"  placeholder="Role Name">
                               </div>
                             </div>
                             <div class="clearfix mb10">

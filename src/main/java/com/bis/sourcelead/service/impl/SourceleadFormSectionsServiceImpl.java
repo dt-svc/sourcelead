@@ -43,7 +43,7 @@ public class SourceleadFormSectionsServiceImpl  implements SourceleadFormSection
 		List<SourceleadSectionDTO> sectionDTOlist = new ArrayList<>();
 		for(SourceleadFormSections section:slFormSections) {
 			List<SourceleadFormFields> fieldsList = sourceleadFormFieldsDao.getAllFormFieldsBySectionId(section.getId());
-			List<OrglocationFormFields> customFieldsList = orglocationFormFieldsDao.getAllCustomFormFieldsBySectionIdandOrgLocationId(section.getId(), locationId);
+			List<OrglocationFormFields> customFieldsList = orglocationFormFieldsDao.getAllCustomFormFieldsBySectionIdandOrgLocationIdForCustomList(section.getId(), locationId);
 			sectionDTO  = sourceleadFormSectionsDTOConverter(section,fieldsList,customFieldsList);
 			sectionDTOlist.add(sectionDTO);
 		}
@@ -58,9 +58,11 @@ public class SourceleadFormSectionsServiceImpl  implements SourceleadFormSection
 			sectionDTO.setSourceleadActionName(slFormSections.getSourceleadActions().getActionName());
 			sectionDTO.setTabID(slFormSections.getTabs().getId());
 			sectionDTO.setTabName(slFormSections.getTabs().getTabName());
+			sectionDTO.setIsDefaultVisible(slFormSections.getIsDefaultVisible());
 			sectionDTO.setSectionName(slFormSections.getSectionName());
 			sectionDTO.setSectionDescription(slFormSections.getSectionDesc());
 			sectionDTO.setStatus(slFormSections.getStatus());
+			
 		}
 		List<SourceleadFormFieldsDTO> fieldsDTOList = new ArrayList<>();
 		if(fieldsList != null && !fieldsList.isEmpty()) {
@@ -107,6 +109,8 @@ public class SourceleadFormSectionsServiceImpl  implements SourceleadFormSection
 		customDTO.setPlaceHolder(customList.getPlaceHolder());
 		customDTO.setOrglocationId(customList.getOrgLocations().getId());
 		customDTO.setOrgId(customList.getOrg().getId());
+		customDTO.setMinDate(customList.getMinDate());
+		customDTO.setMaxDate(customList.getMaxDate());
 		customDTO.setStatus(customList.getStatus());
 		if(customFieldsubList != null && !customFieldsubList.isEmpty()) {
 			List<OrglocationFormSubFieldsDTO> orglocationFormSubfieldDTO = getorgLocationCustomSubFields(customFieldsubList);

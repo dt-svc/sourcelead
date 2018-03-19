@@ -31,5 +31,11 @@ public interface AssetDao {
 	List<Asset> getAssetFilterListByLocationId(Long orgLocationId, String categoryIds, String workingStatus) throws Exception;
 	
 	List<Asset> getAssetListByLocationId(Long orgLocationId) throws Exception;
+	
+	public Asset getAssetByAssetSnoAndId(String assetSno, Long assetId, Long orgLocationsId) throws Exception;
+	
+	public Asset validateAssetSno(String assetSno, Long orgLocationsId) throws Exception;
+	
+	public Boolean validateAssetId(String assetSno, Long orgLocationsId) throws Exception;
 
 }

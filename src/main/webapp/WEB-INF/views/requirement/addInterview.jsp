@@ -48,10 +48,11 @@ function addInterview(requirementId){
 	result = result + '<div class="add_inter">';
 	result = result + '<form id="addInterview_form" name="addInterview_form" >';
 	result = result + '<input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />';
+	result = result + '<input type="hidden" id="changeMaxTsRowNum" name="changeMaxTsRowNum" value="1" />';
 	result = result + '<input type="hidden" id="reqId" name="requirementId" value='+requirementId+'>';
 	result = result + '<input type="hidden" id="isFlushRequired" name="isFlushRequired">';
 	
-	 result = result + '<div class="add_inter_head"> <span>Schedule Interview</span><a href="javascript:void(0)" onClick="addInterviewRow();"><i class="fa fa-plus"></i> Add row</a>'; 
+	 result = result + '<div class="add_inter_head"> <span>Schedule Interview </span><a href="javascript:void(0)" onClick="addInterviewRow();"><i class="fa fa-plus"></i> Add row <i class="fa fa-info-circle" title="Schedule multiple interviews for multiple applicants in different time slots"></i></a>'; 
 // 	result = result + '<div class="add_inter_head"> <span> Schedule interview</span><span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="selectedInterviewApplicantsCount">0</b></span>';
 	result = result + '<div class="clearfix"></div>';
 	result = result + '</div>';
@@ -80,7 +81,7 @@ function addInterview(requirementId){
 	result = result + '<div class="schedule_widget clearfix mb eventAlert" style="display:none;" id="availbleDiv">        								        ';
 	result = result + '    <div class="row">                                                                            ';
 	result = result + '      <div class="col-xs-12 col-md-12 event_calendar">                                           ';
-	result = result + '        <h4>Available Slots</h4>                                                               ';
+	result = result + '        <h4>Available Slots <i class="fa fa-info-circle" title="Check the available time slots for Applicants & Interviewers"></i></h4>                                                               ';
 	result = result + '      </div>                                                                                     ';
 	result = result + '      <!-- show Calendar -->                                                                     ';
 	result = result + '      <div class="col-xs-12 col-md-5 mb">                                                        ';
@@ -124,9 +125,9 @@ function addInterview(requirementId){
 	if(parentRequirement == 'Y'){
 	   result = result + '<label><input type="checkbox" name="notificationToSpoc" value="Y" checked="checked"><b>Notify to Vendors</b></label>';
 	}
-	result = result + '<label><input type="checkbox" name="notificationToOthers" id="notificationToOthers" onClick="getNotifyToOtersValInterview();showOthersDivInterview();"><b>Notify to Others</b></label>';
+	result = result + '<label><input type="checkbox" name="notificationToOthers" id="notificationToOthers" onClick="getNotifyToOtersValInterview();showOthersDivInterview();"><b>Notify to Others <i class="fa fa-info-circle" title="Notify the schedule to those other than the interviewers using their respective email ids"></i></b></label>';
 
-	result = result + '<label><input type="checkbox" name="proposeTime" value="Y" checked="checked" ><b>Propose time</b></label>';
+	result = result + '<label><input type="checkbox" name="proposeTime" value="Y" checked="checked" ><b>Propose time <i class="fa fa-info-circle" title="Applicants can propose their available time slots"></i></b></label>';
 	
 	result = result + '</div>';
 	
@@ -140,7 +141,7 @@ function addInterview(requirementId){
 	result = result + '<div class="mb10 mt clearfix interview-form">';
 	
 	result = result + '<div id="emptyTemplate" style="dispaly:none">';
-	result = result + '<strong class="clearfix col-md-12">Interview Template</strong>';
+	result = result + '<strong class="clearfix col-md-12">Interview Template <i class="fa fa-info-circle" title="The interview feedback template"></i></strong>';
 	 result = result +'<div class="col-md-6 chooRadius mb">';
 	 result = result +'<div class="input-group col-md-10 pull-left chooOverFlow">';
 	result = result + '<select class="form-control mt10" id="interviewSubmissionTemplate" name="interviewSubmissionTemplate">';
@@ -155,7 +156,7 @@ function addInterview(requirementId){
 	result = result + '</div>';
 	
 	
-	result = result + '<strong class="clearfix col-md-12 mb">Reminder Before</strong>';
+	result = result + '<strong class="clearfix col-md-12 mb">Reminder Before <i class="fa fa-info-circle" title="Set a reminder about the scheduled interview to both the interviewers and applicants"></i></strong>';
 	result = result + '<div class="col-md-3 select-field">';
 	result = result + '<span>Hours</span>';
 	result = result + '<select class="form-control mt10" id="reminderHours" name="reminderHours">';
@@ -385,6 +386,10 @@ function validateTimeZone(){
 		var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 		$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
 		
+		var changeMaxRowNum = parseInt($("input[name = 'changeMaxTsRowNum']").val());
+		$("input[name = 'changeMaxTsRowNum']").val(changeMaxRowNum + 1);
+		
+		
 		var row = tbl.insertRow(maxRowNum);
 		row.setAttribute("id", "divTsRow" + maxRowNum);
 		var cell0 = row.insertCell(0);
@@ -563,6 +568,9 @@ function removeInterviewvalidation(){
 <script type="text/javascript">
 	function removeInterviewRow(rowId) {
 		var rowNum = $("#divTsRow"+rowId).val();
+		var changeMaxRowNum = parseInt($("input[name = 'changeMaxTsRowNum']").val());
+		$("input[name = 'changeMaxTsRowNum']").val(changeMaxRowNum - 1);
+		
 		var maxRowNum = parseInt(rowNum);
 		 document.getElementById("divTsRow"+rowId).style.display = 'none';
 		 document.getElementById("divTsRow"+rowId).value= '';
@@ -645,13 +653,12 @@ function getNotifyToOtersValInterview(){
         con = con.replace(/[{}]/g, "");
         var jsonData = encodeURIComponent(con);
         var requirementId = '${requirementId}';
-        var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
-        var rowNum = maxRowNum - 1;
-        var selectedInterviewApplicants = $('#'+rowNum+'applicant_chosen span').size();
+
+        var maxRowNum = parseInt($("input[name = 'changeMaxTsRowNum']").val());
+//         var rowNum = maxRowNum - 1;
+//         var selectedInterviewApplicants = $('#'+rowNum+'applicant_chosen span').size();
         
-        
-        
-        if(selectedInterviewApplicants <= 50 && selectedInterviewApplicants != 0){
+        if(maxRowNum >= 2){
 	        $("#add_interview").attr("disabled", "disabled");
 	 		$("#add_interview" ).addClass('button').val('Processing..');
 	 		$("#interviewLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -668,12 +675,12 @@ function getNotifyToOtersValInterview(){
 		        },
 		    });     
         }
-        else if(selectedInterviewApplicants == 0){
+        else if(maxRowNum < 2){
         	alertInterviewMessage("<b>Select an applicant before submission</b>");
         }
-        else{
+        /* else{
         	alertInterviewMessage("<b>Selected Applicants should not more than 50</b>");
-        }
+        } */
    	    
    	    
         return true;
@@ -908,7 +915,7 @@ function interviewTemplate(){
 	        success: function(json) {
 	        var output = "";
 	        if(json.length > 0){
-	        	output = output + "<option value=''>--select Template--</option>";
+	        	/* output = output + "<option value=''>--select Template--</option>"; */
 	         	for (var i=0; i<json.length; i++)
 	 			{
 	 	        		var opt = json[i];
@@ -1112,15 +1119,16 @@ function checkAvailability(){
 	
 	if(date == null || date == '' || date == 'undefined'){
 		date = new Date(); 
+		var month = parseInt(date.getMonth())+parseInt(1);
 		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  if(locationDate.match("yyyy-MM-dd")){
-			date = date.getFullYear()+"-"+date.getMonth()+1+"-"+date.getDate();
+			date = date.getFullYear()+"-"+month+"-"+date.getDate();
 		  }if(locationDate.match("dd-MM-yyyy")){
-			  date = date.getDate()+"-"+date.getMonth()+1+"-"+date.getFullYear();
+			  date = date.getDate()+"-"+month+"-"+date.getFullYear();
 		  }if(locationDate.match("MM-dd-yyyy")){
-			  date = date.getMonth()+1+"-"+date.getDate()+"-"+date.getFullYear();
+			  date = month+"-"+date.getDate()+"-"+date.getFullYear();
 		  }if(locationDate.match("yyyy-dd-MM")){
-			  date = date.getFullYear()+"-"+date.getDate()+"-"+date.getMonth()+1;
+			  date = date.getFullYear()+"-"+date.getDate()+"-"+month;
 		  }
 	}
 	

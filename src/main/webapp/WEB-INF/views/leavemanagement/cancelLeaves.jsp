@@ -8,6 +8,12 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		getCancelledLeavesList();
+		if ('${notifyLink}' == "notifyLink") 
+		{
+		var leaveUUID = '${leaveUUID}';
+		var orgLocationId = '${orgLocationId}';
+		getRequestedAproveSummary(leaveUUID,orgLocationId);
+		}
 	});
 </script>
 
@@ -286,8 +292,8 @@
 								result = result
 										+ '<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
 								result = result + ' <div class="col-md-8">';
-								if(data.leavesTaken != null && data.leavesTaken !='' && data.leavesTaken !='undefined'){
-									 result = result +'<span>'+data.leavesTaken+'</span>';
+								if(data.actualLeavesTaken != null && data.actualLeavesTaken !='' && data.actualLeavesTaken !='undefined'){
+									 result = result +'<span>'+data.actualLeavesTaken+'</span>';
 								 }else{
 						            	result = result +' <span>--</span>';
 						            }

@@ -144,8 +144,8 @@ $(document).ready(function(){
 	 $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getUserDetailsById?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
-	        success: function(data) {
-			    var json = JSON.parse(data);
+	        success: function(json) {
+			    //var json = JSON.parse(data);
 			    var result = "";
 			    var submissionCountsResult = "";
 			    
@@ -305,7 +305,7 @@ $(document).ready(function(){
 				
 				 if(json.userEmploymentType != null && json.userEmploymentType != "" && json.userEmploymentType != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
-					result = result + '				<strong>Employment Type:</strong><span class="fix">'+json.userEmploymentType+'</span><div class="clearfix"></div>';
+					result = result + '				<strong>employment type:</strong><span class="fix">'+json.userEmploymentType+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
 				} 
 				 
@@ -392,7 +392,7 @@ $(document).ready(function(){
 					result = result + ' 		</div>';
 				} 
 				 
-				 if(json.userCustomFieldlabelNameAndValue != null && json.userCustomFieldlabelNameAndValue != "" && json.userCustomFieldlabelNameAndValue != 'undefined'){
+				 /* if(json.userCustomFieldlabelNameAndValue != null && json.userCustomFieldlabelNameAndValue != "" && json.userCustomFieldlabelNameAndValue != 'undefined'){
 						for (var key in json.userCustomFieldlabelNameAndValue) {
 							  if (json.userCustomFieldlabelNameAndValue.hasOwnProperty(key)) {
 								result = result + '	<div class="project_details_cta">';
@@ -402,7 +402,18 @@ $(document).ready(function(){
 							    result = result + '	</div>';
 							  }
 							}
-					}
+					} */
+				 
+				 
+				 if(json.userCustomFieldlabelNameAndValue != null && json.userCustomFieldlabelNameAndValue != "" && json.userCustomFieldlabelNameAndValue != 'undefined'){
+		              $.each(json.userCustomFieldlabelNameAndValue, function(key, value) {
+		            	  var labelNameAndlabelData = value.split("$");
+		            	  result = result + '	<div class="project_details_cta">';
+		            	  result = result + '	<strong>'+labelNameAndlabelData[0]+':</strong><span class="fix">'+labelNameAndlabelData[1]+'</span><div class="clearfix"></div>';
+		            	  result = result + '	</div>';
+		              });
+	              }
+				 
 				 
 				result = result + '	   </div>';				
 				result = result + '	  <div class="clearfix"></div>';
@@ -1277,13 +1288,12 @@ function getChangeRole(userId,userRoleId){
 <script>
 function editUserDetails(userId){
 $("#editRoleDetailsList").empty(); 
-	 
 	 $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getUserDetailsById?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
-	        success: function(data) {
+	        success: function(json) {
 	        	
-			    var json = JSON.parse(data);
+			    /* var json = JSON.parse(data); */
 			    var result = "";
 			    var selected1 = '';
 				var selected2 = '';
@@ -1296,7 +1306,7 @@ $("#editRoleDetailsList").empty();
 				
 				<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 				  var sectionId = '${section.id}';
-				  getCustomDependentField(sectionId);
+				  preapareCustomFieldDetails(userId,sectionId);
 				</c:forEach>
 				
 				if(json.ratePer == 'Hourly'){
@@ -1375,6 +1385,8 @@ $("#editRoleDetailsList").empty();
 					emailId = json.user.email;
 				}
 				result = result + ' <form id="editUser_form"  name="editUser_form" method="post">';
+					result = result + ' <div class="editfield-container">';
+					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>First name<span class="text-danger">&nbsp;*</span></label>';
 					result = result + ' <input type="text" value="'+json.user.firstName+'" name="FirstName" field-name="First Name" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100"/>';
@@ -1556,7 +1568,9 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <input type="text" value="'+dailyHours+'" id="dayHoursEdit" placeholder="HH:MM" name="DayHours"  data-validation="validate_Space validate_dayHours validate_length length1-9" data-validation-optional="true" onblur="editMe(this);validateDayHours();">';
 					result = result + ' </div>';
 					
-					 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+					result = result + ' <div class="showEditfields" id="customFieldDataId"></div>';
+					
+					 /* <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 		           		if("${sectionOrder.index == 0}"){
 		           		 	 var sectionID = '${section.id}';
 		           		 	 result = result + ' <div class="clearfix"></div>';
@@ -1564,10 +1578,15 @@ $("#editRoleDetailsList").empty();
 		           			 result = result + ' <div class="clearfix"></div>';
 		           			}
 		        	</c:forEach>
-					
+					 */
+					 
+					result = result + ' </div>';
 					result = result + ' <div class="clearfix"></div>';
+					
+					result = result + ' <div class="clearfix">';
 					result = result + ' <div class="user_summary_edit_cta pull-right">';
 					result = result + ' <input class="us-btn" value="Update" id="update_user" type="button" onclick="updateUser('+json.id+','+userId+',\''+json.user.email+'\',\''+json.employeeId+'\');" > <input class="us-btn us-btn_a" value="Cancel" onClick="editUserDetails('+userId+');" type="button">';
+					result = result + ' </div>';
 					result = result + ' </div>';
 					 
 					result = result + ' <div class="clearfix"></div>';
@@ -1612,16 +1631,17 @@ $("#editRoleDetailsList").empty();
 }
 </script>
 
+
 <script>
-function getCustomDependentField(sectionId){
+function preapareCustomFieldDetails(userId,sectionId){
 	$.ajax({
-			type : "POST" , 
-				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
-				 success: function(data) {
-		        	$('#customDiv'+sectionId).empty();
-		        	$('#customDiv'+sectionId).append(data);
-				 }
-		  });
+        type : "POST",
+         url: sourceleadUrl+"/getAllASectionCustomFields?&userId="+userId+"&requestFrom=user"+"&sectionId="+sectionId,        
+         success :function(data) {
+        	 $('#customFieldDataId').empty();
+        	 $('#customFieldDataId').append(data);
+           },
+     }); 
 }
 </script>
 
@@ -2921,8 +2941,11 @@ function profileDetails(candidateId){
 						result = result+' progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%">  ';
 						result = result+'     <p id="disVal">'+json.profilePercentage+'%</p>                                                                                                                                                                      ';
 						result = result+'   </div>  ';
-						result = result+' </div>                 ';                                                                                                                                                      
+						result = result+' </div> '; 
+						
 						result = result+' </div> ';
+						 
+						
 						 
 						 /*  result = result+'  <div class="pull-right" style="position:relative; top:10px; right:-10px;">';
 						 result = result+'  <a href="#" title="Save"><i class="fa fa-check-circle" onClick="saveCandidateImage('+candidateId+');" ></i></a>';
@@ -2934,7 +2957,26 @@ function profileDetails(candidateId){
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Size should not more than 200kb</p>';
 						 */ 
 						 result = result+' </div>';
+						 
+						 result = result+'<div class="socialnetwork-details">';
+			             result = result+'<ul class="list-inline list-unstyled">';
+			             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.facebook != null && json.consultantUser.facebook !="undefined" && json.consultantUser.facebook != ""){
+				             result = result+'<li class="bg-facebook" title="Facebook"><a target="_blank" href=\"'+json.consultantUser.facebook+'\" > <i class="fa fa-facebook-square" ></i></a></li>';
+				             }
+				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.twitter != null && json.consultantUser.twitter !="undefined" && json.consultantUser.twitter != ""){
+				             result = result+'<li class="bg-twitter" title="Twitter"><a target="_blank" href=\"'+json.consultantUser.twitter+'\"> <i class="fa fa-twitter-square" ></i></a></li>';
+				             }
+				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.googlePlus != null && json.consultantUser.googlePlus !="undefined" && json.consultantUser.googlePlus != ""){
+				             result = result+'<li class="bg-google " title="Google-Plus"><a target="_blank" href=\"'+json.consultantUser.googlePlus+'\"> <i class="fa fa-google-plus-square" ></i></a></li>';
+				             }
+				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.linkedIn != null && json.consultantUser.linkedIn !="undefined" && json.consultantUser.linkedIn != ""){
+				             result = result+'<li class="bg-linked" title="Linkedin"><a target="_blank" href=\"'+json.consultantUser.linkedIn+'\"> <i class="fa fa-linkedin-square" ></i></a></li>';
+				             }
+			             result = result+'</ul>';
+			             result = result+' </div>';
+			             
 						 result = result+' </div>';
+						
 						 result = result+'</form>';
 						  
 			             /*  result = result+'                     <div class="media-left image-parent">';
@@ -3011,22 +3053,7 @@ function profileDetails(candidateId){
 			             result = result+'</ul>';
 			             
 			             result = result+'</div>';
-			             result = result+'<div class="socialnetwork-details">';
-			             result = result+'<ul class="list-inline list-unstyled">';
-			             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.facebook != null && json.consultantUser.facebook !="undefined" && json.consultantUser.facebook != ""){
-				             result = result+'<li class="bg-facebook" title="Facebook"><a target="_blank" href=\"'+json.consultantUser.facebook+'\" > <i class="fa fa-facebook-square" ></i></a></li>';
-				             }
-				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.twitter != null && json.consultantUser.twitter !="undefined" && json.consultantUser.twitter != ""){
-				             result = result+'<li class="bg-twitter" title="Twitter"><a target="_blank" href=\"'+json.consultantUser.twitter+'\"> <i class="fa fa-twitter-square" ></i></a></li>';
-				             }
-				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.googlePlus != null && json.consultantUser.googlePlus !="undefined" && json.consultantUser.googlePlus != ""){
-				             result = result+'<li class="bg-google " title="Google-Plus"><a target="_blank" href=\"'+json.consultantUser.googlePlus+'\"> <i class="fa fa-google-plus-square" ></i></a></li>';
-				             }
-				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.linkedIn != null && json.consultantUser.linkedIn !="undefined" && json.consultantUser.linkedIn != ""){
-				             result = result+'<li class="bg-linked" title="Linkedin"><a target="_blank" href=\"'+json.consultantUser.linkedIn+'\"> <i class="fa fa-linkedin-square" ></i></a></li>';
-				             }
-			             result = result+'</ul>';
-			             result = result+'                 </div>';
+			            
 			             result = result+'                 </div>';
 			             result = result+'               </div>';
 			             result = result+'                   </div>';
@@ -3063,6 +3090,10 @@ function profileDetails(candidateId){
 			            result = result+'        	<img data-id="userProfileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}"/>';
 			            result = result+'        </div>';
 			            result = result+'    </div>';
+			            
+			           
+			            
+			            
 			            result = result+'     <div class="comments-content">';
 			            result = result+'         <div class="pull-left">';
 			            result = result+'         <p class="comment-by"></p>';
@@ -3077,7 +3108,7 @@ function profileDetails(candidateId){
 			            result = result+'            <div class="add-comment">';
 			            result = result+'            </div>';
 			            result = result+'          </span>';
-			            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+');">View more <span class="label label-warning">0</span></a>';
+			            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+');">View more <span class="label label-warning">'+json.commentsCount+'</span></a>';
 			 			result = result+'		</div>';
 			            result = result+'     </div>';
 			            result = result+'</div>';
@@ -3085,10 +3116,11 @@ function profileDetails(candidateId){
 			            }
 			 		    /* New comments div creation Nov 8th, 2016 */
 			             
-			             
-			             
+			            
+			 		    
 			             result = result+'               </div>';
 			             result = result+'			</div>';
+			            
 			             result = result+'   <div class="proj_close"></div>';
 			             result = result+'   <div class="project_side_wrap_inn_tabs">';
 			             result = result+'     <ul class="project-tabs-menu custom_tab">'; 

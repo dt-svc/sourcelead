@@ -1,6 +1,8 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,39 +58,45 @@ public class OrglocationSignatoryServiceImpl implements OrglocationSignatoryServ
 				signatory.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 				signatory.setStatus(Constants.RECORD_ACTIVE);
 			}
-			 
-			if(StringUtils.isNotBlank(orglocationSignatoryDTO.getEmail())) {
-				signatory.setFirstName(orglocationSignatoryDTO.getFirstName());
-				signatory.setLastName(orglocationSignatoryDTO.getLastName());
-				signatory.setEmail(orglocationSignatoryDTO.getEmail());
-				signatory.setSsn(Integer.parseInt(orglocationSignatoryDTO.getSsn()));
-				signatory.setPhone(orglocationSignatoryDTO.getPhoneNumber());
-				UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(orglocationSignatoryDTO.getEmail(), orgLocations.getId());
+			if(!"orgSettings".equalsIgnoreCase(orglocationSignatoryDTO.getSignatoryFromType())){
+				if(StringUtils.isNotBlank(orglocationSignatoryDTO.getEmail())) {
+					signatory.setFirstName(orglocationSignatoryDTO.getFirstName());
+					signatory.setLastName(orglocationSignatoryDTO.getLastName());
+					signatory.setEmail(orglocationSignatoryDTO.getEmail());
+					signatory.setSsn(Integer.parseInt(orglocationSignatoryDTO.getSsn()));
+					signatory.setPhone(orglocationSignatoryDTO.getPhoneNumber());
+					UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(orglocationSignatoryDTO.getEmail(), orgLocations.getId());
+					signatory.setUserRoleId(userRole);
+					signatory.setUserId(userRole.getUser());
+					signatory.setDesignation(orglocationSignatoryDTO.getDesignationType());
+					if(StringUtils.isNotBlank(orglocationSignatoryDTO.getDesignationOtherType())) {
+						signatory.setDesignationOtherType(orglocationSignatoryDTO.getDesignationOtherType());
+					}
+				}else {
+					
+					signatory.setFirstName(loginUser.getFirstName());
+					signatory.setLastName(loginUser.getLastName());
+					signatory.setEmail(loginUser.getEmail());
+					if(loginUser.getSsn() != null) {
+						signatory.setSsn(loginUser.getSsn());
+					}
+					
+					if(StringUtils.isNotBlank(loginUser.getMobilePhone())) {
+						signatory.setPhone(loginUser.getMobilePhone());
+					}
+					UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(loginUser.getEmail(), orgLocations.getId());
+					signatory.setUserRoleId(userRole);
+					signatory.setUserId(userRole.getUser());
+					
+				}
+			}else{
+				UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(orglocationSignatoryDTO.getAssociateId(), orgLocations.getId());
 				signatory.setUserRoleId(userRole);
 				signatory.setUserId(userRole.getUser());
-				signatory.setDesignation(orglocationSignatoryDTO.getDesignationType());
-				if(StringUtils.isNotBlank(orglocationSignatoryDTO.getDesignationOtherType())) {
-					signatory.setDesignationOtherType(orglocationSignatoryDTO.getDesignationOtherType());
-				}
-			}else {
-				
-				signatory.setFirstName(loginUser.getFirstName());
-				signatory.setLastName(loginUser.getLastName());
-				signatory.setEmail(loginUser.getEmail());
-				if(loginUser.getSsn() != null) {
-					signatory.setSsn(loginUser.getSsn());
-				}
-				
-				if(StringUtils.isNotBlank(loginUser.getMobilePhone())) {
-					signatory.setPhone(loginUser.getMobilePhone());
-				}
-				
-				
-				UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(loginUser.getEmail(), orgLocations.getId());
-				signatory.setUserRoleId(userRole);
-				signatory.setUserId(userRole.getUser());
-				
+				signatory.setAuthorizedType(String.join(",", orglocationSignatoryDTO.getAuthorizedType()));
+				signatory.setAuthorizedAmount(Long.parseLong(orglocationSignatoryDTO.getAuthorizedAmount()));
 			}
+			
 			signatory.setOrgLocationId(orgLocations);
 			signatory.setCreatedBy(loginUser);
 			signatory.setUpdatedBy(loginUser);
@@ -96,8 +104,10 @@ public class OrglocationSignatoryServiceImpl implements OrglocationSignatoryServ
 			signatory.setUpdatedDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
 			orglocationSignatoryDao.saveOrglocationSignatory(signatory);
 			
-			orgLocations.setIsCompanyOnboarded(Constants.YES);
-			orgLocationsDao.updateOrgLocations(orgLocations);
+			if(!"orgSettings".equalsIgnoreCase(orglocationSignatoryDTO.getSignatoryFromType())){
+				orgLocations.setIsCompanyOnboarded(Constants.YES);
+				orgLocationsDao.updateOrgLocations(orgLocations);
+			}
 			
 			result = "success";
 		} catch (Exception e) {
@@ -115,6 +125,31 @@ public class OrglocationSignatoryServiceImpl implements OrglocationSignatoryServ
 	@Override
 	public OrglocationSignatory getOrglocationSignatoryByUUID(String uuid) throws Exception {
 		return orglocationSignatoryDao.getOrglocationSignatoryByUUID(uuid);
+	}
+
+	@Override
+	public List<OrglocationSignatoryDTO> getAllSignatoriesByLocationId(Long locationId) throws Exception
+	{
+		List<OrglocationSignatory> signatoryList = orglocationSignatoryDao.getAllSignatoriesByLocationId(locationId);
+		List<OrglocationSignatoryDTO> list = new ArrayList<>();
+		
+		for(OrglocationSignatory sign : signatoryList){
+			OrglocationSignatoryDTO signDto = new OrglocationSignatoryDTO();
+			signDto.setFirstName(sign.getUserId().getFirstName());
+			if(StringUtils.isNotBlank(sign.getUserId().getLastName()))
+				signDto.setLastName(sign.getUserId().getLastName());
+			signDto.setEmail(sign.getUserId().getEmail());
+			signDto.setRoleType(sign.getUserRoleId().getRoles().getDisplayName());
+			if(sign.getUserId().getSsn() != null)
+				signDto.setSsn(sign.getUserId().getSsn().toString());
+			if(sign.getAuthorizedAmount() != null)
+				signDto.setAuthorizedAmount(sign.getAuthorizedAmount().toString());
+			signDto.setUuid(sign.getUuid());
+			signDto.setStatus(sign.getStatus());
+			list.add(signDto);
+		}
+		
+		return list;
 	}
 
 }

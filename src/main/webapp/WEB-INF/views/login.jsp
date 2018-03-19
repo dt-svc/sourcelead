@@ -14,7 +14,10 @@
     <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
     <link href="/resources/css/login.css?staticTime=${staticTime}" rel="stylesheet">
     <link href="/resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
-<%
+     <script src="/resources/js/jquery-2.1.4.min.js"></script> 
+
+ 
+   <%
     if (request.getRequestURL().toString().indexOf("www.") == -1 
             && request.getRequestURL().toString().indexOf("localhost") == -1
             && request.getRequestURL().toString().indexOf("qa.") == -1
@@ -23,21 +26,39 @@
         response.sendRedirect("https://www.sourcelead.com/login");
     } %>
  
+ 
 <script>
 window.onload = function() {
 	var userName = '${username}';
-	var password = '${password}';
+	var password = '';
 	var sourceleadUrl ='${sourceleadUrl}';
 	var userRoleId = "";
 	if("${redirect_to_login_2_Step_Process}" != ''){
- 	   directLoginValidateWhiteListIp(userRoleId,userName,password);
+		validateUserAlreadyAuthenticated(userRoleId,userName,password);
 	}
 }
+</script>
+<script>
+$(document).ready(function(){
+	var location = window.location.origin;
+	 $.ajax({
+        url: location+"/getScheduleStatus",
+        success: function(data) {
+        	if(data !== ""){
+        		$("#maintenanceStatus").append(data.mainMessage);
+        	}
+        }
+	}); 
+});
 </script>
  
  
  <div id="slideit" class="bgImg" style="background-image: url(/resources/images/login-psd.jpg)"></div>
- 
+ <div class="marQ">
+        <marquee behavior="scroll" direction="left" id="">
+        <p id="maintenanceStatus"></p>
+        </marquee>
+    </div>
  <div class="signWrap">
 <!--  <div id="loading"></div> -->
  <c:if test="${!empty login_2_Step_Process_Enabled}">
@@ -52,8 +73,9 @@ window.onload = function() {
 
 
 <div id="forgotPasswordDiv" style="display:none">
+<jsp:include page="forgotPasswords.jsp"></jsp:include>
 <!--  Forgot Pass  -->		
-<div class="signin_wrap ForPasSlide">
+<%-- <div class="signin_wrap ForPasSlide">
 	<div class="backBtn">
 		<a onclick="backToLogin();"><u class="fa fa-arrow-left OrBak"></u></a>
 	</div>
@@ -66,9 +88,9 @@ window.onload = function() {
 	            </span>
 	            </div>
 	            <input type="submit" value="Submit" id="submit_button" class="sign_btn sign_btn_for" />
-<%-- 	            <div class="cancel_for"><a href="<c:url value='/login'/>">Cancel</a></div>   --%>
+	            <div class="cancel_for"><a href="<c:url value='/login'/>">Cancel</a></div>  
             </form:form>     
-  </div> 
+  </div>  --%>
 <!--  Forgot Pass  -->	
 </div>
 
@@ -79,9 +101,28 @@ window.onload = function() {
  </div>
  
  <script>
+ 
+function validateUserAlreadyAuthenticated(userRoleId,userName,password){
+	var userName = '${username}';
+	var password = '';
+	var sourceleadUrl ='${sourceleadUrl}';
+	var userRoleId = 0;
+	$.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/ws/validateUserAlreadyAuthenticated?userRoleId="+userRoleId+"&name="+userName,        
+	       success :function(result) {
+	    	 if(result == true){
+	    		 redirectToDashbord(userRoleId,userName,password);
+	    	 }else{
+	    		 directLoginValidateWhiteListIp(userRoleId,userName,password);
+	    	 }
+	      },
+	  }); 
+ }
+ 
 function directLoginValidateWhiteListIp(userRoleId,userName,password){
 	var userName = '${username}';
-	var password = '${password}';
+	var password = '';
 	var sourceleadUrl ='${sourceleadUrl}';
 	var userRoleId = 0;
 // 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -100,6 +141,19 @@ function directLoginValidateWhiteListIp(userRoleId,userName,password){
 	    	 }
 	      },
 	  }); 
+}
+
+function redirectToDashbord(userRoleId,userName,password){
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+		      type : "POST",
+		       url: sourceleadUrl+"/ws/verificationDone?userName="+userName+"&password="+password+"&userRoleId="+userRoleId+"&verfDone=Y",        
+		       success :function(result) {
+		    	 if(result == "true"){
+		    		 location.replace(sourceleadUrl+"/dashboard");  
+		    	 }
+		      },
+		  });
 }
 </script>
  
@@ -129,19 +183,19 @@ function getUserDetailsByUserRoleIdfromLogin(id,userName,password){
 </script>
 
 <script>
-function backToLogin(){
+/* function backToLogin(){
 	$(".signWrap").removeClass("forPassOut");
 	$("#signinDiv").removeAttr("style");
 	$("#signinDiv").attr("style","display:block");
 	$("#forgotPasswordDiv").attr("style","display:none");
 	$(".ForPasSlide").attr("style","display:none");
-}
+} */
 function logout(url){
 	location.href = "/logout";
 }
 </script>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
         $('#forgetPassword_form')
            .submit(function(e) {
         	    e.preventDefault(); 
@@ -196,6 +250,6 @@ function logout(url){
        return o;
    };
 })(jQuery);
-</script>
+</script> -->
 
 <script type="text/javascript" src="https://cdn.ywxi.net/js/1.js" async></script>

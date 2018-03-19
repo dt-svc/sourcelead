@@ -31,6 +31,7 @@ import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.BaseColor;
@@ -67,6 +68,9 @@ public class PdfUtil {
 	
 	@Autowired
 	private OrgLocationService orgLocationService;
+	
+	@Autowired
+	SubmissionApproverHierarchyService submissionApproverHierarchyService;
 	
 	@Autowired
 	 CommonUtil commonUtil;
@@ -132,7 +136,7 @@ public class PdfUtil {
 	        cell1.setColspan(11);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
-            table.setWidths(new int[]{3, 5, 3,5, 5, 3,5,3,5,5,3});
+            table.setWidths(new int[]{3, 5, 3,5, 5, 5,5,5,5,3});
             table.addCell(cell1);
 	        for (int i = 0; i < headers.length; i++) {
 	            String header = headers[i];
@@ -219,36 +223,36 @@ public class PdfUtil {
 		   }else{
 			   userArray[4] = "--";
 		   }
-		   if(userRoles.getUser().getLocation() !=null){
+		   /*if(userRoles.getUser().getLocation() !=null){
 			   userArray[7] = userRoles.getUser().getLocation();
 		   }else{
 			   userArray[7] = "--";
-		   }
+		   }*/
 		   if(userRoles.getRoles() != null){
-			   userArray[8] = userRoles.getRoles().getDisplayName();
+			   userArray[7] = userRoles.getRoles().getDisplayName();
 		   }else{
-			   userArray[8] = "--";
+			   userArray[7] = "--";
 		   }StringBuilder fullName=new StringBuilder();
 		   if(userRoles.getReportingManager() !=null){
 			   if(userRoles.getReportingManager().getLastName()!=null)
 			   {
-			   userArray[9] = fullName.append(userRoles.getReportingManager().getFirstName()).append(" ").append(userRoles.getReportingManager().getLastName()).toString();
+			   userArray[8] = fullName.append(userRoles.getReportingManager().getFirstName()).append(" ").append(userRoles.getReportingManager().getLastName()).toString();
 			   }else
 			   {
-				   userArray[9] = userRoles.getReportingManager().getFirstName();
+				   userArray[8] = userRoles.getReportingManager().getFirstName();
 			   }
 		   }else{
-			   userArray[9] = "--";
+			   userArray[8] = "--";
 		   }
 		   
 		   if(userRoles.getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && "N".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && !"INACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
-			   userArray[10] =  "Invite";
+			   userArray[9] =  "Invite";
 	   		   }else if((userRoles.getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && "Y".equalsIgnoreCase(userRoles.getIsMailSent().toString())) &&  (userRoles.getUserState() !=null && "NOT_LOGGEDIN".equalsIgnoreCase(userRoles.getUserState().toString()))){
-	   		   userArray[10] =  "Resend";
+	   		   userArray[9] =  "Resend";
 	   		   }else if(userRoles.getUserState() !=null && "ACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
-	   			 userArray[10] =  "Active";
+	   			 userArray[9] =  "Active";
 	   		   }else if(userRoles.getUserState() !=null && "INACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
-	   			userArray[10] =  "In-active";
+	   			userArray[9] =  "In-active";
 	   		   }
 		   
 		return userArray;
@@ -976,7 +980,6 @@ public class PdfUtil {
 	    
 
 	private String[] prepareEmployeeArray(ProjectMembers projectMember, String[] headers) {
-		
 			if(projectMember.getProjectMemberCandidteId().getConsultantUser() != null){
 				 UserRole userRole;
 				try {
@@ -1029,11 +1032,13 @@ public class PdfUtil {
 			}else {
 				empArray[6] = "--";
 			}
-			if (projectMember.getDraftHrs() != null && !"".equalsIgnoreCase(projectMember.getDraftHrs())) {
-				empArray[7] = projectMember.getDraftHrs();
+			if(projectMember.getCandidateId() != null){
+				 Float approvalTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByMasterCandidateIdAndProjectIdForEmployee(projectMember.getMasterCandidateId().getId(), projectMember.getProjects().getId(), "APPROVED");
+				    empArray[7] = String.valueOf(approvalTimesheetsSubmissionsCountAsEmployee);
 			}else {
 				empArray[7] = "--";
 			}
+			
 		return empArray;
 	}
 	

@@ -91,6 +91,7 @@ public class ProjectPlanningRestController {
 		 
 		
 		List<Long> roleIds = null; 
+		List<Long> teamIds = null;
 		Projects projects = null;
 		
 		
@@ -109,6 +110,16 @@ public class ProjectPlanningRestController {
 			 String[] rolesList = candidateDTO.getRoles().split(",");
 			 for(int i=0; i < rolesList.length; i++){
 				 roleIds.add(Long.valueOf(rolesList[i]));
+			 }
+			 
+		}
+		
+		
+		if(!isNullOrEmpty(candidateDTO.getTeams())){
+			teamIds = new ArrayList<Long>();
+			 String[] teamsList = candidateDTO.getTeams().split(",");
+			 for(int i=0; i < teamsList.length; i++){
+				 teamIds.add(Long.valueOf(teamsList[i]));
 			 }
 			 
 		}
@@ -138,7 +149,7 @@ public class ProjectPlanningRestController {
 		    }
 		}
 		
-		ResponseList<CandidateDTO> candidateDTOList = candidateService.getRequestedCandidatesList(candidateDTO,candidateDTO.getOrgLocationId(), roleIds, candidateDTO.getResourceType(),associateIds,projects.getId());
+		ResponseList<CandidateDTO> candidateDTOList = candidateService.getRequestedCandidatesList(candidateDTO,candidateDTO.getOrgLocationId(), roleIds,teamIds, candidateDTO.getResourceType(),associateIds,projects.getId());
 		 
 		 return candidateDTOList;
 	  }
@@ -238,6 +249,7 @@ public class ProjectPlanningRestController {
 		  if(planningResourceRequestList != null && planningResourceRequestList.size() > 0) {
 			  List<ProjectPlanningResourceRequest> resourceRequestList = new ArrayList<>();
 			  for(ProjectPlanningResourceRequest resourceRequest : planningResourceRequestList) {
+				  resourceRequest.setRequestedUser(resourceRequest.getProjectPlanningRequestId().getRequestedUser());
 				  resourceRequestList.add(resourceRequest);
 			  }
 			  projectPlanningRequest.setResourceRequestList(resourceRequestList);

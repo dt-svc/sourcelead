@@ -23,10 +23,12 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.ProjectBudget;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ProjectBudgetService;
+import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -54,6 +56,9 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
 	
 	@Autowired
 	ProjectsService  projectsService;
+	
+	@Autowired
+	ProjectClientService projectClientService;
 	
 	@Override
 	public ProjectBudget saveProjectBudget(ProjectBudget projectBudget) throws Exception {
@@ -91,8 +96,8 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
 	}
 	
 	@Override
-	public List<ProjectBudget> getProjectBudgetByProjectTaskIdAndApprovedStatus(Long projectId,String filterDate, Date startDateUTC, Date endDateUTC) throws Exception {
-		return projectBudgetDao.getProjectBudgetByProjectTaskIdAndApprovedStatus(projectId, filterDate, startDateUTC, endDateUTC);
+	public List<ProjectBudget> getProjectBudgetByProjectTaskIdAndApprovedStatus(Long projectId, Long orgLocationId) throws Exception {
+		return projectBudgetDao.getProjectBudgetByProjectTaskIdAndApprovedStatus(projectId, orgLocationId);
 	}
 	
 	@Override
@@ -131,6 +136,7 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
 	 
 	private void sendBudgetApproverEmail(User loginUser, ProjectBudgetRequestDTO projectBudgetRequestDTO, Projects projects)throws Exception {
 		User approverUse = userService.getUserById(Long.valueOf(projectBudgetRequestDTO.getBudgetApprover()));
+		ProjectClients pc = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(),projects.getOrgLocationsId().getId());
 		EmailMessage emailMessage = new EmailMessage();
         emailMessage.setFirstName(loginUser.getFirstName());
         emailMessage.setLastName(loginUser.getLastName());
@@ -169,10 +175,10 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
         String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, projects.getOrgLocationsId().getOrg(),projects.getOrgLocationsId());
         emailMessage.setSubject(subject);
         emailMessage.setMessageBody(emailTemplate);
-       
-        emailScenerioUtil.sendEmail(emailMessage,projects.getOrgLocationsId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
         String actionLink = null;
-         
+        StringBuilder actionLinkBuilder = new StringBuilder();
+        emailScenerioUtil.sendEmail(emailMessage,projects.getOrgLocationsId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+        actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+projectBudgetRequestDTO.getProjectUUID()+"&projectClientUUID="+pc.getUuid()+"&tabType=projectMembers").toString();
         emailScenerioUtil.sendNotification(actionLink, loginUser, approverUse, projects.getOrgLocationsId(), notificationScenario);
 		
 	}
@@ -181,6 +187,7 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
 	@Override
 	public void sendEmailForBugetRequestApproversByAcceptAndRejectAndOnHold(User loginUser, ProjectBudget projectBudget) throws Exception {
 		User approverUse = userService.getUserById(Long.valueOf(projectBudget.getApproverUserId().getId()));
+		ProjectClients pc = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectBudget.getProjectId().getId(),projectBudget.getProjectId().getOrgLocationsId().getId());
 		EmailMessage emailMessage = new EmailMessage();
         emailMessage.setFirstName(loginUser.getFirstName());
         emailMessage.setLastName(loginUser.getLastName());
@@ -197,13 +204,17 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
         
         EmailScenario   emailScenario = null;
         EmailScenario  notificationScenario = null;
+        String actionLink = null;
+        StringBuilder actionLinkBuilder = new StringBuilder();
         if(projectBudget.getBudgetStatus().equalsIgnoreCase(Constants.BUDGET_REQUEST_APPROVED)) {
         	emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.BUDGET_REQUEST_ACCEPTED,Constants.ENTITY_TYPE_EMAIL);
             notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.BUDGET_REQUEST_ACCEPTED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+			actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+projectBudget.getProjectId().getProjectUUID()+"&projectClientUUID="+pc.getUuid()+"&tabType=projectMembers").toString();
         }else if(projectBudget.getBudgetStatus().equalsIgnoreCase(Constants.BUDGET_REQUEST_REJECTED)) {
         	globalVarsMap.put("rejectedReason", projectBudget.getRejectedReason());
         	emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.BUDGET_REQUEST_REJECTED_EMAIL,Constants.ENTITY_TYPE_EMAIL);
             notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.BUDGET_REQUEST_REJECTED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+            actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+projectBudget.getProjectId().getProjectUUID()+"&projectClientUUID="+pc.getUuid()+"&tabType=projectMembers").toString();
         }else if(projectBudget.getBudgetStatus().equalsIgnoreCase(Constants.BUDGET_REQUEST_ON_HOLD)) {
         	globalVarsMap.put("rejectedReason", projectBudget.getRejectedReason());
         	emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.BUDGET_REQUEST_ONHOLD_EMAIL,Constants.ENTITY_TYPE_EMAIL);
@@ -225,7 +236,6 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
         emailMessage.setMessageBody(emailTemplate);
        
         emailScenerioUtil.sendEmail(emailMessage,projectBudget.getProjectId().getOrgLocationsId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
-        String actionLink = null;
         emailScenerioUtil.sendNotification(actionLink, loginUser, approverUse, projectBudget.getProjectId().getOrgLocationsId(), notificationScenario);
 		
 	}

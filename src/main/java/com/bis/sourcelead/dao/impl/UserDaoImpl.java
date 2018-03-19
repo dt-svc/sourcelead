@@ -997,6 +997,21 @@ public class UserDaoImpl implements UserDao {
 		} else {
 			return null;
 		}
+	}
+	
+	@Override
+	@Transactional
+	public User getUserByEmail(String email) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<User> users = new ArrayList<User>();
+		logger.debug("getUserByEmail  start");
+		users = session.createQuery("from User user where user.email = :email " ).setString( "email", email).list();
+		logger.debug("getUserByEmail  end");
+		if (users.size() > 0) {
+			return users.get(0);
+		} else {
+			return null;
+		}
 }
 
 	@Override

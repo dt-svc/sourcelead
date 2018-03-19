@@ -13,9 +13,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,8 +55,11 @@ import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateSearchDTO;
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -61,9 +67,11 @@ import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateCustomFieldDataService;
 import com.bis.sourcelead.service.CandidateDocumentsService;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
@@ -74,6 +82,8 @@ import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
@@ -148,6 +158,15 @@ public class CandidateListRestController {
 	  @Autowired
 	  private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
 	  
+	  @Autowired
+	  private SourceleadActionsService sourceleadActionsService;  
+
+	  @Autowired
+	  private SourceleadFormSectionsService sourceleadFormSectionsService;
+		
+	  @Autowired
+	  private CandidateCustomFieldDataService candidateCustomFieldDataService;
+	  
 	  protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
 		}
@@ -190,7 +209,7 @@ public class CandidateListRestController {
 		/*
 		 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
 		 */
-		String[] tableColumns = {"","isAssociate", "generatedId.keyword","firstName.keyword", "primarySkill.keyword", "designationType.keyword", "email.keyword", "mobilePhone.keyword", "country.keyword", "updatedDate"};
+		String[] tableColumns = {"","isAssociate", "generatedId.keyword","firstName.keyword", "primarySkill.keyword", "designationType.keyword", "email.keyword", "mobilePhone.keyword", "country.keyword", "updatedDate", "createdBy.keyword"};
 		
 		int sortColumnIndex = 9; //by default sorting using updated date
 		boolean sortColumnOrder = false; //by default descending order
@@ -236,6 +255,7 @@ public class CandidateListRestController {
 		if (excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()) {
 			BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
 			for (String keywd : excludeKeyWordArray) {
+				if(StringUtils.isNotBlank(keywd)){
 				BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
 				List<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
 				if (QueryBuilderList != null && !QueryBuilderList.isEmpty()) {
@@ -244,6 +264,7 @@ public class CandidateListRestController {
 					}
 					excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
 				}
+			  }
 			}
 			boolQueryBuilder.mustNot(excludeBoolQueryBuilder);
 		}
@@ -259,6 +280,7 @@ public class CandidateListRestController {
 		if (anyKeyWordArray != null && !anyKeyWordArray.isEmpty()) {
 			BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 			for (String keywd : anyKeyWordArray) {
+				if(StringUtils.isNotBlank(keywd)){
 				BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
 				List<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
 				if (QueryBuilderList != null && !QueryBuilderList.isEmpty()) {
@@ -280,6 +302,7 @@ public class CandidateListRestController {
 					
 					anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 				}
+			  }
 			}
 			boolQueryBuilder.must(anyBoolQueryBuilder);
 		}
@@ -294,6 +317,7 @@ public class CandidateListRestController {
 		if (allKeyWordArray != null && !allKeyWordArray.isEmpty()) {
 			BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 			for (String keywd : allKeyWordArray) {
+				if(StringUtils.isNotBlank(keywd)){
 				BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
 				List<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
 				if (QueryBuilderList != null && !QueryBuilderList.isEmpty()) {
@@ -302,6 +326,7 @@ public class CandidateListRestController {
 					}
 					allBoolQueryBuilder.must(allBoolSubQueryBuilder);
 				}
+			  }
 			}
 			boolQueryBuilder.must(allBoolQueryBuilder);
 		}
@@ -413,13 +438,18 @@ public class CandidateListRestController {
 		String updatedDateRange = search.getUpdatedDateRange();
 		if (StringUtils.isNotEmpty(updatedDateRange) && !"null".equalsIgnoreCase(updatedDateRange)&& !updatedDateRange.equalsIgnoreCase("all") && !updatedDateRange.equalsIgnoreCase("undefined")) {
 			 Calendar c = Calendar.getInstance();
-			 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			Integer dateRange = Integer.parseInt(updatedDateRange);
 	        c.add(Calendar.DATE, -dateRange); // Subtracting dateRange days
 	        String updatedDate     = dateFormat.format(c.getTime());
 	        Date newDate = dateFormat.parse(updatedDate);
 	        Date endDate2 = commonUtil.getOrgLocationCurrentDate(loginOrgLocation.getDateFormat(), newDate);
-			boolQueryBuilder.must(QueryBuilders.rangeQuery("updatedDate").gte(endDate2));
+
+	        SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
+	        String endDateStr = dateFormat1.format(endDate2); 
+			boolQueryBuilder.must(QueryBuilders.rangeQuery("updatedDate").gte(endDateStr));
+			
+
 		}
 		
 		// Rate Type
@@ -444,6 +474,17 @@ public class CandidateListRestController {
 			// boolQueryBuilder.must(QueryBuilders.matchQuery("designationType",
 			// jsonObj.getString("designationType")));
 		}
+		
+		// Created By
+				List<String> createdByArray = search.getCreatedBy(); // getSearchKeywordsFromChosenSelectField(jsonObj, "createdByAdvanced");
+				if(createdByArray != null && !createdByArray.isEmpty()){
+					BoolQueryBuilder createdByBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : createdByArray){
+						createdByBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("createdBy", keywd));
+					}
+					boolQueryBuilder.must(createdByBoolQueryBuilder);
+				}
+
 
 		// updatedOn
 		if (StringUtils.isNotEmpty(search.getUpdatedOn())) {
@@ -565,7 +606,9 @@ public class CandidateListRestController {
 						Date date1 = commonUtil.dateFromElk(candidateIndex.getUpdatedDate());
 						String updatedDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),date1);
 						candidateIndex.setCandidateUpdateDateToString(updatedDate);
+						
 					}
+					candidateIndex.setCreatedBy(candidateIndex.getCreatedBy());
 					candidatesList.add(candidateIndex);
 				}
 				response.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
@@ -604,11 +647,13 @@ public class CandidateListRestController {
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("summary", keywd));
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("education", keywd));
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("skillsName", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("primarySkill", keywd));
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("visaType", keywd));
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("employer", keywd));
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("certifications", keywd));
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("candidateType", keywd));
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("noticePriod", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("createdBy", keywd));
 		// QueryBuilderList.add(QueryBuilders.matchQuery("currentResumeName",
 		// keywd));
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("resumeContent", keywd));
@@ -788,6 +833,43 @@ public class CandidateListRestController {
 		candidateDTO.setStatus(can.getStatus().toString());
 		candidateDTO.setTerminateReason(can.getTerminateReason());
 		candidateDTO.setIsAssociate(can.getIsAssociate());
+		candidateDTO.setId(can.getId());
+		candidateDTO.setCandidateId(String.valueOf(can.getId()));
+		SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CANDIDATE);
+		if(action != null && action.getId()!= null){
+			 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
+			 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),loginOrgLocation.getId());
+			 if(sections != null && !sections.isEmpty()) {
+				 for(SourceleadSectionDTO sec:sections) {
+					 for(OrglocationFormFieldsDTO customFields:sec.getCustomFieldsList()) {
+						 CustomFormFieldDTO custom = new CustomFormFieldDTO();
+						 custom.setCustomFormFieldId(customFields.getId());
+						 formFieldId.add(custom);
+					 }
+				 }
+				 if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocation != null) {
+				 OrgLocations orgLoc = orgLocationService.getOrgLocations(loginOrgLocation.getId());
+				 Map<Long, String[]> candidateData = candidateCustomFieldDataService.getCandidateCustomFieldDataMapByLocationId(orgLoc.getOrg().getId(),formFieldId,can.getId());
+				 Map<String,String> dataMap = new HashMap<>();
+				 if(candidateData!= null && !candidateData.isEmpty()) {
+					 for(Entry<Long, String[]> candidateCustomData:candidateData.entrySet()) {
+						 String labelName = candidateCustomData.getValue()[0];
+						 String labelData = candidateCustomData.getValue()[1];
+						 String labelId = candidateCustomData.getValue()[2];
+						 Long id = candidateCustomData.getKey();
+						 StringBuilder keyValue =  new StringBuilder();
+						 keyValue.append(labelName).append("$").append(labelData);
+						 dataMap.put(id.toString(), keyValue.toString());
+						 candidateDTO.setCandidateCustomFieldData(dataMap);
+					 	}
+				 	}
+				 }
+			 }
+			}
+		
+		
+		
+		
 		return candidateDTO;
 	}
 	 

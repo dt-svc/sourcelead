@@ -1,5 +1,10 @@
 package com.bis.sourcelead.rest;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,7 +18,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,13 +42,13 @@ import com.bis.sourcelead.dao.LeaveDao;
 import com.bis.sourcelead.dao.LeaveManagementHistoryDao;
 import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.dao.OptionsDao;
+import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dao.RestrictDayDao;
 import com.bis.sourcelead.dao.ShiftDao;
 import com.bis.sourcelead.dto.HolidayDTO;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.LeaveReportsDTO;
 import com.bis.sourcelead.dto.LeaveTypeDTO;
-import com.bis.sourcelead.dto.NotificationDTO;
 import com.bis.sourcelead.dto.OptionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.RestrictDayDTO;
@@ -58,9 +63,12 @@ import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveManagementHistory;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Option;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Shift;
@@ -71,9 +79,11 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OptionsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RestrictDayService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.ShiftService;
@@ -82,6 +92,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.LeaveManagementUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 
@@ -164,6 +175,18 @@ public class LeaveManagementRestController {
 	@Autowired
 	LeaveManagementUtil leaveManagementUtil;
 	
+	@Autowired
+	private ProjectsService projectsService;
+	
+	@Autowired
+	private LookUpDataService lookUpDataService;
+	
+	@Autowired
+	private ProjectTasksDao projectTasksDao;
+	
+	@Autowired
+	private TimesheetRestController timesheetRestController;
+	
 	/**
 	 * returns Pending leaves jsp
 	 * @param request
@@ -171,11 +194,19 @@ public class LeaveManagementRestController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/pendingLeaves")
-	public ModelAndView pendingLeavesJsp(HttpServletRequest request,HttpServletResponse response) {
-		   ModelAndView model = new ModelAndView();
-		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   model.setViewName("leavemanagement/pendingLeaves");
-	       return model;
+	public ModelAndView pendingLeavesJsp(@RequestParam(value = "notifyLink", required = false) String notifyLink,
+			@RequestParam(value = "leaveUUID", required = false) String leaveUUID,
+			@RequestParam(value = "orgLocationId", required = false) String orgLocationId,
+			@RequestParam(value = "status", required = false) String status, HttpServletRequest request,
+			HttpServletResponse response) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("notifyLink", notifyLink);
+		model.addObject("leaveUUID", leaveUUID);
+		model.addObject("orgLocationId", orgLocationId);
+		model.addObject("status", status);
+		model.setViewName("leavemanagement/pendingLeaves");
+		return model;
 	}
 	
 	/**
@@ -185,11 +216,17 @@ public class LeaveManagementRestController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/approvedLeaves")
-	public ModelAndView approvedLeavesJsp(HttpServletRequest request,HttpServletResponse response) {
-		   ModelAndView model = new ModelAndView();
-		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   model.setViewName("leavemanagement/approvedLeaves");
-	       return model;
+	public ModelAndView approvedLeavesJsp(@RequestParam(value = "notifyLink", required = false) String notifyLink,
+			@RequestParam(value = "leaveUUID", required = false) String leaveUUID,
+			@RequestParam(value = "orgLocationId", required = false) String orgLocationId, HttpServletRequest request,
+			HttpServletResponse response) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("notifyLink", notifyLink);
+		model.addObject("leaveUUID", leaveUUID);
+		model.addObject("orgLocationId", orgLocationId);
+		model.setViewName("leavemanagement/approvedLeaves");
+		return model;
 	}
 	
 	/**
@@ -199,11 +236,17 @@ public class LeaveManagementRestController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/rejectedLeaves")
-	public ModelAndView rejectedLeavesJsp(HttpServletRequest request,HttpServletResponse response) {
-		   ModelAndView model = new ModelAndView();
-		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   model.setViewName("leavemanagement/rejectedLeaves");
-	       return model;
+	public ModelAndView rejectedLeavesJsp(@RequestParam(value = "notifyLink", required = false) String notifyLink,
+			@RequestParam(value = "leaveUUID", required = false) String leaveUUID,
+			@RequestParam(value = "orgLocationId", required = false) String orgLocationId, HttpServletRequest request,
+			HttpServletResponse response) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("notifyLink", notifyLink);
+		model.addObject("leaveUUID", leaveUUID);
+		model.addObject("orgLocationId", orgLocationId);
+		model.setViewName("leavemanagement/rejectedLeaves");
+		return model;
 	}
 	
 	/**
@@ -213,11 +256,17 @@ public class LeaveManagementRestController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/cancelLeaves")
-	public ModelAndView cancelLeavesJsp(HttpServletRequest request,HttpServletResponse response) {
-		   ModelAndView model = new ModelAndView();
-		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   model.setViewName("leavemanagement/cancelLeaves");
-	       return model;
+	public ModelAndView cancelLeavesJsp(@RequestParam(value = "notifyLink", required = false) String notifyLink,
+			@RequestParam(value = "leaveUUID", required = false) String leaveUUID,
+			@RequestParam(value = "orgLocationId", required = false) String orgLocationId, HttpServletRequest request,
+			HttpServletResponse response) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("notifyLink", notifyLink);
+		model.addObject("leaveUUID", leaveUUID);
+		model.addObject("orgLocationId", orgLocationId);
+		model.setViewName("leavemanagement/cancelLeaves");
+		return model;
 	}
 	
 	
@@ -272,12 +321,12 @@ public class LeaveManagementRestController {
 		
 		   OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		   User loginUser = userService.getUserById(userId);
-		   UserRole userRole = userRoleService.getUserRoleByUserId(userId);
+		   UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocationId);
 
-		   Employees emp = employeesService.getEmployeeByUserId(loginUser.getId());
-		   int balanceLeaveCounts = 0;
+		   Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(loginUser.getId(), orgLocationId);
+		   float balanceLeaveCounts = 0;
 		   int pendingLeaveCounts = 0;
-		   int takenLeaveCounts = 0;
+		   float takenLeaveCounts = 0;
 		   List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocations.getId()));
 
 		   List<LeaveType> roleLeaveType = new ArrayList<>();
@@ -296,27 +345,36 @@ public class LeaveManagementRestController {
 				int totalLeaves = 0;
 				
 				totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(type,emp,orgLocations,loginUser);
-				
+				float leaves = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(type, totalLeaves,emp);
+				float totalbalanceLeaveCounts = leaves;
+				float calculatedTotalNonCarryforwardLeaves = 0;
 				List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getId(),orgLocations.getId(), loginUser.getId());
+				
 				for (Leave leave : totalleavesTaken) {
+					float appliedLeaveCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
+					
 					if(Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
 //						totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
 						pendingLeaveCounts = pendingLeaveCounts + Integer.valueOf(leave.getNumberOfDays());
 					}
 					if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
-						totalLeaves = totalLeaves - leave.getNumberOfDays();
-//						else
-//							totalLeaves = totalLeaves - leave.getNumberOfDays();
+						totalbalanceLeaveCounts = totalbalanceLeaveCounts - (appliedLeaveCount - leave.getExtraLeavesTaken());
 						
-						takenLeaveCounts = takenLeaveCounts + leave.getNumberOfDays();
+						takenLeaveCounts = takenLeaveCounts + appliedLeaveCount;
 					}
 				}
+				if("Monthly".equalsIgnoreCase(type.getPeriod()) && Constants.NO.equalsIgnoreCase(type.getLeavesCarryforward())){
+					calculatedTotalNonCarryforwardLeaves = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(type,totalbalanceLeaveCounts,emp);
+					totalbalanceLeaveCounts = calculatedTotalNonCarryforwardLeaves;
+				}else{
+					balanceLeaveCounts += totalbalanceLeaveCounts;
+				}
 				
-				balanceLeaveCounts += totalLeaves;
-				type.setBalanceLeaveCounts(balanceLeaveCounts);
+				balanceLeaveCounts += totalbalanceLeaveCounts;
+				type.setTotalBalanceLeaveCounts(balanceLeaveCounts);
 				type.setPendingLeaveCounts(pendingLeaveCounts);
-				type.setTakenLeaveCounts(takenLeaveCounts);
-				type.setRemainingTotalLeaveCounts(totalLeaves);
+				type.setTakenLeaves(takenLeaveCounts);
+				type.setLeaveTypeBalanceLeaveCount(totalbalanceLeaveCounts);
 				}
 		   }
 		return roleLeaveType;
@@ -655,10 +713,37 @@ public class LeaveManagementRestController {
 	public @ResponseBody String saveHoliday(HolidayDTO holidayDTO,HttpServletRequest request)
 			throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if(orgLocations.getId() != null)
 			holidayDTO.setOrgLocationId(orgLocations.getId().toString());
+		Holiday savedHoliday = null;
 		if(holidayDTO != null)
-		holidayService.storeHoliday(holidayDTO);
+		 savedHoliday = holidayService.storeHoliday(holidayDTO);
+		
+		List<Projects> projectsList = projectsService.getAllProjectByOrgLocationsId(orgLocations.getId());
+		if(projectsList != null && projectsList.size() > 0) {
+			for(Projects projects : projectsList) {
+				ProjectTasks  tasks  = new ProjectTasks();
+				LookUpData taskType = lookUpDataService.getTasksTypeByUniqueKey(Constants.GENERAL);
+				tasks.setGeneratedId(commonUtil.getProjectTaskGenaratedId(projects));
+				tasks.setProjectTasksUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+				tasks.setTaskName(holidayDTO.getHolidayName());
+				tasks.setDescription(holidayDTO.getHolidayName());
+				tasks.setBillableType("Billable");
+				tasks.setProjectId(projects);
+				tasks.setTaskType(taskType);
+				tasks.setHoliday(savedHoliday);
+				LookUpData taskStatus = lookUpDataService.getTasksById(Constants.TaskStatusID);
+				tasks.setTaskStatus(taskStatus);
+				tasks.setStatus(String.valueOf(Constants.CANDIDATE_ACTIVE));
+				tasks.setCreatedBy(user.getUserCode());
+				tasks.setCreatedDate(new Date());
+				tasks.setUpdatedBy(user.getUserCode());
+				tasks.setUpdatedDate(new Date());
+				projectTasksDao.addTasks(tasks);
+			}
+		}
+		timesheetRestController.linkHolidaysWithTimeSheet(user,orgLocations,savedHoliday);
 		return "success";
 	}
 	
@@ -994,11 +1079,32 @@ public class LeaveManagementRestController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_APPROVE_LEAVE')")
 	@RequestMapping(value = "/employeeRequestedLeaves")
-	public ModelAndView employeeRequestedLeavesJsp(HttpServletRequest request,HttpServletResponse response) {
-		   ModelAndView model = new ModelAndView();
-		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   model.setViewName("leavemanagement/employeeRequestedLeaves");
-	       return model;
+	public ModelAndView employeeRequestedLeavesJsp(
+			@RequestParam(value = "notifyLink", required = false) String notifyLink,
+			@RequestParam(value = "leaveUUID", required = false) String leaveUUID,
+			@RequestParam(value = "orgLocationId", required = false) String orgLocationId, HttpServletRequest request,
+			HttpServletResponse response) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("notifyLink", notifyLink);
+		
+		if(StringUtils.isNotBlank(leaveUUID)){
+			Leave leave = leaveService.getLeaveByLeaveUUId(leaveUUID);
+			model.addObject("leaveUUID", leaveUUID);
+			if ("APPROVED".equalsIgnoreCase(leave.getStatus())) {
+				model.setViewName("leavemanagement/employeeApprovedLeaves");
+			} else if ("REJECTED".equalsIgnoreCase(leave.getStatus())) {
+				model.setViewName("leavemanagement/employeeRejectedLeaves");
+			} else {
+				model.setViewName("leavemanagement/employeeRequestedLeaves");
+			}
+		}else{
+			model.setViewName("leavemanagement/employeeRequestedLeaves");
+		}
+		
+		model.addObject("orgLocationId", orgLocationId);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		
+		return model;
 	}
 	
 	/**
@@ -1051,7 +1157,7 @@ public class LeaveManagementRestController {
 	@ResponseBody
 	public LeaveType leaveTypeSummary(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request) throws Exception
 	{
-		LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeDTO.getLeaveTypeId());
+		LeaveType leaveType = leaveTypeService.getLeaveTypeByUUID(leaveTypeDTO.getLeaveTypeUUID());
 		return leaveType;
 	}
 	
@@ -1232,14 +1338,18 @@ public class LeaveManagementRestController {
 			Employees emp = employeesService.getEmployeeByUserId(leave.getUser().getId());
 			int totalLeavesperYear = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(),emp,orgLocations,leave.getUser());
 			leaveDto.setApproverUsers(String.join(",", aphlist)); 
-			Map<String,Integer> nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
-			leaveDto.setLeavesTaken(String.valueOf(nuberOfLeavestaken.get("numberOfLeavsTaken")));
-			int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
-			leaveDto.setThisMonthLeaves(String.valueOf(thisMonthLeaves));
+			Map<String,Float> nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
+			
+			float leavesTaken = (float) (nuberOfLeavestaken.get("numberOfLeavsTaken") - (nuberOfLeavestaken.get("halfdayLeavesCount") * 0.5));
+			leaveDto.setActualLeavesTaken(leavesTaken);
+			
+			float thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
+			leaveDto.setThisMonthLeavesTaken(thisMonthLeaves);
+			
 			leaveDto.setIsBillable(leave.getLeaveType().getLeaveType());
 //			int balLeaves = totalLeavesperYear - nuberOfLeavestaken.get("numberOfLeavsTaken") + nuberOfLeavestaken.get("numberOfExtraLeaves");
-			int balLeaves = totalLeavesperYear - nuberOfLeavestaken.get("numberOfLeavsTaken");
-			leaveDto.setBalanceleaves(String.valueOf(balLeaves));
+			float balLeaves = totalLeavesperYear - leavesTaken;
+			leaveDto.setTotalBalLeaves(balLeaves);
 		}
 		return leaveDto;
 	}
@@ -1318,6 +1428,8 @@ public class LeaveManagementRestController {
 			if (leaveDto == null) {
 				leaveDto = new LeaveDTO();
 				totalLeaves = 0;
+			}else {
+				totalLeaves = leaveDto.getNoOfDays();
 			}
 			StringBuilder sb = new StringBuilder();
 			if (StringUtils.isNotBlank(leave.getUser().getLastName())) {
@@ -1537,36 +1649,39 @@ public class LeaveManagementRestController {
 		   List<LeaveTypeDTO> leaveTypeDTOList = new ArrayList<>();
 		   if(leaveTypeList !=null && !leaveTypeList.isEmpty()) {
 				for(LeaveType type : leaveTypeList) {
-					int pendingCounts = 0;
-				    int approvedCounts = 0;
-					int rejectedCounts = 0;
-					int cancelCounts = 0;
-					int noOfDays = 0;
+					float pendingCounts = 0;
+				    float approvedCounts = 0;
+					float rejectedCounts = 0;
+					float cancelCounts = 0;
+					float noOfDays = 0;
 					LeaveTypeDTO leaveTypeDto = new LeaveTypeDTO();
 					List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getId(),orgLocations.getId(), user.getId());
 					int totalLeavesperYear = leaveManagementUtil.getBalanceCountForLeaveType(type,emp,orgLocations,user);
 					if(totalleavesTaken != null && totalleavesTaken.size() > 0) {
 						for (Leave leave : totalleavesTaken) {
+							
+							float appliedLeaveCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
+							
 							if(Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
-								pendingCounts = pendingCounts + 1;
+								pendingCounts = pendingCounts + appliedLeaveCount;
 							}
 							if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
-								approvedCounts = approvedCounts + 1;
+								approvedCounts = approvedCounts + appliedLeaveCount;
 								
-								noOfDays = noOfDays + leave.getNumberOfDays();
+								noOfDays = noOfDays + appliedLeaveCount;
 								if(noOfDays > totalLeavesperYear) {
-									int totalLeaves =  totalLeavesperYear - noOfDays;
-									leaveTypeDto.setNumberOfDaysCount(String.valueOf(totalLeaves));
+									float totalLeaves =  totalLeavesperYear - noOfDays;
+									leaveTypeDto.setTotalNoOfDays(totalLeaves);
 								}else {
-									leaveTypeDto.setNumberOfDaysCount(String.valueOf(noOfDays));
+									leaveTypeDto.setTotalNoOfDays(noOfDays);
 								}
 								
 							}
 							if(Constants.REJECTED.equalsIgnoreCase(leave.getStatus())) {
-								rejectedCounts = rejectedCounts + 1;
+								rejectedCounts = rejectedCounts + appliedLeaveCount;
 							}
 							if(Constants.LEAVE_CANCELLED.equalsIgnoreCase(leave.getStatus())) {
-								cancelCounts = cancelCounts + 1;
+								cancelCounts = cancelCounts + appliedLeaveCount;
 							}
 							
 					 }
@@ -1574,10 +1689,10 @@ public class LeaveManagementRestController {
 						leaveTypeDto.setName(type.getName());
 						leaveTypeDto.setLeaveTypeId(type.getId());
 						leaveTypeDto.setNoOfLeavesPerYear(String.valueOf(totalLeavesperYear));
-						leaveTypeDto.setApprovedCount(approvedCounts);
-					    leaveTypeDto.setRejectedCount(rejectedCounts);
-					    leaveTypeDto.setPendingCount(pendingCounts);
-					    leaveTypeDto.setCancelCount(cancelCounts);
+						leaveTypeDto.setTotalApprovedCount(approvedCounts);
+					    leaveTypeDto.setTotalRejectedCount(rejectedCounts);
+					    leaveTypeDto.setTotalPendingCount(pendingCounts);
+					    leaveTypeDto.setTotalCancelCount(cancelCounts);
 					    leaveTypeDTOList.add(leaveTypeDto);					
 					}
 					}
@@ -1717,11 +1832,14 @@ public class LeaveManagementRestController {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Long roleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		
+		UserRole selectedUserRole = userRoleService.getUserDetailsByUserIdAndLocationId(userId, orgLocations.getId());
+		
 		// User loginUser = (User)
 		// SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if (userId != null) {
 			List<User> appUser = new ArrayList<>();
-			List<User> approversList = leaveService.getApproversListBasedonHierarchyExceptLoginUser(userId, roleId, orgLocations.getId());
+			List<User> approversList = leaveService.getApproversListBasedonHierarchyExceptLoginUser(userId, selectedUserRole.getRoles().getId(), orgLocations.getId());
 			if (approversList != null) {
 				for (User user : approversList) {
 					boolean flag = false;
@@ -1793,6 +1911,33 @@ public class LeaveManagementRestController {
 		
 		return isvalidate;
 		
+	}
+	
+	@RequestMapping(value = "/getLeaveExportList")
+	public void getLeaveExportList(LeaveDTO leaveDTO, HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+
+		File file = leaveService.getLeaveExport(orgLocations,leaveDTO);
+		
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileName = new StringBuilder();
+		response.setHeader("Content-Disposition",
+				fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+		if (file != null) {
+			file.delete();
+		}
 	}
 	
 }

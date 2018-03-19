@@ -5,7 +5,11 @@ public class CustomFieldsRequestTypeDTO {
 	Long requirementId;
 	String requestFrom;
 	Long candidateId;
-	
+	Long userId;
+	Long orgRelationID;
+	Long clientLocationId;
+	Long projectId;
+	Long contractId;
 	public Long getSectionId() {
 		return sectionId;
 	}
@@ -29,6 +33,36 @@ public class CustomFieldsRequestTypeDTO {
 	}
 	public void setCandidateId(Long candidateId) {
 		this.candidateId = candidateId;
+	}
+	public Long getUserId() {
+		return userId;
+	}
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+	public Long getOrgRelationID() {
+		return orgRelationID;
+	}
+	public void setOrgRelationID(Long orgRelationID) {
+		this.orgRelationID = orgRelationID;
+	}
+	public Long getClientLocationId() {
+		return clientLocationId;
+	}
+	public void setClientLocationId(Long clientLocationId) {
+		this.clientLocationId = clientLocationId;
+	}
+	public Long getProjectId() {
+		return projectId;
+	}
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
+	}
+	public Long getContractId() {
+		return contractId;
+	}
+	public void setContractId(Long contractId) {
+		this.contractId = contractId;
 	}
 	
 }

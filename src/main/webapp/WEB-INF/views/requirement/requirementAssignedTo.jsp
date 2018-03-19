@@ -6,7 +6,7 @@
 		<div class="modal-content">
 			<div class="modalHeader">
 				<button type="button" id="assignToPopUpCloseId" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Assign To</h4>
+				<h4 class="modal-title">Assign To<i class='fa fa-info-circle' title='Assign the job to the internal team to process the resources for the job'></i></h4>
 			</div>
 			<div class="modal-body">
 
@@ -186,6 +186,62 @@ function getTeamsList(reqId){
 		getUserList(teamType);
 	}
 </script>
+<script>
+window.selectAssignUsersIds = new Array();
+var isIE = /*@cc_on!@*/false || !!document.documentMode;
+if(isIE){
+(function() {
+	  function remove() { this.parentNode && this.parentNode.removeChild(this); }
+	  if (!Element.prototype.remove) Element.prototype.remove = remove;
+	  if (Text && !Text.prototype.remove) Text.prototype.remove = remove;
+	})();
+};	
+function deSelectAssignUsers(){
+	$("input:checkbox[name=selectedUser]:checked").each(function(){
+		var deSelectedId = $(this).attr('value');
+		$(this).closest( 'tr' )[0].remove();
+		$("#assignToDataTableId input[type=checkbox]").each(function(){
+			if(deSelectedId == $(this).attr('value')){
+				$(this).prop('disabled', false);
+			}
+	     });
+		
+		const index = selectAssignUsersIds.indexOf(deSelectedId);
+		selectAssignUsersIds.splice(index,1);
+		
+// 		selectAssignUsersIds = selectAssignUsersIds.filter(item => item !== deSelectedId);
+	});
+	$("#assignToSelectedPopupCount").text(" ("+$('#assignToSelectedDataTableDiv >table >tbody >tr').length+") ");
+	if($('#assignToSelectedDataTableDiv >table >tbody >tr').length == 0){
+		$("#noAssignedmembers").show();
+	}else{
+		$("#noAssignedmembers").hide();
+	}
+}
+
+function selectAssignUsers(){
+	$("#selectedUsersGrid").empty();
+	selectAssignUsersIds = [];
+	$("input:checkbox[name=team]:checked").each(function(){
+		var thisRow = $(this).closest( 'tr' )[0];
+	    $("#selectedUsersGrid").append($(thisRow).clone());
+	    $(this).attr('disabled', 'disabled');
+	    selectAssignUsersIds.push($(this).val());
+	});
+	$("#selectedUsersGrid input[type=checkbox]").each(function(){
+		$(this).attr('name', 'selectedUser');
+		$(this).prop('disabled', false);
+		$(this).removeAttr('onchange');
+		$(this).attr('checked', false);
+     });
+	$("#assignToSelectedPopupCount").text(" ("+$('#assignToSelectedDataTableDiv >table >tbody >tr').length+") ");
+	if($('#assignToSelectedDataTableDiv >table >tbody >tr').length == 0){
+		$("#noAssignedmembers").show();
+	}else{
+		$("#noAssignedmembers").hide();
+	}
+}
+</script>
 
 <script>
 function getUserList(teamType){
@@ -298,51 +354,6 @@ function paginations(){
      	},
     });
     $("#assignToDataTableId").wrap("<div class='modal-body-custom mailerpopup modalAlign'></div>");
-}
-</script>
-
-<script>
-window.selectAssignUsersIds = new Array();
-function selectAssignUsers(){
-	$("#selectedUsersGrid").empty();
-	selectAssignUsersIds = [];
-	$("input:checkbox[name=team]:checked").each(function(){
-		var thisRow = $(this).closest( 'tr' )[0];
-	    $("#selectedUsersGrid").append($(thisRow).clone());
-	    $(this).attr('disabled', 'disabled');
-	    selectAssignUsersIds.push($(this).val());
-	});
-	$("#selectedUsersGrid input[type=checkbox]").each(function(){
-		$(this).attr('name', 'selectedUser');
-		$(this).prop('disabled', false);
-		$(this).removeAttr('onchange');
-		$(this).attr('checked', false);
-     });
-	$("#assignToSelectedPopupCount").text(" ("+$('#assignToSelectedDataTableDiv >table >tbody >tr').length+") ");
-	if($('#assignToSelectedDataTableDiv >table >tbody >tr').length == 0){
-		$("#noAssignedmembers").show();
-	}else{
-		$("#noAssignedmembers").hide();
-	}
-}
-
-function deSelectAssignUsers(){
-	$("input:checkbox[name=selectedUser]:checked").each(function(){
-		var deSelectedId = $(this).attr('value');
-		$(this).closest( 'tr' )[0].remove();
-		$("#assignToDataTableId input[type=checkbox]").each(function(){
-			if(deSelectedId == $(this).attr('value')){
-				$(this).prop('disabled', false);
-			}
-	     });
-		selectAssignUsersIds = selectAssignUsersIds.filter(item => item !== deSelectedId);
-	});
-	$("#assignToSelectedPopupCount").text(" ("+$('#assignToSelectedDataTableDiv >table >tbody >tr').length+") ");
-	if($('#assignToSelectedDataTableDiv >table >tbody >tr').length == 0){
-		$("#noAssignedmembers").show();
-	}else{
-		$("#noAssignedmembers").hide();
-	}
 }
 </script>
 

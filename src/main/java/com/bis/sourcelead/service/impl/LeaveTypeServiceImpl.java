@@ -234,7 +234,7 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 					}
 					tasks.setProjectId(projects);
 					tasks.setTaskType(taskType);
-					
+					tasks.setLeaveType(leaveType);
 					LookUpData taskStatus = lookUpDataService.getTasksById(Constants.TaskStatusID);
 					tasks.setTaskStatus(taskStatus);
 					tasks.setStatus(String.valueOf(Constants.CANDIDATE_ACTIVE));
@@ -313,8 +313,34 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 	}
 
 	@Override
-	public LeaveType getLeaveTypeByUUID(String leaveTypeUUID)
+	public LeaveType getLeaveTypeByUUID(String leaveTypeUUID) throws Exception
 	{
-		return leaveTypeDao.getLeaveTypeByUUID(leaveTypeUUID);
+		LeaveType type = leaveTypeDao.getLeaveTypeByUUID(leaveTypeUUID);
+		if(type.getCreatedBy() != null){
+			User createdUser = userService.getUserByUserCode(type.getCreatedBy());
+			StringBuilder sb = new StringBuilder();
+			if(StringUtils.isNotBlank(createdUser.getFirstName()) && StringUtils.isNotBlank(createdUser.getLastName()))
+				type.setCreatedUser(sb.append(createdUser.getFirstName()).append(" ").append(createdUser.getLastName()).toString());
+			else
+				type.setCreatedUser(createdUser.getFirstName());
+		}
+		
+		if(type.getUpdatedBy() != null){
+			User updatedUser = userService.getUserByUserCode(type.getUpdatedBy());
+			StringBuilder sb = new StringBuilder();
+			if(StringUtils.isNotBlank(updatedUser.getFirstName()) && StringUtils.isNotBlank(updatedUser.getLastName()))
+				type.setUpdatedUser(sb.append(updatedUser.getFirstName()).append(" ").append(updatedUser.getLastName()).toString());
+			else
+				type.setUpdatedUser(updatedUser.getFirstName());
+		}
+		return type;
+		
+		
+		
+	}
+
+	@Override
+	public List<ProjectTasks> getProjectTaskByorgLocationIdAndLeaveTypeId(Long orgLocationId, Long leaveTypeId) {
+		return leaveTypeDao.getProjectTaskByorgLocationIdAndLeaveTypeId(orgLocationId,leaveTypeId);		
 	}
 }

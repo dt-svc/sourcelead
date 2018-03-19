@@ -134,7 +134,7 @@
                       </div>
               </div>
                <div class="col-md-3 dropdown-select">
-               <label>Consulting <span class="text-danger paddingLeft">*</span></label>
+               <label>Consulting <span class="text-danger paddingLeft">* </span><i class='fa fa-info-circle' title='The type of requests such as on-shore or off-shore'></i></label>
                 <select class="form-control" name='consultingREPLACEROWID' id='consultingREPLACEROWID' field-name="Consulting" data-validation="required">
                   <option selected value="">--Select--</option>
                         <option value="OffSite">Off Site</option>
@@ -187,7 +187,7 @@
 					           </div>            
 					     </div>
 			            <div class="form-group">
-			            <label class="col-md-3">Approver <span class="text-danger paddingLeft">*</span></label>
+			            <label class="col-md-3">Approver <span class="text-danger paddingLeft">* </span><i class='fa fa-info-circle' title='The person who will approve the new resource request'></i></label>
 			            <div class="col-md-9" id="errApprover">
 			             <select class="chosen-select form-control" data-validation="required" id="approver" name="approver" field-name="Approver" onchange="removeValidation();">
 		                <option selected value=''>--Select Approver--</option>
@@ -360,12 +360,24 @@
 			$('#startDate'+maxRowNum).datepicker({
 				dateFormat : finalDateFormatResourceReqSave,
 				changeMonth: true,
-				changeYear: true
+				changeYear: true,
+				onSelect: function (selected) {
+		            //var dt = new Date(selected);
+		            var dt = $(this).datepicker('getDate', '+1d');
+		            dt.setDate(dt.getDate() + 1);
+		            $('#endDate'+maxRowNum).datepicker("option", "minDate", dt);
+		        }
 			});
 			$('#endDate'+maxRowNum).datepicker({
 				dateFormat : finalDateFormatResourceReqSave,
 				changeMonth: true,
-				changeYear: true
+				changeYear: true,
+				onSelect: function (selected) {
+		            //var dt = new Date(selected);
+					var dt = $(this).datepicker('getDate', '-1d');
+		            dt.setDate(dt.getDate() - 1);
+		            $('#startDate'+maxRowNum).datepicker("option", "maxDate", dt);
+		        }
 			});
 			$(".addResource").removeAttr('style');
 			$(".addResource").attr('style','display:block');

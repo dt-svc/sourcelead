@@ -58,6 +58,12 @@ function requirementList(searchType,sourceleadUrl){
 				filterJobType.push($(this).val());
 		    });
 			
+			var filterAssignTo = [];
+			$('input:radio[name=requirementAssignTo]:checked').each(function() 
+		    {
+				filterAssignTo.push($(this).val());
+		    });
+			
 			
 			
 			var frm = $('#requirement_form').serializeFormJSON();
@@ -70,7 +76,7 @@ function requirementList(searchType,sourceleadUrl){
 	  		searchValue = searchValue ? searchValue : "";
 	  		$("#requirementList").empty();
 			$("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	  		 url = sourceleadUrl+"/searchRequirement?searchType="+searchType+"&filterStatus="+filterStatus+"&filterClients="+filterClients+"&searchValue="+searchValue+"&filterPriority="+filterPriority+"&filterJobType="+filterJobType;
+	  		 url = sourceleadUrl+"/searchRequirement?searchType="+searchType+"&filterStatus="+filterStatus+"&filterClients="+filterClients+"&searchValue="+searchValue+"&filterPriority="+filterPriority+"&filterJobType="+filterJobType+"&filterAssignTo="+filterAssignTo;
 	  		 url += "&"+$($('#requirement_form')[0]).serialize();
 			
 			
@@ -114,7 +120,9 @@ function prepareRequirementData(url,sourceleadUrl){
    result = result +"    <th>Action</th>"; 
    result = result +"    <th>Generated ID</th>"; 
    result = result +"    <th>Title</th>"; 
-   result = result +"    <th>Client</th>"; 
+   result = result +"    <th>Client</th>";
+   result = result +"    <th>Rate</th>";
+   result = result +"    <th>Bill Rate</th>";
    result = result +"    <th>Type</th>"; 
    result = result +"    <th>Location</th>"; 
    result = result +"    <th>Applicants</th>"; 
@@ -176,6 +184,7 @@ function jpagination(url,sourceleadUrl){
    		"processing": true,
        "serverSide": true,
        "searching": false,
+       "searchHighlight": true,
        "ajax": $.fn.dataTable.pipeline( {
            url: url,
            method: 'POST',
@@ -186,6 +195,8 @@ function jpagination(url,sourceleadUrl){
     	   { "data": "generatedId"},
            { "data": "jobTitle"},
            { "data": "clientName"},
+           { "data": "rate"},
+           { "data": "billRate"},
            { "data": "jobType" },
            { "data": "country"},
            { "data": "totalApplicants" },
@@ -211,7 +222,7 @@ function jpagination(url,sourceleadUrl){
 		      	        '</sec:authorize>';
 		      	        
 		      	      	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT\')">';
-	         				result = result +'<div class="text-center"><a href="javascript:void(0)" title="Assing To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv('+opt.id+');"><i class="fa fa-address-book '+(opt.assignedMembersCount == 0 ? "anchorBlack" : "")+' "></i></a></div>';
+	         				result = result +'<div class="text-center"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv('+opt.id+');"><i class="fa fa-address-book '+(opt.assignedMembersCount == 0 ? "anchorBlack" : "")+' "></i></a></div>';
 	         		 	'</sec:authorize>';
 		      	        
 		      	        '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
@@ -290,14 +301,71 @@ function jpagination(url,sourceleadUrl){
            		   if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
            	      		
            			 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
-           	            result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+opt.orgRelationUUID+'" title="'+opt.clientName+'">'+opt.clientName+'</a></div></td>';
+           	            result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+opt.orgRelationUUID+'" title="'+opt.clientName+'">'+opt.clientName+'</a></div>';
+           	         if(opt.clientContactName != null && opt.clientContactName != '' && opt.clientContactName != 'undefined'){
+	     	        	  result = result + '\n<div  class="tbldata-dotdot-sm">'+opt.clientContactName+'</div>';
+	     	           }
+	     	           result = result + '</td>';
            	         '</sec:authorize>';
            	         
 	           	      '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
-	     	            result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.clientName+'</div></td>';
+	     	            result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.clientName+'</div>';
+	     	           if(opt.clientContactName != null && opt.clientContactName != '' && opt.clientContactName != 'undefined'){
+	     	        	  result = result + '\n<div  class="tbldata-dotdot-sm">'+opt.clientContactName+'</div>';
+	     	           }
+	     	           result = result + '</td>';
 	     	         '</sec:authorize>';
            	         
-           		   }else{           	      	 result = result +"<td><div>-----</div></td>";
+           		   }else{
+						result = result +"<td><div>-----</div></td>";
+           	       }
+		                return result;
+	             }
+	        },
+	        {
+	            "targets": colIndex++,
+	            "data": "rate",
+	            "sortable": false,
+	            "render": function ( data, type, opt, meta ) {
+	            		var result = "";
+           		   if((opt.rate != null && opt.rate != '' && opt.rate != 'undefined') || (opt.maxRate != null && opt.maxRate != '' && opt.maxRate != 'undefined')){
+           				result = result +"<div class='tbldata-dotdot'>"+opt.currencyCode+" ";
+           				if(opt.rate != null && opt.rate != '' && opt.rate != 'undefined'){
+           					result = result + opt.rate;
+           				}
+           				if((opt.rate != null && opt.rate != '' && opt.rate != 'undefined') && (opt.maxRate != null && opt.maxRate != '' && opt.maxRate != 'undefined')){
+           					result = result + " - ";
+           				}
+						if(opt.maxRate != null && opt.maxRate != '' && opt.maxRate != 'undefined'){
+							result = result + opt.maxRate;
+           				}
+           				result = result +" / "+opt.rateType+"</span></div>";
+           		   }else{
+						result = result +"<td><div>-----</div></td>";
+           	       }
+		                return result;
+	             }
+	        },
+	        {
+	            "targets": colIndex++,
+	            "data": "billRate",
+	            "sortable": false,
+	            "render": function ( data, type, opt, meta ) {
+	            		var result = "";
+	            		if((opt.clientRate != null && opt.clientRate != '' && opt.clientRate != 'undefined') || (opt.clientMaxRate != null && opt.clientMaxRate != '' && opt.clientMaxRate != 'undefined')){
+	           				result = result +"<div class='tbldata-dotdot'>"+opt.clientCurrencyCode+" ";
+	           				if(opt.clientRate != null && opt.clientRate != '' && opt.clientRate != 'undefined'){
+	           					result = result + opt.clientRate;
+	           				}
+	           				if((opt.clientRate != null && opt.clientRate != '' && opt.clientRate != 'undefined') && (opt.clientMaxRate != null && opt.clientMaxRate != '' && opt.clientMaxRate != 'undefined')){
+	           					result = result + " - ";
+	           				}
+							if(opt.clientMaxRate != null && opt.clientMaxRate != '' && opt.clientMaxRate != 'undefined'){
+								result = result + opt.clientMaxRate;
+	           				}
+	           				result = result +" / "+opt.clientRateType+"</span></div>";
+	           		   }else{
+						result = result +"<td><div>-----</div></td>";
            	       }
 		                return result;
 	             }
@@ -335,7 +403,7 @@ function jpagination(url,sourceleadUrl){
 			   		        result = result +'<div class="show_Empdetails showjoblist">';
 		   		        	result = result +'<i class="fa fa-ellipsis-v"></i>';
 	
-		   		        	result = result +'<div class="emailvalues">';
+		   		        	result = result +'<div class="emailvalues emailvaluesNew">';
 		   		        	
  							for(var k=0; k<opt.locationsList.length; k++){
  								result = result +'<p><i class="fa fa-map-marker"></i>'+opt.locationsList[k]+'</p>';
@@ -573,7 +641,7 @@ function jpagination(url,sourceleadUrl){
            ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[8,'desc']],
+	    	"aaSorting": [[10,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
@@ -587,7 +655,12 @@ function jpagination(url,sourceleadUrl){
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
 	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
-	     }
+	     },
+	     drawCallback: function(){
+   	      $('a.paginate_button', this.api().table().container()).on('click', function(){
+   	    	jobSearchHighlight();
+   	         }); 
+   	   }
   
    } );
    
@@ -598,10 +671,32 @@ function jpagination(url,sourceleadUrl){
    $("#dataTableSearch").keyup(function(e) {
    	   if(e.which === 13) {
    		 requirementList('list',sourceleadUrl);
+   		jobSearchHighlight();
    	   }
    	});
  }
 </script>
+
+<script>
+ function jobSearchHighlight(){
+	 setTimeout(function () {
+ 		var body = $( table.table().body() );
+	        body.unhighlight();
+	        body.highlight( $("#dataTableSearch").val() );   
+			
+			}, 1000); 
+ }
+ </script>
+ <script>
+	$(document).on( 'init.dt.dth', function (e, settings, json) {
+    table = new $.fn.dataTable.Api( settings );
+    var body = $( table.table().body() );
+    if ( $( table.table().node() ).hasClass( 'searchHighlight' ) || settings.oInit.searchHighlight ||  $.fn.dataTable.defaults.searchHighlight ) {
+	
+	}
+} );
+	</script>
+
 <script>
 function getAssignedMembersDiv(reqId){
 	$("#summaryButtonsDiv").hide();

@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -25,8 +26,10 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.TimeSheetDayEntriesHistory;
+import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
 public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
@@ -90,7 +93,7 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<TimeSheetDayEntries> getAllTimeSheetDayEntriesBySubmissionId(Long submissionId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from TimeSheetDayEntries tde left join fetch tde.projectTask pt  where tde.timesheetSubmissions.Id =:submissionId ";
+		String query = "from TimeSheetDayEntries tde left join fetch tde.projectTask pt  where tde.timesheetSubmissions.Id =:submissionId and tde.status = '1'";
 		List<TimeSheetDayEntries> timesheetEntriesList = session.createQuery(query).setLong("submissionId", submissionId).list();	
 		return timesheetEntriesList;
 	}
@@ -99,7 +102,7 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Long> getAllTimeSheetDayEntryIdsBySubmissionId(Long submissionId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "Select tde.Id from TimeSheetDayEntries tde  where tde.timesheetSubmissions.Id =:submissionId ";
+		String query = "Select tde.Id from TimeSheetDayEntries tde  where tde.timesheetSubmissions.Id =:submissionId and tde.status = '1'";
 		List<Long> timesheetEntriesList = session.createQuery(query).setLong("submissionId", submissionId).list();	
 		return timesheetEntriesList;
 	}
@@ -115,10 +118,10 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 		
 		java.sql.Date sqlEndDate = null;
 		if(endDate != null){
-			sqlEndDate = new java.sql.Date(endDate.getTime());
+			sqlEndDate = new java.sql.Date(endDate.getTime()); 
 		}
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from TimeSheetDayEntries tde left join fetch tde.projectTask pt  where tde.timesheetSubmissions.Id =:submissionId and tde.timesheetDate between :startDate and :endDate ";
+		String query = "from TimeSheetDayEntries tde left join fetch tde.projectTask pt  where tde.timesheetSubmissions.Id =:submissionId and tde.timesheetDate between :startDate and :endDate and tde.status = '1' ";
 		List<TimeSheetDayEntries> timesheetEntriesList = session.createQuery(query).setLong("submissionId", submissionId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list();	
 		return timesheetEntriesList;
 	}
@@ -223,7 +226,7 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 		}
 		
 		String query = "from  TimeSheetDayEntries tde left join fetch tde.projectTask pt left join fetch tde.timesheetSubmissions ts left join fetch ts.projects projects left join fetch ts.projectMembers pm left join fetch pm.projectMemberCandidteId can left join fetch can.masterCandidateId left join fetch  pm.employee emp left join fetch emp.user user  "
-				+ " where  pt.projectTasksUUID = :taskUUID and tde.isManuallyAdded = 'Y' and"
+				+ " where  pt.projectTasksUUID = :taskUUID and tde.isManuallyAdded = 'Y' and tde.status = '1' and "
 				+ " ( "
 				
 				+"  ( user.id = :userId ) "
@@ -242,7 +245,7 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 		
 		String orderQuery = "order by tde.timesheetDate ASC"; 
 
-		String queryCount = " Select Count (*) from  TimeSheetDayEntries tde  where  tde.projectTask.projectTasksUUID = :taskUUID and tde.isManuallyAdded = 'Y' and "
+		String queryCount = " Select Count (*) from  TimeSheetDayEntries tde  where  tde.projectTask.projectTasksUUID = :taskUUID and tde.isManuallyAdded = 'Y' and tde.status = '1' and "
                 + " ( "
 				+"  ( tde.timesheetSubmissions.projectMembers.employee.user.id = :userId ) "
 				+" OR "
@@ -293,7 +296,36 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 		return response;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Float getTotalHoursByProjectIdMasteCandidateIdandTimesheetDate(Long projectId,Long masterCandidateId,Date timesheetDate) {
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlDate = new java.sql.Date(timesheetDate.getTime());
+		String query = "from TimeSheetDayEntries timeDayEntry  left join fetch timeDayEntry.timesheetSubmissions timeSubmissions where timeDayEntry.timesheetDate = :timeDate and timeDayEntry.status = '1' and timeSubmissions.projects.id = :projectId and timeSubmissions.masterCandidateId.id = :masterCandidateId  ";
+		List<TimeSheetDayEntries> tdeList = session.createQuery(query).setLong("projectId", projectId).setLong("masterCandidateId", masterCandidateId).setParameter("timeDate", sqlDate).list();
+		Float totalHours = 0.0F;
+	    if(tdeList != null && !tdeList.isEmpty()){
+		   for(TimeSheetDayEntries tde :tdeList) {
+			   totalHours = CommonUtil.getCombinedHours(Float.parseFloat(tde.getTotalHours().replaceAll(":", ".")), totalHours);
+		   }
+	   }
+		return totalHours;
+	}
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public TimeSheetDayEntries getTimesheetDayEntryByProjectIdMasteCandidateIdandTimesheetDate(Long projectId,Long masterCandidateId,Date timesheetDate,Long projectTaskId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlDate = new java.sql.Date(timesheetDate.getTime());
+		String query = "from TimeSheetDayEntries timeDayEntry left join fetch timeDayEntry.projectTask proTask left join fetch timeDayEntry.timesheetSubmissions timeSubmissions where timeDayEntry.timesheetDate = :timeDate  and timeSubmissions.projects.id = :projectId and timeSubmissions.masterCandidateId.id = :masterCandidateId and proTask.Id = :projectTaskId";
+		List<TimeSheetDayEntries> tdeList = session.createQuery(query).setLong("projectId", projectId).setLong("masterCandidateId", masterCandidateId).setParameter("timeDate", sqlDate).setLong("projectTaskId", projectTaskId).list();
+		if(tdeList!= null && !tdeList.isEmpty()) {
+			return tdeList.get(0);
+		}else {
+			return null;
+		}
+		
+	}
 
 	
 

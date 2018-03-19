@@ -27,5 +27,5 @@ public interface ProjectBudgetService {
 	
 	void sendEmailForBugetRequestApproversByAcceptAndRejectAndOnHold(User user, ProjectBudget projectBudget)throws Exception;
 	
-	List<ProjectBudget>  getProjectBudgetByProjectTaskIdAndApprovedStatus(Long projectId,String filterDate, Date startDateUTC, Date endDateUTC) throws Exception;
+	List<ProjectBudget>  getProjectBudgetByProjectTaskIdAndApprovedStatus(Long projectId, Long orgLocationId) throws Exception;
 }

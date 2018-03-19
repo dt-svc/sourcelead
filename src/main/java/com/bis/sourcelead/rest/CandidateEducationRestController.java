@@ -246,15 +246,19 @@ public class CandidateEducationRestController {
 				     return candEduDTO;
 	}
 	
-	@RequestMapping(value = "/upDateCandidateEducationByCandidateIdAndCandidateEducationId")
-	public String upDateCandidateEducationByCandidateIdAndCandidateEducationId(CandidateEducationDTO candidateEducationDTO,@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
+	@RequestMapping(value = {"/upDateCandidateEducationByCandidateIdAndCandidateEducationId","rest/upDateCandidateEducationByCandidateIdAndCandidateEducationId"},method=RequestMethod.POST)
+	@ResponseBody
+	public  String upDateCandidateEducationByCandidateIdAndCandidateEducationId(CandidateEducationDTO candidateEducationDTO,HttpServletRequest request) throws Exception {
 
+		    String isUpdated = "fasle";
 		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			CandidateEducation candidateEdu;
 			candidateEducationDTO.setDateFormat(loginOrgLocation.getDateFormat());
-			candidateEdu = candidateEducationService.storeCandidateEducation(candidateEducationDTO,candidateId,loginOrgLocation.getId(), user);
-			return "success";
+			CandidateEducation candidateEdu = candidateEducationService.storeCandidateEducation(candidateEducationDTO,candidateEducationDTO.getCandidateId(),loginOrgLocation.getId(), user);
+			if(candidateEdu != null) {
+				isUpdated = "true";
+			}
+			return isUpdated;
 	}
 	
 	

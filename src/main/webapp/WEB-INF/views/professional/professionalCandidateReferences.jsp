@@ -347,8 +347,7 @@
 
 		result = result + '<div class="clearfix mr" id="docAddButton">';
 		result = result
-				+ '<input type="button" value="Save" name="btnAddPr" id="save_ref" class="btn btn-sm btn-primary pull-right" onClick ="storeCandidateReferences('
-				+ candidateId + ');" />';
+				+ '<input type="button" value="Save" name="btnAddPr" id="save_ref" class="btn btn-sm btn-primary pull-right" onClick ="storeCandidateReferences('+ candidateId + ');" />';
 		result = result + '</div>';
 		result = result + '</div>';
 		result = result + '</form>';
@@ -400,12 +399,14 @@
 --%>
 <script type="text/javascript">
 	function storeCandidateReferences(candidateId) {
+		validateReferenceEmail(candidateId);
 		var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd'
 		};
+		
 		if ($('#canReference_form').validate(false, validationSettings)) {
 			
 			var formData = getFormData("canReference_form");
@@ -414,6 +415,7 @@
 			
 		    $("#save_ref").attr("disabled", "disabled");
 			$("#save_ref").addClass('button').val('Processing..'); 
+		
 	        $.post(sourceleadUrl+"/saveCandidateReferences?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(data) {
 	        	closePopup();
 	        	$("#popUpDiv").removeClass("edit-details-active");
@@ -801,10 +803,11 @@ function validateReferenceEmail(candidateId){
 							document.getElementById("referenceEmail").setAttribute('record-exist', 'yes');
 							document.getElementById("referenceEmail").setAttribute('record-exist-errorMsg',email+ ' is Already Existed');
 							$('input#referenceEmail').removeAttr( "record-exist record-exist-errorMsg");
-							$("#save_ref").attr("disabled", "disabled");
+							
+							$('#save_ref').prop('disabled', true);
 		    				
 						} else {
-							$("#save_ref").removeAttr("disabled");
+							$('#save_ref').prop('disabled', false);
 							$('input#referenceEmail').removeAttr("record-exist record-exist-errormsg");
 							
 						}

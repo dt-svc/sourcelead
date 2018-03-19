@@ -106,7 +106,7 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 					StringBuilder interviewStringBuilder=new StringBuilder();
 					interviewHistory.setRemainderTime(interviewStringBuilder.append(hours).append(" : ").append( minutes).append(" minutes").toString());
 				}
-				
+				 
 			    if(requirementInterview.getDateOfInterview() != null){
 
 					String currentTimeStr = Constants.TZ_DF.format(requirementInterview.getStartTime());
@@ -544,4 +544,8 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 	}
 
 	
+	@Override
+	public Long getCountOfAllInterviewAssignedToLoginUser(OrgLocations loginOrgLocations, String userType, Long userId, String userCode) throws Exception {
+		return requirementInterviewHistoryDao.getCountOfAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), userType, userId, userCode);
+	}
 }

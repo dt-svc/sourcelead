@@ -2,7 +2,6 @@ package com.bis.sourcelead.elk.install;
 
 import java.beans.PropertyVetoException;
 import java.io.IOException;
-import java.io.Writer;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,39 +10,28 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.elasticsearch.common.xcontent.XContentType;
-import org.elasticsearch.index.engine.DocumentMissingException;
-import org.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
-import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKTC;
+import com.bis.sourcelead.util.CommonUtil;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import com.thoughtworks.xstream.io.json.JsonWriter;
 
 public class AddElkRequirement {
-	
-	
-	
 	
 	private static final Logger logger = LoggerFactory.getLogger(AddElkRequirement.class);
 	private ComboPooledDataSource comboPooledDataSource;
@@ -81,7 +69,7 @@ public class AddElkRequirement {
 				if(null != rs.getString("ORG_LOCATION_ID") && !"".equalsIgnoreCase(rs.getString("ORG_LOCATION_ID"))){
 					requirementIndex.setOrgLocationId(Long.parseLong(rs.getString("ORG_LOCATION_ID")));
 				}
-				requirementIndex.setJobTitle(rs.getString("JOB_TITLE"));
+				requirementIndex.setJobTitle(firstLetterCapitalizedString(rs.getString("JOB_TITLE")));
 				requirementIndex.setJobId(rs.getString("JOB_ID"));
 				requirementIndex.setCurrentRateCurrency(rs.getString("CURRENCY_CODE"));
 				requirementIndex.setNumberOfPositions(rs.getString("POSITIONS"));
@@ -148,6 +136,18 @@ public class AddElkRequirement {
 				if(null != rs.getString("EXPERIENCE_LEVEL") && !"".equalsIgnoreCase(rs.getString("EXPERIENCE_LEVEL"))){
 					requirementIndex.setExperienceLevel(rs.getString("EXPERIENCE_LEVEL"));
 					}
+				if(null != rs.getString("CLIENT_CURRENCY_CODE") && !"".equalsIgnoreCase(rs.getString("CLIENT_CURRENCY_CODE"))){
+					requirementIndex.setClientCurrencyCode(rs.getString("CLIENT_CURRENCY_CODE"));
+				}
+				if(null != rs.getString("CLIENT_MAX_RATE") && !"".equalsIgnoreCase(rs.getString("CLIENT_MAX_RATE"))){
+					requirementIndex.setClientMaxRate(Float.parseFloat(rs.getString("CLIENT_MAX_RATE")));
+				}
+				if(null != rs.getString("CLIENT_RATE") && !"".equalsIgnoreCase(rs.getString("CLIENT_RATE"))){
+					requirementIndex.setClientRate(Float.parseFloat(rs.getString("CLIENT_RATE")));
+				}
+				if(null != rs.getString("CLIENT_RATE_TYPE") && !"".equalsIgnoreCase(rs.getString("CLIENT_RATE_TYPE"))){
+					requirementIndex.setClientRateType(rs.getString("CLIENT_RATE_TYPE"));
+				}
 					
 				ResultSet approverSet = getApproverUserDetails(Long.parseLong(rs.getString("ID")),conn);
 				List<String> lavel1User = new ArrayList<String>();
@@ -200,13 +200,15 @@ public class AddElkRequirement {
 				}
 				if(rs.getString("ORG_RELATION_ID") !=null && !"".equalsIgnoreCase(rs.getString("ORG_RELATION_ID"))){
 					ResultSet rs1 = getClientContactDetails(rs.getString("ORG_RELATION_ID"),conn);
-					String clientName =null;;
+					String clientName =null;
+					String clientContactName = null;
+					String clientContactEmail = null;
 					while(rs1.next()){
 						String type = rs1.getString("INITIATOR_TYPE");
 						if("Client".equalsIgnoreCase(type)){
 							clientName = getClientName(rs1.getString("LOCATION_ID"),conn);
 						}
-						else{
+						if("Vendor".equalsIgnoreCase(type)){
 							clientName = getClientName(rs1.getString("RESPONDER_LOCATION_ID"),conn);
 						}
 					}
@@ -218,7 +220,19 @@ public class AddElkRequirement {
 					requirementIndex.setJobType(rs.getString("JOB_TYPE"));
 					requirementIndex.setOtherJobType(rs.getString("OTHER_JOBTYPE"));
 					requirementIndex.setJobId(rs.getString("JOB_ID"));
-					String clientContactName = null;
+					
+					
+					String clientContactSql = "SELECT USER.FIRST_NAME, USER.LAST_NAME,USER.EMAIL FROM USER INNER JOIN ORG_SPOC ON USER.ID=ORG_SPOC.CLIENT_USER_ID WHERE ORG_SPOC.ID=?;";
+					ResultSet clientNameRs = getClientContactName(rs.getString("SPOC_ID"),clientContactSql,conn);
+					if(clientNameRs.next()){
+						if(StringUtils.isNotEmpty(clientNameRs.getString("LAST_NAME"))) {
+							clientContactName = clientNameRs.getString("FIRST_NAME")+" "+clientNameRs.getString("LAST_NAME");
+						}else {
+							clientContactName = clientNameRs.getString("FIRST_NAME");
+						}
+						clientContactEmail = clientNameRs.getString("EMAIL");
+					}
+					/*String clientContactName = null;
 					String clientContactEmail = null;
 					while(rs1.next()){
 						String type = rs1.getString("INITIATOR_TYPE");
@@ -240,7 +254,7 @@ public class AddElkRequirement {
 							clientContactEmail = clientNameRs.getString("EMAIL");
 							
 						}
-					}
+					}*/
 					requirementIndex.setClientContactName(clientContactName);
 					requirementIndex.setClientContactEmail(clientContactEmail);
 					requirementIndex.setOrgRelationId(rs.getString("ORG_RELATION_ID"));
@@ -348,7 +362,7 @@ public class AddElkRequirement {
 		ResultSet rs=null;
 		Long requirementId = Long.parseLong(reqId);
 		try{
-				String sql = "SELECT * FROM sourcelead.TEAM team inner join REQUIREMENT_ASSIGN_TO req on team.ID = req.TEAM_ID where req.REQUIREMENT_ID = ?";
+				String sql = "SELECT * FROM sourcelead.TEAM team inner join REQUIREMENT_ASSIGN_TO req on team.ID = req.TEAM_ID where req.STATUS = 1 and req.REQUIREMENT_ID = ?";
 //				 conn = dataSource.getConnection();
 				 ps = conn.prepareStatement(sql);
 				 ps.setLong(1, requirementId);
@@ -404,7 +418,7 @@ public class AddElkRequirement {
 		ResultSet rs=null;
 		 try{
 //			 DataSource dataSource = comboPooledDataSource();
-				String sql = "select * from REQUIREMENT_ASSIGN_TO reqAssaign  where reqAssaign.REQUIREMENT_ID = ? ;";
+				String sql = "select * from REQUIREMENT_ASSIGN_TO reqAssaign  where reqAssaign.STATUS = 1 and reqAssaign.REQUIREMENT_ID = ? ;";
 //				 conn = dataSource.getConnection();
 				 ps = conn.prepareStatement(sql);
 				 ps.setLong(1, requirementId);
@@ -563,4 +577,9 @@ public class AddElkRequirement {
 				e.printStackTrace();
 			}
 		}
+	 
+	 public String firstLetterCapitalizedString(String name){
+		 String finalString = WordUtils.capitalizeFully(name);
+		return finalString;
+	}
 }

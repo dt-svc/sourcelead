@@ -20,8 +20,10 @@ import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveType;
+import com.bis.sourcelead.entity.MonthlyLeaves;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.LeaveService;
 
 @Component
@@ -32,6 +34,9 @@ public class LeaveManagementUtil {
 	
 	@Autowired
 	LeaveService leaveService;
+	
+	@Autowired
+	EmployeesService employeesService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(LeaveManagementUtil.class);
 	
@@ -55,8 +60,9 @@ public class LeaveManagementUtil {
 			return dateFormat.parse(dateFormat.format(date));
 	}
 
-	public int getBalanceCountForLeaveType(LeaveType type, Employees emp, OrgLocations orgLocations, User loginUser) throws ParseException
+	public int getBalanceCountForLeaveType(LeaveType type, Employees employee, OrgLocations orgLocations, User loginUser) throws ParseException
 	{
+		Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(loginUser.getId(), orgLocations.getId());
 		int totalLeaves = 0;
 		if(type.getPeriod() != null){
 			if("Annually".equalsIgnoreCase(type.getPeriod())){
@@ -251,11 +257,14 @@ public class LeaveManagementUtil {
 		return dates;
 	}
 	
-	public Map<String,Integer> getMonthlyAppliedLeaves(Leave leave, LeaveDTO leaveDTO, User user) throws Exception{
-		Map<String,Integer> monthlyLeaves = new HashMap<>();
+	public Map<String,Float> getMonthlyAppliedLeaves(Leave leave, LeaveDTO leaveDTO, User user) throws Exception{
+		Map<String,Float> monthlyLeaves = new HashMap<>();
 		String months[] = Constants.MONTHS;
 		Date fromDate = commonUtil.getDateFormat(leaveDTO.getFromDate());
 		Date toDate = commonUtil.getDateFormat(leaveDTO.getToDate());
+		
+		String fromHalfday = leave.getFromHalfDay();
+		String toHalfday = leave.getToHalfDay();
 		
 		Calendar fromCal = Calendar.getInstance();
 		Calendar toCal = Calendar.getInstance();
@@ -264,27 +273,31 @@ public class LeaveManagementUtil {
 		toCal.setTime(toDate);
 		int toMonth = toCal.get(Calendar.MONTH);
 		int noOfDays = 0;
+		float actualNoOfDays = 0;
 		if(fromMonth == toMonth){
 			noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(fromDate,toDate);
-			monthlyLeaves.put(months[fromMonth], noOfDays);
+			actualNoOfDays = getTotalAppliedLeaves(noOfDays,fromHalfday,toHalfday);
+			monthlyLeaves.put(months[fromMonth], actualNoOfDays);
 		}else{
-			for(int i=1; i <= toMonth;i++){
+			for(int i=1; i < toMonth;i++){
 				if(fromMonth+i == toMonth){
 					Date[] dates = new Date[2];
 					fromCal.set(Calendar.DATE, fromCal.getActualMaximum(Calendar.DAY_OF_MONTH));
 					dates[0] = fromCal.getTime();
 					noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(fromDate,dates[0]);
-					monthlyLeaves.put(months[fromMonth], noOfDays);
+					actualNoOfDays = getTotalAppliedLeaves(noOfDays,fromHalfday,null);
+					monthlyLeaves.put(months[fromMonth], actualNoOfDays);
 					
 					toCal.set(Calendar.DATE, toCal.getActualMinimum(Calendar.DAY_OF_MONTH));
 					dates[1] = toCal.getTime();
 					noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(dates[1],toDate);
-					monthlyLeaves.put(months[toMonth], noOfDays);
-				}else{
+					actualNoOfDays = getTotalAppliedLeaves(noOfDays,null,toHalfday);
+					monthlyLeaves.put(months[toMonth], actualNoOfDays);
+				}else if(fromMonth+i < toMonth){
 					Calendar cal = Calendar.getInstance();
 					cal.set(Calendar.MONTH,fromMonth+i);
 					noOfDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-					monthlyLeaves.put(months[toMonth], noOfDays);
+					monthlyLeaves.put(months[toMonth-i], (float)noOfDays);
 				}
 			}
 			
@@ -292,4 +305,88 @@ public class LeaveManagementUtil {
 		return monthlyLeaves;
 	}
 		
+	private float getTotalAppliedLeaves(int days, String fromHalfday, String toHalfday)
+	{
+		float halfday = 0 ;
+		float actualApplied = 0;
+		
+		if("YES".equalsIgnoreCase(fromHalfday)){
+			halfday += 0.5f;
+		}
+		if("YES".equalsIgnoreCase(toHalfday)){
+			halfday += 0.5f;
+		}
+		if("YES".equalsIgnoreCase(fromHalfday) && "YES".equalsIgnoreCase(toHalfday)){
+			if(days > 1){
+				actualApplied = days - halfday;
+			}else{
+				actualApplied = halfday;
+			}
+		}else{
+			actualApplied = days - halfday;
+		}
+		return actualApplied;
+	}
+
+	public float calculateAppliedLeavesCountWithHalfDays(Leave leave)
+	{
+		float halfday = 0 ;
+		float actualApplied = 0;
+		
+		if("YES".equalsIgnoreCase(leave.getFromHalfDay())){
+			halfday += 0.5f;
+		}
+		if("YES".equalsIgnoreCase(leave.getToHalfDay())){
+			halfday += 0.5f;
+		}
+		int days = leave.getNumberOfDays();
+		if("YES".equalsIgnoreCase(leave.getFromHalfDay()) && "YES".equalsIgnoreCase(leave.getToHalfDay())){
+			if(days > 1){
+				actualApplied = days - halfday;
+			}else{
+				actualApplied = halfday;
+			}
+		}else{
+			actualApplied = days - halfday;
+		}
+		return actualApplied;
+	}
+
+	public float getTotalBalanceLeavesForNonCarryforwardLeaveType(LeaveType leaveType, float totalbalanceLeaveCounts, Employees emp) throws Exception
+	{
+		int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
+//		totalbalanceLeaveCounts = totalbalanceLeaveCounts - ((currentMonth) * leave.getLeaveType().getNoOfDays());
+		float totalLeaveCount = 0;
+		
+		if("Experienced".equalsIgnoreCase(leaveType.getLeaveEffective())){
+			if(emp.getHireDate() != null){
+				Date joinDate = emp.getHireDate();
+				Date currentDate = new Date();
+				int diffDays = commonUtil.getNumberOfDaysBetweenTwoDates(joinDate, currentDate);
+				int expDays = 0;
+				if("Year".equalsIgnoreCase(leaveType.getExperiencedType())){
+					expDays = leaveType.getExperiencedDuration() * 365 ;
+				}else if("Month".equalsIgnoreCase(leaveType.getExperiencedType())){
+					expDays = leaveType.getExperiencedDuration() * 30 ;
+				}else {
+					expDays = leaveType.getExperiencedDuration();
+				}
+				if(diffDays > expDays){
+					totalLeaveCount = leaveType.getExperiencedApplicableDays(); 
+				}else{
+					totalLeaveCount = leaveType.getNewJoinee(); 
+				}
+			}else{
+				totalLeaveCount = leaveType.getExperiencedApplicableDays(); 
+			}
+			totalbalanceLeaveCounts = totalbalanceLeaveCounts - totalLeaveCount;
+		}else{
+			for(int i=0; i<currentMonth;i++){
+				totalLeaveCount += leaveType.getNoOfDays();
+			}
+			totalbalanceLeaveCounts = totalbalanceLeaveCounts - totalLeaveCount;
+		}
+		
+		return totalbalanceLeaveCounts;
+	}
 }

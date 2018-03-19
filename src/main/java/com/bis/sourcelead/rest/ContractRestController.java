@@ -1,11 +1,9 @@
 package com.bis.sourcelead.rest;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -15,21 +13,18 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
-import org.jsoup.select.Elements;
-import org.jsoup.nodes.Element;
-import org.jsoup.parser.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,17 +38,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractRequestDocumentsDao;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
 import com.bis.sourcelead.dto.ContractDocumentsDTO;
 import com.bis.sourcelead.dto.ContractReqDocsDTO;
-import com.bis.sourcelead.dto.ContractsDTO;
-import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ContractTemplateDTO;
+import com.bis.sourcelead.dto.ContractsDTO;
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
+import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ContractRequestDocuments;
 import com.bis.sourcelead.entity.Contracts;
@@ -66,25 +63,27 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.payroll.entity.AccountDeductions;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractRequestDocumentsService;
 import com.bis.sourcelead.service.ContractsTemplateService;
+import com.bis.sourcelead.service.NewContractCustomFieldDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.Html2PdfUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -150,6 +149,15 @@ public class ContractRestController {
 	
 	@Autowired
 	CandidateService candidateService;
+	
+	@Autowired
+	private SourceleadActionsService sourceleadActionsService;
+	@Autowired
+	private SourceleadFormSectionsService sourceleadFormSectionsService;
+	@Autowired
+	private NewContractCustomFieldDataService newContractCustomFieldDataService;
+	
+	   
 	
 	@RequestMapping(value = "/saveTemplate", method = RequestMethod.POST)
 	public @ResponseBody String saveContractTemplate(ContractTemplateDTO contractTemplateDTO,
@@ -517,11 +525,11 @@ public class ContractRestController {
 		List<Requirement> requirementList = requirementService.getRequirementsForSOWByOrgLocationId(loginOrgLocation.getId(), sowType);
 		if(requirementList.size() > 0){
 			for(Requirement requirement : requirementList){
-				if(null != requirement.getSpocId() && (requirement.getSpocId().getClientUser().getFirstName() != null && requirement.getSpocId().getClientUser().getFirstName() != "" && requirement.getSpocId().getClientUser().getLastName() != null && requirement.getSpocId().getClientUser().getLastName() != "" )){
+				if(null != requirement.getSpocId() && (requirement.getManagerUserId().getFirstName() != null && requirement.getManagerUserId().getFirstName() != "" && requirement.getManagerUserId().getLastName() != null && requirement.getManagerUserId().getLastName() != "" )){
 					StringBuilder spocSB = new StringBuilder();
-					requirement.setSpocName(spocSB.append(" (").append(requirement.getSpocId().getClientUser().getFirstName()).append(" ").append(requirement.getSpocId().getClientUser().getLastName()).append(")").toString());
+					requirement.setSpocName(spocSB.append(" (").append(requirement.getManagerUserId().getFirstName()).append(" ").append(requirement.getManagerUserId().getLastName()).append(")").toString());
 				}else if(null != requirement.getSpocId()){
-					requirement.setSpocName(" ("+requirement.getSpocId().getClientUser().getFirstName()+")");
+					requirement.setSpocName(" ("+requirement.getManagerUserId().getFirstName()+")");
 				}else{
 					requirement.setSpocName("");
 				}
@@ -849,6 +857,35 @@ public class ContractRestController {
 		 	
     		contract.setContractRequestDocumentsList(contractRequestDocumentsList);
     		
+    		 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_ADD_NEW_CONTRACT);
+  			 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocation.getId());
+  			 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
+  			 if(sections != null && !sections.isEmpty()) {
+  				 for(SourceleadSectionDTO sec:sections) {
+  					 for(OrglocationFormFieldsDTO customFields:sec.getCustomFieldsList()) {
+  						 CustomFormFieldDTO custom = new CustomFormFieldDTO();
+  						 custom.setCustomFormFieldId(customFields.getId());
+  						 formFieldId.add(custom);
+  					 }
+  				 }
+  				 if(formFieldId != null && !formFieldId.isEmpty() && contract.getId() != null) {
+  				 Map<Long, String[]> contractData = newContractCustomFieldDataService.getNewContractCustomFieldDataByContractId(orgLocation.getOrg().getId(),formFieldId, contract.getId());
+  				 Map<Long,String> dataMap = new HashMap<>();
+  				 
+  				 if(contractData!= null && !contractData.isEmpty()) {
+  					 for(Entry<Long, String[]> contractCustomData:contractData.entrySet()) {
+  						String labelName = contractCustomData.getValue()[0];
+  						 String labelData = contractCustomData.getValue()[1];
+  						 Long id = contractCustomData.getKey();
+  						 StringBuilder keyValue =  new StringBuilder();
+  						 keyValue.append(labelName).append("$").append(labelData);
+  						 dataMap.put(id, keyValue.toString());
+  						 contract.setNewContractCustomFieldlabelNameAndValue(dataMap);
+  					 	}
+  				 	}
+  				 }
+  			 }
+  		
 			return commonUtil.toJSON(contract);
 		}
 	 

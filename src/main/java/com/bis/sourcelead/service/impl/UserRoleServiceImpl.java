@@ -324,11 +324,11 @@ public class UserRoleServiceImpl implements UserRoleService{
 			   writeRow.createCell(4).setCellValue(userRoles.getUser().getMobilePhone());
 		   }
 		   if(userRoles.getRoles() != null){
-			   writeRow.createCell(8).setCellValue(userRoles.getRoles().getDisplayName());
+			   writeRow.createCell(7).setCellValue(userRoles.getRoles().getDisplayName());
 		   }
-		   if(userRoles.getUser().getLocation() !=null){
+		  /* if(userRoles.getUser().getLocation() !=null){
 			   writeRow.createCell(7).setCellValue(userRoles.getUser().getLocation());
-		   }
+		   }*/
 		   if(userRoles.getReportingManager() !=null){
 			   StringBuilder reportingManager = new StringBuilder();
 			   if(userRoles.getReportingManager().getLastName() != null && !userRoles.getReportingManager().getLastName().isEmpty()) {
@@ -336,17 +336,17 @@ public class UserRoleServiceImpl implements UserRoleService{
 			   }else {
 				   reportingManager = reportingManager.append(userRoles.getReportingManager().getFirstName());
 			   }
-			   writeRow.createCell(9).setCellValue(reportingManager.toString());
+			   writeRow.createCell(8).setCellValue(reportingManager.toString());
 		   }
 		   
 		   if(userRoles.getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && "N".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && !"INACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
-			   writeRow.createCell(10).setCellValue("Invite");
+			   writeRow.createCell(9).setCellValue("Invite");
 	   		   }else if((userRoles.getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && "Y".equalsIgnoreCase(userRoles.getIsMailSent().toString())) &&  (userRoles.getUserState() !=null && "NOT_LOGGEDIN".equalsIgnoreCase(userRoles.getUserState().toString()))){
-	   			writeRow.createCell(10).setCellValue("Resend");
+	   			writeRow.createCell(9).setCellValue("Resend");
 	   		   }else if(userRoles.getUserState() !=null && "ACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
-	   			writeRow.createCell(10).setCellValue("Active");
+	   			writeRow.createCell(9).setCellValue("Active");
 	   		   }else if(userRoles.getUserState() !=null && "INACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
-	   			writeRow.createCell(10).setCellValue("In-active");
+	   			writeRow.createCell(9).setCellValue("In-active");
 	   		   }
 		   
 		return createExcelsheet;
@@ -626,10 +626,6 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return userRoleDao.getUserRoleByVerficationUUID(uuid);
 	}
 
-	@Override
-	public ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId(UserDTO userDTO,UserRoleDTO userRoleDTO,Long roleId, Long locationId, String userState, Long userId, String loginUserRole, String userCode) throws Exception {
-		return userRoleDao.getDynamicUsersListByRoleAndNameAndLocationId(userDTO,userRoleDTO,roleId, locationId, userState, userId, loginUserRole, userCode);
-	}
 
 	@Override
 	public List<ConnectionsDTO> getUserListForConnections(String searchByName,Integer offSet,Long userId) throws Exception {
@@ -640,6 +636,22 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public HashSet<ProjectMembers> getAllProjectMembersByProjectIdForMissingTSReports(Long projectId, Long locationId)
 			throws Exception {
 		return userRoleDao.getAllProjectMembersByProjectIdForMissingTSReports(projectId, locationId);
+	}
+
+	@Override
+	public List<UserRole> getAllUsersBasedOrgLocationId(Long orgLocationId) throws Exception {
+		return userRoleDao.getAllUsersBasedOrgLocationId(orgLocationId);
+	}
+	@Override
+	public ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId(UserDTO userDTO,
+			UserRoleDTO userRoleDTO, Long locationId, Long userId, String loginUserRole, String userCode,List<Long> orgRelationsList,List<Long> managerUserIds,List<Long> teamsList,List<Long> departmentsList)
+			throws Exception {
+		return userRoleDao.getDynamicUsersListByRoleAndNameAndLocationId(userDTO, userRoleDTO, locationId, userId, loginUserRole, userCode,orgRelationsList,managerUserIds,teamsList,departmentsList);
+	}
+
+	@Override
+	public List<User> getAllReportingManagersAssignedToAssociates(Long orgLocationId) throws Exception {
+		return userRoleDao.getAllReportingManagersAssignedToAssociates(orgLocationId);
 	}
 
 }

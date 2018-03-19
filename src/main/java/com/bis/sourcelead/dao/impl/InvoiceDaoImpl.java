@@ -25,6 +25,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoicePayment;
@@ -51,6 +52,26 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}
 		return invoice;
 	}
+	
+	
+	@Override
+	@Transactional
+	public Boolean getInvoiceByInvoiceId(String invoiceId, Long orgLocationsId) throws Exception {
+		
+			Session session = this.sessionFactory.getCurrentSession();
+			
+			String query = "from Invoice invoice where invoice.orgLocation.id = :orgLocationsId and invoice.invoiceId = :invoiceId and invoice.status='1'";
+			List<Invoice> invoiceList = session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setString("invoiceId", invoiceId).list();
+
+					if (invoiceList.size() > 0) {
+						return true;
+					} else {
+						return false;
+					}
+			 
+		}
+		
+		
 
 
 	@Override
@@ -126,7 +147,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}
 
 		String query = "from Invoice invoice  left join fetch  invoice.orgRelationID left join fetch invoice.projectMemberId pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user "
-		 		+ "left join fetch invoice.expensesId left join fetch invoice.projectID where  invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" "+subQuery3+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC"+qry;
+		 		+ "left join fetch invoice.expensesId left join fetch invoice.projectID where  invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" "+subQuery3+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
 		String countQuery = "";
 		if(invoiceDTO.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)){
 			countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='Receivable' and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" "+subQuery3+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
@@ -168,7 +189,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			}
 			}
 		}
-		Query queryObj = session.createQuery(query + query1.toString());
+		Query queryObj = session.createQuery(query + query1.toString()+qry);
 		if (invoiceDTO != null && invoiceDTO.getLength() > 0) {
 			queryObj.setFirstResult(invoiceDTO.getStart());
 			queryObj.setMaxResults(invoiceDTO.getLength());
@@ -512,10 +533,24 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			return null;
 		}
 	}
-	
-	
 
-	
 
-	 
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<Invoice> getAllBillsAndInvoicesBYProjectIdOrgLocationIdInvoiceStatusStartDateAndEndDate(Long projectId,
+			Long orgLocationId, String invoiceStatus, Date startDate, Date endDate) {
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlStartDate = null;
+		if(startDate != null){
+			sqlStartDate = new java.sql.Date(startDate.getTime());
+		}
+		java.sql.Date sqlEndDate = null;
+		if(endDate != null){
+			sqlEndDate = new java.sql.Date(endDate.getTime());
+		}
+		String query = "from Invoice invoice  where invoice.projectID.id = :projectId and invoice.invoiceStatus =:invoiceStatus and invoice.orgLocation.id = :orgLocationId and date(invoice.createdDate) BETWEEN :startDate and :endDate";
+		List<Invoice> viewInvoiceList = session.createQuery(query.toString()).setString("invoiceStatus", invoiceStatus).setLong("projectId", projectId).setLong("orgLocationId", orgLocationId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list();
+		return viewInvoiceList;
+	}
 }

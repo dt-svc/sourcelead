@@ -84,7 +84,7 @@ function getRequirementSubmissionDetails(jobTitle,submissionId,candidateId,requi
 	var loginUserId = '${SourceLeadWeb_userId}';
 	$.ajax({ 
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getProfessionalSubmissionDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,
+	    	  url: sourceleadUrl+"/getProfessionalSubmissionDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId, 
 	    			
 	    	  success: function(data) {
     		  var result = "";
@@ -2055,7 +2055,7 @@ $('body').on('submit', '#applyToJob_form', function(e){
 		    			document.getElementById('requirementType').value = 'AppliedJobs';
 			    		document.getElementById('appliedjobs').checked = true;
 			    		document.getElementById('appliedActive').className = 'activeBackground'
-			    		document.getElementById("crowdActive").removeAttribute("class")
+			    		//document.getElementById("crowdActive").removeAttribute("class")
 			       		document.getElementById("openActive").removeAttribute("class");
 			        	
 			       		requirementsList(0);

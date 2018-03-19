@@ -9,6 +9,9 @@
 window.onload = function() { 
 	getPieChartBasedOnUser();
 	getApproversList();
+   if($("#checkbox-1").is(':checked')){
+	   $("#checkbox-1").prop('checked', false);
+	}
 	}
 </script>
 
@@ -263,7 +266,7 @@ function removeEndValid(){
         	  output = output +' <option value="">--Select Leave Type--</option>';
         	  for (var i = 0; i < json.length; i++) { 
         		  var leave = json[i];
-        		  output = output +'<option value='+leave.id+'>'+leave.name+'</option>';
+        		  output = output +'<option value='+leave.leaveTypeUUID+'>'+leave.name+'</option>';
         	  }
         	  output = output +'</select>';
         	  $("#leaveTypeIdDiv").empty();
@@ -273,9 +276,9 @@ function removeEndValid(){
 //         	  $('#leaveType').prop('disabled', true).trigger("chosen:updated");
         	  
         	  var counts = json[json.length-1];
-        	  var totalBalanceCounts = counts.balanceLeaveCounts;
+        	  var totalBalanceCounts = counts.totalBalanceLeaveCounts;
         	  var totalPendingCounts = counts.pendingLeaveCounts;
-        	  var totalTakenCounts = counts.takenLeaveCounts;
+        	  var totalTakenCounts = counts.takenLeaves;
         	  getpieChar(totalBalanceCounts,totalPendingCounts,totalTakenCounts);
         	  
         	  var result = "";
@@ -286,7 +289,7 @@ function removeEndValid(){
 				        result = result +'	<li>';
 				  		result = result +'			<label>'+leaveType.name+'</label>';
 				  		var leaveTypeName = leaveType.name.replace(/ /g,"_");
-				  		result = result +'			<span class="label label-info" id="'+leaveTypeName+'Span" style="background-color: '+leaveType.colorCode+';" >'+leaveType.remainingTotalLeaveCounts+'</span>';
+				  		result = result +'			<span class="label label-info pull-right" id="'+leaveTypeName+'Span" style="background-color: '+leaveType.colorCode+';" >'+leaveType.leaveTypeBalanceLeaveCount+'</span>';
 				  		result = result +'	</li>'; 
 	        	  }
 	        	  result = result +'	</ul>'; 
@@ -447,21 +450,26 @@ $(".close").click(function(){
 
 <script>
 function getLeaveDetails(finalDateFormatEndDate){
-	var leaveTypeId = $("#leaveType").val();
+	var leaveTypeUUID = $("#leaveType").val();
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
-	if(leaveTypeId !=null && leaveTypeId != '' && leaveTypeId !='undefined'){
+	var skipPolicy = false;
+	var policy = $("#termsAndConditions").text();
+	if(policy != null && policy != '' && policy !='undefined'){
+		skipPolicy = true;
+	}
+	if(leaveTypeUUID !=null && leaveTypeUUID != '' && leaveTypeUUID !='undefined'){
 		$.ajax({
 		   	type: "POST",
-		   	url: sourceleadUrl+"/leaveTypeSummary?&leaveTypeId="+leaveTypeId,	 
+		   	url: sourceleadUrl+"/leaveTypeSummary?&leaveTypeUUID="+leaveTypeUUID,	 
 		    success: function(report) {
-		    	if(report.duration == "Full Day"){
+		    	if(report.duration == "Half Day"){
 		    		$("#fromHalfDayDiv").hide();
 		    		$("#toHalfDayDiv").hide();
 		    	}else{
 		    		$("#fromHalfDayDiv").show();
 		    		$("#toHalfDayDiv").show();
-		    	}
+		    	} 
 		    	
 		    	if(report.reasonRequired == "Y"){
 			 		$("#reason").attr('data-validation',"required");
@@ -506,10 +514,13 @@ function getLeaveDetails(finalDateFormatEndDate){
 		        }else{
 		    		$("#applyId").prop("disabled", false);
 		        }
-		    	if(report.policyDescription !=null && report.policyDescription !='' && report.policyDescription !='undefined'){
-	 				$("#termsAndConditions").html(report.policyDescription);
-	 				document.getElementById("termsModel").style.display="block";
-	 			}
+		    	if(skipPolicy != true){
+		    		if(report.policyDescription !=null && report.policyDescription !='' && report.policyDescription !='undefined'){
+		 				$("#termsAndConditions").html(report.policyDescription);
+		 				document.getElementById("termsModel").style.display="block";
+		 			}
+		    	}
+		    	
 		    }
 		});
 	}
@@ -601,7 +612,6 @@ function validateMaxLeave(data){
 
 <script>
 function validateCarryForwardLeaves(){
-	alert("sdasdsadsa")
 	$('.jquery_form_error_message cOrange').hide();
 	var behalf = $("#checkbox-1");
 	var userId = "";
@@ -616,7 +626,6 @@ function validateCarryForwardLeaves(){
 	var leaveTypeId = $("#leaveType").val();
 	if(userId != null && userId !='' && userId !='undefined'){
 	if(leaveTypeId !=null && leaveTypeId != '' && leaveTypeId !='undefined'){
-		alert("asdas")
 		$.get(sourceleadUrl+"/validateCarryForwardLeaves?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&userId="+userId+"&fromDate="+fromDate+"&toDate="+toDate, function(data) {
 			if(data == true){
 				$('.jquery_form_error_message').remove();

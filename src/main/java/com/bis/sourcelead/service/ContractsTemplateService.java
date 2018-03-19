@@ -78,6 +78,8 @@ public interface ContractsTemplateService {
 
 	List<Contracts> getContractByLocationId(Long orgLocationId);
 
+	List<User> getSigningAuthoritiesForContract(Long locationId, Long tabId) throws Exception;
+
 
 	
 }

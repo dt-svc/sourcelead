@@ -457,6 +457,7 @@ public class MailBoxController {
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
 				String commonDateFormat = standardFormat.format(converteDate);
+				userMailBox.setCalDays(commonDateFormat);
 			} 
 
 		}

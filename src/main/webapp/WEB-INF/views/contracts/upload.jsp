@@ -24,7 +24,8 @@
 <script>
 	$(document).ready(function() {
 		var data = '${type}';
-		Signer.uploadDoc(data);
+		var permission = '${permission}';
+		Signer.uploadDoc(data,permission);
 		/* var firstName = '${SourceLeadWeb_user.firstName}';
 		var lastName = '${SourceLeadWeb_user.lastName}';
 		$("#txtsignname").val(firstName);
@@ -136,13 +137,13 @@ position: relative;top:8px;
                     <div class="form-group row">
                         <label for="txtsignname"  class="col-xs-3 text-right">Signatory Name</label>
                         <div class="col-xs-7" id="signatoryNameDiv">
-                            <input class="form-control" id="txtsignname" field-name="Signatory Name" type="text" value="${contract.contactUser.firstName}">
+                            <input class="form-control" id="txtsignname" field-name="Signatory Name" type="text" value="${signatory}">
                         </div>
                     </div>
                     <div class="form-group row">
                          <label class="col-xs-3 text-right" for="txtinitialname">Initial</label>
                         <div class="col-xs-7">
-                            <input class="form-control" id="txtinitialname" type="text" value="${contract.contactUser.lastName}">
+                            <input class="form-control" id="txtinitialname" type="text" value="${initial}">
                         </div>
                     </div>
                 </div>

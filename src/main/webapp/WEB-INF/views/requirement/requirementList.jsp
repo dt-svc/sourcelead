@@ -63,7 +63,7 @@ $(document).ready(function() {
 	    
     $("#filter2ApprovePop").click(function(){
 		$("#filter2ApprovedPop").slideToggle(200);
-		$(".export_pop, .action-pop, #exportPop, #filter1ApprovedPop, #filter3ApprovedPop, #filter4ApprovedPop").slideUp(200);
+		$(".export_pop, .action-pop, #exportPop, #filter1ApprovedPop, #filter3ApprovedPop, #filter4ApprovedPop, #filter5ApprovedPop").slideUp(200);
 	});
     $("html").click(function() {
         $("#filter2ApprovedPop").slideUp(200);
@@ -74,18 +74,29 @@ $(document).ready(function() {
     
     $("#filter3ApprovePop").click(function(){
 		$("#filter3ApprovedPop").slideToggle(200);
-		$(".export_pop, .action-pop, #exportPop, #filter1ApprovedPop, #filter2ApprovedPop, #filter4ApprovedPop").slideUp(200);
+		$(".export_pop, .action-pop, #exportPop, #filter1ApprovedPop, #filter2ApprovedPop, #filter4ApprovedPop, #filter5ApprovedPop").slideUp(200);
 	});
     $("html").click(function() {
         $("#filter3ApprovedPop").slideUp(200);
     });
     $("#filter3ApprovedPop, #filter3ApprovePop").click(function(e) {  
         e.stopPropagation();
-    });	
+    });
+    
+    $("#filter5ApprovePop").click(function(){
+		$("#filter5ApprovedPop").slideToggle(200);
+		$(".export_pop, .action-pop, #exportPop, #filter1ApprovedPop, #filter2ApprovedPop, #filter4ApprovedPop, #filter3ApprovedPop").slideUp(200);
+	});
+    $("html").click(function() {
+        $("#filter5ApprovedPop").slideUp(200);
+    });
+    $("#filter5ApprovedPop, #filter5ApprovePop").click(function(e) {  
+        e.stopPropagation();
+    });
     
     $("#filter4ApprovePop").click(function(){
 		$("#filter4ApprovedPop").slideToggle(200);
-		$(".export_pop, .action-pop, #exportPop, #filter1ApprovedPop, #filter2ApprovedPop, #filter3ApprovedPop ").slideUp(200);
+		$(".export_pop, .action-pop, #exportPop, #filter1ApprovedPop, #filter2ApprovedPop, #filter3ApprovedPop, #filter5ApprovedPop ").slideUp(200);
 	});
     $("html").click(function() {
         $("#filter4ApprovedPop").slideUp(200);
@@ -465,6 +476,15 @@ function statusvalidating(id){
 								</ul>
 						 </div>
 						 
+						 <li><b id="filter5ApprovePop"><i class="fa fa-filter"></i><span>Assign To</span><i
+								class="glyphicon glyphicon-play"></i></b>
+							<div id="filter5ApprovedPop" class="approved_pop">
+								<ul id="assignTo">
+									<li><input id="r1" type="radio" name="requirementAssignTo" value="Alljobs" onclick="requirementList('list','${sourceleadUrl}');"><label for="r1">All Jobs </label></li>
+									<li><input id="r2" type="radio" name="requirementAssignTo" value="Myjobs" onclick="requirementList('list','${sourceleadUrl}');"><label for="r2">My Jobs </label></li>
+								</ul>
+							</div></li>
+						 
 						 <li><b id="filter3ApprovePop"><i class="fa fa-filter"></i><span>Priority</span><i
 								class="glyphicon glyphicon-play"></i></b>
 							<div id="filter3ApprovedPop" class="approved_pop">
@@ -551,10 +571,11 @@ function statusvalidating(id){
 						<li><a href="<c:url value='${appPath}/requirement'/>"><i
 								class="fa fa-plus"></i>Add Job</a></li>
 					</sec:authorize>
-					<sec:authorize access="hasAnyRole('ROLE_ADD_TEAM')">
+					<%-- Team Creation and Team List Moved To Role Configuration --%>
+					<%-- <sec:authorize access="hasAnyRole('ROLE_ADD_TEAM')">
 						<li><a href="<c:url value='${appPath}/team'/>"><i
 								class="fa fa-plus"></i>Team</a></li>
-					</sec:authorize>
+					</sec:authorize> --%>
 					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
 						<li title="Import"><a href="<c:url value='${appPath}/uploadJobs'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
 					</sec:authorize>

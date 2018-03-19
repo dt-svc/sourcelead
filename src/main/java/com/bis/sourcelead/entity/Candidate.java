@@ -104,10 +104,10 @@ public class Candidate implements Serializable{
 	@Column(name = "CITY",columnDefinition = "TEXT default NULL" )
 	private String city;
 	
-	@Column(name = "ADDRESS", columnDefinition = "TEXT default NULL")
+	@Column(name = "ADDRESS", columnDefinition = "LONGTEXT default NULL")
 	private String address;
 	
-	@Column(name = "LOCATION", columnDefinition = "TEXT default NULL")
+	@Column(name = "LOCATION", columnDefinition = "LONGTEXT default NULL")
 	private String location;
 	
 	@Column(name = "ZIPCODE")
@@ -427,6 +427,10 @@ public class Candidate implements Serializable{
 	 
 	 @Transient
 	 private Long venSpocId;
+	 
+	 @Transient
+	 @JsonProperty
+	 private String commentsCount;
 	 
 	public int getProfilePercentage()
 	{
@@ -1595,6 +1599,16 @@ public class Candidate implements Serializable{
 		this.venSpocId = venSpocId;
 	}
 
+
+	public String getCommentsCount()
+	{
+		return commentsCount;
+	}
+
+	public void setCommentsCount(String commentsCount)
+	{
+		this.commentsCount = commentsCount;
+	}
 
 	public Candidate getParentCandidateId() {
 		return parentCandidateId;

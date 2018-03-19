@@ -106,10 +106,9 @@ public class RequirementOffersDaoImpl implements RequirementOffersDao{
 	public List<RequirementOffers> getOfferAcceptedCandidatesByOrgLocationId(Long orgLocationId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RequirementOffers requirementOffer left join fetch requirementOffer.submissionId submission left join fetch submission.candidateResumes left join fetch submission.requirement "
+		String query = "from RequirementOffers requirementOffer left join fetch requirementOffer.submissionId submission left join fetch submission.orgLocations left join fetch submission.candidateResumes left join fetch submission.requirement "
 				+ " left join fetch submission.candidate candidate left join fetch candidate.consultantUser consultantUser where requirementOffer.submissionId.orgLocations.id = :orgLocationId "
-				+ " and requirementOffer.submissionId.submissionStatus = 'OFFERACCEPTED' and requirementOffer.offerStatus = 'OFFERACCEPTED' and consultantUser.id IS NULL and "
-				+ " submission.candidate.id NOT IN (select onboarding.candidateId.id from CandidateOnBoarding onboarding where onboarding.orgLocationId.id = :orgLocationId) ";
+				+ " and requirementOffer.submissionId.submissionStatus = 'OFFERACCEPTED' and requirementOffer.offerStatus = 'OFFERACCEPTED' and consultantUser.id IS NULL ";
 		List<RequirementOffers> requirementOffersList =  session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		
 		return requirementOffersList;
@@ -139,5 +138,21 @@ public class RequirementOffersDaoImpl implements RequirementOffersDao{
 		String query = "from RequirementOffers rs left join fetch rs.submissionId submission left join fetch submission.requirement left join fetch submission.candidate candidate where submission.orgLocations.id =:locationId and submission.sourceSubmission <> NULL and submission.submissionStatus = 'OFFERACCEPTED' order by submission.updatedDate DESC";
 		List<RequirementOffers> requirementOffersList =  session.createQuery(query.toString()).setLong("locationId", locationId).setMaxResults(10).list();
 		return requirementOffersList;
+	}
+
+	@Override
+	@Transactional
+	public RequirementOffers getOnboardRequirementOfferId(Long offerId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementOffers rs left join fetch rs.submissionId submission left join fetch submission.candidate candidate "
+				+ "left join fetch candidate.orgRelationId left join fetch candidate.spocId where rs.id = :offerId ";
+		List<RequirementOffers> requirementOffersList =  session.createQuery(query.toString()).setLong("offerId", offerId).list();
+		
+		RequirementOffers requirementOffers = null;
+		
+		if (requirementOffersList != null && requirementOffersList.size() > 0) {
+			requirementOffers = (RequirementOffers) requirementOffersList.iterator().next();
+		}
+		return requirementOffers;
 	}
 }

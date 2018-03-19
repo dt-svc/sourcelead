@@ -114,7 +114,7 @@ public interface ProjectsService {
 		
 		Boolean validateTasksName(String taskname, Long projectId) throws Exception;
 		
-		List<ProjectMembers> getProjectEmployeeListByProjectIdAndStatus(Long projectId,String status,OrgLocations loginOrgLocation,String roleIds) throws Exception ;
+		List<ProjectMembers> getProjectEmployeeListByProjectIdAndStatus(Long projectId,String status,OrgLocations loginOrgLocation,String roleIds,String teamIds) throws Exception ;
 
 		List<Projects> getClientProjectsByOrgRelationId(Long orgRelationId, Long orgLocationId)throws Exception ;
 
@@ -127,6 +127,10 @@ public interface ProjectsService {
 		List<Projects> getAllProjectsByOrgLocationIdAndStatusForTransfer(Long orgLocationId,String projectClientUUID) throws Exception ;
 		
 		Projects makeInternalProjectAsClientProject(Projects projects,Long orgRelationId,Long clientOrgLocationId,OrgLocations loginOrgLocation) throws Exception;
+		
+		Projects getClientProjectApproversUpdate(String projectClientUUID,User user,ProjectsDTO projectsDTO) throws Exception ;
+
+		Projects getProjectByProjectName(String projectName) throws Exception;
 		
 //		public String getProjectId(OrgLocations orgLocations);
 		

@@ -894,35 +894,35 @@ function educationSelectScoreType(){
 	 if(selectedText =='Percentage'){
 		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
 		  if(canScore.match(floatNum)){
-			  $("#addCandidate").removeAttr("disabled");
+			  $("#save_button").removeAttr("disabled");
 			   return true;
 		  }		  
 		 else{
 				$("input#candidateEducationScore").parent().after("<p class='jquery_form_error_message'><span>Enter your Valid Percentage</span>");
-				 $("#addCandidate").attr("disabled", "disabled");
+				 $("#save_button").attr("disabled", "disabled");
 				return false; 
 		 	 }
 	  }
 	 else if(selectedText =='CGPA'){
 		  var cgpanum = /^(([\d][\.])?([\d])|10)?$/
 			  if(canScore.match(cgpanum)){
-				  $("#addCandidate").removeAttr("disabled");
+				  $("#save_button").removeAttr("disabled");
 				   return true;
 			  }		  
 			 else{
 				 $("input#candidateEducationScore").parent().after("<p class='jquery_form_error_message'><span>Enter your Valid CGPA value</span>");
-				 $("#addCandidate").attr("disabled", "disabled");
+				 $("#save_button").attr("disabled", "disabled");
 			return false; 
 			 }
 	  } 
 	 else if(selectedText =='GRADE'){
 		 var grades = /^([A-E][-+]{0,2})?$/
 			 if (canScore.match(grades)) {
-				 $("#addCandidate").removeAttr("disabled");
+				 $("#save_button").removeAttr("disabled");
 				 return true;
 			}else{
 				$("input#candidateEducationScore").parent().after("<p class='jquery_form_error_message'> Enter your Valid Grade </p>");
-				 $("#addCandidate").attr("disabled", "disabled");
+				 $("#save_button").attr("disabled", "disabled");
 	    		return false;
 	    		
 			}
@@ -934,7 +934,6 @@ function educationSelectScoreType(){
 
 <script type="text/javascript">
 function educationscoreAndScoreType(){
-	
 	 var candidateScore = document.getElementById("candidateEducationScore").value;
 	 var selectedText = document.getElementById("scoreEducationType").value;
 	 var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
@@ -943,13 +942,17 @@ function educationscoreAndScoreType(){
 	 if(candidateScore.match(floatNum)){
 		 $("#scoreEducationType").val('Percentage'); 
 		 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
-		 $("#addCandidate").removeAttr("disabled");
+		 $("#save_button").removeAttr("disabled");
 	 }
 	 if(candidateScore.match(grades)){
+		 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
 		 $("#scoreEducationType").val('GRADE'); 
+		 $("#save_button").removeAttr("disabled");
 	 }
 	 if(candidateScore.match(cgpanum)){
+		 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
 		 $("#scoreEducationType").val('CGPA'); 
+		 $("#save_button").removeAttr("disabled");
 	 }
 	 if((selectedText == '') && (!candidateScore.match(floatNum)) && (!candidateScore.match( cgpanum)) && (!candidateScore.match(grades))){
 		 $("input#candidateEducationScore").parent().after("<p class='jquery_form_error_message'> Enter your Valid Score </p>");
@@ -992,17 +995,14 @@ function clearSearchKeyEducation() {
 		if ($('#education_form').validate(false,
 				validationSettings)) {
 
-			var frm = $('#education_form')[0];
 
-			var formData = new FormData(frm);
+			var formData = getFormData('education_form');
 			 $("#education_form").attr("disabled", "disabled");
 			 $("#save_button").attr("disabled", "disabled");
 			 
 			 $.ajax({
 						type : "POST",
 						data :formData,
-						processData: false,
-		    	        contentType:false,
 						url : sourceleadUrl+"/upDateCandidateEducationByCandidateIdAndCandidateEducationId?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId ,
 						success : function(result) {
 							closePopup();

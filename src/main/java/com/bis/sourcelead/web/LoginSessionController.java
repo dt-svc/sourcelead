@@ -72,6 +72,7 @@ import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.service.UserLoginLogoutSessionService;
 import com.bis.sourcelead.service.UserMailBoxService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -172,6 +173,9 @@ public class LoginSessionController {
 	@Autowired
 	ConnectionsService connectionsService;
 	
+	@Autowired
+	UserLoginLogoutSessionService userLoginLogoutSessionService;
+	
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -224,6 +228,7 @@ public class LoginSessionController {
 		Integer associatesTabsCount = 0; 
 		Integer billingTabsCount = 0;
 		Integer expensesTabCount = 0;
+		Integer resourcesTabCount = 0;
 		
 		UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) request.getSession().getAttribute("userLoginSession");
 		if(userLoginSession != null){
@@ -257,16 +262,16 @@ public class LoginSessionController {
 				tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
 				for(Tabs tabs : tabsList){
 					
-					/*if(tabs.getTabName().equalsIgnoreCase("Associates List") || tabs.getTabName().equalsIgnoreCase("On & Off Boarding")){
-						associatesTabsCount = associatesTabsCount+1;
-					}*/
-					
 					if(tabs.getTabName().equalsIgnoreCase("Receivable") || tabs.getTabName().equalsIgnoreCase("Payables")){
 						billingTabsCount = billingTabsCount+1;
 					}
 					
 					if(tabs.getTabName().equalsIgnoreCase("My Expenses") || tabs.getTabName().equalsIgnoreCase("Expenses Approval")){
 						expensesTabCount = expensesTabCount+1;
+					}
+					
+					if(tabs.getTabName().equalsIgnoreCase("Blog") || tabs.getTabName().equalsIgnoreCase("User Manuals")){
+						resourcesTabCount = resourcesTabCount+1;
 					}
 				}
 				
@@ -292,6 +297,7 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "associatesTabsCount", associatesTabsCount);
 			SourceLeadSessionManager.setSessionAttribute(request, "billingTabsCount", billingTabsCount);
 			SourceLeadSessionManager.setSessionAttribute(request, "expensesTabCount", expensesTabCount);
+			SourceLeadSessionManager.setSessionAttribute(request, "resourcesTabCount", resourcesTabCount);
 			
 			Candidate candidate = candidateService.getCandidateByConsultantUserId(userRole.getUser().getId(), orgLocations.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
@@ -342,6 +348,8 @@ public class LoginSessionController {
 					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", orgLocationsList);
 					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", orgLocationsList.size());
 					SourceLeadSessionManager.setSessionAttribute(request, "prodSupportLoginUserRole", userRole.getRoles().getRoleName());
+					SourceLeadSessionManager.setSessionAttribute(request, "prodSupportLoginUserDisplayName", userRole.getRoles().getDisplayName());
+					SourceLeadSessionManager.setSessionAttribute(request, "prodSupportLoginOrgName", userRole.getRoles().getOrgLocations().getOrgLocationName());
 					SourceLeadSessionManager.setSessionAttribute(request, "prodSupportOrgLocationId", userRole.getRoles().getOrgLocations().getId());
 				}
 			}else{
@@ -394,7 +402,7 @@ public class LoginSessionController {
 				}else{
 					
 					CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(userRole.getUser().getId(), orgLocations.getId());
-					if(null != candidateOnBoarding){
+					if(null != candidateOnBoarding && requirementUUID == null){
 						SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding", candidateOnBoarding);
 						if(candidateOnBoarding.getManagerUserId()!=null){
 							SourceLeadSessionManager.setSessionAttribute(request, "OnboardingManagerUserId", candidateOnBoarding.getManagerUserId().getId());
@@ -408,9 +416,16 @@ public class LoginSessionController {
 						}else{
 							model.setViewName("dashboard");
 						}
-					}else{
+					}
+					else if(requirementUUID !=null && requirementUUID != ""){
+						StringBuilder redirectUrl = new StringBuilder();
+						response.sendRedirect(redirectUrl.append("requirementProfileDetails?requirementUUID=").append(requirementUUID).toString());
+						model.setViewName("professional/professionalRequirements");
+					}
+					else{
 						model.setViewName("dashboard");
 					}
+					
 				}
 			}
 			
@@ -447,7 +462,7 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "prodSupportLoginUserRole", null);
 
 			SourceLeadSessionManager.setSessionAttribute(request, "userType", userRole.getUserType());
-			SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getUserType());
+			SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getRoles().getDisplayName());
 			SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
 			SourceLeadSessionManager.setSessionAttribute(request, "country", user.getCountry());
 			
@@ -516,6 +531,7 @@ public class LoginSessionController {
 				if(!isNullOrEmpty(requirementUUID)){
 					StringBuilder redirectUrl = new StringBuilder();
 					response.sendRedirect(redirectUrl.append("/app/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
+					model.setViewName("professional/professionalRequirements");
 				}else{
 					model.setViewName("recruiter/recruiterDashboard");
 				}
@@ -1171,20 +1187,29 @@ public class LoginSessionController {
     }
   
   
+
   @RequestMapping(value = "/app/ws/userEnrolledOrgLocations" , method = RequestMethod.POST)
-  public ModelAndView userEnrolledOrgLocations(@RequestParam(value = "userName", required = false) String userName,@RequestParam(value = "password", required = false) String password) throws Exception {
+  public ModelAndView userEnrolledOrgLocations(@RequestParam(value = "userName", required = false) String userName,@RequestParam(value = "password", required = false) String password ,@RequestParam(value = "requirementUUID", required = false) String requirementUUID,HttpServletRequest request) throws Exception {
 	  ModelAndView model = new ModelAndView();
 	  User user = userService.findByUserName(userName);
+
 		List<UserRole> userSpocRolesList = null;
-		if(user != null)
+		if (user != null)
 			userSpocRolesList = userRoleService.getUserSpocsListByUserId(user.getId());
-	  model.addObject("username", userName);
-	  model.addObject("password", password);
-	  model.addObject("sourceleadUrl", sourceleadUrl);
-	  model.addObject("roleList", userSpocRolesList);
-	  model.setViewName("userEnrolledLocations");
-	  return model;
-  }
+		
+		String ipAddress = userLoginHelper.getClientIpAddr(request);
+		
+		boolean alreadyVerifiedBefore = userLoginLogoutSessionService.validatePreviouslyAuthenticatedByUserIdAndIpAddress(ipAddress,user.getId());
+		model.addObject("alreadyVerifiedBefore", alreadyVerifiedBefore);
+		model.addObject("username", userName);
+//		model.addObject("password", password);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("requirementUUID", requirementUUID);
+		model.addObject("roleList", userSpocRolesList);
+		model.setViewName("userEnrolledLocations");
+		return model;
+	}
+
   
   
   

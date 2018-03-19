@@ -164,7 +164,7 @@ public class InvoiceController {
 	 * @return modelView
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_INVOICE')")
+//	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_INVOICE')")
 	@RequestMapping(value = "/viewInvoice")
 	public ModelAndView viewInvoice(@RequestParam(value="invoiceUUID", required=false) String invoiceUUID,@RequestParam(value="invoiceType", required=false) String invoiceType,HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -250,7 +250,7 @@ public class InvoiceController {
 	
 	
 	
-	@PreAuthorize("hasAnyRole('ROLE_ADD_INVOICE')")
+//	@PreAuthorize("hasAnyRole('ROLE_ADD_INVOICE')")
 	@RequestMapping(value = "/createInvoiceProjectBased")
 	public ModelAndView createInvoiceProjectBased(HttpServletRequest request,@RequestParam(value="orgRelationId", required=false) Long orgRelationId) throws Exception {
 		
@@ -283,7 +283,7 @@ public class InvoiceController {
 	return model;
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_ADD_INVOICE')")
+//	@PreAuthorize("hasAnyRole('ROLE_ADD_INVOICE')")
 	@RequestMapping(value = "/createInvoiceProjectPayableBased")
 	public ModelAndView createInvoiceProjectPayableBased(@RequestParam(value="orgRelationId", required=false) Long orgRelationId,HttpServletRequest request) throws Exception {
 		

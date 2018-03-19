@@ -17,6 +17,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -592,7 +593,7 @@ public class RequirementController {
 	@RequestMapping(value = "/requirementSummary")
 	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementUUID", required=false)String requirementUUID,
 			@RequestParam(value="type", required=false) String type,@RequestParam(value="candidateUUID", required=false) String candidateUUID,
-			@RequestParam(value="submissionId", required=false) String submissionId) throws Exception {
+			@RequestParam(value="submissionId", required=false) String submissionId,@RequestParam(value="candidateKeyword", required=false)String candidateKeyword,@RequestParam(value="submissionStatus", required=false)String submissionStatus) throws Exception {
 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org loginOrg= (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -797,6 +798,17 @@ public class RequirementController {
 				if(!isNullOrEmpty(submissionId)){
 					model.addObject("submissionId", submissionId);
 				}
+				if(submissionId != null && StringUtils.isNotEmpty(submissionId)){
+				 RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId));
+				 String subStatus  = requirementSubmission.getSubmissionStatus().toString();
+				 model.addObject("subStatus", subStatus);
+				}
+				if(!isNullOrEmpty(submissionStatus)){
+					model.addObject("submissionStatus", submissionStatus);
+				}
+				
+				
+				
 				
 			}
 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqsummaryMsg");
@@ -816,6 +828,9 @@ public class RequirementController {
 			
 			if(!isNullOrEmpty(submissionId)){
 				model.addObject("submissionId", submissionId);
+			}
+			if(!isNullOrEmpty(candidateKeyword)){
+				model.addObject("candidateKeyword", candidateKeyword);
 			}
 			 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_REQUIREMENT);
 		     model.addObject("actionId",action.getId());
@@ -839,7 +854,11 @@ public class RequirementController {
 						 for(Entry<Long, String[]> jobCustomData:jobData.entrySet()) {
 							 String labelName = jobCustomData.getValue()[0];
 							 String labelData = jobCustomData.getValue()[1];
-							 dataMap.put(labelName, labelData);
+							 String labelId = jobCustomData.getValue()[2];
+							 Long id = jobCustomData.getKey();
+							 StringBuilder keyValue =  new StringBuilder();
+							 keyValue.append(labelName).append("$").append(labelData);
+							 dataMap.put(id.toString(), keyValue.toString());
 							 model.addObject("dataMapListJobs", dataMap);
 						 	}
 					 	}

@@ -12,6 +12,7 @@
 	
 	<form:form id="project_additional_form" name="project_additional_form" method="post" >
 	<section class="projQueWrap">
+	<div id="additionalDetailsLoading"></div>
 		<div class="projQueCta">
 			<h2>1. Project location <span class="text-danger">*</span></h2>
 			<div class="projQueCtaInn wid50">
@@ -73,7 +74,7 @@
 		<div class="projQueCta">
 			<h2>5. Team Size</h2>
 			<div class="projQueCtaInn wid50">
-				<input type="text" id="teamSize" name="teamSize" class="form-control" data-validation-optional="true" data-validation="validate_int" field-name="Team Size" />
+				<input type="text" id="teamSize" name="teamSize" class="form-control" data-validation-optional="true" data-validation="validate_int validate_length length1-8" field-name="Team Size" />
 			</div>
 		</div>	
 		<div class="projQueCta">
@@ -239,7 +240,7 @@ $('#projectExecuitionModel input').on('change', function() {
 function getAdditionalDetails(){
 	var projectId = document.getElementById("projectId").value;
 	if(projectId != null && projectId != 'unedfined' && projectId != ''){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#additionalDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl ='${sourceleadUrl}';
 			 $.ajax({
 			    	type: "GET",
@@ -483,7 +484,7 @@ function getAdditionalDetails(){
 			        
 			 });
 			 
-			 $("#loading").removeAttr("style");
+			 $("#additionalDetailsLoading").removeAttr("style");
 	}
 }
 </script>
@@ -507,7 +508,7 @@ function getAdditionalDetails(){
 			var formData = $($('#project_additional_form')[0]).serialize();
 	  		
 			var sourceleadUrl = '${sourceleadUrl}';
-     		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+     		$("#additionalDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 
 	        var userId = '${SourceLeadWeb_user.id}';
       		var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
@@ -520,7 +521,7 @@ function getAdditionalDetails(){
 						 success : function() {
 							 
 							 if(saveType == "Save"){
-								 $("#loading").removeAttr("style");
+								 $("#additionalDetailsLoading").removeAttr("style");
 								 getAdditionalDetails();
 							 }else{
 								 location.replace(sourceleadUrl+"/projectDashboard");  

@@ -39,11 +39,18 @@ import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CompanyRegistrationDTO;
 import com.bis.sourcelead.dto.CrowdSourcingUserRegistrationDTO;
+import com.bis.sourcelead.dto.RegistrationDTO;
+import com.bis.sourcelead.dto.EmployerRegistrationDTO;
+import com.bis.sourcelead.dto.OrgDTO;
+import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.RegistrationOptionalService;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
@@ -57,6 +64,7 @@ import com.bis.sourcelead.service.RegistrationOptionalServicesService;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.UserLoginLogoutSessionService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.WhiteListIpAddressService;
@@ -119,6 +127,9 @@ public class RegistrationRestController {
 	 @Autowired
 	 WhiteListIpAddressService whiteListIpAddressService;
 	 
+	 @Autowired
+	 UserLoginLogoutSessionService userLoginLogoutSessionService;
+	 
 	 @RequestMapping(value = "/app/getOrgsList")
 	 		public @ResponseBody String getUsersList(HttpServletRequest request,
 				@RequestParam(value="searchByName", required=false) String searchByName,
@@ -163,6 +174,63 @@ public class RegistrationRestController {
 		return resultJson;
 
 	}
+	 
+	 
+	 @RequestMapping(value = "/app/getDynamicOrgsList" , method = RequestMethod.POST)
+		public @ResponseBody ResponseList<OrgDTO> getDynamicOrgsList(OrgDTO orgDTO,HttpServletRequest request) throws Exception {
+		 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		 ResponseList<OrgDTO> responseList = new ResponseList<>();
+		   ResponseList<Org> orgsList =orgService.getDynamicEnrolledOrgs(org.getId(), orgDTO);
+		   List<OrgDTO> orgDTOList = new ArrayList<>();
+		   if(orgsList != null) {
+				for(Org regOrg : orgsList.getData()){
+					OrgDTO orgDto = new OrgDTO();
+						OrgLocations orglocations = orgLocationService.getPrimaryOrgLocationByOrgId(regOrg.getId());
+						UserRole userRole = null;
+						if(null != regOrg.getUser()){
+							 userRole = userRoleService.getUserDetailsByUserIdAndLocationId(regOrg.getUser().getId(),orglocations.getId());
+						}
+						if(null != userRole){
+							
+							orgDto.setId(regOrg.getId());
+							orgDto.setOrgName(regOrg.getOrgName());
+							orgDto.setEmail(regOrg.getUser().getEmail());
+							orgDto.setIsMailSent(userRole.getIsMailSent().toString());
+							if(regOrg.getUser().getUserState() != null) {
+								orgDto.setUserState(regOrg.getUser().getUserState().toString());
+							}
+							orgDto.setMobilePhone(regOrg.getUser().getMobilePhone());
+							orgDto.setRegisteredUserId(regOrg.getUser().getId());
+							if(null != userRole){
+								orgDto.setUserState(userRole.getUserState().toString());
+							}
+							orgDto.setUserId(regOrg.getUser().getId());
+							orgDto.setUser(regOrg.getUser());
+						}
+						
+						if(null != orglocations){
+							orgDto.setUser(regOrg.getUser());
+							orgDto.setId(regOrg.getId());
+							orgDto.setOrgName(regOrg.getOrgName());
+							if(orglocations.getLocation() != null && !(orglocations.getLocation().isEmpty())) {
+								orgDto.setLocation(orglocations.getLocation());
+							}else {
+								if(orglocations.getCountry() != null && !(orglocations.getCountry().isEmpty())) {
+									orgDto.setLocation(orglocations.getCountry());
+								}
+							}
+							orgDto.setPrimaryOrgLocationId(orglocations.getId());
+						}
+						orgDTOList.add(orgDto);
+					}
+				}
+		   
+		    responseList.setRecordsFiltered(orgsList.getRecordsFiltered());
+			responseList.setRecordsTotal(orgsList.getRecordsTotal());
+			responseList.setData(orgDTOList);
+			return responseList;
+    }
+	 
 	 
 	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/app/companyRegistration" , method = RequestMethod.POST)
@@ -330,6 +398,35 @@ public class RegistrationRestController {
 	 
 	 
 	 
+	 @RequestMapping(value = "/app/ws/registerAsIndividualEmployer" , method = RequestMethod.POST)
+	 public  String registerAsIndividualEmployer(EmployerRegistrationDTO employerRegistrationDTO, HttpServletRequest request) throws Exception {
+		  registrationService.saveIndividualEmployer(employerRegistrationDTO);
+		 return "success";
+	   }
+	 
+	 @RequestMapping(value = "/app/ws/demoRequest" , method = RequestMethod.POST)
+	 public  String demoRequest(EmployerRegistrationDTO employerRegistrationDTO, HttpServletRequest request) throws Exception {
+		  registrationService.saveIndividualEmployer(employerRegistrationDTO);
+		 return "success";
+	   }
+	 
+	 @RequestMapping(value = "/app/ws/validateOrgRequestCompanyNameByName" , method = RequestMethod.POST)
+	 public  String validateOrgRequestCompanyNameByName(@RequestParam(value="companyNames", required=false) String companyNames) throws Exception {
+		 
+		 String result = "New Org";
+		 OrgLocations orgLocations = orgLocationService.getOrgLocationsByOrgLocationName(companyNames);
+		 if(orgLocations == null) {
+			 Boolean flag =  registrationService.validateOrgRequestCompanyNameByName(companyNames); 
+			 if(flag == true) {
+				 result = "Requested Org"; 
+			 }
+		 }else {
+			 result = "Existed Org";
+		 }
+		
+		 return result;
+	   }
+	 
 	 
 	 @RequestMapping(value = "/app/ws/registerAsProfessionalFromSocialInviter" , method = RequestMethod.POST)
 	 public  String registerAsProfessionalFromSocialInviter(@RequestParam(value="json", required=false) String json,
@@ -343,6 +440,9 @@ public class RegistrationRestController {
 	 	
 		 return "success";
 	   }
+	 
+	 
+	 
 	 
 	 @RequestMapping(value = "/app/ws/registerAsIndividualRecruiterFromSocialInviter" , method = RequestMethod.POST)
 	 public  String registerAsIndividualRecruiterFromSocialInviter(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
@@ -601,13 +701,13 @@ public class RegistrationRestController {
 	
 	
 	@RequestMapping(value = "/app/ws/resetPasswordWithUserName" , method = RequestMethod.POST)
-	public RestResponsetUtil resetPasswordWithUserName(HttpServletRequest request) throws Exception {
+	public RestResponsetUtil resetPasswordWithUserName(RegistrationDTO registrationDTO,HttpServletRequest request) throws Exception {
 		 RestResponsetUtil resResponsetUtil = new RestResponsetUtil();
-		String json1 = IOUtils.toString(request.getInputStream());
-		if(StringUtils.isNotEmpty(json1)){
-			Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-			Registration registration = gson.fromJson(json1, Registration.class);
-			User user = userService.findByUserName(registration.getEmail());
+//		String json1 = IOUtils.toString(request.getInputStream());
+		if(!registrationDTO.getEmail().isEmpty()){
+//			Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+//			Registration registration = gson.fromJson(json1, Registration.class);
+			User user = userService.findByUserName(registrationDTO.getEmail());
 			if (null != user) {
 				UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 				if (null != userRole) {
@@ -927,7 +1027,13 @@ public class RegistrationRestController {
 	@RequestMapping(value = "/app/ws/verificationDone", method = RequestMethod.POST)
 	public String verificationDone(@RequestParam(value = "userName", required = false) String userName, @RequestParam(value = "password", required = false) String password, @RequestParam(value = "userRoleId", required = false) long userRoleId,@RequestParam(value = "verfDone", required = false) String verfDone,HttpServletRequest request) throws Exception
 	{
-		UserRole userRole = userRoleService.getUserRoleById(userRoleId);
+		UserRole userRole = null;
+		if (userRoleId > 0)
+			userRole = userRoleService.getUserRoleById(userRoleId);
+		else {
+			User user = userService.findByUserName(userName);
+			userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		}
 		if("".equalsIgnoreCase(userName) || userName == null){
 			UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) request.getSession().getAttribute("userLoginSession");
 			if(userLoginSession != null){
@@ -1004,7 +1110,23 @@ public class RegistrationRestController {
 		if ("".equalsIgnoreCase(ipAddress) || ipAddress == null) {
 			ipAddress = userLoginHelper.getClientIpAddr(request);
 		}
+		
 		return whiteListIpAddressService.validateIPAddress(ipAddress, userRole,whiteListId,accessingType);
+	}
+	
+	@RequestMapping(value = "/app/ws/validateUserAlreadyAuthenticated", method = RequestMethod.GET)
+	public boolean validateUserAlreadyAuthenticated(@RequestParam(value = "userRoleId", required = false) long userRoleId, @RequestParam(value = "name", required = false) String userName, HttpServletRequest request) throws Exception
+	{
+		UserRole userRole = null;
+		if (userRoleId > 0)
+			userRole = userRoleService.getUserRoleById(userRoleId);
+		else {
+			User user = userService.findByUserName(userName);
+			userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		}
+		String ipAddress = userLoginHelper.getClientIpAddr(request);
+		boolean alreadyVerifiedBefore = userLoginLogoutSessionService.validatePreviouslyAuthenticatedByUserIdAndIpAddress(ipAddress, userRole.getUser().getId());
+		return alreadyVerifiedBefore;
 	}
 	
 	

@@ -24,6 +24,9 @@ window.onload = function () {
 	text-decoration : none;
 	pointer-events: none;
 }
+
+
+
 </style>
 
 <script>
@@ -52,9 +55,9 @@ window.onload = function () {
 			 var vendorDocuments = document.getElementById("vendorDocuments");
 			 $("#vendorDocuments").removeClass("disabledLink");
 			 vendorDocuments.href="#tab-b";
-			 vendorDocuments.addEventListener("click", function() {
+			/*  vendorDocuments.addEventListener("click", function() {
 				 getOnboardDocuments();
-			  });
+			  }); */
 			
 			var isDocumentsFilled = '${isDocumentsFilled}';
 			if(isDocumentsFilled == 'N'){
@@ -67,9 +70,9 @@ window.onload = function () {
 				 var vendorTasks = document.getElementById("vendorTasks");
 				 $("#vendorTasks").removeClass("disabledLink");
 				 vendorTasks.href="#tab-c";
-				 vendorTasks.addEventListener("click", function() {
+				/*  vendorTasks.addEventListener("click", function() {
 					 getVendorOnboardTasksList();
-				  });
+				  }); */
 			}
 			
 		}else{
@@ -257,8 +260,8 @@ function getVendorDetails(){
       		<div class="newPrTabs">
    			  <ul class="newPrTabsMenu">
 				<li class="current" onclick="getVendorDetails();"><a href="#tab-a" data-toggle="tab">Vendor Details</a></li>
-				<li><a href="#tab-b" data-toggle="tab" id="vendorDocuments">Documents</a></li>
-				<li><a href="#tab-c" data-toggle="tab" id="vendorTasks">Tasks</a></li>
+				<li><a href="#tab-b" data-toggle="tab" id="vendorDocuments" onclick="getOnboardDocuments();">Documents</a></li>
+				<li><a href="#tab-c" data-toggle="tab" id="vendorTasks" onclick="getVendorOnboardTasksList();">Tasks</a></li>
 				<div class="clearfix mb"></div>
 			  </ul>
 			  <div class="clearfix"></div>
@@ -305,7 +308,7 @@ function getVendorDetails(){
 								<div class="positionRelative">
 									<input class="form-control positionRelative"
 										id="vendorLocation" name="location"
-										placeholder="Enter your Address" type="text"
+										placeholder="Enter Address" type="text"
 										field-name="Address" data-validation="required"></input> <i
 										class="fa fa-refresh btn btn-primary refresh-icon"
 										title="Refresh"
@@ -327,14 +330,14 @@ function getVendorDetails(){
                         <div class="form-group ">
 							<label class="col-md-3">Street Address</label>
 							<div class="col-md-9">
-								<input type="text" id="addressId" name="address"   field-name="Street Address" class="form-control" placeholder="Enter your Street Addres" data-validation="validate_length length2-250" data-validation-optional="true"/>
+								<input type="text" id="addressId" name="address"   field-name="Street Address" class="form-control" placeholder="Enter Street Addres" data-validation="validate_length length2-250" data-validation-optional="true"/>
 							</div>
 						</div>
 						
 						<div class="form-group" id="cityDiv" style="display: block;">
 							<label class="col-md-3">City</label>
 							<div class="col-md-9">
-								<input class="form-control" id="vendorCity" name="city" placeholder="Enter your City" type="text"  ></input>
+								<input class="form-control" id="vendorCity" name="city" placeholder="Enter City" type="text"  ></input>
 							</div>
 						</div>
 
@@ -348,7 +351,7 @@ function getVendorDetails(){
 						<div class="form-group" id="stateDiv" style="display: block;">
 							<label class="col-md-3">State</label>
 							<div class="col-md-9">
-								<input class="form-control" id="vendorState" name="state" placeholder="Enter your State" type="text" ></input>
+								<input class="form-control" id="vendorState" name="state" placeholder="Enter State" type="text" ></input>
 							</div>
 						</div>
 
@@ -365,7 +368,7 @@ function getVendorDetails(){
 							<label class="col-md-3">ZipCode</label>
 							<div class="col-md-9">
 								<input class="form-control" id="vendorZipCode" name="zipcode"
-									placeholder="Enter your Zip code" type="text"   onclick="zipcodeMask('${loginCountryName}','vendorZipCode');"></input>
+									placeholder="Enter Zip code" type="text"   onclick="zipcodeMask('${loginCountryName}','vendorZipCode');"></input>
 							</div>
 						</div>
 
@@ -416,7 +419,7 @@ function getVendorDetails(){
 
 						<div class="form-group">
 						<div class="clearfix mb">
-							<label class="col-md-3">Tier</label>
+							<label class="col-md-3">Tier <i class='fa fa-info-circle' title='Classify the vendors basing on their performance'></i></label>
 							<div class="col-md-9 dropdown-select">
 								<select class="form-control" id="level" name="level">
 									<option value="Tier-1">Tier-1</option>
@@ -552,7 +555,7 @@ function getVendorDetails(){
 
 						<div class="form-group">
 							<label class="col-md-3">Owner Name<span
-								class="text-danger">&nbsp;*</span></label>
+								class="text-danger">&nbsp;*</span><i class='fa fa-info-circle' title='The internal point of contact to the vendor. A single contact can have multiple owners'></i></label>
 							<div class="col-md-9 candAdvsrch">
 								<select data-placeholder="select owner" multiple
 									class="chosen-select form-control" name="owner" id="owner"
@@ -881,10 +884,12 @@ function getRolesList(){
 						 var vendorDocuments = document.getElementById("vendorDocuments");
 						 document.getElementById("vendorDocuments").removeAttribute("class");
 						 vendorDocuments.href="#tab-b";
-						 vendorDocuments.addEventListener("click", function() {
+						/*  vendorDocuments.addEventListener("click", function() {
 							 getOnboardDocuments();
-						  });
-						 vendorDocuments.click();
+						  }); */
+						 
+						 $("#vendorDocuments").click();
+// 						 vendorDocuments.click();
 					});
 			return true;
 		} else {
@@ -912,11 +917,11 @@ function updateVendor(){
 					 $("#vendorDocuments").removeClass("disabledLink");
 					 vendorDocuments.href="#tab-b"; 
 					 
-					 vendorDocuments.addEventListener("click", function() {
+					/*  vendorDocuments.addEventListener("click", function() {
 						 getOnboardDocuments();
-					});
+					}); */
 					 
-					 vendorDocuments.click();
+					 $("#vendorDocuments").click();
 					 
 				}); 
 		return true;

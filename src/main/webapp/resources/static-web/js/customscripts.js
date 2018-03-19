@@ -97,12 +97,14 @@ $(document).ready(function() {
 		$("#requestDemo").removeClass("activePop");
 		$(".clPop").removeClass("clPopA");
 		$("body").css("overflow", "auto");
+		$(".backshadow").fadeOut(200);
 	});	
 });
 	function requestDemo(){
 		$("#freeTrial").addClass("activePop");
 		$(".clPop").addClass("clPopA");
 		$("body").css("overflow", "hidden");
+		$(".backshadow").fadeIn(200);
 	}
 
 // Responsive Menu bar
@@ -123,4 +125,3 @@ $(document).ready(function(){
 	$(".gallery:gt(0) a[rel^='prettyPhoto']").prettyPhoto({animation_speed:'fast',slideshow:10000, hideflash: true});
 });
 
- 

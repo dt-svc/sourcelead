@@ -149,11 +149,14 @@ function getNotificationtLists(){
 					}					
 					result = result +'		</div>';					
 					result = result +'		</div></td>';
-				   result = result +'   <td>';
+				    result = result +'   <td>';
 					result = result +'			<div class="mailbox-subject tbldata-dotdot-big">';
-
-					if(report.actionLink != null && report.actionLink != '' && report.actionLink != 'undefined'){
+					if((report.actionLink != null && report.actionLink != '' && report.actionLink != 'undefined') && ( report.spocUUID == null || report.spocUUID == "" || report.spocUUID == "undefined")){
 						result = result +'<span><a href="'+report.actionLink+'" title="'+report.body+'"><b>'+report.body+'</b></a></span>';
+					}else if((report.actionLink != null && report.actionLink != '' && report.actionLink != 'undefined') && ( report.spocUUID != null && report.spocUUID != "" && report.spocUUID != "undefined") && (report.spocInvitationStatus == "Accepted" || report.spocInvitationStatus == "Rejected") && report.responderType == "vendor"){
+						result = result +'<span><a href="/app/vendorsList" title="'+report.body+'"><b>'+report.body+'</b></a></span>';
+					}else if((report.actionLink != null && report.actionLink != '' && report.actionLink != 'undefined') && ( report.spocUUID != null && report.spocUUID != "" && report.spocUUID != "undefined") && (report.spocInvitationStatus == "Accepted" || report.spocInvitationStatus == "Rejected") && report.responderType == "client"){
+						result = result +'<span><a href="/app/clientDashboard" title="'+report.body+'"><b>'+report.body+'</b></a></span>';
 					}else{
 						result = result +'<span><a href="#" title="'+report.body+'"><b>'+report.body+'</b></a></span>';
 					}
@@ -163,7 +166,7 @@ function getNotificationtLists(){
 				    result = result +'   <td><div class="mailbox-date tbldata-dotdot-vsm" title="'+report.calDays+'">'+report.calDays+' </div></td>';
 				    
 				    result = result +'   <td><div class="notiRej">';
-				     if(report.userNotificationStatus == "Sent" && report.userNotificationStatus != 'Rejected' && report.actionLink != null && report.actionLink != "" && report.actionLink != "undefined"){
+				     if(report.userNotificationStatus == "Sent" && report.userNotificationStatus != 'Rejected' && report.actionLink != null && report.actionLink != "" && report.actionLink != "undefined"  && report.spocUUID != null && report.spocUUID != "" && report.spocUUID != "undefined"){
 				    	result = result +'<span class="mailbox-trash"><a href="'+report.actionLink+'" title="Accept" onclick="loadingDiv();"><i class="text-muted fa fa-check-circle"></i></a></span>';
 				     }
 				  

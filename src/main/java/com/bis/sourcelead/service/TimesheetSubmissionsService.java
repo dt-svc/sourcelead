@@ -65,7 +65,7 @@ public interface TimesheetSubmissionsService {
 	
 	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsListByStatus(Long userId,String approvalStatus)throws Exception;
 	
-    public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserId(Long userId) throws Exception;
+//    public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserId(Long userId) throws Exception;
 	
 	public TimeSheetSubmissionCount getTimeSheetSubmissionsHoursCountByUserId(Long userId);
 	
@@ -92,5 +92,7 @@ public interface TimesheetSubmissionsService {
 	public List<TimesheetSubmissions> getTimeSheetSubmissionByProjectMemberId(Long pojectMemberId) throws Exception;
 	
 	public List<TimesheetSubmissions> getTimesheetSubmissionsByProjectIdAndMasterCandidateId(Long  projectId,Long masterCandidateId) throws Exception;
+
+	public TimesheetSubmissions getSubmissionDetailsByProjectIdMasterCandiDateIdStartDateandEndDate(Long projectId,Long masterCanidateId, Date frequencyStartDate, Date frequencyEndDate);
 
 }

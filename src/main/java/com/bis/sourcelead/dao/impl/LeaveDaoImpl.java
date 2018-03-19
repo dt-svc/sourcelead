@@ -340,14 +340,19 @@ public class LeaveDaoImpl implements LeaveDao{
 	
 	@Override
 	@Transactional
-	public Map<String, Integer> getNumberOfLeavesTakenByUser(Long userId,Long leaveTypeId) throws Exception {
-		Map<String, Integer> leavesMap = new HashMap<>();
+	public Map<String, Float> getNumberOfLeavesTakenByUser(Long userId,Long leaveTypeId) throws Exception {
+		Map<String, Float> leavesMap = new HashMap<>();
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Leave leave where leave.user.id = :userId  and leave.leaveType.id = :leaveTypeId and leave.status = 'APPROVED'";
 		List<Leave> leavesList = session.createQuery(query).setLong("userId", userId).setLong("leaveTypeId", leaveTypeId).list();
-		int numberOfLeavsTaken = leavesList.stream().mapToInt(l->l.getNumberOfDays()).sum();
+		float numberOfLeavsTaken = leavesList.stream().mapToInt(l->l.getNumberOfDays()).sum();
 		leavesMap.put("numberOfLeavsTaken", numberOfLeavsTaken);
-		int numberOfExtraLeaves = leavesList.stream().mapToInt(l->l.getExtraLeavesTaken()).sum();
+//		int halfDayCount = leavesList.stream().mapToInt(ll->ll.getFromHalfDay().equalsIgnoreCase("YES")).collect(supplier, accumulator, combiner);
+		int fromhalfDayCount = leavesList.stream().filter(ll->ll.getFromHalfDay() != null && ll.getFromHalfDay().equalsIgnoreCase("YES")).collect(Collectors.toList()).size();
+		int tohalfDayCount = leavesList.stream().filter(ll->ll.getToHalfDay() != null && ll.getToHalfDay().equalsIgnoreCase("YES")).collect(Collectors.toList()).size();
+		leavesMap.put("halfdayLeavesCount", (float)fromhalfDayCount + tohalfDayCount);
+		
+		float numberOfExtraLeaves = (float) leavesList.stream().mapToDouble(l->l.getExtraLeavesTaken()).sum();
 		leavesMap.put("numberOfExtraLeaves", numberOfExtraLeaves);
 		return leavesMap;
 	}
@@ -355,7 +360,7 @@ public class LeaveDaoImpl implements LeaveDao{
 
 	@Override
 	@Transactional
-	public int getThisMonthLeavesTakenByUser(Long userId,Long leaveTypeId) {
+	public float getThisMonthLeavesTakenByUser(Long userId,Long leaveTypeId) {
 		Calendar c = Calendar.getInstance();
 		int year = c.get(Calendar.YEAR);
 		int month = c.get(Calendar.MONTH);
@@ -372,10 +377,14 @@ public class LeaveDaoImpl implements LeaveDao{
 		List<Leave> leavesList = session.createQuery(query).setLong("userId", userId).setLong("leaveTypeId", leaveTypeId).setParameter("currentMonthStartDate", currentMonthStartDate).setParameter("currentMonthEndDate", currentMonthEndDate)
 				.list();
 		int numberOfLeavsTaken = leavesList.stream().mapToInt(l->l.getNumberOfDays()).sum();
-		return numberOfLeavsTaken;
+		int fromhalfDayCount = leavesList.stream().filter(ll->ll.getFromHalfDay() != null && ll.getFromHalfDay().equalsIgnoreCase("YES")).collect(Collectors.toList()).size();
+		int tohalfDayCount = leavesList.stream().filter(ll->ll.getToHalfDay() != null && ll.getToHalfDay().equalsIgnoreCase("YES")).collect(Collectors.toList()).size();
+		float leavesTaken = (float) (numberOfLeavsTaken - ((fromhalfDayCount+tohalfDayCount) * 0.5));
+		return leavesTaken;
 	}
 
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
 	public ResponseList<Leave> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception {
@@ -416,19 +425,17 @@ public class LeaveDaoImpl implements LeaveDao{
 		if (leaveDTO != null && leaveDTO.getLength() > 0) {
 			queryObj.setFirstResult(leaveDTO.getStart());
 			queryObj.setMaxResults(leaveDTO.getLength());
-			queryObj.setLong("orgLocationId", orgLocation.getId()).list();
+//			queryObj.setLong("orgLocationId", orgLocation.getId()).list();
 		}
-		leaveList = queryObj.list();
+		leaveList = queryObj.setLong("orgLocationId", orgLocation.getId()).list();
 		int count = 0;
 		int filteredCount = 0;
-		@SuppressWarnings("unchecked")
 		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocation.getId()).list();
 		if (countlist != null && !countlist.isEmpty()) {
 			count = countlist.iterator().next().intValue();
 		}
 		response.setRecordsTotal(count);
 		if (leaveDTO != null) {
-			@SuppressWarnings("unchecked")
 			List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery)
 					.setLong("orgLocationId", orgLocation.getId()).list();
 			if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
@@ -539,8 +546,8 @@ public class LeaveDaoImpl implements LeaveDao{
 		else if("LeaveType".equalsIgnoreCase(fromTable))
 			subQuery = " and frm.name = :name ";
 			
-		String query = "from "+fromTable+" frm where frm.orgLocations.id = :orgLocationId and frm.status = '1' "+subQuery+" and frm.id <> :id";
-		List<Long> found = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("name", name).setString("id", id).list();
+		String query = "from "+fromTable+" frm where frm.orgLocations.id = :orgLocationId "+subQuery+" and frm.id <> :id";
+		List<Long> found = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("name", name.replaceAll("\\s+"," ").trim()).setString("id", id).list();
 		if(found.size() > 0){
 			return true;
 		}else{
@@ -738,5 +745,16 @@ public class LeaveDaoImpl implements LeaveDao{
 			leave =  leaveList.get(0);
 		}
 		return leave;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<Leave> getAllLeave() {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Leave leave";
+		List<Leave> leaveList = session.createQuery(query).list();
+		return leaveList;
 	}
 }

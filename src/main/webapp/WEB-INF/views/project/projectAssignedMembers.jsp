@@ -56,7 +56,7 @@
                      </select>
                   </div>
                   <div class="pull-left inputRate positionRelative errorField-am">
-                      <input class="form-control input-sm" type="text" id="REPLACEROWIDpayRate" name="projectMembers[REPLACEROWID].payRate" field-name="Pay Rate" data-validation-optional="true" data-validation="validate_Space validate_float validate_length length1-15">
+                      <input class="form-control input-sm" type="text" id="REPLACEROWIDpayRate" name="projectMembers[REPLACEROWID].payRate" field-name="Pay Rate"  data-validation="required validate_Space validate_float validate_length length1-15">
                   </div>
                   
                   <div class="pull-left drpdownMonthly dropdown-select">
@@ -87,7 +87,7 @@
                      </select>
                   </div>
                   <div class="pull-left inputRate">
-                      <input class="form-control input-sm" type="text" id="REPLACEROWIDbillRate" name="projectMembers[REPLACEROWID].billRate" data-validation-optional="true"  data-validation="validate_Space validate_float validate_length length1-15">
+                      <input class="form-control input-sm" type="text" id="REPLACEROWIDbillRate" name="projectMembers[REPLACEROWID].billRate" field-name="Bill Rate" data-validation="required validate_Space validate_float validate_length length1-15">
                   </div>
                   <div class="pull-left drpdownMonthly dropdown-select">
                   <select id="REPLACEROWIDbillRateRateType" name="projectMembers[REPLACEROWID].billRateRateType">
@@ -155,7 +155,16 @@ function getAssociates(){
 	      
 	result = result +'<ul class="pull-right">';
 	
-
+	result = result +'<li class="dropdown">';
+	result = result +'<span class="dropdown-toggle" id="menu4" data-toggle="dropdown">';
+	result = result +'<i class="fa fa-filter"></i><span>Team</span><i class="glyphicon glyphicon-play"></i></span>|';
+	          
+	result = result +'<div class="dropdown-menu bootstrap_dropdownMenu" role="menu" aria-labelledby="menu1">';
+	result = result +'<ul class="location-filter">';
+	result = result +'<div id="orgLocationTeams"></div>';  
+	result = result +'</ul>';
+	result = result +'</div>';
+	result = result +'</li>'; 
 	        
 	result = result +'<li class="dropdown">';
 	result = result +'<span class="dropdown-toggle" id="menu3" data-toggle="dropdown">';
@@ -198,6 +207,7 @@ function getAssociates(){
 	 $("#associatesList").empty();
      $("#associatesList").append(result);
      getOrgLocationRoles();
+     getOrgLocationTeams();
  	
 }
 </script>
@@ -225,6 +235,33 @@ function getOrgLocationRoles(){
 	        
 	 });
 }
+
+function getOrgLocationTeams(){
+	var orgLocations = '${SourceLeadWeb_orgLocations.id}';
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getOrgLocationTeamList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,  
+	        success: function(json) {
+	        	
+	        	var output = "";
+	         	if(json.length > 0){
+	        		for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + '<li><input value="'+opt.id+'" name="teams"  type="checkbox" onclick="getAssociatesFilter()"><label>'+opt.name+'</label></li>';
+					}
+	        	}else{
+	        		output = output + '<li><label>&nbsp;&nbsp;&nbsp;<font color="red">No teams configured</font></label></li>';
+	        	}
+	        	$("#orgLocationTeams").empty();
+		        $("#orgLocationTeams").append(output);
+	        }
+	        
+	 });
+}
+
 </script>
 
 
@@ -279,6 +316,12 @@ function candidatesDataTableList(){
 		roles.push($(this).val());
 	    });
 	
+	var teams = [];
+	$('input:checkbox[name=teams]:checked').each(function() 
+		    {
+		teams.push($(this).val());
+	    });
+	
 	var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 	
 	var resourceType = [];
@@ -304,7 +347,7 @@ function candidatesDataTableList(){
 	  
 	  var searchValue = $("#candidateDataTableSearch").val();
 		 searchValue = searchValue ? searchValue : "";
-		 var url = sourceleadUrl+"/getRequestedAssociatesList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&roles="+roles+"&resourceType="+resourceType+"&selectedAssociates="+selectedAssociates+"&projectUUID="+projectUUID;
+		 var url = sourceleadUrl+"/getRequestedAssociatesList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&roles="+roles+"&teams="+teams+"&resourceType="+resourceType+"&selectedAssociates="+selectedAssociates+"&projectUUID="+projectUUID;
 		 candidatesPagination(sourceleadUrl,url);
 	  
 	
@@ -1166,7 +1209,8 @@ function assignMembers(){
 						 var additionalDetails = document.getElementById("additionalDetails");
 						 document.getElementById("additionalDetails").removeAttribute("class")
 						 additionalDetails.href="#tab-c"; 
-						 additionalDetails.click();
+						 $("#additionalDetails").click();
+// 						 additionalDetails.click();
 					},
 				}); 
       		 return true;

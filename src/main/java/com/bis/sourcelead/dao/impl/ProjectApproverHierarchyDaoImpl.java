@@ -134,7 +134,7 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 	@Transactional(rollbackFor = { Exception.class })	
 	public List<ProjectApproverHierarchy> getApproverUsersByProjectMemberMasterCandidateIdAndProjectId(long projectMemberMasterCandidateId,long projectId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from  ProjectApproverHierarchy projectHirachy   left join fetch projectHirachy.approverUserId usr  left join fetch projectHirachy.projectClientsId pc where  projectHirachy.projectId =:projectId and  pc.id IN (select pm.projectClientsId.id from ProjectMembers  pm where pm.masterCandidateId.id = :masterCandidateId and pm.projects.id = :projectId) ";
+		String query = "from  ProjectApproverHierarchy projectHirachy   left join fetch projectHirachy.approverUserId usr  left join fetch projectHirachy.projectClientsId pc where  projectHirachy.projectId =:projectId  and  pc.id IN (select pm.projectClientsId.id from ProjectMembers  pm where pm.masterCandidateId.id = :masterCandidateId and pm.projects.id = :projectId) and projectHirachy.status = '1'";
 	        List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("projectId", projectId).setLong("masterCandidateId", projectMemberMasterCandidateId)
 	        																							
 	        																							.list();
@@ -272,9 +272,25 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 				+ " and projects.id IN (select pc.projectId.id from ProjectClients pc where pc.orgLocationsId.id = :orgLocationId) ";
 		 List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId)
 				                                                                                     
-				 																					 .list();
+				 																				 .list();
 	        return projectHirachyList;
 	}
+	
+	@Override
+	@Transactional
+	public ProjectApproverHierarchy getProjectApproverByUserIdAndProjectIdOrgLocationId(Long userId,Long projectId,Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectApproverHierarchy hierarchy left join fetch hierarchy.projectId projects left join fetch hierarchy.projectClientsId pc left join fetch hierarchy.approverUserId where hierarchy.approverUserId.id = :userId "
+				+ " and projects.id = :projectId and  pc.orgLocationsId.id = :orgLocationId and hierarchy.status = '1' ";
+		 List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("userId", userId).setLong("projectId", projectId).setLong("orgLocationId", orgLocationId).list();
+		 ProjectApproverHierarchy ph = null;
+		 if (projectHirachyList != null && !projectHirachyList.isEmpty()) {
+			ph = (		ProjectApproverHierarchy) projectHirachyList.iterator().next();
+		 }
+		 return ph;
+	}
+	
+	
 	@Override
 	@Transactional
 	public List<ProjectApproverHierarchy> getProjectsHierarchyListByProjectIdAndOrgLocationId(Long projectId,
@@ -379,5 +395,17 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 			ph = (		ProjectApproverHierarchy) projectApproverHierarchies.iterator().next();
 		}
 		return ph;
+	}
+	
+	@Override
+	@Transactional
+	public List<ProjectApproverHierarchy> getProjectsHierarchyListByProjectClientId(Long projectClientId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectApproverHierarchy hierarchy left join fetch hierarchy.projectId projects left join fetch hierarchy.projectClientsId pclient left join fetch hierarchy.approverUserId "
+				+ "where hierarchy.projectClientsId.id = :projectClientId and hierarchy.status = '1' ";
+		 List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("projectClientId", projectClientId).list();
+	     return projectHirachyList;
 	}
 }

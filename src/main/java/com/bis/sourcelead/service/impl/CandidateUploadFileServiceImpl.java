@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -22,7 +21,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -523,25 +521,23 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 				}
 			}
 			
-			if("C2C".equalsIgnoreCase(row.getCell(9).getStringCellValue()) || "C2C-1099".equalsIgnoreCase(row.getCell(9).getStringCellValue())) {
+			if (row.getCell(9) == null || "".equalsIgnoreCase(row.getCell(9).toString())) {
+				candidateImport.setReason("Employment Type is Required");
+				return false;
+			}
+			
+			if("C2C".equalsIgnoreCase(row.getCell(9).getStringCellValue())) {
 				
 			if(row.getCell(10) !=null && !"".equalsIgnoreCase(row.getCell(10).toString())){
 				List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
 				Long vendorId = 0l;
-				boolean flag = false;
 				for(OrgRelations rel : vendorsList) {
 					if((row.getCell(10).toString().equalsIgnoreCase(rel.getLocationId().getOrgLocationName())) || (row.getCell(10).toString().equalsIgnoreCase(rel.getResponderLocationId().getOrgLocationName()))) {
 						vendorId = rel.getId();
-						flag = true;
 						break;
-					}else {
-						flag = false;
 					}
 				}
-				if(!flag) {
-					candidateImport.setReason("No vendor exists..");
-					return flag;
-				}
+				
 				
 				if(row.getCell(11) !=null && !"".equalsIgnoreCase(row.getCell(11).toString())){
 					List<OrgSpoc> vendorContactsList = orgSpocService.getOrgSpocByOrgRelationId(vendorId);
@@ -558,27 +554,17 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 						candidateImport.setReason("No Active contacts exists with this vendor");
 						return false;
 					}
-				}else if(vendorId != 0) {
-					candidateImport.setReason("Contact is mandatory");
-					return false;
 				}
 				
-			}else {
+			}/*else {
 				if(row.getCell(11) !=null && !"".equalsIgnoreCase(row.getCell(11).toString())){
 					candidateImport.setReason("vendor is mandatory if you have entered contact");
 					return false;
-				}
-			}
-		}else {
-			if(row.getCell(10) !=null && !"".equalsIgnoreCase(row.getCell(10).toString())){
-				if(row.getCell(11) !=null && !"".equalsIgnoreCase(row.getCell(11).toString())){
-					candidateImport.setReason("Employment type should be C2C or C2C-1099 if you have entered vendor details");
-					return false;
 				}else {
-					candidateImport.setReason("Employment type should be C2C or C2C-1099 if you have entered vendor details");
+					candidateImport.setReason("vendor details are mandatory.");
 					return false;
 				}
-			}
+			}*/
 		}
 			
 		}
