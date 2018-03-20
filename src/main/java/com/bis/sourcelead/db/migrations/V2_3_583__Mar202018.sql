@@ -1,0 +1,22 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_LOCATIONS','SUBSCRIPTION_TYPE','VARCHAR(250) NULL');
+CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_LOCATIONS','REGISTRATION_STATUS','VARCHAR(50) NULL');
+CALL sourcelead.AlterTableAddColumn ('sourcelead','TABS','TAB_ICON','VARCHAR(50) NULL');
+
+set sql_safe_updates=0;
+UPDATE `sourcelead`.`tabs` SET `TAB_ICON`='fa fa-dashboard' WHERE `ID`='1';
+UPDATE `sourcelead`.`tabs` SET `TAB_ICON`='fa fa-users' WHERE `ID`='2';
+UPDATE `sourcelead`.`tabs` SET `TAB_ICON`='fa fa-bar-chart' WHERE `ID`='3';
+UPDATE `sourcelead`.`tabs` SET `TAB_ICON`='fa fa-clock-o' WHERE `ID`='4';
+UPDATE `sourcelead`.`tabs` SET `TAB_ICON`='fa fa-user-plus' WHERE `ID`='7';
+UPDATE `sourcelead`.`tabs` SET `TAB_ICON`='fa fa-briefcase' WHERE `ID`='8';
+UPDATE `sourcelead`.`tabs` SET `TAB_ICON`='fa fa-suitcase' WHERE `ID`='9';
+UPDATE `sourcelead`.`tabs` SET `TAB_ICON`='fa fa-user' WHERE `ID`='10';
+UPDATE `sourcelead`.`tabs` SET `TAB_ICON`='fa fa-cog' WHERE `ID`='11';
+UPDATE `sourcelead`.`tabs` SET `TAB_ICON`='fa fa-cogs' WHERE `ID`='14';
+UPDATE `sourcelead`.`tabs` SET `TAB_ICON`='fa fa-object-ungroup' WHERE `ID`='16';
+UPDATE `sourcelead`.`tabs` SET `TAB_ICON`='fa fa-users' WHERE `ID`='17';
+UPDATE `sourcelead`.`tabs` SET `TAB_ICON`='fa fa-black-tie' WHERE `ID`='19';
+UPDATE `sourcelead`.`tabs` SET `TAB_ICON`='fa fa-money' WHERE `ID`='20';
+UPDATE `sourcelead`.`tabs` SET `TAB_ICON`='fa fa-calculator' WHERE `ID`='23';
+UPDATE `sourcelead`.`tabs` SET `TAB_ICON`='fa fa-bullhorn' WHERE `ID`='30';
+set sql_safe_updates=1;

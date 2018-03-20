@@ -14,6 +14,10 @@ public class OrgLocationDTO implements Serializable{
 	
 	private String locationCode;
 	
+	private String location;
+	
+	private String zipCode;
+	
 	private String orgCode;
 	
 	private long orgId;
@@ -65,6 +69,23 @@ public class OrgLocationDTO implements Serializable{
 	private int recommRate;
 	
 	private int recommKeywords;
+	
+	private String registrationStatusStr;
+	
+	private String email;
+	
+	private String firstName;
+	
+	private String lastName;
+	
+	private String phoneNumber;
+	
+	private String dateFormat;
+	
+	private Long timeZone;
+	
+	private String subscriptionType;
+	
 
 	public long getId()
 	{
@@ -344,5 +365,85 @@ public class OrgLocationDTO implements Serializable{
 	public void setRecommKeywords(int recommKeywords)
 	{
 		this.recommKeywords = recommKeywords;
+	}
+
+	public String getRegistrationStatusStr() {
+		return registrationStatusStr;
+	}
+
+	public void setRegistrationStatusStr(String registrationStatusStr) {
+		this.registrationStatusStr = registrationStatusStr;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public String getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getDateFormat() {
+		return dateFormat;
+	}
+
+	public void setDateFormat(String dateFormat) {
+		this.dateFormat = dateFormat;
+	}
+
+	public Long getTimeZone() {
+		return timeZone;
+	}
+
+	public void setTimeZone(Long timeZone) {
+		this.timeZone = timeZone;
+	}
+
+	public String getSubscriptionType() {
+		return subscriptionType;
+	}
+
+	public void setSubscriptionType(String subscriptionType) {
+		this.subscriptionType = subscriptionType;
 	}
 }

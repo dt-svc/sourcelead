@@ -2,6 +2,7 @@ package com.bis.sourcelead.rest;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -39,19 +40,18 @@ import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CompanyRegistrationDTO;
 import com.bis.sourcelead.dto.CrowdSourcingUserRegistrationDTO;
-import com.bis.sourcelead.dto.RegistrationDTO;
 import com.bis.sourcelead.dto.EmployerRegistrationDTO;
 import com.bis.sourcelead.dto.OrgDTO;
-import com.bis.sourcelead.dto.ProjectTasksDTO;
-import com.bis.sourcelead.dto.RequirementDTO;
-import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
+import com.bis.sourcelead.dto.OrgLocationDTO;
+import com.bis.sourcelead.dto.RegistrationDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.TabsDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.RegistrationOptionalService;
-import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
@@ -64,6 +64,7 @@ import com.bis.sourcelead.service.RegistrationOptionalServicesService;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.UserLoginLogoutSessionService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -72,7 +73,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UserLoginHelper;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -129,6 +129,9 @@ public class RegistrationRestController {
 	 
 	 @Autowired
 	 UserLoginLogoutSessionService userLoginLogoutSessionService;
+	 
+	 @Autowired
+	 TabsService tabsService;
 	 
 	 @RequestMapping(value = "/app/getOrgsList")
 	 		public @ResponseBody String getUsersList(HttpServletRequest request,
@@ -220,6 +223,8 @@ public class RegistrationRestController {
 								}
 							}
 							orgDto.setPrimaryOrgLocationId(orglocations.getId());
+							orgDto.setRegistrationStatus(orglocations.getRegistrationStatus());
+							orgDto.setLocationCode(orglocations.getLocationCode());
 						}
 						orgDTOList.add(orgDto);
 					}
@@ -234,42 +239,82 @@ public class RegistrationRestController {
 	 
 	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/app/companyRegistration" , method = RequestMethod.POST)
-	   public String addCompanyRegistration(
+	   public OrgLocationDTO addCompanyRegistration(
 			   CompanyRegistrationDTO companyRegistrationDTO,CandidateDTO candidateDTO,
-				@RequestParam(value="modulesList", required=false) String modulesList ,
-				@RequestParam(value="submodulesList", required=false) String submodulesList ,
 	   			HttpServletRequest request) {
+		OrgLocationDTO orgLocationDTO = new OrgLocationDTO();
 		if(Validator.validate(companyRegistrationDTO)){
 		try {
 
 				Registration registration = new Registration();
 				ModelMapper mapper1 = new ModelMapper();
 				registration = mapper1.map(companyRegistrationDTO, Registration.class);
-				
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			    String[] registredModules =  modulesList.split(",");
 			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			    for(int i=0; i<registredModules.length; i++){
-			    	if(Long.parseLong(registredModules[i]) == 1l){
-			    		if(isNullOrEmpty(submodulesList)){
-			    			return "Invalid Sub Modules";
-			    		}
-			    		
-			    	}
-			    }
-			   
-				registrationService.addRegistration(registration,user,modulesList,submodulesList, orgLocations.getId(),candidateDTO);
-				 StringBuilder orgCreateMsg = new StringBuilder();
+			    orgLocationDTO = registrationService.addCompanyRegistration(registration,user,orgLocations.getId(),candidateDTO);
+			    orgLocationDTO.setRegistrationStatusStr("orgList");
+			    StringBuilder orgCreateMsg = new StringBuilder();
 				SourceLeadSessionManager.setSessionAttribute(request, "orgCreateMsg", orgCreateMsg.append(registration.getCompanyName()).append(" Org has created sucessfully.").toString());
 			} catch (Exception e) {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
 			
-			return "orgList";
 		}else{
-			return "DataMissing";
+			orgLocationDTO.setRegistrationStatusStr("DataMissing");
 		}
+		
+		return orgLocationDTO;
 	     
+	   }
+	
+	
+	
+	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
+	@RequestMapping(value = "/app/getRegistrationTabs" , method = RequestMethod.POST)
+	   public List<TabsDTO> getRegistrationTabs(
+	   			HttpServletRequest request) throws Exception {
+		
+		List<TabsDTO> tabsDTOList = new ArrayList<>();
+		Collection<Tabs> tabsList = tabsService.getAllTabsList();
+		List<Long> tabIs = new ArrayList<>();
+		tabIs.add(11L);
+		tabIs.add(14L);
+		List<Tabs> otherTabsList = tabsService.getTabsListByIds(tabIs);
+		tabsList.addAll(otherTabsList);
+		if(tabsList != null) {
+			for(Tabs tabs : tabsList) {
+				TabsDTO tabsDTO = new TabsDTO();
+				tabsDTO.setId(tabs.getId());
+				if(tabs.getTabName().equalsIgnoreCase("Billing")) {
+					tabsDTO.setTabName("Finance");
+				}else {
+					tabsDTO.setTabName(tabs.getTabName());
+				}
+				tabsDTO.setTabIcon(tabs.getTabIcon());
+				tabsDTOList.add(tabsDTO);
+			}
+		}
+		
+		return tabsDTOList;
+	     
+	   }
+	
+	
+	
+	
+	
+	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
+	@RequestMapping(value = "/app/getcompanyRegisteredDetails" , method = RequestMethod.POST)
+	   public OrgLocationDTO getcompanyRegisteredDetails(
+			   @RequestParam(value="orgLocationId", required=true) Long orgLocationId,
+	   			HttpServletRequest request) {
+		OrgLocationDTO orgLocationDTO = new OrgLocationDTO();
+		try {
+			orgLocationDTO = orgLocationService.getRegisteredOrgLocationDetails(orgLocationId);
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return orgLocationDTO;
 	   }
 	
 	

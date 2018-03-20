@@ -154,16 +154,14 @@ public class RegistrationController {
 	 
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	 @RequestMapping(value = "/app/enrollOrg")
-		public ModelAndView registration(HttpServletRequest request) {
+		public ModelAndView enrollOrg(HttpServletRequest request,
+				@RequestParam(value = "locationCode", required = false) String locationCode) {
 			ModelAndView model = new ModelAndView();
 			List<Modules> modulesList = null;
 			List<Modules> requirementSubModulesList = null;
 			try {
 				 modulesList = modulesService.getSourceLeadModules();
 				 model.addObject("modulesList", modulesList);
-				 
-				 /*List<Timezone> timezoneList= timeZoneService.getAllTimeZones();
-				 model.addObject("timezoneList", timezoneList);*/
 				 
 				 requirementSubModulesList = modulesService.getRequirementSubModules();
 				 model.addObject("requirementSubModulesList", requirementSubModulesList);
@@ -175,7 +173,7 @@ public class RegistrationController {
 			commonUtil.highLightMenu(Constants.OrgSettings, request);
 			
 			model.setViewName("registration/enrollOrg");
-
+			model.addObject("locationCode", locationCode);
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.addObject("sourceLeadBlockedSocialDomains", sourceLeadBlockedSocialDomains);
 			

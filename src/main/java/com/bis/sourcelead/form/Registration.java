@@ -25,6 +25,8 @@ public class Registration {
 	
 	private String password;
 	
+	private String orgEnrollment;
+	
 	private String verificationCode;
 	
 	private String timeZone;
@@ -240,6 +242,14 @@ public class Registration {
 
 	public void setAverageWorkingHours(Integer averageWorkingHours) {
 		this.averageWorkingHours = averageWorkingHours;
+	}
+
+	public String getOrgEnrollment() {
+		return orgEnrollment;
+	}
+
+	public void setOrgEnrollment(String orgEnrollment) {
+		this.orgEnrollment = orgEnrollment;
 	}
 	
 	

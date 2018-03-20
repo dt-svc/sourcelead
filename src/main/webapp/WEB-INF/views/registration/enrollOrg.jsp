@@ -3,11 +3,46 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+<style>
+.disabledLink
+{
+	color: #333;
+	text-decoration : none;
+	pointer-events: none;
+}
+</style>
+
+
 <script>
 	$(document).ready(function() {
+		
+		var locationCode = '${locationCode}';
+		if(locationCode == null || locationCode == '' || locationCode == 'undefined'){
+			var assignedMembers = document.getElementById("orgModules");
+			if(orgModules){
+				orgModules.href = "#";
+				orgModules.className = "disabledLink";
+			} 
+		}else{
+			getCompanyDetails();
+		}
+	 	
+		
 		initLocationAuto('orgLocation','orgCountry','orgState','orgCity','orgZipCode','orgLatitude','orgLongitude','invite','address');
 		document.getElementById("createOrg_form").reset();
 		getTimezonesList();
+		$("#tab-a").show()
+	    $(".newPrTabsMenu a").click(function(event) {
+	        event.preventDefault();
+	        $(this).parent().addClass("current");
+	        $(this).parent().siblings().removeClass("current");
+	        var tab = $(this).attr("href");
+	        $(".newPrTabs_inn").not(tab).css("display", "none");
+	        $(tab).fadeIn();
+	    });
+		
+		
+		
 	});
 </script>
 <script>
@@ -24,14 +59,27 @@ function changeCountry(){
     </div>
     <div class="pull-right brud-crum"><a href="${appPath}/dashboard">Home</a> &raquo; <a href="${appPath}/enrolledOrgsList">Orgs List</a> &raquo; Org Registration </div>
   </section>
+  
+  
+  
   <div class="content-area clearfix">
-  <div id="loading"></div>
+   <div id="loading"></div>
    <div id="enrollOrgLoading"></div>
-    <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
-      <form:form class="login-form clearfix"  id="createOrg_form"  name="createOrg_form" method="post" > 
+	   <div class="newPrDetails newPrDetailsPMO"> 
+		   <div class="newPrTabs">
+		      <ul class="newPrTabsMenu">
+				<li class="current"><a href="#tab-a" data-toggle="tab">Company Details</a></li>
+				<li><a href="#tab-b" data-toggle="tab" id="orgModules" onclick="getOrgModules();">Modules</a></li>
+				<div class="clearfix mb"></div>
+			  </ul>
+			  <div class="clearfix"></div>
+			  
+			  <div class="project_tabs">
+			  <div class="clearfix form-area form-horizontal toggle-div remove-div  newPrTabs_inn mt" id="tab-a">
+			  	<form:form class="login-form clearfix"  id="createOrg_form"  name="createOrg_form" method="post" > 
       <div class="row">
           <div class="mb col-xs-12 col-sm-12 col-md-6 col-lg-6">
-             
+           <input type="hidden" name="orgLocationId" id=orgLocationId value=""/>
             <div class="form-group">
 	            <label class="col-md-3">Company Name<span class="text-danger">&nbsp;*</span></label>
 	            <div class="col-md-9">
@@ -79,35 +127,18 @@ function changeCountry(){
 	             <span class="hidden">Phone Number</span>
 	            </div>
             </div>
-             
-             <div class="form-group">
-            <label class="col-md-3">Modules<span class="text-danger">&nbsp;*</label>
-            <div class="col-md-9 checkBox">
-            <div class="clearfix reMar">
-	            <c:forEach var="module" items="${modulesList}">
-	            <ul class="list-unstyled pull-left">
-	                <li>
-	                 <label class="mr pull-left">
-						<input type="checkbox" id="isRecruiting" value="${module.id}" onclick="getRecruitmentTypes(this)" name="modulesList[]" onblur="moduleCheckValidation(this)">${module.moduleName}
-					  </label>
-					   <ul class="list-unstyled pull-left tree-checkbox" id="recrutmentTypes" style="display: none;">
-                    	<li>
-                    	 <c:forEach var="submodules" items="${requirementSubModulesList}">
-                    	  <label>
-                    		 <input type="checkbox" class="allsubmodules" id="submodules" value="${submodules.id}" name="submodulesList[]" >
-                              ${submodules.moduleName}
-                         </label><br/>
-                    	 </c:forEach>
-		                </li>
-                    </ul> 
-					 </li>
-				</ul>
-			    </c:forEach>
-			    </div>
-            <p id="subModule" style="display: none;"><font color="red">Sub Modules Required</font></p>
-            <input type="hidden"  id="moduleValue" name="module" value="${module}" field-name="Module" data-validation="required"/> 			    
-            </div>
-          </div> 
+          
+           <div class="form-group">
+	          <label class="col-md-3">Org Enrollment</label>
+	          <div class="col-md-9">
+	               <select class="form-control" name="orgEnrollment" id="orgEnrollment" field-name="Org Enrollment" data-validation-optional="true" >
+		                    <option value="">Select Enrollment Type</option>
+		                    <option value="1 Month Subscription">1 Month Subscription</option>
+		                    <option value="6 Months Subscription">6 Months Subscription</option>
+			                <option value="1 Year Subscription">1 Year Subscription</option>
+		          </select>
+	          </div>
+	        </div>
              
           </div>
           
@@ -154,7 +185,6 @@ function changeCountry(){
 	        <div class="form-group" id="errCountryMsg">
 	          <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
 	          <div class="col-md-9">
-<%-- 	          <input class="form-control" id="orgCountry" name="country" placeholder="Country" field-name="Country" value ="${country}" type="text" data-validation="required" readonly></input> --%>
 	               <select class="form-control" name="country" id="orgCountry" field-name="Country" data-validation="required" onchange="changeCountry(); getTimezonesList();" >
 		                    <option value="">Select Country</option>
 		                    <option value="Australia">Australia</option>
@@ -203,47 +233,47 @@ function changeCountry(){
       </div>
     </div>
     </form:form>
-    </div>
-    
-    <!-- Content Area Ends--> 
+			  </div>
+			  <jsp:include page="orgModules.jsp" />
+			  </div>
+			  
+		   </div>
+	   </div>
   </div>
+  
 </section>
       <!-- Content Area Ends--> 
 
 <jsp:include page="../masterFooter.jsp" />
 
-
-  <script type="text/javascript">
-	function moduleCheckValidation(id){
+<script>
+function getCompanyDetails(){
+	var orgLocationId = document.getElementById("orgLocationId").value;
+	if(orgLocationId){
+		$("#enrollOrgLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:1000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		var sourceleadUrl ='${sourceleadUrl}';
 		
-		 var modulesList = [];
- 		 $("input[name='modulesList[]']:checked").each( function (i) {
- 			modulesList[i] = $(this).val();
- 		});
- 		 
-		if (modulesList.length > 0) { 
-		document.getElementById("moduleValue").value = id.value;
-		}else{
-			$('#moduleValue').val(''); 
-		}
-	} 
+		  $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/getcompanyRegisteredDetails?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId, 
+		        success: function(json) {
+		        	
+		        	
+		        	
+		        	 $("input[name=companyName]").val(json.orgName);
+		        	 $("input[name=website]").val(json.website);
+		        	 $("input[name=firstName]").val(json.firstName);
+		        	 $("input[name=lastName]").val(json.lastName);
+		        	 $("input[name=email]").val(json.email);
+	      			 
+	      			   
+	      			   $("#enrollOrgLoading").removeAttr("style");
+			        
+		        },
+		    }); 
+	}
+}
 </script>
-
-
-
- <script type="text/javascript">
-function getRecruitmentTypes(id){
-		if (document.getElementById('isRecruiting').checked) {
-		 document.getElementById("recrutmentTypes").style.display="";
-		}else{
-			document.getElementById("recrutmentTypes").style.display="none";
-			 $('.allsubmodules').each(function() {
-	                this.checked = false;      
-	            }); 
-		}
-	} 
-</script>
-
     
 
 <script type="text/javascript">
@@ -258,36 +288,26 @@ var validationSettings = {
         		e.preventDefault();
         		var formData = getFormData("createOrg_form");
          		var sourceleadUrl ='${sourceleadUrl}';
-         		 var modulesList = [];
-         		 $("input[name='modulesList[]']:checked").each( function (i) {
-         			modulesList[i] = $(this).val();
-         		});
-         		 
-         		
-         		 var submodulesList = [];
-         		 $("input[name='submodulesList[]']:checked").each( function (i) {
-         			submodulesList[i] = $(this).val();
-         		});
          		
          		$("#enrollOrgLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          		 	
           		$.ajax({
           	      type: "POST",
           	    	data: formData,
-                	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList,
-                			  
-                			  
-                  	success: function(result) {
-			        	if((result == 'orgList')){
-			        		location.replace(sourceleadUrl+"/enrolledOrgsList");  
+                	  url: sourceleadUrl+"/companyRegistration?${_csrf.parameterName}=${_csrf.token}",
+                  	success: function(orglocations) {
+			         	if(orglocations.registrationStatusStr == 'orgList'){
+			        		$("#orgLocationId").val(orglocations.id);
+			        		 var orgModules = document.getElementById("orgModules");
+							 document.getElementById("orgModules").removeAttribute("class");
+							 orgModules.href="#tab-b"; 
+							 $("#orgModules").click();
+							 $("#enrollOrgLoading").removeAttr('style');
 			        	}
-			        	else if((result == 'Invalid Sub Modules')){
-			        		$("#enrollOrgLoading").removeAttr("style");
-			        		document.getElementById("subModule").style.display="";
-			        	}else if((result == 'DataMissing')){
+			        	else if(orglocations.registrationStatusStr == 'DataMissing'){
 			        		showError("Invalid data");
 			        		$("#enrollOrgLoading").removeAttr('style');
-			        	}
+			        	} 
 			        	
 			        },  
                });   

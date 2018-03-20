@@ -24,6 +24,8 @@ import com.bis.sourcelead.annotations.Required;
 		@Email
 		private String email;
 		
+		private String orgEnrollment;
+		
 		private String country;
 		
 		private String state;
@@ -354,6 +356,14 @@ import com.bis.sourcelead.annotations.Required;
 		public void setDateFormat1(String dateFormat1)
 		{
 			this.dateFormat1 = dateFormat1;
+		}
+
+		public String getOrgEnrollment() {
+			return orgEnrollment;
+		}
+
+		public void setOrgEnrollment(String orgEnrollment) {
+			this.orgEnrollment = orgEnrollment;
 		}
 
 		

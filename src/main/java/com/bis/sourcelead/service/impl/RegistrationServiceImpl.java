@@ -33,12 +33,11 @@ import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesCategoryDao;
 import com.bis.sourcelead.dao.OrgDao;
-import com.bis.sourcelead.dao.OrgRequestDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
-import com.bis.sourcelead.dto.CompanyRegistrationDTO;
 import com.bis.sourcelead.dto.CrowdSourcingUserRegistrationDTO;
 import com.bis.sourcelead.dto.EmployerRegistrationDTO;
+import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -215,15 +214,42 @@ public class RegistrationServiceImpl implements RegistrationService{
 			return (str == null || "".equals(str.trim()));
 	}
 	
+	
 	@Override
-	public void addRegistration(Registration registration,User loginUser,String modules,String subModules, Long orgLocationsId,CandidateDTO candidateDTO) throws Exception {
+	public OrgLocationDTO addCompanyRegistration(Registration registration, User loginUser, Long orgLocationsId,
+			CandidateDTO candidateDTO) throws Exception {
 		
-		String[] registredModules =  modules.split(",");
+		OrgLocationDTO orgLocationDTO = new OrgLocationDTO();
+		Org org = null;
+		org = getOrgDetails(registration);
+		orgService.addOrganization(org);
+		User user = userService.findByUserName(registration.getEmail());
+		String password = "";
+		if(user == null) {
+			user = getUserDetails(registration,password);
+			userService.addUser(user);
+		}
+		OrgLocations orgLocations = getOrgLocationsDetails(registration, org, user);
+		Timezone timeZone = timeZoneService.getTimezone(Long.parseLong(registration.getTimeZone()));
+		orgLocations.setTimezone(timeZone);
+		try {
+			orgLocationService.addOrgLocations(orgLocations);
+			orgLocationDTO.setId(orgLocations.getId());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return orgLocationDTO;
+	}
+	
+	
+	@Override
+	public void addRegistration(Registration registration,User loginUser,Long orgLocationsId,CandidateDTO candidateDTO) throws Exception {
+		
 		Org org = null;
 		//For Saving of Org Details
 		
 		if(isNullOrEmpty(registration.getRegisteredOrgId())){
-			org = getOrgDetails(registration,subModules,modules);
+			org = getOrgDetails(registration);
 			try {
 				orgService.addOrganization(org);
 			} catch (Exception e) {
@@ -265,7 +291,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		}
 		
 		//For saving of orgLocation Details which location has choose in the registration
-		OrgLocations orgLocations = getOrgLocationsDetails(registration, org, user,subModules,modules);
+		OrgLocations orgLocations = getOrgLocationsDetails(registration, org, user);
 		Timezone timeZone = timeZoneService.getTimezone(Long.parseLong(registration.getTimeZone()));
 		orgLocations.setTimezone(timeZone);
 		try {
@@ -335,7 +361,6 @@ public class RegistrationServiceImpl implements RegistrationService{
 		commonUtil.saveDefaultContractTemplate(org,orgLocations,user," Default Client SOW Template",Constants.Client_SOW);
 		commonUtil.saveDefaultContractTemplate(org,orgLocations,user," Default Vendor SOW Template",Constants.Vendor_SOW);
 		commonUtil.saveDefaultContractTemplate(org,orgLocations,user," Default NDA Template",Constants.NDA);
-//		saveDefaultContractTemplate(org,orgLocations,user," Default NCA Template","NSA");
 		
 		saveOrgLocationDefaultProject(registration, orgLocations, user);
 		commonUtil.storeVendorOnboardDefaultTemplate(user, orgLocations);
@@ -393,7 +418,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 
 	
 	
-	private Org getOrgDetails(Registration registration,String subModules,String modules){
+	private Org getOrgDetails(Registration registration){
 		
 		Org org = new Org();
 		org.setOrgName(registration.getCompanyName());
@@ -401,28 +426,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		org.setOrgType("Company");
 		org.setOrgCode(SourceLeadRandomCodeHelper.generateRandomOrgCode());
 		org.setStatus(Status.ACTIVE);
-		
-		/*String orgModules = "";
-		if(!isNullOrEmpty(subModules)){
-			String[] registeredSubModules =  subModules.split(",");
-			for(int i=0; i<registeredSubModules.length; i++){
-					orgModules = orgModules+registeredSubModules[i]+",";
-			}
-		}
-		
-		if(!isNullOrEmpty(modules)){
-			String[] registeredModules =  modules.split(",");
-			for(int i=0; i<registeredModules.length; i++){
-				if(Long.parseLong(registeredModules[i]) != 1L){
-					orgModules = orgModules+registeredModules[i]+",";
-				}
-			}
-		}
-		orgModules = orgModules.substring(0, orgModules.length()-1);
-		org.setModulesId(orgModules);*/
-		
 		org.setCreatedBy("sladmin");
-		
 		org.setCreatedDate(new Date());
 		return org;
 	}
@@ -433,7 +437,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 		user.setLastName(registration.getLastName());
 		user.setEmail(registration.getEmail());
 		user.setUserName(registration.getEmail());
-		user.setPassword(sourceleadPasswordEncoder.encode(password));
+		if(StringUtils.isNotBlank(password)) {
+			user.setPassword(sourceleadPasswordEncoder.encode(password));
+		}
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		user.setMobilePhone(registration.getMobilePhone());
 		user.setCreatedBy(user.getUserCode());
@@ -523,7 +529,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		}
 	 
 	 
-	private OrgLocations getOrgLocationsDetails(Registration registration,Org org,User user,String subModules,String modules ) throws Exception{
+	private OrgLocations getOrgLocationsDetails(Registration registration,Org org,User user) throws Exception{
 		
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setCountry(registration.getCountry());
@@ -545,6 +551,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgLocations.setOrgLocationName(registration.getCompanyName().trim());
 		orgLocations.setWebsite(convertWebsite(registration.getWebsite()));
 		orgLocations.setIsCompanyOnboarded(Constants.NO);
+		orgLocations.setSubscriptionType(registration.getOrgEnrollment());
+		orgLocations.setRegistrationStatus("Draft");
 		
 	    if(StringUtils.isNotBlank(registration.getDba())){
         	orgLocations.setDba(registration.getDba());
@@ -562,36 +570,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			orgLocations.setIsPrimary(Constants.YES);
 		}
 		
-		String orgModules = "";
-		
-		if(!isNullOrEmpty(subModules)){
-			String[] registeredSubModules =  subModules.split(",");
-			for(int i=0; i<registeredSubModules.length; i++){
-					orgModules = orgModules+registeredSubModules[i]+",";
-			}
-		}
-		
-		if(!isNullOrEmpty(modules)){
-			String[] registeredModules =  modules.split(",");
-			for(int i=0; i<registeredModules.length; i++){
-				if(Long.parseLong(registeredModules[i]) != 1L){
-					orgModules = orgModules+registeredModules[i]+",";
-				}
-			}
-		}
-		
-		
-		orgModules = orgModules.substring(0, orgModules.length()-1);
-		
-		if(!isNullOrEmpty(subModules)){
-			String[] registeredModules =  modules.split(",");
-			if(registeredModules.length == 1) {
-				orgModules = orgModules+","+Constants.MODULE_TIMESHEET;
-			}
-		}
-		
-		orgLocations.setModulesId(orgModules);
-		
+		orgLocations.setModulesId("2,3,4");
 		
 		return orgLocations;
 	}
@@ -2122,5 +2101,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		Boolean flag = orgRequestService.validateOrgRequestCompanyNameByName(companyName);
 		return flag;
 	}
+
+
 
 }

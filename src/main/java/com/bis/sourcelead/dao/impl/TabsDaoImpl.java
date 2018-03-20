@@ -192,6 +192,18 @@ public class TabsDaoImpl implements TabsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		return (Tabs) session.get(Tabs.class, tabId);
 	}
+
+	@Override
+	@Transactional
+	public Collection<Tabs> getAllTabsList() throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = "from Tabs tabs left join fetch tabs.tabs where  tabs.tabs IS NULL and tabs.status = '1' and tabs.id NOT IN(1,11,12,15,26,27) ORDER BY tabs.tabOrder ASC ";
+	    List<Tabs> tabsList = session.createQuery(query.toString()).list();
+	    return tabsList;
+	
+	}
 	
 	 
 	

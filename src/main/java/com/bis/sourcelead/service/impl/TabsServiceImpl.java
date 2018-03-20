@@ -69,4 +69,9 @@ public class TabsServiceImpl implements TabsService {
 		return tabsDao.getTabListByTabId(tabId);
 	}
 
+	@Override
+	public Collection<Tabs> getAllTabsList() throws Exception {
+		return tabsDao.getAllTabsList();
+	}
+
 }

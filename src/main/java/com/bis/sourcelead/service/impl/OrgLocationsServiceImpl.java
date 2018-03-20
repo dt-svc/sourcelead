@@ -15,6 +15,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LookUpDataDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dto.ClientDTO;
+import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -385,5 +386,28 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	@Override
 	public List<OrgLocations> getAllOrgLocationsByOrgTypeCompany() throws Exception {
 		return orgLocationsDao.getAllOrgLocationsByOrgTypeCompany();
+	}
+
+	@Override
+	public OrgLocationDTO getRegisteredOrgLocationDetails(Long id) throws Exception {
+		OrgLocationDTO orgLocationDTO = new OrgLocationDTO();
+		OrgLocations orgLocatons = orgLocationsDao.getOrgLocations(id);
+		orgLocationDTO.setId(orgLocatons.getId());
+		orgLocationDTO.setOrgName(orgLocatons.getOrgLocationName());
+		orgLocationDTO.setWebsite(orgLocatons.getWebsite());
+		orgLocationDTO.setOrgLocationAddress(orgLocatons.getOrgLocationAddress());
+		orgLocationDTO.setLocation(orgLocatons.getLocation());
+		orgLocationDTO.setCountry(orgLocatons.getCountry());
+		orgLocationDTO.setState(orgLocatons.getState());
+		orgLocationDTO.setCity(orgLocatons.getCity());
+		orgLocationDTO.setZipCode(orgLocatons.getZipCode());
+		orgLocationDTO.setEmail(orgLocatons.getUser().getEmail());
+		orgLocationDTO.setFirstName(orgLocatons.getUser().getFirstName());
+		orgLocationDTO.setLastName(orgLocatons.getUser().getLastName());
+		orgLocationDTO.setPhoneNumber(orgLocatons.getUser().getMobilePhone());
+		orgLocationDTO.setTimeZone(orgLocatons.getTimezone().getId());
+		orgLocationDTO.setDateFormat(orgLocatons.getDateFormat());
+		orgLocationDTO.setSubscriptionType(orgLocatons.getSubscriptionType());
+		return orgLocationDTO;
 	}
 }
