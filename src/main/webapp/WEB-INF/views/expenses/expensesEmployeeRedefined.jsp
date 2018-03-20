@@ -66,7 +66,8 @@ function getTableData(pageNo){
 	 var expenseStatus = '';
 	 expenseStatus = $('#expenseStatusDivId').val();
 	 if(expenseStatus != null && expenseStatus != '' && expenseStatus !='undefined'){
-		  	expenseStatus = expenseStatus.toUpperCase()
+		  	expenseStatus = expenseStatus.toUpperCase();
+		  	$(":checkbox[value="+expenseStatus+"]").prop("checked","true");
 	 }else{
 		var expenseStatus = [];
 		$('input:checkbox[name=expenseStatus]:checked').each(function() 

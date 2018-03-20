@@ -151,8 +151,18 @@ function getExpensesList(dateSearch){
 	searchValue = searchValue ? searchValue : "";
 	var expenseStatus = '';
 	expenseStatus = $('#expenseStatusDivId').val();
+	
+	var expensesStatusFromDashboard = '${expensesStatusFormDashBoard}';
+	if(expensesStatusFromDashboard != null && expensesStatusFromDashboard != '' && expensesStatusFromDashboard !='undefined'){
+		$(":checkbox[value=ALL]").prop("checked",false);
+		$(":checkbox[value="+expensesStatusFromDashboard+"]").prop("checked",true);
+	}else{
+		$(":checkbox[value=ALL]").prop("checked",true);
+	}
+	
 	if(expenseStatus != null && expenseStatus != '' && expenseStatus !='undefined'){
 		  	expenseStatus = expenseStatus.toUpperCase();
+		  	$(":checkbox[value="+expenseStatus+"]").prop("checked","true");
 	}else{
 		var expenseStatus = [];
 		$('input:checkbox[name=expenseStatus]:checked').each(function() 

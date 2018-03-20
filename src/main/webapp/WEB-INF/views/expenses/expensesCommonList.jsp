@@ -15,7 +15,7 @@ function myExpensesListByStage(expenseStatus){
 		    url: sourceleadUrl+"/getExpensesList?expenseStatus="+expenseStatus+"&expenseDashboardStatus=dashboard",
 		    success :function(json) {
 		    		localStorage.setItem("myExpensesListGrid",json);
-		    		window.location.replace(sourceleadUrl+'/expenses');
+		    		window.location.replace(sourceleadUrl+'/expenses/'+expenseStatus);
 		     }
 		});
 }
