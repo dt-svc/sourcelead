@@ -133,7 +133,7 @@
 				<li data-page="last"><a href="#"> >> </a></li>
 			  </ul>
 		</div>
-		<!--  -->
+		<!--popup code start -->
 		<div class="popUpOut" id="popPassView">
 		<div class="popupHead">
 			<h2>Add Passport</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
@@ -176,8 +176,8 @@
             <input value="Save" class="" type="button">
             <input value="Cancel" class="popCan" type="button">
           </div>		
-	</div>
-		<!--  -->
+	</div><!--popcode end  -->
+		
 		<script>
 		 // Add addPass Div  
 			$("#addPass").click(function(){

@@ -151,7 +151,7 @@
 			  </ul>
 		</div>
 		<!--  -->
-		<!--   Family Popup's  -->  
+		<!--   Family Popup's  popcode start-->  
 
 	<div class="popUpOut" id="spousePopView">
 		<div class="popupHead">
@@ -373,10 +373,9 @@
             <input value="Save" class="" type="button">
             <input value="Cancel" class="popCan" type="button">
           </div>		
-	</div>	
-		<!--  -->
-		
-		<script>
+	</div>	<!--popcode end  -->
+	
+	<script>
 			
 			 // Add Spouse
 			$("#addSpou").click(function(){

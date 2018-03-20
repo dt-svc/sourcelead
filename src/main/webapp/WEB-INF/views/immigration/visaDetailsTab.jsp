@@ -140,7 +140,7 @@
 				<li data-page="last"><a href="#"> >> </a></li>
 			  </ul>
 		</div>
-		<!--  -->
+		<!--popcode start  -->
 		<div class="popUpOut" id="popUpVisa">
 		<div class="popupHead">
 			<h2>Add Visa</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
@@ -194,8 +194,8 @@
             <input value="Save" class="" type="button">
             <input value="Cancel" class="popCan" type="button">
           </div>		
-	</div>	
-		<!--  -->
+	</div><!--popcode end  -->	
+		
 		<script>
 		 // Add addVisa Div  
 			$("#addVisa").click(function(){

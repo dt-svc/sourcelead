@@ -32,7 +32,7 @@
 		    	<img src="images/noReco.png" alt=""/><p>No. Records found...</p>
 		    </div>
 		</div>
-		<!--  -->
+		<!--popcode start  -->
 		<div class="popUpOut" id="popNoteView">
 		<div class="popupHead">
 			<h2>Add Note</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
@@ -46,7 +46,7 @@
             <input value="Save" class="" type="button">
             <input value="Cancel" class="popCan" type="button">
           </div>		
-	</div>	<!--  -->
+	</div>	<!-- popcode end -->
 		<script>
 			 // Add addNote Div   
 			$("#addNote").click(function(){

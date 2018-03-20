@@ -283,8 +283,8 @@
             <input value="Save" class="" type="button">
             <input value="Cancel" class="popCan" type="button">
           </div>		
-	</div>	
-	<!--  popup code end  -->
+	</div>	<!--  popup code end  -->
+	
 		<script>
 		
 			 // Import Document PopUp
