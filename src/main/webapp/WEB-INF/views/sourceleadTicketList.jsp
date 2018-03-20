@@ -227,7 +227,7 @@ function prepareSourceleadTicketList(url){
 		result = result + '<table id="dynamicTicketListView" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
-		 result = result + '<th>Tick_Id</th>';
+		 result = result + '<th>Issue Id</th>';
 	    result = result + '	<th>Title</th>';
         result = result + ' <th>Type</th>';
         result = result + ' <th>Module</th>';
