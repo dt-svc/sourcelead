@@ -143,7 +143,6 @@ public class ExpensesRestController {
 			 return model;
 	}
 	
-	//@RequestMapping(value = "/getExpensesList")
     public ResponseList<ExpensesDTO> getExpensesList( ExpensesListUtilDTO elDTO,HttpServletRequest request) throws Exception
     {
         

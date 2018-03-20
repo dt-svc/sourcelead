@@ -149,9 +149,9 @@ function getExpensesList(dateSearch){
 	var url = '';
     var searchValue = $("#SearchExpensesData").val();
 	searchValue = searchValue ? searchValue : "";
-		var expenseStatus = '';
-		 expenseStatus = $('#expenseStatusDivId').val();
-	 if(expenseStatus != null && expenseStatus != '' && expenseStatus !='undefined'){
+	var expenseStatus = '';
+	expenseStatus = $('#expenseStatusDivId').val();
+	if(expenseStatus != null && expenseStatus != '' && expenseStatus !='undefined'){
 		  	expenseStatus = expenseStatus.toUpperCase();
 	}else{
 		var expenseStatus = [];

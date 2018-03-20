@@ -61,32 +61,29 @@ function getTableDataByPageSizeEmployee(){
 }
 
 function getTableData(pageNo){
-	var startDate = '';
-	var endDate = '';
+	 var startDate = '';
+	 var endDate = '';
 	 var expenseStatus = '';
 	 expenseStatus = $('#expenseStatusDivId').val();
 	 if(expenseStatus != null && expenseStatus != '' && expenseStatus !='undefined'){
 		  	expenseStatus = expenseStatus.toUpperCase()
-	}else{
+	 }else{
 		var expenseStatus = [];
 		$('input:checkbox[name=expenseStatus]:checked').each(function() 
 		{
 			expenseStatus.push($(this).val());
 		});
-	}
+	 }
 	var userId = '${SourceLeadWeb_user.id}';
 	var locationCode = '${SourceLeadWeb_orgLocations.locationCode}'
-	
 	var pageSize = $("#pageSize").val();
     var start = parseInt(pageNo*pageSize)-parseInt(pageSize);
-    
     var searchData = $("#SearchExpensesData").val();
     if(searchData != null && searchData !='' && searchData!='undefined'){
     	searchValue = searchData;
     }else{
     	searchValue = '';
-     }
-	
+    }
 	$.ajax({
 	    type : "POST",
 	     url: sourceleadUrl+"/getExpensesList?&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue+"&userId="+userId+"&locationCode="+locationCode,
@@ -119,8 +116,8 @@ function getTableData(pageNo){
 			              itemsOnPage: pageSize,
 			              ellipsePageSet :false,
 			              cssStyle: 'light-theme',
-			               	 onPageClick: function (pageNumber, event) {
-			               		getTableData(""+pageNumber+"");
+			              onPageClick: function (pageNumber, event) {
+			              getTableData(""+pageNumber+"");
 			              }
 		      };
 		      $("#pagination-demo").pagination(options);

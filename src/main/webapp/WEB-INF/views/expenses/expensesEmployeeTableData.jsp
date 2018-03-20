@@ -27,11 +27,20 @@
 
 
 <sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">                                                                                                                                            
-	<td>
-		<div class="tbldata-dotdot-sm">
-			<a class="btnNoBg" href="${sourceleadUrl}/projectSummary?projectUUID='+opt.projectUUID+'&projectClientUUID='+opt.projectClientUUID+'" title="${expensesDTO.projectName}">${expensesDTO.projectName}</a>
-		</div>
-	</td>
+	<c:if test="${not empty expensesDTO.projectUUID and  not empty expensesDTO.projectClientUUID and not empty expensesDTO.projectName}">
+		<td>
+			<div class="tbldata-dotdot-sm">
+				<a class="btnNoBg" href="${sourceleadUrl}/projectSummary?projectUUID=${expensesDTO.projectUUID}&projectClientUUID=${expensesDTO.projectClientUUID}" title="${expensesDTO.projectName}">${expensesDTO.projectName}</a>
+			</div>
+		</td>
+	</c:if>
+	<c:if test="${empty expensesDTO.projectUUID or empty expensesDTO.projectClientUUID}">
+		<td>
+			<div class="tbldata-dotdot-sm">
+				<a class="btnNoBg" title="${expensesDTO.projectName}">${expensesDTO.projectName}</a>
+			</div>
+		</td>
+	</c:if>
 </sec:authorize>                                                                                                                                                                                                                
                                                                                                                                                                                                                                     
 <sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">                                                                                                                                           
@@ -43,11 +52,10 @@
  <c:if test="${not empty expensesDTO.orgRelationUUID and not empty expensesDTO.clientName}">
  <td>
  	<div title="">
- 		<a class="btnNoBg" href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='${expensesDTO.orgRelationUUID}'" title="${expensesDTO.clientName}">${expensesDTO.clientName}</a>
+ 		<a class="btnNoBg" href="${sourceleadUrl}/clientDashboard?orgRelationUUID=${expensesDTO.orgRelationUUID}" title="${expensesDTO.clientName}">${expensesDTO.clientName}</a>
  	</div>
  </td>
  </c:if>
- 
  <c:if test="${empty expensesDTO.orgRelationUUID or empty expensesDTO.clientName}">
 	<td>
 	 	<div title="--">--</div>
@@ -56,7 +64,6 @@
  
 </sec:authorize>                                                                                                                                                           
 
-                                                                                                                                                                               
 <sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">                                                                                        
 <c:if test="${not empty expensesDTO.clientName}">
 	<td>
