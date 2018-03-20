@@ -2513,6 +2513,13 @@ public class TimesheetRestController {
 		
 		
 		@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")
+		@RequestMapping(value = "/rest/deleteSubmissionDocument", method = RequestMethod.POST)
+	    public String deleteSubmissionDocumentForMobile(@RequestParam(value="submissionDocumentId") Long submissionDocumentId) throws Exception {
+			return deleteSubmissionDocument(submissionDocumentId);
+		}
+		
+		
+		@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")
 		@RequestMapping(value = "/deleteSubmissionDocument", method = RequestMethod.POST)
 	    public String deleteSubmissionDocument(@RequestParam(value="submissionDocumentId", required=false) Long submissionDocumentId) throws Exception {
 	        
@@ -2522,8 +2529,12 @@ public class TimesheetRestController {
 	            timesheetSubmissionsDocuments.setFileContentType(null);
 	            timesheetSubmissionsDocuments.setFileName(null);
 	            timesheetSubmissionsDocuments.setStatus(Constants.CANDIDATE_IN_ACTIVE);
-	            timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(timesheetSubmissionsDocuments);
-	            return "success";
+	            TimesheetSubmissionsDocuments tsd = timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(timesheetSubmissionsDocuments);
+	            if(tsd != null) {
+	            	 return "success";
+	            }else {
+	            	 return "failure";
+	            }
 	    }
 
 		public void linkLeaveTypeWithTimeSheet(User leaveApproverUserId, OrgLocations orgLocations, Long leaveTypeId, Leave leave) throws Exception {
