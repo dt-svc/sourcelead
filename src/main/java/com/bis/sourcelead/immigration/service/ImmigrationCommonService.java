@@ -15,6 +15,8 @@ public interface ImmigrationCommonService {
 	
 	List<ImmigrationTemplate> getImmigrationTemplateList(OrgLocations orgLocations);
 
-	void savePetitionDetails(ImmigrationDTO immigrationDTO, User user, OrgLocations orgLocations) throws Exception;
+	Long savePetitionDetails(ImmigrationDTO immigrationDTO, User user, OrgLocations orgLocations) throws Exception;
+
+	ImmigrationDTO getImmigrationViewList(String immigrationId);
 
 }
