@@ -663,7 +663,7 @@ public class FinanceServiceImpl implements FinanceService{
 			if(paidList.getData() != null) {
 				double otherAmount = 0;
 				for(PaidBillDTO paidBill : paidList.getData()) {
-					if(i <= 10) {
+					if(i < 10) {
 						list.add(paidBill);
 					}else {
 						otherAmount = otherAmount + paidBill.getTotalAmount();
