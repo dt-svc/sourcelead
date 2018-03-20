@@ -328,6 +328,8 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		result = result + '<button type="button" id="cancel_button"  class="btn btn-default ml" onClick="guestCancel();">Cancel</button>';
 		result = result + '</div>';
 		result = result + '<div class="pull-right mr">';
+// 	 Workaround to avoid corrupted XHR2 request body in IE10 / IE11
+		result = result + '<input type="hidden" name="_dontcare">';
 		result = result + '<button type="button" id="save_button"  class="btn btn-sm btn-primary " onclick="addApplicantSubmission();">SUBMIT</button>';
 		result = result + '</div>';
 		result = result + '</div>';

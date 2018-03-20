@@ -522,6 +522,7 @@ function getDayWiseReports(){
          type : "POST",
          url: sourceleadUrl+"/getApplicantReceivedReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
           success :function(data) {
+        	  $("#applicantsLoderDiv").removeAttr("style");
 	        	 prepareReportDataDiv(data);
 	        	 var json = JSON.parse(data);
 	        	 getAllCounts(json.length,reportType,startDate,endDate);
