@@ -17,8 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.codehaus.plexus.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -28,11 +26,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.AddExpensesDao;
-import com.bis.sourcelead.dao.ExpensesEntriesDao;
-import com.bis.sourcelead.dao.ExpensesEntryDocumentsDao;
 import com.bis.sourcelead.dto.ExpenseEntryDetailsDTO;
 import com.bis.sourcelead.dto.ExpensesCategoryListDTO;
 import com.bis.sourcelead.dto.ExpensesDTO;
@@ -68,30 +64,23 @@ import com.bis.sourcelead.service.ExpensesCategoryService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
-import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
-import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
 @RequestMapping("/app")
 public class ExpensesRestController {
-	private static final Logger logger = LoggerFactory.getLogger(ExpensesRestController.class);
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	@Autowired
 	private ExpensesService expensesService;
-	
 	@Autowired
 	private ProjectClientService projectClientService;
-	
 	@Autowired
 	private AddExpensesService addExpensesService;
 	@Autowired
@@ -111,38 +100,52 @@ public class ExpensesRestController {
 	@Autowired
 	private UserService userService;
 	@Autowired
-	private ExpensesEntriesDao expensesEntriesDao;
-	@Autowired
-	private ExpensesEntryDocumentsDao expensesEntryDocumentsDao;
-	@Autowired
-	private TimeZoneService timeZoneService;
-	
-	@Autowired
-	private ConversionUtil conversionUtil;
-	
-	@Autowired
-	private ProjectApproverHierarchyService projectApproverHierarchyService;
-	
-	@Autowired
-	private AddExpensesDao addExpensesDao;
-	
-	@Autowired
 	private CandidateService candidateService;
-	
-	@Autowired
-	private LoginSessionController loginSessionController;
-	
 	@Autowired
 	private ProjectMembersHistoryService projectMembersHistoryService;
+
+	
 	
 	@RequestMapping(value = "/rest/getExpensesList")
     public ResponseList<ExpensesDTO> getExpensesListForMobile(@RequestBody ExpensesListUtilDTO elDTO,HttpServletRequest request) throws Exception{
 		return getExpensesList( elDTO, request);
     }
 	
-	
-	
 	@RequestMapping(value = "/getExpensesList")
+    public ModelAndView getExpensesListForWeb( ExpensesListUtilDTO elDTO,HttpServletRequest request) throws Exception{
+		 ModelAndView model = new ModelAndView();
+		 OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			int start = elDTO.getStart();
+			int length = 0;
+			if(elDTO.getPageNo()<1) {
+				elDTO.setPageNo(1);
+			}
+			if(elDTO.getPageSize()<1) {
+				length = 10;
+				elDTO.setPageSize(10);
+			}else {
+				length = elDTO.getPageSize();
+			}
+			elDTO.setStart(start);
+			elDTO.setLength(length);
+			 ResponseList<ExpensesDTO> expenseEmployeeList = getExpensesList( elDTO, request);
+		     model.addObject("expensesDTOList",expenseEmployeeList.getData());
+		     model.addObject("sourceleadUrl",sourceleadUrl);
+		     model.addObject("orgLocationDateFormat",orgLoc.getDateFormat().toUpperCase());
+		     model.addObject("totalRows",expenseEmployeeList.getRecordsFiltered());
+			 model.addObject("pageCount",elDTO.getPageNo());
+			 model.addObject("pageSize",elDTO.getLength());
+			 model.addObject("searchValue",elDTO.getSearchValue());
+			 if(elDTO.getExpenseDashboardStatus() !=null && elDTO.getExpenseDashboardStatus().equalsIgnoreCase("dashboard")) {
+				 model.addObject("expenseStatus",elDTO.getExpenseStatus().get(0));
+			 }else {
+				 model.addObject("expenseStatus",elDTO.getExpenseStatus());
+			 }
+			 model.setViewName("expenses/expensesEmployeeRedefined");
+			 return model;
+	}
+	
+	//@RequestMapping(value = "/getExpensesList")
     public ResponseList<ExpensesDTO> getExpensesList( ExpensesListUtilDTO elDTO,HttpServletRequest request) throws Exception
     {
         
