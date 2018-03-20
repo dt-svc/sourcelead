@@ -165,6 +165,80 @@
 				<li data-page="last"><a href="#"> >> </a></li>
 			  </ul>
 		</div>
+		
+		<!-- popup code start -->
+		<div class="popUpOut" id="popEduView">
+		<div class="popupHead">
+			<h2>Add Education</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+		</div>
+		
+		<div class="popupMid clearfix">
+
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Select Education</label>
+              	<div class="col-md-8 padding_right">
+					<select class="chosen-select form-control">
+					  <option>Select Education</option>
+					  <option>Education-1</option>
+					  <option>Education-2</option>
+					  <option>Education-3</option>
+					</select>
+				</div>
+			</div>
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Specialization</label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control" />
+				</div>
+			</div>				          
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Start Date</label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control calendar" />
+				</div>
+			</div>	
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">End Date</label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control calendar" />
+				</div>
+			</div>
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Score Type</label>
+              	<div class="col-md-8 padding_right">
+					<select class="chosen-select form-control">
+					  <option>Select Score Type</option>
+					  <option>Percentage</option>
+					  <option>Points</option>
+					</select>
+				</div>
+			</div>	
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Score</label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control" />
+				</div>
+			</div>
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Institute/University</label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control" />
+				</div>
+			</div>
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Address</label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control" />
+				</div>
+			</div>											
+									
+		</div>
+		
+		<div class="immiPopFoot">
+            <input value="Save" class="" type="button">
+            <input value="Cancel" class="popCan" type="button">
+          </div>		
+	</div><!-- popup code end -->
 		<script>
 			// Add addEdu Div  
 			$("#addEdu").click(function(){

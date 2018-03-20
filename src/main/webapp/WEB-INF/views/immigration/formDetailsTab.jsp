@@ -146,6 +146,66 @@
 				<li data-page="last"><a href="#"> >> </a></li>
 			  </ul>
 		</div>
+		<!--  popup code start-->
+		<div class="popUpOut" id="viewFormpop">
+		<div class="popupHead">
+			<h2>Add Form</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+		</div>
+		
+		<div class="popupMid clearfix">
+
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Form name<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8 padding_right">
+					<input type="text" class="form-control" />
+				</div>
+			</div>	         
+          <div class="col-sm-12 noPad mt clearfixclearfix">
+				<label class="col-md-4 padding_left">File<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8 padding_right">
+					<div class="input-group col-md-12" style="margin:0 auto">
+					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+					  <input type="file" style="display: none;" multiple id="uploadBtn1"  class="upload">
+					  </span> </label>
+					<input type="text" class="form-control" readonly id="uploadFile1" placeholder="Upload Resume ...">
+				  </div>
+				</div>
+			</div>					          	
+		
+		</div>
+		
+		<div class="immiPopFoot">
+            <input value="Save" class="" type="button">
+            <input value="Cancel" class="popCan" type="button">
+          </div>		
+	</div>
+	
+	<div class="popUpOut" id="uploadFormPop">
+		<div class="popupHead">
+			<h2>Upload file</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+		</div>
+		
+		<div class="popupMid popupMidHeight clearfix">
+         
+          <div class="col-sm-12 noPad mt clearfixclearfix">
+				<label class="col-md-4 padding_left">File<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8 padding_right">
+					<div class="input-group col-md-12" style="margin:0 auto">
+					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+					  <input type="file" style="display: none;" multiple id="uploadBtn10"  class="upload">
+					  </span> </label>
+					<input type="text" class="form-control" readonly id="uploadFile10" placeholder="Upload Resume ...">
+				  </div>
+				</div>
+			</div>					          	
+		
+		</div>
+		
+		<div class="immiPopFoot">
+            <input value="Save" class="" type="button">
+            <input value="Cancel" class="popCan" type="button">
+          </div>		
+	</div>	<!-- popup code end -->
 		<script>
 			// Add Form PopUp
 			$("#addForm").click(function(){

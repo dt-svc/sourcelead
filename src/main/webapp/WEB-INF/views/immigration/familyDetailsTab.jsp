@@ -150,6 +150,232 @@
 				<li data-page="last"><a href="#"> >> </a></li>
 			  </ul>
 		</div>
+		<!--  -->
+		<!--   Family Popup's  -->  
+
+	<div class="popUpOut" id="spousePopView">
+		<div class="popupHead">
+			<h2>Add Spouse</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+		</div>
+		
+		<div class="popupMid clearfix">
+
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">First Name<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control" />
+				</div>
+			</div>
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Middle Name</label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control" />
+				</div>
+			</div> 
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Last Name<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control" />
+				</div>
+			</div>
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Place of Marriage<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control" />
+				</div>
+			</div>                           				          
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Date of Marriage<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control calendar" />
+				</div>
+			</div>
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">End Date</label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control calendar" />
+				</div>
+			</div>
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Date of Birth<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control calendar" />
+				</div>
+			</div>
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Place of Birth<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control" />
+				</div>
+			</div>
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Address</label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control" />
+				</div>
+			</div>																		
+		</div>
+		
+		<div class="immiPopFoot">
+            <input value="Save" class="" type="button">
+            <input value="Cancel" class="popCan" type="button">
+          </div>		
+	</div>	
+	
+	<div class="popUpOut" id="childPopView">
+		<div class="popupHead">
+			<h2>Add Child</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+		</div>
+		
+		<div class="popupMid clearfix">
+
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">First Name<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control" />
+				</div>
+			</div>
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Middle Name</label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control" />
+				</div>
+			</div> 
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Last Name<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control" />
+				</div>
+			</div>                         				          
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Date of Birth<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control calendar" />
+				</div>
+			</div>
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Place of Birth<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control" />
+				</div>
+			</div>
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Address</label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control" />
+				</div>
+			</div>																		
+		</div>
+		
+		<div class="immiPopFoot">
+            <input value="Save" class="" type="button">
+            <input value="Cancel" class="popCan" type="button">
+          </div>		
+	</div>	
+	
+	<div class="popUpOut" id="fathPopView">
+		<div class="popupHead">
+			<h2>Add Father</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+		</div>
+		
+		<div class="popupMid clearfix">
+
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">First Name<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control" />
+				</div>
+			</div>
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Middle Name</label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control" />
+				</div>
+			</div> 
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Last Name<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control" />
+				</div>
+			</div>                         				          
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Date of Birth<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control calendar" />
+				</div>
+			</div>
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Place of Birth<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control" />
+				</div>
+			</div>
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Address</label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control" />
+				</div>
+			</div>																		
+		</div>
+		
+		<div class="immiPopFoot">
+            <input value="Save" class="" type="button">
+            <input value="Cancel" class="popCan" type="button">
+          </div>		
+	</div>	
+	
+	<div class="popUpOut" id="mothPopView">
+		<div class="popupHead">
+			<h2>Add Mother</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+		</div>
+		
+		<div class="popupMid clearfix">
+
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">First Name<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control" />
+				</div>
+			</div>
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Middle Name</label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control" />
+				</div>
+			</div> 
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Last Name<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control" />
+				</div>
+			</div>                         				          
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Date of Birth<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control calendar" />
+				</div>
+			</div>
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Place of Birth<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control" />
+				</div>
+			</div>
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Address</label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control" />
+				</div>
+			</div>																		
+		</div>
+		
+		<div class="immiPopFoot">
+            <input value="Save" class="" type="button">
+            <input value="Cancel" class="popCan" type="button">
+          </div>		
+	</div>	
+		<!--  -->
+		
 		<script>
 			
 			 // Add Spouse
@@ -169,4 +395,11 @@
 				$(".popMask").fadeIn(200);
 				$("#mothPopView").fadeIn(100);
 			});	
+			
+            // cancel popup.
+			$(".popCan").click(function(){
+				$(".popMask").fadeOut(200);
+				$("#spousePopView, #childPopView, #fathPopView, #mothPopView").fadeOut(100);
+			});	
 		</script>
+		

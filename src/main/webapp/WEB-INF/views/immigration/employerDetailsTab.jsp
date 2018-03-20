@@ -149,6 +149,51 @@
 				<li data-page="last"><a href="#"> >> </a></li>
 			  </ul>
 		</div>
+		<!-- popup code start -->
+		<div class="popUpOut" id="emploView">
+		<div class="popupHead">
+			<h2>Add Employee</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+		</div>
+		
+		<div class="popupMid clearfix">
+
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Imployer<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control" />
+				</div>
+			</div>
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Designation</label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control" />
+				</div>
+			</div>				          
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Address</label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control" />
+				</div>
+			</div>
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Start Date</label>
+              	<div class="col-md-8 padding_right"> 
+              		<input type="text" class="form-control calendar" />
+				</div>
+			</div>				
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">End Date</label>
+              	<div class="col-md-8 padding_right">
+              		<input type="text" class="form-control calendar" />
+				</div>
+			</div>			
+		</div>
+		
+		<div class="immiPopFoot">
+            <input value="Save" class="" type="button">
+            <input value="Cancel" class="popCan" type="button">
+          </div>		
+	</div><!-- popup code end -->
 		<script>
 		// Add Employee PopUp
 		$("#addEmpl").click(function(){

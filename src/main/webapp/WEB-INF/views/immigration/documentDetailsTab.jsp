@@ -176,6 +176,115 @@
 				<li data-page="last"><a href="#"> >> </a></li>
 			  </ul>
 		</div>
+		<!--  popup code start -->
+		<div class="popUpOut" id="docuView">
+		<div class="popupHead">
+			<h2>Add Document</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+		</div>
+		
+		<div class="popupMid clearfix">
+
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Document Type<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8 padding_right">
+					<select class="chosen-select form-control">
+					  <option>Select Document Type</option>
+					  <option>Document-1</option>
+					  <option>Document-2</option>
+					  <option>Document-3</option>
+					</select>
+				</div>
+			</div>
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Tax Id<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8 padding_right">
+					<input type="text" class="form-control" />
+				</div>
+			</div>	         
+          <div class="col-sm-12 noPad mt clearfixclearfix">
+				<label class="col-md-4 padding_left">Document<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8 padding_right">
+					<div class="input-group col-md-12" style="margin:0 auto">
+					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+					  <input type="file" style="display: none;" multiple id="uploadBtn"  class="upload">
+					  </span> </label>
+					<input type="text" class="form-control" readonly id="uploadFile" placeholder="Upload Resume ...">
+				  </div>
+				</div>
+			</div>					          
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Description</label>
+              	<div class="col-md-8 padding_right">
+					<textarea rows="2" class="form-control"></textarea>
+				</div>
+			</div>		
+		
+		</div>
+		
+		<div class="immiPopFoot">
+            <input value="Save" class="" type="button">
+            <input value="Cancel" class="popCan" type="button">
+          </div>		
+	</div>
+	<div class="popUpOut popUpOutBig" id="docuImportView">
+		<div class="popupHead">
+			<h2>Request Document</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+		</div>
+		
+		<div class="popupMid clearfix mt">		
+			<table class="table table-responsive table-bordered table-hover noMar">
+				<tbody>
+					<tr>
+						<td width="200px">
+							<select class="chosen-select form-control">
+							  <option>Select Document Type</option>
+							  <option>Document-1</option>
+							  <option>Document-2</option>
+							  <option>Document-3</option>
+							</select>
+						</td>
+						<td width="auto"><textarea rows="2" placeholder="Description" class="form-control"></textarea></td>
+						<td width="120px">
+							<label class="switch mt10 ml10 pull-left"><input checked="" type="checkbox"><div class="slider round"></div></label>
+							<div class="pull-right"><button type="button" class="btn btm-sm pull-right mt5"><i class="fa fa-plus text-primary"></i></button></div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		
+		<div class="immiPopFoot">
+            <input value="Save" class="" type="button">
+            <input value="Cancel" class="popCan" type="button">
+          </div>		
+	</div>	
+	<div class="popUpOut" id="uploadFormPop">
+		<div class="popupHead">
+			<h2>Upload file</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+		</div>
+		
+		<div class="popupMid popupMidHeight clearfix">
+         
+          <div class="col-sm-12 noPad mt clearfixclearfix">
+				<label class="col-md-4 padding_left">File<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8 padding_right">
+					<div class="input-group col-md-12" style="margin:0 auto">
+					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+					  <input type="file" style="display: none;" multiple id="uploadBtn10"  class="upload">
+					  </span> </label>
+					<input type="text" class="form-control" readonly id="uploadFile10" placeholder="Upload Resume ...">
+				  </div>
+				</div>
+			</div>					          	
+		
+		</div>
+		
+		<div class="immiPopFoot">
+            <input value="Save" class="" type="button">
+            <input value="Cancel" class="popCan" type="button">
+          </div>		
+	</div>	
+	<!--  popup code end  -->
 		<script>
 		
 			 // Import Document PopUp

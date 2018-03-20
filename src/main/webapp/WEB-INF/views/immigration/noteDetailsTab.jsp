@@ -32,6 +32,21 @@
 		    	<img src="images/noReco.png" alt=""/><p>No. Records found...</p>
 		    </div>
 		</div>
+		<!--  -->
+		<div class="popUpOut" id="popNoteView">
+		<div class="popupHead">
+			<h2>Add Note</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+		</div>
+		
+		<div class="popupMid clearfix">
+			<div class="col-sm-12 noPad mt clearfix"><textarea class="form-control" rows="3"></textarea></div>						
+		</div>
+		
+		<div class="immiPopFoot">
+            <input value="Save" class="" type="button">
+            <input value="Cancel" class="popCan" type="button">
+          </div>		
+	</div>	<!--  -->
 		<script>
 			 // Add addNote Div   
 			$("#addNote").click(function(){
