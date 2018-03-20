@@ -101,17 +101,17 @@ public class CandidateResumeRestController {
 	 * @throws Exception
 	 */
 //	@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_RESUMES')")
-	@RequestMapping(value = "/saveCandidateResume", method = RequestMethod.POST)
-	public @ResponseBody String saveCandidateResume(CandidateResumeDTO  candidateResumeDTO,@RequestParam(value = "candidateId", required = false) String candidateId, @RequestParam(value = "resumeId", required = false) String resumeId, HttpServletRequest request) throws Exception
+	@RequestMapping(value = {"/saveCandidateResume","rest/saveCandidateResume"}, method = RequestMethod.POST)
+	public @ResponseBody String saveCandidateResume(CandidateResumeDTO  candidateResumeDTO, HttpServletRequest request) throws Exception
 	{
 		
 		candidateResumeDTO.setStaticPath(staticPath);
 		//FileUploadUtil.fillUploadedFileInfo(candidateResumeDTO, candidateResumeDTO.getFileInfo());
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		if (StringUtils.isNotEmpty(candidateId)) {
-			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
-			candidateResumesService.storeCandidateResume(candidateResumeDTO, user, candidate, resumeId, orgLocation);
+		if (StringUtils.isNotEmpty(candidateResumeDTO.getCandidateId())) {
+			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateResumeDTO.getCandidateId()));
+			candidateResumesService.storeCandidateResume(candidateResumeDTO, user, candidate, candidateResumeDTO.getResumeId(), orgLocation);
 			Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocation);
 			return percentage.toString();
 		}

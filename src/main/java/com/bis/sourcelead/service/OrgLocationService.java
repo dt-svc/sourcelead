@@ -24,6 +24,8 @@ public interface OrgLocationService {
 	public Boolean isLoginUserIsSuperUser(Long userId,Long orgLocationId) throws Exception;
 
 	public List<OrgLocations> getAllOrgLocations() throws Exception;
+	
+	public List<OrgLocations> getAllOrgLocationsByOrgTypeCompany() throws Exception;
 
 	public OrgLocations getOrgLocationsByOrgLocationName(String orgLocationName) throws Exception;
 

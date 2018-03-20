@@ -78,7 +78,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.LoginSessionController;
-import com.itextpdf.text.ListItem;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
@@ -176,6 +175,7 @@ public class ExpensesRestController {
                         if(pc.getOrgRelationId() != null && pc.getOrgRelationId().getId() != null) {
                         OrgRelations orgRelations = orgRelationsService.getOrgRelationById(pc.getOrgRelationId().getId());
             			expenses.setOrgRelationUUID(orgRelations.getUUID());
+            			expenses.setExpensesRejectedReason(eah.getRejectedReason());
                         }
                     }
                 }
@@ -719,12 +719,14 @@ public class ExpensesRestController {
 		List<Expenses> expensesList = expensesService.getTotalMyExpensesListByMasterCandidateIdForEmployeeLogin(candidate.getMasterCandidateId().getId(), expenseStatus);
 		for (Expenses ex : expensesList) {
 			ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(ex.getMasterCandidateId().getId(),ex.getProjects().getId(),orgLoc.getId());
-			if (null != ex.getProjectMembers()) {
-				ex.setProjectName(pm.getProjects().getProjectName());
+			if(pm != null) {
+				if (null != ex.getProjectMembers()) {
+					ex.setProjectName(pm.getProjects().getProjectName());
+				}
+				if(pm.getProjectClientsId()!=null && pm.getProjectClientsId().getOrgRelationId()!= null){
+					ex.setClientName(pm.getProjectClientsId().getOrgRelationId().getClientName());	
+	            }
 			}
-			if(pm.getProjectClientsId()!=null && pm.getProjectClientsId().getOrgRelationId()!= null){
-				ex.setClientName(pm.getProjectClientsId().getOrgRelationId().getClientName());	
-            }
 			if (null != ex.getStartDate()) {
 				ex.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),ex.getStartDate()));
 			}

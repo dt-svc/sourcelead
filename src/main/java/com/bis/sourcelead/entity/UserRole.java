@@ -307,6 +307,7 @@ public class UserRole implements Serializable {
 	private String vendorSpocId;
 
 	@Transient
+	@JsonProperty
 	private String department;
 	
 	@Transient

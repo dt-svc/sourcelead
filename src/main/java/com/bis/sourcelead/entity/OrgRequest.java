@@ -30,6 +30,9 @@ private static final long serialVersionUID = 1L;
     @Column(name = "ID", nullable = false)
     private Long id;
 	
+	@Column(name = "ORG_TYPE")
+   	private String orgType;
+	
     @Column(name = "FIRST_NAME")
    	private String firstName;
     
@@ -58,8 +61,21 @@ private static final long serialVersionUID = 1L;
     @Column(name = "MODULES")
    	private String modules;
     
+    @Column(name = "DEMO_DATE")
+   	private Date demoDate;
+    
+    @Column(name = "DEMO_TIME")
+   	private String demoTime;
+    
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="DEMO_TIME_ZONE", nullable=false )
+	private Timezone timezone;
+		
     @Column(name = "STATUS")
    	private Integer status;
+    
+    @Column(name = "REQUEST_STATUS")
+   	private String requestStatus;
    		
    	@Column(name = "CREATED_DATE")
    	private Date createdDate;
@@ -162,5 +178,45 @@ private static final long serialVersionUID = 1L;
 
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
+	}
+
+	public Date getDemoDate() {
+		return demoDate;
+	}
+
+	public String getDemoTime() {
+		return demoTime;
+	}
+
+	public Timezone getTimezone() {
+		return timezone;
+	}
+
+	public void setDemoDate(Date demoDate) {
+		this.demoDate = demoDate;
+	}
+
+	public void setDemoTime(String demoTime) {
+		this.demoTime = demoTime;
+	}
+
+	public void setTimezone(Timezone timezone) {
+		this.timezone = timezone;
+	}
+
+	public String getOrgType() {
+		return orgType;
+	}
+
+	public void setOrgType(String orgType) {
+		this.orgType = orgType;
+	}
+
+	public String getRequestStatus() {
+		return requestStatus;
+	}
+
+	public void setRequestStatus(String requestStatus) {
+		this.requestStatus = requestStatus;
 	}
 }

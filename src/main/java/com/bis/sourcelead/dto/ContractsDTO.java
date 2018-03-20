@@ -61,7 +61,12 @@ public class ContractsDTO {
 	private String spocUUID;
 	
 	private List<CustomFormFieldDTO> customFormData;
+	
 	private String joinedDateStr;
+	
+	private long parallelSigner1;
+	
+	private long parallelSigner2;
 	
 	public String getStaticPath()
 	{
@@ -554,6 +559,24 @@ public class ContractsDTO {
 	{
 		this.joinedDateStr = joinedDateStr;
 	}
-	
 
+	public long getParallelSigner1()
+	{
+		return parallelSigner1;
+	}
+
+	public void setParallelSigner1(long parallelSigner1)
+	{
+		this.parallelSigner1 = parallelSigner1;
+	}
+
+	public long getParallelSigner2()
+	{
+		return parallelSigner2;
+	}
+
+	public void setParallelSigner2(long parallelSigner2)
+	{
+		this.parallelSigner2 = parallelSigner2;
+	}
 }

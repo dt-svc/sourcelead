@@ -33,6 +33,10 @@ $(document).ready(function(){
 		loadInvoiceDetails(invoiceUUID);
 	}else{
 		getClients();
+		$("#invoiceId").val("");
+		$("#paymentFrequency").val("");
+		$("#paymentFrequency").trigger("chosen:updated");
+		$("#dueDate").val("");
 	}
 
 	
@@ -106,8 +110,8 @@ function errRemoveClientContact(){
 						<div class="form-group">
 							<label class="col-md-3">Invoice Id<span
 								class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9">
-								<input type="text" class="form-control" id="invoiceId"
+							<div class="col-md-9" id="invoiceIdDiv">
+								<input type="text" class="form-control" id="invoiceId" onkeyup="validateInvoiceId();"
 									name="invoiceId" value="" placeholder="Invoice Id"
 									data-validation="required" field-name="Invoice Id">
 							</div>
@@ -534,8 +538,8 @@ if(selectedTextInvoice =='percentage'){
 			   			 document.getElementById("sendButtonId").style.display="none";
 			   			 document.getElementById("saveButtonId").style.display="none";
 			       	}else{
-			       		document.getElementById("sendButtonId").style.display="block";
-			   			document.getElementById("saveButtonId").style.display="block";
+			       		document.getElementById("sendButtonId").style.display="inline-block";
+			   			document.getElementById("saveButtonId").style.display="inline-block";
 			       	}
 		        	
 		        	
@@ -1114,6 +1118,7 @@ function cancelDelDoc(){
 		
   }
   </script>
+  
 
 
 <script>
@@ -1178,6 +1183,39 @@ function pagination(){
 }
 </script>
 
+
+<script type="text/javascript">
+ function validateInvoiceId() {
+	 var invoiceId = document.getElementById("invoiceId").value; 
+	
+	 if(invoiceId != null && invoiceId != ""){
+		 $("#saveButtonId").attr("disabled", "disabled");
+		 $("#sendButtonId").attr("disabled", "disabled");
+		
+         //$("#create_user" ).addClass('button').val('Processing..');
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateInvoiceId?"+tokenParamName+"="+tokenValue+"&invoiceId="+invoiceId, 
+		        success: function(data) {
+		        	 if(data == true){
+		        		  $('#invoiceIdDiv').find('p.jquery_form_error_message').remove();
+						  $("input#invoiceId").after("<p class='jquery_form_error_message'>"+invoiceId+" is Already Existed</span>");
+						  document.getElementById("invoiceId").setAttribute('record-exist','yes');
+						  document.getElementById("invoiceId").setAttribute('record-exist-errorMsg',invoiceId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#invoiceId').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#invoiceIdDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#saveButtonId" ).addClass('us-btn').val('Save');
+                         $("#saveButtonId").removeAttr("disabled");
+                         $("#sendButtonId" ).addClass('us-btn').val('Send');
+                         $("#sendButtonId").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>  
 
 
 <!-- Get contract sow between client and the associate -->
@@ -1684,6 +1722,8 @@ function calculateTaxDiscount(){
 		    	if(taxValue){
 		    		first = parseFloat(taxValue);
 			        $("#"+i+"taxTotal").val(first.toFixed(2));
+		    	}else{
+		    		$("#"+i+"taxTotal").val("00.00");
 		    	}
 		    	
 		    }
@@ -2076,23 +2116,30 @@ function maskme(){
     $.mask.definitions['p'] = "[Mm]";
     $(".inline_field").mask("Hhh:Mm"); 
     
-    $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
-    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
-        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
-            event.preventDefault();
-        }
+    $(".allownumericwithdecimal").on("keypress keyup blur",function (evt) {
+    	
+    	var charCode = (evt.which) ? evt.which : event.keyCode
+    	         if (charCode > 31 && (charCode < 48 || charCode > 57))
+    	            return false;
+    	         return true;
+    	
+    	
+//     $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+//         if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+//             event.preventDefault();
+//         }
     });
 }
 </script>
 
-<script>
+<!-- <script>
 $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
 $(this).val($(this).val().replace(/[^0-9\.]/g,''));
     if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
         event.preventDefault();
     }
 });
-</script>
+</script> -->
 <script type="text/javascript">
 function cancel(){
 	$("#popUp").empty();

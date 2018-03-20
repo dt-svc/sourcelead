@@ -304,22 +304,20 @@
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 						
+						if(json.projectCustomFieldlabelNameAndValue != null && json.projectCustomFieldlabelNameAndValue != "" && json.projectCustomFieldlabelNameAndValue != 'undefined'){
+				              $.each(json.projectCustomFieldlabelNameAndValue, function(key, value) {
+				            	  var labelNameAndlabelData = value.split("$");
+				            	  result = result + '	<div class="project_details_cta">';
+				            	  result = result + '	<strong>'+labelNameAndlabelData[0]+':</strong><span class="fix">'+labelNameAndlabelData[1]+'</span><div class="clearfix"></div>';
+				            	  result = result + '	</div>';
+				              });
+			              }
+						
 						result = result + '<div class="project_details_cta project_description project_details_cta_100">';
 						result = result	+ '<strong>Description:</strong>';
 						result = result + '<div class="descriptionStyle">'+description+' </div>';
 						result = result + '</div>';
 						
-						
-						 if(json.projectCustomFieldlabelNameAndValue != null && json.projectCustomFieldlabelNameAndValue != "" && json.projectCustomFieldlabelNameAndValue != 'undefined'){
-								for (var key in json.projectCustomFieldlabelNameAndValue) {
-									  if (json.projectCustomFieldlabelNameAndValue.hasOwnProperty(key)) {
-										result = result + '<div class="project_details_cta project_details_cta_100">';
-										result = result	+ '<strong>'+key+':</strong>';
-										result = result + '<div class="descriptionStyle">'+json.projectCustomFieldlabelNameAndValue[key]+' </div>';
-										result = result + '</div>';
-									  }
-									}
-							}
 						}
 						
 						result = result + '<div class="clearfix"></div>';
@@ -483,8 +481,10 @@ function editClientProjectDetails(projectId){
                         var allowOffShore  = "";
                         var allowTimeEntryAfterDeadLine = "";
                         var allowBidding = "";
-                        
-                        
+                        <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	              		  var sectionId = '${section.id}';
+	              		  preapareCustomFieldDetails(projectId,sectionId);
+	              		</c:forEach>
                         
                         if(json.allowRemote != null && json.allowRemote != '' && json.allowRemote != 'undefined' && json.allowRemote == 'true'){
                         	allowRemote = "checked";
@@ -835,6 +835,8 @@ function editClientProjectDetails(projectId){
 						result = result + '</div>';
 						
 						result = result + '</div>';
+						result = result + '<div class="clearfix"></div>';
+						result = result + '<div id="customFieldDataId"></div>';
 						
 						result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="width100percnt col-md-12 mb txtEditor_p">';
@@ -917,7 +919,18 @@ function editClientProjectDetails(projectId){
 	}
 </script>
 
-
+<script>
+function preapareCustomFieldDetails(projectId,sectionId){
+	$.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/getAllASectionCustomFields?&projectId="+projectId+"&requestFrom=project"+"&sectionId="+sectionId,        
+         success :function(data) {
+        	 $('#customFieldDataId').empty();
+        	 $('#customFieldDataId').append(data);
+           },
+     }); 
+}
+</script>
 
 <script>
 function validateProjectName(projectUUID){
@@ -1005,9 +1018,10 @@ function projectStatus(){
 <script type="text/javascript">
 	function updateProjectDetails(projectId) {
 		var ee = $("#txtEditor1").val($('.Editor-editor').html()); 
-		$("#projectEditDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		
 		 if ($('#editProject_form').validate(false, validationSettings)) {
 			var formData = getFormData("editProject_form");
+			$("#projectEditDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 						type : "POST",
 						data: formData,
@@ -1022,6 +1036,9 @@ function projectStatus(){
 							var json = JSON.parse(data);
 							$("#empTab").removeAttr("onClick");
 			   		    	$("#empTab").attr("onclick","projectEmployee('"+projectId+"', '"+json.startDateStr+"', '"+json.endDateStr+"', '"+json.projectStatus+"', '"+json.projectName+"')");
+			   		    	
+			   		    	$("#teamTab").removeAttr("onClick");
+			   		    	$("#teamTab").attr("onclick","projectTeam('"+projectId+"', '"+json.startDateStr+"', '"+json.endDateStr+"', '"+json.projectStatus+"', '"+json.projectName+"')");
 			   		    	
 			   		    	$("#taskTab").removeAttr("onClick");
 			   		    	$("#taskTab").attr("onclick","projectTask('"+projectId+"', '"+json.projectStatus+"')");
@@ -1061,6 +1078,9 @@ function projectStatus(){
 							var json = JSON.parse(data);
 							$("#empTab").removeAttr("onClick");
 			   		    	$("#empTab").attr("onclick","projectEmployee('"+projectId+"', '"+json.startDateStr+"', '"+json.endDateStr+"', '"+json.projectStatus+"', '"+json.projectName+"')");
+			   		    	
+			   		    	$("#teamTab").removeAttr("onClick");
+			   		    	$("#teamTab").attr("onclick","projectTeam('"+projectId+"', '"+json.startDateStr+"', '"+json.endDateStr+"', '"+json.projectStatus+"', '"+json.projectName+"')");
 			   		    	
 			   		    	$("#taskTab").removeAttr("onClick");
 			   		    	$("#taskTab").attr("onclick","projectTask('"+projectId+"', '"+json.projectStatus+"')");
@@ -1173,25 +1193,20 @@ function projectStatus(){
 		var sourceleadUrl = '${sourceleadUrl}';
 		var currentApproverId = currentApproverId;
 		var manager2 = manager2;
-		$
-				.ajax({
+		$ .ajax({
 					type : "POST",
-					url : sourceleadUrl
-							+ "/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="
-							+ currentApproverId,
+					url : sourceleadUrl + "/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+ currentApproverId,
 					success : function(json) {
 						var output = "";
-						output = output
-								+ "<option value=''>-Select Manager-</option>";
+						output = output + "<option value=''>-Select Manager-</option>";
 						for (var i = 0; i < json.length; i++) {
-
 							var opt = json[i];
-							if (manager2 == opt.id) {
+							/* if (manager2 == opt.id) {
 								selected = 'selected';
 								output = output + "<option "+selected+" value='" +opt.id+ "'>" + opt.firstName + " " + opt.lastName + "  ("+opt.userType+")</option>";
-							} else {
+							} else { */
 								output = output + "<option value='" +opt.id+ "'>" + opt.firstName + " " + opt.lastName + "  ("+opt.userType+")</option>";
-							}
+// 							}
 
 						}
 						$("#level2Manager").empty();
@@ -1247,25 +1262,20 @@ function showLevel2Div(){
 		if (currentApproverId == manager2) {
 			if (currentApproverId != null && currentApproverId != ''
 					&& currentApproverId != 'undefined') {
-				$
-						.ajax({
-							type : "POST",
-							url : sourceleadUrl + "/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId=" + currentApproverId,
-							success : function(json) {
-								var output = "";
-								output = output
-										+ "<option value=''>-Select Manager-</option>";
-								for (var i = 0; i < json.length; i++) {
-									var opt = json[i];
-									output = output + "<option value='" +opt.id+ "'>" + opt.firstName + " " + opt.lastName + " ("+opt.userType+")</option>";
-								}
-								$("#level2Manager").empty();
-								$("#level2Manager").append(output);
-							},
-							error : function(e) {
-
-							}
-						});
+				$.ajax({ 
+					type : "POST",
+					url : sourceleadUrl + "/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId=" + currentApproverId,
+					success : function(json) {
+						var output = "";
+						output = output + "<option value=''>-Select Manager-</option>";
+						for (var i = 0; i < json.length; i++) {
+							var opt = json[i];
+							output = output + "<option value='" +opt.id+ "'>" + opt.firstName + " " + opt.lastName + " ("+opt.userType+")</option>";
+						}
+						$("#level2Manager").empty();
+						$("#level2Manager").append(output);
+					},
+				});
 			}
 		} else {
 			getApproversLevel2(currentApproverId, manager2);

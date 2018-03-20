@@ -6,9 +6,9 @@
 	function employeeSubmissionDetails(candidateId){
 		var result = "";
 		
-		result = result	+ '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-		result = result	+ '<div class="project_tabs_inn_head"> <input class="vendorfild" ></div>';
-		result = result + '   <div id="employeeSubmissionDetailsList" class="datatable_filter"></div>';
+		result = result	+ '   <div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew">';
+		/* result = result	+ '<div class="project_tabs_inn_head"> <input class="vendorfild" ></div>'; */
+		result = result + '   <div id="employeeSubmissionDetailsList" class="datatable_filter mt5"></div>';
 		result = result + '   </div>';
 		result = result + '<div class="clearfix"></div>';
 		

@@ -181,7 +181,9 @@ $(function(){
 				     
 				    <div class="clearfix mt10"></div>
 				  <div id="legalUserFormDiv"></div>
-			     
+			     <div class="compSignatoryHelpMes mt">
+						You can add more signatories in Org Settings.
+					</div>
 			     <div class="welBtns welBtnsA">
 						<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardDocuments'/>'"><input type="submit" value="Save & Finish" class="Brig" id="save_button">
 						<input type="button" value="Skip & Finish" class="skipBtn" onclick="onboardMessage('Skip');"></a>
@@ -398,7 +400,7 @@ function loadLeagelSignerForm(){
 	result = result +"<div class='form-group clearfix' id='firstNameDiv'>";
 	result = result +"<label class='col-md-4 noPad'>Designation</label>";
 	result = result +"<div class='col-md-8 padding_right'>";
-	result = result +"<input class='form-control' type='text' name='designation' id='designation' field-name='Designation'  pattern='[A-Za-z\s]*' data-validation-optional='true'  data-validation='validate_Space validate_AlphaNumber validate_length length1-100'>";
+	result = result +"<input class='form-control' type='text' name='designation' id='designation' field-name='Designation' data-validation-optional='true' data-validation='validate_Space validate_AlphaNumber validate_length length1-100'>";
 	result = result +"</div>";
 	result = result +"</div>";
 	result = result +"</div>";
@@ -407,7 +409,7 @@ function loadLeagelSignerForm(){
 	result = result +"<div class='form-group clearfix'>";
 	result = result +"<label class='col-md-4 noPad'>Designation</label>";
 	result = result +"<div class='col-md-8 padding_right'>";
-	result = result +"<select class='chosen-select form-control' id='designation' name='designationType' field-name='Designation' data-validation-optional='true' onchange='getDesignationType()'>";
+	result = result +"<select class='chosen-select form-control' id='designation' nSSNSSName='designationType' field-name='Designation' data-validation-optional='true' onchange='getDesignationType()'>";
 	result = result +"<option value=''>--Select Designation--</option>";
 	result = result +'<option value="CEO">CEO</option>';
 	result = result +'<option value="CFO">CFO</option>';

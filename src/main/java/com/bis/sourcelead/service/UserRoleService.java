@@ -15,6 +15,7 @@ import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 
 public interface UserRoleService {
@@ -49,6 +50,10 @@ public interface UserRoleService {
 	
 	public UserRole getUserRoleById(Long userRoleId) throws Exception;
 
+	
+	public List<UserRole> getAllUsersBasedOrgLocationId(Long orgLocationId) throws Exception;
+
+	
 	/**To get user role by userid and locationId
 	 * @author Prasad salina
 	 * @param userId
@@ -138,13 +143,14 @@ public interface UserRoleService {
 
 	public UserRole getUserRoleByVerficationUUID(String uuid);
 	
-	ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId(UserDTO userDTO,UserRoleDTO userRoleDTO, Long roleId,Long locationId,String userState,Long userId,String loginUserRole,String userCode) throws Exception;
-	
 	List<ConnectionsDTO> getUserListForConnections(String searchByName,Integer offSet,Long userId) throws Exception;
+	
+	ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId(UserDTO userDTO,UserRoleDTO userRoleDTO,Long locationId,Long userId,String loginUserRole,String userCode,List<Long> orgRelationsList,List<Long> managerUserIds,List<Long> teamsList,List<Long> departmentsList) throws Exception;
 
 	ResponseList<UserDTO> getUserRoleListByLocationIdAndUserType(UserDTO userDTO) throws Exception;
 	
 	Map<String, Integer> getUserCountListByOrgLocationId(Long orgLocationId,List<Long> orgId);
 
+	List<User> getAllReportingManagersAssignedToAssociates(Long orgLocationId) throws Exception;
 
 }

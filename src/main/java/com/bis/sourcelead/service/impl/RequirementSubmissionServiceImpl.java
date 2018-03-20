@@ -268,7 +268,12 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 CandidateResumes candidateResumes = null;
 		 Date date = new Date();
 		 OrgLocations guestOrglocation=null;
+		 String submissionstatus=null;
 		// SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		 if(jsonObj.has("guestApplicant")){
+			 submissionstatus="guestApplicant";
+			 
+		 }
 		 if(jsonObj.has("requirementId")){
 			 requirement = requirementDao.getRequirementByRequirementId(Long.parseLong(jsonObj.getString("requirementId")));
 			 requirementSubmission.setRequirement(requirement);
@@ -586,14 +591,14 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
  
  				 }
 				 candidateResumes.setUpdatedDate(new Date());
-				 if(orgLocations != null){
+				 if(orgLocations != null && submissionstatus != "guestApplicant"){
 					 candidateResumes.setOrgLocationId(orgLocations);
 
 				 }
 				 else{
 				 candidateResumes.setOrgLocationId(guestOrglocation);
 				 }
-				 if(orgLocations != null){
+				 if(orgLocations != null && submissionstatus != "guestApplicant"){
 				 FileUploadUtil.moveFile(staticPath, fileInfo, "addApplicants");
 				 candidateResumesDao.storeCandidateResumes(candidateResumes);
 				 }
@@ -664,7 +669,11 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 			 if(requirementSubmissionHistoryForCoolingOff != null){
 				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
 					 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
-					 requirementSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+					 if(jsonObj.has("needApplicantPermit") && !isNullOrEmpty(jsonObj.getString("needApplicantPermit")) && jsonObj.getString("needApplicantPermit").equals("Y")){
+		                	 requirementSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.REQUEST_SENT);
+		             }else {
+		            	 	requirementSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+		             }
 					 requirementSubmission.setRejectedReason("Under cooling off period, completed by "+requirementSubmissionHistoryForCoolingOff.getCoolingOffPeriodEndDateStr()+".");
 					 requirementSubmission.setRejectedCategoryType("Other");
 					 requirementSubmission.setRejectedCategoryOther("Under cooling off period");
@@ -1877,8 +1886,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 User fromUser = userService.getUserById(Constants.USERID);
 		 
 		 StringBuilder actionLinkBuilder = new StringBuilder();
-		 String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();		 
-		//calling the sendEmail method of emailScenerioUtil
+		 String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()+"&submissionId="+requirementSubmissionTemplateFields.getRequirementSubmission().getId()+"&candidateUUID="+requirementSubmissionTemplateFields.getRequirementSubmission().getCandidate().getCandidateUUID()+"&submissionStatus=all").toString();		 
+
+		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendNotification(actionLink, fromUser,initiatorUser, orgLocations, notificationScenario);
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 	}
@@ -2539,9 +2549,14 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			emailMessage.setSubmissionId(submissionId);
 			
 			emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray,attachmentList);
-			StringBuilder actionLinkBuilder = new StringBuilder();                          
-			String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=SUBMIT_TO_CLIENT&requirementUUID="+reqSub.getRequirement().getRequirementUUID()).toString();	 
-			emailScenerioUtil.sendNotification(actionLink, user, toUser,reqSub.getRequirement().getSpocId().getClientLocationId(), notificationScenario);
+
+			StringBuilder actionLinkBuilder = new StringBuilder();   
+			String actionLink = null;
+			if(reqSub.getRequirement() != null && reqSub.getRequirement().getParentRequirement() != null) {
+				 actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=all&requirementUUID="+reqSub.getRequirement().getParentRequirement().getRequirementUUID()+"&submissionId="+reqSub.getId()).toString();
+				 emailScenerioUtil.sendNotification(actionLink, user, toUser,reqSub.getRequirement().getSpocId().getClientLocationId(), notificationScenario);
+			}
+				 
 		}
 
 	}
@@ -3430,7 +3445,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		  
+		 StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
+	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirementSubmission.getSourceSubmission().getRequirement().getRequirementUUID()+"&submissionId="+requirementSubmission.getId()+"&candidateUUID="+requirementSubmissionTemplateFields.getRequirementSubmission().getCandidate().getCandidateUUID()+"&submissionStatus=SUBMIT_TO_CLIENT").toString();
+
 		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 emailScenerioUtil.sendNotification(actionLink, users, pastUser, requirementSubmission.getVendorLocationId(), notificationScenario);
@@ -4396,11 +4414,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 
 		String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 		notificationScenario.setBody(notificationBody);
-		/*StringBuilder notificationLink = new StringBuilder();
+		StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
-	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+submission.getSourceSubmission().getRequirement().getRequirementUUID()+"&submissionId="+submission.getSourceSubmission().getId()+"&submissionStatus=REJECTED").toString();
-*/
-		String actionLink="";
+	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+submission.getSourceSubmission().getRequirement().getRequirementUUID()+"&submissionId="+submission.getSourceSubmission().getId()+"&candidateUUID="+submission.getCandidate().getCandidateUUID()+"&submissionStatus=REJECTED").toString();
+
 		if(null != submission.getVendorLocationId()){
 		emailScenerioUtil.sendNotification(actionLink, userClient, userVendor, submission.getVendorLocationId(), notificationScenario);
 		}
@@ -4534,7 +4551,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 								notificationScenario.setBody(notificationBody);
 								StringBuilder notificationLink = new StringBuilder();
 								 String actionLink="";
-							     actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+reqsub.getSourceSubmission().getRequirement().getRequirementUUID()).toString();
+							     actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+reqsub.getSourceSubmission().getRequirement().getRequirementUUID()+"&submissionStatus=all").toString();
 
 								if(null != reqsub.getVendorLocationId()){
 								emailScenerioUtil.sendNotification(actionLink, userClient, userVendor, reqsub.getVendorLocationId(), notificationScenario);

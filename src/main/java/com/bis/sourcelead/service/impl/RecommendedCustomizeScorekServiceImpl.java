@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -110,16 +111,16 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 		if(null != requirement.getSkills()){
 			res.setCustomizeSkills(requirement.getSkills());	
 		}
-		if("" != requirement.getRate() && null != requirement.getRate()){
+		if("".equalsIgnoreCase(requirement.getRate()) && null != requirement.getRate()){
 			res.setCustomizeRate(requirement.getRate());
 		}
-		if("" != requirement.getMinExp() && null != requirement.getMinExp()){
+		if("".equalsIgnoreCase(requirement.getMinExp()) && null != requirement.getMinExp()){
 			res.setCustomizeMinExperience(requirement.getMinExp());	
 		}
-		if("" != null && null != requirement.getRateType()){
+		if("".equalsIgnoreCase(requirement.getRateType()) && null != requirement.getRateType()){
 			res.setCustomizeRatetype(requirement.getRateType());	
 		}
-		if("" != null && null != requirement.getNoticePeriod()){
+		if("".equalsIgnoreCase(requirement.getNoticePeriod()) && null != requirement.getNoticePeriod()){
 			res.setCustomizeNoticeperiod(requirement.getNoticePeriod());	
 		}
 		
@@ -130,14 +131,54 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 			res.setCustomizeEducation(requirement.getEducation());
 		}
 		
-		res.setCustomizeSkillScore(Constants.SCORE_20);
-		res.setCustomizeRateScore(Constants.SCORE_10);
-		res.setCustomizeExperienceScore(Constants.SCORE_10);
-		res.setCustomizeLocationScore(Constants.SCORE_10);
-		res.setCustomizeNoticeperiodScore(Constants.SCORE_10);
-		res.setCustomizeKeywordsScore(Constants.SCORE_20);
-		res.setCustomizeVisatypecore(Constants.SCORE_10);
-		res.setCustomizeEducationScore(Constants.SCORE_10);
+		if(orgLocations.getRecommendedSkillPercent() != null) {
+			res.setCustomizeSkillScore(String.valueOf(orgLocations.getRecommendedSkillPercent()));
+		}else {
+			res.setCustomizeSkillScore(Constants.SCORE_20);
+		}
+		
+		if(orgLocations.getRecommendedRatePercent() != null) {
+			res.setCustomizeRateScore(String.valueOf(orgLocations.getRecommendedRatePercent()));
+		}else {
+			res.setCustomizeRateScore(Constants.SCORE_10);
+		}
+		
+		if(orgLocations.getRecommendedExpPercent() != null) {
+			res.setCustomizeExperienceScore(String.valueOf(orgLocations.getRecommendedExpPercent()));
+		}else {
+			res.setCustomizeExperienceScore(Constants.SCORE_10);
+		}
+		
+		if(orgLocations.getRecommendedLocationPercent() != null) {
+			res.setCustomizeLocationScore(String.valueOf(orgLocations.getRecommendedLocationPercent()));
+		}else {
+			res.setCustomizeLocationScore(Constants.SCORE_10);
+		}
+		
+		if(orgLocations.getRecommendedNoticePercent() != null) {
+			res.setCustomizeNoticeperiodScore(String.valueOf(orgLocations.getRecommendedNoticePercent()));
+		}else {
+			res.setCustomizeNoticeperiodScore(Constants.SCORE_10);
+		}
+		
+		if(orgLocations.getRecommendedKeywordsPercent() != null) {
+			res.setCustomizeKeywordsScore(String.valueOf(orgLocations.getRecommendedKeywordsPercent()));
+		}else {
+			res.setCustomizeKeywordsScore(Constants.SCORE_20);
+		}
+		
+		if(orgLocations.getRecommendedVisatypePercent() != null) {
+			res.setCustomizeVisatypecore(String.valueOf(orgLocations.getRecommendedVisatypePercent()));
+		}else {
+			res.setCustomizeVisatypecore(Constants.SCORE_10);
+		}
+		
+		if(orgLocations.getRecommendedEducationPercent() != null) {
+			res.setCustomizeEducationScore(String.valueOf(orgLocations.getRecommendedEducationPercent()));
+		}else {
+			res.setCustomizeEducationScore(Constants.SCORE_10);
+		}
+		
 		
 		if("" != requirement.getMaxExp() && null != requirement.getMaxExp()){
 			res.setCustomizeMaxExperience(requirement.getMaxExp());	
@@ -258,6 +299,15 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 					&& !"".equalsIgnoreCase(requirement.getLocation())) {
 				candidateCompare.setJobLocation(requirement.getLocation());
 			}
+			
+			if (requirement.getRequirementLocations() != null) {
+				List<String> rls = new ArrayList<>();
+				for(RequirementLocations rl : requirement.getRequirementLocations()) {
+					rls.add(rl.getLocation());
+				}
+				candidateCompare.setJobLocationList(rls);
+			}
+			
 			if (requirement.getMinExp() != null
 					&& !"".equalsIgnoreCase(requirement.getMinExp())) {
 				candidateCompare.setJobMinExp(requirement.getMinExp());

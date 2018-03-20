@@ -30,6 +30,10 @@ $(document).ready(function(){
 		loadInvoiceDetails(invoiceUUID);
 	}else{
 		getVendors();
+		$("#invoiceId").val("");
+		$("#paymentFrequency").val("");
+		$("#paymentFrequency").trigger("chosen:updated");
+		$("#dueDate").val("");
 	}
 	
 });
@@ -104,8 +108,8 @@ function errRemoveVendorContact(){
 						<div class="form-group">
 							<label class="col-md-3">Bill Id<span
 								class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9">
-								<input type="text" class="form-control" id="invoiceId"
+							<div class="col-md-9" id="invoiceIdDiv">
+								<input type="text" class="form-control" id="invoiceId" onkeyup="validateBillId();"
 									name="invoiceId" value="" placeholder="Bill Id"
 									data-validation="required" field-name="Bill Id">
 							</div>
@@ -471,8 +475,8 @@ function remove(){
 			   			 document.getElementById("sendInvoiceId").style.display="none";
 			   			 document.getElementById("saveInvoiceId").style.display="none";
 			       	}else{
-			       		document.getElementById("sendInvoiceId").style.display="block";
-			   			document.getElementById("saveInvoiceId").style.display="block";
+			       		document.getElementById("sendInvoiceId").style.display="inline-block";
+			   			document.getElementById("saveInvoiceId").style.display="inline-block";
 			       	}
 		        	
 		        	
@@ -1887,6 +1891,40 @@ function getPaymentTerms(){
 	});
 }
 </script>
+
+<script type="text/javascript">
+ function validateBillId() {
+	 var invoiceId = document.getElementById("invoiceId").value; 
+	
+	 if(invoiceId != null && invoiceId != ""){
+		 $("#saveInvoiceId").attr("disabled", "disabled");
+		 $("#sendInvoiceId").attr("disabled", "disabled");
+		
+         //$("#create_user" ).addClass('button').val('Processing..');
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateInvoiceId?"+tokenParamName+"="+tokenValue+"&invoiceId="+invoiceId, 
+		        success: function(data) {
+		        	 if(data == true){
+		        		  $('#invoiceIdDiv').find('p.jquery_form_error_message').remove();
+						  $("input#invoiceId").after("<p class='jquery_form_error_message'>"+invoiceId+" is Already Existed</span>");
+						  document.getElementById("invoiceId").setAttribute('record-exist','yes');
+						  document.getElementById("invoiceId").setAttribute('record-exist-errorMsg',invoiceId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#invoiceId').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#invoiceIdDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#saveInvoiceId" ).addClass('us-btn').val('Save');
+                         $("#saveInvoiceId").removeAttr("disabled");
+                         $("#sendInvoiceId" ).addClass('us-btn').val('Send');
+                         $("#sendInvoiceId").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>  
+
 <script>
 function saveInvoice(saveType){
          
@@ -1980,10 +2018,17 @@ function maskme(){
     $(".inline_field").mask("Hhh:Mm"); 
     
     $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
-    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
-        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
-            event.preventDefault();
-        }
+    	
+    	
+    	var charCode = (evt.which) ? evt.which : event.keyCode
+   	         if (charCode > 31 && (charCode < 48 || charCode > 57))
+   	            return false;
+   	         return true;
+   	         
+//     $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+//         if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+//             event.preventDefault();
+//         }
     });
 }
 </script>

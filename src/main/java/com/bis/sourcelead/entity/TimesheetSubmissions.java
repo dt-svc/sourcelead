@@ -94,7 +94,7 @@ public class TimesheetSubmissions implements Serializable{
     private Submission_ApprovalStatus submissionApprovalStatus;*/
 	
 	
-	@OneToMany(mappedBy = "submissionId")
+	@OneToMany(mappedBy = "submissionId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<SubmissionApproverHierarchy> approverHierarchyList = new HashSet<SubmissionApproverHierarchy>(0);
 	

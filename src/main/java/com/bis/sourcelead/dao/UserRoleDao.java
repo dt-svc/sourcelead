@@ -41,6 +41,7 @@ public interface UserRoleDao {
 	
 	public Boolean isUserAdmin(Long userId);
 
+	public List<UserRole> getAllUsersBasedOrgLocationId(Long orgLocationId) throws Exception;
 
 	public UserRole getUserDetailsByEmailAndLocationId(String email,Long locationId) throws Exception;
 	
@@ -118,9 +119,11 @@ public interface UserRoleDao {
 
 	public UserRole getUserRoleByVerficationUUID(String uuid);
 	
-	ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId(UserDTO userDTO,UserRoleDTO userRoleDTO,Long roleId,Long locationId,String userState,Long userId,String loginUserRole,String userCode) throws Exception;
-	
 	List<ConnectionsDTO> getUserListForConnections(String searchByName,Integer offSet,Long userId) throws Exception;
+	
+	ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId(UserDTO userDTO,UserRoleDTO userRoleDTO,Long locationId,Long userId,String loginUserRole,String userCode,List<Long> orgRelationsList,List<Long> managerUserIds,List<Long> teamsList,List<Long> departmentsList) throws Exception;
+	
+	List<User> getAllReportingManagersAssignedToAssociates(Long orgLocationId) throws Exception;
 
 	public ResponseList<UserRole> getUserRoleListByLocationIdAndUserType(UserDTO userDTO);
 	

@@ -326,11 +326,15 @@ function uploadProfileResume(){
 					}
 					$("#resumesList").empty();
 					$("#resumesList").append(result);
+					if(resumesCount<1){
+						location.reload();
+					}
 				}else{
-				result = result + "   <div class='dataTables_empty'>";
+				/* result = result + "   <div class='dataTables_empty'>";
 				result = result + "  </div> ";
 				$("#resumesList").empty();
-				$("#resumesList").append(result);
+				$("#resumesList").append(result); */
+				location.reload();
 			}
 	
 				},
@@ -385,6 +389,8 @@ function deleteResumePopUp(){
 </script>
 
 
+
+
 <script>
 function deleteSelectedResume(candidateId, resumeId){
 	var loginUserId = '${SourceLeadWeb_userId}';
@@ -393,7 +399,7 @@ function deleteSelectedResume(candidateId, resumeId){
 	   	type: "POST",
 	    url: sourceleadUrl+"/terminateResume?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&resumeId="+resumeId, 	   
 		    success: function(data) {
-		    	candidateResumesList(candidateId);
+		    	//candidateResumesList(candidateId);
 		    	if(data != null && data != 'undefined' && data != ""){
 		    		$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
         			 if(data<50){
@@ -413,8 +419,9 @@ function deleteSelectedResume(candidateId, resumeId){
      			 $("#resumeMsgDiv").html("Resume deleted");
     			 $("#popUpDivResume").removeClass("edit-details-active");
     			 deleteResumePopUp();
-    			 resumesMsgFadein();
-    			 
+    			  			
+    			 candidateResumesList(candidateId);
+				  resumesMsgFadein();
 		    	}
 		    },
      });

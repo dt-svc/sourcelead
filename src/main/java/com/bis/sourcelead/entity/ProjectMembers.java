@@ -158,6 +158,7 @@ public class ProjectMembers implements Serializable {
 	
 	
 	@Transient
+	@JsonProperty
 	private String openHrs;
 	
 	@JsonProperty
@@ -189,6 +190,7 @@ public class ProjectMembers implements Serializable {
 	private String userId;
 	
 	@Transient
+	@JsonProperty
 	@Enumerated(EnumType.STRING)
 	private Status userState;
 	
@@ -197,182 +199,240 @@ public class ProjectMembers implements Serializable {
 	private String rateHistroyList;
     
 	@Transient
+	@JsonProperty
 	private String employeeIdForExpenses;
 	
      //For Expenses 
     
     @Transient
+    @JsonProperty
     private Float janExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float janExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float janExpenseUnApprovedTotal;
     
     
     @Transient
+    @JsonProperty
     private Float febExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float febExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float febExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float marExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float marExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float marExpenseUnApprovedTotal;
     
     
     @Transient
+    @JsonProperty
     private Float aprExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float aprExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float aprExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float mayExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float mayExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float mayExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float junExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float junExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float junExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float julExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float julExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float julExpenseUnApprovedTotal;
     
     
     @Transient
+    @JsonProperty
     private Float augExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float augExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float augExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float sepExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float sepExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float sepExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float octExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float octExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float octExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float novExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float novExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float novExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float decExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float decExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float decExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float claimedExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float claimedExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float claimedExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float Q1ExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float Q1ExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float Q1ExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float Q2ExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float Q2ExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float Q2ExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float Q3ExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float Q3ExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float Q3ExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float Q4ExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float Q4ExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float Q4ExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float expenseTotal;
     
     @Transient
+    @JsonProperty
     private Float expenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float expenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
 	private String employementType;
 	
 	@Transient
+	@JsonProperty
 	private String userName;
 	
 	@Transient
+	@JsonProperty
 	private String userEmail;
 	
 	
@@ -388,6 +448,7 @@ public class ProjectMembers implements Serializable {
 	private String terminateReason;
 
 	@Transient
+	@JsonProperty
 	private String totalHours;
 
 	@Transient
@@ -403,12 +464,15 @@ public class ProjectMembers implements Serializable {
 	private String userRoleType;
 
 	@Transient
+	@JsonProperty
 	private Long submissionApproverHierarchyId;
 
 	@Transient
+	@JsonProperty
 	private Long submissionInvoiceId;
 
 	@Transient
+	@JsonProperty
 	private LinkedHashSet<String> monthsStringFormat;
 	
 	@Transient
@@ -455,6 +519,10 @@ public class ProjectMembers implements Serializable {
 	@Transient
 	@JsonProperty
 	private int timeReportsTotalCountValue;
+	
+	@Transient
+	@JsonProperty
+	private String projectMemberStatus;
 	
 	public Long getSubmissionInvoiceId() {
 		return submissionInvoiceId;
@@ -1542,6 +1610,14 @@ public class ProjectMembers implements Serializable {
 
 	public void setRateHistroyList(String rateHistroyList) {
 		this.rateHistroyList = rateHistroyList;
+	}
+
+	public String getProjectMemberStatus() {
+		return projectMemberStatus;
+	}
+
+	public void setProjectMemberStatus(String projectMemberStatus) {
+		this.projectMemberStatus = projectMemberStatus;
 	}
 
 }
