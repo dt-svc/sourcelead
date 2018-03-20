@@ -205,6 +205,18 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 	}
 
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ActionHistory> getAllMultipleIpsByUserId(Long userId)throws Exception
+	{
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserLoginLogoutSession  userLoginLogoutSession  where userLoginLogoutSession.userId.id =:userId group by userLoginLogoutSession.ipaddress";
+		List<ActionHistory> action = session.createQuery(query).setLong("userId", userId).list();
+		return action;
+	}
+
+
 
 }
 

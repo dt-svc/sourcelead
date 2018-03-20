@@ -26,4 +26,6 @@ public interface ActionHistoryDao {
 	
 	public UserDTO getAllActionHistoryByUserId(Long userId) throws Exception;
 
+	public List<ActionHistory> getAllMultipleIpsByUserId(Long userId) throws Exception;
+
 }

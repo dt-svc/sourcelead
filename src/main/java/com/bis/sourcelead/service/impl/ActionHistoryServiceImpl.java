@@ -54,6 +54,12 @@ public class ActionHistoryServiceImpl implements ActionHistoryService{
 	{
 		return actionHistoryDao.getAllActionHistoryByUserId(userId);
 	}
+
+	@Override
+	public List<ActionHistory> getAllMultipleIpsByUserId(Long userId)throws Exception
+	{
+		return actionHistoryDao.getAllMultipleIpsByUserId(userId);
+	}
 	
 	
 

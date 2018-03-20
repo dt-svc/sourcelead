@@ -694,6 +694,10 @@ public class UserRoleServiceImpl implements UserRoleService{
 //			userrDTO.setLastActivity(actionHistory.getLastActivity());
 //			}
 			
+			List<ActionHistory>  actionHis = actionHistoryService.getAllMultipleIpsByUserId(user.getId());
+			userrDTO.setMultipleIps(actionHis.size());
+			
+			
 			userDtoList.add(userrDTO);
 		}
 		responseList.setRecordsFiltered(userlist.getRecordsFiltered());

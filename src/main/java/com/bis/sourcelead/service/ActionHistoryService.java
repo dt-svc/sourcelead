@@ -22,5 +22,7 @@ public interface ActionHistoryService {
 	public void saveActionHistory(String methodName,UserLoginLogoutSession userLoginLogoutSession,OrgLocations loginOrgLocation,String type) throws Exception;
 
 	public UserDTO getAllActionHistoryByUserId(Long userId) throws Exception;
+
+	public List<ActionHistory> getAllMultipleIpsByUserId(Long userId) throws Exception;
 	
 }
