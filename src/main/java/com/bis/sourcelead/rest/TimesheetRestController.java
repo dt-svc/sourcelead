@@ -198,9 +198,7 @@ public class TimesheetRestController {
 		if(tsDTO != null) {
 			Map<String, List<TimesheetEntriesDTO>> entriesMap =	getEntriesMapForDisplayMobile(tsDTO, request);
 			tsDTO.setEntriesMap(entriesMap);
-			Map<String, List<WeekDaysDTO>> weekDaysMap =   getWeekDaysMapForDisplayMobile(tedDTO, request);
-			tedDTO.setWeekDaysMap(weekDaysMap);
-			tedDTO.setTimesheetSubmission(tsDTO);
+			tedDTO =   getWeekDaysMapForDisplayMobile(tedDTO, tsDTO,request);
 		}
 		return tedDTO;
 	}
@@ -334,7 +332,7 @@ public class TimesheetRestController {
 		 
 		return entriesMap;
 	}
-	private  Map<String, List<WeekDaysDTO>> getWeekDaysMapForDisplayMobile(TimesheetEntryDetailsDTO tedDTO,HttpServletRequest request) throws Exception{
+	private  TimesheetEntryDetailsDTO getWeekDaysMapForDisplayMobile(TimesheetEntryDetailsDTO tedDTO,TimeSheetSubmissionDTO tsDTO,HttpServletRequest request) throws Exception{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Map<String, List<WeekDaysDTO>> entriesMap = new LinkedHashMap<>();
@@ -350,12 +348,21 @@ public class TimesheetRestController {
 					      Date actualStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),fStartDate.replaceAll("/", "-"));
 					      Date actualEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),fEndDate.replaceAll("/", "-"));	
 						  if(key != null && key.equalsIgnoreCase(tedDTO.getCurrentTimeSubFrequency())) {
-							  TimeSheetSubmissionDTO tsDTO = tedDTO.getTimesheetSubmission();
+							  TimeSheetSubmissionDTO tssDTO = tedDTO.getTimesheetSubmission();
 							  List<WeekDaysDTO> weekDayDTOList = new LinkedList<>();
 							  while(actualStartDate.before(actualEndDate) || actualStartDate.equals(actualEndDate)){
 								  String weekDayDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), actualStartDate);
-								  for(WeekDaysDTO weekDaysDTO : tsDTO.getWeekDays()) {
+								  for(WeekDaysDTO weekDaysDTO : tssDTO.getWeekDays()) {
 									  if(weekDayDate.equalsIgnoreCase(weekDaysDTO.getDate())) {
+										  if(StringUtils.isNotEmpty(weekDaysDTO.getTotalHours()) && !weekDaysDTO.getTotalHours().equalsIgnoreCase("HH:MM")) {
+											  totalHours = CommonUtil.getCombinedHours(Float.parseFloat(weekDaysDTO.getTotalHours().replace(":", ".")), totalHours);
+										  }
+										  if(StringUtils.isNotEmpty(weekDaysDTO.getBillableHours()) && !weekDaysDTO.getBillableHours().equalsIgnoreCase("HH:MM")) {
+											  billableHours = CommonUtil.getCombinedHours(Float.parseFloat(weekDaysDTO.getBillableHours().replace(":", ".")), billableHours);
+										  }
+										  if(StringUtils.isNotEmpty(weekDaysDTO.getNonBillableHours()) && !weekDaysDTO.getNonBillableHours().equalsIgnoreCase("HH:MM")) {
+											  nonBillableHours = CommonUtil.getCombinedHours(Float.parseFloat(weekDaysDTO.getNonBillableHours().replace(":", ".")), nonBillableHours);
+										  }
 										  weekDayDTOList.add(weekDaysDTO);
 									  }
 								  }
@@ -363,13 +370,22 @@ public class TimesheetRestController {
 							   }
 							  entriesMap.put(key, weekDayDTOList);
 						  }else {
-							  TimeSheetSubmissionDTO tsDTO =  getWeekDaysDTOListBySubFrrequencyList(tedDTO.getProjectMemberId(),tedDTO.getCurrentTimeFrequency(),key,"user",orgLocations,loginUser);
-							  if(tsDTO != null && tsDTO.getWeekDays() != null && !tsDTO.getWeekDays().isEmpty()) {
+							  TimeSheetSubmissionDTO tssDTO =  getWeekDaysDTOListBySubFrrequencyList(tedDTO.getProjectMemberId(),tedDTO.getCurrentTimeFrequency(),key,"user",orgLocations,loginUser);
+							  if(tssDTO != null && tssDTO.getWeekDays() != null && !tssDTO.getWeekDays().isEmpty()) {
 								  List<WeekDaysDTO> weekDayDTOList = new LinkedList<>();
 								  while(actualStartDate.before(actualEndDate) || actualStartDate.equals(actualEndDate)){
 									  String weekDayDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), actualStartDate);
-									  for(WeekDaysDTO weekDaysDTO : tsDTO.getWeekDays()) {
+									  for(WeekDaysDTO weekDaysDTO : tssDTO.getWeekDays()) {
 										  if(weekDayDate.equalsIgnoreCase(weekDaysDTO.getDate())) {
+											  if(StringUtils.isNotEmpty(weekDaysDTO.getTotalHours()) && !weekDaysDTO.getTotalHours().equalsIgnoreCase("HH:MM")) {
+												  totalHours = CommonUtil.getCombinedHours(Float.parseFloat(weekDaysDTO.getTotalHours().replace(":", ".")), totalHours);
+											  }
+											  if(StringUtils.isNotEmpty(weekDaysDTO.getBillableHours()) && !weekDaysDTO.getBillableHours().equalsIgnoreCase("HH:MM")) {
+												  billableHours = CommonUtil.getCombinedHours(Float.parseFloat(weekDaysDTO.getBillableHours().replace(":", ".")), billableHours);
+											  }
+											  if(StringUtils.isNotEmpty(weekDaysDTO.getNonBillableHours()) && !weekDaysDTO.getNonBillableHours().equalsIgnoreCase("HH:MM")) {
+												  nonBillableHours = CommonUtil.getCombinedHours(Float.parseFloat(weekDaysDTO.getNonBillableHours().replace(":", ".")), nonBillableHours);
+											  }
 											  weekDayDTOList.add(weekDaysDTO);
 										  }
 									  }
@@ -407,7 +423,12 @@ public class TimesheetRestController {
 					  	  }
 				 }
 		  }
-		return entriesMap;
+		tsDTO.setTotalHours(CommonUtil.getHoursDisplayFormat(totalHours));
+		tsDTO.setBillableHours(CommonUtil.getHoursDisplayFormat(billableHours));
+		tsDTO.setNonBillableHours(CommonUtil.getHoursDisplayFormat(nonBillableHours));
+		tedDTO.setWeekDaysMap(entriesMap);
+		tedDTO.setTimesheetSubmission(tsDTO);
+		return tedDTO;
 	}
 	private TimesheetEntryDetailsDTO getTimesheetEntryDetails(TimesheetExpenseEntryDetailsUtilDTO eedDTO,HttpServletRequest request) throws Exception
 	{
@@ -1974,9 +1995,8 @@ public class TimesheetRestController {
 		if(tsDTO != null) {
 			Map<String, List<TimesheetEntriesDTO>> entriesMap =	getEntriesMapForDisplayMobile(tsDTO, request);
 			tsDTO.setEntriesMap(entriesMap);
-			Map<String, List<WeekDaysDTO>> weekDaysMap =   getWeekDaysMapForDisplayMobile(tedDTO, request);
-			tedDTO.setWeekDaysMap(weekDaysMap);
-			tedDTO.setTimesheetSubmission(tsDTO);
+			tedDTO =   getWeekDaysMapForDisplayMobile(tedDTO,tsDTO,request);
+			
 		}
 		return tedDTO;   
     }
