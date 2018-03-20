@@ -6,11 +6,13 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.EmployeeVerificationTemplateDao;
 import com.bis.sourcelead.dto.EmploymentVerificationTemplateDTO;
+import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.VendorContractsDTO;
 import com.bis.sourcelead.entity.ContractsTemplate;
@@ -19,6 +21,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
@@ -29,6 +32,9 @@ public class EmployeeVerificationTemplateServiceImpl implements EmployeeVerifica
 	
 	@Autowired
 	UserService userService;
+	
+	@Value("${static.path}")
+	private String staticPath;
 
 	@Override
 	public EmployeeVerificationTemplate saveDefaultEmployeeVerificationTemplate(EmployeeVerificationTemplate employeeVerificationTemplate) {
@@ -61,6 +67,18 @@ public class EmployeeVerificationTemplateServiceImpl implements EmployeeVerifica
 		employeeVerificationTemplate.setUpdatedBy(user.getUserCode());
 		employeeVerificationTemplate.setTemplateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		employeeVerificationTemplate.setTemplateStatus(Constants.MEMBER_ACTIVE);
+		
+		if (employmentVerificationTemplateDTO.getFileInfo() != null) {
+			FileInfo info = employmentVerificationTemplateDTO.getFileInfo().get(0);
+			if(info != null){
+				employeeVerificationTemplate.setFileURL(info.getFileURL());
+				employeeVerificationTemplate.setFileName(info.getFileName());
+				employeeVerificationTemplate.setFileType(info.getContentType());
+			
+			}
+			//move the document file temp to your(EmploymentVerifyDocs here) folder
+			FileUploadUtil.moveFile(staticPath, info, "EmploymentVerifyDocs");
+		}
 		
 		return employeeVerificationTemplateDao.saveEmployeeVerificationTemplate(employeeVerificationTemplate);
 	}
@@ -96,12 +114,24 @@ public class EmployeeVerificationTemplateServiceImpl implements EmployeeVerifica
 			list.add(tempDto);
 		}
 		finalDto.setData(list);
+		finalDto.setRecordsFiltered(empList.getRecordsFiltered());
+		finalDto.setRecordsTotal(empList.getRecordsTotal());
 		return finalDto;
 	}
 
 	@Override
 	public EmployeeVerificationTemplate getEmploymentVerificationtemplateByTemplateUUID(String tempUUID) {
 		return employeeVerificationTemplateDao.getEmploymentVerificationtemplateByTemplateUUID(tempUUID);
+	}
+
+	@Override
+	public EmployeeVerificationTemplate getEmploymentVerificationtemplateByLocationId(Long orgLocationId) {
+		return employeeVerificationTemplateDao.getEmploymentVerificationtemplateByLocationId(orgLocationId);
+	}
+
+	@Override
+	public EmployeeVerificationTemplate updateEmployMentTemplate(EmployeeVerificationTemplate empTemp) {
+		return employeeVerificationTemplateDao.updateEmployMentTemplate(empTemp);		
 	}
 	
 }

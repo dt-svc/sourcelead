@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.EmailDomains;
+import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
@@ -32,6 +33,7 @@ import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.ActionRolesService;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.EmailDomainsService;
+import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -101,6 +103,9 @@ public class RegistrationController {
 	 
 	 @Autowired
 	 EmailDomainsService emailDomainsService;
+	 
+	 @Autowired
+	 private EmployeeVerificationTemplateService employeeVerificationTemplateService;
 	 
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	 @RequestMapping(value = "/app/enrolledOrgsList")
@@ -232,6 +237,10 @@ public class RegistrationController {
 					orgService.addOrganization(org);
 					orgLocations.setStatus(Status.ACTIVE);
 					orgLocationService.updateOrgLocations(orgLocations);
+					
+					EmployeeVerificationTemplate empTemp = employeeVerificationTemplateService.getEmploymentVerificationtemplateByLocationId(orgLocations.getId());
+					empTemp.setSignatory(orgLocations.getUser());
+					employeeVerificationTemplateService.updateEmployMentTemplate(empTemp);
 					
 		    	}
 				 

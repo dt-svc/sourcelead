@@ -69,11 +69,10 @@
             <div class="clearfix">
 			<div class="input-group positionRelative">
 			<label class="input-group-btn">
-			<span class="btn btn-primary">
-			Browse<input style="display: none;" multiple type="file">
+			<span class="btn btn-primary">Browse<input id="uploadBtn" style="display: none;" multiple type="file">
 			</span>
 			</label>
-			<input class="form-control input-custom" readonly type="text">
+			<input type="text" class="form-control" readonly id="imageFile" name="imageFile" value="" placeholder="Upload Sign Image." field-name="Attachment" data-validation="validate_Space validateimage">
 			<i class="refreshinputfile"></i>
 			</div>
 
@@ -96,23 +95,23 @@
             
             <ul id="allfields">
 								<li onclick="copyToClipboard('text_element1')"><i></i>
-									<p class="copyText" id="text_element1">[To Whom It May Concern]</p></li>
+									<p class="copyText" id="text_element1">[To_Whom_It_May_Concern]</p></li>
 								<li onclick="copyToClipboard('text_element2')"><i></i>
-									<p class="copyText" id="text_element2">[Company Name]</p></li>
+									<p class="copyText" id="text_element2">[Company_Name]</p></li>
 								<li onclick="copyToClipboard('text_element3')"><i></i>
-									<p class="copyText" id="text_element3">[Company Location]</p></li>
+									<p class="copyText" id="text_element3">[Company_Location]</p></li>
 								<li onclick="copyToClipboard('text_element4')"><i></i>
-									<p class="copyText" id="text_element4">[Company Email]</p></li>
+									<p class="copyText" id="text_element4">[Company_Email]</p></li>
 								<li onclick="copyToClipboard('text_element5')"><i></i>
-									<p class="copyText" id="text_element5">[Company Contact]</p></li>
+									<p class="copyText" id="text_element5">[Company_Contact]</p></li>
 								<li onclick="copyToClipboard('text_element6')"><i></i>
-									<p class="copyText" id="text_element6">[Issued Date]</p></li>
+									<p class="copyText" id="text_element6">[Issued_Date]</p></li>
 								<li onclick="copyToClipboard('text_element7')"><i></i>
-									<p class="copyText" id="text_element7">[Associate Name]</li>
+									<p class="copyText" id="text_element7">[Associate_Name]</li>
 								<li onclick="copyToClipboard('text_element8')"><i></i>
-									<p class="copyText" id="text_element8">[Associate Designation/Role]</p></li>
+									<p class="copyText" id="text_element8">[Associate_Designation_Role]</p></li>
 								<li onclick="copyToClipboard('text_element9')"><i></i>
-									<p class="copyText" id="text_element9">[Associate Employment Type]</p></li>
+									<p class="copyText" id="text_element9">[Associate_Employment_Type]</p></li>
 								<c:choose>
 								<c:when test="${SourceLeadWeb_currencyCode=='USD'}">
 								<li onclick="copyToClipboard('text_element10')"><i></i>
@@ -124,19 +123,19 @@
 								</c:otherwise>
 								</c:choose>
 								<li onclick="copyToClipboard('text_element11')"><i></i>
-								<p class="copyText" id="text_element11">[Pay Rate]</p></li>
+								<p class="copyText" id="text_element11">[Pay_Rate]</p></li>
 								<li onclick="copyToClipboard('text_element12')"><i></i>
-								<p class="copyText" id="text_element12">[Start Date]</p></li>
+								<p class="copyText" id="text_element12">[Start_Date]</p></li>
 								<li onclick="copyToClipboard('text_element13')"><i></i>
-								<p class="copyText" id="text_element13">[End date]</p></li>
+								<p class="copyText" id="text_element13">[End_date]</p></li>
 								<li onclick="copyToClipboard('text_element14')"><i></i>
-								<p class="copyText" id="text_element14">[Signatory Name]</p></li>
+								<p class="copyText" id="text_element14">[Signatory_Name]</p></li>
 								<li onclick="copyToClipboard('text_element15')"><i></i>
-								<p class="copyText" id="text_element15">[Signatory Designation]</p></li>
+								<p class="copyText" id="text_element15">[Signatory_Designation]</p></li>
 								<li onclick="copyToClipboard('text_element16')"><i></i>
-								<p class="copyText" id="text_element16">[Signatory Email]</p></li>
+								<p class="copyText" id="text_element16">[Signatory_Email]</p></li>
 								<li onclick="copyToClipboard('text_element17')"><i></i>
-								<p class="copyText" id="text_element17">[Signatory Contact]</p></li>
+								<p class="copyText" id="text_element17">[Signatory_Contact]</p></li>
 								<li onclick="copyToClipboard('text_element18')"><i></i>
 								<p class="copyText" id="text_element18">[Signature]</p></li>
 							</ul>
@@ -165,7 +164,6 @@
 <script>
 function saveEmploymentVerificationTemplate(){
 	var templateUUID = '${templateUUID}';
-	alert(templateUUID)
 	if ($('#employment_template_form').validate(false, validationSettings)) {
 		$("#save_employment_template").addClass('button').val('Processing..');
 		var formData = getFormData("employment_template_form");
@@ -194,6 +192,20 @@ function saveEmploymentVerificationTemplate(){
 	function log() {
 		console.log('---')
 	}
+</script>
+
+
+<script>
+$(function() {
+	$("#uploadBtn").change(function() {
+		fileUpload("uploadBtn", "EmploymentVerifyDocs", "employment_template_form");
+	});
+	
+	 document.getElementById("uploadBtn").onchange = function () {
+ 	    document.getElementById("imageFile").value = this.value.split( '\\' ).pop();
+ 	    };
+	
+ });
 </script>
 
 <script>

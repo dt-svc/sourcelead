@@ -16,9 +16,11 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.EmploymentVerificationTemplateDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.ContractsTemplate;
@@ -111,6 +113,15 @@ public class EmploymentVerificationTemplateRestController {
 		    e.printStackTrace();
 		}
 		
+    	
+	}
+	
+	@RequestMapping(value = "/deleteEmployementTemplate", method = RequestMethod.POST)
+	public @ResponseBody  void deleteEmployementTemplate(@RequestParam("templateUUID") String tempUUID,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		EmployeeVerificationTemplate empTemplate = employeeVerificationTemplateService.getEmploymentVerificationtemplateByTemplateUUID(tempUUID);
+		empTemplate.setTemplateStatus(Constants.MEMBER_IN_ACTIVE);
+		employeeVerificationTemplateService.updateEmployMentTemplate(empTemplate);
     	
 	}
 

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class EmploymentVerificationTemplateDTO extends SearchDTO implements Serializable {
 	
@@ -16,6 +17,9 @@ public class EmploymentVerificationTemplateDTO extends SearchDTO implements Seri
 	private String createdBy;
 	private String action;
 	private String signatoryFullName;
+	private String imageFile;
+	private List<FileInfo> fileInfo;
+	
 	public String getTemplateId()
 	{
 		return templateId;
@@ -106,6 +110,16 @@ public class EmploymentVerificationTemplateDTO extends SearchDTO implements Seri
 	public void setSignatoryFullName(String signatoryFullName) {
 		this.signatoryFullName = signatoryFullName;
 	}
-	
-	
+	public String getImageFile() {
+		return imageFile;
+	}
+	public void setImageFile(String imageFile) {
+		this.imageFile = imageFile;
+	}
+	public List<FileInfo> getFileInfo() {
+		return fileInfo;
+	}
+	public void setFileInfo(List<FileInfo> fileInfo) {
+		this.fileInfo = fileInfo;
+	}
 }

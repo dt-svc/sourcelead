@@ -47,9 +47,7 @@ public class EmployeeVerificationTemplateDaoImpl implements EmployeeVerification
 	@Transactional
 	public ResponseList<EmployeeVerificationTemplate> getAllEmploymentVerificationListByOrgLocationId(Long orgLocationId,EmploymentVerificationTemplateDTO employmentVerificationTemplateDTO) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from EmployeeVerificationTemplate evt where evt.orgLocationId.id =:orgLocationId";
-//		List<EmployeeVerificationTemplate> list = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
-		
+		String query = "from EmployeeVerificationTemplate evt where evt.orgLocationId.id =:orgLocationId and evt.templateStatus = '1'";
 		
 		List<EmployeeVerificationTemplate> employmentVerificationTemplateList = null;
 		ResponseList<EmployeeVerificationTemplate> response = new ResponseList<>();
@@ -64,6 +62,13 @@ public class EmployeeVerificationTemplateDaoImpl implements EmployeeVerification
 		StringBuilder query1 = new StringBuilder("");
 			if(employmentVerificationTemplateDTO.getSearchValue() !=null && !"".equalsIgnoreCase(employmentVerificationTemplateDTO.getSearchValue())) {
 						
+					query1.append(" and (evt.templateName like '%" + employmentVerificationTemplateDTO.getSearchValue() + "%' ")
+					.append("OR evt.description like '%" + employmentVerificationTemplateDTO.getSearchValue() + "%' ")
+					.append("OR evt.signatory.firstName like '%" + employmentVerificationTemplateDTO.getSearchValue() + "%' ")
+//					.append("OR evt.signatory.lastName like '%" + employmentVerificationTemplateDTO.getSearchValue() + "%' ")
+					.append("OR evt.signatory.lastName like '%" + employmentVerificationTemplateDTO.getSearchValue() + "%' )");
+							
+				
 			}
 		Query queryObj = session.createQuery(query + query1.toString());
 		if (employmentVerificationTemplateDTO != null && employmentVerificationTemplateDTO.getLength() > 0) {
@@ -102,6 +107,28 @@ public class EmployeeVerificationTemplateDaoImpl implements EmployeeVerification
 			empVerificationTemp = list.get(0);
 		}
 		return empVerificationTemp;
+	}
+
+	@Override
+	@Transactional
+	public EmployeeVerificationTemplate getEmploymentVerificationtemplateByLocationId(Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		EmployeeVerificationTemplate  empVerificationTemp =  null;
+		String query ="from EmployeeVerificationTemplate evt where evt.orgLocationId.id =:orgLocationId";
+		List<EmployeeVerificationTemplate> list = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+		if(null != list && list.size() >0){
+			empVerificationTemp = list.get(0);
+		}
+		return empVerificationTemp;
+	}
+
+	@Override
+	@Transactional
+	public EmployeeVerificationTemplate updateEmployMentTemplate(EmployeeVerificationTemplate empTemp) {
+		Session session = this.sessionFactory.getCurrentSession();
+	    session.saveOrUpdate(empTemp);
+	    logger.info("Successfully updated..!");
+		return empTemp;
 	}
 
 }

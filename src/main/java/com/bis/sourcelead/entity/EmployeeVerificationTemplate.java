@@ -67,6 +67,15 @@ public class EmployeeVerificationTemplate {
 	
 	@Column(name = "TEMPLATE_STATUS")
 	private String templateStatus;
+	
+	@Column(name = "FILE_NAME")
+	private String fileName;
+	
+	@Column(name = "FILE_TYPE")
+	private String fileType;
+	
+	@Column(name = "FILE_URL")
+	private String fileURL;
 
 	
 	public String getTemplateUUID() {
@@ -192,5 +201,31 @@ public class EmployeeVerificationTemplate {
 	{
 		this.templateStatus = templateStatus;
 	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public String getFileType() {
+		return fileType;
+	}
+
+	public void setFileType(String fileType) {
+		this.fileType = fileType;
+	}
+
+	public String getFileURL() {
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL) {
+		this.fileURL = fileURL;
+	}
+	
+	
 	
 }

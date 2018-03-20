@@ -12,4 +12,8 @@ public interface EmployeeVerificationTemplateDao {
 
 	EmployeeVerificationTemplate getEmploymentVerificationtemplateByTemplateUUID(String tempUUID);
 
+	EmployeeVerificationTemplate getEmploymentVerificationtemplateByLocationId(Long orgLocationId);
+
+	EmployeeVerificationTemplate updateEmployMentTemplate(EmployeeVerificationTemplate empTemp);
+
 }

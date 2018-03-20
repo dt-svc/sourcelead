@@ -160,7 +160,7 @@ function employmentTemplatePagination(url){
 				result = result + '       		<ul class="list-unstyled list-inline actionIcons clearfix ml5">                                       '; 
 				result = result + '       			<li><a href="javascript:void(0)" title="View"><i class="fa fa-eye textView" onclick="previewEmpTemplate(\''+report.templateUUID+'\',\''+report.templateName+'\');"></i></a></li>         '; 
 				result = result + '       			<li><a href="'+sourceleadUrl+'/editEmpTemplate?templateUUID='+report.templateUUID+'" title="Edit"><i class="fa fa-pencil textEdit"></i></a></li>      '; 
-				result = result + '       			<li><a href="javascript:void(0)" title="Delete"><i class="fa fa-trash textDelete"></i></a></li>   '; 
+				result = result + '       			<li><a href="javascript:void(0)" title="Delete"><i class="fa fa-trash textDelete" onclick="deleteEmpTemplate(\''+report.templateUUID+'\');"></i></a></li>   '; 
 				result = result + '       		</ul>                                                                                                 '; 
 				result = result + '       </div>                                                                                                      '; 
 				result = result + '     </td>  																										  '; 
@@ -196,7 +196,19 @@ function employmentTemplatePagination(url){
 function previewEmpTemplate(templateUUID,templateName){
 	window.open(sourceleadUrl+'/previewEmpTemplate/'+templateUUID+'/'+templateName+'','_newtab');
 }
+</script>
 
+<script>
+function deleteEmpTemplate(templateUUID){
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/deleteEmployementTemplate?"+tokenParamName+"="+tokenValue+"&templateUUID="+templateUUID,
+		    success: function(data) {
+// 			 	location.replace(sourceleadUrl+"/getAllEmploymentVerificationListByOrgLocationId");
+			 	getEmploymentVerificationList();
+		    }
+	     });
+}
 </script>
 
 <!-- Footer Area -->
