@@ -30,6 +30,7 @@ import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -1540,6 +1541,15 @@ public class CandidateDaoImpl implements CandidateDao {
 			candidate = (Candidate) candidateList.iterator().next();
 		}
 		return candidate;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public String getCandidateIdentitiesNumberByCandidateId(Long id) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select ci.idNumber from CandidateIdendities ci  where ci.candidateId.id = :candidateId  ";  
+		String ssnNumber =  (String) session.createQuery(query).setLong("candidateId", id).uniqueResult();
+		return ssnNumber;
 	}
 
 }
