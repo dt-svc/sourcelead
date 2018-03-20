@@ -98,10 +98,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		immigration.setCandidate(candidate);
 		
 		Requirement requirement = new Requirement();
+		if(!StringUtils.isEmpty(immigrationDTO.getJobId())){// job id optional
 		requirement.setId(Long.parseLong(immigrationDTO.getJobId()));
-		
+		}
+		immigration.setReceiptNo(immigrationDTO.getReceiptNo());
 		immigration.setJob(requirement);
-		immigration.setStatus(1);
+		immigration.setStatus(Constants.RECORD_ACTIVE);
 		immigration.setCreatedBy(user);
 		immigration.setCreatedDate(date);
 		immigration.setUpdatedBy(user);
@@ -136,7 +138,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		candidateIdendities.setCandidateId(candidate);
 		candidateIdendities.setIdNumber(immigrationDTO.getSsnNumber());
 		candidateIdendities.setIdType(Constants.ID_TYPE_SSN);
-		candidateIdendities.setStatus(1);
+		candidateIdendities.setStatus(Constants.RECORD_ACTIVE);
 		candidateIdendities.setCreatedBy(user);
 		candidateIdendities.setCreatedDate(date);
 		candidateIdendities.setUpdatedBy(user);
@@ -180,7 +182,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		lcaSummaryCurr.setRateCurrency(immigrationDTO.getRateCurrency());
 		lcaSummaryCurr.setRate(immigrationDTO.getRate());
 		lcaSummaryCurr.setRateType(immigrationDTO.getRateType());
-		lcaSummaryCurr.setStatus(1);
+		lcaSummaryCurr.setStatus(Constants.RECORD_ACTIVE);
 		lcaSummaryCurr.setIdType(Constants.ID_TYPE_LCA);
 		
 		lcaSummaryCurr.setCreatedDate(date);
@@ -222,7 +224,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			if (immigrationDTO.getResidenceList() != null) { 
 				List<ImmigrationResidenceDTO> residenceDtoLst = immigrationDTO.getResidenceList();
 				for (ImmigrationResidenceDTO residenceDto : residenceDtoLst) {
-					if(StringUtils.isEmpty(residenceDto.getCountry()) ) continue; // skip the empty records if one of the required field value
+					if(StringUtils.isEmpty(residenceDto.getLocation()) ) continue; // skip the empty  residence rows based on one of the required field value
 					CandidateResidence residenceEntity = new CandidateResidence();
 					residenceEntity.setCandidate(candidate);
 					residenceEntity.setCity(residenceDto.getCity());
@@ -240,7 +242,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 							residenceDto.getResidenceEndDate())));
 					}
 					residenceEntity.setIsCurrAddress(Constants.NO); // default No for multiple residences treated as secondary residences.
-					residenceEntity.setStatus(1);
+					residenceEntity.setStatus(Constants.RECORD_ACTIVE);
 					residenceEntity.setCreatedDate(new Date());
 					residenceEntity.setUpdatedDate(new Date());
 					residenceEntity.setCreatedBy(user);

@@ -40,6 +40,15 @@
             </div>
             </div>
             
+            
+             <div class="form-group">
+              <label class="col-md-4">Receipt No</label>
+              <div class="col-md-8">
+					<input type="text" class="form-control" name="receiptNo" id="receiptNo">
+              </div>
+          </div>
+            
+            
             <div class="form-group">
               <label class="col-md-4">Current USCIS Status</label>
               <div class="col-md-8 dropdown-select">
@@ -427,7 +436,7 @@
           </div>
             
             <div class="form-group">
-              <label class="col-md-4">LCA Start dates</label>
+              <label class="col-md-4">LCA Start date</label>
               <div class="col-md-8">
                <div class="input-group">
                 <input type="text" class="form-control calendar" id="lcaStartDate" name="lcaStartDate" placeholder="LCA Start dates">
@@ -453,12 +462,12 @@
            <div class="clearfix"></div>
             
             <div class="form-group">
-              <label class="col-md-4">Location</label>
+              <label class="col-md-4">Location<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
                   <div class="positionRelative">
 								<input class="form-control positionRelative"
 									id="location" name="location" onclick="initLocationAuto('location','country','state','city','zipcode','','','','address');"
-									placeholder="Enter Location" type="text"></input> <i
+									placeholder="Enter Location" type="text" field-name="Location" data-validation="required"></input> <i
 									class="fa fa-refresh btn btn-primary refresh-icon"
 									title="Refresh"
 									onClick="refreshGoogleApiLocation('location','country','state','city','zipcode','address');"></i>
@@ -508,24 +517,16 @@
             </div>
 			<div class="clearfix"></div>
          <div class="form-group">
-              <label class="col-md-4">Start Date</label>
+              <label class="col-md-4">Start Date<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
 					<div class="input-group">
-                <input type="text" class="form-control calendar" id="residenceStartDate"  name="residenceStartDate" placeholder="Start Date">
+                <input type="text" class="form-control calendar" id="residenceStartDate"  name="residenceStartDate" placeholder="Start Date" field-name="Start Date" data-validation="required">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('residenceStartDate')"></i></span>
               </div>
               </div>
           </div>
           
-          <div class="form-group">
-              <label class="col-md-4">End Date</label>
-              <div class="col-md-8">
-					<div class="input-group">
-                <input type="text" class="form-control calendar" id="residenceEndDate"  name="residenceEndDate" placeholder="End Date">
-                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('residenceEndDate')"></i></span>
-              </div>
-              </div>
-          </div>
+          
          
          <div id ="dynamicResidenceGroupDiv" ><!--  dynamic div start -->
           
@@ -538,7 +539,6 @@
 <!--
 			<a href="new-petition-step2.html" class="nextBtn">Send Request</a>
 -->
-			<a href="javascript:void(0)">Skip</a>
 			<div class="clearfix"></div>
 		</div>
 	</div>
@@ -559,12 +559,12 @@
 	   prepareResidencediv =prepareResidencediv+ "   </div>";
 	   prepareResidencediv =prepareResidencediv+ "   <div class='clearfix'></div>";
 	   prepareResidencediv =prepareResidencediv+ " <div class='form-group'>";
-	   prepareResidencediv =prepareResidencediv+ "     <label class='col-md-4'>Location</label>";
+	   prepareResidencediv =prepareResidencediv+ "     <label class='col-md-4'>Location<span class='text-danger paddingLeft'>*</span></label>";
 	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
 	   prepareResidencediv =prepareResidencediv+ "           <div class='positionRelative'>";
 	   prepareResidencediv =prepareResidencediv+ ' 						<input class="form-control positionRelative"';
 	   prepareResidencediv =prepareResidencediv+ ' 						id="location'+rowId+'" name="residenceList['+rowId+'].location"';
-	   prepareResidencediv =prepareResidencediv+ ' 							placeholder="Enter Location" type="text" onClick="initLocationAuto(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipcode'+rowId+'\',\'\',\'\',\'\',\'address'+rowId+'\'); refreshGoogleApiLocation(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipcode'+rowId+'\',\'\',\'\',\'\',\'address'+rowId+'\');"></input> <i';
+	   prepareResidencediv =prepareResidencediv+ ' 							placeholder="Enter Location" field-name="Location" data-validation="required" type="text" onClick="initLocationAuto(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipcode'+rowId+'\',\'\',\'\',\'\',\'address'+rowId+'\'); refreshGoogleApiLocation(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipcode'+rowId+'\',\'\',\'\',\'\',\'address'+rowId+'\');"></input> <i';
 	   prepareResidencediv =prepareResidencediv+ ' 							class="fa fa-refresh btn btn-primary refresh-icon"';
 	   prepareResidencediv =prepareResidencediv+ ' 							title="Refresh"';
 	   prepareResidencediv =prepareResidencediv+ ' 							onClick="refreshGoogleApiLocation(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipcode'+rowId+'\',\'\',\'\',\'\',\'address'+rowId+'\');"></i>';
@@ -607,25 +607,26 @@
 	   prepareResidencediv =prepareResidencediv+ "     </div>";
 	   prepareResidencediv =prepareResidencediv+ "    	<div class='clearfix'></div>";
 	   prepareResidencediv =prepareResidencediv+ "  <div class='form-group'>";
-	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>Start Date</label>";
+	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>Start Date<span class='text-danger paddingLeft'>*</span></label>";
 	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
 	   prepareResidencediv =prepareResidencediv+ " 			<div class='input-group'>";
-	   prepareResidencediv =prepareResidencediv+ "         <input type='text' class='form-control calendar' id='residenceStartDate"+rowId+"' onClick='showStartDatePicker("+rowId+")' name='residenceList["+rowId+"].residenceStartDate' placeholder='Start Date'>";
+	   prepareResidencediv =prepareResidencediv+ "         <input type='text' class='form-control calendar' id='residenceStartDate"+rowId+"' onClick='showStartDatePicker("+rowId+")' name='residenceList["+rowId+"].residenceStartDate' field-name='Start Date' data-validation='required' placeholder='Start Date'>";
 	   prepareResidencediv =prepareResidencediv+ "         <span class='input-group-addon'><i class='fa fa-times text-danger cursorPointer' onclick='clearDateValue(\"residenceStartDate"+rowId+"\")'></i></span>";
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
 	   prepareResidencediv =prepareResidencediv+ "  </div>";
-         
 	   prepareResidencediv =prepareResidencediv+ "  <div class='form-group'>";
-	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>End Date</label>";
+	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>End Date<span class='text-danger paddingLeft'>*</span></label>";
 	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
 	   prepareResidencediv =prepareResidencediv+ " 			<div class='input-group'>";
-	   prepareResidencediv =prepareResidencediv+ "        <input type='text' class='form-control calendar' id='residenceEndDate"+rowId+"' onClick='showEndDatePicker("+rowId+")'  name='residenceList["+rowId+"].residenceEndDate' placeholder='End Date'>";
+	   prepareResidencediv =prepareResidencediv+ "        <input type='text' class='form-control calendar'  id='residenceEndDate"+rowId+"' onClick='showEndDatePicker("+rowId+")'  name='residenceList["+rowId+"].residenceEndDate' field-name='End Date' data-validation='required' placeholder='End Date'>";
 	   prepareResidencediv =prepareResidencediv+ "        <span class='input-group-addon'><i class='fa fa-times text-danger cursorPointer' onclick='clearDateValue(\"residenceEndDate"+rowId+"\")'></i></span>";
 	   prepareResidencediv =prepareResidencediv+ "      </div>";
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
 	   prepareResidencediv =prepareResidencediv+ "   </div>";
 	   prepareResidencediv =prepareResidencediv+ "   </div>";
+	     
+	  
 	   
 		return prepareResidencediv; 
    }
@@ -748,7 +749,11 @@ $("#experienceValue").change(function () {
 		        	$('#currUscisStatus').append('<option value="">--Select Type --</option>');
 		            for(var i=0;i<data.length;i++){
 		            	  var opt = data[i];
-		            		$('#currUscisStatus').append('<option value='+opt.id+' >'+opt.name+'</option>');
+		            	  	if(opt.name == "Request to fill"){
+		            	  		$('#currUscisStatus').append('<option selected value='+opt.id+' >'+opt.name+'</option>');
+		            	  	}else{
+		            			$('#currUscisStatus').append('<option value='+opt.id+' >'+opt.name+'</option>');
+		            	  	}
 		            }
 		            $('#currUscisStatus').trigger("chosen:updated");		        	
 		        }
@@ -860,6 +865,8 @@ $("#experienceValue").change(function () {
 		  	  yearRange: "-100:+0",
 		  	  maxDate:0  
 		  })
+		  
+		  
 // previou lca start and end date 
 		  $('#prevLcaStartDate').datepicker({
 		      dateFormat: finalDateFormatPetitionSave,
@@ -935,31 +942,13 @@ $("#experienceValue").change(function () {
 		  });
 		  ///
 		  
-		// residence start date and end date  
-	
-		  $("#residenceStartDate").datepicker({
+		// residence start date
+		   $('#residenceStartDate').datepicker({
 		      dateFormat: finalDateFormatPetitionSave,
 		      changeMonth: true,
 		  	  changeYear: true, 
-		      onSelect: function (selected) {
-		            //var dt = new Date(selected);
-		            var dt = $(this).datepicker('getDate', '+1d');
-		            dt.setDate(dt.getDate() + 1);
-		            $("#residenceEndDate").datepicker("option", "minDate", dt);
-		        }
-		  })
-		
-	
-		  $("#residenceEndDate").datepicker({
-		      dateFormat: finalDateFormatPetitionSave,
-		      changeMonth: true,
-		  	  changeYear: true, 
-		        onSelect: function (selected) {
-		            //var dt = new Date(selected);
-		            var dt = $(this).datepicker('getDate', '-1d');
-		            dt.setDate(dt.getDate() - 1);
-		            $("#residenceStartDate").datepicker("option", "maxDate", dt);
-		        }
+		  	  yearRange: "-100:+0",
+		  	  maxDate:0  
 		  })
 		  // 
 		  
