@@ -541,9 +541,16 @@ public class CandidateOnBoardRestController {
 		 
 		 	OrgLocations locations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 		 	//SimpleDateFormat dateFormat = locations.getLocFullFormDateFormatter();
-			RequirementOffers offer = requirementOffersService.getRequirementOfferId(offerId);
+			RequirementOffers offer = requirementOffersService.getOnboardRequirementOfferId(offerId);
 			if(null != offer.getDateOfJoining()){
 				offer.setDateOfJoiningStr(commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),offer.getDateOfJoining()));
+				if(offer.getSubmissionId().getCandidate().getOrgRelationId() != null) {
+					offer.setOrgRelationId(offer.getSubmissionId().getCandidate().getOrgRelationId().getId());
+				}
+				
+				if(offer.getSubmissionId().getCandidate().getSpocId() != null) {
+					offer.setSpocId(offer.getSubmissionId().getCandidate().getSpocId().getId());
+				}
 			}
 			
 			
@@ -755,6 +762,16 @@ public class CandidateOnBoardRestController {
 			}else{
 				candidateOnBoardingDTO.setCandidateName(candidateName.append(candidateOnBoarding.getFirstName()).toString());
 			}
+			
+			Candidate candidate = candidateService.getCandidateByCandidateId(candidateOnBoarding.getCandidateId().getId());
+			if(candidate.getOrgRelationId() != null) {
+				candidateOnBoardingDTO.setVendors(candidate.getOrgRelationId().getId().toString());
+			}
+			
+			if(candidate.getSpocId() != null) {
+				candidateOnBoardingDTO.setVendorContact(candidate.getSpocId().getId().toString());
+			}
+			
 			
 		}
 		

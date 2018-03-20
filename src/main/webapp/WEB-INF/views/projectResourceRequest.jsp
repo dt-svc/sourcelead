@@ -301,7 +301,7 @@ function acceptAssociate(requestUUID,requestType){
 
 <script>
 function rejectAssociate(requestUUID,candidateName){
-	
+	$("#requestOnHoldReasonDiv").empty();
 	var result = "";
 	result = result + '	<div class="settPop">';
 	result = result + '	<div id="loading"></div>';
@@ -350,6 +350,7 @@ function cancelRejectedReason(){
 function cancelRequestOnholdReason(){
 	$(".settPop").slideUp(200);
 	$(".vendor_wrap_mask").fadeOut(200);
+	$("#requestOnHoldReasonDiv").empty();
 }
 </script>
 

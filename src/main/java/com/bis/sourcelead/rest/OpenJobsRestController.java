@@ -89,7 +89,7 @@ public class OpenJobsRestController {
 			@RequestParam(value = "dates", required = false, defaultValue = "") String dates,
 			@RequestParam(value = "country", required = false, defaultValue = "") String country,
 			@RequestParam(value = "companies", required = false, defaultValue = "") String companies,
-			@RequestParam(value = "postedOrgName", required = false, defaultValue = "") Long postedOrgName,
+			@RequestParam(value = "postedOrgName", required = false, defaultValue = "") String postedOrgName,
 			HttpServletRequest request) throws Exception {
 
 		boolean isELKSearchEnable = true;
@@ -240,32 +240,38 @@ public class OpenJobsRestController {
 				boolQueryBuilder.must(openJobsBuilder);
 			}
 
-			// for org specific job filter
-			String[] Locations = null;
-			if (null != companies && !"".equals(companies)) {
-				Locations = companies.split(",");
-			}
-			
-			if (null != orgLocationIds && !"".equals(orgLocationIds)) {
-				Locations = orgLocationIds.split("--");
-			}
-			
-			if (null != Locations) {
-				BoolQueryBuilder orgOpenJobsBuilder = QueryBuilders.boolQuery();
-				for (String locationId : Locations) {
-					BoolQueryBuilder openJobscombinedOrgQueryBuilder = QueryBuilders.boolQuery();
-					openJobscombinedOrgQueryBuilder
-							.should(QueryBuilders.matchQuery("orgLocationId", Long.parseLong(locationId)));
-					orgOpenJobsBuilder.should(openJobscombinedOrgQueryBuilder);
-				}
-				boolQueryBuilder.must(orgOpenJobsBuilder);
-			}
 			
 			// for jobs filter when clicked on org name
-			if (postedOrgName != null) {
+			if (postedOrgName != null && !"".equalsIgnoreCase(postedOrgName)) {
 				BoolQueryBuilder postedOrgJobsBuilder = QueryBuilders.boolQuery();
-				postedOrgJobsBuilder.should(QueryBuilders.matchQuery("orgLocationId", postedOrgName));
+				postedOrgJobsBuilder.should(QueryBuilders.matchQuery("postedOrg", postedOrgName));
 				boolQueryBuilder.must(postedOrgJobsBuilder);
+			}
+			else{
+				// for org specific job filter
+				String[] Locations = null;
+				if (null != companies && !"".equals(companies)) {
+					Locations = companies.split(",");
+				}
+				
+				if (null != orgLocationIds && !"".equals(orgLocationIds)) {
+					Locations = orgLocationIds.split("--");
+				}
+				
+				if (null != Locations) {
+					BoolQueryBuilder orgOpenJobsBuilder = QueryBuilders.boolQuery();
+					for (String locationId : Locations) {
+						List<OrgLocations> list=orgLocationService.getAllOrgLocationsByOrgId(Long.parseLong(locationId));
+						for(OrgLocations loc:list){
+							BoolQueryBuilder openJobscombinedOrgQueryBuilder = QueryBuilders.boolQuery();
+							openJobscombinedOrgQueryBuilder
+									.should(QueryBuilders.matchQuery("orgLocationId", loc.getId()));
+							orgOpenJobsBuilder.should(openJobscombinedOrgQueryBuilder);
+						}
+						
+					}
+					boolQueryBuilder.must(orgOpenJobsBuilder);
+				}
 			}
 
 		}

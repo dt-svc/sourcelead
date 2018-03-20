@@ -131,7 +131,7 @@
 								<div class="col-md-8 chooRadius" id="errorAttorney">
 								<div class="input-group col-md-10 pull-left chooRadius">
 									<select class="chosen-select form-control" name="candidateId"
-										id="candidateId" placeholder="Select Beneficiary" onchange="updateCandiateInfo($(this));">
+										id="candidateId" placeholder="Select Beneficiary" onchange="getCandidatesResumeDetailsById($(this).val());updateCandiateInfo($(this));">
 									</select>
 								 <span class="input-group-addon cursorPointer bg-blue" onclick="getCandidatesByOrgLocation();"><i class="fa fa-refresh "></i></span>
 									
@@ -276,10 +276,17 @@
             </div>
               </div>
             </div>
-            
-           <div class="form-group"  id="resumeEmpty">
+             
+                                            
+                                            
+           <div class="form-group" >
               <label class="col-md-4">Upload Resume</label><!-- need to updated  -->
-               <div class="col-md-8">
+              <div class="col-md-3 mt10" id="docNameDiv" style="display: none;">
+                    <label id="documentName"  class="text-primary tbldata-dotdot-vsm pull-left" title=""></label>&nbsp;&nbsp;<span id="delete_file" onclick = "deleteResumeDoc()"><i class="fa fa-trash removeIcon"></i></span>
+                   <input  type="hidden" id="generalExisitingFile" name = "" value="">
+                   <a  class="glyphicon glyphicon-download-alt" id="downloadBrowseFile" href="" download title="Download"></a>
+             </div>
+               <div class="col-md-8"  id="resumeEmpty">
 				<div class="input-group col-md-12 clearUploads" id="clearUploads" style="margin:0 auto">
 					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 					  <input type="file" style="display: none;" id="uploadBtn" class="upload">
@@ -288,15 +295,6 @@
 				  </div>
               </div>
             </div>
-            
-            <div class="col-md-3 mt10" id="resumeDoc" style="display:none;">
-			 <label id="documentName"  class="text-primary tbldata-dotdot-vsm pull-left">${item.fileName}</label>&nbsp;&nbsp;<span id="delete_file" onclick = "deleteDoc()"><i class="fa fa-trash removeIcon"></i></span>
-			<input  type="hidden" id="generalExisitingFile" name = "generalExisitingFile" value="${item.fileName}">
-			  <a  class="glyphicon glyphicon-download-alt"  href="${item.fileUrl}" download title="Download"></a>
-			  </div>
-            
-            
-            
              <div class="form-group">
               <label class="col-md-4">Experience</label>
               <div class="col-md-4 dropdown-select">
@@ -683,6 +681,37 @@ function getCandidatesByOrgLocation(){
    });
 }
 
+function deleteResumeDoc(){
+	$("#docNameDiv").hide();
+	$("#resumeEmpty").show();
+	$("#documentName").html("");
+	$("#downloadBrowseFile").attr("href","");
+}
+// to get the resume details for the candidate.
+function getCandidatesResumeDetailsById(candidateId){
+	 console.log(" before getCandidatesResumeDetailsById function calling ---->"+candidateId);
+	 urltest = sourceleadUrl+immiModulePath+"/getAllActiveCandidatesByLocation";
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+immiModulePath+"/getCandidatesResumeDetailsById?candidateId="+candidateId, 
+		        /* data:, */
+		        success: function(data) {
+		        	if(data.fileName != null){
+		        		$("#docNameDiv").show();
+		        		$("#resumeEmpty").hide();
+			        	$("#documentName").html(data.fileName);
+			        	$("#downloadBrowseFile").attr("href",data.fileURL);
+		        	}else{
+		        		$("#docNameDiv").hide();
+		        		$("#resumeEmpty").show();
+		        	}
+		            console.log("inside sucess function");
+		            console.log(data);
+		            
+		   }
+   });
+}
+
 $("#experienceValue").change(function () {
     if(this.value == '25+'){
     	$("#expMonthValue").val("");
@@ -1046,7 +1075,7 @@ function  removeValidationAttorneyContact() {
 		$("#experienceMonths").val(candidateObj.experienceMonths);
 		
 		// setting the date for the date of birth field.
-		if(typeof  candidateObj.dateOfBirth != 'undefined' && candidateObj.dateOfBirth!=''){
+		if(candidateObj.dateOfBirth != null && typeof  candidateObj.dateOfBirth != 'undefined' && candidateObj.dateOfBirth!=''){
 			var dateOfBirth =  moment(candidateObj.dateOfBirth).format("DD-MM-YYYY");
 		   $("#birthDate").val(dateOfBirth);
 		}
@@ -1063,8 +1092,8 @@ function  removeValidationAttorneyContact() {
 	     $("#clearUploads").click(function(){
 	    	 $("#uploadFile").val("");
 	     });
-	     //var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  //var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
+	     var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		 var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
 		function showStartDatePicker(id){
 		  $("#residenceStartDate"+id).datepicker({
 		      dateFormat: finalDateFormatPetitionSave,

@@ -1561,6 +1561,16 @@ function toDate(selector) {
 		        	$("#savedInvoiceId").val(json['id']); 
 		        	
 		        	
+		        	var test = json['invoiceParentId'];
+		        	if(json['invoiceStatus'] == "Rejected" && test != null){
+			   			 document.getElementById("sendInvoice").style.display="none";
+			   			 document.getElementById("saveInvoice").style.display="none";
+			       	}else{
+			       		document.getElementById("sendInvoice").style.display="inline-block";
+			   			document.getElementById("saveInvoice").style.display="inline-block";
+			       	}
+		        	
+		        	
 		        	
 		        } 
     		});
@@ -1574,6 +1584,10 @@ $(document).ready(function(){
 		loadInvoiceDetails(invoiceUUID);
 	}else{
 		getClients();
+		$("#invoiceId").val("");
+		$("#paymentFrequency").val("");
+		$("#paymentFrequency").trigger("chosen:updated");
+		$("#dueDate").val("");
 	}
 	
 });
@@ -1902,8 +1916,7 @@ function errInvoiceDate(){
 
 <script type="text/javascript">
 function attachFile(id){
-	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, ""+id+"invoicedocFile", "invoiceDocuments", "project_invoice_form","fileInfo");
+	fileUpload(""+id+"invoicedocFile", "invoiceDocuments", "project_invoice_form","fileInfo");
 }
 </script>
 <script>

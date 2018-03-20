@@ -105,6 +105,7 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
           result = result +"    <th>Mobile Number</th>"; 
           result = result +"    <th>Location</th>"; 
           result = result +"    <th>Last Update</th>"; 
+          result = result +"    <th>Created By</th>"; 
           result = result +"  </tr>"; 
           result = result +"</thead>";
           result = result +"<tbody>"; 
@@ -115,6 +116,24 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
           cpagination(url); 
           shareCandidates = {};
   }
+  
+  
+  function candidateSearchHighlight(){
+ 	 setTimeout(function () {
+  		var body = $( table.table().body() );
+ 	        body.unhighlight();
+ 	        body.highlight( $("#dataTableSearch").val() );   
+ 			
+ 			}, 1000); 
+  }
+ 
+ 	$(document).on( 'init.dt.dth', function (e, settings, json) {
+     table = new $.fn.dataTable.Api( settings );
+     var body = $( table.table().body() );
+     if ( $( table.table().node() ).hasClass( 'searchHighlight' ) || settings.oInit.searchHighlight ||  $.fn.dataTable.defaults.searchHighlight ) {
+ 	
+ 	}
+ });
 
 function cpagination(url){ 
 	var colIndex = 0;
@@ -123,6 +142,7 @@ function cpagination(url){
     		"processing": true,
         "serverSide": true,
         "searching": false,
+        "searchHighlight": true,
         "ajax": $.fn.dataTable.pipeline( {
             url: url,
             method: 'POST',
@@ -138,7 +158,8 @@ function cpagination(url){
             { "data": "email" },
             { "data": "mobilePhone" },
             { "data": "country"},
-            { "data": "updatedDate" }
+            { "data": "updatedDate" },
+            { "data": "createdBy" }
         ],
         "columnDefs": [ {
     	  	"targets": colIndex++,
@@ -308,10 +329,23 @@ function cpagination(url){
 			            	}
       	              return result;
                   }
-                } ],
+                } , {
+                    "targets": colIndex++,
+                    "data": "createdBy",
+                    "className": "tblminwidth-75",
+                    "render": function ( data, type, opt, meta ) {
+                    		var result = "";
+                    		if(opt.createdBy != null && opt.createdBy != 'undefined' && opt.createdBy != ""){
+                    			result = "<div>"+opt.createdBy+"</div>"; 
+  			            	}else{
+  			            		result = "<div>---</div>";
+  			            	}
+        	              return result;
+                    }
+                  } ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[9,'desc']],
+	    	"aaSorting": [[10,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
@@ -319,13 +353,19 @@ function cpagination(url){
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
 	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
-	     }
+	     },
+	     drawCallback: function(){
+   	      $('a.paginate_button', this.api().table().container()).on('click', function(){
+   	    	candidateSearchHighlight();
+	         }); 
+	   }
     } );
     $("#candidatePagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
     $("#dataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
 		candidateList();
+		candidateSearchHighlight();
     	   }
     	});
 }

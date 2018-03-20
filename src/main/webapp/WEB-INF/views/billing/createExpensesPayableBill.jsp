@@ -984,7 +984,14 @@ function toDate(selector) {
 		        	
 		        	$("#savedInvoiceId").val(json['id']); 
 		        	
-		        	
+		        	var test = json['invoiceParentId'];
+		        	if(json['invoiceStatus'] == "Rejected" && test != null){
+			   			 document.getElementById("sendButtonId").style.display="none";
+			   			 document.getElementById("saveButtonId").style.display="none";
+			       	}else{
+			       		document.getElementById("sendButtonId").style.display="inline-block";
+			   			document.getElementById("saveButtonId").style.display="inline-block";
+			       	}
 		        	
 		        } 
     		});
@@ -999,6 +1006,10 @@ $(document).ready(function(){
 	}else{
 		getVendors();
 		getProjectsList();
+		$("#invoiceId").val("");
+		$("#paymentFrequency").val("");
+		$("#paymentFrequency").trigger("chosen:updated");
+		$("#dueDate").val("");
 	}
 	
 });
@@ -1695,7 +1706,7 @@ function populateExpensesEntriesGrid(data){
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">';
          		      if(opt.categoryAmount !=null && opt.categoryAmount != ''){
-         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.categoryAmount+'" id="'+i+'total" name="expenseInvoice['+i+'].total" placeholder="S.No">';	  
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" readonly="readonly" value="'+opt.categoryAmount+'" id="'+i+'total" name="expenseInvoice['+i+'].total" placeholder="S.No">';	  
          		      }
          		      result = result +'     </div>';
          		      result = result +'   </td>';
@@ -1712,7 +1723,7 @@ function populateExpensesEntriesGrid(data){
         result = result +' <tr>';
         result = result +' <td colspan="3"></td>';
         result = result +'<td><strong>Sub Total</strong></td>';
-        result = result +' <td><div class="tblminwidth-150"><span class="pull-left paddingRight">INR</span> <input type="text" value = '+subTotal+' id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
+        result = result +' <td><div class="tblminwidth-150"><span class="pull-left paddingRight">INR</span> <input type="text" value = '+subTotal+' id="inoviceTotal" name="inoviceTotal" class="ReadTextFli" readonly="readonly"></div></td>';
         result = result +'  <input type="hidden" value = "" id="hiddenTotal">';
         result = result +' </tr>';
         result = result +' </tfoot> ';

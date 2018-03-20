@@ -12,7 +12,7 @@
 				    	 <div class="col-md-9">
 				    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
 				    		<input type="hidden" value="${dataMap.value[2]}" name="customFormData[${currentIndex+customFormIndex.index}].entityId">
-				     	 	<input type="text" class="form-control" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" value="${dataMap.value[1]}" field-name="${customForm.labelName}" ${customForm.isRequired == 1 ? 'data-validation="required"':''} ${customForm.isRequired == 0 ? 'data-validation-optional="true"':''}>
+				     	 	<input type="text" class="form-control" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" value="${dataMap.value[1]}" field-name="${customForm.labelName}" ${customForm.isRequired == 1 ? 'data-validation="required"':''} ${customForm.isRequired == 0 ? 'data-validation-optional="true"':''} ${customForm.isRequired == 1 ? 'data-check=true':'false'}>
 				    	</div>
 			        </c:if>
 		        </c:forEach>
@@ -21,7 +21,7 @@
 		        <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
 		    	 <div class="col-md-9">
 		    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
-		     	 	<input type="text" class="form-control" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" value="" field-name="${customForm.labelName}" ${customForm.isRequired == 1 ? 'data-validation="required"':''} ${customForm.isRequired == 0 ? 'data-validation-optional="true"':''}>
+		     	 	<input type="text" class="form-control" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" value="" field-name="${customForm.labelName}" ${customForm.isRequired == 1 ? 'data-validation="required"':''} ${customForm.isRequired == 0 ? 'data-validation-optional="true"':''} ${customForm.isRequired == 1 ? 'data-check=true':'false'}>
 		    	</div>
 	    	</c:if>
 	    	

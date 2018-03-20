@@ -426,8 +426,109 @@ function getEmploymentType(){
 		$("#employmentOtherType").attr("data-validation-optional", "true");
 		$('#otherEmploymentTypeDiv').find('p.jquery_form_error_message').remove(); 
 	}
+	
+	
+	 if(employmentType == 'C2C'){
+		 document.getElementById("vendorsDiv").style.display="";
+		 document.getElementById("vendorContactsDiv").style.display="";
+		 document.getElementById("otherEmploymentTypeDiv").style.display="none";
+		
+		 $('#vendors').removeAttr("data-validation-optional"); 
+		 $('#vendorContact').removeAttr("data-validation-optional"); 
+		 
+		 $('#vendors').attr("data-validation","required"); 
+		 $('#vendorContact').attr("data-validation","required");  
+		 
+		 $('#employmentOtherType').removeAttr("data-validation"); 
+		 $('#employmentOtherType').attr("data-validation-optional", "true"); 
+		 $('#employmentOtherType').attr("data-validation","validate_Space validate_length length2-250"); 
+		 
+		 getVendorsByOrgLocationForAddApplicant();
+	 }else{
+		 document.getElementById("otherEmploymentTypeDiv").style.display="none";
+		 document.getElementById("vendorsDiv").style.display="none";
+		 document.getElementById("vendorContactsDiv").style.display="none";
+		 
+		 $('#vendors').removeAttr("data-validation"); 
+		 $('#vendorContact').removeAttr("data-validation"); 
+		 
+		 $('#vendors').attr("data-validation-optional", "true"); 
+		 $('#vendorContact').attr("data-validation-optional", "true");   
+		 
+		 $('#employmentOtherType').removeAttr("data-validation"); 
+		 $('#employmentOtherType').attr("data-validation-optional", "true"); 
+		 $('#employmentOtherType').attr("data-validation","validate_Space validate_length length2-250"); 
+	 }
 }
 </script>
+
+
+<script>
+ function getVendorsByOrgLocationForAddApplicant(orgRelationId){
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getVendorsByOrgLocation?"+tokenParamName+"="+tokenValue+"", 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	var output = "";
+	        	output = output + "<option value=''>--Select Vendor--</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		var selected = "";
+		        		if(orgRelationId != null && orgRelationId != 'undefined' && orgRelationId != ''){
+		        			if(opt.id == orgRelationId){
+		        				selected = "selected";
+		        			}
+		        			output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.orgName+"</option>";
+		        		}else{
+		        			output = output + "<option value='" +opt.id+ "'>"+opt.orgName+"</option>";
+		        		}
+		        		
+				}
+	        	$("#vendors").empty();
+		        $("#vendors").append(output);
+		        $('#vendors').trigger("chosen:updated"); 
+		        
+	        },
+	    }); 
+	 
+ }
+ </script>
+ 
+ <script>
+ function getAddApplicantVendorContactList(orgRelationId,spocId){
+	 
+	 var orgRelationID = '';
+	 if(orgRelationId != null && orgRelationId != 'undefined' && orgRelationId != ''){
+		 orgRelationID = orgRelationId;
+	 }else{
+		 orgRelationID = $('#vendors').val();
+	 }
+		 $.ajax({
+			    type: "POST",
+		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        success: function(json) {
+		        	$('#vendorContact').empty();
+		        	$('#vendorContact').append('<option value="">--Select Vendor contact--</option>');
+		             for(var i=0;i<json.data.length;i++){
+		            	 var opt = json.data[i];
+		            	 if(spocId != null && spocId != 'undefined' && spocId != ''){
+		            		 if(opt.id == spocId){
+			        				selected = "selected";
+			        			}
+		        			 $('#vendorContact').append('<option value='+opt.id+' '+selected+'>'+opt.spocName+'</option>');
+		            	 }else{
+		            		 $('#vendorContact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
+		            	 }
+		            	
+		            } 
+		            $('#vendorContact').trigger("chosen:updated");
+		        }
+		 }); 
+ }
+ </script>
+ 
 
 <!-- getEmployementTye -->
 
@@ -886,9 +987,20 @@ function validateUploadFile(id)
 			    			 $("#employmentOtherType").attr("data-validation-optional","true");
 			    			 $('#otherEmploymentTypeDiv').find('p.jquery_form_error_message').remove(); 
 			    		 }
-			    		
+			    		 
 		    		     $("#employmentType").val(json['positionType']);
 				    	 $('#employmentType').trigger("chosen:updated");
+				    	 
+				    	 if(json['positionType'] = 'C2C'){
+				    		 getEmploymentType();
+				    		 
+				    		 if(json['orgRelationId'] != null && json['orgRelationId'] != '' && json['orgRelationId'] != 'undefined' 
+			    				 && json['spocId'] != null && json['spocId'] != '' && json['spocId'] != 'undefined'){
+				    			 getVendorsByOrgLocationForAddApplicant(json['orgRelationId']);
+				    		     getAddApplicantVendorContactList(json['orgRelationId'],json['spocId']);
+				    		 }
+			    			
+				    	 }
 			    		
 			    	 }else{
 			    		 document.getElementById("otherEmploymentTypeDiv").style.display="none";
@@ -1347,6 +1459,12 @@ function loadOnBoardingTemplates(onboardTemplateId){
 		    		
 	    		     $("#employmentType").val(json['employmentType']);
 			    	 $('#employmentType').trigger("chosen:updated");
+			    	 
+			    	 if(json['employmentType'] = 'C2C'){
+			    		  getEmploymentType();
+			    		  getVendorsByOrgLocationForAddApplicant(json['vendors']);
+			    		  getAddApplicantVendorContactList(json['vendors'],json['vendorContact']);
+			    	 }
 		    		
 		    	 }else{
 		    		 document.getElementById("otherEmploymentTypeDiv").style.display="none";
@@ -2355,6 +2473,25 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<input type="text" class="form-control input-sm" id="employmentOtherType" field-name="Other Type" name="employmentOtherType" >';
 	 result = result +'</div>';
 	 result = result +'</div>';
+	 
+	 
+    result = result +'<div class="form-group" id="vendorsDiv" style="display: none;">';
+	result = result + '<label class="col-md-3  control-label">Vendors<span class="text-danger">* </span></label>';
+	result = result + '<div class="col-md-6">';
+	result = result + '<select class="chosen-select form-control" id="vendors" data-validation-optional="true" name="vendors" onchange="getAddApplicantVendorContactList();" field-name="Vendors">';
+	result = result + '</select>';
+	result = result + '</div>';
+	result = result + '</div>';
+	
+	
+    result = result + '	<div class="form-group" id="vendorContactsDiv" style="display: none;">';
+	result = result + '<label class="col-md-3  control-label">Vendor Contacts<span class="text-danger">* </span></label>';
+	result = result + '<div class="col-md-6">';
+	result = result + '<select class="chosen-select form-control" id="vendorContact" data-validation-optional="true" name="vendorContact"  field-name="vendor Contacts">';
+	result = result + '<option value="">--Select Vendor Contacts--</option>';
+	result = result + '</select>';
+	result = result + '</div>';
+	result = result + '</div>'; 
      
 	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">Probation Notice</label>';
@@ -2416,6 +2553,7 @@ function addCandidateDetailsForOnboarding(){
 	 
 	 $("#onboardingCandidateDetailsDiv").empty();
    	 $("#onboardingCandidateDetailsDiv").append(result); 
+   	 
    	 
      initLocationAuto('offBoardLocation','country','state','city','zipCode','','',''); 
      
