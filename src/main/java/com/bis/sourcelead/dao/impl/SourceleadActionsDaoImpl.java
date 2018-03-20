@@ -145,7 +145,7 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		 
-	    String query = "select sa.id from SourceleadActions sa where sa.id IN(select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id = :moduleId) and sa.tabs.id NOT IN (13,14) and sa.id <> '115' ";
+	    String query = "select sa.id from SourceleadActions sa where sa.id IN(select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id = :moduleId) and sa.tabs.id NOT IN (13,14,26,28,29) and sa.id <> '115' ";
 	    List<Long> actionIds = session.createQuery(query.toString()).setLong("moduleId", moduleId).list();
      
 	    return actionIds;
@@ -184,7 +184,7 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 				modulesList.add(Long.parseLong(s));
 			 }
        		
-	    String query = "from SourceleadActions sa where sa.actionRole != 'ROLE_ENROLL_ORG' and sa.tabs.id NOT IN (13) "
+	    String query = "from SourceleadActions sa where sa.actionRole != 'ROLE_ENROLL_ORG' and sa.tabs.id NOT IN (13,26,28,29) "
 	    		+ "and sa.id IN(select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId)) and sa.status = '1' ";
 	    List<SourceleadActions> actionsList = session.createQuery(query.toString()).setParameterList("modulesId", modulesList).list();
     

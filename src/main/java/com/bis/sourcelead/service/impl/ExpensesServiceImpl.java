@@ -1246,21 +1246,22 @@ public class ExpensesServiceImpl implements ExpensesService{
 	}
 
 	@Override
-	public List<ExpensesEntriesDTO> getApprovedExpenses(Long expenseId) throws Exception {
-
-		List<ExpensesEntries> entriesList = expensesEntriesService.getExpensesEntriesByExpenseId(expenseId);
+	public List<ExpensesEntriesDTO> getApprovedExpenses(Long expenseId,Long locationsId) throws Exception {
 		List<ExpensesEntriesDTO> expensesEntriesDTOList = new ArrayList<>();
-		for(ExpensesEntries entries : entriesList){
-			if(Submission_Status.APPROVED == entries.getExpensesId().getExpenseStatus()) {
-				ExpensesEntriesDTO  expensesEntriesDTO = new ExpensesEntriesDTO();
-				expensesEntriesDTO.setDateOccurred(ConversionUtil.getDateAsString(entries.getExpenseDate()));
-				expensesEntriesDTO.setEntryDescription(entries.getDescription());
-				expensesEntriesDTO.setCategoryAmount(String.valueOf(entries.getAmount()));
-				expensesEntriesDTO.setAmount(entries.getAmount());
-				expensesEntriesDTO.setCategoryName(entries.getExpensesCategoryId().getExpensesName());
-				expensesEntriesDTOList.add(expensesEntriesDTO);
+		ExpensesApproverHierarchy eah = expensesApprovalService.getApprovedExpenseByExpenseIdAndLocationId(expenseId, locationsId);
+		if(eah != null) {
+			List<ExpensesEntries> entriesList = expensesEntriesService.getExpensesEntriesByExpenseId(expenseId);
+			for(ExpensesEntries entries : entriesList){
+					ExpensesEntriesDTO  expensesEntriesDTO = new ExpensesEntriesDTO();
+					expensesEntriesDTO.setDateOccurred(ConversionUtil.getDateAsString(entries.getExpenseDate()));
+					expensesEntriesDTO.setEntryDescription(entries.getDescription());
+					expensesEntriesDTO.setCategoryAmount(String.valueOf(entries.getAmount()));
+					expensesEntriesDTO.setAmount(entries.getAmount());
+					expensesEntriesDTO.setCategoryName(entries.getExpensesCategoryId().getExpensesName());
+					expensesEntriesDTOList.add(expensesEntriesDTO);
 			}
 		}
+		
 		return expensesEntriesDTOList;
 	}
 

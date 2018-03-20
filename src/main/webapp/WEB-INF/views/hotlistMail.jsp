@@ -1310,8 +1310,10 @@ function getRecipient(){
  <script>
 function getRecipientContactsList(){
 	    var result = "";
-	 	result = result +" <div class='remove_search'>";
+	 	result = result +" <div class='dynamic_search dynamic_search-new'>";
 	 	result = result +" <input type='text' placeholder='Search' id='vendorContactsDataTableSearch'/>";
+	 	result = result +"  <span class='cursorPointer' title='Search'><i class='fa fa-search' onclick='vendorContactDataTableList();'></i></span>";     
+
 	 	result = result +"</div>";
 	 	
 	    result = result +'<div class="clearfix popupFilter">';

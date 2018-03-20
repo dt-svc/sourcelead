@@ -252,7 +252,7 @@ function validateShortCode(){
 							<div class="col-md-9">
 								<div class="input-group">
 									<div class="input-group-btn selp-custom-min tblminwidth-125" id="flatPercentageId" >
-										<select class="form-control chosen-select"  name="flatPercentageId" id="flatPercentId">
+										<select class="form-control chosen-select"  name="flatPercentageId" id="flatPercentId" onchange="changeOverTime();">
 											<option value="flat">FLAT</option>
 											<option value="percentage">PERCENTAGE</option>
 										</select>
@@ -1202,7 +1202,7 @@ function getBudgetApprover(approverUserId){
 
 <script>
 	$(document).ready(function() {
-		$("#txtEditor").Editor().trim();
+		$("#txtEditor").Editor();
 		$("#txtEditor").find(".Editor-editor").data-validation('validate_length length2-5000');
 		$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
 	});
@@ -1270,22 +1270,41 @@ function recSelectType(){
 
  <script type="text/javascript">
 function flatPercentageType(){
+	var flatPercentId  = $("#flatPercentId").val();
 	 var flatPercentage = document.getElementById("flatPercentage").value;
-	 $('#flatPercentageDivId').parent().find('p.jquery_form_error_message').remove(); 
-		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+	 $('#flatPercentageDivId').parent().find('p.jquery_form_error_message').remove();
+	 var floatNum = "";
+	 
+	 if(flatPercentage != '' && flatPercentage != 'undefined' && flatPercentage != null){
+		 if(flatPercentId == 'flat'){
+			  var floatNum = /^(\d{0,10}(\.\d{0,10})?|100)$/
+		 }else{
+			  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+		 }
 		  if(flatPercentage.match(floatNum)){
 			  $("#save_project").removeAttr("disabled");
 			   return true;
 		  }		  
 		 else{
-				$("input#flatPercentage").parent().after("<p class='jquery_form_error_message'><span>Enter your Valid Percentage</span>");
+			 if(flatPercentId == 'flat'){
+					$("input#flatPercentage").parent().after("<p class='jquery_form_error_message'><span>Enter  valid flat value length 1 to 10</span>");
+			 }else{
+					$("input#flatPercentage").parent().after("<p class='jquery_form_error_message'><span>Enter  valid percentage</span>");
+			 }
 				 $("#save_project").attr("disabled", "disabled");
 				return false; 
 		 	 }
+		 
+	    }else{
+			$("input#flatPercentage").parent().after("<p class='jquery_form_error_message'><span>Enter value</span>");
+			$("#save_project").attr("disabled", "disabled");
+	    }
+}
+function changeOverTime(){
+	 $('#flatPercentageDivId').parent().find('p.jquery_form_error_message').remove();
+	 $("#flatPercentage").val(0);
 
-	 
-	
-		 }
+}
 	  
 </script>
 

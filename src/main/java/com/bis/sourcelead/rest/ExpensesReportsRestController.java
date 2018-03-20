@@ -53,7 +53,7 @@ public class ExpensesReportsRestController {
 	private ProjectMembersService projectMembersService;
 	
 	@RequestMapping(value = "/getExpensesReportList")
-	public String getExpensesApprovalList(HttpServletRequest request,@RequestParam(value="datequarterly", required=false) String datequarterly) throws Exception {
+	public LinkedHashSet<ProjectMembers> getExpensesApprovalList(HttpServletRequest request,@RequestParam(value="datequarterly", required=false) String datequarterly) throws Exception {
 		LinkedHashSet<ProjectMembers> finalProjectMemberList = new LinkedHashSet<>();
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -528,7 +528,7 @@ public class ExpensesReportsRestController {
 			 }
 		    }
 		}
-	   return commonUtil.toJSON(finalProjectMemberList);
+	   return finalProjectMemberList;
 	}
 	
 	

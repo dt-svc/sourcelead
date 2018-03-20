@@ -2150,6 +2150,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 					 if(userRole != null){
 						 pm.setUserRoleType(userRole.getUserType());
 						 pm.setUserRoleId(userRole.getId());
+						 pm.setProjectMemberStatus(userRole.getUserState().name());
 					 } 
 				 }else{
 					 pm.setUserRoleType("Candidate");
@@ -2397,7 +2398,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				//setting the class filed values
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
 				 	 User termentaedUserName = userService.getUserById(userId);
-					 globalVarsMap.put("loginUser", loginUser.getFirstName());
+					 globalVarsMap.put("loginUser", loginUser.getFullName());
 					 globalVarsMap.put("assignedUser", assUserName.getFirstName());
 					 globalVarsMap.put("reqCount", projectApproverCount.toString());
 					 globalVarsMap.put("terminatedUser",termentaedUserName.getFirstName());
@@ -2822,6 +2823,9 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 					
 					
 				}
+				
+				projects.setIsTimesheetAttachmentRequired(1);
+				projectsDao.updateProject(projects);
 				return projects;
 			}
 

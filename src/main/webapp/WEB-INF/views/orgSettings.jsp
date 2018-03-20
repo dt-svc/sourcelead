@@ -181,7 +181,7 @@ function cancelOrgImg(){
         </c:if>
         <li><a data-toggle="tab" href="#bankingDetails">Banking Details</a></li>
         <li><a data-toggle="tab" id="documentsClick" href="#orglocationDocuments">Documents</a></li>
-        <li><a data-toggle="tab" href="#orglocationSignatory" onclick="validateLegalSigner();">Signatory</a></li>
+        <li><a data-toggle="tab" href="#orglocationSignatory" onclick="getAllSignatory();">Signatory</a></li>
         <li><a data-toggle="tab" href="#emailSign" onclick="loadSignature();">Email Signature</a></li>
         <li><a data-toggle="tab" href="#configCoolingOff" onclick="configCoolingOff();">Configure</a></li>
 
@@ -674,7 +674,7 @@ function cancelOrgImg(){
 						<label class="clearfix">Skills</label>
 						<div class="clearfix dropdown-select mt5">
 							<select class="form-control chosen-select" name="recommSkill" id="recommSkill">
-							<option value="">-- Select Skills --</option>
+							<option value="0">-- Select Skills --</option>
 							<option ${orgLocations.recommendedSkillPercent == '10' ? 'selected' : ''}>10</option>
 							<option ${orgLocations.recommendedSkillPercent == '20' ? 'selected' : ''}>20</option>
 							<option ${orgLocations.recommendedSkillPercent == '30' ? 'selected' : ''}>30</option>
@@ -693,7 +693,7 @@ function cancelOrgImg(){
 						<label class="clearfix">Location</label>
 						<div class="clearfix dropdown-select mt5">
 							<select class="form-control chosen-select" name="recommLocation" id="recommLocation">
-							<option >-- Select Location --</option>
+							<option value="0">-- Select Location --</option>
 							<option ${orgLocations.recommendedLocationPercent == '10' ? 'selected' : ''}>10</option>
 							<option ${orgLocations.recommendedLocationPercent == '20' ? 'selected' : ''}>20</option>
 							<option ${orgLocations.recommendedLocationPercent == '30' ? 'selected' : ''}>30</option>
@@ -712,7 +712,7 @@ function cancelOrgImg(){
 						<label class="clearfix">Notice Period</label>
 						<div class="clearfix dropdown-select mt5">
 							<select class="form-control chosen-select" name="recommNoticePeriod" id="recommNoticePeriod">
-							<option >-- Select Notice Period --</option>
+							<option value="0">-- Select Notice Period --</option>
 							<option ${orgLocations.recommendedNoticePercent == '10' ? 'selected' : ''}>10</option>
 							<option ${orgLocations.recommendedNoticePercent == '20' ? 'selected' : ''}>20</option>
 							<option ${orgLocations.recommendedNoticePercent == '30' ? 'selected' : ''}>30</option>
@@ -731,7 +731,7 @@ function cancelOrgImg(){
 						<label class="clearfix">Experience</label>
 						<div class="clearfix dropdown-select mt5">
 							<select class="form-control chosen-select" name="recommExp" id="recommExp">
-							<option >-- Select Experience --</option>
+							<option value="0">-- Select Experience --</option>
 							<option ${orgLocations.recommendedExpPercent == '10' ? 'selected' : ''}>10</option>
 							<option ${orgLocations.recommendedExpPercent == '20' ? 'selected' : ''}>20</option>
 							<option ${orgLocations.recommendedExpPercent == '30' ? 'selected' : ''}>30</option>
@@ -749,7 +749,7 @@ function cancelOrgImg(){
 						<label class="clearfix">Visa Type</label>
 						<div class="clearfix dropdown-select mt5">
 							<select class="form-control chosen-select" name="recommVisaType" id="recommVisaType">
-							<option >-- Select Visa Type --</option>
+							<option value="0">-- Select Visa Type --</option>
 							<option ${orgLocations.recommendedVisatypePercent == '10' ? 'selected' : ''}>10</option>
 							<option ${orgLocations.recommendedVisatypePercent == '20' ? 'selected' : ''}>20</option>
 							<option ${orgLocations.recommendedVisatypePercent == '30' ? 'selected' : ''}>30</option>
@@ -767,7 +767,7 @@ function cancelOrgImg(){
 						<label class="clearfix">Education</label>
 						<div class="clearfix dropdown-select mt5">
 							<select class="form-control chosen-select" name="recommEducation" id="recommEducation">
-							<option >-- Select Education --</option>
+							<option value="0">-- Select Education --</option>
 							<option ${orgLocations.recommendedEducationPercent == '10' ? 'selected' : ''}>10</option>
 							<option ${orgLocations.recommendedEducationPercent == '20' ? 'selected' : ''}>20</option>
 							<option ${orgLocations.recommendedEducationPercent == '30' ? 'selected' : ''}>30</option>
@@ -785,7 +785,7 @@ function cancelOrgImg(){
 						<label class="clearfix">Rate</label>
 						<div class="clearfix dropdown-select mt5">
 							<select class="form-control chosen-select" name="recommRate" id="recommRate">
-							<option >-- Select Rate --</option>
+							<option value="0">-- Select Rate --</option>
 							<option ${orgLocations.recommendedRatePercent == '10' ? 'selected' : ''}>10</option>
 							<option ${orgLocations.recommendedRatePercent == '20' ? 'selected' : ''}>20</option>
 							<option ${orgLocations.recommendedRatePercent == '30' ? 'selected' : ''}>30</option>
@@ -803,7 +803,7 @@ function cancelOrgImg(){
 						<label class="clearfix">Keywords</label>
 						<div class="clearfix dropdown-select mt5">
 							<select class="form-control chosen-select" name="recommKeywords" id="recommKeywords">
-							<option >-- Select Keywords --</option>
+							<option value="0">-- Select Keywords --</option>
 							<option ${orgLocations.recommendedKeywordsPercent == '10' ? 'selected' : ''}>10</option>
 							<option ${orgLocations.recommendedKeywordsPercent == '20' ? 'selected' : ''}>20</option>
 							<option ${orgLocations.recommendedKeywordsPercent == '30' ? 'selected' : ''}>30</option>
@@ -1008,7 +1008,7 @@ function validateTotalRecommValue(){
 	var keyWordPercent = parseInt($("#recommKeywords").val());
 	
 	var totalPercecnt = skillPercent + locationPercent + visatypePercent + educationPercent + noticePercent + expPercent + ratePercent + keyWordPercent;
-	alert(totalPercecnt)
+	
 	if(totalPercecnt <= 100){
 		saveRecomSettings();
 	}else{
