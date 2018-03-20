@@ -113,7 +113,7 @@ function filterNodes(keyWord) {
 	    			if(ds[i].fileURL && ds[i].fileURL !== "")
 	          			obj.avatar = sourceleadUrl.replace("/app", "")+ds[i].fileURL;
 	    			else 
-	    				obj.avatar = sourceleadUrl.replace("/app", "")+"/resources/css/static-web/images/user-m.png";
+	    				obj.avatar = sourceleadUrl.replace("/app", "")+"/resources/images/userprofile-img.png";
 	          		data = obj;
 		    		obj.children = [];
 	    			$.each(ds, function(j) {
@@ -121,7 +121,7 @@ function filterNodes(keyWord) {
 							if(ds[j].fileURL && ds[j].fileURL !== "")	    					
 	    						ds[j].avatar = sourceleadUrl.replace("/app", "")+ds[j].fileURL;
 	    					else
-	    						ds[j].avatar = sourceleadUrl.replace("/app", "")+"/resources/css/static-web/images/user-m.png";
+	    						ds[j].avatar = sourceleadUrl.replace("/app", "")+"/resources/images/userprofile-img.png";
 	    					obj.children.push(ds[j]);
 	    				}
 	    			});
@@ -132,7 +132,7 @@ function filterNodes(keyWord) {
 	    					if(ds[j].fileURL && ds[j].fileURL !== "")	    					
 	    						ds[j].avatar = sourceleadUrl.replace("/app", "")+ds[j].fileURL;
 	    					else
-	    						ds[j].avatar = sourceleadUrl.replace("/app", "")+"/resources/css/static-web/images/user-m.png";
+	    						ds[j].avatar = sourceleadUrl.replace("/app", "")+"/resources/images/userprofile-img.png";
 	    					ds[i].children.push(ds[j]);
 	    				}
 	    			});

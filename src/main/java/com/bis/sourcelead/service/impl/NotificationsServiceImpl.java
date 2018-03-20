@@ -30,20 +30,26 @@ public class NotificationsServiceImpl implements NotificationsService{
 	
 	@Override
 	public Notifications saveNotification(Notifications notification) throws Exception{
-		UserMailUnsubscribe unsubscriptionUser = userMailUnsubscribeService.getUserMailUnsubscriptionByUserEmail(notification.getNotificationTo().getEmail());
-		if (unsubscriptionUser != null && StringUtils.isNotEmpty(unsubscriptionUser.getTabIds())) {
-			String[] tabIdsArray = unsubscriptionUser.getTabIds().split(",");
-			if (notification.getNotificationScenarioId().getTabId() != null) {
-				if(ArrayUtils.contains( tabIdsArray, notification.getNotificationScenarioId().getTabId().getId().toString())) {
-					return null;
-				}else if(ArrayUtils.contains( tabIdsArray, "0") && !ArrayUtils.contains( Constants.UNSUBSCRIPTION_TABID_LISTED, notification.getNotificationScenarioId().getTabId().getId().toString())) {
+		UserMailUnsubscribe unsubscriptionUser = null;
+		if(notification.getNotificationTo() != null){
+			unsubscriptionUser = userMailUnsubscribeService.getUserMailUnsubscriptionByUserEmail(notification.getNotificationTo().getEmail());
+			
+			if (unsubscriptionUser != null && StringUtils.isNotEmpty(unsubscriptionUser.getTabIds())) {
+				String[] tabIdsArray = unsubscriptionUser.getTabIds().split(",");
+				if (notification.getNotificationScenarioId().getTabId() != null) {
+					if(ArrayUtils.contains( tabIdsArray, notification.getNotificationScenarioId().getTabId().getId().toString())) {
+						return null;
+					}else if(ArrayUtils.contains( tabIdsArray, "0") && !ArrayUtils.contains( Constants.UNSUBSCRIPTION_TABID_LISTED, notification.getNotificationScenarioId().getTabId().getId().toString())) {
+						return null;
+					}
+				}else if(ArrayUtils.contains( tabIdsArray, "0")) {
 					return null;
 				}
-			}else if(ArrayUtils.contains( tabIdsArray, "0")) {
-				return null;
 			}
+			return notificationDao.saveNotification(notification);
+		}else{
+			return null;
 		}
-		return notificationDao.saveNotification(notification);
 	}
 
 	@Override
