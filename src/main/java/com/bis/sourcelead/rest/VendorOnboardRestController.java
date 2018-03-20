@@ -397,16 +397,19 @@ public class VendorOnboardRestController {
 		 
 		    List<VendorOnboardingTemplateDocumentDTO> documentsDTOList = new ArrayList<>();
 		    VendorOnboarding vendorOnboarding = vendorOnboardService.getVendorOnboardingByOrgRelationId(orgRelationId);
-			List<VendorOnboardingTemplateDocuments> documentsList = vendorOnboardTemplateDocumentsService.getVendorOnboaringTemplateDocumentsByVendorOnboardId(vendorOnboarding.getId());
-		    if(documentsList != null && documentsList.size() > 0) {
-		    	for(VendorOnboardingTemplateDocuments documents : documentsList) {
-		    		VendorOnboardingTemplateDocumentDTO docsDTO = new VendorOnboardingTemplateDocumentDTO();
-					docsDTO.setDocumentName(documents.getDocumentName());
-					docsDTO.setUploadedFileUrl(documents.getUploadedFileUrl());
-					docsDTO.setUploadedFileName(documents.getUploadedFileName());
-					documentsDTOList.add(docsDTO);
-		    	}
-		    }
+			if(vendorOnboarding != null) {
+				List<VendorOnboardingTemplateDocuments> documentsList = vendorOnboardTemplateDocumentsService.getVendorOnboaringTemplateDocumentsByVendorOnboardId(vendorOnboarding.getId());
+			    if(documentsList != null && documentsList.size() > 0) {
+			    	for(VendorOnboardingTemplateDocuments documents : documentsList) {
+			    		VendorOnboardingTemplateDocumentDTO docsDTO = new VendorOnboardingTemplateDocumentDTO();
+						docsDTO.setDocumentName(documents.getDocumentName());
+						docsDTO.setUploadedFileUrl(documents.getUploadedFileUrl());
+						docsDTO.setUploadedFileName(documents.getUploadedFileName());
+						documentsDTOList.add(docsDTO);
+			    	}
+			    }
+			}
+		    
 			
 			return documentsDTOList;
 		
@@ -491,22 +494,24 @@ public class VendorOnboardRestController {
 			
 			List<TaskDTO> tasksListDTO = new ArrayList<>();
 			VendorOnboarding vendorOnboarding = vendorOnboardService.getVendorOnboardingByOrgRelationId(orgRelationId);
-			OrgLocations vendorOrgLocations = vendorOnboarding.getVendorLocationId();
-			User vendorUser = vendorOnboarding.getSpocUserId();
-			List<Tasks> tasksList = taskService.getTaskByAssignedUserIdAndOrgLocationIdAndVendorOnboardingId(vendorOrgLocations.getId(), vendorUser.getId(), vendorOnboarding.getId());
-			if(tasksList != null && tasksList.size() > 0) {
-				for(Tasks tasks : tasksList) {
-					TaskDTO taskDTO = new TaskDTO();
-					taskDTO.setId(tasks.getId());
-					taskDTO.setSubject(tasks.getSubject());
-					taskDTO.setPriority(tasks.getPriority());
-					taskDTO.setTaskRepeat(tasks.getTaskRepeat());
-					taskDTO.setVendorTaskDateStr(tasks.getVendorTaskDateStr());
-					taskDTO.setAssignedName(tasks.getAssignedName());
-					taskDTO.setTaskStatus(tasks.getTaskStatus());
-					tasksListDTO.add(taskDTO);
+			if(vendorOnboarding != null) {
+				OrgLocations vendorOrgLocations = vendorOnboarding.getVendorLocationId();
+				User vendorUser = vendorOnboarding.getSpocUserId();
+				List<Tasks> tasksList = taskService.getTaskByAssignedUserIdAndOrgLocationIdAndVendorOnboardingId(vendorOrgLocations.getId(), vendorUser.getId(), vendorOnboarding.getId());
+				if(tasksList != null && tasksList.size() > 0) {
+					for(Tasks tasks : tasksList) {
+						TaskDTO taskDTO = new TaskDTO();
+						taskDTO.setId(tasks.getId());
+						taskDTO.setSubject(tasks.getSubject());
+						taskDTO.setPriority(tasks.getPriority());
+						taskDTO.setTaskRepeat(tasks.getTaskRepeat());
+						taskDTO.setVendorTaskDateStr(tasks.getVendorTaskDateStr());
+						taskDTO.setAssignedName(tasks.getAssignedName());
+						taskDTO.setTaskStatus(tasks.getTaskStatus());
+						tasksListDTO.add(taskDTO);
+					}
+					
 				}
-				
 			}
 			return tasksListDTO;
 		}

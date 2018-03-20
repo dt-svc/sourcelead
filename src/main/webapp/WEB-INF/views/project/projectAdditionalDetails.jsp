@@ -74,7 +74,7 @@
 		<div class="projQueCta">
 			<h2>5. Team Size</h2>
 			<div class="projQueCtaInn wid50">
-				<input type="text" id="teamSize" name="teamSize" class="form-control" data-validation-optional="true" data-validation="validate_int" field-name="Team Size" />
+				<input type="text" id="teamSize" name="teamSize" class="form-control" data-validation-optional="true" data-validation="validate_int validate_length length1-8" field-name="Team Size" />
 			</div>
 		</div>	
 		<div class="projQueCta">

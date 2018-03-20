@@ -95,12 +95,11 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception{
 		Session session = this.sessionFactory.getCurrentSession();	
-		String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate candidate left join fetch candidate.consultantUser left join fetch rs.sourceSubmission left join fetch rs.candidateResumes   where rs.id = :submissionId";
+		String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.requirement.parentRequirement left join fetch rs.candidate candidate left join fetch candidate.consultantUser left join fetch rs.sourceSubmission left join fetch rs.candidateResumes   where rs.id = :submissionId";
 		List<RequirementSubmission>  submission = session.createQuery(query).setLong( "submissionId", submissionId).list();
 		logger.info("RequirementSubmission loaded successfully !!!");
 		return submission.get(0);
 	}
-	
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -2220,7 +2219,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 
 			Session session = this.sessionFactory.getCurrentSession();
 			boolean flag = false;
-			String query ="from RequirementSubmission submission left join fetch submission.candidate left join fetch submission.candidateResumes where submission.candidate.id = :candidateId and submission.requirement.id = :requirementId  ";
+			String query ="from RequirementSubmission submission where submission.candidate.id = :candidateId and submission.requirement.id = :requirementId  ";
 			List<CandidateEducation> educationList = session.createQuery(query).setLong("candidateId", candidateId).setLong("requirementId", requirementId).list();
 			if(educationList !=null && educationList.size() >0){
 				flag = true;
@@ -2603,7 +2602,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	            	
 	            }
 	    		
-	    		Query countQuery = session.createQuery(fromQuryCount);
+	    		Query countQuery = session.createQuery(fromQuryCount+" "+whereCondition+" "+query1+"");
 
 	    		for (String str : countQuery.getNamedParameters())
 	            {

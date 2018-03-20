@@ -65,7 +65,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
              </div>
             <div class="form-group">
               <label class="col-md-3">Bill Id<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9">
+              <div class="col-md-9" id="invoiceIdDiv" onkeyup="validateBillId();">
                 <input class="form-control" id="invoiceId" name="invoiceId" placeholder="Bill Id" type="text" data-validation="required" field-name="Bill Id">
               </div>
             </div>
@@ -1187,6 +1187,40 @@ function calculateTaxDiscount(){
 	}
 </script>
 
+<script type="text/javascript">
+ function validateBillId() {
+	 var invoiceId = document.getElementById("invoiceId").value; 
+	
+	 if(invoiceId != null && invoiceId != ""){
+		 $("#saveInvoice").attr("disabled", "disabled");
+		 $("#sendInvoice").attr("disabled", "disabled");
+		
+         //$("#create_user" ).addClass('button').val('Processing..');
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateInvoiceId?"+tokenParamName+"="+tokenValue+"&invoiceId="+invoiceId, 
+		        success: function(data) {
+		        	 if(data == true){
+		        		  $('#invoiceIdDiv').find('p.jquery_form_error_message').remove();
+						  $("input#invoiceId").after("<p class='jquery_form_error_message'>"+invoiceId+" is Already Existed</span>");
+						  document.getElementById("invoiceId").setAttribute('record-exist','yes');
+						  document.getElementById("invoiceId").setAttribute('record-exist-errorMsg',invoiceId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#invoiceId').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#invoiceIdDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#saveInvoice" ).addClass('us-btn').val('Save');
+                         $("#saveInvoice").removeAttr("disabled");
+                         $("#sendInvoice" ).addClass('us-btn').val('Send');
+                         $("#sendInvoice").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>  
+
+
 <script>
 function saveBill(saveType){
          
@@ -1357,7 +1391,14 @@ function toDate(selector) {
 		        	
 		        	$("#savedInvoiceId").val(json['id']); 
 		        	
-		        	
+		        	var test = json['invoiceParentId'];
+		        	if(json['invoiceStatus'] == "Rejected" && test != null){
+			   			 document.getElementById("sendInvoice").style.display="none";
+			   			 document.getElementById("saveInvoice").style.display="none";
+			       	}else{
+			       		document.getElementById("sendInvoice").style.display="inline-block";
+			   			document.getElementById("saveInvoice").style.display="inline-block";
+			       	}
 		        	
 		        } 
     		});
@@ -1372,6 +1413,10 @@ $(document).ready(function(){
 	}else{
 		getVendors();
 // 		getProjectsList();
+		$("#invoiceId").val("");
+		$("#paymentFrequency").val("");
+		$("#paymentFrequency").trigger("chosen:updated");
+		$("#dueDate").val("");
 	}
 	
 	
@@ -1688,10 +1733,16 @@ function maskme(){
     $(".inline_field").mask("Hhh:Mm"); 
 	
     $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
-    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
-        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
-            event.preventDefault();
-        }
+    	
+    	var charCode = (evt.which) ? evt.which : event.keyCode
+   	         if (charCode > 31 && (charCode < 48 || charCode > 57))
+   	            return false;
+   	         return true;
+   	         
+//     $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+//         if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+//             event.preventDefault();
+//         }
     });
 }
 </script>

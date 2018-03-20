@@ -176,6 +176,12 @@ public class Constants {
 	public static final String ORGREQUEST_EMAIL = "orgRequestEmail";
 	public static final String ORGREQUEST_NOTIFICATION = "orgRequestNotification";
 	
+	public static final String SOURCLEAD_TICKET_EMAIL = "sourceleadTicketEmail";
+	public static final String SOURCLEAD_TICKET_NOTIFICATION = "sourceleadTicketNotification";
+	
+	public static final String ORGDEMO_EMAIL = "orgDemoEmail";
+	public static final String ORGDEMO_NOTIFICATION = "orgDemoNotification";
+	
 	public static final String ENTITY_TYPE_EMAIL = "Email";
 	public static final String ENTITY_TYPE_NOTIFICATION = "Notification";
 	public static final String ENTITY_TYPE_TEMPLATE = "Notification";
@@ -233,6 +239,7 @@ public class Constants {
 	public static final String SOW_CONTRACT_FINALIZED = "SOWFinalizeEmail";
 	public static final String SOW_FINALIZED_NOTIFICATION = "SowFinalizedNotification";
 	public static final String NDA_NSA_CONTRACT_FINALIZED = "NDAOrNSAFinalizeEmail";
+	public static final String NDA_NSA_CONTRACT_FINALIZED_NOTIFICATION = "NDAOrNSAFinalizeNotification";
 	public static final String APPLICANT_ACCEPTMAILTO_INTERVIEW_CREATOR = "ApplicantAcceptMailToInterviewCreator";
 	public static final String APPLICANT_REJECT_MAILTO_INTERVIEW_CREATOR = "ApplicantRejectMailToInterviewCreator";
 	public static final String APPLICANT_TENTATIVE_MAILTO_INTERVIEWCREATOR = "ApplicantTentativeMailToInterviewCreator";
@@ -423,6 +430,9 @@ public class Constants {
 	public static final String TimeSheet = "TimeSheet";
 	public static final String TimeSheetApproval = "TimeSheetApproval";
 	public static final String OrgSettings = "OrgSettings";
+	public static final String Blogs = "Blogs";
+	public static final String UserManuals = "UserManuals";
+	public static final String Support = "Support";
 	public static final String BackOffice = "BackOffice";
 	public static final String Finance = "Finance";
 	public static final String AssetManagement = "AssetManagement";
@@ -889,7 +899,8 @@ public class Constants {
 	public static final String JOB_ENTITY = "JB";
 	public static final String PROJECT_ENTITY = "PJ";
 	public static final String EXPENSES_ENTITY = "EP";
-	  
+	public static final String TICKET_ENTITY = "ST-";
+	
 	public static final String OLD_VALUE_TAG_INITIATION = "<span class='textline-throughold'>";
 	public static final String OLD_VALUE_TAG_END = "</span>";
 	public static final String NEW_VALUE_TAG_INITIATION = "<span class='textline-updated'>";
@@ -1039,5 +1050,16 @@ public class Constants {
 	public static final String[] TOP_TAKERS_LEAVE_HEADERS = { "Emp id", "Employee Name","Email id"," Leave Type", "Duration ", "No. of Days", "No. of Extra Days","Balance Leaves"}; 
 	public static final String LEAVE_DATA =  "Leaves";
 	
+
+	public static final String ORG_REQUEST_FILTER_TODAY = "Today";
+	public static final String ORG_REQUEST_FILTER_ONE_WEEK_AGO = "1 Week Ago";
+	public static final String ORG_REQUEST_FILTER_TWO_WEEK_AGO = "2 Weeks Ago";
+	public static final String ORG_REQUEST_FILTER_ONE_MONTH_AGO = "1 month ago";
+	public static final String ORG_REQUEST_FILTER_THREE_MONTHS_AGO = "3 months ago";
+	
+	
+
+	public static final String[] UNSUBSCRIPTION_TABID_LISTED = {"3","4","8","16","20","23","30" };
+
 
 }

@@ -98,7 +98,7 @@ public class CampaignController {
 			
 	}
 	
-	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
+	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_JOB_CAMPAIGN')")
 	@RequestMapping(value = "/hotListCampaigns")
  	public ModelAndView hotListCampaigns(HttpServletRequest request,@RequestParam(value="mailType", required=false) String mailType) throws Exception {
 		    ModelAndView model = new ModelAndView();
@@ -120,7 +120,7 @@ public class CampaignController {
  			return model;
  	}
 	
-	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
+	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_JOB_CAMPAIGN')")
 	@RequestMapping(value = "/joblistMail")
  	public ModelAndView joblistMail(HttpServletRequest request) throws Exception{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");

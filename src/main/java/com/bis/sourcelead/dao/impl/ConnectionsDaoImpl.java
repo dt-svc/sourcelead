@@ -73,7 +73,7 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (connections != null) {
-				String query = "select count(connections) from Connections connections where connections.fromUser.id = :fromUser and connections.toUser.id = :toUser and connections.connectionStatus = :connectionStatus";
+				String query = "select count(connections) from Connections connections where (connections.fromUser.id = :fromUser and connections.toUser.id = :toUser and connections.connectionStatus = :connectionStatus) or (connections.fromUser.id = :toUser and connections.toUser.id = :fromUser and connections.connectionStatus = :connectionStatus)";
 				Long count = (Long) session.createQuery(query).setLong("fromUser", connections.getFromUser().getId()).setLong("toUser", connections.getToUser().getId()).setString("connectionStatus", connections.getConnectionStatus().toString()).uniqueResult();
 				if(count == 0) {
 					session.saveOrUpdate(connections);
@@ -162,18 +162,6 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 
 	@Override
 	@Transactional
-	public int acceptConnection(User user, User toUser, String status) {
-		logger.debug("deleteConnection");
-		Session session = this.sessionFactory.getCurrentSession();
-		Query qry = null;
-		String queryString="UPDATE Connections connections SET connections.connectionStatus = :status, connections.createdDate = :createdDate WHERE connections.fromUser.id = :fromUid and connections.toUser.id = :toUid";
-		qry = session.createQuery(queryString).setLong("fromUid", toUser.getId()).setLong("toUid", user.getId()).setTimestamp("createdDate", new Timestamp(new Date().getTime())).setString("status", ConnectionStatus.getNameByValue(status).toString());
-    	int i = qry.executeUpdate();
-    	return i;
-	}
-
-	@Override
-	@Transactional
 	public Long getConnectionReceivedCount(Long id) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select count(connections) from Connections connections where connections.toUser.id = :userId and connections.connectionStatus = :connectionStatus";
@@ -206,14 +194,18 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 	public Connections updateConnection(Connections connections) throws Exception {
 		logger.debug("updateConnection");
 		Session session = this.sessionFactory.getCurrentSession();
+		String checkConnectedStatus = "select count(c) from Connections c where (c.fromUser.id = :fromUid and c.toUser.id = :toUid and c.connectionStatus = :status) or (c.fromUser.id = :toUid and c.toUser.id = :fromUid and c.connectionStatus = :status)";
+		Long count = (Long) session.createQuery(checkConnectedStatus).setLong("fromUid", connections.getFromUser().getId()).setLong("toUid", connections.getToUser().getId()).setString("status", connections.getConnectionStatus().toString()).uniqueResult();
+		if(count==0) {
 		try {
-			if (connections != null) {
-				session.update(connections);
+				if (connections != null) {
+					session.update(connections);
+				}
+				logger.debug("connections updated Successfully");
+			} catch (Exception exception) {
+				StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "CONNECTIONS"));
+				throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
 			}
-			logger.debug("connections updated Successfully");
-		} catch (Exception exception) {
-			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "CONNECTIONS"));
-			throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
 		}
 		return connections;
 	}

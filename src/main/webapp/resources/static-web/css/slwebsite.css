@@ -268,11 +268,11 @@ text-align: center;
 	font-size: 16px; padding: 5px 0 0 0px; position: relative; counter-increment: custom;
 }
 .listpositionInside-text li:before {
-	content: counter(custom) ""; padding-right: 15px; font-size: 12px; position: relative; top: -1px;
+	content: counter(custom) ""; padding-right: 15px; font-size: 12px; position: relative; top: -1px; padding-left: 6px;
 }
 .listpositionInside-text li:after {
 	position: absolute; content: "\f1db"; font-family: fontawesome; font-size: 22px; color: #656565;
-	left: -6px; top: 2px;
+	left: 0px; top: 2px;
 }
 .demovideo-image img {
 	transition: all 0.3s ease-in-out;
@@ -942,10 +942,42 @@ a.btn-demo:hover{
 	line-height: 30px;
 }
 .freeTrialPop {
-	position:fixed; right:-600px; width:550px; height:100%; top:0px; z-index:20000; box-shadow:0px 0px 10px rgba(0,0,0,0.4);
-	background:url(../images/demo-bg.jpg) no-repeat center; background-size:cover; overflow: auto;
-	transition:0.2s all; -webkit-transition:0.2s all; -moz-transition:0.2s all; text-align: center;
-	}
+	position:fixed; right:-700px; height:100%; top:0px; z-index:20000; box-shadow:0px 0px 10px rgba(0,0,0,0.4);
+	overflow: auto; transition:0.2s all; -webkit-transition:0.2s all; -moz-transition:0.2s all; text-align: center;
+	background-color:#ededed; width:675px !important;
+	background:url(../images/demoPageBg.jpg) no-repeat 0 0;
+}
+.freeTrialPop .form-control[readonly]{
+	background-color: #fff;
+}
+.getAdemo .col-md-6 {
+	min-height: 60px;
+}
+.pac-container {
+	z-index: 999999;
+}
+.getDemo .modal-title {
+	background: #ccc8c8; padding: 10px; text-transform: uppercase; color: #333;
+}
+.calendar {
+    background-image:url("../images/calendar.png"); background-repeat:no-repeat; background-position:96% center; background-size:18px;
+ }
+.timeicon {
+    background-image:url("../images/time.png"); background-repeat:no-repeat; background-position:94% center; background-size:18px;
+ }
+ .ui-timepicker-wrapper {
+ z-index: 99999; width: 113px;
+ }
+ .pdRight {
+ padding-right: 5px;
+ }
+ .pdLeft {
+ padding-left: 5px;
+ }
+ .getAdemo p.jquery_form_error_message {
+ 	padding: 5px 0 0 0; margin: 0px 0px; font-size: 11px; text-align: left;
+    font-weight: 400; color: red; line-height: normal;
+ }
 .freeTrialPop.freeTrialPop_a {
 	background:#368ee0;
 	}	
@@ -963,27 +995,30 @@ a.btn-demo:hover{
     padding: 15px 0px 0px 0px;
 }
 .clPop.clPopA {
-    right: 550px;
+    right: 675px;
 }
-.Rdemo img {
+.selectpicker-dropdowndDemo .dropdown-menu {
+	width: 100px;
+}
+Rdemo img {
     width: 78%; display: inline-block; padding: 60px 0px 25px 0px;
 }
 .Rdemo {
     /*padding-bottom: 50px;*/
 	padding: 25px;
 }
-.Rdemo h3 {
+Rdemo h3 {
     padding: 0px 0px; margin: 0px 0px; font-size: 36px; font-weight: 400;
     color: #fff; text-transform: uppercase;
 }
-.Rdemo p {
+Rdemo p {
     padding: 20px 60px 15px; margin: 0px 0px; font-size: 18px; font-weight: 400; color: #fff; line-height: 28px;
 }
-.Rdemo span {
+Rdemo span {
     padding: 15px 50px; margin: 0px 0px; font-size: 16px; font-weight: 400; color: #fff;
     display: block;
 }
-.Rdemo a {
+Rdemo a {
     margin: 0px 0px; font-size: 22px; font-weight: 400; color: #fff; display: block;
 }
 .owl-nav {
@@ -1019,20 +1054,26 @@ a.btn-demo:hover{
 .pricingTable table h4 {
 	margin: 10px 0; font-size: 16px; color: #333;
 }
-.pricingTable table .widgetHdr p {
-	color: #707070; margin-top: 0px;
-}
 .pricingTable table p {
-	margin-top: 7px;
+	margin-bottom: 0;
 }
+.pricingTable table .widgetHdr p {
+	color: #707070; margin-top: 0px; margin-bottom: 10px; font-size: 15px;
+}
+/*.pricingTable table p:nth-child(1n+2) {
+	margin-top: 0px;
+}*/
 .pricingTable table .btn {
 	border-radius: 2px; padding: 5px 15px;
+}
+.pricingTable .fa-times-circle-o, .pricingTable .fa-check-circle-o  {
+	font-size: 20px; margin-top: 10px;
 }
 .modal.enrollBasic {
 	display: none;
 }
 .freeTrialfields .form-control {
-	border-radius: 2px; border: 1px solid #ccc; box-shadow: none;
+	border-radius: 2px; border: 1px solid #ccc !important; box-shadow: none;
 }
 .emptyBannerpage {
 	margin-top: 85px; border-top: 1px solid #e0e0e0; background-color: #f5f5f5; padding: 15px 0 0 0;
@@ -1077,14 +1118,14 @@ a.btn-demo:hover{
     position: absolute; opacity: 0; cursor: pointer;
 }
 .checkmark {
-    position: absolute; top: 0; left: 0; height: 20px; width: 20px;
-    background-color: #c9c9c9; border-radius:2px;
+    position: absolute; top: 0; left: 0; height: 18px; width:18px;
+    background-color: #fff; border-radius:2px; border: 2px solid #bdbdbd;
 }
 .checkbox-area:hover input ~ .checkmark {
-    background-color: #ccc;
+    background-color: #f1f1f1;
 }
 .checkbox-area input:checked ~ .checkmark {
-    background-color: #333;
+    background-color: #fff;
 }
 .checkmark:after {
     content: ""; position: absolute; display: none;
@@ -1092,22 +1133,158 @@ a.btn-demo:hover{
 .checkbox-area input:checked ~ .checkmark:after {
     display: block;
 }
-.checkbox-area .checkmark:after {    left: 6px;
-    top: 2px; width: 8px; height: 13px; border: solid white;
-    border-width: 0 3px 3px 0; -webkit-transform: rotate(45deg);
-    -ms-transform: rotate(45deg); transform: rotate(45deg);
+.checkbox-area .checkmark:after {
+    border-width: 0 3px 3px 0;
+	left: 4px; top: 0px; width: 7px; height: 10px; border: solid  #a21e23;
+    border-width: 0 3px 3px 0; -webkit-transform: rotate(45deg); -ms-transform: rotate(45deg); transform: rotate(45deg);
 }
 .getDemo.Rdemo span {
     padding: 0px;
 }
 .getDemo.Rdemo .btn-danger {
-	border-radius: 2px;padding: 5px 25px; margin: 0 auto; display: block;
+	border-radius: 2px;padding: 8px 35px; margin: 0 auto; display: block;  border-radius: 3px; font-size: 18px;
 }
 /* checkbox styles */
 .getdemo-mask {
 	background:rgba(0,0,0,0.6); position: fixed; z-index: 999; top: 0; left: 0;
 	width: 100%; height: 100%; display: none;
 }
+.pricetable-th {
+	margin: -15px;
+}
+.pricetable-header {
+	color: #333; font-size: 20px; padding:10px 15px 0 10px; font-weight: 500; text-transform: uppercase; min-width: 150px;
+}
+.pricetable-header0 {
+	background-color: #F5F5F5;
+}
+.pricetable-header0 span, .pricetable-header1 span, .pricetable-header2 span, .pricetable-header3 span {
+	font-size: 20px;
+}
+
+.pricetable-header1 {
+	background-color: #EEEEEE;
+}
+.pricetable-header2 {
+	background-color: #E0E0E0;
+}
+.pricetable-header3 {
+	background-color: #BDBDBD;
+}
+.pricetable-inner span {
+	font-size: 18px;
+}
+.pricetable-inner {
+ 	padding: 5px 0; font-size: 18px;
+}
+.widgetHdr p {
+	
+}
+a.enrollBtn {
+	text-transform: uppercase; font-size: 18px; font-weight: 500;
+}
+.writer-img {
+	width: 50px; height: 50px; float: left; margin-right: 5px;
+}
+.writer-img img {
+	max-height: 100%; border-radius: 50%; margin-right: 10px; text-align: center;
+}
+.writtenBy h4 { 
+	font-size: 14px; margin-top: 0; margin-bottom: 5px;
+}
+.writtenBy h5 {
+	text-transform: uppercase; font-size: 13px;
+}
+.writtenBy p {
+	color: #545454;
+}
+.writtenBy .writer {
+	padding-bottom: 15px;
+}
+.writtenBy .published, .writtenBy .category, .writtenBy .sharelinks {
+	padding: 10px 0;
+}
+.sharelinks ul li { 
+	padding: 0; float: left; margin: 0 5px; border-radius: 3px; text-align: center;
+	position: relative; z-index: 999;
+}
+.sharelinks ul li div.count-social{
+	display: block; transition: all 0.3s; position: absolute; top: 0px; color: #a21e23; font-weight: 600;
+}
+.sharelinks ul li:hover div.count-social{
+	position: absolute; top: -22px; z-index: 1; display: block;
+}
+.sharelinks ul li a {
+	text-align: center; color: #fff; padding: 6px 15px; position: relative; z-index: 9;
+}
+.sharelinks ul li a:hover{
+	color: #333;
+}
+.sharelinks ul li:first-child a {
+	background-color: #3b5998; 
+}
+.sharelinks ul li:first-child + li a {
+	background-color: #55acee; 
+}
+.sharelinks ul li:first-child + li + li a {
+	background-color: #007bb5; 
+}
+.sharelinks ul li:first-child + li + li + li a {
+	background-color: #dd4b39; 
+}
+.sharelinks ul li a i {
+	padding: 0;
+}
+.subscribe input.form-control {
+	width: 70.8%; float: left; border-radius: 3px 0 0  3px !important;
+}
+.subscribe .btn {
+	border-radius: 0 3px 3px 0 !important;
+}
+.subscribe.subscribe-scroll {
+	position: fixed; left: 7px; top: 75px; width: 35%;
+	/*box-shadow: 0 1px 8px 0 rgba(0,0,0,0.2),0 3px 4px 0 rgba(0,0,0,0.14),0 3px 3px -2px rgba(0,0,0,0.12); */z-index: 999;
+}
+.subscribe.subscribe-scroll input.form-control {
+	width: 79.8%; float: left;
+}
+.subscribe {
+    padding: 20px 15px !important; clear: both; display: inline-block; width: 100%; background-color: #ddd;
+    border-radius: 0 !important; float: left; position: relative;
+}
+.categoriesPost, .recentPost {
+	position: relative;
+}
+.categoriesPost a, .recentPost a {
+	position: relative; padding-left: 20px !important; padding-right: 40px !important;
+}
+.categoriesPost a i, .recentPost a i {
+	position: absolute; left: 5px; top: 8px;
+}
+.categoriesPost .categories-count {
+	position: absolute; right: 0; top: 4px; color: #a21e23; background-color: #f2f2f2; padding: 2px 5px;
+}
+/* Help message styles */
+.cotentareaHelpmessage {
+	padding: 50px 20px; background-color: #fff;
+}
+.cotentareaHelpmessage .col-md-2 {
+	width: 20%;
+}
+.cotentareaHelpmessage .col-md-10 {
+	width: 80%;
+}
+.addFields .col-md-4 {
+	min-height: 80px;
+}
+.btnsStyles {
+	border-radius: 3px;
+}
+.description-textarea .nicEdit-main {
+	min-height: 125px !important;
+}
+/* Help message styles */
+
 /* Mobile Nav styles */
 #mobileNav {
 	display: none; position: absolute; right: 25px; top: 25px; cursor: pointer; z-index: 5;

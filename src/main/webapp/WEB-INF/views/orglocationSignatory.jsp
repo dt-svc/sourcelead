@@ -209,7 +209,7 @@
 // 	  if (document.getElementById('legalSigner').checked) {
 // 		  $("#legalUserFormDiv").empty();
 // 	  }else{
-		  loadLeagelSignerForm();
+		  
 // 	  }
   }
   </script>
@@ -288,7 +288,12 @@ function getAssociatesForSignatory(){
 		output = output + "<option value=''>-- Select Associate --</option>";
      	   for(var i=0; i<data.length;i++){
      		  var opt = data[i];
- 				output = output + "<option value='" +opt.userId+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+     		  if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
+     			 output = output + "<option value='" +opt.userId+ "'>"+opt.firstName+" "+opt.lastName+"</option>"; 
+     		  }else{
+     			 output = output + "<option value='" +opt.userId+ "'>"+opt.firstName+"</option>";
+     		  }
+ 				
      	   }
      	   $("#signatoryAssociate").empty();
      	  $("#signatoryAssociate").append(output);
@@ -422,6 +427,8 @@ function saveSignatory(){
 		         result += '    <td>';
 		         if(report.authorizedAmount != null && report.authorizedAmount != '' && report.authorizedAmount != 'undefined'){
 	        		 result += '        <div title="'+report.authorizedAmount+'" class="tblminwidth-75">'+report.authorizedAmount+'</div>'; 
+		         }else{
+		        	 result += '        <div class="tblminwidth-75"> --- </div>';
 		         }
 		         result += '    </td>';
 		         result += '    <td>';
@@ -469,12 +476,15 @@ function saveSignatory(){
   function addSignatoryDiv(){
 	  $(".signatoryFormDiv").fadeIn();
 	  $(".sideMask").fadeIn();
+	  loadLeagelSignerForm();
   }
   function signatoryFormDiv(){
 	  $(".signatoryFormDiv").fadeOut();
 	  $(".sideMask").fadeOut();  
+	  $('#signatory_form')[0].reset();
+	  $(".chosen-select").trigger("chosen:updated");
+	  $('signatory_form').validate().resetForm();
   }
-  
   </script>
   
   <script>

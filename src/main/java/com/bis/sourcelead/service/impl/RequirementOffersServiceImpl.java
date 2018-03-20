@@ -530,7 +530,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             String url = sourceleadUrl;
             
             String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
-           notificationScenario.setBody(notificationbody);
+            notificationScenario.setBody(notificationbody);
 
 
             // construct HTML template using required data
@@ -674,7 +674,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             String url = sourceleadUrl;
             
             String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getSubject(), globalVarsMap);
-            notificationScenario.setSubject(notificationbody);
+            notificationScenario.setBody(notificationbody);
 
 
             // construct HTML template using required data
@@ -1794,6 +1794,12 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
        String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=APPLICANTS&requirementUUID="+requirementOffers.getSubmissionId().getRequirement().getRequirementUUID()+"&candidateUUID="+requirementOffers.getSubmissionId().getCandidate().getCandidateUUID()+"&submissionId="+requirementOffers.getSubmissionId().getId()).toString();	 
        emailScenerioUtil.sendNotification(actionLink, touser, touser , orgloc, notificationScenario);
 		
+	}
+
+
+	@Override
+	public RequirementOffers getOnboardRequirementOfferId(Long offerId) throws Exception {
+		return requirementOffersDao.getOnboardRequirementOfferId(offerId);
 	}
 
 }

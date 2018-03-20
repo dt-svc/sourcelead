@@ -37,6 +37,7 @@ import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.rest.MailBoxRestController;
@@ -44,6 +45,7 @@ import com.bis.sourcelead.service.CampaignService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.HotListEmailCampaignService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.SourceleadSignatureService;
 import com.bis.sourcelead.service.UserMailBoxService;
@@ -100,6 +102,9 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private RequirementLocationsService requirementLocationsService;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -226,7 +231,8 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		String UUID = SourceLeadRandomCodeHelper.generateUUID();
 		signature = sourceleadSignatureService.buildSignature(user, orgLocation);
 		String str =  getHotListCandidatesTable(hotlistedCandidates,hotListEmailCampaignDTO,signature);
-		String table = str.replace("\"","\'");
+//		String table = str.replace("\"","\'");
+		String  table = str.replaceAll("\\s+"," ");
 		JobListEmailCampaignDTO jobListEmailCampaignDTO = new JobListEmailCampaignDTO();
 		 jobListEmailCampaignDTO.setSenderIdentity(hotListEmailCampaignDTO.getSenderIdentity());
 		 jobListEmailCampaignDTO.setSubject(hotListEmailCampaignDTO.getSubject());
@@ -743,8 +749,9 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 			 }
 			String signature = sourceleadSignatureService.buildSignature(user, orgLocation);
 			 String UUID = SourceLeadRandomCodeHelper.generateUUID();
-			 String table =  getJobListCampaignsTable(campaignJobs,UUID,jobListEmailCampaignDTO,signature); 
+			 String str =  getJobListCampaignsTable(campaignJobs,UUID,jobListEmailCampaignDTO,signature); 
 //			 String table = str.replace("\"","\'");
+			 String  table = str.replaceAll("\\s+"," ");
 			 String createCampaignRes = campaignUtil.createCampaign(jobListEmailCampaignDTO, table,otherReciListId);
 			 if (createCampaignRes != null) {
 					JSONObject jObject = new JSONObject(createCampaignRes);
@@ -928,6 +935,16 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 			 if(j<=10){
 				 
 				 Requirement requirement = requirementService.getRequirementByRequirementId(jobId);
+				 List<RequirementLocations> reqLoc = requirementLocationsService.getRequirementLocationsListByRequirementId(jobId);
+				 StringBuilder location = new StringBuilder();
+				 for (RequirementLocations requirementLocations : reqLoc) {
+					 if(requirement.getId().longValue() == requirementLocations.getRequirementId().getId().longValue()) {
+						 if(!isNullOrEmpty(requirementLocations.getCity())){
+							 location = location.append(requirementLocations.getCity());
+						 }
+					 }
+				}
+				 
 				 StringBuilder jobTitle = new StringBuilder();
 				 if(!isNullOrEmpty(requirement.getJobId())){
 					 jobTitle = jobTitle.append(requirement.getJobId()).append("-").append(requirement.getJobTitle());
@@ -936,10 +953,10 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 				 }
 				 
 				 
-				 StringBuilder location = new StringBuilder();
-				 if(!isNullOrEmpty(requirement.getCity())){
-					 location = location.append(requirement.getCity());
-				 }
+//				 StringBuilder location = new StringBuilder();
+//				 if(!isNullOrEmpty(reqLoc.getCity())){
+//					 location = location.append(reqLoc.getCity());
+//				 }
 				 
 				 StringBuilder employmentType = new StringBuilder();
 				 if(!isNullOrEmpty(requirement.getJobType())){

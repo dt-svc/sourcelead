@@ -7,12 +7,12 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <link href="/resources/css/requirement-summary.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
- 
 <script>
 $(document).ready(function() {
 	 var requirementId = '${requirementId}';
 	 var submissionId = '${submissionId}';
 	 var candidateId = '${candidateId}';
+	 var submissionStatus='${submissionStatus}'
 	 var type = '${type}';
 	 if(type != null && type != '' && type != 'undefined'){
 		 sideBar(requirementId,type);
@@ -21,8 +21,14 @@ $(document).ready(function() {
  if(submissionId != null && submissionId != '' && submissionId != 'undefined' && candidateId != null && candidateId != '' && candidateId != 'undefined'){
 	 requirementPipeline(requirementId,type);
 	 }
- if(submissionId != null && submissionId != '' && submissionId != 'undefined' && requirementId != null && requirementId != '' && requirementId != 'undefined'){
-		 requirementPipeline(requirementId,type);
+  else if(submissionStatus == 'all'){
+	 $("#detailsTab").removeClass("current");
+	 $('li[name=applicantNotification]').addClass("current");
+	 requirementStatusBar(requirementId);
+	 requirementPipeline(requirementId,"all");
+	 }  
+ else if(submissionId != null && submissionId != '' && submissionId != 'undefined' && requirementId != null && requirementId != '' && requirementId != 'undefined'){
+	 requirementPipeline(requirementId,type);
 		 }
 });	
 </script>
@@ -728,7 +734,7 @@ function requirementPipeline(requirementId,submissionType){
 
 <script>
 function requirementPipelineList(url, requirementId, submissionType){
-	  var clientSubmissions = '${clientSubmissions}';
+	var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	  $("#status-data").removeAttr("style");
@@ -1179,7 +1185,7 @@ function assignedMemberList(requirementId){
 	var url = sourceleadUrl+"/getRequirementAssignedListByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId;
 	
 		var result = '';
-		result = result +'     <div class="clearfix mt5 mb require_wrap_table datatable_filter">';
+		result = result +'     <div class="clearfix mt5 mb project_wrap_table datatable_filter dataTablesPaginate">';
 		  /* result = result + " <div class='remove_search searchCustom'>";
 			result = result
 					+ " <input type='text' placeholder='Search' id='assignedToDataTableSearch'/>";

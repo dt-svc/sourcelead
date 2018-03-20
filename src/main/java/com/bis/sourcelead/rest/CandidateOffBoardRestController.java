@@ -29,12 +29,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateOffBoardingDTO;
+import com.bis.sourcelead.dto.CandidateOnBoardingDTO;
 import com.bis.sourcelead.dto.CandidatedOffboardingDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.OffBoardingDocumentsDTO;
 import com.bis.sourcelead.dto.OffBoardingTemplateDTO;
 import com.bis.sourcelead.dto.OffboardTasksDTO;
 import com.bis.sourcelead.dto.OffboardingCandidateSetpsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -785,62 +787,21 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		 
 		 
 		 @RequestMapping(value = "/getOffboardCandidateList")
-		 public List<CandidateOffBoardingDTO> getOffboardCandidateList(@RequestParam("locationCode") String locationCode) throws Exception {
+		 public ResponseList<CandidateOffBoardingDTO> getOffboardCandidateList(CandidateOffBoardingDTO candidateOffBoardingDTO,@RequestParam("locationCode") String locationCode) throws Exception {
 
 			OrgLocations loginOrgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
-			//SimpleDateFormat formatter = loginOrgLocation.getLocFullFormDateFormatter();
-			List<CandidateOffBoarding> candidateOffBoardingList = candidateOffBoardingService.getCandidateOffBoardingListByOrgLocationId(loginOrgLocation.getId());
-			List<CandidateOffBoardingDTO> offBoardingList = new ArrayList<CandidateOffBoardingDTO>();
 			
-			if(null != candidateOffBoardingList && candidateOffBoardingList.size() > 0){
-				for(CandidateOffBoarding candidateOffBoarding : candidateOffBoardingList){
-					
-					CandidateOffBoardingDTO candidateOffBoardingDTO=new CandidateOffBoardingDTO();
-					
-					if(null != candidateOffBoarding.getDateOfJoin()){
-						candidateOffBoardingDTO.setDateOfJoinStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),candidateOffBoarding.getDateOfJoin()));
-					}
-					
-					if(null != candidateOffBoarding.getEffectiveDate()){
-						candidateOffBoardingDTO.setEffectiveDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),candidateOffBoarding.getEffectiveDate()));
-					}
-					
-					if(null != candidateOffBoarding.getEndDate()){
-						candidateOffBoardingDTO.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),candidateOffBoarding.getEndDate()));
-					}
-					
-					if(null != candidateOffBoarding.getOffboardUUID()){
-						candidateOffBoardingDTO.setOffboardUUID(candidateOffBoarding.getOffboardUUID());
-					}
-					
-					if(null != candidateOffBoarding.getOffboardUUID()){
-						candidateOffBoardingDTO.setOffboardUUID(candidateOffBoarding.getOffboardUUID());
-					}
-					
-					if(null != candidateOffBoarding.getOffBoardStatus()){
-						candidateOffBoardingDTO.setOffBoardStatus(candidateOffBoarding.getOffBoardStatus());
-					}
-					
-					if(null != candidateOffBoarding.getOffboardSubmitted()){
-						candidateOffBoardingDTO.setOffboardSubmitted(candidateOffBoarding.getOffboardSubmitted());
-					}
-					
-					
-					StringBuilder candidateName = new StringBuilder();
-					
-					if(null != candidateOffBoarding.getLastName()){
-						candidateOffBoardingDTO.setCandidateName(candidateName.append(candidateOffBoarding.getFirstName()).append(" ").append(candidateOffBoarding.getLastName()).toString());
-					}else{
-						candidateOffBoardingDTO.setCandidateName(candidateName.append(candidateOffBoarding.getFirstName()).toString());
-					}
-					
-					
-					offBoardingList.add(candidateOffBoardingDTO);
-					
-				}
+			String[] tableColumns = {"firstName", "endDate", "effectiveDate","offboardStage","offboardStatus"};
+		    int sortColumnIndex = 1; //by default sorting using updated date
+			String sortColumnOrder = "desc"; //by default descending order
+			if(candidateOffBoardingDTO.getOrder() != null && !candidateOffBoardingDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(candidateOffBoardingDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = candidateOffBoardingDTO.getOrder().get(0).get("dir");
 			}
-			
-			return offBoardingList;
+			candidateOffBoardingDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			candidateOffBoardingDTO.setSortOrder(sortColumnOrder);
+			ResponseList<CandidateOffBoardingDTO> candidateOffBoardingList = candidateOffBoardingService.getCandidateOffBoardingList(candidateOffBoardingDTO,loginOrgLocation);
+			return candidateOffBoardingList;
 		 }
 		 
 		 

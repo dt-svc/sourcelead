@@ -309,9 +309,9 @@
 		result = result + '</div>';
 
 		result = result + '<div class="clearfix mb10">';
-		result = result + '<div class="col-md-12">';
+		result = result + '<div class="col-md-12" id="emailDivId">';
 		result = result
-				+ '<input type="text" name="email" field-name="Email" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *">';
+				+ '<input type="text" name="email" field-name="Email" id="email" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *" onblur="validateReferenceEmail('+candidateId+');">';
 		result = result + '</div>';
 		result = result + '</div>';
 
@@ -631,9 +631,9 @@
 										result = result
 												+ '<div class="clearfix mb10">';
 										result = result
-												+ '<div class="col-md-12">';
+												+ '<div class="col-md-12" id="emailDivId">';
 										result = result
-												+ '<input type="text" name="email" field-name="Email" value="'+json.email+'" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *">';
+												+ '<input type="text" name="email" id="email" field-name="Email" value="'+json.email+'" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *" onblur="validateReferenceEmail('+candidateId+','+json.id+');">';
 										result = result + '</div>';
 										result = result + '</div>';
 
@@ -755,6 +755,35 @@
 				});
 
 	}
+</script>
+
+<script>
+function validateReferenceEmail(candidateId,referId){
+	if(referId != null && referId != "" && referId != "undefined"){
+		referId = referId;
+	}else{
+		referId = "";
+	}
+	var email = $("#email").val();
+	 $('#emailDivId').find('p.jquery_form_error_message').remove();
+	$.ajax({
+			type : "POST",
+			url : sourceleadUrl + "/validateReferEmail?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&referId="+referId+"&email="+email,
+			success : function(data) {
+				if(data == true){
+	        		  $('#emailDivId').find('p.jquery_form_error_message').remove();
+					  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+					  document.getElementById("email").setAttribute('record-exist','yes');
+					  document.getElementById("email").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
+	        	}
+	        	else{
+	        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+	        		 $('#emailDivId').find('p.jquery_form_error_message').remove(); 
+	        	}
+			},
+		});
+	
+}
 </script>
 
 <!-- If Selected value is Work Related then Designation text box will appear -->

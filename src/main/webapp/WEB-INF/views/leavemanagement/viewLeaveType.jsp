@@ -4,6 +4,11 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 
+  <script src="https://cdn.jsdelivr.net/g/mark.js(jquery.mark.min.js)"></script> 
+  <script src="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.js"></script> 
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/datatables.mark.js/2.0.0/datatables.mark.min.css" type="text/css" media="all" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.min.css" media="all" />
+  
 <script type="text/javascript">
 $(document).ready(function(){
    getLeaveTypesList();
@@ -148,6 +153,7 @@ $(document).ready(function(){
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
+	    	 "mark": true,
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": ""
