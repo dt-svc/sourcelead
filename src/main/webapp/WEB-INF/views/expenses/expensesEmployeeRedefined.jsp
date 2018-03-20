@@ -6,7 +6,7 @@
 <script src="/resources/js/jquery.simplePagination.js"></script>
 
 <input type="hidden" id="tempVar" value="tempVar">
-<input type="hidden" value="${expenseStatus}" id="expenseStatusDivId">
+<input type="hidden" value="${expenseDashBoardStatus}" id="expenseStatusDivId">
 <table id='example' class='display' cellspacing='0' width='100%' >                
 		<thead>                                                                           
 			<tr>                                                                              
@@ -63,7 +63,8 @@ function getTableDataByPageSizeEmployee(){
 function getTableData(pageNo){
 	var startDate = '';
 	var endDate = '';
-	var expenseStatus = $('#expenseStatusDivId').val();
+	 var expenseStatus = '';
+	 expenseStatus = $('#expenseStatusDivId').val();
 	 if(expenseStatus != null && expenseStatus != '' && expenseStatus !='undefined'){
 		  	expenseStatus = expenseStatus.toUpperCase()
 	}else{

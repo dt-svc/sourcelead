@@ -149,10 +149,10 @@ function getExpensesList(dateSearch){
 	var url = '';
     var searchValue = $("#SearchExpensesData").val();
 	searchValue = searchValue ? searchValue : "";
-	
-	var expenseStatus = $('#expenseStatusDivId').val();
+		var expenseStatus = '';
+		 expenseStatus = $('#expenseStatusDivId').val();
 	 if(expenseStatus != null && expenseStatus != '' && expenseStatus !='undefined'){
-		  	expenseStatus = expenseStatus.toUpperCase()
+		  	expenseStatus = expenseStatus.toUpperCase();
 	}else{
 		var expenseStatus = [];
 		$('input:checkbox[name=expenseStatus]:checked').each(function() 

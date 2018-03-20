@@ -57,6 +57,9 @@ public class ExpensesDaoImpl implements ExpensesDao {
 	public ResponseList<Expenses> getAllExpenses(Long masterCandidateId, String expenseStatus, Date startDateUTC, Date endDateUTC,String searchValue,int start,int length,OrgLocations orgloc) throws ParseException{
 		ResponseList<Expenses> response = new ResponseList<>();
 		Map<String, Object> params = new HashMap<String,Object>();
+		if(expenseStatus.startsWith("[")) {
+			expenseStatus = expenseStatus.replace("[", "").replace("]", "");
+		}
 		String[] expStatus = expenseStatus.split(",");
 		String subQuery2 = "";
 		if (Arrays.asList(expStatus).contains("ALL") || StringUtils.isEmpty(expenseStatus)) {

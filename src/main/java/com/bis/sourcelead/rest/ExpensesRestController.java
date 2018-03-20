@@ -128,7 +128,10 @@ public class ExpensesRestController {
 			}
 			elDTO.setStart(start);
 			elDTO.setLength(length);
-			 ResponseList<ExpensesDTO> expenseEmployeeList = getExpensesList( elDTO, request);
+			if(elDTO.getExpenseDashboardStatus() !=null && elDTO.getExpenseDashboardStatus().equalsIgnoreCase("dashboard")) {
+				 model.addObject("expenseDashBoardStatus",elDTO.getExpenseStatus().get(0));
+			}
+			ResponseList<ExpensesDTO> expenseEmployeeList = getExpensesList( elDTO, request);
 		     model.addObject("expensesDTOList",expenseEmployeeList.getData());
 		     model.addObject("sourceleadUrl",sourceleadUrl);
 		     model.addObject("orgLocationDateFormat",orgLoc.getDateFormat().toUpperCase());
@@ -136,11 +139,6 @@ public class ExpensesRestController {
 			 model.addObject("pageCount",elDTO.getPageNo());
 			 model.addObject("pageSize",elDTO.getLength());
 			 model.addObject("searchValue",elDTO.getSearchValue());
-			 if(elDTO.getExpenseDashboardStatus() !=null && elDTO.getExpenseDashboardStatus().equalsIgnoreCase("dashboard")) {
-				 model.addObject("expenseStatus",elDTO.getExpenseStatus().get(0));
-			 }else {
-				 model.addObject("expenseStatus",elDTO.getExpenseStatus());
-			 }
 			 model.setViewName("expenses/expensesEmployeeRedefined");
 			 return model;
 	}
@@ -178,7 +176,9 @@ public class ExpensesRestController {
                         if(pc.getOrgRelationId() != null && pc.getOrgRelationId().getId() != null) {
                         OrgRelations orgRelations = orgRelationsService.getOrgRelationById(pc.getOrgRelationId().getId());
             			expenses.setOrgRelationUUID(orgRelations.getUUID());
-            			expenses.setExpensesRejectedReason(eah.getRejectedReason());
+                        }
+                        if(eah.getRejectedReason() != null && StringUtils.isNotEmpty(eah.getRejectedReason())) {
+                        	expenses.setExpensesRejectedReason(eah.getRejectedReason());
                         }
                     }
                 }

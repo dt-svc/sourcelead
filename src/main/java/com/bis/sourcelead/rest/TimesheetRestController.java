@@ -338,6 +338,9 @@ public class TimesheetRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Map<String, List<WeekDaysDTO>> entriesMap = new LinkedHashMap<>();
+		Float totalHours = 0f;
+		Float billableHours = 0f;
+		Float nonBillableHours = 0f;
 		if(orgLocations !=null) {
 				if(tedDTO != null && tedDTO.getTimeSubFrequencies() != null && !tedDTO.getTimeSubFrequencies().isEmpty()) {
 					for(String key :tedDTO.getTimeSubFrequencies().keySet()) {
