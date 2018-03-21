@@ -142,19 +142,20 @@ public class CandidateReferencesRestController {
 	 * @throws Exception
 	 */
 //	@PreAuthorize("hasAnyRole('ROLE_VIEW_AND_EDIT_CANDIDATE_REFERENCE','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_AND_EDIT_ASSOCIATE_REFERENCE')")
-	@RequestMapping(value = "/terminateReference", method = RequestMethod.POST)
-	public @ResponseBody String terminateReference(@RequestParam(value = "loginUserId", required = false) Long loginUserId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
-													@RequestParam(value = "candidateId", required = false) Long candidateId, @RequestParam(value = "refId", required = false) String refId, @RequestParam(value = "userCode", required = false) String userCode) throws Exception
+	@RequestMapping(value = {"/terminateReference","rest/terminateReference"}, method = RequestMethod.POST)
+	public @ResponseBody String terminateReference(CandidateReferencesDTO candidateReferencesDTO) throws Exception
 	{
 		// User user = (User)
+	//	@RequestParam(value = "loginUserId", required = false) Long loginUserId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+		//@RequestParam(value = "candidateId", required = false) Long candidateId, @RequestParam(value = "refId", required = false) String refId, @RequestParam(value = "userCode", required = false) String userCode
 			// SourceLeadSessionManager.getSessionAttribute(request, "user");
-		User user = userService.getUserById(loginUserId);
-		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
-		Candidate candidate =candidateService.getCandidateById(candidateId);
-		CandidateReferences candidateReferences = candidateReferencesService.getCandidateReferenceByReferenceId(Long.parseLong(refId));
+		User user = userService.getUserById(candidateReferencesDTO.getLoginUserId());
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(candidateReferencesDTO.getOrgLocationId());
+		Candidate candidate =candidateService.getCandidateById(candidateReferencesDTO.getCandidateId());
+		CandidateReferences candidateReferences = candidateReferencesService.getCandidateReferenceByReferenceId(Long.parseLong(candidateReferencesDTO.getRefId()));
 		if (candidateReferences != null) {
 			candidateReferences.setStatus(Constants.CANDIDATE_IN_ACTIVE);
-			candidateReferences.setUpdatedBy(userCode);
+			candidateReferences.setUpdatedBy(candidateReferencesDTO.getUserCode());
 			candidateReferences.setUpdatedDate(commonUtil.currentDate());
 			candidateReferencesService.updateCandidateReferences(candidateReferences);
 			StringBuffer activitySummary = new StringBuffer();

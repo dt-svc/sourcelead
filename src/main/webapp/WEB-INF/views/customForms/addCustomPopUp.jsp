@@ -54,6 +54,8 @@
 				  <option value ="selectfield" ${customFormPopDetails.fieldType =='selectfield' ? 'selected':''} >Select field</option>
 				  <option value ="checkBox" ${customFormPopDetails.fieldType =='checkBox' ? 'selected':''} >Check box</option>
 				  <option value ="radioButton" ${customFormPopDetails.fieldType =='radioButton' ? 'selected':''} >Radio button</option>
+				   <option value ="textArea" ${customFormPopDetails.fieldType =='textArea' ? 'selected':''} >Text Area</option>
+				    <option value ="email" ${customFormPopDetails.fieldType =='email' ? 'selected':''} >Email</option>
 				</select>				
 			</div>	
 				<input type="hidden" id="disableFieldsId" value="${disableFields == 'disabled' ? '1':'0'}">		
