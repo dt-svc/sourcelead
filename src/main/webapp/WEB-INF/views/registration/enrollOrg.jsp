@@ -24,7 +24,11 @@
 				orgModules.className = "disabledLink";
 			} 
 		}else{
-			getCompanyDetails();
+			
+        	$("#orgLocationId").val('${orgLocationId}');
+       		$("#orgLinceseSubscriptionId").val('${orgLicenseSubscriptionId}');
+       		$("#registeredOrgId").val('${registeredOrgId}');
+            getCompanyDetails();
 		}
 	 	
 		
@@ -68,7 +72,7 @@ function changeCountry(){
 	   <div class="newPrDetails newPrDetailsPMO"> 
 		   <div class="newPrTabs">
 		      <ul class="newPrTabsMenu">
-				<li class="current"><a href="#tab-a" data-toggle="tab">Company Details</a></li>
+				<li class="current"><a href="#tab-a" data-toggle="tab" onclick="getCompanyDetails();">Company Details</a></li>
 				<li><a href="#tab-b" data-toggle="tab" id="orgModules" onclick="getOrgModules();">Modules</a></li>
 				<div class="clearfix mb"></div>
 			  </ul>
@@ -79,7 +83,10 @@ function changeCountry(){
 			  	<form:form class="login-form clearfix"  id="createOrg_form"  name="createOrg_form" method="post" > 
       <div class="row">
           <div class="mb col-xs-12 col-sm-12 col-md-6 col-lg-6">
-           <input type="hidden" name="orgLocationId" id=orgLocationId value=""/>
+           <input type="hidden" name="orgLocationId" id="orgLocationId" value=""/>
+           <input type="hidden" name="orgLinceseSubscriptionId" id="orgLinceseSubscriptionId" value=""/>
+           <input type="hidden" name="registeredOrgId" id="registeredOrgId" value=""/>
+           
             <div class="form-group">
 	            <label class="col-md-3">Company Name<span class="text-danger">&nbsp;*</span></label>
 	            <div class="col-md-9">
@@ -129,16 +136,50 @@ function changeCountry(){
             </div>
           
            <div class="form-group">
-	          <label class="col-md-3">Org Enrollment</label>
+	          <label class="col-md-3">Org Enrollment<span class="text-danger">&nbsp;*</span></label>
 	          <div class="col-md-9">
-	               <select class="form-control" name="orgEnrollment" id="orgEnrollment" field-name="Org Enrollment" data-validation-optional="true" >
-		                    <option value="">Select Enrollment Type</option>
-		                    <option value="1 Month Subscription">1 Month Subscription</option>
-		                    <option value="6 Months Subscription">6 Months Subscription</option>
-			                <option value="1 Year Subscription">1 Year Subscription</option>
+	               <select class="form-control" name="orgEnrollment" id="orgEnrollment" field-name="Org Enrollment" data-validation="required" >
+	                    <option value="">Select Enrollment Type</option>
+	                    <c:forEach var="subscription" items="${subscriptionTypeList}">
+							<option value="${subscription.id}">${subscription.name}</option>
+			  			</c:forEach>
 		          </select>
 	          </div>
 	        </div>
+	        
+	        <div class="form-group">
+	          <label class="col-md-3">No.Of Users<span class="text-danger">&nbsp;*</span></label>
+	          <div class="col-md-9">
+	               <select class="form-control" name="userSubscription" id="userSubscription" field-name="No.Of Users" data-validation="required" >
+	                    <option value="">Select Users</option>
+	                    <c:forEach var="userSubscription" items="${userSubscriptionTypeList}">
+							<option value="${userSubscription.id}">${userSubscription.name}</option>
+			  			</c:forEach>
+		          </select>
+	          </div>
+	        </div>
+	        
+	        <div class="form-group">
+	          <label class="col-md-3">Data Storage<span class="text-danger">&nbsp;*</span></label>
+	          <div class="col-md-9">
+	               <select class="form-control" name="dataStorage" id="dataStorage" field-name="Data Storage" data-validation="required" >
+	                    <option value="">Select Data Storage</option>
+	                    <c:forEach var="dataStorage" items="${dataStorageTypeList}">
+							<option value="${dataStorage.id}">${dataStorage.name}</option>
+			  			</c:forEach>
+		          </select>
+	          </div>
+	        </div>
+	        
+	        <div class="form-group">
+                      <label class="col-md-3">Subscription Date<span class="text-danger">&nbsp;*</span></label>
+                         <div class="col-md-9">
+                           <div class="input-group" id="subscriptionDateDiv">
+                              <input type="text" name="subscriptionDate" class="form-control calendar" id="subscriptionDate" data-validation="required" field-name="Subscription Date" readonly="readonly">
+                              <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+                           </div>
+                        </div>
+                  </div>
              
           </div>
           
@@ -210,9 +251,9 @@ function changeCountry(){
 				</div>
 				
 				<div class="form-group">
-	            <label class="col-md-3">Date Format</label>
+	            <label class="col-md-3">Date Format<span class="text-danger">&nbsp;*</span></label>
 	            <div class="col-md-9 dropdown-select">
-					<select  id="dateFormat" name="dateFormat">
+					<select  id="dateFormat" name="dateFormat" data-validation="required" field-name="Date Format">
 						<option value=''>--Select Date Format--</option>
 						<option value='dd-MM-yyyy'>dd-MM-yyyy</option>
 						<option value='MM-dd-yyyy'>MM-dd-yyyy</option>
@@ -258,17 +299,45 @@ function getCompanyDetails(){
 		    	 url: sourceleadUrl+"/getcompanyRegisteredDetails?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId, 
 		        success: function(json) {
 		        	
-		        	
-		        	
 		        	 $("input[name=companyName]").val(json.orgName);
 		        	 $("input[name=website]").val(json.website);
 		        	 $("input[name=firstName]").val(json.firstName);
-		        	 $("input[name=lastName]").val(json.lastName);
+		        	 if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
+		        		 $("input[name=lastName]").val(json.lastName);
+		        	 }
+		        	 
 		        	 $("input[name=email]").val(json.email);
-	      			 
+		        	 
+		        	 if(json.phoneNumber != null && json.phoneNumber != '' && json.phoneNumber != 'undefined'){
+		        		 $("input[name=mobilePhone]").val(json.phoneNumber);
+		        	 }
+		        	 
+		        	 $("input[name=location]").val(json.location);
+		        	 
+		        	 if(json.orgLocationAddress != null && json.orgLocationAddress != '' && json.orgLocationAddress != 'undefined'){
+		        		 $("input[name=address]").val(json.orgLocationAddress);
+		        	 }
+		        	
+		        	 $("input[name=city]").val(json.city);
+		        	 $("input[name=state]").val(json.state);
 	      			   
-	      			   $("#enrollOrgLoading").removeAttr("style");
-			        
+		        	 if(json.zipCode != null && json.zipCode != '' && json.zipCode != 'undefined'){
+		        		 $("input[name=zipCode]").val(json.zipCode);
+		        	 }
+	      			 
+		        	 $("#enrollOrgLoading").removeAttr("style");
+		        	 $("select[name=country]").val(json.country);
+		        	 getTimezonesList();
+		        	 $("select[name=timeZone]").val(json.timeZone);
+		        	 if(json.dateFormat != null && json.dateFormat != '' && json.dateFormat != 'undefined'){
+		        		 $("select[name=dateFormat]").val(json.dateFormat);
+		        	 }
+		        	 
+		        	 $("select[name=orgEnrollment]").val(json.subscriptionType);
+		        	 $("select[name=userSubscription]").val(json.userSubscriptionType);
+		        	 $("select[name=dataStorage]").val(json.storageSubscriptionType);
+		        	 $("input[name=subscriptionDate]").val(json.subscriptionDate);
+		        	
 		        },
 		    }); 
 	}
@@ -298,6 +367,10 @@ var validationSettings = {
                   	success: function(orglocations) {
 			         	if(orglocations.registrationStatusStr == 'orgList'){
 			        		$("#orgLocationId").val(orglocations.id);
+			        		$("#orgLinceseSubscriptionId").val(orglocations.orgLinceseSubscriptionId);
+			        		$("#registeredOrgId").val(orglocations.orgId);
+			        		
+			        		
 			        		 var orgModules = document.getElementById("orgModules");
 							 document.getElementById("orgModules").removeAttribute("class");
 							 orgModules.href="#tab-b"; 
@@ -616,5 +689,29 @@ $(function(){
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 		  })
+		  
+		  
+		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	 	  var finalDateFormat = getJSDateFormat(locationDate);
+	 	  $('#subscriptionDate').datepicker({
+	 	      dateFormat: finalDateFormat,
+	 	      changeMonth: true,
+	 	  	  changeYear: true, 
+	 	  	  minDate : 0,
+	 	  	 onClose : function(selected) {
+                removeValidation();
+			}
+	 	  });
 });
 </script>
+
+<script>
+function removeValidation(){
+	$('#subscriptionDateDiv').find('p.jquery_form_error_message').remove();
+}
+
+function clearDate(){
+	$("#subscriptionDate").val("");
+	};
+</script>
+

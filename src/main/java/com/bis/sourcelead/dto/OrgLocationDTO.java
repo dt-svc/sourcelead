@@ -2,7 +2,6 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
 public class OrgLocationDTO implements Serializable{
 	
@@ -25,6 +24,8 @@ public class OrgLocationDTO implements Serializable{
 	private long orgLocationId;
 	
 	private long candidateId;
+	
+	private long orgLinceseSubscriptionId;
 	
 	private String orgImageUrl;
 	
@@ -84,7 +85,13 @@ public class OrgLocationDTO implements Serializable{
 	
 	private Long timeZone;
 	
-	private String subscriptionType;
+	private Long subscriptionType;
+	
+    private Long userSubscriptionType;
+  
+    private Long storageSubscriptionType;
+    
+    private String subscriptionDate;
 	
 
 	public long getId()
@@ -439,11 +446,43 @@ public class OrgLocationDTO implements Serializable{
 		this.timeZone = timeZone;
 	}
 
-	public String getSubscriptionType() {
+	public long getOrgLinceseSubscriptionId() {
+		return orgLinceseSubscriptionId;
+	}
+
+	public void setOrgLinceseSubscriptionId(long orgLinceseSubscriptionId) {
+		this.orgLinceseSubscriptionId = orgLinceseSubscriptionId;
+	}
+
+	public Long getSubscriptionType() {
 		return subscriptionType;
 	}
 
-	public void setSubscriptionType(String subscriptionType) {
+	public void setSubscriptionType(Long subscriptionType) {
 		this.subscriptionType = subscriptionType;
+	}
+
+	public Long getUserSubscriptionType() {
+		return userSubscriptionType;
+	}
+
+	public void setUserSubscriptionType(Long userSubscriptionType) {
+		this.userSubscriptionType = userSubscriptionType;
+	}
+
+	public Long getStorageSubscriptionType() {
+		return storageSubscriptionType;
+	}
+
+	public void setStorageSubscriptionType(Long storageSubscriptionType) {
+		this.storageSubscriptionType = storageSubscriptionType;
+	}
+
+	public String getSubscriptionDate() {
+		return subscriptionDate;
+	}
+
+	public void setSubscriptionDate(String subscriptionDate) {
+		this.subscriptionDate = subscriptionDate;
 	}
 }

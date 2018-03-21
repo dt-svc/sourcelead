@@ -50,6 +50,7 @@ import com.bis.sourcelead.entity.ExpensesCategory;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRequest;
 import com.bis.sourcelead.entity.PasswordResets;
@@ -77,6 +78,7 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExpensesCategoryService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.MasterCandidateService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRequestService;
 import com.bis.sourcelead.service.OrgService;
@@ -96,10 +98,13 @@ import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.ibm.icu.util.Calendar;
+
+import bsh.StringUtil;
 
 @Service
 public class RegistrationServiceImpl implements RegistrationService{
@@ -209,6 +214,12 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Autowired
 	OrgRequestService orgRequestService;
 	
+	@Autowired
+	OrgLicenseSubscriptionService orgLicenseSubscriptionService;
+	
+	@Autowired
+	LookUpDataService lookupDateService;
+	
 	
 	protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -220,21 +231,32 @@ public class RegistrationServiceImpl implements RegistrationService{
 			CandidateDTO candidateDTO) throws Exception {
 		
 		OrgLocationDTO orgLocationDTO = new OrgLocationDTO();
-		Org org = null;
-		org = getOrgDetails(registration);
-		orgService.addOrganization(org);
-		User user = userService.findByUserName(registration.getEmail());
-		String password = "";
-		if(user == null) {
-			user = getUserDetails(registration,password);
-			userService.addUser(user);
+		
+		Org org = getOrgDetails(registration);
+		try {
+			orgService.addOrganization(org);
+			orgLocationDTO.setOrgId(org.getId());
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		
+		String password = "";
+		User user = getUserDetails(registration,password);
+		userService.addUser(user);
 		OrgLocations orgLocations = getOrgLocationsDetails(registration, org, user);
 		Timezone timeZone = timeZoneService.getTimezone(Long.parseLong(registration.getTimeZone()));
 		orgLocations.setTimezone(timeZone);
 		try {
-			orgLocationService.addOrgLocations(orgLocations);
+			orgLocationService.updateOrgLocations(orgLocations);
 			orgLocationDTO.setId(orgLocations.getId());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		OrgLicenseSubscription orgLicenseSubscription =  getOrgLicenseSubscriptionDetails(registration, org, user,orgLocations);
+		try {
+			orgLicenseSubscriptionService.saveOrgLicenseSubscription(orgLicenseSubscription);
+			orgLocationDTO.setOrgLinceseSubscriptionId(orgLicenseSubscription.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -420,7 +442,19 @@ public class RegistrationServiceImpl implements RegistrationService{
 	
 	private Org getOrgDetails(Registration registration){
 		
-		Org org = new Org();
+		Org org = null;
+		if(StringUtils.isNotBlank(registration.getRegisteredOrgId())) {
+			try {
+				org = orgService.findOrgByID(Long.parseLong(registration.getRegisteredOrgId()));
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}else {
+			 org = new Org();
+		}
+		
 		org.setOrgName(registration.getCompanyName());
 		org.setWebSite(convertWebsite(registration.getWebsite()));
 		org.setOrgType("Company");
@@ -432,7 +466,12 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 	
 	private User getUserDetails(Registration registration,String password){
-		User user = new User();
+		User user = null;
+		user = userService.findByUserName(registration.getEmail());
+		if(user == null) {
+			user = new User();
+			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
+		}
 		user.setFirstName(registration.getFirstName());
 		user.setLastName(registration.getLastName());
 		user.setEmail(registration.getEmail());
@@ -440,7 +479,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		if(StringUtils.isNotBlank(password)) {
 			user.setPassword(sourceleadPasswordEncoder.encode(password));
 		}
-		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
+		
 		user.setMobilePhone(registration.getMobilePhone());
 		user.setCreatedBy(user.getUserCode());
 		user.setCreatedDate(new Date());
@@ -531,7 +570,14 @@ public class RegistrationServiceImpl implements RegistrationService{
 	 
 	private OrgLocations getOrgLocationsDetails(Registration registration,Org org,User user) throws Exception{
 		
-		OrgLocations orgLocations = new OrgLocations();
+		OrgLocations orgLocations = null;
+		
+		if(StringUtils.isNotBlank(registration.getOrgLocationId())) {
+			orgLocations = orgLocationService.getOrgLocations(Long.parseLong(registration.getOrgLocationId()));
+		}else {
+			orgLocations = new OrgLocations();
+			orgLocations.setLocationCode(SourceLeadRandomCodeHelper.generateRandomOrgLocationCode());
+		}
 		orgLocations.setCountry(registration.getCountry());
 		orgLocations.setState(registration.getState());
 		orgLocations.setCity(registration.getCity());
@@ -545,13 +591,11 @@ public class RegistrationServiceImpl implements RegistrationService{
 
 		orgLocations.setLoginSecurity(Constants.NO);
 		Countries countries = countriesService.getCountriesByCountryName(registration.getCountry());
-		orgLocations.setLocationCode(SourceLeadRandomCodeHelper.generateRandomOrgLocationCode());
 		orgLocations.setCreatedBy(user.getUserCode());
 		orgLocations.setCreatedDate(new Date());
 		orgLocations.setOrgLocationName(registration.getCompanyName().trim());
 		orgLocations.setWebsite(convertWebsite(registration.getWebsite()));
 		orgLocations.setIsCompanyOnboarded(Constants.NO);
-		orgLocations.setSubscriptionType(registration.getOrgEnrollment());
 		orgLocations.setRegistrationStatus("Draft");
 		
 	    if(StringUtils.isNotBlank(registration.getDba())){
@@ -573,6 +617,61 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgLocations.setModulesId("2,3,4");
 		
 		return orgLocations;
+	}
+	
+	
+	private OrgLicenseSubscription getOrgLicenseSubscriptionDetails(Registration registration,Org org,User user,OrgLocations orgLocations) throws Exception{
+		OrgLicenseSubscription orgLicenseSubscription = null;
+		if(StringUtils.isNotBlank(registration.getOrgLinceseSubscriptionId())) {
+			orgLicenseSubscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionById(Long.parseLong(registration.getOrgLinceseSubscriptionId()));
+		}else {
+			orgLicenseSubscription = new OrgLicenseSubscription();
+			orgLicenseSubscription.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		}
+		orgLicenseSubscription.setOrg(org);
+		orgLicenseSubscription.setCountry(registration.getCountry());
+		
+		LookUpData subscriptionType = new LookUpData();
+		subscriptionType.setId(Long.parseLong(registration.getOrgEnrollment()));
+		orgLicenseSubscription.setSubscriptionType(subscriptionType);
+		
+		LookUpData userSubscriptionType = new LookUpData();
+		userSubscriptionType.setId(Long.parseLong(registration.getUserSubscription()));
+		orgLicenseSubscription.setUserSubscriptionType(userSubscriptionType);
+		
+		LookUpData storageSubscriptionType = new LookUpData();
+		storageSubscriptionType.setId(Long.parseLong(registration.getDataStorage()));
+		orgLicenseSubscription.setStorageSubscriptionType(storageSubscriptionType);
+		
+		orgLicenseSubscription.setCreatedBy(user);
+		orgLicenseSubscription.setCreatedDate(new Date());
+		orgLicenseSubscription.setUpdatedBy(user);
+		orgLicenseSubscription.setUpdatedDate(new Date());
+		
+		Date subscriptionDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),registration.getSubscriptionDate());
+		subscriptionDate = CalendarUtil.getDateTimeForGivenTimeZone(orgLocations.getTimezone().getTimeZoneId(), subscriptionDate, orgLocations.getDateFormat());
+		orgLicenseSubscription.setFromDate(subscriptionDate);
+		
+		Calendar toDate = Calendar.getInstance();
+		toDate.setTime(subscriptionDate);    
+	    
+	    LookUpData lookupData = lookupDateService.getTasksById(Long.parseLong(registration.getOrgEnrollment()));
+		
+	    if(lookupData.getName().equalsIgnoreCase("Free Trail") || lookupData.getName().equalsIgnoreCase("1 Month")) {
+	    	toDate.add(Calendar.MONTH, +1); 
+	    }else if(lookupData.getName().equalsIgnoreCase("6 Months")) {
+	    	toDate.add(Calendar.MONTH, +6); 
+	    }else if(lookupData.getName().equalsIgnoreCase("1 Year")) {
+	    	toDate.add(Calendar.YEAR, +1); 
+	    }else if(lookupData.getName().equalsIgnoreCase("2 Years")) {
+	    	toDate.add(Calendar.YEAR, +2); 
+	    }
+	    
+	    Date subscriptionToDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(),toDate.getTime());
+	    subscriptionToDate = CalendarUtil.getDateTimeForGivenTimeZone(orgLocations.getTimezone().getTimeZoneId(), subscriptionToDate, orgLocations.getDateFormat());
+		orgLicenseSubscription.setToDate(subscriptionToDate);
+	    
+		return orgLicenseSubscription;
 	}
 	
 	private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){

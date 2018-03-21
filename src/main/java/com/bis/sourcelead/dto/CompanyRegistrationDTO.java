@@ -24,7 +24,14 @@ import com.bis.sourcelead.annotations.Required;
 		@Email
 		private String email;
 		
+		@Required(desc = "orgEnrollment")
 		private String orgEnrollment;
+		
+		@Required(desc = "userSubscription")
+		private String userSubscription;
+		
+		@Required(desc = "dataStorage")
+		private String dataStorage;
 		
 		private String country;
 		
@@ -44,6 +51,10 @@ import com.bis.sourcelead.annotations.Required;
 		private String mobilePhone;
 		
 		private String registeredOrgId;
+		
+		private String orgLinceseSubscriptionId;
+		
+		private String orgLocationId;
 		
 		@Required(desc = "location")
 		private String location;
@@ -83,6 +94,8 @@ import com.bis.sourcelead.annotations.Required;
 		private String aboutCompany;
 
 		private List<FileInfo> fileInfo;
+		
+		private String subscriptionDate;
 
 		public Integer getId() {
 			return id;
@@ -364,6 +377,46 @@ import com.bis.sourcelead.annotations.Required;
 
 		public void setOrgEnrollment(String orgEnrollment) {
 			this.orgEnrollment = orgEnrollment;
+		}
+
+		public String getUserSubscription() {
+			return userSubscription;
+		}
+
+		public void setUserSubscription(String userSubscription) {
+			this.userSubscription = userSubscription;
+		}
+
+		public String getDataStorage() {
+			return dataStorage;
+		}
+
+		public void setDataStorage(String dataStorage) {
+			this.dataStorage = dataStorage;
+		}
+
+		public String getOrgLinceseSubscriptionId() {
+			return orgLinceseSubscriptionId;
+		}
+
+		public void setOrgLinceseSubscriptionId(String orgLinceseSubscriptionId) {
+			this.orgLinceseSubscriptionId = orgLinceseSubscriptionId;
+		}
+
+		public String getOrgLocationId() {
+			return orgLocationId;
+		}
+
+		public void setOrgLocationId(String orgLocationId) {
+			this.orgLocationId = orgLocationId;
+		}
+
+		public String getSubscriptionDate() {
+			return subscriptionDate;
+		}
+
+		public void setSubscriptionDate(String subscriptionDate) {
+			this.subscriptionDate = subscriptionDate;
 		}
 
 		

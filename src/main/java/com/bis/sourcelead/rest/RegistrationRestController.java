@@ -118,7 +118,7 @@ public class RegistrationRestController {
 	 OrgLocationService orgLocationService;
 	 
 	 @Autowired
-		private SourceleadPasswordEncoder sourceleadPasswordEncoder;
+	 private SourceleadPasswordEncoder sourceleadPasswordEncoder;
 	 
 	 @Autowired
 	 private RegistrationOptionalServicesService registrationOptionalServicesService;
@@ -287,6 +287,8 @@ public class RegistrationRestController {
 				tabsDTO.setId(tabs.getId());
 				if(tabs.getTabName().equalsIgnoreCase("Billing")) {
 					tabsDTO.setTabName("Finance");
+				}else if(tabs.getTabName().equalsIgnoreCase("Settings")) {
+					tabsDTO.setTabName("Settings & Leave Management");
 				}else {
 					tabsDTO.setTabName(tabs.getTabName());
 				}
@@ -306,7 +308,7 @@ public class RegistrationRestController {
 	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/app/getcompanyRegisteredDetails" , method = RequestMethod.POST)
 	   public OrgLocationDTO getcompanyRegisteredDetails(
-			   @RequestParam(value="orgLocationId", required=true) Long orgLocationId,
+			   @RequestParam(value="orgLocationId", required=false) Long orgLocationId,
 	   			HttpServletRequest request) {
 		OrgLocationDTO orgLocationDTO = new OrgLocationDTO();
 		try {

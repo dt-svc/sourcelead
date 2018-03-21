@@ -13,16 +13,19 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LookUpDataDao;
+import com.bis.sourcelead.dao.OrgLicenseSubscriptionDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Service
@@ -38,6 +41,9 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	OrgLicenseSubscriptionDao orgLicenseSubscriptionDao;
 	
 	@Override
 	public OrgLocations addOrgLocations(OrgLocations orgLocations) throws Exception {
@@ -391,23 +397,31 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	@Override
 	public OrgLocationDTO getRegisteredOrgLocationDetails(Long id) throws Exception {
 		OrgLocationDTO orgLocationDTO = new OrgLocationDTO();
-		OrgLocations orgLocatons = orgLocationsDao.getOrgLocations(id);
-		orgLocationDTO.setId(orgLocatons.getId());
-		orgLocationDTO.setOrgName(orgLocatons.getOrgLocationName());
-		orgLocationDTO.setWebsite(orgLocatons.getWebsite());
-		orgLocationDTO.setOrgLocationAddress(orgLocatons.getOrgLocationAddress());
-		orgLocationDTO.setLocation(orgLocatons.getLocation());
-		orgLocationDTO.setCountry(orgLocatons.getCountry());
-		orgLocationDTO.setState(orgLocatons.getState());
-		orgLocationDTO.setCity(orgLocatons.getCity());
-		orgLocationDTO.setZipCode(orgLocatons.getZipCode());
-		orgLocationDTO.setEmail(orgLocatons.getUser().getEmail());
-		orgLocationDTO.setFirstName(orgLocatons.getUser().getFirstName());
-		orgLocationDTO.setLastName(orgLocatons.getUser().getLastName());
-		orgLocationDTO.setPhoneNumber(orgLocatons.getUser().getMobilePhone());
-		orgLocationDTO.setTimeZone(orgLocatons.getTimezone().getId());
-		orgLocationDTO.setDateFormat(orgLocatons.getDateFormat());
-		orgLocationDTO.setSubscriptionType(orgLocatons.getSubscriptionType());
+		OrgLocations orgLocations = orgLocationsDao.getOrgLocations(id);
+		orgLocationDTO.setId(orgLocations.getId());
+		orgLocationDTO.setOrgName(orgLocations.getOrgLocationName());
+		orgLocationDTO.setWebsite(orgLocations.getWebsite());
+		orgLocationDTO.setOrgLocationAddress(orgLocations.getOrgLocationAddress());
+		orgLocationDTO.setLocation(orgLocations.getLocation());
+		orgLocationDTO.setCountry(orgLocations.getCountry());
+		orgLocationDTO.setState(orgLocations.getState());
+		orgLocationDTO.setCity(orgLocations.getCity());
+		orgLocationDTO.setZipCode(orgLocations.getZipCode());
+		orgLocationDTO.setEmail(orgLocations.getUser().getEmail());
+		orgLocationDTO.setFirstName(orgLocations.getUser().getFirstName());
+		orgLocationDTO.setLastName(orgLocations.getUser().getLastName());
+		orgLocationDTO.setPhoneNumber(orgLocations.getUser().getMobilePhone());
+		orgLocationDTO.setTimeZone(orgLocations.getTimezone().getId());
+		orgLocationDTO.setDateFormat(orgLocations.getDateFormat());
+		
+		OrgLicenseSubscription orgLicenseSubscription = orgLicenseSubscriptionDao.getOrgLicenseSubscriptionByOrgIdAndCountry(orgLocations.getOrg().getId(), orgLocations.getCountry());
+		orgLocationDTO.setSubscriptionType(orgLicenseSubscription.getSubscriptionType().getId());
+		orgLocationDTO.setUserSubscriptionType(orgLicenseSubscription.getUserSubscriptionType().getId());
+		orgLocationDTO.setStorageSubscriptionType(orgLicenseSubscription.getStorageSubscriptionType().getId());
+		
+		String fromDateStr =  CalendarUtil.getDateStrForGivenTimeZone(orgLocations.getTimezone().getTimeZoneId(), orgLicenseSubscription.getFromDate(), "dd-MM-yyyy");
+		
+		orgLocationDTO.setSubscriptionDate(fromDateStr);
 		return orgLocationDTO;
 	}
 }

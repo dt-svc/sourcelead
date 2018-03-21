@@ -1,6 +1,9 @@
-CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_LOCATIONS','SUBSCRIPTION_TYPE','VARCHAR(250) NULL');
+
+
+
 CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_LOCATIONS','REGISTRATION_STATUS','VARCHAR(50) NULL');
 CALL sourcelead.AlterTableAddColumn ('sourcelead','TABS','TAB_ICON','VARCHAR(50) NULL');
+
 
 set sql_safe_updates=0;
 UPDATE `sourcelead`.`tabs` SET `TAB_ICON`='fa fa-dashboard' WHERE `ID`='1';
@@ -20,3 +23,48 @@ UPDATE `sourcelead`.`tabs` SET `TAB_ICON`='fa fa-money' WHERE `ID`='20';
 UPDATE `sourcelead`.`tabs` SET `TAB_ICON`='fa fa-calculator' WHERE `ID`='23';
 UPDATE `sourcelead`.`tabs` SET `TAB_ICON`='fa fa-bullhorn' WHERE `ID`='30';
 set sql_safe_updates=1;
+
+
+INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `UNIQUE_KEY`) VALUES ( 'Free Trail',  'Free Trail', 'Subscription Type', 'Free Trail');
+INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `UNIQUE_KEY`) VALUES ( '1 Month',  '1 Month', 'Subscription Type', '1 Month');
+INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `UNIQUE_KEY`) VALUES ( '6 Months',  '6 Months', 'Subscription Type', '6 Months');
+INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `UNIQUE_KEY`) VALUES ( '1 Year',  '1 Year', 'Subscription Type', '1 Year');
+INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `UNIQUE_KEY`) VALUES ( '2 Years',  '2 Years', 'Subscription Type', '2 Years');
+
+INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `UNIQUE_KEY`) VALUES ( '25 below',  '25 below', 'User Subscription', '25 below');
+INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `UNIQUE_KEY`) VALUES ( '25 & above',  '25 & above', 'User Subscription', '25 & above');
+
+
+INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `UNIQUE_KEY`) VALUES ( '25 GB',  '25 GB', 'Data Storage', '25 GB');
+INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `UNIQUE_KEY`) VALUES ( '250 GB',  '250 GB', 'Data Storage', '250 GB');
+
+
+
+DROP TABLE IF EXISTS `sourcelead`.`ORG_LICENSE_SUBSCRIPTION`;
+CREATE TABLE `sourcelead`.`ORG_LICENSE_SUBSCRIPTION` (
+  ID BIGINT NOT NULL AUTO_INCREMENT,
+  ORG_ID BIGINT DEFAULT NULL,
+  COUNTRY VARCHAR(100) DEFAULT NULL,
+  SUBSCRIPTION_TYPE BIGINT DEFAULT NULL,
+  USER_SUBSCRIPTION_TYPE BIGINT DEFAULT NULL,
+  STORAGE_SUBSCRIPTION_TYPE BIGINT DEFAULT NULL,
+  INVOICE_AMOUNT VARCHAR(30) DEFAULT NULL,
+  SUBSCRIPTION_TABS LONGTEXT DEFAULT NULL,
+  FROM_DATE DATE,
+  TO_DATE DATE,
+  UUID VARCHAR(20) DEFAULT NULL,
+  STATUS INT DEFAULT NULL,
+  CREATED_DATE DATE,
+  CREATED_BY BIGINT DEFAULT NULL,
+  UPDATED_DATE DATE,
+  UPDATED_BY BIGINT DEFAULT NULL,
+  PRIMARY KEY (`ID`), 
+  FOREIGN KEY(ORG_ID) REFERENCES `sourcelead`.`ORG`(ID),
+  FOREIGN KEY(SUBSCRIPTION_TYPE) REFERENCES `sourcelead`.`LOOKUP_DATA`(ID),
+  FOREIGN KEY(USER_SUBSCRIPTION_TYPE) REFERENCES `sourcelead`.`LOOKUP_DATA`(ID),
+  FOREIGN KEY(STORAGE_SUBSCRIPTION_TYPE) REFERENCES `sourcelead`.`LOOKUP_DATA`(ID),
+  FOREIGN KEY(CREATED_BY) REFERENCES `sourcelead`.`USER`(ID),
+  FOREIGN KEY(UPDATED_BY) REFERENCES `sourcelead`.`USER`(ID)
+); 
+
+
