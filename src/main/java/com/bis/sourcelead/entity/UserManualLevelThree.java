@@ -46,7 +46,7 @@ public class UserManualLevelThree implements Serializable{
 	private String fileUrl;
 	
 	@Column(name = "FILE_TYPE")
-	private String String;
+	private String fileType;
 	
 	@Column(name = "UPLOAD_URL")
 	@Type(type="text")
@@ -64,7 +64,7 @@ public class UserManualLevelThree implements Serializable{
 	private Integer order;
 	
 	@Column(name = "STATUS")
-	private Integer status;
+	private String status;
 	
 	@Column(name = "CREATED_DATE")
     private Date createdDate;
@@ -131,13 +131,15 @@ public class UserManualLevelThree implements Serializable{
 	}
 
 
-	public String getString() {
-		return String;
+	
+
+	public String getFileType() {
+		return fileType;
 	}
 
 
-	public void setString(String string) {
-		String = string;
+	public void setFileType(String fileType) {
+		this.fileType = fileType;
 	}
 
 
@@ -181,12 +183,12 @@ public class UserManualLevelThree implements Serializable{
 	}
 
 
-	public Integer getStatus() {
+	public String getStatus() {
 		return status;
 	}
 
 
-	public void setStatus(Integer status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 
@@ -258,17 +260,6 @@ public class UserManualLevelThree implements Serializable{
 
 	public void setLevelThreeUUID(String levelThreeUUID) {
 		this.levelThreeUUID = levelThreeUUID;
-	}
-
-
-	@Override
-	public String toString() {
-		return "UserManualLevelThree [id=" + id + ", levelThreeUUID=" + levelThreeUUID + ", title=" + title
-				+ ", fileName=" + fileName + ", fileUrl=" + fileUrl + ", String=" + String + ", uploadUrl=" + uploadUrl
-				+ ", description=" + description + ", UserManualLevelTwoId=" + UserManualLevelTwoId + ", order=" + order
-				+ ", status=" + status + ", createdDate=" + createdDate + ", updatedDate=" + updatedDate
-				+ ", publishOn=" + publishOn + ", createdBy=" + createdBy + ", updatedBy=" + updatedBy
-				+ ", userManualAttachment=" + userManualAttachment + "]";
 	}
 
 

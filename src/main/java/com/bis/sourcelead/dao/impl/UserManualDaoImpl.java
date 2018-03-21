@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -125,7 +126,7 @@ public class UserManualDaoImpl implements UserManualDao {
 
 	@Override
 	@Transactional
-	public UserManualLevelOne getUserManualByTitle(Long orgLocationsId, String title) throws Exception {
+	public UserManualLevelOne getUserManualByTitle( String title) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from UserManualLevelOne userManualLevelOne where  userManualLevelOne.title = :title ";
 		Collection<UserManualLevelOne> userManualLevelOneList = session.createQuery(query.toString()).setString("title", title).list();
@@ -201,17 +202,20 @@ public class UserManualDaoImpl implements UserManualDao {
 		
 		StringBuilder query1 = new StringBuilder("");
 		if(userManualsDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userManualsDTO.getSearchValue())) {
-		 query1.append("and (pt.title like '%" + userManualsDTO.getSearchValue() + "%' )");
+		 query1.append("where (manual1.title like '%" + userManualsDTO.getSearchValue() + "%' )");
 		}
 		
-		 String queryStr = "from UserManualLevelOne manual1" ;
-		 String queryStrForCount = "Select count (*) from UserManualLevelOne  " ;
+		String sortingQry = "";
+		if(StringUtils.isNotBlank(userManualsDTO.getSortColumn())) {
+				sortingQry = " order by manual1."+ userManualsDTO.getSortColumn() +" "+userManualsDTO.getSortOrder();
+		}
+		
+		 String queryStr = "from UserManualLevelOne manual1 "+query1+"  "+sortingQry+" " ;
+		 String queryStrForCount = "Select count (*) from UserManualLevelOne manual1 "+query1+"  "+sortingQry+" " ;
 		 
-		 Query query = session.createQuery(queryStr+query1);
-		 List usermanualList = query.list();
+		 List usermanualList = session.createQuery(queryStr.toString()).list();
 
-		 Query countQuery = session.createQuery(queryStrForCount+query1);
-		 countlist = countQuery.list();
+		 countlist = session.createQuery(queryStrForCount.toString()).list();
 				 
 		int totalCount = 0;
 		if (userManualsDTO != null) {
@@ -245,16 +249,22 @@ public class UserManualDaoImpl implements UserManualDao {
 		
 		StringBuilder query1 = new StringBuilder("");
 		if(userManualsDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userManualsDTO.getSearchValue())) {
-		 query1.append("and (pt.title like '%" + userManualsDTO.getSearchValue() + "%' )");
+		 query1.append("and (manual2.title like '%" + userManualsDTO.getSearchValue() + "%' )");
+		}
+		
+		String sortingQry = "";
+		if(StringUtils.isNotBlank(userManualsDTO.getSortColumn())) {
+				sortingQry = " order by manual2."+ userManualsDTO.getSortColumn() +" "+userManualsDTO.getSortOrder();
 		}
 		
 		 String queryStr = "from UserManualLevelTwo manual2 where manual2.UserManualLevelOneId.id=:id";
 		 String queryStrForCount = "Select count (*) from UserManualLevelTwo manual2 where manual2.UserManualLevelOneId.id=:id " ;
 		 
-		 Query query = session.createQuery(queryStr+query1);
+		 
+		 Query query = session.createQuery(queryStr+" "+query1+sortingQry);
 		 List usermanualList = query.setLong("id", id).list();
 
-		 Query countQuery = session.createQuery(queryStrForCount+query1);
+		 Query countQuery = session.createQuery(queryStrForCount+query1+sortingQry);
 		 countlist = countQuery.setLong("id", id).list();
 				 
 		int totalCount = 0;
@@ -291,16 +301,21 @@ public class UserManualDaoImpl implements UserManualDao {
 		
 		StringBuilder query1 = new StringBuilder("");
 		if(userManualsDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userManualsDTO.getSearchValue())) {
-		 query1.append("and (pt.title like '%" + userManualsDTO.getSearchValue() + "%' )");
+		 query1.append(" and manual3.title like '%" + userManualsDTO.getSearchValue() + "%' ");
 		}
 		
-		 String queryStr = "from UserManualLevelThree manual3 where manual3.UserManualLevelTwoId.id=:id";
+		String sortingQry = "";
+		if(StringUtils.isNotBlank(userManualsDTO.getSortColumn())) {
+				sortingQry = " order by manual3."+ userManualsDTO.getSortColumn() +" "+userManualsDTO.getSortOrder();
+		}
+		
+		 String queryStr = "from UserManualLevelThree manual3 where manual3.UserManualLevelTwoId.id=:id ";
 		 String queryStrForCount = "Select count (*) from UserManualLevelThree manual3 where manual3.UserManualLevelTwoId.id=:id " ;
 		 
-		 Query query = session.createQuery(queryStr+query1);
+		 Query query = session.createQuery(queryStr+query1+sortingQry);
 		 List usermanualList = query.setLong("id", id).list();
 
-		 Query countQuery = session.createQuery(queryStrForCount+query1);
+		 Query countQuery = session.createQuery(queryStrForCount+query1+sortingQry);
 		 countlist = countQuery.setLong("id", id).list();
 				 
 		int totalCount = 0;
@@ -487,7 +502,89 @@ public class UserManualDaoImpl implements UserManualDao {
 
 		
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public UserManualLevelTwo getUserManualTwoByTitle(String title) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserManualLevelTwo userManualLevelTwo where  userManualLevelTwo.title = :title ";
+		Collection<UserManualLevelTwo> userManualLevelTwoList = session.createQuery(query.toString()).setString("title", title).list();
 
+		UserManualLevelTwo userManualLevelTwo = null;
+		if (userManualLevelTwoList != null && userManualLevelTwoList.size() > 0) {
+			userManualLevelTwo = (UserManualLevelTwo) userManualLevelTwoList.iterator().next();
+		}
+		return userManualLevelTwo;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public UserManualLevelThree getUserManualThreeByTitle(String title) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserManualLevelThree userManualLevelThree where  userManualLevelThree.title = :title ";
+		Collection<UserManualLevelThree> userManualLevelThreeList = session.createQuery(query.toString()).setString("title", title).list();
+
+		UserManualLevelThree userManualLevelThree = null;
+		if (userManualLevelThreeList != null && userManualLevelThreeList.size() > 0) {
+			userManualLevelThree = (UserManualLevelThree) userManualLevelThreeList.iterator().next();
+		}
+		return userManualLevelThree;
+	}
+	
+	//for publishing the data in website
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<Object[]> getUserManualHelperOneTitles() {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select distinct lone.title,lone.id from UserManualLevelOne lone left join UserManualLevelTwo ltwo on lone.id= ltwo.UserManualLevelOneId join UserManualLevelThree lthree on lthree.UserManualLevelTwoId.id=ltwo.id and lthree.status='published' "; 
+		//String query = "from UserManualLevelOne lone";
+		List<Object[]> UserManualLevelOneList =session.createQuery(query).list();
+		return UserManualLevelOneList;
+		
+		/*SELECT sone.title FROM sourcelead.user_manual_level_one sone
+		 LEFT JOIN sourcelead.user_manual_level_two  stwo
+		ON sone.ID=stwo.user_manual_level_one_id
+		JOIN sourcelead.user_manual_level_three sthree
+		ON  sthree.ID=stwo.ID and sthree.status='published'*/
+	}
+
+	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<Object[]> getUserManualHelperTwoTitles(Long  id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = " select distinct ltwo.title, ltwo.id from UserManualLevelTwo ltwo join UserManualLevelThree lthree on lthree.UserManualLevelTwoId.id= ltwo.id and  ltwo.UserManualLevelOneId=:id and  lthree.status='published' "; 
+		List<Object[]> UserManualLevelTwoList =session.createQuery(query).setLong("id", id).list();
+		return UserManualLevelTwoList;
+		
+		/*SELECT stwo.title FROM sourcelead.user_manual_level_two stwo 
+		JOIN sourcelead.user_manual_level_three  sthree
+		ON sthree.user_manual_level_two_id=stwo.id and stwo.user_manual_level_one_id=20
+		 and sthree.status='published'*/
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<UserManualLevelThree> getUserManualHelperThreeTitles(Long id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = " from UserManualLevelThree lthree where lthree.UserManualLevelTwoId.id=:id  and  lthree.status='published' "; 
+		List<UserManualLevelThree> UserManualLevelThreeList =session.createQuery(query).setLong("id", id).list();
+		return UserManualLevelThreeList;
+	}
+	
+	/*SELECT * FROM sourcelead.user_manual_level_three sthree
+	WHERE 	sthree.user_manual_level_two_id=6
+		 and sthree.status='published'*/
 	
 	
 }

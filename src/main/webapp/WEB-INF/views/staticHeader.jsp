@@ -90,7 +90,8 @@ gtag('config', 'UA-115098165-1');
 	<!--<li><a href="helpManuals.html">Help</a></li>-->
 	<li><a href="/blog.html" id="blogID">Blog</a></li>
 	<li><a href="/contact.html" id="contactID">Contact</a></li>
-	<li><a class="loginbtn" href="/login" title="Login">Login</a></li>
+	 <li><a class="loginbtn" href="/login" title="Login">Login</a></li>
+	<li><a class="helpbtn" href="/sourcelead_help.html" >help</a></li>
 	<!-- <li><a href="/register" title="Login">Sign Up</a></li> -->
 	</ul>
 		</div>

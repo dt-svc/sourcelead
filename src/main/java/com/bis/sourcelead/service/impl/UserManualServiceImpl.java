@@ -20,6 +20,7 @@ import com.bis.sourcelead.dao.UserManualDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserManualsDTO;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserManualAttachment;
 import com.bis.sourcelead.entity.UserManualLevelOne;
@@ -78,9 +79,9 @@ public class UserManualServiceImpl implements UserManualService{
 			if(userManualsDTO.getId()!=null && StringUtils.isNotBlank(userManualsDTO.getId())){
 				userManualLevelTwo=userManualDao.getUserManualTwoById(Long.valueOf(userManualsDTO.getId()));
 				if(user!=null){
-					userManualLevelOne.setUpdatedBy(user);
+					userManualLevelTwo.setUpdatedBy(user);
 				}
-				userManualLevelOne.setUpdatedDate(new Date());
+				userManualLevelTwo.setUpdatedDate(new Date());
 			}else{
 				userManualLevelTwo = new UserManualLevelTwo();
 				if(user!=null){
@@ -118,6 +119,11 @@ public class UserManualServiceImpl implements UserManualService{
 				String levelThreeUUID=SourceLeadRandomCodeHelper.generateRandomOrgCode();
 				userManualLevelThree.setLevelThreeUUID(levelThreeUUID);
 				userManualLevelThree.setCreatedDate(commonUtil.currentDate());
+				
+				if(userManualsDTO.getSave().equalsIgnoreCase("publish")){
+					userManualLevelThree.setStatus("published");
+				}else
+					userManualLevelThree.setStatus("publish");
 				}
 				if(userManualsDTO.getTitle()!=null && StringUtils.isNotBlank(userManualsDTO.getTitle())){
 					userManualLevelThree.setTitle(userManualsDTO.getTitle());
@@ -136,6 +142,7 @@ public class UserManualServiceImpl implements UserManualService{
 				if(userManualsDTO.getUrlName()!=null && StringUtils.isNotBlank(userManualsDTO.getUrlName())){
 					userManualLevelThree.setUploadUrl(userManualsDTO.getUrlName());
 				}
+				
 				if(userManualLevelTwo !=null){
 					userManualLevelThree.setUserManualLevelTwoId(userManualLevelTwo);
 				}
@@ -156,9 +163,9 @@ public class UserManualServiceImpl implements UserManualService{
 	}
 
 	@Override
-	public UserManualLevelOne getUserManualByTitle(Long orgLocationsId, String title) throws Exception {
+	public UserManualLevelOne getUserManualByTitle(String title) throws Exception {
 		
-		return userManualDao.getUserManualByTitle(orgLocationsId, title);
+		return userManualDao.getUserManualByTitle( title);
 	}
 
 	@Override
@@ -202,11 +209,19 @@ public class UserManualServiceImpl implements UserManualService{
 		List<UserManualsDTO> userManualsDTOList = new ArrayList<>();
 		for(UserManualLevelOne uml:usermanualList.getData()){
 			UserManualsDTO umd = new UserManualsDTO();
-			umd.setId(uml.getId().toString());
-				umd.setTitle(uml.getTitle());
+			if(uml.getId() !=null){
 				umd.setId(uml.getId().toString());
+			}
+			if(uml.getTitle() !=null){
+				umd.setTitle(uml.getTitle());
+			}
+			if(uml.getLevelOneUUID() !=null){
 				umd.setUserManualUUID(uml.getLevelOneUUID());
-				umd.setDescription(uml.getDescription());
+			}
+			if(uml.getDescription() !=null){
+				umd.setDescription(uml.getDescription().replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", " "));
+			}
+				
 				//userManualsDTO.setStatus(userManual.getStatus());
 			
 			userManualsDTOList.add(umd);
@@ -225,11 +240,19 @@ public class UserManualServiceImpl implements UserManualService{
 		List<UserManualsDTO> userManualsDTOList = new ArrayList<>();
 		for(UserManualLevelTwo uml:usermanualList.getData()){
 			UserManualsDTO umd = new UserManualsDTO();
-			umd.setId(uml.getId().toString());
-				umd.setTitle(uml.getTitle());
+			
+			if(uml.getId() !=null){
 				umd.setId(uml.getId().toString());
+			}
+			if(uml.getTitle() !=null){
+				umd.setTitle(uml.getTitle());
+			}
+			if(uml.getLevelTwoUUID() !=null){
 				umd.setUserManualUUID(uml.getLevelTwoUUID());
-				umd.setDescription(uml.getDescription());
+			}
+			if(uml.getDescription() !=null){
+				umd.setDescription(uml.getDescription().replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", " "));
+			}
 				//userManualsDTO.setStatus(userManual.getStatus());
 			
 			userManualsDTOList.add(umd);
@@ -251,12 +274,21 @@ public class UserManualServiceImpl implements UserManualService{
 		List<UserManualsDTO> userManualsDTOList = new ArrayList<>();
 		for(UserManualLevelThree uml:usermanualList.getData()){
 			UserManualsDTO umd = new UserManualsDTO();
-			umd.setId(uml.getId().toString());
-				umd.setTitle(uml.getTitle());
-				umd.setUserManualUUID(uml.getLevelThreeUUID());
+			if(uml.getId() !=null){
 				umd.setId(uml.getId().toString());
-				umd.setDescription(uml.getDescription());
-				//userManualsDTO.setStatus(userManual.getStatus());
+			}
+			if(uml.getTitle() !=null){
+				umd.setTitle(uml.getTitle());
+			}
+			if(uml.getLevelThreeUUID() !=null){
+				umd.setUserManualUUID(uml.getLevelThreeUUID());
+			}
+			if(uml.getDescription() !=null){
+				umd.setDescription(uml.getDescription().replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", " "));
+			}
+			if(uml.getStatus() !=null){
+				umd.setStatus(uml.getStatus());
+			}
 			
 			userManualsDTOList.add(umd);
 		}
@@ -315,13 +347,14 @@ public class UserManualServiceImpl implements UserManualService{
 
 	@Override
 	public UserManualsDTO getUserManualOneById(Long id) throws Exception{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		UserManualsDTO userManualsDTO=new UserManualsDTO();
 		UserManualLevelOne userManualLevelOne= userManualDao.getUserManualById(id);
 		if(userManualLevelOne.getTitle()!=null ){
 			userManualsDTO.setTitle(userManualLevelOne.getTitle());
 		}
 		if(userManualLevelOne.getDescription()!=null ){
-			userManualsDTO.setDescription(userManualLevelOne.getDescription());
+			userManualsDTO.setDescription(userManualLevelOne.getDescription().replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", " "));
 		}
 		if(userManualLevelOne.getCreatedBy()!=null ){
 			userManualsDTO.setCreatedBy(userManualLevelOne.getCreatedBy().getFullName());
@@ -330,23 +363,27 @@ public class UserManualServiceImpl implements UserManualService{
 			userManualsDTO.setUpdatedBy(userManualLevelOne.getUpdatedBy().getFullName());
 		}
 		if(userManualLevelOne.getCreatedDate()!=null ){
-			userManualsDTO.setCreatedDate(userManualLevelOne.getCreatedDate().toString());
+			String createddateStr = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), userManualLevelOne.getCreatedDate());
+			userManualsDTO.setCreatedDate(createddateStr);
 		}
 		if(userManualLevelOne.getUpdatedDate()!=null ){
-			userManualsDTO.setUpdatedDate(userManualLevelOne.getUpdatedDate().toString());
+			String updateddateStr = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), userManualLevelOne.getUpdatedDate());
+			userManualsDTO.setUpdatedDate(updateddateStr);
 		}
 		return userManualsDTO;
 	}
 
 	@Override
 	public UserManualsDTO getUserManualTwoById(Long id) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		UserManualsDTO userManualsDTO=new UserManualsDTO();
 		UserManualLevelTwo userManualLevelTwo= userManualDao.getUserManualTwoById(id);
 		if(userManualLevelTwo.getTitle()!=null ){
 			userManualsDTO.setTitle(userManualLevelTwo.getTitle());
 		}
+		//String strippedText = htmlText.replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", " ");
 		if(userManualLevelTwo.getDescription()!=null ){
-			userManualsDTO.setDescription(userManualLevelTwo.getDescription());
+			userManualsDTO.setDescription(userManualLevelTwo.getDescription().replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", " "));
 		}
 		if(userManualLevelTwo.getCreatedBy()!=null ){
 			userManualsDTO.setCreatedBy(userManualLevelTwo.getCreatedBy().getFullName());
@@ -355,23 +392,27 @@ public class UserManualServiceImpl implements UserManualService{
 			userManualsDTO.setUpdatedBy(userManualLevelTwo.getUpdatedBy().getFullName());
 		}
 		if(userManualLevelTwo.getCreatedDate()!=null ){
-			userManualsDTO.setCreatedDate(userManualLevelTwo.getCreatedDate().toString());
+			String createddateStr = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), userManualLevelTwo.getCreatedDate());
+			userManualsDTO.setCreatedDate(createddateStr);
 		}
 		if(userManualLevelTwo.getUpdatedDate()!=null ){
-			userManualsDTO.setUpdatedDate(userManualLevelTwo.getUpdatedDate().toString());
+			String updateddateStr = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), userManualLevelTwo.getUpdatedDate());
+			userManualsDTO.setUpdatedDate(updateddateStr);
 		}
 		return userManualsDTO;
 	}
 
 	@Override
 	public UserManualsDTO getUserManualThreeById(Long id) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
 		UserManualsDTO userManualsDTO=new UserManualsDTO();
 		UserManualLevelThree userManualLevelThree= userManualDao.getUserManualThreeById(id);
 		if(userManualLevelThree.getTitle()!=null ){
 			userManualsDTO.setTitle(userManualLevelThree.getTitle());
 		}
 		if(userManualLevelThree.getDescription()!=null ){
-			userManualsDTO.setDescription(userManualLevelThree.getDescription());
+			userManualsDTO.setDescription(userManualLevelThree.getDescription().replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", " "));
 		}
 		if(userManualLevelThree.getCreatedBy()!=null ){
 			userManualsDTO.setCreatedBy(userManualLevelThree.getCreatedBy().getFullName());
@@ -379,19 +420,140 @@ public class UserManualServiceImpl implements UserManualService{
 		if(userManualLevelThree.getUpdatedBy()!=null ){
 			userManualsDTO.setUpdatedBy(userManualLevelThree.getUpdatedBy().getFullName());
 		}
+		
 		if(userManualLevelThree.getCreatedDate()!=null ){
-			userManualsDTO.setCreatedDate(userManualLevelThree.getCreatedDate().toString());
+			String createddateStr = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), userManualLevelThree.getCreatedDate());
+			userManualsDTO.setCreatedDate(createddateStr);
 		}
 		if(userManualLevelThree.getUpdatedDate()!=null ){
-			userManualsDTO.setUpdatedDate(userManualLevelThree.getUpdatedDate().toString());
+			String updateddateStr = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), userManualLevelThree.getUpdatedDate());
+			userManualsDTO.setUpdatedDate(updateddateStr);
 		}
-		userManualsDTO.setPublishOn(userManualLevelThree.getPublishOn().toString());
-		userManualsDTO.setUrlName(userManualLevelThree.getUploadUrl());
-		userManualsDTO.setUserManualAttachment(userManualLevelThree.getUserManualAttachment());
+		if(userManualLevelThree.getPublishOn()!=null ){
+			userManualsDTO.setPublishOn(userManualLevelThree.getPublishOn().toString());
+		}
+		if(userManualLevelThree.getUploadUrl()!=null ){
+			userManualsDTO.setUrlName(userManualLevelThree.getUploadUrl());
+		}
+		
+		if(id!=null){
+
+			List<UserManualAttachment> attchachmentList=new ArrayList<>();
+			attchachmentList=userManualDao.getUsermanualAttachmentList(id);
+			if(attchachmentList!=null){
+				userManualsDTO.setUserManualAttachment(attchachmentList);
+			}
+			
+		}
 		return userManualsDTO;
 	}
+	
+	
+	@Override
+	public UserManualLevelTwo getUserManualTwoByTitle(String UserManTitle) throws Exception {
+		return userManualDao.getUserManualTwoByTitle(UserManTitle);
+	}
 
+	@Override
+	public UserManualLevelThree getUserManualThreeByTitle(String UserManTitle) throws Exception {
+		return userManualDao.getUserManualThreeByTitle(UserManTitle);
+	}
 	
+	//for publishing the data in website
+
+	@Override
+	public List<UserManualsDTO> getUserManualHelperOneTitles() throws Exception {
+		
+		List<UserManualsDTO> manualList=new ArrayList<>();
+		
+		List<Object[]> userManualLevelOneList = userManualDao.getUserManualHelperOneTitles();
+		
+		for(Object[] object:userManualLevelOneList){
+			UserManualsDTO userManualsDTO=new UserManualsDTO();
+			userManualsDTO.setTitle((String)object[0]);
+			userManualsDTO.setId(object[1].toString());
+			manualList.add(userManualsDTO);
+		}
+		// TODO Auto-generated method stub
+		return manualList;
+	}
 	
-	
+	@Override
+	public List<UserManualsDTO> getUserManualHelperTwoTitles(Long userManualId) throws Exception {
+		List<UserManualsDTO> manualList=new ArrayList<>();
+		List<Object[]> userManualLevelOneList = userManualDao.getUserManualHelperTwoTitles(userManualId);
+		
+		for(Object[] object:userManualLevelOneList){
+			UserManualsDTO userManualsDTO=new UserManualsDTO();
+			userManualsDTO.setId(object[1].toString());
+			userManualsDTO.setTitle(object[0].toString());
+			manualList.add(userManualsDTO);
+		}
+		
+		return manualList;
+	}
+
+	@Override
+	public List<UserManualsDTO> getUserManualHelperThreeTitles(Long userManualId) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<UserManualsDTO> manualList=new ArrayList<>();
+		List<UserManualLevelThree> userManualLevelThreeList = userManualDao.getUserManualHelperThreeTitles(userManualId);
+		
+		for(UserManualLevelThree userManualLevelThree:userManualLevelThreeList){
+			UserManualsDTO userManualsDTO=new UserManualsDTO();
+			if(userManualLevelThree.getTitle()!=null ){
+				userManualsDTO.setTitle(userManualLevelThree.getTitle());
+			}
+			if(userManualLevelThree.getDescription()!=null ){
+				userManualsDTO.setDescription(userManualLevelThree.getDescription());
+			}
+			if(userManualLevelThree.getCreatedBy()!=null ){
+				userManualsDTO.setCreatedBy(userManualLevelThree.getCreatedBy().getFullName());
+			}
+			if(userManualLevelThree.getUpdatedBy()!=null ){
+				userManualsDTO.setUpdatedBy(userManualLevelThree.getUpdatedBy().getFullName());
+			}
+			
+			/*if(userManualLevelThree.getCreatedDate()!=null ){
+				String createddateStr = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), userManualLevelThree.getCreatedDate());
+				userManualsDTO.setCreatedDate(createddateStr);
+			}
+			if(userManualLevelThree.getUpdatedDate()!=null ){
+				String updateddateStr = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), userManualLevelThree.getUpdatedDate());
+				userManualsDTO.setUpdatedDate(updateddateStr);
+			}*/
+			if(userManualLevelThree.getPublishOn()!=null ){
+				userManualsDTO.setPublishOn(userManualLevelThree.getPublishOn().toString());
+			}
+			if(userManualLevelThree.getUploadUrl()!=null ){
+				userManualsDTO.setUrlName(userManualLevelThree.getUploadUrl());
+			}
+			
+			if(userManualId!=null){
+
+				List<UserManualAttachment> attchachmentList=new ArrayList<>();
+				attchachmentList=userManualDao.getUsermanualAttachmentList(userManualLevelThree.getId());
+				if(attchachmentList!=null){
+					userManualsDTO.setUserManualAttachment(attchachmentList);
+				}
+				
+			}
+			manualList.add(userManualsDTO);
+		}
+		return manualList;
+	}
+
+	@Override
+	public boolean publishUserManualThree(Long id) throws Exception {
+		
+		UserManualLevelThree userManualLevelThree=userManualDao.getUserManualThreeById(id);
+		if(userManualLevelThree!=null){
+			userManualLevelThree.setStatus("published");
+			userManualDao.storeUserManualsThree(userManualLevelThree);
+			return true;
+		}
+		
+		return false;
+	}
+
 }

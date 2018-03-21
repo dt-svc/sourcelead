@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service;
 
 import java.util.List;
+import java.util.Set;
 
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserManualsDTO;
@@ -14,7 +15,11 @@ public interface UserManualService {
 	//level one
 	public void storeUserManuals(UserManualsDTO userManualsDTO) throws Exception;
 	
-	UserManualLevelOne getUserManualByTitle(Long orgLocationsId,String UserManTitle) throws Exception;
+	UserManualLevelOne getUserManualByTitle(String UserManTitle) throws Exception;
+	
+	UserManualLevelTwo getUserManualTwoByTitle(String UserManTitle) throws Exception;
+	
+	UserManualLevelThree getUserManualThreeByTitle(String UserManTitle) throws Exception;
 	
 	List<UserManualLevelOne> getAllUserManualls() throws Exception;
 	
@@ -46,6 +51,9 @@ public interface UserManualService {
 	
 	UserManualsDTO getUserManualThreeById(Long id)throws Exception;
 	
+	boolean publishUserManualThree(Long id) throws Exception;
+	
+	
 	ResponseList<UserManualsDTO> getAllLevelThreeDynamicList(UserManualsDTO userManualsDTO,Long id) throws Exception;
 	
 	//UserManaual attachment
@@ -53,6 +61,14 @@ public interface UserManualService {
 	
 	
 	public void deleteUserManualAttachments(Long id)throws Exception;
+	
+	//for publishing the data in website
+	
+	List<UserManualsDTO> getUserManualHelperOneTitles() throws Exception;
+	
+	List<UserManualsDTO> getUserManualHelperTwoTitles(Long userManualId) throws Exception;
+	
+	List<UserManualsDTO> getUserManualHelperThreeTitles(Long userManualId) throws Exception;
 	
 
 }

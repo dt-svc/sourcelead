@@ -20,7 +20,11 @@ public interface UserManualDao {
 	
 	public UserManualAttachment storeUserManualAttachment(UserManualAttachment userManualAttachment)throws Exception;
 	
-	UserManualLevelOne getUserManualByTitle(Long orgLocationsId, String UserManTitle) throws Exception;
+	UserManualLevelOne getUserManualByTitle( String UserManTitle) throws Exception;
+	
+	UserManualLevelTwo getUserManualTwoByTitle(String UserManTitle) throws Exception;
+	
+	UserManualLevelThree getUserManualThreeByTitle(String UserManTitle) throws Exception;
 	
 	UserManualLevelOne getUserManualById(Long userManId) throws Exception;
 	
@@ -59,6 +63,14 @@ public interface UserManualDao {
 	UserManualAttachment getUserManualAttchListById(Long id);
 	
 	public void deleteUserManualAttachments(UserManualAttachment UserManualAttachments) throws Exception;
+	
+	//for publishing the data in website
+	
+	List<Object[]> getUserManualHelperOneTitles() throws Exception;
+	
+	List<Object[]> getUserManualHelperTwoTitles(Long id) throws Exception;
+	
+	List<UserManualLevelThree> getUserManualHelperThreeTitles(Long id)throws Exception;
 
 
 }

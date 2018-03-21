@@ -25,10 +25,19 @@ $(function(){
 
 <section class="content-wraper">
         <section class="content-header clearfix">
-          <div class="pull-left">
+          <div class="pull-left" id="usermanualList" style="display:block">
             <h2>User Manuals List</h2>
           </div>
-          <a href="${appPath}/addUserManual" class="pull-right btn btn-primary btn-sm mb">Add</a>
+          <div class="pull-left" id="level1summary" style="display:none">
+            <h2>Level One Summary</h2>
+          </div>
+          <div class="pull-left" id="level2summary" style="display:none">
+            <h2>Level Two Summary</h2>
+          </div>
+          <div class="pull-left" id="level3summary" style="display:none">
+            <h2>Level Three Summary</h2>
+          </div>
+          <%-- <a href="${appPath}/addUserManual" class="pull-right btn btn-primary btn-sm mb">Add</a> --%>
           <%-- <a href="${appPath}/applicantDeclineReports" title="Grid View" id="GView" class="btn btn-default " ><i class="fa fa-pie-chart"></i></a>
           --%> 
           <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; User Manuals </div>
@@ -36,18 +45,31 @@ $(function(){
         
         <div class="content-area clearfix">
      	<div id="UserManualDivId" class="datatable_filter"> </div>
+     	 <div id="userManualDelete" class="datatable_filter"> </div>
+     	
         </div>
         
  </section>
+ 
+
+ 
 
 <script>
 $('#summernote').summernote();
 $('.note-editor').css({"min-height":"200px"});
 $('.note-editable').css({"min-height":"200px"});
 </script>
+
+
+<!--  UserManualone dynamic list -->
+
+
 <script>
  function getUserManualList() {
-	 var url = sourceleadUrl	+"/getAllUseManualLevel1List";
+	 
+	 var searchValue = $("#UserManualSearch").val();
+	 searchValue = searchValue ? searchValue : "";
+	 var url = sourceleadUrl	+"/getAllUseManualLevel1List?searchValue="+searchValue;
 		prepareUserManualList(url);
 	 
  }
@@ -55,9 +77,23 @@ $('.note-editable').css({"min-height":"200px"});
   <script>
  function prepareUserManualList(url){
 	var result = "";
-    result = result	+ '<div class="remove_search">';
+	result = result	+ '<div class="positionRelative table_head">';
+	
+	result = result	+ '<ul class="list-unstyled list-inline pull-right">';
+	
+	result = result	+ '<li>';
+	result = result	+ '<a href="${appPath}/addUserManual" class="btn mr mt10 anchorBlack"><i class="fa fa-plus mr"></i>Add user manual</a>';
+	result = result	+ '</li>';
+	
+	result = result	+ '<li>';
+	result = result	+ '<div class="remove_search">';
     result = result +" <input type='text' placeholder='Search' id='UserManualSearch'/>";
-	result = result	+ '</div><div class="project_tabs_inn_table project_tabs_inn_table_a">';
+    result = result	+ '</div>';
+    result = result	+ '</li>';
+    result = result	+ '</ul>';
+    
+    result = result	+ '</div>';
+    result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
 	result = result	+ '<div id="tasksLoadingImg"></div>';
 	result = result + '<table id="UserManualPagination" class="display" cellspacing="0" width="100%">';
 	result = result + '<thead>';
@@ -99,11 +135,11 @@ function userManualPagination(url){
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		var result = "";
 		    	  		if(opt.title != null && opt.title != ""  && opt.title != "undefined"){
-		    	  			manualtitle = opt.title + " - ";
+		    	  			manualtitle = opt.title ;
 						}else{
 							manualtitle = "";
 						}
-		    	  		result = result	+ '<td><div class="tbldata-dotdot_50" onClick="getAllLevelTwo('+opt.id+');">'+manualtitle+ '</div></td>';
+		    	  		result = result	+ '<td><div class="tbldata-dotdot-me" title="'+manualtitle+'" onClick="getAllLevelTwo('+opt.id+');"><a href="javascript:void(0)">'+manualtitle+'</a></div></td>';
 		    	  		return result;
 		    	  	}
 		      },{
@@ -113,45 +149,32 @@ function userManualPagination(url){
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	  if(opt.description != null && opt.description != ""  && opt.description != "undefined"){
-		    	  			manualDesc = opt.description + " - ";
+	            		  result = result	+ '<td><div class="tbldata-dotdot-me" title="'+opt.description+'">'+opt.description+ '</div></td>';
 						}else{
-							manualDesc = "";
+							result = result	+ '<td><div class="tbldata-dotdot-me" >---</div></td>';
 						}
-	            	  result = result	+ '<td><div class="tbldata-dotdot_80" title="'+manualDesc+'">'+manualDesc+ '</div></td>';
+	            	  
 		              return result;
 	              		
 	              }
 		          },{
 	            "targets": colIndex++,
 	            "data": "level",
+	            "sortable": false,
 	            "render": function ( data, type, opt, meta ) {
 	            	
 	            	var result = "";
-	            	result = result	+ '<td><div class="tbldata-dotdot_50">level-1</div></td>';
+	            	result = result	+ '<td><div class="tbldata-dotdot-100">level-1</div></td>';
 	            	 return result;
 	            }
-	          }, /* {
-	              "targets": colIndex++,
-	              "data": "status",
-	              "sortable": false,
-	              "render": function ( data, type, opt, meta ) {
-	            	  if(opt.taskAssignedUsers != null && opt.taskAssignedUsers != "" && opt.taskAssignedUsers !="undefined"){
-							taskAssignedUsers = opt.taskAssignedUsers;
-						}else{
-							taskAssignedUsers = "--"
-						}
-	            	  var result = "";
-	            	  result = result	+ '<td><div class="tbldata-dotdot"><span >'+taskAssignedUsers+'</span ></div></td>';
-	            	  return result;
-	              }
-	            }, */ {
+	          },  {
 	              "targets": colIndex++,
 	              "data": "action",
 	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	               
 	              	var result = "";
-	              	result = result	+ '<a class="glyphicon glyphicon-edit" title="Edit" href="'+sourceleadUrl+'/editUserManual?levelOneUUID='+opt.userManualUUID+'&levelName='+levelName+'" ></a> <a class="glyphicon glyphicon-trash text-danger ml" title="Delete" onclick="deleteUserManualOne('+opt.id+');"></a><a class="glyphicon glyphicon-trash text-danger ml" title="summary" onclick="userManualOneSummary('+opt.id+');"></a>';
+	              	result = result	+ '<a class="fa fa-pencil" title="Edit" href="'+sourceleadUrl+'/editUserManual?levelOneUUID='+opt.userManualUUID+'&levelName='+levelName+'" ></a> <a class="glyphicon glyphicon-trash text-danger ml" title="Delete" onclick="deleteUserManualOne('+opt.id+');"></a><a class="fa fa-eye text-blue ml" title="summary" onclick="userManualOneSummary('+opt.id+');"></a>';
 	              	result = result	+ '</div></td>';
 	  	              return result;
 	              }
@@ -172,7 +195,7 @@ function userManualPagination(url){
 	    $("input[type=search]").hide();
 	    $("#UserManualSearch").keyup(function(e) {
 	    	   if(e.which === 13) {
-	    		  // getUserManualList();
+ 	    		   getUserManualList();
 	    	   }
 	    	});
 		
@@ -183,44 +206,70 @@ function deleteUserManualOne(userManualId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p style='text-align: center;'>Do you want to delete a task ?</p>";
+	result = result +"		<p style='text-align: center;'>Do you want to delete a level one ?</p>";
 	result = result + ' <div id="reasonForProjectDiv"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteUserManualOne('+userManualId+')"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteUserManualonee('+userManualId+')"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
-	$("#UserManualDelete").append(result);
-	$("#remove_user_pop").slideDown(200);
+	$("#userManualDelete").append(result);
+	$("#remove_user_pop").fadeIn(200);
 	$(".project_inn_mask").fadeIn(200);
 }
 
-function deleteUserManualOne(userManualId){
+
+function deleteUserManualonee(userManualId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
 		type : "GET",
 		url : sourceleadUrl+ "/deleteUserManualOne?${_csrf.parameterName}=${_csrf.token}&userManualId="+userManualId,
 		
 		success : function(json) {
-			    $("#UserManualDelete").empty();
+			    $("#userManualDelete").empty();
 			 	$(".project_inn_mask").fadeOut(200);
-			 	projectTask(projectId,projectStatus);
+			 	getUserManualList();
 		}
 	});
 }
 
+function cancelTermination(){
+	$("#userManualDelete").empty();
+	 $(".project_inn_mask").fadeOut(200);
+}
  </script>
+ 
+ <!--  UserManualTwo dynamic list -->
+ 
  <script>
  function getAllLevelTwo(id){
-	 var url = sourceleadUrl	+"/getAllUseManualLevelTwoList?id="+id;
-		prepareLevelTwoList(url);
+	 var searchValue = $("#UserManualTwoSearch").val();
+	 searchValue = searchValue ? searchValue : "";
+	 var url = sourceleadUrl	+"/getAllUseManualLevelTwoList?searchValue="+searchValue+"&id="+id;
+		prepareLevelTwoList(url,id);
  }
  </script>
  
  <script>
- function prepareLevelTwoList(url){
+ function prepareLevelTwoList(url,id){
 	var result = "";
-    result = result	+ '<div class="remove_search">';
+	
+	result = result	+ '<div class="positionRelative table_head">';
+	
+	result = result	+ '<ul class="list-unstyled list-inline pull-right">';
+	
+	result = result	+ '<li>';
+	result = result	+ '<a href="${appPath}/addUserManual" class="btn mr mt10 anchorBlack"><i class="fa fa-plus mr"></i>Add user manual</a>';
+	result = result	+ '</li>';
+	
+	result = result	+ '<li>';
+	result = result	+ '<div class="remove_search">';
     result = result +" <input type='text' placeholder='Search' id='UserManualTwoSearch'/>";
-	result = result	+ '</div><div class="project_tabs_inn_table project_tabs_inn_table_a">';
+    result = result	+ '</div>';
+    result = result	+ '</li>';
+    result = result	+ '</ul>';
+    
+    result = result	+ '</div>';
+    result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
 	result = result	+ '<div id="tasksLoadingImg"></div>';
+	
 	result = result + '<table id="UserManualTwoPagination" class="display" cellspacing="0" width="100%">';
 	result = result + '<thead>';
 	result = result + '<tr">';
@@ -235,9 +284,9 @@ function deleteUserManualOne(userManualId){
 	result = result	+ '</div>';
 	$("#UserManualDivId").empty();  
 	$("#UserManualDivId").append(result);  
-	userManualLevel2Pagination(url);
+	userManualLevel2Pagination(url,id);
 }
-function userManualLevel2Pagination(url){
+function userManualLevel2Pagination(url,id){
 		var colIndex = 0;
 		var levelName="Level-2"
 	    $('#UserManualTwoPagination').DataTable( { 
@@ -261,11 +310,11 @@ function userManualLevel2Pagination(url){
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		var result = "";
 		    	  		if(opt.title != null && opt.title != ""  && opt.title != "undefined"){
-		    	  			manualtitle = opt.title + " - ";
+		    	  			manualtitle = opt.title ;
 						}else{
 							manualtitle = "";
 						}
-		    	  		result = result	+ '<td><div class="tbldata-dotdot_50" onClick="getAllLevelThree('+opt.id+');">'+manualtitle+ '</div></td>';
+		    	  		result = result	+ '<td><div class="tbldata-dotdot-me" title="'+manualtitle+'" onClick="getAllLevelThree('+opt.id+');"><a href="javascript:void(0)">'+manualtitle+ '</a></div></td>';
 		    	  		return result;
 		    	  	}
 		      },{
@@ -275,17 +324,17 @@ function userManualLevel2Pagination(url){
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	  if(opt.description != null && opt.description != ""  && opt.description != "undefined"){
-		    	  			manualDesc = opt.description + " - ";
+	            		  result = result	+ '<td><div class="tbldata-dotdot-me" title="'+opt.description+'">'+opt.description+ '</div></td>';
 						}else{
-							manualDesc = "";
+							result = result	+ '<td><div class="tbldata-dotdot-me" >---</div></td>';
 						}
-	            	  result = result	+ '<td><div class="tbldata-dotdot_80" title="'+manualDesc+'">'+manualDesc+ '</div></td>';
 		              return result;
 	              		
 	              }
 		          },{
 	            "targets": colIndex++,
 	            "data": "level",
+	            "sortable": false,
 	            "render": function ( data, type, opt, meta ) {
 	            	
 	            	var result = "";
@@ -313,7 +362,7 @@ function userManualLevel2Pagination(url){
 	              "render": function ( data, type, opt, meta ) {
 	               
 	              	var result = "";
-	              	result = result	+ '<a class="glyphicon glyphicon-edit" title="Edit" href="'+sourceleadUrl+'/editUserManual?levelOneUUID='+opt.userManualUUID+'&levelName='+levelName+'" ></a> <a class="glyphicon glyphicon-trash text-danger ml" title="Delete" onclick="deleteUserManualTwo('+opt.id+');"></a><a class="glyphicon glyphicon-edit" title="summary" onclick="userManualTwoSummary('+opt.id+');"></a>';
+	              	result = result	+ '<a class="glyphicon glyphicon-edit" title="Edit" href="'+sourceleadUrl+'/editUserManual?levelOneUUID='+opt.userManualUUID+'&levelName='+levelName+'" ></a> <a class="glyphicon glyphicon-trash text-danger ml" title="Delete" onClick="deleteUserManualTwo('+opt.id+');"></a><a class="fa fa-eye text-blue ml" title="summary" onclick="userManualTwoSummary('+opt.id+');"></a>';
 	              	result = result	+ '</div></td>';
 	  	              return result;
 	              }
@@ -334,7 +383,7 @@ function userManualLevel2Pagination(url){
 	    $("input[type=search]").hide();
 	    $("#UserManualTwoSearch").keyup(function(e) {
 	    	   if(e.which === 13) {
-	    		  // getUserManualList();
+	    		   getAllLevelTwo(id);
 	    	   }
 	    	});
 		
@@ -345,66 +394,90 @@ function deleteUserManualTwo(userManualId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p style='text-align: center;'>Do you want to delete a task ?</p>";
+	result = result +"		<p style='text-align: center;'>Do you want to delete level Two ?</p>";
 	result = result + ' <div id="reasonForProjectDiv"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteUserManualTwo('+userManualId+')"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteUserManualTwoo('+userManualId+')"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
-	$("#UserManualDelete").append(result);
+	$("#userManualDelete").append(result);
 	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
 }
 
-function deleteUserManualTwo(userManualId){
+function deleteUserManualTwoo(userManualId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
 		type : "GET",
 		url : sourceleadUrl+ "/deleteUserManualTwo?${_csrf.parameterName}=${_csrf.token}&userManualId="+userManualId,
 		
 		success : function(json) {
-			    $("#UserManualDelete").empty();
+			    $("#userManualDelete").empty();
 			 	$(".project_inn_mask").fadeOut(200);
-			 	projectTask(projectId,projectStatus);
+			 	getUserManualList();
 		}
 	});
 }
 
-
+function cancelTermination(){
+	$("#userManualDelete").empty();
+	 $(".project_inn_mask").fadeOut(200);
+}
 
 
  </script>
  
+ <!--  UserManualThree dynamic list -->
+ 
   <script>
  function getAllLevelThree(id){
-	 var url = sourceleadUrl	+"/getAllUseManualLevelThreeList?id="+id;
-		prepareLevelThreeList(url);
+	 var searchValue = $("#UserManualThreeSearch").val();
+	 searchValue = searchValue ? searchValue : "";
+	 var url = sourceleadUrl	+"/getAllUseManualLevelThreeList?searchValue="+searchValue+"&id="+id;
+		prepareLevelThreeList(url,id);
  }
  </script>
  
  <script>
- function prepareLevelThreeList(url){
-	var result = "";
-    result = result	+ '<div class="remove_search">';
-    result = result +" <input type='text' placeholder='Search' id='UserManualThreeSearch'/>";
-	result = result	+ '</div><div class="project_tabs_inn_table project_tabs_inn_table_a">';
-	result = result	+ '<div id="tasksLoadingImg"></div>';
-	result = result	+ '<div id="UserManualDelete"></div>';
-	result = result + '<table id="UserManualThreePagination" class="display" cellspacing="0" width="100%">';
-	result = result + '<thead>';
-	result = result + '<tr">';
-	result = result + '<th>Title</th>';
-	result = result + '<th>Description</th>';
-	result = result + '<th>Level</th>';
-	//result = result + '<th>Status</th>';
-	result = result + '<th>Action</th>';
-	result = result + '</tr>';
-	result = result + '</thead>';
-	result = result + '</table>';
-	result = result	+ '</div>';
-	$("#UserManualDivId").empty();  
-	$("#UserManualDivId").append(result);  
-	UserManualThreePagination(url);
+ function prepareLevelThreeList(url,id){
+	 
+	 
+	 
+		 var result = "";
+		result = result	+ '<div class="positionRelative table_head">';
+		
+		result = result	+ '<ul class="list-unstyled list-inline pull-right">';
+		
+		result = result	+ '<li>';
+		result = result	+ '<a href="${appPath}/addUserManual" class="btn mr mt10 anchorBlack"><i class="fa fa-plus mr"></i>Add user manual</a>';
+		result = result	+ '</li>';
+		
+		result = result	+ '<li>';
+		result = result	+ '<div class="remove_search">';
+	    result = result +" <input type='text' placeholder='Search' id='UserManualThreeSearch'/>";
+	    result = result	+ '</div>';
+	    result = result	+ '</li>';
+	    result = result	+ '</ul>';
+	    
+	    result = result	+ '</div>';
+	    result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
+		result = result	+ '<div id="tasksLoadingImg"></div>';
+		
+   
+		result = result + '<table id="UserManualThreePagination" class="display" cellspacing="0" width="100%">';
+		result = result + '<thead>';
+		result = result + '<tr">';
+		result = result + '<th>Title</th>';
+		result = result + '<th>Description</th>';
+		result = result + '<th>Level</th>';
+		result = result + '<th>Status</th>';
+		result = result + '<th>Action</th>';
+		result = result + '</tr>';
+		result = result + '</thead>';
+		result = result + '</table>';
+		result = result	+ '</div>';
+		$("#UserManualDivId").empty();  
+		$("#UserManualDivId").append(result);  
+		UserManualThreePagination(url,id);
 }
-function UserManualThreePagination(url){
+function UserManualThreePagination(url,id){
 		var colIndex = 0;
 		var levelName="Level-3"
 	    $('#UserManualThreePagination').DataTable( { 
@@ -420,6 +493,7 @@ function UserManualThreePagination(url){
 	            { "data": "title" },
 	            { "data": "description"},
 	            { "data": "level"},
+	            { "data": "status"},
 	            { "data": "action" }
 	        ],
 	        "columnDefs": [ {
@@ -428,11 +502,11 @@ function UserManualThreePagination(url){
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		var result = "";
 		    	  		if(opt.title != null && opt.title != ""  && opt.title != "undefined"){
-		    	  			manualtitle = opt.title + " - ";
+		    	  			manualtitle = opt.title ;
 						}else{
 							manualtitle = "";
 						}
-		    	  		result = result	+ '<td><div class="tbldata-dotdot_50" onClick="getAllLevelThree('+opt.id+');">'+manualtitle+ '</div></td>';
+		    	  		result = result	+ '<td><div class="tbldata-dotdot-me" title="'+manualtitle+'">'+manualtitle+ '</div></td>';
 		    	  		return result;
 		    	  	}
 		      },{
@@ -446,41 +520,42 @@ function UserManualThreePagination(url){
 						}else{
 							manualDesc = "";
 						}
-	            	  result = result	+ '<td><div class="tbldata-dotdot_80" title="'+manualDesc+'">'+manualDesc+ '</div></td>';
+	            	  result = result	+ '<td><div class="tbldata-dotdot-me" title="'+manualDesc+'">'+manualDesc+ '</div></td>';
 		              return result;
 	              		
 	              }
 		          },{
 	            "targets": colIndex++,
 	            "data": "level",
+	            "sortable": false,
 	            "render": function ( data, type, opt, meta ) {
 	            	
 	            	var result = "";
 	            	result = result	+ '<td><div class="tbldata-dotdot_50">level-3</div></td>';
 	            	 return result;
 	            }
-	          }, /* {
+	          }, {
 	              "targets": colIndex++,
 	              "data": "status",
 	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
-	            	  if(opt.taskAssignedUsers != null && opt.taskAssignedUsers != "" && opt.taskAssignedUsers !="undefined"){
-							taskAssignedUsers = opt.taskAssignedUsers;
-						}else{
-							taskAssignedUsers = "--"
-						}
 	            	  var result = "";
-	            	  result = result	+ '<td><div class="tbldata-dotdot"><span >'+taskAssignedUsers+'</span ></div></td>';
+	            	  if(opt.status != null && opt.status != "" && opt.status !="undefined" && opt.status=="publish" ){
+	            		  result = result	+ '<td><div class="tbldata-dotdot"><span ><a href="javascript:void(0)" onclick="userManualThreePublish('+opt.id+','+id+');">'+opt.status+'</span ></a></div></td>';
+						}else{
+							result = result	+ '<td><div class="tbldata-dotdot"><span >'+opt.status+'</span ></div></td>';
+						}
+	            	  
 	            	  return result;
 	              }
-	            }, */ {
+	            },  {
 	              "targets": colIndex++,
 	              "data": "action",
 	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	               
 	              	var result = "";
-	              	result = result	+ '<a class="glyphicon glyphicon-edit" title="Edit" href="'+sourceleadUrl+'/editUserManual?levelOneUUID='+opt.userManualUUID+'&levelName='+levelName+'" ></a> <a class="glyphicon glyphicon-trash text-danger ml" title="Delete" onclick="deleteUserManualThree('+opt.id+');"></a><a class="glyphicon glyphicon-edit" title="summary" onclick="userManualOneSummary('+opt.id+');"></a>';
+	              	result = result	+ '<a class="glyphicon glyphicon-edit" title="Edit" href="'+sourceleadUrl+'/editUserManual?levelOneUUID='+opt.userManualUUID+'&levelName='+levelName+'" ></a> <a class="glyphicon glyphicon-trash text-danger ml" title="Delete" onclick="deleteUserManualThree('+opt.id+');"></a> <a class="fa fa-eye text-blue ml" title="summary" onclick="userManualThreeSummary('+opt.id+');"></a>';
 	              	result = result	+ '</div></td>';
 	  	              return result;
 	              }
@@ -501,7 +576,7 @@ function UserManualThreePagination(url){
 	    $("input[type=search]").hide();
 	    $("#UserManualThreeSearch").keyup(function(e) {
 	    	   if(e.which === 13) {
-	    		   getAllLevelThree();
+	    		   getAllLevelThree(id);
 	    	   }
 	    	});
 		
@@ -512,59 +587,74 @@ function deleteUserManualThree(userManualId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p style='text-align: center;'>Do you want to delete a task ?</p>";
+	result = result +"		<p style='text-align: center;'>Do you want to delete a leve three ?</p>";
 	result = result + ' <div id="reasonForProjectDiv"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteUserManualThree('+userManualId+')"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteUserManualThre('+userManualId+')"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
-	$("#UserManualDelete").append(result);
+	$("#userManualDelete").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 }
 
-function deleteUserManualThree(userManualId){
+function deleteUserManualThre(userManualId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
 		type : "GET",
 		url : sourceleadUrl+ "/deleteUserManualThree?${_csrf.parameterName}=${_csrf.token}&userManualId="+userManualId,
 		
 		success : function(json) {
-			    $("#UserManualDelete").empty();
+			    $("#userManualDelete").empty();
 			 	$(".project_inn_mask").fadeOut(200);
-			 	projectTask(projectId,projectStatus);
+			 	getUserManualList();
 		}
 	});
 }
 
-
+function cancelTermination(){
+	$("#userManualDelete").empty();
+	 $(".project_inn_mask").fadeOut(200);
+}
 
  </script>
+ 
+ <!--  UserManualone Summary -->
+ 
  <script>
   
  function userManualOneSummary(userManualId){
-	 alert("hello")
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 			type : "POST",
 			url : sourceleadUrl+ "/userManualOneSummary?${_csrf.parameterName}=${_csrf.token}&userManualId="+userManualId,
 			
 			success : function(json) {
-				alert(json)
 				var title = "";
 				var description = "";
 				
 				
 				if (json.title != null && json.title != '' && json.title != 'undefined') {
-					alert("hello")
-					title = json.title;
+						title = json.title;
 					} else {
-				title = "--";
-			}
+						title = "--";
+					}
+				
 			if (json.description != null && json.description != ''
 					&& json.description != 'undefined') {
 				description = json.description;
 			} else {
 				description = "----";
 			}
+			
+			if (json.updatedBy != null && json.updatedBy != '' && json.updatedBy != 'undefined') {
+				updatedBy = json.updatedBy;
+				} else {
+					updatedBy = "--";
+				}
+			if (json.updatedDate != null && json.updatedDate != '' && json.updatedDate != 'undefined') {
+				updatedDate = json.updatedBy;
+				} else {
+					updatedDate = "--";
+				}
 			
 			var result = "";
 			result = result	+ '<div class="project_tabs_inn_table">';
@@ -576,11 +666,7 @@ function deleteUserManualThree(userManualId){
 			result = result + '<div class="clearfix"></div>';
 			result = result + '</div>';
 			
-			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
-			result = result + '<strong>Description:</strong>';
-			result = result + '<span>'+description+'</span>';
 			result = result + '<div class="clearfix"></div>';
-			result = result + '</div>';
 			
 			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
 			result = result + '<strong>CreatedBy:</strong>';
@@ -588,21 +674,35 @@ function deleteUserManualThree(userManualId){
 			result = result + '<div class="clearfix"></div>';
 			result = result + '</div>';
 			
+			result = result + '<div class="clearfix"></div>';
+			
 			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
 			result = result + '<strong>CreatedDate:</strong>';
 			result = result + '<span>'+json.createdDate+'</span>';
 			result = result + '<div class="clearfix"></div>';
 			result = result + '</div>';
 			
+			result = result + '<div class="clearfix"></div>';
+			
 			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
 			result = result + '<strong>UpdatedBy:</strong>';
-			result = result + '<span>'+json.updatedBy+'</span>';
+			result = result + '<span>'+updatedBy+'</span>';
 			result = result + '<div class="clearfix"></div>';
 			result = result + '</div>';
 			
+			result = result + '<div class="clearfix"></div>';
+			
 			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
 			result = result + '<strong>UpdatedDate:</strong>';
-			result = result + '<span>'+json.updatedDate+'</span>';
+			result = result + '<span>'+updatedDate+'</span>';
+			result = result + '<div class="clearfix"></div>';
+			result = result + '</div>';
+			
+			result = result + '<div class="clearfix"></div>';
+			
+			result = result	+ '<div class="" id="ProjectIdDiv">';
+			result = result + '<strong>Description:</strong>';
+			result = result + '<span>'+description+'</span>';
 			result = result + '<div class="clearfix"></div>';
 			result = result + '</div>';
 			
@@ -610,7 +710,12 @@ function deleteUserManualThree(userManualId){
 			result = result + '</div>';
 			
 			$("#UserManualDivId").empty();  
-			$("#UserManualDivId").append(result);  
+			$("#UserManualDivId").append(result); 
+			
+			 document.getElementById("level1summary").style.display="block";
+			 document.getElementById("usermanualList").style.display="none";
+			 document.getElementById("level2summary").style.display="none";
+			 document.getElementById("level3summary").style.display="none";
 			
 			}
 		});
@@ -618,33 +723,44 @@ function deleteUserManualThree(userManualId){
  
  </script>
  
+  <!--  UserManualTwo Summary -->
+ 
   <script>
   
  function userManualTwoSummary(userManualId){
-	 alert("hello")
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 			type : "POST",
 			url : sourceleadUrl+ "/userManualTwoSummary?${_csrf.parameterName}=${_csrf.token}&userManualId="+userManualId,
 			
 			success : function(json) {
-				alert(json)
 				var title = "";
 				var description = "";
 				
 				
 				if (json.title != null && json.title != '' && json.title != 'undefined') {
-					alert("hello")
 					title = json.title;
 					} else {
 				title = "--";
 			}
+				alert("test "+json.description)
 			if (json.description != null && json.description != ''
 					&& json.description != 'undefined') {
 				description = json.description;
 			} else {
 				description = "----";
 			}
+			if (json.updatedBy != null && json.updatedBy != '' && json.updatedBy != 'undefined') {
+				updatedBy = json.updatedBy;
+				} else {
+					updatedBy = "--";
+				}
+			if (json.updatedDate != null && json.updatedDate != '' && json.updatedDate != 'undefined') {
+				updatedDate = json.updatedBy;
+				} else {
+					updatedDate = "--";
+				}
+			
 			
 			var result = "";
 			result = result	+ '<div class="project_tabs_inn_table">';
@@ -656,11 +772,7 @@ function deleteUserManualThree(userManualId){
 			result = result + '<div class="clearfix"></div>';
 			result = result + '</div>';
 			
-			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
-			result = result + '<strong>Description:</strong>';
-			result = result + '<span>'+description+'</span>';
 			result = result + '<div class="clearfix"></div>';
-			result = result + '</div>';
 			
 			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
 			result = result + '<strong>CreatedBy:</strong>';
@@ -668,29 +780,48 @@ function deleteUserManualThree(userManualId){
 			result = result + '<div class="clearfix"></div>';
 			result = result + '</div>';
 			
+			result = result + '<div class="clearfix"></div>';
+			
 			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
 			result = result + '<strong>CreatedDate:</strong>';
 			result = result + '<span>'+json.createdDate+'</span>';
 			result = result + '<div class="clearfix"></div>';
 			result = result + '</div>';
 			
+			result = result + '<div class="clearfix"></div>';
+			
 			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
 			result = result + '<strong>UpdatedBy:</strong>';
-			result = result + '<span>'+json.updatedBy+'</span>';
+			result = result + '<span>'+updatedBy+'</span>';
 			result = result + '<div class="clearfix"></div>';
 			result = result + '</div>';
+			
+			result = result + '<div class="clearfix"></div>';
 			
 			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
 			result = result + '<strong>UpdatedDate:</strong>';
-			result = result + '<span>'+json.updatedDate+'</span>';
+			result = result + '<span>'+updatedDate+'</span>';
 			result = result + '<div class="clearfix"></div>';
 			result = result + '</div>';
 			
-			result = result + '</div>';
+			result = result + '<div class="clearfix"></div>';
+			
+			result = result	+ '<div class="" id="ProjectIdDiv">';
+			result = result + '<strong>Description:</strong>';
+			result = result + '<span>'+description+'</span>';
+			result = result + '<div class="clearfix"></div>';
 			result = result + '</div>';
 			
+			
+			
 			$("#UserManualDivId").empty();  
-			$("#UserManualDivId").append(result);  
+			$("#UserManualDivId").append(result); 
+			
+			 document.getElementById("level3summary").style.display="none";
+			 document.getElementById("level2summary").style.display="block";
+			 document.getElementById("level1summary").style.display="none";
+			 document.getElementById("usermanualList").style.display="none";
+				
 			
 			}
 		});
@@ -698,23 +829,22 @@ function deleteUserManualThree(userManualId){
  
  </script>
  
+ 
+  <!--  UserManualThree Summary -->
+ 
   <script>
   
- function userManualOneSummary(userManualId){
-	 alert("hello")
+ function userManualThreeSummary(userManualId){
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl+ "/userManualOneSummary?${_csrf.parameterName}=${_csrf.token}&userManualId="+userManualId,
+			url : sourceleadUrl+ "/userManualThreeSummary?${_csrf.parameterName}=${_csrf.token}&userManualId="+userManualId,
 			
 			success : function(json) {
-				alert(json)
 				var title = "";
 				var description = "";
 				
-				
 				if (json.title != null && json.title != '' && json.title != 'undefined') {
-					alert("hello")
 					title = json.title;
 					} else {
 				title = "--";
@@ -725,6 +855,26 @@ function deleteUserManualThree(userManualId){
 			} else {
 				description = "----";
 			}
+			if (json.updatedBy != null && json.updatedBy != '' && json.updatedBy != 'undefined') {
+				updatedBy = json.updatedBy;
+				} else {
+					updatedBy = "--";
+				}
+			if (json.updatedDate != null && json.updatedDate != '' && json.updatedDate != 'undefined') {
+				updatedDate = json.updatedBy;
+				} else {
+					updatedDate = "--";
+				}
+			if (json.urlName != null && json.urlName != '' && json.urlName != 'undefined') {
+				urlName = json.urlName;
+				} else {
+					urlName = "--";
+				}
+			if (json.publishOn != null && json.publishOn != '' && json.publishOn != 'undefined') {
+				publishOn = json.publishOn;
+				} else {
+					publishOn = "--";
+				}
 			
 			var result = "";
 			result = result	+ '<div class="project_tabs_inn_table">';
@@ -736,11 +886,23 @@ function deleteUserManualThree(userManualId){
 			result = result + '<div class="clearfix"></div>';
 			result = result + '</div>';
 			
+			/* result = result + '<div class="clearfix"></div>';
+			
 			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
-			result = result + '<strong>Description:</strong>';
-			result = result + '<span>'+description+'</span>';
+			result = result + '<strong>PublishedOn:</strong>';
+			result = result + '<span>'+publishOn+'</span>';
+			result = result + '<div class="clearfix"></div>';
+			result = result + '</div>'; */
+			
+			result = result + '<div class="clearfix"></div>';
+			
+			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
+			result = result + '<strong>URL Name:</strong>';
+			result = result + '<span>'+urlName+'</span>';
 			result = result + '<div class="clearfix"></div>';
 			result = result + '</div>';
+			
+			result = result + '<div class="clearfix"></div>';
 			
 			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
 			result = result + '<strong>CreatedBy:</strong>';
@@ -748,33 +910,104 @@ function deleteUserManualThree(userManualId){
 			result = result + '<div class="clearfix"></div>';
 			result = result + '</div>';
 			
+			result = result + '<div class="clearfix"></div>';
+			
 			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
 			result = result + '<strong>CreatedDate:</strong>';
 			result = result + '<span>'+json.createdDate+'</span>';
 			result = result + '<div class="clearfix"></div>';
 			result = result + '</div>';
 			
+			result = result + '<div class="clearfix"></div>';
+			
 			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
 			result = result + '<strong>UpdatedBy:</strong>';
-			result = result + '<span>'+json.updatedBy+'</span>';
+			result = result + '<span>'+updatedBy+'</span>';
 			result = result + '<div class="clearfix"></div>';
 			result = result + '</div>';
 			
+			result = result + '<div class="clearfix"></div>';
+			
 			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
 			result = result + '<strong>UpdatedDate:</strong>';
-			result = result + '<span>'+json.updatedDate+'</span>';
+			result = result + '<span>'+updatedDate+'</span>';
 			result = result + '<div class="clearfix"></div>';
 			result = result + '</div>';
+			
+			result = result + '<div class="clearfix"></div>';
+			
+			result = result	+ '<div class="" id="ProjectIdDiv">';
+			result = result + '<strong>Description:</strong>';
+			result = result + '<span>'+description+'</span>';
+			result = result + '<div class="clearfix"></div>';
+			result = result + '</div>';
+			
+			result = result + '<div class="clearfix"></div>';
+			
+			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
+			result = result + '<strong>attachments:</strong>';
+			if(undefined !== json.userManualAttachment){
+				for (var i=0; i<json.userManualAttachment.length; i++)
+				{
+				var att = json.userManualAttachment[i];
+				
+				result = result+' <div class="clearfix"></div>';
+				result = result+' <div class="clearfix mt">';
+				result = result+'<div>';
+				result = result+' <div class="timesheet_week_comm invoiceDocs invoiceDocsInput">';
+				result = result+'<span class="pull-left">';
+				result = result+'<strong>';
+				result = result+'<i class="downloadIcon-new" style="position:absolute; top:13px; font-size:15px; left:10px;"><a download class="glyphicon glyphicon-save" href="'+att.fileUrl+'" title="download"></a></i>';
+				result = result+'<input type="button" title="'+att.fileName+'" value="'+att.fileName+'" style="cursor:initial !important">';
+				result = result+'<a href="javascript:void(0)" class="fa fa-eye pull-left paddingLeft ml5 mt anchorBlack" title="view attachment" onclick="viewFile(\''+att.fileUrl+'\',\''+att.fileName+'\');"></a>';
+				
+				/* result = result+'	            <td><div class="tblminwidth-125"><a download class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\" title="Download"></a>';
+           		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"title="preview"></a>';
+				 */
+           		result = result+'</strong>';
+				result = result+'</span>';
+				result = result+' </div>';
+				result = result+'</div>';
+				result = result+' </div>';
+
+				}
+			}
+			  
+			result = result + '<div class="clearfix"></div>';
+			result = result + '</div>';
+			
+			
 			
 			result = result + '</div>';
 			result = result + '</div>';
 			
 			$("#UserManualDivId").empty();  
-			$("#UserManualDivId").append(result);  
+			$("#UserManualDivId").append(result); 
+			document.getElementById("level3summary").style.display="block";
+			 document.getElementById("level2summary").style.display="none";
+			document.getElementById("level1summary").style.display="none";
+			 document.getElementById("usermanualList").style.display="none";
+			 
 			
 			}
 		});
 	}
+ 
+ </script>
+ 
+ <script>
+ function userManualThreePublish(id,userManaualTwoId){
+	 var sourceleadUrl = '${sourceleadUrl}';
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl+ "/publishUserManualThree?${_csrf.parameterName}=${_csrf.token}&userManualId="+id,
+			
+			success : function(data) {
+				getAllLevelThree(userManaualTwoId);
+			}
+		});	
+	 
+ }
  
  </script>
  

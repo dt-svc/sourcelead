@@ -30,6 +30,7 @@ public class UserManualAttachment implements Serializable{
 	
 	
 	@ManyToOne
+	@JsonBackReference
 	@JoinColumn(name = "USER_MANUAL_ID")
 	private UserManualLevelThree userManualId;
 	
@@ -47,7 +48,7 @@ public class UserManualAttachment implements Serializable{
 	private String fileType;
 	
 	@Column(name = "STATUS")
-	private Integer status;
+	private String status;
 	
 	@Column(name = "CREATED_DATE")
     private Date createdDate;
@@ -128,12 +129,12 @@ public class UserManualAttachment implements Serializable{
 	}
 
 
-	public Integer getStatus() {
+	public String getStatus() {
 		return status;
 	}
 
 
-	public void setStatus(Integer status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 

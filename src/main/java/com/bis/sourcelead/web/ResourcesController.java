@@ -96,7 +96,11 @@ public class ResourcesController {
 		 		model.addObject("levelOneValue", userManualLevelTwo.getUserManualLevelOneId().getId());
 		 	}else{
 		 		userManualLevelThree=userManualService.getLevelThreeByUUId(levelOneUUID);
-		 		String publishon = dateFormatResult.format(dateFormat.parse(userManualLevelThree.getPublishOn().toString()));
+		 		String publishon=null;
+		 		if(userManualLevelThree.getPublishOn() !=null){
+		 			 publishon = dateFormatResult.format(dateFormat.parse(userManualLevelThree.getPublishOn().toString()));
+		 		}
+		 		
 		 		model.addObject("userManualLevel", userManualLevelThree);
 		 		model.addObject("levelOneValue", userManualLevelThree.getUserManualLevelTwoId().getUserManualLevelOneId().getId());
 		 		model.addObject("levelTwoValue", userManualLevelThree.getUserManualLevelTwoId().getId());
@@ -111,6 +115,15 @@ public class ResourcesController {
 		    
 			model.addObject("levelName", levelName);
 			model.setViewName("resources/addUserManual");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			
+			return model;
+
+	 }
+	 @RequestMapping(value = {"/userManualPublish"}, method = { RequestMethod.GET, RequestMethod.POST })
+		public ModelAndView userManualPublish(HttpServletRequest request) {
+			ModelAndView model = new ModelAndView();
+			model.setViewName("resources/userManualPublish");
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			
 			return model;

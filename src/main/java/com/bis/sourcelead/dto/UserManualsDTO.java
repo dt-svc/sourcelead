@@ -7,7 +7,6 @@ import java.util.Set;
 import com.bis.sourcelead.entity.UserManualAttachment;
  
 public class UserManualsDTO  extends SearchDTO implements Serializable{
-
 	
 	private String id;
 	
@@ -43,7 +42,11 @@ public class UserManualsDTO  extends SearchDTO implements Serializable{
 	
 	private String updatedDate;
 	
-	private Set<UserManualAttachment> userManualAttachment;
+	private String save;
+	
+	private String publish;
+	
+	private List<UserManualAttachment> userManualAttachment;
 
 	public String getStatus() {
 		return status;
@@ -183,12 +186,30 @@ public class UserManualsDTO  extends SearchDTO implements Serializable{
 		this.updatedDate = updatedDate;
 	}
 
-	public Set<UserManualAttachment> getUserManualAttachment() {
+	public List<UserManualAttachment> getUserManualAttachment() {
 		return userManualAttachment;
 	}
 
-	public void setUserManualAttachment(Set<UserManualAttachment> userManualAttachment) {
+	public void setUserManualAttachment(List<UserManualAttachment> userManualAttachment) {
 		this.userManualAttachment = userManualAttachment;
 	}
+
+	public String getSave() {
+		return save;
+	}
+
+	public void setSave(String save) {
+		this.save = save;
+	}
+
+	public String getPublish() {
+		return publish;
+	}
+
+	public void setPublish(String publish) {
+		this.publish = publish;
+	}
+	
+	
 	
 }

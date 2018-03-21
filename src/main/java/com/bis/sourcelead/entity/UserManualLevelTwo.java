@@ -2,7 +2,10 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,8 +14,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -28,6 +35,10 @@ public class UserManualLevelTwo implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@OneToMany(mappedBy = "UserManualLevelTwoId",cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
+	private Set<UserManualLevelThree> userManualLevelThree = new HashSet<UserManualLevelThree>();
+	
 	@Column(name = "LEVEL_TWO_UUID")
 	private String levelTwoUUID;
 	
@@ -40,6 +51,7 @@ public class UserManualLevelTwo implements Serializable{
 	private String description;
 	
 	@ManyToOne
+	@JsonBackReference
 	@JoinColumn(name = "USER_MANUAL_LEVEL_ONE_ID")
 	private UserManualLevelOne UserManualLevelOneId;
 	
@@ -47,7 +59,7 @@ public class UserManualLevelTwo implements Serializable{
 	private Integer order;
 	
 	@Column(name = "STATUS")
-	private Integer status;
+	private String status;
 	
 	@Column(name = "CREATED_DATE")
     private Date createdDate;
@@ -118,12 +130,12 @@ public class UserManualLevelTwo implements Serializable{
 	}
 
 
-	public Integer getStatus() {
+	public String getStatus() {
 		return status;
 	}
 
 
-	public void setStatus(Integer status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 
@@ -176,15 +188,5 @@ public class UserManualLevelTwo implements Serializable{
 	public void setLevelTwoUUID(String levelTwoUUID) {
 		this.levelTwoUUID = levelTwoUUID;
 	}
-
-
-	@Override
-	public String toString() {
-		return "UserManualLevelTwo [id=" + id + ", levelTwoUUID=" + levelTwoUUID + ", title=" + title + ", description="
-				+ description + ", UserManualLevelOneId=" + UserManualLevelOneId + ", order=" + order + ", status="
-				+ status + ", createdDate=" + createdDate + ", updatedDate=" + updatedDate + ", createdBy=" + createdBy
-				+ ", updatedBy=" + updatedBy + "]";
-	}
-
 
 }

@@ -2,7 +2,10 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,8 +14,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -27,6 +33,9 @@ public class UserManualLevelOne implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
 	private Long id;
+	
+	@OneToMany(mappedBy = "UserManualLevelOneId",cascade = CascadeType.ALL)
+	private Set<UserManualLevelTwo> userManualLevelTwo = new HashSet<UserManualLevelTwo>();
 	
 	@Column(name = "LEVEL_ONE_UUID")
 	private String levelOneUUID;
@@ -43,7 +52,7 @@ public class UserManualLevelOne implements Serializable{
 	private Integer order;
 	
 	@Column(name = "STATUS")
-	private Integer status;
+	private String status;
 	
 	@Column(name = "CREATED_DATE")
     private Date createdDate;
@@ -104,12 +113,12 @@ public class UserManualLevelOne implements Serializable{
 	}
 
 
-	public Integer getStatus() {
+	public String getStatus() {
 		return status;
 	}
 
 
-	public void setStatus(Integer status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 
@@ -161,14 +170,6 @@ public class UserManualLevelOne implements Serializable{
 
 	public void setLevelOneUUID(String levelOneUUID) {
 		this.levelOneUUID = levelOneUUID;
-	}
-
-
-	@Override
-	public String toString() {
-		return "UserManualLevelOne [id=" + id + ", levelOneUUID=" + levelOneUUID + ", title=" + title + ", description="
-				+ description + ", order=" + order + ", status=" + status + ", createdDate=" + createdDate
-				+ ", updatedDate=" + updatedDate + ", createdBy=" + createdBy + ", updatedBy=" + updatedBy + "]";
 	}
 
 
