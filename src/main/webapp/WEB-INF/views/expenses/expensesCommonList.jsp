@@ -21,12 +21,15 @@ function myExpensesListByStage(expenseStatus){
 }
 		
 function employeeExpensesListByStage(expenseStatus){
+	if(expenseStatus !='' && expenseStatus != null && expenseStatus !='undefined'){
+		expenseStatus = expenseStatus.toUpperCase();
+	}
 $.ajax({
 	    type : "GET",
 	    url: sourceleadUrl+"/getExpensesApprovalList?expenseStatus="+expenseStatus,
 	    success :function(json) {
 	    		localStorage.setItem("empExpensesListGrid",json);
-	    		window.location.replace(sourceleadUrl+'/expensesApprovalList');
+	    		window.location.replace(sourceleadUrl+'/expensesApprovalList/'+expenseStatus);
 	     }
 	});
 }
