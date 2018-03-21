@@ -605,6 +605,8 @@ public class Constants {
 	public static final String[] EXPENSES_REPORTS_HEADERS_1 = {"Amount","Claimed"};
 	
 	
+	public static final String[] PROJECT_EXCEL_HEADERS = { "Project Id", "Name", "Manager", "Invoice Frequency", "Budget", "Date", "Client", "Status"};
+	
 	public static final String SHORTLIST_CANDIDATE_COUNT = "shortlist_candidate :";
 	public static final String VENDOR = "Vendor";
 	public static final String CLIENT = "Client";
