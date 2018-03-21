@@ -1,6 +1,8 @@
 var immigration = new Immigration();
 var immiModulePath = "/immigration";
 var immTemplId = '';
+var immigrationId = '';
+var candidateId = '';
 var formNames = [];
 function Immigration() {
 
@@ -165,6 +167,12 @@ function Immigration() {
                     type: "POST",
                     data: formData,
                     success: function (data) {
+                    	console.log(data);
+                    	immigrationId = data.id;
+                    	candidateId = data.candidateId;
+                    	//window.location.href = sourceleadUrl + immiModulePath + "/viewImmigration?immigrationId="+immigrationId;
+                    	//$("#newPetitionTemplateDiv").load("/app" + immiModulePath + "/loadNewPetitionPage?forward=two");
+                    	//viewImmigrationPageList(data);
                         /* console.log("inside savePetitionTemplateDocDetails success");
                          if(data == 'success'){
                          if(status == 'saveContinue'){
@@ -195,6 +203,17 @@ function Immigration() {
             $("#newPetitionTemplateDiv").load("/app" + immiModulePath + "/loadNewPetitionPage?forward=seven");
         }
     }// immigration end if don't required comment above code end here.
+    
+    this.viewImmigrationPageList = function(immigrationId){
+    	 $.ajax({
+             url: sourceleadUrl + immiModulePath + "/viewImmigration?immigrationId="+immigrationId,
+             type: "POST",
+             /*data: formData,*/
+             success: function (data) {
+            	 
+             }
+    	 });
+    }
 
     this.savePetitionTemplateDetailsValues = function () {
         $.ajax({

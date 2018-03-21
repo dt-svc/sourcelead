@@ -13,9 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.dto.ImmigrationResidenceDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateLcaI94Summary;
@@ -40,6 +39,9 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 
 	@Autowired
 	private UserRoleDao userRoleDao;
+	
+	@Autowired
+	CandidateDao candidateDao;
 
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -76,10 +78,10 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public void savePetitionDetails(Immigration immigration, Candidate candidate,
+	public Immigration savePetitionDetails(Immigration immigration, Candidate candidate,
 			CandidateIdendities candidateIdendities, CandidateResumes candidateResume,
 			List<CandidateLcaI94Summary> lcaSummaryLst, List<CandidateResidence> residenceList) throws Exception {
-		logger.debug("saveConnection");
+		logger.debug("savePetitionDetails starts");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (candidate != null) {
@@ -105,9 +107,37 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 				}
 			}
 		} catch (Exception exception) {
-			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"Immigration"));
-				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		    logger.error("Exception caught while saving immigration information "+exception.getMessage());
+		    exception.printStackTrace();
 		}
+		return immigration;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Immigration getImmigrationViewList(String immigrationId) {
+		logger.debug("getImmigrationViewList starts");
+		Session session = this.sessionFactory.getCurrentSession();
+		Immigration immigration =  (Immigration) session.get(Immigration.class, Long.parseLong(immigrationId));
+		return immigration;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public String getPetitionTypeById(Long petitionTypeId, String petitionTypeConstant) {
+		Session session = this.sessionFactory.getCurrentSession();
+        String query = "select lud.name from LookUpData lud where lud.category = :category and lud.id = :lookupId";
+        String name = (String) session.createQuery(query).setString("category", petitionTypeConstant).setLong("lookupId", petitionTypeId).uniqueResult();
+		return name;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateLcaI94Summary getCandidateLCADetails(Long jobId, String yes) {
+		 Session session = this.sessionFactory.getCurrentSession();
+	        String query = "from CandidateLcaI94Summary clis where clis.requirementId.id = :jobId and clis.isCurrent = :isCurrent";
+	        CandidateLcaI94Summary lcaI94Summary = (CandidateLcaI94Summary) session.createQuery(query).setString("jobId", jobId.toString().trim()).setString("isCurrent", yes).uniqueResult();
+		return lcaI94Summary;
 	}
 
 }

@@ -48,6 +48,10 @@ public class Immigration implements Serializable {
 	private ImmigrationTemplate immigrationTemplateId;
 	
 	@ManyToOne
+	@JoinColumn(name = "ORG_LOCATION_ID")
+	private OrgLocations orgLocationId;
+	
+	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID")
 	private Candidate candidate;
 	
@@ -245,4 +249,14 @@ public class Immigration implements Serializable {
 	public void setOpenDate(Date openDate) {
 		this.openDate = openDate;
 	}
+
+	public OrgLocations getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(OrgLocations orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+	
+	
 }

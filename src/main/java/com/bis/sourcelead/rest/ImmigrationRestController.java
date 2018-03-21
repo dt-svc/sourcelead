@@ -31,6 +31,7 @@ import com.bis.sourcelead.dto.ResponseList;
 
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -177,10 +178,11 @@ public class ImmigrationRestController {
     }
 
     @RequestMapping(value = {"/viewImmigration"})
-    public ModelAndView viewImmigration(HttpServletRequest request) {
+    public ModelAndView viewImmigration(HttpServletRequest request, @RequestParam(value = "immigrationId", required = false) String immigrationId) {
         ModelAndView model = new ModelAndView();
+        ImmigrationDTO immigrationDTO = immigrationCommonService.getImmigrationViewList(immigrationId);
+        model.addObject("immigration", immigrationDTO);
         model.addObject("sourceleadUrl", sourceleadUrl);
-        User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
         model.setViewName("/immigration/immigrationView");
         return model;
     }
@@ -496,18 +498,19 @@ public class ImmigrationRestController {
     }
 
     @RequestMapping(value = {"/savePetitionDetailsPage"}, method = RequestMethod.POST)
-    public String savePetitionDetailsPage(ImmigrationDTO immigrationDTO, HttpServletRequest request) {
+    public String  savePetitionDetailsPage(ImmigrationDTO immigrationDTO, HttpServletRequest request) {
         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
         immigrationDTO.setStaticPath(staticPath);
 		System.out.println("Candidate ID ----> :  "+immigrationDTO.getCandidateId());
+		Immigration immigration = null;
         try {
-            immigrationCommonService.savePetitionDetails(immigrationDTO, user, orgLocations);
+        	immigration = immigrationCommonService.savePetitionDetails(immigrationDTO, user, orgLocations);
         } catch (Exception e) {
             logger.error("Exception caugth in savePetitionDetailsPage controller" + e.getMessage());
             e.printStackTrace();
         }
-        return null;
+        return "{result:success,id:"+immigration.getId()+",candidateId:"+immigration.getCandidate().getId()+"}";
     }
 
     @RequestMapping(value = "/validateTemplateName", method = RequestMethod.POST)
