@@ -3,8 +3,8 @@
 			  <div class="immigraDetailsCta">
 				  <h2>Petition detail</h2>
 				  <ul>
-					  <li class="clearfix"><span>Petition type</span><p>: Green Card</p></li>
-					  <li class="clearfix"><span>Open date</span><p>: DD/MM/YY</p></li>
+					  <li class="clearfix"><span>Petition type</span><p>: ${immigration.petitionType}</p></li>
+					  <li class="clearfix"><span>Open date</span><p>: ${immigration.openDate}</p></li>
 					  <li class="clearfix"><span>Current USCIS Status</span><p>: Green Card</p></li>
 					  <li class="clearfix"><span>Date of arrival</span><p>: DD/MM/YY</p></li>
 					  <li class="clearfix"><span>Place of entry</span><p>: Hyderabad</p></li>
@@ -65,7 +65,7 @@
 	 <script>
 	 
 	 $(document).ready(function() {
-		
+		 location.href = sourceleadUrl + immiModulePath + "/viewImmigration?immigrationId="+immigrationId;
 	 });	
 	 
 	 </script>

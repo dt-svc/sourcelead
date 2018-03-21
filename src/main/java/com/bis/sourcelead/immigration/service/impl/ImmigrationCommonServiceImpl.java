@@ -65,8 +65,8 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	}
 	
 	@Override
-	public void savePetitionDetails(ImmigrationDTO immigrationDTO, User user,OrgLocations orgLocations){
-		
+	public Long savePetitionDetails(ImmigrationDTO immigrationDTO, User user,OrgLocations orgLocations){
+		Long immigrationId = null;
 		try {
 			
 		/*get the candidate details*/
@@ -98,10 +98,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		immigration.setCandidate(candidate);
 		
 		Requirement requirement = new Requirement();
+		if(!StringUtils.isEmpty(immigrationDTO.getJobId())){// job id optional
 		requirement.setId(Long.parseLong(immigrationDTO.getJobId()));
-		
+		}
+		immigration.setReceiptNo(immigrationDTO.getReceiptNo());
 		immigration.setJob(requirement);
-		immigration.setStatus(1);
+		immigration.setStatus(Constants.RECORD_ACTIVE);
 		immigration.setCreatedBy(user);
 		immigration.setCreatedDate(date);
 		immigration.setUpdatedBy(user);
@@ -136,7 +138,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		candidateIdendities.setCandidateId(candidate);
 		candidateIdendities.setIdNumber(immigrationDTO.getSsnNumber());
 		candidateIdendities.setIdType(Constants.ID_TYPE_SSN);
-		candidateIdendities.setStatus(1);
+		candidateIdendities.setStatus(Constants.RECORD_ACTIVE);
 		candidateIdendities.setCreatedBy(user);
 		candidateIdendities.setCreatedDate(date);
 		candidateIdendities.setUpdatedBy(user);
@@ -180,7 +182,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		lcaSummaryCurr.setRateCurrency(immigrationDTO.getRateCurrency());
 		lcaSummaryCurr.setRate(immigrationDTO.getRate());
 		lcaSummaryCurr.setRateType(immigrationDTO.getRateType());
-		lcaSummaryCurr.setStatus(1);
+		lcaSummaryCurr.setStatus(Constants.RECORD_ACTIVE);
 		lcaSummaryCurr.setIdType(Constants.ID_TYPE_LCA);
 		
 		lcaSummaryCurr.setCreatedDate(date);
@@ -200,8 +202,8 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		}
 		lcaSummaryPrev.setRequirementId(requirement);
 		lcaSummaryPrev.setCandidateId(candidate);
-		lcaSummaryPrev.setRequirementId(requirement);
-		lcaSummaryPrev.setCandidateId(candidate);
+		//lcaSummaryPrev.setRequirementId(requirement);
+		//lcaSummaryPrev.setCandidateId(candidate);
 		lcaSummaryPrev.setCreatedBy(user);
 		lcaSummaryPrev.setUpdatedBy(user);
 		lcaSummaryPrev.setEmploymentLevel(immigrationDTO.getEmploymentLevel());
@@ -222,7 +224,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			if (immigrationDTO.getResidenceList() != null) { 
 				List<ImmigrationResidenceDTO> residenceDtoLst = immigrationDTO.getResidenceList();
 				for (ImmigrationResidenceDTO residenceDto : residenceDtoLst) {
-					if(StringUtils.isEmpty(residenceDto.getCountry()) ) continue; // skip the empty records if one of the required field value
+					if(StringUtils.isEmpty(residenceDto.getLocation()) ) continue; // skip the empty  residence rows based on one of the required field value
 					CandidateResidence residenceEntity = new CandidateResidence();
 					residenceEntity.setCandidate(candidate);
 					residenceEntity.setCity(residenceDto.getCity());
@@ -240,7 +242,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 							residenceDto.getResidenceEndDate())));
 					}
 					residenceEntity.setIsCurrAddress(Constants.NO); // default No for multiple residences treated as secondary residences.
-					residenceEntity.setStatus(1);
+					residenceEntity.setStatus(Constants.RECORD_ACTIVE);
 					residenceEntity.setCreatedDate(new Date());
 					residenceEntity.setUpdatedDate(new Date());
 					residenceEntity.setCreatedBy(user);
@@ -249,11 +251,69 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 				}
 			}
 		
-		immigrationCommonDao.savePetitionDetails(immigration,candidate,candidateIdendities,candidateResume,lcaSummaryLst, residenceList);
+		immigrationId = immigrationCommonDao.savePetitionDetails(immigration,candidate,candidateIdendities,candidateResume,lcaSummaryLst, residenceList);
 		}catch(Exception e) {
 			logger.error("Exception caugth in savePetitionDetails service"+ e.getMessage());
 			e.printStackTrace();
 		}
+		return immigrationId;
+	}
+
+	@Override
+	public ImmigrationDTO getImmigrationViewList(String immigrationId) {
+		ImmigrationDTO dto = new ImmigrationDTO();
+		try {
+		Immigration immigration = immigrationCommonDao.getImmigrationViewList(immigrationId);
+		dto.setPetitionType(immigrationCommonDao.getPetitionTypeById(immigration.getPetitionType(), Constants.PETITION_TYPE));
+		dto.setOpenDate(immigration.getOpenDate().toString());
+		dto.setCurrUscisStatus(immigrationCommonDao.getPetitionTypeById(immigration.getCurrUscisStauts(), Constants.USCIS_STATUS));
+		if(immigration.getDateOfArrival() != null) {
+			dto.setArrivalDate(immigration.getDateOfArrival().toString()); 
+		}
+		dto.setEntryPlace(immigration.getPlaceOfEntry());
+		if(immigration.getImmigrationTemplateId() != null) {
+			dto.setTemplateName(immigration.getImmigrationTemplateId().getName());
+		}
+		/*petition details end*/
+		dto.setAttorneyName(immigration.getOrg().getOrgName());
+		/*attorney end*/
+		if(immigration.getJob() != null) {
+			dto.setJobTitle(immigration.getJob().getJobTitle());
+		}
+		CandidateLcaI94Summary lcaI94Summary = immigrationCommonDao.getCandidateLCADetails(immigration.getCandidate().getId(), Constants.YES);
+		if(lcaI94Summary.getEmploymentLevel() != null) {
+			dto.setEmploymentLevelName(immigrationCommonDao.getPetitionTypeById(Long.parseLong(lcaI94Summary.getEmploymentLevel()), Constants.EMPLOYMENT_LEVEL));
+		}
+		dto.setPrevLcaNumber(lcaI94Summary.getIdNumber());
+		dto.setPrevLcaStartDate(lcaI94Summary.getStartDate().toString());
+		dto.setPrevLcaEndDate(lcaI94Summary.getEndDate().toString());
+		dto.setEmployer(lcaI94Summary.getEmployerName());
+		dto.setJobLocation(lcaI94Summary.getEmployerLocation());
+		dto.setLcaStartDate(lcaI94Summary.getStartDate().toString());
+		dto.setLcaEndDate(lcaI94Summary.getEndDate().toString());
+		/*jobdetails end*/
+		Candidate candidate = candidateDao.getCandidateById(immigration.getCandidate().getId()); 
+		dto.setAssociateName(candidate.getFirstName()+" "+candidate.getLastName());
+		dto.setFirstName(candidate.getFirstName());
+		dto.setLastName(candidate.getLastName());
+		dto.setMiddleName(candidate.getMiddelName());
+		dto.setEmail(candidate.getEmail());
+		dto.setMobile(candidate.getMobilePhone());
+		dto.setAlternateMobile(candidate.getAlternateMobilePhone());
+		dto.setBirthDate(candidate.getDateOfBirth().toString());
+		dto.setBirthPlace(candidate.getPlaceOfBirth());
+		dto.setNationality(candidate.getNationality());
+		dto.setMaritalStatus(candidate.getMaritalStatus());
+		dto.setSsnNumber(candidateDao.getCandidateIdentitiesNumberByCandidateId(candidate.getId()));
+		dto.setI_94_number(candidate.getI94No());
+		dto.setI_20_number(candidate.getI20ServiceNo());
+		dto.setEadNumber(candidate.getEadNo());
+		dto.setExperience(candidate.getExperienceYears()+" years "+candidate.getExperienceMonths()+" months");
+		}catch(Exception e) {
+			logger.error("Exception caugth in getImmigrationViewList service"+ e.getMessage());
+			e.printStackTrace();
+		}
+		return dto;
 	}	
 
 }

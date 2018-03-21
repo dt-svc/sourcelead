@@ -48,10 +48,16 @@ public class ImmigrationDTO extends SearchDTO {
 	private String entryPlace;
 
 	private String templateId;
+	
+	private String templateName;
 
 	private String attorneyId;
+	
+	private String attorneyName;
 
 	private String attorneyContact;
+	
+	private String associateName;
 
 	@Required(desc = "first name")
 	private String firstName;
@@ -95,10 +101,16 @@ public class ImmigrationDTO extends SearchDTO {
 	private String experienceYears;
 
 	private String experienceMonths;
+	
+	private String experience;
 
 	private String jobId;
 
+	private String jobTitle;
+	
 	private String employmentLevel;
+	
+	private String employmentLevelName;
 
 	private String employer;
 
@@ -724,4 +736,52 @@ public class ImmigrationDTO extends SearchDTO {
 		this.residenceList = residenceList;
 	}
 
+	public String getTemplateName() {
+		return templateName;
+	}
+
+	public void setTemplateName(String templateName) {
+		this.templateName = templateName;
+	}
+
+	public String getAttorneyName() {
+		return attorneyName;
+	}
+
+	public void setAttorneyName(String attorneyName) {
+		this.attorneyName = attorneyName;
+	}
+
+	public String getJobTitle() {
+		return jobTitle;
+	}
+
+	public void setJobTitle(String jobTitle) {
+		this.jobTitle = jobTitle;
+	}
+
+	public String getEmploymentLevelName() {
+		return employmentLevelName;
+	}
+
+	public void setEmploymentLevelName(String employmentLevelName) {
+		this.employmentLevelName = employmentLevelName;
+	}
+
+	public String getAssociateName() {
+		return associateName;
+	}
+
+	public void setAssociateName(String associateName) {
+		this.associateName = associateName;
+	}
+
+	public String getExperience() {
+		return experience;
+	}
+
+	public void setExperience(String experience) {
+		this.experience = experience;
+	}
+	
 }
