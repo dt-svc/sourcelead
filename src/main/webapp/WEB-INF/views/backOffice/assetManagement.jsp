@@ -14,6 +14,15 @@ $(document).ready(function(){
 });
 </script> 
 
+<script>
+	$(document).ready(function() {
+		document.getElementById("addAsset_form").reset();
+		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		  var sectionId = '${section.id}';
+		  getCustomDependentField(sectionId);
+		 </c:forEach>
+	});
+</script>
 <section class="content-wraper">
 <section class="content-header clearfix">
   <div class="pull-left">
@@ -135,6 +144,13 @@ $(document).ready(function(){
                   <div class="col-md-6" id="descriptionDiv">
                     <textarea class="form-control" rows="2" name="description" id="description" placeholder="Description" data-validation-optional="true" data-validation="validate_Space"></textarea>
                   </div>
+                   <c:if test="${!empty sourceleadSectionList}">
+	            	<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	               		<c:if test="${sectionOrder.index == 0}">
+	                		  <div id="customDiv${section.id}"></div>
+	              		 </c:if>
+	            	</c:forEach>
+	   			</c:if>
                 </div>
                 <!-- Shift A Fields -->
                 <div class="clearfix" id="shiftADetails" style="display: none;">
@@ -957,7 +973,18 @@ $(".addcon-pop").click(function(){
   };
 </script>
 
-
+<script>
+function getCustomDependentField(sectionId){
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 success: function(data) {
+		        	$('#customDiv'+sectionId).empty();
+		        	$('#customDiv'+sectionId).append(data);
+				 }
+		  });
+}
+</script>
 
 
 <script type="text/javascript">

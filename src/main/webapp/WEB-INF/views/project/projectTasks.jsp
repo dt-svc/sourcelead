@@ -46,7 +46,19 @@ function taskNameValidation(){
 	});
 }
 </script>
- 
+
+<script>
+	$(document).ready(function() {
+		alert("hi");
+
+		document.getElementById("addProjectTasks_form").reset();
+		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		  var sectionId = '${section.id}';
+		  getCustomDependentField(sectionId);
+		 </c:forEach>
+	});
+</script>
+
 <script>
 function getTasksOrgLocationTeams(){
 	var orgLocations = '${SourceLeadWeb_orgLocations.id}';
@@ -1005,4 +1017,19 @@ function clearDueDate(){
 	$("#dueDate").val("");
 	};
 
+</script>
+
+<script>
+function getCustomDependentField(sectionId){
+	alert("hi");
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 success: function(data) {
+					 
+		        	$('#customDiv'+sectionId).empty();
+		        	$('#customDiv'+sectionId).append(data);
+				 }
+		  });
+}
 </script>
