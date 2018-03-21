@@ -207,8 +207,6 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		}
 		lcaSummaryPrev.setRequirementId(requirement);
 		lcaSummaryPrev.setCandidateId(candidate);
-		//lcaSummaryPrev.setRequirementId(requirement);
-		//lcaSummaryPrev.setCandidateId(candidate);
 		lcaSummaryPrev.setCreatedBy(user);
 		lcaSummaryPrev.setUpdatedBy(user);
 		lcaSummaryPrev.setEmploymentLevel(immigrationDTO.getEmploymentLevel());

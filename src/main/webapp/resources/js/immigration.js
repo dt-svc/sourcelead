@@ -1,8 +1,8 @@
 var immigration = new Immigration();
 var immiModulePath = "/immigration";
 var immTemplId = '';
-var immigrationId = '';
-var candidateId = '';
+immigrationId = '';
+candidateId = '';
 var formNames = [];
 function Immigration() {
 
