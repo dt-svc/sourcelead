@@ -295,7 +295,7 @@
 		result = result + '<div class="clearfix mb10">';
 		result = result + '<div class="col-md-12" id="EmailIdDiv">';
 		result = result
-				+ '<input type="text" name="email" field-name="Email" id="referenceEmail" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" onkeyUp="validateReferenceEmail('+candidateId+');" placeholder="Email *">';
+				+ '<input type="text" name="email" field-name="Email" id="referenceEmail" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" onblur="validateReferenceEmail('+candidateId+');" placeholder="Email *">';
 		result = result + '</div>';
 		result = result + '</div>';
 
@@ -399,12 +399,14 @@
 --%>
 <script type="text/javascript">
 	function storeCandidateReferences(candidateId) {
+		validateReferenceEmail(candidateId);
 		var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd'
 		};
+		
 		if ($('#canReference_form').validate(false, validationSettings)) {
 			
 			var formData = getFormData("canReference_form");

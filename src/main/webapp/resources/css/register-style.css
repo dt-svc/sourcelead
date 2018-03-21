@@ -256,13 +256,13 @@ left:12px
 
 
 .SocialIcons {
-	width: 265px; margin: 0px auto;
+	width: 198px; margin: 0px auto;
 }
 .SocialIcons ul {
 	margin: 0px 0px; padding: 8px 0px 4px 0px;
 }
 .SocialIcons ul li {
-	list-style-type: none; width: 46px; height: 46px; background-color: #f34a38; border-radius: 50%; color: #fff;
+	list-style-type: none; width: 40px; height: 40px; background-color: #f34a38; border-radius: 50%; color: #fff;
 	float: left; text-align:center; margin: 0px 10px; padding: 13px 0px 0px 0px; cursor: pointer;
 }
 .SocialIcons ul li.sFB {
@@ -277,7 +277,7 @@ left:12px
 	background-color: #0077b7;
 }
 .SocialIcons ul li i {
-	position: static;  color: #fff; padding: 0px 0px 0px 0px; display: inline-block; font-size: 20px !important;
+	position: static;  color: #fff; padding: 0px 0px 0px 0px; display: inline-block; font-size: 18px !important;
 }
 
 
@@ -365,21 +365,21 @@ left:12px
 .checkbox-area {
     display: block !important; position: relative !important; padding:0px 0px 0px 25px !important; margin-bottom: 12px;
     cursor: pointer; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
-    width:28%; margin-top: 5px;margin-right: 20px; left: inherit !important; top: inherit !important; float: left;
+    width:12.2%; margin-top: 5px;margin-right: 20px; left: inherit !important; top: inherit !important; float: left;
     pointer-events: fill !important;
 }
 .checkbox-area input {
     position: absolute; opacity: 0; cursor: pointer;
 }
 .checkmark {
-    position: absolute; top: 0; left: 0; height: 20px; width: 20px;
-    background-color: #c9c9c9; border-radius:2px;
+    position: absolute; top: 0; left: 0; height: 18px; width:18px;
+    background-color: #fff; border-radius:2px; border: 2px solid #bdbdbd;
 }
 .checkbox-area:hover input ~ .checkmark {
-    background-color: #ccc;
+    background-color: #f1f1f1;
 }
 .checkbox-area input:checked ~ .checkmark {
-    background-color: #333;
+    background-color: #fff;
 }
 .checkmark:after {
     content: ""; position: absolute; display: none;
@@ -388,7 +388,8 @@ left:12px
     display: block;
 }
 .checkbox-area .checkmark:after {
-	left: 6px; top: 2px; width: 8px; height: 13px; border: solid white;
+    border-width: 0 3px 3px 0;
+	left: 4px; top: 0px; width: 7px; height: 10px; border: solid  #a21e23;
     border-width: 0 3px 3px 0; -webkit-transform: rotate(45deg); -ms-transform: rotate(45deg); transform: rotate(45deg);
 }
 .getDemo.Rdemo span {
@@ -410,3 +411,35 @@ left:12px
 	background-color: #a31e23; border-color: #a31e23;
 }
 /* checkbox styles */
+
+.posiRela {
+position: relative;
+}
+.passHint {
+position: absolute; width: 270px; left: -275px; background-color: #fff; padding: 10px 15px; border-radius: 5px; top: -56px; display: none;
+}
+.passHint h3 {
+padding: 0px 0px 5px 0px; margin: 0px 0px !important; font-size: 14px; font-weight: 500; color: #454545;
+}
+.passHint p {
+padding: 0px 0px 0px 10px; margin: 0px 0px; font-style: 14px; color: red; font-weight: 400;
+}
+.passHint p:before {
+position: relative; display:inline-block;
+left: -8px; width:18px;
+content: '\f00d'; font-family: fontawesome;
+}
+.passHint p.actTe {
+color: green;
+}
+.passHint p.actTe:before {
+position: relative; display:inline-block;
+left: -8px; width:18px;
+content: '\f00c'; font-family: fontawesome;
+
+}
+
+ .showPassword {
+     	top: 0; right: 0; font-size: 15px !important; background-color: #ccc; padding: 5px !important;
+    height: 34px; line-height: 34px; width: 20px; text-align: center; border-left: 1px solid #c5c5c5; cursor: pointer;
+     }

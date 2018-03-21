@@ -506,5 +506,46 @@
 				requirementPipeline(requirementId, submissionType);
 			}
 		});
+		 var submissionId = '${submissionId}';
+		 var candidateId = '${candidateId}';
+		 var requirementId = '${requirementId}';
+		 var submissionStatus = '${submissionStatus}';
+		
+		 
+		 if(submissionId != null && submissionId != '' && submissionId != 'undefined' && requirementId != null && requirementId != '' && requirementId != 'undefined' && submissionStatus =="REJECTED" && submissionType != "all" && submissionType != "DUPLICATE_APPLICANTS" && submissionType != "REQUEST_SENT" && submissionType != "SHORTLIST" && submissionType != "SUBMIT_TO_CLIENT" && submissionType != "INTERVIEW" && submissionType != "OFFERMADE"){
+			 $("#detailsTab").removeClass("current");
+				 $('li[name=applicantNotification]').addClass("current");
+		    	   requirementStatusBar(requirementId);
+		    	   $("#applicantli").addClass("reqAct");
+// 		    	   $("#submitToClientli").addClass("reqAct");
+		    	   requirementPipeline(requirementId,'all');
+				 }
+		 else if(submissionId != null && submissionId != '' && submissionId != 'undefined' && requirementId != null && requirementId != '' && requirementId != 'undefined' && submissionStatus =="SUBMIT_TO_CLIENT" && submissionType != "all" && submissionType != "DUPLICATE_APPLICANTS" && submissionType != "REQUEST_SENT" && submissionType != "SHORTLIST" && submissionType != "REJECTED" && submissionType != "INTERVIEW" && submissionType != "OFFERMADE"){
+			 $("#detailsTab").removeClass("current");
+			 $('li[name=applicantNotification]').addClass("current");
+	    	   requirementStatusBar(requirementId);
+	    	   $("#applicantli").removeClass("reqAct");
+	    	   $("#submitToClientli").addClass("reqAct");
+	    	   requirementPipeline(requirementId,'SUBMIT_TO_CLIENT');
+	    	   if('${subStatus}'!=null && '${subStatus}'!='' && '${subStatus}'!='undefined' && '${subStatus}' == 'SUBMISSION'){
+	    		   getRateListDiv(submissionId, candidateId)
+	    	   }
+	    	   
+			 }
+		 else if(submissionId != null && submissionId != '' && submissionId != 'undefined' && requirementId != null && requirementId != '' && requirementId != 'undefined' && submissionType != "all" && submissionType != "DUPLICATE_APPLICANTS" && submissionType != "REQUEST_SENT" && submissionType != "SHORTLIST" && submissionType != "REJECTED" && submissionType != "INTERVIEW" && submissionType != "OFFERMADE" && submissionStatus =="all"){
+			 $("#detailsTab").removeClass("current");
+			 $('li[name=applicantNotification]').addClass("current");
+	    	   requirementStatusBar(requirementId);
+	    	   $("#applicantli").removeClass("reqAct");
+	    	   $("#submitToClientli").addClass("reqAct");
+	    	   requirementPipeline(requirementId,'all');
+	    	   if('${subStatus}'!=null && '${subStatus}'!='' && '${subStatus}'!='undefined' && '${subStatus}' == 'SUBMISSION'){
+	    		   getRateListDiv(submissionId, candidateId)
+	    	   }
+			 }
+		 else if(submissionId != null && submissionId != '' && submissionId != 'undefined' && candidateId != null && candidateId != '' && candidateId != 'undefined' && submissionType !="all" &&  submissionStatus !="SUBMIT_TO_CLIENT" && submissionStatus !="all" || submissionStatus =="REJECTED"){
+			applicantQuickViewProfile(submissionId,candidateId);
+			 getSubmissionDetailsSideBar(submissionId,candidateId,requirementId);
+		 }
 	}
 </script>

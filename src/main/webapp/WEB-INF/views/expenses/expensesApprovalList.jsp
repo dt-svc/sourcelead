@@ -10,8 +10,6 @@
 				$("#approverDataExpensesDiv").empty();
 	       		$("#approverDataExpensesDiv").append(localStorage.getItem("empExpensesListGrid"));
 	       		preparePagination(1);
-	       		/* pagination(); */
-	       		/* localStorage.removeItem("empExpensesListGrid"); */
 	       		localStorage.setItem("empExpensesListGrid","");
 	       		$(":checkbox[value=ALL]").prop("checked",false);
 	       		if("reopen" == $("#countType").val()){
@@ -26,7 +24,6 @@
 	       		$("#temp").val("temp");
 	       		$("#appro-pop").hide();
 			}else{
-				//expensesApprovalList('${sourceleadUrl}');
 				getExpensesApprovalDataList();
 				$("#appro-pop").show();
 			}
@@ -194,27 +191,48 @@ if(dateSearch != null && dateSearch != '' && dateSearch != 'undefined' && dateSe
 
 
 var searchData = $('#SearchExpensesData').val();
-/* var expenseStatus = $('#expenseStatusDivId').val();
+
+/* var expenseStatus = [];
+$('input:checkbox[name=expenseStatus]:checked').each(function() 
+{
+	expenseStatus.push($(this).val());
+}); */
+
+
+
+
+var expenseStatus = '';
+var expensesStatusFromDashboard = '${expensesStatusFormDashBoard}';
+if(expensesStatusFromDashboard != null && expensesStatusFromDashboard != '' && expensesStatusFromDashboard !='undefined'){
+	$(":checkbox[value=ALL]").prop("checked",false);
+	$(":checkbox[value="+expensesStatusFromDashboard+"]").prop("checked",true);
+		if(expensesStatusFromDashboard === 'SUBMITTED' || expensesStatusFromDashboard === 'submitted'){
+			$(":checkbox[value=SUBMITTEDFORAPPROVAL]").prop("checked",true);	
+		}else{
+			$(":checkbox[value=ALL]").prop("checked",false);
+		}
+}
+
 if(expenseStatus != null && expenseStatus != '' && expenseStatus !='undefined'){
-	expenseStatus = expenseStatus
+	  	expenseStatus = expenseStatus.toUpperCase();
+	  	$(":checkbox[value="+expenseStatus+"]").prop("checked","true");
 }else{
 	var expenseStatus = [];
 	$('input:checkbox[name=expenseStatus]:checked').each(function() 
 	{
 		expenseStatus.push($(this).val());
-	});	
-} */
-var expenseStatus = [];
-$('input:checkbox[name=expenseStatus]:checked').each(function() 
-{
-	expenseStatus.push($(this).val());
-});
+	});
+}
+
+
+
+
 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
  var expensesApprvListDate = getJSDateFormat(locationList);
  
 var searchvalue = '';
 if(searchData != null && searchData !='' && searchData!='undefined'){
-	searchValue = searchData;
+	searchValue = encodeURIComponent(searchData);
 }else{
 	searchValue = '';
  }
@@ -223,7 +241,7 @@ $.ajax({
     type : "POST",
      url: sourceleadUrl+"/getExpensesApprovalList?"+tokenParamName+"="+tokenValue+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate+"&searchValue="+searchValue,      
      success :function(data) {
-    	$("#approverDataExpensesDiv").empty();
+    	 $("#approverDataExpensesDiv").empty(); 
 		$("#approverDataExpensesDiv").append(data);
 		$("#loadingId").removeAttr('style');
 		preparePagination(1);

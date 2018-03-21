@@ -159,16 +159,18 @@ function assetNotesList(assetId){
 }
 </script>
 <script type="text/javascript">
- function validateAssetSno() {
+ function validateAssetSno(assetId) {
+	
 	 var assetSno = document.getElementById("sno").value; 
+	  
 	 if(assetSno != null && assetSno != ""){
 		 $("#add_asset").attr("disabled", "disabled");
          //$("#create_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateAssetSno?"+tokenParamName+"="+tokenValue+"&assetSno="+assetSno, 
+		        url: sourceleadUrl+"/validateAssetSno?"+tokenParamName+"="+tokenValue+"&assetSno="+assetSno+"&assetId="+assetId, 
 		        success: function(data) {
-		        	if(data == 'true'){
+		        	if(data == true){
 		        		  $('#SnoEditDiv').find('p.jquery_form_error_message').remove();
 						  $("input#sno").after("<p class='jquery_form_error_message'>"+assetSno+" is Already Existed</span>");
 						  document.getElementById("sno").setAttribute('record-exist','yes');
@@ -238,7 +240,7 @@ function assetDetails(assetId) {
 			type : "POST",
 			url : sourceleadUrl	+ "/getAssetById?"+tokenParamName+"="+tokenValue+"&assetId="+ assetId,
 			success : function(json) {
-				    var make = "NO DATA";
+					var make = "NO DATA";
 				    var model = "NO DATA";
 				    var name = "NO DATA";
 				    var memory = "NO DATA";
@@ -389,6 +391,16 @@ function assetDetails(assetId) {
 							result = result + '  </div>';
 						}
 						
+
+					  if(json.assetCustomFieldlabelNameAndValue != null && json.assetCustomFieldlabelNameAndValue != "" && json.assetCustomFieldlabelNameAndValue != 'undefined'){
+						 $.each(json.assetCustomFieldlabelNameAndValue, function(key, value) {
+			            	  var labelNameAndlabelData = value.split("$");
+			            	  result = result + '  <div class="require_wrap_details_cta"> <b><strong>'+labelNameAndlabelData[0]+':</strong></b> <span>'+labelNameAndlabelData[1]+'</span>';
+							  result = result + '   <div class="clearfix"></div>';
+							  result = result + '  </div>';
+			              });
+		              } 
+						
 						result = result + ' <div class="require_wrap_details_cta width100percnt description80"> <b><strong>Description:</strong></b> <span>'+description+'</span>';
 						result = result + ' <div class="clearfix"></div>';
 						result = result + '</div>';
@@ -434,6 +446,14 @@ function editAssetManagement(assetId){
 			var empA = "";
 			var empB = "";
 			var issueDate = "";
+			
+			 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+			  var sectionId = '${section.id}';
+			  preapareCustomFieldDetails(assetId,sectionId);
+			</c:forEach>
+			
+			
+			
 			if (json.make != null && json.make != '' && json.make != 'undefined') {
 				make = json.make;
 			} 
@@ -512,7 +532,7 @@ function editAssetManagement(assetId){
 			result = result + '<div class="form-horizontal clearfix">';
 			
 			result = result + '<div class="col-md-3 minHeight50" id="SnoEditDiv">';
-			result = result + ' <input type="text" class="form-control input-sm" id = "sno" name="sno" value="'+json.sno+'" field-name="Serial / Port Number" onkeyup = "validateAssetSno();" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length1-200" placeholder="Serial / Port Number *">';
+			result = result + ' <input type="text" class="form-control input-sm" id = "sno" name="sno" value="'+json.sno+'" field-name="Serial / Port Number" onkeyup = "validateAssetSno('+assetId+');" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length1-200" placeholder="Serial / Port Number *">';
 			result = result + '</div>';
 			
 			result = result + '<div class="assetaddpop-ul col-md-3 minHeight50" id="workingStatusDiv">';
@@ -552,6 +572,8 @@ function editAssetManagement(assetId){
 				result = result + ' <div class="col-md-3 minHeight50">';
 				result = result + '<input type="text" class="form-control input-sm" name="harddisk" value="'+hardDisk+'" data-validation-optional="true" data-validation="validate_Space validate_NumberAndAlphabet validate_length length2-100" placeholder="Hard Disk">';
 				result = result + '</div>';
+				
+				result = result + ' <div class="showEditfields" id="customFieldDataId"></div>';
 				
 				if (json.categoryName != null && json.categoryName != '' && json.categoryName != 'undefined' && json.categoryId == 2) {
 					result = result + ' <div class="col-md-3 minHeight50">';
@@ -965,7 +987,18 @@ function clearDate(){
 $('#issueDate').val('');	
 }
 </script>
-
+<script>
+function preapareCustomFieldDetails(assetId,sectionId){
+	$.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/getAllASectionCustomFields?&assetId="+assetId+"&requestFrom=asset"+"&sectionId="+sectionId,        
+         success :function(data) {
+        	 $('#customFieldDataId').empty();
+        	 $('#customFieldDataId').append(data);
+           },
+     }); 
+}s
+</script>
 <!-- <script>
 	$("#edit-user").click(function(){
 		$(".user_summary_edit").slideToggle(100);

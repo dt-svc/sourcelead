@@ -17,8 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.codehaus.plexus.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -28,11 +26,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.AddExpensesDao;
-import com.bis.sourcelead.dao.ExpensesEntriesDao;
-import com.bis.sourcelead.dao.ExpensesEntryDocumentsDao;
 import com.bis.sourcelead.dto.ExpenseEntryDetailsDTO;
 import com.bis.sourcelead.dto.ExpensesCategoryListDTO;
 import com.bis.sourcelead.dto.ExpensesDTO;
@@ -68,31 +64,23 @@ import com.bis.sourcelead.service.ExpensesCategoryService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
-import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
-import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
-import com.itextpdf.text.ListItem;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
 @RequestMapping("/app")
 public class ExpensesRestController {
-	private static final Logger logger = LoggerFactory.getLogger(ExpensesRestController.class);
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	@Autowired
 	private ExpensesService expensesService;
-	
 	@Autowired
 	private ProjectClientService projectClientService;
-	
 	@Autowired
 	private AddExpensesService addExpensesService;
 	@Autowired
@@ -112,38 +100,49 @@ public class ExpensesRestController {
 	@Autowired
 	private UserService userService;
 	@Autowired
-	private ExpensesEntriesDao expensesEntriesDao;
-	@Autowired
-	private ExpensesEntryDocumentsDao expensesEntryDocumentsDao;
-	@Autowired
-	private TimeZoneService timeZoneService;
-	
-	@Autowired
-	private ConversionUtil conversionUtil;
-	
-	@Autowired
-	private ProjectApproverHierarchyService projectApproverHierarchyService;
-	
-	@Autowired
-	private AddExpensesDao addExpensesDao;
-	
-	@Autowired
 	private CandidateService candidateService;
-	
-	@Autowired
-	private LoginSessionController loginSessionController;
-	
 	@Autowired
 	private ProjectMembersHistoryService projectMembersHistoryService;
+
+	
 	
 	@RequestMapping(value = "/rest/getExpensesList")
     public ResponseList<ExpensesDTO> getExpensesListForMobile(@RequestBody ExpensesListUtilDTO elDTO,HttpServletRequest request) throws Exception{
 		return getExpensesList( elDTO, request);
     }
 	
-	
-	
 	@RequestMapping(value = "/getExpensesList")
+    public ModelAndView getExpensesListForWeb( ExpensesListUtilDTO elDTO,HttpServletRequest request) throws Exception{
+		 ModelAndView model = new ModelAndView();
+		 OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			int start = elDTO.getStart();
+			int length = 0;
+			if(elDTO.getPageNo()<1) {
+				elDTO.setPageNo(1);
+			}
+			if(elDTO.getPageSize()<1) {
+				length = 10;
+				elDTO.setPageSize(10);
+			}else {
+				length = elDTO.getPageSize();
+			}
+			elDTO.setStart(start);
+			elDTO.setLength(length);
+			if(elDTO.getExpenseDashboardStatus() !=null && elDTO.getExpenseDashboardStatus().equalsIgnoreCase("dashboard")) {
+				 model.addObject("expenseDashBoardStatus",elDTO.getExpenseStatus().get(0));
+			}
+			ResponseList<ExpensesDTO> expenseEmployeeList = getExpensesList( elDTO, request);
+		     model.addObject("expensesDTOList",expenseEmployeeList.getData());
+		     model.addObject("sourceleadUrl",sourceleadUrl);
+		     model.addObject("orgLocationDateFormat",orgLoc.getDateFormat().toUpperCase());
+		     model.addObject("totalRows",expenseEmployeeList.getRecordsFiltered());
+			 model.addObject("pageCount",elDTO.getPageNo());
+			 model.addObject("pageSize",elDTO.getLength());
+			 model.addObject("searchValue",elDTO.getSearchValue());
+			 model.setViewName("expenses/expensesEmployeeRedefined");
+			 return model;
+	}
+	
     public ResponseList<ExpensesDTO> getExpensesList( ExpensesListUtilDTO elDTO,HttpServletRequest request) throws Exception
     {
         
@@ -176,6 +175,9 @@ public class ExpensesRestController {
                         if(pc.getOrgRelationId() != null && pc.getOrgRelationId().getId() != null) {
                         OrgRelations orgRelations = orgRelationsService.getOrgRelationById(pc.getOrgRelationId().getId());
             			expenses.setOrgRelationUUID(orgRelations.getUUID());
+                        }
+                        if(eah.getRejectedReason() != null && StringUtils.isNotEmpty(eah.getRejectedReason())) {
+                        	expenses.setExpensesRejectedReason(eah.getRejectedReason());
                         }
                     }
                 }
@@ -719,12 +721,14 @@ public class ExpensesRestController {
 		List<Expenses> expensesList = expensesService.getTotalMyExpensesListByMasterCandidateIdForEmployeeLogin(candidate.getMasterCandidateId().getId(), expenseStatus);
 		for (Expenses ex : expensesList) {
 			ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(ex.getMasterCandidateId().getId(),ex.getProjects().getId(),orgLoc.getId());
-			if (null != ex.getProjectMembers()) {
-				ex.setProjectName(pm.getProjects().getProjectName());
+			if(pm != null) {
+				if (null != ex.getProjectMembers()) {
+					ex.setProjectName(pm.getProjects().getProjectName());
+				}
+				if(pm.getProjectClientsId()!=null && pm.getProjectClientsId().getOrgRelationId()!= null){
+					ex.setClientName(pm.getProjectClientsId().getOrgRelationId().getClientName());	
+	            }
 			}
-			if(pm.getProjectClientsId()!=null && pm.getProjectClientsId().getOrgRelationId()!= null){
-				ex.setClientName(pm.getProjectClientsId().getOrgRelationId().getClientName());	
-            }
 			if (null != ex.getStartDate()) {
 				ex.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),ex.getStartDate()));
 			}

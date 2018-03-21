@@ -184,6 +184,7 @@ function jpagination(url,sourceleadUrl){
    		"processing": true,
        "serverSide": true,
        "searching": false,
+       "searchHighlight": true,
        "ajax": $.fn.dataTable.pipeline( {
            url: url,
            method: 'POST',
@@ -324,10 +325,11 @@ function jpagination(url,sourceleadUrl){
 	        {
 	            "targets": colIndex++,
 	            "data": "rate",
+	            "sortable": false,
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
            		   if((opt.rate != null && opt.rate != '' && opt.rate != 'undefined') || (opt.maxRate != null && opt.maxRate != '' && opt.maxRate != 'undefined')){
-           				result = result +"<div class='tbldata-dotdot-big'>"+opt.currencyCode+" ";
+           				result = result +"<div class='tbldata-dotdot'>"+opt.currencyCode+" ";
            				if(opt.rate != null && opt.rate != '' && opt.rate != 'undefined'){
            					result = result + opt.rate;
            				}
@@ -347,10 +349,11 @@ function jpagination(url,sourceleadUrl){
 	        {
 	            "targets": colIndex++,
 	            "data": "billRate",
+	            "sortable": false,
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
 	            		if((opt.clientRate != null && opt.clientRate != '' && opt.clientRate != 'undefined') || (opt.clientMaxRate != null && opt.clientMaxRate != '' && opt.clientMaxRate != 'undefined')){
-	           				result = result +"<div class='tbldata-dotdot-big'>"+opt.clientCurrencyCode+" ";
+	           				result = result +"<div class='tbldata-dotdot'>"+opt.clientCurrencyCode+" ";
 	           				if(opt.clientRate != null && opt.clientRate != '' && opt.clientRate != 'undefined'){
 	           					result = result + opt.clientRate;
 	           				}
@@ -638,7 +641,7 @@ function jpagination(url,sourceleadUrl){
            ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[8,'desc']],
+	    	"aaSorting": [[10,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
@@ -652,7 +655,12 @@ function jpagination(url,sourceleadUrl){
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
 	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
-	     }
+	     },
+	     drawCallback: function(){
+   	      $('a.paginate_button', this.api().table().container()).on('click', function(){
+   	    	jobSearchHighlight();
+   	         }); 
+   	   }
   
    } );
    
@@ -663,10 +671,32 @@ function jpagination(url,sourceleadUrl){
    $("#dataTableSearch").keyup(function(e) {
    	   if(e.which === 13) {
    		 requirementList('list',sourceleadUrl);
+   		jobSearchHighlight();
    	   }
    	});
  }
 </script>
+
+<script>
+ function jobSearchHighlight(){
+	 setTimeout(function () {
+ 		var body = $( table.table().body() );
+	        body.unhighlight();
+	        body.highlight( $("#dataTableSearch").val() );   
+			
+			}, 1000); 
+ }
+ </script>
+ <script>
+	$(document).on( 'init.dt.dth', function (e, settings, json) {
+    table = new $.fn.dataTable.Api( settings );
+    var body = $( table.table().body() );
+    if ( $( table.table().node() ).hasClass( 'searchHighlight' ) || settings.oInit.searchHighlight ||  $.fn.dataTable.defaults.searchHighlight ) {
+	
+	}
+} );
+	</script>
+
 <script>
 function getAssignedMembersDiv(reqId){
 	$("#summaryButtonsDiv").hide();

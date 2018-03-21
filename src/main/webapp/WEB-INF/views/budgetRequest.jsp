@@ -137,12 +137,12 @@ function getBudgetRequestList(requestType){
 	    			result = result + '     <td><div class="tbldata-dotdot_80" title="'+estimatedBudgetValue+'">'+estimatedBudgetValue+'</div></td>';
 					result = result + '     <td><div  class="tbldata-dotdot_80">'+estimatedHours+'</div></td>';
 					result = result + '     <td><div  class="tbldata-dotdot-vsm" title="'+report.createdUserName+'">'+report.createdUserName+'</div></td>';
-					result = result + '     <td><div  class="tbldata-dotdot_80">'+report.createdStr+'</div></td>';
+					result = result + '     <td><div  class="tblminwidth-100">'+report.createdStr+'</div></td>';
 					
 					if(requestType == 'Waiting For Approval'){
 						result = result + '     <td><div class="tblminwidth-90">';
-						result = result + '     <i class="fa fa-check text-success" alt="Approve" title="Approved" onclick="acceptBudgetRequset(\''+report.id+'\',\''+requestType+'\')"></i>|';
-						result = result + '     <i class="fa fa-times text-danger" alt="Rejected" title="Rejected" onclick="deleteBudgetRequaet(\''+report.id+'\',\''+requestType+'\');"></i>|';
+						result = result + '     <i class="fa fa-check text-success" alt="Approve" title="Approve" onclick="acceptBudgetRequset(\''+report.id+'\',\''+requestType+'\')"></i>|';
+						result = result + '     <i class="fa fa-times text-danger" alt="Rejected" title="Reject" onclick="deleteBudgetRequaet(\''+report.id+'\',\''+requestType+'\');"></i>|';
 						result = result + '     <i class="fa fa-clock-o text-primary" alt="On hold" title="On hold" onclick="onholdBudgetRequaet(\''+report.id+'\',\''+requestType+'\');"></i></div></td>';
 					}
 					
@@ -166,8 +166,8 @@ function getBudgetRequestList(requestType){
 						result = result + '     <td><div class="tblminwidth-75 paTp">';
 						 result = result+"  <i class='glyphicon glyphicon-comment colB' id='"+report.id+"' onclick='rejectedMessage(\""+report.rejectedReason+"\");'>";
 					 	 result = result+" <div class='app_error_mes' id='rejectedMessage"+report.id+"'>"+report.rejectedReason+"</div></i>|";
-					 	result = result + '     <i class="fa fa-check text-success" alt="Approve" title="Approved" onclick="acceptBudgetRequset(\''+report.id+'\',\''+requestType+'\')"></i>|';
-						result = result + '     <i class="fa fa-times text-danger" alt="Rejected" title="Rejected" onclick="deleteBudgetRequaet(\''+report.id+'\',\''+requestType+'\');"></i>';
+					 	result = result + '     <i class="fa fa-check text-success" alt="Approve" title="Approve" onclick="acceptBudgetRequset(\''+report.id+'\',\''+requestType+'\')"></i>|';
+						result = result + '     <i class="fa fa-times text-danger" alt="Rejected" title="Reject" onclick="deleteBudgetRequaet(\''+report.id+'\',\''+requestType+'\');"></i>';
 						result = result + '     </div></td>';
 												
 						
@@ -312,7 +312,7 @@ function editBudgetrequest(budgetRequestedId,requestType){
 				url : sourceleadUrl+"/getBudgetRequestDetailsById?${_csrf.parameterName}=${_csrf.token}&budgetRequestedId="+budgetRequestedId,
 				success : function(json) {
 					var result = "";
-					result = result + '	<div class="collapse-div-adduser prRight col-md-4 show-div prRight_new popOut"> <i class="fa fa-close close-div" onClick="editCloseDiv();"></i>';
+					result = result + '	<div class="budgetModalpop"> <i class="fa fa-close close-div" onClick="editCloseDiv();"></i>';
 					result = result + '		<div class="form-horizontal clearfix">';
 					result = result + '<form id="budgetRequest-form" name="budgetRequest-form">';
 					result = result + '	    <input type="hidden" id="projectUUID" name="projectUUID" value="'+json.projectIdUUID+'">';
@@ -379,7 +379,9 @@ function editBudgetrequest(budgetRequestedId,requestType){
 						  $(selector).chosen(config[selector]);
 						}
 				    
-					$(".vendor_wrap_mask").fadeIn(200); 			    
+					$(".vendor_wrap_mask").fadeIn(200);
+					$(".budgetModalpop").fadeIn(200);
+					
 				    
 						$('.chosen-select').each(function() {
 							var $this = $(this);
@@ -393,7 +395,7 @@ function editBudgetrequest(budgetRequestedId,requestType){
 			
 }
 function editCloseDiv(){
-	$(".popOut").hide();
+	$(".budgetModalpop").hide();
 	$(".vendor_wrap_mask").hide(); 	
 }
 
@@ -407,7 +409,7 @@ function onholdBudgetRequaet(budgetRequestedId,requestType){
 	result = result +"		<p>Are you sure you want to On-Hold ?</p>";
 	result = result +"		<textarea  id='reasonForProjectBudget' name='reasonForProjectBudget'  placeholder='Comments here' field-name='Reason' data-validation='required validate_length length2-5000' ></textarea>";
 	result = result +"</form>";
-	result = result +'		<b href="javascript:void(0)"><input id="onHold_budget-id" type="button" value="Delete" onclick="saveOnHoldBudgetReason(\''+requestType+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="onHold_budget-id" type="button" value="On-Hold" onclick="saveOnHoldBudgetReason(\''+requestType+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 
 	$("#popUp").append(result);
@@ -489,7 +491,7 @@ function budgetRequsetPagination(){
      		"sZeroRecords": "", "sEmptyTable": ""
      	}
     });
-    $('#planningRequestsList').wrap("<div class='overflow_Auto'></div>");
+    $('#budgetRequestsPaginationList').wrap("<div class='overflow_Auto'></div>");
 }
 </script>
 <script>

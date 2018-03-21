@@ -298,7 +298,9 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 		 User fromUser = userService.getUserById(Constants.USERID);
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,requestedDocuments.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
+	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("candidatesList?&candidateIdSearchId="+requestedDocuments.getCandidateId().getId()+"&candidateKeyword=requestedDocumentNotification").toString();
 		 emailScenerioUtil.sendNotification(actionLink, fromUser, requestedDocuments.getUserId(), requestedDocuments.getOrgLocationId(), notificationScenario);
 	}
 

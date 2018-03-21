@@ -196,9 +196,11 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 					 ProjectMembers projectMember = projectMembersDao.getProjectMembersByMasterCandidateIdAndProjectIdLocationIdForExpences(expensesApproverHierarchy.getExpenseId().getProjectMembers().getMasterCandidateId().getId(), expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjects().getId(),orgLoc.getId());
 							 //expensesApproverHierarchy.getExpenseId().getProjectMembers();
 					 ProjectMembers pmWithUser =projectMembersDao.getConsultantUserProjectMemberByProjectMemberId(expensesApproverHierarchy.getExpenseId().getProjectMembers().getId());
-					if (projectMember != null && null != projectMember.getProjectMemberCandidteId()) {
+					
+					 if (projectMember != null && null != projectMember.getProjectMemberCandidteId()) {
 							if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && StringUtils.isNotBlank(projectMember.getProjectMemberCandidteId().getDesignationType())){
-								String empType = projectMember.getProjectMemberCandidteId().getDesignationType();
+								 String empType = null; empType = projectMember.getProjectMemberCandidteId().getDesignationType();
+								 expensesApproverHierarchy.setEmpType(empType);
 								if(empType.equalsIgnoreCase("C2C") || empType.equalsIgnoreCase("C2C-1099")){
 									OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
 									if(orgRelation !=  null && orgRelation.getResponderLocationId() != null && StringUtils.isNotBlank(orgRelation.getResponderLocationId().getOrgLocationName())) {
@@ -501,7 +503,7 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 			if(null != expenseId.getStatus()){
 				ExpensesApproverHierarchy  eah = getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId.getId(),orgLoc.getId());
 			    Submission_Status submissionStatus = eah.getExpenseStatus();
-				    if(eah.getReopenRejectedReason() != null) {
+				    if(submissionStatus != null) {
 				    	expenseArray[12] = submissionStatus.getValue().toUpperCase();
 				    }else {
 				    	expenseArray[12] = "Rejected";
@@ -808,6 +810,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 	public ExpensesApproverHierarchy saveExpensesApproverHierarchy(
 			ExpensesApproverHierarchy expensesApproverHierarchy) throws Exception{
 		return expensesApprovalDao.saveExpensesApproverHierarchy(expensesApproverHierarchy);
+	}
+
+
+	@Override
+	public ExpensesApproverHierarchy getApprovedExpenseByExpenseIdAndLocationId(Long expenseId, Long locationsId)
+	{
+		return expensesApprovalDao.getApprovedExpenseByExpenseIdAndLocationId(expenseId, locationsId);
 	}
 
 	

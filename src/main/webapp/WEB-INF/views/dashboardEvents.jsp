@@ -103,6 +103,7 @@ function getInterviewsDates(){
 			  }
 		}
 		
+		
 		$.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getInterviewsandTasks?${_csrf.parameterName}=${_csrf.token}&dateRange="+date,

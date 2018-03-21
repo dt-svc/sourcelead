@@ -118,6 +118,7 @@ public class Constants {
 	public static final String INVITE_CLIENT = "Invite Client";
 	public static final String INVITE_VENDOR = "Invite Vendor";
 	public static final String MODIFY_CONTRACT_ENDDATE = "ModifyContractEndDate";
+	public static final String MODIFY_CONTRACT_ENDDATE_NOTIFICATION = "ModifyContractEndDateNotification";
 	public static final String MODIFY_SOW_CONTRACT_ENDDATE = "ModifySowContractEndDate";
 	public static final String ACCEPT_CLIENT_INVITATION = "Accept Client Invitation";
 	public static final String ACCEPT_VENDOR_INVITATION = "Accept Vendor Invitation";
@@ -175,6 +176,12 @@ public class Constants {
 	public static final String ORGREQUEST_EMAIL = "orgRequestEmail";
 	public static final String ORGREQUEST_NOTIFICATION = "orgRequestNotification";
 	
+	public static final String SOURCLEAD_TICKET_EMAIL = "sourceleadTicketEmail";
+	public static final String SOURCLEAD_TICKET_NOTIFICATION = "sourceleadTicketNotification";
+	
+	public static final String ORGDEMO_EMAIL = "orgDemoEmail";
+	public static final String ORGDEMO_NOTIFICATION = "orgDemoNotification";
+	
 	public static final String ENTITY_TYPE_EMAIL = "Email";
 	public static final String ENTITY_TYPE_NOTIFICATION = "Notification";
 	public static final String ENTITY_TYPE_TEMPLATE = "Notification";
@@ -220,6 +227,7 @@ public class Constants {
 	public static final String PROJECT_MEMBER_HISTORY_CLOSED = "CLOSED";
 	public static final String REQUIREMENT_EMAIL_NOTIFICATION = "Approval Mechanism";
 	public static final String SHARE_RECOMENDED_APPLICANT = "Share Recomended Applicant";
+	public static final String SHARE_RECOMENDED_APPLICANT_NOTIFICATION = "Share Recommended Applicant Notification";
 	public static final String APPROVER_UPDATED_CONTRACT = "approverUpdatedContract";
 	public static final String APPROVE_CONTRACT = "Approve Contract";
 	public static final String REJECT_CONTRACT = "Reject Contract";
@@ -227,8 +235,11 @@ public class Constants {
 	public static final String CONTRACT_EXPIRY_REMAINDER = "contractExpiryRemainder";
 	public static final String CONTRACT_DOCUMENTS_RECEIVED = "contractDocumentsReceived";
 	public static final String MSA_CONTRACT_FINALIZED = "MSAFinalizeEmail";
+	public static final String MSA_FINALIZED_NOTIFICATION = "MsaFinalizedNotification";
 	public static final String SOW_CONTRACT_FINALIZED = "SOWFinalizeEmail";
+	public static final String SOW_FINALIZED_NOTIFICATION = "SowFinalizedNotification";
 	public static final String NDA_NSA_CONTRACT_FINALIZED = "NDAOrNSAFinalizeEmail";
+	public static final String NDA_NSA_CONTRACT_FINALIZED_NOTIFICATION = "NDAOrNSAFinalizeNotification";
 	public static final String APPLICANT_ACCEPTMAILTO_INTERVIEW_CREATOR = "ApplicantAcceptMailToInterviewCreator";
 	public static final String APPLICANT_REJECT_MAILTO_INTERVIEW_CREATOR = "ApplicantRejectMailToInterviewCreator";
 	public static final String APPLICANT_TENTATIVE_MAILTO_INTERVIEWCREATOR = "ApplicantTentativeMailToInterviewCreator";
@@ -256,7 +267,8 @@ public class Constants {
 	public static final String USERTERMINATEDNOTIFICATIONEMAIL="UserTerminatedNotificationEmail";
 	
 	public static final String HOLIDAY_REMAINDER="HolidayRemainder";
-		
+	public static final String HOLIDAY_REMAINDER_NOTIFICATION="HolidayRemainderNotification";
+	
 	public static final String LEAVE_APPROVER_EMAIL = "Approver Leave";
 	public static final String LEAVE_APPROVER_NOTIFICATION = "ApproverLeaveNotification";
 	
@@ -496,6 +508,8 @@ public class Constants {
     public static final String NOTES_CONTRACTS = "Contracts";
     public static final String NOTES_BILLING = "Billing";
     public static final String NOTES_CONTACTS = "Contacts";
+    
+    public static final String SOURCELEAD_ADMIN_UNIQUE = "Sourcelead";
 	
 	public static final String DOCUMENT_TYPE = "Document Type";
 	public static final String ADMIN = "Admin";
@@ -590,6 +604,8 @@ public class Constants {
 	public static final String[] EXPENSES_REPORTS_HEADERS = {"Emp id","Employee Name","Email id","Phone Number","Emp Type","Vendor","Vendor Contact","Project","Client"};
 	public static final String[] EXPENSES_REPORTS_HEADERS_1 = {"Amount","Claimed"};
 	
+	
+	public static final String[] PROJECT_EXCEL_HEADERS = { "Project Id", "Name", "Manager", "Invoice Frequency", "Budget", "Date", "Client", "Status"};
 	
 	public static final String SHORTLIST_CANDIDATE_COUNT = "shortlist_candidate :";
 	public static final String VENDOR = "Vendor";
@@ -885,7 +901,8 @@ public class Constants {
 	public static final String JOB_ENTITY = "JB";
 	public static final String PROJECT_ENTITY = "PJ";
 	public static final String EXPENSES_ENTITY = "EP";
-	  
+	public static final String TICKET_ENTITY = "ST-";
+	
 	public static final String OLD_VALUE_TAG_INITIATION = "<span class='textline-throughold'>";
 	public static final String OLD_VALUE_TAG_END = "</span>";
 	public static final String NEW_VALUE_TAG_INITIATION = "<span class='textline-updated'>";
@@ -946,7 +963,7 @@ public class Constants {
 	public static final String[] WEEKENDS = {"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
 	
 	public static final String[] SHORTWEEKENDS = {"Sun","Mon","Tue","Wed","Thu","Fri","Sat"};
-	public static final String[] SHORTWEEKWISEMONTH = {"Week1","Week2","Week3","Week4","Week5"};
+	public static final String[] SHORTWEEKWISEMONTH = {"Week1","Week2","Week3","Week4","Week5","Week6"};
 	public static final String[] SHORTDAYS = {"Day1","Day2","Day3","Day4","Day5","Day6","Day7","Day8","Day9","Day10","Day11","Day12","Day13","Day14","Day15","Day16","Day17","Day18","Day19","Day20","Day21","Day22","Day23","Day24","Day25","Day26","Day27","Day28","Day29","Day30","Day31"};
 	
 	public static final String[] MONTHS = {"January","February","March","April","May","June","July","August","September","October","November","December"};
@@ -1015,6 +1032,7 @@ public class Constants {
 	public static final String ROLE_CREATE_CANDIDATE ="ROLE_CREATE_CANDIDATE";
 	public static final String ROLE_CREATE_PROJECT ="ROLE_CREATE_PROJECT";
 	public static final String ROLE_ADD_NEW_CONTRACT ="ROLE_ADD_NEW_CONTRACT";
+	public static final String ROLE_ADD_ASSET ="ROLE_ADD_ASSET";
 	
 	public static final String REPORT_FILTER_LAST_7_DAYS = "Last_7_days";
 	public static final String REPORT_FILTER_LAST_15_DAYS = "Last_15_days";
@@ -1033,7 +1051,18 @@ public class Constants {
 	
 
 	public static final String[] TOP_TAKERS_LEAVE_HEADERS = { "Emp id", "Employee Name","Email id"," Leave Type", "Duration ", "No. of Days", "No. of Extra Days","Balance Leaves"}; 
-	public static final String LEAVE_DATA =  "Leave";
+	public static final String LEAVE_DATA =  "Leaves";
 	
+
+	public static final String ORG_REQUEST_FILTER_TODAY = "Today";
+	public static final String ORG_REQUEST_FILTER_ONE_WEEK_AGO = "1 Week Ago";
+	public static final String ORG_REQUEST_FILTER_TWO_WEEK_AGO = "2 Weeks Ago";
+	public static final String ORG_REQUEST_FILTER_ONE_MONTH_AGO = "1 month ago";
+	public static final String ORG_REQUEST_FILTER_THREE_MONTHS_AGO = "3 months ago";
+	
+	
+
+	public static final String[] UNSUBSCRIPTION_TABID_LISTED = {"3","4","8","16","20","23","30" };
+
 
 }

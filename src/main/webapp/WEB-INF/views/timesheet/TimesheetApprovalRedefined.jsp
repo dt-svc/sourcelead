@@ -8,8 +8,25 @@
 <script>
 	$(document).ready(function() {
 		timesheetApprovalDetils('month');
+		if ('${notifyLink}' == "notifyLink") 
+			{
+			var currentTimeFrequency = '${currentTimeFrequency}';
+			var projectId = '${projectId}';
+			var projectMemberId = '${projectMemberId}';
+			var masterCandidateId = '${masterCandidateId}';
+			var totalHours = '${totalHours}';
+			var from = '${from}';
+			var requestFrom = "notifyLink";
+			$("#notificationCurrentFrequency").attr("value",currentTimeFrequency);
+			timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,projectMemberId,masterCandidateId,totalHours,from,requestFrom);
+			}
+			selectedRecords = {};
+			$(".checkBoxForSubmitForApproval").click(function () {
+				selectedRecords[$(this).val()] = $(this).is(":checked");
+			});
 	});
 </script>
+
 
 <section class="content-wraper">
 		  <section class="content-header clearfix">
@@ -70,6 +87,9 @@
 	        		    	  $("#loadTimeHead").removeAttr('style');
 	        		    	  $("#timeApprovaldiv").empty();
 	        		    	  $("#timeApprovaldiv").append(data);
+	        		    	  $(".checkBoxForSubmitForApproval").click(function () {
+			             	    	selectedRecords[$(this).val()] = $(this).is(":checked");
+			             	  });
 	        		    	  prepareChosenScripts();
 	        		    	  preparePagination(1);
 	        		      }

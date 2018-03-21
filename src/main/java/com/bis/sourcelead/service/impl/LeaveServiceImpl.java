@@ -1,13 +1,12 @@
 package com.bis.sourcelead.service.impl;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -19,11 +18,14 @@ import java.util.Set;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -42,6 +44,7 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.HolidayAndRestrictday;
+import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveManagementHistory;
@@ -66,8 +69,24 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
+import com.bis.sourcelead.util.InvoicePdfHelper;
 import com.bis.sourcelead.util.LeaveManagementUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Font.FontFamily;
+import com.itextpdf.text.html.WebColors;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.draw.VerticalPositionMark;
 
 @Service
 public class LeaveServiceImpl implements LeaveService{
@@ -123,6 +142,8 @@ public class LeaveServiceImpl implements LeaveService{
     
     @Autowired
     private TimesheetRestController timesheetRestController;
+    
+    private static final Logger logger = LoggerFactory.getLogger(LeaveServiceImpl.class);
     
 	@Override
 	public Leave saveLeave(LeaveDTO leaveDTO,OrgLocations orgLocations, User user) throws Exception {
@@ -191,6 +212,7 @@ public class LeaveServiceImpl implements LeaveService{
 		if(savedLeave !=null) {
 			LeaveManagementHistory leaveManagementHistory = leaveManagementHistoryService.saveLeaveManagementHistory(leave,user);
 			for(String approverUserId :leaveDTO.getApproverUser()){
+				leaveDTO.setLeaveUUID(savedLeave.getLeaveUUID());
 			User approverUser = userService.getUserById(Long.parseLong(approverUserId));
 			if(user.getId().longValue() != approverUser.getId().longValue())
 			sendLeaveEmailToApprovers(user, leaveDTO, orgLocations,approverUser);
@@ -206,83 +228,97 @@ public class LeaveServiceImpl implements LeaveService{
 		return savedLeave;
 	}
 
-	private void sendOnBehalfEmailToEmployee(Leave savedLeave, User applyUser, User loginUser, OrgLocations orgLocations) throws Exception {
-		
+	private void sendOnBehalfEmailToEmployee(Leave savedLeave, User applyUser, User loginUser,
+			OrgLocations orgLocations) throws Exception {
+
 		EmailMessage emailMessage = new EmailMessage();
-		
-			 emailMessage.setFirstName(applyUser.getFirstName());
-			 emailMessage.setToEmail(applyUser.getEmail());
-			 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 
-			 emailMessage.setCreatedBy(loginUser.getUserCode());
-			 emailMessage.setOrgLocationId(orgLocations.getId());
-			 
-			//setting the class filed values
-			 Map<String, String> globalVarsMap = new HashMap<String, String>();
-			 if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
-				 StringBuilder employee =new StringBuilder();
-				 globalVarsMap.put("loginUser", employee.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-			 }else{
-				 globalVarsMap.put("loginUser",loginUser.getFirstName());
-			 }
-			 
-			 if(null != applyUser.getLastName() && !"".equalsIgnoreCase(applyUser.getLastName())) {
-				 StringBuilder leaveUser =new StringBuilder();
-				 globalVarsMap.put("leaveTakenEmployee", leaveUser.append(applyUser.getFirstName()).append(" ").append(applyUser.getLastName()).toString());
-			 }else{
-				 globalVarsMap.put("leaveTakenEmployee",applyUser.getFirstName());
-			 }
-			 
-			 
-			 if(null != savedLeave.getLeaveType()){
-				 LeaveType leaveType =  leaveTypeService.getLeaveTypeById(savedLeave.getLeaveType().getId());
-				 globalVarsMap.put("leaveType",leaveType.getName());
-			 }
-			 
-			 if(null != savedLeave.getFromDate() && null != savedLeave.getToDate()){
-				 StringBuilder date = new StringBuilder();
-				 globalVarsMap.put("leaveDuration",date.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), savedLeave.getFromDate())).append("-").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), savedLeave.getToDate())).toString());
-			 }
-			 
-			 if(null != savedLeave.getReason()){
-				 globalVarsMap.put("leaveReason",savedLeave.getReason());
-			 }
+		emailMessage.setFirstName(applyUser.getFirstName());
+		emailMessage.setToEmail(applyUser.getEmail());
+		emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 
-			 
-			StringBuilder stringBuildforLink = new StringBuilder();
-			globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		emailMessage.setCreatedBy(loginUser.getUserCode());
+		emailMessage.setOrgLocationId(orgLocations.getId());
 
-			 
-			 //setting the Recipient information
-			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-			 
-			 EmailScenario  emailScenario = null;
-			 EmailScenario  notificationScenario = null;
-			 //getting the current EmailScenario by EmailScenario unique name and entity type
-		     emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ON_BEHALF_EMAIL,Constants.ENTITY_TYPE_EMAIL);
-//		     notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ON_BEHALF_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
-			 
-			 //covert subject,body and signature
-			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-			 String url = sourceleadUrl;
-			 
-			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url,orgLocations.getOrg(),orgLocations);
-			 emailMessage.setSubject(subject);
-			 emailMessage.setMessageBody(emailTemplate);
-			 
-			 //calling the sendEmail method of emailScenerioUtil
-			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-			//calling the sendNotification method of emailScenerioUtil
-//				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
-//				notificationScenario.setBody(notificationBody);
-//				emailScenerioUtil.sendNotification(null,loginUser, approverUser, orgLoc, notificationScenario);
-//		}
-//}
-		
-		
+		// setting the class filed values
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		if (null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())) {
+			StringBuilder employee = new StringBuilder();
+			globalVarsMap.put("loginUser",
+					employee.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		} else {
+			globalVarsMap.put("loginUser", loginUser.getFirstName());
+		}
+
+		if (null != applyUser.getLastName() && !"".equalsIgnoreCase(applyUser.getLastName())) {
+			StringBuilder leaveUser = new StringBuilder();
+			globalVarsMap.put("leaveTakenEmployee",
+					leaveUser.append(applyUser.getFirstName()).append(" ").append(applyUser.getLastName()).toString());
+		} else {
+			globalVarsMap.put("leaveTakenEmployee", applyUser.getFirstName());
+		}
+
+		if (null != savedLeave.getLeaveType()) {
+			LeaveType leaveType = leaveTypeService.getLeaveTypeById(savedLeave.getLeaveType().getId());
+			globalVarsMap.put("leaveType", leaveType.getName());
+		}
+
+		if (null != savedLeave.getFromDate() && null != savedLeave.getToDate()) {
+			StringBuilder date = new StringBuilder();
+			globalVarsMap.put("leaveDuration",
+					date.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+							savedLeave.getFromDate())).append("-")
+							.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+									savedLeave.getToDate()))
+							.toString());
+		}
+
+		if (null != savedLeave.getReason()) {
+			globalVarsMap.put("leaveReason", savedLeave.getReason());
+		}
+
+		StringBuilder stringBuildforLink = new StringBuilder();
+		globalVarsMap.put("loginLink",
+				stringBuildforLink.append("<a href='").append(sourceleadLoginUrl)
+						.append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+						.toString());
+
+		// setting the Recipient information
+		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+
+		EmailScenario emailScenario = null;
+		EmailScenario notificationScenario = null;
+		// getting the current EmailScenario by EmailScenario unique name and
+		// entity type
+		emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ON_BEHALF_EMAIL,
+				Constants.ENTITY_TYPE_EMAIL);
+		notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ON_BEHALF_NOTIFICATION,
+				Constants.ENTITY_TYPE_NOTIFICATION);
+
+		// covert subject,body and signature
+		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
+		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
+		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
+		String url = sourceleadUrl;
+
+		// construct HTML template using required data
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
+				signature, url, orgLocations.getOrg(), orgLocations);
+		emailMessage.setSubject(subject);
+		emailMessage.setMessageBody(emailTemplate);
+
+		// calling the sendEmail method of emailScenerioUtil
+		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		// calling the sendNotification method of emailScenerioUtil
+		String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(), globalVarsMap);
+		notificationScenario.setBody(notificationBody);
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink = actionLinkBuilder.append("")
+				.append(sourceleadUrl).append("/").append("pendingLeaves?notifyLink=notifyLink&leaveUUID="
+						+ savedLeave.getLeaveUUID() + "&orgLocationId=" + orgLocations.getId() + "&status=PENDING")
+				.toString();
+		emailScenerioUtil.sendNotification(actionLink, loginUser, applyUser, orgLocations, notificationScenario);
+
 	}
 
 	private void saveMonthlyLeaves(Map<String, Float> monthlyLeaves, Leave leave, User user)
@@ -382,7 +418,8 @@ public class LeaveServiceImpl implements LeaveService{
 
 					leaveDto.setEmpName(sb.toString());
 				}
-					emp = employeesService.getEmployeeByUserId(leave.getUser().getId());
+					emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(leave.getUser().getId(), orgLocations.getId());
+					
 				
 				durationSb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate()))
 						.append(System.getProperty("line.separator")).append(" to ")
@@ -395,7 +432,9 @@ public class LeaveServiceImpl implements LeaveService{
 				leaveDto.setLeaveUUID(leave.getLeaveUUID());
 				
 				int totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(),emp,orgLocations,leave.getUser());
-				float balLeaves = totalLeaves - leavesTaken + nuberOfLeavestaken.get("numberOfExtraLeaves");
+				float leaves = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(leave.getLeaveType(), totalLeaves,emp);
+				
+				float balLeaves = leaves - leavesTaken + nuberOfLeavestaken.get("numberOfExtraLeaves");
 				
 				leaveDto.setTotalBalLeaves(balLeaves);
 				leaveDto.setOrgLocationId(String.valueOf(leave.getOrgLocations().getId()));
@@ -497,7 +536,7 @@ public class LeaveServiceImpl implements LeaveService{
         
 		List<Leave> leaveList = getLeavesListByTypeIdAndDuration(leaveTypeId, orgLocations.getId(),leave.getUser().getId(),yearStartDate,fromDate);
 //		List<Leave> leaveList = leaveDao.getLeavesListByLocationIdAndStatus(orgLocations.getId(),Constants.APPROVED,user.getId());
-		float carryForwardLeaves = calculateCarryForwardLeaves(leaveList,leave.getFromDate(),yearStartDate,leave.getLeaveType());
+		float carryForwardLeaves = calculateCarryForwardLeaves(leaveList,leave.getFromDate(),yearStartDate,leave.getLeaveType(),leave);
 		
 		leaveManagementHistory.setFromStage(leave.getStatus());
 		if (leave != null) {
@@ -505,23 +544,23 @@ public class LeaveServiceImpl implements LeaveService{
 				leave.setStatus(Constants.LEAVE_APPROVED);
 				leave.setApprovedBy(user);
 //					LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeId);
-					emp = employeesService.getEmployeeByUserId(leave.getUser().getId());
+					emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(leave.getUser().getId(),orgLocations.getId());
 					int totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(),emp,orgLocations,leave.getUser());
 					
 //					int noOfExtraDays = leaveManagementUtil.getNumberOfExtraDaysByPeriod(leave.getLeaveType(),leave,orgLocations,user);
 					
 					float appliedLeaves = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
-                    if("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.YES.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
-                        float extraLeaves = appliedLeaves - carryForwardLeaves;
-                        if(extraLeaves > 0)
-                            leave.setExtraLeavesTaken(extraLeaves);
-                        else
-                            leave.setExtraLeavesTaken(0);
-                    }else if("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.NO.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
-                        leave.setExtraLeavesTaken(leave.getLeaveType().getNoOfDays() - appliedLeaves);
-                    }else{
-                        leave.setExtraLeavesTaken(0);
-                    }
+					if("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.YES.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
+						float extraLeaves = appliedLeaves - carryForwardLeaves;
+						if(extraLeaves > 0)
+							leave.setExtraLeavesTaken(extraLeaves);
+						else
+							leave.setExtraLeavesTaken(0);
+					}else if("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.NO.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
+						leave.setExtraLeavesTaken(leave.getLeaveType().getNoOfDays() - appliedLeaves);
+					}else{
+						leave.setExtraLeavesTaken(0);
+					}
 					
 					
 					float numberOfLeavesPerYear = totalLeaves - appliedLeaves + leave.getExtraLeavesTaken();
@@ -556,7 +595,7 @@ public class LeaveServiceImpl implements LeaveService{
 
 	
 
-	private float calculateCarryForwardLeaves(List<Leave> leaveList, Date fromDate, Date yearStartDate, LeaveType leaveType)
+	private float calculateCarryForwardLeaves(List<Leave> leaveList, Date fromDate, Date yearStartDate, LeaveType leaveType, Leave currentLeave) throws Exception
 	{
 		Calendar sDate = Calendar.getInstance();
         Calendar eDate = Calendar.getInstance();
@@ -578,7 +617,32 @@ public class LeaveServiceImpl implements LeaveService{
 		float octLeaves = 0;
 		float novLeaves = 0;
 		float decLeaves = 0;
-		int monthlyAllowedLeaves = leaveType.getNoOfDays();
+		int monthlyAllowedLeaves = 0;
+		if("Experienced".equalsIgnoreCase(leaveType.getLeaveEffective())){
+			Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(currentLeave.getUser().getId(), currentLeave.getOrgLocations().getId());
+			if(emp.getHireDate() != null){
+                Date joinDate = emp.getHireDate();
+                Date currentDate = new Date();
+                int diffDays = commonUtil.getNumberOfDaysBetweenTwoDates(joinDate, currentDate);
+                int expDays = 0;
+                if("Year".equalsIgnoreCase(leaveType.getExperiencedType())){
+                    expDays = leaveType.getExperiencedDuration() * 365 ;
+                }else if("Month".equalsIgnoreCase(leaveType.getExperiencedType())){
+                    expDays = leaveType.getExperiencedDuration() * 30 ;
+                }else {
+                    expDays = leaveType.getExperiencedDuration();
+                }
+                if(diffDays > expDays){
+                	monthlyAllowedLeaves = leaveType.getExperiencedApplicableDays(); 
+                }else{
+                	monthlyAllowedLeaves = leaveType.getNewJoinee(); 
+                }
+            }else{
+            	monthlyAllowedLeaves = leaveType.getExperiencedApplicableDays(); 
+            }
+		}else{
+			monthlyAllowedLeaves = leaveType.getNoOfDays();
+        }
 		if("Monthly".equalsIgnoreCase(leaveType.getPeriod()) && Constants.YES.equalsIgnoreCase(leaveType.getLeavesCarryforward())){
 			for(Leave userLeave : leaveList){
 //				if("Mothly".equalsIgnoreCase(userLeave.getLeaveType().getPeriod()) && Constants.YES.equalsIgnoreCase(userLeave.getLeaveType().getLeavesCarryforward())){
@@ -724,14 +788,17 @@ public class LeaveServiceImpl implements LeaveService{
 		EmailScenario emailScenario = null;
 		
 		EmailScenario notificationScenario = null;
-		
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink = "";
 		if (leaveManagementHistory.getLeaveid().getRejectedReason() != null && !"".equalsIgnoreCase(leaveManagementHistory.getLeaveid().getRejectedReason())) {
 			globalVarsMap.put("reason", leaveManagementHistory.getLeaveid().getRejectedReason());
 			  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_REJECTED_EMAIL, Constants.ENTITY_TYPE_EMAIL);
 			   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_REJECTED_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
+			   actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("rejectedLeaves?notifyLink=notifyLink&leaveUUID="+leaveManagementHistory.getLeaveid().getLeaveUUID()+"&orgLocationId="+orgLocations.getId()).toString();
 		}else{
 			  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_APPROVER_EMAIL, Constants.ENTITY_TYPE_EMAIL);
 			   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_APPROVER_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
+			   actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("approvedLeaves?notifyLink=notifyLink&leaveUUID="+leaveManagementHistory.getLeaveid().getLeaveUUID()+"&orgLocationId="+orgLocations.getId()).toString();
 		}
 		
 		  
@@ -750,7 +817,6 @@ public class LeaveServiceImpl implements LeaveService{
 		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-		String actionLink = null;
 		emailScenerioUtil.sendNotification(actionLink, loginUser, leaveManagementHistory.getLeaveid().getUser(), orgLocations, notificationScenario);
 		
 	}
@@ -1031,8 +1097,8 @@ public class LeaveServiceImpl implements LeaveService{
 		UserRole roleId = userRoleService.getUserRoleByUserId(userId);
 		User user = userService.getUserById(userId);
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		UserRole userRole = userRoleService.getUserRoleByUserId(userId);
-		Employees emp = employeesService.getEmployeeByUserId(user.getId());
+		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocationId);
+		Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(userId, orgLocationId);
 
 		LeaveDTO leaveDto = new LeaveDTO();
 		List<Leave> leavesList = leaveDao.getAllSelfLeavesCounts(orgLocationId,userId);
@@ -1070,20 +1136,22 @@ public class LeaveServiceImpl implements LeaveService{
 				int totalLeaves = 0;
 				
 				totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(type,emp,orgLocations,user);
-				float totalbalanceLeaveCounts = totalLeaves;
-				
+				float leaves = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(type, totalLeaves,emp);
+				float totalbalanceLeaveCounts = leaves;
 				List<Leave> totalleavesTaken = getLeavesListByTypeIdAndLocationIdAndUserId(type.getId(),orgLocations.getId(), user.getId());
 				for (Leave leave : totalleavesTaken) {
 					 float appliedLeaveCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
 						   
-							if(Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
-								pendingLeaveCounts = pendingLeaveCounts + leave.getNumberOfDays();
-							}
-							if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
-								totalbalanceLeaveCounts = totalbalanceLeaveCounts - (appliedLeaveCount - leave.getExtraLeavesTaken());
-							}
+						if(Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
+							pendingLeaveCounts = pendingLeaveCounts + leave.getNumberOfDays();
+						}
+						if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
+							totalbalanceLeaveCounts = totalbalanceLeaveCounts - (appliedLeaveCount - leave.getExtraLeavesTaken());
+						}
 				}
-				
+				if("Monthly".equalsIgnoreCase(type.getPeriod()) && Constants.NO.equalsIgnoreCase(type.getLeavesCarryforward())){
+					totalbalanceLeaveCounts = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(type,totalbalanceLeaveCounts,emp);
+				}
 				balanceLeaveCounts += totalbalanceLeaveCounts;
 //				type.setBalanceLeaveCounts(balanceLeaveCounts);
 //				type.setPendingLeaveCounts(pendingLeaveCounts);
@@ -1208,6 +1276,8 @@ public class LeaveServiceImpl implements LeaveService{
 			 
 			 EmailScenario  emailScenario = null;
 			 EmailScenario  notificationScenario = null;
+			 StringBuilder actionLinkBuilder = new StringBuilder();
+			 String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("employeeRequestedLeaves?notifyLink=notifyLink&leaveUUID="+leaveDTO.getLeaveUUID()+"&orgLocationId="+orgLoc.getId()).toString();	 
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
 			 if(applyUser != null){
 				   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_EMAIL_ON_BEHALF_EMAIL,Constants.ENTITY_TYPE_EMAIL);
@@ -1233,7 +1303,7 @@ public class LeaveServiceImpl implements LeaveService{
 			//calling the sendNotification method of emailScenerioUtil
 				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 				notificationScenario.setBody(notificationBody);
-				emailScenerioUtil.sendNotification(null,loginUser, approverUser, orgLoc, notificationScenario);
+				emailScenerioUtil.sendNotification(actionLink,loginUser, approverUser, orgLoc, notificationScenario);
 //		}
 //}
 }
@@ -1357,8 +1427,9 @@ public class LeaveServiceImpl implements LeaveService{
 				emailMessage.setMessageBody(emailTemplate);
 				// calling the sendEmail method of emailScenerioUtil
 				emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-				String actionLink = null;
-				emailScenerioUtil.sendNotification(actionLink, loginUser, leaveManagementHistory.getLeaveid().getUser(), orgLocations, notificationScenario);
+				//StringBuilder actionLinkBuilder = new StringBuilder();
+				//String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("approvedLeaves?notifyWithDrawLink=notifyLink&leaveUUID="+leaveManagementHistory.getLeaveid().getLeaveUUID()+"&orgLocationId="+orgLocations.getId()).toString();
+				emailScenerioUtil.sendNotification(null, loginUser, lmh.getApproverUserId(), orgLocations, notificationScenario);
 				
 			}
 		}
@@ -1419,7 +1490,8 @@ public class LeaveServiceImpl implements LeaveService{
 		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-		String actionLink = "";
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("cancelLeaves?notifyLink=notifyLink&leaveUUID="+leaveManagementHistory.getLeaveid().getLeaveUUID()+"&orgLocationId="+orgLocations.getId()).toString();
 		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, orgLocations, notificationScenario);
 
 	}
@@ -1534,33 +1606,35 @@ public class LeaveServiceImpl implements LeaveService{
 		return leaveDao.getLeaveByLeaveUUId(leaveUUID);
 	}
 	
-	@SuppressWarnings("unused")
 	@Override
 	public File getLeaveExport(OrgLocations orgLocations,LeaveDTO leaveDTO) throws Exception {
 		
 		File file = null;
-		Workbook createExcelworkbook = new XSSFWorkbook();
-		Sheet createExcelsheet = createExcelworkbook.createSheet(orgLocations.getOrgLocationName() + "_"
-				+ commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), new Date()));
-		Row writeRow = null;
-		createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook);
+		List<LeaveDTO> leaveDtoList = new ArrayList<>();
 		
 		ResponseList<Leave> leaveResponse = getTopLeavetakers(orgLocations, leaveDTO);
 		
 		List<Leave> leaveList = leaveResponse.getData();
-		List<LeaveDTO> leaveDtoList = new ArrayList<>();
-		HashMap<Long, Float> reportMap = new HashMap<>();
+		HashMap<Long, LeaveDTO> reportMap = new HashMap<>();
 		int column = 0;
 		float totalbalanceLeaveCounts = 0;
-		
+		Employees emp =null;
 		for (Leave leave : leaveList) {
 			LeaveDTO leaveDto  = new LeaveDTO();
-			int totalLeaves = 0;
+//			int totalLeaves = 0;
+			
+			emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(leave.getUser().getId(), orgLocations.getId());
+			int totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(),emp,orgLocations,leave.getUser());
+			
+			float leaves = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(leave.getLeaveType(),totalLeaves, emp);
 			
 			if(reportMap.containsKey(leave.getUser().getId())){
-				totalbalanceLeaveCounts = reportMap.get(leave.getUser().getId());
+				if(leave.getLeaveType().getName().equalsIgnoreCase(reportMap.get(leave.getUser().getId()).getLeaveType())) 
+					totalbalanceLeaveCounts = Float.valueOf(reportMap.get(leave.getUser().getId()).getBalanceleaves());
+				else
+					totalbalanceLeaveCounts = leaves;
 			}else {
-				totalbalanceLeaveCounts = leave.getLeaveType().getNoOfDays();
+				totalbalanceLeaveCounts = leaves;
 			}
 			
 			StringBuilder sb = new StringBuilder();
@@ -1583,6 +1657,7 @@ public class LeaveServiceImpl implements LeaveService{
 				totalbalanceLeaveCounts = totalbalanceLeaveCounts - (appliedLeaveCount - leave.getExtraLeavesTaken());
 			}
 			
+//			leaveDto.setLeaveTypeNoOfDays(leave.getLeaveType().getNoOfDays());
 			leaveDto.setDuration(date.toString());
 			leaveDto.setUserId(String.valueOf(leave.getUser().getId()));
 			leaveDto.setEmpName(sb.toString());
@@ -1591,34 +1666,174 @@ public class LeaveServiceImpl implements LeaveService{
 			leaveDto.setStatus(leave.getStatus());
 			leaveDto.setExtraLeavesTaken(leave.getExtraLeavesTaken());
 			leaveDto.setBalanceleaves(String.valueOf(totalbalanceLeaveCounts));
-			totalLeaves = totalLeaves + leave.getNumberOfDays();
-			leaveDto.setNoOfDays(totalLeaves);
+//			totalLeaves = totalLeaves + leave.getNumberOfDays();
+			leaveDto.setLeaveNoDays(appliedLeaveCount);
 			
-			reportMap.put(leave.getUser().getId(), totalbalanceLeaveCounts);
+			reportMap.put(leave.getUser().getId(), leaveDto);
 			leaveDtoList.add(leaveDto);
 			
 		}
 
+		if (!"pdf".equalsIgnoreCase(leaveDTO.getExportType())) {
+			
+			Workbook createExcelworkbook = new XSSFWorkbook();
+			Sheet createExcelsheet = createExcelworkbook.createSheet(orgLocations.getOrgLocationName() + "_"
+					+ commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), new Date()));
+			Row writeRow = null;
+			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook);
 		
-		for (LeaveDTO leaveDTO2 : leaveDtoList) {
-			writeRow = createExcelsheet.createRow(column + 2);
-			createExcelsheet = createXlsSheet(createExcelsheet, writeRow,leaveDTO2);
-			column++;
-		}
+			for (LeaveDTO leaveExcel : leaveDtoList) {
+				writeRow = createExcelsheet.createRow(column + 2);
+				createExcelsheet = createXlsSheet(createExcelsheet, writeRow,leaveExcel);
+				column++;
+			}
 		
-		file = File.createTempFile(orgLocations.getOrgLocationName() + Constants.LEAVE_DATA
-				+ commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), new Date()), ".xls");
-		file.setReadable(true);
-		FileOutputStream fos = new FileOutputStream(file);
+			file = File.createTempFile(orgLocations.getOrgLocationName() + Constants.LEAVE_DATA
+					+ commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), new Date()), ".xls");
+			file.setReadable(true);
+			FileOutputStream fos = new FileOutputStream(file);
 		try {
 			createExcelworkbook.write(fos);
 			fos.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		}else{
+			file = getBillingPdf(leaveDTO,orgLocations,leaveDtoList);
+		}
 		return file;
 	}
 	
+	private File getBillingPdf(LeaveDTO leaveDTO, OrgLocations orgLocations, List<LeaveDTO> leaveDtoList) throws Exception {
+		
+		String[] headers = Constants.TOP_TAKERS_LEAVE_HEADERS;
+		Document document = new Document(PageSize.LETTER.rotate());
+
+		StringBuilder fileSB = new StringBuilder();
+		File file = File.createTempFile(
+				fileSB.append(orgLocations.getOrgLocationName()).append(Constants.LEAVE_DATA).append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),
+				".pdf");
+
+		file.setReadable(true);
+		try {
+			// Get an instance of PdfWriter and create a Table.pdf file as an
+			// output.
+			PdfWriter.getInstance(document, new FileOutputStream(file));
+			document.open();
+			Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+
+			BaseColor myBordColor = WebColors.getRGBColor("#000000");
+			boldFont.setColor(myBordColor);
+
+			StringBuilder orgNameSB = new StringBuilder();
+			Paragraph para = new Paragraph(orgNameSB.append(orgLocations.getOrgLocationName()).append(" ").append(Constants.LEAVE_DATA).toString(),
+					boldFont);
+
+			para.setAlignment(Element.ALIGN_CENTER);
+			document.add(para);
+
+
+			PdfPTable table = new PdfPTable(headers.length);
+			Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+			PdfPCell cell1 = new PdfPCell(new Phrase(Constants.LEAVE_DATA, font));;
+			cell1.setColspan(8);
+			headerCellStyle(cell1);
+			table.setWidthPercentage(100);
+			table.setWidths(new int[] { 3, 5, 3, 5, 5, 3, 5, 3});
+			table.addCell(cell1);
+			for (int i = 0; i < headers.length; i++) {
+				String header = headers[i];
+				PdfPCell cell = new PdfPCell();
+				cell.setGrayFill(0.9f);
+				cell.setPhrase(new Phrase(header, new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+				BaseColor myColor = WebColors.getRGBColor("#D3D3D3");
+				cell.setBackgroundColor(myColor);
+				table.addCell(cell);
+			}
+			table.completeRow();
+			java.util.List<String[]> leaves = new ArrayList<>();
+			for (LeaveDTO leavePdf : leaveDtoList) {
+				leaves.add(prepareBillingToArray(leavePdf,orgLocations));
+			}
+
+			for (String[] leaveArray : leaves) {
+				for (int i = 0; i < leaveArray.length; i++) {
+					String datum = leaveArray[i];
+					PdfPCell cell = new PdfPCell();
+					cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+					table.addCell(cell);
+				}
+				table.completeRow();
+			}
+
+			document.addTitle("Leaves List Table");
+			table.setSpacingBefore(15f);
+			document.add(table);
+			logger.info("Pdf table created !!");
+		} catch (DocumentException e) {
+			logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
+		} catch (FileNotFoundException e) {
+			logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
+		} finally {
+			document.close();
+		}
+		return file;
+	}
+	
+	private String[] prepareBillingToArray(LeaveDTO leavePdf, OrgLocations locations) throws Exception {
+
+		String billingArray[] = new String[Constants.BILLING_HEADERS.length];
+		
+		if(leavePdf.getUserId() != null && !"".equalsIgnoreCase(leavePdf.getUserId())){
+			billingArray[0] = leavePdf.getUserId();
+		}else{
+			billingArray[0] = "--";
+		}
+		
+		if(leavePdf.getEmpName() != null && !"".equalsIgnoreCase(leavePdf.getEmpName())){
+			billingArray[1] = leavePdf.getEmpName();
+		}else{
+			billingArray[1] = "--";
+		}
+		
+		if(leavePdf.getEmpEmail() != null && !"".equalsIgnoreCase(leavePdf.getEmpEmail())){
+			billingArray[2] = leavePdf.getEmpEmail();
+		}else{
+			billingArray[2] = "--";
+		}
+		
+		if(leavePdf.getLeaveType() != null && !"".equalsIgnoreCase(leavePdf.getLeaveType())){
+			billingArray[3] = leavePdf.getLeaveType();
+		}else{
+			billingArray[3] = "--";
+		}
+
+		if(leavePdf.getDuration() != null && !"".equalsIgnoreCase(leavePdf.getDuration())){
+			billingArray[4] = leavePdf.getDuration();
+		}else{
+			billingArray[4] = "--";
+		}
+		
+			billingArray[5] = String.valueOf(leavePdf.getLeaveNoDays());
+			
+			billingArray[6] = String.valueOf(leavePdf.getExtraLeavesTaken());
+			
+			billingArray[7] = String.valueOf(leavePdf.getBalanceleaves());
+		
+		return billingArray;
+
+	}
+	
+	private static void headerCellStyle(PdfPCell cell) {
+		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+		cell.setPaddingTop(0f);
+		cell.setPaddingBottom(7f);
+		cell.setBackgroundColor(new BaseColor(0, 121, 182));
+		cell.setBorder(0);
+		cell.setBorderWidthBottom(2f);
+	}
+
+
 	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook) {
 		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
 		String[] headers  = Constants.TOP_TAKERS_LEAVE_HEADERS;
@@ -1641,20 +1856,25 @@ public class LeaveServiceImpl implements LeaveService{
 			writeRow.createCell(2).setCellValue(leaveDto.getEmpEmail());
 		}
 		
-		if(null != leaveDto.getLeaveType()){
+		if(null != leaveDto.getLeaveType() && !"".equalsIgnoreCase(leaveDto.getLeaveType())){
 			writeRow.createCell(3).setCellValue(leaveDto.getLeaveType());
 		}
 		
-		if(null != leaveDto.getDuration() && null != leaveDto.getDuration()){
+		if(null != leaveDto.getDuration() && !"".equalsIgnoreCase(leaveDto.getDuration())){
 			writeRow.createCell(4).setCellValue(leaveDto.getDuration());
 		}
 		
-			writeRow.createCell(5).setCellValue(leaveDto.getNoOfDays());
+			writeRow.createCell(5).setCellValue(leaveDto.getLeaveNoDays());
 		
 			writeRow.createCell(6).setCellValue(leaveDto.getExtraLeavesTaken());
 		
 			writeRow.createCell(7).setCellValue(leaveDto.getBalanceleaves());
 	return createExcelsheet;
 }
+
+	@Override
+	public List<Leave> getAllLeave(){
+		return leaveDao.getAllLeave();
+	}
 
 }

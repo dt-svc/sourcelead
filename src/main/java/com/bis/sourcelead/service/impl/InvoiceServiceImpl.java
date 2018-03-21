@@ -66,6 +66,7 @@ import com.bis.sourcelead.dto.InvoiceExpensesDTO;
 import com.bis.sourcelead.dto.InvoiceLineItemsDTO;
 import com.bis.sourcelead.dto.InvoiceTaxDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -218,7 +219,13 @@ public class InvoiceServiceImpl implements InvoiceService{
 	{
 		return invoiceDao.getSowcontractListByAssociateId(candidateId,orgLocationId,orgRelationId,contractType);
 	}
-
+  
+	@Override
+	public Boolean getInvoiceByInvoiceId(String invoiceId, Long orgLocationsId) throws Exception {
+		
+		return invoiceDao.getInvoiceByInvoiceId(invoiceId, orgLocationsId);
+	}
+	
 	@Override
 	public Invoice saveInvoice(User user, OrgLocations orgLocation,String saveType,String invoiceType,Org org,String loginOrgCurrencyCode,InvoiceDTO invoiceDTO) throws Exception {
 		
@@ -400,9 +407,8 @@ public class InvoiceServiceImpl implements InvoiceService{
 		invoiceDao.saveInvoce(invoice);
 		if(Constants.SENT.equalsIgnoreCase(saveType)){
 			//mail scenario for client accept or reject
-			sendInvoiceMail(user,orgLocation,invoice,invoiceType,docusList);
-			
 			saveParentInvoice(invoice,loginOrgCurrencyCode,vendorOrgLocation);	
+			sendInvoiceMail(user,orgLocation,invoice,invoiceType,docusList);
 		}
 		
 		
@@ -541,7 +547,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 				invoiceDocument.setOrgLocation(orgLocation);
 				invoiceDocument.setInvoice(invoice);
 				if(fileInfo != null){
-					FileUploadUtil.moveFile(invoiceDTO.getStaticPath(), fileInfo, "invoiceDocuments");
+					FileUploadUtil.moveFile(staticPath, fileInfo, "invoiceDocuments");
 				}
 				invoiceDocumentSet.add(invoiceDocument);
 			}
@@ -880,7 +886,15 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 //calling the sendEmail method of emailScenerioUtil
 		 
 		 emailScenerioUtil.sendEmail(emailMessage,orglocations.getId(),iAdressArray,attachmentList);
-		 String actionLink="";
+		 StringBuilder notificationLink = new StringBuilder();
+		 String actionLink = "";
+		 Invoice notificationInvoice = getInvoicetByParentId(invoice.getId());
+		 if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
+	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="+notificationInvoice.getInvoiceUUID()+"&invoiceType=Payables").toString();
+		 }else{
+		 actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="+notificationInvoice.getInvoiceUUID()+"&invoiceType=Receivable").toString();
+			 
+		 }
 		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario);
 	}
 
@@ -1260,9 +1274,14 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Invoice invoi
 	}
 	
 	if(null != invoice.getInvoiceStatus() && !"".equalsIgnoreCase(invoice.getInvoiceStatus())){
+		if(Constants.SENT.equalsIgnoreCase(invoice.getInvoiceStatus())){
+			writeRow.createCell(10).setCellValue("Sent");
+		}else if(Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus())){
+			writeRow.createCell(10).setCellValue("Draft");
+		}else{
 		 writeRow.createCell(10).setCellValue(invoice.getInvoiceStatus());
 	}
-	
+	}
 	if(null != invoice.getPaymentStatus() && !"".equalsIgnoreCase(invoice.getPaymentStatus())){
 		writeRow.createCell(11).setCellValue(invoice.getPaymentStatus());
 	}
@@ -2333,7 +2352,15 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		 //calling the sendEmail method of emailScenerioUtil
 		 
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,attachmentList);
+		 StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
+		 Invoice notificationInvoice=getInvoicetByParentId(invoice.getId());
+		 if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
+		     actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="+notificationInvoice.getInvoiceUUID()+"&invoiceType=Payables").toString();
+			 }else{
+				 actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="+notificationInvoice.getInvoiceUUID()+"&invoiceType=Receivable").toString();
+				 
+			 }
 		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario);
 		
 	}
@@ -2589,8 +2616,8 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 
 		invoiceDao.saveInvoce(invoice);
 		if (Constants.SENT.equalsIgnoreCase(saveType)) {
-			sendInvoiceMail(user, orgLocation, invoice, invoiceType, docusList);
 			saveParentInvoice(invoice, loginOrgCurrencyCode, vendorOrgLocation);
+			sendInvoiceMail(user, orgLocation, invoice, invoiceType, docusList);
 		}
 
 		if (null != invoiceLineItemsIdsList && invoiceLineItemsIdsList.size() > 0) {

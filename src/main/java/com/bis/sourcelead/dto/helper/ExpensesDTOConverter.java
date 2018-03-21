@@ -46,7 +46,9 @@ public class ExpensesDTOConverter {
 		TreeMap<Long,ExpensesEntriesDTO> eeDTOMap = new TreeMap<>();
 		if(expenses.getExpensesEntries() != null && !expenses.getExpensesEntries().isEmpty() && expenses.getExpensesEntries().size() > 0){
 			for(ExpensesEntries ee : expenses.getExpensesEntries()){
-				eeDTOMap.put(ee.getId(), ExpensesEntriesDTOConverter.getExpensesEntriesDTOFromExpensesEntries(ee, expensesDTO));
+				if(ee != null) {
+					eeDTOMap.put(ee.getId(), ExpensesEntriesDTOConverter.getExpensesEntriesDTOFromExpensesEntries(ee, expensesDTO));
+				}
 			}
 		}
 		if(expenses.getProjectMembers() != null && expenses.getProjectMembers().getProjectMemberCandidteId() != null){
@@ -55,8 +57,7 @@ public class ExpensesDTOConverter {
 		if(eeDTOMap != null && !eeDTOMap.isEmpty()){
 			expensesDTO.setExpenseEntry(new LinkedList(eeDTOMap.values()));
 		}
-		
-		
+		expensesDTO.setExpensesRejectedReason(expenses.getExpensesRejectedReason());
 		expensesDTO.setExpenseStatus(expenses.getExpenseStatus().getValue().toUpperCase());
 		
 		return expensesDTO;

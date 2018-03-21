@@ -2,7 +2,7 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 
-public class TimesheetExpenseEntryDetailsUtilDTO implements Serializable{
+public class TimesheetExpenseEntryDetailsUtilDTO extends SearchDTO implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -29,6 +29,8 @@ public class TimesheetExpenseEntryDetailsUtilDTO implements Serializable{
 	private String currentTimeSubFrequency;
 	
 	private String timesheetStatus;
+	
+	private String redirectionRequestFrom;
 
 	public Long getUserId() {
 		return userId;
@@ -130,6 +132,14 @@ public class TimesheetExpenseEntryDetailsUtilDTO implements Serializable{
 		this.timesheetStatus = timesheetStatus;
 	}
 
- 
+	public String getRedirectionRequestFrom() {
+		return redirectionRequestFrom;
+	}
+
+	public void setRedirectionRequestFrom(String redirectionRequestFrom) {
+		this.redirectionRequestFrom = redirectionRequestFrom;
+	}
+
+	
 
 }

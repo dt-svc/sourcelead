@@ -3,11 +3,10 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/serial.js"></script>
-
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
-<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css">
+<script src="/resources/amcharts/amcharts.js"></script>
+<script src="/resources/amcharts/serial.js"></script>
+<script src="/resources/amcharts/plugins/export/export.min.js"></script>
+<link rel="stylesheet" href="/resources/amcharts/plugins/export/export.css" type="text/css" media="all" />
 
 <script type="text/javascript">
 $(document).ready(function(){
@@ -297,7 +296,7 @@ function getMissingInvoiceCustomDates() {
 
 <script>
   $( function() {
-		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		 /* var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormatProjectSave = '';
 		  if(locationDate.match("yyyy-MM-dd")){
 			  finalDateFormatProjectSave = 'yy-mm-dd';
@@ -307,10 +306,10 @@ function getMissingInvoiceCustomDates() {
 			  finalDateFormatProjectSave = 'mm-dd-yy'; 
 		  }if(locationDate.match("yyyy-dd-MM")){
 			  finalDateFormatProjectSave = 'yy-dd-mm'; 
-		  }
+		  } */
     
 	  $('#fromDate').datepicker({
-			dateFormat : finalDateFormatProjectSave,
+			dateFormat : "yy-mm-dd",
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
@@ -321,7 +320,7 @@ function getMissingInvoiceCustomDates() {
 		});
 	  
 	  $('#toDate').datepicker({
-			dateFormat : finalDateFormatProjectSave,
+			dateFormat : "yy-mm-dd",
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {

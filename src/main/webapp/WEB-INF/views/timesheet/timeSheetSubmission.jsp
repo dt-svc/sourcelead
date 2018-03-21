@@ -7,17 +7,21 @@
 <div class="time_pop" id="timeSheetErrorMsg"></div>
  <c:if test="${timesheetEntryDetailsDTO.timesheetFor == 'approver'}">
    <div class='data_loading' id="loadTime"></div>
- <div class="pull-left timeAppUse">
+ <div class="pull-left timeAppUse col-md-7">
 	<span><img id="userImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofile-img.png"> </span>
 
-	<p>
+	<p class="col-md-10 margin-top0">
 		<input class="timeUsName" type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeeName}">
 		<input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeeEmail}">
+		<input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.projectNameForSubmissionPageDisplay}">
 		<input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeePhoneNo}">
+		
 	</p>
 	<div class="clearfix"></div>
 </div>
 
+ <input type="hidden" id="notificationCurrentFrequency" value="${notificationCurrentFrequency}">
+ 
 <div id="timesheetSubmissionStatusDiv" class="timeNewSe clearfix ${!timesheetSubmissionDTO.reopenAcceptRejectButtonVisible ? 'timeNewStatus':'timesheetApproved-status'}">
 				<c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'REJECTED'}">
 					<b class="proj_closed pull-right">${timesheetSubmissionDTO.timesheetStatus}</b>
@@ -93,6 +97,8 @@
 	   <input type="hidden" name="timesheetSubmission.id" value="${timesheetSubmissionDTO.id}"/>
 	   <input type="hidden" id="currentTimeSubFrequency" name="currentTimeSubFrequency" value="${timesheetSubmissionDTO.timeSubFrequency}"/>
 		<input type="hidden" id="timeSubFrequency" name="timesheetSubmission.timeSubFrequency" value="${timesheetSubmissionDTO.timeSubFrequency}"/>
+		
+		
 		<ul class="project-tabs-menu">
 		   <c:forEach var="tsf" items="${timesheetEntryDetailsDTO.timeSubFrequencies}">
 		       <input type='hidden' name='tabDates'  id='tabDates' value='${tsf.key}' >
@@ -116,9 +122,8 @@
 				</ul>
 			</div>
 			<div class="clearfix"></div>
-				</c:if>
-			
-			
+		</c:if>
+		   <div class="clearfix"></div>
 		</ul>
 			<div id="timesheetDivByTab">
 				<div class="project_tabs">
@@ -1245,8 +1250,13 @@ function timesheetEntriesExport(exportType){
 	var endDate = dateFrequency[1];
 	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	var status = '${timesheetSubmissionDTO.timesheetStatus}';
+	 var tableFor = $("#tableFor").val();
+	 var requestFrom = "employee";
+	 if(tableFor != null && tableFor != 'undefined' && tableFor != ''){
+		 requestFrom = tableFor;
+	 }
 	if(status != null && status != 'undefined' && status != '' && status != 'NEW' && status != 'new'){
-		window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType;
+		window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&requestFrom="+requestFrom;
 	}else{
 		alert("Please fill the TimeSheets..");
 	}
@@ -1449,10 +1459,31 @@ function notifyReopenTimeSheet(projectMemberId,timesheetFrequency,totalHours){
 </script>
 <script>
 function timesheetDivAfterSaving(){
+	var currentTimeFrequency = ''; 
+	var projectMemberId = '';
+	var currentTimeSubFrequency='';
+	var notificationCurrentFrequency ='${notificationCurrentFrequency}';
+	var notificationProMemberId ='${notificationProMemberId}';
+	var notificationCurrentSubTimeFrequency ='${notificationCurrentSubTimeFrequency}';
 	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
-	var projectMemberId = $("#projectMemberId").val();
-	var currentTimeFrequency= $("#currentTimeFrequency").val();
-	var currentTimeSubFrequency= $("#currentTimeSubFrequency").val();
+	
+	if(notificationCurrentFrequency != null && notificationCurrentFrequency !='' && notificationCurrentFrequency !='undefined'){
+		currentTimeFrequency = notificationCurrentFrequency;
+	}else{
+		currentTimeFrequency = $("#currentTimeFrequency").val();
+	}
+	if(notificationProMemberId != null && notificationProMemberId !='' && notificationProMemberId !='undefined'){
+		projectMemberId = notificationProMemberId;
+	}else{
+		projectMemberId = $("#projectMemberId").val();
+	}
+	if(notificationCurrentSubTimeFrequency != null && notificationCurrentSubTimeFrequency !='' && notificationCurrentSubTimeFrequency !='undefined'){
+		currentTimeSubFrequency = notificationCurrentSubTimeFrequency;
+	}else{
+		currentTimeSubFrequency= $("#currentTimeSubFrequency").val();
+	}
+	
+	
 	var timeSheetsFor = $("#timesheetFor").val();
     if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
  	   subFrParam = "&currentTimeSubFrequency="+currentTimeSubFrequency;
@@ -1533,8 +1564,18 @@ $(".project_inn_mask").fadeOut(200);
 
 <script>
 function acceptReopenTimeSheetBySuperUser(projectMemberId,reOpenedUserId){
+	
 	var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
-	var timesheetFrequency = $("#currentTimeFrequency").val(); 
+	var timesheetFrequency = '';
+		var notificationCurrentFrequency =  $("#notificationCurrentFrequency").val();
+		if(notificationCurrentFrequency != null && notificationCurrentFrequency !='' && notificationCurrentFrequency !='undefined'){
+		 	 timesheetFrequency = notificationCurrentFrequency;
+		 }else{
+			 timesheetFrequency = $("#currentTimeFrequency").val();			 
+		 }
+	
+	
+	 
 	$.ajax({
 		type : "POST",
 		url : sourceleadUrl+"/ws/acceptOrRejectReopenTimeSheetBySuperUser?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reOpenedUserId="+reOpenedUserId+"&timesheetFrequency="+timesheetFrequency+"&type=accept",

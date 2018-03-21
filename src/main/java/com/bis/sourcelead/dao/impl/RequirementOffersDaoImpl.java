@@ -139,4 +139,20 @@ public class RequirementOffersDaoImpl implements RequirementOffersDao{
 		List<RequirementOffers> requirementOffersList =  session.createQuery(query.toString()).setLong("locationId", locationId).setMaxResults(10).list();
 		return requirementOffersList;
 	}
+
+	@Override
+	@Transactional
+	public RequirementOffers getOnboardRequirementOfferId(Long offerId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementOffers rs left join fetch rs.submissionId submission left join fetch submission.candidate candidate "
+				+ "left join fetch candidate.orgRelationId left join fetch candidate.spocId where rs.id = :offerId ";
+		List<RequirementOffers> requirementOffersList =  session.createQuery(query.toString()).setLong("offerId", offerId).list();
+		
+		RequirementOffers requirementOffers = null;
+		
+		if (requirementOffersList != null && requirementOffersList.size() > 0) {
+			requirementOffers = (RequirementOffers) requirementOffersList.iterator().next();
+		}
+		return requirementOffers;
+	}
 }

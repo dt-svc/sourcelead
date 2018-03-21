@@ -8,6 +8,9 @@ public class CustomFieldsRequestTypeDTO {
 	Long userId;
 	Long orgRelationID;
 	Long clientLocationId;
+	Long projectId;
+	Long contractId;
+	Long assetId;
 	public Long getSectionId() {
 		return sectionId;
 	}
@@ -49,6 +52,24 @@ public class CustomFieldsRequestTypeDTO {
 	}
 	public void setClientLocationId(Long clientLocationId) {
 		this.clientLocationId = clientLocationId;
+	}
+	public Long getProjectId() {
+		return projectId;
+	}
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
+	}
+	public Long getContractId() {
+		return contractId;
+	}
+	public void setContractId(Long contractId) {
+		this.contractId = contractId;
+	}
+	public Long getAssetId() {
+		return assetId;
+	}
+	public void setAssetId(Long assetId) {
+		this.assetId = assetId;
 	}
 	
 }

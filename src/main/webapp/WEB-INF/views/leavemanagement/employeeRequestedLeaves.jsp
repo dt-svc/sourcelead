@@ -6,6 +6,12 @@
 <script>
 $(document).ready(function(){
    getRequestedEmployeesList();
+   if ('${notifyLink}' == "notifyLink") 
+	{
+	var leaveUUID = '${leaveUUID}';
+	var orgLocationId = '${orgLocationId}';
+    getRequestedAproveSummary(leaveUUID,orgLocationId);
+	}
 });
 </script>
  
@@ -44,8 +50,10 @@ $(document).ready(function(){
     </div>
      <div id="appRejLoading"></div>
     <div class="clients_wrap_table datatable_filter">
-    <div class='remove_search mt10'>
+    <div class='dynamic_search dynamic_search-new mt10'>
 		 <input type='text' placeholder='Search' id='requestedEmployeesTableSearch'/>
+		  <span class="cursorPointer" title="Search"><i class="fa fa-search" onclick="getRequestedEmployeesList();"></i></span>    
+		 
 		</div>
     <div id="requestedLeavesDiv"></div>
     

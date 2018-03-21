@@ -13,6 +13,7 @@ import com.bis.sourcelead.dao.HolidayDAO;
 import com.bis.sourcelead.dto.HolidayDTO;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.LeaveService;
@@ -226,6 +227,16 @@ public class HolidayServiceImpl implements HolidayService{
 	public Holiday getHolidaysByUUID(String holidayUUID)
 	{
 		return holidayDAO.getHolidaysByUUID(holidayUUID);
+	}
+
+	@Override
+	public List<ProjectTasks> getHolidayProjectTaskByorgLocationIdAndHolidayId(Long orglocationId, Long holidayId) {
+		return holidayDAO.getHolidayProjectTaskByorgLocationIdAndHolidayId(orglocationId,holidayId);
+	}
+
+	@Override
+	public List<Holiday> getAllHoliday() {
+		return holidayDAO.getAllHoliday();
 	}
 	
 	
