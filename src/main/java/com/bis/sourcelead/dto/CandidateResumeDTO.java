@@ -41,6 +41,10 @@ public class CandidateResumeDTO {
     private String candidateResumeUpdateDateToString;
     
     private String resumeId;
+    
+    private String loginUserId;
+    
+    private String orgLocationId;
 
 	public Long getId()
 	{
@@ -200,6 +204,26 @@ public class CandidateResumeDTO {
 	public void setResumeId(String resumeId)
 	{
 		this.resumeId = resumeId;
+	}
+
+	public String getLoginUserId()
+	{
+		return loginUserId;
+	}
+
+	public void setLoginUserId(String loginUserId)
+	{
+		this.loginUserId = loginUserId;
+	}
+
+	public String getOrgLocationId()
+	{
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(String orgLocationId)
+	{
+		this.orgLocationId = orgLocationId;
 	} 
 
 	

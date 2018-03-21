@@ -30,6 +30,7 @@ import com.bis.sourcelead.entity.OrglocationFormSubFields;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadFormFields;
 import com.bis.sourcelead.entity.SourceleadFormSections;
+import com.bis.sourcelead.service.AssetCustomFieldService;
 import com.bis.sourcelead.service.CandidateCustomFieldDataService;
 import com.bis.sourcelead.service.ClientCustomFieldDataService;
 //import com.bis.sourcelead.service.ContractCustomFieldDataService;
@@ -89,6 +90,9 @@ public class CustomFormRestController {
 	
 	@Autowired
 	private OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	private AssetCustomFieldService assetCustomFieldService;
 	
 	
     @RequestMapping(value = "/getFormSectionsByActionId",  method = RequestMethod.POST)
@@ -213,9 +217,15 @@ public class CustomFormRestController {
 		 		 	case "contract" :
 		 		 		if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocations != null && customFieldsRequestTypeDTO.getContractId() != null){
 		 		 			jobData =  newContractCustomFieldDataService.getNewContractCustomFieldDataByContractId(orgLoc.getOrg().getId(),formFieldId, customFieldsRequestTypeDTO.getContractId());
-		 		 		
-		 		 		
 		 		 	}
+		 		 		
+		 		 		break;
+		 		 	case "asset" :
+		 		 		if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocations != null && customFieldsRequestTypeDTO.getAssetId() != null){
+		 		 			jobData =  assetCustomFieldService.getAssetCustomFieldDataByAssetId(orgLoc.getOrg().getId(),formFieldId, customFieldsRequestTypeDTO.getAssetId());
+		 		 	}
+		 		 		
+		 		 		
 		 		 }
 		 		 }
 		  return jobData;
