@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.AmexUploadFile;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetCategory;
@@ -36,6 +37,7 @@ import com.bis.sourcelead.entity.BoPaymentTypes;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.AmexFileUploadService;
 import com.bis.sourcelead.service.AssetCategoryService;
@@ -47,8 +49,9 @@ import com.bis.sourcelead.service.ChaseUploadFileService;
 import com.bis.sourcelead.service.ComericaFileUploadService;
 
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.UploadFileService;
-
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.validation.FileValidator;
@@ -92,6 +95,12 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 	
 	@Autowired
 	private AssetService assetService;
+	
+	@Autowired
+	private SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
 	@RequestMapping(value = "/finance")
 	public ModelAndView finance(HttpServletRequest request) throws Exception {
@@ -217,6 +226,12 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 		List<Employees> employeesList = employeesService.getEmployeesByLocationId(orgLocations.getId());
 		model.addObject("employeesList", employeesList);
 		
+	     SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_ADD_ASSET);
+	     model.addObject("actionId",action.getId());
+	     List<SourceleadSectionDTO> sections = commonUtil.getSourceleadFormSectionsByActionId(request, action.getId());
+	     model.addObject("sourceleadSectionList",sections); 
+	     
+		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{
@@ -252,6 +267,11 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 			sessionData = new SessionMaintainanceData();
 		}
 		sessionData.setNav(Constants.AssetManagement);
+		
+		 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_ADD_ASSET);
+	     model.addObject("actionId",action.getId());
+	     List<SourceleadSectionDTO> sections = commonUtil.getSourceleadFormSectionsByActionId(request, action.getId());
+	     model.addObject("sourceleadSectionList",sections);
 		
 		request.getSession().setAttribute("sessionData",sessionData);
 		Asset asset = assetService.getAssetById(assetId);
