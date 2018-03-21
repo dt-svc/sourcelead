@@ -220,8 +220,6 @@ public class CommonUtil {
 			return "Operation failed, please try again";
 			case DISABLED:
 			return "Your account is disable, please contact adminstrator";
-			case INVALID_CREDENTIALS:
-			return "Invalid email and/or password";
 			case INVALID_DATA:
 			return "Invalid data";
 			case INVALID_EMAIL:
@@ -232,16 +230,16 @@ public class CommonUtil {
 			return "Record already existed with given email id";
 			case DUPLICATE_PHONE:
 			return "Record already existed with given phone number";
-			case DUPLICATE_DISTRICT:
-			return "District already existed with given district name";
-			case DUPLICATE_ULB:
-			return "ULB already existed with given ulb name in selected district";
-			case DUPLICATE_INSTITUTION:
-			return "Institution already existed with given institution name in selected district/ulb/ward";
 			case UNAUTHORIZED:
 			return "You are not allowed to access this service";
 			case AWKWARD:
 				return "Something went wrong";
+			case INVALID_CREDENTIALS:
+				return "Invalid UserName Or Password";
+			case NOT_REGISTERED:
+				return "User Not Registered";
+			case INACTIVE_USER:
+				return "In-Active User";
 			}
 			return "Operation failed, please try again";
 	}
