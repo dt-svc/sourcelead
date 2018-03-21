@@ -167,10 +167,9 @@ function Immigration() {
                     type: "POST",
                     data: formData,
                     success: function (data) {
-                    	console.log(data);
                     	immigrationId = data.id;
                     	candidateId = data.candidateId;
-                    	//window.location.href = sourceleadUrl + immiModulePath + "/viewImmigration?immigrationId="+immigrationId;
+                    	location.href = sourceleadUrl + immiModulePath + "/viewImmigration?immigrationId="+immigrationId;
                     	//$("#newPetitionTemplateDiv").load("/app" + immiModulePath + "/loadNewPetitionPage?forward=two");
                     	//viewImmigrationPageList(data);
                         /* console.log("inside savePetitionTemplateDocDetails success");

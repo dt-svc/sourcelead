@@ -510,7 +510,7 @@ public class ImmigrationRestController {
             logger.error("Exception caugth in savePetitionDetailsPage controller" + e.getMessage());
             e.printStackTrace();
         }
-        return "{result:success,id:"+immigration.getId()+",candidateId:"+immigration.getCandidate().getId()+"}";
+        return "{\"result\":\"success\",\"id\":"+immigration.getId()+",\"candidateId\":"+immigration.getCandidate().getId()+"}";
     }
 
     @RequestMapping(value = "/validateTemplateName", method = RequestMethod.POST)
