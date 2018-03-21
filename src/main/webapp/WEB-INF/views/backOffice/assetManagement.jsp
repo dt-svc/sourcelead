@@ -5,6 +5,15 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ page trimDirectiveWhitespaces="true" %>
 
+<style type="text/css">
+.columnfields-custom .col-md-9 {
+	width: 100%;
+}
+.popinnerdiv  {
+min-height: 100px; max-height: 450px; overflow-y:auto; 
+}
+</style>
+
 <script type="text/javascript" src="jquery-1.2.6.min.js"></script>
 
 <script>
@@ -73,6 +82,8 @@ $(document).ready(function(){
           <div id="loading"></div>
           <form:form id="addAsset_form"  name="addAsset_form"> 
            <i class="fa fa-close close-div"></i>
+			 
+			 <div class="popinnerdiv"> 
 			  <div class="clearfix">
             <div class="clearfix assetaddpop-ul col-md-6" id="categoryDiv">
 				<select class="chosen-select" id="category" name="category" onChange="assetCategory(this);" data-validation="required" field-name="Asset Category">
@@ -147,7 +158,7 @@ $(document).ready(function(){
                    <c:if test="${!empty sourceleadSectionList}">
 	            	<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 	               		<c:if test="${sectionOrder.index == 0}">
-	                		  <div id="customDiv${section.id}"></div>
+	                		  <div id="customDiv${section.id}" class="col-md-6 columnfields-custom"></div>
 	              		 </c:if>
 	            	</c:forEach>
 	   			</c:if>
@@ -202,13 +213,13 @@ $(document).ready(function(){
                   </div>
                 </div>
                 </div>
-                
+                </div>
+                </div>
                 <!-- Shift A Fields -->
                 <div class="clearfix mr">
                   <div class="pull-right">
                    <input type="button" value="Add" id="add_asset" onclick="storeAsset();" class="btn btn-sm btn-primary">
                   </div>
-                </div>
               </div>
             </div>
             </form:form>

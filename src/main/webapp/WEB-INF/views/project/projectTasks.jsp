@@ -49,8 +49,6 @@ function taskNameValidation(){
 
 <script>
 	$(document).ready(function() {
-		alert("hi");
-
 		document.getElementById("addProjectTasks_form").reset();
 		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 		  var sectionId = '${section.id}';
@@ -1021,7 +1019,6 @@ function clearDueDate(){
 
 <script>
 function getCustomDependentField(sectionId){
-	alert("hi");
 	 $.ajax({
 			type : "POST" , 
 				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
