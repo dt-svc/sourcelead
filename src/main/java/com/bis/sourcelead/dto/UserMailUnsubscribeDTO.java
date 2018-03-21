@@ -15,6 +15,8 @@ public class UserMailUnsubscribeDTO {
 	private String createdDate;
 	
     private String updatedDate;
+    
+    private String uniqueToken;
 
 	public Long getId()
 	{
@@ -84,6 +86,16 @@ public class UserMailUnsubscribeDTO {
 	public void setUpdatedDate(String updatedDate)
 	{
 		this.updatedDate = updatedDate;
+	}
+
+	public String getUniqueToken()
+	{
+		return uniqueToken;
+	}
+
+	public void setUniqueToken(String uniqueToken)
+	{
+		this.uniqueToken = uniqueToken;
 	}
     
 }
