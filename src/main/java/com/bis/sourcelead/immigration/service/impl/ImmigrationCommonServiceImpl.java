@@ -96,6 +96,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		orgSpoc.setId(Long.parseLong(immigrationDTO.getAttorneyContact()));
 		immigration.setOrgSpoc(orgSpoc);
 		immigration.setCandidate(candidate);
+		immigration.setOrgLocationId(orgLocations);
 		
 		Requirement requirement = new Requirement();
 		if(!StringUtils.isEmpty(immigrationDTO.getJobId())){// job id optional
