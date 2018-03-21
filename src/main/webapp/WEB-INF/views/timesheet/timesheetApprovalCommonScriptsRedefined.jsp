@@ -91,7 +91,11 @@ function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,
 			    	 setTotals();
 				     maskme();
 		      }
-	    }); 
+	    });
+     	selectedRecords = {};
+		$(".checkBoxForSubmitForApproval").click(function () {
+	    	selectedRecords[$(this).val()] = $(this).is(":checked");
+	    });
 } 
 </script>
 <script>
@@ -212,6 +216,7 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 			submissionIDs.push(e);
 		}
 	}
+	alert(submissionIDs);
 	var data = submissionIDs.toString().split(',');
 	for(var i=0; i<=data.length;i++){
 		var data2 = data[i].toString().split('!');
@@ -240,6 +245,10 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 		    			   	$("#loadingCotentDiv").removeAttr('style');
 		    			   	$('#hedderAcceptRejectButton').attr('style','display:none');
 			    		}
+		    			selectedRecords = {};
+		    			$(".checkBoxForSubmitForApproval").click(function () {
+	             	    	selectedRecords[$(this).val()] = $(this).is(":checked");
+	             	    });
 			    	}
 			    }
 		    });  
@@ -273,6 +282,7 @@ function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
 			submissionIDs.push(e);
 		}
 	}
+	alert(submissionIDs);
 	var dataOne = submissionIDs.toString().split(',');
 	for(var i=0; i<=dataOne.length;i++){
 		var dataTwo = dataOne[i].split('!');
@@ -312,6 +322,10 @@ function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
 	      		      $("#rejectpanel").hide();
 	      		      $('#hedderAcceptRejectButton').attr('style','display:none');
 		   	   }
+		       selectedRecords = {};
+   				$(".checkBoxForSubmitForApproval").click(function () {
+        	    	selectedRecords[$(this).val()] = $(this).is(":checked");
+        	    });
 	      }
 	    }); 
 	 }else{
