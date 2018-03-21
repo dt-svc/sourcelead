@@ -95,7 +95,7 @@
         <div class='remove_search'>
 		        		<input type='text' placeholder="Search" value="" id='SearchExpensesData'/>
 		</div>
-    <div class="project_wrap_table datatable_filter">
+    <div class="project_wrap_table datatable_filter overflow_Auto">
     	<div id="expensesListDiv">	</div>
 	</div>
 	</div>
@@ -149,9 +149,9 @@ function getExpensesList(dateSearch){
 	var url = '';
     var searchValue = $("#SearchExpensesData").val();
 	searchValue = searchValue ? searchValue : "";
+	
 	var expenseStatus = '';
 	expenseStatus = $('#expenseStatusDivId').val();
-	
 	var expensesStatusFromDashboard = '${expensesStatusFormDashBoard}';
 	if(expensesStatusFromDashboard != null && expensesStatusFromDashboard != '' && expensesStatusFromDashboard !='undefined'){
 		$(":checkbox[value=ALL]").prop("checked",false);
@@ -170,6 +170,7 @@ function getExpensesList(dateSearch){
 			expenseStatus.push($(this).val());
 		});
 	}
+	
 	var userId = '${SourceLeadWeb_user.id}';
 	var locationCode = '${SourceLeadWeb_orgLocations.locationCode}'
 	$.ajax({
