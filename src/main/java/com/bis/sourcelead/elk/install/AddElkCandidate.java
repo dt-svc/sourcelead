@@ -75,7 +75,9 @@ public class AddElkCandidate{
 						candidateIndex.setFullName(firstLetterCapitalizedString(rs.getString("FIRST_NAME")));
 					}
 					
-					candidateIndex.setEmail(rs.getString("EMAIL").toLowerCase());
+					if(StringUtils.isNotBlank(rs.getString("EMAIL"))) {
+						candidateIndex.setEmail(rs.getString("EMAIL").toLowerCase());
+					}
 					candidateIndex.setAlternateEmail(rs.getString("ALTERNATE_EMAIL"));
 					candidateIndex.setMobilePhone(rs.getString("MOBILE_PHONE"));
 					candidateIndex.setAlternateMobilePhone(rs.getString("ALTERNATE_MOBILE_PHONE"));

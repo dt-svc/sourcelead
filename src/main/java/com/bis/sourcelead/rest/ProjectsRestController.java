@@ -587,22 +587,23 @@ public class ProjectsRestController {
 		    				pmrh.setPayRateStartDate(projectAssignedStartDate);
 		    				pmrh.setBillRateStartDate(projectAssignedStartDate);
 		    			}
-		    			
-		    			Date payRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getPayRateEstimatedDate());
-		    			Calendar cal = Calendar.getInstance();
-		    			cal.setTime(payRateEstimatedDate);
-		    			cal.add( Calendar.DAY_OF_YEAR, -1);
-		    			pmrh.setPayRateEndDate(cal.getTime());
-		    			
-		    			Date billRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getBillRateEstimatedDate());
-		    			Calendar cal1 = Calendar.getInstance();
-		    			cal1.setTime(billRateEstimatedDate);
-		    			cal1.add( Calendar.DAY_OF_YEAR, -1);
-		    			pmrh.setBillRateEndDate(cal1.getTime());
-		    			
-		    			pmrh.setStatus(0);
-		    			pmrh = projectMembersRateHistoryService.saveProjectMembersRateHistory(pmrh);
 		    		}
+		    		
+	    			
+	    			Date payRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getPayRateEstimatedDate());
+	    			Calendar cal = Calendar.getInstance();
+	    			cal.setTime(payRateEstimatedDate);
+	    			cal.add( Calendar.DAY_OF_YEAR, -1);
+	    			pmrh.setPayRateEndDate(cal.getTime());
+	    			
+	    			Date billRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getBillRateEstimatedDate());
+	    			Calendar cal1 = Calendar.getInstance();
+	    			cal1.setTime(billRateEstimatedDate);
+	    			cal1.add( Calendar.DAY_OF_YEAR, -1);
+	    			pmrh.setBillRateEndDate(cal1.getTime());
+	    			
+	    			pmrh.setStatus(0);
+	    			pmrh = projectMembersRateHistoryService.saveProjectMembersRateHistory(pmrh);
 	    		}
 	    		
 	    		

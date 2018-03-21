@@ -8222,9 +8222,6 @@ width: 100% !important;
 .advancedsearch-popup.filterDynamic-Search {
 top: 10%; left: 12.5%; width: 1024px; border-radius:3px;
 }
-.advancedsearch-popup.filterDynamic-Search-small {
-top: 10%; left: 25%; width: 650px; border-radius:3px;
-}
 .letterhead-preview {
 	border: 1px solid #ccc; background-color: #fff; min-height: 600px; padding: 15px;
 	/*box-shadow: 0 1px 8px 0 rgba(0,0,0,0.2),0 3px 4px 0 rgba(0,0,0,0.14),0 3px 3px -2px rgba(0,0,0,0.12);*/
@@ -8313,14 +8310,12 @@ border-radius:0 3px 3px 0;
 position: fixed !important; background-color: #fff; top:10%; left: 25%; width:500px; padding:15px 0 0;
 display: none; z-index: 99999 !important; border-radius:5px !important;
 }
-.fa-filter.faFilter {
-	color: #fff !important;
+.scrollDiv {
+min-height:50px;
 }
-.timesheet_head.timesheetHead ul {
-	padding-right: 15px;
-}
-.timesheet_head.timesheetHead ul li span.faSearch {
-	display: block;
+li.locationLi {
+line-height: 17px !important; overflow: auto !important; min-height: inherit !important; max-height: inherit !important;
+height: 60px !important
 }
 /* media 320px */
 @media (max-width: 320px) {
@@ -8739,4 +8734,3 @@ z-index: -800;
 .remove_uservalidation p.jquery_form_error_message {
 	position: absolute; bottom: 32px;
 }
-

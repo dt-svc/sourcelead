@@ -239,6 +239,7 @@ public class Constants {
 	public static final String SOW_CONTRACT_FINALIZED = "SOWFinalizeEmail";
 	public static final String SOW_FINALIZED_NOTIFICATION = "SowFinalizedNotification";
 	public static final String NDA_NSA_CONTRACT_FINALIZED = "NDAOrNSAFinalizeEmail";
+	public static final String NDA_NSA_CONTRACT_FINALIZED_NOTIFICATION = "NDAOrNSAFinalizeNotification";
 	public static final String APPLICANT_ACCEPTMAILTO_INTERVIEW_CREATOR = "ApplicantAcceptMailToInterviewCreator";
 	public static final String APPLICANT_REJECT_MAILTO_INTERVIEW_CREATOR = "ApplicantRejectMailToInterviewCreator";
 	public static final String APPLICANT_TENTATIVE_MAILTO_INTERVIEWCREATOR = "ApplicantTentativeMailToInterviewCreator";
@@ -1031,6 +1032,7 @@ public class Constants {
 	public static final String ROLE_CREATE_CANDIDATE ="ROLE_CREATE_CANDIDATE";
 	public static final String ROLE_CREATE_PROJECT ="ROLE_CREATE_PROJECT";
 	public static final String ROLE_ADD_NEW_CONTRACT ="ROLE_ADD_NEW_CONTRACT";
+	public static final String ROLE_ADD_ASSET ="ROLE_ADD_ASSET";
 	
 	public static final String REPORT_FILTER_LAST_7_DAYS = "Last_7_days";
 	public static final String REPORT_FILTER_LAST_15_DAYS = "Last_15_days";

@@ -58,7 +58,7 @@ public class UserLeaveLinkUpWithTimeSheetOldData {
 	 @Autowired
 	 private ProjectTasksDao projectTasksDao;
 	 
-	@RequestMapping(value ="/ws/userLeaveOldDateToTimesheet")
+	//@RequestMapping(value ="/ws/userLeaveOldDateToTimesheet")
 	public String userLeaveOldDateToTimesheet() throws Exception {
 		
 		List<Long> leaveType = new ArrayList<Long>();
