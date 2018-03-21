@@ -285,7 +285,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		if(immigration.getJob() != null) {
 			dto.setJobTitle(immigration.getJob().getJobTitle());
 		}
-		CandidateLcaI94Summary lcaI94Summary = immigrationCommonDao.getCandidateLCADetails(immigration.getJob().getId(), Constants.YES);
+		/*CandidateLcaI94Summary lcaI94Summary = immigrationCommonDao.getCandidateLCADetails(immigration.getJob().getId(), Constants.YES);
 		if(lcaI94Summary.getEmploymentLevel() != null) {
 			dto.setEmploymentLevelName(immigrationCommonDao.getPetitionTypeById(Long.parseLong(lcaI94Summary.getEmploymentLevel()), Constants.EMPLOYMENT_LEVEL));
 		}
@@ -295,7 +295,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		dto.setEmployer(lcaI94Summary.getEmployerName());
 		dto.setJobLocation(lcaI94Summary.getEmployerLocation());
 		dto.setLcaStartDate(lcaI94Summary.getStartDate().toString());
-		dto.setLcaEndDate(lcaI94Summary.getEndDate().toString());
+		dto.setLcaEndDate(lcaI94Summary.getEndDate().toString());*/
 		/*jobdetails end*/
 		Candidate candidate = candidateDao.getCandidateById(immigration.getCandidate().getId()); 
 		dto.setAssociateName(candidate.getFirstName()+" "+candidate.getLastName());
@@ -309,7 +309,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		dto.setBirthPlace(candidate.getPlaceOfBirth());
 		dto.setNationality(candidate.getNationality());
 		dto.setMaritalStatus(candidate.getMaritalStatus());
-		dto.setSsnNumber(candidateDao.getCandidateIdentitiesNumberByCandidateId(candidate.getId(), Constants.ID_TYPE_SSN).getIdNumber());
+		//dto.setSsnNumber(candidateDao.getCandidateIdentitiesNumberByCandidateId(candidate.getId(), Constants.ID_TYPE_SSN).getIdNumber());
 		dto.setI_94_number(candidate.getI94No());
 		dto.setI_20_number(candidate.getI20ServiceNo());
 		dto.setEadNumber(candidate.getEadNo());
