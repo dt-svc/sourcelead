@@ -24,7 +24,7 @@ public class CandidateLcaI94Summary {
 	@JoinColumn(name="CANDIDATE_ID",nullable=false)        
 	private Candidate candidateId;
 	
-	@ManyToOne
+	@ManyToOne(optional = false)
 	@JoinColumn(name="JOB_ID",nullable=false)        
 	private Requirement requirementId;
 	

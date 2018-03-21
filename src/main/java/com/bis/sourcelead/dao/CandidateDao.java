@@ -6,6 +6,7 @@ import java.util.List;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -125,5 +126,5 @@ public interface CandidateDao {
 	
 	public Candidate getCandidateByEmail(String email) throws Exception;
 
-	public String getCandidateIdentitiesNumberByCandidateId(Long id);
+	public CandidateIdendities getCandidateIdentitiesNumberByCandidateId(Long id, String status);
 }
