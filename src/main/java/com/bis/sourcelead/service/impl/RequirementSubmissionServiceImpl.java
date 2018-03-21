@@ -669,7 +669,11 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 			 if(requirementSubmissionHistoryForCoolingOff != null){
 				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
 					 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
-					 requirementSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+					 if(jsonObj.has("needApplicantPermit") && !isNullOrEmpty(jsonObj.getString("needApplicantPermit")) && jsonObj.getString("needApplicantPermit").equals("Y")){
+		                	 requirementSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.REQUEST_SENT);
+		             }else {
+		            	 	requirementSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+		             }
 					 requirementSubmission.setRejectedReason("Under cooling off period, completed by "+requirementSubmissionHistoryForCoolingOff.getCoolingOffPeriodEndDateStr()+".");
 					 requirementSubmission.setRejectedCategoryType("Other");
 					 requirementSubmission.setRejectedCategoryOther("Under cooling off period");
@@ -2545,10 +2549,14 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			emailMessage.setSubmissionId(submissionId);
 			
 			emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray,attachmentList);
+
 			StringBuilder actionLinkBuilder = new StringBuilder();   
-			String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=all&requirementUUID="+reqSub.getRequirement().getParentRequirement().getRequirementUUID()+"&submissionId="+reqSub.getId()).toString();	 
-//			String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=SUBMIT_TO_CLIENT&requirementUUID="+reqSub.getRequirement().getRequirementUUID()).toString();	 
-			emailScenerioUtil.sendNotification(actionLink, user, toUser,reqSub.getRequirement().getSpocId().getClientLocationId(), notificationScenario);
+			String actionLink = null;
+			if(reqSub.getRequirement() != null && reqSub.getRequirement().getParentRequirement() != null) {
+				 actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=all&requirementUUID="+reqSub.getRequirement().getParentRequirement().getRequirementUUID()+"&submissionId="+reqSub.getId()).toString();
+				 emailScenerioUtil.sendNotification(actionLink, user, toUser,reqSub.getRequirement().getSpocId().getClientLocationId(), notificationScenario);
+			}
+				 
 		}
 
 	}
@@ -4408,7 +4416,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		notificationScenario.setBody(notificationBody);
 		StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
-	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+submission.getSourceSubmission().getRequirement().getRequirementUUID()+"&submissionId="+submission.getSourceSubmission().getId()+"&submissionStatus=REJECTED").toString();
+	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+submission.getSourceSubmission().getRequirement().getRequirementUUID()+"&submissionId="+submission.getSourceSubmission().getId()+"&candidateUUID="+submission.getCandidate().getCandidateUUID()+"&submissionStatus=REJECTED").toString();
 
 		if(null != submission.getVendorLocationId()){
 		emailScenerioUtil.sendNotification(actionLink, userClient, userVendor, submission.getVendorLocationId(), notificationScenario);
@@ -4543,7 +4551,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 								notificationScenario.setBody(notificationBody);
 								StringBuilder notificationLink = new StringBuilder();
 								 String actionLink="";
-							     actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+reqsub.getSourceSubmission().getRequirement().getRequirementUUID()).toString();
+							     actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+reqsub.getSourceSubmission().getRequirement().getRequirementUUID()+"&submissionStatus=all").toString();
 
 								if(null != reqsub.getVendorLocationId()){
 								emailScenerioUtil.sendNotification(actionLink, userClient, userVendor, reqsub.getVendorLocationId(), notificationScenario);

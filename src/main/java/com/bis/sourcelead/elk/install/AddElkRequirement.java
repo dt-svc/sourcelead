@@ -2,7 +2,6 @@ package com.bis.sourcelead.elk.install;
 
 import java.beans.PropertyVetoException;
 import java.io.IOException;
-import java.io.Writer;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,40 +10,28 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.sql.DataSource;
 
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.elasticsearch.common.xcontent.XContentType;
-import org.elasticsearch.index.engine.DocumentMissingException;
-import org.json.JSONObject;
+import org.apache.commons.lang.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
-import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKTC;
+import com.bis.sourcelead.util.CommonUtil;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import com.thoughtworks.xstream.io.json.JsonWriter;
 
 public class AddElkRequirement {
-	
-	
-	
 	
 	private static final Logger logger = LoggerFactory.getLogger(AddElkRequirement.class);
 	private ComboPooledDataSource comboPooledDataSource;
@@ -82,7 +69,7 @@ public class AddElkRequirement {
 				if(null != rs.getString("ORG_LOCATION_ID") && !"".equalsIgnoreCase(rs.getString("ORG_LOCATION_ID"))){
 					requirementIndex.setOrgLocationId(Long.parseLong(rs.getString("ORG_LOCATION_ID")));
 				}
-				requirementIndex.setJobTitle(rs.getString("JOB_TITLE"));
+				requirementIndex.setJobTitle(firstLetterCapitalizedString(rs.getString("JOB_TITLE")));
 				requirementIndex.setJobId(rs.getString("JOB_ID"));
 				requirementIndex.setCurrentRateCurrency(rs.getString("CURRENCY_CODE"));
 				requirementIndex.setNumberOfPositions(rs.getString("POSITIONS"));
@@ -590,4 +577,9 @@ public class AddElkRequirement {
 				e.printStackTrace();
 			}
 		}
+	 
+	 public String firstLetterCapitalizedString(String name){
+		 String finalString = WordUtils.capitalizeFully(name);
+		return finalString;
+	}
 }

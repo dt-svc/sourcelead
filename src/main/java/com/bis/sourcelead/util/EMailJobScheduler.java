@@ -2091,7 +2091,7 @@ public class EMailJobScheduler {
 	@Scheduled(cron = "0 0 9 1/1 * ?")
 	@Async
 	public void holidayNotificationToUsers() throws Exception {
-		DateTime zoned = new DateTime();
+		DateTime zoned = new DateTime();	
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
 		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
 		DateFormat ts = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -2168,7 +2168,7 @@ public class EMailJobScheduler {
 							globalVarsMap);
 					notificationScenario.setBody(notificationBody);
 					StringBuilder actionLinkBuilder = new StringBuilder();
-					String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("viewHoliday").toString();
+					String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("leaveManagementReports").toString();
 					emailScenerioUtil.sendNotification(actionLink, orgLocations.getOrg().getUser(), user, orgLocations,notificationScenario);
 
 				}

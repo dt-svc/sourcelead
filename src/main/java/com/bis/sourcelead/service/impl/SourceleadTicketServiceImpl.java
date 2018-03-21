@@ -224,9 +224,9 @@ public class SourceleadTicketServiceImpl implements SourceleadTicketService{
 	}
 
 	@Override
-	public ResponseList<SourceleadTicketDTO> getSourceleadTicketListByOrgLocationId(SourceleadTicketDTO sourceleadTicketDTO, Long userId,OrgLocations orgLocation,Date fromDate,Date endDate) throws Exception {
+	public ResponseList<SourceleadTicketDTO> getSourceleadTicketListByOrgLocationId(SourceleadTicketDTO sourceleadTicketDTO, Long userId,OrgLocations orgLocation,Date[] searchDates) throws Exception {
 		 ResponseList<SourceleadTicketDTO> responseList = new ResponseList<>();
-		 ResponseList<SourceleadTickets> sourceleadTicketsList = sourceleadTicketDao.getSourceleadTicketListByOrgLocationId(sourceleadTicketDTO, userId,orgLocation,fromDate,endDate);
+		 ResponseList<SourceleadTickets> sourceleadTicketsList = sourceleadTicketDao.getSourceleadTicketListByOrgLocationId(sourceleadTicketDTO, userId,orgLocation,searchDates);
 		 List<SourceleadTicketDTO> sourceleadTicketDTOList = new ArrayList<>();
 		 if(sourceleadTicketsList != null) {
 			 for(SourceleadTickets sourceleadTickets : sourceleadTicketsList.getData()){

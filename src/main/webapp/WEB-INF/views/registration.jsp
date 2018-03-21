@@ -33,6 +33,7 @@
 }
 </style>
 
+
 <script>
  function getProfileDetails(response,service){
 		var activeElement = $('.tab-pane.fade.in.active').attr('id');
@@ -350,26 +351,26 @@ window.onload = function () {
             </div>
             <div class="row mt10 regDemoFields">
             <div class="form-group clearfix">
-                <div class="col-xs-12 col-md-6 mb10" id="firstNameDiv">
+                <div class="col-xs-12 col-md-6" id="firstNameDiv">
                     <i class="fa fa-user"></i>
                     <label>First Name <span class="text-danger">*</span></label>
                     <input type="text" name="firstName" field-name="First Name" id="firstName" value='${firstName}' data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" onkeydown="removeValidationNameDiv();">
                     <b></b>
                 </div>
-                <div class="col-xs-12 col-md-6 mb10" id="lastNameDiv">
+                <div class="col-xs-12 col-md-6" id="lastNameDiv">
                     <i class="fa fa-user"></i>
                     <label>Last Name</label>
                     <input type="text" name="lastName" field-name="Last Name" id="lastName" value='${lastName}'  data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100">
                     <b></b>
                 </div>
                 
-                <div class="col-xs-12 col-md-6 mb10" id="emailDiv">
+                <div class="col-xs-12 col-md-6" id="emailDiv">
                     <i class="fa fa-envelope"></i>
                     <label>Email <span class="text-danger">*</span></label>
                     <input type="text" name="email" field-name="Email" value='${email}' onblur="validateEmail('Professional');" id="email"  data-validation="required validate_Space validate_length length2-100 validate_email" >
                     <b></b>
                 </div>
-                <div class="col-xs-12 col-md-6 select-field mb10" id="locationCountryDiv">
+                <div class="col-xs-12 col-md-6 select-field" id="locationCountryDiv">
                     <i class="fa fa-map-marker"></i>
                     <select class="form-control chosen-select" name="location" id="location" field-name="Country" data-validation="required" onchange="removeValidation();">
                         <option disabled selected>Country</option>
@@ -391,7 +392,7 @@ window.onload = function () {
 	                    <b></b>
 	                </div> -->
 	                
-	                   <div class="col-xs-12 col-md-6 mb10 posiRela">
+	                   <div class="col-xs-12 col-md-6  posiRela">
 
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Password <span class="text-danger">*</span></label>
@@ -399,18 +400,19 @@ window.onload = function () {
 	                    <b></b>
 	                    
 						<div id="js_message" class="passHint">
-				  			<p  id="js_letter" class="invalid">A lowercase letter</p>
-				  			<p  id="js_capital" class="invalid">A capital (uppercase) letter</p>
-				  			<p  id="js_number" class="invalid">A number</p>
-				  			<p  id="js_special" class="invalid">A special</p>
-				  			<p  id="js_length" class="invalid">Minimum 8 characters</p>
+				  			<p  id="js_letter" class="invalid">At least one lowercase letter</p>
+				  			<p  id="js_capital" class="invalid">At least one uppercase letter</p>
+				  			<p  id="js_number" class="invalid">At least one number</p>
+				  			<p  id="js_special" class="invalid">At least one special character</p>
+				  			<p  id="js_length" class="invalid">Minimum 8 characters required</p>
 						</div>      
-	                    
+	                    <i class="fa fa-eye showPassword-reg-usr" onclick="showProfPassword();"></i>
 	                </div>
-	                <div class="col-xs-12 col-md-6 mb10" id="passwordDiv">
+	                <div class="col-xs-12 col-md-6" id="passwordDiv">
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Confirm Password <span class="text-danger">*</span></label>
 	                    <input type="password" id="jsconfirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).checkProfPass();" data-validation="required validate_length length6-100" >
+	                     <i class="fa fa-eye showPassword-reg-usr" onclick="showProfConfirmPassword();"></i>
 	                    <b></b>
 	                </div>
 	           </div>
@@ -463,26 +465,26 @@ window.onload = function () {
             </div>
             <div class="row mt10 regDemoFields">
             <div class="form-group clearfix">
-                <div class="col-xs-12 col-md-6 mb10" id="firstNameDivRec">
+                <div class="col-xs-12 col-md-6" id="firstNameDivRec">
                     <i class="fa fa-user"></i>
                     <label>First Name <span class="text-danger">*</span></label>
                     <input type="text" name="firstName" field-name="First Name" id="recruiterFirstName" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" onkeydown="removeValidationNameDivRec();">
                     <b></b>
                 </div>
-                <div class="col-xs-12 col-md-6 mb10">
+                <div class="col-xs-12 col-md-6">
                     <i class="fa fa-user"></i>
                     <label>Last Name</label>
                     <input type="text" name="lastName" field-name="Last Name" id="recruiterLastName" data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100">
                     <b></b>
                 </div>
                 
-                <div class="col-xs-12 col-md-6 mb10" id="recruiterEmailDiv">
+                <div class="col-xs-12 col-md-6" id="recruiterEmailDiv">
                     <i class="fa fa-envelope"></i>
                     <label>Email <span class="text-danger">*</span></label>
                     <input type="text" name="email" field-name="Email"  id="recruiterEmail"  onblur="validateRecruiterEmail('Recruiter');" data-validation="required validate_Space validate_length length2-100 validate_email" >
                     <b></b>
                 </div>
-                <div class="col-xs-12 col-md-6 select-field mb10" id="locationCountryDivRec">
+                <div class="col-xs-12 col-md-6 select-field" id="locationCountryDivRec">
                     <i class="fa fa-map-marker"></i>
                     <select class="form-control chosen-select" name="location" id="location" field-name="Country" data-validation="required" onchange="removeValidationRec();">
                         <option disabled selected>Country</option>
@@ -497,7 +499,7 @@ window.onload = function () {
                 </div>
                 <div class="clearfix"></div>
                 <div id="recpwdDiv">
-                <div class="col-xs-12 col-md-6 mb10 posiRela" >
+                <div class="col-xs-12 col-md-6 posiRela" >
 
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Password <span class="text-danger">*</span></label>
@@ -507,17 +509,19 @@ window.onload = function () {
 	                   
 	                    <b></b>
 	                    <div id="fr_message" class="passHint">
-  							<p  id="fr_letter" class="invalid">A lowercase letter</p>
-  							<p  id="fr_capital" class="invalid">A capital (uppercase) letter</p>
-  							<p  id="fr_number" class="invalid">A number</p>
-  							<p  id="fr_special" class="invalid">A special</p>
-  							<p  id="fr_length" class="invalid">Minimum 8 characters</p>
+  							<p  id="fr_letter" class="invalid">At least one lowercase letter</p>
+  							<p  id="fr_capital" class="invalid">At least one uppercase letter</p>
+  							<p  id="fr_number" class="invalid">At least one number</p>
+  							<p  id="fr_special" class="invalid">At least one special character</p>
+  							<p  id="fr_length" class="invalid">Minimum 8 characters required</p>
 						</div> 
+						 <i class="fa fa-eye showPassword-reg-usr" onclick="showRecPassword();"></i>
 	                </div>
-	                <div class="col-xs-12 col-md-6 mb10" id="recpasswordDiv">
+	                <div class="col-xs-12 col-md-6" id="recpasswordDiv">
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Confirm Password <span class="text-danger">*</span></label>
 	                    <input type="password" id="recconfirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).reccheckPass();" data-validation="required validate_length length6-100" >
+	                     <i class="fa fa-eye showPassword-reg-usr" onclick="showRecConfirmPassword();"></i>
 	                    <b></b>
 	                </div>
                 </div>
@@ -956,7 +960,7 @@ function validateEmail(type){
 					     if(data == 'Invalid'){
 					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
 					    	    $('#pwdDiv').attr("style" , "display : none"); 
-					    	    $('#confirmPassword').removeAttr('data-validation');
+					    	    $('#jsconfirmPassword').removeAttr('data-validation');
 						 		$('#confirmPassword').attr('data-validation-optional',"true");
 						 		$('#password').removeAttr('data-validation');
 						 		$('#password').attr('data-validation-optional',"true");
@@ -974,20 +978,20 @@ function validateEmail(type){
 					     }else if(data == 'Not found'){
 					    	 $("#register_button").removeAttr("disabled");
 					    	 	$('#pwdDiv').attr("style" , "display : block"); 
-						 		$('#confirmPassword').removeAttr('data-validation-optional');
-								$('#confirmPassword').attr("data-validation","required");
-								$('#password').removeAttr('data-validation-optional');
-								$('#password').attr("data-validation","required");
+						 		$('#jsconfirmPassword').removeAttr('data-validation-optional');
+								$('#jsconfirmPassword').attr("data-validation","required");
+								$('#jsPassword').removeAttr('data-validation-optional');
+								$('#jsPassword').attr("data-validation","required");
 								$('#emailDiv').find('p.jquery_form_error_message').remove(); 
 								$('input#email').removeAttr('record-exist');
 			    				$('input#email').removeAttr('record-exist-errorMsg'); 
 					     }
 				       	else{
 				       		 $('#pwdDiv').attr("style" , "display : none"); 
-				       		$('#confirmPassword').removeAttr('data-validation');
-					 		$('#confirmPassword').attr('data-validation-optional',"true");
-					 		$('#password').removeAttr('data-validation');
-					 		$('#password').attr('data-validation-optional',"true");
+				       		$('#jsconfirmPassword').removeAttr('data-validation');
+					 		$('#jsconfirmPassword').attr('data-validation-optional',"true");
+					 		$('#jsPassword').removeAttr('data-validation');
+					 		$('#jsPassword').attr('data-validation-optional',"true");
 					 		
 				       		 $("#register_button").removeAttr("disabled");
 							 $('input#email').removeAttr( "record-exist record-exist-errormsg");
@@ -1156,18 +1160,11 @@ function validatepopRecruiterEmail(type){
 
 
 <script type="text/javascript">
-var validationSettings = {
-        errorMessagePosition : 'element',
-       borderColorOnError : '',
-		scrollToTopOnError : true,
-		dateFormat : 'yyyy/mm/dd' 
-   };  
          $('body').on('submit', '#professionalRegistration_form', function(e){
         	  $("#professionalRegistrationErrorMsg").val('');
         	  if($("#professionalRegistrationCheckTermsId").is(':checked')){
         		  $("#professionalRegistrationErrorMsg").val('NO');
         	  }
-        	 
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
             	/* var frm = $('#professionalRegistration_form').serializeFormJSON();
@@ -1227,8 +1224,10 @@ var validationSettings = {
             	return false;	
                }
             });
-         $('#professionalRegistration_form').showHelpOnFocus();
-            
+         $('body').on('blur', '#professionalRegistration_form', function() {
+        		$("#professionalRegistration_form").showHelpOnFocus();
+        		$("#professionalRegistration_form").validateOnBlur(false, validationSettings);
+        	});  
      
 	</script>
 	
@@ -1294,8 +1293,10 @@ var validationSettings = {
             	return false;	
                }
             });
-         $('#recruiterRegistration_form').showHelpOnFocus();
-            
+         $('body').on('blur', '#recruiterRegistration_form', function() {
+     		$("#recruiterRegistration_form").showHelpOnFocus();
+     		$("#recruiterRegistration_form").validateOnBlur(false, validationSettings);
+     	});     
      
 	</script>
 	
@@ -1708,6 +1709,61 @@ function passwordValidation(idValue,letter,capital,number,special,length){
 
 </script>
 
+<script>
+function showProfPassword(){
+	var passwordInput = document.getElementById('jsPassword');
+	if(passwordInput.type === "password"){
+		passwordInput.type = "text"
+	}else{
+		passwordInput.type = "password"
+	}
+	
+	
+}
+
+
+function showProfConfirmPassword(){
+	var confPasswordInput = document.getElementById('jsconfirmPassword');
+	if(confPasswordInput.type === "password"){
+		confPasswordInput.type = "text"
+	}else{
+		confPasswordInput.type = "password"
+	}
+	
+}
+
+function showRecPassword(){
+	var passwordInput = document.getElementById('recpassword');
+	if(passwordInput.type === "password"){
+		passwordInput.type = "text"
+	}else{
+		passwordInput.type = "password"
+	}
+	
+	
+}
+
+
+function showRecConfirmPassword(){
+	var confPasswordInput = document.getElementById('recconfirmPassword');
+	if(confPasswordInput.type === "password"){
+		confPasswordInput.type = "text"
+	}else{
+		confPasswordInput.type = "password"
+	}
+	
+}
+</script>
+
+
+<script>
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   };  
+</script>
 <script>
 $(document).ready(function(){
 	$(".posiRela input").focus(function(){

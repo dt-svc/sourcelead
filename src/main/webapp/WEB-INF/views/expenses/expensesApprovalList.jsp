@@ -214,7 +214,7 @@ var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';
  
 var searchvalue = '';
 if(searchData != null && searchData !='' && searchData!='undefined'){
-	searchValue = searchData;
+	searchValue = encodeURIComponent(searchData);
 }else{
 	searchValue = '';
  }
@@ -223,7 +223,7 @@ $.ajax({
     type : "POST",
      url: sourceleadUrl+"/getExpensesApprovalList?"+tokenParamName+"="+tokenValue+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate+"&searchValue="+searchValue,      
      success :function(data) {
-    	$("#approverDataExpensesDiv").empty();
+    	 $("#approverDataExpensesDiv").empty(); 
 		$("#approverDataExpensesDiv").append(data);
 		$("#loadingId").removeAttr('style');
 		preparePagination(1);

@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
@@ -555,10 +556,34 @@ public class FinanceServiceImpl implements FinanceService{
 	 * @return int
 	 */
 	private int getNumberOfAssociates(List<Invoice> invoiceList) {
-		Set<Long> set = new HashSet<>();
+		Set<Long> set = null;
 		for(Invoice invoice : invoiceList ) {
-			for(InvoiceLineItems inlineItems : invoice.getInvoiceLineItems()) {
-				set.add(inlineItems.getCandidate().getId());
+			if(Constants.PAYABLES.equalsIgnoreCase(invoice.getInvoiceType())){
+				if(null != invoice.getParentInvoiceId()) {
+					set = invoice.getParentInvoiceId().getInvoiceLineItems().stream()
+				              .map(InvoiceLineItems::getId)
+				              .collect(Collectors.toSet());
+				}else {
+					set = invoice.getInvoiceLineItems().stream()
+				              .map(InvoiceLineItems::getId)
+				              .collect(Collectors.toSet());
+				}
+//				for(InvoiceLineItems inlineItems : invoice.getParentInvoiceId().getInvoiceLineItems()) {
+//					set.add(inlineItems.getCandidate().getId());
+//				}
+			}else{
+				if(null != invoice.getParentInvoiceId()) {
+					set  = invoice.getParentInvoiceId().getInvoiceLineItems().stream()
+				              .map(InvoiceLineItems::getId)
+				              .collect(Collectors.toSet());
+				}else {
+					set  = invoice.getInvoiceLineItems().stream()
+				              .map(InvoiceLineItems::getId)
+				              .collect(Collectors.toSet());
+				}
+				/*for(InvoiceLineItems inlineItems : invoice.getInvoiceLineItems()) {
+					set.add(inlineItems.getCandidate().getId());
+				}*/
 			}
 			
 		}
@@ -583,8 +608,14 @@ public class FinanceServiceImpl implements FinanceService{
 				if (paymentDate != null) {
 					paidBill.setPayDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paymentDate));
 				}
-				paidBill.setAmount(invoice.getTotal());
-				double total = getPaidAmountByInvoiceId(invoice.getId());
+				
+				double total = 0;
+				if(Constants.PAYABLES.equalsIgnoreCase(paidBillDTO.getBillType())) {
+					 total = getPaidAmountByInvoiceId(invoice.getId());
+				}else {
+					 total = getPaidAmountByInvoiceId(invoice.getParentInvoiceId().getId());
+				}
+				paidBill.setAmount(total);
 				totalAmount = totalAmount + total;
 				paidBill.setTotalAmount(totalAmount);
 				paidBillList.add(paidBill);
@@ -619,7 +650,7 @@ public class FinanceServiceImpl implements FinanceService{
 			if(paidList.getData() != null) {
 				double otherAmount = 0;
 				for(PaidBillDTO paidBill : paidList.getData()) {
-					if(i <= 10) {
+					if(i < 10) {
 						list.add(paidBill);
 					}else {
 						otherAmount = otherAmount + paidBill.getTotalAmount();
