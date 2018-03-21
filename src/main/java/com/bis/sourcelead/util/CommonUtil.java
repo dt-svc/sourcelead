@@ -85,6 +85,7 @@ import com.bis.sourcelead.entity.VendorOnboardingTemplate;
 import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -205,6 +206,45 @@ public class CommonUtil {
 	private ProjectTasksDao tasksDao;
 	
 	
+	/**
+	 *  For Rest Service Resonse Message
+	 * @param orgDateFormat
+	 * @param date
+	 * @return String
+	 */
+	public static String response(Result response) {
+			switch (response) {
+			case SUCCESS:
+			return "Operation executed successfully";
+			case FAILED:
+			return "Operation failed, please try again";
+			case DISABLED:
+			return "Your account is disable, please contact adminstrator";
+			case INVALID_CREDENTIALS:
+			return "Invalid email and/or password";
+			case INVALID_DATA:
+			return "Invalid data";
+			case INVALID_EMAIL:
+			return "Invalid Email ID";
+			case SESSION_TIMEDOUT:
+			return "You have been logged out, please login and try again.";
+			case DUPLICATE_EMAIL:
+			return "Record already existed with given email id";
+			case DUPLICATE_PHONE:
+			return "Record already existed with given phone number";
+			case DUPLICATE_DISTRICT:
+			return "District already existed with given district name";
+			case DUPLICATE_ULB:
+			return "ULB already existed with given ulb name in selected district";
+			case DUPLICATE_INSTITUTION:
+			return "Institution already existed with given institution name in selected district/ulb/ward";
+			case UNAUTHORIZED:
+			return "You are not allowed to access this service";
+			case AWKWARD:
+				return "Something went wrong";
+			}
+			return "Operation failed, please try again";
+	}
 	
 	/**
 	 * This method is used to store pre-defined sourcelead tasks for the particular project
