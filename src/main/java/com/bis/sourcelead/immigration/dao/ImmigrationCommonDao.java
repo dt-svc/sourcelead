@@ -18,7 +18,7 @@ public interface ImmigrationCommonDao {
 
 	List<ImmigrationTemplate> getImmigrationTemplateList(OrgLocations orgLocations);
 	
-	Long savePetitionDetails(Immigration immigration, Candidate candidate, CandidateIdendities candidateIdendities,
+	Immigration savePetitionDetails(Immigration immigration, Candidate candidate, CandidateIdendities candidateIdendities,
 			CandidateResumes candidateResume, List<CandidateLcaI94Summary> lcaSummaryLst, List<CandidateResidence> residenceEntityLst) throws Exception;
 
 	Immigration getImmigrationViewList(String immigrationId);

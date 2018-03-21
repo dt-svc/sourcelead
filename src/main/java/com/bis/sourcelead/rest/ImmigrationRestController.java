@@ -31,6 +31,7 @@ import com.bis.sourcelead.dto.ResponseList;
 
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -497,19 +498,19 @@ public class ImmigrationRestController {
     }
 
     @RequestMapping(value = {"/savePetitionDetailsPage"}, method = RequestMethod.POST)
-    public Long savePetitionDetailsPage(ImmigrationDTO immigrationDTO, HttpServletRequest request) {
+    public String  savePetitionDetailsPage(ImmigrationDTO immigrationDTO, HttpServletRequest request) {
         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
         immigrationDTO.setStaticPath(staticPath);
 		System.out.println("Candidate ID ----> :  "+immigrationDTO.getCandidateId());
-		Long immigrationId = null;
+		Immigration immigration = null;
         try {
-        	immigrationId = immigrationCommonService.savePetitionDetails(immigrationDTO, user, orgLocations);
+        	immigration = immigrationCommonService.savePetitionDetails(immigrationDTO, user, orgLocations);
         } catch (Exception e) {
             logger.error("Exception caugth in savePetitionDetailsPage controller" + e.getMessage());
             e.printStackTrace();
         }
-        return immigrationId;
+        return "{result:success,id:"+immigration.getId()+",candidateId:"+immigration.getCandidate().getId()+"}";
     }
 
     @RequestMapping(value = "/validateTemplateName", method = RequestMethod.POST)
