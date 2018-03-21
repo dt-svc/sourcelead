@@ -3,11 +3,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<script src="/resources/amcharts/amcharts.js"></script>
-<script src="/resources/amcharts/serial.js"></script>
-<script src="/resources/amcharts/plugins/export/export.min.js"></script>
-<link rel="stylesheet" href="/resources/amcharts/plugins/export/export.css" type="text/css" media="all" />
-<script src="/resources/amcharts/themes/light.js"></script>
 
 <script type="text/javascript">
 $(document).ready(function(){

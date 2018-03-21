@@ -64,6 +64,7 @@ import com.bis.sourcelead.service.RegistrationOptionalServicesService;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.UserLoginLogoutSessionService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.WhiteListIpAddressService;
@@ -126,6 +127,9 @@ public class RegistrationRestController {
 	 @Autowired
 	 WhiteListIpAddressService whiteListIpAddressService;
 	 
+	 @Autowired
+	 UserLoginLogoutSessionService userLoginLogoutSessionService;
+	 
 	 @RequestMapping(value = "/app/getOrgsList")
 	 		public @ResponseBody String getUsersList(HttpServletRequest request,
 				@RequestParam(value="searchByName", required=false) String searchByName,
@@ -182,8 +186,12 @@ public class RegistrationRestController {
 				for(Org regOrg : orgsList.getData()){
 					OrgDTO orgDto = new OrgDTO();
 						OrgLocations orglocations = orgLocationService.getPrimaryOrgLocationByOrgId(regOrg.getId());
+						UserRole userRole = null;
 						if(null != regOrg.getUser()){
-							UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(regOrg.getUser().getId(),orglocations.getId());
+							 userRole = userRoleService.getUserDetailsByUserIdAndLocationId(regOrg.getUser().getId(),orglocations.getId());
+						}
+						if(null != userRole){
+							
 							orgDto.setId(regOrg.getId());
 							orgDto.setOrgName(regOrg.getOrgName());
 							orgDto.setEmail(regOrg.getUser().getEmail());
@@ -1019,7 +1027,13 @@ public class RegistrationRestController {
 	@RequestMapping(value = "/app/ws/verificationDone", method = RequestMethod.POST)
 	public String verificationDone(@RequestParam(value = "userName", required = false) String userName, @RequestParam(value = "password", required = false) String password, @RequestParam(value = "userRoleId", required = false) long userRoleId,@RequestParam(value = "verfDone", required = false) String verfDone,HttpServletRequest request) throws Exception
 	{
-		UserRole userRole = userRoleService.getUserRoleById(userRoleId);
+		UserRole userRole = null;
+		if (userRoleId > 0)
+			userRole = userRoleService.getUserRoleById(userRoleId);
+		else {
+			User user = userService.findByUserName(userName);
+			userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		}
 		if("".equalsIgnoreCase(userName) || userName == null){
 			UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) request.getSession().getAttribute("userLoginSession");
 			if(userLoginSession != null){
@@ -1096,7 +1110,23 @@ public class RegistrationRestController {
 		if ("".equalsIgnoreCase(ipAddress) || ipAddress == null) {
 			ipAddress = userLoginHelper.getClientIpAddr(request);
 		}
+		
 		return whiteListIpAddressService.validateIPAddress(ipAddress, userRole,whiteListId,accessingType);
+	}
+	
+	@RequestMapping(value = "/app/ws/validateUserAlreadyAuthenticated", method = RequestMethod.GET)
+	public boolean validateUserAlreadyAuthenticated(@RequestParam(value = "userRoleId", required = false) long userRoleId, @RequestParam(value = "name", required = false) String userName, HttpServletRequest request) throws Exception
+	{
+		UserRole userRole = null;
+		if (userRoleId > 0)
+			userRole = userRoleService.getUserRoleById(userRoleId);
+		else {
+			User user = userService.findByUserName(userName);
+			userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		}
+		String ipAddress = userLoginHelper.getClientIpAddr(request);
+		boolean alreadyVerifiedBefore = userLoginLogoutSessionService.validatePreviouslyAuthenticatedByUserIdAndIpAddress(ipAddress, userRole.getUser().getId());
+		return alreadyVerifiedBefore;
 	}
 	
 	

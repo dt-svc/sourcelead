@@ -13,7 +13,7 @@ import com.bis.sourcelead.entity.User;
 
 public interface InvoicePaymentService {
 	
-	InvoicePayment saveInvoicePayment(InvoicePaymentDTO invoicePaymentDTO, JSONObject jsonObj, User user, OrgLocations orgLocation,MultipartFile attachedfileList,Long invoiceId)throws Exception;
+	InvoicePayment saveInvoicePayment(InvoicePaymentDTO invoicePaymentDTO, User user, OrgLocations orgLocation,MultipartFile attachedfileList,Long invoiceId)throws Exception;
 	
 	List<InvoicePayment>  getInvoicePaymentList(Long invoiceId)throws Exception;
 

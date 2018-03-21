@@ -1391,7 +1391,14 @@ function toDate(selector) {
 		        	
 		        	$("#savedInvoiceId").val(json['id']); 
 		        	
-		        	
+		        	var test = json['invoiceParentId'];
+		        	if(json['invoiceStatus'] == "Rejected" && test != null){
+			   			 document.getElementById("sendInvoice").style.display="none";
+			   			 document.getElementById("saveInvoice").style.display="none";
+			       	}else{
+			       		document.getElementById("sendInvoice").style.display="inline-block";
+			   			document.getElementById("saveInvoice").style.display="inline-block";
+			       	}
 		        	
 		        } 
     		});
@@ -1406,6 +1413,10 @@ $(document).ready(function(){
 	}else{
 		getVendors();
 // 		getProjectsList();
+		$("#invoiceId").val("");
+		$("#paymentFrequency").val("");
+		$("#paymentFrequency").trigger("chosen:updated");
+		$("#dueDate").val("");
 	}
 	
 	

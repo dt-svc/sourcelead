@@ -89,6 +89,7 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private float totalBalLeaves;
 	
 	private String exportType;
+	private float leaveNoDays;
 	
 	public String getLeavesTaken() {
 		return leavesTaken;
@@ -628,6 +629,12 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	}
 	public void setExportType(String exportType) {
 		this.exportType = exportType;
+	}
+	public float getLeaveNoDays() {
+		return leaveNoDays;
+	}
+	public void setLeaveNoDays(float leaveNoDays) {
+		this.leaveNoDays = leaveNoDays;
 	}
 
 }
