@@ -334,8 +334,8 @@ function saveSignatory(){
   	  var formData = $($('#signatory_form')[0]).serialize();
   	$.post(sourceleadUrl+"/saveOrgLocationSignatory?"+tokenParamName+"="+tokenValue, formData, function(data) {
 		if(data == "success"){
-			signatoryFormDiv();
 			getAllSignatory();
+			signatoryFormDiv();
 		}
 	}); 
     	  //saveOrgLocationSignatory(formData);

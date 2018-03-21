@@ -1667,9 +1667,9 @@ public class LeaveManagementRestController {
 								pendingCounts = pendingCounts + appliedLeaveCount;
 							}
 							if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
-								approvedCounts = approvedCounts + appliedLeaveCount;
+								approvedCounts = approvedCounts + (appliedLeaveCount - leave.getExtraLeavesTaken());
 								
-								noOfDays = noOfDays + appliedLeaveCount;
+								noOfDays = noOfDays + (appliedLeaveCount - leave.getExtraLeavesTaken());
 								if(noOfDays > totalLeavesperYear) {
 									float totalLeaves =  totalLeavesperYear - noOfDays;
 									leaveTypeDto.setTotalNoOfDays(totalLeaves);
