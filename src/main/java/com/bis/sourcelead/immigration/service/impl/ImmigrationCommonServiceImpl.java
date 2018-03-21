@@ -69,10 +69,207 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		Immigration immigrationVal = null;
 		try {
 			
-		/*get the candidate details*/
-		Candidate candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(immigrationDTO.getCandidateId()));
-		//candidate.setId(Long.parseLong(immigrationDTO.getCandidateId()));
-		Date date = new Date();
+		Candidate candidate = new Candidate();
+		candidate = savePetitionCandidate(immigrationDTO,orgLocations,user);
+		
+		CandidateIdendities candidateIdendities = new CandidateIdendities();
+		candidateIdendities = savePetitionCandidateIdentities(immigrationDTO,candidate,user);
+		
+		Requirement requirement = new Requirement();
+		if(!StringUtils.isEmpty(immigrationDTO.getJobId())){// job id optional
+			requirement.setId(Long.parseLong(immigrationDTO.getJobId()));
+		}
+		
+		Immigration immigration = new Immigration();
+		immigration = savePetitionImmigration(immigrationDTO,orgLocations,candidate,requirement,user);
+		
+		CandidateResumes candidateResume = new CandidateResumes();
+		candidateResume = savePetitionCandidateResume(immigrationDTO,candidate, user, orgLocations);
+		
+		List<CandidateLcaI94Summary> lcaSummaryLst  = new ArrayList<CandidateLcaI94Summary>();
+		lcaSummaryLst = savePetitionLcaSummaryList(immigrationDTO, candidate, user, requirement, orgLocations);
+		
+		List<CandidateResidence> residenceList = new ArrayList<CandidateResidence>(); // add residences to immigration candidate tables
+		residenceList = savePetitionResidenceList(immigrationDTO,candidate, user, orgLocations);
+		
+		 immigrationVal = immigrationCommonDao.savePetitionDetails(immigration,candidate,candidateIdendities,candidateResume,lcaSummaryLst, residenceList);
+		}catch(Exception e) {
+			logger.error("Exception caugth in savePetitionDetails service"+ e.getMessage());
+			e.printStackTrace();
+		}
+		return immigrationVal;
+	}
+
+	private List<CandidateResidence> savePetitionResidenceList(ImmigrationDTO immigrationDTO, Candidate candidate,
+			User user, OrgLocations orgLocations) {
+		List<CandidateResidence> residenceList = new ArrayList<CandidateResidence>(); // add residences to immigration candidate tables
+			if (immigrationDTO.getResidenceList() != null) { 
+				List<ImmigrationResidenceDTO> residenceDtoLst = immigrationDTO.getResidenceList();
+				for (ImmigrationResidenceDTO residenceDto : residenceDtoLst) {
+					if(StringUtils.isEmpty(residenceDto.getLocation()) ) continue; // skip the empty  residence rows based on one of the required field value
+					CandidateResidence residenceEntity = new CandidateResidence();
+					residenceEntity.setCandidate(candidate);
+					residenceEntity.setCity(residenceDto.getCity());
+					residenceEntity.setCountry(residenceDto.getCountry());
+					residenceEntity.setLocation(residenceDto.getLocation());
+					residenceEntity.setStreetAddress(residenceDto.getAddress());
+					residenceEntity.setState(residenceDto.getState());
+					residenceEntity.setZipcode(residenceDto.getZipcode());
+					if(!StringUtils.isEmpty(residenceDto.getResidenceStartDate())){
+					residenceEntity.setStartDate((commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
+							residenceDto.getResidenceStartDate())));
+					}
+					if(!StringUtils.isEmpty(residenceDto.getResidenceEndDate())){
+					residenceEntity.setEndDate((commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
+							residenceDto.getResidenceEndDate())));
+					}
+					residenceEntity.setIsCurrAddress(Constants.NO); // default No for multiple residences treated as secondary residences.
+					residenceEntity.setStatus(Constants.RECORD_ACTIVE);
+					residenceEntity.setCreatedDate(new Date());
+					residenceEntity.setUpdatedDate(new Date());
+					residenceEntity.setCreatedBy(user);
+					residenceEntity.setUpdatedBy(user);
+					residenceList.add(residenceEntity);
+				}
+			}
+		return residenceList;
+	}
+
+	private List<CandidateLcaI94Summary> savePetitionLcaSummaryList(ImmigrationDTO immigrationDTO, Candidate candidate,
+			User user, Requirement requirement, OrgLocations orgLocations) {
+		List<CandidateLcaI94Summary> lcaSummaryLst  = new ArrayList<CandidateLcaI94Summary>();
+		CandidateLcaI94Summary lcaSummaryCurr  = new CandidateLcaI94Summary();
+		lcaSummaryCurr.setIdNumber(immigrationDTO.getLcaNumber());
+		if(immigrationDTO.getLcaStartDate()!=null && !StringUtils.isEmpty(immigrationDTO.getLcaStartDate())) {
+			lcaSummaryCurr.setStartDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationDTO.getLcaStartDate()));
+		}
+		if(immigrationDTO.getLcaEndDate()!=null && !StringUtils.isEmpty(immigrationDTO.getLcaEndDate())) {
+			lcaSummaryCurr.setEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationDTO.getLcaEndDate()));
+			lcaSummaryCurr.setIsCurrent(Constants.YES);
+		}
+		lcaSummaryCurr.setRequirementId(requirement);
+		lcaSummaryCurr.setCandidateId(candidate);
+		lcaSummaryCurr.setCreatedBy(user);
+		lcaSummaryCurr.setUpdatedBy(user);
+		lcaSummaryCurr.setEmploymentLevel(immigrationDTO.getEmploymentLevel());
+		lcaSummaryCurr.setEmployerName(immigrationDTO.getEmployer());
+		lcaSummaryCurr.setEmployerLocation(immigrationDTO.getJobLocation());
+		lcaSummaryCurr.setRateCurrency(immigrationDTO.getRateCurrency());
+		lcaSummaryCurr.setRate(immigrationDTO.getRate());
+		lcaSummaryCurr.setRateType(immigrationDTO.getRateType());
+		lcaSummaryCurr.setStatus(Constants.RECORD_ACTIVE);
+		lcaSummaryCurr.setIdType(Constants.ID_TYPE_LCA);
+		lcaSummaryCurr.setCreatedDate(new Date());
+		lcaSummaryCurr.setUpdatedDate(new Date());
+		lcaSummaryLst.add(lcaSummaryCurr); // add current lca
+		
+		CandidateLcaI94Summary lcaSummaryPrev  = new CandidateLcaI94Summary();
+		lcaSummaryPrev.setIdNumber(immigrationDTO.getPrevLcaNumber());
+		if(immigrationDTO.getPrevLcaStartDate()!=null && !StringUtils.isEmpty(immigrationDTO.getPrevLcaStartDate())) {
+			lcaSummaryPrev.setStartDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationDTO.getPrevLcaStartDate()));
+		}
+		if(immigrationDTO.getPrevLcaEndDate()!=null && !StringUtils.isEmpty(immigrationDTO.getPrevLcaEndDate())) {
+			lcaSummaryPrev.setEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationDTO.getPrevLcaEndDate()));
+			lcaSummaryPrev.setIsCurrent(Constants.NO);
+		}
+		lcaSummaryPrev.setRequirementId(requirement);
+		lcaSummaryPrev.setCandidateId(candidate);
+		lcaSummaryPrev.setCreatedBy(user);
+		lcaSummaryPrev.setUpdatedBy(user);
+		lcaSummaryPrev.setEmploymentLevel(immigrationDTO.getEmploymentLevel());
+		lcaSummaryPrev.setEmployerName(immigrationDTO.getEmployer());
+		lcaSummaryPrev.setEmployerLocation(immigrationDTO.getJobLocation());
+		lcaSummaryPrev.setRateCurrency(immigrationDTO.getRateCurrency());
+		lcaSummaryPrev.setRate(immigrationDTO.getRate());
+		lcaSummaryPrev.setRateType(immigrationDTO.getRateType());
+		lcaSummaryPrev.setStatus(Constants.RECORD_ACTIVE);
+		lcaSummaryPrev.setIdType(Constants.ID_TYPE_LCA);
+		lcaSummaryPrev.setCreatedBy(user);
+		lcaSummaryPrev.setUpdatedBy(user);
+		lcaSummaryPrev.setCreatedDate(new Date());
+		lcaSummaryPrev.setUpdatedDate(new Date());
+		lcaSummaryLst.add(lcaSummaryPrev); 
+		return lcaSummaryLst;
+	}
+
+	private CandidateResumes savePetitionCandidateResume(ImmigrationDTO immigrationDTO, Candidate candidate,
+			User user, OrgLocations orgLocations) {
+		try {
+		CandidateResumes candidateResume = new CandidateResumes();
+		if(immigrationDTO.getResumeInfo()!= null) {
+			FileInfo fileInfo = immigrationDTO.getResumeInfo().get(0);
+			candidateResume.setCandidateId(candidate);
+			candidateResume.setFileName(fileInfo.getFileName());
+			candidateResume.setFileURL(fileInfo.getFileURL());
+			candidateResume.setFileContentType(fileInfo.getContentType());
+			candidateResume.setOrgLocationId(orgLocations);
+			candidateResume.setStatus(Constants.RECORD_ACTIVE);
+			candidateResume.setCreatedDate(new Date());
+			candidateResume.setUpdatedDate(new Date());
+			candidateResume.setCreatedBy(user.getUserCode());
+			candidateResume.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			FileUploadUtil.moveFile(immigrationDTO.getStaticPath(), fileInfo, "resumes");
+			}
+		return candidateResume;
+		}catch(Exception e) {
+			logger.error("Exception caugth in savePetitionCandidateResume service"+ e.getMessage());
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private CandidateIdendities savePetitionCandidateIdentities(ImmigrationDTO immigrationDTO, Candidate candidate,
+			User user) {
+		CandidateIdendities candidateIdendities = null;
+		candidateIdendities = candidateDao.getCandidateIdentitiesNumberByCandidateId(candidate.getId(), Constants.ID_TYPE_SSN);
+		if(candidateIdendities == null) {
+			candidateIdendities = new CandidateIdendities();
+		}
+		candidateIdendities.setCandidateId(candidate);
+		candidateIdendities.setIdNumber(immigrationDTO.getSsnNumber());
+		candidateIdendities.setIdType(Constants.ID_TYPE_SSN);
+		candidateIdendities.setStatus(Constants.RECORD_ACTIVE);
+		candidateIdendities.setCreatedBy(user);
+		candidateIdendities.setCreatedDate(new Date());
+		candidateIdendities.setUpdatedBy(user);
+		candidateIdendities.setUpdatedDate(new Date());
+		return null;
+	}
+
+	private Candidate savePetitionCandidate(ImmigrationDTO immigrationDTO, OrgLocations orgLocations, User user) {
+		try {
+			Candidate candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(immigrationDTO.getCandidateId()));
+			candidate.setFirstName(immigrationDTO.getFirstName());
+			candidate.setMiddelName(immigrationDTO.getMiddleName());
+			candidate.setLastName(immigrationDTO.getLastName());
+			candidate.setGender(immigrationDTO.getGender());
+			candidate.setEmail(immigrationDTO.getEmail());
+			candidate.setMobilePhone(immigrationDTO.getMobile());
+			candidate.setAlternateMobilePhone(immigrationDTO.getAlternateMobile());
+			candidate.setDateOfBirth(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationDTO.getBirthDate()));
+			candidate.setPlaceOfBirth(immigrationDTO.getBirthPlace());
+			candidate.setNationality(immigrationDTO.getNationality());
+			candidate.setMaritalStatus(immigrationDTO.getMaritalStatus());
+			candidate.setEadNo(immigrationDTO.getEadNumber());
+			candidate.setI20ServiceNo(immigrationDTO.getI_20_number());
+			candidate.setI94No(immigrationDTO.getI_94_number());
+			candidate.setUpdatedBy(user.getId().toString());
+			candidate.setUpdatedDate(new Date());
+			candidate.setLocation(immigrationDTO.getLocation()); // considered as a primary residence address.
+			candidate.setAddress(immigrationDTO.getAddress());
+			candidate.setCity(immigrationDTO.getCity());
+			candidate.setState(immigrationDTO.getState());
+			candidate.setCountry(immigrationDTO.getCountry());
+			candidate.setZipCode(immigrationDTO.getZipcode());
+			return candidate;
+		}catch(Exception e) {
+			logger.error("Exception caugth in savePetitionCandidate service"+ e.getMessage());
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private Immigration savePetitionImmigration(ImmigrationDTO immigrationDTO, OrgLocations orgLocations, Candidate candidate, Requirement requirement, User user) {
 		Immigration immigration = new Immigration();
 		immigration.setPetitionType(Long.parseLong(immigrationDTO.getPetitionType()));
 		//DateFormat dateFormat = new SimpleDateFormat ("dd-MM-yyyy");
@@ -97,169 +294,14 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		immigration.setOrgSpoc(orgSpoc);
 		immigration.setCandidate(candidate);
 		immigration.setOrgLocationId(orgLocations);
-		
-		Requirement requirement = new Requirement();
-		if(!StringUtils.isEmpty(immigrationDTO.getJobId())){// job id optional
-		requirement.setId(Long.parseLong(immigrationDTO.getJobId()));
-		}
 		immigration.setReceiptNo(immigrationDTO.getReceiptNo());
 		immigration.setJob(requirement);
 		immigration.setStatus(Constants.RECORD_ACTIVE);
 		immigration.setCreatedBy(user);
-		immigration.setCreatedDate(date);
+		immigration.setCreatedDate(new Date());
 		immigration.setUpdatedBy(user);
-		immigration.setUpdatedDate(date);
-		/*end Immigration here*/
-		candidate.setFirstName(immigrationDTO.getFirstName());
-		candidate.setMiddelName(immigrationDTO.getMiddleName());
-		candidate.setLastName(immigrationDTO.getLastName());
-		candidate.setGender(immigrationDTO.getGender());
-		candidate.setEmail(immigrationDTO.getEmail());
-		candidate.setMobilePhone(immigrationDTO.getMobile());
-		candidate.setAlternateMobilePhone(immigrationDTO.getAlternateMobile());
-		candidate.setDateOfBirth(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationDTO.getBirthDate()));
-		candidate.setPlaceOfBirth(immigrationDTO.getBirthPlace());
-		candidate.setNationality(immigrationDTO.getNationality());
-		candidate.setMaritalStatus(immigrationDTO.getMaritalStatus());
-		candidate.setEadNo(immigrationDTO.getEadNumber());
-		candidate.setI20ServiceNo(immigrationDTO.getI_20_number());
-		candidate.setI94No(immigrationDTO.getI_94_number());
-		candidate.setUpdatedBy(user.getId().toString());
-		candidate.setUpdatedDate(new Date());
-		candidate.setLocation(immigrationDTO.getLocation()); // considered as a primary residence address.
-		candidate.setAddress(immigrationDTO.getAddress());
-		candidate.setCity(immigrationDTO.getCity());
-		candidate.setState(immigrationDTO.getState());
-		candidate.setCountry(immigrationDTO.getCountry());
-		candidate.setZipCode(immigrationDTO.getZipcode());
-		//candidate.setResidenceStartDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationDTO.getResidenceStartDate()));
-		//candidate.setResidenceEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationDTO.getResidenceEndDate()));
-		/*End candidate here*/
-		CandidateIdendities candidateIdendities = null;
-		candidateIdendities = candidateDao.getCandidateIdentitiesNumberByCandidateId(candidate.getId(), Constants.ID_TYPE_SSN);
-		if(candidateIdendities == null) {
-			candidateIdendities = new CandidateIdendities();
-		}
-		candidateIdendities.setCandidateId(candidate);
-		candidateIdendities.setIdNumber(immigrationDTO.getSsnNumber());
-		candidateIdendities.setIdType(Constants.ID_TYPE_SSN);
-		candidateIdendities.setStatus(Constants.RECORD_ACTIVE);
-		candidateIdendities.setCreatedBy(user);
-		candidateIdendities.setCreatedDate(date);
-		candidateIdendities.setUpdatedBy(user);
-		candidateIdendities.setUpdatedDate(date);
-		/*CandidateIdentities ends here */
-		
-		CandidateResumes candidateResume = new CandidateResumes();
-		if(immigrationDTO.getResumeInfo()!= null) {
-		FileInfo fileInfo = immigrationDTO.getResumeInfo().get(0);
-		candidateResume.setCandidateId(candidate);
-		candidateResume.setFileName(fileInfo.getFileName());
-		candidateResume.setFileURL(fileInfo.getFileURL());
-		candidateResume.setFileContentType(fileInfo.getContentType());
-		candidateResume.setOrgLocationId(orgLocations);
-		candidateResume.setStatus(Constants.RECORD_ACTIVE);
-		candidateResume.setCreatedDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), date));
-		candidateResume.setUpdatedDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), date));
-		candidateResume.setCreatedBy(user.getUserCode());
-		candidateResume.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-		FileUploadUtil.moveFile(immigrationDTO.getStaticPath(), fileInfo, "resumes");
-		}
-		/*candidateResume ends here */
-		List<CandidateLcaI94Summary> lcaSummaryLst  = new ArrayList<CandidateLcaI94Summary>();
-		CandidateLcaI94Summary lcaSummaryCurr  = new CandidateLcaI94Summary();
-		lcaSummaryCurr.setIdNumber(immigrationDTO.getLcaNumber());
-		if(immigrationDTO.getLcaStartDate()!=null && !StringUtils.isEmpty(immigrationDTO.getLcaStartDate())) {
-			lcaSummaryCurr.setStartDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationDTO.getLcaStartDate()));
-		}
-		if(immigrationDTO.getLcaEndDate()!=null && !StringUtils.isEmpty(immigrationDTO.getLcaEndDate())) {
-			lcaSummaryCurr.setEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationDTO.getLcaEndDate()));
-			lcaSummaryCurr.setIsCurrent(Constants.YES);
-		}
-		
-		lcaSummaryCurr.setRequirementId(requirement);
-		lcaSummaryCurr.setCandidateId(candidate);
-		lcaSummaryCurr.setCreatedBy(user);
-		lcaSummaryCurr.setUpdatedBy(user);
-		lcaSummaryCurr.setEmploymentLevel(immigrationDTO.getEmploymentLevel());
-		lcaSummaryCurr.setEmployerName(immigrationDTO.getEmployer());
-		lcaSummaryCurr.setEmployerLocation(immigrationDTO.getJobLocation());
-		lcaSummaryCurr.setRateCurrency(immigrationDTO.getRateCurrency());
-		lcaSummaryCurr.setRate(immigrationDTO.getRate());
-		lcaSummaryCurr.setRateType(immigrationDTO.getRateType());
-		lcaSummaryCurr.setStatus(Constants.RECORD_ACTIVE);
-		lcaSummaryCurr.setIdType(Constants.ID_TYPE_LCA);
-		
-		lcaSummaryCurr.setCreatedDate(date);
-		lcaSummaryCurr.setUpdatedDate(date);
-		
-		lcaSummaryLst.add(lcaSummaryCurr); // add current lca
-		
-		CandidateLcaI94Summary lcaSummaryPrev  = new CandidateLcaI94Summary();
-		lcaSummaryPrev.setIdNumber(immigrationDTO.getPrevLcaNumber());
-		if(immigrationDTO.getPrevLcaStartDate()!=null && !StringUtils.isEmpty(immigrationDTO.getPrevLcaStartDate())) {
-			lcaSummaryPrev.setStartDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationDTO.getPrevLcaStartDate()));
-			
-		}
-		if(immigrationDTO.getPrevLcaEndDate()!=null && !StringUtils.isEmpty(immigrationDTO.getPrevLcaEndDate())) {
-			lcaSummaryPrev.setEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationDTO.getPrevLcaEndDate()));
-			lcaSummaryPrev.setIsCurrent(Constants.NO);
-		}
-		lcaSummaryPrev.setRequirementId(requirement);
-		lcaSummaryPrev.setCandidateId(candidate);
-		lcaSummaryPrev.setCreatedBy(user);
-		lcaSummaryPrev.setUpdatedBy(user);
-		lcaSummaryPrev.setEmploymentLevel(immigrationDTO.getEmploymentLevel());
-		lcaSummaryPrev.setEmployerName(immigrationDTO.getEmployer());
-		lcaSummaryPrev.setEmployerLocation(immigrationDTO.getJobLocation());
-		lcaSummaryPrev.setRateCurrency(immigrationDTO.getRateCurrency());
-		lcaSummaryPrev.setRate(immigrationDTO.getRate());
-		lcaSummaryPrev.setRateType(immigrationDTO.getRateType());
-		lcaSummaryPrev.setStatus(Constants.RECORD_ACTIVE);
-		lcaSummaryPrev.setIdType(Constants.ID_TYPE_LCA);
-		lcaSummaryPrev.setCreatedBy(user);
-		lcaSummaryPrev.setUpdatedBy(user);
-		lcaSummaryPrev.setCreatedDate(date);
-		lcaSummaryPrev.setUpdatedDate(date);
-		
-		lcaSummaryLst.add(lcaSummaryPrev); // add previous lca
-		List<CandidateResidence> residenceList = new ArrayList<CandidateResidence>(); // add residences to immigration candidate tables
-			if (immigrationDTO.getResidenceList() != null) { 
-				List<ImmigrationResidenceDTO> residenceDtoLst = immigrationDTO.getResidenceList();
-				for (ImmigrationResidenceDTO residenceDto : residenceDtoLst) {
-					if(StringUtils.isEmpty(residenceDto.getLocation()) ) continue; // skip the empty  residence rows based on one of the required field value
-					CandidateResidence residenceEntity = new CandidateResidence();
-					residenceEntity.setCandidate(candidate);
-					residenceEntity.setCity(residenceDto.getCity());
-					residenceEntity.setCountry(residenceDto.getCountry());
-					residenceEntity.setLocation(residenceDto.getLocation());
-					residenceEntity.setStreetAddress(residenceDto.getAddress());
-					residenceEntity.setState(residenceDto.getState());
-					residenceEntity.setZipcode(residenceDto.getZipcode());
-					if(!StringUtils.isEmpty(residenceDto.getResidenceStartDate())){
-					residenceEntity.setStartDate((commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
-							residenceDto.getResidenceStartDate())));
-					}
-					if(!StringUtils.isEmpty(residenceDto.getResidenceEndDate())){
-					residenceEntity.setEndDate((commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
-							residenceDto.getResidenceEndDate())));
-					}
-					residenceEntity.setIsCurrAddress(Constants.NO); // default No for multiple residences treated as secondary residences.
-					residenceEntity.setStatus(Constants.RECORD_ACTIVE);
-					residenceEntity.setCreatedDate(date);
-					residenceEntity.setUpdatedDate(date);
-					residenceEntity.setCreatedBy(user);
-					residenceEntity.setUpdatedBy(user);
-					residenceList.add(residenceEntity);
-				}
-			}
-		
-		 immigrationVal = immigrationCommonDao.savePetitionDetails(immigration,candidate,candidateIdendities,candidateResume,lcaSummaryLst, residenceList);
-		}catch(Exception e) {
-			logger.error("Exception caugth in savePetitionDetails service"+ e.getMessage());
-			e.printStackTrace();
-		}
-		return immigrationVal;
+		immigration.setUpdatedDate(new Date());
+		return immigration;
 	}
 
 	@Override
