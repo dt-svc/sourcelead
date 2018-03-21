@@ -352,16 +352,48 @@ public class LeaveManagementUtil {
 		return actualApplied;
 	}
 
-	public float getTotalBalanceLeavesForNonCarryforwardLeaveType(LeaveType leaveType, float totalbalanceLeaveCounts)
-	{
-		int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
-//		totalbalanceLeaveCounts = totalbalanceLeaveCounts - ((currentMonth) * leave.getLeaveType().getNoOfDays());
-		float totalLeaveCount = 0;
-		int monthlyAllowedLeaves = leaveType.getNoOfDays();
-		for(int i=0; i<currentMonth;i++){
-			totalLeaveCount += monthlyAllowedLeaves;
-		}
-		totalbalanceLeaveCounts = totalbalanceLeaveCounts - totalLeaveCount;
-		return totalbalanceLeaveCounts;
-	}
+	public float getTotalBalanceLeavesForNonCarryforwardLeaveType(LeaveType leaveType, float totalbalanceLeaveCounts, Employees emp) throws Exception
+    {
+        int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
+//        totalbalanceLeaveCounts = totalbalanceLeaveCounts - ((currentMonth) * leave.getLeaveType().getNoOfDays());
+        float totalLeaveCount = 0;
+        
+        if("Monthly".equalsIgnoreCase(leaveType.getPeriod()) && Constants.NO.equalsIgnoreCase(leaveType.getLeavesCarryforward())) {
+        	if("Experienced".equalsIgnoreCase(leaveType.getLeaveEffective())){
+                for(int i=0; i<currentMonth;i++){
+                    if(emp.getHireDate() != null){
+                        Date joinDate = emp.getHireDate();
+                        Date currentDate = new Date();
+                        int diffDays = commonUtil.getNumberOfDaysBetweenTwoDates(joinDate, currentDate);
+                        int expDays = 0;
+                        if("Year".equalsIgnoreCase(leaveType.getExperiencedType())){
+                            expDays = leaveType.getExperiencedDuration() * 365 ;
+                        }else if("Month".equalsIgnoreCase(leaveType.getExperiencedType())){
+                            expDays = leaveType.getExperiencedDuration() * 30 ;
+                        }else {
+                            expDays = leaveType.getExperiencedDuration();
+                        }
+                        if(diffDays > expDays){
+                            totalLeaveCount = leaveType.getExperiencedApplicableDays(); 
+                        }else{
+                            totalLeaveCount = leaveType.getNewJoinee(); 
+                        }
+                    }else{
+                        totalLeaveCount = leaveType.getExperiencedApplicableDays(); 
+                    }
+                }
+                
+                totalbalanceLeaveCounts = totalbalanceLeaveCounts - totalLeaveCount;
+            }else{
+                for(int i=0; i<currentMonth;i++){
+                    totalLeaveCount += leaveType.getNoOfDays();
+                }
+                totalbalanceLeaveCounts = totalbalanceLeaveCounts - totalLeaveCount;
+            }
+        }
+        
+        
+        return totalbalanceLeaveCounts;
+    }
+
 }

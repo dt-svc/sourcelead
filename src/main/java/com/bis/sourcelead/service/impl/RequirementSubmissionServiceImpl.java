@@ -2552,17 +2552,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 
 			StringBuilder actionLinkBuilder = new StringBuilder();   
 			String actionLink = null;
-			if(reqSub.getRequirement().getParentRequirement() != null) {
+			if(reqSub.getRequirement() != null && reqSub.getRequirement().getParentRequirement() != null) {
 				 actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=all&requirementUUID="+reqSub.getRequirement().getParentRequirement().getRequirementUUID()+"&submissionId="+reqSub.getId()).toString();
-			}else {
-				 actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=all&requirementUUID="+reqSub.getRequirement().getRequirementUUID()+"&submissionId="+reqSub.getId()).toString();
+				 emailScenerioUtil.sendNotification(actionLink, user, toUser,reqSub.getRequirement().getSpocId().getClientLocationId(), notificationScenario);
 			}
 				 
-//			String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=SUBMIT_TO_CLIENT&requirementUUID="+reqSub.getRequirement().getRequirementUUID()).toString();	 
-			emailScenerioUtil.sendNotification(actionLink, user, toUser,reqSub.getRequirement().getSpocId().getClientLocationId(), notificationScenario);
-	 
-		
-
 		}
 
 	}
