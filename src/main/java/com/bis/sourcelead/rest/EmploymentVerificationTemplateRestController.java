@@ -62,7 +62,7 @@ public class EmploymentVerificationTemplateRestController {
 	}
 	
 	
-	@RequestMapping(value = "/getAllEmploymentVerificationListByOrgLocationId", method = RequestMethod.POST)
+	@RequestMapping(value = "/getAllEmploymentVerificationListByOrgLocationId", method = RequestMethod.GET)
 	public ResponseList<EmploymentVerificationTemplateDTO> getAllEmploymentVerificationListByOrgLocationId(EmploymentVerificationTemplateDTO employmentVerificationTemplateDTO, HttpServletRequest request,HttpServletResponse response) throws Exception {
 		
 		

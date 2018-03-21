@@ -87,7 +87,7 @@ function employmentTemplatePagination(url){
         "searching": false,
         "ajax": $.fn.dataTable.pipeline( {
             url: url,
-            method: 'POST',
+            method: 'GET',
             pages: 10
         }),
         "columns": [

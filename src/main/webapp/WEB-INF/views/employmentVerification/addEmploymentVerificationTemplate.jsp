@@ -72,7 +72,7 @@
 			<span class="btn btn-primary">Browse<input id="uploadBtn" style="display: none;" multiple type="file">
 			</span>
 			</label>
-			<input type="text" class="form-control" readonly id="imageFile" name="imageFile" value="" placeholder="Upload Sign Image." field-name="Attachment" data-validation="validate_Space validateimage">
+			<input type="text" class="form-control" readonly id="imageFile" name="imageFile" value="${empTemplate.fileName}" placeholder="Upload Sign Image." field-name="Attachment" data-validation="validate_Space validateimage">
 			<i class="refreshinputfile"></i>
 			</div>
 
