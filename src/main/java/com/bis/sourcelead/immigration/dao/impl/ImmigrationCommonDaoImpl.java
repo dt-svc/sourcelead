@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateIdendities;
@@ -21,7 +22,6 @@ import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
-import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.immigration.dao.ImmigrationCommonDao;
@@ -39,6 +39,9 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 
 	@Autowired
 	private UserRoleDao userRoleDao;
+	
+	@Autowired
+	CandidateDao candidateDao;
 
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -75,7 +78,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Long savePetitionDetails(Immigration immigration, Candidate candidate,
+	public Immigration savePetitionDetails(Immigration immigration, Candidate candidate,
 			CandidateIdendities candidateIdendities, CandidateResumes candidateResume,
 			List<CandidateLcaI94Summary> lcaSummaryLst, List<CandidateResidence> residenceList) throws Exception {
 		logger.debug("savePetitionDetails starts");
@@ -104,10 +107,10 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 				}
 			}
 		} catch (Exception exception) {
-			    logger.error("Exception caught while saving immigration information "+exception.getMessage());
-			    exception.printStackTrace();
+		    logger.error("Exception caught while saving immigration information "+exception.getMessage());
+		    exception.printStackTrace();
 		}
-		return immigration.getId();
+		return immigration;
 	}
 
 	@Override
@@ -130,10 +133,10 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public CandidateLcaI94Summary getCandidateLCADetails(Long candidateId, String yes) {
+	public CandidateLcaI94Summary getCandidateLCADetails(Long jobId, String yes) {
 		 Session session = this.sessionFactory.getCurrentSession();
 	        String query = "from CandidateLcaI94Summary clis where clis.requirementId.id = :jobId and clis.isCurrent = :isCurrent";
-	        CandidateLcaI94Summary lcaI94Summary = (CandidateLcaI94Summary) session.createQuery(query).setLong("jobId", candidateId).setString("isCurrent", yes).uniqueResult();
+	        CandidateLcaI94Summary lcaI94Summary = (CandidateLcaI94Summary) session.createQuery(query).setString("jobId", jobId.toString().trim()).setString("isCurrent", yes).uniqueResult();
 		return lcaI94Summary;
 	}
 

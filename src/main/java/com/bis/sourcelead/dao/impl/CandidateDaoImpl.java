@@ -1545,11 +1545,11 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public String getCandidateIdentitiesNumberByCandidateId(Long id) {
+	public CandidateIdendities getCandidateIdentitiesNumberByCandidateId(Long id, String idType) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "select ci.idNumber from CandidateIdendities ci  where ci.candidateId.id = :candidateId  ";  
-		String ssnNumber =  (String) session.createQuery(query).setLong("candidateId", id).uniqueResult();
-		return ssnNumber;
+		String query = " from CandidateIdendities ci  where ci.candidateId.id = :candidateId and ci.idType = :idType ";  
+		CandidateIdendities candidateIdendities =  (CandidateIdendities) session.createQuery(query).setLong("candidateId", id).setString("idType", idType).uniqueResult();
+		return candidateIdendities;
 	}
 
 }
