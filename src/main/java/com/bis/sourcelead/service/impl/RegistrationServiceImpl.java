@@ -668,8 +668,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 		toDate.setTime(subscriptionDate);    
 	    
 	    LookUpData lookupData = lookupDateService.getTasksById(Long.parseLong(registration.getOrgEnrollment()));
-		
-	    if(lookupData.getName().equalsIgnoreCase("Free Trail") || lookupData.getName().equalsIgnoreCase("1 Month")) {
+	    if(lookupData.getName().equalsIgnoreCase("Free Trail")) {
+	    	toDate.add(Calendar.DATE, +15);
+	    }else if(lookupData.getName().equalsIgnoreCase("1 Month")) {
 	    	toDate.add(Calendar.MONTH, +1); 
 	    }else if(lookupData.getName().equalsIgnoreCase("6 Months")) {
 	    	toDate.add(Calendar.MONTH, +6); 
