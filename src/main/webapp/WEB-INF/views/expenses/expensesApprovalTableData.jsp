@@ -21,7 +21,7 @@
  </td>
  
  <td>
- 	<div>
+ 	<div class="tblminwidth-100">
  		<span title="${expApproverHierarchy.expenseEmpUserType}">${expApproverHierarchy.expenseEmpUserType}</span><br>
  		<span title="${expApproverHierarchy.userTypeVendorName}">${expApproverHierarchy.userTypeVendorName}</span>
  	</div>
@@ -30,7 +30,7 @@
 <c:if test="${not empty expApproverHierarchy.clientName}">
 <sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">
 	 <td>
-		 <div><span title="${expApproverHierarchy.expensesProjectName}">${expApproverHierarchy.expensesProjectName}</span><br>
+		 <div class="tbldata-dotdot-100"><span title="${expApproverHierarchy.expensesProjectName}">${expApproverHierarchy.expensesProjectName}</span><br>
 			 <c:if test="${!empty expApproverHierarchy.orgRelationUUID}">
 			 	<span title="${expApproverHierarchy.clientName}"> <a href="/app/clientDashboard?orgRelationUUID=${expApproverHierarchy.orgRelationUUID}" title="${expApproverHierarchy.clientName}" class="aLink"> ${expApproverHierarchy.clientName}</a></span>
 			 </c:if>
@@ -41,7 +41,7 @@
 
 <c:if test="${empty expApproverHierarchy.clientName}">
  	<td>
- 		<div>
+ 		<div class="tbldata-dotdot-100">
  			<span title="${expApproverHierarchy.expensesProjectName}">${expApproverHierarchy.expensesProjectName}</span>
  		</div>
  	</td>	
@@ -49,7 +49,7 @@
 	  		
 <c:if test="${not empty expApproverHierarchy.expensesApproverHierarchyPurpose}">
 	 <td>
-	 	<div>
+	 	<div class="tbldata-dotdot-200">
 	 		<span title="${expApproverHierarchy.expensesApproverHierarchyPurpose}">${expApproverHierarchy.expensesApproverHierarchyPurpose}</span>
 	 	</div>
 	 </td>	
@@ -57,7 +57,7 @@
 
 <c:if test="${empty expApproverHierarchy.expensesApproverHierarchyPurpose}">
 	 <td>
-	 	<div class="sm" title="--">--</div>
+	 	<div class="tbldata-dotdot-200 sm" title="--">--</div>
 	 </td>	
 </c:if>
 

@@ -26,8 +26,10 @@
 	       			$(":checkbox[value=REJECTED]").prop("checked",true);
 	       		}
 	       		$("#temp").val("temp");
+	       		$("#appro-pop").hide();
 			}else{
 				getExpensesList();
+				$("#appro-pop").show();
 			}
 		 };
 </script>
@@ -156,8 +158,6 @@ function getExpensesList(dateSearch){
 	if(expensesStatusFromDashboard != null && expensesStatusFromDashboard != '' && expensesStatusFromDashboard !='undefined'){
 		$(":checkbox[value=ALL]").prop("checked",false);
 		$(":checkbox[value="+expensesStatusFromDashboard+"]").prop("checked",true);
-	}else{
-		$(":checkbox[value=ALL]").prop("checked",true);
 	}
 	
 	if(expenseStatus != null && expenseStatus != '' && expenseStatus !='undefined'){
