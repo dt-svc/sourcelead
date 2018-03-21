@@ -1,8 +1,9 @@
 var immigration = new Immigration();
 var immiModulePath = "/immigration";
 var immTemplId = '';
-immigrationId = '';
-candidateId = '';
+var immigrationId = '';
+var candidateId = '';
+var templateId='';
 var formNames = [];
 function Immigration() {
 
@@ -155,11 +156,11 @@ function Immigration() {
 
     }
     // immigration view navigation if don't required comment below code start here.
-    this.savePageOneContinue = function (status) {
+    this.savePageAndContinue = function (status) {
         //$("#newPetitionTemplateDiv").empty();
         if (status == 'petitionDetails') {
             $("#newPetitionTemplateDiv").load("/app" + immiModulePath + "/loadNewPetitionPage?forward=petitionDetails");
-        } else if (status == 'two') {
+        } else if (status == 'saveContinue') {
             if ($("#petitionDetailsForm").validate(false, validationSettings)) {
                 var formData = getFormData("petitionDetailsForm");
                 $.ajax({
@@ -170,21 +171,14 @@ function Immigration() {
                     	eval("dataObj="+data)
                     	immigrationId = dataObj.id;
                     	candidateId = dataObj.candidateId;
-                    	window.location.href = sourceleadUrl + immiModulePath + "/viewImmigration?immigrationId="+immigrationId;
-                    	//$("#newPetitionTemplateDiv").load("/app" + immiModulePath + "/loadNewPetitionPage?forward=two");
-                    	//viewImmigrationPageList(data);
-                        /* console.log("inside savePetitionTemplateDocDetails success");
-                         if(data == 'success'){
-                         if(status == 'saveContinue'){
-                         $("#addNewPetitionTemplateDiv").empty();
-                         $("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/gotoTemplatePreviousPage?status=formDetails");
+                    	templateId= dataObj.immTemplateId;
+                    	
+                         if(status == 'saveContinue'){// redirect to petition details tab page.
+                         window.location.href = sourceleadUrl + immiModulePath + "/viewImmigration?immigrationId="+immigrationId+"&candidateId="+candidateId+"&templateId="+templateId;
                          }
-                         else if(status == 'save'){
-                         $("#addNewPetitionTemplateDiv").empty();
-                         $("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/gotoTemplatePreviousPage?status=docDetails");
-                         }
-                         }*/
-                    }
+                        
+                      }
+                    
                 });
                 return true;
             } else {
