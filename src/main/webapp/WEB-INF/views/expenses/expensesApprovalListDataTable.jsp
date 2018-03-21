@@ -11,7 +11,7 @@
 	<thead>                                                                                
 		<tr>                                                                                   
 			<th>Employee</th>                                                                      
-			<th>EmploymentType</th>                                                                
+			<th>Emp Type</th>                                                                
 			<th>Project</th>                                                                       
 			<th>Purpose</th> 
             <th>Amount</th>                                                                        

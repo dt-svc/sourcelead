@@ -1374,7 +1374,7 @@ public class ClientServiceImpl implements ClientService {
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink = "";
 		if("Client".equalsIgnoreCase(type))
-			actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("clientDashboard").toString();
+			actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("clientDashboard?contactsTab=contactsTab&orgRelationUUID="+orgSpocLocation.getOrgRelations().getUUID()).toString();
 		else
 			actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("vendorsList?contactsTab=contactsTab&orgRelationUUID="+orgSpocLocation.getOrgRelations().getUUID()).toString();
 		String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(), globalVarsMap);
@@ -1458,7 +1458,7 @@ public class ClientServiceImpl implements ClientService {
 		if("Client".equalsIgnoreCase(type))
 			  actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("vendorsList?contactsTab=contactsTab&orgRelationUUID="+orgSpoc.getOrgRelations().getUUID()).toString();
 		else
-			actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("clientDashboard").toString();
+			actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("clientDashboard?contactsTab=contactsTab&orgRelationUUID="+orgSpoc.getOrgRelations().getUUID()).toString();
 		 String rejectActionLink = "";
 		String spocUUID = "";
 		String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(), globalVarsMap);

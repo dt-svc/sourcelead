@@ -20,6 +20,10 @@
 			$("#notificationCurrentFrequency").attr("value",currentTimeFrequency);
 			timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,projectMemberId,masterCandidateId,totalHours,from,requestFrom);
 			}
+			selectedRecords = {};
+			$(".checkBoxForSubmitForApproval").click(function () {
+				selectedRecords[$(this).val()] = $(this).is(":checked");
+			});
 	});
 </script>
 

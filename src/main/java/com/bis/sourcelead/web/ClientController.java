@@ -135,7 +135,8 @@ public class ClientController {
 				@RequestParam(value = "orgRelationUUID", required = false) String orgRelationUUID,
 				@RequestParam(value = "orgSpocUUID", required = false) String orgSpocUUID,
 				@RequestParam(value = "orgName", required = false) String orgName,
-				@RequestParam(value = "clientKeyword", required = false) String clientKeyword) throws Exception {
+				@RequestParam(value = "clientKeyword", required = false) String clientKeyword,
+				@RequestParam(value="contactsTab", required=false)String contactsTab) throws Exception {
 		 
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -146,7 +147,7 @@ public class ClientController {
 		     List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
 			 model.addObject("sourceleadSectionList",sections);
 		    
-		    
+			 model.addObject("contactsTab",contactsTab);
 		    model.setViewName("client/clientDashboard");
 			
 			if(null != searchResult && !searchResult.equalsIgnoreCase("") && searchResult.equals("clientSearchResult")){
