@@ -1797,6 +1797,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 		clientDTO.setRoleTypeId("");
 		if (isMailSent != null) {
 			clientDTO.setIsMailSent(isMailSent);
+			addUserDTO.setIsMailSent(isMailSent);
 		}
 		if (client.getTier() != null) {
 			clientDTO.setLevel(client.getTier());
