@@ -26,6 +26,7 @@ import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
+import com.bis.sourcelead.entity.OrgLicenseSubscriptionPrice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Roles;
@@ -38,6 +39,7 @@ import com.bis.sourcelead.service.EmailDomainsService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.NotificationsService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionPriceService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
@@ -115,6 +117,9 @@ public class RegistrationController {
 	 @Autowired
 	 OrgLicenseSubscriptionService orgLicenseSubscriptionService;
 	 
+	 @Autowired
+	 OrgLicenseSubscriptionPriceService orgLicenseSubscriptionPriceService;
+	 
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	 @RequestMapping(value = "/app/enrolledOrgsList")
 		public ModelAndView enrolledOrgsList(HttpServletRequest request) {
@@ -190,6 +195,12 @@ public class RegistrationController {
 					model.addObject("registeredOrgId", orgLocations.getOrg().getId());
 					OrgLicenseSubscription orgLicenseSubscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByOrgIdAndCountry(orgLocations.getOrg().getId(), orgLocations.getCountry());
 					model.addObject("orgLicenseSubscriptionId", orgLicenseSubscription.getId());
+					OrgLicenseSubscriptionPrice orgLicenseSubscriptionPrice = orgLicenseSubscriptionPriceService.getOrgLicenseSubscriptionPriceBySubscriptionTypeAndUserType(orgLicenseSubscription.getSubscriptionType().getId(), orgLicenseSubscription.getUserSubscriptionType().getId());
+					 if(orgLicenseSubscriptionPrice != null) {
+						 model.addObject("subscriptionRate", orgLicenseSubscriptionPrice.getSubscriptionRate());
+					   }else {
+						   model.addObject("subscriptionRate", 0);
+					   }
 					
 				}
 				 

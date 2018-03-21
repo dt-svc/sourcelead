@@ -36,7 +36,7 @@ public class OrgLicenseSubscriptionDaoImpl implements OrgLicenseSubscriptionDao 
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
 
-	private static final Logger logger = LoggerFactory.getLogger(OrgLocationsDaoImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(OrgLicenseSubscriptionDaoImpl.class);
 
 	@Override
 	@Transactional

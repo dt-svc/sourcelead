@@ -51,6 +51,7 @@ import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
+import com.bis.sourcelead.entity.OrgLicenseSubscriptionPrice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRequest;
 import com.bis.sourcelead.entity.PasswordResets;
@@ -78,6 +79,7 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExpensesCategoryService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.MasterCandidateService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionPriceService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRequestService;
@@ -220,6 +222,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Autowired
 	LookUpDataService lookupDateService;
 	
+	@Autowired
+	OrgLicenseSubscriptionPriceService orgLicenseSubscriptionPriceService;
+	 
 	
 	protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -257,6 +262,13 @@ public class RegistrationServiceImpl implements RegistrationService{
 		try {
 			orgLicenseSubscriptionService.saveOrgLicenseSubscription(orgLicenseSubscription);
 			orgLocationDTO.setOrgLinceseSubscriptionId(orgLicenseSubscription.getId());
+			OrgLicenseSubscriptionPrice orgLicenseSubscriptionPrice = orgLicenseSubscriptionPriceService.getOrgLicenseSubscriptionPriceBySubscriptionTypeAndUserType(Long.parseLong(registration.getOrgEnrollment()), Long.parseLong(registration.getUserSubscription()));
+			   if(orgLicenseSubscriptionPrice != null) {
+				   orgLocationDTO.setSubscriptionRate(orgLicenseSubscriptionPrice.getSubscriptionRate());
+			   }else {
+				   orgLocationDTO.setSubscriptionRate(0);
+			   }
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

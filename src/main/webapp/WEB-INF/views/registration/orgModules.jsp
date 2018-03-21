@@ -8,7 +8,25 @@
 	<div class="project_tabs_inn_head">
 		<div class="clearfix mb10"></div>
 		<div id="modulesListLoading"></div>
+		 
+		 <div class="tab-pane">
+      	 <div class="form-horizontal">
+      	 <div class="panel-group mt orgmodeulsAccordion" id="accordion">
 		 <div id="modulesList"></div> 
+		 <div class="clearfix"></div>
+        	 <div class="clearfix colmd-12 modal-footer">
+	        	 <div class="pull-left">
+	        	 <label class="checkBox"><input type="checkbox" name="generateInvoice"><strong>Generate Invoice</strong></label>
+	        	 </div>
+	        	 <div class="clearfix"></div>
+	        	 <div class="pull-right">
+	        	<h4><strong>Total: <span class="ml" id="subscriptionRate"></span></strong>$</h4>
+	        	 </div>
+        	 </div>
+       	 </div>
+        	 <div class="clearfix"></div>
+       	 </div>
+       	 </div>
 		
 	</div>
 	
@@ -33,9 +51,6 @@ function getOrgModules(){
 	    	 url: sourceleadUrl+"/getRegistrationTabs?${_csrf.parameterName}=${_csrf.token}", 
 	        success: function(json) {
 	        	
-	        	 result = result +'<div class="tab-pane">';
-	        	 result = result +'<div class="form-horizontal">';
-	        	 result = result +'<div class="panel-group mt orgmodeulsAccordion" id="accordion">';
 	        	 result = result +'<ul class="list-unstyled list-inline">';
 	        	 
 	        	
@@ -67,21 +82,7 @@ function getOrgModules(){
 	        	
 	        	 result = result +'</ul>';
 	        	 
-	        	 result = result +'<div class="clearfix"></div>';
-	        	 result = result +'<div class="clearfix colmd-12 modal-footer">';
-	        	 result = result +'<div class="pull-left">';
-	        	 result = result +'<label class="checkBox"><input type="checkbox" name="generateInvoice"><strong>Generate Invoice</strong></label>';
-	        	 result = result +'</div>';
-	        	 result = result +'<div class="clearfix"></div>';
-	        	 result = result +'<div class="pull-right">';
-	        	 result = result +'<h4><strong>Total: <span class="ml">2000$</span></strong></h4>';
-	        	 result = result +'</div>';
-	        	 result = result +'</div>';
-	        	 result = result +'</div>';
-	        	 result = result +'<div class="clearfix"></div>';
-	               
-	        	 result = result +'</div>';
-	        	 result = result +'</div>';
+	        	 
 	        	 $("#modulesList").empty();
 	             $("#modulesList").append(result);
 		        

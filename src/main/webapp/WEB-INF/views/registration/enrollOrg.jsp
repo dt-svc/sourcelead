@@ -28,6 +28,8 @@
         	$("#orgLocationId").val('${orgLocationId}');
        		$("#orgLinceseSubscriptionId").val('${orgLicenseSubscriptionId}');
        		$("#registeredOrgId").val('${registeredOrgId}');
+       		$("#subscriptionRate").html('${subscriptionRate}');
+       		
             getCompanyDetails();
 		}
 	 	
@@ -369,7 +371,7 @@ var validationSettings = {
 			        		$("#orgLocationId").val(orglocations.id);
 			        		$("#orgLinceseSubscriptionId").val(orglocations.orgLinceseSubscriptionId);
 			        		$("#registeredOrgId").val(orglocations.orgId);
-			        		
+			        		$("#subscriptionRate").html(orglocations.subscriptionRate);
 			        		
 			        		 var orgModules = document.getElementById("orgModules");
 							 document.getElementById("orgModules").removeAttribute("class");

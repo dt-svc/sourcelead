@@ -92,6 +92,8 @@ public class OrgLocationDTO implements Serializable{
     private Long storageSubscriptionType;
     
     private String subscriptionDate;
+    
+    private Integer subscriptionRate;
 	
 
 	public long getId()
@@ -485,4 +487,14 @@ public class OrgLocationDTO implements Serializable{
 	public void setSubscriptionDate(String subscriptionDate) {
 		this.subscriptionDate = subscriptionDate;
 	}
+
+	public Integer getSubscriptionRate() {
+		return subscriptionRate;
+	}
+
+	public void setSubscriptionRate(Integer subscriptionRate) {
+		this.subscriptionRate = subscriptionRate;
+	}
+
+	
 }
