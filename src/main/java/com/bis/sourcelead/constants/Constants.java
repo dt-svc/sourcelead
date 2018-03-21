@@ -1030,6 +1030,7 @@ public class Constants {
 	public static final String ROLE_CREATE_CANDIDATE ="ROLE_CREATE_CANDIDATE";
 	public static final String ROLE_CREATE_PROJECT ="ROLE_CREATE_PROJECT";
 	public static final String ROLE_ADD_NEW_CONTRACT ="ROLE_ADD_NEW_CONTRACT";
+	public static final String ROLE_ADD_ASSET ="ROLE_ADD_ASSET";
 	
 	public static final String REPORT_FILTER_LAST_7_DAYS = "Last_7_days";
 	public static final String REPORT_FILTER_LAST_15_DAYS = "Last_15_days";
