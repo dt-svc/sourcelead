@@ -10,14 +10,20 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AssetDao;
 import com.bis.sourcelead.dto.AssetDTO;
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetCategory;
+import com.bis.sourcelead.entity.AssetCustomFieldData;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.service.AssetCategoryService;
+import com.bis.sourcelead.service.AssetCustomFieldService;
 import com.bis.sourcelead.service.AssetService;
+import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 
@@ -29,6 +35,12 @@ public class AssetServiceImpl implements AssetService{
 
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private AssetCustomFieldService assetCustomFieldService;
+	
+	@Autowired
+	private OrglocationFormFieldsService orglocationFormFieldsService;
 	
 	@Override
 	public Asset saveAsset(Asset asset) throws Exception {
@@ -205,7 +217,6 @@ public class AssetServiceImpl implements AssetService{
 		 if(StringUtils.isNotBlank(assetDTO.getWorkingStatus())){
 			 asset.setWorkingStatus(assetDTO.getWorkingStatus());
 		 }
-		 
 		 if(StringUtils.isNotBlank(assetDTO.getShiftAEmp())){
 			 Employees shiftAEmp = new Employees();
 			 shiftAEmp.setId(Long.parseLong(assetDTO.getShiftAEmp()));
@@ -260,7 +271,26 @@ public class AssetServiceImpl implements AssetService{
 		 asset.setUpdatedDate(new Date());
 		 asset.setStatus(Constants.RECORD_ACTIVE);
 		 
-		 assetDao.saveAsset(asset);		
+		 Asset savedAsset = assetDao.saveAsset(asset);		
+
+			if(assetDTO.getCustomFormData() !=null) {
+				for( CustomFormFieldDTO customFields:assetDTO.getCustomFormData()) {
+					if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+					AssetCustomFieldData assetCustomFields = null;
+						if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+							assetCustomFields = assetCustomFieldService.getAssetCustomFieldDataById(customFields.getEntityId());
+						}else {
+							assetCustomFields = new AssetCustomFieldData();
+						}
+						assetCustomFields.setAssets(savedAsset);
+					OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+					assetCustomFields.setOrglocationsFormFields(orgFormField);
+					assetCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+					assetCustomFieldService.saveAssetCustomFieldData(assetCustomFields);
+					}
+					
+				}	
+			}
 		 
 		 return asset;
 	}
