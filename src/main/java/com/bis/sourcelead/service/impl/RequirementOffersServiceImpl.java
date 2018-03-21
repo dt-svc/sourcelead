@@ -1796,4 +1796,10 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		
 	}
 
+
+	@Override
+	public RequirementOffers getOnboardRequirementOfferId(Long offerId) throws Exception {
+		return requirementOffersDao.getOnboardRequirementOfferId(offerId);
+	}
+
 }
