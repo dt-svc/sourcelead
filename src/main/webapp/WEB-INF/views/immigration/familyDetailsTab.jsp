@@ -11,7 +11,6 @@
 		  	</a> 
 		  	<span><input class="immigraTabSerach" type="text"></span>
 		</div>
-		
 	  	<div class="immigraTable">
 		  <table>
 			<tbody>
@@ -55,8 +54,8 @@
 		</div>
 		<!--  -->
 		<!--   Family Popup's  popcode start-->  
-
-	<div class="popUpOut" id="spousePopView">
+  <form name ="spouseDetailsForm" id ="spouseDetailsForm">
+	<div class="popUpOut" id="spousePopView"><!--  spouse popup start -->
 		<div class="popupHead">
 			<h2>Add Spouse</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
 		</div>
@@ -66,65 +65,65 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">First Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" />
+              		<input type="text" id="firstName" name="firstName" class="form-control" placeholder="First Name" field-name="First Name" data-validation="required"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Middle Name</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" />
+              		<input type="text" id="middleName" name="middleName" class="form-control" />
 				</div>
 			</div> 
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Last Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" />
+              		<input type="text" id="lastName" name="lastName" class="form-control" />
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Place of Marriage<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" />
+              		<input type="text" id="marriagePlace" name="marriagePlace" class="form-control" />
 				</div>
 			</div>                           				          
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Date of Marriage<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control calendar" />
+              		<input type="text" id="marraigeDate" name="marraigeDate" class="form-control calendar" />
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">End Date</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control calendar" />
+              		<input type="text" id="marriageEndDate" name="marriageEndDate" class="form-control calendar" />
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Date of Birth<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control calendar" />
+              		<input type="text" id="dateOfBirth" name="dateOfBirth" class="form-control calendar" />
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Place of Birth<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" />
+              		<input type="text" id="placeOfBirth" name="placeOfBirth"  class="form-control" />
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Address</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" />
+              		<input type="text" id="currentAddress" name="currentAddress" class="form-control" />
 				</div>
 			</div>																		
 		</div>
 		
 		<div class="immiPopFoot">
-            <input value="Save" class="" type="button">
+            <input value="Save" onclick="immigration.saveCandidateFamilyDetails('Spouse');" class="" type="button">
             <input value="Cancel" class="popCan" type="button">
           </div>		
-	</div>	
-	
+	</div>	<!--  spouse popup end -->
+	</form>
 	<div class="popUpOut" id="childPopView">
 		<div class="popupHead">
 			<h2>Add Child</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
@@ -135,37 +134,37 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">First Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" />
+              		<input type="text" id="firstName" name="firstName" class="form-control" />
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Middle Name</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" />
+              		<input type="text" id="middleName" name="middleName" class="form-control" />
 				</div>
 			</div> 
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Last Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" />
+              		<input type="text" id="lastName" name="lastName" class="form-control" />
 				</div>
 			</div>                         				          
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Date of Birth<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control calendar" />
+              		<input type="text"  id="dateOfBirth" name="dateOfBirth" class="form-control calendar" />
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Place of Birth<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" />
+              		<input type="text" id="placeOfBirth" name="placeOfBirth" class="form-control" />
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Address</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" />
+              		<input type="text" id="currentAddress" name="currentAddress"class="form-control" />
 				</div>
 			</div>																		
 		</div>
