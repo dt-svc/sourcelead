@@ -62,7 +62,7 @@ public class Immigration implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "ORG_REL_ID") // used for attorney name
-    private Org org;
+    private OrgRelations orgRelations;
 	
 	
 	@ManyToOne
@@ -170,12 +170,12 @@ public class Immigration implements Serializable {
 		this.job = job;
 	}
 
-	public Org getOrg() {
-		return org;
+	public OrgRelations getOrgRelations() {
+		return orgRelations;
 	}
 
-	public void setOrg(Org org) {
-		this.org = org;
+	public void setOrgRelations(OrgRelations orgRelations) {
+		this.orgRelations = orgRelations;
 	}
 
 	public OrgSpoc getOrgSpoc() {

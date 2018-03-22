@@ -509,7 +509,6 @@ public class ImmigrationRestController {
         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
         immigrationDTO.setStaticPath(staticPath);
-		System.out.println("Candidate ID ----> :  "+immigrationDTO.getCandidateId());
 		Immigration immigration = null;
         try {
         	immigration = immigrationCommonService.savePetitionDetails(immigrationDTO, user, orgLocations);
@@ -517,7 +516,6 @@ public class ImmigrationRestController {
             logger.error("Exception caugth in savePetitionDetailsPage controller" + e.getMessage());
             e.printStackTrace();
         }
-        System.out.println("immigration.getImmigrationTemplateId()"+immigration.getImmigrationTemplateId().getId());
         return "{result:'success',id:'"+immigration.getId()+"',candidateId:'"+immigration.getCandidate().getId()+"',immTemplateId:'"+immigration.getImmigrationTemplateId().getId()+"'}";
     }
 
