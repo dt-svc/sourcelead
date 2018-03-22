@@ -150,8 +150,8 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		}
 		if(immigrationDTO.getLcaEndDate()!=null && !StringUtils.isEmpty(immigrationDTO.getLcaEndDate())) {
 			lcaSummaryCurr.setEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationDTO.getLcaEndDate()));
-			lcaSummaryCurr.setIsCurrent(Constants.YES);
 		}
+		lcaSummaryCurr.setIsCurrent(Constants.YES);
 		lcaSummaryCurr.setRequirementId(requirement);
 		lcaSummaryCurr.setCandidateId(candidate);
 		lcaSummaryCurr.setCreatedBy(user);
@@ -179,8 +179,8 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		}
 		if(immigrationDTO.getPrevLcaEndDate()!=null && !StringUtils.isEmpty(immigrationDTO.getPrevLcaEndDate())) {
 			lcaSummaryPrev.setEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationDTO.getPrevLcaEndDate()));
-			lcaSummaryPrev.setIsCurrent(Constants.NO);
 		}
+		lcaSummaryPrev.setIsCurrent(Constants.NO);
 		lcaSummaryPrev.setRequirementId(requirement);
 		lcaSummaryPrev.setCandidateId(candidate);
 		lcaSummaryPrev.setCreatedBy(user);
@@ -342,7 +342,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			dto.setJobTitle(immigration.getJob().getJobTitle());
 		}
 		CandidateLcaI94Summary lcaI94Summary = immigrationCommonDao.getCandidateLCADetails(immigration.getCandidate().getId(), Constants.YES);
-		if(!StringUtils.isEmpty(lcaI94Summary.getEmploymentLevel())) {
+		if(lcaI94Summary.getEmploymentLevel() != null && !StringUtils.isEmpty(lcaI94Summary.getEmploymentLevel())) {
 			dto.setEmploymentLevelName(immigrationCommonDao.getPetitionTypeById(Long.parseLong(lcaI94Summary.getEmploymentLevel()), Constants.EMPLOYMENT_LEVEL));
 		}
 		dto.setPrevLcaNumber(lcaI94Summary.getIdNumber());
