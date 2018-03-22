@@ -1109,5 +1109,15 @@ function  removeValidationAttorneyContact() {
 		        }
 		  }).datepicker("show");
 		}
+		$(function() {
+		    $("#experienceYears").change(function() {
+		    	if($("#experienceYears").val() == '25+'){
+		    		$("#experienceMonths").prop("disabled", true);
+		    	}else{
+		    		$("#experienceMonths").prop("disabled", false);
+		    	}
+		    });
+		});
+		
 	 </script>
 	

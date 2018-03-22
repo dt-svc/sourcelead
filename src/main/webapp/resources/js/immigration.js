@@ -294,3 +294,31 @@ function checkTaskNames(newName) {
         }
     }
 }
+
+function saveEmployerDetails(status) {
+	if ($('#employerDetails_form').validate(false, validationSettings)) {
+        var formData = getFormData("employerDetails_form");
+        var candidateId = $('#candidateID').val();
+        var immigrationId = $('#immigrationID').val();
+        $.ajax({
+            url: sourceleadUrl + immiModulePath + "/saveImmigrationEmployerDetails?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
+            type: "POST",
+            data: formData,
+            success: function (data) {
+                if (data == 'success') {
+                    if (status == 'saveContinue') {
+                        $("#addNewPetitionTemplateDiv").empty();
+                        $("#addNewPetitionTemplateDiv").load(sourceleadUrl + immiModulePath + "/gotoTemplatePreviousPage?status=taskList");
+                    } else if (status == 'save') {
+                        $("#addNewPetitionTemplateDiv").empty();
+                        $("#addNewPetitionTemplateDiv").load(sourceleadUrl + immiModulePath + "/gotoTemplatePreviousPage?status=formDetails");
+                    }
+                }
+            }
+        });
+
+        return true;
+    } else {
+        return false;
+    }
+}
