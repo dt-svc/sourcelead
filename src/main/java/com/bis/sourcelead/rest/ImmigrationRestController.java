@@ -124,8 +124,6 @@ public class ImmigrationRestController {
             OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
                     "orgLocations");
             List<ImmigrationTemplate> templateList = immigrationCommonService.getImmigrationTemplateList(orgLocations);
-            System.out.println("templateList size in controller is-->" + templateList.size());
-
             model.addObject("templateList", templateList);
         } else if (forward.equalsIgnoreCase("two")) {
             model.setViewName("/immigration/newPetitionPage2");
@@ -151,8 +149,6 @@ public class ImmigrationRestController {
             OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
                     "orgLocations");
             candidateList = candidateService.getAllActiveCandidatesByLocation(orgLocations.getId());
-            System.out.println(
-                    "candidateList size in getAllActiveCandidatesByLocation controller is-->" + candidateList.size());
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -223,7 +219,6 @@ public class ImmigrationRestController {
                 model.addObject("educationsList", educationsList);
                 model.setViewName("/immigration/petitionTemplateDocDetails");
             } else if (status.equalsIgnoreCase("formDetails")) {
-                System.out.println(" inside formDetails controller --->");
                 model.setViewName("/immigration/petitionTemplateFormDetails");
             } else if (status.equalsIgnoreCase("taskList")) {
                 model.setViewName("/immigration/immigrationTemplateTaskList");
@@ -248,7 +243,6 @@ public class ImmigrationRestController {
         if (templateId != null) { // below code is used for edit template name, docs, forms when opened in edit
             // mode.
             try {
-                System.out.println(" Edit mode templateId templateId -->" + templateId);
                 ImmigrationTemplateDTO templateDTO = immigrationTemplateService.getPetitionTemplateDetails(templateId);
                 List<ImmigrationTemplateDocDTO> docsList = immigrationTemplateService
                         .getImmigrationTemplateDocsListById(templateId);
@@ -279,7 +273,6 @@ public class ImmigrationRestController {
         /*
          * try { // List<ImmigrationTemplateView> templateList=
          * immigrationTemplateService.getAllTemplateDetails();
-         * System.out.println("template list size is "+templateList.size());
          * model.addObject("templateList", templateList); } catch (Exception e) {
          * logger.error("Exception occured while getting template list-->"+e.getMessage(
          * )); e.printStackTrace(); }
@@ -305,8 +298,6 @@ public class ImmigrationRestController {
             }
             templateListDTO.setSortColumn(tableColumns[sortColumnIndex]);
             templateListDTO.setSortOrder(sortColumnOrder);
-            System.out.println("searchValue in controller ---> " + searchValue);
-
             OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
                     "orgLocations");
 
@@ -314,10 +305,6 @@ public class ImmigrationRestController {
                     orgLocations.getId());
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        if (templateListDTOList.getRecordsTotal() > 0) {
-            System.out.println("After getAlltemplateList in controller ---> "
-                    + templateListDTOList.getData().get(0).getDocsCount());
         }
         return templateListDTOList;
     }
@@ -328,7 +315,6 @@ public class ImmigrationRestController {
         try {
             immigrationTemplateService.deleteAllPetitionTemplateDetailsById(deleteId);// only soft delete operation in
             // Database.
-            // System.out.println("inside delete controller method calling ----->>>>>>>:
             // "+deleteId);
             logger.debug("inside delete controller method calling ----->>>>>>>: " + deleteId);
         } catch (Exception e) {
@@ -354,7 +340,6 @@ public class ImmigrationRestController {
                 model.addObject("educationsList", educationsList);
                 model.setViewName("/immigration/petitionTemplateDocDetails");
             } else if (forwardTo.equalsIgnoreCase("formDetails")) {
-                System.out.println(" inside formDetails controller --->");
                 model.setViewName("/immigration/petitionTemplateFormDetails");
             } else if (forwardTo.equalsIgnoreCase("taskList")) {
                 model.setViewName("/immigration/immigrationTemplateTaskList");
@@ -426,7 +411,6 @@ public class ImmigrationRestController {
         try {
             User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
             immigrationTemplateService.savePetitionTemplateTaskDetails(templateDTO, user);
-            System.out.println("Template Task Details saved succesfully --> ");
         } catch (Exception e) {
             logger.error("Exception occured while saving Template Task Details" + e.getMessage());
             e.printStackTrace();
