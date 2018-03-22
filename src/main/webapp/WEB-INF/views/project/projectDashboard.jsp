@@ -80,7 +80,7 @@ overflow-x: auto;
 				    <span class="fa fa-refresh"></span>
 				</button>
 				
-				<a href="javascript:void(0)" class="btn btn-primary btn-sm anchorWhite" title="Filter Search" onclick="openFilterPop();"> Filter&nbsp;&nbsp; <i class="fa fa-filter faFilter"></i>
+				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filter Search" onclick="openFilterPop();"><i class="fa fa-filter faFilter padding_right" style="color: #909090!important"></i>
 				</a>
 	       </div>
         	

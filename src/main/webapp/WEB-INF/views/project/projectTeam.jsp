@@ -178,6 +178,12 @@ function filterStatus() {
 	 result = result + '</ul>';
 	 
 	 result = result + '<div class="project_tabs mb">';
+	 result = result + '<input type="hidden" id="projectId" value="'+projectId+'">';
+	 result = result + '<input type="hidden" id="startDateStr" value="'+startDateStr+'">';
+	 result = result + '<input type="hidden" id="endDateStr" value="'+endDateStr+'">';
+	 result = result + '<input type="hidden" id="status" value="'+status+'">';
+	 result = result + '<input type="hidden" id="projectName" value="'+projectName+'">';
+	 
 	 
 	//Resources Tab
 	 result = result + '<div id="tab-a" class="newPrTabs_inn" style="display: block;">';
@@ -204,15 +210,15 @@ function filterStatus() {
 			} 
 			
 			
-			result = result + '	<li><a onClick="filterStatus()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Team</span><i class="glyphicon glyphicon-play"></i></a>';
+		/* 	result = result + '	<li><a onClick="filterStatus()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Team</span><i class="glyphicon glyphicon-play"></i></a>';
 		    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
 			result = result + '       	<ul>';
 			result = result +'<div id="orgLocationTeams"></div>';  				  
 		    result = result + '           </ul>';
 			result = result + '       </div>'; 
-			result = result + '   </li>';
+			result = result + '   </li>'; */
 			
-			result = result + '	<li><a onClick="filterStatus()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Roles</span><i class="glyphicon glyphicon-play"></i></a>';
+			/* result = result + '	<li><a onClick="filterStatus()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Roles</span><i class="glyphicon glyphicon-play"></i></a>';
 		    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
 			result = result + '       	<ul>';
 					<c:forEach var="roles" items="${rolesList}">  
@@ -230,7 +236,7 @@ function filterStatus() {
 			result = result + '				<li><input id="c7" name="employeeStatus" type="checkbox" value ="In-Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c7">In-Active</label></li> ';
 			result = result + '           </ul>';
 			result = result + '       </div>'; 
-			result = result + '   </li>';
+			result = result + '   </li>'; */
 	 
 				'<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_EMPLOYEE\')">';
 					result = result +'<li class="dropdown">';
@@ -252,8 +258,18 @@ function filterStatus() {
 				'</sec:authorize>';
 			
 			result = result +'</ul>';
+			
+			result = result	+ '<div class="pull-left cand-advsrch advsrch_chosen">';
+			result = result	+ '     <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetPorjectTeamFilter();" title="Refresh">';
+			result = result	+ '	    <span class="fa fa-refresh"></span>';
+			result = result	+ '	</button>';
+			result = result	+ '	<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filter Search" onclick="openFilterTeamPop();"><i class="fa fa-filter faFilter padding_right" style="color: #909090!important"></i>';
+			result = result	+ '	</a>';
+			result = result	+ ' </div>';
+			
+			
 			result = result + '</div>';
-			getFilterEmployeeDetails(projectId,startDateStr,endDateStr,status,projectName);
+			getFilterEmployeeDetails();
 			result = result +'<div id="employeeDetailsDiv" class="datatable_filter"> </div>';
 			result = result +'</div>';
 		
@@ -302,14 +318,14 @@ function filterStatus() {
 	        $(tab).fadeIn();
 	    });	
 	    
-	    getOrgLocationTeams(projectId,startDateStr,endDateStr,status,projectName);
+	    getOrgLocationTeams();
 		
  }
  </script>
  
  
  <script>
- function getOrgLocationTeams(projectId,startDateStr,endDateStr,status,projectName){
+ function getOrgLocationTeams(){
 		var orgLocations = '${SourceLeadWeb_orgLocations.id}';
 		 var sourceleadUrl ='${sourceleadUrl}';
 		 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
@@ -323,10 +339,10 @@ function filterStatus() {
 		        		for (var i=0; i<json.length; i++)
 						{
 				        		var opt = json[i];
-				        		output = output + '<li><input value="'+opt.id+'" name="teams"  type="checkbox" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\')" ><label>'+opt.name+'</label></li>';
+				        		output = output + '<li class="checkBox positionRelative clearfix"><input value="'+opt.id+'" name="teams"  type="checkbox" ><label>'+opt.name+'</label></li>';
 						}
 		        	}else{
-		        		output = output + '<li><label>&nbsp;&nbsp;&nbsp;<font color="red">No teams configured</font></label></li>';
+		        		output = output + '<li class="checkBox positionRelative clearfix"><label>&nbsp;&nbsp;&nbsp;<font color="red">No teams configured</font></label></li>';
 		        	}
 		        	
 		        	$("#orgLocationTeams").empty();
@@ -340,7 +356,13 @@ function filterStatus() {
  
  
  <script>
- function getFilterEmployeeDetails(projectId,startDateStr,endDateStr,status,projectName){
+ function getFilterEmployeeDetails(){
+	 var projectId = $("#projectId").val();
+	 var startDateStr = $("#startDateStr").val();
+	 var endDateStr = $("#endDateStr").val();
+	 var status = $("#status");
+	 var projectName = $("#projectName").val();
+	 
 	 var values = [];
 	 var chekbox = $('input:checkbox[name=employeeStatus]:checked').val();
 	 if(chekbox != 'undefined' && chekbox != '' && chekbox != null){
@@ -1590,3 +1612,118 @@ function toDate(selector) {
 			dateFormat : 'yyyy/mm/dd' 
             };
 </script>  
+
+
+<!-- ----------------------------Filter Script By Laxman -------------------------------------- -->
+<script>
+function closeFilterTeamPop(){
+	$("div.cand-advsrch-popup").hide();
+	$(".advancedsearch-mask").fadeOut();
+}
+function openFilterTeamPop(){
+	 $("#teamFilterPopup").toggle();
+	 $(".advancedsearch-mask").fadeIn();
+}
+</script>
+
+
+<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small" id="teamFilterPopup">
+				<h5 class="headerAdsrch">Filter Search
+					<a href="javascript:void(0)" class="close-div" onClick="closeFilterTaskPop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+						<div class="col-md-3">
+						<div class="row">
+						   <div class="col-md-12 mb">
+							  <label><strong>Status</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="StatusFilter">
+										 <li class="checkBox positionRelative"><input id="c6" type="checkbox"   name="employeeStatus" value ="Active" ><label for="c6">Active</label></li>     
+										 <li class="checkBox positionRelative"><input id="c7" name="employeeStatus" type="checkbox" value ="In-Active" ><label for="c7">In-Active</label></li>
+			                        </ul>
+								 </div>
+							 </div>
+							 </div>
+							 </div> 
+							 
+							 <div class="col-md-4 positionRelative">
+								<div class="clearfix dynamic_search filterDynamicsearch">
+									<input type="text" id="myRolesInput" onkeyup="myRolesFunction()" placeholder="Roles" title="Type in a roles">
+									<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+								</div>
+								 <div class="clearfix filterSearch-ul">
+									<ul class="list-unstyled positionRelative filterSearch mt5" id="myRolesUL">
+									<c:forEach var="roles" items="${rolesList}">  
+										<li class="checkBox positionRelative"><input  id="roleName${report.id}" name="roleName" value ="${roles.id}"   type="checkbox"><label for="roleName${roles.id}">${roles.displayName}</label></li>
+									  </c:forEach>
+									</ul>
+								 </div> 
+							</div>
+							
+							<div class="col-md-4 mb positionRelative">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="myTeamInput" onkeyup="myTeamFunction()" placeholder="Team" title="Type in a managers">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myTeamUL">
+										<div id="orgLocationTeams"></div>
+										</ul>
+									 </div> 
+							 </div>
+							 
+					</div>
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet" onclick="closeFilterTeamPop();getFilterEmployeeDetails();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetPorjectTeamFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+	  </div>
+	   
+<script>
+function resetPorjectTeamFilter(){
+	$("ul#StatusFilter > li input:checkbox").prop("checked",false);
+	$("ul#myRolesUL > li input:checkbox").prop("checked",false);
+	$("ul#myTeamUL > li input:checkbox").prop("checked",false);
+	
+	getFilterEmployeeDetails();
+	getOrgLocationTeams();
+}
+function myRolesFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myRolesInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myRolesUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+function myTeamFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myTeamInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myTeamUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+</script>

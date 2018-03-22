@@ -64,16 +64,17 @@ function projectTask(projectId, status) {
 	result = result + '<div class="timesheet_head clearfix timesheet_headul-custom timeHd_minHeight">';
 	result = result + '<input type="hidden" value='+projectId+' id="projectId">';
 	result = result + '<input type="hidden" value='+status+' id="projectStatus">';
-	 result = result	+ '<ul>';
+	result = result	+ '<ul>';
 	 
-	result = result	+ '<li title="Export"><a id="export-pop" onClick="exportpop();"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>';
-	result = result	+ '	<div id="" class="userExp" style="display:none;">';
-	result = result	+ '		<ul class="ul_padding">';
-	result = result	+ '			<li onclick="projectTaskExport(\'Pdf\');"  title="PDF"><i class="fa fa-file-pdf-o text-danger"></i>&nbsp; PDF</li>';
-	result = result	+ '			<li onclick="projectTaskExport(\'Excel\');" value="Excel" title="Excel"><i class="fa fa-file-excel-o text-success"></i>&nbsp; Excel</li>';
-	result = result	+ '		</ul>';
-	result = result	+ '	</div>';
-	result = result	+ '</li>';
+	result = result +'<li class="dropdown">';
+	result = result +' <a title="Export" id="export-pop" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>';	
+	result = result +'<div class="dropdown-menu bootstrap_dropdownMenu">';
+	result = result +'<ul class="ul_padding">';
+	result = result +'<li onclick="projectTaskExport(\'Pdf\');"><i class="fa fa-file-pdf-o text-danger paddingRight"></i>PDF</li>';
+	result = result +'<li onclick="projectTaskExport(\'Excel\');"><i class="fa fa-file-excel-o text-success paddingRight"></i>Excel</li>';
+	result = result +'</ul>';
+	result = result +'</div>';
+	result = result +'</li> ';
 	 
 	if (status != 'COMPLETED' && status != '' && status != 'undefined' && status != null) {
 		result = result +'<li>';
@@ -90,7 +91,7 @@ function projectTask(projectId, status) {
 		result = result	+ '     <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetTaskFilter();" title="Refresh">';
 		result = result	+ '	    <span class="fa fa-refresh"></span>';
 		result = result	+ '	</button>';
-		result = result	+ '	<a href="javascript:void(0)" class="btn btn-primary btn-sm anchorWhite" title="Filter Search" onclick="openFilterTaskPop();"> Filter&nbsp;&nbsp; <i class="fa fa-filter faFilter"></i>';
+		result = result	+ '	<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filter Search" onclick="openFilterTaskPop();"><i class="fa fa-filter faFilter padding_right" style="color: #909090!important"></i>';
 		result = result	+ '	</a>';
 		result = result	+ ' </div>';
 		 
@@ -1062,11 +1063,11 @@ function openFilterTaskPop(){
 							 
 							 <div class="col-md-4 mb positionRelative">
 									<div class="clearfix dynamic_search filterDynamicsearch">
-										<input type="text" id="myTeamInput" onkeyup="myTeamFunction()" placeholder="Team" title="Type in a managers">
+										<input type="text" id="myTaskTeamInput" onkeyup="myTaskTeamFunction()" placeholder="Team" title="Type in a managers">
 										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
 									</div>
 									 <div class="clearfix filterSearch-ul">
-										<ul class="list-unstyled positionRelative filterSearch mt5" id="myTeamUL">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myTaskTeamUL">
 										<div id="tasksOrgLocationTeams"></div>
 										</ul>
 									 </div> 
@@ -1086,7 +1087,7 @@ function resetTaskFilter(){
 	$("ul#taskTypeFilter > li input:checkbox").prop("checked",false);
 	$("ul#taskStatusFilter > li input:checkbox").prop("checked",false);
 	$("ul#myAssignedUL > li input:checkbox").prop("checked",false);
-	$("ul#myTeamUL > li input:checkbox").prop("checked",false);
+	$("ul#myTaskTeamUL > li input:checkbox").prop("checked",false);
 	
 	document.getElementById("taskStatusId1069").checked = true;
 	document.getElementById("taskStatusId1070").checked = true;
@@ -1110,11 +1111,11 @@ function myAssignedFunction() {
     }
 }
 
-function myTeamFunction() {
+function myTaskTeamFunction() {
     var input, filter, ul, li, a, i;
-    input = document.getElementById("myTeamInput");
+    input = document.getElementById("myTaskTeamInput");
     filter = input.value.toUpperCase();
-    ul = document.getElementById("myTeamUL");
+    ul = document.getElementById("myTaskTeamUL");
     li = ul.getElementsByTagName("li");
     for (i = 0; i < li.length; i++) {
         a = li[i].getElementsByTagName("label")[0];
