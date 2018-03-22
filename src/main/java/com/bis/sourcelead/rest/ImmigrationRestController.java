@@ -178,8 +178,15 @@ public class ImmigrationRestController {
     }
 
     @RequestMapping(value = {"/viewImmigration"})
-    public ModelAndView viewImmigration(HttpServletRequest request, @RequestParam(value = "immigrationId", required = false) String immigrationId) {
+    public ModelAndView viewImmigration(HttpServletRequest request
+    		, @RequestParam(value = "templateId", required = false) String templateId
+    		, @RequestParam(value = "candidateId", required = false) String candidateId
+    		 , @RequestParam(value = "immigrationId", required = false) String immigrationId) {
         ModelAndView model = new ModelAndView();
+        model.addObject("immigrationId", immigrationId);
+        model.addObject("candidateId", candidateId);
+        model.addObject("templateId", templateId);
+        
         ImmigrationDTO immigrationDTO = immigrationCommonService.getImmigrationViewList(immigrationId);
         model.addObject("immigration", immigrationDTO);
         model.addObject("sourceleadUrl", sourceleadUrl);
@@ -510,7 +517,8 @@ public class ImmigrationRestController {
             logger.error("Exception caugth in savePetitionDetailsPage controller" + e.getMessage());
             e.printStackTrace();
         }
-        return "{\"result\":\"success\",\"id\":"+immigration.getId()+",\"candidateId\":"+immigration.getCandidate().getId()+"}";
+        System.out.println("immigration.getImmigrationTemplateId()"+immigration.getImmigrationTemplateId().getId());
+        return "{result:'success',id:'"+immigration.getId()+"',candidateId:'"+immigration.getCandidate().getId()+"',immTemplateId:'"+immigration.getImmigrationTemplateId().getId()+"'}";
     }
 
     @RequestMapping(value = "/validateTemplateName", method = RequestMethod.POST)
