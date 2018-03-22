@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.OrgLicenseSubscriptionDao;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -95,6 +96,16 @@ public class OrgLicenseSubscriptionDaoImpl implements OrgLicenseSubscriptionDao 
 		}
    	
 	
+	}
+
+	@Override
+	@Transactional
+	public List<OrgLicenseSubscription> getOrgLicenseSubscriptionByOrgId(Long orgId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from OrgLicenseSubscription subscription left join fetch subscription.org org where org.id = :orgId ";
+		List<OrgLicenseSubscription> orgLicenseSubscriptionList = session.createQuery(query.toString()).setLong("orgId", orgId).list();
+		return orgLicenseSubscriptionList;
 	}
 
 	

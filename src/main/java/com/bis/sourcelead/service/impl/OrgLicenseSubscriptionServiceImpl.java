@@ -208,7 +208,11 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			}
 			
 			orgLocations.setRegistrationStatus("Registered");
+			orgLocations.setUser(user);
 			orgLocationsDao.updateOrgLocations(orgLocations);
+			
+			Org org = orgLicenseSubscription.getOrg();
+			org.setUser(user);
 			
 			List<LookUpData> lookUpExpCatList = lookUpDataDao.getLookUpDataByCategory(Constants.EXPENSESCATEGORY);
 		    for(LookUpData lookUpData:lookUpExpCatList){
@@ -628,6 +632,11 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
+	}
+
+	@Override
+	public List<OrgLicenseSubscription> getOrgLicenseSubscriptionByOrgId(Long orgId) throws Exception {
+		return orgLicenseSubscriptionDao.getOrgLicenseSubscriptionByOrgId(orgId);
 	}
 
 }

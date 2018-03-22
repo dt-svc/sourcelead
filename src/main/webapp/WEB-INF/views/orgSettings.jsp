@@ -856,6 +856,7 @@ function cancelOrgImg(){
      		 <jsp:include page="orglocationBankingDetails.jsp" />
      		 <jsp:include page="orglocationDocuments.jsp" />
      		 <jsp:include page="orglocationSignatory.jsp" />
+     		 <jsp:include page="googleApiLocation.jsp" />
      		 
     			</div>
      		
@@ -2175,7 +2176,14 @@ function createOrg(){
 	$("#registeredOrgs").empty();
 	$("#registeredOrgLocationSummary").empty();
 	$("#editPrimaryUserContactDiv").empty();
-	 
+	
+	var subscribedCountries = '${subscribedCountries}';
+	var countries= [];
+	var res = subscribedCountries.split(",");
+	for(var i=0; i <res.length; i++){
+		countries.push(res[i]);
+	};
+	
 	var result = '';
 	
 	result = result +'<div class="row">';
@@ -2269,7 +2277,7 @@ function createOrg(){
 				result = result +' 			<label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>';
 				result = result +' 			 <div class="col-md-9" id="locationField">';
 				result = result +' 		          <div class="positionRelative">';
-				result = result +' 			          <input class="form-control positionRelative" id="orgSetLocation" name="location" placeholder="Enter Addres"  type="text" field-name="Location" onclick="initLocationAuto(\'orgSetLocation\',\'orgSetCountry\',\'orgSetState\',\'orgSetCity\',\'orgSetZipCode\',\'orgSetLatitude\',\'orgSetLongitude\',\'invite\',\'addressId\');" data-validation="required"></input>';
+				result = result +' 			          <input class="form-control positionRelative" id="orgSetLocation" name="location" placeholder="Enter Addres"  type="text" field-name="Location" onclick="orgSubscriptionApiLocation(\'orgSetLocation\',\'orgSetCountry\',\'orgSetState\',\'orgSetCity\',\'orgSetZipCode\',\''+countries+'\',\'addressId\');" data-validation="required"></input>';
 				result = result +' 			          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="addOrgRefreshGoogleApiLocation();"></i>';
 				result = result +' 			        </div>';
 				result = result +' 	          </div>';

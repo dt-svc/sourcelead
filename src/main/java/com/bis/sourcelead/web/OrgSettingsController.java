@@ -22,6 +22,7 @@ import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationBankingDetails;
 import com.bis.sourcelead.entity.OrglocationOnboardDocuments;
@@ -35,6 +36,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.ModulesService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrglocationBankingDetailsService;
 import com.bis.sourcelead.service.OrglocationOnboardDocumentsService;
 import com.bis.sourcelead.service.OrglocationSignatoryService;
@@ -83,6 +85,9 @@ public class OrgSettingsController {
 	
 	@Autowired
 	CountriesService countriesService;
+	
+	@Autowired
+	OrgLicenseSubscriptionService orgLicenseSubscriptionService;
 
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
@@ -163,7 +168,21 @@ public class OrgSettingsController {
 		if(countries != null){
 			model.addObject("loginCountryName", countries.getName());
 		}
+		
+		List<OrgLicenseSubscription> subscriptionList = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByOrgId(org.getId());
+		StringBuilder subscriptionCountries = new StringBuilder(); 
+		String DOUBLE_QUOTE = "\"";
+		if(subscriptionList != null && !subscriptionList.isEmpty()) {
+			for(OrgLicenseSubscription subscription : subscriptionList) {
+				Countries subscriptionCountry = countriesService.getCountriesByCountryName(subscription.getCountry());
+				subscriptionCountries.append(subscriptionCountry.getCode2()).append(",");
+			}
+		}
+		
+		 String subscribedCountries = subscriptionCountries.toString();
+		 subscribedCountries = subscribedCountries.substring(0,subscribedCountries.length()-1);
 
+		model.addObject("subscribedCountries", subscribedCountries);
 		model.addObject("timezoneList", timezoneList);
 		model.addObject("orgLocations", orgLocations);
 		if(StringUtils.isNotBlank(tabType)) {
