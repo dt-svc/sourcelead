@@ -1,3 +1,4 @@
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 		  <div class="immigraDetailsOut">
 		  	<div class="immigraDetailsWrap">
 			  <div class="immigraDetailsCta">

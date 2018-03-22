@@ -108,6 +108,7 @@
 <script src="js/bootstrap-select.min.js"></script> 
 <script src="js/chosen.jquery.min.js"></script> 
 <script src="js/jquery-ui.min.js"></script> 
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 
 
 <script>
