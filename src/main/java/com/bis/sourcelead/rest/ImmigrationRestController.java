@@ -39,6 +39,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
+import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -72,6 +73,9 @@ public class ImmigrationRestController {
 
     @Autowired
     private UserRoleService userRoleService;
+    
+    @Autowired
+    private CandidateEmployersService candidateEmployersService; 
 
     @Autowired
     private LookUpDataService lookUpDataService;
@@ -351,6 +355,20 @@ public class ImmigrationRestController {
         }
 
         return model;
+    }
+    
+    @RequestMapping(value = {"/saveImmigrationEmployerDetails"}, method = RequestMethod.POST)
+    public String saveImmigrationEmployerDetails(CandidateEmployerDTO candidateEmployerDTO, HttpServletRequest request,
+    		@RequestParam(value = "candidateId", required = false) String candidateId,
+    		@RequestParam(value = "immigrationId", required = false) String immigrationId) throws Exception {
+       
+            User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+            OrgLocations  loginOrglocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+           // immigrationTemplateService.savePetitionTemplateTaskDetails(templateDTO, user);
+            candidateEmployersService.storeCandidateEmployers(candidateEmployerDTO,user,loginOrglocation,Long.parseLong(candidateId));
+            System.out.println("Template Task Details saved succesfully --> ");
+       
+        return "success";
     }
 
     @RequestMapping(value = {
