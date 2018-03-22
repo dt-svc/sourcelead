@@ -15,12 +15,13 @@
 		 <div id="modulesList"></div> 
 		 <div class="clearfix"></div>
         	 <div class="clearfix colmd-12 modal-footer">
-	        	 <div class="pull-left">
+	        	 <!-- <div class="pull-left">
 	        	 <label class="checkBox"><input type="checkbox" name="generateInvoice"><strong>Generate Invoice</strong></label>
-	        	 </div>
+	        	 </div> -->
 	        	 <div class="clearfix"></div>
 	        	 <div class="pull-right">
 	        	<h4><strong>Total: <span class="ml" id="subscriptionRate"></span></strong>$</h4>
+	        	<input type="hidden" name="invoiceAmount" id="invoiceAmount" value=""/>
 	        	 </div>
         	 </div>
        	 </div>
@@ -33,13 +34,55 @@
 <div class="form-footer clearfix miniFoot">
   <div class="col-lg-12">
 	<div class="pull-right">
-	  <input type="button" value="Cancel"  onClick="javascript:window.location.href = '<c:url value='${appPath}/enrolledOrgsList'/>'"  class="btn btn-danger">
-	  <input type="button" value="Save & Continue" onClick="registerCompanyModules()" class="btn btn-primary ml10">
+	  <input type="submit" value="Register" onClick="registerCompanyModules()" class="btn btn-primary ml10">
+	   <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/enrolledOrgsList'/>'"  class="btn btn-default ml">
 	</div>
   </div>
 </div>
 </form:form>
 </div> 
+
+
+
+
+<script type="text/javascript">
+ 
+         $('body').on('submit', '#orgModules_form', function(e){
+        	  if ($(this).validate(false, validationSettings)){
+        		e.preventDefault();
+         		var sourceleadUrl ='${sourceleadUrl}';
+         		
+         		var registeredModules = [];
+        		$('input:checkbox[name=registeredModules]:checked').each(function() 
+        	    {
+        			registeredModules.push($(this).val());
+        	    });
+        		
+        		var orgLinceseSubscriptionId = $("#orgLinceseSubscriptionId").val();
+        		var invoiceAmount = $("#invoiceAmount").val();
+        		var orgLocationId = $("#orgLocationId").val();
+         		
+        		$("#enrollOrgLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+         		 	
+         		$.ajax({
+          	          type: "POST",
+                	  url: sourceleadUrl+"/updateOrgLicenseSubscription?${_csrf.parameterName}=${_csrf.token}&registeredModules="+registeredModules+"&orgLinceseSubscriptionId="+orgLinceseSubscriptionId+"&invoiceAmount="+invoiceAmount+"&orgLocationId="+orgLocationId,
+                  	success: function(orglocations) {
+                  		location.replace(sourceleadUrl+"/enrolledOrgsList");
+			        	
+			        },  
+               });    
+                
+            	    return true;
+            }
+            else{
+            	return false;	
+               }
+            });
+            
+        
+     
+	</script>
 
 <script>
 function getOrgModules(){
@@ -71,7 +114,7 @@ function getOrgModules(){
         			 result = result +'<i class="'+opt.tabIcon+'"></i>';
         			 result = result +'</div>';
         			 result = result +'<div class="pull-left checkBox mt10">';
-        			 result = result +'<input type="checkbox" id="checkbox'+opt.id+'" '+checked+' '+disabled+' value="'+opt.id+'" onclick="checkModule('+opt.id+')">';
+        			 result = result +'<input type="checkbox" id="checkbox'+opt.id+'" '+checked+' '+disabled+' value="'+opt.id+'" name="registeredModules" onclick="checkModule('+opt.id+')">';
         			 result = result +'<a data-toggle="collapse" data-parent="#accordion" href="#collapse1" class="checkBox">';
         			 result = result +''+opt.tabName+'</a>';
         			 result = result +'</div>';
@@ -159,6 +202,9 @@ function checkModule(id){
 	    	 document.getElementById("checkbox10").checked = true;
 			 document.getElementById("module10").removeAttribute("class")
 		     document.getElementById("module10").className = 'panelDefault clearfix activeOrgbox'
+		}else{
+			 document.getElementById("module"+id).removeAttribute("class")
+			 document.getElementById("module"+id).className = 'panelDefault clearfix activeOrgbox'
 		}
 		
 		

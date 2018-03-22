@@ -44,8 +44,11 @@ public class OrgLicenseSubscription implements Serializable{
 	@JoinColumn(name = "STORAGE_SUBSCRIPTION_TYPE")
     private LookUpData storageSubscriptionType;
 	
+	@Column(name = "CURRENCY")
+	private String currency;
+	
 	@Column(name = "INVOICE_AMOUNT")
-	private String invoiceAmount;
+	private Double invoiceAmount;
 	
 	@Column(name = "SUBSCRIPTION_TABS", columnDefinition = "LONGTEXT default NULL")
 	private String subscriptionTabs;
@@ -126,11 +129,11 @@ public class OrgLicenseSubscription implements Serializable{
 		this.storageSubscriptionType = storageSubscriptionType;
 	}
 
-	public String getInvoiceAmount() {
+	public Double getInvoiceAmount() {
 		return invoiceAmount;
 	}
 
-	public void setInvoiceAmount(String invoiceAmount) {
+	public void setInvoiceAmount(Double invoiceAmount) {
 		this.invoiceAmount = invoiceAmount;
 	}
 
@@ -204,5 +207,13 @@ public class OrgLicenseSubscription implements Serializable{
 
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
+	}
+
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
 	}
 }

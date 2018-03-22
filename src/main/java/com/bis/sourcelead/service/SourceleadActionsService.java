@@ -29,4 +29,6 @@ public interface SourceleadActionsService {
 	List<SourceleadActions> getAllSourceleadActionsForEnrollByOrgLocationIdAndOrgId(OrgLocations orgLocations,Org org) throws Exception;
 	
 	SourceleadActions getSourceleadActionsByActionRole(String actionRole);
+	
+	List<SourceleadActions> getAllSourceleadActionsByTabsList(List<Long> tabsList) throws Exception;
 }

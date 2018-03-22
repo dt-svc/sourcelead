@@ -269,7 +269,7 @@ function changeCountry(){
       <div class="form-footer clearfix row">
       <div class="col-lg-12">
         <div class="pull-right">
-          <input type="submit" value="Register" class="btn btn-primary" id="register_button" onclick="createOrg();">
+          <input type="submit" value="Save & Continue" class="btn btn-primary" id="register_button" onclick="createOrg();">
           <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/enrolledOrgsList'/>'"  class="btn btn-default ml">
         </div>
       </div>
@@ -339,6 +339,7 @@ function getCompanyDetails(){
 		        	 $("select[name=dataStorage]").val(json.storageSubscriptionType);
 		        	 $("input[name=subscriptionDate]").val(json.subscriptionDate);
 		        	 $("#subscriptionRate").html(json.subscriptionRate);
+		        	 $("#invoiceAmount").val(json.subscriptionRate);
 		        	
 		        },
 		    }); 
@@ -372,6 +373,7 @@ var validationSettings = {
 			        		$("#orgLinceseSubscriptionId").val(orglocations.orgLinceseSubscriptionId);
 			        		$("#registeredOrgId").val(orglocations.orgId);
 			        		$("#subscriptionRate").html(orglocations.subscriptionRate);
+			        		 $("#invoiceAmount").val(orglocations.subscriptionRate);
 			        		
 			        		 var orgModules = document.getElementById("orgModules");
 							 document.getElementById("orgModules").removeAttribute("class");
@@ -393,7 +395,6 @@ var validationSettings = {
             	return false;	
                }
             });
-         //$('#createOrg_form').showHelpOnFocus();
             
          $('body').on('blur', '#createOrg_form', function() {
      		$("#createOrg_form").showHelpOnFocus();

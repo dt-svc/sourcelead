@@ -63,7 +63,9 @@ public class OrgLicenseSubscriptionDaoImpl implements OrgLicenseSubscriptionDao 
 		Session session = this.sessionFactory.getCurrentSession();
 		List<OrgLicenseSubscription> orgLicenseSubscription = new ArrayList<OrgLicenseSubscription>();
 		logger.debug("getOrgLicenseSubscriptionById start");
-		String query = "from OrgLicenseSubscription subscription where subscription.id = :id ";
+		String query = "from OrgLicenseSubscription subscription left join fetch subscription.org org "
+				+ "left join fetch subscription.subscriptionType left join fetch subscription.userSubscriptionType left join fetch subscription.storageSubscriptionType "
+				+ "where subscription.id = :id ";
 		orgLicenseSubscription = session.createQuery(query).setLong( "id", id ).list();
 		logger.debug("getOrgLicenseSubscriptionById end");
 		if (orgLicenseSubscription.size() > 0) {

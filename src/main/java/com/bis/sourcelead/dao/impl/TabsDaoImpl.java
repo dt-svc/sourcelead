@@ -204,6 +204,15 @@ public class TabsDaoImpl implements TabsDao{
 	    return tabsList;
 	
 	}
+
+	@Override
+	@Transactional
+	public List<Tabs> getClildTabsListByTabId(Long tabId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Tabs tabs left join fetch tabs.tabs parentTab where parentTab.id = :tabId and parentTab.status = '1' ";
+	    List<Tabs> tabsList = session.createQuery(query.toString()).setLong( "tabId", tabId).list();
+	    return tabsList;
+	}
 	
 	 
 	

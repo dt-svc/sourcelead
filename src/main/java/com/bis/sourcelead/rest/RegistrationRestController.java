@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -42,11 +43,14 @@ import com.bis.sourcelead.dto.CompanyRegistrationDTO;
 import com.bis.sourcelead.dto.CrowdSourcingUserRegistrationDTO;
 import com.bis.sourcelead.dto.EmployerRegistrationDTO;
 import com.bis.sourcelead.dto.OrgDTO;
+import com.bis.sourcelead.dto.OrgLicenseSubscriptionDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.dto.RegistrationDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TabsDTO;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.RegistrationOptionalService;
@@ -57,6 +61,8 @@ import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.form.RestResponsetUtil;
+import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.PasswordResetsSevice;
@@ -70,6 +76,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.WhiteListIpAddressService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UserLoginHelper;
@@ -132,6 +139,10 @@ public class RegistrationRestController {
 	 
 	 @Autowired
 	 TabsService tabsService;
+	 
+	 @Autowired
+	 OrgLicenseSubscriptionService orgLicenseSubscriptionService;
+	 
 	 
 	 @RequestMapping(value = "/app/getOrgsList")
 	 		public @ResponseBody String getUsersList(HttpServletRequest request,
@@ -299,6 +310,16 @@ public class RegistrationRestController {
 	     
 	   }
 	
+	
+	
+	
+	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
+	@RequestMapping(value = "/app/updateOrgLicenseSubscription" , method = RequestMethod.POST)
+	   public String updateOrgLicenseSubscription(OrgLicenseSubscriptionDTO orgLicenseSubscriptionDTO,HttpServletRequest request) throws Exception {
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		orgLicenseSubscriptionService.registerOrgLicenseSubscription(orgLicenseSubscriptionDTO,loginUser);
+		return "success";
+     }
 	
 	
 	

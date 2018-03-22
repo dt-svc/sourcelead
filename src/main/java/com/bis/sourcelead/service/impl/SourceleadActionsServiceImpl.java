@@ -76,4 +76,9 @@ public class SourceleadActionsServiceImpl implements SourceleadActionsService {
 		return sourceleadActionsDao.getAllSourceleadActionsForEnrollByOrgLocationIdAndOrgId(orgLocations,org);
 	}
 
+	@Override
+	public List<SourceleadActions> getAllSourceleadActionsByTabsList(List<Long> tabsList) throws Exception {
+		return sourceleadActionsDao.getAllSourceleadActionsByTabsList(tabsList);
+	}
+
 }
