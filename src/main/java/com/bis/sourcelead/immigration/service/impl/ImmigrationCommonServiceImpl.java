@@ -150,8 +150,8 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		}
 		if(immigrationDTO.getLcaEndDate()!=null && !StringUtils.isEmpty(immigrationDTO.getLcaEndDate())) {
 			lcaSummaryCurr.setEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationDTO.getLcaEndDate()));
-			lcaSummaryCurr.setIsCurrent(Constants.YES);
 		}
+		lcaSummaryCurr.setIsCurrent(Constants.YES);
 		lcaSummaryCurr.setRequirementId(requirement);
 		lcaSummaryCurr.setCandidateId(candidate);
 		lcaSummaryCurr.setCreatedBy(user);
@@ -179,8 +179,8 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		}
 		if(immigrationDTO.getPrevLcaEndDate()!=null && !StringUtils.isEmpty(immigrationDTO.getPrevLcaEndDate())) {
 			lcaSummaryPrev.setEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationDTO.getPrevLcaEndDate()));
-			lcaSummaryPrev.setIsCurrent(Constants.NO);
 		}
+		lcaSummaryPrev.setIsCurrent(Constants.NO);
 		lcaSummaryPrev.setRequirementId(requirement);
 		lcaSummaryPrev.setCandidateId(candidate);
 		lcaSummaryPrev.setCreatedBy(user);
@@ -316,12 +316,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	}
 
 	@Override
-	public ImmigrationDTO getImmigrationViewList(String immigrationId) {
+	public ImmigrationDTO getImmigrationViewList(String immigrationId, OrgLocations orgLocations) {
 		ImmigrationDTO dto = new ImmigrationDTO();
 		try {
 		Immigration immigration = immigrationCommonDao.getImmigrationViewList(immigrationId);
 		dto.setPetitionType(immigrationCommonDao.getPetitionTypeById(immigration.getPetitionType(), Constants.PETITION_TYPE));
-		dto.setOpenDate(immigration.getOpenDate().toString());
+		dto.setOpenDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),immigration.getOpenDate()));
 		dto.setCurrUscisStatus(immigrationCommonDao.getPetitionTypeById(immigration.getCurrUscisStauts(), Constants.USCIS_STATUS));
 		if(immigration.getDateOfArrival() != null) {
 			dto.setArrivalDate(immigration.getDateOfArrival().toString()); 
@@ -342,16 +342,16 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			dto.setJobTitle(immigration.getJob().getJobTitle());
 		}
 		CandidateLcaI94Summary lcaI94Summary = immigrationCommonDao.getCandidateLCADetails(immigration.getCandidate().getId(), Constants.YES);
-		if(!StringUtils.isEmpty(lcaI94Summary.getEmploymentLevel())) {
+		if(lcaI94Summary.getEmploymentLevel() != null && !StringUtils.isEmpty(lcaI94Summary.getEmploymentLevel())) {
 			dto.setEmploymentLevelName(immigrationCommonDao.getPetitionTypeById(Long.parseLong(lcaI94Summary.getEmploymentLevel()), Constants.EMPLOYMENT_LEVEL));
 		}
 		dto.setPrevLcaNumber(lcaI94Summary.getIdNumber());
-		dto.setPrevLcaStartDate(lcaI94Summary.getStartDate().toString());
-		dto.setPrevLcaEndDate(lcaI94Summary.getEndDate().toString());
+		dto.setPrevLcaStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lcaI94Summary.getStartDate()));
+		dto.setPrevLcaEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lcaI94Summary.getEndDate()));
 		dto.setEmployer(lcaI94Summary.getEmployerName());
 		dto.setJobLocation(lcaI94Summary.getEmployerLocation());
-		dto.setLcaStartDate(lcaI94Summary.getStartDate().toString());
-		dto.setLcaEndDate(lcaI94Summary.getEndDate().toString());
+		dto.setLcaStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lcaI94Summary.getStartDate()));
+		dto.setLcaEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lcaI94Summary.getEndDate()));
 		/*jobdetails end*/
 		Candidate candidate = candidateDao.getCandidateById(immigration.getCandidate().getId()); 
 		dto.setAssociateName(candidate.getFirstName()+" "+candidate.getLastName());
@@ -361,7 +361,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		dto.setEmail(candidate.getEmail());
 		dto.setMobile(candidate.getMobilePhone());
 		dto.setAlternateMobile(candidate.getAlternateMobilePhone());
-		dto.setBirthDate(candidate.getDateOfBirth().toString());
+		dto.setBirthDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),candidate.getDateOfBirth()));
 		dto.setBirthPlace(candidate.getPlaceOfBirth());
 		dto.setNationality(candidate.getNationality());
 		dto.setMaritalStatus(candidate.getMaritalStatus());
