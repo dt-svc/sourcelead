@@ -82,7 +82,7 @@
             <div class="form-group">
               <label class="col-md-4">Choose Template</label>
               <div class="col-md-8">
-               <select class="chosen-select form-control" id="templateId" name="templateId" data-placeholder="Choose Template">
+               <select class="chosen-select form-control" id="templateId" name="templateId" data-placeholder="Choose Template" field-name="Template"  data-validation="required">
                	
                	<option value="" selected>--Choose Template--</option>
 							<c:forEach var="item" items="${templateList}">
@@ -332,7 +332,7 @@
              <div class="form-group">
               <label class="col-md-4">Job Title</label>
               <div class="col-md-8">
-               <select id="jobId" name="jobId" class="form-control">
+               <select id="jobId" name="jobId" class="form-control" field-name="Job Title" data-validation="required">
                   </select>
               </div>
           </div>  
