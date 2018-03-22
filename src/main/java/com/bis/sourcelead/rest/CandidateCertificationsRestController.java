@@ -110,8 +110,10 @@ public class CandidateCertificationsRestController {
 		
 		for(CandidateCertifications candidateCertifications : candidateCertificationsList){
 			CandidateCertificationDTO candidateCertificationDTO = new CandidateCertificationDTO();
-			
+			candidateCertificationDTO.setCandidateId(candidateId);
             candidateCertificationDTO.setId(candidateCertifications.getId());
+            candidateCertificationDTO.setCandidatecertificateID(String.valueOf(candidateCertifications.getId()));
+            candidateCertificationDTO.setCandidateCertificationId(candidateCertifications.getId());
 			candidateCertificationDTO.setName(candidateCertifications.getName());
 			candidateCertificationDTO.setProvider(candidateCertifications.getProvider());
 		    candidateCertificationDTO.setScore(candidateCertifications.getScore());
@@ -119,6 +121,8 @@ public class CandidateCertificationsRestController {
 		    candidateCertificationDTO.setDescription(candidateCertifications.getDescription());
 		    candidateCertificationDTO.setCandidatevalidFromDateToString(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), candidateCertifications.getValidFrom()));
 		    candidateCertificationDTO.setCandidatevalidToDateToString(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), candidateCertifications.getValidTo()));
+		    candidateCertificationDTO.setValidFrom(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), candidateCertifications.getValidFrom()));
+		    candidateCertificationDTO.setValidTo(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), candidateCertifications.getValidTo()));
 		    candidateCertificationDTOList.add(candidateCertificationDTO);
 			
 		}
@@ -140,16 +144,17 @@ public class CandidateCertificationsRestController {
 	   * @throws Exception
 	   */
 	// @PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_DELETE_ASSOCIATE_CERTIFICATION_DETAILS')")
-	   @RequestMapping(value = "/removeCandidateCertificateBycandidateIdandcandidateCertificateId")
-	   public String removeCandidateCertificateBycandidateIdandcandidateCertificateId(@RequestParam(value = "loginUserId", required = false) Long loginUserId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
-			   																		@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateCertificationId", required = false) Long candidateCertificationId) throws Exception {
+	   @RequestMapping(value = {"/removeCandidateCertificateBycandidateIdandcandidateCertificateId","rest/removeCandidateCertificateBycandidateIdandcandidateCertificateId"} ,method = RequestMethod.POST)
+	   public String removeCandidateCertificateBycandidateIdandcandidateCertificateId(CandidateCertificationDTO candidateCertificationDTO) throws Exception {
 
-			String resultJson;
-			User user = userService.getUserById(loginUserId);
-			OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-			Candidate candidate =candidateService.getCandidateById(candidateId);
-			 CandidateCertifications  candidatesCertificate = candidateCertificationsService.removeCandidateCertificateBycandidateIdandcandidateCertificateId(candidateId, candidateCertificationId, user, orgLocations);
-			 resultJson = commonUtil.toJSON(candidatesCertificate);
+		    String isDeleted = "false"; 
+			User user = userService.getUserById(candidateCertificationDTO.getLoginUserId());
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(candidateCertificationDTO.getOrgLocationId());
+			Candidate candidate =candidateService.getCandidateById(Long.parseLong(candidateCertificationDTO.getCandidateId()));
+			 CandidateCertifications  candidatesCertificate = candidateCertificationsService.removeCandidateCertificateBycandidateIdandcandidateCertificateId(Long.parseLong(candidateCertificationDTO.getCandidateId()), candidateCertificationDTO.getCandidateCertificationId(), user, orgLocations);
+			 if(candidatesCertificate != null) {
+				 isDeleted = "true";
+			 }
 			 //SourceLeadSessionManager.setSessionAttribute(request, "deleteCertification", "Certfification deleted");
 			 if (null != candidate && null != candidate.getId()) {
 				 CandidateIndex candidateIndex = new CandidateIndex();
@@ -158,7 +163,7 @@ public class CandidateCertificationsRestController {
 				 candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
 				 sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE, candidate.getId().toString());
 			  }	
-			 return resultJson;
+			 return isDeleted;
 		}
 	   
 	   /**

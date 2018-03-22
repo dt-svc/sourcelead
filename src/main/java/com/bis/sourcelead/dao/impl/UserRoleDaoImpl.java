@@ -566,7 +566,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	public List<UserRole> getUserSpocsListByUserId(Long userId) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user left join fetch userRole.orgLocations where userRole.user.id = :userId and userRole.userState != 'INACTIVE' and userRole.isMailSent = 'Y' ";
+		String query = "from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user left join fetch userRole.orgLocations where userRole.user.id = :userId and userRole.userState != 'INACTIVE' ";
 		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).list();
 		return userRoleList;
 

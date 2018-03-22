@@ -1,9 +1,12 @@
 package com.bis.sourcelead.service;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.json.JSONObject;
 
 import com.bis.sourcelead.dto.ClientProjectDTO;
@@ -131,6 +134,10 @@ public interface ProjectsService {
 		Projects getClientProjectApproversUpdate(String projectClientUUID,User user,ProjectsDTO projectsDTO) throws Exception ;
 
 		Projects getProjectByProjectName(String projectName) throws Exception;
+
+		Sheet getExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, ResponseList<ProjectsDTO> projectsList, OrgLocations orgLocations)throws Exception;
+
+		File getPdfFile(ResponseList<ProjectsDTO> projectsList, OrgLocations orgLocations)throws Exception;
 		
 //		public String getProjectId(OrgLocations orgLocations);
 		

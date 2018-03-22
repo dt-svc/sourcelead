@@ -84,6 +84,32 @@ function exportTimeSheetToPdfOrExcel(exportType){
  });
 </script>  
 
+<script>
+ var selectedRecords = {};
+  $(document).ready(function () {
+	    $("#selectAllTimeSheetCheckBoxForSubmitForApproval").click(function () {
+	        $(".checkBoxForSubmitForApproval").prop('checked', $(this).prop('checked'));
+	        $(".checkBoxForSubmitForApproval").each(function() {
+	        	selectedRecords[$(this).val()] = $(this).is(":checked");
+	        });
+	        displayAcceptRejectButtonOnHedder();
+	    });
+	});
+ </script>
+ 
+ 
+ <script type="text/javascript">
+function displayAcceptRejectButtonOnHedder() {
+	if($('[name="checkBoxForSubmitForApproval"]:checked').length > 0){
+		$('#hedderAcceptRejectButton').removeAttr('style');
+	}else{
+		$('#hedderAcceptRejectButton').attr('style','display:none');
+	}
+	
+}
+</script>	
+
+
  <script>
       function getTableDataByPageSize(){
     	//  $('#pagination-demo').twbsPagination('destroy'); 

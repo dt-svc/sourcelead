@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -96,8 +97,33 @@ public class CandidateDocumentsRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = {"/saveCandidateDocument","rest/saveCandidateDocument"}, method = RequestMethod.POST)
+	@RequestMapping(value = {"/saveCandidateDocument"}, method = RequestMethod.POST)
 	public @ResponseBody String saveCandidateDocument(CandidateDocumentsDTO candidateDocumentsDTO, HttpServletRequest request) throws Exception
+	{
+		
+		candidateDocumentsDTO.setStaticPath(staticPath);
+		//FileUploadUtil.fillUploadedFileInfo(candidateDocumentsDTO, candidateDocumentsDTO.getFileInfo());
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if(null != candidateDocumentsDTO.getCandidateId()){
+			candidateDocumentsService.storeCandidateDocuments(candidateDocumentsDTO, Long.parseLong(candidateDocumentsDTO.getCandidateId()),candidateDocumentsDTO.getDocumentUUID(), orgLocation.getId(), user);
+			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateDocumentsDTO.getCandidateId()));
+			Integer percentage = candidateService.getCandidatePercentage(candidate,orgLocation);
+			return percentage.toString();
+		}else{
+			return "exception";
+		}
+	}
+	
+	/**
+	 * Rest Call for saveCandidateDocument
+	 * @param candidateDocumentsDTO
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = {"rest/saveCandidateDocument"}, method = RequestMethod.POST)
+	public @ResponseBody String saveCandidateDocumentRest(@RequestBody CandidateDocumentsDTO candidateDocumentsDTO, HttpServletRequest request) throws Exception
 	{
 		
 		candidateDocumentsDTO.setStaticPath(staticPath);
@@ -206,14 +232,13 @@ public class CandidateDocumentsRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/terminateDoc", method = RequestMethod.POST)
-	public @ResponseBody String terminateDoc(@RequestParam(value = "loginUserId", required = false) Long loginUserId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
-											@RequestParam(value = "candidateId", required = false) Long candidateId, @RequestParam(value = "documentId", required = false) String documentId) throws Exception
+	@RequestMapping(value = {"/terminateDoc","rest/terminateDoc"}, method = RequestMethod.POST)
+	public @ResponseBody String terminateDoc(CandidateDocumentsDTO candidateDocumentsDTO) throws Exception
 	{
 		//User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		User user = userService.getUserById(loginUserId);
-		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
-		CandidateDocuments candidateDocuments = candidateDocumentsService.getCandidateDocumentByDocumentId(Long.parseLong(documentId));
+		User user = userService.getUserById(candidateDocumentsDTO.getLoginUserId());
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(candidateDocumentsDTO.getOrgLocationId());
+		CandidateDocuments candidateDocuments = candidateDocumentsService.getCandidateDocumentByDocumentId(Long.parseLong(candidateDocumentsDTO.getDocumentId()));
 		if (candidateDocuments != null) {
 			candidateDocuments.setStatus(Constants.CANDIDATE_IN_ACTIVE);
 			candidateDocuments.setUpdatedBy(user.getUserCode());
@@ -231,7 +256,7 @@ public class CandidateDocumentsRestController {
 			candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidateDocuments.getCandidateId(), "", Constants.CANDIDATE_DELETED_DOCUMENTS, activitySummary.toString(), "CANDIDATE");
 
 		}
-		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateDocumentsDTO.getCandidateId()));
 		 if (null != candidate && null != candidate.getId()) {
 			 CandidateIndex candidateIndex = new CandidateIndex();
 			 candidateIndex.setCandidateId(candidate.getId());
