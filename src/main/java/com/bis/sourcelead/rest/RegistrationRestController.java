@@ -277,8 +277,8 @@ public class RegistrationRestController {
 		List<TabsDTO> tabsDTOList = new ArrayList<>();
 		Collection<Tabs> tabsList = tabsService.getAllTabsList();
 		List<Long> tabIs = new ArrayList<>();
-		tabIs.add(11L);
 		tabIs.add(14L);
+		tabIs.add(11L);
 		List<Tabs> otherTabsList = tabsService.getTabsListByIds(tabIs);
 		tabsList.addAll(otherTabsList);
 		if(tabsList != null) {
@@ -287,8 +287,6 @@ public class RegistrationRestController {
 				tabsDTO.setId(tabs.getId());
 				if(tabs.getTabName().equalsIgnoreCase("Billing")) {
 					tabsDTO.setTabName("Finance");
-				}else if(tabs.getTabName().equalsIgnoreCase("Settings")) {
-					tabsDTO.setTabName("Settings & Leave Management");
 				}else {
 					tabsDTO.setTabName(tabs.getTabName());
 				}
