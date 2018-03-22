@@ -58,6 +58,14 @@ public class ImmigrationDTO extends SearchDTO {
 	private String attorneyContact;
 	
 	private String associateName;
+	
+	private String attorneyEmail;
+	
+	private String attorneyFax;
+	
+	private String attorneyPhone;
+	
+	private String attorneyLawFirm;
 
 	@Required(desc = "first name")
 	private String firstName;
@@ -782,6 +790,38 @@ public class ImmigrationDTO extends SearchDTO {
 
 	public void setExperience(String experience) {
 		this.experience = experience;
+	}
+
+	public String getAttorneyEmail() {
+		return attorneyEmail;
+	}
+
+	public void setAttorneyEmail(String attorneyEmail) {
+		this.attorneyEmail = attorneyEmail;
+	}
+
+	public String getAttorneyFax() {
+		return attorneyFax;
+	}
+
+	public void setAttorneyFax(String attorneyFax) {
+		this.attorneyFax = attorneyFax;
+	}
+
+	public String getAttorneyPhone() {
+		return attorneyPhone;
+	}
+
+	public void setAttorneyPhone(String attorneyPhone) {
+		this.attorneyPhone = attorneyPhone;
+	}
+
+	public String getAttorneyLawFirm() {
+		return attorneyLawFirm;
+	}
+
+	public void setAttorneyLawFirm(String attorneyLawFirm) {
+		this.attorneyLawFirm = attorneyLawFirm;
 	}
 	
 }
