@@ -806,7 +806,7 @@ function preventTabkey(e){
   <!--  Alert message for Switching Locaction -->
   <div class="location-alert alert alert-danger alert-dismissable" id="locationAlert">
     <a href="#" class="loc-alertclose close">&times;</a>
-    <strong>Alert !</strong> Your are not able to Save Required data is Missing.
+    <strong>Alert !</strong> <span>Your are not able to Save Required data is Missing.</span>
   </div>
  <!--  Alert message for Switching Locaction -->
   
