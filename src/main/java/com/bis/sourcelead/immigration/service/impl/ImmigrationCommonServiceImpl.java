@@ -342,7 +342,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			dto.setJobTitle(immigration.getJob().getJobTitle());
 		}
 		CandidateLcaI94Summary lcaI94Summary = immigrationCommonDao.getCandidateLCADetails(immigration.getCandidate().getId(), Constants.YES);
-		if(lcaI94Summary.getEmploymentLevel() != null) {
+		if(!StringUtils.isEmpty(lcaI94Summary.getEmploymentLevel())) {
 			dto.setEmploymentLevelName(immigrationCommonDao.getPetitionTypeById(Long.parseLong(lcaI94Summary.getEmploymentLevel()), Constants.EMPLOYMENT_LEVEL));
 		}
 		dto.setPrevLcaNumber(lcaI94Summary.getIdNumber());
