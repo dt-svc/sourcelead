@@ -186,8 +186,9 @@ public class ImmigrationRestController {
         model.addObject("immigrationId", immigrationId);
         model.addObject("candidateId", candidateId);
         model.addObject("templateId", templateId);
-        
-        ImmigrationDTO immigrationDTO = immigrationCommonService.getImmigrationViewList(immigrationId);
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+                "orgLocations");
+        ImmigrationDTO immigrationDTO = immigrationCommonService.getImmigrationViewList(immigrationId,orgLocations);
         model.addObject("immigration", immigrationDTO);
         model.addObject("sourceleadUrl", sourceleadUrl);
         model.setViewName("/immigration/immigrationView");
