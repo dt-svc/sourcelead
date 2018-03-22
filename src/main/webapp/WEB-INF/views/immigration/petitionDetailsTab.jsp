@@ -15,10 +15,10 @@
 				  <h2>Attorney Details</h2>
 				  <ul>
 					  <li class="clearfix"><span>Attorney Name</span><p>: ${immigration.attorneyName}</p></li>
-					  <li class="clearfix"><span>Email</span><p>: snigi@domain.com</p></li>
-					  <li class="clearfix"><span>Phone</span><p>: 9000 000 000</p></li>
-					  <li class="clearfix"><span>Fax</span><p>: 59896596</p></li>
-					  <li class="clearfix"><span>Law firm</span><p>: Business Intelli</p></li>
+					  <li class="clearfix"><span>Email</span><p>: </p></li>
+					  <li class="clearfix"><span>Phone</span><p>: </p></li>
+					  <li class="clearfix"><span>Fax</span><p>: </p></li>
+					  <li class="clearfix"><span>Law firm</span><p>: </p></li>
 				  </ul>
 			  </div>
 			  <div class="immigraDetailsCta">
