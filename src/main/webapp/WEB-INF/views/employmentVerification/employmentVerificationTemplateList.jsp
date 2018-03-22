@@ -112,6 +112,7 @@ function employmentTemplatePagination(url){
 	    	  	}
 	      },{
 	    	  "targets": colIndex++,
+	    	  "sortable": false,
               "data": "description",
               "render": function ( data, type, report, meta ) {
             	  var result = "";

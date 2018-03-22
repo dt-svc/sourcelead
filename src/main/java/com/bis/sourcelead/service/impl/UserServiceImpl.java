@@ -975,9 +975,9 @@ public class UserServiceImpl implements UserService {
 			 globalVarsMap.put("vendorOrgName",orgLocation.getOrgLocationName());
 			 StringBuilder clientLoginUser = new StringBuilder();
 			 if(null != loginUser.getLastName()){
-				 globalVarsMap.put("loginUsername",clientLoginUser.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+				 globalVarsMap.put("loginUsername",clientLoginUser.append(ownerUser.getFirstName()).append(" ").append(ownerUser.getLastName()).toString());
 			 }else{
-				 globalVarsMap.put("loginUsername",loginUser.getLastName());
+				 globalVarsMap.put("loginUsername",ownerUser.getLastName());
 			 }
 			 StringBuilder urlBuilder = new StringBuilder();
 			 globalVarsMap.put("acceptURL",urlBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
@@ -1038,9 +1038,9 @@ public class UserServiceImpl implements UserService {
 			 
 			 StringBuilder vendorLoginUser = new StringBuilder();
 			 if(null != loginUser.getLastName()){
-				 globalVarsMap.put("loginUsername",vendorLoginUser.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+				 globalVarsMap.put("loginUsername",vendorLoginUser.append(ownerUser.getFirstName()).append(" ").append(ownerUser.getLastName()).toString());
 			 }else{
-				 globalVarsMap.put("loginUsername",loginUser.getLastName());
+				 globalVarsMap.put("loginUsername",ownerUser.getLastName());
 			 }
 			 StringBuilder actionUrlBuilder = new StringBuilder();
 			 globalVarsMap.put("acceptURL",actionUrlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("ws/acceptClientOrVendorInvitation?respondingOrgType=ATS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("&spocUUID=").append(spocUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());

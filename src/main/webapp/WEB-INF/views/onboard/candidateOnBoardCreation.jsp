@@ -2452,9 +2452,9 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
    
 	 result = result +'<div class="form-group" id="employmentTypeDiv">';
-	 result = result +'<label class="col-md-3 control-label">Employment Type</label>';
+	 result = result +'<label class="col-md-3 control-label">Employment Type<span class="text-danger">* </span></label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<select class="chosen-select" data-placeholder="Select Employment Type" id="employmentType" onchange="getEmploymentType();" name="employmentType">';
+	 result = result +'<select class="chosen-select" data-validation="required" id="employmentType" onchange="getEmploymentType();" name="employmentType" field-name="Employment Type">';
 	 result = result +'<option value=""  selected="selected">Select Employment Type</option>';
 	 result = result +'<option value="C2C">C2C</option>';
 	 result = result +'<option value="W-2">W-2</option>';

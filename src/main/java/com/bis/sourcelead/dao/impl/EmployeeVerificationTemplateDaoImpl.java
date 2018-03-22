@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -52,10 +53,10 @@ public class EmployeeVerificationTemplateDaoImpl implements EmployeeVerification
 		List<EmployeeVerificationTemplate> employmentVerificationTemplateList = null;
 		ResponseList<EmployeeVerificationTemplate> response = new ResponseList<>();
 		
-	/*	String qry = "";
-		if(StringUtils.isNotBlank(invoiceDTO.getSortColumn())) {
-			qry = " order by invoice."+ invoiceDTO.getSortColumn() +" "+invoiceDTO.getSortOrder();
-		}*/
+		String qry = "";
+		if(StringUtils.isNotBlank(employmentVerificationTemplateDTO.getSortColumn())) {
+			qry = " order by evt."+ employmentVerificationTemplateDTO.getSortColumn() +" "+employmentVerificationTemplateDTO.getSortOrder();
+		}
 
 //		String countQuery = "From EmployeeVerificationTemplate evt where evt.orgLocationId.id =:orgLocationId";
 	
@@ -70,7 +71,7 @@ public class EmployeeVerificationTemplateDaoImpl implements EmployeeVerification
 							
 				
 			}
-		Query queryObj = session.createQuery(query + query1.toString());
+		Query queryObj = session.createQuery(query + query1.toString()+qry);
 		if (employmentVerificationTemplateDTO != null && employmentVerificationTemplateDTO.getLength() > 0) {
 			queryObj.setFirstResult(employmentVerificationTemplateDTO.getStart());
 			queryObj.setMaxResults(employmentVerificationTemplateDTO.getLength());

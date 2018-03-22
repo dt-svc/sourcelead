@@ -68,7 +68,7 @@ public class EmploymentVerificationTemplateRestController {
 		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		/*String[] tableColumns = {"templateName", "description", "signatory","createdBy","action"};
+		String[] tableColumns = {"templateName", "", "signatory","createdBy",""};
 	     int sortColumnIndex = 0; //by default sorting using updated date
 		String sortColumnOrder = "desc"; //by default descending order
 		if(employmentVerificationTemplateDTO.getOrder() != null && !employmentVerificationTemplateDTO.getOrder().isEmpty()) {
@@ -76,7 +76,7 @@ public class EmploymentVerificationTemplateRestController {
 			sortColumnOrder = employmentVerificationTemplateDTO.getOrder().get(0).get("dir");
 		}
 		employmentVerificationTemplateDTO.setSortColumn(tableColumns[sortColumnIndex]);
-		employmentVerificationTemplateDTO.setSortOrder(sortColumnOrder);*/
+		employmentVerificationTemplateDTO.setSortOrder(sortColumnOrder);
 		
 		
 		return employeeVerificationTemplateService.getAllEmploymentVerificationListByOrgLocationId(orgLocation.getId(),employmentVerificationTemplateDTO);

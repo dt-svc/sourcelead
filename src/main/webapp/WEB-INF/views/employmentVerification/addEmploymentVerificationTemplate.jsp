@@ -26,14 +26,14 @@
             <div class="form-group">
               <label class="col-md-4">Name<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="templateName" value="${empTemplate.templateName}">
+                <input type="text" class="form-control" name="templateName" field-name="Name" value="${empTemplate.templateName}" data-validation="required validate_length length1-250">
               </div>
             </div>
             
             <div class="form-group">
               <label class="col-md-4">Signatory<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="form-control selectpicker" data-live-search="true" title="Select Signatory" name="signatory">
+                  <select class="form-control selectpicker" data-live-search="true" title="Select Signatory" name="signatory" field-name="Signatory" data-validation="required">
                     <c:forEach var="title" items="${signatoryList}">
 					<c:if test = "${title.associateId == empTemplate.signatory.id}">
 				         <option selected value="${title.associateId}">${title.firstName} ${title.lastName}</option>
@@ -53,12 +53,12 @@
             </div> 
             
              <div class="form-group">
-              <label class="col-md-4">Choose Signature</label>
+              <label class="col-md-4">Choose Signature Style</label>
               <div class="col-md-8">
-                  <select class="form-control selectpicker" data-live-search="true" title="Select Signatory">
-                    <option>Signatory-1</option>
-                    <option>Signatory-2</option>
-                    <option>Signatory-3</option>
+                  <select class="form-control selectpicker" data-live-search="true">
+                    <option>Style-1</option>
+                    <option>Style-2</option>
+                    <option>Style-3</option>
                   </select>
             </div>
             
@@ -72,7 +72,7 @@
 			<span class="btn btn-primary">Browse<input id="uploadBtn" style="display: none;" multiple type="file">
 			</span>
 			</label>
-			<input type="text" class="form-control" readonly id="imageFile" name="imageFile" value="${empTemplate.fileName}" placeholder="Upload Sign Image." field-name="Attachment" data-validation="validate_Space validateimage">
+			<input type="text" class="form-control" readonly id="imageFile" name="imageFile" value="${empTemplate.fileName}" placeholder="Upload Sign Image." field-name="Attachment" data-validation-optional="true" data-validation="validate_Space validateimage">
 			<i class="refreshinputfile"></i>
 			</div>
 
@@ -161,6 +161,17 @@
     </section>
 
 
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+
+        
+</script> 
+
 <script>
 function saveEmploymentVerificationTemplate(){
 	var templateUUID = '${templateUUID}';
@@ -177,6 +188,11 @@ function saveEmploymentVerificationTemplate(){
 		return false;
 	}
 }
+
+$('body').on('blur', '#employment_template_form', function() {
+	$("#employment_template_form").showHelpOnFocus();
+	$("#employment_template_form").validateOnBlur(false, validationSettings);
+});
 </script>
 
 <script>

@@ -12,6 +12,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.OrglocationSignatoryDao;
 import com.bis.sourcelead.dto.OrglocationSignatoryDTO;
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationSignatory;
 import com.bis.sourcelead.entity.User;
@@ -41,6 +42,21 @@ public class OrglocationSignatoryServiceImpl implements OrglocationSignatoryServ
 	public OrglocationSignatory saveOrglocationSignatory(OrglocationSignatory orglocationSignatory) throws Exception {
 		return orglocationSignatoryDao.saveOrglocationSignatory(orglocationSignatory);
 	}
+	
+	
+	@Override
+	public boolean getUserByUserId(Long userId, Long orgLocationsId) throws Exception {
+		
+		return orglocationSignatoryDao.getUserByUserId(userId, orgLocationsId);
+	}
+	
+	@Override
+	public OrglocationSignatory getUserBySignatoryUuId(Long userId, String uuid, Long orgLocationsId) throws Exception {
+		
+		return orglocationSignatoryDao.getUserBySignatoryUuId(userId, uuid, orgLocationsId);
+	}
+	
+	
 
 	@Override
 	public String addOrglocationSignatory(OrglocationSignatoryDTO orglocationSignatoryDTO, User loginUser,

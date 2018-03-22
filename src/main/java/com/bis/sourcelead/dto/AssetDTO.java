@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.util.List;
+import java.util.Map;
 
 import com.bis.sourcelead.entity.Employees;
 
@@ -73,6 +74,18 @@ public class AssetDTO extends CommonDTO {
 		private String shiftBEmployee;
 		
 		private String issueDate;
+		
+		private List<CustomFormFieldDTO> customFormData;
+		
+		private Map<Long,String> assetCustomFieldlabelNameAndValue;
+
+		public List<CustomFormFieldDTO> getCustomFormData() {
+			return customFormData;
+		}
+
+		public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
+			this.customFormData = customFormData;
+		}
 
 		public String getSno() {
 			return sno;
@@ -344,6 +357,14 @@ public class AssetDTO extends CommonDTO {
 
 		public void setIssueDate(String issueDate) {
 			this.issueDate = issueDate;
+		}
+
+		public Map<Long, String> getAssetCustomFieldlabelNameAndValue() {
+			return assetCustomFieldlabelNameAndValue;
+		}
+
+		public void setAssetCustomFieldlabelNameAndValue(Map<Long, String> assetCustomFieldlabelNameAndValue) {
+			this.assetCustomFieldlabelNameAndValue = assetCustomFieldlabelNameAndValue;
 		}
 
 		
