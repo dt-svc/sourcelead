@@ -266,7 +266,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			   if(orgLicenseSubscriptionPrice != null) {
 				   orgLocationDTO.setSubscriptionRate(orgLicenseSubscriptionPrice.getSubscriptionRate());
 			   }else {
-				   orgLocationDTO.setSubscriptionRate(0);
+				   orgLocationDTO.setSubscriptionRate(0d);
 			   }
 			
 		} catch (Exception e) {

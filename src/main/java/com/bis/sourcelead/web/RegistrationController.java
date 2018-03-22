@@ -117,8 +117,7 @@ public class RegistrationController {
 	 @Autowired
 	 OrgLicenseSubscriptionService orgLicenseSubscriptionService;
 	 
-	 @Autowired
-	 OrgLicenseSubscriptionPriceService orgLicenseSubscriptionPriceService;
+	
 	 
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	 @RequestMapping(value = "/app/enrolledOrgsList")
@@ -195,12 +194,6 @@ public class RegistrationController {
 					model.addObject("registeredOrgId", orgLocations.getOrg().getId());
 					OrgLicenseSubscription orgLicenseSubscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByOrgIdAndCountry(orgLocations.getOrg().getId(), orgLocations.getCountry());
 					model.addObject("orgLicenseSubscriptionId", orgLicenseSubscription.getId());
-					OrgLicenseSubscriptionPrice orgLicenseSubscriptionPrice = orgLicenseSubscriptionPriceService.getOrgLicenseSubscriptionPriceBySubscriptionTypeAndUserType(orgLicenseSubscription.getSubscriptionType().getId(), orgLicenseSubscription.getUserSubscriptionType().getId());
-					 if(orgLicenseSubscriptionPrice != null) {
-						 model.addObject("subscriptionRate", orgLicenseSubscriptionPrice.getSubscriptionRate());
-					   }else {
-						   model.addObject("subscriptionRate", 0);
-					   }
 					
 				}
 				 

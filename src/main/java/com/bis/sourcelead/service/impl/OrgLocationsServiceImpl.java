@@ -12,14 +12,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.LookUpDataDao;
 import com.bis.sourcelead.dao.OrgLicenseSubscriptionDao;
+import com.bis.sourcelead.dao.OrgLicenseSubscriptionPriceDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
+import com.bis.sourcelead.entity.OrgLicenseSubscriptionPrice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.form.OrgSettings;
@@ -44,6 +45,9 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	
 	@Autowired
 	OrgLicenseSubscriptionDao orgLicenseSubscriptionDao;
+	
+	 @Autowired
+	 OrgLicenseSubscriptionPriceDao orgLicenseSubscriptionPriceDao;
 	
 	@Override
 	public OrgLocations addOrgLocations(OrgLocations orgLocations) throws Exception {
@@ -422,6 +426,15 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 		String fromDateStr =  CalendarUtil.getDateStrForGivenTimeZone(orgLocations.getTimezone().getTimeZoneId(), orgLicenseSubscription.getFromDate(), "dd-MM-yyyy");
 		
 		orgLocationDTO.setSubscriptionDate(fromDateStr);
+		
+		OrgLicenseSubscriptionPrice orgLicenseSubscriptionPrice = orgLicenseSubscriptionPriceDao.getOrgLicenseSubscriptionPriceBySubscriptionTypeAndUserType(orgLicenseSubscription.getSubscriptionType().getId(), orgLicenseSubscription.getUserSubscriptionType().getId());
+		 if(orgLicenseSubscriptionPrice != null) {
+			 orgLocationDTO.setSubscriptionRate(orgLicenseSubscriptionPrice.getSubscriptionRate());
+		   }else {
+			   orgLocationDTO.setSubscriptionRate(0d);
+		   }
+		
+		
 		return orgLocationDTO;
 	}
 }

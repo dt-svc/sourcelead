@@ -32,7 +32,7 @@ public class OrgLicenseSubscriptionPrice implements Serializable{
     private LookUpData userSubscriptionType;
 	
 	@Column(name = "SUBSCRIPTION_RATE")
-	private Integer subscriptionRate;
+	private Double subscriptionRate;
 	
 	
 
@@ -61,13 +61,15 @@ public class OrgLicenseSubscriptionPrice implements Serializable{
 		this.subscriptionType = subscriptionType;
 	}
 
-	public Integer getSubscriptionRate() {
+	public Double getSubscriptionRate() {
 		return subscriptionRate;
 	}
 
-	public void setSubscriptionRate(Integer subscriptionRate) {
+	public void setSubscriptionRate(Double subscriptionRate) {
 		this.subscriptionRate = subscriptionRate;
 	}
+
+	
 
 	
 

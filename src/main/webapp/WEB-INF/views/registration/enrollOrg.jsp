@@ -28,7 +28,6 @@
         	$("#orgLocationId").val('${orgLocationId}');
        		$("#orgLinceseSubscriptionId").val('${orgLicenseSubscriptionId}');
        		$("#registeredOrgId").val('${registeredOrgId}');
-       		$("#subscriptionRate").html('${subscriptionRate}');
        		
             getCompanyDetails();
 		}
@@ -339,6 +338,7 @@ function getCompanyDetails(){
 		        	 $("select[name=userSubscription]").val(json.userSubscriptionType);
 		        	 $("select[name=dataStorage]").val(json.storageSubscriptionType);
 		        	 $("input[name=subscriptionDate]").val(json.subscriptionDate);
+		        	 $("#subscriptionRate").html(json.subscriptionRate);
 		        	
 		        },
 		    }); 

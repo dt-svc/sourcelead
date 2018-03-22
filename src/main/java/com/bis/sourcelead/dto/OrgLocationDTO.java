@@ -93,7 +93,7 @@ public class OrgLocationDTO implements Serializable{
     
     private String subscriptionDate;
     
-    private Integer subscriptionRate;
+    private Double subscriptionRate;
 	
 
 	public long getId()
@@ -488,13 +488,15 @@ public class OrgLocationDTO implements Serializable{
 		this.subscriptionDate = subscriptionDate;
 	}
 
-	public Integer getSubscriptionRate() {
+	public Double getSubscriptionRate() {
 		return subscriptionRate;
 	}
 
-	public void setSubscriptionRate(Integer subscriptionRate) {
+	public void setSubscriptionRate(Double subscriptionRate) {
 		this.subscriptionRate = subscriptionRate;
 	}
+
+	
 
 	
 }
