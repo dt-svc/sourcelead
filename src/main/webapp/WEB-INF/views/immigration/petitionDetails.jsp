@@ -80,9 +80,9 @@
             
             
             <div class="form-group">
-              <label class="col-md-4">Choose Template</label>
+              <label class="col-md-4">Choose Template<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
-               <select class="chosen-select form-control" id="templateId" name="templateId" data-placeholder="Choose Template">
+               <select class="chosen-select form-control" id="templateId" name="templateId" data-placeholder="Choose Template" field-name="Template"  data-validation="required">
                	
                	<option value="" selected>--Choose Template--</option>
 							<c:forEach var="item" items="${templateList}">
@@ -330,9 +330,9 @@
            <div class="clearfix"></div>
           
              <div class="form-group">
-              <label class="col-md-4">Job Title</label>
+              <label class="col-md-4">Job Title<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
-               <select id="jobId" name="jobId" class="form-control">
+               <select id="jobId" name="jobId" class="form-control" field-name="Job Title" data-validation="required">
                   </select>
               </div>
           </div>  
@@ -1109,5 +1109,15 @@ function  removeValidationAttorneyContact() {
 		        }
 		  }).datepicker("show");
 		}
+		$(function() {
+		    $("#experienceYears").change(function() {
+		    	if($("#experienceYears").val() == '25+'){
+		    		$("#experienceMonths").prop("disabled", true);
+		    	}else{
+		    		$("#experienceMonths").prop("disabled", false);
+		    	}
+		    });
+		});
+		
 	 </script>
 	

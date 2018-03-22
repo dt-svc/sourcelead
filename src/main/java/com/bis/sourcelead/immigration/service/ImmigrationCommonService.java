@@ -18,6 +18,6 @@ public interface ImmigrationCommonService {
 
 	Immigration savePetitionDetails(ImmigrationDTO immigrationDTO, User user, OrgLocations orgLocations) throws Exception;
 
-	ImmigrationDTO getImmigrationViewList(String immigrationId);
+	ImmigrationDTO getImmigrationViewList(String immigrationId, OrgLocations orgLocations);
 
 }

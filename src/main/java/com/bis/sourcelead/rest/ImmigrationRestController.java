@@ -39,6 +39,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
+import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -72,6 +73,9 @@ public class ImmigrationRestController {
 
     @Autowired
     private UserRoleService userRoleService;
+    
+    @Autowired
+    private CandidateEmployersService candidateEmployersService; 
 
     @Autowired
     private LookUpDataService lookUpDataService;
@@ -124,8 +128,6 @@ public class ImmigrationRestController {
             OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
                     "orgLocations");
             List<ImmigrationTemplate> templateList = immigrationCommonService.getImmigrationTemplateList(orgLocations);
-            System.out.println("templateList size in controller is-->" + templateList.size());
-
             model.addObject("templateList", templateList);
         } else if (forward.equalsIgnoreCase("two")) {
             model.setViewName("/immigration/newPetitionPage2");
@@ -151,8 +153,6 @@ public class ImmigrationRestController {
             OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
                     "orgLocations");
             candidateList = candidateService.getAllActiveCandidatesByLocation(orgLocations.getId());
-            System.out.println(
-                    "candidateList size in getAllActiveCandidatesByLocation controller is-->" + candidateList.size());
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -186,8 +186,9 @@ public class ImmigrationRestController {
         model.addObject("immigrationId", immigrationId);
         model.addObject("candidateId", candidateId);
         model.addObject("templateId", templateId);
-        
-        ImmigrationDTO immigrationDTO = immigrationCommonService.getImmigrationViewList(immigrationId);
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+                "orgLocations");
+        ImmigrationDTO immigrationDTO = immigrationCommonService.getImmigrationViewList(immigrationId,orgLocations);
         model.addObject("immigration", immigrationDTO);
         model.addObject("sourceleadUrl", sourceleadUrl);
         model.setViewName("/immigration/immigrationView");
@@ -222,7 +223,6 @@ public class ImmigrationRestController {
                 model.addObject("educationsList", educationsList);
                 model.setViewName("/immigration/petitionTemplateDocDetails");
             } else if (status.equalsIgnoreCase("formDetails")) {
-                System.out.println(" inside formDetails controller --->");
                 model.setViewName("/immigration/petitionTemplateFormDetails");
             } else if (status.equalsIgnoreCase("taskList")) {
                 model.setViewName("/immigration/immigrationTemplateTaskList");
@@ -247,7 +247,6 @@ public class ImmigrationRestController {
         if (templateId != null) { // below code is used for edit template name, docs, forms when opened in edit
             // mode.
             try {
-                System.out.println(" Edit mode templateId templateId -->" + templateId);
                 ImmigrationTemplateDTO templateDTO = immigrationTemplateService.getPetitionTemplateDetails(templateId);
                 List<ImmigrationTemplateDocDTO> docsList = immigrationTemplateService
                         .getImmigrationTemplateDocsListById(templateId);
@@ -278,7 +277,6 @@ public class ImmigrationRestController {
         /*
          * try { // List<ImmigrationTemplateView> templateList=
          * immigrationTemplateService.getAllTemplateDetails();
-         * System.out.println("template list size is "+templateList.size());
          * model.addObject("templateList", templateList); } catch (Exception e) {
          * logger.error("Exception occured while getting template list-->"+e.getMessage(
          * )); e.printStackTrace(); }
@@ -304,8 +302,6 @@ public class ImmigrationRestController {
             }
             templateListDTO.setSortColumn(tableColumns[sortColumnIndex]);
             templateListDTO.setSortOrder(sortColumnOrder);
-            System.out.println("searchValue in controller ---> " + searchValue);
-
             OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
                     "orgLocations");
 
@@ -313,10 +309,6 @@ public class ImmigrationRestController {
                     orgLocations.getId());
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        if (templateListDTOList.getRecordsTotal() > 0) {
-            System.out.println("After getAlltemplateList in controller ---> "
-                    + templateListDTOList.getData().get(0).getDocsCount());
         }
         return templateListDTOList;
     }
@@ -327,7 +319,6 @@ public class ImmigrationRestController {
         try {
             immigrationTemplateService.deleteAllPetitionTemplateDetailsById(deleteId);// only soft delete operation in
             // Database.
-            // System.out.println("inside delete controller method calling ----->>>>>>>:
             // "+deleteId);
             logger.debug("inside delete controller method calling ----->>>>>>>: " + deleteId);
         } catch (Exception e) {
@@ -353,7 +344,6 @@ public class ImmigrationRestController {
                 model.addObject("educationsList", educationsList);
                 model.setViewName("/immigration/petitionTemplateDocDetails");
             } else if (forwardTo.equalsIgnoreCase("formDetails")) {
-                System.out.println(" inside formDetails controller --->");
                 model.setViewName("/immigration/petitionTemplateFormDetails");
             } else if (forwardTo.equalsIgnoreCase("taskList")) {
                 model.setViewName("/immigration/immigrationTemplateTaskList");
@@ -365,6 +355,20 @@ public class ImmigrationRestController {
         }
 
         return model;
+    }
+    
+    @RequestMapping(value = {"/saveImmigrationEmployerDetails"}, method = RequestMethod.POST)
+    public String saveImmigrationEmployerDetails(CandidateEmployerDTO candidateEmployerDTO, HttpServletRequest request,
+    		@RequestParam(value = "candidateId", required = false) String candidateId,
+    		@RequestParam(value = "immigrationId", required = false) String immigrationId) throws Exception {
+       
+            User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+            OrgLocations  loginOrglocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+           // immigrationTemplateService.savePetitionTemplateTaskDetails(templateDTO, user);
+            candidateEmployersService.storeCandidateEmployers(candidateEmployerDTO,user,loginOrglocation,Long.parseLong(candidateId));
+            System.out.println("Template Task Details saved succesfully --> ");
+       
+        return "success";
     }
 
     @RequestMapping(value = {
@@ -425,7 +429,6 @@ public class ImmigrationRestController {
         try {
             User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
             immigrationTemplateService.savePetitionTemplateTaskDetails(templateDTO, user);
-            System.out.println("Template Task Details saved succesfully --> ");
         } catch (Exception e) {
             logger.error("Exception occured while saving Template Task Details" + e.getMessage());
             e.printStackTrace();
@@ -509,7 +512,6 @@ public class ImmigrationRestController {
         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
         immigrationDTO.setStaticPath(staticPath);
-		System.out.println("Candidate ID ----> :  "+immigrationDTO.getCandidateId());
 		Immigration immigration = null;
         try {
         	immigration = immigrationCommonService.savePetitionDetails(immigrationDTO, user, orgLocations);
@@ -517,7 +519,6 @@ public class ImmigrationRestController {
             logger.error("Exception caugth in savePetitionDetailsPage controller" + e.getMessage());
             e.printStackTrace();
         }
-        System.out.println("immigration.getImmigrationTemplateId()"+immigration.getImmigrationTemplateId().getId());
         return "{result:'success',id:'"+immigration.getId()+"',candidateId:'"+immigration.getCandidate().getId()+"',immTemplateId:'"+immigration.getImmigrationTemplateId().getId()+"'}";
     }
 

@@ -1,3 +1,4 @@
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 		  <div class="immigraDetailsOut">
 		  	<div class="immigraDetailsWrap">
 			  <div class="immigraDetailsCta">
@@ -15,10 +16,10 @@
 				  <h2>Attorney Details</h2>
 				  <ul>
 					  <li class="clearfix"><span>Attorney Name</span><p>: ${immigration.attorneyName}</p></li>
-					  <li class="clearfix"><span>Email</span><p>: </p></li>
-					  <li class="clearfix"><span>Phone</span><p>: </p></li>
-					  <li class="clearfix"><span>Fax</span><p>: </p></li>
-					  <li class="clearfix"><span>Law firm</span><p>: </p></li>
+					  <li class="clearfix"><span>Email</span><p>: ${immigration.attorneyEmail} </p></li>
+					  <li class="clearfix"><span>Phone</span><p>: ${immigration.attorneyPhone}</p></li>
+					  <li class="clearfix"><span>Fax</span><p>: ${immigration.attorneyFax}</p></li>
+					  <li class="clearfix"><span>Law firm</span><p>: ${immigration.attorneyLawFirm}</p></li>
 				  </ul>
 			  </div>
 			  <div class="immigraDetailsCta">
