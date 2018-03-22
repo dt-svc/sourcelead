@@ -76,13 +76,13 @@ overflow-x: auto;
 		
         <div class="timesheet_head timesheetHead topfilters">
 			<div class="pull-left cand-advsrch advsrch_chosen">
-		<button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetProjectFilter();" title="Refresh">
-			    <span class="fa fa-refresh"></span>
-			</button>
-			
-			<a href="javascript:void(0)" class="btn btn-primary btn-sm anchorWhite" title="Filter Search" onclick="openFilterPop();"> Filter&nbsp;&nbsp; <i class="fa fa-filter faFilter"></i>
-			</a>
-	    </div>
+			     <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetProjectFilter();" title="Refresh">
+				    <span class="fa fa-refresh"></span>
+				</button>
+				
+				<a href="javascript:void(0)" class="btn btn-primary btn-sm anchorWhite" title="Filter Search" onclick="openFilterPop();"> Filter&nbsp;&nbsp; <i class="fa fa-filter faFilter"></i>
+				</a>
+	       </div>
         	
         	
         	
@@ -1134,25 +1134,6 @@ function projectExport(type){
 	
 }
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 <jsp:include page="../masterFooter.jsp" />	
