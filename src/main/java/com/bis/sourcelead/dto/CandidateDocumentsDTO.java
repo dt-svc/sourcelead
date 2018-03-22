@@ -61,6 +61,12 @@ public class CandidateDocumentsDTO {
 	
 	private String requestedDocRejectedReason;
 	
+	private long loginUserId;
+	
+	private long orgLocationId;
+	
+	private String documentId;
+	
 	public String getCandidateId()
 	{
 		return candidateId;
@@ -315,5 +321,37 @@ public class CandidateDocumentsDTO {
 	{
 		this.requestedDocRejectedReason = requestedDocRejectedReason;
 	}
+
+	public long getLoginUserId()
+	{
+		return loginUserId;
+	}
+
+	public void setLoginUserId(long loginUserId)
+	{
+		this.loginUserId = loginUserId;
+	}
+
+	public long getOrgLocationId()
+	{
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(long orgLocationId)
+	{
+		this.orgLocationId = orgLocationId;
+	}
+
+	public String getDocumentId()
+	{
+		return documentId;
+	}
+
+	public void setDocumentId(String documentId)
+	{
+		this.documentId = documentId;
+	}
+	
+	
 	
 }

@@ -164,6 +164,8 @@ public class CandidateReferencesServiceImpl implements CandidateReferencesServic
 			refer.setRelation(candiRefer.getRelation());
 			refer.setComment(candiRefer.getComment());
 			refer.setDesignation(candiRefer.getDesignation());
+			refer.setCandidateId(candidateId);
+			refer.setOrgLocationId(orgLocationId);
 			referDTOLIst.add(refer);
 		}
 		responseReferList.setData(referDTOLIst);
