@@ -1,18 +1,33 @@
 package com.bis.sourcelead.enums;
-
 public enum Result {
-	SUCCESS, 
-	FAILED, 
-	AWKWARD,
-	INVALID_DATA, 
-	INVALID_CREDENTIALS, 
-	DISABLED, 
-	SESSION_TIMEDOUT, 
-	DUPLICATE_EMAIL, 
-	DUPLICATE_PHONE, 
-	DUPLICATE_ULB, 
-	DUPLICATE_DISTRICT, 
-	DUPLICATE_INSTITUTION, 
-	INVALID_EMAIL, 
-	UNAUTHORIZED;
+	SUCCESS("Operation executed successfully"), 
+	FAILED("Operation failed, please try again"), 
+	AWKWARD("Something went wrong"),
+	INVALID_DATA("Invalid data"), 
+	INVALID_CREDENTIALS("Invalid UserName Or Password"), 
+	NOT_REGISTERED("User Not Registered"),
+	INACTIVE_USER("In-Active User"),
+	DISABLED("Your account is disable, please contact adminstrator"), 
+	SESSION_TIMEDOUT("You have been logged out, please login and try again."), 
+	DUPLICATE_EMAIL("Record already existed with given email id"), 
+	DUPLICATE_PHONE("Record already existed with given phone number"), 
+	INVALID_EMAIL("Invalid Email ID"), 
+	UNAUTHORIZED("You are not allowed to access this service");
+	
+    private String value;
+	private Result(String value){
+		this.value = value;
+	}
+	public String getValue() {
+		return value;
+	}
+	public static Result getNameByValue(String scenarioId){
+	   	  for(Result result : Result.values()){
+	   	    if(scenarioId.equalsIgnoreCase(result.value)) 
+	   	    	return result;
+	   	  }
+	   	  return null;
+	}
+	
+	
 }
