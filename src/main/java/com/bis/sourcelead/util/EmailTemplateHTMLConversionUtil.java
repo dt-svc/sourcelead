@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Tabs;
 
 
 /**
@@ -18,7 +19,7 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 	
 	private static final long serialVersionUID = -3317550653234933840L;
 	
-	public static String convertBodyOfEmailTemplateToHTML(String body , String signature ,String callToActionText , String ButtonText , String url, EmailMessage emailMessage, Org org,OrgLocations orgLocations) {	
+	public static String convertBodyOfEmailTemplateToHTML(String body , String signature ,String callToActionText , String ButtonText , String url, EmailMessage emailMessage, Org org,OrgLocations orgLocations, Tabs tabs) {	
 		 
 		StringBuilder tempHTML = new StringBuilder();
 		/*
@@ -100,6 +101,7 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 					                       tempHTML.append("<a target='blank' href='http://www.sourcelead.com/about-us.html' style='text-decoration:none; color:#333;' title='About Us'>About Us</a> | <a target='blank' href='http://www.sourcelead.com/contact.html' style='text-decoration:none; color:#333;' title='Contact Us'>Contact Us</a> | <a target='blank' href='http://www.sourcelead.com/ats.html' style='text-decoration:none; color:#333;' title='ATS'>ATS</a> | <a target='blank' href='http://www.sourcelead.com/vms.html' style='text-decoration:none; color:#333;' title='VMS'>VMS</a> | <a target='blank' href='http://www.sourcelead.com/crms.html' style='text-decoration:none; color:#333;' title='CRMS'>CRMS</a> | <a target='blank' href='http://www.sourcelead.com/pms.html' style='text-decoration:none; color:#333;' title='PMS'>PMS</a> | <a target='blank' href='http://www.sourcelead.com/hrms.html' style='text-decoration:none; color:#333;' title='HRMS'>HRMS</a> | <a target='blank' href='http://www.sourcelead.com/ims.html' style='text-decoration:none; color:#333;' title='IMS'>IMS</a> | <a target='blank' href='http://www.sourcelead.com/sourceleadJobPage.html' style='text-decoration:none; color:#333;' title='Job Search'>Job Search</a> | <a target='blank' href='http://www.sourcelead.com/marketplace.html' style='text-decoration:none; color:#333;' title='Marketplace'>Marketplace</a> <br> <a target='blank' href='http://www.sourcelead.com/termsofuse.html' style='text-decoration:none; color:#333;' title='Terms of Use'>Terms of Use</a> | <a target='blank' href='http://www.sourcelead.com/privacypolicy.html' style='text-decoration:none; color:#333;' title='Privacy policy'>Privacy policy</a></p>");
 					                  tempHTML.append("</td>");
 					            tempHTML.append("</tr>");
+					            tempHTML.append("<tr><td><p style='padding:5px 0px 5px 0px; margin:0px 0px; font-weight:400; font-size:11px; text-align:center;'>If you do not wish to receive any further communication, please  <a target='_blank' href='"+url+"/ws/unsubscribe' style='color:#a21e23;'>unsubscribe</a></p></td></tr>");
 					       tempHTML.append("</table>");
 					 tempHTML.append("</td>");
 			    tempHTML.append("</tr>");
@@ -108,6 +110,12 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 	tempHTML.append("</td>");
  tempHTML.append("</tr>");
 tempHTML.append("</table>");
+
+if(tabs != null) {
+	tempHTML.append("<div hidden><tabIdDiv>").append(tabs.getId().toString()).append("</tabIdDiv>").append("</div>");
+}else {
+	tempHTML.append("<div hidden><tabIdDiv>").append("</tabIdDiv>").append("</div>");
+}
 
 		 return tempHTML.toString();
 	}

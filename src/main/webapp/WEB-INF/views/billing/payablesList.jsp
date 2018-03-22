@@ -395,7 +395,7 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'              <label><strong>Attachments</strong></label>                         ';
 	result = result +'              <div class="timesheet_week_comm col-md-12 ">                        ';
 	result = result +'                <div class="form-group"> <span>                                   ';
-	result = result +'                  <input type="file"  id="paymentAttachment" name="paymentAttachment">                                            ';
+	result = result +'                  <input type="file"  id="paymentAttachment" name="paymentAttachment" onchange="getfileUrl()">                                            ';
 // 	result = result +'                  <i class="fa fa-plus"></i></span> </div>                        ';
 	result = result +'              </div>                                                              ';
 	result = result +'            </div>                                                                ';
@@ -430,6 +430,10 @@ function receivePaymentPop1(invoiceId,total){
 	});
 }
 
+function getfileUrl(){
+	fileUpload("paymentAttachment", "incoiceDocuments", "receivePayment-form");
+}
+
 </script>
 <script>
 function removeValidate(){
@@ -440,12 +444,28 @@ function removeErr(){
 }
 function removeMask(){
 	 $("#customeAmount").removeAttr("readonly");
-	 $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+	 /* $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
 	        $(this).val($(this).val().replace(/[^0-9\.]/g,''));
 	            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && ((event.which) < 48 || (event.which) > 57)) {
 	                event.preventDefault();
 	            }
-	        });
+	        }); */
+	        
+	 $("#customeAmount").keydown(function (e) {
+	        // Allow: backspace, delete, tab, escape, enter and .
+	        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+	             // Allow: Ctrl+A, Command+A
+	            (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) || 
+	             // Allow: home, end, left, right, down, up
+	            (e.keyCode >= 35 && e.keyCode <= 40)) {
+	                 // let it happen, don't do anything
+	                 return;
+	        }
+	        // Ensure that it is a number and stop the keypress
+	        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+	            e.preventDefault();
+	        }
+	    });
 }
 function validMask(){
 	  $('#customeAmount').attr("readonly","readonly");  
@@ -473,7 +493,7 @@ function validMask(){
 <!-- modal pop -->
 
 
-<script>
+<!-- <script>
 $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
     $(this).val($(this).val().replace(/[^0-9\.]/g,''));
         if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
@@ -481,7 +501,7 @@ $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
         }
     });
 
-</script>
+</script> -->
 
 <script>
 function cancelTermination(){
@@ -578,8 +598,9 @@ function getPayableInvoiceList(){
 <script>
 function preparePayableList(url,orgLocationDate){
  	var result = "";
- 	result = result +" <div class='remove_search'>";
+ 	result = result +" <div class='dynamic_search dynamic_search-new'>";
  	result = result +" <input type='text' placeholder='Search' id='payableDataTableSearch'/>";
+ 	result = result +"  <span class='cursorPointer' title='Search'><i class='fa fa-search' onclick='getPayableInvoiceList();'></i></span>";     
  	result = result +"</div>";
  	result = result + '<table id="payableListTable" class="display" cellspacing="0" width="100%" >';
 	result = result + '<thead>';
@@ -818,7 +839,7 @@ function payablePagination(url){
             				result = result +'         <td> ';
             				result = result +'     <div class="tblminwidth-90">';
             				 result = result +'  <div class="pull-right positionRelative menuWidget" >';
-            				if(report.invoiceStatus != "SENT" && report.invoiceStatus != "Received" && report.invoiceStatus != "Rejected"){
+            				if(report.invoiceStatus != "Received" && report.invoiceStatus != "Rejected"){
             					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp('+report.id+',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\',\''+report.fileUrl+'\');" ></i>  ';
             						result = result +'  <div id="popupDiv'+report.id+'"></div>';
             				} 
@@ -826,11 +847,11 @@ function payablePagination(url){
             				if(report.invoiceType=="Payables" && report.invoiceParentId != null && report.invoiceParentId != '' && report.invoiceParentId != "undefined"){
             					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
             						if(report.paymentStatus == "Paid"){
-            							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';
+            							result = result +'           <span class="text-primary primary pull-left" title="Paid" >Paid</span> </td>          ';
             						}else if(report.invoiceStatus == "DRAFT"){
-            							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill('+report.id+');";></i></td>          ';
+            							result = result +'           <span class="successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill('+report.id+');";></i></td>          ';
             						}else if(report.invoiceStatus == "Rejected"){
-            							result = result +'           <div class="text-primary successBtn primary pull-left bg-red">Rejected</div>   ';	
+            							result = result +'           <div class="primary pull-left bg-red">Rejected</div>   ';	
             						}
             							
             					}else{
@@ -847,13 +868,13 @@ function payablePagination(url){
             				}else{
             					if((report.paymentStatus == "Paid" && report.invoiceStatus != "Linked") || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected" || report.invoiceStatus == "SENT"){
             						if(report.paymentStatus == "Paid"){
-            							result = result +'           <span class="successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
+            							result = result +'           <span class=" primary pull-left" title="Paid" >Paid</span> </td>          ';	
             						}else if(report.invoiceStatus == "DRAFT"){
             							result = result +'           <span class="successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill('+report.id+');";></i></td>          ';
             						}else if(report.invoiceStatus == "SENT"){
-            							result = result +'           <span class="successBtn primary pull-left" title="Paid" >Sent</span> </td>          ';
+            							result = result +'           <span class=" primary pull-left" title="Paid" >Sent</span> </td>          ';
             						}else if(report.invoiceStatus == "Rejected"){
-            							result = result +'           <div class="successBtn primary pull-left bg-red">Rejected</div>   ';
+            							result = result +'           <div class=" primary pull-left bg-red">Rejected</div>   ';
             						}
             							
             					}else{
@@ -918,7 +939,7 @@ function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount,fileUrl){
 	     }
 		 result = result+' <i class="fa fa-close close-div closediv-small" onClick="removePopup();"></i>';
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+id+'"> ';
-		 if(invoiceParentId == 'undefined' || invoiceParentId == 'null'){
+		 if((invoiceParentId == 'undefined' || invoiceParentId == 'null') && invoiceStatus != 'DRAFT'){
 			 '<sec:authorize access="hasAnyRole(\'ROLE_SEND_BILL_REMINDER\')">';
 			 result = result +'<li onclick="sendReminder('+id+');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</li> ';
 			 '</sec:authorize>'

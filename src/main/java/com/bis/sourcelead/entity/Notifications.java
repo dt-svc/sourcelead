@@ -115,6 +115,15 @@ public class Notifications implements Serializable{
 	@Transient
 	private String notificationImage;
 	
+	@Transient
+	private String spocInvitationStatus;
+	
+	@Transient
+	private String orgRelationUUID;
+	
+	@Transient
+	private String responderType;
+	
 	
 	@Transient
 	
@@ -324,7 +333,30 @@ public class Notifications implements Serializable{
 	public void setNotificationImage(String notificationImage) {
 		this.notificationImage = notificationImage;
 	}
-	
+
+	public String getSpocInvitationStatus() {
+		return spocInvitationStatus;
+	}
+
+	public void setSpocInvitationStatus(String spocInvitationStatus) {
+		this.spocInvitationStatus = spocInvitationStatus;
+	}
+
+	public String getOrgRelationUUID() {
+		return orgRelationUUID;
+	}
+
+	public void setOrgRelationUUID(String orgRelationUUID) {
+		this.orgRelationUUID = orgRelationUUID;
+	}
+
+	public String getResponderType() {
+		return responderType;
+	}
+
+	public void setResponderType(String responderType) {
+		this.responderType = responderType;
+	}
 	
 	
 }

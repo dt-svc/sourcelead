@@ -17,20 +17,21 @@ $(document).ready(function(){
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Received Invoice</h2>
+        <h2>Received Invoices</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Received Invoice</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Received Invoices</div>
     </section>
     <!-- hiring Process  -->
     <div class="content-dashboard clearfix">
       <div class="ReqRepHead clearfix">
         <div class="col-md-2 pull-left reqListBtn">
-        <a href="financial-paidbills.html" title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
-        <a href="${appPath}/paidBillReport" title="List View" class="btn btn-default rAct"><i class="fa fa-list"></i></a>
+        <a href="${appPath}/receivedInvoiceReportGraph" title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
+        <a href="${appPath}/receivedInvoiceReport" title="List View" class="btn btn-default rAct"><i class="fa fa-list"></i></a>
+        
         </div>
         
         <div class="col-md-4 col-md-offset-1">
-          <select class="chosen-select form-control" multiple data-placeholder="Select Vendor" name="orgId" id="orgId">
+          <select class="chosen-select form-control" multiple data-placeholder="Select Client" name="orgId" id="orgId">
            <c:if test="${not empty clientList}">
                <c:forEach items="${clientList}" var="client">
    						<option value='${client.id }'>${client.orgName}</option>
@@ -85,18 +86,11 @@ $(document).ready(function(){
       <div class="content-dashboard clearfix"> 
         <!-- Assigned Requirements -->
         <div class="clearfix dashboard-widget mt25 col-md-12">
-          <div class="clearfix">
-          <h4 class="pull-left">Paid Bills Lists</h4>
-          	<div class="remove_search pull-right">
-                  <input placeholder="Search" type="text">
-                </div>
+        <div class="clearfix">
+          <h4 class="pull-left">Received invoices Lists</h4>
           </div>
           
-          
-           <div class='remove_search'>
- 		 <input type='text' placeholder='Search' id='dataTableSearch'/>
- 		</div> 
-      <div id="paidBillReportId" class="datatable_filter tableStyles">
+      <div id="paidBillReportId" class="datatable_filter">
         </div>
           
         </div>
@@ -161,7 +155,6 @@ $(document).ready(function(){
 		  	var formData = $($('#rinvoice_custom_form')[0]).serialize();
 		  	 var billType = 'Payables';
 				var sourceleadUrl ='${sourceleadUrl}';
-				var searchValue = $("#dataTableSearch").val();
 				var orgId = $("#orgId").val();
 				var filterType = ""; 
 				if($("#filterType").val() != 'undefined'){
@@ -188,14 +181,14 @@ $(document).ready(function(){
 function getReceivedInvoicereport(){
 	    var billType = 'Receivable';
 		var sourceleadUrl ='${sourceleadUrl}';
-		var searchValue = $("#dataTableSearch").val();
 		var orgId = $("#orgId").val();
 		var filterType = ""; 
 		if($("#filterType").val() != 'undefined'){
 			filterType = $("#filterType").val();
 		}
+		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getPaidBillreport?"+tokenParamName+"="+tokenValue+"&billType="+billType+"&orgId="+orgId+"&filterType="+filterType;
+		var url = sourceleadUrl+"/getPaidBillreport?"+tokenParamName+"="+tokenValue+"&billType="+billType+"&orgId="+orgId+"&filterType="+filterType+"&searchValue="+searchValue;
 		preparePaidBillReportList(url);
 }
 </script>
@@ -203,9 +196,10 @@ function getReceivedInvoicereport(){
 function preparePaidBillReportList(url){
 	$("#paidBillReportId").empty();
  	    var result = "";
- 	    /* result = result +" <div class='remove_search'>";
+ 	    result = result +" <div class='remove_search'>";
  	    result = result +" <input type='text' placeholder='Search' id='dataTableSearch'/>";
- 	    result = result +"</div>"; */
+ 	    result = result +"</div>"; 
+ 	  	result = result +" <div class='tableStyles'>";
  	    result = result +"<table id='paidBillPagination' class='display' cellspacing='0' width='100%' >"; 
         result = result +"<thead>"; 
         result = result + '<tr>';
@@ -218,6 +212,7 @@ function preparePaidBillReportList(url){
         result = result +"<tbody>"; 
         result = result +" </tbody>";
         result = result +"</table>";
+        result = result +"</div>";
       $("#paidBillReportId").append(result);
       prepareBill(url); 
 }
@@ -247,7 +242,7 @@ function prepareBill(url){
 	    	  	"data": "orgName",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
-	    	  		result += '<td><div class="tbldata-dotdot"><a href="'+sourceleadUrl+'/paidBillDetails?&orgRelationId='+opt.orgRelationId+'">'+opt.orgName+'</a> </div></td>';
+	    	  		result += '<td><div class="tbldata-dotdot"><a href="'+sourceleadUrl+'/paidBillDetails?&orgRelationId='+opt.orgRelationId+'&billType=Receivable"">'+opt.orgName+'</a> </div></td>';
 					/*  result = result + ' <td><div class="tblminwidth-75">'+opt.orgName+'</div></td>';  */ 
 		             return result;
 	    	  	}

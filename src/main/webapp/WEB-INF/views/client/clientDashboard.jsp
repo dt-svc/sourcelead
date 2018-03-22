@@ -57,8 +57,7 @@ z-index: 1;
 				</h2>
 			</div>
 
-			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;Client List</div>
-
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/clientDashboard'/>">Client List</a></div>
 		</section>
 
 		<!-- Project -->
@@ -348,8 +347,9 @@ z-index: 1;
 						<div class="clearfix"></div>
 					</ul>
 					<div class="clearfix"></div>
-					 <div class='remove_search'>
-        		          <input type='text' placeholder='search' id='dataTableSearch'/>
+					 <div class='dynamic_search dynamic_search-new'>
+        		          <input type='text' placeholder='Search' id='dataTableSearch'/>
+        		          <span class="cursorPointer" title="Search"><i class="fa fa-search" onclick="getClientList();"></i></span>    
                 </div> 
                 
 				</div>
@@ -448,9 +448,11 @@ function clearSearch(){
 	$('#allKeywords').val('').trigger('chosen:updated');
 	$('#excludeKeyWord').val('').trigger('chosen:updated');
 	$('#orgNameAdvanced').val('').trigger('chosen:updated');
-	$('#countrySearch').val('').trigger('chosen:updated'); 
-	$('#stateSearch').val('').trigger('chosen:updated');
-	$('#citySearch').val('').trigger('chosen:updated');
+	$('#countrySearch').val('').trigger('chosen:updated');
+	//$('#stateSearch').val('').trigger('chosen:updated');
+	getStates();
+	//$('#citySearch').val('').trigger('chosen:updated');
+	getCities();
 	$('#tierAdvanced').val('').trigger('chosen:updated');
 	$('#createdByAdvanced').val('').trigger('chosen:updated');
 	$('#emailAdvanced').val('').trigger('chosen:updated');
@@ -461,6 +463,7 @@ function clearSearch(){
 	$('#contactNameAdvanced').val('').trigger('chosen:updated');
 	$('#phoneNumberAdvanced').val('').trigger('chosen:updated');
 }
+
 </script>
 
 <script>
@@ -989,7 +992,7 @@ function pagination(){
 		
 		//for client contatcs tab
 		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT\')">';
-		result = result + '<li><a href="#tab-2" onclick="clientContacts('+orgRelationId+','+clientLocationId+');">Contacts</a></li>';
+		result = result + '<li id="clientContactsLi"><a href="#tab-2" onclick="clientContacts('+orgRelationId+','+clientLocationId+');">Contacts</a></li>';
 		'</sec:authorize>';
 		
 		//for client documents tab
@@ -1068,9 +1071,15 @@ function pagination(){
 		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
 		$(".side_mask").fadeIn(200);
 		$("body").css('overflow-y', 'hidden');
-		 
- 
-		clientDetails(clientLocationId,orgRelationId);
+		if ('${contactsTab}' == "contactsTab") {
+			$(".project-tabs-menu li").removeClass("current");
+			$("#clientContactsLi").addClass("current");
+			$("#tab-2").show();
+			clientContacts(orgRelationId,clientLocationId);
+		} else {
+			clientDetails(clientLocationId,orgRelationId);
+		}
+		
 	}
 </script>
 

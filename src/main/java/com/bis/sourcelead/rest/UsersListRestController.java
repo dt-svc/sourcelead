@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -49,16 +50,16 @@ import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
-import com.bis.sourcelead.dto.OrgSpocDTO;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
-import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
+import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
+import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
@@ -81,13 +82,10 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
-import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Status;
-import com.bis.sourcelead.model.ConnectionBean;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.DepartmentService;
@@ -98,6 +96,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -226,6 +225,12 @@ public class UsersListRestController {
 	@Autowired
 	private SourceleadActionsService sourceleadActionsService;
 	
+	@Autowired
+	ProjectClientService projectClientService;
+	
+	@Autowired
+    ProjectsIndexHelper projectsIndexHelper;
+	
 	
 	/**
 	 * To get All the Users by filtering
@@ -240,13 +245,19 @@ public class UsersListRestController {
 
 
 	/* this method is used to display the users list onload */
-	@RequestMapping(value = "/detDynamicUserList", method = RequestMethod.POST)
-	public @ResponseBody   ResponseList<UserRoleDTO> detDynamicUserList(UserDTO userDTO,UserRoleDTO userRoleDto,HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/getDynamicUserList", method = RequestMethod.POST)
+	public @ResponseBody   ResponseList<UserRoleDTO> getDynamicUserList(UserDTO userDTO,UserRoleDTO userRoleDto,HttpServletRequest request) throws Exception {
 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		List<Long> orgRelationsList = new ArrayList<>();
+		List<Long> projectAssignedUserIds = new ArrayList<>();
+		List<Long> projectClientsList = new ArrayList<>();
+		List<Long> managerUserIds = new ArrayList<>();
+		List<Long> teamsList = new ArrayList<>();
+		List<Long> departmentsList = new ArrayList<>();
 		
-		String[] tableColumns = {"userName", "email", "mobilePhone", "displayName","","userEmploymentType"};
+		String[] tableColumns = {"firstName", "email", "mobilePhone", "displayName","","userEmploymentType"};
 	    int sortColumnIndex = 5; //by default sorting using updated date
 		String sortColumnOrder = "asc"; //by default descending order
 		if(userRoleDto.getOrder() != null && !userRoleDto.getOrder().isEmpty()) {
@@ -258,13 +269,38 @@ public class UsersListRestController {
 		
 		ResponseList<UserRoleDTO> response = new ResponseList<UserRoleDTO>();
 		List<UserRoleDTO> userRolesList = new ArrayList<>();
-			Long userRoleType ;
-			if(!"".equalsIgnoreCase(userDTO.getUserRole())){
-				 userRoleType = Long.parseLong(userDTO.getUserRole());
-			}else{
-				 userRoleType = null;
+		
+		
+		if(userRoleDto.getOrgClients() != null && !userRoleDto.getOrgClients().isEmpty()) {
+			String[] orgClients = userRoleDto.getOrgClients().split(",");
+			for(int i=0; i < orgClients.length; i++) {
+				orgRelationsList.add(Long.parseLong(orgClients[i]));
 			}
-			ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId(userDTO, userRoleDto, userRoleType, orgLocations.getId(), userDTO.getUserState(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode());
+		}
+		
+		if(userRoleDto.getOrgManagers() != null && !userRoleDto.getOrgManagers().isEmpty()) {
+			String[] orgManagers = userRoleDto.getOrgManagers().split(",");
+			for(int i=0; i < orgManagers.length; i++) {
+				managerUserIds.add(Long.parseLong(orgManagers[i]));
+			}
+		}
+		
+		if(userRoleDto.getOrgTeams() != null && !userRoleDto.getOrgTeams().isEmpty()) {
+			String[] orgTeams = userRoleDto.getOrgTeams().split(",");
+			for(int i=0; i < orgTeams.length; i++) {
+				teamsList.add(Long.parseLong(orgTeams[i]));
+			}
+		}
+		
+		if(userRoleDto.getOrgDepartments() != null && !userRoleDto.getOrgDepartments().isEmpty()) {
+			String[] orgDepts = userRoleDto.getOrgDepartments().split(",");
+			for(int i=0; i < orgDepts.length; i++) {
+				departmentsList.add(Long.parseLong(orgDepts[i]));
+			}
+		}
+			
+			
+			    ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId(userDTO, userRoleDto, orgLocations.getId(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode(),orgRelationsList,managerUserIds,teamsList,departmentsList);
 				for(UserRole role : rolesList.getData()){
 					UserRoleDTO userRoleDTO = new UserRoleDTO();
 					StringBuilder userName = new StringBuilder();
@@ -1181,28 +1217,75 @@ public class UsersListRestController {
 						.getAllProjectsAssigendToUserByIdAndStatus(userId, Constants.MEMBER_ACTIVE);
 				if (null != projectmembersList) {
 					for (ProjectMembers pm : projectmembersList) {
-
-						ProjectMembersHistory projectMembersHistory = projectMembersHistoryService
-								.getProjectMembersOpenHistoryByProjectMemberId(pm.getId());
-
-						if (null != projectMembersHistory) {
-							projectMembersHistory.setProjectTerminationDate(new Date());
-							projectMembersHistoryService.updateProjectMembersHistory(projectMembersHistory);
-						}
-
-						commonUtil.terminateProjectMemberByProjectMemberId(pm.getId(), Primary.Yes);
-
-						List<TimesheetSubmissions> submissionsList = timesheetSubmissionsService
-								.getTimeSheetSubmissionByProjectMemberId(pm.getId());
-						if (null != submissionsList) {
-							for (TimesheetSubmissions submissions : submissionsList) {
-								submissions.setStatus(Constants.MEMBER_IN_ACTIVE);
-								submissions.setUpdatedBy(user.getUserCode());
-								submissions.setUpdatedDate(new Date());
-								timesheetSubmissionsService.addTimesheetSubmissions(submissions);
-							}
-						}
-
+						   try {
+							   List<ProjectMembers> pmList = projectMembersService.getAllProjectMembersByMasterCandidateId(pm.getMasterCandidateId().getId(), pm.getProjects().getId());
+						  	 // ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
+						  	 if(pmList != null && !pmList.isEmpty()) {
+							   for(ProjectMembers projectMembers: pmList) {
+							  		  String status = Constants.MEMBER_IN_ACTIVE;
+								  	  projectMembers.setTerminateReason(addUserDTO.getTerminateReason());
+									  projectMembers.setUpdatedDate(new Date());
+									  projectMembers.setUpdatedBy(user.getUserCode());
+									  projectMembers.setStatus(status);
+									  projectMembersService.saveProjectMember(projectMembers);
+								  	  
+									  List<ProjectMembersHistory> pmhList = projectMembersHistoryService.getProjectMembersHistoryListByProjectMemberId(projectMembers.getId());
+									  int sendEmailCount = 1;
+									  if(pmhList != null && pmhList.size() > 0){
+										  for(ProjectMembersHistory pmh : pmhList){
+											  pmh.setProjectTerminationDate(new Date());
+											  pmh.setUpdatedDate(new Date());
+											  pmh.setUpdatedBy(user.getUserCode());
+											  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
+											  pmh =  projectMembersHistoryService.updateProjectMembersHistory(pmh);
+											  if(sendEmailCount == 1){
+												  commonUtil.terminatedMailToEmployee(user,pmh,orgLocations);
+											  }
+											  
+											  if(pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId().getId().equals(orgLocations.getId())){
+												   /*List<ProjectApproverHierarchy>  mangerList = projectApproverHierarchyService.getApproverUsersByProjectId(pmh.getProjectMemberId().getProjects().getId());
+												      for(ProjectApproverHierarchy pah : mangerList){
+												    	  if(user.getId() != pah.getApproverUserId().getId()){
+												    		  employeeTerminationMailToProjectManager(user,pmh,orgLocations);
+												    	  }
+												      }*/
+												  commonUtil.employeeTerminationMailToProjectManager(user,pmh,orgLocations);
+											  }else{
+												  commonUtil.employeeTerminationMailToProjectManager(pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId().getUser(),pmh,pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId());
+											  }
+											  commonUtil.inactivateTimesheetSubmissionsBasedOnMemberIdAndMemberTerminationDate(pm.getId(),new Date());
+											  sendEmailCount = sendEmailCount+1;
+										  }
+									  }
+									  
+									  
+									  
+									 /* ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
+									  if(pmh != null){
+										  pmh.setProjectTerminationDate(new Date());
+										  pmh.setUpdatedDate(new Date());
+										  pmh.setUpdatedBy(user.getUserCode());
+										  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
+										  pmh =  projectMembersHistoryService.updateProjectMembersHistory(pmh);
+									  }
+									  
+									  commonUtil.terminateProjectMemberByProjectMemberId(projectMemberId,Primary.Yes);
+								      updatedCount = 1;*/
+								      
+								   if(null != pm.getProjects() && pm.getProjects().getId() != null){
+										Projects projects = projectsService.getProjectById(pm.getProjects().getId());
+										if(null != projects){
+											Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(pm.getProjects().getId());
+											ProjectsIndex projectsIndex = projectsIndexHelper.getProjectsIndexFromProjects(projects, null, projectMembersList);
+											//Elastic Search Document Saving
+											sourceleadELKBaseIndexer.saveOrUpdateElkDocument(projectsIndex, Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,projects.getId().toString());
+										}
+								   }
+						  	  }
+						  	 }
+						    } catch (Exception e) {
+						   }
+					    
 					}
 				}
 			}

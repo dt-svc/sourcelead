@@ -167,12 +167,21 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String orgRelationId;
 	
-	private Map<String,String> projectCustomFieldlabelNameAndValue;
+	private Map<Long,String> projectCustomFieldlabelNameAndValue;
 	
 	private List<CustomFormFieldDTO> customFormData;
 	
 	private String projectApprover;
 	
+	private String projectType;
+	
+	private String exportType;
+	
+	private String values;
+	
+	private String clients;
+	
+	private long orgLocationsId;
 	
 	public String getExpenseId() {
 		return expenseId;
@@ -744,11 +753,11 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 		this.orgRelationId = orgRelationId;
 	}
 
-	public Map<String, String> getProjectCustomFieldlabelNameAndValue() {
+	public Map<Long, String> getProjectCustomFieldlabelNameAndValue() {
 		return projectCustomFieldlabelNameAndValue;
 	}
 
-	public void setProjectCustomFieldlabelNameAndValue(Map<String, String> projectCustomFieldlabelNameAndValue) {
+	public void setProjectCustomFieldlabelNameAndValue(Map<Long, String> projectCustomFieldlabelNameAndValue) {
 		this.projectCustomFieldlabelNameAndValue = projectCustomFieldlabelNameAndValue;
 	}
 
@@ -843,5 +852,45 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	public void setFlatPercentage(String flatPercentage) {
 		this.flatPercentage = flatPercentage;
+	}
+
+	public String getProjectType() {
+		return projectType;
+	}
+
+	public void setProjectType(String projectType) {
+		this.projectType = projectType;
+	}
+
+	public String getExportType() {
+		return exportType;
+	}
+
+	public String getValues() {
+		return values;
+	}
+
+	public String getClients() {
+		return clients;
+	}
+
+	public void setExportType(String exportType) {
+		this.exportType = exportType;
+	}
+
+	public void setValues(String values) {
+		this.values = values;
+	}
+
+	public void setClients(String clients) {
+		this.clients = clients;
+	}
+
+	public long getOrgLocationsId() {
+		return orgLocationsId;
+	}
+
+	public void setOrgLocationsId(long orgLocationsId) {
+		this.orgLocationsId = orgLocationsId;
 	}
 }

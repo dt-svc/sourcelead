@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
@@ -35,8 +36,8 @@ import com.bis.sourcelead.reports.service.FinanceService;
 import com.bis.sourcelead.reportsDTO.APAgingDTO;
 import com.bis.sourcelead.reportsDTO.MissingInvoiceDTO;
 import com.bis.sourcelead.reportsDTO.PaidBillDTO;
-import com.bis.sourcelead.rest.reportsRestController.FinanceReportRestController;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.InvoicePaymentService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -55,6 +56,9 @@ public class FinanceServiceImpl implements FinanceService{
 	
 	@Autowired
 	CandidateService candidateService;
+	
+	@Autowired
+	InvoicePaymentService invoicePaymentService;
 	
 	@Override
 	public APAgingDTO getApAgingListByLocation(OrgLocations orgLocation, APAgingDTO apAgingDTO) {
@@ -552,10 +556,34 @@ public class FinanceServiceImpl implements FinanceService{
 	 * @return int
 	 */
 	private int getNumberOfAssociates(List<Invoice> invoiceList) {
-		Set<Long> set = new HashSet<>();
+		Set<Long> set = null;
 		for(Invoice invoice : invoiceList ) {
-			for(InvoiceLineItems inlineItems : invoice.getInvoiceLineItems()) {
-				set.add(inlineItems.getCandidate().getId());
+			if(Constants.PAYABLES.equalsIgnoreCase(invoice.getInvoiceType())){
+				if(null != invoice.getParentInvoiceId()) {
+					set = invoice.getParentInvoiceId().getInvoiceLineItems().stream()
+				              .map(InvoiceLineItems::getId)
+				              .collect(Collectors.toSet());
+				}else {
+					set = invoice.getInvoiceLineItems().stream()
+				              .map(InvoiceLineItems::getId)
+				              .collect(Collectors.toSet());
+				}
+//				for(InvoiceLineItems inlineItems : invoice.getParentInvoiceId().getInvoiceLineItems()) {
+//					set.add(inlineItems.getCandidate().getId());
+//				}
+			}else{
+				if(null != invoice.getParentInvoiceId()) {
+					set  = invoice.getParentInvoiceId().getInvoiceLineItems().stream()
+				              .map(InvoiceLineItems::getId)
+				              .collect(Collectors.toSet());
+				}else {
+					set  = invoice.getInvoiceLineItems().stream()
+				              .map(InvoiceLineItems::getId)
+				              .collect(Collectors.toSet());
+				}
+				/*for(InvoiceLineItems inlineItems : invoice.getInvoiceLineItems()) {
+					set.add(inlineItems.getCandidate().getId());
+				}*/
 			}
 			
 		}
@@ -576,12 +604,31 @@ public class FinanceServiceImpl implements FinanceService{
 					paidBill.setProjectName(invoice.getProjectID().getProjectName());
 				}
 				paidBill.setBillDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), invoice.getInvoiceDate()));
-				Date paymentDate = financeDao.getPaymentDateByInvoiceId(invoice.getId());
+				Date paymentDate = null;
+				if(invoice.getParentInvoiceId() != null){
+					paymentDate = financeDao.getPaymentDateByInvoiceId(invoice.getParentInvoiceId().getId());
+				}else{
+					paymentDate = financeDao.getPaymentDateByInvoiceId(invoice.getId());
+				}
+				
 				if (paymentDate != null) {
 					paidBill.setPayDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paymentDate));
 				}
-				paidBill.setAmount(invoice.getTotal());
-				double total = getPaidAmountByInvoiceId(invoice.getId());
+				
+				double total = 0;
+				if(Constants.PAYABLES.equalsIgnoreCase(paidBillDTO.getBillType())) {
+					
+					if(invoice.getParentInvoiceId() != null)
+						 total = getPaidAmountByInvoiceId(invoice.getParentInvoiceId().getId());
+					else
+						 total = getPaidAmountByInvoiceId(invoice.getId());
+				}else {
+					if(invoice.getParentInvoiceId() != null)
+					     total = getPaidAmountByInvoiceId(invoice.getParentInvoiceId().getId());
+					else
+						total = getPaidAmountByInvoiceId(invoice.getId());
+				}
+				paidBill.setAmount(total);
 				totalAmount = totalAmount + total;
 				paidBill.setTotalAmount(totalAmount);
 				paidBillList.add(paidBill);
@@ -616,7 +663,7 @@ public class FinanceServiceImpl implements FinanceService{
 			if(paidList.getData() != null) {
 				double otherAmount = 0;
 				for(PaidBillDTO paidBill : paidList.getData()) {
-					if(i <= 10) {
+					if(i < 10) {
 						list.add(paidBill);
 					}else {
 						otherAmount = otherAmount + paidBill.getTotalAmount();
@@ -635,6 +682,55 @@ public class FinanceServiceImpl implements FinanceService{
 			res.setData(list);
 			return res;
 //			return getPaidBillDTOResponse(paidInvoiceList,orgLocation);
+	}
+
+	@Override
+	public PaidBillDTO getTotalAmountPerYear(PaidBillDTO paidBillDTO, OrgLocations orgLocation) throws Exception {
+		
+		ResponseList<Invoice> paidInvoiceList = financeDao.getPaidVendorslist(paidBillDTO, orgLocation);
+		PaidBillDTO pbd = new PaidBillDTO();
+		Map<Long, Double> totalAmountMap = new HashMap<>();
+		double totalAmount = 0;
+		double finalAmount = 0;
+		
+		List<InvoicePayment> invoicePaymentList = null;
+		for (Invoice invoice : paidInvoiceList.getData()) {
+			if("Payables".equalsIgnoreCase(paidBillDTO.getBillType())) {
+				if(null != invoice.getParentInvoiceId()) {
+					invoicePaymentList = invoicePaymentService.getInvoicePaymentList(invoice.getParentInvoiceId().getId());
+				}else {
+					invoicePaymentList = invoicePaymentService.getInvoicePaymentList(invoice.getId());
+				}
+			}else if("Receivable".equalsIgnoreCase(paidBillDTO.getBillType())){
+				if(null != invoice.getParentInvoiceId()) {
+					invoicePaymentList = invoicePaymentService.getInvoicePaymentList(invoice.getParentInvoiceId().getId());
+				}else {
+					invoicePaymentList = invoicePaymentService.getInvoicePaymentList(invoice.getId());
+				}
+			}
+			for (InvoicePayment invoicePayment : invoicePaymentList) {
+				
+				Date date = invoicePayment.getPaymentDate();
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(date);
+				long year = cal.get(Calendar.YEAR);
+				
+				double amount = Double.valueOf(invoicePayment.getPaymentAmount());
+				if(totalAmountMap.containsKey(year)) {
+					totalAmount = totalAmountMap.get(year);
+				}else {
+					totalAmount = 0;
+				}
+				finalAmount = totalAmount+amount;
+				totalAmountMap.put(year, finalAmount);
+			}
+		}
+		
+		for (Map.Entry<Long, Double> entry : totalAmountMap.entrySet()) {
+			totalAmountMap.put(entry.getKey(), entry.getValue());
+			pbd.setTotalAmountMap(totalAmountMap);
+		}
+		return pbd;
 	}
 
 }

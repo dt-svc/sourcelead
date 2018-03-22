@@ -211,7 +211,26 @@ public class CrowdSourcingRequirementsRestController {
 	    if(isNullOrEmpty(requirementType) || (!isNullOrEmpty(requirementType) && !requirementType.equalsIgnoreCase("ReferredToMe") && !requirementType.equalsIgnoreCase("SavedJobs"))){
 	    
 	    BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-	     if(requirementType.equalsIgnoreCase("OpenJobs")){
+	     
+	     if(requirementType.equalsIgnoreCase("allJobs")){
+	    	 BoolQueryBuilder allJobsBoolQueryBuilder = QueryBuilders.boolQuery();
+	    	  if(!loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+	    		  allJobsBoolQueryBuilder.should(QueryBuilders.matchQuery("isPublicJob", "Y"));
+	    	  }
+	    	 
+	    	 allJobsBoolQueryBuilder.should(QueryBuilders.matchQuery("isCrowdSourcingJob", "Y"));
+	    	 boolQueryBuilder.must(allJobsBoolQueryBuilder);
+	    	 
+	    	 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("appliedProfessionals", user.getId()));
+	    	 List<RequirementRefer> referList = requirementReferService.getLoginUserReferToMeListByUserId(user.getId());
+	    	 if(null != referList && referList.size() > 0){
+	    		 for(RequirementRefer refer : referList){
+	    			 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementId", refer.getRequirementId().getId()));
+	    		 }
+	    	 }
+	     }
+	    
+	    if(requirementType.equalsIgnoreCase("OpenJobs")){
 	    	 boolQueryBuilder.must(QueryBuilders.matchQuery("isPublicJob", "Y"));
 	    	 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("appliedProfessionals", user.getId()));
 	    	 List<RequirementRefer> referList = requirementReferService.getLoginUserReferToMeListByUserId(user.getId());
@@ -2075,7 +2094,7 @@ public class CrowdSourcingRequirementsRestController {
 						rs.setEmployeeType(rs.getRequirement().getJobType());
 						
 						List<String> requirementLocationsList = new ArrayList<>();
-						 List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(rs.getId());
+						 List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(rs.getRequirement().getId());
 						 if(locationsList != null && !locationsList.isEmpty()) {
 						 for(RequirementLocations location : locationsList) {
 						 requirementLocationsList.add(location.getLocation());
@@ -2576,37 +2595,19 @@ public class CrowdSourcingRequirementsRestController {
 			}
 		
 		   @RequestMapping(value = "/validateGroupName",  method = RequestMethod.GET)
-		   public @ResponseBody String validateGroupName(@RequestParam(value="groupName", required=false) String groupName,
+		   public @ResponseBody Boolean validateGroupName(@RequestParam(value="groupName", required=false) String groupName,
 				   @RequestParam(value="groupId", required=false) Long groupId,HttpServletRequest request) throws Exception {
-			  
 			    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			    String result = "valid";
 			    ContactsGroup contactsGroup = null;
-			    
-				if(groupId != null){
-					contactsGroup  = contactsGroupService.getContactsGroupByGroupId(groupId);
-					if(contactsGroup.getGroupName().equalsIgnoreCase(groupName)){
-						result = "valid";
-					}else{
-						contactsGroup = contactsGroupService.findByContactsGroupAndUserId(groupName, user.getId());
-						if(null != contactsGroup){
-							result = "invalid";
-						}else{
-							result = "valid";
-						}
-					}
-				}
-				
-				else{
-					contactsGroup = contactsGroupService.findByContactsGroupAndUserId(groupName, user.getId());
-					if(null != contactsGroup){
-						result = "Invalid";
-					}else{
-						result = "valid";
-					}
-				}
-			   
-				return result;
+			    if(groupId != null){
+			    	contactsGroup =contactsGroupService.validateGrouppNameByGroupNameAndGroupId(groupName, groupId);
+			    }
+			    Boolean flag = false;
+		    	   if(null == contactsGroup){
+		    		   flag = contactsGroupService.validateGroupNameByGroupNameAndUserId(groupName, user.getId());
+		    		   
+		    	   }
+				return flag;
 		   }
 			
 		@RequestMapping(value = "/getContactsGroupList", method = RequestMethod.POST)

@@ -181,7 +181,7 @@ function cancelOrgImg(){
         </c:if>
         <li><a data-toggle="tab" href="#bankingDetails">Banking Details</a></li>
         <li><a data-toggle="tab" id="documentsClick" href="#orglocationDocuments">Documents</a></li>
-        <li><a data-toggle="tab" href="#orglocationSignatory" onclick="validateLegalSigner();">Signatory</a></li>
+        <li><a data-toggle="tab" href="#orglocationSignatory" onclick="getAllSignatory();">Signatory</a></li>
         <li><a data-toggle="tab" href="#emailSign" onclick="loadSignature();">Email Signature</a></li>
         <li><a data-toggle="tab" href="#configCoolingOff" onclick="configCoolingOff();">Configure</a></li>
 
@@ -511,6 +511,7 @@ function cancelOrgImg(){
     
     		<div id="configCoolingOff" class="tab-pane fade form-horizontal"> 
                 <!-- Tab for Profile setting-area -->
+                <div id="recommLoading"></div>
                     <div class="accountsettings-tab">
                         <div class="tab-content panel-body">
                             <div class="clearfix mb">
@@ -558,6 +559,40 @@ function cancelOrgImg(){
 	                   			</div>
 	               			</div>         
 	           			</div> 
+                                        <div class="tab-content panel-body">
+                                            <div class="clearfix mb">
+                                                <div class="pull-left">
+                                                    <h4 id="careerPageKeyHeading">Career Page Key</h4>
+                                                    <div id="careerPageKeyLoading"></div>
+                                                </div>
+                                                <div class="pull-right">
+                                                    <span title="Click to copy key to clipboard"><i id="copyCareerKey" class="fa fa-clipboard copy-icon hidden {SourceLeadWeb_org.careerPageKey == null ? 'hidden' : ''}" aria-hidden="true"></i></span>
+                                                    <input type="button" value="${SourceLeadWeb_org.careerPageKey == null ? 'Generate Key' : 'Regenerate Key'}" id="generateCareerPageKey" class="btn btn-primary"/>
+                                                </div>
+                                            </div>
+                                            <div class="form-group" id="careerPageInnerContent">
+                                                <c:if test="${SourceLeadWeb_org.careerPageKey != null}">
+                                                    <div class="clearfix">
+                                                        <div class="col-md-2">Career Page Key</div>
+                                                        <div class="col-md-9 break_all">${SourceLeadWeb_org.careerPageKey}</div>
+                                                        <div class="col-md-1">
+                                                            <div class="toggle-button">
+                                                                <label class="switch">
+                                                                    <input type="checkbox" ${SourceLeadWeb_org.careerPageKeyActive ? 'checked' : ''} id="changeCareerPageKeyStatus"/>
+                                                                    <div class="slider round"></div>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </c:if>
+                                            </div>  
+                                                <div class='clearfix'>
+                                                    <span>Please copy & paste this in your career page</span>
+                                                    <textarea class='form-control' rows="3" readonly="readonly" id='careerPageCode'>
+                                                        
+                                                    </textarea>
+                                                </div>
+                                        </div> 
            			</c:if>
            			
            			<c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
@@ -618,6 +653,178 @@ function cancelOrgImg(){
 	               			         
 	           			</div> 
            			</c:if>
+           			
+					<!--   Recommendations Configure starts -->
+           			   <div class="tab-content panel-body positionRelative">
+           			   <div class="alert alert-success alert-dismissible recommendations-msgs text-center" id="recommSuccessDiv" style="display:none">
+						  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+						  Recommendation details updated successfully ..!
+						</div>
+						<div class="alert alert-danger alert-dismissible recommendations-msgs text-center" id="recommErrorDiv" style="display:none">
+						  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+						  Total recommendations should not be more than 100.
+						</div>
+           			   
+                            <div class="clearfix mb">
+                                    <h4 id="coolingOffHeading">Recommendations Configure</h4>
+                            </div>
+                            <form id="recommendations_form"  name="recommendations_form" method="post">
+                            <div class="row">
+                           <div class="col-md-3 mb">
+						<label class="clearfix">Skills</label>
+						<div class="clearfix dropdown-select mt5">
+							<select class="form-control chosen-select" name="recommSkill" id="recommSkill">
+							<option value="0">-- Select Skills --</option>
+							<option ${orgLocations.recommendedSkillPercent == '10' ? 'selected' : ''}>10</option>
+							<option ${orgLocations.recommendedSkillPercent == '20' ? 'selected' : ''}>20</option>
+							<option ${orgLocations.recommendedSkillPercent == '30' ? 'selected' : ''}>30</option>
+							<option ${orgLocations.recommendedSkillPercent == '40' ? 'selected' : ''}>40</option>
+							<option ${orgLocations.recommendedSkillPercent == '50' ? 'selected' : ''}>50</option>
+							<option ${orgLocations.recommendedSkillPercent == '60' ? 'selected' : ''}>60</option>
+							<option ${orgLocations.recommendedSkillPercent == '70' ? 'selected' : ''}>70</option>
+							<option ${orgLocations.recommendedSkillPercent == '80' ? 'selected' : ''}>80</option>
+							<option ${orgLocations.recommendedSkillPercent == '90' ? 'selected' : ''}>90</option>
+							<option ${orgLocations.recommendedSkillPercent == '100' ? 'selected' : ''}>100</option>
+							</select>
+						</div>
+						</div> 
+                            
+						<div class="col-md-3 mb">
+						<label class="clearfix">Location</label>
+						<div class="clearfix dropdown-select mt5">
+							<select class="form-control chosen-select" name="recommLocation" id="recommLocation">
+							<option value="0">-- Select Location --</option>
+							<option ${orgLocations.recommendedLocationPercent == '10' ? 'selected' : ''}>10</option>
+							<option ${orgLocations.recommendedLocationPercent == '20' ? 'selected' : ''}>20</option>
+							<option ${orgLocations.recommendedLocationPercent == '30' ? 'selected' : ''}>30</option>
+							<option ${orgLocations.recommendedLocationPercent == '40' ? 'selected' : ''}>40</option>
+							<option ${orgLocations.recommendedLocationPercent == '50' ? 'selected' : ''}>50</option>
+							<option ${orgLocations.recommendedLocationPercent == '60' ? 'selected' : ''}>60</option>
+							<option ${orgLocations.recommendedLocationPercent == '70' ? 'selected' : ''}>70</option>
+							<option ${orgLocations.recommendedLocationPercent == '80' ? 'selected' : ''}>80</option>
+							<option ${orgLocations.recommendedLocationPercent == '90' ? 'selected' : ''}>90</option>
+							<option ${orgLocations.recommendedLocationPercent == '100' ? 'selected' : ''}>100</option>
+							</select>
+						</div>
+						</div>
+						
+						<div class="col-md-3 mb">
+						<label class="clearfix">Notice Period</label>
+						<div class="clearfix dropdown-select mt5">
+							<select class="form-control chosen-select" name="recommNoticePeriod" id="recommNoticePeriod">
+							<option value="0">-- Select Notice Period --</option>
+							<option ${orgLocations.recommendedNoticePercent == '10' ? 'selected' : ''}>10</option>
+							<option ${orgLocations.recommendedNoticePercent == '20' ? 'selected' : ''}>20</option>
+							<option ${orgLocations.recommendedNoticePercent == '30' ? 'selected' : ''}>30</option>
+							<option ${orgLocations.recommendedNoticePercent == '40' ? 'selected' : ''}>40</option>
+							<option ${orgLocations.recommendedNoticePercent == '50' ? 'selected' : ''}>50</option>
+							<option ${orgLocations.recommendedNoticePercent == '60' ? 'selected' : ''}>60</option>
+							<option ${orgLocations.recommendedNoticePercent == '70' ? 'selected' : ''}>70</option>
+							<option ${orgLocations.recommendedNoticePercent == '80' ? 'selected' : ''}>80</option>
+							<option ${orgLocations.recommendedNoticePercent == '90' ? 'selected' : ''}>90</option>
+							<option ${orgLocations.recommendedNoticePercent == '100' ? 'selected' : ''}>100</option>
+							</select>
+						</div>
+						</div>
+						
+						<div class="col-md-3 mb">
+						<label class="clearfix">Experience</label>
+						<div class="clearfix dropdown-select mt5">
+							<select class="form-control chosen-select" name="recommExp" id="recommExp">
+							<option value="0">-- Select Experience --</option>
+							<option ${orgLocations.recommendedExpPercent == '10' ? 'selected' : ''}>10</option>
+							<option ${orgLocations.recommendedExpPercent == '20' ? 'selected' : ''}>20</option>
+							<option ${orgLocations.recommendedExpPercent == '30' ? 'selected' : ''}>30</option>
+							<option ${orgLocations.recommendedExpPercent == '40' ? 'selected' : ''}>40</option>
+							<option ${orgLocations.recommendedExpPercent == '50' ? 'selected' : ''}>50</option>
+							<option ${orgLocations.recommendedExpPercent == '60' ? 'selected' : ''}>60</option>
+							<option ${orgLocations.recommendedExpPercent == '70' ? 'selected' : ''}>70</option>
+							<option ${orgLocations.recommendedExpPercent == '80' ? 'selected' : ''}>80</option>
+							<option ${orgLocations.recommendedExpPercent == '90' ? 'selected' : ''}>90</option>
+							<option ${orgLocations.recommendedExpPercent == '100' ? 'selected' : ''}>100</option>
+							</select>
+						</div>
+						</div> 
+						<div class="col-md-3 mb">
+						<label class="clearfix">Visa Type</label>
+						<div class="clearfix dropdown-select mt5">
+							<select class="form-control chosen-select" name="recommVisaType" id="recommVisaType">
+							<option value="0">-- Select Visa Type --</option>
+							<option ${orgLocations.recommendedVisatypePercent == '10' ? 'selected' : ''}>10</option>
+							<option ${orgLocations.recommendedVisatypePercent == '20' ? 'selected' : ''}>20</option>
+							<option ${orgLocations.recommendedVisatypePercent == '30' ? 'selected' : ''}>30</option>
+							<option ${orgLocations.recommendedVisatypePercent == '40' ? 'selected' : ''}>40</option>
+							<option ${orgLocations.recommendedVisatypePercent == '50' ? 'selected' : ''}>50</option>
+							<option ${orgLocations.recommendedVisatypePercent == '60' ? 'selected' : ''}>60</option>
+							<option ${orgLocations.recommendedVisatypePercent == '70' ? 'selected' : ''}>70</option>
+							<option ${orgLocations.recommendedVisatypePercent == '80' ? 'selected' : ''}>80</option>
+							<option ${orgLocations.recommendedVisatypePercent == '90' ? 'selected' : ''}>90</option>
+							<option ${orgLocations.recommendedVisatypePercent == '100' ? 'selected' : ''}>100</option>
+							</select>
+						</div>
+						</div> 
+						<div class="col-md-3 mb">
+						<label class="clearfix">Education</label>
+						<div class="clearfix dropdown-select mt5">
+							<select class="form-control chosen-select" name="recommEducation" id="recommEducation">
+							<option value="0">-- Select Education --</option>
+							<option ${orgLocations.recommendedEducationPercent == '10' ? 'selected' : ''}>10</option>
+							<option ${orgLocations.recommendedEducationPercent == '20' ? 'selected' : ''}>20</option>
+							<option ${orgLocations.recommendedEducationPercent == '30' ? 'selected' : ''}>30</option>
+							<option ${orgLocations.recommendedEducationPercent == '40' ? 'selected' : ''}>40</option>
+							<option ${orgLocations.recommendedEducationPercent == '50' ? 'selected' : ''}>50</option>
+							<option ${orgLocations.recommendedEducationPercent == '60' ? 'selected' : ''}>60</option>
+							<option ${orgLocations.recommendedEducationPercent == '70' ? 'selected' : ''}>70</option>
+							<option ${orgLocations.recommendedEducationPercent == '80' ? 'selected' : ''}>80</option>
+							<option ${orgLocations.recommendedEducationPercent == '90' ? 'selected' : ''}>90</option>
+							<option ${orgLocations.recommendedEducationPercent == '100' ? 'selected' : ''}>100</option>
+							</select>
+						</div>
+						</div> 
+						<div class="col-md-3 mb">
+						<label class="clearfix">Rate</label>
+						<div class="clearfix dropdown-select mt5">
+							<select class="form-control chosen-select" name="recommRate" id="recommRate">
+							<option value="0">-- Select Rate --</option>
+							<option ${orgLocations.recommendedRatePercent == '10' ? 'selected' : ''}>10</option>
+							<option ${orgLocations.recommendedRatePercent == '20' ? 'selected' : ''}>20</option>
+							<option ${orgLocations.recommendedRatePercent == '30' ? 'selected' : ''}>30</option>
+							<option ${orgLocations.recommendedRatePercent == '40' ? 'selected' : ''}>40</option>
+							<option ${orgLocations.recommendedRatePercent == '50' ? 'selected' : ''}>50</option>
+							<option ${orgLocations.recommendedRatePercent == '60' ? 'selected' : ''}>60</option>
+							<option ${orgLocations.recommendedRatePercent == '70' ? 'selected' : ''}>70</option>
+							<option ${orgLocations.recommendedRatePercent == '80' ? 'selected' : ''}>80</option>
+							<option ${orgLocations.recommendedRatePercent == '90' ? 'selected' : ''}>90</option>
+							<option ${orgLocations.recommendedRatePercent == '100' ? 'selected' : ''}>100</option>
+							</select>
+						</div>
+						</div> 
+						<div class="col-md-3 mb">
+						<label class="clearfix">Keywords</label>
+						<div class="clearfix dropdown-select mt5">
+							<select class="form-control chosen-select" name="recommKeywords" id="recommKeywords">
+							<option value="0">-- Select Keywords --</option>
+							<option ${orgLocations.recommendedKeywordsPercent == '10' ? 'selected' : ''}>10</option>
+							<option ${orgLocations.recommendedKeywordsPercent == '20' ? 'selected' : ''}>20</option>
+							<option ${orgLocations.recommendedKeywordsPercent == '30' ? 'selected' : ''}>30</option>
+							<option ${orgLocations.recommendedKeywordsPercent == '40' ? 'selected' : ''}>40</option>
+							<option ${orgLocations.recommendedKeywordsPercent == '50' ? 'selected' : ''}>50</option>
+							<option ${orgLocations.recommendedKeywordsPercent == '60' ? 'selected' : ''}>60</option>
+							<option ${orgLocations.recommendedKeywordsPercent == '70' ? 'selected' : ''}>70</option>
+							<option ${orgLocations.recommendedKeywordsPercent == '80' ? 'selected' : ''}>80</option>
+							<option ${orgLocations.recommendedKeywordsPercent == '90' ? 'selected' : ''}>90</option>
+							<option ${orgLocations.recommendedKeywordsPercent == '100' ? 'selected' : ''}>100</option>
+							</select>
+						</div>
+						</div> 
+                            </div>
+                           <div class="pull-right">
+								<input type="button" value="Save" id="saveRecommendationSettings" onclick="validateTotalRecommValue();" class="btn btn-primary mr">
+								<input type="button" value="Cancel" class="btn btn-default" onClick="flushRecomSettings();">
+							</div>
+							</form>
+            			</div>
+           			      <!-- Recommendations Configure ends -->     		
            			           			
         			</div>
     			</div>
@@ -728,7 +935,102 @@ function switchLoginSecurity(){
 	  }); 
 	
 }
+$(function() {
+    $("#generateCareerPageKey").click(function() {
+        $.post(sourceleadUrl+"/generate-career-page-key", {}, function(data) {
+            if(data && data.indexOf("key") === 0) {
+                $("#copyCareerKey").show();
+                $("#generateCareerPageKey").val("Regenerate Key");
+                var text = '<div class="clearfix">';
+                text += '<div class="col-md-2">Career Page Key</div>';
+                text += '<div class="col-md-9 break_all">'+(data.split(';')[1])+'</div>';
+                text += '<div class="col-md-1"><div class="toggle-button"><label class="switch"><input type="checkbox" checked id="changeCareerPageKeyStatus"/><div class="slider round"></div></label></div></div>';
+                text += '</div>';
+                $("#careerPageInnerContent").html(text);
+                applyCareerPageCode(data.split(';')[1]);
+                applyCareerPageStatusEvent();
+            } else  if(data && (data === "logout" || data.indexOf("Sign In") !== -1)) {
+                alert("Session timedout");
+                window.setTimeout('location.href='+sourceleadLoginUrl, 3000);
+            } else {
+                alert("Operation failed, please try again");
+            }
+        });
+    });
+    
+    applyCareerPageCode('${SourceLeadWeb_org.careerPageKey}')
+    applyCareerPageStatusEvent();
+});
+function applyCareerPageStatusEvent() {
+    $("#copyCareerKey").click(function() {
+        $("#careerKeyDummy").remove();
+       $("#copyCareerKey").append("<input type='text' style='display:none' id='careerKeyDummy'/>");
+       var copyText = document.getElementById("careerKeyDummy");
+       copyText.value = $(".col-md-9.break_all").html();
+       copyText.select();
+       document.execCommand("Copy");
+    });
+    
+    $("#changeCareerPageKeyStatus").click(function() {
+        $.post(sourceleadUrl+"/career-page-key-status", {}, function(data) {
+            if(data && data.indexOf("status") === 0) {
+                var status = data.split(";")[1];
+                if(parseInt(status) === 1)
+                    $("#changeCareerPageKeyStatus").prop('checked', 'checked');
+                else
+                    $("#changeCareerPageKeyStatus").removeProp('checked');
+            } else  if(data && (data === "logout" || data.indexOf("Sign In") !== -1)) {
+                alert("Session timedout");
+                window.setTimeout('location.href='+sourceleadLoginUrl, 3000);
+            } else {
+                alert("Operation failed, please try again");
+            }
+        });
+    });
+}
+
+function applyCareerPageCode(code) {
+    var url = '${sourceleadUrl}'.replace('app','');
+    $("#careerPageCode").text("<div id='jobList'></div>\n<script type='text/javascript' src='"+url+"resources/careers.js?key="+code+"'></script"+">");
+}
 </script>
+
+<script>
+
+function validateTotalRecommValue(){
+	var skillPercent = parseInt($("#recommSkill").val());
+	var locationPercent = parseInt($("#recommLocation").val());
+	var visatypePercent = parseInt($("#recommVisaType").val());
+	var educationPercent = parseInt($("#recommEducation").val());
+	var noticePercent = parseInt($("#recommNoticePeriod").val());
+	var expPercent = parseInt($("#recommExp").val());
+	var ratePercent = parseInt($("#recommRate").val());
+	var keyWordPercent = parseInt($("#recommKeywords").val());
+	
+	var totalPercecnt = skillPercent + locationPercent + visatypePercent + educationPercent + noticePercent + expPercent + ratePercent + keyWordPercent;
+	
+	if(totalPercecnt <= 100){
+		saveRecomSettings();
+	}else{
+		$("#recommErrorDiv").removeAttr("style");
+    	$("#recommErrorDiv").attr("style","display:block");
+    	$("#recommErrorDiv").fadeOut(2500);
+	}
+}
+
+function saveRecomSettings(){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var formData = $($('#recommendations_form')[0]).serialize();
+	    $("#recommLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	    $.post(sourceleadUrl + "/saveCustomRecommendation", formData, function(data){
+	    	$("#recommSuccessDiv").removeAttr("style");
+	    	$("#recommLoading").removeAttr('style');
+	    	$("#recommSuccessDiv").attr("style","display:block");
+	    	$("#recommSuccessDiv").fadeOut(2500);
+		});  
+}
+</script>
+
 
 <script>
 function closeWhiteListIp(){

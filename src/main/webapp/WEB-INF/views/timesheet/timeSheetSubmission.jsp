@@ -7,13 +7,15 @@
 <div class="time_pop" id="timeSheetErrorMsg"></div>
  <c:if test="${timesheetEntryDetailsDTO.timesheetFor == 'approver'}">
    <div class='data_loading' id="loadTime"></div>
- <div class="pull-left timeAppUse">
+ <div class="pull-left timeAppUse col-md-7">
 	<span><img id="userImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofile-img.png"> </span>
 
-	<p>
+	<p class="col-md-10 margin-top0">
 		<input class="timeUsName" type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeeName}">
 		<input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeeEmail}">
+		<input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.projectNameForSubmissionPageDisplay}">
 		<input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeePhoneNo}">
+		
 	</p>
 	<div class="clearfix"></div>
 </div>
@@ -95,6 +97,8 @@
 	   <input type="hidden" name="timesheetSubmission.id" value="${timesheetSubmissionDTO.id}"/>
 	   <input type="hidden" id="currentTimeSubFrequency" name="currentTimeSubFrequency" value="${timesheetSubmissionDTO.timeSubFrequency}"/>
 		<input type="hidden" id="timeSubFrequency" name="timesheetSubmission.timeSubFrequency" value="${timesheetSubmissionDTO.timeSubFrequency}"/>
+		
+		
 		<ul class="project-tabs-menu">
 		   <c:forEach var="tsf" items="${timesheetEntryDetailsDTO.timeSubFrequencies}">
 		       <input type='hidden' name='tabDates'  id='tabDates' value='${tsf.key}' >
@@ -118,9 +122,8 @@
 				</ul>
 			</div>
 			<div class="clearfix"></div>
-				</c:if>
-			
-			
+		</c:if>
+		   <div class="clearfix"></div>
 		</ul>
 			<div id="timesheetDivByTab">
 				<div class="project_tabs">
@@ -1247,8 +1250,13 @@ function timesheetEntriesExport(exportType){
 	var endDate = dateFrequency[1];
 	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	var status = '${timesheetSubmissionDTO.timesheetStatus}';
+	 var tableFor = $("#tableFor").val();
+	 var requestFrom = "employee";
+	 if(tableFor != null && tableFor != 'undefined' && tableFor != ''){
+		 requestFrom = tableFor;
+	 }
 	if(status != null && status != 'undefined' && status != '' && status != 'NEW' && status != 'new'){
-		window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType;
+		window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&requestFrom="+requestFrom;
 	}else{
 		alert("Please fill the TimeSheets..");
 	}

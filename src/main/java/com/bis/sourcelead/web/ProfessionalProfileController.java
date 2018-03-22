@@ -112,12 +112,13 @@ public class ProfessionalProfileController {
 				model.addObject("visaList", visaList);
 				
 				Integer candidateResumeCount =  candidateResumesService.getCandidateResumeCountByResumeId(candidateId);
-				if(candidateResumeCount > 0 ){
+				/*if(candidateResumeCount > 0 ){
 					model.setViewName("professional/profile");
 				}else{
 					model.setViewName("professional/updateProfessionalProfile");
-				}
-				
+				}*/
+				model.setViewName("professional/profile");
+				model.addObject("candidateResumeCount", candidateResumeCount);
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				model.addObject("candidateId", candidateId);
 				return model;

@@ -1,7 +1,6 @@
 package com.bis.sourcelead.elk.install;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
-import java.io.Writer;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,19 +9,12 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.xcontent.XContentType;
-import org.elasticsearch.index.engine.DocumentMissingException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -35,13 +27,11 @@ import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKTC;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import com.thoughtworks.xstream.io.json.JsonWriter;
+
 
 
 public class AddElkCandidate{
+	
 	private static final Logger logger = LoggerFactory.getLogger(AddElkCandidate.class);
 	private ComboPooledDataSource comboPooledDataSource;
 	private SourceleadELKTC<CandidateIndex> client;
@@ -71,16 +61,23 @@ public class AddElkCandidate{
 			    	CandidateIndex candidateIndex = new CandidateIndex();
 			    	candidateIndex.setCandidateId(rs.getLong("ID"));
 			    	candidateIndex.setOrgLocationId(rs.getLong("ORG_LOCATION_ID"));
-					candidateIndex.setFirstName(rs.getString("FIRST_NAME"));
-					candidateIndex.setLastName(rs.getString("LAST_NAME"));
+					candidateIndex.setFirstName(firstLetterCapitalizedString(rs.getString("FIRST_NAME")));
+					candidateIndex.setLastName(firstLetterCapitalizedString(rs.getString("LAST_NAME")));
+					String createdBy = null ;
 					
-					if(!isNullOrEmpty(rs.getString("LAST_NAME"))){
-						candidateIndex.setFullName(rs.getString("FIRST_NAME")+" "+rs.getString("LAST_NAME"));
-					}else {
-						candidateIndex.setFullName(rs.getString("FIRST_NAME"));
+					if(!isNullOrEmpty(rs.getString("CREATED_BY"))){
+						createdBy = rs.getString("CREATED_BY");
 					}
 					
-					candidateIndex.setEmail(rs.getString("EMAIL"));
+					if(!isNullOrEmpty(rs.getString("LAST_NAME"))){
+						candidateIndex.setFullName(firstLetterCapitalizedString(rs.getString("FIRST_NAME"))+" "+firstLetterCapitalizedString(rs.getString("LAST_NAME")));
+					}else {
+						candidateIndex.setFullName(firstLetterCapitalizedString(rs.getString("FIRST_NAME")));
+					}
+					
+					if(StringUtils.isNotBlank(rs.getString("EMAIL"))) {
+						candidateIndex.setEmail(rs.getString("EMAIL").toLowerCase());
+					}
 					candidateIndex.setAlternateEmail(rs.getString("ALTERNATE_EMAIL"));
 					candidateIndex.setMobilePhone(rs.getString("MOBILE_PHONE"));
 					candidateIndex.setAlternateMobilePhone(rs.getString("ALTERNATE_MOBILE_PHONE"));
@@ -269,6 +266,24 @@ public class AddElkCandidate{
 									 candidateIndex.setResumeName(rs4.getString("FILE_NAME"));
 							    }
 		    	           }
+							
+							if(createdBy != null && !createdBy.isEmpty()) {
+								String sql6 = "SELECT * FROM sourcelead.USER  user where  user.USER_CODE = '"+createdBy+"' ";
+								Statement stmt6 = conn.createStatement();
+								ResultSet rs6 = stmt6.executeQuery(sql6);
+								if(rs6 != null){
+									 while(rs6.next()){
+										   if(null != rs6.getString("FIRST_NAME") && null != rs6.getString("LAST_NAME") && !rs6.getString("LAST_NAME").isEmpty()){
+											   StringBuilder sb =  new StringBuilder();
+											   candidateIndex.setCreatedBy(sb.append(rs6.getString("FIRST_NAME")).append(" ").append(rs6.getString("LAST_NAME")).toString());
+										   }else if(null != rs6.getString("FIRST_NAME")){
+											   StringBuilder sb =  new StringBuilder();
+											   candidateIndex.setCreatedBy(sb.append(rs6.getString("FIRST_NAME")).toString());
+										   }
+								    }
+			    	           }
+							}
+						
 		    	    }
 		    	    candidateIndexsList.add(candidateIndex);
 			    }
@@ -315,5 +330,10 @@ public class AddElkCandidate{
 		{
 			e.printStackTrace();
 		} 
+	}
+	
+	public String firstLetterCapitalizedString(String name){
+		 String finalString = WordUtils.capitalizeFully(name);
+		return finalString;
 	}
 }

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -19,6 +20,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -56,6 +63,7 @@ import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MasterCandidate;
+import com.bis.sourcelead.entity.NewContractCustomFieldData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -106,12 +114,14 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
+import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.bis.sourcelead.web.RegistrationController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@SuppressWarnings("unchecked")
 @Service
 public class ProjectsServiceImpl implements ProjectsService{
 	
@@ -236,7 +246,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 ProjectMembersRateHistoryService projectMembersRateHistoryService;
 
 	private UserDTO userStatus;
-	 
+	
+	@Autowired
+	private PdfUtil pdfUtil;
+	
 	 
 /*	 @Override
 		public String getProjectId(OrgLocations orgLocations) {
@@ -567,22 +580,24 @@ public class ProjectsServiceImpl implements ProjectsService{
 		Projects updatedProjects = saveProject(projects);
 		
 		
-		
 		if(projectsDTO.getCustomFormData() !=null) {
 			for( CustomFormFieldDTO customFields:projectsDTO.getCustomFormData()) {
-				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
-				ProjectCustomFieldData projectCustomFields = new ProjectCustomFieldData();
-				projectCustomFields.setProjects(updatedProjects);
-				 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
-				 projectCustomFields.setOrglocationsFormFields(orgFormField);
-				 projectCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
-				 projectCustomFieldDataService.saveProjectCustomFieldData(projectCustomFields);
+				if(customFields != null && customFields.getCustomFormFieldId() > 0) {
+					ProjectCustomFieldData projectsCustomFields = null;
+					if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+						projectsCustomFields = projectCustomFieldDataService.getprojectFieldDataById(customFields.getEntityId());
+					}else {
+						projectsCustomFields = new ProjectCustomFieldData();
+					}
+				projectsCustomFields.setProjects(updatedProjects);
+				OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+				projectsCustomFields.setOrglocationsFormFields(orgFormField);
+				projectsCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+				projectCustomFieldDataService.saveProjectCustomFieldData(projectsCustomFields);
 				}
 				
 			}	
 		}
-		
-		
 		
 		/*
 		 * Saving Project DB data as ElasticSearch Documents
@@ -932,13 +947,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 		UserRole userStatus = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),locationsId);
 		if("ACTIVE".equalsIgnoreCase(userStatus.getUserState().toString())) {
 		Set<Projects> projectsSet = new HashSet<>();
+		
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 StringBuilder fromNameSB = new StringBuilder();
-		 emailMessage.setFromName(fromNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+		 emailMessage.setFromName(Constants.SOURCELEAD_ADMIN_UNIQUE);
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -1741,6 +1757,26 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    }
 				
 			    
+			    if(projectDTO.getCustomFormData() !=null) {
+					for( CustomFormFieldDTO customFields:projectDTO.getCustomFormData()) {
+						if(customFields != null && customFields.getCustomFormFieldId() > 0) {
+							ProjectCustomFieldData projectsCustomFields = null;
+							if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+								projectsCustomFields = projectCustomFieldDataService.getprojectFieldDataById(customFields.getEntityId());
+							}else {
+								projectsCustomFields = new ProjectCustomFieldData();
+							}
+						projectsCustomFields.setProjects(projects);
+						OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+						projectsCustomFields.setOrglocationsFormFields(orgFormField);
+						projectsCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+						projectCustomFieldDataService.saveProjectCustomFieldData(projectsCustomFields);
+						}
+						
+					}	
+				}
+			    
+			    
 			  /*  Set<ProjectMembers>  projectMemberList = projectMembersService.prepareProjectMembersListByJson(jsonObj,request, projects);
 				projects.setProjectMembers(projectMemberList);*/
 				 /*
@@ -2126,6 +2162,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 					 if(userRole != null){
 						 pm.setUserRoleType(userRole.getUserType());
 						 pm.setUserRoleId(userRole.getId());
+						 pm.setProjectMemberStatus(userRole.getUserState().name());
 					 } 
 				 }else{
 					 pm.setUserRoleType("Candidate");
@@ -2224,14 +2261,14 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 	     }
 	     if(user != null){
 	    	 UserRole userStatus = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),orgLocations.getId());
-	    	 if(userStatus.getUserState().toString().equalsIgnoreCase("ACTIVE")) {
+	    	 if("ACTIVE".equalsIgnoreCase(userStatus.getUserState().toString())){
 	    	 StringBuilder fNameStringBuilder=new StringBuilder();
 			 EmailMessage emailMessage = new EmailMessage();
 			 emailMessage.setFirstName(user.getFirstName());
 			 emailMessage.setLastName(user.getLastName());
 			 emailMessage.setToEmail(user.getEmail());
 			 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
-			 emailMessage.setFromName(fNameStringBuilder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+			 emailMessage.setFromName(Constants.SOURCELEAD_ADMIN_UNIQUE);
 			// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -2373,7 +2410,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				//setting the class filed values
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
 				 	 User termentaedUserName = userService.getUserById(userId);
-					 globalVarsMap.put("loginUser", loginUser.getFirstName());
+					 globalVarsMap.put("loginUser", loginUser.getFullName());
 					 globalVarsMap.put("assignedUser", assUserName.getFirstName());
 					 globalVarsMap.put("reqCount", projectApproverCount.toString());
 					 globalVarsMap.put("terminatedUser",termentaedUserName.getFirstName());
@@ -2798,6 +2835,9 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 					
 					
 				}
+				
+				projects.setIsTimesheetAttachmentRequired(1);
+				projectsDao.updateProject(projects);
 				return projects;
 			}
 
@@ -2988,6 +3028,133 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				return projects;
 			}
 
+			
+			@Override
+			public Projects getProjectByProjectName(String projectName) throws Exception {
+				return projectsDao.getProjectByProjectName(projectName);
+			}
+
+			@Override
+			public File getPdfFile(ResponseList<ProjectsDTO> projectsList, OrgLocations orgLocations) throws Exception {
+				return pdfUtil.createProjectPdfTable(projectsList, orgLocations);
+			}
+			
+			
+			@Override
+			public Sheet getExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, ResponseList<ProjectsDTO> projectsList, OrgLocations orgLocations)  throws Exception{
+				Row writeRow = null;
+		        createExcelsheet = getExcelSheetWithHeader(createExcelsheet,writeRow,createExcelworkbook,projectsList,orgLocations);
+		        java.util.List<ProjectsDTO> list =  projectsList.getData();
+		        int column=0;
+		        for(ProjectsDTO projects : list){
+		       	 writeRow = createExcelsheet.createRow(column+1);
+		       	 createExcelsheet = createXlsSheet(createExcelsheet,writeRow,column,projects,orgLocations);
+		       	 column++;
+		        }
+				return createExcelsheet;
+			}
+
+			private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, int column, ProjectsDTO projects,OrgLocations orgLocations) throws Exception {
+
+			     	 ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
+		
+			     	 if(projects.getProjectSequeneNumber() != null) {
+			     		 writeRow.createCell(0).setCellValue(projects.getProjectSequeneNumber()); 
+			     	 }else {
+			     		writeRow.createCell(0).setCellValue("--");
+			     	 }
+			     	 
+			     	 if(projects.getProjectName() != null) {
+			     		writeRow.createCell(1).setCellValue(projects.getProjectName());
+			     	 } 
+			     	 
+			     	Set<ProjectApproverHierarchy> projectApproverHierarchies = projectClients.getProjectApproverHierarchyList();
+				    for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
+				    	if(approverHierarchy.getLevel() == 1 && approverHierarchy.getStatus().equalsIgnoreCase("1")){
+				    		projects.setManagerLevel1(approverHierarchy.getApproverUserId().getFullName());
+				    	}else if(approverHierarchy.getLevel() == 2 && approverHierarchy.getStatus().equalsIgnoreCase("1")){
+				    		projects.setManagerLevel2(approverHierarchy.getApproverUserId().getFullName());
+				    	}
+				    }
+				    String projectManagers = "";
+				    if(projects.getManagerLevel1() != null){
+			  		  projectManagers = projects.getManagerLevel1();
+			 		  }
+			  	    if(projects.getManagerLevel2() != null ){
+			    	 projectManagers = projects.getManagerLevel2();
+					 }
+			  	  
+			  	  if(projects.getManagerLevel1() != null  && projects.getManagerLevel2() != null ){
+			 		   projectManagers = projects.getManagerLevel1()+","+projects.getManagerLevel2();
+				 	 }
+				  	if(projectManagers != null) {
+				  		writeRow.createCell(2).setCellValue(projectManagers);
+				 	} 
+				  	
+				  	if(projects.getInvoiceFrequency() != null) {
+				  		writeRow.createCell(3).setCellValue(projects.getInvoiceFrequency());
+				  	}else {
+				  		writeRow.createCell(3).setCellValue("--");
+				  	}
+			  	  
+				  	
+				  	
+					OrgLocations orglo = orgLocationService.getOrgLocations(orgLocations.getId());
+				  	if(projects.getOrgLocationsId() == orglo.getId().longValue()) {
+						 java.util.List<ProjectBudget>  budgetList = projectBudgetService.getProjectBudgetByProjectTaskId(projects.getId(),orglo.getId());
+						    if(budgetList != null && budgetList.size() > 0) {
+						    	 double budgetSum = budgetList.stream().filter(p->p.getEstimatedBudgetValue() !=null).mapToDouble(p->p.getEstimatedBudgetValue()).sum();
+									if(budgetList.size() >0) {
+										ProjectBudget projectBudget = budgetList.iterator().next();
+										projects.setProjectbudgetCurrency(projectBudget.getEstimatedBudgetCurrency());
+									}
+									projects.setProjectbudgetAmount(budgetSum);
+							  		writeRow.createCell(4).setCellValue(projects.getProjectbudgetCurrency()+ " " +budgetSum);
+		
+						    }else {
+						    	writeRow.createCell(4).setCellValue("--");
+						    }
+					 }
+				  	
+				  	
+					if(projects.getEndDateStr() != null && projects.getStartDateStr() != null){
+						writeRow.createCell(5).setCellValue(projects.getStartDateStr() +" To " +projects.getEndDateStr());
+					}else {
+						writeRow.createCell(5).setCellValue(projects.getStartDateStr());
+					}
+					
+					
+					 if(projectClients.getOrgRelationId() != null){
+			    		 
+			 			if(null != projectClients.getOrgRelationId().getLocationId() && projectClients.getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+			 				projects.setClient(projectClients.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+			 				writeRow.createCell(6).setCellValue(projects.getClient());
+							}if(null != projectClients.getOrgRelationId().getResponderLocationId() && projectClients.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+								projects.setClient(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
+								writeRow.createCell(6).setCellValue(projects.getClient());
+							}
+			 	  }else {
+			 		 writeRow.createCell(6).setCellValue("--");
+			 	  }
+					 
+				 if(projects.getProjectStatus().toString() != null){
+					 writeRow.createCell(7).setCellValue(projects.getProjectStatus().toString());
+				} 
+				return createExcelsheet;
+			}
+
+			private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, ResponseList<ProjectsDTO> projectsList, OrgLocations orgLocations) {
+				 CellStyle style = createExcelworkbook.createCellStyle();
+			     style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+			     style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			     Font font = createExcelworkbook.createFont();
+		         font.setColor(IndexedColors.BLACK.getIndex());
+		         style.setFont(font);
+		         String headers [] = Constants.PROJECT_EXCEL_HEADERS;
+		 		return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
+			}
+
+			
 
 
 }

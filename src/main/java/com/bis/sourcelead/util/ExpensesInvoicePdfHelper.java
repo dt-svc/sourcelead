@@ -587,7 +587,9 @@ public class ExpensesInvoicePdfHelper {
 						if (null != invoiceLineItems.getStartDate()) {
 							String StartDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),invoiceLineItems.getStartDate());
 							table.addCell(getCell(StartDate, Element.ALIGN_CENTER, font10));
-						} 
+						}  else {
+							table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
+						}
 						if (null != invoiceLineItems.getInlineDescription()
 								&& !"".equalsIgnoreCase(invoiceLineItems.getInlineDescription())) {
 							table.addCell(getCell(invoiceLineItems.getInlineDescription(), Element.ALIGN_CENTER, font10));
@@ -606,9 +608,9 @@ public class ExpensesInvoicePdfHelper {
 						} else {
 							table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 						}
-						if (null != invoiceLineItems.getTotalHours()
-								&& !"".equalsIgnoreCase(invoiceLineItems.getTotalHours())) {
-							table.addCell(getCell(invoiceLineItems.getTotalHours(), Element.ALIGN_CENTER, font10));
+						if (null != invoiceLineItems.getAmount()
+								&& !"".equalsIgnoreCase(invoiceLineItems.getAmount())) {
+							table.addCell(getCell(invoiceLineItems.getAmount(), Element.ALIGN_CENTER, font10));
 						} else {
 							table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 						}
@@ -624,7 +626,7 @@ public class ExpensesInvoicePdfHelper {
 				table.addCell(cell);
 				table.addCell(cell);
 				table.addCell(cell);
-				table.addCell(cell);
+				//table.addCell(cell);
 				table.addCell(getCell("Sub Total", Element.ALIGN_CENTER, font10));
 				table.addCell(getCell(countryCurrency + " " + invoice.getSubTotal(), Element.ALIGN_CENTER, font10));
 

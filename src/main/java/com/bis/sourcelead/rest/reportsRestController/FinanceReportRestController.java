@@ -474,7 +474,7 @@ public class FinanceReportRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/paidBillDetails")
-	public ModelAndView paidBillDetails(@RequestParam(value = "orgRelationId",required = false) Long orgRelationId,HttpServletRequest request) throws Exception
+	public ModelAndView paidBillDetails(@RequestParam(value = "orgRelationId",required = false) Long orgRelationId,@RequestParam(value = "billType",required = false) String billType,HttpServletRequest request) throws Exception
 	{
 		 ModelAndView model = new ModelAndView();
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -487,6 +487,7 @@ public class FinanceReportRestController {
 				orgName = orgRelations.getLocationId().getOrgLocationName();
 			}
 		 model.addObject("orgRelationId",orgRelationId);
+		 model.addObject("billType",billType);
 		 model.addObject("orgName",orgName);
 		 model.setViewName("reports/paidBillReportDetails");
 		 model.addObject("sourceleadUrl", sourceleadUrl);
@@ -590,5 +591,49 @@ public class FinanceReportRestController {
 		return res; 
 	}
 	
+	/**
+	 * Get total amount paid per year
+	 * @param paidBillDTO
+	 * @return PaidBillDTO
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getTotalAmountPerYear", "/rest/getTotalAmountPerYear" }, method = RequestMethod.POST)
+	public @ResponseBody PaidBillDTO getTotalAmountPerYear(PaidBillDTO paidBillDTO,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		PaidBillDTO res = financeService.getTotalAmountPerYear(paidBillDTO, orgLocation);
+		return res; 
+	}
+	
+	/**
+	 * returns invoices received graph report jsp
+	 * @param request
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/receivedInvoiceReportGraph")
+	public ModelAndView paidInvoiceReportGraphJsp(HttpServletRequest request) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
+			if (null != clientsList) {
+				for (OrgRelations orgRelations : clientsList) {
+					String orgName = "";
+					if (orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()) {
+						orgName = orgRelations.getLocationId().getOrgLocationName();
+					}
+					if (orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()) {
+						orgName = orgRelations.getResponderLocationId().getOrgLocationName();
+					}
+					orgRelations.setOrgName(orgName);
+				}
+			}
+		model.addObject("clientsList", clientsList);
+		model.setViewName("reports/receivedInvoiceReportGraph");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
 	
 }

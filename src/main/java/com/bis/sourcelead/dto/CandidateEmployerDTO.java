@@ -25,6 +25,27 @@ public class CandidateEmployerDTO {
 	private String endDate;
 	
 	private String candidateEmployeeId;
+	
+	private long candidateId;
+	
+	private String candidateExperianceId;
+	
+	private String loginUserId;
+	
+	private String orgLocationId;
+	
+	private String candidateemployerId;
+	
+
+	public String getCandidateemployerId()
+	{
+		return candidateemployerId;
+	}
+
+	public void setCandidateemployerId(String candidateemployerId)
+	{
+		this.candidateemployerId = candidateemployerId;
+	}
 
 	public Long getId()
 	{
@@ -144,6 +165,46 @@ public class CandidateEmployerDTO {
 	public void setCandidateEmployeeId(String candidateEmployeeId)
 	{
 		this.candidateEmployeeId = candidateEmployeeId;
+	}
+
+	public long getCandidateId()
+	{
+		return candidateId;
+	}
+
+	public void setCandidateId(long candidateId)
+	{
+		this.candidateId = candidateId;
+	}
+
+	public String getCandidateExperianceId()
+	{
+		return candidateExperianceId;
+	}
+
+	public void setCandidateExperianceId(String candidateExperianceId)
+	{
+		this.candidateExperianceId = candidateExperianceId;
+	}
+
+	public String getLoginUserId()
+	{
+		return loginUserId;
+	}
+
+	public void setLoginUserId(String loginUserId)
+	{
+		this.loginUserId = loginUserId;
+	}
+
+	public String getOrgLocationId()
+	{
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(String orgLocationId)
+	{
+		this.orgLocationId = orgLocationId;
 	}
 
 	

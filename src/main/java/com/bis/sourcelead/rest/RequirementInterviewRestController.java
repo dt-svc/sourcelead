@@ -325,6 +325,8 @@ public class RequirementInterviewRestController {
 			 //Applicant to created by interviewer send Email
 			 if(orgLocations != null){
 			requirementInterviewService.applicantInterviewProposeTimeEmailToInterviewInitiator(jsonObj.getString("requirementInterviewId"),orgLocations,loginOrg,user);	 
+			 }else{
+			   requirementInterviewService.applicantInterviewProposeTimeEmailToInterviewInitiator(jsonObj.getString("requirementInterviewId"),requirementSubmission.getOrgLocations(),loginOrg,user);	 
 			 }
 			 if(user != null){
 			 requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);

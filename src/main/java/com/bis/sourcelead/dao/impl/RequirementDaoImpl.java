@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -25,16 +26,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.dto.ReferContactsDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
-import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementLocations;
@@ -44,6 +44,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.ibm.icu.text.DateFormat;
 
 /**
  * 
@@ -1182,7 +1183,48 @@ public class RequirementDaoImpl implements RequirementDao {
 		@Transactional(rollbackFor = { Exception.class })
 		public List<Requirement> getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(Long orgLocationId, String userType, Long userId, String userCode, String numberOfDays)
 				throws Exception {
-			Date currentDate =  commonUtil.currentDate();
+			
+			Calendar c = Calendar.getInstance();
+			c.set(Calendar.HOUR_OF_DAY, 0);
+	        c.set(Calendar.MINUTE, 0);
+	        c.set(Calendar.SECOND, 0);
+			Date todayDate = c.getTime();
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			 
+			String startTimeTS = Constants.TZ_DF.format(todayDate);
+			String startDateString = CommonUtil.convertTimeUTC(Constants.UTC_TIMEZONE, startTimeTS);
+			Date startUTCDate  = dateFormat.parse(startDateString);
+		 
+			int hrs;
+			 switch (numberOfDays) {
+			 	 case "1" :
+			 		hrs  = (1 * 24);
+			 		 break;
+			 	 case "2" :
+			 		hrs  = (2 * 24);
+			 		 break;
+			 	 case "7" :
+			 		hrs  = (7 * 24);
+				      break;
+				 case "14" :
+					 hrs  = (15 * 24);
+				     break;
+				 case "30" :
+					 hrs  = (30 * 24);
+				     break;
+				 case "60" :
+					 hrs  = (60 * 24);
+				     break;
+				 default:
+					 hrs  = (1 * 24);
+			 }
+			
+			 Date nHrsUTCDate = DateUtils.addHours(startUTCDate, -hrs);
+			
+			
+			
+			
+			/*Date currentDate =  commonUtil.currentDate();
 			java.sql.Date sqlCurrentDate = null;
 			
 			 if(currentDate != null){
@@ -1195,7 +1237,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		    c.add(Calendar.DATE, -Integer.parseInt(numberOfDays)); // Adding  The DateRange days
 		    String updatedDate     = dateFormat.format(c.getTime());
 		    Date parsed = dateFormat.parse(updatedDate);
-		    java.sql.Date endDate = new java.sql.Date(parsed.getTime());
+		    java.sql.Date endDate = new java.sql.Date(parsed.getTime());*/
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		User user = userDao.getUserById(userId);
@@ -1207,12 +1249,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		String subQuery = "";
 		//String dateBetween = "(requirement.createdDate BETWEEN :sqlCurrentDate AND :endDate) and ";
 		
-		String dateBetween = "" ;
-		if("0".equalsIgnoreCase(numberOfDays)) {
-			dateBetween = "DATE(requirement.createdDate) >=:endDate and ";
-		}else{
-			dateBetween = "DATE(requirement.createdDate) >=:endDate and DATE(requirement.createdDate) <= :sqlCurrentDate and ";
-		}
+		String dateBetween = "DATE(requirement.createdDate) >=:nHrsUTCDate and DATE(requirement.createdDate) <= :startUTCDate and ";
 		
 		if(!StringUtils.equalsIgnoreCase(userType, "ADMIN")){
 			
@@ -1228,8 +1265,8 @@ public class RequirementDaoImpl implements RequirementDao {
 			if(subQuery1 != "" || subQuery2 != "" || subQuery3 !=""){
 				subQuery = "where "+dateBetween+" requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+")  or ("+subQuery3+") ) ";
 				params.put("orgLocationId",orgLocationId);
-				params.put("sqlCurrentDate",sqlCurrentDate);
-				params.put("endDate",endDate);
+				params.put("startUTCDate",startUTCDate);
+				params.put("nHrsUTCDate",nHrsUTCDate);
 			}
 		}else{
 			String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where  ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT') ";
@@ -1240,8 +1277,8 @@ public class RequirementDaoImpl implements RequirementDao {
 			if(subQuery1 != "" || subQuery2 !=""){
 				subQuery = "where "+dateBetween+" requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+")) ";
 				params.put("orgLocationId",orgLocationId);
-				params.put("sqlCurrentDate",sqlCurrentDate);
-				params.put("endDate",endDate);
+				params.put("startUTCDate",startUTCDate);
+				params.put("nHrsUTCDate",nHrsUTCDate);
 			}
 		}
 		
@@ -1966,5 +2003,163 @@ Session session = this.sessionFactory.getCurrentSession();
 		}
 		return requirement;
 	}
-	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<RequirementDTO> getRequirementList(Long id, String search, Long location, String employmentType,
+			int pageNo, int pageSize) {
+
+		ResponseList<RequirementDTO> response = new ResponseList<>();
+
+		try {
+
+			Session session = this.sessionFactory.getCurrentSession();
+
+			String query = "select distinct req from Requirement req join req.orgLocationId l where l.org.id=:id and req.closedDate is null and (req.isPublic is not null or req.isCrowdSourcing is not null)";
+
+			if (location != null && location > 0) {
+
+				query += " and l.id =:location";
+
+			}
+
+			if (search != null && !search.isEmpty()) {
+
+				query += " and (req.jobTitle like :search1 or req.skills like :search2 or req.description like :search3)";
+
+			}
+
+			if (employmentType != null && !employmentType.isEmpty()) {
+
+				query += " and req.jobType =:jobType";
+
+			}
+
+			Query queryObj = session.createQuery(query);
+
+			queryObj.setLong("id", id);
+
+			if (location != null && location > 0) {
+
+				queryObj.setLong("location", location);
+
+			}
+
+			if (search != null && !search.isEmpty()) {
+
+				queryObj.setString("search1", "%" + search + "%").setString("search2", "%" + search + "%")
+						.setString("search3", "%" + search + "%");
+
+			}
+
+			if (employmentType != null && !employmentType.isEmpty()) {
+
+				queryObj.setString("jobType", employmentType);
+
+			}
+
+			queryObj.setFirstResult(pageNo * pageSize);
+
+			queryObj.setMaxResults(pageSize);
+
+			List<Requirement> requirementList = queryObj.list();
+
+			List<RequirementDTO> reqList = new ArrayList<>();
+
+			SimpleDateFormat format = new SimpleDateFormat(Constants.DATE_DD_MM_YYYY);
+
+			if (requirementList != null && !requirementList.isEmpty()) {
+
+				for (Requirement req : requirementList) {
+
+					List<RequirementLocations> reqLocationsList = requirementLocationsService
+							.getRequirementLocationsListByRequirementId(req.getId());
+
+					RequirementDTO dto = new RequirementDTO();
+
+					for (RequirementLocations rloc : reqLocationsList) {
+
+						dto.setCity(rloc.getCity());
+
+						dto.setState(rloc.getState());
+
+						dto.setCountry(rloc.getCountry());
+
+					}
+
+					dto.setId(req.getId());
+
+					dto.setJobTitle(req.getJobTitle());
+
+					dto.setMinExp(req.getMinExp());
+
+					dto.setMaxExp(req.getMaxExp());
+
+					dto.setCreatedDate(format.format(req.getCreatedDate()));
+
+					// dto.setCity(req.getCity());
+
+					// dto.setState(req.getState());
+
+					dto.setDescription(req.getDescription());
+
+					// dto.setCountry(req.getCountry());
+
+					dto.setPositions(req.getPositions());
+
+					dto.setUrl(req.getUrl());
+
+					dto.setRequirementUUID(req.getRequirementUUID());
+
+					reqList.add(dto);
+
+				}
+
+			}
+
+			int total = 0;
+
+			Query queryObj1 = session.createQuery(query.replace("distinct req", "count(distinct req)"));
+
+			queryObj1.setLong("id", id);
+
+			if (location != null && location > 0) {
+
+				queryObj1.setLong("location", location);
+
+			}
+
+			if (search != null && !search.isEmpty()) {
+
+				queryObj1.setString("search1", "%" + search + "%").setString("search2", "%" + search + "%")
+						.setString("search3", "%" + search + "%");
+
+			}
+
+			if (employmentType != null && !employmentType.isEmpty()) {
+
+				queryObj1.setString("jobType", employmentType);
+
+			}
+
+			total = Integer.parseInt(queryObj1.list().get(0).toString());
+
+			response.setData(reqList);
+
+			response.setStatusCode("200");
+
+			response.setRecordsTotal(total);
+
+		} catch (Exception ex) {
+
+			ex.printStackTrace();
+
+			response.setError("Operation failed, please try again");
+
+		}
+
+		return response;
+
+	}
+
 }

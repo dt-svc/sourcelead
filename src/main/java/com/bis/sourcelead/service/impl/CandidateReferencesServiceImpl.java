@@ -164,6 +164,8 @@ public class CandidateReferencesServiceImpl implements CandidateReferencesServic
 			refer.setRelation(candiRefer.getRelation());
 			refer.setComment(candiRefer.getComment());
 			refer.setDesignation(candiRefer.getDesignation());
+			refer.setCandidateId(candidateId);
+			refer.setOrgLocationId(orgLocationId);
 			referDTOLIst.add(refer);
 		}
 		responseReferList.setData(referDTOLIst);
@@ -188,6 +190,16 @@ public class CandidateReferencesServiceImpl implements CandidateReferencesServic
 	@Override
 	public Boolean validateReferenceEmail(String referenceEmail, Long candidateId,Long candidateReferenceId) throws Exception {
 		return candidateReferencesDao.validateReferenceEmail(referenceEmail,candidateId,candidateReferenceId);
+	}
+
+	@Override
+	public CandidateReferences validateReferenceEmailByReferEmailAndReferId(String referEmail, Long referId) throws Exception {
+		return candidateReferencesDao.validateReferenceEmailByReferEmailAndReferId(referEmail, referId);
+	}
+
+	@Override
+	public Boolean validateReferenceEmailByReferEmailAndCandidateId(String referenceEmail, Long candidateId) throws Exception {
+		return candidateReferencesDao.validateReferenceEmailByReferEmailAndCandidateId(referenceEmail, candidateId);
 	}
 
 }
