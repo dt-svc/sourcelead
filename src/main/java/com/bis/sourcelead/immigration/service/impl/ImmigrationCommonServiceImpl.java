@@ -233,7 +233,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		candidateIdendities.setCreatedDate(new Date());
 		candidateIdendities.setUpdatedBy(user);
 		candidateIdendities.setUpdatedDate(new Date());
-		return null;
+		return candidateIdendities;
 	}
 
 	private Candidate savePetitionCandidate(ImmigrationDTO immigrationDTO, OrgLocations orgLocations, User user) {
