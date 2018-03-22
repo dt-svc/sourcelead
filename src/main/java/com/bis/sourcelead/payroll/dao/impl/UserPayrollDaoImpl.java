@@ -112,7 +112,7 @@ public class UserPayrollDaoImpl implements UserPayrollDao{
 			qry = " order by checks."+ checksDTO.getSortColumn() +" "+checksDTO.getSortOrder();
 		}
 		
-		String query = "from Checks checks  left join fetch checks.orgLocationId where checks.orgLocationId.id =:orgLocationId"+qry;
+		String query = "from Checks checks  left join fetch checks.orgLocationId where checks.orgLocationId.id =:orgLocationId";
 		String countQuery = "from Checks checks  where checks.orgLocationId.id =:orgLocationId";
 		
 		StringBuilder query1 = new StringBuilder("");
@@ -133,7 +133,7 @@ public class UserPayrollDaoImpl implements UserPayrollDao{
 					.append("OR checks.checkNo like '%" + checksDTO.getSearchValue() + "%' ");
 						
 			}
-		Query queryObj = session.createQuery(query + query1.toString());
+		Query queryObj = session.createQuery(query + query1.toString()+qry);
 		if (checksDTO != null && checksDTO.getLength() > 0) {
 			queryObj.setFirstResult(checksDTO.getStart());
 			queryObj.setMaxResults(checksDTO.getLength());
