@@ -440,13 +440,13 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	     }
 	     
 	     if(StringUtils.isEmpty(timesheetFor) || (StringUtils.isNotEmpty(timesheetFor) && !timesheetFor.equalsIgnoreCase("reports"))) {
-	    	 fillingOptionQuery = " and ((pclient.id IN(select pc.id from ProjectClients pc where pc.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = projects.id and subPm.masterCandidateId.id = mc.id) and pc.projectId.id = projects.id)) "
+	    	 fillingOptionQuery = " and ((pclient.id IN(select pc.id from ProjectClients pc where pc.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = projects.id and subPm.masterCandidateId.id = mc.id and subPm.projectClientsId.orgLocationsId.org.orgType <> 'GUEST') and pc.projectId.id = projects.id )) "
 	 	     		+ "                   OR ( pm.masterCandidateId.id IN(select sah.submissionId.masterCandidateId.id from SubmissionApproverHierarchy sah where sah.submissionId.projects.id = projects.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate "
 	 	     		+ "                         and (sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REJECTED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REOPENED+"'))))";
 	 	     
 	 	     fillingOptionCountQuery =        "	and ("
 	 								+	 "           (pm.projectClientsId.id IN"
-	 								+	 "               (select pc.id from ProjectClients pc where pc.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = pm.projects.id and subPm.masterCandidateId.id = pm.masterCandidateId.id) and pc.projectId.id = pm.projects.id)"
+	 								+	 "               (select pc.id from ProjectClients pc where pc.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = pm.projects.id and subPm.masterCandidateId.id = pm.masterCandidateId.id and subPm.projectClientsId.orgLocationsId.org.orgType <> 'GUEST') and pc.projectId.id = pm.projects.id)"
 	 								+	 "           ) "
 	 								+    "        OR ( pm.masterCandidateId.id IN(select sah.submissionId.masterCandidateId.id from SubmissionApproverHierarchy sah where sah.submissionId.projects.id = pm.projects.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate "
 	 								+    "                and (sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REJECTED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REOPENED+"'))"
