@@ -133,10 +133,10 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public CandidateLcaI94Summary getCandidateLCADetails(Long jobId, String yes) {
+	public CandidateLcaI94Summary getCandidateLCADetails(Long candidateId, String yes) {
 		 Session session = this.sessionFactory.getCurrentSession();
-	        String query = "from CandidateLcaI94Summary clis where clis.requirementId.id = :jobId and clis.isCurrent = :isCurrent";
-	        CandidateLcaI94Summary lcaI94Summary = (CandidateLcaI94Summary) session.createQuery(query).setString("jobId", jobId.toString().trim()).setString("isCurrent", yes).uniqueResult();
+	        String query = "from CandidateLcaI94Summary clis where clis.candidateId.id = :candidateId and clis.isCurrent = :isCurrent";
+	        CandidateLcaI94Summary lcaI94Summary = (CandidateLcaI94Summary) session.createQuery(query).setLong("candidateId", candidateId).setString("isCurrent", yes).uniqueResult();
 		return lcaI94Summary;
 	}
 

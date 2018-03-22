@@ -26,6 +26,7 @@ public interface ImmigrationCommonDao {
 	String getPetitionTypeById(Long petitionType, String petitionTypeConstant);
 
 	CandidateLcaI94Summary getCandidateLCADetails(Long id, String yes);
+
 	
 	
 }
