@@ -13,6 +13,7 @@
 				<th>To</th>
 				<th>&nbsp;</th>
 			  </tr>
+			  
 			  <tr>
 				<td><div class="tbldata-dotdot-big">Madhapur, Hyderabad</div></td>
 				<td><div class="tbldata-dotdot-vsm">India</div></td>
@@ -28,96 +29,8 @@
 					</div>
 				</td>
 			  </tr>  			  			  
-			  <tr>
-				<td><div class="tbldata-dotdot-big">Madhapur, Hyderabad</div></td>
-				<td><div class="tbldata-dotdot-vsm">India</div></td>
-				<td><div class="tbldata-dotdot-vsm">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-vsm">DD/MM/YY</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
-			  </tr>  
-			  <tr>
-				<td><div class="tbldata-dotdot-big">Madhapur, Hyderabad</div></td>
-				<td><div class="tbldata-dotdot-vsm">India</div></td>
-				<td><div class="tbldata-dotdot-vsm">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-vsm">DD/MM/YY</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
-			  </tr>    
-			  <tr>
-				<td><div class="tbldata-dotdot-big">Madhapur, Hyderabad</div></td>
-				<td><div class="tbldata-dotdot-vsm">India</div></td>
-				<td><div class="tbldata-dotdot-vsm">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-vsm">DD/MM/YY</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
-			  </tr>   
-			  <tr>
-				<td><div class="tbldata-dotdot-big">Madhapur, Hyderabad</div></td>
-				<td><div class="tbldata-dotdot-vsm">India</div></td>
-				<td><div class="tbldata-dotdot-vsm">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-vsm">DD/MM/YY</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
-			  </tr>   
-			  <tr>
-				<td><div class="tbldata-dotdot-big">Madhapur, Hyderabad</div></td>
-				<td><div class="tbldata-dotdot-vsm">India</div></td>
-				<td><div class="tbldata-dotdot-vsm">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-vsm">DD/MM/YY</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
-			  </tr>  
-			  <tr>
-				<td><div class="tbldata-dotdot-big">Madhapur, Hyderabad</div></td>
-				<td><div class="tbldata-dotdot-vsm">India</div></td>
-				<td><div class="tbldata-dotdot-vsm">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-vsm">DD/MM/YY</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
-			  </tr>   
+			  
+ 
 			  						
 			</tbody>
 		  </table>
