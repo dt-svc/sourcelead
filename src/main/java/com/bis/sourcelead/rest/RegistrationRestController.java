@@ -207,6 +207,7 @@ public class RegistrationRestController {
 						if(null != userRole){
 							
 							orgDto.setId(regOrg.getId());
+							orgDto.setOrgCode(regOrg.getOrgCode());
 							orgDto.setOrgName(regOrg.getOrgName());
 							orgDto.setEmail(regOrg.getUser().getEmail());
 							orgDto.setIsMailSent(userRole.getIsMailSent().toString());
@@ -225,6 +226,7 @@ public class RegistrationRestController {
 						if(null != orglocations){
 							orgDto.setUser(regOrg.getUser());
 							orgDto.setId(regOrg.getId());
+							orgDto.setOrgCode(regOrg.getOrgCode());
 							orgDto.setOrgName(regOrg.getOrgName());
 							if(orglocations.getLocation() != null && !(orglocations.getLocation().isEmpty())) {
 								orgDto.setLocation(orglocations.getLocation());
@@ -994,10 +996,10 @@ public class RegistrationRestController {
 		}
 	   
 	   @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")	   
-	   @RequestMapping(value = "/app/orgSummary/{orgId}" , method = RequestMethod.GET)
-		 public @ResponseBody void orgSummary(@PathVariable Long orgId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+	   @RequestMapping(value = "/app/orgSummary/{orgCode}" , method = RequestMethod.GET)
+		 public @ResponseBody void orgSummary(@PathVariable String orgCode,HttpServletRequest request,HttpServletResponse response) throws Exception {
 				StringBuilder redirectUrl = new StringBuilder();
-				response.sendRedirect(redirectUrl.append("/app/enrolledOrgSummary?orgId=").append(orgId).toString());
+				response.sendRedirect(redirectUrl.append("/app/enrolledOrgSummary?orgCode=").append(orgCode).toString());
 				
 		   }
 	   

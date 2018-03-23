@@ -33,6 +33,8 @@ public class OrgDTO extends SearchDTO implements Serializable{
 	private String registrationStatus;
 	
 	private String locationCode;
+	
+	private String orgCode;
 
 	public Long getId() {
 		return id;
@@ -136,6 +138,14 @@ public class OrgDTO extends SearchDTO implements Serializable{
 
 	public void setLocationCode(String locationCode) {
 		this.locationCode = locationCode;
+	}
+
+	public String getOrgCode() {
+		return orgCode;
+	}
+
+	public void setOrgCode(String orgCode) {
+		this.orgCode = orgCode;
 	}
 	
 }

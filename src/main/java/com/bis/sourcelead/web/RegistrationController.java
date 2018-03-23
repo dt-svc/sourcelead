@@ -347,50 +347,15 @@ public class RegistrationController {
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	 @RequestMapping(value = "/app/enrolledOrgSummary")
 		public ModelAndView enrolledOrgSummary(HttpServletRequest request,
-				@RequestParam(value = "orgId", required = false) Long orgId) throws Exception {
+				@RequestParam(value = "orgCode", required = false) String orgCode) throws Exception {
 			    ModelAndView model = new ModelAndView();
 			
-				OrgLocations orgLocations = orgLocationService.getPrimaryOrgLocationByOrgId(orgId);
-
-				List<Modules> modulesList = null;
-				List<Modules> requirementSubModulesList = null;
-				
-				if(null != orgLocations.getModulesId()){
-					ArrayList<Modules> registeredModulesList = new ArrayList<Modules>();
-					ArrayList<Modules> registeredSubModulesList = new ArrayList<Modules>();
-					modulesList = modulesService.getSourceLeadModules();
-					requirementSubModulesList = modulesService.getRequirementSubModules();
-					
-					List<Long> orgModulesList = new ArrayList<Long>();
-					 for (String s : orgLocations.getModulesId().split(",")){
-						 orgModulesList.add(Long.parseLong(s));
-					 }
-					 
-					 for(Modules modules : modulesList){
-						 if((orgModulesList.contains(modules.getId()))){
-							 modules.setIsModuleConfigured(Constants.YES);
-						 }else{
-							 modules.setIsModuleConfigured(Constants.NO);
-						 }
-						 registeredModulesList.add(modules);
-					 }
-					 
-					 for(Modules modules : requirementSubModulesList){
-						 if(orgModulesList.contains(modules.getId())){
-							 modules.setIsModuleConfigured(Constants.YES);
-						 }else{
-							 modules.setIsModuleConfigured(Constants.NO);
-						 }
-						 registeredSubModulesList.add(modules);
-					 }
-					 
-					 model.addObject("registeredModulesList", registeredModulesList);
-					 model.addObject("registeredSubModulesList", registeredSubModulesList);
-				}
+			    Org org = orgService.getOrgByOrgCode(orgCode);
+				OrgLocations orgLocations = orgLocationService.getPrimaryOrgLocationByOrgId(org.getId());
 				
 				model.addObject("orgloc",orgLocations);
 				model.addObject("registeredOrgLocationId",orgLocations.getId());
-				model.addObject("orgId",orgId);
+				model.addObject("orgId",org.getId());
 				model.setViewName("registration/enrolledOrgSummary");
 				
 				if(null != orgLocations.getUser()){

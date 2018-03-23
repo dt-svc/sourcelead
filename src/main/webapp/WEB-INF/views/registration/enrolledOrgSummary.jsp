@@ -144,63 +144,11 @@ z-index: 9999999999 !important;
 	                  </div>
 	                  
 	                  
-	                  <div class="col-md-6">
-								
-								<div class="form-group">
-								<div class="col-md-12 clearfix">
-								<h5>Registered Modules</h5>
-								</div>
-								</div>
-								
-								<div class="form-group">
-						            <div class="col-md-12 checkbox">
-							         <c:forEach var="module" items="${registeredModulesList}">
-										<ul class="list-unstyled pull-left">
-				               				 <li>
-										    <c:if test="${module.id == '1'}">
-									         <label class="mr pull-left NoPad">
-							           		     <p>${module.moduleName}</p>
-							           		  </label>
-							           		   <ul class="list-unstyled pull-left tree-checkbox">
-							                    	 <c:forEach var="submodules" items="${registeredSubModulesList}">
-							                    	  <label>
-							                    	    <c:if test="${submodules.isModuleConfigured  == 'Y'}">
-							                    		  <input type="checkbox" class="allsubmodules" id="submodules"  ${submodules.isModuleConfigured  == 'Y' ? 'checked' : ''} ${submodules.isModuleConfigured  == 'Y' ? 'disabled' : 'true'}  >
-							                              ${submodules.moduleName}
-							                             </c:if>
-							                             <c:if test="${submodules.isModuleConfigured  != 'Y'}">
-							                    		  <input type="checkbox" class="allsubmodules" id="submodules" value="${submodules.id}"  ${submodules.isModuleConfigured  == 'Y' ? 'checked' : ''} ${submodules.isModuleConfigured  == 'Y' ? 'disabled' : 'true'} name="submodulesList[]" >
-							                              ${submodules.moduleName}
-							                             </c:if>
-							                         </label><br/>
-							                    	 </c:forEach>
-							                    </ul> 
-							                </c:if> 
-								          </li>
-								          <li>
-								           <label class="mr pull-left">      
-											    <c:if test="${module.id != '1' && module.isModuleConfigured  == 'Y'}">
-									           		 <input type="checkbox" id="isRecruiting" ${module.isModuleConfigured  == 'Y' ? 'checked' : ''} ${module.isModuleConfigured  == 'Y' ? 'disabled' : 'true'}  >&nbsp;${module.moduleName}
-								                </c:if>  
-								                <c:if test="${module.id != '1' && module.isModuleConfigured  != 'Y'}">
-									           		 <input type="checkbox" id="isRecruiting" value="${module.id}"  ${module.isModuleConfigured  == 'Y' ? 'checked' : ''} ${module.isModuleConfigured  == 'Y' ? 'disabled' : 'true'} name="modulesList[]" >&nbsp;${module.moduleName}
-								                </c:if>  
-								             </label>
-								             </li>
-						                </ul>
-									</c:forEach>
-						            </div>
-					            </div> 
-	                  </div>
+	                  
 				
 					
 					</div>
-					<div class="clearfix">
-					<div class="pull-right">
-					<input type="button" value="Upgrade" onclick="updateModules();" id="save_button" class="btn btn-primary mr">
-					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/app/enrolledOrgsList'">
-					</div>
-					</div>
+					
 					</div>
 					</form:form>
 					
@@ -835,7 +783,7 @@ function pagination(){
 </script>
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 	function updateModules() {
 		
 		var roleId = '${roleId}';
@@ -869,7 +817,7 @@ function pagination(){
 		 
 	}
 
-</script>
+</script> -->
     
 
 
