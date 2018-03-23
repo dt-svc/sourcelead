@@ -3,23 +3,57 @@ package com.bis.sourcelead.dto;
 import java.util.List;
 
 import com.bis.sourcelead.entity.Employees;
-
+/**
+ * @author SanjeevReddy Indurthi
+ **/
 public class ResidenceDTO extends CommonDTO {
-
-		private String residence;
+	
+	    private String location;
+	    
+		private String streetAddress;
+		
+		private String city;
+		
+		private String state;
 		
 		private String country;
 		
-		private String startDate;
+		private String zipcode;
 		
-		private String endDate;
+		private String residenceStartDate;
+		
+		private String residenceEndDate;
 
-		public String getResidence() {
-			return residence;
+		public String getLocation() {
+			return location;
 		}
 
-		public void setResidence(String residence) {
-			this.residence = residence;
+		public void setLocation(String location) {
+			this.location = location;
+		}
+
+		public String getStreetAddress() {
+			return streetAddress;
+		}
+
+		public void setStreetAddress(String streetAddress) {
+			this.streetAddress = streetAddress;
+		}
+
+		public String getCity() {
+			return city;
+		}
+
+		public void setCity(String city) {
+			this.city = city;
+		}
+
+		public String getState() {
+			return state;
+		}
+
+		public void setState(String state) {
+			this.state = state;
 		}
 
 		public String getCountry() {
@@ -30,20 +64,32 @@ public class ResidenceDTO extends CommonDTO {
 			this.country = country;
 		}
 
-		public String getStartDate() {
-			return startDate;
+		public String getZipcode() {
+			return zipcode;
 		}
 
-		public void setStartDate(String startDate) {
-			this.startDate = startDate;
+		public void setZipcode(String zipcode) {
+			this.zipcode = zipcode;
 		}
 
-		public String getEndDate() {
-			return endDate;
+		public String getResidenceStartDate() {
+			return residenceStartDate;
 		}
 
-		public void setEndDate(String endDate) {
-			this.endDate = endDate;
+		public void setResidenceStartDate(String residenceStartDate) {
+			this.residenceStartDate = residenceStartDate;
 		}
+
+		public String getResidenceEndDate() {
+			return residenceEndDate;
+		}
+
+		public void setResidenceEndDate(String residenceEndDate) {
+			this.residenceEndDate = residenceEndDate;
+		}
+
+		
+
+		
 			
 }
