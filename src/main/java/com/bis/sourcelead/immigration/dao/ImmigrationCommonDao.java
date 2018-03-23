@@ -30,9 +30,9 @@ public interface ImmigrationCommonDao {
 	CandidateLcaI94Summary getCandidateLCADetails(Long id, String yes);
 
 	String saveCandidateFamilyMemberDetails(CandidateFamilyDetails familyDetails) throws Exception;
-<<<<<<< HEAD
+
 	CandidatePassportVisa savePassportDetails(CandidatePassportVisa candidatePassportVisa)throws Exception;
-=======
+
 	
->>>>>>> 0444616901f1c75cfde9ace818727693459d4d0e
+
 }
