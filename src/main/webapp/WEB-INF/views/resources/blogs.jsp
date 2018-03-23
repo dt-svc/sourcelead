@@ -28,7 +28,7 @@ window.onload = function() {
 		</ul>
 	<div class="clearfix"></div>
 	<div class="remove_search">
-	<input placeholder="Search" type="text">
+	<input placeholder="Search" type="text" id="blogTableSearch">
 	</div>
  </div>
 	<div class="project_wrap_table datatable_filter backgroundWhite">

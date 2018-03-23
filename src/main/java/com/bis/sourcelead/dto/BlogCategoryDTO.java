@@ -32,6 +32,8 @@ public class BlogCategoryDTO extends SearchDTO implements Serializable{
 	private String isDefaultCategory;
 	
 	private int blogCount;
+	
+	private String href;
 
 	public Long getId() {
 		return Id;
@@ -127,6 +129,14 @@ public class BlogCategoryDTO extends SearchDTO implements Serializable{
 
 	public void setIsDefaultCategory(String isDefaultCategory) {
 		this.isDefaultCategory = isDefaultCategory;
+	}
+
+	public String getHref() {
+		return href;
+	}
+
+	public void setHref(String href) {
+		this.href = href;
 	}
 
 }

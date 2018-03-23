@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -21,15 +22,15 @@ import com.bis.sourcelead.entity.BlogCategory;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
-public class BlogCategoryDaoImpl implements BlogCategoryDao{
+public class BlogCategoryDaoImpl implements BlogCategoryDao {
 
 	@Autowired
 	private SessionFactory sessionFactory;
-	  
+
 	@Autowired
 	private CommonUtil commonUtil;
-	
-    @Value("${SourceLead.100}")
+
+	@Value("${SourceLead.100}")
 	private String notFound;
 	@Value("${SourceLead.101}")
 	private String noRecords;
@@ -39,10 +40,8 @@ public class BlogCategoryDaoImpl implements BlogCategoryDao{
 	private String statusDelete;
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
-    
-	
-	private static final Logger logger = LoggerFactory.getLogger(BlogCategoryDaoImpl.class);
 
+	private static final Logger logger = LoggerFactory.getLogger(BlogCategoryDaoImpl.class);
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -52,7 +51,6 @@ public class BlogCategoryDaoImpl implements BlogCategoryDao{
 		List<BlogCategory> blogcatList = session.createQuery(query).list();
 		return blogcatList;
 	}
-
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -68,20 +66,19 @@ public class BlogCategoryDaoImpl implements BlogCategoryDao{
 		return blogCategory;
 	}
 
-
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public BlogCategory getBlogCategoryById(Long blogCategoryId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from BlogCategory bc where bc.id = :blogCategoryId";
 		BlogCategory blogCategory = null;
-		List<BlogCategory> bcList = session.createQuery(query).setLong("blogCategoryId", blogCategoryId).setCacheable(false).list();
-		if(bcList !=null && bcList.size() >0){
-			blogCategory =  bcList.get(0);
+		List<BlogCategory> bcList = session.createQuery(query).setLong("blogCategoryId", blogCategoryId)
+				.setCacheable(false).list();
+		if (bcList != null && bcList.size() > 0) {
+			blogCategory = bcList.get(0);
 		}
 		return blogCategory;
 	}
-
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -91,61 +88,61 @@ public class BlogCategoryDaoImpl implements BlogCategoryDao{
 		ResponseList<BlogCategory> response = new ResponseList<>();
 		List<Long> countlist = null;
 		StringBuilder query1 = new StringBuilder("");
-		if(blogCategoryDTO.getSearchValue() !=null && !"".equalsIgnoreCase(blogCategoryDTO.getSearchValue())) {
-		 query1.append("and( blogCategory.categoryName like '" + blogCategoryDTO.getSearchValue() + "%' ")
-		       .append("OR blogCategory.description like '%" + blogCategoryDTO.getSearchValue() + "%' ")
-			   .append("OR blogCategory.totalBlogs like '%" + blogCategoryDTO.getSearchValue() + "%' ")
-			   .append("OR createdBy.createdBy like '%" + blogCategoryDTO.getSearchValue() + "%') ) ");
-					
+		if (blogCategoryDTO.getSearchValue() != null && !"".equalsIgnoreCase(blogCategoryDTO.getSearchValue())) {
+			query1.append("and( bc.categoryName like '" + blogCategoryDTO.getSearchValue() + "%' ")
+					.append("OR bc.description like '%" + blogCategoryDTO.getSearchValue() + "%' ")
+					.append("OR bc.blogCount like '%" + blogCategoryDTO.getSearchValue() + "%' ")
+					.append("OR bc.createdBy like '%" + blogCategoryDTO.getSearchValue() + "%') ) ");
+
 		}
-		
-		String query = "from BlogCategory bc where bc.status = 1 "+query1+"";
-		List<BlogCategory> blogCategoryList = session.createQuery(query.toString()).setFirstResult(blogCategoryDTO.getStart()).setMaxResults(blogCategoryDTO.getLength()).list();
-		
-		String countQuery = "select count (*) from BlogCategory bc where bc.status = 1 "+query1+"";
+
+		String query = "from BlogCategory bc where bc.status = 1 " + query1 + "";
+		List<BlogCategory> blogCategoryList = session.createQuery(query.toString())
+				.setFirstResult(blogCategoryDTO.getStart()).setMaxResults(blogCategoryDTO.getLength()).list();
+
+		String countQuery = "select count (*) from BlogCategory bc where bc.status = 1 " + query1 + "";
 		Query listCountQuery = session.createQuery(countQuery);
 		countlist = listCountQuery.list();
-		
+
 		int totalCount = 0;
 		if (blogCategoryDTO != null) {
-			if(countlist != null && !countlist.isEmpty()) {
+			if (countlist != null && !countlist.isEmpty()) {
 				totalCount = countlist.iterator().next().intValue();
 			}
-		} 
+		}
 		response.setRecordsTotal(totalCount);
-		
-		if(query1.toString() != null && !query1.toString().isEmpty()){
+
+		if (query1.toString() != null && !query1.toString().isEmpty()) {
 			response.setRecordsFiltered(filterCount);
-		}else {
+		} else {
 			response.setRecordsFiltered(totalCount);
 		}
-		
+
 		response.setData(blogCategoryList);
 		return response;
 	}
-
 
 	@Transactional(rollbackFor = { Exception.class })
 	public BlogCategory findByBlogCategoryName(String categoryName) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<BlogCategory> blogCategory = new ArrayList<BlogCategory>();
 		logger.debug("findByCategoryName start");
-		try{
-			blogCategory = session.createQuery("from BlogCategory bc where bc.categoryName=:categoryName  and bc.status = '1' " )
-					.setString( "categoryName", categoryName ).list();
-			
+		try {
+			blogCategory = session
+					.createQuery("from BlogCategory bc where bc.categoryName=:categoryName  and bc.status = '1' ")
+					.setString("categoryName", categoryName).list();
+
 			logger.debug("findByCategoryName end");
 			if (blogCategory.size() > 0) {
 				return blogCategory.get(0);
 			} else {
 				return null;
 			}
-		}catch(Exception e){
+		} catch (Exception e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return null;
 	}
-
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -153,12 +150,32 @@ public class BlogCategoryDaoImpl implements BlogCategoryDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from BlogCategory bc  where bc.categoryUUID = :categoryUUID";
 		BlogCategory blogCategory = null;
-		List<BlogCategory> blogCategoryList = session.createQuery(query).setString("categoryUUID", categoryUUID).setCacheable(false).list();
-		if(blogCategoryList !=null && blogCategoryList.size() >0){
-			blogCategory =  blogCategoryList.get(0);
+		List<BlogCategory> blogCategoryList = session.createQuery(query).setString("categoryUUID", categoryUUID)
+				.setCacheable(false).list();
+		if (blogCategoryList != null && blogCategoryList.size() > 0) {
+			blogCategory = blogCategoryList.get(0);
 		}
 		return blogCategory;
 	}
-	
-	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<BlogCategoryDTO> getBlogCategoryListByActiveBlogs() throws Exception {
+		List<BlogCategoryDTO> blogCategoryList = new LinkedList<>();
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select distinct sb.categoryId from SourceleadBlogs sb where sb.status=1";
+		List<BlogCategory> bcList = session.createQuery(query).list();
+		if (bcList != null && bcList.size() > 0) {
+			
+			for (BlogCategory b : bcList) {
+				BlogCategoryDTO blogCategoryDTO = new BlogCategoryDTO();
+				blogCategoryDTO.setCategoryName(b.getCategoryName());
+				blogCategoryDTO.setHref(b.getHref());
+				blogCategoryDTO.setBlogCount(b.getBlogList().size());
+				blogCategoryList.add(blogCategoryDTO);
+			}
+		}
+		return blogCategoryList;
+	}
+
 }

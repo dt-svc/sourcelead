@@ -74,7 +74,6 @@ public class ResourcesController {
 			if(null != blogUUID && !blogUUID.isEmpty()){
 			
 				sourceleadBlog = sourceleadBlogService.getSourceleadBlogsByBlogUUID(blogUUID);
-			//	Date date = sourceleadBlog.getPublishOn();  
 				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
 				DateFormat dateFormatResult = new SimpleDateFormat ("MM/dd/yyyy hh:mm a");
 				String publishon = dateFormatResult.format(dateFormat.parse(sourceleadBlog.getPublishOn().toString()));

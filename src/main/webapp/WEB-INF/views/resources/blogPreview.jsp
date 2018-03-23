@@ -24,7 +24,7 @@
 				<div class="clearfix"></div>
 
 				<div class="blogpreviewContent">
-				${sourceleadBlog.description};
+				${sourceleadBlog.description}
 				</div>
 				
 			</div>

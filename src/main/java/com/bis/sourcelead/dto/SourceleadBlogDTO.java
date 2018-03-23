@@ -49,6 +49,10 @@ public class SourceleadBlogDTO extends SearchDTO implements Serializable{
 	private String blogUUID;
 	
 	private String blogStatus;
+	
+	private String href;
+	
+	private String bodytext;
 
 	public long getId() {
 		return id;
@@ -208,6 +212,22 @@ public class SourceleadBlogDTO extends SearchDTO implements Serializable{
 
 	public void setBlogStatus(String blogStatus) {
 		this.blogStatus = blogStatus;
+	}
+
+	public String getHref() {
+		return href;
+	}
+
+	public void setHref(String href) {
+		this.href = href;
+	}
+
+	public String getBodytext() {
+		return bodytext;
+	}
+
+	public void setBodytext(String bodytext) {
+		this.bodytext = bodytext;
 	}
 	
 }

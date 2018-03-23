@@ -28,7 +28,7 @@ window.onload = function() {
 						<div class="clearfix"></div>
  						<div class="clearfix"></div>
 					<div class="remove_search">
-					<input placeholder="Search" type="text">
+					<input placeholder="Search" type="text" id="blogCategoryTableSearch">
 					</div>
  </div>
  <div id="popUpDivBlogCategory" class="edit-details col-md-4"></div>

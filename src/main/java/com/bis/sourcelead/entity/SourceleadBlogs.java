@@ -27,9 +27,9 @@ public class SourceleadBlogs {
 	@Column(name = "BLOG_TITLE")
 	private String blogTitle;
 	
+	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CATEGORY_ID", nullable = false)
-	@JsonBackReference
 	private BlogCategory categoryId;
 	
 	@Column(name="KEY_WORDS", columnDefinition = "LONGTEXT default NULL")
@@ -59,21 +59,24 @@ public class SourceleadBlogs {
 	@Column(name = "BLOG_STATUS")
 	private String blogStatus;
 	
+	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CREATED_BY", nullable = false)
-	@JsonBackReference
 	private User createdBy;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
+	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "UPDATED_BY", nullable = false)
-	@JsonBackReference
 	private User updatedBy;
 	
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
+	
+	@Column(name = "HREF")
+	private String href;
 	
 	
 	@Transient
@@ -213,6 +216,14 @@ public class SourceleadBlogs {
 
 	public void setBlogStatus(String blogStatus) {
 		this.blogStatus = blogStatus;
+	}
+
+	public String getHref() {
+		return href;
+	}
+
+	public void setHref(String href) {
+		this.href = href;
 	}
 	
 }

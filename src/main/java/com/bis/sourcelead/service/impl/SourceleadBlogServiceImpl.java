@@ -81,6 +81,7 @@ public class SourceleadBlogServiceImpl implements SourceleadBlogService{
 		
 		if(sourceleadBlogDTO.getBlogTitle() != null) {
 			sourceleadBlogs.setBlogTitle(sourceleadBlogDTO.getBlogTitle());
+			sourceleadBlogs.setHref(sourceleadBlogDTO.getBlogTitle().toLowerCase().replaceAll(" ", "-").replaceAll(" & ", "-and-"));
 		}
 		
 		if(sourceleadBlogDTO.getCategoryId() != null) {
@@ -124,8 +125,7 @@ public class SourceleadBlogServiceImpl implements SourceleadBlogService{
 			sbDTO.setPublishOn(sb.getPublishOn().toString());
 			}
 			if(sb.getKeywords() != null) {
-			sbDTO.setKeywords(Arrays.asList(sb.getKeywords().split("\\s*,\\s*"))
-);
+			sbDTO.setKeywords(Arrays.asList(sb.getKeywords().split("\\s*,\\s*")));
 			}
 			
 			if(sb.getDescription() != null) {
@@ -170,6 +170,8 @@ public class SourceleadBlogServiceImpl implements SourceleadBlogService{
 			sourceleadBlogs =  sourceleadBlogDao.addBlog(sourceleadBlogs);
 	        return sourceleadBlogs;
 	}
+	
+	
 
 	@Override
 	public List<SourceleadBlogs> getAllSourceleadBlogsByCategoryId(Long categoryId) throws Exception {
@@ -189,6 +191,26 @@ public class SourceleadBlogServiceImpl implements SourceleadBlogService{
 	@Override
 	public SourceleadBlogs saveOrUpdateBlog(SourceleadBlogs sourceleadBlogs) throws Exception {
 		return sourceleadBlogDao.addBlog(sourceleadBlogs);
+	}
+
+	@Override
+	public List<SourceleadBlogs> getAllSourceleadBlogs() throws Exception {
+		return sourceleadBlogDao.getAllSourceleadBlogs();
+	}
+
+	@Override
+	public SourceleadBlogs getSourceleadBlogsByBlogTitle(String blogTitle) throws Exception {
+		return sourceleadBlogDao.getSourceleadBlogsByBlogTitle(blogTitle);
+	}
+
+	@Override
+	public List<SourceleadBlogs> getRelatedSourceleadBlogs(Long categoryId) throws Exception {
+		return sourceleadBlogDao.getRelatedSourceleadBlogs(categoryId);
+	}
+
+	@Override
+	public List<SourceleadBlogs> getAllSourceleadBlogsByCategoryName(String categoryName) throws Exception {
+		return sourceleadBlogDao.getAllSourceleadBlogsByCategoryName(categoryName);
 	}
 
 }

@@ -52,6 +52,7 @@ public class BlogCategoryServiceImpl implements BlogCategoryService{
 
 		}
 		blogCategory.setCategoryName(blogCategoryDTO.getCategoryName());
+		blogCategory.setHref(blogCategoryDTO.getCategoryName().toLowerCase().replaceAll(" ", "-").replaceAll(" & ", "-and-"));
 		blogCategory.setDescription(blogCategoryDTO.getDescription());
 		blogCategory.setUpdatedDate(commonUtil.currentDate());
 		blogCategory.setStatus(Constants.RECORD_ACTIVE);
@@ -124,5 +125,9 @@ public class BlogCategoryServiceImpl implements BlogCategoryService{
 		return blogCategoryDao.getBlogCategoryByCategoryUUID(categoryUUID);
 	}
 
+	@Override
+	public List<BlogCategoryDTO> getBlogCategoryListByActiveBlogs() throws Exception {
+		return blogCategoryDao.getBlogCategoryListByActiveBlogs();
+	}
 
 }

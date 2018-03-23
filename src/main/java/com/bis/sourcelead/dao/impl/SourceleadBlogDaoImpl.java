@@ -1,7 +1,12 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
@@ -18,7 +23,6 @@ import com.bis.sourcelead.dao.SourceleadBlogDao;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadBlogDTO;
 import com.bis.sourcelead.entity.SourceleadBlogs;
-import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
 public class SourceleadBlogDaoImpl implements SourceleadBlogDao{
@@ -26,8 +30,6 @@ public class SourceleadBlogDaoImpl implements SourceleadBlogDao{
 	@Autowired
 	private SessionFactory sessionFactory;
 	  
-	@Autowired
-	private CommonUtil commonUtil;
 	
     @Value("${SourceLead.100}")
 	private String notFound;
@@ -89,23 +91,26 @@ public class SourceleadBlogDaoImpl implements SourceleadBlogDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ResponseList<SourceleadBlogs> getAllSourceleadBlogsByStatus(SourceleadBlogDTO sourceleadBlogDTO) {
+	public ResponseList<SourceleadBlogs> getAllSourceleadBlogsByStatus(SourceleadBlogDTO sourceleadBlogDTO) throws ParseException {
 		Session session = this.sessionFactory.getCurrentSession();
 		Integer filterCount = 0;
 		ResponseList<SourceleadBlogs> response = new ResponseList<>();
+		
+		
 		List<Long> countlist = null;
 		StringBuilder query1 = new StringBuilder("");
 		if(sourceleadBlogDTO.getSearchValue() !=null && !"".equalsIgnoreCase(sourceleadBlogDTO.getSearchValue())) {
-		 query1.append("and( sourceleadBlogs.blogTitle like '" + sourceleadBlogDTO.getSearchValue() + "%' ")
-		       .append("OR sourceleadBlogs.categoryId like '%" + sourceleadBlogDTO.getSearchValue() + "%' ")
-			   .append("OR sourceleadBlogs.createdBy like '%" + sourceleadBlogDTO.getSearchValue() + "%' ")
-			   .append("OR sourceleadBlogs.publishOn like '%" + sourceleadBlogDTO.getSearchValue() + "%' ")
-			   .append("OR sourceleadBlogs.status like '%" + sourceleadBlogDTO.getSearchValue() + "%') ) ");
+			query1.append("and( (sb.createdBy.firstName like '" + sourceleadBlogDTO.getSearchValue() + "%' OR sb.createdBy.lastName like '%" + sourceleadBlogDTO.getSearchValue() + "' )")
+			      .append("OR (concat(sb.createdBy.firstName,sb.createdBy.lastName) like '%" + sourceleadBlogDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')" )
+		          .append("OR sb.blogTitle like '%" + sourceleadBlogDTO.getSearchValue() + "%' ")
+		          .append("OR sb.categoryId.categoryName like '%" + sourceleadBlogDTO.getSearchValue() + "%' ")
+			      .append("OR sb.publishOn like '%" + sourceleadBlogDTO.getSearchValue() + "%' ")
+			      .append("OR sb.blogStatus like '%" + sourceleadBlogDTO.getSearchValue() + "%') ) ");
 					
 		}
 		
 		
-		String query = "from SourceleadBlogs sb where sb.status = 1 "+query1+"";
+		String query = "from SourceleadBlogs sb left join fetch sb.createdBy user where sb.status = 1 "+query1+"";
 		List<SourceleadBlogs> sourceleadBlogsList = session.createQuery(query.toString()).setFirstResult(sourceleadBlogDTO.getStart()).setMaxResults(sourceleadBlogDTO.getLength()).list();
 		
 		
@@ -131,13 +136,23 @@ public class SourceleadBlogDaoImpl implements SourceleadBlogDao{
 		return response;
 	}
 
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<SourceleadBlogs> getAllSourceleadBlogsByCategoryName(String categoryName) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = "from SourceleadBlogs sb left join fetch sb.categoryId cat where cat.categoryName =:categoryName and  sb.status = 1 ORDER BY sb.id DESC";
+		List<SourceleadBlogs> sourceleadBlogsList = session.createQuery(query.toString()).setString("categoryName", categoryName).list();
+		return sourceleadBlogsList;
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<SourceleadBlogs> getAllSourceleadBlogsByCategoryId(Long categoryId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		
-		String query = "from SourceleadBlogs sb left join fetch sb.categoryId cat where cat.id =:categoryId and  sb.status = 1";
+		String query = "from SourceleadBlogs sb left join fetch sb.categoryId cat where cat.id =:categoryId and  sb.status = 1 ORDER BY sb.id DESC";
 		List<SourceleadBlogs> sourceleadBlogsList = session.createQuery(query.toString()).setLong("categoryId", categoryId).list();
 		return sourceleadBlogsList;
 	}
@@ -171,9 +186,47 @@ public class SourceleadBlogDaoImpl implements SourceleadBlogDao{
 	public List<SourceleadBlogs> getSourceleadBlogsByCategoryId(Long categoryId) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from SourceleadBlogs sb left join fetch sb.categoryId cat where cat.id =:categoryId";
+		String query = "from SourceleadBlogs sb left join fetch sb.categoryId cat where cat.id =:categoryId ORDER BY sb.id DESC";
 		List<SourceleadBlogs> sourceleadBlogsList = session.createQuery(query.toString()).setLong("categoryId", categoryId).list();
 		return sourceleadBlogsList;
 	
 	}
+
+
+	@Override
+	@Transactional
+	public List<SourceleadBlogs> getAllSourceleadBlogs() throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from SourceleadBlogs sb where sb.blogStatus = 'published' and sb.status = '1' ORDER BY sb.id DESC";
+		List<SourceleadBlogs> allBlogs = session.createQuery(query.toString()).list();
+		return allBlogs;
+	}
+
+
+	@Override
+	@Transactional
+	public SourceleadBlogs getSourceleadBlogsByBlogTitle(String blogTitle) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query ="from SourceleadBlogs sb where sb.href =:blogTitle";
+		SourceleadBlogs sourceleadBlogs = null;
+		List<SourceleadBlogs> blogList = session.createQuery(query).setString("blogTitle", blogTitle).setCacheable(false).list();
+		if(blogList !=null && blogList.size() >0){
+			sourceleadBlogs =  blogList.get(0);
+		}
+		return sourceleadBlogs;
+	}
+
+
+	@Override
+	@Transactional
+	public List<SourceleadBlogs> getRelatedSourceleadBlogs(Long categoryId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from SourceleadBlogs sb left join fetch sb.categoryId cat where cat.id =:categoryId ORDER BY rand()";
+		List<SourceleadBlogs> sourceleadBlogsList = session.createQuery(query.toString()).setLong("categoryId", categoryId).list();
+		return sourceleadBlogsList;
+	}
+	
 }

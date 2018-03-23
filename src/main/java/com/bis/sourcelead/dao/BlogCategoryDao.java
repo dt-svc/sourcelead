@@ -19,5 +19,7 @@ public interface BlogCategoryDao {
 	public BlogCategory findByBlogCategoryName(String categoryName) throws Exception;
 	
 	BlogCategory getBlogCategoryByCategoryUUID(String categoryUUID);
-
+	
+	public List<BlogCategoryDTO> getBlogCategoryListByActiveBlogs() throws Exception;
+	
 }
