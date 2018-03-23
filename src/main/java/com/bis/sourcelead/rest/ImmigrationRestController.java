@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -648,4 +649,24 @@ public class ImmigrationRestController {
 
 		return "success";
     }
+    
+	
+	@RequestMapping(value = { "/getCandidateFamilyDetails" })
+	public ModelAndView getCandidateFamilyDetails(
+			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) {
+		ModelAndView model = new ModelAndView();
+		System.out.println(" inisde getCandidateFamilyDetails controller test -->");
+		model.setViewName("/immigration/familyDetailsTab");
+		CandidateFamilyDetailsDTO dto = new CandidateFamilyDetailsDTO();
+		List<CandidateFamilyDetailsDTO> dtoList = new ArrayList<CandidateFamilyDetailsDTO>();
+		dto.setFirstName("srinivas");
+		dto.setRelation("Child");
+		dto.setDateOfBirth("29-03-1981");
+		dto.setPlaceOfBirth("Hyderabad");
+		dto.setCurrentAddress("Telangana");
+		dtoList.add(dto);
+		model.addObject("familyList", dtoList);
+		System.out.println(" after getCandidateFamilyDetails controller -->");
+		return model;
+	}
 }

@@ -316,6 +316,9 @@ function Immigration() {
 					console.log(" inside success function");
 					if (data == 'success') {
                         console.log("data successfully saved for the candidate id "+templateId);
+                        $(".popMask").fadeOut(200); // close the popup code
+        				$("#spousePopView").fadeOut(100);// close the popup code
+                        displayFamilyDetails(candidateId);
 					}
 				}
 			});
@@ -427,5 +430,16 @@ function saveEmployerDetails(status) {
 	
 }
 
-
+function displayFamilyDetails(candidateId){
+	console.log("inside displayFamilyDetails function call test -->")
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/getCandidateFamilyDetails?candidateId="+candidateId,
+        type: "GET",
+        success: function (result) {
+        	  console.log("Before  loading result---->");
+            $("#familiesTab").html(result);
+            console.log("After loading result---->");
+        }
+    });
+}	
 
