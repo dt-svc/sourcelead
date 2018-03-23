@@ -67,8 +67,7 @@
 		<!-- popup code start -->
 		<form name = "employerDetails_form" id = "employerDetails_form" method = "post">
 		<div class="popUpOut" id="emploView">
-		<input type="hidden" id = "candidateID" value = "${candidateId}">
-		<input type="hidden" id = "immigrationID" value = "${immigrationId}">
+		
 		<div class="popupHead">
 			<h2>Add Employee</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
 		</div>

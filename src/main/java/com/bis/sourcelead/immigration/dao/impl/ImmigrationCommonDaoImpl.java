@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateLcaI94Summary;
 import com.bis.sourcelead.entity.CandidateResidence;
@@ -139,6 +140,19 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	        String query = "from CandidateLcaI94Summary clis left join fetch clis.requirementId where clis.candidateId.id = :candidateId and clis.isCurrent = :yes";
 	        CandidateLcaI94Summary lcaI94Summary = (CandidateLcaI94Summary) session.createQuery(query).setLong("candidateId", candidateId).setString("yes", yes).uniqueResult();
 		return lcaI94Summary;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public String saveCandidateFamilyMemberDetails(CandidateFamilyDetails familyDetails) {
+		try {
+		Session session = this.sessionFactory.getCurrentSession();
+		  session.saveOrUpdate(familyDetails);
+		}catch(Exception e) {
+			logger.error("Exception caught while saving family details -->"+e.getMessage());
+			e.printStackTrace();
+		}
+		return "success";
 	}
 
 }

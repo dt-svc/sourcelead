@@ -1068,5 +1068,8 @@ public class Constants {
 	
 	public static final String ID_TYPE_SSN = "SSN";
 	public static final String ID_TYPE_LCA = "LCA";
-
+	public static final String RELATION_TYPE_SPOUSE = "Spouse";
+	public static final String RELATION_TYPE_CHILD ="Child";
+	public static final String RELATION_TYPE_FATHER="Father";
+	public static final String RELATION_TYPE_MOTHER="Mother";
 }

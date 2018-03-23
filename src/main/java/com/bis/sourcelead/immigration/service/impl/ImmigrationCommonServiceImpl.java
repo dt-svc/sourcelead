@@ -17,10 +17,12 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
+import com.bis.sourcelead.dto.CandidateFamilyDetailsDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ImmigrationDTO;
 import com.bis.sourcelead.dto.ImmigrationResidenceDTO;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateLcaI94Summary;
 import com.bis.sourcelead.entity.CandidateResidence;
@@ -376,6 +378,33 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			e.printStackTrace();
 		}
 		return dto;
+	}
+
+	@Override
+	public String saveCandidateFamilyMemberDetails(CandidateFamilyDetailsDTO familyDetailsDto, OrgLocations orgLocations, User user) throws Exception {
+		CandidateFamilyDetails familyDetails = new CandidateFamilyDetails();
+		Candidate candidate = candidateDao.getCandidateByCandidateId(familyDetailsDto.getCandidateId());
+		candidate.setCandidateId(familyDetailsDto.getCandidateId());
+		familyDetails.setCandidate(candidate);
+		familyDetails.setFirstName(familyDetailsDto.getFirstName());
+		familyDetails.setMiddleName(familyDetailsDto.getMiddleName());
+		familyDetails.setLastName(familyDetailsDto.getLastName());
+		familyDetails.setPlaceOfBirth(familyDetailsDto.getPlaceOfBirth());
+		familyDetails.setRelation(familyDetailsDto.getRelation());
+		familyDetails.setDateOfBirth(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), familyDetailsDto.getDateOfBirth()));
+		familyDetails.setMarraigeDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), familyDetailsDto.getMarraigeDate()));
+		familyDetails.setMarriageEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), familyDetailsDto.getMarriageEndDate()));
+		familyDetails.setMarriagePlace(familyDetailsDto.getMarriagePlace());
+		familyDetails.setNationality(familyDetailsDto.getNationality());
+		familyDetails.setCurrentAddress(familyDetailsDto.getCurrentAddress());
+		familyDetails.setStatus(Constants.RECORD_ACTIVE);
+	    Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+		familyDetails.setCreatedDate(currentDate);
+		familyDetails.setCreatedBy(user);
+		familyDetails.setUpdatedDate(currentDate);
+		familyDetails.setUpdatedBy(user);
+		
+		return immigrationCommonDao.saveCandidateFamilyMemberDetails(familyDetails);
 	}	
 
 }
