@@ -142,7 +142,7 @@ $(function(){
 			
 			<div class="col-md-6">
 			<div class="row form-group">
-				<label class="col-md-3">URL </label>
+				<label class="col-md-3">Video URL </label>
 				<div class="col-md-9">
 				          <input type="text" name="urlName" id="youTubeUrl" onblur="validateYouTubeUrl();" value="${uploadUrl}" class="form-control">
 							<h6 id="youtubeUrlId" style="display:none; color:red"> Invalid URL</h6>

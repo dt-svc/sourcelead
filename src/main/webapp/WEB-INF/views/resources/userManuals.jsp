@@ -206,7 +206,7 @@ function deleteUserManualOne(userManualId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p style='text-align: center;'>Do you want to delete a level one ?</p>";
+	result = result +"		<p style='text-align: center;'>Reference with level One sub levels will be delete.Do you want to delete ?</p>";
 	result = result + ' <div id="reasonForProjectDiv"/>';
 	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteUserManualonee('+userManualId+')"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
@@ -394,7 +394,7 @@ function deleteUserManualTwo(userManualId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p style='text-align: center;'>Do you want to delete level Two ?</p>";
+	result = result +"		<p style='text-align: center;'>Reference with level two Sub level will be delete.Do you want to delete?</p>";
 	result = result + ' <div id="reasonForProjectDiv"/>';
 	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteUserManualTwoo('+userManualId+')"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
@@ -587,7 +587,7 @@ function deleteUserManualThree(userManualId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p style='text-align: center;'>Do you want to delete a leve three ?</p>";
+	result = result +"		<p style='text-align: center;'>Do you want to delete this level?</p>";
 	result = result + ' <div id="reasonForProjectDiv"/>';
 	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteUserManualThre('+userManualId+')"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
@@ -743,7 +743,6 @@ function cancelTermination(){
 					} else {
 				title = "--";
 			}
-				alert("test "+json.description)
 			if (json.description != null && json.description != ''
 					&& json.description != 'undefined') {
 				description = json.description;
@@ -896,8 +895,8 @@ function cancelTermination(){
 			
 			result = result + '<div class="clearfix"></div>';
 			
-			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
-			result = result + '<strong>URL Name:</strong>';
+			result = result	+ '<div class="" id="ProjectIdDiv">';
+			result = result + '<strong>Video URL Name:</strong>';
 			result = result + '<span>'+urlName+'</span>';
 			result = result + '<div class="clearfix"></div>';
 			result = result + '</div>';

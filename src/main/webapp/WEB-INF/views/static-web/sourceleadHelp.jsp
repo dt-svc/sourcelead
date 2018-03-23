@@ -21,6 +21,8 @@
 <script>
  window.onload = function() {
 		getUserManualHelperOne();
+		getUserManualHelperTwo(1);
+		getUserManualHelperThree(1);
  };
  </script>
 
@@ -113,6 +115,10 @@ function getUserManualHelperTwo(userManualId){
 			$(this).next(".accordion-panel").slideToggle().siblings(".accordion-panel:visible").slideToggle();
 		}) */
 	 
+}
+function demo() {
+	getUserManualHelperTwo(1);
+	$("#demo"+userManualId).slideToggle();
 }
 </script>
 
