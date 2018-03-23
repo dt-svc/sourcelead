@@ -210,34 +210,6 @@ function filterStatus() {
 			} 
 			
 			
-		/* 	result = result + '	<li><a onClick="filterStatus()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Team</span><i class="glyphicon glyphicon-play"></i></a>';
-		    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
-			result = result + '       	<ul>';
-			result = result +'<div id="orgLocationTeams"></div>';  				  
-		    result = result + '           </ul>';
-			result = result + '       </div>'; 
-			result = result + '   </li>'; */
-			
-			/* result = result + '	<li><a onClick="filterStatus()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Roles</span><i class="glyphicon glyphicon-play"></i></a>';
-		    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
-			result = result + '       	<ul>';
-					<c:forEach var="roles" items="${rolesList}">  
-					result = result + '	<li><input  id="roleName${report.id}" name="roleName" value ="${roles.id}"   onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\')" type="checkbox"><label for="roleName${roles.id}">${roles.displayName}</label></li>';
-				  </c:forEach>
-				  
-		    result = result + '           </ul>';
-			result = result + '       </div>'; 
-			result = result + '   </li>';
-			
-		    result = result + '	<li><a onClick="filterStatus()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>';
-		    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
-			result = result + '       	<ul>';
-			result = result + '				<li><input id="c6" type="checkbox"   name="employeeStatus" value ="Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c6">Active</label></li>';
-			result = result + '				<li><input id="c7" name="employeeStatus" type="checkbox" value ="In-Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c7">In-Active</label></li> ';
-			result = result + '           </ul>';
-			result = result + '       </div>'; 
-			result = result + '   </li>'; */
-	 
 				'<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_EMPLOYEE\')">';
 					result = result +'<li class="dropdown">';
 					if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
@@ -263,7 +235,7 @@ function filterStatus() {
 			result = result	+ '     <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetPorjectTeamFilter();" title="Refresh">';
 			result = result	+ '	    <span class="fa fa-refresh"></span>';
 			result = result	+ '	</button>';
-			result = result	+ '	<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filter Search" onclick="openFilterTeamPop();"><i class="fa fa-filter faFilter padding_right" style="color: #909090!important"></i>';
+			result = result	+ '	<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filter Search" onclick="openFilterTeamPop();"><i class="fa fa-filter faFilter padding_right"></i>';
 			result = result	+ '	</a>';
 			result = result	+ ' </div>';
 			
@@ -317,42 +289,8 @@ function filterStatus() {
 	        $(".newPrTabs_inn").not(tab).css("display", "none");
 	        $(tab).fadeIn();
 	    });	
-	    
-	    getOrgLocationTeams();
-		
  }
  </script>
- 
- 
- <script>
- function getOrgLocationTeams(){
-		var orgLocations = '${SourceLeadWeb_orgLocations.id}';
-		 var sourceleadUrl ='${sourceleadUrl}';
-		 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
-		 $.ajax({
-		    	type: "GET",
-		        url: sourceleadUrl+"/getOrgLocationTeamList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,  
-		        success: function(json) {
-		        	
-		        	var output = "";
-		        	if(json.length > 0){
-		        		for (var i=0; i<json.length; i++)
-						{
-				        		var opt = json[i];
-				        		output = output + '<li class="checkBox positionRelative clearfix"><input value="'+opt.id+'" name="teams"  type="checkbox" ><label>'+opt.name+'</label></li>';
-						}
-		        	}else{
-		        		output = output + '<li class="checkBox positionRelative clearfix"><label>&nbsp;&nbsp;&nbsp;<font color="red">No teams configured</font></label></li>';
-		        	}
-		        	
-		        	$("#orgLocationTeams").empty();
-			        $("#orgLocationTeams").append(output);
-		        }
-		        
-		 });
-	}
- </script>
- 
  
  
  <script>
@@ -1669,7 +1607,9 @@ function openFilterTeamPop(){
 									</div>
 									 <div class="clearfix filterSearch-ul">
 										<ul class="list-unstyled positionRelative filterSearch mt5" id="myTeamUL">
-										<div id="orgLocationTeams"></div>
+										<c:forEach var="team" items="${teamList}"> 
+										<li class="checkBox positionRelative clearfix"><input value="${team.id}" name="teams"  type="checkbox" ><label>${team.name}</label></li>
+										</c:forEach>
 										</ul>
 									 </div> 
 							 </div>
@@ -1691,7 +1631,6 @@ function resetPorjectTeamFilter(){
 	$("ul#myTeamUL > li input:checkbox").prop("checked",false);
 	
 	getFilterEmployeeDetails();
-	getOrgLocationTeams();
 }
 function myRolesFunction() {
     var input, filter, ul, li, a, i;

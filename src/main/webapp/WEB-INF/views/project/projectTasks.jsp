@@ -91,7 +91,7 @@ function projectTask(projectId, status) {
 		result = result	+ '     <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetTaskFilter();" title="Refresh">';
 		result = result	+ '	    <span class="fa fa-refresh"></span>';
 		result = result	+ '	</button>';
-		result = result	+ '	<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filter Search" onclick="openFilterTaskPop();"><i class="fa fa-filter faFilter padding_right" style="color: #909090!important"></i>';
+		result = result	+ '	<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filter Search" onclick="openFilterTaskPop();"><i class="fa fa-filter faFilter padding_right"></i>';
 		result = result	+ '	</a>';
 		result = result	+ ' </div>';
 		 
@@ -120,7 +120,6 @@ function projectTask(projectId, status) {
 				$(tab).fadeIn();
 			});
 	projectTaskList();
-	getTasksOrgLocationTeams();
 }
 </script>
 <script>
@@ -1068,7 +1067,9 @@ function openFilterTaskPop(){
 									</div>
 									 <div class="clearfix filterSearch-ul">
 										<ul class="list-unstyled positionRelative filterSearch mt5" id="myTaskTeamUL">
-										<div id="tasksOrgLocationTeams"></div>
+											<c:forEach var="team" items="${teamList}"> 
+											<li class="checkBox positionRelative clearfix"><input value="${team.id}" name="teams"  type="checkbox" ><label>${team.name}</label></li>
+											</c:forEach>
 										</ul>
 									 </div> 
 							 </div> 
@@ -1092,7 +1093,6 @@ function resetTaskFilter(){
 	document.getElementById("taskStatusId1069").checked = true;
 	document.getElementById("taskStatusId1070").checked = true;
 	projectTaskList();
-	getTasksOrgLocationTeams();
 }
 function myAssignedFunction() {
     var input, filter, ul, li, a, i;
@@ -1129,35 +1129,6 @@ function myTaskTeamFunction() {
 }
 
 </script>			
-				
-<script>
-function getTasksOrgLocationTeams(){
-	var orgLocations = '${SourceLeadWeb_orgLocations.id}';
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
-	 $.ajax({
-	    	type: "GET",
-	        url: sourceleadUrl+"/getOrgLocationTeamList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,  
-	        success: function(json) {
-	        	
-	        	var output = "";
-	        	if(json.length > 0){
-	        		for (var i=0; i<json.length; i++)
-					{
-			        		var opt = json[i];
-			        		output = output + '<li class="checkBox positionRelative clearfix"><input value="'+opt.id+'" name="teams"  type="checkbox" ><label>'+opt.name+'</label></li>';
-					}
-	        	}else{
-	        		output = output + '<li class="checkBox positionRelative clearfix"><label>&nbsp;&nbsp;&nbsp;<font color="red">No teams configured</font></label></li>';
-	        	}
-	        	
-	        	$("#tasksOrgLocationTeams").empty();
-		        $("#tasksOrgLocationTeams").append(output);
-	        }
-	        
-	 });
-}
-</script>
 
 <script>
 function projectTaskExport(type){
