@@ -63,6 +63,8 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	
 	private String projectClientUUID;
 	
+	private String exportType;
+	
 	public Long getId() {
 		return id;
 	}
@@ -241,6 +243,10 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	{
 		this.projectClientUUID = projectClientUUID;
 	}
-	
-	
+	public String getExportType() {
+		return exportType;
+	}
+	public void setExportType(String exportType) {
+		this.exportType = exportType;
+	}
 }
