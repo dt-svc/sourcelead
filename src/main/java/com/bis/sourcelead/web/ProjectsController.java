@@ -39,6 +39,7 @@ import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CountriesService;
@@ -58,6 +59,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
+import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
@@ -125,6 +127,9 @@ public class ProjectsController {
 	@Autowired
 	ProjectBudgetService projectBudgetService;
 	 
+	@Autowired
+	TeamService teamService;
+	
 	@Autowired
 	private SourceleadFormSectionsService sourceleadFormSectionsService;
 	
@@ -358,6 +363,9 @@ public class ProjectsController {
 					if(rolesList != null) {
 						model.addObject("rolesList", rolesList);
 					}
+					
+					List<Team> teamList = teamService.getTeamListByOrgLocationID(orgLocations.getId());
+					model.addObject("teamList", teamList);
 					
 					model.addObject("projectUUID", projectUUID);
 					model.addObject("projectCurrency", projects.getCurrency());

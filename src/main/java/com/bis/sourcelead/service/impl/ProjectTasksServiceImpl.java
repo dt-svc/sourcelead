@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,6 +16,17 @@ import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+
+
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.json.JSONArray;
+import org.json.JSONException;
+>>>>>>> e9ae20691e48ee2a9750202027a4cc7794c05dff
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +37,7 @@ import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
+import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -52,6 +65,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
+import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.ibm.icu.text.DecimalFormat;
@@ -85,6 +99,10 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	
 	@Autowired
 	private ProjectTaskCustomFieldDataService projectTaskCustomFieldDataService;
+	
+	@Autowired
+	PdfUtil pdfUtil;
+	
 	
 	@Override
 	public ProjectTasks addTasks(ProjectTasks tasks) throws Exception {
@@ -695,7 +713,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	}
 
 	@Override
-	public ResponseList<ProjectTasksDTO> getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(ProjectTasksDTO projectTasksDTO, Long projectId, String taskType, String taskStatus, String userRole,String assignedMembers) throws Exception {
+	public ResponseList<ProjectTasks> getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(ProjectTasksDTO projectTasksDTO, Long projectId, String taskType, String taskStatus, String userRole,String assignedMembers) throws Exception {
 		return tasksDao.getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(projectTasksDTO,projectId,taskType,taskStatus,userRole,assignedMembers);
 	}
 
@@ -846,4 +864,116 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	     }
 		 projectTaskActivityService.saveProjectTaskActivities(activity.toString(), activitySummary.toString(),projectTasks,user);
 	}
+
+	@Override
+	public File getTaskPdfFile(ResponseList<ProjectTasks> taskList, OrgLocations orgLocations) throws Exception {
+		return pdfUtil.createProjectTasksPdfTable(taskList, orgLocations);
+	}
+	
+	@Override
+	public Sheet getTaskExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, ResponseList<ProjectTasks> taskList, OrgLocations orgLocations) throws Exception {
+		Row writeRow = null;
+        createExcelsheet = getExcelSheetWithHeader(createExcelsheet,writeRow,createExcelworkbook,taskList,orgLocations);
+        java.util.List<ProjectTasks> list =  taskList.getData();
+        int column=0;
+        for(ProjectTasks tasks : list){
+       	 writeRow = createExcelsheet.createRow(column+1);
+       	 createExcelsheet = createXlsSheet(createExcelsheet,writeRow,column,tasks,orgLocations);
+       	 column++;
+        }
+		return createExcelsheet;
+	}
+
+
+	
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, int column, ProjectTasks projectTassks, OrgLocations orgLocations) {
+		
+		 writeRow.createCell(0).setCellValue(projectTassks.getGeneratedId() +"-"+ projectTassks.getTaskName()); 
+
+		 //Task Type
+		 writeRow.createCell(1).setCellValue(projectTassks.getTaskTypes()); 
+
+		 //Task Priority
+		 if(projectTassks.getTaskPriotiry() != null) {
+			 writeRow.createCell(2).setCellValue(projectTassks.getTaskPriotiry());
+			}else {
+				 writeRow.createCell(2).setCellValue("--");
+			}
+		 
+		 //Task Assigned to 
+		 if(projectTassks.getTaskAssignedUsers() != null) {
+				String assignedTo = projectTassks.getTaskAssignedUsers().toString().replaceAll("\\[", "").replaceAll("\\]","");
+				 writeRow.createCell(3).setCellValue(assignedTo);
+			}else {
+				 writeRow.createCell(3).setCellValue("--");
+			}
+
+		 //Task Due Date
+		 if(projectTassks.getDueDate() != null) {
+			 writeRow.createCell(4).setCellValue(projectTassks.getDueDate());
+		 }else {
+			 writeRow.createCell(4).setCellValue("--");
+		 }
+		 
+		 //Task Estimated Time
+		 if(projectTassks.getEstimateTime() != null) {
+			 writeRow.createCell(5).setCellValue(projectTassks.getEstimateTime());
+		 }else {
+			 writeRow.createCell(5).setCellValue("--");
+		 }
+		 
+		 //Task Severity
+		 if(projectTassks.getTaskSeverity() != null) {
+			 writeRow.createCell(6).setCellValue(projectTassks.getTaskSeverity());
+		 }else {
+			 writeRow.createCell(6).setCellValue("--");
+		 }
+		 
+		 //Task owner name
+		 if(projectTassks.getTaskOwnerName() != null) {
+			 writeRow.createCell(7).setCellValue(projectTassks.getTaskOwnerName());
+		 }else {
+			 writeRow.createCell(7).setCellValue("--");
+		 }
+		 
+		 //Task billing type
+		 if(projectTassks.getBillableType() != null) {
+			 writeRow.createCell(8).setCellValue(projectTassks.getBillableType());
+		 }
+		 
+		 //Task business values
+		 if(projectTassks.getBusinessValue() != null) {
+			 writeRow.createCell(9).setCellValue(projectTassks.getBusinessCurrency() +" "+ projectTassks.getBusinessValue());
+		 }else {
+			 writeRow.createCell(9).setCellValue("--");
+		 }
+		 
+		 //Task Status
+		 writeRow.createCell(10).setCellValue(projectTassks.getTaskStaus());
+
+		 //Task Description
+		 if(projectTassks.getDescription() != null) {
+			 String strippedText = projectTassks.getDescription().replaceAll("<font(.*?);\">", " ").replaceAll("</font>", "").replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", "\n").replaceAll("&nbsp;", "");
+			 writeRow.createCell(11).setCellValue(strippedText);
+		 }else {
+			 writeRow.createCell(11).setCellValue("--");
+		 }
+		 
+		 
+		return createExcelsheet;
+	}
+	
+	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, ResponseList<ProjectTasks> taskList, OrgLocations orgLocations)throws Exception {
+		 CellStyle style = createExcelworkbook.createCellStyle();
+	     style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+	     style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+	     Font font = createExcelworkbook.createFont();
+        font.setColor(IndexedColors.BLACK.getIndex());
+        style.setFont(font);
+        String headers [] = Constants.PROJECT_TASKS_EXCEL_HEADERS;
+		return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
+	}
+	
+	
+	
 }

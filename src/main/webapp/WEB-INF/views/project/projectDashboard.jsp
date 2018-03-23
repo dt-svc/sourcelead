@@ -29,7 +29,33 @@ overflow-x: auto;
 	position: absolute; right: 0px;
 }
 </style>
-<body>
+<script>
+	// Close Advanced Search
+		function closeFilterPop(){
+			$("div.cand-advsrch-popup").hide();
+			$(".advancedsearch-mask").fadeOut();
+		}
+		function openFilterPop(){
+			$("div.cand-advsrch-popup").toggle();
+			 $(".advancedsearch-mask").fadeIn();
+		}
+		
+		 
+		//Export filter
+		function exportpop(){
+		  $("#exportPop").toggle();
+		}
+	   $("#export-pop").click(function(){
+	       $("#exportPop").toggle();
+	   });
+	   $("html").click(function() {
+	       $("#exportPop").hide();
+	   });
+	   $("#exportPop, #export-pop").click(function(e) {
+	       e.stopPropagation();
+	   }); 
+	</script>
+	
       <!-- Content Area -->
        <section class="content-wraper">
         <section class="content-header clearfix">
@@ -48,31 +74,35 @@ overflow-x: auto;
         
 	   <div class="timesheet_out timesheet_background">
 		
-        <div class="timesheet_head topfilters">
+        <div class="timesheet_head timesheetHead topfilters">
+			<div class="pull-left cand-advsrch advsrch_chosen">
+			     <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetProjectFilter();" title="Refresh">
+				    <span class="fa fa-refresh"></span>
+				</button>
+				
+				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filter Search" onclick="openFilterPop();"><i class="fa fa-filter faFilter padding_right" style="color: #909090!important"></i>
+				</a>
+	       </div>
+        	
+        	
+        	
         	<ul>
-				<c:if test="${clientListSize > 0}">
-				<li id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play"  ></i>|
-                	<div id="filter1ApprovedPop" class="approved_pop">
-                    	<ul>
-                    	  <c:forEach var="report" items="${add_client}">  
-                        	<li><input  id="clientName${report.id}" name="clientNameById" value ="${report.id}"  onclick="filter();"  type="checkbox"><label for="clientName${report.id}">${report.clientName}</label></li>
-						  </c:forEach>
-                        </ul>
-                    </div>                	
-                </li>
-                </c:if>
-                <li id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" ></i>|
-                	<div id="filter2ApprovedPop" class="approved_pop">
-                    	<ul>
-                        	<!-- <li><input id="c5" type="checkbox" name="projectStatus" value ="All" onclick="filter();"  ><label for="c5">All</label></li> -->
-                        	<li><input id="c7" name="projectStatus" type="checkbox" value ="In-Progress"  onclick="filter();"><label for="c7">In-Progress</label></li>
-							<li><input id="c9" type="checkbox" name="projectStatus" value ="Not Started"  onclick="filter();"><label for="c9">Not Started</label></li>
-							<li><input id="c8" type="checkbox"  name="projectStatus"   value ="Completed"  onclick="filter();"><label for="c8">Completed</label></li>
-               				<li><input id="c6" type="checkbox"  name="projectStatus"  value ="On-Hold"  onclick="filter();"><label for="c6">On-Hold</label></li>
-               				<li><input id="c10" type="checkbox"  name="projectStatus"   value ="Dropped"  onclick="filter();"><label for="c10">Dropped</label></li>
-                        </ul>
-                    </div>                	
-                </li>
+        	<li class="positionRelative">
+				  <div class="dynamic_search">
+		   			<input type='text' placeholder='Search' id='projectsDataTableSearch'/>
+		   			<span class="cursorPointer faSearch" title="Search"><i class="fa fa-search" onClick="filter();"></i></span>
+				  </div>
+			  </li>
+			  
+		      	<li title="Export"><a id="export-pop" onClick="exportpop();"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
+					<div id="exportPop" class="user_exp">
+						<ul class="ul_padding">
+							<li onclick="projectExport('Pdf');" title="PDF"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
+							<li onclick="projectExport('Excel');" title="Excel"><i class="fa fa-file-excel-o"></i>&nbsp; Excel</li>
+						</ul>
+					</div>
+				 </li>
+				 
 	             
 	             <li><sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT')">
 							<a onclick="getActions();" class="action"
@@ -86,18 +116,83 @@ overflow-x: auto;
 								</span>
 							</div>
 						</sec:authorize></li>
-	             
                 <div class="clearfix"></div>
             </ul>
             <div class="clearfix"></div>
         </div>
 			
-	<div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew pdtop">
+	<div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew">
     	<div id="projectFilterList" class="datatable_filter"></div>
 	</div>	   
 				
 		</div>
+		
+		<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small">
+				<h5 class="headerAdsrch">Filter Search
+					<a href="javascript:void(0)" class="close-div" onClick="closeFilterPop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+						<div class="col-md-4">
+						<div class="row">
+						<div class="col-md-12 mb hidden">
+								<label><strong>Project Type</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="typeFilter">
+			                    	    <li class="checkBox positionRelative" ><input id="c11" name="projectType" type="checkbox" value=""><label for="c7">Internal Project(s)</label></li>
+										<li class="checkBox positionRelative" ><input id="c12" type="checkbox" name="projectType" value="N" ><label for="c9">Client Project(s)</label></li>
+			                        </ul>
+								 </div>
+								 </div> 
+								 
+								 
+						<div class="col-md-12 mb">
+							<label><strong>Status</strong></label>
+							 <div class="clearfix">
+								<ul class="list-unstyled" id="statusFilter">
+		                    	    <li class="checkBox positionRelative" ><input id="c7" name="projectStatus" type="checkbox" value ="In-Progress"  checked ><label for="c7">In-Progress</label></li>
+									<li class="checkBox positionRelative" ><input id="c9" type="checkbox" name="projectStatus" value ="Not Started" ><label for="c9">Not Started</label></li>
+									<li class="checkBox positionRelative" ><input id="c8" type="checkbox"  name="projectStatus"   value ="Completed" ><label for="c8">Completed</label></li>
+		               				<li class="checkBox positionRelative" ><input id="c6" type="checkbox"  name="projectStatus"  value ="On-Hold"  checked ><label for="c6">On-Hold</label></li>
+		               				<li class="checkBox positionRelative" ><input id="c10" type="checkbox"  name="projectStatus"   value ="Dropped" ><label for="c10">Dropped</label></li>
+		               				
+		                        </ul>
+							 </div>
+							 </div> 
+						  </div>
+						</div>
+						<c:if test="${clientListSize > 0}">
+							 <div class="col-md-4 mb positionRelative">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="myClientsInput" onkeyup="myClientsFunction()" placeholder="Clients" title="Type in a clients">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myClientsUL">
+										    <c:forEach var="report" items="${add_client}">
+											     <li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" value ="${report.id}" ><label>${report.clientName}</label></li>
+											</c:forEach>
+										</ul>
+									 </div> 
+							 </div> 
+							 </c:if>
+						
+						
+					</div>
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet"
+								onclick="closeFilterPop();filter();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search"
+								onclick="resetProjectFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+				</div>
+				
 		<%-- </c:if> --%>
+		<div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
 		<div class="side_mask"><div class="proj_close"><i></i></div></div>
 		<div class="project_side_wrap">
 			<div class="project_side_wrap_inn">
@@ -113,10 +208,38 @@ overflow-x: auto;
 		   </div>		
 	   </section>
 	   <div id="popUp"></div>
-	  </body>
 <!--   Popup's   -->
                
+<script>
+function resetProjectFilter(){
+	$("ul#typeFilter > li input:checkbox").prop("checked",false);
+	$("ul#statusFilter > li input:checkbox").prop("checked",false);
+	$("ul#myClientsUL > li input:checkbox").prop("checked",false);
 	
+	document.getElementById("c6").checked = true;
+	document.getElementById("c7").checked = true;
+	filter();
+	
+}
+
+function myClientsFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myClientsInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myClientsUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+</script>
 <script type="text/javascript">
 window.onload = function () {
 		projectsList("${searchValue}","${searchResult}","${projectId}","${projectName}","${startDate}","${endDate}","${status}","${projectKeyword}");
@@ -196,7 +319,7 @@ function filter(){
 	  
 	  var result = "";
 	 	result = result +" <div class='remove_search'>";
-	 	result = result +" <input type='text' placeholder='Search' id='projectsDataTableSearch'/>";
+// 	 	result = result +" <input type='text' placeholder='Search' id='projectsDataTableSearch'/>";
 	 	result = result +"</div>";
 	 	
 	 	result = result + '<table id="projectsListTable" class="display" cellspacing="0" width="100%" >';
@@ -225,23 +348,27 @@ function filter(){
 
 <script>
 function projectDataTableList(){
-	
 	var values = [];
-	$('input:checkbox[name=projectStatus]:checked').each(function() 
-    {
+	$('input:checkbox[name=projectStatus]:checked').each(function() {
 			values.push($(this).val());
     });
 	
-	var clients = [];
-	$('input:checkbox[name=clientNameById]:checked').each(function() 
-		    {
-		clients.push($(this).val());
-		    });
 	
+	var projectType = [];
+	$('input:checkbox[name=projectType]:checked').each(function() {
+		projectType.push($(this).val());
+    });
+	
+	
+	
+	var clients = [];
+	$('input:checkbox[name=clientNameById]:checked').each(function() {
+		clients.push($(this).val());
+	});
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#projectsDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getProjectsByStatusAndClient?searchValue="+searchValue+"&values="+values+"&clients="+clients;
+	 var url = sourceleadUrl+"/getProjectsByStatusAndClient?searchValue="+searchValue+"&values="+values+"&clients="+clients+"&projectType="+projectType;
 	 projectsPagination(url,sourceleadUrl);
 }
 </script>
@@ -977,5 +1104,36 @@ function getActions(){
  	});	
 }
 </script>
+
+<!-- ============================================= Export related functionality  By Laxman   ====================================== -->
+<script>
+function projectExport(type){
+	if(type == "Pdf"){
+		exportType = "pdf";
+	}else{
+		exportType = "xls";
+	}
+	var values = [];
+	$('input:checkbox[name=projectStatus]:checked').each(function() {
+			values.push($(this).val());
+    });
+	
+	var projectType = [];
+	$('input:checkbox[name=projectType]:checked').each(function() {
+		projectType.push($(this).val());
+    });
+	
+	var clients = [];
+	$('input:checkbox[name=clientNameById]:checked').each(function() {
+		clients.push($(this).val());
+	});
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var searchValue = $("#projectsDataTableSearch").val();
+	 searchValue = searchValue ? searchValue : "";
+	 window.location.href = sourceleadUrl + "/getExportProjects?&searchValue="+searchValue+"&values="+values+"&clients="+clients+"&projectType="+projectType+"&exportType="+exportType;
+	
+}
+</script>
+
 
 <jsp:include page="../masterFooter.jsp" />	

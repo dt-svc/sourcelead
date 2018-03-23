@@ -25,6 +25,12 @@ public class CandidateReferencesDTO {
 	
 	private long candidateId;
 	
+	private long loginUserId;
+	
+	private long orgLocationId;
+	
+	private String userCode;
+	
 	public String getName()
 	{
 		return name;
@@ -133,6 +139,36 @@ public class CandidateReferencesDTO {
 	public void setCandidateId(long candidateId)
 	{
 		this.candidateId = candidateId;
+	}
+
+	public long getLoginUserId()
+	{
+		return loginUserId;
+	}
+
+	public void setLoginUserId(long loginUserId)
+	{
+		this.loginUserId = loginUserId;
+	}
+
+	public long getOrgLocationId()
+	{
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(long orgLocationId)
+	{
+		this.orgLocationId = orgLocationId;
+	}
+
+	public String getUserCode()
+	{
+		return userCode;
+	}
+
+	public void setUserCode(String userCode)
+	{
+		this.userCode = userCode;
 	}
 	
 	
