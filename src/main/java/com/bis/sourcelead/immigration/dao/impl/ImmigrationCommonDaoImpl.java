@@ -180,4 +180,21 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return candidatePassportVisa;
 
 }
+    
+    @Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateResidence saveResidenceDetails(CandidateResidence candidateResidence) throws Exception {
+		
+		logger.debug("Adding CandidateResidence");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			session.saveOrUpdate(candidateResidence);
+			logger.debug("CandidateResidence Added Successfully");
+		} catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"CANDIDATE_RESIDENCE"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		
+		return candidateResidence;
+	}
 }

@@ -389,3 +389,31 @@ function savePassportDetails(status) {
         return false;
     }
 }
+
+function savePassportDetails(status) {
+	if ($('#residenceDetails_form').validate(false, validationSettings)) {
+        var formData = getFormData("residenceDetails_form");
+        var candidateId = $('#candidateId').val();
+        var immigrationId = $('#immigrationId').val();
+        $.ajax({
+            url: sourceleadUrl + immiModulePath + "/saveImmigrationResidenceDetails?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
+            type: "POST",
+            data: formData,
+            success: function (data) {
+                if (data == 'success') {
+                    if (status == 'saveContinue') {
+                        $("#addNewPetitionTemplateDiv").empty();
+                        $("#addNewPetitionTemplateDiv").load(sourceleadUrl + immiModulePath + "/gotoTemplatePreviousPage?status=taskList");
+                    } else if (status == 'save') {
+                        $("#addNewPetitionTemplateDiv").empty();
+                        $("#addNewPetitionTemplateDiv").load(sourceleadUrl + immiModulePath + "/gotoTemplatePreviousPage?status=formDetails");
+                    }
+                }
+            }
+        });
+
+        return true;
+    } else {
+        return false;
+    }
+}

@@ -33,6 +33,7 @@ public interface ImmigrationCommonDao {
 
 	CandidatePassportVisa savePassportDetails(CandidatePassportVisa candidatePassportVisa)throws Exception;
 
-	
+	CandidateResidence saveResidenceDetails(CandidateResidence candidateResidence)	throws Exception;
+
 
 }
