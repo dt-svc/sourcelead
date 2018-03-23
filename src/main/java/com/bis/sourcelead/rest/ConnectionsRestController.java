@@ -241,8 +241,13 @@ public class ConnectionsRestController {
 		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, locationId, iAdressArray, new ArrayList<EmailAttachment>());
-		 String actionLink = "";
+//		 String actionLink = "";
 		 UserRole role = userRoleService.getUserRoleByUserId(toUser.getId());
+		String actionLink = "";
+		StringBuilder actionUrlBuilder = new StringBuilder();
+		actionLink = actionUrlBuilder.append("").append(sourceleadUrl).append("/").append("loadReceivedConnections?status=received").toString();
+		 		 
+		  	
 		 emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, role.getOrgLocations(), noificationEmailScenario);
 	}
 	
