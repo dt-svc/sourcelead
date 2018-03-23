@@ -17,7 +17,9 @@
         <h2>Immigrations</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/viewImmigrationList">Immigrations List</a> &raquo; Immigration Summery</div>
-      
+      <input type="hidden" id = "candidateID" value = "${candidateId}">
+		<input type="hidden" id = "immigrationID" value = "${immigrationId}">
+		<input type="hidden" id = "templateID" value = "${templateId}">
 		<div class="clearfix"></div>
 		<div class="immigraHead">
 			<ul class="immigraTabs">
