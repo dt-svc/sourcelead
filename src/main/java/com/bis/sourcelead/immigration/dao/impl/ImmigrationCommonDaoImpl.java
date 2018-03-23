@@ -19,6 +19,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateLcaI94Summary;
+import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
@@ -155,4 +156,28 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return "success";
 	}
 
+
+    @Override
+    @Transactional(rollbackFor = { Exception.class })
+	public CandidatePassportVisa savePassportDetails(CandidatePassportVisa candidatePassportVisa) throws Exception
+	{
+   Session session = this.sessionFactory.getCurrentSession();
+  
+		logger.debug("Storing ImmigrationPassportVisa");
+		try {
+			if (candidatePassportVisa != null) {
+				session.saveOrUpdate(candidatePassportVisa);
+			}
+			logger.debug("candidateCertifications Stored Successfully");
+		} catch (Exception exception) {
+			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"CandidatePassport"));
+			    try {
+	                throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
+	            } catch (SourceLeadConstraintViolationException e) {
+	                e.printStackTrace();
+	            }
+		}
+		return candidatePassportVisa;
+
+}
 }

@@ -7,10 +7,17 @@
 	  
 <script type="text/javascript">
 window.onload = function() { 
+
 	getPieChartBasedOnUser();
 	getApproversList();
    if($("#checkbox-1").is(':checked')){
 	   $("#checkbox-1").prop('checked', false);
+	}
+   if($("#checkbox-2").is(':checked')){
+	   $("#checkbox-2").prop('checked', false);
+	}
+   if($("#checkbox-3").is(':checked')){
+	   $("#checkbox-3").prop('checked', false);
 	}
 	}
 </script>
@@ -67,7 +74,7 @@ window.onload = function() {
                   <div class="col-md-5 paddingLeft"  id="fromHalfDayDiv">
                     <label class="checkBox mt5">
                       <label class="checkBox pull-left mr10">
-					<input id="checkbox-2" class="checkbox-custom checkboxCustom" id="fromHalfDay" name="fromHalfDay"  type="checkbox" onclick="checkFromHalfDay();">
+					<input id="checkbox-2" class="checkbox-custom checkboxCustom" id="fromHalfDay" name="fromHalfDay"  type="checkbox" onclick="checkFromHalfDay();validateFromHalfDay();">
 					<label for="checkbox-2" class="checkbox-custom-label"></label>
                   </label>
                       Half a Day </label>
@@ -85,7 +92,7 @@ window.onload = function() {
                   <div class="col-md-5 paddingLeft" id="toHalfDayDiv">
                     <label class="checkBox mt5">
                       <label class="checkBox pull-left mr10">
-					<input id="checkbox-3" class="checkbox-custom checkboxCustom" name="toHalfDay" value="NO" type="checkbox" onclick="checkToHalfDay();">
+					<input id="checkbox-3" class="checkbox-custom checkboxCustom" name="toHalfDay" value="NO" type="checkbox" onclick="checkToHalfDay();validateToHalfDay();">
 					<label for="checkbox-3" class="checkbox-custom-label"></label>
                   </label>
                       Half a Day </label>
@@ -158,12 +165,120 @@ window.onload = function() {
  </script> 
  <script>
  function checkFromHalfDay(){
-	 $("#checkbox-2").val('YES');
+	
+    $("#checkbox-2").val('YES');
  }
  
  function checkToHalfDay(){
+	
 	 $("#checkbox-3").val('YES');
  }
+  function validateFromHalfDay()
+  {
+	  $("#toHalfDayDiv").hide();
+		 var fromDate = $("#fromDate").val();
+		 var toDate = $("#toDate").val();
+		 if(fromDate.length !=0 && toDate.length!=0)
+	    {
+		 if(fromDate == toDate)
+		 {
+			 
+			 $("#toHalfDayDiv").hide();
+		 }
+		else
+			{
+			 $("#toHalfDayDiv").show();
+			}
+		 
+		
+	    }
+	  
+  }
+  function validateToHalfDay()
+  {
+	  $("#fromHalfDayDiv").hide();
+		 var fromDate = $("#fromDate").val();
+		 var toDate = $("#toDate").val();
+
+		 if(fromDate.length !=0 && toDate.length!=0)
+		    {
+		 if(fromDate == toDate)
+		 {
+			$("#fromHalfDayDiv").hide();
+			
+		  }
+		   else
+			{
+				$("#fromHalfDayDiv").show();
+			}
+		 
+		
+		    } 
+   }
+ function checkFromDate(){
+	 var fromDate = $("#fromDate").val();
+	 var toDate = $("#toDate").val();
+	 
+	 if(fromDate.length !=0 && toDate.length!=0)
+	    {
+		 if(fromDate == toDate && ($("#checkbox-3").is(':checked')) && ($("#checkbox-2").is(':checked'))){
+			 $("#checkbox-3").prop('checked', false);
+			 $("#toHalfDayDiv").hide();
+		 }else{
+			 if(fromDate == toDate && ($("#checkbox-3").is(':checked')) )
+			 {
+				 $("#fromHalfDayDiv").hide();
+			 }
+			else
+				{
+				$("#fromHalfDayDiv").show();
+				}
+			 if(fromDate == toDate && ($("#checkbox-2").is(':checked')) )
+			 {
+				 $("#toHalfDayDiv").hide();
+			 }
+			else
+				{
+				$("#toHalfDayDiv").show();
+				}
+		 }
+	    }
+	 
+ }
+  function checkToDate()
+  {
+	  
+	  var fromDate = $("#fromDate").val();
+	  var toDate = $("#toDate").val();
+	  if(fromDate.length !=0 && toDate.length!=0)
+	  {
+		if(fromDate == toDate && ($("#checkbox-3").is(':checked')) && ($("#checkbox-2").is(':checked'))){
+			 $("#checkbox-3").prop('checked', false);
+			 $("#toHalfDayDiv").hide();
+	  }
+	 else
+	 {
+		 if(fromDate == toDate && ($("#checkbox-2").is(':checked')))
+		  {
+			 $("#toHalfDayDiv").hide();
+		   }
+		  else
+		  {
+			$("#toHalfDayDiv").show();
+		  }
+		 if(fromDate == toDate && ($("#checkbox-3").is(':checked')))
+		 {
+			 $("#fromHalfDayDiv").hide();
+		 }
+		 else
+		 {
+			$("#fromHalfDayDiv").show();
+		 }
+	 }
+   } 
+	  
+	  
+  }
  </script>
   
   
@@ -190,6 +305,7 @@ window.onload = function() {
 			dt.setDate(dt.getDate());
 			$("#toDate").datepicker("option", "minDate", dt);
 			removeStartValid();
+			checkFromDate();
 			getLeaveDetails(finalDateFormatEndDate);
 			}
 		});
@@ -203,6 +319,7 @@ window.onload = function() {
 			dt.setDate(dt.getDate());
 			$("#fromdate").datepicker("option", "maxDate", dt);
 			removeEndValid();
+			checkToDate();
 			validateDate();
 			getLeaveDetails();
 // 			 $('#leaveType').prop('disabled', false).trigger("chosen:updated");

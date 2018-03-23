@@ -6,6 +6,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateLcaI94Summary;
+import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
@@ -29,5 +30,9 @@ public interface ImmigrationCommonDao {
 	CandidateLcaI94Summary getCandidateLCADetails(Long id, String yes);
 
 	String saveCandidateFamilyMemberDetails(CandidateFamilyDetails familyDetails) throws Exception;
+
+	CandidatePassportVisa savePassportDetails(CandidatePassportVisa candidatePassportVisa)throws Exception;
+
 	
+
 }

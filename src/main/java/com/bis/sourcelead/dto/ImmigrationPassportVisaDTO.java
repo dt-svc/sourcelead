@@ -1,0 +1,189 @@
+package com.bis.sourcelead.dto;
+
+public class ImmigrationPassportVisaDTO extends SearchDTO{
+	
+	private static final long serialVersionUID = 1L;
+	 
+
+    /**
+     *@author Mamatha Adla
+     */
+ 
+    private Long id;
+    
+    private String candidateId;
+	
+	private String idNumber;
+
+	private String idType;
+
+	private String VisaId;
+
+	private String visaType;
+
+	private String country;
+	
+	private String validFrom;
+
+	private String validTo;
+	
+	private Integer Status;
+
+	private String createdBy;
+
+	private String updatedDate;
+
+	private String updatedBy;
+	
+	private String staticPath;
+
+	public String getStaticPath()
+	{
+		return staticPath;
+	}
+
+	public void setStaticPath(String staticPath)
+	{
+		this.staticPath = staticPath;
+	}
+
+	public Long getId()
+	{
+		return id;
+	}
+
+	public void setId(Long id)
+	{
+		this.id = id;
+	}
+
+	public String getCandidateId()
+	{
+		return candidateId;
+	}
+
+	public void setCandidateId(String candidateId)
+	{
+		this.candidateId = candidateId;
+	}
+
+	
+
+	public String getVisaId()
+	{
+		return VisaId;
+	}
+
+	public void setVisaId(String visaId)
+	{
+		VisaId = visaId;
+	}
+
+
+	public String getValidFrom()
+	{
+		return validFrom;
+	}
+
+	public void setValidFrom(String validFrom)
+	{
+		this.validFrom = validFrom;
+	}
+
+	public String getValidTo()
+	{
+		return validTo;
+	}
+
+	public void setValidTo(String validTo)
+	{
+		this.validTo = validTo;
+	}
+
+	public Integer getStatus()
+	{
+		return Status;
+	}
+
+	public void setStatus(Integer status)
+	{
+		Status = status;
+	}
+
+	public String getCreatedBy()
+	{
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy)
+	{
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedDate()
+	{
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(String updatedDate)
+	{
+		this.updatedDate = updatedDate;
+	}
+
+	public String getUpdatedBy()
+	{
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy)
+	{
+		this.updatedBy = updatedBy;
+	}
+
+	public static long getSerialversionuid()
+	{
+		return serialVersionUID;
+	}
+
+	public String getIdNumber()
+	{
+		return idNumber;
+	}
+
+	public void setIdNumber(String idNumber)
+	{
+		this.idNumber = idNumber;
+	}
+
+	public String getIdType()
+	{
+		return idType;
+	}
+
+	public void setIdType(String idType)
+	{
+		this.idType = idType;
+	}
+
+	public String getVisaType()
+	{
+		return visaType;
+	}
+
+	public void setVisaType(String visaType)
+	{
+		this.visaType = visaType;
+	}
+
+	public String getCountry()
+	{
+		return country;
+	}
+
+	public void setCountry(String country)
+	{
+		this.country = country;
+	}
+
+	
+}
