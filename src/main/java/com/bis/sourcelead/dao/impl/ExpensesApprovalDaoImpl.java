@@ -94,7 +94,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 					+ "  sah.expenseApprovalStatus = 'SUBMITTEDFORAPPROVAL' or sah.expenseApprovalStatus = 'APPROVED' or sah.expenseApprovalStatus = 'REJECTED' or sah.expenseApprovalStatus = 'REOPENED' ";
 		}
 		else{
-			if (Arrays.asList(expStatus).contains("SUBMITTEDFORAPPROVAL")||Arrays.asList(expStatus).contains("submitted")) {
+			if (Arrays.asList(expStatus).contains("SUBMITTEDFORAPPROVAL")||Arrays.asList(expStatus).contains("submitted")||Arrays.asList(expStatus).contains("SUBMITTED")) {
 				subQuery2 = subQuery2 + " sah.expenseApprovalStatus = 'SUBMITTEDFORAPPROVAL' ";
 			}
 			if (Arrays.asList(expStatus).contains("APPROVED")||Arrays.asList(expStatus).contains("approved")) {
@@ -169,12 +169,14 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		String from = "from  ExpensesApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.projectClientsId pc left join fetch pc.orgRelationId orgRelation left join fetch hierarchy.approverUserId approver left join fetch sah.expenseId exp  left join fetch exp.projectMembers pm left join fetch pm.projects projects"
 				+ " left join fetch pm.masterCandidateId mc left join fetch pm.employee emp left join fetch emp.user user where "
 			+ " pc.orgLocationsId.id = :orgLocationId"
-			+ " and ( ("
+				
+           + "  and   ((hierarchy.approverUserId.id = :userId ) "     
+			/*+ " and ( ("
 			+ "      hierarchy.approverUserId.id = :userId and "
-			+ "       (     (((emp.user.id IS NULL) OR (emp.user.id IS NOT NULL and hierarchy.level = '2' and emp.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id and subeah.hierarchyId.level = '2')))) "
-			+ "          OR (((emp.user.id IS NULL) OR (emp.user.id  IS NOT NULL and hierarchy.level = '1' and emp.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id)) )) "
+			+ "       (     (((emp IS NULL OR emp.user.id IS NULL) OR (emp.user.id IS NOT NULL and hierarchy.level = '2' and emp.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id and subeah.hierarchyId.level = '2')))) "
+			+ "          OR (((emp IS NULL OR  emp.user.id IS NULL) OR (emp.user.id  IS NOT NULL and hierarchy.level = '1' and emp.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id)) )) "
 			+ "       )"
-			+ "      ) "
+			+ "      ) "*/
 		     /*
 			 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 			 */
@@ -185,12 +187,13 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		if(length>0) {
 			     countFrom = "Select count(*) from  ExpensesApproverHierarchy sah where"
 					+ " sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId"
-					+ " and ( ("
+					+ " and ( (sah.hierarchyId.approverUserId.id = :userId  )"
+				/*	+ " and ( ("
 					+ "      sah.hierarchyId.approverUserId.id = :userId and "
-					+ "       (     (((sah.expenseId.projectMembers.employee.user.id IS NULL) OR (sah.expenseId.projectMembers.employee.user.id IS NOT NULL and sah.hierarchyId.level = '2' and sah.expenseId.projectMembers.employee.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id and subeah.hierarchyId.level = '2')))) "
-					+ "          OR (((sah.expenseId.projectMembers.employee.user.id IS NULL) OR (sah.expenseId.projectMembers.employee.user.id  IS NOT NULL and sah.hierarchyId.level = '1' and sah.expenseId.projectMembers.employee.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id)) )) "
+					+ "       (     (((sah.expenseId.projectMembers.employee IS NULL OR sah.expenseId.projectMembers.employee.user.id IS NULL) OR (sah.expenseId.projectMembers.employee.user.id IS NOT NULL and sah.hierarchyId.level = '2' and sah.expenseId.projectMembers.employee.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id and subeah.hierarchyId.level = '2')))) "
+					+ "          OR (((sah.expenseId.projectMembers.employee IS NULL OR  sah.expenseId.projectMembers.employee.user.id IS NULL) OR (sah.expenseId.projectMembers.employee.user.id  IS NOT NULL and sah.hierarchyId.level = '1' and sah.expenseId.projectMembers.employee.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id)) )) "
 					+ "       )"
-					+ "      ) "
+					+ "      ) "*/
 				    /*
 					 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 					 */

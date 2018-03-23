@@ -455,9 +455,9 @@ function populateInlineItemsGrid(data){
              result = result +'<td>';
              result = result +'<div class="tbldata-dotdot-100">';
              if(opt.rate != null && opt.rate !='' && opt.rate !='undefined'){
-                 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="lineItems['+i+'].rate" value='+opt.rate+' placeholder="Rate" data-validation="required" field-name="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">'; 
+                 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="lineItems['+i+'].rate" value='+opt.rate+' placeholder="Rate" data-validation="required validate_float" field-name="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">'; 
              }else{
-                 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="lineItems['+i+'].rate"  placeholder="Rate" data-validation="required" field-name="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">';
+                 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="lineItems['+i+'].rate"  placeholder="Rate" data-validation="required validate_float" field-name="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">';
              }
              result = result +'</div>';
              result = result +'</td>';
@@ -614,8 +614,8 @@ function populateInlineItemsGrid1(data){
     	 result = result +'<td>';
     	 result = result +'<div class="tbldata-dotdot_80 validationTxt">';
     	 if(opt.rate != null && opt.rate !='' && opt.rate !='undefined'){
-    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="lineItems['+i+'].rate" value='+opt.rate+' placeholder="Rate" data-validation="required" field-name="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">'; 
-    	 }else{
+    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="lineItems['+i+'].rate" value='+opt.rate+' placeholder="Rate" data-validation="required " field-name="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">'; 
+    		 }else{
     		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="lineItems['+i+'].rate"  placeholder="Rate" data-validation="required" field-name="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">';
     	 }
     	 result = result +'</div>';
@@ -1559,6 +1559,16 @@ function toDate(selector) {
 		        	  
 		        	
 		        	$("#savedInvoiceId").val(json['id']); 
+		        	
+		        	
+		        	var test = json['invoiceParentId'];
+		        	if(json['invoiceStatus'] == "Rejected" && test != null){
+			   			 document.getElementById("sendInvoice").style.display="none";
+			   			 document.getElementById("saveInvoice").style.display="none";
+			       	}else{
+			       		document.getElementById("sendInvoice").style.display="inline-block";
+			   			document.getElementById("saveInvoice").style.display="inline-block";
+			       	}
 		        	
 		        	
 		        	

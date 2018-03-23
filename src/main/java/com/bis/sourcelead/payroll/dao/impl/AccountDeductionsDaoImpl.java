@@ -74,7 +74,7 @@ public class AccountDeductionsDaoImpl implements AccountDeductionsDao{
 			qry = " order by acd."+ accountDeductionsDTO.getSortColumn() +" "+accountDeductionsDTO.getSortOrder();
 		}
 		
-		String query = "from AccountDeductions acd  left join fetch acd.orgLocationId where acd.orgLocationId.id =:orgLocationId"+qry;
+		String query = "from AccountDeductions acd  left join fetch acd.orgLocationId where acd.orgLocationId.id =:orgLocationId";
 		String countQuery = "from AccountDeductions acd  where acd.orgLocationId.id =:orgLocationId";
 		
 		
@@ -113,7 +113,7 @@ public class AccountDeductionsDaoImpl implements AccountDeductionsDao{
 					.append("OR acd.repaidStatus like '%" + accountDeductionsDTO.getSearchValue() + "%' ");
 					
 			}
-		Query queryObj = session.createQuery(query + query1.toString());
+		Query queryObj = session.createQuery(query + query1.toString()+qry);
 		if (accountDeductionsDTO != null && accountDeductionsDTO.getLength() > 0) {
 			queryObj.setFirstResult(accountDeductionsDTO.getStart());
 			queryObj.setMaxResults(accountDeductionsDTO.getLength());

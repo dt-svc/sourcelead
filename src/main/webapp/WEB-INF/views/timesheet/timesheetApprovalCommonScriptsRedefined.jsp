@@ -91,7 +91,11 @@ function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,
 			    	 setTotals();
 				     maskme();
 		      }
-	    }); 
+	    });
+     	selectedRecords = {};
+		$(".checkBoxForSubmitForApproval").click(function () {
+	    	selectedRecords[$(this).val()] = $(this).is(":checked");
+	    });
 } 
 </script>
 <script>
@@ -208,8 +212,11 @@ function cancelRejectSubmission(projectMemberId){
 function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 	var submissionIDs = [];
 	for(var e in selectedRecords) {
-		submissionIDs.push(e);
+		if(selectedRecords[e]){
+			submissionIDs.push(e);
+		}
 	}
+	alert(submissionIDs);
 	var data = submissionIDs.toString().split(',');
 	for(var i=0; i<=data.length;i++){
 		var data2 = data[i].toString().split('!');
@@ -238,6 +245,10 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 		    			   	$("#loadingCotentDiv").removeAttr('style');
 		    			   	$('#hedderAcceptRejectButton').attr('style','display:none');
 			    		}
+		    			selectedRecords = {};
+		    			$(".checkBoxForSubmitForApproval").click(function () {
+	             	    	selectedRecords[$(this).val()] = $(this).is(":checked");
+	             	    });
 			    	}
 			    }
 		    });  
@@ -265,9 +276,13 @@ function rejectTimeSheetSubmissionBySubmissionId(tableFor){
 }
 
 function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
-	var submissionIDs = $('input[name="checkBoxForSubmitForApproval"]:checked').map(function() {
-	    return this.value;
-	}).get();
+	var submissionIDs = [];
+	for(var e in selectedRecords) {
+		if(selectedRecords[e]){
+			submissionIDs.push(e);
+		}
+	}
+	alert(submissionIDs);
 	var dataOne = submissionIDs.toString().split(',');
 	for(var i=0; i<=dataOne.length;i++){
 		var dataTwo = dataOne[i].split('!');
@@ -307,6 +322,10 @@ function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
 	      		      $("#rejectpanel").hide();
 	      		      $('#hedderAcceptRejectButton').attr('style','display:none');
 		   	   }
+		       selectedRecords = {};
+   				$(".checkBoxForSubmitForApproval").click(function () {
+        	    	selectedRecords[$(this).val()] = $(this).is(":checked");
+        	    });
 	      }
 	    }); 
 	 }else{

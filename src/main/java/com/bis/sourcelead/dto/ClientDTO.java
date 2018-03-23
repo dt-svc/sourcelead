@@ -102,7 +102,17 @@ public class ClientDTO {
 	
 	private CandidateDTO candidateDTO;
 	
+	public String getClientSaveFromType()
+	{
+		return clientSaveFromType;
+	}
+	public void setClientSaveFromType(String clientSaveFromType)
+	{
+		this.clientSaveFromType = clientSaveFromType;
+	}
 	private String UUID;
+	
+	private String clientSaveFromType;
 	
 	private List<CustomFormFieldDTO> customFormData;
 	

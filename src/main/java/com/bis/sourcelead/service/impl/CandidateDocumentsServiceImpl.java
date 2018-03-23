@@ -234,6 +234,7 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 				docDto.setDocumentOtherType(doc.getDocumentOtherType());
 			if(StringUtils.isNotBlank(doc.getDocumentType()))			
 				docDto.setDocumentType(doc.getDocumentType());
+			    docDto.setName(doc.getDocumentType());
 			if(StringUtils.isNotBlank(doc.getIsConfidential()))		
 				docDto.setIsConfidential(doc.getIsConfidential());
 			if(StringUtils.isNotBlank(doc.getFileName()))		
@@ -258,9 +259,11 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 			if(StringUtils.isNotBlank(doc.getRequestedDocStatus())){
 				docDto.setRequestedDocStatus(doc.getRequestedDocStatus());
 			}
-
+			docDto.setDoctype(doc.getDocumentType());
 			docDto.setUserIdStr(doc.getCreatedBy());
-
+			docDto.setCandidateId(String.valueOf(candidateId));
+			docDto.setDocumentUUID(doc.getDocumentUUID());
+			docDto.setDocumentId(String.valueOf(doc.getId()));
 			candiDocList.add(docDto);
 		}
 		
