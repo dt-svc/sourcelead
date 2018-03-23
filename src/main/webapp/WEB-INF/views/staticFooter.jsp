@@ -93,8 +93,15 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
 	<li><a href="/sourceleadJobPage.html">Search Job</a></li>
 	<li><a href="/marketplace.html">Marketplace</a></li>
 	<li><a href="/about-us.html">About Us</a></li>
-	<!--<li><a href="helpManuals.html">Help</a></li>-->
-	<li><a href="/blog.html">Blog</a></li>
+	<li class="dropdown dropdown-featureshome">
+	 <a data-target="#featureshome" href="javascript:void(0)" id="resourcesID">Resources
+			  <span class="fa fa-angle-down"></span></a>
+			<ul id="featureshome" class="collapse list-unstyled dropdownmenu-custom">
+				<li><a class="helpbtn" href="/sourcelead_help.html">Help</a></li>
+				<li><a href="/blog.html" id="blogID">Blog</a></li>
+			</ul>
+	</li>
+
 	<li><a href="/contact.html">Contact</a></li>
 	<li><a class="loginbtn" href="/login" title="Login">Login</a></li>
 	<li><a href="/register" title="Login">Sign Up</a></li>
