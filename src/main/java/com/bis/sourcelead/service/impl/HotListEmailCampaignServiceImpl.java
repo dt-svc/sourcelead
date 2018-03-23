@@ -529,7 +529,7 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 		      tempHTML = tempHTML + "   </table></td>";
 		      tempHTML = tempHTML + " </tr>";
               tempHTML = tempHTML + "</table>";
-              /*tempHTML = tempHTML + "<a href='[unsubscribe]'>Click Here to Unsubscribe</a>";*/
+              tempHTML = tempHTML + "<a href='[unsubscribe]' style='display:none'>Click Here to Unsubscribe</a>";
 		
 		/* String tempHTML = null;
 		 
@@ -1036,7 +1036,7 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 		tempHTML = tempHTML + " </table></td>";
 		tempHTML = tempHTML +"</tr>";
 		tempHTML = tempHTML +"</table>";
-        /*tempHTML = tempHTML + "<a href='[unsubscribe]'>Click Here to Unsubscribe</a>";*/
+        tempHTML = tempHTML + "<a href='[unsubscribe]' style='display:none'>Click Here to Unsubscribe</a>";
 		
 		
 		
