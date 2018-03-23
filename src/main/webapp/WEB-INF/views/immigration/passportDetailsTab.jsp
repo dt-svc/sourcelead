@@ -134,10 +134,8 @@
 			  </ul>
 		</div>
 		<!--popup code start -->
-		<form id="Candidate_Passport_form" name="Candidate_Passport_form" method="post"> 
+		<form id="Candidate_Passport_form" name="CandidatePassportform" method="post"> 
 		<div class="popUpOut" id="popPassView">
-		<input type="hidden" value="${immigrationId}"  id="immigrationId" >
-	     <input type="hidden" value="${candidateId}"  id="candidateId" >
 		<div class="popupHead">
 			<h2>Add Passport</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
 		</div>
@@ -179,7 +177,7 @@
 		
 		
 		<div class="immiPopFoot">
-            <input value="Save" class="" type="button" id="passport_save_id" onclick="savePassportDetails('save')">
+            <input value="Save" class="" type="button" id="passport_save_id" onclick="immigration.savePassportVisaDetails('Passport')">
             <input value="Cancel" class="popCan" type="button">
           </div>		
 	</div><!--popcode end  -->

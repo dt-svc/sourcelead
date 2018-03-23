@@ -416,9 +416,8 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	@Override
 	public CandidatePassportVisa savePassportDetails(ImmigrationPassportVisaDTO immigrationPassportVisaDTO, User user,
 			OrgLocations orgLocations) throws Exception {
-
 		CandidatePassportVisa candidatePassportVisa = new CandidatePassportVisa();
-		Candidate can = new Candidate();
+		Candidate candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(immigrationPassportVisaDTO.getCandidateId()));
 		// SimpleDateFormat simpleDateFormat =
 		// orgLocationId.getLocFullFormDateFormatter();
 		StringBuffer activitySummary = new StringBuffer();
@@ -462,11 +461,30 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			}
 
 		}
+		if(immigrationPassportVisaDTO.getIdType()=="Visa")
+		{
+			candidatePassportVisa.setVisaType(immigrationPassportVisaDTO.getVisaType());
+                        candidatePassportVisa.setIdType(Constants.ID_TYPE_VISA);
+		}
+                else
+                {candidatePassportVisa.setIdType(Constants.ID_TYPE_PASSPORT);
+
+                 }
+		
+		candidatePassportVisa.setCandidate(candidate);
+		candidatePassportVisa.setStatus(Constants.CANDIDATE_ACTIVE);
+		candidatePassportVisa.setUpdatedDate(commonUtil.currentDate());
+		candidatePassportVisa.setCreatedBy(user);
+		candidatePassportVisa.setCreatedDate(commonUtil.currentDate());
+		candidatePassportVisa.setUpdatedBy(user);
+		
+		
 		logger.debug("In CandidateCertificationsServiceImpl class save method");
 		candidatePassportVisa = immigrationCommonDao.savePassportDetails(candidatePassportVisa);
 		return candidatePassportVisa;
 
 	}
+
 	
 	@Override
 	public CandidateResidence saveResidenceDetails(ResidenceDTO residenceDTO, OrgLocations orgLocations, User user, Long candidateId)	throws Exception {
