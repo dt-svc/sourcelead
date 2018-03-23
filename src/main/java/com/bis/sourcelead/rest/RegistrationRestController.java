@@ -282,12 +282,62 @@ public class RegistrationRestController {
 	
 	
 	
+	
+	
+	
+	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG')")
+	@RequestMapping(value = "/app/getOrgSubscribedList" , method = RequestMethod.POST)
+	   public List<OrgLicenseSubscriptionDTO> getOrgSubscribedList(@RequestParam(value="orgId", required=true) Long orgId,
+			   HttpServletRequest request) throws Exception {
+		
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		List<OrgLicenseSubscriptionDTO> subscriptionList =  new ArrayList<>();
+		List<OrgLicenseSubscription> licenseSubscriptionList =  orgLicenseSubscriptionService.getOrgLicenseSubscriptionByOrgId(orgId);
+		if(licenseSubscriptionList != null && !licenseSubscriptionList.isEmpty()) {
+			for(OrgLicenseSubscription subscription : licenseSubscriptionList) {
+				OrgLicenseSubscriptionDTO subscriptionDTO = new OrgLicenseSubscriptionDTO();
+				subscriptionDTO.setSubscriptionType(subscription.getSubscriptionType().getName());
+				subscriptionDTO.setCountry(subscription.getCountry());
+				subscriptionDTO.setStorageType(subscription.getStorageSubscriptionType().getName());
+				
+				if(subscription.getFromDate() != null) {
+					subscriptionDTO.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),subscription.getFromDate()));
+				}
+				
+				if(subscription.getToDate() != null) {
+					subscriptionDTO.setToDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),subscription.getToDate()));
+				}
+				
+				subscriptionDTO.setCurrency(subscription.getCurrency());
+				subscriptionDTO.setInvoiceAmount(subscription.getInvoiceAmount());
+				String[] subscribedTabsList = subscription.getSubscriptionTabs().split(",");
+				List<Long> tabIdsList = new ArrayList<>();
+			    for(int i=0; i<subscribedTabsList.length; i++) {
+			    	tabIdsList.add(Long.parseLong(subscribedTabsList[i]));
+			    }
+				
+				List<Tabs> tabsList = tabsService.getTabsListByIds(tabIdsList);
+				List<String> registeredTabs = new ArrayList<>();
+				if(tabsList != null && !tabsList.isEmpty()) {
+					for(Tabs tabs : tabsList) {
+						registeredTabs.add(tabs.getTabName());
+					}
+				}
+				
+				subscriptionDTO.setModulesList(registeredTabs);
+				subscriptionList.add(subscriptionDTO);
+			}
+		}
+		return subscriptionList;
+	   }
+	
+	
+	
 	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/app/companyLocationRegistration" , method = RequestMethod.POST)
 	   public String companyLocationRegistration(
 			   CompanyRegistrationDTO companyRegistrationDTO,CandidateDTO candidateDTO,
-				@RequestParam(value="modulesList", required=false) String modulesList ,
-				@RequestParam(value="submodulesList", required=false) String submodulesList ,
 	   			HttpServletRequest request) {
 		if(Validator.validate(companyRegistrationDTO)){
 		try {

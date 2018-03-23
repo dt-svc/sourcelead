@@ -44,6 +44,7 @@ z-index: 9999999999 !important;
 		  
 		  <ul class="nav nav-tabs">
 			<li class="active"><a data-toggle="tab" href="#details" onclick="flushUser(); removeAddUserPopUp();">Details</a></li>
+			<li><a data-toggle="tab" href="#subscription" onclick="orgSubscriptionList();">Subscription</a></li>
 			<li><a data-toggle="tab" href="#users" onclick="getUserList();">Users</a></li>
 		  </ul>
 		  
@@ -250,13 +251,14 @@ z-index: 9999999999 !important;
 			 <div id="loading"></div>
 			 </div>
 			</div>
-			
+			  <jsp:include page="orgSubscriptions.jsp" />
 			</div>
 			</div>
 		   </div>
 		</div>
 			<!-- Tab for Profile setting-area ends -->
 		  </div>
+		   
 		  </div>
   </section>
   <!-- Tab for Profile setting-area starts Ends -->

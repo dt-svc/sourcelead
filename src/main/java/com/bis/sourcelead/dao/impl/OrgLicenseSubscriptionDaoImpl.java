@@ -103,7 +103,9 @@ public class OrgLicenseSubscriptionDaoImpl implements OrgLicenseSubscriptionDao 
 	public List<OrgLicenseSubscription> getOrgLicenseSubscriptionByOrgId(Long orgId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from OrgLicenseSubscription subscription left join fetch subscription.org org where org.id = :orgId ";
+		String query = "from OrgLicenseSubscription subscription left join fetch subscription.org org "
+				+ " left join fetch subscription.subscriptionType left join fetch subscription.userSubscriptionType left join fetch subscription.storageSubscriptionType  "
+				+ " where org.id = :orgId order by subscription.id ASC ";
 		List<OrgLicenseSubscription> orgLicenseSubscriptionList = session.createQuery(query.toString()).setLong("orgId", orgId).list();
 		return orgLicenseSubscriptionList;
 	}
