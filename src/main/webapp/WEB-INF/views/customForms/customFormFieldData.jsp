@@ -6,7 +6,14 @@
 	<td class="cusFielAction tblminwidth-125">
 	   <div>
 	    <i class="fa fa-sort paddingRight" title="Drag"></i>
+	    
+		<div class="cusViewImg">
 		<i class="fa fa-eye"></i>
+			<div class="cusFieldView">
+				<span><img src="${customFormDetails.imagePathUrl}" alt=""/></span>
+			</div>
+		</div>
+		
 		<i class="fa fa-file-text-o" title="edit file" onclick="editFileDetails(${customFormDetails.id},'editCustomRowField');"></i>
 		<c:if test="${customFormDetails.status eq 1}">
 			<i class="fa fa-trash" title="De-Activate" id="deletFildRow${customFormDetails.id}" onclick="activateOrDeactivateCustomField(${customFormDetails.id},'deactivate');"></i>

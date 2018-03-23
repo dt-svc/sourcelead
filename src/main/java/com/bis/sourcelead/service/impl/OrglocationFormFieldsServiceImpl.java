@@ -65,6 +65,35 @@ public class OrglocationFormFieldsServiceImpl implements OrglocationFormFieldsSe
 		orgLocFormFields.setPlaceHolder(StringUtils.capitalize(orgLocFormFieldsDTO.getPlaceHolder()));
 		orgLocFormFields.setIsFieldRequired(orgLocFormFieldsDTO.getIsRequired());
 		orgLocFormFields.setStatus(orgLocFormFieldsDTO.getStatus());
+		
+		if(orgLocFormFieldsDTO.getValidationType()!= null && orgLocFormFieldsDTO.getValidationRange()!= null) {
+			StringBuilder validationBuilder = new StringBuilder();
+				switch (orgLocFormFieldsDTO.getValidationRange()) {
+				case "Length 2-200":
+					validationBuilder.append("validate_length length2-250 ");
+					break;
+				case "Length 2-500":
+					validationBuilder.append("validate_length length2-500 ");
+					break;
+				case "Length 500 Above":
+					validationBuilder.append("Length 500 and Above ");
+					break;
+				}
+				
+				switch (orgLocFormFieldsDTO.getValidationType()) {
+				case "Alphabets":
+					validationBuilder.append("validate_Alphabet ");
+					break;
+				case "Aplhanumeric":
+					validationBuilder.append("validate_AlphaNumaric ");
+					break;
+				case "Numbers":
+					validationBuilder.append("validate_int ");
+					break;
+				}
+				
+			orgLocFormFields.setDataValidationType(validationBuilder.toString());
+		}
 		if(orgLocFormFieldsDTO.getSlDependedntField() != null && StringUtils.isNotEmpty(orgLocFormFieldsDTO.getSlDependedntField().toString())) {
 			SourceleadFormFields sourceLeadDependantField = new SourceleadFormFields();
 			sourceLeadDependantField.setId(orgLocFormFieldsDTO.getSlDependedntField());

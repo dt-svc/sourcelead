@@ -111,6 +111,9 @@ public class OrglocationFormFields implements Serializable{
     @JoinColumn(name="UPDATED_BY", nullable=false )
 	private User updatedBy;
 
+	@Column(name="DATA_VALIDATION_TYPE",columnDefinition = "TEXT default NULL")
+	private String dataValidationType;
+	
 	public Long getId() {
 		return id;
 	}
@@ -301,6 +304,14 @@ public class OrglocationFormFields implements Serializable{
 
 	public void setPlaceHolder(String placeHolder) {
 		this.placeHolder = placeHolder;
+	}
+
+	public String getDataValidationType() {
+		return dataValidationType;
+	}
+
+	public void setDataValidationType(String dataValidationType) {
+		this.dataValidationType = dataValidationType;
 	}
 	
 	

@@ -18,7 +18,7 @@
 	    <input type="hidden" value="${customFormPopDetails.customDependentField}" id="customDependndentFieldId">
 	    <input type="hidden" value="${customFormPopDetails.slDependedntField}" id="slDependedntFieldId">
 		<div class="popupHead">
-			<h2>${customFormPopDetails.customEditType eq 'Edit' ? 'Edit New Field':'Add New Field'} </h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+			<h2>${customFormPopDetails.customEditType eq 'Edit' ? 'Edit Field':'Add New Field'} </h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
 		</div>
 		<div class="cuspopHead clearfix">
 			<div class="col-md-6 padding_left">
@@ -49,10 +49,10 @@
 				</c:if>
 				<select class="chosen-select form-control" id="fieldsDropDown" name="fieldType"  onchange="getSelectedFieldDetails();" ${disableFields}>
 				  <option value="">--Select Field Type--</option>
-				  <option value ="textfield" ${customFormPopDetails.fieldType =='textfield' ? 'selected':''} selected>Text field</option>
-				  <option value ="datefield" ${customFormPopDetails.fieldType =='datefield' ? 'selected':''} >Date field</option>
-				  <option value ="selectfield" ${customFormPopDetails.fieldType =='selectfield' ? 'selected':''} >Select field</option>
-				  <option value ="checkBox" ${customFormPopDetails.fieldType =='checkBox' ? 'selected':''} >Check box</option>
+				  <option value ="TextBox" ${customFormPopDetails.fieldType =='textBox' ? 'selected':''} selected>Text field</option>
+				  <option value ="Date" ${customFormPopDetails.fieldType =='datefield' ? 'selected':''} >Date field</option>
+				  <option value ="selectBox" ${customFormPopDetails.fieldType =='selectBox' ? 'selected':''} >Select field</option>
+				  <option value ="Check Box" ${customFormPopDetails.fieldType =='checkBox' ? 'selected':''} >Check box</option>
 				  <option value ="radioButton" ${customFormPopDetails.fieldType =='radioButton' ? 'selected':''} >Radio button</option>
 				   <option value ="textArea" ${customFormPopDetails.fieldType =='textArea' ? 'selected':''} >Text Area</option>
 				    <option value ="email" ${customFormPopDetails.fieldType =='email' ? 'selected':''} >Email</option>
@@ -68,9 +68,31 @@
 					  <div class="col-md-6"><input name="labelName" id="labelName" value="${customFormPopDetails.labelName}" field-name="Label Name" class="field-label form-control input-sm" data-validation="required validate_length length1-250"  type="text"></div>
 				</div>
 			  
-			  <div class="col-sm-12 noPad mt clearfix">
+			  	<div class="col-sm-12 noPad mt clearfix">
 				  	  <div class="col-md-3 noPad labHeight">Is Required? <span class="text-danger paddingLeft">*</span></div>
 					  <div class="col-md-6"><input name="isRequired" value="${empty customFormPopDetails.isRequired ? '0' : customFormPopDetails.isRequired}" ${customFormPopDetails.isRequired == '1'?'checked':''} id="isRequired" class="toggle-required" field-name="isRequired" type="checkbox"></div>
+				</div>
+				
+				<div class="col-sm-12 noPad mt clearfix">
+				  <div class="col-md-3 noPad labHeight">Validation Range<span class="text-danger paddingLeft">*</span></div>
+				  <div class="col-md-6 dropdown-select">
+					  <select name="validationRange" data-placeholder="Select Validation Range" class="form-control input-sm" id="validationRange" field-name="validation Range" data-validation="required">
+						  	<option ${customFormPopDetails.validationRange == "Length 2-250" ? 'selected':''} value="Length 2-250">Length 2-250</option>
+						  	<option ${customFormPopDetails.validationRange == "Length 2-500" ? 'selected':''} value="Length 2-500">Length 2-500</option>
+						  	<option ${customFormPopDetails.validationRange == "Length 500 Above" ? 'selected':''} value="Length 500 Above">Length 500 and Above</option>
+					  </select>
+				  </div>
+				</div>
+
+				<div class="col-sm-12 noPad mt clearfix">
+				  <div class="col-md-3 noPad labHeight">Validation Type<span class="text-danger paddingLeft">*</span></div>
+				  <div class="col-md-6 dropdown-select">
+					  <select name="validationType" data-placeholder="Select Validation Type" class="chosen-select form-control input-sm" id="validationType" field-name="validation Type" data-validation="required">
+						  	<option ${customFormPopDetails.validationType == "Alphabets" ? 'selected':''} value="Alphabets">Alphabet</option>
+						  	<option ${customFormPopDetails.validationType == "Numbers" ? 'selected':''} value="Numbers">Number</option>
+						  	<option ${customFormPopDetails.validationType == "Aplhanumeric" ? 'selected':''} value="Aplhanumeric">Alphanumeric</option>
+					  </select>
+				  </div>
 				</div>
 			  
 				<div class="clearfix"></div>

@@ -5,7 +5,6 @@
  
 
  <c:forEach var="section" items="${SourceleadForm_Sections}" varStatus="sectionStatus">
-     <div class="cusFielInn" >
         <div class="cusFielInnHead clearfix">
 	  				<h2>${section.sectionName}</h2>
 	  				<c:if test="${sectionStatus.index == 0}">
@@ -30,9 +29,12 @@
 				<c:forEach var="fieldValue" items="${section.formFieldsList}">
 					  <tr>
 						<td class="cusFielAction">
-						   <div>
+							<div class="cusViewImg">
 							<i class="fa fa-eye"></i>
-				            </div>
+								<div class="cusFieldView">
+									<span><img src="${fieldValue.imagePathUrl}" alt=""/></span>
+								</div>
+							</div>
 				        </td>
 						<td><div class="tblminwidth-150">${fieldValue.labelName}</div></td>
 						<td><div class="tblminwidth-75">${fieldValue.fieldType}</div></td>
@@ -55,7 +57,6 @@
                 </c:forEach>						
 			</tbody>
 			 </table>
-     </div>
      </div>
  </c:forEach>
 

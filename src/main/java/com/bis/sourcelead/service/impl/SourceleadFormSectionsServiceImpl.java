@@ -112,6 +112,51 @@ public class SourceleadFormSectionsServiceImpl  implements SourceleadFormSection
 		customDTO.setMinDate(customList.getMinDate());
 		customDTO.setMaxDate(customList.getMaxDate());
 		customDTO.setStatus(customList.getStatus());
+		if(customDTO.getFieldType().equalsIgnoreCase("TextBox")) {
+			customDTO.setImagePathUrl("/resources/images/textfield.jpg");
+		}else if(customDTO.getFieldType().equalsIgnoreCase("Date")) {
+			customDTO.setImagePathUrl("/resources/images/datefield.jpg");
+		}else if(customDTO.getFieldType().equalsIgnoreCase("SelectBox")) {
+			customDTO.setImagePathUrl("/resources/images/selectfeild.jpg");
+		}else if(customDTO.getFieldType().equalsIgnoreCase("Check Box")) {
+			customDTO.setImagePathUrl("/resources/images/checkbox.jpg");
+		}else if(customDTO.getFieldType().equalsIgnoreCase("radioButton")) {
+			customDTO.setImagePathUrl("/resources/images/radio.jpg");
+		}else if(customDTO.getFieldType().equalsIgnoreCase("textArea")) {
+			customDTO.setImagePathUrl("/resources/images/text area.jpg");
+		}else if(customDTO.getFieldType().equalsIgnoreCase("email")) {
+			customDTO.setImagePathUrl("/resources/images/mailfield.jpg");
+		}else if(customDTO.getFieldType().equalsIgnoreCase("location")) {
+			customDTO.setImagePathUrl("/resources/images/location.jpg");
+		}
+		
+		if(customList.getDataValidationType() != null) {
+			String length = "";
+			String Type = "";
+			Boolean length2To250 = customList.getDataValidationType().contains("validate_length length2-250 ");
+			Boolean length2To500 = customList.getDataValidationType().contains("validate_length length2-500 ");
+			Boolean length500AndAbove = customList.getDataValidationType().contains("Length 500 and Above ");
+			Boolean Alphabets = customList.getDataValidationType().contains("validate_Alphabet ");
+			Boolean Numbers = customList.getDataValidationType().contains("validate_int ");
+			Boolean Alphanumeric = customList.getDataValidationType().contains("validate_AlphaNumaric ");
+			if(length2To250 == true) {
+				length = "Length 2-250";
+			}else if(length2To500 == true) {
+				length = "Length 2-500";
+			}else if(length500AndAbove == true) {
+				length = "Length 500 Above";
+			}
+			customDTO.setValidationRange(length);
+			if(Alphabets == true) {
+				Type = "Alphabets";
+			}else if(Numbers == true) {
+				Type = "Numbers";
+			}else if(Alphanumeric == true) {
+				Type = "Aplhanumeric";
+			}
+			customDTO.setValidationType(Type);
+		}
+		
 		if(customFieldsubList != null && !customFieldsubList.isEmpty()) {
 			List<OrglocationFormSubFieldsDTO> orglocationFormSubfieldDTO = getorgLocationCustomSubFields(customFieldsubList);
 			customDTO.setOptionData(orglocationFormSubfieldDTO);
@@ -143,6 +188,25 @@ public class SourceleadFormSectionsServiceImpl  implements SourceleadFormSection
 		formfieldDTO.setLabelInfo(formFields.getLabelInfo());
 		formfieldDTO.setLabelName(formFields.getLabelName());
 		formfieldDTO.setPlaceHolder(formFields.getPlaceHolder());
+		
+		if(formfieldDTO.getFieldType().equalsIgnoreCase("TextBox")) {
+			formfieldDTO.setImagePathUrl("/resources/images/textfield.jpg");
+		}else if(formfieldDTO.getFieldType().equalsIgnoreCase("Date")) {
+			formfieldDTO.setImagePathUrl("/resources/images/datefield.jpg");
+		}else if(formfieldDTO.getFieldType().equalsIgnoreCase("SelectBox")) {
+			formfieldDTO.setImagePathUrl("/resources/images/selectfeild.jpg");
+		}else if(formfieldDTO.getFieldType().equalsIgnoreCase("Check Box")) {
+			formfieldDTO.setImagePathUrl("/resources/images/checkbox.jpg");
+		}else if(formfieldDTO.getFieldType().equalsIgnoreCase("radioButton")) {
+			formfieldDTO.setImagePathUrl("/resources/images/radio.jpg");
+		}else if(formfieldDTO.getFieldType().equalsIgnoreCase("textArea")) {
+			formfieldDTO.setImagePathUrl("/resources/images/text area.jpg");
+		}else if(formfieldDTO.getFieldType().equalsIgnoreCase("email")) {
+			formfieldDTO.setImagePathUrl("/resources/images/mailfield.jpg");
+		}else if(formfieldDTO.getFieldType().equalsIgnoreCase("location")) {
+			formfieldDTO.setImagePathUrl("/resources/images/location.jpg");
+		}
+		
 		formfieldDTO.setSectionId(formFields.getSourceleadFormSections().getId());
 		formfieldDTO.setSourceLeadlDependantField(formFields.getSlDependantField());
 		if(((Integer)formFields.getIsFieldRequired()!= null)) {

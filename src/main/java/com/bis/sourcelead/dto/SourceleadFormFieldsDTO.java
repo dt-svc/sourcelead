@@ -12,6 +12,7 @@ public class SourceleadFormFieldsDTO {
 	private int isFieldRequired;
 	private Long sourceLeadlDependantField;
 	private int fieldstatus;
+	private String imagePathUrl;
 	
 	
 	public Long getSectionId() {
@@ -73,6 +74,12 @@ public class SourceleadFormFieldsDTO {
 	}
 	public void setFieldstatus(int fieldstatus) {
 		this.fieldstatus = fieldstatus;
+	}
+	public String getImagePathUrl() {
+		return imagePathUrl;
+	}
+	public void setImagePathUrl(String imagePathUrl) {
+		this.imagePathUrl = imagePathUrl;
 	}
 	
 	
