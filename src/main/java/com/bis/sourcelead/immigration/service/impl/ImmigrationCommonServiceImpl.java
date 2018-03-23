@@ -25,6 +25,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateLcaI94Summary;
+import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
@@ -406,5 +407,59 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		
 		return immigrationCommonDao.saveCandidateFamilyMemberDetails(familyDetails);
 	}	
+
+	
+	/*candidatePassportVisa.setId(immigrationPassportVisaDTO.getId());
+	candidatePassportVisa.setIdNumber(immigrationPassportVisaDTO.getIdNumber());*/
+	
+	
+	CandidatePassportVisa candidatePassportVisa  = new CandidatePassportVisa();
+	Candidate can = new Candidate();
+	//SimpleDateFormat simpleDateFormat = orgLocationId.getLocFullFormDateFormatter();
+	StringBuffer activitySummary = new StringBuffer();
+	 if(immigrationPassportVisaDTO.getCandidateId()!= null){
+		
+	if (StringUtils.isNotBlank(immigrationPassportVisaDTO.getIdNumber())) {
+		
+		candidatePassportVisa.setIdNumber(immigrationPassportVisaDTO.getIdNumber());
+	}
+	
+  if (StringUtils.isNotBlank(immigrationPassportVisaDTO.getCountry())) {
+		
+		candidatePassportVisa.setCountry(immigrationPassportVisaDTO.getCountry());
+	}
+	
+		if (StringUtils.isNotBlank(immigrationPassportVisaDTO.getValidFrom())) {
+			try {
+				
+                Date validFrom = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationPassportVisaDTO.getValidFrom());
+                candidatePassportVisa.setValidFromDate(validFrom);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}else{
+			candidatePassportVisa.setValidFromDate(null);
+		}
+		if (StringUtils.isNotBlank(immigrationPassportVisaDTO.getValidTo())) {
+			try {
+                
+                Date validTo = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationPassportVisaDTO.getValidTo());
+                candidatePassportVisa.setValidToDate(validTo);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}else{
+			candidatePassportVisa.setValidToDate(null);
+		}
+		
+	
+}
+	logger.debug("In CandidateCertificationsServiceImpl class save method");
+	candidatePassportVisa = immigrationCommonDao.savePassportDetails(candidatePassportVisa);
+	return candidatePassportVisa;
+	
+}	
 
 }

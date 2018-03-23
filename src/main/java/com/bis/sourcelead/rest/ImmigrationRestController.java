@@ -588,4 +588,26 @@ public class ImmigrationRestController {
        	}
        	return status;
       }
+<<<<<<< HEAD
+    
+    @RequestMapping(value = {"/savePassportDetailsPage"}, method = RequestMethod.POST)
+    public String  savePassportDetailsPage(ImmigrationPassportVisaDTO immigrationPassportVisaDTO, HttpServletRequest request,
+    		@RequestParam(value = "candidateId", required = false) String candidateId,
+    		@RequestParam(value = "immigrationId", required = false) String immigrationId) {
+        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+        immigrationPassportVisaDTO.setStaticPath(staticPath);
+		System.out.println("Candidate ID ----> :  "+immigrationPassportVisaDTO.getCandidateId());
+        try {
+      immigrationCommonService.savePassportDetails(immigrationPassportVisaDTO, user, orgLocations);
+        } catch (Exception e) {
+            logger.error("Exception caugth in savePetitionDetailsPage controller" + e.getMessage());
+            e.printStackTrace();
+        }
+       
+        return "Success";
+         
+    }
+=======
+>>>>>>> 0444616901f1c75cfde9ace818727693459d4d0e
 }
