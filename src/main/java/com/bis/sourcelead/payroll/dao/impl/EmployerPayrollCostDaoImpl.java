@@ -64,7 +64,7 @@ public class EmployerPayrollCostDaoImpl implements EmployerPayrollCostDao{
 			qry = " order by epc."+ employerPayrollCostDTO.getSortColumn() +" "+employerPayrollCostDTO.getSortOrder();
 		}
 		
-		String query = "from EmployerPayrollCost epc  left join fetch epc.orgLocationId where epc.orgLocationId.id =:orgLocationId"+qry;
+		String query = "from EmployerPayrollCost epc  left join fetch epc.orgLocationId where epc.orgLocationId.id =:orgLocationId";
 		String countQuery = "from EmployerPayrollCost epc  where epc.orgLocationId.id =:orgLocationId";
 		
 		if(employerPayrollCostDTO.getSearchValue().contains("/") || employerPayrollCostDTO.getSearchValue().contains("-")){
@@ -100,7 +100,7 @@ public class EmployerPayrollCostDaoImpl implements EmployerPayrollCostDao{
 					.append("OR epc.adminFee like '%" + employerPayrollCostDTO.getSearchValue() + "%' ")
 					.append("OR epc.totalErCost like '%" + employerPayrollCostDTO.getSearchValue() + "%' ");
 			}
-		Query queryObj = session.createQuery(query + query1.toString());
+		Query queryObj = session.createQuery(query + query1.toString()+qry);
 		if (employerPayrollCostDTO != null && employerPayrollCostDTO.getLength() > 0) {
 			queryObj.setFirstResult(employerPayrollCostDTO.getStart());
 			queryObj.setMaxResults(employerPayrollCostDTO.getLength());

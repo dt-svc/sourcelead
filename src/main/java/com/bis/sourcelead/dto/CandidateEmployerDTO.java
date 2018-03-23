@@ -40,7 +40,26 @@ public class CandidateEmployerDTO {
 	
 	private String candidateExperianceId;
 	
+
 	private List<LookUpData> candidateEmpLookup; 
+
+
+	private String loginUserId;
+	
+	private String orgLocationId;
+	
+	private String candidateemployerId;
+	
+
+	public String getCandidateemployerId()
+	{
+		return candidateemployerId;
+	}
+
+	public void setCandidateemployerId(String candidateemployerId)
+	{
+		this.candidateemployerId = candidateemployerId;
+	}
 
 
 	public Long getId()
@@ -209,6 +228,7 @@ public class CandidateEmployerDTO {
 		this.candidateExperianceId = candidateExperianceId;
 	}
 
+
 	public List<LookUpData> getCandidateEmpLookup() {
 		return candidateEmpLookup;
 	}
@@ -216,4 +236,26 @@ public class CandidateEmployerDTO {
 	public void setCandidateEmpLookup(List<LookUpData> candidateEmpLookup) {
 		this.candidateEmpLookup = candidateEmpLookup;
 	}
+
+	public String getLoginUserId()
+	{
+		return loginUserId;
+	}
+
+	public void setLoginUserId(String loginUserId)
+	{
+		this.loginUserId = loginUserId;
+	}
+
+	public String getOrgLocationId()
+	{
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(String orgLocationId)
+	{
+		this.orgLocationId = orgLocationId;
+	}
+
+
 }

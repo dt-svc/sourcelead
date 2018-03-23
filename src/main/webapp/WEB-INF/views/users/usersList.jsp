@@ -957,7 +957,7 @@ function getUserSummary(userId){
   $('#selector').delay(2000).fadeOut('slow');
 	   $("#export-pop").click(function(){
 	               $("#exportPop").toggle();
-	       });
+	   });
 	   $("html").click(function() {
 	       $("#exportPop").hide();
 	   });

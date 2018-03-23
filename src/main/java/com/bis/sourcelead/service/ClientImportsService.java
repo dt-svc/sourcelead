@@ -31,7 +31,7 @@ public interface ClientImportsService {
 
 	BulkClientDetails deleteDuplicateRecord(String recordId, OrgLocations orgLocation,String responderType)throws Exception;
 
-	BulkClientDetails saveClientRecord(String recordId, OrgLocations orgLocation, Org org, User user,String responderType) throws Exception;
+	BulkClientDetails saveClientRecord(String recordId, OrgLocations orgLocation, Org org, User user,String responderType, List<String> templateId) throws Exception;
 
 	OrgRelations getMatchedClientList(String recordId, OrgLocations orgLocation, Org org, User user, String responderType) throws Exception;
 

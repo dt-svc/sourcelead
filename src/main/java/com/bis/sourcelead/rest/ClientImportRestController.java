@@ -127,14 +127,14 @@ public class ClientImportRestController {
 	
 	@RequestMapping(value = "/addRecordFromBulk", method = RequestMethod.POST)
 	@ResponseBody
-	public boolean addRecordFromBulk(@RequestParam(value = "recordId", required = false) String recordId,@RequestParam(value = "responderType", required = false) String responderType,HttpServletRequest request)throws Exception{
+	public boolean addRecordFromBulk(@RequestParam(value = "recordId", required = false) String recordId,@RequestParam(value = "responderType", required = false) String responderType,@RequestParam(value = "templateId", required = false) List<String> templateId,HttpServletRequest request)throws Exception{
 
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		boolean isDeleted = false;
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		BulkClientDetails bulkClientDetails  = clientImportsService.saveClientRecord(recordId,orgLocation,org,user,responderType);
+		BulkClientDetails bulkClientDetails  = clientImportsService.saveClientRecord(recordId,orgLocation,org,user,responderType,templateId);
 		if(bulkClientDetails != null){
 			isDeleted = true;
 		}
