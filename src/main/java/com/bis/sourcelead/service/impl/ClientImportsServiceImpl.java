@@ -1928,12 +1928,17 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 	}
 	
 	@Override
-	public BulkClientDetails saveClientRecord(String recordId, OrgLocations orgLocation, Org org, User user, String responderType) throws Exception
+	public BulkClientDetails saveClientRecord(String recordId, OrgLocations orgLocation, Org org, User user, String responderType,List<String> templateId) throws Exception
 	{
 		BulkClientDetails bulkClientDetails = clientImportDao.getbulkClientByrecordIdAndOrgLocationId(Long.parseLong(recordId), orgLocation.getId(), responderType);
 		OrgLocations mainOrgLocation = validateSourceleadOrg(bulkClientDetails.getOrgName(), org);
 		ClientDTO clientDTO = populateJsonObjectTemp(bulkClientDetails, "Y", null, orgLocation, bulkClientDetails.getOrgName(), "org", mainOrgLocation,user);
 		try {
+			if("Vendor".equalsIgnoreCase(responderType)){
+				clientDTO.setTemplateId(templateId);
+				clientDTO.getAddUserDTO().setIsMailSent(Constants.YES);
+				clientDTO.setClientSaveFromType("BulkVendorSaving");
+				}
 			clientService.storeClient(clientDTO , clientDTO.getAddUserDTO(), clientDTO.getCandidateDTO(), user, orgLocation, responderType, org);
 			bulkClientDetails.setRecordStatus("1");
 			clientImportDao.saveClientVendorExcelData(bulkClientDetails);

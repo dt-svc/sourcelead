@@ -21,12 +21,6 @@
 </head>
 
 
-<script type="text/javascript">
-window.onload = function () {
-	var sourceleadUrl ='${sourceleadUrl}';
-	var status = '${status}';
- };
-</script>
 <style type="text/css">
 /*  switch button styels */
 .slider.round:before {
@@ -69,10 +63,20 @@ p.jquery_form_error_message {
 font-size: 12px !important; color:red !important; margin-top: 0 padding:0 !important;
 }
 .text-danger {
-color:red !important;
+color:red !important; font-size: 12px;
 }
 .text-success {
-color:#4CAF50 !important;
+color:#4CAF50 !important; font-size: 12px;
+}
+.modal.modalunsubsribe {
+	width: 40%; left: 30%; top:25%; display: none;
+}
+.modal.modalunsubsribe .modal-body {
+padding: 30px 15px;
+}
+.modalunsubsribeMask {
+position: absolute; top:0; left:0; width: 100%; height: 100%; background: rgba(000,000,000, 0.5);
+display: none;
 }
 </style>
 <body>
@@ -84,6 +88,7 @@ color:#4CAF50 !important;
 				<div class="col-md-6 col-md-offset-3">
 				<input type="text" class="form-control error" id="emailId" name="email" placeholder="Enter your email" field-name="Email Id"  onblur="validateUserEmail();">
 				<div class="mt5 clearfix">
+				<span class="text-danger" id="validationEmail" style="display: none;">Email is required</span>
 				<span class="fa fa-check text-success pull-right" aria-hidden="true" id="validUser" style="display: none;">&nbsp;&nbsp;<span id="validUserName" class="paddingLeft"></span></span>
 				<span class="fa fa-times text-danger pull-right" aria-hidden="true" id="inValidUser" style="display: none;">&nbsp;&nbsp;<span id="inValidUserName" class="paddingLeft"></span></span>
 				</div>
@@ -240,22 +245,86 @@ color:#4CAF50 !important;
 			
 		</section>
 	</section>
+<div class="modalunsubsribeMask"></div>
+
+	<div id="myModal" class="modal modalunsubsribe">
+		<!-- Modal content -->
+		<div class="modal-content">
+			<div class="modal-header">
+				<span class="close" onclick="closeSubscribe();">&times;</span>
+				<h4>Confirm your password !</h4>
+			</div>
+			<div class="modal-body">
+			<input type="password" id="userPassword" value="" class="form-control" placeholder="Enter Password" autofocus>
+			<span class="text-danger" id="passwordErrorDiv"></span>
+			</div>
+			<div class="modal-footer">
+				<input type="submit" id="popupSubmit" value="Submit" onclick="validateUserPassword();" class="btn btn-primary btn-sm pull-right">
+			</div>
+		</div>
+	</div>
+
 </body>
-
-
 
 <script type="text/javascript">
 function submitRequest() {
-		$( "#submit_request" ).addClass('button').val('Processing..');
+	$("#popupSubmit").prop('disabled', false);
+	$("#passwordErrorDiv").empty();
+	var email = $("#emailId").val();
+	if(email != null && email != ''){
+		$("#myModal").fadeIn(600);
+		$(".modalunsubsribeMask").fadeIn();
+	}else{
+		$("#inValidUser").hide();
+		$("#validUser").hide();
+		$("#validationEmail").show();
+	}
+}
+function closeSubscribe() {
+	$("#passwordErrorDiv").empty();
+	$("#userPassword").val('');
+	$("#myModal").fadeOut(200);
+	$(".modalunsubsribeMask").fadeOut();
+}
+
+</script>
+<script type="text/javascript">
+function validateUserPassword() {
+	var sourceleadUrl = '${sourceleadUrl}';
+	$("#popupSubmit").prop('disabled', true);
+	$("#passwordErrorDiv").empty();
+	var mail = $("#emailId").val();
+	var pass = $("#userPassword").val();
+	if(pass != null && pass != ''){
+		$.ajax({
+			 type : "GET",
+			 url : sourceleadUrl+"/userVerification?email="+mail+"&credential="+pass,
+			 success : function(data) {
+				 if(data != null && data != 'undefined' && data != '' && data==true){
+					 saveUnsubscriptionData();
+				 }else{
+					 $("#passwordErrorDiv").append("Invalid password");
+					 $( "#popupSubmit" ).prop('disabled', false);
+				 }
+				 
+			 },
+		});
+	}else{
+		$("#passwordErrorDiv").append("Password is required");
+		$( "#popupSubmit" ).prop('disabled', false);
+	}
+	
+}
+
+
+function saveUnsubscriptionData() {
 		$( "#submit_request" ).prop('disabled', true);
 		var sourceleadUrl = '${sourceleadUrl}';
 		var tabIds = [];
 		$('input:checkbox[name=chkChangeSubscription]:checked').each(function(){
 			tabIds.push($(this).val());
 		});
-		/* var uniqueToken = GetURLParameter('token'); */
 		var uniqueToken = $("#emailId").val();
-		
 		$.ajax({
 			 type : "GET",
 			 url : sourceleadUrl+"/storeUnsubscriptionPublic?tabIds="+tabIds+"&uniqueToken="+uniqueToken,
@@ -271,22 +340,9 @@ function submitRequest() {
 				 }
 			 },
 		});
+		
+		closeSubscribe();
 }
-	
-
-/* function GetURLParameter(sParam)
-{
-    var sPageURL = window.location.search.substring(1);
-    var sURLVariables = sPageURL.split('&');
-    for (var i = 0; i < sURLVariables.length; i++)
-    {
-        var sParameterName = sURLVariables[i].split('=');
-        if (sParameterName[0] == sParam)
-        {
-            return sParameterName[1];
-        }
-    }
-} */
 
 
 function validateUserEmail(){
@@ -304,6 +360,7 @@ function validateUserEmail(){
 	$("#validUserName").empty("");
 	$("#inValidUser").hide();
 	$("#inValidUserName").empty("");
+	$("#validationEmail").hide();
 	var sourceleadUrl = '${sourceleadUrl}';
 	var email = $("#emailId").val();
 	$.ajax({
