@@ -345,16 +345,13 @@ function saveEmployerDetails(status) {
         return false;
     }
 	
-<<<<<<< HEAD
 }
 
 function savePassportDetails(status) {
-	alert("ppppp")
 	if ($('#Candidate_Passport_form').validate(false, validationSettings)) {
         var formData = getFormData("Candidate_Passport_form");
         var candidateId = $('#candidateId').val();
         var immigrationId = $('#immigrationId').val();
-        alert("pppp")
         $.ajax({
             url: sourceleadUrl + immiModulePath + "/savePassportDetailsPage?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
             type: "POST",
@@ -376,6 +373,4 @@ function savePassportDetails(status) {
     } else {
         return false;
     }
-=======
->>>>>>> 0444616901f1c75cfde9ace818727693459d4d0e
 }
