@@ -395,6 +395,31 @@ public class RegistrationRestController {
 	     
 	   }
 	
+	@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	@RequestMapping(value = "/app/getOrgSubscribeCountries" , method = RequestMethod.POST)
+	   public List<String> getOrgSubscribeCountries( @RequestParam(value="orgId", required=true) Long orgId,
+	   			HttpServletRequest request) throws Exception {
+		
+		List<OrgLicenseSubscription> subscriptionList =  orgLicenseSubscriptionService.getOrgLicenseSubscriptionByOrgId(orgId);
+	    List<String> orgSubscribedCountries = new ArrayList<>();
+		if(subscriptionList != null) {
+	    	for(OrgLicenseSubscription subscription : subscriptionList) {
+	    		orgSubscribedCountries.add(subscription.getCountry());
+	    	}
+	    }
+		
+		List<String> orgRegistrationCountries = new ArrayList<>();
+		 String[] registrationCountries = Constants.REGISTERED_COUNTRIES;
+		 for(int i=0; i<registrationCountries.length;i++) {
+			 orgRegistrationCountries.add(registrationCountries[i]);
+		 }
+		 
+		 orgSubscribedCountries.retainAll(orgRegistrationCountries);
+		 orgRegistrationCountries.removeAll(orgSubscribedCountries);
+		
+		return orgRegistrationCountries;
+	     
+	   }
 	
 	
 	

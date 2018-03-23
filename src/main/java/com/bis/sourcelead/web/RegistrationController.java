@@ -364,6 +364,15 @@ public class RegistrationController {
 					model.addObject("userState",userRole.getUserState());
 				}
 				
+				List<LookUpData> subscriptionTypeList = lookUpDataService.getLookUpDataByCategory(Constants.SUBSCRIPTION_TYPE);
+				model.addObject("subscriptionTypeList", subscriptionTypeList);
+				 
+				List<LookUpData> userSubscriptionTypeList = lookUpDataService.getLookUpDataByCategory(Constants.USER_SUBSCRIPTION);
+				model.addObject("userSubscriptionTypeList", userSubscriptionTypeList);
+				
+				List<LookUpData> dataStorageTypeList = lookUpDataService.getLookUpDataByCategory(Constants.DATA_STORAGE);
+				model.addObject("dataStorageTypeList", dataStorageTypeList);
+				
 				model.addObject("sourceleadUrl", sourceleadUrl);
 			
 			return model;
