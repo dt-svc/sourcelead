@@ -345,6 +345,7 @@ function saveEmployerDetails(status) {
         return false;
     }
 	
+<<<<<<< HEAD
 }
 
 function savePassportDetails(status) {
@@ -375,4 +376,6 @@ function savePassportDetails(status) {
     } else {
         return false;
     }
+=======
+>>>>>>> 0444616901f1c75cfde9ace818727693459d4d0e
 }

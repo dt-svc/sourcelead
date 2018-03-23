@@ -588,6 +588,7 @@ public class ImmigrationRestController {
        	}
        	return status;
       }
+<<<<<<< HEAD
     
     @RequestMapping(value = {"/savePassportDetailsPage"}, method = RequestMethod.POST)
     public String  savePassportDetailsPage(ImmigrationPassportVisaDTO immigrationPassportVisaDTO, HttpServletRequest request,
@@ -607,4 +608,6 @@ public class ImmigrationRestController {
         return "Success";
          
     }
+=======
+>>>>>>> 0444616901f1c75cfde9ace818727693459d4d0e
 }

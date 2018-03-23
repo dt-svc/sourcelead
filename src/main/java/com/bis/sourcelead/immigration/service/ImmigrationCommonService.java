@@ -22,5 +22,8 @@ public interface ImmigrationCommonService {
 	ImmigrationDTO getImmigrationViewList(String immigrationId, OrgLocations orgLocations);
 	
 	String saveCandidateFamilyMemberDetails(CandidateFamilyDetailsDTO familyDetailsDTO, OrgLocations orgLocations, User user) throws Exception;
+<<<<<<< HEAD
 	CandidatePassportVisa savePassportDetails(ImmigrationPassportVisaDTO immigrationPassportVisaDTO, User user, OrgLocations orgLocations)throws Exception;
+=======
+>>>>>>> 0444616901f1c75cfde9ace818727693459d4d0e
 }

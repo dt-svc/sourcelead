@@ -156,6 +156,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return "success";
 	}
 
+
     @Override
     @Transactional(rollbackFor = { Exception.class })
 	public CandidatePassportVisa savePassportDetails(CandidatePassportVisa candidatePassportVisa) throws Exception
@@ -177,5 +178,6 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	            }
 		}
 		return candidatePassportVisa;
+
 }
 }
