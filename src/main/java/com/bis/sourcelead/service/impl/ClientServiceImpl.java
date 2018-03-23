@@ -2,7 +2,6 @@ package com.bis.sourcelead.service.impl;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.ResultSet;
 import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
@@ -63,6 +62,7 @@ import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.entity.VendorOnboarding;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.service.CandidateService;
@@ -87,6 +87,7 @@ import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.VendorOnboardService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -206,6 +207,9 @@ public class ClientServiceImpl implements ClientService {
 	
 	@Autowired
 	LookUpDataDao lookUpDataDao;
+	
+	@Autowired
+	VendorOnboardService vendorOnboardService;
 
 	/**
 	 * @author VenkatKesav
@@ -474,6 +478,15 @@ public class ClientServiceImpl implements ClientService {
 			}
 		}
 
+		
+		if ("BulkVendorSaving".equalsIgnoreCase(clientDTO.getClientSaveFromType())) {
+			clientOrgLocations.setVendorOrgRelationId(orgSpoc.getOrgRelations().getId());
+			clientOrgLocations.setVendorSpocId(spocUser.getId());
+			User bulkUser = userService.getUserById(spocUser.getId());
+			VendorOnboarding vendorOnboarding = vendorOnboardService.saveVendorOnboarding(clientOrgLocations, orgLocations, user);
+			vendorOnboardService.saveVendorOnboardForVendorBulkImports(vendorOnboarding.getId(),user,bulkUser,orgLocations);
+			}
+		
 		// store default submission template in guest
 		if (Constants.GUEST.equalsIgnoreCase(org.getOrgType())) {
 			submissionTemplate = new SubmissionTemplate();
@@ -1374,7 +1387,7 @@ public class ClientServiceImpl implements ClientService {
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink = "";
 		if("Client".equalsIgnoreCase(type))
-			actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("clientDashboard").toString();
+			actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("clientDashboard?contactsTab=contactsTab&orgRelationUUID="+orgSpocLocation.getOrgRelations().getUUID()).toString();
 		else
 			actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("vendorsList?contactsTab=contactsTab&orgRelationUUID="+orgSpocLocation.getOrgRelations().getUUID()).toString();
 		String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(), globalVarsMap);
@@ -1458,7 +1471,7 @@ public class ClientServiceImpl implements ClientService {
 		if("Client".equalsIgnoreCase(type))
 			  actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("vendorsList?contactsTab=contactsTab&orgRelationUUID="+orgSpoc.getOrgRelations().getUUID()).toString();
 		else
-			actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("clientDashboard").toString();
+			actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("clientDashboard?contactsTab=contactsTab&orgRelationUUID="+orgSpoc.getOrgRelations().getUUID()).toString();
 		 String rejectActionLink = "";
 		String spocUUID = "";
 		String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(), globalVarsMap);

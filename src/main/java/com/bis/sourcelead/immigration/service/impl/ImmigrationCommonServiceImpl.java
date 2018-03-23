@@ -3,8 +3,6 @@
  */
 package com.bis.sourcelead.immigration.service.impl;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +18,7 @@ import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dto.CandidateFamilyDetailsDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ImmigrationDTO;
+import com.bis.sourcelead.dto.ImmigrationPassportVisaDTO;
 import com.bis.sourcelead.dto.ImmigrationResidenceDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
@@ -30,7 +29,6 @@ import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -38,7 +36,6 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.immigration.dao.ImmigrationCommonDao;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
-import com.bis.sourcelead.rest.ImmigrationRestController;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -409,57 +406,59 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	}	
 
 	
-	/*candidatePassportVisa.setId(immigrationPassportVisaDTO.getId());
-	candidatePassportVisa.setIdNumber(immigrationPassportVisaDTO.getIdNumber());*/
-	
-	
-	CandidatePassportVisa candidatePassportVisa  = new CandidatePassportVisa();
-	Candidate can = new Candidate();
-	//SimpleDateFormat simpleDateFormat = orgLocationId.getLocFullFormDateFormatter();
-	StringBuffer activitySummary = new StringBuffer();
-	 if(immigrationPassportVisaDTO.getCandidateId()!= null){
-		
-	if (StringUtils.isNotBlank(immigrationPassportVisaDTO.getIdNumber())) {
-		
-		candidatePassportVisa.setIdNumber(immigrationPassportVisaDTO.getIdNumber());
-	}
-	
-  if (StringUtils.isNotBlank(immigrationPassportVisaDTO.getCountry())) {
-		
-		candidatePassportVisa.setCountry(immigrationPassportVisaDTO.getCountry());
-	}
-	
-		if (StringUtils.isNotBlank(immigrationPassportVisaDTO.getValidFrom())) {
-			try {
-				
-                Date validFrom = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationPassportVisaDTO.getValidFrom());
-                candidatePassportVisa.setValidFromDate(validFrom);
-				
-			} catch (Exception e) {
-				e.printStackTrace();
+	@Override
+	public CandidatePassportVisa savePassportDetails(ImmigrationPassportVisaDTO immigrationPassportVisaDTO, User user,
+			OrgLocations orgLocations) throws Exception {
+
+		CandidatePassportVisa candidatePassportVisa = new CandidatePassportVisa();
+		Candidate can = new Candidate();
+		// SimpleDateFormat simpleDateFormat =
+		// orgLocationId.getLocFullFormDateFormatter();
+		StringBuffer activitySummary = new StringBuffer();
+		if (immigrationPassportVisaDTO.getCandidateId() != null) {
+
+			if (StringUtils.isNotBlank(immigrationPassportVisaDTO.getIdNumber())) {
+
+				candidatePassportVisa.setIdNumber(immigrationPassportVisaDTO.getIdNumber());
 			}
-		}else{
-			candidatePassportVisa.setValidFromDate(null);
-		}
-		if (StringUtils.isNotBlank(immigrationPassportVisaDTO.getValidTo())) {
-			try {
-                
-                Date validTo = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationPassportVisaDTO.getValidTo());
-                candidatePassportVisa.setValidToDate(validTo);
-				
-			} catch (Exception e) {
-				e.printStackTrace();
+
+			if (StringUtils.isNotBlank(immigrationPassportVisaDTO.getCountry())) {
+
+				candidatePassportVisa.setCountry(immigrationPassportVisaDTO.getCountry());
 			}
-		}else{
-			candidatePassportVisa.setValidToDate(null);
+
+			if (StringUtils.isNotBlank(immigrationPassportVisaDTO.getValidFrom())) {
+				try {
+
+					Date validFrom = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
+							immigrationPassportVisaDTO.getValidFrom());
+					candidatePassportVisa.setValidFromDate(validFrom);
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else {
+				candidatePassportVisa.setValidFromDate(null);
+			}
+			if (StringUtils.isNotBlank(immigrationPassportVisaDTO.getValidTo())) {
+				try {
+
+					Date validTo = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
+							immigrationPassportVisaDTO.getValidTo());
+					candidatePassportVisa.setValidToDate(validTo);
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else {
+				candidatePassportVisa.setValidToDate(null);
+			}
+
 		}
-		
-	
-}
-	logger.debug("In CandidateCertificationsServiceImpl class save method");
-	candidatePassportVisa = immigrationCommonDao.savePassportDetails(candidatePassportVisa);
-	return candidatePassportVisa;
-	
-}	
+		logger.debug("In CandidateCertificationsServiceImpl class save method");
+		candidatePassportVisa = immigrationCommonDao.savePassportDetails(candidatePassportVisa);
+		return candidatePassportVisa;
+
+	}
 
 }

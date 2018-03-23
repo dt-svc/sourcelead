@@ -329,13 +329,15 @@ function saveEmployerDetails(status) {
             data: formData,
             success: function (data) {
                 if (data == 'success') {
-                    if (status == 'saveContinue') {
+                	$('#emploView').hide();
+                	$('.popMask').fadeOut();
+                    /*if (status == 'saveContinue') {
                         $("#addNewPetitionTemplateDiv").empty();
                         $("#addNewPetitionTemplateDiv").load(sourceleadUrl + immiModulePath + "/gotoTemplatePreviousPage?status=taskList");
                     } else if (status == 'save') {
                         $("#addNewPetitionTemplateDiv").empty();
                         $("#addNewPetitionTemplateDiv").load(sourceleadUrl + immiModulePath + "/gotoTemplatePreviousPage?status=formDetails");
-                    }
+                    }*/
                 }
             }
         });

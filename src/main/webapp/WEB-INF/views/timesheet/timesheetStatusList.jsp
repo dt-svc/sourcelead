@@ -121,7 +121,7 @@ function filter(){
 		        	   if(data != null && data != 'undefined' && data != ""){
 			                	 $("#timesheetApprList").empty();
 			                     $("#timesheetApprList").append(data); 
-			                     $(".checkBoxForSubmitForApproval").click(function () {
+			                     	$(".checkBoxForSubmitForApproval").click(function () {
 				             	    	selectedRecords[$(this).val()] = $(this).is(":checked");
 				             	    });
 			                     $("#TimeshgeetStatusListIdLoading").empty();

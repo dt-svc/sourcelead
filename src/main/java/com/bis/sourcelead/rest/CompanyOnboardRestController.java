@@ -227,8 +227,13 @@ public class CompanyOnboardRestController {
 		OrglocationSignatoryDTO signDto = new OrglocationSignatoryDTO();
 		signDto.setUuid(signatory.getUuid());
 		signDto.setAssociateId(signatory.getUserId().getId());
-		signDto.setAuthorizedType(Arrays.asList(signatory.getAuthorizedType().split("\\s*,\\s*")));
-		signDto.setAuthorizedAmount(signatory.getAuthorizedAmount().toString());
+		if(StringUtils.isNotBlank(signatory.getAuthorizedType())){
+			signDto.setAuthorizedType(Arrays.asList(signatory.getAuthorizedType().split("\\s*,\\s*")));
+		}
+		if(signatory.getAuthorizedAmount() != null){
+			signDto.setAuthorizedAmount(signatory.getAuthorizedAmount().toString());
+		}
+		
 		return signDto;
 	}
 	

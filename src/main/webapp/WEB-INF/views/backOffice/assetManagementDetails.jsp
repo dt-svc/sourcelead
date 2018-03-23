@@ -240,7 +240,7 @@ function assetDetails(assetId) {
 			type : "POST",
 			url : sourceleadUrl	+ "/getAssetById?"+tokenParamName+"="+tokenValue+"&assetId="+ assetId,
 			success : function(json) {
-				    var make = "NO DATA";
+					var make = "NO DATA";
 				    var model = "NO DATA";
 				    var name = "NO DATA";
 				    var memory = "NO DATA";
@@ -391,6 +391,16 @@ function assetDetails(assetId) {
 							result = result + '  </div>';
 						}
 						
+
+					  if(json.assetCustomFieldlabelNameAndValue != null && json.assetCustomFieldlabelNameAndValue != "" && json.assetCustomFieldlabelNameAndValue != 'undefined'){
+						 $.each(json.assetCustomFieldlabelNameAndValue, function(key, value) {
+			            	  var labelNameAndlabelData = value.split("$");
+			            	  result = result + '  <div class="require_wrap_details_cta"> <b><strong>'+labelNameAndlabelData[0]+':</strong></b> <span>'+labelNameAndlabelData[1]+'</span>';
+							  result = result + '   <div class="clearfix"></div>';
+							  result = result + '  </div>';
+			              });
+		              } 
+						
 						result = result + ' <div class="require_wrap_details_cta width100percnt description80"> <b><strong>Description:</strong></b> <span>'+description+'</span>';
 						result = result + ' <div class="clearfix"></div>';
 						result = result + '</div>';
@@ -436,6 +446,14 @@ function editAssetManagement(assetId){
 			var empA = "";
 			var empB = "";
 			var issueDate = "";
+			
+			 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+			  var sectionId = '${section.id}';
+			  preapareCustomFieldDetails(assetId,sectionId);
+			</c:forEach>
+			
+			
+			
 			if (json.make != null && json.make != '' && json.make != 'undefined') {
 				make = json.make;
 			} 
@@ -554,6 +572,8 @@ function editAssetManagement(assetId){
 				result = result + ' <div class="col-md-3 minHeight50">';
 				result = result + '<input type="text" class="form-control input-sm" name="harddisk" value="'+hardDisk+'" data-validation-optional="true" data-validation="validate_Space validate_NumberAndAlphabet validate_length length2-100" placeholder="Hard Disk">';
 				result = result + '</div>';
+				
+				result = result + ' <div class="showEditfields" id="customFieldDataId"></div>';
 				
 				if (json.categoryName != null && json.categoryName != '' && json.categoryName != 'undefined' && json.categoryId == 2) {
 					result = result + ' <div class="col-md-3 minHeight50">';
@@ -967,7 +987,18 @@ function clearDate(){
 $('#issueDate').val('');	
 }
 </script>
-
+<script>
+function preapareCustomFieldDetails(assetId,sectionId){
+	$.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/getAllASectionCustomFields?&assetId="+assetId+"&requestFrom=asset"+"&sectionId="+sectionId,        
+         success :function(data) {
+        	 $('#customFieldDataId').empty();
+        	 $('#customFieldDataId').append(data);
+           },
+     }); 
+}s
+</script>
 <!-- <script>
 	$("#edit-user").click(function(){
 		$(".user_summary_edit").slideToggle(100);
