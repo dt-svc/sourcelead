@@ -1076,4 +1076,7 @@ public class Constants {
 	public static final String RELATION_TYPE_CHILD ="Child";
 	public static final String RELATION_TYPE_FATHER="Father";
 	public static final String RELATION_TYPE_MOTHER="Mother";
+	
+	public static final String ID_TYPE_PASSPORT="Passport";
+	public static final String ID_TYPE_VISA="Visa";
 }
