@@ -112,6 +112,7 @@ public class SecurityConfig  {
     			.antMatchers("/ws/displayOrgImageInMail/**").permitAll() 
     			.antMatchers("/app/ws/displayOrgImageInMail/**").permitAll()
     			.antMatchers("/app/ws/unsubscribe/**").permitAll()
+    			.antMatchers("/app/userVerification/**").permitAll()
     			.antMatchers("/app/storeUnsubscriptionPublic/**").permitAll()
     			.antMatchers("/app/isActiveUserByUserEmail/**").permitAll()
     			.antMatchers("/openJobsPublicPage").permitAll()

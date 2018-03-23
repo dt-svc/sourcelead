@@ -72,7 +72,7 @@ public class HrDeductionsDaoImpl implements HrDeductionsDao{
 			qry = " order by hrd."+ hrDeductionsDTO.getSortColumn() +" "+hrDeductionsDTO.getSortOrder();
 		}
 		
-		String query = "from HrDeductions hrd  left join fetch hrd.orgLocationId where hrd.orgLocationId.id =:orgLocationId"+qry;
+		String query = "from HrDeductions hrd  left join fetch hrd.orgLocationId where hrd.orgLocationId.id =:orgLocationId";
 		String countQuery = "from HrDeductions hrd  where hrd.orgLocationId.id =:orgLocationId";
 		
 		if(hrDeductionsDTO.getSearchValue().contains("/") || hrDeductionsDTO.getSearchValue().contains("-")){
@@ -110,7 +110,7 @@ public class HrDeductionsDaoImpl implements HrDeductionsDao{
 					.append("OR hrd.repaidStatus like '%" + hrDeductionsDTO.getSearchValue() + "%' ");
 					
 			}
-		Query queryObj = session.createQuery(query + query1.toString());
+		Query queryObj = session.createQuery(query + query1.toString()+qry);
 		if (hrDeductionsDTO != null && hrDeductionsDTO.getLength() > 0) {
 			queryObj.setFirstResult(hrDeductionsDTO.getStart());
 			queryObj.setMaxResults(hrDeductionsDTO.getLength());
