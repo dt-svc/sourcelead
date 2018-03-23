@@ -20,6 +20,7 @@ import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ImmigrationDTO;
 import com.bis.sourcelead.dto.ImmigrationPassportVisaDTO;
 import com.bis.sourcelead.dto.ImmigrationResidenceDTO;
+import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidateIdendities;
@@ -389,9 +390,15 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		familyDetails.setLastName(familyDetailsDto.getLastName());
 		familyDetails.setPlaceOfBirth(familyDetailsDto.getPlaceOfBirth());
 		familyDetails.setRelation(familyDetailsDto.getRelation());
+		if(!StringUtils.isEmpty(familyDetailsDto.getDateOfBirth())) {
 		familyDetails.setDateOfBirth(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), familyDetailsDto.getDateOfBirth()));
+		}
+		if(!StringUtils.isEmpty(familyDetailsDto.getMarraigeDate())) {
 		familyDetails.setMarraigeDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), familyDetailsDto.getMarraigeDate()));
+		}
+		if(!StringUtils.isEmpty(familyDetailsDto.getMarriageEndDate())) {
 		familyDetails.setMarriageEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), familyDetailsDto.getMarriageEndDate()));
+		}
 		familyDetails.setMarriagePlace(familyDetailsDto.getMarriagePlace());
 		familyDetails.setNationality(familyDetailsDto.getNationality());
 		familyDetails.setCurrentAddress(familyDetailsDto.getCurrentAddress());
@@ -460,5 +467,22 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		return candidatePassportVisa;
 
 	}
-
+	
+	@Override
+	public CandidateResidence saveResidenceDetails(ResidenceDTO residenceDTO, OrgLocations orgLocations, User user, Long candidateId)	throws Exception {
+		CandidateResidence candidateResidence = new CandidateResidence();
+		Candidate candidate = candidateDao.getCandidateByCandidateId(candidateId);
+		candidateResidence.setCandidate(candidate);
+		candidateResidence.setLocation(residenceDTO.getLocation());
+		candidateResidence.setStreetAddress(residenceDTO.getStreetAddress());
+		candidateResidence.setCity(residenceDTO.getCity());
+		candidateResidence.setState(residenceDTO.getState());
+		candidateResidence.setCountry(residenceDTO.getCountry());
+		candidateResidence.setZipcode(residenceDTO.getZipcode());
+		
+		
+		immigrationCommonDao.saveResidenceDetails(candidateResidence);
+		return candidateResidence;
+	}	
+	
 }

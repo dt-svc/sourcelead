@@ -29,6 +29,7 @@ import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
+import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.dto.ResponseList;
 
 import com.bis.sourcelead.entity.Candidate;
@@ -609,4 +610,15 @@ public class ImmigrationRestController {
          
     }
 
+    @RequestMapping(value = {"/saveImmigrationResidenceDetails"})
+    public String saveCandidateResidence(ResidenceDTO residenceDTO, HttpServletRequest request, 
+    		@RequestParam(value = "candidateId", required = false) Long candidateId,
+    		@RequestParam(value = "immigrationId", required = false) String immigrationId ) throws Exception {
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+        immigrationCommonService.saveResidenceDetails(residenceDTO,orgLocations,user,candidateId);
+        System.out.println("Template Task Details saved succesfully --> ");
+
+		return "success";
+    }
 }

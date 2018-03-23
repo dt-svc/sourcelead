@@ -1,3 +1,4 @@
+
 <div class="immigraTabsHead">
 		  	<a href="javascript:void(0)" class="immMenuClick">Add Family <i class="fa fa-plus"></i>
 				<div class="immiSubMenu">
@@ -71,49 +72,49 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Middle Name</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="middleName" name="middleName" class="form-control" />
+              		<input type="text" id="middleName" name="middleName" placeholder="Middle Name"class="form-control" />
 				</div>
 			</div> 
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Last Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="lastName" name="lastName" class="form-control" />
+              		<input type="text" id="lastName" name="lastName" class="form-control" placeholder="last Name" field-name="Last Name" data-validation="required" />
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Place of Marriage<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="marriagePlace" name="marriagePlace" class="form-control" />
+              		<input type="text" id="marriagePlace" name="marriagePlace" class="form-control" placeholder="Place Of Marriage" field-name="Place Of Marriage" data-validation="required"/>
 				</div>
 			</div>                           				          
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Date of Marriage<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="marraigeDate" name="marraigeDate" class="form-control calendar" />
+              		<input type="text" id="marraigeDate" name="marraigeDate" class="form-control calendar" onclick="showMarraigeDatePicker();" placeholder="Date Of Marriage" field-name="Date Of Marriage" data-validation="required"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">End Date</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="marriageEndDate" name="marriageEndDate" class="form-control calendar" />
+              		<input type="text" id="marriageEndDate" name="marriageEndDate" placeholder="End Date" onclick="showMarraigeEndDatePicker();" class="form-control calendar" />
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Date of Birth<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="dateOfBirth" name="dateOfBirth" class="form-control calendar" />
+              		<input type="text" id="dateOfBirthSpouse" name="dateOfBirth" class="form-control calendar" onclick ="showSpouseBirthDatePicker();" placeholder="Date Of Birth" field-name="Date Of Birth" data-validation="required"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Place of Birth<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="placeOfBirth" name="placeOfBirth"  class="form-control" />
+              		<input type="text" id="placeOfBirthSpouse" name="placeOfBirth"  class="form-control" placeholder="Place Of Birth" field-name="Place Of Birth" data-validation="required" />
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Address</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="currentAddress" name="currentAddress" class="form-control" />
+              		<input type="text" id="currentAddress" name="currentAddress" class="form-control" placeholder="Address" field-name="Address" data-validation="required"/>
 				</div>
 			</div>																		
 		</div>
@@ -123,7 +124,8 @@
             <input value="Cancel" class="popCan" type="button">
           </div>		
 	</div>	<!--  spouse popup end -->
-	</form>
+	</form>.
+	<form name ="childDetailsForm" id ="childDetailsForm"><!--  child popup start -->
 	<div class="popUpOut" id="childPopView">
 		<div class="popupHead">
 			<h2>Add Child</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
@@ -134,47 +136,48 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">First Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="firstName" name="firstName" class="form-control" />
+              		<input type="text" id="firstName" name="firstName" class="form-control" placeholder="First Name" field-name="First Name" data-validation="required"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Middle Name</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="middleName" name="middleName" class="form-control" />
+              		<input type="text" id="middleName" name="middleName" class="form-control" placeholder="Middle Name"  />
 				</div>
 			</div> 
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Last Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="lastName" name="lastName" class="form-control" />
+              		<input type="text" id="lastName" name="lastName" class="form-control" placeholder="Last Name" field-name="Last Name" data-validation="required" />
 				</div>
 			</div>                         				          
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Date of Birth<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text"  id="dateOfBirth" name="dateOfBirth" class="form-control calendar" />
+              		<input type="text"  id="dateOfBirthChild" name="dateOfBirth" class="form-control calendar" placeholder="Date Of Birth" field-name="Date Of Birth" data-validation="required"  />
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Place of Birth<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="placeOfBirth" name="placeOfBirth" class="form-control" />
+              		<input type="text" id="placeOfBirth" name="placeOfBirth" class="form-control" placeholder="Place Of Birth" field-name="Place Of Birth" data-validation="required"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Address</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="currentAddress" name="currentAddress"class="form-control" />
+              		<input type="text" id="currentAddress" name="currentAddress" field-name="Address"  placeholder="Address" data-validation="required" class="form-control"  />
 				</div>
 			</div>																		
 		</div>
 		
 		<div class="immiPopFoot">
-            <input value="Save" class="" type="button">
+            <input value="Save" onclick="immigration.saveCandidateFamilyDetails('Child');" class="" type="button">
             <input value="Cancel" class="popCan" type="button">
           </div>		
-	</div>	
-	
+	</div><!--  child popup end -->	
+	</form>
+	<form name ="fatherDetailsForm" id ="fatherDetailsForm"><!--  Father popup start -->
 	<div class="popUpOut" id="fathPopView">
 		<div class="popupHead">
 			<h2>Add Father</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
@@ -185,47 +188,48 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">First Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" />
+              		<input type="text" class="form-control" id="firstName" name="firstName" class="form-control" placeholder="First Name" field-name="First Name" data-validation="required"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Middle Name</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" />
+              		<input type="text" class="form-control" id="middleName" name="middleName" class="form-control" placeholder="Middle Name"  />
 				</div>
 			</div> 
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Last Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" />
+              		<input type="text" class="form-control" id="lastName" name="lastName" class="form-control" placeholder="Last Name" field-name="Last Name" data-validation="required" />
 				</div>
 			</div>                         				          
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Date of Birth<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control calendar" />
+              		<input type="text" id="dateOfBirthFather" name="dateOfBirth" class="form-control calendar" placeholder="Date Of Birth" field-name="Date Of Birth" data-validation="required"  />
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Place of Birth<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" />
+              		<input type="text" class="form-control" id="placeOfBirth" name="placeOfBirth" class="form-control" placeholder="Place Of Birth" field-name="Place Of Birth" data-validation="required"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Address</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" />
+              		<input type="text" class="form-control" id="currentAddress" field-name="Address" name="currentAddress" placeholder="Address" data-validation="required" class="form-control" />
 				</div>
 			</div>																		
 		</div>
 		
 		<div class="immiPopFoot">
-            <input value="Save" class="" type="button">
+            <input value="Save" onclick="immigration.saveCandidateFamilyDetails('Father');"class="" type="button">
             <input value="Cancel" class="popCan" type="button">
           </div>		
-	</div>	
-	
+	</div>	<!--  Father popup start -->
+	</form>
+	<form name ="motherDetailsForm" id ="motherDetailsForm"><!--  mother popup start -->
 	<div class="popUpOut" id="mothPopView">
 		<div class="popupHead">
 			<h2>Add Mother</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
@@ -236,47 +240,47 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">First Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" />
+              		<input type="text"  class="form-control" id="firstName" name="firstName" class="form-control" placeholder="First Name" field-name="First Name" data-validation="required"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Middle Name</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" />
+              		<input type="text"  class="form-control" id="middleName" name="middleName" class="form-control" placeholder="Middle Name"  />
 				</div>
 			</div> 
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Last Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" />
+              		<input type="text" class="form-control" id="lastName" name="lastName" class="form-control" placeholder="Last Name" field-name="Last Name" data-validation="required" />
 				</div>
 			</div>                         				          
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Date of Birth<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control calendar" />
+              		<input type="text" id="dateOfBirthMother" name="dateOfBirth" class="form-control calendar" placeholder="Date Of Birth" field-name="Date Of Birth" data-validation="required"  />
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Place of Birth<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" />
+              		<input type="text" class="form-control" id="placeOfBirth" name="placeOfBirth" class="form-control" placeholder="Place Of Birth" field-name="Place Of Birth" data-validation="required"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Address</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" />
+              		<input type="text" class="form-control" id="currentAddress" name="currentAddress" placeholder="Address" field-name="Address" data-validation="required" class="form-control" />
 				</div>
 			</div>																		
 		</div>
 		
 		<div class="immiPopFoot">
-            <input value="Save" class="" type="button">
+            <input value="Save" onclick="immigration.saveCandidateFamilyDetails('Mother');"class="" type="button">
             <input value="Cancel" class="popCan" type="button">
           </div>		
-	</div>	<!--popcode end  -->
-	
+	</div>	<!--mother popcode end  -->
+	</form>
 	<script>
 			
 			 // Add Spouse
@@ -303,4 +307,81 @@
 				$("#spousePopView, #childPopView, #fathPopView, #mothPopView").fadeOut(100);
 			});	
 		</script>
+	
+	<script>	
+	
 		
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		 var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
+		 console.log("finalDateFormatPetitionSave ---> ::  "+finalDateFormatPetitionSave);
+		// spouse birth date
+		function showSpouseBirthDatePicker(){
+		   $('#dateOfBirthSpouse').datepicker({
+		      dateFormat: finalDateFormatPetitionSave,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		  	  yearRange: "-100:+0",
+		  	  maxDate:0  
+		  }).datepicker("show");
+		}  
+		//
+		// child birth date
+		function showChildBirthDatePicker(){
+		   $('#dateOfBirthChild').datepicker({
+		      dateFormat: finalDateFormatPetitionSave,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		  	  yearRange: "-100:+0",
+		  	  maxDate:0  
+		  }).datepicker("show");
+		}  
+		// Father birth date
+		function showChildBirthDatePicker(){
+		   $('#dateOfBirthFather').datepicker({
+		      dateFormat: finalDateFormatPetitionSave,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		  	  yearRange: "-100:+0",
+		  	  maxDate:0  
+		  }).datepicker("show");
+		}  
+		
+		// Mother birth date
+		function showChildBirthDatePicker(){
+		   $('#dateOfBirthMother').datepicker({
+		      dateFormat: finalDateFormatPetitionSave,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		  	  yearRange: "-100:+0",
+		  	  maxDate:0  
+		  }).datepicker("show");
+		}  
+		
+		// marriage start date and end dates
+		function showMarraigeDatePicker(){
+		  $('#marraigeDate').datepicker({
+		      dateFormat: finalDateFormatPetitionSave,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		      onSelect: function (selected) {
+		            //var dt = new Date(selected);
+		            var dt = $(this).datepicker('getDate', '+1d');
+		            dt.setDate(dt.getDate() + 1);
+		            $("#marriageEndDate").datepicker("option", "minDate", dt);
+		        }
+		  }).datepicker("show");
+		}
+		function showMarraigeEndDatePicker(){ 
+		  $('#marriageEndDate').datepicker({
+		      dateFormat: finalDateFormatPetitionSave,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		        onSelect: function (selected) {
+		            //var dt = new Date(selected);
+		            var dt = $(this).datepicker('getDate', '-1d');
+		            dt.setDate(dt.getDate() - 1);
+		            $("#marraigeDate").datepicker("option", "maxDate", dt);
+		        }
+		  }).datepicker("show");
+		}
+	</script>
