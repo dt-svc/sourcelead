@@ -186,7 +186,7 @@ public class ImmigrationRestController {
     public ModelAndView viewImmigration(HttpServletRequest request
     		, @RequestParam(value = "templateId", required = false) String templateId
     		, @RequestParam(value = "candidateId", required = false) String candidateId
-    		 , @RequestParam(value = "immigrationId", required = false) String immigrationId) {
+    		 , @RequestParam(value = "immigrationId", required = false) String immigrationId) throws Exception {
         ModelAndView model = new ModelAndView();
         model.addObject("immigrationId", immigrationId);
         model.addObject("candidateId", candidateId);
@@ -194,6 +194,8 @@ public class ImmigrationRestController {
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
                 "orgLocations");
         ImmigrationDTO immigrationDTO = immigrationCommonService.getImmigrationViewList(immigrationId,orgLocations);
+        List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+		 model.addObject("educationsList", educationsList);
         model.addObject("immigration", immigrationDTO);
         model.addObject("sourceleadUrl", sourceleadUrl);
         model.setViewName("/immigration/immigrationView");
