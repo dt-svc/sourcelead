@@ -67,7 +67,7 @@ public class InvoiceDataDaoImpl implements InvoiceDataDao{
 			qry = " order by ind."+ invoiceDetailsDTO.getSortColumn() +" "+invoiceDetailsDTO.getSortOrder();
 		}
 		
-		String query = "from InvoiceData ind  left join fetch ind.orgLocationId where ind.orgLocationId.id =:orgLocationId"+qry;
+		String query = "from InvoiceData ind  left join fetch ind.orgLocationId where ind.orgLocationId.id =:orgLocationId";
 		String countQuery = "from InvoiceData ind  where ind.orgLocationId.id =:orgLocationId";
 		
 		if(invoiceDetailsDTO.getSearchValue().contains("/") || invoiceDetailsDTO.getSearchValue().contains("-")){
@@ -109,7 +109,7 @@ public class InvoiceDataDaoImpl implements InvoiceDataDao{
 					.append("OR ind.arPaid like '%" + invoiceDetailsDTO.getSearchValue() + "%' ")
 					.append("OR ind.oldNew like '%" + invoiceDetailsDTO.getSearchValue() + "%' ");
 			}
-		Query queryObj = session.createQuery(query + query1.toString());
+		Query queryObj = session.createQuery(query + query1.toString()+qry);
 		if (invoiceDetailsDTO != null && invoiceDetailsDTO.getLength() > 0) {
 			queryObj.setFirstResult(invoiceDetailsDTO.getStart());
 			queryObj.setMaxResults(invoiceDetailsDTO.getLength());

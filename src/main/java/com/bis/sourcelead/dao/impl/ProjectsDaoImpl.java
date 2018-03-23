@@ -739,7 +739,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 				    	 if(projectClients != null){
 				    		 
 				    			 ProjectsDTO projectsDTO = new ProjectsDTO();
-				    			 
+				    			 projectsDTO.setId(projects.getId());
 				    			 projectsDTO.setProjectClientUUID(projectClients.getUuid());
 				    			 projectsDTO.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projects.getStartDate()));
 				    			 projectsDTO.setEmployeeStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projects.getStartDate()));
@@ -782,6 +782,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 							    
 							 
 							 if(projects.getOrgLocationsId().getId().longValue() == orglo.getId().longValue()) {
+								 projectsDTO.setOrgLocationsId(projects.getOrgLocationsId().getId());
 								 List<ProjectBudget>  budgetList = projectBudgetService.getProjectBudgetByProjectTaskId(projects.getId(),orglo.getId());
 								    if(budgetList != null && budgetList.size() > 0) {
 								    	 double budgetSum = budgetList.stream().filter(p->p.getEstimatedBudgetValue() !=null).mapToDouble(p->p.getEstimatedBudgetValue()).sum();

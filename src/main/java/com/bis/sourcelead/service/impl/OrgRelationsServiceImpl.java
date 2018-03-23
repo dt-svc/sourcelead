@@ -139,10 +139,17 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 			}else{
 				orgRelations.setInitiatorType("Client"); 
 				orgRelations.setResponderType("Vendor");
-				orgRelations.setVendorRelationStatus("Draft");
-				orgRelations.setIsVendorDetailsFilled(Constants.YES);
-				orgRelations.setIsVendorDocumentsFilled(Constants.NO);
-				orgRelations.setIsVendorTasksFilled(Constants.NO);
+				if(StringUtils.isNotBlank(clientDTO.getClientSaveFromType()) && "BulkVendorSaving".equalsIgnoreCase(clientDTO.getClientSaveFromType())){
+					orgRelations.setVendorRelationStatus("Sent");
+					orgRelations.setIsVendorDetailsFilled(Constants.YES);
+					orgRelations.setIsVendorDocumentsFilled(Constants.YES);
+					orgRelations.setIsVendorTasksFilled(Constants.YES);
+					}else{
+					orgRelations.setVendorRelationStatus("Draft");
+					orgRelations.setIsVendorDetailsFilled(Constants.YES);
+					orgRelations.setIsVendorDocumentsFilled(Constants.NO);
+					orgRelations.setIsVendorTasksFilled(Constants.NO);
+					}
 				
 				 if(clientDTO.getTemplateId() != null && clientDTO.getTemplateId().size() > 0){
 				    	StringBuilder templateIds = new StringBuilder();
