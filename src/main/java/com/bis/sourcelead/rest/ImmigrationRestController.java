@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateEmployerDTO;
+import com.bis.sourcelead.dto.CandidateFamilyDetailsDTO;
 import com.bis.sourcelead.dto.CandidateResumeDTO;
 import com.bis.sourcelead.dto.ImmigrationDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
@@ -553,5 +554,57 @@ public class ImmigrationRestController {
 			}
 		}
 		return candidateResumeDTO;
+    }
+    
+    @RequestMapping(value = {"/saveCandidateFamilyDetails"})
+    public String saveCandidateFamilyMemberDetails(CandidateFamilyDetailsDTO familyDetailsDTO,  HttpServletRequest request,
+    		@RequestParam(value = "candidateId", required = true) Long candidateId
+    		,@RequestParam(value = "relationType", required = true) String relationType) {
+    	String status ="";
+    	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+                "orgLocations");
+    	try {
+    		  familyDetailsDTO.setCandidateId(candidateId);
+    		  System.out.println(" inside conroller -->relationType :: "+relationType);
+    		  if(relationType.trim().equalsIgnoreCase(Constants.RELATION_TYPE_SPOUSE)) {
+    			  familyDetailsDTO.setRelation(Constants.RELATION_TYPE_SPOUSE);
+    		  }
+    		  else if(relationType.trim().equalsIgnoreCase(Constants.RELATION_TYPE_CHILD)) {
+    			  familyDetailsDTO.setRelation(Constants.RELATION_TYPE_CHILD);
+    		  }
+    		  else if(relationType.trim().equalsIgnoreCase(Constants.RELATION_TYPE_MOTHER)) {
+    			  familyDetailsDTO.setRelation(Constants.RELATION_TYPE_MOTHER);
+    		  }
+    		  else if(relationType.trim().equalsIgnoreCase(Constants.RELATION_TYPE_FATHER)) {
+    			  familyDetailsDTO.setRelation(Constants.RELATION_TYPE_FATHER);
+    		  }
+    		  
+    	      status = immigrationCommonService.saveCandidateFamilyMemberDetails(familyDetailsDTO, orgLocations, user);
+    	      
+       	}catch(Exception e) {
+       		logger.error("Exception caught in controller  -->"+e.getMessage());
+       		e.printStackTrace();
+       	}
+       	return status;
+      }
+    
+    @RequestMapping(value = {"/savePassportDetailsPage"}, method = RequestMethod.POST)
+    public String  savePassportDetailsPage(ImmigrationPassportVisaDTO immigrationPassportVisaDTO, HttpServletRequest request,
+    		@RequestParam(value = "candidateId", required = false) String candidateId,
+    		@RequestParam(value = "immigrationId", required = false) String immigrationId) {
+        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+        immigrationPassportVisaDTO.setStaticPath(staticPath);
+		System.out.println("Candidate ID ----> :  "+immigrationPassportVisaDTO.getCandidateId());
+        try {
+      immigrationCommonService.savePassportDetails(immigrationPassportVisaDTO, user, orgLocations);
+        } catch (Exception e) {
+            logger.error("Exception caugth in savePetitionDetailsPage controller" + e.getMessage());
+            e.printStackTrace();
+        }
+       
+        return "Success";
+         
     }
 }

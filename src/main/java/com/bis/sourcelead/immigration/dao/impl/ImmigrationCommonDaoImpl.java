@@ -16,8 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateLcaI94Summary;
+import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
@@ -141,4 +143,39 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return lcaI94Summary;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public String saveCandidateFamilyMemberDetails(CandidateFamilyDetails familyDetails) {
+		try {
+		Session session = this.sessionFactory.getCurrentSession();
+		  session.saveOrUpdate(familyDetails);
+		}catch(Exception e) {
+			logger.error("Exception caught while saving family details -->"+e.getMessage());
+			e.printStackTrace();
+		}
+		return "success";
+	}
+
+    @Override
+    @Transactional(rollbackFor = { Exception.class })
+	public CandidatePassportVisa savePassportDetails(CandidatePassportVisa candidatePassportVisa) throws Exception
+	{
+   Session session = this.sessionFactory.getCurrentSession();
+  
+		logger.debug("Storing ImmigrationPassportVisa");
+		try {
+			if (candidatePassportVisa != null) {
+				session.saveOrUpdate(candidatePassportVisa);
+			}
+			logger.debug("candidateCertifications Stored Successfully");
+		} catch (Exception exception) {
+			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"CandidatePassport"));
+			    try {
+	                throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
+	            } catch (SourceLeadConstraintViolationException e) {
+	                e.printStackTrace();
+	            }
+		}
+		return candidatePassportVisa;
+}
 }

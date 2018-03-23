@@ -224,6 +224,29 @@ function Immigration() {
             }
         });
     }
+    this.saveCandidateFamilyDetails= function(relationType) {
+		if ($('#spouseDetailsForm').validate(false, validationSettings)) {
+			var formData = getFormData("spouseDetailsForm");
+			console.log(" inside function");
+			console.log(formData);
+			 var candidateId = $('#candidateID').val();
+			$.ajax({
+				url : sourceleadUrl + immiModulePath+ "/saveCandidateFamilyDetails?candidateId="+candidateId+"&relationType="+relationType,
+				type : "POST",
+				data : formData,
+				success : function(data) {
+					console.log(" inside success function");
+					if (data == 'success') {
+                        console.log("data successfully saved for the candidate id "+templateId);
+					}
+				}
+			});
+
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
 function validateTemplateName() {
     var templateName = document.getElementById("templateName").value.trim();
@@ -302,6 +325,37 @@ function saveEmployerDetails(status) {
         var immigrationId = $('#immigrationID').val();
         $.ajax({
             url: sourceleadUrl + immiModulePath + "/saveImmigrationEmployerDetails?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
+            type: "POST",
+            data: formData,
+            success: function (data) {
+                if (data == 'success') {
+                    if (status == 'saveContinue') {
+                        $("#addNewPetitionTemplateDiv").empty();
+                        $("#addNewPetitionTemplateDiv").load(sourceleadUrl + immiModulePath + "/gotoTemplatePreviousPage?status=taskList");
+                    } else if (status == 'save') {
+                        $("#addNewPetitionTemplateDiv").empty();
+                        $("#addNewPetitionTemplateDiv").load(sourceleadUrl + immiModulePath + "/gotoTemplatePreviousPage?status=formDetails");
+                    }
+                }
+            }
+        });
+
+        return true;
+    } else {
+        return false;
+    }
+	
+}
+
+function savePassportDetails(status) {
+	alert("ppppp")
+	if ($('#Candidate_Passport_form').validate(false, validationSettings)) {
+        var formData = getFormData("Candidate_Passport_form");
+        var candidateId = $('#candidateId').val();
+        var immigrationId = $('#immigrationId').val();
+        alert("pppp")
+        $.ajax({
+            url: sourceleadUrl + immiModulePath + "/savePassportDetailsPage?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
             type: "POST",
             data: formData,
             success: function (data) {

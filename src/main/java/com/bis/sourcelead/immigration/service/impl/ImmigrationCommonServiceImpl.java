@@ -17,12 +17,15 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
+import com.bis.sourcelead.dto.CandidateFamilyDetailsDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ImmigrationDTO;
 import com.bis.sourcelead.dto.ImmigrationResidenceDTO;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateLcaI94Summary;
+import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
@@ -376,6 +379,87 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			e.printStackTrace();
 		}
 		return dto;
+	}
+
+	@Override
+	public String saveCandidateFamilyMemberDetails(CandidateFamilyDetailsDTO familyDetailsDto, OrgLocations orgLocations, User user) throws Exception {
+		CandidateFamilyDetails familyDetails = new CandidateFamilyDetails();
+		Candidate candidate = candidateDao.getCandidateByCandidateId(familyDetailsDto.getCandidateId());
+		candidate.setCandidateId(familyDetailsDto.getCandidateId());
+		familyDetails.setCandidate(candidate);
+		familyDetails.setFirstName(familyDetailsDto.getFirstName());
+		familyDetails.setMiddleName(familyDetailsDto.getMiddleName());
+		familyDetails.setLastName(familyDetailsDto.getLastName());
+		familyDetails.setPlaceOfBirth(familyDetailsDto.getPlaceOfBirth());
+		familyDetails.setRelation(familyDetailsDto.getRelation());
+		familyDetails.setDateOfBirth(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), familyDetailsDto.getDateOfBirth()));
+		familyDetails.setMarraigeDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), familyDetailsDto.getMarraigeDate()));
+		familyDetails.setMarriageEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), familyDetailsDto.getMarriageEndDate()));
+		familyDetails.setMarriagePlace(familyDetailsDto.getMarriagePlace());
+		familyDetails.setNationality(familyDetailsDto.getNationality());
+		familyDetails.setCurrentAddress(familyDetailsDto.getCurrentAddress());
+		familyDetails.setStatus(Constants.RECORD_ACTIVE);
+	    Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+		familyDetails.setCreatedDate(currentDate);
+		familyDetails.setCreatedBy(user);
+		familyDetails.setUpdatedDate(currentDate);
+		familyDetails.setUpdatedBy(user);
+		
+		return immigrationCommonDao.saveCandidateFamilyMemberDetails(familyDetails);
 	}	
+
+	
+	/*candidatePassportVisa.setId(immigrationPassportVisaDTO.getId());
+	candidatePassportVisa.setIdNumber(immigrationPassportVisaDTO.getIdNumber());*/
+	
+	
+	CandidatePassportVisa candidatePassportVisa  = new CandidatePassportVisa();
+	Candidate can = new Candidate();
+	//SimpleDateFormat simpleDateFormat = orgLocationId.getLocFullFormDateFormatter();
+	StringBuffer activitySummary = new StringBuffer();
+	 if(immigrationPassportVisaDTO.getCandidateId()!= null){
+		
+	if (StringUtils.isNotBlank(immigrationPassportVisaDTO.getIdNumber())) {
+		
+		candidatePassportVisa.setIdNumber(immigrationPassportVisaDTO.getIdNumber());
+	}
+	
+  if (StringUtils.isNotBlank(immigrationPassportVisaDTO.getCountry())) {
+		
+		candidatePassportVisa.setCountry(immigrationPassportVisaDTO.getCountry());
+	}
+	
+		if (StringUtils.isNotBlank(immigrationPassportVisaDTO.getValidFrom())) {
+			try {
+				
+                Date validFrom = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationPassportVisaDTO.getValidFrom());
+                candidatePassportVisa.setValidFromDate(validFrom);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}else{
+			candidatePassportVisa.setValidFromDate(null);
+		}
+		if (StringUtils.isNotBlank(immigrationPassportVisaDTO.getValidTo())) {
+			try {
+                
+                Date validTo = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationPassportVisaDTO.getValidTo());
+                candidatePassportVisa.setValidToDate(validTo);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}else{
+			candidatePassportVisa.setValidToDate(null);
+		}
+		
+	
+}
+	logger.debug("In CandidateCertificationsServiceImpl class save method");
+	candidatePassportVisa = immigrationCommonDao.savePassportDetails(candidatePassportVisa);
+	return candidatePassportVisa;
+	
+}	
 
 }
