@@ -224,6 +224,29 @@ function Immigration() {
             }
         });
     }
+    this.saveCandidateFamilyDetails= function(relationType) {
+		if ($('#spouseDetailsForm').validate(false, validationSettings)) {
+			var formData = getFormData("spouseDetailsForm");
+			console.log(" inside function");
+			console.log(formData);
+			 var candidateId = $('#candidateID').val();
+			$.ajax({
+				url : sourceleadUrl + immiModulePath+ "/saveCandidateFamilyDetails?candidateId="+candidateId+"&relationType="+relationType,
+				type : "POST",
+				data : formData,
+				success : function(data) {
+					console.log(" inside success function");
+					if (data == 'success') {
+                        console.log("data successfully saved for the candidate id "+templateId);
+					}
+				}
+			});
+
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
 function validateTemplateName() {
     var templateName = document.getElementById("templateName").value.trim();
@@ -321,4 +344,5 @@ function saveEmployerDetails(status) {
     } else {
         return false;
     }
+	
 }
