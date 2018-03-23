@@ -257,20 +257,20 @@ function Immigration() {
     	alert(idType+"hi")
     	var formId= "";
     	if(idType =="Passport"){
-    			formId ="Candidate_Passport_form";
+    			formId ="CandidatePassportform";
     		}
     	 	else if(idType =="Visa"){
-      		formId ="Candidate_Visa_form";
-      		alert(formId)
-    	  	}
+      		formId ="CandidateVisaform";
+      		 	  	}
     	if ($('#'+formId).validate(false, validationSettings)) {
     			var formData = getFormData(formId);
     		    console.log(" inside function formId"+formId);
     		 	console.log(formData);
     		 	var candidateId = $('#candidateID').val();
                 var immigrationId = $('#immigrationId').val();
+                alert(candidateId+formId);
             $.ajax({
-                url: sourceleadUrl + immiModulePath + "/savePassportVisaDetailsPage?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
+                url: sourceleadUrl + immiModulePath + "/savePassportVisaDetailsPage?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId+"&idType="+idType,
                 type : "POST",
 				data : formData,
 				success : function(data) {

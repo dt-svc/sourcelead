@@ -141,7 +141,7 @@
 			  </ul>
 		</div>
 		<!--popcode start  -->
-		<form id="Candidate_Visa_form" name="Candidate_Visa_form" method="post"> 
+		<form id="Candidate_Visa_form" name="CandidateVisaform" method="post"> 
 		<div class="popUpOut" id="popUpVisa">
 		
 		<div class="popupHead">
@@ -199,6 +199,7 @@
             <input value="Cancel" class="popCan" type="button">
           </div>		
 	</div><!--popcode end  -->	
+	</form>
 		<script>
 		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormatCerSave = getJSDateFormat(locationDate);

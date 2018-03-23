@@ -598,7 +598,9 @@ public class ImmigrationRestController {
     
     @RequestMapping(value = {"/savePassportVisaDetailsPage"}, method = RequestMethod.POST)
     public String  savePassportDetailsPage(ImmigrationPassportVisaDTO immigrationPassportVisaDTO, HttpServletRequest request,
-    		@RequestParam(value = "idType", required = true) String idType) {
+    		@RequestParam(value = "idType", required = true) String idType,
+    		@RequestParam(value = "candidateId", required = false) String candidateId,
+    		@RequestParam(value = "immigrationId", required = false) String immigrationId) {
         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		System.out.println("Candidate ID ----> :  "+immigrationPassportVisaDTO.getCandidateId());

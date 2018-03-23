@@ -464,10 +464,10 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		if(immigrationPassportVisaDTO.getIdType()=="Visa")
 		{
 			candidatePassportVisa.setVisaType(immigrationPassportVisaDTO.getVisaType());
-                        candidatePassportVisa.setIdType(Constants.ID_TYPE_PASSPORT);
+                        candidatePassportVisa.setIdType(Constants.ID_TYPE_VISA);
 		}
                 else
-                {candidatePassportVisa.setIdType(Constants.ID_TYPE_VISA);
+                {candidatePassportVisa.setIdType(Constants.ID_TYPE_PASSPORT);
 
                  }
 		
