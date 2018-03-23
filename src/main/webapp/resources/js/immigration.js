@@ -225,9 +225,22 @@ function Immigration() {
         });
     }
     this.saveCandidateFamilyDetails= function(relationType) {
-		if ($('#spouseDetailsForm').validate(false, validationSettings)) {
-			var formData = getFormData("spouseDetailsForm");
-			console.log(" inside function");
+    	var formId= "";
+    	if(relationType =="Spouse"){
+    		formId ="spouseDetailsForm";
+    	}
+    	else if(relationType =="Child"){
+    		formId ="childDetailsForm";
+    	}
+    	else if(relationType =="Father"){
+    		formId ="fatherDetailsForm";
+    	}
+    	else if(relationType =="Mother"){
+    		formId ="motherDetailsForm";
+    	}
+		if ($('#'+formId).validate(false, validationSettings)) {
+			var formData = getFormData(formId);
+			console.log(" inside function formId"+formId);
 			console.log(formData);
 			 var candidateId = $('#candidateID').val();
 			$.ajax({

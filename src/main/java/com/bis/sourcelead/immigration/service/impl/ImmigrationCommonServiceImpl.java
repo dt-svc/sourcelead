@@ -389,9 +389,15 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		familyDetails.setLastName(familyDetailsDto.getLastName());
 		familyDetails.setPlaceOfBirth(familyDetailsDto.getPlaceOfBirth());
 		familyDetails.setRelation(familyDetailsDto.getRelation());
+		if(!StringUtils.isEmpty(familyDetailsDto.getDateOfBirth())) {
 		familyDetails.setDateOfBirth(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), familyDetailsDto.getDateOfBirth()));
+		}
+		if(!StringUtils.isEmpty(familyDetailsDto.getMarraigeDate())) {
 		familyDetails.setMarraigeDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), familyDetailsDto.getMarraigeDate()));
+		}
+		if(!StringUtils.isEmpty(familyDetailsDto.getMarriageEndDate())) {
 		familyDetails.setMarriageEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), familyDetailsDto.getMarriageEndDate()));
+		}
 		familyDetails.setMarriagePlace(familyDetailsDto.getMarriagePlace());
 		familyDetails.setNationality(familyDetailsDto.getNationality());
 		familyDetails.setCurrentAddress(familyDetailsDto.getCurrentAddress());
