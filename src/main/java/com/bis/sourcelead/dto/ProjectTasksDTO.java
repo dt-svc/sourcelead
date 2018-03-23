@@ -63,6 +63,8 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	
 	private String projectClientUUID;
 	
+	private List<CustomFormFieldDTO> customFormData;
+	
 	public Long getId() {
 		return id;
 	}
@@ -240,6 +242,12 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	public void setProjectClientUUID(String projectClientUUID)
 	{
 		this.projectClientUUID = projectClientUUID;
+	}
+	public List<CustomFormFieldDTO> getCustomFormData() {
+		return customFormData;
+	}
+	public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
+		this.customFormData = customFormData;
 	}
 	
 	

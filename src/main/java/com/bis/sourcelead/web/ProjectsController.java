@@ -3,7 +3,10 @@ package com.bis.sourcelead.web;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,6 +23,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
+import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
@@ -47,6 +52,7 @@ import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectDocumentsService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectPlanningRequestService;
+import com.bis.sourcelead.service.ProjectTaskCustomFieldDataService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
@@ -121,8 +127,13 @@ public class ProjectsController {
 	 
 	@Autowired
 	private SourceleadFormSectionsService sourceleadFormSectionsService;
+	
 	@Autowired
 	private SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired
+	private ProjectTaskCustomFieldDataService projectTaskCustomFieldDataService;
+	
 	
 	 protected boolean isNullOrEmpty(String str)
 	 {
@@ -374,6 +385,11 @@ public class ProjectsController {
 				     List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
 					 model.addObject("sourceleadSectionList",sections);
 					
+					 SourceleadActions actionIDProjectTask = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_PROJECT_TASKS);
+				     model.addObject("actionIDProjectTask",actionIDProjectTask.getId());
+				     List<SourceleadSectionDTO> sectionsProjectTsk  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(actionIDProjectTask.getId(),orgLocations.getId());
+					 model.addObject("sourceleadSectionListForProjectTask",sectionsProjectTsk);
+					 
 					model.setViewName("project/projectSummary");
 				}else {
 					model.setViewName("registration/persmissionDenied");
@@ -466,6 +482,40 @@ public class ProjectsController {
 				 model.addObject("taskStatusList", taskStatusList);
 				 
 				 
+				 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_PROJECT_TASKS);
+				 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
+				 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
+				 if(sections != null && !sections.isEmpty()) {
+					 for(SourceleadSectionDTO sec:sections) {
+						 for(OrglocationFormFieldsDTO customFields:sec.getCustomFieldsList()) {
+							 CustomFormFieldDTO custom = new CustomFormFieldDTO();
+							 custom.setCustomFormFieldId(customFields.getId());
+							 formFieldId.add(custom);
+						 }
+					 }
+					 if(formFieldId != null && !formFieldId.isEmpty() && projectTask != null && projectTask.getId() != null) {
+					 Map<Long, String[]> projectTaskData = projectTaskCustomFieldDataService.getProjectTaskCustomFieldDataByUserId(orgLocations.getOrg().getId(),formFieldId,projectTask.getId());
+					 Map<Long,String> dataMap = new HashMap<>();
+					 if(projectTaskData!= null && !projectTaskData.isEmpty()) {
+						 for(Entry<Long, String[]> projectTaskCustomData:projectTaskData.entrySet()) {
+							String labelName = projectTaskCustomData.getValue()[0];
+							 String labelData = projectTaskCustomData.getValue()[1];
+							 Long id = projectTaskCustomData.getKey();
+							 StringBuilder keyValue =  new StringBuilder();
+							 keyValue.append(labelName).append("$").append(labelData);
+							 dataMap.put(id, keyValue.toString());
+							 model.addObject("projectTaskCustomFieldlabelNameAndValue",dataMap);
+							 //assetDTO.setProjectTaskCustomFieldlabelNameAndValue(dataMap);
+						 	}
+					 	}
+					 }
+				 }
+				 
+				 SourceleadActions actionIDProjectTask = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_PROJECT_TASKS);
+			     model.addObject("actionIDProjectTask",actionIDProjectTask.getId());
+			     List<SourceleadSectionDTO> sectionsProjectTsk  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(actionIDProjectTask.getId(),orgLocations.getId());
+				 model.addObject("sourceleadSectionListForProjectTask",sectionsProjectTsk);
+				 
 				 LookUpData taskStatus = lookUpDataService.getRequirementExperienceLevelyUniqueKey(projectTask.getTaskType().getUniqueKey());
 				 model.addObject("taskStatus", taskStatus.getUniqueKey());
 				model.addObject("taskUUID", taskUUID);
@@ -474,7 +524,6 @@ public class ProjectsController {
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				return model;
 	}
-	 
 	 
 	 @RequestMapping(value = "/newResourceRequest")
 		public ModelAndView newResourceRequest(@RequestParam(value="projectUUID", required=true) String projectUUID,
