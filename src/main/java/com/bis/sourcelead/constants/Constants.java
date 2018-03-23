@@ -1064,6 +1064,8 @@ public class Constants {
 	public static final String SUBSCRIPTION_TYPE = "Subscription Type";
 	public static final String USER_SUBSCRIPTION = "User Subscription";
 	public static final String DATA_STORAGE = "Data Storage";
+	
+	public static final String[] REGISTERED_COUNTRIES = { "Australia", "France", "India", "Singapore", "United Kingdom", "United States"};
 
 
 }

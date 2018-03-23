@@ -48,6 +48,8 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
+import opennlp.tools.parser.Cons;
+
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
 @RequestMapping("/app")
@@ -102,16 +104,6 @@ public class OrgSettingsController {
 		ModelAndView model = new ModelAndView();
 		commonUtil.highLightMenu(Constants.OrgSettings, request);
 		List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
-		List<Modules> modulesList = null;
-		List<Modules> requirementSubModulesList = null;
-		try {
-			modulesList = modulesService.getSourceLeadModules();
-			model.addObject("modulesList", modulesList);
-			requirementSubModulesList = modulesService.getRequirementSubModules();
-			model.addObject("requirementSubModulesList", requirementSubModulesList);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		
 		List<States> states = statesService.getAllStatesByCountry(orgLocations.getCountry());
 		model.addObject("statesList", states);
@@ -170,18 +162,20 @@ public class OrgSettingsController {
 		}
 		
 		List<OrgLicenseSubscription> subscriptionList = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByOrgId(org.getId());
+		List<String> orgSubscribedCountriesList = new ArrayList<>();
 		StringBuilder subscriptionCountries = new StringBuilder(); 
-		String DOUBLE_QUOTE = "\"";
 		if(subscriptionList != null && !subscriptionList.isEmpty()) {
 			for(OrgLicenseSubscription subscription : subscriptionList) {
 				Countries subscriptionCountry = countriesService.getCountriesByCountryName(subscription.getCountry());
 				subscriptionCountries.append(subscriptionCountry.getCode2()).append(",");
+				orgSubscribedCountriesList.add(subscription.getCountry());
 			}
 		}
 		
 		 String subscribedCountries = subscriptionCountries.toString();
 		 subscribedCountries = subscribedCountries.substring(0,subscribedCountries.length()-1);
-
+		 
+		model.addObject("orgSubscribedCountriesList", orgSubscribedCountriesList);
 		model.addObject("subscribedCountries", subscribedCountries);
 		model.addObject("timezoneList", timezoneList);
 		model.addObject("orgLocations", orgLocations);

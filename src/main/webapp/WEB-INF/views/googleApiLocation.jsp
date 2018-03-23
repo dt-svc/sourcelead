@@ -51,7 +51,6 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId,country,addres
 	 var input = (document.getElementById(locationId));
 	 var countries =  "country:["+country+"]";
 	 options.types=['geocode'];
-	 console.log("country"+country);
 	 options.componentRestrictions.country=country; 
 	    autocomplete = new google.maps.places.Autocomplete(input, options);
   

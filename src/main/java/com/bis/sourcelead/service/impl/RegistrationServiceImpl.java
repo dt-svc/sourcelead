@@ -33,6 +33,7 @@ import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesCategoryDao;
 import com.bis.sourcelead.dao.OrgDao;
+import com.bis.sourcelead.dao.TabsDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CrowdSourcingUserRegistrationDTO;
@@ -65,6 +66,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
+import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -224,6 +226,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 	
 	@Autowired
 	OrgLicenseSubscriptionPriceService orgLicenseSubscriptionPriceService;
+	
+	@Autowired
+	TabsDao tabsDao;
 	 
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -249,6 +254,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		User user = getUserDetails(registration,password);
 		userService.addUser(user);
 		OrgLocations orgLocations = getOrgLocationsDetails(registration, org, user);
+		orgLocations.setRegistrationStatus("Draft");
 		Timezone timeZone = timeZoneService.getTimezone(Long.parseLong(registration.getTimeZone()));
 		orgLocations.setTimezone(timeZone);
 		try {
@@ -326,6 +332,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		//For saving of orgLocation Details which location has choose in the registration
 		OrgLocations orgLocations = getOrgLocationsDetails(registration, org, user);
+		orgLocations.setRegistrationStatus("Registered");
 		Timezone timeZone = timeZoneService.getTimezone(Long.parseLong(registration.getTimeZone()));
 		orgLocations.setTimezone(timeZone);
 		try {
@@ -608,7 +615,6 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgLocations.setOrgLocationName(registration.getCompanyName().trim());
 		orgLocations.setWebsite(convertWebsite(registration.getWebsite()));
 		orgLocations.setIsCompanyOnboarded(Constants.NO);
-		orgLocations.setRegistrationStatus("Draft");
 		
 	    if(StringUtils.isNotBlank(registration.getDba())){
         	orgLocations.setDba(registration.getDba());
@@ -749,48 +755,67 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 	
 	public void saveOrgBasedRoles(Org org,OrgLocations orgLocations,User user) throws Exception{
-		List<SourceleadRoles> rolesList = sourceleadRolesService.getSourceleadRoles();
-		if(null != rolesList){
-			for(SourceleadRoles roles : rolesList){
-				Roles orgRoles = new Roles();
-				orgRoles.setRoleName(roles.getRoleName());
-				orgRoles.setDisplayName(roles.getDisplayName());
-				orgRoles.setOrgLocations(orgLocations);
-				RoleHierarchy roleHierarchy = roleHierarchyService.getRoleHierarchyByHierarchyLevelAndOrgLocationId(roles.getRoleHierarchy().getHierarchyLevel(), orgLocations.getId());
-				orgRoles.setRoleHierarchy(roleHierarchy);
-				orgRoles.setOrg(orgLocations.getOrg());
-				orgRoles.setDefaultRole(1);
-				StringBuilder strbul  = new StringBuilder();
+		
+		OrgLicenseSubscription orgLicenseSubscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByOrgIdAndCountry(org.getId(), orgLocations.getCountry());
 				
-				List<Long> roleActonsList = new ArrayList<Long>();
-				if(null != roles.getActionId()){
-					for (String s : roles.getActionId().split(",")){
-						 roleActonsList.add(Long.parseLong(s));
-					 }
-				}
+				List<Long> tabsIds = new ArrayList<>();
+				String[] registeredTabs = orgLicenseSubscription.getSubscriptionTabs().split(",");
 				
-				List<SourceleadActions> sourceLeadActionsList =  sourceleadActionsService.getAllSourceleadActionsByOrgLocationId(orgLocations);
-				for(SourceleadActions actions : sourceLeadActionsList){
-					if(roleActonsList.contains(actions.getId())){
-						 strbul.append(actions.getId()).append(",");
+				for(int i=0; i<registeredTabs.length; i++) {
+					List<Tabs> childTabsList = tabsDao.getClildTabsListByTabId(Long.valueOf(registeredTabs[i]));
+					if(childTabsList.size() > 0) {
+						for(Tabs childTabs : childTabsList) {
+							tabsIds.add(childTabs.getId());
+						}
+					}else {
+						tabsIds.add(Long.valueOf(registeredTabs[i]));
 					}
 				}
 				
-				String actionId = strbul.toString();
+				List<SourceleadRoles> rolesList = sourceleadRolesService.getSourceleadRoles();
+				List<SourceleadActions> sourceLeadActionsList =  sourceleadActionsService.getAllSourceleadActionsByTabsList(tabsIds);
 				
-				if(!isNullOrEmpty(actionId)){
-					actionId = actionId.substring(0, actionId.length()-1);
-					orgRoles.setActionId(actionId);
-				}else{
-					orgRoles.setActionId(null);
+				if(null != rolesList){
+					for(SourceleadRoles roles : rolesList){
+						Roles orgRoles = new Roles();
+						orgRoles.setRoleName(roles.getRoleName());
+						orgRoles.setDisplayName(roles.getDisplayName());
+						orgRoles.setOrgLocations(orgLocations);
+						RoleHierarchy roleHierarchy = roleHierarchyService.getRoleHierarchyByHierarchyLevelAndOrgLocationId(roles.getRoleHierarchy().getHierarchyLevel(), orgLocations.getId());
+						orgRoles.setRoleHierarchy(roleHierarchy);
+						orgRoles.setOrg(orgLocations.getOrg());
+						orgRoles.setDefaultRole(1);
+						StringBuilder strbul  = new StringBuilder();
+						
+						List<Long> roleActonsList = new ArrayList<Long>();
+						if(null != roles.getActionId()){
+							for (String s : roles.getActionId().split(",")){
+								 roleActonsList.add(Long.parseLong(s));
+							 }
+						}
+						
+						
+						for(SourceleadActions actions : sourceLeadActionsList){
+							if(roleActonsList.contains(actions.getId())){
+								 strbul.append(actions.getId()).append(",");
+							}
+						}
+						
+						String actionId = strbul.toString();
+						
+						if(!isNullOrEmpty(actionId)){
+							actionId = actionId.substring(0, actionId.length()-1);
+							orgRoles.setActionId(actionId);
+						}else{
+							orgRoles.setActionId(null);
+						}
+						
+						orgRoles.setStatus(roles.getStatus().toString());
+						orgRoles.setCreatedBy(user.getUserCode());
+						orgRoles.setCreatedDate(new Date());
+						rolesService.storeRoles(orgRoles);
+					}
 				}
-				
-				orgRoles.setStatus(roles.getStatus().toString());
-				orgRoles.setCreatedBy(user.getUserCode());
-				orgRoles.setCreatedDate(new Date());
-				rolesService.storeRoles(orgRoles);
-			}
-		}
 		
 	}
 	

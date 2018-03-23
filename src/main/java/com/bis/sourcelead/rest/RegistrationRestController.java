@@ -248,7 +248,7 @@ public class RegistrationRestController {
     }
 	 
 	 
-	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
+	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG')")
 	@RequestMapping(value = "/app/companyRegistration" , method = RequestMethod.POST)
 	   public OrgLocationDTO addCompanyRegistration(
 			   CompanyRegistrationDTO companyRegistrationDTO,CandidateDTO candidateDTO,
@@ -275,6 +275,39 @@ public class RegistrationRestController {
 		}
 		
 		return orgLocationDTO;
+	     
+	   }
+	
+	
+	
+	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
+	@RequestMapping(value = "/app/companyLocationRegistration" , method = RequestMethod.POST)
+	   public String companyLocationRegistration(
+			   CompanyRegistrationDTO companyRegistrationDTO,CandidateDTO candidateDTO,
+				@RequestParam(value="modulesList", required=false) String modulesList ,
+				@RequestParam(value="submodulesList", required=false) String submodulesList ,
+	   			HttpServletRequest request) {
+		if(Validator.validate(companyRegistrationDTO)){
+		try {
+
+				Registration registration = new Registration();
+				ModelMapper mapper1 = new ModelMapper();
+				registration = mapper1.map(companyRegistrationDTO, Registration.class);
+				
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			   
+				registrationService.addRegistration(registration,user,orgLocations.getId(),candidateDTO);
+				 StringBuilder orgCreateMsg = new StringBuilder();
+				SourceLeadSessionManager.setSessionAttribute(request, "orgCreateMsg", orgCreateMsg.append(registration.getCompanyName()).append(" Org has created sucessfully.").toString());
+			} catch (Exception e) {
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+			
+			return "orgList";
+		}else{
+			return "DataMissing";
+		}
 	     
 	   }
 	
