@@ -14,4 +14,9 @@ public interface OrglocationSignatoryDao {
 	OrglocationSignatory getOrglocationSignatoryByUUID(String uuid) throws Exception;
 
 	List<OrglocationSignatory> getAllSignatoriesByLocationId(Long locationId) throws Exception;
+	
+	public boolean getUserByUserId(Long userId, Long orgLocationsId) throws Exception;
+	
+	public OrglocationSignatory getUserBySignatoryUuId(Long userId, String uuid, Long orgLocationsId) throws Exception;
+
 }

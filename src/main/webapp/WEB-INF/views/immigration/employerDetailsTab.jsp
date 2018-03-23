@@ -72,43 +72,93 @@
 			<h2>Add Employee</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
 		</div>
 		
-		<div class="popupMid clearfix">
+		<div class="popupMid clearfix overflow_inherint">
 
           <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-4 padding_left">Employer<span class="text-danger">&nbsp;*</span></label>
-              	<div class="col-md-8 padding_right">
+				<div class="row">
+				<label class="col-md-4">Employer<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-8">
               		<input type="text" class="form-control" placeholder="Employer" id = "name" name="name" data-validation="required validate_Space validate_length length2-100" field-name="Employer Name"/>
+				</div>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-4 padding_left">Designation</label>
-              	<div class="col-md-8 padding_right">
+				<div class="row">
+				<label class="col-md-4">Designation</label>
+              	<div class="col-md-8">
               		<input type="text" placeholder="Employer Designation" id ="designation" name="designation" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Employer Designation"  class="form-control" />
+				</div>
 				</div>
 			</div>				          
           <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-4 padding_left">Address</label>
-              	<div class="col-md-8 padding_right">
+				<div class="row">
+				<label class="col-md-4">Address</label>
+              	<div class="col-md-8">
               		<input type="text" placeholder="Address" id = "address" name="address" data-validation="required validate_Space validate_length length2-250"  data-validation-optional="true" field-name="Address" class="form-control" />
+				</div>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-4 padding_left">Start Date</label>
-              	<div class="col-md-8 padding_right"> 
-              		<input type="text" id= "startDate" name = "startDate" class="form-control calendar" />
+				<div class="row">
+				<label class="col-md-4">Start Date</label>
+              	<div class="col-md-4"> 
+              		<select class="newSelect"  name="startMonth" id="startMonth" onChange="monthIfYearRequired();">';
+		                      <option value="">Select Month</option>
+							   <option value="1&January">January</option>
+		                      <option value="2&February">February</option>
+		                      <option value="3&March">March</option>
+		                      <option value="4&April">April</option>
+		                      <option value="5&May">May</option>
+		                      <option value="6&June">June</option> 
+		                      <option value="7&July">July</option>
+		                      <option value="8&August">August</option>
+		                      <option value="9&September">September</option>
+		                      <option value="10&October">October</option>
+		                      <option value="11&November">November</option>
+		                      <option value="12&December">December</option>
+		                  </select>
+				</div>
+				<div class="col-md-4" id="startYearDiv">
+					<input type="text" max class="form-control input-sm" value="" id="startYear" name="startYear" placeholder="Enter Year"
+						field-name="Start Year"
+						data-validation="validate_Space validate_extno validate_length length4-4"
+						data-validation-optional="true">
+				</div>
 				</div>
 			</div>				
           <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-4 padding_left">End Date</label>
-              	<div class="col-md-8 padding_right">
-              		<input type="text" id= "endDate" name = "endDate" class="form-control calendar" />
+				<div class="row">
+				<label class="col-md-4">End Date</label>
+              	<div class="col-md-4"> 
+              		<select class="newSelect"  name="endMonth" id="endMonth" onChange="monthIfYearRequired();">';
+		                      <option value="">Select Month</option>
+							   <option value="1&January">January</option>
+		                      <option value="2&February">February</option>
+		                      <option value="3&March">March</option>
+		                      <option value="4&April">April</option>
+		                      <option value="5&May">May</option>
+		                      <option value="6&June">June</option> 
+		                      <option value="7&July">July</option>
+		                      <option value="8&August">August</option>
+		                      <option value="9&September">September</option>
+		                      <option value="10&October">October</option>
+		                      <option value="11&November">November</option>
+		                      <option value="12&December">December</option>
+		                  </select>
+				</div>
+				<div class="col-md-4" id="startYearDiv">
+					<input type="text" max class="form-control input-sm" value="" id="endYear" name="endYear" placeholder="Enter Year"
+						field-name="End Year"
+						data-validation="validate_Space validate_extno validate_length length4-4"
+						data-validation-optional="true">
+				</div>
 				</div>
 			</div>			
 		</div>
 		
 		<div class="immiPopFoot">
             <input value="Save"class="" type="button" id = "save_Buton" onclick="saveEmployerDetails('save');"> 
-            <input value="Cancel" class="popCan" type="button">
+            <input value="Cancel" id = "cancel_button" class="popCan" type="button">
           </div>		
 	</div><!-- popup code end -->
 	</form>

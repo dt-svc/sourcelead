@@ -604,16 +604,29 @@ public class FinanceServiceImpl implements FinanceService{
 					paidBill.setProjectName(invoice.getProjectID().getProjectName());
 				}
 				paidBill.setBillDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), invoice.getInvoiceDate()));
-				Date paymentDate = financeDao.getPaymentDateByInvoiceId(invoice.getId());
+				Date paymentDate = null;
+				if(invoice.getParentInvoiceId() != null){
+					paymentDate = financeDao.getPaymentDateByInvoiceId(invoice.getParentInvoiceId().getId());
+				}else{
+					paymentDate = financeDao.getPaymentDateByInvoiceId(invoice.getId());
+				}
+				
 				if (paymentDate != null) {
 					paidBill.setPayDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paymentDate));
 				}
 				
 				double total = 0;
 				if(Constants.PAYABLES.equalsIgnoreCase(paidBillDTO.getBillType())) {
-					 total = getPaidAmountByInvoiceId(invoice.getId());
+					
+					if(invoice.getParentInvoiceId() != null)
+						 total = getPaidAmountByInvoiceId(invoice.getParentInvoiceId().getId());
+					else
+						 total = getPaidAmountByInvoiceId(invoice.getId());
 				}else {
-					 total = getPaidAmountByInvoiceId(invoice.getParentInvoiceId().getId());
+					if(invoice.getParentInvoiceId() != null)
+					     total = getPaidAmountByInvoiceId(invoice.getParentInvoiceId().getId());
+					else
+						total = getPaidAmountByInvoiceId(invoice.getId());
 				}
 				paidBill.setAmount(total);
 				totalAmount = totalAmount + total;
@@ -650,7 +663,7 @@ public class FinanceServiceImpl implements FinanceService{
 			if(paidList.getData() != null) {
 				double otherAmount = 0;
 				for(PaidBillDTO paidBill : paidList.getData()) {
-					if(i <= 10) {
+					if(i < 10) {
 						list.add(paidBill);
 					}else {
 						otherAmount = otherAmount + paidBill.getTotalAmount();

@@ -1443,6 +1443,7 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label><strong>Role:</strong></label>';
 					result = result + '<div class="clearfix mt10"><span>'+json.roles.displayName+'</span></div>';
+					result = result + '<input type = "hidden" id = "role" name = "roleType" value = "'+json.roles.id+'">';
 					/* result = result + '<strong>Role:</strong><span class="fix">'+json.roles.displayName+'</span></div>'; */
 					result = result + ' </div>'; 
 					//result = result + ' <div class="clearfix"></div>';

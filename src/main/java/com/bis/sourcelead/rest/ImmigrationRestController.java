@@ -24,6 +24,7 @@ import com.bis.sourcelead.dto.CandidateEmployerDTO;
 import com.bis.sourcelead.dto.CandidateFamilyDetailsDTO;
 import com.bis.sourcelead.dto.CandidateResumeDTO;
 import com.bis.sourcelead.dto.ImmigrationDTO;
+import com.bis.sourcelead.dto.ImmigrationPassportVisaDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
@@ -588,7 +589,7 @@ public class ImmigrationRestController {
        	}
        	return status;
       }
-<<<<<<< HEAD
+
     
     @RequestMapping(value = {"/savePassportDetailsPage"}, method = RequestMethod.POST)
     public String  savePassportDetailsPage(ImmigrationPassportVisaDTO immigrationPassportVisaDTO, HttpServletRequest request,
@@ -596,11 +597,10 @@ public class ImmigrationRestController {
     		@RequestParam(value = "immigrationId", required = false) String immigrationId) {
         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-        immigrationPassportVisaDTO.setStaticPath(staticPath);
 		System.out.println("Candidate ID ----> :  "+immigrationPassportVisaDTO.getCandidateId());
         try {
-      immigrationCommonService.savePassportDetails(immigrationPassportVisaDTO, user, orgLocations);
-        } catch (Exception e) {
+        	  immigrationCommonService.savePassportDetails(immigrationPassportVisaDTO, user, orgLocations);
+         } catch (Exception e) {
             logger.error("Exception caugth in savePetitionDetailsPage controller" + e.getMessage());
             e.printStackTrace();
         }
@@ -608,6 +608,5 @@ public class ImmigrationRestController {
         return "Success";
          
     }
-=======
->>>>>>> 0444616901f1c75cfde9ace818727693459d4d0e
+
 }
