@@ -1,7 +1,5 @@
 package com.bis.sourcelead.rest;
 
-import java.io.Writer;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateEducationDTO;
 import com.bis.sourcelead.dto.CandidateEmployerDTO;
 import com.bis.sourcelead.dto.CandidateFamilyDetailsDTO;
 import com.bis.sourcelead.dto.CandidateResumeDTO;
@@ -31,7 +30,6 @@ import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.dto.ResponseList;
-
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
@@ -42,6 +40,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
+import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
@@ -73,7 +72,10 @@ public class ImmigrationRestController {
 
     @Autowired
     private OrgLocationService orgLocationService;
-
+    
+    @Autowired
+    private CandidateEducationService candidateEducationService;
+    
     @Autowired
     private UserRoleService userRoleService;
     
@@ -608,6 +610,22 @@ public class ImmigrationRestController {
        
         return "Success";
          
+    }
+    
+    @RequestMapping(value = {"/saveEducationImmigrationDedtails"}, method = RequestMethod.POST)
+    public String  saveEducationImmigrationDedtails(CandidateEducationDTO candidateEducationDTO, HttpServletRequest request,
+    		@RequestParam(value = "candidateId", required = false) String candidateId,
+    		@RequestParam(value = "immigrationId", required = false) String immigrationId) {
+        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+        try {
+        	candidateEducationService.storeCandidateEducation(candidateEducationDTO, Long.parseLong(candidateId), orgLocations.getId(), user);
+         } catch (Exception e) {
+            logger.error("Exception caugth in savePetitionDetailsPage controller" + e.getMessage());
+            e.printStackTrace();
+        }
+       
+        return "Success";
     }
 
     @RequestMapping(value = {"/saveImmigrationResidenceDetails"})
