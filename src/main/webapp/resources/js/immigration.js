@@ -46,6 +46,34 @@ function Immigration() {
     this.resetFormData = function (formId) {
         $("#" + formId)[0].reset();
     }
+    
+    this.saveEducationImmigration = function (status) {
+        if ($('#eduSave_Form').validate(false, validationSettings)) {
+            var formData = getFormData("eduSave_Form");
+            var candidateId = $('#candidateId').val();
+            var immigrationId = $('#immigrationId').val();
+            $.ajax({
+                url: sourceleadUrl + immiModulePath + "/saveEducationImmigrationDedtails?" + tokenParamName + "=" + tokenValue + "&candidateId=" + candidateId+"&immigrationId="+immigrationId,
+                type: "POST",
+                data: formData,
+                success: function (data) {
+                    if (data == 'Success') {
+                    	$('#popEduView').hide();
+                    	$('.popMask').fadeOut();
+                        /*immTemplId = jsonObj.id;
+                        if (status == 'saveContinue') {
+                            $("#addNewPetitionTemplateDiv").empty();
+                            $("#addNewPetitionTemplateDiv").load(sourceleadUrl + immiModulePath + "/gotoTemplatePreviousPage?status=docDetails");
+                        }*/
+
+                    }
+                }
+            });
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     this.savePetitionDoc = function (status) {
         if ($('#PetitionTemplateDocDetails').validate(false, validationSettings)) {
