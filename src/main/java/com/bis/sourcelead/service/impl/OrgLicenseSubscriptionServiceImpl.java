@@ -21,7 +21,9 @@ import com.bis.sourcelead.dao.CountriesDao;
 import com.bis.sourcelead.dao.EmployeesDao;
 import com.bis.sourcelead.dao.ExpensesCategoryDao;
 import com.bis.sourcelead.dao.LookUpDataDao;
+import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.dao.OrgLicenseSubscriptionDao;
+import com.bis.sourcelead.dao.OrgLicenseSubscriptionPriceDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.RoleHierarchyDao;
 import com.bis.sourcelead.dao.RolesDao;
@@ -42,6 +44,7 @@ import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
+import com.bis.sourcelead.entity.OrgLicenseSubscriptionPrice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectClients;
@@ -58,11 +61,13 @@ import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -141,6 +146,15 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 	@Autowired
 	ProjectsService projectsService;
 	
+	@Autowired
+	OrgDao orgDao;
+	
+	@Autowired
+	LookUpDataDao lookupDataDao;
+	
+	@Autowired
+	OrgLicenseSubscriptionPriceDao orgLicenseSubscriptionPriceDao;
+	
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -171,18 +185,19 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			orgLicenseSubscription = getOrgLicenseSubscriptionById(orgLicenseSubscriptionDTO.getOrgLinceseSubscriptionId());
 			orgLicenseSubscription.setSubscriptionTabs(orgLicenseSubscriptionDTO.getRegisteredModules());
 			
-			if(!orgLicenseSubscription.getStorageSubscriptionType().getName().equalsIgnoreCase("Free Trail")) {
-				
 				Countries countries = countriesDao.getCountriesByCountryName(orgLicenseSubscription.getCountry());
 				orgLicenseSubscription.setCurrency(countries.getCurrency());
-				
-				if(orgLicenseSubscriptionDTO.getRegisteredModules().equalsIgnoreCase("United States")) {
+			
+		    if(!orgLicenseSubscription.getStorageSubscriptionType().getName().equalsIgnoreCase("Free Trail")) {
+				if(orgLicenseSubscription.getCountry().equalsIgnoreCase("United States")) {
 					orgLicenseSubscription.setInvoiceAmount(orgLicenseSubscriptionDTO.getInvoiceAmount());
 				}else {
 					Double invoiceAmount = conversionUtil.currencyConvert("USD", countries.getCurrency(),orgLicenseSubscriptionDTO.getInvoiceAmount());
 					DecimalFormat df = new DecimalFormat(".##");
 					orgLicenseSubscription.setInvoiceAmount(Double.valueOf(df.format(invoiceAmount)));
 				}
+			}else {
+				orgLicenseSubscription.setInvoiceAmount(0d);
 			}
 			
 			saveOrgLicenseSubscription(orgLicenseSubscription);
@@ -637,6 +652,82 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 	@Override
 	public List<OrgLicenseSubscription> getOrgLicenseSubscriptionByOrgId(Long orgId) throws Exception {
 		return orgLicenseSubscriptionDao.getOrgLicenseSubscriptionByOrgId(orgId);
+	}
+
+	@Override
+	public void upgradeOrgLicenseSubscription(OrgLicenseSubscriptionDTO orgLicenseSubscriptionDTO, User loginUser,Long orgId)
+			throws Exception {
+		
+		try {
+			
+			OrgLicenseSubscription orgLicenseSubscription = new OrgLicenseSubscription();
+			Org org = orgDao.findOrgByID(orgId);
+			orgLicenseSubscription.setOrg(org);
+			orgLicenseSubscription.setCountry(orgLicenseSubscriptionDTO.getCountry());
+			
+			LookUpData subscriptionType = new LookUpData();
+			subscriptionType.setId(Long.parseLong(orgLicenseSubscriptionDTO.getSubscriptionType()));
+			orgLicenseSubscription.setSubscriptionType(subscriptionType);
+			
+			LookUpData userSubscriptionType = new LookUpData();
+			userSubscriptionType.setId(Long.parseLong(orgLicenseSubscriptionDTO.getUserSubscription()));
+			orgLicenseSubscription.setUserSubscriptionType(userSubscriptionType);
+			
+			LookUpData storageSubscriptionType = new LookUpData();
+			storageSubscriptionType.setId(Long.parseLong(orgLicenseSubscriptionDTO.getStorageType()));
+			orgLicenseSubscription.setStorageSubscriptionType(storageSubscriptionType);
+			
+			orgLicenseSubscription.setCreatedBy(loginUser);
+			orgLicenseSubscription.setCreatedDate(new Date());
+			orgLicenseSubscription.setUpdatedBy(loginUser);
+			orgLicenseSubscription.setUpdatedDate(new Date());
+			
+			Date subscriptionDate = commonUtil.orgLocationDateFormat("dd-MM-yyyy",orgLicenseSubscriptionDTO.getSubscriptionDate());
+			subscriptionDate = CalendarUtil.getDateTimeForGivenTimeZone(orgLicenseSubscriptionDTO.getTimezone(), subscriptionDate, "dd-MM-yyyy");
+			orgLicenseSubscription.setFromDate(subscriptionDate);
+			
+			Calendar toDate = Calendar.getInstance();
+			toDate.setTime(subscriptionDate);    
+		    
+		    LookUpData lookupData = lookupDataDao.getTasksById(Long.parseLong(orgLicenseSubscriptionDTO.getSubscriptionType()));
+			
+		    if(lookupData.getName().equalsIgnoreCase("Free Trail") || lookupData.getName().equalsIgnoreCase("1 Month")) {
+		    	toDate.add(Calendar.MONTH, +1); 
+		    }else if(lookupData.getName().equalsIgnoreCase("6 Months")) {
+		    	toDate.add(Calendar.MONTH, +6); 
+		    }else if(lookupData.getName().equalsIgnoreCase("1 Year")) {
+		    	toDate.add(Calendar.YEAR, +1); 
+		    }else if(lookupData.getName().equalsIgnoreCase("2 Years")) {
+		    	toDate.add(Calendar.YEAR, +2); 
+		    }
+		    
+		    Date subscriptionToDate = commonUtil.getOrgLocationCurrentDate("dd-MM-yyyy",toDate.getTime());
+		    subscriptionToDate = CalendarUtil.getDateTimeForGivenTimeZone(orgLicenseSubscriptionDTO.getTimezone(), subscriptionToDate, "dd-MM-yyyy");
+			orgLicenseSubscription.setToDate(subscriptionToDate);
+			
+			Countries countries = countriesDao.getCountriesByCountryName(orgLicenseSubscriptionDTO.getCountry());
+			orgLicenseSubscription.setCurrency(countries.getCurrency());
+			
+			OrgLicenseSubscriptionPrice subscriptionPrice = orgLicenseSubscriptionPriceDao.getOrgLicenseSubscriptionPriceBySubscriptionTypeAndUserType(Long.parseLong(orgLicenseSubscriptionDTO.getSubscriptionType()), Long.parseLong(orgLicenseSubscriptionDTO.getUserSubscription()));
+		    
+			if(!lookupData.getName().equalsIgnoreCase("Free Trail")) {
+						if(orgLicenseSubscriptionDTO.getCountry().equalsIgnoreCase("United States")) {
+							orgLicenseSubscription.setInvoiceAmount(subscriptionPrice.getSubscriptionRate());
+						}else {
+							Double invoiceAmount = conversionUtil.currencyConvert("USD", countries.getCurrency(),subscriptionPrice.getSubscriptionRate());
+							DecimalFormat df = new DecimalFormat(".##");
+							orgLicenseSubscription.setInvoiceAmount(Double.valueOf(df.format(invoiceAmount)));
+						}
+					}else {
+						orgLicenseSubscription.setInvoiceAmount(0d);
+					}
+			
+			orgLicenseSubscription.setSubscriptionTabs(orgLicenseSubscriptionDTO.getRegisteredModules());
+			saveOrgLicenseSubscription(orgLicenseSubscription);
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

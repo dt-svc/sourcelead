@@ -51,6 +51,7 @@ import com.bis.sourcelead.dto.TabsDTO;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
+import com.bis.sourcelead.entity.OrgLicenseSubscriptionPrice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.RegistrationOptionalService;
@@ -62,6 +63,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.form.RestResponsetUtil;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionPriceService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
@@ -142,6 +144,9 @@ public class RegistrationRestController {
 	 
 	 @Autowired
 	 OrgLicenseSubscriptionService orgLicenseSubscriptionService;
+	 
+	 @Autowired
+	 OrgLicenseSubscriptionPriceService orgLicenseSubscriptionPriceService;
 	 
 	 
 	 @RequestMapping(value = "/app/getOrgsList")
@@ -266,8 +271,8 @@ public class RegistrationRestController {
 			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			    orgLocationDTO = registrationService.addCompanyRegistration(registration,user,orgLocations.getId(),candidateDTO);
 			    orgLocationDTO.setRegistrationStatusStr("orgList");
-			    StringBuilder orgCreateMsg = new StringBuilder();
-				SourceLeadSessionManager.setSessionAttribute(request, "orgCreateMsg", orgCreateMsg.append(registration.getCompanyName()).append(" Org has created sucessfully.").toString());
+			   /* StringBuilder orgCreateMsg = new StringBuilder();
+				SourceLeadSessionManager.setSessionAttribute(request, "orgCreateMsg", orgCreateMsg.append(registration.getCompanyName()).append(" Org has created sucessfully.").toString());*/
 			} catch (Exception e) {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
@@ -423,13 +428,49 @@ public class RegistrationRestController {
 	
 	
 	
-	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
+	@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	@RequestMapping(value = "/app/updateOrgLicenseSubscription" , method = RequestMethod.POST)
 	   public String updateOrgLicenseSubscription(OrgLicenseSubscriptionDTO orgLicenseSubscriptionDTO,HttpServletRequest request) throws Exception {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		orgLicenseSubscriptionService.registerOrgLicenseSubscription(orgLicenseSubscriptionDTO,loginUser);
 		return "success";
      }
+	
+	
+	@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	@RequestMapping(value = "/app/getInvoiceRateBySubscriptionRateAndUserSubscription" , method = RequestMethod.POST)
+	   public Double getInvoiceRateBySubscriptionRateAndUserSubscription(@RequestParam(value="subscriptionType", required=true) Long subscriptionType,
+			   @RequestParam(value="userSubscription", required=true) Long userSubscription,HttpServletRequest request) throws Exception {
+		OrgLicenseSubscriptionPrice subscriptionPrice = orgLicenseSubscriptionPriceService.getOrgLicenseSubscriptionPriceBySubscriptionTypeAndUserType(subscriptionType, userSubscription);
+		if(subscriptionPrice != null) {
+			return subscriptionPrice.getSubscriptionRate();
+		}else {
+			return 0d;
+		}
+		
+     }
+	
+	
+	@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	@RequestMapping(value = "/app/saveOrgLocationSubscription" , method = RequestMethod.POST)
+	   public String saveOrgLocationSubscription(OrgLicenseSubscriptionDTO orgLicenseSubscriptionDTO,
+			   @RequestParam(value="orgId", required=true) Long orgId,HttpServletRequest request) {
+		
+		if(Validator.validate(orgLicenseSubscriptionDTO)){
+			try {
+				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				orgLicenseSubscriptionService.upgradeOrgLicenseSubscription(orgLicenseSubscriptionDTO, loginUser, orgId);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return "subscribeList";
+		}else {
+			return "DataMissing";
+		}
+		
+     }
+	
 	
 	
 	

@@ -222,7 +222,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	OrgLicenseSubscriptionService orgLicenseSubscriptionService;
 	
 	@Autowired
-	LookUpDataService lookupDateService;
+	LookUpDataService lookupDataService;
 	
 	@Autowired
 	OrgLicenseSubscriptionPriceService orgLicenseSubscriptionPriceService;
@@ -673,7 +673,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		Calendar toDate = Calendar.getInstance();
 		toDate.setTime(subscriptionDate);    
 	    
-	    LookUpData lookupData = lookupDateService.getTasksById(Long.parseLong(registration.getOrgEnrollment()));
+	    LookUpData lookupData = lookupDataService.getTasksById(Long.parseLong(registration.getOrgEnrollment()));
 		
 	    if(lookupData.getName().equalsIgnoreCase("Free Trail") || lookupData.getName().equalsIgnoreCase("1 Month")) {
 	    	toDate.add(Calendar.MONTH, +1); 

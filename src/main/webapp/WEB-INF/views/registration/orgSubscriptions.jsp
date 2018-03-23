@@ -7,21 +7,14 @@
 <a href="javascript:void(0)" class="addcon-pop btn btn-sm btn-primary mb10" onclick="addSubscription();"><i class="glyphicon glyphicon-plus"></i>&nbsp;Subscribe</a>
 <div id="subscriptionList"></div>
 <div id="subscriptionListLoading"></div>
-
+</div>
 
 <form:form class="login-form clearfix"  id="subscribe_form"  name="subscribe_form" method="post" >
- 			<div id="subscribeOrg" class="clearfix"></div>
- <div class="form-footer clearfix miniFoot">
-  <div class="col-lg-12">
-	<div class="pull-right">
-	  <input type="submit" value="Register" onClick="registerCompanyModules()" class="btn btn-primary ml10">
-	   <input type="button" value="Cancel" onClick="orgSubscriptionList()"  class="btn btn-default ml">
-	</div>
-  </div>
-</div>
+<div id="subscriptionLoading"></div>
+<div id="subscribeOrg" class="clearfix"></div>
 </form:form>
 
-</div>
+
 </div>
 
 
@@ -38,10 +31,10 @@ function addSubscription(){
 		
 		result = result +'<div class="col-md-6">';
 		
-		result = result +'<div class="form-group clearfix">';
+		result = result +'<div class="form-group clearfix id="errCountryMsg"">';
 		result = result +'<label class="col-md-4 noPad">Country<i class="text-danger">&nbsp;*</i></label>';
 		result = result +'<div class="col-md-6 padding_right">';
-		result = result +'<select class="form-control" field-name="Country" data-validation="required" id="subscribeCountries" name="country">';
+		result = result +'<select class="form-control" field-name="Country" data-validation="required" onchange="changeCountry(); getTimezonesList();" id="subscribeCountries" name="country">';
 	    result = result +'</select>';
 		result = result +'</div>';
 		result = result +'</div>';
@@ -50,7 +43,7 @@ function addSubscription(){
 		result = result +'<label class="col-md-4 noPad">Org Enrollment<i class="text-danger">&nbsp;*</i></label>';
 		result = result +'<div class="col-md-6 padding_right">';
 		
-		result = result + '   <select class="form-control chosen-select" name="subscriptionType" id="subscriptionType" field-name="Org Enrollment" data-validation="required">';
+		result = result + '   <select class="form-control chosen-select" name="subscriptionType" id="subscriptionType" onchange="getInvoiceRate();" field-name="Org Enrollment" data-validation="required">';
 	 	result = result + '       <option value="">Select Enrollment Type</option>';
 	 	result = result +'		<c:forEach var="subscriptionType" items="${subscriptionTypeList}">';
 	 	result = result + '       <option value="${subscriptionType.id}">${subscriptionType.name}</option>';
@@ -64,7 +57,7 @@ function addSubscription(){
 		result = result +'<label class="col-md-4 noPad">No.Of Users<i class="text-danger">&nbsp;*</i></label>';
 		result = result +'<div class="col-md-6 padding_right">';
 		
-		result = result + '   <select class="form-control chosen-select" name="userSubscription" id="userSubscription" field-name="Users" data-validation="required">';
+		result = result + '   <select class="form-control chosen-select" name="userSubscription" id="userSubscription" onchange="getInvoiceRate();" field-name="Users" data-validation="required">';
 	 	result = result + '       <option value="">Select Users</option>';
 	 	result = result +'		<c:forEach var="userSubscription" items="${userSubscriptionTypeList}">';
 	 	result = result + '       <option value="${userSubscription.id}">${userSubscription.name}</option>';
@@ -85,12 +78,24 @@ function addSubscription(){
 		result = result +'<label class="col-md-4 noPad">Data Storage<i class="text-danger">&nbsp;*</i></label>';
 		result = result +'<div class="col-md-6 padding_right">';
 		
-		result = result + '   <select class="form-control chosen-select" name="dataStorage" id="dataStorage" field-name="Data Storate" data-validation="required">';
+		result = result + '   <select class="form-control chosen-select" name="storageType" id="dataStorage" field-name="Data Storate" data-validation="required">';
 	 	result = result + '       <option value="">Select Data Storage</option>';
 	 	result = result +'		<c:forEach var="dataStorage" items="${dataStorageTypeList}">';
 	 	result = result + '       <option value="${dataStorage.id}">${dataStorage.name}</option>';
 	    result = result +'		</c:forEach>';
 	    result = result + '    </select>';
+		
+		result = result +'</div>';
+		result = result +'</div>';
+		
+		
+		result = result +'<div class="form-group clearfix">';
+		result = result +'<label class="col-md-4 noPad">Time Zone<i class="text-danger">&nbsp;*</i></label>';
+		result = result +'<div class="col-md-6 padding_right">';
+		
+		result = result + '   <select class="form-control chosen-select"  data-placeholder="Time Zone" name="timezone" id="timeZone" field-name="Time Zone" data-validation="required">';
+	    
+		result = result + '    </select>';
 		
 		result = result +'</div>';
 		result = result +'</div>';
@@ -117,7 +122,7 @@ function addSubscription(){
 		result = result +'<div class="clearfix colmd-12 modal-footer">';
 		result = result +'<div class="clearfix"></div>';
 		result = result +'<div class="pull-right">';
-		result = result +'<h4><strong>Total: <b class="ml mr5" id="subscriptionRate">0.00</b></strong><strong>$</strong></h4>';
+		result = result +'<h4><strong>Total: <b class="ml mr5" id="subscriptionRate">0</b></strong><strong>$</strong></h4>';
 		result = result +'<input type="hidden" name="invoiceAmount" id="invoiceAmount" value=""/>';
 		result = result +'</div>';
 		result = result +'</div>';
@@ -128,6 +133,15 @@ function addSubscription(){
 		
 		
 		
+		result = result +'</div>';
+		result = result +'</div>';
+		
+		result = result +'<div class="form-footer clearfix miniFoot">';
+		result = result +'<div class="col-lg-12">';
+		result = result +'<div class="pull-right">';
+		result = result +'<input type="submit" value="Register" onClick="registerCompanyModules()" class="btn btn-primary ml10">';
+		result = result +'<input type="button" value="Cancel" onClick="orgSubscriptionList()"  class="btn btn-default ml">';
+		result = result +'</div>';
 		result = result +'</div>';
 		result = result +'</div>';
 		
@@ -145,6 +159,8 @@ function addSubscription(){
     			  '.chosen-select-width'     : {width:"95%"}
     			}
 	    
+	    $("#timeZone").chosen();
+	    
 	    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	 	  var finalDateFormat = getJSDateFormat(locationDate);
 	 	  $('#subscriptionDate').datepicker({
@@ -157,8 +173,54 @@ function addSubscription(){
 			}
 	 	  });
 	 	  
+	 	  
 	    getSubscribeCountries();
 	    getOrgModules();
+	    getTimezonesList();
+}
+</script>
+
+<script>
+function getTimezonesList(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var country = $('#subscribeCountries').val();
+	if(country){
+		if(country == "India"){
+			$("select[name = 'dateFormat']").val('dd-MM-yyyy');
+		}else{
+			$("select[name = 'dateFormat']").val('MM-dd-yyyy');
+		}
+		 $.ajax({
+		    	type: "POST",
+		    	url : sourceleadUrl+"/getTimezonesList?${_csrf.parameterName}=${_csrf.token}", 
+		        success: function(data) {
+		        var json = JSON.parse(data);
+		        var output = "";
+		        output = output + "<option value=''>--Select--</option>";
+		        if(country == 'India'){
+	    			output = output + "<option value='246' selected> Asia/Kolkata </option>";
+	    		}else if(country == 'United States'){
+	    			output = output + "<option value='132' selected> America/Chicago </option>";
+	    		}else if(country == 'United Kingdom'){
+	    			output = output + "<option value='333' selected> Europe/London </option>";
+	    		}else if(country == 'Singapore'){
+	    			output = output + "<option value='272' selected> Asia/Singapore </option>";
+	    		}else if(country == 'France'){
+	    			output = output + "<option value='342' selected> Europe/Paris </option>";
+	    		}else if(country == 'Australia'){
+	    			output = output + "<option value='298' selected> Australia/Adelaide </option>";
+	    		}
+		        	for (var i=0; i<json.length; i++){
+		        		var opt = json[i];
+		        		output = output + "<option value='" +opt.id+ "'>"+opt.timeZoneId+"</option>";
+					}
+		        	$("#timeZone").empty();
+		        	$("#timeZone").append(output);
+		        	$("#timeZone").trigger("chosen:updated");
+		        }
+		 });
+	}
+
 }
 </script>
 
@@ -173,6 +235,30 @@ function removeValidation(){
 function clearDate(){
 	$("#subscriptionDate").val("");
 	};
+	
+function changeCountry(){
+	 $("#errCountryMsg").find("p.jquery_form_error_message").remove();
+}
+	
+	
+function getInvoiceRate(){
+	var subscriptionType = $("#subscriptionType").val();
+	var userSubscription = $("#userSubscription").val();
+	
+	if(subscriptionType && userSubscription){
+		
+		 $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/getInvoiceRateBySubscriptionRateAndUserSubscription?${_csrf.parameterName}=${_csrf.token}&subscriptionType="+subscriptionType+"&userSubscription="+userSubscription, 
+		        success: function(invoiceAmount) {
+		        	
+		        	 $("#subscriptionRate").html(invoiceAmount);
+			        
+		        },
+		    }); 
+	}
+}	
+	
 </script>
 
 <script>
@@ -587,3 +673,59 @@ function alertMessage3(tab1,tab2,tab3){
 
 }
 </script>
+
+<script type="text/javascript">
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   };  
+         $('body').on('submit', '#subscribe_form', function(e){
+        	  if ($(this).validate(false, validationSettings)){
+        		e.preventDefault();
+        		var formData = getFormData("subscribe_form");
+         		var sourceleadUrl ='${sourceleadUrl}';
+         		var orgId = '${orgId}';
+         		
+         		$("#subscriptionLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+         		 
+         		
+         		var registeredModules = [];
+        		$('input:checkbox[name=registeredModules]:checked').each(function() 
+        	    {
+        			registeredModules.push($(this).val());
+        	    });
+        		
+        		
+        		
+          		 $.ajax({
+          	      type: "POST",
+          	    	data: formData,
+                	  url: sourceleadUrl+"/saveOrgLocationSubscription?${_csrf.parameterName}=${_csrf.token}&orgId="+orgId+"&registeredModules="+registeredModules,
+                  	success: function(result) {
+			         	if(result == 'subscribeList'){
+			         		$("#subscriptionLoading").removeAttr('style');
+			         		orgSubscriptionList();
+			         	}
+			        	else if(orglocations.registrationStatusStr == 'DataMissing'){
+			        		$("#subscriptionLoading").removeAttr('style');
+			        	} 
+			        	
+			        },  
+               });    
+                
+            	    return true;
+            }
+            else{
+            	return false;	
+               }
+            });
+            
+         $('body').on('blur', '#subscribe_form', function() {
+     		$("#subscribe_form").showHelpOnFocus();
+     		$("#subscribe_form").validateOnBlur(false, validationSettings);
+     	});
+     
+	</script>
+

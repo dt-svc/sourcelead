@@ -3,12 +3,15 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class OrgLicenseSubscriptionDTO implements Serializable{
 
     private static final long serialVersionUID = 1L;
 	
 	private long orgLinceseSubscriptionId;
 	
+	@Required(desc = "registeredModules")
 	private String registeredModules;
 	
 	private Double invoiceAmount;
@@ -17,6 +20,7 @@ public class OrgLicenseSubscriptionDTO implements Serializable{
 	
 	private String currency;
 	
+	@Required(desc = "country")
 	private String country;
 	
 	private String fromDateStr;
@@ -25,9 +29,20 @@ public class OrgLicenseSubscriptionDTO implements Serializable{
 	
 	private List<String> modulesList;
 	
+	@Required(desc = "subscriptionType")
 	private String subscriptionType;
 	
+	@Required(desc = "storageType")
 	private String storageType;
+	
+	@Required(desc = "userSubscription")
+	private String userSubscription;
+	
+	@Required(desc = "subscriptionDate")
+	private String subscriptionDate;
+	
+	@Required(desc = "timezone")
+	private String timezone;
 
 	public long getOrgLinceseSubscriptionId() {
 		return orgLinceseSubscriptionId;
@@ -115,5 +130,29 @@ public class OrgLicenseSubscriptionDTO implements Serializable{
 
 	public void setStorageType(String storageType) {
 		this.storageType = storageType;
+	}
+
+	public String getUserSubscription() {
+		return userSubscription;
+	}
+
+	public void setUserSubscription(String userSubscription) {
+		this.userSubscription = userSubscription;
+	}
+
+	public String getSubscriptionDate() {
+		return subscriptionDate;
+	}
+
+	public void setSubscriptionDate(String subscriptionDate) {
+		this.subscriptionDate = subscriptionDate;
+	}
+
+	public String getTimezone() {
+		return timezone;
+	}
+
+	public void setTimezone(String timezone) {
+		this.timezone = timezone;
 	}
 }
