@@ -431,14 +431,13 @@ function saveEmployerDetails(status) {
 }
 
 function displayFamilyDetails(candidateId){
-	console.log("inside displayFamilyDetails function call test -->")
+	console.log("inside displayFamilyDetails function call -->")
 	$.ajax({
         url: sourceleadUrl + immiModulePath + "/getCandidateFamilyDetails?candidateId="+candidateId,
         type: "GET",
         success: function (result) {
-        	  console.log("Before  loading result---->");
             $("#familiesTab").html(result);
-            console.log("After loading result---->");
+            addfamilyPopupEventListener();
         }
     });
 }	

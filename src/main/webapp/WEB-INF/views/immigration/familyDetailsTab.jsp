@@ -1,4 +1,5 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <div class="immigraTabsHead">
 		  	<a href="javascript:void(0)" class="immMenuClick">Add Family <i class="fa fa-plus"></i>
 				<div class="immiSubMenu">
@@ -27,7 +28,7 @@
 			  <tr>
 				<td><div class="tbldata-dotdot-me">${items.firstName}</div></td>
 				<td><div class="tbldata-dotdot-me">${items.relation}</div></td>
-				<td><div class="tbldata-dotdot-vsm">${items.dateOfBirth}</div></td>
+				<td><div class="tbldata-dotdot-vsm"><fmt:formatDate value="${items.dateOfBirth}" pattern="MM/dd/yyyy" /></div></td>
 				<td><div class="tbldata-dotdot-vsm">${items.placeOfBirth}</div></td>
 				<td><div class="tbldata-dotdot-me">${items.currentAddress}</div></td>
 				<td class="immigraAction">
@@ -45,7 +46,7 @@
 		  </table>
 		</div>
 		
-		<div class="immigraPagi clearfix">
+		<!-- <div class="immigraPagi clearfix">
 			<div class="immiPagiText">Showing 1 to 6 of 6 entries</div>
 			  <ul class="pagination">
 				<li><a href="#"> << </a></li>
@@ -54,8 +55,8 @@
 				<li class="disabled"><a href="#">6</a></li>
 				<li data-page="last"><a href="#"> >> </a></li>
 			  </ul>
-		</div>
-		<!--  -->
+		</div> -->
+		
 		<!--   Family Popup's  popcode start-->  
   <form name ="spouseDetailsForm" id ="spouseDetailsForm">
 	<div class="popUpOut" id="spousePopView"><!--  spouse popup start -->
@@ -315,7 +316,7 @@
 	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatEduSave = getJSDateFormat(locationDate);
 	// marriage start date and end dates
-	$('#marraigeDate').datepicker({
+/* 	$('#marraigeDate').datepicker({
 	      dateFormat: finalDateFormatEduSave,
 	      changeMonth: true,
 	  	  changeYear: true, 
@@ -381,5 +382,5 @@
 		  	  maxDate:0  
 		  }).datepicker("show");
 		}  
-		
+		 */
 	</script>

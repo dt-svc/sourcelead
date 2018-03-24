@@ -32,6 +32,7 @@ import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
@@ -657,15 +658,14 @@ public class ImmigrationRestController {
 		ModelAndView model = new ModelAndView();
 		System.out.println(" inisde getCandidateFamilyDetails controller test -->");
 		model.setViewName("/immigration/familyDetailsTab");
-		CandidateFamilyDetailsDTO dto = new CandidateFamilyDetailsDTO();
-		List<CandidateFamilyDetailsDTO> dtoList = new ArrayList<CandidateFamilyDetailsDTO>();
-		dto.setFirstName("srinivas");
-		dto.setRelation("Child");
-		dto.setDateOfBirth("29-03-1981");
-		dto.setPlaceOfBirth("Hyderabad");
-		dto.setCurrentAddress("Telangana");
-		dtoList.add(dto);
-		model.addObject("familyList", dtoList);
+		List<CandidateFamilyDetails> familyList = new ArrayList<CandidateFamilyDetails>();
+		try {
+			familyList = immigrationCommonService.getCandidateFamilyDetails(candidateId);
+		model.addObject("familyList", familyList);
+		}catch(Exception e ) {
+			logger.error("Exception caught in controller --->"+e.getMessage());
+			e.printStackTrace();
+		}
 		System.out.println(" after getCandidateFamilyDetails controller -->");
 		return model;
 	}

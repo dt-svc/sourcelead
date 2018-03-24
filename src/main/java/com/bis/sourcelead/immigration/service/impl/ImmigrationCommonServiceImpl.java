@@ -501,6 +501,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		
 		immigrationCommonDao.saveResidenceDetails(candidateResidence);
 		return candidateResidence;
+	}
+
+	@Override
+	public List<CandidateFamilyDetails> getCandidateFamilyDetails(Long candidateId) {
+		// TODO Auto-generated method stub
+		return immigrationCommonDao.getCandidateFamilyDetails(candidateId);
 	}	
 	
 }
