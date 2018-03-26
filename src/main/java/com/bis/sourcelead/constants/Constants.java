@@ -470,6 +470,7 @@ public class Constants {
 	public static final String NOTIFICATION_DELETED = "0";
 	public static final String NOTIFICATION_NOT_DELETED = "1";
 	public static final String TIME_SHEET_SUBMISSION = "Time Sheet Submission";
+	public static final String PLACE_UUID = "PLACE_UUID";
 	/** for user roles **/
 	public static final String ROLE_ADMIN = "ROLE_ADMIN";
 	public static final String ROLE_APPROVER = "ROLE_APPROVER";
