@@ -40,6 +40,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.ProjectCustomFieldDataService;
+import com.bis.sourcelead.service.ProjectTaskCustomFieldDataService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormFieldsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
@@ -93,6 +94,9 @@ public class CustomFormRestController {
 	
 	@Autowired
 	private AssetCustomFieldService assetCustomFieldService;
+	
+	@Autowired
+	private ProjectTaskCustomFieldDataService projectTaskCustomFieldDataService;
 	
 	
     @RequestMapping(value = "/getFormSectionsByActionId",  method = RequestMethod.POST)
@@ -236,9 +240,15 @@ public class CustomFormRestController {
 		 		 		break;
 		 		 	case "asset" :
 		 		 		if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocations != null && customFieldsRequestTypeDTO.getAssetId() != null){
-		 		 			jobData =  assetCustomFieldService.getAssetCustomFieldDataByAssetId(orgLoc.getOrg().getId(),formFieldId, customFieldsRequestTypeDTO.getAssetId());
+		 		 			jobData =  assetCustomFieldService.getAssetCustomFieldDataByAssetId(orgLoc.getOrg().getId(),formFieldId, customFieldsRequestTypeDTO.getProjectTask());
 		 		 	}
 		 		 		
+		 		 		break;
+		 		 	case "projectTask" :
+		 		 		if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocations != null && customFieldsRequestTypeDTO.getProjectTask() != null){
+		 		 			jobData =  projectTaskCustomFieldDataService.getProjectTaskCustomFieldDataByUserId(orgLoc.getOrg().getId(),formFieldId, customFieldsRequestTypeDTO.getProjectTask());
+		 		 	}
+		 		 	break;	
 		 		 		
 		 		 }
 		 		 }
