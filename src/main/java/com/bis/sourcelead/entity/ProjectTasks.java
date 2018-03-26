@@ -163,6 +163,14 @@ public class ProjectTasks implements Serializable{
 	
 	@JsonProperty
 	@Transient
+	private String taskSeverity;
+	
+	@JsonProperty
+	@Transient
+	private String taskOwnerName;
+	
+	@JsonProperty
+	@Transient
 	private String taskStaus;
 	
 	@JsonProperty
@@ -635,6 +643,28 @@ public class ProjectTasks implements Serializable{
 	public void setHoliday(Holiday holiday) {
 		this.holiday = holiday;
 	}
-	
-	
+
+	public String getTaskSeverity() {
+		String taskSeverity = null;
+		if (severity != null) {
+			taskSeverity = severity.getName();
+		}
+		return taskSeverity;
+	}
+
+	public String getTaskOwnerName() {
+		String taskOwnerName = null;
+		if(ownerUserId != null) {
+			taskOwnerName = ownerUserId.getFullName();
+		}
+		return taskOwnerName;
+	}
+
+	public void setTaskSeverity(String taskSeverity) {
+		this.taskSeverity = taskSeverity;
+	}
+
+	public void setTaskOwnerName(String taskOwnerName) {
+		this.taskOwnerName = taskOwnerName;
+	}
 }
