@@ -924,6 +924,10 @@ $("#experienceValue").change(function () {
 		      onSelect: function (selected) {
 		            //var dt = new Date(selected);
 		            var dt = $(this).datepicker('getDate', '+1d');
+		            console.log("dt");
+			           console.log(dt);
+			           console.log("dt.getDate()");
+			           console.log(dt.getDate());
 		            dt.setDate(dt.getDate() + 1);
 		            $("#lcaEndDate").datepicker("option", "minDate", dt);
 		        }

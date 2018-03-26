@@ -16,34 +16,30 @@
 				<th>Score Type</th>
 				<th>Institute/University</th>
 				<th>Address</th>
-				<th>&nbsp;</th>
+				<th>Action</th>
 			  </tr>
+			   <c:forEach var="eduItems" items="${candidatesEducationList}" varStatus="rows">
 			  <tr>
-				<td><div class="tbldata-dotdot-vsm">Bachelor of Commerce</div></td>
-				<td><div class="tbldata-dotdot-vsm">----</div></td>
-				<td><div class="tbldata-dotdot_80">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-80">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-80">80</div></td>
-				<td><div class="tbldata-dotdot-80">Percentage</div></td>
-				<td><div class="tbldata-dotdot-vsm">----</div></td>
-				<td><div class="tbldata-dotdot-vsm">Hyderabad</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
+				<td><div class="tbldata-dotdot-vsm">${eduItems.name}</div></td>
+				<td><div class="tbldata-dotdot-vsm">${eduItems.specialization}</div></td>
+				<td><div class="tbldata-dotdot_80">${eduItems.startDateStr}</div></td>
+				<td><div class="tbldata-dotdot-80">${eduItems.endDateStr}</div></td>
+				<td><div class="tbldata-dotdot-80">${eduItems.grade}</div></td>
+				<td><div class="tbldata-dotdot-80">${eduItems.gradeType}</div></td>
+				<td><div class="tbldata-dotdot-vsm">${eduItems.institute}</div></td>
+				<td><div class="tbldata-dotdot-vsm">${eduItems.address}</div></td>
+				<td><div><i id="edit" onclick="editEducationDEtailsByRowId(${eduItems.id});"
+				class="glyphicon glyphicon-pencil"></i><i id="delete" 
+				 onclick="deleteEDucationDetailsById(${eduItems.id});" 
+				 class="glyphicon glyphicon-trash ml10"></i></div></td>
 			  </tr>  			  			  
-			   
+			   </c:forEach>
 			  						
 			</tbody>
 		  </table>
 		</div>
 		
-		<div class="immigraPagi clearfix">
+		<!--  <div class="immigraPagi clearfix">
 			<div class="immiPagiText">Showing 1 to 6 of 6 entries</div>
 			  <ul class="pagination">
 				<li><a href="#"> << </a></li>
@@ -52,13 +48,13 @@
 				<li class="disabled"><a href="#">6</a></li>
 				<li data-page="last"><a href="#"> >> </a></li>
 			  </ul>
-		</div>
+		</div>  -->
 		
 		<!-- popup code start -->
 		<form id="eduSave_Form" name = "eduSave_Form" method = "post">
 		<div class="popUpOut" id="popEduView">
 		<div class="popupHead">
-			<h2>Add Education</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+			<h2>Add Education</h2><a href="javascript:void(0)" class="fa fa-close popCan" onclick="closeEdupopup();"></a>
 		</div>
 		
 		<div class="popupMid clearfix">
@@ -68,7 +64,7 @@
               	<div class="col-md-8 padding_right">
 					<select class="chosen-select form-control" name="name" id= "eduName" field-name="Education" data-validation="required">
 					<option value="" selected>--Select Education--</option>
-					  <c:forEach var="edu" items="${educationsList}">
+					  <c:forEach var="edu" items="${educationsDropList}">
 											<option value="${edu.name}">${edu.name}</option>
 										</c:forEach>
 					</select>
@@ -83,7 +79,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Start Date</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control calendar" id="immigrationEduStartDate" name = "startDate"/>
+              		<input type="text" class="form-control calendar" id="immigrationEduStartDate12" name = "startDate"/>
 				</div>
 			</div>	
           <div class="col-sm-12 noPad mt clearfix">
@@ -126,7 +122,7 @@
 		
 		<div class="immiPopFoot">
             <input value="Save" id= "eduSave_Button" class="" type="button" onclick = "immigration.saveEducationImmigration('save')">
-            <input value="Cancel" class="popCan" type="button">
+            <input value="Cancel" class="popCan" type="button" onclick="closeEdupopup();">
           </div>		
 	</div><!-- popup code end -->
 	</form>
@@ -135,7 +131,7 @@
 		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormatEduSave = getJSDateFormat(locationDate);
 		
-		$('#immigrationEduStartDate').datepicker({
+		$('#immigrationEduStartDate12').datepicker({
 		      dateFormat: finalDateFormatEduSave,
 		      changeMonth: true,
 		  	  changeYear: true, 
@@ -155,7 +151,7 @@
 		            //var dt = new Date(selected);
 		            var dt = $(this).datepicker('getDate', '-1d');
 		            dt.setDate(dt.getDate() - 1);
-		            $("#immigrationEduStartDate").datepicker("option", "maxDate", dt);
+		            $("#immigrationEduStartDate12").datepicker("option", "maxDate", dt);
 		        }
 		  });
 		
@@ -165,4 +161,8 @@
 				$(".popMask").fadeIn(200);
 				$("#popEduView").fadeIn(100);
 			});
+	function closeEdupopup(){
+		$(".popMask").fadeOut(200);
+		$("#popEduView").fadeOut(100);
+	}
 		</script>

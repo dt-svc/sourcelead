@@ -879,7 +879,13 @@ function cancel(candidateId){
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
-    
+    <div class="pull-left pull-left ml mt10 mr5">
+                <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr10" onclick="resetCandidateFilter();" title="Refresh">
+				    <span class="fa fa-refresh"></span>
+				</button>
+				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filter Search" onclick="openCandidateFilterPop();"><i class="fa fa-filter faFilter padding_right"></i>
+				</a>
+	</div>
      <div class="pull-left cand-advsrche">
 			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();">
 			  Advanced Search&nbsp;&nbsp;
@@ -1178,57 +1184,11 @@ function cancel(candidateId){
       <!-- <div class="timesheet_head  customtimesheet-head hdr-styles pull-right"> -->
       <div class="timesheet_head customtimesheet-head topfilters topfilters2 pull-right hdrFilter">
         <ul>
-           <li id="filter2ApprovePop"><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" ></i>|
-              	<div id="filter2ApprovedPop" class="approved_pop">
-                  	<ul>
-	                    <li><input id="candidateAll" type="radio" name="candidateStatus" checked  value ="2" onclick="candidateList();"  ><label for="candidateAll">All</label></li>
-						<li><input id="candidateActive" type="radio" name="candidateStatus" value ="1"  onclick="candidateList();"><label for="candidateActive">Active</label></li>
-						<li><input id="candidateInActive" name="candidateStatus" type="radio" value ="0"  onclick="candidateList();"><label for="candidateInActive">In Active</label></li>
-                    </ul>
-                  </div>                	
-          </li>
-          
-<%--           <sec:authorize access="!hasRole('ROLE_CROWDSOURCING_CANDIDATES')"> --%>
-          <li id="filter3ApprovePop"><i class="fa fa-filter"></i><span id="typeDiv"> Type </span><i class="glyphicon glyphicon-play" ></i>|
-              	<div id="filter3ApprovedPop" class="approved_pop">
-                  	<ul>
-	                    <li><input id="candidateTypeAll" type="radio" name="candidateType" checked value ="All" onclick="candidateList();"  ><label for="candidateTypeAll">All</label></li>
-						<li><input id="onlycandidate" type="radio" name="candidateType" value ="1"  onclick="candidateList();"><label for="onlycandidate">Favourite</label></li>
-                    </ul>
-                  </div>                	
-          </li>
-<%--           </sec:authorize> --%>
-          
-            <li id="filter1ApprovePop"><i class="fa fa-filter"></i><span id="candidateUpdiv">Updated</span><i class="glyphicon glyphicon-play" ></i>|
-              	<div id="filter1ApprovedPop" class="approved_pop">
-                  	<ul>
-                         <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="all"  onclick="candidateList();"  ><label for="candidateDayAgo">All</label></li>
-                           <li><input id="candidateToDay" type="radio" name="upcandidateStatus" value ="0"  onclick="candidateList();"  ><label for="candidateDayAgo">Today</label></li>
-                         <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1"  onclick="candidateList();"  ><label for="candidateDayAgo">1 Day ago</label></li>
-						<li><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3"  onclick="candidateList();"><label for="candidate3DayAgo">3 Days ago</label></li>
-						<li><input id="candidate1WeekAgo" name="upcandidateStatus" type="radio" value ="7"  onclick="candidateList();"><label for="candidate1WeekAgo">1 Week ago</label></li>
-						<li><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="14"  onclick="candidateList();"><label for="candidate3WeekAgo">2 Weeks ago</label></li>
-						<li><input id="candidateMonthAgo" name="upcandidateStatus" type="radio" value ="30"  onclick="candidateList();"><label for="candidateMonthAgo">1 Month ago</label></li>
-	                    <li><input id="candidate3Months"  name="upcandidateStatus" type="radio" value ="90"  onclick="candidateList();"><label for="candidate3Months">3 Months ago</label></li>
-                    </ul>
-                  </div>                	
-          </li>  
+            
           <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')">
           <li><b id="addmore"><a onClick="addCandidate();" title="Add Candidate"><i class="fa fa-user-plus" style="font-size:17px;"></i></b>
           <div id="addmorepop" class="approved_pop">
-           <%-- <ul>
-             <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')">
-              <li><a  onClick="addCandidate();" ><i class="fa fa-plus"></i>Add Candidate</a></li>
-           </sec:authorize>
            
-           <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE')">
-              <li><a  onclick= "addConsultant();"><i class="fa fa-plus"></i>Add Consultant</a></li>
-           </sec:authorize>
-           
-           <sec:authorize access="hasAnyRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')">
-              <li><a href="<c:url value='/assignHotListToTeam'/>" title=""><i class="fa fa-plus"></i>Assign To Team</a></li>
-           </sec:authorize>
-           </ul> --%>
            </div>
           </li>
           </sec:authorize>
@@ -1248,7 +1208,7 @@ function cancel(candidateId){
           
           <div class="clearfix"></div>
         </ul>
-        
+	       
         <div class="clearfix"></div>
         <div class='remove_search'>
         		<input type='text' placeholder='search' id='dataTableSearch'/>
@@ -1666,6 +1626,7 @@ function savedCommentAndCount(candidateId){
 		  $("#dataTableSearch").val('');
 		  $("div.cand-advsrch-popup").toggle();
 		  $(".advancedsearch-mask").fadeIn();
+		  $("#candidateFilterPopup").toggle();
 		};
 		function closeAdsrch(){
 			$("div.cand-advsrch-popup").fadeOut();
@@ -2606,4 +2567,119 @@ function getRequirements(){
 
 }
 </script>
+
+
+
+
+
+<!-- ------------------------------------ Filter Chnages By Laxman -------------------------- -->
+
+<script>
+function closeCandidateFilterPop(){
+	$("div.cand-advsrch-popup").hide();
+	$(".advancedsearch-mask").fadeOut();
+}
+function openCandidateFilterPop(){
+	$("#candidateFilterPopup").toggle();
+	 $(".advancedsearch-mask").fadeIn();
+}
+function resetCandidateFilter(){
+	$("ul#TypeFilter > li input:radio").prop("checked",false);
+	$("ul#AllTypeFilter > li input:radio").prop("checked",false);
+	$("ul#UpdatedFilter > li input:radio").prop("checked",false);
+	$("ul#employmentFilter > li input:checkbox").prop("checked",false);
+	
+	document.getElementById("candidateTypeAll").checked = true;
+	document.getElementById("candidateAll").checked = true;
+	candidateList();
+}
+</script>		
+
+
+  <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small" id="candidateFilterPopup">
+	<h5 class="headerAdsrch">Filter Search
+		<a href="javascript:void(0)" class="close-div" onClick="closeCandidateFilterPop()"><i
+			class="fa fa-close"></i></a>
+	</h5>
+	<div class="addInner">
+		<div class="row">
+			<div class="col-md-4">
+			<div class="row">
+			
+			<div class="col-md-12 mb">
+				<label><strong>All Candidates</strong></label>
+				 <div class="clearfix">
+					<ul class="list-unstyled" id="AllTypeFilter">
+					    <li class="radioIput positionRelative"><input id="candidateAll" type="radio" name="candidateStatus" checked  value ="2"   ><label for="candidateAll">All</label></li>
+						<li class="radioIput positionRelative"><input id="candidateActive" type="radio" name="candidateStatus" value ="1"  ><label for="candidateActive">Active</label></li>
+						<li class="radioIput positionRelative" ><input id="candidateInActive" name="candidateStatus" type="radio" value ="0" ><label for="candidateInActive">In Active</label></li>
+                    </ul>
+				 </div>
+				 </div> 
+				 
+				 
+			<div class="col-md-12 mb">
+				<label><strong>Type</strong></label>
+				 <div class="clearfix">
+					<ul class="list-unstyled" id="TypeFilter">
+					     <li class="radioIput positionRelative" ><input id="candidateTypeAll" type="radio" name="candidateType" checked value ="All" ><label for="candidateTypeAll">All</label></li>
+						 <li class="radioIput positionRelative" ><input id="onlycandidate" type="radio" name="candidateType" value ="1" ><label for="onlycandidate">Favourite</label></li>
+                    </ul>
+				 </div>
+				 </div> 
+			  </div>
+			</div>
+			
+			<div class="col-md-3">
+				<div class="row">
+			       <div class="col-md-12 mb">
+				     <label><strong>Updated</strong></label>
+					 <div class="clearfix">
+						<ul class="list-unstyled" id="UpdatedFilter">
+						<li class="radioIput positionRelative" ><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="all" ><label for="candidateDayAgo">All</label></li>
+                        <li class="radioIput positionRelative" ><input id="candidateToDay" type="radio" name="upcandidateStatus" value ="0"  ><label for="candidateDayAgo">Today</label></li>
+                        <li class="radioIput positionRelative" ><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1" ><label for="candidateDayAgo">1 Day ago</label></li>
+						<li class="radioIput positionRelative" ><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3" ><label for="candidate3DayAgo">3 Days ago</label></li>
+						<li class="radioIput positionRelative" ><input id="candidate1WeekAgo" name="upcandidateStatus" type="radio" value ="7" ><label for="candidate1WeekAgo">1 Week ago</label></li>
+						<li class="radioIput positionRelative" ><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="14" ><label for="candidate3WeekAgo">2 Weeks ago</label></li>
+						<li class="radioIput positionRelative" ><input id="candidateMonthAgo" name="upcandidateStatus" type="radio" value ="30" ><label for="candidateMonthAgo">1 Month ago</label></li>
+	                    <li class="radioIput positionRelative" ><input id="candidate3Months"  name="upcandidateStatus" type="radio" value ="90"><label for="candidate3Months">3 Months ago</label></li>
+	                    
+                        </ul>
+					 </div>
+				 </div>
+			 </div>
+			</div> 
+			
+			<div class="col-md-4">
+				<div class="row">
+					<div class="col-md-12 mb">
+						<label><strong>Employment Type</strong></label>
+						 <div class="clearfix">
+							<ul class="list-unstyled" id="employmentFilter">
+	                    	    <li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="C2C"  ><label>C2C</label></li>
+								<li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="C2C-1099" ><label>C2C-1099</label></li>
+								<li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="W-2" ><label>W-2</label></li>
+	               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="C2H"  ><label>C2H</label></li>
+	               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="C2H -1099" ><label>C2H -1099</label></li>
+	               			    <li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="Part Time" ><label>Part Time</label></li>
+	               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="Full Time" ><label>Full Time</label></li>
+	                        </ul>
+						 </div>
+						 </div> 
+				     </div>
+			</div>
+			
+			
+		</div>
+		</div>
+		<div class="clearfix advancedsearch-footer">
+			<div class="pull-right mr">
+				<input type="button" value="Apply" id="search_requiremet" onclick="closeCandidateFilterPop();candidateList();" class="btn btn-sm btn-success" />
+				<input type="button" value="Reset" id="clear_search" onclick="resetCandidateFilter();" class="btn btn-sm btn-primary" />
+			</div>
+		</div>
+</div>
+	
+
 <jsp:include page="../masterFooter.jsp" /> 

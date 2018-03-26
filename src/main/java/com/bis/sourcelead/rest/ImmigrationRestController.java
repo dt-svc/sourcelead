@@ -32,6 +32,8 @@ import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateEducation;
+import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
@@ -196,8 +198,6 @@ public class ImmigrationRestController {
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
                 "orgLocations");
         ImmigrationDTO immigrationDTO = immigrationCommonService.getImmigrationViewList(immigrationId,orgLocations);
-        List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
-		 model.addObject("educationsList", educationsList);
         model.addObject("immigration", immigrationDTO);
         model.addObject("sourceleadUrl", sourceleadUrl);
         model.setViewName("/immigration/immigrationView");
@@ -667,6 +667,73 @@ public class ImmigrationRestController {
 			e.printStackTrace();
 		}
 		System.out.println(" after getCandidateFamilyDetails controller -->");
+		return model;
+	}
+	
+	@RequestMapping(value = { "/deleteCandidateFamilyDetails" })
+	public String deleteCandidateFamilyDetails(
+			@RequestParam(value = "id", required = true) Long deleteId, HttpServletRequest request) {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		String status="";
+		System.out.println(" in controller deleteId ---> "+deleteId);
+		try {
+			status = immigrationCommonService.deletetCandidateFamilyDetails(deleteId);
+			System.out.println(" in controller status "+status);
+		} catch (Exception e) {
+			logger.error("Exception caught in controller --->"+e.getMessage());
+			e.printStackTrace();
+		}
+
+		return status;
+	}
+	
+	@RequestMapping(value = { "/deleteCandidateEduDetails" })
+	public String deleteCandidateEduDetails(
+			@RequestParam(value = "id", required = true) Long id, 
+			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		CandidateEducation  candidateEducation = candidateEducationService.removeCandidateEducationBycandidateIdandcandidateEducationId(candidateId, id, user, orgLocations);
+
+		return "success";
+	}
+	
+	@RequestMapping(value = { "/deleteCandidateEmployerDetails" })
+	public String deleteCandidateEmployerDetails(
+			@RequestParam(value = "id", required = true) Long id, 
+			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		CandidateEmployers  candidatesEmployer = candidateEmployersService.removeCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, id);
+
+		return "success";
+	}
+	
+	@RequestMapping(value = { "/getCandidateEducationList" })
+	public ModelAndView getCandidateEducationList(
+			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		model.setViewName("/immigration/educationDetailsTab");
+		 List<CandidateEducation>   candidatesEducationList = candidateEducationService.getCandidateEducationListByCandidateIdAndOrgLocationID(Long.valueOf(candidateId), orgLocations.getId());
+		 List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+		 model.addObject("educationsDropList", educationsList);
+		 model.addObject("candidatesEducationList",candidatesEducationList);
+		return model;
+	}
+	
+	
+	
+	
+	@RequestMapping(value = { "/getCandidateEmployerList" })
+	public ModelAndView getCandidateEmployerList(
+			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		model.setViewName("/immigration/employerDetailsTab");
+		 List<CandidateEmployers>   candidatesEmployersList = candidateEmployersService.getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long.valueOf(candidateId), orgLocations.getId());
+		model.addObject("candidatesEmployersList",candidatesEmployersList);
 		return model;
 	}
 }

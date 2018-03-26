@@ -50,8 +50,8 @@ function Immigration() {
     this.saveEducationImmigration = function (status) {
         if ($('#eduSave_Form').validate(false, validationSettings)) {
             var formData = getFormData("eduSave_Form");
-            var candidateId = $('#candidateId').val();
-            var immigrationId = $('#immigrationId').val();
+            var candidateId = $('#candidateID').val();
+            var immigrationId = $('#immigrationID').val();
             $.ajax({
                 url: sourceleadUrl + immiModulePath + "/saveEducationImmigrationDedtails?" + tokenParamName + "=" + tokenValue + "&candidateId=" + candidateId+"&immigrationId="+immigrationId,
                 type: "POST",
@@ -60,11 +60,7 @@ function Immigration() {
                     if (data == 'Success') {
                     	$('#popEduView').hide();
                     	$('.popMask').fadeOut();
-                        /*immTemplId = jsonObj.id;
-                        if (status == 'saveContinue') {
-                            $("#addNewPetitionTemplateDiv").empty();
-                            $("#addNewPetitionTemplateDiv").load(sourceleadUrl + immiModulePath + "/gotoTemplatePreviousPage?status=docDetails");
-                        }*/
+                    	getCandidateEducationList(candidateId);
 
                     }
                 }
@@ -318,7 +314,7 @@ function Immigration() {
                         console.log("data successfully saved for the candidate id "+templateId);
                         $(".popMask").fadeOut(200); // close the popup code
         				$("#spousePopView").fadeOut(100);// close the popup code
-                        displayFamilyDetails(candidateId);
+        				immigration.displayFamilyDetails(candidateId);
 					}
 				}
 			});
@@ -328,7 +324,64 @@ function Immigration() {
 			return false;
 		}
 	}
+    this.displayFamilyDetails=function(candidateId){
+    	console.log("inside displayFamilyDetails function call  -->")
+    	$.ajax({
+            url: sourceleadUrl + immiModulePath + "/getCandidateFamilyDetails?candidateId="+candidateId,
+            type: "GET",
+            success: function (result) {
+                $("#familiesTab").html(result);
+                addfamilyPopupEventListener();
+            }
+        });
+    }	
+	this.deleteFamilyDetailsById = function(delId){
+		console.log(" inside delete record  "+delId);
+		$.ajax({
+            url: sourceleadUrl + immiModulePath + "/deleteCandidateFamilyDetails?id="+delId,
+            type: "GET",
+            success: function (result) {
+            	if(result=='success'){
+            		console.log(" record successfully delete id  --> "+delId);
+            	     immigration.displayFamilyDetails(candidateId) //candidateId global variable
+            	     
+            	}
+            }
+        });
+	}
+	
+	
+	
 }
+
+function deleteEDucationDetailsById(id){
+	var candidateId = $("#candidateID").val();
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/deleteCandidateEduDetails?id="+id+"&candidateId="+candidateId,
+        type: "GET",
+        success: function (result) {
+        	if(result=='success'){
+        	  getCandidateEducationList(candidateId) //candidateId global variable
+        	     
+        	}
+        }
+    });
+}
+
+function deleteEmpDetailsById(id){
+	var candidateId = $("#candidateID").val();
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/deleteCandidateEmployerDetails?id="+id+"&candidateId="+candidateId,
+        type: "GET",
+        success: function (result) {
+        	if(result=='success'){
+        		getCandidateEmployerList(candidateId) //candidateId global variable
+        	     
+        	}
+        }
+    });
+}
+
 function validateTemplateName() {
     var templateName = document.getElementById("templateName").value.trim();
     if (templateName !== null && templateName !== "") {
@@ -412,13 +465,7 @@ function saveEmployerDetails(status) {
                 if (data == 'success') {
                 	$('#emploView').hide();
                 	$('.popMask').fadeOut();
-                    /*if (status == 'saveContinue') {
-                        $("#addNewPetitionTemplateDiv").empty();
-                        $("#addNewPetitionTemplateDiv").load(sourceleadUrl + immiModulePath + "/gotoTemplatePreviousPage?status=taskList");
-                    } else if (status == 'save') {
-                        $("#addNewPetitionTemplateDiv").empty();
-                        $("#addNewPetitionTemplateDiv").load(sourceleadUrl + immiModulePath + "/gotoTemplatePreviousPage?status=formDetails");
-                    }*/
+                	getCandidateEmployerList(candidateId);
                 }
             }
         });
@@ -430,17 +477,25 @@ function saveEmployerDetails(status) {
 	
 }
 
-function displayFamilyDetails(candidateId){
-	console.log("inside displayFamilyDetails function call -->")
+function getCandidateEducationList(candidateId){
 	$.ajax({
-        url: sourceleadUrl + immiModulePath + "/getCandidateFamilyDetails?candidateId="+candidateId,
+        url: sourceleadUrl + immiModulePath + "/getCandidateEducationList?candidateId="+candidateId,
         type: "GET",
         success: function (result) {
-            $("#familiesTab").html(result);
-            addfamilyPopupEventListener();
+            $("#educationsTab").html(result);
         }
     });
-}	
+}
+
+function getCandidateEmployerList(candidateId){
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/getCandidateEmployerList?candidateId="+candidateId,
+        type: "GET",
+        success: function (result) {
+            $("#employersTab").html(result);
+        }
+    });
+}
 
 function saveResidenceDetails(status) {
 	if ($('#residenceDetails_form').validate(false, validationSettings)) {

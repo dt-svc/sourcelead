@@ -4,6 +4,8 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -216,5 +218,23 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		  e.printStackTrace();
 		}
 		return familyList;
+	}
+
+    @Override
+	@Transactional(rollbackFor = { Exception.class })
+	public String deletetCandidateFamilyDetails(Long id) {
+		  System.out.println("Delete deletetCandidateFamilyDetails candidateId ---> "+id);
+		  
+	        try {
+				Session session = this.sessionFactory.getCurrentSession();
+				CandidateFamilyDetails familyEntity = (CandidateFamilyDetails)session.load(CandidateFamilyDetails.class,id);
+				session.delete(familyEntity);
+				session.flush();
+			} catch (HibernateException e) {
+				logger.error("SQL Exception occured while doing delete -->"+e.getMessage());
+				e.printStackTrace();
+			}
+	        System.out.println("Deleted record id -->"+ id);
+		return "success";
 	}
 }

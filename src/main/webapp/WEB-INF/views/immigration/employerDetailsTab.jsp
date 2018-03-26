@@ -1,3 +1,4 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <div class="immigraTabsHead">
 		  	<a href="javascript:void(0)" id="addEmpl"><i class="glyphicon glyphicon-plus"></i> Add Employer</a> 
 		  	<span><input class="immigraTabSerach" type="text"></span>
@@ -8,21 +9,24 @@
 			<tbody>
 			  <tr>
 				<th>Employer</th>
-				<th>Tax Id</th>
 				<th>Designation</th>
 				<th>Address</th>
 				<th>Start Date</th>
 				<th>End Date</th>
-				<th>&nbsp;</th>
+				<th>Action</th>
 			  </tr>
+			<c:forEach var="empItems" items="${candidatesEmployersList}" varStatus="rows">
 			  <tr>
-				<td><div class="tbldata-dotdot-sm">Business Intelli</div></td>
-				<td><div class="">DFDD551</div></td>
-				<td><div class="tbldata-dotdot-sm">UI Developer</div></td>
-				<td><div class="tbldata-dotdot-me">Address text</div></td>
-				<td><div class="">MM/YYYY</div></td>
-				<td><div class="">MM/YYYY</div></td>
-				<td class="immigraAction">
+				<td><div class="tbldata-dotdot-sm">${empItems.name}</div></td>
+				<td><div class="tbldata-dotdot-sm">${empItems.designation}</div></td>
+				<td><div class="tbldata-dotdot-me">${empItems.address}</div></td>
+				<td><div class="">${empItems.startMonth} ${empItems.startYear}</div></td>
+				<td><div class="">${empItems.endMonth} ${empItems.endYear}</div></td>
+				<td><div><i id="edit" onclick="editEmpDetailsByRowId(${empItems.id});"
+				class="glyphicon glyphicon-pencil"></i><i id="delete" 
+				 onclick="deleteEmpDetailsById(${empItems.id});" 
+				 class="glyphicon glyphicon-trash ml10"></i></div></td>
+				<!-- <td class="immigraAction">
 					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
 					<div class="mmigraActionInn">
 						<span>
@@ -30,31 +34,14 @@
 							<a href="javascript:void(0)" class="fa fa-pencil"></a>
 						</span>
 					</div>
-				</td>
+				</td> -->
 			  </tr>  			  			  
-			  <tr>
-				<td><div class="tbldata-dotdot-sm">Business Intelli</div></td>
-				<td><div class="">DFDD551</div></td>
-				<td><div class="tbldata-dotdot-sm">UI Developer</div></td>
-				<td><div class="tbldata-dotdot-me">Address text</div></td>
-				<td><div class="">MM/YYYY</div></td>
-				<td><div class="">MM/YYYY</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
-			  </tr>   
-			  						
+			  	</c:forEach>					
 			</tbody>
 		  </table>
 		</div>
 		
-		<div class="immigraPagi clearfix">
+		<!-- <div class="immigraPagi clearfix">
 			<div class="immiPagiText">Showing 1 to 6 of 6 entries</div>
 			  <ul class="pagination">
 				<li><a href="#"> << </a></li>
@@ -63,13 +50,13 @@
 				<li class="disabled"><a href="#">6</a></li>
 				<li data-page="last"><a href="#"> >> </a></li>
 			  </ul>
-		</div>
+		</div>  -->
 		<!-- popup code start -->
 		<form name = "employerDetails_form" id = "employerDetails_form" method = "post">
 		<div class="popUpOut" id="emploView">
 		
 		<div class="popupHead">
-			<h2>Add Employee</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+			<h2>Add Employee</h2><a href="javascript:void(0)" class="fa fa-close popCan" onClick="popFun();"></a>
 		</div>
 		
 		<div class="popupMid clearfix overflow_inherint">
@@ -158,19 +145,22 @@
 		
 		<div class="immiPopFoot">
             <input value="Save"class="" type="button" id = "save_Buton" onclick="saveEmployerDetails('save');"> 
-            <input value="Cancel" id = "cancel_button" class="popCan" type="button">
+            <input value="Cancel" id = "cancel_button" class="popCan" type="button" onClick="popFun();">
           </div>		
 	</div><!-- popup code end -->
 	</form>
 	
 		
-		<script>
-		// Add Employee PopUp
-		$("#addEmpl").click(function(){
-			$(".popMask").fadeIn(200);
-			$("#emploView").fadeIn(100);
-		});
-		
-		</script>
-		
+<script>
+	// Add Employee PopUp
+	$("#addEmpl").click(function(){
+		$(".popMask").fadeIn(200);
+		$("#emploView").fadeIn(100);
+	});
+
+	function popFun() {
+		$(".popMask").fadeOut(200);
+		$("#emploView").fadeOut(200);
+	}
+</script>	
 		
