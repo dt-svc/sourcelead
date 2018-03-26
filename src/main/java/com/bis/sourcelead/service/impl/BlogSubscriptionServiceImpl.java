@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -118,7 +119,7 @@ public class BlogSubscriptionServiceImpl implements BlogSubscriptionService{
 					 }
 					 if(count < 4) {
 						 if(!isNullOrEmpty(allblogs.getBlogTitle())){
-							 blogTable = blogTable.append("<a href='"+sleadUrl+"/blog/"+allblogs.getHref()+".html'>").append(allblogs.getBlogTitle()).append("</a>").append("\n").append(allblogs.getDescription());
+							 blogTable = blogTable.append("<div class=\"blgWrp\"><div class=\"blgText\"><a href='"+sleadUrl+"/blog/"+allblogs.getHref()+".html'>").append(allblogs.getBlogTitle()).append("</a>").append("\n").append("<p>").append(allblogs.getDescription()).append("</p></div>");
 						 }
 					 }
 				 }

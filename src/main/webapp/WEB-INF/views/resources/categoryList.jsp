@@ -51,14 +51,16 @@ function addBlogCategory(uuid){
 	result = result+'<form role="form"  id="blog_category_form" name="blog_category_form" method="post" > ';
 	result = result+ '<i class="fa fa-close close-div"  onClick="closeBlogCategoryPopup();"></i>';
 	result = result+ '<div class="form-horizontal clearfix">';
+	
+	result = result+ '<div class="clearfix mb10">';
+	result = result+ '<div class="col-md-12" id="categoryNameDiv">';
+	result = result+ '<label>Category Name<b class="text-danger">*</b> </label>';
+	result = result+ '<input type="text" class="form-control"  placeholder="Category Name" id="categoryName" name="categoryName" field-name="Category Name" data-validation="required validate_Space validate_AlphaNumaric validate_length length1-250"  onblur="validateBlogCategoryName(\''+uuid+'\');">';
+	result = result+ ' </div>';
+	result = result+ '  </div>';
+	
 	result = result+ '<div class="clearfix mb10">';
 	result = result+ '<div class="col-md-12">';
-	result = result+ '<label>Category Name<b class="text-danger">*</b> </label>';
-	result = result+ '<input type="text" class="form-control"  placeholder="Category Name" id="categoryName" name="categoryName" field-name="Category Name" data-validation="required validate_Space validate_AlphaNumaric validate_length length1-250"  onblur="validateBlogCategoryName();">';
-	result = result+ '                </div>';
-	result = result+ '              </div>';
-	result = result+ '              <div class="clearfix mb10">';
-	result = result+ '                <div class="col-md-12">';
 	result = result+ '<label>Description<b class="text-danger">*</b> </label>';
 	result = result + '<textarea cols="3" class="form-control" name="description" id="description" field-name="Description" data-validation=" validate_length length1-500" data-validation-optional="true">';
     result = result + '</textarea>';
@@ -339,28 +341,32 @@ function closePopup(){
 	 $("#popUpDiv").removeClass("edit-details-active");
 }
 </script>
-
-<script type="text/javascript">
- function validateBlogCategoryName() {
+ 
+ <script>
+function validateBlogCategoryName(uuid){
+	 if(uuid != null && uuid != "" && uuid != "undefined"){
+		 uuid = uuid;
+		}else{
+			uuid = "";
+		}
 	 var categoryName = $('#categoryName').val(); 
 	 $('#categoryNameDiv').find('p.jquery_form_error_message').remove();
-	 if(categoryName != null && categoryName != ""){
-		 $.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/validateBlogCategoryName?"+tokenParamName+"="+tokenValue+"&categoryName="+categoryName, 
-		        success: function(data) {
-		        	if(data == 'true'){
-		        		  $("input#categoryName").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
-						  $("#add_BlogCategory").attr("disabled", "disabled");
-						  $("#add_BlogCategory").addClass('button').val('Processing..');
-		        	}else{
-		        		 $('input#categoryName').removeAttr("record-exist record-exist-errormsg");
-		        		 $('#categoryNameDiv').find('p.jquery_form_error_message').remove(); 
-		        		 $("#add_BlogCategory" ).addClass('button').val('Save');
-                         $("#add_BlogCategory").removeAttr("disabled");
-		        	}
-		        },
-		    });
-	 }
- }
- </script>     
+	$.ajax({
+			type : "POST",
+			url: sourceleadUrl+"/validateBlogCategoryName?"+tokenParamName+"="+tokenValue+"&categoryName="+categoryName+"&categoryUUID="+uuid, 
+			success : function(data) {
+				if(data == true){
+	        		  $('#categoryNameDiv').find('p.jquery_form_error_message').remove();
+					  $("input#categoryName").after("<p class='jquery_form_error_message'>"+categoryName+" is Already Existed</span>");
+					  document.getElementById("categoryName").setAttribute('record-exist','yes');
+					  document.getElementById("categoryName").setAttribute('record-exist-errorMsg',categoryName+' is Already Existed'); 
+	        	}
+	        	else{
+	        		 $('input#categoryName').removeAttr( "record-exist record-exist-errormsg");
+	        		 $('#categoryNameDiv').find('p.jquery_form_error_message').remove(); 
+	        	}
+			},
+		});
+	 
+}
+</script>   
