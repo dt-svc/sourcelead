@@ -3,8 +3,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<link href="/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
+<%@taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
+<link
+	href="/resources/css/candidate-common.css?staticTime=${staticTime}"
+	rel="stylesheet">
 
 <script type="text/javascript">
     window.onload = function () {
@@ -27,557 +30,577 @@
 
 <!-- Content Area -->
 <section class="content-wraper">
-    <section class="content-header clearfix">
-        <div class="pull-left">
-            <h2>Add Candidate</h2>
-        </div>
-        <c:if
-            test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-            <div class="pull-right brud-crum">
-                <a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-                    href="<c:url value='/app/candidatesList'/>"> Candidate List</a> &raquo;
-                Add Candidate
-            </div>
-        </c:if>
-        <c:if
-            test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-            <div class="pull-right brud-crum">
-                <a href="<c:url value='/app/recruiterDashboard'/>">Home</a>&raquo;<a
-                    href="<c:url value='/app/candidatesList'/>"> Candidate List</a> &raquo;
-                Add Candidate
-            </div>
-        </c:if>
-    </section>
-    <div class="content-area content-new clearfix">
-        <div id="loading"></div>
-        <form:form id="addcandidate_form" name="addcandidate_form">
-            <input type="hidden" id="actionId" value="${actionId}">
-            <div class="row form-horizontal mt myForm">
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<section class="content-header clearfix">
+		<div class="pull-left">
+			<h2>Add Candidate</h2>
+		</div>
+		<c:if
+			test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+			<div class="pull-right brud-crum">
+				<a
+					href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
+					href="<c:url value='/app/candidatesList'/>"> Candidate List</a>
+				&raquo; Add Candidate
+			</div>
+		</c:if>
+		<c:if
+			test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+			<div class="pull-right brud-crum">
+				<a href="<c:url value='/app/recruiterDashboard'/>">Home</a>&raquo;<a
+					href="<c:url value='/app/candidatesList'/>"> Candidate List</a>
+				&raquo; Add Candidate
+			</div>
+		</c:if>
+	</section>
+	<div class="content-area content-new clearfix">
+		<div id="loading"></div>
+		<form:form id="addcandidate_form" name="addcandidate_form">
+			<input type="hidden" id="actionId" value="${actionId}">
+			<div class="row form-horizontal mt myForm">
+				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
-                    <div class="form-group">
-                        <label class="col-md-3">First Name<span
-                                class="text-danger">&nbsp;*</span></label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" id="firstName"
-                                   name="firstName" value="${firstName}" field-name="First Name"
-                                   data-validation="required validate_AlphaNumber validate_length length1-100"
-                                   value="">
-                            <div class="input-group hidden">
-                                <div class="input-group-btn">
-                                    <button type="button" class="btn btn-danger dropdown-toggle"
-                                            data-toggle="dropdown" aria-haspopup="true"
-                                            aria-expanded="false">
-                                        Action <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#">Action</a></li>
-                                        <li><a href="#">Another action</a></li>
-                                        <li><a href="#">Something else here</a></li>
-                                        <li role="separator" class="divider"></li>
-                                        <li><a href="#">Separated link</a></li>
-                                    </ul>
-                                </div>
-                                <!-- /btn-group -->
-                                <input type="text" class="form-control" aria-label="...">
-                            </div>
-                            <!-- /input-group -->
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-3">Last Name</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" id="lastName"
-                                   name="lastName" value="${lastName}" field-name="Last Name"
-                                   data-validation="validate_AlphaNumber validate_length length1-100"
-                                   data-validation-optional="true" value="">
-                        </div>
-                    </div>
-                    <div class="form-group" id="emailDiv">
-                        <label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" id="email" name="email"
-                                   value="${email}" field-name="Email"
-                                   data-validation="required validate_length length2-100 validate_email"
-                                   onblur="validateCandidateEmail();"
-                                   onmouseout="validateCandidateEmail();" value=""> <span
-                                   class="hidden">Valid Email</span>
-                        </div>
-                    </div>
+					<div class="form-group">
+						<label class="col-md-3">First Name<span
+							class="text-danger">&nbsp;*</span></label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" id="firstName"
+								name="firstName" value="${firstName}" field-name="First Name"
+								data-validation="required validate_AlphaNumber validate_length length1-100"
+								value="">
+							<div class="input-group hidden">
+								<div class="input-group-btn">
+									<button type="button" class="btn btn-danger dropdown-toggle"
+										data-toggle="dropdown" aria-haspopup="true"
+										aria-expanded="false">
+										Action <span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu">
+										<li><a href="#">Action</a></li>
+										<li><a href="#">Another action</a></li>
+										<li><a href="#">Something else here</a></li>
+										<li role="separator" class="divider"></li>
+										<li><a href="#">Separated link</a></li>
+									</ul>
+								</div>
+								<!-- /btn-group -->
+								<input type="text" class="form-control" aria-label="...">
+							</div>
+							<!-- /input-group -->
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3">Last Name</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" id="lastName"
+								name="lastName" value="${lastName}" field-name="Last Name"
+								data-validation="validate_AlphaNumber validate_length length1-100"
+								data-validation-optional="true" value="">
+						</div>
+					</div>
+					<div class="form-group" id="emailDiv">
+						<label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" id="email" name="email"
+								value="${email}" field-name="Email"
+								data-validation="required validate_length length2-100 validate_email"
+								onblur="validateCandidateEmail();"
+								onmouseout="validateCandidateEmail();" value=""> <span
+								class="hidden">Valid Email</span>
+						</div>
+					</div>
 
-                    <div class="form-group">
-                        <label class="col-md-3">Mobile</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" id="mobilePhone"
-                                   name="mobilePhone" value="${phone}" field-name="Mobile Number"
-                                   data-validation="validate_length length9-20 validate_phone"
-                                   data-validation-optional="true" value="">
-                        </div>
-                    </div>
+					<div class="form-group">
+						<label class="col-md-3">Mobile</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" id="mobilePhone"
+								name="mobilePhone" value="${phone}" field-name="Mobile Number"
+								data-validation="validate_length length9-20 validate_phone"
+								data-validation-optional="true" value="">
+						</div>
+					</div>
 
-                    <div class="form-group">
-                        <label class="col-md-3">Alternative Number</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" id="alternateMobilePhone"
-                                   name="alternateMobilePhone" field-name="Alternative Number"
-                                   data-validation="validate_length length9-20 validate_phone"
-                                   data-validation-optional="true" value="">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>
-                        <div class="col-md-9" id="locationField">
-                            <div class="positionRelative">
-                                <input class="form-control positionRelative"
-                                       id="candidateLocation" name="location"
-                                       placeholder="Enter address" type="text"
-                                       field-name="Address" data-validation="required"></input> <i
-                                       class="fa fa-refresh btn btn-primary refresh-icon"
-                                       title="Refresh"
-                                       onClick="refreshGoogleApiLocation('candidateLocation', 'candidateCountry', 'candidateState', 'candidateCity', 'candidateZipCode', 'address');"></i>
-                            </div>
-                        </div>
-                    </div>
+					<div class="form-group">
+						<label class="col-md-3">Alternative Number</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" id="alternateMobilePhone"
+								name="alternateMobilePhone" field-name="Alternative Number"
+								data-validation="validate_length length9-20 validate_phone"
+								data-validation-optional="true" value="">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>
+						<div class="col-md-9" id="locationField">
+							<div class="positionRelative">
+								<input class="form-control positionRelative"
+									id="candidateLocation" name="location"
+									placeholder="Enter address" type="text" field-name="Address"
+									data-validation="required"></input> <i
+									class="fa fa-refresh btn btn-primary refresh-icon"
+									title="Refresh"
+									onClick="refreshGoogleApiLocation('candidateLocation', 'candidateCountry', 'candidateState', 'candidateCity', 'candidateZipCode', 'address');"></i>
+							</div>
+						</div>
+					</div>
 
-                    <div class="form-group">
-                        <label class="col-md-3">Street Address</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" id="address"
-                                   name="address" value="${address}" field-name="Street Address" placeholder="Enter Street Addres"
-                                   data-validation="validate_Space validate_length length2-250"
-                                   data-validation-optional="true">
-                        </div>
-                    </div>
+					<div class="form-group">
+						<label class="col-md-3">Street Address</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" id="address"
+								name="address" value="${address}" field-name="Street Address"
+								placeholder="Enter Street Addres"
+								data-validation="validate_Space validate_length length2-250"
+								data-validation-optional="true">
+						</div>
+					</div>
 
-                    <div class="form-group">
-                        <label class="col-md-3">City</label>
-                        <div class="col-md-9">
-                            <input class="form-control" id="candidateCity" name="city" placeholder="City" type="text"></input>
-                        </div>
-                    </div>
+					<div class="form-group">
+						<label class="col-md-3">City</label>
+						<div class="col-md-9">
+							<input class="form-control" id="candidateCity" name="city"
+								placeholder="City" type="text"></input>
+						</div>
+					</div>
 
-                    <div class="form-group">
-                        <label class="col-md-3">State</label>
-                        <div class="col-md-9">
-                            <input class="form-control" id="candidateState" name="state" placeholder="State" type="text" ></input>
-                        </div>
-                    </div>
+					<div class="form-group">
+						<label class="col-md-3">State</label>
+						<div class="col-md-9">
+							<input class="form-control" id="candidateState" name="state"
+								placeholder="State" type="text"></input>
+						</div>
+					</div>
 
-                    <div class="form-group">
-                        <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
-                        <div class="col-md-9">
-                            <input class="form-control" id="candidateCountry" name="country" placeholder="Country" field-name="Country"  data-validation="required"  value="${loginCountryName}" type="text" ></input>
-                        </div>
-                    </div>
-
-
-                    <div class="form-group">
-                        <label class="col-md-3">ZipCode</label>
-                        <div class="col-md-9">
-                            <input class="form-control" id="candidateZipCode" name="zipcode"
-                                   placeholder="Zip code" type="text" ></input>
-                        </div>
-                    </div>
+					<div class="form-group">
+						<label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
+						<div class="col-md-9">
+							<input class="form-control" id="candidateCountry" name="country"
+								placeholder="Country" field-name="Country"
+								data-validation="required" value="${loginCountryName}"
+								type="text"></input>
+						</div>
+					</div>
 
 
-                    <div class="form-group hidden">
-                        <label class="col-md-3">Lat</label>
-                        <div class="col-md-9">
-                            <input class="form-control" id="candidateLatitude"
-                                   name="latitude" type="text"></input>
-                        </div>
-                    </div>
-
-                    <div class="form-group hidden">
-                        <label class="col-md-3">Long</label>
-                        <div class="col-md-9">
-                            <input class="form-control" id="candidateLongitude"
-                                   name="longitude" type="text"></input>
-                        </div>
-                    </div>
+					<div class="form-group">
+						<label class="col-md-3">ZipCode</label>
+						<div class="col-md-9">
+							<input class="form-control" id="candidateZipCode" name="zipcode"
+								placeholder="Zip code" type="text"></input>
+						</div>
+					</div>
 
 
+					<div class="form-group hidden">
+						<label class="col-md-3">Lat</label>
+						<div class="col-md-9">
+							<input class="form-control" id="candidateLatitude"
+								name="latitude" type="text"></input>
+						</div>
+					</div>
 
-
-                    <div class="form-group">
-                        <label class="col-md-3">Designation</label>
-                        <div class="col-md-9 ratetype">
-                            <input type="text" id="designation" name="designation"
-                                   value="${designation}" field-name="Designation"
-                                   data-validation="validate_Space validate_Name validate_length length2-250"
-                                   data-validation-optional="true" value="" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-md-3">Employment Type<span
-                                class="text-danger">&nbsp;*</span></label>
-                        <div class="col-md-9">
-                            <select class="selectpicker form-control" id="designationType"
-                                    name="designationType" onChange="getDesignationType(this);"
-                                    field-name="Employment type" data-validation="required">
-                                <option value="">--Select Employment Type--</option>
-                                <option>C2C</option>
-                                <option>C2C-1099</option>
-                                <option>W-2</option>
-                                <option>C2H</option>
-                                <option>C2H -1099</option>
-                                <option>Part Time</option>
-                                <option>Full Time</option>
-                                <option>Other</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-md-3">Experience</label>
-                        <div class="col-md-9">
-                            <div class="row exp-drop">
-                                <div class="col-xs-6 col-md-6">
-                                    <select class="form-control selectpicker" id="experienceYears"
-                                            name="experienceYears" onchange="disableMonths();">
-                                        <option value="">Years</option>
-                                        <c:forEach begin="0" end="50" varStatus="loop">
-                                            <option>${loop.index}</option>
-                                        </c:forEach>
-                                    </select>
-                                </div>
-                                <div class="col-xs-6 col-md-6">
-                                    <select class="form-control selectpicker experienceMonths" id="experienceMonths"
-                                            name="experienceMonths">
-                                        <option value="">Months</option>
-                                        <c:forEach begin="0" end="11" varStatus="loop">
-                                            <option>${loop.index}</option>
-                                        </c:forEach>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group designationTypeDiv" id="designationTypeDiv"
-                         style="display: none">
-                        <label class="col-md-3">Employment Type</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" id="designationOtherType"
-                                   name="designationOtherType"
-                                   value="${candidate.designationOtherType}" field-name="Job Type"
-                                   value="">
-                        </div>
-                    </div>
-                    <c:if test="${SourceLeadWeb_userType != 'Recruiter'}">
-                        <div class="clearfix" id="hideVendor" style="display: none">
-                            <div class="form-group">
-                                <label class="col-md-3"><span class="pull-left">Vendor</span></label>
-                                <div class="col-md-9 chooRadius" id="errorvendor">
-                                    <div class="input-group col-md-10 pull-left chooRadius">
-                                        <select class="chosen-select form-control" name="vendors" data-validation-optional="true"
-                                                id="vendors" placeholder="Select Vendor" field-name="Vendor"
-                                                onchange="getVendorContactList();removeValiationVendor();">
-                                        </select>
-                                        <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocation();addCandiadateEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
-
-                                    </div>
-                                    <span class="col-md-2 noPad clearfix">
-                                        <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-                                            <a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
-                                            </sec:authorize>
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-md-3"><span class="pull-left">Vendor Contact</label>
-                                <div class="col-md-9 chooRadius" id="errorvendorContact">
-                                    <div class="input-group col-md-10 pull-left chooRadius">
-                                        <select class="chosen-select form-control" name="vendorcontact"
-                                                id="vendorcontact" field-name="Vendor Contact"
-                                                placeholder="Select Vendor Contact" data-validation-optional="true"
-                                                onchange="removeValiationVendorContact();">
-                                        </select>
-                                        <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocation();
-                                                addCandiadateEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
-                                    </div>		
-                                    <span class="col-md-2 noPad clearfix" onclick="selectedVendor();">
-                                        <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
-                                            <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
-                                            </sec:authorize>
-                                    </span>			
-
-                                </div>
-
-                            </div>
-                        </div>
-                    </c:if>
-                    <div class="form-group">
-                        <label class="col-md-3">Current Rate</label>
-                        <div class="col-md-9">
-                            <div class="input-group er ratetype">
-                                <div class="input-group-btn tblminwidth-75">
-
-                                    <select class="selectpicker" id="currentRateCurrency"
-                                            name="currentRateCurrency">
-
-                                        <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
-                                        <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
-                                        <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-                                        <option ${currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
-                                        <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
-                                        <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
-
-                                    </select>
-
-                                </div>
-                                <input type="text" id="currentRate" name="currentRate"
-                                       value="${currentRate}" field-name="Current Rate"
-                                       data-validation="validate_Space validate_float validate_length length1-8"
-                                       data-validation-optional="true" value="" class="form-control">
-                                <div class="input-group-btn tblminwidth-75 ratetype">
-                                    <select class="selectpicker" id="currentRateType"
-                                            name="currentRateType" field-name="Rate Per">
-                                        <option value="">Rate Per</option>
-                                        <option ${currentRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
-                                        <option ${currentRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-                                        <option ${currentRateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
-                                        <option ${currentRateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
-                                        <option ${currentRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-                                        <option ${currentRateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
-                                        <option ${currentRateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
-                                    </select>
-                                </div>
-                                <div class="clearfix"></div>
-                                <div class="clearfix"></div>
-                            </div>
-                        </div>
-                    </div>
-
-
-
-                    <div class="form-group">
-                        <label class="col-md-3">Expected Rate</label>
-                        <div class="col-md-9">
-                            <div class="input-group er ratetype">
-                                <div class="input-group-btn tblminwidth-75">
-
-                                    <select class="selectpicker" id="expectedRateCurrencey"
-                                            name="expectedRateCurrencey">
-
-                                        <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
-                                        <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
-                                        <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-                                        <option ${currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
-                                        <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
-                                        <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
-
-                                    </select>
-
-                                </div>
-                                <input type="text" id="expectedRate" name="expectedRate"
-                                       value="${expectedRate}" field-name="Expected Rate"
-                                       data-validation="validate_Space validate_int validate_length length1-8"
-                                       data-validation-optional="true" value="" class="form-control">
-                                <div class="input-group-btn tblminwidth-75 ratetype">
-                                    <select class="selectpicker" id="rateType" name="rateType"
-                                            field-name="Rate Per">
-                                        <option value="">Rate Per</option>
-                                        <option ${rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
-                                        <option ${rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-                                        <option ${rateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
-                                        <option ${rateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
-                                        <option ${rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-                                        <option ${rateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
-                                        <option ${rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
-                                    </select>
-                                </div>
-                                <div class="clearfix"></div>
-                                <div class="clearfix"></div>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="form-group">
-                        <label class="col-md-3">Employer's</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" id="candidateEmployers"
-                                   name="candidateEmployers" value="${candidateEmployers}"
-                                   field-name="Employers"
-                                   data-validation="validate_Space validate_length length2-250"
-                                   data-validation-optional="true" value="">
-                        </div>
-                    </div>
+					<div class="form-group hidden">
+						<label class="col-md-3">Long</label>
+						<div class="col-md-9">
+							<input class="form-control" id="candidateLongitude"
+								name="longitude" type="text"></input>
+						</div>
+					</div>
 
 
 
 
-                    <div class="form-group">
-                        <label class="col-md-3">Notice Period</label>
-                        <div class="col-md-9">
-                            <select class="form-control valid selectpicker" id="noticePeriod"
-                                    name="noticePeriod">
-                                <option value="">---Select Notice Period---</option>
-                                <option
-                                    ${noticePeriod  == 'Immediately available' ? 'selected' : ''}>Immediately
+					<div class="form-group">
+						<label class="col-md-3">Designation</label>
+						<div class="col-md-9 ratetype">
+							<input type="text" id="designation" name="designation"
+								value="${designation}" field-name="Designation"
+								data-validation="validate_Space validate_Name validate_length length2-250"
+								data-validation-optional="true" value="" class="form-control">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-md-3">Employment Type<span
+							class="text-danger">&nbsp;*</span></label>
+						<div class="col-md-9">
+							<select class="selectpicker form-control" id="designationType"
+								name="designationType" onChange="getDesignationType(this);"
+								field-name="Employment type" data-validation="required">
+								<option value="">--Select Employment Type--</option>
+								<option>C2C</option>
+								<option>C2C-1099</option>
+								<option>W-2</option>
+								<option>C2H</option>
+								<option>C2H -1099</option>
+								<option>Part Time</option>
+								<option>Full Time</option>
+								<option>Other</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-md-3">Experience</label>
+						<div class="col-md-9">
+							<div class="row exp-drop">
+								<div class="col-xs-6 col-md-6">
+									<select class="form-control selectpicker" id="experienceYears"
+										name="experienceYears" onchange="disableMonths();">
+										<option value="">Years</option>
+										<c:forEach begin="0" end="50" varStatus="loop">
+											<option>${loop.index}</option>
+										</c:forEach>
+									</select>
+								</div>
+								<div class="col-xs-6 col-md-6">
+									<select class="form-control selectpicker experienceMonths"
+										id="experienceMonths" name="experienceMonths">
+										<option value="">Months</option>
+										<c:forEach begin="0" end="11" varStatus="loop">
+											<option>${loop.index}</option>
+										</c:forEach>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group designationTypeDiv" id="designationTypeDiv"
+						style="display: none">
+						<label class="col-md-3">Employment Type</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" id="designationOtherType"
+								name="designationOtherType"
+								value="${candidate.designationOtherType}" field-name="Job Type"
+								value="">
+						</div>
+					</div>
+					<c:if test="${SourceLeadWeb_userType != 'Recruiter'}">
+						<div class="clearfix" id="hideVendor" style="display: none">
+							<div class="form-group">
+								<label class="col-md-3"><span class="pull-left">Vendor</span></label>
+								<div class="col-md-9 chooRadius" id="errorvendor">
+									<div class="input-group col-md-10 pull-left chooRadius">
+										<select class="chosen-select form-control" name="vendors"
+											data-validation-optional="true" id="vendors"
+											placeholder="Select Vendor" field-name="Vendor"
+											onchange="getVendorContactList();removeValiationVendor();">
+										</select> <span class="input-group-addon cursorPointer bg-blue"
+											onclick="getVendorsByOrgLocation();addCandiadateEmptyVendorContact();"><i
+											class="fa fa-refresh "></i></span>
+
+									</div>
+									<span class="col-md-2 noPad clearfix"> <sec:authorize
+											access="hasAnyRole('ROLE_CREATE_VENDOR')">
+											<a href="<c:url value="/app/addVendor" />" target="_blank"><i
+												class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+										</sec:authorize>
+									</span>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-md-3"><span class="pull-left">Vendor
+										Contact</label>
+								<div class="col-md-9 chooRadius" id="errorvendorContact">
+									<div class="input-group col-md-10 pull-left chooRadius">
+										<select class="chosen-select form-control"
+											name="vendorcontact" id="vendorcontact"
+											field-name="Vendor Contact"
+											placeholder="Select Vendor Contact"
+											data-validation-optional="true"
+											onchange="removeValiationVendorContact();">
+										</select> <span class="input-group-addon cursorPointer bg-blue"
+											onclick="getVendorsByOrgLocation();
+                                                addCandiadateEmptyVendorContact();"><i
+											class="fa fa-refresh "></i></span>
+									</div>
+									<span class="col-md-2 noPad clearfix"
+										onclick="selectedVendor();"> <sec:authorize
+											access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')">
+											<a href="javascript:void(0)"><i
+												class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+										</sec:authorize>
+									</span>
+
+								</div>
+
+							</div>
+						</div>
+					</c:if>
+					<div class="form-group">
+						<label class="col-md-3">Current Rate</label>
+						<div class="col-md-9">
+							<div class="input-group er ratetype">
+								<div class="input-group-btn tblminwidth-75">
+
+									<select class="selectpicker" id="currentRateCurrency"
+										name="currentRateCurrency">
+
+										<option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+										<option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+										<option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+										<option ${currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
+										<option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
+										<option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+
+									</select>
+
+								</div>
+								<input type="text" id="currentRate" name="currentRate"
+									value="${currentRate}" field-name="Current Rate"
+									data-validation="validate_Space validate_float validate_length length1-8"
+									data-validation-optional="true" value="" class="form-control">
+								<div class="input-group-btn tblminwidth-75 ratetype">
+									<select class="selectpicker" id="currentRateType"
+										name="currentRateType" field-name="Rate Per">
+										<option value="">Rate Per</option>
+										<option ${currentRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+										<option ${currentRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+										<option ${currentRateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
+										<option ${currentRateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
+										<option ${currentRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+										<option ${currentRateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
+										<option ${currentRateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+									</select>
+								</div>
+								<div class="clearfix"></div>
+								<div class="clearfix"></div>
+							</div>
+						</div>
+					</div>
+
+
+
+					<div class="form-group">
+						<label class="col-md-3">Expected Rate</label>
+						<div class="col-md-9">
+							<div class="input-group er ratetype">
+								<div class="input-group-btn tblminwidth-75">
+
+									<select class="selectpicker" id="expectedRateCurrencey"
+										name="expectedRateCurrencey">
+
+										<option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+										<option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+										<option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+										<option ${currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
+										<option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
+										<option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+
+									</select>
+
+								</div>
+								<input type="text" id="expectedRate" name="expectedRate"
+									value="${expectedRate}" field-name="Expected Rate"
+									data-validation="validate_Space validate_int validate_length length1-8"
+									data-validation-optional="true" value="" class="form-control">
+								<div class="input-group-btn tblminwidth-75 ratetype">
+									<select class="selectpicker" id="rateType" name="rateType"
+										field-name="Rate Per">
+										<option value="">Rate Per</option>
+										<option ${rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+										<option ${rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+										<option ${rateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
+										<option ${rateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
+										<option ${rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+										<option ${rateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
+										<option ${rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+									</select>
+								</div>
+								<div class="clearfix"></div>
+								<div class="clearfix"></div>
+							</div>
+						</div>
+					</div>
+
+
+					<div class="form-group">
+						<label class="col-md-3">Employer's</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" id="candidateEmployers"
+								name="candidateEmployers" value="${candidateEmployers}"
+								field-name="Employers"
+								data-validation="validate_Space validate_length length2-250"
+								data-validation-optional="true" value="">
+						</div>
+					</div>
+
+
+
+
+					<div class="form-group">
+						<label class="col-md-3">Notice Period</label>
+						<div class="col-md-9">
+							<select class="form-control valid selectpicker" id="noticePeriod"
+								name="noticePeriod">
+								<option value="">---Select Notice Period---</option>
+								<option
+									${noticePeriod  == 'Immediately available' ? 'selected' : ''}>Immediately
                                     available</option>
-                                <option ${noticePeriod  == '15 Days' ? 'selected' : ''}>15
+								<option ${noticePeriod  == '15 Days' ? 'selected' : ''}>15
                                     Days</option>
-                                <option ${noticePeriod  == '1 Month' ? 'selected' : ''}>1
+								<option ${noticePeriod  == '1 Month' ? 'selected' : ''}>1
                                     Month</option>
-                                <option ${noticePeriod  == '2 Months' ? 'selected' : ''}>2
+								<option ${noticePeriod  == '2 Months' ? 'selected' : ''}>2
                                     Months</option>
-                                <option ${noticePeriod  == '3 Months' ? 'selected' : ''}>3
+								<option ${noticePeriod  == '3 Months' ? 'selected' : ''}>3
                                     Months</option>
-                            </select>
+							</select>
 
-                        </div>
-                    </div>
+						</div>
+					</div>
 
-                    <div class="clearfix"></div>
-                    <div class="form-group innerForm_formGroup">
+					<div class="clearfix"></div>
+					<div class="form-group innerForm_formGroup">
 
-                        <div class="form-group">
-                            <label class="col-md-3">Attach Resume</label>
-                            <div class="col-md-9 zindex positionRelative">
-                                <div class="input-group col-md-12" id="uploadFileGroup"
-                                     style="margin: 0 auto">
-                                    <label class="input-group-btn"> 
-                                        <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadBtn" class="upload"> </span>
-                                    </label> 
+						<div class="form-group">
+							<label class="col-md-3">Attach Resume</label>
+							<div class="col-md-9 zindex positionRelative">
+								<div class="input-group col-md-12" id="uploadFileGroup"
+									style="margin: 0 auto">
+									<label class="input-group-btn"> <span
+										class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse
+											File <input type="file" style="display: none;" id="uploadBtn"
+											class="upload"> </span>
+									</label> <input type="text" class="form-control" readonly
+										id="uploadFile" name="docFile" placeholder="Upload Resume ..."
+										field-name="Upload Resume" data-validation="validatedoc "
+										data-validation-optional="true">
+									<div class="clearUpload"></div>
+								</div>
+							</div>
+						</div>
 
-                                    <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Resume ..." field-name="Upload Resume"
-                                           data-validation="validatedoc " data-validation-optional="true">
-                                    <div class="clearUpload"></div>
-                                </div>
-                            </div>
-                        </div>
+						<div class="form-group">
+							<label class="col-md-3">Skills</label>
+							<div class="col-md-9 mySkillsUl">
+								<select multiple data-placeholder="Select Skills"
+									class="chosen-select form-control" name="candidateSkills"
+									id="candidateSkills" data-validation-optional="true">
+									<c:forEach var="skill" items="${skillsList}">
+										<option value="${skill.name}">${skill.name}</option>
+									</c:forEach>
+								</select>
+							</div>
+						</div>
 
-                        <div class="form-group">
-                            <label class="col-md-3">Skills</label>
-                            <div class="col-md-9 mySkillsUl">
-                                <select multiple data-placeholder="Select Skills"
-                                        class="chosen-select form-control" name="candidateSkills"
-                                        id="candidateSkills" data-validation-optional="true">
-                                    <c:forEach var="skill" items="${skillsList}">
-                                        <option value="${skill.name}">${skill.name}</option>
-                                    </c:forEach>
-                                </select>
-                            </div>
-                        </div>
+						<div class="form-group">
+							<label class="col-md-3">Immigration Status</label>
+							<div class="col-md-9">
+								<select multiple class="chosen-select form-control" name="visa"
+									id="visa" data-placeholder="Select Visa"
+									data-validation-optional="true">
+									<c:forEach var="visaList" items="${visaList}">
+										<c:set var="NUM" value="${0}" />
+										<c:forEach var="existedVisa" items="${requirement.visaType}">
+											<c:if test="${existedVisa eq visaList}">
+												<c:set var="NUM" value="${1}" />
+												<option selected value="${visaList}">${visaList}</option>
+											</c:if>
+										</c:forEach>
 
-                        <div class="form-group">
-                            <label class="col-md-3">Immigration Status</label>
-                            <div class="col-md-9">
-                                <select multiple class="chosen-select form-control" name="visa"
-                                        id="visa" data-placeholder="Select Visa"
-                                        data-validation-optional="true">
-                                    <c:forEach var="visaList" items="${visaList}">
-                                        <c:set var="NUM" value="${0}" />
-                                        <c:forEach var="existedVisa" items="${requirement.visaType}">
-                                            <c:if test="${existedVisa eq visaList}">
-                                                <c:set var="NUM" value="${1}" />
-                                                <option selected value="${visaList}">${visaList}</option>
-                                            </c:if>
-                                        </c:forEach>
+										<c:if test="${NUM == 0}">
+											<option value="${visaList}">${visaList}</option>
+										</c:if>
+									</c:forEach>
+								</select>
+							</div>
+						</div>
 
-                                        <c:if test="${NUM == 0}">
-                                            <option value="${visaList}">${visaList}</option>
-                                        </c:if>
-                                    </c:forEach>
-                                </select>
-                            </div>
-                        </div>
+						<div class="form-group">
+							<label class="col-md-3">Primary Skill</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" id="primarySkill"
+									name="primarySkill" value="${primarySkill}"
+									field-name="Primary Skill"
+									data-validation="validate_Space validate_length length2-200"
+									data-validation-optional="true">
+							</div>
+						</div>
 
-                        <div class="form-group">
-                            <label class="col-md-3">Primary Skill</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" id="primarySkill"
-                                       name="primarySkill" value="${primarySkill}"
-                                       field-name="Primary Skill"
-                                       data-validation="validate_Space validate_length length2-200"
-                                       data-validation-optional="true">
-                            </div>
-                        </div>
+					</div>
 
-                    </div>
+					<div class="form-group innerForm_formGroup">
+						<div class="form-group">
+							<label class="col-md-3">Education</label>
+							<div class="col-md-9 mySkillsUl">
+								<select multiple data-placeholder="Select Education"
+									class="chosenone-selectone form-control"
+									name="candidateEducation" id="candidateEducation"
+									data-validation="validate_Space"
+									data-validation-optional="true">
+									<c:forEach var="edu" items="${educationsList}">
+										<option value="${edu.name}">${edu.name}</option>
+									</c:forEach>
+								</select>
+							</div>
+						</div>
 
-                    <div class="form-group innerForm_formGroup">
-                        <div class="form-group">
-                            <label class="col-md-3">Education</label>
-                            <div class="col-md-9 mySkillsUl">
-                                <select multiple data-placeholder="Select Education"
-                                        class="chosenone-selectone form-control"
-                                        name="candidateEducation" id="candidateEducation"
-                                        data-validation="validate_Space"
-                                        data-validation-optional="true">
-                                    <c:forEach var="edu" items="${educationsList}">
-                                        <option value="${edu.name}">${edu.name}</option>
-                                    </c:forEach>
-                                </select>
-                            </div>
-                        </div>
+						<div class="form-group">
+							<label class="col-md-3">Summary</label>
+							<div class="col-md-9">
+								<textarea rows="2" class="form-control" id="summary"
+									name="summary" value="${summary}" field-name="Summary"
+									data-validation=" validate_length length2-5000"
+									data-validation-optional="true"></textarea>
+							</div>
+						</div>
+					</div>
 
-                        <div class="form-group">
-                            <label class="col-md-3">Summary</label>
-                            <div class="col-md-9">
-                                <textarea rows="2" class="form-control" id="summary"
-                                          name="summary" value="${summary}" field-name="Summary"
-                                          data-validation=" validate_length length2-5000"
-                                          data-validation-optional="true"></textarea>
-                            </div>
-                        </div>
-                    </div>
+					<div class="clearfix"></div>
+					<c:forEach var="section" items="${sourceleadSectionList}"
+						varStatus="sectionOrder">
+						<c:if test="${sectionOrder.index == 0}">
+							<div id="customDiv${section.id}"></div>
+						</c:if>
+					</c:forEach>
 
-                    <div class="clearfix"></div>
-                    <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
-                        <c:if test="${sectionOrder.index == 0}">
-                            <div id="customDiv${section.id}"></div>
-                        </c:if>
-                    </c:forEach>
+					<div class="clearfix"></div>
+					<div class="form-group">
+						<label class="col-md-3"></label>
+						<div class="col-md-9">
+							<div class="checkbox checkBox">
+								<label> <input type="checkbox" value="Y"
+									name="inviteEmail"> Invite to SourceLead
+								</label>
+							</div>
+						</div>
+					</div>
 
-                    <div class="clearfix"></div>
-                    <div class="form-group">
-                        <label class="col-md-3"></label>
-                        <div class="col-md-9">
-                            <div class="checkbox checkBox">
-                                <label> <input type="checkbox" value="Y"
-                                               name="inviteEmail"> Invite to SourceLead
-                                </label>
-                            </div>
-                        </div>
-                    </div>
+					<!-- this "candidateCreationType" field is used for candidate creation type -->
+					<input type="hidden" id="candidateCreationType"
+						name="candidateCreationType" value="manual">
 
-                    <!-- this "candidateCreationType" field is used for candidate creation type -->
-                    <input type="hidden" id="candidateCreationType" name="candidateCreationType" value="manual">
+					<div class="clearfix"></div>
 
-                    <div class="clearfix"></div>
-
-                    <div class="form-group">
-                        <label class="col-md-3"></label>
-                    </div>
+					<div class="form-group">
+						<label class="col-md-3"></label>
+					</div>
 
 
-                    <div class="clearfix"></div>
-                </div>
-            </div>
+					<div class="clearfix"></div>
+				</div>
+			</div>
 
 
-            <div class="form-footer clearfix">
-                <div class="col-lg-12">
-                    <div class="pull-right">
-                        <input type="button" value="Save" id="store_candidate"
-                               onclick="storeCandidate();" class="btn btn-primary"> <input
-                               type="button" value="Cancel"
-                               onClick="javascript:window.location.href = '<c:url value='${appPath}/candidatesList'/>'"
-                               class="btn btn-default ml">
-                    </div>
-                </div>
-            </div>
+			<div class="form-footer clearfix">
+				<div class="col-lg-12">
+					<div class="pull-right">
+						<input type="button" value="Save" id="store_candidate"
+							onclick="storeCandidate();" class="btn btn-primary"> <input
+							type="button" value="Cancel"
+							onClick="javascript:window.location.href = '<c:url value='${appPath}/candidatesList'/>'"
+							class="btn btn-default ml">
+					</div>
+				</div>
+			</div>
 
-        </form:form>
+		</form:form>
 
-    </div>
+	</div>
 
-    <!-- Content Area Ends-->
+	<!-- Content Area Ends-->
 </section>
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
@@ -622,14 +645,30 @@
         };
 
         if ($('#addcandidate_form').validate(false, validationSettings)) {
-
             var form = $('#addcandidate_form')[0];
-            var formData = new FormData(form);
+            /* var formData = new FormData(form); */
+            var formData = getFormData("addcandidate_form");
             //It will escape all the special characters
             $("#store_candidate").attr("disabled", "disabled");
             $("#store_candidate").addClass('button').val('Processing..');
-
-            $.ajax({
+			$.post(sourceleadUrl + "/storeCandidate?" + tokenParamName + "=" + tokenValue + "", formData, function(result) {
+				if (result && result.response === "INVALID_DATA") {
+                    $("#store_candidate").removeAttr("disabled");
+                    $("#store_candidate").removeAttr('button').val('Save');
+                    showError(result.responseMessage);
+                } else if (result.response === "AWKWARD") {
+                    location.href = "/errorPage";
+                } else if (result.response === "SUCCESS") {
+                    location.replace(sourceleadUrl + "/candidatesList");
+                } else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+                    $("#store_candidate").removeAttr("disabled");
+                    $("#store_candidate").addClass('button').val('Save');
+                    showError("Operation failed, please try again");
+                }
+			});
+            /* $.ajax({
                 type: "POST",
                 data: formData,
                 processData: false,
@@ -654,7 +693,7 @@
                         showError("Operation failed, please try again");
                     }
                 }
-            });
+            }); */
             return true;
         } else {
             return false;
@@ -746,9 +785,7 @@
     function validateCandidateEmail() {
         var email = document.getElementById("email").value;
         $('#emailDiv').find('p.jquery_form_error_message').remove();
-
         if (email != null && email != "") {
-
             $.ajax({
                 type: "POST",
                 url: sourceleadUrl + "/validateCandidateEmail?" + tokenParamName + "=" + tokenValue + "&email=" + email + "&candidateType=N",

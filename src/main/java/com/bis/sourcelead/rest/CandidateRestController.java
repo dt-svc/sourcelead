@@ -166,7 +166,7 @@ public class CandidateRestController {
     @PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_VIEW_CANDIDATE','ROLE_VIEW_EDIT_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_CANDIDATES')")
     @RequestMapping(value = "/app/storeCandidate", method = RequestMethod.POST)
     @ResponseBody
-    public Response storeCandidate(CandidateDTO candidateDto, HttpServletRequest request) throws Exception {
+    public Response<String> storeCandidate(CandidateDTO candidateDto, HttpServletRequest request) throws Exception {
         Response<String> response = new Response<>();
         try {
             User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");

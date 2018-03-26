@@ -526,35 +526,56 @@ function preapareCustomFieldDetails(candidateId){
 --%>
 
 <script>
-function deleteCandidate(candidateId,candidateType){
-	 // var reason = document.getElementById("rejectReason").value;
-	  var reason = document.getElementById("rejectReason").value;
-	  reason = reason.replace(/\s/g, "") 
-	 
-	  if(reason.length == 0){
-		  $(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
-    	  $(".rejectErrorMsgs").append("<p class='jquery_form_error_message'>Reason is required</p>");
+function deleteCandidate(candidateId,candidateType) {
+	if(document.getElementById("rejectReason")!==null) {
+		var reason = document.getElementById("rejectReason").value;
+		reason = reason.replace(/\s/g, "");
+		if(reason.length == 0){
+			$(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
+	    	$(".rejectErrorMsgs").append("<p class='jquery_form_error_message'>Reason is required</p>");
 		}
-		  if(reason.match(/^[^\s-](.*)*$/) != null){
-			  $(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
-			  $(".rejectErrorMsgs").empty();
-	  $.ajax({
-        type : "POST",
-         url: sourceleadUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType="+candidateType,        
-         success :function(data) {
-              if(data != null && data != 'undefined' && data != ""){
-            	  var json = JSON.parse(data);
-            	  if(candidateType == 'Associates'){
-            		  location.replace(sourceleadUrl+"/associatesList");
-            	  }else{
-            		  location.replace(sourceleadUrl+"/candidatesList");
-            	  }
-                }
-                 },
-              }); 
-	  
-			}
-	  
+		if(reason.match(/^[^\s-](.*)*$/) != null) {
+			$(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
+			$(".rejectErrorMsgs").empty();
+			$.post(sourceleadUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType="+candidateType,{},function(result){
+				if (result && result.response === "INVALID_DATA") {
+				    $("#update_candidate").removeAttr("disabled");
+				    $("#update_candidate").removeAttr('button').val('Save');
+				    showError(result.responseMessage);
+				} else if (result.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+					var json = JSON.parse(result.object);
+					if(candidateType == 'Associates') {
+						location.replace(sourceleadUrl+"/associatesList");
+					} else {
+						location.replace(sourceleadUrl+"/candidatesList");
+					}
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    $("#update_candidate").removeAttr("disabled");
+				    showError("Operation failed, please try again");
+				}	
+			});
+			/* $.ajax({
+	        type : "POST",
+	         url: sourceleadUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType="+candidateType,        
+	         success :function(data) {
+	              if(data != null && data != 'undefined' && data != ""){
+	            	  var json = JSON.parse(data);
+	            	  if(candidateType == 'Associates'){
+	            		  location.replace(sourceleadUrl+"/associatesList");
+	            	  }else{
+	            		  location.replace(sourceleadUrl+"/candidatesList");
+	            	  }
+	                }
+	                 },
+	              }); */ 
+		}
+	} else {
+		showError("Reason is required");
+	}
 }
 </script>
 <script>
@@ -622,15 +643,30 @@ function reActivateCandidateAlertMessage(candidateId){
 	if (message == true) { */
 		var reactivate = '1';
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.ajax({
+		$.post(sourceleadUrl+"/reActivateCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&reActivate="+reactivate,{},function(result){
+			if (result && result.response === "INVALID_DATA") {
+			    $("#update_candidate").removeAttr("disabled");
+			    $("#update_candidate").removeAttr('button').val('Save');
+			    showError(result.responseMessage);
+			} else if (result.response === "AWKWARD") {
+			    location.href = "/errorPage";
+			} else if (result.response === "SUCCESS") {
+				location.replace(sourceleadUrl+"/candidatesList");
+			} else if (result.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+			    showError("Operation failed, please try again");
+			}			
+		});
+		/* $.ajax({
 	        type : "POST",
 	         url: sourceleadUrl+"/reActivateCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&reActivate="+reactivate,        
 	         success :function(data) {
 	               if(data != null && data != 'undefined' && data != ""){
 	            			 location.replace(sourceleadUrl+"/candidatesList");
 	                } 
-	                 },
-	              }); 
+	         },
+		}); */ 
 		
 // 	}
 	
@@ -1106,34 +1142,61 @@ function candidateProfile(candidateId,candidateType){
 		rateValidations();
 		 $('#emailDiv').find('p.jquery_form_error_message').remove();
 		
-		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
-			
+		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){
       		var formData = getFormData("candidateProfileEdit_form");
 			$("#update_candidate").attr("disabled", "disabled");
 			$("#update_candidate").addClass('button').val('Processing..');
-				
-
-			$.ajax({
+			$.post(sourceleadUrl+"/updateCandidate?"+tokenParamName+"="+tokenValue+"", formData, function(result) {
+				if (result && result.response === "INVALID_DATA") {
+				    $("#update_candidate").removeAttr("disabled");
+				    $("#update_candidate").removeAttr('button').val('Save');
+				    showError(result.responseMessage);
+				} else if (result.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+				    $("#selector1").removeAttr("style");
+				    $("#selector1").css({ display: "block" });
+				    $("#candMsgDiv").html("Success!!  Candidate Updated");
+				    candUpdateMsgFadeinFunction();
+				    candidateQuickViewProfile(candidateId);
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    $("#update_candidate").removeAttr("disabled");
+				    showError("Operation failed, please try again");
+				}
+			});
+			/* $.ajax({
 				type : "POST",
         	    data: formData,
 				url : sourceleadUrl+"/updateCandidate?"+tokenParamName+"="+tokenValue+"",
 				success : function(result) {
-					if(result && result === "failed") {
-						 $("#update_candidate").removeAttr("disabled");
-						showError("Invalid data");
-					} 
-					else {
-						 $("#selector1").removeAttr("style");
-	         			 $("#selector1").css({ display: "block" });
-			        	 $("#candMsgDiv").html("Success!!  Candidate Updated");
-			        	candUpdateMsgFadeinFunction();
-						candidateQuickViewProfile(candidateId);
+					if (data.indexOf('Sign In') >= 0) {
+						location.replace(sourceleadUrl);
+					} else if (result && result.response === "INVALID_DATA") {
+					    $("#update_candidate").removeAttr("disabled");
+					    $("#update_candidate").removeAttr('button').val('Save');
+					    showError(result.responseMessage);
+					} else if (result.response === "SUCCESS") {
+					    $("#selector1").removeAttr("style");
+					    $("#selector1").css({ display: "block" });
+					    $("#candMsgDiv").html("Success!!  Candidate Updated");
+					    candUpdateMsgFadeinFunction();
+					    candidateQuickViewProfile(candidateId);
+					} else if (result.response === "SESSION_TIMEDOUT") {
+					    location.href = "/login";
+					} else if (result.response === "AWKWARD") {
+					    location.href = "/errorPage";
+					} else {
+					    $("#update_candidate").removeAttr("disabled");
+					    showError("Invalid data");
+					    showError("Operation failed, please try again");
 					}
-				},
-			});
+				}
+			}); */
 			return true;
-		 }else{ 
-				return false;
+		 } else { 
+			return false;
 		 } 
 	}
 		 $('body').on('blur','#candidateProfileEdit_form',
@@ -1147,6 +1210,7 @@ function candidateProfile(candidateId,candidateType){
 <script>
 function cancelEdit(){
 	$("#profileEditPopup").empty();
+	$(".location-alert").fadeOut();
 }
 </script>
 

@@ -1291,6 +1291,7 @@ function cancel(candidateId){
 		$("#detailview").removeClass("active in");
 		$("#candTimelineView").removeClass("active");
 		$("#timelineview").removeClass("active in");
+		$(".location-alert").fadeOut();
 	}
 </script>
 
