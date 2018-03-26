@@ -106,6 +106,12 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 					if(actionName.getActionName().contains(type)){
 						actionHistory.setActionName(actionName.getActionName());
 						actionHistory.setActionPerformed("You have performed "+ actionName.getActionName()+" Action ");
+						actionHistory.setOrgLocations(loginOrgLocation);
+						actionHistory.setUserId(userLoginLogoutSession.getUserId().getId());
+						actionHistory.setUserLoginLogoutSessionId(userLoginLogoutSession);
+						Date date = new Date();
+						actionHistory.setActionTime(commonUtil.orgLocationCommonDate(date, loginOrgLocation));
+
 					}
 				}
 			}else
