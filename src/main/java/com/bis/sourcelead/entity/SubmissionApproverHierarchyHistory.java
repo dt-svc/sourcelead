@@ -3,6 +3,7 @@ package com.bis.sourcelead.entity;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -11,13 +12,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Approval_Mechanism_Type;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
-
+@Entity
+@Table(name = "SUBMISSION_APPROVER_HIERARCHY_HISTORY")
 public class SubmissionApproverHierarchyHistory {
 
 	

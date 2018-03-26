@@ -1,5 +1,10 @@
 package com.bis.sourcelead.service.impl;
 
-public class SubmissionApproverHierarchyHistoryServiceImpl {
+import org.springframework.stereotype.Service;
+
+import com.bis.sourcelead.service.SubmissionApproverHierarchyHistoryService;
+
+@Service
+public class SubmissionApproverHierarchyHistoryServiceImpl implements SubmissionApproverHierarchyHistoryService {
 
 }

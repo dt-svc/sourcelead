@@ -1,5 +1,10 @@
 package com.bis.sourcelead.dao.impl;
 
-public class SubmissionApproverHierarchyHistoryDaoImpl {
+import org.springframework.stereotype.Repository;
+
+import com.bis.sourcelead.dao.SubmissionApproverHierarchyHistoryDao;
+
+@Repository
+public class SubmissionApproverHierarchyHistoryDaoImpl  implements SubmissionApproverHierarchyHistoryDao {
 
 }
