@@ -58,7 +58,7 @@ a { cursor:pointer;}
 .timesheet_head .glyphicon-chevron-left {
     font-size:12px; color:#545454; font-weight:300; cursor:pointer; position:relative; right:20px;
     }
-.export_pop, .approved_pop, .export_pipline, #exportPop {
+.export_pop, .approved_pop, .export_pipline, #exportPop, .userExp {
     position:absolute; z-index:100; width:150px; top:35px; right:2px; display:none;
     }
 .export_pipline ul {
@@ -70,16 +70,15 @@ a { cursor:pointer;}
 .export_pop, .export_pipline {
     width:100px; right:12px;
     }  
-.export_pop ul, .approved_pop ul, .export_pipline ul, #exportPop ul {
+.export_pop ul, .approved_pop ul, .export_pipline ul, #exportPop ul, .userExp ul {
     position:relative; margin:0px 0px; background-color:#FFF; box-shadow:0px 0px 5px rgba(0,0,0,0.3); padding:5px 0px !important;
     border-radius:4px; max-height: 150px; overflow-y: auto; width:180px !important; overflow-x: hidden;
     }
-.export_pop ul:after, .approved_pop ul:after, .export_pipline ul:after, #exportPop ul:after {
+.export_pop ul:after, .approved_pop ul:after, .export_pipline ul:after, #exportPop ul:after, .userExp ul:after {
     bottom: 100%; left: 80%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
-    border-color: rgba(136, 183, 213, 0); border-bottom-color: #fff; border-width: 8px; margin-left: -8px;
-          
+    border-color: rgba(136, 183, 213, 0); border-bottom-color: #fff; border-width: 8px; margin-left: -8px;       
     }  
-.export_pop ul li, .approved_pop ul li, .export_pipline ul li, #exportPop ul li {
+.export_pop ul li, .approved_pop ul li, .export_pipline ul li, #exportPop ul li, .userExp ul li {
     list-style-type:none; padding:4px 10px !important; margin:0px 0px !important; width:100%; position:relative;
     font-size:13px; font-weight:500; color:#454545; display:inline-flex; cursor: pointer;
     }
@@ -7099,23 +7098,22 @@ background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-r
 	background-color: #fff; padding: 0px; border-radius: 0px 0px 3px 3px; position: relative; min-height: 100px;
 }
 .comProTabs {
-	background-color: #fff; border-radius: 3px;
+	background-color: #fff; position: relative;
 }
 .comProTabs ul {
-
-    margin:0px 0px; padding:0px 0px 0px 10px;
+    margin:0px 0px; padding:6px 0px 0px 0px;
     }
 .comProTabs ul li {
-    float:left; background-color:#fff; list-style-type:none; border-bottom:2px solid #fff;
+    float:left; list-style-type:none; margin: 0px 0px 0px 6px; background-color: #f9faff;
     }
 .comProTabs ul li.current {
-    position:relative; background-color:#fff; z-index:5; border-bottom:2px solid #368ee0;
+    position:relative; background-color:#e6e8f4; z-index:5;
     }
 .comProTabs ul li a {
-    padding:11px 20px 0px; text-decoration:none; font-size:15px; color:#666; display:block; height: 42px;
+    padding:8px 20px 0px; text-decoration:none; font-size:14px; color:#666; display:block; height: 36px;
     }
 .comProTabs ul li.current a{
-    color:#1d6cb5;
+    color:#333;
     }
 .comProfile {
 	width: 110px; height: 110px; position: absolute; background-color: #f1f1f1; left: 15px; top: -40px;
@@ -7173,13 +7171,13 @@ background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-r
 
 .companyDetWrap {
 	width: 100%; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); background-color: #fff; padding: 10px 0px 20px;
-	border-radius: 3px; min-height: 300px;
+	border-radius: 0px 3px 3px 3px; min-height: 300px;
 }
 .companyDetHead {
 	padding: 5px 0px;
 }
 .companyDetHead h2 {
-	padding: 5px 20px; margin: 0px 0px; font-size: 17px; font-weight: 400; color: #666;
+	padding: 5px 20px; margin: 0px 0px; font-size: 17px; font-weight: 400; color: #454545;
 }
 .companyDetInn {
 	padding: 10px 20px 0px 20px;
@@ -7197,13 +7195,13 @@ background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-r
 	width: 100%; padding: 10px 0px 0px 0px;
 }
 .companyDetInn div.fullDetails p {
-	width: 100%; color: #454545; margin: 6px 0px 0px 0px; line-height: 21px; border-radius: 3px;
+	width: 100%; color: #666; margin: 6px 0px 0px 0px; line-height: 21px; border-radius: 3px;
 }
 .compLoca {
 	padding: 10px 20px 15px; background-color: #fff; border-radius: 3px; margin: 10px 0px 0px 0px;
 }
 .compLoca h2 {
-	padding: 5px 0px 5px; margin: 0px 0px; font-size: 17px; font-weight: 400; color: #666;
+	padding: 5px 0px 5px; margin: 0px 0px; font-size: 17px; font-weight: 400; color: #454545;
 }
 .compLocaCta {
 	float: left; width: 25%; background-color: #f5f5f5; margin: 10px 10px 0px 0px; padding: 14px 15px; border-radius: 3px;
@@ -7354,12 +7352,12 @@ font-weight: 500;
 	padding: 2px 0px; margin: 0px 0px; font-size: 18px; font-weight: 500; color: #666;
 }
 .comRevHead a {
-	padding: 6px 15px; border-radius: 5px; margin: 0px 5px 0px 0px; display: inline-block; font-size: 14px; font-weight: 400;
+	padding: 6px 15px; border-radius: 1px; margin: 0px 5px 0px 0px; display: inline-block; font-size: 14px; font-weight: 400;
 	color: #545454;
 	
 }
 .comRevHead a:hover, .comRevHead a.act {
-	color: #fff; background-color: #368ee0;
+	color: #fff; background-color: #6c7686; border-bottom: 3px solid #5acc95;
 }
 .comEventWrap {}
 .comEventWrap .comRevRight {
@@ -7736,12 +7734,24 @@ font-weight: 500;
 	opacity: 0.5; cursor: default; pointer-events: none;
 }
 
+.temp_active {color: #0bb42b;}
+
+.temp_inactive {color: #fe4556;}
+
+.successDiv {
+position: relative; width:100%; border: 1px solid #81C784; min-height: 190px; padding: 30px;
+text-align: center; color: #81C784;
+}
+.failureDiv {
+position: relative; width:100%; border: 1px solid #EF5350; min-height: 190px; padding: 30px;
+text-align: center; color: #EF5350;
+}
 .compNewHead {
 	box-shadow: 0px 0px 2px rgba(0,0,0,0.2); border-radius: 3px; padding: 0px 0px; background-color: #fff;
 	margin: 0px 0px 10px 0px;
 }
 .compNewHeadTop {
-	border-bottom: 1px solid #ccc; padding: 10px 10px;
+	border-bottom: 1px solid #ededed; padding: 10px 10px;
 }
 .compNewHeadTopLeft {
 	width: 80px; height:80px; float: left; padding: 2px; border: 1px solid #ededed;
@@ -7766,12 +7776,33 @@ font-weight: 500;
 	overflow-x: scroll; display: flex;
 }
 .compNewHeadScrollInn {
-	width: 400px; min-width: 300px;
+	min-width: 210px;
+}
+.compNewHeadScrollInn h2 {
+	padding: 10px 15px; margin: 0px 0px; font-size: 14px; font-weight: 500; color: #666;
+	border-bottom: 1px solid #ededed;
+}
+.compNewHeadScrollCta {
+	max-height: 140px; overflow-y: auto; padding: 10px 15px;
+}
+.compNewHeadScrollCta p {
+	padding: 0px 0px; margin: 0px 0px;
+}
+.compNewHeadScrollCta p a {
+	padding: 2px 0px; margin: 0px 0px; display: inline-block; font-size: 13px; color: #454545;
+}
+.compNewHeadScrollCta p a:hover {
+	color: #368ee0;
 }
 
-
-
-
-
+.btnNoBg {
+	background: none !important; color: #368ee0 !important;
+}
+#paginationDiv span {
+	max-width: inherit !important;
+}
+.borTop{
+border-top: 1px solid #454545;
+}
 
 

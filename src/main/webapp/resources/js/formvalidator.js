@@ -1035,7 +1035,7 @@ jQueryFormUtils.validatespace = function(val) {
 };
 
 jQueryFormUtils.validatefile_image = function(val) {
-    return val.toLowerCase().match(/(.*)(jpg|gif|png)$/) !== null;
+    return val.toLowerCase().match(/(.*)(jpg|JPG|png|gif)$/) !== null;
 };
 
 jQueryFormUtils.validatefile_doc = function(val) {
@@ -1049,6 +1049,13 @@ jQueryFormUtils.validatefile_docimgpdf = function(val) {
 jQueryFormUtils.validatefile_resume = function(val) {
     return val.toLowerCase().match(/(.*)(docx|doc|pdf|rtf)$/) !== null;
 };
+
+//images
+
+jQueryFormUtils.validatefile_img = function(val) {
+    return val.toLowerCase().match(/(.*)(jpg|jpeg|png|gif)$/) !== null;
+};
+
 jQueryFormUtils.validatefile_pdf = function(val) {
     return val.toLowerCase().match(/(.*)(pdf)$/) !== null;
 };
@@ -1212,6 +1219,12 @@ jQueryFormUtils.validateName = function(val) {
         }
         // simple File Doc check
         else if (validationRules.indexOf('validateResume') > -1 && !jQueryFormUtils.validatefile_resume(value, validationRules)) {
+            return validationErrorMsg || language.badResume;
+        }
+        
+        //simple img file check
+        
+        else if (validationRules.indexOf('validateImg') > -1 && !jQueryFormUtils.validatefile_img(value, validationRules)) {
             return validationErrorMsg || language.badResume;
         }
         

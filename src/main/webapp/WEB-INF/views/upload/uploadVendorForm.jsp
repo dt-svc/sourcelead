@@ -419,9 +419,10 @@ function terminateRecord(recordId){
 <script>
 function addRecord(recordId){
 	var rowHtmlContent =  $("#row"+recordId).html();
+	var templateId = $("#templateId").val();
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/addRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Vendor",       
+       url: sourceleadUrl+"/addRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Vendor&templateId="+templateId,       
         success :function(data) {
         	$("#row"+recordId).empty();
 	    	$("#row"+recordId).html(rowHtmlContent);
