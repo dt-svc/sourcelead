@@ -213,6 +213,16 @@ public class TabsDaoImpl implements TabsDao{
 	    List<Tabs> tabsList = session.createQuery(query.toString()).setLong( "tabId", tabId).list();
 	    return tabsList;
 	}
+
+	@Override
+	@Transactional
+	public List<Tabs> getTabListByActionsIds(List<Long> actionIdsList) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Tabs tabs left join fetch tabs.tabs where tabs.id IN (select distinct sa.tabs.id from SourceleadActions sa where sa.id IN (:actionIdsList)) ORDER BY tabs.tabOrder ASC ";
+	    List<Tabs> tabsList = session.createQuery(query.toString()).setParameterList("actionIdsList", actionIdsList).list();
+	    return tabsList;
+	
+	}
 	
 	 
 	

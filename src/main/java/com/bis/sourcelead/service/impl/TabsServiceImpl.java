@@ -79,4 +79,9 @@ public class TabsServiceImpl implements TabsService {
 		return tabsDao.getClildTabsListByTabId(tabId);
 	}
 
+	@Override
+	public List<Tabs> getTabListByActionsIds(List<Long> actionIdsList) throws Exception {
+		return tabsDao.getTabListByActionsIds(actionIdsList);
+	}
+
 }

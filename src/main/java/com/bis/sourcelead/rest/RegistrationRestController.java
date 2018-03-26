@@ -304,7 +304,10 @@ public class RegistrationRestController {
 				subscriptionDTO.setSubscriptionType(subscription.getSubscriptionType().getName());
 				subscriptionDTO.setCountry(subscription.getCountry());
 				subscriptionDTO.setStorageType(subscription.getStorageSubscriptionType().getName());
-				subscriptionDTO.setUserSubscription(subscription.getUserSubscriptionType().getName());
+				if(subscription.getUserSubscriptionType() != null) {
+					subscriptionDTO.setUserSubscription(subscription.getUserSubscriptionType().getName());
+				}
+				
 				
 				if(subscription.getFromDate() != null) {
 					subscriptionDTO.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),subscription.getFromDate()));
@@ -353,8 +356,14 @@ public class RegistrationRestController {
 		OrgLicenseSubscriptionDTO subscriptionDTO = new OrgLicenseSubscriptionDTO();
 		subscriptionDTO.setSubscriptionType(subscription.getSubscriptionType().getId().toString());
 		subscriptionDTO.setCountry(subscription.getCountry());
-		subscriptionDTO.setStorageType(subscription.getStorageSubscriptionType().getId().toString());
-		subscriptionDTO.setUserSubscription(subscription.getUserSubscriptionType().getId().toString());
+		if(subscription.getStorageSubscriptionType() != null) {
+			subscriptionDTO.setStorageType(subscription.getStorageSubscriptionType().getId().toString());
+		}
+		
+		if(subscription.getUserSubscriptionType() != null) {
+			subscriptionDTO.setUserSubscription(subscription.getUserSubscriptionType().getId().toString());
+		}
+		
 		if(subscription.getTimezone() != null) {
 			subscriptionDTO.setTimezone(subscription.getTimezone().getId().toString());
 		}
@@ -373,9 +382,12 @@ public class RegistrationRestController {
 			if(subscription.getCountry().equalsIgnoreCase("United States")) {
 				subscriptionDTO.setInvoiceAmount(subscription.getInvoiceAmount());
 			}else {
-				Double invoiceAmount = conversionUtil.currencyConvert(subscription.getCurrency(), "USD" ,subscription.getInvoiceAmount());
-				DecimalFormat df = new DecimalFormat(".##");
-				subscriptionDTO.setInvoiceAmount(Double.valueOf(df.format(invoiceAmount)));
+				if(subscription.getInvoiceAmount() != null) {
+					Double invoiceAmount = conversionUtil.currencyConvert(subscription.getCurrency(), "USD" ,subscription.getInvoiceAmount());
+					DecimalFormat df = new DecimalFormat(".##");
+					subscriptionDTO.setInvoiceAmount(Double.valueOf(df.format(invoiceAmount)));
+				}
+				
 			}
 		}else {
 			subscriptionDTO.setInvoiceAmount(0d);

@@ -30,6 +30,8 @@ public interface TabsDao {
 	Collection<Tabs> getAllTabsList() throws Exception;
 	
 	List<Tabs> getClildTabsListByTabId(Long tabId) throws Exception;
+	
+	List<Tabs> getTabListByActionsIds(List<Long> actionIdsList) throws Exception;
 
 	
 }

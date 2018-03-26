@@ -243,26 +243,12 @@ public class RegistrationController {
 		    	if(null != org){
 			    	org.setOrgType("Company");
 			    	
-			    	List<Integer> moduleIds = new ArrayList<Integer>();
+			    /*	List<Integer> moduleIds = new ArrayList<Integer>();
 					 for (String s : orgLocations.getModulesId().split(",")){
 						 moduleIds.add(Integer.parseInt(s));
 					 }
 					 
-			    	/*if("ATS".equalsIgnoreCase(respondingOrgType)){
-			    		flag = moduleIds.contains(Constants.MODULE_ATS);
-			    		moduleId = (long) Constants.MODULE_ATS;
-			    		if(flag == false){
-			    			modules = modules+","+Constants.MODULE_ATS;
-			    			saveUserRoleActions(moduleId,orgLocations);
-			    		}
-			    		
-			    		boolean tsflag = moduleIds.contains(Constants.MODULE_TIMESHEET);
-			    		if(tsflag == false) {
-		    				modules = modules+","+Constants.MODULE_TIMESHEET;
-		    				saveUserRoleActions(tsModuleId,orgLocations);
-		    			}
-			    		
-			    	}else*/ 
+			    	
 					 
 					 if("VMS".equalsIgnoreCase(respondingOrgType)){
 			    		flag = moduleIds.contains(Constants.MODULE_VMS);
@@ -277,12 +263,12 @@ public class RegistrationController {
 		    				modules = modules+","+Constants.MODULE_TIMESHEET;
 		    				saveUserRoleActions(tsModuleId,orgLocations);
 		    			}
-			    	}
+			    	}*/
 			    	
 			    	org.setStatus(Status.ACTIVE);
 					orgService.updateOrg(org);
 					
-					orgLocations.setModulesId(modules);
+					//orgLocations.setModulesId(modules);
 					if(!isNullOrEmpty(spocUUID)){
 						OrgSpoc orgSpoc = orgSpocService.getSpocBySpocUUID(spocUUID);
 						if(null != orgSpoc){

@@ -622,7 +622,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 			
 			vendorOrg.setOrgType("Company");
 			
-			List<Integer> moduleIds = new ArrayList<Integer>();
+			/*List<Integer> moduleIds = new ArrayList<Integer>();
 			 for (String s : vendorOrgLocations.getModulesId().split(",")){
 				 moduleIds.add(Integer.parseInt(s));
 			 }
@@ -642,7 +642,8 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
     				saveUserRoleActions(tsModuleId,vendorOrgLocations);
     			}
 	    		
-	    		vendorOrgLocations.setModulesId(modules);
+	    		vendorOrgLocations.setModulesId(modules);*/
+			
 	    		vendorOrg.setStatus(Status.ACTIVE);
 				orgService.updateOrg(vendorOrg);
 				vendorOrgLocations.setUser(user);

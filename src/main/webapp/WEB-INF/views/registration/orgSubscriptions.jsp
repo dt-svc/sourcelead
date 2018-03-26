@@ -52,6 +52,7 @@ function addSubscription(licenseUUID){
 	 	result = result +'		<c:forEach var="subscriptionType" items="${subscriptionTypeList}">';
 	 	result = result + '       <option value="${subscriptionType.id}">${subscriptionType.name}</option>';
 	    result = result +'		</c:forEach>';
+		result = result + '       <option value="8048" id="guestOpt" style="display:none">Guest</option>';
 	    result = result + '    </select>';
 		
 		result = result +'</div>';
@@ -389,14 +390,36 @@ function orgSubscriptionList(){
 	                     
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
+	                    	 
+	                    	 var userSubscription = '';
+	                    	 var invoiceAmount = '';
+	                    	 var toDateStr = '';
+	                    	 
+	                    	 if(opt.userSubscription != null && opt.userSubscription != '' && opt.userSubscription != 'undefined'){
+	                    		 userSubscription =  opt.userSubscription
+	                    	 }else{
+	                    		 userSubscription = '----';
+	                    	 }
+	                    	 
+	                    	 if(opt.invoiceAmount != null && opt.invoiceAmount != '' && opt.invoiceAmount != 'undefined'){
+	                    		 invoiceAmount =  opt.currency+" "+opt.invoiceAmount
+	                    	 }else{
+	                    		 invoiceAmount = '----';
+	                    	 }
+	                    	 
+	                    	 if(opt.toDateStr != null && opt.toDateStr != '' && opt.toDateStr != 'undefined'){
+	                    		 toDateStr =  opt.toDateStr
+	                    	 }else{
+	                    		 toDateStr = '----';
+	                    	 }
 	               
 	                    	 result = result +'<tr>';
 	                    	 result = result +'<td><a href="#"><div class="tbldata-dotdot-100" title='+opt.country+' onclick="addSubscription(\''+opt.licenseUUID+'\');">'+opt.country+'</div></a></td>';
 	                    	 result = result +'<td><div class="tbldata-dotdot-80" title='+opt.subscriptionType+'>'+opt.subscriptionType+'</div></td>';
-	                    	 result = result +'<td><div class="tbldata-dotdot_80" title='+opt.userSubscription+'>'+opt.userSubscription+'</div></td>';
-	                    	 result = result +'<td><div class="tbldata-dotdot-80" title='+opt.currency+' '+opt.invoiceAmount+'>'+opt.currency+' '+opt.invoiceAmount+'</div></td>';
+	                    	 result = result +'<td><div class="tbldata-dotdot_80" title='+userSubscription+'>'+userSubscription+'</div></td>';
+	                    	 result = result +'<td><div class="tbldata-dotdot-80" title='+invoiceAmount+'>'+invoiceAmount+'</div></td>';
 	                    	 result = result +'<td><div class="tbldata-dotdot-80" title='+opt.fromDateStr+'>'+opt.fromDateStr+'</div></td>';
-	                    	 result = result +'<td><div class="tbldata-dotdot-80" title='+opt.toDateStr+'>'+opt.toDateStr+'</div></td>';
+	                    	 result = result +'<td><div class="tbldata-dotdot-80" title='+toDateStr+'>'+toDateStr+'</div></td>';
 	                    	 result = result +'<td><div class="tbldata-dotdot-80" title='+opt.storageType+'>'+opt.storageType+'</div></td>';
 	                    	 
 	                 	    result = result +'<td>';
@@ -443,15 +466,35 @@ function licenseSubscriptionDetails(licenseUUID){
 		  url: sourceleadUrl+"/getLocationSubscriptionDetails?${_csrf.parameterName}=${_csrf.token}&licenseUUID="+licenseUUID,
            success :function(json) {
         	  getSubscribeCountries(json.country);
-        	 $("select[name=subscriptionType]").val(json.subscriptionType);
-        	 $("select[name=userSubscription]").val(json.userSubscription);
+        	 
+        	  
+        	  if(json.subscriptionType == '8048'){
+        		  document.getElementById("guestOpt").style.display="";
+        	  }
+        	  
+        	  $("select[name=subscriptionType]").val(json.subscriptionType);
+        	
+        	 if(json.userSubscription != null && json.userSubscription != '' && json.userSubscription != 'undefined'){
+        		 $("select[name=userSubscription]").val(json.userSubscription);
+        	 }
+        	 
+        	 
         	 $("select[name=storageType]").val(json.storageType);
         	 getTimezonesList(); 
-        	 $("select[name=timezone]").val(json.timezone);
-	         $("#timeZone").trigger("chosen:updated");
+        	
+        	 if(json.timezone != null && json.timezone != '' && json.timezone != 'undefined'){
+        		 $("select[name=timezone]").val(json.timezone);
+    	         $("#timeZone").trigger("chosen:updated");
+        	 }
+        	
 	         $("input[name=subscriptionDate]").val(json.fromDateStr);
 	         
-	         $("#subscriptionRate").html(json.invoiceAmount);
+	         if(json.invoiceAmount != null && json.invoiceAmount != '' && json.invoiceAmount != 'undefined'){
+	        	 $("#subscriptionRate").html(json.invoiceAmount);
+	         }else{
+	        	 $("#subscriptionRate").html("0");
+	         }
+	         
 	         
 	        	 for(var i=0; i<json.modulesIdsList.length; i++){
 	        		var opt = json.modulesIdsList[i];

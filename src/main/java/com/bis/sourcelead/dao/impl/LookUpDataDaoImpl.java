@@ -58,7 +58,7 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
 	@Transactional
 	public List<LookUpData> getLookUpDataByCategory(String category) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-	    String query = "from LookUpData lookupdata where lookupdata.category = :category ";
+	    String query = "from LookUpData lookupdata where lookupdata.category = :category and lookupdata.name <> 'Guest' ";
 	    List<LookUpData> educationsList = session.createQuery(query.toString()).setString("category", category).list();
       
 	    return educationsList;
