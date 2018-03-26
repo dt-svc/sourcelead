@@ -50,7 +50,8 @@ public class SourceleadFormSectionsServiceImpl  implements SourceleadFormSection
 		return sectionDTOlist;
 	}
 
-	private SourceleadSectionDTO sourceleadFormSectionsDTOConverter(SourceleadFormSections slFormSections,List<SourceleadFormFields> fieldsList,List<OrglocationFormFields> customFieldsList) {
+	@Override
+	public SourceleadSectionDTO sourceleadFormSectionsDTOConverter(SourceleadFormSections slFormSections,List<SourceleadFormFields> fieldsList,List<OrglocationFormFields> customFieldsList) {
 		SourceleadSectionDTO sectionDTO = new SourceleadSectionDTO();
 		sectionDTO.setId(slFormSections.getId());
 		if(slFormSections != null && slFormSections.getSourceleadActions() != null) {
@@ -72,7 +73,7 @@ public class SourceleadFormSectionsServiceImpl  implements SourceleadFormSection
 			
 		}
 		List<OrglocationFormFieldsDTO> customFieldsListDTO = new ArrayList<>();
-		if(fieldsList != null && !fieldsList.isEmpty()) {
+		if(customFieldsList != null && !customFieldsList.isEmpty()) {
 			for(OrglocationFormFields customList :customFieldsList) {
 				List<OrglocationFormSubFields> customFieldsubList = orglocationFormSubFieldsDao.getOrgCustomSufieldsBySectionId(customList.getId());
 				customFieldsListDTO.add(CustomFormFieldsDTOConverter(customList,customFieldsubList));
@@ -181,6 +182,7 @@ public class SourceleadFormSectionsServiceImpl  implements SourceleadFormSection
 
 	private SourceleadFormFieldsDTO sourceleadFormFieldsDTOConverter(SourceleadFormFields formFields) {
 		SourceleadFormFieldsDTO formfieldDTO = new SourceleadFormFieldsDTO();
+		formfieldDTO.setId(formFields.getId());
 		formfieldDTO.setFieldName(formFields.getFieldName());
 		formfieldDTO.setFieldDesc(formFields.getFieldDesc());
 		formfieldDTO.setFieldType(formFields.getFieldType());
@@ -189,22 +191,24 @@ public class SourceleadFormSectionsServiceImpl  implements SourceleadFormSection
 		formfieldDTO.setLabelName(formFields.getLabelName());
 		formfieldDTO.setPlaceHolder(formFields.getPlaceHolder());
 		
-		if(formfieldDTO.getFieldType().equalsIgnoreCase("TextBox")) {
-			formfieldDTO.setImagePathUrl("/resources/images/textfield.jpg");
-		}else if(formfieldDTO.getFieldType().equalsIgnoreCase("Date")) {
-			formfieldDTO.setImagePathUrl("/resources/images/datefield.jpg");
-		}else if(formfieldDTO.getFieldType().equalsIgnoreCase("SelectBox")) {
-			formfieldDTO.setImagePathUrl("/resources/images/selectfeild.jpg");
-		}else if(formfieldDTO.getFieldType().equalsIgnoreCase("Check Box")) {
-			formfieldDTO.setImagePathUrl("/resources/images/checkbox.jpg");
-		}else if(formfieldDTO.getFieldType().equalsIgnoreCase("radioButton")) {
-			formfieldDTO.setImagePathUrl("/resources/images/radio.jpg");
-		}else if(formfieldDTO.getFieldType().equalsIgnoreCase("textArea")) {
-			formfieldDTO.setImagePathUrl("/resources/images/text area.jpg");
-		}else if(formfieldDTO.getFieldType().equalsIgnoreCase("email")) {
-			formfieldDTO.setImagePathUrl("/resources/images/mailfield.jpg");
-		}else if(formfieldDTO.getFieldType().equalsIgnoreCase("location")) {
-			formfieldDTO.setImagePathUrl("/resources/images/location.jpg");
+		if(formfieldDTO.getFieldType() != null && StringUtils.isNotEmpty(formfieldDTO.getFieldType())) {
+			if(formfieldDTO.getFieldType().equalsIgnoreCase("TextBox")) {
+				formfieldDTO.setImagePathUrl("/resources/images/textfield.jpg");
+			}else if(formfieldDTO.getFieldType().equalsIgnoreCase("Date")) {
+				formfieldDTO.setImagePathUrl("/resources/images/datefield.jpg");
+			}else if(formfieldDTO.getFieldType().equalsIgnoreCase("SelectBox")) {
+				formfieldDTO.setImagePathUrl("/resources/images/selectfeild.jpg");
+			}else if(formfieldDTO.getFieldType().equalsIgnoreCase("Check Box")) {
+				formfieldDTO.setImagePathUrl("/resources/images/checkbox.jpg");
+			}else if(formfieldDTO.getFieldType().equalsIgnoreCase("radioButton")) {
+				formfieldDTO.setImagePathUrl("/resources/images/radio.jpg");
+			}else if(formfieldDTO.getFieldType().equalsIgnoreCase("textArea")) {
+				formfieldDTO.setImagePathUrl("/resources/images/text area.jpg");
+			}else if(formfieldDTO.getFieldType().equalsIgnoreCase("email")) {
+				formfieldDTO.setImagePathUrl("/resources/images/mailfield.jpg");
+			}else if(formfieldDTO.getFieldType().equalsIgnoreCase("location")) {
+				formfieldDTO.setImagePathUrl("/resources/images/location.jpg");
+			}
 		}
 		
 		formfieldDTO.setSectionId(formFields.getSourceleadFormSections().getId());
@@ -213,5 +217,10 @@ public class SourceleadFormSectionsServiceImpl  implements SourceleadFormSection
 			formfieldDTO.setIsFieldRequired(formFields.getIsFieldRequired());
 		}
 		return formfieldDTO;
+	}
+
+	@Override
+	public List<SourceleadFormFields> getSourceleadSectionDetailsById(Long section,Long sourceleadFormId, Long locationId) {
+		return sourceleadFormFieldsDao.getSourceleadSectionDetailsById(section,sourceleadFormId,locationId);
 	}
 }

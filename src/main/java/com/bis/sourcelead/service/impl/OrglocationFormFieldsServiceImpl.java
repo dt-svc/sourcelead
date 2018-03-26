@@ -69,10 +69,10 @@ public class OrglocationFormFieldsServiceImpl implements OrglocationFormFieldsSe
 		if(orgLocFormFieldsDTO.getValidationType()!= null && orgLocFormFieldsDTO.getValidationRange()!= null) {
 			StringBuilder validationBuilder = new StringBuilder();
 				switch (orgLocFormFieldsDTO.getValidationRange()) {
-				case "Length 2-200":
+				case "Length2-250":
 					validationBuilder.append("validate_length length2-250 ");
 					break;
-				case "Length 2-500":
+				case "Length2-500":
 					validationBuilder.append("validate_length length2-500 ");
 					break;
 				case "Length 500 Above":

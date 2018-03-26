@@ -2,6 +2,7 @@ package com.bis.sourcelead.dto;
 
 public class SourceleadFormFieldsDTO {
 
+	private Long Id;
 	private Long sectionId;
 	private String labelName;
 	private String fieldName;
@@ -15,6 +16,12 @@ public class SourceleadFormFieldsDTO {
 	private String imagePathUrl;
 	
 	
+	public Long getId() {
+		return Id;
+	}
+	public void setId(Long id) {
+		Id = id;
+	}
 	public Long getSectionId() {
 		return sectionId;
 	}
