@@ -783,7 +783,7 @@ public class ProjectsRestController {
 			notificationScenario.setBody(notificationBody);
 			//String url = null;
 			String actionLink = "";
-			emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getEmployee().getUser(), loginOrgLocation, notificationScenario);
+			emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getEmployee().getUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());
 		}
 	    
 	    

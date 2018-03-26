@@ -862,13 +862,13 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			 //calling the Notification 
 			 if(task.getAlertType().equalsIgnoreCase("Notification")){
 				 String actionLink="";
-				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(), task.getOwnerOrglocationId(), notificationScenario);
+				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(), task.getOwnerOrglocationId(), notificationScenario,new HashMap<String,String>());
 			 }
 			 //calling the Email  and notification 
 			 if(task.getAlertType().equalsIgnoreCase("Email,Notification")){
 				 emailScenerioUtil.sendEmail(emailMessage,task.getOwnerOrglocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
 				 String actionLink="";
-				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(),task.getOwnerOrglocationId(), notificationScenario);
+				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(),task.getOwnerOrglocationId(), notificationScenario,new HashMap<String,String>());
 			 }
 		 }
 

@@ -1046,7 +1046,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 				OrgLocations loginOrgLocation = new OrgLocations();
 			   loginOrgLocation.setLocationCode(emp.getOrgLocations().getLocationCode());
 			   loginOrgLocation.setOrg(emp.getOrgLocations().getOrg());
-			   emailScenerioUtil.sendNotification(actionLink, fromUser, toUser, loginOrgLocation, emailScenario);	
+			   emailScenerioUtil.sendNotification(actionLink, fromUser, toUser, loginOrgLocation, emailScenario,new HashMap<String,String>());	
 		}
 	}
 	
@@ -1080,7 +1080,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 						OrgLocations loginOrgLocation = new OrgLocations();
 					   loginOrgLocation.setLocationCode(emp.getOrgLocations().getLocationCode());
 					   loginOrgLocation.setOrg(emp.getOrgLocations().getOrg());
-					   emailScenerioUtil.sendNotification(actionLink, fromUser, toUser, loginOrgLocation, emailScenario);
+					   emailScenerioUtil.sendNotification(actionLink, fromUser, toUser, loginOrgLocation, emailScenario,new HashMap<String,String>());
 //		    	}
 		    }
 		}
@@ -1344,7 +1344,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		notificationScenario.setOrgCode(loginOrgCode);
 		//String url = null;
 		String actionLink = "";
-		emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, loginOrgLocation, notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, loginOrgLocation, notificationScenario,new HashMap<String,String>());
 	}
 	 
 	 
@@ -1416,7 +1416,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		notificationScenario.setOrgCode(loginOrgCode);
 		//String url = null;
 		String actionLink = "";
-		emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getUser(), loginOrgLocation, notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());
 	}
 	
 	@Override
@@ -2444,7 +2444,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				 //calling the sendEmail method of emailScenerioUtil
 				 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 				 String actionLink="";
-				 emailScenerioUtil.sendNotification(actionLink, loginUser, assUserName, orgLocations, notificationScenario);
+				 emailScenerioUtil.sendNotification(actionLink, loginUser, assUserName, orgLocations, notificationScenario,new HashMap<String,String>());
 				}
 			
 			

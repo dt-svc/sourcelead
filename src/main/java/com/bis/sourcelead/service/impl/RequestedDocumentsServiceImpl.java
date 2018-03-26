@@ -301,7 +301,7 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 		 StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
 	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("candidatesList?&candidateIdSearchId="+requestedDocuments.getCandidateId().getId()+"&candidateKeyword=requestedDocumentNotification").toString();
-		 emailScenerioUtil.sendNotification(actionLink, fromUser, requestedDocuments.getUserId(), requestedDocuments.getOrgLocationId(), notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, fromUser, requestedDocuments.getUserId(), requestedDocuments.getOrgLocationId(), notificationScenario,new HashMap<String,String>());
 	}
 
 	@Override

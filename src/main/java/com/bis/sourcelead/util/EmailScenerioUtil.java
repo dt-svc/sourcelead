@@ -1,7 +1,7 @@
 package com.bis.sourcelead.util;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
@@ -116,7 +115,7 @@ public EmailScenario validateEmailscenerioExists(String uniqueScenarioName,Strin
 	}
 
 
-public void sendNotification(String actionLink,User loginUser,User toUser, OrgLocations loginOrgLocation, EmailScenario emailScenario) throws Exception{
+public void sendNotification(String actionLink,User loginUser,User toUser, OrgLocations loginOrgLocation, EmailScenario emailScenario,HashMap<String,String> parameterList) throws Exception{
 	
 	//new Notification logic
 	Notifications notification = new Notifications();
