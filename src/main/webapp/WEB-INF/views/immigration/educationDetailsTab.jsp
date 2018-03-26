@@ -16,7 +16,7 @@
 				<th>Score Type</th>
 				<th>Institute/University</th>
 				<th>Address</th>
-				<th>&nbsp;</th>
+				<th>Action</th>
 			  </tr>
 			   <c:forEach var="eduItems" items="${candidatesEducationList}" varStatus="rows">
 			  <tr>
@@ -28,15 +28,10 @@
 				<td><div class="tbldata-dotdot-80">${eduItems.gradeType}</div></td>
 				<td><div class="tbldata-dotdot-vsm">${eduItems.institute}</div></td>
 				<td><div class="tbldata-dotdot-vsm">${eduItems.address}</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
+				<td><div><i id="edit" onclick="editEducationDEtailsByRowId(${eduItems.id});"
+				class="glyphicon glyphicon-pencil"></i><i id="delete" 
+				 onclick="deleteEDucationDetailsById(${eduItems.id});" 
+				 class="glyphicon glyphicon-trash ml10"></i></div></td>
 			  </tr>  			  			  
 			   </c:forEach>
 			  						
@@ -44,7 +39,7 @@
 		  </table>
 		</div>
 		
-		 <div class="immigraPagi clearfix">
+		<!--  <div class="immigraPagi clearfix">
 			<div class="immiPagiText">Showing 1 to 6 of 6 entries</div>
 			  <ul class="pagination">
 				<li><a href="#"> << </a></li>
@@ -53,7 +48,7 @@
 				<li class="disabled"><a href="#">6</a></li>
 				<li data-page="last"><a href="#"> >> </a></li>
 			  </ul>
-		</div> 
+		</div>  -->
 		
 		<!-- popup code start -->
 		<form id="eduSave_Form" name = "eduSave_Form" method = "post">
