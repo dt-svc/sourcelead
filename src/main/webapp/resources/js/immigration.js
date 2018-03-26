@@ -349,7 +349,39 @@ function Immigration() {
             }
         });
 	}
+	
+	
+	
 }
+
+function deleteEDucationDetailsById(id){
+	var candidateId = $("#candidateID").val();
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/deleteCandidateEduDetails?id="+id+"&candidateId="+candidateId,
+        type: "GET",
+        success: function (result) {
+        	if(result=='success'){
+        	  getCandidateEducationList(candidateId) //candidateId global variable
+        	     
+        	}
+        }
+    });
+}
+
+function deleteEmpDetailsById(id){
+	var candidateId = $("#candidateID").val();
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/deleteCandidateEmployerDetails?id="+id+"&candidateId="+candidateId,
+        type: "GET",
+        success: function (result) {
+        	if(result=='success'){
+        		getCandidateEmployerList(candidateId) //candidateId global variable
+        	     
+        	}
+        }
+    });
+}
+
 function validateTemplateName() {
     var templateName = document.getElementById("templateName").value.trim();
     if (templateName !== null && templateName !== "") {
@@ -446,7 +478,6 @@ function saveEmployerDetails(status) {
 }
 
 function getCandidateEducationList(candidateId){
-	console.log("ajith -->")
 	$.ajax({
         url: sourceleadUrl + immiModulePath + "/getCandidateEducationList?candidateId="+candidateId,
         type: "GET",

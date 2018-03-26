@@ -688,6 +688,28 @@ public class ImmigrationRestController {
 		return status;
 	}
 	
+	@RequestMapping(value = { "/deleteCandidateEduDetails" })
+	public String deleteCandidateEduDetails(
+			@RequestParam(value = "id", required = true) Long id, 
+			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		CandidateEducation  candidateEducation = candidateEducationService.removeCandidateEducationBycandidateIdandcandidateEducationId(candidateId, id, user, orgLocations);
+
+		return "success";
+	}
+	
+	@RequestMapping(value = { "/deleteCandidateEmployerDetails" })
+	public String deleteCandidateEmployerDetails(
+			@RequestParam(value = "id", required = true) Long id, 
+			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		CandidateEmployers  candidatesEmployer = candidateEmployersService.removeCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, id);
+
+		return "success";
+	}
+	
 	@RequestMapping(value = { "/getCandidateEducationList" })
 	public ModelAndView getCandidateEducationList(
 			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) throws Exception {

@@ -13,7 +13,7 @@
 				<th>Address</th>
 				<th>Start Date</th>
 				<th>End Date</th>
-				<th>&nbsp;</th>
+				<th>Action</th>
 			  </tr>
 			<c:forEach var="empItems" items="${candidatesEmployersList}" varStatus="rows">
 			  <tr>
@@ -22,7 +22,11 @@
 				<td><div class="tbldata-dotdot-me">${empItems.address}</div></td>
 				<td><div class="">${empItems.startMonth} ${empItems.startYear}</div></td>
 				<td><div class="">${empItems.endMonth} ${empItems.endYear}</div></td>
-				<td class="immigraAction">
+				<td><div><i id="edit" onclick="editEmpDetailsByRowId(${empItems.id});"
+				class="glyphicon glyphicon-pencil"></i><i id="delete" 
+				 onclick="deleteEmpDetailsById(${empItems.id});" 
+				 class="glyphicon glyphicon-trash ml10"></i></div></td>
+				<!-- <td class="immigraAction">
 					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
 					<div class="mmigraActionInn">
 						<span>
@@ -30,14 +34,14 @@
 							<a href="javascript:void(0)" class="fa fa-pencil"></a>
 						</span>
 					</div>
-				</td>
+				</td> -->
 			  </tr>  			  			  
 			  	</c:forEach>					
 			</tbody>
 		  </table>
 		</div>
 		
-		<div class="immigraPagi clearfix">
+		<!-- <div class="immigraPagi clearfix">
 			<div class="immiPagiText">Showing 1 to 6 of 6 entries</div>
 			  <ul class="pagination">
 				<li><a href="#"> << </a></li>
@@ -46,7 +50,7 @@
 				<li class="disabled"><a href="#">6</a></li>
 				<li data-page="last"><a href="#"> >> </a></li>
 			  </ul>
-		</div> 
+		</div>  -->
 		<!-- popup code start -->
 		<form name = "employerDetails_form" id = "employerDetails_form" method = "post">
 		<div class="popUpOut" id="emploView">
