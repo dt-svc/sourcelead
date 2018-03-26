@@ -190,6 +190,8 @@ function eduMsgFadeinFunction(message) {
 }
 	
 	function getMututalConnections(userId){
+		$.post("check-session", {}, function(data) {
+			if(data === "YES") {
 		 $.ajax({ 
 			type : "GET",
 			url : sourceleadUrl+"/getMututalConnections?${_csrf.parameterName}=${_csrf.token}&userId="+userId,
@@ -218,6 +220,10 @@ function eduMsgFadeinFunction(message) {
 	        	}
 	        }
 		});
+	}else {
+		location.href='/login';
+	}
+	});
 	}
 	$(".popClo").click(function(){
     	$("#popupMaskShade").hide();

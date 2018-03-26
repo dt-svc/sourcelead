@@ -194,6 +194,8 @@ var sentCount = 0;
 		}
 	
 	function getMututalConnections(userId){
+		$.post("check-session", {}, function(data) {
+			if(data === "YES") {
 		 $.ajax({ 
 			type : "GET",
 			url : sourceleadUrl+"/getMututalConnections?${_csrf.parameterName}=${_csrf.token}&userId="+userId,
@@ -221,6 +223,10 @@ var sentCount = 0;
 		        	$("#mutualConnDynamic").empty().append(mutualPopVal);
 	        	}
 	        }
+		});
+			}else {
+				location.href='/login';
+			}
 		});
 	}
 	$(".popClo").click(function(){
