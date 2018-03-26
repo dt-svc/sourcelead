@@ -22,8 +22,8 @@
 				<th class="tblminwidth-100">Required ?</th>
 				<th class="tblminwidth-150">PlaceHolder</th>
 				<th class="tblminwidth-75">Status</th>
-				<th>Description</th>
-				<th class="tblminwidth-150">Tool Tip</th>
+				<!-- <th>Description</th>
+				<th class="tblminwidth-150">Tool Tip</th> -->
 				
 				
 			  </tr>
@@ -31,7 +31,7 @@
 					  <tr>
 						<td class="cusFielAction">
 						   <div>
-							<i class="fa fa-eye"></i>
+							<i class="fa fa-eye" onclick="viewSectionFileDetails(${section.id},${fieldValue.id},'SourceleadSummary');"></i>
 				            </div>
 				        </td>
 						<td><div class="tblminwidth-150">${fieldValue.labelName}</div></td>
@@ -39,13 +39,15 @@
 						<td><div class="tblminwidth-30">${fieldValue.isFieldRequired == '0'? 'No':'Yes'}</div></td>
 						<td><div class="tblminwidth-150">${fieldValue.placeHolder}</div></td>
 						<td><div class="tblminwidth-75">${fieldValue.fieldstatus == '0'? 'InActive':'Active'}</div></td>
-						<c:if test="${!empty fieldValue.fieldDesc}">
+						
+						
+						<%-- <c:if test="${!empty fieldValue.fieldDesc}">
 							<td><div class="showmore tblminwidth-150">${fieldValue.fieldDesc}</div></td>
 						</c:if>
 						<c:if test="${empty fieldValue.fieldDesc}">
 							<td><div class="showmore tblminwidth-150 text-center">--</div></td>
 						</c:if>
-						<td><div class="showmore tblminwidth-150">${fieldValue.labelInfo}</div></td>
+						<td><div class="showmore tblminwidth-150">${fieldValue.labelInfo}</div></td> --%>
 						
 					  </tr>
 			    </c:forEach>
@@ -60,11 +62,24 @@
  </c:forEach>
 
 <div class="popMaskCustom popMask-zindex"></div>
-<div class="cusFielPopup cusFiel-popup " id="popUpDataCustom">
+<div id="popUpDataCustom">
   <jsp:include page="addCustomPopUp.jsp"></jsp:include>
 </div> 
  
- 
+<script>
+function viewSectionFileDetails(sectionId,sourceleadFormId,type){
+	$.ajax({
+		 type : "POST",
+		 url : sourceleadUrl+"/getSourceleadSectionDetailsById?&SectionId="+sectionId+"&sourceleadFormId="+sourceleadFormId+"&type="+type,
+		 	 	success : function(data) {
+		 	 		$("#popUpDataCustom").empty();
+			        $("#popUpDataCustom").append(data);
+			        addFieldPopUp(sectionId);			        
+		},
+	});
+}
+</script> 
+
  <script>
   function addOption(){
 	  var optionCounter = $("#optionCounter").val();
@@ -175,14 +190,14 @@ function getSelectedFieldDetails(){
 		$("#optionDiv"+i).remove();
 	}
 	 var field = $('#fieldsDropDown').val();
-	 if(field == 'selectfield' || field == 'checkBox' || field == 'radioButton'){
+	 if(field == 'selectBox' || field == 'CheckBox' || field == 'radioButton'){
 		 $('#selectFieldDiv').show();
 		 $('#textBoxDiv').hide();
-		 if(field == 'selectfield'){
+		 if(field == 'selectBox'){
 			 $("#selectFieldDiv p:contains('Choices')").html("Options");
 			 $("#addOptionDiv p:contains('Add Choice')").html("Add Option");
 			
-		 }else if(field == 'checkBox' || field == 'radioButton'){
+		 }else if(field == 'CheckBox' || field == 'radioButton'){
 			 $("#selectFieldDiv p:contains('Options')").html("Choices");
 			 $("#addOptionDiv p:contains('Add Option')").html("Add Choice");
 		 }
@@ -196,7 +211,7 @@ function getSelectedFieldDetails(){
 		 $('#selectOptionId').attr("data-validation-optional","true");
 	 }
 	 
-	 if(field == 'datefield'){
+	 if(field == 'Date'){
 		 $('#selectFieldDiv').hide();
 		 $('#dateFieldDiv').show();
 		 $( "#datepicker" ).datepicker();

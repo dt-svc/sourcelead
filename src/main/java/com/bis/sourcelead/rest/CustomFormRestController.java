@@ -109,6 +109,20 @@ public class CustomFormRestController {
     	return model;
     }
 	 
+    
+    @RequestMapping(value = "/getSourceleadSectionDetailsById",  method = RequestMethod.POST)
+    public  ModelAndView getSourceleadSectionDetailsById(@RequestParam(value="SectionId", required=true) Long section,@RequestParam(value="sourceleadFormId",required=true)Long sourceleadFormId,@RequestParam(value="type",required = true)String type,HttpServletRequest request) throws Exception {
+    	ModelAndView model = new ModelAndView();
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<SourceleadFormFields> sectionsList  = sourceleadFormSectionsService.getSourceleadSectionDetailsById(section,sourceleadFormId,orgLocation.getId());
+		SourceleadSectionDTO sections = sourceleadFormSectionsService.sourceleadFormSectionsDTOConverter(sectionsList.get(0).getSourceleadFormSections(), sectionsList, null);
+		model.addObject("SourceleadFormViewData",sections);
+		model.addObject("type",type);
+    	model.setViewName("customForms/customFormSections");
+    	return model;
+    }
+    
+    
     @RequestMapping(value = "/getFormFeildsBySectionId",  method = RequestMethod.POST)
     public @ResponseBody List<SourceleadFormFields> getFormFieldsBySectionId(@RequestParam(value="sectionId", required=true) Long sectionId) throws Exception {
     	List<SourceleadFormFields> fromFeilds  = sourceleadFormFieldsService.getAllFormFieldsBySectionId(sectionId);
