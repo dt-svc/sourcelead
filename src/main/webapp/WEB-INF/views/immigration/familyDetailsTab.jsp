@@ -31,7 +31,7 @@
 				<td><div class="tbldata-dotdot-vsm"><fmt:formatDate value="${items.dateOfBirth}" pattern="MM/dd/yyyy" /></div></td>
 				<td><div class="tbldata-dotdot-vsm">${items.placeOfBirth}</div></td>
 				<td><div class="tbldata-dotdot-me">${items.currentAddress}</div></td>
-				<td><div><i id="edit" onclick="immigration.editFamilyDetailsByRowId(${items.id});"
+				<td><div><i id="edit" onclick="immigration.editFamilyDetailsById(${items.id},'${items.relation}');"
 				class="glyphicon glyphicon-pencil"></i><i id="delete" 
 				 onclick="immigration.deleteFamilyDetailsById(${items.id});" 
 				 class="glyphicon glyphicon-trash ml10"></i></div></td>

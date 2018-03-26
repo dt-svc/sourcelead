@@ -271,5 +271,19 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		
 		return passportvisaList;
 	}
-
+    @Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateFamilyDetails getCandidateFamilyDetailsById(Long id) {
+		System.out.println("get CandidateFamilyDetails id ---> "+id);
+		CandidateFamilyDetails familyObj= null;
+        try {
+			Session session = this.sessionFactory.getCurrentSession();
+			familyObj = (CandidateFamilyDetails)session.get(CandidateFamilyDetails.class,id);
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing getting record -->"+e.getMessage());
+			e.printStackTrace();
+		}
+        System.out.println("got the record id -->"+ id);
+		return familyObj;
+	}
 }
