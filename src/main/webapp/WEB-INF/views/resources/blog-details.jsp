@@ -78,12 +78,18 @@
 	        </div>                      
         </div>
         
+        
+        
         <form:form id="blog_subscription_form" name="blog_subscription_form" method="post">
        		<div class="subscribe">
 			<input type="text" class="form-control" name="email" id="email" placeholder="Subscribe News Letter" field-name="Email"
 								data-validation="required validate_Space validate_length length2-100 validate_email">
-			<input type="button" value="Subscribe" class="btn btn-danger pull-right" id="save" onclick="saveBlogSubscription(${blogDetails.id});">
+			<input type="button" value="Subscribe" class="btn btn-danger pull-right" id="saveSubscription" onclick="saveBlogSubscription(${blogDetails.id});">
   			</div>
+  			<div class="clearfix"></div>
+  			 <div class="success_pop text-success text-center panel-heading bg-success" id="selector4" style="display: none;"> 
+		     <i class="fa fa-check-circle mr"></i><span id="subMsgDiv"></span> 
+		   </div>
   	   </form:form>		
     </div>
 
@@ -114,14 +120,14 @@
 function saveBlogSubscription(blogId){
 	var sleadUrl = '${sleadUrl}';
 	if ($('#blog_subscription_form').validate(false, validationSettings)) {
-		
 	  	var formData = $($('#blog_subscription_form')[0]).serialize();
-	  	
-		$("#blogLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#blogSubLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.post(sleadUrl+"/addBlogSubscription?blogId="+blogId, formData, function(data) {
-			if(data == true){
-				location.replace(sourceleadUrl+ "/blog/${all.href}.html");
-			}
+			$("#email").val('');
+			$("#selector4").removeAttr("style");
+   			$("#selector4").css({ display: "block" });
+   			$("#subMsgDiv").html("Great ! you have successfully subscribed");
+   			subscriptionMsgFadeinFunction();
 		}); 
 		return true;
 		} else {
@@ -135,6 +141,14 @@ $('body').on('blur', '#blog_subscription_form', function() {
 	$("#blog_subscription_form").validateOnBlur(false, validationSettings);
 });
 </script>
+
+<script>
+	function subscriptionMsgFadeinFunction() {
+		$("#selector4").fadeIn(200);
+        $('#selector4').delay(2000).fadeOut('slow');
+	}
+</script>
+
 <jsp:include page="../staticFooter.jsp" />
 
 <script type="text/javascript" src="http://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5a60382a93e935c2"></script>
