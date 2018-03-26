@@ -21,9 +21,9 @@
 				<td><div class="tbldata-dotdot-sm">${empItems.name}</div></td>
 				<td><div class="">DFDD551</div></td>
 				<td><div class="tbldata-dotdot-sm">${empItems.designation}</div></td>
-				<td><div class="tbldata-dotdot-me">Address text</div></td>
-				<td><div class="">MM/YYYY</div></td>
-				<td><div class="">MM/YYYY</div></td>
+				<td><div class="tbldata-dotdot-me">${empItems.address}</div></td>
+				<td><div class="">${empItems.startMonth} ${empItems.startYear}</div></td>
+				<td><div class="">${empItems.endMonth} ${empItems.endYear}</div></td>
 				<td class="immigraAction">
 					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
 					<div class="mmigraActionInn">
@@ -39,7 +39,7 @@
 		  </table>
 		</div>
 		
-		<!-- <div class="immigraPagi clearfix">
+		<div class="immigraPagi clearfix">
 			<div class="immiPagiText">Showing 1 to 6 of 6 entries</div>
 			  <ul class="pagination">
 				<li><a href="#"> << </a></li>
@@ -48,13 +48,13 @@
 				<li class="disabled"><a href="#">6</a></li>
 				<li data-page="last"><a href="#"> >> </a></li>
 			  </ul>
-		</div> -->
+		</div> 
 		<!-- popup code start -->
 		<form name = "employerDetails_form" id = "employerDetails_form" method = "post">
 		<div class="popUpOut" id="emploView">
 		
 		<div class="popupHead">
-			<h2>Add Employee</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+			<h2>Add Employee</h2><a href="javascript:void(0)" class="fa fa-close popCan" onClick="popFun();"></a>
 		</div>
 		
 		<div class="popupMid clearfix overflow_inherint">
@@ -143,19 +143,22 @@
 		
 		<div class="immiPopFoot">
             <input value="Save"class="" type="button" id = "save_Buton" onclick="saveEmployerDetails('save');"> 
-            <input value="Cancel" id = "cancel_button" class="popCan" type="button">
+            <input value="Cancel" id = "cancel_button" class="popCan" type="button" onClick="popFun();">
           </div>		
 	</div><!-- popup code end -->
 	</form>
 	
 		
-		<script>
-		// Add Employee PopUp
-		$("#addEmpl").click(function(){
-			$(".popMask").fadeIn(200);
-			$("#emploView").fadeIn(100);
-		});
-		
-		</script>
-		
+<script>
+	// Add Employee PopUp
+	$("#addEmpl").click(function(){
+		$(".popMask").fadeIn(200);
+		$("#emploView").fadeIn(100);
+	});
+
+	function popFun() {
+		$(".popMask").fadeOut(200);
+		$("#emploView").fadeOut(200);
+	}
+</script>	
 		
