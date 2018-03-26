@@ -29,6 +29,9 @@ public class BlogSubscription {
 	@DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss")
     @Column(name = "CREATED_DATE", nullable = false)
 	private Date createdDate;
+	
+	@Column(name = "SUBSCRIPTION_UUID")
+	private String subscriptionUUID;
 
 	public Long getId() {
 		return id;
@@ -60,6 +63,14 @@ public class BlogSubscription {
 
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
+	}
+
+	public String getSubscriptionUUID() {
+		return subscriptionUUID;
+	}
+
+	public void setSubscriptionUUID(String subscriptionUUID) {
+		this.subscriptionUUID = subscriptionUUID;
 	}
 	
 }

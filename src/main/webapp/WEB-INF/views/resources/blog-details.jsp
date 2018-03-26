@@ -81,10 +81,10 @@
         
         
         <form:form id="blog_subscription_form" name="blog_subscription_form" method="post">
-       		<div class="subscribe">
+       		<div class="subscribe" id="emailDiv">
 			<input type="text" class="form-control" name="email" id="email" placeholder="Subscribe News Letter" field-name="Email"
-								data-validation="required validate_Space validate_length length2-100 validate_email">
-			<input type="button" value="Subscribe" class="btn btn-danger pull-right" id="saveSubscription" onclick="saveBlogSubscription(${blogDetails.id});">
+								data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateBlogSubscriptionEmail();">
+			<input type="button" value="Subscribe" class="btn btn-danger pull-right" id="saveSubscription" onclick="saveBlogSubscription(${blogDetails.id});" >
   			</div>
   			<div class="clearfix"></div>
   			 <div class="success_pop text-success text-center panel-heading bg-success" id="selector4" style="display: none;"> 
@@ -148,6 +148,35 @@ $('body').on('blur', '#blog_subscription_form', function() {
         $('#selector4').delay(2000).fadeOut('slow');
 	}
 </script>
+
+<script>
+function validateBlogSubscriptionEmail(){
+	/* if(subscriptionUUID != null && subscriptionUUID != "" && subscriptionUUID != "undefined"){
+		subscriptionUUID = subscriptionUUID;
+	}else{
+		subscriptionUUID = "";
+	} */
+	var email = $('#email').val(); 
+	$('#emailDiv').find('p.jquery_form_error_message').remove();
+	$.ajax({
+			type : "POST",
+			url : sourceleadUrl + "/validateBlogSubscriptionEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&subscriptionUUID="+subscriptionUUID,
+			success : function(data) {
+				if(data == true){
+	        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
+					  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+					  document.getElementById("email").setAttribute('record-exist','yes');
+					  document.getElementById("email").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
+	        	}
+	        	else{
+	        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+	        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+	        	}
+			},
+		});
+	 
+}
+</script>  
 
 <jsp:include page="../staticFooter.jsp" />
 
