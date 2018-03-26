@@ -1,3 +1,4 @@
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <div class="immigraTabsHead">
 		  	<a href="javascript:void(0)" id="addResi"><i class="glyphicon glyphicon-plus"></i> Add Residence</a> 
 		  	<span><input class="immigraTabSerach" type="text"></span>
@@ -7,18 +8,19 @@
 		  <table>
 			<tbody>
 			  <tr>
-				<th>Residence</th>
+				<th>Location</th>
 				<th>Country</th>
 				<th>From</th>
 				<th>To</th>
 				<th>&nbsp;</th>
 			  </tr>
+			  <c:forEach var="residitems" items="${candidatesResidenceList}" varStatus="rows"> 
 			  
 			  <tr>
-				<td><div class="tbldata-dotdot-big">Madhapur, Hyderabad</div></td>
-				<td><div class="tbldata-dotdot-vsm">India</div></td>
-				<td><div class="tbldata-dotdot-vsm">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-vsm">DD/MM/YY</div></td>
+				<td><div class="tbldata-dotdot-big">${residitems.location}</div></td>
+				<td><div class="tbldata-dotdot-vsm">ttt</div></td>
+				<td><div class="tbldata-dotdot-vsm">yyyy</div></td>
+				<td><div class="tbldata-dotdot-vsm">llll</div></td>
 				<td class="immigraAction">
 					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
 					<div class="mmigraActionInn">
@@ -29,13 +31,13 @@
 					</div>
 				</td>
 			  </tr>  			  			  
-			  
+			   
  
-			  						
+			  </c:forEach>  						
 			</tbody>
 		  </table>
 		</div>
-		
+		<!-- 
 		<div class="immigraPagi clearfix">
 			<div class="immiPagiText">Showing 1 to 6 of 6 entries</div>
 			  <ul class="pagination">
@@ -45,7 +47,8 @@
 				<li class="disabled"><a href="#">6</a></li>
 				<li data-page="last"><a href="#"> >> </a></li>
 			  </ul>
-		</div>
+		</div> -->
+		
 		<!-- popcode start -->
 		<form id ="residenceDetails_form" name = "residenceDetails_form" method = "Post">
 		<div class="popUpOut" id="popResiView">
@@ -110,13 +113,13 @@
            <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Start Date<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" name = "residenceStartDate" id = "residenceStartDate" field-name = "Start Date" data-validation="required" class="form-control calendar"/>
+              		<input type="text" name = "residenceStartDate" id = "residenceStartDate" field-name = "Start Date"  class="form-control calendar"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">End Date<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" name = "residenceEndDate" id = "residenceEndDate" field-Name = "End Date" data-validation="required" class="form-control calendar" />
+              		<input type="text" name = "residenceEndDate" id = "residenceEndDate" field-Name = "End Date"  class="form-control calendar" />
 				</div>
 			</div>	 								
 		</div>
@@ -130,7 +133,7 @@
 	</div>	<!-- popcode code End -->
 		</form>
 		
-		<script type="text/javascript">
+		 <!--   <script type="text/javascript">
 		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormatEduSave = getJSDateFormat(locationDate);
 		  
@@ -158,7 +161,7 @@
 		        }
 		  });
 		
-</script>
+</script>   -->
 		
 		
 		<script>
