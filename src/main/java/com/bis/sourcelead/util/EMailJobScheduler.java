@@ -288,15 +288,22 @@ public class EMailJobScheduler {
 	public void runJobSchedulerByWeekly() {
 		logger.info("******************  Notification Job Scheduler started..! **********");
 		try {
-			HashSet<ProjectMembers> ProjectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.WEEKLY);
-			if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
-				for(ProjectMembers projectMember : ProjectMembersList){
-					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
-					if("Admin".equalsIgnoreCase(userRole.getUserType()))
-						continue;
-					    sendCronRemainderForProjectMember(projectMember,userRole,Constants.WEEKLY);
+			List<Org> orgList = orgService.getOrgs();
+			for (Org org : orgList) {
+				List<OrgLocations> orgLocations = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
+				for (OrgLocations ol : orgLocations) {
+					HashSet<ProjectMembers> ProjectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.WEEKLY,ol.getId());
+					if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
+						for(ProjectMembers projectMember : ProjectMembersList){
+							UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(),ol.getId());
+							if("Admin".equalsIgnoreCase(userRole.getUserType()))
+								continue;
+							    sendCronRemainderForProjectMember(projectMember,ol,userRole,Constants.WEEKLY);
+						}
+					}
 				}
 			}
+			
 			
 		} catch (Exception e) {
 			logger.error("ERROR in " + e.getMessage());
@@ -311,15 +318,22 @@ public class EMailJobScheduler {
 	public void runJobSchedulerByBi_Weekly() {
 		logger.info("******************  Notification Job Scheduler Every two weeks started..! **********");
 		try {
-			HashSet<ProjectMembers> ProjectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.BI_WEEKLY);
-			if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
-				for(ProjectMembers projectMember : ProjectMembersList){
-					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
-					if("Admin".equalsIgnoreCase(userRole.getUserType()))
-						continue;
-					    sendCronRemainderForProjectMember(projectMember,userRole,Constants.BI_WEEKLY);
+			List<Org> orgList = orgService.getOrgs();
+			for (Org org : orgList) {
+				List<OrgLocations> orgLocations = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
+				for (OrgLocations ol : orgLocations) {
+					HashSet<ProjectMembers> ProjectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.BI_WEEKLY,ol.getId());
+					if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
+						for(ProjectMembers projectMember : ProjectMembersList){
+							UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
+							if("Admin".equalsIgnoreCase(userRole.getUserType()))
+								continue;
+							    sendCronRemainderForProjectMember(projectMember,ol,userRole,Constants.BI_WEEKLY);
+						}
+					}
 				}
 			}
+			
 			
 		} catch (Exception e) {
 			logger.error("ERROR in " + e.getMessage());
@@ -334,15 +348,21 @@ public class EMailJobScheduler {
 	public void runJobSchedulerBySemi_Monthly() {
 		logger.info("******************  Notification Job Scheduler Every 15 days in a month started..! **********");
 		try {
-				HashSet<ProjectMembers> ProjectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.SEMI_MONTHLY);
-				if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
-					for(ProjectMembers projectMember : ProjectMembersList){
-						UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
-						if("Admin".equalsIgnoreCase(userRole.getUserType()))
-							continue;
-						   sendCronRemainderForProjectMember(projectMember,userRole,Constants.SEMI_MONTHLY);
-						    
+			List<Org> orgList = orgService.getOrgs();
+			for (Org org : orgList) {
+				List<OrgLocations> orgLocations = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
+				for (OrgLocations ol : orgLocations) {
+					HashSet<ProjectMembers> ProjectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.SEMI_MONTHLY,ol.getId());
+					if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
+						for(ProjectMembers projectMember : ProjectMembersList){
+							UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
+							if("Admin".equalsIgnoreCase(userRole.getUserType()))
+								continue;
+							   sendCronRemainderForProjectMember(projectMember,ol,userRole,Constants.SEMI_MONTHLY);
+							    
+					}
 				}
+			  }
 			}
 		} catch (Exception e) {
 			logger.error("ERROR in " + e.getMessage());
@@ -356,24 +376,30 @@ public class EMailJobScheduler {
 	public void runJobSchedulerByMonthly() {
 		logger.info("******************  Notification Job Scheduler  Every month 30th started..! **********");
 		try {
-			HashSet<ProjectMembers> ProjectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.MONTHLY);
-			if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
-				for(ProjectMembers projectMember : ProjectMembersList){
-					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
-					if("Admin".equalsIgnoreCase(userRole.getUserType()))
-						continue;
-					sendCronRemainderForProjectMember(projectMember,userRole,Constants.MONTHLY);
+			List<Org> orgList = orgService.getOrgs();
+			for (Org org : orgList) {
+				List<OrgLocations> orgLocations = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
+				for (OrgLocations ol : orgLocations) {
+					HashSet<ProjectMembers> ProjectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.MONTHLY,ol.getId());
+					if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
+						for(ProjectMembers projectMember : ProjectMembersList){
+							UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
+							if("Admin".equalsIgnoreCase(userRole.getUserType()))
+								continue;
+							sendCronRemainderForProjectMember(projectMember,ol,userRole,Constants.MONTHLY);
+						}
+					}
 				}
 			}
+			
 		} catch (Exception e) {
 			logger.error("ERROR in " + e.getMessage());
 		}
     }
 	
 	@Async
-	private void sendCronRemainderForProjectMember(ProjectMembers projectMember,UserRole userRole,String frequency) throws Exception{
+	private void sendCronRemainderForProjectMember(ProjectMembers projectMember,OrgLocations orgLocations,UserRole userRole,String frequency) throws Exception{
 			String level ="";
-			OrgLocations orgLocations = orgLocationService.getOrgLocations(userRole.getOrgLocations().getId());
 			Map<String,String>  timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMember,orgLocations,"employeeScheduler");
 			LinkedHashMap<String,String> finalTFMap = new LinkedHashMap<>();
 			if(null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
@@ -398,7 +424,7 @@ public class EMailJobScheduler {
 				}
 			}
 			if(null != finalTFMap && !finalTFMap.isEmpty()){
-				projectsService.userEmailNotificationForTimeSheetSubmission(userRole.getUser(),userRole.getOrgLocations().getId(),finalTFMap,projectMember.getProjects(),level);	
+				projectsService.userEmailNotificationForTimeSheetSubmission(userRole.getUser(),orgLocations.getId(),finalTFMap,projectMember.getProjects(),level);	
 				logger.info("########## Mail Sent to: "+userRole.getUser().getEmail()+" ##########");
 			}
 			
@@ -702,7 +728,7 @@ public class EMailJobScheduler {
 									count++;
 						   }
 					    	
-					    	 HashSet<ProjectMembers> projectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(invoiceFrequency);
+					    	 HashSet<ProjectMembers> projectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(invoiceFrequency,ol.getId());
 							
 					    	 if(null != projectMembersList && !projectMembersList.isEmpty()){
 								for (ProjectMembers projectMembers : projectMembersList) {
