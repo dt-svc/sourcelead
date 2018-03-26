@@ -396,12 +396,12 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ResponseList<ProjectTasksDTO> getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(ProjectTasksDTO projectTasksDTO, Long projectId, String taskType, String taskStatus, String userRole,String assignedMembers) throws Exception {
+	public ResponseList<ProjectTasks> getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(ProjectTasksDTO projectTasksDTO, Long projectId, String taskType, String taskStatus, String userRole,String assignedMembers) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Long> countlist = null;
 		List<Long> teamsIdsList = null;
 		Integer filterCount = 0;
-		ResponseList<ProjectTasksDTO> response = new ResponseList<>();
+		ResponseList<ProjectTasks> response = new ResponseList<>();
 		 
 		StringBuilder query1 = new StringBuilder("");
 		if(projectTasksDTO.getSearchValue() !=null && !"".equalsIgnoreCase(projectTasksDTO.getSearchValue())) {
@@ -443,7 +443,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		}
 		
 		 Query query = session.createQuery(queryStr+subQueryStr+query1+sortingQry);
-		 List projectTasksList = null;
+		 List<ProjectTasks> projectTasksList = null;
 		 if(StringUtils.isNotEmpty(projectTasksDTO.getTeams())) {
 			 projectTasksList =query.setLong("projectId", projectId).setParameterList("teamsIdsList", teamsIdsList).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).list();
 		 
