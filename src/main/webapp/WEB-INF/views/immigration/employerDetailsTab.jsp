@@ -1,3 +1,4 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <div class="immigraTabsHead">
 		  	<a href="javascript:void(0)" id="addEmpl"><i class="glyphicon glyphicon-plus"></i> Add Employer</a> 
 		  	<span><input class="immigraTabSerach" type="text"></span>
@@ -15,10 +16,11 @@
 				<th>End Date</th>
 				<th>&nbsp;</th>
 			  </tr>
+			<c:forEach var="empItems" items="${candidatesEmployersList}" varStatus="rows">
 			  <tr>
-				<td><div class="tbldata-dotdot-sm">Business Intelli</div></td>
+				<td><div class="tbldata-dotdot-sm">${empItems.name}</div></td>
 				<td><div class="">DFDD551</div></td>
-				<td><div class="tbldata-dotdot-sm">UI Developer</div></td>
+				<td><div class="tbldata-dotdot-sm">${empItems.designation}</div></td>
 				<td><div class="tbldata-dotdot-me">Address text</div></td>
 				<td><div class="">MM/YYYY</div></td>
 				<td><div class="">MM/YYYY</div></td>
@@ -32,29 +34,12 @@
 					</div>
 				</td>
 			  </tr>  			  			  
-			  <tr>
-				<td><div class="tbldata-dotdot-sm">Business Intelli</div></td>
-				<td><div class="">DFDD551</div></td>
-				<td><div class="tbldata-dotdot-sm">UI Developer</div></td>
-				<td><div class="tbldata-dotdot-me">Address text</div></td>
-				<td><div class="">MM/YYYY</div></td>
-				<td><div class="">MM/YYYY</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
-			  </tr>   
-			  						
+			  	</c:forEach>					
 			</tbody>
 		  </table>
 		</div>
 		
-		<div class="immigraPagi clearfix">
+		<!-- <div class="immigraPagi clearfix">
 			<div class="immiPagiText">Showing 1 to 6 of 6 entries</div>
 			  <ul class="pagination">
 				<li><a href="#"> << </a></li>
@@ -63,7 +48,7 @@
 				<li class="disabled"><a href="#">6</a></li>
 				<li data-page="last"><a href="#"> >> </a></li>
 			  </ul>
-		</div>
+		</div> -->
 		<!-- popup code start -->
 		<form name = "employerDetails_form" id = "employerDetails_form" method = "post">
 		<div class="popUpOut" id="emploView">

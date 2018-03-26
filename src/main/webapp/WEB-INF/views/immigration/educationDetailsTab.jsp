@@ -18,11 +18,12 @@
 				<th>Address</th>
 				<th>&nbsp;</th>
 			  </tr>
+			   <c:forEach var="eduItems" items="${candidatesEducationList}" varStatus="rows">
 			  <tr>
-				<td><div class="tbldata-dotdot-vsm">Bachelor of Commerce</div></td>
-				<td><div class="tbldata-dotdot-vsm">----</div></td>
-				<td><div class="tbldata-dotdot_80">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-80">DD/MM/YY</div></td>
+				<td><div class="tbldata-dotdot-vsm">${eduItems.name}</div></td>
+				<td><div class="tbldata-dotdot-vsm">${eduItems.name}</div></td>
+				<td><div class="tbldata-dotdot_80">${eduItems.name}</div></td>
+				<td><div class="tbldata-dotdot-80">${eduItems.name}</div></td>
 				<td><div class="tbldata-dotdot-80">80</div></td>
 				<td><div class="tbldata-dotdot-80">Percentage</div></td>
 				<td><div class="tbldata-dotdot-vsm">----</div></td>
@@ -37,13 +38,13 @@
 					</div>
 				</td>
 			  </tr>  			  			  
-			   
+			   </c:forEach>
 			  						
 			</tbody>
 		  </table>
 		</div>
 		
-		<div class="immigraPagi clearfix">
+		<!-- <div class="immigraPagi clearfix">
 			<div class="immiPagiText">Showing 1 to 6 of 6 entries</div>
 			  <ul class="pagination">
 				<li><a href="#"> << </a></li>
@@ -52,7 +53,7 @@
 				<li class="disabled"><a href="#">6</a></li>
 				<li data-page="last"><a href="#"> >> </a></li>
 			  </ul>
-		</div>
+		</div> -->
 		
 		<!-- popup code start -->
 		<form id="eduSave_Form" name = "eduSave_Form" method = "post">

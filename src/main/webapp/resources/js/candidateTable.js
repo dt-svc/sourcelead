@@ -32,6 +32,12 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
            $("#canDiv").removeAttr("onClick");
        }
 	  
+ 	 var employmnetTypes = [];
+ 	 $('input:checkbox[name=employmentType]:checked').each(function() 
+      {
+ 		employmnetTypes.push($(this).val());
+ 	 });
+ 	
 	  
  	  var candTypeRadio = $('input[name=candidateType]');
  	  var candidateType = candTypeRadio.filter(':checked').val();
@@ -73,7 +79,7 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 	  		var formData = new FormData(form); 
 	  		var searchValue = $("#dataTableSearch").val();
 	  		searchValue = searchValue ? searchValue : "";
-	  		var url = sourceleadUrl+"/searchCandidate?"+_csrfParam+"="+_csrfToken+"&candidateStatus="+candidateStatus+"&searchValue="+searchValue+"&updatedDateRange="+upcandidateStatus+"&isAssociate="+isAssociate+"&candidateType="+candidateType;
+	  		var url = sourceleadUrl+"/searchCandidate?"+_csrfParam+"="+_csrfToken+"&candidateStatus="+candidateStatus+"&searchValue="+searchValue+"&updatedDateRange="+upcandidateStatus+"&isAssociate="+isAssociate+"&candidateType="+candidateType+"&employmnetTypes="+employmnetTypes;
 	  		url += "&"+$($('#candidatelist_form')[0]).serialize();
 	  		prepareCandidateList(url);
 	  		closePop();
