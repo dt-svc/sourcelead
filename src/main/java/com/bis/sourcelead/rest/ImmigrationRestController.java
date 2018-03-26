@@ -32,6 +32,8 @@ import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateEducation;
+import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
@@ -667,6 +669,28 @@ public class ImmigrationRestController {
 			e.printStackTrace();
 		}
 		System.out.println(" after getCandidateFamilyDetails controller -->");
+		return model;
+	}
+	
+	@RequestMapping(value = { "/getCandidateEducationList" })
+	public ModelAndView getCandidateEducationList(
+			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		model.setViewName("/immigration/educationDetailsTab");
+		 List<CandidateEducation>   candidatesEducationList = candidateEducationService.getCandidateEducationListByCandidateIdAndOrgLocationID(Long.valueOf(candidateId), orgLocations.getId());
+		model.addObject("candidatesEducationList",candidatesEducationList);
+		return model;
+	}
+	
+	@RequestMapping(value = { "/getCandidateEmployerList" })
+	public ModelAndView getCandidateEmployerList(
+			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		model.setViewName("/immigration/employerDetailsTab");
+		 List<CandidateEmployers>   candidatesEmployersList = candidateEmployersService.getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long.valueOf(candidateId), orgLocations.getId());
+		model.addObject("candidatesEmployersList",candidatesEmployersList);
 		return model;
 	}
 }

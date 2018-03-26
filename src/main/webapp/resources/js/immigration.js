@@ -50,8 +50,8 @@ function Immigration() {
     this.saveEducationImmigration = function (status) {
         if ($('#eduSave_Form').validate(false, validationSettings)) {
             var formData = getFormData("eduSave_Form");
-            var candidateId = $('#candidateId').val();
-            var immigrationId = $('#immigrationId').val();
+            var candidateId = $('#candidateID').val();
+            var immigrationId = $('#immigrationID').val();
             $.ajax({
                 url: sourceleadUrl + immiModulePath + "/saveEducationImmigrationDedtails?" + tokenParamName + "=" + tokenValue + "&candidateId=" + candidateId+"&immigrationId="+immigrationId,
                 type: "POST",
@@ -60,11 +60,7 @@ function Immigration() {
                     if (data == 'Success') {
                     	$('#popEduView').hide();
                     	$('.popMask').fadeOut();
-                        /*immTemplId = jsonObj.id;
-                        if (status == 'saveContinue') {
-                            $("#addNewPetitionTemplateDiv").empty();
-                            $("#addNewPetitionTemplateDiv").load(sourceleadUrl + immiModulePath + "/gotoTemplatePreviousPage?status=docDetails");
-                        }*/
+                    	getCandidateEducationList(candidateId);
 
                     }
                 }
@@ -424,13 +420,7 @@ function saveEmployerDetails(status) {
                 if (data == 'success') {
                 	$('#emploView').hide();
                 	$('.popMask').fadeOut();
-                    /*if (status == 'saveContinue') {
-                        $("#addNewPetitionTemplateDiv").empty();
-                        $("#addNewPetitionTemplateDiv").load(sourceleadUrl + immiModulePath + "/gotoTemplatePreviousPage?status=taskList");
-                    } else if (status == 'save') {
-                        $("#addNewPetitionTemplateDiv").empty();
-                        $("#addNewPetitionTemplateDiv").load(sourceleadUrl + immiModulePath + "/gotoTemplatePreviousPage?status=formDetails");
-                    }*/
+                	getCandidateEmployerList(candidateId);
                 }
             }
         });
@@ -442,6 +432,26 @@ function saveEmployerDetails(status) {
 	
 }
 
+function getCandidateEducationList(candidateId){
+	console.log("ajith -->")
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/getCandidateEducationList?candidateId="+candidateId,
+        type: "GET",
+        success: function (result) {
+            $("#educationsTab").html(result);
+        }
+    });
+}
+
+function getCandidateEmployerList(candidateId){
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/getCandidateEmployerList?candidateId="+candidateId,
+        type: "GET",
+        success: function (result) {
+            $("#employersTab").html(result);
+        }
+    });
+}
 
 function saveResidenceDetails(status) {
 	if ($('#residenceDetails_form').validate(false, validationSettings)) {

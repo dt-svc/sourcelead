@@ -153,6 +153,10 @@ $(document).ready(function() {
         $(".immigraTabs_inn").not(tab).css("display", "none");
         if(tab=='#familiesTab'){
         	immigration.displayFamilyDetails(candidateId);
+        }else if(tab=='#educationsTab'){
+        getCandidateEducationList(candidateId);
+        } else if(tab=='#employersTab'){
+        getCandidateEmployerList(candidateId);
         }
         $(tab).fadeIn();
     });
