@@ -250,7 +250,6 @@ function Immigration() {
     }
     
     this.savePassportVisaDetails= function(idType) {
-    	alert(idType+"hi")
     	var formId= "";
     	if(idType =="Passport"){
     			formId ="CandidatePassportform";
@@ -264,7 +263,6 @@ function Immigration() {
     		 	console.log(formData);
     		 	var candidateId = $('#candidateID').val();
                 var immigrationId = $('#immigrationId').val();
-                alert(candidateId+formId);
             $.ajax({
                 url: sourceleadUrl + immiModulePath + "/savePassportVisaDetailsPage?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId+"&idType="+idType,
                 type : "POST",
@@ -282,7 +280,71 @@ function Immigration() {
 			return false;
 		}
 	}
+   
+    this.savePassportVisaDetails= function(idType) {
+    	var formId= "";
+	if(idType =="Passport"){
+			formId ="CandidatePassportform";
+		}
+	 	else if(idType =="Visa"){
+  		formId ="CandidateVisaform";
+  		 	  	}
+	if ($('#'+formId).validate(false, validationSettings)) {
+			var formData = getFormData(formId);
+		    console.log(" inside function formId"+formId);
+		 	console.log(formData);
+		 	var candidateId = $('#candidateID').val();
+            var immigrationId = $('#immigrationId').val();
+            $.ajax({
+            url: sourceleadUrl + immiModulePath + "/savePassportVisaDetailsPage?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId+"&idType="+idType,
+            type : "POST",
+			data : formData,
+			success : function(data) {
+				console.log(" inside success function");
+				if (data == 'success') {
+                    console.log("data successfully saved for the candidate id "+templateId);
+                    if(idType=="Passport"){
+                    $(".popMask").fadeOut(200); // close the popup code
+                    $("#popPassView").fadeOut(100);// close the popup code
+    				immigration.displayPassportDetails(candidateId,idType);}
+    				else if(idType =="Visa"){
+    				$(".popMask").fadeOut(200); // close the popup code
+    				$("#popUpVisa").fadeOut(100);// close the popup code
+    				immigration.displayVisaDetails(candidateId,idType);}
+    					
+				}
+			}
+		});
+		return true;
+	} else {
+		return false;
+	}
+}
 
+ this.displayPassportDetails=function(candidateId,Passport){
+	console.log("inside displayPassportDetails function call  -->")
+	var Passport=document.getElementById("Passport").value;
+	    	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/getCandidatePassportVisaDetails?candidateId="+candidateId+ "&idType=" + Passport,
+        type: "GET",
+        success: function (result) {
+            $("#passportsTab").html(result);
+           
+        }
+    });
+}	
+this.displayVisaDetails=function(candidateId,Visa){
+	console.log("inside displayVisaDetails function call  -->")
+	var Visa=document.getElementById("Visa").value;
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/getCandidatePassportVisaDetails?candidateId="+candidateId+ "&idType=" + Visa,
+        type: "GET",
+        success: function (result) {
+            $("#visasTab").html(result);
+           
+        }
+    });
+}	
 
 
     this.saveCandidateFamilyDetails= function(relationType) {

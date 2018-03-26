@@ -41,6 +41,6 @@ public interface ImmigrationCommonDao {
 	
 	List<CandidateResidence> getCandidatesResidenceListByCandidateIdAndOrgLocationID(Long candidateId);
 
-
+	List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId,String idType);
 
 }

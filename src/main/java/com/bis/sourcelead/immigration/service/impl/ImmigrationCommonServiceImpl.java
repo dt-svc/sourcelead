@@ -529,5 +529,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
  public List<CandidateResidence> getCandidatesResidenceListByCandidateIdAndOrgLocationID(Long candidateId) {
  return immigrationCommonDao.getCandidatesResidenceListByCandidateIdAndOrgLocationID(candidateId);
  }	
-	
+	@Override
+	public List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId,String idType) {
+		// TODO Auto-generated method stub
+		return immigrationCommonDao.getCandidatePassportVisaDetails(candidateId,idType);
+	}	
 }

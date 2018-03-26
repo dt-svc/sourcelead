@@ -35,6 +35,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
+import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
@@ -746,6 +747,28 @@ public class ImmigrationRestController {
 		model.setViewName("/immigration/residenceDetailsTab");
 		 List<CandidateResidence>   candidatesResidenceList = immigrationCommonService.getCandidatesResidenceListByCandidateIdAndOrgLocationID(candidateId);
 		model.addObject("candidatesResidenceList",candidatesResidenceList);
+		return model;
+	}
+	@RequestMapping(value = { "/getCandidatePassportVisaDetails" })
+	public ModelAndView getCandidatePassportVisaDetails(@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request, @RequestParam(value = "idType", required = true) String idType)
+	{
+		ModelAndView model = new ModelAndView();
+		System.out.println(" inisde getCandidatePassportDetails controller test -->");
+		List<CandidatePassportVisa> PassportList = new ArrayList<CandidatePassportVisa>();
+		try {
+			PassportList = immigrationCommonService.getCandidatePassportVisaDetails(candidateId, idType);
+			model.addObject("PassportList", PassportList);
+		} catch (Exception e) {
+			logger.error("Exception caught in controller --->" + e.getMessage());
+			e.printStackTrace();
+		}
+		System.out.println(" after getCandidatePassportVisaDetails controller -->");
+		if (idType.equalsIgnoreCase("Passport")) {
+			model.setViewName("/immigration/passportDetailsTab");
+		}
+		else {
+			model.setViewName("/immigration/visaDetailsTab");
+		}
 		return model;
 	}
 }
