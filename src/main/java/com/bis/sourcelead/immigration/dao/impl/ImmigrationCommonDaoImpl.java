@@ -197,4 +197,24 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		
 		return candidateResidence;
 	}
+
+    @SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CandidateFamilyDetails> getCandidateFamilyDetails(Long candidateId) {
+    	logger.debug("Getting  CandidateFamilyDetails --->  ");
+		Session session = this.sessionFactory.getCurrentSession();
+		List<CandidateFamilyDetails> familyList = new ArrayList<CandidateFamilyDetails>();
+		try {
+			
+			String queryString  ="from CandidateFamilyDetails cd where cd.candidate.id=:candidateId order by cd.updatedDate desc";
+			
+			familyList = session.createQuery(queryString).setLong("candidateId", candidateId).list();
+			
+		}catch(Exception e) {
+		  logger.error("Exeption caught while getting dao layer --->"+e.getMessage());
+		  e.printStackTrace();
+		}
+		return familyList;
+	}
 }

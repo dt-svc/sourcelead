@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +32,7 @@ import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
@@ -596,14 +598,21 @@ public class ImmigrationRestController {
       }
 
     
-    @RequestMapping(value = {"/savePassportDetailsPage"}, method = RequestMethod.POST)
+    @RequestMapping(value = {"/savePassportVisaDetailsPage"}, method = RequestMethod.POST)
     public String  savePassportDetailsPage(ImmigrationPassportVisaDTO immigrationPassportVisaDTO, HttpServletRequest request,
+    		@RequestParam(value = "idType", required = true) String idType,
     		@RequestParam(value = "candidateId", required = false) String candidateId,
     		@RequestParam(value = "immigrationId", required = false) String immigrationId) {
         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		System.out.println("Candidate ID ----> :  "+immigrationPassportVisaDTO.getCandidateId());
         try {
+        	 if(idType.trim().equalsIgnoreCase(Constants.ID_TYPE_PASSPORT)) {
+        		 immigrationPassportVisaDTO.setIdType(Constants.ID_TYPE_PASSPORT);
+   		  }
+   		  else if(idType.trim().equalsIgnoreCase(Constants.ID_TYPE_VISA)) {
+   			 immigrationPassportVisaDTO.setIdType(Constants.ID_TYPE_VISA);
+   		  }
         	  immigrationCommonService.savePassportDetails(immigrationPassportVisaDTO, user, orgLocations);
          } catch (Exception e) {
             logger.error("Exception caugth in savePetitionDetailsPage controller" + e.getMessage());
@@ -641,4 +650,23 @@ public class ImmigrationRestController {
 
 		return "success";
     }
+    
+	
+	@RequestMapping(value = { "/getCandidateFamilyDetails" })
+	public ModelAndView getCandidateFamilyDetails(
+			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) {
+		ModelAndView model = new ModelAndView();
+		System.out.println(" inisde getCandidateFamilyDetails controller test -->");
+		model.setViewName("/immigration/familyDetailsTab");
+		List<CandidateFamilyDetails> familyList = new ArrayList<CandidateFamilyDetails>();
+		try {
+			familyList = immigrationCommonService.getCandidateFamilyDetails(candidateId);
+		model.addObject("familyList", familyList);
+		}catch(Exception e ) {
+			logger.error("Exception caught in controller --->"+e.getMessage());
+			e.printStackTrace();
+		}
+		System.out.println(" after getCandidateFamilyDetails controller -->");
+		return model;
+	}
 }

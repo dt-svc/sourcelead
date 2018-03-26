@@ -141,7 +141,9 @@
 			  </ul>
 		</div>
 		<!--popcode start  -->
+		<form id="Candidate_Visa_form" name="CandidateVisaform" method="post"> 
 		<div class="popUpOut" id="popUpVisa">
+		
 		<div class="popupHead">
 			<h2>Add Visa</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
 		</div>
@@ -151,7 +153,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Visa Type</label>
               	<div class="col-md-8 padding_right">
-					<select class="chosen-select form-control">
+					<select class="chosen-select form-control" id = "VisaType" field-name = "Visa Type"  data-validation = "required">
 					  <option>Select Visa Type</option>
 					  <option>H1B</option>
 					  <option>H2B</option>
@@ -162,7 +164,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Visa Id<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" />
+              		<input type="text" class="form-control"   id = "idNumber" field-name = "Visa Id"  data-validation = "required"/>
 				</div>
 			</div>				          
           <div class="col-sm-12 noPad mt clearfix">
@@ -179,22 +181,68 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Valid From</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control calendar" />
+              		<input type="text" class="form-control calendar" value="" name = "validFrom" id = "validfrom" field-name = "Valid From"/>
+				    <div class="clearDate" onClick="clearCandidateCertStartDate();"></div>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Valid To</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control calendar" />
+              		<input type="text" class="form-control calendar" value="" name = "validTo" id = "validto" field-name = "Valid To" />
+				<div class="clearDate" onClick="clearCandidateCertEndDate();"></div>
 				</div>
 			</div>									
 		</div>
 		
 		<div class="immiPopFoot">
-            <input value="Save" class="" type="button">
+            <input value="Save" class="" type="button" id="visa_save_id" onclick="immigration.savePassportVisaDetails('Visa')">
             <input value="Cancel" class="popCan" type="button">
           </div>		
 	</div><!--popcode end  -->	
+	</form>
+		<script>
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatCerSave = getJSDateFormat(locationDate);
+		  
+		 $('#validfrom').datepicker({
+		      dateFormat: finalDateFormatCerSave,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		      onSelect: function (selected) {
+		           // var dt = new Date(selected);
+		           var dt = 	  $(this).datepicker('getDate', '+1d'); 
+		           dt.setDate(dt.getDate() + 1);
+		            $("#validto").datepicker("option", "minDate", dt);
+		        }
+		  });
+		  
+		  $('#validto').datepicker({
+		      dateFormat: finalDateFormatCerSave,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		        onSelect: function (selected) {
+		            //var dt = new Date(selected);
+		            var dt = 	  $(this).datepicker('getDate', '-1d');
+		            dt.setDate(dt.getDate() - 1);
+		            $("#validfrom").datepicker("option", "maxDate", dt);
+		        }
+		  });
+		</script>
+		<script>
+		<script>
+		function clearCandidateCertStartDate(){
+			$("#validfrom").val("");
+			};
+		function clearCandidateCertEndDate(){
+			$("#validto").val("");
+			};
+		</script>   
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
 		
 		<script>
 		 // Add addVisa Div  

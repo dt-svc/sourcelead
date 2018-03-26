@@ -35,5 +35,7 @@ public interface ImmigrationCommonDao {
 
 	CandidateResidence saveResidenceDetails(CandidateResidence candidateResidence)	throws Exception;
 
+	List<CandidateFamilyDetails> getCandidateFamilyDetails(Long candidateId);
+
 
 }
