@@ -1774,9 +1774,29 @@ public class RequirementListRestController {
 			}
 		}
 		
+		//filter for is Client job
+				if(StringUtils.isNotEmpty(search.getFilterSpecJobs()) && "ClientJobs".equalsIgnoreCase(search.getFilterSpecJobs())){
+					BoolQueryBuilder clientBoolQueryBuilder = new BoolQueryBuilder();
+					clientBoolQueryBuilder.must(QueryBuilders.matchPhraseQuery("isClientJob", "Y"));
+					boolQueryBuilder.must(clientBoolQueryBuilder);
+					if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
+						boolQueryBuilderForCount.must(clientBoolQueryBuilder);
+					}
+				}
+				
+				//filter for is Client job
+				if(StringUtils.isNotEmpty(search.getFilterSpecJobs()) && "NormalJobs".equalsIgnoreCase(search.getFilterSpecJobs())){
+					BoolQueryBuilder nonClientBoolQueryBuilder = new BoolQueryBuilder();
+					nonClientBoolQueryBuilder.must(QueryBuilders.matchPhraseQuery("isClientJob", "N"));
+					boolQueryBuilder.must(nonClientBoolQueryBuilder);
+					if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
+						boolQueryBuilderForCount.must(nonClientBoolQueryBuilder);
+					}
+				}
+		
 		  //requirementPriority
 
-			/*	if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterStatus())){
+				if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterStatus())){
 					String priority = "";
 					if(StringUtils.isNotEmpty(search.getRequirementStatus())){
 						priority = search.getRequirementStatus();
@@ -1819,7 +1839,7 @@ public class RequirementListRestController {
 							boolQueryBuilderForCount.must(reqJobTypeBoolQueryBuilder);
 						}
 					} 
-				}*/
+				}
 				
 			
 		if(StringUtils.isNotEmpty(search.getUpdatedOn())){
@@ -1841,9 +1861,9 @@ public class RequirementListRestController {
 			}
 			ArrayList<String> employerArray = getSearchKeywordsFromChosenSelectField(clients);
 			if(employerArray != null && !employerArray.isEmpty()){
-				BoolQueryBuilder employerBoolQueryBuilder = QueryBuilders.boolQuery();
+				BoolQueryBuilder employerBoolQueryBuilder = new BoolQueryBuilder();
 				for(String keywd : employerArray){
-					employerBoolQueryBuilder.should(QueryBuilders.matchQuery("client", keywd));
+					employerBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("client", keywd));
 				}
 				boolQueryBuilder.must(employerBoolQueryBuilder);
 				if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
@@ -1851,6 +1871,28 @@ public class RequirementListRestController {
 				}
 			}
 		}
+		
+		//projects
+				if(StringUtils.isNotEmpty(search.getFilterProjectId())){
+					
+					String	projects = search.getFilterProjectId();
+					
+					ArrayList<String> projectArray = getSearchKeywordsFromChosenSelectField(projects);
+					if(projectArray != null && !projectArray.isEmpty()){
+						BoolQueryBuilder projectBoolQueryBuilder = new BoolQueryBuilder();
+						for(String keywd : projectArray){
+							projectBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("projectClientID", keywd));
+							
+						}
+						boolQueryBuilder.must(projectBoolQueryBuilder);
+						if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
+							boolQueryBuilderForCount.must(projectBoolQueryBuilder);
+						}
+					}
+				}
+				
+				
+				
 		
 		if(userRole != null&& !("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
 			BoolQueryBuilder assignedBoolQueryBuilder = QueryBuilders.boolQuery();
@@ -1901,6 +1943,8 @@ public class RequirementListRestController {
 			teamAssignedUserQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "SUBMITTED"));
 			teamAssignedUserQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "REJECTED"));
 			assignedBoolQueryBuilder.should(teamAssignedUserQueryBuilder);
+			
+			
 			
 			
 			boolQueryBuilder.must(assignedBoolQueryBuilder);
