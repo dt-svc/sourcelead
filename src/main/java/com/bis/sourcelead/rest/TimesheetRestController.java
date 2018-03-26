@@ -2107,7 +2107,7 @@ public class TimesheetRestController {
 		            			   freshSaHierarchyList.add(saHierarchy);
 		            		 }
 		            		 submissionApproverHierarchyService.saveAllSubmissionApproverHierarchy(new ArrayList<>(freshSaHierarchyList));
-		            		 if(tsDTO != null && StringUtils.isNotEmpty(tsDTO.getWeekComment())){
+		            		 if(tsDTO != null){
 		            			 timesheetSubmissions.setWeekcomments(tsDTO.getWeekComment());
 		            		 }
 		            		 timesheetSubmissions.setUpdatedDate(CommonUtil.currentDate());
