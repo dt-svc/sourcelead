@@ -141,7 +141,7 @@
 			  </ul>
 		</div>
 		<!--popcode start  -->
-		<form id="Candidate_Visa_form" name="CandidateVisaform" method="post"> 
+		<form id="CandidateVisaform" name="CandidateVisaform" method="post"> 
 		<div class="popUpOut" id="popUpVisa">
 		
 		<div class="popupHead">
@@ -153,7 +153,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Visa Type</label>
               	<div class="col-md-8 padding_right">
-					<select class="chosen-select form-control" id = "VisaType" field-name = "Visa Type"  data-validation = "required">
+					<select class="chosen-select form-control" id = "visaType" field-name = "Visa Type"  data-validation = "required">
 					  <option>Select Visa Type</option>
 					  <option>H1B</option>
 					  <option>H2B</option>
@@ -164,7 +164,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Visa Id<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control"   id = "idNumber" field-name = "Visa Id"  data-validation = "required"/>
+              		<input type="text" name = "idNumber" id = "idNumber" field-name = "Visa Id" class="form-control" data-validation = "required"/>
 				</div>
 			</div>				          
           <div class="col-sm-12 noPad mt clearfix">
