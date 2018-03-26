@@ -171,17 +171,12 @@ public class SourceleadBlogServiceImpl implements SourceleadBlogService{
 	        return sourceleadBlogs;
 	}
 	
-	
 
 	@Override
 	public List<SourceleadBlogs> getAllSourceleadBlogsByCategoryId(Long categoryId) throws Exception {
 		return sourceleadBlogDao.getAllSourceleadBlogsByCategoryId(categoryId);
 	}
 
-	@Override
-	public SourceleadBlogs findByBlogTitle(String name) throws Exception {
-		return sourceleadBlogDao.findByBlogTitle(name);
-	}
 
 	@Override
 	public List<SourceleadBlogs> getSourceleadBlogsByCategoryId(Long categoryId) throws Exception {
@@ -211,6 +206,17 @@ public class SourceleadBlogServiceImpl implements SourceleadBlogService{
 	@Override
 	public List<SourceleadBlogs> getAllSourceleadBlogsByCategoryName(String categoryName) throws Exception {
 		return sourceleadBlogDao.getAllSourceleadBlogsByCategoryName(categoryName);
+	}
+
+	@Override
+	public SourceleadBlogs validateSourceleadBlogTitleByBlogTitleAndBlogId(String blogTitle, String blogUUID)
+			throws Exception {
+		return sourceleadBlogDao.validateSourceleadBlogTitleByBlogTitleAndBlogId(blogTitle, blogUUID);
+	}
+
+	@Override
+	public Boolean validateSourceleadBlogTitleByBlogTitle(String blogTitle) throws Exception {
+		return sourceleadBlogDao.validateSourceleadBlogTitleByBlogTitle(blogTitle);
 	}
 
 }
