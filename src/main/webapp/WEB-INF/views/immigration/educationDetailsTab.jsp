@@ -1,3 +1,4 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <div class="immigraTabsHead">
 		  	<a href="javascript:void(0)" id="addEdu"><i class="glyphicon glyphicon-plus"></i> Add Education</a> 
 		  	<span><input class="immigraTabSerach" type="text"></span>
@@ -36,120 +37,7 @@
 					</div>
 				</td>
 			  </tr>  			  			  
-			  <tr>
-				<td><div class="tbldata-dotdot-vsm">Bachelor of Commerce</div></td>
-				<td><div class="tbldata-dotdot-vsm">----</div></td>
-				<td><div class="tbldata-dotdot_80">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-80">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-80">80</div></td>
-				<td><div class="tbldata-dotdot-80">Percentage</div></td>
-				<td><div class="tbldata-dotdot-vsm">----</div></td>
-				<td><div class="tbldata-dotdot-vsm">Hyderabad</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
-			  </tr>    
-			  <tr>
-				<td><div class="tbldata-dotdot-vsm">Bachelor of Commerce</div></td>
-				<td><div class="tbldata-dotdot-vsm">----</div></td>
-				<td><div class="tbldata-dotdot_80">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-80">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-80">80</div></td>
-				<td><div class="tbldata-dotdot-80">Percentage</div></td>
-				<td><div class="tbldata-dotdot-vsm">----</div></td>
-				<td><div class="tbldata-dotdot-vsm">Hyderabad</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
-			  </tr>     
-			  <tr>
-				<td><div class="tbldata-dotdot-vsm">Bachelor of Commerce</div></td>
-				<td><div class="tbldata-dotdot-vsm">----</div></td>
-				<td><div class="tbldata-dotdot_80">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-80">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-80">80</div></td>
-				<td><div class="tbldata-dotdot-80">Percentage</div></td>
-				<td><div class="tbldata-dotdot-vsm">----</div></td>
-				<td><div class="tbldata-dotdot-vsm">Hyderabad</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
-			  </tr>    
-			  <tr>
-				<td><div class="tbldata-dotdot-vsm">Bachelor of Commerce</div></td>
-				<td><div class="tbldata-dotdot-vsm">----</div></td>
-				<td><div class="tbldata-dotdot_80">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-80">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-80">80</div></td>
-				<td><div class="tbldata-dotdot-80">Percentage</div></td>
-				<td><div class="tbldata-dotdot-vsm">----</div></td>
-				<td><div class="tbldata-dotdot-vsm">Hyderabad</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
-			  </tr>   
-			  <tr>
-				<td><div class="tbldata-dotdot-vsm">Bachelor of Commerce</div></td>
-				<td><div class="tbldata-dotdot-vsm">----</div></td>
-				<td><div class="tbldata-dotdot_80">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-80">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-80">80</div></td>
-				<td><div class="tbldata-dotdot-80">Percentage</div></td>
-				<td><div class="tbldata-dotdot-vsm">----</div></td>
-				<td><div class="tbldata-dotdot-vsm">Hyderabad</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
-			  </tr>  
-			  <tr>
-				<td><div class="tbldata-dotdot-vsm">Bachelor of Commerce</div></td>
-				<td><div class="tbldata-dotdot-vsm">----</div></td>
-				<td><div class="tbldata-dotdot_80">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-80">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-80">80</div></td>
-				<td><div class="tbldata-dotdot-80">Percentage</div></td>
-				<td><div class="tbldata-dotdot-vsm">----</div></td>
-				<td><div class="tbldata-dotdot-vsm">Hyderabad</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
-			  </tr>   
+			   
 			  						
 			</tbody>
 		  </table>
@@ -167,6 +55,7 @@
 		</div>
 		
 		<!-- popup code start -->
+		<form id="eduSave_Form" name = "eduSave_Form" method = "post">
 		<div class="popUpOut" id="popEduView">
 		<div class="popupHead">
 			<h2>Add Education</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
@@ -177,69 +66,100 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Select Education</label>
               	<div class="col-md-8 padding_right">
-					<select class="chosen-select form-control">
-					  <option>Select Education</option>
-					  <option>Education-1</option>
-					  <option>Education-2</option>
-					  <option>Education-3</option>
+					<select class="chosen-select form-control" name="name" id= "eduName" field-name="Education" data-validation="required">
+					<option value="" selected>--Select Education--</option>
+					  <c:forEach var="edu" items="${educationsList}">
+											<option value="${edu.name}">${edu.name}</option>
+										</c:forEach>
 					</select>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Specialization</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" />
+              		<input type="text" class="form-control" id = "specialization" name = "specialization"/>
 				</div>
 			</div>				          
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Start Date</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control calendar" />
+              		<input type="text" class="form-control calendar" id="immigrationEduStartDate" name = "startDate"/>
 				</div>
 			</div>	
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">End Date</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control calendar" />
+              		<input type="text" class="form-control calendar" id = "immigrationEduEndDate" name = "endDate"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Score Type</label>
               	<div class="col-md-8 padding_right">
-					<select class="chosen-select form-control">
-					  <option>Select Score Type</option>
-					  <option>Percentage</option>
-					  <option>Points</option>
+					<select class="chosen-select form-control" name="gradeType" id="scoreEducationType">
+					  <option value="" selected="selected">Score Type</option>
+						 <option value="Percentage">Percentage</option>
+	              <option value="CGPA">CGPA</option>
+	           <option value="GRADE">GRADE</option>
 					</select>
 				</div>
 			</div>	
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Score</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" />
+              		<input type="text" class="form-control" id = "grade" name="grade"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Institute/University</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" />
+              		<input type="text" class="form-control" id = "institute" name = "institute"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Address</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" />
+              		<input type="text" class="form-control" id = "address" name = "address"/>
 				</div>
 			</div>											
 									
 		</div>
 		
 		<div class="immiPopFoot">
-            <input value="Save" class="" type="button">
+            <input value="Save" id= "eduSave_Button" class="" type="button" onclick = "immigration.saveEducationImmigration('save')">
             <input value="Cancel" class="popCan" type="button">
           </div>		
 	</div><!-- popup code end -->
+	</form>
 		<script>
+		
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatEduSave = getJSDateFormat(locationDate);
+		
+		$('#immigrationEduStartDate').datepicker({
+		      dateFormat: finalDateFormatEduSave,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		      onSelect: function (selected) {
+		            //var dt = new Date(selected);
+		            var dt = $(this).datepicker('getDate', '+1d');
+		            dt.setDate(dt.getDate() + 1);
+		            $("#immigrationEduEndDate").datepicker("option", "minDate", dt);
+		        }
+		  });
+		  
+		  $('#immigrationEduEndDate').datepicker({
+		      dateFormat: finalDateFormatEduSave,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		      onSelect: function (selected) {
+		            //var dt = new Date(selected);
+		            var dt = $(this).datepicker('getDate', '-1d');
+		            dt.setDate(dt.getDate() - 1);
+		            $("#immigrationEduStartDate").datepicker("option", "maxDate", dt);
+		        }
+		  });
+		
+		
 			// Add addEdu Div  
 			$("#addEdu").click(function(){
 				$(".popMask").fadeIn(200);

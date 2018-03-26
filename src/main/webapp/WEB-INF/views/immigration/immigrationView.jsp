@@ -124,7 +124,7 @@ $(document).ready(function() {
 
 <!--   Family Popup's  -->
 <script>
-$(document).ready(function() {
+var addfamilyPopupEventListener = function() {
 	$("body").click(function(){ // used for family popup events.
 		$(".immiSubMenu").hide();
 	});
@@ -136,20 +136,23 @@ $(document).ready(function() {
 	$(".immMenuClick, .immiSubMenu").click(function(event) {
 	  event.stopImmediatePropagation();
 	});	
-	
-});	
+  }	
 </script>
 
 <script>
 // project side bar tabs
 $(document).ready(function() {
 	$("#detailsTab").show()
+	addfamilyPopupEventListener();
     $(".immigraTabs a").click(function(event) {
         event.preventDefault();
         $(this).parent().addClass("current");
         $(this).parent().siblings().removeClass("current");
         var tab = $(this).attr("href");
         $(".immigraTabs_inn").not(tab).css("display", "none");
+        if(tab=='#familiesTab'){
+       	 displayFamilyDetails(candidateId);
+        }
         $(tab).fadeIn();
     });
 	

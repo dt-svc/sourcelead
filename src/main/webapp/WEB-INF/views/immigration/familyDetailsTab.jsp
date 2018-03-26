@@ -1,4 +1,5 @@
-
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <div class="immigraTabsHead">
 		  	<a href="javascript:void(0)" class="immMenuClick">Add Family <i class="fa fa-plus"></i>
 				<div class="immiSubMenu">
@@ -23,12 +24,13 @@
 				<th>Address</th>
 				<th>&nbsp;</th>
 			  </tr>
+			  <c:forEach var="items" items="${familyList}" varStatus="rows">
 			  <tr>
-				<td><div class="tbldata-dotdot-me">Mahesh Vannam</div></td>
-				<td><div class="tbldata-dotdot-me">Brother</div></td>
-				<td><div class="tbldata-dotdot-vsm">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-vsm">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-me">Hyderabad</div></td>
+				<td><div class="tbldata-dotdot-me">${items.firstName}</div></td>
+				<td><div class="tbldata-dotdot-me">${items.relation}</div></td>
+				<td><div class="tbldata-dotdot-vsm"><fmt:formatDate value="${items.dateOfBirth}" pattern="MM/dd/yyyy" /></div></td>
+				<td><div class="tbldata-dotdot-vsm">${items.placeOfBirth}</div></td>
+				<td><div class="tbldata-dotdot-me">${items.currentAddress}</div></td>
 				<td class="immigraAction">
 					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
 					<div class="mmigraActionInn">
@@ -38,12 +40,13 @@
 						</span>
 					</div>
 				</td>
-			  </tr>  			  			  
+			  </tr> 
+			  </c:forEach>
 			 </tbody>
 		  </table>
 		</div>
 		
-		<div class="immigraPagi clearfix">
+		<!-- <div class="immigraPagi clearfix">
 			<div class="immiPagiText">Showing 1 to 6 of 6 entries</div>
 			  <ul class="pagination">
 				<li><a href="#"> << </a></li>
@@ -52,8 +55,8 @@
 				<li class="disabled"><a href="#">6</a></li>
 				<li data-page="last"><a href="#"> >> </a></li>
 			  </ul>
-		</div>
-		<!--  -->
+		</div> -->
+		
 		<!--   Family Popup's  popcode start-->  
   <form name ="spouseDetailsForm" id ="spouseDetailsForm">
 	<div class="popUpOut" id="spousePopView"><!--  spouse popup start -->
@@ -90,7 +93,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Date of Marriage<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="marraigeDate" name="marraigeDate" class="form-control calendar" onclick="showMarraigeDatePicker();" placeholder="Date Of Marriage" field-name="Date Of Marriage" data-validation="required"/>
+              		<input type="text" id="marraigeDate" name="marraigeDate" class="form-control calendar" placeholder="Date Of Marriage" field-name="Date Of Marriage" data-validation="required"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
@@ -310,11 +313,34 @@
 	
 	<script>	
 	
-		
-		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		 var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
-		 console.log("finalDateFormatPetitionSave ---> ::  "+finalDateFormatPetitionSave);
-		// spouse birth date
+	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatEduSave = getJSDateFormat(locationDate);
+	// marriage start date and end dates
+/* 	$('#marraigeDate').datepicker({
+	      dateFormat: finalDateFormatEduSave,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	      onSelect: function (selected) {
+	            //var dt = new Date(selected);
+	            var dt = $(this).datepicker('getDate', '+1d');
+	            dt.setDate(dt.getDate() + 1);
+	            $("#marriageEndDate").datepicker("option", "minDate", dt);
+	        }
+	  });
+	  
+	  $('#marriageEndDate').datepicker({
+	      dateFormat: finalDateFormatEduSave,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	        onSelect: function (selected) {
+	            //var dt = new Date(selected);
+	            var dt = $(this).datepicker('getDate', '-1d');
+	            dt.setDate(dt.getDate() - 1);
+	            $("#marraigeDate").datepicker("option", "maxDate", dt);
+	        }
+	  });
+	
+		// spouse birth date dateOfBirthSpouse 
 		function showSpouseBirthDatePicker(){
 		   $('#dateOfBirthSpouse').datepicker({
 		      dateFormat: finalDateFormatPetitionSave,
@@ -325,8 +351,8 @@
 		  }).datepicker("show");
 		}  
 		//
-		// child birth date
-		function showChildBirthDatePicker(){
+		// child birth date dateOfBirthChild
+	
 		   $('#dateOfBirthChild').datepicker({
 		      dateFormat: finalDateFormatPetitionSave,
 		      changeMonth: true,
@@ -334,8 +360,8 @@
 		  	  yearRange: "-100:+0",
 		  	  maxDate:0  
 		  }).datepicker("show");
-		}  
-		// Father birth date
+		  
+		// Father birth date dateOfBirthFather
 		function showChildBirthDatePicker(){
 		   $('#dateOfBirthFather').datepicker({
 		      dateFormat: finalDateFormatPetitionSave,
@@ -346,7 +372,7 @@
 		  }).datepicker("show");
 		}  
 		
-		// Mother birth date
+		// Mother birth date dateOfBirthMother
 		function showChildBirthDatePicker(){
 		   $('#dateOfBirthMother').datepicker({
 		      dateFormat: finalDateFormatPetitionSave,
@@ -356,32 +382,5 @@
 		  	  maxDate:0  
 		  }).datepicker("show");
 		}  
-		
-		// marriage start date and end dates
-		function showMarraigeDatePicker(){
-		  $('#marraigeDate').datepicker({
-		      dateFormat: finalDateFormatPetitionSave,
-		      changeMonth: true,
-		  	  changeYear: true, 
-		      onSelect: function (selected) {
-		            //var dt = new Date(selected);
-		            var dt = $(this).datepicker('getDate', '+1d');
-		            dt.setDate(dt.getDate() + 1);
-		            $("#marriageEndDate").datepicker("option", "minDate", dt);
-		        }
-		  }).datepicker("show");
-		}
-		function showMarraigeEndDatePicker(){ 
-		  $('#marriageEndDate').datepicker({
-		      dateFormat: finalDateFormatPetitionSave,
-		      changeMonth: true,
-		  	  changeYear: true, 
-		        onSelect: function (selected) {
-		            //var dt = new Date(selected);
-		            var dt = $(this).datepicker('getDate', '-1d');
-		            dt.setDate(dt.getDate() - 1);
-		            $("#marraigeDate").datepicker("option", "maxDate", dt);
-		        }
-		  }).datepicker("show");
-		}
+		 */
 	</script>
