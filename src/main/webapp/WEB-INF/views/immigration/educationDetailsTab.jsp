@@ -21,13 +21,13 @@
 			   <c:forEach var="eduItems" items="${candidatesEducationList}" varStatus="rows">
 			  <tr>
 				<td><div class="tbldata-dotdot-vsm">${eduItems.name}</div></td>
-				<td><div class="tbldata-dotdot-vsm">${eduItems.name}</div></td>
-				<td><div class="tbldata-dotdot_80">${eduItems.name}</div></td>
-				<td><div class="tbldata-dotdot-80">${eduItems.name}</div></td>
-				<td><div class="tbldata-dotdot-80">80</div></td>
-				<td><div class="tbldata-dotdot-80">Percentage</div></td>
-				<td><div class="tbldata-dotdot-vsm">----</div></td>
-				<td><div class="tbldata-dotdot-vsm">Hyderabad</div></td>
+				<td><div class="tbldata-dotdot-vsm">${eduItems.specialization}</div></td>
+				<td><div class="tbldata-dotdot_80">${eduItems.startDateStr}</div></td>
+				<td><div class="tbldata-dotdot-80">${eduItems.endDateStr}</div></td>
+				<td><div class="tbldata-dotdot-80">${eduItems.grade}</div></td>
+				<td><div class="tbldata-dotdot-80">${eduItems.gradeType}</div></td>
+				<td><div class="tbldata-dotdot-vsm">${eduItems.institute}</div></td>
+				<td><div class="tbldata-dotdot-vsm">${eduItems.address}</div></td>
 				<td class="immigraAction">
 					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
 					<div class="mmigraActionInn">

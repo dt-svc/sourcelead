@@ -9,7 +9,6 @@
 			<tbody>
 			  <tr>
 				<th>Employer</th>
-				<th>Tax Id</th>
 				<th>Designation</th>
 				<th>Address</th>
 				<th>Start Date</th>
@@ -19,7 +18,6 @@
 			<c:forEach var="empItems" items="${candidatesEmployersList}" varStatus="rows">
 			  <tr>
 				<td><div class="tbldata-dotdot-sm">${empItems.name}</div></td>
-				<td><div class="">DFDD551</div></td>
 				<td><div class="tbldata-dotdot-sm">${empItems.designation}</div></td>
 				<td><div class="tbldata-dotdot-me">${empItems.address}</div></td>
 				<td><div class="">${empItems.startMonth} ${empItems.startYear}</div></td>
