@@ -134,7 +134,7 @@
 			  </ul>
 		</div>
 		<!--popup code start -->
-		<form id="Candidate_Passport_form" name="CandidatePassportform" method="post"> 
+		<form id="CandidatePassportform" name="CandidatePassportform" method="post"> 
 		<div class="popUpOut" id="popPassView">
 		<div class="popupHead">
 			<h2>Add Passport</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>

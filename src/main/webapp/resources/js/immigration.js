@@ -318,7 +318,7 @@ function Immigration() {
                         console.log("data successfully saved for the candidate id "+templateId);
                         $(".popMask").fadeOut(200); // close the popup code
         				$("#spousePopView").fadeOut(100);// close the popup code
-                        displayFamilyDetails(candidateId);
+        				immigration.displayFamilyDetails(candidateId);
 					}
 				}
 			});
@@ -328,6 +328,18 @@ function Immigration() {
 			return false;
 		}
 	}
+    this.displayFamilyDetails=function(candidateId){
+    	console.log("inside displayFamilyDetails function call  -->")
+    	$.ajax({
+            url: sourceleadUrl + immiModulePath + "/getCandidateFamilyDetails?candidateId="+candidateId,
+            type: "GET",
+            success: function (result) {
+                $("#familiesTab").html(result);
+                addfamilyPopupEventListener();
+            }
+        });
+    }	
+	
 }
 function validateTemplateName() {
     var templateName = document.getElementById("templateName").value.trim();
@@ -430,17 +442,6 @@ function saveEmployerDetails(status) {
 	
 }
 
-function displayFamilyDetails(candidateId){
-	console.log("inside displayFamilyDetails function call -->")
-	$.ajax({
-        url: sourceleadUrl + immiModulePath + "/getCandidateFamilyDetails?candidateId="+candidateId,
-        type: "GET",
-        success: function (result) {
-            $("#familiesTab").html(result);
-            addfamilyPopupEventListener();
-        }
-    });
-}	
 
 function saveResidenceDetails(status) {
 	if ($('#residenceDetails_form').validate(false, validationSettings)) {
