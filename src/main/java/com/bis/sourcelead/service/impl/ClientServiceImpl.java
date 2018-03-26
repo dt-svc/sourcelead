@@ -752,13 +752,16 @@ public class ClientServiceImpl implements ClientService {
 		List<SourceleadRoles> rolesList = sourceleadRolesService.getSourceleadRoles();
 		List<Long> soureleadActionIdList = new ArrayList<>();
 		String[] actionsIds = null;
+		SourceleadRoles sourceleadRoles = null;
 		if(responderType.equalsIgnoreCase("Vendor")) {
-			 actionsIds = Constants.GUEST_VENDOR_TAB_ACTIONS;
+			 sourceleadRoles = sourceleadRolesService.getSourceleadRolesByRoleName(Constants.ROLE_GUEST_VENDOR);
+			 actionsIds = sourceleadRoles.getActionId().split(",");
 			 for(int i=0 ; i < actionsIds.length; i++) {
 				 soureleadActionIdList.add(Long.parseLong(actionsIds[i]));
 			 }
 		}else if(responderType.equalsIgnoreCase("Client")) {
-			 actionsIds = Constants.GUEST_CLIENT_TAB_ACTIONS;
+			sourceleadRoles = sourceleadRolesService.getSourceleadRolesByRoleName(Constants.ROLE_GUEST_CLIENT);
+			 actionsIds = sourceleadRoles.getActionId().split(",");
 			 for(int i=0 ; i < actionsIds.length; i++) {
 				 soureleadActionIdList.add(Long.parseLong(actionsIds[i]));
 			 }

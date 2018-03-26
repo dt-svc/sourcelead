@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.SourceleadRolesDao;
+import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.SourceleadRoles;
 
 @Repository
@@ -67,6 +69,25 @@ public class SourceleadRolesDaoImpl implements SourceleadRolesDao {
 		
 		
 
+	}
+
+	@Override
+	@Transactional
+	public SourceleadRoles getSourceleadRolesByRoleName(String roleName) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<SourceleadRoles> sourceleadRoles = new ArrayList<SourceleadRoles>();
+		logger.debug("getSourceleadRolesByRoleName start");
+		String query = "from SourceleadRoles roles where roles.roleName = :roleName ";
+		sourceleadRoles = session.createQuery(query).setString( "roleName", roleName ).list();
+		logger.debug("getSourceleadRolesByRoleName end");
+		if (sourceleadRoles.size() > 0) {
+			return sourceleadRoles.get(0);
+		} else {
+			return null;
+		}
+   	
+	
 	}
 
 }

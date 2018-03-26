@@ -10,6 +10,8 @@ public interface SourceleadRolesService {
 	
 	boolean roleHaveActionAccessOrNot(String actionId,String roleName);
 	
+	SourceleadRoles getSourceleadRolesByRoleName(String  roleName) throws Exception;
+	
 
 
 }
