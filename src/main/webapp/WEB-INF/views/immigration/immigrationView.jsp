@@ -103,6 +103,7 @@
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
+<script src="/resources/js/jquery-ui.js"></script>
 <script src="js/moment.min.js"></script> 
 <script src="js/bootstrap-datetimepicker.min.js"></script> 
 <script src="js/bootstrap.min.js"></script> 
@@ -151,7 +152,7 @@ $(document).ready(function() {
         var tab = $(this).attr("href");
         $(".immigraTabs_inn").not(tab).css("display", "none");
         if(tab=='#familiesTab'){
-       	 displayFamilyDetails(candidateId);
+        	immigration.displayFamilyDetails(candidateId);
         }
         $(tab).fadeIn();
     });
