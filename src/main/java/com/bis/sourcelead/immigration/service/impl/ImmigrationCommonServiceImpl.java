@@ -517,8 +517,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 
 	@Override
 	public List<CandidateFamilyDetails> getCandidateFamilyDetails(Long candidateId) {
-		// TODO Auto-generated method stub
 		return immigrationCommonDao.getCandidateFamilyDetails(candidateId);
+	}
+
+	@Override
+	public String deletetCandidateFamilyDetails(Long candidateId) {
+		return immigrationCommonDao.deletetCandidateFamilyDetails(candidateId);
 	}	
 	
 }

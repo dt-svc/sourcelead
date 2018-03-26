@@ -22,7 +22,7 @@
 				<th>Date of Birth</th>
 				<th>Place of Birth</th>
 				<th>Address</th>
-				<th>&nbsp;</th>
+				<th>Action</th>
 			  </tr>
 			  <c:forEach var="items" items="${familyList}" varStatus="rows">
 			  <tr>
@@ -31,15 +31,10 @@
 				<td><div class="tbldata-dotdot-vsm"><fmt:formatDate value="${items.dateOfBirth}" pattern="MM/dd/yyyy" /></div></td>
 				<td><div class="tbldata-dotdot-vsm">${items.placeOfBirth}</div></td>
 				<td><div class="tbldata-dotdot-me">${items.currentAddress}</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
+				<td><div><i id="edit" onclick="immigration.editFamilyDetailsByRowId(${items.id});"
+				class="glyphicon glyphicon-pencil"></i><i id="delete" 
+				 onclick="immigration.deleteFamilyDetailsById(${items.id});" 
+				 class="glyphicon glyphicon-trash ml10"></i></div></td>
 			  </tr> 
 			  </c:forEach>
 			 </tbody>
