@@ -310,11 +310,11 @@ function assetDetails(assetId) {
 					result = result + '<div class="clearfix"></div>';
 					result = result + ' </div>';
 					
-					result = result + '<div class="require_wrap_details_cta"> <b><strong>Serial Number:</strong></b> <span>'+json.sno+'</span>';
+					result = result + '<div class="require_wrap_details_cta"> <b><strong>Serial Number:</strong></b> <span class="wordWrap-breakword">'+json.sno+'</span>';
 					result = result + '<div class="clearfix"></div>';
 					result = result + ' </div>';
 					
-					result = result + '<div class="require_wrap_details_cta"> <b><strong>Make:</strong></b> <span>'+make+'</span>';
+					result = result + '<div class="require_wrap_details_cta"> <b><strong>Make:</strong></b> <span class="wordWrap-breakword">'+make+'</span>';
 					result = result + '  <div class="clearfix"></div>';
 					result = result + '</div>';
 					
@@ -401,7 +401,7 @@ function assetDetails(assetId) {
 			              });
 		              } 
 						
-						result = result + ' <div class="require_wrap_details_cta width100percnt description80"> <b><strong>Description:</strong></b> <span>'+description+'</span>';
+						result = result + ' <div class="require_wrap_details_cta width100percnt description80"> <b><strong>Description:</strong></b> <span class="wordWrap-breakword">'+description+'</span>';
 						result = result + ' <div class="clearfix"></div>';
 						result = result + '</div>';
 					
