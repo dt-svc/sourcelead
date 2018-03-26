@@ -37,5 +37,7 @@ public interface ImmigrationCommonDao {
 
 	List<CandidateFamilyDetails> getCandidateFamilyDetails(Long candidateId);
 
+	String deletetCandidateFamilyDetails(Long id);
+
 
 }

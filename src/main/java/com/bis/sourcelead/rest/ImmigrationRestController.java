@@ -672,6 +672,24 @@ public class ImmigrationRestController {
 		return model;
 	}
 	
+	@RequestMapping(value = { "/deleteCandidateFamilyDetails" })
+	public String deleteCandidateFamilyDetails(
+			@RequestParam(value = "id", required = true) Long deleteId, HttpServletRequest request) {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		String status="";
+		System.out.println(" in controller deleteId ---> "+deleteId);
+		try {
+			status = immigrationCommonService.deletetCandidateFamilyDetails(deleteId);
+			System.out.println(" in controller status "+status);
+		} catch (Exception e) {
+			logger.error("Exception caught in controller --->"+e.getMessage());
+			e.printStackTrace();
+		}
+
+		return status;
+	}
+	
 	@RequestMapping(value = { "/getCandidateEducationList" })
 	public ModelAndView getCandidateEducationList(
 			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) throws Exception {
@@ -682,6 +700,9 @@ public class ImmigrationRestController {
 		model.addObject("candidatesEducationList",candidatesEducationList);
 		return model;
 	}
+	
+	
+	
 	
 	@RequestMapping(value = { "/getCandidateEmployerList" })
 	public ModelAndView getCandidateEmployerList(

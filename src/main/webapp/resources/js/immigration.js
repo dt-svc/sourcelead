@@ -335,7 +335,20 @@ function Immigration() {
             }
         });
     }	
-	
+	this.deleteFamilyDetailsById = function(delId){
+		console.log(" inside delete record  "+delId);
+		$.ajax({
+            url: sourceleadUrl + immiModulePath + "/deleteCandidateFamilyDetails?id="+delId,
+            type: "GET",
+            success: function (result) {
+            	if(result=='success'){
+            		console.log(" record successfully delete id  --> "+delId);
+            	     immigration.displayFamilyDetails(candidateId) //candidateId global variable
+            	     
+            	}
+            }
+        });
+	}
 }
 function validateTemplateName() {
     var templateName = document.getElementById("templateName").value.trim();

@@ -34,4 +34,6 @@ public interface ImmigrationCommonService {
 
 	List<CandidateFamilyDetails> getCandidateFamilyDetails(Long candidateId);
 
+	String deletetCandidateFamilyDetails(Long id);
+
 }
