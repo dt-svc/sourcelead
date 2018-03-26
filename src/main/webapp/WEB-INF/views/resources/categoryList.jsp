@@ -61,7 +61,7 @@ function addBlogCategory(uuid){
 	
 	result = result+ '<div class="clearfix mb10">';
 	result = result+ '<div class="col-md-12">';
-	result = result+ '<label>Description<b class="text-danger">*</b> </label>';
+	result = result+ '<label>Description</label>';
 	result = result + '<textarea cols="3" class="form-control" name="description" id="description" field-name="Description" data-validation=" validate_length length1-500" data-validation-optional="true">';
     result = result + '</textarea>';
 	result = result+ '                </div>';
