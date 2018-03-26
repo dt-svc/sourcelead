@@ -497,7 +497,19 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		candidateResidence.setState(residenceDTO.getState());
 		candidateResidence.setCountry(residenceDTO.getCountry());
 		candidateResidence.setZipcode(residenceDTO.getZipcode());
-		
+		if(!StringUtils.isEmpty(residenceDTO.getResidenceStartDate())){
+			candidateResidence.setStartDate((commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
+					residenceDTO.getResidenceStartDate())));
+			}
+			if(!StringUtils.isEmpty(residenceDTO.getResidenceEndDate())){
+				candidateResidence.setEndDate((commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
+					residenceDTO.getResidenceEndDate())));
+			}
+			candidateResidence.setStatus(Constants.RECORD_ACTIVE);
+			candidateResidence.setCreatedDate(new Date());
+			candidateResidence.setUpdatedDate(new Date());
+			candidateResidence.setCreatedBy(user);
+			candidateResidence.setUpdatedBy(user);
 		
 		immigrationCommonDao.saveResidenceDetails(candidateResidence);
 		return candidateResidence;
