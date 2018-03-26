@@ -77,10 +77,11 @@
 	    	   </c:forEach>
 	        </div>                      
         </div>
+        
         <form:form id="blog_subscription_form" name="blog_subscription_form" method="post">
        		<div class="subscribe">
-			<input type="text" class="form-control" name="email" id="email" placeholder="Subscribe News Letter">
-			<!-- <button type="submit" class="btn btn-danger pull-right">Subscribe</button> -->
+			<input type="text" class="form-control" name="email" id="email" placeholder="Subscribe News Letter" field-name="Email"
+								data-validation="required validate_Space validate_length length2-100 validate_email">
 			<input type="button" value="Subscribe" class="btn btn-danger pull-right" id="save" onclick="saveBlogSubscription(${blogDetails.id});">
   			</div>
   	   </form:form>		
@@ -119,13 +120,14 @@ function saveBlogSubscription(blogId){
 		$("#blogLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.post(sleadUrl+"/addBlogSubscription?blogId="+blogId, formData, function(data) {
 			if(data == true){
-				location.replace(sourceleadUrl+ "/blog");
+				location.replace(sourceleadUrl+ "/blog/${all.href}.html");
 			}
 		}); 
 		return true;
 		} else {
 			return false;
 		}
+	
 }
 
 $('body').on('blur', '#blog_subscription_form', function() {
