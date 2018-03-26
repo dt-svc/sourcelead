@@ -130,4 +130,15 @@ public class BlogCategoryServiceImpl implements BlogCategoryService{
 		return blogCategoryDao.getBlogCategoryListByActiveBlogs();
 	}
 
+	@Override
+	public BlogCategory validateBlogCategoryCategoryNameByCategoryNameAndCategoryUUID(String categoryName,
+			String categoryUUID) throws Exception {
+		return blogCategoryDao.validateBlogCategoryCategoryNameByCategoryNameAndCategoryUUID(categoryName, categoryUUID);
+	}
+
+	@Override
+	public Boolean validateBlogCategoryCategoryNameByCategoryName(String categoryName) throws Exception {
+		return blogCategoryDao.validateBlogCategoryCategoryNameByCategoryName(categoryName);
+	}
+
 }

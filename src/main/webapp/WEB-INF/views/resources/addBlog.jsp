@@ -24,14 +24,28 @@
   <form:form id="add_blog_form" name="add_blog_form" method="post">
     <div class="row form-horizontal mt myForm">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
+        
+         <c:if test="${empty sourceleadBlog.blogUUID}">
         <div class="form-group">
           <label class="col-md-3">Blog Title<span class="text-danger paddingLeft">&nbsp;*</span></label>
           <div class="col-md-9" id="blogTitleDiv">
             <input type="text" name="blogTitle" id="blogTitle" class="form-control" field-name="Blog Title"
 								data-validation="required validate_length length1-500"
-								value="${sourceleadBlog.blogTitle}"  onblur="validateBlogTitle();">
+								  onblur="validateBlogTitle();">
           </div>
         </div>
+        </c:if> 
+        
+        <c:if test="${!empty sourceleadBlog.blogUUID}">
+        <div class="form-group">
+          <label class="col-md-3">Blog Title <span class="text-danger paddingLeft">&nbsp;*</span></label>
+          <div class="col-md-9" id="blogTitleDiv">
+            <input type="text" name="blogTitle" id="blogTitle" class="form-control" field-name="Blog Title"
+								data-validation="required validate_length length1-500"
+								value="${sourceleadBlog.blogTitle}"  onblur="validateBlogTitle('${sourceleadBlog.blogUUID}');">
+          </div>
+        </div>
+        </c:if>
         
         <div class="form-group">
 			<label class="col-md-3">Blog Category</label>
@@ -229,30 +243,34 @@ $(function() {
 	tagIt("blogKeywords", 'Enter Keywords And Press Enter-Key Or Comma(,) Or Space To Add New Keywords', 'tagItBykeyForEmails','skills');
 });
 </script>
-
-<script type="text/javascript">
- function validateBlogTitle() {
-	 var name = $('#blogTitle').val(); 
-	 $('#blogTitleDiv').find('p.jquery_form_error_message').remove();
-	 if(name != null && name != ""){
-		 $.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/validateBlogTitle?"+tokenParamName+"="+tokenValue+"&name="+name, 
-		        success: function(data) {
-		        	if(data == 'true'){
-		        		  $("input#blogTitle").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
-						  $("#save").attr("disabled", "disabled");
-						  $("#save").addClass('button').val('Processing..');
-		        	}else{
-		        		 $('input#blogTitle').removeAttr("record-exist record-exist-errormsg");
-		        		 $('#blogTitleDiv').find('p.jquery_form_error_message').remove(); 
-		        		 $("#save" ).addClass('button').val('Save');
-                         $("#save").removeAttr("disabled");
-		        	}
-		        },
-		    });
-	 }
- }
- </script>     
+ 
+ <script>
+function validateBlogTitle(blogUUID){
+	if(blogUUID != null && blogUUID != "" && blogUUID != "undefined"){
+		blogUUID = blogUUID;
+	}else{
+		blogUUID = "";
+	}
+	var blogTitle = $('#blogTitle').val(); 
+	$('#blogTitleDiv').find('p.jquery_form_error_message').remove();
+	$.ajax({
+			type : "POST",
+			url : sourceleadUrl + "/validateBlogTitle?"+tokenParamName+"="+tokenValue+"&blogUUID="+blogUUID+"&blogTitle="+blogTitle,
+			success : function(data) {
+				if(data == true){
+	        		  $('#blogTitleDiv').find('p.jquery_form_error_message').remove();
+					  $("input#blogTitle").after("<p class='jquery_form_error_message'>"+blogTitle+" is Already Existed</span>");
+					  document.getElementById("blogTitle").setAttribute('record-exist','yes');
+					  document.getElementById("blogTitle").setAttribute('record-exist-errorMsg',blogTitle+' is Already Existed'); 
+	        	}
+	        	else{
+	        		 $('input#blogTitle').removeAttr( "record-exist record-exist-errormsg");
+	        		 $('#blogTitleDiv').find('p.jquery_form_error_message').remove(); 
+	        	}
+			},
+		});
+	 
+}
+</script>  
   
  
