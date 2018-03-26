@@ -157,6 +157,8 @@ $(document).ready(function() {
         getCandidateEducationList(candidateId);
         } else if(tab=='#employersTab'){
         getCandidateEmployerList(candidateId);
+        }else if(tab=='#residencesTab'){
+        	getCandidateResidenceList(candidateId);
         }
         $(tab).fadeIn();
     });

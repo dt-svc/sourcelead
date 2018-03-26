@@ -507,16 +507,10 @@ function saveResidenceDetails(status) {
             type: "POST",
             data: formData,
             success: function (data) {
-                if (data == 'success') {
-                	$('#emploView').hide();
+            	if (data === 'success') {
+                	$('#popResiView').hide();
                 	$('.popMask').fadeOut();
-                    /*if (status == 'saveContinue') {
-                        $("#addNewPetitionTemplateDiv").empty();
-                        $("#addNewPetitionTemplateDiv").load(sourceleadUrl + immiModulePath + "/gotoTemplatePreviousPage?status=taskList");
-                    } else if (status == 'save') {
-                        $("#addNewPetitionTemplateDiv").empty();
-                        $("#addNewPetitionTemplateDiv").load(sourceleadUrl + immiModulePath + "/gotoTemplatePreviousPage?status=formDetails");
-                    }*/
+                	getCandidateResidenceList(candidateId);
                 }
             }
         });
@@ -527,3 +521,16 @@ function saveResidenceDetails(status) {
     }
 	
 }
+
+function getCandidateResidenceList(candidateId){
+		console.log("inside displayResidenceDetails function call test -->")
+		$.ajax({
+	        url: sourceleadUrl + immiModulePath + "/getCandidateResidenceList?candidateId="+candidateId,
+	       type: "GET",
+	        success: function (result) {
+	       	  console.log("Before  loading result---->");
+	           $("#residencesTab").html(result);
+	           console.log("After loading result---->");
+	       }
+	   });
+	}
