@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import com.bis.sourcelead.dao.BlogCategoryDao;
 import com.bis.sourcelead.dto.BlogCategoryDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.BlogCategory;
+import com.bis.sourcelead.entity.SourceleadBlogs;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
@@ -89,10 +91,11 @@ public class BlogCategoryDaoImpl implements BlogCategoryDao {
 		List<Long> countlist = null;
 		StringBuilder query1 = new StringBuilder("");
 		if (blogCategoryDTO.getSearchValue() != null && !"".equalsIgnoreCase(blogCategoryDTO.getSearchValue())) {
-			query1.append("and( bc.categoryName like '" + blogCategoryDTO.getSearchValue() + "%' ")
-					.append("OR bc.description like '%" + blogCategoryDTO.getSearchValue() + "%' ")
-					.append("OR bc.blogCount like '%" + blogCategoryDTO.getSearchValue() + "%' ")
-					.append("OR bc.createdBy like '%" + blogCategoryDTO.getSearchValue() + "%') ) ");
+			
+			query1.append("and( (bc.createdBy.firstName like '" + blogCategoryDTO.getSearchValue() + "%' OR bc.createdBy.lastName like '%" + blogCategoryDTO.getSearchValue() + "' )")
+		      .append("OR (concat(sb.createdBy.firstName,sb.createdBy.lastName) like '%" + blogCategoryDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')" )
+			  .append("and( bc.categoryName like '" + blogCategoryDTO.getSearchValue() + "%' ")
+			  .append("OR bc.description like '%" + blogCategoryDTO.getSearchValue() + "%') ) ");
 
 		}
 
@@ -176,6 +179,34 @@ public class BlogCategoryDaoImpl implements BlogCategoryDao {
 			}
 		}
 		return blogCategoryList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public BlogCategory validateBlogCategoryCategoryNameByCategoryNameAndCategoryUUID(String categoryName,
+			String categoryUUID) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from BlogCategory bc  where bc.categoryUUID =:categoryUUID and bc.categoryName =:categoryName ";
+		List<BlogCategory> blogCategoryList =session.createQuery(query) .setString("categoryName", categoryName).setString("categoryUUID", categoryUUID).list();
+		BlogCategory blogCategory = null;
+		if(blogCategoryList != null && !blogCategoryList.isEmpty())
+		{
+			blogCategory = (BlogCategory) blogCategoryList.iterator().next();
+		}
+		return blogCategory;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validateBlogCategoryCategoryNameByCategoryName(String categoryName) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+			 String query = "from BlogCategory bc where bc.categoryName =:categoryName";
+				Collection<BlogCategory> blogCategoryList = session.createQuery(query) .setString("categoryName", categoryName).list();
+				if (blogCategoryList != null && blogCategoryList.size() > 0) {
+					flag = true;
+				}
+		     return flag;
 	}
 
 }

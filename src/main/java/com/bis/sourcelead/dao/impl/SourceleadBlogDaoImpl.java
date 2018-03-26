@@ -1,12 +1,8 @@
 package com.bis.sourcelead.dao.impl;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
@@ -159,29 +155,6 @@ public class SourceleadBlogDaoImpl implements SourceleadBlogDao{
 
 
 	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public SourceleadBlogs findByBlogTitle(String name) throws Exception {
-		Session session = this.sessionFactory.getCurrentSession();
-		List<SourceleadBlogs> sourceleadBlogs = new ArrayList<SourceleadBlogs>();
-		logger.debug("findBy BlogTitle start");
-		try{
-			sourceleadBlogs = session.createQuery("from SourceleadBlogs sb where sb.blogTitle=:name  and sb.status = '1' " )
-					.setString( "name", name ).list();
-			
-			logger.debug("findBy BlogTitle end");
-			if (sourceleadBlogs.size() > 0) {
-				return sourceleadBlogs.get(0);
-			} else {
-				return null;
-			}
-		}catch(Exception e){
-			logger.error(ExceptionUtils.getFullStackTrace(e));
-		}
-		return null;
-	}
-
-
-	@Override
 	@Transactional
 	public List<SourceleadBlogs> getSourceleadBlogsByCategoryId(Long categoryId) throws Exception {
 
@@ -227,6 +200,36 @@ public class SourceleadBlogDaoImpl implements SourceleadBlogDao{
 		String query = "from SourceleadBlogs sb left join fetch sb.categoryId cat where cat.id =:categoryId ORDER BY rand()";
 		List<SourceleadBlogs> sourceleadBlogsList = session.createQuery(query.toString()).setLong("categoryId", categoryId).list();
 		return sourceleadBlogsList;
+	}
+
+
+	@Override
+	@Transactional
+	public SourceleadBlogs validateSourceleadBlogTitleByBlogTitleAndBlogId(String blogTitle, String blogUUID)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from SourceleadBlogs sb  where sb.blogUUID =:blogUUID and sb.blogTitle =:blogTitle ";
+		List<SourceleadBlogs> sourceleadBlogList =session.createQuery(query) .setString("blogTitle", blogTitle).setString("blogUUID", blogUUID).list();
+		SourceleadBlogs sourceleadBlogs = null;
+		if(sourceleadBlogList != null && !sourceleadBlogList.isEmpty())
+		{
+			sourceleadBlogs = (SourceleadBlogs) sourceleadBlogList.iterator().next();
+		}
+		return sourceleadBlogs;
+	}
+
+
+	@Override
+	@Transactional
+	public Boolean validateSourceleadBlogTitleByBlogTitle(String blogTitle) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+			 String query = "from SourceleadBlogs sb where sb.blogTitle =:blogTitle";
+				Collection<SourceleadBlogs> sourceleadBlogList = session.createQuery(query) .setString("blogTitle", blogTitle).list();
+				if (sourceleadBlogList != null && sourceleadBlogList.size() > 0) {
+					flag = true;
+				}
+		return flag;
 	}
 	
 }
