@@ -35,6 +35,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
+import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
@@ -734,6 +735,17 @@ public class ImmigrationRestController {
 		model.setViewName("/immigration/employerDetailsTab");
 		 List<CandidateEmployers>   candidatesEmployersList = candidateEmployersService.getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long.valueOf(candidateId), orgLocations.getId());
 		model.addObject("candidatesEmployersList",candidatesEmployersList);
+		return model;
+	}
+	
+	@RequestMapping(value = { "/getCandidateResidenceList" })
+	public ModelAndView getCandidateResidenceList(
+			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		model.setViewName("/immigration/residenceDetailsTab");
+		 List<CandidateResidence>   candidatesResidenceList = immigrationCommonService.getCandidatesResidenceListByCandidateIdAndOrgLocationID(candidateId);
+		model.addObject("candidatesResidenceList",candidatesResidenceList);
 		return model;
 	}
 }

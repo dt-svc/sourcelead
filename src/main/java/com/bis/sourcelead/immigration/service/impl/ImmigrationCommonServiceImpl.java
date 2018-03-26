@@ -525,4 +525,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		return immigrationCommonDao.deletetCandidateFamilyDetails(candidateId);
 	}	
 	
+	@Override
+ public List<CandidateResidence> getCandidatesResidenceListByCandidateIdAndOrgLocationID(Long candidateId) {
+ return immigrationCommonDao.getCandidatesResidenceListByCandidateIdAndOrgLocationID(candidateId);
+ }	
+	
 }
