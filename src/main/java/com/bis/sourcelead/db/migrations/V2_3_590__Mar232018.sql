@@ -6,7 +6,7 @@ ALTER TABLE `sourcelead`.`SOURCELEAD_BLOGS` ADD COLUMN `HREF` VARCHAR(50) NULL D
 
 ALTER TABLE `sourcelead`.`BLOG_CATEGORY` ADD COLUMN `HREF` VARCHAR(50) NULL DEFAULT NULL AFTER `STATUS`;
 
-UPDATE `sourcelead`.`blog_category` SET `CATEGORY_NAME`='General Category', `DESCRIPTION`='General Category', `HREF`='General-Category' WHERE `ID`='1';
+UPDATE `sourcelead`.`BLOG_CATEGORY` SET `CATEGORY_NAME`='General Category', `DESCRIPTION`='General Category', `HREF`='General-Category' WHERE `ID`='1';
 
 DROP TABLE IF EXISTS `sourcelead`.`BLOG_SUBSCRIPTION`;
 CREATE TABLE `sourcelead`.`BLOG_SUBSCRIPTION` (
