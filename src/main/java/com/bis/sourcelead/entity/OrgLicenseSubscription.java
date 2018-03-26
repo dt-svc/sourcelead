@@ -59,6 +59,10 @@ public class OrgLicenseSubscription implements Serializable{
 	@Column(name = "TO_DATE")
 	private Date toDate;
 	
+	@ManyToOne
+	@JoinColumn(name = "TIMEZONE_ID")
+    private Timezone timezone;
+	
 	@Column(name = "UUID")
 	private String uuid;
 	
@@ -215,5 +219,13 @@ public class OrgLicenseSubscription implements Serializable{
 
 	public void setCurrency(String currency) {
 		this.currency = currency;
+	}
+
+	public Timezone getTimezone() {
+		return timezone;
+	}
+
+	public void setTimezone(Timezone timezone) {
+		this.timezone = timezone;
 	}
 }

@@ -148,6 +148,9 @@ public class RegistrationRestController {
 	 @Autowired
 	 OrgLicenseSubscriptionPriceService orgLicenseSubscriptionPriceService;
 	 
+	 @Autowired
+     ConversionUtil conversionUtil;
+	 
 	 
 	 @RequestMapping(value = "/app/getOrgsList")
 	 		public @ResponseBody String getUsersList(HttpServletRequest request,
@@ -286,10 +289,6 @@ public class RegistrationRestController {
 	   }
 	
 	
-	
-	
-	
-	
 	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG')")
 	@RequestMapping(value = "/app/getOrgSubscribedList" , method = RequestMethod.POST)
 	   public List<OrgLicenseSubscriptionDTO> getOrgSubscribedList(@RequestParam(value="orgId", required=true) Long orgId,
@@ -305,6 +304,7 @@ public class RegistrationRestController {
 				subscriptionDTO.setSubscriptionType(subscription.getSubscriptionType().getName());
 				subscriptionDTO.setCountry(subscription.getCountry());
 				subscriptionDTO.setStorageType(subscription.getStorageSubscriptionType().getName());
+				subscriptionDTO.setUserSubscription(subscription.getUserSubscriptionType().getName());
 				
 				if(subscription.getFromDate() != null) {
 					subscriptionDTO.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),subscription.getFromDate()));
@@ -331,11 +331,69 @@ public class RegistrationRestController {
 				}
 				
 				subscriptionDTO.setModulesList(registeredTabs);
+				subscriptionDTO.setLicenseUUID(subscription.getUuid());
 				subscriptionList.add(subscriptionDTO);
 			}
 		}
 		return subscriptionList;
 	   }
+	
+	
+	
+
+	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG')")
+	@RequestMapping(value = "/app/getLocationSubscriptionDetails" , method = RequestMethod.POST)
+	   public OrgLicenseSubscriptionDTO getLocationSubscriptionDetails(@RequestParam(value="licenseUUID", required=true) String licenseUUID,
+			   HttpServletRequest request) throws Exception {
+		
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		OrgLicenseSubscription subscription =  orgLicenseSubscriptionService.getOrgLicenseSubscriptionByUUID(licenseUUID);
+
+		OrgLicenseSubscriptionDTO subscriptionDTO = new OrgLicenseSubscriptionDTO();
+		subscriptionDTO.setSubscriptionType(subscription.getSubscriptionType().getId().toString());
+		subscriptionDTO.setCountry(subscription.getCountry());
+		subscriptionDTO.setStorageType(subscription.getStorageSubscriptionType().getId().toString());
+		subscriptionDTO.setUserSubscription(subscription.getUserSubscriptionType().getId().toString());
+		if(subscription.getTimezone() != null) {
+			subscriptionDTO.setTimezone(subscription.getTimezone().getId().toString());
+		}
+	
+		
+		if(subscription.getFromDate() != null) {
+			subscriptionDTO.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),subscription.getFromDate()));
+		}
+		
+		if(subscription.getToDate() != null) {
+			subscriptionDTO.setToDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),subscription.getToDate()));
+		}
+		
+		
+	    if(!subscription.getStorageSubscriptionType().getName().equalsIgnoreCase("Free Trail")) {
+			if(subscription.getCountry().equalsIgnoreCase("United States")) {
+				subscriptionDTO.setInvoiceAmount(subscription.getInvoiceAmount());
+			}else {
+				Double invoiceAmount = conversionUtil.currencyConvert(subscription.getCurrency(), "USD" ,subscription.getInvoiceAmount());
+				DecimalFormat df = new DecimalFormat(".##");
+				subscriptionDTO.setInvoiceAmount(Double.valueOf(df.format(invoiceAmount)));
+			}
+		}else {
+			subscriptionDTO.setInvoiceAmount(0d);
+		}
+		
+		
+		String[] subscribedTabsList = subscription.getSubscriptionTabs().split(",");
+		List<Long> tabIdsList = new ArrayList<>();
+	    for(int i=0; i<subscribedTabsList.length; i++) {
+	    	tabIdsList.add(Long.parseLong(subscribedTabsList[i]));
+	    }
+		
+		subscriptionDTO.setModulesIdsList(tabIdsList);
+		subscriptionDTO.setLicenseUUID(subscription.getUuid());
+	
+		return subscriptionDTO;
+	   }
+	
 	
 	
 	

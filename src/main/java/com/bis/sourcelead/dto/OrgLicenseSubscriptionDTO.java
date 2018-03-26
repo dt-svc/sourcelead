@@ -29,6 +29,8 @@ public class OrgLicenseSubscriptionDTO implements Serializable{
 	
 	private List<String> modulesList;
 	
+	private List<Long> modulesIdsList;
+	
 	@Required(desc = "subscriptionType")
 	private String subscriptionType;
 	
@@ -43,6 +45,8 @@ public class OrgLicenseSubscriptionDTO implements Serializable{
 	
 	@Required(desc = "timezone")
 	private String timezone;
+	
+	private String licenseUUID;
 
 	public long getOrgLinceseSubscriptionId() {
 		return orgLinceseSubscriptionId;
@@ -154,5 +158,21 @@ public class OrgLicenseSubscriptionDTO implements Serializable{
 
 	public void setTimezone(String timezone) {
 		this.timezone = timezone;
+	}
+
+	public String getLicenseUUID() {
+		return licenseUUID;
+	}
+
+	public void setLicenseUUID(String licenseUUID) {
+		this.licenseUUID = licenseUUID;
+	}
+
+	public List<Long> getModulesIdsList() {
+		return modulesIdsList;
+	}
+
+	public void setModulesIdsList(List<Long> modulesIdsList) {
+		this.modulesIdsList = modulesIdsList;
 	}
 }

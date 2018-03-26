@@ -109,6 +109,28 @@ public class OrgLicenseSubscriptionDaoImpl implements OrgLicenseSubscriptionDao 
 		List<OrgLicenseSubscription> orgLicenseSubscriptionList = session.createQuery(query.toString()).setLong("orgId", orgId).list();
 		return orgLicenseSubscriptionList;
 	}
+	
+
+	@Override
+	@Transactional
+	public OrgLicenseSubscription getOrgLicenseSubscriptionByUUID(String uuid) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<OrgLicenseSubscription> orgLicenseSubscription = new ArrayList<OrgLicenseSubscription>();
+		logger.debug("getOrgLicenseSubscriptionById start");
+		String query = "from OrgLicenseSubscription subscription left join fetch subscription.org org "
+				+ "left join fetch subscription.subscriptionType left join fetch subscription.userSubscriptionType left join fetch subscription.storageSubscriptionType "
+				+ "where subscription.uuid = :uuid ";
+		orgLicenseSubscription = session.createQuery(query).setString( "uuid", uuid ).list();
+		logger.debug("getOrgLicenseSubscriptionById end");
+		if (orgLicenseSubscription.size() > 0) {
+			return orgLicenseSubscription.get(0);
+		} else {
+			return null;
+		}
+   	
+	
+	}
 
 	
 }

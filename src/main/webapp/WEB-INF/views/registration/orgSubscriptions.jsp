@@ -7,6 +7,7 @@
 <a href="javascript:void(0)" class="addcon-pop btn btn-sm btn-primary mb10" onclick="addSubscription();"><i class="glyphicon glyphicon-plus"></i>&nbsp;Subscribe</a>
 <div id="subscriptionList"></div>
 <div id="subscriptionListLoading"></div>
+<div id="editsubscriptionListLoading"></div>
 </div>
 
 <form:form class="login-form clearfix"  id="subscribe_form"  name="subscribe_form" method="post" >
@@ -20,7 +21,7 @@
 
 
 <script>
-function addSubscription(){
+function addSubscription(licenseUUID){
 	  $("#subscriptionList").empty();
 	 
 	  $("#subscriptionListLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -31,19 +32,22 @@ function addSubscription(){
 		
 		result = result +'<div class="col-md-6">';
 		
-		result = result +'<div class="form-group clearfix id="errCountryMsg"">';
+		result = result +'<div class="form-group clearfix id="errCountryMsg">';
 		result = result +'<label class="col-md-4 noPad">Country<i class="text-danger">&nbsp;*</i></label>';
 		result = result +'<div class="col-md-6 padding_right">';
 		result = result +'<select class="form-control" field-name="Country" data-validation="required" onchange="changeCountry(); getTimezonesList();" id="subscribeCountries" name="country">';
-	    result = result +'</select>';
+		result = result + '<option value="">Select Country</option>';
+		result = result +'</select>';
 		result = result +'</div>';
 		result = result +'</div>';
+		
+		result = result +'<input type="hidden" name="licenseUUID" value=""  id="subscriptionLicenseUUID">';
 		
 		result = result +'<div class="form-group clearfix">';
 		result = result +'<label class="col-md-4 noPad">Org Enrollment<i class="text-danger">&nbsp;*</i></label>';
 		result = result +'<div class="col-md-6 padding_right">';
 		
-		result = result + '   <select class="form-control chosen-select" name="subscriptionType" id="subscriptionType" onchange="getInvoiceRate();" field-name="Org Enrollment" data-validation="required">';
+		result = result + '   <select class="form-control" name="subscriptionType" id="subscriptionType" onchange="getInvoiceRate();" field-name="Org Enrollment" data-validation="required">';
 	 	result = result + '       <option value="">Select Enrollment Type</option>';
 	 	result = result +'		<c:forEach var="subscriptionType" items="${subscriptionTypeList}">';
 	 	result = result + '       <option value="${subscriptionType.id}">${subscriptionType.name}</option>';
@@ -57,7 +61,7 @@ function addSubscription(){
 		result = result +'<label class="col-md-4 noPad">No.Of Users<i class="text-danger">&nbsp;*</i></label>';
 		result = result +'<div class="col-md-6 padding_right">';
 		
-		result = result + '   <select class="form-control chosen-select" name="userSubscription" id="userSubscription" onchange="getInvoiceRate();" field-name="Users" data-validation="required">';
+		result = result + '   <select class="form-control" name="userSubscription" id="userSubscription" onchange="getInvoiceRate();" field-name="Users" data-validation="required">';
 	 	result = result + '       <option value="">Select Users</option>';
 	 	result = result +'		<c:forEach var="userSubscription" items="${userSubscriptionTypeList}">';
 	 	result = result + '       <option value="${userSubscription.id}">${userSubscription.name}</option>';
@@ -172,11 +176,22 @@ function addSubscription(){
               removeValidation();
 			}
 	 	  });
-	 	  
-	 	  
-	    getSubscribeCountries();
+	  
 	    getOrgModules();
-	    getTimezonesList();
+	    
+	    if(licenseUUID != null && licenseUUID != '' && licenseUUID != 'undefined'){
+	    	 $("#subscriptionLicenseUUID").val(licenseUUID);
+	    	 $("#editsubscriptionListLoading").attr('style','position:absolute; width:100%; height:950px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	        setTimeout(function () {
+	        	  licenseSubscriptionDetails(licenseUUID);
+	        	  $("#editsubscriptionListLoading").removeAttr("style");
+	 			}, 3000);
+	    	
+	    }else{
+	    	  getSubscribeCountries();
+	    	  getTimezonesList();
+	    }
+	    
 }
 </script>
 
@@ -313,23 +328,32 @@ function getOrgModules(){
 </script>
 
 <script>
-function getSubscribeCountries(){
+function getSubscribeCountries(country){
 	  var orgId = '${orgId}';
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  $.ajax({
-	    	type: "POST",
-	    	url : sourceleadUrl+"/getOrgSubscribeCountries?${_csrf.parameterName}=${_csrf.token}&orgId="+orgId, 
-	        success: function(json) {
-	        var output = "";
-	           output = output + "<option value=''>Select Country</option>";
-	            for (var i=0; i<json.length; i++){
-	        		var opt = json[i];
-	        		output = output + "<option value='" +opt+ "'>"+opt+"</option>";
-				}
+	
+	  if(country == null || country == '' || country == 'undefined'){
+		  $.ajax({
+		    	type: "POST",
+		    	url : sourceleadUrl+"/getOrgSubscribeCountries?${_csrf.parameterName}=${_csrf.token}&orgId="+orgId, 
+		        success: function(json) {
+		        var output = "";
+		           output = output + "<option value=''>Select Country</option>";
+		            for (var i=0; i<json.length; i++){
+		        		var opt = json[i];
+		        		output = output + "<option value='" +opt+ "'>"+opt+"</option>";
+					}
+		        	$("#subscribeCountries").empty();
+		        	$("#subscribeCountries").append(output);
+		        }
+		 });
+	  }else{
+	      	    var output = "";
+	            output = output + "<option value='" +country+ "'>"+country+"</option>";
 	        	$("#subscribeCountries").empty();
 	        	$("#subscribeCountries").append(output);
-	        }
-	 });
+	  }
+
 	  
 }
 </script>
@@ -351,8 +375,9 @@ function orgSubscriptionList(){
 	                	 result = result +"<table id='example' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"<tr>"; 
-	                     result = result +'<th>Subscription Type</th>';
 	               		 result = result +'<th>Country</th>';
+	               	     result = result +'<th>Subscription Type</th>';
+	               	     result = result +'<th>User Subscription</th>';
 	               		 result = result +'<th>Invoice Amount</th>';
 	               		 result = result +'<th>From Date</th>';
 	               		 result = result +'<th>To Date</th>';
@@ -366,12 +391,13 @@ function orgSubscriptionList(){
 	                    	 var opt = json[i]; 
 	               
 	                    	 result = result +'<tr>';
-	                    	 result = result +'<td><div class="tbldata-dotdot-100" title='+opt.subscriptionType+'>'+opt.subscriptionType+'</div></td>';
-	                    	 result = result +'<td><div class="tbldata-dotdot-100" title='+opt.country+'>'+opt.country+'</div></td>';
-	                    	 result = result +'<td><div class="tbldata-dotdot-100" title='+opt.currency+' '+opt.invoiceAmount+'>'+opt.currency+' '+opt.invoiceAmount+'</div></td>';
-	                    	 result = result +'<td><div class="tbldata-dotdot-100" title='+opt.fromDateStr+'>'+opt.fromDateStr+'</div></td>';
-	                    	 result = result +'<td><div class="tbldata-dotdot-100" title='+opt.toDateStr+'>'+opt.toDateStr+'</div></td>';
-	                    	 result = result +'<td><div class="tbldata-dotdot-100" title='+opt.storageType+'>'+opt.storageType+'</div></td>';
+	                    	 result = result +'<td><a href="#"><div class="tbldata-dotdot-100" title='+opt.country+' onclick="addSubscription(\''+opt.licenseUUID+'\');">'+opt.country+'</div></a></td>';
+	                    	 result = result +'<td><div class="tbldata-dotdot-80" title='+opt.subscriptionType+'>'+opt.subscriptionType+'</div></td>';
+	                    	 result = result +'<td><div class="tbldata-dotdot_80" title='+opt.userSubscription+'>'+opt.userSubscription+'</div></td>';
+	                    	 result = result +'<td><div class="tbldata-dotdot-80" title='+opt.currency+' '+opt.invoiceAmount+'>'+opt.currency+' '+opt.invoiceAmount+'</div></td>';
+	                    	 result = result +'<td><div class="tbldata-dotdot-80" title='+opt.fromDateStr+'>'+opt.fromDateStr+'</div></td>';
+	                    	 result = result +'<td><div class="tbldata-dotdot-80" title='+opt.toDateStr+'>'+opt.toDateStr+'</div></td>';
+	                    	 result = result +'<td><div class="tbldata-dotdot-80" title='+opt.storageType+'>'+opt.storageType+'</div></td>';
 	                    	 
 	                 	    result = result +'<td>';
 		   		        	result = result +'<div class="positionRelative">';
@@ -390,13 +416,11 @@ function orgSubscriptionList(){
 		   		    	 	}
 		   		        	result = result +'</div>';
 		   		        	result = result +'</div>';
-		   
 
-	   		        	result = result +'</div>';
-	   		        	result = result +'</td>';
+		   		        	result = result +'</div>';
+		   		        	result = result +'</td>';
 	                    	 
-	                    	
-	                    	 result = result +'</tr>';
+	                    	result = result +'</tr>';
 	                    	
                     }
 	                     result = result +" </tbody>";
@@ -410,6 +434,43 @@ function orgSubscriptionList(){
 	 
 }
 </script>
+
+<script>
+function licenseSubscriptionDetails(licenseUUID){
+	   var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+		  type : "POST",
+		  url: sourceleadUrl+"/getLocationSubscriptionDetails?${_csrf.parameterName}=${_csrf.token}&licenseUUID="+licenseUUID,
+           success :function(json) {
+        	  getSubscribeCountries(json.country);
+        	 $("select[name=subscriptionType]").val(json.subscriptionType);
+        	 $("select[name=userSubscription]").val(json.userSubscription);
+        	 $("select[name=storageType]").val(json.storageType);
+        	 getTimezonesList(); 
+        	 $("select[name=timezone]").val(json.timezone);
+	         $("#timeZone").trigger("chosen:updated");
+	         $("input[name=subscriptionDate]").val(json.fromDateStr);
+	         
+	         $("#subscriptionRate").html(json.invoiceAmount);
+	         
+	        	 for(var i=0; i<json.modulesIdsList.length; i++){
+	        		var opt = json.modulesIdsList[i];
+	        		 document.getElementById("checkbox"+opt).checked = true;
+	    		     document.getElementById("module"+opt).removeAttribute("class")
+	    		     document.getElementById("module"+opt).className = 'panelDefault clearfix activeOrgbox'
+	        			
+	        	 }
+	         
+	         
+         },
+           
+      });  
+}
+
+</script>
+
+
+
 
 <script>
 function checkModule(id){

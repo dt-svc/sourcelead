@@ -264,7 +264,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			e.printStackTrace();
 		}
 		
-		OrgLicenseSubscription orgLicenseSubscription =  getOrgLicenseSubscriptionDetails(registration, org, user,orgLocations);
+		OrgLicenseSubscription orgLicenseSubscription =  getOrgLicenseSubscriptionDetails(registration, org, user,orgLocations,loginUser);
 		try {
 			orgLicenseSubscriptionService.saveOrgLicenseSubscription(orgLicenseSubscription);
 			orgLocationDTO.setOrgLinceseSubscriptionId(orgLicenseSubscription.getId());
@@ -638,7 +638,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 	
 	
-	private OrgLicenseSubscription getOrgLicenseSubscriptionDetails(Registration registration,Org org,User user,OrgLocations orgLocations) throws Exception{
+	private OrgLicenseSubscription getOrgLicenseSubscriptionDetails(Registration registration,Org org,User user,OrgLocations orgLocations,User loginUser) throws Exception{
 		OrgLicenseSubscription orgLicenseSubscription = null;
 		if(StringUtils.isNotBlank(registration.getOrgLinceseSubscriptionId())) {
 			orgLicenseSubscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionById(Long.parseLong(registration.getOrgLinceseSubscriptionId()));
@@ -661,14 +661,16 @@ public class RegistrationServiceImpl implements RegistrationService{
 		storageSubscriptionType.setId(Long.parseLong(registration.getDataStorage()));
 		orgLicenseSubscription.setStorageSubscriptionType(storageSubscriptionType);
 		
-		orgLicenseSubscription.setCreatedBy(user);
+		orgLicenseSubscription.setCreatedBy(loginUser);
 		orgLicenseSubscription.setCreatedDate(new Date());
-		orgLicenseSubscription.setUpdatedBy(user);
+		orgLicenseSubscription.setUpdatedBy(loginUser);
 		orgLicenseSubscription.setUpdatedDate(new Date());
 		
 		Date subscriptionDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),registration.getSubscriptionDate());
 		subscriptionDate = CalendarUtil.getDateTimeForGivenTimeZone(orgLocations.getTimezone().getTimeZoneId(), subscriptionDate, orgLocations.getDateFormat());
 		orgLicenseSubscription.setFromDate(subscriptionDate);
+		
+		orgLicenseSubscription.setTimezone(orgLocations.getTimezone());
 		
 		Calendar toDate = Calendar.getInstance();
 		toDate.setTime(subscriptionDate);    

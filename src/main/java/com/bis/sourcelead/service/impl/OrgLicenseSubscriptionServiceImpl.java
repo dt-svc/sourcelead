@@ -660,7 +660,13 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 		
 		try {
 			
-			OrgLicenseSubscription orgLicenseSubscription = new OrgLicenseSubscription();
+			OrgLicenseSubscription orgLicenseSubscription = null;
+			if(orgLicenseSubscriptionDTO.getLicenseUUID() != null && !orgLicenseSubscriptionDTO.getLicenseUUID().isEmpty()) {
+				orgLicenseSubscription = orgLicenseSubscriptionDao.getOrgLicenseSubscriptionByUUID(orgLicenseSubscriptionDTO.getLicenseUUID());
+			}else {
+				orgLicenseSubscription = new OrgLicenseSubscription();
+				orgLicenseSubscription.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			}
 			Org org = orgDao.findOrgByID(orgId);
 			orgLicenseSubscription.setOrg(org);
 			orgLicenseSubscription.setCountry(orgLicenseSubscriptionDTO.getCountry());
@@ -728,6 +734,11 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public OrgLicenseSubscription getOrgLicenseSubscriptionByUUID(String uuid) throws Exception {
+		return orgLicenseSubscriptionDao.getOrgLicenseSubscriptionByUUID(uuid);
 	}
 
 }
