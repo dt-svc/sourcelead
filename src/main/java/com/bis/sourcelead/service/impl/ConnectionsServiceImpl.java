@@ -56,5 +56,10 @@ public class ConnectionsServiceImpl implements ConnectionsService {
 		return connectionsDao.checkUserInContacts(fromUid, toUid);
 	}
 
+	@Override
+	public List<ConnectionsDTO> getMututalConnections(Long userId, Long sessionUid) {
+		return connectionsDao.getMututalConnections(userId, sessionUid);
+	}
+
 
 }

@@ -23,6 +23,8 @@ public interface ConnectionsService {
 
 	Long checkUserInContacts(Long fromUid, Long toUid);
 
+	List<ConnectionsDTO> getMututalConnections(Long userId, Long sessionUid);
+
 	int deleteConnection(String connectionUUID);
 
 }

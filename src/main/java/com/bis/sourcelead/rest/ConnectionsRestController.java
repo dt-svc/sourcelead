@@ -284,5 +284,13 @@ public class ConnectionsRestController {
 	}
 	
 	
+	@RequestMapping(value = "/getMututalConnections")
+	public @ResponseBody List<ConnectionsDTO> getMututalConnections(
+			@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request)
+			throws Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		List<ConnectionsDTO> connectionsDTOs = connectionsService.getMututalConnections(userId, user.getId());
+		return connectionsDTOs;
+	}
 	
 }

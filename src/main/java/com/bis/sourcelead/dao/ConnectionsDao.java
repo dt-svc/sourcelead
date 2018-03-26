@@ -28,6 +28,8 @@ public interface ConnectionsDao {
 	int deleteConnection(String connectionUUID);
 
 	Map<String, BigInteger> getCountValuesForSentReceivedConnected(Long userId);
+
+	List<ConnectionsDTO> getMututalConnections(Long userId, Long sessionUid);
 	
 	
 

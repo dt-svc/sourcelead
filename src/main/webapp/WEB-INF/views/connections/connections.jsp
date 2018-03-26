@@ -56,6 +56,19 @@ window.onload = function () {
 	</div>
 	<div id="loadMoreDiv"></div> 
 </div>
+
+<!--  PopUp  -->
+<div class="popMask" id="popupMaskShade"></div>
+<div class="conePop" id="popupMaskLight">
+    <div class="conePopHead">
+        <h2>Mutual Connections</h2>
+        <a href="javascript:void(0)" class="popClo"><i class="fa fa-times"></i></a>
+    </div>
+    <div class="conePopInn" id="mutualConnDynamic">
+    </div>
+</div>
+<!--  PopUp  -->
+
 <script>
 
 
@@ -138,9 +151,9 @@ function getConnectionsList(type){
 	 				}
 	 				var mutCountStatus = null;
 	 				if(user.count != 0){
-	 					mutCountStatus = user.count + " Mutual Connections";
-	 				}else{
-	 					mutCountStatus = "No Mutual Connections";
+	 					mutCountStatus ="<a href='javascript:void(0)' onclick='getMututalConnections("+user.id+");' class='conUnder'><p>"+user.count + " Mutual Connections</p></a>";
+		 			}else{
+		 				mutCountStatus = "<p>No Mutual Connections</p>";
 	 				}
 	 				var orgNameValue = null;
 	 				if(user.orgName == ""){
@@ -156,7 +169,7 @@ function getConnectionsList(type){
 	 				result = result + "<span><img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' src='"+fileUrl+"' class='m-t-xs'   alt='image'>";
 	 				result = result + "</span><a href='javascript:void(0)'><h2>"+user.userName+"</h2>";
 	 				result = result + "<p>"+user.userType+" <b> "+orgNameValue+" </b></p></a>";
-	 				result = result + "<a href='javascript:void(0)' class='conUnder'><p>"+mutCountStatus+"<p></a>";
+	 				result = result + mutCountStatus;
 	 				result = result + '</div><div class="connCtaBtn" id="connectionState'+user.userCode+'">'+state+'</div></div></div>';
 	   		    }
 	 			if(result !== ""){
@@ -190,6 +203,38 @@ function getConnectionsList(type){
 
 
 <script>
+
+function getMututalConnections(userId){
+	 $.ajax({ 
+		type : "GET",
+		url : sourceleadUrl+"/getMututalConnections?${_csrf.parameterName}=${_csrf.token}&userId="+userId,
+        success: function(json) {
+        	if(json !=null && json.length > 0){
+	        	$("#popupMaskShade").show();
+	            $("#popupMaskLight").show();
+	            var mutualPopVal = "<ul>";
+	        	for(var i=0; i<json.length; i++){
+	 				var user = json[i];
+	 				var orgNameValue = null;
+	 				if(user.orgName == ""){
+	 					orgNameValue = "";
+	 				}else{
+	 					orgNameValue = "at " + user.orgName;
+	 				}
+	 				var fileUrl = "";
+	 				if(user.fileUrl != null){
+	 					fileUrl = user.fileUrl;
+	 				}
+	 				mutualPopVal = mutualPopVal + '<li class="clearfix"><div class="UsImg"><img data-id="userProfileImage" onerror="predefineProfileImage(this);" src="'+fileUrl+'" alt="" title="'+user.userName+'"/></div>';
+	 				mutualPopVal = mutualPopVal + '<div class="UsText"><h2>'+user.userName+'</h2><p>'+user.userType+' '+orgNameValue+'</p></div></li>';
+	        	}
+	        	mutualPopVal = mutualPopVal + '</ul>';
+	        	$("#mutualConnDynamic").empty().append(mutualPopVal);
+        	}
+        }
+	});
+}
+
 function eduMsgFadeinFunction(message) {
 	$("#selector4").fadeIn(200, function(){
 		$("#inviteMessage").text(message);
@@ -374,6 +419,12 @@ $(document).ready(function(){
             $(".conHeadgap").css("height", "0px");
         }
     });
+    
+    // POPUP
+    $(".popClo").click(function(){
+    	$("#popupMaskShade").hide();
+        $("#popupMaskLight").hide();
+    });    
 });
 </script>
 
