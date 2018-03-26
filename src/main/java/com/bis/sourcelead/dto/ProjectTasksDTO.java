@@ -264,3 +264,4 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 		this.exportType = exportType;
 	}
 
+}
