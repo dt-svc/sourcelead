@@ -525,4 +525,18 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		return immigrationCommonDao.deletetCandidateFamilyDetails(candidateId);
 	}	
 	
+	@Override
+ public List<CandidateResidence> getCandidatesResidenceListByCandidateIdAndOrgLocationID(Long candidateId) {
+ return immigrationCommonDao.getCandidatesResidenceListByCandidateIdAndOrgLocationID(candidateId);
+ }	
+	@Override
+	public List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId,String idType) {
+		// TODO Auto-generated method stub
+		return immigrationCommonDao.getCandidatePassportVisaDetails(candidateId,idType);
+	}	
+	@Override
+	public CandidateFamilyDetails getCandidateFamilyDetailsById(Long id) {
+		// TODO Auto-generated method stub
+		return immigrationCommonDao.getCandidateFamilyDetailsById(id);
+	}	
 }

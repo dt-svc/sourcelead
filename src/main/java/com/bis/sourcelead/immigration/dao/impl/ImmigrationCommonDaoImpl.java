@@ -237,4 +237,53 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	        System.out.println("Deleted record id -->"+ id);
 		return "success";
 	}
+    
+    @SuppressWarnings("unchecked")
+   	@Override
+   	@Transactional(rollbackFor = { Exception.class })
+   	public List<CandidateResidence> getCandidatesResidenceListByCandidateIdAndOrgLocationID(Long candidateId) {
+   		logger.debug("Getting  CandidateResidenceDetails --->  ");
+   		Session session = this.sessionFactory.getCurrentSession();
+   		List<CandidateResidence> candidatesResidenceList = new ArrayList<CandidateResidence>();
+   		try {
+   			
+   			String queryString  ="from CandidateResidence cr where cr.candidate.id=:candidateId order by cr.updatedDate desc";
+   			
+   			candidatesResidenceList = session.createQuery(queryString).setLong("candidateId", candidateId).list();
+   			
+   		}catch(Exception e) {
+   		  logger.error("Exeption caught while getting dao layer --->"+e.getMessage());
+   		  e.printStackTrace();
+   		}
+   		return candidatesResidenceList;
+   	}
+    @SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId, String idType)
+	{
+		logger.debug("Getting  CandidatepassportDetails --->  ");
+		Session session = this.sessionFactory.getCurrentSession();
+		String Type = "Passport";
+		List<CandidatePassportVisa> passportvisaList = new ArrayList<CandidatePassportVisa>();
+			String queryString = "from CandidatePassportVisa cp where cp.candidate.id=:candidateId and cp.idType=:idType  order by cp.updatedDate desc";
+			passportvisaList = session.createQuery(queryString).setLong("candidateId", candidateId).setString("idType", idType).list();
+		
+		return passportvisaList;
+	}
+    @Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateFamilyDetails getCandidateFamilyDetailsById(Long id) {
+		System.out.println("get CandidateFamilyDetails id ---> "+id);
+		CandidateFamilyDetails familyObj= null;
+        try {
+			Session session = this.sessionFactory.getCurrentSession();
+			familyObj = (CandidateFamilyDetails)session.get(CandidateFamilyDetails.class,id);
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing getting record -->"+e.getMessage());
+			e.printStackTrace();
+		}
+        System.out.println("got the record id -->"+ id);
+		return familyObj;
+	}
 }

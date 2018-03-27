@@ -38,6 +38,11 @@ public interface ImmigrationCommonDao {
 	List<CandidateFamilyDetails> getCandidateFamilyDetails(Long candidateId);
 
 	String deletetCandidateFamilyDetails(Long id);
+	
+	List<CandidateResidence> getCandidatesResidenceListByCandidateIdAndOrgLocationID(Long candidateId);
 
+	List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId,String idType);
+	
+	CandidateFamilyDetails getCandidateFamilyDetailsById(Long id);
 
 }

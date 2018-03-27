@@ -20,6 +20,9 @@
       <input type="hidden" id = "candidateID" value = "${candidateId}">
 		<input type="hidden" id = "immigrationID" value = "${immigrationId}">
 		<input type="hidden" id = "templateID" value = "${templateId}">
+		<input type="hidden" id="Passport" name="Passport" value="Passport" >
+		<input type="hidden" id="Visa" name="Visa" value="Visa" >
+		
 		<div class="clearfix"></div>
 		<div class="immigraHead">
 			<ul class="immigraTabs">
@@ -157,6 +160,14 @@ $(document).ready(function() {
         getCandidateEducationList(candidateId);
         } else if(tab=='#employersTab'){
         getCandidateEmployerList(candidateId);
+        }else if(tab=='#residencesTab'){
+        	getCandidateResidenceList(candidateId);
+        }else if(tab=='#passportsTab'){
+        	var Passport=$("#Passport").val();
+        immigration.displayPassportDetails(candidateId,Passport);
+        }else if(tab=='#visasTab'){
+         var Visa=$("#Visa").val();
+          immigration.displayVisaDetails(candidateId,Visa);
         }
         $(tab).fadeIn();
     });

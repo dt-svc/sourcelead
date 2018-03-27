@@ -35,6 +35,8 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
+import com.bis.sourcelead.entity.CandidatePassportVisa;
+import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
@@ -687,7 +689,25 @@ public class ImmigrationRestController {
 
 		return status;
 	}
-	
+	@RequestMapping(value = { "/getCandidateFamilyDetailsById" })
+	public @ResponseBody  CandidateFamilyDetails getCandidateFamilyDetailsById(
+			@RequestParam(value = "id", required = true) Long id, HttpServletRequest request) {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		String status="";
+		System.out.println(" in controller method getCandidateFamilyDetailsById id ---> "+id);
+		CandidateFamilyDetails familyObj= null;
+		try {
+			familyObj = immigrationCommonService.getCandidateFamilyDetailsById(id);
+			System.out.println(" in controller status "+status);
+		} catch (Exception e) {
+			logger.error("Exception caught in controller test --->"+e.getMessage());
+			e.printStackTrace();
+		}
+
+		return familyObj;
+	}
+
 	@RequestMapping(value = { "/deleteCandidateEduDetails" })
 	public String deleteCandidateEduDetails(
 			@RequestParam(value = "id", required = true) Long id, 
@@ -734,6 +754,39 @@ public class ImmigrationRestController {
 		model.setViewName("/immigration/employerDetailsTab");
 		 List<CandidateEmployers>   candidatesEmployersList = candidateEmployersService.getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long.valueOf(candidateId), orgLocations.getId());
 		model.addObject("candidatesEmployersList",candidatesEmployersList);
+		return model;
+	}
+	
+	@RequestMapping(value = { "/getCandidateResidenceList" })
+	public ModelAndView getCandidateResidenceList(
+			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		model.setViewName("/immigration/residenceDetailsTab");
+		 List<CandidateResidence>   candidatesResidenceList = immigrationCommonService.getCandidatesResidenceListByCandidateIdAndOrgLocationID(candidateId);
+		model.addObject("candidatesResidenceList",candidatesResidenceList);
+		return model;
+	}
+	@RequestMapping(value = { "/getCandidatePassportVisaDetails" })
+	public ModelAndView getCandidatePassportVisaDetails(@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request, @RequestParam(value = "idType", required = true) String idType)
+	{
+		ModelAndView model = new ModelAndView();
+		System.out.println(" inisde getCandidatePassportDetails controller test -->");
+		List<CandidatePassportVisa> PassportList = new ArrayList<CandidatePassportVisa>();
+		try {
+			PassportList = immigrationCommonService.getCandidatePassportVisaDetails(candidateId, idType);
+			model.addObject("PassportList", PassportList);
+		} catch (Exception e) {
+			logger.error("Exception caught in controller --->" + e.getMessage());
+			e.printStackTrace();
+		}
+		System.out.println(" after getCandidatePassportVisaDetails controller -->");
+		if (idType.equalsIgnoreCase("Passport")) {
+			model.setViewName("/immigration/passportDetailsTab");
+		}
+		else {
+			model.setViewName("/immigration/visaDetailsTab");
+		}
 		return model;
 	}
 }

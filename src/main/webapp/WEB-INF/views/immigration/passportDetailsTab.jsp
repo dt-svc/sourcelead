@@ -1,3 +1,4 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <div class="immigraTabsHead">			  	
 		  	<a href="javascript:void(0)" id="addPass"><i class="glyphicon glyphicon-plus"></i> Add Passport</a> 
 		  	<span><input class="immigraTabSerach" type="text"></span>
@@ -13,11 +14,12 @@
 				<th>Valid To</th>
 				<th>&nbsp;</th>
 			  </tr>
+			  <c:forEach var="passportdetails" items="${PassportList}" varStatus="rows">
 			  <tr>
-				<td><div class="tbldata-dotdot-big">IND5656256</div></td>
+				<td><div class="tbldata-dotdot-big">${passportdetails.idNumber}</div></td>
 				<td><div class="tbldata-dotdot-me">India</div></td>
-				<td><div class="tbldata-dotdot-me">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-me">DD/MM/YY</div></td>
+				<td><div class="tbldata-dotdot-me">${passportdetails.validFromDate}</div></td>
+				<td><div class="tbldata-dotdot-me">${passportdetails.validToDate}</div></td>
 				<td class="immigraAction">
 					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
 					<div class="mmigraActionInn">
@@ -27,103 +29,13 @@
 						</span>
 					</div>
 				</td>
-			  </tr>  			  			  
-			  <tr>
-				<td><div class="tbldata-dotdot-big">IND5656256</div></td>
-				<td><div class="tbldata-dotdot-me">India</div></td>
-				<td><div class="tbldata-dotdot-me">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-me">DD/MM/YY</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
 			  </tr>  
-			  <tr>
-				<td><div class="tbldata-dotdot-big">IND5656256</div></td>
-				<td><div class="tbldata-dotdot-me">India</div></td>
-				<td><div class="tbldata-dotdot-me">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-me">DD/MM/YY</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
-			  </tr>   
-			  <tr>
-				<td><div class="tbldata-dotdot-big">IND5656256</div></td>
-				<td><div class="tbldata-dotdot-me">India</div></td>
-				<td><div class="tbldata-dotdot-me">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-me">DD/MM/YY</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
-			  </tr>  
-			  <tr>
-				<td><div class="tbldata-dotdot-big">IND5656256</div></td>
-				<td><div class="tbldata-dotdot-me">India</div></td>
-				<td><div class="tbldata-dotdot-me">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-me">DD/MM/YY</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
-			  </tr>   
-			  <tr>
-				<td><div class="tbldata-dotdot-big">IND5656256</div></td>
-				<td><div class="tbldata-dotdot-me">India</div></td>
-				<td><div class="tbldata-dotdot-me">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-me">DD/MM/YY</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
-			  </tr>   
-			  <tr>
-				<td><div class="tbldata-dotdot-big">IND5656256</div></td>
-				<td><div class="tbldata-dotdot-me">India</div></td>
-				<td><div class="tbldata-dotdot-me">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-me">DD/MM/YY</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
-			  </tr>   
-			  						
+			  </c:forEach>			 				
 			</tbody>
 		  </table>
 		</div>
 		
-		<div class="immigraPagi clearfix">
+		<!-- <div class="immigraPagi clearfix">
 			<div class="immiPagiText">Showing 1 to 6 of 6 entries</div>
 			  <ul class="pagination">
 				<li><a href="#"> << </a></li>
@@ -132,9 +44,10 @@
 				<li class="disabled"><a href="#">6</a></li>
 				<li data-page="last"><a href="#"> >> </a></li>
 			  </ul>
-		</div>
+		</div> -->
 		<!--popup code start -->
 		<form id="CandidatePassportform" name="CandidatePassportform" method="post"> 
+		<input type="hidden" id="Passport" name="Passport" value="Passport" >
 		<div class="popUpOut" id="popPassView">
 		<div class="popupHead">
 			<h2>Add Passport</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
