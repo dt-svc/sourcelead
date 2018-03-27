@@ -16,6 +16,8 @@ import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+
+
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
@@ -24,6 +26,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.json.JSONArray;
 import org.json.JSONException;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,28 +34,31 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectTasksDao;
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.ProjectAssignTask;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectTaskCustomFieldData;
 import com.bis.sourcelead.entity.ProjectTaskDocuments;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.model.ProjectTaskDocumentBO;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTaskActivityService;
+import com.bis.sourcelead.service.ProjectTaskCustomFieldDataService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
@@ -86,7 +92,13 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	private String sourceleadLoginUrl;
 	
 	@Autowired
-	ProjectTaskActivityService projectTaskActivityService;
+	private ProjectTaskActivityService projectTaskActivityService;
+	
+	@Autowired
+	private OrglocationFormFieldsService orglocationFormFieldsService;
+	
+	@Autowired
+	private ProjectTaskCustomFieldDataService projectTaskCustomFieldDataService;
 	
 	@Autowired
 	PdfUtil pdfUtil;
@@ -351,7 +363,27 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
         tasks.setGeneratedId(getProjectTaskGenaratedId(projects));
         tasks.setProjectTasksUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
         tasks.setCreatedDate(commonUtil.currentDate());
-        tasksDao.addTasks(tasks);
+        ProjectTasks savedTask  = tasksDao.addTasks(tasks);
+        
+        if(projectTasksDTO.getCustomFormData() !=null) {
+			for( CustomFormFieldDTO customFields:projectTasksDTO.getCustomFormData()) {
+				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+					ProjectTaskCustomFieldData projectTaskCustomFields = null;
+					if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+						projectTaskCustomFields = projectTaskCustomFieldDataService.getProjectTaskCustomFieldDataById(customFields.getEntityId());
+					}else {
+						projectTaskCustomFields = new ProjectTaskCustomFieldData();
+					}
+				projectTaskCustomFields.setProjectTask(savedTask);
+				OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+				projectTaskCustomFields.setOrglocationsFormFields(orgFormField);
+				projectTaskCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+				projectTaskCustomFieldDataService.saveProjectTaskCustomFieldData(projectTaskCustomFields);
+				}
+				
+			}	
+		}
+        
         
         for (ProjectAssignTask projectAssignTask : assignProjetcTasks) {
          SendMailtoAssigntoMembersaboutAddingTask(projectAssignTask,projectTasksDTO,tasks,loginOrgLocation,user);

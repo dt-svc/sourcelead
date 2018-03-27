@@ -47,6 +47,7 @@ public class Candidate implements Serializable {
 	@JoinColumn(name = "PARENT_CANDIDATE_ID")
 	private Candidate parentCandidateId;
 
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orgLocationId;

@@ -28,12 +28,14 @@ public interface SourceleadBlogService {
 
 	public List<SourceleadBlogs> getSourceleadBlogsByCategoryId(Long categoryId) throws Exception;
 
-	public SourceleadBlogs findByBlogTitle(String name) throws Exception;
-
 	public List<SourceleadBlogs> getAllSourceleadBlogs() throws Exception;
 
 	SourceleadBlogs getSourceleadBlogsByBlogTitle(String blogTitle) throws Exception;
 
 	public List<SourceleadBlogs> getRelatedSourceleadBlogs(Long categoryId) throws Exception;
+	
+	public SourceleadBlogs validateSourceleadBlogTitleByBlogTitleAndBlogId(String blogTitle,String blogUUID) throws Exception;
+
+	Boolean validateSourceleadBlogTitleByBlogTitle(String blogTitle) throws Exception;
 
 }

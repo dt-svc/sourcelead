@@ -25,4 +25,8 @@ public interface BlogCategoryService {
 	
 	public List<BlogCategoryDTO> getBlogCategoryListByActiveBlogs() throws Exception;
 	
+	public BlogCategory validateBlogCategoryCategoryNameByCategoryNameAndCategoryUUID(String categoryName,String categoryUUID) throws Exception;
+
+	Boolean validateBlogCategoryCategoryNameByCategoryName(String categoryName) throws Exception;
+	
 }

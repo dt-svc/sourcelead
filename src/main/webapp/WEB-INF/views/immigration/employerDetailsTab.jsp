@@ -18,8 +18,8 @@
 			<c:forEach var="empItems" items="${candidatesEmployersList}" varStatus="rows">
 			  <tr>
 				<td><div class="tbldata-dotdot-sm">${empItems.name}</div></td>
-				<td><div class="tbldata-dotdot-sm">${empItems.designation}</div></td>
-				<td><div class="tbldata-dotdot-me">${empItems.address}</div></td>
+				<td><div class="tbldata-dotdot-sm">${!empty empItems.designation ? empItems.designation : '---' }</div></td>
+				<td><div class="tbldata-dotdot-me">${!empty empItems.address ? empItems.address : '---'}</div></td>
 				<td><div class="">${empItems.startMonth} ${empItems.startYear}</div></td>
 				<td><div class="">${empItems.endMonth} ${empItems.endYear}</div></td>
 				<td><div><i id="edit" onclick="editEmpDetailsByRowId(${empItems.id});"
@@ -161,6 +161,7 @@
 	function popFun() {
 		$(".popMask").fadeOut(200);
 		$("#emploView").fadeOut(200);
+		$("#employerDetails_form")[0].reset();
 	}
 </script>	
 		
