@@ -13,16 +13,20 @@
 				<th>Country</th>
 				<th>Valid From</th>
 				<th>Valid To</th>
-				<th>&nbsp;</th>
+				<th>Action</th>
 			  </tr>
 			  <c:forEach var="visadetails" items="${PassportList}" varStatus="rows">
 			  <tr>
 				<td><div class="tbldata-dotdot-sm">H1B</div></td>
 				<td><div class="tbldata-dotdot-sm">${visadetails.visaType}</div></td>
-				<td><div class="tbldata-dotdot-sm">India</div></td>
+				<td><div class="tbldata-dotdot-sm">${visadetails.country}</div></td>
 				<td><div class="tbldata-dotdot-sm">${visadetails.validFromDate}</div></td>
 				<td><div class="tbldata-dotdot-sm">${visadetails.validToDate}</div></td>
-				<td class="immigraAction">
+				<td><div><i id="edit" onclick="immigration.editPassportVisaDetailsByRowId(${visadetails.id});"
+				class="glyphicon glyphicon-pencil"></i><i id="delete" 
+				 onclick="immigration.deletePassportVisaDetailsById(${visadetails.id},'${visadetails.idType}');" 
+				 class="glyphicon glyphicon-trash ml10"></i></div></td>
+				<!-- <td class="immigraAction">
 					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
 					<div class="mmigraActionInn">
 						<span>
@@ -30,7 +34,7 @@
 							<a href="javascript:void(0)" class="fa fa-pencil"></a>
 						</span>
 					</div>
-				</td>
+				</td> -->
 			  </tr>
 			   </c:forEach>
 			  </tbody>
@@ -161,7 +165,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Visa Type</label>
               	<div class="col-md-8 padding_right">
-					<select class="chosen-select form-control" id = "visaType" field-name = "Visa Type"  data-validation = "required">
+					<select class="chosen-select form-control" id = "visaType" field-name = "Visa Type" >
 					  <option>Select Visa Type</option>
 					  <option>H1B</option>
 					  <option>H2B</option>
@@ -178,25 +182,25 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Country</label>
               	<div class="col-md-8 padding_right">
-					<select class="chosen-select form-control">
-					  <option>Select Country</option>
-					  <option>India</option>
-					  <option>USA</option>
-					  <option>UK</option>
+					<select class="chosen-select form-control" name="country" id= "countryName" field-name="Country" data-validation="required">
+					<option value="" selected>--Select Country--</option>
+					  <c:forEach var="country" items="${countryList}">
+						<option value="${country.name}">${country.name}</option>
+					</c:forEach>
 					</select>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Valid From</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control calendar" value="" name = "validFrom" id = "validfrom" field-name = "Valid From"/>
+              		<input type="text" class="form-control calendar" value="" name = "validFrom" id = "validfrom" field-name = "Valid From" data-validation="required"/>
 				    <div class="clearDate" onClick="clearCandidateCertStartDate();"></div>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Valid To</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control calendar" value="" name = "validTo" id = "validto" field-name = "Valid To" />
+              		<input type="text" class="form-control calendar" value="" name = "validTo" id = "validto" field-name = "Valid To" data-validation="required"/>
 				<div class="clearDate" onClick="clearCandidateCertEndDate();"></div>
 				</div>
 			</div>									

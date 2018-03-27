@@ -404,7 +404,13 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		familyDetails.setCurrentAddress(familyDetailsDto.getCurrentAddress());
 		familyDetails.setStatus(Constants.RECORD_ACTIVE);
 	    Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
-		familyDetails.setCreatedDate(currentDate);
+	    if(familyDetailsDto.getId()!= null) {
+	    System.out.println(" in edit mode --member id >"+familyDetailsDto.getId());
+	    familyDetails.setId(familyDetailsDto.getId());
+	    }else {
+	    familyDetails.setCreatedDate(currentDate); // created date , created by fields skipped for edit mode 
+	    familyDetails.setCreatedBy(user);
+	     }
 		familyDetails.setCreatedBy(user);
 		familyDetails.setUpdatedDate(currentDate);
 		familyDetails.setUpdatedBy(user);
@@ -538,5 +544,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	public CandidateFamilyDetails getCandidateFamilyDetailsById(Long id) {
 		// TODO Auto-generated method stub
 		return immigrationCommonDao.getCandidateFamilyDetailsById(id);
+	}
+
+	@Override
+	public void removeCandidatePassportVisaDetails(Long candidateId, Long id, User user, OrgLocations orgLocations, String idType)
+	{
+		 immigrationCommonDao.removeCandidatePassportVisaDetails(candidateId, id, user, orgLocations,idType);
+
 	}	
 }

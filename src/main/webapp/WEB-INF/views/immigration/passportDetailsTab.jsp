@@ -12,15 +12,20 @@
 				<th>Country</th>
 				<th>Valid From</th>
 				<th>Valid To</th>
-				<th>&nbsp;</th>
+				<th>Action</th>
 			  </tr>
 			  <c:forEach var="passportdetails" items="${PassportList}" varStatus="rows">
 			  <tr>
 				<td><div class="tbldata-dotdot-big">${passportdetails.idNumber}</div></td>
-				<td><div class="tbldata-dotdot-me">India</div></td>
+				<td><div class="tbldata-dotdot-me">${passportdetails.country}</div></td>
 				<td><div class="tbldata-dotdot-me">${passportdetails.validFromDate}</div></td>
 				<td><div class="tbldata-dotdot-me">${passportdetails.validToDate}</div></td>
-				<td class="immigraAction">
+				<td><div><i id="edit" onclick="immigration.editPassportVisaDetailsByRowId(${passportdetails.id});"
+				class="glyphicon glyphicon-pencil"></i><i id="delete" 
+				 onclick="immigration.deletePassportVisaDetailsById(${passportdetails.id},'${passportdetails.idType}');" 
+				 class="glyphicon glyphicon-trash ml10"></i></div></td>
+				 
+				<!-- <td class="immigraAction">
 					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
 					<div class="mmigraActionInn">
 						<span>immMenuClick
@@ -28,7 +33,7 @@
 							<a href="javascript:void(0)" class="fa fa-pencil"></a>
 						</span>
 					</div>
-				</td>
+				</td> -->
 			  </tr>  
 			  </c:forEach>			 				
 			</tbody>
@@ -66,25 +71,25 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Country</label>
               	<div class="col-md-8 padding_right">
-					<select class="chosen-select form-control">
-					  <option>Select Country</option>
-					  <option>India</option>
-					  <option>USA</option>
-					  <option>UK</option>
+					<select class="chosen-select form-control" name="country" id= "countryName" field-name="Country" data-validation="required">
+					<option value="" selected>--Select Country--</option>
+					  <c:forEach var="country" items="${countryList}">
+						<option value="${country.name}">${country.name}</option>
+					</c:forEach>
 					</select>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Valid From</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control calendar" value="" name = "validFrom" id = "validFrom" field-name = "Valid From"/>
+              		<input type="text" class="form-control calendar" value="" name = "validFrom" id = "validFrom" field-name = "Valid From" data-validation="required"/>
 				    <div class="clearDate" onClick="clearCandidateCertStartDate();"></div>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Valid To</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control calendar" value="" name = "validTo" id = "validTo" field-name = "Valid To" />
+              		<input type="text" class="form-control calendar" value="" name = "validTo" id = "validTo" field-name = "Valid To" data-validation="required"/>
 				<div class="clearDate" onClick="clearCandidateCertEndDate();"></div>
 				</div>
 			</div>									

@@ -3,6 +3,7 @@ var immiModulePath = "/immigration";
 var immTemplId = '';
 var immigrationId = '';
 var candidateId = '';
+var familyMemberId = id;
 var templateId='';
 var formNames = [];
 function Immigration() {
@@ -322,6 +323,8 @@ function Immigration() {
 	}
 }
 
+    
+    
  this.displayPassportDetails=function(candidateId,Passport){
 	console.log("inside displayPassportDetails function call  -->")
 	var Passport=document.getElementById("Passport").value;
@@ -347,6 +350,24 @@ this.displayVisaDetails=function(candidateId,Visa){
     });
 }	
 
+this.deletePassportVisaDetailsById=function(id,idType){
+	var candidateId = $("#candidateID").val();
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/deleteCandidatePassportVisaDetails?id="+id+"&candidateId="+candidateId+ "&idType=" + idType,
+        type: "GET",
+        success: function (result) {
+        	if(result=='success'){
+        		if(idType=='Passport'){
+        			immigration.displayPassportDetails(candidateId,idType);
+        		}
+        		else if (idType == 'Visa') {
+        			immigration.displayVisaDetails(candidateId,idType);
+        		}
+        	}
+        }
+    });
+}
+
 
     this.saveCandidateFamilyDetails= function(relationType) {
     	var formId= "";
@@ -368,7 +389,7 @@ this.displayVisaDetails=function(candidateId,Visa){
 			console.log(formData);
 			 var candidateId = $('#candidateID').val();
 			$.ajax({
-				url : sourceleadUrl + immiModulePath+ "/saveCandidateFamilyDetails?candidateId="+candidateId+"&relationType="+relationType,
+				url : sourceleadUrl + immiModulePath+ "/saveCandidateFamilyDetails?candidateId="+candidateId+"&relationType="+relationType+"&memberId="+familyMemberId,
 				type : "POST",
 				data : formData,
 				success : function(data) {
@@ -415,6 +436,7 @@ this.displayVisaDetails=function(candidateId,Visa){
 	
 	this.editFamilyDetailsById = function(id, relationType){
 		console.log(" inside edit record  "+id);
+		familyMemberId = id; // update the variable with family member id in edit mode.
 		$.ajax({
             url: sourceleadUrl + immiModulePath + "/getCandidateFamilyDetailsById?id="+id,
             type: "GET",
