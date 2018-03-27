@@ -269,7 +269,11 @@ function addResume(candidateId) {
 							 		setTimeout(function() {
 							 			candidateList();					 			
 							 		},100);
-			            		 }
+			            		} else if (result.indexOf('Sign In') !== -1) {
+			     					location.replace(sourceleadUrl);
+			     				} else {
+			     				    showError("Operation failed, please try again");
+			     				}
 								 /* $("#conMsg").fadeIn(200);
 								 $('#conMsg').delay(2000).fadeOut('slow'); */
 							},

@@ -13,6 +13,7 @@
 <script>
 function closeCertificatePopup(){
 	 $("#popUpDivEmp").removeClass("edit-details-active");
+	 $(".location-alert").fadeOut();
 }
 </script>
 <%-- 
@@ -110,48 +111,52 @@ var validationSettings = {
 --%>
 
 <script>
-function storeCertificate(candidateId){
-	
-			 var scoreType = document.getElementById("scoreType").value; 
-			 if(scoreType != null && scoreType != ""){
-				 $('#candidateScore').removeAttr('data-validation-optional');
-				 $('#candidateScore').attr("data-validation","required"); 
-			 }else{
-				 $('#candidateScore').removeAttr('data-validation');
-				 $('#candidateScore').attr("data-validation-optional","true"); 
-			 }
-		 
-			
-		if ($('#Candidate_certification_form').validate(false,validationSettings)) {
-			
-			 var formData = getFormData("Candidate_certification_form");
-				$("#Candidate_certification_form").attr("disabled", "disabled");
-				 $("#addCandidate").attr("disabled", "disabled");
-		        $.post(sourceleadUrl+"/storeCandidateCertifications?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(data) {
-		        	closeCertificatePopup();
-		        	$("#selector5").removeAttr("style");
-	     			$("#selector5").css({ display: "block" });
-	     			$("#cerMsgDiv").html("Success!! New Certification added");
-		        	candidateCertificateList(candidateId);
-               		cerMsgFadein();
-               		qwikCertificates(candidateId);
-               		setTimeout(function(){
-			 			candidateList();					 			
-			 		},100);
-		        });
-				
-			return true;
+function storeCertificate(candidateId) {
+	var scoreType = document.getElementById("scoreType").value; 
+	if(scoreType != null && scoreType != "") {
+ 		$('#candidateScore').removeAttr('data-validation-optional');
+		$('#candidateScore').attr("data-validation","required"); 
+	} else {
+ 		$('#candidateScore').removeAttr('data-validation');
+ 		$('#candidateScore').attr("data-validation-optional","true"); 
+	}
+	if ($('#Candidate_certification_form').validate(false,validationSettings)) {
+		var formData = getFormData("Candidate_certification_form");
+		$("#Candidate_certification_form").attr("disabled", "disabled");
+		$("#addCandidate").attr("disabled", "disabled");
+		$.post(sourceleadUrl+"/storeCandidateCertifications?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(result) {
+			if (result && result.response === "INVALID_DATA") {
+    		    showError(result.responseMessage);
+    		} else if (result.response === "AWKWARD") {
+    		    location.href = "/errorPage";
+    		} else if (result.response === "SUCCESS") {
+    			closeCertificatePopup();
+    		    $("#selector5").removeAttr("style");
+    	     	$("#selector5").css({ display: "block" });
+    	     	$("#cerMsgDiv").html("Success!! New Certification added");
+    		    candidateCertificateList(candidateId);
+                cerMsgFadein();
+                qwikCertificates(candidateId);
+                setTimeout(function(){
+    				candidateList();					 			
+    			},100);
+    		} else if (result.indexOf('Sign In') !== -1) {
+    			location.replace(sourceleadUrl);
+    		} else {
+    		    showError("Operation failed, please try again");
+    		}
+		});
+		return true;
 		} else {
 			return false;
 		}
 	}
 	$('body').on('blur','#Candidate_certification_form',
-			function() {
-				$("#Candidate_certification_form").showHelpOnFocus();
-				$("#Candidate_certification_form").validateOnBlur(false,validationSettings);
-			});
+		function() {
+			$("#Candidate_certification_form").showHelpOnFocus();
+			$("#Candidate_certification_form").validateOnBlur(false,validationSettings);
+		});
 </script>
-
 
 <!-- this script is for serializeFormJSON -->
 <script type="text/javascript">
@@ -673,54 +678,59 @@ function addCertification(candidateId) {
      3.ajax url implementation in CandidateCertificationsRestController.
 --%>
       
-      <script type="text/javascript">
+<script type="text/javascript">
 	function updateCandidateCertification(candidateId, candidateCertificationId) {
-
 		var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd'
 		};
-		
 		var scoreType = document.getElementById("scoreType").value; 
-		 if(scoreType != null && scoreType != ""){
-			 $('#candidateScore').removeAttr('data-validation-optional');
-			 $('#candidateScore').attr("data-validation","required"); 
-		 }else{
-			 $('#candidateScore').removeAttr('data-validation');
-			 $('#candidateScore').attr("data-validation-optional","true"); 
-		 }
+		if(scoreType !== null && scoreType !== "") {
+			$('#candidateScore').removeAttr('data-validation-optional');
+			$('#candidateScore').attr("data-validation","required"); 
+	 	} else {
+			$('#candidateScore').removeAttr('data-validation');
+			$('#candidateScore').attr("data-validation-optional","true"); 
+		}
 		
 		if ($('#candidateCertificationEdit_form').validate(false,
 				validationSettings)) {
-
-			 var formData = getFormData("candidateCertificationEdit_form");
+			var formData = getFormData("candidateCertificationEdit_form");
 			//It will escape all the special characters
-			
-			 $.post(sourceleadUrl+"/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateCertificationId"+ candidateCertificationId, formData, function(data) {
-				 closeCertificatePopup();
-     			$("#selector5").removeAttr("style");
-     			$("#selector5").css({ display: "block" });
-     			$("#cerMsgDiv").html("Certification details updated");
+			$.post(sourceleadUrl+"/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateCertificationId"+ candidateCertificationId, formData, function(result) {
+				if (result && result.response === "INVALID_DATA") {
+	    		    showError(result.responseMessage);
+	    		} else if (result.response === "AWKWARD") {
+	    		    location.href = "/errorPage";
+	    		} else if (result.response === "SUCCESS") {
+					closeCertificatePopup();
+     				$("#selector5").removeAttr("style");
+     				$("#selector5").css({ display: "block" });
+	     			$("#cerMsgDiv").html("Certification details updated");
 					candidateCertificateList(candidateId);
 					cerMsgFadein();
 					qwikCertificates(candidateId);
 					setTimeout(function(){
-			 			candidateList();					 			
-			 		},100);
-		        });			
-
+						candidateList();					 			
+					},100);
+	    		} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
+		    });			
 			return true;
 		} else {
 			return false;
 		}
-		$('body').on('blur','#candidateCertificationEdit_form',
-				function() {
-					$("#candidateCertificationEdit_form").showHelpOnFocus();
-					$("#candidateCertificationEdit_form").validateOnBlur(false,
-							validationSettings);
-				});
+	$('body').on('blur','#candidateCertificationEdit_form',
+		function() {
+			$("#candidateCertificationEdit_form").showHelpOnFocus();
+			$("#candidateCertificationEdit_form").validateOnBlur(false,
+				validationSettings);
+			});
 	}
 </script>
   <%-- 

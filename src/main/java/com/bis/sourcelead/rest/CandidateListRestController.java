@@ -1487,94 +1487,128 @@ public class CandidateListRestController {
 	 * @throws NullPointerException
 	 */
 	@RequestMapping(value = "/saveOrUpdateOnlySkillBycandidateId")
-	public String saveOrUpdateOnlySkillBycandidateId(@RequestParam(value = "loginUserId", required = false) Long loginUserId,
-			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
-			@RequestParam(value = "candidateId", required = false) String candidateId,
+	public Response<String> saveOrUpdateOnlySkillBycandidateId(@RequestParam(value = "loginUserId", required = false) Long loginUserId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(defaultValue = "0") long candidateId,
 			@RequestParam(value = "skillName", required = false) String skillName, HttpServletRequest request) throws Exception {
-		Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
-		User user = userService.getUserById(loginUserId);
-		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		StringBuffer activitySummary = new StringBuffer();
-		if (null != can && StringUtils.isNotEmpty(skillName)) {
+		Response<String> response = new Response<>();
+		try {
+			User user = userService.getUserById(loginUserId);
+			if (user != null) {
+				Candidate can = candidateService.getCandidateByCandidateId(candidateId);
+				OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+				StringBuffer activitySummary = new StringBuffer();
+				if (null != can && StringUtils.isNotEmpty(skillName)) {
+					ArrayList<String> oldSkills = new ArrayList<>();
+					if (StringUtils.isNotBlank(can.getSkillsName())) {
+						oldSkills.addAll(Arrays.asList(can.getSkillsName().split("\\s*,\\s*")));
+					}
+					ArrayList<String> newSkills = new ArrayList<>(Arrays.asList(skillName.split("\\s*,\\s*")));
+					ArrayList<String> actualNewSkills = new ArrayList<>();
+					actualNewSkills.addAll(newSkills);
+					newSkills.removeAll(oldSkills);
+					oldSkills.removeAll(actualNewSkills);
 
-			ArrayList<String> oldSkills = new ArrayList<>();
-			if (StringUtils.isNotBlank(can.getSkillsName())) {
-				oldSkills.addAll(Arrays.asList(can.getSkillsName().split("\\s*,\\s*")));
+					activitySummary.append("Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION)
+							.append(String.join(",", oldSkills)).append(Constants.OLD_VALUE_TAG_END).append(" ")
+							.append(Constants.NEW_VALUE_TAG_INITIATION).append(String.join(",", newSkills))
+							.append(Constants.NEW_VALUE_TAG_END);
+					can.setSkillsName("");
+					can.setSkillsName(skillName);
+					candidateService.saveOrUpdateCandidate(can);
+					candidateService.saveOrUpdateCandidateElkDocument(can);
+					candidateActivityCommonUtil.storeCandidateHistory(can, user);
+					candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_SKILL_UPDATED,
+							activitySummary.toString(), "CANDIDATE");
+					// return "success";
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					/*
+					 * ArrayList<String> oldSkills = new ArrayList<>(); if
+					 * (StringUtils.isNotBlank(can.getSkillsName())) {
+					 * oldSkills.addAll(Arrays.asList(can.getSkillsName().split("\\s*,\\s*"))); }
+					 * ArrayList<String> newSkills = new
+					 * ArrayList<>(Arrays.asList(skillName.split("\\s*,\\s*"))); ArrayList<String>
+					 * actualNewSkills = new ArrayList<>(); actualNewSkills.addAll(newSkills);
+					 * newSkills.removeAll(oldSkills); oldSkills.removeAll(actualNewSkills);
+					 * 
+					 * activitySummary.append("Skills").append(" : ").append(Constants.
+					 * OLD_VALUE_TAG_INITIATION) .append(String.join(",",
+					 * oldSkills)).append(Constants.OLD_VALUE_TAG_END).append(" ")
+					 * .append(Constants.NEW_VALUE_TAG_INITIATION).append(String.join(",",
+					 * newSkills)) .append(Constants.NEW_VALUE_TAG_END); can.setSkillsName("");
+					 * candidateService.saveOrUpdateCandidate(can);
+					 * candidateService.saveOrUpdateCandidateElkDocument(can);
+					 * candidateActivityCommonUtil.storeCandidateHistory(can, user);
+					 * candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can,
+					 * "", Constants.CANDIDATE_SKILL_UPDATED, activitySummary.toString(),
+					 * "CANDIDATE"); return "failed";
+					 */
+					response.setResponse(Result.INVALID_USER.name());
+					response.setResponseMessage(Result.INVALID_USER.getValue());
+				}
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 			}
-			ArrayList<String> newSkills = new ArrayList<>(Arrays.asList(skillName.split("\\s*,\\s*")));
-			ArrayList<String> actualNewSkills = new ArrayList<>();
-			actualNewSkills.addAll(newSkills);
-			newSkills.removeAll(oldSkills);
-			oldSkills.removeAll(actualNewSkills);
-
-			activitySummary.append("Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(String.join(",", oldSkills))
-					.append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION)
-					.append(String.join(",", newSkills)).append(Constants.NEW_VALUE_TAG_END);
-			can.setSkillsName("");
-			can.setSkillsName(skillName);
-			candidateService.saveOrUpdateCandidate(can);
-			candidateService.saveOrUpdateCandidateElkDocument(can);
-			candidateActivityCommonUtil.storeCandidateHistory(can, user);
-			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_SKILL_UPDATED,
-					activitySummary.toString(), "CANDIDATE");
-			return "success";
-		} else {
-
-			ArrayList<String> oldSkills = new ArrayList<>();
-			if (StringUtils.isNotBlank(can.getSkillsName())) {
-				oldSkills.addAll(Arrays.asList(can.getSkillsName().split("\\s*,\\s*")));
-			}
-			ArrayList<String> newSkills = new ArrayList<>(Arrays.asList(skillName.split("\\s*,\\s*")));
-			ArrayList<String> actualNewSkills = new ArrayList<>();
-			actualNewSkills.addAll(newSkills);
-			newSkills.removeAll(oldSkills);
-			oldSkills.removeAll(actualNewSkills);
-
-			activitySummary.append("Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(String.join(",", oldSkills))
-					.append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION)
-					.append(String.join(",", newSkills)).append(Constants.NEW_VALUE_TAG_END);
-			can.setSkillsName("");
-			candidateService.saveOrUpdateCandidate(can);
-			candidateService.saveOrUpdateCandidateElkDocument(can);
-			candidateActivityCommonUtil.storeCandidateHistory(can, user);
-			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_SKILL_UPDATED,
-					activitySummary.toString(), "CANDIDATE");
-			return "failed";
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
+		return response;
 	}
 
 	@RequestMapping(value = "/saveOrUpdateOnlyVisaBycandidateId")
-	public String saveOrUpdateOnlyVisaBycandidateId(@RequestParam(value = "loginUserId", required = false) Long loginUserId,
-			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
-			@RequestParam(value = "candidateId", required = false) String candidateId,
+	public Response<String> saveOrUpdateOnlyVisaBycandidateId(@RequestParam(value = "loginUserId", required = false) Long loginUserId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(defaultValue = "0") long candidateId,
 			@RequestParam(value = "visaName", required = false) String visaName, HttpServletRequest request) throws Exception {
-		Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
-		User user = userService.getUserById(loginUserId);
-		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		StringBuffer activitySummary = new StringBuffer();
-		if (null != can && StringUtils.isNotEmpty(visaName)) {
-			activitySummary.append("Immigration Status").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(can.getVisaType())
-					.append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(visaName)
-					.append(Constants.NEW_VALUE_TAG_END);
-			can.setVisaType(visaName);
-			candidateService.saveOrUpdateCandidate(can);
-			candidateService.saveOrUpdateCandidateElkDocument(can);
-			candidateActivityCommonUtil.storeCandidateHistory(can, user);
-			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_VISA_UPDATED,
-					activitySummary.toString(), "CANDIDATE");
-			return "success";
-		} else {
-			activitySummary.append("Immigration Status").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(can.getVisaType())
-					.append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(visaName)
-					.append(Constants.NEW_VALUE_TAG_END);
-			can.setVisaType(null);
-			candidateService.saveOrUpdateCandidate(can);
-			candidateService.saveOrUpdateCandidateElkDocument(can);
-			candidateActivityCommonUtil.storeCandidateHistory(can, user);
-			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_VISA_UPDATED,
-					activitySummary.toString(), "CANDIDATE");
-			return "failed";
+		Response<String> response = new Response<>();
+		try {
+			User user = userService.getUserById(loginUserId);
+			if (user != null) {
+				Candidate can = candidateService.getCandidateByCandidateId(candidateId);
+				OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+				StringBuffer activitySummary = new StringBuffer();
+				if (null != can && StringUtils.isNotEmpty(visaName)) {
+					activitySummary.append("Immigration Status").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION)
+							.append(can.getVisaType()).append(Constants.OLD_VALUE_TAG_END).append(" ")
+							.append(Constants.NEW_VALUE_TAG_INITIATION).append(visaName).append(Constants.NEW_VALUE_TAG_END);
+					can.setVisaType(visaName);
+					candidateService.saveOrUpdateCandidate(can);
+					candidateService.saveOrUpdateCandidateElkDocument(can);
+					candidateActivityCommonUtil.storeCandidateHistory(can, user);
+					candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_VISA_UPDATED,
+							activitySummary.toString(), "CANDIDATE");
+					// return "success";
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					// activitySummary.append("Immigration Status").append(" :
+					// ").append(Constants.OLD_VALUE_TAG_INITIATION)
+					// .append(can.getVisaType()).append(Constants.OLD_VALUE_TAG_END).append(" ")
+					// .append(Constants.NEW_VALUE_TAG_INITIATION).append(visaName).append(Constants.NEW_VALUE_TAG_END);
+					// can.setVisaType(null);
+					// candidateService.saveOrUpdateCandidate(can);
+					// candidateService.saveOrUpdateCandidateElkDocument(can);
+					// candidateActivityCommonUtil.storeCandidateHistory(can, user);
+					// candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can,
+					// "", Constants.CANDIDATE_VISA_UPDATED,
+					// activitySummary.toString(), "CANDIDATE");
+					// return "failed";
+					response.setResponse(Result.INVALID_USER.name());
+					response.setResponseMessage(Result.INVALID_USER.getValue());
+				}
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
+		return response;
 	}
 
 	@RequestMapping(value = "/getCandidateReportsListByOrgLocationID")

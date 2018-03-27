@@ -155,49 +155,58 @@ public class CandidateEmployersRestController {
 			"rest/getCandidatesEmployersListByCandidateIdAndOrgLocationID" }, method = RequestMethod.POST)
 	public ResponseList<CandidateEmployerDTO> getCandidatesEmployersListByCandidateIdAndOrgLocationID(
 			@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception {
+		ResponseList<CandidateEmployerDTO> reponseList = new ResponseList<>();
+		try {
 
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		ResponseList<CandidateEmployerDTO> employeeList = new ResponseList<>();
-		Candidate employers = candidateService.getCandidateById(Long.parseLong(candidateId));
-		Long loc = employers.getOrgLocationId().getId();
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
-		List<CandidateEmployerDTO> candidateEmployeeDTOList = new ArrayList<>();
-		String resultJson;
-		List<CandidateEmployers> candidatesEmployersList = candidateEmployersService
-				.getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long.valueOf(candidateId), loc);
+			Candidate employers = candidateService.getCandidateById(Long.parseLong(candidateId));
+			Long loc = employers.getOrgLocationId().getId();
 
-		// candidatesEmployersList.forEach(candidaet->{
-		for (CandidateEmployers candidateEmployers : candidatesEmployersList) {
-			CandidateEmployerDTO candidateEmployerDTO = new CandidateEmployerDTO();
+			List<CandidateEmployerDTO> candidateEmployeeDTOList = new ArrayList<>();
+			String resultJson;
+			List<CandidateEmployers> candidatesEmployersList = candidateEmployersService
+					.getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long.valueOf(candidateId), loc);
 
-			if (StringUtils.isNotBlank(candidateEmployers.getStartMonth())) {
-				String smonth = getMonthAsString(candidateEmployers.getStartMonth());
-				candidateEmployers.setStartMonth(smonth);
+			// candidatesEmployersList.forEach(candidaet->{
+			for (CandidateEmployers candidateEmployers : candidatesEmployersList) {
+				CandidateEmployerDTO candidateEmployerDTO = new CandidateEmployerDTO();
+
+				if (StringUtils.isNotBlank(candidateEmployers.getStartMonth())) {
+					String smonth = getMonthAsString(candidateEmployers.getStartMonth());
+					candidateEmployers.setStartMonth(smonth);
+				}
+
+				if (StringUtils.isNotBlank(candidateEmployers.getEndMonth())) {
+					String emonth = getMonthAsString(candidateEmployers.getEndMonth());
+					candidateEmployers.setEndMonth(emonth);
+				}
+				candidateEmployerDTO.setId(candidateEmployers.getId());
+				candidateEmployerDTO.setName(candidateEmployers.getName());
+				candidateEmployerDTO.setDesignation(candidateEmployers.getDesignation());
+				candidateEmployerDTO.setAddress(candidateEmployers.getAddress());
+				candidateEmployerDTO.setStartMonth(candidateEmployers.getStartMonth());
+				candidateEmployerDTO.setEndMonth(candidateEmployers.getEndMonth());
+				candidateEmployerDTO.setStartYear(candidateEmployers.getStartYear());
+				candidateEmployerDTO.setEndYear(candidateEmployers.getEndYear());
+				candidateEmployerDTO.setCandidateId(Long.parseLong(candidateId));
+				candidateEmployerDTO.setCandidateEmployeeId(String.valueOf(candidateEmployers.getId()));
+				candidateEmployerDTO.setCandidateExperianceId(String.valueOf(candidateEmployers.getId()));
+				candidateEmployerDTO.setIsCurrentPosition(candidateEmployers.getIsCurrentPosition());
+				candidateEmployerDTO.setOrgLocationId(String.valueOf(orgLocations.getId()));
+				candidateEmployerDTO.setCandidateemployerId(String.valueOf(candidateEmployers.getId()));
+				candidateEmployeeDTOList.add(candidateEmployerDTO);
 			}
-
-			if (StringUtils.isNotBlank(candidateEmployers.getEndMonth())) {
-				String emonth = getMonthAsString(candidateEmployers.getEndMonth());
-				candidateEmployers.setEndMonth(emonth);
-			}
-			candidateEmployerDTO.setId(candidateEmployers.getId());
-			candidateEmployerDTO.setName(candidateEmployers.getName());
-			candidateEmployerDTO.setDesignation(candidateEmployers.getDesignation());
-			candidateEmployerDTO.setAddress(candidateEmployers.getAddress());
-			candidateEmployerDTO.setStartMonth(candidateEmployers.getStartMonth());
-			candidateEmployerDTO.setEndMonth(candidateEmployers.getEndMonth());
-			candidateEmployerDTO.setStartYear(candidateEmployers.getStartYear());
-			candidateEmployerDTO.setEndYear(candidateEmployers.getEndYear());
-			candidateEmployerDTO.setCandidateId(Long.parseLong(candidateId));
-			candidateEmployerDTO.setCandidateEmployeeId(String.valueOf(candidateEmployers.getId()));
-			candidateEmployerDTO.setCandidateExperianceId(String.valueOf(candidateEmployers.getId()));
-			candidateEmployerDTO.setIsCurrentPosition(candidateEmployers.getIsCurrentPosition());
-			candidateEmployerDTO.setOrgLocationId(String.valueOf(orgLocations.getId()));
-			candidateEmployerDTO.setCandidateemployerId(String.valueOf(candidateEmployers.getId()));
-			candidateEmployeeDTOList.add(candidateEmployerDTO);
+			// });
+			reponseList.setData(candidateEmployeeDTOList);
+			reponseList.setResponse(Result.SUCCESS.name());
+			reponseList.setResponseMessage(Result.SUCCESS.getValue());
+		} catch (Exception e) {
+			reponseList.setResponse(Result.AWKWARD.name());
+			reponseList.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		// });
-		employeeList.setData(candidateEmployeeDTOList);
-		return employeeList;
+		return reponseList;
 	}
 
 	private String getMonthAsString(String month) {

@@ -13,7 +13,7 @@
   <div id="shareEmptypopUp"></div>
    <div class="success_pop" id="selector4" style="display: none;"> 
      <i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span> 
-   </div>  
+   </div>
 <script>
   function noAccess(id){ 	
 	 
@@ -1243,6 +1243,10 @@ function cancel(candidateId){
     <div class="side_mask">
        <div class="proj_close" onclick="activeTab();"></div>
     </div>
+    <div class="success_pop" id="statusAlert">
+		<i class="fa fa-check-circle"></i>
+   		<span></span>
+   </div>
  <div class="clients_side_wrap quickviewTabs">
     
  <ul class="nav nav-tabs">

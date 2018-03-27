@@ -144,34 +144,51 @@ public class CandidateEducationRestController {
 	 */
 	@RequestMapping(value = { "/getCandidateEducationListByCandidateId",
 			"/rest/getCandidateEducationListByCandidateId" }, method = RequestMethod.GET)
-	public ResponseList<CandidateEducationDTO> getCandidateEducationListByCandidateId(
-			@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception {
-
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		ResponseList<CandidateEducationDTO> candiEduList = new ResponseList<>();
-		List<CandidateEducation> candidatesEducationList = candidateEducationService
-				.getCandidateEducationListByCandidateIdAndOrgLocationID(Long.valueOf(candidateId), loginOrgLocation.getId());
-		List<CandidateEducationDTO> eduList = new ArrayList<>();
-		for (CandidateEducation candidateEducation : candidatesEducationList) {
-			CandidateEducationDTO edu = new CandidateEducationDTO();
-			edu.setName(candidateEducation.getName());
-			edu.setSpecialization(candidateEducation.getSpecialization());
-			edu.setStartDateStr(candidateEducation.getStartDateStr());
-			edu.setEndDateStr(candidateEducation.getEndDateStr());
-			edu.setGrade(candidateEducation.getGrade());
-			edu.setGradeType(candidateEducation.getGradeType());
-			edu.setInstitute(candidateEducation.getInstitute());
-			edu.setAddress(candidateEducation.getAddress());
-			edu.setId(candidateEducation.getId());
-			edu.setCandidateId(candidateEducation.getCandidateId().getId());
-			edu.setCandidateEduId(candidateEducation.getId().toString());
-			edu.setStartDate(candidateEducation.getStartDateStr());
-			edu.setEndDate(candidateEducation.getEndDateStr());
-			edu.setCandidateEducationId(candidateEducation.getId());
-			eduList.add(edu);
+	public ResponseList<CandidateEducationDTO> getCandidateEducationListByCandidateId(@RequestParam(defaultValue = "0") long candidateId,
+			HttpServletRequest request) throws Exception {
+		ResponseList<CandidateEducationDTO> reponseList = new ResponseList<>();
+		try {
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if (loginOrgLocation != null) {
+				if (candidateId > 0) {
+					List<CandidateEducation> candidatesEducationList = candidateEducationService
+							.getCandidateEducationListByCandidateIdAndOrgLocationID(candidateId, loginOrgLocation.getId());
+					List<CandidateEducationDTO> eduList = new ArrayList<>();
+					for (CandidateEducation candidateEducation : candidatesEducationList) {
+						CandidateEducationDTO edu = new CandidateEducationDTO();
+						edu.setName(candidateEducation.getName());
+						edu.setSpecialization(candidateEducation.getSpecialization());
+						edu.setStartDateStr(candidateEducation.getStartDateStr());
+						edu.setEndDateStr(candidateEducation.getEndDateStr());
+						edu.setGrade(candidateEducation.getGrade());
+						edu.setGradeType(candidateEducation.getGradeType());
+						edu.setInstitute(candidateEducation.getInstitute());
+						edu.setAddress(candidateEducation.getAddress());
+						edu.setId(candidateEducation.getId());
+						edu.setCandidateId(candidateEducation.getCandidateId().getId());
+						edu.setCandidateEduId(candidateEducation.getId().toString());
+						edu.setStartDate(candidateEducation.getStartDateStr());
+						edu.setEndDate(candidateEducation.getEndDateStr());
+						edu.setCandidateEducationId(candidateEducation.getId());
+						eduList.add(edu);
+					}
+					reponseList.setData(eduList);
+					reponseList.setResponse(Result.SUCCESS.name());
+					reponseList.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					reponseList.setResponse(Result.INVALID_USER.name());
+					reponseList.setResponseMessage(Result.INVALID_USER.getValue());
+				}
+			} else {
+				reponseList.setResponse(Result.SESSION_TIMEDOUT.name());
+				reponseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			reponseList.setResponse(Result.AWKWARD.name());
+			reponseList.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		candiEduList.setData(eduList);
-		return candiEduList;
+		return reponseList;
 	}
 
 	/**
@@ -192,26 +209,45 @@ public class CandidateEducationRestController {
 	// @PreAuthorize("hasAnyRole('ROLE_DELETE_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS')")
 	@RequestMapping(value = { "/removeCandidateEducationBycandidateIdandcandidateEducationId",
 			"rest/removeCandidateEducationBycandidateIdandcandidateEducationId" })
-	public String removeCandidateEducationBycandidateIdandcandidateEducationId(CandidateEducationDTO candidateEducationDTO)
+	public Response<String> removeCandidateEducationBycandidateIdandcandidateEducationId(CandidateEducationDTO candidateEducationDTO)
 			throws Exception {
-		User user = userService.getUserById(candidateEducationDTO.getLoginUserId());
-		OrgLocations orgLocations = orgLocationService.getOrgLocations(candidateEducationDTO.getOrgLocationId());
-		CandidateEducation candidateEducation = candidateEducationService.removeCandidateEducationBycandidateIdandcandidateEducationId(
-				candidateEducationDTO.getCandidateId(), candidateEducationDTO.getCandidateEducationId(), user, orgLocations);
-		// OrgLocations loginOrgLocation = (OrgLocations)
-		// SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Candidate candidate = candidateService.getCandidateByCandidateId(candidateEducationDTO.getCandidateId());
-		if (null != candidate && null != candidate.getId()) {
-			CandidateIndex candidateIndex = new CandidateIndex();
-			candidateIndex.setCandidateId(candidate.getId());
-			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
-			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,
-					candidate.getId().toString());
-		}
+		Response<String> response = new Response<>();
+		try {
+			User user = userService.getUserById(candidateEducationDTO.getLoginUserId());
+			if (user != null) {
+				OrgLocations orgLocations = orgLocationService.getOrgLocations(candidateEducationDTO.getOrgLocationId());
+				CandidateEducation candidateEducation = candidateEducationService
+						.removeCandidateEducationBycandidateIdandcandidateEducationId(candidateEducationDTO.getCandidateId(),
+								candidateEducationDTO.getCandidateEducationId(), user, orgLocations);
+				// OrgLocations loginOrgLocation = (OrgLocations)
+				// SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				Candidate candidate = candidateService.getCandidateByCandidateId(candidateEducationDTO.getCandidateId());
+				if (null != candidate && null != candidate.getId()) {
+					CandidateIndex candidateIndex = new CandidateIndex();
+					candidateIndex.setCandidateId(candidate.getId());
+					DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+					candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
+					sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX,
+							Constants.ELK_CANDIDATE_TYPE, candidate.getId().toString());
 
-		Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocations);
-		return percentage.toString();
+					Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocations);
+					response.setObject(percentage.toString());
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
 	}
 
 	// @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS')")
