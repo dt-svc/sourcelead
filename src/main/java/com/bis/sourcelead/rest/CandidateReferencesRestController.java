@@ -167,7 +167,6 @@ public class CandidateReferencesRestController {
 		try {
 			User user = userService.getUserById(candidateReferencesDTO.getLoginUserId());
 			if (user != null) {
-
 				OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(candidateReferencesDTO.getOrgLocationId());
 				Candidate candidate = candidateService.getCandidateById(candidateReferencesDTO.getCandidateId());
 				CandidateReferences candidateReferences = candidateReferencesService

@@ -38,6 +38,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 /**
  * @author Shivayogi
@@ -190,31 +191,44 @@ public class CandidateCertificationsRestController {
 	// @PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_DELETE_ASSOCIATE_CERTIFICATION_DETAILS')")
 	@RequestMapping(value = { "/removeCandidateCertificateBycandidateIdandcandidateCertificateId",
 			"rest/removeCandidateCertificateBycandidateIdandcandidateCertificateId" }, method = RequestMethod.POST)
-	public String removeCandidateCertificateBycandidateIdandcandidateCertificateId(CandidateCertificationDTO candidateCertificationDTO)
-			throws Exception {
-
-		String isDeleted = "false";
-		User user = userService.getUserById(candidateCertificationDTO.getLoginUserId());
-		OrgLocations orgLocations = orgLocationService.getOrgLocations(candidateCertificationDTO.getOrgLocationId());
-		Candidate candidate = candidateService.getCandidateById(Long.parseLong(candidateCertificationDTO.getCandidateId()));
-		CandidateCertifications candidatesCertificate = candidateCertificationsService
-				.removeCandidateCertificateBycandidateIdandcandidateCertificateId(
-						Long.parseLong(candidateCertificationDTO.getCandidateId()), candidateCertificationDTO.getCandidateCertificationId(),
-						user, orgLocations);
-		if (candidatesCertificate != null) {
-			isDeleted = "true";
+	public Response<String> removeCandidateCertificateBycandidateIdandcandidateCertificateId(
+			CandidateCertificationDTO candidateCertificationDTO) throws Exception {
+		Response<String> response = new Response<>();
+		try {
+			User user = userService.getUserById(candidateCertificationDTO.getLoginUserId());
+			if (user != null) {
+				OrgLocations orgLocations = orgLocationService.getOrgLocations(candidateCertificationDTO.getOrgLocationId());
+				Candidate candidate = candidateService.getCandidateById(Long.parseLong(candidateCertificationDTO.getCandidateId()));
+				CandidateCertifications candidatesCertificate = candidateCertificationsService
+						.removeCandidateCertificateBycandidateIdandcandidateCertificateId(
+								Long.parseLong(candidateCertificationDTO.getCandidateId()),
+								candidateCertificationDTO.getCandidateCertificationId(), user, orgLocations);
+				if (null != candidate && null != candidate.getId() && candidatesCertificate != null) {
+					CandidateIndex candidateIndex = new CandidateIndex();
+					candidateIndex.setCandidateId(candidate.getId());
+					DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+					candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
+					sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX,
+							Constants.ELK_CANDIDATE_TYPE, candidate.getId().toString());
+				} else if (candidatesCertificate == null) {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				} else {
+					response.setResponse(Result.INVALID_USER.name());
+					response.setResponseMessage(Result.INVALID_USER.getValue());
+				}
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		// SourceLeadSessionManager.setSessionAttribute(request, "deleteCertification",
-		// "Certfification deleted");
-		if (null != candidate && null != candidate.getId()) {
-			CandidateIndex candidateIndex = new CandidateIndex();
-			candidateIndex.setCandidateId(candidate.getId());
-			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
-			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,
-					candidate.getId().toString());
-		}
-		return isDeleted;
+		return response;
 	}
 
 	/**
@@ -233,29 +247,47 @@ public class CandidateCertificationsRestController {
 	 */
 	// @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_EDIT_ASSOCIATE_CERTIFICATION_DETAILS')")
 	@RequestMapping(value = "/getCandidateCertificateBycandidateIdandCertificateId")
-	public String getCandidateCertificateBycandidateIdandCertificateId(
+	public Response<String> getCandidateCertificateBycandidateIdandCertificateId(
 			@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "candidateCertificationId", required = false) Long candidateCertificationId, HttpServletRequest request)
 			throws Exception {
-
-		String resultJson;
-		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-		OrgLocations orgLocations = orgLocationService.getOrgLocations(candidate.getOrgLocationId().getId());
-		// SimpleDateFormat simpleDateFormat =
-		// orgLocations.getLocFullFormDateFormatter();
-		CandidateCertifications candidateCertificationsList = candidateCertificationsService
-				.getCandidateCertificateBycandidateIdandCertificateId(candidateId, candidateCertificationId);
-
-		if (candidateCertificationsList.getValidFrom() != null) {
-			candidateCertificationsList.setCandidatevalidFromDateToString(
-					commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), candidateCertificationsList.getValidFrom()));
+		Response<String> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				if (candidateId > 0 && candidateCertificationId > 0) {
+					// String resultJson;
+					Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+					OrgLocations orgLocations = orgLocationService.getOrgLocations(candidate.getOrgLocationId().getId());
+					CandidateCertifications candidateCertificationsList = candidateCertificationsService
+							.getCandidateCertificateBycandidateIdandCertificateId(candidateId, candidateCertificationId);
+					if (candidateCertificationsList.getValidFrom() != null) {
+						candidateCertificationsList.setCandidatevalidFromDateToString(commonUtil
+								.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), candidateCertificationsList.getValidFrom()));
+					}
+					if (candidateCertificationsList.getValidTo() != null) {
+						candidateCertificationsList.setCandidatevalidToDateToString(commonUtil
+								.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), candidateCertificationsList.getValidTo()));
+					}
+					// resultJson = commonUtil.toJSON(candidateCertificationsList);
+					// return resultJson;
+					response.setObject(commonUtil.toJSON(candidateCertificationsList));
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		if (candidateCertificationsList.getValidTo() != null) {
-			candidateCertificationsList.setCandidatevalidToDateToString(
-					commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), candidateCertificationsList.getValidTo()));
-		}
-		resultJson = commonUtil.toJSON(candidateCertificationsList);
-		return resultJson;
+		return response;
 	}
 
 	/**
