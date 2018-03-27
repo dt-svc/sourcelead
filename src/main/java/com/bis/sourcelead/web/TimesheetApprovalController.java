@@ -36,7 +36,7 @@ public class TimesheetApprovalController {
 	
 		
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')")
-	@RequestMapping(value = "/timesheetApproval")
+	@RequestMapping(value = {"/timesheetApproval","/timesheetApproval/{notificationUUID"})
 	public ModelAndView newTimesheetApproval(@RequestParam(value="notifyLink", required=false) String notifyLink,
 			@RequestParam(value="currentTimeFrequency", required=false) String currentTimeFrequency,
 			@RequestParam(value="projectId", required=false) Long projectId,

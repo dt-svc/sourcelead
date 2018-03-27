@@ -217,11 +217,21 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 		leaveType = leaveTypeDao.addLeaveType(leaveType);
 		
 		if(flag == true) {
-			
-			List<Projects> projectsList = projectsService.getAllProjectByOrgLocationsId(orgLocation.getId());
+			addOrUpdateLeaveTypeToprojectTask(orgLocation.getId(),leaveTypeDTO,leaveType,user,flag);
+		}else if(flag == false) {
+			addOrUpdateLeaveTypeToprojectTask(orgLocation.getId(),leaveTypeDTO,leaveType,user,flag);
+		}
+		return leaveType;
+	}
+	 
+		private void addOrUpdateLeaveTypeToprojectTask(Long orgLocationId, LeaveTypeDTO leaveTypeDTO, LeaveType leaveType, User user, boolean flag) throws Exception {
+			List<Projects> projectsList = projectsService.getAllProjectByOrgLocationsId(orgLocationId);
 			if(projectsList != null && projectsList.size() > 0) {
 				for(Projects projects : projectsList) {
-					ProjectTasks  tasks  = new ProjectTasks();
+					ProjectTasks  tasks  = null;
+					if(flag == true) {
+						  tasks  = new ProjectTasks();
+					}
 					LookUpData taskType = lookUpDataService.getTasksTypeByUniqueKey(Constants.GENERAL);
 					tasks.setGeneratedId(commonUtil.getProjectTaskGenaratedId(projects));
 					tasks.setProjectTasksUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -247,10 +257,9 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 				}
 			}
 		}
-		
-		return leaveType;
-	}
-	 
+
+
+
 	private Set<LeaveRole> getLeaveRoles(List<String> roles, LeaveType leaveType, User user) throws Exception
 	{
 		Set<LeaveRole> leaveRolesSet = new HashSet<>();
