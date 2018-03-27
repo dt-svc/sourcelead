@@ -403,7 +403,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		familyDetails.setNationality(familyDetailsDto.getNationality());
 		familyDetails.setCurrentAddress(familyDetailsDto.getCurrentAddress());
 		familyDetails.setStatus(Constants.RECORD_ACTIVE);
-	    Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 	    if(familyDetailsDto.getId()!= null) {
 	    System.out.println(" in edit mode --member id >"+familyDetailsDto.getId());
 	    familyDetails.setId(familyDetailsDto.getId());
@@ -417,7 +417,6 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		
 		return immigrationCommonDao.saveCandidateFamilyMemberDetails(familyDetails);
 	}	
-
 	
 	@Override
 	public CandidatePassportVisa savePassportDetails(ImmigrationPassportVisaDTO immigrationPassportVisaDTO, User user,

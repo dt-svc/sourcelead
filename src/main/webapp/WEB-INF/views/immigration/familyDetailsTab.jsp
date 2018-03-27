@@ -303,10 +303,12 @@
 			$(".popCan").click(function(){
 				$(".popMask").fadeOut(200);
 				$("#spousePopView, #childPopView, #fathPopView, #mothPopView").fadeOut(100);
+				
 			});	
 		</script>
 	
 	<script>	
+	familyMemberId ="" // empty the value of familyMemberId which is used for edit mode. 
 	
 	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatEduSave = getJSDateFormat(locationDate);

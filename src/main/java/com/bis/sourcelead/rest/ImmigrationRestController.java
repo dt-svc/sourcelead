@@ -5,6 +5,7 @@ import java.util.List;
 import org.jadira.usertype.spi.utils.lang.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 
+import org.jadira.usertype.spi.utils.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -583,9 +584,12 @@ public class ImmigrationRestController {
     	try {
     		  familyDetailsDTO.setCandidateId(candidateId);
     		  if(id!= null) { // edit mode we will get the value.
+
     			 familyDetailsDTO.setId(id); 
     			 System.out.println("familyDetailsDTO.getId()--->"+familyDetailsDTO.getId()); 
     			 }
+
+    			 
     		  System.out.println(" inside conroller -->relationType :: "+relationType);
     		  if(relationType.trim().equalsIgnoreCase(Constants.RELATION_TYPE_SPOUSE)) {
     			  familyDetailsDTO.setRelation(Constants.RELATION_TYPE_SPOUSE);
