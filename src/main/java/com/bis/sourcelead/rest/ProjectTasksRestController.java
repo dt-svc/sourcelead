@@ -36,6 +36,7 @@ import com.bis.sourcelead.beans.TasksStackedReportDTO;
 import com.bis.sourcelead.beans.TimesheetReportDTO;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TimeSheetDayEntriesDTO;
@@ -43,29 +44,32 @@ import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.ProjectAssignTask;
 import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTaskActivity;
 import com.bis.sourcelead.entity.ProjectTaskComments;
+import com.bis.sourcelead.entity.ProjectTaskCustomFieldData;
 import com.bis.sourcelead.entity.ProjectTaskDocuments;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
-import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.ProjectAssignTasksService;
 import com.bis.sourcelead.service.ProjectBudgetService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTaskActivityService;
 import com.bis.sourcelead.service.ProjectTaskCommentsService;
+import com.bis.sourcelead.service.ProjectTaskCustomFieldDataService;
 import com.bis.sourcelead.service.ProjectTaskDocumentsService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -155,6 +159,12 @@ public class ProjectTasksRestController {
 	@Autowired
 	private TimesheetSubmissionsService timesheetSubmissionsService;
 	
+	@Autowired
+	private ProjectTaskCustomFieldDataService projectTaskCustomFieldDataService;
+	
+	@Autowired
+	private OrglocationFormFieldsService orglocationFormFieldsService;
+	
 	/**
 	 * @author David sammeta
 	 * @return
@@ -214,6 +224,35 @@ public class ProjectTasksRestController {
 		return "success";
 	}
 
+	
+	@RequestMapping(value = "/saveProjectTaskCustomFieldDetails", method = RequestMethod.POST)
+	public @ResponseBody void saveProjectTaskCustomFieldDetails(ProjectTasksDTO projectTasksDTO) throws Exception {
+	 if(projectTasksDTO.getCustomFormData() !=null) {
+			for( CustomFormFieldDTO customFields:projectTasksDTO.getCustomFormData()) {
+				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+					ProjectTaskCustomFieldData projectTaskCustomFields = null;
+					if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+						projectTaskCustomFields = projectTaskCustomFieldDataService.getProjectTaskCustomFieldDataById(customFields.getEntityId());
+					}else {
+						projectTaskCustomFields = new ProjectTaskCustomFieldData();
+					}
+				ProjectTasks saveTask = null;
+				if(projectTasksDTO.getId()!= null){
+					saveTask = projectTasksService.getTasksId(projectTasksDTO.getId().toString());
+				}else{
+					saveTask = new ProjectTasks();
+				}
+				projectTaskCustomFields.setProjectTask(saveTask);
+				OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+				projectTaskCustomFields.setOrglocationsFormFields(orgFormField);
+				projectTaskCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+				projectTaskCustomFieldDataService.saveProjectTaskCustomFieldData(projectTaskCustomFields);
+				}
+				
+			}	
+		}
+	}
+	
 	/**
 	 * ]
 	 * 

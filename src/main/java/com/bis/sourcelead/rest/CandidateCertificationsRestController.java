@@ -74,7 +74,7 @@ public class CandidateCertificationsRestController {
 	 * @throws Exception
 	 */
 	 //@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_CERTIFICATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_CERTIFICATION_DETAILS')")
-	 @RequestMapping(value = "/storeCandidateCertifications", method = RequestMethod.POST)
+	 @RequestMapping(value = {"/storeCandidateCertifications","rest/storeCandidateCertifications"}, method = RequestMethod.POST)
      public @ResponseBody String storeCandidateCertifications(CandidateCertificationDTO candidateCertificationDTO,@RequestParam(value="candidateId", required=false) Long candidateId ,HttpServletRequest request) throws Exception {
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");

@@ -50,10 +50,10 @@ function taskNameValidation(){
 <script>
 	$(document).ready(function() {
 		document.getElementById("addProjectTasks_form").reset();
-		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		/* <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 		  var sectionId = '${section.id}';
 		  getCustomDependentField(sectionId);
-		 </c:forEach>
+		 </c:forEach> */
 	});
 </script>
 
@@ -589,6 +589,11 @@ function editCancel(){
         $(".modal-Time").fadeOut();
     } 
     function addtask(){
+	   <c:forEach var="section" items="${sourceleadSectionListForProjectTask}" varStatus="sectionOrder">
+		  var sectionId = '${section.id}';
+		  getCustomDependentFieldProjectTask(sectionId);
+	   </c:forEach> 
+    	
     	var projectId =  $("#projectId").val();
     	var projectStartDate = '${projectStartDate}';
         	var result = "";
@@ -727,6 +732,19 @@ function editCancel(){
 			result = result	+ '					<div class="clearfix"></div>';
 			result = result	+ '					</div>';
 			result = result	+ '             </div>';
+			
+			
+			result = result	+ '           <c:if test= "${!empty sourceleadSectionListForProjectTask}">  ';
+			result = result	+ '           <c:forEach var="section" items="${sourceleadSectionListForProjectTask}" varStatus="sectionOrder"> ';
+			result = result	+ '	          <c:if test="${sectionOrder.index == 0}">';
+			result = result	+ '           <div class="form-group" id="customDiv${section.id}"></div>';
+			result = result	+ '           </c:if>';
+			result = result	+ '           </c:forEach>';
+			result = result	+ '           </c:if>';
+			
+			
+			
+			
 			result = result	+ '         <div class="clearfix"></div>';
 			result = result	+ '         <div class="clearfix mb">';
 			result = result	+ '           <label class="col-md-12">Description</label>';
@@ -969,16 +987,18 @@ function clearDueDate(){
 </script>
 
 <script>
-function getCustomDependentField(sectionId){
-	 $.ajax({
+function getCustomDependentFieldProjectTask(sectionId){
+	$.ajax({
 			type : "POST" , 
 				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
 				 success: function(data) {
-					 
 		        	$('#customDiv'+sectionId).empty();
-		        	$('#customDiv'+sectionId).append(data);
+		        	var result ='';
+		        	result = result + data;
+		        	$('#customDiv'+sectionId).append(result);
+		        	
 				 }
-		  });
+		  }); 
 }
 </script>
 

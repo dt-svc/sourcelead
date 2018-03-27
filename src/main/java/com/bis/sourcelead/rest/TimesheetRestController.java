@@ -2464,15 +2464,20 @@ public class TimesheetRestController {
 			//String url = null;
 			
 			StringBuilder currentTimeFrequency = new StringBuilder();
-			currentTimeFrequency.append(startDateStr).append(" To ").append(endDateStr);
+			currentTimeFrequency.append(startDateStr).append("To").append(endDateStr);
 			String actionLink = "";
 			
-			/*StringBuilder actionLinkBuilder = new StringBuilder();
+			StringBuilder actionLinkBuilder = new StringBuilder();
 			TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getSubmissionDetailsByProjectIdMasterCandiDateIdStartDateandEndDate(projectId,masterCanidateId,frequencyStartDate,frequencyEndDate);
+			HashMap<String,String> paramList = new HashMap<>();
 			if(timesheetSubmissions!= null && timesheetSubmissions.getProjectMembers()!= null && timesheetSubmissions.getTotalHours()!= null) {
-				actionLink =actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheetApproval?&currentTimeFrequency="+currentTimeFrequency.toString()+"&projectId="+projectId+"&masterCandidateId="+masterCanidateId+"&projectMemberId="+timesheetSubmissions.getProjectMembers().getId()+"&totalHours="+timesheetSubmissions.getTotalHours()+"&from=approver&notifyLink=notifyLink").toString();
-			}*/
-			emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, loginOrgLocation, notificationScenario);
+				paramList.put("currentTimeFrequency", currentTimeFrequency.toString());
+				paramList.put("projectId",projectId.toString());
+				paramList.put("masterCandidateId", masterCanidateId.toString());
+				actionLink =actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheetApproval/").append(Constants.PLACE_UUID).toString();
+			}
+			emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, loginOrgLocation, notificationScenario,paramList);
+
 			
 		}
 	}
