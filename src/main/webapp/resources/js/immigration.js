@@ -399,6 +399,7 @@ this.deletePassportVisaDetailsById=function(id,idType){
                         $(".popMask").fadeOut(200); // close the popup code
         				$("#spousePopView").fadeOut(100);// close the popup code
         				immigration.displayFamilyDetails(candidateId);
+        				
 					}
 				}
 			});
@@ -467,7 +468,7 @@ this.deletePassportVisaDetailsById=function(id,idType){
             			$("#addMoth").trigger('click');
             			immigration.udpatePopupFormdata(formObj,motherPopNames,data);
             		}
-            	   
+            		familyMemberId = ''// reset the value
             	}
             }
         });
