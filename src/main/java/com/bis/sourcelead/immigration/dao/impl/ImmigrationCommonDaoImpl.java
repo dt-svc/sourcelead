@@ -305,4 +305,26 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	        System.out.println("Deleted record id -->"+ id);
 		
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public String deleteCandidateResidenceDetails(Long id,Long candidateId) {
+		
+		System.out.println("Delete deletetCandidateFamilyDetails candidateId ---> "+id);
+		  
+        try {
+			Session session = this.sessionFactory.getCurrentSession();
+			CandidateResidence res = (CandidateResidence)session.load(CandidateResidence.class,id);
+			session.delete(res);
+			session.flush();
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing delete -->"+e.getMessage());
+			e.printStackTrace();
+		}
+        System.out.println("Deleted record id -->"+ id);
+        
+		return "success";
+		
+        
+	}
 }

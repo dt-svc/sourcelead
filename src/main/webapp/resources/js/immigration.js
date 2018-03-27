@@ -675,3 +675,17 @@ function getCandidateResidenceList(candidateId){
 	       }
 	   });
 	}
+
+function deleteResidenceDetailsById(id){
+	var candidateId = $("#candidateID").val();
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/deleteCandidateResidenceDetails?id="+id+"&candidateId="+candidateId,
+        type: "GET",
+        success: function (result) {
+        	if(result=='success'){
+        		getCandidateResidenceList(candidateId) //candidateId global variable
+        	     
+        	}
+        }
+    });
+}

@@ -816,4 +816,15 @@ public class ImmigrationRestController {
 
 		return "success";
 	}
+	
+	@RequestMapping(value = { "/deleteCandidateResidenceDetails" })
+	public String deleteCandidateResidenceDetails(
+			@RequestParam(value = "id", required = true) Long id, 
+			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		String  candidateResidence = immigrationCommonService.deleteCandidateResidenceDetails(id, candidateId);
+
+		return "success";
+	}
 }
