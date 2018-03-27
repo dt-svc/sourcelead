@@ -161,6 +161,7 @@
 	function popFun() {
 		$(".popMask").fadeOut(200);
 		$("#emploView").fadeOut(200);
+		$("#employerDetails_form")[0].reset();
 	}
 </script>	
 		

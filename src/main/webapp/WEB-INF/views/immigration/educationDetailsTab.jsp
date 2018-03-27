@@ -127,10 +127,8 @@
 	</div><!-- popup code end -->
 	</form>
 		<script>
-		
 		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormatEduSave = getJSDateFormat(locationDate);
-		
 		$('#immigrationEduStartDate12').datepicker({
 		      dateFormat: finalDateFormatEduSave,
 		      changeMonth: true,
@@ -164,5 +162,6 @@
 	function closeEdupopup(){
 		$(".popMask").fadeOut(200);
 		$("#popEduView").fadeOut(100);
+		$("#eduSave_Form")[0].reset();
 	}
 		</script>
