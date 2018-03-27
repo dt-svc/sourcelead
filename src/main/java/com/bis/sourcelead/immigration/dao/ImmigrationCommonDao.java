@@ -12,6 +12,7 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 /**
  * @author Srinivas.Sabbu
  *
@@ -44,5 +45,10 @@ public interface ImmigrationCommonDao {
 	List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId,String idType);
 	
 	CandidateFamilyDetails getCandidateFamilyDetailsById(Long id);
+
+	void removeCandidatePassportVisaDetails(Long candidateId, Long id, User user, OrgLocations orgLocations, String idType);
+	
+	 String deleteCandidateResidenceDetails(Long id,Long candidateId);
+
 
 }

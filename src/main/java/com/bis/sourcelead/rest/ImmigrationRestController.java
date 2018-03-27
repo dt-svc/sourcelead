@@ -2,7 +2,7 @@ package com.bis.sourcelead.rest;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import org.jadira.usertype.spi.utils.lang.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jadira.usertype.spi.utils.lang.StringUtils;
@@ -39,6 +39,7 @@ import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.LookUpData;
@@ -51,6 +52,7 @@ import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementService;
@@ -76,6 +78,9 @@ public class ImmigrationRestController {
 
     @Value("${static.path}")
     private String staticPath;
+    
+    @Autowired
+    private CountriesService countriesService;
 
     @Autowired
     private OrgLocationService orgLocationService;
@@ -579,9 +584,12 @@ public class ImmigrationRestController {
     	try {
     		  familyDetailsDTO.setCandidateId(candidateId);
     		  if(id!= null) { // edit mode we will get the value.
-    			  familyDetailsDTO.setId(id); 
-    			  System.out.println("familyDetailsDTO.getId()--->"+familyDetailsDTO.getId()); 
-    		  }
+
+    			 familyDetailsDTO.setId(id); 
+    			 System.out.println("familyDetailsDTO.getId()--->"+familyDetailsDTO.getId()); 
+    			 }
+
+    			 
     		  System.out.println(" inside conroller -->relationType :: "+relationType);
     		  if(relationType.trim().equalsIgnoreCase(Constants.RELATION_TYPE_SPOUSE)) {
     			  familyDetailsDTO.setRelation(Constants.RELATION_TYPE_SPOUSE);
@@ -781,7 +789,9 @@ public class ImmigrationRestController {
 		List<CandidatePassportVisa> PassportList = new ArrayList<CandidatePassportVisa>();
 		try {
 			PassportList = immigrationCommonService.getCandidatePassportVisaDetails(candidateId, idType);
+			List<Countries> countryList = countriesService.getAllSourceLeadCountries();
 			model.addObject("PassportList", PassportList);
+			model.addObject("countryList", countryList);
 		} catch (Exception e) {
 			logger.error("Exception caught in controller --->" + e.getMessage());
 			e.printStackTrace();
@@ -794,5 +804,27 @@ public class ImmigrationRestController {
 			model.setViewName("/immigration/visaDetailsTab");
 		}
 		return model;
+	}
+	
+	@RequestMapping(value = { "/deleteCandidatePassportVisaDetails" })
+	public String deleteCandidatePassportVisaDetails(
+			@RequestParam(value = "id", required = true) Long id, 
+			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request,@RequestParam(value = "idType", required = true) String idType) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		immigrationCommonService.removeCandidatePassportVisaDetails(candidateId, id, user, orgLocations,idType);
+
+		return "success";
+	}
+	
+	@RequestMapping(value = { "/deleteCandidateResidenceDetails" })
+	public String deleteCandidateResidenceDetails(
+			@RequestParam(value = "id", required = true) Long id, 
+			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		String  candidateResidence = immigrationCommonService.deleteCandidateResidenceDetails(id, candidateId);
+
+		return "success";
 	}
 }

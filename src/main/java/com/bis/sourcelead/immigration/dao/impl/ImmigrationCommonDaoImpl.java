@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.immigration.dao.ImmigrationCommonDao;
 
@@ -285,5 +286,45 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		}
         System.out.println("got the record id -->"+ id);
 		return familyObj;
+	}
+
+   
+	@Override
+   	@Transactional(rollbackFor = { Exception.class })
+	public void removeCandidatePassportVisaDetails(Long candidateId, Long id, User user, OrgLocations orgLocations, String idType)
+	{
+		 try {
+				Session session = this.sessionFactory.getCurrentSession();
+				CandidatePassportVisa PassportVisaEntity = (CandidatePassportVisa)session.load(CandidatePassportVisa.class,id);
+				session.delete(PassportVisaEntity);
+				session.flush();
+			} catch (HibernateException e) {
+				logger.error("SQL Exception occured while doing delete -->"+e.getMessage());
+				e.printStackTrace();
+			}
+	        System.out.println("Deleted record id -->"+ id);
+		
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public String deleteCandidateResidenceDetails(Long id,Long candidateId) {
+		
+		System.out.println("Delete deletetCandidateFamilyDetails candidateId ---> "+id);
+		  
+        try {
+			Session session = this.sessionFactory.getCurrentSession();
+			CandidateResidence res = (CandidateResidence)session.load(CandidateResidence.class,id);
+			session.delete(res);
+			session.flush();
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing delete -->"+e.getMessage());
+			e.printStackTrace();
+		}
+        System.out.println("Deleted record id -->"+ id);
+        
+		return "success";
+		
+        
 	}
 }
