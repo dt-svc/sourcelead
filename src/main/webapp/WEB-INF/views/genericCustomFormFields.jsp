@@ -3,7 +3,8 @@
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 
 	<c:forEach var="customForm" items="${customFieldsList}" varStatus="customFormIndex">
-	<c:if test="${customForm.fieldType == 'textfield'}">
+	<c:if test="${customForm.fieldType == 'TextBox'}">
+		<c:set var="dataValidationConditionTextBox" value=""></c:set>
 		<div class="form-group clearfix">
 		  <c:if test="${not empty dataMapList}">
 		        <c:forEach var="dataMap" items="${dataMapList}">
@@ -12,7 +13,15 @@
 				    	 <div class="col-md-9">
 				    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
 				    		<input type="hidden" value="${dataMap.value[2]}" name="customFormData[${currentIndex+customFormIndex.index}].entityId">
-				     	 	<input type="text" class="form-control" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" value="${dataMap.value[1]}" field-name="${customForm.labelName}" ${customForm.isRequired == 1 ? 'data-validation="required"':''} ${customForm.isRequired == 0 ? 'data-validation-optional="true"':''} ${customForm.isRequired == 1 ? 'data-check=true':'false'}>
+			    		 	<c:choose>
+							   <c:when test="${customForm.isRequired == 1}">
+							    	<c:set var="dataValidationConditionTextBox" value="data-validation='required ${customForm.validation}'"/>
+							  </c:when>
+							 <c:otherwise>
+							   		<c:set var="dataValidationConditionTextBox" value="data-validation-optional='true' data-validation='${customForm.validation}'"/>
+							 </c:otherwise>
+							</c:choose>
+				     	 	<input type="text" class="form-control" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" value="${dataMap.value[1]}" field-name="${customForm.labelName}" ${dataValidationConditionTextBox} ${customForm.isRequired == 1 ? 'data-check=true':'false'}>
 				    	</div>
 			        </c:if>
 		        </c:forEach>
@@ -21,7 +30,15 @@
 		        <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
 		    	 <div class="col-md-9">
 		    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
-		     	 	<input type="text" class="form-control" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" value="" field-name="${customForm.labelName}" ${customForm.isRequired == 1 ? 'data-validation="required"':''} ${customForm.isRequired == 0 ? 'data-validation-optional="true"':''} ${customForm.isRequired == 1 ? 'data-check=true':'false'}>
+		    		 <c:choose>
+					   <c:when test="${customForm.isRequired == 1}">
+					    <c:set var="dataValidationConditionTextBox" value="data-validation='required ${customForm.validation}'"/>
+					  </c:when>
+					 <c:otherwise>
+					   <c:set var="dataValidationConditionTextBox" value="data-validation-optional='true' data-validation='${customForm.validation}'"/>
+					 </c:otherwise>
+					</c:choose>
+		     	 	<input type="text" class="form-control" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" value="" field-name="${customForm.labelName}"  ${dataValidationConditionTextBox} ${customForm.isRequired == 1 ? 'data-check=true':'false'}>
 		    	</div>
 	    	</c:if>
 	    	
@@ -29,7 +46,7 @@
 	 </c:if>
 	 
 	 
-	 <c:if test="${customForm.fieldType == 'selectfield'}">
+	 <c:if test="${customForm.fieldType == 'selectBox'}">
 		<div class="form-group">
 		<c:if test="${not empty dataMapList}">
 		<c:forEach var="dataMap" items="${dataMapList}"> 
@@ -63,7 +80,7 @@
 	  </div>
 	 </c:if> 
 	 
-	  <c:if test="${customForm.fieldType == 'checkBox'}">
+	  <c:if test="${customForm.fieldType == 'CheckBox'}">
 	   <div class="form-group">
 	   	  <c:if test="${not empty dataMapList}">
 	   	  		<c:forEach var="dataMap" items="${dataMapList}">
@@ -127,7 +144,7 @@
 	  </div>
 	   </c:if> 
 	   
-	   <c:if test="${customForm.fieldType == 'datefield'}">
+	   <c:if test="${customForm.fieldType == 'Date'}">
  			 <c:if test="${not empty dataMapList}">
 	 			 <c:forEach var="dataMap" items="${dataMapList}">
 	 			 	<c:if test="${customForm.id eq dataMap.key}">
@@ -159,6 +176,7 @@
 	   </c:if>
 	 
 	 <c:if test="${customForm.fieldType == 'textArea'}">
+		<c:set var="dataValidationConditiontextArea" value=""></c:set>
 		<div class="form-group clearfix">
 		  <c:if test="${not empty dataMapList}">
 		        <c:forEach var="dataMap" items="${dataMapList}">
@@ -167,7 +185,17 @@
 				    	 <div class="col-md-9">
 				    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
 				    		<input type="hidden" value="${dataMap.value[2]}" name="customFormData[${currentIndex+customFormIndex.index}].entityId">
-				     	 	<textarea rows="4" cols="50" class="form-control" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" field-name="${customForm.labelName}" ${customForm.isRequired == 1 ? 'data-validation="required"':''} ${customForm.isRequired == 0 ? 'data-validation-optional="true"':''} ${customForm.isRequired == 1 ? 'data-check=true':'false'}>${dataMap.value[1]}</textarea>
+				     	 	
+				     	 	<c:choose>
+							   <c:when test="${customForm.isRequired == 1}">
+							    	<c:set var="dataValidationConditiontextArea" value="data-validation='required ${customForm.validation}'"/>
+							  </c:when>
+							 <c:otherwise>
+							   		<c:set var="dataValidationConditiontextArea" value="data-validation-optional='true' data-validation='${customForm.validation}'"/>
+							 </c:otherwise>
+							</c:choose>
+				     	 	
+				     	 	<textarea rows="4" cols="50" class="form-control" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" field-name="${customForm.labelName}" ${dataValidationConditiontextArea}  ${customForm.isRequired == 1 ? 'data-check=true':'false'}>${dataMap.value[1]}</textarea>
 				    	</div>
 			        </c:if>
 		        </c:forEach>
@@ -176,7 +204,15 @@
 		        <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
 		    	 <div class="col-md-9">
 		    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
-		     	 	<textarea rows="4" cols="50" class="form-control" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" value="" field-name="${customForm.labelName}" ${customForm.isRequired == 1 ? 'data-validation="required"':''} ${customForm.isRequired == 0 ? 'data-validation-optional="true"':''} ${customForm.isRequired == 1 ? 'data-check=true':'false'}></textarea>
+				     	 	<c:choose>
+							   <c:when test="${customForm.isRequired == 1}">
+							    	<c:set var="dataValidationConditiontextArea" value="data-validation='required ${customForm.validation}'"/>
+							  </c:when>
+							 <c:otherwise>
+							   		<c:set var="dataValidationConditiontextArea" value="data-validation-optional='true' data-validation='${customForm.validation}'"/>
+							 </c:otherwise>
+							</c:choose>
+		     	 	<textarea rows="4" cols="50" class="form-control" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" value="" field-name="${customForm.labelName}" ${dataValidationConditiontextArea} ${customForm.isRequired == 1 ? 'data-check=true':'false'}></textarea>
 		    	</div>
 	    	</c:if>
 	    	
@@ -184,24 +220,41 @@
 	 </c:if>
 	 
 	 <c:if test="${customForm.fieldType == 'email'}">
+	 <c:set var="dataValidationConditionEmail" value=""></c:set>
 		<div class="form-group clearfix">
 		  <c:if test="${not empty dataMapList}">
 		        <c:forEach var="dataMap" items="${dataMapList}">
 			        <c:if test="${customForm.id eq dataMap.key}">
 				         <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
-				    	 <div class="col-md-9">
+				    	 <div class="col-md-9 emailDiv">
 				    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
 				    		<input type="hidden" value="${dataMap.value[2]}" name="customFormData[${currentIndex+customFormIndex.index}].entityId">
-				     	 	<input type="text" class="form-control" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" value="${dataMap.value[1]}" field-name="${customForm.labelName}" ${customForm.isRequired == 1 ? 'data-validation="required"':''} ${customForm.isRequired == 0 ? 'data-validation-optional="true"':''} ${customForm.isRequired == 1 ? 'data-check=true':'false'}>
+				     	 	<c:choose>
+							   <c:when test="${customForm.isRequired == 1}">
+							    	<c:set var="dataValidationConditionEmail" value="data-validation='required ${customForm.validation}'"/>
+							  </c:when>
+							 <c:otherwise>
+							   		<c:set var="dataValidationConditionEmail" value="data-validation-optional='true' data-validation='${customForm.validation}'"/>
+							 </c:otherwise>
+							</c:choose>
+				     	 	<input type="text" class="form-control email" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" value="${dataMap.value[1]}" field-name="${customForm.labelName}" ${dataValidationConditionEmail} ${customForm.isRequired == 1 ? 'data-check=true':'false'}>
 				    	</div>
 			        </c:if>
 		        </c:forEach>
 	        </c:if>
 	       <c:if test="${empty dataMapList}">
 		        <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
-		    	 <div class="col-md-9">
+		    	 <div class="col-md-9 emailDiv">
 		    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
-		     	 	<input type="text" class="form-control" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" value="" field-name="${customForm.labelName}" ${customForm.isRequired == 1 ? 'data-validation="required"':''} ${customForm.isRequired == 0 ? 'data-validation-optional="true"':''} ${customForm.isRequired == 1 ? 'data-check=true':'false'}>
+		     	 			<c:choose>
+							   <c:when test="${customForm.isRequired == 1}">
+							    	<c:set var="dataValidationConditionEmail" value="data-validation='required ${customForm.validation}'"/>
+							  </c:when>
+							 <c:otherwise>
+							   		<c:set var="dataValidationConditionEmail" value="data-validation-optional='true' data-validation='${customForm.validation}'"/>
+							 </c:otherwise>
+							</c:choose>
+		     	 	<input type="text" class="form-control email" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" value="" field-name="${customForm.labelName}" ${dataValidationConditionEmail} ${customForm.isRequired == 1 ? 'data-check=true':'false'}>
 		    	</div>
 	    	</c:if>
 	    	
@@ -211,6 +264,21 @@
 	 
 	   
 	</c:forEach>
+
+<script>
+$('.email').blur(function() {
+    var testEmail = /^[A-Z0-9._%+-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i;
+    if (this.value != null && this.value !='' && this.value !='undefined' && testEmail.test(this.value)){
+    	$('.email').removeAttr("data-validation","validate_email");
+    } else if(this.value != null && this.value !='' && this.value !='undefined' && !testEmail.test(this.value)){
+    	$('.email').attr("data-validation","validate_email");
+    } else if(this.value ==''){
+    	$('.emailDiv').parent().find('p.jquery_form_error_message').remove();
+    }
+});
+</script>
+
+
 
 <script>
 	function dateScriptsCustomDate(minDate, maxDate) {

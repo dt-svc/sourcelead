@@ -370,13 +370,13 @@ public class TaskServiceImpl implements TaskService{
 			 //calling the Notification 
 			 if(task.getAlertType() != null && task.getAlertType().equalsIgnoreCase("Notification")){
 				 String actionLink="";
-				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(), task.getOwnerOrglocationId(), notificationScenario);
+				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(), task.getOwnerOrglocationId(), notificationScenario,new HashMap<String,String>());
 			 }
 			 //calling the Email  and notification 
 			 if(task.getAlertType() != null && task.getAlertType().equalsIgnoreCase("Email,Notification")){
 				 emailScenerioUtil.sendEmail(emailMessage,task.getOwnerOrglocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
 				 String actionLink="";
-				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(),task.getOwnerOrglocationId(), notificationScenario);
+				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(),task.getOwnerOrglocationId(), notificationScenario,new HashMap<String,String>());
 			 }
 
 	}

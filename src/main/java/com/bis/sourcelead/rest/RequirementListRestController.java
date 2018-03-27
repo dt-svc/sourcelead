@@ -2298,7 +2298,7 @@ public class RequirementListRestController {
 				// calling the sendEmail method of emailScenerioUtil
 				emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 				String actionLink = "";
-				emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContact, releasedRequirement.getSpocId().getVendorLocationId(), notificationScenario);
+				emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContact, releasedRequirement.getSpocId().getVendorLocationId(), notificationScenario,new HashMap<String,String>());
 			}
 		}
 	}

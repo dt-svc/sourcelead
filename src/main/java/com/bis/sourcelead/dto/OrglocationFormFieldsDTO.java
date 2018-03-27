@@ -17,6 +17,7 @@ public class OrglocationFormFieldsDTO implements Serializable {
 	private String labelinfo;
 	private String validationType;
 	private String validationRange;
+	private String validation;
 	//private String optionLabelName;
 	private List<OrglocationFormSubFieldsDTO> optionData;
 	private String fieldType;
@@ -162,6 +163,12 @@ public class OrglocationFormFieldsDTO implements Serializable {
 	}
 	public void setImagePathUrl(String imagePathUrl) {
 		this.imagePathUrl = imagePathUrl;
+	}
+	public String getValidation() {
+		return validation;
+	}
+	public void setValidation(String validation) {
+		this.validation = validation;
 	}
 	
 	

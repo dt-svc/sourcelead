@@ -1110,7 +1110,7 @@ public class EMailJobScheduler {
 		 
 		 User sourceLeadAdmin = userService.getUserById(Constants.SOURCELEAD_ADMIN_USERID);
 		 
-		 emailScenerioUtil.sendNotification(actionLink, sourceLeadAdmin, user, orgLocations, noificationEmailScenario);
+		 emailScenerioUtil.sendNotification(actionLink, sourceLeadAdmin, user, orgLocations, noificationEmailScenario,new HashMap<String,String>());
 		 }
 	}
 	
@@ -1443,7 +1443,7 @@ public class EMailJobScheduler {
 
 			 emailScenerioUtil.sendEmail(emailMessage,contracts.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
 			 
-		 emailScenerioUtil.sendNotification(actionLink,receiver,owner, contracts.getOrgLocationId(), notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink,receiver,owner, contracts.getOrgLocationId(), notificationScenario,new HashMap<String,String>());
 		
 	}
 	
@@ -2195,7 +2195,7 @@ public class EMailJobScheduler {
 					notificationScenario.setBody(notificationBody);
 					StringBuilder actionLinkBuilder = new StringBuilder();
 					String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("leaveManagementReports").toString();
-					emailScenerioUtil.sendNotification(actionLink, orgLocations.getOrg().getUser(), user, orgLocations,notificationScenario);
+					emailScenerioUtil.sendNotification(actionLink, orgLocations.getOrg().getUser(), user, orgLocations,notificationScenario,new HashMap<String,String>());
 
 				}
 			}
