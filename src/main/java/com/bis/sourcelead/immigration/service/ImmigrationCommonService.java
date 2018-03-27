@@ -42,4 +42,6 @@ public interface ImmigrationCommonService {
 	
 	CandidateFamilyDetails getCandidateFamilyDetailsById(Long id);
 
+	 void removeCandidatePassportVisaDetails(Long candidateId, Long id, User user, OrgLocations orgLocations, String idType);
+
 }

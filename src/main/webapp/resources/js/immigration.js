@@ -323,6 +323,8 @@ function Immigration() {
 	}
 }
 
+    
+    
  this.displayPassportDetails=function(candidateId,Passport){
 	console.log("inside displayPassportDetails function call  -->")
 	var Passport=document.getElementById("Passport").value;
@@ -347,6 +349,24 @@ this.displayVisaDetails=function(candidateId,Visa){
         }
     });
 }	
+
+this.deletePassportVisaDetailsById=function(id,idType){
+	var candidateId = $("#candidateID").val();
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/deleteCandidatePassportVisaDetails?id="+id+"&candidateId="+candidateId+ "&idType=" + idType,
+        type: "GET",
+        success: function (result) {
+        	if(result=='success'){
+        		if(idType=='Passport'){
+        			immigration.displayPassportDetails(candidateId,idType);
+        		}
+        		else if (idType == 'Visa') {
+        			immigration.displayVisaDetails(candidateId,idType);
+        		}
+        	}
+        }
+    });
+}
 
 
     this.saveCandidateFamilyDetails= function(relationType) {
