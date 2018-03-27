@@ -843,6 +843,13 @@ public class ClientServiceImpl implements ClientService {
 		subscription.setStorageSubscriptionType(storageLookUpData);
 		subscription.setFromDate(new Date());
 		
+		Calendar toDate = Calendar.getInstance();
+		toDate.setTime(new Date());
+		toDate.add(Calendar.MONTH, +1); 
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date endDate = dateFormat.parse(dateFormat.format(toDate.getTime()));
+		subscription.setToDate(endDate);
+		
 		StringBuilder tabIds = new StringBuilder();
 		List<Tabs> tabsList =  tabsService.getTabListByActionsIds(soureleadActionIdList);
 		Set<Long> tabIdsList = new HashSet<>();

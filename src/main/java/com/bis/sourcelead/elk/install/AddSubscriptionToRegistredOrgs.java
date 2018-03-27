@@ -115,7 +115,18 @@ public void updateSubscription() throws IOException, SQLException {
 							 Statement stmt6 = conn.createStatement();
 							 ResultSet rs6 = stmt6.executeQuery(sql6);
 							 if(rs6.next()) {
-								 tabIds.add(rs6.getLong("TAB_ID"));
+								 Long tabId = rs6.getLong("TAB_ID");
+								 String sql7 = "SELECT * FROM sourcelead.TABS tabs where tabs.ID = '"+tabId+"' ";
+								 Statement stmt7 = conn.createStatement();
+								 ResultSet rs7 = stmt7.executeQuery(sql7);
+								 if(rs7.next()) {
+									 if(rs7.getString("TAB_ID") != null) {
+										 tabIds.add(rs7.getLong("TAB_ID"));
+									 }else {
+										 tabIds.add(rs7.getLong("ID"));
+									 }
+								 }
+								 
 							 }
 						 }
 						 
