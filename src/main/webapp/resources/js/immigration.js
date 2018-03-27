@@ -3,6 +3,7 @@ var immiModulePath = "/immigration";
 var immTemplId = '';
 var immigrationId = '';
 var candidateId = '';
+var familyMemberId = id;
 var templateId='';
 var formNames = [];
 function Immigration() {
@@ -368,7 +369,7 @@ this.displayVisaDetails=function(candidateId,Visa){
 			console.log(formData);
 			 var candidateId = $('#candidateID').val();
 			$.ajax({
-				url : sourceleadUrl + immiModulePath+ "/saveCandidateFamilyDetails?candidateId="+candidateId+"&relationType="+relationType,
+				url : sourceleadUrl + immiModulePath+ "/saveCandidateFamilyDetails?candidateId="+candidateId+"&relationType="+relationType+"&memberId="+familyMemberId,
 				type : "POST",
 				data : formData,
 				success : function(data) {
@@ -415,6 +416,7 @@ this.displayVisaDetails=function(candidateId,Visa){
 	
 	this.editFamilyDetailsById = function(id, relationType){
 		console.log(" inside edit record  "+id);
+		familyMemberId = id; // update the variable with family member id in edit mode.
 		$.ajax({
             url: sourceleadUrl + immiModulePath + "/getCandidateFamilyDetailsById?id="+id,
             type: "GET",
