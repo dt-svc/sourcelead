@@ -111,6 +111,7 @@ public class DataMigrationCommonRestController {
 		model.addObject("dataWithCellId", dataWithCellId);
 		model.addObject("fields", formFields);
 		model.addObject("projectUUID", dataMigrationCommonDTO.getProjectUUID());
+		model.addObject("projectClientUUID", dataMigrationCommonDTO.getProjectClientUUID());
 		model.addObject("exportFilePath", dataMigrationCommonDTO.getFilePath());
 		model.addObject("uploadType", dataMigrationCommonDTO.getUploadType());
 		model.addObject("timesheetMode", dataMigrationCommonDTO.getTimesheetMode());

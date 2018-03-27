@@ -62,7 +62,6 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	private String teams;
 	
 	private String projectClientUUID;
-	
 
 	private List<CustomFormFieldDTO> customFormData;
 

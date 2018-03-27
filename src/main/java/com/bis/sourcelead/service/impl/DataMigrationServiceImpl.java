@@ -191,6 +191,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				/*this code is for assign projectUUI(in project Task upload) from dataMigrationDTO to dataMigrationDTOJsonCopy json object*/
 				if(dataMigrationDTO.getUploadType().equalsIgnoreCase("projectTasks")) {
 					dataMigrationDTOJsonCopy.put("projectUUID", dataMigrationDTO.getProjectUUID());
+					dataMigrationDTOJsonCopy.put("projectClientUUID", dataMigrationDTO.getProjectClientUUID());
 				}
 	
 				while( keys.hasNext() ) {

@@ -1583,56 +1583,63 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			
 			//Project Type User Story
 			if(!dataMigrationDTOJsonCopy.getString("epic").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("epic"))) {
-				LookUpData lookupdata = lookUpDataService.getTasksTypeByUniqueKey(dataMigrationDTOJsonCopy.getString("epic"));
-				Collection<ProjectTasks> taskList = projectTasksService.getAllTasksByProjectIdAndTaskType(project.getId(), lookupdata.getId());
-				int incr = 0;
-				for(ProjectTasks pt :taskList) {
-					if(pt.getTaskName().trim().toLowerCase().equalsIgnoreCase(dataMigrationDTOJsonCopy.getString("epic").trim().toLowerCase())) {
-						incr++;
-						dataMigrationDTOJsonCopy.put("epic", pt.getId());
-					} 
-				}
-				if(incr<1) {
-					errorSet.put("epic", dataMigrationDTOJsonCopy.getString("epic").trim()+" Invalid Epic Name");
+				if(dataMigrationDTOJsonCopy.getString("taskstype").trim().toLowerCase().equalsIgnoreCase("UserStory")) {
+					LookUpData lookupdata = lookUpDataService.getTasksTypeByUniqueKey("Epic");
+					Collection<ProjectTasks> taskList = projectTasksService.getAllTasksByProjectIdAndTaskType(project.getId(), lookupdata.getId());
+					int incr = 0;
+					for(ProjectTasks pt :taskList) {
+						if(pt.getTaskName().trim().toLowerCase().equalsIgnoreCase(dataMigrationDTOJsonCopy.getString("epic").trim().toLowerCase())) {
+							incr++;
+							dataMigrationDTOJsonCopy.put("epic", pt.getId());
+						} 
+					}
+					if(incr<1) {
+						errorSet.put("epic", dataMigrationDTOJsonCopy.getString("epic").trim()+" Invalid Epic Name");
+					}
 				}
 			}
 			
 			//Project Type Bug
-			if(!dataMigrationDTOJsonCopy.getString("bug").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("bug"))) {
-				LookUpData lookupdata = lookUpDataService.getTasksTypeByUniqueKey(dataMigrationDTOJsonCopy.getString("bug"));
-				Collection<ProjectTasks> taskList = projectTasksService.getAllTasksByProjectIdAndTaskType(project.getId(), lookupdata.getId());
-				int incr = 0;
-				for(ProjectTasks pt :taskList) {
-					if(pt.getTaskName().trim().toLowerCase().equalsIgnoreCase(dataMigrationDTOJsonCopy.getString("bug").trim().toLowerCase())) {
-						incr++;
-						dataMigrationDTOJsonCopy.put("userStory", pt.getId());
-					} 
+			if(!dataMigrationDTOJsonCopy.getString("userStory").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("userStory"))) {
+				if(dataMigrationDTOJsonCopy.getString("taskstype").trim().toLowerCase().equalsIgnoreCase("bug")) {
+					String userStory = dataMigrationDTOJsonCopy.getString("userStory").trim().toLowerCase();
+					LookUpData lookupdata = lookUpDataService.getTasksTypeByUniqueKey("UserStory");
+					Collection<ProjectTasks> taskList = projectTasksService.getAllTasksByProjectIdAndTaskType(project.getId(), lookupdata.getId());
+					int incr = 0;
+					for(ProjectTasks pt :taskList) {
+						if(pt.getTaskName().equalsIgnoreCase(userStory)) {
+							incr++;
+							dataMigrationDTOJsonCopy.put("userStory", pt.getId());
+						} 
+					}
+					if(incr<1) {
+						errorSet.put("userStory", dataMigrationDTOJsonCopy.getString("userStory").trim()+" Invalid UserStory Name");
+					}
 				}
-				if(incr<1) {
-					errorSet.put("userStory", dataMigrationDTOJsonCopy.getString("userStory").trim()+" Invalid UserStory Name");
-				}
+				
 			}
 			
 			
 			//Project Type Sub Tasks
-			if(!dataMigrationDTOJsonCopy.getString("subTask").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("SubTask"))) {
-				LookUpData lookupdata = lookUpDataService.getTasksTypeByUniqueKey(dataMigrationDTOJsonCopy.getString("subTask"));
-				Collection<ProjectTasks> taskList = projectTasksService.getAllTasksByProjectIdAndTaskType(project.getId(), lookupdata.getId());
-				if(taskList != null) {
-					int incr = 0;
-					for(ProjectTasks pt :taskList) {
-						if(pt.getTaskName().trim().toLowerCase().equalsIgnoreCase(dataMigrationDTOJsonCopy.getString("subTask").trim().toLowerCase())) {
-							incr++;
-							dataMigrationDTOJsonCopy.put("subTask", pt.getId());
-						} 
+			if(!dataMigrationDTOJsonCopy.getString("subTask").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("subTask"))) {
+				if(dataMigrationDTOJsonCopy.getString("taskstype").trim().toLowerCase().equalsIgnoreCase("SubTask")) {
+					LookUpData lookupdata = lookUpDataService.getTasksTypeByUniqueKey("SubTask");
+					Collection<ProjectTasks> taskList = projectTasksService.getAllTasksByProjectIdAndTaskType(project.getId(), lookupdata.getId());
+					if(taskList != null) {
+						int incr = 0;
+						for(ProjectTasks pt :taskList) {
+							if(pt.getTaskName().trim().toLowerCase().equalsIgnoreCase(dataMigrationDTOJsonCopy.getString("subTask").trim().toLowerCase())) {
+								incr++;
+								dataMigrationDTOJsonCopy.put("subTask", pt.getId());
+							} 
+						}
+						if(incr<1) {
+							errorSet.put("subTask", dataMigrationDTOJsonCopy.getString("subTask").trim()+" Invalid SubTask Name");
+						}
+					}else {
+						errorSet.put("subTask", dataMigrationDTOJsonCopy.getString("subTask").trim()+" Task Name is required");
 					}
-					if(incr<1) {
-						errorSet.put("subTask", dataMigrationDTOJsonCopy.getString("subTask").trim()+" Invalid SubTask Name");
-					}
-				}else {
-					errorSet.put("subTask", dataMigrationDTOJsonCopy.getString("subTask").trim()+" Task Name is required");
 				}
-				
 			}
 			
 			
@@ -1756,15 +1763,11 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 							incr++;
 							dataMigrationDTOJsonCopy.put("taskOwner", ownerUser.getId().toString());
 						} 
-		    		  if(incr<1) {
-							errorSet.put("taskOwner", dataMigrationDTOJsonCopy.getString("taskOwner").trim()+" Invalid Owner");
-						}
-		    	  }else {
-						errorSet.put("taskOwner", dataMigrationDTOJsonCopy.getString("taskOwner").trim()+" Invalid Owner Email");
-		    	   }
+		    	  }
 				}
-				
-			
+		      if(incr<1) {
+					errorSet.put("taskOwner", dataMigrationDTOJsonCopy.getString("taskOwner").trim()+" Invalid Owner");
+				}
 			}
 			
 			

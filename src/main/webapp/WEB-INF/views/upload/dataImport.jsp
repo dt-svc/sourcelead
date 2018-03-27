@@ -54,6 +54,7 @@
 	</div>
 	<div class="form-horizontal myForm row">
 	<input type="hidden" name="projectUUID" value="${projectUUID}">
+	<input type="hidden" name="projectClientUUID" value="${projectClientUUID}">
 		<div class="clearfix">
 			<!-- Select Dropdowns -->
 			<div class="col-xs-12 col-sm-6 col-md-12 col-lg-12">

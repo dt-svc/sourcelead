@@ -229,6 +229,7 @@ public class DataMigrationDTO extends CommonDTO {
 	
 	private String projectUUID;
 	
+	private String projectClientUUID;
 	
 	public String getEmployeeId() {
 		return employeeId;
@@ -1223,5 +1224,13 @@ public class DataMigrationDTO extends CommonDTO {
 
 	public void setAssignTaskId(String assignTaskId) {
 		this.assignTaskId = assignTaskId;
+	}
+
+	public String getProjectClientUUID() {
+		return projectClientUUID;
+	}
+
+	public void setProjectClientUUID(String projectClientUUID) {
+		this.projectClientUUID = projectClientUUID;
 	}
 }

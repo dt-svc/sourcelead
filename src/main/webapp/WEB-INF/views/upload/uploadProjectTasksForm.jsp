@@ -141,12 +141,13 @@ function fetchFieldsWithMatchedColumn(){
 	var fileUrl = $("#dataFilePath").val();
 	var uploadType = "projectTasks";
 	var projctUUId = "${projectUUID}";
+	var projectClientUUID = "${projectClientUUID}";
 	var headerPosition = $("#headerPosition").val();
         if (($('#upload_job_form').validate(false, validationSettings))){
       	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
           	$.ajax({
     			type: "POST",
-    		    url: sourceleadUrl+"/dataMigrationCommon?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType+"&headerPosition="+headerPosition+"&projectUUID="+projctUUId, 
+    		    url: sourceleadUrl+"/dataMigrationCommon?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType+"&headerPosition="+headerPosition+"&projectUUID="+projctUUId+"&projectClientUUID="+projectClientUUID, 
     		    success: function(data) {
     		    	$("#dataFileImportDiv").attr("style","display:none");
     		    	$('#dataFieldsDiv').removeAttr("style");
