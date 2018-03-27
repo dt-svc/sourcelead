@@ -22,6 +22,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmailMessageService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.NotificationsService;
+import com.google.gson.Gson;
 
 /**
  * This class is for covert subject,body,signature
@@ -121,7 +122,12 @@ public void sendNotification(String actionLink,User loginUser,User toUser, OrgLo
 	//new Notification logic
 	Notifications notification = new Notifications();
 	
-	notification.setUUID(SourceLeadRandomCodeHelper.generateNotificationUUID());
+	if(null != emailScenario.getUUID()  && !emailScenario.getUUID().isEmpty()){
+		notification.setUUID(emailScenario.getUUID());
+	}
+	else {
+		notification.setUUID(SourceLeadRandomCodeHelper.generateNotificationUUID());
+	}
 	if(StringUtils.isNotEmpty(actionLink) && actionLink.contains(Constants.PLACE_UUID)) {
 		actionLink = actionLink.replace(Constants.PLACE_UUID, notification.getUUID());
 	}
@@ -137,11 +143,11 @@ public void sendNotification(String actionLink,User loginUser,User toUser, OrgLo
 	notification.setOrgCode(loginOrgLocation.getOrg().getOrgCode());
 	notification.setUserNotificationStatus("Sent");
 	notification.setNotificationStatus(Constants.NOTIFICATION_NOT_DELETED);
-	if(null != emailScenario.getUUID()  && !emailScenario.getUUID().isEmpty()){
-		notification.setUUID(emailScenario.getUUID());
-	}
+	
 	if(parameterList != null && !parameterList.isEmpty()) {
-		notification.setParameterList(parameterList.toString());
+		 Gson gsonObj = new Gson();
+		 String str = gsonObj.toJson(parameterList);
+		notification.setParameterList(str);
 	}
 	
 	 notificationsService.saveNotification(notification);

@@ -7,19 +7,12 @@
 
 <script>
 	$(document).ready(function() {
-		   timesheetApprovalDetils('month');
-		   /* if ('${notifyLink}' == "notifyLink") 
+		    if ('${notifyLink}' == true) 
 			{
-				var currentTimeFrequency = '${currentTimeFrequency}';
-				var projectId = '${projectId}';
-				var projectMemberId = '${projectMemberId}';
-				var masterCandidateId = '${masterCandidateId}';
-				var totalHours = '${totalHours}';
-				var from = '${from}';
-				var requestFrom = "notifyLink";
-				$("#notificationCurrentFrequency").attr("value",currentTimeFrequency);
-				timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,projectMemberId,masterCandidateId,totalHours,from,requestFrom);
-			} */
+		    	timesheetApprovalDetils('notifyLink');
+			} else{
+				timesheetApprovalDetils('month');
+			}
 			selectedRecords = {};
 			$(".checkBoxForSubmitForApproval").click(function () {
 				selectedRecords[$(this).val()] = $(this).is(":checked");
@@ -52,23 +45,34 @@
 	               var locationCode ='${SourceLeadWeb_locationCode}';
 	               var userId = '${SourceLeadWeb_user.id}';
 	               var frequencyMonth = $("#frequencyMonth").val();
+	               var timesheetFrequency = $('#timesheetFrequency').val();
 	               var searchData = $('#dataTableSearchExpenses').val();
+	               var weekFrequency = $('#weekFrequency').val();
+	               var stage = $('#stage').val();
+	               var client = $('#client').val();
+	               if(filter != null && filter != '' && filter != 'undefined' &&  filter == 'notifyLink'){
+	            	   frequencyMonth = '${frequencyMonth}';
+	            	   timesheetFrequency = '${timesheetFrequency}';
+	            	   searchData = '${searchData}';
+	            	   weekFrequency = '${weekFrequency}';
+	               }
+	               
 	               if(frequencyMonth == null || frequencyMonth == '' || frequencyMonth == 'undefined')
 	            	   frequencyMonth = '';
 	               
-	  	           var timesheetFrequency = $('#timesheetFrequency').val();
+	  	         
 	  	           if(timesheetFrequency == null || timesheetFrequency == '' || timesheetFrequency == 'undefined')
 	  	        	 timesheetFrequency = '';
 	  	           
-	  	           var weekFrequency = $('#weekFrequency').val();
+	  	           
 		           if((weekFrequency == null || weekFrequency == '' || weekFrequency == 'undefined') || (filter == 'month')  || (filter == 'frequency'))
 		        	   weekFrequency = '';
 	  	         
-		           var stage = $('#stage').val();
+		          
 		           if(stage == null || stage == '' || stage == 'undefined')
 		        	   stage = '';
 		           
-		           var client = $('#client').val();
+		          
 		           if(client == null || client == '' || client == 'undefined')
 		        	   client = '';
 		           

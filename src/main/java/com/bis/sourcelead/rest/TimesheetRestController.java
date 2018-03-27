@@ -2476,9 +2476,7 @@ public class TimesheetRestController {
 				paramList.put("masterCandidateId", masterCanidateId.toString());
 				actionLink =actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheetApproval/").append(Constants.PLACE_UUID).toString();
 			}
-			emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, loginOrgLocation, notificationScenario,paramList);
-
-			
+			emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, approver.getProjectClientsId().getOrgLocationsId(), notificationScenario,paramList);
 		}
 	}
 	}

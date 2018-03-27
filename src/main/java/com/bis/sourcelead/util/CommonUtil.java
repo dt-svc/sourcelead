@@ -85,7 +85,6 @@ import com.bis.sourcelead.entity.VendorOnboardingTemplate;
 import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
-import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -107,6 +106,8 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.VendorOnboardTemplateDocumentsService;
 import com.bis.sourcelead.service.VendorOnboardTemplateService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.icu.text.DecimalFormat;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -206,6 +207,27 @@ public class CommonUtil {
 	private ProjectTasksDao tasksDao;
 	
 	
+	/**
+	 * This method is used to store pre-defined sourcelead tasks for the particular project
+	 * @author: Naresh Bolisetty
+	 * 
+	 */
+	public static HashMap<String, String> getJsonAsMap(String json)
+	{
+	    try
+	    {
+	        ObjectMapper mapper = new ObjectMapper();
+	        TypeReference<Map<String,String>> typeRef = new TypeReference<Map<String,String>>() {};
+	        HashMap<String, String> result = mapper.readValue(json, typeRef);
+
+	        return result;
+	    }
+	    catch (Exception e)
+	    {
+	        throw new RuntimeException("Couldnt parse json:" + json, e);
+	    }
+	}
+	
 	
 	/**
 	 * This method is used to store pre-defined sourcelead tasks for the particular project
@@ -216,6 +238,9 @@ public class CommonUtil {
 	public static Date currentDate() {
         return new Date();
     }
+	
+	
+	
 	
 	/**
 	 * Converting Org based date format as string
@@ -231,6 +256,7 @@ public class CommonUtil {
 		}
 		return dateStr;
 	}
+	
 	
 	/**
 	 * Convert String to Capitalized String
