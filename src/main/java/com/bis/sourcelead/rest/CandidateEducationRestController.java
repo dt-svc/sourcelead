@@ -93,15 +93,15 @@ public class CandidateEducationRestController {
 	 * @throws NullPointer
 	 */
 	//@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_EDUCATION_DETAILS')")
-	@RequestMapping(value = "/storeCandidateEducation", method = RequestMethod.POST)
-	public @ResponseBody String storeCandidateEducation(CandidateEducationDTO candidateEducationDTO,@RequestParam(value = "candidateId", required = false) String candidateId,HttpServletRequest request) throws Exception {
+	@RequestMapping(value = {"/storeCandidateEducation","rest/storeCandidateEducation"}, method = RequestMethod.POST)
+	public @ResponseBody String storeCandidateEducation(CandidateEducationDTO candidateEducationDTO,HttpServletRequest request) throws Exception {
 
 		if(Validator.validate(candidateEducationDTO)) {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		candidateEducationDTO.setDateFormat(loginOrgLocation.getDateFormat());
-		candidateEducationService.storeCandidateEducation(candidateEducationDTO,Long.parseLong(candidateId),loginOrgLocation.getId(), user);
-		Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
+		candidateEducationService.storeCandidateEducation(candidateEducationDTO,candidateEducationDTO.getCandidateId(),loginOrgLocation.getId(), user);
+		Candidate candidate = candidateService.getCandidateByCandidateId(candidateEducationDTO.getCandidateId());
 		Integer percentage = candidateService.getCandidatePercentage(candidate,loginOrgLocation);
 		return percentage.toString();
 		}else{
@@ -141,6 +141,9 @@ public class CandidateEducationRestController {
 			 edu.setId(candidateEducation.getId());
 			 edu.setCandidateId(candidateEducation.getCandidateId().getId());
 			 edu.setCandidateEduId(candidateEducation.getId().toString());
+			 edu.setStartDate(candidateEducation.getStartDateStr());
+			 edu.setEndDate(candidateEducation.getEndDateStr());
+			 edu.setCandidateEducationId(candidateEducation.getId());
 			 eduList.add(edu);
 		 }
 		 candiEduList.setData(eduList);
@@ -165,14 +168,13 @@ public class CandidateEducationRestController {
 	 */
 	
 //	@PreAuthorize("hasAnyRole('ROLE_DELETE_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS')")
-	@RequestMapping(value = "/removeCandidateEducationBycandidateIdandcandidateEducationId")
-	public String removeCandidateEducationBycandidateIdandcandidateEducationId(@RequestParam(value = "loginUserId", required = false) Long loginUserId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
-																				@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateEducationId", required = false) Long candidateEducationId) throws Exception {
-		User user = userService.getUserById(loginUserId);
-		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		CandidateEducation  candidateEducation = candidateEducationService.removeCandidateEducationBycandidateIdandcandidateEducationId(candidateId, candidateEducationId, user, orgLocations);
+	@RequestMapping(value = {"/removeCandidateEducationBycandidateIdandcandidateEducationId","rest/removeCandidateEducationBycandidateIdandcandidateEducationId"})
+	public String removeCandidateEducationBycandidateIdandcandidateEducationId(CandidateEducationDTO candidateEducationDTO) throws Exception {
+		User user = userService.getUserById(candidateEducationDTO.getLoginUserId());
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(candidateEducationDTO.getOrgLocationId());
+		CandidateEducation  candidateEducation = candidateEducationService.removeCandidateEducationBycandidateIdandcandidateEducationId(candidateEducationDTO.getCandidateId(), candidateEducationDTO.getCandidateEducationId(), user, orgLocations);
 		 //OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		 Candidate candidate = candidateService.getCandidateByCandidateId(candidateEducationDTO.getCandidateId());
 		 if (null != candidate && null != candidate.getId()) {
 			 CandidateIndex candidateIndex = new CandidateIndex();
 			 candidateIndex.setCandidateId(candidate.getId());

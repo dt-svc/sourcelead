@@ -91,7 +91,11 @@ function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,
 			    	 setTotals();
 				     maskme();
 		      }
-	    }); 
+	    });
+     	selectedRecords = {};
+		$(".checkBoxForSubmitForApproval").click(function () {
+	    	selectedRecords[$(this).val()] = $(this).is(":checked");
+	    });
 } 
 </script>
 <script>
@@ -240,6 +244,10 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 		    			   	$("#loadingCotentDiv").removeAttr('style');
 		    			   	$('#hedderAcceptRejectButton').attr('style','display:none');
 			    		}
+		    			selectedRecords = {};
+		    			$(".checkBoxForSubmitForApproval").click(function () {
+	             	    	selectedRecords[$(this).val()] = $(this).is(":checked");
+	             	    });
 			    	}
 			    }
 		    });  
@@ -312,6 +320,10 @@ function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
 	      		      $("#rejectpanel").hide();
 	      		      $('#hedderAcceptRejectButton').attr('style','display:none');
 		   	   }
+		       selectedRecords = {};
+   				$(".checkBoxForSubmitForApproval").click(function () {
+        	    	selectedRecords[$(this).val()] = $(this).is(":checked");
+        	    });
 	      }
 	    }); 
 	 }else{

@@ -37,6 +37,12 @@ public class CandidateCertificationDTO extends CommonDTO {
 
 	private String candidatevalidToDateToString;
 
+	private long loginUserId;
+	
+	private long orgLocationId;
+	
+	private long candidateCertificationId;
+	
 	public Long getId()
 	{
 		return id;
@@ -195,6 +201,36 @@ public class CandidateCertificationDTO extends CommonDTO {
 	public void setCandidatevalidToDateToString(String candidatevalidToDateToString)
 	{
 		this.candidatevalidToDateToString = candidatevalidToDateToString;
+	}
+
+	public long getLoginUserId()
+	{
+		return loginUserId;
+	}
+
+	public void setLoginUserId(long loginUserId)
+	{
+		this.loginUserId = loginUserId;
+	}
+
+	public long getOrgLocationId()
+	{
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(long orgLocationId)
+	{
+		this.orgLocationId = orgLocationId;
+	}
+
+	public long getCandidateCertificationId()
+	{
+		return candidateCertificationId;
+	}
+
+	public void setCandidateCertificationId(long candidateCertificationId)
+	{
+		this.candidateCertificationId = candidateCertificationId;
 	}
 	
 	

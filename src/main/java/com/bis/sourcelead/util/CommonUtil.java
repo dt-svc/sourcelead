@@ -85,6 +85,7 @@ import com.bis.sourcelead.entity.VendorOnboardingTemplate;
 import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -547,7 +548,7 @@ public class CommonUtil {
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String actionLink="";
-		emailScenerioUtil.sendNotification(actionLink, loginUser,toUser, pmh.getProjectMemberId().getEmployee().getOrgLocations(), notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser,toUser, pmh.getProjectMemberId().getEmployee().getOrgLocations(), notificationScenario,new HashMap<String,String>());
 
 			
 		}
@@ -2099,7 +2100,7 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		 String actionLink="";
 	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+pmh.getProjectMemberId().getProjects().getProjectUUID()+"&projectClientUUID="+pmh.getProjectMemberId().getProjectClientUUID()+"&tabType=team").toString();
 
-		 emailScenerioUtil.sendNotification(actionLink, loginUser,user, projectApproverHierarchy.getProjectId().getOrgLocationsId(), notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, loginUser,user, projectApproverHierarchy.getProjectId().getOrgLocationsId(), notificationScenario,new HashMap<String,String>());
 		 }
 		}
 		

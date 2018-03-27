@@ -101,7 +101,7 @@ public class CandidateEmployersRestController {
 	
 	//@PreAuthorize("hasAnyRole('ROLE_ADD_EMPLOYEER','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_EMPLOYER')")
 	@RequestMapping(value = {"/storeCandidateEmployers","rest/storeCandidateEmployers"}, method = RequestMethod.POST)
-	public @ResponseBody String storeCandidateEmployers(CandidateEmployerDTO candidateEmployerDTO,@RequestParam(value="candidateId", required=false) Long candidateId ,HttpServletRequest request) throws Exception {
+	public @ResponseBody String storeCandidateEmployers(CandidateEmployerDTO candidateEmployerDTO ,HttpServletRequest request) throws Exception {
 
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -109,8 +109,8 @@ public class CandidateEmployersRestController {
 		
 		/*String json1 = "{"+json+"}";
 		JSONObject jsonObject = new JSONObject(json1);*/
-	    candidateEmployersService.storeCandidateEmployers(candidateEmployerDTO,users,loginOrgLocation,candidateId);
-		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+	    candidateEmployersService.storeCandidateEmployers(candidateEmployerDTO,users,loginOrgLocation,candidateEmployerDTO.getCandidateId());
+		Candidate candidate = candidateService.getCandidateByCandidateId(candidateEmployerDTO.getCandidateId());
 		Integer percentage = candidateService.getCandidatePercentage(candidate,loginOrgLocation);
 		return percentage.toString();
 	}
@@ -160,6 +160,12 @@ public class CandidateEmployersRestController {
 			 candidateEmployerDTO.setEndMonth(candidateEmployers.getEndMonth());
 			 candidateEmployerDTO.setStartYear(candidateEmployers.getStartYear());
 			 candidateEmployerDTO.setEndYear(candidateEmployers.getEndYear());
+			 candidateEmployerDTO.setCandidateId(Long.parseLong(candidateId));
+			 candidateEmployerDTO.setCandidateEmployeeId(String.valueOf(candidateEmployers.getId()));
+			 candidateEmployerDTO.setCandidateExperianceId(String.valueOf(candidateEmployers.getId()));
+			 candidateEmployerDTO.setIsCurrentPosition(candidateEmployers.getIsCurrentPosition());
+			 candidateEmployerDTO.setOrgLocationId(String.valueOf(orgLocations.getId()));
+			 candidateEmployerDTO.setCandidateemployerId(String.valueOf(candidateEmployers.getId()));
 			 candidateEmployeeDTOList.add(candidateEmployerDTO);
 			}
 //		 });
@@ -196,15 +202,15 @@ public class CandidateEmployersRestController {
 	 */
 	
 //	@PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_EMPLOYEER','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_DELETE_ASSOCIATE_EMPLOYER')")
-	@RequestMapping(value = "/removeCandidateEmployerBycandidateIdandCandidateEmployerID")
-	public String removeCandidateEmployerBycandidateIdandCandidateEmployerID(@RequestParam(value = "loginUserId", required = false) Long loginUserId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateemployerId", required = false) Long candidateemployerId) throws Exception {
+	@RequestMapping(value = {"/removeCandidateEmployerBycandidateIdandCandidateEmployerID","rest/removeCandidateEmployerBycandidateIdandCandidateEmployerID"})
+	public String removeCandidateEmployerBycandidateIdandCandidateEmployerID(CandidateEmployerDTO candidateEmployerDTO) throws Exception {
 
 		//OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User user = userService.getUserById(loginUserId);
-		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		User user = userService.getUserById(Long.parseLong(candidateEmployerDTO.getLoginUserId()));
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(candidateEmployerDTO.getOrgLocationId()));
 		StringBuffer activitySummary = new StringBuffer();
-		CandidateEmployers  candidatesEmployersList = candidateEmployersService.removeCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, candidateemployerId);
-		Candidate candidate =candidateService.getCandidateById(candidateId);
+		CandidateEmployers  candidatesEmployersList = candidateEmployersService.removeCandidateEmployerBycandidateIdandCandidateEmployerID(candidateEmployerDTO.getCandidateId(), Long.parseLong(candidateEmployerDTO.getCandidateemployerId()));
+		Candidate candidate =candidateService.getCandidateById(candidateEmployerDTO.getCandidateId());
 		
 		activitySummary.append("Employer").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidatesEmployersList.getName()).append(Constants.NEW_VALUE_TAG_END);
 		candidateActivityCommonUtil.storeCandidateEmployersHistory(candidatesEmployersList, user);

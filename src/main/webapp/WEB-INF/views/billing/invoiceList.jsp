@@ -71,15 +71,20 @@ $(document).ready(function(){
          
          <ul class="nav nav-tabs" id="tab_bar">
             
-               <li class="active">
+                  <li class="active">
                         <h4>Unbilled</h4>
                         <a  data-toggle="tab" class="onboardCount billbg_orange" title="Draft Invoices">
                             <div class="pull-left">
                             <strong>${SourceLeadWeb_currencyCode}</strong>
                             </div>
-                            <div class="pull-right ml10">
-                            <div class="count" id="unbilledAmoumt"></div>
+                                <div class="pull-right ml10">
+                               <div class="count" id="unbilledAmoumt"></div>
+                               <c:if test="${!empty draftInvoiceCount }">
                                 <h5>Draft Invoices <span class="paddingLeft" id="draftInvoiceCount"></span></h5>
+                                </c:if>
+                                <c:if test="${empty draftInvoiceCount }">
+                                <h5>Draft Invoices<br><span class="paddingright pull-right">0.0</span></h5>
+                                </c:if>
                                 </div>
                         </a>
                     </li>
@@ -91,7 +96,12 @@ $(document).ready(function(){
                             </div>
                             <div class="pull-right ml10">
                             <div class="count" id="dueAfterInvoiceAmount"></div>
-                        <h5>Overdue Invoices<span class="paddingLeft" id="dueAfterInvoiceCount"></span></h5>
+                            <c:if test="${!empty dueAfterInvoiceCount }">
+                              <h5>Overdue Invoices<span class="paddingLeft" id="dueAfterInvoiceCount"></span></h5>
+                           </c:if>
+                            <c:if test="${empty dueAfterInvoiceCount }">
+                              <h5>Overdue Invoices<br><span class="paddingright pull-right">0.0</span></h5>
+                           </c:if>
                             </div>
                         
                         </a>
@@ -104,8 +114,13 @@ $(document).ready(function(){
                             </div>
                             <div class="pull-right ml10">
                             <div class="count" id="dueBeforeInvoiceAmount"></div>
-                        <h5>Open Invoices<span class="paddingLeft" id="dueBeforeInvoiceCount"></span></h5>
-                        </div>
+                             <c:if test="${!empty dueBeforeInvoiceCount }">
+                             <h5>Open Invoices<span class="paddingLeft" id="dueBeforeInvoiceCount"></span></h5>
+                             </c:if>
+                              <c:if test="${empty dueBeforeInvoiceCount }">
+                             <h5>Open Invoices<br><span class="paddingright pull-right">0.0</span></h5>
+                             </c:if>
+                          </div>
                         </a>
                     </li>
                     <li class="billingbg_greens">
@@ -116,7 +131,14 @@ $(document).ready(function(){
                             </div> 
                             <div class="pull-right ml10">
                             <div class="count" id="paidInvoiceAmount"></div>
-                        <h5>Paid Invoices<span class="paddingLeft" id="paidInvoiceCount"></span></h5>
+                             <c:if test="${!empty paidInvoiceCount }">
+                              <h5>Paid Invoices<span class="paddingLeft" id="paidInvoiceCount"></span></h5>
+                             </c:if>
+                             
+                              <c:if test="${empty paidInvoiceCount }">
+                              <h5>Paid Invoices<br><span class="paddingright pull-right">0.0</span></h5>
+                             </c:if>
+                             
                             </div>
                         </a>
                     </li>
@@ -615,12 +637,12 @@ function invoicePagination(url){
 	    	  	    result = result +'         <td>';
 	    	  	    if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
 						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_INVOICE\')">';
-						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor2"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
+						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor2"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'" title="'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
 						'</sec:authorize>' ;
 					}
 					if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked" ){
 						'<sec:authorize access="hasAnyRole(\'ROLE_INVOICE_PAYMENT_HISTORY\')">';
-						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="<c:url value="/app/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>">'+report.invoiceId+'</a></div>';				
+						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="<c:url value="/app/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>" title="'+report.invoiceId+'">'+report.invoiceId+'</a></div>';				
 						'</sec:authorize>' ;
 					}
 					result = result +'         </td>  ';  

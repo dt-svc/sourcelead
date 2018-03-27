@@ -992,7 +992,7 @@ function pagination(){
 		
 		//for client contatcs tab
 		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT\')">';
-		result = result + '<li><a href="#tab-2" onclick="clientContacts('+orgRelationId+','+clientLocationId+');">Contacts</a></li>';
+		result = result + '<li id="clientContactsLi"><a href="#tab-2" onclick="clientContacts('+orgRelationId+','+clientLocationId+');">Contacts</a></li>';
 		'</sec:authorize>';
 		
 		//for client documents tab
@@ -1071,9 +1071,15 @@ function pagination(){
 		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
 		$(".side_mask").fadeIn(200);
 		$("body").css('overflow-y', 'hidden');
-		 
- 
-		clientDetails(clientLocationId,orgRelationId);
+		if ('${contactsTab}' == "contactsTab") {
+			$(".project-tabs-menu li").removeClass("current");
+			$("#clientContactsLi").addClass("current");
+			$("#tab-2").show();
+			clientContacts(orgRelationId,clientLocationId);
+		} else {
+			clientDetails(clientLocationId,orgRelationId);
+		}
+		
 	}
 </script>
 

@@ -328,7 +328,7 @@ public class TimesheetSubmissionsRestController {
 			currentTimeFrequency.append(startDate).append("To").append(endDate);
 			actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("timesheet?&currentTimeFrequency="+currentTimeFrequency.toString()+"&projectMembersId="+projectMember.getId()+"&notifyLink=notifyLink").toString();*/	
 			
-			emailScenerioUtil.sendNotification(actionLink, loginUser,  projectMember.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario); 
+			emailScenerioUtil.sendNotification(actionLink, loginUser,  projectMember.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>()); 
 	}
 
 	private void sendEmailToVendorAtTimesheetApprovalStatus(ProjectMembers projectMember,User loginUser, OrgLocations loginOrgLocation, String loginOrgCode, String startDate, String endDate, String status, String rejectedReason) throws Exception {
@@ -416,7 +416,7 @@ public class TimesheetSubmissionsRestController {
 			StringBuilder currentTimeFrequency = new StringBuilder();
 			currentTimeFrequency.append(startDate).append("To").append(endDate);
 			String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("timesheetApproval?&currentTimeFrequency="+currentTimeFrequency.toString()+"&projectMemberId="+projectMember.getId()+"&projectId="+projectMember.getProjects().getId()+"&masterCandidateId="+projectMember.getMasterCandidateId().getId()+"&from=approver"+"&notifyLink=notifyLink").toString();*/	
-			emailScenerioUtil.sendNotification(actionLink, loginUser, approver.getApproverUserId(), approver.getProjectClientsId().getOrgLocationsId(), notificationScenario);
+			emailScenerioUtil.sendNotification(actionLink, loginUser, approver.getApproverUserId(), approver.getProjectClientsId().getOrgLocationsId(), notificationScenario,new HashMap<String,String>());
 			
 		}
 	}

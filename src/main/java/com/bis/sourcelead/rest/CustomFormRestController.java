@@ -30,6 +30,7 @@ import com.bis.sourcelead.entity.OrglocationFormSubFields;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadFormFields;
 import com.bis.sourcelead.entity.SourceleadFormSections;
+import com.bis.sourcelead.service.AssetCustomFieldService;
 import com.bis.sourcelead.service.CandidateCustomFieldDataService;
 import com.bis.sourcelead.service.ClientCustomFieldDataService;
 //import com.bis.sourcelead.service.ContractCustomFieldDataService;
@@ -39,6 +40,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.ProjectCustomFieldDataService;
+import com.bis.sourcelead.service.ProjectTaskCustomFieldDataService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormFieldsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
@@ -90,6 +92,12 @@ public class CustomFormRestController {
 	@Autowired
 	private OrgRelationsService orgRelationsService;
 	
+	@Autowired
+	private AssetCustomFieldService assetCustomFieldService;
+	
+	@Autowired
+	private ProjectTaskCustomFieldDataService projectTaskCustomFieldDataService;
+	
 	
     @RequestMapping(value = "/getFormSectionsByActionId",  method = RequestMethod.POST)
     public  ModelAndView getFormSectionsByActionId(@RequestParam(value="actionId", required=true) Long actionId,HttpServletRequest request) throws Exception {
@@ -101,6 +109,20 @@ public class CustomFormRestController {
     	return model;
     }
 	 
+    
+    @RequestMapping(value = "/getSourceleadSectionDetailsById",  method = RequestMethod.POST)
+    public  ModelAndView getSourceleadSectionDetailsById(@RequestParam(value="SectionId", required=true) Long section,@RequestParam(value="sourceleadFormId",required=true)Long sourceleadFormId,@RequestParam(value="type",required = true)String type,HttpServletRequest request) throws Exception {
+    	ModelAndView model = new ModelAndView();
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<SourceleadFormFields> sectionsList  = sourceleadFormSectionsService.getSourceleadSectionDetailsById(section,sourceleadFormId,orgLocation.getId());
+		SourceleadSectionDTO sections = sourceleadFormSectionsService.sourceleadFormSectionsDTOConverter(sectionsList.get(0).getSourceleadFormSections(), sectionsList, null);
+		model.addObject("SourceleadFormViewData",sections);
+		model.addObject("type",type);
+    	model.setViewName("customForms/customFormSections");
+    	return model;
+    }
+    
+    
     @RequestMapping(value = "/getFormFeildsBySectionId",  method = RequestMethod.POST)
     public @ResponseBody List<SourceleadFormFields> getFormFieldsBySectionId(@RequestParam(value="sectionId", required=true) Long sectionId) throws Exception {
     	List<SourceleadFormFields> fromFeilds  = sourceleadFormFieldsService.getAllFormFieldsBySectionId(sectionId);
@@ -213,9 +235,21 @@ public class CustomFormRestController {
 		 		 	case "contract" :
 		 		 		if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocations != null && customFieldsRequestTypeDTO.getContractId() != null){
 		 		 			jobData =  newContractCustomFieldDataService.getNewContractCustomFieldDataByContractId(orgLoc.getOrg().getId(),formFieldId, customFieldsRequestTypeDTO.getContractId());
-		 		 		
-		 		 		
 		 		 	}
+		 		 		
+		 		 		break;
+		 		 	case "asset" :
+		 		 		if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocations != null && customFieldsRequestTypeDTO.getAssetId() != null){
+		 		 			jobData =  assetCustomFieldService.getAssetCustomFieldDataByAssetId(orgLoc.getOrg().getId(),formFieldId, customFieldsRequestTypeDTO.getProjectTask());
+		 		 	}
+		 		 		
+		 		 		break;
+		 		 	case "projectTask" :
+		 		 		if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocations != null && customFieldsRequestTypeDTO.getProjectTask() != null){
+		 		 			jobData =  projectTaskCustomFieldDataService.getProjectTaskCustomFieldDataByUserId(orgLoc.getOrg().getId(),formFieldId, customFieldsRequestTypeDTO.getProjectTask());
+		 		 	}
+		 		 	break;	
+		 		 		
 		 		 }
 		 		 }
 		  return jobData;

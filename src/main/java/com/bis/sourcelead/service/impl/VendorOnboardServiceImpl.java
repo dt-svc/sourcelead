@@ -25,7 +25,6 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.VendorOnboardDao;
 import com.bis.sourcelead.dao.VendorOnboardTasksDao;
 import com.bis.sourcelead.dao.VendorOnboardTemplateDocumentsDao;
-import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.OnboardTasksDTO;
 import com.bis.sourcelead.dto.VendorDocumentsFileInfo;
 import com.bis.sourcelead.dto.VendorOnboardDTO;
@@ -54,6 +53,7 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgBankDetailsService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RolesService;
@@ -146,7 +146,8 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 	@Autowired
 	SourceleadRolesService sourceleadRolesService;
 	 
-	 
+	@Autowired
+	OrgRelationsService orgRelationsService;
 	 
 	
 	@Override
@@ -154,12 +155,10 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 			throws Exception {
 		
 		VendorOnboarding vendorOnboarding = new VendorOnboarding();
-		OrgRelations orgRelations = new OrgRelations();
-		orgRelations.setId(vendorOrgLocations.getVendorOrgRelationId());
+		OrgRelations orgRelations = orgRelationsService.getOrgRelationById(vendorOrgLocations.getVendorOrgRelationId());
 		vendorOnboarding.setOrgRelationId(orgRelations);
 		vendorOnboarding.setVendorLocationId(vendorOrgLocations);
-		User spocUser = new User();
-		spocUser.setId(vendorOrgLocations.getVendorSpocId());
+		User spocUser = userService.getUserById(vendorOrgLocations.getVendorSpocId());
 		vendorOnboarding.setSpocUserId(spocUser);
 		vendorOnboarding.setVendorOnboardStatus("Draft");
 		vendorOnboarding.setOnboardSubmitted(Constants.NO);
