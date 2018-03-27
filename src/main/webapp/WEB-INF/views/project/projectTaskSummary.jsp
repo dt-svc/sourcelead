@@ -117,6 +117,15 @@ var sourceleadUrl = '${sourceleadUrl}';
 	<div class="taskview_wrapinn">
 	      
 	<div class="clearfix">
+	
+			<c:forEach var="section" items="${sourceleadSectionListForProjectTask}" varStatus="sectionOrder">
+				 <script>
+				 $(document).ready(function() {
+					 preapareCustomFieldDetails('${projectTask.id}','${section.id}');					 
+				 });
+				 </script>
+			</c:forEach>
+	
           <div class="col-md-9">
 	          
 	          <div class="bg-success taskheaader-inlineedit mb10 clearfix">
@@ -397,11 +406,45 @@ var sourceleadUrl = '${sourceleadUrl}';
 		                   <select class="form-control chosen-select choose" multiple id="assignedUsers" name="assignedUsers"></select> 
 		              </div>
 		              </div>
-		              
+			              <form name="projectTaskCustomForm" id="projectTaskCustomForm">
+			             	<div id="projectTaskCustomId" onClick="inlinesaveProjectTaskCustomFieldDetails();"></div>
+			             </form>
 		          </div>
 		      </div>
       </div>
   </section>
+
+
+<script>
+function inlinesaveProjectTaskCustomFieldDetails(){
+		var projectTaskId = '${projectTask.id}';
+	  /*  if ($('#projectTaskCustomForm').validate(false, validationSettings)) { */
+		var formData = getFormData("projectTaskCustomForm");
+		$.ajax({
+			type : "POST",
+			 data: formData,
+			 url : sourceleadUrl+"/ProjectTasks/saveProjectTaskCustomFieldDetails?&id="+projectTaskId,
+			  success : function(data) {
+			}, 
+		});
+		return true;
+	/* } */
+}
+</script>
+
+
+<script>
+function preapareCustomFieldDetails(projecttaskId,sectionId){
+	 $.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/getAllASectionCustomFields?&projectTask="+projecttaskId+"&requestFrom=projectTask"+"&sectionId="+sectionId,        
+         success :function(data) {
+        	 $('#projectTaskCustomId').empty();
+        	 $('#projectTaskCustomId').append(data);
+           },
+     }); 
+}
+</script>
 
 <script>
 	var validationSettings = {

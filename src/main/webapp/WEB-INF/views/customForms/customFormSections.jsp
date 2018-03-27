@@ -83,6 +83,9 @@ function viewSectionFileDetails(sectionId,sourceleadFormId,type){
  <script>
   function addOption(){
 	  var optionCounter = $("#optionCounter").val();
+	  if(optionCounter == 0){
+		  optionCounter = +optionCounter + 1;
+	  }
 	  var divText = '<div id="optionDiv'+optionCounter+'" class="col-sm-12 noPad mt clearfix">'+
 	                 '<div class="col-md-3 noPad labHeight">&nbsp;</div>'+
 	                   '<div class="col-md-6"><input id = "selectOptionId" placeholder="" name="optionData['+optionCounter+'].option" class="field-label form-control input-sm" type="text"> </div>'+
