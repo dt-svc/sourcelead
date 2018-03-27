@@ -205,13 +205,30 @@ public class ImmigrationRestController {
         model.addObject("templateId", templateId);
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
                 "orgLocations");
-        ImmigrationDTO immigrationDTO = immigrationCommonService.getImmigrationViewList(immigrationId,orgLocations);
+        ImmigrationDTO immigrationDTO = null;
+        if(immigrationId!=null && !StringUtils.isEmpty(immigrationId)) {
+        	immigrationDTO= immigrationCommonService.getImmigrationViewList(immigrationId,orgLocations);
+        }
         model.addObject("immigration", immigrationDTO);
         model.addObject("sourceleadUrl", sourceleadUrl);
         model.setViewName("/immigration/immigrationView");
         return model;
     }
-
+    @RequestMapping(value = {"/viewImmigrationById"})
+    public ModelAndView getImmigrationDeatilsById(HttpServletRequest request
+    		 ,@RequestParam(value = "immigrationId", required = true) String immigrationId) throws Exception {
+        ModelAndView model = new ModelAndView();
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+                "orgLocations");
+        ImmigrationDTO immigrationDTO = null;
+        if(immigrationId!=null && !StringUtils.isEmpty(immigrationId)) {
+        	immigrationDTO= immigrationCommonService.getImmigrationViewList(immigrationId,orgLocations);
+        }
+        model.addObject("immigration", immigrationDTO);
+        model.addObject("sourceleadUrl", sourceleadUrl);
+        model.setViewName("/immigration/petitionDetailsTab");
+        return model;
+    }
     // ============= immigration view End. if you don't required comment above code
     // end here============================
     @RequestMapping(value = {"/gotoTemplatePreviousPage"})

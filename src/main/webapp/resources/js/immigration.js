@@ -3,7 +3,7 @@ var immiModulePath = "/immigration";
 var immTemplId = '';
 var immigrationId = '';
 var candidateId = '';
-var familyMemberId = id;
+var familyMemberId = '';
 var templateId='';
 var formNames = [];
 function Immigration() {
@@ -223,15 +223,15 @@ function Immigration() {
         }
     }// immigration end if don't required comment above code end here.
     
-    this.viewImmigrationPageList = function(immigrationId){
-    	 $.ajax({
-             url: sourceleadUrl + immiModulePath + "/viewImmigration?immigrationId="+immigrationId,
-             type: "POST",
-             /*data: formData,*/
-             success: function (data) {
-            	 
-             }
-    	 });
+    this.displayPetitionDetails = function(immigrationId){
+    	console.log("inside displayPetitionDetails function call immigrationId -->"+immigrationId);
+    	$.ajax({
+            url: sourceleadUrl + immiModulePath + "/viewImmigrationById?immigrationId="+immigrationId,
+            type: "GET",
+            success: function (result) {
+                $("#detailsTab").html(result);
+            }
+        });
     }
 
     this.savePetitionTemplateDetailsValues = function () {
