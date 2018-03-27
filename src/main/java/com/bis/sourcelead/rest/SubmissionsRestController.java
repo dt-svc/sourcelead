@@ -891,7 +891,7 @@ public class SubmissionsRestController {
 				new ArrayList<EmailAttachment>());
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();	 
-		emailScenerioUtil.sendNotification(actionLink, user,requirement.getManagerUserId(), loginOrgLocations, notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, user,requirement.getManagerUserId(), loginOrgLocations, notificationScenario,new HashMap<String,String>());
 
 	}
 

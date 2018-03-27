@@ -310,7 +310,7 @@ public class ExpensesApprovalRestController {
 			notificationScenario.setOrgCode(orgLoc.getLocationCode());
 			//String url = null;
 			String actionLink = "";
-			emailScenerioUtil.sendNotification(actionLink, user, approver.getApproverUserId(), orgLoc, notificationScenario);
+			emailScenerioUtil.sendNotification(actionLink, user, approver.getApproverUserId(), orgLoc, notificationScenario,new HashMap<String,String>());
 			
 		    }
 		}
@@ -417,7 +417,7 @@ public class ExpensesApprovalRestController {
 		String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getSubject(),globalVarsMap);
 		notificationScenario.setBody(notificationBody);
 		notificationScenario.setOrgCode(loginOrgLocation.getLocationCode());
-		emailScenerioUtil.sendNotification(actionLink, loginUser, projectMembers.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario);  
+		emailScenerioUtil.sendNotification(actionLink, loginUser, projectMembers.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());  
    }
 	
 	

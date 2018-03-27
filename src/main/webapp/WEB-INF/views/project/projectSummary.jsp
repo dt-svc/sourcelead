@@ -12,6 +12,16 @@
 margin: 0.1% 2%;
 }
  </style>
+ 
+ <!-- <script>
+	$(document).ready(function() {
+		  <c:forEach var="section" items="${sourceleadSectionListForProjectTask}" varStatus="sectionOrder">
+		  var sectionId = '${section.id}';
+		  getCustomDependentFieldProjectTask(sectionId);
+		 </c:forEach> 
+	});
+</script> -->
+ 
 
       <!-- Content Area -->
        <section class="content-wraper">
@@ -225,6 +235,14 @@ $(document).ready(function() {
 		
 });
 </script> 
+
+
+
+
+
+
+
+
 <script>
 	// Close Advanced Search
 	function closePop(){

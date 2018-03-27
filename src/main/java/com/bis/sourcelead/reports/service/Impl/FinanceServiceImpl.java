@@ -631,6 +631,7 @@ public class FinanceServiceImpl implements FinanceService{
 				paidBill.setAmount(total);
 				totalAmount = totalAmount + total;
 				paidBill.setTotalAmount(totalAmount);
+				if(total != 0)
 				paidBillList.add(paidBill);
 			}
 			res.setData(paidBillList);
