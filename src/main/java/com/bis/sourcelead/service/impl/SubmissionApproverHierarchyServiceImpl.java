@@ -235,7 +235,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 if(clientProjectMember!= null &&  clientProjectMember.getProjects() != null && clientProjectMember.getMasterCandidateId() != null){
 					 actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("timesheetApproval?&currentTimeFrequency="+currentTimeFrequency.toString()+"&projectId="+clientProjectMember.getProjects().getId()+"&masterCandidateId="+clientProjectMember.getMasterCandidateId().getId()+"&projectMemberId="+clientProjectMember.getId()+"&totalHours="+totalHours+"&from=approver&notifyLink=notifyLink").toString();
 				 }
-				emailScenerioUtil.sendNotification(actionLink , loginUser, pah.getApproverUserId(), pah.getProjectClientsId().getOrgLocationsId(), notificationScenario);
+				emailScenerioUtil.sendNotification(actionLink , loginUser, pah.getApproverUserId(), pah.getProjectClientsId().getOrgLocationsId(), notificationScenario,new HashMap<String,String>());
 			 }
 	}
 	
@@ -328,7 +328,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 				notificationScenario.setBody(notificationBody);
 				UserRole userRole = userRoleService.getUserByUserId(reopenedUser.getId());
-				emailScenerioUtil.sendNotification(actionLink, loginUser, reopenedUser, userRole.getOrgLocations(), notificationScenario);
+				emailScenerioUtil.sendNotification(actionLink, loginUser, reopenedUser, userRole.getOrgLocations(), notificationScenario,new HashMap<String,String>());
 	}
 
 	@Override

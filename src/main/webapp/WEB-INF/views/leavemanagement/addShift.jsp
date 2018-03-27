@@ -93,11 +93,12 @@ function validateShiftName(){
 <script type="text/javascript">
 	function saveShift() {
 		var userId = '${SourceLeadWeb_user.id}';
+		var shiftUUID = '${shift.shiftUUID}';
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		 if ($('#addshift_form').validate(false, validationSettings)) {
 			var formData = getFormData("addshift_form");
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			$.post( sourceleadUrl+ "/saveShift?$ "+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, formData, function(data) {
+			$.post( sourceleadUrl+ "/saveShift?$ "+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&shiftUUID="+shiftUUID, formData, function(data) {
                        if(data == "success"){
                     	   $("#loading").removeAttr("style");
                     	   location.replace(sourceleadUrl+"/viewShift");

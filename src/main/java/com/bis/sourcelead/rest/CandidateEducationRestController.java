@@ -93,15 +93,15 @@ public class CandidateEducationRestController {
 	 * @throws NullPointer
 	 */
 	//@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_EDUCATION_DETAILS')")
-	@RequestMapping(value = "/storeCandidateEducation", method = RequestMethod.POST)
-	public @ResponseBody String storeCandidateEducation(CandidateEducationDTO candidateEducationDTO,@RequestParam(value = "candidateId", required = false) String candidateId,HttpServletRequest request) throws Exception {
+	@RequestMapping(value = {"/storeCandidateEducation","rest/storeCandidateEducation"}, method = RequestMethod.POST)
+	public @ResponseBody String storeCandidateEducation(CandidateEducationDTO candidateEducationDTO,HttpServletRequest request) throws Exception {
 
 		if(Validator.validate(candidateEducationDTO)) {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		candidateEducationDTO.setDateFormat(loginOrgLocation.getDateFormat());
-		candidateEducationService.storeCandidateEducation(candidateEducationDTO,Long.parseLong(candidateId),loginOrgLocation.getId(), user);
-		Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
+		candidateEducationService.storeCandidateEducation(candidateEducationDTO,candidateEducationDTO.getCandidateId(),loginOrgLocation.getId(), user);
+		Candidate candidate = candidateService.getCandidateByCandidateId(candidateEducationDTO.getCandidateId());
 		Integer percentage = candidateService.getCandidatePercentage(candidate,loginOrgLocation);
 		return percentage.toString();
 		}else{

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserMailUnsubscribeDTO;
@@ -46,6 +47,9 @@ public class UnSubscribeRestController {
 	 
 	 @Autowired
 	 CandidateService candidateService;
+	 
+	 @Autowired
+	 SourceleadPasswordEncoder sourceleadPasswordEncoder;
 	  
 	    
 	@RequestMapping(value = "/app/ws/unsubscribe", method = RequestMethod.GET)
@@ -124,6 +128,23 @@ public class UnSubscribeRestController {
 				}
 			}catch (Exception e) {
 				return "Failure";
+			}
+	}
+	
+	@RequestMapping(value = "/app/userVerification", method = RequestMethod.GET)
+	public Boolean userVerification(UserMailUnsubscribeDTO userMailUnsubscribeDTO) throws Exception
+	{
+		try {
+				User user = userService.getUserByEmail(userMailUnsubscribeDTO.getEmail());
+				
+				if(sourceleadPasswordEncoder.matches(userMailUnsubscribeDTO.getCredential(), user.getPassword())){
+					return true;
+				}else {
+					return false;
+				}
+				
+			}catch (Exception e) {
+				return false;
 			}
 	}
 	

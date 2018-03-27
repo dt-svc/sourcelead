@@ -37,7 +37,7 @@ public class ShiftServiceImpl implements ShiftService {
 		
 		Shift shift = null;
 		if(StringUtils.isNotBlank(shiftDTO.getShiftUUID())){
-			shift = shiftDao.getShiftById(shiftDTO.getShiftId());
+			shift = shiftDao.getShiftById(shiftDTO.getShiftUUID());
 		}else{
 			shift = new Shift();
 			shift.setShiftUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
