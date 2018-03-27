@@ -230,7 +230,7 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
         StringBuilder notificationLink = new StringBuilder();
         String actionLink = notificationLink.append(sourceleadUrl).append("/").append("requestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
          
-        emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getApproverUser(), orgLocations, notificationScenario);
+        emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getApproverUser(), orgLocations, notificationScenario,new HashMap<String,String>());
 	}
 	
 	
@@ -407,7 +407,7 @@ public void sendMailToNewResourceRequestApprover(ProjectPlanningRequest projectP
         StringBuilder notificationLink = new StringBuilder();
         String actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewNewResourceRequestDashborad?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
          
-        emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getApproverUser(), orgLocations, notificationScenario);
+        emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getApproverUser(), orgLocations, notificationScenario,new HashMap<String,String>());
 	}
 	
 private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList) throws Exception{

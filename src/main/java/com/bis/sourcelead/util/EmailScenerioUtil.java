@@ -1,19 +1,19 @@
 package com.bis.sourcelead.util;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
@@ -116,10 +116,15 @@ public EmailScenario validateEmailscenerioExists(String uniqueScenarioName,Strin
 	}
 
 
-public void sendNotification(String actionLink,User loginUser,User toUser, OrgLocations loginOrgLocation, EmailScenario emailScenario) throws Exception{
+public void sendNotification(String actionLink,User loginUser,User toUser, OrgLocations loginOrgLocation, EmailScenario emailScenario,HashMap<String,String> parameterList) throws Exception{
 	
 	//new Notification logic
 	Notifications notification = new Notifications();
+	
+	notification.setUUID(SourceLeadRandomCodeHelper.generateNotificationUUID());
+	if(StringUtils.isNotEmpty(actionLink) && actionLink.contains(Constants.PLACE_UUID)) {
+		actionLink = actionLink.replace(Constants.PLACE_UUID, notification.getUUID());
+	}
 	notification.setActionLink(actionLink);
 	notification.setBody(emailScenario.getBody());
 	notification.setNotificationFrom(loginUser);
@@ -135,8 +140,11 @@ public void sendNotification(String actionLink,User loginUser,User toUser, OrgLo
 	if(null != emailScenario.getUUID()  && !emailScenario.getUUID().isEmpty()){
 		notification.setUUID(emailScenario.getUUID());
 	}
+	if(parameterList != null && !parameterList.isEmpty()) {
+		notification.setParameterList(parameterList.toString());
+	}
 	
-	Notifications notification1 = notificationsService.saveNotification(notification);
+	 notificationsService.saveNotification(notification);
 	
 	}
 
