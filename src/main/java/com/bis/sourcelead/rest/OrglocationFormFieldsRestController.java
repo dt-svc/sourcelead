@@ -66,7 +66,7 @@ public class OrglocationFormFieldsRestController {
 				orglocationFormFieldsDTO = sourceleadFormSectionsService.CustomFormFieldsDTOConverter(orglocationFormFields,orglocationFormSubFields);
 			}
 		sections = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(actionId,orgLocation.getId());
-		}else if(type.equalsIgnoreCase("editCustomRowField")) {
+		}else if(type.equalsIgnoreCase("editCustomRowField") || type.equalsIgnoreCase("summary")) {
 		orglocationFormFields = orglocationFormFieldsService.getOrglocationFormFieldsById(orgLocFormFieldsDTO.getId());
 		orglocationFormSubFields = orglocationFormSubFieldsService.getOrgCustomSufieldsBySectionId(orgLocFormFieldsDTO.getId());
 		orglocationFormFieldsDTO = sourceleadFormSectionsService.CustomFormFieldsDTOConverter(orglocationFormFields, orglocationFormSubFields);
@@ -78,6 +78,7 @@ public class OrglocationFormFieldsRestController {
 		model.addObject("customFormPopDetails",orglocationFormFieldsDTO);
 		model.addObject("SourceleadForm_Sections_pop",sections);
 		model.addObject("disableFields",disableFields);
+		model.addObject("type",type);
 		model.setViewName("customForms/addCustomPopUp");
 		return model;
     }
