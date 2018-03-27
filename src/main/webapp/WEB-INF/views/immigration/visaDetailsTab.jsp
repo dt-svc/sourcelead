@@ -153,7 +153,7 @@
 		<div class="popUpOut" id="popUpVisa">
 		
 		<div class="popupHead">
-			<h2>Add Visa</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+			<h2>Add Visa</h2><a href="javascript:void(0)" class="fa fa-close popCan" onClick="popFun();"></a>
 		</div>
 		
 	<div class="popupMid clearfix">
@@ -204,10 +204,22 @@
 		
 		<div class="immiPopFoot">
             <input value="Save" class="" type="button" id="visa_save_id" onclick="immigration.savePassportVisaDetails('Visa')">
-            <input value="Cancel" class="popCan" type="button">
+            <input value="Cancel" class="popCan" type="button" onClick="popFun();">
           </div>		
 	</div><!--popcode end  -->	
 	</form>
+	<script>
+		 // Add addVisa Div  
+			$("#addVisa").click(function(){
+				$(".popMask").fadeIn(200);
+				$("#popUpVisa").fadeIn(100);
+			});	
+			function popFun() {
+				$(".popMask").fadeOut(200);
+				$("#popUpVisa").fadeOut(200);
+			}
+		   	
+		</script>
 		<script>
 		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormatCerSave = getJSDateFormat(locationDate);
@@ -252,11 +264,4 @@ function toDate(selector) {
 }
 </script>
 		
-		<script>
-		 // Add addVisa Div  
-			$("#addVisa").click(function(){
-				$(".popMask").fadeIn(200);
-				$("#popUpVisa").fadeIn(100);
-			});	
-		   	
-		</script>
+		

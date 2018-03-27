@@ -300,17 +300,18 @@ function Immigration() {
             type : "POST",
 			data : formData,
 			success : function(data) {
-				console.log(" inside success function");
-				if (data == 'success') {
-                    console.log("data successfully saved for the candidate id "+templateId);
-                    if(idType=="Passport"){
-                    $(".popMask").fadeOut(200); // close the popup code
-                    $("#popPassView").fadeOut(100);// close the popup code
-    				immigration.displayPassportDetails(candidateId,idType);}
-    				else if(idType =="Visa"){
-    				$(".popMask").fadeOut(200); // close the popup code
-    				$("#popUpVisa").fadeOut(100);// close the popup code
-    				immigration.displayVisaDetails(candidateId,idType);}
+							console.log(" inside success function"+idType);
+							if (data == 'Success') {
+								console.log("data successfully saved for the candidate id "+ immigrationId);
+								if (idType == 'Passport') {
+									$('#popPassView').hide();
+									$('.popMask').fadeOut();
+									immigration.displayPassportDetails(candidateId, idType);
+								} else if (idType == 'Visa') {
+									$("#popUpVisa").hide();
+									$(".popMask").fadeOut(200); // close the popup code															// popup code
+									immigration.displayVisaDetails(candidateId,idType);
+								}
     					
 				}
 			}
