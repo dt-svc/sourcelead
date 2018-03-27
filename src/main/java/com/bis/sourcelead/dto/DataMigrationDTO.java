@@ -191,6 +191,45 @@ public class DataMigrationDTO extends CommonDTO {
 	
 	/*Asset Uploads End*/
 	
+   //	Project Tasks
+	
+    private String taskName;
+	
+	private String taskBillableType;
+
+	private String epic;
+	
+	private String taskstype;
+	
+	private String userStory;
+	
+	private String subTask;
+	
+	private String severity;
+	
+	private String duDate;
+	
+	private String estimatedDate;
+	
+	private String estimatedTime;
+	
+	private String taskStatus;
+	
+	private String taskDescription;
+	
+	private String currencyType;
+	
+	private String businessValue;
+	
+	private String taskOwner;
+	
+	private String assignTaskId;
+	
+	private String projectId;
+	
+	private String projectUUID;
+	
+	
 	public String getEmployeeId() {
 		return employeeId;
 	}
@@ -1041,5 +1080,148 @@ public class DataMigrationDTO extends CommonDTO {
 		this.shiftBEmployee = shiftBEmployee;
 	}
 
-	
+	public String getTaskName() {
+		return taskName;
+	}
+
+	public String getTaskBillableType() {
+		return taskBillableType;
+	}
+
+	public String getEpic() {
+		return epic;
+	}
+
+	public String getTaskstype() {
+		return taskstype;
+	}
+
+	public String getUserStory() {
+		return userStory;
+	}
+
+	public String getSubTask() {
+		return subTask;
+	}
+
+	public String getSeverity() {
+		return severity;
+	}
+
+	public String getDuDate() {
+		return duDate;
+	}
+
+	public String getEstimatedDate() {
+		return estimatedDate;
+	}
+
+	public String getEstimatedTime() {
+		return estimatedTime;
+	}
+
+	public String getTaskStatus() {
+		return taskStatus;
+	}
+
+	public String getTaskDescription() {
+		return taskDescription;
+	}
+
+	public String getCurrencyType() {
+		return currencyType;
+	}
+
+	public String getBusinessValue() {
+		return businessValue;
+	}
+
+	public String getTaskOwner() {
+		return taskOwner;
+	}
+
+	public String getProjectId() {
+		return projectId;
+	}
+
+	public void setTaskName(String taskName) {
+		this.taskName = taskName;
+	}
+
+	public void setTaskBillableType(String taskBillableType) {
+		this.taskBillableType = taskBillableType;
+	}
+
+	public void setEpic(String epic) {
+		this.epic = epic;
+	}
+
+	public void setTaskstype(String taskstype) {
+		this.taskstype = taskstype;
+	}
+
+	public void setUserStory(String userStory) {
+		this.userStory = userStory;
+	}
+
+	public void setSubTask(String subTask) {
+		this.subTask = subTask;
+	}
+
+	public void setSeverity(String severity) {
+		this.severity = severity;
+	}
+
+	public void setDuDate(String duDate) {
+		this.duDate = duDate;
+	}
+
+	public void setEstimatedDate(String estimatedDate) {
+		this.estimatedDate = estimatedDate;
+	}
+
+	public void setEstimatedTime(String estimatedTime) {
+		this.estimatedTime = estimatedTime;
+	}
+
+	public void setTaskStatus(String taskStatus) {
+		this.taskStatus = taskStatus;
+	}
+
+	public void setTaskDescription(String taskDescription) {
+		this.taskDescription = taskDescription;
+	}
+
+	public void setCurrencyType(String currencyType) {
+		this.currencyType = currencyType;
+	}
+
+	public void setBusinessValue(String businessValue) {
+		this.businessValue = businessValue;
+	}
+
+	public void setTaskOwner(String taskOwner) {
+		this.taskOwner = taskOwner;
+	}
+
+	 
+	public void setProjectId(String projectId) {
+		this.projectId = projectId;
+	}
+
+	public String getProjectUUID() {
+		return projectUUID;
+	}
+
+	public void setProjectUUID(String projectUUID) {
+		this.projectUUID = projectUUID;
+	}
+
+	public String getAssignTaskId() {
+		return assignTaskId;
+	}
+
+	public void setAssignTaskId(String assignTaskId) {
+		this.assignTaskId = assignTaskId;
+	}
 }

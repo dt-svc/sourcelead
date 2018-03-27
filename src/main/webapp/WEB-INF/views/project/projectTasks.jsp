@@ -60,12 +60,18 @@ function taskNameValidation(){
 
 <script>
 function projectTask(projectId, status) {
+	var projectClientUUID = '${projectClientUUID}';
+	var projectUUID = '${projectUUID}';
+	
 	var result = "";
 	result = result + '<div class="timesheet_head clearfix timesheet_headul-custom timeHd_minHeight">';
 	result = result + '<input type="hidden" value='+projectId+' id="projectId">';
 	result = result + '<input type="hidden" value='+status+' id="projectStatus">';
 	result = result	+ '<ul>';
 	 
+	result = result +'<li title="Import"><a href="<c:url value="${appPath}/uploadProjectTasks?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'"/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>';
+
+	
 	result = result +'<li class="dropdown">';
 	result = result +' <a title="Export" id="export-pop" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>';	
 	result = result +'<div class="dropdown-menu bootstrap_dropdownMenu">';

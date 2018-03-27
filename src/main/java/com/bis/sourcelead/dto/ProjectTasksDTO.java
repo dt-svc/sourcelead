@@ -39,7 +39,7 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	
 	private Long taskOwner;
 	
-	private List<Long> assignTaskId;
+	private String assignTaskId;
 	
 	private String staticPath;
 	
@@ -64,6 +64,8 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	private String projectClientUUID;
 	
 	private String exportType;
+	
+	private String projectUUID;
 	
 	public Long getId() {
 		return id;
@@ -168,10 +170,10 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	public void setTaskOwner(Long taskOwner) {
 		this.taskOwner = taskOwner;
 	}
-	public List<Long> getAssignTaskId() {
+	public String getAssignTaskId() {
 		return assignTaskId;
 	}
-	public void setAssignTaskId(List<Long> assignTaskId) {
+	public void setAssignTaskId(String assignTaskId) {
 		this.assignTaskId = assignTaskId;
 	}
 	public String getStaticPath() {
@@ -249,4 +251,11 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	public void setExportType(String exportType) {
 		this.exportType = exportType;
 	}
+	public String getProjectUUID() {
+		return projectUUID;
+	}
+	public void setProjectUUID(String projectUUID) {
+		this.projectUUID = projectUUID;
+	}
+	
 }

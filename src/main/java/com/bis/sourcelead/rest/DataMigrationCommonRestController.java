@@ -81,7 +81,7 @@ public class DataMigrationCommonRestController {
 		
 		switch(dataMigrationCommonDTO.getUploadType()){  
 	    case "jobUpload": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(46l, 1);break;
-	    //case "timesheetUpload": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(1l, 1);break;  
+	    case "projectTasks": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(94l, 1);break;  
 	    }
 		
 		if("timesheetUpload".equalsIgnoreCase(dataMigrationCommonDTO.getUploadType())) {
@@ -110,6 +110,7 @@ public class DataMigrationCommonRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("dataWithCellId", dataWithCellId);
 		model.addObject("fields", formFields);
+		model.addObject("projectUUID", dataMigrationCommonDTO.getProjectUUID());
 		model.addObject("exportFilePath", dataMigrationCommonDTO.getFilePath());
 		model.addObject("uploadType", dataMigrationCommonDTO.getUploadType());
 		model.addObject("timesheetMode", dataMigrationCommonDTO.getTimesheetMode());
@@ -123,45 +124,10 @@ public class DataMigrationCommonRestController {
 	{
 		ModelAndView model = new ModelAndView();
 		String importStatus = dataMigrationService.validateImportedFormData(dataMigrationDTO, request);
-		
-		/*String ac = StringUtils.removeEnd(staticPath, "/slead-static");
-		Map<String, String> dataWithCellId = new TreeMap<String, String>();
-		dataWithCellId = dataMigrationService.getfileData(ac+dataMigrationDTO.getExportFilePath().replace("/dataMigration/", "/temp/"), dataMigrationDTO.getHeaderPosition());
-		List<SourceleadFormFields> formFields = null;
-		switch(dataMigrationDTO.getUploadType()){  
-	    case "jobUpload": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(46l, 1);break;  
-	    }
-		
-		if("timesheetUpload".equalsIgnoreCase(dataMigrationDTO.getUploadType())) {
-			int noOfUnits = 0;
-			switch(dataMigrationDTO.getTimesheetMode()){
-		    case "BiMonthly": noOfUnits=15;break;  
-		    case "Monthly": noOfUnits=31;break;
-		    case "MonthlyWeekWise": noOfUnits=5;break;  
-		    case "Weekly": noOfUnits=7;break;
-		    }
-			formFields = new ArrayList<SourceleadFormFields>();
-			for(int i=0; i<noOfUnits; i++) {
-				SourceleadFormFields field = new SourceleadFormFields();
-				if("Weekly".equalsIgnoreCase(dataMigrationDTO.getTimesheetMode())) {
-					field.setLabelName(Constants.SHORTWEEKENDS[i]);
-				}else if("MonthlyWeekWise".equalsIgnoreCase(dataMigrationDTO.getTimesheetMode())) {
-					field.setLabelName(Constants.SHORTWEEKWISEMONTH[i]);
-				}else {
-					field.setLabelName(Constants.SHORTDAYS[i]);
-				}
-				formFields.add(field);
-			}
-		}*/
-		
-		/*model.addObject("dataWithCellId", dataWithCellId);
-		model.addObject("fields", formFields);*/
+		 
 		model.setViewName("upload/dataImport");
 		model.addObject("importStatus", importStatus);
-		/*model.addObject("exportFilePath", dataMigrationDTO.getExportFilePath());*/
 		model.addObject("uploadType", dataMigrationDTO.getUploadType());
-		/*model.addObject("headerPosition", dataMigrationDTO.getHeaderPosition());
-		model.addObject("timesheetMode", dataMigrationDTO.getTimesheetMode());*/
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
