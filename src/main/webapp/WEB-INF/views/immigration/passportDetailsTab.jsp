@@ -35,6 +35,7 @@
 		  </table>
 		</div>
 		
+		
 		<!-- <div class="immigraPagi clearfix">
 			<div class="immiPagiText">Showing 1 to 6 of 6 entries</div>
 			  <ul class="pagination">
@@ -49,8 +50,9 @@
 		<form id="CandidatePassportform" name="CandidatePassportform" method="post"> 
 		<input type="hidden" id="Passport" name="Passport" value="Passport" >
 		<div class="popUpOut" id="popPassView">
+		
 		<div class="popupHead">
-			<h2>Add Passport</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+			<h2>Add Passport</h2><a href="javascript:void(0)" class="fa fa-close popCan" onClick="popFun();"></a>
 		</div>
 		
 		<div class="popupMid clearfix">
@@ -91,53 +93,10 @@
 		
 		<div class="immiPopFoot">
             <input value="Save" class="" type="button" id="passport_save_id" onclick="immigration.savePassportVisaDetails('Passport')">
-            <input value="Cancel" class="popCan" type="button">
+            <input value="Cancel" class="popCan" type="button" onClick="popFun();">
           </div>		
 	</div><!--popcode end  -->
 		</form>
-		<script>
-		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatCerSave = getJSDateFormat(locationDate);
-		  
-		 $('#validFrom').datepicker({
-		      dateFormat: finalDateFormatCerSave,
-		      changeMonth: true,
-		  	  changeYear: true, 
-		      onSelect: function (selected) {
-		           // var dt = new Date(selected);
-		           var dt = 	  $(this).datepicker('getDate', '+1d'); 
-		           dt.setDate(dt.getDate() + 1);
-		            $("#validTo").datepicker("option", "minDate", dt);
-		        }
-		  });
-		  
-		  $('#validTo').datepicker({
-		      dateFormat: finalDateFormatCerSave,
-		      changeMonth: true,
-		  	  changeYear: true, 
-		        onSelect: function (selected) {
-		            //var dt = new Date(selected);
-		            var dt = 	  $(this).datepicker('getDate', '-1d');
-		            dt.setDate(dt.getDate() - 1);
-		            $("#validFrom").datepicker("option", "maxDate", dt);
-		        }
-		  });
-		</script>
-		<script>
-		<script>
-		function clearCandidateCertStartDate(){
-			$("#validFrom").val("");
-			};
-		function clearCandidateCertEndDate(){
-			$("#validTo").val("");
-			};
-		</script>   
-<script>
-function toDate(selector) {
-    var from = $(selector).val().split("-");
-    return new Date(from[2], from[1] - 1, from[0]);
-}
-</script>
 		
 		<script>
 		 // Add addPass Div  
@@ -145,4 +104,11 @@ function toDate(selector) {
 				$(".popMask").fadeIn(200);
 				$("#popPassView").fadeIn(100);
 			});	
+			function popFun() {
+				$(".popMask").fadeOut(200);
+				$("#popPassView").fadeOut(200);
+			}
 		</script>
+		
+		
+		

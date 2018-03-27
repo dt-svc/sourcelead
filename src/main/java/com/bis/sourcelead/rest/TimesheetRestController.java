@@ -2107,7 +2107,7 @@ public class TimesheetRestController {
 		            			   freshSaHierarchyList.add(saHierarchy);
 		            		 }
 		            		 submissionApproverHierarchyService.saveAllSubmissionApproverHierarchy(new ArrayList<>(freshSaHierarchyList));
-		            		 if(tsDTO != null && StringUtils.isNotEmpty(tsDTO.getWeekComment())){
+		            		 if(tsDTO != null){
 		            			 timesheetSubmissions.setWeekcomments(tsDTO.getWeekComment());
 		            		 }
 		            		 timesheetSubmissions.setUpdatedDate(CommonUtil.currentDate());
@@ -2472,7 +2472,7 @@ public class TimesheetRestController {
 			if(timesheetSubmissions!= null && timesheetSubmissions.getProjectMembers()!= null && timesheetSubmissions.getTotalHours()!= null) {
 				actionLink =actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheetApproval?&currentTimeFrequency="+currentTimeFrequency.toString()+"&projectId="+projectId+"&masterCandidateId="+masterCanidateId+"&projectMemberId="+timesheetSubmissions.getProjectMembers().getId()+"&totalHours="+timesheetSubmissions.getTotalHours()+"&from=approver&notifyLink=notifyLink").toString();
 			}*/
-			emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, loginOrgLocation, notificationScenario);
+			emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, approver.getProjectClientsId().getOrgLocationsId(), notificationScenario);
 			
 		}
 	}
