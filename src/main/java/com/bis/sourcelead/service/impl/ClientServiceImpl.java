@@ -637,6 +637,7 @@ public class ClientServiceImpl implements ClientService {
 	    	}
 
 	    	projects.setInvoiceFrequency(Constants.WEEKLY);
+	    	projects.setTimesheetFrequency(Constants.MONTHLY);
 	    	projects.setProjectStatus(Project_Status.INPROGRESS);
 	    	projects.setIsDefaultProject(Constants.YES);
 	    	projects.setIsPrimary(1);

@@ -530,7 +530,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	    	projects.setStartDate(projStartDate);
 
 	    	projects.setInvoiceFrequency(Constants.WEEKLY);
-	    	projects.setTimesheetFrequency(Constants.WEEKLY);
+	    	projects.setTimesheetFrequency(Constants.MONTHLY);
 	    	projects.setProjectStatus(Project_Status.INPROGRESS);
 	    	projects.setIsPrimary(1);
 	    	projects.setCreatedDate(new Date());
