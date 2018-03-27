@@ -546,7 +546,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
                 StringBuilder actionLinkBuilder = new StringBuilder();
                 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=OFFERMADE&requirementUUID="+clientrequirement.getRequirementUUID()).toString();	 
                OrgLocations vendorLocation = clientrequirement.getOrgLocationId();
-				emailScenerioUtil.sendNotification(actionLink, loginUser, clientrequirement.getSpocId().getVendorUser(), vendorLocation, notificationScenario);
+				emailScenerioUtil.sendNotification(actionLink, loginUser, clientrequirement.getSpocId().getVendorUser(), vendorLocation, notificationScenario,new HashMap<String,String>());
         		}catch (MessagingException e) {
         			logger.error(ExceptionUtils.getFullStackTrace(new RuntimeException(e)));
         		} catch (UnsupportedEncodingException e) {
@@ -694,7 +694,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     		StringBuilder actionLinkBuilder = new StringBuilder();                          
 			String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=OFFERMADE&requirementUUID="+applicant.getRequirement().getRequirementUUID()).toString();	 
             User applicantuser = applicant.getOrgLocations().getOrg().getUser();
-			emailScenerioUtil.sendNotification(actionLink, loginUser, applicantuser, orgLocations, notificationScenario);
+			emailScenerioUtil.sendNotification(actionLink, loginUser, applicantuser, orgLocations, notificationScenario,new HashMap<String,String>());
             
             
     }
@@ -1271,7 +1271,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 StringBuilder actionLinkBuilder = new StringBuilder();                          
 		 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirementOffers.getSubmissionId().getRequirement().getRequirementUUID()).toString();	 
-		 emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario,new HashMap<String,String>());
 		   }
 		  }
 		 }
@@ -1347,7 +1347,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 StringBuilder actionLinkBuilder = new StringBuilder();
 		 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getRequirementUUID()).toString();	 
-		 emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario,new HashMap<String,String>());
 		
 		// TODO Auto-generated method stub
 			 }
@@ -1706,7 +1706,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
        
        StringBuilder actionLinkBuilder = new StringBuilder();
        String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirementOffers.getSubmissionId().getRequirement().getRequirementUUID()).toString();	 
-       emailScenerioUtil.sendNotification(actionLink, touser, touser , orgloc, notificationScenario);
+       emailScenerioUtil.sendNotification(actionLink, touser, touser , orgloc, notificationScenario,new HashMap<String,String>());
 		
 	}
 	
@@ -1792,7 +1792,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
        
        StringBuilder actionLinkBuilder = new StringBuilder();
        String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=APPLICANTS&requirementUUID="+requirementOffers.getSubmissionId().getRequirement().getRequirementUUID()+"&candidateUUID="+requirementOffers.getSubmissionId().getCandidate().getCandidateUUID()+"&submissionId="+requirementOffers.getSubmissionId().getId()).toString();	 
-       emailScenerioUtil.sendNotification(actionLink, touser, touser , orgloc, notificationScenario);
+       emailScenerioUtil.sendNotification(actionLink, touser, touser , orgloc, notificationScenario,new HashMap<String,String>());
 		
 	}
 
