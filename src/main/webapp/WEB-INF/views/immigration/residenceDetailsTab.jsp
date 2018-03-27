@@ -18,7 +18,7 @@
 			  
 			  <tr>
 				<td><div class="tbldata-dotdot-big">${residitems.location}</div></td>
-				<td><div class="tbldata-dotdot-vsm">ttt</div></td>
+				<td><div class="tbldata-dotdot-vsm">${residitems.country}</div></td>
 				<td><div class="tbldata-dotdot-vsm">yyyy</div></td>
 				<td><div class="tbldata-dotdot-vsm">llll</div></td>
 				<td class="immigraAction">
@@ -53,16 +53,16 @@
 		<form id ="residenceDetails_form" name = "residenceDetails_form" method = "Post">
 		<div class="popUpOut" id="popResiView">
 		<div class="popupHead">
-			<h2>Add Residence</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+			<h2>Add Residence</h2><a href="javascript:void(0)" class="fa fa-close popCan" onclick="refreshResidency();"></a>
 		</div>
 		
 		<div class="popupMid clearfix">
 
           <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-4 padding_left">Location<span class="text-danger">&nbsp;*</span></label>
+				<label class="col-md-4 padding_left">Location<span class="text-danger">&nbsp;*</span></label>  
               	<div class="col-md-8 padding_right">
-              		<input type="text" name= "location" id= "location" field-name= "location" data-validation="required validate_Space validate_length length2-100" class="form-control" /> 
-              		             		
+              		<input type="text" name= "location" id= "location" field-name= "location" onclick="initLocationAuto('location','country','state','city','zipcode','','','','streetAddress');" data-validation="required validate_Space validate_length length2-100" class="form-control" /> 
+              		   <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('location','country','state','city','zipcode','streetAddress');"></i>         		
 				</div>
 			</div>	
 			<div class="col-sm-12 noPad mt clearfix">
@@ -93,12 +93,8 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Country</label>
               	<div class="col-md-8 padding_right">
-					<select class="chosen-select form-control" name="country" id= "country" field-name="Country"data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
-					  <option>Select Country</option>
-					  <option>India</option>
-					  <option>USA</option>
-					  <option>UK</option>
-					</select>
+				 <input class="form-control" id="country" name="country" placeholder="Country" value="${loginCountryName}" type="text" ></input>
+
 				</div>
 			</div>
 			
@@ -126,7 +122,7 @@
 		
 		<div class="immiPopFoot">
             <input value="Save" class="" type="button" id="save_Buton" onclick="saveResidenceDetails('save');">
-            <input value="Cancel" class="popCan" type="button">
+            <input value="Cancel" class="popCan" type="button" onclick="refreshResidency();">
           </div>		
         
        
@@ -170,6 +166,10 @@
 				$(".popMask").fadeIn(200);
 				$("#popResiView").fadeIn(100);
 			});	
+			 function refreshResidency(){
+				 $(".popMask").fadeOut(200);
+				$("#popResiView").fadeOut(100); 
+			 }
 		</script>
 		
 		
