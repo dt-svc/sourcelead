@@ -1877,4 +1877,9 @@ public class LeaveServiceImpl implements LeaveService{
 		return leaveDao.getAllLeave();
 	}
 
+	@Override
+	public List<Leave> getLeaveByUserIdOrglocationIdandStatus(User consultantUser, Long orglocationId, String approved) {
+		return leaveDao.getLeaveByUserIdOrglocationIdandStatus(consultantUser.getId(),orglocationId,approved);
+	}
+
 }
