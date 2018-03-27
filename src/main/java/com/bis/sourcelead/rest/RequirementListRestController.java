@@ -1796,7 +1796,7 @@ public class RequirementListRestController {
 							boolQueryBuilderForCount.must(reqPriorityBoolQueryBuilder);
 						}
 					} 
-				}
+				}*/
 				
 				//requirementPriority
 				if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterJobType())){
@@ -1819,7 +1819,7 @@ public class RequirementListRestController {
 							boolQueryBuilderForCount.must(reqJobTypeBoolQueryBuilder);
 						}
 					} 
-				}*/
+				}
 				
 			
 		if(StringUtils.isNotEmpty(search.getUpdatedOn())){
