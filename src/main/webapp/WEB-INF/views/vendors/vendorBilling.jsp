@@ -198,7 +198,7 @@ result = result  +'    <div class="billingArea"> ';
  													'<sec:authorize access="hasAnyRole(\'ROLE_ADD_BILL\')"> ';
  result = result + '			                      <li><a href="javascript:void(0)" class="anchorTag" title="Create Bill"  onclick="createBill('+orgRelationId+');"> <i class="fa fa-plus paddingRight"></i>Create Bill</a>&nbsp;&nbsp;&nbsp;|</li>        ';
  													'</sec:authorize>';
- result = result + '			                      <li><a href="javascript:void(0)" class="" title="Generate Automatic Invoice" onclick="generateAutomaticInvoice();"> <i class="fa fa-plus paddingRight"></i>Generate Automatic Invoice</a>&nbsp;&nbsp;&nbsp;|</li>';
+ result = result + '			                      <li><a href="javascript:void(0)" class="" title="Generate Automatic Bill" onclick="generateAutomaticInvoice();"> <i class="fa fa-plus paddingRight"></i>Generate Automatic Bill</a>&nbsp;&nbsp;&nbsp;|</li>';
  result = result + '			                      <div class="clearfix"></div>                                                                                                                                                                 ';
  result = result + '			                    </ul>                                                                                                                                                                                          ';
  result = result + '			                    <div class="clearfix"></div>                                                                                                                                                                   ';
