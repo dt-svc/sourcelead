@@ -31,4 +31,6 @@ public interface SourceleadActionsService {
 	SourceleadActions getSourceleadActionsByActionRole(String actionRole);
 	
 	List<SourceleadActions> getAllSourceleadActionsByTabsList(List<Long> tabsList) throws Exception;
+	
+	List<SourceleadActions> getAllSourceleadGuestOrgActionsForEnroll() throws Exception;
 }

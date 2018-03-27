@@ -271,4 +271,16 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 	    return actionsList;
 	}
 
+	@Override
+	@Transactional
+	public List<SourceleadActions> getAllSourceleadGuestOrgActionsForEnroll() throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<SourceleadActions> actionsList = null;
+		
+		 String query = "from SourceleadActions sa where sa.actionRole != 'ROLE_ENROLL_ORG' and sa.tabs.id NOT IN (13,26,28,29)  and sa.status = '1' ";
+		 actionsList = session.createQuery(query.toString()).list();
+		    
+		return actionsList;
+	}
+
 }

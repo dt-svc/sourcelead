@@ -30,6 +30,7 @@ import com.bis.sourcelead.entity.OrglocationSignatory;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -43,6 +44,7 @@ import com.bis.sourcelead.service.OrglocationSignatoryService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -90,6 +92,9 @@ public class OrgSettingsController {
 	
 	@Autowired
 	OrgLicenseSubscriptionService orgLicenseSubscriptionService;
+	
+	@Autowired
+	SourceleadRolesService sourceleadRolesService;
 
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
@@ -242,6 +247,17 @@ public class OrgSettingsController {
 		return model;
 	}
 	
+	
+	@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	@RequestMapping(value = "/guestOrgActionRoles")
+	public ModelAndView guestOrgActionRoles(HttpServletRequest request)
+	{
+		ModelAndView model = new ModelAndView();
+		model.setViewName("guestOrgActionRoles");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
 	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
 	@RequestMapping(value = "/roleHierarchy")
 	public ModelAndView roleHierarchy(HttpServletRequest request) throws Exception
@@ -328,6 +344,56 @@ public class OrgSettingsController {
 			model.addObject("roleDisplayName", roles.getDisplayName());
 			model.addObject("roleName", roles.getRoleName());
 			model.setViewName("enrollRoleActions");
+			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "actionRolesMsg");
+			if (!isNullOrEmpty(msg)) {
+				model.addObject("msg", msg);
+				SourceLeadSessionManager.removeSessionAttribute(request, "actionRolesMsg");
+			}
+		}
+		else {
+			model.setViewName("registration/persmissionDenied");
+		}
+		return model;
+	}
+	
+	
+	
+	
+	
+	
+	@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	@RequestMapping(value = "/guestEnrollRoleActions")
+	public ModelAndView guestEnrollRoleActions(HttpServletRequest request, @RequestParam(value = "uuid", required = true) String uuid) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		SourceleadRoles roles = sourceleadRolesService.getSourceleadRolesByUUID(uuid);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		if (null != roles) {
+			List<SourceleadActions> actionsList = sourceleadActionsService.getAllSourceleadGuestOrgActionsForEnroll();
+			if (null != roles.getActionId()) {
+				ArrayList<SourceleadActions> sourceleadActionsList = new ArrayList<SourceleadActions>();
+				List<Long> roleActonList = new ArrayList<Long>();
+				for (String s : roles.getActionId().split(",")) {
+					roleActonList.add(Long.parseLong(s));
+				}
+				for (SourceleadActions sleadActions : actionsList) {
+					if (roleActonList.contains(sleadActions.getId())) {
+						sleadActions.setIsActionConfigured(Constants.YES);
+					}
+					else {
+						sleadActions.setIsActionConfigured(Constants.NO);
+					}
+					sourceleadActionsList.add(sleadActions);
+				}
+				model.addObject("actionsList", sourceleadActionsList);
+			}
+			else {
+				model.addObject("actionsList", actionsList);
+			}
+			model.addObject("roleDisplayName", roles.getDisplayName());
+			model.addObject("roleName", roles.getRoleName());
+			model.addObject("uuid", uuid);
+			model.setViewName("enrollGuestRoleActions");
 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "actionRolesMsg");
 			if (!isNullOrEmpty(msg)) {
 				model.addObject("msg", msg);

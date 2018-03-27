@@ -31,4 +31,19 @@ public class SourceleadRolesServiceImpl implements SourceleadRolesService{
 		return sourceleadRolesDao.getSourceleadRolesByRoleName(roleName);
 	}
 
+	@Override
+	public List<SourceleadRoles> getGuestOrgSourceleadRoles() throws Exception {
+		return sourceleadRolesDao.getGuestOrgSourceleadRoles();
+	}
+
+	@Override
+	public SourceleadRoles getSourceleadRolesByUUID(String uuid) throws Exception {
+		return sourceleadRolesDao.getSourceleadRolesByUUID(uuid);
+	}
+
+	@Override
+	public SourceleadRoles saveSourceleadRoles(SourceleadRoles sourceleadRoles) throws Exception {
+		return sourceleadRolesDao.saveSourceleadRoles(sourceleadRoles);
+	}
+
 }

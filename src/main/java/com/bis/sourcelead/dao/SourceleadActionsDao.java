@@ -31,4 +31,6 @@ public interface SourceleadActionsDao {
 	List<SourceleadActions> getAllSourceleadActionsForEnrollByOrgLocationIdAndOrgId(OrgLocations orgLocations,Org org) throws Exception;
 	
 	List<SourceleadActions> getAllSourceleadActionsByTabsList(List<Long> tabsList) throws Exception;
+	
+	List<SourceleadActions> getAllSourceleadGuestOrgActionsForEnroll() throws Exception;
 }
