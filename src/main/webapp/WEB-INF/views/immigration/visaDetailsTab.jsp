@@ -17,8 +17,8 @@
 			  </tr>
 			  <c:forEach var="visadetails" items="${PassportList}" varStatus="rows">
 			  <tr>
-				<td><div class="tbldata-dotdot-sm">H1B</div></td>
 				<td><div class="tbldata-dotdot-sm">${visadetails.visaType}</div></td>
+				<td><div class="tbldata-dotdot-sm">${visadetails.idNumber}</div></td>
 				<td><div class="tbldata-dotdot-sm">${visadetails.country}</div></td>
 				<td><div class="tbldata-dotdot-sm">${visadetails.validFromDate}</div></td>
 				<td><div class="tbldata-dotdot-sm">${visadetails.validToDate}</div></td>
@@ -165,7 +165,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Visa Type</label>
               	<div class="col-md-8 padding_right">
-					<select class="chosen-select form-control" id = "visaType" field-name = "Visa Type" >
+					<select class="chosen-select form-control" name = "visaType" id = "visaType" field-name = "Visa Type"  data-validation = "required" >
 					  <option>Select Visa Type</option>
 					  <option>H1B</option>
 					  <option>H2B</option>
