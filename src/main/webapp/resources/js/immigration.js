@@ -509,6 +509,52 @@ function deleteEDucationDetailsById(id){
     });
 }
 
+function editEducationDEtailsByRowId(id){
+	console.log(" inside edit record  "+id);
+	 // update the variable with family member id in edit mode.
+	var candidateId = $("#candidateID").val();
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/getCandidateEducationDetailsById?id="+id+"&candidateId="+candidateId,
+        type: "GET",
+        success: function (data) {
+        	console.log(" inside success test --->" );
+        	var formObj='';
+        	if(data!= null){
+        		console.log(" record successfully fetched by id  --> "+id);
+        		
+        			formObj = $('#eduSave_Form')[0]; // load the child form
+        			var fomValues=["name","specialization", "startDate","endDate","gradeType","grade","institute","address"];
+        			$("#addEdu").trigger('click');
+        			udpateEduFormdata(formObj,fomValues,data);
+        			$('#eduName').val(data.name); // to select the dropdwon value based on id value.
+        			$('#scoreEducationType').val(data.gradeType);
+        			$('#candidateEducationId').val(data.id);
+        	
+        	   
+        	}
+        }
+    });
+}
+function udpateEduFormdata (formObj, idsArray, dataObj) {
+	  var formId = formObj.id;
+	   $.each(formObj, function(key, value) {
+		var formElemName = value.name;
+		if (typeof formElemName!= 'undefined' && idsArray.indexOf(formElemName) > -1) {
+			console.log(" inside ** formElemId:-> "+formElemName +",  dataObj.formElemId: ->"+dataObj[formElemName]);
+			// below code added for date fields in forms based on name paroperty of the field. date should contain date string in filed name.
+			if(formElemName.toLowerCase().indexOf("date")>-1 && dataObj[formElemName] != null && typeof  dataObj[formElemName] != 'undefined' && dataObj[formElemName]!=''){
+				console.log(" inside date value---> ");
+				var dateVal =  moment(dataObj[formElemName]).format("DD-MM-YYYY");
+				$("#"+formId+" input[name='"+formElemName+"']").val(dateVal); // sets date values to the form.
+			}// above code checks the date field names and set the formatted date value to the popup.
+			else{
+			 $("#"+formId+" input[name='"+formElemName+"']").val(dataObj[formElemName]); // setting non date values to the from
+			}
+		}
+
+	});
+}
+
 function deleteEmpDetailsById(id){
 	var candidateId = $("#candidateID").val();
 	$.ajax({
