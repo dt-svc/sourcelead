@@ -23,8 +23,9 @@ public class CandidateFamilyDetailsDTO extends SearchDTO {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-
+   
+    private Long id; // added to populate the value in edit mode.
+    
 	@Required(desc = "candidate id")
 	private Long candidateId;
 	
@@ -61,6 +62,15 @@ public class CandidateFamilyDetailsDTO extends SearchDTO {
 	private String updatedDate;
 
 	private String updatedBy;
+
+	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public Long getCandidateId() {
 		return candidateId;
