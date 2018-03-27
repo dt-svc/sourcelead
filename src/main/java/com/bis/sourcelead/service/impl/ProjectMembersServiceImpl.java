@@ -693,7 +693,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		notificationScenario.setOrgCode(loginOrgCode);
 		//String url = null;
 		String actionLink = "";
-		emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getUser(), loginOrgLocation, notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());
 	}
 
 	@Override

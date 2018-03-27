@@ -474,7 +474,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		StringBuilder notificationLink = new StringBuilder();
 		String actionLink="";
 		actionLink = notificationLink.append(sourceleadUrl).append("/").append("projectTaskSummary?"+"taskUUID="+tasks.getProjectTasksUUID()+"&projectClientUUID="+projectTasksDTO.getProjectClientUUID()).toString();
-		emailScenerioUtil.sendNotification(actionLink, loginUser, user, loginOrgLocation, notificationScenario) ;
+		emailScenerioUtil.sendNotification(actionLink, loginUser, user, loginOrgLocation, notificationScenario,new HashMap<String,String>()) ;
 	 		
 
 		

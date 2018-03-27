@@ -317,7 +317,7 @@ public class LeaveServiceImpl implements LeaveService{
 				.append(sourceleadUrl).append("/").append("pendingLeaves?notifyLink=notifyLink&leaveUUID="
 						+ savedLeave.getLeaveUUID() + "&orgLocationId=" + orgLocations.getId() + "&status=PENDING")
 				.toString();
-		emailScenerioUtil.sendNotification(actionLink, loginUser, applyUser, orgLocations, notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, applyUser, orgLocations, notificationScenario,new HashMap<String,String>());
 
 	}
 
@@ -817,7 +817,7 @@ public class LeaveServiceImpl implements LeaveService{
 		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-		emailScenerioUtil.sendNotification(actionLink, loginUser, leaveManagementHistory.getLeaveid().getUser(), orgLocations, notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, leaveManagementHistory.getLeaveid().getUser(), orgLocations, notificationScenario,new HashMap<String,String>());
 		
 	}
 
@@ -1303,7 +1303,7 @@ public class LeaveServiceImpl implements LeaveService{
 			//calling the sendNotification method of emailScenerioUtil
 				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 				notificationScenario.setBody(notificationBody);
-				emailScenerioUtil.sendNotification(actionLink,loginUser, approverUser, orgLoc, notificationScenario);
+				emailScenerioUtil.sendNotification(actionLink,loginUser, approverUser, orgLoc, notificationScenario,new HashMap<String,String>());
 //		}
 //}
 }
@@ -1429,7 +1429,7 @@ public class LeaveServiceImpl implements LeaveService{
 				emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 				//StringBuilder actionLinkBuilder = new StringBuilder();
 				//String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("approvedLeaves?notifyWithDrawLink=notifyLink&leaveUUID="+leaveManagementHistory.getLeaveid().getLeaveUUID()+"&orgLocationId="+orgLocations.getId()).toString();
-				emailScenerioUtil.sendNotification(null, loginUser, lmh.getApproverUserId(), orgLocations, notificationScenario);
+				emailScenerioUtil.sendNotification(null, loginUser, lmh.getApproverUserId(), orgLocations, notificationScenario,new HashMap<String,String>());
 				
 			}
 		}
@@ -1492,7 +1492,7 @@ public class LeaveServiceImpl implements LeaveService{
 		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("cancelLeaves?notifyLink=notifyLink&leaveUUID="+leaveManagementHistory.getLeaveid().getLeaveUUID()+"&orgLocationId="+orgLocations.getId()).toString();
-		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, orgLocations, notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, orgLocations, notificationScenario,new HashMap<String,String>());
 
 	}
 
