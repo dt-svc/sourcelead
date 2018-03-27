@@ -78,7 +78,7 @@ public class SourceleadRolesDaoImpl implements SourceleadRolesDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<SourceleadRoles> sourceleadRoles = new ArrayList<SourceleadRoles>();
 		logger.debug("getSourceleadRolesByRoleName start");
-		String query = "from SourceleadRoles roles where roles.roleName = :roleName ";
+		String query = "from SourceleadRoles roles where roles.RoleName = :roleName ";
 		sourceleadRoles = session.createQuery(query).setString( "roleName", roleName ).list();
 		logger.debug("getSourceleadRolesByRoleName end");
 		if (sourceleadRoles.size() > 0) {

@@ -30,6 +30,7 @@ import com.bis.sourcelead.entity.OrgLicenseSubscriptionPrice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
@@ -46,6 +47,7 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -116,6 +118,9 @@ public class RegistrationController {
 	 
 	 @Autowired
 	 OrgLicenseSubscriptionService orgLicenseSubscriptionService;
+	 
+	 @Autowired
+	 SourceleadRolesService sourceleadRolesService;
 	 
 	
 	 
@@ -243,7 +248,7 @@ public class RegistrationController {
 		    	if(null != org){
 			    	org.setOrgType("Company");
 			    	
-			    /*	List<Integer> moduleIds = new ArrayList<Integer>();
+			    	List<Integer> moduleIds = new ArrayList<Integer>();
 					 for (String s : orgLocations.getModulesId().split(",")){
 						 moduleIds.add(Integer.parseInt(s));
 					 }
@@ -255,16 +260,16 @@ public class RegistrationController {
 			    		moduleId = (long) Constants.MODULE_VMS;
 			    		if(flag == false){
 			    			modules = modules+","+Constants.MODULE_VMS;
-			    			saveUserRoleActions(moduleId,orgLocations);
 			    		}
 			    		
 			    		boolean tsflag = moduleIds.contains(Constants.MODULE_TIMESHEET);
 			    		if(tsflag == false) {
 		    				modules = modules+","+Constants.MODULE_TIMESHEET;
-		    				saveUserRoleActions(tsModuleId,orgLocations);
 		    			}
-			    	}*/
+			    	}
 			    	
+					 saveUserRoleActions(orgLocations);
+					 
 			    	org.setStatus(Status.ACTIVE);
 					orgService.updateOrg(org);
 					
@@ -444,9 +449,15 @@ public class RegistrationController {
 		   
 		
 	
-	 public void saveUserRoleActions(Long moduleId,OrgLocations orgLocations) throws Exception{
+	 public void saveUserRoleActions(OrgLocations orgLocations) throws Exception{
 		 
-			List<Long> actionsList = sourceleadActionsService.getSourceLeadActionsByModuleId(moduleId);
+		   SourceleadRoles soruceLeadRoles = sourceleadRolesService.getSourceleadRolesByRoleName(Constants.ROLE_GUEST_CLIENT);
+			List<Long> soureleadActionIdList = new ArrayList<>();
+			String[] actionsIds = null;
+			actionsIds = soruceLeadRoles.getActionId().split(",");
+			 for(int i=0 ; i < actionsIds.length; i++) {
+				 soureleadActionIdList.add(Long.parseLong(actionsIds[i]));
+			 }
 			
 			Roles adminrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_ADMIN, orgLocations.getId());
 			 List<Long> adminRoleActonList = new ArrayList<Long>();
@@ -454,12 +465,56 @@ public class RegistrationController {
 				 adminRoleActonList.add(Long.parseLong(s));
 			 }
 			 
-			 adminRoleActonList.retainAll(actionsList);
-			 actionsList.removeAll(adminRoleActonList);
+			 adminRoleActonList.retainAll(soureleadActionIdList);
+			 soureleadActionIdList.removeAll(adminRoleActonList);
 			
 			
 	    	StringBuilder strbul  = new StringBuilder();
-		     Iterator<Long> iter = actionsList.iterator();
+		     Iterator<Long> iter = soureleadActionIdList.iterator();
+		     while(iter.hasNext())
+		     {
+		         strbul.append(iter.next());
+		        if(iter.hasNext()){
+		         strbul.append(",");
+		        }
+		     }
+		     strbul.toString();
+			
+			
+	        String adminids = adminrole.getActionId()+","+strbul;
+			adminrole.setActionId(adminids);
+			rolesService.storeRoles(adminrole);
+			
+			Roles managerrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER, orgLocations.getId());
+			String managerids = managerrole.getActionId()+","+strbul;
+		    managerrole.setActionId(managerids);
+			rolesService.storeRoles(managerrole);
+	 }
+	 
+	 
+	 
+	 public void saveVendorUserRoleActions(OrgLocations orgLocations) throws Exception{
+		 
+		   SourceleadRoles soruceLeadRoles = sourceleadRolesService.getSourceleadRolesByRoleName(Constants.ROLE_GUEST_VENDOR);
+			List<Long> soureleadActionIdList = new ArrayList<>();
+			String[] actionsIds = null;
+			actionsIds = soruceLeadRoles.getActionId().split(",");
+			 for(int i=0 ; i < actionsIds.length; i++) {
+				 soureleadActionIdList.add(Long.parseLong(actionsIds[i]));
+			 }
+			
+			Roles adminrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_ADMIN, orgLocations.getId());
+			 List<Long> adminRoleActonList = new ArrayList<Long>();
+			 for (String s : adminrole.getActionId().split(",")){
+				 adminRoleActonList.add(Long.parseLong(s));
+			 }
+			 
+			 adminRoleActonList.retainAll(soureleadActionIdList);
+			 soureleadActionIdList.removeAll(adminRoleActonList);
+			
+			
+	    	StringBuilder strbul  = new StringBuilder();
+		     Iterator<Long> iter = soureleadActionIdList.iterator();
 		     while(iter.hasNext())
 		     {
 		         strbul.append(iter.next());

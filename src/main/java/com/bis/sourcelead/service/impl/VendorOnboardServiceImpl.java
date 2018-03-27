@@ -40,6 +40,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
@@ -57,6 +58,7 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -140,6 +142,9 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 	
 	@Autowired
 	OrgSpocService orgSpocService;
+	
+	@Autowired
+	SourceleadRolesService sourceleadRolesService;
 	 
 	 
 	 
@@ -622,7 +627,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 			
 			vendorOrg.setOrgType("Company");
 			
-			/*List<Integer> moduleIds = new ArrayList<Integer>();
+			List<Integer> moduleIds = new ArrayList<Integer>();
 			 for (String s : vendorOrgLocations.getModulesId().split(",")){
 				 moduleIds.add(Integer.parseInt(s));
 			 }
@@ -633,16 +638,17 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 	    		moduleId = (long) Constants.MODULE_ATS;
 	    		if(flag == false){
 	    			modules = modules+","+Constants.MODULE_ATS;
-	    			saveUserRoleActions(moduleId,vendorOrgLocations);
+	    			
 	    		}
 	    		
 	    		boolean tsflag = moduleIds.contains(Constants.MODULE_TIMESHEET);
 	    		if(tsflag == false) {
     				modules = modules+","+Constants.MODULE_TIMESHEET;
-    				saveUserRoleActions(tsModuleId,vendorOrgLocations);
     			}
 	    		
-	    		vendorOrgLocations.setModulesId(modules);*/
+	    		saveUserRoleActions(vendorOrgLocations);
+	    		
+	    		vendorOrgLocations.setModulesId(modules);
 			
 	    		vendorOrg.setStatus(Status.ACTIVE);
 				orgService.updateOrg(vendorOrg);
@@ -689,9 +695,15 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 	
 	
 	
-	public void saveUserRoleActions(Long moduleId,OrgLocations orgLocations) throws Exception{
+	public void saveUserRoleActions(OrgLocations orgLocations) throws Exception{
 		 
-		List<Long> actionsList = sourceleadActionsService.getSourceLeadActionsByModuleId(moduleId);
+		SourceleadRoles soruceLeadRoles = sourceleadRolesService.getSourceleadRolesByRoleName(Constants.ROLE_GUEST_VENDOR);
+		List<Long> soureleadActionIdList = new ArrayList<>();
+		String[] actionsIds = null;
+		actionsIds = soruceLeadRoles.getActionId().split(",");
+		 for(int i=0 ; i < actionsIds.length; i++) {
+			 soureleadActionIdList.add(Long.parseLong(actionsIds[i]));
+		 }
 		
 		Roles adminrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_ADMIN, orgLocations.getId());
 		 List<Long> adminRoleActonList = new ArrayList<Long>();
@@ -699,12 +711,12 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 			 adminRoleActonList.add(Long.parseLong(s));
 		 }
 		 
-		 adminRoleActonList.retainAll(actionsList);
-		 actionsList.removeAll(adminRoleActonList);
+		 adminRoleActonList.retainAll(soureleadActionIdList);
+		 soureleadActionIdList.removeAll(adminRoleActonList);
 		
 		
-    	StringBuilder strbul  = new StringBuilder();
-	     Iterator<Long> iter = actionsList.iterator();
+    	 StringBuilder strbul  = new StringBuilder();
+	     Iterator<Long> iter = soureleadActionIdList.iterator();
 	     while(iter.hasNext())
 	     {
 	         strbul.append(iter.next());
