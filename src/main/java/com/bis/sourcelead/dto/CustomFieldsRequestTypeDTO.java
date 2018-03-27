@@ -11,6 +11,7 @@ public class CustomFieldsRequestTypeDTO {
 	Long projectId;
 	Long contractId;
 	Long assetId;
+	Long projectTask;
 	public Long getSectionId() {
 		return sectionId;
 	}
@@ -70,6 +71,12 @@ public class CustomFieldsRequestTypeDTO {
 	}
 	public void setAssetId(Long assetId) {
 		this.assetId = assetId;
+	}
+	public Long getProjectTask() {
+		return projectTask;
+	}
+	public void setProjectTask(Long projectTask) {
+		this.projectTask = projectTask;
 	}
 	
 }

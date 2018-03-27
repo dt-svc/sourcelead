@@ -203,7 +203,11 @@ public class ExpensesReportsRestController {
 			    StringBuilder vendor=new StringBuilder();
 			 	if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType()) && (projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C-1099")||projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C"))){
      			  OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
-     			  vendor.append(projectMember.getProjectMemberCandidteId().getDesignationType()).append(",").append(orgRelation.getResponderLocationId().getOrgLocationName()).toString();
+     			  if(orgRelation != null) {
+     				  vendor.append(projectMember.getProjectMemberCandidteId().getDesignationType()).append(",").append(orgRelation.getResponderLocationId().getOrgLocationName()).toString();
+     			  }else {
+     				 vendor.append(projectMember.getProjectMemberCandidteId().getDesignationType());
+     			  }
            	     }else{
            	    	vendor.append("--").toString(); 
            	     }
