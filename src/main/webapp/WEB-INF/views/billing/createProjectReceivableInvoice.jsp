@@ -1791,7 +1791,7 @@ function maskme(){
     $.mask.definitions['p'] = "[Mm]";
     $(".inline_field").mask("Hhh:Mm"); 
 	
-    $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+    $(".allownumericwithdecimal").on("keypress keyup blur",function (evt) {
     	
     	var charCode = (evt.which) ? evt.which : event.keyCode
    	         if (charCode > 31 && (charCode < 48 || charCode > 57))

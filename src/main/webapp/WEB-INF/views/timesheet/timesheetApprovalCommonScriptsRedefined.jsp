@@ -216,7 +216,6 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 			submissionIDs.push(e);
 		}
 	}
-	alert(submissionIDs);
 	var data = submissionIDs.toString().split(',');
 	for(var i=0; i<=data.length;i++){
 		var data2 = data[i].toString().split('!');
@@ -282,7 +281,6 @@ function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
 			submissionIDs.push(e);
 		}
 	}
-	alert(submissionIDs);
 	var dataOne = submissionIDs.toString().split(',');
 	for(var i=0; i<=dataOne.length;i++){
 		var dataTwo = dataOne[i].split('!');

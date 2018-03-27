@@ -5,7 +5,7 @@
 }
 body {
 	font-size: 14px; color: #333; min-height: 100%; background-color: #e0e0e0 !important;
-    font-weight: 400 !important; font-style: normal !important; font-family:'Roboto', sans-serif  !important;
+    font-style: normal !important; font-family:'Roboto', sans-serif  !important;
 }
 a:hover, a:active, a:focus {
 	outline: 0; text-decoration: none;
@@ -8350,6 +8350,56 @@ height: 60px !important
 .btn.btnerror-custom {
 padding: 5px 12px;
 }
+.payrollFilter input {
+	width: 170px !important;
+}
+.searchStyles input {
+    margin: 0px; border: none; padding: 3px 25px 3px 5px; background-color: transparent;
+    width: 100%; background: url(../images/searchicon-new.png) no-repeat right 5px;
+    }
+ul.horizentalTabStyles {
+	border-bottom: none;
+}
+ul.horizentalTabStyles li {
+	float: none; border-radius: 0; 
+}
+ul.horizentalTabStyles li a {
+	border: none; color: #fff; background-color: #6c7686; margin: 5px 0; min-height: 50px; line-height: 40px;
+	border-radius: 0;
+}
+.horizentalTabStyles > li.active > a, .horizentalTabStyles > li.active > a:focus, .horizentalTabStyles > li.active > a:hover {
+	background-color: #6c7686; border-radius: 0; color: #fff; margin-right: 0; border: none;
+	border-right: 10px solid #5acc95;
+}
+.horizentalTabStyles.nav-tabs > li > a:hover {
+	background-color: #6c7686;color:#5acc95;
+}
+.horizentalTabStyles-tabcontent {
+	padding: 20px 30px;
+}
+.divTotal {
+	border-top: 1px solid #f2f2f2;
+}
+
+.tableStyles-new {
+    width:100%; border:1px solid #e3eaf0; border-radius: 5px;
+}  
+.tableStyles-new table {
+    border-collapse: collapse; width: 100%; font-size:14px; font-weight:400; 
+    }
+.tableStyles-new table thead {
+	background-color: #6c7686; border-radius: 3px;
+	color:#FFF; height:60px;
+}
+.tableStyles-new table tr th {
+    padding:5px 15px; text-align:center;font-weight:500;
+    }
+.tableStyles-new table tr td {
+    color:#405063; padding:5px 12px; border-bottom: 1px solid #e3eaf0; height:40px; font-weight:400;
+    }
+.tableStyles-new table tr td div {
+    position:relative;
+    }
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
