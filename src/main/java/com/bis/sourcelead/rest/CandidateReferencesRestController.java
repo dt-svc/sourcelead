@@ -76,16 +76,13 @@ public class CandidateReferencesRestController {
 	 * @throws Exception
 	 */
 	//@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_REFERENCE','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_REFERENCE')")
-	@RequestMapping(value = "/saveCandidateReferences", method = RequestMethod.POST)
-	public @ResponseBody String saveCandidateReferences(CandidateReferencesDTO candidateReferencesDTO, @RequestParam("candidateId") Long candidateId, @RequestParam("userId") Long userId, @RequestParam("locationCode") String locationCode) throws Exception
+	@RequestMapping(value = {"/saveCandidateReferences","rest/saveCandidateReferences"}, method = RequestMethod.POST)
+	public @ResponseBody String saveCandidateReferences(CandidateReferencesDTO candidateReferencesDTO) throws Exception
 	{
-		/* String json1 = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json);*/
-		User user = userService.getUserById(userId); 
-		
-		OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
-		if (null != candidateId) {
-			candidateReferencesService.storeCandidateReferences(candidateReferencesDTO, candidateId, orgLocation.getId(), user);
+		User user = userService.getUserById(candidateReferencesDTO.getUserId()); 
+		OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(candidateReferencesDTO.getLocationCode());
+		if (0 != candidateReferencesDTO.getCandidateId()) {
+			candidateReferencesService.storeCandidateReferences(candidateReferencesDTO, candidateReferencesDTO.getCandidateId(), orgLocation.getId(), user);
 			return "success";
 		}
 		else {

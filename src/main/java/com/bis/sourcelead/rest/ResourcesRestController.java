@@ -156,43 +156,48 @@ public class ResourcesRestController {
 			return "success";
 		}
 	    
-	    /**
-		 * To validate Blog Title
-		 * 
-		 * @param name
-		 * @return
-		 */
+		
+        /**
+         * To validate Blog Title
+         * 
+         * @param blogTitle
+         * @param blogId
+         * @return
+         * @throws Exception
+         */
 		@RequestMapping(value = "/validateBlogTitle", method = RequestMethod.POST)
-		public @ResponseBody String validateBlogTitle(@RequestParam(value = "name", required = false) String name, HttpServletRequest request) throws Exception
+		public @ResponseBody Boolean validateBlogTitle(@RequestParam("blogTitle") String blogTitle,@RequestParam("blogUUID") String blogUUID) throws Exception
 		{
-			String result = null;
-			SourceleadBlogs sourceleadBlogs = sourceleadBlogService.findByBlogTitle(name);
-			if (null != sourceleadBlogs) {
-				result = "true";
+			SourceleadBlogs sourceleadBlogs = null;
+			if(blogUUID != null){
+				sourceleadBlogs = sourceleadBlogService.validateSourceleadBlogTitleByBlogTitleAndBlogId(blogTitle, blogUUID);
 			}
-			else {
-				result = "false";
-			}
-			return result;
+			 Boolean flag = false;
+			 if(null == sourceleadBlogs) {
+				 flag = sourceleadBlogService.validateSourceleadBlogTitleByBlogTitle(blogTitle);
+			 }
+		 return flag;
 		}
 		
 		/**
-		 * To validate Blog Title
-		 * 
-		 * @param name
+		 * Validate categoryName
+		 * @param categoryName
+		 * @param categoryUUID
 		 * @return
+		 * @throws Exception
 		 */
 		@RequestMapping(value = "/validateBlogCategoryName", method = RequestMethod.POST)
-		public @ResponseBody String validateBlogCategoryName(@RequestParam(value = "categoryName", required = false) String categoryName, HttpServletRequest request) throws Exception
+		public @ResponseBody Boolean validateBlogCategoryName(@RequestParam("categoryName") String categoryName,@RequestParam("categoryUUID") String categoryUUID) throws Exception
 		{
-			String result = null;
-			BlogCategory  blogCategory = blogCategoryService.findByBlogCategoryName(categoryName);
-			if (null != blogCategory) {
-				result = "true";
+			BlogCategory  blogCategory = null;
+			if(categoryUUID != null){
+				blogCategory = blogCategoryService.validateBlogCategoryCategoryNameByCategoryNameAndCategoryUUID(categoryName, categoryUUID);
 			}
-			else {
-				result = "false";
-			}
-			return result;
+			 Boolean flag = false;
+			 if(null == blogCategory) {
+				 flag = blogCategoryService.validateBlogCategoryCategoryNameByCategoryName(categoryName);
+			 }
+		 return flag;
 		}
+		
 }
