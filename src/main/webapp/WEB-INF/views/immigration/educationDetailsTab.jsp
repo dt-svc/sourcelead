@@ -21,13 +21,13 @@
 			   <c:forEach var="eduItems" items="${candidatesEducationList}" varStatus="rows">
 			  <tr>
 				<td><div class="tbldata-dotdot-vsm">${eduItems.name}</div></td>
-				<td><div class="tbldata-dotdot-vsm">${eduItems.specialization}</div></td>
-				<td><div class="tbldata-dotdot_80">${eduItems.startDateStr}</div></td>
-				<td><div class="tbldata-dotdot-80">${eduItems.endDateStr}</div></td>
-				<td><div class="tbldata-dotdot-80">${eduItems.grade}</div></td>
-				<td><div class="tbldata-dotdot-80">${eduItems.gradeType}</div></td>
-				<td><div class="tbldata-dotdot-vsm">${eduItems.institute}</div></td>
-				<td><div class="tbldata-dotdot-vsm">${eduItems.address}</div></td>
+				<td><div class="tbldata-dotdot-vsm">${!empty eduItems.specialization ? eduItems.specialization : '---'}</div></td>
+				<td><div class="tbldata-dotdot_80">${!empty eduItems.startDateStr ? eduItems.startDateStr : '---'}</div></td>
+				<td><div class="tbldata-dotdot-80">${!empty eduItems.endDateStr ? eduItems.endDateStr : '---'}</div></td>
+				<td><div class="tbldata-dotdot-80">${!empty eduItems.grade ? eduItems.grade : '---'}</div></td>
+				<td><div class="tbldata-dotdot-80">${!empty eduItems.gradeType ? eduItems.gradeType : '---'}</div></td>
+				<td><div class="tbldata-dotdot-vsm">${!empty eduItems.institute ? eduItems.institute : '---'}</div></td>
+				<td><div class="tbldata-dotdot-vsm">${!empty eduItems.address ? eduItems.address : '---'}</div></td>
 				<td><div><i id="edit" onclick="editEducationDEtailsByRowId(${eduItems.id});"
 				class="glyphicon glyphicon-pencil"></i><i id="delete" 
 				 onclick="deleteEDucationDetailsById(${eduItems.id});" 
