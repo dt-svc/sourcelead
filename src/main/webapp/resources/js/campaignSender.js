@@ -2,7 +2,7 @@
 
 function campaignSender(ele,senderId, fromType) {
 	/*fromProfile = fromProfile ? fromProfile : false;*/
-		$.post(sourceleadUrl+"/campaignSender?senderId="+senderId+"", {}, function(data) {
+	$.post(sourceleadUrl+"/campaignSender?senderId="+senderId+"", {}, function(data) {
 			$(".popMask").fadeIn(200);
 			$("#campaignSender").fadeIn(100);
 			$("#campaignSender").html(data);
@@ -16,16 +16,20 @@ function campaignSender(ele,senderId, fromType) {
 						$.post(sourceleadUrl+"/saveCampaignSender?"+tokenParamName+"="+tokenValue, formData, function(data) {
 							if(data == 'success'){
 								senderClose();
-								if(fromType == "hotList" || fromType == "jobList"){
-					            	$(".popMask").fadeOut(200);
-				            		$("#campaignSender").fadeOut(100);
-					             }else{
-					            	 getSendersList("success");
-//								     location.replace(sourceleadUrl+ "/campaignSendersList?&msg=success");
-					             }
-					  			 $("#popUp").empty();
-//					  			$("#senderLoading").removeAttr("style");
-					 			 $(".project_inn_mask").fadeOut(200);
+								if(senderId != ''){
+									 $("#campainSenderAlertMsg").removeAttr("style");
+						  			 $("#campainSenderAlertMsg").css({ display: "block" });
+						  			 $("#campainSenderAlertMsgDiv").html("Successfully Updated sender identity");
+								}else{
+									 $("#campainSenderAlertMsg").removeAttr("style");
+						  			 $("#campainSenderAlertMsg").css({ display: "block" });
+						  			 $("#campainSenderAlertMsgDiv").html("Successfully Created sender identity");
+								}
+					  			
+								 location.replace(sourceleadUrl+ "/campaignSendersList");
+								 $("#popUp").empty();
+					  			 $(".project_inn_mask").fadeOut(200);
+								 campainSenderAlertMsgFadein();	
 					             	
 							}else if(data == '400Body'){
 								$("#senderLoading").removeAttr("style");

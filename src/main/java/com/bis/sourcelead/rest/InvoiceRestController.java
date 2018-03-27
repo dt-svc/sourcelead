@@ -1117,7 +1117,7 @@ public class InvoiceRestController {
 				 
 			 }
 
-		 emailScenerioUtil.sendNotification(actionLink, loginUser,  invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, loginUser,  invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario,new HashMap<String,String>());
 		}
 	
 	@RequestMapping(value = "/rejectInvoice", method = RequestMethod.POST)
@@ -1211,7 +1211,7 @@ public class InvoiceRestController {
 				 actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="+invoice.getInvoiceUUID()+"&invoiceType=Receivable").toString();
 				 
 			 }
-		 emailScenerioUtil.sendNotification(actionLink, loginUser,  invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, loginUser,  invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario,new HashMap<String,String>());
 		}
 	
 	/**
