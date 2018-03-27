@@ -687,6 +687,7 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 			orgLicenseSubscription.setCreatedDate(new Date());
 			orgLicenseSubscription.setUpdatedBy(loginUser);
 			orgLicenseSubscription.setUpdatedDate(new Date());
+			orgLicenseSubscription.setStatus(1);
 			
 			Date subscriptionDate = commonUtil.orgLocationDateFormat("dd-MM-yyyy",orgLicenseSubscriptionDTO.getSubscriptionDate());
 			subscriptionDate = CalendarUtil.getDateTimeForGivenTimeZone(orgLicenseSubscriptionDTO.getTimezone(), subscriptionDate, "dd-MM-yyyy");

@@ -665,6 +665,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgLicenseSubscription.setCreatedDate(new Date());
 		orgLicenseSubscription.setUpdatedBy(loginUser);
 		orgLicenseSubscription.setUpdatedDate(new Date());
+		orgLicenseSubscription.setStatus(1);
 		
 		Date subscriptionDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),registration.getSubscriptionDate());
 		subscriptionDate = CalendarUtil.getDateTimeForGivenTimeZone(orgLocations.getTimezone().getTimeZoneId(), subscriptionDate, orgLocations.getDateFormat());
