@@ -231,8 +231,6 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 					ProjectTasks  tasks  = null;
 					if(flag == true) {
 						  tasks  = new ProjectTasks();
-					}else if(flag == false) {
-						   
 					}
 					LookUpData taskType = lookUpDataService.getTasksTypeByUniqueKey(Constants.GENERAL);
 					tasks.setGeneratedId(commonUtil.getProjectTaskGenaratedId(projects));
