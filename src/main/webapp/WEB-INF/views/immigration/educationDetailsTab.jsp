@@ -53,6 +53,7 @@
 		<!-- popup code start -->
 		<form id="eduSave_Form" name = "eduSave_Form" method = "post">
 		<div class="popUpOut" id="popEduView">
+		<!--hidden id for edit -->
 		<input type = "hidden" id="candidateEducationId"  name="candidateEduId">
 		<div class="popupHead">
 			<h2>Add Education</h2><a href="javascript:void(0)" class="fa fa-close popCan" onclick="closeEdupopup();"></a>

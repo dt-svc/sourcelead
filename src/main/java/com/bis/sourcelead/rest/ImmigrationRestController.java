@@ -740,6 +740,25 @@ public class ImmigrationRestController {
 
 		return canEdu;  
 	}
+	
+	@RequestMapping(value = { "/getCandidateEmpDetailsById" })
+	public @ResponseBody  CandidateEmployers getCandidateEmpDetailsById(
+			@RequestParam(value = "id", required = true) Long id,
+			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		System.out.println(" in controller method getCandidateFamilyDetailsById id ---> "+id);
+		CandidateEmployers canEmp= null;
+		try {
+			canEmp = candidateEmployersService.getCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, id);
+
+		} catch (Exception e) {
+			logger.error("Exception caught in controller test --->"+e.getMessage());
+			e.printStackTrace();
+		}
+
+		return canEmp;  
+	}
 
 	@RequestMapping(value = { "/deleteCandidateEduDetails" })
 	public String deleteCandidateEduDetails(

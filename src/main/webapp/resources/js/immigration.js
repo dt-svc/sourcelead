@@ -535,6 +535,34 @@ function editEducationDEtailsByRowId(id){
         }
     });
 }
+
+function editEmpDetailsByRowId(id){
+	console.log(" inside edit record  "+id);
+	 // update the variable with family member id in edit mode.
+	var candidateId = $("#candidateID").val();
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/getCandidateEmpDetailsById?id="+id+"&candidateId="+candidateId,
+        type: "GET",
+        success: function (data) {
+        	console.log(" inside success test --->" );
+        	var formObj='';
+        	if(data!= null){
+        		console.log(" record successfully fetched by id  --> "+id);
+        		
+        			formObj = $('#employerDetails_form')[0]; // load the child form
+        			var fomValues=["name","designation", "address","startMonth","startYear","endMonth","endYear"];
+        			$("#addEmpl").trigger('click');
+        			udpateEduFormdata(formObj,fomValues,data);
+        			$('#startMonth').val(data.startMonth); // to select the dropdwon value based on id value.
+        			$('#endMonth').val(data.endMonth);
+        			$('#candidateEmpId').val(data.id);
+        	
+        	   
+        	}
+        }
+    });
+}
+
 function udpateEduFormdata (formObj, idsArray, dataObj) {
 	  var formId = formObj.id;
 	   $.each(formObj, function(key, value) {
