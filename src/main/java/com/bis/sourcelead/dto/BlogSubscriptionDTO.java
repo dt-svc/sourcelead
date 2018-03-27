@@ -22,6 +22,8 @@ public class BlogSubscriptionDTO extends SearchDTO implements Serializable{
 	private String blogId;
 	
 	private String bodytext;
+	
+	private String subscriptionUUID;
 
 	public Long getId() {
 		return Id;
@@ -78,5 +80,15 @@ public class BlogSubscriptionDTO extends SearchDTO implements Serializable{
 	public void setBodytext(String bodytext) {
 		this.bodytext = bodytext;
 	}
+
+	public String getSubscriptionUUID() {
+		return subscriptionUUID;
+	}
+
+	public void setSubscriptionUUID(String subscriptionUUID) {
+		this.subscriptionUUID = subscriptionUUID;
+	}
+	
+	
 	
 }

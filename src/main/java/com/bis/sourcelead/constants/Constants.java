@@ -470,6 +470,7 @@ public class Constants {
 	public static final String NOTIFICATION_DELETED = "0";
 	public static final String NOTIFICATION_NOT_DELETED = "1";
 	public static final String TIME_SHEET_SUBMISSION = "Time Sheet Submission";
+	public static final String PLACE_UUID = "PLACE_UUID";
 	/** for user roles **/
 	public static final String ROLE_ADMIN = "ROLE_ADMIN";
 	public static final String ROLE_APPROVER = "ROLE_APPROVER";
@@ -1037,7 +1038,7 @@ public class Constants {
 	public static final String ROLE_CREATE_PROJECT ="ROLE_CREATE_PROJECT";
 	public static final String ROLE_ADD_NEW_CONTRACT ="ROLE_ADD_NEW_CONTRACT";
 	public static final String ROLE_ADD_ASSET ="ROLE_ADD_ASSET";
-	
+	public static final String ROLE_CREATE_PROJECT_TASKS ="ROLE_CREATE_PROJECT_TASKS";
 	public static final String REPORT_FILTER_LAST_7_DAYS = "Last_7_days";
 	public static final String REPORT_FILTER_LAST_15_DAYS = "Last_15_days";
 	public static final String REPORT_FILTER_1_MONTH = "1_month";

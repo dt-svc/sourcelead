@@ -25,6 +25,7 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.SourceleadBlogService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class BlogSubscriptionServiceImpl implements BlogSubscriptionService{
@@ -54,6 +55,7 @@ public class BlogSubscriptionServiceImpl implements BlogSubscriptionService{
 		    blogSubscription = new BlogSubscription();
 		    blogSubscription.setEmail(blogSubscriptionDTO.getEmail());
 		    blogSubscription.setStatus("Y");
+		    blogSubscription.setSubscriptionUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		    blogSubscription.setCreatedDate(commonUtil.currentDate());
 		    blogSubscriptionDao.addBlogSubscription(blogSubscription);
 		    sendEmail(blogSubscriptionDTO);
@@ -167,6 +169,22 @@ public class BlogSubscriptionServiceImpl implements BlogSubscriptionService{
 	@Override
 	public BlogSubscription getBlogSubscriptionByBlogId(Long blogSubscriptionId) throws Exception {
 		return blogSubscriptionDao.getBlogSubscriptionByBlogId(blogSubscriptionId);
+	}
+
+	@Override
+	public BlogSubscription validateBlogSubscriptionByEmailAndSubscriptionUUID(String email, String subscriptionUUID)
+			throws Exception {
+		return blogSubscriptionDao.validateBlogSubscriptionByEmailAndSubscriptionUUID(email, subscriptionUUID);
+	}
+
+	@Override
+	public Boolean validateBlogSubscriptionByEmail(String email) throws Exception {
+		return blogSubscriptionDao.validateBlogSubscriptionByEmail(email);
+	}
+
+	@Override
+	public BlogSubscription getBlogSubscriptionBySubscriptionUUID(String subscriptionUUID) throws Exception {
+		return blogSubscriptionDao.getBlogSubscriptionBySubscriptionUUID(subscriptionUUID);
 	}
 
 }

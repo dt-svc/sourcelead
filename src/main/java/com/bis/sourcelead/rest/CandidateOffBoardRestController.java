@@ -1505,7 +1505,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		         //calling the sendEmail method of emailScenerioUtil
 		         emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		         String actionLink="";
-		       emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, orgLocations, notificationScenario);
+		       emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, orgLocations, notificationScenario,new HashMap<String,String>());
 
 
 		    }
