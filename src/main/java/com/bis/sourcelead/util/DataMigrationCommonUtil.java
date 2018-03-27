@@ -1780,6 +1780,27 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				}
 			}
 			
+			//Project Task Business Currency
+			if(!dataMigrationDTOJsonCopy.getString("currencyType").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("currencyType"))) {
+				String currency = dataMigrationDTOJsonCopy.getString("currencyType").trim().toLowerCase();
+				if(currency.equalsIgnoreCase("INR")) {
+					dataMigrationDTOJsonCopy.put("currencyType", "INR");
+				}else if(currency.equalsIgnoreCase("AUD")) {
+					dataMigrationDTOJsonCopy.put("currencyType", "AUD");
+				}else if(currency.equalsIgnoreCase("USD")) {
+					dataMigrationDTOJsonCopy.put("currencyType", "USD");
+				}else if(currency.equalsIgnoreCase("GBP")) {
+					dataMigrationDTOJsonCopy.put("currencyType", "GBP");
+				}else if(currency.equalsIgnoreCase("SGD")) {
+					dataMigrationDTOJsonCopy.put("currencyType", "SGD");
+				}else if(currency.equalsIgnoreCase("EUR")) {
+					dataMigrationDTOJsonCopy.put("currencyType", "EUR");
+				}else {
+					errorSet.put("currencyType", dataMigrationDTOJsonCopy.getString("currencyType").trim()+" Invalid currency Type");
+				}
+			}
+			
+			
 			//Project Task Business Value
 			if(!dataMigrationDTOJsonCopy.getString("businessValue").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("businessValue"))) {
 				String value = dataMigrationDTOJsonCopy.getString("businessValue");

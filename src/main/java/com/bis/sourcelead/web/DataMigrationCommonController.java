@@ -221,8 +221,8 @@ public class DataMigrationCommonController {
 		public void downloadDataImportTemplateForProjectTasks(HttpServletRequest request,HttpServletResponse response) throws Exception{
 	        @SuppressWarnings("resource")
 			XSSFWorkbook workbook = new XSSFWorkbook();
-	        XSSFSheet sheet = workbook.createSheet("JobTemplate");
-	        String[] tableColumns = Constants.PROJECT_TASKS_EXCEL_HEADERS;
+	        XSSFSheet sheet = workbook.createSheet("ProjectTaskTemplate");
+	        String[] tableColumns = Constants.DATA_MIGRATION_PROJECT_TASKS_EXCEL_HEADERS;
 	 
 	        Row row = sheet.createRow(0);
 	        int cellnum = 0;
