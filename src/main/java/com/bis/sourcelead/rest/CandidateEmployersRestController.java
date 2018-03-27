@@ -101,7 +101,7 @@ public class CandidateEmployersRestController {
 	
 	//@PreAuthorize("hasAnyRole('ROLE_ADD_EMPLOYEER','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_EMPLOYER')")
 	@RequestMapping(value = {"/storeCandidateEmployers","rest/storeCandidateEmployers"}, method = RequestMethod.POST)
-	public @ResponseBody String storeCandidateEmployers(CandidateEmployerDTO candidateEmployerDTO,@RequestParam(value="candidateId", required=false) Long candidateId ,HttpServletRequest request) throws Exception {
+	public @ResponseBody String storeCandidateEmployers(CandidateEmployerDTO candidateEmployerDTO ,HttpServletRequest request) throws Exception {
 
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -109,8 +109,8 @@ public class CandidateEmployersRestController {
 		
 		/*String json1 = "{"+json+"}";
 		JSONObject jsonObject = new JSONObject(json1);*/
-	    candidateEmployersService.storeCandidateEmployers(candidateEmployerDTO,users,loginOrgLocation,candidateId);
-		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+	    candidateEmployersService.storeCandidateEmployers(candidateEmployerDTO,users,loginOrgLocation,candidateEmployerDTO.getCandidateId());
+		Candidate candidate = candidateService.getCandidateByCandidateId(candidateEmployerDTO.getCandidateId());
 		Integer percentage = candidateService.getCandidatePercentage(candidate,loginOrgLocation);
 		return percentage.toString();
 	}
