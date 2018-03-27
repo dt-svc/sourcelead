@@ -47,5 +47,8 @@ public interface ImmigrationCommonDao {
 	CandidateFamilyDetails getCandidateFamilyDetailsById(Long id);
 
 	void removeCandidatePassportVisaDetails(Long candidateId, Long id, User user, OrgLocations orgLocations, String idType);
+	
+	 String deleteCandidateResidenceDetails(Long id,Long candidateId);
+
 
 }
