@@ -7,7 +7,7 @@
 
 <script>
 	$(document).ready(function() {
-		    if ('${notifyLink}' == true) 
+		    if ('${notifyLink}' == 'true') 
 			{
 		    	timesheetApprovalDetils('notifyLink');
 			} else{
@@ -31,6 +31,7 @@
 		   <div id="timesheetApprovalDiv" class="datatable_filter" >
 			   <div class="timesheet_out">
 			     	<div class="timesheet_appr_wrap">
+			     	 <input type='hidden' id='notifyLink' name='notifyLink' value="${notifyLink}"/>
 			     	 <div id="timeApprovaldiv">
 				     		<jsp:include page="TimesheetApprovalDetils.jsp"></jsp:include>
 			         </div>
@@ -48,6 +49,7 @@
 	               var timesheetFrequency = $('#timesheetFrequency').val();
 	               var searchData = $('#dataTableSearchExpenses').val();
 	               var weekFrequency = $('#weekFrequency').val();
+	               var projectName = '';
 	               var stage = $('#stage').val();
 	               var client = $('#client').val();
 	               if(filter != null && filter != '' && filter != 'undefined' &&  filter == 'notifyLink'){
@@ -55,8 +57,8 @@
 	            	   timesheetFrequency = '${timesheetFrequency}';
 	            	   searchData = '${searchData}';
 	            	   weekFrequency = '${weekFrequency}';
+	            	   projectName= '${projectName}';
 	               }
-	               
 	               if(frequencyMonth == null || frequencyMonth == '' || frequencyMonth == 'undefined')
 	            	   frequencyMonth = '';
 	               
@@ -86,7 +88,7 @@
 	               $("#loadTimeHead").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	        	   $.ajax({
 		      	          type : "POST",
-	        	      	  url: sourceleadUrl+"/timesheetApprovalDetails?frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency+"&weekFrequency="+weekFrequency+"&client="+client+"&stage="+stage+"&locationCode="+locationCode+"&userId="+userId+"&searchValue="+searchValue,		
+	        	      	  url: sourceleadUrl+"/timesheetApprovalDetails?frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency+"&weekFrequency="+weekFrequency+"&client="+client+"&stage="+stage+"&locationCode="+locationCode+"&userId="+userId+"&searchValue="+searchValue+"&projectName="+projectName,		
 	        		      success :function(data) {
 	        		    	  $("#loadTimeHead").removeAttr('style');
 	        		    	  $("#timeApprovaldiv").empty();
