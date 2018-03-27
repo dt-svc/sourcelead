@@ -250,7 +250,6 @@ function Immigration() {
     }
     
     this.savePassportVisaDetails= function(idType) {
-    	alert(idType+"hi")
     	var formId= "";
     	if(idType =="Passport"){
     			formId ="CandidatePassportform";
@@ -264,7 +263,6 @@ function Immigration() {
     		 	console.log(formData);
     		 	var candidateId = $('#candidateID').val();
                 var immigrationId = $('#immigrationId').val();
-                alert(candidateId+formId);
             $.ajax({
                 url: sourceleadUrl + immiModulePath + "/savePassportVisaDetailsPage?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId+"&idType="+idType,
                 type : "POST",
@@ -282,7 +280,71 @@ function Immigration() {
 			return false;
 		}
 	}
+   
+    this.savePassportVisaDetails= function(idType) {
+    	var formId= "";
+	if(idType =="Passport"){
+			formId ="CandidatePassportform";
+		}
+	 	else if(idType =="Visa"){
+  		formId ="CandidateVisaform";
+  		 	  	}
+	if ($('#'+formId).validate(false, validationSettings)) {
+			var formData = getFormData(formId);
+		    console.log(" inside function formId"+formId);
+		 	console.log(formData);
+		 	var candidateId = $('#candidateID').val();
+            var immigrationId = $('#immigrationId').val();
+            $.ajax({
+            url: sourceleadUrl + immiModulePath + "/savePassportVisaDetailsPage?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId+"&idType="+idType,
+            type : "POST",
+			data : formData,
+			success : function(data) {
+				console.log(" inside success function");
+				if (data == 'success') {
+                    console.log("data successfully saved for the candidate id "+templateId);
+                    if(idType=="Passport"){
+                    $(".popMask").fadeOut(200); // close the popup code
+                    $("#popPassView").fadeOut(100);// close the popup code
+    				immigration.displayPassportDetails(candidateId,idType);}
+    				else if(idType =="Visa"){
+    				$(".popMask").fadeOut(200); // close the popup code
+    				$("#popUpVisa").fadeOut(100);// close the popup code
+    				immigration.displayVisaDetails(candidateId,idType);}
+    					
+				}
+			}
+		});
+		return true;
+	} else {
+		return false;
+	}
+}
 
+ this.displayPassportDetails=function(candidateId,Passport){
+	console.log("inside displayPassportDetails function call  -->")
+	var Passport=document.getElementById("Passport").value;
+	    	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/getCandidatePassportVisaDetails?candidateId="+candidateId+ "&idType=" + Passport,
+        type: "GET",
+        success: function (result) {
+            $("#passportsTab").html(result);
+           
+        }
+    });
+}	
+this.displayVisaDetails=function(candidateId,Visa){
+	console.log("inside displayVisaDetails function call  -->")
+	var Visa=document.getElementById("Visa").value;
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/getCandidatePassportVisaDetails?candidateId="+candidateId+ "&idType=" + Visa,
+        type: "GET",
+        success: function (result) {
+            $("#visasTab").html(result);
+           
+        }
+    });
+}	
 
 
     this.saveCandidateFamilyDetails= function(relationType) {
@@ -350,6 +412,62 @@ function Immigration() {
         });
 	}
 	
+	this.editFamilyDetailsById = function(id, relationType){
+		console.log(" inside edit record  "+id);
+		$.ajax({
+            url: sourceleadUrl + immiModulePath + "/getCandidateFamilyDetailsById?id="+id,
+            type: "GET",
+            success: function (data) {
+            	console.log(" inside success test --->" );
+            	var formObj='';
+            	if(data!= null){
+            		console.log(" record successfully fetched by id  --> "+id);
+            		if(relationType =='Child'){
+            			formObj = $('#childDetailsForm')[0]; // load the child form
+            			var childPopNames=["firstName","middleName", "lastName","dateOfBirth","placeOfBirth","currentAddress"];
+            			$("#addChil").trigger('click');
+            			immigration.udpatePopupFormdata(formObj,childPopNames,data);
+            		}else if(relationType =='Spouse'){
+            			formObj = $('#spouseDetailsForm')[0]; // load the Spouse form
+            			var spousePopNames=["firstName","middleName", "lastName","marriagePlace","marraigeDate", "marriageEndDate","dateOfBirth","placeOfBirth","currentAddress"];
+            			$("#addSpou").trigger('click');
+            			immigration.udpatePopupFormdata(formObj,spousePopNames,data);
+            		}else if(relationType =='Father'){
+            			formObj = $('#fatherDetailsForm')[0]; // load the Father form
+            			var fatherPopNames=["firstName","middleName", "lastName","dateOfBirth","placeOfBirth","currentAddress"];
+            			$("#addFath").trigger('click');
+            			immigration.udpatePopupFormdata(formObj,fatherPopNames,data);
+            			
+            		}else if(relationType =='Mother'){
+            			formObj = $('#motherDetailsForm')[0]; // load the mother form
+            			var motherPopNames=["firstName","middleName", "lastName","dateOfBirth","placeOfBirth","currentAddress"];
+            			$("#addMoth").trigger('click');
+            			immigration.udpatePopupFormdata(formObj,motherPopNames,data);
+            		}
+            	   
+            	}
+            }
+        });
+	}
+	this.udpatePopupFormdata = function(formObj, idsArray, dataObj) {
+		  var formId = formObj.id;
+		   $.each(formObj, function(key, value) {
+			var formElemName = value.name;
+			if (typeof formElemName!= 'undefined' && idsArray.indexOf(formElemName) > -1) {
+				console.log(" inside ** formElemId:-> "+formElemName +",  dataObj.formElemId: ->"+dataObj[formElemName]);
+				// below code added for date fields in forms based on name paroperty of the field. date should contain date string in filed name.
+				if(formElemName.toLowerCase().indexOf("date")>-1 && dataObj[formElemName] != null && typeof  dataObj[formElemName] != 'undefined' && dataObj[formElemName]!=''){
+					console.log(" inside date value---> ");
+					var dateVal =  moment(dataObj[formElemName]).format("DD-MM-YYYY");
+					$("#"+formId+" input[name='"+formElemName+"']").val(dateVal); // sets date values to the form.
+				}// above code checks the date field names and set the formatted date value to the popup.
+				else{
+				 $("#"+formId+" input[name='"+formElemName+"']").val(dataObj[formElemName]); // setting non date values to the from
+				}
+			}
+
+		});
+	}
 	
 	
 }

@@ -1,3 +1,4 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <div class="immigraTabsHead">			  	
 		  	<a href="javascript:void(0)" id="addVisa"><i class="glyphicon glyphicon-plus"></i> Add Visa</a> 
 		  	<span><input class="immigraTabSerach" type="text"></span>
@@ -14,12 +15,13 @@
 				<th>Valid To</th>
 				<th>&nbsp;</th>
 			  </tr>
+			  <c:forEach var="visadetails" items="${PassportList}" varStatus="rows">
 			  <tr>
 				<td><div class="tbldata-dotdot-sm">H1B</div></td>
-				<td><div class="tbldata-dotdot-sm">INODA65464</div></td>
+				<td><div class="tbldata-dotdot-sm">${visadetails.visaType}</div></td>
 				<td><div class="tbldata-dotdot-sm">India</div></td>
-				<td><div class="tbldata-dotdot-sm">DD/MM/YY</div></td>
-				<td><div class="tbldata-dotdot-sm">DD/MM/YY</div></td>
+				<td><div class="tbldata-dotdot-sm">${visadetails.validFromDate}</div></td>
+				<td><div class="tbldata-dotdot-sm">${visadetails.validToDate}</div></td>
 				<td class="immigraAction">
 					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
 					<div class="mmigraActionInn">
@@ -30,7 +32,12 @@
 					</div>
 				</td>
 			  </tr>
-			  <tr>
+			   </c:forEach>
+			  </tbody>
+		  </table>
+		</div>
+			 
+			  <!-- <tr>
 				<td><div class="tbldata-dotdot-sm">H1B</div></td>
 				<td><div class="tbldata-dotdot-sm">INODA65464</div></td>
 				<td><div class="tbldata-dotdot-sm">India</div></td>
@@ -139,9 +146,10 @@
 				<li class="disabled"><a href="#">6</a></li>
 				<li data-page="last"><a href="#"> >> </a></li>
 			  </ul>
-		</div>
+		</div> -->
 		<!--popcode start  -->
 		<form id="CandidateVisaform" name="CandidateVisaform" method="post"> 
+		 <input type="hidden" id="Visa" name="Visa" value="Visa">
 		<div class="popUpOut" id="popUpVisa">
 		
 		<div class="popupHead">

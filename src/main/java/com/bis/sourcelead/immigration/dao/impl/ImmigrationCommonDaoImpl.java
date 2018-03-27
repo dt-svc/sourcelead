@@ -257,4 +257,33 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
    		}
    		return candidatesResidenceList;
    	}
+    @SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId, String idType)
+	{
+		logger.debug("Getting  CandidatepassportDetails --->  ");
+		Session session = this.sessionFactory.getCurrentSession();
+		String Type = "Passport";
+		List<CandidatePassportVisa> passportvisaList = new ArrayList<CandidatePassportVisa>();
+			String queryString = "from CandidatePassportVisa cp where cp.candidate.id=:candidateId and cp.idType=:idType  order by cp.updatedDate desc";
+			passportvisaList = session.createQuery(queryString).setLong("candidateId", candidateId).setString("idType", idType).list();
+		
+		return passportvisaList;
+	}
+    @Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateFamilyDetails getCandidateFamilyDetailsById(Long id) {
+		System.out.println("get CandidateFamilyDetails id ---> "+id);
+		CandidateFamilyDetails familyObj= null;
+        try {
+			Session session = this.sessionFactory.getCurrentSession();
+			familyObj = (CandidateFamilyDetails)session.get(CandidateFamilyDetails.class,id);
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing getting record -->"+e.getMessage());
+			e.printStackTrace();
+		}
+        System.out.println("got the record id -->"+ id);
+		return familyObj;
+	}
 }
