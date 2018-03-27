@@ -12,6 +12,7 @@
 				<th>Country</th>
 				<th>From</th>
 				<th>To</th>
+				<th>Action</th>
 				<th>&nbsp;</th>
 			  </tr>
 			  <c:forEach var="residitems" items="${candidatesResidenceList}" varStatus="rows"> 
@@ -21,7 +22,13 @@
 				<td><div class="tbldata-dotdot-vsm">${residitems.country}</div></td>
 				<td><div class="tbldata-dotdot-vsm">yyyy</div></td>
 				<td><div class="tbldata-dotdot-vsm">llll</div></td>
-				<td class="immigraAction">
+				
+				<td><div><i id="edit" onclick="editResidenceDEtailsByRowId(${residitems.id});"
+				class="glyphicon glyphicon-pencil"></i><i id="delete" 
+				 onclick="deleteResidenceDetailsById(${residitems.id});" 
+				 class="glyphicon glyphicon-trash ml10"></i></div></td>
+				
+				<!-- <td class="immigraAction">
 					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
 					<div class="mmigraActionInn">
 						<span>
@@ -29,7 +36,7 @@
 							<a href="javascript:void(0)" class="fa fa-pencil"></a>
 						</span>
 					</div>
-				</td>
+				</td> -->
 			  </tr>  			  			  
 			   
  
