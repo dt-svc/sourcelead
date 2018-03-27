@@ -109,7 +109,9 @@ function candidateEducationList(candidateId){
           type : "GET",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(json) {
-             			 
+			        	  if (json.redirect) {
+			        		  window.location.href = json.redirect;
+			        	  }
 	                	 $("#candidateEducationList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='candidateEducationPagination' class='display' cellspacing='0' width='100%' >"; 

@@ -467,6 +467,18 @@ public class CandidateListRestController {
 			// jsonObj.getString("designationType")));
 		}
 
+		// employmentType
+		if (StringUtils.isNotEmpty(search.getEmploymnetTypes())) {
+			ArrayList<String> employmnetTypeArray = getSearchKeywordsFromChosenSelectField(search.getEmploymnetTypes());
+			if (employmnetTypeArray != null && !employmnetTypeArray.isEmpty()) {
+				BoolQueryBuilder employmnetTypeBoolQueryBuilder = new BoolQueryBuilder();
+				for (String keywd : employmnetTypeArray) {
+					employmnetTypeBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("designationType", keywd));
+				}
+				boolQueryBuilder.must(employmnetTypeBoolQueryBuilder);
+			}
+		}
+
 		// Created By
 		List<String> createdByArray = search.getCreatedBy(); // getSearchKeywordsFromChosenSelectField(jsonObj, "createdByAdvanced");
 		if (createdByArray != null && !createdByArray.isEmpty()) {
@@ -613,6 +625,17 @@ public class CandidateListRestController {
 			response.setError(e.getMessage());
 		}
 		return response;
+	}
+
+	private ArrayList<String> getSearchKeywordsFromChosenSelectField(String paramValue) throws Exception {
+		ArrayList<String> keyWordList = null;
+		if (StringUtils.isNotEmpty(paramValue)) {
+			keyWordList = new ArrayList<String>(Arrays.asList(paramValue.split(",")));
+		} else {
+			keyWordList = new ArrayList<String>();
+		}
+
+		return keyWordList;
 	}
 
 	private List<QueryBuilder> getQueryBuilderList(String keywd) {

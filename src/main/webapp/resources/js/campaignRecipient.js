@@ -21,23 +21,29 @@ function campaignRecipient(ele,listId, fromType) {
 							
 							if(data == 'success'){
 								 recipientClose();
-								 $("#selector1").removeAttr("style");
-					  			 $("#selector1").css({ display: "block" });
-					  			 $("#msgDiv").html("Successfully Created sender identity");
-					  			 $("#popUp").empty();
-					 			 $(".project_inn_mask").fadeOut(200);
-					             msgFadein();	
+								 
+								 if(listId != ''){
+									 $("#selector1").removeAttr("style");
+						  			 $("#selector1").css({ display: "block" });
+						  			 $("#msgDiv").html("Successfully Updated recipient");
+								}else{
+									 $("#selector1").removeAttr("style");
+						  			 $("#selector1").css({ display: "block" });
+						  			 $("#msgDiv").html("Successfully Created recipient");
+								}
+					  			
 					             if(fromType == "hotList" || fromType == "jobList"){
 					            	 if(fromType == "hotList"){
 					            		 location.replace(sourceleadUrl+ "/hotlistMail");
 					            	 }else if(fromType == "jobList"){
 					            		 location.replace(sourceleadUrl+ "/joblistMail");
 					            	 }
-					            	$(".popMask").fadeOut(200);
-				            		$(".popUpReci").fadeOut(100);
 					             }else{
 					            	 location.replace(sourceleadUrl+ "/recipientsList");
 					             }
+					             $("#popUp").empty();
+					 			 $(".project_inn_mask").fadeOut(200);
+					             msgFadein();
 					             
 							}else if(data == '400Body'){
 								$("#loadingRecipient").removeAttr("style");

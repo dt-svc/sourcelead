@@ -78,6 +78,7 @@ public class CandidateReferencesRestController {
 	 * 
 	 * @throws Exception
 	 */
+
 	// @PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_REFERENCE','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_REFERENCE')")
 	@RequestMapping(value = "/saveCandidateReferences", method = RequestMethod.POST)
 	public @ResponseBody Response<String> saveCandidateReferences(CandidateReferencesDTO candidateReferencesDTO,

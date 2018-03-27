@@ -97,6 +97,7 @@ public class CandidateEducationRestController {
 	 * 
 	 * @throws NullPointer
 	 */
+
 	// @PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_EDUCATION_DETAILS')")
 	@RequestMapping(value = "/storeCandidateEducation", method = RequestMethod.POST)
 	@ResponseBody

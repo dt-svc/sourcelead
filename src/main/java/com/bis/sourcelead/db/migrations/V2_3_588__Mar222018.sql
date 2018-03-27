@@ -7,6 +7,6 @@ UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `SUBJECT`='New Registration Request fro
 
 UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Dear Sourceleadadmin,\n\n This is to notify that {{sourceladTicket.companyName}}  has submitted a new ticket . please find the details below \n Title : {{sourceladTicket.tikcetTitle}} \n Type : {{sourceladTicket.ticketType}} \n Module : {{sourceladTicket.ticketModule}} \n Url : {{sourceladTicket.ticketLoginUrl}}' WHERE `UNIQUE_SCENARIO_NAME`='sourceleadTicketEmail' and `ENTITY_TYPE`='Email';
 
-UPDATE `sourcelead`.`email_scenario` SET `TAB_ID`='16' WHERE `UNIQUE_SCENARIO_NAME`='NDAOrNSAFinalizeNotification';
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `TAB_ID`='16' WHERE `UNIQUE_SCENARIO_NAME`='NDAOrNSAFinalizeNotification';
 
 SET SQL_SAFE_UPDATES = 1;
