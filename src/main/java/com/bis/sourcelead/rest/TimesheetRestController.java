@@ -2471,12 +2471,20 @@ public class TimesheetRestController {
 			TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getSubmissionDetailsByProjectIdMasterCandiDateIdStartDateandEndDate(projectId,masterCanidateId,frequencyStartDate,frequencyEndDate);
 			HashMap<String,String> paramList = new HashMap<>();
 			if(timesheetSubmissions!= null && timesheetSubmissions.getProjectMembers()!= null && timesheetSubmissions.getTotalHours()!= null) {
-				paramList.put("currentTimeFrequency", currentTimeFrequency.toString());
-				paramList.put("projectId",projectId.toString());
-				paramList.put("masterCandidateId", masterCanidateId.toString());
+				String frequencyMonth =  CalendarUtil.getMonthFromGivenDate(frequencyStartDate);
+				String frequencyYear =  CalendarUtil.getYearFromGivenDate(frequencyStartDate);
+				paramList.put("frequencyMonth", frequencyMonth+"-"+frequencyYear);
+				paramList.put("startDateStr",startDateStr);
+				paramList.put("endDateStr",endDateStr);
+				paramList.put("dateFormat",loginOrgLocation.getDateFormat());
+				paramList.put("timesheetFrequency",approver.getProjectId().getInvoiceFrequency());
+				paramList.put("searchData",timesheetSubmissions.getProjectMembers().getProjectMemberCandidteId().getEmail());
+				paramList.put("projectName",timesheetSubmissions.getProjectMembers().getProjects().getProjectName());
 				actionLink =actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheetApproval/").append(Constants.PLACE_UUID).toString();
 			}
 			emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, approver.getProjectClientsId().getOrgLocationsId(), notificationScenario,paramList);
+
+			
 		}
 	}
 	}
