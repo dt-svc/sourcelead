@@ -853,8 +853,13 @@ public class ImmigrationRestController {
 		ModelAndView model = new ModelAndView();
 		System.out.println(" inisde getCandidatePassportDetails controller test -->");
 		List<CandidatePassportVisa> PassportList = new ArrayList<CandidatePassportVisa>();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		try {
 			PassportList = immigrationCommonService.getCandidatePassportVisaDetails(candidateId, idType);
+			for(CandidatePassportVisa canPassportVisa : PassportList){
+				canPassportVisa.setValidFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),canPassportVisa.getValidFromDate()));
+				canPassportVisa.setValidToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),canPassportVisa.getValidToDate()));
+			}
 			List<Countries> countryList = countriesService.getAllSourceLeadCountries();
 			model.addObject("PassportList", PassportList);
 			model.addObject("countryList", countryList);
