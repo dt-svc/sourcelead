@@ -8,12 +8,6 @@
 <section class="staticBan blogBan">
 	<div class="staticBanInn"><h4>SourceLead blogs</h4><div class="clear"></div></div>
 </section>  
-<!-- <style type="text/css">
-.dataTables_empty{
-background-color: #fff; height: 200px !important; background-image:url(../images/norecords.jpg); background-repeat:no-repeat;
-	background-position:center; background-size:260px;
-}
-</style> -->
 
 <section class="blogNewWrap">
 	<section class="blogNewInn">
@@ -31,7 +25,7 @@ background-color: #fff; height: 200px !important; background-image:url(../images
 				</article>
 			</c:forEach> 
 			
-			<c:if test="${!empty allBlogs}">
+			<c:if test="${empty allBlogs}">
 			<div class="dataTables_empty"></div>
 			</c:if>
 		 <div class="clear"></div>
