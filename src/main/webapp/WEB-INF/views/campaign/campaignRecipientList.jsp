@@ -269,7 +269,7 @@ function cancelDeleteCampaignList(){
 
 <script>
  function msgFadein() {
-	$("#selector11").fadeIn(200);
+	$("#selector11").fadeIn(300);
     $('#selector11').delay(2000).fadeOut('slow');
 }
 </script>
