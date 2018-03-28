@@ -75,19 +75,26 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Specialization</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" id = "specialization" name = "specialization"/>
+              		<input type="text" class="form-control" id = "specialization" name = "specialization" placeholder="Specialization"/>
 				</div>
 			</div>				          
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Start Date</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control calendar" id="immigrationEduStartDate12" name = "startDate"/>
+              	<div class="input-group">
+              		<input type="text" class="form-control calendar" id="immigrationEduStartDate12" name = "startDate" placeholder="Start Date" field-name="Start Date" readonly="readonly"/>
+                   	<span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('immigrationEduStartDate12');"></i></span>
+              		</div>
 				</div>
 			</div>	
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">End Date</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control calendar" id = "immigrationEduEndDate" name = "endDate"/>
+              	<div class="input-group"> 
+              		<input type="text" class="form-control calendar" id = "immigrationEduEndDate" name = "endDate" placeholder="End Date" field-name="End Date" readonly="readonly"/>
+              		<span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('immigrationEduEndDate');"></i></span>
+              		
+              		</div>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
@@ -104,19 +111,19 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Score</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" id = "grade" name="grade"/>
+              		<input type="text" class="form-control" id = "grade" name="grade" placeholder="Score" placeholder="Score"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Institute/University</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" id = "institute" name = "institute"/>
+              		<input type="text" class="form-control" id = "institute" name = "institute" placeholder="Institute"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Address</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" id = "address" name = "address"/>
+              		<input type="text" class="form-control" id = "address" name = "address" placeholder="Address"/>
 				</div>
 			</div>											
 									
@@ -166,4 +173,12 @@
 		$("#popEduView").fadeOut(100);
 		$("#eduSave_Form")[0].reset();
 	}
+	
+	var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
 		</script>
