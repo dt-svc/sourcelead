@@ -210,7 +210,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ProjectTasks> getAllTasksByProjectIdAndTaskType(Long projectId, Long TaskType) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.taskType = :TaskType" ;
+		String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.taskType = :TaskType and pt.status ='1'" ;
 		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setLong("TaskType", TaskType).list(); 
 		return projectTasksList; 
 	}
@@ -220,7 +220,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	public List<ProjectTasks> getAllTasksByProjectIdAndSubTaskType(Long projectId, Long subTaskType)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.taskType <> :subTaskType" ;
+		String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.taskType <> :subTaskType and pt.status ='1'" ;
 		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setLong("subTaskType", subTaskType).list(); 
 		return projectTasksList; 
 	} 
