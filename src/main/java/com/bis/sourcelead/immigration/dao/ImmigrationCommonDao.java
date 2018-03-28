@@ -51,5 +51,7 @@ public interface ImmigrationCommonDao {
 	 String deleteCandidateResidenceDetails(Long id,Long candidateId);
 	 
 	 CandidateResidence getCandidateResidenceDetailsById(Long id);
+	 
+	 CandidatePassportVisa getCandidatePassportVisaDetailsById(Long id);
 
 }

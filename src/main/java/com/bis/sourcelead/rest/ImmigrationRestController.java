@@ -749,7 +749,8 @@ public class ImmigrationRestController {
 		CandidateEducation canEdu= null;
 		try {
 			canEdu = candidateEducationService.getCandidateEducationBycandidateIdandEducationId(candidateId, id);
-
+			canEdu.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), canEdu.getStartDate()));
+			canEdu.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), canEdu.getEndDate()));
 		} catch (Exception e) {
 			logger.error("Exception caught in controller test --->"+e.getMessage());
 			e.printStackTrace();
@@ -900,6 +901,29 @@ public class ImmigrationRestController {
 		}
 
 		return residenceObj;
+	}
+	
+	@RequestMapping(value = { "/getCandidatePassportVisaDetailsById" })
+	public @ResponseBody  CandidatePassportVisa getCandidatePassportVisaDetailsById(
+			@RequestParam(value = "id", required = true) Long id, HttpServletRequest request) {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		String status="";
+		System.out.println(" in controller method getCandidateFamilyDetailsById id ---> "+id);
+		CandidatePassportVisa passportVisaObj= null;
+		try {
+			passportVisaObj = immigrationCommonService.getCandidatePassportVisaDetailsById(id);
+			
+			passportVisaObj.setValidFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),passportVisaObj.getValidFromDate()));
+			passportVisaObj.setValidToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),passportVisaObj.getValidToDate()));
+			
+			System.out.println(" in controller status "+status);
+		} catch (Exception e) {
+			logger.error("Exception caught in controller test --->"+e.getMessage());
+			e.printStackTrace();
+		}
+
+		return passportVisaObj;
 	}
 }
 
