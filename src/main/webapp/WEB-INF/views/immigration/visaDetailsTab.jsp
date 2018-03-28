@@ -118,9 +118,9 @@
 		</script>
 		<script>
 		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatCerSave = getJSDateFormat(locationDate);
+		  var finalDateFormatVisaSave = getJSDateFormat(locationDate);
 		 $('#visaValidFrom').datepicker({
-		      dateFormat: finalDateFormatCerSave,
+		      dateFormat: finalDateFormatVisaSave,
 		      changeMonth: true,
 		  	  changeYear: true, 
 		      onSelect: function (selected) {
@@ -132,7 +132,7 @@
 		  });
 		  
 		  $('#visaValidTo').datepicker({
-		      dateFormat: finalDateFormatCerSave,
+		      dateFormat: finalDateFormatVisaSave,
 		      changeMonth: true,
 		  	  changeYear: true, 
 		        onSelect: function (selected) {

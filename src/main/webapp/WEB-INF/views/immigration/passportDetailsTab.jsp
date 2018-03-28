@@ -24,33 +24,12 @@
 				class="glyphicon glyphicon-pencil"></i><i id="delete" 
 				 onclick="immigration.deletePassportVisaDetailsById(${passportdetails.id},'${passportdetails.idType}');" 
 				 class="glyphicon glyphicon-trash ml10"></i></div></td>
-				 
-				<!-- <td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>immMenuClick
-							<a href="javascript:void(0)" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td> -->
 			  </tr>  
 			  </c:forEach>			 				
 			</tbody>
 		  </table>
 		</div>
 		
-		
-		<!-- <div class="immigraPagi clearfix">
-			<div class="immiPagiText">Showing 1 to 6 of 6 entries</div>
-			  <ul class="pagination">
-				<li><a href="#"> << </a></li>
-				<li><a href="#">2</a></li>
-				<li><a href="#">3</a></li>
-				<li class="disabled"><a href="#">6</a></li>
-				<li data-page="last"><a href="#"> >> </a></li>
-			  </ul>
-		</div> -->
 		<!--popup code start -->
 		<form id="CandidatePassportform" name="CandidatePassportform" method="post"> 
 		<input type="hidden" id="Passport" name="Passport" value="Passport" >
@@ -144,14 +123,7 @@
 		  });
 		</script>
 		<script>
-		<script>
-		function clearCandidatePassportStartDate(){
-			$("#validFrom").val("");
-			};
-		function clearCandidatePassportEndDate(){
-			$("#validTo").val("");
-			};
-		</script>   
+		
 <script>
 function toDate(selector) {
     var from = $(selector).val().split("-");
