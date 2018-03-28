@@ -574,7 +574,7 @@ function editCertification(candidateCertificationId, candidateId) {
 			            $("#StartDateEdit").datepicker("option", "maxDate", dt);
 			        }
 			  });
-    		} else if (result.indexOf('Sign In') !== -1) {
+    		} else if (response.indexOf('Sign In') !== -1) {
 				location.replace(sourceleadUrl);
 			} else {
 			    showError("Operation failed, please try again");
