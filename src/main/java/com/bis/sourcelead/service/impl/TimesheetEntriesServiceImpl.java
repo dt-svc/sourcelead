@@ -1934,7 +1934,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			notificationScenario.setOrgCode(loginOrgCode);
 			//String url = null;
 			String actionLink = "";
-			emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, loginOrgLocation, notificationScenario);
+			emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, loginOrgLocation, notificationScenario,new HashMap<String,String>());
 			
 		}
 	}
