@@ -1,4 +1,5 @@
 package com.bis.sourcelead.web;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -17,10 +18,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Notifications;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
  
 
 @Controller 
@@ -39,6 +42,9 @@ public class TimesheetApprovalController {
 	@Autowired
 	private NotificationsService notificationsService;
 	
+	@Autowired
+	private CommonUtil commonUtil;
+	
 		
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = {"/timesheetApproval","/timesheetApproval/{notificationUUID}"})
@@ -51,6 +57,8 @@ public class TimesheetApprovalController {
 			@RequestParam(value="from", required=false) String from,
 			@PathVariable Optional<String> notificationUUID,
 			HttpServletRequest request) throws Exception {
+		
+		   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			ModelAndView model = new ModelAndView();
 			
 			if(notificationUUID != null && notificationUUID.isPresent()) {
@@ -58,10 +66,31 @@ public class TimesheetApprovalController {
 				if(notifications != null && StringUtils.isNotEmpty(notifications.getParameterList())) {
 					HashMap<String, String>  paramList = CommonUtil.getJsonAsMap(notifications.getParameterList());
 					model.addObject("notifyLink", true);
+					String weekFrequency = "";
+					String startDateStr = "";
+					String endDateStr = "";
+					String dateFormat = "";
 					if(paramList != null && !paramList.isEmpty()) {
 						for(Map.Entry<String,String> entry : paramList.entrySet()) {
-							model.addObject(entry.getKey(), entry.getValue());
+							if(entry.getKey().equalsIgnoreCase("projectName") || entry.getKey().equalsIgnoreCase("searchData") || entry.getKey().equalsIgnoreCase("timesheetFrequency")  || entry.getKey().equalsIgnoreCase("frequencyMonth"))
+							{
+								model.addObject(entry.getKey(), entry.getValue());
+							}else if(entry.getKey().equalsIgnoreCase("startDateStr")) {
+								startDateStr = entry.getValue();
+							}else if(entry.getKey().equalsIgnoreCase("endDateStr")) {
+								endDateStr = entry.getValue();
+							}else if(entry.getKey().equalsIgnoreCase("dateFormat")) {
+								dateFormat = entry.getValue();
+							}
 						}
+					}
+					if(StringUtils.isNotEmpty(dateFormat) && StringUtils.isNotEmpty(startDateStr) && StringUtils.isNotEmpty(endDateStr)) {
+						 Date frequencyStartDate = commonUtil.orgLocationDateFormat(dateFormat,startDateStr);
+						 Date frequencyEndDate = commonUtil.orgLocationDateFormat(dateFormat,endDateStr);
+						 String actualStartDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),frequencyStartDate);
+						 String actualEndDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),frequencyEndDate);
+						 weekFrequency = actualStartDate+"To"+actualEndDate;
+						 model.addObject("weekFrequency", weekFrequency);
 					}
 				}
 			}
