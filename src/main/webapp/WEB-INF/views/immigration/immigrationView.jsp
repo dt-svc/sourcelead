@@ -20,8 +20,6 @@
       <input type="hidden" id = "candidateID" value = "${candidateId}">
 		<input type="hidden" id = "immigrationID" value = "${immigrationId}">
 		<input type="hidden" id = "templateID" value = "${templateId}">
-		<input type="hidden" id="Passport" name="Passport" value="Passport" >
-		<input type="hidden" id="Visa" name="Visa" value="Visa" >
 		
 		<div class="clearfix"></div>
 		<div class="immigraHead">
@@ -158,10 +156,10 @@ $(document).ready(function() {
         	getCandidateResidenceList(candidateId);
         }else if(tab=='#passportsTab'){
         	var Passport=$("#Passport").val();
-        immigration.displayPassportDetails(candidateId,Passport);
+        immigration.displayPassportDetails(candidateId,'Passport');
         }else if(tab=='#visasTab'){
          var Visa=$("#Visa").val();
-          immigration.displayVisaDetails(candidateId,Visa);
+          immigration.displayVisaDetails(candidateId,'Visa');
         }
         $(tab).fadeIn();
     });
@@ -204,6 +202,13 @@ $(document).ready(function() {
         $('.side_mask').fadeOut(200);
         });
     </script>
+    <script>
+	// use below function to clear all the date values.
+   function clearDateValue(id){
+	   $("#"+id).val(""); 
+   }
+   </script>
+   
     <!-- Script for Linked Invoice pop -->
 <jsp:include page="../masterFooter.jsp" />
  
