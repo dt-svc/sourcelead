@@ -3,7 +3,7 @@ var immiModulePath = "/immigration";
 var immTemplId = '';
 var immigrationId = '';
 var candidateId = '';
-var familyMemberId = id;
+var familyMemberId = '';
 var templateId='';
 var formNames = [];
 function Immigration() {
@@ -49,7 +49,13 @@ function Immigration() {
     }
     
     this.saveEducationImmigration = function (status) {
-        if ($('#eduSave_Form').validate(false, validationSettings)) {
+    	var validationSettings = {
+                errorMessagePosition: 'element',
+                borderColorOnError: '',
+                scrollToTopOnError: true,
+                dateFormat: 'yyyy/mm/dd'
+            };
+    	if ($('#eduSave_Form').validate(false, validationSettings)) {
             var formData = getFormData("eduSave_Form");
             var candidateId = $('#candidateID').val();
             var immigrationId = $('#immigrationID').val();
@@ -71,6 +77,10 @@ function Immigration() {
             return false;
         }
     }
+    $('body').on('blur', '#eduSave_Form', function () {
+        $("#eduSave_Form").showHelpOnFocus();
+        $("#eduSave_Form").validateOnBlur(false, validationSettings);
+    });
 
     this.savePetitionDoc = function (status) {
         if ($('#PetitionTemplateDocDetails').validate(false, validationSettings)) {
@@ -223,15 +233,15 @@ function Immigration() {
         }
     }// immigration end if don't required comment above code end here.
     
-    this.viewImmigrationPageList = function(immigrationId){
-    	 $.ajax({
-             url: sourceleadUrl + immiModulePath + "/viewImmigration?immigrationId="+immigrationId,
-             type: "POST",
-             /*data: formData,*/
-             success: function (data) {
-            	 
-             }
-    	 });
+    this.displayPetitionDetails = function(immigrationId){
+    	console.log("inside displayPetitionDetails function call immigrationId -->"+immigrationId);
+    	$.ajax({
+            url: sourceleadUrl + immiModulePath + "/viewImmigrationById?immigrationId="+immigrationId,
+            type: "GET",
+            success: function (result) {
+                $("#detailsTab").html(result);
+            }
+        });
     }
 
     this.savePetitionTemplateDetailsValues = function () {
@@ -399,6 +409,7 @@ this.deletePassportVisaDetailsById=function(id,idType){
                         $(".popMask").fadeOut(200); // close the popup code
         				$("#spousePopView").fadeOut(100);// close the popup code
         				immigration.displayFamilyDetails(candidateId);
+        				
 					}
 				}
 			});
@@ -467,7 +478,7 @@ this.deletePassportVisaDetailsById=function(id,idType){
             			$("#addMoth").trigger('click');
             			immigration.udpatePopupFormdata(formObj,motherPopNames,data);
             		}
-            	   
+            		familyMemberId = ''// reset the value
             	}
             }
         });
@@ -535,6 +546,34 @@ function editEducationDEtailsByRowId(id){
         }
     });
 }
+
+function editEmpDetailsByRowId(id){
+	console.log(" inside edit record  "+id);
+	 // update the variable with family member id in edit mode.
+	var candidateId = $("#candidateID").val();
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/getCandidateEmpDetailsById?id="+id+"&candidateId="+candidateId,
+        type: "GET",
+        success: function (data) {
+        	console.log(" inside success test --->" );
+        	var formObj='';
+        	if(data!= null){
+        		console.log(" record successfully fetched by id  --> "+id);
+        		
+        			formObj = $('#employerDetails_form')[0]; // load the child form
+        			var fomValues=["name","designation", "address","startMonth","startYear","endMonth","endYear"];
+        			$("#addEmpl").trigger('click');
+        			udpateEduFormdata(formObj,fomValues,data);
+        			$('#startMonth').val(data.startMonth); // to select the dropdwon value based on id value.
+        			$('#endMonth').val(data.endMonth);
+        			$('#candidateEmpId').val(data.id);
+        	
+        	   
+        	}
+        }
+    });
+}
+
 function udpateEduFormdata (formObj, idsArray, dataObj) {
 	  var formId = formObj.id;
 	   $.each(formObj, function(key, value) {
@@ -640,6 +679,12 @@ function checkTaskNames(newName) {
 }
 
 function saveEmployerDetails(status) {
+	var validationSettings = {
+            errorMessagePosition: 'element',
+            borderColorOnError: '',
+            scrollToTopOnError: true,
+            dateFormat: 'yyyy/mm/dd'
+        };
 	if ($('#employerDetails_form').validate(false, validationSettings)) {
         var formData = getFormData("employerDetails_form");
         var candidateId = $('#candidateID').val();
@@ -663,6 +708,10 @@ function saveEmployerDetails(status) {
     }
 	
 }
+$('body').on('blur', '#employerDetails_form', function () {
+    $("#employerDetails_form").showHelpOnFocus();
+    $("#employerDetails_form").validateOnBlur(false, validationSettings);
+});
 
 function getCandidateEducationList(candidateId){
 	$.ajax({

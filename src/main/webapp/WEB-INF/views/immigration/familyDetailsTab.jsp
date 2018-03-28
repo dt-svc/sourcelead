@@ -94,13 +94,13 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">End Date</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="marriageEndDate" name="marriageEndDate" placeholder="End Date" onclick="showMarraigeEndDatePicker();" class="form-control calendar" />
+              		<input type="text" id="marriageEndDate" name="marriageEndDate" placeholder="End Date"  class="form-control calendar" />
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Date of Birth<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="dateOfBirthSpouse" name="dateOfBirth" class="form-control calendar" onclick ="showSpouseBirthDatePicker();" placeholder="Date Of Birth" field-name="Date Of Birth" data-validation="required"/>
+              		<input type="text" id="dateOfBirthSpouse" name="dateOfBirth" class="form-control calendar"  placeholder="Date Of Birth" field-name="Date Of Birth" data-validation="required"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
@@ -280,23 +280,30 @@
 	</div>	<!--mother popcode end  -->
 	</form>
 	<script>
-			
+	   function resetFormData(id){
+		   $('#'+id)[0].reset() // reset the form data.
+	   }	
+	
 			 // Add Spouse
 			$("#addSpou").click(function(){
 				$(".popMask").fadeIn(200);
 				$("#spousePopView").fadeIn(100);
+				resetFormData("spouseDetailsForm");
 			});
 			$("#addChil").click(function(){
 				$(".popMask").fadeIn(200);
 				$("#childPopView").fadeIn(100);
+				resetFormData("childDetailsForm");
 			});
 			$("#addFath").click(function(){
 				$(".popMask").fadeIn(200);
 				$("#fathPopView").fadeIn(100);
+				resetFormData("fatherDetailsForm");
 			});
 			$("#addMoth").click(function(){
 				$(".popMask").fadeIn(200);
 				$("#mothPopView").fadeIn(100);
+				resetFormData("motherDetailsForm"); 
 			});	
 			
             // cancel popup.
@@ -311,10 +318,13 @@
 	familyMemberId ="" // empty the value of familyMemberId which is used for edit mode. 
 	
 	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	  var finalDateFormatEduSave = getJSDateFormat(locationDate);
+	  var finalDateFormatFamilySave = getJSDateFormat(locationDate);
+	</script>
+	<script>
+	$(document).ready(function() {
 	// marriage start date and end dates
-/* 	$('#marraigeDate').datepicker({
-	      dateFormat: finalDateFormatEduSave,
+ 	$('#marraigeDate').datepicker({
+	      dateFormat: finalDateFormatFamilySave,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      onSelect: function (selected) {
@@ -326,7 +336,7 @@
 	  });
 	  
 	  $('#marriageEndDate').datepicker({
-	      dateFormat: finalDateFormatEduSave,
+	      dateFormat: finalDateFormatFamilySave,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	        onSelect: function (selected) {
@@ -338,46 +348,39 @@
 	  });
 	
 		// spouse birth date dateOfBirthSpouse 
-		function showSpouseBirthDatePicker(){
 		   $('#dateOfBirthSpouse').datepicker({
-		      dateFormat: finalDateFormatPetitionSave,
+		      dateFormat: finalDateFormatFamilySave,
 		      changeMonth: true,
 		  	  changeYear: true, 
 		  	  yearRange: "-100:+0",
 		  	  maxDate:0  
-		  }).datepicker("show");
-		}  
-		//
+		  });
+		
 		// child birth date dateOfBirthChild
-	
 		   $('#dateOfBirthChild').datepicker({
-		      dateFormat: finalDateFormatPetitionSave,
+		      dateFormat: finalDateFormatFamilySave,
 		      changeMonth: true,
 		  	  changeYear: true, 
 		  	  yearRange: "-100:+0",
 		  	  maxDate:0  
-		  }).datepicker("show");
+		  })
 		  
 		// Father birth date dateOfBirthFather
-		function showChildBirthDatePicker(){
 		   $('#dateOfBirthFather').datepicker({
-		      dateFormat: finalDateFormatPetitionSave,
+		      dateFormat: finalDateFormatFamilySave,
 		      changeMonth: true,
 		  	  changeYear: true, 
 		  	  yearRange: "-100:+0",
 		  	  maxDate:0  
-		  }).datepicker("show");
-		}  
+		  });
 		
 		// Mother birth date dateOfBirthMother
-		function showChildBirthDatePicker(){
 		   $('#dateOfBirthMother').datepicker({
-		      dateFormat: finalDateFormatPetitionSave,
+		      dateFormat: finalDateFormatFamilySave,
 		      changeMonth: true,
 		  	  changeYear: true, 
 		  	  yearRange: "-100:+0",
 		  	  maxDate:0  
-		  }).datepicker("show");
-		}  
-		 */
+		  });
+	 });	 
 	</script>

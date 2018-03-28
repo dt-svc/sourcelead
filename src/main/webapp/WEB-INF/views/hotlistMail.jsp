@@ -1454,7 +1454,7 @@ $('input[class="myRecipantsContactsCheckbox"]').each(function(i) {
 	    $("input[type=search]").hide();
 	    $("#vendorContactsDataTableSearch").keyup(function(e) {
 	    	   if(e.which === 13) {
-	    		   vendorContactDataTableList();
+	    		   vendorContactDataTableList1();
 	    	   }
 	    	});
 }

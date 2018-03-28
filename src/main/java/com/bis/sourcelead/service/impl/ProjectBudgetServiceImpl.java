@@ -179,7 +179,7 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
         StringBuilder actionLinkBuilder = new StringBuilder();
         emailScenerioUtil.sendEmail(emailMessage,projects.getOrgLocationsId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
         actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+projectBudgetRequestDTO.getProjectUUID()+"&projectClientUUID="+pc.getUuid()+"&tabType=projectMembers").toString();
-        emailScenerioUtil.sendNotification(actionLink, loginUser, approverUse, projects.getOrgLocationsId(), notificationScenario);
+        emailScenerioUtil.sendNotification(actionLink, loginUser, approverUse, projects.getOrgLocationsId(), notificationScenario,new HashMap<String,String>());
 		
 	}
 
@@ -236,7 +236,7 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
         emailMessage.setMessageBody(emailTemplate);
        
         emailScenerioUtil.sendEmail(emailMessage,projectBudget.getProjectId().getOrgLocationsId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
-        emailScenerioUtil.sendNotification(actionLink, loginUser, approverUse, projectBudget.getProjectId().getOrgLocationsId(), notificationScenario);
+        emailScenerioUtil.sendNotification(actionLink, loginUser, approverUse, projectBudget.getProjectId().getOrgLocationsId(), notificationScenario,new HashMap<String,String>());
 		
 	}
 	

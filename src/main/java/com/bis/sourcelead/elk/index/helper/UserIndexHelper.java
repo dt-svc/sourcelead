@@ -38,6 +38,9 @@ public class UserIndexHelper {
 			userIndex.setEmail(user.getEmail());
 			userIndex.setMobilePhone(user.getMobilePhone());
 			userIndex.setExtensionNumber(user.getExtensionNumber());
+			userIndex.setMiddleName(user.getMiddelName());
+			userIndex.setGender(user.getGender());
+			userIndex.setMaritalStatus(user.getMaritalStatus());
 			if(null != user.getIsMailSent()){
 				userIndex.setIsMailSent(user.getIsMailSent().toString());	
 			}
@@ -60,6 +63,11 @@ public class UserIndexHelper {
 						userIndex.setHireDate(hireDate);
 					}
 			}
+				if(null != user.getDateOfBirth()){
+					
+					String dateofBirth = dateFormat.format(user.getDateOfBirth());
+					userIndex.setDateofBirth(dateofBirth);
+				}
 				
 				if(null != user.getDateOfBirth()){
 					String dateofBirth  = dateFormat.format(user.getDateOfBirth());
