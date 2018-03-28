@@ -97,25 +97,12 @@
     
   </section>
   <!-- Content Area -->
-</div>
+
    
 <!-- Footer Area --> 
 
 <!--   Popup Code  -->
 <div class="popMask"></div>
-
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
-<script src="/resources/js/jquery-ui.js"></script>
-<script src="js/moment.min.js"></script> 
-<script src="js/bootstrap-datetimepicker.min.js"></script> 
-<script src="js/bootstrap.min.js"></script> 
-<script src="js/masterHeaderAction.js"></script> 
-<script src="js/bootstrap-select.min.js"></script> 
-<script src="js/chosen.jquery.min.js"></script> 
-<script src="js/jquery-ui.min.js"></script> 
-<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
-
 
 <script>
 $(document).ready(function() {
@@ -128,6 +115,11 @@ $(document).ready(function() {
 
 <!--   Family Popup's  -->
 <script>
+//update the javascript variables
+immigrationId = '<c:out value ="${immigrationId}"/>'
+candidateId = '<c:out value ="${candidateId}"/>'
+templateId = '<c:out value ="${templateId}"/>'
+
 var addfamilyPopupEventListener = function() {
 	$("body").click(function(){ // used for family popup events.
 		$(".immiSubMenu").hide();
@@ -156,6 +148,8 @@ $(document).ready(function() {
         $(".immigraTabs_inn").not(tab).css("display", "none");
         if(tab=='#familiesTab'){
         	immigration.displayFamilyDetails(candidateId);
+        }else if(tab=='#familiesTab'){
+        	immigration.displayFamilyDetails(candidateId);
         }else if(tab=='#educationsTab'){
         getCandidateEducationList(candidateId);
         } else if(tab=='#employersTab'){
@@ -172,10 +166,6 @@ $(document).ready(function() {
         $(tab).fadeIn();
     });
 	
-	// update the javascript variables
-	immigrationId = '<c:out value ="${immigrationId}"/>'
-	candidateId = '<c:out value ="${candidateId}"/>'
-	templateId = '<c:out value ="${templateId}"/>'
 	
 });	
 	</script>
