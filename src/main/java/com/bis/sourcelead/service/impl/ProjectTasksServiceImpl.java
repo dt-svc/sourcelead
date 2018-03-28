@@ -417,12 +417,15 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 			 }else{
 				 globalVarsMap.put("LoginUser",loginUser.getFirstName());
 			}
-		      String priority=tasks.getPriority().getName();
+		      
 		      if( projectAssignTask.getProjectMemberId().getEmpName()!=null && !"".equalsIgnoreCase( projectAssignTask.getProjectMemberId().getEmpName())){
 				 globalVarsMap.put("Assignedmember",projectAssignTask.getProjectMemberId().getEmpName());}
-		         if( priority!=null && !"".equalsIgnoreCase(priority)){
-				 globalVarsMap.put("Priority",priority);
-		         }		         
+		         if(tasks.getPriority() != null) {
+		        	 String priority=tasks.getPriority().getName();
+			         if( priority!=null && !"".equalsIgnoreCase(priority)){
+					 globalVarsMap.put("Priority",priority);
+			         } 
+		         }
 				 if(tasks.getSeverity()!=null ){
 				 globalVarsMap.put("Severity",tasks.getSeverity().getName());
 				 }				 
@@ -474,7 +477,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		StringBuilder notificationLink = new StringBuilder();
 		String actionLink="";
 		actionLink = notificationLink.append(sourceleadUrl).append("/").append("projectTaskSummary?"+"taskUUID="+tasks.getProjectTasksUUID()+"&projectClientUUID="+projectTasksDTO.getProjectClientUUID()).toString();
-		emailScenerioUtil.sendNotification(actionLink, loginUser, user, loginOrgLocation, notificationScenario) ;
+		emailScenerioUtil.sendNotification(actionLink, loginUser, user, loginOrgLocation, notificationScenario,new HashMap<String,String>()) ;
 	 		
 
 		
@@ -484,10 +487,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		 Set<ProjectAssignTask> projectAssignTaskSet = new HashSet<>();
 		 
 		if(projectTasksDTO != null && projectTasksDTO.getAssignTaskId() != null){
-			String assignId =null;
-				List<Long> jsonArray = projectTasksDTO.getAssignTaskId();
-				assignId = jsonArray.toString().replaceAll("\\[", "").replaceAll("\\]","").trim();
-			String[] assign = assignId.split(",");
+			String[] assign = projectTasksDTO.getAssignTaskId().split(",");
 			for(String memberId : assign)
 			{
 				ProjectAssignTask assignTask = new ProjectAssignTask();

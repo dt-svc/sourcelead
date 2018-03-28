@@ -277,7 +277,7 @@ function getUnsubscribeList(){
 						<label class="col-md-4">New Password<span class="text-danger paddingLeft">*</span></label>
 						
 						<div class="col-md-6 posiRela positionRelative">
-						  <input type="password" name="password" id="password" field-name="New Password" class="form-control" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d.*)(?=.*\W.*)[a-zA-Z0-9\S]{8,}$" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" data-validation="required validate_length length6-100"  onkeyup="passwordValidation_pf('password','np_letter','np_capital','np_number','np_special','np_length');" />
+						  <input type="password" name="password" id="password" field-name="New Password" class="form-control" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d.*)(?=.*\W.*)[a-zA-Z0-9\S]{8,}$" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" data-validation="required validate_length length8-100"  onkeyup="passwordValidation_pf('password','np_letter','np_capital','np_number','np_special','np_length');" />
 	             	    <div id="np_message" class="passHintNew">
 				  			<p  id="np_letter" class="invalid">At least one lowercase letter</p>
 				  			<p  id="np_capital" class="invalid">At least one uppercase letter</p>
