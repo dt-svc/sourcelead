@@ -49,7 +49,13 @@ function Immigration() {
     }
     
     this.saveEducationImmigration = function (status) {
-        if ($('#eduSave_Form').validate(false, validationSettings)) {
+    	var validationSettings = {
+                errorMessagePosition: 'element',
+                borderColorOnError: '',
+                scrollToTopOnError: true,
+                dateFormat: 'yyyy/mm/dd'
+            };
+    	if ($('#eduSave_Form').validate(false, validationSettings)) {
             var formData = getFormData("eduSave_Form");
             var candidateId = $('#candidateID').val();
             var immigrationId = $('#immigrationID').val();
@@ -71,6 +77,10 @@ function Immigration() {
             return false;
         }
     }
+    $('body').on('blur', '#eduSave_Form', function () {
+        $("#eduSave_Form").showHelpOnFocus();
+        $("#eduSave_Form").validateOnBlur(false, validationSettings);
+    });
 
     this.savePetitionDoc = function (status) {
         if ($('#PetitionTemplateDocDetails').validate(false, validationSettings)) {
@@ -669,6 +679,12 @@ function checkTaskNames(newName) {
 }
 
 function saveEmployerDetails(status) {
+	var validationSettings = {
+            errorMessagePosition: 'element',
+            borderColorOnError: '',
+            scrollToTopOnError: true,
+            dateFormat: 'yyyy/mm/dd'
+        };
 	if ($('#employerDetails_form').validate(false, validationSettings)) {
         var formData = getFormData("employerDetails_form");
         var candidateId = $('#candidateID').val();
@@ -692,6 +708,10 @@ function saveEmployerDetails(status) {
     }
 	
 }
+$('body').on('blur', '#employerDetails_form', function () {
+    $("#employerDetails_form").showHelpOnFocus();
+    $("#employerDetails_form").validateOnBlur(false, validationSettings);
+});
 
 function getCandidateEducationList(candidateId){
 	$.ajax({
