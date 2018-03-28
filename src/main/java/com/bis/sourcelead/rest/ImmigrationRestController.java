@@ -749,7 +749,8 @@ public class ImmigrationRestController {
 		CandidateEducation canEdu= null;
 		try {
 			canEdu = candidateEducationService.getCandidateEducationBycandidateIdandEducationId(candidateId, id);
-
+			canEdu.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), canEdu.getStartDate()));
+			canEdu.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), canEdu.getEndDate()));
 		} catch (Exception e) {
 			logger.error("Exception caught in controller test --->"+e.getMessage());
 			e.printStackTrace();
