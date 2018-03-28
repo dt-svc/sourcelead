@@ -160,12 +160,16 @@ function displayAcceptRejectButtonOnHedder() {
 		  var totalRows =  $('#totalRows').val();
 		  var pageMsg = '';
 		  var searchData = '${timesheetApprovalDTO.searchValue}';
+		  var notifyLink =$('#notifyLink').val(); 
 		  if(totalRows !=null && totalRows != '' && totalRows != 'undefined'){
 			  $('#paginationDiv').show();
 			  var pageCount = $('#pageCount').val();
 			  var pageSize = $("#pageSize").val();
 			  $('#dataTableSearchExpenses').val('') ;
-			  $('#dataTableSearchExpenses').val(searchData); 
+			  if (!notifyLink){
+				  $('#dataTableSearchExpenses').val(searchData); 
+			  }
+			 
 			  var startingRecord = parseInt((pageNo*pageSize-pageSize)+1);
 			  var endingRecord = parseInt(pageNo*pageSize);
 			  if(endingRecord > totalRows){

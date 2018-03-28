@@ -29,6 +29,7 @@ public class TimesheetApprovalDTO extends SearchDTO implements Serializable {
 	private List<String> dataTableWeekDateList;
 	private LinkedHashMap<Date,Date> displayWeekList;
 	private List<TimesheetApprovalSubmissionDetailsDTO> timesheetSubmission;
+	private String projectName;
 	
 	private String exportType;
 	private int totalRows;
@@ -187,6 +188,12 @@ public class TimesheetApprovalDTO extends SearchDTO implements Serializable {
 	}
 	public void setTableRowFor(String tableRowFor) {
 		this.tableRowFor = tableRowFor;
+	}
+	public String getProjectName() {
+		return projectName;
+	}
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
 	}
 
 	
