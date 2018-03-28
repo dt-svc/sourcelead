@@ -374,7 +374,7 @@
 		  	  maxDate:0  
 		  });
 		
-		// child birth date dateOfBirthChild
+		// child birth date  dateOfBirthChild
 		   $('#dateOfBirthChild').datepicker({
 		      dateFormat: finalDateFormatFamilySave,
 		      changeMonth: true,
@@ -383,7 +383,7 @@
 		  	  maxDate:0  
 		  })
 		  
-		// Father birth date dateOfBirthFather
+		// Father birth date  dateOfBirthFather
 		   $('#dateOfBirthFather').datepicker({
 		      dateFormat: finalDateFormatFamilySave,
 		      changeMonth: true,
@@ -392,7 +392,7 @@
 		  	  maxDate:0  
 		  });
 		
-		// Mother birth date dateOfBirthMother
+		// Mother birth date  dateOfBirthMother
 		   $('#dateOfBirthMother').datepicker({
 		      dateFormat: finalDateFormatFamilySave,
 		      changeMonth: true,
