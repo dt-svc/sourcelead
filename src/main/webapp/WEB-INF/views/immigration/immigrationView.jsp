@@ -143,7 +143,9 @@ $(document).ready(function() {
         $(this).parent().siblings().removeClass("current");
         var tab = $(this).attr("href");
         $(".immigraTabs_inn").not(tab).css("display", "none");
-        if(tab=='#familiesTab'){
+        if(tab=='#deatilsTab'){
+        	immigration.displayPetitionDetails(immigrationId);
+        }else if(tab=='#familiesTab'){
         	immigration.displayFamilyDetails(candidateId);
         }else if(tab=='#educationsTab'){
         getCandidateEducationList(candidateId);
