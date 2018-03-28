@@ -493,25 +493,30 @@ this.deletePassportVisaDetailsById=function(id,idType){
             		console.log(" record successfully fetched by id  --> "+id);
             		if(relationType =='Child'){
             			formObj = $('#childDetailsForm')[0]; // load the child form
-            			var childPopNames=["firstName","middleName", "lastName","dateOfBirth","placeOfBirth","currentAddress"];
+            			var childPopNames=["firstName","middleName", "lastName","placeOfBirth","currentAddress"];
             			$("#addChil").trigger('click');
             			immigration.udpatePopupFormdata(formObj,childPopNames,data);
+            			$('#dateOfBirthChild').val(data.dateOfBirthStr);
             		}else if(relationType =='Spouse'){
             			formObj = $('#spouseDetailsForm')[0]; // load the Spouse form
-            			var spousePopNames=["firstName","middleName", "lastName","marriagePlace","marraigeDate", "marriageEndDate","dateOfBirth","placeOfBirth","currentAddress"];
+            			var spousePopNames=["firstName","middleName", "lastName","marriagePlace","placeOfBirth","currentAddress"];
             			$("#addSpou").trigger('click');
             			immigration.udpatePopupFormdata(formObj,spousePopNames,data);
+            			$('#marraigeDate').val(data.marraigeDateStr);
+            			$('#marriageEndDate').val(data.marriageEndDateStr);
+            			$('#dateOfBirthSpouse').val(data.dateOfBirthStr);
             		}else if(relationType =='Father'){
             			formObj = $('#fatherDetailsForm')[0]; // load the Father form
-            			var fatherPopNames=["firstName","middleName", "lastName","dateOfBirth","placeOfBirth","currentAddress"];
+            			var fatherPopNames=["firstName","middleName", "lastName","placeOfBirth","currentAddress"];
             			$("#addFath").trigger('click');
             			immigration.udpatePopupFormdata(formObj,fatherPopNames,data);
-            			
+            			$('#dateOfBirthFather').val(data.dateOfBirthStr);
             		}else if(relationType =='Mother'){
             			formObj = $('#motherDetailsForm')[0]; // load the mother form
-            			var motherPopNames=["firstName","middleName", "lastName","dateOfBirth","placeOfBirth","currentAddress"];
+            			var motherPopNames=["firstName","middleName", "lastName","placeOfBirth","currentAddress"];
             			$("#addMoth").trigger('click');
             			immigration.udpatePopupFormdata(formObj,motherPopNames,data);
+            			$('#dateOfBirthMother').val(data.dateOfBirthStr);
             		}
             		familyMemberId = ''// reset the value
             	}
