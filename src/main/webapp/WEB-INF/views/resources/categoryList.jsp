@@ -16,7 +16,7 @@ window.onload = function() {
     <div class="pull-left">
       <h2>Category List</h2>
     </div>
-   <%--  <div class="pull-right brud-crum"><a href="<c:url value='/app/categoryList'/>">CategoryList</a>&raquo;Category</div> --%>
+   <div class="pull-right brud-crum"><a href="<c:url value='/app/blogs'/>">Blogs</a> &raquo;Blog Category</div>
   </section>
   <div class="content-area content-new clearfix">
    <div class="timesheet_head minHeight50 list-borderright">

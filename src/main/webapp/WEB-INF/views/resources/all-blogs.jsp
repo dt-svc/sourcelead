@@ -31,7 +31,7 @@ background-color: #fff; height: 200px !important; background-image:url(../images
 				</article>
 			</c:forEach> 
 			
-			<c:if test="${!empty allBlogs}">
+			<c:if test="${empty allBlogs}">
 			<div class="dataTables_empty"></div>
 			</c:if>
 		 <div class="clear"></div>
