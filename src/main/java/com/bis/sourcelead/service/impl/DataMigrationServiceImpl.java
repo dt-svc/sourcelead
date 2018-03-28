@@ -3,6 +3,7 @@ package com.bis.sourcelead.service.impl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -21,6 +22,7 @@ import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.IndexedColors;
@@ -37,23 +39,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.DataMigrationDao;
+import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.dto.AssetsDataImportDTO;
 import com.bis.sourcelead.dto.DataMigrationDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementLocationsDTO;
 import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SourceleadFormFields;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.DataMigrationService;
+import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.ProjectTasksService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
+import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.util.DataMigrationCommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -80,6 +91,15 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	
 	@Autowired
 	private AssetService assetService;
+	
+	@Autowired
+	private ProjectTasksService tasksService;
+	
+	@Autowired
+	private ProjectsService projectService;
+	
+	@Autowired
+	LookUpDataService lookUpDataService;
 	
 	@Override
 	public Map<String, String> getfileData(String filePath, String headerPosition) throws Exception
@@ -167,6 +187,12 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				DataMigrationDTO dataMigrationDTOCopy = new DataMigrationDTO();
 				JSONObject dataMigrationDTOJsonCopy = new JSONObject(dataMigrationDTOCopy);
 				Iterator<?> keys = dataMigrationDTOJson.keys();
+				
+				/*this code is for assign projectUUI(in project Task upload) from dataMigrationDTO to dataMigrationDTOJsonCopy json object*/
+				if(dataMigrationDTO.getUploadType().equalsIgnoreCase("projectTasks")) {
+					dataMigrationDTOJsonCopy.put("projectUUID", dataMigrationDTO.getProjectUUID());
+					dataMigrationDTOJsonCopy.put("projectClientUUID", dataMigrationDTO.getProjectClientUUID());
+				}
 	
 				while( keys.hasNext() ) {
 				     String k = (String)keys.next();
@@ -176,7 +202,18 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 								Cell cell = cellIterator.next();
 								if (dataMigrationDTOJson.get((String) k) != null) {
 									if ((dataMigrationDTOJson.get((String) k).toString().replaceAll("\\d", "")).equalsIgnoreCase(CellReference.convertNumToColString(cell.getColumnIndex()))) {
-										dataMigrationDTOJsonCopy.put((String) k, objDefaultFormat.formatCellValue(cell, objFormulaEvaluator).toString().trim());
+										try {
+											if (DateUtil.isCellDateFormatted(cell)) {
+												SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+												   dataMigrationDTOJsonCopy.put((String) k,dateFormat.format(cell.getDateCellValue()));
+												}else {
+											     dataMigrationDTOJsonCopy.put((String) k, objDefaultFormat.formatCellValue(cell, objFormulaEvaluator).toString().trim());
+												}
+										}catch (Exception e) {
+										     dataMigrationDTOJsonCopy.put((String) k, objDefaultFormat.formatCellValue(cell, objFormulaEvaluator).toString().trim());
+
+										} 
+										
 										//dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, (String) k, objFormulaEvaluator, objDefaultFormat, user, orgLocation);
 									}
 								}
@@ -210,7 +247,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			    case "timesheetUpload": 
 			    	String timeFrequency = dataMigrationDTOJson.get("timeFrequencyType").toString();
 			    	dataMigrationCommonUtil.dataValidationForTimesheets(errorSet, dataMigrationDTOJsonCopy, objFormulaEvaluator, objDefaultFormat, user, orgLocation,timeFrequency);break;  
-			    case "assetUpload": dataMigrationCommonUtil.dataValidationForAssets(errorSet, dataMigrationDTOJsonCopy, user, orgLocation);break;  
+			    case "assetUpload": dataMigrationCommonUtil.dataValidationForAssets(errorSet, dataMigrationDTOJsonCopy, user, orgLocation);break;
+			    
+			    case "projectTasks": dataMigrationCommonUtil.dataValidationForProjectTasks(errorSet, dataMigrationDTOJsonCopy, user, orgLocation);break;
 
 				}
 				
@@ -343,6 +382,21 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		    
 		    case "timesheetUpload": 
 		    	System.out.println("Time Sheet block");	    
+		    break;
+		    
+		    
+		    case "projectTasks": 
+		    	System.out.println("projectTasks");	
+		    	
+		    	ProjectTasksDTO projectTasksDTO = new ProjectTasksDTO();
+				ObjectMapper tasksMapper = new ObjectMapper();
+				tasksMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+				tasksMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+				
+				projectTasksDTO = tasksMapper.readValue(dataMigrationDTOJsonCopy, ProjectTasksDTO.class);
+				Projects project  = projectService.getProjectByProjectUUID(projectTasksDTO.getProjectUUID());
+				 
+				tasksService.saveProjectTasksDTOByProjectId(project.getId(), projectTasksDTO, user.getId());
 		    break;
 	    }
 	}
