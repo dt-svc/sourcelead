@@ -784,3 +784,30 @@ function deleteResidenceDetailsById(id){
         }
     });
 }
+
+function editResidenceDEtailsByRowId(id){
+	console.log(" inside edit record  "+id);
+	 // update the variable with residence member id in edit mode.
+	var candidateId = $("#candidateID").val();
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/getCandidateResidenceDetailsById?id="+id+"&candidateId="+candidateId,
+        type: "GET",
+        success: function (data) {
+        	console.log(" inside success test --->" );
+        	var formObj='';
+        	if(data!= null){
+        		console.log(" today  --> "+data.id);
+        		
+        			formObj = $('#residenceDetails_form')[0]; // load the child form
+        			var fomValues=["location","streetAddress", "country","city","state","zipcode","startDate","endDate"];
+        			$("#addResi").trigger('click');
+        			udpateEduFormdata(formObj,fomValues,data);
+        		/*	$('#eduName').val(data.name); // to select the dropdwon value based on id value.
+        			$('#scoreEducationType').val(data.gradeType);*/
+        			$('#residenceId').val(data.id);
+        	
+        	   
+        	}
+        }
+    });
+}
