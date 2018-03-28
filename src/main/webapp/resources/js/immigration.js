@@ -333,7 +333,41 @@ function Immigration() {
 	}
 }
 
-    
+    this.editPassportVisaDetailsByRowId=function(id,idType){
+		$.ajax({
+	        url: sourceleadUrl + immiModulePath + "/getCandidatePassportVisaDetailsById?id="+id,
+	        type: "GET",
+	        success : function(data) {
+	        	if(data != null){
+	        		if(idType=='Passport'){
+	        		formObj = $('#CandidatePassportform')[0]; // load the child form
+        			var childPopNames=["idNumber","country", "validFrom","validTo"];
+        			$("#addPass").trigger('click');
+        			immigration.udpatePopupFormdata(formObj,childPopNames,data);
+        			$('#validFrom').val(data.validFromDateStr);
+        			$('#validTo').val(data.validToDateStr);
+        			$('#countryName').val(data.country);
+        			$('#candidatePassportId').val(data.id);	
+	        		}
+                                else if(idType=='Visa')
+                                {
+                                formObj = $('#CandidateVisaform')[0]; // load the child form
+        			var childPopNames=["visaType","idNumber","country", "validFrom","validTo"];
+        			$("#addVisa").trigger('click');
+        			immigration.udpatePopupFormdata(formObj,childPopNames,data);
+        			$('#validFrom').val(data.validFromDateStr);
+        			$('#validTo').val(data.validToDateStr);
+        			$('#countryName').val(data.country);
+        			$('#candidatePassportId').val(data.id);	
+                                }
+	        		
+        			
+	        		
+	        	}
+	        }
+	    });
+	}
+ 
     
  this.displayPassportDetails=function(candidateId,Passport){
 	console.log("inside displayPassportDetails function call  -->")
@@ -444,6 +478,7 @@ this.deletePassportVisaDetailsById=function(id,idType){
             }
         });
 	}
+	
 	
 	this.editFamilyDetailsById = function(id, relationType){
 		console.log(" inside edit record  "+id);
