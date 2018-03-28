@@ -37,6 +37,7 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 
@@ -63,6 +64,9 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
+
+	@Autowired
+	private SubmissionApproverHierarchyService submissionApproverHierarchyService;
 	
 	@Autowired
 	EmailScenarioService emailScenarioService;
@@ -227,14 +231,28 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION);
 				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 				notificationScenario.setBody(notificationBody);
+				
+				
+				
 				StringBuilder actionLinkBuilder = new StringBuilder();
-				//TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getSubmissionDetailsByProjectIdMasterCandiDateIdStartDateandEndDate(projectId,masterCanidateId,frequencyStartDate,frequencyEndDate);
-				 StringBuilder  currentTimeFrequency = new StringBuilder();
-				 currentTimeFrequency.append(weekStartDate).append("To").append(weekEndDate);
-				 String actionLink = "";
-				 if(clientProjectMember!= null &&  clientProjectMember.getProjects() != null && clientProjectMember.getMasterCandidateId() != null){
-					 actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("timesheetApproval?&currentTimeFrequency="+currentTimeFrequency.toString()+"&projectId="+clientProjectMember.getProjects().getId()+"&masterCandidateId="+clientProjectMember.getMasterCandidateId().getId()+"&projectMemberId="+clientProjectMember.getId()+"&totalHours="+totalHours+"&from=approver&notifyLink=notifyLink").toString();
-				 }
+				Date startDateFormat = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), weekStartDate);
+				Date endDateFormat = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), weekEndDate);
+				SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(startDateFormat,endDateFormat,clientProjectMember.getProjects().getId(),clientProjectMember.getMasterCandidateId().getId());
+				HashMap<String,String> paramList = new HashMap<>();
+				String actionLink = null;
+				if(sah!= null && sah.getSubmissionId() != null && sah.getSubmissionId().getProjectMembers()!= null) {
+					String frequencyMonth =  CalendarUtil.getMonthFromGivenDate(startDateFormat);
+					String frequencyYear =  CalendarUtil.getYearFromGivenDate(endDateFormat);
+					paramList.put("frequencyMonth", frequencyMonth+"-"+frequencyYear);
+					paramList.put("startDateStr",weekStartDate);
+					paramList.put("endDateStr",weekEndDate);
+					paramList.put("dateFormat",orgLocations.getDateFormat());
+					paramList.put("timesheetFrequency",clientProjectMember.getProjects().getInvoiceFrequency());
+					paramList.put("searchData",sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getEmail());
+					paramList.put("projectName",sah.getSubmissionId().getProjectMembers().getProjects().getProjectName());
+					actionLink =actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheetApproval/").append(Constants.PLACE_UUID).toString();
+				}
+				
 				emailScenerioUtil.sendNotification(actionLink , loginUser, pah.getApproverUserId(), pah.getProjectClientsId().getOrgLocationsId(), notificationScenario,new HashMap<String,String>());
 			 }
 	}
