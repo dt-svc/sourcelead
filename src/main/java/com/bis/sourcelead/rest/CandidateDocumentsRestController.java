@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDocumentsDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -36,6 +37,7 @@ import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequestedDocuments;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateDocumentsService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -60,10 +62,10 @@ public class CandidateDocumentsRestController {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateDocumentsRestController.class);
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
-	
+
 	@Value("${static.path}")
 	private String staticPath;
-	
+
 	@Autowired
 	private CandidateDocumentsService candidateDocumentsService;
 	@Autowired
@@ -80,10 +82,10 @@ public class CandidateDocumentsRestController {
 	OrgLocationService orgLocationService;
 	@Autowired
 	CandidateActivityCommonUtil candidateActivityCommonUtil;
-	
+
 	@Autowired
 	private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
-	
+
 	/**
 	 * @author Prasad K
 	 * 
@@ -97,49 +99,73 @@ public class CandidateDocumentsRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = {"/saveCandidateDocument"}, method = RequestMethod.POST)
-	public @ResponseBody String saveCandidateDocument(CandidateDocumentsDTO candidateDocumentsDTO, HttpServletRequest request) throws Exception
-	{
-		
-		candidateDocumentsDTO.setStaticPath(staticPath);
-		//FileUploadUtil.fillUploadedFileInfo(candidateDocumentsDTO, candidateDocumentsDTO.getFileInfo());
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		if(null != candidateDocumentsDTO.getCandidateId()){
-			candidateDocumentsService.storeCandidateDocuments(candidateDocumentsDTO, Long.parseLong(candidateDocumentsDTO.getCandidateId()),candidateDocumentsDTO.getDocumentUUID(), orgLocation.getId(), user);
-			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateDocumentsDTO.getCandidateId()));
-			Integer percentage = candidateService.getCandidatePercentage(candidate,orgLocation);
-			return percentage.toString();
-		}else{
-			return "exception";
+	@RequestMapping(value = { "/saveCandidateDocument" }, method = RequestMethod.POST)
+	public @ResponseBody Response<String> saveCandidateDocument(CandidateDocumentsDTO candidateDocumentsDTO, HttpServletRequest request)
+			throws Exception {
+		Response<String> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				candidateDocumentsDTO.setStaticPath(staticPath);
+				// FileUploadUtil.fillUploadedFileInfo(candidateDocumentsDTO,
+				// candidateDocumentsDTO.getFileInfo());
+
+				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				if (null != candidateDocumentsDTO.getCandidateId()) {
+					candidateDocumentsService.storeCandidateDocuments(candidateDocumentsDTO,
+							Long.parseLong(candidateDocumentsDTO.getCandidateId()), candidateDocumentsDTO.getDocumentUUID(),
+							orgLocation.getId(), user);
+					Candidate candidate = candidateService
+							.getCandidateByCandidateId(Long.parseLong(candidateDocumentsDTO.getCandidateId()));
+					Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocation);
+					// return percentage.toString();
+					response.setObject(percentage.toString());
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
+		return response;
 	}
-	
+
 	/**
 	 * Rest Call for saveCandidateDocument
+	 * 
 	 * @param candidateDocumentsDTO
 	 * @param request
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = {"rest/saveCandidateDocument"}, method = RequestMethod.POST)
-	public @ResponseBody String saveCandidateDocumentRest(@RequestBody CandidateDocumentsDTO candidateDocumentsDTO, HttpServletRequest request) throws Exception
-	{
-		
+	@RequestMapping(value = { "rest/saveCandidateDocument" }, method = RequestMethod.POST)
+	public @ResponseBody String saveCandidateDocumentRest(@RequestBody CandidateDocumentsDTO candidateDocumentsDTO,
+			HttpServletRequest request) throws Exception {
+
 		candidateDocumentsDTO.setStaticPath(staticPath);
-		//FileUploadUtil.fillUploadedFileInfo(candidateDocumentsDTO, candidateDocumentsDTO.getFileInfo());
+		// FileUploadUtil.fillUploadedFileInfo(candidateDocumentsDTO,
+		// candidateDocumentsDTO.getFileInfo());
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		if(null != candidateDocumentsDTO.getCandidateId()){
-			candidateDocumentsService.storeCandidateDocuments(candidateDocumentsDTO, Long.parseLong(candidateDocumentsDTO.getCandidateId()),candidateDocumentsDTO.getDocumentUUID(), orgLocation.getId(), user);
+		if (null != candidateDocumentsDTO.getCandidateId()) {
+			candidateDocumentsService.storeCandidateDocuments(candidateDocumentsDTO, Long.parseLong(candidateDocumentsDTO.getCandidateId()),
+					candidateDocumentsDTO.getDocumentUUID(), orgLocation.getId(), user);
 			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateDocumentsDTO.getCandidateId()));
-			Integer percentage = candidateService.getCandidatePercentage(candidate,orgLocation);
+			Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocation);
 			return percentage.toString();
-		}else{
+		} else {
 			return "exception";
 		}
 	}
-	
+
 	/**
 	 * This Method is for getting candidate documents
 	 * 
@@ -152,14 +178,16 @@ public class CandidateDocumentsRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = {"/getCandidateDocumentsListByCandidateId","rest/getCandidateDocumentsListByCandidateId"},method = RequestMethod.POST)
-	public ResponseList<CandidateDocumentsDTO> getCandidateDocumentsListByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception
-	{
+	@RequestMapping(value = { "/getCandidateDocumentsListByCandidateId",
+			"rest/getCandidateDocumentsListByCandidateId" }, method = RequestMethod.POST)
+	public ResponseList<CandidateDocumentsDTO> getCandidateDocumentsListByCandidateId(
+			@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		ResponseList<CandidateDocumentsDTO> candidateDocumentsList = candidateDocumentsService.getCandidateDocumentsDTOListByCandidateIdAndOrgLocationID(Long.parseLong(candidateId), loginOrgLocation.getId());
+		ResponseList<CandidateDocumentsDTO> candidateDocumentsList = candidateDocumentsService
+				.getCandidateDocumentsDTOListByCandidateIdAndOrgLocationID(Long.parseLong(candidateId), loginOrgLocation.getId());
 		return candidateDocumentsList;
 	}
-	
+
 	/**
 	 * @author Prasad K
 	 * 
@@ -174,16 +202,16 @@ public class CandidateDocumentsRestController {
 	 */
 	@RequestMapping(value = "/getDocument", method = RequestMethod.POST)
 	@ResponseBody
-	public  CandidateDocuments getDocument(@RequestParam(value = "candidateId", required = false) Long candidateId, @RequestParam(value = "documentId", required = false) String documentId, HttpServletRequest request) throws Exception
-	{
+	public CandidateDocuments getDocument(@RequestParam(value = "candidateId", required = false) Long candidateId,
+			@RequestParam(value = "documentId", required = false) String documentId, HttpServletRequest request) throws Exception {
 		CandidateDocuments candidateDocuments = null;
-		 candidateDocuments = candidateDocumentsService.getCandidateDocumentByDocumentId(Long.parseLong(documentId));
+		candidateDocuments = candidateDocumentsService.getCandidateDocumentByDocumentId(Long.parseLong(documentId));
 		if (candidateDocuments != null) {
 			return candidateDocuments;
 		}
 		return candidateDocuments;
 	}
-	
+
 	/**
 	 * @author Prasad K
 	 * 
@@ -196,30 +224,25 @@ public class CandidateDocumentsRestController {
 	 * 
 	 * @throws Exception
 	 */
-	/*@RequestMapping(value = "/downloadDoc", method = RequestMethod.GET)
-	public void downloadDoc(@RequestParam(value = "documentUUID", required = false) String documentUUID, HttpServletResponse response) throws Exception
-	{
-		CandidateDocuments candidateDocuments = candidateDocumentsService.getCandidateDocumentByDocumentUUID(documentUUID);
-		if (null != candidateDocuments) {
-			response.setContentType("application/octet-stream");
-			StringBuilder fileName = new StringBuilder();
-			response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(candidateDocuments.getFileName()).append("\"").toString());
-			InputStream inputStream = new ByteArrayInputStream(candidateDocuments.getDocFile());
-			try {
-				OutputStream outStream = response.getOutputStream();
-				byte[] buffer = new byte[4096];
-				int bytesRead = -1;
-				while ((bytesRead = inputStream.read(buffer)) != -1) {
-					outStream.write(buffer, 0, bytesRead);
-				}
-				inputStream.close();
-				outStream.close();
-			} catch (FileNotFoundException e) {
-				logger.error(ExceptionUtils.getFullStackTrace(e));
-			}
-		}
-	}*/
-	
+	/*
+	 * @RequestMapping(value = "/downloadDoc", method = RequestMethod.GET) public
+	 * void downloadDoc(@RequestParam(value = "documentUUID", required = false)
+	 * String documentUUID, HttpServletResponse response) throws Exception {
+	 * CandidateDocuments candidateDocuments =
+	 * candidateDocumentsService.getCandidateDocumentByDocumentUUID(documentUUID);
+	 * if (null != candidateDocuments) {
+	 * response.setContentType("application/octet-stream"); StringBuilder fileName =
+	 * new StringBuilder(); response.setHeader("Content-Disposition",
+	 * fileName.append("attachment; filename=\"").append(candidateDocuments.
+	 * getFileName()).append("\"").toString()); InputStream inputStream = new
+	 * ByteArrayInputStream(candidateDocuments.getDocFile()); try { OutputStream
+	 * outStream = response.getOutputStream(); byte[] buffer = new byte[4096]; int
+	 * bytesRead = -1; while ((bytesRead = inputStream.read(buffer)) != -1) {
+	 * outStream.write(buffer, 0, bytesRead); } inputStream.close();
+	 * outStream.close(); } catch (FileNotFoundException e) {
+	 * logger.error(ExceptionUtils.getFullStackTrace(e)); } } }
+	 */
+
 	/**
 	 * @author Prasad K
 	 * 
@@ -232,69 +255,94 @@ public class CandidateDocumentsRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = {"/terminateDoc","rest/terminateDoc"}, method = RequestMethod.POST)
-	public @ResponseBody String terminateDoc(CandidateDocumentsDTO candidateDocumentsDTO) throws Exception
-	{
-		//User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		User user = userService.getUserById(candidateDocumentsDTO.getLoginUserId());
-		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(candidateDocumentsDTO.getOrgLocationId());
-		CandidateDocuments candidateDocuments = candidateDocumentsService.getCandidateDocumentByDocumentId(Long.parseLong(candidateDocumentsDTO.getDocumentId()));
-		if (candidateDocuments != null) {
-			candidateDocuments.setStatus(Constants.CANDIDATE_IN_ACTIVE);
-			candidateDocuments.setUpdatedBy(user.getUserCode());
-			candidateDocuments.setUpdatedDate(commonUtil.currentDate());
-			candidateDocumentsService.updateCandidateDocuments(candidateDocuments);
-			StringBuffer activitySummary = new StringBuffer();
-			if(candidateDocuments.getFileName() != null && !candidateDocuments.getFileName().equalsIgnoreCase("")){
-				activitySummary.append("Document").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDocuments.getFileName()).append(Constants.NEW_VALUE_TAG_END);
-			}else if(candidateDocuments.getDocumentType().equalsIgnoreCase("Other")){
-				activitySummary.append("Document").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDocuments.getDocumentOtherType()).append(Constants.NEW_VALUE_TAG_END);
-			}else{
-				activitySummary.append("Document").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDocuments.getDocumentType()).append(Constants.NEW_VALUE_TAG_END);
-			}
-			candidateActivityCommonUtil.storeCandidateDocumentsHistory(candidateDocuments, user);
-			candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidateDocuments.getCandidateId(), "", Constants.CANDIDATE_DELETED_DOCUMENTS, activitySummary.toString(), "CANDIDATE");
+	@RequestMapping(value = { "/terminateDoc", "rest/terminateDoc" }, method = RequestMethod.POST)
+	public @ResponseBody Response<String> terminateDoc(CandidateDocumentsDTO candidateDocumentsDTO) throws Exception {
+		Response<String> response = new Response<>();
+		try {
+			User user = userService.getUserById(candidateDocumentsDTO.getLoginUserId());
+			if (user != null) {
+				OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(candidateDocumentsDTO.getOrgLocationId());
+				CandidateDocuments candidateDocuments = candidateDocumentsService
+						.getCandidateDocumentByDocumentId(Long.parseLong(candidateDocumentsDTO.getDocumentId()));
+				if (candidateDocuments != null) {
+					candidateDocuments.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+					candidateDocuments.setUpdatedBy(user.getUserCode());
+					candidateDocuments.setUpdatedDate(commonUtil.currentDate());
+					candidateDocumentsService.updateCandidateDocuments(candidateDocuments);
+					StringBuffer activitySummary = new StringBuffer();
+					if (candidateDocuments.getFileName() != null && !candidateDocuments.getFileName().equalsIgnoreCase("")) {
+						activitySummary.append("Document").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION)
+								.append(candidateDocuments.getFileName()).append(Constants.NEW_VALUE_TAG_END);
+					} else if (candidateDocuments.getDocumentType().equalsIgnoreCase("Other")) {
+						activitySummary.append("Document").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION)
+								.append(candidateDocuments.getDocumentOtherType()).append(Constants.NEW_VALUE_TAG_END);
+					} else {
+						activitySummary.append("Document").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION)
+								.append(candidateDocuments.getDocumentType()).append(Constants.NEW_VALUE_TAG_END);
+					}
+					candidateActivityCommonUtil.storeCandidateDocumentsHistory(candidateDocuments, user);
+					candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidateDocuments.getCandidateId(), "",
+							Constants.CANDIDATE_DELETED_DOCUMENTS, activitySummary.toString(), "CANDIDATE");
 
+				}
+				Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateDocumentsDTO.getCandidateId()));
+				if (null != candidate && null != candidate.getId()) {
+					CandidateIndex candidateIndex = new CandidateIndex();
+					candidateIndex.setCandidateId(candidate.getId());
+					DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+					candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
+					sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX,
+							Constants.ELK_CANDIDATE_TYPE, candidate.getId().toString());
+
+					// OrgLocations loginOrgLocation = (OrgLocations)
+					// SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					Integer percentage = candidateService.getCandidatePercentage(candidate, loginOrgLocation);
+					response.setObject(percentage.toString());
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateDocumentsDTO.getCandidateId()));
-		 if (null != candidate && null != candidate.getId()) {
-			 CandidateIndex candidateIndex = new CandidateIndex();
-			 candidateIndex.setCandidateId(candidate.getId());
-			 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			 candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
-			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE, candidate.getId().toString());
-		}	
-		//OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Integer percentage = candidateService.getCandidatePercentage(candidate,loginOrgLocation);
-		return percentage.toString();
+		return response;
 	}
-	
+
 	@RequestMapping(value = "/requestCandidateForDocuments", method = RequestMethod.POST)
-	public @ResponseBody String requestCandidateForDocuments(CandidateDocumentsDTO candidateDocumentsDTO, HttpServletRequest request) throws Exception
-	{
+	public @ResponseBody String requestCandidateForDocuments(CandidateDocumentsDTO candidateDocumentsDTO, HttpServletRequest request)
+			throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		requestedDocumentsService.storeRequestedDocumentsDetails(candidateDocumentsDTO, user, loginOrgLocation);
 		return "success";
 	}
-	
+
 	@RequestMapping(value = "/ws/uploadRequestedDocuments", method = RequestMethod.POST)
-	public @ResponseBody String uploadRequestedDocuments(CandidateDocumentsDTO candidateDocumentsDTO, HttpServletRequest request) throws Exception
-	{
-		
+	public @ResponseBody String uploadRequestedDocuments(CandidateDocumentsDTO candidateDocumentsDTO, HttpServletRequest request)
+			throws Exception {
+
 		candidateDocumentsDTO.setStaticPath(staticPath);
-		RequestedDocuments requestedDocuments = requestedDocumentsService.getRequestedDocumentsByRequestDocUUID(candidateDocumentsDTO.getRequestDocUUID());
+		RequestedDocuments requestedDocuments = requestedDocumentsService
+				.getRequestedDocumentsByRequestDocUUID(candidateDocumentsDTO.getRequestDocUUID());
 		if (null != requestedDocuments) {
-			List<CandidateDocuments> candidateDocumentsList = candidateDocumentsService.getCandidateDocumentsListByRequestedDocumentsId(requestedDocuments.getId());
-			
+			List<CandidateDocuments> candidateDocumentsList = candidateDocumentsService
+					.getCandidateDocumentsListByRequestedDocumentsId(requestedDocuments.getId());
+
 			if (null != candidateDocumentsList && candidateDocumentsList.size() > 0) {
-				
+
 				for (CandidateDocuments candidateDocuments : candidateDocumentsList) {
 					if (candidateDocumentsDTO.getFileInfo() != null && !candidateDocumentsDTO.getFileInfo().isEmpty()) {
-						
-						if(!candidateDocumentsDTO.getFileInfo().isEmpty())
-						{
-							FileInfo fileInfo =candidateDocumentsDTO.getFileInfo().get(0);
+
+						if (!candidateDocumentsDTO.getFileInfo().isEmpty()) {
+							FileInfo fileInfo = candidateDocumentsDTO.getFileInfo().get(0);
 							candidateDocuments.setFileName(fileInfo.getFileName());
 							candidateDocuments.setFileContentType(fileInfo.getContentType());
 							candidateDocuments.setFileURL(fileInfo.getFileURL());
@@ -305,17 +353,17 @@ public class CandidateDocumentsRestController {
 						}
 					}
 				}
-				
+
 			}
 			requestedDocuments.setIsDocsUploaded(Constants.YES);
 			requestedDocumentsService.saveRequestedDocuments(requestedDocuments);
 		}
 		return "success";
 	}
-	
+
 	@RequestMapping(value = "/rejectRequestedDocuments", method = RequestMethod.POST)
-	public @ResponseBody String rejectRequestedDocuments(@RequestParam(value = "json", required = false) String json, @RequestParam(value = "documentsIds", required = false) String documentsIds,HttpServletRequest request) throws Exception
-	{
+	public @ResponseBody String rejectRequestedDocuments(@RequestParam(value = "json", required = false) String json,
+			@RequestParam(value = "documentsIds", required = false) String documentsIds, HttpServletRequest request) throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String json1 = "{" + json + "}";
@@ -323,21 +371,24 @@ public class CandidateDocumentsRestController {
 		requestedDocumentsService.rejectRequestedDocuments(jsonObj, user, loginOrgLocation, documentsIds);
 		return "success";
 	}
-	
+
 	@RequestMapping(value = "/acceptRequestedDocuments", method = RequestMethod.POST)
-	public @ResponseBody String acceptRequestedDocuments(@RequestParam(value = "documentsIds", required = false) String documentsIds,  @RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "candidateId", required = false) Long candidateId) throws Exception
-	{
-		//User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	public @ResponseBody String acceptRequestedDocuments(@RequestParam(value = "documentsIds", required = false) String documentsIds,
+			@RequestParam(value = "userId", required = false) Long userId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+			@RequestParam(value = "candidateId", required = false) Long candidateId) throws Exception {
+		// User user = (User) SourceLeadSessionManager.getSessionAttribute(request,
+		// "user");
 		User user = userService.getUserById(userId);
 		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
 		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 		requestedDocumentsService.acceptRequestedDocuments(user, documentsIds, loginOrgLocation, candidate);
 		return "success";
 	}
-	
+
 	@RequestMapping(value = "/validateDocName")
-	public Boolean validateDocName(@RequestParam(value = "name", required = false) String name, @RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request) throws Exception
-	{
+	public Boolean validateDocName(@RequestParam(value = "name", required = false) String name,
+			@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request) throws Exception {
 		String candidateDocument = name;
 		Boolean canEdu = candidateDocumentsService.validateCandidateDocument(candidateId, candidateDocument);
 		return canEdu;
