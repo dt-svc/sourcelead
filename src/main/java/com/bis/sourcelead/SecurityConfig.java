@@ -121,6 +121,7 @@ public class SecurityConfig  {
     			.antMatchers("/getGuestUserRequirmentOrgSubmissionTemplate/**").permitAll()
     			.antMatchers("/saveGuestAddApplicant/**").permitAll()
     			.antMatchers("/addBlogSubscription/**").permitAll()
+    			.antMatchers("/validateBlogSubscriptionEmail/**").permitAll()
     			.antMatchers("/parseResume/**").permitAll()
     			.antMatchers("/app/getDemoTimezonesList/**").permitAll()
     			.antMatchers("/app/getDemoModulesList/**").permitAll()
