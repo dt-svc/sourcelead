@@ -899,7 +899,10 @@ function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount,fileUrl){
 	 	'<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_INVOICE\')">';
 	     result = result+'<li><a target="_blank" href="'+fileUrl+'" title="Download"><i class="fa fa-download paddingLeft paddingRight"></i>Download</a></li>';
 	     '</sec:authorize>'
+	     if(invoiceStatus != 'DRAFT')
+	     {
 	     result = result +'      <li onclick="linkInvoice('+id+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</li>';
+	     }
 	     result = result +'    </ul>';
     	 $("#popupDiv"+id+"").append(result);
     	 showMenu();

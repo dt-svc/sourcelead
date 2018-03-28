@@ -982,7 +982,10 @@ function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount,fileUrl){
 // 	     result = result +'      <li onclick="downloadInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
  		 result = result+' <a href="'+fileUrl+'" title="Download"><i class="fa fa-download paddingLeft paddingRight"></i>Download</a>';
 	     '</sec:authorize>'
+	     if(invoiceStatus != 'DRAFT')
+	     {
 	     result = result +'      <li onclick="linkPayableInvoice('+id+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Bill"></i>Link Bill</li>';
+	     }
 	     result = result +'    </ul>';
     	 $("#popupDiv"+id+"").append(result);
     	 showMenu();
