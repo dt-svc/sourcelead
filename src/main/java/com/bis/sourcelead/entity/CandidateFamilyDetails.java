@@ -11,8 +11,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
-import org.hibernate.annotations.Type;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "CANDIDATE_FAMILY_DETAILS", schema = "SOURCELEAD")
@@ -81,7 +83,19 @@ public class CandidateFamilyDetails implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "UPDATED_BY")
 	private User updatedBy;
-
+	
+	@Transient
+	@JsonProperty
+	private String marraigeDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String marriageEndDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String dateOfBirthStr;
+	
 	public Long getId() {
 		return id;
 	}
@@ -226,5 +240,30 @@ public class CandidateFamilyDetails implements Serializable {
 		this.updatedBy = updatedBy;
 	}
 
+	public String getMarraigeDateStr() {
+		return marraigeDateStr;
+	}
+
+	public void setMarraigeDateStr(String marraigeDateStr) {
+		this.marraigeDateStr = marraigeDateStr;
+	}
+
+	public String getMarriageEndDateStr() {
+		return marriageEndDateStr;
+	}
+
+	public void setMarriageEndDateStr(String marriageEndDateStr) {
+		this.marriageEndDateStr = marriageEndDateStr;
+	}
+
+	public String getDateOfBirthStr() {
+		return dateOfBirthStr;
+	}
+
+	public void setDateOfBirthStr(String dateOfBirthStr) {
+		this.dateOfBirthStr = dateOfBirthStr;
+	}
+
+	
 	
 }
