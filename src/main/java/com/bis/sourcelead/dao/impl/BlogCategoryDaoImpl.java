@@ -92,12 +92,10 @@ public class BlogCategoryDaoImpl implements BlogCategoryDao {
 		List<Long> countlist = null;
 		StringBuilder query1 = new StringBuilder("");
 		if (blogCategoryDTO.getSearchValue() != null && !"".equalsIgnoreCase(blogCategoryDTO.getSearchValue())) {
-			
-			query1.append("and( (bc.createdBy.firstName like '" + blogCategoryDTO.getSearchValue() + "%' OR bc.createdBy.lastName like '%" + blogCategoryDTO.getSearchValue() + "' )")
-		      .append("OR (concat(sb.createdBy.firstName,sb.createdBy.lastName) like '%" + blogCategoryDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')" )
-			  .append("and( bc.categoryName like '" + blogCategoryDTO.getSearchValue() + "%' ")
-			  .append("OR bc.description like '%" + blogCategoryDTO.getSearchValue() + "%') ) ");
-
+			   query1.append("and( (bc.createdBy.firstName like '" + blogCategoryDTO.getSearchValue() + "%' OR bc.createdBy.lastName like '%" + blogCategoryDTO.getSearchValue() + "' )")
+		      .append("OR (concat(bc.createdBy.firstName,bc.createdBy.lastName) like '%" + blogCategoryDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')" )
+	          .append("OR bc.categoryName like '%" + blogCategoryDTO.getSearchValue() + "%' ")
+		      .append("OR bc.description like '%" + blogCategoryDTO.getSearchValue() + "%') ) ");
 		}
 
 		String query = "from BlogCategory bc where bc.status = 1 " + query1 + "";
