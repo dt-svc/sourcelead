@@ -65,11 +65,11 @@
 	        <div class="form-group" >
 	          <label class="col-md-3">Image</label>
 	          <div class="col-md-9">
-	           <div class="input-group col-md-12" style="margin:0 auto">
+	           <div class="input-group col-md-12 errorInptgroup" style="margin:0 auto">
 	            <label class="input-group-btn" onchange="uploadFileDoc();"> <span class="btn btn-danger" ><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-	              <input type="file" style="display: none;" multiple id="uploadBtn"  class="upload" >
+	              <input type="file" style="display: none;" multiple id="uploadBtn"  class="upload"  validateimage>
 	              </span> </label>
-	            <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Resume ...">
+	            <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Image ..." field-name="Image" data-validation="validateimage" data-validation-optional="true">
 	          </div>
 	        </div>
 	        </div>
@@ -79,11 +79,11 @@
         <div class="form-group" id= "uploadImgGroup123" style="display: none;">
           <label class="col-md-3">Image</label>
           <div class="col-md-9">
-           <div class="input-group col-md-12" style="margin:0 auto">
+           <div class="input-group col-md-12 errorInptgroup" style="margin:0 auto">
             <label class="input-group-btn" onchange="uploadFileDoc();"> <span class="btn btn-danger" ><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
               <input type="file" style="display: none;" multiple id="uploadBtn"  class="upload" >
               </span> </label>
-            <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Resume ...">
+            <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Image ..." field-name="Image" data-validation="validateimage" data-validation-optional="true">
           </div>
         </div>
         </div>
@@ -119,7 +119,7 @@
 			<div class="form-group row">
 				<label class="col-md-12">Description <span class="text-danger paddingLeft">&nbsp;*</span></label>
 				<div class="col-md-12">
-					<textarea rows="2" class="form-control" name="description" id="summernote" field-name="Description" >${sourceleadBlog.description}</textarea>
+					<textarea rows="2" class="form-control" name="description" id="summernote" field-name="Description" field-name="Description" data-validation="required">${sourceleadBlog.description}</textarea>
 					<div id="editor"></div>
 				</div>
 			</div>  
