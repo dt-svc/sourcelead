@@ -228,6 +228,8 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			
 			Org org = orgLicenseSubscription.getOrg();
 			org.setUser(user);
+			orgDao.addOrganization(org);
+			
 			
 			List<LookUpData> lookUpExpCatList = lookUpDataDao.getLookUpDataByCategory(Constants.EXPENSESCATEGORY);
 		    for(LookUpData lookUpData:lookUpExpCatList){

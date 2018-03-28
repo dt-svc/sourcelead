@@ -28,6 +28,10 @@
 <script type="text/javascript">
 window.onload = function () {
 	loadRegisteredOrgs();
+	var isSuperAdmin = '${SourceLeadWeb_isSuperAdmin}';
+	if(isSuperAdmin == 'Y'){
+		document.getElementById("enrollNewOrgLocationDiv").style.display="";
+	}
  };
 </script>
 
@@ -187,9 +191,11 @@ $(function(){
 	        <div class="pull-right">
 	        <button class="btn btn-default btm-sm" id="orgsList" data-toggle="tab" href="#orgRegisteredlocations" onclick="loadRegisteredOrgs();" style="display: none"><i class="fa fa-building"></i>
 	                                         &nbsp;&nbsp;Locations List</button>
-	                                         
-	        <button class="btn btn-default btm-sm pull-right" onclick="createOrg();" id="enrollNewOrgLocation"><i class="fa fa-map-marker"></i>&nbsp;Add Location</button>
 	       </div>
+	       
+	        <div class="pull-right" id="enrollNewOrgLocationDiv" style="display: none;">
+	          <button class="btn btn-default btm-sm pull-right" onclick="createOrg();" id="enrollNewOrgLocation" ><i class="fa fa-map-marker"></i>&nbsp;Add Location</button>
+	        </div>
 	        
 	        <div class="clearfix"></div>
 	        <div class="clearfix compOnBorLoca mt10">
