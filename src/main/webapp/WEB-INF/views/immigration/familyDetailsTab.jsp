@@ -28,13 +28,13 @@
 			  <tr>
 				<td><div class="tbldata-dotdot-me">${items.firstName}</div></td>
 				<td><div class="tbldata-dotdot-me">${items.relation}</div></td>
-				<td><div class="tbldata-dotdot-vsm"><fmt:formatDate value="${items.dateOfBirth}" pattern="MM/dd/yyyy" /></div></td>
+				<td><div class="tbldata-dotdot-vsm">${items.dateOfBirthStr}</div></td>
 				<td><div class="tbldata-dotdot-vsm">${items.placeOfBirth}</div></td>
 				<td><div class="tbldata-dotdot-me">${items.currentAddress}</div></td>
-				<td><div><i id="edit" onclick="immigration.editFamilyDetailsById(${items.id},'${items.relation}');"
-				class="glyphicon glyphicon-pencil"></i><i id="delete" 
-				 onclick="immigration.deleteFamilyDetailsById(${items.id});" 
-				 class="glyphicon glyphicon-trash ml10"></i></div></td>
+				<td><div><i id="edit" class="glyphicon glyphicon-pencil"onclick="immigration.editFamilyDetailsById(${items.id},'${items.relation}');"
+				></i><i id="delete" class="glyphicon glyphicon-trash ml10"
+				 onclick="immigration.delet eFamilyDetailsById(${items.id});" 
+				 ></i></div></td>
 			  </tr> 
 			  </c:forEach>
 			 </tbody>
@@ -89,7 +89,7 @@
 				<label class="col-md-4 padding_left">Date of Marriage<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
               	<div class="input-group">
-              		<input type="text" id="marraigeDate" name="marraigeDate" class="form-control calendar" placeholder="Date Of Marriage" field-name="Date Of Marriage" data-validation="required"/>
+              		<input type="text" id="marraigeDate" name="marraigeDate" class="form-control calendar" placeholder="Date Of Marriage" field-name="Date Of Marriage" readonly="readonly" data-validation="required"/>
               		<span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('marraigeDate');"></i></span>
 				</div>
 				</div>
@@ -98,7 +98,7 @@
 				<label class="col-md-4 padding_left">End Date</label>
               	<div class="col-md-8 padding_right">
               	<div class="input-group">
-              		<input type="text" id="marriageEndDate" name="marriageEndDate" placeholder="End Date"  class="form-control calendar" />
+              		<input type="text" id="marriageEndDate" name="marriageEndDate" placeholder="End Date" readonly="readonly" class="form-control calendar" />
               		<span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('marriageEndDate');"></i></span>
 				</div>
 				</div>
@@ -107,7 +107,7 @@
 				<label class="col-md-4 padding_left">Date of Birth<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
               	<div class="input-group">
-              		<input type="text" id="dateOfBirthSpouse" name="dateOfBirth" class="form-control calendar"  placeholder="Date Of Birth" field-name="Date Of Birth" data-validation="required"/>
+              		<input type="text" id="dateOfBirthSpouse" name="dateOfBirth" class="form-control calendar"  placeholder="Date Of Birth" field-name="Date Of Birth" readonly="readonly" data-validation="required"/>
               		<span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('dateOfBirthSpouse');"></i></span>
 				</div>
 				</div>
@@ -162,7 +162,7 @@
 				<label class="col-md-4 padding_left">Date of Birth<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
               	<div class="input-group">
-              		<input type="text"  id="dateOfBirthChild" name="dateOfBirth" class="form-control calendar" placeholder="Date Of Birth" field-name="Date Of Birth" data-validation="required"  />
+              		<input type="text"  id="dateOfBirthChild" name="dateOfBirth" class="form-control calendar" placeholder="Date Of Birth" field-name="Date Of Birth" readonly="readonly" data-validation="required"  />
               		<span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('dateOfBirthChild');"></i></span>
 				</div>
 				</div>
@@ -217,7 +217,7 @@
 				<label class="col-md-4 padding_left">Date of Birth<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
               	<div class="input-group">
-              		<input type="text" id="dateOfBirthFather" name="dateOfBirth" class="form-control calendar" placeholder="Date Of Birth" field-name="Date Of Birth" data-validation="required"  />
+              		<input type="text" id="dateOfBirthFather" name="dateOfBirth" class="form-control calendar" placeholder="Date Of Birth" field-name="Date Of Birth" readonly="readonly" data-validation="required"  />
               		<span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('dateOfBirthFather');"></i></span>
 				</div>
 				</div>
@@ -272,7 +272,7 @@
 				<label class="col-md-4 padding_left">Date of Birth<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
               	<div class="input-group">
-              		<input type="text" id="dateOfBirthMother" name="dateOfBirth" class="form-control calendar" placeholder="Date Of Birth" field-name="Date Of Birth" data-validation="required"  />
+              		<input type="text" id="dateOfBirthMother" name="dateOfBirth" class="form-control calendar" placeholder="Date Of Birth" field-name="Date Of Birth" readonly="readonly" data-validation="required"  />
               		<span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('dateOfBirthMother');"></i></span>
 				</div>
 				</div>

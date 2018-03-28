@@ -692,9 +692,16 @@ public class ImmigrationRestController {
 		System.out.println(" inisde getCandidateFamilyDetails controller test -->");
 		model.setViewName("/immigration/familyDetailsTab");
 		List<CandidateFamilyDetails> familyList = new ArrayList<CandidateFamilyDetails>();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
 		try {
 			familyList = immigrationCommonService.getCandidateFamilyDetails(candidateId);
-		model.addObject("familyList", familyList);
+			for(CandidateFamilyDetails familyObj: familyList) {
+				familyObj.setMarraigeDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), familyObj.getMarraigeDate()));
+				familyObj.setMarriageEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), familyObj.getMarriageEndDate()));
+				familyObj.setDateOfBirthStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), familyObj.getDateOfBirth()));
+			}
+			model.addObject("familyList", familyList);
 		}catch(Exception e ) {
 			logger.error("Exception caught in controller --->"+e.getMessage());
 			e.printStackTrace();
@@ -730,6 +737,9 @@ public class ImmigrationRestController {
 		CandidateFamilyDetails familyObj= null;
 		try {
 			familyObj = immigrationCommonService.getCandidateFamilyDetailsById(id);
+			familyObj.setMarraigeDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), familyObj.getMarraigeDate()));
+			familyObj.setMarriageEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), familyObj.getMarriageEndDate()));
+			familyObj.setDateOfBirthStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), familyObj.getDateOfBirth()));
 			System.out.println(" in controller status "+status);
 		} catch (Exception e) {
 			logger.error("Exception caught in controller test --->"+e.getMessage());
@@ -901,6 +911,29 @@ public class ImmigrationRestController {
 		}
 
 		return residenceObj;
+	}
+	
+	@RequestMapping(value = { "/getCandidatePassportVisaDetailsById" })
+	public @ResponseBody  CandidatePassportVisa getCandidatePassportVisaDetailsById(
+			@RequestParam(value = "id", required = true) Long id, HttpServletRequest request) {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		String status="";
+		System.out.println(" in controller method getCandidateFamilyDetailsById id ---> "+id);
+		CandidatePassportVisa passportVisaObj= null;
+		try {
+			passportVisaObj = immigrationCommonService.getCandidatePassportVisaDetailsById(id);
+			
+			passportVisaObj.setValidFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),passportVisaObj.getValidFromDate()));
+			passportVisaObj.setValidToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),passportVisaObj.getValidToDate()));
+			
+			System.out.println(" in controller status "+status);
+		} catch (Exception e) {
+			logger.error("Exception caught in controller test --->"+e.getMessage());
+			e.printStackTrace();
+		}
+
+		return passportVisaObj;
 	}
 }
 

@@ -343,4 +343,20 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         System.out.println("got the record id -->"+ id);
 		return residenceObj;
 	}
+	
+	  @Override
+			@Transactional(rollbackFor = { Exception.class })
+			public CandidatePassportVisa getCandidatePassportVisaDetailsById(Long id) {
+				System.out.println("get CandidateFamilyDetails id ---> "+id);
+				CandidatePassportVisa passportVisaObj= null;
+		        try {
+					Session session = this.sessionFactory.getCurrentSession();
+					passportVisaObj = (CandidatePassportVisa)session.get(CandidatePassportVisa.class,id);
+				} catch (HibernateException e) {
+					logger.error("SQL Exception occured while doing getting record -->"+e.getMessage());
+					e.printStackTrace();
+				}
+		        System.out.println("got the record id -->"+ id);
+				return passportVisaObj;
+			}
 }

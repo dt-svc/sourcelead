@@ -11,8 +11,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "CANDIDATE_PASSPORT_VISA", schema = "SOURCELEAD")
@@ -66,6 +69,13 @@ public class CandidatePassportVisa implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "UPDATED_BY")
 	private User updatedBy;
+	@Transient
+	@JsonProperty
+	private String validFromDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String validToDateStr;
 
 	public Long getId() {
 		return id;
@@ -177,6 +187,26 @@ public class CandidatePassportVisa implements Serializable {
 
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getValidFromDateStr()
+	{
+		return validFromDateStr;
+	}
+
+	public void setValidFromDateStr(String validFromDateStr)
+	{
+		this.validFromDateStr = validFromDateStr;
+	}
+
+	public String getValidToDateStr()
+	{
+		return validToDateStr;
+	}
+
+	public void setValidToDateStr(String validToDateStr)
+	{
+		this.validToDateStr = validToDateStr;
 	}
 	
 	
