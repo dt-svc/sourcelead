@@ -45,5 +45,8 @@ public interface ImmigrationCommonService {
 	 void removeCandidatePassportVisaDetails(Long candidateId, Long id, User user, OrgLocations orgLocations, String idType);
 	 
 	 String deleteCandidateResidenceDetails(Long id,Long candidateId);
+	 
+	 CandidateResidence getCandidateResidenceDetailsById(Long id);
+
 
 }

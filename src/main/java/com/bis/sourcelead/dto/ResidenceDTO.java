@@ -8,7 +8,9 @@ import com.bis.sourcelead.entity.Employees;
  **/
 public class ResidenceDTO extends CommonDTO {
 	
-	    private String location;
+	     private Long residenceId;
+	     
+		private String location;
 	    
 		private String streetAddress;
 		
@@ -86,6 +88,14 @@ public class ResidenceDTO extends CommonDTO {
 
 		public void setResidenceEndDate(String residenceEndDate) {
 			this.residenceEndDate = residenceEndDate;
+		}
+
+		public Long getResidenceId() {
+			return residenceId;
+		}
+
+		public void setResidenceId(Long residenceId) {
+			this.residenceId = residenceId;
 		}
 
 		

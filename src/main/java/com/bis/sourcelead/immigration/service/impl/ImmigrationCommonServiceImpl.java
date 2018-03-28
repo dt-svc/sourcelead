@@ -493,7 +493,15 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	
 	@Override
 	public CandidateResidence saveResidenceDetails(ResidenceDTO residenceDTO, OrgLocations orgLocations, User user, Long candidateId)	throws Exception {
-		CandidateResidence candidateResidence = new CandidateResidence();
+		CandidateResidence candidateResidence = null;
+		if(residenceDTO.getResidenceId() != null){
+			candidateResidence = immigrationCommonDao.getCandidateResidenceDetailsById(residenceDTO.getResidenceId());
+		}else{
+			candidateResidence = new CandidateResidence();
+			candidateResidence.setCreatedDate(new Date());
+			candidateResidence.setCreatedBy(user);
+
+		}
 		Candidate candidate = candidateDao.getCandidateByCandidateId(candidateId);
 		candidateResidence.setCandidate(candidate);
 		candidateResidence.setLocation(residenceDTO.getLocation());
@@ -511,9 +519,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 					residenceDTO.getResidenceEndDate())));
 			}
 			candidateResidence.setStatus(Constants.RECORD_ACTIVE);
-			candidateResidence.setCreatedDate(new Date());
 			candidateResidence.setUpdatedDate(new Date());
-			candidateResidence.setCreatedBy(user);
 			candidateResidence.setUpdatedBy(user);
 		
 		immigrationCommonDao.saveResidenceDetails(candidateResidence);
@@ -556,5 +562,11 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	public String deleteCandidateResidenceDetails(Long id,Long candidateId) {
 		
 		return immigrationCommonDao.deleteCandidateResidenceDetails(id,candidateId);
-	}	
+	}
+
+	@Override
+	public CandidateResidence getCandidateResidenceDetailsById(Long id) {
+		// TODO Auto-generated method stub
+		return  immigrationCommonDao.getCandidateResidenceDetailsById(id);
+	}
 }

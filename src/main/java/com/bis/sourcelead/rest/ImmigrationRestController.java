@@ -882,4 +882,25 @@ public class ImmigrationRestController {
 
 		return "success";
 	}
+	
+	@RequestMapping(value = { "/getCandidateResidenceDetailsById" })
+	public @ResponseBody  CandidateResidence getCandidateResidenceDetailsById(
+			@RequestParam(value = "id", required = true) Long id, HttpServletRequest request) {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		String status="";
+		System.out.println(" in controller method getCandidateResidenceDetailsById id ---> "+id);
+		CandidateResidence residenceObj= null;
+		try {
+			residenceObj = immigrationCommonService.getCandidateResidenceDetailsById(id);
+			System.out.println(" in controller status "+status);
+		} catch (Exception e) {
+			logger.error("Exception caught in controller test --->"+e.getMessage());
+			e.printStackTrace();
+		}
+
+		return residenceObj;
+	}
 }
+
+

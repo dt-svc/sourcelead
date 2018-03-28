@@ -59,6 +59,7 @@
 		<!-- popcode start -->
 		<form id ="residenceDetails_form" name = "residenceDetails_form" method = "Post">
 		<div class="popUpOut" id="popResiView">
+		<input type="hidden" id= "residenceId" name = "residenceId">
 		<div class="popupHead">
 			<h2>Add Residence</h2><a href="javascript:void(0)" class="fa fa-close popCan" onclick="refreshResidency();"></a>
 		</div>
