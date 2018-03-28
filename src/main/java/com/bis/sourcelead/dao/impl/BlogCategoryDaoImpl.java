@@ -9,6 +9,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import com.bis.sourcelead.dao.BlogCategoryDao;
 import com.bis.sourcelead.dto.BlogCategoryDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.BlogCategory;
+import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.SourceleadBlogs;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -62,12 +64,11 @@ public class BlogCategoryDaoImpl implements BlogCategoryDao {
 			if (blogCategory != null) {
 				session.saveOrUpdate(blogCategory);
 			}
-		} catch (Exception exception) {
-			logger.error(ExceptionUtils.getFullStackTrace(exception));
+		} catch (ConstraintViolationException exception) {
 		}
 		return blogCategory;
 	}
-
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public BlogCategory getBlogCategoryById(Long blogCategoryId) throws Exception {
@@ -186,7 +187,7 @@ public class BlogCategoryDaoImpl implements BlogCategoryDao {
 	public BlogCategory validateBlogCategoryCategoryNameByCategoryNameAndCategoryUUID(String categoryName,
 			String categoryUUID) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from BlogCategory bc  where bc.categoryUUID =:categoryUUID and bc.categoryName =:categoryName ";
+		String query = "from BlogCategory bc  where bc.categoryUUID =:categoryUUID and bc.categoryName =:categoryName and bc.status=1";
 		List<BlogCategory> blogCategoryList =session.createQuery(query) .setString("categoryName", categoryName).setString("categoryUUID", categoryUUID).list();
 		BlogCategory blogCategory = null;
 		if(blogCategoryList != null && !blogCategoryList.isEmpty())
@@ -201,7 +202,7 @@ public class BlogCategoryDaoImpl implements BlogCategoryDao {
 	public Boolean validateBlogCategoryCategoryNameByCategoryName(String categoryName) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		 boolean flag = false;
-			 String query = "from BlogCategory bc where bc.categoryName =:categoryName";
+			 String query = "from BlogCategory bc where bc.categoryName =:categoryName and bc.status=1";
 				Collection<BlogCategory> blogCategoryList = session.createQuery(query) .setString("categoryName", categoryName).list();
 				if (blogCategoryList != null && blogCategoryList.size() > 0) {
 					flag = true;
