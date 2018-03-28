@@ -6,12 +6,6 @@
 <script type="text/javascript">
 $(document).ready(function(){
     getSendersList();
-    /* if('${msg}' == "success"){
-    	$("#selector1").removeAttr("style");
-		$("#selector1").css({ display: "block" });
-	    $("#msgDiv").html("Successfully Created sender identity");
-	    msgFadein();
-    } */
 });
 </script>
 
@@ -137,12 +131,6 @@ function getSendersList(type){
       		 result += '</table> ';
       		 $("#sendersListDiv").empty();
       		 $("#sendersListDiv").append(result);
-      		if(type == "success"){
-		    	$("#campainSenderAlertMsg").removeAttr("style");
-				$("#campainSenderAlertMsg").css({ display: "block" });
-			    $("#campainSenderAlertMsgDiv").html("Successfully Created sender identity");
-			    campainSenderAlertMsgFadein();
-			}
       		 $("#loading").removeAttr('style');
       		 senderListPagination();
     });
@@ -169,8 +157,8 @@ function getSendersList(type){
  
  <script>
  function campainSenderAlertMsgFadein() {
-	$("#campainSenderAlertMsg").fadeIn(200);
-    $('#campainSenderAlertMsg').delay(2000).fadeOut('slow');
+	$("#campainSenderAlertMsg").fadeIn(300);
+    $('#campainSenderAlertMsg').delay(3000).fadeOut('slow');
 }
 </script>
 
