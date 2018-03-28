@@ -75,19 +75,18 @@
 	  
 	  <div id="activitiesTab" class="immigraTabs_inn">
 		<jsp:include page="activityDetailsTab.jsp" />
-	  </div>  
-	  
+	  </div> 
+	   
+	   <div id="visasTab" class="immigraTabs_inn">
+		<jsp:include page="visaDetailsTab.jsp" />
+	  </div>
+	  	  
 	  <div id="passportsTab" class="immigraTabs_inn">
 		<jsp:include page="passportDetailsTab.jsp" />
 	  </div>	  
 	  
-	  <div id="visasTab" class="immigraTabs_inn">
-		<jsp:include page="visaDetailsTab.jsp" />
-	  </div>	  
-	  
-	  <div id="formsTab" class="immigraTabs_inn">
+	   <div id="formsTab" class="immigraTabs_inn">
 		<jsp:include page="formDetailsTab.jsp" />
-		
 	  </div>
 
 	</section>
@@ -146,8 +145,6 @@ $(document).ready(function() {
         $(".immigraTabs_inn").not(tab).css("display", "none");
         if(tab=='#familiesTab'){
         	immigration.displayFamilyDetails(candidateId);
-        }else if(tab=='#familiesTab'){
-        	immigration.displayFamilyDetails(candidateId);
         }else if(tab=='#educationsTab'){
         getCandidateEducationList(candidateId);
         } else if(tab=='#employersTab'){
@@ -155,12 +152,11 @@ $(document).ready(function() {
         }else if(tab=='#residencesTab'){
         	getCandidateResidenceList(candidateId);
         }else if(tab=='#passportsTab'){
-        	var Passport=$("#Passport").val();
         immigration.displayPassportDetails(candidateId,'Passport');
         }else if(tab=='#visasTab'){
-         var Visa=$("#Visa").val();
-          immigration.displayVisaDetails(candidateId,'Visa');
+        immigration.displayVisaDetails(candidateId,'Visa');
         }
+       
         $(tab).fadeIn();
     });
 	

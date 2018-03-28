@@ -82,20 +82,22 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Valid From</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control calendar" value="" name = "validFrom" id = "validFrom" field-name = "Valid From" data-validation="required"/>
-				    <div class="clearDate" onClick="clearCandidateCertStartDate();"></div>
+              	<div class="input-group">
+              	<input type="text" class="form-control calendar" value="" name = "validFrom" id = "validFrom" field-name = "Valid From" data-validation="required"/>
+				   <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onClick="clearDateValue('validFrom');"></i></span>
+				</div>
+              		
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Valid To</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control calendar" value="" name = "validTo" id = "validTo" field-name = "Valid To" data-validation="required"/>
-				<div class="clearDate" onClick="clearCandidateCertEndDate();"></div>
+              	<div class="input-group">
+              	<input type="text" class="form-control calendar" value="" name = "validTo" id = "validTo" field-name = "Valid To" data-validation="required"/>
+				<span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onClick="clearDateValue('validTo');"></i></span>
+				</div>
 				</div>
 			</div>									
-		</div>
-		
-		
 		<div class="immiPopFoot">
             <input value="Save" class="" type="button" id="passport_save_id" onclick="immigration.savePassportVisaDetails('Passport')">
             <input value="Cancel" class="popCan" type="button" onClick="popFun();">
@@ -116,9 +118,9 @@
 		</script>
 		<script>
 		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatCerSave = getJSDateFormat(locationDate);
+		  var finalDateFormatPassSave = getJSDateFormat(locationDate);
 		 $('#validFrom').datepicker({
-		      dateFormat: finalDateFormatCerSave,
+		      dateFormat: finalDateFormatPassSave,
 		      changeMonth: true,
 		  	  changeYear: true, 
 		      onSelect: function (selected) {
@@ -130,7 +132,7 @@
 		  });
 		  
 		  $('#validTo').datepicker({
-		      dateFormat: finalDateFormatCerSave,
+		      dateFormat: finalDateFormatPassSave,
 		      changeMonth: true,
 		  	  changeYear: true, 
 		        onSelect: function (selected) {
@@ -143,10 +145,10 @@
 		</script>
 		<script>
 		<script>
-		function clearCandidateCertStartDate(){
+		function clearCandidatePassportStartDate(){
 			$("#validFrom").val("");
 			};
-		function clearCandidateCertEndDate(){
+		function clearCandidatePassportEndDate(){
 			$("#validTo").val("");
 			};
 		</script>   
