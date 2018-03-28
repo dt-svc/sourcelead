@@ -1889,7 +1889,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()+"&submissionId="+requirementSubmissionTemplateFields.getRequirementSubmission().getId()+"&candidateUUID="+requirementSubmissionTemplateFields.getRequirementSubmission().getCandidate().getCandidateUUID()+"&submissionStatus=all").toString();		 
 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendNotification(actionLink, fromUser,initiatorUser, orgLocations, notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, fromUser,initiatorUser, orgLocations, notificationScenario,new HashMap<String,String>());
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 	}
 	
@@ -1976,7 +1976,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 
 		 String actionLink="";
 		//calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendNotification(actionLink, fromUser,initiatorUser, orgLocations, notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, fromUser,initiatorUser, orgLocations, notificationScenario,new HashMap<String,String>());
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 	}
 	
@@ -2554,7 +2554,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			String actionLink = null;
 			if(reqSub.getRequirement() != null && reqSub.getRequirement().getParentRequirement() != null) {
 				 actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=all&requirementUUID="+reqSub.getRequirement().getParentRequirement().getRequirementUUID()+"&submissionId="+reqSub.getId()).toString();
-				 emailScenerioUtil.sendNotification(actionLink, user, toUser,reqSub.getRequirement().getSpocId().getClientLocationId(), notificationScenario);
+				 emailScenerioUtil.sendNotification(actionLink, user, toUser,reqSub.getRequirement().getSpocId().getClientLocationId(), notificationScenario,new HashMap<String,String>());
 			}
 				 
 		}
@@ -2878,7 +2878,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String actionLink="";
-		 emailScenerioUtil.sendNotification(actionLink, users, pastUser, requirementSubmission.getOrgLocations(), notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, users, pastUser, requirementSubmission.getOrgLocations(), notificationScenario,new HashMap<String,String>());
 	}
 
 	@Override
@@ -3209,7 +3209,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		emailMessage.setMessageBody(emailTemplate);
 		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 		String actionLink = "";
-		emailScenerioUtil.sendNotification(actionLink, loginUser, assignedUser, loginOrgLocation, notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, assignedUser, loginOrgLocation, notificationScenario,new HashMap<String,String>());
 	}
 	
 	
@@ -3313,7 +3313,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		  
 		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String actionLink="";
-		 emailScenerioUtil.sendNotification(actionLink, loginUser, assignedUser, loginOrgLocation, notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, loginUser, assignedUser, loginOrgLocation, notificationScenario,new HashMap<String,String>());
 		
 	}
 
@@ -3451,7 +3451,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 
 		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-		 emailScenerioUtil.sendNotification(actionLink, users, pastUser, requirementSubmission.getVendorLocationId(), notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, users, pastUser, requirementSubmission.getVendorLocationId(), notificationScenario,new HashMap<String,String>());
 	}
 
 	@Override
@@ -3683,14 +3683,14 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 
 		 if(Constants.CLIENT.equalsIgnoreCase(type) && "Accepted".equalsIgnoreCase(status)){
-		 emailScenerioUtil.sendNotification(actionLink, users, pastUser, requirementSubmission.getVendorLocationId(), notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, users, pastUser, requirementSubmission.getVendorLocationId(), notificationScenario,new HashMap<String,String>());
 		 }else if(Constants.VENDOR.equalsIgnoreCase(type) && "Accepted".equalsIgnoreCase(status)){
-			 emailScenerioUtil.sendNotification(actionLink, users, pastUser, requirementSubmission.getOrgLocations(), notificationScenario);
+			 emailScenerioUtil.sendNotification(actionLink, users, pastUser, requirementSubmission.getOrgLocations(), notificationScenario,new HashMap<String,String>());
 		 }
 		 if(Constants.CLIENT.equalsIgnoreCase(type) && "Rejected".equalsIgnoreCase(status)){
-			 emailScenerioUtil.sendNotification(actionLink, users, pastUser, requirementSubmission.getVendorLocationId(), notificationScenario);
+			 emailScenerioUtil.sendNotification(actionLink, users, pastUser, requirementSubmission.getVendorLocationId(), notificationScenario,new HashMap<String,String>());
 		 }else if(Constants.VENDOR.equalsIgnoreCase(type) && "Rejected".equalsIgnoreCase(status)){
-			 emailScenerioUtil.sendNotification(actionLink, users, pastUser, requirementSubmission.getOrgLocations(), notificationScenario);
+			 emailScenerioUtil.sendNotification(actionLink, users, pastUser, requirementSubmission.getOrgLocations(), notificationScenario,new HashMap<String,String>());
 		 }
 	}
 
@@ -4419,7 +4419,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+submission.getSourceSubmission().getRequirement().getRequirementUUID()+"&submissionId="+submission.getSourceSubmission().getId()+"&candidateUUID="+submission.getCandidate().getCandidateUUID()+"&submissionStatus=REJECTED").toString();
 
 		if(null != submission.getVendorLocationId()){
-		emailScenerioUtil.sendNotification(actionLink, userClient, userVendor, submission.getVendorLocationId(), notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, userClient, userVendor, submission.getVendorLocationId(), notificationScenario,new HashMap<String,String>());
 		}
 	   }
 	}
@@ -4554,7 +4554,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 							     actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+reqsub.getSourceSubmission().getRequirement().getRequirementUUID()+"&submissionStatus=all").toString();
 
 								if(null != reqsub.getVendorLocationId()){
-								emailScenerioUtil.sendNotification(actionLink, userClient, userVendor, reqsub.getVendorLocationId(), notificationScenario);
+								emailScenerioUtil.sendNotification(actionLink, userClient, userVendor, reqsub.getVendorLocationId(), notificationScenario,new HashMap<String,String>());
 								}
 						 }	
 					 vendorIds.add(reqsub.getVendorLocationId().getId());

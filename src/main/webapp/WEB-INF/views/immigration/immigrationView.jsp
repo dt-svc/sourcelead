@@ -20,8 +20,6 @@
       <input type="hidden" id = "candidateID" value = "${candidateId}">
 		<input type="hidden" id = "immigrationID" value = "${immigrationId}">
 		<input type="hidden" id = "templateID" value = "${templateId}">
-		<input type="hidden" id="Passport" name="Passport" value="Passport" >
-		<input type="hidden" id="Visa" name="Visa" value="Visa" >
 		
 		<div class="clearfix"></div>
 		<div class="immigraHead">
@@ -97,25 +95,12 @@
     
   </section>
   <!-- Content Area -->
-</div>
+
    
 <!-- Footer Area --> 
 
 <!--   Popup Code  -->
 <div class="popMask"></div>
-
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
-<script src="/resources/js/jquery-ui.js"></script>
-<script src="js/moment.min.js"></script> 
-<script src="js/bootstrap-datetimepicker.min.js"></script> 
-<script src="js/bootstrap.min.js"></script> 
-<script src="js/masterHeaderAction.js"></script> 
-<script src="js/bootstrap-select.min.js"></script> 
-<script src="js/chosen.jquery.min.js"></script> 
-<script src="js/jquery-ui.min.js"></script> 
-<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
-
 
 <script>
 $(document).ready(function() {
@@ -128,6 +113,11 @@ $(document).ready(function() {
 
 <!--   Family Popup's  -->
 <script>
+//update the javascript variables
+immigrationId = '<c:out value ="${immigrationId}"/>'
+candidateId = '<c:out value ="${candidateId}"/>'
+templateId = '<c:out value ="${templateId}"/>'
+
 var addfamilyPopupEventListener = function() {
 	$("body").click(function(){ // used for family popup events.
 		$(".immiSubMenu").hide();
@@ -156,6 +146,8 @@ $(document).ready(function() {
         $(".immigraTabs_inn").not(tab).css("display", "none");
         if(tab=='#familiesTab'){
         	immigration.displayFamilyDetails(candidateId);
+        }else if(tab=='#familiesTab'){
+        	immigration.displayFamilyDetails(candidateId);
         }else if(tab=='#educationsTab'){
         getCandidateEducationList(candidateId);
         } else if(tab=='#employersTab'){
@@ -164,18 +156,14 @@ $(document).ready(function() {
         	getCandidateResidenceList(candidateId);
         }else if(tab=='#passportsTab'){
         	var Passport=$("#Passport").val();
-        immigration.displayPassportDetails(candidateId,Passport);
+        immigration.displayPassportDetails(candidateId,'Passport');
         }else if(tab=='#visasTab'){
          var Visa=$("#Visa").val();
-          immigration.displayVisaDetails(candidateId,Visa);
+          immigration.displayVisaDetails(candidateId,'Visa');
         }
         $(tab).fadeIn();
     });
 	
-	// update the javascript variables
-	immigrationId = '<c:out value ="${immigrationId}"/>'
-	candidateId = '<c:out value ="${candidateId}"/>'
-	templateId = '<c:out value ="${templateId}"/>'
 	
 });	
 	</script>
@@ -214,6 +202,13 @@ $(document).ready(function() {
         $('.side_mask').fadeOut(200);
         });
     </script>
+    <script>
+	// use below function to clear all the date values.
+   function clearDateValue(id){
+	   $("#"+id).val(""); 
+   }
+   </script>
+   
     <!-- Script for Linked Invoice pop -->
 <jsp:include page="../masterFooter.jsp" />
  

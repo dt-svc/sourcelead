@@ -205,13 +205,30 @@ public class ImmigrationRestController {
         model.addObject("templateId", templateId);
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
                 "orgLocations");
-        ImmigrationDTO immigrationDTO = immigrationCommonService.getImmigrationViewList(immigrationId,orgLocations);
+        ImmigrationDTO immigrationDTO = null;
+        if(immigrationId!=null && !StringUtils.isEmpty(immigrationId)) {
+        	immigrationDTO= immigrationCommonService.getImmigrationViewList(immigrationId,orgLocations);
+        }
         model.addObject("immigration", immigrationDTO);
         model.addObject("sourceleadUrl", sourceleadUrl);
         model.setViewName("/immigration/immigrationView");
         return model;
     }
-
+    @RequestMapping(value = {"/viewImmigrationById"})
+    public ModelAndView getImmigrationDeatilsById(HttpServletRequest request
+    		 ,@RequestParam(value = "immigrationId", required = true) String immigrationId) throws Exception {
+        ModelAndView model = new ModelAndView();
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+                "orgLocations");
+        ImmigrationDTO immigrationDTO = null;
+        if(immigrationId!=null && !StringUtils.isEmpty(immigrationId)) {
+        	immigrationDTO= immigrationCommonService.getImmigrationViewList(immigrationId,orgLocations);
+        }
+        model.addObject("immigration", immigrationDTO);
+        model.addObject("sourceleadUrl", sourceleadUrl);
+        model.setViewName("/immigration/petitionDetailsTab");
+        return model;
+    }
     // ============= immigration view End. if you don't required comment above code
     // end here============================
     @RequestMapping(value = {"/gotoTemplatePreviousPage"})
@@ -739,6 +756,25 @@ public class ImmigrationRestController {
 		}
 
 		return canEdu;  
+	}
+	
+	@RequestMapping(value = { "/getCandidateEmpDetailsById" })
+	public @ResponseBody  CandidateEmployers getCandidateEmpDetailsById(
+			@RequestParam(value = "id", required = true) Long id,
+			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		System.out.println(" in controller method getCandidateFamilyDetailsById id ---> "+id);
+		CandidateEmployers canEmp= null;
+		try {
+			canEmp = candidateEmployersService.getCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, id);
+
+		} catch (Exception e) {
+			logger.error("Exception caught in controller test --->"+e.getMessage());
+			e.printStackTrace();
+		}
+
+		return canEmp;  
 	}
 
 	@RequestMapping(value = { "/deleteCandidateEduDetails" })

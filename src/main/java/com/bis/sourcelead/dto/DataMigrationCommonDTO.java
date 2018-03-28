@@ -5,6 +5,8 @@ public class DataMigrationCommonDTO extends CommonDTO {
 	private String uploadType;
 	private String timesheetMode;
 	private String headerPosition;
+	private String projectUUID;
+	private String projectClientUUID;
 	
 	public String getFilePath()
 	{
@@ -44,5 +46,21 @@ public class DataMigrationCommonDTO extends CommonDTO {
 	public void setHeaderPosition(String headerPosition)
 	{
 		this.headerPosition = headerPosition;
+	}
+
+	public String getProjectUUID() {
+		return projectUUID;
+	}
+
+	public void setProjectUUID(String projectUUID) {
+		this.projectUUID = projectUUID;
+	}
+
+	public String getProjectClientUUID() {
+		return projectClientUUID;
+	}
+
+	public void setProjectClientUUID(String projectClientUUID) {
+		this.projectClientUUID = projectClientUUID;
 	}
 }

@@ -253,7 +253,6 @@
 		  });
 		</script>
 		<script>
-		<script>
 		function clearCandidateCertStartDate(){
 			$("#validfrom").val("");
 			};

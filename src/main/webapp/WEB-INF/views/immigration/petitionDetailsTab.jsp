@@ -1,4 +1,3 @@
-<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 		  <div class="immigraDetailsOut">
 		  	<div class="immigraDetailsWrap">
 			  <div class="immigraDetailsCta">
@@ -66,7 +65,7 @@
 	 <script>
 	 
 	 $(document).ready(function() {
-		 location.href = sourceleadUrl + immiModulePath + "/viewImmigration?immigrationId="+immigrationId;
+		 //location.href = sourceleadUrl + immiModulePath + "/viewImmigration?immigrationId="+immigrationId;
 	 });	
 	 
 	 </script>
