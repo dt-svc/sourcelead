@@ -2555,11 +2555,11 @@ public class TimesheetRestController {
     	 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	 LinkedList<TimeSheetDayEntries> timeSheetDayEntriesList = new LinkedList<>();
-		 addTimesheetDayEntriesByProjectIdAndProjectMemberId(timesheetProjectTaskDTO.getProjectId(), timesheetProjectTaskDTO.getProjectTaskMemberId(), timesheetProjectTaskDTO.getTaskUUID(), timesheetProjectTaskDTO.getTimesheetDate(), timesheetProjectTaskDTO.getHours(),timesheetProjectTaskDTO.getComments(),loginUser, loginOrgLocation);
+		 addTimesheetDayEntriesByProjectIdAndProjectMemberId(timesheetProjectTaskDTO.getProjectId(), timesheetProjectTaskDTO.getProjectTaskMemberId(), timesheetProjectTaskDTO.getTaskUUID(), timesheetProjectTaskDTO.getTimesheetDate(), timesheetProjectTaskDTO.getHours(),timesheetProjectTaskDTO.getComments(),loginUser, loginOrgLocation,null);
 	 	 return timeSheetDayEntriesList;
        }
        
-       private void addTimesheetDayEntriesByProjectIdAndProjectMemberId(Long projectId,Long projectMemberId,String taskUUID,String timesheetDateStr,String hours,String comments,User loginUser,OrgLocations loginOrgLocation) throws Exception{
+       private void addTimesheetDayEntriesByProjectIdAndProjectMemberId(Long projectId,Long projectMemberId,String taskUUID,String timesheetDateStr,String hours,String comments,User loginUser,OrgLocations loginOrgLocation, String leaveStatusType) throws Exception{
     	   Projects projects = projectsService.getProjectById(projectId);
     	   ProjectMembers projectMember = projectMembersService.getProjectMemberById(projectMemberId);
     	   Date frequencyStartDate = null;
@@ -2620,10 +2620,10 @@ public class TimesheetRestController {
 				 }
 			     
 			}
-    	    addTimesheetDayEntry(projectMember, actualStartDate, actualEndDate, frequencyStartDate, frequencyEndDate, loginUser,timesheetDate,hours,comments,taskUUID,loginOrgLocation.getDateFormat());
+    	    addTimesheetDayEntry(projectMember, actualStartDate, actualEndDate, frequencyStartDate, frequencyEndDate, loginUser,timesheetDate,hours,comments,taskUUID,loginOrgLocation.getDateFormat(),leaveStatusType);
        }
        
-       private void addTimesheetDayEntry(ProjectMembers projectMember,Date actualStartDate,Date actualEndDate,Date frequencyStartDate,Date frequencyEndDate,User loginUser,Date timesheetDate,String hours,String comments,String taskUUID,String dateformat) throws Exception{
+       private void addTimesheetDayEntry(ProjectMembers projectMember,Date actualStartDate,Date actualEndDate,Date frequencyStartDate,Date frequencyEndDate,User loginUser,Date timesheetDate,String hours,String comments,String taskUUID,String dateformat, String leaveStatusType) throws Exception{
     	  if(projectMember!= null && projectMember.getProjects()!= null && projectMember.getMasterCandidateId()!= null) {
     	   TimesheetSubmissions timesheetSubmissions  = timesheetSubmissionsService.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(actualStartDate,actualEndDate,projectMember.getProjects().getId(),projectMember.getMasterCandidateId().getId());
 	    	if(timesheetSubmissions == null){
@@ -2633,7 +2633,11 @@ public class TimesheetRestController {
 		    	timesheetSubmissions.setProjectMembers(projectMember);
 		    	timesheetSubmissions.setProjects(projectMember.getProjects());
 		    	timesheetSubmissions.setMasterCandidateId(projectMember.getMasterCandidateId());
-		    	timesheetSubmissions.setStatus(Constants.RECORD_ACTIVE+"");
+		    	if(leaveStatusType!= null && StringUtils.isNotEmpty(leaveStatusType) && (leaveStatusType.equalsIgnoreCase(Constants.LEAVE_WITHDRAW)||leaveStatusType.equalsIgnoreCase(Constants.LEAVE_CANCELLED))) {
+		    		timesheetSubmissions.setStatus(Constants.RECORD_INACTIVE+"");
+		    	}else {
+		    		timesheetSubmissions.setStatus(Constants.RECORD_ACTIVE+"");
+		    	}
 		    	timesheetSubmissions.setCreatedDate(CommonUtil.currentDate());
 		    	timesheetSubmissions.setCreatedBy(loginUser.getUserCode());
 		    	timesheetSubmissions.setWeekcomments("");
@@ -2667,7 +2671,11 @@ public class TimesheetRestController {
 							saHierarchy.setCreatedBy(timesheetSubmissions.getCreatedBy());
 							saHierarchy.setUpdatedDate(timesheetSubmissions.getUpdatedDate());
 							saHierarchy.setUpdatedBy(timesheetSubmissions.getUpdatedBy());
-							saHierarchy.setStatus(Constants.RECORD_ACTIVE+"");
+							if(leaveStatusType!= null && StringUtils.isNotEmpty(leaveStatusType) && (leaveStatusType.equalsIgnoreCase(Constants.LEAVE_WITHDRAW)||leaveStatusType.equalsIgnoreCase(Constants.LEAVE_CANCELLED))) {
+								saHierarchy.setStatus(Constants.RECORD_INACTIVE+"");
+					    	}else {
+					    		saHierarchy.setStatus(Constants.RECORD_ACTIVE+"");
+					    	}
 					    }
 						saHierarchyList.add(saHierarchy);
 					}
@@ -2676,7 +2684,7 @@ public class TimesheetRestController {
 			timesheetSubmissionsList.add(timesheetSubmissions);
 			timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
 			
-			HashMap<String,Long> totalMap =   addTimesheetDateDayEntries(actualStartDate, actualEndDate, timesheetDate,dateformat, taskUUID, hours, comments, timesheetSubmissions, loginUser);
+			HashMap<String,Long> totalMap =   addTimesheetDateDayEntries(actualStartDate, actualEndDate, timesheetDate,dateformat, taskUUID, hours, comments, timesheetSubmissions, loginUser,leaveStatusType);
 			
 			Long total =totalMap.get("TOTAL");
 			Long totalNonBillableHours = totalMap.get("BILLABLE");
@@ -2723,7 +2731,7 @@ public class TimesheetRestController {
     	 }
        }  
        
-       private HashMap<String,Long> addTimesheetDateDayEntries(Date actualStartDate,Date actualEndDate,Date timesheetDate,String dateFormat,String taskUUID,String hours,String comments,TimesheetSubmissions timesheetSubmissions,User loginUser) throws Exception{
+       private HashMap<String,Long> addTimesheetDateDayEntries(Date actualStartDate,Date actualEndDate,Date timesheetDate,String dateFormat,String taskUUID,String hours,String comments,TimesheetSubmissions timesheetSubmissions,User loginUser, String leaveStatusType) throws Exception{
     	   Long total = 0l;
 	        Long totalBillableHours = 0l;
 	        Long totalNonBillableHours = 0l;
@@ -2760,7 +2768,11 @@ public class TimesheetRestController {
 						timesheetDayEntries.setTimesheetDate(timesheetDate);
 						timesheetDayEntries.setCreatedDate(CommonUtil.currentDate());
 						timesheetDayEntries.setCreatedBy(loginUser.getCreatedBy());
-						timesheetDayEntries.setStatus(1);
+						if(leaveStatusType!= null && StringUtils.isNotEmpty(leaveStatusType) && (leaveStatusType.equalsIgnoreCase(Constants.LEAVE_WITHDRAW)||leaveStatusType.equalsIgnoreCase(Constants.LEAVE_CANCELLED))) {
+							timesheetDayEntries.setStatus(0);
+				    	}else {
+				    		timesheetDayEntries.setStatus(1);
+				    	}
 						timesheetDayEntries.setUpdatedBy(loginUser.getCreatedBy());
 						timesheetDayEntries.setUpdatedDate(CommonUtil.currentDate());
 						timesheetDayEntriesDao.saveTimesheetDayEntries(timesheetDayEntries);
@@ -2918,7 +2930,7 @@ public class TimesheetRestController {
 	            }
 	    }
 
-		public void linkLeaveTypeWithTimeSheet(User leaveApproverUserId, OrgLocations orgLocations, Long leaveTypeId, Leave leave) throws Exception {
+		public void linkLeaveTypeWithTimeSheet(User leaveApproverUserId, OrgLocations orgLocations, Long leaveTypeId, Leave leave, String leaveStatusType) throws Exception {
 			List<ProjectTasks> projectTaskList = leaveTypeService.getProjectTaskByorgLocationIdAndLeaveTypeId(orgLocations.getId(),leaveTypeId);
 			if(projectTaskList != null && !projectTaskList.isEmpty()) {
 			for(ProjectTasks projectTask: projectTaskList) {
@@ -2927,7 +2939,7 @@ public class TimesheetRestController {
 					String dateList = commonUtil.getDaysBetweenDates(leave.getFromDate(), leave.getToDate(), orgLocations.getDateFormat());
 					String leaveDate[] = dateList.split(",");
 					for(int i=0;i<leaveDate.length;i++) {
-						addTimesheetDayEntriesByProjectIdAndProjectMemberId(projectTask.getProjectId().getId(), projectMember.getId(), projectTask.getProjectTasksUUID(), leaveDate[i],CalendarUtil.getTimesheetHoursDisplayFormat(orgLocations.getAverageWorkingHours().floatValue()).replace(".", ":"), leave.getReason(), leaveApproverUserId, orgLocations);
+						addTimesheetDayEntriesByProjectIdAndProjectMemberId(projectTask.getProjectId().getId(), projectMember.getId(), projectTask.getProjectTasksUUID(), leaveDate[i],CalendarUtil.getTimesheetHoursDisplayFormat(orgLocations.getAverageWorkingHours().floatValue()).replace(".", ":"), leave.getReason(), leaveApproverUserId, orgLocations,leaveStatusType);
 						}
 					}
 				}
@@ -2946,7 +2958,7 @@ public class TimesheetRestController {
 							String dateList = commonUtil.getDaysBetweenDates(holiday.getFromDate(), holiday.getToDate(), orgLocations.getDateFormat());
 							String holidayDate[] = dateList.split(",");
 							for(int i=0;i<holidayDate.length;i++) {
-								addTimesheetDayEntriesByProjectIdAndProjectMemberId(projectTask.getProjectId().getId(), projectMember.getId(), projectTask.getProjectTasksUUID(), holidayDate[i],CalendarUtil.getTimesheetHoursDisplayFormat(orgLocations.getAverageWorkingHours().floatValue()).replace(".", ":"), holiday.getHolidayName(), user, orgLocations);
+								addTimesheetDayEntriesByProjectIdAndProjectMemberId(projectTask.getProjectId().getId(), projectMember.getId(), projectTask.getProjectTasksUUID(), holidayDate[i],CalendarUtil.getTimesheetHoursDisplayFormat(orgLocations.getAverageWorkingHours().floatValue()).replace(".", ":"), holiday.getHolidayName(), user, orgLocations,null);
 								}
 							}
 						}
