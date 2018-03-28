@@ -342,7 +342,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(String timesheetFrequency,Date startDate,Date endDate,Long clientId,String status,Long locationsId, Long approverUserId,String searchValue, int start, int length,String timesheetFor){
+	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(String timesheetFrequency,Date startDate,Date endDate,Long clientId,String status,Long locationsId, Long approverUserId,String searchValue,String projectName,int start, int length,String timesheetFor){
 		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
 		
 		ResponseList<ProjectMembers> response = new ResponseList<>();
@@ -372,7 +372,9 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					.append( " (select sah.submissionId.projectMembers.id from SubmissionApproverHierarchy sah where sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate and sah.submissionApprovalStatus  like '%"+ searchValue +"') ")
 					.append( " )");
 		}
-		
+		if(StringUtils.isNotEmpty(projectName) && projectName != null) {
+			searchCountQuery.append("and pm.projects.projectName like '%" + projectName + "%'");
+		}
 		
 		String dateQuery = "";
 		String userQuery = "";
@@ -401,7 +403,9 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					.append( " (select sah.submissionId.projectMembers.id from SubmissionApproverHierarchy sah where sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate and sah.submissionApprovalStatus  like '%"+ searchValue +"%') ")
 					.append( " )");
 		}
-		
+		if(StringUtils.isNotEmpty(projectName) && projectName != null) {
+			searchQuery.append("and projects.projectName  like '%" + projectName + "%'");
+		}
 		sortingOrder = "order by pm.id desc";
 		
 		if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Bi-Weekly")){

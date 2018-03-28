@@ -1295,9 +1295,15 @@ function getAllEmailContacts(){
 	var internalOutput = "";
 	
 	for(var e in contactUsers) {
+		
 		if(contactUsers[e] == 'Email' || contactUsers[e] == 'Notification' || contactUsers[e] == 'on')
 			continue;
+	   var elist=$("#recipientEmail").chosen().find("option:selected" ).text();
+	   var searchString=elist.search(contactUsers[e]);
+		 if(searchString==-1)
+			{
 		internalOutput = internalOutput+"<option value='" +contactUsers[e]+ "' selected>"+contactUsers[e]+"</option>";
+			}
 	}
 	
 	    $("#recipientEmail").append(internalOutput);
