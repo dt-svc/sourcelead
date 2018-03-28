@@ -93,9 +93,8 @@ public class TabsDaoImpl implements TabsDao{
 			 }
 		 }
 		
-		String query = "from Tabs tabs left join fetch tabs.tabs where tabs.id IN (select distinct sa.tabs.id from SourceleadActions sa where sa.id IN (select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN (:modulesId) "
-				+ " and moduleActions.sourceleadActions.id IN (:roleActonList))) and tabs.status = '1' ORDER BY tabs.tabOrder ASC ";
-	    List<Tabs> tabsList = session.createQuery(query.toString()).setParameterList("modulesId", modulesId).setParameterList("roleActonList", roleActonList).list();
+		String query = "from Tabs tabs left join fetch tabs.tabs where tabs.id IN (select distinct sa.tabs.id from SourceleadActions sa where sa.id IN (:roleActonList)) and tabs.status = '1' ORDER BY tabs.tabOrder ASC ";
+	    List<Tabs> tabsList = session.createQuery(query.toString()).setParameterList("roleActonList", roleActonList).list();
 	    return tabsList;
 	}
 

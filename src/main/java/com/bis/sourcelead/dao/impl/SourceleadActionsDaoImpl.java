@@ -86,9 +86,8 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 			 }
 		 }
 		
-	    String query = "from SourceleadActions sa where sa.id IN (select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId) "
-	    		+ "and moduleActions.sourceleadActions.id IN (:roleActonList)) ";
-	    List<SourceleadActions> actionsList = session.createQuery(query.toString()).setParameterList("modulesId", modulesId).setParameterList("roleActonList", roleActonList).list();
+	    String query = "from SourceleadActions sa where sa.id IN (:roleActonList) ";
+	    List<SourceleadActions> actionsList = session.createQuery(query.toString()).setParameterList("roleActonList", roleActonList).list();
       
       
 	    return actionsList;

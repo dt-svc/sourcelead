@@ -411,11 +411,12 @@ function validateCompanyName(){
 	var company = document.getElementById("companyName").value;
 	var companyName = encodeURIComponent(con);
 	var sourceleadUrl ='${sourceleadUrl}';
+	var orgLocationId = document.getElementById("orgLocationId").value;
 	 if(companyName != null && companyName != ''){
 		 $("#register_button").attr("disabled", "disabled");
 			 $.ajax({
 				    type: "GET",
-       	            url: sourceleadUrl+"/validateCompanyName?companyName="+companyName,
+       	            url: sourceleadUrl+"/validateCompanyName?companyName="+companyName+"&orgLocationId="+orgLocationId,
 			        success: function(data) {
 			        	 var result = data;
 			        		if(result == "Company Duplicated") {

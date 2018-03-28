@@ -1093,18 +1093,29 @@ public class RegistrationRestController {
 	   
 	   @RequestMapping(value = "/app/validateCompanyName", method = RequestMethod.GET)
 	   public @ResponseBody String validateCompanyName(
-	   		@RequestParam(value="companyName", required=false) String companyName,HttpServletRequest request) {
+	   		@RequestParam(value="companyName", required=true) String companyName,@RequestParam(value="orgLocationId", required=false) String orgLocationId,HttpServletRequest request) {
 			String status = null;
 			boolean flag = false;
+			OrgLocations regOrgLocation = null;
 				try {
-					List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
-					if(null != orgLocationsList){
-						for(OrgLocations orgLocations : orgLocationsList){
-							if(orgLocations.getOrgLocationName().equalsIgnoreCase(companyName)){
-								flag = true;
+					if(StringUtils.isNoneBlank(orgLocationId)) {
+						regOrgLocation = orgLocationService.getOrgLocations(Long.parseLong(orgLocationId));
+					}
+					
+					if(regOrgLocation != null && regOrgLocation.getOrgLocationName().equalsIgnoreCase(companyName)) {
+						flag = false;
+					}else {
+						List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
+						if(null != orgLocationsList){
+							for(OrgLocations orgLocations : orgLocationsList){
+								 if(orgLocations.getOrgLocationName().equalsIgnoreCase(companyName)){
+									flag = true;
+								}
 							}
 						}
 					}
+					
+				
 					
 				} catch (Exception e) {
 					e.printStackTrace();

@@ -41,7 +41,7 @@ public void updateSubscription() throws IOException, SQLException {
 		DataSource dataSource = comboPooledDataSource();
 		conn = dataSource.getConnection();
 			
-		      System.out.println("----Updating subscription to org starts -----");
+		      System.out.println("----Adding subscription to orgs starts -----");
 		      
 			 String sql1 = "SELECT * FROM sourcelead.ROLES roles where roles.ROLE_NAME = 'ROLE_ADMIN' ";
 			 stmt1 = conn.createStatement();
@@ -121,7 +121,11 @@ public void updateSubscription() throws IOException, SQLException {
 								 ResultSet rs7 = stmt7.executeQuery(sql7);
 								 if(rs7.next()) {
 									 if(rs7.getString("TAB_ID") != null) {
-										 tabIds.add(rs7.getLong("TAB_ID"));
+										 if(rs7.getLong("ID") == 14L) {
+											 tabIds.add(rs7.getLong("ID"));
+										 }else {
+											 tabIds.add(rs7.getLong("TAB_ID"));
+										 }
 									 }else {
 										 tabIds.add(rs7.getLong("ID"));
 									 }
@@ -167,7 +171,7 @@ public void updateSubscription() throws IOException, SQLException {
 				 
 				
 			}
-			System.out.println("----Updating subscription to org ends-----");
+			System.out.println("----Adding subscription to orgs ends-----");
 		
 	}catch(Exception e){
 		e.printStackTrace();

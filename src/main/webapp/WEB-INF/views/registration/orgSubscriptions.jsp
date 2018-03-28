@@ -503,9 +503,13 @@ function licenseSubscriptionDetails(licenseUUID){
 	         
 	        	 for(var i=0; i<json.modulesIdsList.length; i++){
 	        		var opt = json.modulesIdsList[i];
-	        		 document.getElementById("checkbox"+opt).checked = true;
-	    		     document.getElementById("module"+opt).removeAttribute("class")
-	    		     document.getElementById("module"+opt).className = 'panelDefault clearfix activeOrgbox'
+	        		
+	        		if(document.getElementById("checkbox"+opt) != null){
+	        			 document.getElementById("checkbox"+opt).checked = true;
+		    		     document.getElementById("module"+opt).removeAttribute("class")
+		    		     document.getElementById("module"+opt).className = 'panelDefault clearfix activeOrgbox'
+	        		}
+	        		
 	        			
 	        	 }
 	         
@@ -807,8 +811,7 @@ var validationSettings = {
         	    });
         		
         		
-        		
-          		 $.ajax({
+           		 $.ajax({
           	      type: "POST",
           	    	data: formData,
                 	  url: sourceleadUrl+"/saveOrgLocationSubscription?${_csrf.parameterName}=${_csrf.token}&orgId="+orgId+"&registeredModules="+registeredModules,
