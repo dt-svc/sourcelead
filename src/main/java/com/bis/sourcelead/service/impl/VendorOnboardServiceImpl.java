@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -35,12 +36,15 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgBankDetails;
+import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
+import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -52,6 +56,7 @@ import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgBankDetailsService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
@@ -60,6 +65,7 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
+import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.VendorOnboardService;
@@ -148,6 +154,12 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 	 
 	@Autowired
 	OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	TabsService tabService;
+	
+	@Autowired
+	OrgLicenseSubscriptionService orgLicenseSubscriptionService;
 	 
 	
 	@Override
@@ -734,7 +746,42 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		String managerids = managerrole.getActionId()+","+strbul;
 	    managerrole.setActionId(managerids);
 		rolesService.storeRoles(managerrole);
+		
+		updateOrgSubscriptionRegsiteredTabs(orgLocations, adminids);
+		
  }
+	
+ public void updateOrgSubscriptionRegsiteredTabs(OrgLocations orglocations,String actionIds) throws Exception {
+		 
+		 String[] sourceleadActionIds = actionIds.split(",");
+		 List<Long> actionIdsList = new ArrayList<>();
+		 for(int i=0; i<sourceleadActionIds.length;i++) {
+			 actionIdsList.add(Long.parseLong(sourceleadActionIds[i]));
+		 }
+		 
+		 List<SourceleadActions> actionsList = sourceleadActionsService.getAllSourceleadActionsByIdsList(actionIdsList);
+		 Set<Long> tabIds = new HashSet<>();
+		 if(actionsList != null && !actionsList.isEmpty()) {
+			 for(SourceleadActions action : actionsList) {
+				 Tabs tabs = tabService.getTabListByTabId(action.getTabs().getId());
+				 if(tabs.getTabs() != null){
+					 tabIds.add(tabs.getTabs().getId());
+				 }else {
+					 tabIds.add(tabs.getId());
+				 }
+			 }
+		 }
+		 
+		 StringBuilder tabsBuilder = new StringBuilder();
+		 for (Long tabId : tabIds) {
+			 tabsBuilder.append(tabId).append(",");
+		 }
+		 String tabsBuilderString = tabsBuilder.substring(0, tabsBuilder.length()-1);
+		 
+		 OrgLicenseSubscription orgLicenseSubscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByOrgIdAndCountry(orglocations.getOrg().getId(), orglocations.getCountry());
+		 orgLicenseSubscription.setSubscriptionTabs(tabsBuilderString);
+		 orgLicenseSubscriptionService.saveOrgLicenseSubscription(orgLicenseSubscription);
+	 }
 
 	@Override
 	public VendorOnboarding getVendorOnboardingByOrgLocationIdAndVendorLocationId(Long orgLocationId,

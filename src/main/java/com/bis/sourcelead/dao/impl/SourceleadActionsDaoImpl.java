@@ -283,4 +283,15 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 		return actionsList;
 	}
 
+	@Override
+	@Transactional
+	public List<SourceleadActions> getAllSourceleadActionsByIdsList(List<Long> actionIdList) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+  		
+	    String query = "from SourceleadActions sa left join fetch sa.tabs where sa.id IN (:actionIdList)";
+	    List<SourceleadActions> actionsList = session.createQuery(query.toString()).setParameterList("actionIdList", actionIdList).list();
+   
+	    return actionsList;
+	}
+
 }

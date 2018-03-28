@@ -17,6 +17,7 @@ import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Tabs;
+import com.bis.sourcelead.entity.User;
 
 @Repository
 public class TabsDaoImpl implements TabsDao{
@@ -189,8 +190,18 @@ public class TabsDaoImpl implements TabsDao{
 	@Override
 	@Transactional
 	public Tabs getTabListByTabId(Long tabId) {
+		
 		Session session = this.sessionFactory.getCurrentSession();
-		return (Tabs) session.get(Tabs.class, tabId);
+		List<Tabs> tabs = new ArrayList<Tabs>();
+		logger.debug("getTabListByTabId start");
+		tabs = session.createQuery("from Tabs tabs left join fetch tabs.tabs where tabs.id = :tabId" ).setLong( "tabId", tabId ).list();
+		logger.debug("getTabListByTabId end");
+		if (tabs.size() > 0) {
+			return tabs.get(0);
+		} else {
+			return null;
+		}
+   	
 	}
 
 	@Override
