@@ -895,7 +895,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="+notificationInvoice.getInvoiceUUID()+"&invoiceType=Receivable").toString();
 			 
 		 }
-		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario,new HashMap<String,String>());
 	}
 
 
@@ -2361,7 +2361,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				 actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="+notificationInvoice.getInvoiceUUID()+"&invoiceType=Receivable").toString();
 				 
 			 }
-		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario,new HashMap<String,String>());
 		
 	}
 	@Override

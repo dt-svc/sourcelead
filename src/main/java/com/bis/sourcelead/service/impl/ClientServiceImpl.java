@@ -1473,7 +1473,7 @@ public class ClientServiceImpl implements ClientService {
 		String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(), globalVarsMap);
 		noificationEmailScenario.setBody(notificationbody);
 
-		emailScenerioUtil.sendNotification(actionLink, loginUser, changedUser, orgLocation, noificationEmailScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, changedUser, orgLocation, noificationEmailScenario,new HashMap<String,String>());
 
 	}
 

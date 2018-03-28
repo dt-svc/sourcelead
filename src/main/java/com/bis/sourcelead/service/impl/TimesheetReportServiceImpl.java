@@ -647,7 +647,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	            table.addCell(cell);
 	        }
             table.completeRow();
-            ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate, null,null,orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(), 0, timesheetReportsDTO.getTotalRows(),"reports");
+            ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate, null,null,orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(),"", 0, timesheetReportsDTO.getTotalRows(),"reports");
             
             java.util.List<String[]> reportList = new ArrayList<>();
             for(ProjectMembers promembers:projectMembers.getData()){
@@ -909,7 +909,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		
 		
 		int column = 0;
-		 ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate,null,null, orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(), 0, timesheetReportsDTO.getTotalRows(),"reports");
+		 ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate,null,null, orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(),"", 0, timesheetReportsDTO.getTotalRows(),"reports");
 		 for(ProjectMembers promembers:projectMembers.getData()){
 			 writeRow = createExcelsheet.createRow(column + 1);
 			 createExcelsheet = prepareTimesheetReportDataExcel(promembers,displayWeeksList,loginUser,createExcelsheet,writeRow,startDate,endDate,orgLocations);
