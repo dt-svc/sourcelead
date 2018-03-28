@@ -539,6 +539,8 @@ function editEducationDEtailsByRowId(id){
         			udpateEduFormdata(formObj,fomValues,data);
         			$('#eduName').val(data.name); // to select the dropdwon value based on id value.
         			$('#scoreEducationType').val(data.gradeType);
+        			$('#immigrationEduStartDate12').val(data.startDateStr);
+        			$('#immigrationEduEndDate').val(data.endDateStr);
         			$('#candidateEducationId').val(data.id);
         	
         	   
@@ -581,14 +583,13 @@ function udpateEduFormdata (formObj, idsArray, dataObj) {
 		if (typeof formElemName!= 'undefined' && idsArray.indexOf(formElemName) > -1) {
 			console.log(" inside ** formElemId:-> "+formElemName +",  dataObj.formElemId: ->"+dataObj[formElemName]);
 			// below code added for date fields in forms based on name paroperty of the field. date should contain date string in filed name.
-			if(formElemName.toLowerCase().indexOf("date")>-1 && dataObj[formElemName] != null && typeof  dataObj[formElemName] != 'undefined' && dataObj[formElemName]!=''){
+			/*if(formElemName.toLowerCase().indexOf("date")>-1 && dataObj[formElemName] != null && typeof  dataObj[formElemName] != 'undefined' && dataObj[formElemName]!=''){
 				console.log(" inside date value---> ");
 				var dateVal =  moment(dataObj[formElemName]).format("DD-MM-YYYY");
 				$("#"+formId+" input[name='"+formElemName+"']").val(dateVal); // sets date values to the form.
 			}// above code checks the date field names and set the formatted date value to the popup.
-			else{
+*/			
 			 $("#"+formId+" input[name='"+formElemName+"']").val(dataObj[formElemName]); // setting non date values to the from
-			}
 		}
 
 	});
