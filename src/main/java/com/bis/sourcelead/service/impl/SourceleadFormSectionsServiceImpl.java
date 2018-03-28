@@ -134,6 +134,7 @@ public class SourceleadFormSectionsServiceImpl  implements SourceleadFormSection
 		if(customList.getDataValidationType() != null) {
 			String length = "";
 			String Type = "";
+			StringBuilder validation = new StringBuilder();
 			Boolean length2To250 = customList.getDataValidationType().contains("validate_length length2-250 ");
 			Boolean length2To500 = customList.getDataValidationType().contains("validate_length length2-500 ");
 			Boolean length500AndAbove = customList.getDataValidationType().contains("Length 500 and Above ");
@@ -156,6 +157,7 @@ public class SourceleadFormSectionsServiceImpl  implements SourceleadFormSection
 				Type = "Aplhanumeric";
 			}
 			customDTO.setValidationType(Type);
+			customDTO.setValidation(customList.getDataValidationType());
 		}
 		
 		if(customFieldsubList != null && !customFieldsubList.isEmpty()) {
