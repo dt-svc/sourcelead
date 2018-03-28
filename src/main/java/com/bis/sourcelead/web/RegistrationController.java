@@ -340,7 +340,7 @@ public class RegistrationController {
 		public ModelAndView enrolledOrgSummary(HttpServletRequest request,
 				@RequestParam(value = "orgCode", required = false) String orgCode) throws Exception {
 			    ModelAndView model = new ModelAndView();
-			
+			    commonUtil.highLightMenu(Constants.OrgSettings, request);
 			    Org org = orgService.getOrgByOrgCode(orgCode);
 				OrgLocations orgLocations = orgLocationService.getPrimaryOrgLocationByOrgId(org.getId());
 				

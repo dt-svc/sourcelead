@@ -44,6 +44,7 @@ INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `UNI
 INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `UNIQUE_KEY`) VALUES ( '250 GB',  '250 GB', 'Data Storage', '250 GB');
 
 INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `UNIQUE_KEY`) VALUES ( 'Guest',  'Guest', 'Subscription Type', 'Guest');
+INSERT INTO `sourcelead`.`LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `UNIQUE_KEY`) VALUES ( 'Unlimited',  'Unlimited', 'Subscription Type', 'Unlimited');
 
 
 

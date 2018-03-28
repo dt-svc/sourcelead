@@ -715,10 +715,11 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 			Countries countries = countriesDao.getCountriesByCountryName(orgLicenseSubscriptionDTO.getCountry());
 			orgLicenseSubscription.setCurrency(countries.getCurrency());
 			
-			OrgLicenseSubscriptionPrice subscriptionPrice = orgLicenseSubscriptionPriceDao.getOrgLicenseSubscriptionPriceBySubscriptionTypeAndUserType(Long.parseLong(orgLicenseSubscriptionDTO.getSubscriptionType()), Long.parseLong(orgLicenseSubscriptionDTO.getUserSubscription()));
+			
 		    
-			if(!lookupData.getName().equalsIgnoreCase("Free Trail")) {
-						if(orgLicenseSubscriptionDTO.getCountry().equalsIgnoreCase("United States")) {
+			if(!lookupData.getName().equalsIgnoreCase("Free Trail") && !lookupData.getName().equalsIgnoreCase("Guest") && !lookupData.getName().equalsIgnoreCase("Unlimited")) {
+				OrgLicenseSubscriptionPrice subscriptionPrice = orgLicenseSubscriptionPriceDao.getOrgLicenseSubscriptionPriceBySubscriptionTypeAndUserType(Long.parseLong(orgLicenseSubscriptionDTO.getSubscriptionType()), Long.parseLong(orgLicenseSubscriptionDTO.getUserSubscription()));		
+				if(orgLicenseSubscriptionDTO.getCountry().equalsIgnoreCase("United States")) {
 							orgLicenseSubscription.setInvoiceAmount(subscriptionPrice.getSubscriptionRate());
 						}else {
 							Double invoiceAmount = conversionUtil.currencyConvert("USD", countries.getCurrency(),subscriptionPrice.getSubscriptionRate());

@@ -53,6 +53,7 @@ function addSubscription(licenseUUID){
 	 	result = result + '       <option value="${subscriptionType.id}">${subscriptionType.name}</option>';
 	    result = result +'		</c:forEach>';
 		result = result + '       <option value="8048" id="guestOpt" style="display:none">Guest</option>';
+		result = result + '       <option value="8049" id="unlimitedOpt" style="display:none">Unlimited</option>';
 	    result = result + '    </select>';
 		
 		result = result +'</div>';
@@ -470,6 +471,10 @@ function licenseSubscriptionDetails(licenseUUID){
         	  
         	  if(json.subscriptionType == '8048'){
         		  document.getElementById("guestOpt").style.display="";
+        	  }
+        	  
+        	  if(json.subscriptionType == '8049'){
+        		  document.getElementById("unlimitedOpt").style.display="";
         	  }
         	  
         	  $("select[name=subscriptionType]").val(json.subscriptionType);
