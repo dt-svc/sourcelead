@@ -39,6 +39,7 @@ import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+
 /**
  * 
  * @author Rajashekar
@@ -47,207 +48,272 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @Controller
 @RequestMapping("/app")
 public class PayrollController {
-	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
-
 	@Autowired
 	PayrollFileValidator validator;
-	
 	@Autowired
 	private UserService userService;
-	
 	@Autowired
 	private BisUserMappingService bisUserMappingService;
-	
 	@Autowired
 	private WageTaxSummaryService wageTaxSummaryService;
-
+	
 	@InitBinder
-	private void initBinder(WebDataBinder binder) {
+	private void initBinder(WebDataBinder binder)
+	{
 		binder.setValidator(validator);
 	}
-
+	
 	@RequestMapping(value = "/payrollForm")
-	public String getUploadForm(Model model) {
+	public String getUploadForm(Model model)
+	{
 		File fileModel = new File();
 		model.addAttribute("file", fileModel);
 		return "payroll/uploadPayroll";
 	}
-
-	
 	
 	@RequestMapping(value = "/payrollList")
-	public ModelAndView getPayrollList(HttpServletRequest request,HttpServletResponse response) {
-		   ModelAndView model = new ModelAndView();
-		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   model.setViewName("payroll/payrollList");
-		   
-		   SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-			if(sessionData == null)
-			{
-				sessionData = new SessionMaintainanceData();
-			}
-			sessionData.setNav(Constants.PAYROLL);
-			request.getSession().setAttribute("sessionData",sessionData);
-			
-	       return model;
+	public ModelAndView getPayrollList(HttpServletRequest request, HttpServletResponse response)
+	{
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("payroll/payrollList");
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
+		if (sessionData == null) {
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.PAYROLL);
+		request.getSession().setAttribute("sessionData", sessionData);
+		return model;
 	}
 	
 	/**
 	 * returns user mapping jsp for payroll
+	 * 
 	 * @param request
 	 * @param response
 	 * @return ModelAndView
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@RequestMapping(value = "/userMapping")
-	public ModelAndView userMapping(HttpServletRequest request,HttpServletResponse response) throws Exception {
-		   ModelAndView model = new ModelAndView();
-		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		   List<User> usersList = userService.getUsersListByOrglocationId(orgLocations.getId());
-		   usersList.sort((User report1, User report2)-> report1.getFirstName().compareToIgnoreCase(report2.getFirstName()));
-		   
-		   List<WageTaxSummary> wageTaxSummaryList = wageTaxSummaryService.getAllImportedUsers(orgLocations);
-		   
-		 //lambda here!
-		   wageTaxSummaryList.sort((WageTaxSummary report1, WageTaxSummary report2)-> report1.getEmployeeName().compareToIgnoreCase(report2.getEmployeeName()));
-			
-		   model.addObject("usersList", usersList);
-		   model.addObject("masterUsersList", wageTaxSummaryList);
-		   model.setViewName("payroll/userMapping");
-	       return model;
+	public ModelAndView userMapping(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<User> usersList = userService.getUsersListByOrglocationId(orgLocations.getId());
+		usersList.sort((User report1, User report2) -> report1.getFirstName().compareToIgnoreCase(report2.getFirstName()));
+		List<WageTaxSummary> wageTaxSummaryList = wageTaxSummaryService.getAllImportedUsers(orgLocations);
+		// lambda here!
+		wageTaxSummaryList.sort((WageTaxSummary report1, WageTaxSummary report2) -> report1.getEmployeeName().compareToIgnoreCase(report2.getEmployeeName()));
+		model.addObject("usersList", usersList);
+		model.addObject("masterUsersList", wageTaxSummaryList);
+		model.setViewName("payroll/userMapping");
+		return model;
 	}
 	
 	/**
-	 * @author Pavan Jampana
-	 * used to redirect to user pay screen
+	 * @author Pavan Jampana used to redirect to user pay screen
 	 * @param request
 	 * @return
 	 */
 	@RequestMapping(value = "/userPay")
-	public ModelAndView getUserPayroll(HttpServletRequest request) {
-		   ModelAndView model = new ModelAndView();
-		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   model.setViewName("payroll/userPayroll");
-		   
-		   SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-			if(sessionData == null)
-			{
-				sessionData = new SessionMaintainanceData();
-			}
-			sessionData.setNav(Constants.PAY);
-			request.getSession().setAttribute("sessionData",sessionData);
-			
-	       return model;
+	public ModelAndView getUserPayroll(HttpServletRequest request)
+	{
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("payroll/userPayroll");
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
+		if (sessionData == null) {
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.PAY);
+		request.getSession().setAttribute("sessionData", sessionData);
+		return model;
 	}
 	
-	 @RequestMapping(value = "/payrollReport")
-		public ModelAndView payrollReport(HttpServletRequest request) throws Exception {
-		 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-		 ModelAndView model = new ModelAndView();	
-		 if(sessionData == null)
-			{
-				sessionData = new SessionMaintainanceData();
-			}
-			//sessionData.setNav(Constants.PAYROLL);
-			
-			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			List<WageTaxSummary> wageTaxSummaryList =  wageTaxSummaryService.getUniqueWagesAndTaxListByOrgLocationId(orgLocation);
-			
-			if(wageTaxSummaryList !=null){
-				model.addObject("wageTaxSummaryList", wageTaxSummaryList);
-			}
-			request.getSession().setAttribute("sessionData",sessionData);
-			
-			model.setViewName("payroll/payrollReport");
-			model.addObject("sourceleadUrl", sourceleadUrl);
-			return model;
-
+	@RequestMapping(value = "/payrollReport")
+	public ModelAndView payrollReport(HttpServletRequest request) throws Exception
+	{
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
+		ModelAndView model = new ModelAndView();
+		if (sessionData == null) {
+			sessionData = new SessionMaintainanceData();
 		}
-	 
-	 
-		/**
-		 * Returns payroll documents upload jsp
-		 * @param request
-		 * @return ModelAndView
-		 * @throws Exception 
-		 */
-		 @RequestMapping(value = "/addChecks")
-			public ModelAndView addChecks(HttpServletRequest request) throws Exception {
-			 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-			 ModelAndView model = new ModelAndView();	
-			 if(sessionData == null)
-				{
-					sessionData = new SessionMaintainanceData();
-				}
-				sessionData.setNav(Constants.PAYROLL);
-				 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-				List<WageTaxSummary> wageTaxSummaryList =  wageTaxSummaryService.getUniqueWagesAndTaxListByOrgLocationId(orgLocation);
-
-//				List<WageTaxSummary> distinctList = getUniqueWageTaxSummary(wageTaxSummaryList);
-				
-				if(wageTaxSummaryList !=null){
-					model.addObject("wageTaxSummaryList", wageTaxSummaryList);
-				}
-				
-				request.getSession().setAttribute("sessionData",sessionData);
-				
+		// sessionData.setNav(Constants.PAYROLL);
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		List<WageTaxSummary> wageTaxSummaryList = wageTaxSummaryService.getUniqueWagesAndTaxListByOrgLocationId(orgLocation);
+		if (wageTaxSummaryList != null) {
+			model.addObject("wageTaxSummaryList", wageTaxSummaryList);
+		}
+		request.getSession().setAttribute("sessionData", sessionData);
+		model.setViewName("payroll/payrollReport");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	/**
+	 * Returns payroll documents upload jsp
+	 * 
+	 * @param request
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/addChecks")
+	public ModelAndView addChecks(HttpServletRequest request) throws Exception
+	{
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
+		ModelAndView model = new ModelAndView();
+		if (sessionData == null) {
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.PAYROLL);
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<WageTaxSummary> wageTaxSummaryList = wageTaxSummaryService.getUniqueWagesAndTaxListByOrgLocationId(orgLocation);
+		// List<WageTaxSummary> distinctList =
+		// getUniqueWageTaxSummary(wageTaxSummaryList);
+		if (wageTaxSummaryList != null) {
+			model.addObject("wageTaxSummaryList", wageTaxSummaryList);
+		}
+		request.getSession().setAttribute("sessionData", sessionData);
 		model.setViewName("payroll/addChecks");
-				model.addObject("sourceleadUrl", sourceleadUrl);
-				return model;
-
-			}
-
-		 
-		 
-		 /**
-			 * Returns all payroll balance reports for all employess jsp
-			 * @param request
-			 * @return ModelAndView
-			 * @throws Exception 
-			 */
-			 @RequestMapping(value = "/payrollAllBalanceReport")
-				public ModelAndView allPayrollReportsJsp(HttpServletRequest request) throws Exception {
-				 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-				 ModelAndView model = new ModelAndView();	
-				 if(sessionData == null)
-					{
-						sessionData = new SessionMaintainanceData();
-					}
-					//sessionData.setNav(Constants.PAYROLL);
-					request.getSession().setAttribute("sessionData",sessionData);
-					
-					model.setViewName("payroll/allPayrollReports");
-					model.addObject("sourceleadUrl", sourceleadUrl);
-					return model;
-
-				}
-			 
-			 	/**
-				 * Returns search based payroll reports
-				 * @param request
-				 * @return ModelAndView
-				 * @throws Exception 
-				 */
-				 @RequestMapping(value = "/searchBasedReport")
-					public ModelAndView searchBasedReport(HttpServletRequest request) throws Exception {
-					 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-					 ModelAndView model = new ModelAndView();	
-					 if(sessionData == null)
-						{
-							sessionData = new SessionMaintainanceData();
-						}
-						//sessionData.setNav(Constants.PAYROLL);
-						request.getSession().setAttribute("sessionData",sessionData);
-						
-						model.setViewName("payroll/searchPayrollReport");
-						model.addObject("sourceleadUrl", sourceleadUrl);
-						return model;
-
-					}
-
-
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	/**
+	 * Returns all payroll balance reports for all employess jsp
+	 * 
+	 * @param request
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/payrollAllBalanceReport")
+	public ModelAndView allPayrollReportsJsp(HttpServletRequest request) throws Exception
+	{
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
+		ModelAndView model = new ModelAndView();
+		if (sessionData == null) {
+			sessionData = new SessionMaintainanceData();
+		}
+		// sessionData.setNav(Constants.PAYROLL);
+		request.getSession().setAttribute("sessionData", sessionData);
+		model.setViewName("payroll/allPayrollReports");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	/**
+	 * Returns search based payroll reports
+	 * 
+	 * @param request
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/searchBasedReport")
+	public ModelAndView searchBasedReport(HttpServletRequest request) throws Exception
+	{
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
+		ModelAndView model = new ModelAndView();
+		if (sessionData == null) {
+			sessionData = new SessionMaintainanceData();
+		}
+		// sessionData.setNav(Constants.PAYROLL);
+		request.getSession().setAttribute("sessionData", sessionData);
+		model.setViewName("payroll/searchPayrollReport");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	
+	/**
+	 * Return Payroll Deduction List Jsp
+	 * 
+	 * @param request
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/payrollConfigure")
+	public ModelAndView payrollDeductionListJsp(HttpServletRequest request) throws Exception
+	{
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
+		ModelAndView model = new ModelAndView();
+		if (sessionData == null) {
+			sessionData = new SessionMaintainanceData();
+		}
+		// sessionData.setNav(Constants.PAYROLL);
+		request.getSession().setAttribute("sessionData", sessionData);
+		model.setViewName("payroll/payrollDeductionList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	/**
+	 * Return Payroll Contribution List Jsp
+	 * 
+	 * @param request
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/payrollContribution")
+	public ModelAndView payrollContributionListJsp(HttpServletRequest request) throws Exception
+	{
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
+		ModelAndView model = new ModelAndView();
+		if (sessionData == null) {
+			sessionData = new SessionMaintainanceData();
+		}
+		// sessionData.setNav(Constants.PAYROLL);
+		request.getSession().setAttribute("sessionData", sessionData);
+		model.setViewName("payroll/payrollContributionList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	/**
+	 * Return Payroll Add Deduction Jsp
+	 * 
+	 * @param request
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/addDeduction")
+	public ModelAndView addDeductionJsp(HttpServletRequest request) throws Exception
+	{
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
+		ModelAndView model = new ModelAndView();
+		if (sessionData == null) {
+			sessionData = new SessionMaintainanceData();
+		}
+		// sessionData.setNav(Constants.PAYROLL);
+		request.getSession().setAttribute("sessionData", sessionData);
+		model.setViewName("payroll/addDeduction");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	/**
+	 * Return Payroll Add Contribution Jsp
+	 * 
+	 * @param request
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/addContribution")
+	public ModelAndView addContributionJsp(HttpServletRequest request) throws Exception
+	{
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
+		ModelAndView model = new ModelAndView();
+		if (sessionData == null) {
+			sessionData = new SessionMaintainanceData();
+		}
+		// sessionData.setNav(Constants.PAYROLL);
+		request.getSession().setAttribute("sessionData", sessionData);
+		model.setViewName("payroll/addContribution");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
 }

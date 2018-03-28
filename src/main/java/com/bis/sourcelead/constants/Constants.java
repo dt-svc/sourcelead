@@ -1069,5 +1069,6 @@ public class Constants {
 
 	public static final String[] UNSUBSCRIPTION_TABID_LISTED = {"3","4","8","16","20","23","30" };
 
+	public static final String PAYROLL_CATEGORY = "Payroll_Deduction";
 
 }

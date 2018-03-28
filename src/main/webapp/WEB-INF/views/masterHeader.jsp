@@ -752,6 +752,8 @@ function preventTabkey(e){
 								</div>
 							 </li> 	
 						   </sec:authorize>
+						   
+					  	<li><a href="<c:url value="/app/payrollConfigure" />"><i class="fa fa-dollar-sign" aria-hidden="true"></i>Payroll Configuration</a></li>
 	              </ul>
 	            </div>
 	          </li>
