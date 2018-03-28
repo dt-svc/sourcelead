@@ -9,7 +9,7 @@ public class ImmigrationPassportVisaDTO extends SearchDTO{
      *@author Mamatha Adla
      */
  
-    private Long id;
+    private Long candidatePassportId;
     
     private String candidateId;
 	
@@ -47,14 +47,16 @@ public class ImmigrationPassportVisaDTO extends SearchDTO{
 		this.staticPath = staticPath;
 	}
 
-	public Long getId()
+	
+
+	public Long getCandidatePassportId()
 	{
-		return id;
+		return candidatePassportId;
 	}
 
-	public void setId(Long id)
+	public void setCandidatePassportId(Long candidatePassportId)
 	{
-		this.id = id;
+		this.candidatePassportId = candidatePassportId;
 	}
 
 	public String getCandidateId()
