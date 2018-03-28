@@ -130,9 +130,9 @@
 	</form>
 		<script>
 		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatEduSave = getJSDateFormat(locationDate);
+		  var finalDateFormatImmiEduSave = getJSDateFormat(locationDate);
 		$('#immigrationEduStartDate12').datepicker({
-		      dateFormat: finalDateFormatEduSave,
+		      dateFormat: finalDateFormatImmiEduSave,
 		      changeMonth: true,
 		  	  changeYear: true, 
 		      onSelect: function (selected) {
@@ -144,7 +144,7 @@
 		  });
 		  
 		  $('#immigrationEduEndDate').datepicker({
-		      dateFormat: finalDateFormatEduSave,
+		      dateFormat: finalDateFormatImmiEduSave,
 		      changeMonth: true,
 		  	  changeYear: true, 
 		      onSelect: function (selected) {
