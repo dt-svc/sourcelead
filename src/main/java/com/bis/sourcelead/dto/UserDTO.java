@@ -22,7 +22,6 @@ public class UserDTO extends SearchDTO implements Serializable {
 	private String loginUserRole;
 	private String roleId;
 	private String fileURL;
-<<<<<<< HEAD
 	private String userName;
 	private String userEmail;
 	private String createdOn;
@@ -37,11 +36,10 @@ public class UserDTO extends SearchDTO implements Serializable {
 	private long locationId;
 	private long multipleIps;
 	private String customDates;
-=======
 	private String email;
 	private String fullName;
 	private String unSubscribeTabIds;
->>>>>>> df5a7f82d79cf9158d97f951e4672bfa231c40da
+
 	
 	public String getUnSubscribeTabIds()
 	{
