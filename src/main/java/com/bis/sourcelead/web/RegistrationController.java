@@ -565,12 +565,11 @@ public class RegistrationController {
 			 for(SourceleadActions action : actionsList) {
 				 Tabs tabs = tabService.getTabListByTabId(action.getTabs().getId());
 				 if(tabs.getTabs() != null){
-					 if(tabs.getTabs().getId() == 14L) {
+					 if(tabs.getId() == 14L) {
 						 tabIds.add(tabs.getId());
 					 }else {
 						 tabIds.add(tabs.getTabs().getId());
 					 }
-					 
 				 }else {
 					 tabIds.add(tabs.getId());
 				 }

@@ -765,7 +765,11 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 			 for(SourceleadActions action : actionsList) {
 				 Tabs tabs = tabService.getTabListByTabId(action.getTabs().getId());
 				 if(tabs.getTabs() != null){
-					 tabIds.add(tabs.getTabs().getId());
+					 if(tabs.getId() == 14L) {
+						 tabIds.add(tabs.getId());
+					 }else {
+						 tabIds.add(tabs.getTabs().getId());
+					 }
 				 }else {
 					 tabIds.add(tabs.getId());
 				 }

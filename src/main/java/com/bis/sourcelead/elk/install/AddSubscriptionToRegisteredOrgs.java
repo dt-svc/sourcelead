@@ -24,7 +24,7 @@ import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.ibm.icu.util.Calendar;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
-public class AddSubscriptionToRegistredOrgs {
+public class AddSubscriptionToRegisteredOrgs {
 	private ComboPooledDataSource comboPooledDataSource;
 	
 /**
@@ -208,7 +208,7 @@ private DataSource comboPooledDataSource() {
 	}
  
 public static void main(String[] args) throws IOException, SQLException {
-	AddSubscriptionToRegistredOrgs dump = new AddSubscriptionToRegistredOrgs();
+	AddSubscriptionToRegisteredOrgs dump = new AddSubscriptionToRegisteredOrgs();
 	dump.updateSubscription();
 }
 
