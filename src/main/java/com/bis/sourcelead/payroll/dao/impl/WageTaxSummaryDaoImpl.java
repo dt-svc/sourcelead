@@ -71,7 +71,7 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 			qry = " order by wts."+ wagesTaxSummaryDTO.getSortColumn() +" "+wagesTaxSummaryDTO.getSortOrder();
 		}
 		
-		String query = "from WageTaxSummary wts  left join fetch wts.orgLocationId where wts.orgLocationId.id =:orgLocationId "+qry;
+		String query = "from WageTaxSummary wts  left join fetch wts.orgLocationId where wts.orgLocationId.id =:orgLocationId ";
 		String countQuery = "from WageTaxSummary wts  where wts.orgLocationId.id =:orgLocationId";
 		
 		if(wagesTaxSummaryDTO.getSearchValue().contains("/") || wagesTaxSummaryDTO.getSearchValue().contains("-")){
@@ -106,7 +106,7 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 					.append("OR wts.toDate like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' ");
 						/*+ "OR wts.checkDate like '%" + wagesTaxSummaryDTO.getSearchValue() + "%'";*/
 			}
-		Query queryObj = session.createQuery(query + query1.toString());
+		Query queryObj = session.createQuery(query + query1.toString()+qry);
 		if (wagesTaxSummaryDTO != null && wagesTaxSummaryDTO.getLength() > 0) {
 			queryObj.setFirstResult(wagesTaxSummaryDTO.getStart());
 			queryObj.setMaxResults(wagesTaxSummaryDTO.getLength());

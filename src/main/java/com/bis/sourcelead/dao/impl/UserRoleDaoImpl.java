@@ -7,8 +7,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,10 +31,10 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ConnectionsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ConnectionsDTO;
-import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
+
 import com.bis.sourcelead.dto.UsersUsageReportDTO;
 import com.bis.sourcelead.entity.Connections;
 import com.bis.sourcelead.entity.Leave;
@@ -45,11 +43,8 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.enums.ConnectionStatus;
-import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CalendarUtil;
-import com.mchange.v1.util.StringTokenizerUtils;
 
 @Repository
 public class UserRoleDaoImpl implements UserRoleDao {
@@ -79,14 +74,14 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception {
+	public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency,Long orgLocationId) throws Exception {
 		 Session session = this.sessionFactory.getCurrentSession();
 		 List<ProjectMembers> projectMemberList = null;
 		 if(StringUtils.isEmpty(invoiceFrequency)){
 			invoiceFrequency = "Weekly";
 		 }
-		 String query = "from ProjectMembers pm left join fetch pm.projects proj left join fetch pm.employee emp  where emp IS NOT NULL and proj.invoiceFrequency = :invoiceFrequency";
-		 projectMemberList = session.createQuery(query).setString("invoiceFrequency", invoiceFrequency).list(); 
+		 String query = "from ProjectMembers pm left join fetch pm.projectMemberCandidteId can left join fetch pm.projects proj left join fetch pm.employee emp  where emp IS NOT NULL and proj.invoiceFrequency = :invoiceFrequency  and can.orgLocationId.id = :orgLocationId";
+		 projectMemberList = session.createQuery(query).setString("invoiceFrequency", invoiceFrequency).setLong("orgLocationId", orgLocationId).list(); 
 		 HashSet<ProjectMembers> projectMemberSet  = null;
 		 if(projectMemberList != null && !projectMemberList.isEmpty()){
 			 logger.debug("The Total Employees which are not submitted the Time sheets within a week are : ***********************"+projectMemberList.size());
@@ -574,7 +569,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	public List<UserRole> getUserSpocsListByUserId(Long userId) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user left join fetch userRole.orgLocations where userRole.user.id = :userId and userRole.userState != 'INACTIVE' and userRole.isMailSent = 'Y' ";
+		String query = "from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user left join fetch userRole.orgLocations where userRole.user.id = :userId and userRole.userState != 'INACTIVE' ";
 		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).list();
 		return userRoleList;
 

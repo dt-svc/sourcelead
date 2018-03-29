@@ -516,13 +516,13 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 
 		 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.INTERVIEWER_INVITATION_REDIFINED,Constants.ENTITY_TYPE_NOTIFICATION); 
 		 StringBuilder actionLinkBuilder = new StringBuilder();
-		 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();	 
+		 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()+"&submissionId="+submission.getId()+"&candidateUUID="+submission.getCandidate().getCandidateUUID()+"&candidateKeyword=rescheduleInterviewNotification").toString();	 
 		 
 		 if(interviewerUser.getFirstName()!=null){
 		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
 		 noificationEmailScenario.setBody(notificationbody);
 		 
-		 emailScenerioUtil.sendNotification(actionLink, loginUser, interviewerUser, orgLocations, noificationEmailScenario);
+		 emailScenerioUtil.sendNotification(actionLink, loginUser, interviewerUser, orgLocations, noificationEmailScenario,new HashMap<String,String>());
 		 }
 	}
 	
@@ -1090,7 +1090,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
 		 noificationEmailScenario.setBody(notificationbody);
 		 
-		 emailScenerioUtil.sendNotification(actionLink, loginUser, interviewerUser, orgLocations, noificationEmailScenario);
+		 emailScenerioUtil.sendNotification(actionLink, loginUser, interviewerUser, orgLocations, noificationEmailScenario,new HashMap<String,String>());
 		 }
 	}
 	
@@ -1522,7 +1522,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
 		 noificationEmailScenario.setBody(notificationbody);
 		 
-		 emailScenerioUtil.sendNotification(actionLink, loginUser, user, requirementSubmission.getVendorLocationId(), noificationEmailScenario);
+		 emailScenerioUtil.sendNotification(actionLink, loginUser, user, requirementSubmission.getVendorLocationId(), noificationEmailScenario,new HashMap<String,String>());
 		 
 		 
 	}
@@ -1643,7 +1643,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
 		 noificationEmailScenario.setBody(notificationbody);
 		 
-		 emailScenerioUtil.sendNotification(actionLink, loginUser, interviewerUser, orgLocations, noificationEmailScenario);
+		 emailScenerioUtil.sendNotification(actionLink, loginUser, interviewerUser, orgLocations, noificationEmailScenario,new HashMap<String,String>());
 		 }
 	}
 	
@@ -1896,10 +1896,10 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 //		 String actionLink= "";
 
 		 if(null != reqSubmission.getVendorLocationId()){
-		 emailScenerioUtil.sendNotification(actionLink,spoc.getVendorUser(), interviewCreactorUser, spoc.getClientLocationId(), notificationScenario);	 
+		 emailScenerioUtil.sendNotification(actionLink,spoc.getVendorUser(), interviewCreactorUser, spoc.getClientLocationId(), notificationScenario,new HashMap<String,String>());	 
 		 }else{
 		 User fromuser = userService.getUserById(Constants.USERID);
-		 emailScenerioUtil.sendNotification(actionLink,fromuser,interviewCreactorUser, reqSubmission.getOrgLocations(), notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink,fromuser,interviewCreactorUser, reqSubmission.getOrgLocations(), notificationScenario,new HashMap<String,String>());
 		 }
 		 emailScenerioUtil.sendEmail(emailMessage,reqSubmission.getOrgLocations().getOrg().getId(),iAdressArray,new ArrayList<EmailAttachment>());
 	
@@ -2060,10 +2060,10 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	    			 noificationEmailScenario.setBody(notificationbody);
 	    			 
 	    			 if(null != requirementSubmission.getVendorLocationId()){
-	    				 emailScenerioUtil.sendNotification(actionLink,spoc.getVendorUser(), interviewrUser, spoc.getClientLocationId(), noificationEmailScenario);	 
+	    				 emailScenerioUtil.sendNotification(actionLink,spoc.getVendorUser(), interviewrUser, spoc.getClientLocationId(), noificationEmailScenario,new HashMap<String,String>());	 
 	    				 }else{
 	    				 User fromuser = userService.getUserById(Constants.USERID);
-	    				 emailScenerioUtil.sendNotification(actionLink,fromuser,interviewrUser, requirementSubmission.getOrgLocations(), noificationEmailScenario);
+	    				 emailScenerioUtil.sendNotification(actionLink,fromuser,interviewrUser, requirementSubmission.getOrgLocations(), noificationEmailScenario,new HashMap<String,String>());
 	    				 } 
 	    	  }
 //	      }

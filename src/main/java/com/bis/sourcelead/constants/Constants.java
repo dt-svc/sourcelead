@@ -114,6 +114,7 @@ public class Constants {
 	public static final String MAIL_TEAM_MEMBERS = "Mail To Team Members";
 	public static final String INVITE_CONNECTION_USER = "connectionInvitation";
 	public static final String INVITE_USER = "Invite User";
+	public static final String BLOG_SUBSCRIPTION = "blogSubscription";
 	public static final String EXPENSES_EMAIL_TO_MANAGER = "ExpensesEmailToManager";
 	public static final String INVITE_CLIENT = "Invite Client";
 	public static final String INVITE_VENDOR = "Invite Vendor";
@@ -469,6 +470,7 @@ public class Constants {
 	public static final String NOTIFICATION_DELETED = "0";
 	public static final String NOTIFICATION_NOT_DELETED = "1";
 	public static final String TIME_SHEET_SUBMISSION = "Time Sheet Submission";
+	public static final String PLACE_UUID = "PLACE_UUID";
 	/** for user roles **/
 	public static final String ROLE_ADMIN = "ROLE_ADMIN";
 	public static final String ROLE_APPROVER = "ROLE_APPROVER";
@@ -605,6 +607,13 @@ public class Constants {
 	public static final String[] EXPENSES_REPORTS_HEADERS_1 = {"Amount","Claimed"};
 	
 	
+	public static final String[] PROJECT_EXCEL_HEADERS = { "Project Id", "Name", "Manager", "Invoice Frequency", "Budget", "Date", "Client", "Status"};
+	
+	public static final String[] PROJECT_TASKS_PDF_HEADERS = { "Task Name", "Task Type", "Priority", "Assigned To", "Status"};
+	public static final String[] PROJECT_TASKS_EXCEL_HEADERS = { "Task Name", "Task Type", "Priority", "Assigned To","Due Date","Estimated Time","Severity","Owner","Billing Type","Business Value", "Status","Description"};
+
+	public static final String[] DATA_MIGRATION_PROJECT_TASKS_EXCEL_HEADERS = { "Task Type" , "Task Name","Assigned To", "Due Date", "Priority", "Estimated Time","Severity","Status", "Owner","Billing Type","Currency Type","Business Value", "Description"};
+
 	public static final String SHORTLIST_CANDIDATE_COUNT = "shortlist_candidate :";
 	public static final String VENDOR = "Vendor";
 	public static final String CLIENT = "Client";
@@ -1031,7 +1040,8 @@ public class Constants {
 	public static final String ROLE_CREATE_CANDIDATE ="ROLE_CREATE_CANDIDATE";
 	public static final String ROLE_CREATE_PROJECT ="ROLE_CREATE_PROJECT";
 	public static final String ROLE_ADD_NEW_CONTRACT ="ROLE_ADD_NEW_CONTRACT";
-	
+	public static final String ROLE_ADD_ASSET ="ROLE_ADD_ASSET";
+	public static final String ROLE_CREATE_PROJECT_TASKS ="ROLE_CREATE_PROJECT_TASKS";
 	public static final String REPORT_FILTER_LAST_7_DAYS = "Last_7_days";
 	public static final String REPORT_FILTER_LAST_15_DAYS = "Last_15_days";
 	public static final String REPORT_FILTER_1_MONTH = "1_month";
@@ -1062,6 +1072,14 @@ public class Constants {
 	
 
 	public static final String[] UNSUBSCRIPTION_TABID_LISTED = {"3","4","8","16","20","23","30" };
-
+	
+	public static final String SUBSCRIPTION_TYPE = "Subscription Type";
+	public static final String USER_SUBSCRIPTION = "User Subscription";
+	public static final String DATA_STORAGE = "Data Storage";
+	
+	public static final String[] REGISTERED_COUNTRIES = { "Australia", "France", "India", "Singapore", "United Kingdom", "United States"};
+	
+	public static final String ROLE_GUEST_VENDOR = "ROLE_GUEST_VENDOR";
+	public static final String ROLE_GUEST_CLIENT = "ROLE_GUEST_CLIENT";
 
 }

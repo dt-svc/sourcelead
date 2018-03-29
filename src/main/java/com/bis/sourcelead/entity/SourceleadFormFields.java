@@ -52,7 +52,7 @@ public class SourceleadFormFields implements Serializable{
 	private String fieldDesc;
 	
 	@Column(name = "IS_FIELD_REQUIRED")
-	private int isFieldRequired;
+	private Integer isFieldRequired;
 	
 	@Column(name = "IS_IMPORT_FIELD")
 	private int isImportField;
@@ -143,11 +143,11 @@ public class SourceleadFormFields implements Serializable{
 		this.fieldDesc = fieldDesc;
 	}
 
-	public int getIsFieldRequired() {
+	public Integer getIsFieldRequired() {
 		return isFieldRequired;
 	}
 
-	public void setIsFieldRequired(int isFieldRequired) {
+	public void setIsFieldRequired(Integer isFieldRequired) {
 		this.isFieldRequired = isFieldRequired;
 	}
 

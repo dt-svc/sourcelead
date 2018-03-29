@@ -38,14 +38,18 @@ import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CompanyRegistrationDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.dto.OrglocationSignatoryDTO;
+import com.bis.sourcelead.dto.SourceleadRolesDTO;
 import com.bis.sourcelead.dto.WhiteListIPAddressDTO;
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrglocationSignatory;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SourceleadSignature;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -57,8 +61,10 @@ import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.OrglocationSignatoryService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.SourceleadSignatureService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -80,6 +86,8 @@ public class OrgSettingsRestController {
 	private OrgService orgService;
 	@Autowired
 	private OrgRelationsService orgRelationsService;
+	@Autowired
+	private OrglocationSignatoryService orglocationSignatoryService;
 	@Autowired
 	private OrgLocationService orgLocationService;
 	@Autowired
@@ -108,6 +116,9 @@ public class OrgSettingsRestController {
 
 	@Value("${static.path}")
 	private String staticPath;
+	
+	@Autowired
+	SourceleadRolesService sourceleadRolesService;
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/app/saveOrgImage", method = RequestMethod.POST)
@@ -331,11 +342,45 @@ public class OrgSettingsRestController {
 		return resultJson;
 	}
 	
+	
+	@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	@RequestMapping(value = "/app/getGuestOrgEnrolledList")
+	public List<SourceleadRolesDTO> getGuestOrgEnrolledList(HttpServletRequest request) throws Exception
+	{
+		List<SourceleadRolesDTO> rolesDTOList = new ArrayList<>();
+		
+		List<SourceleadRoles> orgRolesList = sourceleadRolesService.getGuestOrgSourceleadRoles();
+		for (SourceleadRoles roles : orgRolesList) {
+			
+			SourceleadRolesDTO rolesDTO = new SourceleadRolesDTO();
+			rolesDTO.setDisplayName(roles.getDisplayName());
+			rolesDTO.setUuid(roles.getUuid());
+			
+			List<Long> roleActonsList = new ArrayList<Long>();
+			if (null != roles.getActionId()) {
+				for (String s : roles.getActionId().split(",")) {
+					roleActonsList.add(Long.parseLong(s));
+				}
+			}
+			rolesDTO.setActionsCount(roleActonsList.size());
+			rolesDTOList.add(rolesDTO);
+		}
+		return rolesDTOList;
+	}
+	
 	@RequestMapping(value = "/app/roleActions/{roleId}", method = RequestMethod.GET)
 	public @ResponseBody void roleActions(@PathVariable Long roleId, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		StringBuilder redirectUrl = new StringBuilder();
 		response.sendRedirect(redirectUrl.append("/app/enrollRoleActions?roleId=").append(roleId).toString());
+	}
+	
+	
+	@RequestMapping(value = "/app/guestRoleActions/{uuid}", method = RequestMethod.GET)
+	public @ResponseBody void guestRoleActions(@PathVariable String uuid, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		StringBuilder redirectUrl = new StringBuilder();
+		response.sendRedirect(redirectUrl.append("/app/guestEnrollRoleActions?uuid=").append(uuid).toString());
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
@@ -716,6 +761,39 @@ public class OrgSettingsRestController {
 		}
 		return userDtoList;
 	}
+	
+	
+
+	@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	@RequestMapping(value = "/app/saveGuestRoleActions", method = RequestMethod.POST)
+	public String saveGuestRoleActions(@RequestParam(value = "uuid", required = false) String uuid, @RequestParam(value = "actionIds", required = false) String actionIds, HttpServletRequest request) throws Exception
+	{
+		SourceleadRoles roles = sourceleadRolesService.getSourceleadRolesByUUID(uuid);
+		if (null != roles) {
+			roles.setActionId(actionIds);
+			sourceleadRolesService.saveSourceleadRoles(roles);
+			SourceLeadSessionManager.setSessionAttribute(request, "actionRolesMsg", "Action Roles Modified Successfully");
+		}
+		return "success";
+	}
+
+	@RequestMapping(value = "/app/validateAssociate",  method = RequestMethod.POST)
+    public @ResponseBody boolean validateAssociate(@RequestParam(value="userId", required=false) Long userId, @RequestParam(value="id", required=false) String uuid, HttpServletRequest request) throws Exception {
+	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	       OrglocationSignatory signatory=null;
+	       if(null != uuid){
+	        signatory = orglocationSignatoryService.getUserBySignatoryUuId(userId, uuid, orgLocation.getId());
+	       }
+	       
+	       Boolean flag = false;
+	       if(signatory == null){
+
+	    	   flag = orglocationSignatoryService.getUserByUserId(userId, orgLocation.getId());
+	       }
+	      return flag;
+		 
+	    }
+
 	
 
 	@RequestMapping(value = "/app/generate-career-page-key", method = RequestMethod.POST)

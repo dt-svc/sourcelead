@@ -1563,7 +1563,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("contractListbyStatus?"+"contractType="+contracts.getContractType()+"&status=rejected").toString();
 
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-		 emailScenerioUtil.sendNotification(actionLink, loginUser,createdUser, orgLocation, notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, loginUser,createdUser, orgLocation, notificationScenario,new HashMap<String,String>());
 		
 		
 	}
@@ -1685,7 +1685,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		 String actionLink="";
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-		 emailScenerioUtil.sendNotification(actionLink, loginUser,createdUser, orgLocation, notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, loginUser,createdUser, orgLocation, notificationScenario,new HashMap<String,String>());
 		
 	}
 
@@ -1846,7 +1846,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 String actionLink="";
 	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("contractListbyStatus?"+"contractType="+contracts.getContractType()+"&status=waiting").toString();
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, orgLocation, notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, orgLocation, notificationScenario,new HashMap<String,String>());
 		
 	}
 	
@@ -2436,7 +2436,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		 String actionLink="";
 		 emailScenerioUtil.sendEmail(emailMessage,contracts.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
-		 emailScenerioUtil.sendNotification(actionLink, loginUser,owner, contracts.getOrgLocationId(), notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, loginUser,owner, contracts.getOrgLocationId(), notificationScenario,new HashMap<String,String>());
 		
 	}
 
@@ -2786,7 +2786,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	     notificationActionLink = notificationLink.append(sourceleadUrl).append("/").append("viewContract?"+"contractUUID="+contracts.getContractUUID()).toString();
 
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-		 emailScenerioUtil.sendNotification(notificationActionLink, loginUser,contracts.getContactUser(), contracts.getContractOrgLocationId(), notificationScenario);
+		 emailScenerioUtil.sendNotification(notificationActionLink, loginUser,contracts.getContactUser(), contracts.getContractOrgLocationId(), notificationScenario,new HashMap<String,String>());
 		
 
 	}
@@ -2885,7 +2885,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 String actionLink="";
 	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewContract?"+"contractUUID="+contracts.getContractUUID()).toString();
 
-		emailScenerioUtil.sendNotification(actionLink,ownerUser,contactUser, contracts.getContractOrgLocationId(), notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink,ownerUser,contactUser, contracts.getContractOrgLocationId(), notificationScenario,new HashMap<String,String>());
 	}
 
 	@Override
@@ -3136,7 +3136,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 
 		 emailScenerioUtil.sendEmail(emailMessage,contracts.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 
-	 emailScenerioUtil.sendNotification(actionLink,owner,receiver, contracts.getContractOrgLocationId(), notificationScenario);
+	 emailScenerioUtil.sendNotification(actionLink,owner,receiver, contracts.getContractOrgLocationId(), notificationScenario,new HashMap<String,String>());
 		
 	}
 

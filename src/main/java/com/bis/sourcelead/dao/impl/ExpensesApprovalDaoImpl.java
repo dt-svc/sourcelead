@@ -94,7 +94,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 					+ "  sah.expenseApprovalStatus = 'SUBMITTEDFORAPPROVAL' or sah.expenseApprovalStatus = 'APPROVED' or sah.expenseApprovalStatus = 'REJECTED' or sah.expenseApprovalStatus = 'REOPENED' ";
 		}
 		else{
-			if (Arrays.asList(expStatus).contains("SUBMITTEDFORAPPROVAL")||Arrays.asList(expStatus).contains("submitted")) {
+			if (Arrays.asList(expStatus).contains("SUBMITTEDFORAPPROVAL")||Arrays.asList(expStatus).contains("submitted")||Arrays.asList(expStatus).contains("SUBMITTED")) {
 				subQuery2 = subQuery2 + " sah.expenseApprovalStatus = 'SUBMITTEDFORAPPROVAL' ";
 			}
 			if (Arrays.asList(expStatus).contains("APPROVED")||Arrays.asList(expStatus).contains("approved")) {

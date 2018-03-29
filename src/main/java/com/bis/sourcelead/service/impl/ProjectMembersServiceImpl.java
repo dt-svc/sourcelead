@@ -621,8 +621,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	@Override
 	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(
 			String timesheetFrequency, Date startDate, Date endDate, Long clientId, String status, Long locationsId,
-			Long approverUserId,String searchValue, int start, int length,String timesheetFor) {
-		return projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, status, locationsId, approverUserId,searchValue,start,length,timesheetFor);
+			Long approverUserId,String searchValue,String projectName, int start, int length,String timesheetFor) {
+		return projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, status, locationsId, approverUserId,searchValue,projectName,start,length,timesheetFor);
 	}
 	
 	@Override
@@ -693,7 +693,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		notificationScenario.setOrgCode(loginOrgCode);
 		//String url = null;
 		String actionLink = "";
-		emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getUser(), loginOrgLocation, notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());
 	}
 
 	@Override
@@ -1364,18 +1364,14 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 							 }
 							 boolean flag = moduleIds.contains(Constants.MODULE_VMS);
 							 if(flag == false){
-								 Long moduleId = (long) Constants.MODULE_ATS;
 							     modules = modules+","+Constants.MODULE_VMS;
-							     registrationController.saveUserRoleActions(moduleId,orgLoc);
 							 }
 							 
-							 Long tsModuleId = (long) Constants.MODULE_TIMESHEET;
 							 boolean tsflag = moduleIds.contains(Constants.MODULE_TIMESHEET);
 							 if(tsflag == false) {
 				    				modules = modules+","+Constants.MODULE_TIMESHEET;
-				    				registrationController.saveUserRoleActions(tsModuleId,orgLoc);
 				    			}
-							
+							 registrationController.saveUserRoleActions(orgLoc);
 							 
 							 orgLoc.setModulesId(modules);
 							 orgLocationService.updateOrgLocations(orgLoc);

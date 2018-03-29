@@ -152,8 +152,8 @@ public class TimeApprovalRedefinedRestController {
 			
 			LinkedHashSet<String> timesheetFrequencyList = new LinkedHashSet<>();
 			timesheetFrequencyList.add("Weekly");
-			timesheetFrequencyList.add("Bi-weekly");
-			timesheetFrequencyList.add("Semi-monthly");
+			timesheetFrequencyList.add("Bi-Weekly");
+			timesheetFrequencyList.add("Semi-Monthly");
 			timesheetFrequencyList.add("Monthly");
 			timesheetApprovalDTO.setTimesheetFrequencyList(timesheetFrequencyList);
 			if(StringUtils.isEmpty(timesheetApprovalDTO.getTimesheetFrequency())){
@@ -436,7 +436,7 @@ public class TimeApprovalRedefinedRestController {
 	        if(StringUtils.isNotEmpty(timesheetApprovalDTO.getClient()) && !timesheetApprovalDTO.getClient().equalsIgnoreCase("All")){
 	        	clientId =Long.parseLong(timesheetApprovalDTO.getClient());
 	        }
-	        ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetApprovalDTO.getTimesheetFrequency(), actualStartDate, actualEndDate, clientId, timesheetApprovalDTO.getStage(), orgLocations.getId(), user.getId(),timesheetApprovalDTO.getSearchValue(),start,length,"");
+	        ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetApprovalDTO.getTimesheetFrequency(), actualStartDate, actualEndDate, clientId, timesheetApprovalDTO.getStage(), orgLocations.getId(), user.getId(),timesheetApprovalDTO.getSearchValue(),timesheetApprovalDTO.getProjectName(),start,length,"");
 	        
 	        timesheetApprovalDTO.setTotalRows(projectMembers.getRecordsTotal());
 			

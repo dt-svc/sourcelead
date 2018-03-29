@@ -392,19 +392,6 @@ $(document).ready(function(){
 					result = result + ' 		</div>';
 				} 
 				 
-				 /* if(json.userCustomFieldlabelNameAndValue != null && json.userCustomFieldlabelNameAndValue != "" && json.userCustomFieldlabelNameAndValue != 'undefined'){
-						for (var key in json.userCustomFieldlabelNameAndValue) {
-							  if (json.userCustomFieldlabelNameAndValue.hasOwnProperty(key)) {
-								result = result + '	<div class="project_details_cta">';
-								var value = json.userCustomFieldlabelNameAndValue[key];  
-								var valueArray = value.toString().split(",");
-							    result = result + '	<strong>'+valueArray[0]+':</strong><span class="fix">'+valueArray[1]+'</span><div class="clearfix"></div>';
-							    result = result + '	</div>';
-							  }
-							}
-					} */
-				 
-				 
 				 if(json.userCustomFieldlabelNameAndValue != null && json.userCustomFieldlabelNameAndValue != "" && json.userCustomFieldlabelNameAndValue != 'undefined'){
 		              $.each(json.userCustomFieldlabelNameAndValue, function(key, value) {
 		            	  var labelNameAndlabelData = value.split("$");
@@ -1400,6 +1387,7 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label><strong>Role:</strong></label>';
 					result = result + '<div class="clearfix mt10"><span>'+json.roles.displayName+'</span></div>';
+					result = result + '<input type = "hidden" id = "role" name = "roleType" value = "'+json.roles.id+'">';
 					/* result = result + '<strong>Role:</strong><span class="fix">'+json.roles.displayName+'</span></div>'; */
 					result = result + ' </div>'; 
 					result = result + ' <div class="clearfix"></div>';
@@ -3289,9 +3277,14 @@ function refreshImageBlock(candidateId){
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-           success :function(data) {   
-                if(data != null && data != 'undefined' && data != ""){  
-                	 var json = JSON.parse(data);
+           success :function(result) {  
+        	   var json = result.object;
+        	   if(result.response === "SESSION_TIMEDOUT") {
+					location.replace(sourceleadUrl);
+				} else if (result.response === "AWKWARD") {
+					location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+                	if(json != null && json != 'undefined' && json != ""){  
 	                	 $("#candidateImageId").empty();
 	                	 var result = '';
 			             result = result+'<div class="well well-sm text-center clearfix">';
@@ -3330,7 +3323,12 @@ function refreshImageBlock(candidateId){
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
 						 result = result+' </div>';
 						 $("#candidateImageId").append(result);
-                }
+                	}
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
+				}
          	},
       }); 
    }

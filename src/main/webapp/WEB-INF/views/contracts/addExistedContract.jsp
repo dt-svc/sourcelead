@@ -1828,20 +1828,30 @@ function previewTemplatePDF(){
 	        type : "GET",
 	        url: sourceleadUrl+"/getCandidateDetails?candidateId="+associateId,    
 	         success :function(data) {
-	        	 var json = JSON.parse(data);
-	           	 var result = "";
-	           	 result = result + '<option value="">Select Vendor</option>';
-	           	 $.each(map, function(key, value) {
-	                 if(json.relationId == key){
-                		 result = result +  '<option value="'+key+'" selected> '+value+'</option>';
-                	 }else{
-                		 result = result +  '<option value="'+key+'"> '+value+'</option>';
-                	 }
-	           		});
-                 $("#orgRelationId").empty();
-                 $("#orgRelationId").append(result);
-                 $('#orgRelationId').trigger("chosen:updated");
-                 getVendorContacts(json.venSpocId);
+	        	 if (data.response === "FAILED") {
+			    		showError(data.responseMessage);
+			    	} else if (data.response === "AWKWARD") {
+			    		location.href = "/errorPage";
+			    	} else if (data.response === "SUCCESS") {
+			    		var json = data.object;
+			           	 var result = "";
+			           	 result = result + '<option value="">Select Vendor</option>';
+			           	 $.each(map, function(key, value) {
+			                 if(json.relationId == key){
+		                		 result = result +  '<option value="'+key+'" selected> '+value+'</option>';
+		                	 }else{
+		                		 result = result +  '<option value="'+key+'"> '+value+'</option>';
+		                	 }
+			           		});
+		                 $("#orgRelationId").empty();
+		                 $("#orgRelationId").append(result);
+		                 $('#orgRelationId').trigger("chosen:updated");
+		                 getVendorContacts(json.venSpocId);
+			    	}else if (data.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    		showError("Operation failed, please try again");
+			    	}
 	         }
 		});
 	}

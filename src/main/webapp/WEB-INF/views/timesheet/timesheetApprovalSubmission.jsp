@@ -84,6 +84,32 @@ function exportTimeSheetToPdfOrExcel(exportType){
  });
 </script>  
 
+<script>
+ var selectedRecords = {};
+  $(document).ready(function () {
+	    $("#selectAllTimeSheetCheckBoxForSubmitForApproval").click(function () {
+	        $(".checkBoxForSubmitForApproval").prop('checked', $(this).prop('checked'));
+	        $(".checkBoxForSubmitForApproval").each(function() {
+	        	selectedRecords[$(this).val()] = $(this).is(":checked");
+	        });
+	        displayAcceptRejectButtonOnHedder();
+	    });
+	});
+ </script>
+ 
+ 
+ <script type="text/javascript">
+function displayAcceptRejectButtonOnHedder() {
+	if($('[name="checkBoxForSubmitForApproval"]:checked').length > 0){
+		$('#hedderAcceptRejectButton').removeAttr('style');
+	}else{
+		$('#hedderAcceptRejectButton').attr('style','display:none');
+	}
+	
+}
+</script>	
+
+
  <script>
       function getTableDataByPageSize(){
     	//  $('#pagination-demo').twbsPagination('destroy'); 
@@ -134,12 +160,16 @@ function exportTimeSheetToPdfOrExcel(exportType){
 		  var totalRows =  $('#totalRows').val();
 		  var pageMsg = '';
 		  var searchData = '${timesheetApprovalDTO.searchValue}';
+		  var notifyLink =$('#notifyLink').val(); 
 		  if(totalRows !=null && totalRows != '' && totalRows != 'undefined'){
 			  $('#paginationDiv').show();
 			  var pageCount = $('#pageCount').val();
 			  var pageSize = $("#pageSize").val();
 			  $('#dataTableSearchExpenses').val('') ;
-			  $('#dataTableSearchExpenses').val(searchData); 
+			  $('#dataTableSearchExpenses').val(searchData);
+			  if (notifyLink != null && notifyLink != '' && notifyLink != 'undefined' && notifyLink){
+				  $('#dataTableSearchExpenses').val('') ;
+			  }
 			  var startingRecord = parseInt((pageNo*pageSize-pageSize)+1);
 			  var endingRecord = parseInt(pageNo*pageSize);
 			  if(endingRecord > totalRows){
@@ -158,6 +188,9 @@ function exportTimeSheetToPdfOrExcel(exportType){
 		      };
 		      $("#pagination-demo").pagination(options);
 		      pageMsg = " Showing "+startingRecord+" to "+endingRecord+" of "+totalRows+" entries ";
+		      if (notifyLink != null && notifyLink != '' && notifyLink != 'undefined' && notifyLink){
+		    	  $("#popuplink").click();
+		      } 
 		  }
 		  else{
 			  $("#tableContent").empty();
