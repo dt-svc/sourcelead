@@ -856,6 +856,7 @@ function cancelOrgImg(){
      		 <jsp:include page="orglocationBankingDetails.jsp" />
      		 <jsp:include page="orglocationDocuments.jsp" />
      		 <jsp:include page="orglocationSignatory.jsp" />
+     		 <jsp:include page="googleApiLocation.jsp" />
      		 
     			</div>
      		
@@ -2022,84 +2023,6 @@ function getOrgLocationDetails(orgLocationId){
 	    	        
     	            result = result +'</div>';
     	            
-    	             result = result +'<div class="col-md-6">';
-	    	            
-    	            	result = result +'<div class="form-group">';
-		    	        result = result +'<div class="col-md-12 clearfix">';
-		    	        result = result +'<h5>Registered Modules</h5>';
-		    	        result = result +'</div>';
-		    	        result = result +'</div>';
-		    	        
-		    	        result = result +'<div class="form-group">';
-		    	        result = result +'<div class="col-md-12 checkbox">';
-		    	        
-		    	        if(json.modulesList != null && json.modulesList != "" && json.modulesList != 'undefined' && json.modulesList.length > 0){
-		    	        	
-		    	        	 for(var i=0; i<json.modulesList.length; i++){
-				    	        	var module = json.modulesList[i];
-				    	        	
-				    	       	 result = result +'<ul class="list-unstyled pull-left">';
-			    	        	 result = result +'<li>';
-			    	        	 
-			    	        	 	if(module.id == '1'){
-			    	        	 		result = result +'<label class="mr pull-left NoPad">';
-			    	        	        result = result +'<p>'+module.moduleName+'</p>';
-			    	        	        result = result +'</label>';
-			    	        	        
-			    	        	        result = result +'<ul class="list-unstyled pull-left tree-checkbox">';
-			    	        	        if(json.subModulesList != null && json.subModulesList != "" && json.subModulesList != 'undefined' && json.subModulesList.length > 0){
-			    	        	        	for(var j=0; j<json.subModulesList.length; j++){
-			    	        	        		var subModules = json.subModulesList[j];
-			    	        	        		    result = result +'<label>';
-			    	        	        	        if(subModules.isModuleConfigured == 'Y'){
-				    	        	        	         result = result +'<input type="checkbox" class="allsubmodules" id="submodules"  checked="checked" disabled="disabled">';
-				    	        	        	         result = result +'<p>'+subModules.moduleName+'</p>';
-			    	        	        			} 
-			    	        	        	        if(subModules.isModuleConfigured != 'Y'){
-				    	        	        	         result = result +'<input type="checkbox" class="allsubmodules" value="'+subModules.id+'"  id="submodules"  name="submodulesList[]">';
-				    	        	        	         result = result +'<p>'+subModules.moduleName+'</p>';
-			    	        	        			} 
-			    	        	        	        result = result +'</label><br/>';
-			    	        	        	}
-			    	        	        }
-			    	        	        
-			    	        	        result = result +'</ul>';
-			    	        	 	}
-			    	        	 
-			    	        	 result = result +'</li>';
-			    	        	 
-			    	        	 
-			    	        	 
-			    	        	 
-			    	        	 result = result +'<li>';
-			    	             result = result +'<label class="mr pull-left">';
-				    	             if(module.id != "1" && module.isModuleConfigured  == "Y"){
-				    	            	 result = result +'<input type="checkbox" id="isRecruiting"  checked="checked" disabled="disabled" >';
-				    	            	 result = result +'<p>'+module.moduleName+'</p>';
-				    	             }
-				    	             
-				    	             if(module.id != "1" && module.isModuleConfigured  != "Y"){
-				    	            	 result = result +'<input type="checkbox" id="isRecruiting" value="'+module.id+'"  name="modulesList[]"  >';
-				    	            	 result = result +'<p>'+module.moduleName+'</p>';
-				    	             } 
-			    	             result = result +'</label>';
-			    	             result = result +'</li>';
-			    	        	 
-			    	        	 result = result +'</ul>';
-				    	        	
-				    	        	
-				    	        }
-		    	        }
-		    	        
-		    	        result = result +'</div>';
-		    	        result = result +'</div>';
-		    	        
-		    	        result = result +'<div class="clearfix">';
-		    	        result = result +'<div class="pull-right">';
-		    	        result = result +'<input type="button" value="Upgrade" onclick="updateModules('+orgLocationId+');" id="save_button" class="btn btn-primary mr">';
-		    	        result = result +'<input type="button" value="Cancel" class="btn btn-default" onClick="loadRegisteredOrgs();">';
-		    	        result = result +'</div>';
-		    	        result = result +'</div>';
 		    	        
     	                result = result +'</div>'; 
     	       	
@@ -2112,27 +2035,18 @@ function getOrgLocationDetails(orgLocationId){
 </script>
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 	function updateModules(orgLocationId) {
 		
 			var sourceleadUrl ='${sourceleadUrl}'; 
 			
-			 var modulesList = [];
-			 $("input[name='modulesList[]']:checked").each( function (i) {
-				modulesList[i] = $(this).val();
-			});
-			 
 			
-			 var submodulesList = [];
-			 $("input[name='submodulesList[]']:checked").each( function (i) {
-				submodulesList[i] = $(this).val();
-			});
 			 
 	 	 
 		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({ 
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/updateOrgModules?${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&orgLocationId="+orgLocationId,
+		    	 url: sourceleadUrl+"/updateOrgModules?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&submodulesList="+submodulesList+"&orgLocationId="+orgLocationId,
 		        success: function(result) {
 		        	if((result == 'success')){
 		        		loadRegisteredOrgs();
@@ -2142,7 +2056,7 @@ function getOrgLocationDetails(orgLocationId){
 		  
 	}
 
-</script>
+</script> -->
 
 
 
@@ -2175,7 +2089,14 @@ function createOrg(){
 	$("#registeredOrgs").empty();
 	$("#registeredOrgLocationSummary").empty();
 	$("#editPrimaryUserContactDiv").empty();
-	 
+	
+	var subscribedCountries = '${subscribedCountries}';
+	var countries= [];
+	var res = subscribedCountries.split(",");
+	for(var i=0; i <res.length; i++){
+		countries.push(res[i]);
+	};
+	
 	var result = '';
 	
 	result = result +'<div class="row">';
@@ -2232,33 +2153,12 @@ function createOrg(){
 	            result = result +'</div>';
           
 	            result = result +'<div class="form-group">';
-	            result = result +'<label class="col-md-3">Modules<span class="text-danger">&nbsp;*</label>';
-	            result = result +'<div class="col-md-9 checkBox">';
-	            result = result +'<div class="clearfix reMar">';
-	            result = result +'<c:forEach var="module" items="${modulesList}">';
-	            result = result +'<ul class="list-unstyled pull-left">';
-	            result = result +'<li>';
-	            result = result +'<label class="mr pull-left">';
-	            result = result +'<input type="checkbox" id="isRecruiting" value="${module.id}" onclick="getRecruitmentTypes(this)" name="modulesList[]" onblur="moduleCheckValidation(this)">${module.moduleName}';
-	            result = result +'</label>';
-	            result = result +'<ul class="list-unstyled pull-left tree-checkbox" id="recrutmentTypes" style="display: none;">';
-	            result = result +'<li>';
-	            result = result +'<c:forEach var="submodules" items="${requirementSubModulesList}">';
-	            result = result +'<label>';
-	            result = result +'<input type="checkbox" class="allsubmodules" id="submodules" value="${submodules.id}" name="submodulesList[]" >';
-	            result = result +'${submodules.moduleName}';
-	            result = result +'</label><br/>';
-	            result = result +'</c:forEach>';
-	            result = result +'</li>';
-	            result = result +'</ul>';
-	            result = result +'</li>';
-	            result = result +'</ul>';
-	            result = result +'</c:forEach>';
+	            result = result +'<label class="col-md-3">Date Format</label>';
+	            result = result +'<div class="col-md-9">';
+	            result = result +'<select class="chosen-select form-control" data-placeholder="Date Format" field-name="Date Format" data-validation="required" id="dateFormat" name="dateFormat">';
+	            result = result +'</select>';
 	            result = result +'</div>';
-	            result = result +'<p id="subModule" style="display: none;"><font color="red">Sub Modules Required</font></p>';
-	            result = result +'<input type="hidden"  id="moduleValue" name="module" value="${module}" field-name="Module" data-validation="required"/>'; 			    
 	            result = result +'</div>';
-	            result = result +'</div>'; 
         
         
 	            result = result +'</div>';
@@ -2269,7 +2169,7 @@ function createOrg(){
 				result = result +' 			<label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>';
 				result = result +' 			 <div class="col-md-9" id="locationField">';
 				result = result +' 		          <div class="positionRelative">';
-				result = result +' 			          <input class="form-control positionRelative" id="orgSetLocation" name="location" placeholder="Enter Addres"  type="text" field-name="Location" onclick="initLocationAuto(\'orgSetLocation\',\'orgSetCountry\',\'orgSetState\',\'orgSetCity\',\'orgSetZipCode\',\'orgSetLatitude\',\'orgSetLongitude\',\'invite\',\'addressId\');" data-validation="required"></input>';
+				result = result +' 			          <input class="form-control positionRelative" id="orgSetLocation" name="location" placeholder="Enter Addres"  type="text" field-name="Location" onclick="orgSubscriptionApiLocation(\'orgSetLocation\',\'orgSetCountry\',\'orgSetState\',\'orgSetCity\',\'orgSetZipCode\',\''+countries+'\',\'addressId\');" data-validation="required"></input>';
 				result = result +' 			          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="addOrgRefreshGoogleApiLocation();"></i>';
 				result = result +' 			        </div>';
 				result = result +' 	          </div>';
@@ -2308,20 +2208,15 @@ function createOrg(){
 				result = result +'       <div class="form-group" id="errCoutryMsg">';
 				result = result +'         <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>';
 				result = result +'         <div class="col-md-9">';
-			 	 result = result + '   <select class="form-control chosen-select" name="country" id="orgSetCountry" field-name="Country" data-placeholder="Select Country" data-validation="required" onchange="changeCountry();">';
+			 	result = result + '   <select class="form-control chosen-select" name="country" id="orgSetCountry" field-name="Country" data-placeholder="Select Country" data-validation="required" onchange="changeCountry();">';
 			 	result = result + '       <option value="">Select Country</option>';
-				result = result + '       <option >Australia</option>';
-				result = result + '       <option >France</option>';
-				result = result + '       <option >India</option>';
-				result = result + '       <option >Singapore</option>';
-				result = result + '       <option >United Kingdom</option>';
-				result = result + '       <option >United States</option>'; 
+			 	result = result +'		<c:forEach var="subscibedCountries" items="${orgSubscribedCountriesList}">';
+			 	result = result + '       <option value="${subscibedCountries}">${subscibedCountries}</option>';
+		        result = result +'		</c:forEach>';
                 result = result + '    </select>';
 				result = result +'         </div>';
 				result = result +'       </div>';
 				
-						        
-	          
      
 	            result = result +'<div class="form-group">';
 	            result = result +'<label class="col-md-3">Time Zone<span class="text-danger">&nbsp;*</span></label>';
@@ -2332,14 +2227,7 @@ function createOrg(){
 	            result = result +'</div>';
 	            result = result +'</div>';
 	            
-	            result = result +'<div class="form-group">';
-	            result = result +'<label class="col-md-3">Date Format</label>';
-	            result = result +'<div class="col-md-9">';
-	            result = result +'<select class="chosen-select form-control" data-placeholder="Date Format" field-name="Date Format" data-validation="required" id="dateFormat" name="dateFormat">';
-	            result = result +'</select>';
-	            //result = result +'<span class="hidden">Time Zone</span>';
-	            result = result +'</div>';
-	            result = result +'</div>';
+	          
 	            
           
 	            
@@ -2934,22 +2822,13 @@ var validationSettings = {
         	
          		var sourceleadUrl ='${sourceleadUrl}';
          		var formData = getFormData("createOrg_form");
-         		 var modulesList = [];
-         		 $("input[name='modulesList[]']:checked").each( function (i) {
-         			modulesList[i] = $(this).val();
-         		});
-         		 
          		
-         		 var submodulesList = [];
-         		 $("input[name='submodulesList[]']:checked").each( function (i) {
-         			submodulesList[i] = $(this).val();
-         		});
          		
          		$("#regLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          		 	$.ajax({
           	      type: "POST",
           	      data: formData,
-                	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList,
+                	  url: sourceleadUrl+"/companyLocationRegistration?${_csrf.parameterName}=${_csrf.token}",
                 			  
                 			  
                   	success: function(result) {

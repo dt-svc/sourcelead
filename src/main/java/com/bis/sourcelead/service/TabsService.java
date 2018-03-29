@@ -26,4 +26,10 @@ public interface TabsService {
 	List<String> getTabsNamesListByActionsIds(List<Long> actionIdsList) throws Exception;
 
 	Tabs getTabListByTabId(Long tabId);
+	
+	Collection<Tabs> getAllTabsList() throws Exception;
+	
+	List<Tabs> getClildTabsListByTabId(Long tabId) throws Exception;
+	
+	List<Tabs> getTabListByActionsIds(List<Long> actionIdsList) throws Exception;
 }
