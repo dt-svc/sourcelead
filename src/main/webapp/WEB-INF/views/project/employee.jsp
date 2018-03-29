@@ -955,7 +955,7 @@ function editBudgetrequest(budgetRequestedId){
 					 
 					result = result + '	    <div class="clearfix mb10">';
 					result = result + '	      <div class="col-md-12">';
-					result = result + '	        <input type="text" class="form-control inlineField" value="'+json.estimatedHours+'" id="estimatedHours" placeholder="Estimated Hours *" name="estimatedHours" field-name="Estimated Hours"  data-validation="required">';
+					result = result + '	        <input type="text" class="form-control inlineField" value="'+json.estimatedHours+'" id="estimatedHours" placeholder="Estimated Hours *" name="estimatedHours" field-name="Estimated Hours"  data-validation="required validate_length length1-10 validate_int">';
 					result = result + '	      </div>';
 					result = result + '	    </div>';
 				  
@@ -1053,7 +1053,7 @@ function addBudgetRequestPopUp(){
 	 
 	result = result + '	    <div class="clearfix mb10">';
 	result = result + '	      <div class="col-md-12">';
-	result = result + '	        <input type="text" class="form-control input-sm inlineField" value="" id="estimatedHours"  placeholder="Estimated Hours *" name="estimatedHours"  field-name="Estimated Hours"  data-validation="required">';
+	result = result + '	        <input type="text" class="form-control input-sm inlineField" value="" id="estimatedHours"  placeholder="Estimated Hours *" name="estimatedHours"  field-name="Estimated Hours"  data-validation="required validate_length length1-10 validate_int">';
 	result = result + '	      </div>';
 	result = result + '	    </div>';
  
