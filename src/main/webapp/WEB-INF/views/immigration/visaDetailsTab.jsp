@@ -145,11 +145,5 @@
 		</script>
 		
 		
-<script>
-function toDate(selector) {
-    var from = $(selector).val().split("-");
-    return new Date(from[2], from[1] - 1, from[0]);
-}
-</script>
-		
+
 		
