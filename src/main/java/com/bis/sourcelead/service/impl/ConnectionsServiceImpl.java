@@ -203,7 +203,7 @@ public class ConnectionsServiceImpl implements ConnectionsService {
 		String actionLink = "";
 		UserRole role = userRoleService.getUserRoleByUserId(toUser.getId());
 		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, role.getOrgLocations(),
-				noificationEmailScenario);
+				noificationEmailScenario, null);
 	}
 
 	public StringBuilder sendEmailToInvitationUserTable(User loginUser, User toUser, OrgLocations locations,
