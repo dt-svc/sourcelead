@@ -10,6 +10,14 @@ public interface SourceleadRolesService {
 	
 	boolean roleHaveActionAccessOrNot(String actionId,String roleName);
 	
+	SourceleadRoles getSourceleadRolesByRoleName(String  roleName) throws Exception;
+	
+	List<SourceleadRoles> getGuestOrgSourceleadRoles() throws Exception;
+	
+	SourceleadRoles getSourceleadRolesByUUID(String uuid) throws Exception;
+	
+	SourceleadRoles saveSourceleadRoles(SourceleadRoles sourceleadRoles) throws Exception;
+	
 
 
 }

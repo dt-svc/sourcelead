@@ -551,7 +551,7 @@ $(function(){
 		$("#assignedMemberList").slideDown();
 		$(".assignedGrid1").hide();
 		$(".assignedGrid2").show(); 
-		 assignedMemberList(${requirement.id});
+		 assignedMemberList("${requirement.id}");
 	});
 	$('.assignedGrid2').click(function(){
 		$("#assignedMemberList").slideUp();
