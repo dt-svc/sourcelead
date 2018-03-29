@@ -18,23 +18,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationBankingDetails;
 import com.bis.sourcelead.entity.OrglocationOnboardDocuments;
-import com.bis.sourcelead.entity.OrglocationSignatory;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ModulesService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrglocationBankingDetailsService;
 import com.bis.sourcelead.service.OrglocationOnboardDocumentsService;
 import com.bis.sourcelead.service.OrglocationSignatoryService;
@@ -65,6 +65,9 @@ public class OrgSettingsController {
 	TimeZoneService timeZoneService;
 	@Autowired
 	ModulesService modulesService;
+	
+	 @Autowired
+	 private OrgLocationService orgLocationService;
 	
 	@Autowired
 	StatesService statesService;
@@ -201,15 +204,16 @@ public class OrgSettingsController {
 	}
 	
 	// @PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
-	@RequestMapping(value = "/orgChart")
-	public ModelAndView orgChart(HttpServletRequest request) throws Exception
-	{
-//		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		ModelAndView model = new ModelAndView();
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("orgChart");
-		return model;
-	}
+	 @RequestMapping(value = "/orgChart")
+	    public ModelAndView orgChart(HttpServletRequest request) throws Exception
+	    {
+	        Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+	        ModelAndView model = new ModelAndView();
+	        model.addObject("sourceleadUrl", sourceleadUrl);
+	        model.addObject("locations", orgLocationService.getAllOrgLocationsByOrgId(org.getId()));
+	        model.setViewName("orgChart");
+	        return model;
+	    }
 	
 	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
 	@RequestMapping(value = "/orgRolesList")
