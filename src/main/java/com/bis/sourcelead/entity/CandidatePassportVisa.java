@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -28,7 +30,8 @@ public class CandidatePassportVisa implements Serializable {
 	@Column(name = "ID", nullable = false)
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID")
 	private Candidate candidate;
 
@@ -59,14 +62,16 @@ public class CandidatePassportVisa implements Serializable {
 	@Column(name = "CREATED_DATE ")
 	private Date createdDate;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
 	@JoinColumn(name = "CREATED_BY")
 	private User createdBy;
 
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
 	@JoinColumn(name = "UPDATED_BY")
 	private User updatedBy;
 	@Transient

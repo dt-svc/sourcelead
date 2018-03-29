@@ -35,19 +35,6 @@ public class ImmigrationPassportVisaDTO extends SearchDTO{
 
 	private String updatedBy;
 	
-	private String staticPath;
-
-	public String getStaticPath()
-	{
-		return staticPath;
-	}
-
-	public void setStaticPath(String staticPath)
-	{
-		this.staticPath = staticPath;
-	}
-
-	
 
 	public Long getCandidatePassportId()
 	{
