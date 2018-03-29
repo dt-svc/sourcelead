@@ -826,12 +826,12 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		String searchByValue = searchByName.trim();
 		StringBuilder subQuery = new StringBuilder("");
 		String sqlQuery = "select distinct u.ID as id, u.USER_CODE as userCode, u.FILE_URL as fileUrl, concat(u.FIRST_NAME,' ',IFNULL(u.LAST_NAME, '')) as userName, u.EMAIL as email, ur.USER_TYPE as userType, ol.ORG_NAME as orgName," + 
-				"((select count(c.FROM_UID) from sourcelead.CONNECTIONS c where c.TO_UID = u.ID "+
-				"and (c.FROM_UID in (select c.FROM_UID from sourcelead.CONNECTIONS c where c.TO_UID = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') or "+
-				"c.FROM_UID in (select c.TO_UID from sourcelead.CONNECTIONS c where c.FROM_UID = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED')))+ "+ 
-				"(select count(c.TO_UID) from sourcelead.CONNECTIONS c where c.FROM_UID = u.ID "+
-				"and (c.TO_UID in (select c.FROM_UID from sourcelead.CONNECTIONS c where c.TO_UID = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') or "+
-				"c.TO_UID in (select c.TO_UID from sourcelead.CONNECTIONS c where c.FROM_UID = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED')))) as count, "+
+				"((select count(c.FROM_UID) from sourcelead.CONNECTIONS c where c.TO_UID = :loginUserId "+
+				"and (c.FROM_UID in (select c.FROM_UID from sourcelead.CONNECTIONS c where c.TO_UID = u.ID and c.CONNECTION_STATUS = 'CONNECTED') or "+
+				"c.FROM_UID in (select c.TO_UID from sourcelead.CONNECTIONS c where c.FROM_UID = u.ID and c.CONNECTION_STATUS = 'CONNECTED')))+ "+ 
+				"(select count(c.TO_UID) from sourcelead.CONNECTIONS c where c.FROM_UID = :loginUserId "+
+				"and (c.TO_UID in (select c.FROM_UID from sourcelead.CONNECTIONS c where c.TO_UID = u.ID and c.CONNECTION_STATUS = 'CONNECTED') or "+
+				"c.TO_UID in (select c.TO_UID from sourcelead.CONNECTIONS c where c.FROM_UID = u.ID and c.CONNECTION_STATUS = 'CONNECTED')))) as count, "+
 				"(select c.CONNECTION_UID from sourcelead.CONNECTIONS c where (c.FROM_UID = :loginUserId and c.TO_UID = u.ID) or (c.FROM_UID = u.ID and c.TO_UID = :loginUserId)) as connectionUUID, " +
 				"(select count(*) from sourcelead.CONNECTIONS c where c.FROM_UID = :loginUserId and c.TO_UID = u.ID and c.CONNECTION_STATUS = 'REQUEST_SENT') as requestSent, " + 
 				"(select count(*) from sourcelead.CONNECTIONS c where c.FROM_UID = u.ID and c.TO_UID = :loginUserId and c.CONNECTION_STATUS = 'REQUEST_SENT') as requestRecieved " +
@@ -852,7 +852,9 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			queryString.setParameter("searchByUserType",searchByValue)
 			.setParameter("searchByValue", "%" + searchByValue + "%");
 		}
-		//Pagination                                                              //Converting custom DTO class list from Sql result 
+		//System.out.println("The query is: "+queryString.getQueryString());
+		//Pagination
+		//Converting custom DTO class list from Sql result 
 		queryString.setFirstResult(offset).setMaxResults(18).setResultTransformer(Transformers.aliasToBean(ConnectionsDTO.class));
 		usersList = queryString.list();
 		if(usersList.isEmpty()) {
