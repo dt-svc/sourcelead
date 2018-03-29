@@ -844,7 +844,12 @@ public class ImmigrationRestController {
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		model.setViewName("/immigration/residenceDetailsTab");
 		 List<CandidateResidence>   candidatesResidenceList = immigrationCommonService.getCandidatesResidenceListByCandidateIdAndOrgLocationID(candidateId);
-		model.addObject("candidatesResidenceList",candidatesResidenceList);
+		for(CandidateResidence canRes : candidatesResidenceList){
+			canRes.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), canRes.getStartDate()));
+			canRes.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), canRes.getEndDate()));
+
+		}
+		 model.addObject("candidatesResidenceList",candidatesResidenceList);
 		return model;
 	}
 	@RequestMapping(value = { "/getCandidatePassportVisaDetails" })
@@ -909,6 +914,8 @@ public class ImmigrationRestController {
 		CandidateResidence residenceObj= null;
 		try {
 			residenceObj = immigrationCommonService.getCandidateResidenceDetailsById(id);
+			residenceObj.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), residenceObj.getStartDate()));
+			residenceObj.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), residenceObj.getEndDate()));
 			System.out.println(" in controller status "+status);
 		} catch (Exception e) {
 			logger.error("Exception caught in controller test --->"+e.getMessage());
