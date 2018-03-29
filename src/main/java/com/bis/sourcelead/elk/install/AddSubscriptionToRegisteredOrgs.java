@@ -84,9 +84,9 @@ public void updateSubscription() throws IOException, SQLException {
 					 String currency = null;
 					 
 					 if(orgType.equalsIgnoreCase("Guest")) {
-						 subscriptionType = "8048";
+						 subscriptionType = "6";
 					 }else {
-						 subscriptionType = "8039";
+						 subscriptionType = "1";
 					 }
 					 
 					 String sql5 = "SELECT * FROM sourcelead.COUNTRIES countries where countries.Name = '"+country+"' ";
@@ -150,8 +150,8 @@ public void updateSubscription() throws IOException, SQLException {
 				    		 pstmt2.setLong(1, orgId);
 				    		 pstmt2.setString(2,country);
 				    		 pstmt2.setString(3, subscriptionType);
-				    		 pstmt2.setString(4, "8044");
-				    		 pstmt2.setString(5,"8046");
+				    		 pstmt2.setString(4, "8");
+				    		 pstmt2.setString(5,"10");
 				    		 pstmt2.setString(6,currency);
 				    		 pstmt2.setDouble(7,0d);
 				    		 pstmt2.setString(8,tabsBuilderString);

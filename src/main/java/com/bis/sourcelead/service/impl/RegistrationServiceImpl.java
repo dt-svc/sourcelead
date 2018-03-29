@@ -53,6 +53,7 @@ import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLicenseSubscriptionPrice;
+import com.bis.sourcelead.entity.OrgLicenseSubscriptionTypes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRequest;
 import com.bis.sourcelead.entity.PasswordResets;
@@ -649,15 +650,15 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgLicenseSubscription.setOrg(org);
 		orgLicenseSubscription.setCountry(registration.getCountry());
 		
-		LookUpData subscriptionType = new LookUpData();
+		OrgLicenseSubscriptionTypes subscriptionType = new OrgLicenseSubscriptionTypes();
 		subscriptionType.setId(Long.parseLong(registration.getOrgEnrollment()));
 		orgLicenseSubscription.setSubscriptionType(subscriptionType);
 		
-		LookUpData userSubscriptionType = new LookUpData();
+		OrgLicenseSubscriptionTypes userSubscriptionType = new OrgLicenseSubscriptionTypes();
 		userSubscriptionType.setId(Long.parseLong(registration.getUserSubscription()));
 		orgLicenseSubscription.setUserSubscriptionType(userSubscriptionType);
 		
-		LookUpData storageSubscriptionType = new LookUpData();
+		OrgLicenseSubscriptionTypes storageSubscriptionType = new OrgLicenseSubscriptionTypes();
 		storageSubscriptionType.setId(Long.parseLong(registration.getDataStorage()));
 		orgLicenseSubscription.setStorageSubscriptionType(storageSubscriptionType);
 		

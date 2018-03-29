@@ -45,6 +45,7 @@ import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLicenseSubscriptionPrice;
+import com.bis.sourcelead.entity.OrgLicenseSubscriptionTypes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectClients;
@@ -675,15 +676,15 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 			orgLicenseSubscription.setOrg(org);
 			orgLicenseSubscription.setCountry(orgLicenseSubscriptionDTO.getCountry());
 			
-			LookUpData subscriptionType = new LookUpData();
+			OrgLicenseSubscriptionTypes subscriptionType = new OrgLicenseSubscriptionTypes();
 			subscriptionType.setId(Long.parseLong(orgLicenseSubscriptionDTO.getSubscriptionType()));
 			orgLicenseSubscription.setSubscriptionType(subscriptionType);
 			
-			LookUpData userSubscriptionType = new LookUpData();
+			OrgLicenseSubscriptionTypes userSubscriptionType = new OrgLicenseSubscriptionTypes();
 			userSubscriptionType.setId(Long.parseLong(orgLicenseSubscriptionDTO.getUserSubscription()));
 			orgLicenseSubscription.setUserSubscriptionType(userSubscriptionType);
 			
-			LookUpData storageSubscriptionType = new LookUpData();
+			OrgLicenseSubscriptionTypes storageSubscriptionType = new OrgLicenseSubscriptionTypes();
 			storageSubscriptionType.setId(Long.parseLong(orgLicenseSubscriptionDTO.getStorageType()));
 			orgLicenseSubscription.setStorageSubscriptionType(storageSubscriptionType);
 			
