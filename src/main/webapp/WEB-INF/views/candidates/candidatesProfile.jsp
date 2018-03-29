@@ -47,9 +47,14 @@ function editCandidate(candidateId){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-         success :function(json) {  
-              if(json != null){  
-//               	 var json = JSON.parse(data);
+         success :function(result) {
+           var json = result.object;
+      	   if(result.response === "SESSION_TIMEDOUT") {
+					location.replace(sourceleadUrl);
+				} else if (result.response === "AWKWARD") {
+					location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+              		if(json != null){  
             			 	var lastName = '';
             			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
             			 		lastName = json.lastName;            			 		
@@ -481,7 +486,7 @@ function editCandidate(candidateId){
 								  })
 							});
             		 
-                }else{
+                	}else{
          	    	         var result ="";
         		    	     result = result+"   <div class='row'>"; 
         					 result = result+"	<div class='col-lg-12'>"; 
@@ -496,6 +501,11 @@ function editCandidate(candidateId){
         					$("#profileEditPopup").empty();
         				    $("#profileEditPopup").append(result); 
                         }
+					} else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+						showError("Operation failed, please try again");
+					}
                  },
                    
               }); 
@@ -689,9 +699,14 @@ function candidateProfile(candidateId,candidateType){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-         success :function(json) {  
-              if(json != null) {
-//               	var json = JSON.parse(data);
+         success :function(result) { 
+        	 var json = result.object;
+        	   if(result.response === "SESSION_TIMEDOUT") {
+  					location.replace(sourceleadUrl);
+  				} else if (result.response === "AWKWARD") {
+  					location.href = "/errorPage";
+  				} else if (result.response === "SUCCESS") {
+              		if(json != null) {
 							var result = "";
 							result = result+'<div id="removeCandidateAlert" ></div>';
 							result = result+'<div id="loading"></div>';
@@ -962,22 +977,27 @@ function candidateProfile(candidateId,candidateType){
 								$(".endDate").toggle(200);
 							});
 							     /* event.preventDefault(); */
-              } else {
-					$("#candidateSideDiv").removeAttr("style");
-       	    	    var result ="";
-      		    	result = result+"   <div class='row'>"; 
-      				result = result+"	<div class='col-lg-12'>"; 
-      				result = result+"		<div class='content-area clearfix'>"; 
-      				result = result+"			<div class='blank-pages'>";
-      				result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-      				result = result+"			        <p>No Candidates Found</p>";
-      				result = result+"			 </div>";
-      				result = result+"		</div>"; 
-      				result = result+"	</div>"; 
-      				result = result+"  </div> "; 
-      				$("#candidateSideDiv").empty();
-      				$("#candidateSideDiv").append(result); 
-			}
+		              } else {
+							$("#candidateSideDiv").removeAttr("style");
+		       	    	    var result ="";
+		      		    	result = result+"   <div class='row'>"; 
+		      				result = result+"	<div class='col-lg-12'>"; 
+		      				result = result+"		<div class='content-area clearfix'>"; 
+		      				result = result+"			<div class='blank-pages'>";
+		      				result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+		      				result = result+"			        <p>No Candidates Found</p>";
+		      				result = result+"			 </div>";
+		      				result = result+"		</div>"; 
+		      				result = result+"	</div>"; 
+		      				result = result+"  </div> "; 
+		      				$("#candidateSideDiv").empty();
+		      				$("#candidateSideDiv").append(result); 
+					}
+  				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
+				}
 		},
                  
 	}); 

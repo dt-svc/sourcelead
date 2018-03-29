@@ -14,12 +14,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.annotations.Validator;
+import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadNotesDTO;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadNotes;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.InvoiceService;
@@ -79,15 +83,30 @@ public class SourceleadNotesRestController {
 	
 	
 	@RequestMapping(value = "/storeNotes", method = RequestMethod.POST)
-	public @ResponseBody String storeNotes(SourceleadNotesDTO sourceleadNotesDTO,
+	public @ResponseBody Response<String> storeNotes(SourceleadNotesDTO sourceleadNotesDTO,
 			@RequestParam("userId") Long userId,
 			@RequestParam("locationCode") String locationCode) throws Exception
 	{
-		
-		User user =  userService.getUserById(userId);
-		OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
-		sourceleadNotesService.storeComments(sourceleadNotesDTO, user,orgLocation);
-		return "success";
+		Response<String> response = new Response<>();
+		if (Validator.validate(sourceleadNotesDTO)) {
+			try {
+					User user =  userService.getUserById(userId);
+					OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+					sourceleadNotesService.storeComments(sourceleadNotesDTO, user,orgLocation);
+					response.setObject("success");
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}catch(Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+				}
+			return response;
+		}else {
+			response.setObject("MissingData");
+			response.setResponse(Result.FAILED.name());
+			response.setResponseMessage(Result.FAILED.getValue());
+			return response;
+		}
 	}
 	
 	
@@ -125,13 +144,26 @@ public class SourceleadNotesRestController {
 	
 	
 	@RequestMapping(value = "/getRequirementNotes", method = RequestMethod.POST)
-	public @ResponseBody String getRequirementNotes(@RequestParam(value = "requirementId", required = false) Long requirementId,HttpServletRequest request) throws Exception
+	public @ResponseBody ResponseList<SourceleadNotes> getRequirementNotes(@RequestParam(value = "requirementId", required = false) Long requirementId,HttpServletRequest request) throws Exception
 	{
-		String notesList;
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<SourceleadNotes> list = sourceleadNotesService.getNotesListByRequirementId(requirementId,orgLocation.getId());
-		notesList = commonUtil.toJSON(list);
-		return notesList;
+		ResponseList<SourceleadNotes> response = new ResponseList<>();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(user != null){
+			try {
+					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					List<SourceleadNotes> list = sourceleadNotesService.getNotesListByRequirementId(requirementId,orgLocation.getId());
+					response.setData(list);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}catch(Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
 	}
 	
 	@RequestMapping(value = "/getAssetNotes", method = RequestMethod.POST)
