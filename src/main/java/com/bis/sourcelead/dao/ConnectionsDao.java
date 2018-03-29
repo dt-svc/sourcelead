@@ -5,9 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.bis.sourcelead.dto.ConnectionsDTO;
-import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.Connections;
-import com.bis.sourcelead.entity.User;
 
 public interface ConnectionsDao {
 
@@ -30,6 +28,10 @@ public interface ConnectionsDao {
 	Map<String, BigInteger> getCountValuesForSentReceivedConnected(Long userId);
 
 	List<ConnectionsDTO> getMututalConnections(Long userId, Long sessionUid);
+
+	int saveConnectionsList(List<Connections> connections);
+
+	String withdrawAllValues(String[] connectionsUerIdList);
 	
 	
 

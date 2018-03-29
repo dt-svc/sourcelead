@@ -48,6 +48,11 @@ window.onload = function () {
 			<li class="current"><a href="#" onclick="getConnectionListOnClick()">Find</a></li>
 		</ul>
 		<span><input class="immigraTabSerach" id="searchFindConnId" placeholder="Name/Email/Role/Org" type="text"></span>
+		
+		<div class="conneWrapHeadBtn">
+            <a href="javascript:void(0)" class="color" onclick="inviteAllMutualSearch();">Invite all</a>
+        </div>
+		
 	</div>
 	<div class="conHeadgap"></div>
 	
@@ -86,6 +91,23 @@ $(document).scroll(function(e){
     }
     
 });
+
+
+function inviteAllMutualSearch(){
+	  $.ajax({ 
+   		type : "POST",
+   		data : {
+			connectionsUerIdList : mutualConnUsers
+   		},
+		url : sourceleadUrl+"/inviteAllMutualAndSearch",
+       	success: function(json) {
+       		if(json == 'success'){
+       			getConnectionsList('manual');
+       		}
+       	}
+	  });
+}
+
 </script>
 
 <script type="text/javascript">
@@ -100,6 +122,7 @@ $("#searchFindConnId").keydown(function(e) {
 	}
 	var userName = null;
 	
+var mutualConnUsers = [];
 function getConnectionsList(type){
 	$.post("check-session", {}, function(data) {
 		if(data === "YES") {
@@ -118,6 +141,7 @@ function getConnectionsList(type){
     		$("#orgOffset").val(0);
    		    offset = 0;
     	}
+		//mutualConnUsers = [];
 		$("#loadingConnectionDiv").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({ 
 	    	type : "POST",
@@ -147,6 +171,13 @@ function getConnectionsList(type){
 	 				}else if(user.requestRecieved == 1){
 	 					state = '<a href="javascript:void(0)" onclick="acceptConnection(\''+user.userCode+'\', \''+user.userName+'\', \''+user.connectionUUID+'\')" id="connection'+user.userCode+'" class="connlink green">Accept</a><a href="javascript:void(0)" onclick="ignoreConnection(\''+user.userCode+'\', \''+user.userName+'\', \''+user.connectionUUID+'\')" id="connection'+user.userCode+'" class="connlink orange">Ignore</a>';
 	 				}else{
+						if($("#searchFindConnId").val()!=""){
+							mutualConnUsers.push(user.userCode);
+						}else{
+		 					if(user.count != 0){
+								mutualConnUsers.push(user.userCode);
+		 					}
+						}
 	 					state = '<a href="javascript:void(0)" onclick="getConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink">Connect</a>';
 	 				}
 	 				var mutCountStatus = null;

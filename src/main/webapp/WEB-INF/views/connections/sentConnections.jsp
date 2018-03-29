@@ -44,6 +44,9 @@
 			<li><a  href="<c:url value='${appPath}/loadFindConnections?status=find'/>">Find</a></li>
 		</ul>
 		<span><input class="immigraTabSerach" id="searchFindConnId" placeholder="Name/Email/Role/Company" type="text"></span>
+		<div class="conneWrapHeadBtn">
+            <a href="javascript:void(0)" class="color" onclick="withdrawAllValues();">Withdraw all</a>
+        </div>
 	</div>
 	<div class="conHeadgap"></div>
 	<div class="conneWrapInn clearfix" id="findConnectionListId"></div>
@@ -104,6 +107,27 @@ $("#searchFindConnId").keydown(function(e) {
 		getConnectionsList('manual');
 	}
 });
+
+function withdrawAllValues(){
+	$.ajax({ 
+ 		type : "POST",
+ 		data : {
+			connectionsUerIdList : requestSentUsers
+ 		},
+		url : sourceleadUrl+"/withdrawAllValues",
+     	success: function(json) {
+     		if(json == 'success'){
+     			getConnectionsList('manual');
+     			/* $.each(requestSentUsers, function( index, value ) {
+     				  alert( index + ": " + value );
+     				 $("#connectionState"+value).empty().append('<b class="connlink gray">Withdrawn</b>');
+     			}); */
+     		}
+     	}
+	});
+}
+
+var requestSentUsers = [];
 var sentCount = 0;
 	function getConnectionsList(type){
 		$.post("check-session", {}, function(data) {
@@ -125,7 +149,7 @@ var sentCount = 0;
 	    		$("#orgOffset").val(0);
 	   		    offset = 0;
 	    	} 
-			
+			//requestSentUsers = [];
 			$("#loadingConnectionSentDiv").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({ 
 	    	type : "GET",
@@ -144,6 +168,7 @@ var sentCount = 0;
 	 			for(var i=0; i<json.length; i++){
 	 				var user = json[i];
 	 				var mutCountStatus = null;
+	 				requestSentUsers.push(user.connectionUUID);
 		 			if(user.count != 0){
 		 				mutCountStatus ="<a href='javascript:void(0)' onclick='getMututalConnections("+user.id+");' class='conUnder'><p>"+user.count + " Mutual Connections</p></a>";
 		 			}else{

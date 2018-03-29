@@ -859,7 +859,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			queryString.setParameter("searchByUserType",searchByValue)
 			.setParameter("searchByValue", "%" + searchByValue + "%");
 		}
-		System.out.println("The query is: "+queryString.getQueryString());
+		//System.out.println("The query is: "+queryString.getQueryString());
 		//Pagination
 		//Converting custom DTO class list from Sql result 
 		queryString.setFirstResult(offset).setMaxResults(18).setResultTransformer(Transformers.aliasToBean(ConnectionsDTO.class));

@@ -40,6 +40,10 @@
 			<li><a href="<c:url value='${appPath}/loadFindConnections?status=find'/>">Find</a></li>
 		</ul>
 		<span><input class="immigraTabSerach" type="text" id="searchFindConnId" placeholder="Name/Email/Role/Company"></span>
+		<div class="conneWrapHeadBtn">
+            <a href="javascript:void(0)" onclick="acceptAllRequest();" class="color">Accept all</a>
+            <a href="javascript:void(0)" onclick="ignoreAllRequest();">Ignore all</a>
+        </div>
 	</div>
 	<div class="conHeadgap"></div>
 	<div class="conneWrapInn clearfix" id="findConnectionListId"></div>
@@ -81,7 +85,37 @@ $(document).scroll(function(e){
 window.onload = function () {
 	getConnectionsList('manual');
  };
+ 
+ function ignoreAllRequest(){
+	 $.ajax({ 
+	 		type : "POST",
+	 		data : {
+				connectionsUerIdList : receivedConnUuidVal
+	 		},
+			url : sourceleadUrl+"/withdrawAllValues",
+	     	success: function(json) {
+	     		if(json == 'success'){
+	     			getConnectionsList('manual');
+	     		}
+	     	}
+		});
+ }
 
+ function acceptAllRequest(){
+	 $.ajax({ 
+	 		type : "POST",
+	 		data : {
+				connectionsUerIdList : receivedConnUuidVal
+	 		},
+			url : sourceleadUrl+"/acceptAllValues",
+	     	success: function(json) {
+	     		if(json == 'success'){
+	     			getConnectionsList('manual');
+	     		}
+	     	}
+		});
+ }
+ 
 </script>
  <script>
 	function predefineProfileImage(imageId){
@@ -95,10 +129,10 @@ function eduMsgFadeinFunction(message) {
 		$(this).delay(200).fadeOut('slow');
 	});
 }
+	var receivedConnUuidVal = [];
 	function getConnectionsList(type){
 		$.post("check-session", {}, function(data) {
 			if(data === "YES") {
-				
 		var sourceleadUrl = '${sourceleadUrl}';
 		 var searchValue = $("#searchFindConnId").val();
 		 if(type == "scroll"){
@@ -129,10 +163,10 @@ function eduMsgFadeinFunction(message) {
 	        if(json != null && json.length > 0)
 	   		{
 	    		 $('#loadMoreDiv').empty();
-	    		
 	 			for(var i=0; i<json.length; i++){
 	 				var user = json[i];
 	 				var mutCountStatus = null;
+	 				receivedConnUuidVal.push(user.connectionUUID);
 		 			if(user.count != 0){
 		 				mutCountStatus ="<a href='javascript:void(0)' onclick='getMututalConnections("+user.id+");' class='conUnder'><p>"+user.count + " Mutual Connections</p></a>";
 		 			}else{
