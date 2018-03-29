@@ -20,7 +20,6 @@ import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Weeks;
 
@@ -28,23 +27,6 @@ import com.bis.sourcelead.constants.Constants;
 
 public  class CalendarUtil {
 
-	public static void main(String[] args) throws ParseException {
-		
-		String minString = "11-03-2018";
-		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-		Date min = dateFormat.parse(minString);
-		
-		String maxString = "15-03-2018";
-		Date max = dateFormat.parse(maxString);
-		
-		String inputString = "15-03-2018";
-		Date d = dateFormat.parse(inputString);
-		
-		System.out.println(getMonth16thDateByGivenDate(min,Constants.CURRENT_MONTH).get("STARTDATE"));
-		
-		
-		
-	}
 	/*public static void main(String[] args){
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 		currentCal.setLenient(false);
@@ -1101,4 +1083,13 @@ public  class CalendarUtil {
 		return numberofDays;
 
 	}
+ public static String getMonthFromGivenDate(Date date){
+	    SimpleDateFormat   simpleDateFormat = new SimpleDateFormat("MMMM");
+		return simpleDateFormat.format(date);
+	}
+ public static String getYearFromGivenDate(Date date){
+	    SimpleDateFormat   simpleDateFormat = new SimpleDateFormat("YYYY");
+		return simpleDateFormat.format(date);
+	}
 }
+

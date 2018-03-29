@@ -7,6 +7,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.select.Evaluator.IsEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -91,14 +92,18 @@ public class ResourcesController {
 				sourceleadBlog = sourceleadBlogService.getSourceleadBlogsByBlogUUID(blogUUID);
 				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
 				DateFormat dateFormatResult = new SimpleDateFormat ("MM/dd/yyyy hh:mm a");
+				
+				if(sourceleadBlog.getPublishOn() != null) {
 				String publishon = dateFormatResult.format(dateFormat.parse(sourceleadBlog.getPublishOn().toString()));
+				model.addObject("publishon", publishon);
+				}
 				
 				String[] keywordsArray = null;
 				if(sourceleadBlog != null && StringUtils.isNotEmpty(sourceleadBlog.getKeywords())) {
 					keywordsArray = sourceleadBlog.getKeywords().split(",");
 				}
 				model.addObject("keywordsArray", keywordsArray);
-				model.addObject("publishon", publishon);
+				
 				model.addObject("sourceleadBlog", sourceleadBlog);
 			}
 			
