@@ -2,18 +2,14 @@
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
 <!-- these files for autocomplete with tagit -->
-
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <jsp:include page="candidatesQuickView.jsp"></jsp:include>
-
 <style>
 .addUser-org {
-    overflow-x: auto;
+	overflow-x: auto;
 }
 </style>
-
 <%-- 
      @author : sarath kumar.
      this script is for display candidate education tab data.
@@ -81,18 +77,14 @@ function candidateEducation(candidateId){
     
 }
 </script>
-
-
 <!-- Show success message after form submission script -->
 <script>
 	function eduMsgFadeinFunction() {
 		$("#selector04").fadeIn(200);
         $('#selector04').delay(2000).fadeOut('slow');
 	}
-</script> 
+</script>
 <!-- End -->
-
-
 <%-- 
      @author : sarath kumar.
      this script is for get candidateEducationList.
@@ -216,13 +208,11 @@ function candidateEducationList(candidateId){
      }); 
 }
 </script>
-
 <%-- 
      @author : sarath kumar.
      this script is for prepare pagination.
      1.usage     : used in candidateEducationList().
 --%>
-
 <script>
 function educationPagination(){  
     $('#candidateEducationPagination').DataTable( { 
@@ -238,20 +228,17 @@ function educationPagination(){
     } );
 }
 </script>
-
-
 <%-- 
      @author : sarath kumar.
      this script is for remove popUp.
      1.usage   : used in addEducation() function.
 --%>
-
 <script>
 function closePopup(){
 	 $("#popUpDiv").removeClass("edit-details-active");
+	 $(".location-alert").fadeOut();
 }
 </script>
-
 <%-- 
      @author : sarath kumar.
      this script is for shown popUp.
@@ -371,23 +358,24 @@ function addEducation(candidateId) {
 	
 	
 	$(".edit-details").toggleClass("edit-details-active");
-	 $(".close-div").click(function(){ 
-		 $(this).parent("div.edit-details").removeClass("edit-details-active");
-		 });
-	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
-		 e.stopPropagation();
-	 });
+	$(".close-div").click(function(){ 
+		$(this).parent("div.edit-details").removeClass("edit-details-active");
+		$(".location-alert").fadeOut();
+	});
+	$(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
+		e.stopPropagation();
+	});
 	 /* $('html').click(function(){
 		$(".edit-details").removeClass("edit-details-active");
 	   });	 */
 	 <%-- Eductions and Skills Autocomplete Scripts Starts Here --%>
-	 var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
+	var config = {
+		'.chosen-select'           : {},
+		'.chosen-select-deselect'  : {allow_single_deselect:true},
+		'.chosen-select-no-single' : {disable_search_threshold:10},
+		'.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+		'.chosen-select-width'     : {width:"95%"}
+	}
 	//Adding Customized Educations to the list
      var selectone, chosenone;
      selectone = $("#candEdu");
@@ -423,10 +411,6 @@ function addEducation(candidateId) {
 		<%-- Eductions and Skills Autocomplete Scripts Ends Here --%>
 	}
 </script>
-
-
-
-
 <script>
 function EditEducation(candidateId,candidateEducationId) {
 	$.ajax({	type : "POST",
@@ -642,12 +626,13 @@ function EditEducation(candidateId,candidateEducationId) {
 		 $(".edit-details").toggleClass("edit-details-active");
 	 }); */
 	$(".edit-details").toggleClass("edit-details-active");
-	 $(".close-div").click(function(){ 
-		 $(this).parent("div.edit-details").removeClass("edit-details-active");
-		 });
-	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
-		 e.stopPropagation();
-	 });
+	$(".close-div").click(function(){ 
+		$(this).parent("div.edit-details").removeClass("edit-details-active");
+		$(".location-alert").fadeOut();
+	});
+	$(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
+		e.stopPropagation();
+	});
 	 /* $('html').click(function(){
 		$(".edit-details").removeClass("edit-details-active");
 	   });	 */
@@ -676,9 +661,6 @@ function EditEducation(candidateId,candidateEducationId) {
 
 }
 </script>
-
-
-
 <%-- 
      @author : sarath kumar.
      this script is for store candidateEducationstore .
@@ -693,79 +675,84 @@ var validationSettings = {
 	};
 </script>
 <script>
-function candidateEducationStore(candidateId){
+function candidateEducationStore(candidateId) {
 	var scoreType = document.getElementById("scoreEducationType").value; 
 	 if(scoreType != null && scoreType != ""){
 		 $('#candidateEducationScore').removeAttr('data-validation-optional');
 		 $('#candidateEducationScore').attr("data-validation","required"); 
-	 }else{
+	 } else {
 		 $('#candidateEducationScore').removeAttr('data-validation');
 		 $('#candidateEducationScore').attr("data-validation-optional","true"); 
 	 }
 	  
 	  if ($('#education_form').validate(false, validationSettings)) {
-		  
-		     var formData = getFormData("education_form");
-			 $("#education_form").attr("disabled", "disabled");
-			 $("#save_button").attr("disabled", "disabled");
-			
-			 $.post(sourceleadUrl+"/storeCandidateEducation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(data) {
-				 closePopup();
-				 $('#perVal').attr('aria-valuenow', data).css('width',data+'%');
-    			 if(data<50){
-    			   $("#perVal").removeClass('progress-bar-success');
-    			   $("#perVal").addClass("progress-bar-danger");
-    			 }
-    			 if(data>=50){
-    				 $("#perVal").removeClass("progress-bar-danger");
-    				 $("#perVal").addClass("progress-bar-success");
-    			 }
-    			 $("#disVal").empty();
-    			$("#disVal").append(data+'%');
-    			// for quick view bar update
-    			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
-      			 if(data<50){
-          			   $("#quickPerVal").removeClass('progress-bar-success');
-          			   $("#quickPerVal").addClass("progress-bar-danger");
-          			 }
-          			 if(data>=50){
-          				 $("#quickPerVal").removeClass('progress-bar-danger');
-          				 $("#quickPerVal").addClass("progress-bar-success");
-          			 }
+	     var formData = getFormData("education_form");
+		 $("#education_form").attr("disabled", "disabled");
+		 $("#save_button").attr("disabled", "disabled");
+		
+		 $.post(sourceleadUrl+"/storeCandidateEducation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(result) {
+			 if (result && result.response === "INVALID_DATA") {
+				    $("#update_candidate").removeAttr("disabled");
+				    $("#update_candidate").removeAttr('button').val('Save');
+				    showError(result.responseMessage);
+				} else if (result.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+					closePopup();
+					$('#perVal').attr('aria-valuenow', result.object).css('width',result.object+'%');
+	    			if(result.object < 50){
+	    				$("#perVal").removeClass('progress-bar-success');
+	    				$("#perVal").addClass("progress-bar-danger");
+	    			}
+	    			if(result.object >= 50){
+	    				$("#perVal").removeClass("progress-bar-danger");
+	    				$("#perVal").addClass("progress-bar-success");
+	    			}
+	    			$("#disVal").empty();
+	    			$("#disVal").append(result.object+'%');
+	    			// for quick view bar update
+	    			$('#quickPerVal').attr('aria-valuenow', result.object).css('width',result.object+'%');
+	      			if(result.object<50){
+	          			$("#quickPerVal").removeClass('progress-bar-success');
+	          			$("#quickPerVal").addClass("progress-bar-danger");
+	          		}
+	          		if(result.object>=50){
+	          			$("#quickPerVal").removeClass('progress-bar-danger');
+	          			$("#quickPerVal").addClass("progress-bar-success");
+	          		}
 
-    			$("#quickDisVal").empty();
-    			$("#quickDisVal").append(data+'%');
-    			
-       		    $("#popUpDiv").removeClass("edit-details-active");
-    			$("#selector04").removeAttr("style");
-    			$("#selector04").css({ display: "block" });
-				$("#eduMsgDivEmp").html("Success!! New Education added");
-       			candidateEducationList(candidateId);
-       			eduMsgFadeinFunction();
-       			qveducationSubmission(candidateId);
-       			setTimeout(function(){
-		 			candidateList();					 			
-		 		},100);
-		        });
-			
-			return true; 
-		} else {
-			return false;
-		}
-} 
+	    			$("#quickDisVal").empty();
+	    			$("#quickDisVal").append(result.object+'%');
+	    			
+	       		    $("#popUpDiv").removeClass("edit-details-active");
+	    			$("#selector04").removeAttr("style");
+	    			$("#selector04").css({ display: "block" });
+					$("#eduMsgDivEmp").html("Success!! New Education added");
+	       			candidateEducationList(candidateId);
+	       			eduMsgFadeinFunction();
+	       			qveducationSubmission(candidateId);
+	       			setTimeout(function(){
+			 			candidateList();					 			
+			 		},100);
+		 			return true;
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
+			 return false;
+		 });
+	}
+}
 $('body').on('blur', '#education_form', function() {
 	$("#education_form").showHelpOnFocus();
 	$("#education_form").validateOnBlur(false, validationSettings);
 });
 
-
-</script>            
-          
-
+</script>
 <script type="text/javascript">
 	(function($) {
 		$.fn.serializeFormJSON = function() {
-
 			var o = {};
 			var a = this.serializeArray();
 			$.each(a, function() {
@@ -781,20 +768,13 @@ $('body').on('blur', '#education_form', function() {
 			return o;
 		};
 	})(jQuery);
-</script>           
-
-
-
-  
-  
-  <script type="text/javascript">
+</script>
+<script type="text/javascript">
 function deleteEduPopup(){
 	$("#remove_user_pop, .project_inn_mask").fadeOut();
 }
 </script>
-
-<div id="deleteEduPopUp"></div> 
-
+<div id="deleteEduPopUp"></div>
 <script type="text/javascript">
 function removeEducation(candidateEducationId, candidateId){
 	var result = "";
@@ -808,16 +788,12 @@ function removeEducation(candidateEducationId, candidateId){
 	$("#deleteEduPopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
-
 }
 </script>
-   
 <%-- 
      @author : david.
      this script is for remove candidateEducation.
 --%>
-
-      
 <script>
 function deleteSelectedEducation(candidateEducationId,candidateId){
  var loginUserId = '${SourceLeadWeb_userId}';
@@ -825,64 +801,58 @@ function deleteSelectedEducation(candidateEducationId,candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/removeCandidateEducationBycandidateIdandcandidateEducationId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,        
-          success :function(data) {
+          success :function(result) {
+        	  if (result && result.response === "INVALID_DATA") {
+        		    showError(result.responseMessage);
+        		} else if (result.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (result.response === "SUCCESS") {
+        			$('#perVal').attr('aria-valuenow', result.object).css('width',result.object+'%');
+          			if(result.object < 50){
+          			/* $("#perVal").removeClass("progress-bar-success"); */
+          				$("#perVal").removeClass('progress-bar-success')
+          				$("#perVal").addClass("progress-bar-danger");
+          			}
+          			if(result.object >= 50){
+          				$("#perVal").removeClass('progress-bar-danger');
+          				$("#perVal").addClass("progress-bar-success");
+          			}
+          			$("#disVal").empty();
+          			$("#disVal").append(result.object +'%');
+          			
+          			$('#quickPerVal').attr('aria-valuenow', result.object).css('width',result.object +'%');
+        			if(result.object < 50){
+	          			$("#quickPerVal").removeClass('progress-bar-success');
+	          			$("#quickPerVal").addClass("progress-bar-danger");
+	          		}
+	          		if(result.object >= 50){
+	          			$("#quickPerVal").removeClass('progress-bar-danger');
+	          			$("#quickPerVal").addClass("progress-bar-success");
+	          		}
 
-				if(data != null && data != 'undefined' && data != ""){
-             		if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	}else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		}else{
-             			$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
-           			 if(data<50){
-           			  /* $("#perVal").removeClass("progress-bar-success"); */
-           			   $("#perVal").removeClass('progress-bar-success')
-           			   $("#perVal").addClass("progress-bar-danger");
-           			 }
-           			 if(data>=50){
-           				 $("#perVal").removeClass('progress-bar-danger');
-           				 $("#perVal").addClass("progress-bar-success");
-           			 }
-           			 $("#disVal").empty();
-           			$("#disVal").append(data+'%');
-           			
-           			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
-         			 if(data<50){
-	          			   $("#quickPerVal").removeClass('progress-bar-success');
-	          			   $("#quickPerVal").addClass("progress-bar-danger");
-	          			 }
-	          			 if(data>=50){
-	          				 $("#quickPerVal").removeClass('progress-bar-danger');
-	          				 $("#quickPerVal").addClass("progress-bar-success");
-	          			 }
-
-       				$("#quickDisVal").empty();
-       				$("#quickDisVal").append(data+'%');
-           			
-           			
-           			 	 $("#selector04").removeAttr("style");
-            			 $("#selector04").css({ display: "block" });
-            			 $("#eduMsgDivEmp").html("Education deleted");
-             			 $("#popUpDiv").removeClass("edit-details-active");
-             			$("#remove_user_pop, .project_inn_mask").fadeOut();
-             			 candidateEducationList(candidateId);
-             			qveducationSubmission(candidateId);
-             			eduMsgFadeinFunction();
-             			 setTimeout(function(){
- 				 			candidateList();					 			
- 				 	    },100);
-			    	}
-               } 
+      				$("#quickDisVal").empty();
+      				$("#quickDisVal").append(result.object +'%');
+          			
+          			$("#selector04").removeAttr("style");
+           			$("#selector04").css({ display: "block" });
+           			$("#eduMsgDivEmp").html("Education deleted");
+            		$("#popUpDiv").removeClass("edit-details-active");
+            		$("#remove_user_pop, .project_inn_mask").fadeOut();
+            		candidateEducationList(candidateId);
+            		qveducationSubmission(candidateId);
+            		eduMsgFadeinFunction();
+            		setTimeout(function() {
+				 		candidateList();					 			
+				 	},100);
+        		} else if (result.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
         },
-          
      }); 
-	 
 }
-</script> 
-
- 
-
-
+</script>
 <script type="text/javascript">
 function educationSelectScoreType(){
 	var str = document.getElementById("candidateEducationScore").value;
@@ -932,8 +902,6 @@ function educationSelectScoreType(){
 		 }
 	  
 </script>
-
-
 <script type="text/javascript">
 function educationscoreAndScoreType(){
 	 var candidateScore = document.getElementById("candidateEducationScore").value;
@@ -967,9 +935,6 @@ function educationscoreAndScoreType(){
 	 }
 }
 </script>
-
-
-
 <%-- 
      @author : shivayogi , Ajith.
      this script is to flush candidate value when score type is changed.
@@ -980,8 +945,7 @@ function clearSearchKeyEducation() {
 	   $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
 
 }
-</script>       
-
+</script>
 <script type="text/javascript">
 	function updateCandidateEducation(candidateId, candidateEducationId) {
 		
@@ -993,33 +957,40 @@ function clearSearchKeyEducation() {
 			 $('#candidateEducationScore').removeAttr('data-validation');
 			 $('#candidateEducationScore').attr("data-validation-optional","true"); 
 		 }
-		
-		if ($('#education_form').validate(false,
-				validationSettings)) {
-
-
-			var formData = getFormData('education_form');
-			 $("#education_form").attr("disabled", "disabled");
-			 $("#save_button").attr("disabled", "disabled");
-			 
-			 $.ajax({
-						type : "POST",
-						data :formData,
-						url : sourceleadUrl+"/upDateCandidateEducationByCandidateIdAndCandidateEducationId?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId ,
-						success : function(result) {
+		if ($('#education_form').validate(false, validationSettings)) {
+			if($("#candEdu").length > 0 && $("#candEdu_chosen").length > 0){
+				var formData = getFormData('education_form');
+				 $("#education_form").attr("disabled", "disabled");
+				 $("#save_button").attr("disabled", "disabled");
+				 $.post(sourceleadUrl+"/upDateCandidateEducationByCandidateIdAndCandidateEducationId?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,formData,function(result){
+					 	if (result && result.response === "INVALID_DATA") {
+						    $("#update_candidate").removeAttr("disabled");
+						    $("#update_candidate").removeAttr('button').val('Save');
+						    showError(result.responseMessage);
+						} else if (result.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (result.response === "SUCCESS") {
 							closePopup();
-		            			$("#selector04").removeAttr("style");
-		            			$("#selector04").css({ display: "block" });
-		            			$("#eduMsgDivEmp").html("Education details updated");
+			     			$("#selector04").removeAttr("style");
+			     			$("#selector04").css({ display: "block" });
+			     			$("#eduMsgDivEmp").html("Education details updated");
 							candidateEducationList(candidateId)
 							eduMsgFadeinFunction();
 							qveducationSubmission(candidateId);
 							setTimeout(function(){
 					 			candidateList();					 			
 					 		},100);
-						},
-					}); 
-			return true;
+						} else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    $("#update_candidate").removeAttr("disabled");
+						    showError("Operation failed, please try again");
+						}
+				 });
+				return true;
+			} else {
+				showError("Education is missing");
+			}
 		} else {
 			return false;
 		}
@@ -1031,9 +1002,6 @@ function clearSearchKeyEducation() {
 				});
 	}
 </script>
-
-
-
 <script type="text/javascript">
  function validateEduname(candidateId) {
 	  var name = document.getElementById("candEdu").value; 
@@ -1059,31 +1027,28 @@ function clearSearchKeyEducation() {
 		        },
 		    });
  }
- </script>     
- 
- <!-- script for converting dateformat in datepicker -->
+ </script>
+<!-- script for converting dateformat in datepicker -->
 <script>
 function toDate(selector) {
-    var from = $(selector).val().split("-");
+	var from = $(selector).val().split("-");
     return new Date(from[2], from[1] - 1, from[0]);
 }
 </script>
 <!-- script for dateformat in datepicker End -->
-
 <script>
-function clearCandidateEduStartDate(){
+function clearCandidateEduStartDate() {
 	$("#startDate").val("");
-	};
-function clearCandidateEduEndDate(){
+}
+function clearCandidateEduEndDate() {
 	$("#endDate").val("");
-	};
+}
 </script>
-
 <script>
-function editCandidateEducationStartDate(){
+function editCandidateEducationStartDate() {
 	$("#startDateEdit").val("");
-	};
- function editCandidateEducationEndDate(){
+}
+function editCandidateEducationEndDate() {
 	$("#endDateEdit").val("");
-	}; 
-</script> 
+}
+</script>

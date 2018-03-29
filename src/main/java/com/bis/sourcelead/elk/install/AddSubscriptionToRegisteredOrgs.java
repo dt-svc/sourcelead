@@ -84,9 +84,9 @@ public void updateSubscription() throws IOException, SQLException {
 					 String currency = null;
 					 
 					 if(orgType.equalsIgnoreCase("Guest")) {
-						 subscriptionType = "8048";
+						 subscriptionType = "6";
 					 }else {
-						 subscriptionType = "8039";
+						 subscriptionType = "1";
 					 }
 					 
 					 String sql5 = "SELECT * FROM sourcelead.COUNTRIES countries where countries.Name = '"+country+"' ";
@@ -142,16 +142,16 @@ public void updateSubscription() throws IOException, SQLException {
 						 
 						 
 					      String query1 = " insert into sourcelead.ORG_LICENSE_SUBSCRIPTION (ORG_ID, COUNTRY, SUBSCRIPTION_TYPE, USER_SUBSCRIPTION_TYPE, STORAGE_SUBSCRIPTION_TYPE,  "
-								+ "CURRENCY, INVOICE_AMOUNT, SUBSCRIPTION_TABS,FROM_DATE,TO_DATE,TIMEZONE_ID,UUID,STATUS,CREATED_BY,CREATED_DATE)"
-								+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+								+ "CURRENCY, INVOICE_AMOUNT, SUBSCRIPTION_TABS,FROM_DATE,TO_DATE,TIMEZONE_ID,UUID,STATUS,CREATED_BY,CREATED_DATE,IS_INVOICE_AMOUNT_PAID)"
+								+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			    		
 			    		try {
 			    			 PreparedStatement pstmt2 = conn.prepareStatement(query1);
 				    		 pstmt2.setLong(1, orgId);
 				    		 pstmt2.setString(2,country);
 				    		 pstmt2.setString(3, subscriptionType);
-				    		 pstmt2.setString(4, "8044");
-				    		 pstmt2.setString(5,"8046");
+				    		 pstmt2.setString(4, "8");
+				    		 pstmt2.setString(5,"10");
 				    		 pstmt2.setString(6,currency);
 				    		 pstmt2.setDouble(7,0d);
 				    		 pstmt2.setString(8,tabsBuilderString);
@@ -162,6 +162,7 @@ public void updateSubscription() throws IOException, SQLException {
 				    		 pstmt2.setString(13,"1");
 				    		 pstmt2.setLong(14,1l);
 				    		 pstmt2.setString(15,createdDateStr);
+				    		 pstmt2.setString(16,"N");
 				    		 pstmt2.execute();	
 				    		 
 			    		}catch (Exception e){   

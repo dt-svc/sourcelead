@@ -13,7 +13,7 @@ public interface TabsDao {
 	
 	List<Tabs> getTabsList(List<Long> modulesId,Long roleId,Long orgId) throws Exception;
 	
-	Collection<Tabs> getTabsListByOrgLocationId(List<Long> modulesId,Long roleId,Long orgLocationId) throws Exception;
+	Collection<Tabs> getTabsListByOrgLocationId(Long roleId,Long orgLocationId) throws Exception;
 	
 	List<Long> getTabsIdsListByUserRoleIdAndOrgLocationId(Long roleId,Long orgLocationId) throws Exception;
 	
