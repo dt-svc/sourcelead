@@ -60,7 +60,7 @@ font-weight: normal;
 margin-bottom: 5px;
 }
 p.jquery_form_error_message {
-font-size: 12px !important; color:red !important; margin-top: 0 padding:0 !important;
+font-size: 12px !important; color:red !important; margin-top: 0; padding:0 !important;
 }
 .text-danger {
 color:red !important; font-size: 12px;

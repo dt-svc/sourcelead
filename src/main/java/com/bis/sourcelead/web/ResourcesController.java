@@ -127,9 +127,8 @@ public class ResourcesController {
 				sourceleadBlog = sourceleadBlogService.getSourceleadBlogsByBlogUUID(blogUUID);
 				if(sourceleadBlog.getImgFileUrl() != null) {
 				sourceleadBlog.setBlogImage(sourceleadBlog.getImgFileUrl());
+			     }
 				model.addObject("sourceleadBlog", sourceleadBlog);
-			}
-			
 			}
 			model.setViewName("resources/blogPreview");
 			model.addObject("sourceleadUrl", sourceleadUrl);

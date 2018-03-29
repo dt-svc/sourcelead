@@ -406,6 +406,7 @@ public class Candidate implements Serializable{
 	 private String reportingManager;
 	 
 	 @Transient
+	 @JsonProperty
 	 private String resumeUUID;
 	 
 	 @Transient
