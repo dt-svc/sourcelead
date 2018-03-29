@@ -35,6 +35,7 @@ public class UserDTO extends SearchDTO implements Serializable {
 	private long userRoleId;
 	private long locationId;
 	private long multipleIps;
+	private String customDates;
 	
 	public String getFileURL() {
 		return fileURL;
@@ -294,6 +295,16 @@ public class UserDTO extends SearchDTO implements Serializable {
 	public void setMultipleIps(long multipleIps)
 	{
 		this.multipleIps = multipleIps;
+	}
+
+	public String getCustomDates()
+	{
+		return customDates;
+	}
+
+	public void setCustomDates(String customDates)
+	{
+		this.customDates = customDates;
 	}
 
 	

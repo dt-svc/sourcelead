@@ -1,6 +1,10 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <!-- Content Area -->
 <script>
@@ -12,13 +16,15 @@
  });
  
  </script>
-
+<input type="hidden" id="emptyUserUsageReportsId" name="emptyUserUsageReportsId"/>
+<input type="hidden" id="userTypeId" name="userTypeId"/>
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Users Usage Report List</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Users Usage Report List</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Reports Dashboard</div>
+<!--       <div class="pull-right brud-crum">Home &raquo; Users Usage Report List</div> -->
     </section>
       <!-- Tabs html -->
       <div class="clearfix"></div>
@@ -30,34 +36,39 @@
     		      </div>
      		<!--<a href="jobsPipline-list.html" class="btn btn-primary">List</a>-->
        
-        <div class="col-md-4 col-md-offset-1">
+        <div class="col-md-4 col-md-offset-2">
     <div class="dropdown-scroll">
+    <sec:authorize access="hasRole('ROLE_ENROLL_ORG')">
 		<select class="chosen-select form-control" multiple data-placeholder="Select Org" name="orgId" id="orgs">
 		</select>
+		</sec:authorize>
+		
+		<sec:authorize access="!hasRole('ROLE_ENROLL_ORG')">
+		<input type="hidden" name="orgId" id="orgs" value="${SourceLeadWeb_orgLocations.org.id}">
+		</sec:authorize>
 	</div>
         </div>
         <div class="col-md-2 dropdown-select">
         <div class="dropdown-select positionRelative">
-        <select class="form-control" id="customDates">
-          <option>Select Date</option>
-          <option value="invoiceweekly">Last 7 days</option>
-          <option value="invoice15Days">Last 15 days</option>
-          <option value="invoice1Month">1 month</option>
-          <option value="invoice3Month">3 months</option>
-          <option value="invoices" selected>Last year</option>
-          <option>Year to Date</option>
-          <option value="custom-select">Custom</option>
+        <select class="form-control" id="customDates" onchange="showCustomFields();">
+<!--           <option>Select Date</option> -->
+          <option value="Last_7_days" selected>Last 7 days</option>
+          <option value="Last_15_days">Last 15 days</option>
+          <option value="1_month">1 month</option>
+          <option value="3_months">3 months</option>
+          <option value="Last_Year">Last year</option>
+          <option value="Custom">Custom</option>
         </select>
         <!-- Top Leave Takers Custom Date -->
-    <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-select" style="display: none; width: 346px;">
+    <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-select" style="display: none; width: 346px;" >
 		<div class="pull-left">
-		<div class="pull-left mr5" style="width: 140px">
-		<input value="" name="Date" id="datepicker4" placeholder="From" class="form-control calendar input-sm" type="text">
+		<div class="pull-left mr5" style="width: 140px" id="custFromDateDiv">
+		<input value="" name="Date" id="custFromDate" placeholder="From" class="form-control calendar input-sm" type="text">
 		</div>
-		<div class="pull-left mr5" style="width: 140px">
-		<input value="" name="Date" id="datepicker2" placeholder="To" class="form-control calendar input-sm" type="text">
+		<div class="pull-left mr5" style="width: 140px" id="custToDateDiv">
+		<input value="" name="Date" id="custToDate" placeholder="To" class="form-control calendar input-sm" type="text">
 		</div>
-		<button type="button" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></button>
+		<button type="button" class="btn btn-primary btn-sm" onclick="validateCustDates();"><i class="fa fa-search"></i></button>
 		</div>
     </div>
 <!-- Top Leave Takers Custom Date --> 
@@ -65,17 +76,30 @@
 
         </div>
         <div class="col-md-2">
-        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="usageReportList('ACTIVE')">Customize</button>
+        
+        <sec:authorize access="hasRole('ROLE_ENROLL_ORG')">
+        <button type="button" class="btn btn-primary mt2  pull-left mr" onclick="usageReportList('ACTIVE')">Customize</button>
+        </sec:authorize>
+        
+			<div title="Export" class="mrPOP mt10 pull-right" id="mypop"><i class="glyphicon glyphicon-export"></i>
+			     	<div id="exportPop" class="ExpPop" style="left:0">
+			           <ul>
+			             <li onclick="exportUserUsageReportPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
+			     <li onclick="exportUserUsageReportExcel();"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
+			    </ul>
+			  </div>
+			</div>
 		</div>
-		<div class="col-md-1">
-          <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
-            <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-download"></i></button>
-            <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"> <span class="caret"></span> </button>
-            <ul class="dropdown-menu clearfix  dropdown-menu-right">
-              <li role="Export" class="mt5 cursorPointer"><i class="fa fa-file-pdf-o paddingRight"></i>Export</li>
-            </ul>
-          </div>
-        </div>
+<!-- 		<div class="col-md-1"> -->
+<!--           <div class="btn-group bootstrap_dropdownMenu dropdownPadding"> -->
+<!--             <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-download"></i></button> -->
+<!--             <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"> <span class="caret"></span> </button> -->
+<!--             <ul class="dropdown-menu clearfix  dropdown-menu-right"> -->
+<!--               <li role="Export" class="mt5 cursorPointer" id="mypop"><i class="fa fa-file-pdf-o paddingRight"></i>Export</li> -->
+<!--             </ul> -->
+<!--           </div> -->
+<!--         </div> -->
+                      
       </div>
     </div>
                  <div class="dashboard-widget">
@@ -87,6 +111,7 @@
         <div class="clearfix"><i class="fa fa-user fa-2x text-primary"></i></div>
         <h4>Active</h4>
         <label class="views-count usersList" onClick="usageReportList('ACTIVE');usageactiveList();" id="activeCount"></label>
+<!--       <input type="text" value='ACTIVE' id="activeCount" class="form-control"> -->
       </div>
     </li>
     <li class="col-md-2">
@@ -114,7 +139,7 @@
       <div class="text-center well well-sm" id="multipleLi">
         <div class="clearfix"><i class="fa fa-sliders fa-2x text-success"></i></div>
         <h4>Multiple Ips</h4>
-        <label class="views-count offer" onClick="usagemultipleipslist()">50</label>
+        <label class="views-count offer" onClick="usagemultipleipslist('MULTIPLE_IP')" id="multipleIpsCount"></label>
       </div>
     </li>
   </ul>
@@ -122,9 +147,9 @@
 <div class="clearfix"></div>
 <div class="timesheet_out clearfix userlistGrid" id="activeList">
   <div class="timesheet_head">
-    <p class="pull-left mt ml"><strong>Active User List</strong></p>
+    <p class="pull-left mt ml"><strong><b id="listNamediv">Active User List</b></strong></p>
     <ul class="pull-right">
-      <li class="dropdown"> <span class="dropdown-toggle" id="menu1" data-toggle="dropdown" aria-expanded="false"> <i class="fa fa-filter"></i><span>Job Status</span><i class="glyphicon glyphicon-play"></i></span>|
+      <li class="dropdown"> 
         <div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding" role="menu" aria-labelledby="menu1">
           <ul>
             <li class="checkBox">
@@ -169,23 +194,28 @@
   
   </div>
   
+  <div id="popUp"></div>
+  
   </script>
 <script type="text/javascript">
        function usageReportList(userType){
-		var sourceleadUrl ='${sourceleadUrl}';
-		// var tab = "previous";
-// 		 var tab = '${tab}';
-	    var orgId = $("#orgs").val();
-	    if(orgId != null && orgId != '' && orgId != 'undefined'){
-	    	orgId = $("#orgs").val();
-	    }else{
-	    	orgId = "";
-	    }
-		var searchValue = $("#dataTableSearch").val();
-		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/userUsageReportList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&userType="+userType+"&orgId="+orgId;
-	    prepareUsageReportList(url, userType);
+    	   $("#emptyUserUsageReportsId").val(0);
+    	   $("#userTypeId").val(userType);
+    	    var fromDate = $("#custFromDate").val();
+    	    var toDate = $("#custToDate").val();
+		    var sourceleadUrl ='${sourceleadUrl}';
+	        var orgId = $("#orgs").val();
+		    if(orgId != null && orgId != '' && orgId != 'undefined'){
+		    	orgId = $("#orgs").val();
+		    }else{
+		    	orgId = "";
+		    }
+		    var customDates = $("#customDates").val();
+			var searchValue = $("#dataTableSearch").val();
+			var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+			searchValue = searchValue ? searchValue : "";
+			var url = sourceleadUrl+"/userUsageReportList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&userType="+userType+"&orgId="+orgId+"&customDates="+customDates+"&fromDate="+fromDate+"&toDate="+toDate;
+		    prepareUsageReportList(url, userType);
 }
 </script> 
 
@@ -248,6 +278,7 @@ function activePagination(url, userType){
 	    	  	"targets": colIndex++,
 	    	  	"data": "users",
 	    	  	"render": function(data, type, opt, meta) {
+	    	  		$("#emptyUserUsageReportsId").val(1);
 	    	  		  var result = "";
 	    	  		 if(opt.userName !=null && opt.userName !='' && opt.userName !='undefined'){
 							result = result + ' <td><div><span>'+opt.userName+'</span></div></td>';
@@ -317,11 +348,15 @@ function activePagination(url, userType){
                 "data": "noOfActivities",
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
+                		if(userType != "NOT_LOGGEDIN"){
                 		if(opt.noOfActivities !=null && opt.noOfActivities !='' && opt.noOfActivities !='undefined'){
 							result = result + ' <td><div><span>'+opt.noOfActivities+'</span></div></td>';
 						}else{
 							result = result + ' <td><div><span>---</span></div></td>';
 						}
+                		}else{
+                			result = result + ' <td><div><span>---</span></div></td>';
+                		}
     	              return result;
                 }
           },{
@@ -329,11 +364,15 @@ function activePagination(url, userType){
               "data": "multipleIps",
               "render": function ( data, type, opt, meta ) {
               		var result = "";
+              		if(userType != "NOT_LOGGEDIN"){
               		if(opt.multipleIps !=null && opt.multipleIps !='' && opt.multipleIps !='undefined'){
 							result = result + ' <td><div><span>'+opt.multipleIps+'</span></div></td>';
 						}else{
 							result = result + ' <td><div><span>---</span></div></td>';
 						}
+              		}else{
+              			result = result + ' <td><div><span>---</span></div></td>';
+              		}
   	              return result;
               }
         },
@@ -354,8 +393,12 @@ function activePagination(url, userType){
 	    	  	"data": "lastActivityOn",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
-	    	  		if(opt.lastActivityOn != null && opt.lastActivityOn !='' && opt.lastActivityOn != 'undefined'){
-	    	  			result = result + ' <td><div><span>'+opt.lastActivityOn+'</span></div></td>';
+	    	  		if(userType != "NOT_LOGGEDIN"){
+	    	  		if(opt.lastActivity != null && opt.lastActivity !='' && opt.lastActivity != 'undefined'){
+	    	  			result = result + ' <td><div><span>'+opt.lastActivity+'</span></div></td>';
+	    	  		}else{
+	    	  			result = result + ' <td><div><span>---</span></div></td>';
+	    	  		}
 	    	  		}else{
 	    	  			result = result + ' <td><div><span>---</span></div></td>';
 	    	  		}
@@ -401,6 +444,7 @@ function activePagination(url, userType){
     		   usageReportList(userType);
     	   }
     	});
+    $("#listNamediv").html(userType+" users List");
     getCountList();
 }
 
@@ -412,7 +456,7 @@ function activePagination(url, userType){
   <div class="timesheet_head">
     <p class="pull-left mt ml"><strong>Multiple IPS User List</strong></p>
     <ul class="pull-right">
-      <li class="dropdown"> <span class="dropdown-toggle" id="menu1" data-toggle="dropdown" aria-expanded="false"> <i class="fa fa-filter"></i><span>Job Status</span><i class="glyphicon glyphicon-play"></i></span>|
+      <li class="dropdown">
         <div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding" role="menu" aria-labelledby="menu1">
           <ul>
             <li class="checkBox">
@@ -447,42 +491,19 @@ function activePagination(url, userType){
     <div class="clearfix"></div>
      
   </div>
-  <div class="require_wrap_table">
-    <table>
-      <thead>
-        <tr>
-          <th>IP Address</th>
-          <th>No. of Users</th>
-          <th>Location</th>
-          <th>No. of Activities</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><div class="tbldata-dotdot-200" title="192.168.14.290"><a href="activeactivities-usersusage.html">192.168.14.290</a></div></td>
-          <td><div title="20" class="tblminwidth-75">20</div></td>
-          <td><div title="Hyderabad" class="tblminwidth-75">Hyderabad</div></td>
-          <td><div title="100" class="tblminwidth-75">100</div></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <nav class="clearfix">
-    <ul id="paging" class="pagination pull-right mr">
-      <li><a href="#">Previous</a></li>
-      <li><a href="#">2</a></li>
-      <li><a href="#">3</a></li>
-      <li class="disabled"><a href="#">6</a></li>
-      <li data-page="last"><a href="#">Next</a></li>
-    </ul>
-    <div class="clearfix"></div>
-  </nav>
-</div>
-<div class="timesheet_out clearfix userlistGrid" id="totalList" style="display: none">
+   <div class="require_wrap_table datatable_filter">
+   
+   <div id="multipleIpsDiv"></div>
+   
+   </div> 
+   
+   </div>
+   
+<!-- <div class="timesheet_out clearfix userlistGrid" id="totalList" style="display: none">
   <div class="timesheet_head">
     <p class="pull-left mt ml"><strong>Total User List</strong></p>
     <ul class="pull-right">
-      <li class="dropdown"> <span class="dropdown-toggle" id="menu1" data-toggle="dropdown" aria-expanded="false"> <i class="fa fa-filter"></i><span>Job Status</span><i class="glyphicon glyphicon-play"></i></span>|
+      <li class="dropdown">
         <div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding" role="menu" aria-labelledby="menu1">
           <ul>
             <li class="checkBox">
@@ -559,7 +580,7 @@ function activePagination(url, userType){
     </ul>
     <div class="clearfix"></div>
   </nav>
-</div>
+</div> -->
           </div>
         </div>
       <!-- Tabs html --> 
@@ -569,9 +590,9 @@ function activePagination(url, userType){
         //Usage User show hide script
         function usageactiveList(){
 //             $("#inactiveList").hide();
-//             $("#activeList").toggle();
+            $("#activeList").show();
 //             $("#notloginList").hide();
-//             $("#multipleList").hide();
+            $("#multipleList").hide();
 //             $("#totalList").hide();
             $("#activeLi").addClass("usageGrid");
             $("#inactiveLi").removeClass("usageGrid");
@@ -580,10 +601,10 @@ function activePagination(url, userType){
             $("#totalLi").removeClass("usageGrid");
         }
         function usageinactiveList(){
-            $("#inactiveList").toggle();
-//             $("#activeList").hide();
+//             $("#inactiveList").show();
+            $("#activeList").show();
 //             $("#notloginList").hide();
-//             $("#multipleList").hide();
+            $("#multipleList").hide();
 //             $("#totalList").hide();
             $("#activeLi").removeClass("usageGrid");
             $("#inactiveLi").addClass("usageGrid");
@@ -593,9 +614,9 @@ function activePagination(url, userType){
         }
         function usagenotloginList(){
 //             $("#inactiveList").hide();
-//             $("#activeList").hide();
-            $("#notloginList").toggle();
-//             $("#multipleList").hide();
+            $("#activeList").show();
+// 	           $("#notloginList").show();
+	           $("#multipleList").hide();
 //             $("#totalList").hide();
 
             $("#activeLi").removeClass("usageGrid");
@@ -604,24 +625,153 @@ function activePagination(url, userType){
             $("#multipleLi").removeClass("usageGrid");
             $("#totalLi").removeClass("usageGrid");
         }
-        function usagemultipleipslist(){
-//             $("#inactiveList").hide();
-//             $("#activeList").hide();
-//             $("#notloginList").hide();
-            $("#multipleList").toggle();
-//             $("#totalList").hide();
+        function usagemultipleipslist(userType){
+        	$("#userTypeId").val(userType);
+            $("#inactiveList").hide();
+            $("#activeList").hide();
+            $("#notloginList").hide();
+            $("#multipleList").show();
+            $("#totalList").hide();
 
             $("#activeLi").removeClass("usageGrid");
             $("#inactiveLi").removeClass("usageGrid");
             $("#notloginLi").removeClass("usageGrid");
             $("#multipleLi").addClass("usageGrid");
             $("#totalLi").removeClass("usageGrid");
+            
+         var fromDate = $("#custFromDate").val();
+    	 var toDate = $("#custToDate").val();
+    	 var customDates = $("#customDates").val();
+         var sourceleadUrl ='${sourceleadUrl}';
+       	 var searchValue = $("#dataaTableSearch").val();
+       	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+       	 searchValue = searchValue ? searchValue : "";
+       	 
+       	 var url = sourceleadUrl+"/multipleIpsList?searchValue="+searchValue+"&fromDate="+fromDate+"&toDate="+toDate+"&customDates="+customDates;
+       	 prepareMultipleIpsList(url);
         }
+        
+        function prepareMultipleIpsList(url){
+        var result= "";
+       	 result = result +' <div class="modal-header">';
+       	 result = result +' <div class="remove_search">';
+       	 result = result +' <input type="text" placeholder="Search" id="dataaTableSearch"/>';
+       	 result = result +'</div>';
+       	 result = result +'</div>';
+       	 result = result +'<table id="multipleIpsPagination" class="display" cellspacing="0" width="100%" >'; 
+       	 result = result +'<thead>'; 
+       	 result = result + '<tr>';
+       	 result = result + '<th>IP Address</th>';
+       	 result = result + '<th>No. of Users</th>';
+       	 result = result + '<th>Location</th>';
+       	 result = result + '<th>No.of Activities</th>';
+       	 result = result + '</tr>';
+       	 result = result +'</thead>';
+       	 result = result +'<tbody>'; 
+       	 result = result +' </tbody>';
+       	 result = result +'</table>';
+       	 $("#multipleIpsDiv").empty();
+       	 $("#multipleIpsDiv").append(result);
+       	 multipleIpsPagination(url);
+        }
+        
+        function multipleIpsPagination(url){
+        	var colIndex = 0;
+            $('#multipleIpsPagination').DataTable( { 
+            		"processing": true,
+                "serverSide": true,
+                "searching": false,
+                "ajax": $.fn.dataTable.pipeline( {
+                    url: url,
+                    method: 'POST',
+                    pages: 10
+                }),
+                "columns": [
+                    { "data": "ipAddress" },
+                    { "data": "noOfUsers"},
+                    { "data": "location"},
+                    { "data": "noOfActivities"},
+                    
+                ],
+                "columnDefs": [ {
+        	    	  	"targets": colIndex++,
+        	    	  	"data": "ipAddress",
+        	    	  	"render": function(data, type, opt, meta) {
+        	    	  		  var result = "";
+        	    	  		 if(opt.ipAddress !=null && opt.ipAddress !='' && opt.ipAddress !='undefined'){
+        							result = result + ' <td><div><span>'+opt.ipAddress+'</span></div></td>';
+        						}else{
+        							result = result + ' <td><div>--</div></td>';
+        						}
+        		             return result;
+        	    	  	}
+        	      },{
+        	    	  "targets": colIndex++,
+                      "data": "noOfUsers",
+                      "render": function ( data, type, opt, meta ) {
+                    	  var result = "";
+                    	  if(opt.noOfUsers !=null && opt.noOfUsers !='' && opt.noOfUsers !='undefined'){
+                    		  result = result + ' <td><div><span class="cursorPointer" onClick="showIp(\''+opt.ipAddress+'\');">'+opt.noOfUsers+'</span></div></td>';
+        					}else{
+        						result = result + ' <td><div>--</div></td>';
+        					}
+                    	  return result;
+                      		
+                      }
+        	          },{
+                    "targets": colIndex++,
+                    "data": "location",
+                    "render": function ( data, type, opt, meta ) {
+                    	var result = "";
+                    	
+           				if(opt.userType != null && opt.userType != '' && opt.userType !='undefined'){
+           					result = result + '<td><div><span>'+opt.userType+' </span></div></td>';
+                    	 }else{
+                    		 result = result + '<td><div><span>---</span></div></td>';
+                    	 }
+           				return result;
+                    }
+                  }, {
+                        "targets": colIndex++,
+                        "data": "noOfActivities",
+                        "render": function ( data, type, opt, meta ) {
+                        		var result = "";
+                        		if(opt.noOfActivities !=null && opt.noOfActivities !='' && opt.noOfActivities !='undefined'){
+        							result = result + ' <td><div><span>'+opt.noOfActivities+'</span></div></td>';
+        						}else{
+        							result = result + ' <td><div><span>---</span></div></td>';
+        						}
+            	              return result;
+                        }
+                  }],
+                  
+                  "scrollCollapse": false,
+      	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+//       	    	"aaSorting": [[3,'desc']],
+      	    	"bLengthChange": true,
+      	    	"bDestroy": true,
+      	    	"ordering": true,
+      	    	"oLanguage": {
+      	     		"sSearch": "",
+      	     		 "sZeroRecords": "", "sEmptyTable": "", 
+      	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+      	     }
+          } );
+          $("#multipleIpsPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+          $("input[type=search]").hide();
+          $("#dataaTableSearch").keyup(function(e) {
+          	   if(e.which === 13) {
+          		 prepareMultipleIpsList(url);
+//           		   usageReportList(userType);
+          	   }
+          	});
+      }
+        
         function usagetotalList(){
-//             $("#inactiveList").hide();
-//             $("#activeList").hide();
-//             $("#notloginList").hide();
-//             $("#multipleList").hide();
+            $("#inactiveList").hide();
+            $("#activeList").hide();
+            $("#notloginList").hide();
+            $("#multipleList").hide();
             $("#totalList").toggle();
 
             $("#activeLi").removeClass("usageGrid");
@@ -758,6 +908,7 @@ var config = {
 			 $("#activeCount").html(data.activeCount);
 			 $("#inActiveCount").html(data.inactiveCount);
 	    	 $("#notLoggedInCount").html(data.notLoggedinCount);
+	    	 $("#multipleIpsCount").html(data.multipleIps);
 	    	 
 	    	 var totalCount = data.activeCount + data.inactiveCount + data.notLoggedinCount;
 	    	 
@@ -796,6 +947,336 @@ function blockActiveUser(userRoleId,locationId){
   
 }
 </script>
-  
-  
+
+<script>
+function showCustomFields(){
+    var frequency = $("#customDates").val();
+    var userType = $("#userTypeId").val();
+    if(frequency == "Custom"){
+        $("#custom-select").show();
+         $('#custFromDate').attr('data-validation',"required");
+         $('#custToDate').attr('data-validation',"required");
+    }else{
+        $("#custom-select").hide();
+        $('#custFromDate').removeAttr('data-validation');
+        $('#custToDate').attr('data-validation',"required");
+        usageReportList(userType);
+//         usagemultipleipslist();
+    }
+    
+    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+      var finalDateFormatEndDate = '';
+      if(locationDate.match("yyyy-MM-dd")){
+          finalDateFormatEndDate = 'yy-mm-dd';
+      }if(locationDate.match("dd-MM-yyyy")){
+          finalDateFormatEndDate = 'dd-mm-yy'; 
+      }if(locationDate.match("MM-dd-yyyy")){
+          finalDateFormatEndDate = 'mm-dd-yy'; 
+      }if(locationDate.match("yyyy-dd-MM")){
+          finalDateFormatEndDate = 'yy-dd-mm'; 
+      }
+
+      $( "#custFromDate" ).datepicker({
+           dateFormat : finalDateFormatEndDate,
+            changeMonth: true,
+            changeYear: true,
+            maxDate: new Date() ,
+            onSelect : function(selected) {
+            var dt = $(this).datepicker('getDate', '+1d');
+            dt.setDate(dt.getDate());
+            $("#custToDate").datepicker("option", "minDate", dt);
+             removeStartValid();
+            } 
+      
+      });
+      
+      $( "#custToDate" ).datepicker({
+           dateFormat : finalDateFormatEndDate,
+            changeMonth: true,
+            changeYear: true,
+          maxDate: new Date() ,
+      onSelect : function(selected) {
+            var dt = $(this).datepicker('getDate', '+1d');
+            dt.setDate(dt.getDate());
+            $("#custFromDate").datepicker("option", "maxDate", dt);
+             removeEndValid();
+            }});
+}
+
+function removeStartValid(){
+    $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+}
+function removeEndValid(){
+    $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+}
+
+function validateCustDates(){
+	var userType = $("#userTypeId").val();
+    var frequency = $("#customDates").val();
+    var fromDate = $("#custFromDate").val();
+    var toDate = $("#custToDate").val();
+    if(frequency == "Custom"){
+        if(fromDate == ''){
+            $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+            $("input#custFromDate").after( "<p class='jquery_form_error_message'>FromDate is required.</span>");
+        }
+        if(toDate == ''){
+            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+            $("input#custToDate").after( "<p class='jquery_form_error_message'>ToDate is required.</span>");
+        }
+        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
+            $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+            if(userType == "MULTIPLE_IP"){
+            	usagemultipleipslist();
+            }else{
+            	usageReportList(userType);
+            }
+        }
+    }else{
+        $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+        $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+        usageReportList(userType);
+        usagemultipleipslist()
+    } 
+}
+</script>
+
+<script>
+$('#mypop').click(function(){
+		$("#exportPop").toggle();
+		$("#filter2ApprovedPop, #filter1ApprovedPop, .action-pop, .approved_pop").slideUp();
+ });
+ $("html").click(function(){
+	$("#exportPop, .ExpPop").hide(200);
+ });
+ $(".billing_dashboard, .nav-tabs").click(function(){
+	$("#exportPop, .ExpPop").hide(200);
+ });
+ 
+ $("#exportPop, #mypop, .nav-tabs, .billing_dashboard").click(function(e) {  
+     e.stopPropagation();
+ });
+</script>
+
+
+<script>
+function exportUserUsageReportPdf(){
+		var emptyExport = $("#emptyUserUsageReportsId").val();
+		var customDates = $('#customDates').val();
+		
+		var fromDate = $("#custFromDate").val();
+		var toDate = $("#custToDate").val();
+		var userType = $("#userTypeId").val();
+		
+		if(emptyExport > 0){
+			window.location.href = sourceleadUrl+"/getUserUsageReportExportList?"+tokenParamName+"="+tokenValue+"&customDates="+customDates+"&fromDate="+fromDate+"&toDate="+toDate+"&userType="+userType+"&exportType=pdf";
+		}else{
+			 var result = "";
+				result = result +"	<div class='project_inn_mask'></div>";
+				result = result +"	   <div id='empty_receivable_pop' class='remove_user_pop remove_user_pop_a'>";
+				result = result +"		<p>User Usage Report List is Empty</p>";
+				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelExport();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelExport();'></b>";
+				result = result +"	</div>";
+				$("#popUp").append(result);
+				$("#empty_receivable_pop").slideDown(200);
+				$(".project_inn_mask").fadeIn(200);
+		}
+	
+}
+</script>
+
+<script>
+function exportUserUsageReportExcel(){
+		var emptyExport = $('#emptyUserUsageReportsId').val();
+		var customDates = $('#customDates').val();
+		
+		var fromDate = $("#custFromDate").val();
+		var toDate = $("#custToDate").val();
+		var userType = $("#userTypeId").val();
+		
+		if(emptyExport > 0){
+			window.location.href = sourceleadUrl+"/getUserUsageReportExportList?"+tokenParamName+"="+tokenValue+"&customDates="+customDates+"&fromDate="+fromDate+"&toDate="+toDate+"&userType="+userType+"&exportType=xls";
+		}else{	
+				var result = "";
+				result = result +"	<div class='project_inn_mask'></div>";
+				result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
+				result = result +"		<p>Receivables List is Empty</p>";
+				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelExport();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelExport();'></b>";
+				result = result +"	</div>";
+				$("#popUpp").append(result);
+				$("#empty_requirement_pop").slideDown(200);
+				$(".project_inn_mask").fadeIn(200);
+  }
+}
+</script>
+<div class="sideMask"></div>
+<!-- Modal -->
+  <div class="modal multipleipsList" id="multipleipsList" style="display:none">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" onClick="closeIp();">&times;</button>
+          <h4 class="modal-title">IPS User List</h4>
+        </div>
+        <div class="modal-body">
+        <div class="require_wrap_table datatable_filter">
+          <div id="multipleIpsUsersDiv"></div>
+          </div>
+          <!-- <table class="table table-bordered">
+          <thead>
+          	<tr>
+          	<th>Name</th><th>Email</th><th>Phone</th><th>Company</th>
+          	</tr>
+          </thead>
+          <tbody>
+          <tr>
+          	<td>Name</td><td>Email</td><td>Phone</td><td>Company</td>
+          </tr>
+          </tbody>
+          </table> -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" onClick="closeIp();">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script type="text/javascript">
+function cancelExport(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+function showIp(ipAddress){
+	$(".sideMask").fadeIn(200);
+	$(".multipleipsList").fadeIn(200);
+	
+// 	var fromDate = $("#custFromDate").val();
+// 	 var toDate = $("#custToDate").val();
+// 	 var customDates = $("#customDates").val();
+    var sourceleadUrl ='${sourceleadUrl}';
+  	 var searchValue = $("#dataaTableSearch").val();
+  	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+  	 searchValue = searchValue ? searchValue : "";
+  	 
+  	 var url = sourceleadUrl+"/multipleIpsUsersList?searchValue="+searchValue+"&ipAddress="+ipAddress;
+  	 prepareMultipleIpsUsersList(url);
+}
+
+function prepareMultipleIpsUsersList(url){
+	
+	 var result= "";
+   	 result = result +' <div class="modal-header">';
+   	 result = result +' <div class="remove_search">';
+   	 result = result +' <input type="text" placeholder="Search" id="dataa1TableSearch"/>';
+   	 result = result +'</div>';
+   	 result = result +'</div>';
+   	 result = result +'<table id="multipleIpsUsersPagination" class="display" cellspacing="0" width="100%" >'; 
+   	 result = result +'<thead>'; 
+   	 result = result + '<tr>';
+   	 result = result + '<th>Name</th>';
+   	 result = result + '<th>Email</th>';
+   	 result = result + '<th>Phone</th>';
+//    	 result = result + '<th>Company Name</th>';
+   	 result = result + '</tr>';
+   	 result = result +'</thead>';
+   	 result = result +'<tbody>'; 
+   	 result = result +' </tbody>';
+   	 result = result +'</table>';
+   	 $("#multipleIpsUsersDiv").empty();
+   	 $("#multipleIpsUsersDiv").append(result);
+   	multipleIpsUsersPagination(url);
+	
+}
+
+function multipleIpsUsersPagination(url){
+	var colIndex = 0;
+    $('#multipleIpsUsersPagination').DataTable( { 
+    		"processing": true,
+        "serverSide": true,
+        "searching": false,
+        "ajax": $.fn.dataTable.pipeline( {
+            url: url,
+            method: 'POST',
+            pages: 10
+        }),
+        "columns": [
+            { "data": "userName" },
+             { "data": "userEmail"},
+            { "data": "mobilePhone"},
+//             { "data": "companyName"}, 
+            
+        ],
+        "columnDefs": [ {
+	    	  	"targets": colIndex++,
+	    	  	"data": "userName",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		  var result = "";
+	    	  		 if(opt.userName !=null && opt.userName !='' && opt.userName !='undefined'){
+							result = result + ' <td><div><span>'+opt.userName+'</span></div></td>';
+						}else{
+							result = result + ' <td><div>--</div></td>';
+						}
+		             return result;
+	    	  	}
+	      },
+	       {
+	    	  "targets": colIndex++,
+              "data": "userEmail",
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+            	  if(opt.userEmail !=null && opt.userEmail !='' && opt.userEmail !='undefined'){
+            		  result = result + ' <td><div><span>'+opt.userEmail+'</span></div></td>';
+					}else{
+						result = result + ' <td><div>--</div></td>';
+					}
+            	  return result;
+              		
+              }
+	          },{
+            "targets": colIndex++,
+            "data": "mobilePhone",
+            "render": function ( data, type, opt, meta ) {
+            	var result = "";
+   				if(opt.mobilePhone != null && opt.mobilePhone != '' && opt.mobilePhone !='undefined'){
+   					result = result + '<td><div><span>'+opt.mobilePhone+' </span></div></td>';
+            	 }else{
+            		 result = result + '<td><div><span>---</span></div></td>';
+            	 }
+   				return result;
+            }
+          }], 
+          
+          "scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+// 	    	"aaSorting": [[3,'desc']],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     }
+    } );
+    $("#multipleIpsUsersPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("input[type=search]").hide();
+    $("#dataa1TableSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+    		   prepareMultipleIpsUsersList(url);
+    	   }
+    	});
+}
+
+    
+
+
+function closeIp(){
+	$(".sideMask").fadeOut(200);
+	$(".multipleipsList").fadeOut(200);
+}
+</script>  
 <jsp:include page="../masterFooter.jsp" />

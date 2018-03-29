@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -59,6 +60,12 @@ public class ActionHistoryServiceImpl implements ActionHistoryService{
 	public List<ActionHistory> getAllMultipleIpsByUserId(Long userId)throws Exception
 	{
 		return actionHistoryDao.getAllMultipleIpsByUserId(userId);
+	}
+
+	@Override
+	public List<Long> getAllUserIdsByFrequencyBasedOnActivity(Date[] freqDates)
+	{
+		return actionHistoryDao.getAllUserIdsByFrequencyBasedOnActivity(freqDates);
 	}
 	
 	

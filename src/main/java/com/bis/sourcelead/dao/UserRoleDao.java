@@ -9,6 +9,8 @@ import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
+import com.bis.sourcelead.dto.UsersUsageReportDTO;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -125,7 +127,7 @@ public interface UserRoleDao {
 	
 	List<User> getAllReportingManagersAssignedToAssociates(Long orgLocationId) throws Exception;
 
-	public ResponseList<UserRole> getUserRoleListByLocationIdAndUserType(UserDTO userDTO);
+	public ResponseList<UserRole> getUserRoleListByLocationIdAndUserType(UsersUsageReportDTO usersUsageReportDTO,OrgLocations orglocation)throws Exception;
 	
 	Map<String, Integer> getUserCountListByOrgLocationId(Long orgLocationId,List<Long> orgId);
 

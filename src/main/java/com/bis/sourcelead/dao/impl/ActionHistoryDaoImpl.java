@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -192,14 +193,14 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 		countMap.setNoOfActivities(count.toString());
 //		List<Long> countlist = actionHistory.list();
 		
-//		String query1 = "from ActionHistory actHistory where actHistory.userId = (SELECT MAX(id) FROM ActionHistory  where actHistory.userId = :userId)";
-//		List<ActionHistory> actionHistorylist = session.createQuery(query1).setLong("userId", userId).list();
-//		Date lastActivity = null ;
-//		if(actionHistorylist != null && actionHistorylist.size() > 0){
-//			lastActivity = actionHistorylist.get(0).getActionTime();
-//			SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-//			countMap.setLastActivity(df.format(lastActivity));
-//		}
+		String query1 = "SELECT MAX(act) FROM ActionHistory act where act.userId = :userId";
+		List<ActionHistory> actionHistorylist = session.createQuery(query1).setLong("userId", userId).list();
+		Date lastActivity = null ;
+		if(actionHistorylist != null && actionHistorylist.size() > 0 && actionHistorylist.get(0) != null){
+			lastActivity = actionHistorylist.get(0).getActionTime();
+			SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+			countMap.setLastActivity(df.format(lastActivity));
+		}
 		
 		return countMap;
 	}
@@ -214,6 +215,21 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 		String query = "from UserLoginLogoutSession  userLoginLogoutSession  where userLoginLogoutSession.userId.id =:userId group by userLoginLogoutSession.ipaddress";
 		List<ActionHistory> action = session.createQuery(query).setLong("userId", userId).list();
 		return action;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Long> getAllUserIdsByFrequencyBasedOnActivity(Date[] freqDates)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ActionHistory actHis where actHis.actionTime >= :startDate and actHis.actionTime <= :endDate group by actHis.userId";
+		List<ActionHistory> actHisList = session.createQuery(query).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).list();
+		List<Long> userIds = new ArrayList<>();
+		for(ActionHistory actHis : actHisList){
+			userIds.add(actHis.getUserId());
+		}
+		return userIds;
 	}
 
 

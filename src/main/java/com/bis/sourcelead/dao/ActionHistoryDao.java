@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -27,5 +28,7 @@ public interface ActionHistoryDao {
 	public UserDTO getAllActionHistoryByUserId(Long userId) throws Exception;
 
 	public List<ActionHistory> getAllMultipleIpsByUserId(Long userId) throws Exception;
+
+	public List<Long> getAllUserIdsByFrequencyBasedOnActivity(Date[] freqDates);
 
 }

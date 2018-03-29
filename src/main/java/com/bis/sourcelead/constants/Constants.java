@@ -814,6 +814,7 @@ public class Constants {
 	public static final String CUSTOM =  "CUSTOM";
 
 	public static final String BILLING =  "Billing";
+	public static final String ACTIVE_USAGE_LIST =  "Active Usage List";
 	public static final String INVOICE_LIST =  "Invoice List";
 	public static final String BILLING_LIST =  "Billing List";
 	public static final String LINKED_STATUS =  "Linked";
@@ -1050,6 +1051,7 @@ public class Constants {
 	public static final String[] TOP_TAKERS_LEAVE_HEADERS = { "Emp id", "Employee Name","Email id"," Leave Type", "Duration ", "No. of Days", "No. of Extra Days","Balance Leaves"}; 
 	public static final String LEAVE_DATA =  "Leaves";
 	
+	public static final String[] USERS_USAGE_REPORT_EXPORT = { "Users", "Email", "User Type", "Org", "No.of Activities", "Multiple Ips", "Created On", "Last Activity On"};
 
 	public static final String ORG_REQUEST_FILTER_TODAY = "Today";
 	public static final String ORG_REQUEST_FILTER_ONE_WEEK_AGO = "1 Week Ago";

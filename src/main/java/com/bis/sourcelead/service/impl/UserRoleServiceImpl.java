@@ -33,6 +33,7 @@ import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
+import com.bis.sourcelead.dto.UsersUsageReportDTO;
 import com.bis.sourcelead.entity.ActionHistory;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -45,8 +46,9 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfUtil;
+import com.bis.sourcelead.util.ReportsUtil;
 
-@Service
+@Service 
 public class UserRoleServiceImpl implements UserRoleService{
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserRoleServiceImpl.class);
@@ -86,6 +88,9 @@ public class UserRoleServiceImpl implements UserRoleService{
 	
 	@Autowired
 	ActionHistoryService actionHistoryService;
+	
+	@Autowired
+	ReportsUtil reportsUtil;
 	
 
 	@Override
@@ -647,58 +652,69 @@ public class UserRoleServiceImpl implements UserRoleService{
 	}
 
 	@Override
-	public ResponseList<UserDTO> getUserRoleListByLocationIdAndUserType(UserDTO userDTO) throws Exception
+	public ResponseList<UsersUsageReportDTO> getUserRoleListByLocationIdAndUserType(UsersUsageReportDTO usersUsageReportDTO,OrgLocations orgLocation) throws Exception
 	{
-		
-		ResponseList<UserRole> userlist = userRoleDao.getUserRoleListByLocationIdAndUserType(userDTO);
-		ResponseList<UserDTO> responseList = new ResponseList<>();
-		List<UserDTO> userDtoList = new ArrayList<>();
+		Date[] freqDates = new Date[2];
+		if("Custom".equalsIgnoreCase(usersUsageReportDTO.getCustomDates())){
+			freqDates[0] = commonUtil.getDateFormat(usersUsageReportDTO.getFromDate());
+			freqDates[1] = commonUtil.getDateFormat(usersUsageReportDTO.getToDate());
+		}else{
+			freqDates = reportsUtil.getJobFilterDate(usersUsageReportDTO.getCustomDates(),orgLocation);
+		}
+		if(!"NOT_LOGGEDIN".equalsIgnoreCase(usersUsageReportDTO.getUserType())){
+		List<Long> userIds = actionHistoryService.getAllUserIdsByFrequencyBasedOnActivity(freqDates);
+		usersUsageReportDTO.setUserIds(userIds);
+		}
+		ResponseList<UserRole> userlist = userRoleDao.getUserRoleListByLocationIdAndUserType(usersUsageReportDTO,orgLocation);
+		ResponseList<UsersUsageReportDTO> responseList = new ResponseList<>();
+		List<UsersUsageReportDTO> userUsageDtoList = new ArrayList<>();
 		for(UserRole userRole : userlist.getData()){
 			
 			User user = userRole.getUser();
 			Employees employee = employeesService.getEmployeeByUserId(user.getId());
-					
-			UserDTO userrDTO = new UserDTO();
 			StringBuilder sb = new StringBuilder();
-			
-			
-			userrDTO.setUserRoleId(userRole.getId());
-			userrDTO.setLocationId(userRole.getOrgLocations().getId());
-			if(StringUtils.isNotBlank(employee.getEmployeeId())){
-				sb.append(employee.getEmployeeId());
+			if(employee != null){
+				if(StringUtils.isNotBlank(employee.getEmployeeId())){
+					sb.append(employee.getEmployeeId());
+				}
 			}
+			
+			UsersUsageReportDTO usageDto = new UsersUsageReportDTO();
+			usageDto.setUserRoleId(userRole.getId());
+			usageDto.setLocationId(userRole.getOrgLocations().getId());
+			
 			if(StringUtils.isNotBlank(user.getLastName())){
-				userrDTO.setUserName(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+				usageDto.setUserName(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 			}else{
-				userrDTO.setUserName(sb.append(user.getFirstName()).toString());
+				usageDto.setUserName(sb.append(user.getFirstName()).toString());
 			}
 			
-			userrDTO.setUserEmail(user.getEmail());
-			userrDTO.setUserType(user.getUserType());
+			usageDto.setUserEmail(user.getEmail());
+			usageDto.setUserType(user.getUserType());
 			
 			List<UserRole> userRoleList =  userRoleDao.getUsersListByUserId(user.getId());
 			for(UserRole ur:userRoleList){
 				ur.setOrgName(ur.getOrgLocations().getOrgLocationName());
 			}
-			userrDTO.setEnrolledOrgs(userRoleList);
-			userrDTO.setCreatedOn(commonUtil.dateStrFromDate(user.getCreatedDate()));
+			usageDto.setEnrolledOrgs(userRoleList);
+			usageDto.setCreatedOn(commonUtil.dateStrFromDate(user.getCreatedDate()));
 			
 			UserDTO actionHistory = actionHistoryService.getAllActionHistoryByUserId(user.getId());
-			userrDTO.setNoOfActivities(actionHistory.getNoOfActivities());
+			usageDto.setNoOfActivities(actionHistory.getNoOfActivities());
 			
-//			if(StringUtils.isNotBlank(actionHistory.getLastActivity())){
-//			userrDTO.setLastActivity(actionHistory.getLastActivity());
-//			}
+			if(StringUtils.isNotBlank(actionHistory.getLastActivity())){
+			usageDto.setLastActivity(actionHistory.getLastActivity());
+			}
 			
 			List<ActionHistory>  actionHis = actionHistoryService.getAllMultipleIpsByUserId(user.getId());
-			userrDTO.setMultipleIps(actionHis.size());
+			usageDto.setMultipleIps(actionHis.size());
 			
 			
-			userDtoList.add(userrDTO);
+			userUsageDtoList.add(usageDto);
 		}
 		responseList.setRecordsFiltered(userlist.getRecordsFiltered());
 		responseList.setRecordsTotal(userlist.getRecordsTotal());
-		responseList.setData(userDtoList);
+		responseList.setData(userUsageDtoList);
 		return responseList;
 	}
 
