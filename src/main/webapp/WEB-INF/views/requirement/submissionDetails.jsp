@@ -1901,7 +1901,7 @@ function savedCommentAndCount(candidateId,submissionId) {
 
 <!-- this script using for interview feedback Start -->
 <script type="text/javascript">
-function interviewFeedback(interviewId,templateId,id){
+function interviewFeedback(interviewId,templateId,id) {
 	$("#mask_inner").fadeIn();
 	$("#feedbackdiv"+interviewId+"").show();
 	$(".reSchPop").removeClass("reSchPopActive");
@@ -1910,8 +1910,8 @@ function interviewFeedback(interviewId,templateId,id){
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
-	type: "GET",
-	url: sourceleadUrl+"/getInterviewrsFeedbackList?"+tokenParamName+"="+tokenValue+"&interviewId="+interviewId+"&locationId="+locationId,
+		type: "GET",
+		url: sourceleadUrl+"/getInterviewrsFeedbackList?"+tokenParamName+"="+tokenValue+"&interviewId="+interviewId+"&locationId="+locationId,
 		success: function(json) {
 			var result = "";
 			result = result +"<strong>Interview Feedback</strong>";
@@ -1924,8 +1924,7 @@ function interviewFeedback(interviewId,templateId,id){
 		    result = result +"  </tr>"; 
 		    result = result +"</thead>";
 		    result = result +"<tbody>"; 
-			for (var i=0; i<json.length; i++)
-			{
+			for (var i=0; i<json.length; i++) {
 				var report = json[i];
 				if(report.feedbackDate != null && report.feedbackDate != '' && report.feedbackDate != 'undefined'){
 					feedbackDate  = report.feedbackDate;
@@ -1950,7 +1949,6 @@ function interviewFeedback(interviewId,templateId,id){
 			
 		},
 	});
-    
 }
 
 </script>
