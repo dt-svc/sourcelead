@@ -38,6 +38,14 @@ window.onload = function() {
 	}
 }
 </script>
+
+<script>
+$(document).ready(function(){
+    if(window.location.href.indexOf("login") == -1) {
+        window.location.href = '/login';
+     }
+});
+</script>
 <script>
 $(document).ready(function(){
 	var location = window.location.origin;

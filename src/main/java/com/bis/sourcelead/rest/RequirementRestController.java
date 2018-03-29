@@ -29,6 +29,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
@@ -53,6 +54,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.JobShareService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -796,15 +798,19 @@ public class RequirementRestController {
 			@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "count", required = false) Long offset,CandidateDTO candidateDTO)
 			throws Exception {
 		
-		//OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ResponseList<CandidateIndex> candidateListCopy = null;
-		RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirementId);
-	    if(null != recommendedCustomizeScore){ 
-		//candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocation.getId(), recommendedCustomizeScore,offset);
-	    	candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocationId, recommendedCustomizeScore, requirementId,null,candidateDTO);
-	    }
+		try {
+			RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirementId);
+		    if(null != recommendedCustomizeScore){ 
+		    	candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocationId, recommendedCustomizeScore, requirementId,null,candidateDTO);
+		    }
+		    candidateListCopy.setResponse(Result.SUCCESS.name());
+		    candidateListCopy.setResponseMessage(Result.SUCCESS.getValue());
+		}catch(Exception e) {
+			candidateListCopy.setResponse(Result.AWKWARD.name());
+			candidateListCopy.setResponseMessage(Result.AWKWARD.getValue());
+		}
 		return candidateListCopy;
-
 	}
 
 	
@@ -1019,34 +1025,60 @@ public class RequirementRestController {
 
 	
 	@RequestMapping(value = "/shareRecomendedApplicant", method = RequestMethod.POST)
-	public @ResponseBody void shareRecomendedApplicant(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request)throws Exception {
+	public @ResponseBody Response<String>  shareRecomendedApplicant(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request)throws Exception {
+		Response<String> response = new Response<>();
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-		requirementService.shareRecomendedApplicant(loginUser, orgLocation,requirement,candidate);
+		if(loginUser != null) {
+			try {
+				Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+				requirementService.shareRecomendedApplicant(loginUser, orgLocation,requirement,candidate);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+				}catch(Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
 	}
 	
 	@RequestMapping(value = "/shareAllRecommendations", method = RequestMethod.POST)
-	public @ResponseBody void shareAllRecommendations(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateIds", required = false) String candidateIds,HttpServletRequest request)throws Exception {
+	public @ResponseBody Response<String> shareAllRecommendations(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateIds", required = false) String candidateIds,HttpServletRequest request)throws Exception {
+		Response<String> response = new Response<>();
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-		
-		String[] candidateId = candidateIds.split(",");
-		if(candidateId != null &&  candidateId.length>0 && candidateId[0] != null && candidateId[0] != ""){
-			for(String candidateid   : candidateId){
-				Candidate candidates = candidateService.getCandidateByCandidateId(Long.valueOf(candidateid));
-						JobShareCandidate jobShareCandidate = new JobShareCandidate();
-						jobShareCandidate.setCandidateId(candidates);
-						jobShareCandidate.setJobId(requirement);
-						jobShareCandidate.setCreatedDate(new Date());
-						jobShareService.saveJobShareCandidate(jobShareCandidate);
-						requirementService.shareRecomendedApplicant(loginUser, orgLocation,requirement,candidates);
+		if(loginUser != null) {
+			try {
+				Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+				
+				String[] candidateId = candidateIds.split(",");
+				if(candidateId != null &&  candidateId.length>0 && candidateId[0] != null && candidateId[0] != ""){
+					for(String candidateid   : candidateId){
+						Candidate candidates = candidateService.getCandidateByCandidateId(Long.valueOf(candidateid));
+								JobShareCandidate jobShareCandidate = new JobShareCandidate();
+								jobShareCandidate.setCandidateId(candidates);
+								jobShareCandidate.setJobId(requirement);
+								jobShareCandidate.setCreatedDate(new Date());
+								jobShareService.saveJobShareCandidate(jobShareCandidate);
+								requirementService.shareRecomendedApplicant(loginUser, orgLocation,requirement,candidates);
+						}
 				}
-//				boolean isSumbitted = requirementSubmissionService.isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(Long.valueOf(candidateid), requirementId);
-//				if(isSumbitted == false)
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+				}catch(Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
+		return response;
 	}
 	
 	

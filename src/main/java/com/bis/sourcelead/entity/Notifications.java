@@ -83,6 +83,9 @@ public class Notifications implements Serializable{
 	@Column(name="UUID")
 	private String UUID;
 	
+	@Column(name = "PARAMETER_LIST", columnDefinition = "TEXT default NULL")
+	private String parameterList;
+	
 	@Column(name="SPOC_UUID")
 	private String spocUUID;
 	
@@ -356,6 +359,14 @@ public class Notifications implements Serializable{
 
 	public void setResponderType(String responderType) {
 		this.responderType = responderType;
+	}
+
+	public String getParameterList() {
+		return parameterList;
+	}
+
+	public void setParameterList(String parameterList) {
+		this.parameterList = parameterList;
 	}
 	
 	

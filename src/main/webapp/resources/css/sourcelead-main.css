@@ -5,7 +5,7 @@
 }
 body {
 	font-size: 14px; color: #333; min-height: 100%; background-color: #e0e0e0 !important;
-    font-weight: 400 !important; font-style: normal !important; font-family:'Roboto', sans-serif  !important;
+    font-style: normal !important; font-family:'Roboto', sans-serif  !important;
 }
 a:hover, a:active, a:focus {
 	outline: 0; text-decoration: none;
@@ -8350,6 +8350,144 @@ height: 60px !important
 .btn.btnerror-custom {
 padding: 5px 12px;
 }
+.payrollFilter input {
+	width: 170px !important;
+}
+.searchStyles input {
+    margin: 0px; border: none; padding: 3px 25px 3px 5px; background-color: transparent;
+    width: 100%; background: url(../images/searchicon-new.png) no-repeat right 5px;
+    }
+ul.horizentalTabStyles {
+	border-bottom: none;
+}
+ul.horizentalTabStyles li {
+	float: none; border-radius: 0; 
+}
+ul.horizentalTabStyles li a {
+	border: none; color: #fff; background-color: #6c7686; margin: 5px 0; min-height: 50px; line-height: 40px;
+	border-radius: 0;
+}
+.horizentalTabStyles > li.active > a, .horizentalTabStyles > li.active > a:focus, .horizentalTabStyles > li.active > a:hover {
+	background-color: #6c7686; border-radius: 0; color: #fff; margin-right: 0; border: none;
+	border-right: 10px solid #5acc95;
+}
+.horizentalTabStyles.nav-tabs > li > a:hover {
+	background-color: #6c7686;color:#5acc95;
+}
+.horizentalTabStyles-tabcontent {
+	padding: 20px 30px;
+}
+.divTotal {
+	border-top: 1px solid #f2f2f2;
+}
+/* new theme styles */
+.tableStyles-new {
+    width:100%; border:1px solid #e3eaf0; border-radius: 5px;
+}  
+.tableStyles-new table {
+    border-collapse: collapse; width: 100%; font-size:14px; font-weight:400; 
+    }
+.tableStyles-new table thead {
+	background-color: #6c7686; border-radius: 3px;
+	color:#FFF; height:60px;
+}
+.tableStyles-new table tr th, .styleTables table thead th  {
+    padding:5px 15px; text-align:center; font-weight:500;
+    }
+.tableStyles-new table tr td, .styleTables table tr td {
+    color:#405063; padding:5px 12px; border-bottom: 1px solid #e3eaf0; height:40px; font-weight:400;
+    }
+.tableStyles-new table tr td div, .styleTables table tr td div {
+    position:relative;
+    }
+.styleTables table {
+	border-collapse: collapse; width: 100%; font-size:14px; font-weight:400; 
+}
+.styleTables table thead {
+	background-color: #fff; border-radius: 3px; color:#6C7686; height:40px; text-align: center; vertical-align: middle;
+	border-bottom: 1px solid #ededed;
+}
+.styleTables table tr td {
+	color: #909090 !important;
+}
+.table-header {
+	min-height: 40px; border-bottom: 1px solid #f2f2f2; padding: 10px 15px;
+}
+.table-header ul {
+	float: right; margin-bottom: 0;
+}
+.table-header ul li a {
+	color: #909090; transition: all 0.3s ease-in-out;
+}
+.table-header ul li a:hover{
+	color: #333;
+}
+.tabsMenu ul {
+	margin-bottom: 0;
+}
+.tabsMenu li {
+	background-color: #6C7686; border-radius: 0; color: #fff; min-height: 60px;
+	border: none; margin-right: 3px; min-width: 125px; text-align: center; float: left;
+}
+.tabsMenu li a {
+	color: #fff; padding: 5px 30px; line-height: 50px;
+}
+.tabsMenu li.current {
+	border: none;
+	-webkit-box-shadow: inset 0 -15px 0px -6px #5ACC95;
+	-moz-box-shadow: inset 0 -15px 0px -6px #5ACC95;
+	box-shadow: inset 0 -15px 0px -6px #5ACC95;
+}
+.tablelist-wrap {
+	width: 100%; border: 1px solid #f2f2f2;
+}
+.tabsMenu_tabs {
+   width: 100%; border: 1px solid #f2f2f2;
+}
+.tabsMenu_tabs_inn {
+	padding: 15px; display: none;
+}
+.hoursType {
+	color: #fff;
+}
+.hoursType small {
+	float: left; position: relative; top: 5px; left: 5px;
+}
+.hoursType  input {
+	width: 40% !important; float: right; padding: 0px !important; right: 5px; position: relative;
+}
+.hours-type {
+	width: 50%; float: left; padding: 2px; text-align: center;  color: #fff;
+}
+.hours-type small {
+	float: left; padding-left: 5px;
+}
+.hours-type input {
+	padding: 0 !important; font-size: 12px !important; width: 50% !important; float: right; padding-right: 5px !important;
+}
+.propagate-div {
+ 	background-color: #fff; padding: 15px; border-radius: 3px; position: absolute;
+	top: 40px; right: 10px; z-index: 9; width: 450px; box-shadow: 0px 0px 3px 1px #b2b1b1; display: none;
+}
+.propagate-div .close {
+	color: #a21e23; position: absolute; right: 10px; top: 5px; opacity: 1;
+}
+.content-wraper.contentWraper {
+	background-color: #fff;
+}
+.contentareaInner-styles  {
+	color: #5D6388;
+}
+.contentareaInner-styles .form-control, .contentareaInner-styles .chosen-container-single .chosen-single
+{
+	border: 1px solid #A8B7C7 !important; border-radius: 3px; box-shadow: none; background: transparent;
+}
+.orgmodeulsAccordion .panelDefault {
+	border: 1px solid #ddd; padding:10px; border-radius:3px;
+}
+.orgmodeulsAccordion .panelDefault a {
+	color: #333;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
@@ -8766,4 +8904,3 @@ z-index: -800;
 .remove_uservalidation p.jquery_form_error_message {
 	position: absolute; bottom: 32px;
 }
-

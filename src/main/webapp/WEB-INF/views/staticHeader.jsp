@@ -88,14 +88,18 @@ gtag('config', 'UA-115098165-1');
 	<li><a href="/marketplace.html" id="marketplaceID">Marketplace</a></li>
 	<li><a href="/about-us.html" id="aboutusID">About Us</a></li>
 	<!--<li><a href="helpManuals.html">Help</a></li>-->
+
+	<!-- <li><a href="/blog/all.html" id="blogID">Blog</a></li> -->
+
 	<li class="dropdown dropdown-featureshome">
 	 <a data-target="#featureshome" href="javascript:void(0)" id="resourcesID">Resources
 			  <span class="fa fa-angle-down"></span></a>
 			<ul id="featureshome" class="collapse list-unstyled dropdownmenu-custom">
 				<li><a class="helpbtn" href="/sourcelead_help.html">Help</a></li>
-				<li><a href="/blog.html" id="blogID">Blog</a></li>
+				<li><a href="/blog/all.html" id="blogID">Blog</a></li>
 			</ul>
 	</li>
+
 	<li><a href="/contact.html" id="contactID">Contact</a></li>
 	<!-- <li><a href="/register" title="Login">Sign Up</a></li> -->
 		 <li><a class="loginbtn" href="/login" title="Login">Login</a></li>

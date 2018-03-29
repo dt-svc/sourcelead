@@ -143,9 +143,19 @@ $('body').on('submit', '#addRecomApplicant_form', function(e){
  	        dataType : 'json',
  	    	url : sourceleadUrl+"/saveAddApplicant?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
-	        	if((result == 'success')){
-	        		location.replace(sourceleadUrl+"/requirementSummary?requirementId="+requirementId); 
-		        } 
+	        	if(result.response === "SESSION_TIMEDOUT") {
+					location.replace(sourceleadUrl);
+				} else if (result.response === "AWKWARD") {
+					location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+		        	if((result.object === "success")){
+		        		location.replace(sourceleadUrl+"/requirementSummary?requirementId="+requirementId); 
+			        }
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
+				}
 	        },
 	    }); 
       return true; 

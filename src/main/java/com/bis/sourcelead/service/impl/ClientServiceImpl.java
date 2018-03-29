@@ -47,6 +47,8 @@ import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.ExpensesCategory;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLicenseSubscription;
+import com.bis.sourcelead.entity.OrgLicenseSubscriptionTypes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -57,9 +59,9 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
+import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.VendorOnboarding;
@@ -71,6 +73,7 @@ import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
@@ -85,6 +88,7 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
+import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.VendorOnboardService;
@@ -209,7 +213,14 @@ public class ClientServiceImpl implements ClientService {
 	LookUpDataDao lookUpDataDao;
 	
 	@Autowired
+	OrgLicenseSubscriptionService orgLicenseSubscriptionService;
+	
+	@Autowired
+	TabsService tabsService;
+
+	@Autowired
 	VendorOnboardService vendorOnboardService;
+
 
 	/**
 	 * @author VenkatKesav
@@ -334,6 +345,7 @@ public class ClientServiceImpl implements ClientService {
 			clientOrgLocations.setIsPrimary(Constants.YES);
 			clientOrgLocations.setIsCompanyOnboarded(Constants.NO);
 			clientOrgLocations.setCoolingOffPeriod("3 Months");
+			clientOrgLocations.setRegistrationStatus("Registered");
 			orgLocationsList.add(clientOrgLocations);
 			org.setOrgLocationsList(orgLocationsList);
 			Org savedClient = orgService.addOrganization(org);
@@ -366,7 +378,7 @@ public class ClientServiceImpl implements ClientService {
 				expensesCategoryDao.storeExpenseCategory(expensesCategory); 
 		    }
 			saveOrgRoleHierarchy(clientOrgLocations, user);
-			saveOrgBasedRoles(org, clientOrgLocations, user);
+			saveOrgBasedRoles(org, clientOrgLocations, user,responderType);
 			newlyRegistred = "Y";
 		} else {
 			
@@ -641,6 +653,7 @@ public class ClientServiceImpl implements ClientService {
 	    	}
 
 	    	projects.setInvoiceFrequency(Constants.WEEKLY);
+	    	projects.setTimesheetFrequency(Constants.MONTHLY);
 	    	projects.setProjectStatus(Project_Status.INPROGRESS);
 	    	projects.setIsDefaultProject(Constants.YES);
 	    	projects.setIsPrimary(1);
@@ -752,8 +765,26 @@ public class ClientServiceImpl implements ClientService {
 
 	}
 
-	public void saveOrgBasedRoles(Org org, OrgLocations orgLocations, User user) throws Exception {
+	public void saveOrgBasedRoles(Org org, OrgLocations orgLocations, User user,String responderType) throws Exception {
 		List<SourceleadRoles> rolesList = sourceleadRolesService.getSourceleadRoles();
+		List<Long> soureleadActionIdList = new ArrayList<>();
+		String[] actionsIds = null;
+		SourceleadRoles sourceleadRoles = null;
+		if(responderType.equalsIgnoreCase("Vendor")) {
+			 sourceleadRoles = sourceleadRolesService.getSourceleadRolesByRoleName(Constants.ROLE_GUEST_VENDOR);
+			 actionsIds = sourceleadRoles.getActionId().split(",");
+			 for(int i=0 ; i < actionsIds.length; i++) {
+				 soureleadActionIdList.add(Long.parseLong(actionsIds[i]));
+			 }
+		}else if(responderType.equalsIgnoreCase("Client")) {
+			sourceleadRoles = sourceleadRolesService.getSourceleadRolesByRoleName(Constants.ROLE_GUEST_CLIENT);
+			 actionsIds = sourceleadRoles.getActionId().split(",");
+			 for(int i=0 ; i < actionsIds.length; i++) {
+				 soureleadActionIdList.add(Long.parseLong(actionsIds[i]));
+			 }
+		}
+		
+		
 		if (null != rolesList) {
 			for (SourceleadRoles roles : rolesList) {
 				Roles orgRoles = new Roles();
@@ -775,11 +806,9 @@ public class ClientServiceImpl implements ClientService {
 					}
 				}
 
-				List<SourceleadActions> sourceLeadActionsList = sourceleadActionsService
-						.getAllSourceleadActionsByOrgLocationId(orgLocations);
-				for (SourceleadActions actions : sourceLeadActionsList) {
-					if (roleActonsList.contains(actions.getId())) {
-						strbul.append(actions.getId()).append(",");
+				for (Long actionId : soureleadActionIdList) {
+					if (roleActonsList.contains(actionId)) {
+						strbul.append(actionId).append(",");
 					}
 				}
 
@@ -798,6 +827,52 @@ public class ClientServiceImpl implements ClientService {
 			}
 		}
 
+		saveLincenseSubscription(org,orgLocations,soureleadActionIdList);
+	}
+	
+	
+	public void saveLincenseSubscription(Org org,OrgLocations orgLocations,List<Long> soureleadActionIdList) throws Exception {
+		OrgLicenseSubscription subscription = new OrgLicenseSubscription();
+		subscription.setOrg(org);
+		OrgLicenseSubscriptionTypes subscriptionTypeLookUpData = new OrgLicenseSubscriptionTypes();
+		subscriptionTypeLookUpData.setId(6L);
+		subscription.setSubscriptionType(subscriptionTypeLookUpData);
+		subscription.setCountry(orgLocations.getCountry());
+		subscription.setTimezone(orgLocations.getTimezone());
+		OrgLicenseSubscriptionTypes storageLookUpData = new OrgLicenseSubscriptionTypes();
+		storageLookUpData.setId(8L);
+		subscription.setStorageSubscriptionType(storageLookUpData);
+		subscription.setFromDate(new Date());
+		
+		Calendar toDate = Calendar.getInstance();
+		toDate.setTime(new Date());
+		toDate.add(Calendar.MONTH, +1); 
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date endDate = dateFormat.parse(dateFormat.format(toDate.getTime()));
+		subscription.setToDate(endDate);
+		
+		StringBuilder tabIds = new StringBuilder();
+		List<Tabs> tabsList =  tabsService.getTabListByActionsIds(soureleadActionIdList);
+		Set<Long> tabIdsList = new HashSet<>();
+		if(tabsList != null && !tabsList.isEmpty()) {
+			for(Tabs tabs : tabsList) {
+				if(tabs.getTabs() != null) {
+					tabIdsList.add(tabs.getTabs().getId());
+				}else {
+					tabIdsList.add(tabs.getId());
+				}
+			}
+		}
+		
+		for(Long tab :tabIdsList) {
+			tabIds = tabIds.append(tab).append(",");
+		}
+	
+		String enrolledTabs = tabIds.toString();
+		enrolledTabs = enrolledTabs.substring(0, enrolledTabs.length()-1);
+		subscription.setSubscriptionTabs(enrolledTabs);
+		subscription.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		orgLicenseSubscriptionService.saveOrgLicenseSubscription(subscription);
 	}
 
 	// This method is not in use so commented by David S
@@ -1393,7 +1468,7 @@ public class ClientServiceImpl implements ClientService {
 		String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(), globalVarsMap);
 		noificationEmailScenario.setBody(notificationbody);
 
-		emailScenerioUtil.sendNotification(actionLink, loginUser, changedUser, orgLocation, noificationEmailScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, changedUser, orgLocation, noificationEmailScenario,new HashMap<String,String>());
 
 	}
 

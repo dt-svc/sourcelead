@@ -205,7 +205,6 @@ public class ConnectionsRestController {
 			HttpServletRequest request) throws Exception {
 		String result = connectionsService.withdrawAllValues(connectionsUerIdList);
 		return result;
-	}
 	
 	
 	@RequestMapping(value = "/acceptAllValues")

@@ -7,18 +7,11 @@
 
 <script>
 	$(document).ready(function() {
-		timesheetApprovalDetils('month');
-		if ('${notifyLink}' == "notifyLink") 
+		    if ('${notifyLink}' == 'true') 
 			{
-			var currentTimeFrequency = '${currentTimeFrequency}';
-			var projectId = '${projectId}';
-			var projectMemberId = '${projectMemberId}';
-			var masterCandidateId = '${masterCandidateId}';
-			var totalHours = '${totalHours}';
-			var from = '${from}';
-			var requestFrom = "notifyLink";
-			$("#notificationCurrentFrequency").attr("value",currentTimeFrequency);
-			timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,projectMemberId,masterCandidateId,totalHours,from,requestFrom);
+		    	timesheetApprovalDetils('notifyLink');
+			} else{
+				timesheetApprovalDetils('month');
 			}
 			selectedRecords = {};
 			$(".checkBoxForSubmitForApproval").click(function () {
@@ -38,6 +31,7 @@
 		   <div id="timesheetApprovalDiv" class="datatable_filter" >
 			   <div class="timesheet_out">
 			     	<div class="timesheet_appr_wrap">
+			     	 <input type='hidden' id='notifyLink' name='notifyLink' value="${notifyLink}"/>
 			     	 <div id="timeApprovaldiv">
 				     		<jsp:include page="TimesheetApprovalDetils.jsp"></jsp:include>
 			         </div>
@@ -52,23 +46,35 @@
 	               var locationCode ='${SourceLeadWeb_locationCode}';
 	               var userId = '${SourceLeadWeb_user.id}';
 	               var frequencyMonth = $("#frequencyMonth").val();
+	               var timesheetFrequency = $('#timesheetFrequency').val();
 	               var searchData = $('#dataTableSearchExpenses').val();
+	               var weekFrequency = $('#weekFrequency').val();
+	               var projectName = '';
+	               var stage = $('#stage').val();
+	               var client = $('#client').val();
+	               if(filter != null && filter != '' && filter != 'undefined' &&  filter == 'notifyLink'){
+	            	   frequencyMonth = '${frequencyMonth}';
+	            	   timesheetFrequency = '${timesheetFrequency}';
+	            	   searchData = '${searchData}';
+	            	   weekFrequency = '${weekFrequency}';
+	            	   projectName= '${projectName}';
+	               }
 	               if(frequencyMonth == null || frequencyMonth == '' || frequencyMonth == 'undefined')
 	            	   frequencyMonth = '';
 	               
-	  	           var timesheetFrequency = $('#timesheetFrequency').val();
+	  	         
 	  	           if(timesheetFrequency == null || timesheetFrequency == '' || timesheetFrequency == 'undefined')
 	  	        	 timesheetFrequency = '';
 	  	           
-	  	           var weekFrequency = $('#weekFrequency').val();
+	  	           
 		           if((weekFrequency == null || weekFrequency == '' || weekFrequency == 'undefined') || (filter == 'month')  || (filter == 'frequency'))
 		        	   weekFrequency = '';
 	  	         
-		           var stage = $('#stage').val();
+		          
 		           if(stage == null || stage == '' || stage == 'undefined')
 		        	   stage = '';
 		           
-		           var client = $('#client').val();
+		          
 		           if(client == null || client == '' || client == 'undefined')
 		        	   client = '';
 		           
@@ -82,7 +88,7 @@
 	               $("#loadTimeHead").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	        	   $.ajax({
 		      	          type : "POST",
-	        	      	  url: sourceleadUrl+"/timesheetApprovalDetails?frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency+"&weekFrequency="+weekFrequency+"&client="+client+"&stage="+stage+"&locationCode="+locationCode+"&userId="+userId+"&searchValue="+searchValue,		
+	        	      	  url: sourceleadUrl+"/timesheetApprovalDetails?frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency+"&weekFrequency="+weekFrequency+"&client="+client+"&stage="+stage+"&locationCode="+locationCode+"&userId="+userId+"&searchValue="+searchValue+"&projectName="+projectName,		
 	        		      success :function(data) {
 	        		    	  $("#loadTimeHead").removeAttr('style');
 	        		    	  $("#timeApprovaldiv").empty();
