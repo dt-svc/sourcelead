@@ -81,7 +81,9 @@
             <input value="Save" class="" type="button" id="passport_save_id" onclick="immigration.savePassportVisaDetails('Passport')">
             <input value="Cancel" class="popCan" type="button" onClick="popFun();">
           </div>		
-	</div><!--popcode end  -->
+	</div>
+	</div>
+	<!--popcode end  -->
 		</form>
 		
 		<script>
