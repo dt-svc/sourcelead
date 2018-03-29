@@ -270,6 +270,7 @@
 <script>
 	function closePopup() {
 		$("#popUpDiv").removeClass("edit-details-active");
+		$(".location-alert").fadeOut();
 	}
 </script>
 
@@ -422,26 +423,33 @@
 			dateFormat : 'yyyy/mm/dd'
 		};
 		if ($('#canReference_form').validate(false, validationSettings)) {
-			
-			    var formData = getFormData("canReference_form");
-			    var userId = '${SourceLeadWeb_user.id}';
-			    var locationCode = '${SourceLeadWeb_locationCode}';
-				
-				 $("#save_ref").attr("disabled", "disabled");
-				$("#save_ref").addClass('button').val('Processing..'); 
-		        $.post(sourceleadUrl+"/saveCandidateReferences?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(data) {
-		        	closePopup();
-		        	 $("#popUpDiv").removeClass("edit-details-active");
+			var formData = getFormData("canReference_form");
+			var userId = '${SourceLeadWeb_user.id}';
+			var locationCode = '${SourceLeadWeb_locationCode}';
+			$("#save_ref").attr("disabled", "disabled");
+			$("#save_ref").addClass('button').val('Processing..'); 
+		    $.post(sourceleadUrl+"/saveCandidateReferences?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(result) {
+		    	if (result && (result.response === "INVALID_USER" || result.response === "INVALID_DATA")) {
+				    showError(result.responseMessage);
+				} else if (result.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+					closePopup();
+			        $("#popUpDiv").removeClass("edit-details-active");
 					$("#selector10").removeAttr("style");
 					$("#selector10").css({display : "block"	});
 					$("#refMsgDiv").html("Success!! New References added");
-		        	candReferencesList(candidateId);
+			        candReferencesList(candidateId);
 					refMsgFadein(); 
 					setTimeout(function(){
-			 			candidateList();					 			
-			 	     },100);
-		        });
-		        
+				 		candidateList();					 			
+				 	},100);
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
+		    });
 			return true;
 		} else {
 			return false;
@@ -514,76 +522,78 @@
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		//var message = confirm("You are choosing to delete the reference");
 		var userCode = '${SourceLeadWeb_userCode}';
-		$
-				.ajax({
-					type : "POST",
-					url : sourceleadUrl
-							+ "/terminateReference?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="
-							+ candidateId + "&refId=" + refId + "&userCode="
-							+ userCode,
-					success : function(data) {
-						if (data != null && data != 'undefined' && data != "") {
-							$("#selector10").removeAttr("style");
-							$("#selector10").css({
-								display : "block"
-							});
-							$("#refMsgDiv").html("Reference deleted");
-							$("#popUpDiv").removeClass("edit-details-active");
-							$("#remove_user_pop_reference, .project_inn_mask")
-									.fadeOut();
-							candReferencesList(candidateId);
-							refMsgFadein();
-							setTimeout(function(){
-					 			candidateList();					 			
-					 	 },100);
-						}
-					},
-				});
-
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl
+					+ "/terminateReference?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="
+					+ candidateId + "&refId=" + refId + "&userCode="
+					+ userCode,
+			success : function(result) {
+				if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+	    		    showError(result.responseMessage);
+	    		} else if (result.response === "AWKWARD") {
+	    		    location.href = "/errorPage";
+	    		} else if (result.response === "SUCCESS") {
+	    			$("#selector10").removeAttr("style");
+					$("#selector10").css({display : "block"});
+					$("#refMsgDiv").html("Reference deleted");
+					$("#popUpDiv").removeClass("edit-details-active");
+					$("#remove_user_pop_reference, .project_inn_mask").fadeOut();
+					candReferencesList(candidateId);
+					refMsgFadein();
+					setTimeout(function(){
+						candidateList();					 			
+					},100);	
+	    		} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
+			},
+		});
 	}
 </script>
 
 <script type="text/javascript">
 	function updateCandidateReference(candidateId, refId) {
-
 		var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd'
 		};
-		
 		if ($('#canReferenceEdit_form').validate(false, validationSettings)) {
-
-			
 			var formData = getFormData("canReferenceEdit_form");
 		    var userId = '${SourceLeadWeb_user.id}';
 		    var locationCode = '${SourceLeadWeb_locationCode}';
-			
-			 $("#save_ref").attr("disabled", "disabled");
+			$("#save_ref").attr("disabled", "disabled");
 			$("#save_ref").addClass('button').val('Processing..'); 
-	        $.post(sourceleadUrl+"/updateCandidateReferenceBycandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(data) {
-	        	
-	        	$("#selector10").removeAttr("style");
-				$("#selector10").css({display : "block"});
-				$("#refMsgDiv").html("Reference details updated");
-				closePopup();
-				candReferencesList(candidateId);
-				refMsgFadein();
+	        $.post(sourceleadUrl+"/updateCandidateReferenceBycandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(result) {
+	        	if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+	    		    showError(result.responseMessage);
+	    		} else if (result.response === "AWKWARD") {
+	    		    location.href = "/errorPage";
+	    		} else if (result.response === "SUCCESS") {
+	    			$("#selector10").removeAttr("style");
+					$("#selector10").css({display : "block"});
+					$("#refMsgDiv").html("Reference details updated");
+					closePopup();
+					candReferencesList(candidateId);
+					refMsgFadein();
+	    		} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
 	        });
-	        
 			return true;
 		} else {
 			return false;
 		}
-		$('body').on(
-				'blur',
-				'#canReference_form',
-				function() {
-					$("#canReferenceEdit_form").showHelpOnFocus();
-					$("#canReferenceEdit_form").validateOnBlur(false,
-							validationSettings);
-				});
+		$('body').on('blur', '#canReference_form', function() {
+			$("#canReferenceEdit_form").showHelpOnFocus();
+			$("#canReferenceEdit_form").validateOnBlur(false, validationSettings);
+		});
 	}
 </script>
 

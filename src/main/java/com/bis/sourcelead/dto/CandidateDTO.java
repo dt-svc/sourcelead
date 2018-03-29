@@ -75,6 +75,7 @@ public class CandidateDTO extends SearchDTO{
 
 	private String designation;
 
+        @Required(desc = "designation type")
 	private String designationType;
 
 	private String designationOtherType;
