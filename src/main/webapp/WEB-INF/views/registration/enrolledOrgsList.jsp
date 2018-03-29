@@ -139,6 +139,7 @@ function prepareDynamicOrgList(url){
 		result = result	+ '</div>';
 		$("#dynamicOrgList").empty();
 		$("#dynamicOrgList").append(result);
+		var sourceleadUrl ='${sourceleadUrl}';
 		dynamicOrgListPagination(url);
 }
 function dynamicOrgListPagination(url){
@@ -159,7 +160,12 @@ function dynamicOrgListPagination(url){
     	  		var result = "";
     	  		result = result +"<td><div class='tbldata-dotdot-200 UserTextLeft'>";
        	    	result = result +"<img onerror='predefineOrgImage(this);' class='m-t-xs' data-id='orgLogoImage' src="+org.fileUrl+" alt='image'>";
-       	    	result = result +"<a href='<c:url value='/app/orgSummary/"+org.id+"'/>' title='"+org.orgName+"'>"+org.orgName+" </a>";
+       	    	if(org.registrationStatus != 'Draft' ){
+       	    		result = result +"<a href='<c:url value='/app/orgSummary/"+org.orgCode+"'/>' title='"+org.orgName+"'>"+org.orgName+" </a>";
+       	    	}else{
+       	    		result = result +'<a href="'+sourceleadUrl+'/enrollOrg?locationCode='+org.locationCode+'">'+org.orgName+'</a>';
+       	    	}
+       	    	
        	    	result = result + '</div></td>'; 
        	    	return result;
     	  	}

@@ -64,13 +64,17 @@ public class BlogController {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
 		DateFormat dateFormatResult = new SimpleDateFormat ("MM/dd/yyyy hh:mm a");
 		
-		String publishon = dateFormatResult.format(dateFormat.parse(blogDetails.getPublishOn().toString()));
+		if(blogDetails.getPublishOn() != null) {
+			String publishon = dateFormatResult.format(dateFormat.parse(blogDetails.getPublishOn().toString()));
+			modelAndView.addObject("publishon", publishon);
+		}
+		
 		String createdDate = dateFormatResult.format(dateFormat.parse(blogDetails.getCreatedDate().toString()));
 
 		modelAndView.addObject("blogCategoryList", blogCategoryList);
 		modelAndView.addObject("relatedBlogs", relatedBlogs);
 		modelAndView.addObject("blogDetails", blogDetails);
-		modelAndView.addObject("publishon", publishon);
+		
 		modelAndView.addObject("createdDate", createdDate);
 		String sleadUrl = sourceleadUrl.replace("/app", "");
 		modelAndView.addObject("sleadUrl", sleadUrl);

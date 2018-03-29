@@ -16,7 +16,7 @@ window.onload = function() {
     <div class="pull-left">
       <h2>Category List</h2>
     </div>
-   <%--  <div class="pull-right brud-crum"><a href="<c:url value='/app/categoryList'/>">CategoryList</a>&raquo;Category</div> --%>
+   <div class="pull-right brud-crum"><a href="<c:url value='/app/blogs'/>">Blogs</a> &raquo;Blog Category</div>
   </section>
   <div class="content-area content-new clearfix">
    <div class="timesheet_head minHeight50 list-borderright">
@@ -62,7 +62,7 @@ function addBlogCategory(uuid){
 	result = result+ '<div class="clearfix mb10">';
 	result = result+ '<div class="col-md-12">';
 	result = result+ '<label>Description</label>';
-	result = result + '<textarea cols="3" class="form-control" name="description" id="description" field-name="Description" data-validation=" validate_length length1-500" data-validation-optional="true">';
+	result = result + '<textarea cols="3" class="form-control" name="description" id="description" field-name="Description" data-validation="validate_length length1-500" data-validation-optional="true">';
     result = result + '</textarea>';
 	result = result+ '                </div>';
 	result = result+ '              </div> ';
@@ -173,7 +173,7 @@ function prepareBlogCategoryList(url){
 	    result = result +" <input type='text' placeholder='Search' id='blogCategoryTableSearch'/>";
 		result = result	+ '</div>';
 		result = result	+ '</div>';
-		result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
+		result = result	+ '<div class="clearfix">';
 		result = result + '<table id="blogCategoryListView" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';

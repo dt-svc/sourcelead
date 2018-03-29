@@ -1070,6 +1070,14 @@ public class Constants {
 	
 
 	public static final String[] UNSUBSCRIPTION_TABID_LISTED = {"3","4","8","16","20","23","30" };
-
+	
+	public static final String SUBSCRIPTION_TYPE = "Subscription Type";
+	public static final String USER_SUBSCRIPTION = "User Subscription";
+	public static final String DATA_STORAGE = "Data Storage";
+	
+	public static final String[] REGISTERED_COUNTRIES = { "Australia", "France", "India", "Singapore", "United Kingdom", "United States"};
+	
+	public static final String ROLE_GUEST_VENDOR = "ROLE_GUEST_VENDOR";
+	public static final String ROLE_GUEST_CLIENT = "ROLE_GUEST_CLIENT";
 
 }
