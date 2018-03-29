@@ -121,14 +121,15 @@
 						result = result + '<th>Email</th>';
 						result = result + '<th>Phone</th>';
 						result = result + '<th>Relation </th>';
+						result = result + '<th>Designation </th>';
 						result = result + '<th>Comment </th>';
 						result = result + '<th>Action </th>';
 						result = result + "  </tr>";
 						result = result + "</thead>";
 						result = result + "<tbody>";
 
-						for (var i = 0; i < json.length; i++) {
-							var opt = json[i];
+						for (var i = 0; i < json.data.length; i++) {
+							var opt = json.data[i];
 							result = result + ' <tr>';
 							if (opt.name != null && opt.name != ''
 									&& opt.name != "undefined") {
@@ -170,6 +171,11 @@
 								result = result
 										+ ' <td><div><span>----</span></div></td>';
 							}
+							if (opt.designation != null && opt.designation != ''&& opt.designation != 'undefined') {
+							result = result	+ ' <td><div><span title="'+opt.designation+'">'+ opt.designation + '</span></div></td>';
+						   } else {
+							result = result	+ ' <td><div><span>----</span></div></td>';
+						   }
 
 							if (opt.comment != null && opt.comment != ''
 									&& opt.comment != 'undefined') {
@@ -277,12 +283,7 @@
 		});
 	});
 
-	/* $(function() {
-	 $('#relation').change(function(){
-	 alert("X");
-	 $('#row_dim')[ ($("option[value='Work Related']").is(":checked"))? "show" : "hide" ]();  
-	 });
-	 }); */
+	
 </script>
 <%-- 
      @author : prasad K.
@@ -308,9 +309,9 @@
 		result = result + '</div>';
 
 		result = result + '<div class="clearfix mb10">';
-		result = result + '<div class="col-md-12">';
+		result = result + '<div class="col-md-12" id="emailDivId">';
 		result = result
-				+ '<input type="text" name="email" field-name="Email" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *">';
+				+ '<input type="text" name="email" field-name="Email" id="email" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *" onblur="validateReferenceEmail('+candidateId+');">';
 		result = result + '</div>';
 		result = result + '</div>';
 
@@ -432,15 +433,15 @@
 		        	closePopup();
 		        	 $("#popUpDiv").removeClass("edit-details-active");
 					$("#selector10").removeAttr("style");
-					$("#selector10").css({
-						display : "block"
-					});
-					$("#refMsgDiv").html(
-							"Success!! New Candidate References added");
+					$("#selector10").css({display : "block"	});
+					$("#refMsgDiv").html("Success!! New References added");
 		        	candReferencesList(candidateId);
 					refMsgFadein(); 
+					setTimeout(function(){
+			 			candidateList();					 			
+			 	     },100);
 		        });
-			
+		        
 			return true;
 		} else {
 			return false;
@@ -532,6 +533,9 @@
 									.fadeOut();
 							candReferencesList(candidateId);
 							refMsgFadein();
+							setTimeout(function(){
+					 			candidateList();					 			
+					 	 },100);
 						}
 					},
 				});
@@ -561,9 +565,7 @@
 	        $.post(sourceleadUrl+"/updateCandidateReferenceBycandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(data) {
 	        	
 	        	$("#selector10").removeAttr("style");
-				$("#selector10").css({
-					display : "block"
-				});
+				$("#selector10").css({display : "block"});
 				$("#refMsgDiv").html("Reference details updated");
 				closePopup();
 				candReferencesList(candidateId);
@@ -629,9 +631,9 @@
 										result = result
 												+ '<div class="clearfix mb10">';
 										result = result
-												+ '<div class="col-md-12">';
+												+ '<div class="col-md-12" id="emailDivId">';
 										result = result
-												+ '<input type="text" name="email" field-name="Email" value="'+json.email+'" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *">';
+												+ '<input type="text" name="email" id="email" field-name="Email" value="'+json.email+'" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *" onblur="validateReferenceEmail('+candidateId+','+json.id+');">';
 										result = result + '</div>';
 										result = result + '</div>';
 
@@ -683,7 +685,7 @@
 										result = result
 												+ '<div class="col-md-12">';
 										result = result
-												+ '<input type="text" name="designation" id="designationValEdit" field-name="Designation" value="'+json.designation+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Designation *">';
+												+ '<input type="text" name="designation" id="designationValEdit" field-name="Designation" value="'+json.designation+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" placeholder="Designation *">';
 										result = result + '</div>';
 										result = result + '</div>';
 
@@ -721,6 +723,9 @@
 										result = result + '</div>';
 										result = result + '</form>';
 										$("#popUpDiv").empty();
+										if(json.relation == "Work Related"){
+											$("#dvDesignationEdit").show();
+									      }
 										$("#popUpDiv").append(result);
 
 										$(".edit-details").toggleClass(
@@ -740,13 +745,6 @@
 													e.stopPropagation();
 												});
 
-										/* if(json.relation == "Family Related"){
-										    $("#dvDesignationEdit").remove();
-											$("#dvDesignationEdit").css("display", "none");
-											$("#designationValEdit").removeAttr("data-validation");
-											$("#designationValEdit").attr("data-validation-optional", "true");
-										} */
-
 									}
 
 								}
@@ -759,52 +757,65 @@
 	}
 </script>
 
+<script>
+function validateReferenceEmail(candidateId,referId){
+	if(referId != null && referId != "" && referId != "undefined"){
+		referId = referId;
+	}else{
+		referId = "";
+	}
+	var email = $("#email").val();
+	 $('#emailDivId').find('p.jquery_form_error_message').remove();
+	$.ajax({
+			type : "POST",
+			url : sourceleadUrl + "/validateReferEmail?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&referId="+referId+"&email="+email,
+			success : function(data) {
+				if(data == true){
+	        		  $('#emailDivId').find('p.jquery_form_error_message').remove();
+					  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+					  document.getElementById("email").setAttribute('record-exist','yes');
+					  document.getElementById("email").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
+	        	}
+	        	else{
+	        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+	        		 $('#emailDivId').find('p.jquery_form_error_message').remove(); 
+	        	}
+			},
+		});
+	
+}
+</script>
+
 <!-- If Selected value is Work Related then Designation text box will appear -->
 <script type="text/javascript">
 	function getRelation() {
 		var relation = $("#relation").val();
-		
 		if (relation == 'Work Related') {
 			$('#designationVal').val('');
-			$('#designationVal').attr("data-validation",
-					"required validate_Space validate_length length2-100");
+			$('#designationVal').attr("data-validation","required validate_Space validate_length length2-100");
 			$("#dvDesignation").show();
-		} else if (relation == 'Family Related') {
-
+		} else{
 			$('#designationVal').val('');
 			$("#designationVal").attr("data-validation-optional", "true");
 			$("#dvDesignation").hide();
-		}else {
-			$("#dvDesignationEdit").hide();
-			$("#designationVal").remove();
-			$('#dvDesignation').find('p.jquery_form_error_message').remove();
-			$('#designationVal').removeAttr("data-validation");
 		}
 	}
 </script>
 
 <script>
 	function editRelation(e) {
-		if (e.value == 'Work Related') {
+		var relationType = $("#relation").val();
+		if (relationType == 'Work Related') {
 			document.getElementById("dvDesignationEdit").style.display = "block";
 			$("#designationValEdit").removeAttr("data-validation-optional");
 			$('#designationValEdit').attr("data-validation",
 					"required validate_Space validate_length length2-100"); 
 			$("#designationValEdit").show();
-		} else if (e.value == 'Family Related') {
-			document.getElementById("dvDesignationEdit").style.display = "none";
-
-			$("#designationValEdit").val('');
-			$('#designationValEdit').find('p.jquery_form_error_message')
-					.remove();
-			$('#designationValEdit').removeAttr("data-validation");
 		} else {
-			$("#dvDesignationEdit").removeAttr("style");
-			$("#dvDesignationEdit").hide();
+			document.getElementById("dvDesignationEdit").style.display = "none";
 			$("#designationValEdit").val('');
-			$('#dvDesignationEdit').find('p.jquery_form_error_message')
-					.remove();
+			$('#designationValEdit').find('p.jquery_form_error_message').remove();
 			$('#designationValEdit').removeAttr("data-validation");
-		}
+		} 
 	}
 </script>

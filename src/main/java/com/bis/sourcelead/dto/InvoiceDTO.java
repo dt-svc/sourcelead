@@ -53,7 +53,7 @@ public class InvoiceDTO extends SearchDTO {
     private String exportEndDate;
     private String vendorName;
     private String locationdateForList;
-    
+    private String orgLocationId;
 	public List<InvoiceExpensesDTO> getExpenseInvoice() {
 		return expenseInvoice;
 	}
@@ -439,6 +439,16 @@ public class InvoiceDTO extends SearchDTO {
 
 	public void setLocationdateForList(String locationdateForList) {
 		this.locationdateForList = locationdateForList;
+	}
+
+	public String getOrgLocationId()
+	{
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(String orgLocationId)
+	{
+		this.orgLocationId = orgLocationId;
 	}
 	
 }

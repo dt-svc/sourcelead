@@ -8,11 +8,11 @@
       <h2 class="pull-left">Org chart view</h2>
     </div>
     <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Org Chart View </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Org Chart View </div>
     </c:if> 
     
     <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home </a> &raquo; Org Chart View  </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard'/>">Home </a> &raquo; Org Chart View  </div>
     </c:if> 
   </section>
   
@@ -110,12 +110,18 @@ function filterNodes(keyWord) {
 	    			obj.id = ds[i].id;
 	    			obj.name = ds[i].name;
 	    			obj.designation = ds[i].designation;
-	          	obj.avatar = sourceleadUrl+'/displayUserImage/'+ds[i].id;
-	          	data = obj;
+	    			if(ds[i].fileURL && ds[i].fileURL !== "")
+	          			obj.avatar = sourceleadUrl.replace("/app", "")+ds[i].fileURL;
+	    			else 
+	    				obj.avatar = sourceleadUrl.replace("/app", "")+"/resources/images/userprofile-img.png";
+	          		data = obj;
 		    		obj.children = [];
 	    			$.each(ds, function(j) {
 	    				if(ds[j].parentId == obj.id) {
-	    					ds[j].avatar = sourceleadUrl+'/displayUserImage/'+ds[j].id;
+							if(ds[j].fileURL && ds[j].fileURL !== "")	    					
+	    						ds[j].avatar = sourceleadUrl.replace("/app", "")+ds[j].fileURL;
+	    					else
+	    						ds[j].avatar = sourceleadUrl.replace("/app", "")+"/resources/images/userprofile-img.png";
 	    					obj.children.push(ds[j]);
 	    				}
 	    			});
@@ -123,7 +129,10 @@ function filterNodes(keyWord) {
 	    			ds[i].children = [];
 	    			$.each(ds, function(j) {
 	    				if(ds[i].id == ds[j].parentId) {
-	    					ds[j].avatar = sourceleadUrl+'/displayUserImage/'+ds[j].id;
+	    					if(ds[j].fileURL && ds[j].fileURL !== "")	    					
+	    						ds[j].avatar = sourceleadUrl.replace("/app", "")+ds[j].fileURL;
+	    					else
+	    						ds[j].avatar = sourceleadUrl.replace("/app", "")+"/resources/images/userprofile-img.png";
 	    					ds[i].children.push(ds[j]);
 	    				}
 	    			});

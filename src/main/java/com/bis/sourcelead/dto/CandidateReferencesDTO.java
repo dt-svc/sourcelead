@@ -16,8 +16,21 @@ public class CandidateReferencesDTO {
 	private String designation;
 	
 	private String comment;
+	
+	private long id;
+    
+	private long userId;
 
-
+	private String locationCode;
+	
+	private long candidateId;
+	
+	private long loginUserId;
+	
+	private long orgLocationId;
+	
+	private String userCode;
+	
 	public String getName()
 	{
 		return name;
@@ -87,5 +100,76 @@ public class CandidateReferencesDTO {
 	{
 		this.refId = refId;
 	}
+
+	public long getId()
+	{
+		return id;
+	}
+
+	public void setId(long id)
+	{
+		this.id = id;
+	}
+
+	public long getUserId()
+	{
+		return userId;
+	}
+
+	public void setUserId(long userId)
+	{
+		this.userId = userId;
+	}
+
+	public String getLocationCode()
+	{
+		return locationCode;
+	}
+
+	public void setLocationCode(String locationCode)
+	{
+		this.locationCode = locationCode;
+	}
+
+	public long getCandidateId()
+	{
+		return candidateId;
+	}
+
+	public void setCandidateId(long candidateId)
+	{
+		this.candidateId = candidateId;
+	}
+
+	public long getLoginUserId()
+	{
+		return loginUserId;
+	}
+
+	public void setLoginUserId(long loginUserId)
+	{
+		this.loginUserId = loginUserId;
+	}
+
+	public long getOrgLocationId()
+	{
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(long orgLocationId)
+	{
+		this.orgLocationId = orgLocationId;
+	}
+
+	public String getUserCode()
+	{
+		return userCode;
+	}
+
+	public void setUserCode(String userCode)
+	{
+		this.userCode = userCode;
+	}
+	
 	
 }

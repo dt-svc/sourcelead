@@ -3,11 +3,15 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<link href="resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+
+<link href="/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
+
 	
 	<script type="text/javascript">
 		window.onload = function () {
-			initLocationAuto('associateLocation','associateCountry','associateState','associateCity','associateZipCode','associateLatitude','associateLongitude');
+			initLocationAuto('associateLocation','associateCountry','associateState','associateCity','associateZipCode','associateLatitude','associateLongitude','','address');
 			disableMonths();
 			getUsersByRole();
 			var type = '${type}';
@@ -35,7 +39,7 @@
     <div class="pull-left">
       <h2>Add Associate</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/associatesList'/>"> Associate List</a> &raquo; Add Associate</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/associatesList'/>"> Associate List</a> &raquo; Add Associate</div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
@@ -125,41 +129,49 @@
         </div>
         
         <div class="form-group">
-          <label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
+          <label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9" id="locationField">
           <div class="positionRelative">
-          <input class="form-control positionRelative" id="associateLocation" name="location" placeholder="Enter your address" type="text" field-name="Locatin" data-validation="required"></input>
-          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('associateLocation','associateCountry','associateState','associateCity','associateZipCode');"></i>
+          <input class="form-control positionRelative" id="associateLocation" name="location" placeholder="Enter your address" type="text" field-name="Address" data-validation="required"></input>
+          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('associateLocation','associateCountry','associateState','associateCity','associateZipCode','address');"></i>
           </div>
           </div>
         </div>
-		
 		
 		<div class="form-group">
-          <label class="col-md-3">Country</label>
+          <label class="col-md-3">Street Address</label>
           <div class="col-md-9">
-          <input class="form-control" id="associateCountry" name="country" placeholder="Enter your Country" value ="${loginCountryName}"  type="text" readonly></input>
+           <input type="text" class="form-control" id="address" name="address" value="${address}"  placeholder="Enter your Street Addres" field-name="Street Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
           </div>
         </div>
         
-        <div class="form-group">
-          <label class="col-md-3">State</label>
-          <div class="col-md-9">
-          <input class="form-control" id="associateState" name="state" placeholder="Enter your State" type="text" readonly></input>
-          </div>
-        </div>
-        
-        <div class="form-group">
+		 <div class="form-group">
           <label class="col-md-3">City</label>
           <div class="col-md-9">
-          <input class="form-control" id="associateCity" name="city" placeholder="Enter your City" type="text" readonly></input>
+          <input class="form-control" id="associateCity" name="city" placeholder="Enter your City" type="text" ></input>
           </div>
         </div>
         
+         <div class="form-group">
+          <label class="col-md-3">State</label>
+          <div class="col-md-9">
+          <input class="form-control" id="associateState" name="state" placeholder="Enter your State" type="text" ></input>
+          </div>
+        </div>
+        
+		<div class="form-group">
+          <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
+          <div class="col-md-9">
+          <input class="form-control" id="associateCountry" name="country" placeholder="Enter your Country" field-name="Country" data-validation="required" value ="${loginCountryName}"  type="text" ></input>
+          </div>
+        </div>
+        
+       
+       
         <div class="form-group">
           <label class="col-md-3">ZipCode</label>
           <div class="col-md-9">
-          <input class="form-control" id="associateZipCode" name="zipcode" placeholder="Enter your Zip code" type="text" readonly></input>
+          <input class="form-control" id="associateZipCode" name="zipcode" placeholder="Enter your Zip code" type="text" ></input>
           </div>
         </div>
         
@@ -178,12 +190,7 @@
           </div>
         </div> 
         
-        <div class="form-group">
-          <label class="col-md-3">Address</label>
-          <div class="col-md-9">
-           <input type="text" class="form-control" id="address" name="address" value="${address}"  field-name="Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
-          </div>
-        </div>
+        
         
          <div class="form-group">
          <label class="col-md-3">Designation</label>
@@ -216,7 +223,7 @@
              <div class="col-xs-6 col-md-6">
              		<select class="form-control selectpicker" id="experienceYears" name="experienceYears" onchange="disableMonths();">
              		  <option value="" >Years</option>
-             		  <c:forEach begin="0" end="25" varStatus="loop">
+             		  <c:forEach begin="0" end="50" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
              		     
@@ -240,21 +247,33 @@
        <div class="clearfix" id="hideVendor" style="display:none">
        <div class="form-group">
 			<label class="col-md-3" ><span class="pull-left">Vendor</span><span class="text-danger pull-left" id="man1">*</span></label>
-			<div class="col-md-9">
+			<div class="col-md-9 chooRadius">
+			<div class="input-group col-md-10 pull-left">
 			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="Select Vendor" field-name="Vendor" onchange="getVendorContactList();">
                  </select>
+                 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocation();associateFromCandEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
 			</div>
+			<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
+		           <a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+              </sec:authorize>
 		</div>
-		
+		</div>
 		 <div class="form-group">
 			<label class="col-md-3" ><span class="pull-left">Vendor Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
-			<div class="col-md-9">
+			<div class="col-md-9 chooRadius">
+			<div class="input-group col-md-10 pull-left">
 			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="Select Vendor Contact">
                  </select>
+                 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorContactList();"><i class="fa fa-refresh "></i></span>
 			</div>
+		      <span class="col-md-2 noPad clearfix" onclick="selectedVendor();">
+			<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
+			<a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+			</sec:authorize>
+		 </span>		
 		</div>
 		</div>
-       
+       </div>
         <div class="form-group designationTypeDiv" id="designationTypeDiv" style="display:none">
             <label class="col-md-3">Employment Type</label>
             <div class="col-md-9">
@@ -475,7 +494,9 @@
       </div> 
     </div>
     
-    
+    <!-- this "candidateCreationType" field is used for candidate creation type -->
+         <input type="hidden" id="candidateCreationType" name="candidateCreationType" value="manual">
+         
     <div class="form-footer clearfix mt">
       <div class="col-lg-12">
         <div class="pull-right">
@@ -596,26 +617,22 @@ function validate_fileupload(fileName)
     return false;
 }
 </script>
-
+  
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
+<script>
+  $(function() { 
+	  tagIt("candidateSkills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','Select Skills');
+		tagIt("candidateEducation", 'Press Enter-Key Or Comma(,) To Add New Education:', 'tagItBykeyForSkills','skills','Select Education');
+
+	});
+  </script>
+
 <script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			
+			 
 	       $("#candidateSkills").val('').trigger("chosen:updated");
 	       $("#candidateEducation").val('').trigger("chosen:updated");
 	       
-	        //Adding Customized Skills to the list
-	        var select, chosen;
-		    select = $("#candidateSkills");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
-		    chosen = select.data('chosen');
-		    
+	     
 		    $("#candidateSkills").chosen().change(function(event) {
 		    	 var sourceleadUrl ='${sourceleadUrl}';
 		    	var allSkills = $(event.target).val();
@@ -631,114 +648,6 @@ function validate_fileupload(fileName)
 		    	
 		    });
 		    
-		    chosen.search_field.on('keydown keyup', function(e)
-				    {
-				    	   var skillsArray = this.value.split(",");
-					    	 if(skillsArray.length > 1){
-				        		 for (var i=0; i < skillsArray.length; i++) {
-				        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
-				        			 select.append(option);
-				 		             select.find(option).prop('selected', true);
-				 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
-				 	        		 $("#candidateSkills").trigger("chosen:updated");
-				                 }
-					    	 }else{
-					    		var focussedSkills = $("ul.chosen-results").find("li.active-result.highlighted");
-				    			var newSkill = this.value.replace(","," ");
-				    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-				                 {
-				    				 preventTabkey(e);
-				                   // below code manually enter skills are taken
-				    				  
-				                   var isNewSkill = true;
-									 $("#candidateSkills option:selected").each(function(){
-										 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
-											 isNewSkill = false;
-											 return false;
-										 }
-				                    
-				                   });
-									
-										if(focussedSkills.length > 0){
-											var skillOption  = $("<option>").val(focussedSkills.first().text()).text(focussedSkills.first().text());
-											select.append(skillOption);
-											select.find(skillOption).prop('selected',true);
-											select.find(skillOption).siblings("[value='"+ focussedSkills.first().text()+"']").remove();
-											$("#candidateSkills").trigger("chosen:updated");
-									   }
-									   else{
-										   if(isNewSkill){
-											var option = $("<option>").val(newSkill).text(newSkill);
-											select.append(option);
-											select.find(option).prop('selected', true);
-										   }
-									   
-									}
-					               $("#candidateSkills").trigger("chosen:updated"); 
-				                   
-				                }
-						       
-			    	         }
-		    	});
-		 
-		    
-		    //Adding Customized Educations to the list
-	        var selectone, chosenone;
-	        selectone = $("#candidateEducation");
-	        selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
-	        chosenone = selectone.data('chosen');
-	        chosenone.search_field.on('keydown keyup', function(e1)
-	    		    {
-	    	        	var focussedEducations = $("ul.chosen-results").find("li.active-result.highlighted");
-	    		    	var newEducation = this.value.replace(",","");
-	    		        if (tagItBykeyForSkills(e1) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
-	    		        {
-	    		        	preventTabkey(e1);
-	    		        	var isNewEducation = true;
-	    					 $("#candidateEducation option:selected").each(function(){
-	    						 if(this.value.toUpperCase() === newEducation.toUpperCase() && this.value.toLowerCase() === newEducation.toLowerCase()){
-	    							 isNewEducation = false;
-	    							 return false;
-	    						 }
-	                       
-	                      });
-	    					 
-	    					 
-	    							if(focussedEducations.length > 0){
-	    								var educationOption  = $("<option>").val(focussedEducations.first().text()).text(focussedEducations.first().text());
-	    								selectone.append(educationOption);
-	    								selectone.find(educationOption).prop('selected',true);
-	    								selectone.find(educationOption).siblings("[value='"+ focussedEducations.first().text()+"']").remove();
-	    								$("#candidateEducation").trigger("chosen:updated");
-	    						   }
-	    						   else{
-	    							   if(isNewEducation){
-	    								var option = $("<option>").val(newEducation).text(newEducation);
-	    								selectone.append(option);
-	    								selectone.find(option).prop('selected', true);
-	    							   }
-	    						   }
-	    						
-	    					 
-	    					 
-	    		        	
-	                        //end
-	    	        		$("#candidateEducation").trigger("chosen:updated");
-	    	        		
-	    		        }
-	    		    }); 
-		    //Adding Customized Educations to the list
-	       
-	      
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-			var $this = $(this);
-			$this.next().css({'width': '100%'});
-			})
-				
-				
 </script> 
 <!-- Eductions and Skills Autocomplete Scripts End Here -->
 
@@ -780,7 +689,7 @@ function validate_fileupload(fileName)
  
  function disableMonths() {
      $("#experienceYears").change(function() {
-         if ($("#experienceYears").val() == '25'){
+         if ($("#experienceYears").val() == '50'){
         	 $("#experienceMonths").val('');  
         	 $('#experienceMonths').selectpicker('refresh');
         	 /* $('#experienceMonths').attr("disabled", true);
@@ -1630,7 +1539,6 @@ function getCandidateDetails(){
 			            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');	
 		            }
 		            $('#vendors').trigger("chosen:updated");
-		            //getVendorContactList();
 		            
 		        }
 		 });
@@ -1645,12 +1553,12 @@ function getCandidateDetails(){
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
+		        	//var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
 		        	$('#vendorcontact').append('<option value="">--Select Vendor contact--</option>');
-		             for(var i=0;i<json.length;i++){
-		            	 var opt = json[i];
+		             for(var i=0;i<json.data.length;i++){
+		            	 var opt = json.data[i];
 		            	 $('#vendorcontact').append('<option value='+opt.id+' >'+opt.spocName+' ('+opt.ownerName+')</option>');
 		            } 
 		            $('#vendorcontact').trigger("chosen:updated");
@@ -1694,7 +1602,7 @@ function getCandidateDetails(){
    		var form = $('#candidate_form')[0];
      		var formData = new FormData(form); 
    		var sourceleadUrl = '${sourceleadUrl}';
-    	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+    	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
    		   $.ajax({
    					type : "POST",
    	        	    data: formData,
@@ -1848,12 +1756,12 @@ if(type == 'C2C-1099'){
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+vendorOrgRelationId+"&type=Vendor",  
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
+		        	//var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
 		        	$('#vendorcontact').append('<option value="">--Select Vendor contact--</option>');
-		             for(var i=0;i<json.length;i++){
-		            	 var opt = json[i];
+		             for(var i=0;i<json.data.length;i++){
+		            	 var opt = json.data[i];
 		            	 if(vendorContactName != null && vendorContactName != 'undefined' && vendorContactName  != ''){
 		            		 $('#vendorcontact').append('<option '+ (opt.id == vendorSpocId ? "selected" : '') +' value="'+opt.id+'">'+opt.spocName+' ('+opt.ownerName+')</option>');
 			            	}else{
@@ -1874,4 +1782,17 @@ if(type == 'C2C-1099'){
 		});
 	 });
  </script>
+ <script>
+function associateFromCandEmptyVendorContact(){
+	$("#vendorcontact").empty();
+	 $('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
+   $('#vendorcontact').trigger("chosen:updated");
+}
+</script>
+<script>
+	 function selectedVendor(){
+		 var vid =  $('#vendors').val();
+		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
+	 }
+	 </script>
  

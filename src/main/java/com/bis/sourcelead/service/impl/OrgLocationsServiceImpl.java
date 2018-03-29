@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.LookUpDataDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dto.ClientDTO;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Timezone;
@@ -35,7 +37,7 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	
 	@Autowired
 	private CommonUtil commonUtil;
-
+	
 	@Override
 	public OrgLocations addOrgLocations(OrgLocations orgLocations) throws Exception {
 		orgLocations.setCoolingOffPeriod(Constants.DEFAULT_COOLINGOFF_PERIOD); //to set default cooling-off period to three months
@@ -100,7 +102,42 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
         orgLocations.setOrgLocationAddress(orgSettings.getAddress());
         orgLocations.setWebsite(convertWebsite(orgSettings.getWebsite()));
         orgLocations.setOrgDescription(orgSettings.getAboutCompany());
+        
+        if(StringUtils.isNotBlank(orgSettings.getBusinessType()) && !orgSettings.getBusinessType().equalsIgnoreCase("Other")){
+          LookUpData businessTypeLookUpData = new LookUpData();
+          businessTypeLookUpData.setId(Long.valueOf(orgSettings.getBusinessType()));
+          orgLocations.setBusinessType(businessTypeLookUpData);
+          orgLocations.setOtherBusinessType(null);
+        }else {
+        	orgLocations.setBusinessType(null);
+        	orgLocations.setOtherBusinessType(orgSettings.getOtherBusinessType());
+        }
       
+        if(StringUtils.isNotBlank(orgSettings.getDba())){
+        	orgLocations.setDba(orgSettings.getDba());
+        }
+        
+        
+        if(StringUtils.isNotBlank(orgSettings.getGeneratedUserId())){
+        	orgLocations.setGeneratedUserId(orgSettings.getGeneratedUserId().toUpperCase());
+        }
+        
+        if(StringUtils.isNotBlank(orgSettings.getPoEmail())){
+        	orgLocations.setPoEmail(orgSettings.getPoEmail()); 
+        }else {
+        	orgLocations.setPoEmail(null); 
+        }
+        
+        if(StringUtils.isNotBlank(orgSettings.getRemittanceEmail())){
+        	orgLocations.setRemittanceEmail(orgSettings.getRemittanceEmail());
+        }else {
+        	orgLocations.setRemittanceEmail(null);
+        }
+        
+        if(orgSettings.getAverageWorkingHours() != null) {
+        	orgLocations.setAverageWorkingHours(orgSettings.getAverageWorkingHours());
+        }
+        
         if(orgLocations.getCoolingOffPeriod() == null || orgLocations.getCoolingOffPeriod().isEmpty()){
 			orgLocations.setCoolingOffPeriod(Constants.DEFAULT_COOLINGOFF_PERIOD); //to set default cooling-off period to three months
 		}
@@ -156,6 +193,13 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 			
 			if(StringUtils.isNotBlank(clientDTO.getWebSite())){
 				clientOrgLocations.setWebsite(clientDTO.getWebSite());
+			}
+			
+			if (StringUtils.isNotBlank(clientDTO.getAddress())) {
+				clientOrgLocations.setOrgLocationAddress(clientDTO.getAddress());
+			}
+			if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
+				clientOrgLocations.setBillingAddress(clientDTO.getBillingAddress());
 			}
 			
 			if(StringUtils.isNotBlank(clientDTO.getCountry())){
@@ -221,6 +265,8 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 					clientOrgLocations.setTimezone(timezone);
 					clientOrgLocations.setDateFormat("MM-dd-yyyy");
 				} 
+			}else {
+				clientOrgLocations.setTimezone(orgLocations.getTimezone());
 			}
 			
 			String clientCountry = locationCode.substring(Math.max(locationCode.length() - 2, 0));
@@ -306,8 +352,38 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	}
 
 	@Override
+	public List<OrgLocations> getAllRegisteredOrgLocationsForClientProject(List<Long> orgLocationId) throws Exception {
+		return orgLocationsDao.getAllRegisteredOrgLocationsForClientProject(orgLocationId);
+	}
+   @Override
 	public List<OrgLocations> userList(Long orgId) throws Exception
 	{
 		return orgLocationsDao.userList(orgId);
+	}
+
+	@Override
+	public OrgLocations getOrgLocationsByOrgLocationName(String orgLocationName) throws Exception {
+		return orgLocationsDao.getOrgLocationsByOrgLocationName(orgLocationName);
+	}
+
+	@Override
+	public Boolean isTwoStepVerificationEnabledForAllEnrolledOrgsByUserId(Long userId)
+	{
+		return orgLocationsDao.isTwoStepVerificationEnabledForAllEnrolledOrgsByUserId(userId);
+	}
+
+	@Override
+	public List<OrgLocations> getAllRegisteredOrgLocationsExceptLoggedInLocation(Long orgLocationId,Long orgId) throws Exception {
+		return orgLocationsDao.getAllRegisteredOrgLocationsExceptLoggedInLocation(orgLocationId, orgId);
+	}
+
+	@Override
+	public Integer getRegisteredOrgLoctionsCountByOrgId(Long orgId) throws Exception {
+		return orgLocationsDao.getRegisteredOrgLoctionsCountByOrgId(orgId);
+	}
+
+	@Override
+	public List<OrgLocations> getAllOrgLocationsByOrgTypeCompany() throws Exception {
+		return orgLocationsDao.getAllOrgLocationsByOrgTypeCompany();
 	}
 }

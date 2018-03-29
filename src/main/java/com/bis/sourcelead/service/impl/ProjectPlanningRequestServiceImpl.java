@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,6 +61,8 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
 	
 	@Autowired
 	EmailScenarioService emailScenarioService;
@@ -96,6 +99,7 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		if(!isNullOrEmpty(projectUUID)){
 			Projects projects = projectsDao.getProjectByProjectUUID(projectUUID);
 			projectPlanningRequest.setProjectId(projects);
+			projectPlanningRequest.setProjectName(projects.getProjectName());
 		}
 		
 		if(jsonObj.has("description") && !"".equalsIgnoreCase(jsonObj.getString("description"))){
@@ -139,7 +143,7 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 			 }
 		}
 		
-		Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList = getResourceRequestList(jsonObj,loginUser,projectPlanningRequest,resourceRequestIds,orgLocations);
+		Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList = getResourceRequestList(jsonObj,loginUser,projectPlanningRequest,resourceRequestIds,orgLocations,saveType);
 		projectPlanningRequest.setProjectPlanningResourceRequestList(projectPlanningResourceRequestList);
 		projectPlanningRequest.setRequestedResources(projectPlanningResourceRequestList.size()+approvedResources.size());
 		projectPlanningRequest.setAllocatedResources(0);
@@ -197,7 +201,7 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
         globalVarsMap.put("estimatedHours", String.valueOf(projectPlanningRequest.getEstimatedHours()));
         globalVarsMap.put("estimatedBudget", projectPlanningRequest.getEstimatedBudgetCurrency()+" "+projectPlanningRequest.getEstimatedBudget());
         StringBuilder linkBuild = new StringBuilder();
-        globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+        globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
         
         Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList = projectPlanningRequest.getProjectPlanningResourceRequestList();
         globalVarsMap.put("resourceCount", String.valueOf(projectPlanningResourceRequestList.size()));
@@ -226,7 +230,7 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
         StringBuilder notificationLink = new StringBuilder();
         String actionLink = notificationLink.append(sourceleadUrl).append("/").append("requestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
          
-        emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getApproverUser(), orgLocations, notificationScenario);
+        emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getApproverUser(), orgLocations, notificationScenario,new HashMap<String,String>());
 	}
 	
 	
@@ -284,6 +288,7 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		if(!isNullOrEmpty(projectUUID)){
 			Projects projects = projectsDao.getProjectByProjectUUID(projectUUID);
 			projectPlanningRequest.setProjectId(projects);
+			projectPlanningRequest.setProjectName(projects.getProjectName());
 		}
 		if(jsonObj.has("description") && !"".equalsIgnoreCase(jsonObj.getString("description"))){
 			projectPlanningRequest.setDescription(jsonObj.getString("description"));
@@ -325,7 +330,7 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 			 resourceRequestIds = projectPlanningNewResourceRequestDao.getProjectPlanningNewResourceRequestIdsByRequestId(projectPlanningRequest.getId());
 		}
 		
-		Set<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList = getNewResourceRequestList(jsonObj,loginUser,projectPlanningRequest,resourceRequestIds,orgLocations);
+		Set<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList = getNewResourceRequestList(jsonObj,loginUser,projectPlanningRequest,resourceRequestIds,orgLocations,saveType);
 		projectPlanningRequest.setProjectPlanningNewResourceRequestList(projectPlanningNewResourceRequestList);
 //		projectPlanningRequest.setRequestedResources(projectPlanningNewResourceRequestList.size());
 		projectPlanningRequest.setAllocatedResources(0);
@@ -370,10 +375,10 @@ public void sendMailToNewResourceRequestApprover(ProjectPlanningRequest projectP
         globalVarsMap.put("approverName", projectPlanningRequest.getApproverName());
         globalVarsMap.put("loginUserName", loginUser.getFullName());
         globalVarsMap.put("loginOrgName", orgLocations.getOrgLocationName());
-        globalVarsMap.put("estimatedHours", String.valueOf(projectPlanningRequest.getEstimatedHours()));
-        globalVarsMap.put("estimatedBudget", projectPlanningRequest.getEstimatedBudgetCurrency()+" "+projectPlanningRequest.getEstimatedBudget());
+        globalVarsMap.put("estimatedHours", String.valueOf(BigDecimal.valueOf(projectPlanningRequest.getEstimatedHours())));
+        globalVarsMap.put("estimatedBudget", projectPlanningRequest.getEstimatedBudgetCurrency()+" "+BigDecimal.valueOf(projectPlanningRequest.getEstimatedBudget()));
         StringBuilder linkBuild = new StringBuilder();
-        globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+        globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
         
         Set<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList = projectPlanningRequest.getProjectPlanningNewResourceRequestList();
         globalVarsMap.put("resourceCount", String.valueOf(projectPlanningNewResourceRequestList.size()));
@@ -400,9 +405,9 @@ public void sendMailToNewResourceRequestApprover(ProjectPlanningRequest projectP
        
         emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
         StringBuilder notificationLink = new StringBuilder();
-        String actionLink = notificationLink.append(sourceleadUrl).append("/").append("newRequestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
+        String actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewNewResourceRequestDashborad?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
          
-        emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getApproverUser(), orgLocations, notificationScenario);
+        emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getApproverUser(), orgLocations, notificationScenario,new HashMap<String,String>());
 	}
 	
 private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList) throws Exception{
@@ -456,7 +461,7 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 		}else{
 			payRate = "--";
 		}
-		
+	 
 	 tempHTML = tempHTML+" <tr align='center'>";
 	 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top; vertical-align:top;'>"+planningResourceRequest.getRoleName()+"</td>";
 	 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>"+planningResourceRequest.getNoOfResource()+"</td>";
@@ -481,8 +486,18 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 	 tempHTML = tempHTML+"			<div style='width:65px; text-align:center;'>"+endDate+"</div>";
 	 tempHTML = tempHTML+"	</td>";
 	 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>"+planningResourceRequest.getConsultingType()+"</td>";
-	 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>"+planningResourceRequest.getEstimatedHours()+"</td>";
-	 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>"+planningResourceRequest.getEstimatedBudget()+"</td>";
+	 if(planningResourceRequest.getEstimatedHours() != null) {
+		 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>"+BigDecimal.valueOf(planningResourceRequest.getEstimatedHours())+"</td>";
+	 }else {
+		 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>--</td>";
+
+	 }
+	 if(planningResourceRequest.getEstimatedBudget() != null) {
+		 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>"+BigDecimal.valueOf(planningResourceRequest.getEstimatedBudget())+"</td>";
+	 }else {
+		 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>--</td>";
+
+	 }
 	 tempHTML = tempHTML+"	</tr>";
 	 }
 	 tempHTML = tempHTML+"</tbody>";
@@ -491,7 +506,7 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 	 return tempHTML;
 }
 
-	private Set<ProjectPlanningResourceRequest> getResourceRequestList(JSONObject jsonObj, User loginUser,ProjectPlanningRequest projectPlanningRequest,List<Long> resourceRequestIds,OrgLocations orgLocations) throws Exception {
+	private Set<ProjectPlanningResourceRequest> getResourceRequestList(JSONObject jsonObj, User loginUser,ProjectPlanningRequest projectPlanningRequest,List<Long> resourceRequestIds,OrgLocations orgLocations,String saveType) throws Exception {
 		
 		 Set<ProjectPlanningResourceRequest> resourceRequestSet = new HashSet<>();
 		 List<Long> updatedResourceRequests = new ArrayList<Long>();
@@ -593,6 +608,13 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 					 resourceRequest.setEstimatedBudget(null);
 				 }
 				 
+				 
+			    if(!isNullOrEmpty(saveType) && saveType.equalsIgnoreCase("Draft")){
+					 resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_DRAFT);
+				}else{
+					 resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL);
+				}
+				 
 				 resourceRequest.setOrgLocationId(orgLocations);
 				 resourceRequest.setProjectPlanningRequestId(projectPlanningRequest);
 				 resourceRequest.setStatus(Constants.RECORD_ACTIVE);
@@ -614,7 +636,7 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 	}
 
 	
-	private Set<ProjectPlanningNewResourceRequest> getNewResourceRequestList(JSONObject jsonObj, User loginUser,ProjectPlanningRequest projectPlanningRequest,List<Long> resourceRequestIds, OrgLocations orgLocations) throws Exception {
+	private Set<ProjectPlanningNewResourceRequest> getNewResourceRequestList(JSONObject jsonObj, User loginUser,ProjectPlanningRequest projectPlanningRequest,List<Long> resourceRequestIds, OrgLocations orgLocations,String saveType) throws Exception {
 		 Set<ProjectPlanningNewResourceRequest> resourceRequestSet = new HashSet<>();
 		 List<Long> updatedNewResourceRequests = new ArrayList<Long>();
 	     //SimpleDateFormat format = orgLocations.getLocFullFormDateFormatter();
@@ -701,6 +723,13 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 					 resourceRequest.setEstimatedBudgetCurrency(jsonObj.getString("budgetCurrency"+i));
 				 }
 				 
+
+				if(!isNullOrEmpty(saveType) && saveType.equalsIgnoreCase("Draft")){
+					resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_DRAFT);
+				}else{
+					resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL);
+				}
+				 
 				 resourceRequest.setProjectPlanningRequestId(projectPlanningRequest);
 				 resourceRequest.setStatus(Constants.RECORD_ACTIVE);
 				 resourceRequest.setCreatedBy(loginUser);
@@ -738,9 +767,9 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 	}
 
 	@Override
-	public List<ProjectPlanningRequest> getProjectPlanningRequestByApproverId(Long approverUserId, Long orgLocationId,String requestStatus)
+	public List<ProjectPlanningRequest> getProjectPlanningRequestByApproverId(Long approverUserId, Long orgLocationId,String requestStatus,String userRole)
 			throws Exception {
-		return projectPlanningRequestDao.getProjectPlanningRequestByApproverId(approverUserId, orgLocationId,requestStatus);
+		return projectPlanningRequestDao.getProjectPlanningRequestByApproverId(approverUserId, orgLocationId,requestStatus,userRole);
 	}
 
 	@Override
@@ -751,8 +780,8 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 
 	@Override
 	public List<ProjectPlanningRequest> getProjectPlanningRequestByApproverIdAndOrgLocationId(Long approverUserId,
-			Long orgLocationId) throws Exception {
-		return projectPlanningRequestDao.getProjectPlanningRequestByApproverIdAndOrgLocationId(approverUserId, orgLocationId);
+			Long orgLocationId,String userRole) throws Exception {
+		return projectPlanningRequestDao.getProjectPlanningRequestByApproverIdAndOrgLocationId(approverUserId, orgLocationId,userRole);
 	}
 
 }

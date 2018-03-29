@@ -101,6 +101,8 @@ public interface UserDao {
 	
 	public List<User> getTabAccessOwnersByOrgLocationIdAndTabId(Long orgLocationsId,Long tabId) throws Exception;
 	
+	public User getTabAccessOwnersByOrgLocationIdEmailAndTabId(Long orgLocationsId, String email, Long tabId) throws Exception;
+	
 	/**
 	 * @author Prasad salina
 	 * @param currentApproverId
@@ -124,6 +126,8 @@ public interface UserDao {
 	
 	User getUserByEmailAndUserType(String email,String userType) throws Exception;
 	
+	User getUserByEmail(String email) throws Exception;
+	
 	User getUserByUserName(String userName) throws Exception;
 
 	List<User> getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(Long orgLocationsId, Long tabId,
@@ -137,5 +141,13 @@ public interface UserDao {
 	public LinkedHashSet<User> getUsersListAsReoprtingManagersByOrgLocationIdHavingTabAccess(Long orgLocationsId,User user,Long tabId) throws Exception;
 	
 	public List<User> getUsersByOrgLocationIdExceptLoggedInUser(Long orgLocationsId,Long userId) throws Exception;
+	
+	public List<User> getUsersHierarchyListByOrgLocationIdAndRoleIdAndNoCurrentUser(Long userId, Long roleId, Long orgLocationsId) throws Exception;
+	
+	List<User> getUserListByRoleActionIdAndOrgLocationId(Long roleActionId,Long orgLocationId) throws Exception;
+
+	User getUserByVerficationUUID(String token);
+	
+	User getUserByUserCodeAndOrgLocationsId(String userCode, Long orgLocationsId) throws Exception;
 
 }

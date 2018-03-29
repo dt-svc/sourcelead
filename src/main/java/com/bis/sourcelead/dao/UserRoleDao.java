@@ -4,6 +4,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import com.bis.sourcelead.dto.ConnectionsDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -36,8 +40,11 @@ public interface UserRoleDao {
 	
 	public Boolean isUserAdmin(Long userId);
 
+	public List<UserRole> getAllUsersBasedOrgLocationId(Long orgLocationId) throws Exception;
 
 	public UserRole getUserDetailsByEmailAndLocationId(String email,Long locationId) throws Exception;
+	
+	public UserRole getUserRoleById(Long userRoleId) throws Exception;
 	
 	/**To get user role by userid and locationId
 	 * @author Prasad salina
@@ -46,6 +53,9 @@ public interface UserRoleDao {
 	 * @return
 	 * @throws Exception
 	 */
+	
+	public UserRole getUserRoleWithoutAdminsByUserIdAndLocationId(Long userId,Long locationId) throws Exception;
+	
 	public UserRole getUserRoleByUserIdAndLocationId(Long userId,Long locationId) throws Exception;
 	
 	public boolean isUserActive(Long userId) throws Exception;
@@ -84,9 +94,11 @@ public interface UserRoleDao {
 	 * @purpose : Email JobScheduler(For to intimate unfilled timesheets)
 	 * 
 	 */
-	public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
+	public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency,Long locationId) throws Exception;
 	
-	public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatusByApproverUserId(String invoiceFrequency,Long approverUserId) throws Exception;
+	public HashSet<ProjectMembers> getAllProjectMembersByProjectIdForMissingTSReports(Long projectId,Long locationId) throws Exception;
+	
+	public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatusByApproverUserId(String invoiceFrequency,Long approverUserId,Long locationId) throws Exception;
 	
 	public HashSet<UserRole> getAllUserTimeSheetSubmissionStatusCurrentWeek();
 	
@@ -103,4 +115,13 @@ public interface UserRoleDao {
 	public UserRole getUserDetailsByUserIdAndLocationIdAndUserType(Long userId,Long locationId,String userType) throws Exception;
 	
 	UserRole getIsProfessionalOrRecruiterExistsWithEmailAndUserType(String email,String userType) throws Exception;
+
+	public UserRole getUserRoleByVerficationUUID(String uuid);
+	
+	List<ConnectionsDTO> getUserListForConnections(String searchByName,Integer offSet,Long userId) throws Exception;
+	
+	ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId(UserDTO userDTO,UserRoleDTO userRoleDTO,Long locationId,Long userId,String loginUserRole,String userCode,List<Long> orgRelationsList,List<Long> managerUserIds,List<Long> teamsList,List<Long> departmentsList) throws Exception;
+	
+	List<User> getAllReportingManagersAssignedToAssociates(Long orgLocationId) throws Exception;
+
 }

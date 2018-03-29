@@ -2,8 +2,11 @@ package com.bis.sourcelead.service.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -12,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -21,7 +26,6 @@ import javax.mail.Authenticator;
 import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -31,6 +35,8 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,12 +52,15 @@ import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailNotification;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SubmissionXls;
+import com.bis.sourcelead.entity.UserMailUnsubscribe;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.EmailMessageService;
 import com.bis.sourcelead.service.EmailNotificationService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionXlsService;
+import com.bis.sourcelead.service.UserMailUnsubscribeService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 /**
@@ -95,6 +104,12 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 
 	@Autowired
 	OrgLocationService orgLocationService;
+	
+	@Autowired
+	UserService userService;
+	
+	@Autowired
+	UserMailUnsubscribeService userMailUnsubscribeService;
 
 	@Autowired
 	@Lazy
@@ -123,47 +138,77 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 
 	@Override
 	@Async
-	public void sendEmail(EmailMessage emailMessage, Long locationsId, InternetAddress[] iAdressArray,
-			List<EmailAttachment> attachmentList) throws Exception {
-
+	public void sendEmail(EmailMessage emailMessage, Long locationsId, InternetAddress[] iAdressArray, List<EmailAttachment> attachmentList) throws Exception
+	{
 		if (emailMessage != null) {
-			Long emailNotificationId = null;
-
-			// if non prod and send email in non prod is true then call or prod
-			if (environment.equalsIgnoreCase("prod")) {
-				OrgLocations orgLocations = orgLocationService.getOrgLocations(locationsId);
-				if (orgLocations != null && orgLocations.getFromEmail() != null
-						&& orgLocations.getFromEmailPassword() != null) {
-					emailMessage.setUserName(defaultFromEmailAddressForProd);
-					emailMessage.setPassword(defaultFromEmailAddressPwdForProd);
-				} else {
-					emailMessage.setUserName(defaultFromEmailAddress);
-					emailMessage.setPassword(defaultFromEmailAddressPwd);
-					logger.info(
-							"######## if production email/password not correct then email sent from default email address ###########");
-				}
-				emailNotificationId = storeEmailInfoInDB(emailMessage, iAdressArray);
-				sendMessage(emailMessage, iAdressArray, attachmentList);
-			} else {
-				if (sendMailForNonProd.equalsIgnoreCase("true")) {
-					emailMessage.setUserName(defaultFromEmailAddress);
-					emailMessage.setPassword(defaultFromEmailAddressPwd);
-					emailNotificationId = storeEmailInfoInDB(emailMessage, iAdressArray);
-					sendMessage(emailMessage, iAdressArray, attachmentList);
+			String tabDivGroup = "";
+			// the pattern we want to search for
+			Pattern p = Pattern.compile("<tabIdDiv>(\\S+)</tabIdDiv>");
+			Matcher m = p.matcher(emailMessage.getMessageBody());
+			// if we find a match, get the group
+			if (m.find()) {
+				// get the matching group
+				tabDivGroup = m.group(1);
+			}
+			
+			for (InternetAddress toAddressEmail : iAdressArray) {
+				UserMailUnsubscribe unsubscriptionUser = userMailUnsubscribeService.getUserMailUnsubscriptionByUserEmail(toAddressEmail.getAddress());
+				if (unsubscriptionUser != null && StringUtils.isNotEmpty(unsubscriptionUser.getTabIds())) {
+					String[] tabIdsArray = unsubscriptionUser.getTabIds().split(",");
+					if (StringUtils.isNotEmpty(tabDivGroup)) {
+						if(ArrayUtils.contains( tabIdsArray, tabDivGroup)) {
+							iAdressArray = (InternetAddress[]) ArrayUtils.removeElement(iAdressArray, toAddressEmail);
+						}else if(ArrayUtils.contains( tabIdsArray, "0") && !ArrayUtils.contains( Constants.UNSUBSCRIPTION_TABID_LISTED, tabDivGroup)) {
+							iAdressArray = (InternetAddress[]) ArrayUtils.removeElement(iAdressArray, toAddressEmail);
+						}
+					}else if(ArrayUtils.contains( tabIdsArray, "0")) {
+						iAdressArray = (InternetAddress[]) ArrayUtils.removeElement(iAdressArray, toAddressEmail);
+					}
 				}
 			}
-
-			updateEmailInfoWithDeliveryStatus(emailNotificationId);
+			sendEmailCommon(emailMessage, locationsId, iAdressArray, attachmentList);
 		}
-
 	}
-
+	
+	
+	private void sendEmailCommon(EmailMessage emailMessage, Long locationsId, InternetAddress[] iAdressArray, List<EmailAttachment> attachmentList) throws Exception
+	{
+		Long emailNotificationId = null;
+		// if non prod and send email in non prod is true then call or prod
+		if (environment.equalsIgnoreCase("prod")) {
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(locationsId);
+			
+			if (orgLocations != null && orgLocations.getFromEmail() != null
+					&& orgLocations.getFromEmailPassword() != null) {
+				emailMessage.setUserName(defaultFromEmailAddressForProd);
+				emailMessage.setPassword(defaultFromEmailAddressPwdForProd);
+			}
+			else {
+				emailMessage.setUserName(defaultFromEmailAddress);
+				emailMessage.setPassword(defaultFromEmailAddressPwd);
+				logger.info("######## if production email/password not correct then email sent from default email address ###########");
+			}
+			emailNotificationId = storeEmailInfoInDB(emailMessage, iAdressArray);
+			sendMessage(emailMessage, iAdressArray, attachmentList);
+		}
+		else {
+			if (sendMailForNonProd.equalsIgnoreCase("true")) {
+				emailMessage.setUserName(defaultFromEmailAddress);
+				emailMessage.setPassword(defaultFromEmailAddressPwd);
+				emailNotificationId = storeEmailInfoInDB(emailMessage, iAdressArray);
+				sendMessage(emailMessage, iAdressArray, attachmentList);
+			}
+		}
+		updateEmailInfoWithDeliveryStatus(emailNotificationId);
+	}
+	
 	private void sendMessage(EmailMessage emailMessage, InternetAddress[] iAdressArray,
 			List<EmailAttachment> attachmentList) throws Exception {
 
 		Properties props = new Properties();
 		final String username = emailMessage.getUserName();
 		final String password = emailMessage.getPassword();
+
 		props.put("mail.smtp.host", "secure.emailsrvr.com");
 		props.put("mail.smtp.localhost", "localhost");
 		props.put("mail.stmp.user", username);
@@ -174,6 +219,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.port", "465");
+
 
 		Session session = Session.getDefaultInstance(props, new Authenticator() {
 			@Override
@@ -465,17 +511,18 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 					.getResumeIdsByRequirementSubmissionId(tempSubmissionIds);
 			if (submissionResumeIds != null && !submissionResumeIds.isEmpty()) {
 				try {
-					List<CandidateResumes> candidateResumesList = candidateResumesService
-							.getCandidateResumesByIds(submissionResumeIds);
+					List<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesByIds(submissionResumeIds);
 					if (candidateResumesList != null && !candidateResumesList.isEmpty()) {
-						int i = 0;
 						for (CandidateResumes wte : candidateResumesList) {
-							EmailAttachment emailAttachment = new EmailAttachment();
-							//emailAttachment.setDocFile(wte.getDocFile());
-							emailAttachment.setName(wte.getFileName());
-							emailAttachment.setType(wte.getFileContentType());
-							i++;
-							emailAttachmentList.add(emailAttachment);
+							File file = new File(wte.getFileURL());
+							if(file.exists()) {
+								EmailAttachment emailAttachment = new EmailAttachment();
+								byte[] bytesArray = getByteArray(file);
+								emailAttachment.setDocFile(bytesArray);
+								emailAttachment.setName(wte.getFileName());
+								emailAttachment.setType(wte.getFileContentType());
+								emailAttachmentList.add(emailAttachment);	
+							}
 						}
 					}
 				} catch (Exception e) {
@@ -484,6 +531,40 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			}
 		}
 		return emailAttachmentList;
+	}
+
+	/**
+	 * Get the bytes from file
+	 * @param file
+	 * @return byte
+	 * @throws IOException
+	 */
+	private byte[] getByteArray(File file) throws IOException {
+		ByteArrayOutputStream ous = null;
+		InputStream ios = null;
+		try {
+			byte[] buffer = new byte[4096];
+			ous = new ByteArrayOutputStream();
+			ios = new FileInputStream(file);
+			int read = 0;
+			while ((read = ios.read(buffer)) != -1) {
+				ous.write(buffer, 0, read);
+			}
+		} finally {
+			try {
+				if (ous != null)
+					ous.close();
+			} catch (IOException e) {
+			}
+
+			try {
+				if (ios != null)
+					ios.close();
+			} catch (IOException e) {
+			}
+		}
+		return ous.toByteArray();
+
 	}
 
 	private MimeMultipart createResumeZipFile(String[] submissionIds) throws Exception {
@@ -497,21 +578,24 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 					.getResumeIdsByRequirementSubmissionId(tempSubmissionIds);
 			if (submissionResumeIds != null && !submissionResumeIds.isEmpty()) {
 				try {
-					List<CandidateResumes> candidateResumesList = candidateResumesService
-							.getCandidateResumesByIds(submissionResumeIds);
+					List<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesByIds(submissionResumeIds);
 					if (candidateResumesList != null && !candidateResumesList.isEmpty()) {
 						ByteArrayOutputStream zipBytes = new ByteArrayOutputStream();
 						ZipOutputStream outZip = new ZipOutputStream(zipBytes);
 
 						int i = 0;
 						for (CandidateResumes wte : candidateResumesList) {
-							StringBuilder sb = new StringBuilder();
-							String st = wte.getFileName();
-							String lastIndex = st.substring(0, st.lastIndexOf("."));
-							String newFilename = (sb.append(lastIndex).append("-").append(i)
-									.append(st.substring(st.lastIndexOf("."))).toString());
-							//addToZipFile(wte.getDocFile(), outZip, newFilename);
-							i++;
+							File file = new File(wte.getFileURL());
+							if(file.exists()) {
+								StringBuilder sb = new StringBuilder();
+								String st = wte.getFileName();
+								String lastIndex = st.substring(0, st.lastIndexOf("."));
+								String newFilename = (sb.append(lastIndex).append("-").append(i).append(st.substring(st.lastIndexOf("."))).toString());
+								byte[] docFile = getByteArray(file);
+								addToZipFile(docFile, outZip, newFilename);
+								i++;
+							}
+							
 						}
 
 						outZip.closeEntry();

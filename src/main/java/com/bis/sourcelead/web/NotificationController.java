@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.service.NotificationsService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -33,6 +36,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  */
 
 @Controller
+@RequestMapping("/app")
 public class NotificationController {
 
 	@Value("${sourceleadUrl}")
@@ -43,6 +47,9 @@ public class NotificationController {
 	
 	@Autowired
 	TimeZoneService timeZoneService;
+	
+	@Autowired
+	OrgSpocService orgSpocService;
 	
 	/*
 	 * To change the notification mode as read
@@ -105,6 +112,17 @@ public class NotificationController {
 				nl.setNotificationLastName(nl.getNotificationFrom().getLastName());
 				nl.setNotificationFormId(nl.getNotificationFrom().getId().toString());
 				nl.setNotificationImage(nl.getNotificationFrom().getFileUrl());
+				if(StringUtils.isNotBlank(nl.getSpocUUID())){
+					OrgSpoc orgSpoc = orgSpocService.getOrgSpocByUUID(nl.getSpocUUID());
+					nl.setSpocInvitationStatus(orgSpoc.getInvitationStatus());
+					nl.setOrgRelationUUID(orgSpoc.getOrgRelations().getUUID());
+					String responderType = "";
+					if(userId.longValue() == orgSpoc.getClientUser().getId().longValue())
+						responderType = "vendor";
+					else
+						responderType = "client";
+					nl.setResponderType(responderType);
+				}
 			}
 		}
 		resultJson = commonUtil.toJSON(notificationsList);

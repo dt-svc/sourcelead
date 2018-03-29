@@ -6,7 +6,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<link rel="stylesheet" href="resources/css/style.css" />
+<link rel="stylesheet" href="/resources/css/style.css" />
 <style type="text/css">
 
 .timesheet_head ul.nav-tabs, .timesheet_head ul.invoiceHdr  {
@@ -144,7 +144,7 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			                    	                                                                                                                                                                                           ';
  result = result + '			                      <li class="dropdown"><div class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></div>';
  result = result + '			                        <div class="dropdown-menu bootstrap_dropdownMenu">                                                                                                                                              ';
- result = result + '			                          <ul>                                                                                                                                                                                     ';
+ result = result + '			                          <ul  class="paddingLi">                                                                                                                                                                                     ';
  result = result + '			                            <li>                                                                                                                                                                                   ';
  result = result + '			                              <input type="checkbox" value="DRAFT" name="invoiceStatus" id="" onclick="getInvoiceListBasedonVendor('+orgRelationId+','+vendorLocationId+');" >                                                                                        ';
  result = result + '			                              <label for="onboard1">Draft</label>                                                                                                                                                  ';
@@ -175,7 +175,7 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			                                                                                                                                                                                                                   ';
  result = result + '			                      <li class="dropdown"><div class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Payment</span><i class="glyphicon glyphicon-play"></i></div>';
  result = result + '			                        <div class="dropdown-menu bootstrap_dropdownMenu">                                                                                                                                              ';
- result = result + '			                          <ul>                                                                                                                                                                                     ';
+ result = result + '			                          <ul  class="paddingLi">                                                                                                                                                                                     ';
  result = result + '			                            <li>                                                                                                                                                                                   ';
  result = result + '			                              <input type="checkbox" id="" value="Paid" name="paymentStatus" onclick="getInvoiceListBasedonVendor('+orgRelationId+','+vendorLocationId+');">                                                                                          ';
  result = result + '			                              <label for="onboard3">Paid</label>                                                                                                                                                   ';
@@ -198,7 +198,7 @@ result = result  +'    <div class="billingArea"> ';
  													'<sec:authorize access="hasAnyRole(\'ROLE_ADD_BILL\')"> ';
  result = result + '			                      <li><a href="javascript:void(0)" class="anchorTag" title="Create Bill"  onclick="createBill('+orgRelationId+');"> <i class="fa fa-plus paddingRight"></i>Create Bill</a>&nbsp;&nbsp;&nbsp;|</li>        ';
  													'</sec:authorize>';
- result = result + '			                      <li><a href="javascript:void(0)" class="" title="Generate Automatic Invoice" onclick="generateAutomaticInvoice();"> <i class="fa fa-plus paddingRight"></i>Generate Automatic Invoice</a>&nbsp;&nbsp;&nbsp;|</li>';
+ result = result + '			                      <li><a href="javascript:void(0)" class="" title="Generate Automatic Bill" onclick="generateAutomaticInvoice();"> <i class="fa fa-plus paddingRight"></i>Generate Automatic Bill</a>&nbsp;&nbsp;&nbsp;|</li>';
  result = result + '			                      <div class="clearfix"></div>                                                                                                                                                                 ';
  result = result + '			                    </ul>                                                                                                                                                                                          ';
  result = result + '			                    <div class="clearfix"></div>                                                                                                                                                                   ';
@@ -303,7 +303,7 @@ result = result  +'    <div class="billingArea"> ';
 			result = result +'	<table id="vendorInvoiceListPagination">                                                                                                         ';
 			result = result +'     <thead>                            ';
 			result = result +'       <tr>                             ';
-			result = result +'         <th>Bill ID</th>                    ';
+			result = result +'         <th>Reference ID</th>                    ';
 			result = result +'         <th>Vendor Contact</th>               ';
 			result = result +'         <th>Invoice Date <br>(<small class="custom-small">'+billingVendorDatePattern+'</small>)</th>               ';
 			result = result +'         <th>Total</th>                 ';
@@ -381,7 +381,7 @@ result = result  +'    <div class="billingArea"> ';
 					}
 					if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked"){
 						'<sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')">';
-						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
+						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/app/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
 						'</sec:authorize>';
 					}
 					
@@ -432,13 +432,13 @@ result = result  +'    <div class="billingArea"> ';
 					
 					if(report.invoiceType=="Payables" && report.invoiceParentId != null && report.invoiceParentId != '' && report.invoiceParentId != "undefined"){
 						if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
-							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
+							result = result +'           <span class="successBtn primary pull-left" title="Paid">Paid</span> </td>          ';	
 						}else{
 							if(report.invoiceStatus == "Accepted"){
-								result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>';
+								result = result +'           <span class="receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>';
 							}else{
 								if(report.invoiceStatus == "Rejected"){
-									result = result +'           <span class="text-danger successBtn primary pull-left" >Rejected</span> </td>          ';	
+									result = result +'           <span class="text-danger successBtn primary pull-left">Rejected</span> </td>          ';	
 								}else{
 									result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
 								}
@@ -448,9 +448,9 @@ result = result  +'    <div class="billingArea"> ';
 						
 					}else{
 						if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
-							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
+							result = result +'           <span class="successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
 						}else{
-							result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>          ';	
+							result = result +'           <span class="receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>          ';	
 						}
 						
 						
@@ -635,10 +635,14 @@ function vendorInvoicePagination(){
             }
         ],
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 8
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -692,28 +696,38 @@ function vendorInvoicePagination(){
 		    	 var result = '';
 			        result = result +'<div class="addcandidate-popup">';
 				  result = result +'  <div class="row">';
-				  result = result +'    <div class="col-md-offset-2 col-md-10"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()">&times;</a>';
-				  result = result +'    <div class="col-md-5 mt25">';
+				  result = result +'    <div class="col-md-offset-0 col-md-12"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()">&times;</a>';
+				  result = result +'    <div class="col-md-4 mt25">';
 				  result = result +'      <div class="small-widget bgGreen">';
 				  result = result +'          <a onClick="createVendorInvoice('+orgRelationId+',\'custom\');" title="Create custom bill">';
 				  result = result +'        <div class="clearfix mb10"> ';
-				  result = result +'            <img src="resources/images/invoice_icon.png" class="text-center" alt="create_receivables">';
+				  result = result +'            <img src="/resources/images/invoice_icon.png" class="text-center" alt="create_receivables">';
 				  result = result +'        </div>';
 				  result = result +'        <strong class="clearfix">Custom</strong></a>';
 				  result = result +'        </div>';
 				  result = result +'    </div>';
-				  result = result +'      <div class="col-md-5 mt25">';
+				  result = result +'      <div class="col-md-4 mt25">';
 				  result = result +'        <div class="small-widget bg-yellow"> ';
 				  result = result +'        <a onClick="createVendorInvoice('+orgRelationId+',\'project\');" title="Create project based bill">';
 				  result = result +'          <div class="clearfix mb10">';
 				  result = result +'              <!--<i class="fa fa-usd fa-3x"></i>-->';
-				  result = result +'              <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">';
+				  result = result +'              <img src="/resources/images/invoice_icon.png" class="text-center" alt="Invoice">';
 				  result = result +'          </div>';
 				  result = result +'          <strong class="clearfix">Project Based </strong> </a> </div>';
+				  result = result +'      </div>';
+				  result = result +'      <div class="col-md-4 mt25">';
+				  result = result +'        <div class="small-widget bg-purple"> ';
+				  result = result +'        <a onClick="createVendorInvoice('+orgRelationId+',\'other\');" title="Create Other Bill">';
+				  result = result +'          <div class="clearfix mb10">';
+				  result = result +'              <!--<i class="fa fa-usd fa-3x"></i>-->';
+				  result = result +'              <img src="/resources/images/invoice_icon.png" class="text-center" alt="Invoice">';
+				  result = result +'          </div>';
+				  result = result +'          <strong class="clearfix">Other </strong> </a> </div>';
 				  result = result +'      </div>';
 				  result = result +'        </div>';
 				  result = result +'  </div>';
 				  result = result +'</div>';
+				  
 			        $("#createBillDiv").empty();
 			        $("#createBillDiv").append(result);
 			        $('.addcandidate-popup').fadeIn(200);
@@ -728,6 +742,8 @@ function vendorInvoicePagination(){
 		    	   var sourceleadUrl = '${sourceleadUrl}';
 		    	   if(type == 'project'){
 		    			window.location.href = sourceleadUrl + "/createInvoiceProjectPayableBased?&orgRelationId="+orgRelationId;
+		    	   }else if(type == 'other'){
+		    			window.location.href = sourceleadUrl + "/createExpensesPayableBill?&orgRelationId="+orgRelationId;
 		    	   }else{
 		    		   window.location.href = sourceleadUrl + "/createPayables?&orgRelationId="+orgRelationId;
 		    	   }
@@ -953,7 +969,7 @@ function removeErr(){
 </script>  
   <!-- modal pop -->
 <div class="modal-backdrop" style="display: none"></div>
-<div id="recvPymntpop" class="modal" style="display: none;">
+<div id="recvPymntpop" class="modal zInd" style="display: none;">
    <div id="receivePaymentId" ></div>
 </div>
 <!-- modal pop --> 
@@ -1007,7 +1023,7 @@ function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount){
 		 result = result +'      <li onclick="downloadInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
 		 '</sec:authorize>'
 		 
-		 result = result +'      <li onclick="linkPayableInvoice('+id+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</li>';
+		 result = result +'      <li onclick="linkPayableInvoice('+id+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Bill</li>';
 	     result = result +'    </ul>';
     	 $("#popupDiv"+id+"").append(result);
     	 showMenu();

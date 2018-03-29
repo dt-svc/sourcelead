@@ -25,6 +25,8 @@ function prepareEmployeeList(url){
 	
 	 $("#employeeListDiv").removeAttr("style");
  	 $("#employeeListDiv").empty();
+ 	$("#payrollCycleDiv").find('p.jquery_form_error_message').remove();
+	$('#payrollCycle').val('').trigger("chosen:updated");
  	 var result = "";
  	result = result +" <div class='modal-header'>";
  	result = result +" <div class='remove_search'>";
@@ -295,7 +297,7 @@ function employeesPagination(url){
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
     $("#employeesListTablePagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 

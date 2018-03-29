@@ -7,8 +7,8 @@
 	uri="http://www.springframework.org/security/tags"%>
 
 
-<script src="resources/js/jquery.mask.min.js"></script>
-<script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
+<script src="/resources/js/jquery.mask.min.js"></script>
+<script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
 
 <style type="text/css">
 .inline_field, .inline_field:focus {
@@ -33,6 +33,10 @@ $(document).ready(function(){
 		loadInvoiceDetails(invoiceUUID);
 	}else{
 		getClients();
+		$("#invoiceId").val("");
+		$("#paymentFrequency").val("");
+		$("#paymentFrequency").trigger("chosen:updated");
+		$("#dueDate").val("");
 	}
 
 	
@@ -57,9 +61,14 @@ function errRemoveClientContact(){
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Custom Invoice</h2>
+			<h2>Client Invoice</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/invoiceList'/>">Receivable List</a> &raquo; Custom Based Invoice</div>
+		<sec:authorize access="hasAnyRole('ROLE_ADD_NEW_CONTRACT')">
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/invoiceList'/>">Invoice List</a> &raquo; Client Invoice</div>
+	</sec:authorize>
+	<div class="success_pop" id="selector1" style="display: none;">
+ 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+       </div>
 	</section>
 	<div class="content-area content-new clearfix">
 		<div id="invoiceLoading"></div>
@@ -69,26 +78,40 @@ function errRemoveClientContact(){
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 				           <div class="form-group">
 				              <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
-				              <div class="col-md-9 select-field" id="errClient">
+				              <div class="col-md-9 select-field chooRadius" id="errClient">
+               					<div class="input-group col-md-10 pull-left">				              
 
 				                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();getPaymentTerms();" data-validation="required" field-name="Client">             
 				                </select>
-				              </div>
+				                <span class="input-group-addon cursorPointer bg-blue" onclick="getClients();createInvoiceEmptyClientContact();"><i class="fa fa-refresh "></i></span>
+				                </div>
+				                 <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
+                                 <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
+                                 </sec:authorize>
+				               </div> 
 				              <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
 				                <input type="hidden" name="clientCurrency" id="clientCurrency">
 				            </div>
 				             <div class="form-group">
 				              <label class="col-md-3">Client Contact<span class="text-danger">*</span></label>
-				              <div class="col-md-9" id="errClientContact">
+				              <div class="col-md-9 select-field chooRadius" id="errClientContact">
+				              	<div class="input-group col-md-10 pull-left">	
 				                  <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact" onchange="errRemoveClientContact();">
 				                  </select>
+				                    <span class="input-group-addon cursorPointer bg-blue" onclick="getClientContacts();"><i class="fa fa-refresh "></i></span>
 				              </div>
+				               <span class="col-md-2 noPad clearfix" onclick="selectedClient();">
+			                             <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
+			                              <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+			                             </sec:authorize>
+		             	</span>
 				            </div>
+				              </div>
 						<div class="form-group">
 							<label class="col-md-3">Invoice Id<span
 								class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9">
-								<input type="text" class="form-control" id="invoiceId"
+							<div class="col-md-9" id="invoiceIdDiv">
+								<input type="text" class="form-control" id="invoiceId" onkeyup="validateInvoiceId();"
 									name="invoiceId" value="" placeholder="Invoice Id"
 									data-validation="required" field-name="Invoice Id">
 							</div>
@@ -117,8 +140,8 @@ function errRemoveClientContact(){
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3" >Due Date<span class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9" id="errDuedate">
+							<label class="col-md-3" >Due Date<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='The deadline for the invoice payment'></i></label>
+							<div class="col-md-9 " id="errDuedate">
 								<input type="text" class="form-control calendar" id="dueDate"
 									name="dueDate" value="" placeholder="Due Date"
 									readonly data-validation="required" field-name="Due Date">
@@ -154,7 +177,7 @@ function errRemoveClientContact(){
 						<button type="button" id="sendButtonId" class="btn btn-sm btn-success ml"
 							onclick="saveInvoice('SENT')">Send</button>
 						<button type="button" class="btn btn-sm btn-default ml"
-							onClick="javascript:window.location.href = '<c:url value='/invoiceList'/>'">Cancel</button>
+							onClick="javascript:window.location.href = '<c:url value='${appPath}/invoiceList'/>'">Cancel</button>
 					</div>
 				</footer>
 			</div>
@@ -181,9 +204,9 @@ function errRemoveClientContact(){
 </div>
 
 <div id="divTaskTd3" style="display: none; float: left;">
-	<div class="tbldata-dotdot select-field">
+	<div class="tbldata-dotdot select-field validationTxt">
 		<textarea type="text" class="form-control input-sm" placeholder="Description" id="REPLACEROWIDDescription" name="lineItems[REPLACEROWID].Description"
-			data-validation="validate_length length1-100" field-name="Description"></textarea>
+			data-validation="required validate_length length1-100" field-name="Description"></textarea>
 	</div>
 </div>
 
@@ -196,11 +219,11 @@ function errRemoveClientContact(){
 </div>
 
 <div id="divTaskTd5" style="display: none; float: left;">
-	<div class="tbldata-dotdot_80">
+	<div class="tbldata-dotdot_80 validationTxt whiteSpace">
 		<input type="text"
 			class="form-control input-sm allownumericwithdecimal"
 			placeholder="Rate" id="REPLACEROWIDrate" name="lineItems[REPLACEROWID].rate"
-			onblur="totalHoursCalculateAmount(REPLACEROWID);" data-validation="required" field-name="Rate">
+			onblur="totalHoursCalculateAmount(REPLACEROWID);" data-validation="required validate_float" field-name="Rate">
 	</div>
 </div>
 
@@ -236,7 +259,7 @@ function errRemoveClientContact(){
 		 result = result +'  <input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="0" />';
 		 result = result +'  <table width="100%">';
 		 result = result +'  <thead id="addInvoiceTbl">';
-		 result = result +'  <tr id="divTsRow0">';
+		 result = result +'  <tr>';
 		 result = result +'  <th>Date</th>';
 		 result = result +'  <th>Associate</th>';
 		 result = result +'  <th>Description</th>';
@@ -326,7 +349,7 @@ function errRemoveClientContact(){
          result = result +'  </select>';
          result = result +'  </div>';
          result = result +'  <div class="col-md-5 paddingLeft" id="discountValueDiv">';
-         result = result +'  <input type="text" class="form-control input-sm" id="discountValue" disabled="disabled" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();"  onkeyup="validateDiscount();">';
+         result = result +'  <input type="text" class="form-control input-sm allownumericwithdecimal" id="discountValue" disabled="disabled" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();"  onkeyup="validateDiscount();">';
          result = result +'  </div>';
          result = result +'  </div>';
          result = result +'  </div>';
@@ -419,6 +442,42 @@ function validateDiscount() {
 </script>
 
 <script>
+function validateRowDiscount(maxRowNum) {
+$('#'+maxRowNum+'discountRowDiv').parent().find('p.jquery_form_error_message').remove();
+var selectedTextInvoice = $("#"+maxRowNum+"taxdiscountType").val();
+var enteredValue = $("#"+maxRowNum+"taxdiscountvalue").val();
+
+if(selectedTextInvoice =='percentage'){
+	  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+	  if(enteredValue.match(floatNum)){
+		  $("#saveButtonId").removeAttr("disabled", "disabled");
+			$("#sendButtonId").removeAttr("disabled", "disabled");
+		   return true;
+	  }		  
+	 else{
+			$("#"+maxRowNum+"discountRowDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Percentage</span>");
+			$("#saveButtonId").attr("disabled", "disabled");
+			$("#sendButtonId").attr("disabled", "disabled");
+			return false; 
+	 	 }
+}if(selectedTextInvoice =='flat'){
+	/* var floatNum = /^[0-9]*$/
+		if(enteredValue.match(floatNum)){
+			  $("#saveButtonId").attr("disabled", "disabled");
+				$("#sendButtonId").attr("disabled", "disabled");
+			   return false;
+		  }
+		else{ */
+			$("#saveButtonId").removeAttr("disabled", "disabled");
+			  $("#sendButtonId").removeAttr("disabled", "disabled");
+// 		}
+	  }		
+	  
+ 
+}
+</script>
+
+<script>
 	function loadInvoiceDetails(invoiceUUID){
 		 
 		 $.ajax({
@@ -474,6 +533,15 @@ function validateDiscount() {
 		        	 
 		        	$("#savedInvoiceId").val(json['id']);
 		        	
+		        	var test = json['invoiceParentId'];
+		        	if(json['invoiceStatus'] == "Rejected" && test != null){
+			   			 document.getElementById("sendButtonId").style.display="none";
+			   			 document.getElementById("saveButtonId").style.display="none";
+			       	}else{
+			       		document.getElementById("sendButtonId").style.display="inline-block";
+			   			document.getElementById("saveButtonId").style.display="inline-block";
+			       	}
+		        	
 		        	
 		        	
 		        }
@@ -491,7 +559,7 @@ function validateDiscount() {
 				 var opt = invoiceDocumentsList[i]; 
 	    		
 				 result = result +"<strong id='invoiceDocument"+opt.id+"'>";
-	    		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadInvoiceDocument?documentId="+opt.id+"\"></a></i>";
+	    		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\'"+opt.fileUrl+"\' title='download' download></a></i>";
 					 result = result +"<input type='button' value='"+opt.fileName+"'>";
 					 result = result +"</a>";
 					 result = result +"<input class='dele' type='button' onClick='deleteDocument("+opt.id+");' >";
@@ -500,6 +568,18 @@ function validateDiscount() {
 	    	 }
 			 
 			 $("#savedAttachments").empty();
+			 $("#savedAttachments").append(result);
+		}else{
+			
+			 <c:forEach var="doc" items="${documents}">
+			 result = result +"<strong id='invoiceDocument${doc.id}'>";
+    		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\'${doc.fileUrl}\' title='download' download></a></i>";
+			 result = result +"<input type='button' value='${doc.fileName}'>";
+			 result = result +"</a>";
+			 result = result +"</strong>";
+     		</c:forEach>
+     		
+     		 $("#savedAttachments").empty();
 			 $("#savedAttachments").append(result);
 		}
     	
@@ -512,7 +592,7 @@ function validateDiscount() {
 		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Are you sure to delete Attachment</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteInvoiceDocument("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteInvoiceDocument("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDelDoc();'></b>";
 		result = result +"	</div>";
 		$("#lineItemPopUp").append(result);
 		$("#remove_user_pop").slideDown(200);
@@ -607,11 +687,9 @@ function validateDiscount() {
 				  $("#discountValue").val('');
 				  $("#discountValue").attr("disabled", "disabled");
 			  }
-			  
-		
 		document.getElementById('divTsRow' + rowId).style.display = 'none';
-		var r = document.getElementById('addInvoiceTbl').rows[rowId];
-		var count = 2 * (r.cells.length);
+		var r = document.getElementById('addInvoiceTbl').rows[rowId+1];
+		var count = r.cells.length;
 		for (i = 0; i <= count; i++) {
 			r.deleteCell(0);
 		}
@@ -735,7 +813,7 @@ function validateDiscount() {
 
 
 <script type="text/javascript">
-function cancel(){
+function cancelDelDoc(){
 	$("#lineItemPopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 }
@@ -847,7 +925,7 @@ function cancel(){
 			      dateFormat : finalDateFormatInvoiceSave,
 				  onSelect : function(selected) {
 					  var dt = $(this).datepicker('getDate', '+1d');
-			            dt.setDate(dt.getDate() + 1);
+			            dt.setDate(dt.getDate());
 			            $("#"+maxRowNum+"edate-input").datepicker("option", "minDate", dt);
 			            getEstimatedHours(maxRowNum);
 			            
@@ -864,7 +942,7 @@ function cancel(){
 				  onSelect : function(selected) {
 					  
 					  var dt = $(this).datepicker('getDate', '-1d');
-			            dt.setDate(dt.getDate() - 1);
+			            dt.setDate(dt.getDate());
 			            $("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt);
 			            getEstimatedHours(maxRowNum);
 					 /*  var dt = toDate("#"+maxRowNum+"edate-input");
@@ -932,8 +1010,8 @@ function cancel(){
 	  var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 	  var orgRelationId = $("#clientOrgRelationId").val();
 	  var selectedAssociates = '';
-	  if(maxTsRowNum > 1){
-		  for(var i=1; i<maxTsRowNum; i++){
+	  if(maxTsRowNum > 0){
+		  for(var i=0; i<maxTsRowNum; i++){
 			  if(document.getElementById(i+"candidateId")){
 				  var associateId = document.getElementById(i+"candidateId").value;
 				  if(selectedAssociates == ''){
@@ -1003,7 +1081,7 @@ function cancel(){
 	                 	 result = result +'       </div>'; 
 	                 	 result = result +'   </div>'; 
 	                 	 result = result +'   <div class="modal-footer">';
-	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="addInvoice();$(this).blur();">Add</button>';
+	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="this.disabled=true;addInvoice();$(this).blur();" >Add</button>';
 	                 	 result = result +'   </div>'; 
 	                 	 $("#associatesListDiv").empty(); 
 	                     $("#associatesListDiv").append(result); 
@@ -1040,6 +1118,7 @@ function cancel(){
 		
   }
   </script>
+  
 
 
 <script>
@@ -1104,6 +1183,39 @@ function pagination(){
 }
 </script>
 
+
+<script type="text/javascript">
+ function validateInvoiceId() {
+	 var invoiceId = document.getElementById("invoiceId").value; 
+	
+	 if(invoiceId != null && invoiceId != ""){
+		 $("#saveButtonId").attr("disabled", "disabled");
+		 $("#sendButtonId").attr("disabled", "disabled");
+		
+         //$("#create_user" ).addClass('button').val('Processing..');
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateInvoiceId?"+tokenParamName+"="+tokenValue+"&invoiceId="+invoiceId, 
+		        success: function(data) {
+		        	 if(data == true){
+		        		  $('#invoiceIdDiv').find('p.jquery_form_error_message').remove();
+						  $("input#invoiceId").after("<p class='jquery_form_error_message'>"+invoiceId+" is Already Existed</span>");
+						  document.getElementById("invoiceId").setAttribute('record-exist','yes');
+						  document.getElementById("invoiceId").setAttribute('record-exist-errorMsg',invoiceId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#invoiceId').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#invoiceIdDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#saveButtonId" ).addClass('us-btn').val('Save');
+                         $("#saveButtonId").removeAttr("disabled");
+                         $("#sendButtonId" ).addClass('us-btn').val('Send');
+                         $("#sendButtonId").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>  
 
 
 <!-- Get contract sow between client and the associate -->
@@ -1419,7 +1531,7 @@ function calculateDiscount(){
 			$("#afterDiscountTotal").val(total.toFixed(2));
 		}else{
 			$("#discountTotal").val("00.00");
-			$("#grandTotal").val(subTotal);
+// 			$("#grandTotal").val(subTotal);
 			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
 		}
@@ -1504,7 +1616,7 @@ function calculateDiscount(){
 
 <div id="divTaxTd2" style="display: none; float: left;">
 	<div class="btn-group tblminwidth-75">
-		<select class="form-control input-sm" id="REPLACEROWIDtaxdiscountType" name="invoiceTax[REPLACEROWID].taxdiscountType" onchange="calculateTaxDiscount(REPLACEROWID);">
+		<select class="form-control input-sm" id="REPLACEROWIDtaxdiscountType" name="invoiceTax[REPLACEROWID].taxdiscountType" onchange="calculateTaxDiscount(REPLACEROWID);validateRowDiscount(REPLACEROWID);">
 			<option value="percentage">Percentage</option>
 			<option value="flat">Flat</option>
 		</select>
@@ -1512,12 +1624,12 @@ function calculateDiscount(){
 </div>
 
 <div id="divTaxTd3" style="display: none; float: left;">
-	<div class="tblminwidth-75">
+	<div class="tblminwidth-75" id="REPLACEROWIDdiscountRowDiv">
 		<input type="text"
 			class="form-control input-sm allownumericwithdecimal" value=""
 			placeholder="Flat / Discount" name='invoiceTax[REPLACEROWID].taxdiscountvalue'
 			id='REPLACEROWIDtaxdiscountvalue'
-			onblur="calculateTaxDiscount(REPLACEROWID);">
+			onblur="calculateTaxDiscount(REPLACEROWID);" onkeyup="validateRowDiscount(REPLACEROWID);">
 	</div>
 </div>
 
@@ -1574,6 +1686,7 @@ function calculateDiscount(){
 
 <script type="text/javascript">
 	function removeTaxRow(rowId) {
+		$("#divTaxRow"+rowId).css("display", "none");
 		
 		//After removing the row calculate the amount and append the grand total
 		var grandTotal =  $("#grandTotal").val();
@@ -1585,13 +1698,12 @@ function calculateDiscount(){
         $("#conversionFrom").val(total);
        //=======================================
         conversion();
-		document.getElementById('divTaxRow' + rowId).style.display = 'none';
-		var r = document.getElementById('addTaxTbl').rows[rowId];
-		var count = 2 * (r.cells.length);
+		
+		var r = document.getElementById('addTaxTbl').rows[rowId+1];
+		var count = r.cells.length;
 		for (i = 0; i <= count; i++) {
 			r.deleteCell(0);
 		}
-		
 	}
 </script>
 
@@ -1610,6 +1722,8 @@ function calculateTaxDiscount(){
 		    	if(taxValue){
 		    		first = parseFloat(taxValue);
 			        $("#"+i+"taxTotal").val(first.toFixed(2));
+		    	}else{
+		    		$("#"+i+"taxTotal").val("00.00");
 		    	}
 		    	
 		    }
@@ -1826,6 +1940,7 @@ function getClients(){
 <script>
 function getClientContacts(clientContactId){
 	var orgRelationId = $("#clientOrgRelationId").val();
+	$("#clientContact").empty();
 	$.ajax({
 	type : "GET",
 	url: sourceleadUrl+"/getClientContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
@@ -1844,7 +1959,7 @@ function getClientContacts(clientContactId){
 	$("#clientCurrency").val(opt.clientCurrency);
 	}
 	
-	$("#clientContact").empty();
+	
 	$("#clientContact").append(output);
 	$('#clientContact').trigger("chosen:updated");
 	if(clientContactId == null || clientContactId == '' || clientContactId == 'undefined'){
@@ -1893,7 +2008,7 @@ function getDueDateByFrequency(){
 	 var paymentFrequency = document.getElementById("paymentFrequency").value;
 	 var locationCode ='${SourceLeadWeb_locationCode}';
 	 if(paymentFrequency && invoiceDate){
-	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    
 	    $.ajax({
 			type : "GET",
@@ -1943,11 +2058,19 @@ function saveInvoice(saveType){
 	     		$("#invoice_pop").slideDown(200);
 	     		$(".project_inn_mask").fadeIn(200);
 		        }else{
-		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		        	  $.post(sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=Receivable", formData, function(data) {
 		  				if(data == "success"){
 		  					$("#invoiceLoading").removeAttr("style");
     		     			location.replace(sourceleadUrl+"/invoiceList");
+    		     			$("#selector1").removeAttr("style");
+				    		$("#selector1").css({ display: "block" });
+				    		if(saveType == 'SENT'){
+				    			$("#msgDiv").html("Successfully you have sent a Invoice..");
+				    		}else if(saveType == 'DRAFT'){
+				    			$("#msgDiv").html("Invoice saved Successfully..");
+				    		}
+    		     			msgFadein();
 		  				}
 		  			   }); 
 		        	  
@@ -1963,7 +2086,14 @@ $('body').on('blur', '#invoice_form', function() {
 	$("#invoice_form").showHelpOnFocus();
 	$("#invoice_form").validateOnBlur(false, validationSettings);  
 }); 
+
+function msgFadein() {
+	$("#selector1").fadeIn(200);
+    $('#selector1').delay(2000).fadeOut('slow');
+}
+
 </script>
+
 <!-- End by Rajashekar -->
 <!-- <script>
 $(document).ready(function(){
@@ -1986,23 +2116,30 @@ function maskme(){
     $.mask.definitions['p'] = "[Mm]";
     $(".inline_field").mask("Hhh:Mm"); 
     
-    $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
-    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
-        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
-            event.preventDefault();
-        }
+    $(".allownumericwithdecimal").on("keypress keyup blur",function (evt) {
+    	
+    	var charCode = (evt.which) ? evt.which : event.keyCode
+    	         if (charCode > 31 && (charCode < 48 || charCode > 57))
+    	            return false;
+    	         return true;
+    	
+    	
+//     $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+//         if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+//             event.preventDefault();
+//         }
     });
 }
 </script>
 
-<script>
+<!-- <script>
 $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
 $(this).val($(this).val().replace(/[^0-9\.]/g,''));
     if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
         event.preventDefault();
     }
 });
-</script>
+</script> -->
 <script type="text/javascript">
 function cancel(){
 	$("#popUp").empty();
@@ -2024,7 +2161,7 @@ function getEstimatedHours(rowId){
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	if(startDate && endDate){
 		 var averageWorkingHours = '${SourceLeadWeb_orgLocations.averageWorkingHours}';
-		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getTotalHosursForBilling?"+tokenParamName+"="+tokenValue+"&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours+"&locationId="+locationId,
@@ -2043,7 +2180,7 @@ function editHoursValidations(startDate,endDate,rowId){
 	if(startDate && endDate){
 		 var locationId = '${SourceLeadWeb_orgLocationId}';
 		 var averageWorkingHours = '${SourceLeadWeb_orgLocations.averageWorkingHours}';
-		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getTotalHosursForBilling?"+tokenParamName+"="+tokenValue+"&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours+"&locationId="+locationId,
@@ -2089,4 +2226,24 @@ function attachFile(id){
 }
  
 </script>
+
+<script>
+function createInvoiceEmptyClientContact(){
+	$("#clientContact").empty();
+	 $('#clientContact').append('<option value="">--select Client contact--</option>');
+    $('#clientContact').trigger("chosen:updated");
+}
+</script>
+ <script>
+	 function selectedClient(){
+		 var cid = $("#clientOrgRelationId").val();
+		 window.open(sourceleadUrl+"/addClientContact?cid="+cid,'_blank');
+	 }
+</script>
+<!-- <script>
+function clearDate(){
+	$("#dueDate").val("");
+	};
+</script> -->
+
 <jsp:include page="../masterFooter.jsp" />

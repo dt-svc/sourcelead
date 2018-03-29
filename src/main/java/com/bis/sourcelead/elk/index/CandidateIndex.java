@@ -18,6 +18,8 @@ public class CandidateIndex implements Serializable {
 	private String firstName;
 
 	private String lastName;
+	
+	private String fullName;
 
 	private String email;
 
@@ -187,6 +189,18 @@ public class CandidateIndex implements Serializable {
 	private String fileUrl;
 	
 	private String fileContentType;
+	
+	private String action;
+	
+	private String resumeName;
+	
+	private String middleName;
+	
+	private String gender;
+	
+	private String maritalStatus;
+	
+	private String dateofBirth;
 	
 	
 	public String getSearchType() {
@@ -937,5 +951,62 @@ public class CandidateIndex implements Serializable {
 	{
 		this.fileContentType = fileContentType;
 	}
+
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
+	}
+
+	public String getResumeName() {
+		return resumeName;
+	}
+
+	public void setResumeName(String resumeName) {
+		this.resumeName = resumeName;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+	public String getMiddleName() {
+		return middleName;
+	}
+
+	public void setMiddleName(String middleName) {
+		this.middleName = middleName;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getMaritalStatus() {
+		return maritalStatus;
+	}
+
+	public void setMaritalStatus(String maritalStatus) {
+		this.maritalStatus = maritalStatus;
+	}
+
+	public String getDateofBirth() {
+		return dateofBirth;
+	}
+
+	public void setDateofBirth(String dateofBirth) {
+		this.dateofBirth = dateofBirth;
+	}
+	
 }
 

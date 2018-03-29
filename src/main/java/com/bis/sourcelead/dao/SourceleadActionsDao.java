@@ -25,4 +25,8 @@ public interface SourceleadActionsDao {
 	List<SourceleadActions> getLoginCrowdSourcingUserRoleActionsByOrgLocationId(Long roleId) throws Exception;
 	
 	List<SourceleadActions> getAllSourceleadActionsByOrgLocationId(OrgLocations orgLocations) throws Exception;
+	
+	SourceleadActions getSourceleadActionsByActionRole(String actionRole);
+	
+	List<SourceleadActions> getAllSourceleadActionsForEnrollByOrgLocationIdAndOrgId(OrgLocations orgLocations,Org org) throws Exception;
 }

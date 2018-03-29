@@ -1,19 +1,19 @@
 package com.bis.sourcelead.util;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
@@ -22,6 +22,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmailMessageService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.NotificationsService;
+import com.google.gson.Gson;
 
 /**
  * This class is for covert subject,body,signature
@@ -71,7 +72,7 @@ public class EmailScenerioUtil {
 	}
 
 	public String AssembleEmailMessage(EmailScenario emailScenario, EmailMessage emailMessage,String subject , String body, String signature, String url, Org org,OrgLocations orgLocations ){
-		String emailTemplate = EmailTemplateHTMLConversionUtil.convertBodyOfEmailTemplateToHTML(body, signature,emailScenario.getCallToActionText(), emailScenario.getButtonText(), url , emailMessage,org,orgLocations);
+		String emailTemplate = EmailTemplateHTMLConversionUtil.convertBodyOfEmailTemplateToHTML(body, signature,emailScenario.getCallToActionText(), emailScenario.getButtonText(), url , emailMessage,org,orgLocations, emailScenario.getTabId());
 		return emailTemplate ;
 	} 
 	
@@ -116,10 +117,20 @@ public EmailScenario validateEmailscenerioExists(String uniqueScenarioName,Strin
 	}
 
 
-public void sendNotification(String actionLink,User loginUser,User toUser, OrgLocations loginOrgLocation, EmailScenario emailScenario) throws Exception{
+public void sendNotification(String actionLink,User loginUser,User toUser, OrgLocations loginOrgLocation, EmailScenario emailScenario,HashMap<String,String> parameterList) throws Exception{
 	
 	//new Notification logic
 	Notifications notification = new Notifications();
+	
+	if(null != emailScenario.getUUID()  && !emailScenario.getUUID().isEmpty()){
+		notification.setUUID(emailScenario.getUUID());
+	}
+	else {
+		notification.setUUID(SourceLeadRandomCodeHelper.generateNotificationUUID());
+	}
+	if(StringUtils.isNotEmpty(actionLink) && actionLink.contains(Constants.PLACE_UUID)) {
+		actionLink = actionLink.replace(Constants.PLACE_UUID, notification.getUUID());
+	}
 	notification.setActionLink(actionLink);
 	notification.setBody(emailScenario.getBody());
 	notification.setNotificationFrom(loginUser);
@@ -132,11 +143,14 @@ public void sendNotification(String actionLink,User loginUser,User toUser, OrgLo
 	notification.setOrgCode(loginOrgLocation.getOrg().getOrgCode());
 	notification.setUserNotificationStatus("Sent");
 	notification.setNotificationStatus(Constants.NOTIFICATION_NOT_DELETED);
-	if(null != emailScenario.getUUID()  && !emailScenario.getUUID().isEmpty()){
-		notification.setUUID(emailScenario.getUUID());
+	
+	if(parameterList != null && !parameterList.isEmpty()) {
+		 Gson gsonObj = new Gson();
+		 String str = gsonObj.toJson(parameterList);
+		notification.setParameterList(str);
 	}
 	
-	Notifications notification1 = notificationsService.saveNotification(notification);
+	 notificationsService.saveNotification(notification);
 	
 	}
 

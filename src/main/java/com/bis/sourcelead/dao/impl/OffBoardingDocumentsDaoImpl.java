@@ -65,7 +65,7 @@ public class OffBoardingDocumentsDaoImpl implements OffBoardingDocumentsDao {
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from OffBoardingDocuments documents left join fetch documents.offboardingTemplateId where documents.offboardingTemplateId.id = :templateId "
 	    		+ " and documents.documentType = :documentType and documents.status = '1' ";
-	    List<OffBoardingDocuments> documentsList = session.createQuery(query.toString()).setLong("templateId", templateId).setString("documentType", documentType).setCacheable(true).list();
+	    List<OffBoardingDocuments> documentsList = session.createQuery(query.toString()).setLong("templateId", templateId).setString("documentType", documentType).list();
         return documentsList;
 	}
 
@@ -75,7 +75,7 @@ public class OffBoardingDocumentsDaoImpl implements OffBoardingDocumentsDao {
 	public OffBoardingDocuments getOffBoardingDocumentsBydocumentUUID(String documentUUID) throws Exception {
 	
 		Session session = this.sessionFactory.getCurrentSession();
-		List<OffBoardingDocuments> documents = session.createQuery("from OffBoardingDocuments documents where documents.documentUUID =:documentUUID" ).setString( "documentUUID", documentUUID ).setCacheable(true).list();
+		List<OffBoardingDocuments> documents = session.createQuery("from OffBoardingDocuments documents where documents.documentUUID =:documentUUID" ).setString( "documentUUID", documentUUID ).list();
 		if (documents.size() > 0) {
 			return documents.get(0);
 		} else {
@@ -107,7 +107,7 @@ public class OffBoardingDocumentsDaoImpl implements OffBoardingDocumentsDao {
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from OffBoardingDocuments documents left join fetch documents.candidateOffBoardingId where documents.candidateOffBoardingId.id = :candidateOffBoardingId "
 	    		+ " and documents.documentType = :documentType and documents.status = '1' ";
-	    List<OffBoardingDocuments> documentsList = session.createQuery(query.toString()).setLong("candidateOffBoardingId", candidateOffBoardingId).setString("documentType", documentType).setCacheable(true).list();
+	    List<OffBoardingDocuments> documentsList = session.createQuery(query.toString()).setLong("candidateOffBoardingId", candidateOffBoardingId).setString("documentType", documentType).list();
         return documentsList;
 		
 	}
@@ -121,7 +121,7 @@ public class OffBoardingDocumentsDaoImpl implements OffBoardingDocumentsDao {
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from OffBoardingDocuments documents left join fetch documents.offboardingTemplateId where documents.offboardingTemplateId.id IN (:templateIds) "
 	    		+ " and documents.documentType = :documentType and documents.status = '1' ";
-	    List<OffBoardingDocuments> documentsList = session.createQuery(query.toString()).setParameterList("templateIds", templateIds).setString("documentType", documentType).setCacheable(true).list();
+	    List<OffBoardingDocuments> documentsList = session.createQuery(query.toString()).setParameterList("templateIds", templateIds).setString("documentType", documentType).list();
         return documentsList;
 	}
 
@@ -131,7 +131,7 @@ public class OffBoardingDocumentsDaoImpl implements OffBoardingDocumentsDao {
 	public OffBoardingDocuments getOffBoardingDocumentsById(Long id) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		List<OffBoardingDocuments> documents = session.createQuery("from OffBoardingDocuments documents where documents.id = :id" ).setLong( "id", id ).setCacheable(true).list();
+		List<OffBoardingDocuments> documents = session.createQuery("from OffBoardingDocuments documents where documents.id = :id" ).setLong( "id", id ).list();
 		if (documents.size() > 0) {
 			return documents.get(0);
 		} else {

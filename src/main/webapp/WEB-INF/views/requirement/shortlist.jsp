@@ -5,7 +5,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<link rel="stylesheet" href="resources/css/style.css" />
+<link rel="stylesheet" href="/resources/css/style.css" />
 
 <style type="text/css">
 .require_wrap_table table tr td:first-child {
@@ -33,7 +33,7 @@ function candidateShortList(requirementId){
 	    	   var json = JSON.parse(data);
 	           result = result + '     <div class="clearfix"></div>';
 	           result = result + '   </div>';
-	           result = result + '   <div class="require_wrap_table scroll_table mt40">';
+	           result = result + '   <div class="require_wrap_table datatable_filter scroll_table mt40">';
 	           result = result + '     <table id="shortlistedPagination"  class="display" cellspacing="0" width="100%">';
 	           result = result + '       <thead>';
 	           result = result + '         <tr>';
@@ -92,8 +92,8 @@ function candidateShortList(requirementId){
 				        	result = result + '<td><div><span>--</span></div></td>';
 			    	     }
 			           
-			           if(report.candidateResumes != null && report.candidateResumes != '' && report.candidateResumes != 'undefined'){
-			        	   result = result + '<td><div class="tbldata-dotdot_80"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.candidateResumes.resumeUUID+'\"></a><a class="fa fa-eye ml10" onclick="viewResumeRequirementSummary(\''+report.candidateResumes.resumeUUID+'\',\''+report.candidateResumes.fileName+'\')"></a></span></div></td>';
+			           if(report.fileURL != null && report.fileURL != '' && report.fileURL != 'undefined'){
+			        	   result = result + '<td><div class="tbldata-dotdot_80"><a download class="glyphicon glyphicon-download-alt" href=\"'+report.fileURL+'\"></a><a class="fa fa-eye ml10" onclick="viewFile(\''+report.fileURL+'\',\''+report.fileName+'\',\''+report.fileContentType+'\');"></a></span></div></td>';
 				           }
 				       else{
 				    	   result = result + '<td><div>--</div></td>';
@@ -169,9 +169,9 @@ function viewResumeRequirementSummary(resumeUUID,title){
 function shortListPagination(){
     $('#shortlistedPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
-    	"bPaginate": false,
-    	"bLengthChange": false,
+    	"bPaginate": true,
+    	"bLengthChange": true,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bDestroy": true,
     	"aaSorting": [[1,'desc']],
     	"ordering": true,
@@ -213,10 +213,12 @@ function selectAllShortlisted(){
             });         
         } 
 	
-   var selectedsubmissionslists = [];
-	 $("input[name='submissionList[]']:checked").each( function (i) {
-		 selectedsubmissionslists[i] = $(this).val();
-	});
+	 var selectedsubmissionslists = [];
+	 var oTable = $('#shortlistedPagination').dataTable();
+	 var rowcollection =  oTable.$("input[name='submissionList[]']:checked", {"page": "all"});
+	 rowcollection.each(function(index,elem){
+		 selectedsubmissionslists[index] = $(elem).val();
+	 });
 	 
 	$("#checkedshortlistedCount").html(selectedsubmissionslists.length);
 	  
@@ -227,9 +229,11 @@ function selectAllShortlisted(){
 <script>
 function getCheckedCandidatesCount(){
 	 var selectedsubmissionslists = [];
-	 $("input[name='submissionList[]']:checked").each( function (i) {
-		 selectedsubmissionslists[i] = $(this).val();
-	});
+	 var oTable = $('#shortlistedPagination').dataTable();
+	 var rowcollection =  oTable.$("input[name='submissionList[]']:checked", {"page": "all"});
+	 rowcollection.each(function(index,elem){
+		 selectedsubmissionslists[index] = $(elem).val();
+	 });
 	 
 	$("#checkedshortlistedCount").html(selectedsubmissionslists.length);
 	 
@@ -240,14 +244,16 @@ function getCheckedCandidatesCount(){
 <script>
 function shortlist(requirementId){
 	 var selectedsubmissionslists = [];
-	 $("input[name='submissionList[]']:checked").each( function (i) {
-		 selectedsubmissionslists[i] = $(this).val();
-	});
+	 var oTable = $('#shortlistedPagination').dataTable();
+	 var rowcollection =  oTable.$("input[name='submissionList[]']:checked", {"page": "all"});
+	 rowcollection.each(function(index,elem){
+		 selectedsubmissionslists[index] = $(elem).val();
+	 });
 	 
 	  if(selectedsubmissionslists.length > 0){
 		  
 		  if(selectedsubmissionslists.length <= 50){
-				 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+				 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 				 $.ajax({ 
 				    	type: "POST",
 				    	url: sourceleadUrl+"/candidateShortList?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionsList="+selectedsubmissionslists,
@@ -259,7 +265,7 @@ function shortlist(requirementId){
 				    		requirementPipeline(requirementId,allApplicants); 
 				    		pipelineList(requirementId);
 				        },
-				 });  
+				 });   
 		  }else{
 			  alertMessage("<b>Selected Candidates should not more than 50</b>");
 		  }

@@ -5,7 +5,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -31,7 +33,6 @@ import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProposeTimeService;
@@ -44,9 +45,9 @@ import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
 
 /**
  * Prasanna Vadla
@@ -95,7 +96,7 @@ public class RequirementInterviewRestController {
 	 @Autowired
 	 RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	
-	@RequestMapping(value = "/getAllInterviewers")
+	@RequestMapping(value = "/app/getAllInterviewers")
 	public @ResponseBody String getAllApprovers(HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String resultJson = null;
@@ -104,17 +105,19 @@ public class RequirementInterviewRestController {
 		
 		List<User> interviewersList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
 		for(User userList:interviewersList){
-			UserRole user = userRoleService.getUserRoleByUserIdAndLocationId(userList.getId(), orgLocations.getId());
-			if(!Constants.EMPLOYEE.equals(user.getUserType())){
+			/*UserRole user = userRoleService.getUserRoleByUserIdAndLocationId(userList.getId(), orgLocations.getId());
+		   */
+			interviewersNewList.add(userList);
+			/*if(!Constants.EMPLOYEE.equals(user.getUserType())){
 				interviewersNewList.add(userList);
-			}
+			}*/
 		}
 		resultJson = commonUtil.toJSON(interviewersNewList);
 		return resultJson;
 
 	}
 	
-	@RequestMapping(value = "/getAllShortListCandidates")
+	@RequestMapping(value = "/app/getAllShortListCandidates")
 	public @ResponseBody String getAllShortListCandidates(@RequestParam(value="requirementId", required=false) Long requirementId,
 			                                              @RequestParam(value="existingApplicantsIds", required=false) List<Long> existingApplicantsIds,
 			                                              @RequestParam(value="isClientInterview", required=false) String isClientInterview,
@@ -146,7 +149,7 @@ public class RequirementInterviewRestController {
 	 * @throws Exception
 	 */
 	@PreAuthorize("hasRole('ROLE_ADD_INTERVIEW')")
-	@RequestMapping(value = "/saveInterview" , method = RequestMethod.POST)
+	@RequestMapping(value = "/app/saveInterview" , method = RequestMethod.POST)
 	   public String saveInterview(@RequestParam(value="jsonData", required=false) String json, HttpServletRequest request) throws Exception {
 			
  	    String json1 = "{" + json + "}";
@@ -163,7 +166,7 @@ public class RequirementInterviewRestController {
 
   }
 	
-    @RequestMapping(value = "/updateRescheduleInterview" , method = RequestMethod.POST)
+    @RequestMapping(value = "/app/updateRescheduleInterview" , method = RequestMethod.POST)
     public String updateRescheduleInterview(@RequestParam(value="jsonData", required=false) String json, HttpServletRequest request) throws Exception {
 			
  	    String json1 = "{" + json + "}";
@@ -178,7 +181,7 @@ public class RequirementInterviewRestController {
 	
 	
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_INTERVIEW','ROLE_VIEW_CANCEL_INTERVIEW')")
-	@RequestMapping(value = "/getAllInternalInterviews" , method = RequestMethod.POST)
+	@RequestMapping(value = "/app/getAllInternalInterviews" , method = RequestMethod.POST)
 	 public @ResponseBody  String getAllInternalInterviews(@RequestParam(value="submissionId", required=false) Long submissionId, HttpServletRequest request) throws Exception {
 		
 	     OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -191,7 +194,7 @@ public class RequirementInterviewRestController {
 	   }
 	
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_INTERVIEW','ROLE_VIEW_CANCEL_INTERVIEW')")
-	@RequestMapping(value = "/getScheduledInterviewsListForSelectedApplicants" , method = RequestMethod.POST)
+	@RequestMapping(value = "/app/getScheduledInterviewsListForSelectedApplicants" , method = RequestMethod.POST)
 	 public @ResponseBody  String getScheduledInterviewsListForSelectedApplicants(@RequestParam(value="selectedReqId", required=false) String selectedReqId, @RequestParam(value="selectedSubmissions", required=false) String selectedSubmissions, HttpServletRequest request) throws Exception {
 		
 	     OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -259,7 +262,7 @@ public class RequirementInterviewRestController {
 	
 	  
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_INTERVIEW','ROLE_VIEW_CANCEL_INTERVIEW')")
-	@RequestMapping(value = "/getAllCustomerInterviews" , method = RequestMethod.POST)
+	@RequestMapping(value = "/app/getAllCustomerInterviews" , method = RequestMethod.POST)
 	 public @ResponseBody  String getAllCustomerInterviews(@RequestParam(value="submissionId", required=false) Long submissionId,
 			 @RequestParam(value = "requirementId", required = false) Long requirementId,
 			 HttpServletRequest request) throws Exception {
@@ -280,7 +283,7 @@ public class RequirementInterviewRestController {
 	 * @throws Exception
 	 */
 	
-	@RequestMapping(value = "/saveProposeTime" , method = RequestMethod.POST)
+	@RequestMapping(value = {"/saveProposeTime", "/app/saveProposeTime"} , method = RequestMethod.POST)
 	   public String saveProposeTime(@RequestParam(value="jsonData", required=false) String json,@RequestParam(value="submissionId", required=false) Long submissionId, HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -322,6 +325,8 @@ public class RequirementInterviewRestController {
 			 //Applicant to created by interviewer send Email
 			 if(orgLocations != null){
 			requirementInterviewService.applicantInterviewProposeTimeEmailToInterviewInitiator(jsonObj.getString("requirementInterviewId"),orgLocations,loginOrg,user);	 
+			 }else{
+			   requirementInterviewService.applicantInterviewProposeTimeEmailToInterviewInitiator(jsonObj.getString("requirementInterviewId"),requirementSubmission.getOrgLocations(),loginOrg,user);	 
 			 }
 			 if(user != null){
 			 requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
@@ -337,7 +342,7 @@ public class RequirementInterviewRestController {
 	 * @return resultJson
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getProposeTime" , method = RequestMethod.POST)
+	@RequestMapping(value = "/app/getProposeTime" , method = RequestMethod.POST)
 	 public @ResponseBody  String getProposeTime(@RequestParam(value="interviewId", required=false) Long interviewId, @RequestParam(value="locationId", required=false) Long locationId,HttpServletRequest request) throws Exception {
 		 String resultJson = null;
 		 List<ProposeTime> proposeTimeList = proposeTimeService.getProposeTimeByInterViewId(interviewId);
@@ -361,7 +366,7 @@ public class RequirementInterviewRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	 @RequestMapping(value = "/acceptProposeTime" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/app/acceptProposeTime" , method = RequestMethod.POST)
 	    public String acceptProposeTime(@RequestParam(value="jsonData", required=false) String json,@RequestParam(value="proposeTimeId", required=false) Long proposeTimeId,
 	    		@RequestParam(value="proposeDate", required=false) String proposeDate,@RequestParam(value="proposeTime", required=false) String proposeTime,HttpServletRequest request) throws Exception {
 				
@@ -375,7 +380,7 @@ public class RequirementInterviewRestController {
 	   }
 	 
 	 
-	 /*@RequestMapping(value = "/acceptOrRejectInterview")
+	 /*@RequestMapping(value = "/ws/acceptOrRejectInterview")
 	 @ResponseBody  String acceptOrRejectInterview(@RequestParam(value="interviewStatus", required=false) String interviewStatus,
 				@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
 			 HttpServletRequest request) throws Exception {
@@ -398,7 +403,7 @@ public class RequirementInterviewRestController {
 		return message;
 	 }	*/
 	 
-	 @RequestMapping(value = "/sendMailToapplicant")
+	 @RequestMapping(value = "/app/sendMailToapplicant")
 	 @ResponseBody String sendMailToapplicant(@RequestParam(value="submissionId", required=false) String submissionId,
 				@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
 				@RequestParam(value = "interviewHistoryId", required = false) String interviewHistoryId,
@@ -420,7 +425,7 @@ public class RequirementInterviewRestController {
 		 
 		return "success";
 	 }		
-	 @RequestMapping(value = "/sendMailToVendor")
+	 @RequestMapping(value = "/app/sendMailToVendor")
 	 @ResponseBody String sendMailToVendor(@RequestParam(value="submissionId", required=false) String submissionId,
 				@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
 				@RequestParam(value = "interviewHistoryId", required = false) String interviewHistoryId,
@@ -466,10 +471,61 @@ public class RequirementInterviewRestController {
 	 
 	 
 	 
+	 @RequestMapping(value = "/app/getInterviewSlotDates")
+		public List<String> getInterviewSlotDates(@RequestParam(value = "applicantSubmissionIds", required = false) String applicantSubmissionIds,
+				@RequestParam(value = "interviewerIds", required = false) String interviewerIds,
+				 HttpServletRequest request) throws Exception {
+		 
+			OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<String> interviewDatesList = new ArrayList<>();
+			List<Long> interviewUserIdList = new ArrayList<>();
+			List<Long> submissionsList = new ArrayList<>();
+			List<Date> interviewerDatesList = new ArrayList<>();
+			List<Date> candidatesDatesList = new ArrayList<>();
+			Set<Date> datesList = new LinkedHashSet<>();
+			
+			if(interviewerIds != null && !interviewerIds.isEmpty()) {
+				String[] interviewerUserIds = interviewerIds.split(",");
+				for(int i=0;i<interviewerUserIds.length;i++) {
+					interviewUserIdList.add(Long.valueOf(interviewerUserIds[i]));
+				}
+				interviewerDatesList = requirementInterviewService.getInterviewDatesForInterviewrsInterviewSlots(interviewUserIdList, loginOrgLocations.getId());
+			}
+			
+			if(applicantSubmissionIds != null && !applicantSubmissionIds.isEmpty()) {
+				String[] submissionIds = applicantSubmissionIds.split(",");
+				for(int i=0;i<submissionIds.length;i++) {
+					submissionsList.add(Long.valueOf(submissionIds[i]));
+				}
+				candidatesDatesList = requirementInterviewService.getInterviewDatesForCandidateInterviewSlots(submissionsList);
+			}
+			
+			if(interviewerDatesList != null && interviewerDatesList.size() > 0) {
+				datesList.addAll(interviewerDatesList);
+			}
+			
+			if(candidatesDatesList != null && candidatesDatesList.size() > 0) {
+				datesList.addAll(candidatesDatesList);
+			}
+			
+			Timezone timezone = null;
+			if(loginOrgLocations.getTimezone() != null){
+				timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
+			}
+			if(datesList != null && datesList.size() > 0) {
+				for(Date date : datesList) {
+					    String converted_dateStr =  CalendarUtil.getDateStrForGivenTimeZone(timezone.getTimeZoneId(), date, "yyyy/MM/dd");
+					    if(StringUtils.isNotEmpty(converted_dateStr)) {
+					    	 interviewDatesList.add(converted_dateStr);
+					    }
+				}
+			}
+			return interviewDatesList;
+		}
+		
 	 
 	 
-	 
-	 @RequestMapping(value = "/getInterviewerAndApplicantsDetails")
+	 @RequestMapping(value = "/app/getInterviewerAndApplicantsDetails")
 		public @ResponseBody String getInterviewerAndApplicantsDetails(
 				@RequestParam(value = "applicantSubId", required = false) String applicantSubId,
 				@RequestParam(value = "interviewerIds", required = false) String interviewerIds,

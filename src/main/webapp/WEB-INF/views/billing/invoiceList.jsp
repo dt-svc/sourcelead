@@ -44,9 +44,9 @@ $(document).ready(function(){
 			</div>
 	     </c:if>
       <div class="pull-left">
-        <h2>Receivables</h2>
+        <h2>Invoices</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Receivable List</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Invoice List</div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="billing_dashboard">
@@ -71,15 +71,20 @@ $(document).ready(function(){
          
          <ul class="nav nav-tabs" id="tab_bar">
             
-               <li class="active">
+                  <li class="active">
                         <h4>Unbilled</h4>
                         <a  data-toggle="tab" class="onboardCount billbg_orange" title="Draft Invoices">
                             <div class="pull-left">
                             <strong>${SourceLeadWeb_currencyCode}</strong>
                             </div>
-                            <div class="pull-right ml10">
-                            <div class="count" id="unbilledAmoumt"></div>
+                                <div class="pull-right ml10">
+                               <div class="count" id="unbilledAmoumt"></div>
+                               <c:if test="${!empty draftInvoiceCount }">
                                 <h5>Draft Invoices <span class="paddingLeft" id="draftInvoiceCount"></span></h5>
+                                </c:if>
+                                <c:if test="${empty draftInvoiceCount }">
+                                <h5>Draft Invoices<br><span class="paddingright pull-right">0.0</span></h5>
+                                </c:if>
                                 </div>
                         </a>
                     </li>
@@ -91,7 +96,12 @@ $(document).ready(function(){
                             </div>
                             <div class="pull-right ml10">
                             <div class="count" id="dueAfterInvoiceAmount"></div>
-                        <h5>Overdue Invoices<span class="paddingLeft" id="dueAfterInvoiceCount"></span></h5>
+                            <c:if test="${!empty dueAfterInvoiceCount }">
+                              <h5>Overdue Invoices<span class="paddingLeft" id="dueAfterInvoiceCount"></span></h5>
+                           </c:if>
+                            <c:if test="${empty dueAfterInvoiceCount }">
+                              <h5>Overdue Invoices<br><span class="paddingright pull-right">0.0</span></h5>
+                           </c:if>
                             </div>
                         
                         </a>
@@ -104,8 +114,13 @@ $(document).ready(function(){
                             </div>
                             <div class="pull-right ml10">
                             <div class="count" id="dueBeforeInvoiceAmount"></div>
-                        <h5>Open Invoices<span class="paddingLeft" id="dueBeforeInvoiceCount"></span></h5>
-                        </div>
+                             <c:if test="${!empty dueBeforeInvoiceCount }">
+                             <h5>Open Invoices<span class="paddingLeft" id="dueBeforeInvoiceCount"></span></h5>
+                             </c:if>
+                              <c:if test="${empty dueBeforeInvoiceCount }">
+                             <h5>Open Invoices<br><span class="paddingright pull-right">0.0</span></h5>
+                             </c:if>
+                          </div>
                         </a>
                     </li>
                     <li class="billingbg_greens">
@@ -116,7 +131,14 @@ $(document).ready(function(){
                             </div> 
                             <div class="pull-right ml10">
                             <div class="count" id="paidInvoiceAmount"></div>
-                        <h5>Paid Invoices<span class="paddingLeft" id="paidInvoiceCount"></span></h5>
+                             <c:if test="${!empty paidInvoiceCount }">
+                              <h5>Paid Invoices<span class="paddingLeft" id="paidInvoiceCount"></span></h5>
+                             </c:if>
+                             
+                              <c:if test="${empty paidInvoiceCount }">
+                              <h5>Paid Invoices<br><span class="paddingright pull-right">0.0</span></h5>
+                             </c:if>
+                             
                             </div>
                         </a>
                     </li>
@@ -235,9 +257,9 @@ $(document).ready(function(){
 		      <div class="col-md-12"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()">&times;</a>
 		      <div class="col-md-4 mt25">
 		        <div class="small-widget bgGreen">
-		            <a  href="<c:url value='/createInvoice'/>" title="Create Client Based Invoice">
+		            <a  href="<c:url value='${appPath}/createInvoice'/>" title="Create Client Based Invoice">
 		          <div class="clearfix mb10"> 
-		              <img src="resources/images/invoice_icon.png" class="text-center" alt="create_receivables">
+		              <img src="/resources/images/invoice_icon.png" class="text-center" alt="create_receivables">
 		          </div>
 		          <strong class="clearfix">Client Based</strong></a>
 		          </div>
@@ -245,20 +267,20 @@ $(document).ready(function(){
 		
 		        <div class="col-md-4 mt25">
 		          <div class="small-widget bg-yellow"> 
-		          <a href="<c:url value='/createInvoiceProjectBased'/>" title="Create Project Based Invoice">
+		          <a href="<c:url value='${appPath}/createInvoiceProjectBased'/>" title="Create Project Based Invoice">
 		            <div class="clearfix mb10">
 		                <!--<i class="fa fa-usd fa-3x"></i>-->
-		                <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
+		                <img src="/resources/images/invoice_icon.png" class="text-center" alt="Invoice">
 		            </div>
 		            <strong class="clearfix">Project Based </strong> </a> </div>
 		        </div>
 		          
 		         <div class="col-md-4 mt25">
 		          <div class="small-widget bg-purple"> <a href="other_receivables.html" title="Create other invoice">
-		            <a  href="<c:url value='/createReceivableExpensesBill'/>" title="Create Other Invoice">
+		            <a  href="<c:url value='${appPath}/createReceivableExpensesBill'/>" title="Create Other Invoice">
 		            <div class="clearfix mb10">
 		              <i class="fa fa-usd fa-3x"></i>             
-		             <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
+		             <img src="/resources/images/invoice_icon.png" class="text-center" alt="Invoice">
 		              </div>
 		            <strong class="clearfix">Other</strong> </a> </div>
 		        </div>
@@ -479,6 +501,7 @@ $('body').on('blur', '#receivePayment-form', function() {
 function getInvoiceList(){
 	var invoice = [];
 	var payment = [];
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var dayWisetype = $("#dayWiseTypeId").val();
 	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
@@ -514,7 +537,7 @@ function getInvoiceList(){
 	 });
 	var searchValue = $("#invoiceDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getInvoiceList?&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceType=receivable&searchValue="+searchValue;
+	var url = sourceleadUrl+"/getInvoiceList?&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceType=receivable&searchValue="+searchValue+"&orgLocationId="+orgLocationId;
 	prepareInvoiceList(url,locationdateForList);
 }
 
@@ -523,13 +546,15 @@ function getInvoiceList(){
 <script>
 function prepareInvoiceList(url,locationdateForList){
  	var result = "";
- 	result = result +" <div class='remove_search'>";
+ 	result = result +" <div class='dynamic_search dynamic_search-new'>";
  	result = result +" <input type='text' placeholder='Search' id='invoiceDataTableSearch'/>";
+ 	result = result +"  <span class='cursorPointer' title='Search'><i class='fa fa-search' onclick='getInvoiceList();'></i></span>";     
+
  	result = result +"</div>";
  	result = result + '<table id="invoiceListTable" class="display" cellspacing="0" width="100%" >';
 	result = result + '<thead>';
 	result = result +'       <tr>                             ';
-	result = result +'         <th>ID</th>                    ';
+	result = result +'         <th>Reference Id</th>                    ';
 	result = result +'         <th>Client Name</th>           ';
 	result = result +'         <th>Contact</th>               ';
 	result = result +'         <th>Project Name</th>   ';
@@ -612,12 +637,12 @@ function invoicePagination(url){
 	    	  	    result = result +'         <td>';
 	    	  	    if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
 						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_INVOICE\')">';
-						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor2"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
+						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor2"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'" title="'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
 						'</sec:authorize>' ;
 					}
 					if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked" ){
 						'<sec:authorize access="hasAnyRole(\'ROLE_INVOICE_PAYMENT_HISTORY\')">';
-						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>">'+report.invoiceId+'</a></div>';				
+						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="<c:url value="/app/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>" title="'+report.invoiceId+'">'+report.invoiceId+'</a></div>';				
 						'</sec:authorize>' ;
 					}
 					result = result +'         </td>  ';  
@@ -630,7 +655,19 @@ function invoicePagination(url){
               "render": function ( data, type, report, meta ) {
             	  var result = "";
             	  result = result +'         <td>   ';
-  				result = result +'           <div class="tbldata-dotdot-vsm" title="'+report.clientName+'">'+report.clientName+'</div>';
+            	 if(report.clientName != null && report.clientName != '' && report.clientName != 'undefined'){
+            		 
+            		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+  				      result = result +'<div class="tbldata-dotdot-vsm" title="'+report.clientName+'"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.clientName+'">'+report.clientName+'</a></div>';
+  				     '</sec:authorize>';
+  				     
+  				   '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+				      result = result +'<div class="tbldata-dotdot-vsm" title="'+report.clientName+'">'+report.clientName+'</div>';
+				     '</sec:authorize>';
+  				     
+            	 }else{
+            		 result = result +'<div class="tbldata-dotdot-vsm">--</div>  ';
+            	 }
   				result = result +'         </td> ';
 	              return result;
               		
@@ -741,46 +778,49 @@ function invoicePagination(url){
                     },{
                         "targets": colIndex++,
                         "data": "action",
+                        "sortable": false,
                         "render": function ( data, type, report, meta ) {
                         	var result = "";
                         	result = result +'         <td> ';
             				result = result +'     <div class="tblminwidth-90">';
             				 result = result +'  <div class="pull-right positionRelative menuWidget" >';
-            				 if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" ){
+            				 if(report.invoiceStatus != "Received" && report.invoiceStatus != "Rejected" ){
             					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp('+report.id+',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\',\''+report.fileUrl+'\');" ></i>  ';
             						result = result +'  <div id="popupDiv'+report.id+'"></div>';
             				} 
             				result = result +'  </div> ';
             				if(report.invoiceType == "Receivable" && (report.invoiceParentId == null || report.invoiceParentId == '' || report.invoiceParentId == "undefined")){
-            					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
+            					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected" || report.invoiceStatus == "SENT"){
             						if(report.paymentStatus == "Paid"){
-            							result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span>   ';
+            							result = result +'           <span class="text-primary primary pull-left" >Receive</span>   ';
             						}else if(report.invoiceStatus == "DRAFT"){
-            							result = result +'           <span class="text-primary successBtn primary pull-left">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer" title="Remove Invoice" onClick="deleteInvoice('+report.id+');";></i>';	
+            							result = result +'           <span class="successBtn primary pull-left">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Invoice" onClick="deleteInvoice('+report.id+');";></i>';	
+            						}else if(report.invoiceStatus == "Rejected"){
+            							result = result +'           <div class=" primary pull-left bg-red">Rejected</div>   ';	
             						}else{
-            							result = result +'           <span class="text-primary successBtn primary pull-left">Send</span>   ';	
+            							result = result +'           <span class="text-primary primary pull-left">Sent</span>   ';	
             						}
             							
             					}else{
             						if(report.invoiceStatus == "Linked"){
-            							result = result +' <a class="text-primary successBtn primary pull-left" onClick="unLinkInvoice('+report.id+')">UnLink</a>  ';
+            							result = result +' <a class="successBtn primary pull-left" onClick="unLinkInvoice('+report.id+')">UnLink</a>  ';
             						}else{
-            							result = result +'           <span class="text-primary receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span>';
+            							result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span>';
             						}
             					}
             				}else{
             					if(report.invoiceStatus == "Accepted"){
             						if(report.paymentStatus == "Paid"){
-            							result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span>   ';	
+            							result = result +'           <span class=" primary pull-left">Receive</span>   ';	
             						}else{
-            							result = result +'           <span class="text-primary receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>';
+            							result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>';
             						}
             						
             					}else{
             						if(report.invoiceStatus == "Rejected"){
-            							result = result +'           <span class="text-primary successBtn primary pull-left" >Send</span>           ';	
+            							result = result +'           <div class=" primary pull-left bg-red">Rejected</div>   ';	
             						}else if(report.invoiceStatus == "Linked"){
-            							result = result +' <a class="text-primary successBtn primary pull-left" onClick="unLinkInvoice('+report.id+')">UnLink</a>  ';
+            							result = result +' <a class="successBtn primary pull-left" onClick="unLinkInvoice('+report.id+')">UnLink</a>  ';
             						}else{
             							result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
             						}
@@ -796,14 +836,14 @@ function invoicePagination(url){
                 } ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[1,'desc']],
+	    	"aaSorting": [[4,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
     $("#invoiceListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
@@ -842,22 +882,22 @@ function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount,fileUrl){
 	     if(invoiceParentId == 'undefined'){
 	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_2"> ';
 	     }else{
-	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_3"> ';
+	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_2"> ';
 	     }
 		 result = result+' <i class="fa fa-close close-div closediv-small" onClick="removePopup();"></i>';
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+id+'"> ';
-		 if(invoiceParentId == 'undefined'){
+		 if((invoiceParentId == 'undefined' || invoiceParentId == 'null') && invoiceStatus != 'DRAFT'){
 			 '<sec:authorize access="hasAnyRole(\'ROLE_SEND_INVOICE_REMINDER\')">';
 			 result = result +'      <li onclick="sendReminder('+id+');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</li> ';
 			'</sec:authorize>'
 		 }
 		 '<sec:authorize access="hasAnyRole(\'ROLE_PRINT_INVOICE\')">';
 // 	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
-		result = result+' <a class="fa fa-print paddingLeft paddingRight" target="_blank" href="'+fileUrl+'" title="Print">Print</a>';
+		result = result+' <li><a class="" target="_blank" href="'+fileUrl+'" title="Print"><i class="fa fa-print paddingLeft paddingRight"></i>Print</a></li>';
 	 	'</sec:authorize>'
 	 	
 	 	'<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_INVOICE\')">';
-	     result = result+' <a class="fa fa-download paddingLeft paddingRight" target="_blank" href="'+fileUrl+'" title="Download">Download</a>';
+	     result = result+'<li><a target="_blank" href="'+fileUrl+'" title="Download"><i class="fa fa-download paddingLeft paddingRight"></i>Download</a></li>';
 	     '</sec:authorize>'
 	     result = result +'      <li onclick="linkInvoice('+id+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</li>';
 	     result = result +'    </ul>';
@@ -962,9 +1002,9 @@ function rejectInvoice(id){
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	//result = result +"		<p>Do you want to delete this vendor contact?</p>";
-	result = result +"		<textarea id='reasonForDelete' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result +"		<textarea id='reasonForDelete' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Reject Reason' rows='2'></textarea>";
 	result = result + ' <div id="reasonForRejectDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReasonforReceivable("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Reject' onclick='saveReasonforReceivable("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -1038,12 +1078,28 @@ function cancelbtn(){
 <script>
 function removeMask(){
 	 $("#customeAmount").removeAttr("readonly");
-	 $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+	/*  $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
 	        $(this).val($(this).val().replace(/[^0-9\.]/g,''));
 	            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
 	                event.preventDefault();
 	            }
-	        });
+	        }); */
+	        
+	 $("#customeAmount").keydown(function (e) {
+	        // Allow: backspace, delete, tab, escape, enter and .
+	        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+	             // Allow: Ctrl+A, Command+A
+	            (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) || 
+	             // Allow: home, end, left, right, down, up
+	            (e.keyCode >= 35 && e.keyCode <= 40)) {
+	                 // let it happen, don't do anything
+	                 return;
+	        }
+	        // Ensure that it is a number and stop the keypress
+	        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+	            e.preventDefault();
+	        }
+	    });
 	 
 	 
 }
@@ -1380,9 +1436,9 @@ function linkInvoice(invoiceId,totalAmount){
 			result = result +'          </tr>                                                                                                               ';
 			}
 			}else{
-	 			result = result +'          <tr>';
-				result = result +'                <td valign="top" colspan="10" class="dataTables_empty"></td>';
-				result = result +'          </tr>';
+				result = result +' <div class="col-md-12" style="display:none">';
+				result = result +' <div class="dataTables_empty"></div>';
+				result = result +' </div>';
 			}
 			result = result +'        </tbody>                                                                                                              ';
 			result = result +'      </table>                                                                                                                ';
@@ -1450,7 +1506,7 @@ function LinkInvoicePagination(){
 
 <script type="text/javascript">
 function generateAutomaticInvoice(){
-	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',

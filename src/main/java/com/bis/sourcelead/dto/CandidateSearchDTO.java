@@ -27,6 +27,8 @@ public class CandidateSearchDTO extends SearchDTO implements Serializable {
 	private String isAssociate;
 	private String candidateType;
 	private String generatedId;
+	private List<String> createdBy;
+	private String employmnetTypes;
 
 	public List<String> getCandidateSkills() {
 		return candidateSkills;
@@ -209,5 +211,19 @@ public class CandidateSearchDTO extends SearchDTO implements Serializable {
 		this.generatedId = generatedId;
 	}
 
+	public List<String> getCreatedBy() {
+		return createdBy;
+	}
 
+	public void setCreatedBy(List<String> createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getEmploymnetTypes() {
+		return employmnetTypes;
+	}
+
+	public void setEmploymnetTypes(String employmnetTypes) {
+		this.employmnetTypes = employmnetTypes;
+	}
 }

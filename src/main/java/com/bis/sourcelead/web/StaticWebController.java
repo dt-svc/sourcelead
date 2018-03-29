@@ -1,0 +1,249 @@
+package com.bis.sourcelead.web;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.bis.sourcelead.dto.UserManualsDTO;
+import com.bis.sourcelead.service.UserManualService;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
+
+@Controller
+@PropertySource("${propertyLocation:app.properties}")
+public class StaticWebController {
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
+	
+	@RequestMapping("/about-us.html")
+	public String aboutUs() {
+		return "static-web/about-us";
+	}
+	
+	@Autowired
+	UserManualService userManualService;
+	
+	@RequestMapping("/termsofuse.html")
+	public String termsofuse() {
+		return "static-web/termsofuse";
+	}
+	
+	@RequestMapping("/privacypolicy.html")
+	public String privacypolicy() {
+		return "static-web/privacypolicy";
+	}
+	
+	@RequestMapping("/crms.html")
+	public String crms() {
+		return "static-web/crms";
+	}
+	
+	@RequestMapping("/disclaimer.html")
+	public String disclaimer() {
+		return "static-web/disclaimer";
+	}
+	
+	@RequestMapping("/helpManuals.html")
+	public String helpManuals() {
+		return "static-web/helpManuals";
+	}
+	
+	@RequestMapping("/hrms.html")
+	public String hrms() {
+		return "static-web/hrms";
+	}
+	
+	@RequestMapping("/ims.html")
+	public String ims() {
+		return "static-web/ims";
+	}
+	
+	@RequestMapping("/marketplace.html")
+	public String marketplace() {
+		return "static-web/marketplace";
+	}
+	
+	@RequestMapping("/pms.html")
+	public String pms() {
+		return "static-web/pms";
+	}
+	
+	@RequestMapping("/searchprofile.html")
+	public String searchprofile() {
+		return "static-web/searchprofile";
+	}
+	
+	@RequestMapping("/termsnconditions.html")
+	public String termsnconditions() {
+		return "static-web/termsnconditions";
+	}
+	
+	@RequestMapping("/ats.html")
+	public String ats() {
+		return "static-web/ats";
+	}
+	
+	@RequestMapping("/blog.html")
+	public String blog() {
+		return "static-web/blog";
+	}
+	
+	@RequestMapping("/blog1.html")
+	public String blog1() {
+		return "static-web/blog1";
+	}
+	
+	@RequestMapping("/blog2.html")
+	public String blog2() {
+		return "static-web/blog2";
+	}
+	
+	@RequestMapping("/blog3.html")
+	public String blog3() {
+		return "static-web/blog3";
+	}
+	
+	@RequestMapping("/blog4.html")
+	public String blog4() {
+		return "static-web/blog4";
+	}
+	
+	@RequestMapping("/blog5.html")
+	public String blog5() {
+		return "static-web/blog5";
+	}
+	
+	@RequestMapping("/careers.html")
+	public String careers() {
+		return "static-web/careers";
+	}
+	
+	@RequestMapping("/careers-details.html")
+	public String careersDetails() {
+		return "static-web/careers-details";
+	}
+	
+	@RequestMapping("/contact.html")
+	public String contact() {
+		return "static-web/contact";
+	}
+	
+	@RequestMapping("/crowdsourcing.html")
+	public String crowdsourcing() {
+		return "static-web/crowdsourcing";
+	}
+	
+	
+	@RequestMapping("/demo.html")
+	public String demo() {
+		return "static-web/demo";
+	}
+	
+	@RequestMapping("/email-verification.html")
+	public String emailVerification() {
+		return "static-web/email-verification";
+	}
+	
+	@RequestMapping("/faqs.html")
+	public String faqs() {
+		return "static-web/faqs";
+	}
+	
+	@RequestMapping("/features.html")
+	public String features() {
+		return "static-web/features";
+	}
+	
+	@RequestMapping("/help-empdata.html")
+	public String helpEmpdata() {
+		return "static-web/help-empdata";
+	}
+	
+	@RequestMapping("/help-main.html")
+	public String helpMain() {
+		return "static-web/help-main";
+	}
+	
+	@RequestMapping("/help-next.html")
+	public String helpNext() {
+		return "static-web/help-next";
+	}
+	
+	@RequestMapping("/home.html")
+	public String home() {
+		return "static-web/home";
+	}
+	
+	@RequestMapping("/sourceleadJobPage.html")
+	public String sourceleadJobPage() {
+		return "openJobs/sourceleadJobPage";
+	}
+	
+	@RequestMapping(value={ "/","/index.html"})
+	public String index(HttpServletRequest request) {
+		SourceLeadSessionManager.setSessionAttribute(request, "sourceleadUrl", sourceleadUrl);
+		return "static-web/index";
+	}
+	
+	@RequestMapping("/job-details.html")
+	public String jobDetails() {
+		return "static-web/job-details";
+	}
+	
+	@RequestMapping("/jobs.html")
+	public String jobs() {
+		return "static-web/jobs";
+	}
+	
+	@RequestMapping("/privacy.html")
+	public String privacy() {
+		return "static-web/privacy";
+	}
+	
+	@RequestMapping("/register.html")
+	public String register() {
+		return "static-web/register";
+	}
+	
+	@RequestMapping("/team.html")
+	public String team() {
+		return "static-web/team";
+	}
+	
+	@RequestMapping("/terms.html")
+	public String terms() {
+		return "static-web/terms";
+	}
+	
+	@RequestMapping("/testimonial.html")
+	public String testimonial() {
+		return "static-web/testimonial";
+	}
+
+	@RequestMapping("/timesheet.html")
+	public String timesheet() {
+		return "static-web/timesheet";
+	}
+	
+	@RequestMapping("/vms.html")
+	public String vms() {
+		return "static-web/vms";
+	}
+	
+	@RequestMapping("/sourcelead_help.html")
+	public ModelAndView sourceleadHelp() {
+		ModelAndView modal = new ModelAndView();
+		modal.addObject("sourceleadUrl",sourceleadUrl);
+		modal.setViewName("static-web/sourceleadHelp");
+		return modal;
+	}
+}

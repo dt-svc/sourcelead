@@ -18,9 +18,9 @@ public interface UserMailBoxDao {
 	
 	public Integer getUnReadMessagesByUserIdAndLocationIdAndType(Long userId,Long orgLocationId,String type) throws Exception;
 	
-	UserMailBox getUserPreviousMail(Long Id,Long userId,Long orgLocationId,String type) throws Exception;
+	UserMailBox getUserPreviousMail(Long Id,Long userId,Long orgLocationId,String type,String mailType) throws Exception;
 	
-	UserMailBox getUserNextMail(Long Id,Long userId,Long orgLocationId,String type) throws Exception;
+	UserMailBox getUserNextMail(Long Id,Long userId,Long orgLocationId,String type,String mailType) throws Exception;
 	
 	public Long getMailBoxCountByUserIdAndOrgLocationid(Long userId,Long orgLocationId,String type) throws Exception;
 }

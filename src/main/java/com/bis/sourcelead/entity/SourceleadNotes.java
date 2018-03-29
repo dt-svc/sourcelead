@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,15 +13,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 
 @Entity
-@Table(name = "SOURCELEAD_NOTES", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadNotes")
+@Table(name = "SOURCELEAD_NOTES")
 public class SourceleadNotes {
 	
 	private static final long serialVersionUID = 1L;
@@ -64,6 +62,19 @@ public class SourceleadNotes {
 	@ManyToOne
     @JoinColumn(name="INVOICE_ID", nullable=false )     
 	private Invoice invoicdeId;
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
+    @JoinColumn(name="ASSET_ID", nullable=false )     
+	private Asset assetId;
+	
+	@ManyToOne
+	@JoinColumn(name = "IMMIGRATION_ID")
+	private Immigration immigration;
+	
+	@ManyToOne
+	@JoinColumn(name = "CANDIDATE_ID")
+	private Candidate candidate;
 	
 	@Transient
 	private Long commentAuthorUserId;
@@ -115,6 +126,9 @@ public class SourceleadNotes {
 	
 	@Transient
 	private Long userIdStr;
+	
+	@Transient
+	private String assetName;
 	
 	@Transient
 	private String updatedDateString;
@@ -377,6 +391,39 @@ public class SourceleadNotes {
 	public void setCommentAuthorImage(String commentAuthorImage) {
 		this.commentAuthorImage = commentAuthorImage;
 	}
+
+	public Asset getAssetId() {
+		return assetId;
+	}
+
+	public void setAssetId(Asset assetId) {
+		this.assetId = assetId;
+	}
+
+	public String getAssetName() {
+		return assetName;
+	}
+
+	public void setAssetName(String assetName) {
+		this.assetName = assetName;
+	}
+
+	public Immigration getImmigration() {
+		return immigration;
+	}
+
+	public void setImmigration(Immigration immigration) {
+		this.immigration = immigration;
+	}
+
+	public Candidate getCandidate() {
+		return candidate;
+	}
+
+	public void setCandidate(Candidate candidate) {
+		this.candidate = candidate;
+	}
+	
 	
 	
 }

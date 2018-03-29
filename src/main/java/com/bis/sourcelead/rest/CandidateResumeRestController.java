@@ -8,6 +8,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLDecoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletOutputStream;
@@ -23,6 +27,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,6 +36,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateResumeDTO;
+import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.RestrictDayDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -51,6 +59,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/app")
 /**
  * 
  * @author root Handles client requests
@@ -94,17 +103,37 @@ public class CandidateResumeRestController {
 	 * @throws Exception
 	 */
 //	@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_RESUMES')")
-	@RequestMapping(value = "/saveCandidateResume", method = RequestMethod.POST)
-	public @ResponseBody String saveCandidateResume(CandidateResumeDTO  candidateResumeDTO,@RequestParam(value = "candidateId", required = false) String candidateId, @RequestParam(value = "resumeId", required = false) String resumeId, HttpServletRequest request) throws Exception
+	@RequestMapping(value = {"/saveCandidateResume"}, method = RequestMethod.POST)
+	public @ResponseBody String saveCandidateResume(CandidateResumeDTO  candidateResumeDTO, HttpServletRequest request) throws Exception
 	{
 		
 		candidateResumeDTO.setStaticPath(staticPath);
 		//FileUploadUtil.fillUploadedFileInfo(candidateResumeDTO, candidateResumeDTO.getFileInfo());
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		if (StringUtils.isNotEmpty(candidateId)) {
-			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
-			candidateResumesService.storeCandidateResume(candidateResumeDTO, user, candidate, resumeId, orgLocation);
+		if (StringUtils.isNotEmpty(candidateResumeDTO.getCandidateId())) {
+			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateResumeDTO.getCandidateId()));
+			candidateResumesService.storeCandidateResume(candidateResumeDTO, user, candidate, candidateResumeDTO.getResumeId(), orgLocation);
+			Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocation);
+			return percentage.toString();
+		}
+		else {
+			return "exception";
+		}
+	}
+	
+	
+	@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_RESUMES')")
+	@RequestMapping(value = {"rest/saveCandidateResume"}, method = RequestMethod.POST)
+	public @ResponseBody String saveCandidateResumeRest(@RequestBody CandidateResumeDTO  candidateResumeDTO, HttpServletRequest request) throws Exception
+	{
+		candidateResumeDTO.setStaticPath(staticPath);
+		//FileUploadUtil.fillUploadedFileInfo(candidateResumeDTO, candidateResumeDTO.getFileInfo());
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if (StringUtils.isNotEmpty(candidateResumeDTO.getCandidateId())) {
+			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateResumeDTO.getCandidateId()));
+			candidateResumesService.storeCandidateResume(candidateResumeDTO, user, candidate, candidateResumeDTO.getResumeId(), orgLocation);
 			Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocation);
 			return percentage.toString();
 		}
@@ -124,24 +153,44 @@ public class CandidateResumeRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/candidateResumesListByCandidateId", method = RequestMethod.POST)
-	public @ResponseBody String candidateResumesListByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception
+	@RequestMapping(value = {"/candidateResumesListByCandidateId","rest/candidateResumesListByCandidateId"}, method = RequestMethod.POST)
+	public @ResponseBody ResponseList<CandidateResumeDTO> candidateResumesListByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception
 	{
-		String msg = "";
-		String resultJson = null;
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		ResponseList<CandidateResumeDTO> resumeList = new ResponseList<>();
 		Integer status = Constants.CANDIDATE_ACTIVE;
+		List<CandidateResumeDTO> candidateResumesDTOList = new ArrayList<>();
 		if (candidateId != null) {
 			List<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesListByCandidateIdAndStatus(Long.parseLong(candidateId), status);
 			for (CandidateResumes candidateResume : candidateResumesList) {
+				CandidateResumeDTO candidateResumeDTO = new CandidateResumeDTO();
 				User createdUser = userService.getUserByUserCode(candidateResume.getCreatedBy());
 				if (createdUser != null) {
 					StringBuilder name = new StringBuilder();
 					candidateResume.setCreatedBy(name.append(createdUser.getFirstName()).append(" ").append(createdUser.getLastName()).toString());
 				}
+//				List<FileInfo> fileInfo = new ArrayList<>();
+//				FileInfo fInfo = new FileInfo();
+				candidateResumeDTO.setId(candidateResume.getId());
+				candidateResumeDTO.setTitle(candidateResume.getTitle());
+				candidateResumeDTO.setDescription(candidateResume.getDescription());
+				candidateResumeDTO.setCreatedBy(candidateResume.getCreatedBy());
+				candidateResumeDTO.setFileContentType(candidateResume.getFileContentType());
+				candidateResumeDTO.setFileName(candidateResume.getFileName());
+				candidateResumeDTO.setFileURL(candidateResume.getFileURL());
+				candidateResumeDTO.setResumeId(String.valueOf(candidateResume.getId()));
+//				fInfo.setContentType(candidateResume.getFileContentType());
+//				fInfo.setFileName(candidateResume.getFileName());
+////				fInfo.setFileURL(candidateResume.getFileURL());
+//				fileInfo.add(fInfo);
+				candidateResumeDTO.setCandidateId(candidateId);
+				candidateResumeDTO.setCandidateResumeUpdateDateToString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), candidateResume.getUpdatedDate()));
+				candidateResumesDTOList.add(candidateResumeDTO);
+				
 			}
-			resultJson = commonUtil.toJSON(candidateResumesList);
 		}
-		return resultJson;
+		resumeList.setData(candidateResumesDTOList);
+		return resumeList;
 	}
 	
 	/**
@@ -171,7 +220,7 @@ public class CandidateResumeRestController {
 			candidateResume.setStatus(Constants.CANDIDATE_IN_ACTIVE);
 			candidateResume.setUpdatedBy(user.getUserCode());
 			candidateResume.setUpdatedDate(commonUtil.currentDate());
-			candidateResumesService.updateCandidateResume(candidateResume);
+			candidateResume = candidateResumesService.updateCandidateResume(candidateResume);
 			if (candidateResume.getTitle() != null && candidateResume.getTitle() != ""
 					&& candidateResume.getTitle() != "undefined") {
 				activitySummary.append("Resume").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateResume.getTitle()).append(Constants.NEW_VALUE_TAG_END).append(" ");
@@ -183,16 +232,69 @@ public class CandidateResumeRestController {
 			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidateResume.getCandidateId(), "", Constants.CANDIDATE_DELETED_RESUME, activitySummary.toString(), "CANDIDATE");
 			// update the candidate Resume on ELK
 			if (null != candidate && null != candidate.getId()) {
-				CandidateIndex candidateIndex = new CandidateIndex();
-				candidateIndex.setCandidateId(candidate.getId());
-				candidateIndex.setCurrentResumeId(Constants.CANDIATE_RESUME_IN_ACTIVE);
+				 CandidateIndex candidateIndex = new CandidateIndex();
+				 candidateIndex.setCandidateId(candidate.getId());
+				 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				 candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
+				 candidateIndex.setCurrentResumeId(Constants.CANDIATE_RESUME_IN_ACTIVE);
+				
 				sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE, candidate.getId().toString());
 			}
 		}
 		Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocations);
+		
 		return percentage.toString();
 	}
 	
+	/**
+	 * Resume Delete rest call
+	 * @param loginUserId
+	 * @param orgLocationId
+	 * @param candidateId
+	 * @param resumeId
+	 * @return
+	 * @throws Exception
+	 */
+	
+	@RequestMapping(value = "rest/terminateResume", method = RequestMethod.POST)
+	public @ResponseBody String terminateResumeRest(@RequestBody CandidateResumeDTO candidateResumeDTO) throws Exception
+	{
+		// User user = (User)
+			// SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateResumeDTO.getCandidateId()));
+		User user = userService.getUserById(Long.parseLong(candidateResumeDTO.getLoginUserId()));
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(candidateResumeDTO.getLoginUserId()));
+		StringBuffer activitySummary = new StringBuffer();
+		CandidateResumes candidateResume = candidateResumesService.getCandidateResumeByResumeId(Long.parseLong(candidateResumeDTO.getResumeId()));
+		if (candidateResume != null) {
+			candidateResume.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+			candidateResume.setUpdatedBy(user.getUserCode());
+			candidateResume.setUpdatedDate(commonUtil.currentDate());
+			candidateResume = candidateResumesService.updateCandidateResume(candidateResume);
+			if (candidateResume.getTitle() != null && candidateResume.getTitle() != ""
+					&& candidateResume.getTitle() != "undefined") {
+				activitySummary.append("Resume").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateResume.getTitle()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}
+			else {
+				activitySummary.append("Resume").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateResume.getFileName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}
+			candidateActivityCommonUtil.storeCandidateResumesHistory(candidateResume, user);
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidateResume.getCandidateId(), "", Constants.CANDIDATE_DELETED_RESUME, activitySummary.toString(), "CANDIDATE");
+			// update the candidate Resume on ELK
+			if (null != candidate && null != candidate.getId()) {
+				 CandidateIndex candidateIndex = new CandidateIndex();
+				 candidateIndex.setCandidateId(candidate.getId());
+				 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				 candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
+				 candidateIndex.setCurrentResumeId(Constants.CANDIATE_RESUME_IN_ACTIVE);
+				
+				sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE, candidate.getId().toString());
+			}
+		}
+		Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocations);
+		
+		return percentage.toString();
+	}
 	/**
 	 * @author Venkat Kesav
 	 * 

@@ -3,22 +3,42 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-
-<link href="resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<link href="/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
 
 <script type="text/javascript">
 		window.onload = function () {
 			/* getAllCountries(); */
-			initLocationAuto('candidateLocation','candidateCountry','candidateState','candidateCity','candidateZipCode','candidateLatitude','candidateLongitude','');
+			initLocationAuto('candidateLocation','candidateCountry','candidateState','candidateCity','candidateZipCode','candidateLatitude','candidateLongitude','','address');
 			disableMonths();
 		 };
 	</script>
 
-<script>
+	<script>
 		$(document).ready(function() {
+			$(".clearUpload").hide();
 			document.getElementById("addcandidate_form").reset();
+			<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+			  var sectionId = '${section.id}';
+			  getCustomDependentField(sectionId);
+			 </c:forEach>
 		});
 	</script>
+
+ <script type="text/javascript">
+	function genderCheckValidation(id){
+		 var gendersList = [];
+ 		 $("input[name='gender']:checked").each( function (i) {
+ 			gendersList[i] = $(this).val();
+ 		});
+ 		 
+		if (gendersList.length > 0) { 
+		document.getElementById("genderValue").value = id.value;
+		}else{
+			$('#genderValue').val(''); 
+		}
+	} 
+</script>
 
 <!-- Content Area -->
 <section class="content-wraper">
@@ -29,16 +49,16 @@
 		<c:if
 			test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
 			<div class="pull-right brud-crum">
-				<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-					href="<c:url value='/candidatesList'/>"> Candidate List</a> &raquo;
+				<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
+					href="<c:url value='/app/candidatesList'/>"> Candidate List</a> &raquo;
 				Add Candidate
 			</div>
 		</c:if>
 		<c:if
 			test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
 			<div class="pull-right brud-crum">
-				<a href="<c:url value='/recruiterDashboard'/>">Home</a>&raquo;<a
-					href="<c:url value='/candidatesList'/>"> Candidate List</a> &raquo;
+				<a href="<c:url value='/app/recruiterDashboard'/>">Home</a>&raquo;<a
+					href="<c:url value='/app/candidatesList'/>"> Candidate List</a> &raquo;
 				Add Candidate
 			</div>
 		</c:if>
@@ -46,6 +66,7 @@
 	<div class="content-area content-new clearfix">
 		<div id="loading"></div>
 		<form:form id="addcandidate_form" name="addcandidate_form">
+		<input type="hidden" id="actionId" value="${actionId}">
 			<div class="row form-horizontal mt myForm">
 				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
@@ -76,6 +97,15 @@
 								<input type="text" class="form-control" aria-label="...">
 							</div>
 							<!-- /input-group -->
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3">Middle Name</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" id="middleName"
+								name="middleName" value="" field-name="Middle Name"
+								data-validation="validate_AlphaNumber validate_length length1-100"
+								data-validation-optional="true" value="">
 						</div>
 					</div>
 					<div class="form-group">
@@ -119,51 +149,87 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
+						<label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>
 						<div class="col-md-9" id="locationField">
 							<div class="positionRelative">
 								<input class="form-control positionRelative"
 									id="candidateLocation" name="location"
-									placeholder="Enter your address" type="text"
-									field-name="Locatin" data-validation="required"></input> <i
+									placeholder="Enter address" type="text"
+									field-name="Address" data-validation="required"></input> <i
 									class="fa fa-refresh btn btn-primary refresh-icon"
 									title="Refresh"
-									onClick="refreshGoogleApiLocation('candidateLocation','candidateCountry','candidateState','candidateCity','candidateZipCode');"></i>
+									onClick="refreshGoogleApiLocation('candidateLocation','candidateCountry','candidateState','candidateCity','candidateZipCode','address');"></i>
 							</div>
 						</div>
 					</div>
 
-
 					<div class="form-group">
-						<label class="col-md-3">Country</label>
+						<label class="col-md-3">Street Address</label>
 						<div class="col-md-9">
-							<input class="form-control" id="candidateCountry" name="country"
-								placeholder="Country" value="${loginCountryName}" type="text"
-								readonly></input>
+							<input type="text" class="form-control" id="address"
+								name="address" value="${address}" field-name="Street Address" placeholder="Enter Street Addres"
+								data-validation="validate_Space validate_length length2-250"
+								data-validation-optional="true">
 						</div>
 					</div>
-
-					<div class="form-group">
-						<label class="col-md-3">State</label>
-						<div class="col-md-9">
-							<input class="form-control" id="candidateState" name="state"
-								placeholder="State" type="text" readonly></input>
-						</div>
-					</div>
-
+					
 					<div class="form-group">
 						<label class="col-md-3">City</label>
 						<div class="col-md-9">
-							<input class="form-control" id="candidateCity" name="city"
-								placeholder="City" type="text" readonly></input>
+							<input class="form-control" id="candidateCity" name="city" placeholder="City" type="text"></input>
 						</div>
 					</div>
+					
+					<div class="form-group">
+						<label class="col-md-3">State</label>
+						<div class="col-md-9">
+							<input class="form-control" id="candidateState" name="state" placeholder="State" type="text" ></input>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
+						<div class="col-md-9">
+							<input class="form-control" id="candidateCountry" name="country" placeholder="Country" field-name="Country"  data-validation="required"  value="${loginCountryName}" type="text" ></input>
+						</div>
+					</div>
+					
 
 					<div class="form-group">
 						<label class="col-md-3">ZipCode</label>
 						<div class="col-md-9">
 							<input class="form-control" id="candidateZipCode" name="zipcode"
-								placeholder="Zip code" type="text" readonly></input>
+								placeholder="Zip code" type="text" ></input>
+						</div>
+					</div>
+					
+					<div class="form-group">
+                      <label class="col-md-3">Date of Birth</label>
+                         <div class="col-md-9">
+                           <div class="input-group">
+                              <input type="text" value="" name="dateofBirth" class="form-control calendar" id="dateofBirth" readonly="readonly">
+                              <span class="input-group-addon" onClick="clearDateOfBirth();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+                           </div>
+                        </div>
+                  </div>
+					
+					<div class="form-group">
+						<label class="col-md-3">Marital Status</label>
+						<div class="col-md-9">
+						<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>
+						<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>
+						<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>
+						<label class="paddingLeft paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-md-3">Gender</label>
+						<div class="col-md-9" id= "errorGenderMsg">
+						<label class="paddingRight"><input type="radio"  value="Male"  name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Male</label>
+						<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Female</label>
+						<label class="paddingRight"><input type="radio"  value="Transgender" name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Transgender</label>
+						<input type="hidden"  id="genderValue" name="genderValue"  field-name="Gender" data-validation="required"/> 		
 						</div>
 					</div>
 
@@ -185,15 +251,7 @@
 					</div>
 
 
-					<div class="form-group">
-						<label class="col-md-3">Address</label>
-						<div class="col-md-9">
-							<input type="text" class="form-control" id="address"
-								name="address" value="${address}" field-name="Address"
-								data-validation="validate_Space validate_length length2-250"
-								data-validation-optional="true">
-						</div>
-					</div>
+					
 
 					<div class="form-group">
 						<label class="col-md-3">Designation</label>
@@ -233,13 +291,13 @@
 									<select class="form-control selectpicker" id="experienceYears"
 										name="experienceYears" onchange="disableMonths();">
 										<option value="">Years</option>
-										<c:forEach begin="0" end="25" varStatus="loop">
+										<c:forEach begin="0" end="50" varStatus="loop">
 											<option>${loop.index}</option>
 										</c:forEach>
 									</select>
 								</div>
 								<div class="col-xs-6 col-md-6">
-									<select class="form-control selectpicker" id="experienceMonths"
+									<select class="form-control selectpicker experienceMonths" id="experienceMonths"
 										name="experienceMonths">
 										<option value="">Months</option>
 										<c:forEach begin="0" end="11" varStatus="loop">
@@ -264,26 +322,43 @@
 					<c:if test="${SourceLeadWeb_userType != 'Recruiter'}">
 						<div class="clearfix" id="hideVendor" style="display: none">
 							<div class="form-group">
-								<label class="col-md-3"><span class="pull-left">Vendor</span><span
-									class="text-danger pull-left" id="man1">*</span></label>
-								<div class="col-md-9" id="errorvendor">
-									<select class="chosen-select form-control" name="vendors"
+								<label class="col-md-3"><span class="pull-left">Vendor</span></label>
+								<div class="col-md-9 chooRadius" id="errorvendor">
+								<div class="input-group col-md-10 pull-left chooRadius">
+									<select class="chosen-select form-control" name="vendors" data-validation-optional="true"
 										id="vendors" placeholder="Select Vendor" field-name="Vendor"
 										onchange="getVendorContactList();removeValiationVendor();">
 									</select>
+								 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocation();addCandiadateEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
+									
 								</div>
+								<span class="col-md-2 noPad clearfix">
+							<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
+							<a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+							</sec:authorize>
+							</span>
+							</div>
 							</div>
 
 							<div class="form-group">
-								<label class="col-md-3"><span class="pull-left">Vendor
-										Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
-								<div class="col-md-9" id="errorvendorContact">
+								<label class="col-md-3"><span class="pull-left">Vendor Contact</label>
+								<div class="col-md-9 chooRadius" id="errorvendorContact">
+								<div class="input-group col-md-10 pull-left chooRadius">
 									<select class="chosen-select form-control" name="vendorcontact"
 										id="vendorcontact" field-name="Vendor Contact"
-										placeholder="Select Vendor Contact"
+										placeholder="Select Vendor Contact" data-validation-optional="true"
 										onchange="removeValiationVendorContact();">
 									</select>
+                  <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocation();addCandiadateEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
+			</div>		
+								<span class="col-md-2 noPad clearfix" onclick="selectedVendor();">
+								<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
+								<a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+								</sec:authorize>
+							 </span>			
+										
 								</div>
+								
 							</div>
 						</div>
 					</c:if>
@@ -415,14 +490,16 @@
 
 						<div class="form-group">
 							<label class="col-md-3">Attach Resume</label>
-							<div class="col-md-9 zindex">
+							<div class="col-md-9 zindex positionRelative">
 								<div class="input-group col-md-12" id="uploadFileGroup"
 									style="margin: 0 auto">
 									<label class="input-group-btn"> 
 									<span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadBtn" class="upload"> </span>
 									</label> 
+									
 									<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Resume ..." field-name="Upload Resume"
 										data-validation="validatedoc " data-validation-optional="true">
+										<div class="clearUpload"></div>
 								</div>
 							</div>
 						</div>
@@ -504,6 +581,13 @@
 					</div>
 
 					<div class="clearfix"></div>
+					 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		               <c:if test="${sectionOrder.index == 0}">
+		                  <div id="customDiv${section.id}"></div>
+		               </c:if>
+		            </c:forEach>
+					
+					<div class="clearfix"></div>
 					<div class="form-group">
 						<label class="col-md-3"></label>
 						<div class="col-md-9">
@@ -515,9 +599,8 @@
 						</div>
 					</div>
 
-
-
-
+					<!-- this "candidateCreationType" field is used for candidate creation type -->
+         			<input type="hidden" id="candidateCreationType" name="candidateCreationType" value="manual">
 
 					<div class="clearfix"></div>
 
@@ -537,7 +620,7 @@
 						<input type="button" value="Save" id="store_candidate"
 							onclick="storeCandidate();" class="btn btn-primary"> <input
 							type="button" value="Cancel"
-							onClick="javascript:window.location.href = '<c:url value='/candidatesList'/>'"
+							onClick="javascript:window.location.href = '<c:url value='${appPath}/candidatesList'/>'"
 							class="btn btn-default ml">
 					</div>
 				</div>
@@ -552,6 +635,19 @@
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->
+
+<script>
+function getCustomDependentField(sectionId){
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 success: function(data) {
+		        	$('#customDiv'+sectionId).empty();
+		        	$('#customDiv'+sectionId).append(data);
+				 }
+		  });
+}
+</script>
 
 <%-- 
      @author : prasad k.
@@ -577,9 +673,8 @@
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd'
 			};
-		
+  		
 		 if ($('#addcandidate_form').validate(false, validationSettings)){ 
-			
 			var form = $('#addcandidate_form')[0];
       		var formData = new FormData(form); 
 			//It will escape all the special characters
@@ -659,33 +754,22 @@ function validate_fileupload(fileName)
 }
 </script>
 
-
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
+
+<script>
+  $(function() { 
+	  tagIt("candidateSkills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','Select Skills');
+		tagIt("candidateEducation", 'Press Enter-Key Or Comma(,) To Add New Education:', 'tagItBykeyForSkills','skills','Select Education');
+
+	});
+  </script>
+
+
+
 <script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			
-		   /* $("#country").chosen(); */
-	       /* $("#state").chosen();
-	       $("#city").chosen(); */
-	       
-	       
-	       
-	        //Adding Customized Skills to the list
-	        var select, chosen;
-		    select = $("#candidateSkills");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
-		    chosen = select.data('chosen');
-		    
 		    $("#candidateSkills").chosen().change(function(event) {
 		    	var allSkills = $(event.target).val();
 		   
-		    	
 		    	$.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/profileBySkillSet?"+tokenParamName+"="+tokenValue+"&allSkills="+allSkills, 
@@ -698,127 +782,11 @@ function validate_fileupload(fileName)
 		    	
 		    });
 		    
-		   // chosen.search_field.on('keyup keydown', function(e)
-		    		chosen.search_field.on('keydown keyup', function(e)
-				    {
-				    	   var skillsArray = this.value.split(",");
-					    	 if(skillsArray.length > 1){
-				        		 for (var i=0; i < skillsArray.length; i++) {
-				        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
-				        			 select.append(option);
-				 		             select.find(option).prop('selected', true);
-				 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
-				 	        		 $("#candidateSkills").trigger("chosen:updated");
-				                 }
-					    	 }else{
-					    		var focussedSkills = $("ul.chosen-results").find("li.active-result.highlighted");
-				    			var newSkill = this.value.replace(","," ");
-				    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-				                 {
-				    				 preventTabkey(e);
-				                   // below code manually enter skills are taken
-				    				  
-				                   var isNewSkill = true;
-									 $("#candidateSkills option:selected").each(function(){
-										 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
-											 isNewSkill = false;
-											 return false;
-										 }
-				                    
-				                   });
-									
-										if(focussedSkills.length > 0){
-											var skillOption  = $("<option>").val(focussedSkills.first().text()).text(focussedSkills.first().text());
-											select.append(skillOption);
-											select.find(skillOption).prop('selected',true);
-											select.find(skillOption).siblings("[value='"+ focussedSkills.first().text()+"']").remove();
-											$("#candidateSkills").trigger("chosen:updated");
-									   }
-									   else{
-										   if(isNewSkill){
-											var option = $("<option>").val(newSkill).text(newSkill);
-											select.append(option);
-											select.find(option).prop('selected', true);
-										   }
-									   }
-									
-					               $("#candidateSkills").trigger("chosen:updated"); 
-				                   
-				                }
-						       
-			    	         }
-		    	});
-		    //Adding Customized Skills to the list
-		    
-		    //Adding Customized Educations to the list
-	        var selectone, chosenone;
-	        selectone = $("#candidateEducation");
-	        selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
-	        chosenone = selectone.data('chosen');
-	        chosenone.search_field.on('keydown keyup', function(e1)
-		    {
-	        	var focussedEducations = $("ul.chosen-results").find("li.active-result.highlighted");
-		    	var newEducation = this.value.replace(",","");
-		        if (tagItBykeyForSkills(e1) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
-		        {
-		        	preventTabkey(e1);
-		        	var isNewEducation = true;
-					 $("#candidateEducation option:selected").each(function(){
-						 if(this.value.toUpperCase() === newEducation.toUpperCase() && this.value.toLowerCase() === newEducation.toLowerCase()){
-							 isNewEducation = false;
-							 return false;
-						 }
-                   
-                  });
-					 
-					 
-							if(focussedEducations.length > 0){
-								var educationOption  = $("<option>").val(focussedEducations.first().text()).text(focussedEducations.first().text());
-								selectone.append(educationOption);
-								selectone.find(educationOption).prop('selected',true);
-								selectone.find(educationOption).siblings("[value='"+ focussedEducations.first().text()+"']").remove();
-								$("#candidateEducation").trigger("chosen:updated");
-						   }
-						   else{
-							   if(isNewEducation){
-								var option = $("<option>").val(newEducation).text(newEducation);
-								selectone.append(option);
-								selectone.find(option).prop('selected', true);
-							   }
-						   }
-						
-					 
-					 
-		        	
-                    //end
-	        		$("#candidateEducation").trigger("chosen:updated");
-	        		
-		        }
-		    }); 
-		    //Adding Customized Educations to the list
-	       
-	       
-	      /*  $("#country").on('change', function (e) {
-	    	   getStates();
-	       });
-	       $("#state").on('change', function (e) {
-	    	   getCities();
-	       }); */
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-			var $this = $(this);
-			$this.next().css({'width': '100%'});
-			})
-			
 			$("#candidateSkills").val('').trigger("chosen:updated");
 	       $("#candidateEducation").val('').trigger("chosen:updated");
 				
 				
 </script>
-<!-- Eductions and Skills Autocomplete Scripts End Here -->
-
 <!-- Candidate Email validation script starts here -->
 
 <script type="text/javascript">
@@ -854,20 +822,21 @@ function validate_fileupload(fileName)
 
 <!-- Experience Years and Months validation Script years greater than  20 the months dropdown disabled script here -->
 <script type="text/javascript">
- function disableMonths() {
-     $("#experienceYears").change(function() {
-         if ($("#experienceYears").val() == '25'){
-        	 $("#experienceMonths").val('');  
-        	 $('#experienceMonths').selectpicker('refresh');
-        	 $('#experienceMonths').attr("disabled", false);
-             $('#experienceMonths').val("disabled", false);
-         }else{
-        	 $("#experienceMonths").val('');  
-        	 $('#experienceMonths').selectpicker('refresh');
-        	 $("#experienceMonths").attr("disabled", false); 
-         }
-     });
- }
+function disableMonths() {
+	
+    $("#experienceYears").change(function() {
+        if ($('#experienceYears').val()=='50'){
+       	 $("#experienceMonths").val('');
+       	 $('#experienceMonths').selectpicker('refresh');
+       	 $('#experienceMonths').attr("disabled", "disabled");
+       	
+        }else{
+       	 $('#experienceMonths').val("");  
+       	 $('#experienceMonths').selectpicker('refresh');
+       	 $("#experienceMonths").attr("disabled", false); 
+        }
+    });
+}
  
  var selectedFile = document.getElementById("uploadBtn");
 	      selectedFile.addEventListener("change", function() {
@@ -918,23 +887,14 @@ function getDesignationType(designationType){
 	
 	if(designationType.value == 'C2C'){
 		 document.getElementById("hideVendor").style.display="block";
-		 $('#vendors').attr("data-validation","required"); 
-		 $('#vendorcontact').attr("data-validation","required"); 
-		 
-		 document.getElementById("man1").style.display="block";
-		 document.getElementById("man2").style.display="block";
 		  getVendorsByOrgLocation();
 	}else{
 		 document.getElementById("hideVendor").style.display="none";
-		 $('#vendors').removeAttr("data-validation","required"); 
-		 $('#vendorcontact').removeAttr("data-validation","required"); 
 	}
 	
 	 
 	if(designationType.value == 'C2C-1099'){
 		 document.getElementById("hideVendor").style.display="block";
-		 document.getElementById("man1").style.display="none";
-		 document.getElementById("man2").style.display="none";
 		 $('#vendors').attr("data-validation-optional", "true"); 
 		 $('#vendorcontact').attr("data-validation-optional", "true");  
 		 $("#errorvendor").find("p.jquery_form_error_message").remove();
@@ -942,8 +902,6 @@ function getDesignationType(designationType){
 		  getVendorsByOrgLocation();
 	}else{
 		// document.getElementById("hideVendor").style.display="none";
-		 $('#vendors').removeAttr("data-validation-optional", "true"); 
-		 $('#vendorcontact').removeAttr("data-validation-optional", "true");  
 	} 
 	$('#designationType + p').remove();
 }
@@ -1043,12 +1001,12 @@ function  removeValiationVendorContact() {
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
+		        	//var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
 		        	$('#vendorcontact').append('<option value="">--Select Vendor contact--</option>');
-		             for(var i=0;i<json.length;i++){
-		            	 var opt = json[i];
+		             for(var i=0;i<json.data.length;i++){
+		            	 var opt = json.data[i];
 		            	 $('#vendorcontact').append('<option value='+opt.id+' >'+opt.spocName+' ('+opt.ownerName+')</option>');
 		            } 
 		            $('#vendorcontact').trigger("chosen:updated");
@@ -1059,7 +1017,51 @@ function  removeValiationVendorContact() {
  $(function() {
 	$("#uploadBtn").change(function() {
 		fileUpload("uploadBtn", "resumes", "addcandidate_form");
+		$(".clearUpload").show();
 	});
  });
  </script>
+<script>
+	$(".clearUpload").click(function(){
+		$("#uploadFile").val('');
+		$(".clearUpload").hide();
+	        $("#addcandidate_form input[data-id*=uploadBtn]").remove();
+	});
+</script>
 
+<script>
+function addCandiadateEmptyVendorContact(){
+	$("#vendorcontact").empty();
+	 $('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
+   $('#vendorcontact').trigger("chosen:updated");
+}
+</script>
+<script>
+	 function selectedVendor(){
+		 var vid =  $('#vendors').val();
+		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
+	 }
+	 </script>
+	 
+<script>
+  $( function() {
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  // written common method in slead-common.js for date formats start
+	  var finalDateFormat = getJSDateFormat(locationDate);
+	  //end
+	  $('#dateofBirth').datepicker({
+	      dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  	  yearRange: "-100:+0",
+	  	  maxDate:0
+	      //minDate: 0  this line for to restrict selection of previous dates
+	  });
+	  
+  } );
+  
+  function clearDateOfBirth(){
+		$("#dateofBirth").val("");
+		};
+		
+</script>

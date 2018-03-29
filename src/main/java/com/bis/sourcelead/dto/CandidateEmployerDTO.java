@@ -1,7 +1,12 @@
 package com.bis.sourcelead.dto;
 
+import java.util.List;
+
+import com.bis.sourcelead.entity.LookUpData;
+
 public class CandidateEmployerDTO {
 
+	private Long id;
 	
 	private String name ;
 	
@@ -24,6 +29,48 @@ public class CandidateEmployerDTO {
 	private String endDate;
 	
 	private String candidateEmployeeId;
+	
+	private String taxId;
+	
+	private String jobTitle;
+	
+	private String employmentType;
+
+	private long candidateId;
+	
+	private String candidateExperianceId;
+	
+
+	private List<LookUpData> candidateEmpLookup; 
+
+
+	private String loginUserId;
+	
+	private String orgLocationId;
+	
+	private String candidateemployerId;
+	
+
+	public String getCandidateemployerId()
+	{
+		return candidateemployerId;
+	}
+
+	public void setCandidateemployerId(String candidateemployerId)
+	{
+		this.candidateemployerId = candidateemployerId;
+	}
+
+
+	public Long getId()
+	{
+		return id;
+	}
+
+	public void setId(Long id)
+	{
+		this.id = id;
+	}
 
 	public String getName()
 	{
@@ -75,16 +122,6 @@ public class CandidateEmployerDTO {
 		this.startMonth = startMonth;
 	}
 
-	public String getStartDate()
-	{
-		return startDate;
-	}
-
-	public void setStartDate(String startDate)
-	{
-		this.startDate = startDate;
-	}
-
 	public String getEndMonth()
 	{
 		return endMonth;
@@ -93,6 +130,16 @@ public class CandidateEmployerDTO {
 	public void setEndMonth(String endMonth)
 	{
 		this.endMonth = endMonth;
+	}
+
+	public String getStartDate()
+	{
+		return startDate;
+	}
+
+	public void setStartDate(String startDate)
+	{
+		this.startDate = startDate;
 	}
 
 	public String getStartYear()
@@ -134,5 +181,81 @@ public class CandidateEmployerDTO {
 	{
 		this.candidateEmployeeId = candidateEmployeeId;
 	}
+
+
+	public String getTaxId() {
+		return taxId;
+	}
+
+	public void setTaxId(String taxId) {
+		this.taxId = taxId;
+	}
+
+	public String getJobTitle() {
+		return jobTitle;
+	}
+
+	public void setJobTitle(String jobTitle) {
+		this.jobTitle = jobTitle;
+	}
+
+	public String getEmploymentType() {
+		return employmentType;
+	}
+
+	public void setEmploymentType(String employmentType) {
+		this.employmentType = employmentType;
+	}
+
+
+	public long getCandidateId()
+	{
+		return candidateId;
+	}
+
+	public void setCandidateId(long candidateId)
+	{
+		this.candidateId = candidateId;
+	}
+
+	public String getCandidateExperianceId()
+	{
+		return candidateExperianceId;
+	}
+
+	public void setCandidateExperianceId(String candidateExperianceId)
+	{
+		this.candidateExperianceId = candidateExperianceId;
+	}
+
+
+	public List<LookUpData> getCandidateEmpLookup() {
+		return candidateEmpLookup;
+	}
+
+	public void setCandidateEmpLookup(List<LookUpData> candidateEmpLookup) {
+		this.candidateEmpLookup = candidateEmpLookup;
+	}
+
+	public String getLoginUserId()
+	{
+		return loginUserId;
+	}
+
+	public void setLoginUserId(String loginUserId)
+	{
+		this.loginUserId = loginUserId;
+	}
+
+	public String getOrgLocationId()
+	{
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(String orgLocationId)
+	{
+		this.orgLocationId = orgLocationId;
+	}
+
 
 }

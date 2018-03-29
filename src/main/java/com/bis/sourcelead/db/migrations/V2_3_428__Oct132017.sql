@@ -1,0 +1,2 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_RELATIONS','NAICS_CODE','VARCHAR(50) NULL AFTER `INDUSTRY_NAME`');
+CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_RELATIONS','EIN_CODE','VARCHAR(50) NULL AFTER `NAICS_CODE`');

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.LocalDate;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.ibm.icu.math.BigDecimal;
 
 @Service
@@ -62,7 +64,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 	ConversionUtil conversionUtil;
 
 	@Override
-	public InvoicePayment saveInvoicePayment(InvoicePaymentDTO invoicePaymentDTO,JSONObject jsonObj, User user, OrgLocations orgLocation,
+	public InvoicePayment saveInvoicePayment(InvoicePaymentDTO invoicePaymentDTO, User user, OrgLocations orgLocation,
 			MultipartFile multiFile, Long invoiceId) throws Exception {
 
 		Invoice invoice = invoiceDao.getInvoicetById(invoiceId);
@@ -139,18 +141,16 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 						if (StringUtils.isNotBlank(invoicePaymentDTO.getCustomeAmount())) {
 							invoicePayment.setPaymentAmount(invoicePaymentDTO.getCustomeAmount());
 							if (!paidCurrencyCode.equalsIgnoreCase(receiverCurrencyCode)) {
-								float conAmount = conversionUtil.convert(paidCurrencyCode, receiverCurrencyCode,
-										Float.parseFloat(paidAmount));
-								BigDecimal conversionAmount = new BigDecimal(conAmount);
-								BigDecimal receiverTotalAmount = new BigDecimal(
-										Float.parseFloat(parentInvoice.getTotal()));
-								receivedAmount = receiverTotalAmount.subtract(conversionAmount);
-								BigDecimal totalAmount = new BigDecimal(
-										Double.parseDouble(invoicePaymentDTO.getTotalAmount()));
-								BigDecimal customAmount = new BigDecimal(
-										Double.parseDouble(invoicePaymentDTO.getCustomeAmount()));
-								int res = customAmount.compareTo(totalAmount);
-								if ((conversionAmount.equals(receiverTotalAmount)) || res == -1) {
+								float conAmount = conversionUtil.convert(paidCurrencyCode, receiverCurrencyCode,Float.parseFloat(paidAmount));
+								BigDecimal paidConversionAmount = new BigDecimal(conAmount);
+								BigDecimal receiverTotalAmount = new BigDecimal(Float.parseFloat(parentInvoice.getDueAmount()));
+								receivedAmount = receiverTotalAmount.subtract(paidConversionAmount);
+//								BigDecimal totalAmount = new BigDecimal(
+//										Double.parseDouble(invoicePaymentDTO.getTotalAmount()));
+//								BigDecimal customAmount = new BigDecimal(
+//										Double.parseDouble(invoicePaymentDTO.getCustomeAmount()));
+								int res = paidConversionAmount.compareTo(receiverTotalAmount);
+								if ((receiverTotalAmount.equals(paidConversionAmount)) || res == 1) {
 									parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
 								}else if(commonUtil.currentDate().after(invoice.getDueDate())) {
 									invoice.setPaymentStatus(Constants.OVER_DUE);
@@ -200,6 +200,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 				invoicePayment.setFileContentType(file.getContentType());
 				invoicePayment.setFileName(file.getFileName());
 				invoicePayment.setFileURL(file.getFileURL());
+				FileUploadUtil.moveFile(invoicePaymentDTO.getStaticPath(), file, "incoiceDocuments");
 			}
 		}
 		
@@ -230,6 +231,11 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 	@Override
 	public InvoicePayment invoicePaymentById(Long id) throws Exception {
 		return invoicePaymentDao.invoicePaymentById(id);
+	}
+
+	@Override
+	public List<InvoicePayment> getInvoicePaymentListByOrgloactionIdAndDates(Long orgLocationId, Date startDate, Date endDate) throws Exception {
+		return invoicePaymentDao.getInvoicePaymentListByOrgloactionIdAndDates(orgLocationId, startDate, endDate);
 	}
 
 }

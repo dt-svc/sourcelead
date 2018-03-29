@@ -30,7 +30,7 @@ public interface ContractsTemplateService {
 
 	Contracts saveNewContract(ContractsDTO contractsDTO, OrgLocations orgLocation, String saveType, User user, Org org, String contractType)throws Exception;
 
-	Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation,String contractSubmissionType, String tabType, String contractsType, String contractStatus,User user,String userRoleName)throws Exception;
+	ContractsDTO getAllContractsByLocationIdAndStatus(OrgLocations orgLocation,String contractSubmissionType, String tabType, String contractsType, String contractStatus,User user,String userRoleName)throws Exception;
 	
 	Contracts getAllContractsCountByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType, String contractStatus, User user, String userRoleName)throws Exception;
 
@@ -75,6 +75,10 @@ public interface ContractsTemplateService {
 	void sendMSAEndDateModifiedMail(Contracts contracts, OrgLocations orgLocation, Date previousEndDate) throws Exception;
 
 	void sendSOWEndDateModifiedMail(Contracts contracts, OrgLocations orgLocation) throws Exception;
+
+	List<Contracts> getContractByLocationId(Long orgLocationId);
+
+	List<User> getSigningAuthoritiesForContract(Long locationId, Long tabId) throws Exception;
 
 
 	

@@ -20,7 +20,6 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name="USER_LOGIN_ATTEMPTS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region = "userLoginAttempts")
 public class UserLoginAttempts implements Serializable{
 	
 	
@@ -31,8 +30,8 @@ public class UserLoginAttempts implements Serializable{
 	@Column(name = "ID",nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch=FetchType.EAGER)
+	
+	@ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="USER_ID", nullable=false )        
     private User user;
 	

@@ -69,7 +69,7 @@ function alertClose(){
 	$(".modal.modal_createalert").fadeOut();
 }
 </script>
-<script src="resources/js/jobs/js/bootstrap-select.min.js"></script>
+<script src="/resources/js/jobs/js/bootstrap-select.min.js"></script>
 <script>
 function createAlert(){
 	var email = '${SourceLeadWeb_user.email}';
@@ -210,10 +210,12 @@ function createAlert(){
 					 result = result +'         	<label class="col-md-3">Keywords / Skills <span class="text-danger paddingLeft">*</span></label>';
 					 result = result +'         	<div class="col-md-9">';
 					 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills"  multiple id="skills" name="skills" data-validation="required" field-name="Keywords/Skills">';
-					 result = result +'         			<c:forEach var="skill" items="${skillsList}">';
-					 result = result +'         			<option value="${skill.name}">${skill.name}</option>';
-					 result = result +'         			</c:forEach>';
-					 result = result +'         		</select>';
+					 
+					          		 <c:forEach var="skill" items="${skillsList}">
+											result = result + "<option value='${skill.name}'>${skill.name}</option>";
+						             </c:forEach>
+						            
+					 result = result +'       </select>';
 					 result = result +'         	</div>';
 					 result = result +'         </div>';
 					 result = result +'       </div>';
@@ -324,15 +326,16 @@ function createAlert(){
 function saveAlert(){
 	var jobAlertUUID = $("#jobAlertUUID").val();
 	if ($('#create_alert_form').validate(false, validationSettings)){ 
-		var frm = $('#create_alert_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, ""); 
-		//It will escape all the special characters
-	    var jsonData = encodeURIComponent(con);
+
+		var sourceleadUrl = '${sourceleadUrl}';
+	    var formData = getFormData1("create_alert_form");
 
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+					data: formData,
+	  		         processData: false,
+	  		         contentType:false, 
+					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}",
 					success : function(result) {
 						 if(jobAlertUUID != null && jobAlertUUID != '' && jobAlertUUID != 'undefined'){
 							$("#jobAlert2").removeAttr("style");

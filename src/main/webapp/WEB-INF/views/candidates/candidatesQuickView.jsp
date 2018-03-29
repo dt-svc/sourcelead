@@ -15,9 +15,8 @@ function candidateQuickViewProfile(candidateId){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-         success :function(data) {  
-              if(data != null && data != 'undefined' && data != ""){  
-              	var json = JSON.parse(data);
+         success :function(json) {  
+              if(json != null){  
 							var result ="";
 							
 							if(json.country != null && json.country != '' && json.country != 'undefined'){
@@ -43,6 +42,11 @@ function candidateQuickViewProfile(candidateId){
 	             			 	}else{
 	             			 		lastName = '';
 	             			 	}
+	         			 	if(json.middleName != null && json.middleName !='' && json.middleName != 'undefined'){
+	         			 		middleName = json.middleName;
+	         			 	}else{
+	         			 		middleName = "";
+	         			 	}
 	         			 	if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
 	         			 		mobilePhone =json.mobilePhone;
 	             			 	}else{
@@ -101,7 +105,7 @@ function candidateQuickViewProfile(candidateId){
 					result = result+'        <div class="col-md-7">                                                                                                                                ';
 					result = result+'            <div class="media">                                                                                                                               ';
 					result = result+'                <div class="media-body">                                                                                                                      ';
-					result = result+'                    <h4 class="media-heading text-warning">'+json.firstName+' '+lastName+'<small> '+designationType+'</small></h4>';
+					result = result+'                    <h4 class="media-heading text-warning">'+json.firstName+' '+middleName+' '+lastName+'<small> '+designationType+'</small></h4>';
 					if(json.summary != null && json.summary != '' && json.summary != 'undifined'){
 						
 						result = result+'      <div class="trimTxt">';
@@ -116,7 +120,7 @@ function candidateQuickViewProfile(candidateId){
 					if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
 					result = result+'<img data-id="profileImage" id="userImage" src="'+json.fileUrl+'" alt="Profile Image" class="media-object" style="width:65px">';
 					}else{
-					result = result+'<img data-id="profileImage" id="userImage" src="resources/images/userprofileImg.jpg" alt="Profile Image" class="media-object" style="width:65px">';
+					result = result+'<img data-id="profileImage" id="userImage" src="/resources/images/userprofileImg.jpg" alt="Profile Image" class="media-object" style="width:65px">';
 					} 
 					result = result+'  <div class="mb mt5 UsProBar">';                                                                                                                                        
 						result = result+' <div class="progress nomr">  ';
@@ -220,20 +224,20 @@ function candidateQuickViewProfile(candidateId){
 
 <script>
 	function qvemployeeSubmission(candidateId) {
-				$.ajax({
-					type : "POST",
-					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
-					success : function(data) {
-						if (data != null && data != 'undefined' && data != "" && data != '[]') {
-								$("#qvemployeeSubmission").empty();
+		$.ajax({
+					type : "GET",
+					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?&candidateId=" + candidateId,
+					success : function(json) {
+		                  if (json.data.length > 0 && json != null && json != 'undefined' && json != "" && json != '[]') {
+		
+						$("#qvemployeeSubmission").empty();
 								var result = "";
-								var json = JSON.parse(data);
 								result = result +'            <div class="col-md-12">';
 								result = result +' 				<h4>Work Experience</h4>';
 
-								for (var i = 0; i < json.length; i++) {
+								for (var i = 0; i < json.data.length; i++) {
 									if(i < 4){
-									var opt = json[i];
+									var opt = json.data[i];
 									if (opt.name != null && opt.name != '' && opt.name != 'undefined') {
 										name = opt.name;
 									} else {
@@ -292,7 +296,16 @@ function candidateQuickViewProfile(candidateId){
 // 								result = result +'          </div>';
 								result = result +'        </div>';
 								$("#qvemployeeSubmission").append(result);
-						}
+					}else{
+			        	  var result = '';
+			        	  result = result +'            <div class="col-md-12" style="display:none">';
+			        	  result = result +' <h4>Work Experience</h4>';
+			        	  result = result +' <div>---</div>';
+			        	  result = result +'</div>';
+			        	  $("#qvemployeeSubmission").empty();
+			        	  $("#qvemployeeSubmission").append(result); 
+			          }
+						
 					},
 
 				});
@@ -302,20 +315,22 @@ function candidateQuickViewProfile(candidateId){
 <script>
 function qveducationSubmission(candidateId){
 	 $.ajax({  
-          type : "POST",
-          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
-        	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
-	                	 $("#qveducationSubmission").empty();
+          type : "GET",
+          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?&candidateId="+candidateId,        
+          
+        		  success :function(json) {
+                  if (json.data.length > 0 && json != null && json != 'undefined' && json != "" && json != '[]') {
+ 
+        			  $("#qveducationSubmission").empty();
 	                	 var result = "";
 	                	 
 							result = result +'            <div class="col-md-12">';
 							result = result +'              <h4>Education</h4>';
 							
-							 var json = JSON.parse(data);
-		                     for (var i = 0; i < json.length; i++) {
+						//	 var json = JSON.parse(data);
+		                     for (var i = 0; i < json.data.length; i++) {
 		                    	 if(i < 3){
-			                    	 var opt = json[i];  
+			                    	 var opt = json.data[i];  
 			                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
 		                    		        EducationName = opt.name;
 			                    	    }else{
@@ -373,7 +388,15 @@ function qveducationSubmission(candidateId){
 							
 							result = result +'        </div>';
 	                     $("#qveducationSubmission").append(result); 
-        	  }
+          }else{
+        	  var result = '';
+        	  result = result +'            <div class="col-md-12 " style="display:none">';
+        	  result = result +' <h4>Education</h4>';
+        	  result = result +' <div>---</div>';
+        	  result = result +'            </div>';
+        	  $("#qveducationSubmission").empty();
+        	  $("#qveducationSubmission").append(result); 
+          }
         },
           
      }); 
@@ -385,17 +408,17 @@ function qwikCertificates(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
-        	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
+          success :function(json) {
+        	  if (json.data.length > 0 && json != null && json != 'undefined' && json != "" && json != '[]') {
 	                	 $("#qvcertificationSubmission").empty();
 	                	 var result = "";
 	                	 
 	                	 result = result +'<div class="col-md-12">';
 						 result = result +' <h4>Certifications</h4>';
-							var json = JSON.parse(data);
-							for (var i = 0; i < json.length; i++) { 
+// 							var json = JSON.parse(data);
+							for (var i = 0; i < json.data.length; i++) { 
 								if(i < 3){
-		                    	var opt = json[i];  
+		                    	var opt = json.data[i];  
 								result = result +'<div class="resume-widget resumewidget">';
 								
 								if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != "" && opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
@@ -427,6 +450,14 @@ function qwikCertificates(candidateId){
 							result = result +'        </div>';
 							
 							$("#qvcertificationSubmission").append(result); 
+          }else{
+        	  var result = '';
+        	  result = result +'            <div class="col-md-12 " style="display:none">';
+        	  result = result +' <h4>Certifications</h4>';
+        	  result = result +' <div>---</div>';
+        	  result = result +'            </div>';
+        	  $("#qvcertificationSubmission").empty();
+        	  $("#qvcertificationSubmission").append(result); 
           }
         },
           

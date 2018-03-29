@@ -27,6 +27,11 @@ height: auto !important;
 
 <script>
 function candidateDocuments(candidateId){
+	
+	$("#candidateProfileTab").removeClass("current");
+	$("#candidateDocumentsTab").addClass("current");
+	$(".project_tabs_inn").css("display", "block");
+	
 	var candidateType = '${candidateType}';
 	var result = "";
 	
@@ -102,9 +107,9 @@ function candDocumentsList(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateDocumentsListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
+          success :function(json) {
            
-             			 var json = JSON.parse(data); 
+//              			 var json = JSON.parse(data); 
              			 
 	                	 $("#candidateDocumentsList").empty();
 	                	 var result = "";
@@ -122,10 +127,12 @@ function candDocumentsList(candidateId){
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
 	                     
-	                     for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i];  
+	                     for (var i = 0; i < json.data.length; i++) { 
+	                    	 var opt = json.data[i];  
+	                    	 if(opt.isConfidential == 'N' || opt.docUploadStatus =="Requested"|| (opt.isConfidential == 'Y' && '${SourceLeadWeb_user.userCode}' == opt.userIdStr)){
+
 	                    	 result  = result + ' <tr>';
-	                    	 if(opt.requestedDocumentsId != null && opt.requestedDocStatus != "Rejected" && opt.requestedDocStatus != "Accepted"){
+	                    	 if(opt.requestDocumentId != null && opt.requestedDocStatus == "Submitted"){
 	                    		 result = result +'<td><input id="'+opt.id+'" value="'+opt.id+'"  onclick="deleteRequestedDoc();" type="checkbox" name="documents[]" class="myCheckbox" >';
 	                    	 }else{
 	                    		 result = result +"  <td><div>--</div></td>"; 
@@ -144,7 +151,7 @@ function candDocumentsList(candidateId){
 	    	             	 }
 	                    	 
 	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
-				           	 result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span><a class="fa fa-eye" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a><a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileURL+'\" title="Download"></a></div></td>';
+				           	 result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span><a class="fa fa-eye" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a><a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileURL+'\" download title="Download"></a></div></td>';
 
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>----</span></div></td>';
@@ -158,7 +165,6 @@ function candDocumentsList(candidateId){
 		                    	
 	                    	 
 							result = result +"  <td><div title='"+opt.docUploadStatus+"'>"+opt.docUploadStatus+"</div></td>"; 
-	                    	 
 	                    	 if(opt.requestedDocStatus != null && opt.requestedDocStatus != '' && opt.requestedDocStatus != 'undefined'){
 	                    		 result = result +"<td>";
 	                    		 result = result +"<div title='"+opt.requestedDocStatus+"'>"+opt.requestedDocStatus+" "; 
@@ -193,6 +199,7 @@ function candDocumentsList(candidateId){
 			           		}
 			           		result = result+'</div></td>';
 	                    	 result  = result + '</tr>';
+	                    	 }
 	                      } 
 	                     result = result +" </tbody>";
 	                     result = result +"</table>";
@@ -214,13 +221,13 @@ function candidateDocumentView(documentUUID,title){
 
 <script>
 	function toggleAllDocuments(source) {
-	    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+		 var checkboxes = document.querySelectorAll('input[class="myCheckbox"]');
 	    for (var i = 0; i < checkboxes.length; i++) {
 	        if (checkboxes[i] != source)
 	            checkboxes[i].checked = source.checked;
 	        
 	    }
-	$('input:checkbox:not(#checkAllDocuments)').click(function() {
+		 $('input[class="myCheckbox"]').each(function(i) {
 	    if(!this.checked) {
 	        $('#checkAllDocuments').removeAttr('checked');
 	    }
@@ -445,7 +452,7 @@ function addDocument(candidateId, documentUUID) {
 	
 	result = result+'<div class="clearfix mb10" id="uploadDocDiv">';
 	result = result+'<div class="col-md-12 validation_p">';
-	result = result+'<div class="input-group positionRelative" id="uploadFileGroup">';
+	result = result+'<div class="input-group" id="uploadFileGroup">';
 	result = result+'<label class="input-group-btn" onchange="uploadFileDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'<input type="file"  id="uploadBtn" style="display: none;"  multiple="" class="upload">';
 	result = result+'</span> </label>';
@@ -492,15 +499,7 @@ function addDocument(candidateId, documentUUID) {
 	   }; 
 	    
 	    /* upload file script for size validation 2MB*/
-	    var selectedFile = document.getElementById("uploadBtn");
-	    selectedFile.addEventListener("change", function() {
-	      var docSize = this.files[0].size;
-	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-	      if(docSize > 2097152){
-	    	  document.getElementById("uploadFile").value = '';
-	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
-	      }
-	    });
+	   
 	 <%-- Eductions and Skills Autocomplete Scripts Starts Here --%>
 	 var config = {
 			  '.chosen-select'           : {},
@@ -623,9 +622,15 @@ function getDocumentType(documentType){
 							$("#popUpDiv").removeClass("edit-details-active");
 	            			$("#selector9").removeAttr("style");
 	            			$("#selector9").css({ display: "block" });
-            				$("#docMsgDiv").html("Success!! New Candidate Document added");
+	            			if(documentUUID != null && documentUUID !="" && documentUUID !="undefined")
+	            			$("#docMsgDiv").html("Document updated");
+		            		else
+		            		$("#docMsgDiv").html("Success!! New Document added");
 	             			candDocumentsList(candidateId);
 	             			docMsgFadein();
+	             			setTimeout(function(){
+	        		 			candidateList();					 			
+	        		 		},100);
 	            		 
 					},
 				}); 
@@ -783,6 +788,9 @@ function deleteDocument(candidateId, documentId){
         			 $("#remove_user_pop_documents, .project_inn_mask").fadeOut();
         			 candDocumentsList(candidateId);
         			 docMsgFadein();
+        			 setTimeout(function(){
+ 			 			candidateList();					 			
+ 			 	     },100);
    		    	}
    		    },
 	     });
@@ -959,7 +967,7 @@ $('body').on('submit', '#requestForDocuments_form', function(e){
       var formData = getFormData("requestForDocuments_form");
         $("#submit_docs").attr("disabled", "disabled");
 		$("#submit_docs" ).addClass('button').val('Processing..');
-		$("#documentLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#documentLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	       $.ajax({
 		    	type: "POST",
 		    	data : formData,
@@ -1048,7 +1056,7 @@ $('body').on('submit', '#docrejectedReason_form', function(e){
 	 	});
 	 	 
        $("#submit_rejectedReason").attr("disabled", "disabled");
-       $("#docsrejectedLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+       $("#docsrejectedLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
   	   $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/rejectRequestedDocuments?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&documentsIds="+documentsIds, 
@@ -1085,3 +1093,10 @@ $(document).ready(function() {
 });		
 	
 </script>  
+
+<!-- <script>
+	function clearUpload(){
+		$("#uploadFile").val("");
+	}
+</script>
+ -->

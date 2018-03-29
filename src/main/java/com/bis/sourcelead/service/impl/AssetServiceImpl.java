@@ -2,24 +2,30 @@ package com.bis.sourcelead.service.impl;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AssetDao;
+import com.bis.sourcelead.dto.AssetDTO;
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
+import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetCategory;
+import com.bis.sourcelead.entity.AssetCustomFieldData;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserCustomFieldData;
+import com.bis.sourcelead.service.AssetCategoryService;
+import com.bis.sourcelead.service.AssetCustomFieldService;
 import com.bis.sourcelead.service.AssetService;
+import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 
 @Service
 public class AssetServiceImpl implements AssetService{
@@ -29,6 +35,12 @@ public class AssetServiceImpl implements AssetService{
 
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private AssetCustomFieldService assetCustomFieldService;
+	
+	@Autowired
+	private OrglocationFormFieldsService orglocationFormFieldsService;
 	
 	@Override
 	public Asset saveAsset(Asset asset) throws Exception {
@@ -116,8 +128,7 @@ public class AssetServiceImpl implements AssetService{
 	
 	
 	@Override
-	public void saveAssetDetails(JSONObject jsonObj,String assetId, User user, OrgLocations orgLocations,
-			MultipartHttpServletRequest request) throws Exception {
+	public Asset saveAssetDetails(AssetDTO assetDTO,String assetId, User user, OrgLocations orgLocations) throws Exception {
 		
 		Asset asset ;
 		if(assetId != null && !"".equals(assetId)){
@@ -128,126 +139,181 @@ public class AssetServiceImpl implements AssetService{
 			asset.setCreatedDate(new Date());
 		}
 		
-		 if(jsonObj.has("sno") && !isNullOrEmpty(jsonObj.getString("sno"))){
-			 asset.setSlno(jsonObj.getString("sno"));
+		 if(StringUtils.isNotBlank(assetDTO.getSno())){
+			 asset.setSlno(assetDTO.getSno());
 		 }
 		 
-		 if(jsonObj.has("make") && !isNullOrEmpty(jsonObj.getString("make"))){
-			 asset.setMake(jsonObj.getString("make"));
+		 if(StringUtils.isNotBlank(assetDTO.getMake())){
+			 asset.setMake(assetDTO.getMake());
 		 }
 		 
-		 if(jsonObj.has("model") && !isNullOrEmpty(jsonObj.getString("model"))){
-			 asset.setModel(jsonObj.getString("model"));
+		 else{
+			 
+			 asset.setMake(null);
 		 }
 		 
-		 if(jsonObj.has("name") && !isNullOrEmpty(jsonObj.getString("name"))){
-			 asset.setName(jsonObj.getString("name"));
+		 if(StringUtils.isNotBlank(assetDTO.getModel())){
+			 asset.setModel(assetDTO.getModel());
+		 }
+		 else{
+			 asset.setModel(null);
+			 
 		 }
 		 
-		 if(jsonObj.has("memory") && !isNullOrEmpty(jsonObj.getString("memory"))){
-			 asset.setMemory(jsonObj.getString("memory"));
+		 if(StringUtils.isNotBlank(assetDTO.getName())){
+			 asset.setName(assetDTO.getName());
 		 }
 		 
-		 if(jsonObj.has("cpu") && !isNullOrEmpty(jsonObj.getString("cpu"))){
-			 asset.setCpu(jsonObj.getString("cpu"));
+		 else{
+			 asset.setName(null);
 		 }
 		 
-		 if(jsonObj.has("harddisk") && !isNullOrEmpty(jsonObj.getString("harddisk"))){
-			 asset.setHardDisk(jsonObj.getString("harddisk"));
+		 if(StringUtils.isNotBlank(assetDTO.getMemory())){
+			 asset.setMemory(assetDTO.getMemory());
+		 }
+		 else{
+			 
+			 asset.setMemory(null);
 		 }
 		 
-		 if(jsonObj.has("monitor") && !isNullOrEmpty(jsonObj.getString("monitor"))){
-			 asset.setMonitor(jsonObj.getString("monitor"));
+		 if(StringUtils.isNotBlank(assetDTO.getCpu())){
+			 asset.setCpu(assetDTO.getCpu());
+		 }
+		 else{
+			 asset.setCpu(null);
+		 }
+		 if(StringUtils.isNotBlank(assetDTO.getHarddisk())){
+			 asset.setHardDisk(assetDTO.getHarddisk());
 		 }
 		 
-		 if(jsonObj.has("category") && !isNullOrEmpty(jsonObj.getString("category"))){
-			 String[] category = jsonObj.getString("category").split(",");
+		 else{
+			 asset.setHardDisk(null);
+		 }
+		 
+		 if(StringUtils.isNotBlank(assetDTO.getMonitor())){
+			 asset.setMonitor(assetDTO.getMonitor());
+		 }
+		 
+		 else{
+			 
+			 asset.setMonitor(null);
+		 }
+		 
+		 if(StringUtils.isNotBlank(assetDTO.getIssueDate())){
+			 try {
+				 asset.setIssueDate(commonUtil.orgLocationDateFormat(assetDTO.getDateFormat(), assetDTO.getIssueDate()));
+				  
+				} catch (Exception e) {
+				  e.printStackTrace();
+				}
+		 }
+		 
+		 if(StringUtils.isNotBlank(assetDTO.getCategory())){
 			 AssetCategory assetCategory = new AssetCategory();
-			 assetCategory.setId(Long.valueOf(category[1]));
+			 assetCategory.setId(Long.parseLong(assetDTO.getCategory()));
 			 asset.setAssetCategory(assetCategory);
 		 }
 		 
-		 if(jsonObj.has("workingStatus") && !isNullOrEmpty(jsonObj.getString("workingStatus"))){
-			 asset.setWorkingStatus(jsonObj.getString("workingStatus"));
+		 if(StringUtils.isNotBlank(assetDTO.getWorkingStatus())){
+			 asset.setWorkingStatus(assetDTO.getWorkingStatus());
 		 }
-		 
-		 if(jsonObj.has("shiftAEmp") && !isNullOrEmpty(jsonObj.getString("shiftAEmp"))){
+		 if(StringUtils.isNotBlank(assetDTO.getShiftAEmp())){
 			 Employees shiftAEmp = new Employees();
-			 shiftAEmp.setId(Long.parseLong(jsonObj.getString("shiftAEmp")));
+			 shiftAEmp.setId(Long.parseLong(assetDTO.getShiftAEmp()));
 			 asset.setShiftAEmployee(shiftAEmp);
+		 }else{
+			 asset.setShiftAEmployee(null);
 		 }
 		 
-		 if(jsonObj.has("shiftBEmp") && !isNullOrEmpty(jsonObj.getString("shiftBEmp"))){
+		 if(StringUtils.isNotBlank(assetDTO.getShiftBEmp())){
 			 Employees shiftBEmp = new Employees();
-			 shiftBEmp.setId(Long.parseLong(jsonObj.getString("shiftBEmp")));
+			 shiftBEmp.setId(Long.parseLong(assetDTO.getShiftBEmp()));
 			 asset.setShiftBEmployee(shiftBEmp);
+		 }else{
+			 asset.setShiftBEmployee(null);
 		 }
 		 
-		 if(jsonObj.has("description") && !isNullOrEmpty(jsonObj.getString("description"))){
-			 asset.setDescription(jsonObj.getString("description"));
+		 if(StringUtils.isNotBlank(assetDTO.getDescription())){
+			 asset.setDescription(assetDTO.getDescription());
 		 }
 		 
+		 else{
+			 
+			 asset.setDescription(null);
+		 }
 		 
+		 if(assetDTO.getAttachmentUpload() != null){
+			 FileInfo fileInfo = assetDTO.getAttachmentUpload().get(0);
+			 asset.setFileUrl(fileInfo.getFileURL());
+			 asset.setFileName(fileInfo.getFileName());
+			 asset.setFileContentType(fileInfo.getContentType());
+			 FileUploadUtil.moveFile(assetDTO.getStaticPath(), fileInfo, "assetDocuments");
+		 }
+		 
+		 if(assetDTO.getUploadBtndskAUpload() != null){
+			 FileInfo fileInfo1 = assetDTO.getUploadBtndskAUpload().get(0);
+			 asset.setShiftAFileUrl(fileInfo1.getFileURL());
+			 asset.setShiftAFileName(fileInfo1.getFileName());
+			 asset.setShiftAFileContentType(fileInfo1.getContentType());
+			 FileUploadUtil.moveFile(assetDTO.getStaticPath(), fileInfo1, "assetDocuments");
+			 }
+			 
+			 if(assetDTO.getUploadBtndskBUpload()!= null){
+			 FileInfo fileInfo2 = assetDTO.getUploadBtndskBUpload().get(0);
+			 asset.setShiftBFileUrl(fileInfo2.getFileURL());
+			 asset.setShiftBFileName(fileInfo2.getFileName());
+			 asset.setShiftBFileContentType(fileInfo2.getContentType());
+			 FileUploadUtil.moveFile(assetDTO.getStaticPath(), fileInfo2, "assetDocuments");
+			 }
 		    		 
-		   MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
-	       final Map files = multiRequest.getFileMap();
-	       MultipartFile multiFile = (MultipartFile)files.get("attachment");
-	        if(null != multiFile && null != multiFile.getContentType() && !isNullOrEmpty(multiFile.getOriginalFilename())){
-		     	  try {
-		     		 asset.setFileContentType(multiFile.getContentType());
-		     		 asset.setDocFile(multiFile.getBytes());
-		     		 asset.setFileName(multiFile.getOriginalFilename());
-		     	   
-		 	       }catch (Exception e) {
-		     	      	 e.printStackTrace();
-		 			    }
-	         }else if(jsonObj.has("generalExisitingFile") && jsonObj.getString("generalExisitingFile").equalsIgnoreCase("")){
-	        	 asset.setFileContentType(null);
-	     		 asset.setDocFile(null);
-	     		 asset.setFileName(null);
-	         }
-	       
-	       
-	        MultipartFile multiFile1 = (MultipartFile)files.get("uploadBtn-dskA");
-	       if(null != multiFile1 && null != multiFile1.getContentType() && !isNullOrEmpty(multiFile1.getOriginalFilename())){
-		     	  try {
-		     		 asset.setShiftAFileContentType(multiFile1.getContentType());
-		     		 asset.setShiftADocFile(multiFile1.getBytes());
-		     		 asset.setShiftAFileName(multiFile1.getOriginalFilename());
-		     	   
-		 	       }catch (Exception e) {
-		     	      	 e.printStackTrace();
-		 			    }
-		     }else if(jsonObj.has("shiftAExisitngFile") && jsonObj.getString("shiftAExisitngFile").equalsIgnoreCase("")){
-	        	 asset.setShiftAFileContentType(null);
-	     		 asset.setShiftADocFile(null);
-	     		 asset.setShiftAFileName(null);
-	         }
-	       
-	        
-	        MultipartFile multiFile2 = (MultipartFile)files.get("uploadBtn-dskB");
-		       if(null != multiFile2 && null != multiFile2.getContentType() && !isNullOrEmpty(multiFile2.getOriginalFilename())){
-			     	  try {
-			     		 asset.setShiftBFileContentType(multiFile2.getContentType());
-			     		 asset.setShiftBDocFile(multiFile2.getBytes());
-			     		 asset.setShiftBFileName(multiFile2.getOriginalFilename());
-			     	   
-			 	       }catch (Exception e) {
-			     	      	 e.printStackTrace();
-			 			    }
-			    }else if(jsonObj.has("shiftBExisitngFile") && jsonObj.getString("shiftBExisitngFile").equalsIgnoreCase("")){
-		        	 asset.setShiftBFileContentType(null);
-		     		 asset.setShiftBDocFile(null);
-		     		 asset.setShiftBFileName(null);
-		         }
-	       
-		 
 		 asset.setOrgLocations(orgLocations);
 		 asset.setUpdatedBy(user.getUserCode());
 		 asset.setUpdatedDate(new Date());
 		 asset.setStatus(Constants.RECORD_ACTIVE);
 		 
-		 assetDao.saveAsset(asset);		 
+		 Asset savedAsset = assetDao.saveAsset(asset);		
+
+			if(assetDTO.getCustomFormData() !=null) {
+				for( CustomFormFieldDTO customFields:assetDTO.getCustomFormData()) {
+					if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+					AssetCustomFieldData assetCustomFields = null;
+						if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+							assetCustomFields = assetCustomFieldService.getAssetCustomFieldDataById(customFields.getEntityId());
+						}else {
+							assetCustomFields = new AssetCustomFieldData();
+						}
+						assetCustomFields.setAssets(savedAsset);
+					OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+					assetCustomFields.setOrglocationsFormFields(orgFormField);
+					assetCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+					assetCustomFieldService.saveAssetCustomFieldData(assetCustomFields);
+					}
+					
+				}	
+			}
+		 
+		 return asset;
 	}
+
+
+	@Override
+	public Asset getAssetByAssetSnoAndId(String assetSno, Long assetId, Long orgLocationsId) throws Exception {
+		
+		return assetDao.getAssetByAssetSnoAndId(assetSno,assetId,orgLocationsId);
+	}
+	
+
+
+	@Override
+	public Asset validateAssetSno(String assetSno, Long orgLocationsId) throws Exception {
+		return assetDao.validateAssetSno(assetSno,orgLocationsId);
+	}
+	
+	@Override
+	public Boolean validateAssetId(String assetSno, Long orgLocationsId) throws Exception {
+		return assetDao.validateAssetId(assetSno,orgLocationsId);
+	}
+	
+	
 
 }
