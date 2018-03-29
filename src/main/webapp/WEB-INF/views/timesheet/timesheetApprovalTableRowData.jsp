@@ -108,3 +108,11 @@
 		<div  class="sm">--</div>
 	</td>
 </c:if>
+
+<script>
+  $(document).ready(function () {
+	  if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	  }
+	});
+</script>

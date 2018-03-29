@@ -146,8 +146,12 @@ function saveTaskDetails(){
   		         contentType:false, 
 				 url : sourceleadUrl+"/addTimeSheetDayEntries",
 				  		success : function(data) {
-				  			getSavedTaskDetails();
-				  			closeTimeEntryTasks();
+				  			if(){
+				  				
+				  			}else{
+					  			getSavedTaskDetails();
+					  			closeTimeEntryTasks();
+				  			}
 				},
 			});
 			return true; 

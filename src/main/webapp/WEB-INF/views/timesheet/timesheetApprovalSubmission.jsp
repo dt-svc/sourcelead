@@ -4,6 +4,8 @@
 
 
 <script src="/resources/js/jquery.simplePagination.js"></script>
+
+
 <c:if test="${!empty timesheetApprovalDTO.timesheetSubmission}">
 <div id="loadingCotentDiv"></div>
 <div id="tableContent" class="timesheetRep-table timesheet_appr_table" style="overflow: auto;">

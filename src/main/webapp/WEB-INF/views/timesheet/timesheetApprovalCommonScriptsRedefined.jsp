@@ -130,16 +130,21 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
     type: "POST",
     url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
 	    success: function(data) {
-        	 if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor == 'dashboard'){
-        		 var currentPageNumber =  $("#currentPageNumber").val();
-        		 getStatusListData(""+currentPageNumber+"","");
-        	 }
-        	 else{
-        		 $("#row"+projectMemberId).empty();
-		    	 $("#row"+projectMemberId).html(rowHtmlContent);
-		    	 $("#status"+projectMemberId).html("Approved");
-		    	 $("#action"+projectMemberId).html("<h3>Approved</h3><b class='Rname'>By :"+locationName+"</b>"); 
-        	   }
+	    	 if( data.indexOf('Sign In') >= 0){
+	    		location.replace(sourceleadUrl);
+	    	 }else{
+	    		 if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor == 'dashboard'){
+	        		 var currentPageNumber =  $("#currentPageNumber").val();
+	        		 getStatusListData(""+currentPageNumber+"","");
+	        	 }
+	        	 else{
+	        		 $("#row"+projectMemberId).empty();
+			    	 $("#row"+projectMemberId).html(rowHtmlContent);
+			    	 $("#status"+projectMemberId).html("Approved");
+			    	 $("#action"+projectMemberId).html("<h3>Approved</h3><b class='Rname'>By :"+locationName+"</b>"); 
+	        	   }
+	    	 }
+        	 
 	    	 
 	    }
     });   
@@ -168,22 +173,24 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 	    type: "POST",
 	    url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+(encodeMsg.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>'))+"&approvalStatus=REJECTED",       
 	    success: function(data) { 
-	    	
-	   	   // approvalList();
-	       if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor == 'dashboard'){
-	    	     var currentPageNumber =  $("#currentPageNumber").val();
-      		     getStatusListData(""+currentPageNumber+"","");
-		   }
-	   	   else{
-	   		  	  $("#row"+projectMemberId).empty();
-	 	    	  $("#row"+projectMemberId).html(rowHtmlContent);
-	 	    	  $("#status"+projectMemberId).html("Rejected");
-	 	    	  $("#action"+projectMemberId).empty();
-	 	    	  $("#action"+projectMemberId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'><div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>"+msg+"</div></i><b class='Rname'>By :"+locationName+"</b>");
-	   	   }
-	   	   cancelRejectSubmission(projectMemberId);
-	   	    pagination();
-	   	   
+	    	if( data.indexOf('Sign In') >= 0){
+	    		location.replace(sourceleadUrl);
+	    	 }else{
+	    		 // approvalList();
+	  	        if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor == 'dashboard'){
+	  	    	     var currentPageNumber =  $("#currentPageNumber").val();
+	        		     getStatusListData(""+currentPageNumber+"","");
+	  		    }
+	  	   	    else{
+	  	   		  	  $("#row"+projectMemberId).empty();
+	  	 	    	  $("#row"+projectMemberId).html(rowHtmlContent);
+	  	 	    	  $("#status"+projectMemberId).html("Rejected");
+	  	 	    	  $("#action"+projectMemberId).empty();
+	  	 	    	  $("#action"+projectMemberId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'><div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>"+msg+"</div></i><b class='Rname'>By :"+locationName+"</b>");
+	  	   	     }
+	  	   	     cancelRejectSubmission(projectMemberId);
+	  	   	    pagination();
+	    	 }
 	      }
 	    }); 
 	 }else{

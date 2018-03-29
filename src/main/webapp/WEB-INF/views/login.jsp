@@ -26,7 +26,13 @@
         response.sendRedirect("https://www.sourcelead.com/login");
     } %>
  
- 
+ <script>
+$(document).ready(function(){
+    if(window.location.href.indexOf("login") == -1) {
+        window.location.href = '/login';
+     }
+});
+</script>
 <script>
 window.onload = function() {
 	var userName = '${username}';

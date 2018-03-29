@@ -42,6 +42,8 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
+import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TimeSheetSubmissionDTO;
 import com.bis.sourcelead.dto.TimesheetEntriesDTO;
 import com.bis.sourcelead.dto.TimesheetEntryDetailsDTO;
@@ -67,11 +69,11 @@ import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
-import com.bis.sourcelead.service.ExportTimesheetEntries;
 import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -207,6 +209,7 @@ public class TimesheetRestController {
 	public ModelAndView getTimesheetEntryDetailsWeb(TimesheetExpenseEntryDetailsUtilDTO eedDTO,HttpServletRequest request) throws Exception
 	{
 		 ModelAndView model = new ModelAndView();
+		 try {
 		 TimesheetEntryDetailsDTO tedDTO = getTimesheetEntryDetails(eedDTO, request); 
 		 Long projectMemberId = eedDTO.getProjectMembersId();
 		 if(projectMemberId != null) {
@@ -217,6 +220,10 @@ public class TimesheetRestController {
 		 }
 		
 		 model.setViewName("timesheet/timesheetProjects");
+		 }catch(Exception e) {
+			 model.addObject("AWKWARD", true);
+			 model.setViewName("timesheet/timesheetProjects"); 
+		 }
 		 return model;
 		
 	}
@@ -531,14 +538,19 @@ public class TimesheetRestController {
  public ModelAndView getTimesheetfrequencyListWeb(TimesheetExpenseEntryDetailsUtilDTO eedDTO,HttpServletRequest request) throws Exception
  {
 	 ModelAndView model = new ModelAndView();
-	 TimesheetEntryDetailsDTO timesheetEntryDetailsDTO = new TimesheetEntryDetailsDTO();
-	 timesheetEntryDetailsDTO =  getTimesheetFrequencyList(eedDTO, timesheetEntryDetailsDTO,request);
-	 model.addObject("timesheetSubmissionDTO",timesheetEntryDetailsDTO.getTimesheetSubmission());
-	 model.addObject("timesheetEntryDetailsDTO",timesheetEntryDetailsDTO);
-	 LinkedHashMap<Long, LinkedList<TimesheetEntriesDTO>> entriesMap = getEntriesMapForDisplayWeb(timesheetEntryDetailsDTO.getTimesheetSubmission(),request);
-	 model.addObject("entriesMap",entriesMap);
-	 model.addObject("sourceleadUrl", sourceleadUrl);
-	 model.setViewName("timesheet/timesheetfrequencyList");
+	try {
+		 TimesheetEntryDetailsDTO timesheetEntryDetailsDTO = new TimesheetEntryDetailsDTO();
+		 timesheetEntryDetailsDTO =  getTimesheetFrequencyList(eedDTO, timesheetEntryDetailsDTO,request);
+		 model.addObject("timesheetSubmissionDTO",timesheetEntryDetailsDTO.getTimesheetSubmission());
+		 model.addObject("timesheetEntryDetailsDTO",timesheetEntryDetailsDTO);
+		 LinkedHashMap<Long, LinkedList<TimesheetEntriesDTO>> entriesMap = getEntriesMapForDisplayWeb(timesheetEntryDetailsDTO.getTimesheetSubmission(),request);
+		 model.addObject("entriesMap",entriesMap);
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("timesheet/timesheetfrequencyList");
+	}catch(Exception e) {
+		model.addObject("AWKWARD", true);
+		model.setViewName("timesheet/timesheetfrequencyList");
+	}
 	 return model;
  }
   private TimesheetEntryDetailsDTO getTimesheetFrequencyList(TimesheetExpenseEntryDetailsUtilDTO eedDTO,TimesheetEntryDetailsDTO timesheetEntryDetailsDTO,HttpServletRequest request) throws Exception {
@@ -841,8 +853,9 @@ public class TimesheetRestController {
 	  if(orgLocations == null && StringUtils.isNotEmpty(eedDTO.getLocationCode())){
 		orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
 	  }
-	  Long projectMemberId = eedDTO.getProjectMembersId();
 	  ModelAndView model = new ModelAndView();
+	  try {
+	  Long projectMemberId = eedDTO.getProjectMembersId();
 	  if(projectMemberId != null) {
 		     ProjectMembers pm = projectMembersService.getProjectMemberById(projectMemberId);
 			 eedDTO.setUserId(loginUser.getId());
@@ -877,6 +890,10 @@ public class TimesheetRestController {
 		     }
 	  }
 	 model.setViewName("timesheet/timeSheetSubmission");
+	  }catch(Exception e) {
+		  model.addObject("AWKWARD", true);
+		  model.setViewName("timesheet/timeSheetSubmission");
+	  }
 	 return model;
   }
   
@@ -1977,13 +1994,18 @@ public class TimesheetRestController {
     	/**
     	 * saving Code
     	 */
-    	 tedDTO =saveTimesheetEntries(tedDTO, request);
-    	 ModelAndView model = new ModelAndView();
-         model.addObject("timesheetSubmissionDTO",tedDTO.getTimesheetSubmission());
-         LinkedHashMap<Long, LinkedList<TimesheetEntriesDTO>> entriesMap = getEntriesMapForDisplayWeb(tedDTO.getTimesheetSubmission(),request);
-    	 model.addObject("entriesMap",entriesMap);
-         model.addObject("timesheetEntryDetailsDTO",tedDTO);
-    	 model.setViewName("timesheet/timeSheetSubmission");
+    	ModelAndView model = new ModelAndView();
+    	try {
+	    	 tedDTO =saveTimesheetEntries(tedDTO, request);
+	         model.addObject("timesheetSubmissionDTO",tedDTO.getTimesheetSubmission());
+	         LinkedHashMap<Long, LinkedList<TimesheetEntriesDTO>> entriesMap = getEntriesMapForDisplayWeb(tedDTO.getTimesheetSubmission(),request);
+	    	 model.addObject("entriesMap",entriesMap);
+	         model.addObject("timesheetEntryDetailsDTO",tedDTO);
+	    	 model.setViewName("timesheet/timeSheetSubmission");
+    	}catch(Exception e) {
+    		model.addObject("AWKWARD", true);
+			model.setViewName("timesheet/timeSheetSubmission");
+    	}
     	 return model;
     }
     
@@ -2368,6 +2390,7 @@ public class TimesheetRestController {
 			@RequestParam(value="dateFormat", required=false) String dateFormat,HttpServletRequest request) throws Exception {
 			//DateFormat format = Constants.DF_DMY;
 		//DateFormat  format = LoginSessionController.DATEFORMAT;
+		try {
 			if(StringUtils.isNotEmpty(timesheetFrequency)){
 			 	 String[] frequency = timesheetFrequency.split("To");
 			 	 String weekStartDate = frequency[0].trim();
@@ -2377,6 +2400,9 @@ public class TimesheetRestController {
 				 ProjectMembers pm = projectMembersService.getProjectMemberById(projectMemberId);
 			  	 submissionApproverHierarchyService.updateSubmissionStatusByProjectIdMasterCandidateIdStartDateAndEndDate(pm.getProjects().getId(),pm.getMasterCandidateId().getId(), startDate, endDate, Submission_Status.DRAFT.getValue());;
 			}
+		}catch(Exception e) {
+				e.printStackTrace();
+		}
 		
 	}
 	
@@ -2551,12 +2577,21 @@ public class TimesheetRestController {
 		}
     
        @RequestMapping(value = "/addTimeSheetDayEntries" , method = RequestMethod.POST)
-       public List<TimeSheetDayEntries> addTimeSheetDayEntries(TimesheetProjectTaskDTO timesheetProjectTaskDTO,HttpServletRequest request) throws Exception {
-    	 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	 	 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	 	 LinkedList<TimeSheetDayEntries> timeSheetDayEntriesList = new LinkedList<>();
-		 addTimesheetDayEntriesByProjectIdAndProjectMemberId(timesheetProjectTaskDTO.getProjectId(), timesheetProjectTaskDTO.getProjectTaskMemberId(), timesheetProjectTaskDTO.getTaskUUID(), timesheetProjectTaskDTO.getTimesheetDate(), timesheetProjectTaskDTO.getHours(),timesheetProjectTaskDTO.getComments(),loginUser, loginOrgLocation,null);
-	 	 return timeSheetDayEntriesList;
+       public ResponseList<TimeSheetDayEntries> addTimeSheetDayEntries(TimesheetProjectTaskDTO timesheetProjectTaskDTO,HttpServletRequest request) throws Exception {
+    	 ResponseList<TimeSheetDayEntries> timeSheetDayEntriesListResponseList = new ResponseList<>();
+    	 try {
+	    	 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 	 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 	 LinkedList<TimeSheetDayEntries> timeSheetDayEntriesList = new LinkedList<>();
+			 addTimesheetDayEntriesByProjectIdAndProjectMemberId(timesheetProjectTaskDTO.getProjectId(), timesheetProjectTaskDTO.getProjectTaskMemberId(), timesheetProjectTaskDTO.getTaskUUID(), timesheetProjectTaskDTO.getTimesheetDate(), timesheetProjectTaskDTO.getHours(),timesheetProjectTaskDTO.getComments(),loginUser, loginOrgLocation,null);
+			 timeSheetDayEntriesListResponseList.setData(timeSheetDayEntriesList);
+			 timeSheetDayEntriesListResponseList.setResponse(Result.SUCCESS.name());
+			 timeSheetDayEntriesListResponseList.setResponseMessage(Result.SUCCESS.getValue());
+    	 }catch(Exception e) {
+    		 timeSheetDayEntriesListResponseList.setResponse(Result.AWKWARD.name());
+			 timeSheetDayEntriesListResponseList.setResponseMessage(Result.AWKWARD.getValue());
+    	 }
+	 	 return timeSheetDayEntriesListResponseList;
        }
        
        private void addTimesheetDayEntriesByProjectIdAndProjectMemberId(Long projectId,Long projectMemberId,String taskUUID,String timesheetDateStr,String hours,String comments,User loginUser,OrgLocations loginOrgLocation, String leaveStatusType) throws Exception{

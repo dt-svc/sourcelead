@@ -118,10 +118,15 @@ public class TimeApprovalRedefinedRestController {
 		
 		@RequestMapping(value = "/timesheetApprovalDetails", method = RequestMethod.POST ) 
 		public ModelAndView timesheetApprovalDetailsWeb(TimesheetApprovalDTO timesheetApprovalDTO,HttpServletRequest request) throws Exception {
-			ModelAndView model = new ModelAndView();		
-			timesheetApprovalDTO = timesheetApprovalDetails(timesheetApprovalDTO,request);
-			model.addObject("timesheetApproval", timesheetApprovalDTO);
-			model.setViewName("timesheet/TimesheetApprovalDetils");
+			ModelAndView model = new ModelAndView();
+			try {
+				timesheetApprovalDTO = timesheetApprovalDetails(timesheetApprovalDTO,request);
+				model.addObject("timesheetApproval", timesheetApprovalDTO);
+				model.setViewName("timesheet/TimesheetApprovalDetils");
+			}catch (Exception e){
+				model.addObject("AWKWARD", true);
+				model.setViewName("timesheet/TimesheetApprovalDetils");
+			}
 			return model;
 			
 		}
@@ -399,14 +404,19 @@ public class TimeApprovalRedefinedRestController {
 		@RequestMapping(value = "/timesheetEmployeeSubmissionDetails", method = RequestMethod.POST ) 
 		public ModelAndView timesheetEmployeeSubmissionDetailsWeb(TimesheetApprovalDTO timesheetApprovalDTO,HttpServletRequest request) throws Exception {
 			ModelAndView model = new ModelAndView();
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			 if(orgLocations == null && StringUtils.isNotEmpty(timesheetApprovalDTO.getLocationCode())){
-				orgLocations = orgLocationService.getOrgLocationsByLocationCode(timesheetApprovalDTO.getLocationCode());
-			 }
-			timesheetApprovalDTO = dataTableWeekDateList(request, timesheetApprovalDTO,orgLocations);
-			timesheetApprovalDTO = timesheetEmployeeSubmissionDetails(request,timesheetApprovalDTO);
-			model.addObject("timesheetApproval", timesheetApprovalDTO);
-			model.setViewName("timesheet/timesheetApprovalTableData");
+			try {
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				 if(orgLocations == null && StringUtils.isNotEmpty(timesheetApprovalDTO.getLocationCode())){
+					orgLocations = orgLocationService.getOrgLocationsByLocationCode(timesheetApprovalDTO.getLocationCode());
+				 }
+				timesheetApprovalDTO = dataTableWeekDateList(request, timesheetApprovalDTO,orgLocations);
+				timesheetApprovalDTO = timesheetEmployeeSubmissionDetails(request,timesheetApprovalDTO);
+				model.addObject("timesheetApproval", timesheetApprovalDTO);
+				model.setViewName("timesheet/timesheetApprovalTableData");
+			}catch (Exception e){
+				model.addObject("AWKWARD", true);
+				model.setViewName("timesheet/timesheetApprovalTableData");
+			}	
 			return model;
 			
 		}
@@ -425,6 +435,9 @@ public class TimeApprovalRedefinedRestController {
 			
 			OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(timesheetApprovalDTO.getLocationCode());
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
+			//orgLocations = null;
+			//user = null;
 			
 			Date actualStartDate=null;
 		    Date actualEndDate=null;
@@ -481,7 +494,8 @@ public class TimeApprovalRedefinedRestController {
 		
 	@RequestMapping(value = "/timesheetApprovalRowDetails", method = RequestMethod.POST ) 
 	public ModelAndView timesheetApprovalRowDetailsWeb(TimesheetApprovalDTO timesheetApprovalDTO,HttpServletRequest request) throws Exception {
-		ModelAndView model = new ModelAndView();	
+		ModelAndView model = new ModelAndView();
+		try {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    if(orgLocations == null && StringUtils.isNotEmpty(timesheetApprovalDTO.getLocationCode())){
 		  orgLocations = orgLocationService.getOrgLocationsByLocationCode(timesheetApprovalDTO.getLocationCode());
@@ -513,6 +527,10 @@ public class TimeApprovalRedefinedRestController {
 	    model.addObject("timesheetSubmission", submissionDTO);
 		model.addObject("timesheetApprovalDTO", timesheetApprovalDTO);
 		model.setViewName("timesheet/timesheetApprovalTableRowData");
+		}catch (Exception e) {
+			model.addObject("AWKWARD", true);
+			model.setViewName("timesheet/timesheetApprovalTableRowData");
+		}
 		return model;
 		
 	}
@@ -631,9 +649,14 @@ public class TimeApprovalRedefinedRestController {
 		@RequestMapping(value = "/getTimesheetListByStatus", method = RequestMethod.POST ) 
 		public ModelAndView getTimesheetListByStatusWeb(TimesheetApprovalDTO timesheetApprovalDTO,HttpServletRequest request) throws Exception {
 			ModelAndView model = new ModelAndView();	
-			timesheetApprovalDTO = getTimesheetListByStatus(timesheetApprovalDTO,request);
-			model.addObject("timesheetApproval", timesheetApprovalDTO);
-			model.setViewName("timesheet/timesheetDashboardTableData");
+			try {
+				timesheetApprovalDTO = getTimesheetListByStatus(timesheetApprovalDTO,request);
+				model.addObject("timesheetApproval", timesheetApprovalDTO);
+				model.setViewName("timesheet/timesheetDashboardTableData");
+			}catch(Exception e) {
+				model.addObject("AWKWARD", true);
+				model.setViewName("timesheet/timesheetDashboardTableData");
+			}
 			return model;
 			
 		}

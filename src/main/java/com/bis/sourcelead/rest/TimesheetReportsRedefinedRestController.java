@@ -80,9 +80,14 @@ public class TimesheetReportsRedefinedRestController {
 	@RequestMapping(value = "/timesheetReportsDiv", method = RequestMethod.POST ) 
 	public ModelAndView prapareTimesheetReports(TimesheetReportsDTO timesheetReportsDTO,HttpServletRequest request) throws Exception {
 		ModelAndView model = new  ModelAndView();
+		try {
 		timesheetReportsDTO = timesheetReportsDiv(timesheetReportsDTO,request);
 		model.addObject("timesheetReportsDTO",timesheetReportsDTO);
 		model.setViewName("timesheet/timeReportsDropDown");
+		}catch(Exception e) {
+			model.addObject("AWKWARD", true);
+			model.setViewName("timesheet/timeReportsDropDown");
+		}
 		return model;
 		
 	}
@@ -201,10 +206,15 @@ public class TimesheetReportsRedefinedRestController {
 	@RequestMapping(value = "/getMemberReports", method = RequestMethod.POST ) 
 	public ModelAndView prepareSubmissionDetailsWeb(TimesheetReportsDTO timesheetReportsDTO,HttpServletRequest request) throws Exception {
 		ModelAndView model = new  ModelAndView();
-		timesheetReportsDTO = prepareDateFrequencyForTimeSheetReports(timesheetReportsDTO,request);
-		timesheetReportsDTO = prepareSubmissionDetails(timesheetReportsDTO,request);
-		model.addObject("timesheetReportsDTO",timesheetReportsDTO);
-		model.setViewName("timesheet/timeReportsSubmissionData");
+		try {
+			timesheetReportsDTO = prepareDateFrequencyForTimeSheetReports(timesheetReportsDTO,request);
+			timesheetReportsDTO = prepareSubmissionDetails(timesheetReportsDTO,request);
+			model.addObject("timesheetReportsDTO",timesheetReportsDTO);
+			model.setViewName("timesheet/timeReportsSubmissionData");
+		}catch(Exception e) {
+			model.addObject("AWKWARD", true);
+			model.setViewName("timesheet/timeReportsSubmissionData");
+		}
 		return model;
 	}
 	private TimesheetReportsDTO prepareSubmissionDetails(TimesheetReportsDTO timesheetReportsDTO,HttpServletRequest request) throws Exception {
@@ -441,6 +451,7 @@ public class TimesheetReportsRedefinedRestController {
 	@RequestMapping(value = "/timeSheetReportExportList")   
 	public @ResponseBody void timeSheetReportExportList(HttpServletRequest request,HttpServletResponse response,TimesheetReportsDTO timesheetReportsDTO) throws Exception {
 		   File timesheetReportFile = null;
+		   try {
 		   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		   if(timesheetReportsDTO.getExportType().equalsIgnoreCase("pdf")){
@@ -468,5 +479,8 @@ public class TimesheetReportsRedefinedRestController {
 			inputStream.close();
 			response.getOutputStream().close();
 			response.getOutputStream().flush();
+		   }catch(Exception e) {
+			  e.printStackTrace();
+		   }
 	}
 }

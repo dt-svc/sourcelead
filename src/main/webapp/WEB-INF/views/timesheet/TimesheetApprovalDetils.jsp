@@ -207,13 +207,18 @@ $("#dataTableSearchExpenses").keyup(function(event) {
 <script>
  var selectedRecords = {};
   $(document).ready(function () {
-	    $("#selectAllTimeSheetCheckBoxForSubmitForApproval").click(function () {
-	        $(".checkBoxForSubmitForApproval").prop('checked', $(this).prop('checked'));
-	        $(".checkBoxForSubmitForApproval").each(function() {
-	        	selectedRecords[$(this).val()] = $(this).is(":checked");
-	        });
-	        displayAcceptRejectButtonOnHedder();
-	    });
+	  if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	  }else{
+		  $("#selectAllTimeSheetCheckBoxForSubmitForApproval").click(function () {
+		        $(".checkBoxForSubmitForApproval").prop('checked', $(this).prop('checked'));
+		        $(".checkBoxForSubmitForApproval").each(function() {
+		        	selectedRecords[$(this).val()] = $(this).is(":checked");
+		        });
+		        displayAcceptRejectButtonOnHedder();
+		    });
+	  }
+	   
 	});
  </script>
  

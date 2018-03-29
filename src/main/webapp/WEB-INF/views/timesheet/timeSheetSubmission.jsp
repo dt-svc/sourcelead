@@ -571,7 +571,11 @@ function maskme(){
 
 <script>
 $(document).ready(function() {  
-	maskme();    
+	if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	 }else{
+		 maskme(); 
+	 }
  });
 </script>
 
