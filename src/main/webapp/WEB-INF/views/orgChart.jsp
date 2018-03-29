@@ -26,6 +26,7 @@
                     </c:forEach>
                 </select>
             <input type="text" placeholder="Search" id="orgChartSearch"><input id='orgChartSearchButton' class="OrgBt" type="button" value="&nbsp" />
+		<i class="fa fa-times refresh" id='orgChartSearchClear'></i>
 		<div class="clearfix"></div>
 		</div> 
 		 
