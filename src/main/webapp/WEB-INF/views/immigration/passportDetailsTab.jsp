@@ -48,7 +48,7 @@
 				</div>
 			</div>				          
           <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-4 padding_left">Country</label>
+				<label class="col-md-4 padding_left">Country<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
 					<select class="chosen-select form-control" name="country" id= "countryName" field-name="Country" data-validation="required">
 					<option value="" selected>--Select Country--</option>
@@ -59,9 +59,9 @@
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-4 padding_left">Valid From</label>
+				<label class="col-md-4 padding_left">Valid From<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              	<div class="input-group">
+              	<div class="input-group errorInptgroup">
               	<input type="text" class="form-control calendar" value=""  placeholder="Valid From" name = "validFrom" id = "validFrom" field-name = "Valid From" data-validation="required"/>
 				   <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onClick="clearDateValue('validFrom');"></i></span>
 				</div>
@@ -69,9 +69,9 @@
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-4 padding_left">Valid To</label>
+				<label class="col-md-4 padding_left">Valid To<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              	<div class="input-group">
+              	<div class="input-group errorInptgroup">
               	<input type="text" class="form-control calendar" value="" name = "validTo" id = "validTo" placeholder="Valid To" field-name = "Valid To" data-validation="required"/>
 				<span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onClick="clearDateValue('validTo');"></i></span>
 				</div>

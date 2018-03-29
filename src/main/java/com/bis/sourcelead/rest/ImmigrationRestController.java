@@ -860,7 +860,7 @@ public class ImmigrationRestController {
 				canPassportVisa.setValidFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),canPassportVisa.getValidFromDate()));
 				canPassportVisa.setValidToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),canPassportVisa.getValidToDate()));
 			}
-			List<Countries> countryList = countriesService.getAllSourceLeadCountries();
+			List<Countries> countryList = countriesService.getAllCountries();
 			model.addObject("PassportList", PassportList);
 			model.addObject("countryList", countryList);
 		} catch (Exception e) {
