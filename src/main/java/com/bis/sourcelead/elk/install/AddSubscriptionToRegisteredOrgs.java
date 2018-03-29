@@ -89,7 +89,7 @@ public void updateSubscription() throws IOException, SQLException {
 						 subscriptionType = "1";
 					 }
 					 
-					 String sql5 = "SELECT * FROM sourcelead.COUNTRIES countries where countries.Name = '"+country+"' ";
+					 String sql5 = "SELECT * FROM sourcelead.countries countries where countries.Name = '"+country+"' ";
 					 Statement stmt5 = conn.createStatement();
 					 ResultSet rs5 = stmt5.executeQuery(sql5);
 					 if(rs5.next()) {
