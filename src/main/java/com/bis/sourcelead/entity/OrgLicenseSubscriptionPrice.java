@@ -25,11 +25,11 @@ public class OrgLicenseSubscriptionPrice implements Serializable{
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SUBSCRIPTION_TYPE_ID")
-    private LookUpData subscriptionType;
+    private OrgLicenseSubscriptionTypes subscriptionType;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USER_SUBSCRIPTION_TYPE_ID")
-    private LookUpData userSubscriptionType;
+    private OrgLicenseSubscriptionTypes userSubscriptionType;
 	
 	@Column(name = "SUBSCRIPTION_RATE")
 	private Double subscriptionRate;
@@ -44,21 +44,21 @@ public class OrgLicenseSubscriptionPrice implements Serializable{
 		this.id = id;
 	}
 
-	public LookUpData getUserSubscriptionType() {
-		return userSubscriptionType;
-	}
 
-	public void setUserSubscriptionType(LookUpData userSubscriptionType) {
-		this.userSubscriptionType = userSubscriptionType;
-	}
-
-
-	public LookUpData getSubscriptionType() {
+	public OrgLicenseSubscriptionTypes getSubscriptionType() {
 		return subscriptionType;
 	}
 
-	public void setSubscriptionType(LookUpData subscriptionType) {
+	public void setSubscriptionType(OrgLicenseSubscriptionTypes subscriptionType) {
 		this.subscriptionType = subscriptionType;
+	}
+
+	public OrgLicenseSubscriptionTypes getUserSubscriptionType() {
+		return userSubscriptionType;
+	}
+
+	public void setUserSubscriptionType(OrgLicenseSubscriptionTypes userSubscriptionType) {
+		this.userSubscriptionType = userSubscriptionType;
 	}
 
 	public Double getSubscriptionRate() {

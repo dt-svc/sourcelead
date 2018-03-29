@@ -52,8 +52,8 @@ function addSubscription(licenseUUID){
 	 	result = result +'		<c:forEach var="subscriptionType" items="${subscriptionTypeList}">';
 	 	result = result + '       <option value="${subscriptionType.id}">${subscriptionType.name}</option>';
 	    result = result +'		</c:forEach>';
-		result = result + '       <option value="8048" id="guestOpt" style="display:none">Guest</option>';
-		result = result + '       <option value="8049" id="unlimitedOpt" style="display:none">Unlimited</option>';
+		result = result + '       <option value="6" id="guestOpt" style="display:none">Guest</option>';
+		result = result + '       <option value="7" id="unlimitedOpt" style="display:none">Unlimited</option>';
 	    result = result + '    </select>';
 		
 		result = result +'</div>';
@@ -469,11 +469,11 @@ function licenseSubscriptionDetails(licenseUUID){
         	  getSubscribeCountries(json.country);
         	 
         	  
-        	  if(json.subscriptionType == '8048'){
+        	  if(json.subscriptionType == '6'){
         		  document.getElementById("guestOpt").style.display="";
         	  }
         	  
-        	  if(json.subscriptionType == '8049'){
+        	  if(json.subscriptionType == '7'){
         		  document.getElementById("unlimitedOpt").style.display="";
         	  }
         	  
