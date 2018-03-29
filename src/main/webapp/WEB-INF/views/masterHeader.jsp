@@ -91,7 +91,7 @@
 	<script src="/resources/reports/exporting.js"></script> 
 </c:if>
 
-<c:if test='${viewPage == "reports/requirementStageReports"}'>
+<c:if test='${viewPage == "reports/requirementStageReports" || viewPage == "reports/usersUsageReportList"}'>
 	<script src="/resources/reports/amcharts.js?staticTime=${staticTime}"></script>
 	<script src="/resources/reports/piechart.js?staticTime=${staticTime}"></script>
 	<script src="/resources/reports/export.min.js?staticTime=${staticTime}"></script>
@@ -558,6 +558,12 @@ function preventTabkey(e){
             <sec:authorize access="hasRole('ROLE_DASHBOARD_REPORTS')">
 	            <li class="reportsH">
 					<a title="Reports" href="<c:url value='${sourceleadUrl}/reportsDashboard'/>"><i class="fa fa-pie-chart"></i></a>
+	            </li>
+            </sec:authorize>
+            
+            <sec:authorize access="hasRole('ROLE_ENROLL_ORG')">
+	            <li class="reportsH">
+					<a title="Usage Reports" href="${appPath}/userUsageReport"><i class="fa fa-pie-chart"></i></a>
 	            </li>
             </sec:authorize>
             

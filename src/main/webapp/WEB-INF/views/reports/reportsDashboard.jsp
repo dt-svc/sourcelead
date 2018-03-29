@@ -57,6 +57,7 @@
 				<c:if test="${SourceLeadWeb_ats == 'Y'}">
 				<li><a href='${appPath}/arAgingReport'>A/R Aging</a></li>
 				</c:if>
+				<li><a href="${appPath}/userUsageReport">Usage Report</a></li>
 				
 				<c:if test="${SourceLeadWeb_vms == 'Y'}">
 				<li><a href='${appPath}/apAgingReport'>A/P Aging</a></li>
