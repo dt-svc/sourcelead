@@ -34,15 +34,15 @@ public class OrgLicenseSubscription implements Serializable{
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SUBSCRIPTION_TYPE")
-    private LookUpData subscriptionType;
+    private OrgLicenseSubscriptionTypes subscriptionType;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USER_SUBSCRIPTION_TYPE")
-    private LookUpData userSubscriptionType;
+    private OrgLicenseSubscriptionTypes userSubscriptionType;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "STORAGE_SUBSCRIPTION_TYPE")
-    private LookUpData storageSubscriptionType;
+    private OrgLicenseSubscriptionTypes storageSubscriptionType;
 	
 	@Column(name = "CURRENCY")
 	private String currency;
@@ -113,27 +113,28 @@ public class OrgLicenseSubscription implements Serializable{
 		this.country = country;
 	}
 
-	public LookUpData getSubscriptionType() {
+
+	public OrgLicenseSubscriptionTypes getSubscriptionType() {
 		return subscriptionType;
 	}
 
-	public void setSubscriptionType(LookUpData subscriptionType) {
+	public void setSubscriptionType(OrgLicenseSubscriptionTypes subscriptionType) {
 		this.subscriptionType = subscriptionType;
 	}
 
-	public LookUpData getUserSubscriptionType() {
+	public OrgLicenseSubscriptionTypes getUserSubscriptionType() {
 		return userSubscriptionType;
 	}
 
-	public void setUserSubscriptionType(LookUpData userSubscriptionType) {
+	public void setUserSubscriptionType(OrgLicenseSubscriptionTypes userSubscriptionType) {
 		this.userSubscriptionType = userSubscriptionType;
 	}
 
-	public LookUpData getStorageSubscriptionType() {
+	public OrgLicenseSubscriptionTypes getStorageSubscriptionType() {
 		return storageSubscriptionType;
 	}
 
-	public void setStorageSubscriptionType(LookUpData storageSubscriptionType) {
+	public void setStorageSubscriptionType(OrgLicenseSubscriptionTypes storageSubscriptionType) {
 		this.storageSubscriptionType = storageSubscriptionType;
 	}
 
