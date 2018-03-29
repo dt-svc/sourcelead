@@ -132,7 +132,7 @@
           <input type="button" value="Publish" class="btn btn-primary" id="publish" onclick="saveBlog('published');">
            <input type="hidden" value="${sourceleadBlog.blogUUID}" id="blogUUID">
           <input type="button" value="Save" class="btn btn-info ml mr" id="save" onclick="saveBlog('saved');">
-          <input type="button" value="cancel" id="cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/blogs'/>'" class="btn btn-default">
+          <input type="button" value="Cancel" id="cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/blogs'/>'" class="btn btn-default">
         </div>
       </div>
     </div>
