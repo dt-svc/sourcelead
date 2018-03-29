@@ -17,12 +17,12 @@
 			  </tr>
 			  <c:forEach var="visadetails" items="${PassportList}" varStatus="rows">
 			  <tr>
-				<td><div class="tbldata-dotdot-sm">${visadetails.visaType}</div></td>
-				<td><div class="tbldata-dotdot-sm">${visadetails.idNumber}</div></td>
-				<td><div class="tbldata-dotdot-sm">${visadetails.country}</div></td>
-				<td><div class="tbldata-dotdot-sm">${visadetails.validFromDate}</div></td>
-				<td><div class="tbldata-dotdot-sm">${visadetails.validToDate}</div></td>
-				<td><div><i id="edit" onclick="immigration.editPassportVisaDetailsByRowId(${visadetails.id});"
+				<td><div class="tbldata-dotdot-sm">${!empty visadetails.visaType ? visadetails.visaType : '---'}</div></td>
+				<td><div class="tbldata-dotdot-sm">${!empty visadetails.idNumber ? visadetails.idNumber : '---'}</div></td>
+				<td><div class="tbldata-dotdot-sm">${!empty visadetails.country ? visadetails.country : '---'}</div></td>
+				<td><div class="tbldata-dotdot-sm">${!empty visadetails.validFromDateStr ? visadetails.validFromDateStr : '---'}</div></td>
+				<td><div class="tbldata-dotdot-sm">${!empty visadetails.validToDateStr ? visadetails.validToDateStr : '---'}</div></td>
+				<td><div><i id="edit" onclick="immigration.editPassportVisaDetailsByRowId(${visadetails.id},'${visadetails.idType}');"
 				class="glyphicon glyphicon-pencil"></i><i id="delete" 
 				 onclick="immigration.deletePassportVisaDetailsById(${visadetails.id},'${visadetails.idType}');" 
 				 class="glyphicon glyphicon-trash ml10"></i></div></td>
@@ -45,7 +45,7 @@
 		<form id="CandidateVisaform" name="CandidateVisaform" method="post"> 
 		 <input type="hidden" id="Visa" name="Visa" value="Visa">
 		<div class="popUpOut" id="popUpVisa">
-		<input type = "hidden" id="candidatePassportId"  name="candidatePassportId">
+		<input type = "hidden" id="candidateVisaId"  name="candidatePassportId">
 		<div class="popupHead">
 			<h2>Add Visa</h2><a href="javascript:void(0)" class="fa fa-close popCan" onClick="popFun();"></a>
 		</div>
@@ -69,10 +69,10 @@
               		<input type="text" name = "idNumber" id = "idNumber" field-name = "Visa Id" class="form-control" data-validation = "required"/>
 				</div>
 			</div>				          
-          <div class="col-sm-12 noPad mt clearfix">
+          	<div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Country</label>
               	<div class="col-md-8 padding_right">
-					<select class="chosen-select form-control" name="country" id= "countryName" field-name="Country" data-validation="required">
+					<select class="chosen-select form-control" name="country" id= "visaCountry" field-name="Country" data-validation="required">
 					<option value="" selected>--Select Country--</option>
 					  <c:forEach var="country" items="${countryList}">
 						<option value="${country.name}">${country.name}</option>
@@ -80,20 +80,22 @@
 					</select>
 				</div>
 			</div>
-          <div class="col-sm-12 noPad mt clearfix">
+		  <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Valid From</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control calendar" value="" name = "validFrom" id = "validfrom" field-name = "Valid From" data-validation="required"/>
-				    <div class="clearDate" onClick="clearCandidateCertStartDate();"></div>
-				</div>
+              	<div class="input-group">
+              		<input type="text" class="form-control calendar" value="" name = "validFrom" id = "visaValidFrom" field-name = "Valid From" data-validation="required"/>
+				    <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onClick="clearDateValue('visaValidFrom');"></i></span>
+				</div></div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Valid To</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control calendar" value="" name = "validTo" id = "validto" field-name = "Valid To" data-validation="required"/>
-				<div class="clearDate" onClick="clearCandidateCertEndDate();"></div>
+              	<div class="input-group">
+              		<input type="text" class="form-control calendar" value="" name = "validTo" id = "visaValidTo" field-name = "Valid To" data-validation="required"/>
+				 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onClick="clearDateValue('visaValidTo');"></i></span>
 				</div>
-			</div>									
+			</div>	</div>								
 		</div>
 		
 		<div class="immiPopFoot">
@@ -116,45 +118,32 @@
 		</script>
 		<script>
 		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatCerSave = getJSDateFormat(locationDate);
-		 $('#validfrom').datepicker({
-		      dateFormat: finalDateFormatCerSave,
+		  var finalDateFormatVisaSave = getJSDateFormat(locationDate);
+		 $('#visaValidFrom').datepicker({
+		      dateFormat: finalDateFormatVisaSave,
 		      changeMonth: true,
 		  	  changeYear: true, 
 		      onSelect: function (selected) {
 		           // var dt = new Date(selected);
 		           var dt = 	  $(this).datepicker('getDate', '+1d'); 
 		           dt.setDate(dt.getDate() + 1);
-		            $("#validto").datepicker("option", "minDate", dt);
+		            $("#visaValidTo").datepicker("option", "minDate", dt);
 		        }
 		  });
 		  
-		  $('#validto').datepicker({
-		      dateFormat: finalDateFormatCerSave,
+		  $('#visaValidTo').datepicker({
+		      dateFormat: finalDateFormatVisaSave,
 		      changeMonth: true,
 		  	  changeYear: true, 
 		        onSelect: function (selected) {
 		            //var dt = new Date(selected);
 		            var dt = 	  $(this).datepicker('getDate', '-1d');
 		            dt.setDate(dt.getDate() - 1);
-		            $("#validfrom").datepicker("option", "maxDate", dt);
+		            $("#visaValidFrom").datepicker("option", "maxDate", dt);
 		        }
 		  });
 		</script>
-		<script>
-		<script>
-		function clearCandidateCertStartDate(){
-			$("#validfrom").val("");
-			};
-		function clearCandidateCertEndDate(){
-			$("#validto").val("");
-			};
-		</script>   
-<script>
-function toDate(selector) {
-    var from = $(selector).val().split("-");
-    return new Date(from[2], from[1] - 1, from[0]);
-}
-</script>
 		
+		
+
 		

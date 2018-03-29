@@ -265,7 +265,6 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	{
 		logger.debug("Getting  CandidatepassportDetails --->  ");
 		Session session = this.sessionFactory.getCurrentSession();
-		String Type = "Passport";
 		List<CandidatePassportVisa> passportvisaList = new ArrayList<CandidatePassportVisa>();
 			String queryString = "from CandidatePassportVisa cp where cp.candidate.id=:candidateId and cp.idType=:idType  order by cp.updatedDate desc";
 			passportvisaList = session.createQuery(queryString).setLong("candidateId", candidateId).setString("idType", idType).list();
