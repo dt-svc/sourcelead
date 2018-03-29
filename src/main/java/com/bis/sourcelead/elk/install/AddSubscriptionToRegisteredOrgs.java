@@ -142,8 +142,8 @@ public void updateSubscription() throws IOException, SQLException {
 						 
 						 
 					      String query1 = " insert into sourcelead.ORG_LICENSE_SUBSCRIPTION (ORG_ID, COUNTRY, SUBSCRIPTION_TYPE, USER_SUBSCRIPTION_TYPE, STORAGE_SUBSCRIPTION_TYPE,  "
-								+ "CURRENCY, INVOICE_AMOUNT, SUBSCRIPTION_TABS,FROM_DATE,TO_DATE,TIMEZONE_ID,UUID,STATUS,CREATED_BY,CREATED_DATE)"
-								+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+								+ "CURRENCY, INVOICE_AMOUNT, SUBSCRIPTION_TABS,FROM_DATE,TO_DATE,TIMEZONE_ID,UUID,STATUS,CREATED_BY,CREATED_DATE,IS_INVOICE_AMOUNT_PAID)"
+								+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			    		
 			    		try {
 			    			 PreparedStatement pstmt2 = conn.prepareStatement(query1);
@@ -162,6 +162,7 @@ public void updateSubscription() throws IOException, SQLException {
 				    		 pstmt2.setString(13,"1");
 				    		 pstmt2.setLong(14,1l);
 				    		 pstmt2.setString(15,createdDateStr);
+				    		 pstmt2.setString(16,"N");
 				    		 pstmt2.execute();	
 				    		 
 			    		}catch (Exception e){   

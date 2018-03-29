@@ -79,7 +79,7 @@ public class TabsDaoImpl implements TabsDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Collection<Tabs> getTabsListByOrgLocationId(List<Long> modulesId, Long roleId, Long orgLocationId)
+	public Collection<Tabs> getTabsListByOrgLocationId(Long roleId, Long orgLocationId)
 			throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
