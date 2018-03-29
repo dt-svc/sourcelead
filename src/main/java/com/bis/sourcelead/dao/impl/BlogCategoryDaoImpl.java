@@ -21,8 +21,6 @@ import com.bis.sourcelead.dao.BlogCategoryDao;
 import com.bis.sourcelead.dto.BlogCategoryDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.BlogCategory;
-import com.bis.sourcelead.entity.CandidateEducation;
-import com.bis.sourcelead.entity.SourceleadBlogs;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
