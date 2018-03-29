@@ -331,19 +331,14 @@ public class TimesheetSubmissionsRestController {
 			HashMap<String,String> paramList = new HashMap<>();
 			String actionLink = null;
 			if(sah!= null && sah.getSubmissionId() != null && sah.getSubmissionId().getProjectMembers()!= null) {
-				String frequencyMonth =  CalendarUtil.getMonthFromGivenDate(startDateFormat);
-				String frequencyYear =  CalendarUtil.getYearFromGivenDate(endDateFormat);
-				paramList.put("frequencyMonth", frequencyMonth+"-"+frequencyYear);
 				paramList.put("startDateStr",startDate);
 				paramList.put("endDateStr",endDate);
 				paramList.put("dateFormat",loginOrgLocation.getDateFormat());
-				paramList.put("timesheetFrequency",projectMember.getProjects().getInvoiceFrequency());
-				paramList.put("searchData",sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getEmail());
-				paramList.put("projectName",sah.getSubmissionId().getProjectMembers().getProjects().getProjectName());
-				actionLink =actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheetApproval/").append(Constants.PLACE_UUID).toString();
+				paramList.put("projectMemberId",projectMember.getId().toString());
+				actionLink =actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheet/").append(Constants.PLACE_UUID).toString();
 			}
 			
-			emailScenerioUtil.sendNotification(actionLink, loginUser,  projectMember.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>()); 
+			emailScenerioUtil.sendNotification(actionLink, loginUser,  projectMember.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,paramList); 
 	}
 
 	private void sendEmailToVendorAtTimesheetApprovalStatus(ProjectMembers projectMember,User loginUser, OrgLocations loginOrgLocation, String loginOrgCode, String startDate, String endDate, String status, String rejectedReason) throws Exception {

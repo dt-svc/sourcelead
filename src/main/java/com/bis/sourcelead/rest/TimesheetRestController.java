@@ -870,11 +870,11 @@ public class TimesheetRestController {
 			 model.addObject("entriesMap",entriesMap);
 			 model.addObject("projectsTasks",projectsTasks);
 		     model.addObject("timesheetEntryDetailsDTO",timesheetEntryDetailsDTO);
-		     if(eedDTO.getRedirectionRequestFrom()!= null && StringUtils.isNotBlank(eedDTO.getRedirectionRequestFrom()) && eedDTO.getRedirectionRequestFrom().equalsIgnoreCase("notifyLink")){
+		     /*if(eedDTO.getRedirectionRequestFrom()!= null && StringUtils.isNotBlank(eedDTO.getRedirectionRequestFrom()) && eedDTO.getRedirectionRequestFrom().equalsIgnoreCase("notifyLink")){
 		    	 model.addObject("notificationCurrentFrequency",eedDTO.getCurrentTimeFrequency());
 		    	 model.addObject("notificationProMemberId",eedDTO.getProjectMembersId());
 		    	 model.addObject("notificationCurrentSubTimeFrequency",eedDTO.getCurrentTimeSubFrequency());
-		     }
+		     }*/
 	  }
 	 model.setViewName("timesheet/timeSheetSubmission");
 	 return model;

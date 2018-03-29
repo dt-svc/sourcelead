@@ -8,7 +8,6 @@ import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 
-import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,13 +18,11 @@ import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
-import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Invoice;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -64,9 +61,6 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
-
-	@Autowired
-	private SubmissionApproverHierarchyService submissionApproverHierarchyService;
 	
 	@Autowired
 	EmailScenarioService emailScenarioService;
@@ -82,6 +76,8 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	
 	@Autowired
 	private UserRoleService userRoleService;
+	
+	
 	
 	@Override
 	public SubmissionApproverHierarchy addSubmissionApproverHierarchy(
@@ -233,11 +229,10 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				notificationScenario.setBody(notificationBody);
 				
 				
-				
 				StringBuilder actionLinkBuilder = new StringBuilder();
 				Date startDateFormat = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), weekStartDate);
 				Date endDateFormat = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), weekEndDate);
-				SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(startDateFormat,endDateFormat,clientProjectMember.getProjects().getId(),clientProjectMember.getMasterCandidateId().getId());
+				SubmissionApproverHierarchy sah = getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(startDateFormat,endDateFormat,clientProjectMember.getProjects().getId(),clientProjectMember.getMasterCandidateId().getId());
 				HashMap<String,String> paramList = new HashMap<>();
 				String actionLink = null;
 				if(sah!= null && sah.getSubmissionId() != null && sah.getSubmissionId().getProjectMembers()!= null) {
@@ -253,7 +248,8 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 					actionLink =actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheetApproval/").append(Constants.PLACE_UUID).toString();
 				}
 				
-				emailScenerioUtil.sendNotification(actionLink , loginUser, pah.getApproverUserId(), pah.getProjectClientsId().getOrgLocationsId(), notificationScenario,new HashMap<String,String>());
+				
+				emailScenerioUtil.sendNotification(actionLink , loginUser, pah.getApproverUserId(), pah.getProjectClientsId().getOrgLocationsId(), notificationScenario,paramList);
 			 }
 	}
 	
@@ -278,6 +274,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 
 				 String[] frequency = timesheetFrequency.split("To");
 			 	 String weekStartDate = frequency[0].trim();
+			  	 String weekEndDate = frequency[1].trim();
 				 
 				 TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissionsByMemberIdAndStartDate(projectMemberId,commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), weekStartDate));
 				 
@@ -311,20 +308,50 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 
 				 //setting the Recipient information
 				 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-				 String actionLink = "";
 				 //getting the current EmailScenario by EmailScenario unique name and entity type
+				 HashMap<String,String> paramList = new HashMap<>();
+				 String actionLink = null;
 				 if(null != type && "accept".equalsIgnoreCase(type)){
 					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_ACCEPT_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_EMAIL);
 					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_ACCEPT_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION);
 					 StringBuilder actionLinkBuilder = new StringBuilder();
-					 actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("timesheetApproval?notifyLink=notifyLink&currentTimeFrequency="+timesheetFrequency+"&projectId="+projectMembers.getProjects().getId()+"&projectMemberId="+projectMemberId+"&masterCandidateId="+projectMembers.getMasterCandidateId().getId()+"&totalHours="+timesheetSubmissions.getTotalHours()+"&from=approver").toString();
+						Date startDateFormat = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), weekStartDate);
+						Date endDateFormat = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), weekEndDate);
+						SubmissionApproverHierarchy sah = getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(startDateFormat,endDateFormat,projectMembers.getProjects().getId(),projectMembers.getMasterCandidateId().getId());
+						
+						if(sah!= null && sah.getSubmissionId() != null && sah.getSubmissionId().getProjectMembers()!= null) {
+							String frequencyMonth =  CalendarUtil.getMonthFromGivenDate(startDateFormat);
+							String frequencyYear =  CalendarUtil.getYearFromGivenDate(endDateFormat);
+							paramList.put("frequencyMonth", frequencyMonth+"-"+frequencyYear);
+							paramList.put("startDateStr",weekStartDate);
+							paramList.put("endDateStr",weekEndDate);
+							paramList.put("dateFormat",orgLocations.getDateFormat());
+							paramList.put("timesheetFrequency",projectMembers.getProjects().getInvoiceFrequency());
+							paramList.put("searchData",sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getEmail());
+							paramList.put("projectName",sah.getSubmissionId().getProjectMembers().getProjects().getProjectName());
+							actionLink =actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheetApproval/").append(Constants.PLACE_UUID).toString();
+						}
 						
 				 }if(null != type && "reject".equalsIgnoreCase(type)){
 					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REJECT_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_EMAIL);
 					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REJECT_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION); 
 					 StringBuilder actionLinkBuilder = new StringBuilder();
-					 actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("timesheetApproval?notifyLink=notifyLink&currentTimeFrequency="+timesheetFrequency+"&projectId="+projectMembers.getProjects().getId()+"&projectMemberId="+projectMemberId+"&masterCandidateId="+projectMembers.getMasterCandidateId().getId()+"&totalHours="+timesheetSubmissions.getTotalHours()+"&from=approver").toString();
-					
+						Date startDateFormat = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), weekStartDate);
+						Date endDateFormat = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), weekEndDate);
+						SubmissionApproverHierarchy sah = getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(startDateFormat,endDateFormat,projectMembers.getProjects().getId(),projectMembers.getMasterCandidateId().getId());
+						if(sah!= null && sah.getSubmissionId() != null && sah.getSubmissionId().getProjectMembers()!= null) {
+							String frequencyMonth =  CalendarUtil.getMonthFromGivenDate(startDateFormat);
+							String frequencyYear =  CalendarUtil.getYearFromGivenDate(endDateFormat);
+							paramList.put("frequencyMonth", frequencyMonth+"-"+frequencyYear);
+							paramList.put("startDateStr",weekStartDate);
+							paramList.put("endDateStr",weekEndDate);
+							paramList.put("dateFormat",orgLocations.getDateFormat());
+							paramList.put("timesheetFrequency",projectMembers.getProjects().getInvoiceFrequency());
+							paramList.put("searchData",sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getEmail());
+							paramList.put("projectName",sah.getSubmissionId().getProjectMembers().getProjects().getProjectName());
+							actionLink =actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheetApproval/").append(Constants.PLACE_UUID).toString();
+						}
+						
 				 }
 				 
 				
@@ -346,7 +373,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 				notificationScenario.setBody(notificationBody);
 				UserRole userRole = userRoleService.getUserByUserId(reopenedUser.getId());
-				emailScenerioUtil.sendNotification(actionLink, loginUser, reopenedUser, userRole.getOrgLocations(), notificationScenario,new HashMap<String,String>());
+				emailScenerioUtil.sendNotification(actionLink, loginUser, reopenedUser, userRole.getOrgLocations(), notificationScenario,paramList);
 	}
 
 	@Override
