@@ -48,6 +48,7 @@ import com.bis.sourcelead.entity.ExpensesCategory;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
+import com.bis.sourcelead.entity.OrgLicenseSubscriptionTypes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -833,13 +834,13 @@ public class ClientServiceImpl implements ClientService {
 	public void saveLincenseSubscription(Org org,OrgLocations orgLocations,List<Long> soureleadActionIdList) throws Exception {
 		OrgLicenseSubscription subscription = new OrgLicenseSubscription();
 		subscription.setOrg(org);
-		LookUpData subscriptionTypeLookUpData = new LookUpData();
-		subscriptionTypeLookUpData.setId(8048l);
+		OrgLicenseSubscriptionTypes subscriptionTypeLookUpData = new OrgLicenseSubscriptionTypes();
+		subscriptionTypeLookUpData.setId(6L);
 		subscription.setSubscriptionType(subscriptionTypeLookUpData);
 		subscription.setCountry(orgLocations.getCountry());
 		subscription.setTimezone(orgLocations.getTimezone());
-		LookUpData storageLookUpData = new LookUpData();
-		storageLookUpData.setId(8046l);
+		OrgLicenseSubscriptionTypes storageLookUpData = new OrgLicenseSubscriptionTypes();
+		storageLookUpData.setId(8L);
 		subscription.setStorageSubscriptionType(storageLookUpData);
 		subscription.setFromDate(new Date());
 		

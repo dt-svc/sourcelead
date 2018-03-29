@@ -24,11 +24,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.EmailDomains;
 import com.bis.sourcelead.entity.LookUpData;
-import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
-import com.bis.sourcelead.entity.OrgLicenseSubscriptionPrice;
+import com.bis.sourcelead.entity.OrgLicenseSubscriptionTypes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Roles;
@@ -44,8 +43,8 @@ import com.bis.sourcelead.service.EmailDomainsService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.NotificationsService;
-import com.bis.sourcelead.service.OrgLicenseSubscriptionPriceService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionTypesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -58,8 +57,6 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-
-import bsh.StringUtil;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
@@ -130,6 +127,9 @@ public class RegistrationController {
 	 @Autowired
 	 TabsService tabService;
 	 
+	 @Autowired
+	 OrgLicenseSubscriptionTypesService orgLicenseSubscriptionTypesService;
+	 
 	
 	 
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
@@ -191,13 +191,13 @@ public class RegistrationController {
 		 
 			ModelAndView model = new ModelAndView();
 			try {
-				List<LookUpData> subscriptionTypeList = lookUpDataService.getLookUpDataByCategory(Constants.SUBSCRIPTION_TYPE);
+				List<OrgLicenseSubscriptionTypes> subscriptionTypeList = orgLicenseSubscriptionTypesService.getLicenseSubscriptionTypesByCategory(Constants.SUBSCRIPTION_TYPE);
 				model.addObject("subscriptionTypeList", subscriptionTypeList);
 				 
-				List<LookUpData> userSubscriptionTypeList = lookUpDataService.getLookUpDataByCategory(Constants.USER_SUBSCRIPTION);
+				List<OrgLicenseSubscriptionTypes> userSubscriptionTypeList = orgLicenseSubscriptionTypesService.getLicenseSubscriptionTypesByCategory(Constants.USER_SUBSCRIPTION);
 				model.addObject("userSubscriptionTypeList", userSubscriptionTypeList);
 				
-				List<LookUpData> dataStorageTypeList = lookUpDataService.getLookUpDataByCategory(Constants.DATA_STORAGE);
+				List<OrgLicenseSubscriptionTypes> dataStorageTypeList = orgLicenseSubscriptionTypesService.getLicenseSubscriptionTypesByCategory(Constants.DATA_STORAGE);
 				model.addObject("dataStorageTypeList", dataStorageTypeList);
 				
 				if(StringUtils.isNotBlank(locationCode)) {
@@ -363,13 +363,13 @@ public class RegistrationController {
 					model.addObject("userState",userRole.getUserState());
 				}
 				
-				List<LookUpData> subscriptionTypeList = lookUpDataService.getLookUpDataByCategory(Constants.SUBSCRIPTION_TYPE);
+				List<OrgLicenseSubscriptionTypes> subscriptionTypeList = orgLicenseSubscriptionTypesService.getLicenseSubscriptionTypesByCategory(Constants.SUBSCRIPTION_TYPE);
 				model.addObject("subscriptionTypeList", subscriptionTypeList);
 				 
-				List<LookUpData> userSubscriptionTypeList = lookUpDataService.getLookUpDataByCategory(Constants.USER_SUBSCRIPTION);
+				List<OrgLicenseSubscriptionTypes> userSubscriptionTypeList = orgLicenseSubscriptionTypesService.getLicenseSubscriptionTypesByCategory(Constants.USER_SUBSCRIPTION);
 				model.addObject("userSubscriptionTypeList", userSubscriptionTypeList);
 				
-				List<LookUpData> dataStorageTypeList = lookUpDataService.getLookUpDataByCategory(Constants.DATA_STORAGE);
+				List<OrgLicenseSubscriptionTypes> dataStorageTypeList = orgLicenseSubscriptionTypesService.getLicenseSubscriptionTypesByCategory(Constants.DATA_STORAGE);
 				model.addObject("dataStorageTypeList", dataStorageTypeList);
 				
 				model.addObject("sourceleadUrl", sourceleadUrl);
