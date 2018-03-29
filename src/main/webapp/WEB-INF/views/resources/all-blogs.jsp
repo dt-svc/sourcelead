@@ -9,10 +9,9 @@
 	<div class="staticBanInn"><h4>SourceLead blogs</h4><div class="clear"></div></div>
 </section>  
 
-
 <section class="blogNewWrap">
 	<section class="blogNewInn">
-		    <c:forEach var="all" items="${allBlogs}">
+		     <c:forEach var="all" items="${allBlogs}">
 		       <article>
 				<a href="/blog/${all.href}.html"><span><img src="${all.imgFileUrl}" alt="" class="img-responsive"></span>
 				 
@@ -24,7 +23,11 @@
 				
 				</a>	
 				</article>
-			</c:forEach>
+			</c:forEach> 
+			
+			<c:if test="${empty allBlogs}">
+			<div class="dataTables_empty"></div>
+			</c:if>
 		 <div class="clear"></div>
 	</section>
 </section>
