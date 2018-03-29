@@ -199,6 +199,8 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			}else {
 				orgLicenseSubscription.setInvoiceAmount(0d);
 			}
+		    
+		    orgLicenseSubscription.setIsInvoiceAmountPaid(Constants.NO);
 			
 			saveOrgLicenseSubscription(orgLicenseSubscription);
 			
@@ -731,7 +733,7 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 					}else {
 						orgLicenseSubscription.setInvoiceAmount(0d);
 					}
-			
+			orgLicenseSubscription.setIsInvoiceAmountPaid(Constants.NO);
 			orgLicenseSubscription.setSubscriptionTabs(orgLicenseSubscriptionDTO.getRegisteredModules());
 			saveOrgLicenseSubscription(orgLicenseSubscription);
 			

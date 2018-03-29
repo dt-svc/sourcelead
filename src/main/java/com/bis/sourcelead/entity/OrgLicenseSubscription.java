@@ -63,6 +63,10 @@ public class OrgLicenseSubscription implements Serializable{
 	@JoinColumn(name = "TIMEZONE_ID")
     private Timezone timezone;
 	
+	@Column(name = "IS_INVOICE_AMOUNT_PAID")
+	private String isInvoiceAmountPaid;
+	
+	
 	@Column(name = "UUID")
 	private String uuid;
 	
@@ -227,5 +231,13 @@ public class OrgLicenseSubscription implements Serializable{
 
 	public void setTimezone(Timezone timezone) {
 		this.timezone = timezone;
+	}
+
+	public String getIsInvoiceAmountPaid() {
+		return isInvoiceAmountPaid;
+	}
+
+	public void setIsInvoiceAmountPaid(String isInvoiceAmountPaid) {
+		this.isInvoiceAmountPaid = isInvoiceAmountPaid;
 	}
 }
