@@ -881,7 +881,6 @@ function validateEduname()
 	var candidateId = $("#candidateID").val();
 	  var name = document.getElementById("eduName").value; 
 	  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
-	  alert(candidateId+" "+name);
 		 $.ajax({
 		    	type: "POST",
 		        url:sourceleadUrl + immiModulePath + "/validateImmiEduname?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&name="+name, 
