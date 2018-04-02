@@ -597,7 +597,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		immigrationCandidateDocuments.setCandidateId(candidate);
 		immigrationCandidateDocuments.setImmigrationTemplateId(immigrationTemplate);
 		immigrationCandidateDocuments.setImmigrationId(immigration);
-		immigrationCandidateDocuments.setDocumentType(documentType);
+		//immigrationCandidateDocuments.setDocumentType(documentType);
 		immigrationCandidateDocuments.setCreatedBy(user);
 		immigrationCandidateDocuments.setUpdatedBy(user);
 		
