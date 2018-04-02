@@ -83,9 +83,14 @@ function editCandidate(candidateId){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-         success :function(json) {  
-              if(json != null ){  
-              	 //var json = JSON.parse(data);
+         success :function(result) {  
+        	 var json = result.object;
+      	   		if(result.response === "SESSION_TIMEDOUT") {
+					location.replace(sourceleadUrl);
+				} else if (result.response === "AWKWARD") {
+					location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+              		if(json != null ){  
             			 	var lastName = '';
             			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
             			 		lastName = json.lastName;            			 		
@@ -446,7 +451,7 @@ function editCandidate(candidateId){
 								  })
 							});
             		 
-                }else{
+                		}else{
          	    	         var result ="";
         		    	     result = result+"   <div class='row'>"; 
         					 result = result+"	<div class='col-lg-12'>"; 
@@ -461,10 +466,15 @@ function editCandidate(candidateId){
         					$("#profileEditPopup").empty();
         				    $("#profileEditPopup").append(result); 
                         }
-                 },
-                   
-              }); 
-		 }
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
+				}
+              },
+                
+           }); 
+	}
 }
 </script>
 
@@ -483,9 +493,14 @@ function professionalProfile(candidateId){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-         success :function(json) {  
-              if(json != null ){  
-              	//var json = JSON.parse(data);
+         success :function(result) { 
+        	 var json = result.object;
+      	   	 if(result.response === "SESSION_TIMEDOUT") {
+					location.replace(sourceleadUrl);
+				} else if (result.response === "AWKWARD") {
+					location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+              		if(json != null ){  
 							var result ="";
 							var checked = "";
 							
@@ -772,7 +787,7 @@ function professionalProfile(candidateId){
 							     });
 							     event.preventDefault();
 								   
-              }else{
+              		}else{
                      	 $("#candidateSideDiv").removeAttr("style");
        	    	         var result ="";
       		    	     result = result+"   <div class='row'>"; 
@@ -788,6 +803,11 @@ function professionalProfile(candidateId){
       					$("#candidateSideDiv").empty();
       				    $("#candidateSideDiv").append(result); 
                       }
+					} else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+						showError("Operation failed, please try again");
+					}
                },
                  
             }); 

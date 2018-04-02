@@ -18,9 +18,9 @@ background-color: #fff;
 
 <script type="text/javascript">
 $(document).ready(function(){
-	if("" != localStorage.getItem("stage") && null != localStorage.getItem("stage")){
+// 	if("" != localStorage.getItem("stage") && null != localStorage.getItem("stage")){
 		displyContract(localStorage.getItem("stage"));
-	}
+// 	}
 });
 </script>
 
@@ -238,7 +238,8 @@ function addContractNotes(){
 <script>
 function displyContract(stage){
 	var sourceleadUrl ='${sourceleadUrl}';
-	var contractUUID = getParameterByName('contractUUID');
+// 	var contractUUID = getParameterByName('contractUUID');
+	var contractUUID ='${contractUUID}';
 	 $.ajax({
       type : "GET",
        url: sourceleadUrl+"/getContractByContractUUID?contractUUID="+contractUUID,       
@@ -300,12 +301,11 @@ function displyContract(stage){
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.workLocation+'</div>';
 				result = result +	'	</div>';
 			}
-			
 			if(json.contractType!="Full time offer"){
 					if(null != json.endDateStr && "" != json.endDateStr && 'undefined' != json.endDateStr){
 						result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 						result = result +	'		<div class="col-md-4 col-sm-4">End Date </div>';
-						if(stage!="SIGN" &&  stage!="VERIFY" && stage!="REJECTED"){
+						if(json.templateSubmissionStatus!="SIGN" &&  json.templateSubmissionStatus!="VERIFY" && json.templateSubmissionStatus!="REJECTED"){
 							result = result +	'		<div class="col-md-8 col-sm-8 popRela" id="endVal">: '+json.endDateStr+' <i class="fa fa-pencil popEdCo"  onclick="editOne(\''+json.startDateStr+'\',\''+json.endDateStr+'\');"></i>';
 							result = result +	'<div class="editNewDat"><input type="text" class="form-control calendar" value="'+json.endDateStr+'" id="endDate" name="endDate" placeholder="End date" readonly="readonly"><i class="fa fa-floppy-o" onclick="editClo('+json.id+',\''+json.startDateStr+'\');"></i></div>';
 						}
@@ -318,7 +318,7 @@ function displyContract(stage){
 					else{
 						result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 						result = result +	'		<div class="col-md-4 col-sm-4">End Date </div>';
-						if(stage!="SIGN" &&  stage!="VERIFY" && stage!="REJECTED"){
+						if(json.templateSubmissionStatus!="SIGN" &&  json.templateSubmissionStatus!="VERIFY" && json.templateSubmissionStatus!="REJECTED"){
 							result = result +	'		<div class="col-md-8 col-sm-8 popRela" id="endVal">: --  <i class="fa fa-pencil popEdCo"  onclick="editOne(\''+json.startDateStr+'\',\''+json.endDateStr+'\');"></i>';
 							result = result +	'<div class="editNewDat"><input type="text" class="form-control calendar" value="" id="endDate" name="endDate" placeholder="End date" readonly="readonly"><i class="fa fa-floppy-o" onclick="editClo('+json.id+',\''+json.startDateStr+'\');"></i></div>';
 						}
@@ -435,7 +435,7 @@ function displyContract(stage){
 				result = result +	'	</div>';
 			}
 			
-			if(null != json.rejectedReason && "" != json.rejectedReason && 'undefined' != json.rejectedReason && stage =="REJECTED"){
+			if(null != json.rejectedReason && "" != json.rejectedReason && 'undefined' != json.rejectedReason && json.templateSubmissionStatus =="REJECTED"){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Rejected Reason</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.rejectedReason+'</div>';

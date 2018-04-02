@@ -1087,5 +1087,9 @@ public  class CalendarUtil {
 	    SimpleDateFormat   simpleDateFormat = new SimpleDateFormat("MMMM");
 		return simpleDateFormat.format(date);
 	}
+ public static String getYearFromGivenDate(Date date){
+	    SimpleDateFormat   simpleDateFormat = new SimpleDateFormat("YYYY");
+		return simpleDateFormat.format(date);
+	}
 }
 

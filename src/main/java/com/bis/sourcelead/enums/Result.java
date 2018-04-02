@@ -7,6 +7,7 @@ public enum Result {
 	INVALID_CREDENTIALS("Invalid UserName Or Password"), 
 	NOT_REGISTERED("User Not Registered"),
 	INACTIVE_USER("In-Active User"),
+	INVALID_USER("Invalid User Or User doesn't exists"),
 	DISABLED("Your account is disable, please contact adminstrator"), 
 	SESSION_TIMEDOUT("You have been logged out, please login and try again."), 
 	DUPLICATE_EMAIL("Record already existed with given email id"), 
