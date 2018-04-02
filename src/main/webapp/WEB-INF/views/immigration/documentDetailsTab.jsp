@@ -56,11 +56,11 @@
 		<!--  popup code start -->
 		<form id= "candidate_Immigration_Doc" name = "candidate_Immigration_Doc">
 		<div class="popUpOut" id="docuView">
-	 	<input type = "hidden" id= "immigrationcandidateId" name = "immigrationcandidateId" value = "${candidateId}">
-		<input type = "hidden" id= "immigrationId" name = "immigrationId" value = "${immigrationId}">
-		<input type = "hidden" id= "immigrationTempplateId" name = "immigrationTempplateId" value = "${templateId}">
+	 	<%-- <input type = "text" id= "immigrationcandidateId" name = "immigrationcandidateId" value = "${candidateId}">
+		<input type = "text" id= "immigrationId" name = "immigrationId" value = "${immigrationId}">
+		<input type = "text" id= "immigrationTempplateId" name = "immigrationTempplateId" value = "${templateId}"> --%>
 		<div class="popupHead">
-			<h2>Add Document</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+			<h2>Add Document</h2><a href="javascript:void(0)" class="fa fa-close popCan" onclick="removeDocPopUp();"></a>
 		</div>
 		
 		<div class="popupMid clearfix">
@@ -113,7 +113,7 @@
 		
 		<div class="immiPopFoot">
             <input value="Save" class="" type="button" onclick="saveCandidateDocs();">
-            <input value="Cancel" class="popCan" type="button">
+            <input value="Cancel" class="popCan" onclick="removeDocPopUp();" type="button">
           </div>		
 	</div>
 	</form>
@@ -172,7 +172,7 @@
 		
 		<div class="immiPopFoot">
             <input value="Save" class="" type="button">
-            <input value="Cancel" class="popCan" type="button">
+            <input value="Cancel" class="popCan"  type="button">
           </div>		
 	</div>	<!--  popup code end  -->
 	
@@ -195,7 +195,11 @@
 		</script>
 		
 <script type="text/javascript">
-
+function removeDocPopUp(){
+	$(".popMask").fadeOut(200);
+	$("#docuView").fadeOut(100);
+	$("#candidate_Immigration_Doc")[0].reset();
+}
 $(function() {
 	$("#uploadBtn").change(function() {
 	fileUpload("uploadBtn", "immigrationCandidateDocuments", "candidate_Immigration_Doc");

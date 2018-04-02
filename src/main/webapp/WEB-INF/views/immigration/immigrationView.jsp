@@ -157,6 +157,8 @@ $(document).ready(function() {
         immigration.displayPassportDetails(candidateId,'Passport');
         }else if(tab=='#visasTab'){
         immigration.displayVisaDetails(candidateId,'Visa');
+        }else if(tab=='#docsTab'){
+        	displayImmigrationCandidateDocs(candidateId,templateId);
         }
        
         $(tab).fadeIn();
