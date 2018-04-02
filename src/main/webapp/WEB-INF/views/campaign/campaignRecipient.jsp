@@ -101,7 +101,7 @@ z-index: 1040 !important;
                   </div>
                   
                    <div class="modal-body clearfix">
-                    <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100 select-field paddingLeft mb10" id="vendorsListDiv" style="display: none">
+                   <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100 select-field paddingLeft mb10" id="vendorsListDiv" style="display: none">
                           <select class="form-control" id="vendorListType" onchange="vendorListChange();">
                            <option value="listbyVendor" selected>List By Vendor</option>
                            <option value="listbyContact">List By Contact</option>
@@ -167,9 +167,12 @@ z-index: 1040 !important;
   function selectRadio(){
 	  $("#mailBoxVendorsList").empty();
 	  $("#mailBoxClientsList").empty();
+	
 	  
 	  var campaignType = $( 'input[name="campaignType"]:checked' ).val();
 	  if(campaignType == 'hotlistCampaign'){
+		  $('#clientsListDiv').find('p.jquery_form_error_message').remove();
+	  		$("#clientbtnId").removeAttr("disabled");
 		 $("#receipantCategoryType").html("Select Client");
 		 document.getElementById("vendorCheck").checked = true;
 		  document.getElementById("contactsCheck").checked = false;
@@ -207,6 +210,7 @@ z-index: 1040 !important;
   
   <script>
 	  function clientListChange(){
+		  $('#clientsListDiv').find('p.jquery_form_error_message').remove();
 		  document.getElementById("vendorsListDiv").style.display="none";
 		  document.getElementById("clientsListDiv").style.display="";
 		  var listType = document.getElementById("clientListType").value;
@@ -724,6 +728,7 @@ var clientList = {};
 function checkClients(ele){
 	if($(ele).is(":checked")) {
        clientList[$(ele).data("id")] = $(ele).val();
+   	 $("#clientbtnId").removeAttr("disabled");
 	}
      else
      {
@@ -1204,9 +1209,14 @@ $('input[class="myVendorContactsCheckbox"]').each(function(i) {
 function toggleClients(source) {
 var checkboxes = document.querySelectorAll('input[class="myClientCheckbox"]');
 if($(source).is(":checked"))
+	{
 	  $('input[class="myClientCheckbox"]').prop('checked', 'checked');
+	  $("#clientbtnId").removeAttr("disabled");
+	}
 else 
+	{
 	  $('input[class="myClientCheckbox"]').removeProp('checked');
+	}
 
 $('input[class="myClientCheckbox"]').each(function(i) {
 	  if($(this).is(":checked")) {
@@ -1306,6 +1316,7 @@ function getClientContactEmails(){
 				continue;
 		 if(clientcontactsList[e] != '')
 		 {
+			 
 		 internalOutput = internalOutput+"<option value='" +clientcontactsList[e]+ "' selected>"+clientcontactsList[e]+"</option>";
 		 }
 	  }
@@ -1358,7 +1369,7 @@ function getAllEmailContacts(){
 		if(contactUsers[e] == 'Email' || contactUsers[e] == 'Notification' || contactUsers[e] == 'on')
 			continue;
 	   var elist=$("#recipientEmail").chosen().find("option:selected" ).text();
-	 if(contactUsers[e] != '')
+	   if(contactUsers[e] != '')
 	  {
 	   var searchString=elist.search(contactUsers[e]);
 		 if(searchString==-1)
@@ -1380,7 +1391,7 @@ function getAllEmailContacts(){
 
 <script>
 function getClientEmails(){
-	var orgRelationIds = new Array();
+    var orgRelationIds = new Array();
 	var internalOutput = "";
 	
 	 for(var e in clientList) {
@@ -1393,7 +1404,15 @@ function getClientEmails(){
 			 }
 	  }
 	
-	 
+	 var elist=$("#recipientEmail").chosen().find("option:selected" ).text();
+	 if(elist == '' && orgRelationIds.length == 0)
+	 {
+		 $('#clientsListDiv').find('p.jquery_form_error_message').remove();
+		  $("#clientbtnId").attr("disabled", "disabled");
+		  $("#clientListType").after( "<p class='jquery_form_error_message'>Select atleast one client</p>");
+	 }
+	 else
+	  {
 	 var recipientsEmails = '';
 	 if($("#recipientEmail").val() != null){
 		  recipientsEmails = $("#recipientEmail").val();
@@ -1421,7 +1440,9 @@ function getClientEmails(){
           },
           
      }); 
+		 }
 	 
+	
 }
 </script>
 
