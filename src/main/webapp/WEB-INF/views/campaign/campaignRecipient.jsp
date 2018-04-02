@@ -723,9 +723,15 @@ function clientsPagination(url){
 var clientList = {};
 function checkClients(ele){
 	if($(ele).is(":checked")) {
-		clientList[$(ele).data("id")] = $(ele).val();
+       clientList[$(ele).data("id")] = $(ele).val();
 	}
+     else
+     {
+       clientList[$(ele).data("id")] = "";
+     }
+   
 }
+
 </script>
 
 
@@ -735,6 +741,24 @@ var clientcontactsList = {};
 function checkClientsContacts(ele){
 	if($(ele).is(":checked")) {
 		clientcontactsList[$(ele).data("id")] = $(ele).val();
+	}
+	else
+	{
+	    clientcontactsList[$(ele).data("id")] = "";	
+	}
+}
+</script>
+
+
+<script>
+var contactUsers = {};
+function checkContactUsers(ele){
+	if($(ele).is(":checked")) {
+		contactUsers[$(ele).data("id")] = $(ele).val();
+	}
+	else
+	{
+		contactUsers[$(ele).data("id")] = "";	
 	}
 }
 </script>
@@ -1099,17 +1123,18 @@ function contactsPagination(url){
 </script>
 
 <script>
-var contactUsers = [];
+/*var contactUsers = [];
 function checkContactUsers(ele) {
 	if($(ele).is(":checked")) {
 		contactUsers[contactUsers.length] = $(ele).val();
 	}
-}
+ }*/
+
 </script>
 
 
 <script>
-function toggleMyContacts(source) {
+/*function toggleMyContacts(source) {
     var checkboxes = document.querySelectorAll('input[type="checkbox"]');
     for (var i = 0; i < checkboxes.length; i++) {
         if (checkboxes[i] != source)
@@ -1122,7 +1147,7 @@ $('input:checkbox:not(#checkAllContacts)').click(function() {
         $('#checkAllContacts').removeAttr('checked');
     }
 });
-}
+}*/
 </script>
 
 
@@ -1204,7 +1229,24 @@ $('input[class="myClientContactsCheckbox"]').each(function(i) {
 
 }
 </script>
+<script>
+function toggleMyContacts(source) {
 
+if($(source).is(":checked"))
+	  $('input[class="myCheckbox"]').prop('checked', 'checked');
+else 
+	  $('input[class="myCheckbox"]').removeProp('checked');
+
+$('input[class="myCheckbox"]').each(function(i) {
+	  if($(this).is(":checked")) {
+		  contactUsers[$(this).data("id")] = $(this).val();
+	  } else {
+		  contactUsers[$(this).data("id")] = "";
+	  }
+});
+
+}
+</script>
 
 <script>
 function getContactEmails(){
@@ -1251,7 +1293,10 @@ function getClientContactEmails(){
 	 for(var e in clientcontactsList) {
 		 if(clientcontactsList[e] == 'Email' || clientcontactsList[e] == 'Notification' || clientcontactsList[e] == 'on')
 				continue;
+		 if(clientcontactsList[e] != '')
+		 {
 		 internalOutput = internalOutput+"<option value='" +clientcontactsList[e]+ "' selected>"+clientcontactsList[e]+"</option>";
+		 }
 	  }
 	
 	
@@ -1299,11 +1344,14 @@ function getAllEmailContacts(){
 		if(contactUsers[e] == 'Email' || contactUsers[e] == 'Notification' || contactUsers[e] == 'on')
 			continue;
 	   var elist=$("#recipientEmail").chosen().find("option:selected" ).text();
+	 if(contactUsers[e] != '')
+	  {
 	   var searchString=elist.search(contactUsers[e]);
 		 if(searchString==-1)
 			{
 		internalOutput = internalOutput+"<option value='" +contactUsers[e]+ "' selected>"+contactUsers[e]+"</option>";
 			}
+	  }
 	}
 	
 	    $("#recipientEmail").append(internalOutput);
@@ -1322,10 +1370,15 @@ function getClientEmails(){
 	var internalOutput = "";
 	
 	 for(var e in clientList) {
+	
 		 if(clientList[e] == 'Email' || clientList[e] == 'Notification' || clientList[e] == 'on')
 				continue;
+		 if(clientList[e]!='')
+			 {
 		 orgRelationIds.push(clientList[e])
+			 }
 	  }
+	
 	 
 	 var recipientsEmails = '';
 	 if($("#recipientEmail").val() != null){
@@ -1339,7 +1392,7 @@ function getClientEmails(){
           success :function(data) {
         	  if(data != null){
         		  var str_array = data.replace(/\"/g, "").split(',');
-  				for(var i = 0; i < str_array.length; i++) {
+        	     for(var i = 0; i < str_array.length; i++) {
   				   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
   				   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
   				}
