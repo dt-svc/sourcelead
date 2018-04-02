@@ -190,13 +190,7 @@ public class CandidateEmployerDTO {
 	}
 
 
-	public long getCandidateId()
-	{
-
-	public long getCandidateId() {
-
-		return candidateId;
-	}
+	
 
 	public void setCandidateId(long candidateId) {
 		this.candidateId = candidateId;
@@ -219,14 +213,6 @@ public class CandidateEmployerDTO {
 		this.candidateEmpLookup = candidateEmpLookup;
 	}
 
-	public String getLoginUserId()
-	{
-
-	public String getLoginUserId() {
-
-		return loginUserId;
-	}
-
 	public void setLoginUserId(String loginUserId) {
 		this.loginUserId = loginUserId;
 	}
@@ -237,6 +223,14 @@ public class CandidateEmployerDTO {
 
 	public void setOrgLocationId(String orgLocationId) {
 		this.orgLocationId = orgLocationId;
+	}
+
+	public long getCandidateId() {
+		return candidateId;
+	}
+
+	public String getLoginUserId() {
+		return loginUserId;
 	}
 
 

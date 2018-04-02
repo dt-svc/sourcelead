@@ -936,7 +936,7 @@ public class UserRole implements Serializable {
 
 	public void setDateofBirthStr(String dateofBirthStr) {
 		this.dateofBirthStr = dateofBirthStr;
-
+	}
 	public String getOrgName()
 	{
 		return orgName;
