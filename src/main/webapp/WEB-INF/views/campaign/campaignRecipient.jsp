@@ -817,6 +817,10 @@ function checkVendors(ele){
 	if($(ele).is(":checked")) {
 		vendorList[$(ele).data("id")] = $(ele).val();
 	}
+	else
+	{
+		vendorList[$(ele).data("id")] = "";
+	 }
 }
 </script>
 
@@ -827,6 +831,10 @@ var vendorcontactsList = {};
 function checkVendorsContacts(ele){
 	if($(ele).is(":checked")) {
 		vendorcontactsList[$(ele).data("id")] = $(ele).val();
+	}
+	else
+	{
+		vendorcontactsList[$(ele).data("id")] = "";
 	}
 }
 </script>
@@ -1256,7 +1264,10 @@ function getContactEmails(){
 	 for(var e in vendorList) {
 		 if(vendorList[e] == 'Email' || vendorList[e] == 'Notification' || vendorList[e] == 'on')
 				continue;
-		 orgRelationIds.push(vendorList[e])
+		 if(vendorList[e] != '')
+		 {
+		  orgRelationIds.push(vendorList[e])
+		 }
 	  }
 	 
 	 
@@ -1322,7 +1333,10 @@ function getVendorContactEmails(){
 	 for(var e in vendorcontactsList) {
 		 if(vendorcontactsList[e] == 'Email' || vendorcontactsList[e] == 'Notification' || vendorcontactsList[e] == 'on')
 				continue;
+		 if(vendorcontactsList[e] != '')
+		 {
 		 internalOutput = internalOutput+"<option value='" +vendorcontactsList[e]+ "' selected>"+vendorcontactsList[e]+"</option>";
+		 }
 	  }
 	
 	
