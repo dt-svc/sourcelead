@@ -190,4 +190,20 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 model.setViewName("reports/vendorsReport");
 		 return model;
 	 }	
+	 
+	 @RequestMapping(value = "/userUsageReport")
+		public ModelAndView userUsageReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		 
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		 
+//		 boolean vendorTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_VENDOR));
+		 
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+//		 model.addObject("vendorTabAccess", vendorTabAccess);
+		 model.setViewName("reports/usersUsageReportList");
+		 return model;
+	 }	
 }
