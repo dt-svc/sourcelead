@@ -18,10 +18,10 @@
 			  <c:forEach var="residitems" items="${candidatesResidenceList}" varStatus="rows"> 
 			  
 			  <tr>
-				<td><div class="tbldata-dotdot-big">${residitems.location}</div></td>
-				<td><div class="tbldata-dotdot-vsm">${residitems.country}</div></td>
-				<td><div class="tbldata-dotdot-vsm">yyyy</div></td>
-				<td><div class="tbldata-dotdot-vsm">llll</div></td>
+				<td><div class="tbldata-dotdot-big">${!empty residitems.location ? residitems.location : '---'}</div></td>
+				<td><div class="tbldata-dotdot-vsm">${!empty residitems.country ? residitems.country : '---'}</div></td>
+				<td><div class="tbldata-dotdot-vsm">${!empty residitems.startDateStr ? residitems.startDateStr : '---'}</div></td>				
+				<td><div class="tbldata-dotdot-vsm">${!empty residitems.endDateStr ? residitems.endDateStr : '---'}</div></td>
 				
 				<td><div><i id="edit" onclick="editResidenceDEtailsByRowId(${residitems.id});"
 				class="glyphicon glyphicon-pencil"></i><i id="delete" 
@@ -69,14 +69,14 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Location<span class="text-danger">&nbsp;*</span></label>  
               	<div class="col-md-8 padding_right">
-              		<input type="text" name= "location" id= "location" field-name= "location" onclick="initLocationAuto('location','country','state','city','zipcode','','','','streetAddress');" data-validation="required validate_Space validate_length length2-100" class="form-control" /> 
+              		<input type="text" name= "location" id= "location" field-name= "location" placeholder="Location" onclick="initLocationAuto('location','country','state','city','zipcode','','','','streetAddress');" data-validation="required validate_Space validate_length length2-100" class="form-control" /> 
               		   <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('location','country','state','city','zipcode','streetAddress');"></i>         		
 				</div>
 			</div>	
 			<div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">StreetAddress</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" name= "streetAddress" id= "streetAddress" field-name= "streetAddress" class="form-control" /> 
+              		<input type="text" name= "streetAddress" id= "streetAddress" field-name= "streetAddress" placeholder="StreetAddress" class="form-control" /> 
               		             		
 				</div>
 			</div>
@@ -84,7 +84,7 @@
 			<div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">City</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" name= "city" id= "city" field-name= "city" class="form-control"/> 
+              		<input type="text" name= "city" id= "city" field-name= "city" placeholder="City" class="form-control"/> 
               		             		
 				</div>
 			</div>
@@ -92,7 +92,7 @@
 			<div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">State</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" name= "state" id= "state" field-name= "state"  class="form-control" /> 
+              		<input type="text" name= "state" id= "state" field-name= "state" placeholder="State" class="form-control" /> 
               		             		
 				</div>
 			</div>
@@ -109,7 +109,7 @@
 			<div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Zipcode</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" name= "zipcode" id= "zipcode" field-name= "zipcode"  class="form-control" /> 
+              		<input type="text" name= "zipcode" id= "zipcode" field-name= "zipcode" placeholder="Zipcode"  class="form-control" /> 
               		             		
 				</div>
 			</div>
@@ -117,13 +117,18 @@
            <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Start Date<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" name = "residenceStartDate" id = "residenceStartDate" field-name = "Start Date"  class="form-control calendar"/>
+              	<div class="input-group">
+              		<input type="text" name = "residenceStartDate" id = "residenceStartDate" field-name = "Start Date" placeholder="Start Date" readonly="readonly" data-validation="required" class="form-control calendar"/>
+				   	<span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('residenceStartDate');"></i></span>
+				</div>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">End Date<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" name = "residenceEndDate" id = "residenceEndDate" field-Name = "End Date"  class="form-control calendar" />
+              	 <div class="input-group">
+              		<input type="text" name = "residenceEndDate" id = "residenceEndDate" field-Name = "End Date" placeholder="End Date" readonly="readonly" data-validation="required" class="form-control calendar" />
+				  	<span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('residenceEndDate');"></i></span>
 				</div>
 			</div>	 								
 		</div>
@@ -135,9 +140,10 @@
         
        
 	</div>	<!-- popcode code End -->
+	</div>
 		</form>
 		
-		 <!--   <script type="text/javascript">
+		    <script type="text/javascript">
 		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormatEduSave = getJSDateFormat(locationDate);
 		  
@@ -165,7 +171,7 @@
 		        }
 		  });
 		
-</script>   -->
+</script>  
 		
 		
 		<script>

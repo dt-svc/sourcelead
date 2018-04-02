@@ -56,9 +56,10 @@
 				<label class="col-md-4 padding_left">Visa Type</label>
               	<div class="col-md-8 padding_right">
 					<select class="chosen-select form-control" name = "visaType" id = "visaType" field-name = "Visa Type"  data-validation = "required" >
-					  <option>Select Visa Type</option>
-					  <option>H1B</option>
-					  <option>H2B</option>
+					  <option value="" selected>Select Visa Type</option>
+					  <c:forEach var="visaType" items="${visaList}">
+						<option value="${visaType}">${visaType}</option>
+					</c:forEach>
 					</select>
 				</div>
 			</div>
@@ -66,13 +67,13 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Visa Id<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" name = "idNumber" id = "idNumber" field-name = "Visa Id" class="form-control" data-validation = "required"/>
+              		<input type="text" name = "idNumber" id = "idNumber" placeholder="Visa Id" field-name = "Visa Id" class="form-control" data-validation = "required"/>
 				</div>
 			</div>				          
           	<div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-4 padding_left">Country</label>
+				<label class="col-md-4 padding_left">Country<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-					<select class="chosen-select form-control" name="country" id= "visaCountry" field-name="Country" data-validation="required">
+					<select class="chosen-select form-control" name="country" id= "visaCountry"  field-name="Country" data-validation="required">
 					<option value="" selected>--Select Country--</option>
 					  <c:forEach var="country" items="${countryList}">
 						<option value="${country.name}">${country.name}</option>
@@ -81,18 +82,18 @@
 				</div>
 			</div>
 		  <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-4 padding_left">Valid From</label>
+				<label class="col-md-4 padding_left">Valid From<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              	<div class="input-group">
-              		<input type="text" class="form-control calendar" value="" name = "validFrom" id = "visaValidFrom" field-name = "Valid From" data-validation="required"/>
+              	<div class="input-group errorInptgroup">
+              		<input type="text" class="form-control calendar"  placeholder="Valid From" value="" name = "validFrom" id = "visaValidFrom" field-name = "Valid From" data-validation="required"/>
 				    <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onClick="clearDateValue('visaValidFrom');"></i></span>
 				</div></div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-4 padding_left">Valid To</label>
+				<label class="col-md-4 padding_left">Valid To<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              	<div class="input-group">
-              		<input type="text" class="form-control calendar" value="" name = "validTo" id = "visaValidTo" field-name = "Valid To" data-validation="required"/>
+              	<div class="input-group errorInptgroup">
+              		<input type="text" class="form-control calendar" value="" name = "validTo" placeholder="Valid To" id = "visaValidTo" field-name = "Valid To" data-validation="required"/>
 				 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onClick="clearDateValue('visaValidTo');"></i></span>
 				</div>
 			</div>	</div>								

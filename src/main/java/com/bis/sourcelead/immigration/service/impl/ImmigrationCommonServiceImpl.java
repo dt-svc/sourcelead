@@ -502,16 +502,17 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 
 	
 	@Override
-	public CandidateResidence saveResidenceDetails(ResidenceDTO residenceDTO, OrgLocations orgLocations, User user, Long candidateId)	throws Exception {
-		CandidateResidence candidateResidence = null;
-		if(residenceDTO.getResidenceId() != null){
-			candidateResidence = immigrationCommonDao.getCandidateResidenceDetailsById(residenceDTO.getResidenceId());
-		}else{
-			candidateResidence = new CandidateResidence();
-			candidateResidence.setCreatedDate(new Date());
-			candidateResidence.setCreatedBy(user);
+		public CandidateResidence saveResidenceDetails(ResidenceDTO residenceDTO, OrgLocations orgLocations, User user, Long candidateId)	throws Exception {
+			CandidateResidence candidateResidence = null;
+			Date date = new Date();
+			if(residenceDTO.getResidenceId() != null){
+				candidateResidence = immigrationCommonDao.getCandidateResidenceDetailsById(residenceDTO.getResidenceId());
+			}else{
+				candidateResidence = new CandidateResidence();
+				candidateResidence.setCreatedDate(commonUtil.orgLocationCommonDate(date,orgLocations));
+				candidateResidence.setCreatedBy(user);
 
-		}
+			}
 		Candidate candidate = candidateDao.getCandidateByCandidateId(candidateId);
 		candidateResidence.setCandidate(candidate);
 		candidateResidence.setLocation(residenceDTO.getLocation());
@@ -529,7 +530,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 					residenceDTO.getResidenceEndDate())));
 			}
 			candidateResidence.setStatus(Constants.RECORD_ACTIVE);
-			candidateResidence.setUpdatedDate(new Date());
+			candidateResidence.setUpdatedDate(commonUtil.orgLocationCommonDate(date,orgLocations));
 			candidateResidence.setUpdatedBy(user);
 		
 		immigrationCommonDao.saveResidenceDetails(candidateResidence);
