@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
 import com.bis.sourcelead.dto.ProjectBudgetRequestDTO;
+import com.bis.sourcelead.dto.ProjectMembersDTO;
 import com.bis.sourcelead.dto.ProjectPlanningNewResourceRequestDTO;
 import com.bis.sourcelead.dto.ProjectPlanningResourceRequestDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -36,6 +38,7 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectBudgetService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectPlanningNewResourceRequestService;
 import com.bis.sourcelead.service.ProjectPlanningRequestService;
 import com.bis.sourcelead.service.ProjectPlanningResourceRequestService;
@@ -85,6 +88,9 @@ public class ProjectPlanningRestController {
 	
 	@Autowired
 	OrgLocationService orgLocationService;
+	
+	@Autowired
+	ProjectMembersService projectMembersService;
 	
 	 @RequestMapping(value = "/getRequestedAssociatesList", method = RequestMethod.GET)
 	 public @ResponseBody ResponseList<CandidateDTO>  getRequestedAssociatesList(CandidateDTO candidateDTO) throws Exception{ 
@@ -487,6 +493,33 @@ public class ProjectPlanningRestController {
 	    		 Integer allocatedResouresCount = projectPlanningRequest.getAllocatedResources()+1;
 	    		 projectPlanningRequest.setAllocatedResources(allocatedResouresCount);
 	    		 projectPlanningRequestService.storeProjectPlanningRequest(projectPlanningRequest);
+	    		 
+	    		 Projects projects = projectsService.getProjectById(projectPlanningResourceRequest.getProjectPlanningRequestId().getProjectId().getId());
+	    		 List<ProjectMembersDTO> projectMembersDTOList = new ArrayList<>();
+	    		 ProjectMembersDTO projectMembersDTO = new ProjectMembersDTO();
+	    		 projectMembersDTO.setCandidateId(projectPlanningResourceRequest.getCandidateId().getId());
+	    		 projectMembersDTO.setPayRate(projectPlanningResourceRequest.getPayRate());
+	    		 projectMembersDTO.setPayRateCurrency(projectPlanningResourceRequest.getPayRateCurrency());
+	    		 projectMembersDTO.setPayRateRateType(projectPlanningResourceRequest.getPayRateType());
+	    		 projectMembersDTO.setBillRate(projectPlanningResourceRequest.getBillRate());
+	    		 projectMembersDTO.setBillRateCurrency(projectPlanningResourceRequest.getBillRateCurrency());
+	    		 projectMembersDTO.setBillRateRateType(projectPlanningResourceRequest.getBillRateType());
+	    		
+	    		 if(projectPlanningResourceRequest.getStartDate() != null) {
+	    			 projectMembersDTO.setMemberStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projectPlanningResourceRequest.getStartDate()));
+	    		 }
+	    		
+	    		 if(projectPlanningResourceRequest.getEndDate() != null) {
+	    			 projectMembersDTO.setMemberEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projectPlanningResourceRequest.getEndDate()));
+	    		 }
+	    		 projectMembersDTO.setEstHours(projectPlanningResourceRequest.getEstimatedHours());
+	    		 projectMembersDTO.setEstBudget(projectPlanningResourceRequest.getEstimatedBudget());
+	    		 projectMembersDTOList.add(projectMembersDTO);
+	    		
+	    		 ProjectAssignedMembersDTO projectAssignedMembersDTO = new ProjectAssignedMembersDTO();
+	    		 projectAssignedMembersDTO.setProjectMembers(projectMembersDTOList);
+	 		   
+			     projectMembersService.saveAssignedProjectMembers(projectAssignedMembersDTO, projects.getProjectUUID(), user, orgLocations);
 
 	    		 //Sending emil To Aprover
 	    		 projectPlanningResourceRequestService.sendMailToAcceptAndRejectSingleResourceRequestApprover(projectPlanningResourceRequest, user, orgLocations);
