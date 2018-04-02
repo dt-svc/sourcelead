@@ -38,6 +38,7 @@ import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CompanyRegistrationDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.dto.OrglocationSignatoryDTO;
+import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.dto.SourceleadRolesDTO;
 import com.bis.sourcelead.dto.WhiteListIPAddressDTO;
 import com.bis.sourcelead.entity.Asset;
@@ -318,28 +319,30 @@ public class OrgSettingsRestController {
 	
 	@RequestMapping(value = "/app/getOrgEnrolledList")
 	@ResponseBody
-	public String getOrgEnrolledList(HttpServletRequest request) throws Exception
+	public List<RoleDTO> getOrgEnrolledList(HttpServletRequest request) throws Exception
 	{
-		String resultJson = null;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		ArrayList<Roles> rolesList = new ArrayList<Roles>();
 		List<Roles> orgRolesList = new ArrayList<Roles>();
 		orgRolesList = rolesService.getOrgEnrolledRolesByOrgLocationId(org, orgLocations.getId());
+		List<RoleDTO> orgRolesDTOList = new ArrayList<>();
+		
 		for (Roles roles : orgRolesList) {
-			roles.setHierarchyName(roles.getRoleHierarchy().getHierarchyName());
+			RoleDTO roleDTO = new RoleDTO();
+			roleDTO.setId(roles.getId());
+			roleDTO.setDisplayName(roles.getDisplayName());
 			List<Long> roleActonsList = new ArrayList<Long>();
 			if (null != roles.getActionId()) {
 				for (String s : roles.getActionId().split(",")) {
 					roleActonsList.add(Long.parseLong(s));
 				}
 			}
-			roles.setActionsCount(roleActonsList.size());
-			rolesList.add(roles);
+			roleDTO.setActionsCount(roleActonsList.size());
+			roleDTO.setHierarchyId(roles.getRoleHierarchy().getId());
+			roleDTO.setHierarchyName(roles.getRoleHierarchy().getHierarchyName());
+			orgRolesDTOList.add(roleDTO);
 		}
-		resultJson = toJSON(rolesList);
-		return resultJson;
+		return orgRolesDTOList;
 	}
 	
 	
@@ -410,6 +413,33 @@ public class OrgSettingsRestController {
 		}
 	}
 	
+	
+	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
+	@RequestMapping(value = "/app/validateExistingRoleName", method = RequestMethod.GET)
+	public String validateExistingRoleName(@RequestParam(value = "roleName", required = false) String roleName,@RequestParam(value = "roleId", required = false) Long roleId,HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Roles roles = rolesService.getRolesById(roleId);
+		
+		String result = null;
+		
+		if(roles != null) {
+			if(roles.getDisplayName().equalsIgnoreCase(roleName)) {
+				result = "valid";
+			}else {
+				Roles orgRole = rolesService.getRolesByRoleDisplayNameAndOrgLocationId(roleName, orgLocations.getId());
+				if(orgRole != null) {
+					result = "invalid";
+				}
+			}
+		}else {
+			result = "valid";
+		}
+		
+		return result;
+		
+	}
+	
 	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
 	@RequestMapping(value = "/app/validateRoleHierarchyLevelName", method = RequestMethod.GET)
 	public String validateRoleHierarchyLevelName(@RequestParam(value = "levelName", required = false) String levelName, @RequestParam(value = "hierarchyId", required = false) String hierarchyId, HttpServletRequest request) throws Exception
@@ -472,6 +502,25 @@ public class OrgSettingsRestController {
 		rolesList.add(roles.getId().toString());
 		return commonUtil.toJSON(rolesList);
 	}
+	
+	
+	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
+	@RequestMapping(value = "/app/updateOrgLocationRole", method = RequestMethod.POST)
+	public String updateOrgLocationRole(RoleDTO roleDTO, HttpServletRequest request) throws Exception
+	{
+		Roles roles = rolesService.getRolesById(roleDTO.getRoleId());
+		if(roles != null) {
+			roles.setDisplayName(roleDTO.getDisplayName());
+			RoleHierarchy roleHierarchy = new RoleHierarchy();
+			roleHierarchy.setId(roleDTO.getHierarchyId());
+			roles.setRoleHierarchy(roleHierarchy);
+			rolesService.storeRoles(roles);
+		}
+
+		return "success";
+	}
+	
+	
 	
 	@RequestMapping(value = "/app/getOrgSignature")
 	public String getOrgSignature(HttpServletRequest request) throws Exception
