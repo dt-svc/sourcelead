@@ -419,6 +419,7 @@ function getRoleDeatils(displayName,roleHierarchyId,roleId){
 			}
   
   $("select[name=hierarchyId]").val(roleHierarchyId);
+  $("#hierarchyId").chosen();
   $("#hierarchyId").trigger("chosen:updated");
   
   $(".settPop").slideDown(200);
