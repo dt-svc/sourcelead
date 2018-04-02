@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dto;
 
+import java.util.List;
+
 public class ImmigrationTemplateDocDTO {
 	
 	private Long id;
@@ -17,8 +19,13 @@ public class ImmigrationTemplateDocDTO {
 	private String immigrationcandidateId;
 	
 	private String immigrationTempplateId;
+	
 	// this variables added for immigration candidate docs
+	private List<FileInfo> fileInfo;
+	
 	private String immigrationCandidateFileUrl;
+	
+	private String staticPath;
 	
 	private String immigrationCandidateFileName;
 	
@@ -90,6 +97,18 @@ public class ImmigrationTemplateDocDTO {
 	}
 	public void setImmigrationTempplateId(String immigrationTempplateId) {
 		this.immigrationTempplateId = immigrationTempplateId;
+	}
+	public String getStaticPath() {
+		return staticPath;
+	}
+	public void setStaticPath(String staticPath) {
+		this.staticPath = staticPath;
+	}
+	public List<FileInfo> getFileInfo() {
+		return fileInfo;
+	}
+	public void setFileInfo(List<FileInfo> fileInfo) {
+		this.fileInfo = fileInfo;
 	}
 	
 	

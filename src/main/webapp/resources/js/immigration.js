@@ -734,7 +734,7 @@ function saveCandidateDocs() {
             data: formData,
             success: function (data) {
                 if (data == 'success') {
-                	$('#addDocu').hide();
+                	$('#docuView').hide();
                 	$('.popMask').fadeOut();
                 	//getCandidateEmployerList(candidateId);
                 }

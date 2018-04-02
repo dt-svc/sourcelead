@@ -68,8 +68,8 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Document Type<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-					<select class="chosen-select form-control" name = "documentType" id = "documentType" data-validation = "required">
-					  <option>Select Document Type</option>
+					<select class="chosen-select form-control" name = "documentType" field-name="Document Type" data-validation="required" id = "documentType">
+					  <option value = "">Select Document Type</option>
 					   <c:forEach var="docs" items="${documentsList}">
 											<option value="${docs.id}">${docs.name}</option>
 										</c:forEach>
@@ -91,11 +91,11 @@
 							</label>
 						  </div>
 						  
-				  <div class="col-md-4">
+				  <!-- <div class="col-md-4">
 				<div class="mt5 ml5 clearfix">
 				  <input id="multipleCheck" title="Allow multiple Docs" name="multiple" value = "N" onclick = "tempDocCheckBox()" type="checkbox">
 				  </div>
-				 </div>	
+				 </div> -->	
 			
 			<div class="col-sm-12 noPad mt clearfixclearfix">
 				<label class="col-md-4 padding_left">Document<span class="text-danger">&nbsp;*</span></label>
@@ -104,7 +104,7 @@
 					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 					  <input type="file" style="display: none;" multiple id="uploadBtn"  class="upload">
 					  </span> </label>
-					<input type="text" class="form-control" readonly id="uploadFile" placeholder="Upload Resume ...">
+					<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Resume ...">
 				  </div>
 				</div>
 			</div>				
@@ -188,4 +188,17 @@
 				$(".popMask").fadeIn(200);
 				$("#docuView").fadeIn(100);
 			});
+			document.getElementById("uploadBtn").onchange = function () {
+			 	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+
+			}; 
 		</script>
+		
+<script type="text/javascript">
+
+$(function() {
+	$("#uploadBtn").change(function() {
+	fileUpload("uploadBtn", "immigrationCandidateDocuments", "candidate_Immigration_Doc");
+});
+});
+</script>		
