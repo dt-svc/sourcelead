@@ -7,7 +7,7 @@
 
 <c:if test="${!empty timesheetApprovalDTO.timesheetSubmission}">
 <div id="loadingCotentDiv"></div>
-<div id="tableContent" class="timesheetRep-table timesheet_appr_table" style="overflow: auto;">
+<div id="tableContent" class="timesheetRep-table timesheet_appr_table timesheet_apprTable" style="overflow: auto;">
  <table id='exampleApprover' class='display'>
 	<thead> 
     <tr>

@@ -196,9 +196,15 @@
 	    </div>
 <script>
 $("#dataTableSearchExpenses").keyup(function(event) {
-    if (event.keyCode === 13) {
+	if (event.keyCode === 13) {
+    	$('#dataTableSearchExpenses').find('p.jquery_form_error_message').remove();
     	var searchData = $('#dataTableSearchExpenses').val();
-    	timesheetApprovalDetils('',searchData)
+    	var regex =  new RegExp(/[^\w\s]/gi);
+    	if(regex.test(searchData) == false){
+    		timesheetApprovalDetils('',searchData)
+    	}else{
+    		$("#dataTableSearchExpenses").after("<p class='jquery_form_error_message'><span>Enter valid Search Data</span>");
+    	}
     	$('#dataTableSearchExpenses').val(searchData);
     }
 });

@@ -65,9 +65,23 @@
 	  	           }
 		           $("#timeApprovaldiv").empty();
 	               $("#loadTimeHead").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+	               var formData = new FormData();
+	               formData.append("frequencyMonth", frequencyMonth);
+	               formData.append("timesheetFrequency", timesheetFrequency);
+	               formData.append("weekFrequency", weekFrequency);
+	               formData.append("client", client);
+	               formData.append("stage", stage);
+	               formData.append("locationCode", locationCode);
+	               formData.append("userId", userId);
+	               formData.append("searchValue", searchValue);
+	               formData.append("projectName", projectName);
+	               
 	        	   $.ajax({
 		      	          type : "POST",
-	        	      	  url: sourceleadUrl+"/timesheetApprovalDetails?frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency+"&weekFrequency="+weekFrequency+"&client="+client+"&stage="+stage+"&locationCode="+locationCode+"&userId="+userId+"&searchValue="+searchValue+"&projectName="+projectName,		
+		      	          data: formData,
+		  		          processData: false,
+		  		          contentType:false, 
+	        	      	  url: sourceleadUrl+"/timesheetApprovalDetails",		
 	        		      success :function(data) {
 	        		    	  $("#loadTimeHead").removeAttr('style');
 	        		    	  $("#timeApprovaldiv").empty();
