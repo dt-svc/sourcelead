@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -27,6 +28,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateLcaI94Summary;
+import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
@@ -546,4 +548,17 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
         }
         return false;
     }
+
+	@Override
+	public ImmigrationTemplate getImmigrationTemplateById(Long templateId) {
+		ImmigrationTemplate immigrationTemplate= null;
+        try {
+			Session session = this.sessionFactory.getCurrentSession();
+			immigrationTemplate = (ImmigrationTemplate)session.get(ImmigrationTemplate.class,templateId);
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing getting record -->"+e.getMessage());
+			e.printStackTrace();
+		}
+		return immigrationTemplate;
+	}
 }

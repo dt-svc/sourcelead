@@ -1,0 +1,234 @@
+package com.bis.sourcelead.entity;
+
+import java.io.Serializable;
+import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.Type;
+
+@Entity
+@Table(name = "IMMIGRATION_CANDIDATE_DOCS", schema = "SOURCELEAD")
+public class ImmigrationCandidateDocuments implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "ID", nullable = false)
+	private Long id;
+
+	
+	@ManyToOne
+	@JoinColumn(name = "IMMIGRATION_TEMPLATE_ID")
+	private ImmigrationTemplate immigrationTemplateId;
+	
+	@ManyToOne
+	@JoinColumn(name = "IMMIGRATION_ID")
+	private Immigration immigrationId;
+	
+	@ManyToOne
+	@JoinColumn(name = "CANDIDATE_ID")
+	private Candidate candidateId;
+	
+	@Column(name = "DOCUMENT_TYPE")
+	private Long documentType;
+	
+	@Column(name = "DOCUMENT_UUID ")
+	private String docUUID;
+
+	@Column(name = "IS_REQUIRED ")
+	private String isRequired;
+	
+	@Column(name = "STATUS")
+	private Integer status;
+	
+	@Column(name = "REQUEST_FILE_URL",columnDefinition = "TEXT default NULL")
+	private String requestFileUrl;
+	
+	@Column(name = "UPLOADED_FILE_URL",columnDefinition = "TEXT default NULL")
+	private String uplodedFileUrl;
+	
+	@Column(name = "REQUEST_FILE_NAME")
+	private String requestFileName;
+	
+	@Column(name = "UPLOADED_FILE_NAME")
+	private String upldedFileName;
+	
+	@Column(name = "REQUEST_FILE_CONTENT_TYPE")
+	private String requestFileContentType;
+	
+	@Column(name = "UPLOADED_FILE_CONTENT_TYPE")
+	private String upldedFileContentType;
+	
+	
+	@Column(name = "CREATED_DATE ")
+	private Date createdDate;
+	
+	@ManyToOne
+	@JoinColumn(name = "CREATED_BY")
+	private User createdBy;
+
+	@Column(name = "UPDATED_DATE")
+	private Date updatedDate;
+
+	@ManyToOne
+	@JoinColumn(name = "UPDATED_BY")
+	private User updatedBy;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public ImmigrationTemplate getImmigrationTemplateId() {
+		return immigrationTemplateId;
+	}
+
+	public void setImmigrationTemplateId(ImmigrationTemplate immigrationTemplateId) {
+		this.immigrationTemplateId = immigrationTemplateId;
+	}
+
+	public Immigration getImmigrationId() {
+		return immigrationId;
+	}
+
+	public void setImmigrationId(Immigration immigrationId) {
+		this.immigrationId = immigrationId;
+	}
+
+	public Candidate getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(Candidate candidateId) {
+		this.candidateId = candidateId;
+	}
+
+	public Long getDocumentType() {
+		return documentType;
+	}
+
+	public void setDocumentType(Long documentType) {
+		this.documentType = documentType;
+	}
+
+	public String getDocUUID() {
+		return docUUID;
+	}
+
+	public void setDocUUID(String docUUID) {
+		this.docUUID = docUUID;
+	}
+
+	public String getIsRequired() {
+		return isRequired;
+	}
+
+	public void setIsRequired(String isRequired) {
+		this.isRequired = isRequired;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public String getRequestFileUrl() {
+		return requestFileUrl;
+	}
+
+	public void setRequestFileUrl(String requestFileUrl) {
+		this.requestFileUrl = requestFileUrl;
+	}
+
+	public String getUplodedFileUrl() {
+		return uplodedFileUrl;
+	}
+
+	public void setUplodedFileUrl(String uplodedFileUrl) {
+		this.uplodedFileUrl = uplodedFileUrl;
+	}
+
+	public String getRequestFileName() {
+		return requestFileName;
+	}
+
+	public void setRequestFileName(String requestFileName) {
+		this.requestFileName = requestFileName;
+	}
+
+	public String getUpldedFileName() {
+		return upldedFileName;
+	}
+
+	public void setUpldedFileName(String upldedFileName) {
+		this.upldedFileName = upldedFileName;
+	}
+
+	public String getRequestFileContentType() {
+		return requestFileContentType;
+	}
+
+	public void setRequestFileContentType(String requestFileContentType) {
+		this.requestFileContentType = requestFileContentType;
+	}
+
+	public String getUpldedFileContentType() {
+		return upldedFileContentType;
+	}
+
+	public void setUpldedFileContentType(String upldedFileContentType) {
+		this.upldedFileContentType = upldedFileContentType;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public User getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(User createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public User getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(User updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+	
+	
+	
+	
+		
+}
