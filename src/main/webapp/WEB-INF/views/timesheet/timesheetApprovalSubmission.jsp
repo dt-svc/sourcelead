@@ -239,7 +239,7 @@ function displayAcceptRejectButtonOnHedder() {
   
   
    
- <jsp:include page="timesheetApprovalCommonScriptsRedefined.jsp"></jsp:include>
+ <jsp:include page="timesheetApprovalCommonScripts.jsp"></jsp:include>
 
 
 

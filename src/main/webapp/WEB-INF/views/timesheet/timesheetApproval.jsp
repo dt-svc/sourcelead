@@ -20,27 +20,7 @@
 	});
 </script>
 
-
-<section class="content-wraper">
-		  <section class="content-header clearfix">
-		       <div class="pull-left"><h2>Timesheet approval</h2></div>
-		            <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> » Timesheet approval</div>
-		       <div class="clearfix"></div>
-		   </section>
-		    <div  id="loadTimeHead"></div>
-		   <div id="timesheetApprovalDiv" class="datatable_filter" >
-			   <div class="timesheet_out">
-			     	<div class="timesheet_appr_wrap">
-			     	 <input type='hidden' id='notifyLink' name='notifyLink' value="${notifyLink}"/>
-			     	 <div id="timeApprovaldiv">
-				     		<jsp:include page="TimesheetApprovalDetils.jsp"></jsp:include>
-			         </div>
-	     		</div>
-	     	</div> 
-	 	 </div>
-</section>
-
- <script>
+<script>
 	function timesheetApprovalDetils(filter){ 
 	               var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	               var locationCode ='${SourceLeadWeb_locationCode}';
@@ -77,7 +57,6 @@
 		          
 		           if(client == null || client == '' || client == 'undefined')
 		        	   client = '';
-		           
 		           var searchvalue = '';
 	  	           if(searchData != null && searchData !='' && searchData!='undefined'){
 	  	        	 searchValue = searchData;
@@ -102,6 +81,27 @@
 	        	    }); 
 	}
 </script> 
+
+<section class="content-wraper">
+		  <section class="content-header clearfix">
+		       <div class="pull-left"><h2>Timesheet approval</h2></div>
+		            <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> » Timesheet approval</div>
+		       <div class="clearfix"></div>
+		   </section>
+		    <div  id="loadTimeHead"></div>
+		   <div id="timesheetApprovalDiv" class="datatable_filter" >
+			   <div class="timesheet_out">
+			     	<div class="timesheet_appr_wrap">
+			     	 <input type='hidden' id='notifyLink' name='notifyLink' value="${notifyLink}"/>
+			     	 <div id="timeApprovaldiv">
+				     		<jsp:include page="timesheetApprovalDetils.jsp"></jsp:include>
+			         </div>
+	     		</div>
+	     	</div> 
+	 	 </div>
+</section>
+
+ 
 <script type="text/javascript">
          function prepareChosenScripts(){
         	 var config = {
