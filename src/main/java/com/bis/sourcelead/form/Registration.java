@@ -25,6 +25,12 @@ public class Registration {
 	
 	private String password;
 	
+	private String orgEnrollment;
+	
+	private String userSubscription;
+	
+	private String dataStorage;
+	
 	private String verificationCode;
 	
 	private String timeZone;
@@ -32,6 +38,10 @@ public class Registration {
 	private String mobilePhone;
 	
 	private String registeredOrgId;
+	
+	private String orgLocationId;
+	
+	private String orgLinceseSubscriptionId;
 	
 	private String location;
 	
@@ -48,6 +58,8 @@ public class Registration {
 	private String generatedUserId;
 	
 	private Integer averageWorkingHours;
+	
+	private String subscriptionDate;
 	
 
 	public String getTimeZone() {
@@ -240,6 +252,54 @@ public class Registration {
 
 	public void setAverageWorkingHours(Integer averageWorkingHours) {
 		this.averageWorkingHours = averageWorkingHours;
+	}
+
+	public String getOrgEnrollment() {
+		return orgEnrollment;
+	}
+
+	public void setOrgEnrollment(String orgEnrollment) {
+		this.orgEnrollment = orgEnrollment;
+	}
+
+	public String getUserSubscription() {
+		return userSubscription;
+	}
+
+	public void setUserSubscription(String userSubscription) {
+		this.userSubscription = userSubscription;
+	}
+
+	public String getDataStorage() {
+		return dataStorage;
+	}
+
+	public void setDataStorage(String dataStorage) {
+		this.dataStorage = dataStorage;
+	}
+
+	public String getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(String orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+
+	public String getOrgLinceseSubscriptionId() {
+		return orgLinceseSubscriptionId;
+	}
+
+	public void setOrgLinceseSubscriptionId(String orgLinceseSubscriptionId) {
+		this.orgLinceseSubscriptionId = orgLinceseSubscriptionId;
+	}
+
+	public String getSubscriptionDate() {
+		return subscriptionDate;
+	}
+
+	public void setSubscriptionDate(String subscriptionDate) {
+		this.subscriptionDate = subscriptionDate;
 	}
 	
 	

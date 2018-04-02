@@ -374,6 +374,7 @@ function documentsPagination(){
 <script>
 function closePopup1(){
 	 $("#popUpDiv").removeClass("edit-details-active");
+	 $(".location-alert").fadeOut();
 }
 </script>
 
@@ -571,85 +572,89 @@ function getDocumentType(documentType){
      3.ajax url implementation in CandidateDocumentRestController.
 --%>
 <script type="text/javascript">
-	function storeCandidateDocument(candidateId, documentUUID){
-			var validationSettings = {
-			        errorMessagePosition : 'element',
-			        borderColorOnError : '',
-					scrollToTopOnError : true,
-					dateFormat : 'yyyy/mm/dd' 
-		         }; 
-			 if ($('#documentType_form').validate(false, validationSettings)){
-				
-		        var frm = $('#documentType_form')[0];
-				var formData = new FormData(frm);
-				$("#save_doc").attr("disabled", "disabled");
-         		$("#save_doc" ).addClass('button').val('Processing..');
-         		
-         		$.ajax({
-					type : "POST",
-	        	    data: formData,
-	    	        processData: false,
-	    	        contentType:false,
-	        	   	url : sourceleadUrl+"/saveCandidateDocument?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&documentUUID="+documentUUID,
-					success : function(result) {
-							closePopup();
-							$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
-		          			 if(result<50){
-		          			   $("#perVal").removeClass('progress-bar-success');
-		          			   $("#perVal").addClass("progress-bar-danger");
-		          			 }
-		          			 if(result>=50){
-		          				 $("#perVal").removeClass('progress-bar-danger');
-		          				 $("#perVal").addClass("progress-bar-success");
-		          			 }
-		          			 $("#disVal").empty();
-		          			$("#disVal").append(result+'%');
-		          			
-		          		// for quick view bar update
-	            			$('#quickPerVal').attr('aria-valuenow', result).css('width',result+'%');
-		          			 if(result<50){
-			          			   $("#quickPerVal").removeClass('progress-bar-success');
-			          			   $("#quickPerVal").addClass("progress-bar-danger");
-			          			 }
-			          			 if(result>=50){
-			          				 $("#quickPerVal").removeClass('progress-bar-danger');
-			          				 $("#quickPerVal").addClass("progress-bar-success");
-			          			 }
-
-	            			$("#quickDisVal").empty();
-	            			$("#quickDisVal").append(result+'%');
-		          			
-							$("#popUpDiv").removeClass("edit-details-active");
-	            			$("#selector9").removeAttr("style");
-	            			$("#selector9").css({ display: "block" });
-	            			if(documentUUID != null && documentUUID !="" && documentUUID !="undefined")
-	            			$("#docMsgDiv").html("Document updated");
-		            		else
-		            		$("#docMsgDiv").html("Success!! New Document added");
-	             			candDocumentsList(candidateId);
-	             			docMsgFadein();
-	             			setTimeout(function(){
-	        		 			candidateList();					 			
-	        		 		},100);
-	            		 
-					},
-				}); 
-				
-			
-					return true;
-			 }else{ 
-					return false;
-			 } 
+function storeCandidateDocument(candidateId, documentUUID) {
+	var validationSettings = {
+		errorMessagePosition : 'element',
+		borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+	}; 
+	if ($('#documentType_form').validate(false, validationSettings)) {
+		if(document.getElementById("uploadBtn") !== null && (document.getElementById("uploadBtn").files.length > 0 || $("#docsName").html()!=="")) {
+			var frm = $('#documentType_form')[0];
+			var formData = new FormData(frm);
+			$("#save_doc").attr("disabled", "disabled");
+			$("#save_doc" ).addClass('button').val('Processing..');
+			$.ajax({
+				type : "POST",
+		      	data: formData,
+		  		processData: false,
+		  	    contentType:false,
+		      	url : sourceleadUrl+"/saveCandidateDocument?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&documentUUID="+documentUUID,
+				success : function(result) {
+					if (result && result.response === "INVALID_DATA") {
+		    		    showError(result.responseMessage);
+		    		} else if (result.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    		} else if (result.response === "SUCCESS") {
+		    			closePopup();
+						$('#perVal').attr('aria-valuenow', result.object).css('width',result.object+'%');
+	        				if(result.object < 50) {
+	        			   		$("#perVal").removeClass('progress-bar-success');
+	        			   		$("#perVal").addClass("progress-bar-danger");
+	        			 	}
+	        			 	if(result.object >= 50) {
+	        					$("#perVal").removeClass('progress-bar-danger');
+	        				 	$("#perVal").addClass("progress-bar-success");
+	        			 	}
+	        			 	$("#disVal").empty();
+	        				$("#disVal").append(result.object+'%');
+	         			// for quick view bar update
+	   	      			$('#quickPerVal').attr('aria-valuenow', result.object).css('width',result.object+'%');
+	       	 			if(result.object < 50) {
+	         				$("#quickPerVal").removeClass('progress-bar-success');
+	         			   	$("#quickPerVal").addClass("progress-bar-danger");
+	         			}
+	         			if(result.object >= 50) {
+	         				$("#quickPerVal").removeClass('progress-bar-danger');
+	         				$("#quickPerVal").addClass("progress-bar-success");
+	         			}
+	         			$("#quickDisVal").empty();
+	         			$("#quickDisVal").append(result+'%');
+						$("#popUpDiv").removeClass("edit-details-active");
+	          			$("#selector9").removeAttr("style");
+	          			$("#selector9").css({ display: "block" });
+	          			if(documentUUID != null && documentUUID !="" && documentUUID !="undefined")
+	          				$("#docMsgDiv").html("Document updated");
+	           			else
+	           				$("#docMsgDiv").html("Success!! New Document added");
+	           			candDocumentsList(candidateId);
+	           			docMsgFadein();
+	           			setTimeout(function(){
+	      		 			candidateList();					 			
+	      		 		},100);
+		    		} else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+					    showError("Operation failed, please try again");
+					}
+				},
+			}); 
+			return true;
+		} else {
+			showError("Document file is missing");
 		}
-		$('body').on('blur', '#documentType_form', function() {
-		$("#documentType_form").showHelpOnFocus();
-		$("#documentType_form").validateOnBlur(false, validationSettings);
-	});
-		
+	}
+	return false;
+}
+$('body').on('blur', '#documentType_form', function() {
+	$("#documentType_form").showHelpOnFocus();
+	$("#documentType_form").validateOnBlur(false, validationSettings);
+});
 </script>
 
 <script>
-function uploadFileDoc(){
+function uploadFileDoc() {
 	fileUpload("uploadBtn", "candidateDocuments", "documentType_form");
 }
 </script>
@@ -746,55 +751,60 @@ function removeDocument(candidateId, documentId){
      3.ajax url implementation in CandidateDocumentRestController.
 --%>
 <script>
-function deleteDocument(candidateId, documentId){
-	
+function deleteDocument(candidateId, documentId) {
 	var loginUserId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	//var message = confirm("You are choosing to delete the document");
-		$.ajax({
-		   	type: "POST",
-		    url: sourceleadUrl+"/terminateDoc?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&documentId="+documentId, 	   
-   		    success: function(data) {
-   		    	if(data != null && data != 'undefined' && data != ""){
-   		    		$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
-         			 if(data<50){
-         			  /* $("#perVal").removeClass("progress-bar-success"); */
-         			   $("#perVal").find('progress-bar-success').remove();
-         			   $("#perVal").addClass("progress-bar-danger");
-         			 }
-         			 if(data>=50){
-         				 $("#perVal").find('progress-bar-danger').remove();
-         				 $("#perVal").addClass("progress-bar-success");
-         			 }
-         			 $("#disVal").empty();
-         			$("#disVal").append(data+'%');
-         			// for quick view bar update
-        			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
-          			 if(data<50){
-	          			   $("#quickPerVal").removeClass('progress-bar-success');
-	          			   $("#quickPerVal").addClass("progress-bar-danger");
-	          			 }
-	          			 if(data>=50){
-	          				 $("#quickPerVal").removeClass('progress-bar-danger');
-	          				 $("#quickPerVal").addClass("progress-bar-success");
-	          			 }
-
-        			$("#quickDisVal").empty();
-        			$("#quickDisVal").append(data+'%');
-        			 $("#selector9").removeAttr("style");
-         			 $("#selector9").css({ display: "block" });
-         			 $("#docMsgDiv").html("Document deleted");
-        			 $("#popUpDiv").removeClass("edit-details-active");
-        			 $("#remove_user_pop_documents, .project_inn_mask").fadeOut();
-        			 candDocumentsList(candidateId);
-        			 docMsgFadein();
-        			 setTimeout(function(){
- 			 			candidateList();					 			
- 			 	     },100);
-   		    	}
-   		    },
-	     });
-
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/terminateDoc?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&documentId="+documentId, 	   
+  		success: function(result) {
+  			if (result && result.response === "INVALID_DATA") {
+			    showError(result.responseMessage);
+			} else if (result.response === "AWKWARD") {
+			    location.href = "/errorPage";
+			} else if (result.response === "SUCCESS") {
+				$('#perVal').attr('aria-valuenow', result.object).css('width',result.object+'%');
+	   			if(result.object < 50){
+	   				/* $("#perVal").removeClass("progress-bar-success"); */
+	   				$("#perVal").find('progress-bar-success').remove();
+	   				$("#perVal").addClass("progress-bar-danger");
+	   			}
+	   			if(result.object >= 50){
+	   				$("#perVal").find('progress-bar-danger').remove();
+	   				$("#perVal").addClass("progress-bar-success");
+	   			}
+	   			$("#disVal").empty();
+	   			$("#disVal").append(result.object+'%');
+	   			// for quick view bar update
+	  			$('#quickPerVal').attr('aria-valuenow', result.object).css('width',result.object +'%');
+	    		if(result.object < 50){
+	     			$("#quickPerVal").removeClass('progress-bar-success');
+	     			$("#quickPerVal").addClass("progress-bar-danger");
+	     		}
+	     		if(result.object >= 50){
+	     			$("#quickPerVal").removeClass('progress-bar-danger');
+	     			$("#quickPerVal").addClass("progress-bar-success");
+	     		}
+	  			$("#quickDisVal").empty();
+	  			$("#quickDisVal").append(result.object+'%');
+	  			$("#selector9").removeAttr("style");
+   				$("#selector9").css({ display: "block" });
+   				$("#docMsgDiv").html("Document deleted");
+  				$("#popUpDiv").removeClass("edit-details-active");
+  				$("#remove_user_pop_documents, .project_inn_mask").fadeOut();
+  				candDocumentsList(candidateId);
+  				docMsgFadein();
+  				setTimeout(function(){
+					candidateList();					 			
+	     		},100);	
+			} else if (result.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+			    showError("Operation failed, please try again");
+			}
+  		},
+	});
 }
 </script>
 
