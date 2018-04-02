@@ -29,7 +29,7 @@ public class AddSubscriptionToRegisteredOrgs {
 	
 /**
  * @author Venkat I
- * this method is using for update email for contacts
+ * this method is using for org subscription
  * @throws IOException
  * @throws SQLException
  */
