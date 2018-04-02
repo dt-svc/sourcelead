@@ -490,6 +490,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 			user = new User();
 			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			user.setIsVerified(Constants.NO);
+			user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
+			user.setUrlSentTime(new Date());
+			user.setLoginSecurity(Constants.NO);
+			user.setRegistrationType("Newly Registered");
 		}
 		user.setFirstName(registration.getFirstName());
 		user.setLastName(registration.getLastName());
@@ -503,10 +507,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		user.setCreatedBy(user.getUserCode());
 		user.setCreatedDate(new Date());
 		
-		user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
-		user.setUrlSentTime(new Date());
-		user.setLoginSecurity(Constants.NO);
-		user.setRegistrationType("Newly Registered");
+		
 		return user;
 	}
 	
