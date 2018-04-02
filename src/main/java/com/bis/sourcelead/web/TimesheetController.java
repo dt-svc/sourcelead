@@ -3,7 +3,10 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -103,16 +106,12 @@ public class TimesheetController {
 	 * @throws NullPointer
 	 */
 	
-	@RequestMapping(value = "/timesheet")
+	@RequestMapping(value = {"/timesheet","/timesheet/{notificationUUID}"})
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS')")
-	public ModelAndView newTimesheet(HttpServletRequest request
-			,@RequestParam(value="currentTimeFrequency",required =false)String currentTimeFrequency
-			,@RequestParam(value="projectMembersId",required =false)String projectMembersId
-			,@RequestParam(value="notifyLink",required=false)String notifyLink) throws Exception {
+	public ModelAndView newTimesheet(HttpServletRequest request,@PathVariable Optional<String> notificationUUID) throws Exception {
 			ModelAndView model = new ModelAndView();
 			
 			commonUtil.highLightMenu(Constants.TimeSheet, request);
-			
 			String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 			String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -131,14 +130,42 @@ public class TimesheetController {
 			SourceLeadSessionManager.removeSessionAttribute(request, "notificationList");
 			SourceLeadSessionManager.setSessionAttribute(request, "notificationList",notificationList);
 			
+			if(notificationUUID != null && notificationUUID.isPresent()) {
+				Notifications notifications = notificationsService.getNotificationsByUUID(notificationUUID.get());
+				if(notifications != null && StringUtils.isNotEmpty(notifications.getParameterList())) {
+					HashMap<String, String>  paramList = CommonUtil.getJsonAsMap(notifications.getParameterList());
+					model.addObject("notifyLink", true);
+					
+					String weekFrequency = "";
+					String startDateStr = "";
+					String endDateStr = "";
+					String dateFormat = "";
+					if(paramList != null && !paramList.isEmpty()) {
+						for(Map.Entry<String,String> entry : paramList.entrySet()) {
+							if(entry.getKey().equalsIgnoreCase("projectMemberId"))
+							{
+								model.addObject(entry.getKey(), entry.getValue());
+							}else if(entry.getKey().equalsIgnoreCase("startDateStr")) {
+								startDateStr = entry.getValue();
+							}else if(entry.getKey().equalsIgnoreCase("endDateStr")) {
+								endDateStr = entry.getValue();
+							}else if(entry.getKey().equalsIgnoreCase("dateFormat")) {
+								dateFormat = entry.getValue();
+							}
+						}
+					}
+					if(StringUtils.isNotEmpty(dateFormat) && StringUtils.isNotEmpty(startDateStr) && StringUtils.isNotEmpty(endDateStr)) {
+						 Date frequencyStartDate = commonUtil.orgLocationDateFormat(dateFormat,startDateStr);
+						 Date frequencyEndDate = commonUtil.orgLocationDateFormat(dateFormat,endDateStr);
+						 String actualStartDate = commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),frequencyStartDate);
+						 String actualEndDate = commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),frequencyEndDate);
+						 weekFrequency = actualStartDate+"To"+actualEndDate;
+						 model.addObject("currentTimeFrequency", weekFrequency);
+					}
+				}	
+			}	
 			List<ProjectMembers> projectMembersList =  projectMembersService.getProjectMembersListByOrgLocationsIdAndEmpUserId(orgLoc.getId(), loginUser.getId());
 			model.addObject("ProjectMembersList", projectMembersList);
-			
-			if(notifyLink!=null && StringUtils.isNotEmpty(notifyLink) && notifyLink.equalsIgnoreCase("notifyLink")) {
-				model.addObject("currentTimeFrequency", currentTimeFrequency);
-				model.addObject("projectMembersId", projectMembersId);
-				model.addObject("notifyLink", notifyLink);
-			}
 			
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("timesheet/timesheetRedefined");

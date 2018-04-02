@@ -1936,17 +1936,14 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 							 }
 							 boolean flag = moduleIds.contains(Constants.MODULE_VMS);
 							 if(flag == false){
-								 Long moduleId = (long) Constants.MODULE_VMS;
 							     modules = modules+","+Constants.MODULE_VMS;
-							     registrationController.saveUserRoleActions(moduleId,vendorOrgLocation);
 							 }
 							 
-							 Long tsModuleId = (long) Constants.MODULE_TIMESHEET;
 							 boolean tsflag = moduleIds.contains(Constants.MODULE_TIMESHEET);
 							 if(tsflag == false) {
 				    				modules = modules+","+Constants.MODULE_TIMESHEET;
-				    				registrationController.saveUserRoleActions(tsModuleId,vendorOrgLocation);
 				    			}
+							 registrationController.saveUserRoleActions(vendorOrgLocation);
 							
 							 
 							 vendorOrgLocation.setModulesId(modules);
@@ -1960,9 +1957,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 								 }
 								 boolean flag1 = moduleIds.contains(Constants.MODULE_ATS);
 								 if(flag1 == false){
-									 Long moduleId = (long) Constants.MODULE_ATS;
 									 clientModules = clientModules+","+Constants.MODULE_ATS;
-								     registrationController.saveUserRoleActions(moduleId,orgLocations);
+								     registrationController.saveVendorUserRoleActions(orgLocations);
 								 }
 								 
 								 orgLocations.setModulesId(clientModules);

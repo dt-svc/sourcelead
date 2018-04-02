@@ -407,6 +407,7 @@ public class Candidate implements Serializable {
 	@Transient
 	private String vendorSpocId;
 
+
 	@Transient
 	private List<RequirementSubmission> requirementSubmisstions;
 
@@ -475,6 +476,7 @@ public class Candidate implements Serializable {
 	private String commentsCount;
 
 	public int getProfilePercentage() {
+
 		return profilePercentage;
 	}
 

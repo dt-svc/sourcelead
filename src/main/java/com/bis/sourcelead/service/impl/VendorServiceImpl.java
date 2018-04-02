@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.NotificationsDao;
+import com.bis.sourcelead.dao.OrgLicenseSubscriptionDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.dao.OrgSpocDao;
@@ -20,9 +21,11 @@ import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.dto.VendorOnboardDTO;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgBankDetails;
+import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -70,6 +73,9 @@ public class VendorServiceImpl implements VendorService{
 	@Autowired
 	NotificationsDao notificationsDao;
 	
+	@Autowired
+	OrgLicenseSubscriptionDao orgLicenseSubscriptionDao;
+	
 	@Override
 	public OrgLocations updateVendor(ClientDTO clientDTO, AddUserDTO addUserDTO, CandidateDTO candidateDTO, User user,
 			OrgLocations orgLocations, Long orgRelationId, Org org) throws Exception {
@@ -78,6 +84,7 @@ public class VendorServiceImpl implements VendorService{
 		User spocUser = null;
 		List<Long> updatedSpocs = new ArrayList<Long>();
 		List<Long> savedSpocs = new ArrayList<Long>();
+		String country = null;
 		
 		orgRelations.setResponderLevel(clientDTO.getLevel());
 		 if(clientDTO.getTemplateId() != null && clientDTO.getTemplateId().size() > 0){
@@ -101,8 +108,10 @@ public class VendorServiceImpl implements VendorService{
 		 OrgLocations vendorOrgLocations = null;
 		 if(orgRelations.getLocationId().getId().equals(orgLocations.getId())){
 			 vendorOrgLocations = orgRelations.getResponderLocationId();
+			 country = vendorOrgLocations.getCountry();
 		 }else{
 			 vendorOrgLocations = orgRelations.getLocationId();
+			 country = vendorOrgLocations.getCountry();
 		 }
 		 
 		 vendorOrgLocations.setLocation(clientDTO.getLocation());
@@ -125,6 +134,9 @@ public class VendorServiceImpl implements VendorService{
 		 }
 		 
 		 orgLocationsDao.updateOrgLocations(vendorOrgLocations);
+		 OrgLicenseSubscription orgLicenseSubscription = orgLicenseSubscriptionDao.getOrgLicenseSubscriptionByOrgIdAndCountry(org.getId(),country);
+		 orgLicenseSubscription.setCountry(vendorOrgLocations.getCountry());
+		 orgLicenseSubscriptionDao.saveOrgLicenseSubscription(orgLicenseSubscription);
 		 
 		 if (StringUtils.isNotBlank(clientDTO.getEmail())) {
 				spocUser = userService.storeUser(addUserDTO,candidateDTO, user, vendorOrgLocations, "CREATEUSER", "Vendor", org);
