@@ -853,7 +853,7 @@ public class ImmigrationRestController {
 		return model;
 	}
 	@RequestMapping(value = { "/getCandidatePassportVisaDetails" })
-	public ModelAndView getCandidatePassportVisaDetails(@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request, @RequestParam(value = "idType", required = true) String idType)
+	public ModelAndView getCandidatePassportVisaDetails(@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request, @RequestParam(value = "idType", required = true) String idType) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
 		System.out.println(" inisde getCandidatePassportDetails controller test -->");
@@ -865,7 +865,9 @@ public class ImmigrationRestController {
 				canPassportVisa.setValidFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),canPassportVisa.getValidFromDate()));
 				canPassportVisa.setValidToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),canPassportVisa.getValidToDate()));
 			}
-			List<Countries> countryList = countriesService.getAllSourceLeadCountries();
+			
+			
+			List<Countries> countryList = countriesService.getAllCountries();
 			model.addObject("PassportList", PassportList);
 			model.addObject("countryList", countryList);
 		} catch (Exception e) {
@@ -877,6 +879,8 @@ public class ImmigrationRestController {
 			model.setViewName("/immigration/passportDetailsTab");
 		}
 		else {
+			List<String> visaList = lookUpDataService.getAllVisaByCategory();
+			model.addObject("visaList", visaList);	
 			model.setViewName("/immigration/visaDetailsTab");
 		}
 		return model;
