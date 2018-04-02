@@ -109,8 +109,6 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.ibm.icu.util.Calendar;
 
-import bsh.StringUtil;
-
 @Service
 public class RegistrationServiceImpl implements RegistrationService{
 

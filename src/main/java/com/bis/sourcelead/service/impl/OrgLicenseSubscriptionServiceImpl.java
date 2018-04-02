@@ -186,17 +186,18 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			orgLicenseSubscription = getOrgLicenseSubscriptionById(orgLicenseSubscriptionDTO.getOrgLinceseSubscriptionId());
 			orgLicenseSubscription.setSubscriptionTabs(orgLicenseSubscriptionDTO.getRegisteredModules());
 			
-				Countries countries = countriesDao.getCountriesByCountryName(orgLicenseSubscription.getCountry());
-				orgLicenseSubscription.setCurrency(countries.getCurrency());
+				/*Countries countries = countriesDao.getCountriesByCountryName(orgLicenseSubscription.getCountry());*/
+				orgLicenseSubscription.setCurrency("USD");
 			
 		    if(!orgLicenseSubscription.getStorageSubscriptionType().getName().equalsIgnoreCase("Free Trail")) {
-				if(orgLicenseSubscription.getCountry().equalsIgnoreCase("United States")) {
+		    	orgLicenseSubscription.setInvoiceAmount(orgLicenseSubscriptionDTO.getInvoiceAmount());
+			/*	if(orgLicenseSubscription.getCountry().equalsIgnoreCase("United States")) {
 					orgLicenseSubscription.setInvoiceAmount(orgLicenseSubscriptionDTO.getInvoiceAmount());
 				}else {
 					Double invoiceAmount = conversionUtil.currencyConvert("USD", countries.getCurrency(),orgLicenseSubscriptionDTO.getInvoiceAmount());
 					DecimalFormat df = new DecimalFormat(".##");
 					orgLicenseSubscription.setInvoiceAmount(Double.valueOf(df.format(invoiceAmount)));
-				}
+				}*/
 			}else {
 				orgLicenseSubscription.setInvoiceAmount(0d);
 			}
@@ -717,20 +718,21 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 		    subscriptionToDate = CalendarUtil.getDateTimeForGivenTimeZone(orgLicenseSubscriptionDTO.getTimezone(), subscriptionToDate, "dd-MM-yyyy");
 			orgLicenseSubscription.setToDate(subscriptionToDate);
 			
-			Countries countries = countriesDao.getCountriesByCountryName(orgLicenseSubscriptionDTO.getCountry());
-			orgLicenseSubscription.setCurrency(countries.getCurrency());
+			/*Countries countries = countriesDao.getCountriesByCountryName(orgLicenseSubscriptionDTO.getCountry());*/
+			orgLicenseSubscription.setCurrency("USD");
 			
 			
 		    
 			if(!lookupData.getName().equalsIgnoreCase("Free Trail") && !lookupData.getName().equalsIgnoreCase("Guest") && !lookupData.getName().equalsIgnoreCase("Unlimited")) {
 				OrgLicenseSubscriptionPrice subscriptionPrice = orgLicenseSubscriptionPriceDao.getOrgLicenseSubscriptionPriceBySubscriptionTypeAndUserType(Long.parseLong(orgLicenseSubscriptionDTO.getSubscriptionType()), Long.parseLong(orgLicenseSubscriptionDTO.getUserSubscription()));		
-				if(orgLicenseSubscriptionDTO.getCountry().equalsIgnoreCase("United States")) {
+				orgLicenseSubscription.setInvoiceAmount(subscriptionPrice.getSubscriptionRate());
+				/*if(orgLicenseSubscriptionDTO.getCountry().equalsIgnoreCase("United States")) {
 							orgLicenseSubscription.setInvoiceAmount(subscriptionPrice.getSubscriptionRate());
 						}else {
 							Double invoiceAmount = conversionUtil.currencyConvert("USD", countries.getCurrency(),subscriptionPrice.getSubscriptionRate());
 							DecimalFormat df = new DecimalFormat(".##");
 							orgLicenseSubscription.setInvoiceAmount(Double.valueOf(df.format(invoiceAmount)));
-						}
+						}*/
 					}else {
 						orgLicenseSubscription.setInvoiceAmount(0d);
 					}

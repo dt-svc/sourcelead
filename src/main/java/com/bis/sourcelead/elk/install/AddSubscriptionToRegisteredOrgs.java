@@ -29,7 +29,7 @@ public class AddSubscriptionToRegisteredOrgs {
 	
 /**
  * @author Venkat I
- * this method is using for update email for contacts
+ * this method is using for org subscription
  * @throws IOException
  * @throws SQLException
  */
@@ -81,7 +81,7 @@ public void updateSubscription() throws IOException, SQLException {
 					 }
 					 
 					 String subscriptionType = null;
-					 String currency = null;
+					 String currency = "USD";
 					 
 					 if(orgType.equalsIgnoreCase("Guest")) {
 						 subscriptionType = "6";
@@ -89,12 +89,12 @@ public void updateSubscription() throws IOException, SQLException {
 						 subscriptionType = "1";
 					 }
 					 
-					 String sql5 = "SELECT * FROM sourcelead.COUNTRIES countries where countries.Name = '"+country+"' ";
+			/*		 String sql5 = "SELECT * FROM sourcelead.countries countries where countries.Name = '"+country+"' ";
 					 Statement stmt5 = conn.createStatement();
 					 ResultSet rs5 = stmt5.executeQuery(sql5);
 					 if(rs5.next()) {
 						 currency = rs5.getString("currency");
-					 }
+					 }*/
 					 
 						DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 						Date subscriptionDate = df.parse(createdDate);
