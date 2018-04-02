@@ -81,7 +81,9 @@ padding-right: 254px; padding-top: 10px;
 				</div>	   
 					
 			</div>
-	   </div>		
+	   </div>	
+	   <div class="vendor_wrap_mask"></div>
+	   <div id="updateRoleDiv"></div>	
  </section>
  
  
@@ -122,6 +124,85 @@ function validateRoleName(){
 	}
 	}
 </script>
+
+
+
+<script>
+function validateEditRoleName(){
+	var displayName = document.getElementById("displayName").value;
+	var roleId = document.getElementById("roleId").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	if(displayName != null && displayName != '') {
+		$.ajax({
+			type : "GET",
+			url: sourceleadUrl+"/validateExistingRoleName?${_csrf.parameterName}=${_csrf.token}&roleName="+displayName+"&roleId="+roleId, 
+			success : function(data) {
+				var result = data;
+				if (result == "invalid") {
+			        $("#update_role").attr("disabled", "disabled");
+					$("input#displayName").after( "<p class='jquery_form_error_message'>" + displayName + " is already existed</span>");
+					document.getElementById("displayName").setAttribute( 'record-exist', 'yes');
+					document.getElementById("displayName").setAttribute( 'record-exist-errorMsg', displayName +"  already existed");
+					$('input#displayName').removeAttr( "record-exist record-exist-errorMsg");
+					
+				}else{
+					$("#update_role").removeAttr("disabled");
+					$('input#displayName').removeAttr("class record-exist record-exist-errormsg");
+					$('input#displayName').attr('class','valid form-control');
+					$('#editRoleDiv').find('p.jquery_form_error_message').remove();
+					$("#update_role").click(function() {
+						
+					});
+				}
+			},
+
+		});
+	}
+}
+</script>
+
+
+ <script type="text/javascript">
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   };  
+         $('body').on('submit', '#updateRole_form', function(e){
+        	  if ($(this).validate(false, validationSettings)){
+        		    e.preventDefault(); 
+	          		
+        		    var formData = getFormData("updateRole_form");
+	          		var sourceleadUrl ='${sourceleadUrl}';
+	          		
+	          		 $("#updateRole_form").attr("disabled", "disabled");
+	          		$("#updateLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	          		
+	        		
+	           		 $.ajax({
+	          	      type: "POST",
+	          	    	data: formData,
+	                	  url: sourceleadUrl+"/updateOrgLocationRole?${_csrf.parameterName}=${_csrf.token}",
+	                  	success: function(result) {
+				         	if(result == 'success'){
+				         		 location.replace(sourceleadUrl+ "/orgRolesList");
+				         	}
+				        },  
+	               });
+                
+            	    return true;
+            }
+            else{
+            	return false;	
+               }
+            });
+         $('#updateRole_form').showHelpOnFocus();
+         $('#updateRole_form').validateOnBlur(false, validationSettings); 
+            
+     
+</script> 
+
 
 <script type="text/javascript">
 	function flushRole() {
@@ -241,8 +322,7 @@ function getRolesList(){
 	 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getOrgEnrolledList?${_csrf.parameterName}=${_csrf.token}", 	   
-   		    success: function(data) {
-   		    	var json = JSON.parse(data);
+   		    success: function(json) {
    	        	var result = "";
    	         	result = result +"<table id='rolePagination' class='display' cellspacing='0' width='100%' >"; 
    		    	result = result +'<thead>';
@@ -260,7 +340,7 @@ function getRolesList(){
    		    		
    		    		result = result +'<tr>';
    		    		
-   		    		result = result +'<td align="center"><div class="tbldata-dotdot-big" title="'+report.displayName+'">'+report.displayName+'</div></td>';
+   		    		result = result +'<td><div class="proj_show tbldata-dotdot-sm" onclick="getRoleDeatils(\''+report.displayName+'\','+report.hierarchyId+','+report.id+')"><span class="pull-left" title="'+report.displayName+'">'+report.displayName+'</span><i class="fa fa-edit"></i></div></a></td>';
    		    		result = result +'<td align="center"><div class="tbldata-dotdot-sm" title="'+report.hierarchyName+'">'+report.hierarchyName+'</div></td>';
    		    		result = result +'<td align="right"><div class="tbldata-dotdot-vsm" title="'+report.actionsCount+'">'+report.actionsCount+'</div></td>';
    		    		result = result +'<td>';
@@ -286,23 +366,73 @@ function getRolesList(){
 }	
 </script> 
 
+<script>
+function getRoleDeatils(displayName,roleHierarchyId,roleId){
+	
+	var result = "";
+	result = result + '	<div class="settPop">';
+	result = result + '	<div id="updateLoading"></div>';
+	result = result + '<form id="updateRole_form" name="updateRole_form" method="post">';
+	result = result + '<input type="hidden" name="roleId" value="'+roleId+'"  id="roleId">';
+	result = result + '	<h3>Role Update<i class="fa fa-times" onclick="cancelUpdate();"></i></h3>  ';
+	result = result + '	<div class="settPopInn"> ';
+	
+	result = result + '		<div class="clearfix">  ';
+	result = result + '		<div class="col-md-12" id="editRoleDiv">  ';
+	result = result + '		  <label class="col-md-2 noPad" for="Role Name">Role Name :</label> ';
+	result = result + '			<input type="text" class="form-control col-md-8 paddingRight" onblur="validateEditRoleName();" name="displayName" value="'+displayName+'" id="displayName" field-name="Role Name" data-validation="required  validate_length length1-100">';
+	result = result + '		</div>  ';
 
-
-<!-- <script>
-function pagination(){  
-    $('#rolesList').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
-    	"bDestroy": true,
-    	"ordering": false,
-    	"oLanguage": {
-     		"sSearch": ""
-     	}
-		
-    } );
+	result = result + '		  <label class="col-md-12 mt10" for="Project Id">Level</label> ';
+	result = result + '		  <div class="col-md-12 taskdesp">   ';
+	
+	result = result + '   <select class="form-control chosen-select" name="hierarchyId" id="hierarchyId" field-name="Level" data-validation="required">';
+ 	result = result + '     <option value="">--Level--</option>';
+ 	result = result +'		<c:forEach var="hierarchy" items="${hierarchyList}">';
+ 	result = result + '       <option value="${hierarchy.id}">${hierarchy.hierarchyName}</option>';
+    result = result +'		</c:forEach>';
+    result = result + '    </select>';
+	
+	result = result + '			<span class="hidden"></span> </div>  ';
+	result = result + '		</div>';
+	result = result + '		<div class="col-md-12 mt5 clearfix"> ';
+	result = result + '		<div class="pull-right">  ';
+	result = result + '		  <input type="submit" value="Save" id="update_role"  onclick="updateRole();" class="btn btn-primary" >';
+	result = result + '		  <input type="button" value="Cancel" class="btn btn-default ml10" onclick="cancelUpdate();">';
+	result = result + '		</div>';
+	result = result + '		</div>';
+	result = result + '		<div class="clearfix"></div>   ';
+	result = result + '	</div>  ';
+	result = result + '</form>';
+	result = result + '	</div>';
+    $("#updateRoleDiv").empty();
+    $("#updateRoleDiv").append(result);
+    
+   
+	
+    var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+  
+  $("select[name=hierarchyId]").val(roleHierarchyId);
+  $("#hierarchyId").trigger("chosen:updated");
+  
+  $(".settPop").slideDown(200);
+	$(".vendor_wrap_mask").fadeIn(200);
 }
-</script> -->
+</script>
+
+<script>
+function cancelUpdate(){
+	$(".settPop").slideUp(200);
+	$(".vendor_wrap_mask").fadeOut(200);
+}
+</script>
+
 
 
 <script type="text/javascript">
