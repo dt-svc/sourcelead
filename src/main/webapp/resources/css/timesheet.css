@@ -7003,6 +7003,45 @@ background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-r
 .conneWrapHead span {
 	float: right; padding: 6px 10px; 
 }
+.conneWrapHeadBtn {
+	float: right;
+}
+.conneWrapHeadBtn a {
+	display: inline-block; padding: 6px 20px; border: 1px solid #C2C5C8; border-radius: 4px; background-color: #fff;
+	color: #6C7686; font-size: 12px; margin: 8px 3px 0px;
+}
+.conneWrapHeadBtn a.color {
+	border: 1px solid #3EC9A7; background-color: #3EC9A7; color: #fff;
+}
+.conneWrapHeadBtn a:hover {
+	background-color: #f1f1f1;
+}
+.conneWrapHeadBtn a.color:hover {
+	border: 1px solid #39bb9b; background-color: #39bb9b;
+}
+.conneWrapHeadBtn .fa-info-circle {
+	position: relative; font-size: 16px; color: #485974; display: inline-block; padding: 2px; cursor: pointer;
+}
+.infoText {
+	position: absolute; width: 250px; top: -6px; right: 25px; display: none;
+}
+.infoText p {
+	position: relative; border: 1px solid #A8B7C7; color: #6C7686; font-size: 12px; padding: 4px 8px;
+	border-radius: 2px; background-color: #fff;
+}
+.infoText p:after, .infoText p:before {
+	left: 100%; top: 50%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
+}
+.infoText p:after {
+	border-color: rgba(136, 183, 213, 0); border-left-color: #A8B7C7; border-width: 6px; margin-top: -6px;
+}
+.infoText p:before {
+	border-color: rgba(194, 225, 245, 0); border-left-color: #A8B7C7; border-width: 6px; margin-top: -6px;
+}
+.conneWrapHeadBtn .fa-info-circle:hover .infoText {
+	display: block;
+}
+
 .connHeadText {
    padding:15px 0px 0px 3px; margin:0px 0px; font-size:15px; font-weight:400; color:#454545;
 }
@@ -7494,6 +7533,14 @@ font-weight: 500;
 .OrgSearch {
 	z-index: 100;
     }
+.OrgSearch select {
+    margin: 0px 0px 10px 0px;
+}    
+    
+.OrgSearch .refresh {
+    top: 64px !important;
+} 
+
 .zInd {
 	z-index: 10500 !important;
 }

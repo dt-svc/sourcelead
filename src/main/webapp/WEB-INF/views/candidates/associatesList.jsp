@@ -606,48 +606,58 @@ function refreshImageBlock(candidateId){
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-           success :function(data) {   
-                if(data != null && data != 'undefined' && data != ""){  
-                	 var json = JSON.parse(data);
-	                	 $("#candidateImageId").empty();
-	                	 var result = '';
-			             result = result+'<div class="well well-sm text-center clearfix">';
-						 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
-						 result = result+'   <img  id="userImage"  data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';
-						 result = result+'  <div class="btn-group uploadfile uploadfile-candidate">';
-						 //result = result+'  <button type="button" class="btn btn-sm btn-primary">';
-						 //result = result+'  <i class="fa fa-upload"></i></button>';
-						 result = result+'  <label class="btn btn-sm btn-primary">';
-					     result = result+'  <i class="fa fa-upload paddingRight"></i>Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateId+',false);"  style="display: none;">';
-					     result = result+'  </label>';
-					     if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
-						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
-							 result = result+'  <i class="fa fa-trash"></i></button>';
-					     } 
-						 result = result+'  </div>';
-						 result = result+'  </div>';
-						 
-						 
-						 result = result+'  </div>';
-						 
-						 result = result+' <div class="mb mt5 UsProBar">';
-						 result = result+' <div class="progress nomr"> ';
-						 if(json.profilePercentage>=50){
-						 result = result+' <div class="progress-bar progress-bar-success ';
-						 }
-						 else{
-						 result = result+' <div class="progress-bar progress-bar-danger ';
-						 }
-						 result = result+' progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%"> ';
-						 result = result+' <p id="disVal">'+json.profilePercentage+'%</p> ';
-						 result = result+' </div> ';
-						 result = result+' </div> ';
-						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
-						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not supported</p>';
-						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
-						 result = result+' </div>';
-						 $("#candidateImageId").append(result);
-                }
+           success :function(result) {
+        	   var json = result.object;
+          	   if(result.response === "SESSION_TIMEDOUT") {
+    					location.replace(sourceleadUrl);
+    				} else if (result.response === "AWKWARD") {
+    					location.href = "/errorPage";
+    				} else if (result.response === "SUCCESS") {
+	                	if(json != null && json != 'undefined' && json != ""){  
+		                	 $("#candidateImageId").empty();
+		                	 var result = '';
+				             result = result+'<div class="well well-sm text-center clearfix">';
+							 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
+							 result = result+'   <img  id="userImage"  data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';
+							 result = result+'  <div class="btn-group uploadfile uploadfile-candidate">';
+							 //result = result+'  <button type="button" class="btn btn-sm btn-primary">';
+							 //result = result+'  <i class="fa fa-upload"></i></button>';
+							 result = result+'  <label class="btn btn-sm btn-primary">';
+						     result = result+'  <i class="fa fa-upload paddingRight"></i>Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateId+',false);"  style="display: none;">';
+						     result = result+'  </label>';
+						     if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
+							     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
+								 result = result+'  <i class="fa fa-trash"></i></button>';
+						     } 
+							 result = result+'  </div>';
+							 result = result+'  </div>';
+							 
+							 
+							 result = result+'  </div>';
+							 
+							 result = result+' <div class="mb mt5 UsProBar">';
+							 result = result+' <div class="progress nomr"> ';
+							 if(json.profilePercentage>=50){
+							 result = result+' <div class="progress-bar progress-bar-success ';
+							 }
+							 else{
+							 result = result+' <div class="progress-bar progress-bar-danger ';
+							 }
+							 result = result+' progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%"> ';
+							 result = result+' <p id="disVal">'+json.profilePercentage+'%</p> ';
+							 result = result+' </div> ';
+							 result = result+' </div> ';
+							 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
+							 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not supported</p>';
+							 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
+							 result = result+' </div>';
+							 $("#candidateImageId").append(result);
+	                }
+   				}else if (data.indexOf('Sign In') !== -1) {
+		    		location.replace(sourceleadUrl);
+		    	} else {
+		    		showError("Operation failed, please try again");
+		    	}
          	},
       }); 
    }
