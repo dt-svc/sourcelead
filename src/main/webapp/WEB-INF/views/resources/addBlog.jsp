@@ -5,12 +5,8 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <link href="/resources/css/summernote-new.css" rel="stylesheet" type="text/css">
-<script src="/resources/js/summernote.min.js"></script>
-
-
 
 <div class="wraper">
-
 <!-- Content Area -->
 <section class="content-wraper">
   <section class="content-header clearfix">
@@ -113,6 +109,13 @@
           </div>
         </div>
         
+         <div class="form-group">
+          <label class="col-md-3">Short Description</label>
+          <div class="col-md-9">
+				<textarea rows="2" class="form-control" name="shortDescription" id="shortDescription" field-name="Short Description" field-name="Short Description" data-validation="required validate_Space validate_length length2-250">${sourceleadBlog.shortDescription}</textarea>
+          </div>
+        </div>
+        
         </div>
         </div>
 		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -146,7 +149,6 @@
 function saveBlog(saveType) {
 	var blogUUID = $("#blogUUID").val();
 	var ee = $("#summernote").val($('.note-editable').html()); 
-	
 	if ($('#add_blog_form').validate(false, validationSettings)) {
 	  	var formData = $($('#add_blog_form')[0]).serialize();
 		$("#blogLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -180,8 +182,8 @@ function uploadFileDoc(){
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
             };
-</script> 
-
+</script>
+ 
 <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
@@ -198,19 +200,10 @@ function uploadFileDoc(){
 				$this.next().css({'width': '100%'});
 
       });
- 		
 $("#blogKeywords").trigger("chosen:updated");
 $("#publishOn").datetimepicker(); 
 
-
-
-$(document).ready(function() {
-	$('#summernote').summernote();
-	$('.note-editor').css({"min-height":"200px"});
-	$('.note-editable').css({"min-height":"200px"});
-});
 </script>
-	
 	
 <script>
 	 /* upload file script to show selected file name*/
@@ -235,8 +228,6 @@ function removeBlogImg(blogId){
 	
 }
 </script>
-
-
   
 <script type="text/javascript">
 $(function() { 
@@ -272,5 +263,14 @@ function validateBlogTitle(blogUUID){
 	 
 }
 </script>  
-  
- 
+<script src="/resources/js/summernote.min.js"></script>
+<script>
+$(function() {
+	$('#summernote').summernote();
+    $('.note-editable').find('p').remove();
+    $('.note-editable').attr("data-validation","required"); 
+ 	$('.note-editor').css({"min-height":"200px"});
+	$('.note-editable').css({"min-height":"200px", "max-height":"200px"});
+	
+});
+</script>
