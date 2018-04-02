@@ -130,9 +130,9 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
     type: "POST",
     url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
 	    success: function(data) {
-	    	 if( data.indexOf('Sign In') >= 0){
-	    		location.replace(sourceleadUrl);
-	    	 }else{
+	    	 if (data.response === "AWKWARD") {
+                    location.href = "/errorPage";
+	    	 } else if (data.response === "SUCCESS") {
 	    		 if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor == 'dashboard'){
 	        		 var currentPageNumber =  $("#currentPageNumber").val();
 	        		 getStatusListData(""+currentPageNumber+"","");
@@ -143,7 +143,9 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 			    	 $("#status"+projectMemberId).html("Approved");
 			    	 $("#action"+projectMemberId).html("<h3>Approved</h3><b class='Rname'>By :"+locationName+"</b>"); 
 	        	   }
-	    	 }
+	    	 }else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+			 }
         	 
 	    	 
 	    }
@@ -173,10 +175,9 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 	    type: "POST",
 	    url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+(encodeMsg.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>'))+"&approvalStatus=REJECTED",       
 	    success: function(data) { 
-	    	if( data.indexOf('Sign In') >= 0){
-	    		location.replace(sourceleadUrl);
-	    	 }else{
-	    		 // approvalList();
+	    	 if (data.response === "AWKWARD") {
+                    location.href = "/errorPage";
+	    	 } else if (data.response === "SUCCESS") {
 	  	        if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor == 'dashboard'){
 	  	    	     var currentPageNumber =  $("#currentPageNumber").val();
 	        		     getStatusListData(""+currentPageNumber+"","");
@@ -190,7 +191,9 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 	  	   	     }
 	  	   	     cancelRejectSubmission(projectMemberId);
 	  	   	    pagination();
-	    	 }
+	    	 }else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+			 }
 	      }
 	    }); 
 	 }else{
@@ -240,6 +243,9 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 		    type: "POST",
 		    url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
 			    success: function(data) {
+			    	 if (data.response === "AWKWARD") {
+		                    location.href = "/errorPage";
+			    	 } else if (data.response === "SUCCESS") {
 			    	if(data != null && data !='' && data !='undefined'){
 		    			if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor == 'dashboard'){
 		    				 var currentPageNumber =  $("#currentPageNumber").val();
@@ -256,8 +262,11 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 	             	    	selectedRecords[$(this).val()] = $(this).is(":checked");
 	             	    });
 			    	}
-			    }
-		    });  
+			    }else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				 }
+			  }
+		  });  
 		
 	}
 }
@@ -312,26 +321,32 @@ function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
 	    type: "POST",
 	    url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+(encodeMsg.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>'))+"&approvalStatus=REJECTED",       
 	    success: function(data) { 
-		       if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor == 'dashboard'){
-		    	     var currentPageNumber =  $("#currentPageNumber").val();
-	      		     getStatusListData(""+currentPageNumber+"","");
-	      		   	 $(".mask_time").fadeOut(200);
-	      		     $("#rejectpanel").hide();
-	      		  	 $('#hedderAcceptRejectButton').attr('style','display:none');
-	      		   	 
-			   }else{
-					  var currentPageNumberApproverReject =  $("#timesheetApproverCurrentPageNumber").val();
-					  getTableData(currentPageNumberApproverReject);
-	    			  $("#loadingCotentDiv").removeAttr('style');
-		 	    	  $(".mask_time").fadeOut(200);
-	      		      $("#rejectpanel").hide();
-	      		      $('#hedderAcceptRejectButton').attr('style','display:none');
-		   	   }
-		       selectedRecords = {};
-   				$(".checkBoxForSubmitForApproval").click(function () {
-        	    	selectedRecords[$(this).val()] = $(this).is(":checked");
-        	    });
-	      }
+	    	 if (data.response === "AWKWARD") {
+                 location.href = "/errorPage";
+	    	 } else if (data.response === "SUCCESS") {   
+		    	if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor == 'dashboard'){
+			    	     var currentPageNumber =  $("#currentPageNumber").val();
+		      		     getStatusListData(""+currentPageNumber+"","");
+		      		   	 $(".mask_time").fadeOut(200);
+		      		     $("#rejectpanel").hide();
+		      		  	 $('#hedderAcceptRejectButton').attr('style','display:none');
+		      		   	 
+				   }else{
+						  var currentPageNumberApproverReject =  $("#timesheetApproverCurrentPageNumber").val();
+						  getTableData(currentPageNumberApproverReject);
+		    			  $("#loadingCotentDiv").removeAttr('style');
+			 	    	  $(".mask_time").fadeOut(200);
+		      		      $("#rejectpanel").hide();
+		      		      $('#hedderAcceptRejectButton').attr('style','display:none');
+			   	   }
+			       selectedRecords = {};
+	   				$(".checkBoxForSubmitForApproval").click(function () {
+	        	    	selectedRecords[$(this).val()] = $(this).is(":checked");
+	        	    });
+		      }else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+			  }
+	    }
 	    }); 
 	 }else{
 		 if(msg){

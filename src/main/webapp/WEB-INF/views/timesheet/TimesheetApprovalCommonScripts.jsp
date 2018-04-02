@@ -1422,37 +1422,42 @@ function notifyReopenTimeSheet(projectMemberId,timesheetFrequency,totalHours){
 		   	type: "POST",
 		    url: sourceleadUrl+"/notifyReopenTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&reason="+(reason.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>'))+"&totalHours="+totalHours,	    	   
 		    success: function(data) {
-		    	$("#reOpenPopup").empty();
-   			 	$(".project_inn_mask").fadeOut(200);
-   			 	
-   			    var startDate = $("#tabStartDate").val();
-   			    var endDate = $("#tabEndDate").val();
-   			    var isSuperUser = $("#isSuperUser").val();
-   			    var timesheetSubmissionStatus = $("#timesheetSubmissionStatus").val();
-   			 
-   			    if(startDate != null && startDate != '' && startDate != 'undefined' && 
-   					  endDate != null && endDate != '' && endDate != 'undefined'){
-   			    	
-   			    	  if(timesheetSubmissionStatus == 'approved'){
-   			    		 if(isSuperUser == 'true'){
-      			    		 timesheetDivAfterSaving(startDate,endDate,"draft");
-      			    	 }
-   			    		 else{
-   			    			 timesheetDivAfterSaving(startDate,endDate,"approved");
-   			    		 }
-   			    		 
-   			    	  }else{
-   			    		 if(isSuperUser == 'true'){
-      			    		 timesheetDivAfterSaving(startDate,endDate,"draft");
-      			    	 }
-      			    	 else{
-      			    		timesheetDivAfterSaving(startDate,endDate,"submitted");
-      			    	 } 
-   			    	  }
-   			    	 
-   			    }
-   			    else{
-   			    	timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMemberId,"approver");
+		    	if(data.response === "SESSION_TIMEDOUT") {
+		    		location.replace(sourceleadUrl);
+		    	 } else if (data.response === "AWKWARD") {
+                        location.href = "/errorPage";
+		    	 } else if (data.response === "SUCCESS") {
+			    	$("#reOpenPopup").empty();
+	   			 	$(".project_inn_mask").fadeOut(200);
+	   			    var startDate = $("#tabStartDate").val();
+	   			    var endDate = $("#tabEndDate").val();
+	   			    var isSuperUser = $("#isSuperUser").val();
+	   			    var timesheetSubmissionStatus = $("#timesheetSubmissionStatus").val();
+	   			 
+	   			    if(startDate != null && startDate != '' && startDate != 'undefined' && 
+	   					  endDate != null && endDate != '' && endDate != 'undefined'){
+	   			    	
+	   			    	  if(timesheetSubmissionStatus == 'approved'){
+	   			    		 if(isSuperUser == 'true'){
+	      			    		 timesheetDivAfterSaving(startDate,endDate,"draft");
+	      			    	 }
+	   			    		 else{
+	   			    			 timesheetDivAfterSaving(startDate,endDate,"approved");
+	   			    		 }
+	   			    		 
+	   			    	  }else{
+	   			    		 if(isSuperUser == 'true'){
+	      			    		 timesheetDivAfterSaving(startDate,endDate,"draft");
+	      			    	 }
+	      			    	 else{
+	      			    		timesheetDivAfterSaving(startDate,endDate,"submitted");
+	      			    	 } 
+	   			    	  }
+	   			    	} 
+   			    	}else if (result.indexOf('Sign In') !== -1) {
+  					location.replace(sourceleadUrl);
+  					}else{
+   			    		timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMemberId,"approver");
    			    }
    			   
    			    

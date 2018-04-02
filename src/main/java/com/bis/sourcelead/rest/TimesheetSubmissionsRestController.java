@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -35,6 +36,7 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -175,12 +177,13 @@ public class TimesheetSubmissionsRestController {
 	
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")
     @RequestMapping(value = "/saveSubmissionApprovalStatusByProjectMemberId", method = RequestMethod.POST)
-    public  String saveSubmissionApprovalStatusByProjectMemberId(HttpServletRequest request,
+    public  Response<String> saveSubmissionApprovalStatusByProjectMemberId(HttpServletRequest request,
                                                 @RequestParam(value="projectMemberId", required=false) Long projectMemberId,
                                                 @RequestParam(value="startDate", required=false) String startDate,
                                                 @RequestParam(value="endDate", required=false) String endDate,
                                                 @RequestParam(value="approvalStatus", required=false) String approvalStatus,@RequestParam(value="rejectedReason", required=false) String rejectedReason) throws Exception{
-                                                 
+		Response<String> resp = new Response<>();
+		try {                                         
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
@@ -189,10 +192,14 @@ public class TimesheetSubmissionsRestController {
         Date sDate  =  commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),startDate);
         Date eDate  =  commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),endDate);
         submissionApproverHierarchyService.updateApprovalStatusByApproverForProjectMemberId(projectMemberId, user.getId(), sDate,eDate,approvalStatus, rejectedReason,loginOrgLocation);
-        
-       sendEmailToEmployeeTimesheetApprovalStatus(projectMemberId, user, startDate, endDate, approvalStatus, rejectedReason, loginOrgLocation, loginOrgCode);
-        
-        return "success";
+        sendEmailToEmployeeTimesheetApprovalStatus(projectMemberId, user, startDate, endDate, approvalStatus, rejectedReason, loginOrgLocation, loginOrgCode);
+	        resp.setResponse(Result.SUCCESS.name());
+	    	resp.setResponseMessage(Result.SUCCESS.getValue());
+		}catch(Exception e) {
+			resp.setResponse(Result.AWKWARD.name());
+			resp.setResponseMessage(Result.AWKWARD.getValue());
+        }        
+        return resp;
     }
 	
 	/*@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")

@@ -2,9 +2,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-
 <script src="/resources/js/jquery.simplePagination.js"></script>
-
+<script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script>
 
 <c:if test="${!empty timesheetApprovalDTO.timesheetSubmission}">
 <div id="loadingCotentDiv"></div>
@@ -53,6 +52,34 @@
 		<ul id="pagination-demo" class="pagination-sm pull-right pagination"></ul>
 	</div>
 </div>
+
+<script>
+$(document).ready(function(){
+	datatableBody();
+});
+</script> 
+<script>
+function datatableBody(){ 
+	 $('#exampleApprover').DataTable( { 
+		    "sDom": "Rlfrtip",
+		    "bPaginate": false,
+		    "bInfo" : false,
+		    "ordering": false,
+		    "searchHighlight": true
+	    } );
+}
+</script> 
+<script>
+ function searchHighlight(searchData){
+	 if(searchData != null && searchData != 'undefined' && searchData != ''){
+		    var table = $('#exampleApprover').DataTable();
+		    var body = $( table.table().body() );
+		    body.unhighlight();
+	        body.highlight(searchData);
+	 } 
+ }
+ </script>
+
 <script>
 function exportTimeSheetToPdfOrExcel(exportType){
 	 	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
@@ -169,7 +196,8 @@ function displayAcceptRejectButtonOnHedder() {
 			  var pageSize = $("#pageSize").val();
 			  $('#dataTableSearchExpenses').val('') ;
 			  if (!notifyLink){
-				  $('#dataTableSearchExpenses').val(searchData); 
+				  $('#dataTableSearchExpenses').val(searchData);
+				  searchHighlight(searchData);
 			  }
 			 
 			  var startingRecord = parseInt((pageNo*pageSize-pageSize)+1);

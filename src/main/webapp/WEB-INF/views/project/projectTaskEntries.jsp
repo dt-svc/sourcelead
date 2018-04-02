@@ -146,11 +146,13 @@ function saveTaskDetails(){
   		         contentType:false, 
 				 url : sourceleadUrl+"/addTimeSheetDayEntries",
 				  		success : function(data) {
-				  			if(){
-				  				
-				  			}else{
-					  			getSavedTaskDetails();
-					  			closeTimeEntryTasks();
+				  			if(data.response === "SESSION_TIMEDOUT") {
+					    			location.replace(sourceleadUrl);
+					    	 } else if (data.response === "AWKWARD") {
+			                        location.href = "/errorPage";
+					    	 } else if (data.response === "SUCCESS") {
+						  			getSavedTaskDetails();
+						  			closeTimeEntryTasks();
 				  			}
 				},
 			});

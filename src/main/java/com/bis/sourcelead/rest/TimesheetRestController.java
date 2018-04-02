@@ -218,7 +218,6 @@ public class TimesheetRestController {
 			 LinkedHashMap<Long, LinkedList<TimesheetEntriesDTO>> entriesMap = getEntriesMapForDisplayWeb(tedDTO.getTimesheetSubmission(),request);
 			 model.addObject("entriesMap",entriesMap);
 		 }
-		
 		 model.setViewName("timesheet/timesheetProjects");
 		 }catch(Exception e) {
 			 model.addObject("AWKWARD", true);
@@ -2870,11 +2869,12 @@ public class TimesheetRestController {
 		}  
 		
 		@RequestMapping(value = "/notifyReopenTimeSheet", method = RequestMethod.POST)
-		public @ResponseBody void notifyReopenTimeSheet(@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
+		public @ResponseBody ResponseList<String> notifyReopenTimeSheet(@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
 				@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency,
 				@RequestParam(value="reason", required=false) String reason,
 				@RequestParam(value="totalHours", required=false) Float totalHours, HttpServletRequest request) throws Exception {
-				
+				ResponseList<String> response = new ResponseList<>(); 
+				try {
 			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			    String isSuperUser = Constants.NO;
@@ -2895,21 +2895,28 @@ public class TimesheetRestController {
 				    //send mail & notification logic
 				  	if(isSuperUser.equalsIgnoreCase(Constants.NO)){
 				  		submissionApproverHierarchyService.sendReopenTimeSheetMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency,totalHours);
-				  	}
-				  	
+				  		}
+					}
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}catch(Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
 				}
+				return response;
 			
 		}
 		
 		
 		@RequestMapping(value = "/ws/acceptOrRejectReopenTimeSheetBySuperUser", method = RequestMethod.POST)
-		public @ResponseBody void acceptOrRejectReopenTimeSheetBySuperUser(@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
+		public @ResponseBody ResponseList<String> acceptOrRejectReopenTimeSheetBySuperUser(@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
 				@RequestParam(value="reOpenedUserId", required=false) Long reopenedUserId,
 				@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency,
 				@RequestParam(value="type", required=false) String type,
 				@RequestParam(value="reason", required=false) String reason, HttpServletRequest request) throws Exception {
-				
-			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				ResponseList<String> response = new ResponseList<>(); 	
+				try {
+				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			    User reopenedUser = userService.getUserById(reopenedUserId);
 				//DateFormat format = Constants.DF_DMY;
@@ -2935,7 +2942,14 @@ public class TimesheetRestController {
 				
 				    //send mail & notification logic
 				  	submissionApproverHierarchyService.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency,type,reopenedUser);
+				  	response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
 				}
+			}catch(Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+				return response;
 			
 		}
 		
@@ -2943,26 +2957,42 @@ public class TimesheetRestController {
 		@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")
 		@RequestMapping(value = "/rest/deleteSubmissionDocument", method = RequestMethod.POST)
 	    public String deleteSubmissionDocumentForMobile(@RequestParam(value="submissionDocumentId") Long submissionDocumentId) throws Exception {
-			return deleteSubmissionDocument(submissionDocumentId);
+			 Response<String> resp = deleteSubmissionDocument(submissionDocumentId);
+			 String output = "";
+			 if(resp.getResponse() == Result.SUCCESS.name()) {
+				 output = "success";
+			 }
+			 else if(resp.getResponse() == Result.FAILED.name()) {
+				 output = "failure";
+			 }
+			 return output;
 		}
 		
 		
 		@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")
 		@RequestMapping(value = "/deleteSubmissionDocument", method = RequestMethod.POST)
-	    public String deleteSubmissionDocument(@RequestParam(value="submissionDocumentId", required=false) Long submissionDocumentId) throws Exception {
-	        
-	            /*TimesheetSubmissions timesheetSubmissions =    timesheetSubmissionsService.getTimesheetSubmissions(submissionId.toString());*/
-				TimesheetSubmissionsDocuments	timesheetSubmissionsDocuments =	timesheetSubmissionsDocumentsService.getTimesheetSubmissionsDocuments(submissionDocumentId);
-	            timesheetSubmissionsDocuments.setDocFile(null);
-	            timesheetSubmissionsDocuments.setFileContentType(null);
-	            timesheetSubmissionsDocuments.setFileName(null);
-	            timesheetSubmissionsDocuments.setStatus(Constants.CANDIDATE_IN_ACTIVE);
-	            TimesheetSubmissionsDocuments tsd = timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(timesheetSubmissionsDocuments);
-	            if(tsd != null) {
-	            	 return "success";
-	            }else {
-	            	 return "failure";
-	            }
+	    public Response<String> deleteSubmissionDocument(@RequestParam(value="submissionDocumentId", required=false) Long submissionDocumentId) {
+			    Response<String> resp = new Response<>();
+			    try {
+			    	TimesheetSubmissionsDocuments	timesheetSubmissionsDocuments =	timesheetSubmissionsDocumentsService.getTimesheetSubmissionsDocuments(submissionDocumentId);
+		            timesheetSubmissionsDocuments.setDocFile(null);
+		            timesheetSubmissionsDocuments.setFileContentType(null);
+		            timesheetSubmissionsDocuments.setFileName(null);
+		            timesheetSubmissionsDocuments.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+		            TimesheetSubmissionsDocuments tsd = timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(timesheetSubmissionsDocuments);
+		            if(tsd != null) {
+		            	resp.setResponse(Result.SUCCESS.name());
+		            	resp.setResponseMessage(Result.SUCCESS.getValue());
+		            }else {
+		            	resp.setResponse(Result.FAILED.name());
+		            	resp.setResponseMessage(Result.FAILED.getValue());
+		            }
+			    }catch(Exception e) {
+			    	resp.setResponse(Result.AWKWARD.name());
+	            	resp.setResponseMessage(Result.AWKWARD.getValue());
+			    }
+				
+	            return resp;
 	    }
 
 		public void linkLeaveTypeWithTimeSheet(User leaveApproverUserId, OrgLocations orgLocations, Long leaveTypeId, Leave leave, String leaveStatusType) throws Exception {
