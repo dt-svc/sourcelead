@@ -43,6 +43,9 @@ public class ImmigrationCandidateDocuments implements Serializable {
 	
 	@Column(name = "DOCUMENT_UUID ")
 	private String docUUID;
+	
+	@Column(name = "DESCRIPTION",columnDefinition = "TEXT default NULL")
+	private String description;
 
 	@Column(name = "IS_REQUIRED ")
 	private String isRequired;
@@ -225,6 +228,14 @@ public class ImmigrationCandidateDocuments implements Serializable {
 
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	
 	

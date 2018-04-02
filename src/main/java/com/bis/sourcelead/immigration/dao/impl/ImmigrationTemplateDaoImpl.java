@@ -527,6 +527,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
     }
 
     @Override
+    @Transactional(rollbackFor = {Exception.class})
     public boolean validateTemplateNameExistance(String templateName, Long templateId) {
         Session session = null;
         try {
@@ -550,10 +551,11 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
     }
 
 	@Override
+	@Transactional(rollbackFor = {Exception.class})
 	public ImmigrationTemplate getImmigrationTemplateById(Long templateId) {
 		ImmigrationTemplate immigrationTemplate= null;
         try {
-			Session session = this.sessionFactory.getCurrentSession();
+        	Session session = this.sessionFactory.getCurrentSession();
 			immigrationTemplate = (ImmigrationTemplate)session.get(ImmigrationTemplate.class,templateId);
 		} catch (HibernateException e) {
 			logger.error("SQL Exception occured while doing getting record -->"+e.getMessage());

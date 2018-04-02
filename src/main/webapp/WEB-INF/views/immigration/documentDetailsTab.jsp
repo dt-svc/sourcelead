@@ -1,3 +1,4 @@
+	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 		<div class="immigraTabsHead">
 		<!-- <a href="javascript:void(0)" id="immDocu"><i class="glyphicon glyphicon-plus"></i> Request Document</a> 		 -->	  	
 		  	<a href="javascript:void(0)" id="addDocu"><i class="glyphicon glyphicon-plus"></i> Add Document</a> 
@@ -67,11 +68,11 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Document Type<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-					<select class="chosen-select form-control">
+					<select class="chosen-select form-control" name = "documentType" id = "documentType" data-validation = "required">
 					  <option>Select Document Type</option>
-					  <option>Document-1</option>
-					  <option>Document-2</option>
-					  <option>Document-3</option>
+					   <c:forEach var="docs" items="${documentsList}">
+											<option value="${docs.id}">${docs.name}</option>
+										</c:forEach>
 					</select>
 				</div>
 			</div>

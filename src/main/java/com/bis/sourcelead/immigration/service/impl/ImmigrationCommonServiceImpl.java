@@ -598,10 +598,14 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		immigrationCandidateDocuments.setCandidateId(candidate);
 		immigrationCandidateDocuments.setImmigrationTemplateId(immigrationTemplate);
 		immigrationCandidateDocuments.setImmigrationId(immigration);
-		//immigrationCandidateDocuments.setDocumentType(documentType);
+		immigrationCandidateDocuments.setDocumentType(immigrationTemplateDocDTO.getDocumentType());
+		immigrationCandidateDocuments.setDocUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		immigrationCandidateDocuments.setDescription(immigrationTemplateDocDTO.getDescription());
+		immigrationCandidateDocuments.setIsRequired(immigrationTemplateDocDTO.getIsRequired());
 		immigrationCandidateDocuments.setCreatedBy(user);
 		immigrationCandidateDocuments.setUpdatedBy(user);
-		
+		immigrationCandidateDocuments.setUpdatedDate(date);
+		immigrationCandidateDocuments.setCreatedDate(date);
 		
 		return immigrationCommonDao.saveImmigrationCandidateDocs(immigrationCandidateDocuments);
 	}
