@@ -497,13 +497,23 @@ function shareRecomendedApplicant(requirementId,candidateId){
 	$.ajax({
     	type: "POST",
         url: sourceleadUrl+"/shareRecomendedApplicant?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&candidateId="+candidateId, 
-        success: function(result) {
-            $("#recommendationsLoading").removeAttr("style");
-        	$("#selector4").removeAttr("style");
-   			$("#selector4").css({ display: "block" });
-   			$("#eduMsgDiv").html("You have successfully shared the job with selected candidate(s)");
-   			eduMsgFadeinFunction();
-   			toggleShareRecommendation();
+        success: function(data) {
+        	if (data.response === "FAILED") {
+	    		showError(data.responseMessage);
+	    	} else if (data.response === "AWKWARD") {
+	    		location.href = "/errorPage";
+	    	} else if (data.response === "SUCCESS") {
+	            $("#recommendationsLoading").removeAttr("style");
+	        	$("#selector4").removeAttr("style");
+	   			$("#selector4").css({ display: "block" });
+	   			$("#eduMsgDiv").html("You have successfully shared the job with selected candidate(s)");
+	   			eduMsgFadeinFunction();
+	   			toggleShareRecommendation();
+	    	}else if (data.indexOf('Sign In') !== -1) {
+	    		location.replace(sourceleadUrl);
+	    	} else {
+	    		showError("Operation failed, please try again");
+	    	}
          },
     });
 }
@@ -569,11 +579,21 @@ function shareAllRecommendations(requirementId){
 	          url: sourceleadUrl+"/shareAllRecommendations?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+requirementId,    
 	           success :function(data) {
 	        	   $("#recommendationsLoading").removeAttr("style");
-	        	    $("#selector4").removeAttr("style");
-	       			$("#selector4").css({ display: "block" });
-	       			$("#eduMsgDiv").html("Great ! you have successfully shared this job");
-	       			eduMsgFadeinFunction();
-	       			toggleShareRecommendation();
+	        	   if (data.response === "FAILED") {
+			    		showError(data.responseMessage);
+			    	} else if (data.response === "AWKWARD") {
+			    		location.href = "/errorPage";
+			    	} else if (data.response === "SUCCESS") {
+		        	    $("#selector4").removeAttr("style");
+		       			$("#selector4").css({ display: "block" });
+		       			$("#eduMsgDiv").html("Great ! you have successfully shared this job");
+		       			eduMsgFadeinFunction();
+		       			toggleShareRecommendation();
+			    	}else if (data.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    		showError("Operation failed, please try again");
+			    	}
 	           },
 	   });  
 	 }else{
