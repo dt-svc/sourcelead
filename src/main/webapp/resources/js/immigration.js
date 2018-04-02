@@ -871,6 +871,36 @@ function editResidenceDEtailsByRowId(id){
  });
 }
 
+function validateEduname()  
+{	var validationSettings = {
+            errorMessagePosition: 'element',
+            borderColorOnError: '',
+            scrollToTopOnError: true,
+            dateFormat: 'yyyy/mm/dd'
+        };
+	var candidateId = $("#candidateID").val();
+	  var name = document.getElementById("eduName").value; 
+	  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
+		 $.ajax({
+		    	type: "POST",
+		        url:sourceleadUrl + immiModulePath + "/validateImmiEduname?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&name="+name, 
+		        success: function(data) {
+		        	if(data == true){
+		        		  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
+		        		  $("#eduName").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
+						  $("#eduSave_Button").attr('disabled','disabled');
+						 // return false;
+		        	}
+		        	else{
+		        		 $('#nameIdDiv').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#nameIdDiv').find('p.jquery_form_error_message').remove(); 
+                       $("#eduSave_Button").removeAttr("disabled");
+		        	}
+		        },
+		    });
+}
+
+
 function saveNotesDatails(status) {
 	if ($('#notesDetails_form').validate(false, validationSettings)) {
         var formData = getFormData("notesDetails_form");
@@ -895,3 +925,4 @@ function saveNotesDatails(status) {
     }
 	
 }
+
