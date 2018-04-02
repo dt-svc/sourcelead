@@ -400,4 +400,18 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         System.out.println("got the record id -->"+ id);
 		return immigration;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Immigration getImmigrationByImmigrationId(Long immigrationId) throws Exception {
+		Immigration immigration= null;
+        try {
+			Session session = this.sessionFactory.getCurrentSession();
+			immigration = (Immigration)session.get(Immigration.class,immigrationId);
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing getting record -->"+e.getMessage());
+			e.printStackTrace();
+		}
+		return immigration;
+	}
 }
