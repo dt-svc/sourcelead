@@ -515,6 +515,7 @@ public class OrgSettingsRestController {
 			roleHierarchy.setId(roleDTO.getHierarchyId());
 			roles.setRoleHierarchy(roleHierarchy);
 			rolesService.storeRoles(roles);
+			SourceLeadSessionManager.setSessionAttribute(request, "displayName",roleDTO.getDisplayName());
 		}
 
 		return "success";
