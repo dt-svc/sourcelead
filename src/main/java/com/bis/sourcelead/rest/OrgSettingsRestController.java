@@ -416,7 +416,7 @@ public class OrgSettingsRestController {
 	
 	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
 	@RequestMapping(value = "/app/validateExistingRoleName", method = RequestMethod.GET)
-	public String validateExistingRoleName(@RequestParam(value = "roleName", required = false) String roleName,@RequestParam(value = "roleId", required = false) Long roleId,HttpServletRequest request) throws Exception
+	public String validateExistingRoleName(@RequestParam(value = "roleName", required = true) String roleName,@RequestParam(value = "roleId", required = true) Long roleId,HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Roles roles = rolesService.getRolesById(roleId);
