@@ -11,8 +11,6 @@
 				addthis.layers.refresh();
 	        }, 500);
 </script> 
-
-
 <div class="clearfix"></div>
 <section class="staticBan blogBan">
 	<div class="staticBanInn"><h4>SourceLead blogs</h4><div class="clear"></div></div>
@@ -69,7 +67,7 @@
 	    	<div class="blogRight">
 	    		
 	    		<c:forEach var="blogCategory" items="${blogCategoryList}">
-	    		<a href="/blog/${blogCategory.href}"><i class="fa fa-caret-right"></i>${blogCategory.categoryName}
+	    		<a href="/blog/topic/${blogCategory.href}.html"><i class="fa fa-caret-right"></i>${blogCategory.categoryName}
 	    		
 	    		<div class="categories-count"><span> ${blogCategory.blogCount} </span></div>
 	    		
@@ -79,17 +77,19 @@
         </div>
         
         
-        
         <form:form id="blog_subscription_form" name="blog_subscription_form" method="post">
-       		<div class="subscribe" id="emailDiv">
-			<input type="text" class="form-control" name="email" id="email" placeholder="Subscribe News Letter" field-name="Email"
-								data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateBlogSubscriptionEmail();">
-			<input type="button" value="Subscribe" class="btn btn-danger pull-right" id="saveSubscription" onclick="saveBlogSubscription(${blogDetails.id});" >
+       		<div class="subscribe" id="emailError" >
+			    <input type="text" class="form-control" name="email" id="email" placeholder="Subscribe News Letter" field-name="Email"
+								data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateBlogSubscriptionEmail();" onkeyup="validateBlogSubscriptionEmail();">
+			    <input type="button" value="Subscribe" class="btn btn-danger pull-right" id="saveSubscription" onclick="saveBlogSubscription(${blogDetails.id});" >
   			</div>
+  			
   			<div class="clearfix"></div>
   			 <div class="success_pop text-success text-center panel-heading bg-success" id="selector4" style="display: none;"> 
 		     <i class="fa fa-check-circle mr"></i><span id="subMsgDiv"></span> 
 		   </div>
+		   
+		  
   	   </form:form>		
     </div>
 
@@ -118,6 +118,7 @@
 
 <script type="text/javascript">
 function saveBlogSubscription(blogId){
+	
 	var sleadUrl = '${sleadUrl}';
 	if ($('#blog_subscription_form').validate(false, validationSettings)) {
 	  	var formData = $($('#blog_subscription_form')[0]).serialize();
@@ -151,32 +152,32 @@ $('body').on('blur', '#blog_subscription_form', function() {
 
 <script>
 function validateBlogSubscriptionEmail(){
-	/* if(subscriptionUUID != null && subscriptionUUID != "" && subscriptionUUID != "undefined"){
-		subscriptionUUID = subscriptionUUID;
-	}else{
-		subscriptionUUID = "";
-	} */
+	var sleadUrl = '${sleadUrl}';
 	var email = $('#email').val(); 
-	$('#emailDiv').find('p.jquery_form_error_message').remove();
+	$('#emailError').find('p.jquery_form_error_message').remove();
+ if(email != null && email != ""){
 	$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/validateBlogSubscriptionEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&subscriptionUUID="+subscriptionUUID,
+			url : sleadUrl +"/validateBlogSubscriptionEmail?&email="+email,
 			success : function(data) {
 				if(data == true){
-	        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
-					  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+	        		  $('#email').find('p.jquery_form_error_message').remove();
+					  $("input#email").after("<p class='jquery_form_error_message' style='position:absolute;bottom:4px; left:0; text-overflow:ellipsis; width:325px;overflow:hidden; display:block; white-space:nowrap;'>"+email+" is Already Existed</p>");
 					  document.getElementById("email").setAttribute('record-exist','yes');
-					  document.getElementById("email").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
+					  document.getElementById("email").setAttribute('record-exist-errorMsg',email+' is Already Existed');
 	        	}
 	        	else{
 	        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
-	        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+	        		 $('#email').find('p.jquery_form_error_message').remove(); 
 	        	}
 			},
 		});
-	 
 }
+}
+
 </script>  
+
+
 
 <jsp:include page="../staticFooter.jsp" />
 

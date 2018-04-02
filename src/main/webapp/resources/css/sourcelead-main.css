@@ -8203,6 +8203,12 @@ color:#a21e23 !important;
 .active_orgacrhdr {
 	color:#a21e23 !important;
 }
+.orgmodeulsAccordion .panelDefault {
+border: 1px solid #ddd; padding:10px; border-radius:3px;
+}
+.orgmodeulsAccordion .panelDefault a {
+color: #333;
+}
 .invoiceDocs.invoiceDocsInput span input {
 width: 80%; text-align:left; padding-left: 25px;
 }
@@ -8503,6 +8509,14 @@ background: #3EC9A7; border: 1px solid #3EC9A7; border-radius: 3px;
 .selectUser .btn-default, .er .btn-default, .bg-blue {
 	background-color: #42CDAD !important; border-color: #42CDAD !important; border-radius: 3px;
 }
+
+.top2 {
+position: relative; top:2px;
+}
+.extraData-dotdot {
+text-overflow: ellipsis; overflow: hidden; display: inline-block; width: 115px; white-space: nowrap;
+}
+
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

@@ -870,11 +870,11 @@ public class TimesheetRestController {
 			 model.addObject("entriesMap",entriesMap);
 			 model.addObject("projectsTasks",projectsTasks);
 		     model.addObject("timesheetEntryDetailsDTO",timesheetEntryDetailsDTO);
-		     if(eedDTO.getRedirectionRequestFrom()!= null && StringUtils.isNotBlank(eedDTO.getRedirectionRequestFrom()) && eedDTO.getRedirectionRequestFrom().equalsIgnoreCase("notifyLink")){
+		     /*if(eedDTO.getRedirectionRequestFrom()!= null && StringUtils.isNotBlank(eedDTO.getRedirectionRequestFrom()) && eedDTO.getRedirectionRequestFrom().equalsIgnoreCase("notifyLink")){
 		    	 model.addObject("notificationCurrentFrequency",eedDTO.getCurrentTimeFrequency());
 		    	 model.addObject("notificationProMemberId",eedDTO.getProjectMembersId());
 		    	 model.addObject("notificationCurrentSubTimeFrequency",eedDTO.getCurrentTimeSubFrequency());
-		     }
+		     }*/
 	  }
 	 model.setViewName("timesheet/timeSheetSubmission");
 	 return model;
@@ -2468,15 +2468,21 @@ public class TimesheetRestController {
 			String actionLink = "";
 			
 			StringBuilder actionLinkBuilder = new StringBuilder();
-			TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getSubmissionDetailsByProjectIdMasterCandiDateIdStartDateandEndDate(projectId,masterCanidateId,frequencyStartDate,frequencyEndDate);
+			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(frequencyStartDate,frequencyEndDate,projectId,masterCanidateId);
 			HashMap<String,String> paramList = new HashMap<>();
-			if(timesheetSubmissions!= null && timesheetSubmissions.getProjectMembers()!= null && timesheetSubmissions.getTotalHours()!= null) {
-				paramList.put("currentTimeFrequency", currentTimeFrequency.toString());
-				paramList.put("projectId",projectId.toString());
-				paramList.put("masterCandidateId", masterCanidateId.toString());
+			if(sah!= null && sah.getSubmissionId() != null && sah.getSubmissionId().getProjectMembers()!= null) {
+				String frequencyMonth =  CalendarUtil.getMonthFromGivenDate(frequencyStartDate);
+				String frequencyYear =  CalendarUtil.getYearFromGivenDate(frequencyStartDate);
+				paramList.put("frequencyMonth", frequencyMonth+"-"+frequencyYear);
+				paramList.put("startDateStr",startDateStr);
+				paramList.put("endDateStr",endDateStr);
+				paramList.put("dateFormat",loginOrgLocation.getDateFormat());
+				paramList.put("timesheetFrequency",approver.getProjectId().getInvoiceFrequency());
+				paramList.put("searchData",sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getEmail());
+				paramList.put("projectName",sah.getSubmissionId().getProjectMembers().getProjects().getProjectName());
 				actionLink =actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheetApproval/").append(Constants.PLACE_UUID).toString();
 			}
-			emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, loginOrgLocation, notificationScenario,paramList);
+			emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, approver.getProjectClientsId().getOrgLocationsId(), notificationScenario,paramList);
 
 			
 		}

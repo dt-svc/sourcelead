@@ -91,7 +91,7 @@
 	<script src="/resources/reports/exporting.js"></script> 
 </c:if>
 
-<c:if test='${viewPage == "reports/requirementStageReports"}'>
+<c:if test='${viewPage == "reports/requirementStageReports" || viewPage == "reports/usersUsageReportList"}'>
 	<script src="/resources/reports/amcharts.js?staticTime=${staticTime}"></script>
 	<script src="/resources/reports/piechart.js?staticTime=${staticTime}"></script>
 	<script src="/resources/reports/export.min.js?staticTime=${staticTime}"></script>
@@ -555,11 +555,17 @@ function preventTabkey(e){
 					<a title="Contacts" href="<c:url value='${sourceleadUrl}/referRequirementList'/>"><i class="fa fa-address-book-o"></i></a>
 	        </li>
             
-            <sec:authorize access="hasRole('ROLE_DASHBOARD_REPORTS')">
+<%--             <sec:authorize access="hasRole('ROLE_DASHBOARD_REPORTS')"> --%>
 	            <li class="reportsH">
 					<a title="Reports" href="<c:url value='${sourceleadUrl}/reportsDashboard'/>"><i class="fa fa-pie-chart"></i></a>
 	            </li>
-            </sec:authorize>
+<%--             </sec:authorize> --%>
+            
+            <%-- <sec:authorize access="hasRole('ROLE_ENROLL_ORG')">
+	            <li class="reportsH">
+					<a title="Usage Reports" href="${appPath}/userUsageReport"><i class="fa fa-pie-chart"></i></a>
+	            </li>
+            </sec:authorize> --%>
             
             <sec:authorize access="hasAnyRole('ROLE_MAIL_BOX','ROLE_HOTLIST_CAMPAIGN')">
             	<li><a href="<c:url value='${sourceleadUrl}/mailBox/mails'/>" title="Mailbox" id="mailbox"><i class="fa fa-envelope"></i>  <span class="label label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount > 0 ?SourceLeadWeb_unReadMailsCount : ''}</span> </a></li>
@@ -752,8 +758,12 @@ function preventTabkey(e){
 								</div>
 							 </li> 	
 						   </sec:authorize>
-						   
+					
 					  	<li><a href="<c:url value="/app/payrollConfigure" />"><i class="fa fa-dollar-sign" aria-hidden="true"></i>Payroll Configuration</a></li>
+
+					   <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
+	                     <li><a href="<c:url value='${sourceleadUrl}/guestOrgActionRoles'/>" ><i class="fa fa-key" aria-hidden="true"></i>Guest Action Roles</a></li>
+                       </sec:authorize>
 	              </ul>
 	            </div>
 	          </li>
@@ -806,9 +816,9 @@ function preventTabkey(e){
   </div>
   
   <!--  Alert message for Switching Locaction -->
-  <div class="location-alert alert alert-danger alert-dismissable" id="locationAlert">
+  <div class="location-alert alert alert-danger alert-dismissable zInPop" id="locationAlert">
     <a href="#" class="loc-alertclose close">&times;</a>
-    <strong>Alert !</strong> Your are not able to Save Required data is Missing.
+    <strong>Alert !</strong> <span>Your are not able to Save Required data is Missing.</span>
   </div>
  <!--  Alert message for Switching Locaction -->
   

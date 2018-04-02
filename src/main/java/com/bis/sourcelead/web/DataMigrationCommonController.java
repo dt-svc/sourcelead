@@ -22,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
@@ -71,6 +72,26 @@ public class DataMigrationCommonController {
 			return model;
 
 		}
+	 
+	 @RequestMapping(value = "/uploadProjectTasks")
+		public ModelAndView uploadProjectTasks(@RequestParam(value="projectUUID", required=true) String projectUUID,
+				@RequestParam(value="projectClientUUID", required=true) String projectClientUUID,HttpServletRequest request) {
+		        SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.Projects);
+			request.getSession().setAttribute("sessionData",sessionData);
+			ModelAndView model = new ModelAndView();
+			model.setViewName("upload/uploadProjectTasksForm");
+			model.addObject("projectUUID", projectUUID);
+			model.addObject("projectClientUUID", projectClientUUID);
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+
+		}
+	 
 	 
 	 @RequestMapping(value = "/uploadassetManagement")
 		public ModelAndView uploadassetManagement(HttpServletRequest request) {
@@ -194,5 +215,49 @@ public class DataMigrationCommonController {
 	        }
 			
 		}
+	 
+	 
+	 @RequestMapping(value = "/downloadDataImportTemplateForProjectTasks", method = RequestMethod.GET)
+		public void downloadDataImportTemplateForProjectTasks(HttpServletRequest request,HttpServletResponse response) throws Exception{
+	        @SuppressWarnings("resource")
+			XSSFWorkbook workbook = new XSSFWorkbook();
+	        XSSFSheet sheet = workbook.createSheet("ProjectTaskTemplate");
+	        String[] tableColumns = Constants.DATA_MIGRATION_PROJECT_TASKS_EXCEL_HEADERS;
+	 
+	        Row row = sheet.createRow(0);
+	        int cellnum = 0;
+	        for (String key : tableColumns) {
+	            Cell cell = row.createCell(cellnum++);
+	            cell.setCellValue((String)key);
+	        }
+	        try {
+	            File file = new File("Project_Task_Import_Template.xlsx");
+	    		FileOutputStream out = new FileOutputStream(file);
+	    		workbook.write(out);
+	            
+	            out.close();
+	            out.flush();
+	            
+	            String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+				if (mimeType == null) {
+					mimeType = "application/octet-stream";
+				}
+				response.setContentType(mimeType);
+				StringBuilder fileNameSB = new StringBuilder();
+				response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+				response.setContentLength((int) file.length());
+				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+				FileCopyUtils.copy(inputStream, response.getOutputStream());
+				inputStream.close();
+				response.getOutputStream().close();
+				response.getOutputStream().flush();
+	            
+	        }
+	        catch (Exception e) {
+	            e.printStackTrace();
+	        }
+			
+		}
+	 
 	 
 }

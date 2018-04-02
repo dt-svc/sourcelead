@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LookUpDataDao;
 import com.bis.sourcelead.entity.LookUpData;
 
@@ -58,7 +59,9 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
 	@Transactional
 	public List<LookUpData> getLookUpDataByCategory(String category) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-	    String query = "from LookUpData lookupdata where lookupdata.category = :category ";
+		String query = null;
+		query = "from LookUpData lookupdata where lookupdata.category = :category  ";
+	    
 	    List<LookUpData> educationsList = session.createQuery(query.toString()).setString("category", category).list();
       
 	    return educationsList;

@@ -612,6 +612,8 @@ public class Constants {
 	public static final String[] PROJECT_TASKS_PDF_HEADERS = { "Task Name", "Task Type", "Priority", "Assigned To", "Status"};
 	public static final String[] PROJECT_TASKS_EXCEL_HEADERS = { "Task Name", "Task Type", "Priority", "Assigned To","Due Date","Estimated Time","Severity","Owner","Billing Type","Business Value", "Status","Description"};
 
+	public static final String[] DATA_MIGRATION_PROJECT_TASKS_EXCEL_HEADERS = { "Task Type" , "Task Name","Assigned To", "Due Date", "Priority", "Estimated Time","Severity","Status", "Owner","Billing Type","Currency Type","Business Value", "Description"};
+
 	public static final String SHORTLIST_CANDIDATE_COUNT = "shortlist_candidate :";
 	public static final String VENDOR = "Vendor";
 	public static final String CLIENT = "Client";
@@ -821,6 +823,7 @@ public class Constants {
 	public static final String CUSTOM =  "CUSTOM";
 
 	public static final String BILLING =  "Billing";
+	public static final String ACTIVE_USAGE_LIST =  "Active Usage List";
 	public static final String INVOICE_LIST =  "Invoice List";
 	public static final String BILLING_LIST =  "Billing List";
 	public static final String LINKED_STATUS =  "Linked";
@@ -1058,6 +1061,7 @@ public class Constants {
 	public static final String[] TOP_TAKERS_LEAVE_HEADERS = { "Emp id", "Employee Name","Email id"," Leave Type", "Duration ", "No. of Days", "No. of Extra Days","Balance Leaves"}; 
 	public static final String LEAVE_DATA =  "Leaves";
 	
+	public static final String[] USERS_USAGE_REPORT_EXPORT = { "Users", "Email", "User Type", "Org", "No.of Activities", "Multiple Ips", "Created On", "Last Activity On"};
 
 	public static final String ORG_REQUEST_FILTER_TODAY = "Today";
 	public static final String ORG_REQUEST_FILTER_ONE_WEEK_AGO = "1 Week Ago";
@@ -1070,5 +1074,15 @@ public class Constants {
 	public static final String[] UNSUBSCRIPTION_TABID_LISTED = {"3","4","8","16","20","23","30" };
 
 	public static final String PAYROLL_CATEGORY = "Payroll_Deduction";
+	
+	public static final String SUBSCRIPTION_TYPE = "Subscription Type";
+	public static final String USER_SUBSCRIPTION = "User Subscription";
+	public static final String DATA_STORAGE = "Data Storage";
+	
+	public static final String[] REGISTERED_COUNTRIES = { "Australia", "France", "India", "Singapore", "United Kingdom", "United States"};
+	
+	public static final String ROLE_GUEST_VENDOR = "ROLE_GUEST_VENDOR";
+	public static final String ROLE_GUEST_CLIENT = "ROLE_GUEST_CLIENT";
+
 
 }

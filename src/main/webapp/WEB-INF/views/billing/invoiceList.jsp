@@ -71,15 +71,20 @@ $(document).ready(function(){
          
          <ul class="nav nav-tabs" id="tab_bar">
             
-               <li class="active">
+                  <li class="active">
                         <h4>Unbilled</h4>
                         <a  data-toggle="tab" class="onboardCount billbg_orange" title="Draft Invoices">
                             <div class="pull-left">
                             <strong>${SourceLeadWeb_currencyCode}</strong>
                             </div>
-                            <div class="pull-right ml10">
-                            <div class="count" id="unbilledAmoumt"></div>
+                                <div class="pull-right ml10">
+                               <div class="count" id="unbilledAmoumt"></div>
+                               <c:if test="${!empty draftInvoiceCount }">
                                 <h5>Draft Invoices <span class="paddingLeft" id="draftInvoiceCount"></span></h5>
+                                </c:if>
+                                <c:if test="${empty draftInvoiceCount }">
+                                <h5>Draft Invoices<br><span class="paddingright pull-right">0.0</span></h5>
+                                </c:if>
                                 </div>
                         </a>
                     </li>
@@ -91,7 +96,12 @@ $(document).ready(function(){
                             </div>
                             <div class="pull-right ml10">
                             <div class="count" id="dueAfterInvoiceAmount"></div>
-                        <h5>Overdue Invoices<span class="paddingLeft" id="dueAfterInvoiceCount"></span></h5>
+                            <c:if test="${!empty dueAfterInvoiceCount }">
+                              <h5>Overdue Invoices<span class="paddingLeft" id="dueAfterInvoiceCount"></span></h5>
+                           </c:if>
+                            <c:if test="${empty dueAfterInvoiceCount }">
+                              <h5>Overdue Invoices<br><span class="paddingright pull-right">0.0</span></h5>
+                           </c:if>
                             </div>
                         
                         </a>
@@ -104,8 +114,13 @@ $(document).ready(function(){
                             </div>
                             <div class="pull-right ml10">
                             <div class="count" id="dueBeforeInvoiceAmount"></div>
-                        <h5>Open Invoices<span class="paddingLeft" id="dueBeforeInvoiceCount"></span></h5>
-                        </div>
+                             <c:if test="${!empty dueBeforeInvoiceCount }">
+                             <h5>Open Invoices<span class="paddingLeft" id="dueBeforeInvoiceCount"></span></h5>
+                             </c:if>
+                              <c:if test="${empty dueBeforeInvoiceCount }">
+                             <h5>Open Invoices<br><span class="paddingright pull-right">0.0</span></h5>
+                             </c:if>
+                          </div>
                         </a>
                     </li>
                     <li class="billingbg_greens">
@@ -116,7 +131,14 @@ $(document).ready(function(){
                             </div> 
                             <div class="pull-right ml10">
                             <div class="count" id="paidInvoiceAmount"></div>
-                        <h5>Paid Invoices<span class="paddingLeft" id="paidInvoiceCount"></span></h5>
+                             <c:if test="${!empty paidInvoiceCount }">
+                              <h5>Paid Invoices<span class="paddingLeft" id="paidInvoiceCount"></span></h5>
+                             </c:if>
+                             
+                              <c:if test="${empty paidInvoiceCount }">
+                              <h5>Paid Invoices<br><span class="paddingright pull-right">0.0</span></h5>
+                             </c:if>
+                             
                             </div>
                         </a>
                     </li>
@@ -877,7 +899,10 @@ function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount,fileUrl){
 	 	'<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_INVOICE\')">';
 	     result = result+'<li><a target="_blank" href="'+fileUrl+'" title="Download"><i class="fa fa-download paddingLeft paddingRight"></i>Download</a></li>';
 	     '</sec:authorize>'
+	     if(invoiceStatus != 'DRAFT')
+	     {
 	     result = result +'      <li onclick="linkInvoice('+id+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</li>';
+	     }
 	     result = result +'    </ul>';
     	 $("#popupDiv"+id+"").append(result);
     	 showMenu();
@@ -1408,8 +1433,21 @@ function linkInvoice(invoiceId,totalAmount){
 			result = result +'            <td>                                                                                                              ';
 			result = result +'              <div class="tbldata-dotdot_80">'+opt.dueAmount+'</div>                                                                 ';
 			result = result +'            </td>                                                                                                             ';
-			result = result +'            <td>                                                                                                              ';
-			result = result +'              <div class="tbldata-dotdot_100">'+opt.invoiceStatus+'</div>                                                                    ';
+			var status = null;
+			if(opt.invoiceStatus == 'DRAFT')
+			  {
+				status="Draft";
+			  }
+			else if(opt.invoiceStatus == 'SENT')
+			  {
+				status="Sent";
+			  }
+			else
+			 {
+				status=opt.invoiceStatus;
+			 }
+			result = result +'            <td>';
+			result = result +'              <div class="tbldata-dotdot_100">'+status+'</div>                                                                    ';
 			result = result +'            </td>                                                                                                             ';
 			result = result +'          </tr>                                                                                                               ';
 			}
