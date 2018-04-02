@@ -601,7 +601,20 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		immigrationCandidateDocuments.setDocumentType(immigrationTemplateDocDTO.getDocumentType());
 		immigrationCandidateDocuments.setDocUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		immigrationCandidateDocuments.setDescription(immigrationTemplateDocDTO.getDescription());
+		if(immigrationTemplateDocDTO.getIsRequired() != null && "Y".equalsIgnoreCase(immigrationTemplateDocDTO.getIsRequired())){
 		immigrationCandidateDocuments.setIsRequired(immigrationTemplateDocDTO.getIsRequired());
+		}else{
+		immigrationCandidateDocuments.setIsRequired(Constants.NO);	
+		}
+		immigrationCandidateDocuments.setStatus(Constants.RECORD_ACTIVE);
+		
+		if(immigrationTemplateDocDTO.getFileInfo() != null){
+			FileInfo fileInfo = immigrationTemplateDocDTO.getFileInfo().get(0);
+			immigrationCandidateDocuments.setRequestFileUrl(fileInfo.getFileURL());
+			immigrationCandidateDocuments.setRequestFileName(fileInfo.getFileName());
+			immigrationCandidateDocuments.setRequestFileContentType(fileInfo.getContentType());
+			FileUploadUtil.moveFile(immigrationTemplateDocDTO.getStaticPath(), fileInfo, "immigrationCandidateDocuments");
+		}
 		immigrationCandidateDocuments.setCreatedBy(user);
 		immigrationCandidateDocuments.setUpdatedBy(user);
 		immigrationCandidateDocuments.setUpdatedDate(date);

@@ -412,6 +412,7 @@ public class ImmigrationRestController {
        
             User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
             OrgLocations  loginOrglocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+            immigrationTemplateDocDTO.setStaticPath(staticPath);
             immigrationCommonService.saveImmigrationCandidateDocs(immigrationTemplateDocDTO,user,loginOrglocation);
             System.out.println("Template Task Details saved succesfully --> ");
        
