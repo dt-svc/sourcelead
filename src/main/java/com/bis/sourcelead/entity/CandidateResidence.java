@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,8 +12,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "CANDIDATE_RESIDENCE", schema = "SOURCELEAD")
@@ -75,6 +79,14 @@ public class CandidateResidence implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "UPDATED_BY")
 	private User updatedBy;
+	
+	@Transient
+	@JsonProperty
+	private String startDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String endDateStr;
 
 	public Long getId() {
 		return id;
@@ -202,6 +214,22 @@ public class CandidateResidence implements Serializable {
 
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getStartDateStr() {
+		return startDateStr;
+	}
+
+	public void setStartDateStr(String startDateStr) {
+		this.startDateStr = startDateStr;
+	}
+
+	public String getEndDateStr() {
+		return endDateStr;
+	}
+
+	public void setEndDateStr(String endDateStr) {
+		this.endDateStr = endDateStr;
 	}
 
 
