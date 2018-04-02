@@ -623,4 +623,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		return immigrationCommonDao.saveImmigrationCandidateDocs(immigrationCandidateDocuments);
 	}
 	
+	 @Override
+		public Immigration getImmigrationByImmigrationId(Long immigrationId) throws Exception {
+			// TODO Auto-generated method stub
+			return immigrationCommonDao.getImmigrationByImmigrationId( immigrationId);
+		}
 }

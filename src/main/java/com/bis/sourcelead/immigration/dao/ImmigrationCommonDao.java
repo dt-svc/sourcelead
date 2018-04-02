@@ -59,5 +59,7 @@ public interface ImmigrationCommonDao {
 	 
 	 ImmigrationCandidateDocuments saveImmigrationCandidateDocs(ImmigrationCandidateDocuments immigrationCandidateDocuments) throws Exception;
 
+	Immigration getImmigrationByImmigrationId(Long immigrationId) throws Exception;
+
 
 }

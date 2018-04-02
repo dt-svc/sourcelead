@@ -12,7 +12,9 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.SourceleadNotesDao;
 import com.bis.sourcelead.dto.SourceleadNotesDTO;
 import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
+import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -20,7 +22,9 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SourceleadNotes;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.service.AssetService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -51,10 +55,16 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 	private RequirementService requirementService;
 	
 	@Autowired
+	private ImmigrationCommonService immigrationCommonService;
+	
+	@Autowired
 	private ContractsTemplateService contractsTemplateService;
 	
 	@Autowired
 	private InvoiceService invoiceService;
+	
+	@Autowired
+	private CandidateService candidateService;
 	
 	@Autowired
 	private UserService userService;
@@ -82,6 +92,13 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 		if (StringUtils.isNotBlank(sourceleadNotesDTO.getRequirementId())) {
 			Requirement req=requirementService.getRequirementByRequirementId(Long.parseLong(sourceleadNotesDTO.getRequirementId()));
 			sourceleadNotes.setRequirementId(req);
+		}
+		
+		if (StringUtils.isNotBlank(sourceleadNotesDTO.getImmigrationId())) {
+			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(sourceleadNotesDTO.getCandidateId()));
+			Immigration img=immigrationCommonService.getImmigrationByImmigrationId(Long.parseLong(sourceleadNotesDTO.getImmigrationId()));
+			sourceleadNotes.setImmigration(img);
+			sourceleadNotes.setCandidate(candidate);
 		}
 		
 		if (StringUtils.isNotBlank(sourceleadNotesDTO.getAssetId())) {
