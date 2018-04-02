@@ -106,7 +106,8 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningReso
 			throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectPlanningResourceRequest resourceRequest left join fetch resourceRequest.projectPlanningRequestId left join fetch resourceRequest.candidateId "
+		String query = "from ProjectPlanningResourceRequest resourceRequest left join fetch resourceRequest.projectPlanningRequestId planningRequest "
+				+ " left join fetch planningRequest.projectId left join fetch resourceRequest.candidateId "
 				+ " where resourceRequest.requestUUID = :requestUUID and resourceRequest.status = '1' ";  
 		List<ProjectPlanningResourceRequest> resourceRequestList = session.createQuery(query).setString("requestUUID", requestUUID).list();
 		ProjectPlanningResourceRequest projectPlanningResourceRequest = null;
