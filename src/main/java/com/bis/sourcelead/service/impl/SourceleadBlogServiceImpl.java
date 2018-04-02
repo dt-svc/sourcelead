@@ -146,7 +146,7 @@ public class SourceleadBlogServiceImpl implements SourceleadBlogService{
 				if(curentDate.equals(sb.getPublishOn()) || sb.getPublishOn().before(curentDate)) {
 					sbDTO.setPublishStatus("Published");
 				}else {
-					sbDTO.setPublishStatus("Publishe");
+					sbDTO.setPublishStatus("Publish");
 				}
 				
 			}

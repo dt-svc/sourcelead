@@ -982,7 +982,10 @@ function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount,fileUrl){
 // 	     result = result +'      <li onclick="downloadInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
  		 result = result+' <a href="'+fileUrl+'" title="Download"><i class="fa fa-download paddingLeft paddingRight"></i>Download</a>';
 	     '</sec:authorize>'
+	     if(invoiceStatus != 'DRAFT')
+	     {
 	     result = result +'      <li onclick="linkPayableInvoice('+id+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Bill"></i>Link Bill</li>';
+	     }
 	     result = result +'    </ul>';
     	 $("#popupDiv"+id+"").append(result);
     	 showMenu();
@@ -1480,9 +1483,22 @@ function linkPayableInvoice(invoiceId,totalAmount){
 			result = result +'            </td>                                                                                                             ';
 			result = result +'            <td>                                                                                                              ';
 			result = result +'              <div class="tbldata-dotdot_80">'+opt.dueAmount+'</div>                                                                 ';
-			result = result +'            </td>                                                                                                             ';
+			result = result +'            </td>';
+			var status = null;
+			if(opt.invoiceStatus == 'DRAFT')
+			  {
+				status="Draft";
+			  }
+			else if(opt.invoiceStatus == 'SENT')
+			  {
+				status="Sent";
+			  }
+			else
+			 {
+				status=opt.invoiceStatus;
+			 }
 			result = result +'            <td>                                                                                                              ';
-			result = result +'              <div class="tbldata-dotdot_100">'+opt.invoiceStatus+'</div>                                                                    ';
+			result = result +'              <div class="tbldata-dotdot_100">'+status+'</div>                                                                    ';
 			result = result +'            </td>                                                                                                             ';
 			result = result +'          </tr>                                                                                                               ';
 			}

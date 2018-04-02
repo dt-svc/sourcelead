@@ -1322,7 +1322,8 @@ function newSaveTimesheet(status){
 }
 </script>
 <script type="text/javascript">
-function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMembersId,from){ 
+function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMembersId,from){
+	    $('#notifyLink').val('');
 		 if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
 			 $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
 	    	 $(".side_mask").fadeOut(200); 

@@ -157,8 +157,8 @@ public class TimeApprovalRedefinedRestController {
 			
 			LinkedHashSet<String> timesheetFrequencyList = new LinkedHashSet<>();
 			timesheetFrequencyList.add("Weekly");
-			timesheetFrequencyList.add("Bi-weekly");
-			timesheetFrequencyList.add("Semi-monthly");
+			timesheetFrequencyList.add("Bi-Weekly");
+			timesheetFrequencyList.add("Semi-Monthly");
 			timesheetFrequencyList.add("Monthly");
 			timesheetApprovalDTO.setTimesheetFrequencyList(timesheetFrequencyList);
 			if(StringUtils.isEmpty(timesheetApprovalDTO.getTimesheetFrequency())){

@@ -14,6 +14,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.UserLoginLogoutSessionDao;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UsersUsageReportDTO;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -111,6 +114,39 @@ public class UserLoginLogoutSessionDaoImpl implements UserLoginLogoutSessionDao 
 		} else {
 			return false;
 		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<String> getMultipleIps(UsersUsageReportDTO usersUsageReportDTO)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<String> ipList = new ArrayList<>();
+		String query = "select uLoginSession.ipaddress from UserLoginLogoutSession uLoginSession group by uLoginSession.ipaddress";
+		ipList = session.createQuery(query).list();
+		return ipList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Long> getUsersListByIpAddress(String ipAddress)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Long> ipList = new ArrayList<>();
+		String query = "select userLogin.userId.id from UserLoginLogoutSession userLogin where userLogin.ipaddress =:ipaddress group by userLogin.userId.id";
+		ipList = session.createQuery(query).setString("ipaddress", ipAddress).list();
+		return ipList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<UserLoginLogoutSession> getUsersByipAddress(UsersUsageReportDTO usersUsageReportDTO)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserLoginLogoutSession> ipUsersList = new ArrayList<>();
+		String query = "from UserLoginLogoutSession userLogin where userLogin.ipaddress =:ipaddress group by userLogin.userId.id";
+		ipUsersList = session.createQuery(query).setString("ipaddress", usersUsageReportDTO.getIpAddress()).list();
+		return ipUsersList;
 	}
 	
 	

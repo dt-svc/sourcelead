@@ -721,166 +721,179 @@ public class CandidateListRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = { "/getCandidateById", "/rest/getCandidateById" }, method = RequestMethod.POST)
-	public @ResponseBody CandidateDTO getCandidateById(@RequestParam(value = "candidateId", required = false) String candidateId,
+	public @ResponseBody Response<CandidateDTO> getCandidateById(@RequestParam(value = "candidateId", required = false) String candidateId,
 			HttpServletRequest request) throws Exception {
-
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Countries countries = countriesService.getCountriesByCountryName(loginOrgLocation.getCountry());
-
-		CandidateDTO candidateDTO = new CandidateDTO();
-
-		Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
-
-		int percentage = candidateService.getCandidatePercentage(can, loginOrgLocation);
-
-		LinkedHashSet<String> lhs = new LinkedHashSet<String>();
-		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
-		for (LookUpData lookUpData : skillsList) {
-			lhs.add(lookUpData.getName());
-		}
-
-		if (null != can.getSkillsName() && StringUtils.isNotEmpty(can.getSkillsName())) {
-			String[] csl = can.getSkillsName().split(",");
-			for (String sl : csl) {
-				lhs.add(sl);
-			}
-		}
-		candidateDTO.setAllAndCandidateSkills(lhs);
-
-		// visa type
-		LinkedHashSet<String> visa = new LinkedHashSet<String>();
-		List<LookUpData> visaList = lookUpDataService.getLookUpDataByCategory(Constants.VISA);
-		for (LookUpData lookUpData : visaList) {
-			visa.add(lookUpData.getName());
-		}
-		if (null != can.getVisaType() && StringUtils.isNotEmpty(can.getVisaType())) {
-			String[] csl = can.getVisaType().split(",");
-			for (String sl : csl) {
-				visa.add(sl);
-			}
-		}
-		candidateDTO.setAllAndCandidateVisa(visa);
-		candidateDTO.setVisaType(can.getVisaType());
-
-		if (null != can.getExpectedRateCurrencey()) {
-			candidateDTO.setExpectedRateCurrencey(can.getExpectedRateCurrencey());
-		} else {
-			if (null != countries && !countries.getCurrency().equalsIgnoreCase("")) {
-				candidateDTO.setExpectedRateCurrencey(countries.getCurrency());
-			}
-		}
-
-		if (null != can.getCurrentRateCurrency()) {
-			candidateDTO.setCurrentRateCurrency(can.getCurrentRateCurrency());
-		} else {
-			if (null != countries && !countries.getCurrency().equalsIgnoreCase("")) {
-				candidateDTO.setCurrentRateCurrency(countries.getCurrency());
-
-			}
-		}
-
-		if (null != can.getCurrentRateType()) {
-			candidateDTO.setCurrentRateType(can.getCurrentRateType());
-		} else {
-			if (null != countries && !countries.getCurrency().equalsIgnoreCase("")) {
-				String countryCheck = countries.getName();
-				switch (countryCheck) {
-				case "India":
-					candidateDTO.setCurrentRateType("Monthly");
-					break;
-				default:
-					candidateDTO.setCurrentRateType("Hourly");
+		Response<CandidateDTO> response = new Response<>();
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(loginUser != null) {
+			try {
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				Countries countries = countriesService.getCountriesByCountryName(loginOrgLocation.getCountry());
+		
+				CandidateDTO candidateDTO = new CandidateDTO();
+		
+				Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
+		
+				int percentage = candidateService.getCandidatePercentage(can, loginOrgLocation);
+		
+				LinkedHashSet<String> lhs = new LinkedHashSet<String>();
+				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+				for (LookUpData lookUpData : skillsList) {
+					lhs.add(lookUpData.getName());
 				}
-			}
-		}
-
-		if (null != can.getOrgRelationId()) {
-			candidateDTO.setVendorOrgRelationId(String.valueOf(can.getOrgRelationId().getId()));
-			if (can.getOrgRelationId().getResponderLocationId().getId().longValue() == loginOrgLocation.getId().longValue()) {
-				candidateDTO.setVendorName(can.getOrgRelationId().getLocationId().getOrgLocationName());
-			}
-			if (can.getOrgRelationId().getLocationId().getId().longValue() == loginOrgLocation.getId().longValue()) {
-				candidateDTO.setVendorName(can.getOrgRelationId().getResponderLocationId().getOrgLocationName());
-			}
-
-		}
-		if (null != can.getSpocId()) {
-			StringBuilder contactName = new StringBuilder();
-			candidateDTO.setVendorSpocId(can.getSpocId().getId().toString());
-			if (null != can.getSpocId().getClientUser().getLastName()) {
-				candidateDTO.setVendorContactName(contactName.append(can.getSpocId().getVendorUser().getFirstName()).append(" ")
-						.append(can.getSpocId().getClientUser().getLastName()).toString());
-			} else {
-				candidateDTO.setVendorContactName(contactName.append(can.getSpocId().getVendorUser().getFirstName()).toString());
-			}
-
-		}
-		candidateDTO.setProfilePercentage(percentage);
-		candidateDTO.setCountry(can.getCountry());
-		candidateDTO.setCandidateType(can.getCandidateType());
-		candidateDTO.setCity(can.getCity());
-		candidateDTO.setState(can.getState());
-		candidateDTO.setFirstName(can.getFirstName());
-		candidateDTO.setLastName(can.getLastName());
-		candidateDTO.setLocation(can.getLocation());
-		candidateDTO.setSummary(can.getSummary());
-		candidateDTO.setFileUrl(can.getFileUrl());
-		candidateDTO.setMobilePhone(can.getMobilePhone());
-		candidateDTO.setAlternateMobilePhone(can.getAlternateMobilePhone());
-		candidateDTO.setSkillsName(can.getSkillsName());
-		candidateDTO.setRateType(can.getRateType());
-		candidateDTO.setDesignationType(can.getDesignationType());
-		candidateDTO.setExpectedRate(can.getExpectedRate());
-		candidateDTO.setCurrentRate(can.getCurrentRate());
-		candidateDTO.setEmail(can.getEmail());
-		candidateDTO.setNoticePeriod(can.getNoticePeriod());
-		candidateDTO.setDesignation(can.getDesignation());
-		candidateDTO.setPrimarySkill(can.getPrimarySkill());
-		candidateDTO.setAddress(can.getAddress());
-		candidateDTO.setExperienceMonths(can.getExperienceMonths());
-		candidateDTO.setExperienceYears(can.getExperienceYears());
-		candidateDTO.setZipcode(can.getZipCode());
-		candidateDTO.setCandidateType(can.getCandidateType());
-		candidateDTO.setStatus(can.getStatus().toString());
-		candidateDTO.setTerminateReason(can.getTerminateReason());
-		candidateDTO.setIsAssociate(can.getIsAssociate());
-		candidateDTO.setId(can.getId());
-		candidateDTO.setCandidateId(String.valueOf(can.getId()));
-		SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CANDIDATE);
-		if (action != null && action.getId() != null) {
-			List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
-			List<SourceleadSectionDTO> sections = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),
-					loginOrgLocation.getId());
-			if (sections != null && !sections.isEmpty()) {
-				for (SourceleadSectionDTO sec : sections) {
-					for (OrglocationFormFieldsDTO customFields : sec.getCustomFieldsList()) {
-						CustomFormFieldDTO custom = new CustomFormFieldDTO();
-						custom.setCustomFormFieldId(customFields.getId());
-						formFieldId.add(custom);
+		
+				if (null != can.getSkillsName() && StringUtils.isNotEmpty(can.getSkillsName())) {
+					String[] csl = can.getSkillsName().split(",");
+					for (String sl : csl) {
+						lhs.add(sl);
 					}
 				}
-				if (formFieldId != null && !formFieldId.isEmpty() && loginOrgLocation != null) {
-					OrgLocations orgLoc = orgLocationService.getOrgLocations(loginOrgLocation.getId());
-					Map<Long, String[]> candidateData = candidateCustomFieldDataService
-							.getCandidateCustomFieldDataMapByLocationId(orgLoc.getOrg().getId(), formFieldId, can.getId());
-					Map<String, String> dataMap = new HashMap<>();
-					if (candidateData != null && !candidateData.isEmpty()) {
-						for (Entry<Long, String[]> candidateCustomData : candidateData.entrySet()) {
-							String labelName = candidateCustomData.getValue()[0];
-							String labelData = candidateCustomData.getValue()[1];
-							String labelId = candidateCustomData.getValue()[2];
-							Long id = candidateCustomData.getKey();
-							StringBuilder keyValue = new StringBuilder();
-							keyValue.append(labelName).append("$").append(labelData);
-							dataMap.put(id.toString(), keyValue.toString());
-							candidateDTO.setCandidateCustomFieldData(dataMap);
+				candidateDTO.setAllAndCandidateSkills(lhs);
+		
+				// visa type
+				LinkedHashSet<String> visa = new LinkedHashSet<String>();
+				List<LookUpData> visaList = lookUpDataService.getLookUpDataByCategory(Constants.VISA);
+				for (LookUpData lookUpData : visaList) {
+					visa.add(lookUpData.getName());
+				}
+				if (null != can.getVisaType() && StringUtils.isNotEmpty(can.getVisaType())) {
+					String[] csl = can.getVisaType().split(",");
+					for (String sl : csl) {
+						visa.add(sl);
+					}
+				}
+				candidateDTO.setAllAndCandidateVisa(visa);
+				candidateDTO.setVisaType(can.getVisaType());
+		
+				if (null != can.getExpectedRateCurrencey()) {
+					candidateDTO.setExpectedRateCurrencey(can.getExpectedRateCurrencey());
+				} else {
+					if (null != countries && !countries.getCurrency().equalsIgnoreCase("")) {
+						candidateDTO.setExpectedRateCurrencey(countries.getCurrency());
+					}
+				}
+		
+				if (null != can.getCurrentRateCurrency()) {
+					candidateDTO.setCurrentRateCurrency(can.getCurrentRateCurrency());
+				} else {
+					if (null != countries && !countries.getCurrency().equalsIgnoreCase("")) {
+						candidateDTO.setCurrentRateCurrency(countries.getCurrency());
+		
+					}
+				}
+		
+				if (null != can.getCurrentRateType()) {
+					candidateDTO.setCurrentRateType(can.getCurrentRateType());
+				} else {
+					if (null != countries && !countries.getCurrency().equalsIgnoreCase("")) {
+						String countryCheck = countries.getName();
+						switch (countryCheck) {
+						case "India":
+							candidateDTO.setCurrentRateType("Monthly");
+							break;
+						default:
+							candidateDTO.setCurrentRateType("Hourly");
 						}
 					}
 				}
+		
+				if (null != can.getOrgRelationId()) {
+					candidateDTO.setVendorOrgRelationId(String.valueOf(can.getOrgRelationId().getId()));
+					if (can.getOrgRelationId().getResponderLocationId().getId().longValue() == loginOrgLocation.getId().longValue()) {
+						candidateDTO.setVendorName(can.getOrgRelationId().getLocationId().getOrgLocationName());
+					}
+					if (can.getOrgRelationId().getLocationId().getId().longValue() == loginOrgLocation.getId().longValue()) {
+						candidateDTO.setVendorName(can.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+					}
+		
+				}
+				if (null != can.getSpocId()) {
+					StringBuilder contactName = new StringBuilder();
+					candidateDTO.setVendorSpocId(can.getSpocId().getId().toString());
+					if (null != can.getSpocId().getClientUser().getLastName()) {
+						candidateDTO.setVendorContactName(contactName.append(can.getSpocId().getVendorUser().getFirstName()).append(" ")
+								.append(can.getSpocId().getClientUser().getLastName()).toString());
+					} else {
+						candidateDTO.setVendorContactName(contactName.append(can.getSpocId().getVendorUser().getFirstName()).toString());
+					}
+		
+				}
+				candidateDTO.setProfilePercentage(percentage);
+				candidateDTO.setCountry(can.getCountry());
+				candidateDTO.setCandidateType(can.getCandidateType());
+				candidateDTO.setCity(can.getCity());
+				candidateDTO.setState(can.getState());
+				candidateDTO.setFirstName(can.getFirstName());
+				candidateDTO.setLastName(can.getLastName());
+				candidateDTO.setLocation(can.getLocation());
+				candidateDTO.setSummary(can.getSummary());
+				candidateDTO.setFileUrl(can.getFileUrl());
+				candidateDTO.setMobilePhone(can.getMobilePhone());
+				candidateDTO.setAlternateMobilePhone(can.getAlternateMobilePhone());
+				candidateDTO.setSkillsName(can.getSkillsName());
+				candidateDTO.setRateType(can.getRateType());
+				candidateDTO.setDesignationType(can.getDesignationType());
+				candidateDTO.setExpectedRate(can.getExpectedRate());
+				candidateDTO.setCurrentRate(can.getCurrentRate());
+				candidateDTO.setEmail(can.getEmail());
+				candidateDTO.setNoticePeriod(can.getNoticePeriod());
+				candidateDTO.setDesignation(can.getDesignation());
+				candidateDTO.setPrimarySkill(can.getPrimarySkill());
+				candidateDTO.setAddress(can.getAddress());
+				candidateDTO.setExperienceMonths(can.getExperienceMonths());
+				candidateDTO.setExperienceYears(can.getExperienceYears());
+				candidateDTO.setZipcode(can.getZipCode());
+				candidateDTO.setCandidateType(can.getCandidateType());
+				candidateDTO.setStatus(can.getStatus().toString());
+				candidateDTO.setTerminateReason(can.getTerminateReason());
+				candidateDTO.setIsAssociate(can.getIsAssociate());
+				candidateDTO.setId(can.getId());
+				candidateDTO.setCandidateId(String.valueOf(can.getId()));
+				SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CANDIDATE);
+				if (action != null && action.getId() != null) {
+					List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
+					List<SourceleadSectionDTO> sections = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),
+							loginOrgLocation.getId());
+					if (sections != null && !sections.isEmpty()) {
+						for (SourceleadSectionDTO sec : sections) {
+							for (OrglocationFormFieldsDTO customFields : sec.getCustomFieldsList()) {
+								CustomFormFieldDTO custom = new CustomFormFieldDTO();
+								custom.setCustomFormFieldId(customFields.getId());
+								formFieldId.add(custom);
+							}
+						}
+						if (formFieldId != null && !formFieldId.isEmpty() && loginOrgLocation != null) {
+							OrgLocations orgLoc = orgLocationService.getOrgLocations(loginOrgLocation.getId());
+							Map<Long, String[]> candidateData = candidateCustomFieldDataService
+									.getCandidateCustomFieldDataMapByLocationId(orgLoc.getOrg().getId(), formFieldId, can.getId());
+							Map<String, String> dataMap = new HashMap<>();
+							if (candidateData != null && !candidateData.isEmpty()) {
+								for (Entry<Long, String[]> candidateCustomData : candidateData.entrySet()) {
+									String labelName = candidateCustomData.getValue()[0];
+									String labelData = candidateCustomData.getValue()[1];
+									String labelId = candidateCustomData.getValue()[2];
+									Long id = candidateCustomData.getKey();
+									StringBuilder keyValue = new StringBuilder();
+									keyValue.append(labelName).append("$").append(labelData);
+									dataMap.put(id.toString(), keyValue.toString());
+									candidateDTO.setCandidateCustomFieldData(dataMap);
+								}
+							}
+						}
+					}
+				}
+				response.setObject(candidateDTO);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+				}catch(Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+				}
+			}else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 			}
-		}
-
-		return candidateDTO;
+		return response;
 	}
 
 	/**
@@ -1835,5 +1848,59 @@ public class CandidateListRestController {
 		return "success";
 
 	}
+		   
+		   @RequestMapping(value = "/rest/saveOrUpdateOnlySkillBycandidateId")
+		    public String saveOrUpdateOnlySkillBycandidateIdForAndroid(
+		            @RequestParam(value = "loginUserId", required = false) Long loginUserId,
+		            @RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+		            @RequestParam(value = "candidateId", required = false) String candidateId,
+		            @RequestParam(value = "skillName", required = false) String skillName, HttpServletRequest request)
+		            throws Exception {
+		        Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
+		        User user = userService.getUserById(loginUserId);
+		        OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		        StringBuffer activitySummary = new StringBuffer();
+		        if (null != can && StringUtils.isNotEmpty(skillName)) {
+		            
+		            
+		            ArrayList<String> oldSkills = new ArrayList<>();
+		            if(StringUtils.isNotBlank(can.getSkillsName())){
+		                oldSkills.addAll(Arrays.asList(can.getSkillsName().split("\\s*,\\s*")));
+		            }
+		            ArrayList<String> newSkills = new ArrayList<>(Arrays.asList(skillName.split("\\s*,\\s*")));
+		            ArrayList<String> actualNewSkills = new ArrayList<>();
+		            actualNewSkills.addAll(newSkills);
+		             newSkills.removeAll(oldSkills);
+		             oldSkills.removeAll(actualNewSkills);
+		            
+		            activitySummary.append("Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(String.join(",", oldSkills)).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(String.join(",", newSkills)).append(Constants.NEW_VALUE_TAG_END);
+//		            can.setSkillsName("");
+		            can.setSkillsName(skillName.replaceAll("\\s*,\\s*$", ""));
+		            candidateService.saveOrUpdateCandidate(can);
+		            candidateService.saveOrUpdateCandidateElkDocument(can);
+		            candidateActivityCommonUtil.storeCandidateHistory(can, user);
+		            candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_SKILL_UPDATED, activitySummary.toString(), "CANDIDATE");
+		            return "success";
+		        } else {
+		            
+		            ArrayList<String> oldSkills = new ArrayList<>();
+		            if(StringUtils.isNotBlank(can.getSkillsName())){
+		                oldSkills.addAll(Arrays.asList(can.getSkillsName().split("\\s*,\\s*")));
+		            }
+		            ArrayList<String> newSkills = new ArrayList<>(Arrays.asList(skillName.split("\\s*,\\s*")));
+		            ArrayList<String> actualNewSkills = new ArrayList<>();
+		            actualNewSkills.addAll(newSkills);
+		             newSkills.removeAll(oldSkills);
+		             oldSkills.removeAll(actualNewSkills);
+		            
+		            activitySummary.append("Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(String.join(",", oldSkills)).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(String.join(",", newSkills)).append(Constants.NEW_VALUE_TAG_END);
+		            can.setSkillsName("");
+		            candidateService.saveOrUpdateCandidate(can);
+		            candidateService.saveOrUpdateCandidateElkDocument(can);
+		            candidateActivityCommonUtil.storeCandidateHistory(can, user);
+		            candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_SKILL_UPDATED, activitySummary.toString(), "CANDIDATE");
+		            return "failed";
+		        }
+		    }
 
 }
