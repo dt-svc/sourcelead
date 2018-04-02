@@ -2,7 +2,7 @@ package com.bis.sourcelead.rest;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.jadira.usertype.spi.utils.lang.StringUtils;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.jadira.usertype.spi.utils.lang.StringUtils;
@@ -209,6 +209,8 @@ public class ImmigrationRestController {
         if(immigrationId!=null && !StringUtils.isEmpty(immigrationId)) {
         	immigrationDTO= immigrationCommonService.getImmigrationViewList(immigrationId,orgLocations);
         }
+        List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+        model.addObject("documentsList", documentsList);
         model.addObject("immigration", immigrationDTO);
         model.addObject("sourceleadUrl", sourceleadUrl);
         model.setViewName("/immigration/immigrationView");
@@ -400,6 +402,17 @@ public class ImmigrationRestController {
             OrgLocations  loginOrglocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
            // immigrationTemplateService.savePetitionTemplateTaskDetails(templateDTO, user);
             candidateEmployersService.storeCandidateEmployers(candidateEmployerDTO,user,loginOrglocation,Long.parseLong(candidateId));
+            System.out.println("Template Task Details saved succesfully --> ");
+       
+        return "success";
+    }
+    
+    @RequestMapping(value = {"/saveCandidateImmigrationDocuments"}, method = RequestMethod.POST)
+    public String saveCandidateImmigrationDocuments(ImmigrationTemplateDocDTO immigrationTemplateDocDTO, HttpServletRequest request) throws Exception {
+       
+            User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+            OrgLocations  loginOrglocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+            immigrationCommonService.saveImmigrationCandidateDocs(immigrationTemplateDocDTO,user,loginOrglocation);
             System.out.println("Template Task Details saved succesfully --> ");
        
         return "success";

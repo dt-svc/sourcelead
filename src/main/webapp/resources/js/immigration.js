@@ -718,6 +718,41 @@ $('body').on('blur', '#employerDetails_form', function () {
     $("#employerDetails_form").validateOnBlur(false, validationSettings);
 });
 
+
+function saveCandidateDocs() {
+	var validationSettings = {
+            errorMessagePosition: 'element',
+            borderColorOnError: '',
+            scrollToTopOnError: true,
+            dateFormat: 'yyyy/mm/dd'
+        };
+	if ($('#candidate_Immigration_Doc').validate(false, validationSettings)) {
+		var formData = getFormData("candidate_Immigration_Doc");
+        $.ajax({
+            url: sourceleadUrl + immiModulePath + "/saveCandidateImmigrationDocuments?",
+            type: "POST",
+            data: formData,
+            success: function (data) {
+                if (data == 'success') {
+                	$('#addDocu').hide();
+                	$('.popMask').fadeOut();
+                	//getCandidateEmployerList(candidateId);
+                }
+            }
+        });
+
+        return true;
+    } else {
+        return false;
+    }
+	
+}
+$('body').on('blur', '#candidate_Immigration_Doc', function () {
+    $("#candidate_Immigration_Doc").showHelpOnFocus();
+    $("#candidate_Immigration_Doc").validateOnBlur(false, validationSettings);
+});
+
+
 function getCandidateEducationList(candidateId){
 	$.ajax({
         url: sourceleadUrl + immiModulePath + "/getCandidateEducationList?candidateId="+candidateId,

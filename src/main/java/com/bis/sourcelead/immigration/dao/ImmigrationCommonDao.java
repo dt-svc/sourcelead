@@ -10,6 +10,7 @@ import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
+import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -53,5 +54,10 @@ public interface ImmigrationCommonDao {
 	 CandidateResidence getCandidateResidenceDetailsById(Long id);
 	 
 	 CandidatePassportVisa getCandidatePassportVisaDetailsById(Long id);
+	 
+	 Immigration  getImmigrationById(Long id);
+	 
+	 ImmigrationCandidateDocuments saveImmigrationCandidateDocs(ImmigrationCandidateDocuments immigrationCandidateDocuments) throws Exception;
+
 
 }
