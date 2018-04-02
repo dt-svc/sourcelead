@@ -214,8 +214,6 @@ public class ImmigrationRestController {
         if(immigrationId!=null && !StringUtils.isEmpty(immigrationId)) {
         	immigrationDTO= immigrationCommonService.getImmigrationViewList(immigrationId,orgLocations);
         }
-        List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
-        model.addObject("documentsList", documentsList);
         model.addObject("immigration", immigrationDTO);
         model.addObject("sourceleadUrl", sourceleadUrl);
         model.setViewName("/immigration/immigrationView");
@@ -413,8 +411,14 @@ public class ImmigrationRestController {
     }
     
     @RequestMapping(value = {"/saveCandidateImmigrationDocuments"}, method = RequestMethod.POST)
-    public String saveCandidateImmigrationDocuments(ImmigrationTemplateDocDTO immigrationTemplateDocDTO, HttpServletRequest request) throws Exception {
-       
+    public String saveCandidateImmigrationDocuments(ImmigrationTemplateDocDTO immigrationTemplateDocDTO, 
+    		@RequestParam(value = "candidateId", required = false) String candidateId,
+    		@RequestParam(value = "immigrationId", required = false) String immigrationId,
+    		@RequestParam(value = "templateId", required = false) String templateId,
+    		HttpServletRequest request) throws Exception {
+    		immigrationTemplateDocDTO.setImmigrationId(immigrationId);
+    		immigrationTemplateDocDTO.setImmigrationcandidateId(candidateId);
+    		immigrationTemplateDocDTO.setImmigrationTempplateId(templateId);
             User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
             OrgLocations  loginOrglocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
             immigrationTemplateDocDTO.setStaticPath(staticPath);
@@ -423,6 +427,18 @@ public class ImmigrationRestController {
        
         return "success";
     }
+    
+    @RequestMapping(value = { "/getCandidateImmigrationCandidateDocsList" })
+	public ModelAndView getCandidateImmigrationCandidateDocsList(@RequestParam(value = "candidateId", required = true) Long candidateId,
+			@RequestParam(value = "templateid", required = true) Long templateid,
+			HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		model.setViewName("/immigration/documentDetailsTab");
+		 List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+	       model.addObject("documentsList", documentsList);
+		return model;
+	}
 
     @RequestMapping(value = {
         "/savePetitionTemplateDetails"}, method = RequestMethod.POST, produces = "application/json")

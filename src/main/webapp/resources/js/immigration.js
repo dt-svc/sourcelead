@@ -728,15 +728,18 @@ function saveCandidateDocs() {
         };
 	if ($('#candidate_Immigration_Doc').validate(false, validationSettings)) {
 		var formData = getFormData("candidate_Immigration_Doc");
+		var candidateId = $('#candidateID').val();
+		var templateId = $('#templateID').val();
+		var immigrationId = $('#immigrationID').val();
         $.ajax({
-            url: sourceleadUrl + immiModulePath + "/saveCandidateImmigrationDocuments?",
+            url: sourceleadUrl + immiModulePath + "/saveCandidateImmigrationDocuments?"+ tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId+"&templateId="+templateId,
             type: "POST",
             data: formData,
             success: function (data) {
                 if (data == 'success') {
                 	$('#docuView').hide();
                 	$('.popMask').fadeOut();
-                	//getCandidateEmployerList(candidateId);
+                	displayImmigrationCandidateDocs(candidateId,templateId);
                 }
             }
         });
@@ -751,6 +754,18 @@ $('body').on('blur', '#candidate_Immigration_Doc', function () {
     $("#candidate_Immigration_Doc").showHelpOnFocus();
     $("#candidate_Immigration_Doc").validateOnBlur(false, validationSettings);
 });
+
+
+function displayImmigrationCandidateDocs(candidateId,templateid){
+	
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/getCandidateImmigrationCandidateDocsList?candidateId="+candidateId+"&templateid="+templateid,
+        type: "GET",
+        success: function (result) {
+            $("#docsTab").html(result);
+        }
+    });
+}
 
 
 function getCandidateEducationList(candidateId){
