@@ -340,7 +340,7 @@ function getRolesList(){
    		    		
    		    		result = result +'<tr>';
    		    		
-   		    		result = result +'<td><div class="proj_show tbldata-dotdot-sm" onclick="getRoleDeatils(\''+report.displayName+'\','+report.hierarchyId+','+report.id+')"><span class="pull-left" title="'+report.displayName+'">'+report.displayName+'</span><i class="fa fa-edit"></i></div></a></td>';
+   		    		result = result +'<td align="center"><div class="proj_show" onclick="getRoleDeatils(\''+report.displayName+'\','+report.hierarchyId+','+report.id+')"><span  title="'+report.displayName+'">'+report.displayName+'</span><i class="fa fa-edit"></i></div></a></td>';
    		    		result = result +'<td align="center"><div class="tbldata-dotdot-sm" title="'+report.hierarchyName+'">'+report.hierarchyName+'</div></td>';
    		    		result = result +'<td align="right"><div class="tbldata-dotdot-vsm" title="'+report.actionsCount+'">'+report.actionsCount+'</div></td>';
    		    		result = result +'<td>';
@@ -374,7 +374,7 @@ function getRoleDeatils(displayName,roleHierarchyId,roleId){
 	result = result + '	<div id="updateLoading"></div>';
 	result = result + '<form id="updateRole_form" name="updateRole_form" method="post">';
 	result = result + '<input type="hidden" name="roleId" value="'+roleId+'"  id="roleId">';
-	result = result + '	<h3>Role Update<i class="fa fa-times" onclick="cancelUpdate();"></i></h3>  ';
+	result = result + '	<h3>Edit Role<i class="fa fa-times" onclick="cancelUpdate();"></i></h3>  ';
 	result = result + '	<div class="settPopInn"> ';
 	
 	result = result + '		<div class="clearfix">  ';
