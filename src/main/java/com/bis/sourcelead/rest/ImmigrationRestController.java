@@ -32,6 +32,7 @@ import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SourceleadNotesDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
@@ -56,6 +57,7 @@ import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.SourceleadNotesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -114,6 +116,9 @@ public class ImmigrationRestController {
 
     @Autowired
     private RequirementService requirementService;
+    
+    @Autowired
+    private SourceleadNotesService sourceleadNotesService;
 
     // ====================immigration view startviewImmigration if you don't
     // required comment below code start here==============================
@@ -965,6 +970,19 @@ public class ImmigrationRestController {
 
 		return passportVisaObj;
 	}
+	
+	@RequestMapping(value = {"/saveImmigrationNotesDetails"})
+    public String saveImmigrationNotesDetails(SourceleadNotesDTO sourceleadNotesDTO, HttpServletRequest request, 
+    		@RequestParam(value = "candidateId", required = false) Long candidateId,
+    		@RequestParam(value = "immigrationId", required = false) String immigrationId ) throws Exception {
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+        sourceleadNotesService.storeComments(sourceleadNotesDTO, user,orgLocations);
+        System.out.println("Template Task Details saved succesfully --> ");
+
+		return "success";
+    }
+	
 }
 
 

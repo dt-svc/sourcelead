@@ -54,6 +54,8 @@ public interface ImmigrationCommonService {
 	 
 	 ImmigrationCandidateDocuments saveImmigrationCandidateDocs(ImmigrationTemplateDocDTO immigrationTemplateDocDTO,User user, OrgLocations orgLocations) throws Exception;
 
+	 Immigration getImmigrationByImmigrationId(Long immigrationId) throws Exception;
+
 
 
 }
