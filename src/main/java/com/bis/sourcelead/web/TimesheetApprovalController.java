@@ -20,7 +20,6 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.service.NotificationsService;
-import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -29,15 +28,9 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @Controller 
 @RequestMapping("/app")
 public class TimesheetApprovalController {
-
-
-	
 	 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
-	
-	@Autowired
-	private TimesheetSubmissionsService timesheetSubmissionsService;
 	
 	@Autowired
 	private NotificationsService notificationsService;
@@ -106,8 +99,7 @@ public class TimesheetApprovalController {
 
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			
-			//model.setViewName("timesheet/TimesheetApprovalRedefined");
-			 model.setViewName("timesheet/TimesheetApprovalRedefined");
+			 model.setViewName("timesheet/timesheetApproval");
 	        return model;
 	}
 	
@@ -115,6 +107,24 @@ public class TimesheetApprovalController {
 			return str == null || "".equals(str.trim());
 		}
  
+	 /**
+		 * @author David
+		 * This Method is for redirecting  to Timsheet Submissions List 
+		 * @param request
+		 * @param status
+		 * @return
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/timesheetlistByStatus")
+		public ModelAndView timesheetListByStatus(HttpServletRequest request,
+				@RequestParam(value = "status", required = false) String status) throws Exception {
+			ModelAndView model = new ModelAndView();
+			request.setAttribute("status", status);
+			
+			model.setViewName("timesheet/timesheetStatusList");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
 
+		}
 	 
 }
