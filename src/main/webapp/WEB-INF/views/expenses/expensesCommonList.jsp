@@ -11,7 +11,7 @@ function myExpensesListByStage(expenseStatus){
 		expenseStatus = expenseStatus.toUpperCase();
 	}
 	$.ajax({
-		    type : "GET",
+		    type : "POST",
 		    url: sourceleadUrl+"/getExpensesList?expenseStatus="+expenseStatus+"&expenseDashboardStatus=dashboard",
 		    success :function(json) {
 		    		localStorage.setItem("myExpensesListGrid",json);

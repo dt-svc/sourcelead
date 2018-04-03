@@ -51,7 +51,7 @@
 </div> 
 
 
-<script>
+<!-- <script>
 $(document).ready(function(){
 	datatableBody();
 });
@@ -76,7 +76,7 @@ function datatableBody(){
 	        body.highlight(searchData);
 	 } 
  }
- </script>
+ </script> -->
 
 
 <script>
@@ -140,7 +140,7 @@ $("#SearchExpensesData").keyup(function(event) {
 			  var pageSize = $("#pageSize").val();
 			  $('#SearchExpensesData').val('') ;
 			  $('#SearchExpensesData').val(searchData);
-			  searchHighlight(searchData);
+			  /* searchHighlight(searchData); */
 			  var startingRecord = parseInt((pageNo*pageSize-pageSize)+1);
 			  var endingRecord = parseInt(pageNo*pageSize);
 			  if(endingRecord > totalRows){
