@@ -12,16 +12,10 @@
 					<b>By <span>${notesitems.userName}</span><u>${notesitems.createdDateString}</u></b>
 					${notesitems.comment}
 				</p>
-<!-- 				<div class="removeNote"><i class="fa fa-trash"></i></div>
- -->			</div> 
+ 			</div> 
 			</c:forEach>
-			<!-- <div class="noRecordFound">
-		    	<img src="images/noReco.png" alt=""/><p>No. Records found...</p>
-		    </div> -->
+			
 		</div> 
-		
-<%-- 	<c:forEach var="notesitems" items="${candidatesNotesList}" varStatus="rows"/> 
- --%>		
 		    
 		<!--popcode start  -->
 		<form id ="notesDetails_form" name = "notesDetails_form" method = "Post">
