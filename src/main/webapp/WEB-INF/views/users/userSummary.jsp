@@ -3252,17 +3252,22 @@ function deleteProfileImage(candidateId){
 	 $.ajax({
 		    type: "GET",
             url: sourceleadUrl+"/deleteCandidateImage?candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
-	        success: function(data) {
-	        	 var result = data;
-	        	 
-	        	 $("#popUp").empty();
-	        	 $(".project_inn_mask").fadeOut(200);
-	        	 $("[data-id=profileImage]").attr('src', 'resources/images/userprofileImg.jpg');
-	        	 
-	        	 //refreshImageBlock(candidateId);
-	        	 //candidateQuickViewProfile(candidateId);
+	        success: function(response) {
+	        	if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+	        		var result = response.object;
+		        	 $("#popUp").empty();
+		        	 $(".project_inn_mask").fadeOut(200);
+		        	 $("[data-id=profileImage]").attr('src', 'resources/images/userprofileImg.jpg');
+		        	 //refreshImageBlock(candidateId);
+		        	 //candidateQuickViewProfile(candidateId);
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
 	       },
-	        
      }); 
 }
 </script>
@@ -3337,42 +3342,45 @@ function refreshImageBlock(candidateId){
 
 <script>
 function addFavourite(candidateId){
-	
 	var checked = document.getElementById("fav"+candidateId).checked;
-	
 	 	$.ajax({
 			type : "POST",
 			url : sourceleadUrl+"/saveAssociateAsFavourite?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
-			success : function(result) {
-				
-				var td = cacheLastJson.data;
-				for(var e in td) {
-					if(td[e].candidateId === candidateId) {
-						td[e]
-						if(isAssociate == "N"){
-							td[e].isFavourite = checked ? 1 : 0;
-		            	} else if(isAssociate == "Y") {
-		            		td[e].isFavouriteAssociate = checked ? 1 : 0;
-		            	}
-						break;
+			success : function(response) {
+				if (response && response.response === "INVALID_DATA") {
+				    showError(response.responseMessage);
+				} else if (response.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				} else if (response.response === "SUCCESS") {
+					var td = cacheLastJson.response.object;
+					for(var e in td) {
+						if(td[e].candidateId === candidateId) {
+							td[e]
+							if(isAssociate == "N"){
+								td[e].isFavourite = checked ? 1 : 0;
+			            	} else if(isAssociate == "Y") {
+			            		td[e].isFavouriteAssociate = checked ? 1 : 0;
+			            	}
+							break;
+						}
 					}
+					cacheLastJson.response.object = td;
+					
+					if(checked){
+						 document.getElementById("favourite"+candidateId).removeAttribute("class")
+						 document.getElementById("favourite"+candidateId).className = 'star-rating activestar-rating' 
+					}else{
+						 //document.getElementById("favourite"+candidateId).removeAttribute("class")
+						 document.getElementById("favourite"+candidateId).classList.remove("activestar-rating");
+						 document.getElementById("favourite"+candidateId).className = 'star-rating' 
+					}
+				} else if (response.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
 				}
-				cacheLastJson.data = td;
-				
-				if(checked){
-					 document.getElementById("favourite"+candidateId).removeAttribute("class")
-					 document.getElementById("favourite"+candidateId).className = 'star-rating activestar-rating' 
-				}else{
-					 //document.getElementById("favourite"+candidateId).removeAttribute("class")
-					 document.getElementById("favourite"+candidateId).classList.remove("activestar-rating");
-					 document.getElementById("favourite"+candidateId).className = 'star-rating' 
-				}
-				
 			},
 		}); 
-		 
-		
-	
 }
 </script>
 

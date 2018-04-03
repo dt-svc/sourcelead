@@ -3321,12 +3321,20 @@ function deleteProfileImage(candidateId){
 	 $.ajax({
 		    type: "GET",
             url: sourceleadUrl+"/deleteCandidateImage?candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
-	        success: function(data) {
-	        	 var result = data;
-	        	 $("#popUp").empty();
-	        	 $(".project_inn_mask").fadeOut(200);
-	        	 refreshImageBlock(candidateId);
-	        	 applicantQuickViewProfile(candidateId,submissionId);
+	        success: function(response) {
+	        	if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+		        	 var result = response.object;
+		        	 $("#popUp").empty();
+		        	 $(".project_inn_mask").fadeOut(200);
+		        	 refreshImageBlock(candidateId);
+		        	 applicantQuickViewProfile(candidateId,submissionId);
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
 	       },
 	        
      }); 
@@ -3351,32 +3359,39 @@ function saveOrCancel(message,candidateId){
 <script>
 function saveCandidateImage(candidateId){
 	            		
-          		var frm = $('#candidate_form').serializeFormJSON();
-              	var con = JSON.stringify(frm);
-  			    con = con.replace(/[{}]/g, ""); 
-  			    
-  		        var jsonData = encodeURIComponent(con);
-          		
-          		var sourceleadUrl ='${sourceleadUrl}';
-          		var loginUserId = '${SourceLeadWeb_userId}';
-          		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-          		var form = $('#candidate_form')[0];
-           		var formData = new FormData(form);
-	            		
-	            $.ajax({
-	                	      type: "POST",
-	                	      data: formData,
-	                	      contentType : 'application/json; charset=utf-8',
-	                	      enctype: 'multipart/form-data',
-	            	          processData: false,
-	            	          contentType:false,
-	                	      dataType : 'json',
-	                	      
-	                      	  url: sourceleadUrl+"/saveCandidateProfile?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
-	                          success: function(result) {
-	                        	  recommendationAlertCancel(candidateId);
-	    			          },  
-	            });
+	var frm = $('#candidate_form').serializeFormJSON();
+	var con = JSON.stringify(frm);
+	con = con.replace(/[{}]/g, ""); 
+
+   var jsonData = encodeURIComponent(con);
+ 		
+	var sourceleadUrl ='${sourceleadUrl}';
+	var loginUserId = '${SourceLeadWeb_userId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var form = $('#candidate_form')[0];
+	var formData = new FormData(form);
+    		
+    $.ajax({
+    	type: "POST",
+    	data: formData,
+    	contentType : 'application/json; charset=utf-8',
+    	enctype: 'multipart/form-data',
+	    processData: false,
+	    contentType:false,
+    	dataType : 'json',
+        url: sourceleadUrl+"/saveCandidateProfile?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
+        success: function(response) {
+        	if (response.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (response.response === "SUCCESS") {
+        		recommendationAlertCancel(candidateId);        		
+        	} else if (response.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+     	},  
+    });
 }
 </script> 
 
