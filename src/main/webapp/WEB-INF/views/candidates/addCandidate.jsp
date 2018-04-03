@@ -761,23 +761,25 @@
 <script type="text/javascript">
     $("#candidateSkills").chosen().change(function (event) {
         var allSkills = $(event.target).val();
-
         $.ajax({
             type: "POST",
             url: sourceleadUrl + "/profileBySkillSet?" + tokenParamName + "=" + tokenValue + "&allSkills=" + allSkills,
-            success: function (data) {
-                var primarySkill = data;
-                $("#primarySkill").val(primarySkill);
-
+            success: function (response) {
+            	if (response.response === "AWKWARD") {
+            	    location.href = "/errorPage";
+            	} else if (response.response === "SUCCESS") {
+            		var primarySkill = response.object;
+                    $("#primarySkill").val(primarySkill);
+            	} else if (response.indexOf('Sign In') !== -1) {
+            		location.replace(sourceleadUrl);
+            	} else {
+            	    showError("Operation failed, please try again");
+            	}
             },
         });
-
     });
-
     $("#candidateSkills").val('').trigger("chosen:updated");
     $("#candidateEducation").val('').trigger("chosen:updated");
-
-
 </script>
 <!-- Candidate Email validation script starts here -->
 
@@ -789,18 +791,26 @@
             $.ajax({
                 type: "POST",
                 url: sourceleadUrl + "/validateCandidateEmail?" + tokenParamName + "=" + tokenValue + "&email=" + email + "&candidateType=N",
-                success: function (data) {
-                    if (data == 'true') {
-                        $('#emailDiv').find('p.jquery_form_error_message').remove();
-                        $("input#email").after("<p class='jquery_form_error_message'>" + email + " is Already Existed</span>");
-                        document.getElementById("email").setAttribute('record-exist', 'yes');
-                        document.getElementById("email").setAttribute('record-exist-errorMsg', email + ' is Already Existed');
-                    } else {
-                        $('input#email').removeAttr("record-exist record-exist-errormsg");
-                        $('#emailDiv').find('p.jquery_form_error_message').remove();
-                        $("#store_candidate").addClass('button').val('Save');
-                        $("#store_candidate").removeAttr("disabled");
-                    }
+                success: function (response) {
+                	if (response.response === "AWKWARD") {
+                	    location.href = "/errorPage";
+                	} else if (response.response === "SUCCESS") {
+                		if (response.object == 'true') {
+                            $('#emailDiv').find('p.jquery_form_error_message').remove();
+                            $("input#email").after("<p class='jquery_form_error_message'>" + email + " is Already Existed</span>");
+                            document.getElementById("email").setAttribute('record-exist', 'yes');
+                            document.getElementById("email").setAttribute('record-exist-errorMsg', email + ' is Already Existed');
+                        } else {
+                            $('input#email').removeAttr("record-exist record-exist-errormsg");
+                            $('#emailDiv').find('p.jquery_form_error_message').remove();
+                            $("#store_candidate").addClass('button').val('Save');
+                            $("#store_candidate").removeAttr("disabled");
+                        }
+                	} else if (response.indexOf('Sign In') !== -1) {
+                		location.replace(sourceleadUrl);
+                	} else {
+                	    showError("Operation failed, please try again");
+                	}
                 },
             });
         }
