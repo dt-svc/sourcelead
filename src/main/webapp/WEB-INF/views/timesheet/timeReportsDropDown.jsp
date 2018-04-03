@@ -51,7 +51,11 @@
 	<jsp:include page="timeReportsTableAndData.jsp"></jsp:include>
 	<script type="text/javascript">
 		$(document).ready(function(){
-			getMonths();
+			if('${AWKWARD}' == "true"){
+				   window.location.href = "/errorPage";
+			}else{
+				getMonths();
+			}
 		});
 		function getMonths() {
 			var year = $("#frequencyYear").val();

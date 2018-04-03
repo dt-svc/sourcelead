@@ -14,3 +14,13 @@
 		   <jsp:include page="timesheetApprovalTableRowData.jsp"></jsp:include>
        </tr>
 </c:forEach>
+
+
+<script>
+  $(document).ready(function () {
+	  if('${AWKWARD}' == "true"){
+		  alert('${AWKWARD}');
+		   window.location.href =  "/errorPage";
+	  }
+	});
+</script>

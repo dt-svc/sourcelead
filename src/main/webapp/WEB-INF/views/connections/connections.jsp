@@ -102,6 +102,7 @@ function inviteAllMutualSearch(){
 		url : sourceleadUrl+"/inviteAllMutualAndSearch",
        	success: function(json) {
        		if(json == 'success'){
+       			eduMsgFadeinFunction("Invitation successfully sent to "+mutualConnUsers.length);
        			getConnectionsList('manual');
        		}
        	}
