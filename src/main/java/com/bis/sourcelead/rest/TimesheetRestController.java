@@ -1,8 +1,12 @@
 package com.bis.sourcelead.rest;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -42,6 +47,8 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
+import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TimeSheetSubmissionDTO;
 import com.bis.sourcelead.dto.TimesheetEntriesDTO;
 import com.bis.sourcelead.dto.TimesheetEntryDetailsDTO;
@@ -58,6 +65,7 @@ import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
@@ -67,6 +75,7 @@ import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.CandidateService;
@@ -76,6 +85,7 @@ import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
@@ -173,6 +183,9 @@ public class TimesheetRestController {
 	
 	@Autowired
 	private CandidateService candidateService;
+	
+	@Autowired
+	private ExportTimesheetEntries exportTimesheetEntries;
 
 	@Value("${static.path}")
 	private String staticPath;
@@ -182,6 +195,9 @@ public class TimesheetRestController {
 	
 	@Autowired
 	private HolidayService holidayService;
+	
+	@Autowired
+	private ProjectClientService projectClientService;
 	
 	/***
 	 * @purpose : Getting ProjectList For Login User (Step - 1)
@@ -207,6 +223,7 @@ public class TimesheetRestController {
 	public ModelAndView getTimesheetEntryDetailsWeb(TimesheetExpenseEntryDetailsUtilDTO eedDTO,HttpServletRequest request) throws Exception
 	{
 		 ModelAndView model = new ModelAndView();
+		 try {
 		 TimesheetEntryDetailsDTO tedDTO = getTimesheetEntryDetails(eedDTO, request); 
 		 Long projectMemberId = eedDTO.getProjectMembersId();
 		 if(projectMemberId != null) {
@@ -215,8 +232,11 @@ public class TimesheetRestController {
 			 LinkedHashMap<Long, LinkedList<TimesheetEntriesDTO>> entriesMap = getEntriesMapForDisplayWeb(tedDTO.getTimesheetSubmission(),request);
 			 model.addObject("entriesMap",entriesMap);
 		 }
-		
 		 model.setViewName("timesheet/timesheetProjects");
+		 }catch(Exception e) {
+			 model.addObject("AWKWARD", true);
+			 model.setViewName("timesheet/timesheetProjects"); 
+		 }
 		 return model;
 		
 	}
@@ -531,14 +551,19 @@ public class TimesheetRestController {
  public ModelAndView getTimesheetfrequencyListWeb(TimesheetExpenseEntryDetailsUtilDTO eedDTO,HttpServletRequest request) throws Exception
  {
 	 ModelAndView model = new ModelAndView();
-	 TimesheetEntryDetailsDTO timesheetEntryDetailsDTO = new TimesheetEntryDetailsDTO();
-	 timesheetEntryDetailsDTO =  getTimesheetFrequencyList(eedDTO, timesheetEntryDetailsDTO,request);
-	 model.addObject("timesheetSubmissionDTO",timesheetEntryDetailsDTO.getTimesheetSubmission());
-	 model.addObject("timesheetEntryDetailsDTO",timesheetEntryDetailsDTO);
-	 LinkedHashMap<Long, LinkedList<TimesheetEntriesDTO>> entriesMap = getEntriesMapForDisplayWeb(timesheetEntryDetailsDTO.getTimesheetSubmission(),request);
-	 model.addObject("entriesMap",entriesMap);
-	 model.addObject("sourceleadUrl", sourceleadUrl);
-	 model.setViewName("timesheet/timesheetfrequencyList");
+	try {
+		 TimesheetEntryDetailsDTO timesheetEntryDetailsDTO = new TimesheetEntryDetailsDTO();
+		 timesheetEntryDetailsDTO =  getTimesheetFrequencyList(eedDTO, timesheetEntryDetailsDTO,request);
+		 model.addObject("timesheetSubmissionDTO",timesheetEntryDetailsDTO.getTimesheetSubmission());
+		 model.addObject("timesheetEntryDetailsDTO",timesheetEntryDetailsDTO);
+		 LinkedHashMap<Long, LinkedList<TimesheetEntriesDTO>> entriesMap = getEntriesMapForDisplayWeb(timesheetEntryDetailsDTO.getTimesheetSubmission(),request);
+		 model.addObject("entriesMap",entriesMap);
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("timesheet/timesheetfrequencyList");
+	}catch(Exception e) {
+		model.addObject("AWKWARD", true);
+		model.setViewName("timesheet/timesheetfrequencyList");
+	}
 	 return model;
  }
   private TimesheetEntryDetailsDTO getTimesheetFrequencyList(TimesheetExpenseEntryDetailsUtilDTO eedDTO,TimesheetEntryDetailsDTO timesheetEntryDetailsDTO,HttpServletRequest request) throws Exception {
@@ -841,8 +866,9 @@ public class TimesheetRestController {
 	  if(orgLocations == null && StringUtils.isNotEmpty(eedDTO.getLocationCode())){
 		orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
 	  }
-	  Long projectMemberId = eedDTO.getProjectMembersId();
 	  ModelAndView model = new ModelAndView();
+	  try {
+	  Long projectMemberId = eedDTO.getProjectMembersId();
 	  if(projectMemberId != null) {
 		     ProjectMembers pm = projectMembersService.getProjectMemberById(projectMemberId);
 			 eedDTO.setUserId(loginUser.getId());
@@ -870,13 +896,17 @@ public class TimesheetRestController {
 			 model.addObject("entriesMap",entriesMap);
 			 model.addObject("projectsTasks",projectsTasks);
 		     model.addObject("timesheetEntryDetailsDTO",timesheetEntryDetailsDTO);
-		     if(eedDTO.getRedirectionRequestFrom()!= null && StringUtils.isNotBlank(eedDTO.getRedirectionRequestFrom()) && eedDTO.getRedirectionRequestFrom().equalsIgnoreCase("notifyLink")){
+		     /*if(eedDTO.getRedirectionRequestFrom()!= null && StringUtils.isNotBlank(eedDTO.getRedirectionRequestFrom()) && eedDTO.getRedirectionRequestFrom().equalsIgnoreCase("notifyLink")){
 		    	 model.addObject("notificationCurrentFrequency",eedDTO.getCurrentTimeFrequency());
 		    	 model.addObject("notificationProMemberId",eedDTO.getProjectMembersId());
 		    	 model.addObject("notificationCurrentSubTimeFrequency",eedDTO.getCurrentTimeSubFrequency());
-		     }
+		     }*/
 	  }
 	 model.setViewName("timesheet/timeSheetSubmission");
+	  }catch(Exception e) {
+		  model.addObject("AWKWARD", true);
+		  model.setViewName("timesheet/timeSheetSubmission");
+	  }
 	 return model;
   }
   
@@ -1977,13 +2007,18 @@ public class TimesheetRestController {
     	/**
     	 * saving Code
     	 */
-    	 tedDTO =saveTimesheetEntries(tedDTO, request);
-    	 ModelAndView model = new ModelAndView();
-         model.addObject("timesheetSubmissionDTO",tedDTO.getTimesheetSubmission());
-         LinkedHashMap<Long, LinkedList<TimesheetEntriesDTO>> entriesMap = getEntriesMapForDisplayWeb(tedDTO.getTimesheetSubmission(),request);
-    	 model.addObject("entriesMap",entriesMap);
-         model.addObject("timesheetEntryDetailsDTO",tedDTO);
-    	 model.setViewName("timesheet/timeSheetSubmission");
+    	ModelAndView model = new ModelAndView();
+    	try {
+	    	 tedDTO =saveTimesheetEntries(tedDTO, request);
+	         model.addObject("timesheetSubmissionDTO",tedDTO.getTimesheetSubmission());
+	         LinkedHashMap<Long, LinkedList<TimesheetEntriesDTO>> entriesMap = getEntriesMapForDisplayWeb(tedDTO.getTimesheetSubmission(),request);
+	    	 model.addObject("entriesMap",entriesMap);
+	         model.addObject("timesheetEntryDetailsDTO",tedDTO);
+	    	 model.setViewName("timesheet/timeSheetSubmission");
+    	}catch(Exception e) {
+    		model.addObject("AWKWARD", true);
+			model.setViewName("timesheet/timeSheetSubmission");
+    	}
     	 return model;
     }
     
@@ -2318,7 +2353,7 @@ public class TimesheetRestController {
 					}
 					if(status != null &&  status.equalsIgnoreCase("Submitted")){
 					if (tedDTO.getTimeSubFrequencies() != null && !tedDTO.getTimeSubFrequencies().isEmpty()){
-						   	LinkedList<String> tabDates = new LinkedList(tedDTO.getTimeSubFrequencies().keySet());
+						   	LinkedList<String> tabDates = new LinkedList<String>(tedDTO.getTimeSubFrequencies().keySet());
 						   	if(tabDates != null && !tabDates.isEmpty()){ 
 								for(String tabDate : tabDates){
 									tabDate = tabDate.replace("\"", "");
@@ -2368,6 +2403,7 @@ public class TimesheetRestController {
 			@RequestParam(value="dateFormat", required=false) String dateFormat,HttpServletRequest request) throws Exception {
 			//DateFormat format = Constants.DF_DMY;
 		//DateFormat  format = LoginSessionController.DATEFORMAT;
+		try {
 			if(StringUtils.isNotEmpty(timesheetFrequency)){
 			 	 String[] frequency = timesheetFrequency.split("To");
 			 	 String weekStartDate = frequency[0].trim();
@@ -2377,6 +2413,9 @@ public class TimesheetRestController {
 				 ProjectMembers pm = projectMembersService.getProjectMemberById(projectMemberId);
 			  	 submissionApproverHierarchyService.updateSubmissionStatusByProjectIdMasterCandidateIdStartDateAndEndDate(pm.getProjects().getId(),pm.getMasterCandidateId().getId(), startDate, endDate, Submission_Status.DRAFT.getValue());;
 			}
+		}catch(Exception e) {
+				e.printStackTrace();
+		}
 		
 	}
 	
@@ -2468,9 +2507,9 @@ public class TimesheetRestController {
 			String actionLink = "";
 			
 			StringBuilder actionLinkBuilder = new StringBuilder();
-			TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getSubmissionDetailsByProjectIdMasterCandiDateIdStartDateandEndDate(projectId,masterCanidateId,frequencyStartDate,frequencyEndDate);
+			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(frequencyStartDate,frequencyEndDate,projectId,masterCanidateId);
 			HashMap<String,String> paramList = new HashMap<>();
-			if(timesheetSubmissions!= null && timesheetSubmissions.getProjectMembers()!= null && timesheetSubmissions.getTotalHours()!= null) {
+			if(sah!= null && sah.getSubmissionId() != null && sah.getSubmissionId().getProjectMembers()!= null) {
 				String frequencyMonth =  CalendarUtil.getMonthFromGivenDate(frequencyStartDate);
 				String frequencyYear =  CalendarUtil.getYearFromGivenDate(frequencyStartDate);
 				paramList.put("frequencyMonth", frequencyMonth+"-"+frequencyYear);
@@ -2478,8 +2517,8 @@ public class TimesheetRestController {
 				paramList.put("endDateStr",endDateStr);
 				paramList.put("dateFormat",loginOrgLocation.getDateFormat());
 				paramList.put("timesheetFrequency",approver.getProjectId().getInvoiceFrequency());
-				paramList.put("searchData",timesheetSubmissions.getProjectMembers().getProjectMemberCandidteId().getEmail());
-				paramList.put("projectName",timesheetSubmissions.getProjectMembers().getProjects().getProjectName());
+				paramList.put("searchData",sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getEmail());
+				paramList.put("projectName",sah.getSubmissionId().getProjectMembers().getProjects().getProjectName());
 				actionLink =actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheetApproval/").append(Constants.PLACE_UUID).toString();
 			}
 			emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, approver.getProjectClientsId().getOrgLocationsId(), notificationScenario,paramList);
@@ -2551,15 +2590,24 @@ public class TimesheetRestController {
 		}
     
        @RequestMapping(value = "/addTimeSheetDayEntries" , method = RequestMethod.POST)
-       public List<TimeSheetDayEntries> addTimeSheetDayEntries(TimesheetProjectTaskDTO timesheetProjectTaskDTO,HttpServletRequest request) throws Exception {
-    	 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	 	 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	 	 LinkedList<TimeSheetDayEntries> timeSheetDayEntriesList = new LinkedList<>();
-		 addTimesheetDayEntriesByProjectIdAndProjectMemberId(timesheetProjectTaskDTO.getProjectId(), timesheetProjectTaskDTO.getProjectTaskMemberId(), timesheetProjectTaskDTO.getTaskUUID(), timesheetProjectTaskDTO.getTimesheetDate(), timesheetProjectTaskDTO.getHours(),timesheetProjectTaskDTO.getComments(),loginUser, loginOrgLocation);
-	 	 return timeSheetDayEntriesList;
+       public ResponseList<TimeSheetDayEntries> addTimeSheetDayEntries(TimesheetProjectTaskDTO timesheetProjectTaskDTO,HttpServletRequest request) throws Exception {
+    	 ResponseList<TimeSheetDayEntries> timeSheetDayEntriesListResponseList = new ResponseList<>();
+    	 try {
+	    	 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 	 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 	 LinkedList<TimeSheetDayEntries> timeSheetDayEntriesList = new LinkedList<>();
+			 addTimesheetDayEntriesByProjectIdAndProjectMemberId(timesheetProjectTaskDTO.getProjectId(), timesheetProjectTaskDTO.getProjectTaskMemberId(), timesheetProjectTaskDTO.getTaskUUID(), timesheetProjectTaskDTO.getTimesheetDate(), timesheetProjectTaskDTO.getHours(),timesheetProjectTaskDTO.getComments(),loginUser, loginOrgLocation,null);
+			 timeSheetDayEntriesListResponseList.setData(timeSheetDayEntriesList);
+			 timeSheetDayEntriesListResponseList.setResponse(Result.SUCCESS.name());
+			 timeSheetDayEntriesListResponseList.setResponseMessage(Result.SUCCESS.getValue());
+    	 }catch(Exception e) {
+    		 timeSheetDayEntriesListResponseList.setResponse(Result.AWKWARD.name());
+			 timeSheetDayEntriesListResponseList.setResponseMessage(Result.AWKWARD.getValue());
+    	 }
+	 	 return timeSheetDayEntriesListResponseList;
        }
        
-       private void addTimesheetDayEntriesByProjectIdAndProjectMemberId(Long projectId,Long projectMemberId,String taskUUID,String timesheetDateStr,String hours,String comments,User loginUser,OrgLocations loginOrgLocation) throws Exception{
+       private void addTimesheetDayEntriesByProjectIdAndProjectMemberId(Long projectId,Long projectMemberId,String taskUUID,String timesheetDateStr,String hours,String comments,User loginUser,OrgLocations loginOrgLocation, String leaveStatusType) throws Exception{
     	   Projects projects = projectsService.getProjectById(projectId);
     	   ProjectMembers projectMember = projectMembersService.getProjectMemberById(projectMemberId);
     	   Date frequencyStartDate = null;
@@ -2620,10 +2668,10 @@ public class TimesheetRestController {
 				 }
 			     
 			}
-    	    addTimesheetDayEntry(projectMember, actualStartDate, actualEndDate, frequencyStartDate, frequencyEndDate, loginUser,timesheetDate,hours,comments,taskUUID,loginOrgLocation.getDateFormat());
+    	    addTimesheetDayEntry(projectMember, actualStartDate, actualEndDate, frequencyStartDate, frequencyEndDate, loginUser,timesheetDate,hours,comments,taskUUID,loginOrgLocation.getDateFormat(),leaveStatusType);
        }
        
-       private void addTimesheetDayEntry(ProjectMembers projectMember,Date actualStartDate,Date actualEndDate,Date frequencyStartDate,Date frequencyEndDate,User loginUser,Date timesheetDate,String hours,String comments,String taskUUID,String dateformat) throws Exception{
+       private void addTimesheetDayEntry(ProjectMembers projectMember,Date actualStartDate,Date actualEndDate,Date frequencyStartDate,Date frequencyEndDate,User loginUser,Date timesheetDate,String hours,String comments,String taskUUID,String dateformat, String leaveStatusType) throws Exception{
     	  if(projectMember!= null && projectMember.getProjects()!= null && projectMember.getMasterCandidateId()!= null) {
     	   TimesheetSubmissions timesheetSubmissions  = timesheetSubmissionsService.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(actualStartDate,actualEndDate,projectMember.getProjects().getId(),projectMember.getMasterCandidateId().getId());
 	    	if(timesheetSubmissions == null){
@@ -2633,7 +2681,11 @@ public class TimesheetRestController {
 		    	timesheetSubmissions.setProjectMembers(projectMember);
 		    	timesheetSubmissions.setProjects(projectMember.getProjects());
 		    	timesheetSubmissions.setMasterCandidateId(projectMember.getMasterCandidateId());
-		    	timesheetSubmissions.setStatus(Constants.RECORD_ACTIVE+"");
+		    	if(leaveStatusType!= null && StringUtils.isNotEmpty(leaveStatusType) && (leaveStatusType.equalsIgnoreCase(Constants.LEAVE_WITHDRAW)||leaveStatusType.equalsIgnoreCase(Constants.LEAVE_CANCELLED))) {
+		    		timesheetSubmissions.setStatus(Constants.RECORD_INACTIVE+"");
+		    	}else {
+		    		timesheetSubmissions.setStatus(Constants.RECORD_ACTIVE+"");
+		    	}
 		    	timesheetSubmissions.setCreatedDate(CommonUtil.currentDate());
 		    	timesheetSubmissions.setCreatedBy(loginUser.getUserCode());
 		    	timesheetSubmissions.setWeekcomments("");
@@ -2667,7 +2719,11 @@ public class TimesheetRestController {
 							saHierarchy.setCreatedBy(timesheetSubmissions.getCreatedBy());
 							saHierarchy.setUpdatedDate(timesheetSubmissions.getUpdatedDate());
 							saHierarchy.setUpdatedBy(timesheetSubmissions.getUpdatedBy());
-							saHierarchy.setStatus(Constants.RECORD_ACTIVE+"");
+							if(leaveStatusType!= null && StringUtils.isNotEmpty(leaveStatusType) && (leaveStatusType.equalsIgnoreCase(Constants.LEAVE_WITHDRAW)||leaveStatusType.equalsIgnoreCase(Constants.LEAVE_CANCELLED))) {
+								saHierarchy.setStatus(Constants.RECORD_INACTIVE+"");
+					    	}else {
+					    		saHierarchy.setStatus(Constants.RECORD_ACTIVE+"");
+					    	}
 					    }
 						saHierarchyList.add(saHierarchy);
 					}
@@ -2676,7 +2732,7 @@ public class TimesheetRestController {
 			timesheetSubmissionsList.add(timesheetSubmissions);
 			timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
 			
-			HashMap<String,Long> totalMap =   addTimesheetDateDayEntries(actualStartDate, actualEndDate, timesheetDate,dateformat, taskUUID, hours, comments, timesheetSubmissions, loginUser);
+			HashMap<String,Long> totalMap =   addTimesheetDateDayEntries(actualStartDate, actualEndDate, timesheetDate,dateformat, taskUUID, hours, comments, timesheetSubmissions, loginUser,leaveStatusType);
 			
 			Long total =totalMap.get("TOTAL");
 			Long totalNonBillableHours = totalMap.get("BILLABLE");
@@ -2723,7 +2779,7 @@ public class TimesheetRestController {
     	 }
        }  
        
-       private HashMap<String,Long> addTimesheetDateDayEntries(Date actualStartDate,Date actualEndDate,Date timesheetDate,String dateFormat,String taskUUID,String hours,String comments,TimesheetSubmissions timesheetSubmissions,User loginUser) throws Exception{
+       private HashMap<String,Long> addTimesheetDateDayEntries(Date actualStartDate,Date actualEndDate,Date timesheetDate,String dateFormat,String taskUUID,String hours,String comments,TimesheetSubmissions timesheetSubmissions,User loginUser, String leaveStatusType) throws Exception{
     	   Long total = 0l;
 	        Long totalBillableHours = 0l;
 	        Long totalNonBillableHours = 0l;
@@ -2760,7 +2816,11 @@ public class TimesheetRestController {
 						timesheetDayEntries.setTimesheetDate(timesheetDate);
 						timesheetDayEntries.setCreatedDate(CommonUtil.currentDate());
 						timesheetDayEntries.setCreatedBy(loginUser.getCreatedBy());
-						timesheetDayEntries.setStatus(1);
+						if(leaveStatusType!= null && StringUtils.isNotEmpty(leaveStatusType) && (leaveStatusType.equalsIgnoreCase(Constants.LEAVE_WITHDRAW)||leaveStatusType.equalsIgnoreCase(Constants.LEAVE_CANCELLED))) {
+							timesheetDayEntries.setStatus(0);
+				    	}else {
+				    		timesheetDayEntries.setStatus(1);
+				    	}
 						timesheetDayEntries.setUpdatedBy(loginUser.getCreatedBy());
 						timesheetDayEntries.setUpdatedDate(CommonUtil.currentDate());
 						timesheetDayEntriesDao.saveTimesheetDayEntries(timesheetDayEntries);
@@ -2823,11 +2883,12 @@ public class TimesheetRestController {
 		}  
 		
 		@RequestMapping(value = "/notifyReopenTimeSheet", method = RequestMethod.POST)
-		public @ResponseBody void notifyReopenTimeSheet(@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
+		public @ResponseBody ResponseList<String> notifyReopenTimeSheet(@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
 				@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency,
 				@RequestParam(value="reason", required=false) String reason,
 				@RequestParam(value="totalHours", required=false) Float totalHours, HttpServletRequest request) throws Exception {
-				
+				ResponseList<String> response = new ResponseList<>(); 
+				try {
 			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			    String isSuperUser = Constants.NO;
@@ -2848,21 +2909,28 @@ public class TimesheetRestController {
 				    //send mail & notification logic
 				  	if(isSuperUser.equalsIgnoreCase(Constants.NO)){
 				  		submissionApproverHierarchyService.sendReopenTimeSheetMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency,totalHours);
-				  	}
-				  	
+				  		}
+					}
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}catch(Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
 				}
+				return response;
 			
 		}
 		
 		
 		@RequestMapping(value = "/ws/acceptOrRejectReopenTimeSheetBySuperUser", method = RequestMethod.POST)
-		public @ResponseBody void acceptOrRejectReopenTimeSheetBySuperUser(@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
+		public @ResponseBody ResponseList<String> acceptOrRejectReopenTimeSheetBySuperUser(@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
 				@RequestParam(value="reOpenedUserId", required=false) Long reopenedUserId,
 				@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency,
 				@RequestParam(value="type", required=false) String type,
 				@RequestParam(value="reason", required=false) String reason, HttpServletRequest request) throws Exception {
-				
-			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				ResponseList<String> response = new ResponseList<>(); 	
+				try {
+				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			    User reopenedUser = userService.getUserById(reopenedUserId);
 				//DateFormat format = Constants.DF_DMY;
@@ -2888,7 +2956,14 @@ public class TimesheetRestController {
 				
 				    //send mail & notification logic
 				  	submissionApproverHierarchyService.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency,type,reopenedUser);
+				  	response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
 				}
+			}catch(Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+				return response;
 			
 		}
 		
@@ -2896,29 +2971,45 @@ public class TimesheetRestController {
 		@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")
 		@RequestMapping(value = "/rest/deleteSubmissionDocument", method = RequestMethod.POST)
 	    public String deleteSubmissionDocumentForMobile(@RequestParam(value="submissionDocumentId") Long submissionDocumentId) throws Exception {
-			return deleteSubmissionDocument(submissionDocumentId);
+			 Response<String> resp = deleteSubmissionDocument(submissionDocumentId);
+			 String output = "";
+			 if(resp.getResponse() == Result.SUCCESS.name()) {
+				 output = "success";
+			 }
+			 else if(resp.getResponse() == Result.FAILED.name()) {
+				 output = "failure";
+			 }
+			 return output;
 		}
 		
 		
 		@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")
 		@RequestMapping(value = "/deleteSubmissionDocument", method = RequestMethod.POST)
-	    public String deleteSubmissionDocument(@RequestParam(value="submissionDocumentId", required=false) Long submissionDocumentId) throws Exception {
-	        
-	            /*TimesheetSubmissions timesheetSubmissions =    timesheetSubmissionsService.getTimesheetSubmissions(submissionId.toString());*/
-				TimesheetSubmissionsDocuments	timesheetSubmissionsDocuments =	timesheetSubmissionsDocumentsService.getTimesheetSubmissionsDocuments(submissionDocumentId);
-	            timesheetSubmissionsDocuments.setDocFile(null);
-	            timesheetSubmissionsDocuments.setFileContentType(null);
-	            timesheetSubmissionsDocuments.setFileName(null);
-	            timesheetSubmissionsDocuments.setStatus(Constants.CANDIDATE_IN_ACTIVE);
-	            TimesheetSubmissionsDocuments tsd = timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(timesheetSubmissionsDocuments);
-	            if(tsd != null) {
-	            	 return "success";
-	            }else {
-	            	 return "failure";
-	            }
+	    public Response<String> deleteSubmissionDocument(@RequestParam(value="submissionDocumentId", required=false) Long submissionDocumentId) {
+			    Response<String> resp = new Response<>();
+			    try {
+			    	TimesheetSubmissionsDocuments	timesheetSubmissionsDocuments =	timesheetSubmissionsDocumentsService.getTimesheetSubmissionsDocuments(submissionDocumentId);
+		            timesheetSubmissionsDocuments.setDocFile(null);
+		            timesheetSubmissionsDocuments.setFileContentType(null);
+		            timesheetSubmissionsDocuments.setFileName(null);
+		            timesheetSubmissionsDocuments.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+		            TimesheetSubmissionsDocuments tsd = timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(timesheetSubmissionsDocuments);
+		            if(tsd != null) {
+		            	resp.setResponse(Result.SUCCESS.name());
+		            	resp.setResponseMessage(Result.SUCCESS.getValue());
+		            }else {
+		            	resp.setResponse(Result.FAILED.name());
+		            	resp.setResponseMessage(Result.FAILED.getValue());
+		            }
+			    }catch(Exception e) {
+			    	resp.setResponse(Result.AWKWARD.name());
+	            	resp.setResponseMessage(Result.AWKWARD.getValue());
+			    }
+				
+	            return resp;
 	    }
 
-		public void linkLeaveTypeWithTimeSheet(User leaveApproverUserId, OrgLocations orgLocations, Long leaveTypeId, Leave leave) throws Exception {
+		public void linkLeaveTypeWithTimeSheet(User leaveApproverUserId, OrgLocations orgLocations, Long leaveTypeId, Leave leave, String leaveStatusType) throws Exception {
 			List<ProjectTasks> projectTaskList = leaveTypeService.getProjectTaskByorgLocationIdAndLeaveTypeId(orgLocations.getId(),leaveTypeId);
 			if(projectTaskList != null && !projectTaskList.isEmpty()) {
 			for(ProjectTasks projectTask: projectTaskList) {
@@ -2927,7 +3018,7 @@ public class TimesheetRestController {
 					String dateList = commonUtil.getDaysBetweenDates(leave.getFromDate(), leave.getToDate(), orgLocations.getDateFormat());
 					String leaveDate[] = dateList.split(",");
 					for(int i=0;i<leaveDate.length;i++) {
-						addTimesheetDayEntriesByProjectIdAndProjectMemberId(projectTask.getProjectId().getId(), projectMember.getId(), projectTask.getProjectTasksUUID(), leaveDate[i],CalendarUtil.getTimesheetHoursDisplayFormat(orgLocations.getAverageWorkingHours().floatValue()).replace(".", ":"), leave.getReason(), leaveApproverUserId, orgLocations);
+						addTimesheetDayEntriesByProjectIdAndProjectMemberId(projectTask.getProjectId().getId(), projectMember.getId(), projectTask.getProjectTasksUUID(), leaveDate[i],CalendarUtil.getTimesheetHoursDisplayFormat(orgLocations.getAverageWorkingHours().floatValue()).replace(".", ":"), leave.getReason(), leaveApproverUserId, orgLocations,leaveStatusType);
 						}
 					}
 				}
@@ -2946,13 +3037,322 @@ public class TimesheetRestController {
 							String dateList = commonUtil.getDaysBetweenDates(holiday.getFromDate(), holiday.getToDate(), orgLocations.getDateFormat());
 							String holidayDate[] = dateList.split(",");
 							for(int i=0;i<holidayDate.length;i++) {
-								addTimesheetDayEntriesByProjectIdAndProjectMemberId(projectTask.getProjectId().getId(), projectMember.getId(), projectTask.getProjectTasksUUID(), holidayDate[i],CalendarUtil.getTimesheetHoursDisplayFormat(orgLocations.getAverageWorkingHours().floatValue()).replace(".", ":"), holiday.getHolidayName(), user, orgLocations);
+								addTimesheetDayEntriesByProjectIdAndProjectMemberId(projectTask.getProjectId().getId(), projectMember.getId(), projectTask.getProjectTasksUUID(), holidayDate[i],CalendarUtil.getTimesheetHoursDisplayFormat(orgLocations.getAverageWorkingHours().floatValue()).replace(".", ":"), holiday.getHolidayName(), user, orgLocations,null);
 								}
 							}
 						}
 					}
 				}
 			}
+		}
+		
+
+		/**
+		 * @author Rajashekar
+		 * @param request
+		 * @param navigation
+		 * @param startDate
+		 * @return JSON
+		 * @throws Exception
+		 */
+		
+		@RequestMapping(value = "/exportTimeSheet")  
+		@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS')")
+		public void ExportTimeShhet(HttpServletRequest request,@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
+				@RequestParam(value="startDate", required=false) String startDate,
+				@RequestParam(value="endDate", required=false) String endDate,
+				@RequestParam(value="exportType", required=false) String exportType,
+				@RequestParam(value="requestFrom", required=false) String requestFrom,
+				HttpServletResponse response) throws Exception {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			ProjectMembers projectMember =  null;
+			if(null != projectMemberId){
+				projectMember = projectMembersService.getProjectMemberById(projectMemberId);
+			}
+			
+			File file = null;
+			if(!"pdf".equalsIgnoreCase(exportType)){
+				file = exportTimesheetEntries.exportTimesheets(projectMember,startDate,endDate,orgLocations,requestFrom,loginUser);
+			}else{
+				file = timeSheetPdfUtil.exportTimesheetPdf(projectMember,startDate,endDate,orgLocations,requestFrom,loginUser);
+			}
+			
+			if(file != null){
+				String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+				if (mimeType == null) {
+					mimeType = "application/octet-stream";
+				}
+				response.setContentType(mimeType);
+				StringBuilder fileName = new StringBuilder();
+				response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+				response.setContentLength((int) file.length());
+				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+				FileCopyUtils.copy(inputStream, response.getOutputStream());
+				inputStream.close();
+				response.getOutputStream().close();
+				response.getOutputStream().flush();	
+			}
+		}
+		
+		
+		@PreAuthorize("hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")
+	    @RequestMapping(value = "/saveSubmissionApprovalStatusByProjectMemberId", method = RequestMethod.POST)
+	    public  Response<String> saveSubmissionApprovalStatusByProjectMemberId(HttpServletRequest request,
+	                                                @RequestParam(value="projectMemberId", required=false) Long projectMemberId,
+	                                                @RequestParam(value="startDate", required=false) String startDate,
+	                                                @RequestParam(value="endDate", required=false) String endDate,
+	                                                @RequestParam(value="approvalStatus", required=false) String approvalStatus,@RequestParam(value="rejectedReason", required=false) String rejectedReason) throws Exception{
+			Response<String> resp = new Response<>();
+			try {                                         
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
+		 //	SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
+		 	//DateFormat  sdf = LoginSessionController.DATEFORMAT;
+	        Date sDate  =  commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),startDate);
+	        Date eDate  =  commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),endDate);
+	        submissionApproverHierarchyService.updateApprovalStatusByApproverForProjectMemberId(projectMemberId, user.getId(), sDate,eDate,approvalStatus, rejectedReason,loginOrgLocation);
+	        sendEmailToEmployeeTimesheetApprovalStatus(projectMemberId, user, startDate, endDate, approvalStatus, rejectedReason, loginOrgLocation, loginOrgCode);
+		        resp.setResponse(Result.SUCCESS.name());
+		    	resp.setResponseMessage(Result.SUCCESS.getValue());
+			}catch(Exception e) {
+				resp.setResponse(Result.AWKWARD.name());
+				resp.setResponseMessage(Result.AWKWARD.getValue());
+	        }        
+	        return resp;
+	    }
+		
+		
+		private void sendEmailToEmployeeTimesheetApprovalStatus(Long pmId, User loginUser, String startDate, String endDate, String status, String rejectedReason, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
+			
+				 ProjectMembers projectMember = projectMembersService.getProjectMemberById(pmId);
+				 Date frequencyStartDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),startDate.replaceAll("/", "-"));
+				 Date frequencyEndDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),endDate.replaceAll("/", "-"));
+			 
+				 SubmissionApproverHierarchy sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(frequencyStartDate, frequencyEndDate, projectMember.getProjects().getId(),projectMember.getMasterCandidateId().getId());
+				 Submission_Status submissionStatus = sah.getSubmissionStatus();
+			 	 String submissionStatusStr = submissionStatus.getValue();
+			 	  if(!isNullOrEmpty(submissionStatusStr) && 
+			 			 (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())
+			 		     || submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))
+			 	    )
+			 	   {
+			 		//For Employee
+			 		sendEmailNotificationToEmployeeAndApproversOfEndClient(projectMember.getProjectMemberCandidteId().getFirstName(),projectMember.getProjectMemberCandidteId().getLastName(),  projectMember.getProjectMemberCandidteId().getEmail(), loginUser, loginOrgLocation, projectMember, startDate, endDate, submissionStatusStr, rejectedReason);
+			 		 
+			 		//For Approvers of EndClient
+			 		 List<ProjectApproverHierarchy> approverList =  projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectMember.getProjects().getId(), loginOrgLocation.getId());
+			 		 if(approverList != null && approverList.isEmpty()){
+			 			 for(ProjectApproverHierarchy  approver : approverList){
+			 				if(!loginUser.getUserCode().equalsIgnoreCase(approver.getApproverUserId().getUserCode())){
+			 					sendEmailNotificationToEmployeeAndApproversOfEndClient(approver.getApproverUserId().getFirstName(), approver.getApproverUserId().getLastName(), approver.getApproverUserId().getEmail(), loginUser, loginOrgLocation, projectMember, startDate, endDate, submissionStatusStr, rejectedReason);
+			 				}
+			 			 }
+			 		 }
+			 		 
+					//
+			 	   
+			 	 }
+			 		//Send Emails & Notifications to vendors
+			 	 sendEmailToVendorAtTimesheetApprovalStatus(projectMember,loginUser,loginOrgLocation,loginOrgCode,startDate, endDate,status, submissionStatusStr);
+		     	
+		}
+		
+		private void sendEmailNotificationToEmployeeAndApproversOfEndClient(String firstName,String lastName,String toEmail,User loginUser,OrgLocations loginOrgLocation,ProjectMembers projectMember,String startDate, String endDate,String status,String rejectedReason) throws Exception{
+				 EmailMessage emailMessage = new EmailMessage();
+		     	 emailMessage.setFirstName(firstName);
+			 	 emailMessage.setLastName(lastName);
+			 	 emailMessage.setToEmail(toEmail);
+			 	 emailMessage.setFromEmail(loginUser.getEmail());
+			 	 emailMessage.setCreatedBy(loginUser.getUserCode());
+			 	 
+			 	 StringBuilder userNameSB = new StringBuilder();
+			 	 if(loginUser.getLastName()!=null && loginUser.getLastName()!="undefined" && loginUser.getLastName()!= "" && !loginUser.getLastName().isEmpty()){
+			 	 emailMessage.setFromName(userNameSB.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 	 }
+			 	 else
+			 	 {
+			 		emailMessage.setFromName(userNameSB.append(loginUser.getFirstName()).append(" ").toString());
+			 		
+			 	 }
+			 	 
+			 	 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+				 //setting the class filed values
+				 Map<String, String> globalVarsMap = new HashMap<>();
+				 globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());
+				 globalVarsMap.put("loginUserLastName",loginUser.getLastName());
+				 globalVarsMap.put("employeeFirstName", projectMember.getProjectMemberCandidteId().getFirstName());
+				 globalVarsMap.put("employeeLastName", projectMember.getProjectMemberCandidteId().getLastName());
+				 globalVarsMap.put("orgName",loginOrgLocation.getOrgLocationName());
+				 globalVarsMap.put("projectName", projectMember.getProjects().getProjectName());
+				 globalVarsMap.put("frequencyType",projectMember.getProjects().getInvoiceFrequency());
+				 StringBuilder timeFrequencySB = new StringBuilder();
+				 globalVarsMap.put("timeFrequency",timeFrequencySB.append(startDate).append(" to ").append(endDate).toString());
+				 
+				 globalVarsMap.put("managerFirstName", loginUser.getFirstName());
+				 globalVarsMap.put("managerLastName", loginUser.getLastName());
+				 if("REJECTED".equalsIgnoreCase(status)){
+					 globalVarsMap.put("rejectedReason",rejectedReason);
+				 }
+				 
+				 StringBuilder loginURLSB = new StringBuilder();
+				 globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadLoginUrl).append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+				 
+				 //setting the Recipient information
+				 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+				 
+				 //getting the current EmailScenario by EmailScenario unique name and entity type
+				 EmailScenario  emailScenario = null;
+				 if("REJECTED".equalsIgnoreCase(status)){
+					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MEMBERS_REJECTED_TIMESHEET,Constants.ENTITY_TYPE_EMAIL);
+				 }
+				 if("APPROVED".equalsIgnoreCase(status)){
+					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MEMBERS_APPROVED_TIMESHEET,Constants.ENTITY_TYPE_EMAIL);
+				 }
+				 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+				 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+				 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+				 String url = sourceleadUrl;
+				 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
+				 emailMessage.setSubject(subject);
+				 emailMessage.setMessageBody(emailTemplate);
+				 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+				
+				 
+				 EmailScenario  notificationScenario = null;
+				 if("REJECTED".equalsIgnoreCase(status)){
+					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MEMBERS_REJECTED_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION);
+				 }
+				 if("APPROVED".equalsIgnoreCase(status)){
+					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MEMBERS_APPROVED_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION);
+				 }
+				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+				notificationScenario.setBody(notificationBody);
+				notificationScenario.setOrgCode(loginOrgLocation.getLocationCode());
+				
+				
+				StringBuilder actionLinkBuilder = new StringBuilder();
+				Date startDateFormat = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), startDate);
+				Date endDateFormat = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), endDate);
+				SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(startDateFormat,endDateFormat,projectMember.getProjects().getId(),projectMember.getMasterCandidateId().getId());
+				HashMap<String,String> paramList = new HashMap<>();
+				String actionLink = null;
+				if(sah!= null && sah.getSubmissionId() != null && sah.getSubmissionId().getProjectMembers()!= null) {
+					paramList.put("startDateStr",startDate);
+					paramList.put("endDateStr",endDate);
+					paramList.put("dateFormat",loginOrgLocation.getDateFormat());
+					paramList.put("projectMemberId",projectMember.getId().toString());
+					actionLink =actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheet/").append(Constants.PLACE_UUID).toString();
+				}
+				
+				emailScenerioUtil.sendNotification(actionLink, loginUser,  projectMember.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,paramList); 
+		}
+
+		
+		private void sendEmailToVendorAtTimesheetApprovalStatus(ProjectMembers projectMember,User loginUser, OrgLocations loginOrgLocation, String loginOrgCode, String startDate, String endDate, String status, String rejectedReason) throws Exception {
+			List<ProjectApproverHierarchy> approverHierarchyList = projectApproverHierarchyService.getActiveOrgApproverUsersByProjectMemberMasterCandidateIdAndProjectId(projectMember.getMasterCandidateId().getId(),projectMember.getProjects().getId());
+			//login Org ProjectClient(Current-Level-Org)
+			ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectMember.getProjects().getId(), loginOrgLocation.getId());
+			
+			for(ProjectApproverHierarchy approver : approverHierarchyList){
+				//Sending Mail to Low-Level Org Approvers(Vendor Approvers)	
+			    if(approver.getProjectClientsId()!= null && 
+			    		approver.getProjectClientsId().getOrgLocationsId() != null && projectClients != null &&
+			    		!projectClients.getOrgLocationsId().getLocationCode().equalsIgnoreCase(approver.getProjectClientsId().getOrgLocationsId().getLocationCode()) && projectClients.getLevel() < approver.getProjectClientsId().getLevel()){
+					
+			     EmailMessage emailMessage = new EmailMessage();
+				 emailMessage.setFirstName(approver.getApproverUserId().getFirstName());
+				 emailMessage.setLastName(approver.getApproverUserId().getLastName());
+				 emailMessage.setToEmail(approver.getApproverUserId().getEmail());
+				 emailMessage.setFromEmail(loginUser.getEmail());
+				 emailMessage.setCreatedBy(loginUser.getUserCode());
+				 
+				 DateFormat TZ_DF_TS = new SimpleDateFormat (loginOrgLocation.getDateFormat());
+		         String startDateStr = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),TZ_DF_TS.parse(startDate));
+		         String endDateStr = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),TZ_DF_TS.parse(endDate));
+
+				 //setting the class filed values
+				 Map<String, String> globalVarsMap = new HashMap<String, String>();
+				 StringBuilder loginName = new StringBuilder();
+				 if(null !=  projectMember.getProjectMemberCandidteId().getLastName() && !"".equalsIgnoreCase( projectMember.getProjectMemberCandidteId().getLastName())){
+					 globalVarsMap.put("employeename",loginName.append( projectMember.getProjectMemberCandidteId().getFirstName()).append(" ").append( projectMember.getProjectMemberCandidteId().getLastName()).toString());
+				 }else{
+					 globalVarsMap.put("employeename", projectMember.getProjectMemberCandidteId().getFirstName());
+				 }
+				 StringBuilder managerName = new StringBuilder();
+				 if(null != approver.getApproverUserId().getLastName() && !"".equalsIgnoreCase(approver.getApproverUserId().getLastName())){
+					 globalVarsMap.put("vendorcontactname",managerName.append(approver.getApproverUserId().getFirstName()).append(" ").append(approver.getApproverUserId().getLastName()).toString());
+				 }else{
+					 globalVarsMap.put("vendorcontactname",approver.getApproverUserId().getFirstName());
+				 }
+				 globalVarsMap.put("projectname", projectMember.getProjects().getProjectName());
+				 globalVarsMap.put("frequency",startDateStr+" to "+endDateStr);
+				 globalVarsMap.put("clientName",loginUser.getFullName()+","+(loginOrgLocation.getOrgLocationName()));
+				 globalVarsMap.put("reason",rejectedReason);
+				 
+				 //setting the Recipient information
+				 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+				 
+				 //getting the current EmailScenario by EmailScenario unique name and entity type
+				 EmailScenario  emailScenario = null;
+				 if(status.equals("REJECTED")){
+		             emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_REJECTED_EMAIL_TOVENDOR,Constants.ENTITY_TYPE_EMAIL);
+				 }else{
+					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_APPROVED_EMAIL_TOVENDOR,Constants.ENTITY_TYPE_EMAIL);
+				 }
+				 
+				 //covert subject,body and signature
+				 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+				 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+				 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+				 String url = sourceleadUrl;
+				 
+				 //construct HTML template using required data
+				 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
+				 emailMessage.setSubject(subject);
+				 emailMessage.setMessageBody(emailTemplate);
+				 
+				 //calling the sendEmail method of emailScenerioUtil
+				 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+				 
+				 
+				//calling the sendNotification method of emailScenerioUtil
+				 EmailScenario notificationScenario = null;
+				 if(status.equals("REJECTED")){
+					   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_REJECTED_EMAIL_TOVENDOR,Constants.ENTITY_TYPE_NOTIFICATION);
+				 }else {
+					   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_APPROVED_EMAIL_TOVENDOR,Constants.ENTITY_TYPE_NOTIFICATION);
+				 }
+				 
+				
+				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+				notificationScenario.setBody(notificationBody);
+				notificationScenario.setOrgCode(loginOrgLocation.getLocationCode());
+
+				StringBuilder actionLinkBuilder = new StringBuilder();
+				Date startDateFormat = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), startDateStr);
+				Date endDateFormat = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), endDateStr);
+				SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(startDateFormat,endDateFormat,projectMember.getProjects().getId(),projectMember.getMasterCandidateId().getId());
+				HashMap<String,String> paramList = new HashMap<>();
+				String actionLink = null;
+				if(sah!= null && sah.getSubmissionId() != null && sah.getSubmissionId().getProjectMembers()!= null) {
+					String frequencyMonth =  CalendarUtil.getMonthFromGivenDate(startDateFormat);
+					String frequencyYear =  CalendarUtil.getYearFromGivenDate(endDateFormat);
+					paramList.put("frequencyMonth", frequencyMonth+"-"+frequencyYear);
+					paramList.put("startDateStr",startDate);
+					paramList.put("endDateStr",endDate);
+					paramList.put("dateFormat",loginOrgLocation.getDateFormat());
+					paramList.put("timesheetFrequency",projectMember.getProjects().getInvoiceFrequency());
+					paramList.put("searchData",sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getEmail());
+					paramList.put("projectName",sah.getSubmissionId().getProjectMembers().getProjects().getProjectName());
+					actionLink =actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheetApproval/").append(Constants.PLACE_UUID).toString();
+				}
+				
+				emailScenerioUtil.sendNotification(actionLink, loginUser, approver.getApproverUserId(), approver.getProjectClientsId().getOrgLocationsId(), notificationScenario,paramList);
+				
+			}
+		}
 		}
 		
 }

@@ -67,7 +67,7 @@
 	    	<div class="blogRight">
 	    		
 	    		<c:forEach var="blogCategory" items="${blogCategoryList}">
-	    		<a href="/blog/${blogCategory.href}"><i class="fa fa-caret-right"></i>${blogCategory.categoryName}
+	    		<a href="/blog/topic/${blogCategory.href}.html"><i class="fa fa-caret-right"></i>${blogCategory.categoryName}
 	    		
 	    		<div class="categories-count"><span> ${blogCategory.blogCount} </span></div>
 	    		

@@ -12,20 +12,36 @@
    <div class="pull-right brud-crum"><a href="<c:url value='/app/blogs'/>">Blogs</a> &raquo;Blog Preview</div>
   </section>
  
-	<section class="testiWrap mt25 clearfix">
+	<section class="testiWrap dashboard-widget clearfix">
 		<section class="blogWrap">
 			<div class="blogInn">
 
 				<h4 class="margin-top0">${sourceleadBlog.blogTitle}</h4>
+				
+				<c:if test="${!empty sourceleadBlog.blogImage}">
 				<div class="blogImg mb">
 					<img src="${sourceleadBlog.blogImage}" alt="" class="img-responsive">
 				</div>
-
+                </c:if>
+                
+                <c:if test="${empty sourceleadBlog.blogImage}">
+				<div class="blogImg mb">
+					<img src="#" alt="" class="img-responsive">
+				</div>
+                </c:if>
+                
 				<div class="clearfix"></div>
-
+                <c:if test="${!empty sourceleadBlog.description}">
 				<div class="blogpreviewContent">
 				${sourceleadBlog.description}
 				</div>
+				</c:if>
+				
+			 <c:if test="${empty sourceleadBlog.description}">
+				<div class="blogpreviewContent">
+				
+				</div>
+				</c:if>
 				
 			</div>
 

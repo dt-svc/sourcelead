@@ -32,9 +32,9 @@ public class TabsServiceImpl implements TabsService {
 	}
 
 	@Override
-	public Collection<Tabs> getTabsListByOrgLocationId(List<Long> modulesId, Long roleId, Long orgLocationId)
+	public Collection<Tabs> getTabsListByOrgLocationId(Long roleId, Long orgLocationId)
 			throws Exception {
-		return tabsDao.getTabsListByOrgLocationId(modulesId, roleId, orgLocationId);
+		return tabsDao.getTabsListByOrgLocationId(roleId, orgLocationId);
 	}
 
 	@Override

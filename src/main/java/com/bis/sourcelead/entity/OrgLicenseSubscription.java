@@ -34,15 +34,15 @@ public class OrgLicenseSubscription implements Serializable{
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SUBSCRIPTION_TYPE")
-    private LookUpData subscriptionType;
+    private OrgLicenseSubscriptionTypes subscriptionType;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USER_SUBSCRIPTION_TYPE")
-    private LookUpData userSubscriptionType;
+    private OrgLicenseSubscriptionTypes userSubscriptionType;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "STORAGE_SUBSCRIPTION_TYPE")
-    private LookUpData storageSubscriptionType;
+    private OrgLicenseSubscriptionTypes storageSubscriptionType;
 	
 	@Column(name = "CURRENCY")
 	private String currency;
@@ -62,6 +62,10 @@ public class OrgLicenseSubscription implements Serializable{
 	@ManyToOne
 	@JoinColumn(name = "TIMEZONE_ID")
     private Timezone timezone;
+	
+	@Column(name = "IS_INVOICE_AMOUNT_PAID")
+	private String isInvoiceAmountPaid;
+	
 	
 	@Column(name = "UUID")
 	private String uuid;
@@ -109,27 +113,28 @@ public class OrgLicenseSubscription implements Serializable{
 		this.country = country;
 	}
 
-	public LookUpData getSubscriptionType() {
+
+	public OrgLicenseSubscriptionTypes getSubscriptionType() {
 		return subscriptionType;
 	}
 
-	public void setSubscriptionType(LookUpData subscriptionType) {
+	public void setSubscriptionType(OrgLicenseSubscriptionTypes subscriptionType) {
 		this.subscriptionType = subscriptionType;
 	}
 
-	public LookUpData getUserSubscriptionType() {
+	public OrgLicenseSubscriptionTypes getUserSubscriptionType() {
 		return userSubscriptionType;
 	}
 
-	public void setUserSubscriptionType(LookUpData userSubscriptionType) {
+	public void setUserSubscriptionType(OrgLicenseSubscriptionTypes userSubscriptionType) {
 		this.userSubscriptionType = userSubscriptionType;
 	}
 
-	public LookUpData getStorageSubscriptionType() {
+	public OrgLicenseSubscriptionTypes getStorageSubscriptionType() {
 		return storageSubscriptionType;
 	}
 
-	public void setStorageSubscriptionType(LookUpData storageSubscriptionType) {
+	public void setStorageSubscriptionType(OrgLicenseSubscriptionTypes storageSubscriptionType) {
 		this.storageSubscriptionType = storageSubscriptionType;
 	}
 
@@ -227,5 +232,13 @@ public class OrgLicenseSubscription implements Serializable{
 
 	public void setTimezone(Timezone timezone) {
 		this.timezone = timezone;
+	}
+
+	public String getIsInvoiceAmountPaid() {
+		return isInvoiceAmountPaid;
+	}
+
+	public void setIsInvoiceAmountPaid(String isInvoiceAmountPaid) {
+		this.isInvoiceAmountPaid = isInvoiceAmountPaid;
 	}
 }
