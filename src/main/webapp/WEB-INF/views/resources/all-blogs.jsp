@@ -9,22 +9,26 @@
 	<div class="staticBanInn"><h4>SourceLead blogs</h4><div class="clear"></div></div>
 </section>  
 
-
 <section class="blogNewWrap">
 	<section class="blogNewInn">
-		    <c:forEach var="all" items="${allBlogs}">
+		     <c:forEach var="all" items="${allBlogs}">
 		       <article>
 				<a href="/blog/${all.href}.html"><span><img src="${all.imgFileUrl}" alt="" class="img-responsive"></span>
 				 
 				 <h2>${all.blogTitle}</h2>
 					<div class="clearfix blogNewInn-content">
-						<p>${all.description}</p>
+						<p>${all.shortDescription}</p>
 					</div>
-				<b>Read more...</b>	
-				
+					<c:if test="${!empty all.shortDescription}">		
+						<b>Read more...</b>	
+					</c:if>	
 				</a>	
 				</article>
-			</c:forEach>
+			</c:forEach> 
+			
+			<c:if test="${empty allBlogs}">
+			<div class="dataTables_empty"></div>
+			</c:if>
 		 <div class="clear"></div>
 	</section>
 </section>

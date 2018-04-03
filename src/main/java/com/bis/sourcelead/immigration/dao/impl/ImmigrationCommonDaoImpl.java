@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidateIdendities;
@@ -25,6 +26,7 @@ import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
+import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -358,4 +360,58 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		        System.out.println("got the record id -->"+ id);
 				return passportVisaObj;
 			}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ImmigrationCandidateDocuments saveImmigrationCandidateDocs(ImmigrationCandidateDocuments immigrationCandidateDocuments)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		  
+		logger.debug("Storing ImmigrationPassportVisa");
+		try {
+			if (immigrationCandidateDocuments != null) {
+				session.saveOrUpdate(immigrationCandidateDocuments);
+			}
+			logger.debug("ImmigrationCandidateDocuments Stored Successfully");
+		} catch (Exception exception) {
+			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ImmigrationCandidateDocuments"));
+			    try {
+	                throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
+	            } catch (SourceLeadConstraintViolationException e) {
+	                e.printStackTrace();
+	            }
+		}
+		return immigrationCandidateDocuments;
+}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Immigration  getImmigrationById(Long id) {
+		System.out.println("get CandidateFamilyDetails id ---> "+id);
+		Immigration immigration= null;
+        try {
+			Session session = this.sessionFactory.getCurrentSession();
+			immigration = (Immigration)session.get(Immigration.class,id);
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing getting record -->"+e.getMessage());
+			e.printStackTrace();
+		}
+        System.out.println("got the record id -->"+ id);
+		return immigration;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Immigration getImmigrationByImmigrationId(Long immigrationId) throws Exception {
+		Immigration immigration= null;
+        try {
+			Session session = this.sessionFactory.getCurrentSession();
+			immigration = (Immigration)session.get(Immigration.class,immigrationId);
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing getting record -->"+e.getMessage());
+			e.printStackTrace();
+		}
+		return immigration;
+	}
 }

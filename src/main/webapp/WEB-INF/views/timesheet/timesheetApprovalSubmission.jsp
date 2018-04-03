@@ -166,10 +166,10 @@ function displayAcceptRejectButtonOnHedder() {
 			  var pageCount = $('#pageCount').val();
 			  var pageSize = $("#pageSize").val();
 			  $('#dataTableSearchExpenses').val('') ;
-			  if (!notifyLink){
-				  $('#dataTableSearchExpenses').val(searchData); 
+			  $('#dataTableSearchExpenses').val(searchData);
+			  if (notifyLink != null && notifyLink != '' && notifyLink != 'undefined' && notifyLink){
+				  $('#dataTableSearchExpenses').val('') ;
 			  }
-			 
 			  var startingRecord = parseInt((pageNo*pageSize-pageSize)+1);
 			  var endingRecord = parseInt(pageNo*pageSize);
 			  if(endingRecord > totalRows){
@@ -188,6 +188,9 @@ function displayAcceptRejectButtonOnHedder() {
 		      };
 		      $("#pagination-demo").pagination(options);
 		      pageMsg = " Showing "+startingRecord+" to "+endingRecord+" of "+totalRows+" entries ";
+		      if (notifyLink != null && notifyLink != '' && notifyLink != 'undefined' && notifyLink){
+		    	  $("#popuplink").click();
+		      } 
 		  }
 		  else{
 			  $("#tableContent").empty();

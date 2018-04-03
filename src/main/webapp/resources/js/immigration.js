@@ -718,6 +718,56 @@ $('body').on('blur', '#employerDetails_form', function () {
     $("#employerDetails_form").validateOnBlur(false, validationSettings);
 });
 
+
+function saveCandidateDocs() {
+	var validationSettings = {
+            errorMessagePosition: 'element',
+            borderColorOnError: '',
+            scrollToTopOnError: true,
+            dateFormat: 'yyyy/mm/dd'
+        };
+	if ($('#candidate_Immigration_Doc').validate(false, validationSettings)) {
+		var formData = getFormData("candidate_Immigration_Doc");
+		var candidateId = $('#candidateID').val();
+		var templateId = $('#templateID').val();
+		var immigrationId = $('#immigrationID').val();
+        $.ajax({
+            url: sourceleadUrl + immiModulePath + "/saveCandidateImmigrationDocuments?"+ tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId+"&templateId="+templateId,
+            type: "POST",
+            data: formData,
+            success: function (data) {
+                if (data == 'success') {
+                	$('#docuView').hide();
+                	$('.popMask').fadeOut();
+                	displayImmigrationCandidateDocs(candidateId,templateId);
+                }
+            }
+        });
+
+        return true;
+    } else {
+        return false;
+    }
+	
+}
+$('body').on('blur', '#candidate_Immigration_Doc', function () {
+    $("#candidate_Immigration_Doc").showHelpOnFocus();
+    $("#candidate_Immigration_Doc").validateOnBlur(false, validationSettings);
+});
+
+
+function displayImmigrationCandidateDocs(candidateId,templateid){
+	
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/getCandidateImmigrationCandidateDocsList?candidateId="+candidateId+"&templateid="+templateid,
+        type: "GET",
+        success: function (result) {
+            $("#docsTab").html(result);
+        }
+    });
+}
+
+
 function getCandidateEducationList(candidateId){
 	$.ajax({
         url: sourceleadUrl + immiModulePath + "/getCandidateEducationList?candidateId="+candidateId,
@@ -820,3 +870,59 @@ function editResidenceDEtailsByRowId(id){
      }
  });
 }
+
+function validateEduname()  
+{	var validationSettings = {
+            errorMessagePosition: 'element',
+            borderColorOnError: '',
+            scrollToTopOnError: true,
+            dateFormat: 'yyyy/mm/dd'
+        };
+	var candidateId = $("#candidateID").val();
+	  var name = document.getElementById("eduName").value; 
+	  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
+		 $.ajax({
+		    	type: "POST",
+		        url:sourceleadUrl + immiModulePath + "/validateImmiEduname?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&name="+name, 
+		        success: function(data) {
+		        	if(data == true){
+		        		  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
+		        		  $("#eduName").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
+						  $("#eduSave_Button").attr('disabled','disabled');
+						 // return false;
+		        	}
+		        	else{
+		        		 $('#nameIdDiv').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#nameIdDiv').find('p.jquery_form_error_message').remove(); 
+                       $("#eduSave_Button").removeAttr("disabled");
+		        	}
+		        },
+		    });
+}
+
+
+function saveNotesDatails(status) {
+	if ($('#notesDetails_form').validate(false, validationSettings)) {
+        var formData = getFormData("notesDetails_form");
+        var candidateId = $('#candidateID').val();
+        var immigrationId = $('#immigrationID').val();
+        $.ajax({
+            url: sourceleadUrl + immiModulePath + "/saveImmigrationNotesDetails?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
+            type: "POST",
+            data: formData,
+            success: function (data) {
+            	if (data === 'success') {
+                	$('#popResiView').hide();
+                	$('.popMask').fadeOut();
+                	//getCandidateResidenceList(candidateId);
+                }
+            }
+        });
+
+        return true;
+    } else {
+        return false;
+    }
+	
+}
+

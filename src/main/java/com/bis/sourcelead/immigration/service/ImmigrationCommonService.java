@@ -5,11 +5,13 @@ import java.util.List;
 import com.bis.sourcelead.dto.CandidateFamilyDetailsDTO;
 import com.bis.sourcelead.dto.ImmigrationDTO;
 import com.bis.sourcelead.dto.ImmigrationPassportVisaDTO;
+import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.Immigration;
+import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -49,6 +51,10 @@ public interface ImmigrationCommonService {
 	 CandidateResidence getCandidateResidenceDetailsById(Long id);
 	 
 	 CandidatePassportVisa getCandidatePassportVisaDetailsById(Long id);
+	 
+	 ImmigrationCandidateDocuments saveImmigrationCandidateDocs(ImmigrationTemplateDocDTO immigrationTemplateDocDTO,User user, OrgLocations orgLocations) throws Exception;
+
+	 Immigration getImmigrationByImmigrationId(Long immigrationId) throws Exception;
 
 
 

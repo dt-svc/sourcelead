@@ -272,7 +272,7 @@ public class RolesDaoImpl implements RolesDao{
 			subQuery = "and roles.roleName != 'ROLE_SOURCELEAD_ADMIN' and roles.roleName != 'ROLE_CROWDSOURCING_PROFESSIONAL' and roles.roleName != 'ROLE_CROWDSOURCING_RECRUITER' ";
 		}
         
-	    String query = "from Roles roles where roles.orgLocations.id = :orgLocationId and roles.status = '1'  "+subQuery+" ";
+	    String query = "from Roles roles left join fetch roles.roleHierarchy where roles.orgLocations.id = :orgLocationId and roles.status = '1'  "+subQuery+" ";
 	    List<Roles> rolesList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 		
 		return rolesList;

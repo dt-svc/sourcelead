@@ -20,6 +20,7 @@ import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ImmigrationDTO;
 import com.bis.sourcelead.dto.ImmigrationPassportVisaDTO;
 import com.bis.sourcelead.dto.ImmigrationResidenceDTO;
+import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
@@ -29,6 +30,7 @@ import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
+import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -36,6 +38,7 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.immigration.dao.ImmigrationCommonDao;
+import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
@@ -56,6 +59,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	
 	@Autowired
 	CandidateDao candidateDao;
+	
+	@Autowired
+	private ImmigrationTemplateDao immigrationTemplateDao;
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -580,5 +586,46 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		// TODO Auto-generated method stub
 		return immigrationCommonDao.getCandidatePassportVisaDetailsById(id);
 	}
+
+	@Override
+	public ImmigrationCandidateDocuments saveImmigrationCandidateDocs(ImmigrationTemplateDocDTO immigrationTemplateDocDTO, User user, OrgLocations orgLocations)
+			throws Exception {
+		ImmigrationCandidateDocuments immigrationCandidateDocuments = new ImmigrationCandidateDocuments();
+		Date date = new Date();
+		Candidate candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(immigrationTemplateDocDTO.getImmigrationcandidateId()));
+		ImmigrationTemplate immigrationTemplate = immigrationTemplateDao.getImmigrationTemplateById(Long.parseLong(immigrationTemplateDocDTO.getImmigrationTempplateId()));
+		Immigration immigration = immigrationCommonDao.getImmigrationById(Long.parseLong(immigrationTemplateDocDTO.getImmigrationId()));
+		immigrationCandidateDocuments.setCandidateId(candidate);
+		immigrationCandidateDocuments.setImmigrationTemplateId(immigrationTemplate);
+		immigrationCandidateDocuments.setImmigrationId(immigration);
+		immigrationCandidateDocuments.setDocumentType(immigrationTemplateDocDTO.getDocumentType());
+		immigrationCandidateDocuments.setDocUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		immigrationCandidateDocuments.setDescription(immigrationTemplateDocDTO.getDescription());
+		if(immigrationTemplateDocDTO.getIsRequired() != null && "Y".equalsIgnoreCase(immigrationTemplateDocDTO.getIsRequired())){
+		immigrationCandidateDocuments.setIsRequired(immigrationTemplateDocDTO.getIsRequired());
+		}else{
+		immigrationCandidateDocuments.setIsRequired(Constants.NO);	
+		}
+		immigrationCandidateDocuments.setStatus(Constants.RECORD_ACTIVE);
+		
+		if(immigrationTemplateDocDTO.getFileInfo() != null){
+			FileInfo fileInfo = immigrationTemplateDocDTO.getFileInfo().get(0);
+			immigrationCandidateDocuments.setRequestFileUrl(fileInfo.getFileURL());
+			immigrationCandidateDocuments.setRequestFileName(fileInfo.getFileName());
+			immigrationCandidateDocuments.setRequestFileContentType(fileInfo.getContentType());
+			FileUploadUtil.moveFile(immigrationTemplateDocDTO.getStaticPath(), fileInfo, "immigrationCandidateDocuments");
+		}
+		immigrationCandidateDocuments.setCreatedBy(user);
+		immigrationCandidateDocuments.setUpdatedBy(user);
+		immigrationCandidateDocuments.setUpdatedDate(date);
+		immigrationCandidateDocuments.setCreatedDate(date);
+		
+		return immigrationCommonDao.saveImmigrationCandidateDocs(immigrationCandidateDocuments);
+	}
 	
+	 @Override
+		public Immigration getImmigrationByImmigrationId(Long immigrationId) throws Exception {
+			// TODO Auto-generated method stub
+			return immigrationCommonDao.getImmigrationByImmigrationId( immigrationId);
+		}
 }

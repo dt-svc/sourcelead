@@ -49,17 +49,14 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
      * @throws Exception
      */
 	@RequestMapping(value = "/validateBlogSubscriptionEmail", method = RequestMethod.POST)
-	public @ResponseBody Boolean validateBlogSubscriptionEmail(@RequestParam("email") String email,@RequestParam("subscriptionUUID") String subscriptionUUID) throws Exception
+	public @ResponseBody Boolean validateBlogSubscriptionEmail(@RequestParam("email") String email) throws Exception
 	{
-		BlogSubscription  blogSubscription = null;
-		if(subscriptionUUID != null){
-			blogSubscription = blogSubscriptionService.validateBlogSubscriptionByEmailAndSubscriptionUUID(email, subscriptionUUID);
-		}
+		 BlogSubscription  blogSubscription = null;
 		 Boolean flag = false;
 		 if(null == blogSubscription) {
 			 flag = blogSubscriptionService.validateBlogSubscriptionByEmail(email);
 		 }
-	 return flag;
+	    return flag;
 	}	 
 		
 

@@ -218,9 +218,8 @@ public class SourceleadTicketsRestController {
 		 }else{
 			 if(orgLocationId != null && userId != null) {
 				 OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-				 List<Long> modulesId = modulesService.getOrgRegisteredModulesByOrgLocationId(orgLocations);
 				 UserRole orgUserRole = userRoleService.getUserDetailsByUserIdAndLocationId(userId, orgLocationId);
-				 tabsList = tabsService.getTabsListByOrgLocationId(modulesId, orgUserRole.getRoles().getId(), orgLocations.getId());
+				 tabsList = tabsService.getTabsListByOrgLocationId(orgUserRole.getRoles().getId(), orgLocations.getId());
 				
 			 }
 		 }

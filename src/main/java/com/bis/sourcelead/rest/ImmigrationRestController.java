@@ -2,7 +2,7 @@ package com.bis.sourcelead.rest;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.jadira.usertype.spi.utils.lang.StringUtils;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.jadira.usertype.spi.utils.lang.StringUtils;
@@ -32,6 +32,7 @@ import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SourceleadNotesDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
@@ -56,6 +57,7 @@ import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.SourceleadNotesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -114,6 +116,9 @@ public class ImmigrationRestController {
 
     @Autowired
     private RequirementService requirementService;
+    
+    @Autowired
+    private SourceleadNotesService sourceleadNotesService;
 
     // ====================immigration view startviewImmigration if you don't
     // required comment below code start here==============================
@@ -404,6 +409,36 @@ public class ImmigrationRestController {
        
         return "success";
     }
+    
+    @RequestMapping(value = {"/saveCandidateImmigrationDocuments"}, method = RequestMethod.POST)
+    public String saveCandidateImmigrationDocuments(ImmigrationTemplateDocDTO immigrationTemplateDocDTO, 
+    		@RequestParam(value = "candidateId", required = false) String candidateId,
+    		@RequestParam(value = "immigrationId", required = false) String immigrationId,
+    		@RequestParam(value = "templateId", required = false) String templateId,
+    		HttpServletRequest request) throws Exception {
+    		immigrationTemplateDocDTO.setImmigrationId(immigrationId);
+    		immigrationTemplateDocDTO.setImmigrationcandidateId(candidateId);
+    		immigrationTemplateDocDTO.setImmigrationTempplateId(templateId);
+            User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+            OrgLocations  loginOrglocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+            immigrationTemplateDocDTO.setStaticPath(staticPath);
+            immigrationCommonService.saveImmigrationCandidateDocs(immigrationTemplateDocDTO,user,loginOrglocation);
+            System.out.println("Template Task Details saved succesfully --> ");
+       
+        return "success";
+    }
+    
+    @RequestMapping(value = { "/getCandidateImmigrationCandidateDocsList" })
+	public ModelAndView getCandidateImmigrationCandidateDocsList(@RequestParam(value = "candidateId", required = true) Long candidateId,
+			@RequestParam(value = "templateid", required = true) Long templateid,
+			HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		model.setViewName("/immigration/documentDetailsTab");
+		 List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+	       model.addObject("documentsList", documentsList);
+		return model;
+	}
 
     @RequestMapping(value = {
         "/savePetitionTemplateDetails"}, method = RequestMethod.POST, produces = "application/json")
@@ -853,7 +888,7 @@ public class ImmigrationRestController {
 		return model;
 	}
 	@RequestMapping(value = { "/getCandidatePassportVisaDetails" })
-	public ModelAndView getCandidatePassportVisaDetails(@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request, @RequestParam(value = "idType", required = true) String idType)
+	public ModelAndView getCandidatePassportVisaDetails(@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request, @RequestParam(value = "idType", required = true) String idType) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
 		System.out.println(" inisde getCandidatePassportDetails controller test -->");
@@ -865,6 +900,8 @@ public class ImmigrationRestController {
 				canPassportVisa.setValidFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),canPassportVisa.getValidFromDate()));
 				canPassportVisa.setValidToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),canPassportVisa.getValidToDate()));
 			}
+			
+			
 			List<Countries> countryList = countriesService.getAllCountries();
 			model.addObject("PassportList", PassportList);
 			model.addObject("countryList", countryList);
@@ -877,6 +914,8 @@ public class ImmigrationRestController {
 			model.setViewName("/immigration/passportDetailsTab");
 		}
 		else {
+			List<String> visaList = lookUpDataService.getAllVisaByCategory();
+			model.addObject("visaList", visaList);	
 			model.setViewName("/immigration/visaDetailsTab");
 		}
 		return model;
@@ -947,6 +986,26 @@ public class ImmigrationRestController {
 
 		return passportVisaObj;
 	}
+	
+	@RequestMapping(value = {"/saveImmigrationNotesDetails"})
+    public String saveImmigrationNotesDetails(SourceleadNotesDTO sourceleadNotesDTO, HttpServletRequest request, 
+    		@RequestParam(value = "candidateId", required = false) Long candidateId,
+    		@RequestParam(value = "immigrationId", required = false) String immigrationId ) throws Exception {
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+        sourceleadNotesService.storeComments(sourceleadNotesDTO, user,orgLocations);
+        System.out.println("Template Task Details saved succesfully --> ");
+
+		return "success";
+    }
+	
+	@RequestMapping(value = "/validateImmiEduname")
+	public Boolean validateEduname(@RequestParam(value="name", required=false) String  name,@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
+		String candidateEducationName = name;
+			Boolean immiCanEdu = candidateEducationService.validateEducationName(candidateId, candidateEducationName );
+			return immiCanEdu;
+	}
+	
 }
 
 
