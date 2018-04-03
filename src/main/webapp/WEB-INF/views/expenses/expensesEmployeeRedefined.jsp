@@ -4,7 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="/resources/js/jquery.simplePagination.js"></script>
-<script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script>
+<!-- <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script> -->
 
 <input type="hidden" id="tempVar" value="tempVar">
 <input type="hidden" value="${expenseDashBoardStatus}" id="expenseStatusDivId">
@@ -47,7 +47,7 @@
 </div> 
 
 
-<script>
+<!-- <script>
 $(document).ready(function(){
 	datatableBody();
 });
@@ -72,7 +72,7 @@ function datatableBody(){
 	        body.highlight(searchData);
 	 } 
  }
- </script>
+ </script> -->
 		
 <script>
 $("#SearchExpensesData").keyup(function(event) {
@@ -142,7 +142,7 @@ function getTableData(pageNo){
 			  var pageSize = $("#pageSize").val();
 			  $('#SearchExpensesDataEmployee').val('') ;
 			  $('#SearchExpensesDataEmployee').val(searchData);
-			  searchHighlight(searchData);
+			  /* searchHighlight(searchData); */
 			  var startingRecord = parseInt((pageNo*pageSize-pageSize)+1);
 			  var endingRecord = parseInt(pageNo*pageSize);
 			  if(endingRecord > totalRows){

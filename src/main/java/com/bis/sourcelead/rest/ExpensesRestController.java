@@ -70,6 +70,7 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
@@ -111,7 +112,7 @@ public class ExpensesRestController {
 		return getExpensesList( elDTO, request);
     }
 	
-	@RequestMapping(value = "/getExpensesList")
+	@RequestMapping(value = "/getExpensesList" , method=RequestMethod.POST)
     public ModelAndView getExpensesListForWeb( ExpensesListUtilDTO elDTO,HttpServletRequest request) throws Exception{
 		 ModelAndView model = new ModelAndView();
 		 OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
