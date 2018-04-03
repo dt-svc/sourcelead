@@ -1,4 +1,4 @@
-package com.bis.sourcelead.rest;
+package com.bis.sourcelead.dto;
 
 public class TimeSheetDayEntriesDTOList {
 	private String employeeName;

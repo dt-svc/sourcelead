@@ -5,12 +5,18 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
-<tr style="display:none">
+<%-- <tr style="display:none">
 	       <input type="hidden" id="totalRows" name="totalRows" value="${totalRows}">
 	       <input type="hidden" id="pageCount" name="totalRowsPage" value="${pageCount}">
- </tr>
-<c:forEach var="expensesDTO" items="${expensesDTOList}">
+ </tr> --%>
+<c:forEach var="expensesDTO" items="${expensesDTOList}" varStatus="exEmpStatus">
 <tr id="row${expensesDTO.id}">
+	
+	<c:if test="${exEmpStatus.index == 0}">
+	       <input type="hidden" id="totalRows" name="totalRows" value="${totalRows}">
+	       <input type="hidden" id="pageCount" name="totalRowsPage" value="${pageCount}">
+	</c:if>
+
 <sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_MY_EXPENSES\')">
 	<td><a href='${sourceleadUrl}/addExpense?expenseId=${expensesDTO.expenseAutoId}&expenseLocationCode=${expensesDTO.expenseLocationCode}&type=view'><div class='proj_show'><span>${expensesDTO.expenseAutoId}</span><i class='fa fa-binoculars'></i></div></a></td>
 </sec:authorize>

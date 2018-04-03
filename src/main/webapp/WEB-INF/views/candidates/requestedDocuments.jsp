@@ -135,44 +135,49 @@ var sourceleadUrl ='${sourceleadUrl}';
         </div>
     </c:if>
    
-   <script type="text/javascript">
+<script type="text/javascript">
    function requestDocSave(){
-   var validationSettings = {
+	   var validationSettings = {
 	        errorMessagePosition : 'element',
 	        borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
         }; 
-
-	  if ($("#requestForDocs_form").validate(false, validationSettings)){
-    
-	  var requestDocUUID = '${requestDocUUID}';
-	 
-	    var formData = getFormData1("requestForDocs_form");
-		$("#submit_docs").attr("disabled", "disabled");
-		$("#submit_docs" ).addClass('button').val('Processing..');
-		
-		$.ajax({
-				 type : "POST",
-				 data: formData,
-		         processData: false,
-		         contentType:false, 
-			url : sourceleadUrl+"/ws/uploadRequestedDocuments?"+tokenParamName+"="+tokenValue+"",
-			success : function(data) {
-				 location.replace(sourceleadUrl+"/ws/requestedDocuments?requestDocUUID="+requestDocUUID); 
-
-			},
-		});
-		return true;
-    }else{
-		return false;
-	  }
+		if ($("#requestForDocs_form").validate(false, validationSettings)){
+		  	var requestDocUUID = '${requestDocUUID}';
+		    var formData = getFormData1("requestForDocs_form");
+			$("#submit_docs").attr("disabled", "disabled");
+			$("#submit_docs" ).addClass('button').val('Processing..');
+			$.ajax({
+				type : "POST",
+				data: formData,
+			    processData: false,
+			    contentType:false, 
+				url : sourceleadUrl+"/ws/uploadRequestedDocuments?"+tokenParamName+"="+tokenValue+"",
+				success : function(response) {
+					if (response && response.response === "INVALID_DATA") {
+					    showError(response.responseMessage);
+					} else if (response.response === "AWKWARD") {
+					    location.href = "/errorPage";
+					} else if (response.response === "SUCCESS") {
+						location.replace(sourceleadUrl+"/ws/requestedDocuments?requestDocUUID="+requestDocUUID); 
+					} else if (response.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+					    showError("Operation failed, please try again");
+					}
+				},
+			});
+			return true;
+    	} else {
+			return false;
+		}
 	}
 	$('body').on('blur', '#requestForDocs_form', function() {
 		$("#requestForDocs_form").showHelpOnFocus();
 		$("#requestForDocs_form").validateOnBlur(false, validationSettings);
 	});
-  </script>
+</script>
   <script type="text/javascript">
 var tokenParamName = "${_csrf.parameterName}";
 var tokenValue = "${_csrf.token}";

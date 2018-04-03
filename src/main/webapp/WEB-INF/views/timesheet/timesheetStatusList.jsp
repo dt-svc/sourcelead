@@ -9,7 +9,7 @@
 
 <script src="/resources/js/jquery.simplePagination.js"></script>
 
-<jsp:include page="timesheetApprovalCommonScriptsRedefined.jsp" />
+<jsp:include page="timesheetApprovalCommonScripts.jsp" />
 <div id="TimeshgeetStatusListId"></div>
 
  <body  onclick="bodyClick();">
