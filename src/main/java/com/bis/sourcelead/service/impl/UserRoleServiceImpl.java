@@ -668,52 +668,55 @@ public class UserRoleServiceImpl implements UserRoleService{
 		ResponseList<UserRole> userlist = userRoleDao.getUserRoleListByLocationIdAndUserType(usersUsageReportDTO,orgLocation);
 		ResponseList<UsersUsageReportDTO> responseList = new ResponseList<>();
 		List<UsersUsageReportDTO> userUsageDtoList = new ArrayList<>();
-		for(UserRole userRole : userlist.getData()){
-			
-			User user = userRole.getUser();
-			Employees employee = employeesService.getEmployeeByUserId(user.getId());
-			StringBuilder sb = new StringBuilder();
-			if(employee != null){
-				if(StringUtils.isNotBlank(employee.getEmployeeId())){
-					sb.append(employee.getEmployeeId());
+		if(userlist.getData() != null){
+			for(UserRole userRole : userlist.getData()){
+				
+				User user = userRole.getUser();
+				Employees employee = employeesService.getEmployeeByUserId(user.getId());
+				StringBuilder sb = new StringBuilder();
+				if(employee != null){
+					if(StringUtils.isNotBlank(employee.getEmployeeId())){
+						sb.append(employee.getEmployeeId());
+					}
 				}
+				
+				UsersUsageReportDTO usageDto = new UsersUsageReportDTO();
+				usageDto.setUserRoleId(userRole.getId());
+				usageDto.setLocationId(userRole.getOrgLocations().getId());
+				
+				if(StringUtils.isNotBlank(user.getLastName())){
+					usageDto.setUserName(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+				}else{
+					usageDto.setUserName(sb.append(user.getFirstName()).toString());
+				}
+				
+				usageDto.setUserEmail(user.getEmail());
+				usageDto.setUserType(user.getUserType());
+				
+				List<UserRole> userRoleList =  userRoleDao.getUsersListByUserId(user.getId());
+				for(UserRole ur:userRoleList){
+					ur.setOrgName(ur.getOrgLocations().getOrgLocationName());
+				}
+				usageDto.setEnrolledOrgs(userRoleList);
+				usageDto.setCreatedOn(commonUtil.dateStrFromDate(user.getCreatedDate()));
+				
+				UserDTO actionHistory = actionHistoryService.getAllActionHistoryByUserId(user.getId());
+				usageDto.setNoOfActivities(actionHistory.getNoOfActivities());
+				
+				if(StringUtils.isNotBlank(actionHistory.getLastActivity())){
+				usageDto.setLastActivity(actionHistory.getLastActivity());
+				}
+				
+				List<ActionHistory>  actionHis = actionHistoryService.getAllMultipleIpsByUserId(user.getId());
+				usageDto.setMultipleIps(actionHis.size());
+				
+				
+				userUsageDtoList.add(usageDto);
 			}
-			
-			UsersUsageReportDTO usageDto = new UsersUsageReportDTO();
-			usageDto.setUserRoleId(userRole.getId());
-			usageDto.setLocationId(userRole.getOrgLocations().getId());
-			
-			if(StringUtils.isNotBlank(user.getLastName())){
-				usageDto.setUserName(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-			}else{
-				usageDto.setUserName(sb.append(user.getFirstName()).toString());
-			}
-			
-			usageDto.setUserEmail(user.getEmail());
-			usageDto.setUserType(user.getUserType());
-			
-			List<UserRole> userRoleList =  userRoleDao.getUsersListByUserId(user.getId());
-			for(UserRole ur:userRoleList){
-				ur.setOrgName(ur.getOrgLocations().getOrgLocationName());
-			}
-			usageDto.setEnrolledOrgs(userRoleList);
-			usageDto.setCreatedOn(commonUtil.dateStrFromDate(user.getCreatedDate()));
-			
-			UserDTO actionHistory = actionHistoryService.getAllActionHistoryByUserId(user.getId());
-			usageDto.setNoOfActivities(actionHistory.getNoOfActivities());
-			
-			if(StringUtils.isNotBlank(actionHistory.getLastActivity())){
-			usageDto.setLastActivity(actionHistory.getLastActivity());
-			}
-			
-			List<ActionHistory>  actionHis = actionHistoryService.getAllMultipleIpsByUserId(user.getId());
-			usageDto.setMultipleIps(actionHis.size());
-			
-			
-			userUsageDtoList.add(usageDto);
+			responseList.setRecordsFiltered(userlist.getRecordsFiltered());
+			responseList.setRecordsTotal(userlist.getRecordsTotal());
 		}
-		responseList.setRecordsFiltered(userlist.getRecordsFiltered());
-		responseList.setRecordsTotal(userlist.getRecordsTotal());
+		
 		responseList.setData(userUsageDtoList);
 		return responseList;
 	}
