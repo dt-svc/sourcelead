@@ -108,7 +108,7 @@ public class UserLeaveLinkUpWithTimeSheetOldData {
 					leaveUserId =  approverUser.getApproverUserId();
 				}
 				if(leaveUserId != null && leave != null) {
-					timesheetRestController.linkLeaveTypeWithTimeSheet(leaveUserId,leave.getOrgLocations(), leave.getLeaveType().getId(), leave);
+					timesheetRestController.linkLeaveTypeWithTimeSheet(leaveUserId,leave.getOrgLocations(), leave.getLeaveType().getId(), leave,null);
 				}
 			}
 		}
