@@ -1,22 +1,22 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <div class="immigraTabsHead">
 		  	<a href="javascript:void(0)" id="addNote"><i class="glyphicon glyphicon-plus"></i> Add Note</a> 
 		  	<span><input class="immigraTabSerach" type="text"></span>
 		</div>
 		
-	  	<div class="immigraTable">
-			
-		  <div class="immiNote clearfix">
+	  	 <div class="immigraTable">
+			<c:forEach var="notesitems" items="${candidatesNotesList}" varStatus="rows"> 
+		   <div class="immiNote clearfix">
 				<img src="images/23.jpg" alt=""/>
 				<p>
-					<b>By <span>Vannam Mahesh</span><u>(21 min ago)</u></b>
-					Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever
+					<b>By <span>${notesitems.userName}</span><u>${notesitems.createdDateString}</u></b>
+					${notesitems.comment}
 				</p>
-				<div class="removeNote"><i class="fa fa-trash"></i></div>
-			</div>
-			<div class="noRecordFound">
-		    	<img src="images/noReco.png" alt=""/><p>No. Records found...</p>
-		    </div>
-		</div>
+ 			</div> 
+			</c:forEach>
+			
+		</div> 
+		    
 		<!--popcode start  -->
 		<form id ="notesDetails_form" name = "notesDetails_form" method = "Post">
 		<div class="popUpOut" id="popNoteView">
@@ -32,7 +32,7 @@
 		
 		<div class="immiPopFoot">
             <input value="Save" class="" type="button" id="save_Button" onclick="saveNotesDatails('save');">
-            <input value="Cancel" class="popCan" type="button">
+            <input value="Cancel" class="popCan" type="button" onclick="refreshNotes();">
           </div>		
 	</div>	<!-- popcode end -->
 	</form>
@@ -42,4 +42,8 @@
 				$(".popMask").fadeIn(200);
 				$("#popNoteView").fadeIn(100);
 			});	
+			function refreshNotes(){
+				 $(".popMask").fadeOut(200);
+				$("#popNoteView").fadeOut(100); 
+			 }
 		</script>

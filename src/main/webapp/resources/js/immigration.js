@@ -912,9 +912,9 @@ function saveNotesDatails(status) {
             data: formData,
             success: function (data) {
             	if (data === 'success') {
-                	$('#popResiView').hide();
-                	$('.popMask').fadeOut();
-                	//getCandidateResidenceList(candidateId);
+            		$(".popMask").fadeOut(200);
+    				$("#popNoteView").hide(100);
+                	getNotesListByImmigration(candidateId);
                 }
             }
         });
@@ -924,5 +924,20 @@ function saveNotesDatails(status) {
         return false;
     }
 	
+}
+
+function getNotesListByImmigration(candidateId){
+	console.log("inside displayNotesDetails function call test -->")
+	 var immigrationId = $('#immigrationID').val();
+	//alert("oooooo"+candidateId)
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/getNotesListByImmigrationId?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
+       type: "GET",
+        success: function (result) {
+       	  console.log("Before  loading result---->");
+           $("#notesTab").html(result);
+           console.log("After loading result---->");
+       }
+   });
 }
 

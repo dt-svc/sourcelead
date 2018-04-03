@@ -159,6 +159,8 @@ $(document).ready(function() {
         immigration.displayVisaDetails(candidateId,'Visa');
         }else if(tab=='#docsTab'){
         	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId);
+        }else if(tab =='#notesTab'){
+        	getNotesListByImmigration(candidateId);
         }
        
         $(tab).fadeIn();
