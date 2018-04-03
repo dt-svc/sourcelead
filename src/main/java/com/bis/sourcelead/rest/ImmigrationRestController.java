@@ -42,6 +42,7 @@ import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Immigration;
+import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -214,8 +215,6 @@ public class ImmigrationRestController {
         if(immigrationId!=null && !StringUtils.isEmpty(immigrationId)) {
         	immigrationDTO= immigrationCommonService.getImmigrationViewList(immigrationId,orgLocations);
         }
-        List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
-        model.addObject("documentsList", documentsList);
         model.addObject("immigration", immigrationDTO);
         model.addObject("sourceleadUrl", sourceleadUrl);
         model.setViewName("/immigration/immigrationView");
@@ -413,8 +412,14 @@ public class ImmigrationRestController {
     }
     
     @RequestMapping(value = {"/saveCandidateImmigrationDocuments"}, method = RequestMethod.POST)
-    public String saveCandidateImmigrationDocuments(ImmigrationTemplateDocDTO immigrationTemplateDocDTO, HttpServletRequest request) throws Exception {
-       
+    public String saveCandidateImmigrationDocuments(ImmigrationTemplateDocDTO immigrationTemplateDocDTO, 
+    		@RequestParam(value = "candidateId", required = false) String candidateId,
+    		@RequestParam(value = "immigrationId", required = false) String immigrationId,
+    		@RequestParam(value = "templateId", required = false) String templateId,
+    		HttpServletRequest request) throws Exception {
+    		immigrationTemplateDocDTO.setImmigrationId(immigrationId);
+    		immigrationTemplateDocDTO.setImmigrationcandidateId(candidateId);
+    		immigrationTemplateDocDTO.setImmigrationTempplateId(templateId);
             User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
             OrgLocations  loginOrglocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
             immigrationTemplateDocDTO.setStaticPath(staticPath);
@@ -423,6 +428,26 @@ public class ImmigrationRestController {
        
         return "success";
     }
+    
+    @RequestMapping(value = { "/getCandidateImmigrationCandidateDocsList" })
+	public ModelAndView getCandidateImmigrationCandidateDocsList(@RequestParam(value = "candidateId", required = true) Long candidateId,
+			@RequestParam(value = "templateid", required = true) Long templateid,
+			@RequestParam(value = "immigrationId", required = true) Long immigrationId,
+			HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+        List<ImmigrationCandidateDocuments> immigrationCanDocList = immigrationCommonService.getImmigrationCandidateDocs(immigrationId,templateid,candidateId,user,orgLocations);
+        for(ImmigrationCandidateDocuments docs : immigrationCanDocList){
+        	LookUpData data = lookUpDataService.getTasksById(docs.getDocumentType());
+			docs.setDocumentTypeName(data.getName());
+		}
+        model.setViewName("/immigration/documentDetailsTab");
+		 List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+	       model.addObject("documentsList", documentsList);
+	       model.addObject("immigrationCanDocList", immigrationCanDocList);
+		return model;
+	}
 
     @RequestMapping(value = {
         "/savePetitionTemplateDetails"}, method = RequestMethod.POST, produces = "application/json")
@@ -982,6 +1007,13 @@ public class ImmigrationRestController {
 
 		return "success";
     }
+	
+	@RequestMapping(value = "/validateImmiEduname")
+	public Boolean validateEduname(@RequestParam(value="name", required=false) String  name,@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
+		String candidateEducationName = name;
+			Boolean immiCanEdu = candidateEducationService.validateEducationName(candidateId, candidateEducationName );
+			return immiCanEdu;
+	}
 	
 }
 

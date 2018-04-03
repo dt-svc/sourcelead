@@ -129,7 +129,7 @@ margin:10px 220px 0;
  -->			  </p>
 			  </span>
             </div>
-            <div class="panel-body checkbox div-checkbox hidden">
+            <div class="panel-body checkBox">
 				  <label><input type="checkbox" checked="checked" value="Y" name="email"></label><span>Send Emails</span>
 		    </div>
           </div>
