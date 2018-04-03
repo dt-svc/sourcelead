@@ -18,6 +18,11 @@ $(document).ready(function(){
   <div class="pull-left">
     <h2>Payroll Configuration</h2>
   </div>
+  
+  <div class="success_pop" id="selector2" style="display: none;">
+   <i class="fa fa-check-circle"></i><span id="deductionDeleteMsgDiv"></span>
+ </div>
+ 
   <div class="pull-right brud-crum">Home &raquo; Payroll Configuration</div>
 </section>
  
@@ -35,7 +40,7 @@ $(document).ready(function(){
         <li><a href="<c:url value='${appPath}/addDeduction'/>" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Add</a></li>
         <li>
 		 <div class="dynamic_search">
-			<input type="text" placeholder="Search" id='dataTableSearch'/>
+			<input type="text" placeholder="Search" id='dataTableSearch' onclick="getAllDeductionType();"/>
 			<i class="fa fa-search"></i>
 		 </div>
 	   </li>
@@ -45,56 +50,6 @@ $(document).ready(function(){
     
 <div class="styleTables datatable_filter">
 	<div id="deductionTable"></div>
-    	<!-- <table>
-		<thead>
-            	<tr>
-                	<th>Type</th>
-                   	<th>Description</th>
-                    <th>Method</th>
-                    <th>Amount</th>
-                    <th>Action</th>
-                </tr>
-			</thead>	
-			<tbody>
-			   	<tr>
-                    <td><div class="proj_show tblminwidth-75"><span>401</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div class="tbldata-dotdot-verybig">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries</div></td>
-                    <td><div  class="tblminwidth-100">Fixed</div></td>
-                    <td><div  class="tblminwidth-100">50000$</div></td>
-                    <td><div class="tbldata-dotdot_50">
-                   		 	<a href="javascript:void(0)" class="text-primary"><i class="fa fa-pencil-square-o"></i></a>
-                    		<a href="javascript:void(0)"><i class="glyphicon glyphicon-trash"></i></a>
-						</div>
-               		</td>
-                </tr>
-			   	<tr>
-                    <td><div class="proj_show tblminwidth-75"><span>Post Tax Deduction</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div class="tbldata-dotdot-verybig">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries</div></td>
-                    <td><div  class="tblminwidth-100">Fixed</div></td>
-                    <td><div  class="tblminwidth-100">50000$</div></td>
-                    <td><div class="tbldata-dotdot_50">
-                   		 	<a href="javascript:void(0)" class="text-primary"><i class="fa fa-pencil-square-o"></i></a>
-                    		<a href="javascript:void(0)"><i class="glyphicon glyphicon-trash"></i></a>
-						</div>
-               		</td>
-                </tr>      			
-            </tbody>
-        </table> -->
-	</div>
-  <!--   
-    <nav>
-      <ul id="paging" class="pagination pull-right mr">
-        <li><a href="#">Previous</a></li>
-        <li><a href="#">2</a></li>
-        <li><a href="#">3</a></li>
-        <li><a href="#">4</a></li>
-        <li><a href="#">5</a></li>
-        <li class="disabled"><a href="#">6</a></li>
-        <li data-page="last"><a href="#">Next</a></li>
-      </ul>
-      <div class="clearfix"></div>
-    </nav> -->
-    
   </div>
 
 
@@ -193,7 +148,7 @@ function deductionTypepagination(url){
               "targets": colIndex++,
               "data": "deductionAmount",
               "render": function ( data, type, opt, meta ) {
-            	  return ' <td><div  class="tblminwidth-100">$ '+opt.deductionAmount+'</div></td>';
+            	  return ' <td><div  class="tblminwidth-100">$ '+opt.deductionAmount.toFixed(2)+'</div></td>';
               }
             }, {
                 "targets": colIndex++,
@@ -202,8 +157,8 @@ function deductionTypepagination(url){
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
                 		result = result + '<td><div class="tbldata-dotdot_50">';
-                		result = result + '<a href="javascript:void(0)" class="text-primary"><i class="fa fa-pencil-square-o mr5"></i></a>';
-                		result = result + '<a href="javascript:void(0)"><i class="glyphicon glyphicon-trash"></i></a>';
+                		result = result + '<a href="'+sourceleadUrl+'/editDeductionType?deductionUUID='+opt.deductionUUID+'" class="text-primary"><i class="fa fa-pencil-square-o mr5"></i></a>';
+                		result = result + '<a href="javascript:void(0)"><i class="glyphicon glyphicon-trash" onclick="deleteDeductionType('+opt.id+');"></i></a>';
                 		result = result + '</div>';
                 		result = result + '</td>';
     	              return result;
@@ -231,5 +186,55 @@ function deductionTypepagination(url){
 }
 </script>
 
+<div id="deleteDeductionPopUpDiv"></div> 
 
+<script type="text/javascript">
+function deleteDeductionType(deductionId){
+	$("#deleteDeductionPopUpDiv").empty();
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are you sure you want to delete.!</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedDeductionType("+deductionId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteDeductionPopUp();'></b>";
+	result = result +"	</div>";
+	$("#deleteDeductionPopUpDiv").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+  
+<script type="text/javascript">
+function deleteDeductionPopUp(){
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+}
+</script>
+
+
+
+<script>
+function deleteSelectedDeductionType(id){
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/deleteDeductionType?${_csrf.parameterName}=${_csrf.token}&id="+id, 	   
+		    success: function(data) {
+		    	if(data == true){
+		    		getAllDeductionType();
+		    		deleteDeductionPopUp();
+		    		 $("#selector2").removeAttr("style");
+	     			 $("#selector2").css({ display: "block" });
+	     			 $("#deductionDeleteMsgDiv").html("Deleted Successfully");
+	     			deductionDeleteMsgFadein();
+		    	}
+		    },
+     });
+}
+</script>
+
+<script>
+	function deductionDeleteMsgFadein() {
+		$("#selector2").fadeIn(200);
+        $('#selector2').delay(2000).fadeOut('slow');
+	}
+</script>
 <jsp:include page="../masterFooter.jsp" />

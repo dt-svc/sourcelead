@@ -1,0 +1,18 @@
+package com.bis.sourcelead.payroll.service;
+
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.dto.PayrollContributionDTO;
+import com.bis.sourcelead.payroll.entity.PayrollContribution;
+
+public interface PayrollContributionService {
+	
+	ResponseList<PayrollContributionDTO> savePayrollContribution(PayrollContributionDTO payrollContributionDTO, OrgLocations orgLocation, User user);
+	
+	ResponseList<PayrollContributionDTO> findAllPayrollContribution(PayrollContributionDTO payrollContributionDTO, OrgLocations orgLocation);
+	
+	PayrollContribution findPayrollContributionByUUID(String contributionUUID);
+	
+	boolean deleteContributionById(long contributionId);
+}

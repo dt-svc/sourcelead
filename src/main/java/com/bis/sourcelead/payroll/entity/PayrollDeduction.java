@@ -41,6 +41,10 @@ public class PayrollDeduction {
 	@Column(name = "TAX_TYPE")
 	private String taxType;
 	
+	@Column(name = "DEDUCTION_UUID")
+	private String deductionUUID;
+	
+	
 	@Column(name = "DEDUCTION_AMOUNT")
 	private BigDecimal deductionAmount;
 	
@@ -49,6 +53,7 @@ public class PayrollDeduction {
 	
 	@Column(name = "STATUS")
 	private Integer status;
+	
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -195,6 +200,16 @@ public class PayrollDeduction {
 	public void setTaxType(String taxType)
 	{
 		this.taxType = taxType;
+	}
+
+	public String getDeductionUUID()
+	{
+		return deductionUUID;
+	}
+
+	public void setDeductionUUID(String deductionUUID)
+	{
+		this.deductionUUID = deductionUUID;
 	}
 	
 	

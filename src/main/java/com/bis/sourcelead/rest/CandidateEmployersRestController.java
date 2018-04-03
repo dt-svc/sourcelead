@@ -153,8 +153,7 @@ public class CandidateEmployersRestController {
 	 */
 	@RequestMapping(value = { "/getCandidatesEmployersListByCandidateIdAndOrgLocationID",
 			"rest/getCandidatesEmployersListByCandidateIdAndOrgLocationID" }, method = RequestMethod.POST)
-	public ResponseList<CandidateEmployerDTO> getCandidatesEmployersListByCandidateIdAndOrgLocationID(
-			@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception {
+	public ResponseList<CandidateEmployerDTO> getCandidatesEmployersListByCandidateIdAndOrgLocationID(@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception {
 		ResponseList<CandidateEmployerDTO> reponseList = new ResponseList<>();
 		try {
 

@@ -5,18 +5,28 @@
 
 <script>
 $(document).ready(function(){
- findAllDeductionType();
+	var deductionType = "${payrollDeduction.payrollDeductionType }";
+    findAllDeductionType(deductionType);
 });
 
 </script>
 
 <!-- Content Area -->
   <section class="content-wraper contentWraper">
+  
+  
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Add Deduction</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Payhead List &raquo; Add Deduction</div>
+      <div class="success_pop" id="selector2" style="display: none;">
+   <i class="fa fa-check-circle"></i><span id="addDeductionMsgDiv"></span>
+ </div>
+      <!-- <div class="pull-right brud-crum">Home &raquo; Payhead List &raquo; Add Deduction</div> -->
+       <div class="pull-right brud-crum">
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
+				href="<c:url value='${appPath}/payrollConfigure'/>"> Payroll Deduction List</a>
+		</div>
     </section>
     <div id="addDeductionLoading"></div>
     <form:form id="add_deduction_form" name="add_deduction_form" method="post">
@@ -26,10 +36,11 @@ $(document).ready(function(){
           <div class="col-md-5">
            
             <div class="form-group">
-              <label class="col-md-12 paddingRight">Deduction Type<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-12 paddingRight">Deduction Type<span class="text-danger paddingLeft">&nbsp;*</span></label>
 				<div class="col-md-12">
 					<select class="form-control chosen-select" id="deductionType" name="payrollDeductionType" data-validation="required" field-name="Deduction Type">
 					</select>
+					<input type="hidden" value="${payrollDeduction.deductionUUID }" id="deductionUUID" name="deductionUUID"/>
 				</div>
             </div>
             <div class="form-group">
@@ -37,35 +48,35 @@ $(document).ready(function(){
               <div class="col-md-12">
                 <select class="form-control sel" id="payrollDeductionMethod" name="payrollDeductionMethod">
 					    <option value = "">Select Method</option>
-						<option  value = "Fixed">Fixed</option>
-						<option  value = "Percent">Percent</option>
-					</select>
-              </div>
-            </div>
-			</div>
-            <div class="col-md-5">
-             <div class="form-group">
-              <label class="col-md-12">Amount per pay</label>
-              <div class="col-md-12">
-                <input type="text" class="form-control" id="deductionAmount" name="deductionAmount" data-validation="required validate_int" field-name="Amount">
-              </div>
-            </div>
-             <div class="form-group">
-              <label class="col-md-12">Scheduled</label>
-              <div class="col-md-12">
-                <select class="form-control sel" id="payrollScheduled" name="payrollScheduled" data-validation="required" field-name="Scheduled">
-					    <option value = "">Select Scheduled</option>
-						<option  value = "EVERY_PAY">Every Pay</option>
-						<option  value = "QUARTERLY">Quarterly</option>
-						<option  value = "SEMI_ANNUALLY">Semi-Annually</option>
-						<option  value = "ANNUALLY">Annually</option>
+						 <option ${payrollDeduction.payrollDeductionMethod == 'Fixed' ? 'selected' : ''} value = "Fixed">Fixed</option>
+						  <option ${payrollDeduction.payrollDeductionMethod == 'Percent' ? 'selected' : ''} value = "Percent">Percent</option>
 					</select>
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-12">Description</label>
               <div class="col-md-12">
-               <textarea rows="2" class="form-control" id="description" name="description"></textarea>
+               <textarea rows="2" class="form-control" id="description" name="description" data-validation="validate_length length1-250">${payrollDeduction.description }</textarea>
+              </div>
+            </div>
+			</div>
+            <div class="col-md-5">
+             <div class="form-group">
+              <label class="col-md-12">Amount per pay<span class="text-danger paddingLeft">&nbsp;*</span></label>
+              <div class="col-md-12">
+                <input type="text" class="form-control" value="${payrollDeduction.deductionAmount }" id="deductionAmount" name="deductionAmount" data-validation="required validate_int" field-name="Amount">
+              </div>
+            </div>
+             <div class="form-group">
+              <label class="col-md-12">Scheduled<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-12">
+                <select class="form-control sel" id="payrollScheduled" name="payrollScheduled" data-validation="required" field-name="Scheduled">
+					    <option value = "">Select Scheduled</option>
+						 <option ${payrollDeduction.payrollScheduled == 'EVERY_PAY' ? 'selected' : ''} value = "EVERY_PAY">Every Pay</option>
+						 <option ${payrollDeduction.payrollScheduled == 'QUARTERLY' ? 'selected' : ''} value = "QUARTERLY">Quarterly</option>
+						 <option ${payrollDeduction.payrollScheduled == 'SEMI_ANNUALLY' ? 'selected' : ''} value = "SEMI_ANNUALLY">Semi-Annually</option>
+						 <option ${payrollDeduction.payrollScheduled == 'ANNUALLY' ? 'selected' : ''} value = "ANNUALLY">Annually</option>
+					</select>
               </div>
             </div>
         </div>
@@ -87,7 +98,7 @@ $(document).ready(function(){
   
 
 <script>
-function findAllDeductionType(){
+function findAllDeductionType(deductionType){
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/findAllLookUpDeductionTypes?"+tokenParamName+"="+tokenValue+"",
@@ -98,12 +109,12 @@ function findAllDeductionType(){
 		for (var i=0; i<json.length; i++)
 		{
 		var opt = json[i];
-		/* if(orgRelationId == opt.id){
+		 if(deductionType == opt.payrollDeductionTypeName){
 			var selected = 'selected';
 			output = output + "<option value='" +opt.payrollDeductionTypeName+ "'"+selected+">"+opt.payrollDeductionTypeName+"</option>";
-		}else{ */
+		}else{ 
 			output = output + "<option value='" +opt.payrollDeductionTypeName+ "'>"+opt.payrollDeductionTypeName+"</option>";
-		//}
+	}
 		
 		}
 		$("#deductionType").empty();
@@ -123,6 +134,11 @@ function saveDeduction(){
 		        	  $.post(sourceleadUrl+"/savePayrollDeduction?"+tokenParamName+"="+tokenValue, formData, function(data) {
 		        		  $("#addDeductionLoading").removeAttr("style");
 		        		  location.replace(sourceleadUrl+ "/payrollConfigure");
+		        		  
+		        		    $("#selector2").removeAttr("style");
+			     			 $("#selector2").css({ display: "block" });
+			     			 $("#addDeductionMsgDiv").html("Added Successfully");
+			     			addDeductionMsgFadein();
 		  			   }); 
 		    	         return true; 
          }else{
@@ -134,6 +150,13 @@ $('body').on('blur', '#add_deduction_form', function() {
 	$("#add_deduction_form").showHelpOnFocus();
 	$("#add_deduction_form").validateOnBlur(false, validationSettings);  
 }); 
+</script>
+
+<script>
+	function addDeductionMsgFadein() {
+		$("#selector2").fadeIn(200);
+        $('#selector2').delay(2000).fadeOut('slow');
+	}
 </script>
 
 <jsp:include page="../masterFooter.jsp" />

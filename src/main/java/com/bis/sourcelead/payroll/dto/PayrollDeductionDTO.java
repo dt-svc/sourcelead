@@ -34,6 +34,8 @@ public class PayrollDeductionDTO  extends SearchDTO{
 	
 	private String payrollScheduled;
 	
+	private String deductionUUID;
+	
 	public long getId()
 	{
 		return id;
@@ -145,6 +147,14 @@ public class PayrollDeductionDTO  extends SearchDTO{
 	public void setPayrollScheduled(String payrollScheduled)
 	{
 		this.payrollScheduled = payrollScheduled;
+	}
+	public String getDeductionUUID()
+	{
+		return deductionUUID;
+	}
+	public void setDeductionUUID(String deductionUUID)
+	{
+		this.deductionUUID = deductionUUID;
 	}
 	
 }
