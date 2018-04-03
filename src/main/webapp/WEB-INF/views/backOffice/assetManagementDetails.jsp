@@ -252,6 +252,7 @@ function assetDetails(assetId) {
 				    var shiftAEmpName = " ";
 				    var shiftBEmpName = " ";
 				    var issueDate = "NO DATA";
+					var macAddress  = "--"
 					
 					if (json.make != null && json.make != '' && json.make != 'undefined') {
 						make = json.make;
@@ -301,6 +302,10 @@ function assetDetails(assetId) {
 					if (json.issueDate != null && json.issueDate != '' && json.issueDate != 'undefined') {
 						issueDate = json.issueDate;
 					}
+					if (json.macAddress != null && json.macAddress != '' && json.macAddress != 'undefined') {
+						macAddress = json.macAddress;
+					}
+					
 					var result = "";
 					result = result + '<div class="require_wrap_details">';
 					result = result + '<h1>'+json.categoryName+' Asset details: <a id="edit-user" href="javascript:editAssetManagement('+assetId+');">Edit<i class="glyphicon glyphicon-pencil"></i>&nbsp;&nbsp</a></h1>';
@@ -357,6 +362,10 @@ function assetDetails(assetId) {
 						result = result + ' </div>';
 						
 						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Hard Disk:</strong></b> <span>'+hardDisk+'</span>';
+						result = result + ' <div class="clearfix"></div>';
+						result = result + ' </div>';
+						
+						result = result + ' <div class="require_wrap_details_cta"> <b><strong>MAC Address:</strong></b> <span>'+macAddress+'</span>';
 						result = result + ' <div class="clearfix"></div>';
 						result = result + ' </div>';
 						
@@ -446,13 +455,12 @@ function editAssetManagement(assetId){
 			var empA = "";
 			var empB = "";
 			var issueDate = "";
+			var macAddress = "";
 			
 			 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 			  var sectionId = '${section.id}';
 			  preapareCustomFieldDetails(assetId,sectionId);
 			</c:forEach>
-			
-			
 			
 			if (json.make != null && json.make != '' && json.make != 'undefined') {
 				make = json.make;
@@ -509,6 +517,10 @@ function editAssetManagement(assetId){
 			if (json.issueDate != null && json.issueDate != '' && json.issueDate != 'undefined') {
 				issueDate = json.issueDate;
 			}
+			
+			if (json.macAddress != null && json.macAddress != '' && json.macAddress != 'undefined') {
+				macAddress = json.macAddress;
+			} 
 			
 			if(json.workingStatus == 'Working'){
 				selected1 = 'selected';
@@ -582,6 +594,13 @@ function editAssetManagement(assetId){
 				}
 				
 			}
+		    
+		
+			result = result + ' <div class="col-md-3 minHeight50">';
+			result = result + '<input type="text" class="form-control input-sm" name="macAddress" value="'+macAddress+'" data-validation-optional="true" data-validation="validate_length length8-100" placeholder="MAC Address">';
+			result = result + '</div>';
+			
+			
 			//this block not visible to others category assets
 			
 				result = result + '<div class="clearfix"></div>';
