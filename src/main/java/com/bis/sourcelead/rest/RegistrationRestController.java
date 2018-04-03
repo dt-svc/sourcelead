@@ -379,7 +379,8 @@ public class RegistrationRestController {
 		
 		
 	    if(!subscription.getStorageSubscriptionType().getName().equalsIgnoreCase("Free Trail")) {
-			if(subscription.getCountry().equalsIgnoreCase("United States")) {
+	    	subscriptionDTO.setInvoiceAmount(subscription.getInvoiceAmount());
+		/*	if(subscription.getCountry().equalsIgnoreCase("United States")) {
 				subscriptionDTO.setInvoiceAmount(subscription.getInvoiceAmount());
 			}else {
 				if(subscription.getInvoiceAmount() != null) {
@@ -388,7 +389,7 @@ public class RegistrationRestController {
 					subscriptionDTO.setInvoiceAmount(Double.valueOf(df.format(invoiceAmount)));
 				}
 				
-			}
+			}*/
 		}else {
 			subscriptionDTO.setInvoiceAmount(0d);
 		}

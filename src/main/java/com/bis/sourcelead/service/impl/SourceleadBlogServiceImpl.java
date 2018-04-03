@@ -73,6 +73,10 @@ public class SourceleadBlogServiceImpl implements SourceleadBlogService{
 		sourceleadBlogs.setDescription(sourceleadBlogDTO.getDescription());
 		}
 		
+		if(sourceleadBlogDTO.getShortDescription() != null) {
+		 sourceleadBlogs.setShortDescription(sourceleadBlogDTO.getShortDescription());
+		}
+		
 		if(sourceleadBlogDTO.getPublishOn() != null && !sourceleadBlogDTO.getPublishOn().isEmpty()) {
 			
 			DateFormat dateFormatResult = new SimpleDateFormat ("MM/dd/yyyy HH:mm a");
@@ -130,6 +134,10 @@ public class SourceleadBlogServiceImpl implements SourceleadBlogService{
 			
 			if(sb.getDescription() != null) {
 			sbDTO.setDescription(sb.getDescription());
+			}
+			
+			if(sb.getShortDescription() != null) {
+				sbDTO.setShortDescription(sb.getShortDescription());
 			}
 			if(sb.getCategoryId() != null) {
 				sbDTO.setCategoryId(sb.getCategoryId().getCategoryName());

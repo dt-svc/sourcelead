@@ -378,12 +378,12 @@ function getRoleDeatils(displayName,roleHierarchyId,roleId){
 	result = result + '	<div class="settPopInn"> ';
 	
 	result = result + '		<div class="clearfix">  ';
-	result = result + '		<div class="col-md-12" id="editRoleDiv">  ';
+	result = result + '		<div class="col-md-12 errorInptgroup" id="editRoleDiv">  ';
 	result = result + '		  <label class="col-md-2 noPad" for="Role Name">Role Name :</label> ';
 	result = result + '			<input type="text" class="form-control col-md-8 paddingRight" onblur="validateEditRoleName();" name="displayName" value="'+displayName+'" id="displayName" field-name="Role Name" data-validation="required  validate_length length1-100">';
 	result = result + '		</div>  ';
 
-	result = result + '		  <label class="col-md-12 mt10" for="Project Id">Level</label> ';
+	result = result + '		  <label class="col-md-12 mt" for="Project Id">Level</label> ';
 	result = result + '		  <div class="col-md-12 taskdesp">   ';
 	
 	result = result + '   <select class="form-control chosen-select" name="hierarchyId" id="hierarchyId" field-name="Level" data-validation="required">';
