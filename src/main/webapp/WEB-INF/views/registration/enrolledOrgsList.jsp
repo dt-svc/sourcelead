@@ -217,16 +217,23 @@ function dynamicOrgListPagination(url){
 			  	"render": function(data, type, org, meta) {
 			  		var result = "";
 	    	  		result = result +"<td><div class='tbldata-dotdot_80'>";
-			  		if(org.user != null &&(org.isMailSent != null && org.isMailSent != "" && org.isMailSent == 'Y') &&
-	 			    		(org.userState != null && org.userState != "" && org.userState == 'NOT_LOGGEDIN') ){
-	 			    	 result = result +"<p><label id='user"+org.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+org.registeredUserId+","+org.id+");'>&nbsp;&nbsp;Resend</a></label></p>";
-	 			    }else if(org.user != null && org.userState != null && org.userState != "" && org.userState == 'ACTIVE'){
-	 			    	result = result +"<b class='activeGren'>&nbsp;&nbsp;Active</b>";
-	 			    }else if(org.user != null && org.userState != null && org.userState != "" && org.userState == 'INACTIVE'){
-	 			    	result = result +"<b class='activeGray'>&nbsp;&nbsp;In-active</b>";
-	 			    }else if(org.user == null ){
-	 			    	result = result +"<b>&nbsp;&nbsp;Guest Org</b>";
-	 			    } 
+			  		
+	    	  		if(org.registrationStatus != 'Draft' ){
+		    	  		if(org.user != null &&(org.isMailSent != null && org.isMailSent != "" && org.isMailSent == 'Y') &&
+		 			    		(org.userState != null && org.userState != "" && org.userState == 'NOT_LOGGEDIN') ){
+		 			    	 result = result +"<p><label id='user"+org.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+org.registeredUserId+","+org.id+");'>&nbsp;&nbsp;Resend</a></label></p>";
+		 			    }else if(org.user != null && org.userState != null && org.userState != "" && org.userState == 'ACTIVE'){
+		 			    	result = result +"<b class='activeGren'>&nbsp;&nbsp;Active</b>";
+		 			    }else if(org.user != null && org.userState != null && org.userState != "" && org.userState == 'INACTIVE'){
+		 			    	result = result +"<b class='activeGray'>&nbsp;&nbsp;In-active</b>";
+		 			    }else if(org.user == null ){
+		 			    	result = result +"<b>&nbsp;&nbsp;Guest Org</b>";
+		 			    } 
+	    	  		}else{
+	    	  			result = result +"<b>&nbsp;&nbsp;Draft</b>";
+	    	  		}
+			  		
+			  		
 	    	  		result = result +"</td></div>";
 
 		             return result;
