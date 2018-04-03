@@ -53,8 +53,14 @@ public class ImmigrationCandidateDocuments implements Serializable {
 	@Column(name = "IS_REQUIRED ")
 	private String isRequired;
 	
+	@Column(name="DOCUMENT_STATUS")
+	private String documentStatus;
+	
 	@Column(name = "STATUS")
 	private Integer status;
+	
+	@Column(name = "IS_TEMPALTE_CONFIGURED")
+	private String isTemplateConfigured;
 	
 	@Column(name = "REQUEST_FILE_URL",columnDefinition = "TEXT default NULL")
 	private String requestFileUrl;
@@ -250,6 +256,22 @@ public class ImmigrationCandidateDocuments implements Serializable {
 
 	public void setDocumentTypeName(String documentTypeName) {
 		this.documentTypeName = documentTypeName;
+	}
+
+	public String getDocumentStatus() {
+		return documentStatus;
+	}
+
+	public void setDocumentStatus(String documentStatus) {
+		this.documentStatus = documentStatus;
+	}
+
+	public String getIsTemplateConfigured() {
+		return isTemplateConfigured;
+	}
+
+	public void setIsTemplateConfigured(String isTemplateConfigured) {
+		this.isTemplateConfigured = isTemplateConfigured;
 	}
 	
 	
