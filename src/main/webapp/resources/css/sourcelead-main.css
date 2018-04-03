@@ -8515,6 +8515,9 @@ position: relative; top:2px;
 .extraData-dotdot {
 text-overflow: ellipsis; overflow: hidden; display: inline-block; width: 115px; white-space: nowrap;
 }
+.timesheet_appr_table.timesheet_apprTable div input {
+width: auto;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

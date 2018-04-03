@@ -17,10 +17,11 @@
 				 
 				 <h2>${all.blogTitle}</h2>
 					<div class="clearfix blogNewInn-content">
-						<p>${all.description}</p>
+						<p>${all.shortDescription}</p>
 					</div>
-				<b>Read more...</b>	
-				
+					<c:if test="${!empty all.shortDescription}">		
+						<b>Read more...</b>	
+					</c:if>	
 				</a>	
 				</article>
 			</c:forEach> 
