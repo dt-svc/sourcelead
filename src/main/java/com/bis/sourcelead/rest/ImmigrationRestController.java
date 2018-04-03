@@ -42,6 +42,7 @@ import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Immigration;
+import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -431,12 +432,20 @@ public class ImmigrationRestController {
     @RequestMapping(value = { "/getCandidateImmigrationCandidateDocsList" })
 	public ModelAndView getCandidateImmigrationCandidateDocsList(@RequestParam(value = "candidateId", required = true) Long candidateId,
 			@RequestParam(value = "templateid", required = true) Long templateid,
+			@RequestParam(value = "immigrationId", required = true) Long immigrationId,
 			HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		model.setViewName("/immigration/documentDetailsTab");
+        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+        List<ImmigrationCandidateDocuments> immigrationCanDocList = immigrationCommonService.getImmigrationCandidateDocs(immigrationId,templateid,candidateId,user,orgLocations);
+        for(ImmigrationCandidateDocuments docs : immigrationCanDocList){
+        	LookUpData data = lookUpDataService.getTasksById(docs.getDocumentType());
+			docs.setDocumentTypeName(data.getName());
+		}
+        model.setViewName("/immigration/documentDetailsTab");
 		 List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
 	       model.addObject("documentsList", documentsList);
+	       model.addObject("immigrationCanDocList", immigrationCanDocList);
 		return model;
 	}
 

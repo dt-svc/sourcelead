@@ -32,6 +32,7 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
+import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -628,4 +629,49 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			// TODO Auto-generated method stub
 			return immigrationCommonDao.getImmigrationByImmigrationId( immigrationId);
 		}
+
+	@Override
+	public List<ImmigrationCandidateDocuments> getImmigrationCandidateDocs(Long immigrationId, Long templateId,
+			Long candidateId,User user,OrgLocations orgLocations) throws Exception {
+		
+		List <ImmigrationCandidateDocuments> immigrationCanididateDocList = null;
+		immigrationCanididateDocList =immigrationCommonDao.getImmigrationCandidateDocs(immigrationId,templateId,candidateId);
+		
+		if(immigrationCanididateDocList.size()==0){
+			List <ImmigrationTemplateDocs> immigrationTemplateDocsDocList =immigrationTemplateDao.getImmigrationTemplateDocsList(templateId);
+			ImmigrationCandidateDocuments immCanObj = new ImmigrationCandidateDocuments();
+			Date date = new Date();
+			ImmigrationTemplate template = new ImmigrationTemplate();
+			Candidate candidate = new Candidate();
+			Immigration immigration = new Immigration();
+			template.setId(templateId);
+			candidate.setId(candidateId);
+			immigration.setId(immigrationId);
+			immCanObj.setImmigrationTemplateId(template);
+			immCanObj.setCandidateId(candidate);
+			immCanObj.setImmigrationId(immigration);
+			for(ImmigrationTemplateDocs docs :immigrationTemplateDocsDocList){
+				
+				immCanObj.setDocumentType(docs.getDocumentType());
+				immCanObj.setDocUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+				immCanObj.setDescription(docs.getDescription());
+				if(docs.getIsRequired() != null && "Y".equalsIgnoreCase(docs.getIsRequired())){
+					immCanObj.setIsRequired(docs.getIsRequired());
+				}else{
+					immCanObj.setIsRequired(Constants.NO);	
+				}
+				immCanObj.setStatus(Constants.RECORD_ACTIVE);
+				
+				immCanObj.setCreatedBy(user);
+				immCanObj.setUpdatedBy(user);
+				immCanObj.setUpdatedDate(date);
+				immCanObj.setCreatedDate(date);
+				immigrationCommonDao.saveImmigrationCandidateDocs(immCanObj);
+			}
+			 immigrationCanididateDocList =immigrationCommonDao.getImmigrationCandidateDocs(immigrationId,templateId,candidateId);
+
+		}
+		return immigrationCanididateDocList;
+	}
+	
 }

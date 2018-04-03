@@ -51,6 +51,8 @@ public interface ImmigrationTemplateDao {
     ImmigrationTemplateTasks editImmigrationTaskList(String id);
 
     List<ImmigrationTemplateDocDTO> getImmigrationTemplateDocsListById(Long templateId);
+    
+    List<ImmigrationTemplateDocs> getImmigrationTemplateDocsList(Long templateId);
 
     List<ImmigrationTemplateFormDTO> getImmigrationTemplateformsListById(Long templateId);
 

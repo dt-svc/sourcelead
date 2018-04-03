@@ -414,4 +414,17 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		}
 		return immigration;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ImmigrationCandidateDocuments> getImmigrationCandidateDocs(Long immigrationId, Long templateId,
+			Long candidateId) {
+		logger.debug("Getting  CandidatepassportDetails --->  ");
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ImmigrationCandidateDocuments> immigrationCandidateDocumentsList = new ArrayList<ImmigrationCandidateDocuments>();
+			String queryString = "from ImmigrationCandidateDocuments cd where cd.candidateId.id=:candidateId and cd.immigrationId.id=:immigrationId and cd.immigrationTemplateId.id=:templateId  order by cd.updatedDate desc";
+			immigrationCandidateDocumentsList = session.createQuery(queryString).setLong("candidateId", candidateId).setLong("templateId", templateId).setLong("immigrationId", immigrationId).list();
+		
+		return immigrationCandidateDocumentsList;
+	}
 }

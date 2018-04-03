@@ -739,7 +739,7 @@ function saveCandidateDocs() {
                 if (data == 'success') {
                 	$('#docuView').hide();
                 	$('.popMask').fadeOut();
-                	displayImmigrationCandidateDocs(candidateId,templateId);
+                	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId);
                 }
             }
         });
@@ -756,10 +756,10 @@ $('body').on('blur', '#candidate_Immigration_Doc', function () {
 });
 
 
-function displayImmigrationCandidateDocs(candidateId,templateid){
+function displayImmigrationCandidateDocs(candidateId,templateid,immigrationId){
 	
 	$.ajax({
-        url: sourceleadUrl + immiModulePath + "/getCandidateImmigrationCandidateDocsList?candidateId="+candidateId+"&templateid="+templateid,
+        url: sourceleadUrl + immiModulePath + "/getCandidateImmigrationCandidateDocsList?candidateId="+candidateId+"&templateid="+templateid+"&immigrationId="+immigrationId,
         type: "GET",
         success: function (result) {
             $("#docsTab").html(result);
