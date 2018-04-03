@@ -136,6 +136,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			}
 			immCanObj.setStatus(Constants.RECORD_ACTIVE);
 			immCanObj.setDocumentStatus(Constants.DOCUMENT_UPLOAD_REQUESTED);
+			immCanObj.setIsTemplateConfigured(Constants.YES);
 			immCanObj.setCreatedBy(user);
 			immCanObj.setUpdatedBy(user);
 			immCanObj.setUpdatedDate(date);
@@ -166,6 +167,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			}
 			immCanObj.setStatus(Constants.RECORD_ACTIVE);
 			//immCanObj.setDocumentStatus(Constants.DOCUMENT_UPLOAD_REQUESTED);
+			immCanObj.setIsTemplateConfigured(Constants.YES);
 			immCanObj.setCreatedBy(user);
 			immCanObj.setUpdatedBy(user);
 			immCanObj.setUpdatedDate(date);
