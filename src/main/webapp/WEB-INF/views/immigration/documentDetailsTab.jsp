@@ -16,16 +16,16 @@
 				<th>Description</th>
 				<th>&nbsp;</th>
 			  </tr>
-			  			  			  
+			  <c:forEach var="canDocList" items="${immigrationCanDocList}" varStatus="rows">			  			  
 			<tr>
-				<td><div class="tbldata-dotdot-vsm">Pan Card</div></td>
-				<td><div class="tbldata-dotdot-vsm">Yes</div></td>
+				<td><div class="tbldata-dotdot-vsm">${canDocList.documentTypeName}</div></td>
+				<td><div class="tbldata-dotdot-vsm">${canDocList.isRequired == 'Y' ? "YES":"NO"}</div></td>
 				<td><div class="tbldata-dotdot-me"><span class="fileName">Pad.jpg</span>
 					<a class="fa fa-eye" title="View"></a>
 					<a class="glyphicon glyphicon-download-alt" title="View"></a></div>
 				</td>
 				<td><div class="tbldata-dotdot-vsm">Uploaded</div></td>
-				<td><div class="tbldata-dotdot-big">Description text</div></td>
+				<td><div class="tbldata-dotdot-big">${canDocList.description}</div></td>
 				<td class="immigraAction">
 					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
 					<div class="mmigraActionInn">
@@ -37,7 +37,7 @@
 					</div>
 				</td>
 			  </tr>  
-
+		</c:forEach>
 			  						
 			</tbody>
 		  </table>

@@ -31,6 +31,7 @@ import com.bis.sourcelead.entity.CandidateLcaI94Summary;
 import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
+import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
@@ -562,5 +563,16 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 			e.printStackTrace();
 		}
 		return immigrationTemplate;
+	}
+
+	@Override
+	@Transactional(rollbackFor = {Exception.class})
+	public List<ImmigrationTemplateDocs> getImmigrationTemplateDocsList(Long templateId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ImmigrationTemplateDocs> immigrationTemplateDocsList = new ArrayList<ImmigrationTemplateDocs>();
+			String queryString = "from ImmigrationTemplateDocs td where td.immigrationTempId.id=:templateId order by td.updatedDate desc";
+			immigrationTemplateDocsList = session.createQuery(queryString).setLong("templateId", templateId).list();
+		
+		return immigrationTemplateDocsList;
 	}
 }
