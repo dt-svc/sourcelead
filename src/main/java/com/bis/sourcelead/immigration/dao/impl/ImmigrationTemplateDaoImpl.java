@@ -575,4 +575,15 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 		
 		return immigrationTemplateDocsList;
 	}
+
+	@Override
+	@Transactional(rollbackFor = {Exception.class})
+	public List<ImmigrationTemplateForms> getImmigrationTemplateFormsList(Long templateId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ImmigrationTemplateForms> immigrationTemplateFormsList = new ArrayList<ImmigrationTemplateForms>();
+			String queryString = "from ImmigrationTemplateForms td where td.immigrationTempId.id=:templateId order by td.updatedDate desc";
+			immigrationTemplateFormsList = session.createQuery(queryString).setLong("templateId", templateId).list();
+		
+		return immigrationTemplateFormsList;
+	}
 }

@@ -53,6 +53,8 @@ public interface ImmigrationTemplateDao {
     List<ImmigrationTemplateDocDTO> getImmigrationTemplateDocsListById(Long templateId);
     
     List<ImmigrationTemplateDocs> getImmigrationTemplateDocsList(Long templateId);
+    
+    List<ImmigrationTemplateForms> getImmigrationTemplateFormsList(Long templateId);
 
     List<ImmigrationTemplateFormDTO> getImmigrationTemplateformsListById(Long templateId);
 
