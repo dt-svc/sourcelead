@@ -41,8 +41,8 @@
 		</ul>
 		<span><input class="immigraTabSerach" type="text" id="searchFindConnId" placeholder="Name/Email/Role/Company"></span>
 		<div class="conneWrapHeadBtn">
-            <a href="javascript:void(0)" onclick="acceptAllRequest();" class="color">Accept all</a>
-            <a href="javascript:void(0)" onclick="ignoreAllRequest();">Ignore all</a>
+            <a href="javascript:void(0)" id="acceptAllRequest" class="color">Accept all</a>
+            <a href="javascript:void(0)" id="ignoreAllRequest">Ignore all</a>
         </div>
 	</div>
 	<div class="conHeadgap"></div>
@@ -86,7 +86,8 @@ window.onload = function () {
 	getConnectionsList('manual');
  };
  
- function ignoreAllRequest(){
+$("#ignoreAllRequest").click(function(e){
+	if(receivedConnUuidVal.length != 0){
 	 $.ajax({ 
 	 		type : "POST",
 	 		data : {
@@ -95,13 +96,18 @@ window.onload = function () {
 			url : sourceleadUrl+"/withdrawAllValues",
 	     	success: function(json) {
 	     		if(json == 'success'){
+	     			eduMsgFadeinFunction(receivedConnUuidVal.length+" invitations removed")
 	     			getConnectionsList('manual');
 	     		}
 	     	}
 		});
- }
+	}else{
+		e.preventDefault();
+	}
+ });
 
- function acceptAllRequest(){
+ $("#acceptAllRequest").click(function(e){
+	 if(receivedConnUuidVal.length != 0){
 	 $.ajax({ 
 	 		type : "POST",
 	 		data : {
@@ -110,11 +116,15 @@ window.onload = function () {
 			url : sourceleadUrl+"/acceptAllValues",
 	     	success: function(json) {
 	     		if(json == 'success'){
+	     			eduMsgFadeinFunction("You're connected with "+receivedConnUuidVal.length+" users");
 	     			getConnectionsList('manual');
 	     		}
 	     	}
 		});
- }
+	 }else{
+		e.preventDefault();
+	}
+ });
  
 </script>
  <script>
@@ -150,6 +160,7 @@ function eduMsgFadeinFunction(message) {
     		$("#orgOffset").val(0);
    		    offset = 0;
     	} 
+		receivedConnUuidVal = [];
 		$("#loadingConnReceivedDiv").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({ 
 	    	type : "GET",
