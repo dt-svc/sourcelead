@@ -18,7 +18,7 @@
  </script>
 <input type="hidden" id="emptyUserUsageReportsId" name="emptyUserUsageReportsId"/>
 <input type="hidden" id="userTypeId" name="userTypeId"/>
-  <section class="content-wraper">
+  <section class="content-wraper" id="userUsageReportsListSection">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Users Usage Report List</h2>
@@ -31,8 +31,8 @@
 <div class="clearfix">
       <div class="ReqRepHead clearfix mb reports-head">
     		      <div class="col-md-2 pull-left reqListBtn">
-          <a href="user-usagereport.html" title="List View" id="GView" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
-          <a href="user-usagereport-list.html" title="List View" id="LView" class="btn btn-default rAct"><i class="fa fa-list"></i></a>
+<!--           <a  title="List View" id="GView" class="btn btn-default"><i class="fa fa-pie-chart"></i></a> -->
+<!--           <a  title="List View" id="LView" class="btn btn-default rAct"><i class="fa fa-list"></i></a> -->
     		      </div>
      		<!--<a href="jobsPipline-list.html" class="btn btn-primary">List</a>-->
        
@@ -196,8 +196,64 @@
   
   <div id="popUp"></div>
   
-  </script>
-<script type="text/javascript">
+
+  
+  
+    
+<div class="timesheet_out clearfix userlistGrid" id="multipleList" style="display: none">
+  <div class="timesheet_head">
+    <p class="pull-left mt ml"><strong>Multiple IPS User List</strong></p>
+    <ul class="pull-right">
+      <li class="dropdown">
+        <div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding" role="menu" aria-labelledby="menu1">
+          <ul>
+            <li class="checkBox">
+              <input value="" name="resourcerequest" id="jobNew" type="checkbox">
+              <label for="all">New</label>
+            </li>
+            <li class="checkBox">
+              <input id="jobOpen" name="resourcerequest" type="checkbox">
+              <label for="hotlist">Open</label>
+            </li>
+            <li class="checkBox">
+              <input id="jobOnhold" name="resourcerequest" type="checkbox">
+              <label for="Assigned">Onhold</label>
+            </li>
+            <li class="checkBox">
+              <input id="jobFilledClosed" name="resourcerequest" type="checkbox">
+              <label for="Assigned">Filled Closed</label>
+            </li>
+            <li class="checkBox">
+              <input id="jobUnfilledClosed" name="resourcerequest" type="checkbox">
+              <label for="Assigned">Unfilled Closed</label>
+            </li>
+            <li class="checkBox">
+              <input id="jobClosed" name="resourcerequest" type="checkbox">
+              <label for="Assigned">Closed</label>
+            </li>
+          </ul>
+        </div>
+      </li>
+      <div class="clearfix"></div>
+    </ul>
+    <div class="clearfix"></div>
+     
+  </div>
+   <div class="require_wrap_table datatable_filter">
+   
+   <div id="multipleIpsDiv"></div>
+   
+   </div> 
+   
+   </div>
+   
+
+          </div>
+        </div>
+      <!-- Tabs html --> 
+  </section>
+  
+  <script type="text/javascript">
        function usageReportList(userType){
     	   $("#emptyUserUsageReportsId").val(0);
     	   $("#userTypeId").val(userType);
@@ -450,141 +506,6 @@ function activePagination(url, userType){
 
 </script>
   
-  
-    
-<div class="timesheet_out clearfix userlistGrid" id="multipleList" style="display: none">
-  <div class="timesheet_head">
-    <p class="pull-left mt ml"><strong>Multiple IPS User List</strong></p>
-    <ul class="pull-right">
-      <li class="dropdown">
-        <div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding" role="menu" aria-labelledby="menu1">
-          <ul>
-            <li class="checkBox">
-              <input value="" name="resourcerequest" id="jobNew" type="checkbox">
-              <label for="all">New</label>
-            </li>
-            <li class="checkBox">
-              <input id="jobOpen" name="resourcerequest" type="checkbox">
-              <label for="hotlist">Open</label>
-            </li>
-            <li class="checkBox">
-              <input id="jobOnhold" name="resourcerequest" type="checkbox">
-              <label for="Assigned">Onhold</label>
-            </li>
-            <li class="checkBox">
-              <input id="jobFilledClosed" name="resourcerequest" type="checkbox">
-              <label for="Assigned">Filled Closed</label>
-            </li>
-            <li class="checkBox">
-              <input id="jobUnfilledClosed" name="resourcerequest" type="checkbox">
-              <label for="Assigned">Unfilled Closed</label>
-            </li>
-            <li class="checkBox">
-              <input id="jobClosed" name="resourcerequest" type="checkbox">
-              <label for="Assigned">Closed</label>
-            </li>
-          </ul>
-        </div>
-      </li>
-      <div class="clearfix"></div>
-    </ul>
-    <div class="clearfix"></div>
-     
-  </div>
-   <div class="require_wrap_table datatable_filter">
-   
-   <div id="multipleIpsDiv"></div>
-   
-   </div> 
-   
-   </div>
-   
-<!-- <div class="timesheet_out clearfix userlistGrid" id="totalList" style="display: none">
-  <div class="timesheet_head">
-    <p class="pull-left mt ml"><strong>Total User List</strong></p>
-    <ul class="pull-right">
-      <li class="dropdown">
-        <div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding" role="menu" aria-labelledby="menu1">
-          <ul>
-            <li class="checkBox">
-              <input value="" name="resourcerequest" id="jobNew" type="checkbox">
-              <label for="all">New</label>
-            </li>
-            <li class="checkBox">
-              <input id="jobOpen" name="resourcerequest" type="checkbox">
-              <label for="hotlist">Open</label>
-            </li>
-            <li class="checkBox">
-              <input id="jobOnhold" name="resourcerequest" type="checkbox">
-              <label for="Assigned">Onhold</label>
-            </li>
-            <li class="checkBox">
-              <input id="jobFilledClosed" name="resourcerequest" type="checkbox">
-              <label for="Assigned">Filled Closed</label>
-            </li>
-            <li class="checkBox">
-              <input id="jobUnfilledClosed" name="resourcerequest" type="checkbox">
-              <label for="Assigned">Unfilled Closed</label>
-            </li>
-            <li class="checkBox">
-              <input id="jobClosed" name="resourcerequest" type="checkbox">
-              <label for="Assigned">Closed</label>
-            </li>
-          </ul>
-        </div>
-      </li>
-      <div class="clearfix"></div>
-    </ul>
-    <div class="clearfix"></div>
-     
-  </div>
-  <div class="require_wrap_table">
-    <table>
-      <thead>
-        <tr>
-          <th>Users</th>
-          <th>Email</th>
-          <th>User Type</th>
-          <th>Org</th>
-          <th>No. of Activities</th>
-          <th>Created On</th>
-          <th>Last Activity On</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><div class="tbldata-dotdot" title="BIS10041JavaDeveloper">BIS10041JavaDeveloper </div></td>
-          <td><div title="TCS, Dalls" class="tbldata-dotdot-vsm">businessintelli@info.com</div></td>
-          <td><div title="TCS, Dalls" class="tbldata-dotdot-vsm">Org</div></td>
-          <td><div title="TCS, Dalls" class="tbldata-dotdot-vsm">Tata Consultancy Services</div></td>
-          <td><div title="TCS, Dalls" class="tblminwidth-75">100</div></td>
-          <td><div title="TCS, Dalls" class="tblminwidth-75">23/07/2017</div></td>
-          <td><div title="TCS, Dalls" class="tblminwidth-75">23/07/2017</div></td>
-          <td><div class="tblminwidth-75" title="Closed">
-              <label class="switch mt10">
-                <input type="checkbox" checked>
-                <span class="slider round"></span> </label>
-            </div></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <nav class="clearfix">
-    <ul id="paging" class="pagination pull-right mr">
-      <li><a href="#">Previous</a></li>
-      <li><a href="#">2</a></li>
-      <li><a href="#">3</a></li>
-      <li class="disabled"><a href="#">6</a></li>
-      <li data-page="last"><a href="#">Next</a></li>
-    </ul>
-    <div class="clearfix"></div>
-  </nav>
-</div> -->
-          </div>
-        </div>
-      <!-- Tabs html --> 
-  </section>
   
   <script>
         //Usage User show hide script
@@ -1279,4 +1200,6 @@ function closeIp(){
 	$(".multipleipsList").fadeOut(200);
 }
 </script>  
+
+<%-- <jsp:include page="userUsageReportsGraph.jsp" /> --%>
 <jsp:include page="../masterFooter.jsp" />
