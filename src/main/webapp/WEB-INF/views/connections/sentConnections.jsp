@@ -97,7 +97,6 @@ window.onload = function () {
 </script>
 <script type="text/javascript">
 function eduMsgFadeinFunction(message) {
-	alert(message);
 	$("#selector4").fadeIn(200, function(){
 		$("#inviteMessage").text(message);
 		$(this).delay(200).fadeOut('slow');
@@ -120,14 +119,9 @@ $("#withdrawAllBtn").click(function(e){
  		},
 		url : sourceleadUrl+"/withdrawAllValues",
      	success: function(json) {
-     		alert("success"+requestSentUsers.length);
      		if(json == 'success'){
      			eduMsgFadeinFunction(requestSentUsers.length+" invitation withdrawn ");
      			getConnectionsList('manual');
-     			/* $.each(requestSentUsers, function( index, value ) {
-     				  alert( index + ": " + value );
-     				 $("#connectionState"+value).empty().append('<b class="connlink gray">Withdrawn</b>');
-     			}); */
      		}
      	}
 	});
