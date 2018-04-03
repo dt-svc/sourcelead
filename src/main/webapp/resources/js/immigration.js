@@ -487,6 +487,19 @@ this.deletePassportVisaDetailsById=function(id,idType){
             }
         });
 	}
+	
+	this.displayImmigrationCandidateForms = function(candidateId,templateId, immigrationId){
+		console.log(" inside forms list candidateId--->"+candidateId);
+		$.ajax({
+	        url: sourceleadUrl + immiModulePath + "/getCandidateImmigrationFormsList?candidateId="+candidateId+"&templateId="+templateId+"&immigrationId="+immigrationId,
+	        type: "GET",
+	        success: function (result) {
+	            $("#formsTab").html(result);
+	            console.log(" inside forms list success--->");
+	        }
+	    });
+	}
+	
 	this.udpatePopupFormdata = function(formObj, idsArray, dataObj) {
 		  var formId = formObj.id;
 		   $.each(formObj, function(key, value) {
