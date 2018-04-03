@@ -18,4 +18,6 @@ public interface PayrollContributionDao {
 	
 	PayrollContribution findPayrollContributionByID(long contributionID);
 
+	PayrollContribution findPayrollContributionByDeductionTypeId(long deductionTypeId);
+
 }

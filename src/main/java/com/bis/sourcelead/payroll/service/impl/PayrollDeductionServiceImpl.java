@@ -18,6 +18,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.PayrollDeductionDao;
 import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
+import com.bis.sourcelead.payroll.entity.PayrollContribution;
 import com.bis.sourcelead.payroll.entity.PayrollDeduction;
 import com.bis.sourcelead.payroll.service.PayrollDeductionService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -160,4 +161,16 @@ public class PayrollDeductionServiceImpl  implements PayrollDeductionService{
 		return isDeleted;
 	}
 
+	@Override
+	public boolean isValidDeductionType(String payrollDeductionType)
+	{
+		boolean isValid = false;
+		PayrollDeduction payrollDeduction = payrollDeductionDao.isValidDeductionType(payrollDeductionType);
+		if (payrollDeduction != null) {
+			isValid = true;
+		}
+		return isValid;
+	}
+
+	
 }

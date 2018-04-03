@@ -37,10 +37,12 @@ $(document).ready(function(){
            
             <div class="form-group">
               <label class="col-md-12 paddingRight">Deduction Type<span class="text-danger paddingLeft">&nbsp;*</span></label>
+				<div id="deductionNameDive">
 				<div class="col-md-12">
-					<select class="form-control chosen-select" id="deductionType" name="payrollDeductionType" data-validation="required" field-name="Deduction Type">
+					<select class="form-control chosen-select" id="deductionType" name="payrollDeductionType" data-validation="required" onchange="validateDeductionType();" field-name="Deduction Type">
 					</select>
 					<input type="hidden" value="${payrollDeduction.deductionUUID }" id="deductionUUID" name="deductionUUID"/>
+				</div>
 				</div>
             </div>
             <div class="form-group">
@@ -85,7 +87,7 @@ $(document).ready(function(){
 	<div class="clearfix footerstyelsNew">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input value="Save" class="btn btn-success btnSuccess" type="button" onclick="saveDeduction();">
+            <input value="Save" class="btn btn-success btnSuccess" id="save_deductionType" type="button" onclick="saveDeduction();">
             <input value="Cancel" class="btn btn-defualt ml10" type="button">
           </div>
         </div>
@@ -157,6 +159,38 @@ $('body').on('blur', '#add_deduction_form', function() {
 		$("#selector2").fadeIn(200);
         $('#selector2').delay(2000).fadeOut('slow');
 	}
+</script>
+
+<script>
+function validateDeductionType(){
+	var payrollDeductionType = $("#deductionType").val();
+	$('#deductionNameDive').find('p.jquery_form_error_message').remove();
+	if (payrollDeductionType != null && payrollDeductionType != '') {
+		alert("1");
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl + "/isValidDeductionType?"+tokenParamName+"="+tokenValue+"&payrollDeductionType="+payrollDeductionType,
+			success : function(data) {
+				if (data == true) {
+					$("#save_deductionType").removeAttr("disabled");
+			        $("#save_deductionType").attr("disabled", "disabled");
+					$("#deductionNameDive").append( "<p class='jquery_form_error_message'>" + payrollDeductionType + " is Existed</span>");
+					$('#deductionNameDive').removeAttr( "record-exist record-exist-errorMsg");
+					
+				}else {
+					$("#save_deductionType").removeAttr("disabled");
+					$('#deductionNameDive').find('p.jquery_form_error_message').remove();
+					$("#save_deductionType").click(function() {
+					});
+					
+				}
+				
+			},
+
+		});
+	}
+}
+
 </script>
 
 <jsp:include page="../masterFooter.jsp" />

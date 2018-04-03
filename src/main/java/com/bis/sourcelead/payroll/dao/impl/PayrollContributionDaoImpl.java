@@ -146,4 +146,22 @@ private static final Logger logger = LoggerFactory.getLogger(PayrollContribution
 		}
 		return payrollContribution;
 	}
+
+	@Override
+	@Transactional
+	public PayrollContribution findPayrollContributionByDeductionTypeId(long deductionTypeId)
+	{
+		PayrollContribution payrollContribution = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from PayrollContribution payrollCon where payrollCon.deductionTypeId.id =:deductionTypeId";
+			List<PayrollContribution> payrollContributionList = session.createQuery(query).setLong("deductionTypeId", deductionTypeId).list();
+			if (payrollContributionList != null && payrollContributionList.size() > 0) {
+				payrollContribution = payrollContributionList.get(0);
+			}
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return payrollContribution;
+	}
 }

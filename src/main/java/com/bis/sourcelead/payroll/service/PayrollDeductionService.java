@@ -17,4 +17,7 @@ public interface PayrollDeductionService {
 	PayrollDeduction findPayrollDeductionByUUID(String deductionUUID);
 	
 	boolean deleteDeductionById(Long deductionId);
+
+	boolean isValidDeductionType(String payrollDeductionType);
+
 }

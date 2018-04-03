@@ -15,4 +15,6 @@ public interface PayrollContributionService {
 	PayrollContribution findPayrollContributionByUUID(String contributionUUID);
 	
 	boolean deleteContributionById(long contributionId);
+
+	boolean isValidContributionType(long deductionTypeId);
 }

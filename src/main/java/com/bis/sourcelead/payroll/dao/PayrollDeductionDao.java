@@ -18,4 +18,6 @@ public interface PayrollDeductionDao {
 	List<PayrollDeduction> getAllDeductionTypeByLocationId(OrgLocations orgLocation);
 	
 	PayrollDeduction findPayrollDeductionByID(Long deductionId);
+
+	PayrollDeduction isValidDeductionType(String payrollDeductionType);
 }

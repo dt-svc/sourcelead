@@ -226,4 +226,31 @@ public class USPayrollRestController {
 		}
 		return false;
 	}
+	
+	
+	/**
+	 * Is Valid Deduction Type
+	 * @param payrollDeductionDTO
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/isValidDeductionType","/rest/isValidDeductionType" }, method = RequestMethod.POST)
+	@ResponseBody
+	public boolean isValidDeductionType(PayrollDeductionDTO payrollDeductionDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		if (StringUtils.isNoneBlank(payrollDeductionDTO.getPayrollDeductionType())) {
+			return payrollDeductionService.isValidDeductionType(payrollDeductionDTO.getPayrollDeductionType());
+		}
+		return false;
+	}
+	
+	
+	@RequestMapping(value = { "/isValidContributionType","/rest/isValidContributionType" }, method = RequestMethod.POST)
+	@ResponseBody
+	public boolean isValidContributionType(PayrollContributionDTO payrollContributionDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+			return payrollContributionService.isValidContributionType(payrollContributionDTO.getDeductionTypeId());
+	}
 }

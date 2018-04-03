@@ -124,5 +124,16 @@ public class PayrollContributionServiceImpl implements PayrollContributionServic
 		return payrollContributionDao.findPayrollContributionByUUID(contributionUUID);
 	}
 
+	@Override
+	public boolean isValidContributionType(long deductionTypeId)
+	{
+		boolean isValid = false; 
+		PayrollContribution payrollContribution = payrollContributionDao.findPayrollContributionByDeductionTypeId(deductionTypeId);
+		if(payrollContribution != null) {
+			isValid = true;
+		}
+		return isValid;
+	}
+
 
 }

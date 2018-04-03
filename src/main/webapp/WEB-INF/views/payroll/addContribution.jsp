@@ -39,10 +39,12 @@ $(document).ready(function(){
           <div class="col-md-5">
 			<div class="form-group">
 			<label class="col-md-12">For Deduction<span class="text-danger paddingLeft">&nbsp;*</span></label>
+			<div id="contributionNameDive">
 			<div class="col-md-12">
-			<select class="form-control chosen-select" id="deductionTypeId" name="deductionTypeId" data-validation="required" field-name="Deduction Type">
+			<select class="form-control chosen-select" id="deductionTypeId" name="deductionTypeId" data-validation="required" onchange="isValidContributionType();" field-name="Deduction Type">
 			</select>
 			<input type="hidden" value="${payrollContribution.contributionUUID }" id="contributionUUID" name="contributionUUID"/>
+			</div>
 			</div>
 			</div>
 			  <div class="form-group">
@@ -78,7 +80,7 @@ $(document).ready(function(){
 	<div class="clearfix footerstyelsNew">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input value="Save" class="btn btn-success btnSuccess" type="button" onclick="saveContribution();">
+            <input value="Save" class="btn btn-success btnSuccess" id="save_contributionType" type="button" onclick="saveContribution();">
             <input value="Cancel" class="btn btn-default ml10" type="button">
           </div>
         </div>
@@ -160,5 +162,36 @@ $('body').on('blur', '#add_deduction_form', function() {
 			dateFormat : 'yyyy/mm/dd' 
             };
 </script> 
+
+<script>
+function isValidContributionType(){
+	var deductionTypeId = $("#deductionTypeId").val();
+	var deductionTypeName = $('#deductionTypeId').find(":selected").text();
+	$('#contributionNameDive').find('p.jquery_form_error_message').remove();
+	if (deductionTypeId != null && deductionTypeId != '') {
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl + "/isValidContributionType?"+tokenParamName+"="+tokenValue+"&deductionTypeId="+deductionTypeId,
+			success : function(data) {
+				if (data == true) {
+					$("#save_contributionType").removeAttr("disabled");
+			        $("#save_contributionType").attr("disabled", "disabled");
+					$("#contributionNameDive").append( "<p class='jquery_form_error_message'>"+deductionTypeName+" is already Existed</span>");
+					$('#contributionNameDive').removeAttr( "record-exist record-exist-errorMsg");
+					
+				}else {
+					$("#save_contributionType").removeAttr("disabled");
+					$('#contributionNameDive').find('p.jquery_form_error_message').remove();
+					$("#save_contributionType").click(function() {
+					});
+					
+				}
+				
+			},
+
+		});
+	}
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />
