@@ -45,7 +45,7 @@
 		</ul>
 		<span><input class="immigraTabSerach" id="searchFindConnId" placeholder="Name/Email/Role/Company" type="text"></span>
 		<div class="conneWrapHeadBtn">
-            <a href="javascript:void(0)" class="color" onclick="withdrawAllValues();">Withdraw all</a>
+            <a href="" class="color" id="withdrawAllBtn">Withdraw all</a>
         </div>
 	</div>
 	<div class="conHeadgap"></div>
@@ -97,6 +97,7 @@ window.onload = function () {
 </script>
 <script type="text/javascript">
 function eduMsgFadeinFunction(message) {
+	alert(message);
 	$("#selector4").fadeIn(200, function(){
 		$("#inviteMessage").text(message);
 		$(this).delay(200).fadeOut('slow');
@@ -108,7 +109,10 @@ $("#searchFindConnId").keydown(function(e) {
 	}
 });
 
-function withdrawAllValues(){
+//function withdrawAllValues()
+
+$("#withdrawAllBtn").click(function(e){
+	if(requestSentUsers.length != 0){
 	$.ajax({ 
  		type : "POST",
  		data : {
@@ -116,7 +120,9 @@ function withdrawAllValues(){
  		},
 		url : sourceleadUrl+"/withdrawAllValues",
      	success: function(json) {
+     		alert("success"+requestSentUsers.length);
      		if(json == 'success'){
+     			eduMsgFadeinFunction(requestSentUsers.length+" invitation withdrawn ");
      			getConnectionsList('manual');
      			/* $.each(requestSentUsers, function( index, value ) {
      				  alert( index + ": " + value );
@@ -125,10 +131,12 @@ function withdrawAllValues(){
      		}
      	}
 	});
-}
+	}else{
+		e.preventDefault();
+	}
+});
 
 var requestSentUsers = [];
-var sentCount = 0;
 	function getConnectionsList(type){
 		$.post("check-session", {}, function(data) {
 			if(data === "YES") {
@@ -149,7 +157,7 @@ var sentCount = 0;
 	    		$("#orgOffset").val(0);
 	   		    offset = 0;
 	    	} 
-			//requestSentUsers = [];
+			requestSentUsers = [];
 			$("#loadingConnectionSentDiv").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({ 
 	    	type : "GET",
@@ -203,6 +211,9 @@ var sentCount = 0;
 	   			$('#loadMoreDiv').empty();
 	   			localStorage.setItem("sentCount", 0);
 	   			$('#loadMoreDiv').append('<div class="noDate"></div>');
+	   			$("#withdrawAllBtn").removeAttr("href");
+	   			//$('#withdrawAllBtn').bind('click', false);
+	   			
 	   		}
 	        $("#sentCountVal").empty().append(localStorage.getItem("sentCount"));
 	        $("#receivedCountVal").empty().append(localStorage.getItem("receivedCount"));
