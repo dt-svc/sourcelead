@@ -1013,11 +1013,13 @@ public class UserRoleDaoImpl implements UserRoleDao {
         		    Query listCountQuery = session.createQuery(countQuery + query1 + " group by uRole.user.id");
         		    countlist =listCountQuery.setParameterList("orgList", usersUsageReportDTO.getOrgId()).setParameterList("userIds", usersUsageReportDTO.getUserIds()).list();
         		}else{
-        			query = " from UserRole uRole where uRole.user.id <> 1 and uRole.user.id <> 2 and uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+" and userRole.user.id IN (:userIds)) "+query1+" group by uRole.user.id";
-        			userList =   session.createQuery(query.toString()).setParameterList("userIds", usersUsageReportDTO.getUserIds()).list();
-        		    countQuery ="select count(*) from UserRole uRole where uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+" and userRole.user.id IN (:userIds)) ";
-        		    Query listCountQuery = session.createQuery(countQuery + query1 + " group by uRole.user.id");
-        		    countlist =listCountQuery.setParameterList("userIds", usersUsageReportDTO.getUserIds()).list();
+        			if(usersUsageReportDTO.getUserIds() != null && !usersUsageReportDTO.getUserIds().isEmpty()){
+        				query = " from UserRole uRole where uRole.user.id <> 1 and uRole.user.id <> 2 and uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+" and userRole.user.id IN (:userIds)) "+query1+" group by uRole.user.id";
+            			userList =   session.createQuery(query.toString()).setParameterList("userIds", usersUsageReportDTO.getUserIds()).list();
+            		    countQuery ="select count(*) from UserRole uRole where uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+" and userRole.user.id IN (:userIds)) ";
+            		    Query listCountQuery = session.createQuery(countQuery + query1 + " group by uRole.user.id");
+            		    countlist =listCountQuery.setParameterList("userIds", usersUsageReportDTO.getUserIds()).list();
+        			}
         		}
     		}else{
     			if(usersUsageReportDTO.getOrgId() != null && usersUsageReportDTO.getOrgId().size() > 0){
@@ -1027,11 +1029,13 @@ public class UserRoleDaoImpl implements UserRoleDao {
         		    Query listCountQuery = session.createQuery(countQuery + query1 + " group by uRole.user.id");
         		    countlist =listCountQuery.setParameterList("orgList", usersUsageReportDTO.getOrgId()).list();
         		}else{
-        			query = " from UserRole uRole where uRole.user.id <> 1 and uRole.user.id <> 2 and uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+") "+query1+" group by uRole.user.id";
-        			userList =   session.createQuery(query.toString()).list();
-        		    countQuery ="select count(*) from UserRole uRole where uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+")";
-        		    Query listCountQuery = session.createQuery(countQuery + query1 + " group by uRole.user.id");
-        		    countlist =listCountQuery.list();
+//        			if(usersUsageReportDTO.getUserIds() != null && !usersUsageReportDTO.getUserIds().isEmpty()){
+        				query = " from UserRole uRole where uRole.user.id <> 1 and uRole.user.id <> 2 and uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+") "+query1+" group by uRole.user.id";
+            			userList =   session.createQuery(query.toString()).list();
+            		    countQuery ="select count(*) from UserRole uRole where uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+")";
+            		    Query listCountQuery = session.createQuery(countQuery + query1 + " group by uRole.user.id");
+            		    countlist =listCountQuery.list();
+//        			}
         		}
     		}
     		
@@ -1045,38 +1049,47 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		if (!"NOT_LOGGEDIN".equalsIgnoreCase(usersUsageReportDTO.getUserType())) {
 			if (usersUsageReportDTO.getOrgId() != null
 					&& usersUsageReportDTO.getOrgId().size() > 0) {
+				if(usersUsageReportDTO.getUserIds() != null && usersUsageReportDTO.getUserIds().isEmpty()){
 				List<Long> filteredCountlist = session.createQuery(countQuery
 						+ query1).setParameterList("userIds", usersUsageReportDTO.getUserIds()).setParameterList("orgList", usersUsageReportDTO.getOrgId()).list();
 				if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
 					filteredCount = filteredCountlist.iterator().next().intValue();
 				}
 				response.setRecordsFiltered(filteredCount);
+			 }
+				
 			}
 			else {
+				if(usersUsageReportDTO.getUserIds() != null && !usersUsageReportDTO.getUserIds().isEmpty()){
 				List<Long> filteredCountlist = session.createQuery(countQuery
 						+ query1).setParameterList("userIds", usersUsageReportDTO.getUserIds()).list();
 				if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
 					filteredCount = filteredCountlist.iterator().next().intValue();
 				}
 				response.setRecordsFiltered(filteredCount);
+			 }
 			}
 		}
 		else {
 			if (usersUsageReportDTO.getOrgId() != null
 					&& usersUsageReportDTO.getOrgId().size() > 0) {
+//				if(usersUsageReportDTO.getUserIds() != null && usersUsageReportDTO.getUserIds().isEmpty()){
 				List<Long> filteredCountlist = session.createQuery(countQuery
 						+ query1).setParameterList("orgList", usersUsageReportDTO.getOrgId()).list();
 				if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
 					filteredCount = filteredCountlist.iterator().next().intValue();
 				}
 				response.setRecordsFiltered(filteredCount);
+//				}
 			}
 			else {
+//				if(usersUsageReportDTO.getUserIds() != null && !usersUsageReportDTO.getUserIds().isEmpty()){
 				List<Long> filteredCountlist = session.createQuery(countQuery + query1).list();
 				if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
 					filteredCount = filteredCountlist.iterator().next().intValue();
 				}
 				response.setRecordsFiltered(filteredCount);
+//				}
 			}
 		}
     		
