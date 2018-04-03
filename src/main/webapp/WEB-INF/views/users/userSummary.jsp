@@ -92,7 +92,7 @@ $(document).ready(function(){
 		 
 		 result = result + '<li class="current"><a href="#tab-18" onClick="userDetails('+userId+');" >Details</a></li>';
 		 result = result + '<li><a href="#tab-19" onClick="userAssignedProjects('+userId+')" >Projects</a></li>';
-		 result = result + '<li><a href="#tab-20" onClick="userAssetManagement('+userId+')" >Asset</a></li>';
+		 result = result + '<li><a href="#tab-20" onClick="userAssetManagement('+userId+')" >Assets</a></li>';
 		 result = result + '<li><a href="#tab-17" onClick="profileDetails('+candidateId+');" >Profile</a></li>';
 		
 		 result = result + '<div class="clearfix"></div>';

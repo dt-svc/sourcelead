@@ -240,18 +240,18 @@ function assetDetails(assetId) {
 			type : "POST",
 			url : sourceleadUrl	+ "/getAssetById?"+tokenParamName+"="+tokenValue+"&assetId="+ assetId,
 			success : function(json) {
-					var make = "NO DATA";
-				    var model = "NO DATA";
-				    var name = "NO DATA";
-				    var memory = "NO DATA";
-				    var cpu = "NO DATA";
-				    var workingStatus = "NO DATA";
-				    var hardDisk = "NO DATA";
-				    var monitor = "NO DATA";
-				    var description = "NO DATA";
+					var make = "--";
+				    var model = "--";
+				    var name = "--";
+				    var memory = "--";
+				    var cpu = "--";
+				    var workingStatus = "--";
+				    var hardDisk = "--";
+				    var monitor = "--";
+				    var description = "--";
 				    var shiftAEmpName = " ";
 				    var shiftBEmpName = " ";
-				    var issueDate = "NO DATA";
+				    var issueDate = "--";
 					var macAddress  = "--"
 					
 					if (json.make != null && json.make != '' && json.make != 'undefined') {
@@ -291,13 +291,13 @@ function assetDetails(assetId) {
 					if (json.shiftAEmpName != null && json.shiftAEmpName != '' && json.shiftAEmpName != 'undefined') {
 						shiftAEmpName = json.shiftAEmpName;
 					}else{
-						shiftAEmpName = "NO DATA";
+						shiftAEmpName = "--";
 					}
 					
 					if (json.shiftBEmpName != null && json.shiftBEmpName != '' && json.shiftBEmpName != 'undefined') {
 						shiftBEmpName = json.shiftBEmpName;
 					}else{
-						shiftBEmpName = "NO DATA";
+						shiftBEmpName = "--";
 					}
 					if (json.issueDate != null && json.issueDate != '' && json.issueDate != 'undefined') {
 						issueDate = json.issueDate;
@@ -308,7 +308,7 @@ function assetDetails(assetId) {
 					
 					var result = "";
 					result = result + '<div class="require_wrap_details">';
-					result = result + '<h1>'+json.categoryName+' Asset details: <a id="edit-user" href="javascript:editAssetManagement('+assetId+');">Edit<i class="glyphicon glyphicon-pencil"></i>&nbsp;&nbsp</a></h1>';
+					result = result + '<h1>'+json.categoryName+' Asset details: <a class="pull-right" id="edit-user" href="javascript:editAssetManagement('+assetId+');">Edit<i class="glyphicon glyphicon-pencil"></i>&nbsp;&nbsp</a></h1>';
 					result = result + '<div class="require_one">';
 					
 					result = result + '<div class="require_wrap_details_cta"> <b><strong>Category Name:</strong></b> <span>'+json.categoryName+'</span>';
@@ -337,7 +337,7 @@ function assetDetails(assetId) {
 						result = result + ' <div class="clearfix"></div>';
 						result = result + '</div>';
 					}else{
-						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Attched File:</strong></b> <span>NO DATA</span>';
+						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Attched File:</strong></b> <span>--</span>';
 						result = result + ' <div class="clearfix"></div>';
 						result = result + '</div>';
 					}
