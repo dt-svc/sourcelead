@@ -45,6 +45,7 @@ import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLicenseSubscriptionPrice;
+import com.bis.sourcelead.entity.OrgLicenseSubscriptionTypes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectClients;
@@ -185,20 +186,23 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			orgLicenseSubscription = getOrgLicenseSubscriptionById(orgLicenseSubscriptionDTO.getOrgLinceseSubscriptionId());
 			orgLicenseSubscription.setSubscriptionTabs(orgLicenseSubscriptionDTO.getRegisteredModules());
 			
-				Countries countries = countriesDao.getCountriesByCountryName(orgLicenseSubscription.getCountry());
-				orgLicenseSubscription.setCurrency(countries.getCurrency());
+				/*Countries countries = countriesDao.getCountriesByCountryName(orgLicenseSubscription.getCountry());*/
+				orgLicenseSubscription.setCurrency("USD");
 			
 		    if(!orgLicenseSubscription.getStorageSubscriptionType().getName().equalsIgnoreCase("Free Trail")) {
-				if(orgLicenseSubscription.getCountry().equalsIgnoreCase("United States")) {
+		    	orgLicenseSubscription.setInvoiceAmount(orgLicenseSubscriptionDTO.getInvoiceAmount());
+			/*	if(orgLicenseSubscription.getCountry().equalsIgnoreCase("United States")) {
 					orgLicenseSubscription.setInvoiceAmount(orgLicenseSubscriptionDTO.getInvoiceAmount());
 				}else {
 					Double invoiceAmount = conversionUtil.currencyConvert("USD", countries.getCurrency(),orgLicenseSubscriptionDTO.getInvoiceAmount());
 					DecimalFormat df = new DecimalFormat(".##");
 					orgLicenseSubscription.setInvoiceAmount(Double.valueOf(df.format(invoiceAmount)));
-				}
+				}*/
 			}else {
 				orgLicenseSubscription.setInvoiceAmount(0d);
 			}
+		    
+		    orgLicenseSubscription.setIsInvoiceAmountPaid(Constants.NO);
 			
 			saveOrgLicenseSubscription(orgLicenseSubscription);
 			
@@ -673,15 +677,15 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 			orgLicenseSubscription.setOrg(org);
 			orgLicenseSubscription.setCountry(orgLicenseSubscriptionDTO.getCountry());
 			
-			LookUpData subscriptionType = new LookUpData();
+			OrgLicenseSubscriptionTypes subscriptionType = new OrgLicenseSubscriptionTypes();
 			subscriptionType.setId(Long.parseLong(orgLicenseSubscriptionDTO.getSubscriptionType()));
 			orgLicenseSubscription.setSubscriptionType(subscriptionType);
 			
-			LookUpData userSubscriptionType = new LookUpData();
+			OrgLicenseSubscriptionTypes userSubscriptionType = new OrgLicenseSubscriptionTypes();
 			userSubscriptionType.setId(Long.parseLong(orgLicenseSubscriptionDTO.getUserSubscription()));
 			orgLicenseSubscription.setUserSubscriptionType(userSubscriptionType);
 			
-			LookUpData storageSubscriptionType = new LookUpData();
+			OrgLicenseSubscriptionTypes storageSubscriptionType = new OrgLicenseSubscriptionTypes();
 			storageSubscriptionType.setId(Long.parseLong(orgLicenseSubscriptionDTO.getStorageType()));
 			orgLicenseSubscription.setStorageSubscriptionType(storageSubscriptionType);
 			
@@ -714,24 +718,25 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 		    subscriptionToDate = CalendarUtil.getDateTimeForGivenTimeZone(orgLicenseSubscriptionDTO.getTimezone(), subscriptionToDate, "dd-MM-yyyy");
 			orgLicenseSubscription.setToDate(subscriptionToDate);
 			
-			Countries countries = countriesDao.getCountriesByCountryName(orgLicenseSubscriptionDTO.getCountry());
-			orgLicenseSubscription.setCurrency(countries.getCurrency());
+			/*Countries countries = countriesDao.getCountriesByCountryName(orgLicenseSubscriptionDTO.getCountry());*/
+			orgLicenseSubscription.setCurrency("USD");
 			
 			
 		    
 			if(!lookupData.getName().equalsIgnoreCase("Free Trail") && !lookupData.getName().equalsIgnoreCase("Guest") && !lookupData.getName().equalsIgnoreCase("Unlimited")) {
 				OrgLicenseSubscriptionPrice subscriptionPrice = orgLicenseSubscriptionPriceDao.getOrgLicenseSubscriptionPriceBySubscriptionTypeAndUserType(Long.parseLong(orgLicenseSubscriptionDTO.getSubscriptionType()), Long.parseLong(orgLicenseSubscriptionDTO.getUserSubscription()));		
-				if(orgLicenseSubscriptionDTO.getCountry().equalsIgnoreCase("United States")) {
+				orgLicenseSubscription.setInvoiceAmount(subscriptionPrice.getSubscriptionRate());
+				/*if(orgLicenseSubscriptionDTO.getCountry().equalsIgnoreCase("United States")) {
 							orgLicenseSubscription.setInvoiceAmount(subscriptionPrice.getSubscriptionRate());
 						}else {
 							Double invoiceAmount = conversionUtil.currencyConvert("USD", countries.getCurrency(),subscriptionPrice.getSubscriptionRate());
 							DecimalFormat df = new DecimalFormat(".##");
 							orgLicenseSubscription.setInvoiceAmount(Double.valueOf(df.format(invoiceAmount)));
-						}
+						}*/
 					}else {
 						orgLicenseSubscription.setInvoiceAmount(0d);
 					}
-			
+			orgLicenseSubscription.setIsInvoiceAmountPaid(Constants.NO);
 			orgLicenseSubscription.setSubscriptionTabs(orgLicenseSubscriptionDTO.getRegisteredModules());
 			saveOrgLicenseSubscription(orgLicenseSubscription);
 			

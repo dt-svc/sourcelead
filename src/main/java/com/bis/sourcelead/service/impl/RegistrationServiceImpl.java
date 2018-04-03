@@ -53,6 +53,7 @@ import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLicenseSubscriptionPrice;
+import com.bis.sourcelead.entity.OrgLicenseSubscriptionTypes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRequest;
 import com.bis.sourcelead.entity.PasswordResets;
@@ -107,8 +108,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.ibm.icu.util.Calendar;
-
-import bsh.StringUtil;
 
 @Service
 public class RegistrationServiceImpl implements RegistrationService{
@@ -490,6 +489,11 @@ public class RegistrationServiceImpl implements RegistrationService{
 		if(user == null) {
 			user = new User();
 			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
+			user.setIsVerified(Constants.NO);
+			user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
+			user.setUrlSentTime(new Date());
+			user.setLoginSecurity(Constants.NO);
+			user.setRegistrationType("Newly Registered");
 		}
 		user.setFirstName(registration.getFirstName());
 		user.setLastName(registration.getLastName());
@@ -503,11 +507,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		user.setCreatedBy(user.getUserCode());
 		user.setCreatedDate(new Date());
 		
-		user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
-		user.setUrlSentTime(new Date());
-		user.setIsVerified(Constants.NO);
-		user.setLoginSecurity(Constants.NO);
-		user.setRegistrationType("Newly Registered");
+		
 		return user;
 	}
 	
@@ -649,15 +649,15 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgLicenseSubscription.setOrg(org);
 		orgLicenseSubscription.setCountry(registration.getCountry());
 		
-		LookUpData subscriptionType = new LookUpData();
+		OrgLicenseSubscriptionTypes subscriptionType = new OrgLicenseSubscriptionTypes();
 		subscriptionType.setId(Long.parseLong(registration.getOrgEnrollment()));
 		orgLicenseSubscription.setSubscriptionType(subscriptionType);
 		
-		LookUpData userSubscriptionType = new LookUpData();
+		OrgLicenseSubscriptionTypes userSubscriptionType = new OrgLicenseSubscriptionTypes();
 		userSubscriptionType.setId(Long.parseLong(registration.getUserSubscription()));
 		orgLicenseSubscription.setUserSubscriptionType(userSubscriptionType);
 		
-		LookUpData storageSubscriptionType = new LookUpData();
+		OrgLicenseSubscriptionTypes storageSubscriptionType = new OrgLicenseSubscriptionTypes();
 		storageSubscriptionType.setId(Long.parseLong(registration.getDataStorage()));
 		orgLicenseSubscription.setStorageSubscriptionType(storageSubscriptionType);
 		

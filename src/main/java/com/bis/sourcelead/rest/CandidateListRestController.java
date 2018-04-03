@@ -1848,5 +1848,59 @@ public class CandidateListRestController {
 		return "success";
 
 	}
+		   
+		   @RequestMapping(value = "/rest/saveOrUpdateOnlySkillBycandidateId")
+		    public String saveOrUpdateOnlySkillBycandidateIdForAndroid(
+		            @RequestParam(value = "loginUserId", required = false) Long loginUserId,
+		            @RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+		            @RequestParam(value = "candidateId", required = false) String candidateId,
+		            @RequestParam(value = "skillName", required = false) String skillName, HttpServletRequest request)
+		            throws Exception {
+		        Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
+		        User user = userService.getUserById(loginUserId);
+		        OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		        StringBuffer activitySummary = new StringBuffer();
+		        if (null != can && StringUtils.isNotEmpty(skillName)) {
+		            
+		            
+		            ArrayList<String> oldSkills = new ArrayList<>();
+		            if(StringUtils.isNotBlank(can.getSkillsName())){
+		                oldSkills.addAll(Arrays.asList(can.getSkillsName().split("\\s*,\\s*")));
+		            }
+		            ArrayList<String> newSkills = new ArrayList<>(Arrays.asList(skillName.split("\\s*,\\s*")));
+		            ArrayList<String> actualNewSkills = new ArrayList<>();
+		            actualNewSkills.addAll(newSkills);
+		             newSkills.removeAll(oldSkills);
+		             oldSkills.removeAll(actualNewSkills);
+		            
+		            activitySummary.append("Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(String.join(",", oldSkills)).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(String.join(",", newSkills)).append(Constants.NEW_VALUE_TAG_END);
+//		            can.setSkillsName("");
+		            can.setSkillsName(skillName.replaceAll("\\s*,\\s*$", ""));
+		            candidateService.saveOrUpdateCandidate(can);
+		            candidateService.saveOrUpdateCandidateElkDocument(can);
+		            candidateActivityCommonUtil.storeCandidateHistory(can, user);
+		            candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_SKILL_UPDATED, activitySummary.toString(), "CANDIDATE");
+		            return "success";
+		        } else {
+		            
+		            ArrayList<String> oldSkills = new ArrayList<>();
+		            if(StringUtils.isNotBlank(can.getSkillsName())){
+		                oldSkills.addAll(Arrays.asList(can.getSkillsName().split("\\s*,\\s*")));
+		            }
+		            ArrayList<String> newSkills = new ArrayList<>(Arrays.asList(skillName.split("\\s*,\\s*")));
+		            ArrayList<String> actualNewSkills = new ArrayList<>();
+		            actualNewSkills.addAll(newSkills);
+		             newSkills.removeAll(oldSkills);
+		             oldSkills.removeAll(actualNewSkills);
+		            
+		            activitySummary.append("Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(String.join(",", oldSkills)).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(String.join(",", newSkills)).append(Constants.NEW_VALUE_TAG_END);
+		            can.setSkillsName("");
+		            candidateService.saveOrUpdateCandidate(can);
+		            candidateService.saveOrUpdateCandidateElkDocument(can);
+		            candidateActivityCommonUtil.storeCandidateHistory(can, user);
+		            candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_SKILL_UPDATED, activitySummary.toString(), "CANDIDATE");
+		            return "failed";
+		        }
+		    }
 
 }
