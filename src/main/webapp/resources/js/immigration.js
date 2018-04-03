@@ -901,32 +901,6 @@ function validateEduname()
 }
 
 
-/*function saveNotesDatails(status) {
-	if ($('#notesDetails_form').validate(false, validationSettings)) {
-        var formData = getFormData("notesDetails_form");
-        var candidateId = $('#candidateID').val();
-        var immigrationId = $('#immigrationID').val();
-        $.ajax({
-            url: sourceleadUrl + immiModulePath + "/saveImmigrationNotesDetails?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
-            type: "POST",
-            data: formData,
-            success: function (data) {
-            	if (data === 'success') {
-                	$('#popResiView').hide();
-                	$('.popMask').fadeOut();
-                	//getCandidateResidenceList(candidateId);
-                }
-            }
-        });
-
-        return true;
-    } else {
-        return false;
-    }
-	
-}*/
-
-
 function saveNotesDatails(status) {
 	if ($('#notesDetails_form').validate(false, validationSettings)) {
         var formData = getFormData("notesDetails_form");
