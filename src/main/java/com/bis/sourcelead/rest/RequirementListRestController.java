@@ -88,6 +88,7 @@ import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
 import com.bis.sourcelead.enums.ApplicantSubmissionDisplayStatus;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
@@ -348,30 +349,37 @@ public class RequirementListRestController {
 	public @ResponseBody ResponseList<RequirementAssignTo> getRequirementAssignedListByRequirementId(RequirementAssignToDTO requirementAssignToDTO, HttpServletRequest request) throws Exception
 	{
 		ResponseList<RequirementAssignTo> requirementAssignToDtoResponse = new ResponseList<>();
-		ResponseList<RequirementAssignTo> list = requirementAssignToService.loadRequirementAssignToListByRequirementId(requirementAssignToDTO);
-		List<RequirementAssignTo> requirementAssignToList = list.getData();
-			if (list != null && list.getRecordsTotal() > 0) {
-				for (RequirementAssignTo assing : requirementAssignToList) {
-					if (assing.getAssignUserId() != null) {
-						assing.setAssignedUserName(assing.getAssignUserId().getFullName());
-					}
-					if (assing.getRoleId() != null) {
-						assing.setAssignedUserRole(assing.getRoleId().getDisplayName());
-					}
-					if (assing.getTeamId() != null) {
-						assing.setTeamName(assing.getTeamId().getName());
-					}
-					if (assing.getAssignUserId() != null) {
-						Integer applicantCount = requirementSubmissionService.getApplicantCountByrequirementIdandAssignedUsercode(requirementAssignToDTO.getRequirementId(), assing.getAssignUserId().getUserCode());
-						assing.setApplicantCount(applicantCount.toString());
+		try {
+			ResponseList<RequirementAssignTo> list = requirementAssignToService.loadRequirementAssignToListByRequirementId(requirementAssignToDTO);
+			List<RequirementAssignTo> requirementAssignToList = list.getData();
+				if (list != null && list.getRecordsTotal() > 0) {
+					for (RequirementAssignTo assing : requirementAssignToList) {
+						if (assing.getAssignUserId() != null) {
+							assing.setAssignedUserName(assing.getAssignUserId().getFullName());
+						}
+						if (assing.getRoleId() != null) {
+							assing.setAssignedUserRole(assing.getRoleId().getDisplayName());
+						}
+						if (assing.getTeamId() != null) {
+							assing.setTeamName(assing.getTeamId().getName());
+						}
+						if (assing.getAssignUserId() != null) {
+							Integer applicantCount = requirementSubmissionService.getApplicantCountByrequirementIdandAssignedUsercode(requirementAssignToDTO.getRequirementId(), assing.getAssignUserId().getUserCode());
+							assing.setApplicantCount(applicantCount.toString());
+						}
 					}
 				}
-			}
-		requirementAssignToDtoResponse.setData(requirementAssignToList);
-		requirementAssignToDtoResponse.setRecordsFiltered(requirementAssignToList.size());
-		requirementAssignToDtoResponse.setRecordsTotal(requirementAssignToList.size());
-		requirementAssignToDtoResponse.setError(list.getError());
-		return requirementAssignToDtoResponse;
+			requirementAssignToDtoResponse.setData(requirementAssignToList);
+			requirementAssignToDtoResponse.setRecordsFiltered(requirementAssignToList.size());
+			requirementAssignToDtoResponse.setRecordsTotal(requirementAssignToList.size());
+			requirementAssignToDtoResponse.setError(list.getError());
+			requirementAssignToDtoResponse.setResponse(Result.SUCCESS.name());
+			requirementAssignToDtoResponse.setResponseMessage(Result.SUCCESS.getValue());
+	}catch(Exception e) {
+		requirementAssignToDtoResponse.setResponse(Result.AWKWARD.name());
+		requirementAssignToDtoResponse.setResponseMessage(Result.AWKWARD.getValue());
+	}
+	return requirementAssignToDtoResponse;
 	}
 	
 	/**
@@ -655,226 +663,239 @@ public class RequirementListRestController {
 	{
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(requirementSubmissionsDTO.getOrgLocationId());
 		Timezone timezone = (Timezone) SourceLeadSessionManager.getSessionAttribute(request, "timezone");
-		List<RequirementSubmission> submissionList = new ArrayList<RequirementSubmission>();
-		String[] tableColumns = null;
-		if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("SHORTLIST")){
-			String[] columns = {"name", "email", "phNo", "resume", "appliedOn", "rate", "source", "shortlistedBy", "score", "exp", "status"};
-			tableColumns = columns;
-		}else if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("INTERVIEW")){
-			String[] columns = {"name", "email", "phNo", "resume", "noOfInterviews", "status"};
-			tableColumns = columns;
-		}else if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("OFFERMADE")){
-			String[] columns = {"name", "email", "phNo", "resume", "offerJoinDate", "positionType", "offerRate", "attachment", "status"};
-			tableColumns = columns;
-		}else if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("REJECTED")){
-			String[] columns = {"name", "email", "resume", "appliedOn", "rate", "subRate", "source", "rejectedOn", "rejectedBy", "status"};
-			tableColumns = columns;
-		}else if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("BACKOUT")){
-			String[] columns = {"name", "email", "resume", "appliedOn", "rate", "subRate", "source", "backOutOn", "backOutBy", "status"};
-			tableColumns = columns;
-		}else if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("SUBMIT_TO_CLIENT")){
-			String[] columns = {"name", "email", "phNo", "resume", "appliedOn", "subRate", "source", "score", "exp", "status"};
-			tableColumns = columns;
-		}else{
-			String[] columns = {"name", "email", "phNo", "resume", "appliedOn", "rate", "source", "score", "exp", "status"};
-			tableColumns = columns;
-		}
-		
-	    int sortColumnIndex = 3; //by default sorting using updated date
-		String sortColumnOrder = "desc"; //by default descending order
-		if(requirementSubmissionsDTO.getOrder() != null && !requirementSubmissionsDTO.getOrder().isEmpty()) {
-			sortColumnIndex = Integer.parseInt(requirementSubmissionsDTO.getOrder().get(0).get("column"));
-			sortColumnOrder = requirementSubmissionsDTO.getOrder().get(0).get("dir");
-		}
-		
-		requirementSubmissionsDTO.setSortColumn(tableColumns[sortColumnIndex]);
-		requirementSubmissionsDTO.setSortOrder(sortColumnOrder);
-		
-		ResponseList<RequirementSubmission> list = requirementSubmissionService.loadSubmissionsListByRequirementId(requirementSubmissionsDTO);
-		
-		if (list.getData() != null && list.getData().size() > 0) {
-			for (RequirementSubmission requirementSubmission : list.getData()) {
-				if (requirementSubmission.getCandidateResumes() != null) {
-					RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = null;
-					Set<RequirementSubmissionTemplateFields> requirementSubmissionTemplateFieldsList = requirementSubmission.getRequirementSubmissionTemplateFieldsList();
-					for(RequirementSubmissionTemplateFields templateFields : requirementSubmissionTemplateFieldsList){
-						if(templateFields.getRequirementSubmission().getId().equals(requirementSubmission.getId())){
-							requirementSubmissionTemplateFields = templateFields;
-						}
-					}
-					
-					
-					if (requirementSubmissionsDTO.getSubmissionType() != null
-							&& requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("INTERVIEW")) {
-						
-						Set<RequirementInterviewHistory> requirementInterviewHistoryList = requirementSubmission.getRequirementInterviewHistory();
-						requirementSubmission.setTotalNoOfInterviews(requirementInterviewHistoryList.size());
-					}
-					
-					if (requirementSubmissionsDTO.getSubmissionType() != null
-							&& requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("OFFERMADE")) {
-						
-						Set<RequirementOffers> requirementOffersList = requirementSubmission.getRequirementOffersList();
-						
-						if (requirementOffersList.size() == 0
-								&& (ApplicantSubmissionStatus.CLIENT_OFFERMADE.toString().equalsIgnoreCase(requirementSubmission.getSubmissionStatus().toString())
-										|| ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED.toString().equalsIgnoreCase(requirementSubmission.getSubmissionStatus().toString())
-										|| ApplicantSubmissionStatus.CLIENT_OFFERREJECTED.toString().equalsIgnoreCase(requirementSubmission.getSubmissionStatus().toString())
-										|| ApplicantSubmissionStatus.CLIENT_OFFERHIRED.toString().equalsIgnoreCase(requirementSubmission.getSubmissionStatus().toString()))) {
-							
-							Set<RequirementOfferHistory> offersList = requirementSubmission.getRequirementOfferHistoryList();
-							
-							if(offersList != null){
-								for (RequirementOfferHistory requirementOfferHistory : offersList) {
-									RequirementOffers requirementOffershis = requirementOfferHistory.getOfferId();
-									requirementSubmission.setOfferId(requirementOffershis.getId());
-									if (requirementOffershis.getDateOfJoining() != null) {
-										requirementSubmission.setOfferJoinDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),requirementOffershis.getDateOfJoining()));
-									}
-									if (requirementOffershis.getPositionType() != null) {
-										requirementSubmission.setPositionType(requirementOffershis.getPositionType());
-									}
-									if (requirementOffershis.getAmount() != null) {
-										requirementSubmission.setOfferRate(requirementOffershis.getAmount());
-									}
-									if (requirementOffershis.getFileName() != null) {
-										requirementSubmission.setAttachment(requirementOffershis.getFileName());
-									}
-
-								}
-							}
-						}
-						
-						if (requirementOffersList != null && requirementOffersList.size() > 0) {
-							RequirementOffers requirementOffers = null;
-							for(RequirementOffers offers : requirementOffersList){
-								requirementOffers = offers;
-							}
-							requirementSubmission.setOfferId(requirementOffers.getId());
-							if (requirementOffers.getDateOfJoining() != null) {
-								requirementSubmission.setOfferJoinDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),requirementOffers.getDateOfJoining()));
-							}
-							if (requirementOffers.getPositionType() != null) {
-								requirementSubmission.setPositionType(requirementOffers.getPositionType());
-							}
-							if (requirementOffers.getAmount() != null) {
-								requirementSubmission.setOfferRate(requirementOffers.getAmount());
-							}
-							if (requirementOffers.getFileName() != null) {
-								requirementSubmission.setAttachment(requirementOffers.getFileName());
-							}
-						}
-					}
-					String candidateName = "";
-					if (requirementSubmissionTemplateFields != null) {
-						if (!isNullOrEmpty(requirementSubmissionTemplateFields.getLastName())) {
-							StringBuilder candidateNameSB = new StringBuilder();
-							candidateName = candidateNameSB.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString();
-						}
-						else {
-							candidateName = requirementSubmissionTemplateFields.getFirstName();
-						}
-						requirementSubmission.setCandidateName(candidateName);
-						requirementSubmission.setCandidateEmail(requirementSubmission.getCandidate().getEmail());
-						requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
-						requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
-						requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
-					}
-					requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
-					requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
-					requirementSubmission.setResumeUUID(requirementSubmission.getCandidateResumes().getResumeUUID());
-					
-					requirementSubmission.setFileContentType(requirementSubmission.getCandidateResumes().getFileContentType());
-					requirementSubmission.setFileName(requirementSubmission.getCandidateResumes().getFileName());
-					requirementSubmission.setFileURL(requirementSubmission.getCandidateResumes().getFileURL());
-					
-					if(requirementSubmission.getSubmissionStatus() != null) {
-						ApplicantSubmissionDisplayStatus status =	ApplicantSubmissionDisplayStatus.valueOf(requirementSubmission.getSubmissionStatus().toString());
-						if(status != null)
-		  				requirementSubmission.setSubmissionDisplayStatus(status.getValue());
-					}
-					if (requirementSubmission.getVendorLocationId() != null) {
-						requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrgLocationName());
-					}
-					else {
-						if (requirementSubmission.getRecruiterUserId() == null
-								&& requirementSubmission.getCandidate().getCandidateType().equalsIgnoreCase("Professional")) {
-							requirementSubmission.setCandidateSource(requirementSubmission.getCandidate().getCandidateType());
-						}
-						if (requirementSubmission.getRecruiterUserId() != null) {
-							requirementSubmission.setCandidateSource("Individual Recruiter");
-						}
-					}
-					if (requirementSubmission.getCandidateResumes() != null
-							&& requirementSubmission.getCandidateResumes().getFileName() != null) {
-						requirementSubmission.setFilename(requirementSubmission.getCandidateResumes().getFileName());
-					}
-					
-					RequirementRateSubmissionNegotiation pastRequirementRateSubmissionNegotiation = null;
-					if (null != requirementSubmissionsDTO.getSubmissionType()
-							&& requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("SUBMIT_TO_CLIENT")) {
-						RequirementSubmission clientSubmission = requirementSubmissionService.getClientSubmissionsBySubmissionIdAndOrgLocationId(requirementSubmission.getId(), requirementSubmission.getOrgLocations().getId());
-						if (clientSubmission != null) {
-							requirementSubmission.setClientSubmissionId(clientSubmission.getId().toString());
-							pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(clientSubmission.getId());
-							if (pastRequirementRateSubmissionNegotiation != null) {
-								requirementSubmission.setProposedSubmissionRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
-								requirementSubmission.setSubmitToClientRate(pastRequirementRateSubmissionNegotiation.getRequirementsubmissionId().getFinalizedRate());
-							}
-						}
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		ResponseList<RequirementSubmission> list = new ResponseList<>();
+		if(user != null) {
+			List<RequirementSubmission> submissionList = new ArrayList<RequirementSubmission>();
+				try {
+					String[] tableColumns = null;
+					if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("SHORTLIST")){
+						String[] columns = {"name", "email", "phNo", "resume", "appliedOn", "rate", "source", "shortlistedBy", "score", "exp", "status"};
+						tableColumns = columns;
+					}else if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("INTERVIEW")){
+						String[] columns = {"name", "email", "phNo", "resume", "noOfInterviews", "status"};
+						tableColumns = columns;
+					}else if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("OFFERMADE")){
+						String[] columns = {"name", "email", "phNo", "resume", "offerJoinDate", "positionType", "offerRate", "attachment", "status"};
+						tableColumns = columns;
+					}else if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("REJECTED")){
+						String[] columns = {"name", "email", "resume", "appliedOn", "rate", "subRate", "source", "rejectedOn", "rejectedBy", "status"};
+						tableColumns = columns;
+					}else if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("BACKOUT")){
+						String[] columns = {"name", "email", "resume", "appliedOn", "rate", "subRate", "source", "backOutOn", "backOutBy", "status"};
+						tableColumns = columns;
+					}else if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("SUBMIT_TO_CLIENT")){
+						String[] columns = {"name", "email", "phNo", "resume", "appliedOn", "subRate", "source", "score", "exp", "status"};
+						tableColumns = columns;
 					}else{
-						pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
+						String[] columns = {"name", "email", "phNo", "resume", "appliedOn", "rate", "source", "score", "exp", "status"};
+						tableColumns = columns;
 					}
 					
-					if (pastRequirementRateSubmissionNegotiation != null) {
-						if (pastRequirementRateSubmissionNegotiation.getRateInitiatorType().equals(SubmissionRateStatus.VENDOR)
-								|| pastRequirementRateSubmissionNegotiation.getRateInitiatorType().equals(SubmissionRateStatus.CLIENT)) {
-							requirementSubmission.setProposedSubmissionRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+				    int sortColumnIndex = 3; //by default sorting using updated date
+					String sortColumnOrder = "desc"; //by default descending order
+					if(requirementSubmissionsDTO.getOrder() != null && !requirementSubmissionsDTO.getOrder().isEmpty()) {
+						sortColumnIndex = Integer.parseInt(requirementSubmissionsDTO.getOrder().get(0).get("column"));
+						sortColumnOrder = requirementSubmissionsDTO.getOrder().get(0).get("dir");
+					}
+					
+					requirementSubmissionsDTO.setSortColumn(tableColumns[sortColumnIndex]);
+					requirementSubmissionsDTO.setSortOrder(sortColumnOrder);
+					
+					list = requirementSubmissionService.loadSubmissionsListByRequirementId(requirementSubmissionsDTO);
+					
+					if (list.getData() != null && list.getData().size() > 0) {
+						for (RequirementSubmission requirementSubmission : list.getData()) {
+							if (requirementSubmission.getCandidateResumes() != null) {
+								RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = null;
+								Set<RequirementSubmissionTemplateFields> requirementSubmissionTemplateFieldsList = requirementSubmission.getRequirementSubmissionTemplateFieldsList();
+								for(RequirementSubmissionTemplateFields templateFields : requirementSubmissionTemplateFieldsList){
+									if(templateFields.getRequirementSubmission().getId().equals(requirementSubmission.getId())){
+										requirementSubmissionTemplateFields = templateFields;
+									}
+								}
+								
+								
+								if (requirementSubmissionsDTO.getSubmissionType() != null
+										&& requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("INTERVIEW")) {
+									
+									Set<RequirementInterviewHistory> requirementInterviewHistoryList = requirementSubmission.getRequirementInterviewHistory();
+									requirementSubmission.setTotalNoOfInterviews(requirementInterviewHistoryList.size());
+								}
+								
+								if (requirementSubmissionsDTO.getSubmissionType() != null
+										&& requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("OFFERMADE")) {
+									
+									Set<RequirementOffers> requirementOffersList = requirementSubmission.getRequirementOffersList();
+									
+									if (requirementOffersList.size() == 0
+											&& (ApplicantSubmissionStatus.CLIENT_OFFERMADE.toString().equalsIgnoreCase(requirementSubmission.getSubmissionStatus().toString())
+													|| ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED.toString().equalsIgnoreCase(requirementSubmission.getSubmissionStatus().toString())
+													|| ApplicantSubmissionStatus.CLIENT_OFFERREJECTED.toString().equalsIgnoreCase(requirementSubmission.getSubmissionStatus().toString())
+													|| ApplicantSubmissionStatus.CLIENT_OFFERHIRED.toString().equalsIgnoreCase(requirementSubmission.getSubmissionStatus().toString()))) {
+										
+										Set<RequirementOfferHistory> offersList = requirementSubmission.getRequirementOfferHistoryList();
+										
+										if(offersList != null){
+											for (RequirementOfferHistory requirementOfferHistory : offersList) {
+												RequirementOffers requirementOffershis = requirementOfferHistory.getOfferId();
+												requirementSubmission.setOfferId(requirementOffershis.getId());
+												if (requirementOffershis.getDateOfJoining() != null) {
+													requirementSubmission.setOfferJoinDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),requirementOffershis.getDateOfJoining()));
+												}
+												if (requirementOffershis.getPositionType() != null) {
+													requirementSubmission.setPositionType(requirementOffershis.getPositionType());
+												}
+												if (requirementOffershis.getAmount() != null) {
+													requirementSubmission.setOfferRate(requirementOffershis.getAmount());
+												}
+												if (requirementOffershis.getFileName() != null) {
+													requirementSubmission.setAttachment(requirementOffershis.getFileName());
+												}
+			
+											}
+										}
+									}
+									
+									if (requirementOffersList != null && requirementOffersList.size() > 0) {
+										RequirementOffers requirementOffers = null;
+										for(RequirementOffers offers : requirementOffersList){
+											requirementOffers = offers;
+										}
+										requirementSubmission.setOfferId(requirementOffers.getId());
+										if (requirementOffers.getDateOfJoining() != null) {
+											requirementSubmission.setOfferJoinDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),requirementOffers.getDateOfJoining()));
+										}
+										if (requirementOffers.getPositionType() != null) {
+											requirementSubmission.setPositionType(requirementOffers.getPositionType());
+										}
+										if (requirementOffers.getAmount() != null) {
+											requirementSubmission.setOfferRate(requirementOffers.getAmount());
+										}
+										if (requirementOffers.getFileName() != null) {
+											requirementSubmission.setAttachment(requirementOffers.getFileName());
+										}
+									}
+								}
+								String candidateName = "";
+								if (requirementSubmissionTemplateFields != null) {
+									if (!isNullOrEmpty(requirementSubmissionTemplateFields.getLastName())) {
+										StringBuilder candidateNameSB = new StringBuilder();
+										candidateName = candidateNameSB.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString();
+									}
+									else {
+										candidateName = requirementSubmissionTemplateFields.getFirstName();
+									}
+									requirementSubmission.setCandidateName(candidateName);
+									requirementSubmission.setCandidateEmail(requirementSubmission.getCandidate().getEmail());
+									requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
+									requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
+									requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
+								}
+								requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
+								requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
+								requirementSubmission.setResumeUUID(requirementSubmission.getCandidateResumes().getResumeUUID());
+								
+								requirementSubmission.setFileContentType(requirementSubmission.getCandidateResumes().getFileContentType());
+								requirementSubmission.setFileName(requirementSubmission.getCandidateResumes().getFileName());
+								requirementSubmission.setFileURL(requirementSubmission.getCandidateResumes().getFileURL());
+								
+								if(requirementSubmission.getSubmissionStatus() != null) {
+									ApplicantSubmissionDisplayStatus status =	ApplicantSubmissionDisplayStatus.valueOf(requirementSubmission.getSubmissionStatus().toString());
+									if(status != null)
+					  				requirementSubmission.setSubmissionDisplayStatus(status.getValue());
+								}
+								if (requirementSubmission.getVendorLocationId() != null) {
+									requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrgLocationName());
+								}
+								else {
+									if (requirementSubmission.getRecruiterUserId() == null
+											&& requirementSubmission.getCandidate().getCandidateType().equalsIgnoreCase("Professional")) {
+										requirementSubmission.setCandidateSource(requirementSubmission.getCandidate().getCandidateType());
+									}
+									if (requirementSubmission.getRecruiterUserId() != null) {
+										requirementSubmission.setCandidateSource("Individual Recruiter");
+									}
+								}
+								if (requirementSubmission.getCandidateResumes() != null
+										&& requirementSubmission.getCandidateResumes().getFileName() != null) {
+									requirementSubmission.setFilename(requirementSubmission.getCandidateResumes().getFileName());
+								}
+								
+								RequirementRateSubmissionNegotiation pastRequirementRateSubmissionNegotiation = null;
+								if (null != requirementSubmissionsDTO.getSubmissionType()
+										&& requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("SUBMIT_TO_CLIENT")) {
+									RequirementSubmission clientSubmission = requirementSubmissionService.getClientSubmissionsBySubmissionIdAndOrgLocationId(requirementSubmission.getId(), requirementSubmission.getOrgLocations().getId());
+									if (clientSubmission != null) {
+										requirementSubmission.setClientSubmissionId(clientSubmission.getId().toString());
+										pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(clientSubmission.getId());
+										if (pastRequirementRateSubmissionNegotiation != null) {
+											requirementSubmission.setProposedSubmissionRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+											requirementSubmission.setSubmitToClientRate(pastRequirementRateSubmissionNegotiation.getRequirementsubmissionId().getFinalizedRate());
+										}
+									}
+								}else{
+									pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
+								}
+								
+								if (pastRequirementRateSubmissionNegotiation != null) {
+									if (pastRequirementRateSubmissionNegotiation.getRateInitiatorType().equals(SubmissionRateStatus.VENDOR)
+											|| pastRequirementRateSubmissionNegotiation.getRateInitiatorType().equals(SubmissionRateStatus.CLIENT)) {
+										requirementSubmission.setProposedSubmissionRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+									}
+									else {
+										requirementSubmission.setExpectedRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+									}
+									requirementSubmission.setLastRateIniLocId(pastRequirementRateSubmissionNegotiation.getInitiatorOrgLocationId().getId().toString());
+									requirementSubmission.setLastRateIniType(pastRequirementRateSubmissionNegotiation.getRateInitiatorType().getValue());
+									requirementSubmission.setLastRateIniUserCode(pastRequirementRateSubmissionNegotiation.getCreatedBy());
+									requirementSubmission.setLastRateStage(pastRequirementRateSubmissionNegotiation.getRateStage().getValue());
+								}
+								if (requirementSubmission.getCreatedDate() != null) {
+									
+									requirementSubmission.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(requirementSubmission.getOrgLocations().getDateFormat(), requirementSubmission.getCreatedDate()));
+									//commented by Laxman
+									//add applicant created date is wrong
+									/*String currentTimeStr = Constants.TZ_DF.format(requirementSubmission.getCreatedDate());
+									if (null != timezone && null != timezone.getTimeZoneId()) {
+										String currentDateInTimezone = CommonUtil.convertTimeZones("UTC", timezone.getTimeZoneId(), currentTimeStr);
+										DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+										Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+										currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),converteDate);
+										requirementSubmission.setCreatedDateStr(currentDateInTimezone);
+										SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
+										String time = localDateFormat.format(converteDate);
+										requirementSubmission.setCreatedTimeStr(time);
+									}*/
+								}
+								if (requirementSubmission.getUpdatedDate() != null) {
+									requirementSubmission.setUpDatedStr(commonUtil.dateStrFromOrgDateFormatter(requirementSubmission.getOrgLocations().getDateFormat(), requirementSubmission.getUpdatedDate()));
+								   //commented by Laxman
+									//add applicant updated date is wrong
+									/*String currentTimeStr = Constants.TZ_DF.format(requirementSubmission.getUpdatedDate());
+									if (null != timezone && null != timezone.getTimeZoneId()) {
+										String currentDateInTimezone = CommonUtil.convertTimeZones("UTC", timezone.getTimeZoneId(), currentTimeStr);
+										DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+										Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+										currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),converteDate);
+										requirementSubmission.setUpDatedStr(currentDateInTimezone);
+									}*/
+								}
+								//submissionList.add(requirementSubmission);
+							}
+							requirementSubmission.setRequirementCurrentStatus(requirementSubmission.getRequirement().getRequirementSubmissionStatus());
 						}
-						else {
-							requirementSubmission.setExpectedRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
-						}
-						requirementSubmission.setLastRateIniLocId(pastRequirementRateSubmissionNegotiation.getInitiatorOrgLocationId().getId().toString());
-						requirementSubmission.setLastRateIniType(pastRequirementRateSubmissionNegotiation.getRateInitiatorType().getValue());
-						requirementSubmission.setLastRateIniUserCode(pastRequirementRateSubmissionNegotiation.getCreatedBy());
-						requirementSubmission.setLastRateStage(pastRequirementRateSubmissionNegotiation.getRateStage().getValue());
 					}
-					if (requirementSubmission.getCreatedDate() != null) {
-						
-						requirementSubmission.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(requirementSubmission.getOrgLocations().getDateFormat(), requirementSubmission.getCreatedDate()));
-						//commented by Laxman
-						//add applicant created date is wrong
-						/*String currentTimeStr = Constants.TZ_DF.format(requirementSubmission.getCreatedDate());
-						if (null != timezone && null != timezone.getTimeZoneId()) {
-							String currentDateInTimezone = CommonUtil.convertTimeZones("UTC", timezone.getTimeZoneId(), currentTimeStr);
-							DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-							Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-							currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),converteDate);
-							requirementSubmission.setCreatedDateStr(currentDateInTimezone);
-							SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
-							String time = localDateFormat.format(converteDate);
-							requirementSubmission.setCreatedTimeStr(time);
-						}*/
-					}
-					if (requirementSubmission.getUpdatedDate() != null) {
-						requirementSubmission.setUpDatedStr(commonUtil.dateStrFromOrgDateFormatter(requirementSubmission.getOrgLocations().getDateFormat(), requirementSubmission.getUpdatedDate()));
-					   //commented by Laxman
-						//add applicant updated date is wrong
-						/*String currentTimeStr = Constants.TZ_DF.format(requirementSubmission.getUpdatedDate());
-						if (null != timezone && null != timezone.getTimeZoneId()) {
-							String currentDateInTimezone = CommonUtil.convertTimeZones("UTC", timezone.getTimeZoneId(), currentTimeStr);
-							DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-							Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-							currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),converteDate);
-							requirementSubmission.setUpDatedStr(currentDateInTimezone);
-						}*/
-					}
-					//submissionList.add(requirementSubmission);
-				}
-				requirementSubmission.setRequirementCurrentStatus(requirementSubmission.getRequirement().getRequirementSubmissionStatus());
-			}
+				list.setResponse(Result.SUCCESS.name());
+				list.setResponseMessage(Result.SUCCESS.getValue());
+			}catch(Exception e) {
+			list.setResponse(Result.AWKWARD.name());
+			list.setResponseMessage(Result.AWKWARD.getValue());
 		}
-		
+		}else {
+		list.setResponse(Result.SESSION_TIMEDOUT.name());
+		list.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
 		return list;
 		
 	}
@@ -1613,345 +1634,360 @@ public class RequirementListRestController {
 	public ResponseList<Requirement> searchRequirement(RequirementSearchDTO search, HttpServletRequest request) throws Exception
 	{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-
 		ResponseList<Requirement> resp= new ResponseList<>();
-		/*
-		 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
-		 */
-		String[] tableColumns = {"", "generatedId.keyword","jobTitle.keyword", "client.keyword","","", "jobType.keyword", "country.keyword", "", "manager.keyword", "createdDate", ""};
+		if(user != null) {
+			try {
+				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		
-		int sortColumnIndex = 10; //by default sorting using updated date
-		boolean sortColumnOrder = false; //by default descending order
-		if(search.getOrder() != null && !search.getOrder().isEmpty()) {
-			sortColumnIndex = Integer.parseInt(search.getOrder().get(0).get("column"));
-			sortColumnOrder = !search.getOrder().get(0).get("dir").equalsIgnoreCase("desc");
-		}
-		
-		
-		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-		boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
-		
-		BoolQueryBuilder boolQueryBuilderForCount = new BoolQueryBuilder();
-		boolQueryBuilderForCount.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
-	 
-		
-		if(StringUtils.isNotEmpty(search.getSearchType())  
-				&& StringUtils.isNotEmpty(search.getSearchValue())){
-			    ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(search.getSearchValue());
-				if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
-					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
-					 for(String keywd : anyKeyWordArray){
-						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<QueryBuilder> QueryBuilderList =getQueryBuilderListForUniversalSearch(keywd);
-						if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
-							for(QueryBuilder QueryBuilder :QueryBuilderList){
-								anyBoolSubQueryBuilder.should(QueryBuilder);
-							}
-							DateFormat df = orgLocation.getLocFullFormDateFormatter();
-							try{
-								if(keywd.contains("/")){
-									keywd = keywd.replaceAll("/", "-");
+				/*
+				 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
+				 */
+				String[] tableColumns = {"", "generatedId.keyword","jobTitle.keyword", "client.keyword","","", "jobType.keyword", "country.keyword", "", "manager.keyword", "createdDate", ""};
+				
+				int sortColumnIndex = 10; //by default sorting using updated date
+				boolean sortColumnOrder = false; //by default descending order
+				if(search.getOrder() != null && !search.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(search.getOrder().get(0).get("column"));
+					sortColumnOrder = !search.getOrder().get(0).get("dir").equalsIgnoreCase("desc");
+				}
+				
+				
+				BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+				boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
+				
+				BoolQueryBuilder boolQueryBuilderForCount = new BoolQueryBuilder();
+				boolQueryBuilderForCount.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
+			 
+				
+				if(StringUtils.isNotEmpty(search.getSearchType())  
+						&& StringUtils.isNotEmpty(search.getSearchValue())){
+					    ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(search.getSearchValue());
+						if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+							 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+							 for(String keywd : anyKeyWordArray){
+								 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+								ArrayList<QueryBuilder> QueryBuilderList =getQueryBuilderListForUniversalSearch(keywd);
+								if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+									for(QueryBuilder QueryBuilder :QueryBuilderList){
+										anyBoolSubQueryBuilder.should(QueryBuilder);
+									}
+									DateFormat df = orgLocation.getLocFullFormDateFormatter();
+									try{
+										if(keywd.contains("/")){
+											keywd = keywd.replaceAll("/", "-");
+										}
+										Date d = df.parse(keywd);
+										anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+										String dateStr = commonUtil.elkDateFormatter(d);
+										anyBoolSubQueryBuilder.should(QueryBuilders.termQuery("createdDate", dateStr));
+									 }
+									 catch(Exception e){}
+									
+									anyBoolQueryBuilder.must(anyBoolSubQueryBuilder);
 								}
-								Date d = df.parse(keywd);
-								anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-								String dateStr = commonUtil.elkDateFormatter(d);
-								anyBoolSubQueryBuilder.should(QueryBuilders.termQuery("createdDate", dateStr));
-							 }
-							 catch(Exception e){}
-							
-							anyBoolQueryBuilder.must(anyBoolSubQueryBuilder);
+							}
+							 boolQueryBuilder.must(anyBoolQueryBuilder);
+						} 
+				 }
+				 
+				
+				//Generated Id
+				if(StringUtils.isNotEmpty(search.getGeneratedId())){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("generatedId", search.getGeneratedId()));
+			    }
+				
+				//Requirement Title
+				if(StringUtils.isNotEmpty(search.getRequirementTitle())){
+					boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("jobTitle", search.getRequirementTitle()));
+			    }
+				// jobId
+				if(StringUtils.isNotEmpty(search.getJobId())){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("jobId", search.getJobId()));
+			    }
+			   //Country
+				/*if(StringUtils.isNotEmpty(search.getCountry())){
+					boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("country", search.getCountry().split(",")[0]));
+			    }
+				 //State
+				if(StringUtils.isNotEmpty(search.getState())){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("state", search.getState()));
+			    }*/
+			 
+				//multiple City
+				if(StringUtils.isNotEmpty(search.getCity())){
+					ArrayList<String> cityArray = getSearchKeywordsFromChosenSelectField(search.getCity());
+					if(cityArray != null && !cityArray.isEmpty()){
+						BoolQueryBuilder multiCityBoolQueryBuilder = new BoolQueryBuilder();
+						for(String keywd : cityArray){
+							multiCityBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("city", keywd));
 						}
-					}
-					 boolQueryBuilder.must(anyBoolQueryBuilder);
-				} 
-		 }
-		 
-		
-		//Generated Id
-		if(StringUtils.isNotEmpty(search.getGeneratedId())){
-			boolQueryBuilder.must(QueryBuilders.matchQuery("generatedId", search.getGeneratedId()));
-	    }
-		
-		//Requirement Title
-		if(StringUtils.isNotEmpty(search.getRequirementTitle())){
-			boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("jobTitle", search.getRequirementTitle()));
-	    }
-		// jobId
-		if(StringUtils.isNotEmpty(search.getJobId())){
-			boolQueryBuilder.must(QueryBuilders.matchQuery("jobId", search.getJobId()));
-	    }
-	   //Country
-		/*if(StringUtils.isNotEmpty(search.getCountry())){
-			boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("country", search.getCountry().split(",")[0]));
-	    }
-		 //State
-		if(StringUtils.isNotEmpty(search.getState())){
-			boolQueryBuilder.must(QueryBuilders.matchQuery("state", search.getState()));
-	    }*/
-	 
-		//multiple City
-		if(StringUtils.isNotEmpty(search.getCity())){
-			ArrayList<String> cityArray = getSearchKeywordsFromChosenSelectField(search.getCity());
-			if(cityArray != null && !cityArray.isEmpty()){
-				BoolQueryBuilder multiCityBoolQueryBuilder = new BoolQueryBuilder();
-				for(String keywd : cityArray){
-					multiCityBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("city", keywd));
-				}
-				boolQueryBuilder.must(multiCityBoolQueryBuilder);
-			} 
-		}
-		
-		
-		if(StringUtils.isNotEmpty(search.getNoticePeriod())){
-			ArrayList<String> noticePeriodArray = getSearchKeywordsFromChosenSelectField(search.getNoticePeriod());
-			if(noticePeriodArray != null && !noticePeriodArray.isEmpty()){
-				BoolQueryBuilder noticePeriodBoolQueryBuilder = new BoolQueryBuilder();
-				for(String keywd : noticePeriodArray){
-					noticePeriodBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("noticePeriod", keywd));
-				}
-				boolQueryBuilder.must(noticePeriodBoolQueryBuilder);
-			} 
-		}
-			
-		//visa type
-				if(StringUtils.isNotEmpty(search.getVisaType())){
-					ArrayList<String> immigrationTypeArray = getSearchKeywordsFromChosenSelectField(search.getVisaType());
-					if(immigrationTypeArray != null && !immigrationTypeArray.isEmpty()){
-						BoolQueryBuilder immigrationTypeBoolQueryBuilder = new BoolQueryBuilder();
-						for(String keywd : immigrationTypeArray){
-							immigrationTypeBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("visaTypes", keywd));
-						}
-						boolQueryBuilder.must(immigrationTypeBoolQueryBuilder);
+						boolQueryBuilder.must(multiCityBoolQueryBuilder);
 					} 
 				}
 				
-				//Skills
-				if(StringUtils.isNotEmpty(search.getRequirementSkills())){
-					ArrayList<String> skillsArray = getSearchKeywordsFromChosenSelectField(search.getRequirementSkills());
-					if(skillsArray != null && !skillsArray.isEmpty()){
-						BoolQueryBuilder skillsBoolQueryBuilder = new BoolQueryBuilder();
-						for(String keywd : skillsArray){
-							skillsBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("skills", keywd));
+				
+				if(StringUtils.isNotEmpty(search.getNoticePeriod())){
+					ArrayList<String> noticePeriodArray = getSearchKeywordsFromChosenSelectField(search.getNoticePeriod());
+					if(noticePeriodArray != null && !noticePeriodArray.isEmpty()){
+						BoolQueryBuilder noticePeriodBoolQueryBuilder = new BoolQueryBuilder();
+						for(String keywd : noticePeriodArray){
+							noticePeriodBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("noticePeriod", keywd));
 						}
-						boolQueryBuilder.must(skillsBoolQueryBuilder);
+						boolQueryBuilder.must(noticePeriodBoolQueryBuilder);
 					} 
 				}
-				
-	    //requirementStatus
-		if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterStatus())){
-			String status = "";
-			if(StringUtils.isNotEmpty(search.getRequirementStatus())){
-				status = search.getRequirementStatus();
-			}
-			else{
-				status = search.getFilterStatus();
-			}
-			ArrayList<String> requirementStatusArray = getSearchKeywordsFromChosenSelectField(status);
-			if(requirementStatusArray != null && !requirementStatusArray.isEmpty()){
-				BoolQueryBuilder reqStatusBoolQueryBuilder = new BoolQueryBuilder();
-				for(String keywd : requirementStatusArray){
-					reqStatusBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
-				}
-				
-				boolQueryBuilder.must(reqStatusBoolQueryBuilder);
-				if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
-					boolQueryBuilderForCount.must(reqStatusBoolQueryBuilder);
-				}
-			} 
-		}
-			
-		
-		//requirementAssignTo
-		if(StringUtils.isNotEmpty(search.getFilterAssignTo()) && "Myjobs".equalsIgnoreCase(search.getFilterAssignTo())){
-			String assignTo = user.getId().toString();
-			BoolQueryBuilder reqAssignToBoolQueryBuilder = new BoolQueryBuilder();
-			reqAssignToBoolQueryBuilder.must(QueryBuilders.termQuery("teamAssignUserId", assignTo));
-			boolQueryBuilder.must(reqAssignToBoolQueryBuilder);
-			if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
-				boolQueryBuilderForCount.must(reqAssignToBoolQueryBuilder);
-			}
-		}
-		
-		  //requirementPriority
-
-			/*	if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterStatus())){
-					String priority = "";
-					if(StringUtils.isNotEmpty(search.getRequirementStatus())){
-						priority = search.getRequirementStatus();
-					}
-					else{
-						priority = search.getFilterPriority();
-					}
-					ArrayList<String> requirementPriorityArray = getSearchKeywordsFromChosenSelectField(priority);
-					if(requirementPriorityArray != null && !requirementPriorityArray.isEmpty()){
-						BoolQueryBuilder reqPriorityBoolQueryBuilder = new BoolQueryBuilder();
-						for(String keywd : requirementPriorityArray){
-							reqPriorityBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("priority", keywd));
+					
+				//visa type
+						if(StringUtils.isNotEmpty(search.getVisaType())){
+							ArrayList<String> immigrationTypeArray = getSearchKeywordsFromChosenSelectField(search.getVisaType());
+							if(immigrationTypeArray != null && !immigrationTypeArray.isEmpty()){
+								BoolQueryBuilder immigrationTypeBoolQueryBuilder = new BoolQueryBuilder();
+								for(String keywd : immigrationTypeArray){
+									immigrationTypeBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("visaTypes", keywd));
+								}
+								boolQueryBuilder.must(immigrationTypeBoolQueryBuilder);
+							} 
 						}
 						
-						boolQueryBuilder.must(reqPriorityBoolQueryBuilder);
-						if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
-							boolQueryBuilderForCount.must(reqPriorityBoolQueryBuilder);
-						}
-					} 
-				}*/
-				
-				//requirementPriority
-				if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterJobType())){
-					String jobType = "";
-					if(StringUtils.isNotEmpty(search.getRequirementStatus())){
-						jobType = search.getRequirementStatus();
-					}
-					else{
-						jobType = search.getFilterJobType();
-					}
-					ArrayList<String> requirementJobTypeyArray = getSearchKeywordsFromChosenSelectField(jobType);
-					if(requirementJobTypeyArray != null && !requirementJobTypeyArray.isEmpty()){
-						BoolQueryBuilder reqJobTypeBoolQueryBuilder = new BoolQueryBuilder();
-						for(String keywd : requirementJobTypeyArray){
-							reqJobTypeBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("jobType", keywd));
+						//Skills
+						if(StringUtils.isNotEmpty(search.getRequirementSkills())){
+							ArrayList<String> skillsArray = getSearchKeywordsFromChosenSelectField(search.getRequirementSkills());
+							if(skillsArray != null && !skillsArray.isEmpty()){
+								BoolQueryBuilder skillsBoolQueryBuilder = new BoolQueryBuilder();
+								for(String keywd : skillsArray){
+									skillsBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("skills", keywd));
+								}
+								boolQueryBuilder.must(skillsBoolQueryBuilder);
+							} 
 						}
 						
-						boolQueryBuilder.must(reqJobTypeBoolQueryBuilder);
+			    //requirementStatus
+				if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterStatus())){
+					String status = "";
+					if(StringUtils.isNotEmpty(search.getRequirementStatus())){
+						status = search.getRequirementStatus();
+					}
+					else{
+						status = search.getFilterStatus();
+					}
+					ArrayList<String> requirementStatusArray = getSearchKeywordsFromChosenSelectField(status);
+					if(requirementStatusArray != null && !requirementStatusArray.isEmpty()){
+						BoolQueryBuilder reqStatusBoolQueryBuilder = new BoolQueryBuilder();
+						for(String keywd : requirementStatusArray){
+							reqStatusBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
+						}
+						
+						boolQueryBuilder.must(reqStatusBoolQueryBuilder);
 						if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
-							boolQueryBuilderForCount.must(reqJobTypeBoolQueryBuilder);
+							boolQueryBuilderForCount.must(reqStatusBoolQueryBuilder);
 						}
 					} 
+
+				}
+					
+				
+				//requirementAssignTo
+				if(StringUtils.isNotEmpty(search.getFilterAssignTo()) && "Myjobs".equalsIgnoreCase(search.getFilterAssignTo())){
+					String assignTo = user.getId().toString();
+					BoolQueryBuilder reqAssignToBoolQueryBuilder = new BoolQueryBuilder();
+					reqAssignToBoolQueryBuilder.must(QueryBuilders.termQuery("teamAssignUserId", assignTo));
+					boolQueryBuilder.must(reqAssignToBoolQueryBuilder);
+					if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
+						boolQueryBuilderForCount.must(reqAssignToBoolQueryBuilder);
+					}
+				}
+
+				
+				  //requirementPriority
+		
+					/*	if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterStatus())){
+							String priority = "";
+							if(StringUtils.isNotEmpty(search.getRequirementStatus())){
+								priority = search.getRequirementStatus();
+							}
+							else{
+								priority = search.getFilterPriority();
+							}
+							ArrayList<String> requirementPriorityArray = getSearchKeywordsFromChosenSelectField(priority);
+							if(requirementPriorityArray != null && !requirementPriorityArray.isEmpty()){
+								BoolQueryBuilder reqPriorityBoolQueryBuilder = new BoolQueryBuilder();
+								for(String keywd : requirementPriorityArray){
+									reqPriorityBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("priority", keywd));
+								}
+								
+								boolQueryBuilder.must(reqPriorityBoolQueryBuilder);
+								if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
+									boolQueryBuilderForCount.must(reqPriorityBoolQueryBuilder);
+								}
+							} 
+						}
+						
+						//requirementPriority
+						if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterJobType())){
+							String jobType = "";
+							if(StringUtils.isNotEmpty(search.getRequirementStatus())){
+								jobType = search.getRequirementStatus();
+							}
+							else{
+								jobType = search.getFilterJobType();
+							}
+							ArrayList<String> requirementJobTypeyArray = getSearchKeywordsFromChosenSelectField(jobType);
+							if(requirementJobTypeyArray != null && !requirementJobTypeyArray.isEmpty()){
+								BoolQueryBuilder reqJobTypeBoolQueryBuilder = new BoolQueryBuilder();
+								for(String keywd : requirementJobTypeyArray){
+									reqJobTypeBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("jobType", keywd));
+								}
+								
+								boolQueryBuilder.must(reqJobTypeBoolQueryBuilder);
+								if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
+									boolQueryBuilderForCount.must(reqJobTypeBoolQueryBuilder);
+								}
+							} 
+						}*/
+						
+					
+				if(StringUtils.isNotEmpty(search.getUpdatedOn())){
+					String updatedOn = search.getUpdatedOn();
+					String upOn = UpdateOnToDate(updatedOn);
+					if(!Constants.ALL_RECORDS.equalsIgnoreCase(upOn)){
+					 RangeQueryBuilder qb = QueryBuilders.rangeQuery("createdDate").gte(upOn);
+					boolQueryBuilder.must(qb);
+					}
+				}
+				//client
+				if(StringUtils.isNotEmpty(search.getClient()) || StringUtils.isNotEmpty(search.getFilterClients())){
+					String clients = "";
+					if(StringUtils.isNotEmpty(search.getClient())){
+						clients = search.getClient();
+					}
+					else{
+						clients = search.getFilterClients();
+					}
+					ArrayList<String> employerArray = getSearchKeywordsFromChosenSelectField(clients);
+					if(employerArray != null && !employerArray.isEmpty()){
+						BoolQueryBuilder employerBoolQueryBuilder = QueryBuilders.boolQuery();
+						for(String keywd : employerArray){
+							employerBoolQueryBuilder.should(QueryBuilders.matchQuery("client", keywd));
+						}
+						boolQueryBuilder.must(employerBoolQueryBuilder);
+						if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
+							boolQueryBuilderForCount.must(employerBoolQueryBuilder);
+						}
+
+					}
+
 				}
 				
-			
-		if(StringUtils.isNotEmpty(search.getUpdatedOn())){
-			String updatedOn = search.getUpdatedOn();
-			String upOn = UpdateOnToDate(updatedOn);
-			if(!Constants.ALL_RECORDS.equalsIgnoreCase(upOn)){
-			 RangeQueryBuilder qb = QueryBuilders.rangeQuery("createdDate").gte(upOn);
-			boolQueryBuilder.must(qb);
-			}
-		}
-		//client
-		if(StringUtils.isNotEmpty(search.getClient()) || StringUtils.isNotEmpty(search.getFilterClients())){
-			String clients = "";
-			if(StringUtils.isNotEmpty(search.getClient())){
-				clients = search.getClient();
-			}
-			else{
-				clients = search.getFilterClients();
-			}
-			ArrayList<String> employerArray = getSearchKeywordsFromChosenSelectField(clients);
-			if(employerArray != null && !employerArray.isEmpty()){
-				BoolQueryBuilder employerBoolQueryBuilder = QueryBuilders.boolQuery();
-				for(String keywd : employerArray){
-					employerBoolQueryBuilder.should(QueryBuilders.matchQuery("client", keywd));
+				if(userRole != null&& !("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
+					BoolQueryBuilder assignedBoolQueryBuilder = QueryBuilders.boolQuery();
+					//releaseJob To AllUsers
+					BoolQueryBuilder releaseJobToAllUsersQueryBuilder = QueryBuilders.boolQuery();
+					releaseJobToAllUsersQueryBuilder.must(QueryBuilders.matchQuery("releaseJobToAllUsers", "Y"));
+					releaseJobToAllUsersQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "DRAFT"));
+					releaseJobToAllUsersQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "SUBMITTED"));
+					releaseJobToAllUsersQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "REJECTED"));
+					assignedBoolQueryBuilder.should(releaseJobToAllUsersQueryBuilder);
+					
+					//Created By User
+					BoolQueryBuilder createdByQueryBuilder = QueryBuilders.boolQuery();
+					createdByQueryBuilder.must(QueryBuilders.termQuery("reqCreatedBy",user.getId().toString()));
+					assignedBoolQueryBuilder.should(createdByQueryBuilder);
+					
+					//For Level1 Approver
+					BoolQueryBuilder reqLevel1ApproverUserIdQueryBuilder = QueryBuilders.boolQuery();
+					reqLevel1ApproverUserIdQueryBuilder.must(QueryBuilders.termQuery("reqLevel1ApproverUserId", user.getId().toString()));
+					reqLevel1ApproverUserIdQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "DRAFT"));
+					assignedBoolQueryBuilder.should(reqLevel1ApproverUserIdQueryBuilder);
+					
+					
+					//For Level2 Approver
+					BoolQueryBuilder reqLevel2ApproverUserIdQueryBuilder = QueryBuilders.boolQuery();
+					reqLevel2ApproverUserIdQueryBuilder.must(QueryBuilders.termQuery("reqLevel2ApproverUserId", user.getId().toString()));
+					reqLevel2ApproverUserIdQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "DRAFT"));
+					reqLevel2ApproverUserIdQueryBuilder.must(QueryBuilders.matchQuery("reqLevel1ApproverStatus", "APPROVED"));
+					assignedBoolQueryBuilder.should(reqLevel2ApproverUserIdQueryBuilder);
+					
+					//For Requirement Manager
+					BoolQueryBuilder reqManagerUserIdQueryBuilder = QueryBuilders.boolQuery();
+					reqManagerUserIdQueryBuilder.must(QueryBuilders.termQuery("managerUserId",user.getId().toString()));
+					reqManagerUserIdQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "DRAFT"));
+					assignedBoolQueryBuilder.should(reqManagerUserIdQueryBuilder);
+					
+					//For Team Owner
+					BoolQueryBuilder teamOwnerQueryBuilder = QueryBuilders.boolQuery();
+					teamOwnerQueryBuilder.must(QueryBuilders.termQuery("teamOwnerUserId", user.getId().toString()));
+					teamOwnerQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "DRAFT"));
+					teamOwnerQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "REJECTED"));
+					assignedBoolQueryBuilder.should(teamOwnerQueryBuilder);
+					
+					//For Team AssignedUser
+					BoolQueryBuilder teamAssignedUserQueryBuilder = QueryBuilders.boolQuery();
+					teamAssignedUserQueryBuilder.must(QueryBuilders.termQuery("teamAssignUserId", user.getId().toString()));
+					teamAssignedUserQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "DRAFT"));
+					teamAssignedUserQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "SUBMITTED"));
+					teamAssignedUserQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "REJECTED"));
+					assignedBoolQueryBuilder.should(teamAssignedUserQueryBuilder);
+					
+					
+					boolQueryBuilder.must(assignedBoolQueryBuilder);
+					boolQueryBuilderForCount.must(assignedBoolQueryBuilder);
 				}
-				boolQueryBuilder.must(employerBoolQueryBuilder);
-				if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
-					boolQueryBuilderForCount.must(employerBoolQueryBuilder);
+				
+				SearchResponse searchResponse = sourceleadELKBaseIndexer
+						.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,
+								search.getStart(), search.getLength(), tableColumns[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
+				SearchHit searchHits[] = searchResponse.getHits().getHits();
+				//boolQueryBuilderForCount
+				List<Requirement>   reqList = new LinkedList<>();
+				if(searchHits != null && searchHits.length >0){
+					for (SearchHit hit : searchHits) {
+						String sourceAsString = hit.getSourceAsString();
+						ObjectMapper mapper = new ObjectMapper();
+						if (sourceAsString != null) {
+							RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
+							Requirement	requirement = getData(requirementIndex,user,orgLocation);
+			            	if(requirement !=null){
+			            		Integer applicantsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(), user, orgLocation, "APPLICANTS");
+			            		requirement.setTotalApplicants(applicantsCount);
+			            		
+			            		if(requirement.getOrgRelationId() != null && !requirement.getOrgRelationId().isEmpty()){
+			            			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(Long.parseLong(requirement.getOrgRelationId()));
+			            			requirement.setOrgRelationUUID(orgRelations.getUUID());
+			            		}
+			            		
+			            		if(requirement.getSpocId() != null){
+			            			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
+			            			requirement.setSpocUUID(orgSpoc.getUUID());
+			            		}
+			            		if(StringUtils.isEmpty(requirement.getReqCoolingOffPeriod())){
+		            				requirement.setReqCoolingOffPeriod(orgLocation.getCoolingOffPeriod());
+		            			}
+			            		
+			            		Integer requirementAssignToListCount = requirementAssignToService.getRequirementAssignToListCountByRequirementId(requirement.getId());
+			            		requirement.setAssignedMembersCount(requirementAssignToListCount.toString());
+			            		reqList.add(requirement);
+			            	}
+			            }
+					}
 				}
+				 resp.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
+				 SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
+						.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,
+								0, 10, "createdDate", SortOrder.DESC, boolQueryBuilderForCount);
+				
+				 resp.setRecordsTotal(searchResponseForCount == null ? resp.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
+			     resp.setData(reqList);
+			     resp.setResponse(Result.SUCCESS.name());
+				 resp.setResponseMessage(Result.SUCCESS.getValue());
+			}catch(Exception e) {
+				resp.setResponse(Result.AWKWARD.name());
+				resp.setResponseMessage(Result.AWKWARD.getValue());
 			}
+		}else {
+			resp.setResponse(Result.SESSION_TIMEDOUT.name());
+			resp.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
-		
-		if(userRole != null&& !("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
-			BoolQueryBuilder assignedBoolQueryBuilder = QueryBuilders.boolQuery();
-			//releaseJob To AllUsers
-			BoolQueryBuilder releaseJobToAllUsersQueryBuilder = QueryBuilders.boolQuery();
-			releaseJobToAllUsersQueryBuilder.must(QueryBuilders.matchQuery("releaseJobToAllUsers", "Y"));
-			releaseJobToAllUsersQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "DRAFT"));
-			releaseJobToAllUsersQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "SUBMITTED"));
-			releaseJobToAllUsersQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "REJECTED"));
-			assignedBoolQueryBuilder.should(releaseJobToAllUsersQueryBuilder);
-			
-			//Created By User
-			BoolQueryBuilder createdByQueryBuilder = QueryBuilders.boolQuery();
-			createdByQueryBuilder.must(QueryBuilders.termQuery("reqCreatedBy",user.getId().toString()));
-			assignedBoolQueryBuilder.should(createdByQueryBuilder);
-			
-			//For Level1 Approver
-			BoolQueryBuilder reqLevel1ApproverUserIdQueryBuilder = QueryBuilders.boolQuery();
-			reqLevel1ApproverUserIdQueryBuilder.must(QueryBuilders.termQuery("reqLevel1ApproverUserId", user.getId().toString()));
-			reqLevel1ApproverUserIdQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "DRAFT"));
-			assignedBoolQueryBuilder.should(reqLevel1ApproverUserIdQueryBuilder);
-			
-			
-			//For Level2 Approver
-			BoolQueryBuilder reqLevel2ApproverUserIdQueryBuilder = QueryBuilders.boolQuery();
-			reqLevel2ApproverUserIdQueryBuilder.must(QueryBuilders.termQuery("reqLevel2ApproverUserId", user.getId().toString()));
-			reqLevel2ApproverUserIdQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "DRAFT"));
-			reqLevel2ApproverUserIdQueryBuilder.must(QueryBuilders.matchQuery("reqLevel1ApproverStatus", "APPROVED"));
-			assignedBoolQueryBuilder.should(reqLevel2ApproverUserIdQueryBuilder);
-			
-			//For Requirement Manager
-			BoolQueryBuilder reqManagerUserIdQueryBuilder = QueryBuilders.boolQuery();
-			reqManagerUserIdQueryBuilder.must(QueryBuilders.termQuery("managerUserId",user.getId().toString()));
-			reqManagerUserIdQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "DRAFT"));
-			assignedBoolQueryBuilder.should(reqManagerUserIdQueryBuilder);
-			
-			//For Team Owner
-			BoolQueryBuilder teamOwnerQueryBuilder = QueryBuilders.boolQuery();
-			teamOwnerQueryBuilder.must(QueryBuilders.termQuery("teamOwnerUserId", user.getId().toString()));
-			teamOwnerQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "DRAFT"));
-			teamOwnerQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "REJECTED"));
-			assignedBoolQueryBuilder.should(teamOwnerQueryBuilder);
-			
-			//For Team AssignedUser
-			BoolQueryBuilder teamAssignedUserQueryBuilder = QueryBuilders.boolQuery();
-			teamAssignedUserQueryBuilder.must(QueryBuilders.termQuery("teamAssignUserId", user.getId().toString()));
-			teamAssignedUserQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "DRAFT"));
-			teamAssignedUserQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "SUBMITTED"));
-			teamAssignedUserQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "REJECTED"));
-			assignedBoolQueryBuilder.should(teamAssignedUserQueryBuilder);
-			
-			
-			boolQueryBuilder.must(assignedBoolQueryBuilder);
-			boolQueryBuilderForCount.must(assignedBoolQueryBuilder);
-		}
-		
-		SearchResponse searchResponse = sourceleadELKBaseIndexer
-				.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,
-						search.getStart(), search.getLength(), tableColumns[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
-		SearchHit searchHits[] = searchResponse.getHits().getHits();
-		//boolQueryBuilderForCount
-		List<Requirement>   reqList = new LinkedList<>();
-		if(searchHits != null && searchHits.length >0){
-			for (SearchHit hit : searchHits) {
-				String sourceAsString = hit.getSourceAsString();
-				ObjectMapper mapper = new ObjectMapper();
-				if (sourceAsString != null) {
-					RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
-					Requirement	requirement = getData(requirementIndex,user,orgLocation);
-	            	if(requirement !=null){
-	            		Integer applicantsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(), user, orgLocation, "APPLICANTS");
-	            		requirement.setTotalApplicants(applicantsCount);
-	            		
-	            		if(requirement.getOrgRelationId() != null && !requirement.getOrgRelationId().isEmpty()){
-	            			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(Long.parseLong(requirement.getOrgRelationId()));
-	            			requirement.setOrgRelationUUID(orgRelations.getUUID());
-	            		}
-	            		
-	            		if(requirement.getSpocId() != null){
-	            			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
-	            			requirement.setSpocUUID(orgSpoc.getUUID());
-	            		}
-	            		if(StringUtils.isEmpty(requirement.getReqCoolingOffPeriod())){
-            				requirement.setReqCoolingOffPeriod(orgLocation.getCoolingOffPeriod());
-            			}
-	            		
-	            		Integer requirementAssignToListCount = requirementAssignToService.getRequirementAssignToListCountByRequirementId(requirement.getId());
-	            		requirement.setAssignedMembersCount(requirementAssignToListCount.toString());
-	            		reqList.add(requirement);
-	            	}
-	            }
-			}
-		}
-		 resp.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
-		 SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
-				.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,
-						0, 10, "createdDate", SortOrder.DESC, boolQueryBuilderForCount);
-		
-		 resp.setRecordsTotal(searchResponseForCount == null ? resp.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
-	     resp.setData(reqList);
-
         return resp;
 		
 	}

@@ -20,7 +20,7 @@
 	<td><div class="tblminwidth-75">${customFormDetails.fieldType}</div></td>
 	<td><div class="tblminwidth-30">${customFormDetails.isRequired == '0'? 'No':'Yes'}</div></td>
 	<td><div class="tblminwidth-150">${customFormDetails.placeHolder}</div></td>
-	<td><div class="tblminwidth-75">${customFormDetails.status == '0'? 'InActive':'Active'}</div></td>
+	<td><div id = "customFieldStatus${customFormDetails.id}" class="tblminwidth-75">${customFormDetails.status == '0'? 'InActive':'Active'}</div></td>
 	<%-- <c:if test="${!empty customFormDetails.fieldDescription}">
 		<td><div class="showmore tblminwidth-150">${customFormDetails.fieldDescription}</div></td>
 	</c:if>

@@ -44,6 +44,7 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -321,14 +322,23 @@ public class TimesheetSubmissionsRestController {
 			String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 			notificationScenario.setBody(notificationBody);
 			notificationScenario.setOrgCode(loginOrgLocation.getLocationCode());
-			String actionLink = "";
 			
-			/*StringBuilder actionLinkBuilder = new StringBuilder();
-			StringBuilder currentTimeFrequency = new StringBuilder();
-			currentTimeFrequency.append(startDate).append("To").append(endDate);
-			actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("timesheet?&currentTimeFrequency="+currentTimeFrequency.toString()+"&projectMembersId="+projectMember.getId()+"&notifyLink=notifyLink").toString();*/	
 			
-			emailScenerioUtil.sendNotification(actionLink, loginUser,  projectMember.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>()); 
+			StringBuilder actionLinkBuilder = new StringBuilder();
+			Date startDateFormat = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), startDate);
+			Date endDateFormat = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), endDate);
+			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(startDateFormat,endDateFormat,projectMember.getProjects().getId(),projectMember.getMasterCandidateId().getId());
+			HashMap<String,String> paramList = new HashMap<>();
+			String actionLink = null;
+			if(sah!= null && sah.getSubmissionId() != null && sah.getSubmissionId().getProjectMembers()!= null) {
+				paramList.put("startDateStr",startDate);
+				paramList.put("endDateStr",endDate);
+				paramList.put("dateFormat",loginOrgLocation.getDateFormat());
+				paramList.put("projectMemberId",projectMember.getId().toString());
+				actionLink =actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheet/").append(Constants.PLACE_UUID).toString();
+			}
+			
+			emailScenerioUtil.sendNotification(actionLink, loginUser,  projectMember.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,paramList); 
 	}
 
 	private void sendEmailToVendorAtTimesheetApprovalStatus(ProjectMembers projectMember,User loginUser, OrgLocations loginOrgLocation, String loginOrgCode, String startDate, String endDate, String status, String rejectedReason) throws Exception {
@@ -410,13 +420,27 @@ public class TimesheetSubmissionsRestController {
 			String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 			notificationScenario.setBody(notificationBody);
 			notificationScenario.setOrgCode(loginOrgLocation.getLocationCode());
-			//String url = null;
-			String actionLink = "";
-			/*StringBuilder actionLinkBuilder = new StringBuilder();
-			StringBuilder currentTimeFrequency = new StringBuilder();
-			currentTimeFrequency.append(startDate).append("To").append(endDate);
-			String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("timesheetApproval?&currentTimeFrequency="+currentTimeFrequency.toString()+"&projectMemberId="+projectMember.getId()+"&projectId="+projectMember.getProjects().getId()+"&masterCandidateId="+projectMember.getMasterCandidateId().getId()+"&from=approver"+"&notifyLink=notifyLink").toString();*/	
-			emailScenerioUtil.sendNotification(actionLink, loginUser, approver.getApproverUserId(), approver.getProjectClientsId().getOrgLocationsId(), notificationScenario,new HashMap<String,String>());
+
+			StringBuilder actionLinkBuilder = new StringBuilder();
+			Date startDateFormat = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), startDateStr);
+			Date endDateFormat = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), endDateStr);
+			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(startDateFormat,endDateFormat,projectMember.getProjects().getId(),projectMember.getMasterCandidateId().getId());
+			HashMap<String,String> paramList = new HashMap<>();
+			String actionLink = null;
+			if(sah!= null && sah.getSubmissionId() != null && sah.getSubmissionId().getProjectMembers()!= null) {
+				String frequencyMonth =  CalendarUtil.getMonthFromGivenDate(startDateFormat);
+				String frequencyYear =  CalendarUtil.getYearFromGivenDate(endDateFormat);
+				paramList.put("frequencyMonth", frequencyMonth+"-"+frequencyYear);
+				paramList.put("startDateStr",startDate);
+				paramList.put("endDateStr",endDate);
+				paramList.put("dateFormat",loginOrgLocation.getDateFormat());
+				paramList.put("timesheetFrequency",projectMember.getProjects().getInvoiceFrequency());
+				paramList.put("searchData",sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getEmail());
+				paramList.put("projectName",sah.getSubmissionId().getProjectMembers().getProjects().getProjectName());
+				actionLink =actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheetApproval/").append(Constants.PLACE_UUID).toString();
+			}
+			
+			emailScenerioUtil.sendNotification(actionLink, loginUser, approver.getApproverUserId(), approver.getProjectClientsId().getOrgLocationsId(), notificationScenario,paramList);
 			
 		}
 	}
