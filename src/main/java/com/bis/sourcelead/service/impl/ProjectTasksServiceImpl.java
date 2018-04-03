@@ -973,6 +973,11 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
         String headers [] = Constants.PROJECT_TASKS_EXCEL_HEADERS;
 		return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
 	}
+
+	@Override
+	public ProjectTasks getProjectTaskByleaveTypeId(long leaveTypeId,Long projectId) {
+		return tasksDao.getProjectTaskByleaveTypeId(leaveTypeId,projectId);
+	}
 	
 	
 	

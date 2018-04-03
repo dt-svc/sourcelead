@@ -3,6 +3,8 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <script src="/resources/js/jquery.simplePagination.js"></script>
+<script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script>
+
 <div id="tableContent" class="timesheetRep-table timesheet_appr_table" style="overflow: auto;">
 <input type="hidden" id="tempVar" value="tempVar">
 <input type="hidden" value="${expenseStatus}" id="expenseStatusDivId">
@@ -47,6 +49,35 @@
 		<ul id="pagination-demo" class="pagination-sm pull-right pagination"></ul>
 	</div>
 </div> 
+
+
+<script>
+$(document).ready(function(){
+	datatableBody();
+});
+</script> 
+<script>
+function datatableBody(){ 
+	 $('#example').DataTable( { 
+		    "sDom": "Rlfrtip",
+		    "bPaginate": false,
+		    "bInfo" : false,
+		    "ordering": false,
+		    "searchHighlight": true
+	    } );
+}
+</script> 
+<script>
+ function searchHighlight(searchData){
+	 if(searchData != null && searchData != 'undefined' && searchData != ''){
+		    var table = $('#example').DataTable();
+		    var body = $( table.table().body() );
+		    body.unhighlight();
+	        body.highlight(searchData);
+	 } 
+ }
+ </script>
+
 
 <script>
 $("#SearchExpensesData").keyup(function(event) {
@@ -108,7 +139,8 @@ $("#SearchExpensesData").keyup(function(event) {
 			  var pageCount = $('#pageCount').val();
 			  var pageSize = $("#pageSize").val();
 			  $('#SearchExpensesData').val('') ;
-			  $('#SearchExpensesData').val(searchData); 
+			  $('#SearchExpensesData').val(searchData);
+			  searchHighlight(searchData);
 			  var startingRecord = parseInt((pageNo*pageSize-pageSize)+1);
 			  var endingRecord = parseInt(pageNo*pageSize);
 			  if(endingRecord > totalRows){
