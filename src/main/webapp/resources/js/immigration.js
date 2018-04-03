@@ -901,7 +901,7 @@ function validateEduname()
 }
 
 
-function saveNotesDatails(status) {
+/*function saveNotesDatails(status) {
 	if ($('#notesDetails_form').validate(false, validationSettings)) {
         var formData = getFormData("notesDetails_form");
         var candidateId = $('#candidateID').val();
@@ -924,5 +924,46 @@ function saveNotesDatails(status) {
         return false;
     }
 	
+}*/
+
+
+function saveNotesDatails(status) {
+	if ($('#notesDetails_form').validate(false, validationSettings)) {
+        var formData = getFormData("notesDetails_form");
+        var candidateId = $('#candidateID').val();
+        var immigrationId = $('#immigrationID').val();
+        $.ajax({
+            url: sourceleadUrl + immiModulePath + "/saveImmigrationNotesDetails?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
+            type: "POST",
+            data: formData,
+            success: function (data) {
+            	if (data === 'success') {
+            		$(".popMask").fadeOut(200);
+    				$("#popNoteView").hide(100);
+                	getNotesListByImmigration(candidateId);
+                }
+            }
+        });
+
+        return true;
+    } else {
+        return false;
+    }
+	
+}
+
+function getNotesListByImmigration(candidateId){
+	console.log("inside displayNotesDetails function call test -->")
+	 var immigrationId = $('#immigrationID').val();
+	//alert("oooooo"+candidateId)
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/getNotesListByImmigrationId?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
+       type: "GET",
+        success: function (result) {
+       	  console.log("Before  loading result---->");
+           $("#notesTab").html(result);
+           console.log("After loading result---->");
+       }
+   });
 }
 
