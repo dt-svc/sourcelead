@@ -47,6 +47,7 @@ import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.SourceleadNotes;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
@@ -1015,6 +1016,18 @@ public class ImmigrationRestController {
 			return immiCanEdu;
 	}
 	
+	@RequestMapping(value = { "/getNotesListByImmigrationId" })
+	public ModelAndView getNotesListByImmigrationId(
+			@RequestParam(value = "candidateId", required = true) Long candidateId,
+			@RequestParam(value = "immigrationId", required = true) Long immigrationId,
+			HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		model.setViewName("/immigration/noteDetailsTab");
+		 List<SourceleadNotes>   candidatesNotesList = sourceleadNotesService.getNotesListByImmigrationId(immigrationId,orgLocations.getId());
+		 model.addObject("candidatesNotesList",candidatesNotesList);
+		return model;
+	}
 }
 
 

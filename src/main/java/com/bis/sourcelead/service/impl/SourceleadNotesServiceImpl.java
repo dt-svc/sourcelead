@@ -443,4 +443,56 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 		return notesList;
 	}
 	
+	@Override
+	public List<SourceleadNotes> getNotesListByImmigrationId(Long immigrationId,Long orgLocationId) throws Exception
+	{
+		List<SourceleadNotes> notesList = sourceleadNotesDao.getNotesListByImmigrationId(immigrationId,orgLocationId);
+		for (SourceleadNotes notes : notesList) {
+			notes.setComment(notes.getComment());
+			// for image display
+			User user = userService.getUserByUserCode(notes.getCreatedBy());
+			if(null != user){
+				String authorLastName = "";
+				if(StringUtils.isNotEmpty(user.getFirstName())){
+					authorLastName = user.getLastName();
+				}
+				StringBuilder nameBuilder = new StringBuilder();
+				notes.setUserName(nameBuilder.append(user.getFirstName()).append(" ").append(authorLastName).toString());
+				notes.setCommentAuthorUserId(user.getId());
+				notes.setCommentAuthorImage(user.getFileUrl());
+			}
+			if (notes.getImmigration() != null) {
+				notes.setImmigrationId(notes.getImmigration().getReceiptNo());
+			}
+			notes.setCheckBox(notes.getCheckBox());
+			notes.setUserIdStr(notes.getUserId().getId());
+			// date time format conversion.
+			long diff = commonUtil.currentDate().getTime() - notes.getCreatedDate().getTime();
+			long diffSeconds = diff / 1000 % 60;
+			long diffMinutes = diff / (60 * 1000) % 60;
+			long diffHours = diff / (60 * 60 * 1000) % 24;
+			long diffDays = diff / (24 * 60 * 60 * 1000);
+			StringBuilder timeBuilder = new StringBuilder();
+			if (diffDays == 0 && diffHours == 0 && diffMinutes == 0) {
+				notes.setCreatedDateString(timeBuilder.append(diffSeconds).append("seconds ago").toString());
+			}
+			else if (diffDays == 0 && diffHours == 0) {
+				notes.setCreatedDateString(timeBuilder.append(diffMinutes).append(" minutes ago").toString());
+			}
+			else if (diffDays == 0) {
+				notes.setCreatedDateString(timeBuilder.append(diffHours).append(" hours ").append(diffMinutes).append(" minutes ago").toString());
+			}
+			else if (diffDays < 7) {
+				notes.setCreatedDateString(timeBuilder.append(diffDays).append(" days ").append(diffHours).append(" hours ago").toString());
+			}
+			else {
+				DateFormat standardFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm:ss aa");
+				String commonDateFormat = standardFormat.format(notes.getCreatedDate());
+				notes.setCreatedDateString(commonDateFormat.toString());
+			}
+		}
+		return notesList;
+	}
+	
+	
 }
