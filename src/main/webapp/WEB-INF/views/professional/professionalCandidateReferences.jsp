@@ -565,166 +565,158 @@
 <script>
 	function editCandidateReference(candidateId, refId) {
 
-		$.ajax(
-						{
-							type : "POST",
-							url : sourceleadUrl
-									+ "/getCandidateReferencesByCandidateIdAndReferenceId?${_csrf.parameterName}=${_csrf.token}&candidateId="
-									+ candidateId + "&refId=" + refId,
-							success : function(data) {
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl
+					+ "/getCandidateReferencesByCandidateIdAndReferenceId?${_csrf.parameterName}=${_csrf.token}&candidateId="
+					+ candidateId + "&refId=" + refId,
+			success : function(response) {
+				if (response.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				} else if (response.response === "SUCCESS") {
+					var json = response.object;
+					var result = '';
+					result = result
+							+ '     <!-- Popup Div -->                                                                                         ';
+					result = result
+							+ '         <form id="canReferenceEdit_form" name="canReferenceEdit_form" method="post">        ';
+					result = result
+							+ '<i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
+					result = result
+							+ '<div class="form-horizontal clearfix"> ';
+					result = result + '   ';
 
-								if (data != null && data != 'undefined'
-										&& data != "") {
+					result = result
+							+ '<div class="clearfix mb10">';
+					result = result
+							+ '<div class="col-md-12">';
+					result = result
+							+ '<input type="text" name="name" field-name="Name"  value="'+json.name+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Name *" >';
+					result = result + '</div>';
+					result = result + '</div>';
 
-									var json = JSON.parse(data);
+					result = result
+							+ '<div class="clearfix mb10">';
+					result = result
+							+ '<div class="col-md-12" id="EmailIdDiv">';
+					result = result
+							+ '<input type="text" name="email" field-name="Email" id="referenceEmail"  value="'+json.email+'" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *">';
+					result = result + '</div>';
+					result = result + '</div>';
 
-									if (data.indexOf('Sign In') >= 0) {
-										location.replace(sourceleadUrl);
-									} else if (data.indexOf('exception') >= 0) {
-										location.replace(sourceleadUrl
-												+ "/errorPage");
-									} else {
-										var result = '';
-										result = result
-												+ '     <!-- Popup Div -->                                                                                         ';
-										result = result
-												+ '         <form id="canReferenceEdit_form" name="canReferenceEdit_form" method="post">        ';
-										result = result
-												+ '<i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
-										result = result
-												+ '<div class="form-horizontal clearfix"> ';
-										result = result + '   ';
+					result = result
+							+ '<div class="clearfix mb10">';
+					result = result
+							+ '<div class="col-md-12">';
+					result = result
+							+ '<input type="text" name="mobilePhone" field-name="MobilePhone" value="'+json.mobilePhone+'" data-validation="validate_length length9-20 validate_phone" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Mobile Phone">';
+					result = result + '</div>';
+					result = result + '</div>';
 
-										result = result
-												+ '<div class="clearfix mb10">';
-										result = result
-												+ '<div class="col-md-12">';
-										result = result
-												+ '<input type="text" name="name" field-name="Name"  value="'+json.name+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Name *" >';
-										result = result + '</div>';
-										result = result + '</div>';
+					result = result
+							+ '<div class="clearfix mb10">';
+					result = result
+							+ '<div class="col-md-12">';
+					result = result
+							+ '<select class="form-control width100percnt" id="relation" name="relation" field-name="Relation" onChange="editRelation(this);" onkeyup="editRelation(this);">';
+					result = result
+							+ '<option value="">--Select Relation--</option>';
+					result = result
+							+ ' <option '
+							+ (json.relation == "Work Related" ? "selected"
+									: '')
+							+ '>Work Related</option>';
+					result = result
+							+ '<option  '
+							+ (json.relation == "Family Related" ? "selected"
+									: '')
+							+ '>Family Related</option>';
+				   result = result
+							+ '<option  '
+							+ (json.relation == "Friend" ? "selected"
+									: '')
+							+ '>Friend</option>';
+							
+					result = result
+							+ '<option  '
+							+ (json.relation == "Neighbour" ? "selected"
+									: '')
+							+ '>Neighbour</option>';		
+					result = result + ' </select>';
+					result = result + '</div>';
+					result = result + '</div>';
 
-										result = result
-												+ '<div class="clearfix mb10">';
-										result = result
-												+ '<div class="col-md-12" id="EmailIdDiv">';
-										result = result
-												+ '<input type="text" name="email" field-name="Email" id="referenceEmail"  value="'+json.email+'" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *">';
-										result = result + '</div>';
-										result = result + '</div>';
+					result = result
+							+ '<div class="clearfix mb10" id="dvDesignationEdit" style="display:none">';
+					result = result
+							+ '<div class="col-md-12">';
+					result = result
+							+ '<input type="text" name="designation" id="designationValEdit" field-name="Designation" value="'+json.designation+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Designation *">';
+					result = result + '</div>';
+					result = result + '</div>';
 
-										result = result
-												+ '<div class="clearfix mb10">';
-										result = result
-												+ '<div class="col-md-12">';
-										result = result
-												+ '<input type="text" name="mobilePhone" field-name="MobilePhone" value="'+json.mobilePhone+'" data-validation="validate_length length9-20 validate_phone" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Mobile Phone">';
-										result = result + '</div>';
-										result = result + '</div>';
+					result = result
+							+ '<div class="clearfix mb10 mt25">';
+					result = result
+							+ '<div class="col-md-12">';
+					result = result
+							+ '<textarea rows="2" placeholder="Comment" value="+json.comment" id="comment" name="comment" data-validation-optional="true" data-validation="validate_length length1-500"  field-name="comment" class="form-control">'
+							+ json.comment + '</textarea>';
+					result = result + '</div>';
+					result = result + '</div>';
 
-										result = result
-												+ '<div class="clearfix mb10">';
-										result = result
-												+ '<div class="col-md-12">';
-										result = result
-												+ '<select class="form-control width100percnt" id="relation" name="relation" field-name="Relation" onChange="editRelation(this);" onkeyup="editRelation(this);">';
-										result = result
-												+ '<option value="">--Select Relation--</option>';
-										result = result
-												+ ' <option '
-												+ (json.relation == "Work Related" ? "selected"
-														: '')
-												+ '>Work Related</option>';
-										result = result
-												+ '<option  '
-												+ (json.relation == "Family Related" ? "selected"
-														: '')
-												+ '>Family Related</option>';
-									   result = result
-												+ '<option  '
-												+ (json.relation == "Friend" ? "selected"
-														: '')
-												+ '>Friend</option>';
-												
-										result = result
-												+ '<option  '
-												+ (json.relation == "Neighbour" ? "selected"
-														: '')
-												+ '>Neighbour</option>';		
-										result = result + ' </select>';
-										result = result + '</div>';
-										result = result + '</div>';
+					result = result
+							+ '<div class="clearfix mr mt" id="docUpdateButton" style="display: none;">';
+					result = result
+							+ '<button type="button" id="update_doc" class="btn btn-sm btn-primary pull-right">Update</button>';
+					result = result + '</div>';
 
-										result = result
-												+ '<div class="clearfix mb10" id="dvDesignationEdit" style="display:none">';
-										result = result
-												+ '<div class="col-md-12">';
-										result = result
-												+ '<input type="text" name="designation" id="designationValEdit" field-name="Designation" value="'+json.designation+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Designation *">';
-										result = result + '</div>';
-										result = result + '</div>';
+					result = result
+							+ '<div class="clearfix mr" id="docAddButton">';
+					result = result
+							+ '<input type="hidden"  value="'+refId+'" id="refId" name="refId">';
+					result = result
+							+ '<input type="hidden"  value="'+candidateId+'" id="candidateId" name="candidateId">';
 
-										result = result
-												+ '<div class="clearfix mb10 mt25">';
-										result = result
-												+ '<div class="col-md-12">';
-										result = result
-												+ '<textarea rows="2" placeholder="Comment" value="+json.comment" id="comment" name="comment" data-validation-optional="true" data-validation="validate_length length1-500"  field-name="comment" class="form-control">'
-												+ json.comment + '</textarea>';
-										result = result + '</div>';
-										result = result + '</div>';
+					result = result
+							+ '<button type="button"  id="Edit_candidateReference"  onClick ="updateCandidateReference('
+							+ candidateId
+							+ ','
+							+ refId
+							+ ');" class="btn btn-sm btn-primary pull-right"  >Update</button>';
 
-										result = result
-												+ '<div class="clearfix mr mt" id="docUpdateButton" style="display: none;">';
-										result = result
-												+ '<button type="button" id="update_doc" class="btn btn-sm btn-primary pull-right">Update</button>';
-										result = result + '</div>';
+					result = result + '</div>';
+					result = result + '</div>';
+					result = result + '</form>';
+					$("#popUpDiv").empty();
+					$("#popUpDiv").append(result);
 
-										result = result
-												+ '<div class="clearfix mr" id="docAddButton">';
-										result = result
-												+ '<input type="hidden"  value="'+refId+'" id="refId" name="refId">';
-										result = result
-												+ '<input type="hidden"  value="'+candidateId+'" id="candidateId" name="candidateId">';
+					$(".edit-details").toggleClass(
+							"edit-details-active");
+					$(".close-div")
+							.click(
+									function() {
+										$(this)
+												.parent(
+														"div.edit-details")
+												.removeClass(
+														"edit-details-active");
+									});
+					$(
+							".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details")
+							.click(function(e) {
+								e.stopPropagation();
+							});
+				}
+				} else if (response.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
 
-										result = result
-												+ '<button type="button"  id="Edit_candidateReference"  onClick ="updateCandidateReference('
-												+ candidateId
-												+ ','
-												+ refId
-												+ ');" class="btn btn-sm btn-primary pull-right"  >Update</button>';
-
-										result = result + '</div>';
-										result = result + '</div>';
-										result = result + '</form>';
-										$("#popUpDiv").empty();
-										$("#popUpDiv").append(result);
-
-										$(".edit-details").toggleClass(
-												"edit-details-active");
-										$(".close-div")
-												.click(
-														function() {
-															$(this)
-																	.parent(
-																			"div.edit-details")
-																	.removeClass(
-																			"edit-details-active");
-														});
-										$(
-												".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details")
-												.click(function(e) {
-													e.stopPropagation();
-												});
-									}
-
-								}
-							},
-
-						}).done(function() {
-					editRelation(this);
+			}).done(function() {
+				editRelation(this);
 				});
-
 	}
 </script>
 

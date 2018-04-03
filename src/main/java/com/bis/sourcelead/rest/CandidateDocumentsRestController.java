@@ -1,16 +1,11 @@
 package com.bis.sourcelead.rest;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
@@ -147,23 +142,38 @@ public class CandidateDocumentsRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = { "rest/saveCandidateDocument" }, method = RequestMethod.POST)
-	public @ResponseBody String saveCandidateDocumentRest(@RequestBody CandidateDocumentsDTO candidateDocumentsDTO,
+	public @ResponseBody Response<String> saveCandidateDocumentRest(@RequestBody CandidateDocumentsDTO candidateDocumentsDTO,
 			HttpServletRequest request) throws Exception {
-
-		candidateDocumentsDTO.setStaticPath(staticPath);
-		// FileUploadUtil.fillUploadedFileInfo(candidateDocumentsDTO,
-		// candidateDocumentsDTO.getFileInfo());
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		if (null != candidateDocumentsDTO.getCandidateId()) {
-			candidateDocumentsService.storeCandidateDocuments(candidateDocumentsDTO, Long.parseLong(candidateDocumentsDTO.getCandidateId()),
-					candidateDocumentsDTO.getDocumentUUID(), orgLocation.getId(), user);
-			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateDocumentsDTO.getCandidateId()));
-			Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocation);
-			return percentage.toString();
-		} else {
-			return "exception";
+		Response<String> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				candidateDocumentsDTO.setStaticPath(staticPath);
+				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				if (null != candidateDocumentsDTO.getCandidateId()) {
+					candidateDocumentsService.storeCandidateDocuments(candidateDocumentsDTO,
+							Long.parseLong(candidateDocumentsDTO.getCandidateId()), candidateDocumentsDTO.getDocumentUUID(),
+							orgLocation.getId(), user);
+					Candidate candidate = candidateService
+							.getCandidateByCandidateId(Long.parseLong(candidateDocumentsDTO.getCandidateId()));
+					Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocation);
+					response.setObject(percentage.toString());
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setResponse(Result.INVALID_USER.name());
+					response.setResponseMessage(Result.INVALID_USER.getValue());
+				}
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
+		return response;
 	}
 
 	/**
@@ -180,12 +190,31 @@ public class CandidateDocumentsRestController {
 	 */
 	@RequestMapping(value = { "/getCandidateDocumentsListByCandidateId",
 			"rest/getCandidateDocumentsListByCandidateId" }, method = RequestMethod.POST)
-	public ResponseList<CandidateDocumentsDTO> getCandidateDocumentsListByCandidateId(
-			@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception {
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		ResponseList<CandidateDocumentsDTO> candidateDocumentsList = candidateDocumentsService
-				.getCandidateDocumentsDTOListByCandidateIdAndOrgLocationID(Long.parseLong(candidateId), loginOrgLocation.getId());
-		return candidateDocumentsList;
+	public ResponseList<CandidateDocumentsDTO> getCandidateDocumentsListByCandidateId(@RequestParam(defaultValue = "0") long candidateId,
+			HttpServletRequest request) throws Exception {
+		ResponseList<CandidateDocumentsDTO> responseList = new ResponseList<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null && candidateId > 0) {
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				List<CandidateDocumentsDTO> candidateDocumentsList = candidateDocumentsService
+						.getCandidateDocumentsDTOListByCandidateIdAndOrgLocationID(candidateId, loginOrgLocation.getId());
+				responseList.setData(candidateDocumentsList);
+				responseList.setResponse(Result.SUCCESS.name());
+				responseList.setResponseMessage(Result.SUCCESS.getValue());
+			} else if (user == null) {
+				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			} else {
+				responseList.setResponse(Result.INVALID_USER.name());
+				responseList.setResponseMessage(Result.INVALID_USER.getValue());
+			}
+		} catch (Exception e) {
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return responseList;
 	}
 
 	/**
@@ -202,14 +231,35 @@ public class CandidateDocumentsRestController {
 	 */
 	@RequestMapping(value = "/getDocument", method = RequestMethod.POST)
 	@ResponseBody
-	public CandidateDocuments getDocument(@RequestParam(value = "candidateId", required = false) Long candidateId,
-			@RequestParam(value = "documentId", required = false) String documentId, HttpServletRequest request) throws Exception {
-		CandidateDocuments candidateDocuments = null;
-		candidateDocuments = candidateDocumentsService.getCandidateDocumentByDocumentId(Long.parseLong(documentId));
-		if (candidateDocuments != null) {
-			return candidateDocuments;
+	public Response<CandidateDocuments> getDocument(@RequestParam(defaultValue = "0") Long candidateId,
+			@RequestParam(defaultValue = "0") long documentId, HttpServletRequest request) throws Exception {
+		Response<CandidateDocuments> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null && candidateId > 0 && documentId > 0) {
+				CandidateDocuments candidateDocuments = null;
+				candidateDocuments = candidateDocumentsService.getCandidateDocumentByDocumentId(documentId);
+				if (candidateDocuments != null) {
+					response.setObject(candidateDocuments);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+			} else if (user == null) {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			} else if (candidateId <= 0) {
+				response.setResponse(Result.INVALID_USER.name());
+				response.setResponseMessage(Result.INVALID_USER.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		return candidateDocuments;
+		return response;
 	}
 
 	/**
@@ -317,80 +367,150 @@ public class CandidateDocumentsRestController {
 	}
 
 	@RequestMapping(value = "/requestCandidateForDocuments", method = RequestMethod.POST)
-	public @ResponseBody String requestCandidateForDocuments(CandidateDocumentsDTO candidateDocumentsDTO, HttpServletRequest request)
-			throws Exception {
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		requestedDocumentsService.storeRequestedDocumentsDetails(candidateDocumentsDTO, user, loginOrgLocation);
-		return "success";
+	public @ResponseBody Response<String> requestCandidateForDocuments(CandidateDocumentsDTO candidateDocumentsDTO,
+			HttpServletRequest request) throws Exception {
+		Response<String> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				requestedDocumentsService.storeRequestedDocumentsDetails(candidateDocumentsDTO, user, loginOrgLocation);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
 	}
 
 	@RequestMapping(value = "/ws/uploadRequestedDocuments", method = RequestMethod.POST)
-	public @ResponseBody String uploadRequestedDocuments(CandidateDocumentsDTO candidateDocumentsDTO, HttpServletRequest request)
+	public @ResponseBody Response<String> uploadRequestedDocuments(CandidateDocumentsDTO candidateDocumentsDTO, HttpServletRequest request)
 			throws Exception {
-
-		candidateDocumentsDTO.setStaticPath(staticPath);
-		RequestedDocuments requestedDocuments = requestedDocumentsService
-				.getRequestedDocumentsByRequestDocUUID(candidateDocumentsDTO.getRequestDocUUID());
-		if (null != requestedDocuments) {
-			List<CandidateDocuments> candidateDocumentsList = candidateDocumentsService
-					.getCandidateDocumentsListByRequestedDocumentsId(requestedDocuments.getId());
-
-			if (null != candidateDocumentsList && candidateDocumentsList.size() > 0) {
-
-				for (CandidateDocuments candidateDocuments : candidateDocumentsList) {
-					if (candidateDocumentsDTO.getFileInfo() != null && !candidateDocumentsDTO.getFileInfo().isEmpty()) {
-
-						if (!candidateDocumentsDTO.getFileInfo().isEmpty()) {
-							FileInfo fileInfo = candidateDocumentsDTO.getFileInfo().get(0);
-							candidateDocuments.setFileName(fileInfo.getFileName());
-							candidateDocuments.setFileContentType(fileInfo.getContentType());
-							candidateDocuments.setFileURL(fileInfo.getFileURL());
-							FileUploadUtil.moveFile(candidateDocumentsDTO.getStaticPath(), fileInfo, "requestedDocuments");
-							candidateDocuments.setRequestedDocStatus(Constants.REQUESTED_DOCUMENT_SUBMITTED);
-							candidateDocumentsService.updateCandidateDocuments(candidateDocuments);
-							candidateDocumentsDTO.getFileInfo().remove(0);
+		Response<String> response = new Response<>();
+		try {
+			candidateDocumentsDTO.setStaticPath(staticPath);
+			RequestedDocuments requestedDocuments = requestedDocumentsService
+					.getRequestedDocumentsByRequestDocUUID(candidateDocumentsDTO.getRequestDocUUID());
+			if (null != requestedDocuments) {
+				List<CandidateDocuments> candidateDocumentsList = candidateDocumentsService
+						.getCandidateDocumentsListByRequestedDocumentsId(requestedDocuments.getId());
+				if (null != candidateDocumentsList && candidateDocumentsList.size() > 0) {
+					for (CandidateDocuments candidateDocuments : candidateDocumentsList) {
+						if (candidateDocumentsDTO.getFileInfo() != null && !candidateDocumentsDTO.getFileInfo().isEmpty()) {
+							if (!candidateDocumentsDTO.getFileInfo().isEmpty()) {
+								FileInfo fileInfo = candidateDocumentsDTO.getFileInfo().get(0);
+								candidateDocuments.setFileName(fileInfo.getFileName());
+								candidateDocuments.setFileContentType(fileInfo.getContentType());
+								candidateDocuments.setFileURL(fileInfo.getFileURL());
+								FileUploadUtil.moveFile(candidateDocumentsDTO.getStaticPath(), fileInfo, "requestedDocuments");
+								candidateDocuments.setRequestedDocStatus(Constants.REQUESTED_DOCUMENT_SUBMITTED);
+								candidateDocumentsService.updateCandidateDocuments(candidateDocuments);
+								candidateDocumentsDTO.getFileInfo().remove(0);
+							}
 						}
 					}
 				}
-
+				requestedDocuments.setIsDocsUploaded(Constants.YES);
+				requestedDocumentsService.saveRequestedDocuments(requestedDocuments);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
 			}
-			requestedDocuments.setIsDocsUploaded(Constants.YES);
-			requestedDocumentsService.saveRequestedDocuments(requestedDocuments);
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		return "success";
+		return response;
 	}
 
 	@RequestMapping(value = "/rejectRequestedDocuments", method = RequestMethod.POST)
-	public @ResponseBody String rejectRequestedDocuments(@RequestParam(value = "json", required = false) String json,
+	public @ResponseBody Response<String> rejectRequestedDocuments(@RequestParam(value = "json", required = false) String json,
 			@RequestParam(value = "documentsIds", required = false) String documentsIds, HttpServletRequest request) throws Exception {
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		String json1 = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json1);
-		requestedDocumentsService.rejectRequestedDocuments(jsonObj, user, loginOrgLocation, documentsIds);
-		return "success";
+		Response<String> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null && documentsIds != null && !documentsIds.isEmpty()) {
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				String json1 = "{" + json + "}";
+				JSONObject jsonObj = new JSONObject(json1);
+				requestedDocumentsService.rejectRequestedDocuments(jsonObj, user, loginOrgLocation, documentsIds);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else if (user == null) {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
 	}
 
 	@RequestMapping(value = "/acceptRequestedDocuments", method = RequestMethod.POST)
-	public @ResponseBody String acceptRequestedDocuments(@RequestParam(value = "documentsIds", required = false) String documentsIds,
+	public @ResponseBody Response<String> acceptRequestedDocuments(
+			@RequestParam(value = "documentsIds", required = false) String documentsIds,
 			@RequestParam(value = "userId", required = false) Long userId,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "candidateId", required = false) Long candidateId) throws Exception {
-		// User user = (User) SourceLeadSessionManager.getSessionAttribute(request,
-		// "user");
-		User user = userService.getUserById(userId);
-		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
-		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-		requestedDocumentsService.acceptRequestedDocuments(user, documentsIds, loginOrgLocation, candidate);
-		return "success";
+		Response<String> response = new Response<>();
+		try {
+			User user = userService.getUserById(userId);
+			if (user != null && documentsIds != null && !documentsIds.isEmpty()) {
+				OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
+				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+				requestedDocumentsService.acceptRequestedDocuments(user, documentsIds, loginOrgLocation, candidate);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else if (user == null) {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
 	}
 
 	@RequestMapping(value = "/validateDocName")
-	public Boolean validateDocName(@RequestParam(value = "name", required = false) String name,
+	public Response<Boolean> validateDocName(@RequestParam(value = "name", required = false) String name,
 			@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request) throws Exception {
-		String candidateDocument = name;
-		Boolean canEdu = candidateDocumentsService.validateCandidateDocument(candidateId, candidateDocument);
-		return canEdu;
+		Response<Boolean> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				String candidateDocument = name;
+				Boolean canEdu = candidateDocumentsService.validateCandidateDocument(candidateId, candidateDocument);
+				response.setObject(canEdu);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
 	}
 }
