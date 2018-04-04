@@ -981,6 +981,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 					
 					if(candidate.getParentCandidateId() != null && (candidate.getDesignationType().equalsIgnoreCase("C2C") || candidate.getDesignationType().equalsIgnoreCase("C2C-1099"))){
 						Long parentCandidatId = candidate.getParentCandidateId().getId();
+						Long orgLocationId = candidate.getOrgLocationId().getId();
 						int level = 1;
 						while(parentCandidatId != null){
 							Candidate cand = candidateService.getCandidateByCandidateId(parentCandidatId);
@@ -991,7 +992,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 							if(cand != null){
 								projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), cand.getOrgLocationId().getId());
 								if(projectClients == null){
-									Candidate clildCandidate = candidateService.getCandidateByParentCandidateId(parentCandidatId);
+									Candidate clildCandidate = candidateService.getCandidateByParentCandidateIdAndOrgLocationId(parentCandidatId,orgLocationId);
 									projectClients = new ProjectClients();
 									projectClients.setProjectId(projects);
 									projectClients.setOrgRelationId(clildCandidate.getOrgRelationId());
@@ -1005,6 +1006,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 										ProjectClients pClient = projectClientService.getProjectClientsByProjectIdAndOrgLocationIdAndOrgRelationId(projects.getId(), clildCandidate.getOrgLocationId().getId(),pCandidate.getOrgRelationId().getId());
 										if(pClient != null && pClient.getLevel() != null){
 											level = pClient.getLevel()+1;
+										}else {
+											level = level+1;
 										}
 									}
 									else{
@@ -1049,6 +1052,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 								saveProjectMembersHistory(projectMembers,user,projectClients);
 								if(cand.getParentCandidateId() != null){
 									parentCandidatId = cand.getParentCandidateId().getId();
+									orgLocationId = cand.getOrgLocationId().getId();
 								}else{
 									parentCandidatId = null;
 								}
