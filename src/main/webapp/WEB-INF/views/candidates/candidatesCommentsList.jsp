@@ -29,7 +29,7 @@ function candidateCommentsList(candidateId,submissionId){
 	    	    location.href = "/errorPage";
 	    	} else if (data.response === "SUCCESS") {
 	    		var result = "";
-				if(data.object.length > 0) {
+				if(data.object.length > 2) {
 		       		var json = JSON.parse(data.object);
 		       	 	result  = result + '   <div class="project_tabs_inn_head addUser-org"> ';
 		     		result  = result + '              <div class="project_tabs_inn_table vendor_wrap_inn_table">';
@@ -52,13 +52,14 @@ function candidateCommentsList(candidateId,submissionId){
 		     	        result = result+'     </div>';
 		     	        result = result+'</div>';
 		     		}
+		     	   result  = result + '              </div>';
+			       	result  = result + '        </div>';
 		        } else {
 					var result ="";
 			        result = result+"   <div class='dataTables_empty'>"; 
 					result = result+"  </div> ";
 				}
-		       	result  = result + '              </div>';
-		       	result  = result + '        </div>';
+		       	
 				$("#tab-1").empty();
 		        $("#tab-2").empty(); 
 		        $("#tab-3").empty();  

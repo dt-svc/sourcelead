@@ -206,6 +206,7 @@ public class CandidateCommentsRestController {
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
+	 
 		return response;
 	}
 }
