@@ -659,18 +659,38 @@ function changeStatus(requirementId, requirementStatus){
         	 $.ajax({
              type : "POST",
         	 url: sourceleadUrl+"/saveChangedStatusFromDraft?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status+"&userId="+userId,
-	        	 success :function(data) {
-	       		  $("#changeStatusId" +requirementId).val(status);
-	           	  //location.replace(sourceleadUrl+"/requirementList");
+	        	 success :function(result) {
+	        		 	if (result.response === "SESSION_TIMEDOUT") {
+			  				location.replace(sourceleadUrl);
+		                } else if (result.response === "AWKWARD") {
+		                    location.href = "/errorPage";
+		                } else if (result.response === "SUCCESS") {
+		                	$("#changeStatusId" +requirementId).val(status);
+		  	           	  //location.replace(sourceleadUrl+"/requirementList");	
+		                } else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+		                    showError("Operation failed, please try again");
+		                }
 	         	}
         	});
          }else{
         	 $.ajax({
              type : "POST",
         	 url: sourceleadUrl+"/saveChangedStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status,
-	        	 success :function(data) {
-	       		  $("#changeStatusId" +requirementId).val(status);
-	           	 //location.replace(sourceleadUrl+"/requirementList");
+	        	 success :function(result) {
+	        		 if (result.response === "SESSION_TIMEDOUT") {
+			  				location.replace(sourceleadUrl);
+		                } else if (result.response === "AWKWARD") {
+		                    location.href = "/errorPage";
+		                } else if (result.response === "SUCCESS") {
+		                	$("#changeStatusId" +requirementId).val(status);
+		   	           	 //location.replace(sourceleadUrl+"/requirementList");
+		                } else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+		                    showError("Operation failed, please try again");
+		                }
 	         	}
         	});
          }

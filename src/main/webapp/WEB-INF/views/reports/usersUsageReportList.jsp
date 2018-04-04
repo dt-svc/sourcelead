@@ -48,10 +48,10 @@
 		</sec:authorize>
 	</div>
         </div>
-        <div class="col-md-2 dropdown-select">
+        <!-- <div class="col-md-2 dropdown-select">
         <div class="dropdown-select positionRelative">
         <select class="form-control" id="customDates" onchange="showCustomFields();">
-<!--           <option>Select Date</option> -->
+          <option>Select Date</option>
           <option value="Last_7_days" selected>Last 7 days</option>
           <option value="Last_15_days">Last 15 days</option>
           <option value="1_month">1 month</option>
@@ -59,7 +59,7 @@
           <option value="Last_Year">Last year</option>
           <option value="Custom">Custom</option>
         </select>
-        <!-- Top Leave Takers Custom Date -->
+        Top Leave Takers Custom Date
     <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-select" style="display: none; width: 346px;" >
 		<div class="pull-left">
 		<div class="pull-left mr5" style="width: 140px" id="custFromDateDiv">
@@ -71,25 +71,25 @@
 		<button type="button" class="btn btn-primary btn-sm" onclick="validateCustDates();"><i class="fa fa-search"></i></button>
 		</div>
     </div>
-<!-- Top Leave Takers Custom Date --> 
+Top Leave Takers Custom Date 
       </div>
 
-        </div>
-        <div class="col-md-2">
+        </div> -->
+       <div class="col-md-2">
         
         <sec:authorize access="hasRole('ROLE_ENROLL_ORG')">
         <button type="button" class="btn btn-primary mt2  pull-left mr" onclick="usageReportList('ACTIVE')">Customize</button>
         </sec:authorize>
         
-			<div title="Export" class="mrPOP mt10 pull-right" id="mypop"><i class="glyphicon glyphicon-export"></i>
-			     	<div id="exportPop" class="ExpPop" style="left:0">
+			<!-- <div title="Export" class="mrPOP mt10 pull-right hidden" id="mypop2"><i class="glyphicon glyphicon-export"></i>
+			     	<div id="exportPop2" class="ExpPop" style="left:0">
 			           <ul>
 			             <li onclick="exportUserUsageReportPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
 			     <li onclick="exportUserUsageReportExcel();"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
 			    </ul>
 			  </div>
-			</div>
-		</div>
+			</div> -->
+		</div> 
 <!-- 		<div class="col-md-1"> -->
 <!--           <div class="btn-group bootstrap_dropdownMenu dropdownPadding"> -->
 <!--             <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-download"></i></button> -->
@@ -124,7 +124,7 @@
     <li class="col-md-2">
       <div class="text-center well well-sm" id="notloginLi">
         <div class="clearfix"><i class="fa fa-lock fa-2x text-warning"></i></div>
-        <h4>Not Login</h4>
+        <h4> Not Logged In</h4>
         <label class="views-count interview" onClick="usageReportList('NOT_LOGGEDIN');usagenotloginList();" id="notLoggedInCount"></label>
       </div>
     </li>
@@ -138,7 +138,7 @@
          <li class="col-md-2">
       <div class="text-center well well-sm" id="multipleLi">
         <div class="clearfix"><i class="fa fa-sliders fa-2x text-success"></i></div>
-        <h4>Multiple Ips</h4>
+        <h4>IP Details</h4>
         <label class="views-count offer" onClick="usagemultipleipslist('MULTIPLE_IP')" id="multipleIpsCount"></label>
       </div>
     </li>
@@ -148,40 +148,45 @@
 <div class="timesheet_out clearfix userlistGrid" id="activeList">
   <div class="timesheet_head">
     <p class="pull-left mt ml"><strong><b id="listNamediv">Active User List</b></strong></p>
-    <ul class="pull-right">
-      <li class="dropdown"> 
-        <div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding" role="menu" aria-labelledby="menu1">
-          <ul>
-            <li class="checkBox">
-              <input value="" name="resourcerequest" id="jobNew" type="checkbox">
-              <label for="all">New</label>
-            </li>
-            <li class="checkBox">
-              <input id="jobOpen" name="resourcerequest" type="checkbox">
-              <label for="hotlist">Open</label>
-            </li>
-            <li class="checkBox">
-              <input id="jobOnhold" name="resourcerequest" type="checkbox">
-              <label for="Assigned">Onhold</label>
-            </li>
-            <li class="checkBox">
-              <input id="jobFilledClosed" name="resourcerequest" type="checkbox">
-              <label for="Assigned">Filled Closed</label>
-            </li>
-            <li class="checkBox">
-              <input id="jobUnfilledClosed" name="resourcerequest" type="checkbox">
-              <label for="Assigned">Unfilled Closed</label>
-            </li>
-            <li class="checkBox">
-              <input id="jobClosed" name="resourcerequest" type="checkbox">
-              <label for="Assigned">Closed</label>
-            </li>
-          </ul>
+    <ul>
+        <li>
+    <div title="Export" class="mrPOP mt10 pull-right" id="mypop"><i class="glyphicon glyphicon-export"></i>
+			     	<div id="exportPop" class="ExpPop" style="left: 0px; display: none;">
+			           <ul>
+			             <li onclick="exportUserUsageReportPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
+			     <li onclick="exportUserUsageReportExcel();"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
+			    </ul>
+			  </div>
+			</div>
+    </li>
+    <li>
+    <div class="col-md-12 dropdown-select">
+        <div class="dropdown-select positionRelative">
+        <select class="form-control" id="customDates" onchange="showCustomFields();">
+<!--           <option>Select Date</option> -->
+          <option value="Last_7_days" selected>Last 7 days</option>
+          <option value="Last_15_days">Last 15 days</option>
+          <option value="1_month">1 month</option>
+          <option value="3_months">3 months</option>
+          <option value="Last_Year">Last year</option>
+          <option value="Custom">Custom</option>
+        </select>
+        <!-- Top Leave Takers Custom Date -->
+    <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-select" style="display: none; width: 346px;" >
+		<div class="pull-left">
+		<div class="pull-left mr5" style="width: 140px" id="custFromDateDiv">
+		<input value="" name="Date" id="custFromDate" placeholder="From" class="form-control calendar input-sm margin-top0" type="text">
+		</div>
+		<div class="pull-left mr5" style="width: 140px" id="custToDateDiv">
+		<input value="" name="Date" id="custToDate" placeholder="To" class="form-control calendar input-sm margin-top0" type="text">
+		</div>
+		<button type="button" class="btn btn-primary btn-sm" onclick="validateCustDates();"><i class="fa fa-search"></i></button>
+		</div>
+    </div>
+<!-- Top Leave Takers Custom Date --> 
+      </div>
         </div>
-      </li>
-      
-      
-      <div class="clearfix"></div>
+    </li>
     </ul>
     <div class="clearfix"></div>
      
@@ -189,6 +194,7 @@
   <div class="require_wrap_table datatable_filter">
   
   <div id="activeDiv"></div>
+  <div id="multipleIpsDiv"></div>
   
   </div>
   
@@ -200,42 +206,9 @@
   
   
     
-<div class="timesheet_out clearfix userlistGrid" id="multipleList" style="display: none">
+<!-- <div class="timesheet_out clearfix userlistGrid" id="multipleList" style="display: none">
   <div class="timesheet_head">
     <p class="pull-left mt ml"><strong>Multiple IPS User List</strong></p>
-    <ul class="pull-right">
-      <li class="dropdown">
-        <div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding" role="menu" aria-labelledby="menu1">
-          <ul>
-            <li class="checkBox">
-              <input value="" name="resourcerequest" id="jobNew" type="checkbox">
-              <label for="all">New</label>
-            </li>
-            <li class="checkBox">
-              <input id="jobOpen" name="resourcerequest" type="checkbox">
-              <label for="hotlist">Open</label>
-            </li>
-            <li class="checkBox">
-              <input id="jobOnhold" name="resourcerequest" type="checkbox">
-              <label for="Assigned">Onhold</label>
-            </li>
-            <li class="checkBox">
-              <input id="jobFilledClosed" name="resourcerequest" type="checkbox">
-              <label for="Assigned">Filled Closed</label>
-            </li>
-            <li class="checkBox">
-              <input id="jobUnfilledClosed" name="resourcerequest" type="checkbox">
-              <label for="Assigned">Unfilled Closed</label>
-            </li>
-            <li class="checkBox">
-              <input id="jobClosed" name="resourcerequest" type="checkbox">
-              <label for="Assigned">Closed</label>
-            </li>
-          </ul>
-        </div>
-      </li>
-      <div class="clearfix"></div>
-    </ul>
     <div class="clearfix"></div>
      
   </div>
@@ -245,7 +218,7 @@
    
    </div> 
    
-   </div>
+   </div> -->
    
 
           </div>
@@ -279,8 +252,8 @@
 <script>
 function prepareUsageReportList(url, userType){
         var result = "";
- 	    result = result +' <div class="modal-header">';
- 	    result = result +' <div class="remove_search">';
+ 	    result = result +' <div class="clearfix">';
+ 	    result = result +' <div class="remove_search mt">';
  	    result = result +' <input type="text" placeholder="Search" id="dataTableSearch"/>';
  	    result = result +'</div>';
  	    result = result +'</div>';
@@ -500,7 +473,14 @@ function activePagination(url, userType){
     		   usageReportList(userType);
     	   }
     	});
-    $("#listNamediv").html(userType+" users List");
+    
+    if(userType == "ACTIVE"){
+    	$("#listNamediv").html("Active Users List");
+    }else if(userType == "INACTIVE"){
+    	$("#listNamediv").html("Inactive Users List");
+    }else if(userType == "NOT_LOGGEDIN"){
+    	$("#listNamediv").html("Not Logged In Users List");
+    }
     getCountList();
 }
 
@@ -511,9 +491,9 @@ function activePagination(url, userType){
         //Usage User show hide script
         function usageactiveList(){
 //             $("#inactiveList").hide();
-            $("#activeList").show();
+            $("#activeDiv").show();
 //             $("#notloginList").hide();
-            $("#multipleList").hide();
+            $("#multipleIpsDiv").hide();
 //             $("#totalList").hide();
             $("#activeLi").addClass("usageGrid");
             $("#inactiveLi").removeClass("usageGrid");
@@ -523,9 +503,9 @@ function activePagination(url, userType){
         }
         function usageinactiveList(){
 //             $("#inactiveList").show();
-            $("#activeList").show();
+            $("#activeDiv").show();
 //             $("#notloginList").hide();
-            $("#multipleList").hide();
+            $("#multipleIpsDiv").hide();
 //             $("#totalList").hide();
             $("#activeLi").removeClass("usageGrid");
             $("#inactiveLi").addClass("usageGrid");
@@ -535,9 +515,9 @@ function activePagination(url, userType){
         }
         function usagenotloginList(){
 //             $("#inactiveList").hide();
-            $("#activeList").show();
+            $("#activeDiv").show();
 // 	           $("#notloginList").show();
-	           $("#multipleList").hide();
+	           $("#multipleIpsDiv").hide();
 //             $("#totalList").hide();
 
             $("#activeLi").removeClass("usageGrid");
@@ -549,9 +529,9 @@ function activePagination(url, userType){
         function usagemultipleipslist(userType){
         	$("#userTypeId").val(userType);
             $("#inactiveList").hide();
-            $("#activeList").hide();
+            $("#activeDiv").hide();
             $("#notloginList").hide();
-            $("#multipleList").show();
+            $("#multipleIpsDiv").show();
             $("#totalList").hide();
 
             $("#activeLi").removeClass("usageGrid");
@@ -574,8 +554,8 @@ function activePagination(url, userType){
         
         function prepareMultipleIpsList(url){
         var result= "";
-       	 result = result +' <div class="modal-header">';
-       	 result = result +' <div class="remove_search">';
+       	 result = result +' <div class="clearfix">';
+       	 result = result +' <div class="remove_search mt">';
        	 result = result +' <input type="text" placeholder="Search" id="dataaTableSearch"/>';
        	 result = result +'</div>';
        	 result = result +'</div>';
@@ -594,6 +574,7 @@ function activePagination(url, userType){
        	 $("#multipleIpsDiv").empty();
        	 $("#multipleIpsDiv").append(result);
        	 multipleIpsPagination(url);
+       	$("#listNamediv").html("Ip List");
         }
         
         function multipleIpsPagination(url){
@@ -632,7 +613,7 @@ function activePagination(url, userType){
                       "render": function ( data, type, opt, meta ) {
                     	  var result = "";
                     	  if(opt.noOfUsers !=null && opt.noOfUsers !='' && opt.noOfUsers !='undefined'){
-                    		  result = result + ' <td><div><span class="cursorPointer" onClick="showIp(\''+opt.ipAddress+'\');">'+opt.noOfUsers+'</span></div></td>';
+                    		  result = result + ' <td><div><a class="cursorPointer" onClick="showIp(\''+opt.ipAddress+'\');">'+opt.noOfUsers+'</a></div></td>';
         					}else{
         						result = result + ' <td><div>--</div></td>';
         					}
@@ -686,6 +667,7 @@ function activePagination(url, userType){
 //           		   usageReportList(userType);
           	   }
           	});
+          
       }
         
         function usagetotalList(){

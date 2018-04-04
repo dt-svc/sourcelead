@@ -3,7 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <script src="/resources/js/jquery.simplePagination.js"></script>
-<script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script>
+<!-- <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script> -->
 
 <c:if test="${!empty timesheetApprovalDTO.timesheetSubmission}">
 <div id="loadingCotentDiv"></div>
@@ -52,7 +52,7 @@
 		<ul id="pagination-demo" class="pagination-sm pull-right pagination"></ul>
 	</div>
 </div>
-
+<!-- 
 <script>
 $(document).ready(function(){
 	datatableBody();
@@ -78,7 +78,7 @@ function datatableBody(){
 	        body.highlight(searchData);
 	 } 
  }
- </script>
+ </script> -->
 
 <script>
 function exportTimeSheetToPdfOrExcel(exportType){
@@ -197,7 +197,7 @@ function displayAcceptRejectButtonOnHedder() {
 			  $('#dataTableSearchExpenses').val('') ;
 
 			  $('#dataTableSearchExpenses').val(searchData);
-			  searchHighlight(searchData);
+			 /*  searchHighlight(searchData); */
 			  if (notifyLink != null && notifyLink != '' && notifyLink != 'undefined' && notifyLink){
 				  $('#dataTableSearchExpenses').val('') ;
 			  }

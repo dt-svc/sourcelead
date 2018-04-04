@@ -668,7 +668,7 @@ function cancelTermination(){
 					updatedBy = "--";
 				}
 			if (json.updatedDate != null && json.updatedDate != '' && json.updatedDate != 'undefined') {
-				updatedDate = json.updatedBy;
+				updatedDate = json.updatedDate;
 				} else {
 					updatedDate = "--";
 				}
@@ -772,7 +772,7 @@ function cancelTermination(){
 					updatedBy = "--";
 				}
 			if (json.updatedDate != null && json.updatedDate != '' && json.updatedDate != 'undefined') {
-				updatedDate = json.updatedBy;
+				updatedDate = json.updatedDate;
 				} else {
 					updatedDate = "--";
 				}
@@ -877,7 +877,7 @@ function cancelTermination(){
 					updatedBy = "--";
 				}
 			if (json.updatedDate != null && json.updatedDate != '' && json.updatedDate != 'undefined') {
-				updatedDate = json.updatedBy;
+				updatedDate = json.updatedDate;
 				} else {
 					updatedDate = "--";
 				}
