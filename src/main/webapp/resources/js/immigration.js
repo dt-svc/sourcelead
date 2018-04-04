@@ -926,3 +926,20 @@ function saveNotesDatails(status) {
 	
 }
 
+function getPetitionTypeOnCountries(selectedCountry){
+	var selectedValue = selectedCountry.val();
+	$.ajax({
+	    type: "GET",
+        url: sourceleadUrl+immiModulePath+"/getPetitionTypeOnLocation?locationVal="+selectedValue,  
+        success: function(json) {
+        	$('#petitionTypeTemplate').empty();
+        	$('#petitionTypeTemplate').append('<option value="">--Select Petition Type--</option>');
+             for(var i=0;i<json.length;i++){
+            	 var opt = json[i];
+            	 $('#petitionTypeTemplate').append('<option value='+opt.name+'>'+opt.name+'</option>');
+            } 
+            $('#petitionTypeTemplate').trigger("chosen:updated");
+        }
+	}); 
+}
+

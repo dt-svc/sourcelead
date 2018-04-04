@@ -343,4 +343,10 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
         return immigrationTemplateDao.validateTemplateNameExistance(templateName, templateId);
     }
 
+	@Override
+	public List<LookUpData> getLookupDataByTypeAndLocation(String petitionType, String locationVal) {
+		 List<LookUpData> lookUpDatas = immigrationTemplateDao.getLookupDataByTypeAndLocation(petitionType, locationVal);
+	     return lookUpDatas;
+	}
+
 }

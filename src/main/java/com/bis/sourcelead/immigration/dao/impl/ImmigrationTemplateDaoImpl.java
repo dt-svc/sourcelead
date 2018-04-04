@@ -563,4 +563,13 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 		}
 		return immigrationTemplate;
 	}
+
+	@Override
+	@Transactional(rollbackFor = {Exception.class})
+	public List<LookUpData> getLookupDataByTypeAndLocation(String petitionType, String locationVal) {
+		Session session = this.sessionFactory.getCurrentSession();
+        String query = "from LookUpData lud where lud.category = :category and location = :location";
+        List<LookUpData> petitionTypeLookup = session.createQuery(query).setString("category", petitionType).setString("location", locationVal).list();
+        return petitionTypeLookup;
+	}
 }

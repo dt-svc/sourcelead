@@ -18,6 +18,7 @@ INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES 
 INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Rejected','Rejected','USCISStatus');
 
 
+
 INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Level 1','Level 1','EmploymentLevel');
 INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Level 2','Level 2','EmploymentLevel');
 INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Level 3','Level 3','EmploymentLevel');
@@ -40,3 +41,7 @@ INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES 
 
 CALL sourcelead.AlterTableAddColumn ('sourcelead','IMMIGRATION','ORG_LOCATION_ID','BIGINT NULL AFTER `ORG_SPOC_ID`');
 ALTER TABLE sourcelead.`IMMIGRATION` ADD CONSTRAINT `ORG_LOCATION_ID_FK8` FOREIGN KEY (`ORG_LOCATION_ID`) REFERENCES `sourcelead`.`ORG_LOCATIONS` (`ID`);
+
+set sql_safe_updates=0;
+UPDATE `sourcelead`.`LOOKUP_DATA` SET `LOCATION`='United States' WHERE `CATEGORY`='PetitionType';
+set sql_safe_updates=1;
