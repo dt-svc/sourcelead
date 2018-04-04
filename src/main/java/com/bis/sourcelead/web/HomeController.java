@@ -189,7 +189,7 @@ public class HomeController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth != null && auth.getPrincipal() != null && !(auth instanceof AnonymousAuthenticationToken)
 				&& !StringUtils.isNotEmpty(logout)) {
-			if("false".equalsIgnoreCase(allowed)){
+			if("false".equalsIgnoreCase(allowed)) {
 				return new ModelAndView("redirect:/logout?allowed=false");
 			}
 			if (isNullOrEmpty(requirementUUID)) {

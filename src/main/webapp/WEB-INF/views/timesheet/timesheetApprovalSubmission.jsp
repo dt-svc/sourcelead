@@ -2,11 +2,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-
 <script src="/resources/js/jquery.simplePagination.js"></script>
+<!-- <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script> -->
+
 <c:if test="${!empty timesheetApprovalDTO.timesheetSubmission}">
 <div id="loadingCotentDiv"></div>
-<div id="tableContent" class="timesheetRep-table timesheet_appr_table" style="overflow: auto;">
+<div id="tableContent" class="timesheetRep-table timesheet_appr_table timesheet_apprTable" style="overflow: auto;">
  <table id='exampleApprover' class='display'>
 	<thead> 
     <tr>
@@ -51,6 +52,34 @@
 		<ul id="pagination-demo" class="pagination-sm pull-right pagination"></ul>
 	</div>
 </div>
+<!-- 
+<script>
+$(document).ready(function(){
+	datatableBody();
+});
+</script> 
+<script>
+function datatableBody(){ 
+	 $('#exampleApprover').DataTable( { 
+		    "sDom": "Rlfrtip",
+		    "bPaginate": false,
+		    "bInfo" : false,
+		    "ordering": false,
+		    "searchHighlight": true
+	    } );
+}
+</script> 
+<script>
+ function searchHighlight(searchData){
+	 if(searchData != null && searchData != 'undefined' && searchData != ''){
+		    var table = $('#exampleApprover').DataTable();
+		    var body = $( table.table().body() );
+		    body.unhighlight();
+	        body.highlight(searchData);
+	 } 
+ }
+ </script> -->
+
 <script>
 function exportTimeSheetToPdfOrExcel(exportType){
 	 	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
@@ -166,7 +195,9 @@ function displayAcceptRejectButtonOnHedder() {
 			  var pageCount = $('#pageCount').val();
 			  var pageSize = $("#pageSize").val();
 			  $('#dataTableSearchExpenses').val('') ;
+
 			  $('#dataTableSearchExpenses').val(searchData);
+			 /*  searchHighlight(searchData); */
 			  if (notifyLink != null && notifyLink != '' && notifyLink != 'undefined' && notifyLink){
 				  $('#dataTableSearchExpenses').val('') ;
 			  }
@@ -208,7 +239,7 @@ function displayAcceptRejectButtonOnHedder() {
   
   
    
- <jsp:include page="timesheetApprovalCommonScriptsRedefined.jsp"></jsp:include>
+ <jsp:include page="timesheetApprovalCommonScripts.jsp"></jsp:include>
 
 
 

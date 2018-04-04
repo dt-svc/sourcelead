@@ -34,6 +34,7 @@ import com.bis.sourcelead.dao.AssetDao;
 import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetCategory;
@@ -43,6 +44,7 @@ import com.bis.sourcelead.entity.BoJmpcTrans;
 import com.bis.sourcelead.entity.BoUploadedFiles;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.AssetCategoryService;
@@ -454,6 +456,32 @@ public class BackOfficeRestController {
 		return resultJson;
 	}
 	
+	
+	/**
+	 * @author Laxman
+	 * @param assetDTO
+	 * @param request
+	 * @return assetList
+	 * @throws Exception
+	 */
+	
+	@RequestMapping(value = "/getAssetDynamicList")
+	@ResponseBody
+	public ResponseList<Asset> getAssetDynamicList(AssetDTO assetDTO,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String[] tableColumns = {"slno", "assetCategory", "model", "shiftAEmployee","shiftBEmployee","workingStatus"};
+	    int sortColumnIndex = 1; //by default sorting using updated date
+		String sortColumnOrder = "asc"; //by default descending order
+		if(assetDTO.getOrder() != null && !assetDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(assetDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = assetDTO.getOrder().get(0).get("dir");
+		}
+		assetDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		assetDTO.setSortOrder(sortColumnOrder);
+		ResponseList<Asset> assetList = assetService.getDynamicAssetFilterListByLocationId(orgLocations.getId(), assetDTO);
+		return assetList;
+	}
+	
 	/**
 	 * @author Prasad Salina
 	 * @param assetId
@@ -519,7 +547,7 @@ public class BackOfficeRestController {
 			assetDTO.setShiftBEmployee(asset.getShiftBEmployee().getId().toString());
 			}
 		}
-		
+		assetDTO.setMacAddress(asset.getMacAddress());
 		assetDTO.setSno(asset.getSlno());
 		assetDTO.setMake(asset.getMake());
 		assetDTO.setMonitor(asset.getMonitor());
