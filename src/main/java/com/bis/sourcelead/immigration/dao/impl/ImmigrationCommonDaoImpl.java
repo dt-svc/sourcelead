@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -264,14 +265,20 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
     @SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId, String idType)
+	public List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId, String idType, String searchValue)
 	{
-		logger.debug("Getting  CandidatepassportDetails --->  ");
-		Session session = this.sessionFactory.getCurrentSession();
 		List<CandidatePassportVisa> passportvisaList = new ArrayList<CandidatePassportVisa>();
+		logger.debug("Getting  CandidatepassportDetails --->  ");  
+		Session session = this.sessionFactory.getCurrentSession();
+		if (!"undefined".equalsIgnoreCase(searchValue) && StringUtils.isNotBlank(searchValue)
+				&& searchValue != "") {
+			String queryString = "from CandidatePassportVisa cp where cp.candidate.id=:candidateId and cp.idType=:idType and (cp.idNumber =:searchValue or cp.country =:searchValue)  order by cp.updatedDate desc";
+			passportvisaList = session.createQuery(queryString).setLong("candidateId", candidateId).setString("idType", idType).setString("searchValue", searchValue).list();
+		}
+		else {
 			String queryString = "from CandidatePassportVisa cp where cp.candidate.id=:candidateId and cp.idType=:idType  order by cp.updatedDate desc";
 			passportvisaList = session.createQuery(queryString).setLong("candidateId", candidateId).setString("idType", idType).list();
-		
+		}
 		return passportvisaList;
 	}
     @Override
@@ -471,4 +478,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			}
 		return candidateFormLst;
 	}
-}
+	
+	
+	}
+	
