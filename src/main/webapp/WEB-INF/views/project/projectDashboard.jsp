@@ -127,14 +127,14 @@ overflow-x: auto;
 				
 		</div>
 		
-		<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small">
+		<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
 				<h5 class="headerAdsrch">Filter Search
 					<a href="javascript:void(0)" class="close-div" onClick="closeFilterPop()"><i
 						class="fa fa-close"></i></a>
 				</h5>
 				<div class="addInner">
 					<div class="row">
-						<div class="col-md-4">
+						<div class="col-md-3">
 						<div class="row">
 						<div class="col-md-12 mb">
 								<label><strong>Project Type</strong></label>
@@ -172,6 +172,22 @@ overflow-x: auto;
 										<ul class="list-unstyled positionRelative filterSearch mt5" id="myClientsUL">
 										    <c:forEach var="report" items="${add_client}">
 											     <li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" value ="${report.id}" ><label>${report.clientName}</label></li>
+											</c:forEach>
+										</ul>
+									 </div> 
+							 </div> 
+							 </c:if>
+							 
+							 <c:if test="${projectManagersListSize > 0}">
+							 <div class="col-md-4 mb positionRelative">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="myManagersInput" onkeyup="myManagersFunction()" placeholder="Managers" title="Type in a managers">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myManagersUL">
+											<c:forEach var="manager" items="${projectManagersList}">
+											<li class="checkBox positionRelative"><input  type="checkbox" name="projectManagers" value ="${manager.id}" ><label>${manager.fullName}</label></li>
 											</c:forEach>
 										</ul>
 									 </div> 
@@ -215,6 +231,7 @@ function resetProjectFilter(){
 	$("ul#typeFilter > li input:checkbox").prop("checked",false);
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
 	$("ul#myClientsUL > li input:checkbox").prop("checked",false);
+	$("ul#myManagersUL > li input:checkbox").prop("checked",false);
 	
 	document.getElementById("c6").checked = true;
 	document.getElementById("c7").checked = true;
@@ -227,6 +244,24 @@ function myClientsFunction() {
     input = document.getElementById("myClientsInput");
     filter = input.value.toUpperCase();
     ul = document.getElementById("myClientsUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+
+function myManagersFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myManagersInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myManagersUL");
     li = ul.getElementsByTagName("li");
     for (i = 0; i < li.length; i++) {
         a = li[i].getElementsByTagName("label")[0];
@@ -365,10 +400,19 @@ function projectDataTableList(){
 	$('input:checkbox[name=clientNameById]:checked').each(function() {
 		clients.push($(this).val());
 	});
+	
+	
+	var projectManagers = [];
+	$('input:checkbox[name=projectManagers]:checked').each(function() 
+		    {
+		projectManagers.push($(this).val());
+     });
+	
+	
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#projectsDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getProjectsByStatusAndClient?searchValue="+searchValue+"&values="+values+"&clients="+clients+"&projectType="+projectType;
+	 var url = sourceleadUrl+"/getProjectsByStatusAndClient?searchValue="+searchValue+"&values="+values+"&clients="+clients+"&projectType="+projectType+"&projectManagers="+projectManagers;
 	 projectsPagination(url,sourceleadUrl);
 }
 </script>
@@ -1127,10 +1171,17 @@ function projectExport(type){
 	$('input:checkbox[name=clientNameById]:checked').each(function() {
 		clients.push($(this).val());
 	});
+	
+	var projectManagers = [];
+	$('input:checkbox[name=projectManagers]:checked').each(function() 
+		    {
+		projectManagers.push($(this).val());
+     });
+	
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#projectsDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 window.location.href = sourceleadUrl + "/getExportProjects?&searchValue="+searchValue+"&values="+values+"&clients="+clients+"&projectType="+projectType+"&exportType="+exportType;
+	 window.location.href = sourceleadUrl + "/getExportProjects?&searchValue="+searchValue+"&values="+values+"&clients="+clients+"&projectType="+projectType+"&exportType="+exportType+"&projectManagers="+projectManagers;
 	
 }
 </script>
