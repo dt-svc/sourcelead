@@ -567,6 +567,15 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 
 	@Override
 	@Transactional(rollbackFor = {Exception.class})
+	public List<LookUpData> getLookupDataByTypeAndLocation(String petitionType, String locationVal) {
+		Session session = this.sessionFactory.getCurrentSession();
+        String query = "from LookUpData lud where lud.category = :category and location = :location";
+        List<LookUpData> petitionTypeLookup = session.createQuery(query).setString("category", petitionType).setString("location", locationVal).list();
+        return petitionTypeLookup;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = {Exception.class})
 	public List<ImmigrationTemplateDocs> getImmigrationTemplateDocsList(Long templateId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<ImmigrationTemplateDocs> immigrationTemplateDocsList = new ArrayList<ImmigrationTemplateDocs>();
