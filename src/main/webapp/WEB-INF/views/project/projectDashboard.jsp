@@ -274,6 +274,13 @@ function myManagersFunction() {
     }
 }
 
+
+$(document).keyup(function(e) {
+	  if (e.keyCode === 27) {
+		  closeFilterPop();
+	  }
+	});
+
 </script>
 <script type="text/javascript">
 window.onload = function () {
