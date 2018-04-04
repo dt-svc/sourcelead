@@ -203,6 +203,8 @@ public class RequirementIndex implements Serializable {
 	
 	private List<String> locationsList;
 	
+	private String isClientJob;
+	
 	public String getManagerUserId() {
 		return managerUserId;
 	}
@@ -1029,5 +1031,13 @@ public class RequirementIndex implements Serializable {
 	public void setLocationsList(List<String> locationsList) {
 		this.locationsList = locationsList;
 	}
-	
+
+	public String getIsClientJob() {
+		return isClientJob;
+	}
+
+	public void setIsClientJob(String isClientJob) {
+		this.isClientJob = isClientJob;
+	}
+
 }

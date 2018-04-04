@@ -745,12 +745,12 @@
 								e.stopPropagation();
 							});
 
-						}
 					} else if (response.indexOf('Sign In') !== -1) {
 						location.replace(sourceleadUrl);
 					} else {
 					    showError("Operation failed, please try again");
 					}
+			}
 		}).done(function() {
 			editRelation(this);
 		});
