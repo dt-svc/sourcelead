@@ -7,6 +7,7 @@
 <script src="/resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
 
 <jsp:include page="userProjectSummary.jsp" />
+<jsp:include page="userAssetManagement.jsp" />
 
 <style>
 .user_summary_edit_cta p{
@@ -91,6 +92,7 @@ $(document).ready(function(){
 		 
 		 result = result + '<li class="current"><a href="#tab-18" onClick="userDetails('+userId+');" >Details</a></li>';
 		 result = result + '<li><a href="#tab-19" onClick="userAssignedProjects('+userId+')" >Projects</a></li>';
+		 result = result + '<li><a href="#tab-20" onClick="userAssetManagement('+userId+')" >Assets</a></li>';
 		 result = result + '<li><a href="#tab-17" onClick="profileDetails('+candidateId+');" >Profile</a></li>';
 		
 		 result = result + '<div class="clearfix"></div>';
@@ -102,6 +104,9 @@ $(document).ready(function(){
 		 result = result + '</div>';
 		  	
 		 result = result + '<div id="tab-19" class="project_tabs_inn project_tabs_inn_table datatable_filter dataTablesFilter-relative">';
+		 result = result + '</div>';
+		 
+		 result = result + '<div id="tab-20" class="require_wrap_table table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative">';
 		 result = result + '</div>';
 		 
 		 result = result + '<div id="tab-17" class="project_tabs_inn project_tabs_inn_table">';

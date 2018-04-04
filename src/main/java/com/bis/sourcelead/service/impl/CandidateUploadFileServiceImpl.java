@@ -491,13 +491,13 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 				candidateImport.setReason("Invalid Email");
 				return false;
 			}
-			/*else if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
+			else if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
 				Candidate candidate = candidateService.findByCandidateEmail(row.getCell(2).toString(), orgLocations.getId());
 				if (candidate != null) {
 					candidateImport.setReason("Candidate already exist.!");
 					return false;
 				}
-			}*/
+			}
 			if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
 				String mobileNumber = getCellValueAsString(row.getCell(3), fileName);
 				if (mobileNumber != null && !"".equalsIgnoreCase(mobileNumber)) {
@@ -556,7 +556,9 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 					}
 				}
 				
-			}/*else {
+			}
+			
+			/*else {
 				if(row.getCell(11) !=null && !"".equalsIgnoreCase(row.getCell(11).toString())){
 					candidateImport.setReason("vendor is mandatory if you have entered contact");
 					return false;

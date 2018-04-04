@@ -139,11 +139,7 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 	        	 }
 	        	 else{
 	        		 $("#row"+projectMemberId).empty();
-	        		 var trAppend = '';
-	        		 trAppend = trAppend +'<tr>';
-	        		 trAppend = rowHtmlContent ;
-	        		 trAppend = trAppend +'</tr>';
-			    	 $("#row"+projectMemberId).html(trAppend);
+			    	 $("#row"+projectMemberId).html(rowHtmlContent);
 			    	 $("#status"+projectMemberId).html("Approved");
 			    	 $("#action"+projectMemberId).html("<h3>Approved</h3><b class='Rname'>By :"+locationName+"</b>"); 
 	        	   }
@@ -188,11 +184,7 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 	  		    }
 	  	   	    else{
 	  	   		  	  $("#row"+projectMemberId).empty();
-		  	   		  var trAppend = '';
-	        		  trAppend = trAppend +'<tr>';
-	        		  trAppend = rowHtmlContent ;
-	        		  trAppend = trAppend +'</tr>';
-	  	 	    	  $("#row"+projectMemberId).html(trAppend);
+	  	 	    	  $("#row"+projectMemberId).html(rowHtmlContent);
 	  	 	    	  $("#status"+projectMemberId).html("Rejected");
 	  	 	    	  $("#action"+projectMemberId).empty();
 	  	 	    	  $("#action"+projectMemberId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'><div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>"+msg+"</div></i><b class='Rname'>By :"+locationName+"</b>");

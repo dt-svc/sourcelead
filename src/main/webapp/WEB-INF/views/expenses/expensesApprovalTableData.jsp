@@ -2,14 +2,14 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
  
+<tr style="display: none;">
+		   <input type="hidden" id="totalRows" name="totalRows" value="${totalRows}">
+	       <input type="hidden" id="pageCount" name="totalRowsPage" value="${pageCount}">
+</tr>
 
-<c:forEach var="expApproverHierarchy" items="${expApperoverHierarchydto}"  varStatus="expStatus">
+<c:forEach var="expApproverHierarchy" items="${expApperoverHierarchydto}">
  <tr id="row${expApproverHierarchy.expId}">
  <td>
-     <c:if test="${expStatus.index == 0}">
- 		   <input type="hidden" id="totalRows" name="totalRows" value="${totalRows}">
-	       <input type="hidden" id="pageCount" name="totalRowsPage" value="${pageCount}">
-     </c:if>
 	 <div class="time_appr_user"><img  id="userImage" onerror="predefineProfileImage(this);" src="${expApproverHierarchy.userFileUrl}" alt="Profile Image" class="img-circle img-responsive">
 		 <span>
 			 <b title="${expApproverHierarchy.expenseEmpUserFirstNameLastName}">${expApproverHierarchy.expenseEmpUserFirstNameLastName}</b>

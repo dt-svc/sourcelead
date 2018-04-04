@@ -12,6 +12,7 @@ import com.bis.sourcelead.dao.AssetDao;
 import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.AssetCustomFieldData;
@@ -190,6 +191,11 @@ public class AssetServiceImpl implements AssetService{
 			 asset.setHardDisk(null);
 		 }
 		 
+		 if(StringUtils.isNotBlank(assetDTO.getMacAddress())){
+			 asset.setMacAddress(assetDTO.getMacAddress());
+		 } 
+		 
+		 
 		 if(StringUtils.isNotBlank(assetDTO.getMonitor())){
 			 asset.setMonitor(assetDTO.getMonitor());
 		 }
@@ -312,6 +318,18 @@ public class AssetServiceImpl implements AssetService{
 	@Override
 	public Boolean validateAssetId(String assetSno, Long orgLocationsId) throws Exception {
 		return assetDao.validateAssetId(assetSno,orgLocationsId);
+	}
+
+
+	@Override
+	public ResponseList<Asset> getDynamicAssetFilterListByLocationId(Long orgLocationId, AssetDTO assetDTO) throws Exception {
+		return assetDao.getDynamicAssetFilterListByLocationId(orgLocationId, assetDTO);
+	}
+
+
+	@Override
+	public List<Asset> getUserBasedAssetManagementListandOrgLocation(Long orgLocationId, Long UserId) throws Exception {
+		return assetDao.getUserBasedAssetManagementListandOrgLocation(orgLocationId, UserId);
 	}
 	
 	
