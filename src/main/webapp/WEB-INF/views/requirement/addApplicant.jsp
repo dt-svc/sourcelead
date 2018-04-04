@@ -1236,6 +1236,7 @@ function addRequirementRecommendations(){
 			    		$("body").css('overflow-y', 'auto');
 			    		$("#recCandidate"+candidateId).html("Added");
 			    		$("#recSumbmitbtn"+candidateId).removeAttr("onclick");
+			    		
 			    		$(".sideMask").fadeOut(200);
 					} else if (result.indexOf('Sign In') !== -1) {
 						location.replace(sourceleadUrl);
@@ -1248,7 +1249,7 @@ function addRequirementRecommendations(){
 			return false;
 		}
 }
-    
+$('.project-tabs-menu li a[href="#tab-3"]').click();
    	$('body').on('blur', '#submitRecomendedApplicant_form', function() {
 		$("#submitRecomendedApplicant_form").showHelpOnFocus();
 		$("#submitRecomendedApplicant_form").validateOnBlur(false, validationSettings);
