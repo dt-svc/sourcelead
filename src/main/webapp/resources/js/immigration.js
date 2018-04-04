@@ -949,8 +949,6 @@ function getPetitionTypeOnCountries(selectedCountry, selectedCountryOption){
         	$('#petitionTypeTemplate').append('<option value="">--Select Petition Type--</option>');
              for(var i=0;i<json.length;i++){
             	 var opt = json[i];
-            	 console.log(opt);
-            	 alert(opt.name);
             	 $('#petitionTypeTemplate').append('<option value='+opt.id+'>'+opt.name+'</option>');
             } 
             $('#petitionTypeTemplate option[value='+selectedCountryOption+']').prop("selected", true);
