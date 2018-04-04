@@ -43,6 +43,7 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
+import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -1028,6 +1029,22 @@ public class ImmigrationRestController {
 		 model.addObject("candidatesNotesList",candidatesNotesList);
 		return model;
 	}
+	@RequestMapping(value = {"/getCandidateImmigrationFormsList"})
+    public ModelAndView getCandidateImmigrationForms(HttpServletRequest request, 
+    		@RequestParam(value = "candidateId", required = false) Long candidateId
+    	    ,@RequestParam(value = "templateId", defaultValue = "0") Long templateId
+    		,@RequestParam(value = "immigrationId", required = false) Long immigrationId ) throws Exception {
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+        System.out.println("inside controller method getCandidateImmigrationForms--> ");
+    	
+        ModelAndView model = new ModelAndView();
+    	model.setViewName("/immigration/formDetailsTab");
+        List<ImmigrationCandidateForms> candidateFormsLst = immigrationCommonService.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId);
+        System.out.println("Candidate forms Details updated succesfully  candidateFormsLst size  is --> "+candidateFormsLst.size());
+        model.addObject("formsList" ,candidateFormsLst);
+		return model;
+    }
 }
 
 

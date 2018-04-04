@@ -119,13 +119,13 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 
 	void copyImmigrationConfiguredDocsToCandidate(Immigration immigrationObj,User user,OrgLocations orgLocations){
 		List <ImmigrationTemplateDocs> immigrationTemplateDocsDocList =immigrationTemplateDao.getImmigrationTemplateDocsList(immigrationObj.getImmigrationTemplateId().getId());
-		ImmigrationCandidateDocuments immCanObj = new ImmigrationCandidateDocuments();
-		Date date = new Date();
-		immCanObj.setImmigrationTemplateId(immigrationObj.getImmigrationTemplateId());
-		immCanObj.setCandidateId(immigrationObj.getCandidate());
-		immCanObj.setImmigrationId(immigrationObj);
+		ImmigrationCandidateDocuments immCanObj =null; 
+		
 		for(ImmigrationTemplateDocs docs :immigrationTemplateDocsDocList){
-			
+			immCanObj = new ImmigrationCandidateDocuments();
+			immCanObj.setImmigrationTemplateId(immigrationObj.getImmigrationTemplateId());
+			immCanObj.setCandidateId(immigrationObj.getCandidate());
+			immCanObj.setImmigrationId(immigrationObj);
 			immCanObj.setDocumentType(docs.getDocumentType());
 			immCanObj.setDocUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			immCanObj.setDescription(docs.getDescription());
@@ -139,8 +139,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			immCanObj.setIsTemplateConfigured(Constants.YES);
 			immCanObj.setCreatedBy(user);
 			immCanObj.setUpdatedBy(user);
-			immCanObj.setUpdatedDate(date);
-			immCanObj.setCreatedDate(date);
+			Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+			immCanObj.setUpdatedDate(currentDate);
+			immCanObj.setCreatedDate(currentDate);
 			try {
 				immigrationCommonDao.saveImmigrationCandidateDocs(immCanObj);
 			} catch (Exception e) {
@@ -152,30 +153,36 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	
 	void copyImmigrationConfiguredFormsToCandidate(Immigration immigrationObj,User user,OrgLocations orgLocations){
 		List <ImmigrationTemplateForms> immigrationTemplateFormsList =immigrationTemplateDao.getImmigrationTemplateFormsList(immigrationObj.getImmigrationTemplateId().getId());
-		ImmigrationCandidateForms immCanObj = new ImmigrationCandidateForms();
-		Date date = new Date();
-		immCanObj.setImmigrationTempId(immigrationObj.getImmigrationTemplateId());
-		immCanObj.setCandidate(immigrationObj.getCandidate());
-		immCanObj.setImmigration(immigrationObj);
-		for(ImmigrationTemplateForms docs :immigrationTemplateFormsList){
-			
-			immCanObj.setDescription(docs.getDescription());
-			if(docs.getIsRequired() != null && "Y".equalsIgnoreCase(docs.getIsRequired())){
-				immCanObj.setIsRequired(docs.getIsRequired());
+		ImmigrationCandidateForms immCanObj = null;
+		
+		for(ImmigrationTemplateForms forms :immigrationTemplateFormsList){
+			immCanObj = new ImmigrationCandidateForms();
+			immCanObj.setImmigrationTempId(immigrationObj.getImmigrationTemplateId());
+			immCanObj.setCandidate(immigrationObj.getCandidate());
+			immCanObj.setImmigration(immigrationObj);
+			immCanObj.setDescription(forms.getDescription());
+			if(forms.getIsRequired() != null && "Y".equalsIgnoreCase(forms.getIsRequired())){
+				immCanObj.setIsRequired(forms.getIsRequired());
 			}else{
 				immCanObj.setIsRequired(Constants.NO);	
 			}
+			immCanObj.setFormName(forms.getFormName());
+			immCanObj.setFormType(forms.getFormType());
+			immCanObj.setFormUUID(forms.getFormUUID());
+			immCanObj.setFileName(forms.getFileName());
+			immCanObj.setFileContentType(forms.getFileContentType());
+			immCanObj.setFileUrl(forms.getFileUrl());
 			immCanObj.setStatus(Constants.RECORD_ACTIVE);
-			//immCanObj.setDocumentStatus(Constants.DOCUMENT_UPLOAD_REQUESTED);
+			immCanObj.setFormStatus(Constants.DOCUMENT_UPLOAD_REQUESTED);
 			immCanObj.setIsTemplateConfigured(Constants.YES);
+			Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 			immCanObj.setCreatedBy(user);
 			immCanObj.setUpdatedBy(user);
-			immCanObj.setUpdatedDate(date);
-			immCanObj.setCreatedDate(date);
+			immCanObj.setUpdatedDate(currentDate);
+			immCanObj.setCreatedDate(currentDate);
 			try {
-				//immigrationCommonDao.saveImmigrationCandidateDocs(immCanObj);
+				immigrationCommonDao.saveImmigrationCandidateForms(immCanObj);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -710,6 +717,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		List <ImmigrationCandidateDocuments> immigrationCanididateDocList =immigrationCommonDao.getImmigrationCandidateDocs(immigrationId,templateId,candidateId);
 		
 		return immigrationCanididateDocList;
+	}
+
+	@Override
+	public List<ImmigrationCandidateForms> getCandidateImmigartionFormsDetails(Long candidateId, Long templateId,
+			Long immigrationId) {
+		return immigrationCommonDao.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId);
 	}
 	
 }
