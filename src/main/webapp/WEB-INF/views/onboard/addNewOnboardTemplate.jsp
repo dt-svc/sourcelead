@@ -790,21 +790,21 @@ function saveOnboardTask(){
 		        contentType:false,
 		    	 url: sourceleadUrl+"/saveOnBoardTasks?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(response) {
-		        	 	if (response.response === "AWKWARD") {
-		        		    location.href = "/errorPage";
-		        		} else if (response.response === "SUCCESS") {
-			        		$("#onboardtasksLoading").removeAttr("style");
-				        	flushOnboardTask();
-				        	getAssignToUsersList();
-				        	getOnboardingTasksList();
-				        	document.getElementById("selector").style.display = 'block';
-				        	$("#selector").fadeIn(150);
-				        	$('#selector').delay(1000).fadeOut('slow');
-		        		} else if (response.indexOf('Sign In') !== -1) {
-		        			location.replace(sourceleadUrl);
-		        		} else {
-		        		    showError("Operation failed, please try again");
-		        		}
+	        	 	if (response.response === "AWKWARD") {
+	        		    location.href = "/errorPage";
+	        		} else if (response.response === "SUCCESS") {
+		        		$("#onboardtasksLoading").removeAttr("style");
+			        	flushOnboardTask();
+			        	getAssignToUsersList();
+			        	getOnboardingTasksList();
+			        	document.getElementById("selector").style.display = 'block';
+			        	$("#selector").fadeIn(150);
+			        	$('#selector')s.delay(1000).fadeOut('slow');
+	        		} else if (response.indexOf('Sign In') !== -1) {
+	        			location.replace(sourceleadUrl);
+	        		} else {
+	        		    showError("Operation failed, please try again");
+	        		}
 		        },
 		    });  
 	        return true;
@@ -1267,7 +1267,7 @@ function saveAndFinishOnboardTemplate(templateId) {
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/saveAndFinishOnboardTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
-	    success: function(data) {
+	    success: function(response) {
 	    	if (response.response === "AWKWARD") {
 	    	    location.href = "/errorPage";
 	    	} else if (response.response === "SUCCESS") {
