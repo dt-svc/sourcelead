@@ -80,7 +80,7 @@ public class AddElkRequirement {
 				requirementIndex.setClosedDate(rs.getString("REQUIRMENT_CLOSED_DATE"));
 				requirementIndex.setIsreceivingApplicants(rs.getString("IS_RECEIVING_APPLICANTS"));
 				if(null != rs.getString("PROJECT_CLIENT_ID") && !"".equalsIgnoreCase(rs.getString("PROJECT_CLIENT_ID"))){
-				requirementIndex.setProjectClientID(rs.getString("PROJECT_CLIENT_ID"));
+					requirementIndex.setProjectClientID(rs.getString("PROJECT_CLIENT_ID"));
 				}
 				if(null != rs.getString("DESCRIPTION") && !"".equalsIgnoreCase(rs.getString("DESCRIPTION"))){
 					requirementIndex.setDescription(rs.getString("DESCRIPTION"));
@@ -199,6 +199,7 @@ public class AddElkRequirement {
 					requirementIndex.setEducation(education.split(","));
 				}
 				if(rs.getString("ORG_RELATION_ID") !=null && !"".equalsIgnoreCase(rs.getString("ORG_RELATION_ID"))){
+					requirementIndex.setIsClientJob(rs.getString("IS_CLIENT_JOB"));
 					ResultSet rs1 = getClientContactDetails(rs.getString("ORG_RELATION_ID"),conn);
 					String clientName =null;
 					String clientContactName = null;
