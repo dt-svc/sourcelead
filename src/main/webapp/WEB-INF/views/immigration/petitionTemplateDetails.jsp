@@ -29,10 +29,10 @@
                         <div class="col-md-12 noPad mb" id="templateNameDiv">
                             <label class="col-md-3">Country<span class="text-danger paddingLeft">*</span></label>
                            	<div class="col-md-8 padding_right">
-								<select class="chosen-select form-control" name="country" onchange="getPetitionTypeOnCountries($(this));" id= "countryName" field-name="Country" data-validation="required">
+								<select class="chosen-select form-control" name="country" onchange="getPetitionTypeOnCountries($(this), null);" id= "countryName" field-name="Country" data-validation="required">
 								<option value="" selected>--Select Country--</option>
-								  <c:forEach var="country" items="${countriesList}">
-									<option value="${country.name}">${country.name}</option>
+								  <c:forEach var="country"  items="${countriesList}">
+									<option value="${country.name}" ${templateDTO.country == country.name ? 'selected' : ''} >${country.name}</option>
 								</c:forEach>
 								</select>
 							</div>
@@ -41,10 +41,6 @@
                             <label class="col-md-3">Petition Type<span class="text-danger paddingLeft">*</span></label>
                             <div class="col-md-8 padding_right">
 								<select class="chosen-select form-control" name="petitionType" id="petitionTypeTemplate" field-name="Petition Type" data-validation="required">
-								<%-- <option value="" selected>--Select Petition Type--</option>
-								  <c:forEach var="petitionType" items="${petitionTypeList}">
-									<option value="${petitionType.name}">${petitionType.description}</option>
-								</c:forEach> --%>
 								</select>
 							</div>
                         </div> 
@@ -66,5 +62,6 @@
 <script type="text/javascript">
     $(document).ready(function () {
         immTemplId = '<c:out value ="${not empty templateDTO.id ? templateDTO.id : ''}"/>';
+        getPetitionTypeOnCountries($("#countryName"),"${templateDTO.petitionType}");
     });
 </script>

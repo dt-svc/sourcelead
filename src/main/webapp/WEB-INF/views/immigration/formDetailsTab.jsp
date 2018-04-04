@@ -11,25 +11,20 @@
 				<th>Form Name</th>
 				<th>File</th>
 				<th>Status</th>
-				<th>&nbsp;</th>
+				<th>Action</th>
 			  </tr>
 			  <c:forEach var="items" items="${formsList}" varStatus="rows">
 			  <tr>
 				<td><div class="tbldata-dotdot-me">${items.formName}</div></td>
 				<td><div class="tbldata-dotdot-me"><span class="fileName">${items.fileName}</span>
-					<a class="glyphicon glyphicon-download-alt" title="Download"></a></div>
+					<a class="glyphicon glyphicon-download-alt" title="Download" href="${items.fileUrl}"></a></div>
 				</td>
-				<td><div class="tbldata-dotdot-big">${items.formStatus}</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" title="Upload" class="fa fa-upload uploadForm"></a>
-							<a href="javascript:void(0)" title="Remove" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" title="Edit" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
+				<td><div class="tbldata-dotdot-sm">${items.formStatus}</div></td>
+				 <td><div>
+				 <a title="Upload" class="fa fa-upload uploadForm" onclick=""></a>
+				 <i id="edit" class="glyphicon glyphicon-pencil ml10" onclick=""></i>
+				 <i id="delete" class="glyphicon glyphicon-trash ml10" onclick="" ></i></div>
+				 </td>
 			  </tr>  
 			 </c:forEach>			  			  
 			</tbody>
