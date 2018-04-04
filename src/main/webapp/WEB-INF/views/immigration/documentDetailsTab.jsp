@@ -14,18 +14,18 @@
 				<th>Document</th>
 				<th>Status</th>
 				<th>Description</th>
-				<th>&nbsp;</th>
+				<th>Action</th>
 			  </tr>
-			  			  			  
+			  <c:forEach var="canDocList" items="${immigrationCanDocList}" varStatus="rows">			  			  
 			<tr>
-				<td><div class="tbldata-dotdot-vsm">Pan Card</div></td>
-				<td><div class="tbldata-dotdot-vsm">Yes</div></td>
+				<td><div class="tbldata-dotdot-vsm">${canDocList.documentTypeName}</div></td>
+				<td><div class="tbldata-dotdot-vsm">${canDocList.isRequired == 'Y' ? "YES":"NO"}</div></td>
 				<td><div class="tbldata-dotdot-me"><span class="fileName">Pad.jpg</span>
 					<a class="fa fa-eye" title="View"></a>
 					<a class="glyphicon glyphicon-download-alt" title="View"></a></div>
 				</td>
-				<td><div class="tbldata-dotdot-vsm">Uploaded</div></td>
-				<td><div class="tbldata-dotdot-big">Description text</div></td>
+				<td><div class="tbldata-dotdot-vsm">${canDocList.documentStatus}</div></td>
+				<td><div class="tbldata-dotdot-big">${canDocList.description}</div></td>
 				<td class="immigraAction">
 					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
 					<div class="mmigraActionInn">
@@ -37,22 +37,13 @@
 					</div>
 				</td>
 			  </tr>  
-
+		</c:forEach>
 			  						
 			</tbody>
 		  </table>
 		</div>
 		
-		<div class="immigraPagi clearfix">
-			<div class="immiPagiText">Showing 1 to 6 of 6 entries</div>
-			  <ul class="pagination">
-				<li><a href="#"> << </a></li>
-				<li><a href="#">2</a></li>
-				<li><a href="#">3</a></li>
-				<li class="disabled"><a href="#">6</a></li>
-				<li data-page="last"><a href="#"> >> </a></li>
-			  </ul>
-		</div>
+		
 		<!--  popup code start -->
 		<form id= "candidate_Immigration_Doc" name = "candidate_Immigration_Doc">
 		<div class="popUpOut" id="docuView">

@@ -144,7 +144,9 @@ public class SourceleadNotes {
 	@JsonProperty
 	private String updatedDateString;
 	
-
+	@Transient
+	private String immigrationId;
+	
 	public Long getId()
 	{
 		return id;
@@ -433,6 +435,14 @@ public class SourceleadNotes {
 
 	public void setCandidate(Candidate candidate) {
 		this.candidate = candidate;
+	}
+
+	public String getImmigrationId() {
+		return immigrationId;
+	}
+
+	public void setImmigrationId(String immigrationId) {
+		this.immigrationId = immigrationId;
 	}
 	
 	

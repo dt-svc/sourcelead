@@ -42,10 +42,13 @@ import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Immigration;
+import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
+import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.SourceleadNotes;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
@@ -439,12 +442,20 @@ public class ImmigrationRestController {
     @RequestMapping(value = { "/getCandidateImmigrationCandidateDocsList" })
 	public ModelAndView getCandidateImmigrationCandidateDocsList(@RequestParam(value = "candidateId", required = true) Long candidateId,
 			@RequestParam(value = "templateid", required = true) Long templateid,
+			@RequestParam(value = "immigrationId", required = true) Long immigrationId,
 			HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		model.setViewName("/immigration/documentDetailsTab");
+        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+        List<ImmigrationCandidateDocuments> immigrationCanDocList = immigrationCommonService.getImmigrationCandidateDocs(immigrationId,templateid,candidateId,user,orgLocations);
+        for(ImmigrationCandidateDocuments docs : immigrationCanDocList){
+        	LookUpData data = lookUpDataService.getTasksById(docs.getDocumentType());
+			docs.setDocumentTypeName(data.getName());
+		}
+        model.setViewName("/immigration/documentDetailsTab");
 		 List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
 	       model.addObject("documentsList", documentsList);
+	       model.addObject("immigrationCanDocList", immigrationCanDocList);
 		return model;
 	}
 
@@ -1014,6 +1025,7 @@ public class ImmigrationRestController {
 			return immiCanEdu;
 	}
 	
+<<<<<<< HEAD
 	
 	@RequestMapping(value = {"/getPetitionTypeOnLocation"})
     public List<LookUpData> getPetitionTypeOnLocation(@RequestParam(value="locationVal", required=false) String  locationVal, HttpServletRequest request) {
@@ -1021,6 +1033,36 @@ public class ImmigrationRestController {
         return petitionTypeDTOs;
 	}
 	
+=======
+	@RequestMapping(value = { "/getNotesListByImmigrationId" })
+	public ModelAndView getNotesListByImmigrationId(
+			@RequestParam(value = "candidateId", required = true) Long candidateId,
+			@RequestParam(value = "immigrationId", required = true) Long immigrationId,
+			HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		model.setViewName("/immigration/noteDetailsTab");
+		 List<SourceleadNotes>   candidatesNotesList = sourceleadNotesService.getNotesListByImmigrationId(immigrationId,orgLocations.getId());
+		 model.addObject("candidatesNotesList",candidatesNotesList);
+		return model;
+	}
+	@RequestMapping(value = {"/getCandidateImmigrationFormsList"})
+    public ModelAndView getCandidateImmigrationForms(HttpServletRequest request, 
+    		@RequestParam(value = "candidateId", required = false) Long candidateId
+    	    ,@RequestParam(value = "templateId", defaultValue = "0") Long templateId
+    		,@RequestParam(value = "immigrationId", required = false) Long immigrationId ) throws Exception {
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+        System.out.println("inside controller method getCandidateImmigrationForms--> ");
+    	
+        ModelAndView model = new ModelAndView();
+    	model.setViewName("/immigration/formDetailsTab");
+        List<ImmigrationCandidateForms> candidateFormsLst = immigrationCommonService.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId);
+        System.out.println("Candidate forms Details updated succesfully  candidateFormsLst size  is --> "+candidateFormsLst.size());
+        model.addObject("formsList" ,candidateFormsLst);
+		return model;
+    }
+>>>>>>> 35cd016b2475db7d408202d901a1a9d7cdffaf8a
 }
 
 

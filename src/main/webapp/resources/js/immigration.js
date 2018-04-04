@@ -487,6 +487,19 @@ this.deletePassportVisaDetailsById=function(id,idType){
             }
         });
 	}
+	
+	this.displayImmigrationCandidateForms = function(candidateId,templateId, immigrationId){
+		console.log(" inside forms list candidateId--->"+candidateId);
+		$.ajax({
+	        url: sourceleadUrl + immiModulePath + "/getCandidateImmigrationFormsList?candidateId="+candidateId+"&templateId="+templateId+"&immigrationId="+immigrationId,
+	        type: "GET",
+	        success: function (result) {
+	            $("#formsTab").html(result);
+	            console.log(" inside forms list success--->");
+	        }
+	    });
+	}
+	
 	this.udpatePopupFormdata = function(formObj, idsArray, dataObj) {
 		  var formId = formObj.id;
 		   $.each(formObj, function(key, value) {
@@ -739,7 +752,7 @@ function saveCandidateDocs() {
                 if (data == 'success') {
                 	$('#docuView').hide();
                 	$('.popMask').fadeOut();
-                	displayImmigrationCandidateDocs(candidateId,templateId);
+                	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId);
                 }
             }
         });
@@ -756,10 +769,10 @@ $('body').on('blur', '#candidate_Immigration_Doc', function () {
 });
 
 
-function displayImmigrationCandidateDocs(candidateId,templateid){
+function displayImmigrationCandidateDocs(candidateId,templateid,immigrationId){
 	
 	$.ajax({
-        url: sourceleadUrl + immiModulePath + "/getCandidateImmigrationCandidateDocsList?candidateId="+candidateId+"&templateid="+templateid,
+        url: sourceleadUrl + immiModulePath + "/getCandidateImmigrationCandidateDocsList?candidateId="+candidateId+"&templateid="+templateid+"&immigrationId="+immigrationId,
         type: "GET",
         success: function (result) {
             $("#docsTab").html(result);
@@ -912,9 +925,9 @@ function saveNotesDatails(status) {
             data: formData,
             success: function (data) {
             	if (data === 'success') {
-                	$('#popResiView').hide();
-                	$('.popMask').fadeOut();
-                	//getCandidateResidenceList(candidateId);
+            		$(".popMask").fadeOut(200);
+    				$("#popNoteView").hide(100);
+                	getNotesListByImmigration(candidateId);
                 }
             }
         });
@@ -926,6 +939,7 @@ function saveNotesDatails(status) {
 	
 }
 
+<<<<<<< HEAD
 function getPetitionTypeOnCountries(selectedCountry){
 	var selectedValue = selectedCountry.val();
 	$.ajax({
@@ -941,5 +955,20 @@ function getPetitionTypeOnCountries(selectedCountry){
             $('#petitionTypeTemplate').trigger("chosen:updated");
         }
 	}); 
+=======
+function getNotesListByImmigration(candidateId){
+	console.log("inside displayNotesDetails function call test -->")
+	 var immigrationId = $('#immigrationID').val();
+	//alert("oooooo"+candidateId)
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/getNotesListByImmigrationId?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
+       type: "GET",
+        success: function (result) {
+       	  console.log("Before  loading result---->");
+           $("#notesTab").html(result);
+           console.log("After loading result---->");
+       }
+   });
+>>>>>>> 35cd016b2475db7d408202d901a1a9d7cdffaf8a
 }
 

@@ -1,3 +1,4 @@
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <div class="immigraTabsHead">			  	
 		  	<a href="javascript:void(0)" id="addForm"><i class="glyphicon glyphicon-plus"></i> Add Form</a> 
 		  	<span><input class="immigraTabSerach" type="text"></span>
@@ -12,46 +13,13 @@
 				<th>Status</th>
 				<th>&nbsp;</th>
 			  </tr>
+			  <c:forEach var="items" items="${formsList}" varStatus="rows">
 			  <tr>
-				<td><div class="tbldata-dotdot-me">Form one</div></td>
-				<td><div class="tbldata-dotdot-me"><span class="fileName">mainform.jpg</span>
+				<td><div class="tbldata-dotdot-me">${items.formName}</div></td>
+				<td><div class="tbldata-dotdot-me"><span class="fileName">${items.fileName}</span>
 					<a class="glyphicon glyphicon-download-alt" title="Download"></a></div>
 				</td>
-				<td><div class="tbldata-dotdot-big">Not uploaded</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" title="Upload" class="fa fa-upload uploadForm"></a>
-							<a href="javascript:void(0)" title="Remove" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" title="Edit" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
-			  </tr>  			  			  
-			  <tr>
-				<td><div class="tbldata-dotdot-me">Form one</div></td>
-				<td><div class="tbldata-dotdot-me"><span class="fileName">mainform.jpg</span>
-					<a class="glyphicon glyphicon-download-alt" title="Download"></a></div>
-				</td>
-				<td><div class="tbldata-dotdot-big">Not uploaded</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" title="Upload" class="fa fa-upload uploadForm"></a>
-							<a href="javascript:void(0)" title="Remove" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" title="Edit" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
-			  </tr> 
-			  <tr>
-				<td><div class="tbldata-dotdot-me">Form one</div></td>
-				<td><div class="tbldata-dotdot-me"><span class="fileName">mainform.jpg</span>
-					<a class="glyphicon glyphicon-download-alt" title="Download"></a></div>
-				</td>
-				<td><div class="tbldata-dotdot-big">Uploaded</div></td>
+				<td><div class="tbldata-dotdot-big">${items.formStatus}</div></td>
 				<td class="immigraAction">
 					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
 					<div class="mmigraActionInn">
@@ -63,80 +31,12 @@
 					</div>
 				</td>
 			  </tr>  
-			  <tr>
-				<td><div class="tbldata-dotdot-me">Form one</div></td>
-				<td><div class="tbldata-dotdot-me"><span class="fileName">mainform.jpg</span>
-					<a class="glyphicon glyphicon-download-alt" title="Download"></a></div>
-				</td>
-				<td><div class="tbldata-dotdot-big">Uploaded</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" title="Upload" class="fa fa-upload uploadForm"></a>
-							<a href="javascript:void(0)" title="Remove" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" title="Edit" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
-			  </tr>  
-			  <tr>
-				<td><div class="tbldata-dotdot-me">Form one</div></td>
-				<td><div class="tbldata-dotdot-me"><span class="fileName">mainform.jpg</span>
-					<a class="glyphicon glyphicon-download-alt" title="Download"></a></div>
-				</td>
-				<td><div class="tbldata-dotdot-big">Not uploaded</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" title="Upload" class="fa fa-upload uploadForm"></a>
-							<a href="javascript:void(0)" title="Remove" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" title="Edit" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
-			  </tr>  
-			  <tr>
-				<td><div class="tbldata-dotdot-me">Form one</div></td>
-				<td><div class="tbldata-dotdot-me"><span class="fileName">mainform.jpg</span>
-					<a class="glyphicon glyphicon-download-alt" title="Download"></a></div>
-				</td>
-				<td><div class="tbldata-dotdot-big">Not uploaded</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" title="Upload" class="fa fa-upload uploadForm"></a>
-							<a href="javascript:void(0)" title="Remove" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" title="Edit" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
-			  </tr> 
-			  <tr>
-				<td><div class="tbldata-dotdot-me">Form one</div></td>
-				<td><div class="tbldata-dotdot-me"><span class="fileName">mainform.jpg</span>
-					<a class="glyphicon glyphicon-download-alt" title="Download"></a></div>
-				</td>
-				<td><div class="tbldata-dotdot-big">Uploaded</div></td>
-				<td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" title="Upload" class="fa fa-upload uploadForm"></a>
-							<a href="javascript:void(0)" title="Remove" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" title="Edit" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td>
-			  </tr> 
-			  						
+			 </c:forEach>			  			  
 			</tbody>
 		  </table>
 		</div>
 		
-		<div class="immigraPagi clearfix">
+		<!-- <div class="immigraPagi clearfix">
 			<div class="immiPagiText">Showing 1 to 6 of 6 entries</div>
 			  <ul class="pagination">
 				<li><a href="#"> << </a></li>
@@ -145,7 +45,7 @@
 				<li class="disabled"><a href="#">6</a></li>
 				<li data-page="last"><a href="#"> >> </a></li>
 			  </ul>
-		</div>
+		</div> -->
 		<!--  popup code start-->
 		<div class="popUpOut" id="viewFormpop">
 		<div class="popupHead">

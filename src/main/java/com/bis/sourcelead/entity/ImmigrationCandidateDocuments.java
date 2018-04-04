@@ -11,8 +11,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "IMMIGRATION_CANDIDATE_DOCS", schema = "SOURCELEAD")
@@ -50,8 +53,14 @@ public class ImmigrationCandidateDocuments implements Serializable {
 	@Column(name = "IS_REQUIRED ")
 	private String isRequired;
 	
+	@Column(name="DOCUMENT_STATUS")
+	private String documentStatus;
+	
 	@Column(name = "STATUS")
 	private Integer status;
+	
+	@Column(name = "IS_TEMPALTE_CONFIGURED")
+	private String isTemplateConfigured;
 	
 	@Column(name = "REQUEST_FILE_URL",columnDefinition = "TEXT default NULL")
 	private String requestFileUrl;
@@ -71,7 +80,6 @@ public class ImmigrationCandidateDocuments implements Serializable {
 	@Column(name = "UPLOADED_FILE_CONTENT_TYPE")
 	private String upldedFileContentType;
 	
-	
 	@Column(name = "CREATED_DATE ")
 	private Date createdDate;
 	
@@ -85,6 +93,10 @@ public class ImmigrationCandidateDocuments implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "UPDATED_BY")
 	private User updatedBy;
+	
+	@Transient
+	@JsonProperty
+	private String documentTypeName;
 
 	public Long getId() {
 		return id;
@@ -236,6 +248,30 @@ public class ImmigrationCandidateDocuments implements Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getDocumentTypeName() {
+		return documentTypeName;
+	}
+
+	public void setDocumentTypeName(String documentTypeName) {
+		this.documentTypeName = documentTypeName;
+	}
+
+	public String getDocumentStatus() {
+		return documentStatus;
+	}
+
+	public void setDocumentStatus(String documentStatus) {
+		this.documentStatus = documentStatus;
+	}
+
+	public String getIsTemplateConfigured() {
+		return isTemplateConfigured;
+	}
+
+	public void setIsTemplateConfigured(String isTemplateConfigured) {
+		this.isTemplateConfigured = isTemplateConfigured;
 	}
 	
 	

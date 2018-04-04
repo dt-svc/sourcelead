@@ -31,6 +31,7 @@ import com.bis.sourcelead.entity.CandidateLcaI94Summary;
 import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
+import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
@@ -571,5 +572,27 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
         String query = "from LookUpData lud where lud.category = :category and location = :location";
         List<LookUpData> petitionTypeLookup = session.createQuery(query).setString("category", petitionType).setString("location", locationVal).list();
         return petitionTypeLookup;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = {Exception.class})
+	public List<ImmigrationTemplateDocs> getImmigrationTemplateDocsList(Long templateId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ImmigrationTemplateDocs> immigrationTemplateDocsList = new ArrayList<ImmigrationTemplateDocs>();
+			String queryString = "from ImmigrationTemplateDocs td where td.immigrationTempId.id=:templateId order by td.updatedDate desc";
+			immigrationTemplateDocsList = session.createQuery(queryString).setLong("templateId", templateId).list();
+		
+		return immigrationTemplateDocsList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = {Exception.class})
+	public List<ImmigrationTemplateForms> getImmigrationTemplateFormsList(Long templateId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ImmigrationTemplateForms> immigrationTemplateFormsList = new ArrayList<ImmigrationTemplateForms>();
+			String queryString = "from ImmigrationTemplateForms td where td.immigrationTempId.id=:templateId order by td.updatedDate desc";
+			immigrationTemplateFormsList = session.createQuery(queryString).setLong("templateId", templateId).list();
+		
+		return immigrationTemplateFormsList;
 	}
 }
