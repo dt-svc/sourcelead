@@ -505,4 +505,15 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		}
 		return projectTasks;
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectTasks> getTasksListByLeaveType(Long levaTypeId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectTasks pt where pt.leaveType.id = :levaTypeId ";
+		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setLong("levaTypeId", levaTypeId).list(); 
+		return projectTasksList; 
+	}
+	 
 }
