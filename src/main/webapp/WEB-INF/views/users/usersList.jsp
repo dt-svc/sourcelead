@@ -484,6 +484,12 @@ function myDepartmentFunction() {
     }
 }
 
+$(document).keyup(function(e) {
+	  if (e.keyCode === 27) {
+		  closePop();
+	  }
+	});
+
 </script>
 
 <script>
