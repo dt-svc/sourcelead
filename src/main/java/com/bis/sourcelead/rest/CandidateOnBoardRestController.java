@@ -32,6 +32,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateOnBoardingDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.OnBoardingTemplateDTO;
@@ -524,12 +525,28 @@ public class CandidateOnBoardRestController {
 	 
 	 
 	 @RequestMapping(value = "/getOnBoardingCandidateDetails")
-		public String getOnBoardingCandidateDetails(@RequestParam(value = "candidateId", required = false) Long candidateId,
+		public CandidateDTO getOnBoardingCandidateDetails(@RequestParam(value = "candidateId", required = false) Long candidateId,
 				HttpServletRequest request) throws Exception {
 
 			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+			CandidateDTO candidateDTO = new CandidateDTO();
+			candidateDTO.setFirstName(candidate.getFirstName());
+			candidateDTO.setLastName(candidate.getLastName());
+			candidateDTO.setMobilePhone(candidate.getMobilePhone());
+			candidateDTO.setEmail(candidate.getEmail());
+			candidateDTO.setLocation(candidate.getLocation());
+			candidateDTO.setCountry(candidate.getCountry());
+			candidateDTO.setState(candidate.getState());
+			candidateDTO.setCity(candidate.getCity());
+			candidateDTO.setZipcode(candidate.getZipCode());
+		if (candidate.getOrgRelationId() != null) {
+			candidateDTO.setVendorOrgRelationId(candidate.getOrgRelationId().getId().toString());
+		}
+		if (candidate.getSpocId() != null) {
+			candidateDTO.setVendorSpocId(candidate.getSpocId().getId().toString());
+		}
 			
-			return commonUtil.toJSON(candidate);
+			return candidateDTO;
 
 		}
 	 

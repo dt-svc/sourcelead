@@ -747,5 +747,10 @@ public class UserRoleServiceImpl implements UserRoleService{
 	{
 		return userRoleDao.getUserCountListByOrgLocationId(orgLocationId, usersUsageReportDTO);
 	}
+    @Override
+	public List<User> getAllProjectManagersAssignedToProjects(Long orgLocationId) throws Exception {
+		return userRoleDao.getAllProjectManagersAssignedToProjects(orgLocationId);
+
+	}
 
 }

@@ -130,6 +130,8 @@ public interface UserRoleDao {
 	public ResponseList<UserRole> getUserRoleListByLocationIdAndUserType(UsersUsageReportDTO usersUsageReportDTO,OrgLocations orglocation)throws Exception;
 	
 	Map<String, Integer> getUserCountListByOrgLocationId(Long orgLocationId,List<Long> orgId);
+	
+	List<User> getAllProjectManagersAssignedToProjects(Long orgLocationId) throws Exception;
 
 	public Map<String, Integer> getUserCountListByOrgLocationId(Long orgLocationId, UsersUsageReportDTO usersUsageReportDTO);
 

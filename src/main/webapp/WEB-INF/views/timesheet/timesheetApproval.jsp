@@ -20,27 +20,7 @@
 	});
 </script>
 
-
-<section class="content-wraper">
-		  <section class="content-header clearfix">
-		       <div class="pull-left"><h2>Timesheet approval</h2></div>
-		            <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> » Timesheet approval</div>
-		       <div class="clearfix"></div>
-		   </section>
-		    <div  id="loadTimeHead"></div>
-		   <div id="timesheetApprovalDiv" class="datatable_filter" >
-			   <div class="timesheet_out">
-			     	<div class="timesheet_appr_wrap">
-			     	 <input type='hidden' id='notifyLink' name='notifyLink' value="${notifyLink}"/>
-			     	 <div id="timeApprovaldiv">
-				     		<jsp:include page="TimesheetApprovalDetils.jsp"></jsp:include>
-			         </div>
-	     		</div>
-	     	</div> 
-	 	 </div>
-</section>
-
- <script>
+<script>
 	function timesheetApprovalDetils(filter){ 
 	               var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	               var locationCode ='${SourceLeadWeb_locationCode}';
@@ -77,7 +57,6 @@
 		          
 		           if(client == null || client == '' || client == 'undefined')
 		        	   client = '';
-		           
 		           var searchvalue = '';
 	  	           if(searchData != null && searchData !='' && searchData!='undefined'){
 	  	        	 searchValue = searchData;
@@ -86,9 +65,23 @@
 	  	           }
 		           $("#timeApprovaldiv").empty();
 	               $("#loadTimeHead").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+	               var formData = new FormData();
+	               formData.append("frequencyMonth", frequencyMonth);
+	               formData.append("timesheetFrequency", timesheetFrequency);
+	               formData.append("weekFrequency", weekFrequency);
+	               formData.append("client", client);
+	               formData.append("stage", stage);
+	               formData.append("locationCode", locationCode);
+	               formData.append("userId", userId);
+	               formData.append("searchValue", searchValue);
+	               formData.append("projectName", projectName);
+	               
 	        	   $.ajax({
 		      	          type : "POST",
-	        	      	  url: sourceleadUrl+"/timesheetApprovalDetails?frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency+"&weekFrequency="+weekFrequency+"&client="+client+"&stage="+stage+"&locationCode="+locationCode+"&userId="+userId+"&searchValue="+searchValue+"&projectName="+projectName,		
+		      	          data: formData,
+		  		          processData: false,
+		  		          contentType:false, 
+	        	      	  url: sourceleadUrl+"/timesheetApprovalDetails",		
 	        		      success :function(data) {
 	        		    	  $("#loadTimeHead").removeAttr('style');
 	        		    	  $("#timeApprovaldiv").empty();
@@ -102,6 +95,27 @@
 	        	    }); 
 	}
 </script> 
+
+<section class="content-wraper">
+		  <section class="content-header clearfix">
+		       <div class="pull-left"><h2>Timesheet approval</h2></div>
+		            <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> » Timesheet approval</div>
+		       <div class="clearfix"></div>
+		   </section>
+		    <div  id="loadTimeHead"></div>
+		   <div id="timesheetApprovalDiv" class="datatable_filter" >
+			   <div class="timesheet_out">
+			     	<div class="timesheet_appr_wrap">
+			     	 <input type='hidden' id='notifyLink' name='notifyLink' value="${notifyLink}"/>
+			     	 <div id="timeApprovaldiv">
+				     		<jsp:include page="timesheetApprovalDetils.jsp"></jsp:include>
+			         </div>
+	     		</div>
+	     	</div> 
+	 	 </div>
+</section>
+
+ 
 <script type="text/javascript">
          function prepareChosenScripts(){
         	 var config = {

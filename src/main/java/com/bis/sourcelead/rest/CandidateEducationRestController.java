@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -97,6 +98,22 @@ public class CandidateEducationRestController {
 	 * 
 	 * @throws NullPointer
 	 */
+
+	/** @author: Mahaveer Manoj, This method is used for Android application **/
+	@RequestMapping(value = "/rest/storeCandidateEducation", method = RequestMethod.POST)
+	@ResponseBody
+	public Response<Integer> storeCandidateEducation(@RequestBody CandidateEducationDTO candidateEducationDTO, HttpServletRequest request)
+			throws Exception {
+		Response<Integer> response = new Response<>();
+		try {
+			response = storeCandidateEducation(candidateEducationDTO, candidateEducationDTO.getCandidateId() + "", request);
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
 
 	// @PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_EDUCATION_DETAILS')")
 	@RequestMapping(value = "/storeCandidateEducation", method = RequestMethod.POST)
@@ -254,73 +271,105 @@ public class CandidateEducationRestController {
 	// @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS')")
 	@RequestMapping(value = { "/getCandidateEducationBycandidateIdandEducationId",
 			"/rest/getCandidateEducationBycandidateIdandEducationId" }, method = RequestMethod.POST)
-	public CandidateEducationDTO getCandidateEducationBycandidateIdandEducationId(
-			@RequestParam(value = "candidateId", required = false) Long candidateId,
-			@RequestParam(value = "candidateEducationId", required = false) Long candidateEducationId, HttpServletRequest request)
-			throws Exception {
+	public Response<CandidateEducationDTO> getCandidateEducationBycandidateIdandEducationId(
+			@RequestParam(value = "candidateId", required = false, defaultValue = "0") Long candidateId,
+			@RequestParam(value = "candidateEducationId", required = false, defaultValue = "0") Long candidateEducationId,
+			HttpServletRequest request) throws Exception {
+		Response<CandidateEducationDTO> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null && candidateId > 0 && candidateEducationId > 0) {
+				CandidateEducationDTO candEduDTO = new CandidateEducationDTO();
+				CandidateEducation candidatesEducationList = candidateEducationService
+						.getCandidateEducationBycandidateIdandEducationId(candidateId, candidateEducationId);
+				Candidate can = candidateService.getCandidateById(candidateId);
+				// SimpleDateFormat formatter =
+				// can.getOrgLocationId().getLocFullFormDateFormatter();
 
-		CandidateEducationDTO candEduDTO = new CandidateEducationDTO();
-		CandidateEducation candidatesEducationList = candidateEducationService.getCandidateEducationBycandidateIdandEducationId(candidateId,
-				candidateEducationId);
-		Candidate can = candidateService.getCandidateById(candidateId);
-		// SimpleDateFormat formatter =
-		// can.getOrgLocationId().getLocFullFormDateFormatter();
+				if (candidatesEducationList.getName() != null) {
+					candEduDTO.setName(candidatesEducationList.getName());
+				}
 
-		if (candidatesEducationList.getName() != null) {
-			candEduDTO.setName(candidatesEducationList.getName());
-		}
+				if (candidatesEducationList.getInstitute() != null) {
+					candEduDTO.setInstitute(candidatesEducationList.getInstitute());
+				}
 
-		if (candidatesEducationList.getInstitute() != null) {
-			candEduDTO.setInstitute(candidatesEducationList.getInstitute());
-		}
+				if (candidatesEducationList.getSpecialization() != null) {
+					candEduDTO.setSpecialization(candidatesEducationList.getSpecialization());
+				}
 
-		if (candidatesEducationList.getSpecialization() != null) {
-			candEduDTO.setSpecialization(candidatesEducationList.getSpecialization());
-		}
+				if (candidatesEducationList.getAddress() != null) {
+					candEduDTO.setAddress(candidatesEducationList.getAddress());
+				}
 
-		if (candidatesEducationList.getAddress() != null) {
-			candEduDTO.setAddress(candidatesEducationList.getAddress());
-		}
+				if (candidatesEducationList.getGrade() != null) {
+					candEduDTO.setGrade(candidatesEducationList.getGrade());
+				}
 
-		if (candidatesEducationList.getGrade() != null) {
-			candEduDTO.setGrade(candidatesEducationList.getGrade());
-		}
+				if (candidatesEducationList.getGradeType() != null) {
+					candEduDTO.setGradeType(candidatesEducationList.getGradeType());
+				}
 
-		if (candidatesEducationList.getGradeType() != null) {
-			candEduDTO.setGradeType(candidatesEducationList.getGradeType());
-		}
+				if (candidatesEducationList.getAllAndCandidateEducations() != null) {
+					candEduDTO.setAllAndCandidateEducations(candidatesEducationList.getAllAndCandidateEducations());
+				}
 
-		if (candidatesEducationList.getAllAndCandidateEducations() != null) {
-			candEduDTO.setAllAndCandidateEducations(candidatesEducationList.getAllAndCandidateEducations());
-		}
+				if (candidatesEducationList.getStartDate() != null) {
+					candEduDTO.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(can.getOrgLocationId().getDateFormat(),
+							candidatesEducationList.getStartDate()));
+				}
+				if (candidatesEducationList.getEndDate() != null) {
+					candEduDTO.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(can.getOrgLocationId().getDateFormat(),
+							candidatesEducationList.getEndDate()));
+				}
 
-		if (candidatesEducationList.getStartDate() != null) {
-			candEduDTO.setStartDateStr(
-					commonUtil.dateStrFromOrgDateFormatter(can.getOrgLocationId().getDateFormat(), candidatesEducationList.getStartDate()));
-		}
-		if (candidatesEducationList.getEndDate() != null) {
-			candEduDTO.setEndDateStr(
-					commonUtil.dateStrFromOrgDateFormatter(can.getOrgLocationId().getDateFormat(), candidatesEducationList.getEndDate()));
-		}
-
-		LinkedHashSet<String> lhs = new LinkedHashSet<String>();
-		List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
-		for (LookUpData lookUpData : educationsList) {
-			lhs.add(lookUpData.getName());
-		}
-		if (StringUtils.isNotEmpty(candidatesEducationList.getName())) {
-			String[] cel = candidatesEducationList.getName().split(",");
-			for (String el : cel) {
-				lhs.add(el);
+				LinkedHashSet<String> lhs = new LinkedHashSet<String>();
+				List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+				for (LookUpData lookUpData : educationsList) {
+					lhs.add(lookUpData.getName());
+				}
+				if (StringUtils.isNotEmpty(candidatesEducationList.getName())) {
+					String[] cel = candidatesEducationList.getName().split(",");
+					for (String el : cel) {
+						lhs.add(el);
+					}
+				}
+				candEduDTO.setAllAndCandidateEducations(lhs);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+				response.setObject(candEduDTO);
+			} else if (user == null) {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
 			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		candEduDTO.setAllAndCandidateEducations(lhs);
-
-		return candEduDTO;
+		return response;
 	}
 
-	@RequestMapping(value = { "/upDateCandidateEducationByCandidateIdAndCandidateEducationId",
-			"rest/upDateCandidateEducationByCandidateIdAndCandidateEducationId" }, method = RequestMethod.POST)
+	/** @author: Mahaveer Manoj, This method is used for Android application **/
+	@RequestMapping(value = "rest/upDateCandidateEducationByCandidateIdAndCandidateEducationId", method = RequestMethod.POST)
+	@ResponseBody
+	public Response<Boolean> upDateCandidateEducationByCandidateIdAndCandidateEducationIdForAndroid(
+			@RequestBody CandidateEducationDTO candidateEducationDTO, HttpServletRequest request) throws Exception {
+		Response<Boolean> response = new Response<>();
+		try {
+			response = upDateCandidateEducationByCandidateIdAndCandidateEducationId(candidateEducationDTO, request);
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+
+	@RequestMapping(value = "/upDateCandidateEducationByCandidateIdAndCandidateEducationId", method = RequestMethod.POST)
 	@ResponseBody
 	public Response<Boolean> upDateCandidateEducationByCandidateIdAndCandidateEducationId(CandidateEducationDTO candidateEducationDTO,
 			HttpServletRequest request) throws Exception {
@@ -356,11 +405,30 @@ public class CandidateEducationRestController {
 	}
 
 	@RequestMapping(value = "/validateEduname")
-	public Boolean validateEduname(@RequestParam(value = "name", required = false) String name,
+	public Response<Boolean> validateEduname(@RequestParam(value = "name", required = false) String name,
 			@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request) throws Exception {
-		String candidateEducation = name;
-		Boolean canEdu = candidateEducationService.validateEducationName(candidateId, candidateEducation);
-		return canEdu;
+		Response<Boolean> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null && candidateId > 0) {
+				String candidateEducation = name;
+				Boolean canEdu = candidateEducationService.validateEducationName(candidateId, candidateEducation);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+				response.setObject(canEdu);
+			} else if (user == null) {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
 	}
 
 }

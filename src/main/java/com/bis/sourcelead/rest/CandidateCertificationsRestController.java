@@ -9,10 +9,10 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateCertificationDTO;
-import com.bis.sourcelead.dto.CandidateResumeDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
@@ -38,7 +37,6 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 /**
  * @author Shivayogi
@@ -81,6 +79,23 @@ public class CandidateCertificationsRestController {
 	 * 
 	 * @throws Exception
 	 */
+
+	/** @author: Mahaveer Manoj, This method is used for Android application **/
+	@RequestMapping(value = "/rest/storeCandidateCertifications", method = RequestMethod.POST)
+	public @ResponseBody Response<String> storeCandidateCertifications(@RequestBody CandidateCertificationDTO candidateCertificationDTO,
+			HttpServletRequest request) throws Exception {
+		Response<String> response = new Response<>();
+		try {
+			response = storeCandidateCertifications(candidateCertificationDTO, Long.parseLong(candidateCertificationDTO.getCandidateId()),
+					request);
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+
 	// @PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_CERTIFICATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_CERTIFICATION_DETAILS')")
 	@RequestMapping(value = "/storeCandidateCertifications", method = RequestMethod.POST)
 	public @ResponseBody Response<String> storeCandidateCertifications(CandidateCertificationDTO candidateCertificationDTO,
@@ -303,8 +318,23 @@ public class CandidateCertificationsRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = { "/updateCandidateCertificationsBycandidateIdandcandidateCertificateId",
-			"rest/updateCandidateCertificationsBycandidateIdandcandidateCertificateId" }, method = RequestMethod.POST)
+
+	/** @author: Mahaveer Manoj, This method is used for Android application **/
+	@RequestMapping(value = "rest/updateCandidateCertificationsBycandidateIdandcandidateCertificateId", method = RequestMethod.POST)
+	public @ResponseBody Response<String> updateCandidateCertificationsBycandidateIdandcandidateCertificateIdForAndroid(
+			@RequestBody CandidateCertificationDTO candidateCertificationDTO, HttpServletRequest request) throws Exception {
+		Response<String> response = new Response<>();
+		try {
+			response = updateCandidateCertificationsBycandidateIdandcandidateCertificateId(candidateCertificationDTO, request);
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+
+	@RequestMapping(value = "/updateCandidateCertificationsBycandidateIdandcandidateCertificateId", method = RequestMethod.POST)
 	public @ResponseBody Response<String> updateCandidateCertificationsBycandidateIdandcandidateCertificateId(
 			CandidateCertificationDTO candidateCertificationDTO, HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();

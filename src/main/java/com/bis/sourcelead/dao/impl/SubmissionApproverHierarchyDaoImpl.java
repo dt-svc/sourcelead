@@ -12,10 +12,21 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.annotations.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +45,15 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchyHistory;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
+import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Approval_Mechanism_Type;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -85,6 +100,10 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			session.saveOrUpdate(submissionApproverHierarchy);
+			SubmissionApproverHierarchyHistory sahh = CommonUtil.getSubmissionApproverHierarchyHistory(submissionApproverHierarchy);
+			if(sahh != null && sahh.getSubmissionApproverHierarchyId() != null) {
+				session.saveOrUpdate(sahh);
+			}
 		} catch (Exception exception) {
 			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "SUBMISSION_APPROVE_HIERARCHY"));
 			throw new SourceLeadConstraintViolationException(message.toString()
@@ -99,6 +118,10 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		Session session = this.sessionFactory.getCurrentSession();
 		if (submissionApproverHierarchy != null) {
 			session.saveOrUpdate(submissionApproverHierarchy);
+			SubmissionApproverHierarchyHistory sahh = CommonUtil.getSubmissionApproverHierarchyHistory(submissionApproverHierarchy);
+			if(sahh != null && sahh.getSubmissionApproverHierarchyId() != null) {
+				session.saveOrUpdate(sahh);
+			}
 		}
 		if (submissionApproverHierarchy == null) {
 			StringBuilder message = new StringBuilder(MessageFormat.format(statusUpdate, "SUBMISSION_APPROVE_HIERARCHY"));
@@ -106,6 +129,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		}
 		return submissionApproverHierarchy;
 	}
+	
 	
 	@SuppressWarnings("unchecked")   
 	@Override
