@@ -56,6 +56,12 @@ public class ImmigrationTemplate implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "UPDATED_BY")
 	private User updatedBy;
+	
+	@Column(name = "PETITION_TYPE")
+	private String petitionType;
+	
+	@Column(name = "COUNTRY")
+	private String country;
 
 	public Long getId() {
 		return id;
@@ -137,7 +143,21 @@ public class ImmigrationTemplate implements Serializable {
 	public void setOrgLocations(OrgLocations orgLocations) {
 		this.orgLocations = orgLocations;
 	}
-	
-	
 
+	public String getPetitionType() {
+		return petitionType;
+	}
+
+	public void setPetitionType(String petitionType) {
+		this.petitionType = petitionType;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+	
 }

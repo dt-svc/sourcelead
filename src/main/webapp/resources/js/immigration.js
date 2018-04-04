@@ -939,6 +939,24 @@ function saveNotesDatails(status) {
 	
 }
 
+function getPetitionTypeOnCountries(selectedCountry, selectedCountryOption){
+	var selectedValue = selectedCountry.val();
+	$.ajax({
+	    type: "GET",
+        url: sourceleadUrl+immiModulePath+"/getPetitionTypeOnLocation?locationVal="+selectedValue,  
+        success: function(json) {
+        	$('#petitionTypeTemplate').empty();
+        	$('#petitionTypeTemplate').append('<option value="">--Select Petition Type--</option>');
+             for(var i=0;i<json.length;i++){
+            	 var opt = json[i];
+            	 $('#petitionTypeTemplate').append('<option value='+opt.id+'>'+opt.name+'</option>');
+            } 
+            $('#petitionTypeTemplate option[value='+selectedCountryOption+']').prop("selected", true);
+            $('#petitionTypeTemplate').trigger("chosen:updated");
+        }
+	}); 
+}
+
 function getNotesListByImmigration(candidateId){
 	console.log("inside displayNotesDetails function call test -->")
 	 var immigrationId = $('#immigrationID').val();

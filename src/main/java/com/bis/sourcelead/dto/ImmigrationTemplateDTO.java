@@ -61,6 +61,10 @@ public class ImmigrationTemplateDTO extends SearchDTO implements Serializable {
 	private String taskReminder;
 
 	private String assignedTo;
+	
+	private String country;
+	
+	private String petitionType;
 
 	public Long getId() {
 		return id;
@@ -268,6 +272,22 @@ public class ImmigrationTemplateDTO extends SearchDTO implements Serializable {
 
 	public void setPetitionAssignedToName(String petitionAssignedToName) {
 		this.petitionAssignedToName = petitionAssignedToName;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public String getPetitionType() {
+		return petitionType;
+	}
+
+	public void setPetitionType(String petitionType) {
+		this.petitionType = petitionType;
 	}
 
 }
