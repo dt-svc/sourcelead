@@ -2618,7 +2618,7 @@ function resetCandidateFilter(){
 	$("ul#AllTypeFilter > li input:radio").prop("checked",false);
 	$("ul#UpdatedFilter > li input:radio").prop("checked",false);
 	$("ul#employmentFilter > li input:checkbox").prop("checked",false);
-	
+	$("#dataTableSearch").val('');
 	document.getElementById("candidateTypeAll").checked = true;
 	document.getElementById("candidateAll").checked = true;
 	candidateList();
