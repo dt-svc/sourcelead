@@ -621,6 +621,22 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	public List<CandidateFamilyDetails> getCandidateFamilyDetails(Long candidateId) {
 		return immigrationCommonDao.getCandidateFamilyDetails(candidateId);
 	}
+	
+	@Override
+	public ImmigrationCandidateDocuments uploadRequstedDocForCandidate(ImmigrationTemplateDocDTO immigrationTemplateDocDTO,Long id, Long candidateId, Long immigrationId) throws Exception {
+		ImmigrationCandidateDocuments docs = immigrationCommonDao.getImmigrationCandidateDocsById(id,candidateId,immigrationId);
+		if(immigrationTemplateDocDTO.getFileInfo() != null){
+			FileInfo fileInfo = immigrationTemplateDocDTO.getFileInfo().get(0);
+			docs.setUplodedFileUrl(fileInfo.getFileURL());
+			docs.setUpldedFileContentType(fileInfo.getContentType());
+			docs.setUpldedFileName(fileInfo.getFileName());
+			FileUploadUtil.moveFile(immigrationTemplateDocDTO.getStaticPath(), fileInfo, "immigrationCandidateDocuments");
+			docs.setDocumentStatus(Constants.DOCUMENT_UPLOAD);
+			immigrationCommonDao.saveImmigrationCandidateDocs(docs);
+		}
+		
+		return docs;
+	}
 
 	@Override
 	public String deletetCandidateFamilyDetails(Long candidateId) {

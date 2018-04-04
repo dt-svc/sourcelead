@@ -139,6 +139,20 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         String name = (String) session.createQuery(query).setString("category", petitionTypeConstant).setLong("lookupId", petitionTypeId).uniqueResult();
 		return name;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ImmigrationCandidateDocuments getImmigrationCandidateDocsById(Long id, Long candidateId, Long immigrationId)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ImmigrationCandidateDocuments  ciDoc where ciDoc.id=:id and ciDoc.candidateId.id = :candidateId and ciDoc.immigrationId.id =:immigrationId";
+		List<ImmigrationCandidateDocuments> canImgDocList = session.createQuery(query).setLong("id", id).setLong("candidateId", candidateId).setLong("immigrationId", immigrationId).list();
+		ImmigrationCandidateDocuments canImgDoc = null;
+		if (canImgDocList != null && canImgDocList.size() > 0) {
+			canImgDoc = (ImmigrationCandidateDocuments) canImgDocList.iterator().next();
+		}
+		return canImgDoc;
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })

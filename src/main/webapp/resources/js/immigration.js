@@ -887,6 +887,26 @@ function editResidenceDEtailsByRowId(id){
  });
 }
 
+function uploadRequestDoc(){
+	var formData = getFormData("uploadRequestDoc_Form");
+	var candidateId = $("#candidateID").val();
+	var immigrationId = $('#immigrationID').val();
+	var id = $("#uploadIdSave").val();
+	alert("ooooo"+id)
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/uploadRequstedDoc?id="+id+"&candidateId="+candidateId+"&immigrationId="+immigrationId,
+        type: "POST",
+        data: formData,
+        success: function (result) {
+        	if(result=='success'){
+        		$('#uploadCanDocPop').hide();
+            	$('.popMask').fadeOut();
+        	     
+        	}
+        }
+    });
+}
+
 function validateEduname()  
 {	var validationSettings = {
             errorMessagePosition: 'element',
