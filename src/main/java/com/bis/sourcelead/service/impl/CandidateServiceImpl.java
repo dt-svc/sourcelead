@@ -2120,4 +2120,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getCandidateByEmail(email);
 	}
 
+	@Override
+	public Candidate getCandidateByParentCandidateIdAndOrgLocationId(Long parentCandidateId, Long orgLocationId)
+			throws Exception {
+		return candidateDao.getCandidateByParentCandidateIdAndOrgLocationId(parentCandidateId, orgLocationId);
+	}
+
 }

@@ -53,6 +53,7 @@ import com.bis.sourcelead.dto.UserProfileDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.Department;
@@ -74,6 +75,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.RestResponsetUtil;
+import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
@@ -189,6 +191,8 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	@Autowired
 	CandidateOffBoardingService candidateOffBoardingService;
 
+	@Autowired
+	AssetService assetService;
 	private Org org;
 	
 	/**
@@ -1329,6 +1333,13 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	{
 		List<ProjectMembers> projectMembersList = projectMembersService.getAllAssignedProjectsForUser(userId, orgLocationId,fromType);
 		return projectMembersList;
+	}
+	
+	@RequestMapping(value =  "/getUserBasedAssetManagementList", method = RequestMethod.GET)
+	public @ResponseBody List<Asset> getUserBasedAssetManagementList(@RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception
+	{
+	List<Asset> assementList = assetService.getUserBasedAssetManagementListandOrgLocation(orgLocationId, userId);
+	return assementList;
 	}
 	
 	 @RequestMapping(value = "/refreshRoleList", method = RequestMethod.POST)
