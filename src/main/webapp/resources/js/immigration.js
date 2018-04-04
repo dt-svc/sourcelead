@@ -939,7 +939,6 @@ function saveNotesDatails(status) {
 	
 }
 
-<<<<<<< HEAD
 function getPetitionTypeOnCountries(selectedCountry){
 	var selectedValue = selectedCountry.val();
 	$.ajax({
@@ -955,7 +954,8 @@ function getPetitionTypeOnCountries(selectedCountry){
             $('#petitionTypeTemplate').trigger("chosen:updated");
         }
 	}); 
-=======
+}
+
 function getNotesListByImmigration(candidateId){
 	console.log("inside displayNotesDetails function call test -->")
 	 var immigrationId = $('#immigrationID').val();
@@ -969,6 +969,5 @@ function getNotesListByImmigration(candidateId){
            console.log("After loading result---->");
        }
    });
->>>>>>> 35cd016b2475db7d408202d901a1a9d7cdffaf8a
 }
 
