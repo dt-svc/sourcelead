@@ -17,23 +17,39 @@
 				<th>Action</th>
 			  </tr>
 			  <c:forEach var="canDocList" items="${immigrationCanDocList}" varStatus="rows">			  			  
-			<tr>
+			<tr docid="${canDocList.id}" >
 				<td><div class="tbldata-dotdot-vsm">${canDocList.documentTypeName}</div></td>
 				<td><div class="tbldata-dotdot-vsm">${canDocList.isRequired == 'Y' ? "YES":"NO"}</div></td>
-				<td><div class="tbldata-dotdot-me"><span class="fileName">Pad.jpg</span>
-					<a class="fa fa-eye" title="View"></a>
-					<a class="glyphicon glyphicon-download-alt" title="View"></a></div>
+				<c:if test="${!empty canDocList.upldedFileName}">
+				<td><div class="tbldata-dotdot-me"><span class="fileName">${canDocList.upldedFileName}</span>
+					<a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile('${canDocList.uplodedFileUrl}','${canDocList.upldedFileName}','${canDocList.upldedFileContentType}');" title="View"></a>
+					<a class="glyphicon glyphicon-download-alt" href="${canDocList.uplodedFileUrl}" title="	Download"></a></div>
 				</td>
+				</c:if>
+				<c:if test="${empty canDocList.upldedFileName}">
+				<td><div class="tbldata-dotdot-me"><span class="fileName">--</span>
+					</div>
+				</td>
+				</c:if>
 				<td><div class="tbldata-dotdot-vsm">${canDocList.documentStatus}</div></td>
 				<td><div class="tbldata-dotdot-big">${canDocList.description}</div></td>
-				<td class="immigraAction">
+				<!-- <td class="immigraAction">
 					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
 					<div class="mmigraActionInn">
 						<span>
 							<a href="javascript:void(0)" title="Upload" class="fa fa-upload uploadForm"></a>
+							<a title="Upload" class="fa fa-upload uploadForm"></a>
 							<a href="javascript:void(0)" title="Remove" class="fa fa-trash"></a>
 							<a href="javascript:void(0)" title="Edit" class="fa fa-pencil"></a>
 						</span>
+					</div>
+				</td> -->
+				<td class="immigraAction">
+					<div><i id= "upload" title="Upload" class="fa fa-upload uploadForm"></i><i id="edit" onclick="editDocumentDetailsByRowId(${canDocList.id});"
+				class="glyphicon glyphicon-pencil"></i><i id="delete" 
+				 onclick="deleteDocumentDetailsByRowId(${canDocList.id});" 
+				 class="glyphicon glyphicon-trash ml10"></i>
+						
 					</div>
 				</td>
 			  </tr>  
@@ -144,10 +160,12 @@
             <input value="Save" class="" type="button" onclick="saveCandidateDocs();">
             <input value="Cancel" class="popCan" type="button">
           </div>		
-	</div> -->	
-	<div class="popUpOut" id="uploadFormPop">
+	</div> -->
+	<form id = "uploadRequestDoc_Form" name = "uploadRequestDoc_Form" >
+	<input type= "hidden" id ="uploadIdSave" value=""/>
+	<div class="popUpOut" id="uploadCanDocPop">
 		<div class="popupHead">
-			<h2>Upload file</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+			<h2>Upload file</h2><a href="javascript:void(0)" class="fa fa-close popCan" onclick="removeDocPopUp12();"></a>
 		</div>
 		
 		<div class="popupMid popupMidHeight clearfix">
@@ -157,9 +175,9 @@
               	<div class="col-md-8 padding_right">
 					<div class="input-group col-md-12" style="margin:0 auto">
 					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-					  <input type="file" style="display: none;" multiple id="uploadBtn10"  class="upload">
+					  <input type="file" style="display: none;" multiple id="uploadBtn"  class="upload">
 					  </span> </label>
-					<input type="text" class="form-control" readonly id="uploadFile10" placeholder="Upload Resume ...">
+					<input type="text" class="form-control" readonly id="uploadFile" name = "docFile" placeholder="Upload Resume ...">
 				  </div>
 				</div>
 			</div>					          	
@@ -167,17 +185,22 @@
 		</div>
 		
 		<div class="immiPopFoot">
-            <input value="Save" class="" type="button">
-            <input value="Cancel" class="popCan"  type="button">
+            <input value="Save" id="uploadDocSave" class="" type="button" onclick="uploadRequestDoc();">
+            <input value="Cancel" class="popCan"  onclick="removeDocPopUp12();" type="button">
           </div>		
 	</div>	<!--  popup code end  -->
-	
+	</form>	
 		<script>
 		
 			 // Import Document PopUp
-			$("#immDocu").click(function(){
+			$(".uploadForm").click(function(){
 				$(".popMask").fadeIn(200);
-				$("#uploadFormPop").fadeIn(100);
+				$("#uploadCanDocPop").fadeIn(100);
+
+				$("#uploadIdSave").val($(this).closest('tr').attr("docid"));
+				
+				
+				
 			});
 			 // Add Document PopUp
 			$("#addDocu").click(function(){
@@ -189,8 +212,20 @@
 
 			}; 
 		</script>
+<!-- <script type="text/javascript">
+function uploadDoc(id){
+	uploadRequestDoc(id);
+	alert("ggggg"+id)
+}
+</script> -->
 		
 <script type="text/javascript">
+
+function removeDocPopUp12(){
+	$(".popMask").fadeOut(200);
+	$("#uploadCanDocPop").fadeOut(100);
+}
+
 function removeDocPopUp(){
 	$(".popMask").fadeOut(200);
 	$("#docuView").fadeOut(100);
@@ -198,7 +233,7 @@ function removeDocPopUp(){
 }
 $(function() {
 	$("#uploadBtn").change(function() {
-	fileUpload("uploadBtn", "immigrationCandidateDocuments", "candidate_Immigration_Doc");
+	fileUpload("uploadBtn", "immigrationCandidateDocuments", "uploadRequestDoc_Form");
 });
 });
 </script>		

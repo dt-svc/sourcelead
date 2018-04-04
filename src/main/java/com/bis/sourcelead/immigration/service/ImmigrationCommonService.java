@@ -39,6 +39,8 @@ public interface ImmigrationCommonService {
 
 	String deletetCandidateFamilyDetails(Long id);
 	
+	ImmigrationCandidateDocuments uploadRequstedDocForCandidate(ImmigrationTemplateDocDTO immigrationTemplateDocDTO,Long id,Long candidateId,Long immigrationId)throws Exception;
+	
 	List<CandidateResidence> getCandidatesResidenceListByCandidateIdAndOrgLocationID(Long candidateId);
 	
 	List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId,String idType, String searchValue);

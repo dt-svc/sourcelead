@@ -852,6 +852,7 @@ public class Constants {
     public static final String ACCOUNT_DEDUCTIONS = "ACCOUNT_DEDUCTIONS";
     public static final String DOCUMENT_UPLOAD_MANUALLY = "Manually";
     public static final String DOCUMENT_UPLOAD_REQUESTED = "Requested";
+    public static final String DOCUMENT_UPLOAD = "Uploaded";
     public static final String REQUESTED_DOCUMENT_ACCEPTED = "Accepted";
     public static final String REQUESTED_DOCUMENT_REJECTED = "Rejected";
     public static final String REQUESTED_DOCUMENT_SUBMITTED = "Submitted";
