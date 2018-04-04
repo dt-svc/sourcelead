@@ -335,28 +335,31 @@ function Immigration() {
 	}
  
     
- this.displayPassportDetails=function(candidateId,Passport){
-	console.log("inside displayPassportDetails function call  -->")
-		$.ajax({
-        url: sourceleadUrl + immiModulePath + "/getCandidatePassportVisaDetails?candidateId="+candidateId+ "&idType=" + Passport,
-        type: "GET",
-        success: function (result) {
-            $("#passportsTab").html(result);
-           
-        }
-    });
-}	
-this.displayVisaDetails=function(candidateId,Visa){
-	console.log("inside displayVisaDetails function call  -->")
-		$.ajax({
-        url: sourceleadUrl + immiModulePath + "/getCandidatePassportVisaDetails?candidateId="+candidateId+ "&idType=" + Visa,
-        type: "GET",
-        success: function (result) {
-            $("#visasTab").html(result);
-           
-        }
-    });
-}	
+
+    this.displayPassportDetails=function(candidateId,Passport,searchValue){
+   	console.log("inside displayPassportDetails function call  -->")
+   		$.ajax({
+           url: sourceleadUrl + immiModulePath + "/getCandidatePassportVisaDetails?candidateId="+candidateId+ "&idType=" + Passport+ "&searchValue=" + searchValue,
+           type: "GET",
+           success: function (result) {
+               $("#passportsTab").html(result);
+              
+           }
+       });
+   }	
+    
+    
+   this.displayVisaDetails=function(candidateId,Visa,searchValue){
+   	console.log("inside displayVisaDetails function call  -->")
+   		$.ajax({
+           url: sourceleadUrl + immiModulePath + "/getCandidatePassportVisaDetails?candidateId="+candidateId+ "&idType=" + Visa+ "&searchValue=" + searchValue,
+           type: "GET",
+           success: function (result) {
+               $("#visasTab").html(result);
+              
+           }
+       });
+   }	
 
 this.deletePassportVisaDetailsById=function(id,idType){
 	var candidateId = $("#candidateID").val();
@@ -971,4 +974,34 @@ function getNotesListByImmigration(candidateId){
        }
    });
 }
+
+function searchPassportValue(){
+	var validationSettings = {
+            errorMessagePosition: 'element',
+            borderColorOnError: '',
+            scrollToTopOnError: true,
+            dateFormat: 'yyyy/mm/dd'
+        };
+	var searchValue =document.getElementById("searchValuePassport").value; 
+	var candidateId = $('#candidateID').val();
+	console.log("searchValue"+searchValue);
+	immigration.displayPassportDetails(candidateId,'Passport',searchValue);
+	
+}
+
+function searchVisaValue(){
+	var validationSettings = {
+            errorMessagePosition: 'element',
+            borderColorOnError: '',
+            scrollToTopOnError: true,
+            dateFormat: 'yyyy/mm/dd'
+        };
+	var searchValue =document.getElementById("searchValueVisa").value; 
+	var candidateId = $('#candidateID').val();
+	console.log("searchValue"+searchValue);
+	immigration.displayVisaDetails(candidateId,'Visa',searchValue);
+	
+}
+
+
 
