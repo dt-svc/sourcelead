@@ -478,6 +478,22 @@ public class CandidateListRestController {
 				boolQueryBuilder.must(employmnetTypeBoolQueryBuilder);
 			}
 		}
+		
+		if(StringUtils.isNotBlank(search.getCandidateFilterSkills())) {
+			String[] filterSkills = search.getCandidateFilterSkills().split(",");
+			List<String> filterSkillsList = new ArrayList<>();
+			for(int i=0; i<filterSkills.length; i++) {
+				filterSkillsList.add(filterSkills[i]);
+			}
+			if (filterSkillsList != null && !filterSkillsList.isEmpty()) {
+				BoolQueryBuilder filterSkillBoolQueryBuilder = QueryBuilders.boolQuery();
+				for (String keywd : filterSkillsList) {
+					filterSkillBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("skillsName", keywd));
+				}
+				boolQueryBuilder.must(filterSkillBoolQueryBuilder);
+			}
+		}
+
 
 		// Created By
 		List<String> createdByArray = search.getCreatedBy(); // getSearchKeywordsFromChosenSelectField(jsonObj, "createdByAdvanced");
@@ -1550,6 +1566,7 @@ public class CandidateListRestController {
 			@RequestParam(value = "updatedDateRange", required = false) String updatedDateRange,
 			@RequestParam(value = "exportType", required = false) String exportType,
 			@RequestParam(value = "candidateType", required = false) String candidateType,
+			@RequestParam(value = "candidateFilterSkills", required = false) String candidateFilterSkills,
 			@RequestParam(value = "isAssociate", required = false) String isAssociate, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
@@ -1564,7 +1581,7 @@ public class CandidateListRestController {
 			candidatesList = candidateService.getCandidatesListByOrgLocationIDAndUserId(loginOrgLocation.getId(), user.getId());
 		} else {
 			candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(), org.getId(), candidateStatus,
-					updatedDateRange, candidateType, isAssociate);
+					updatedDateRange, candidateType, isAssociate,candidateFilterSkills);
 		}
 
 		File file = null;

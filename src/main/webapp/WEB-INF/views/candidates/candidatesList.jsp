@@ -1428,10 +1428,16 @@ function exportToPdf(){
         $("#canDiv").removeAttr("onClick");
     }
 	  
+    var candidateFilterSkills = [];
+	 $('input:checkbox[name=candidateFilterSkills]:checked').each(function() 
+     {
+		 candidateFilterSkills.push($(this).val());
+	 });
+	 
 	  var candTypeRadio = $('input[name=candidateType]');
 	  var candidateType = candTypeRadio.filter(':checked').val();
 	  if(isCandidatesAvailable > 0){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf"+"&candidateType="+candidateType+"&isAssociate=N";	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf"+"&candidateType="+candidateType+"&candidateFilterSkills="+candidateFilterSkills+"&isAssociate=N";	
 	  }else{
 		  var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -1468,10 +1474,16 @@ function exportToExcel(){
        $("#canDiv").removeAttr("onClick");
    }
 	  
+	  var candidateFilterSkills = [];
+		 $('input:checkbox[name=candidateFilterSkills]:checked').each(function() 
+	     {
+			 candidateFilterSkills.push($(this).val());
+		 });
+	  
 	  var candTypeRadio = $('input[name=candidateType]');
 	  var candidateType = candTypeRadio.filter(':checked').val();
 	  if(isCandidatesAvailable > 0){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls"+"&candidateType="+candidateType+"&isAssociate=N";	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls"+"&candidateType="+candidateType+"&candidateFilterSkills="+candidateFilterSkills+"&isAssociate=N";	
 	  }else{
 		  var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -2618,6 +2630,7 @@ function resetCandidateFilter(){
 	$("ul#AllTypeFilter > li input:radio").prop("checked",false);
 	$("ul#UpdatedFilter > li input:radio").prop("checked",false);
 	$("ul#employmentFilter > li input:checkbox").prop("checked",false);
+	$("ul#skillsUL > li input:checkbox").prop("checked",false);
 	$("#dataTableSearch").val('');
 	document.getElementById("candidateTypeAll").checked = true;
 	document.getElementById("candidateAll").checked = true;
@@ -2626,14 +2639,14 @@ function resetCandidateFilter(){
 </script>		
 
 
-  <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small" id="candidateFilterPopup">
+  <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="candidateFilterPopup">
 	<h5 class="headerAdsrch">Filter Search
 		<a href="javascript:void(0)" class="close-div" onClick="closeCandidateFilterPop()"><i
 			class="fa fa-close"></i></a>
 	</h5>
 	<div class="addInner">
 		<div class="row">
-			<div class="col-md-4">
+			<div class="col-md-2">
 			<div class="row">
 			
 			<div class="col-md-12 mb">
@@ -2660,7 +2673,7 @@ function resetCandidateFilter(){
 			  </div>
 			</div>
 			
-			<div class="col-md-3">
+			<div class="col-md-2">
 				<div class="row">
 			       <div class="col-md-12 mb">
 				     <label><strong>Updated</strong></label>
@@ -2681,7 +2694,7 @@ function resetCandidateFilter(){
 			 </div>
 			</div> 
 			
-			<div class="col-md-4">
+			<div class="col-md-2">
 				<div class="row">
 					<div class="col-md-12 mb">
 						<label><strong>Employment Type</strong></label>
@@ -2700,6 +2713,19 @@ function resetCandidateFilter(){
 				     </div>
 			</div>
 			
+			<div class="col-md-3">
+					<div class="clearfix dynamic_search filterDynamicsearch">
+						<input type="text" id="mySkillsInput" onkeyup="mySkillsFunction()" placeholder="Skills" title="Type in a skills">
+						<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+					</div>
+					 <div class="clearfix filterSearch-ul">
+						<ul class="list-unstyled positionRelative filterSearch mt5" id="skillsUL">
+							<c:forEach var="skill" items="${skillsList}">
+							<li class="checkBox positionRelative"><input  type="checkbox" name="candidateFilterSkills" value ="${skill.name}" ><label>${skill.name}</label></li>
+							</c:forEach>
+						</ul>
+					 </div> 
+		 </div> 
 			
 		</div>
 		</div>
@@ -2711,5 +2737,23 @@ function resetCandidateFilter(){
 		</div>
 </div>
 	
+<script>
+function mySkillsFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("mySkillsInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("skillsUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+</script>	
 
 <jsp:include page="../masterFooter.jsp" /> 

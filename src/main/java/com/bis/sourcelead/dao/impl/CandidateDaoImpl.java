@@ -196,7 +196,7 @@ public class CandidateDaoImpl implements CandidateDao {
     */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId, Integer candidateState, String updatedDateRange,String candidateType,String isAssociate) throws Exception {
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId, Integer candidateState, String updatedDateRange,String candidateType,String isAssociate,String candidateFilterSkills) throws Exception {
 
 		
 		String subQuery = null;
@@ -225,13 +225,6 @@ public class CandidateDaoImpl implements CandidateDao {
 		
 		
 		String candidateTypeSubQuery = "";
-		/*if(candidateType != null && !candidateType.isEmpty() && candidateType.equalsIgnoreCase("All")){
-			
-			candidateTypeSubQuery = " and (cnadidate.candidateType = 'Candidate' OR cnadidate.candidateType = 'Consultant')";
-			
-		}else{
-			candidateTypeSubQuery = " and cnadidate.candidateType = '"+candidateType+"' ";
-		}*/
 		
 			if(candidateType != null && !candidateType.isEmpty() && candidateType.equalsIgnoreCase("All")){
 				if(isAssociate.equalsIgnoreCase(Constants.YES)){
@@ -247,6 +240,19 @@ public class CandidateDaoImpl implements CandidateDao {
 					candidateTypeSubQuery = " and (cnadidate.isFavourite = '"+candidateType+"') ";
 				}
 			}
+			
+			List<String> skillsList = new ArrayList<>();
+			if(StringUtils.isNotBlank(candidateFilterSkills)) {
+				String[] skills = candidateFilterSkills.split(",");
+				for(int i=0 ;i<skills.length; i++) {
+					skillsList.add(skills[i]);
+				}
+				
+			}else {
+				skillsList.add("0");
+			}
+			
+			String candidateSkillsSubQuery = " and ((:varZero  IN (:skillsList)) OR (:varZero NOT IN (:skillsList) and cnadidate.skillsName IN (:skillsList)))";
     	
 			
 		if(StringUtils.isNotEmpty(updatedDateRange) && !"null".equalsIgnoreCase(updatedDateRange)   && !updatedDateRange.equalsIgnoreCase("undefined")){
@@ -262,19 +268,19 @@ public class CandidateDaoImpl implements CandidateDao {
 	         java.sql.Date endDate = new java.sql.Date(parsed.getTime());
 	         
 			
-   	    	 String query = "from Candidate cnadidate left join fetch cnadidate.orgLocationId orglocation where  cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+" "+candidateTypeSubQuery+" and ( cnadidate.updatedDate >= :endDate) ORDER BY cnadidate.id DESC ";  
+   	    	 String query = "from Candidate cnadidate left join fetch cnadidate.orgLocationId orglocation where  cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+" "+candidateTypeSubQuery+" "+candidateSkillsSubQuery+" and ( cnadidate.updatedDate >= :endDate) ORDER BY cnadidate.id DESC ";  
 		     candidateList = session.createQuery(query)
 				                    .setDate("endDate", endDate)
-				                    .setLong("orgLocationId", orgLocationId)
+				                    .setLong("orgLocationId", orgLocationId).setString("varZero", "0").setParameterList("skillsList", skillsList)
 				                    .setLong("orgId", orgId)
 				                    
 				                    .list();
 		}else{
 			
-			String query = "from Candidate cnadidate  left join fetch cnadidate.orgLocationId orglocation where cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+" "+candidateTypeSubQuery+" ORDER BY cnadidate.id DESC";  
+			String query = "from Candidate cnadidate  left join fetch cnadidate.orgLocationId orglocation where cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+" "+candidateTypeSubQuery+" "+candidateSkillsSubQuery+" ORDER BY cnadidate.id DESC";  
 		    candidateList = session.createQuery(query)
 					               .setLong("orgLocationId", orgLocationId)
-					               .setLong("orgId", orgId).list();
+					               .setLong("orgId", orgId).setString("varZero", "0").setParameterList("skillsList", skillsList).list();
 		}
 		
 		return candidateList;
