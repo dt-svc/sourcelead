@@ -1551,7 +1551,8 @@ public class CandidateDaoImpl implements CandidateDao {
 		String query = " from CandidateIdendities ci  where ci.candidateId.id = :candidateId and ci.idType = :idType ";  
 		CandidateIdendities candidateIdendities =  (CandidateIdendities) session.createQuery(query).setLong("candidateId", id).setString("idType", idType).uniqueResult();
 		return candidateIdendities;
-
+	}
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Candidate getCandidateByParentCandidateIdAndOrgLocationId(Long parentCandidateId, Long orgLocationId)
