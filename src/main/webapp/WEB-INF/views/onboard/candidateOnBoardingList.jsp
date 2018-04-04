@@ -157,7 +157,6 @@
  
  <script>
 function onboardDataTableList(){
-	
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#onboardDataTableSearch").val();
 	 var locationCode = '${SourceLeadWeb_locationCode}';

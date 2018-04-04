@@ -484,6 +484,12 @@ function myDepartmentFunction() {
     }
 }
 
+$(document).keyup(function(e) {
+	  if (e.keyCode === 27) {
+		  closePop();
+	  }
+	});
+
 </script>
 
 <script>
@@ -495,6 +501,7 @@ function resetFilter(){
 	$("ul#myTeamsUL > li input:checkbox").prop("checked",false);
 	$("ul#myDepartmentUL > li input:checkbox").prop("checked",false);
 	$("ul#employmentTypeFilter > li input:checkbox").prop("checked",false);
+	$("#dynamicUserDataTableSearch").val('');
 	
 	document.getElementById("activeStatus").checked = true;
 	document.getElementById("notloggedInStatus").checked = true;
