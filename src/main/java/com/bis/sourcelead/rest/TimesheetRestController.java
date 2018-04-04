@@ -64,6 +64,7 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -84,6 +85,7 @@ import com.bis.sourcelead.service.ExportTimesheetEntries;
 import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
@@ -198,6 +200,9 @@ public class TimesheetRestController {
 	
 	@Autowired
 	private ProjectClientService projectClientService;
+	
+	@Autowired
+	private OrgRelationsService orgRelationsService;
 	
 	/***
 	 * @purpose : Getting ProjectList For Login User (Step - 1)
@@ -889,6 +894,22 @@ public class TimesheetRestController {
 			 timesheetEntryDetailsDTO.setEmployeeEmail(pm.getProjectMemberCandidteId().getEmail());
 			 timesheetEntryDetailsDTO.setEmployeePhoneNo(pm.getProjectMemberCandidteId().getMobilePhone());
 			 timesheetEntryDetailsDTO.setProjectNameForSubmissionPageDisplay(pm.getProjects().getProjectName());
+			 timesheetEntryDetailsDTO.setEmploymentTypeForSubmissionPageDisplay(pm.getProjectMemberCandidteId().getDesignationType());
+			 
+			 if(pm.getProjectClientsId().getOrgRelationId()!= null){
+		    	 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(pm.getProjectClientsId().getOrgRelationId().getId());
+		   	 if(null != pm.getProjectClientsId().getOrgRelationId().getLocationId() && pm.getProjectClientsId().getOrgRelationId().getLocationId().getId() != null && pm.getProjectClientsId().getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+						if(orgRelations.getResponderLocationId() != null){
+							timesheetEntryDetailsDTO.setEmploymentTypeForSubmissionPageDisplay(orgRelations.getResponderLocationId().getOrgLocationName());
+						}
+					}
+					if(null != pm.getProjectClientsId().getOrgRelationId().getResponderLocationId() && null != pm.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId() && pm.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+						if(orgRelations.getLocationId() != null){
+							timesheetEntryDetailsDTO.setEmploymentTypeForSubmissionPageDisplay(orgRelations.getLocationId().getOrgLocationName());
+						}
+					}
+		         }
+			 
 			 List<ProjectTasks> projectsTasks = projectTasksService.getAllTasksByProjectId(eedDTO.getProjectsId());
 			 TimeSheetSubmissionDTO tsDTO =  getTimesheetSubmissionDetails(eedDTO, request);
 			 model.addObject("timesheetSubmissionDTO",tsDTO);
@@ -3354,5 +3375,26 @@ public class TimesheetRestController {
 			}
 		}
 		}
+		
+		@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS')")
+		@RequestMapping(value = "/projectTasksById" , method = RequestMethod.POST)
+		public @ResponseBody  String getProjectTasks(
+				 @RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="avilableProjectTaskIds", required=false) String  avilableProjectTaskIds) throws Exception {
+			 	
+				 
+				List<Long> ids = new ArrayList<Long>();
+				String[] avilableProjectTaskId = avilableProjectTaskIds.split(",");
+				for(String id  : avilableProjectTaskId){
+					if(id != null && !id.isEmpty()){
+						ids.add(Long.parseLong(id));
+					}
+				}
+				
+				 String resultJson;
+				 Collection<ProjectTasks> taskList=projectTasksService.getAllTasksByProjectIdAndExistedProjectTaskIds(projectId, ids);
+				 resultJson = commonUtil.toJSON(taskList);
+				 return resultJson;
+			 	
+		 }
 		
 }
