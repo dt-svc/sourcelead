@@ -452,22 +452,27 @@ function getEmploymentType(){
 			  $.ajax({
 				   	type: "POST",
 				    url: sourceleadUrl+"/getOnBoardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,	    	   
-				    success: function(json) {
-				    	 if(json['vendorOrgRelationId'] != null && json['vendorOrgRelationId'] != '' && json['vendorOrgRelationId'] != 'undefined' 
-		    				 && json['vendorSpocId'] != null && json['vendorSpocId'] != '' && json['vendorSpocId'] != 'undefined'){
-			    			 getVendorsByOrgLocationForAddApplicant(json['vendorOrgRelationId']);
-			    		     getAddApplicantVendorContactList(json['vendorOrgRelationId'],json['vendorSpocId']);
-			    		 }else{
-			    			 getVendorsByOrgLocationForAddApplicant();
-			    		 }
+				    success: function(response) {
+				    	if (response.response === "AWKWARD") {
+				    	    location.href = "/errorPage";
+				    	} else if (response.response === "SUCCESS") {
+				    		var json = JSON.parse(response.object);
+				    		if(json['vendorOrgRelationId'] != null && json['vendorOrgRelationId'] != '' && json['vendorOrgRelationId'] != 'undefined' 
+			    				 && json['vendorSpocId'] != null && json['vendorSpocId'] != '' && json['vendorSpocId'] != 'undefined'){
+				    			 getVendorsByOrgLocationForAddApplicant(json['vendorOrgRelationId']);
+				    		     getAddApplicantVendorContactList(json['vendorOrgRelationId'],json['vendorSpocId']);
+				    		 }else{
+				    			 getVendorsByOrgLocationForAddApplicant();
+				    		 }
+				    	} else if (response.indexOf('Sign In') !== -1) {
+				    		location.replace(sourceleadUrl);
+				    	} else {
+				    	    showError("Operation failed, please try again");
+				    	}
 				    }
 			   });
 			  $("#loading").removeAttr("style");
 		  }
-		 
-		
-		 
-		
 	 }else{
 		 document.getElementById("otherEmploymentTypeDiv").style.display="none";
 		 document.getElementById("vendorsDiv").style.display="none";
@@ -485,7 +490,6 @@ function getEmploymentType(){
 	 }
 }
 </script>
-
 
 <script>
  function getVendorsByOrgLocationForAddApplicant(orgRelationId){
@@ -835,30 +839,37 @@ function validateUploadFile(id)
   
   <script>
   function loadOfferAcceptedCandidates(candidateId){
-		
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getOfferAcceptedCandidatesForOnBoard?${_csrf.parameterName}=${_csrf.token}",	    	   
-		    success: function(data) {
-		    	 var json = JSON.parse(data);
-	        	 var result = "";
-	        	
-	        	result = result +'<option disabled selected>--Select Candidate--</option>';
-	        	for (var i=0; i<json.length; i++)
-				{
-	        		var report = json[i];
-	        		var selected = '';
-	        		if(candidateId != null && candidateId != '' && candidateId != 'undefind'){
-	        			if(candidateId == report.candidateId){
-	        				selected = 'selected';
-	        			}
-	        		}
-	        		result = result +'<option value='+report.candidateId+","+report.id+' '+selected+' >'+report.candidateName+' ('+report.jobTitle+')</option>';
-				}
-	        	 
-	        	 $("#onboardCandiate").empty();
-	           	 $("#onboardCandiate").append(result); 
-	           	 $('#onboardCandiate').trigger("chosen:updated");
+		    success: function(response) {
+		    	if (response.response === "AWKWARD") {
+		    	    location.href = "/errorPage";
+		    	} else if (response.response === "SUCCESS") {
+		    		 var json = JSON.parse(response.object);
+		        	 var result = "";
+		        	
+		        	result = result +'<option disabled selected>--Select Candidate--</option>';
+		        	for (var i=0; i<json.length; i++)
+					{
+		        		var report = json[i];
+		        		var selected = '';
+		        		if(candidateId != null && candidateId != '' && candidateId != 'undefind'){
+		        			if(candidateId == report.candidateId){
+		        				selected = 'selected';
+		        			}
+		        		}
+		        		result = result +'<option value='+report.candidateId+","+report.id+' '+selected+' >'+report.candidateName+' ('+report.jobTitle+')</option>';
+					}
+		        	 
+		        	 $("#onboardCandiate").empty();
+		           	 $("#onboardCandiate").append(result); 
+		           	 $('#onboardCandiate').trigger("chosen:updated");
+		    	} else if (response.indexOf('Sign In') !== -1) {
+		    		location.replace(sourceleadUrl);
+		    	} else {
+		    	    showError("Operation failed, please try again");
+		    	}
 		    }
 	   });
 	  
@@ -878,35 +889,39 @@ function validateUploadFile(id)
 		  $.ajax({
 			   	type: "POST",
 			    url: sourceleadUrl+"/getOnBoardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,	    	   
-			    success: function(json) {
-		        	
-			    	 $("#firstName").val(json['firstName']);
-			    	 $("#lastName").val(json['lastName']);
-			    	 
-			    	 if(json['mobilePhone'] != null && json['mobilePhone'] != "" && json['mobilePhone'] !="undefined"){
-			        		$("#mobileNumber").val(json['mobilePhone']);
-			        		$("#mobileNumber").attr("readonly","readonly");
-			        	}else{
-			        		$("#mobileNumber").remveAttr("readonly");
-			        	}
-			    	 
-			    	 $("#personalEmail").val(json['email']);
-			    	 $("#offBoardLocation").val(json['location']);
-			    	 $("#country").val(json['country']);
-			    	 $("#state").val(json['state']);
-			    	 $("#city").val(json['city']);
-			    	 $("#zipCode").val(json['zipCode']);
-			    	 
-			    	 validateOnboardCandidate(json['email']);
+			    success: function(response) {
+			    	if (response.response === "AWKWARD") {
+			    	    location.href = "/errorPage";
+			    	} else if (response.response === "SUCCESS") {
+			    		var json = JSON.parse(response.object);
+			    		$("#firstName").val(json['firstName']);
+				    	 $("#lastName").val(json['lastName']);
+				    	 
+				    	 if(json['mobilePhone'] != null && json['mobilePhone'] != "" && json['mobilePhone'] !="undefined"){
+				        		$("#mobileNumber").val(json['mobilePhone']);
+				        		$("#mobileNumber").attr("readonly","readonly");
+				        	}else{
+				        		$("#mobileNumber").remveAttr("readonly");
+				        	}
+				    	 
+				    	 $("#personalEmail").val(json['email']);
+				    	 $("#offBoardLocation").val(json['location']);
+				    	 $("#country").val(json['country']);
+				    	 $("#state").val(json['state']);
+				    	 $("#city").val(json['city']);
+				    	 $("#zipCode").val(json['zipCode']);
+				    	 
+				    	 validateOnboardCandidate(json['email']);
+			    	} else if (response.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    	    showError("Operation failed, please try again");
+			    	}
 			    }
 		   });
 	  }
-	  
-	  
   }
   </script>
-  
-  
   
   <script>
   function getDashboardCandidateDetails(){
@@ -922,48 +937,52 @@ function validateUploadFile(id)
 		  $.ajax({
 			   	type: "POST",
 			    url: sourceleadUrl+"/getOnBoardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,	    	   
-			    success: function(data) {
-			    	 var json = JSON.parse(data);
-		        	
-			    	 $("#firstName").val(json['firstName']);
-			    	 $("#lastName").val(json['lastName']);
-			    	
-			    	 
-			    	 if(json['mobilePhone'] != null && json['mobilePhone'] != "" && json['mobilePhone'] !="undefined"){
-			        		$("#mobileNumber").val(json['mobilePhone']);
-			        		$("#mobileNumber").attr("readonly","readonly");
-			        	}else{
-			        		$("#mobileNumber").remveAttr("readonly");
-			        	}
-			    	 
-			    	 $("#personalEmail").val(json['email']);
-			    	 if(json['country'] != null && json['country'] != "" && json['country'] != "undefined"){
-				    	 $("#country").val(json['country']);
-			    	 }else{
-				    	 $("#country").removeAttr('readonly');
-			    	 }
-			    	 if(json['state'] != null && json['state'] != "" && json['state'] != "undefined"){
-				    	 $("#state").val(json['state']);
-			    	 }else{
-				    	 $("#state").removeAttr('readonly');
-			    	 }
-			    	 if(json['city'] != null && json['city'] != "" && json['city'] != "undefined"){
-				    	 $("#city").val(json['city']);
-			    	 }else{
-				    	 $("#city").removeAttr('readonly');
-			    	 }
-			    	 if(json['location'] != null && json['location'] != "" && json['location'] != "undefined"){
-				    	 $("#offBoardLocation").val(json['location']);
-			    	 } 
-			    	 if(json['zipCode'] != null && json['zipCode'] != "" && json['zipCode'] != "undefined"){
-				    	 $("#zipCode").val(json['zipCode']);
-			    	 } 
-			    	 
+			    success: function(response) {
+			    	if (response.response === "AWKWARD") {
+			    	    location.href = "/errorPage";
+			    	} else if (response.response === "SUCCESS") {
+			    		var json = JSON.parse(response.object);
+			    		$("#firstName").val(json['firstName']);
+				    	 $("#lastName").val(json['lastName']);
+				    	
+				    	 
+				    	 if(json['mobilePhone'] != null && json['mobilePhone'] != "" && json['mobilePhone'] !="undefined"){
+				        		$("#mobileNumber").val(json['mobilePhone']);
+				        		$("#mobileNumber").attr("readonly","readonly");
+				        	}else{
+				        		$("#mobileNumber").remveAttr("readonly");
+				        	}
+				    	 
+				    	 $("#personalEmail").val(json['email']);
+				    	 if(json['country'] != null && json['country'] != "" && json['country'] != "undefined"){
+					    	 $("#country").val(json['country']);
+				    	 }else{
+					    	 $("#country").removeAttr('readonly');
+				    	 }
+				    	 if(json['state'] != null && json['state'] != "" && json['state'] != "undefined"){
+					    	 $("#state").val(json['state']);
+				    	 }else{
+					    	 $("#state").removeAttr('readonly');
+				    	 }
+				    	 if(json['city'] != null && json['city'] != "" && json['city'] != "undefined"){
+					    	 $("#city").val(json['city']);
+				    	 }else{
+					    	 $("#city").removeAttr('readonly');
+				    	 }
+				    	 if(json['location'] != null && json['location'] != "" && json['location'] != "undefined"){
+					    	 $("#offBoardLocation").val(json['location']);
+				    	 } 
+				    	 if(json['zipCode'] != null && json['zipCode'] != "" && json['zipCode'] != "undefined"){
+					    	 $("#zipCode").val(json['zipCode']);
+				    	 } 
+			    	} else if (response.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    	    showError("Operation failed, please try again");
+			    	}
 			    }
 		   });
 	  }
-	  
-	  
   }
   </script>
   
@@ -983,58 +1002,63 @@ function validateUploadFile(id)
 		  $.ajax({
 			   	type: "POST",
 			    url: sourceleadUrl+"/getOnBoardingCandidateOfferDetails?${_csrf.parameterName}=${_csrf.token}&offerId="+offerId+"&locationCode="+locationCode,	    	   
-			    success: function(data) {
-			    	 var json = JSON.parse(data);
-		        	
-			    	 if(json['amount'] != null && json['amount'] != "" && json['amount'] != 'undefined'){
-			    		 $("#salaryRate").val(json['amount']);
-			    		 $("#paymentType").val(json['paymentType']);
-				    	 $('#paymentType').trigger("chosen:updated");
-				    	 $("#paymentMode").val(json['paymentMode']);
-				    	 $('#paymentMode').trigger("chosen:updated");
-			    	 }
-						if(json['positionType'] != null && json['positionType'] != "" && json['positionType'] != 'undefined'){
-			    		 if(json['positionType'] == 'Other'){
-			    			 document.getElementById("otherEmploymentTypeDiv").style.display="block";
-			    			 $("#employmentOtherType").val(json['otherPositionType']);
-			    			 $("#employmentOtherType").attr("data-validation", "required");
-			    			 $("#employmentOtherType").removeAttr("data-validation-optional");
-			    		 }else{
-			    			 $("#employmentOtherType").removeAttr("data-validation");
-			    			 $("#employmentOtherType").attr("data-validation-optional","true");
-			    			 $('#otherEmploymentTypeDiv').find('p.jquery_form_error_message').remove(); 
-			    		 }
-			    		 
-		    		     $("#employmentType").val(json['positionType']);
-				    	 $('#employmentType').trigger("chosen:updated");
-				    	 
-				    	 if(json['positionType'] = 'C2C'){
-				    		 getEmploymentType();
-				    		 
-				    		 if(json['orgRelationId'] != null && json['orgRelationId'] != '' && json['orgRelationId'] != 'undefined' 
-			    				 && json['spocId'] != null && json['spocId'] != '' && json['spocId'] != 'undefined'){
-				    			 getVendorsByOrgLocationForAddApplicant(json['orgRelationId']);
-				    		     getAddApplicantVendorContactList(json['orgRelationId'],json['spocId']);
-				    		 }
-			    			
+			    success: function(response) {
+			    	if (response.response === "AWKWARD") {
+			    	    location.href = "/errorPage";
+			    	} else if (response.response === "SUCCESS") {
+			    		var json = JSON.parse(response.object);
+			        	
+				    	 if(json['amount'] != null && json['amount'] != "" && json['amount'] != 'undefined'){
+				    		 $("#salaryRate").val(json['amount']);
+				    		 $("#paymentType").val(json['paymentType']);
+					    	 $('#paymentType').trigger("chosen:updated");
+					    	 $("#paymentMode").val(json['paymentMode']);
+					    	 $('#paymentMode').trigger("chosen:updated");
 				    	 }
-			    		
-			    	 }else{
-			    		 document.getElementById("otherEmploymentTypeDiv").style.display="none";
-			    		 $('#otherEmploymentTypeDiv').find('p.jquery_form_error_message').remove(); 
-			    	 } 
-			    	 if(json['dateOfJoiningStr'] != null && json['dateOfJoiningStr'] != "" && json['dateOfJoiningStr'] != 'undefined'){
-			    		 $("#startDate").val(json['dateOfJoiningStr']);
-			    		 var dt = getJSDate(json['dateOfJoiningStr'],'${SourceLeadWeb_orgLocations.dateFormat}');
-			 			 dt.setDate(dt.getDate() + 1);
-			 			 $("#endDate").datepicker("option", "minDate", dt);
-			    	 }
-			    	 
-			    	 
+							if(json['positionType'] != null && json['positionType'] != "" && json['positionType'] != 'undefined'){
+				    		 if(json['positionType'] == 'Other'){
+				    			 document.getElementById("otherEmploymentTypeDiv").style.display="block";
+				    			 $("#employmentOtherType").val(json['otherPositionType']);
+				    			 $("#employmentOtherType").attr("data-validation", "required");
+				    			 $("#employmentOtherType").removeAttr("data-validation-optional");
+				    		 }else{
+				    			 $("#employmentOtherType").removeAttr("data-validation");
+				    			 $("#employmentOtherType").attr("data-validation-optional","true");
+				    			 $('#otherEmploymentTypeDiv').find('p.jquery_form_error_message').remove(); 
+				    		 }
+				    		 
+			    		     $("#employmentType").val(json['positionType']);
+					    	 $('#employmentType').trigger("chosen:updated");
+					    	 
+					    	 if(json['positionType'] = 'C2C'){
+					    		 getEmploymentType();
+					    		 
+					    		 if(json['orgRelationId'] != null && json['orgRelationId'] != '' && json['orgRelationId'] != 'undefined' 
+				    				 && json['spocId'] != null && json['spocId'] != '' && json['spocId'] != 'undefined'){
+					    			 getVendorsByOrgLocationForAddApplicant(json['orgRelationId']);
+					    		     getAddApplicantVendorContactList(json['orgRelationId'],json['spocId']);
+					    		 }
+				    			
+					    	 }
+				    		
+				    	 }else{
+				    		 document.getElementById("otherEmploymentTypeDiv").style.display="none";
+				    		 $('#otherEmploymentTypeDiv').find('p.jquery_form_error_message').remove(); 
+				    	 } 
+				    	 if(json['dateOfJoiningStr'] != null && json['dateOfJoiningStr'] != "" && json['dateOfJoiningStr'] != 'undefined'){
+				    		 $("#startDate").val(json['dateOfJoiningStr']);
+				    		 var dt = getJSDate(json['dateOfJoiningStr'],'${SourceLeadWeb_orgLocations.dateFormat}');
+				 			 dt.setDate(dt.getDate() + 1);
+				 			 $("#endDate").datepicker("option", "minDate", dt);
+				    	 }
+			    	} else if (response.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    	    showError("Operation failed, please try again");
+			    	}
 			    }
 		   });
 	  }
-	  
   }
   </script> 
   
@@ -1156,24 +1180,30 @@ function loadCandidateRoles(onBoardRoleId){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getRolesListForCandidateOnBoarding?${_csrf.parameterName}=${_csrf.token}",	    	   
-	    success: function(data) {
-	    	 var json = JSON.parse(data);
-        	 var result = "";
-        	
-        	result = result +'<option  selected value="">--Select Role--</option>';
-        	for (var i=0; i<json.length; i++)
-			{
-        		var report = json[i];
-        		var selected = '';
-        		if(onBoardRoleId != null && onBoardRoleId != "" && onBoardRoleId !="undefined" && onBoardRoleId == report.id){
-            		selected = 'selected';
-            	}
-        		result = result +'<option value='+report.id+' '+selected+' >'+report.displayName+'</option>';
-			}
-        	 
-        	 $("#onboardCandidateRole").empty();
-           	 $("#onboardCandidateRole").append(result); 
-           	 $('#onboardCandidateRole').trigger("chosen:updated");
+	    success: function(response) {
+	    	 var json = JSON.parse(response);
+	    	 if (response.response === "AWKWARD") {
+		    	    location.href = "/errorPage";
+		    	} else if (response.response === "SUCCESS") {
+		    		var json = JSON.parse(response.object);
+		    		var result = "";
+		        	result = result +'<option  selected value="">--Select Role--</option>';
+		        	for (var i=0; i<json.length; i++) {
+		        		var report = json[i];
+		        		var selected = '';
+		        		if(onBoardRoleId != null && onBoardRoleId != "" && onBoardRoleId !="undefined" && onBoardRoleId == report.id){
+		            		selected = 'selected';
+		            	}
+		        		result = result +'<option value='+report.id+' '+selected+' >'+report.displayName+'</option>';
+					}
+		        	 $("#onboardCandidateRole").empty();
+		           	 $("#onboardCandidateRole").append(result); 
+		           	 $('#onboardCandidateRole').trigger("chosen:updated");
+		    	} else if (response.indexOf('Sign In') !== -1) {
+		    		location.replace(sourceleadUrl);
+		    	} else {
+		    	    showError("Operation failed, please try again");
+		    	}
 	    }
    });
 }
@@ -1186,24 +1216,30 @@ function loadTeams(onboardTeamId){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getTeamsListForCandidateOnBoarding?${_csrf.parameterName}=${_csrf.token}",	    	   
-	    success: function(data) {
-	    	 var json = JSON.parse(data);
-        	 var result = "";
-        	
-        	result = result +'<option selected value="">--Select Team--</option>';
-        	for (var i=0; i<json.length; i++)
-			{
-        		var report = json[i];
-        		var selected = '';
-        		if(onboardTeamId != null && onboardTeamId != "" && onboardTeamId !="undefined" && onboardTeamId == report.id){
-            		selected = 'selected';
-            	}
-        		result = result +'<option value='+report.id+' '+selected+' >'+report.name+'</option>';
-			}
-        	 
-        	 $("#team").empty();
-           	 $("#team").append(result); 
-           	 $('#team').trigger("chosen:updated");
+	    success: function(response) {
+	    	if (response.response === "AWKWARD") {
+	    	    location.href = "/errorPage";
+	    	} else if (response.response === "SUCCESS") {
+	    	 	var json = JSON.parse(response.object);
+	    	 	var result = "";
+	        	result = result +'<option selected value="">--Select Team--</option>';
+	        	for (var i=0; i<json.length; i++) {
+	        		var report = json[i];
+	        		var selected = '';
+	        		if(onboardTeamId != null && onboardTeamId != "" && onboardTeamId !="undefined" && onboardTeamId == report.id){
+	            		selected = 'selected';
+	            	}
+	        		result = result +'<option value='+report.id+' '+selected+' >'+report.name+'</option>';
+				}
+	        	 
+	        	 $("#team").empty();
+	           	 $("#team").append(result); 
+	           	 $('#team').trigger("chosen:updated");
+	    	} else if (response.indexOf('Sign In') !== -1) {
+	    		location.replace(sourceleadUrl);
+	    	} else {
+	    	    showError("Operation failed, please try again");
+	    	}
 	    }
    });
 }
@@ -1217,31 +1253,34 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOnboardingTemplatesForCandidateOnBoarding?${_csrf.parameterName}=${_csrf.token}",	    	   
-	    success: function(data) {
-	    	 var json = JSON.parse(data);
-        	 var result = "";
-        	
-        	for (var i=0; i<json.length; i++)
-			{
-        		var report = json[i];
-        		if(onboardTemplateId != null && onboardTemplateId != "" && onboardTemplateId !="undefined"){
-        			var templateId = onboardTemplateId.split(",");
-        			var selected = '';
-        			for(var j=0; j<templateId.length; j++){
-        				if(templateId[j] == report.id){
-        					selected = 'selected';
-        				}
-        			}
-        			
-        		}
-        		
-        		result = result +'<option value='+report.id+' '+selected+'>'+report.templateName+'</option>';
-			}
-        	 
-        	 $("#onboardingTemplate").empty();
-           	 $("#onboardingTemplate").append(result); 
-           	 $('#onboardingTemplate').trigger("chosen:updated");
-           	$('#onboardingTemplate_chosen').find(".chosen-choices").css({"min-height":"34px"});
+	    success: function(response) {
+	    	if (response.response === "AWKWARD") {
+	    	    location.href = "/errorPage";
+	    	} else if (response.response === "SUCCESS") {
+	    		var json = JSON.parse(response.object);
+	    		var result = "";
+	        	for (var i=0; i<json.length; i++) {
+	        		var report = json[i];
+	        		if(onboardTemplateId != null && onboardTemplateId != "" && onboardTemplateId !="undefined"){
+	        			var templateId = onboardTemplateId.split(",");
+	        			var selected = '';
+	        			for(var j=0; j<templateId.length; j++){
+	        				if(templateId[j] == report.id){
+	        					selected = 'selected';
+	        				}
+	        			}
+	        		}
+	        		result = result +'<option value='+report.id+' '+selected+'>'+report.templateName+'</option>';
+				}
+	        	 $("#onboardingTemplate").empty();
+	           	 $("#onboardingTemplate").append(result); 
+	           	 $('#onboardingTemplate').trigger("chosen:updated");
+	           	$('#onboardingTemplate_chosen').find(".chosen-choices").css({"min-height":"34px"});
+	    	} else if (response.indexOf('Sign In') !== -1) {
+	    		location.replace(sourceleadUrl);
+	    	} else {
+	    	    showError("Operation failed, please try again");
+	    	}
 	    }
    });
 }
@@ -1315,31 +1354,34 @@ function loadOnBoardingTemplates(onboardTemplateId){
 		 		processData: false, 
 		 		contentType: false,
 		    	 url: sourceleadUrl+"/saveOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}", 
-		        success: function(json) {
-		        	if(saveType == 'saveAndContinue'){
-		        		var $tabs = $('.tabbable li');
-		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
-		     	        document.getElementById("templateDocs").disabled = false;
-		     	        
-		     	       getTemplatePolicyDocumentsDetails(json.id);
-		     	       getTemplateSupportingDocumentsDetails(json.id);
-		     	       getTemplateContractsDocumentsDetails(json.id);
-		     	       getTemplateFormsDocumentsDetails(json.id);
-		     	       
-		     	       $("#documentstemplateId").val(json.id);
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		var json = response.object;
+			        	if(saveType == 'saveAndContinue'){
+			        		var $tabs = $('.tabbable li');
+			     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
+			     	        document.getElementById("templateDocs").disabled = false;
+			     	       getTemplatePolicyDocumentsDetails(json.id);
+			     	       getTemplateSupportingDocumentsDetails(json.id);
+			     	       getTemplateContractsDocumentsDetails(json.id);
+			     	       getTemplateFormsDocumentsDetails(json.id);
+			     	       $("#documentstemplateId").val(json.id);
+			        	}
+		     	        $("#candidateOnBoardId").val(json.id);
+		     	        $("#savedonboardId").val(json.id);
+		     	        $("#save_onboardUser").removeAttr("disabled");
+		   	            $("#saveAndContinue_onboardUser").removeAttr("disabled");
+		     	        $("#loading").removeAttr("style");
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
 		        	}
-		        	
-	     	        $("#candidateOnBoardId").val(json.id);
-	     	        $("#savedonboardId").val(json.id);
-	     	        
-	     	       $("#save_onboardUser").removeAttr("disabled");
-	   	           $("#saveAndContinue_onboardUser").removeAttr("disabled");
-	   	        
-	     	        $("#loading").removeAttr("style");
 		        },
 		    }); 
 	        return true;
-		
 	  }else{
 		return false;
 	  }
@@ -1369,168 +1411,135 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/loadOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&locationCode="+locationCode, 
-	        success: function(json) {
-	        	
-	        	
-	        	 var result = "";
-	        	 var selected = 'selected';
-	        	 result = result +'<option disabled selected>--Select Candidate--</option>';
-	        	 result = result +'<option value='+json['onBoardCandidateId']+","+json['onBoardOfferId']+' '+selected+' >'+json['candidateName']+' ('+json['jobTitle']+')</option>';
-	        	 $("#onboardCandiate").empty();
-	           	 $("#onboardCandiate").append(result); 
-	           	 $('#onboardCandiate').trigger("chosen:updated");
-	        	
-	        	$("#firstName").val(json['firstName']);
-	        	
-	        	if(json['lastName'] != null && json['lastName'] != "" && json['lastName'] !="undefined"){
-	        		$("#lastName").val(json['lastName']);
-	        	}
-	        	
-	        	$("#address1").val(json['address1']);
-	        	
-	        	if(json['address2'] != null && json['address2'] != "" && json['address2'] !="undefined"){
-	        		$("#address2").val(json['address2']);
-	        	}
-	        	
-	        	
-	        	if(json['mobileNumber'] != null && json['mobileNumber'] != "" && json['mobileNumber'] !="undefined"){
-	        		$("#mobileNumber").val(json['mobileNumber']);
-	        		$("#mobileNumber").attr("readonly","readonly");
-	        	}else{
-	        		$("#mobileNumber").remveAttr("readonly");
-	        	}
-	        	
-	        	
-		    	$("#personalEmail").val(json['personalEmail']);
-		    	
-		    	if(json['companyEmail'] != null && json['companyEmail'] != "" && json['companyEmail'] !="undefined"){
-		    		$("#companyEmail").val(json['companyEmail']);
-		    	}
-		    	
-		    	if(json['zipCode'] != null && json['zipCode'] != "" && json['zipCode'] !="undefined"){
-		    		$("#zipCode").val(json['zipCode']);
-		    	}
-		    	
-		    	if(json['country'] != null && json['country'] != "" && json['country'] !="undefined"){
-		    		$("#country").val(json['country']);
-		    	}
-		    	
-		    	if(json['state'] != null && json['state'] != "" && json['state'] !="undefined"){
-		    		$("#state").val(json['state']);
-		    	}
-		    	
-		    	if(json['city'] != null && json['city'] != "" && json['city'] !="undefined"){
-		    		$("#city").val(json['city']);
-		    	}
-		    	
-		    	if(json['location'] != null && json['location'] != "" && json['location'] !="undefined"){
-		    		$("#offBoardLocation").val(json['location']);
-		    	}
-		    	
-		    	
-		    	/* getOnBoardCandidateCountry(json['country']);
-		    	getOnBoardCandidateStates(json['country'],json['state']);
-		    	getOnBoardCandidateCities(json['country'],json['state'],json['city']); */
-		    	
-		    	loadCandidateRoles(json['onBoardRoleId']);
-		    	$("#startDate").val(json['joiningDateStr']);
-		    	
-		    	 var dt = toDate("#startDate");
-	 			 dt.setDate(dt.getDate() + 1);
-	 			 $("#endDate").datepicker("option", "minDate", dt);
-	 			 $("#dueDate").datepicker("option", "minDate", dt);
-		    	
-		    	if(json['endDateStr'] != null && json['endDateStr'] != "" && json['endDateStr'] !="undefined"){
-		    		$("#endDate").val(json['endDateStr']);
-		    	}
-		    	$("#paymentType").val(json['paymentType']);
-		    	 $('#paymentType').trigger("chosen:updated");
-		    	$("#salaryRate").val(json['salaryRate']);
-		    	$("#paymentMode").val(json['paymentMode']);
-		    	 $('#paymentMode').trigger("chosen:updated");
-		    	
-		    	if(json['onBoardManagerId'] != null && json['onBoardManagerId'] != "" && json['onBoardManagerId'] !="undefined"){
-		    		getReportingManager(json['onBoardRoleId'],json['onBoardManagerId']);
-		    	}else{
-		    		getReportingManager(json['onBoardRoleId']);
-		    	}
-		    	
-		    	if(json['onBoardTeamId'] != null && json['onBoardTeamId'] != "" && json['onBoardTeamId'] !="undefined"){
-		    		loadTeams(json['onBoardTeamId']);
-		    	}
-		    	
-		    	
-		    	 if(json['employmentType'] != null && json['employmentType'] != "" && json['employmentType'] != 'undefined'){
-		    		 
-		    		 if(json['employmentType'] == 'Other'){
-		    			 document.getElementById("otherEmploymentTypeDiv").style.display="block";
-		    			 $("#employmentOtherType").val(json['employmentOtherType']);
-		    			 $("#employmentOtherType").attr("data-validation", "required");
-		    			 $("#employmentOtherType").removeAttr("data-validation-optional");
-		    		 }else{
-		    			 $("#employmentOtherType").removeAttr("data-validation");
-		    			 $("#employmentOtherType").attr("data-validation-optional","true");
-		    			 $('#otherEmploymentTypeDiv').find('p.jquery_form_error_message').remove(); 
-		    		 }
-		    		
-	    		     $("#employmentType").val(json['employmentType']);
-			    	 $('#employmentType').trigger("chosen:updated");
-			    	 
-			    	 if(json['employmentType'] = 'C2C'){
-			    		  getEmploymentType();
-			    		  getVendorsByOrgLocationForAddApplicant(json['vendors']);
-			    		  getAddApplicantVendorContactList(json['vendors'],json['vendorContact']);
-			    	 }
-		    		
-		    	 }else{
-		    		 document.getElementById("otherEmploymentTypeDiv").style.display="none";
-		    		 $('#otherEmploymentTypeDiv').find('p.jquery_form_error_message').remove(); 
-		    	 }
-		    	 
-		    	 
-		    	
-		    	if(json['probationNotice'] != null && json['probationNotice'] != "" && json['probationNotice'] !="undefined"){
-		    		$("#probationNotice").val(json['probationNotice']);
-			    	$('#probationNotice').trigger("chosen:updated");
-		    	}
-		    	
-		    	
-		    	if(json['terminationNotice'] != null && json['terminationNotice'] != "" && json['terminationNotice'] !="undefined"){
-		    		$("#terminationNotice").val(json['terminationNotice']);
-			    	$('#terminationNotice').trigger("chosen:updated");
-		    	}
-		    	
-		    	
-		    	if(json['dueDateStr'] != null && json['dueDateStr'] != "" && json['dueDateStr'] !="undefined"){
-		    		$("#dueDate").val(json['dueDateStr']);
-		    	}
-		    	
-		    	if(json['specialConditions'] != null && json['specialConditions'] != "" && json['specialConditions'] !="undefined"){
-		    		$("#specialConditions").val(json['specialConditions']);
-		    	}
-		    	
-		    	if(json['onboardTemplateId'] != null && json['onboardTemplateId'] != "" && json['onboardTemplateId'] !="undefined"){
-		    		loadOnBoardingTemplates(json['onboardTemplateId']);
-		    	}
-		    	
-		    	$("#savedonboardId").val(json['id']);
-		    	
-		    	$("#loading").removeAttr("style");
+	    	url: sourceleadUrl+"/loadOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&locationCode="+locationCode, 
+	        success: function(response) {
+	        	if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+        			var json = response.object;
+        			var result = "";
+   	        	 var selected = 'selected';
+   	        	 result = result +'<option disabled selected>--Select Candidate--</option>';
+   	        	 result = result +'<option value='+json['onBoardCandidateId']+","+json['onBoardOfferId']+' '+selected+' >'+json['candidateName']+' ('+json['jobTitle']+')</option>';
+   	        	 $("#onboardCandiate").empty();
+   	           	 $("#onboardCandiate").append(result); 
+   	           	 $('#onboardCandiate').trigger("chosen:updated");
+   	        	$("#firstName").val(json['firstName']);
+   	        	if(json['lastName'] != null && json['lastName'] != "" && json['lastName'] !="undefined"){
+   	        		$("#lastName").val(json['lastName']);
+   	        	}
+   	        	$("#address1").val(json['address1']);
+   	        	if(json['address2'] != null && json['address2'] != "" && json['address2'] !="undefined"){
+   	        		$("#address2").val(json['address2']);
+   	        	}
+   	        	if(json['mobileNumber'] != null && json['mobileNumber'] != "" && json['mobileNumber'] !="undefined"){
+   	        		$("#mobileNumber").val(json['mobileNumber']);
+   	        		$("#mobileNumber").attr("readonly","readonly");
+   	        	}else{
+   	        		$("#mobileNumber").remveAttr("readonly");
+   	        	}
+   		    	$("#personalEmail").val(json['personalEmail']);
+   		    	if(json['companyEmail'] != null && json['companyEmail'] != "" && json['companyEmail'] !="undefined"){
+   		    		$("#companyEmail").val(json['companyEmail']);
+   		    	}
+   		    	if(json['zipCode'] != null && json['zipCode'] != "" && json['zipCode'] !="undefined"){
+   		    		$("#zipCode").val(json['zipCode']);
+   		    	}
+   		    	if(json['country'] != null && json['country'] != "" && json['country'] !="undefined"){
+   		    		$("#country").val(json['country']);
+   		    	}
+   		    	if(json['state'] != null && json['state'] != "" && json['state'] !="undefined"){
+   		    		$("#state").val(json['state']);
+   		    	}
+   		    	if(json['city'] != null && json['city'] != "" && json['city'] !="undefined"){
+   		    		$("#city").val(json['city']);
+   		    	}
+   		    	if(json['location'] != null && json['location'] != "" && json['location'] !="undefined"){
+   		    		$("#offBoardLocation").val(json['location']);
+   		    	}
+   		    	/* getOnBoardCandidateCountry(json['country']);
+   		    	getOnBoardCandidateStates(json['country'],json['state']);
+   		    	getOnBoardCandidateCities(json['country'],json['state'],json['city']); */
+   		    	loadCandidateRoles(json['onBoardRoleId']);
+   		    	$("#startDate").val(json['joiningDateStr']);
+   		    	 var dt = toDate("#startDate");
+   	 			 dt.setDate(dt.getDate() + 1);
+   	 			 $("#endDate").datepicker("option", "minDate", dt);
+   	 			 $("#dueDate").datepicker("option", "minDate", dt);
+   		    	if(json['endDateStr'] != null && json['endDateStr'] != "" && json['endDateStr'] !="undefined"){
+   		    		$("#endDate").val(json['endDateStr']);
+   		    	}
+   		    	$("#paymentType").val(json['paymentType']);
+   		    	 $('#paymentType').trigger("chosen:updated");
+   		    	$("#salaryRate").val(json['salaryRate']);
+   		    	$("#paymentMode").val(json['paymentMode']);
+   		    	 $('#paymentMode').trigger("chosen:updated");
+   		    	if(json['onBoardManagerId'] != null && json['onBoardManagerId'] != "" && json['onBoardManagerId'] !="undefined"){
+   		    		getReportingManager(json['onBoardRoleId'],json['onBoardManagerId']);
+   		    	}else{
+   		    		getReportingManager(json['onBoardRoleId']);
+   		    	}
+   		    	if(json['onBoardTeamId'] != null && json['onBoardTeamId'] != "" && json['onBoardTeamId'] !="undefined"){
+   		    		loadTeams(json['onBoardTeamId']);
+   		    	}
+   		    	 if(json['employmentType'] != null && json['employmentType'] != "" && json['employmentType'] != 'undefined'){
+   		    		 if(json['employmentType'] == 'Other'){
+   		    			 document.getElementById("otherEmploymentTypeDiv").style.display="block";
+   		    			 $("#employmentOtherType").val(json['employmentOtherType']);
+   		    			 $("#employmentOtherType").attr("data-validation", "required");
+   		    			 $("#employmentOtherType").removeAttr("data-validation-optional");
+   		    		 }else{
+   		    			 $("#employmentOtherType").removeAttr("data-validation");
+   		    			 $("#employmentOtherType").attr("data-validation-optional","true");
+   		    			 $('#otherEmploymentTypeDiv').find('p.jquery_form_error_message').remove(); 
+   		    		 }
+   	    		     $("#employmentType").val(json['employmentType']);
+   			    	 $('#employmentType').trigger("chosen:updated");
+   			    	 
+   			    	 if(json['employmentType'] = 'C2C'){
+   			    		  getEmploymentType();
+   			    		  getVendorsByOrgLocationForAddApplicant(json['vendors']);
+   			    		  getAddApplicantVendorContactList(json['vendors'],json['vendorContact']);
+   			    	 }
+   		    	 }else{
+   		    		 document.getElementById("otherEmploymentTypeDiv").style.display="none";
+   		    		 $('#otherEmploymentTypeDiv').find('p.jquery_form_error_message').remove(); 
+   		    	 }
+   		    	if(json['probationNotice'] != null && json['probationNotice'] != "" && json['probationNotice'] !="undefined"){
+   		    		$("#probationNotice").val(json['probationNotice']);
+   			    	$('#probationNotice').trigger("chosen:updated");
+   		    	}
+   		    	if(json['terminationNotice'] != null && json['terminationNotice'] != "" && json['terminationNotice'] !="undefined"){
+   		    		$("#terminationNotice").val(json['terminationNotice']);
+   			    	$('#terminationNotice').trigger("chosen:updated");
+   		    	}
+   		    	if(json['dueDateStr'] != null && json['dueDateStr'] != "" && json['dueDateStr'] !="undefined"){
+   		    		$("#dueDate").val(json['dueDateStr']);
+   		    	}
+   		    	if(json['specialConditions'] != null && json['specialConditions'] != "" && json['specialConditions'] !="undefined"){
+   		    		$("#specialConditions").val(json['specialConditions']);
+   		    	}
+   		    	if(json['onboardTemplateId'] != null && json['onboardTemplateId'] != "" && json['onboardTemplateId'] !="undefined"){
+   		    		loadOnBoardingTemplates(json['onboardTemplateId']);
+   		    	}
+   		    	$("#savedonboardId").val(json['id']);
+   		    	$("#loading").removeAttr("style");
+        		} else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
 	        },
 	    });
 	 }
  }
  </script>
  
- 
- 
  <script>
  function loadOnboardCandidateFormDashobard(candidateId,offerId){
 	 var candidateName = '${candidateName}';
 	 var jobTitle = '${jobTitle}';
 	 var candidateEmail ='${candidateEmail}';
-	 
 	 var result = "";
 	 var selected = 'selected';
 	 result = result +'<option disabled selected>--Select Candidate--</option>';
@@ -1538,16 +1547,12 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	 $("#onboardCandiate").empty();
    	 $("#onboardCandiate").append(result); 
    	 $('#onboardCandiate').trigger("chosen:updated");
-   	 
    	 getDashboardCandidateDetails();
      validateOnbardUserByCandidateId(candidateId,candidateName);
    	 getOfferDetails();
-     addCandidateDetailsForOnboarding();
-	 
-	
+     addCandidateDetailsForOnboarding(); 	
  }
- </script>
- 
+ </script> 
  
  <script>
 function getTemplatePolicyDocumentsDetails(onboardId){
@@ -1813,8 +1818,12 @@ function deleteCandidateOnboardDocument(documentUUID,documentId,documentType){
 	   $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/deleteTemplateDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
-	        success: function(data) {
-	        	if(data == 'success'){
+	        success: function(response) {
+	        	if (response && response.response === "INVALID_DATA") {
+	        	    showError(response.responseMessage);
+	        	} else if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
 	        		if(documentType == 'Policies'){
 	        			document.getElementById("policydocument"+documentId).remove();
 	        		}
@@ -1827,18 +1836,15 @@ function deleteCandidateOnboardDocument(documentUUID,documentId,documentType){
 	        		else if(documentType == 'Forms'){
 	        			document.getElementById("formsdocument"+documentId).remove();
 	        		}
-	        		
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
 	        	}
 	        },
 	    });
-	 
 }
 </script>
-
-
-
-
-
 
 <script>
 function createTemplateDocs(saveType){
@@ -1861,42 +1867,41 @@ function createTemplateDocs(saveType){
 		      processData: false, 
 		 	  contentType: false,
 	    	  url: sourceleadUrl+"/saveCandidatedOnboardingTemplateDocuments?${_csrf.parameterName}=${_csrf.token}",		
-		      success :function(result) {
-		    	  
-		    	  if(saveType == 'saveAndContinue'){
-		        		var $tabs = $('.tabbable li');
-		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
-		     	        document.getElementById("templateTasks").disabled = false;
-		     	        getOnboardingTasksList();
-		        	}else{
-		        		getTemplatePolicyDocumentsDetails();
-		        		getTemplateSupportingDocumentsDetails();
-		        		getTemplateContractsDocumentsDetails();
-			     	    getTemplateFormsDocumentsDetails();
-		        	}
-		    	  
-		    	  $("#save_docs_button").removeAttr("disabled");
-		   	      $("#save_continue_docs_button").removeAttr("disabled");
-		    	  $("#loading").removeAttr("style");
-		    	  
+		      success :function(response) {
+		    	  	if (response.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    	  	} else if (response.response === "SUCCESS") {
+		    	  		if(saveType == 'saveAndContinue') {
+			        		var $tabs = $('.tabbable li');
+			     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
+			     	        document.getElementById("templateTasks").disabled = false;
+			     	        getOnboardingTasksList();
+			        	} else {
+			        		getTemplatePolicyDocumentsDetails();
+			        		getTemplateSupportingDocumentsDetails();
+			        		getTemplateContractsDocumentsDetails();
+				     	    getTemplateFormsDocumentsDetails();
+			        	}
+			    	  $("#save_docs_button").removeAttr("disabled");
+			   	      $("#save_continue_docs_button").removeAttr("disabled");
+			    	  $("#loading").removeAttr("style");
+		    	  	} else if (response.indexOf('Sign In') !== -1) {
+		    			location.replace(sourceleadUrl);
+		    		} else {
+		    		    showError("Operation failed, please try again");
+		    		}
 		      }
-	    	  
 	  });
 		return true;
-	  }else{
+	  } else {
 		  return false;
 	  }
-	  
 	  $('body').on('blur', '#templateDocuments_form', function() {
 			$("#templateDocuments_form").showHelpOnFocus();
 			$("#templateDocuments_form").validateOnBlur(false, validationSettings);  
 	   });
-	  
-	  
 }
 </script>
-
-
 
 <script>
   function validateTaskEmail(){
@@ -1906,7 +1911,6 @@ function createTemplateDocs(saveType){
 	  }else{
 		  document.getElementById("taskEmail").value = 'N';
 	  }
-	  
   }
   </script>
   
@@ -1982,21 +1986,27 @@ function createTemplateDocs(saveType){
 function getAssignToUsersList(){
 	var candidateOnBoardId = document.getElementById("candidateOnBoardId").value;
     $("#candidateOnboardTaskId").val(candidateOnBoardId);
-    
-	
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
-	    success: function(json) {
-        	 var result = "";
-        	for (var i=0; i<json.length; i++)
-			{
-        		var report = json[i];
-        		result = result +'<option value='+report.userId+' >'+report.userName+'</option>';
-			}
-        	 $("#onboardAssignedTo").empty();
-           	 $("#onboardAssignedTo").append(result); 
-           	 $('#onboardAssignedTo').trigger("chosen:updated");
+	    success: function(response) {
+	    	if (response.response === "AWKWARD") {
+	    	    location.href = "/errorPage";
+	    	} else if (response.response === "SUCCESS") {
+	    		var json = response.data;
+	    		var result = "";
+	        	for (var i=0; i<json.length; i++) {
+	        		var report = json[i];
+	        		result = result +'<option value='+report.userId+' >'+report.userName+'</option>';
+				}
+	        	 $("#onboardAssignedTo").empty();
+	           	 $("#onboardAssignedTo").append(result); 
+	           	 $('#onboardAssignedTo').trigger("chosen:updated");
+	    	} else if (response.indexOf('Sign In') !== -1) {
+	    		location.replace(sourceleadUrl);
+	    	} else {
+	    	    showError("Operation failed, please try again");
+	    	}
 	    }
    }); 
 }
@@ -2022,7 +2032,6 @@ function saveOnboardTask(){
 	    	}
 	    	
 	    	tasks = tasks.substring(0, tasks.length - 1);
-	        
 	       
 	        $("#onboardtasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        $.ajax({
@@ -2031,23 +2040,26 @@ function saveOnboardTask(){
 		    	 processData: false,
 			     contentType:false,
 		    	 url: sourceleadUrl+"/saveCandidateOnBoardTasks?${_csrf.parameterName}=${_csrf.token}&tasks="+tasks, 
-		        success: function(result) {
-		        	if(result == 'success'){
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
 		        		$("#onboardtasksLoading").removeAttr("style");
 			        	flushOnboardTask();
 			        	getAssignToUsersList();
 			        	getOnboardingTasksList();
-			        	
 			        	document.getElementById("selector").style.display = 'block';
 			        	$("#selector").fadeIn(150);
 			        	$('#selector').delay(1000).fadeOut('slow');
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
 		        	}
-		        	
 		        },
 		    });   
 	        return true;
-		
-	  }else{
+	  } else {
 		return false;
 	  }
 }
@@ -2150,21 +2162,26 @@ function getOnboardingTasksList(){
 
 <script>
 function deleteTask(taskId,taskType){
-	
 	if(taskType != 'Candidate Task'){
 		document.getElementById("onboardTask"+taskId).remove();
 		document.getElementById("templateTask"+taskId).remove()
 	}else{
-		
 		var sourceleadUrl ='${sourceleadUrl}';
 		   $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/deleteOnboardTaskByTaskId?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
-		        success: function(data) {
-		        	if(data == 'success'){
-		        		document.getElementById("onboardTask"+taskId).remove();
-		        		
-		        	}
+		        success: function(response) {
+		        	if (response && response.response === "INVALID_DATA") {
+	        		    showError(response.responseMessage);
+	        		} else if (response.response === "AWKWARD") {
+	        		    location.href = "/errorPage";
+	        		} else if (response.response === "SUCCESS") {
+	        			document.getElementById("onboardTask"+taskId).remove();
+	        		} else if (response.indexOf('Sign In') !== -1) {
+	        			location.replace(sourceleadUrl);
+	        		} else {
+	        		    showError("Operation failed, please try again");
+	        		}
 		        },
 		    });
 	}
@@ -2190,13 +2207,19 @@ function saveAndFinishOnboardTemplate(onboardId){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/saveAndFinishCandidateOnboard?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&tasks="+tasks, 	    	   
-	    success: function(data) {
-	    	$("#finish_task").removeAttr("disabled");
-	    	location.replace(sourceleadUrl+"/candidateOnBoardingList");  
+	    success: function(response) {
+	    	if (response.response === "AWKWARD") {
+	    	    location.href = "/errorPage";
+	    	} else if (response.response === "SUCCESS") {
+		    	$("#finish_task").removeAttr("disabled");
+		    	location.replace(sourceleadUrl+"/candidateOnBoardingList"); 
+	    	} else if (response.indexOf('Sign In') !== -1) {
+	    		location.replace(sourceleadUrl);
+	    	} else {
+	    	    showError("Operation failed, please try again");
+	    	}
 	    }
   });   
-	
-
 }
 </script>
 
@@ -2212,24 +2235,34 @@ function saveAndFinishOnboardTemplate(onboardId){
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateOnboardCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email, 
-		        success: function(data) {
-		        	if(data == 'Invalid User Email'){
-		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
-						  $("input#companyEmail").after("<p class='jquery_form_error_message'>"+email+" is Already as user</span>");
-						  document.getElementById("companyEmail").setAttribute('record-exist','yes');
-						  document.getElementById("companyEmail").setAttribute('record-exist-errorMsg',email+' is as user'); 
-		        	}
-		        	else if(data == 'Invalid OnboardUser Email'){
-		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
-						  $("input#companyEmail").after("<p class='jquery_form_error_message'>"+email+" is Already as onboard user</span>");
-						  document.getElementById("companyEmail").setAttribute('record-exist','yes');
-						  document.getElementById("companyEmail").setAttribute('record-exist-errorMsg',email+' is as user'); 
-		        	}
-		        	else{
-		        		 $('input#companyEmail').removeAttr( "record-exist record-exist-errormsg");
-		        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
-                         $("#save_onboardUser").removeAttr("disabled");
-                         $("#saveAndContinue_onboardUser").removeAttr("disabled");
+		        success: function(response) {
+		        	if (response && response.response === "INVALID_USER") {
+		        	    showError(response.responseMessage);
+		        	} else if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		if(response.object == 'Invalid User Email'){
+			        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
+							  $("input#companyEmail").after("<p class='jquery_form_error_message'>"+email+" is Already as user</span>");
+							  document.getElementById("companyEmail").setAttribute('record-exist','yes');
+							  document.getElementById("companyEmail").setAttribute('record-exist-errorMsg',email+' is as user'); 
+			        	}
+			        	else if(response.object == 'Invalid OnboardUser Email'){
+			        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
+							  $("input#companyEmail").after("<p class='jquery_form_error_message'>"+email+" is Already as onboard user</span>");
+							  document.getElementById("companyEmail").setAttribute('record-exist','yes');
+							  document.getElementById("companyEmail").setAttribute('record-exist-errorMsg',email+' is as user'); 
+			        	}
+			        	else{
+			        		 $('input#companyEmail').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+	                         $("#save_onboardUser").removeAttr("disabled");
+	                         $("#saveAndContinue_onboardUser").removeAttr("disabled");
+			        	}
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
 		        	}
 		        },
 		    });
@@ -2247,18 +2280,24 @@ function saveAndFinishOnboardTemplate(onboardId){
 			 $.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/validateOnboardCandidate?${_csrf.parameterName}=${_csrf.token}&email="+email, 
-			        success: function(result) {
-			        	if(result == 'Invalid'){
-			        		alertMessage(email+" is Already exists as user")
-			        	}
-			        	else{
-	                         $("#save_onboardUser").removeAttr("disabled");
-	                         $("#saveAndContinue_onboardUser").removeAttr("disabled");
+			        success: function(response) {
+			        	if (response.response === "AWKWARD") {
+			        	    location.href = "/errorPage";
+			        	} else if (response.response === "SUCCESS") {
+			        		if(response.object == 'Invalid'){
+				        		alertMessage(email+" is Already exists as user")
+				        	} else{
+		                         $("#save_onboardUser").removeAttr("disabled");
+		                         $("#saveAndContinue_onboardUser").removeAttr("disabled");
+				        	}
+			        	} else if (response.indexOf('Sign In') !== -1) {
+			        		location.replace(sourceleadUrl);
+			        	} else {
+			        	    showError("Operation failed, please try again");
 			        	}
 			        },
 			    });
 	  }
-	  
  }
  </script>
  
@@ -2270,17 +2309,21 @@ function saveAndFinishOnboardTemplate(onboardId){
 			 $.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/validateOnboardCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
-			        success: function(result) {
-			        	if(result == 'Invalid'){
+			        success: function(response) {
+			        	if (response.response === "AWKWARD") {
+			        	    location.href = "/errorPage";
+			        	} else if (response.response === "SUCCESS") {
 			        		 $("#save_onboardUser").attr("disabled", "disabled");
 			    			 $("#saveAndContinue_onboardUser" ).attr("disabled", "disabled");
-			        		 alertMessage(candidateName+" is Already exists as onboard user");
+			        		 alertMessage(candidateName+" is Already exists as onboard user");	
+			        	} else if (response.indexOf('Sign In') !== -1) {
+			        		location.replace(sourceleadUrl);
+			        	} else {
+			        	    showError("Operation failed, please try again");
 			        	}
-			        	
 			        },
 			    });
 	  }
-	  
  }
  </script>
  
@@ -2310,11 +2353,8 @@ function cancel(){
 
 <script>
 function addCandidateDetailsForOnboarding(){
-	
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	
 	 var result = "";
-	
 	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">First Name <span class="text-danger">*</span></label>';
 	 result = result +'<div class="col-md-6">';
@@ -2491,7 +2531,6 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 
-	 
     result = result +'<div class="form-group" id="vendorsDiv" style="display: none;">';
 	result = result + '<label class="col-md-3  control-label">Vendors<span class="text-danger">* </span></label>';
 	result = result + '<div class="col-md-6">';
@@ -2499,7 +2538,6 @@ function addCandidateDetailsForOnboarding(){
 	result = result + '</select>';
 	result = result + '</div>';
 	result = result + '</div>';
-	
 	
     result = result + '	<div class="form-group" id="vendorContactsDiv" style="display: none;">';
 	result = result + '<label class="col-md-3  control-label">Vendor Contacts<span class="text-danger">* </span></label>';
@@ -2535,7 +2573,6 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 result = result +'</div>';
      
-     
 	 result = result +'<div class="form-group" id="dueDateDiv">';
 	 result = result +'<label class="col-md-3 control-label">Due Date <i class="fa fa-info-circle" title="The due date for the onboarding process of the selected candidate"></i></label>';
 	 result = result +'<div class="col-md-6">';
@@ -2567,10 +2604,8 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</sec:authorize>';
 	 result = result +'</div>';
 	 
-	 
 	 $("#onboardingCandidateDetailsDiv").empty();
    	 $("#onboardingCandidateDetailsDiv").append(result); 
-   	 
    	 
      initLocationAuto('offBoardLocation','country','state','city','zipCode','','',''); 
      
@@ -2580,24 +2615,21 @@ function addCandidateDetailsForOnboarding(){
 	 getDatesScript();
    	 $("#loading").removeAttr("style");
    	 
-   	 
    	var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-				});
-	
+		  '.chosen-select'           : {},
+		  '.chosen-select-deselect'  : {allow_single_deselect:true},
+		  '.chosen-select-no-single' : {disable_search_threshold:10},
+		  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+		  '.chosen-select-width'     : {width:"95%"}
+	}
+	for (var selector in config) {
+	  $(selector).chosen(config[selector]);
+	}
+	$('.chosen-select').each(function() {
+		var $this = $(this);
+		$this.next().css({'width': '100%'});
+	});
 }
-
 </script>
 
 <script>
