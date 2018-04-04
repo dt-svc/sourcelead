@@ -1,6 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+
 <c:if test="${staticTime == null || staticTime == 0 }">
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
@@ -27,6 +28,10 @@
 <script type="text/javascript">
 window.onload = function () {
 	loadRegisteredOrgs();
+	var isSuperAdmin = '${SourceLeadWeb_isSuperAdmin}';
+	if(isSuperAdmin == 'Y'){
+		document.getElementById("enrollNewOrgLocationDiv").style.display="";
+	}
  };
 </script>
 
@@ -186,9 +191,11 @@ $(function(){
 	        <div class="pull-right">
 	        <button class="btn btn-default btm-sm" id="orgsList" data-toggle="tab" href="#orgRegisteredlocations" onclick="loadRegisteredOrgs();" style="display: none"><i class="fa fa-building"></i>
 	                                         &nbsp;&nbsp;Locations List</button>
-	                                         
-	        <button class="btn btn-default btm-sm pull-right" onclick="createOrg();" id="enrollNewOrgLocation"><i class="fa fa-map-marker"></i>&nbsp;Add Location</button>
 	       </div>
+	       
+	        <div class="pull-right" id="enrollNewOrgLocationDiv" style="display: none;">
+	          <button class="btn btn-default btm-sm pull-right" onclick="createOrg();" id="enrollNewOrgLocation" ><i class="fa fa-map-marker"></i>&nbsp;Add Location</button>
+	        </div>
 	        
 	        <div class="clearfix"></div>
 	        <div class="clearfix compOnBorLoca mt10">
@@ -339,8 +346,13 @@ function createOrg(){
 	
 	 document.getElementById("register_button").style.display=""; 
 	 
-	//$("#registeredOrgLocationSummary").empty();
-	//$("#editPrimaryUserContactDiv").empty();
+	 var subscribedCountries = '${subscribedCountries}';
+		var countries= [];
+		var res = subscribedCountries.split(",");
+		for(var i=0; i <res.length; i++){
+			countries.push(res[i]);
+		};
+		
 	 
 	var result = '';
 	
@@ -438,36 +450,6 @@ function createOrg(){
 	result = result +'</div>';
 	result = result +'</div>';
 	
-	
-	
-	result = result +'<div class="form-group clearfix">';
-	result = result +'<label class="col-md-4 noPad">Modules<span class="text-danger">&nbsp;*</span></label>';
-	result = result +'<div class="col-md-8 padding_right">';
-    result = result +'<div class="clearfix reMar">';
-    result = result +'<c:forEach var="module" items="${modulesList}">';
-    result = result +'<ul class="list-unstyled pull-left">';
-    result = result +'<li>';
-    result = result +'<label class="mr pull-left">';
-    result = result +'<input type="checkbox" id="isRecruiting" value="${module.id}" onclick="getRecruitmentTypes(this)" name="modulesList[]" onblur="moduleCheckValidation(this)">&nbsp;${module.moduleName}';
-    result = result +'</label>';
-    result = result +'<ul class="list-unstyled pull-left tree-checkbox" id="recrutmentTypes" style="display: none;">';
-    result = result +'<li>';
-    result = result +'<c:forEach var="submodules" items="${requirementSubModulesList}">';
-    result = result +'<label>';
-    result = result +'&nbsp;<input type="checkbox" class="allsubmodules" id="submodules" value="${submodules.id}" name="submodulesList[]" >';
-    result = result +'&nbsp;${submodules.moduleName}';
-    result = result +'</label><br/>';
-    result = result +'</c:forEach>';
-    result = result +'</li>';
-    result = result +'</ul>';
-    result = result +'</li>';
-    result = result +'</ul>';
-    result = result +'</c:forEach>';
-    result = result +'</div>';
-    result = result +'<p id="subModule" style="display: none;"><font color="red">Sub Modules Required</font></p>';
-    result = result +'<input type="hidden"  id="moduleValue" name="module" value="${module}" field-name="Module" data-validation="required"/>'; 			    
-    result = result +'</div>';
-	result = result +'</div>';
 
 	result = result +'</div>';
 	
@@ -476,31 +458,42 @@ function createOrg(){
 	result = result +'<div class="form-group clearfix">';
 	result = result +'<label class="col-md-4 noPad">Location</label>';
 	result = result +'<div class="col-md-8 padding_right">';
-	result = result +'<input class="form-control positionRelative" id="orgSetLocation" name="location" placeholder="Enter your Location"  type="text" field-name="Location" onClick="addOrgRefreshGoogleApiLocation();" data-validation="required"></input>';
+	result = result +'<input class="form-control positionRelative" id="orgSetLocation" name="location" placeholder="Enter your Location"  type="text" field-name="Location" onclick="orgSubscriptionApiLocation(\'orgSetLocation\',\'orgSetCountry\',\'orgSetState\',\'orgSetCity\',\'orgSetZipCode\',\''+countries+'\',\'addressId\');" data-validation="required"></input>';
 	result = result +'<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshOrgEditGoogleApiLocation();"></i>';
 	result = result +'</div>';
 	result = result +'</div>';
 	
 	
+	
+	
 	result = result +'<div class="form-group clearfix">';
 	result = result +'<label class="col-md-4 noPad">Country<span class="text-danger">&nbsp;*</span></label>';
 	result = result +'<div class="col-md-8 padding_right">';
-	result = result +'<input class="form-control" id="orgSetCountry" name="country" placeholder="Country" field-name="Country" value ="${country}" type="text" data-validation="required" readonly></input>';
+	
+	result = result + '   <select class="form-control chosen-select" name="country" id="orgSetCountry" field-name="Country" data-placeholder="Select Country" data-validation="required" onchange="changeCountry();">';
+ 	result = result + '       <option value="">Select Country</option>';
+ 	result = result +'		<c:forEach var="subscibedCountries" items="${orgSubscribedCountriesList}">';
+ 	result = result + '       <option value="${subscibedCountries}">${subscibedCountries}</option>';
+    result = result +'		</c:forEach>';
+    result = result + '    </select>';
+	
 	result = result +'</div>';
 	result = result +'</div>';
+	
+	
 	
 	
 	result = result +'<div class="form-group clearfix">';
 	result = result +'<label class="col-md-4 noPad">State<span class="text-danger">&nbsp;*</span></label>';
 	result = result +'<div class="col-md-8 padding_right">';
-	result = result +'<input class="form-control" id="orgSetState" name="state" placeholder="State" type="text" field-name="State" data-validation="required" readonly></input>';
+	result = result +'<input class="form-control" id="orgSetState" name="state" placeholder="State" type="text" field-name="State" data-validation="required" ></input>';
 	result = result +'</div>';
 	result = result +'</div>';
 	
 	result = result +'<div class="form-group clearfix">';
 	result = result +'<label class="col-md-4 noPad">City<span class="text-danger">&nbsp;*</span></label>';
 	result = result +'<div class="col-md-8 padding_right">';
-	result = result +'<input class="form-control" id="orgSetCity" name="city" placeholder="City" type="text" field-name="City" data-validation="required"  readonly></input>';
+	result = result +'<input class="form-control" id="orgSetCity" name="city" placeholder="City" type="text" field-name="City" data-validation="required"  ></input>';
 	result = result +'</div>';
 	result = result +'</div>';
 	
@@ -564,7 +557,7 @@ function createOrg(){
 	 	       $("#locationCity").chosen();
 	 	       $("#locationTimeZone").chosen();
 	 	       
-	 	   
+	 	       getTimezonesList();
 		      
 		       $('.chosen-select').each(function() {
 					var $this = $(this);
@@ -996,23 +989,13 @@ var validationSettings = {
         		var formData = getFormData("createOrg_form");
          		var sourceleadUrl ='${sourceleadUrl}';
          		
-         		var modulesList = [];
-         		 $("input[name='modulesList[]']:checked").each( function (i) {
-         			modulesList[i] = $(this).val();
-         		});
-         		 
          		
-         		 var submodulesList = [];
-         		 $("input[name='submodulesList[]']:checked").each( function (i) {
-         			submodulesList[i] = $(this).val();
-         		});
          		 
          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          	 	 	$.ajax({
           	      type: "POST",
           	      data: formData,
-                	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList,
-                			  
+                	  url: sourceleadUrl+"/companyLocationRegistration?${_csrf.parameterName}=${_csrf.token}",		  
                 			  
                   	success: function(result) {
 			        	if((result == 'orgList')){
@@ -1080,3 +1063,64 @@ var validationSettings = {
 <form action="${logoutUrl}" method="post" id="logoutForm">
  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 </form>
+
+
+<script>
+ var options = {
+ 		types: [],
+     componentRestrictions: {
+     	country:[]
+     }
+ };
+function orgSubscriptionApiLocation(locationId,countryId,stateId,cityId,zipCodeId,type,addressId) {
+	var country = type.split(",");
+	var subscriptionCountries = '';
+	for(var i=0; i<country.length; i++){
+		country[i] = '' + country[i] + ''
+	}
+	
+	initialize(locationId,countryId,stateId,cityId,zipCodeId,country,addressId);
+	
+}
+function initialize(locationId,countryId,stateId,cityId,zipCodeId,country,addressId) {
+	 var input = (document.getElementById(locationId));
+	 var countries =  "country:["+country+"]";
+	 options.types=['geocode'];
+	 options.componentRestrictions.country=country; 
+	    autocomplete = new google.maps.places.Autocomplete(input, options);
+  
+ google.maps.event.addListener(autocomplete, 'place_changed', function() {
+ place = autocomplete.getPlace();
+ var address = {};
+ for (var i = 0; i < place.address_components.length; i++) {
+   var addressType = place.address_components[i].types[0];
+   switch (addressType) {
+      case "route":
+   	 address.name=place.address_components[i].long_name;
+   	 break;
+     case "locality":
+       address.city = place.address_components[i].long_name;
+       break;
+     case "administrative_area_level_1":
+       address.state = place.address_components[i].long_name;
+       break;
+     case "country":
+       address.country = place.address_components[i].long_name;
+       break;
+     case "postal_code":
+       address.zipcode = place.address_components[i].long_name;
+       
+   }
+ }
+
+ $("#"+stateId).val(address.state).change();
+ $("#"+cityId).val(address.city).change();
+ $("#"+zipCodeId).val(address.zipcode).change();
+ $("#"+addressId).val($("#"+locationId).val().replace(", "+$("#"+cityId).val()+", "+$("#"+stateId).val()+", "+$("#"+countryId).val(), ""));
+ $("#"+countryId).val(address.country).change();
+ $("#"+countryId).trigger("chosen:updated");
+
+
+  });
+}
+</script>

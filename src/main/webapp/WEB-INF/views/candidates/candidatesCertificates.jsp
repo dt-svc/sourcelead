@@ -13,6 +13,7 @@
 <script>
 function closeCertificatePopup(){
 	 $("#popUpDivEmp").removeClass("edit-details-active");
+	 $(".location-alert").fadeOut();
 }
 </script>
 <%-- 
@@ -110,48 +111,52 @@ var validationSettings = {
 --%>
 
 <script>
-function storeCertificate(candidateId){
-	
-			 var scoreType = document.getElementById("scoreType").value; 
-			 if(scoreType != null && scoreType != ""){
-				 $('#candidateScore').removeAttr('data-validation-optional');
-				 $('#candidateScore').attr("data-validation","required"); 
-			 }else{
-				 $('#candidateScore').removeAttr('data-validation');
-				 $('#candidateScore').attr("data-validation-optional","true"); 
-			 }
-		 
-			
-		if ($('#Candidate_certification_form').validate(false,validationSettings)) {
-			
-			 var formData = getFormData("Candidate_certification_form");
-				$("#Candidate_certification_form").attr("disabled", "disabled");
-				 $("#addCandidate").attr("disabled", "disabled");
-		        $.post(sourceleadUrl+"/storeCandidateCertifications?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(data) {
-		        	closeCertificatePopup();
-		        	$("#selector5").removeAttr("style");
-	     			$("#selector5").css({ display: "block" });
-	     			$("#cerMsgDiv").html("Success!! New Certification added");
-		        	candidateCertificateList(candidateId);
-               		cerMsgFadein();
-               		qwikCertificates(candidateId);
-               		setTimeout(function(){
-			 			candidateList();					 			
-			 		},100);
-		        });
-				
-			return true;
+function storeCertificate(candidateId) {
+	var scoreType = document.getElementById("scoreType").value; 
+	if(scoreType != null && scoreType != "") {
+ 		$('#candidateScore').removeAttr('data-validation-optional');
+		$('#candidateScore').attr("data-validation","required"); 
+	} else {
+ 		$('#candidateScore').removeAttr('data-validation');
+ 		$('#candidateScore').attr("data-validation-optional","true"); 
+	}
+	if ($('#Candidate_certification_form').validate(false,validationSettings)) {
+		var formData = getFormData("Candidate_certification_form");
+		$("#Candidate_certification_form").attr("disabled", "disabled");
+		$("#addCandidate").attr("disabled", "disabled");
+		$.post(sourceleadUrl+"/storeCandidateCertifications?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(result) {
+			if (result && result.response === "INVALID_DATA") {
+    		    showError(result.responseMessage);
+    		} else if (result.response === "AWKWARD") {
+    		    location.href = "/errorPage";
+    		} else if (result.response === "SUCCESS") {
+    			closeCertificatePopup();
+    		    $("#selector5").removeAttr("style");
+    	     	$("#selector5").css({ display: "block" });
+    	     	$("#cerMsgDiv").html("Success!! New Certification added");
+    		    candidateCertificateList(candidateId);
+                cerMsgFadein();
+                qwikCertificates(candidateId);
+                setTimeout(function(){
+    				candidateList();					 			
+    			},100);
+    		} else if (result.indexOf('Sign In') !== -1) {
+    			location.replace(sourceleadUrl);
+    		} else {
+    		    showError("Operation failed, please try again");
+    		}
+		});
+		return true;
 		} else {
 			return false;
 		}
 	}
 	$('body').on('blur','#Candidate_certification_form',
-			function() {
-				$("#Candidate_certification_form").showHelpOnFocus();
-				$("#Candidate_certification_form").validateOnBlur(false,validationSettings);
-			});
+		function() {
+			$("#Candidate_certification_form").showHelpOnFocus();
+			$("#Candidate_certification_form").validateOnBlur(false,validationSettings);
+		});
 </script>
-
 
 <!-- this script is for serializeFormJSON -->
 <script type="text/javascript">
@@ -472,197 +477,172 @@ function addCertification(candidateId) {
 <script>
 	function editCertification(candidateCertificationId, candidateId) {
 		$.ajax({
-					type : "POST",
-					url : sourceleadUrl
-							+ "/getCandidateCertificateBycandidateIdandCertificateId?"+tokenParamName+"="+tokenValue+"&candidateId="
-							+ candidateId + "&candidateCertificationId=" + candidateCertificationId,
-					success : function(data) {
-
-						var json = JSON.parse(data);
-
-						if (data != null && data != 'undefined' && data != "") {
-
-							if (data.indexOf('Sign In') >= 0) {
-								location.replace(sourceleadUrl);
-							} else if (data.indexOf('exception') >= 0) {
-								location.replace(sourceleadUrl + "/errorPage");
-							} else {
-								var result = '';
-							 	result  = result + '     <!-- Popup Div -->                                                                                         ';
-								result  = result + '         <form id="candidateCertificationEdit_form" name="candidateCertificationEdit_form" method="post">        ';
-								result = result+'	           <i class="fa fa-close close-div" onClick="closeCertificatePopup();"></i>';
-								result  = result + '               <div class="form-horizontal clearfix">';
-								result  = result + '                 <div class="clearfix mb10">';
-								result  = result + '                   <div class="col-md-12" id="candidatenameDiv">';
-								result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.name+ '" name="name"  placeholder="Namedfds *" id="candidateName" ';
-								result  = result + '                      data-validation="required validate_length length2-250" field-name="Name" >';
-								result  = result + '                   </div>';
-								result  = result + '                 </div>';
-								result  = result + '                 <div class="clearfix mb10">';
-								result  = result + '                   <div class="col-md-12">';
-								result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.provider+ '" name="provider" placeholder="Provider *" id="candidateProvider"';
-								result  = result + '                      data-validation="required validate_Space validate_length length2-250" field-name="Provider">';
-								result  = result + '                   </div>';
-								result  = result + '                 </div>';
-								
-								result  = result + '                 <div class="clearfix mb10">';
-								result = result  +'	                     <div class="col-md-5 positionRelative padding_right">';
-								result = result  +'	                     <select class="newSelect"  name="scoreType"  value="'+ json.scoreType+ '"  id="scoreType" onchange="selectScoreType();clearSearchKey();"  >';
-								result = result  +' 					   <option value="" selected="selected">Score Type</option>';
-								if (json.scoreType == "Percentage") {
-									result = result + '<option selected value="Percentage">Percentage</option>';
-								} else {
-									result = result	+ '<option value="Percentage">Percentage</option>';
-								}
-								if (json.scoreType == "CGPA") {
-									result = result	+ '<option selected value="CGPA">CGPA</option>';
-								} else {
-									result = result	+ '<option value="CGPA">CGPA</option>';
-								}
-								if (json.scoreType == "GRADE") {
-									result = result	+ '<option selected value="GRADE">GRADE</option>';
-								} else {
-									result = result + '<option value="GRADE">GRADE</option>';
-								}
-								result = result  +'	                      </select>';
-								result = result  +'	                   </div>';
-								result  = result + '                   <div class="col-md-7" positionRelative id="candidateScoreDiv">';
-								if(json.score !=null && json.score!='undefined'&& json.score !=''){
-								result  = result + '                     <input type="text" class="form-control input-sm" value="'+json.score+ '" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();scoreAndScoreType();"';
-								result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
-								}else{
-								result  = result + '                     <input type="text" class="form-control input-sm" value="" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();scoreAndScoreType();"';
-								result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
-								}
-								result  = result + '                 	 </div>';
-								result = result  +'	                   </div>';
-								result  = result + '                 <div class="clearfix mb10">';
-								if(json.description !=null && json.description!='undefined'&& json.description !=''){
-								result  = result + '                   <div class="col-md-12">';
-								result  = result + '                     <input type="text" class="form-control" rows="1" name ="description" value="'+json.description+ '"  placeholder="Description" id="candidateDescription"';
-								result  = result + '                     data-validation-optional="true" data-validation="required validate_length length2-250">';
-								result  = result + '                   </div>';
-								}else{
-									result  = result + '                   <div class="col-md-12">';
-									result  = result + '                     <input type="text" class="form-control" rows="1" name ="description" value=""  placeholder="Description" id="candidateDescription"';
-									result  = result + '                     data-validation-optional="true" data-validation="required">';
-									result  = result + '                   </div>';	
-								}
-								result  = result + '                 </div>';
-								result  = result + '                 <div class="clearfix mb10">';
-								result  = result + '                   <div class="col-md-6 positionRelative">';
-								if(json.candidatevalidFromDateToString !=null && json.candidatevalidFromDateToString!='undefined'&& json.candidatevalidFromDateToString !=''){
-								
-									result = result  +'	                   <div>';
-									result  = result + '                     <input type="text" class="form-control input-sm"  value="'+ json.candidatevalidFromDateToString+ '" name ="validFrom" placeholder="Valid From" ';
-									result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDateEdit" readonly>';
-									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
-									result  = result + '					<div class="clearDate" onClick="editCandidateCertificatesStartDate();"></div>';
-									result  = result + '                   </div>';
-
-								}else{
-									result = result  +'	                   <div>';
-									result  = result + '                     <input type="text" class="form-control input-sm"  value="" name ="validFrom" placeholder="Valid From" ';
-									result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDateEdit" readonly>';
-									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
-									result  = result + '					<div class="clearDate" onClick="editCandidateCertificatesStartDate();"></div>';
-									result  = result + '                   </div>';
-
-								}
-								
-								result  = result + '                   </div>';
-								result  = result + '                   <div class="col-md-6 positionRelative">';
-								if(json.candidatevalidToDateToString !=null && json.candidatevalidToDateToString!='undefined'&& json.candidatevalidToDateToString !=''){
-								
-									result = result  +'	                   <div>';
-									result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.candidatevalidToDateToString+ '" name="validTo" placeholder="Valid To" ';
-									result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDateEdit" readonly>';
-									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
-									result  = result + '					<div class="clearDate" onClick="editCandidateCertificatesEndDate();"></div>';
-									result  = result + '                   </div>';
-
-								}else{
-									
-									result = result  +'	                   <div>';
-									result  = result + '                     <input type="text" class="form-control input-sm" value = "" name="validTo" placeholder="Valid To" ';
-									result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDateEdit" readonly>';
-									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
-									result  = result + '					<div class="clearDate" onClick="editCandidateCertificatesEndDate();"></div>';
-									result  = result + '                   </div>';
-
-								}
-								
-								
-								result  = result + '                   </div>';
-								result  = result + '                 </div>';
-								result  = result + '                 <div class="clearfix mr">';
-								result = result	+ '	                   <input type="hidden"  value="'+candidateCertificationId+'" id="candidateCertificationId"  name="candidatecertificateID" >';
-								result = result	+ '	                   <input type="hidden"  value="'+candidateId+'" id="candidateId" >';
-							
-								result  = result + '                   <button type="button"  id="addCandidate"  onClick ="updateCandidateCertification('+ candidateId+ ','+ candidateCertificationId+ ');" class="btn btn-sm btn-primary pull-right"  >Update</button>';
-								result  = result + '                 </div>';
-								result  = result + '               </div>';
-								result  = result + '              </form>';
-								$("#popUpDivEmp").empty();
-								$("#popUpDivEmp").append(result);
-								
-								$(".edit-details").toggleClass("edit-details-active");
-								
-								$(".close-div").click(function(){
-									 $(this).parent("div.edit-details").removeClass("edit-details-active");
-									 });
-								 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
-									 e.stopPropagation();
-								 });
-								 
-								var cerStartDate = $("#StartDateEdit").val();
-								var cerEndDate = $("#EndDateEdit").val(); 
-								
-								
-								var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-								 
-								 var finalDateFormatCerEditOneSave = '';
-								 // written common method in slead-common.js for date formats start
-								  var cerStartDateEdit = getJSDate(cerStartDate,locationDate);
-								  var cerEndDateEdit = getJSDate(cerEndDate,locationDate);
-								  
-								  var finalDateFormatCerUpdate = getJSDateFormat(locationDate);
-								  //end
-							   
-							  $('#StartDateEdit').datepicker({
-							      dateFormat: finalDateFormatCerUpdate,
-							      changeMonth: true,
-							  	  changeYear: true, 
-							  	  maxDate: cerEndDateEdit,
-							      onSelect: function (selected) {
-							            //var dt = new Date(selected);
-							            var dt = $(this).datepicker('getDate', '+1d');
-							            dt.setDate(dt.getDate() + 1);
-							            $("#EndDateEdit").datepicker("option", "minDate", dt);
-							        }
-							  });
-							  
-							  $('#EndDateEdit').datepicker({
-							      dateFormat: finalDateFormatCerUpdate,
-							      changeMonth: true,
-							  	  changeYear: true, 
-							  	  minDate: cerStartDateEdit,
-							      onSelect: function (selected) {
-							            //var dt = new Date(selected);
-							            var dt = $(this).datepicker('getDate', '-1d');
-							            dt.setDate(dt.getDate() - 1);
-							            $("#StartDateEdit").datepicker("option", "maxDate", dt);
-							        }
-							  });
-																
-							}
-						
-						}
-					},
-
-				});
-
-	}
+			type : "POST",
+			url : sourceleadUrl
+					+ "/getCandidateCertificateBycandidateIdandCertificateId?"+tokenParamName+"="+tokenValue+"&candidateId="
+					+ candidateId + "&candidateCertificationId=" + candidateCertificationId,
+			success : function(response) {
+				if (response && response.response === "INVALID_DATA") {
+	    		    showError(response.responseMessage);
+	    		} else if (response.response === "AWKWARD") {
+	    		    location.href = "/errorPage";
+	    		} else if (response.response === "SUCCESS") {
+	    			/* var json = JSON.parse(data); */
+	    			var json = JSON.parse(response.object);
+	    			var result = '';
+	    		 	result  = result + '     <!-- Popup Div -->                                                                                         ';
+	    			result  = result + '         <form id="candidateCertificationEdit_form" name="candidateCertificationEdit_form" method="post">        ';
+	    			result = result+'	           <i class="fa fa-close close-div" onClick="closeCertificatePopup();"></i>';
+	    			result  = result + '               <div class="form-horizontal clearfix">';
+	    			result  = result + '                 <div class="clearfix mb10">';
+	    			result  = result + '                   <div class="col-md-12" id="candidatenameDiv">';
+	    			result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.name+ '" name="name"  placeholder="Namedfds *" id="candidateName" ';
+	    			result  = result + '                      data-validation="required validate_length length2-250" field-name="Name" >';
+	    			result  = result + '                   </div>';
+	    			result  = result + '                 </div>';
+	    			result  = result + '                 <div class="clearfix mb10">';
+	    			result  = result + '                   <div class="col-md-12">';
+	    			result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.provider+ '" name="provider" placeholder="Provider *" id="candidateProvider"';
+	    			result  = result + '                      data-validation="required validate_Space validate_length length2-250" field-name="Provider">';
+	    			result  = result + '                   </div>';
+	    			result  = result + '                 </div>';
+	    			result  = result + '                 <div class="clearfix mb10">';
+	    			result = result  +'	                     <div class="col-md-5 positionRelative padding_right">';
+	    			result = result  +'	                     <select class="newSelect"  name="scoreType"  value="'+ json.scoreType+ '"  id="scoreType" onchange="selectScoreType();clearSearchKey();"  >';
+	    			result = result  +' 					   <option value="" selected="selected">Score Type</option>';
+	    			if (json.scoreType == "Percentage") {
+	    				result = result + '<option selected value="Percentage">Percentage</option>';
+	    			} else {
+	    				result = result	+ '<option value="Percentage">Percentage</option>';
+	    			}
+	    			if (json.scoreType == "CGPA") {
+	    				result = result	+ '<option selected value="CGPA">CGPA</option>';
+	    			} else {
+	    				result = result	+ '<option value="CGPA">CGPA</option>';
+	    			}
+	    			if (json.scoreType == "GRADE") {
+	    				result = result	+ '<option selected value="GRADE">GRADE</option>';
+	    			} else {
+	    				result = result + '<option value="GRADE">GRADE</option>';
+	    			}
+	    			result = result  +'	                      </select>';
+	    			result = result  +'	                   </div>';
+	    			result  = result + '                   <div class="col-md-7" positionRelative id="candidateScoreDiv">';
+	    			if(json.score !=null && json.score!='undefined'&& json.score !=''){
+	    			result  = result + '                     <input type="text" class="form-control input-sm" value="'+json.score+ '" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();scoreAndScoreType();"';
+	    			result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
+	    			}else{
+	    			result  = result + '                     <input type="text" class="form-control input-sm" value="" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();scoreAndScoreType();"';
+	    			result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
+	    			}
+	    			result  = result + '                 	 </div>';
+	    			result = result  +'	                   </div>';
+	    			result  = result + '                 <div class="clearfix mb10">';
+	    			if(json.description !=null && json.description!='undefined'&& json.description !=''){
+	    			result  = result + '                   <div class="col-md-12">';
+	    			result  = result + '                     <input type="text" class="form-control" rows="1" name ="description" value="'+json.description+ '"  placeholder="Description" id="candidateDescription"';
+	    			result  = result + '                     data-validation-optional="true" data-validation="required validate_length length2-250">';
+	    			result  = result + '                   </div>';
+	    			}else{
+	    				result  = result + '                   <div class="col-md-12">';
+	    				result  = result + '                     <input type="text" class="form-control" rows="1" name ="description" value=""  placeholder="Description" id="candidateDescription"';
+	    				result  = result + '                     data-validation-optional="true" data-validation="required">';
+	    				result  = result + '                   </div>';	
+	    			}
+	    			result  = result + '                 </div>';
+	    			result  = result + '                 <div class="clearfix mb10">';
+	    			result  = result + '                   <div class="col-md-6 positionRelative">';
+	    			if(json.candidatevalidFromDateToString !=null && json.candidatevalidFromDateToString!='undefined'&& json.candidatevalidFromDateToString !=''){
+	    				result = result  +'	                   <div>';
+	    				result  = result + '                     <input type="text" class="form-control input-sm"  value="'+ json.candidatevalidFromDateToString+ '" name ="validFrom" placeholder="Valid From" ';
+	    				result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDateEdit" readonly>';
+	    				result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+	    				result  = result + '					<div class="clearDate" onClick="editCandidateCertificatesStartDate();"></div>';
+	    				result  = result + '                   </div>';
+	    			}else{
+	    				result = result  +'	                   <div>';
+	    				result  = result + '                     <input type="text" class="form-control input-sm"  value="" name ="validFrom" placeholder="Valid From" ';
+	    				result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDateEdit" readonly>';
+	    				result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+	    				result  = result + '					<div class="clearDate" onClick="editCandidateCertificatesStartDate();"></div>';
+	    				result  = result + '                   </div>';
+	    			}
+	    			result  = result + '                   </div>';
+	    			result  = result + '                   <div class="col-md-6 positionRelative">';
+	    			if(json.candidatevalidToDateToString !=null && json.candidatevalidToDateToString!='undefined'&& json.candidatevalidToDateToString !=''){
+	    				result = result  +'	                   <div>';
+	    				result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.candidatevalidToDateToString+ '" name="validTo" placeholder="Valid To" ';
+	    				result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDateEdit" readonly>';
+	    				result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+	    				result  = result + '					<div class="clearDate" onClick="editCandidateCertificatesEndDate();"></div>';
+	    				result  = result + '                   </div>';
+	    			}else{
+	    				result = result  +'	                   <div>';
+	    				result  = result + '                     <input type="text" class="form-control input-sm" value = "" name="validTo" placeholder="Valid To" ';
+	    				result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDateEdit" readonly>';
+	    				result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+	    				result  = result + '					<div class="clearDate" onClick="editCandidateCertificatesEndDate();"></div>';
+	    				result  = result + '                   </div>';
+	    			}
+	    			result  = result + '                   </div>';
+	    			result  = result + '                 </div>';
+	    			result  = result + '                 <div class="clearfix mr">';
+	    			result = result	+ '	                   <input type="hidden"  value="'+candidateCertificationId+'" id="candidateCertificationId"  name="candidatecertificateID" >';
+	    			result = result	+ '	                   <input type="hidden"  value="'+candidateId+'" id="candidateId" >';
+	    			result  = result + '                   <button type="button"  id="addCandidate"  onClick ="updateCandidateCertification('+ candidateId+ ','+ candidateCertificationId+ ');" class="btn btn-sm btn-primary pull-right"  >Update</button>';
+	    			result  = result + '                 </div>';
+	    			result  = result + '               </div>';
+	    			result  = result + '              </form>';
+	    			$("#popUpDivEmp").empty();
+	    			$("#popUpDivEmp").append(result);
+	    			$(".edit-details").toggleClass("edit-details-active");
+	    			$(".close-div").click(function(){
+	    				$(this).parent("div.edit-details").removeClass("edit-details-active");
+	    			});
+	    			$(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
+	    				e.stopPropagation();
+	    			});
+	    			var cerStartDate = $("#StartDateEdit").val();
+	    			var cerEndDate = $("#EndDateEdit").val(); 
+	    			var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	    			var finalDateFormatCerEditOneSave = '';
+	    			 // written common method in slead-common.js for date formats start
+	    			var cerStartDateEdit = getJSDate(cerStartDate,locationDate);
+	    			var cerEndDateEdit = getJSDate(cerEndDate,locationDate);
+	    			var finalDateFormatCerUpdate = getJSDateFormat(locationDate);
+	    			  //end
+	    		  $('#StartDateEdit').datepicker({
+	    		      dateFormat: finalDateFormatCerUpdate,
+	    		      changeMonth: true,
+	    		  	  changeYear: true, 
+	    		  	  maxDate: cerEndDateEdit,
+	    		      onSelect: function (selected) {
+	    		            //var dt = new Date(selected);
+	    		            var dt = $(this).datepicker('getDate', '+1d');
+	    		            dt.setDate(dt.getDate() + 1);
+	    		            $("#EndDateEdit").datepicker("option", "minDate", dt);
+	    		        }
+	    		  });
+	    		  $('#EndDateEdit').datepicker({
+	    		      dateFormat: finalDateFormatCerUpdate,
+	    		      changeMonth: true,
+	    		  	  changeYear: true, 
+	    		  	  minDate: cerStartDateEdit,
+	    		      onSelect: function (selected) {
+	    		            //var dt = new Date(selected);
+	    		            var dt = $(this).datepicker('getDate', '-1d');
+	    		            dt.setDate(dt.getDate() - 1);
+	    		            $("#StartDateEdit").datepicker("option", "maxDate", dt);
+	    		        }
+	    		  });
+	    		} else if (response.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
+		},
+	});
+}
 </script>
 
 <%-- 
@@ -673,54 +653,59 @@ function addCertification(candidateId) {
      3.ajax url implementation in CandidateCertificationsRestController.
 --%>
       
-      <script type="text/javascript">
+<script type="text/javascript">
 	function updateCandidateCertification(candidateId, candidateCertificationId) {
-
 		var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd'
 		};
-		
 		var scoreType = document.getElementById("scoreType").value; 
-		 if(scoreType != null && scoreType != ""){
-			 $('#candidateScore').removeAttr('data-validation-optional');
-			 $('#candidateScore').attr("data-validation","required"); 
-		 }else{
-			 $('#candidateScore').removeAttr('data-validation');
-			 $('#candidateScore').attr("data-validation-optional","true"); 
-		 }
+		if(scoreType !== null && scoreType !== "") {
+			$('#candidateScore').removeAttr('data-validation-optional');
+			$('#candidateScore').attr("data-validation","required"); 
+	 	} else {
+			$('#candidateScore').removeAttr('data-validation');
+			$('#candidateScore').attr("data-validation-optional","true"); 
+		}
 		
 		if ($('#candidateCertificationEdit_form').validate(false,
 				validationSettings)) {
-
-			 var formData = getFormData("candidateCertificationEdit_form");
+			var formData = getFormData("candidateCertificationEdit_form");
 			//It will escape all the special characters
-			
-			 $.post(sourceleadUrl+"/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateCertificationId"+ candidateCertificationId, formData, function(data) {
-				 closeCertificatePopup();
-     			$("#selector5").removeAttr("style");
-     			$("#selector5").css({ display: "block" });
-     			$("#cerMsgDiv").html("Certification details updated");
+			$.post(sourceleadUrl+"/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateCertificationId"+ candidateCertificationId, formData, function(result) {
+				if (result && result.response === "INVALID_DATA") {
+	    		    showError(result.responseMessage);
+	    		} else if (result.response === "AWKWARD") {
+	    		    location.href = "/errorPage";
+	    		} else if (result.response === "SUCCESS") {
+					closeCertificatePopup();
+     				$("#selector5").removeAttr("style");
+     				$("#selector5").css({ display: "block" });
+	     			$("#cerMsgDiv").html("Certification details updated");
 					candidateCertificateList(candidateId);
 					cerMsgFadein();
 					qwikCertificates(candidateId);
 					setTimeout(function(){
-			 			candidateList();					 			
-			 		},100);
-		        });			
-
+						candidateList();					 			
+					},100);
+	    		} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
+		    });			
 			return true;
 		} else {
 			return false;
 		}
-		$('body').on('blur','#candidateCertificationEdit_form',
-				function() {
-					$("#candidateCertificationEdit_form").showHelpOnFocus();
-					$("#candidateCertificationEdit_form").validateOnBlur(false,
-							validationSettings);
-				});
+	$('body').on('blur','#candidateCertificationEdit_form',
+		function() {
+			$("#candidateCertificationEdit_form").showHelpOnFocus();
+			$("#candidateCertificationEdit_form").validateOnBlur(false,
+				validationSettings);
+			});
 	}
 </script>
   <%-- 
@@ -759,39 +744,36 @@ function removeCertification(candidateCertificationId, candidateId){
       
       
 <script>
-function  deleteSelectedCertification(candidateCertificationId,candidateId){
-	
+function deleteSelectedCertification(candidateCertificationId,candidateId) {
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	 $.ajax({  
+	 $.ajax({
           type : "POST",
           url: sourceleadUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
-          success :function(data) {
-
-				if(data != null && data != 'undefined' && data != ""){
-             		if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadLoginUrl);
-			    	}
-             		else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		}
-             		else{
-             		     $("#popUpDivEmp").removeClass("edit-details-active");
-            			 $("#selector5").removeAttr("style");
-             			 $("#selector5").css({ display: "block" });
-             			 $("#cerMsgDiv").html("Certification deleted");
-             			$("#remove_user_pop_certificates, .project_inn_mask").fadeOut();
-             			candidateCertificateList(candidateId);
-             			qwikCertificates(candidateId);
-             			cerMsgFadein();
-             			setTimeout(function(){
-				 			candidateList();					 			
-				 	    },100);
-			    	}
-               } 
+          success :function(result) {
+			if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+				showError(result.responseMessage);
+			} else if (result.response === "AWKWARD") {
+	    		location.href = "/errorPage";
+	    	} else if (result.response === "SUCCESS") {
+	    		$("#popUpDivEmp").removeClass("edit-details-active");
+       			$("#selector5").removeAttr("style");
+        		$("#selector5").css({ display: "block" });
+        		$("#cerMsgDiv").html("Certification deleted");
+        		$("#remove_user_pop_certificates, .project_inn_mask").fadeOut();
+        		candidateCertificateList(candidateId);
+        		qwikCertificates(candidateId);
+        		cerMsgFadein();
+        		setTimeout(function(){
+			 		candidateList();					 			
+			 	},100);
+	    	} else if (result.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+			showError("Operation failed, please try again");
+			}
         },
-          
-     }); 
+    }); 
 }
 </script> 
  <!-- this script is for removing the Certification  Ends -->  

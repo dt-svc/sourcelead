@@ -83,9 +83,14 @@ function editCandidate(candidateId){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-         success :function(json) {  
-              if(json != null){  
-//               	 var json = JSON.parse(data);
+         success :function(result) {  
+        	   var json = result.object;
+	      	   if(result.response === "SESSION_TIMEDOUT") {
+						location.replace(sourceleadUrl);
+					} else if (result.response === "AWKWARD") {
+						location.href = "/errorPage";
+					} else if (result.response === "SUCCESS") {
+	              	if(json != null){  
             			 	var lastName = '';
             			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
             			 		lastName = json.lastName;            			 		
@@ -515,7 +520,7 @@ function editCandidate(candidateId){
 								  })
 							});
             		 
-                }else{
+                	}else{
          	    	         var result ="";
         		    	     result = result+"   <div class='row'>"; 
         					 result = result+"	<div class='col-lg-12'>"; 
@@ -530,6 +535,11 @@ function editCandidate(candidateId){
         					$("#profileEditPopup").empty();
         				    $("#profileEditPopup").append(result); 
                         }
+					} else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+						showError("Operation failed, please try again");
+					}
                  },
                    
               }); 
@@ -673,9 +683,14 @@ function candidateProfile(candidateId,candidateType){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-         success :function(json) {  
-              if(json != null){  
-//               	var json = JSON.parse(data);
+         success :function(result) {
+        	 var json = result.object;
+      	   		if(result.response === "SESSION_TIMEDOUT") {
+					location.replace(sourceleadUrl);
+				} else if (result.response === "AWKWARD") {
+					location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+              		if(json != null){  
 							var result ="";
 							
 							result = result+'<div id="removeCandidateAlert" ></div>  ';
@@ -976,7 +991,7 @@ function candidateProfile(candidateId,candidateType){
 							     });
 							     event.preventDefault();
 								   
-              }else{
+              	}else{
                      	 $("#candidateSideDiv").removeAttr("style");
        	    	         var result ="";
       		    	     result = result+"   <div class='row'>"; 
@@ -992,6 +1007,11 @@ function candidateProfile(candidateId,candidateType){
       					$("#candidateSideDiv").empty();
       				    $("#candidateSideDiv").append(result); 
                       }
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
+				}
                },
                  
             }); 
@@ -1057,14 +1077,22 @@ function candidateProfile(candidateId,candidateType){
          type : "POST",
          url: Urlcheck,        
          success :function(data) {
-            	  var candidateType = "Candidates";
-            	  candidateProfile(candidateId,candidateType);
-            	  candidateQuickViewProfile(candidateId);
-            	  $("#loading").removeAttr('style');
+       	 	if (response && response.response === "INVALID_DATA") {
+       		    showError(response.responseMessage);
+       		} else if (response.response === "AWKWARD") {
+       		    location.href = "/errorPage";
+       		} else if (response.response === "SUCCESS") {
+       			var candidateType = "Candidates";
+             	  candidateProfile(candidateId,candidateType);
+             	  candidateQuickViewProfile(candidateId);
+             	  $("#loading").removeAttr('style');
+       		} else if (response.indexOf('Sign In') !== -1) {
+       			location.replace(sourceleadUrl);
+       		} else {
+       		    showError("Operation failed, please try again");
+       		}
        },
-         
     }); 
-	 
  }  
 </script>
  
@@ -1521,18 +1549,25 @@ function updateDesignationOtherType(){
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&candidateType="+candidateType, 
-		        success: function(data) {
-		        	if(data == 'true'){
-		        		  $('#candidateType').val(); 
-						  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
-						  $("#update_candidate").attr("disabled", "disabled");
-						  $("#update_candidate").addClass('button').val('Processing..');
-		        	}
-		        	else{
-		        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
-		        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
-		        		 $("#update_candidate" ).addClass('button').val('Save');
-                         $("#update_candidate").removeAttr("disabled");
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		if(response.object == 'true') {
+			        		  $('#candidateType').val(); 
+							  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+							  $("#update_candidate").attr("disabled", "disabled");
+							  $("#update_candidate").addClass('button').val('Processing..');
+			        	} else {
+			        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+			        		 $("#update_candidate" ).addClass('button').val('Save');
+	                         $("#update_candidate").removeAttr("disabled");
+			        	}
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
 		        	}
 		        },
 		    });

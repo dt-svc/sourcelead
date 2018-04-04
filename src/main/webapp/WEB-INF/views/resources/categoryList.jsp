@@ -173,7 +173,7 @@ function prepareBlogCategoryList(url){
 	    result = result +" <input type='text' placeholder='Search' id='blogCategoryTableSearch'/>";
 		result = result	+ '</div>';
 		result = result	+ '</div>';
-		result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
+		result = result	+ '<div class="clearfix">';
 		result = result + '<table id="blogCategoryListView" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import com.bis.sourcelead.dto.AssetDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
@@ -43,7 +44,11 @@ public interface AssetService {
 	 */
 	List<Asset> getAssetFilterListByLocationId(Long orgLocationId, String categoryIds, String workingStatus) throws Exception;
 	
+	ResponseList<Asset> getDynamicAssetFilterListByLocationId(Long orgLocationId,AssetDTO assetDTO) throws Exception;
+	
 	List<Asset> getAssetListByLocationId(Long orgLocationId) throws Exception;
 	
 	public Asset saveAssetDetails(AssetDTO assetDTO,String assetId, User user,OrgLocations orgLocations) throws Exception;
+	
+	List<Asset> getUserBasedAssetManagementListandOrgLocation(Long orgLocationId, Long UserId) throws Exception;
 }

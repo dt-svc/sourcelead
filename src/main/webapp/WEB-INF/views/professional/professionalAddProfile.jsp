@@ -301,7 +301,7 @@
             <label class="col-md-3">Add Resume<span class="text-danger">&nbsp;*</span></label>
             <div class="col-md-9">
 			 <div class="input-group col-md-12" id="uploadFileGroup" style="margin:0 auto">
-               <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+               <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                 <input type="file" style="display: none;"  id="uploadBtn"  class="upload">
                  </span> </label>
                  <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="text"  name="" placeholder="Upload Resume ..." field-name="Resume" data-validation="required validate_Space validatedoc" >
@@ -488,15 +488,20 @@ function validate_fileupload(fileName)
 		    	$.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
-			        success: function(data) {
-			        	var primarySkill = data;
-			        	      $("#primarySkill").val(primarySkill);
-			        	
+			        success: function(response) {
+			        	if (response.response === "AWKWARD") {
+			        	    location.href = "/errorPage";
+			        	} else if (response.response === "SUCCESS") {
+			        		var primarySkill = response.object;
+			        	    $("#primarySkill").val(primarySkill);
+			        	} else if (response.indexOf('Sign In') !== -1) {
+			        		location.replace(sourceleadUrl);
+			        	} else {
+			        	    showError("Operation failed, please try again");
+			        	}
 			        },
 			    });
-		    	
 		    });
-			
 		   $("#candidateSkills").val('').trigger("chosen:updated");
 	       $("#candidateEducation").val('').trigger("chosen:updated");
 				
@@ -515,18 +520,26 @@ function validate_fileupload(fileName)
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&candidateType=Candidate", 
-		        success: function(data) {
-		        	if(data == 'true'){
-		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
-						  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
-						  document.getElementById("email").setAttribute('record-exist','yes');
-						  document.getElementById("email").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
-		        	}
-		        	else{
-		        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
-		        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
-		        		 $("#store_candidate" ).addClass('button').val('Save');
-                         $("#store_candidate").removeAttr("disabled");
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		if(response.object == 'true'){
+			        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
+							  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+							  document.getElementById("email").setAttribute('record-exist','yes');
+							  document.getElementById("email").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
+			        	}
+			        	else{
+			        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+			        		 $("#store_candidate" ).addClass('button').val('Save');
+	                         $("#store_candidate").removeAttr("disabled");
+			        	}		        		
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
 		        	}
 		        },
 		    });

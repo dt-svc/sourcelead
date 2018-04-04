@@ -13,7 +13,7 @@
   <div id="shareEmptypopUp"></div>
    <div class="success_pop" id="selector4" style="display: none;"> 
      <i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span> 
-   </div>  
+   </div>
 <script>
   function noAccess(id){ 	
 	 
@@ -627,15 +627,22 @@ function deleteProfileImage(candidateId){
 	 $.ajax({
 		    type: "GET",
             url: sourceleadUrl+"/deleteCandidateImage?candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
-	        success: function(data) {
-	        	 var result = data;
-	        	 $("#popUp").empty();
-	        	 $(".project_inn_mask").fadeOut(200);
-	        	 $("[data-id=profileImage]").attr('src', '/resources/images/userprofileImg.jpg');
-	        	 candidateQuickViewProfile(candidateId);
-	        	 refreshImageBlock(candidateId);
+	        success: function(response) {
+	        	if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+	        		var result = response.object;
+		        	 $("#popUp").empty();
+		        	 $(".project_inn_mask").fadeOut(200);
+		        	 $("[data-id=profileImage]").attr('src', '/resources/images/userprofileImg.jpg');
+		        	 candidateQuickViewProfile(candidateId);
+		        	 refreshImageBlock(candidateId);
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
 	       },
-	        
      }); 
 }
 </script>
@@ -650,9 +657,14 @@ function refreshImageBlock(candidateId){
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-           success :function(json) {   
-                if(data){  
-//                 	 var json = JSON.parse(data);
+           success :function(result) { 
+        	   var json = result.object;
+        	   if(result.response === "SESSION_TIMEDOUT") {
+					location.replace(sourceleadUrl);
+				} else if (result.response === "AWKWARD") {
+					location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+					if(json != null){
 	                	 $("#candidateImageId").empty();
 	                	 var result = '';
 			             result = result+'<div class="well well-sm text-center clearfix">';
@@ -691,7 +703,12 @@ function refreshImageBlock(candidateId){
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
 						 result = result+' </div>';
 						 $("#candidateImageId").append(result);
-                }
+                	}
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
+				}
          	},
       }); 
    }
@@ -705,34 +722,40 @@ function addFavourite(candidateId){
 	 	$.ajax({
 			type : "POST",
 			url : sourceleadUrl+"/saveCandidateAsFavourite?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
-			success : function(result) {
-				var td = cacheLastJson.data;
-				for(var e in td) {
-					if(td[e].candidateId === candidateId) {
-						td[e]
-						if(isAssociate == "N"){
-							td[e].isFavourite = checked ? 1 : 0;
-		            	} else if(td[e].isFavouriteAssociate == '1' && isAssociate == "Y") {
-		            		td[e].isFavouriteAssociate = checked ? 1 : 0;
-		            	}
-						break;
+			success : function(response) {
+				if (response && response.response === "INVALID_DATA") {
+				    showError(response.responseMessage);
+				} else if (response.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				} else if (response.response === "SUCCESS") {
+					var td = cacheLastJson.response.object;
+					for(var e in td) {
+						if(td[e].candidateId === candidateId) {
+							td[e]
+							if(isAssociate == "N"){
+								td[e].isFavourite = checked ? 1 : 0;
+			            	} else if(td[e].isFavouriteAssociate == '1' && isAssociate == "Y") {
+			            		td[e].isFavouriteAssociate = checked ? 1 : 0;
+			            	}
+							break;
+						}
 					}
+					cacheLastJson.response.object = td;
+					if(checked){
+						 document.getElementById("favourite"+candidateId).removeAttribute("class");
+						 document.getElementById("favourite"+candidateId).className = 'iconClass pull-left star-rating activestar-rating' 
+					} else {
+						 //document.getElementById("favourite"+candidateId).removeAttribute("class");
+						 document.getElementById("favourite"+candidateId).classList.remove("activestar-rating");
+						 document.getEmentById("favourite"+candidateId).className = 'iconClass pull-left star-rating';
+					}
+				} else if (response.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
 				}
-				cacheLastJson.data = td;
-				if(checked){
-					 document.getElementById("favourite"+candidateId).removeAttribute("class");
-					 document.getElementById("favourite"+candidateId).className = 'iconClass pull-left star-rating activestar-rating' 
-				}else{
-					 //document.getElementById("favourite"+candidateId).removeAttribute("class");
-					 document.getElementById("favourite"+candidateId).classList.remove("activestar-rating");
-					 document.getEmentById("favourite"+candidateId).className = 'iconClass pull-left star-rating';
-				}
-				
 			},
 		}); 
-		 
-		
-	
 }
 </script>
 
@@ -1203,6 +1226,10 @@ function cancel(candidateId){
     <div class="side_mask">
        <div class="proj_close" onclick="activeTab();"></div>
     </div>
+    <div class="success_pop" id="statusAlert">
+		<i class="fa fa-check-circle"></i>
+   		<span></span>
+   </div>
  <div class="clients_side_wrap quickviewTabs">
     
  <ul class="nav nav-tabs">
@@ -1251,6 +1278,7 @@ function cancel(candidateId){
 		$("#detailview").removeClass("active in");
 		$("#candTimelineView").removeClass("active");
 		$("#timelineview").removeClass("active in");
+		$(".location-alert").fadeOut();
 	}
 </script>
 
@@ -1494,7 +1522,7 @@ function closeComment(){
 					scrollToTopOnError : true,
 					dateFormat : 'yyyy/mm/dd' 
 		         }; 
-			 if ($('#candidateComments_form').validate(false, validationSettings)){
+			 if ($('#candidateComments_form').validate(false, validationSettings)) {
 				var frm = $('#candidateComments_form').serializeFormJSON();
 				var con = JSON.stringify(frm);
 				con = con.replace(/[{}]/g, "");
@@ -1504,7 +1532,7 @@ function closeComment(){
          		$("#submit_comment" ).addClass('button').val('Processing..');
 				//It will escape all the special characters
 		        var jsonData = encodeURIComponent(con);
-				$.ajax({
+				/* $.ajax({
 						type : "POST",
 		        	    data: formData,
 		        	    contentType : 'application/json; charset=utf-8',
@@ -1514,22 +1542,36 @@ function closeComment(){
 		        	    dataType : 'json',
 						url : sourceleadUrl+"/saveCandidateComment?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&candidateId="+candidateId,
 						success : function(result) {
-							savedCommentAndCount(candidateId);
-							 /* if( result.indexOf('Sign In') >= 0){
-					    		location.replace(sourceleadUrl);
-					    	 }
-		            		 else if (result.indexOf('exception') >= 0) {
-		            			 location.replace(sourceleadUrl+"/errorPage");
-		            		 }
-		            		 else{
-						 		$("#popUpDivResume").removeClass("edit-details-active");
-						 		candidateResumesList(candidateId);
-		            		 } */
+							if (result && result.response === "INVALID_USER") {
+				    		    showError(result.responseMessage);
+				    		} else if (result.response === "AWKWARD") {
+				    		    location.href = "/errorPage";
+				    		} else if (result.response === "SUCCESS") {
+				    			savedCommentAndCount(candidateId);
+				    		} else if (result.indexOf('Sign In') !== -1) {
+								location.replace(sourceleadUrl);
+							} else {
+							    showError("Operation failed, please try again");
+							} 
 						},
-					});
-					$('.add-comment').toggle(200);
-					return true;
-			 }else{ 
+					}); */
+				
+				$.post(sourceleadUrl+"/saveCandidateComment?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&candidateId="+candidateId,{},function(result){
+					if (result && result.response === "INVALID_USER") {
+		    		    showError(result.responseMessage);
+		    		} else if (result.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    		} else if (result.response === "SUCCESS") {
+		    			savedCommentAndCount(candidateId);
+		    		} else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+					    showError("Operation failed, please try again");
+					}
+				});
+				$('.add-comment').toggle(200);
+				return true;
+			 } else { 
 					return false;
 			 }
 		}
@@ -1549,46 +1591,55 @@ function savedCommentAndCount(candidateId){
         type : "POST",
          url: sourceleadUrl+"/getAllCommentsOnCandidateByCandidateIdAndOrgLocation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(data) {
-        	 var result = "";
-              if(data != null && data != 'undefined' && data != ""){
-              	 	 var json = JSON.parse(data);
-            			 var totalComments = 0;
-            			 if(json.length>0){
-            				totalComments = json.length;
-         	            	var report = json[0];
-	 			            
-	 			            result = result+'    <div class="commentsimg">';
-				            result = result+'    <i class="fa fa-comments"></i>';
-				            result = result+'        <div class="commentsimg-inner">';
-				            
-				            result = result+'        	<img data-id="userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorUserImage+'"/>';
-				            result = result+'        </div>';
-				            result = result+'    </div>';
-				            result = result+'     <div class="comments-content">';
-				            result = result+'         <div class="pull-left" id="latestMessage">';
-				            result = result+'         <p class="comment-by">';
-				            result = result+'            By <span class="text-danger">'+report.commentAuthor+'</span>';
-				            result = result+'            <span class="small">('+report.commentTime+')</span></p>';
-				            result = result+'         <p class="comment-text">'+report.comment+'</p>';
-				            result = result+'         </div>';
-				            result = result+'         <div class="pull-right cmt-button">';
-				            result = result+'          <span class="comments-button">';
-				            
-				            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateId+')">';
-				            result = result+'            	<i class="fa fa-plus"></i>&nbsp;Comments';
-				            result = result+'            </button>';
-				            result = result+'            <div class="add-comment">';
-				            result = result+'            </div>';
-				            result = result+'          </span>';
-				            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+');">View more <span class="label label-warning">'+totalComments+'</span></a>';
-				 			result = result+'		</div>';
-				            result = result+'     </div>';
-	 			           
-	 			           $("#latestMessage").empty();
-	 			           $("#latestMessage").append(result);
-            			 }
-            			 
-              }
+        	 if (data && data.response === "INVALID_DATA") {
+        		    showError(data.responseMessage);
+        		} else if (data.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (data.response === "SUCCESS") {
+        			var result = "";
+                    if(data.object.length > 0) {
+                    	var json = JSON.parse(data.object);
+                  		var totalComments = 0;
+                  		if(json.length>0) {
+                  			totalComments = json.length;
+            	            var report = json[0];
+   	 			            
+   	 			            result = result+'    <div class="commentsimg">';
+   				            result = result+'    <i class="fa fa-comments"></i>';
+   				            result = result+'        <div class="commentsimg-inner">';
+   				            
+   				            result = result+'        	<img data-id="userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorUserImage+'"/>';
+   				            result = result+'        </div>';
+   				            result = result+'    </div>';
+   				            result = result+'     <div class="comments-content">';
+   				            result = result+'         <div class="pull-left" id="latestMessage">';
+   				            result = result+'         <p class="comment-by">';
+   				            result = result+'            By <span class="text-danger">'+report.commentAuthor+'</span>';
+   				            result = result+'            <span class="small">('+report.commentTime+')</span></p>';
+   				            result = result+'         <p class="comment-text">'+report.comment+'</p>';
+   				            result = result+'         </div>';
+   				            result = result+'         <div class="pull-right cmt-button">';
+   				            result = result+'          <span class="comments-button">';
+   				            
+   				            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateId+')">';
+   				            result = result+'            	<i class="fa fa-plus"></i>&nbsp;Comments';
+   				            result = result+'            </button>';
+   				            result = result+'            <div class="add-comment">';
+   				            result = result+'            </div>';
+   				            result = result+'          </span>';
+   				            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+');">View more <span class="label label-warning">'+totalComments+'</span></a>';
+   				 			result = result+'		</div>';
+   				            result = result+'     </div>';
+   	 			           
+   	 			           	$("#latestMessage").empty();
+   	 			           	$("#latestMessage").append(result);
+                  		}
+					}
+        		} else if (data.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
 			},
       });
 }
