@@ -1382,6 +1382,9 @@ public class LeaveManagementRestController {
 			leaveManagementHistory.setToStage(Constants.LEAVE_CANCELLED);
 			leaveManagementHistoryDao.saveLeaveManagementHistory(leaveManagementHistory);
 			leaveService.LeaveCancelEmailToUser(user,leaveManagementHistory,reason);
+			if(leave != null && leave.getLeaveType() != null && leave.getOrgLocations() != null) {
+				timesheetRestController.linkLeaveTypeWithTimeSheet(user, leave.getOrgLocations(), leave.getLeaveType().getId(), leave, Constants.LEAVE_CANCELLED);
+			}
 		return isCancelled;
 	}	
 	

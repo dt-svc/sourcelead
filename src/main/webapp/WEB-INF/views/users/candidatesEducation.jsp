@@ -420,231 +420,242 @@ function addEducation(candidateId) {
 
 <script>
 function EditEducation(candidateId,candidateEducationId) {
-	$.ajax({	type : "POST",
-				url : sourceleadUrl+ "/getCandidateEducationBycandidateIdandEducationId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,
-				success : function(json) {
-					//var json = JSON.parse(data);
-					var specialization = "";
-					var grade = "";
-					var institute = "";
-					var address  = "";
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl+ "/getCandidateEducationBycandidateIdandEducationId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,
+		success : function(response) {
+			if (response && response.response === "INVALID_DATA") {
+			    showError(response.responseMessage);
+			} else if (response.response === "AWKWARD") {
+			    location.href = "/errorPage";
+			} else if (response.response === "SUCCESS") {
+				//var json = JSON.parse(data);
+				var json = response.object;
+				var specialization = "";
+				var grade = "";
+				var institute = "";
+				var address  = "";
+				
+				if(json.specialization !=null && json.specialization !='undefined' && json.specialization !='') {
+					specialization = json.specialization;
+				}
+				
+				if(json.grade !=null && json.grade !='undefined' && json.grade !='') {
+					grade = json.grade;
+				}
+				
+				if(json.institute !=null && json.institute !='undefined' && json.institute !=''){
+					institute = json.institute;
+				}
+				
+				if(json.address !=null && json.address !='undefined' && json.address !=''){
+					address = json.address;
+				}
+				if (json != null && json != 'undefined' && json != "") {
+//						if (json.indexOf('Sign In') >= 0) {
+//							location.replace(sourceleadUrl);
+//						} else if (json.indexOf('exception') >= 0) {
+//							location.replace(sourceleadUrl + "/errorPage");
+//						} else {
+						var result = "";
+						result = result  +'<!-- Popup Div -->';
+						result = result  +'          <form role="form"  id="education_form" name="educatio(n_form" method="post" > ';
+						result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
+						result = result  +'                <div class="form-horizontal clearfix"> ';
+						result = result  +'   ';
+						result = result  +'                  <div class="clearfix mb10"> ';
+						result = result  +'                    <div class="col-md-12">                                                                                                            ';
+						result = result + "<select  class='chosen-select form-control' name='name' id='candEdu' data-validation='validate_Space' data-validation-optional='true' onchange='validateEduname("+candidateId+");'onkeyup = 'validateEduname("+candidateId+");'>";
+	               
 					
-					if(json.specialization !=null && json.specialization !='undefined' && json.specialization !=''){
-						specialization = json.specialization;
-					}
-					
-					if(json.grade !=null && json.grade !='undefined' && json.grade !=''){
-						grade = json.grade;
-					}
-					
-					if(json.institute !=null && json.institute !='undefined' && json.institute !=''){
-						institute = json.institute;
-					}
-					
-					if(json.address !=null && json.address !='undefined' && json.address !=''){
-						address = json.address;
-					}
-					if (json != null && json != 'undefined' && json != "") {
-// 						if (json.indexOf('Sign In') >= 0) {
-// 							location.replace(sourceleadUrl);
-// 						} else if (json.indexOf('exception') >= 0) {
-// 							location.replace(sourceleadUrl + "/errorPage");
-// 						} else {
-							var result = "";
-							result = result  +'<!-- Popup Div -->';
-							result = result  +'          <form role="form"  id="education_form" name="educatio(n_form" method="post" > ';
-							result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
-							result = result  +'                <div class="form-horizontal clearfix"> ';
-							result = result  +'   ';
-							result = result  +'                  <div class="clearfix mb10"> ';
-							result = result  +'                    <div class="col-md-12">                                                                                                            ';
-							result = result + "<select  class='chosen-select form-control' name='name' id='candEdu' data-validation='validate_Space' data-validation-optional='true' onchange='validateEduname("+candidateId+");'onkeyup = 'validateEduname("+candidateId+");'>";
-		               
-						
-				    	 $.each(json.allAndCandidateEducations, function( i, eduName){
-							  var existed = 0;
-				                if(json.name != null && json.name != 'undefined' && json.name != ''){
-					                var res = [];
-					                res = json.name.split(",");
-					                res.forEach(function(item) {
-					                	if(eduName == item){
-					                		existed = 1;
-					                		result = result + ' <option selected value="'+eduName+'">'+eduName+'</option>';
-					                	}
-					                });
-				                }
-				                if(existed == 0){
-				                	result = result + ' <option value="'+eduName+'">'+eduName+'</option>';
-				                }
-							  
-							});
-    result = result + "</select>";
-	result = result  +'                  </div>                                                                                                                               ';
-	result = result  +'                  </div>                                                                                                                               ';
-	result = result  +'                                                                                                                                                       ';
-	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
-	result = result  +'                    <div class="col-md-12">                                                                                                            ';
-	result = result  +'                      <input type="text" name="specialization"  field-name="specialization" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" class="form-control input-sm" value="'+specialization+'" placeholder="Specialization">                                          ';
-	result = result  +'                    </div>                                                                                                                             ';
-	result = result  +'                  </div>                                                                                                                               ';
-	result = result  +'                                                                                                                                                       ';
-	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
-	result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
-								if(json.startDateStr !=null && json.startDateStr !='undefined' && json.startDateStr !=''){
-	result = result  +'                      <input type="text" name="startDate" class="form-control input-sm" field-name="startDate" id="startDateEdit" onclick="educationStartDate();" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="'+ json.startDateStr +'" placeholder="Start Date" id="edu-startDate" readonly>                           ';
-	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
-								}else{
-	result = result  +'					  <input type="text" name="startDate" class="form-control input-sm" field-name="startDate" id="startDateEdit" onclick="educationStartDate();" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="" placeholder="Start Date" id="edu-startDate" readonly>                           ';
-	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
-								}
-									
-	result = result  +'                    </div>                                                                                                                             ';
-	result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
-								if(json.endDateStr !=null && json.endDateStr !='undefined' && json.endDateStr !=''){
-	result = result  +'                      <input type="text" name="endDate" class="form-control input-sm" field-name="endDate" id="endDateEdit"  onclick="educationStartDate();" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="'+ json.endDateStr +'" placeholder="End Date" id="edu-endDate" readonly>                               ';
-	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
-								}
-								else{
-	result = result  +'                      <input type="text" name="endDate" class="form-control input-sm" field-name="endDate" id="endDateEdit" onclick="educationStartDate();" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="" placeholder="End Date" id="edu-endDate" readonly>                               ';
-	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
-								}
-	result = result  +'                    </div>    ';
-	result = result  +'                  </div>                                                                                                                               ';
-	result = result  +'                                                                                                                                                       ';
-	
-	result  = result + '                 <div class="clearfix mb10">';
-	result = result  +'	                     <div class="col-md-6 dropdown-select positionRelative paddingRight">';
-	result = result  +'	                     <select class="newSelect" value="'+ json.gradeType +'" name="gradeType" id="scoreEducationType" onchange="educationSelectScoreType();clearSearchKeyEducation();">';
-	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
-												if (json.gradeType == "Percentage") {
-													result = result + '<option selected>Percentage</option>';
-												} else {
-													result = result	+ '<option>Percentage</option>';
-												}
-												if (json.gradeType == "CGPA") {
-													result = result	+ '<option selected>CGPA</option>';
-												} else {
-													result = result	+ '<option>CGPA</option>';
-												}
-												if (json.gradeType == "GRADE") {
-													result = result	+ '<option selected>GRADE</option>';
-												} else {
-													result = result + '<option>GRADE</option>';
-												}
-	result = result  +'	                      </select>';
-	result = result  +'	                   </div>';
-	result  = result + '                   <div class="col-md-6" positionRelative paddingLeft id="candidateScoreDiv">';
-	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="grade" placeholder="Score" id="candidateEducationScore" onkeyup="educationSelectScoreType();educationscoreAndScoreType();"';
-	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-3" field-name="score">';
-	result  = result + '                 	 </div>';
-	result = result  +'	                   </div>';
-	
-	result = result  +'                                                                                                                                                       ';
-	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
-	result = result  +'                    <div class="col-md-12">                                                                                                            ';
-	result = result  +'                      <input type="text" name="institute" field-name="institute" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" class="form-control input-sm" value="'+institute+'" placeholder="Institute">                                               ';
-	result = result  +'                    </div>                                                                                                                             ';
-	result = result  +'                  </div>                                                                                                                               ';
-	result = result  +'                                                                                                                                                       ';
-	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
-	result = result  +'                    <div class="col-md-12">                                                                                                            ';
-	result = result  +'                      <input type="text" field-name="institute" data-validation="required validate_Space validate_length length2-250" data-validation-optional="true" name="address" class="form-control input-sm" value="'+address+'" placeholder="Address">                                                 ';
-	result = result  +'                    </div>                                                                                                                             ';
-	result = result  +'                  </div>                                                                                                                               ';
-	result = result  +'     ';
-	
-	result = result  +'                  <div class="clearfix mr"> ';
-	
-	result = result	+ '	                   <input type="hidden"  value="'+candidateEducationId+'" id="candidateEducationId"  name="candidateEduId" >';
-	result = result	+ '	                   <input type="hidden"  value="'+candidateId+'" id="candidateId" >';
-	
-    result  = result + '<button type="button"  id="save_button"  onClick ="updateCandidateEducation('+candidateId+');" class="btn btn-sm btn-primary pull-right">Update</button>';
-	result = result  +'                  </div>';
-	
-	result = result  +'                </div>   ';
-	result = result  +'                </form>                                                                                                                                ';
-	$("#popUpDiv").empty();
-	$("#popUpDiv").append(result);
-	
-	function educationStartDate(){
-	}
-	
-	 var eduStartDate = $("#startDateEdit").val();
-	var eduEndDate = $("#endDateEdit").val(); 
-	
-	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	
-	 
-	 var finalDateFormatEduEditOneSave = '';
-	 
-	 // written common method in slead-common.js for date formats start
-	  var eduStartDateEdit = getJSDate(eduStartDate,locationDate);
-	  var eduEndDateEdit = getJSDate(eduEndDate,locationDate);
-	  
-	  var finalDateFormatEduUpdate = getJSDateFormat(locationDate);
-	  //end
-	
-	$('#startDateEdit').datepicker({
-	      dateFormat: finalDateFormatEduUpdate,
-	      changeMonth: true,
-	  	  changeYear: true, 
-	  	 maxDate: eduEndDateEdit,
-	      onSelect: function (selected) {
-	            //var dt = new Date(selected);
-	            var dt = $(this).datepicker('getDate', '+1d');
-	            dt.setDate(dt.getDate() + 1);
-	            $("#endDateEdit").datepicker("option", "minDate", dt);
-	        }
-	  });
-	  
-	  $('#endDateEdit').datepicker({
-	      dateFormat: finalDateFormatEduUpdate,
-	      changeMonth: true,
-	  	  changeYear: true, 
-	  	  minDate: eduStartDateEdit,
-	      onSelect: function (selected) {
-	            //var dt = new Date(selected);
-	            var dt = $(this).datepicker('getDate', '-1d');
-	            dt.setDate(dt.getDate() - 1);
-	            $("#startDateEdit").datepicker("option", "maxDate", dt);
-	        }
-	  });
-	
-	/* $(".addUser-org").click(function(){
-		 $(".edit-details").toggleClass("edit-details-active");
-	 }); */
-	$(".edit-details").toggleClass("edit-details-active");
-	 $(".close-div").click(function(){ 
-		 $(this).parent("div.edit-details").removeClass("edit-details-active");
-		 });
-	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
-		 e.stopPropagation();
-	 });
-	 /* $('html').click(function(){
-		$(".edit-details").removeClass("edit-details-active");
-	   });	 */
-	 <%-- Eductions and Skills Autocomplete Scripts Starts Here --%>
-	 var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-				})
-		<%-- Eductions and Skills Autocomplete Scripts Ends Here --%>
-		
-}
-// 					}
-			},
+			    	 $.each(json.allAndCandidateEducations, function( i, eduName){
+						  var existed = 0;
+			                if(json.name != null && json.name != 'undefined' && json.name != ''){
+				                var res = [];
+				                res = json.name.split(",");
+				                res.forEach(function(item) {
+				                	if(eduName == item){
+				                		existed = 1;
+				                		result = result + ' <option selected value="'+eduName+'">'+eduName+'</option>';
+				                	}
+				                });
+			                }
+			                if(existed == 0){
+			                	result = result + ' <option value="'+eduName+'">'+eduName+'</option>';
+			                }
+						  
+						});
+result = result + "</select>";
+result = result  +'                  </div>                                                                                                                               ';
+result = result  +'                  </div>                                                                                                                               ';
+result = result  +'                                                                                                                                                       ';
+result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
+result = result  +'                    <div class="col-md-12">                                                                                                            ';
+result = result  +'                      <input type="text" name="specialization"  field-name="specialization" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" class="form-control input-sm" value="'+specialization+'" placeholder="Specialization">                                          ';
+result = result  +'                    </div>                                                                                                                             ';
+result = result  +'                  </div>                                                                                                                               ';
+result = result  +'                                                                                                                                                       ';
+result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
+result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
+							if(json.startDateStr !=null && json.startDateStr !='undefined' && json.startDateStr !=''){
+result = result  +'                      <input type="text" name="startDate" class="form-control input-sm" field-name="startDate" id="startDateEdit" onclick="educationStartDate();" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="'+ json.startDateStr +'" placeholder="Start Date" id="edu-startDate" readonly>                           ';
+result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
+							}else{
+result = result  +'					  <input type="text" name="startDate" class="form-control input-sm" field-name="startDate" id="startDateEdit" onclick="educationStartDate();" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="" placeholder="Start Date" id="edu-startDate" readonly>                           ';
+result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+							}
+								
+result = result  +'                    </div>                                                                                                                             ';
+result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
+							if(json.endDateStr !=null && json.endDateStr !='undefined' && json.endDateStr !=''){
+result = result  +'                      <input type="text" name="endDate" class="form-control input-sm" field-name="endDate" id="endDateEdit"  onclick="educationStartDate();" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="'+ json.endDateStr +'" placeholder="End Date" id="edu-endDate" readonly>                               ';
+result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
+							}
+							else{
+result = result  +'                      <input type="text" name="endDate" class="form-control input-sm" field-name="endDate" id="endDateEdit" onclick="educationStartDate();" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="" placeholder="End Date" id="edu-endDate" readonly>                               ';
+result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
+							}
+result = result  +'                    </div>    ';
+result = result  +'                  </div>                                                                                                                               ';
+result = result  +'                                                                                                                                                       ';
 
-		});
+result  = result + '                 <div class="clearfix mb10">';
+result = result  +'	                     <div class="col-md-6 dropdown-select positionRelative paddingRight">';
+result = result  +'	                     <select class="newSelect" value="'+ json.gradeType +'" name="gradeType" id="scoreEducationType" onchange="educationSelectScoreType();clearSearchKeyEducation();">';
+result = result  +' 					   <option value="" selected="selected">Score Type</option>';
+											if (json.gradeType == "Percentage") {
+												result = result + '<option selected>Percentage</option>';
+											} else {
+												result = result	+ '<option>Percentage</option>';
+											}
+											if (json.gradeType == "CGPA") {
+												result = result	+ '<option selected>CGPA</option>';
+											} else {
+												result = result	+ '<option>CGPA</option>';
+											}
+											if (json.gradeType == "GRADE") {
+												result = result	+ '<option selected>GRADE</option>';
+											} else {
+												result = result + '<option>GRADE</option>';
+											}
+result = result  +'	                      </select>';
+result = result  +'	                   </div>';
+result  = result + '                   <div class="col-md-6" positionRelative paddingLeft id="candidateScoreDiv">';
+result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="grade" placeholder="Score" id="candidateEducationScore" onkeyup="educationSelectScoreType();educationscoreAndScoreType();"';
+result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-3" field-name="score">';
+result  = result + '                 	 </div>';
+result = result  +'	                   </div>';
+
+result = result  +'                                                                                                                                                       ';
+result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
+result = result  +'                    <div class="col-md-12">                                                                                                            ';
+result = result  +'                      <input type="text" name="institute" field-name="institute" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" class="form-control input-sm" value="'+institute+'" placeholder="Institute">                                               ';
+result = result  +'                    </div>                                                                                                                             ';
+result = result  +'                  </div>                                                                                                                               ';
+result = result  +'                                                                                                                                                       ';
+result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
+result = result  +'                    <div class="col-md-12">                                                                                                            ';
+result = result  +'                      <input type="text" field-name="institute" data-validation="required validate_Space validate_length length2-250" data-validation-optional="true" name="address" class="form-control input-sm" value="'+address+'" placeholder="Address">                                                 ';
+result = result  +'                    </div>                                                                                                                             ';
+result = result  +'                  </div>                                                                                                                               ';
+result = result  +'     ';
+
+result = result  +'                  <div class="clearfix mr"> ';
+
+result = result	+ '	                   <input type="hidden"  value="'+candidateEducationId+'" id="candidateEducationId"  name="candidateEduId" >';
+result = result	+ '	                   <input type="hidden"  value="'+candidateId+'" id="candidateId" >';
+
+result  = result + '<button type="button"  id="save_button"  onClick ="updateCandidateEducation('+candidateId+');" class="btn btn-sm btn-primary pull-right">Update</button>';
+result = result  +'                  </div>';
+
+result = result  +'                </div>   ';
+result = result  +'                </form>                                                                                                                                ';
+$("#popUpDiv").empty();
+$("#popUpDiv").append(result);
+
+function educationStartDate(){
+}
+
+ var eduStartDate = $("#startDateEdit").val();
+var eduEndDate = $("#endDateEdit").val(); 
+
+var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+
+ 
+ var finalDateFormatEduEditOneSave = '';
+ 
+ // written common method in slead-common.js for date formats start
+  var eduStartDateEdit = getJSDate(eduStartDate,locationDate);
+  var eduEndDateEdit = getJSDate(eduEndDate,locationDate);
+  
+  var finalDateFormatEduUpdate = getJSDateFormat(locationDate);
+  //end
+
+$('#startDateEdit').datepicker({
+      dateFormat: finalDateFormatEduUpdate,
+      changeMonth: true,
+  	  changeYear: true, 
+  	 maxDate: eduEndDateEdit,
+      onSelect: function (selected) {
+            //var dt = new Date(selected);
+            var dt = $(this).datepicker('getDate', '+1d');
+            dt.setDate(dt.getDate() + 1);
+            $("#endDateEdit").datepicker("option", "minDate", dt);
+        }
+  });
+  
+  $('#endDateEdit').datepicker({
+      dateFormat: finalDateFormatEduUpdate,
+      changeMonth: true,
+  	  changeYear: true, 
+  	  minDate: eduStartDateEdit,
+      onSelect: function (selected) {
+            //var dt = new Date(selected);
+            var dt = $(this).datepicker('getDate', '-1d');
+            dt.setDate(dt.getDate() - 1);
+            $("#startDateEdit").datepicker("option", "maxDate", dt);
+        }
+  });
+
+/* $(".addUser-org").click(function(){
+	 $(".edit-details").toggleClass("edit-details-active");
+ }); */
+$(".edit-details").toggleClass("edit-details-active");
+ $(".close-div").click(function(){ 
+	 $(this).parent("div.edit-details").removeClass("edit-details-active");
+	 });
+ $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
+	 e.stopPropagation();
+ });
+ /* $('html').click(function(){
+	$(".edit-details").removeClass("edit-details-active");
+   });	 */
+ <%-- Eductions and Skills Autocomplete Scripts Starts Here --%>
+ var config = {
+		  '.chosen-select'           : {},
+		  '.chosen-select-deselect'  : {allow_single_deselect:true},
+		  '.chosen-select-no-single' : {disable_search_threshold:10},
+		  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+		  '.chosen-select-width'     : {width:"95%"}
+		}
+		for (var selector in config) {
+		  $(selector).chosen(config[selector]);
+		}
+		$('.chosen-select').each(function() {
+			var $this = $(this);
+			$this.next().css({'width': '100%'});
+			})
+	<%-- Eductions and Skills Autocomplete Scripts Ends Here --%>
+	
+}
+//					}a	
+			} else if (response.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+			    showError("Operation failed, please try again");
+			}					
+		},
+});
 
 }
 </script>
@@ -1010,28 +1021,37 @@ function clearSearchKeyEducation() {
 
 <script type="text/javascript">
  function validateEduname(candidateId) {
-	  var name = document.getElementById("candEdu").value; 
- 	  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
-		 $.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/validateEduname?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&name="+name, 
-		        success: function(data) {
-		        	if(data == true){
-		        		  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
-		        		  /* document.getElementById("name").setAttribute('record-exist','yes');
-						  document.getElementById("name").setAttribute('record-exist-errorMsg',name+' is Already Existed'); 
-						   */
-						   $("#candEdu").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
-						  $("#save_button").attr('disabled','disabled');
-						 // return false;
-		        	}
-		        	else{
-		        		 $('#nameIdDiv').removeAttr( "record-exist record-exist-errormsg");
-		        		 $('#nameIdDiv').find('p.jquery_form_error_message').remove(); 
-                         $("#save_button").removeAttr("disabled");
-		        	}
-		        },
-		    });
+	 var name = document.getElementById("candEdu").value; 
+	 $('#nameIdDiv').find('p.jquery_form_error_message').remove();
+	 $.ajax({
+    	type: "POST",
+        url: sourceleadUrl+"/validateEduname?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&name="+name, 
+        success: function(response) {
+        	if (response && response.response === "INVALID_DATA") {
+        	    showError(response.responseMessage);
+        	} else if (response.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (response.response === "SUCCESS") {
+        		if(response.object == true) {
+          			$('#nameIdDiv').find('p.jquery_form_error_message').remove();
+          		  	/* document.getElementById("name").setAttribute('record-exist','yes');
+  				  	document.getElementById("name").setAttribute('record-exist-errorMsg',name+' is Already Existed'); 
+  				   	*/
+  				   	$("#candEdu").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
+  				  	$("#save_button").attr('disabled','disabled');
+  				 	// return false;
+          		} else{
+          			$('#nameIdDiv').removeAttr( "record-exist record-exist-errormsg");
+          			$('#nameIdDiv').find('p.jquery_form_error_message').remove(); 
+                    $("#save_button").removeAttr("disabled");
+          		}
+        	} else if (response.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+        },
+    });
  }
  </script>     
  

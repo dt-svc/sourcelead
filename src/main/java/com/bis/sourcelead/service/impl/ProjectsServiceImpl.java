@@ -571,12 +571,14 @@ public class ProjectsServiceImpl implements ProjectsService{
     	//save the default tasks
 	    if(projects.getId() == null){
 	    	Set<ProjectTasks>  projectTasksList = getDefaultTasksForProject(projects);
-	    	Set<ProjectTasks>  leaveTypeTasksList = getLeaveTasksForProjectBasedOnOrgLocationId(projects,loginOrgLocation);
+	    	Set<ProjectTasks> leaveTypeTasksList  = getLeaveTasksForProjectBasedOnOrgLocationId(projects,loginOrgLocation);
+	    	if(leaveTypeTasksList != null && !leaveTypeTasksList.isEmpty()) {
+	    		projectTasksList.addAll(leaveTypeTasksList);
+	    	}
 			projects.setProjectTasks(projectTasksList);
-			projects.setProjectTasks(leaveTypeTasksList);
 	    }
-		
-		Set<ProjectClients> projectClientsList = getProjectClientsForProject(projectsDTO,projects,loginOrgLocation,user);
+
+	    Set<ProjectClients> projectClientsList = getProjectClientsForProject(projectsDTO,projects,loginOrgLocation,user);
 		projects.setProjectClients(projectClientsList);
 		
 		

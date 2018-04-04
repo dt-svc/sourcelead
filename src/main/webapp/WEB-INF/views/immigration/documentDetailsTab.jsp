@@ -78,9 +78,14 @@
 			<div class="col-md-4 noPad">
 							<label class="switch mt5 text-center">
 							<input id="requiredCheck" name="isRequired" title="Is Required" type="checkbox" value = "Y" onclick = "tempDocReq();">
-							<div class="slider round"></div>
+							<div class="slider round" title="Is Required"></div>
 							</label>
 						  </div>
+						   <div class="col-md-4">
+						   		<div class="mt5 ml5 clearfix">
+							   <input id="multipleCheck" title="Allow multiple Docs" name="multiple"  type="checkbox" value = "N" onclick = "tempDocCheckBox(0)">
+							   </div>
+						   </div>	
 						  
 				  <!-- <div class="col-md-4">
 				<div class="mt5 ml5 clearfix">
@@ -88,7 +93,7 @@
 				  </div>
 				 </div> -->	
 			
-			<div class="col-sm-12 noPad mt clearfixclearfix">
+			<!-- <div class="col-sm-12 noPad mt clearfixclearfix">
 				<label class="col-md-4 padding_left">Document<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
 					<div class="input-group col-md-12" style="margin:0 auto">
@@ -98,7 +103,7 @@
 					<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Resume ...">
 				  </div>
 				</div>
-			</div>				
+			</div>	 -->			
 		
 		</div>
 		
