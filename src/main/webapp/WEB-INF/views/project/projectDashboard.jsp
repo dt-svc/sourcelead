@@ -232,7 +232,7 @@ function resetProjectFilter(){
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
 	$("ul#myClientsUL > li input:checkbox").prop("checked",false);
 	$("ul#myManagersUL > li input:checkbox").prop("checked",false);
-	
+	$("#projectsDataTableSearch").val('');
 	document.getElementById("c6").checked = true;
 	document.getElementById("c7").checked = true;
 	filter();
