@@ -1271,7 +1271,7 @@ public class CandidateDaoImpl implements CandidateDao {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Candidate> candidate = new ArrayList<Candidate>();
-		candidate = session.createQuery("from Candidate candidate  left join fetch candidate.orgRelationId where candidate.parentCandidateId.id =:parentCandidateId" ).setLong( "parentCandidateId", parentCandidateId ).list();
+		candidate = session.createQuery("from Candidate candidate left join fetch candidate.orgLocationId left join fetch candidate.orgRelationId where candidate.parentCandidateId.id =:parentCandidateId" ).setLong( "parentCandidateId", parentCandidateId ).list();
 		logger.debug("getCandidateByParentCandidateId end");
 		if (candidate.size() > 0) {
 			return candidate.get(0);
@@ -1540,6 +1540,24 @@ public class CandidateDaoImpl implements CandidateDao {
 			candidate = (Candidate) candidateList.iterator().next();
 		}
 		return candidate;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateByParentCandidateIdAndOrgLocationId(Long parentCandidateId, Long orgLocationId)
+			throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Candidate> candidate = new ArrayList<Candidate>();
+		candidate = session.createQuery("from Candidate candidate left join fetch candidate.orgLocationId left join fetch candidate.orgRelationId "
+				+ " where candidate.parentCandidateId.id =:parentCandidateId and candidate.orgLocationId.id = :orgLocationId" ).setLong( "parentCandidateId", parentCandidateId ).setLong( "orgLocationId", orgLocationId ).list();
+		logger.debug("getCandidateByParentCandidateId end");
+		if (candidate.size() > 0) {
+			return candidate.get(0);
+		} else {
+			return null;
+		}
+   	
 	}
 
 }
