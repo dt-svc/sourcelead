@@ -443,7 +443,31 @@ function getEmploymentType(){
 		 $('#employmentOtherType').attr("data-validation-optional", "true"); 
 		 $('#employmentOtherType').attr("data-validation","validate_Space validate_length length2-250"); 
 		 
-		 getVendorsByOrgLocationForAddApplicant();
+		 
+		  var onboardCandiate = document.getElementById("onboardCandiate").value;
+		  var candidate = onboardCandiate.split(",");
+		  var candidateId = candidate[0];
+		  if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
+			  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			  $.ajax({
+				   	type: "POST",
+				    url: sourceleadUrl+"/getOnBoardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,	    	   
+				    success: function(json) {
+				    	 if(json['vendorOrgRelationId'] != null && json['vendorOrgRelationId'] != '' && json['vendorOrgRelationId'] != 'undefined' 
+		    				 && json['vendorSpocId'] != null && json['vendorSpocId'] != '' && json['vendorSpocId'] != 'undefined'){
+			    			 getVendorsByOrgLocationForAddApplicant(json['vendorOrgRelationId']);
+			    		     getAddApplicantVendorContactList(json['vendorOrgRelationId'],json['vendorSpocId']);
+			    		 }else{
+			    			 getVendorsByOrgLocationForAddApplicant();
+			    		 }
+				    }
+			   });
+			  $("#loading").removeAttr("style");
+		  }
+		 
+		
+		 
+		
 	 }else{
 		 document.getElementById("otherEmploymentTypeDiv").style.display="none";
 		 document.getElementById("vendorsDiv").style.display="none";
@@ -854,8 +878,7 @@ function validateUploadFile(id)
 		  $.ajax({
 			   	type: "POST",
 			    url: sourceleadUrl+"/getOnBoardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,	    	   
-			    success: function(data) {
-			    	 var json = JSON.parse(data);
+			    success: function(json) {
 		        	
 			    	 $("#firstName").val(json['firstName']);
 			    	 $("#lastName").val(json['lastName']);
@@ -873,12 +896,6 @@ function validateUploadFile(id)
 			    	 $("#state").val(json['state']);
 			    	 $("#city").val(json['city']);
 			    	 $("#zipCode").val(json['zipCode']);
-			    	 
-			    	 /* $("#employmentType").val(json['designationType']);
-			    	 $("#employmentType").trigger("chosen:updated"); */
-			    	/*  getOnBoardCandidateCountry(json['country'])
-			    	 getOnBoardCandidateStates(json['country'],json['state']);
-			    	 getOnBoardCandidateCities(json['country'],json['state'],json['city']); */
 			    	 
 			    	 validateOnboardCandidate(json['email']);
 			    }

@@ -75,4 +75,6 @@ public interface LeaveDao {
 
 	List<Leave> getAllLeave();
 
+	List<Leave> getLeaveByUserIdOrglocationIdandStatus(Long id, Long orglocationId, String approved);
+
 }

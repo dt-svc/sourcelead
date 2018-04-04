@@ -129,3 +129,12 @@
 		  			<i class="fa fa-times" onclick="removeAttachmentRow(REPLACEROWID);"></i>
 		  		</div>
 	    </div>
+
+
+<script>
+  $(document).ready(function () {
+	  if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	  }
+	});
+</script>

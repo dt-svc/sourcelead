@@ -51,7 +51,7 @@
 						  <div class="col-md-4 noPad">
 							<label class="switch mt5 text-center">
 							<input checked id="requiredCheck0" name="immigrationDocList[0].isRequired" title="Is Required" type="checkbox" value = "Y" onclick = "tempDocReq(0);">
-							<div class="slider round"></div>
+							<div class="slider round" title="Is Required"></div>
 							</label>
 						  </div>
 						   <div class="col-md-4">
