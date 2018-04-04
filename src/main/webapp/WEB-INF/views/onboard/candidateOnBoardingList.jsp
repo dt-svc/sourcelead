@@ -558,23 +558,28 @@ $('body').on('submit', '#rejectedReason_form', function(e){
       //It will escape all the special characters
       var jsonData = encodeURIComponent(con);
       var sourceleadUrl ='${sourceleadUrl}';
-      
         $("#submit_rejectedReason").attr("disabled", "disabled");
-		
         $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 	 $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/rejectOnboardedCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
-		        success: function(result) {
-		        	cancelRejectedReason();
-		        	getOnboardCandidatesList();
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		cancelRejectedReason();
+			        	getOnboardCandidatesList();
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
 		        },
 		    }); 
       return true; 
-    }
-    else{
+    } else {
     	return false;	
-       }
+    }
   });
 
 	$('body').on('blur', '#rejectedReason_form', function() {
@@ -591,8 +596,16 @@ $('body').on('submit', '#rejectedReason_form', function(e){
 	 	 $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/acceptOnboardingCandiate?${_csrf.parameterName}=${_csrf.token}&onboardCandidateUUID="+onboardCandidateUUID, 
-		        success: function(result) {
-		        	getOnboardCandidatesList();
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		getOnboardCandidatesList();
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
 		        },
 		    }); 
   }
