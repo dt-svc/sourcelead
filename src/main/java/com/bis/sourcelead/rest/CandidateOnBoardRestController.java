@@ -539,8 +539,12 @@ public class CandidateOnBoardRestController {
 			candidateDTO.setState(candidate.getState());
 			candidateDTO.setCity(candidate.getCity());
 			candidateDTO.setZipcode(candidate.getZipCode());
+		if (candidate.getOrgRelationId() != null) {
 			candidateDTO.setVendorOrgRelationId(candidate.getOrgRelationId().getId().toString());
+		}
+		if (candidate.getSpocId() != null) {
 			candidateDTO.setVendorSpocId(candidate.getSpocId().getId().toString());
+		}
 			
 			return candidateDTO;
 
