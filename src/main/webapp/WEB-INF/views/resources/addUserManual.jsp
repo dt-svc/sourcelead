@@ -96,7 +96,7 @@ $(function(){
 			<div class="col-md-6">
 			<div class="row">
 				<label class="col-md-3">Title <span class="text-danger paddingLeft">*</span></label>
-				<div class="col-md-9">
+				<div class="col-md-9" id="errMsg">
 				<c:choose>
 				<c:when test="${!empty userManualLevel.title}">
 				        <input type="text" name="title" id="title" class="form-control" field-name="title" onblur="validateUserManualTitle();" data-validation="required validate_length length1-500" value="${userManualLevel.title}">
@@ -184,14 +184,15 @@ $(function(){
 			         </div>
 		         </div>
 		         </c:if> 
-		          <div class="timesheet_week_comm slticket" >
+		          <div class="timesheet_week_comm slticket uploadfileError" >
 		          <div id="0ticketdocFileuploadFileGroup"> 
 		          <span>
 		          <input type="file"  id="0ticketdocFile" field-name="Attachment"  class="timesheetAttachmentValidation" onchange="attachFile(0);" >
 		          <!-- data-validation="validate_Space validateimage" -->
-		          <i class="fa fa-refresh faRefresh" mouseOver="Refresh" title="Clear" onClick="refershDocument()"></i>
+		          <i class="fa fa-refresh faRefresh mt5" mouseOver="Refresh" title="Clear" onClick="refershDocument()"></i>
 		          <i class="fa fa-plus" mouseOver="Add" title="Add" onClick="addTicketAttachment()"></i>
-		          </span> </div>
+		          </span>
+		           </div>
 		          </div>
 		          </td>
 		          </tr>
@@ -351,7 +352,7 @@ function levelFun() {
 		$('#level2Title').attr('data-validation',"required");
 		
 		//$('#0ticketdocFile').removeAttr('data-validation-optional');
-		$('#0ticketdocFile').attr('data-validation'," validateimage");
+		$('#0ticketdocFile').attr('data-validation'," validateImg");
 		//$('#0ticketdocFile').attr('data-validation',"validateimage");
 		
 	}else {
@@ -423,13 +424,12 @@ function saveLevels(type){
 function validateUserManualTitle(){
 	var title = document.getElementById("title").value;
 	var levelValue  = $("#levelID").val();
-	
+	$('#errMsg').find('p.jquery_form_error_message').remove();
 	$.ajax({
 		type : "GET",
 		url : sourceleadUrl+ "/validateOrgLocationUserManTitle?${_csrf.parameterName}=${_csrf.token}&title="+title+"&levelValue="+levelValue,
 		success : function(data) {
 			if (data == true) {
-				
 				$("input#title").after("<p class='jquery_form_error_message'>"+ title+ " is Already Existed</span>");
 				document.getElementById("title").setAttribute('record-exist', 'yes');
 				document.getElementById("title").setAttribute('record-exist-errorMsg',title+ ' is Already Existed');
@@ -562,20 +562,24 @@ function getLevel2Titles(){
  <script>
  function validateYouTubeUrl() {
      var url = $('#youTubeUrl').val();
-         if (url != undefined) {
+         if (url != undefined && url != "") {
              var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
-             var match = url.match(regExp);
+             var match = url.trim().match(regExp);
              if (match && match[2].length == 11) {
             	 document.getElementById("youtubeUrlId").style.display="none";
-            	// $("#save_title").removeAttr("disabled");
-            	 //$("#saveandcontinue").removeAttr("disabled");
+            	 $("#save_title").removeAttr("disabled");
+            	 $("#saveandcontinue").removeAttr("disabled");
                  $('#ytplayerSide').attr('src', 'https://www.youtube.com/embed/' + match[2] + '?autoplay=0');
              }
              else {
         		 document.getElementById("youtubeUrlId").style.display="block";
-        		// $("#save_title").attr("disabled", "disabled");
-        		 //$("#saveandcontinue").attr("disabled", "disabled");
+        		 $("#save_title").attr("disabled", "disabled");
+        		 $("#saveandcontinue").attr("disabled", "disabled");
              }
+         }else{
+        	 document.getElementById("youtubeUrlId").style.display="none";
+        	 $("#save_title").removeAttr("disabled");
+        	 $("#saveandcontinue").removeAttr("disabled");
          }
  }
  
