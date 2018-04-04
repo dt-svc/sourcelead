@@ -942,15 +942,20 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 	    	$.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
-		        success: function(data) {
-		        	var primarySkill = data;
-		        	      $("#primarySkill").val(primarySkill);
-		        	
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		var primarySkill = response.object;
+			        	$("#primarySkill").val(primarySkill);
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
 		        },
 		    });
-	    	
 	    });
-	    
 	    chosen.search_field.on('keyup', function(e)
 			    {
 			    	   var skillsArray = this.value.split(",");
@@ -1257,48 +1262,56 @@ function ApplicantNotifyRequiremnentProRecruter(){
 			        contentType:false,
 		   	        dataType : 'json',
 					url : sourceleadUrl+"/parseResume?${_csrf.parameterName}=${_csrf.token}",
-					success : function(data) {
-						var json = JSON.parse(data);
-						var name = json.name;
-						var firstName = '';
-						var lastName = '';
-						if(name != null && name != 'undefined' && name != ''){
-							 firstName = name.split(".")[0]; 
-							 lastName = name.split(".")[1]; 
-							 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
-									 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
-								 firstName = name;
-							 }
+					success : function(response) {
+						if (response.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (response.response === "SUCCESS") {
+							var json = JSON.parse(response.object);
+							var name = json.name;
+							var firstName = '';
+							var lastName = '';
+							if(name != null && name != 'undefined' && name != ''){
+								 firstName = name.split(".")[0]; 
+								 lastName = name.split(".")[1]; 
+								 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
+										 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
+									 firstName = name;
+								 }
+							}
+							
+							
+							 $("input[name=FirstName]").val(firstName);
+				        	 $("input[name=LastName]").val(lastName);
+				        	 $("input[name=EmailId]").val(json.email);
+				        	 $("input[name=PhoneNumber]").val(json.phoneNumbers);
+				        	 
+				        	 $("#candidateSkills").empty();
+				        	 var internalOutput = "";
+	 						 <c:forEach var="skill" items="${skillsList}">
+	 						    internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
+	 	                     </c:forEach>
+	 						var skills = json.skills;
+	 						if(skills != null && skills != 'undefined' && skills != ''){
+	 							var str_array = skills.split(',');
+	 							for(var i = 0; i < str_array.length; i++) {
+	 							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+	 							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+	 							}
+	 						}
+	 						$("#candidateSkills").append(internalOutput);
+	 		        		$("#candidateSkills").trigger("chosen:updated");
+	  						
+				        	 
+							 validateCandidateEmail();
+							 getAllSubmissionCandidateCountries();
+							 setRateTypesByLocation();
+							 dobDatePicker();
+							 $("#loading").removeAttr("style");
+						} else if (response.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
 						}
-						
-						
-						 $("input[name=FirstName]").val(firstName);
-			        	 $("input[name=LastName]").val(lastName);
-			        	 $("input[name=EmailId]").val(json.email);
-			        	 $("input[name=PhoneNumber]").val(json.phoneNumbers);
-			        	 
-			        	 $("#candidateSkills").empty();
-			        	 var internalOutput = "";
- 						 <c:forEach var="skill" items="${skillsList}">
- 						    internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
- 	                     </c:forEach>
- 						var skills = json.skills;
- 						if(skills != null && skills != 'undefined' && skills != ''){
- 							var str_array = skills.split(',');
- 							for(var i = 0; i < str_array.length; i++) {
- 							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
- 							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
- 							}
- 						}
- 						$("#candidateSkills").append(internalOutput);
- 		        		$("#candidateSkills").trigger("chosen:updated");
-  						
-			        	 
-						 validateCandidateEmail();
-						 getAllSubmissionCandidateCountries();
-						 setRateTypesByLocation();
-						 dobDatePicker();
-						 $("#loading").removeAttr("style");
 					},
 				});
  	 }
@@ -2342,52 +2355,60 @@ function setRateTypesByLocation(){
 			        contentType:false,
 		   	        dataType : 'json',
 					url : sourceleadUrl+"/parseResume?${_csrf.parameterName}=${_csrf.token}",
-					success : function(data) {
-						var json = JSON.parse(data);
-						var name = json.name;
-						var firstName = '';
-						var lastName = '';
-						if(name != null && name != 'undefined' && name != ''){
-							 firstName = name.split(".")[0]; 
-							 lastName = name.split(".")[1]; 
-							 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
-									 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
-								 firstName = name;
-							 }
+					success : function(response) {
+						if (response.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (response.response === "SUCCESS") {
+							var json = JSON.parse(response.object);
+							var name = json.name;
+							var firstName = '';
+							var lastName = '';
+							if(name != null && name != 'undefined' && name != ''){
+								 firstName = name.split(".")[0]; 
+								 lastName = name.split(".")[1]; 
+								 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
+										 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
+									 firstName = name;
+								 }
+							}
+							
+							
+							 $("input[name=FirstName]").val('${SourceLeadWeb_candidate.firstName}');
+				        	 $("input[name=LastName]").val('${SourceLeadWeb_candidate.lastName}');
+				        	 $("input[name=EmailId]").val('${SourceLeadWeb_candidate.email}');
+				        	 $("input[name=PhoneNumber]").val('${SourceLeadWeb_user.mobilePhone}');
+				        	 
+				        	 $("input[name=FirstName]").attr("readonly", "readonly");
+				        	 $("input[name=LastName]").attr("readonly", "readonly");
+				        	 $("input[name=EmailId]").attr("readonly", "readonly");
+				        	 
+				        	 $("#candidateSkills").empty();
+				        	 var internalOutput = "";
+	 						 <c:forEach var="skill" items="${skillsList}">
+	 						    internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
+	 	                     </c:forEach>
+	 						var skills = json.skills;
+	 						if(skills != null && skills != 'undefined' && skills != ''){
+	 							var str_array = skills.split(',');
+	 							for(var i = 0; i < str_array.length; i++) {
+	 							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+	 							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+	 							}
+	 						}
+	 						$("#candidateSkills").append(internalOutput);
+	 		        		$("#candidateSkills").trigger("chosen:updated");
+	  						
+				        	 
+							 validateCandidateEmail();
+							 getAllSubmissionCandidateCountries();
+							 setRateTypesByLocation();
+							 dobDatePicker();
+							 $("#loading").removeAttr("style");
+						} else if (response.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
 						}
-						
-						
-						 $("input[name=FirstName]").val('${SourceLeadWeb_candidate.firstName}');
-			        	 $("input[name=LastName]").val('${SourceLeadWeb_candidate.lastName}');
-			        	 $("input[name=EmailId]").val('${SourceLeadWeb_candidate.email}');
-			        	 $("input[name=PhoneNumber]").val('${SourceLeadWeb_user.mobilePhone}');
-			        	 
-			        	 $("input[name=FirstName]").attr("readonly", "readonly");
-			        	 $("input[name=LastName]").attr("readonly", "readonly");
-			        	 $("input[name=EmailId]").attr("readonly", "readonly");
-			        	 
-			        	 $("#candidateSkills").empty();
-			        	 var internalOutput = "";
- 						 <c:forEach var="skill" items="${skillsList}">
- 						    internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
- 	                     </c:forEach>
- 						var skills = json.skills;
- 						if(skills != null && skills != 'undefined' && skills != ''){
- 							var str_array = skills.split(',');
- 							for(var i = 0; i < str_array.length; i++) {
- 							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
- 							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
- 							}
- 						}
- 						$("#candidateSkills").append(internalOutput);
- 		        		$("#candidateSkills").trigger("chosen:updated");
-  						
-			        	 
-						 validateCandidateEmail();
-						 getAllSubmissionCandidateCountries();
-						 setRateTypesByLocation();
-						 dobDatePicker();
-						 $("#loading").removeAttr("style");
 					},
 				});
  	 }

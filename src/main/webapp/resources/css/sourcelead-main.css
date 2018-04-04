@@ -1215,7 +1215,7 @@ z-index: 100; border-radius: 3px; color: #fff; text-align: center;
 */	padding: 5px; clear: both; display: block; text-align: center;
 }
 .bg-green {
-	background: #1ab394; color: #fff;
+	background: #1ab394 !important; color: #fff !important;
 }
 .bgGreen {
 	background: #c8e6ea; color: #fff;
@@ -1230,7 +1230,7 @@ background-color: #28a745 !important; color: #fff;
 background-color: #ddd !important; color: #909090 !important;
 }
 .bg-orange {
-	background: #FF8F00; color: #fff;
+	background: #FF8F00 !important; color: #fff !important;
 }
 .bg-red {
 	background: #D84315 !important; color: #fff;
@@ -8506,14 +8506,29 @@ background: #3EC9A7; border: 1px solid #3EC9A7; border-radius: 3px;
 .minHeightcol5 .col-md-5 {
 	min-height: 75px;	
 }
-.selectUser .btn-default, .er .btn-default, .bg-blue {
+/*.selectUser .btn-default, .er .btn-default, .bg-blue {
 	background-color: #42CDAD !important; border-color: #42CDAD !important; border-radius: 3px;
-}
+}*/
 .top2 {
 position: relative; top:2px;
 }
 .extraData-dotdot {
 text-overflow: ellipsis; overflow: hidden; display: inline-block; width: 115px; white-space: nowrap;
+}
+.timesheet_appr_table.timesheet_apprTable div input {
+width: auto;
+}
+.note-editable ol, .note-editable ul {
+padding-left:15px;
+}
+.note-editor.fullscreen {
+top: 10% !important; left: 1% !important; width: 98% !important; height: 70% !important;
+}
+.note-editor.fullscreen .note-editable {
+max-height: 500px !important;
+}
+.bgDanger {
+	background-color: #a21e23 !important; color: #fff !important;
 }
 /* media 320px */
 @media (max-width: 320px) {

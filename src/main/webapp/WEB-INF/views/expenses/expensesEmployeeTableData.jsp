@@ -11,6 +11,7 @@
  </tr>
 <c:forEach var="expensesDTO" items="${expensesDTOList}">
 <tr id="row${expensesDTO.id}">
+
 <sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_MY_EXPENSES\')">
 	<td><a href='${sourceleadUrl}/addExpense?expenseId=${expensesDTO.expenseAutoId}&expenseLocationCode=${expensesDTO.expenseLocationCode}&type=view'><div class='proj_show'><span>${expensesDTO.expenseAutoId}</span><i class='fa fa-binoculars'></i></div></a></td>
 </sec:authorize>
