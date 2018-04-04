@@ -136,12 +136,12 @@ overflow-x: auto;
 					<div class="row">
 						<div class="col-md-4">
 						<div class="row">
-						<div class="col-md-12 mb hidden">
+						<div class="col-md-12 mb">
 								<label><strong>Project Type</strong></label>
 								 <div class="clearfix">
 									<ul class="list-unstyled" id="typeFilter">
-			                    	    <li class="checkBox positionRelative" ><input id="c11" name="projectType" type="checkbox" value=""><label for="c7">Internal Project(s)</label></li>
-										<li class="checkBox positionRelative" ><input id="c12" type="checkbox" name="projectType" value="N" ><label for="c9">Client Project(s)</label></li>
+			                    	    <li class="checkBox positionRelative" ><input id="c11" name="projectType" type="checkbox" value="Internal"><label for="c7">Internal Project(s)</label></li>
+										<li class="checkBox positionRelative" ><input id="c12" type="checkbox" name="projectType" value="Client" ><label for="c9">Client Project(s)</label></li>
 			                        </ul>
 								 </div>
 								 </div> 

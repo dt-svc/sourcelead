@@ -650,8 +650,19 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		
 		String subQuery2 = " and ((:varZero  IN (:clientIdsList)) OR (:varZero NOT IN (:clientIdsList) and pc.orgRelationId.id IN (:clientIdsList)))";
 		
+		String subQuery3 ="";
+		if(projectsDTO.getProjectType() != null && !projectsDTO.getProjectType().isEmpty()){
+			String[] projectsType = projectsDTO.getProjectType().split(",");
+			if (Arrays.asList(projectsType).contains("Internal")) {
+				subQuery3 = subQuery3 + "ps.orgLocationsId = :orgLocationsId or ";
+			}
+			if (Arrays.asList(projectsType).contains("Client")) {
+				subQuery3 = subQuery3 + "ps.orgLocationsId <> :orgLocationsId or ";
+			}
+			subQuery3 = "and (" + subQuery3.substring(0, subQuery3.length() - 4) + ")";
+		}
 		
-		query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId "+subQuery2+" "+approverQuery+") "+projectModeQuery+" "+subQuery1+"  ";
+		query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId "+subQuery2+" "+approverQuery+") "+projectModeQuery+" "+subQuery1+" "+subQuery3+" ";
 		if(query1.toString() != null && !query1.toString().isEmpty()){
 			 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+" ORDER BY ps.createdDate DESC");
 		}else{
