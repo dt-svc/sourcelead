@@ -1199,6 +1199,13 @@ function myProjectFunction() {
         }
     }
 }
+
+
+$(document).keyup(function(e) {
+	  if (e.keyCode === 27) {
+		  closeFilter();
+	  }
+	});
 </script>
 <script>
 function resetJobFilter(){
