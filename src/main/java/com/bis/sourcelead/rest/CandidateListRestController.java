@@ -493,6 +493,23 @@ public class CandidateListRestController {
 				boolQueryBuilder.must(filterSkillBoolQueryBuilder);
 			}
 		}
+		
+		if(StringUtils.isNotBlank(search.getAvailability())) {
+			String[] avaliability = search.getAvailability().split(",");
+			List<String> avaliabilityList = new ArrayList<>();
+			for(int i=0; i<avaliability.length; i++) {
+				avaliabilityList.add(avaliability[i]);
+			}
+			
+			BoolQueryBuilder noticePeriodBoolQueryBuilder = QueryBuilders.boolQuery();
+			for (String keywd : avaliabilityList) {
+				noticePeriodBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("noticePriod", keywd));
+			}
+			boolQueryBuilder.must(noticePeriodBoolQueryBuilder);
+		}
+		
+
+		
 
 
 		// Created By
@@ -1567,6 +1584,7 @@ public class CandidateListRestController {
 			@RequestParam(value = "exportType", required = false) String exportType,
 			@RequestParam(value = "candidateType", required = false) String candidateType,
 			@RequestParam(value = "candidateFilterSkills", required = false) String candidateFilterSkills,
+			@RequestParam(value = "availability", required = false) String availability,
 			@RequestParam(value = "isAssociate", required = false) String isAssociate, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
@@ -1581,7 +1599,7 @@ public class CandidateListRestController {
 			candidatesList = candidateService.getCandidatesListByOrgLocationIDAndUserId(loginOrgLocation.getId(), user.getId());
 		} else {
 			candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(), org.getId(), candidateStatus,
-					updatedDateRange, candidateType, isAssociate,candidateFilterSkills);
+					updatedDateRange, candidateType, isAssociate,candidateFilterSkills,availability);
 		}
 
 		File file = null;

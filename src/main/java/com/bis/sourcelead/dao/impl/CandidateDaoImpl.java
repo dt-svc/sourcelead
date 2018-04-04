@@ -196,7 +196,7 @@ public class CandidateDaoImpl implements CandidateDao {
     */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId, Integer candidateState, String updatedDateRange,String candidateType,String isAssociate,String candidateFilterSkills) throws Exception {
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId, Integer candidateState, String updatedDateRange,String candidateType,String isAssociate,String candidateFilterSkills,String availability) throws Exception {
 
 		
 		String subQuery = null;
@@ -252,7 +252,20 @@ public class CandidateDaoImpl implements CandidateDao {
 				skillsList.add("0");
 			}
 			
+			
+			List<String> avalibilityList = new ArrayList<>();
+			if(StringUtils.isNotBlank(availability)) {
+				String[] availabilityStr = availability.split(",");
+				for(int i=0 ;i<availabilityStr.length; i++) {
+					avalibilityList.add(availabilityStr[i]);
+				}
+				
+			}else {
+				avalibilityList.add("0");
+			}
+			
 			String candidateSkillsSubQuery = " and ((:varZero  IN (:skillsList)) OR (:varZero NOT IN (:skillsList) and cnadidate.skillsName IN (:skillsList)))";
+			String avaliabilitySubQuery = " and ((:varZero  IN (:avalibilityList)) OR (:varZero NOT IN (:avalibilityList) and cnadidate.noticePeriod IN (:avalibilityList)))";
     	
 			
 		if(StringUtils.isNotEmpty(updatedDateRange) && !"null".equalsIgnoreCase(updatedDateRange)   && !updatedDateRange.equalsIgnoreCase("undefined")){
@@ -268,19 +281,19 @@ public class CandidateDaoImpl implements CandidateDao {
 	         java.sql.Date endDate = new java.sql.Date(parsed.getTime());
 	         
 			
-   	    	 String query = "from Candidate cnadidate left join fetch cnadidate.orgLocationId orglocation where  cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+" "+candidateTypeSubQuery+" "+candidateSkillsSubQuery+" and ( cnadidate.updatedDate >= :endDate) ORDER BY cnadidate.id DESC ";  
+   	    	 String query = "from Candidate cnadidate left join fetch cnadidate.orgLocationId orglocation where  cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+" "+candidateTypeSubQuery+" "+candidateSkillsSubQuery+" "+avaliabilitySubQuery+" and ( cnadidate.updatedDate >= :endDate) ORDER BY cnadidate.id DESC ";  
 		     candidateList = session.createQuery(query)
 				                    .setDate("endDate", endDate)
-				                    .setLong("orgLocationId", orgLocationId).setString("varZero", "0").setParameterList("skillsList", skillsList)
+				                    .setLong("orgLocationId", orgLocationId).setString("varZero", "0").setParameterList("skillsList", skillsList).setParameterList("avalibilityList", avalibilityList)
 				                    .setLong("orgId", orgId)
 				                    
 				                    .list();
 		}else{
 			
-			String query = "from Candidate cnadidate  left join fetch cnadidate.orgLocationId orglocation where cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+" "+candidateTypeSubQuery+" "+candidateSkillsSubQuery+" ORDER BY cnadidate.id DESC";  
+			String query = "from Candidate cnadidate  left join fetch cnadidate.orgLocationId orglocation where cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+" "+candidateTypeSubQuery+" "+candidateSkillsSubQuery+" "+avaliabilitySubQuery+" ORDER BY cnadidate.id DESC";  
 		    candidateList = session.createQuery(query)
 					               .setLong("orgLocationId", orgLocationId)
-					               .setLong("orgId", orgId).setString("varZero", "0").setParameterList("skillsList", skillsList).list();
+					               .setLong("orgId", orgId).setString("varZero", "0").setParameterList("skillsList", skillsList).setParameterList("avalibilityList", avalibilityList).list();
 		}
 		
 		return candidateList;
