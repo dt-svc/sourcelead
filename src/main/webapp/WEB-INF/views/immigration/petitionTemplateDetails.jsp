@@ -25,6 +25,28 @@
                         <div class="col-md-12 noPad mb">
                             <label class="col-md-3">Description<span class="text-danger paddingLeft">*</span></label>
                             <div class="col-md-9"><textarea id="templateDescription" name="templateDescription" class="form-control" rows="3" field-name="Description" data-validation="required validate_length length2-500">${not empty templateDTO.templateDescription ? templateDTO.templateDescription : ''} </textarea></div>
+                        </div>
+                        <div class="col-md-12 noPad mb" id="templateNameDiv">
+                            <label class="col-md-3">Country<span class="text-danger paddingLeft">*</span></label>
+                           	<div class="col-md-8 padding_right">
+								<select class="chosen-select form-control" name="country" onchange="getPetitionTypeOnCountries($(this));" id= "countryName" field-name="Country" data-validation="required">
+								<option value="" selected>--Select Country--</option>
+								  <c:forEach var="country" items="${countriesList}">
+									<option value="${country.name}">${country.name}</option>
+								</c:forEach>
+								</select>
+							</div>
+                        </div> 
+                        <div class="col-md-12 noPad mb" id="templateNameDiv">
+                            <label class="col-md-3">Petition Type<span class="text-danger paddingLeft">*</span></label>
+                            <div class="col-md-8 padding_right">
+								<select class="chosen-select form-control" name="petitionType" id="petitionTypeTemplate" field-name="Petition Type" data-validation="required">
+								<%-- <option value="" selected>--Select Petition Type--</option>
+								  <c:forEach var="petitionType" items="${petitionTypeList}">
+									<option value="${petitionType.name}">${petitionType.description}</option>
+								</c:forEach> --%>
+								</select>
+							</div>
                         </div> 
                     </div>
                 </div>

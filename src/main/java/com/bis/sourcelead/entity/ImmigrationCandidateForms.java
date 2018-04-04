@@ -51,6 +51,11 @@ public class ImmigrationCandidateForms implements Serializable {
 	@Type(type="text")
 	private String fileUrl;
 	
+	@Column(name = "IS_TEMPALTE_CONFIGURED")
+	private String isTemplateConfigured;
+	
+	@Column(name = "FORM_STATUS")
+	private String formStatus;
 	
 	@Column(name = "UPLOADED_FILE_NAME")
 	@Type(type="text")
@@ -104,7 +109,6 @@ public class ImmigrationCandidateForms implements Serializable {
 		this.id = id;
 	}
 
-
 	public ImmigrationTemplate getImmigrationTempId() {
 		return immigrationTempId;
 	}
@@ -113,36 +117,28 @@ public class ImmigrationCandidateForms implements Serializable {
 		this.immigrationTempId = immigrationTempId;
 	}
 
+	public Immigration getImmigration() {
+		return immigration;
+	}
+
+	public void setImmigration(Immigration immigration) {
+		this.immigration = immigration;
+	}
+
+	public Candidate getCandidate() {
+		return candidate;
+	}
+
+	public void setCandidate(Candidate candidate) {
+		this.candidate = candidate;
+	}
+
 	public String getFormName() {
 		return formName;
 	}
 
 	public void setFormName(String formName) {
 		this.formName = formName;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getFormType() {
-		return formType;
-	}
-
-	public void setFormType(String formType) {
-		this.formType = formType;
-	}
-
-	public String getFormUUID() {
-		return formUUID;
-	}
-
-	public void setFormUUID(String formUUID) {
-		this.formUUID = formUUID;
 	}
 
 	public String getFileName() {
@@ -167,6 +163,62 @@ public class ImmigrationCandidateForms implements Serializable {
 
 	public void setFileUrl(String fileUrl) {
 		this.fileUrl = fileUrl;
+	}
+
+	public String getUploadFileName() {
+		return uploadFileName;
+	}
+
+	public void setUploadFileName(String uploadFileName) {
+		this.uploadFileName = uploadFileName;
+	}
+
+	public String getUploadedFileContentType() {
+		return uploadedFileContentType;
+	}
+
+	public void setUploadedFileContentType(String uploadedFileContentType) {
+		this.uploadedFileContentType = uploadedFileContentType;
+	}
+
+	public String getUploadedFileUrl() {
+		return uploadedFileUrl;
+	}
+
+	public void setUploadedFileUrl(String uploadedFileUrl) {
+		this.uploadedFileUrl = uploadedFileUrl;
+	}
+
+	public String getFormUUID() {
+		return formUUID;
+	}
+
+	public void setFormUUID(String formUUID) {
+		this.formUUID = formUUID;
+	}
+
+	public String getUploadedFormUUID() {
+		return uploadedFormUUID;
+	}
+
+	public void setUploadedFormUUID(String uploadedFormUUID) {
+		this.uploadedFormUUID = uploadedFormUUID;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getFormType() {
+		return formType;
+	}
+
+	public void setFormType(String formType) {
+		this.formType = formType;
 	}
 
 	public String getIsRequired() {
@@ -216,5 +268,23 @@ public class ImmigrationCandidateForms implements Serializable {
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
 	}
+
+	public String getFormStatus() {
+		return formStatus;
+	}
+
+	public void setFormStatus(String formStatus) {
+		this.formStatus = formStatus;
+	}
+
+	public String getIsTemplateConfigured() {
+		return isTemplateConfigured;
+	}
+
+	public void setIsTemplateConfigured(String isTemplateConfigured) {
+		this.isTemplateConfigured = isTemplateConfigured;
+	}
+
+
 
 }

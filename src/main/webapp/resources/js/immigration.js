@@ -487,6 +487,19 @@ this.deletePassportVisaDetailsById=function(id,idType){
             }
         });
 	}
+	
+	this.displayImmigrationCandidateForms = function(candidateId,templateId, immigrationId){
+		console.log(" inside forms list candidateId--->"+candidateId);
+		$.ajax({
+	        url: sourceleadUrl + immiModulePath + "/getCandidateImmigrationFormsList?candidateId="+candidateId+"&templateId="+templateId+"&immigrationId="+immigrationId,
+	        type: "GET",
+	        success: function (result) {
+	            $("#formsTab").html(result);
+	            console.log(" inside forms list success--->");
+	        }
+	    });
+	}
+	
 	this.udpatePopupFormdata = function(formObj, idsArray, dataObj) {
 		  var formId = formObj.id;
 		   $.each(formObj, function(key, value) {
@@ -924,6 +937,23 @@ function saveNotesDatails(status) {
         return false;
     }
 	
+}
+
+function getPetitionTypeOnCountries(selectedCountry){
+	var selectedValue = selectedCountry.val();
+	$.ajax({
+	    type: "GET",
+        url: sourceleadUrl+immiModulePath+"/getPetitionTypeOnLocation?locationVal="+selectedValue,  
+        success: function(json) {
+        	$('#petitionTypeTemplate').empty();
+        	$('#petitionTypeTemplate').append('<option value="">--Select Petition Type--</option>');
+             for(var i=0;i<json.length;i++){
+            	 var opt = json[i];
+            	 $('#petitionTypeTemplate').append('<option value='+opt.name+'>'+opt.name+'</option>');
+            } 
+            $('#petitionTypeTemplate').trigger("chosen:updated");
+        }
+	}); 
 }
 
 function getNotesListByImmigration(candidateId){

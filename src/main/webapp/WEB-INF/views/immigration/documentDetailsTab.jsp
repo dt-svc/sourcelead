@@ -14,7 +14,7 @@
 				<th>Document</th>
 				<th>Status</th>
 				<th>Description</th>
-				<th>&nbsp;</th>
+				<th>Action</th>
 			  </tr>
 			  <c:forEach var="canDocList" items="${immigrationCanDocList}" varStatus="rows">			  			  
 			<tr>
@@ -24,7 +24,7 @@
 					<a class="fa fa-eye" title="View"></a>
 					<a class="glyphicon glyphicon-download-alt" title="View"></a></div>
 				</td>
-				<td><div class="tbldata-dotdot-vsm">Uploaded</div></td>
+				<td><div class="tbldata-dotdot-vsm">${canDocList.documentStatus}</div></td>
 				<td><div class="tbldata-dotdot-big">${canDocList.description}</div></td>
 				<td class="immigraAction">
 					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
@@ -43,16 +43,7 @@
 		  </table>
 		</div>
 		
-		<div class="immigraPagi clearfix">
-			<div class="immiPagiText">Showing 1 to 6 of 6 entries</div>
-			  <ul class="pagination">
-				<li><a href="#"> << </a></li>
-				<li><a href="#">2</a></li>
-				<li><a href="#">3</a></li>
-				<li class="disabled"><a href="#">6</a></li>
-				<li data-page="last"><a href="#"> >> </a></li>
-			  </ul>
-		</div>
+		
 		<!--  popup code start -->
 		<form id= "candidate_Immigration_Doc" name = "candidate_Immigration_Doc">
 		<div class="popUpOut" id="docuView">
@@ -87,9 +78,14 @@
 			<div class="col-md-4 noPad">
 							<label class="switch mt5 text-center">
 							<input id="requiredCheck" name="isRequired" title="Is Required" type="checkbox" value = "Y" onclick = "tempDocReq();">
-							<div class="slider round"></div>
+							<div class="slider round" title="Is Required"></div>
 							</label>
 						  </div>
+						   <div class="col-md-4">
+						   		<div class="mt5 ml5 clearfix">
+							   <input id="multipleCheck" title="Allow multiple Docs" name="multiple"  type="checkbox" value = "N" onclick = "tempDocCheckBox(0)">
+							   </div>
+						   </div>	
 						  
 				  <!-- <div class="col-md-4">
 				<div class="mt5 ml5 clearfix">
@@ -97,7 +93,7 @@
 				  </div>
 				 </div> -->	
 			
-			<div class="col-sm-12 noPad mt clearfixclearfix">
+			<!-- <div class="col-sm-12 noPad mt clearfixclearfix">
 				<label class="col-md-4 padding_left">Document<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
 					<div class="input-group col-md-12" style="margin:0 auto">
@@ -107,7 +103,7 @@
 					<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Resume ...">
 				  </div>
 				</div>
-			</div>				
+			</div>	 -->			
 		
 		</div>
 		

@@ -1,5 +1,4 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <div class="immigraTabsHead">
 		  	<a href="javascript:void(0)" class="immMenuClick">Add Family <i class="fa fa-plus"></i>
 				<div class="immiSubMenu">

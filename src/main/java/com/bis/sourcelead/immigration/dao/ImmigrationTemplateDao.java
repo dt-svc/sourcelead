@@ -53,6 +53,8 @@ public interface ImmigrationTemplateDao {
     List<ImmigrationTemplateDocDTO> getImmigrationTemplateDocsListById(Long templateId);
     
     List<ImmigrationTemplateDocs> getImmigrationTemplateDocsList(Long templateId);
+    
+    List<ImmigrationTemplateForms> getImmigrationTemplateFormsList(Long templateId);
 
     List<ImmigrationTemplateFormDTO> getImmigrationTemplateformsListById(Long templateId);
 
@@ -72,4 +74,6 @@ public interface ImmigrationTemplateDao {
             CandidateResumes candidateResume, List<CandidateLcaI94Summary> lcaSummaryLst) throws Exception;
 
     public boolean validateTemplateNameExistance(String templateName, Long templateId);
+
+	List<LookUpData> getLookupDataByTypeAndLocation(String petitionType, String locationVal);
 }

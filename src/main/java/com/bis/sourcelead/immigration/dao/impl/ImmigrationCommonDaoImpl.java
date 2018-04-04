@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
+import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -426,5 +427,48 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			immigrationCandidateDocumentsList = session.createQuery(queryString).setLong("candidateId", candidateId).setLong("templateId", templateId).setLong("immigrationId", immigrationId).list();
 		
 		return immigrationCandidateDocumentsList;
+	}
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ImmigrationCandidateForms saveImmigrationCandidateForms(ImmigrationCandidateForms immigrationCandidateForms)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		  
+		logger.debug("Storing ImmigrationCandidateForms");
+		try {
+			if (immigrationCandidateForms != null) {
+				session.saveOrUpdate(immigrationCandidateForms);
+			}
+			logger.debug("ImmigrationCandidateForms Stored Successfully");
+		} catch (Exception exception) {
+			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ImmigrationCandidateForms"));
+			    try {
+	                throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
+	            } catch (SourceLeadConstraintViolationException e) {
+	                e.printStackTrace();
+	            }
+		}
+		return immigrationCandidateForms;
+    }
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ImmigrationCandidateForms> getCandidateImmigartionFormsDetails(Long candidateId, Long templateId,
+			Long immigrationId) {
+		List<ImmigrationCandidateForms> candidateFormLst= null;
+		 try {
+				Session session = this.sessionFactory.getCurrentSession();
+                String queryString ="from ImmigrationCandidateForms icf where  icf.immigrationTempId.id= :templateId and icf.immigration.id=:immigrationId and icf.candidate=:candidateId";
+                candidateFormLst =session.createQuery(queryString)
+                		                                     .setLong("templateId", templateId)
+                		                                     .setLong("immigrationId", immigrationId)
+                		                                     .setLong("candidateId", candidateId).list();
+                System.out.println("candidateFormLst size is ---> "+candidateFormLst.size());
+		 } catch (HibernateException e) {
+				logger.error("SQL Exception occured while doing getting ImmigrationCandidateForms records -->"+e.getMessage());
+				e.printStackTrace();
+			}
+		return candidateFormLst;
 	}
 }

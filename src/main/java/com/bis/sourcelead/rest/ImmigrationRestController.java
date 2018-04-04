@@ -43,6 +43,7 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
+import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -246,6 +247,10 @@ public class ImmigrationRestController {
         try {
             if (status.equalsIgnoreCase("templateDetails")) {
                 ImmigrationTemplateDTO dto = (ImmigrationTemplateDTO) request.getSession().getAttribute("templateDTO");
+                List<Countries> countryList = countriesService.getAllCountries();
+                //List<LookUpData> petitionTypeList = immigrationTemplateService.getLookupDataByType(Constants.PETITION_TYPE);
+                model.addObject("countriesList", countryList);
+                //model.addObject("petitionTypeList", petitionTypeList);
                 model.addObject("templateDTO", dto);
                 model.setViewName("/immigration/petitionTemplateDetails");
             }
@@ -377,6 +382,10 @@ public class ImmigrationRestController {
             model.addObject("sourceleadUrl", sourceleadUrl);
             if (forwardTo.equalsIgnoreCase("tempDetails")) {
                 model.setViewName("/immigration/petitionTemplateDetails");
+                List<Countries> countryList = countriesService.getAllCountries();
+                //List<LookUpData> petitionTypeList = immigrationTemplateService.getLookupDataByType(Constants.PETITION_TYPE);
+                model.addObject("countriesList", countryList);
+                //model.addObject("petitionTypeList", petitionTypeList);
             } else if (forwardTo.equalsIgnoreCase("docDetails")) {
                 List<LookUpData> educationsList = null;
                 educationsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE); // for populating
@@ -1016,6 +1025,15 @@ public class ImmigrationRestController {
 			return immiCanEdu;
 	}
 	
+
+	
+	@RequestMapping(value = {"/getPetitionTypeOnLocation"})
+    public List<LookUpData> getPetitionTypeOnLocation(@RequestParam(value="locationVal", required=false) String  locationVal, HttpServletRequest request) {
+        List<LookUpData> petitionTypeDTOs = immigrationTemplateService.getLookupDataByTypeAndLocation(Constants.PETITION_TYPE,locationVal);
+        return petitionTypeDTOs;
+	}
+	
+
 	@RequestMapping(value = { "/getNotesListByImmigrationId" })
 	public ModelAndView getNotesListByImmigrationId(
 			@RequestParam(value = "candidateId", required = true) Long candidateId,
@@ -1028,6 +1046,23 @@ public class ImmigrationRestController {
 		 model.addObject("candidatesNotesList",candidatesNotesList);
 		return model;
 	}
+	@RequestMapping(value = {"/getCandidateImmigrationFormsList"})
+    public ModelAndView getCandidateImmigrationForms(HttpServletRequest request, 
+    		@RequestParam(value = "candidateId", required = false) Long candidateId
+    	    ,@RequestParam(value = "templateId", defaultValue = "0") Long templateId
+    		,@RequestParam(value = "immigrationId", required = false) Long immigrationId ) throws Exception {
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+        System.out.println("inside controller method getCandidateImmigrationForms--> ");
+    	
+        ModelAndView model = new ModelAndView();
+    	model.setViewName("/immigration/formDetailsTab");
+        List<ImmigrationCandidateForms> candidateFormsLst = immigrationCommonService.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId);
+        System.out.println("Candidate forms Details updated succesfully  candidateFormsLst size  is --> "+candidateFormsLst.size());
+        model.addObject("formsList" ,candidateFormsLst);
+		return model;
+    }
+
 }
 
 

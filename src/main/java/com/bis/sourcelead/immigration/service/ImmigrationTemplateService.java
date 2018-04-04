@@ -54,4 +54,6 @@ public interface ImmigrationTemplateService {
 
     public boolean validateTemplateNameExistance(String templateName, Long templateId);
 
+	List<LookUpData> getLookupDataByTypeAndLocation(String petitionType, String locationVal);
+
 }

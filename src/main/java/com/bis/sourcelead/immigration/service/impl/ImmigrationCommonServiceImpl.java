@@ -31,8 +31,10 @@ import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
+import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
+import com.bis.sourcelead.entity.ImmigrationTemplateForms;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -75,7 +77,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	
 	@Override
 	public Immigration savePetitionDetails(ImmigrationDTO immigrationDTO, User user,OrgLocations orgLocations){
-		Immigration immigrationVal = null;
+		Immigration immigrationObj = null;
 		try {
 			
 		Candidate candidate = new Candidate();
@@ -101,14 +103,91 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		List<CandidateResidence> residenceList = new ArrayList<CandidateResidence>(); // add residences to immigration candidate tables
 		residenceList = savePetitionResidenceList(immigrationDTO,candidate, user, orgLocations);
 		
-		 immigrationVal = immigrationCommonDao.savePetitionDetails(immigration,candidate,candidateIdendities,candidateResume,lcaSummaryLst, residenceList);
+		 immigrationObj = immigrationCommonDao.savePetitionDetails(immigration,candidate,candidateIdendities,candidateResume,lcaSummaryLst, residenceList);
+		 //Copy IMMIGRATION_TEMPLATE_DOCUMENTS data to  IMMIGRATION_CANDIDATE_DOCS table based on templateId 
+		 copyImmigrationConfiguredDocsToCandidate(immigrationObj,user,orgLocations);
+		 
+		 //Copy IMMIGRATION_TEMPLATE_FORMS data to  IMMIGRATION_CANDIDATE_FORMS table based on templateId 
+		 copyImmigrationConfiguredFormsToCandidate(immigrationObj,user,orgLocations);
+		 
 		}catch(Exception e) {
 			logger.error("Exception caugth in savePetitionDetails service"+ e.getMessage());
 			e.printStackTrace();
 		}
-		return immigrationVal;
+		return immigrationObj;
 	}
 
+	void copyImmigrationConfiguredDocsToCandidate(Immigration immigrationObj,User user,OrgLocations orgLocations){
+		List <ImmigrationTemplateDocs> immigrationTemplateDocsDocList =immigrationTemplateDao.getImmigrationTemplateDocsList(immigrationObj.getImmigrationTemplateId().getId());
+		ImmigrationCandidateDocuments immCanObj =null; 
+		
+		for(ImmigrationTemplateDocs docs :immigrationTemplateDocsDocList){
+			immCanObj = new ImmigrationCandidateDocuments();
+			immCanObj.setImmigrationTemplateId(immigrationObj.getImmigrationTemplateId());
+			immCanObj.setCandidateId(immigrationObj.getCandidate());
+			immCanObj.setImmigrationId(immigrationObj);
+			immCanObj.setDocumentType(docs.getDocumentType());
+			immCanObj.setDocUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			immCanObj.setDescription(docs.getDescription());
+			if(docs.getIsRequired() != null && "Y".equalsIgnoreCase(docs.getIsRequired())){
+				immCanObj.setIsRequired(docs.getIsRequired());
+			}else{
+				immCanObj.setIsRequired(Constants.NO);	
+			}
+			immCanObj.setStatus(Constants.RECORD_ACTIVE);
+			immCanObj.setDocumentStatus(Constants.DOCUMENT_UPLOAD_REQUESTED);
+			immCanObj.setIsTemplateConfigured(Constants.YES);
+			immCanObj.setCreatedBy(user);
+			immCanObj.setUpdatedBy(user);
+			Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+			immCanObj.setUpdatedDate(currentDate);
+			immCanObj.setCreatedDate(currentDate);
+			try {
+				immigrationCommonDao.saveImmigrationCandidateDocs(immCanObj);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	void copyImmigrationConfiguredFormsToCandidate(Immigration immigrationObj,User user,OrgLocations orgLocations){
+		List <ImmigrationTemplateForms> immigrationTemplateFormsList =immigrationTemplateDao.getImmigrationTemplateFormsList(immigrationObj.getImmigrationTemplateId().getId());
+		ImmigrationCandidateForms immCanObj = null;
+		
+		for(ImmigrationTemplateForms forms :immigrationTemplateFormsList){
+			immCanObj = new ImmigrationCandidateForms();
+			immCanObj.setImmigrationTempId(immigrationObj.getImmigrationTemplateId());
+			immCanObj.setCandidate(immigrationObj.getCandidate());
+			immCanObj.setImmigration(immigrationObj);
+			immCanObj.setDescription(forms.getDescription());
+			if(forms.getIsRequired() != null && "Y".equalsIgnoreCase(forms.getIsRequired())){
+				immCanObj.setIsRequired(forms.getIsRequired());
+			}else{
+				immCanObj.setIsRequired(Constants.NO);	
+			}
+			immCanObj.setFormName(forms.getFormName());
+			immCanObj.setFormType(forms.getFormType());
+			immCanObj.setFormUUID(forms.getFormUUID());
+			immCanObj.setFileName(forms.getFileName());
+			immCanObj.setFileContentType(forms.getFileContentType());
+			immCanObj.setFileUrl(forms.getFileUrl());
+			immCanObj.setStatus(Constants.RECORD_ACTIVE);
+			immCanObj.setFormStatus(Constants.DOCUMENT_UPLOAD_REQUESTED);
+			immCanObj.setIsTemplateConfigured(Constants.YES);
+			Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+			immCanObj.setCreatedBy(user);
+			immCanObj.setUpdatedBy(user);
+			immCanObj.setUpdatedDate(currentDate);
+			immCanObj.setCreatedDate(currentDate);
+			try {
+				immigrationCommonDao.saveImmigrationCandidateForms(immCanObj);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	private List<CandidateResidence> savePetitionResidenceList(ImmigrationDTO immigrationDTO, Candidate candidate,
 			User user, OrgLocations orgLocations) {
 		List<CandidateResidence> residenceList = new ArrayList<CandidateResidence>(); // add residences to immigration candidate tables
@@ -608,13 +687,14 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		immigrationCandidateDocuments.setIsRequired(Constants.NO);	
 		}
 		immigrationCandidateDocuments.setStatus(Constants.RECORD_ACTIVE);
-		
+		immigrationCandidateDocuments.setDocumentStatus(Constants.DOCUMENT_UPLOAD_REQUESTED);
 		if(immigrationTemplateDocDTO.getFileInfo() != null){
 			FileInfo fileInfo = immigrationTemplateDocDTO.getFileInfo().get(0);
 			immigrationCandidateDocuments.setRequestFileUrl(fileInfo.getFileURL());
 			immigrationCandidateDocuments.setRequestFileName(fileInfo.getFileName());
 			immigrationCandidateDocuments.setRequestFileContentType(fileInfo.getContentType());
 			FileUploadUtil.moveFile(immigrationTemplateDocDTO.getStaticPath(), fileInfo, "immigrationCandidateDocuments");
+			
 		}
 		immigrationCandidateDocuments.setCreatedBy(user);
 		immigrationCandidateDocuments.setUpdatedBy(user);
@@ -634,44 +714,15 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	public List<ImmigrationCandidateDocuments> getImmigrationCandidateDocs(Long immigrationId, Long templateId,
 			Long candidateId,User user,OrgLocations orgLocations) throws Exception {
 		
-		List <ImmigrationCandidateDocuments> immigrationCanididateDocList = null;
-		immigrationCanididateDocList =immigrationCommonDao.getImmigrationCandidateDocs(immigrationId,templateId,candidateId);
+		List <ImmigrationCandidateDocuments> immigrationCanididateDocList =immigrationCommonDao.getImmigrationCandidateDocs(immigrationId,templateId,candidateId);
 		
-		if(immigrationCanididateDocList.size()==0){
-			List <ImmigrationTemplateDocs> immigrationTemplateDocsDocList =immigrationTemplateDao.getImmigrationTemplateDocsList(templateId);
-			ImmigrationCandidateDocuments immCanObj = new ImmigrationCandidateDocuments();
-			Date date = new Date();
-			ImmigrationTemplate template = new ImmigrationTemplate();
-			Candidate candidate = new Candidate();
-			Immigration immigration = new Immigration();
-			template.setId(templateId);
-			candidate.setId(candidateId);
-			immigration.setId(immigrationId);
-			immCanObj.setImmigrationTemplateId(template);
-			immCanObj.setCandidateId(candidate);
-			immCanObj.setImmigrationId(immigration);
-			for(ImmigrationTemplateDocs docs :immigrationTemplateDocsDocList){
-				
-				immCanObj.setDocumentType(docs.getDocumentType());
-				immCanObj.setDocUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-				immCanObj.setDescription(docs.getDescription());
-				if(docs.getIsRequired() != null && "Y".equalsIgnoreCase(docs.getIsRequired())){
-					immCanObj.setIsRequired(docs.getIsRequired());
-				}else{
-					immCanObj.setIsRequired(Constants.NO);	
-				}
-				immCanObj.setStatus(Constants.RECORD_ACTIVE);
-				
-				immCanObj.setCreatedBy(user);
-				immCanObj.setUpdatedBy(user);
-				immCanObj.setUpdatedDate(date);
-				immCanObj.setCreatedDate(date);
-				immigrationCommonDao.saveImmigrationCandidateDocs(immCanObj);
-			}
-			 immigrationCanididateDocList =immigrationCommonDao.getImmigrationCandidateDocs(immigrationId,templateId,candidateId);
-
-		}
 		return immigrationCanididateDocList;
+	}
+
+	@Override
+	public List<ImmigrationCandidateForms> getCandidateImmigartionFormsDetails(Long candidateId, Long templateId,
+			Long immigrationId) {
+		return immigrationCommonDao.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId);
 	}
 	
 }
