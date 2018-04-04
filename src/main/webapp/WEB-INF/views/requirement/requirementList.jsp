@@ -1002,6 +1002,17 @@ function refreshGoogleApiCity(cityId){
 								</ul>
 				</div>
 			</div>
+			
+			<div class="col-md-12">
+				<label><strong>Jobs</strong></label>
+					<div class='clearfix'>
+				<ul id="jobs" class="list-unstyled">
+					<li class="checkBox positionRelative"><input id="j1" type="checkbox" name="requirementSpecJobs" value="ClientJobs" ><label for="j1">All Client Jobs </label></li>
+					<li class="checkBox positionRelative"><input id="j2" type="checkbox" name="requirementSpecJobs" value="NormalJobs" ><label for="j2">All Internal jobs</label></li>
+				
+				</ul>
+			</div>
+           </div>
 			</div>
 			</div>
 			
@@ -1069,18 +1080,8 @@ function refreshGoogleApiCity(cityId){
 							
 							
 							
-							<div class="col-md-2">
- 			<label><strong>Jobs</strong></label>
- 			<div class='clearfix'>
-								<ul id="jobs" class="list-unstyled">
-									<li class="checkBox positionRelative"><input id="j1" type="checkbox" name="requirementSpecJobs" value="ClientJobs" ><label for="j1">All Client Jobs </label></li>
-									<li class="checkBox positionRelative"><input id="j2" type="checkbox" name="requirementSpecJobs" value="NormalJobs" ><label for="j2">All Internal jobs</label></li>
-								
-								</ul>
-				</div>
-			</div>
-			
-						<div class="col-md-2 mb positionRelative">
+							
+						<div class="col-md-3 mb positionRelative">
 							<div class="clearfix dynamic_search filterDynamicsearch">
 								<input type="text" id="myClientInput" onkeyup="myClientFunction()" placeholder="Clients" title="Type in a teams">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
@@ -1104,7 +1105,7 @@ function refreshGoogleApiCity(cityId){
 			<!-- //projectList -->
 			
 			
-			<div class="col-md-2 mb positionRelative">
+			<div class="col-md-3 mb positionRelative">
 							<div class="clearfix dynamic_search filterDynamicsearch">
 								<input type="text" id="myProjectInput" onkeyup="myProjectFunction()" placeholder="Projects" title="Type in a teams">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
