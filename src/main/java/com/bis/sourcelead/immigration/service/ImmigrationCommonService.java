@@ -41,7 +41,7 @@ public interface ImmigrationCommonService {
 	
 	List<CandidateResidence> getCandidatesResidenceListByCandidateIdAndOrgLocationID(Long candidateId);
 	
-	List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId,String idType);
+	List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId,String idType, String searchValue);
 	
 	CandidateFamilyDetails getCandidateFamilyDetailsById(Long id);
 
@@ -61,6 +61,6 @@ public interface ImmigrationCommonService {
 
 	List<ImmigrationCandidateForms> getCandidateImmigartionFormsDetails(Long candidateId, Long templateId, Long immigrationId);
 
-
+	
 
 }
