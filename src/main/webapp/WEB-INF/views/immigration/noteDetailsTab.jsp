@@ -9,6 +9,12 @@
 			<c:if test="${notesitems.checkBox =='Y' || (notesitems.checkBox =='N' && SourceLeadWeb_user.id == notesitems.userIdStr)}">
 		   <div class="immiNote clearfix">
 				<img src="images/23.jpg" alt=""/>
+				<c:if test="${!empty notesitems.commentAuthorImage}">
+				<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="${notesitems.commentAuthorImage}"/>
+				</c:if>
+				<c:if test="${empty notesitems.commentAuthorImage}">
+				<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg"/>
+				</c:if>
 				<p>
 					<b>By <span>${notesitems.userName}</span><u>${notesitems.createdDateString}</u></b>
 					${notesitems.comment}
