@@ -71,6 +71,9 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
         ImmigrationTemplate immigrationTemplate = new ImmigrationTemplate();
         if (!templateId.equalsIgnoreCase("null") && !templateId.isEmpty()) {
             immigrationTemplate.setId(Long.parseLong(templateId));
+            immigrationTemplate.setStatus(1);
+        }else {
+        	immigrationTemplate.setStatus(0);
         }
         immigrationTemplate.setOrgLocations(orgLocations);
         immigrationTemplate.setName(templateDTO.getTemplateName());
@@ -80,7 +83,6 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
         immigrationTemplate.setUpdatedBy(user);
         immigrationTemplate.setUpdatedDate(new Date());
         immigrationTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-        immigrationTemplate.setStatus(0);
         immigrationTemplate.setPetitionType(templateDTO.getPetitionType());
         immigrationTemplate.setCountry(templateDTO.getCountry());
         return immigrationTemplateDao.savePetitionTemplateDetails(immigrationTemplate, templateId);
