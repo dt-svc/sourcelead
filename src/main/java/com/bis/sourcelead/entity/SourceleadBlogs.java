@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -26,9 +27,9 @@ public class SourceleadBlogs {
 	@Column(name = "BLOG_TITLE")
 	private String blogTitle;
 	
+	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CATEGORY_ID", nullable = false)
-	@JsonBackReference
 	private BlogCategory categoryId;
 	
 	@Column(name="KEY_WORDS", columnDefinition = "LONGTEXT default NULL")
@@ -52,26 +53,45 @@ public class SourceleadBlogs {
 	@Column(name="DESCRIPTION", columnDefinition = "LONGTEXT default NULL")
 	private String description;
 	
+	@Column(name="SHORT_DESCRIPTION")
+	private String shortDescription;
+	
 	@Column(name = "STATUS")
 	private Integer status;
 	
+	@Column(name = "BLOG_STATUS")
+	private String blogStatus;
+	
+	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CREATED_BY", nullable = false)
-	@JsonBackReference
 	private User createdBy;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
+	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "UPDATED_BY", nullable = false)
-	@JsonBackReference
 	private User updatedBy;
 	
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 	
+	@Column(name = "HREF")
+	private String href;
 	
+	
+	@Transient
+	private String blogImage;
+
+	public String getBlogImage() {
+		return blogImage;
+	}
+
+	public void setBlogImage(String blogImage) {
+		this.blogImage = blogImage;
+	}
 
 	public Long getId() {
 		return id;
@@ -191,6 +211,30 @@ public class SourceleadBlogs {
 
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	public String getBlogStatus() {
+		return blogStatus;
+	}
+
+	public void setBlogStatus(String blogStatus) {
+		this.blogStatus = blogStatus;
+	}
+
+	public String getHref() {
+		return href;
+	}
+
+	public void setHref(String href) {
+		this.href = href;
+	}
+
+	public String getShortDescription() {
+		return shortDescription;
+	}
+
+	public void setShortDescription(String shortDescription) {
+		this.shortDescription = shortDescription;
 	}
 	
 }

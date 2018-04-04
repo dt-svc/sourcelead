@@ -96,9 +96,14 @@ $(document).ready(function(){
 							</div>
 							<div class="pull-right ml10">
 								<div class="count" id="unbilledAmoumt"></div>
-								<h5>
-									Draft Bills<span class="paddingLeft" id="draftInvoiceCount"></span>
-								</h5>
+								<c:if test="${!empty draftInvoiceCount}">
+								<h5>Draft Bills<span class="paddingLeft" id="draftInvoiceCount"></span></h5>
+								</c:if>
+								
+								<c:if test="${empty draftInvoiceCount}">
+								<h5>Draft Bills<br><span class="paddingright pull-right">0.0</span></h5>
+								</c:if>
+								
 							</div>
 					</a>
 					</li>
@@ -110,10 +115,17 @@ $(document).ready(function(){
 							</div>
 							<div class="pull-right ml10">
 								<div class="count" id="dueAfterInvoiceAmount"></div>
+								<c:if test="${!empty dueAfterInvoiceCount}">
 								<h5>
-									Overdue Bills<span class="paddingLeft"
-										id="dueAfterInvoiceCount"></span>
+									Overdue Bills<span class="paddingLeft" id="dueAfterInvoiceCount"></span>
 								</h5>
+								</c:if>
+								
+								<c:if test="${empty dueAfterInvoiceCount}">
+								<h5>
+									Overdue Bills<br><span class="paddingright pull-right">0.0</span>
+								</h5>
+								</c:if>
 							</div>
 
 					</a>
@@ -126,9 +138,17 @@ $(document).ready(function(){
 							</div>
 							<div class="pull-right ml10">
 								<div class="count" id="dueBeforeInvoiceAmount"></div>
+								<c:if test="${!empty dueBeforeInvoiceCount}">
 								<h5>
 									Open Bills<span class="paddingLeft" id="dueBeforeInvoiceCount"></span>
 								</h5>
+								</c:if>
+								
+								<c:if test="${empty dueBeforeInvoiceCount}">
+								<h5>
+									Open Bills<br><span class="paddingright pull-right">0.0</span>
+								</h5>
+								</c:if>
 							</div>
 					</a>
 					</li>
@@ -140,9 +160,18 @@ $(document).ready(function(){
 							</div>
 							<div class="pull-right ml10">
 								<div class="count" id="paidInvoiceAmount"></div>
+								<c:if test="${!empty paidInvoiceCount}">
 								<h5>
 									Paid Bills<span class="paddingLeft" id="paidInvoiceCount"></span>
 								</h5>
+								</c:if>
+								
+								<c:if test="${empty paidInvoiceCount}">
+								<h5>
+									Paid Bills<br><span class="paddingright pull-right">0.0</span>
+								</h5>
+								</c:if>
+								
 							</div>
 					</a>
 					</li>
@@ -953,7 +982,10 @@ function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount,fileUrl){
 // 	     result = result +'      <li onclick="downloadInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
  		 result = result+' <a href="'+fileUrl+'" title="Download"><i class="fa fa-download paddingLeft paddingRight"></i>Download</a>';
 	     '</sec:authorize>'
+	     if(invoiceStatus != 'DRAFT')
+	     {
 	     result = result +'      <li onclick="linkPayableInvoice('+id+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Bill"></i>Link Bill</li>';
+	     }
 	     result = result +'    </ul>';
     	 $("#popupDiv"+id+"").append(result);
     	 showMenu();
@@ -1451,9 +1483,22 @@ function linkPayableInvoice(invoiceId,totalAmount){
 			result = result +'            </td>                                                                                                             ';
 			result = result +'            <td>                                                                                                              ';
 			result = result +'              <div class="tbldata-dotdot_80">'+opt.dueAmount+'</div>                                                                 ';
-			result = result +'            </td>                                                                                                             ';
+			result = result +'            </td>';
+			var status = null;
+			if(opt.invoiceStatus == 'DRAFT')
+			  {
+				status="Draft";
+			  }
+			else if(opt.invoiceStatus == 'SENT')
+			  {
+				status="Sent";
+			  }
+			else
+			 {
+				status=opt.invoiceStatus;
+			 }
 			result = result +'            <td>                                                                                                              ';
-			result = result +'              <div class="tbldata-dotdot_100">'+opt.invoiceStatus+'</div>                                                                    ';
+			result = result +'              <div class="tbldata-dotdot_100">'+status+'</div>                                                                    ';
 			result = result +'            </td>                                                                                                             ';
 			result = result +'          </tr>                                                                                                               ';
 			}

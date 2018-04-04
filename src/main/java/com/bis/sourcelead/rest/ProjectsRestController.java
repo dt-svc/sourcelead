@@ -46,15 +46,15 @@ import com.bis.sourcelead.dto.ProjectMembersDTO;
 import com.bis.sourcelead.dto.ProjectMembersRateHistoryDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.dto.UserDTO;
-import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -66,8 +66,10 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
@@ -159,6 +161,15 @@ public class ProjectsRestController {
 	
 	@Autowired
 	ProjectMembersRateHistoryService projectMembersRateHistoryService;
+	
+	@Autowired
+	private LeaveService leaveService;
+	
+	@Autowired
+	private CandidateService candidateService;
+	
+	@Autowired
+	private TimesheetRestController timesheetRestController;
 
 	/**
 	 * This method for save the project by json
@@ -195,12 +206,32 @@ public class ProjectsRestController {
 		    User user = userService.getUserById(userId);
 		    OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		    projectMembersService.saveAssignedProjectMembers(projectAssignedMembersDTO, projectUUID, user, orgLocations);
-		   
+		    approvedLeaveForNewlyAddedEmployee(projectAssignedMembersDTO.getProjectMembers(),orgLocations,user);
 		    return "success";
 	    }
        
        
-       @RequestMapping(value = "/storeProjectAdditionalDetails", method = RequestMethod.POST)
+	private void approvedLeaveForNewlyAddedEmployee(List<ProjectMembersDTO> projectMembers, OrgLocations orglocationId, User user) throws Exception {
+		if(projectMembers != null && !projectMembers.isEmpty()) {
+			for(ProjectMembersDTO members:projectMembers) {
+				if(members.getCandidateId()!= null) {
+					 Candidate candidate = candidateService.getCandidateByCandidateId(members.getCandidateId());
+					 if(candidate != null && candidate.getConsultantUser()!= null) {
+						 List<Leave> leaveList = leaveService.getLeaveByUserIdOrglocationIdandStatus(candidate.getConsultantUser(),orglocationId.getId(),Constants.APPROVED);
+						 if(leaveList!= null && !leaveList.isEmpty()) {
+							 for(Leave leave:leaveList) {
+							 	timesheetRestController.linkLeaveTypeWithTimeSheet(user,orglocationId, leave.getLeaveType().getId(),leave,Constants.APPROVED);
+							 } 
+						 }
+					 }
+				}
+			}	
+		}
+	}
+
+
+
+	@RequestMapping(value = "/storeProjectAdditionalDetails", method = RequestMethod.POST)
 		public  String storeProjectAdditionalDetails(ProjectAdditionalDetailsDTO projectAdditionalDetailsDTO,@RequestParam(value="projectId", required=true) Long projectId,
 			   @RequestParam(value="userId", required=true) Long userId,@RequestParam(value="orgLocationId", required=true) Long orgLocationId,
 			   @RequestParam(value="saveType", required=true) String saveType,HttpServletRequest request) throws Exception {
@@ -783,7 +814,7 @@ public class ProjectsRestController {
 			notificationScenario.setBody(notificationBody);
 			//String url = null;
 			String actionLink = "";
-			emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getEmployee().getUser(), loginOrgLocation, notificationScenario);
+			emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getEmployee().getUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());
 		}
 	    
 	    

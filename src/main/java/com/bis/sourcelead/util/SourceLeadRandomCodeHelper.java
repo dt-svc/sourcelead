@@ -33,6 +33,11 @@ public class SourceLeadRandomCodeHelper {
 		return UUID;
 	}
 	
+	public static String generateNotificationUUID() {
+		String UUID = RandomStringUtils.randomAlphabetic(32);
+		return UUID;
+	}
+	
 	public static String generateRandomUUID() {
 		String UUID = RandomStringUtils.randomAlphanumeric(8);
 		return UUID;
