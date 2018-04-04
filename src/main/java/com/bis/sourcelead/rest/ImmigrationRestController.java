@@ -1025,7 +1025,7 @@ public class ImmigrationRestController {
 			return immiCanEdu;
 	}
 	
-<<<<<<< HEAD
+
 	
 	@RequestMapping(value = {"/getPetitionTypeOnLocation"})
     public List<LookUpData> getPetitionTypeOnLocation(@RequestParam(value="locationVal", required=false) String  locationVal, HttpServletRequest request) {
@@ -1033,7 +1033,7 @@ public class ImmigrationRestController {
         return petitionTypeDTOs;
 	}
 	
-=======
+
 	@RequestMapping(value = { "/getNotesListByImmigrationId" })
 	public ModelAndView getNotesListByImmigrationId(
 			@RequestParam(value = "candidateId", required = true) Long candidateId,
@@ -1062,7 +1062,7 @@ public class ImmigrationRestController {
         model.addObject("formsList" ,candidateFormsLst);
 		return model;
     }
->>>>>>> 35cd016b2475db7d408202d901a1a9d7cdffaf8a
+
 }
 
 
