@@ -119,30 +119,29 @@ function closeCertificatePopup(){
 			else{
 			$("#candidateEmployersAdd").attr("disabled", "disabled");
 			$("#candidateEmployersAdd").addClass('button').val('Processing..'); 
-	        $.post(sourceleadUrl+"/storeCandidateEmployers?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(data) {
+	        $.post(sourceleadUrl+"/storeCandidateEmployers?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(result) {
 	        	
-	        	if (data != null && data != 'undefined'
-					&& data != "") {
-				if (data.indexOf('Sign In') >= 0) {
-					location.replace(sourceleadUrl);
-				} else if (data.indexOf('exception') >= 0) {
-					location.replace(sourceleadUrl  + "/errorPage");
-				} else {
+	        	if (result && result.response === "INVALID_DATA") {
+				    showError(result.responseMessage);
+				} else if (result.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+					var data = result.object;
 					$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
-        			 if(data<50){
-        			   $("#perVal").removeClass('progress-bar-success');
-        			   $("#perVal").addClass("progress-bar-danger");
-        			 }
-        			 if(data>=50){
-        				 $("#perVal").removeClass("progress-bar-danger");
-        				 $("#perVal").addClass("progress-bar-success");
-        			 }
-        			 $("#disVal").empty();
-        			$("#disVal").append(data+'%');
-        			
-        			// for quick view bar update
-        			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
-          			 if(data<50){
+       			 if(data<50){
+       			   $("#perVal").removeClass('progress-bar-success');
+       			   $("#perVal").addClass("progress-bar-danger");
+       			 }
+       			 if(data>=50){
+       				 $("#perVal").removeClass("progress-bar-danger");
+       				 $("#perVal").addClass("progress-bar-success");
+       			 }
+       			 $("#disVal").empty();
+       			$("#disVal").append(data+'%');
+       			
+       			// for quick view bar update
+       			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
+         			 if(data<50){
 	          			   $("#quickPerVal").removeClass('progress-bar-success');
 	          			   $("#quickPerVal").addClass("progress-bar-danger");
 	          			 }
@@ -151,13 +150,13 @@ function closeCertificatePopup(){
 	          				 $("#quickPerVal").addClass("progress-bar-success");
 	          			 }
 
-        			$("#quickDisVal").empty();
-        			$("#quickDisVal").append(data+'%');
-        			
+       			$("#quickDisVal").empty();
+       			$("#quickDisVal").append(data+'%');
+       			
 					$("#popUpDivEmp").removeClass("edit-details-active");
-        			$("#selector3").removeAttr("style");
-        			$("#selector3").css({ display: "block" });
-        			$("#empMsgDiv").html("Success!! New Employer added");
+       			$("#selector3").removeAttr("style");
+       			$("#selector3").css({ display: "block" });
+       			$("#empMsgDiv").html("Success!! New Employer added");
 					candidateEmployersList(candidateId);
 					empMsgFadein();
 					qvemployeeSubmission(candidateId);
@@ -165,11 +164,13 @@ function closeCertificatePopup(){
 					setTimeout(function(){
 			 			candidateList();					 			
 			 		},100);
+					
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
 				}
-	        	}
-			
 	        });
-			
 			}
 			return true;
 		} else {
@@ -180,6 +181,7 @@ function closeCertificatePopup(){
 		$("#employers_form").showHelpOnFocus();
 		$("#employers_form").validateOnBlur(false, validationSettings);
 	});
+	        	
 </script>
 
 
@@ -312,7 +314,7 @@ function closeCertificatePopup(){
 			url : sourceleadUrl
 					+ "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId?"+tokenParamName+"="+tokenValue+"&candidateId="
 					+ candidateId + "&candidateEmpId=" + candidateEmpId,
-			success : function(data) {
+			success : function(response) {
 				if (response.response === "AWKWARD") {
 				    location.href = "/errorPage";
 				} else if (response.response === "SUCCESS") {
@@ -320,7 +322,7 @@ function closeCertificatePopup(){
     					location.href = "/errorPage";
 					} else if (response.response === "SUCCESS") {
 						/* var json = JSON.parse(data); */
-						var json = response.object;
+						var json = JSON.parse(response.object);
 						var result = "";
 						result = result + '      <!-- Popup Div --> ';
 						result = result	+ '         <form id="candidateExperianceEdit_form" name="candidateExperianceEdit_form" method="post">';
@@ -764,7 +766,7 @@ function removeEmployer(candidateemployerId, candidateId){
 		$.ajax({
 			type : "POST",
 			url : sourceleadUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
-			success : function(data) {
+			success : function(response) {
 				if (response.response === "AWKWARD") {
 				    location.href = "/errorPage";
 				} else if (response.response === "SUCCESS") {
