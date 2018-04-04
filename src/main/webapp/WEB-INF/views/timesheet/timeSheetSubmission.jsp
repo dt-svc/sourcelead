@@ -571,7 +571,11 @@ function maskme(){
 
 <script>
 $(document).ready(function() {  
-	maskme();    
+	if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	 }else{
+		 maskme(); 
+	 }
  });
 </script>
 
@@ -1448,8 +1452,16 @@ function notifyReopenTimeSheet(projectMemberId,timesheetFrequency,totalHours){
 		   	type: "POST",
 		    url: sourceleadUrl+"/notifyReopenTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&reason="+(reason.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>'))+"&totalHours="+totalHours,	    	   
 		    success: function(data) {
-		    	 cancelReOpen();
-   			    timesheetDivAfterSaving();
+		    	if(data.response === "SESSION_TIMEDOUT") {
+		    		location.replace(sourceleadUrl);
+		    	 } else if (data.response === "AWKWARD") {
+                        location.href = "/errorPage";
+		    	 } else if (data.response === "SUCCESS") {
+			    		cancelReOpen();
+	   			    	timesheetDivAfterSaving();
+		    	 }else if (result.indexOf('Sign In') !== -1) {
+	  					location.replace(sourceleadUrl);
+				 }
 		    }
 	   });
 	}else{

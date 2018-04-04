@@ -275,13 +275,24 @@ public class CandidateReferencesRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getCandidateReferencesByCandidateIdAndReferenceId")
-	public String getCandidateReferencesByCandidateIdAndReferenceId(@RequestParam(value = "candidateId", required = false) Long candidateId,
+	public Response<String> getCandidateReferencesByCandidateIdAndReferenceId(
+			@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "refId", required = false) Long refId) throws Exception {
-		String resultJson;
-		CandidateReferences candidateReferencesList = candidateReferencesService
-				.getCandidateReferencesByCandidateIdAndReferenceId(candidateId, refId);
-		resultJson = commonUtil.toJSON(candidateReferencesList);
-		return resultJson;
+		Response<String> response = new Response<>();
+		try {
+			String resultJson;
+			CandidateReferences candidateReferencesList = candidateReferencesService
+					.getCandidateReferencesByCandidateIdAndReferenceId(candidateId, refId);
+			resultJson = commonUtil.toJSON(candidateReferencesList);
+			response.setObject(resultJson);
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
 	}
 
 	// to validate Project SequeneNumber
