@@ -971,16 +971,24 @@ function cleardateofBirth(){
 			 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+""
 		 }
 		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		 $.ajax({  
-	          type : "POST",
-	          url: Urlcheck,        
-	          success :function(data) {
-	        	  getProfessionalInfo();
-	        	  $("#loading").removeAttr('style');
+		 $.ajax({
+			type : "POST",
+	        url: Urlcheck,        
+	        success :function(response) {
+	        	if (response && response.response === "INVALID_DATA") {
+	        		showError(response.responseMessage);
+	        	} else if (response.response === "AWKWARD") {
+	        		location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+	        		getProfessionalInfo();
+	  	        	$("#loading").removeAttr('style');
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        		showError("Operation failed, please try again");
+	        	}
 	        },
-	          
 	     }); 
-	 
  }  
 </script>
  

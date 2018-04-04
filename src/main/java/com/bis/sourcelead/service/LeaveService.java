@@ -75,4 +75,6 @@ public interface LeaveService {
 	File getLeaveExport(OrgLocations orgLocations, LeaveDTO leaveDTO) throws Exception;
 	
 	List<Leave> getAllLeave();
+
+	List<Leave> getLeaveByUserIdOrglocationIdandStatus(User consultantUser, Long orglocationId, String approved);
 }

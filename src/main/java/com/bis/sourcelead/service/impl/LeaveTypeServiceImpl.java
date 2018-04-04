@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -14,8 +13,6 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LeaveTypeDao;
-import com.bis.sourcelead.dao.ProjectTasksDao;
-import com.bis.sourcelead.dao.TaskDao;
 import com.bis.sourcelead.dto.LeaveTypeDTO;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.LeaveRole;
@@ -31,6 +28,7 @@ import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserService;
@@ -66,7 +64,7 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 	LookUpDataService lookUpDataService;
 	
 	@Autowired
-	private ProjectTasksDao projectTasksDao;
+	private ProjectTasksService projectTasksService;
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -218,41 +216,57 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 		
 		if(flag == true) {
 			addOrUpdateLeaveTypeToprojectTask(orgLocation.getId(),leaveTypeDTO,leaveType,user,flag);
+		}else if(flag == false) {
+			addOrUpdateLeaveTypeToprojectTask(orgLocation.getId(),leaveTypeDTO,leaveType,user,flag);
 		}
 		return leaveType;
 	}
 	 
 		private void addOrUpdateLeaveTypeToprojectTask(Long orgLocationId, LeaveTypeDTO leaveTypeDTO, LeaveType leaveType, User user, boolean flag) throws Exception {
-			if(flag == true) {
 			List<Projects> projectsList = projectsService.getAllProjectByOrgLocationsId(orgLocationId);
 			if(projectsList != null && projectsList.size() > 0) {
 				for(Projects projects : projectsList) {
-					ProjectTasks  tasks  =  new ProjectTasks();
-					LookUpData taskType = lookUpDataService.getTasksTypeByUniqueKey(Constants.GENERAL);
-					tasks.setGeneratedId(commonUtil.getProjectTaskGenaratedId(projects));
-					tasks.setProjectTasksUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-					tasks.setTaskName(leaveTypeDTO.getName());
-					tasks.setDescription(leaveTypeDTO.getName());
-					if(leaveTypeDTO.getBillingType().equalsIgnoreCase("Non Billable")) {
-						tasks.setBillableType("Non-Billable");
+					if(flag == true) {	
+						ProjectTasks  tasks  = null;
+						tasks  = new ProjectTasks();
+						LookUpData taskType = lookUpDataService.getTasksTypeByUniqueKey(Constants.GENERAL);
+						tasks.setGeneratedId(commonUtil.getProjectTaskGenaratedId(projects));
+						tasks.setProjectTasksUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+						tasks.setTaskName(leaveTypeDTO.getName());
+						tasks.setDescription(leaveTypeDTO.getName());
+						if(leaveTypeDTO.getBillingType().equalsIgnoreCase("Non Billable")) {
+							tasks.setBillableType("Non-Billable");
+						}else {
+							tasks.setBillableType("Billable");
+						}
+						tasks.setProjectId(projects);
+						tasks.setTaskType(taskType);
+						tasks.setLeaveType(leaveType);
+						LookUpData taskStatus = lookUpDataService.getTasksById(Constants.TaskStatusID);
+						tasks.setTaskStatus(taskStatus);
+						tasks.setStatus(String.valueOf(Constants.CANDIDATE_ACTIVE));
+						tasks.setCreatedBy(user.getUserCode());
+						tasks.setCreatedDate(new Date());
+						tasks.setUpdatedBy(user.getUserCode());
+						tasks.setUpdatedDate(new Date());
+						projectTasksService.addTasks(tasks);
 					}else {
-						tasks.setBillableType("Billable");
-					}
-					tasks.setProjectId(projects);
-					tasks.setTaskType(taskType);
-					tasks.setLeaveType(leaveType);
-					LookUpData taskStatus = lookUpDataService.getTasksById(Constants.TaskStatusID);
-					tasks.setTaskStatus(taskStatus);
-					tasks.setStatus(String.valueOf(Constants.CANDIDATE_ACTIVE));
-					tasks.setCreatedBy(user.getUserCode());
-					tasks.setCreatedDate(new Date());
-					tasks.setUpdatedBy(user.getUserCode());
-					tasks.setUpdatedDate(new Date());
-					projectTasksDao.addTasks(tasks);
-					}
+						 ProjectTasks tasks = projectTasksService.getProjectTaskByleaveTypeId(leaveTypeDTO.getLeaveTypeId(),projects.getId());
+						 if(tasks != null) {
+							 tasks.setTaskName(leaveTypeDTO.getName());
+							 tasks.setDescription(leaveTypeDTO.getName());
+							 if(leaveTypeDTO.getBillingType().equalsIgnoreCase("Non Billable")) {
+								tasks.setBillableType("Non-Billable");
+							}else {
+								tasks.setBillableType("Billable");
+							}
+							 projectTasksService.updateTasks(tasks);
+						 }
 				}
+			
 			}
 		}
+	}
 
 
 

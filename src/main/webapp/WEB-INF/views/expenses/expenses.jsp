@@ -98,7 +98,9 @@
 		        		<input type='text' placeholder="Search" value="" id='SearchExpensesData'/>
 		</div>
     <div class="project_wrap_table datatable_filter overflow_Auto">
-    	<div id="expensesListDiv">	</div>
+    	<div id="expensesListDiv">
+    		<jsp:include page="expensesEmployeeRedefined.jsp"></jsp:include>
+    		</div>
 	</div>
 	</div>
 </div>  
@@ -483,7 +485,7 @@ function expensesCancel(){
 	$(".project_inn_mask").fadeOut(200);
 }
 </script>
-
+ 
 
 <script>
   $("#selector").fadeIn(200);
@@ -498,5 +500,5 @@ function expensesCancel(){
 	       e.stopPropagation();
 	   });        
 </script> 
-
+<jsp:include page="../masterFooter.jsp" />
 <%-- <jsp:include page="expensesEmployeeTable.jsp" /> --%>

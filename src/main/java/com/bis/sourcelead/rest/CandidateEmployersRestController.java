@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,7 +41,6 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.sendgrid.Method;
 
 /**
  * Handles requests for the CandidateCandidateEmployers Service.
@@ -153,54 +151,59 @@ public class CandidateEmployersRestController {
 	 */
 	@RequestMapping(value = { "/getCandidatesEmployersListByCandidateIdAndOrgLocationID",
 			"rest/getCandidatesEmployersListByCandidateIdAndOrgLocationID" }, method = RequestMethod.POST)
-	public ResponseList<CandidateEmployerDTO> getCandidatesEmployersListByCandidateIdAndOrgLocationID(
-			@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception {
+	public ResponseList<CandidateEmployerDTO> getCandidatesEmployersListByCandidateIdAndOrgLocationID(HttpServletRequest request,
+			CandidateEmployerDTO candidateEmployer) throws Exception {
 		ResponseList<CandidateEmployerDTO> reponseList = new ResponseList<>();
 		try {
 
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
-			Candidate employers = candidateService.getCandidateById(Long.parseLong(candidateId));
-			Long loc = employers.getOrgLocationId().getId();
+			Candidate employers = candidateService.getCandidateById(candidateEmployer.getCandidateId());
+			if (employers != null) {
+				Long loc = employers.getOrgLocationId().getId();
 
-			List<CandidateEmployerDTO> candidateEmployeeDTOList = new ArrayList<>();
-			String resultJson;
-			List<CandidateEmployers> candidatesEmployersList = candidateEmployersService
-					.getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long.valueOf(candidateId), loc);
+				List<CandidateEmployerDTO> candidateEmployeeDTOList = new ArrayList<>();
+				String resultJson;
+				List<CandidateEmployers> candidatesEmployersList = candidateEmployersService
+						.getCandidatesEmployersListByCandidateIdAndOrgLocationID(candidateEmployer.getCandidateId(), loc);
 
-			// candidatesEmployersList.forEach(candidaet->{
-			for (CandidateEmployers candidateEmployers : candidatesEmployersList) {
-				CandidateEmployerDTO candidateEmployerDTO = new CandidateEmployerDTO();
+				// candidatesEmployersList.forEach(candidaet->{
+				for (CandidateEmployers candidateEmployers : candidatesEmployersList) {
+					CandidateEmployerDTO candidateEmployerDTO = new CandidateEmployerDTO();
 
-				if (StringUtils.isNotBlank(candidateEmployers.getStartMonth())) {
-					String smonth = getMonthAsString(candidateEmployers.getStartMonth());
-					candidateEmployers.setStartMonth(smonth);
+					if (StringUtils.isNotBlank(candidateEmployers.getStartMonth())) {
+						String smonth = getMonthAsString(candidateEmployers.getStartMonth());
+						candidateEmployers.setStartMonth(smonth);
+					}
+
+					if (StringUtils.isNotBlank(candidateEmployers.getEndMonth())) {
+						String emonth = getMonthAsString(candidateEmployers.getEndMonth());
+						candidateEmployers.setEndMonth(emonth);
+					}
+					candidateEmployerDTO.setId(candidateEmployers.getId());
+					candidateEmployerDTO.setName(candidateEmployers.getName());
+					candidateEmployerDTO.setDesignation(candidateEmployers.getDesignation());
+					candidateEmployerDTO.setAddress(candidateEmployers.getAddress());
+					candidateEmployerDTO.setStartMonth(candidateEmployers.getStartMonth());
+					candidateEmployerDTO.setEndMonth(candidateEmployers.getEndMonth());
+					candidateEmployerDTO.setStartYear(candidateEmployers.getStartYear());
+					candidateEmployerDTO.setEndYear(candidateEmployers.getEndYear());
+					candidateEmployerDTO.setCandidateId(candidateEmployerDTO.getCandidateId());
+					candidateEmployerDTO.setCandidateEmployeeId(String.valueOf(candidateEmployers.getId()));
+					candidateEmployerDTO.setCandidateExperianceId(String.valueOf(candidateEmployers.getId()));
+					candidateEmployerDTO.setIsCurrentPosition(candidateEmployers.getIsCurrentPosition());
+					candidateEmployerDTO.setOrgLocationId(String.valueOf(orgLocations.getId()));
+					candidateEmployerDTO.setCandidateemployerId(String.valueOf(candidateEmployers.getId()));
+					candidateEmployeeDTOList.add(candidateEmployerDTO);
 				}
-
-				if (StringUtils.isNotBlank(candidateEmployers.getEndMonth())) {
-					String emonth = getMonthAsString(candidateEmployers.getEndMonth());
-					candidateEmployers.setEndMonth(emonth);
-				}
-				candidateEmployerDTO.setId(candidateEmployers.getId());
-				candidateEmployerDTO.setName(candidateEmployers.getName());
-				candidateEmployerDTO.setDesignation(candidateEmployers.getDesignation());
-				candidateEmployerDTO.setAddress(candidateEmployers.getAddress());
-				candidateEmployerDTO.setStartMonth(candidateEmployers.getStartMonth());
-				candidateEmployerDTO.setEndMonth(candidateEmployers.getEndMonth());
-				candidateEmployerDTO.setStartYear(candidateEmployers.getStartYear());
-				candidateEmployerDTO.setEndYear(candidateEmployers.getEndYear());
-				candidateEmployerDTO.setCandidateId(Long.parseLong(candidateId));
-				candidateEmployerDTO.setCandidateEmployeeId(String.valueOf(candidateEmployers.getId()));
-				candidateEmployerDTO.setCandidateExperianceId(String.valueOf(candidateEmployers.getId()));
-				candidateEmployerDTO.setIsCurrentPosition(candidateEmployers.getIsCurrentPosition());
-				candidateEmployerDTO.setOrgLocationId(String.valueOf(orgLocations.getId()));
-				candidateEmployerDTO.setCandidateemployerId(String.valueOf(candidateEmployers.getId()));
-				candidateEmployeeDTOList.add(candidateEmployerDTO);
+				// });
+				reponseList.setData(candidateEmployeeDTOList);
+				reponseList.setResponse(Result.SUCCESS.name());
+				reponseList.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				reponseList.setResponse(Result.INVALID_DATA.name());
+				reponseList.setResponseMessage(Result.INVALID_DATA.getValue());
 			}
-			// });
-			reponseList.setData(candidateEmployeeDTOList);
-			reponseList.setResponse(Result.SUCCESS.name());
-			reponseList.setResponseMessage(Result.SUCCESS.getValue());
 		} catch (Exception e) {
 			reponseList.setResponse(Result.AWKWARD.name());
 			reponseList.setResponseMessage(Result.AWKWARD.getValue());
@@ -242,34 +245,50 @@ public class CandidateEmployersRestController {
 	// @PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_EMPLOYEER','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_DELETE_ASSOCIATE_EMPLOYER')")
 	@RequestMapping(value = { "/removeCandidateEmployerBycandidateIdandCandidateEmployerID",
 			"rest/removeCandidateEmployerBycandidateIdandCandidateEmployerID" })
-	public String removeCandidateEmployerBycandidateIdandCandidateEmployerID(CandidateEmployerDTO candidateEmployerDTO) throws Exception {
+	public Response<String> removeCandidateEmployerBycandidateIdandCandidateEmployerID(HttpServletRequest request,
+			CandidateEmployerDTO candidateEmployerDTO) throws Exception {
+		Response<String> response = new Response<>();
+		try {
+			// OrgLocations loginOrgLocation = (OrgLocations)
+			// SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = userService.getUserById(Long.parseLong(candidateEmployerDTO.getLoginUserId()));
+			if (user != null) {
+				OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(candidateEmployerDTO.getOrgLocationId()));
+				StringBuffer activitySummary = new StringBuffer();
+				CandidateEmployers candidatesEmployersList = candidateEmployersService
+						.removeCandidateEmployerBycandidateIdandCandidateEmployerID(candidateEmployerDTO.getCandidateId(),
+								Long.parseLong(candidateEmployerDTO.getCandidateemployerId()));
+				Candidate candidate = candidateService.getCandidateById(candidateEmployerDTO.getCandidateId());
 
-		// OrgLocations loginOrgLocation = (OrgLocations)
-		// SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User user = userService.getUserById(Long.parseLong(candidateEmployerDTO.getLoginUserId()));
-		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(candidateEmployerDTO.getOrgLocationId()));
-		StringBuffer activitySummary = new StringBuffer();
-		CandidateEmployers candidatesEmployersList = candidateEmployersService.removeCandidateEmployerBycandidateIdandCandidateEmployerID(
-				candidateEmployerDTO.getCandidateId(), Long.parseLong(candidateEmployerDTO.getCandidateemployerId()));
-		Candidate candidate = candidateService.getCandidateById(candidateEmployerDTO.getCandidateId());
+				activitySummary.append("Employer").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION)
+						.append(candidatesEmployersList.getName()).append(Constants.NEW_VALUE_TAG_END);
+				candidateActivityCommonUtil.storeCandidateEmployersHistory(candidatesEmployersList, user);
+				candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidatesEmployersList.getCandidateId(), "",
+						Constants.CANDIDATE_DELETED_EMPLOYER, activitySummary.toString(), "CANDIDATE");
 
-		activitySummary.append("Employer").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION)
-				.append(candidatesEmployersList.getName()).append(Constants.NEW_VALUE_TAG_END);
-		candidateActivityCommonUtil.storeCandidateEmployersHistory(candidatesEmployersList, user);
-		candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidatesEmployersList.getCandidateId(), "",
-				Constants.CANDIDATE_DELETED_EMPLOYER, activitySummary.toString(), "CANDIDATE");
+				if (null != candidate && null != candidate.getId()) {
+					CandidateIndex candidateIndex = new CandidateIndex();
+					candidateIndex.setCandidateId(candidate.getId());
+					DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+					candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
+					sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX,
+							Constants.ELK_CANDIDATE_TYPE, candidate.getId().toString());
+				}
 
-		if (null != candidate && null != candidate.getId()) {
-			CandidateIndex candidateIndex = new CandidateIndex();
-			candidateIndex.setCandidateId(candidate.getId());
-			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
-			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,
-					candidate.getId().toString());
+				Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocations);
+				response.setObject(percentage.toString());
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-
-		Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocations);
-		return percentage.toString();
+		return response;
 	}
 
 	/**
@@ -291,16 +310,30 @@ public class CandidateEmployersRestController {
 	 */
 	// @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_EMPLOYEER','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_EDIT_ASSOCIATE_EMPLOYER')")
 	@RequestMapping(value = "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId")
-	public String getCandidateEmployerByCandidateIdAndCandidateEmpoyerId(
+	public Response<String> getCandidateEmployerByCandidateIdAndCandidateEmpoyerId(
 			@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "candidateEmpId", required = false) Long candidateEmpId, HttpServletRequest request) throws Exception {
-
-		String resultJson;
-
-		CandidateEmployers candidatesEmployersList = candidateEmployersService
-				.getCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, candidateEmpId);
-		resultJson = commonUtil.toJSON(candidatesEmployersList);
-		return resultJson;
+		Response<String> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				String resultJson;
+				CandidateEmployers candidatesEmployersList = candidateEmployersService
+						.getCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, candidateEmpId);
+				resultJson = commonUtil.toJSON(candidatesEmployersList);
+				response.setObject(resultJson);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
 	}
 
 	/**

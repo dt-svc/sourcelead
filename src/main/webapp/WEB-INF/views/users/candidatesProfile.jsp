@@ -1174,14 +1174,22 @@ function candidateProfile(candidateId,candidateType){
          type : "POST",
          url: Urlcheck,        
          success :function(data) {
-            	  var candidateType = "Candidates";
-            	  candidateProfile(candidateId,candidateType);
-            	  candidateQuickViewProfile(candidateId);
-            	  $("#loading").removeAttr('style');
+       	 	if (response && response.response === "INVALID_DATA") {
+       		    showError(response.responseMessage);
+       		} else if (response.response === "AWKWARD") {
+       		    location.href = "/errorPage";
+       		} else if (response.response === "SUCCESS") {
+       			var candidateType = "Candidates";
+             	  candidateProfile(candidateId,candidateType);
+             	  candidateQuickViewProfile(candidateId);
+             	  $("#loading").removeAttr('style');
+       		} else if (response.indexOf('Sign In') !== -1) {
+       			location.replace(sourceleadUrl);
+       		} else {
+       		    showError("Operation failed, please try again");
+       		}
        },
-         
     }); 
-	 
  }  
 </script>
  
@@ -1638,18 +1646,25 @@ function updateDesignationOtherType(){
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&candidateType="+candidateType, 
-		        success: function(data) {
-		        	if(data == 'true'){
-		        		  $('#candidateType').val(); 
-						  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
-						  $("#update_candidate").attr("disabled", "disabled");
-						  $("#update_candidate").addClass('button').val('Processing..');
-		        	}
-		        	else{
-		        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
-		        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
-		        		 $("#update_candidate" ).addClass('button').val('Save');
-                         $("#update_candidate").removeAttr("disabled");
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		if(response.object == 'true') {
+			        		  $('#candidateType').val(); 
+							  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+							  $("#update_candidate").attr("disabled", "disabled");
+							  $("#update_candidate").addClass('button').val('Processing..');
+			        	} else {
+			        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+			        		 $("#update_candidate" ).addClass('button').val('Save');
+	                         $("#update_candidate").removeAttr("disabled");
+			        	}
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
 		        	}
 		        },
 		    });
