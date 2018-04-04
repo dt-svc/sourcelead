@@ -81,6 +81,8 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
         immigrationTemplate.setUpdatedDate(new Date());
         immigrationTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
         immigrationTemplate.setStatus(0);
+        immigrationTemplate.setPetitionType(templateDTO.getPetitionType());
+        immigrationTemplate.setCountry(templateDTO.getCountry());
         return immigrationTemplateDao.savePetitionTemplateDetails(immigrationTemplate, templateId);
 
     }
