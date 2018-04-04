@@ -939,7 +939,7 @@ function saveNotesDatails(status) {
 	
 }
 
-function getPetitionTypeOnCountries(selectedCountry){
+function getPetitionTypeOnCountries(selectedCountry, selectedCountryOption){
 	var selectedValue = selectedCountry.val();
 	$.ajax({
 	    type: "GET",
@@ -951,6 +951,7 @@ function getPetitionTypeOnCountries(selectedCountry){
             	 var opt = json[i];
             	 $('#petitionTypeTemplate').append('<option value='+opt.name+'>'+opt.name+'</option>');
             } 
+            $('#petitionTypeTemplate option[value='+selectedCountryOption+']').prop("selected", true);
             $('#petitionTypeTemplate').trigger("chosen:updated");
         }
 	}); 
