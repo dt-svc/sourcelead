@@ -742,4 +742,10 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return userRoleDao.getAllReportingManagersAssignedToAssociates(orgLocationId);
 	}
 
+	@Override
+	public Map<String, Integer> getUserCountListByOrgLocationId(Long orgLocationId, UsersUsageReportDTO usersUsageReportDTO)
+	{
+		return userRoleDao.getUserCountListByOrgLocationId(orgLocationId, usersUsageReportDTO);
+	}
+
 }

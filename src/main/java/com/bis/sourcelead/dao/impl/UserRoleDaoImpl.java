@@ -1361,6 +1361,28 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		List<User> userList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 		return userList;
 	}
+
+	@Override
+	@Transactional
+	public Map<String, Integer> getUserCountListByOrgLocationId(Long orgLocationId, UsersUsageReportDTO usersUsageReportDTO)
+	{
+		Map<String, Integer> countMaps = new HashMap<>();
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query =" from UserRole uRole where uRole.user.id <> 1 and uRole.user.id <> 2 and uRole.user.id IN (select userRole.user.id from UserRole userRole where  userRole.userState = 'ACTIVE') group by uRole.user.id";
+        List<User> activeUserList =   session.createQuery(query.toString()).list();
+        countMaps.put("ACTIVE", activeUserList.size());
+		
+		String query1 =" from UserRole uRole where uRole.user.id <> 1 and uRole.user.id <> 2 and uRole.user.id IN (select userRole.user.id from UserRole userRole where  userRole.userState = 'INACTIVE') group by uRole.user.id";
+        List<User> inactiveUserList =   session.createQuery(query1.toString()).list();
+        countMaps.put("INACTIVE", inactiveUserList.size());
+		
+		String query2 =" from UserRole uRole where uRole.user.id <> 1 and uRole.user.id <> 2 and uRole.user.id IN (select userRole.user.id from UserRole userRole where  userRole.userState = 'NOT_LOGGEDIN') group by uRole.user.id";
+        List<User> notLoggedinUserList =   session.createQuery(query2.toString()).list();
+        countMaps.put("NOT_LOGGEDIN", notLoggedinUserList.size());
+		
+		return countMaps;
+	}
 	
 	/*
      @SuppressWarnings("unchecked")

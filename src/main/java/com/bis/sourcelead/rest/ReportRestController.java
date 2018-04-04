@@ -678,6 +678,21 @@ public class ReportRestController {
 		ResponseList<UsersUsageReportDTO> userLoginLogout = userLoginLogoutSessionService.getUsersByipAddress(usersUsageReportDTO);
 		return userLoginLogout;
 	}
+	
+	@RequestMapping (value = "/userUsageGraph")
+	public @ResponseBody UsersUsageReportDTO userUsageGraph(UsersUsageReportDTO usersUsageReportDTO,HttpServletRequest request)throws Exception{
+	Map<String, Integer> count = userRoleService.getUserCountListByOrgLocationId(usersUsageReportDTO.getLocationId(), usersUsageReportDTO);
+	
+	UsersUsageReportDTO useDTO = new UsersUsageReportDTO();
+	
+	useDTO.setActiveCount(count.get("ACTIVE"));
+	useDTO.setInactiveCount(count.get("INACTIVE"));
+	useDTO.setNotLoggedinCount(count.get("NOT_LOGGEDIN"));
+//	useDTO.setMultipleIps(count.get("MULTIPLE_IPS"));
+	
+	
+	return useDTO;
+	}
 
 
 	private File getExportUsageReport(ResponseList<UsersUsageReportDTO> usageList, OrgLocations orgLocations, UsersUsageReportDTO usersUsageReportDTO) throws Exception
@@ -940,5 +955,7 @@ public class ReportRestController {
 			cell.setBorder(0);
 			cell.setBorderWidthBottom(2f);
 		}
+		
+		
 		
 }

@@ -6,6 +6,11 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
+<script src="/resources/amcharts/amcharts.js"></script>
+<script src="/resources/amcharts/serial.js"></script>
+<script src="/resources/amcharts/plugins/export/export.min.js"></script>
+<link rel="stylesheet" href="/resources/amcharts/plugins/export/export.css" type="text/css" media="all" />
+
 <!-- Content Area -->
 <script>
  $(document).ready(function() {
@@ -18,7 +23,7 @@
  </script>
 <input type="hidden" id="emptyUserUsageReportsId" name="emptyUserUsageReportsId"/>
 <input type="hidden" id="userTypeId" name="userTypeId"/>
-  <section class="content-wraper" id="userUsageReportsListSection">
+  <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Users Usage Report List</h2>
@@ -31,8 +36,8 @@
 <div class="clearfix">
       <div class="ReqRepHead clearfix mb reports-head">
     		      <div class="col-md-2 pull-left reqListBtn">
-<!--           <a  title="List View" id="GView" class="btn btn-default"><i class="fa fa-pie-chart"></i></a> -->
-<!--           <a  title="List View" id="LView" class="btn btn-default rAct"><i class="fa fa-list"></i></a> -->
+          <a  title="Graph View" id="GView" class="btn btn-default" onclick="usageReportsGraph();"><i class="fa fa-pie-chart"></i></a>
+          <a  title="List View" id="LView" class="btn btn-default rAct" onclick="usageReportsShowList();"><i class="fa fa-list"></i></a>
     		      </div>
      		<!--<a href="jobsPipline-list.html" class="btn btn-primary">List</a>-->
        
@@ -55,6 +60,13 @@
           <option value="Last_7_days" selected>Last 7 days</option>
           <option value="Last_15_days">Last 15 days</option>
           <option value="1_month">1 month</option>
+          <option value="3_months">3 months</option>
+          <option value="Last_Year">Last year</option>
+          <option value="Custom">Custom</option>
+        </select>
+        
+        <select class="form-control" id="customGraphDates" style= display:none onchange="showCustomFieldsGraph();">
+<!--           <option>Select Date</option> -->
           <option value="3_months">3 months</option>
           <option value="Last_Year">Last year</option>
           <option value="Custom">Custom</option>
@@ -102,8 +114,10 @@
                       
       </div>
     </div>
-                 <div class="dashboard-widget">
-          <div class="positionRelative"> 
+                 <div class="dashboard-widget" >
+                 
+                 <div id="userUsageReportsListSection">
+                 <div class="positionRelative"> 
 <div class="col-md-12 mt">
   <ul class="list-unstyled list-inline col-md-offset-2">
     <li class="col-md-2">
@@ -190,6 +204,7 @@
   
   <div id="activeDiv"></div>
   
+  
   </div>
   
   </div>
@@ -249,9 +264,55 @@
    
 
           </div>
+                 </div>
+                 
+          <div id="useractiveGraph" style="width: 100%; height: 300px; display:none"></div>
         </div>
       <!-- Tabs html --> 
+      
+      
+      
   </section>
+  
+ <script>
+ function usageReportsGraph(){
+	 $("#custom-select").hide();
+     $('#custFromDate').removeAttr('data-validation');
+     $('#custToDate').attr('data-validation',"required");
+	 $("#customGraphDates").show();
+	 $("#customDates").hide();
+	 $("#GView").addClass("rAct");
+	 $("#LView").removeClass("rAct");
+	 $("#useractiveGraph").show();
+	 $("#activeDiv").hide();
+	 $("#userUsageReportsListSection").hide();
+	 
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+		var fromDate = $("#custFromDate").val();
+	    var toDate = $("#custToDate").val();
+	    alert(toDate);
+	    var sourceleadUrl ='${sourceleadUrl}';
+	    var customGraphDates = $("#customGraphDates").val();
+	    alert(customGraphDates);
+	    var url = sourceleadUrl+"/userUsageGraph?locationId="+orgLocationId+"&customDates="+customDates+"&fromDate="+fromDate+"&toDate="+toDate;
+	    $.get(url, function(data) {
+			
+		});
+ }
+ 
+ function usageReportsShowList(){
+	 $("#custom-select").hide();
+     $('#custFromDate').removeAttr('data-validation');
+     $('#custToDate').attr('data-validation',"required");
+	 $("#customGraphDates").hide();
+	 $("#customDates").show();
+	 $("#LView").addClass("rAct");
+	 $("#GView").removeClass("rAct");
+	 $("#useractiveGraph").hide();
+	 $("#activeDiv").show();
+	 $("#userUsageReportsListSection").show();
+ }
+ </script>
   
   <script type="text/javascript">
        function usageReportList(userType){
@@ -1201,5 +1262,22 @@ function closeIp(){
 }
 </script>  
 
-<%-- <jsp:include page="userUsageReportsGraph.jsp" /> --%>
+<script>
+function showCustomFieldsGraph(){
+    var frequency = $("#customGraphDates").val();
+    var userType = $("#userTypeId").val();
+    if(frequency == "Custom"){
+        $("#custom-select").show();
+         $('#custFromDate').attr('data-validation',"required");
+         $('#custToDate').attr('data-validation',"required");
+    }else{
+        $("#custom-select").hide();
+        $('#custFromDate').removeAttr('data-validation');
+        $('#custToDate').attr('data-validation',"required");
+    }
+}
+    
+    </script>
+
+<jsp:include page="userUsageReportsGraph.jsp" />
 <jsp:include page="../masterFooter.jsp" />

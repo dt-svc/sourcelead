@@ -154,4 +154,6 @@ public interface UserRoleService {
 
 	List<User> getAllReportingManagersAssignedToAssociates(Long orgLocationId) throws Exception;
 
+	public Map<String, Integer> getUserCountListByOrgLocationId(Long orgLocationId, UsersUsageReportDTO usersUsageReportDTO);
+
 }
