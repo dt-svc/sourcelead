@@ -457,7 +457,23 @@ public class ImmigrationRestController {
        
         return "success";
     }
-    
+    @RequestMapping(value = {"/saveCandidateImmigrationForms"}, method = RequestMethod.POST)
+    public String saveCandidateImmigrationForms(ImmigrationTemplateFormDTO immigrationTemplateFormDTO, 
+    		@RequestParam(value = "candidateId", required = false) String candidateId,
+    		@RequestParam(value = "immigrationId", required = false) String immigrationId,
+    		@RequestParam(value = "templateId", required = false) String templateId,
+    		HttpServletRequest request) throws Exception {
+    		immigrationTemplateFormDTO.setImmigrationId(immigrationId);
+    		immigrationTemplateFormDTO.setImmigrationcandidateId(candidateId);
+    		immigrationTemplateFormDTO.setImmigrationTempplateId(templateId);
+            User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+            OrgLocations  loginOrglocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+            immigrationTemplateFormDTO.setStaticPath(staticPath);
+            immigrationCommonService.saveImmigrationCandidateForms(immigrationTemplateFormDTO,user,loginOrglocation);
+            System.out.println("Candidate Form  saved succesfully --> ");
+       
+        return "success";
+    }
     @RequestMapping(value = { "/getCandidateImmigrationCandidateDocsList" })
 	public ModelAndView getCandidateImmigrationCandidateDocsList(@RequestParam(value = "candidateId", required = true) Long candidateId,
 			@RequestParam(value = "templateid", required = true) Long templateid,

@@ -420,6 +420,37 @@ this.deletePassportVisaDetailsById=function(id,idType){
 			return false;
 		}
 	}
+    this.saveCandidateForms= function () {
+		var validationSettings = {
+	            errorMessagePosition: 'element',
+	            borderColorOnError: '',
+	            scrollToTopOnError: true,
+	            dateFormat: 'yyyy/mm/dd'
+	        };
+		if ($('#formSave_Form').validate(false, validationSettings)) {
+			var formData = getFormData("formSave_Form");
+			var candidateId = $('#candidateID').val();
+			var templateId = $('#templateID').val();
+			var immigrationId = $('#immigrationID').val();
+	        $.ajax({
+	            url: sourceleadUrl + immiModulePath + "/saveCandidateImmigrationForms?"+ tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId+"&templateId="+templateId,
+	            type: "POST",
+	            data: formData,
+	            success: function (data) {
+	                if (data == 'success') {
+	                	$('#viewFormpop').hide();
+	                	$('.popMask').fadeOut();
+	                	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId);
+	                }
+	            }
+	        });
+
+	        return true;
+	    } else {
+	        return false;
+	    }
+		
+	}
     this.displayFamilyDetails=function(candidateId){
     	console.log("inside displayFamilyDetails function call  -->")
     	$.ajax({
