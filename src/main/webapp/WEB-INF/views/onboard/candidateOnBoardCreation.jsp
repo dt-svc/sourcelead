@@ -893,7 +893,7 @@ function validateUploadFile(id)
 			    	if (response.response === "AWKWARD") {
 			    	    location.href = "/errorPage";
 			    	} else if (response.response === "SUCCESS") {
-			    		var json = JSON.parse(response.object);
+			    		var json = response.object;
 			    		$("#firstName").val(json['firstName']);
 				    	 $("#lastName").val(json['lastName']);
 				    	 
@@ -1181,7 +1181,7 @@ function loadCandidateRoles(onBoardRoleId){
 	   	type: "POST",
 	    url: sourceleadUrl+"/getRolesListForCandidateOnBoarding?${_csrf.parameterName}=${_csrf.token}",	    	   
 	    success: function(response) {
-	    	 var json = JSON.parse(response);
+	    	 var json = JSON.parse(response.object);
 	    	 if (response.response === "AWKWARD") {
 		    	    location.href = "/errorPage";
 		    	} else if (response.response === "SUCCESS") {

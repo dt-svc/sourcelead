@@ -622,8 +622,6 @@ public class CandidateOnBoardRestController {
 			if (candidate.getSpocId() != null) {
 				candidateDTO.setVendorSpocId(candidate.getSpocId().getId().toString());
 			}
-			candidateDTO.setVendorOrgRelationId(candidate.getOrgRelationId().getId().toString());
-			candidateDTO.setVendorSpocId(candidate.getSpocId().getId().toString());
 			response.setObject(candidateDTO);
 			response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());
@@ -718,17 +716,32 @@ public class CandidateOnBoardRestController {
 	}
 
 	@RequestMapping(value = "/saveOnboardingCandidateDetails", method = RequestMethod.POST)
-	public @ResponseBody CandidateOnBoarding saveOnboardingCandidateDetails(CandidateOnBoardingDTO candidateOnBoardingDTO,
+	public @ResponseBody Response<CandidateOnBoarding> saveOnboardingCandidateDetails(CandidateOnBoardingDTO candidateOnBoardingDTO,
 			HttpServletRequest request) throws Exception {
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.saveOnBoardingCandidatesDetails(candidateOnBoardingDTO,
-				loginOrgLocation, user);
-		return candidateOnBoarding;
-		/*
-		 * resultJson = commonUtil.toJSON(Long.valueOf(candidateOnBoarding.getId()));
-		 * return resultJson;
-		 */
+		Response<CandidateOnBoarding> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.saveOnBoardingCandidatesDetails(candidateOnBoardingDTO,
+						loginOrgLocation, user);
+				response.setObject(candidateOnBoarding);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+				/*
+				 * resultJson = commonUtil.toJSON(Long.valueOf(candidateOnBoarding.getId()));
+				 * return resultJson;
+				 */
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
 	}
 
 	@RequestMapping(value = { "/getOnboardCandidateList", "rest/getOnboardCandidateList" })
@@ -1583,6 +1596,8 @@ public class CandidateOnBoardRestController {
 			} else {
 				response.setObject("success");
 			}
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
 		} catch (Exception e) {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
