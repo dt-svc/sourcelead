@@ -234,11 +234,6 @@ public class CandidateListRestController {
 
 		boolQueryBuilderForCount.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
 
-		if (StringUtils.isNotEmpty(search.getCandidateType()) && !"All".equalsIgnoreCase(search.getCandidateType())) {
-			if (Constants.NO.equalsIgnoreCase(search.getIsAssociate())) {
-				boolQueryBuilder.must(QueryBuilders.matchQuery("isFavourite", search.getCandidateType()));
-			}
-		}
 
 		if (Constants.YES.equalsIgnoreCase(search.getIsAssociate())) {
 			boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", "Y"));
@@ -508,6 +503,41 @@ public class CandidateListRestController {
 			}
 			boolQueryBuilder.must(noticePeriodBoolQueryBuilder);
 		}
+
+		
+		
+		if(search.getCandidateType().equalsIgnoreCase("Favourite") && StringUtils.isBlank(search.getCandidateTypeFilter())) {
+			BoolQueryBuilder favBoolQueryBuilder = QueryBuilders.boolQuery();
+			boolQueryBuilder.must(QueryBuilders.matchQuery("isFavourite", "1"));
+			favBoolQueryBuilder.should(QueryBuilders.matchQuery("isAssociate", "N"));
+			favBoolQueryBuilder.should(QueryBuilders.matchQuery("isAssociate", "Y"));
+			boolQueryBuilder.must(favBoolQueryBuilder);
+		}
+		
+		if(StringUtils.isNotBlank(search.getCandidateTypeFilter())) {
+			String[] candidateType = search.getCandidateTypeFilter().split(",");
+			BoolQueryBuilder candidateBoolQueryBuilder = QueryBuilders.boolQuery();
+			BoolQueryBuilder favouriteBoolQueryBuilder = QueryBuilders.boolQuery();
+			for(int i=0; i<candidateType.length; i++) {
+				if(candidateType[i].equalsIgnoreCase("Candidates")) {
+					candidateBoolQueryBuilder.should(QueryBuilders.matchQuery("isAssociate", "N"));
+					if(search.getCandidateType().equalsIgnoreCase("Favourite")) {
+						favouriteBoolQueryBuilder.should(QueryBuilders.matchQuery("isFavourite", "1"));
+					}
+				}
+				
+				if(candidateType[i].equalsIgnoreCase("Associates")) {
+					candidateBoolQueryBuilder.should(QueryBuilders.matchQuery("isAssociate", "Y"));
+					if(search.getCandidateType().equalsIgnoreCase("Favourite")) {
+						favouriteBoolQueryBuilder.should(QueryBuilders.matchQuery("isFavourite", "1"));
+					}
+				}
+			}
+			boolQueryBuilder.must(candidateBoolQueryBuilder);
+			boolQueryBuilder.must(favouriteBoolQueryBuilder);
+		}
+		
+
 
 		// Created By
 		List<String> createdByArray = search.getCreatedBy(); // getSearchKeywordsFromChosenSelectField(jsonObj, "createdByAdvanced");
@@ -1578,6 +1608,7 @@ public class CandidateListRestController {
 			@RequestParam(value = "candidateType", required = false) String candidateType,
 			@RequestParam(value = "candidateFilterSkills", required = false) String candidateFilterSkills,
 			@RequestParam(value = "availability", required = false) String availability,
+			@RequestParam(value = "candidateTypeFilter", required = false) String candidateTypeFilter,
 			@RequestParam(value = "isAssociate", required = false) String isAssociate, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
@@ -1592,7 +1623,8 @@ public class CandidateListRestController {
 			candidatesList = candidateService.getCandidatesListByOrgLocationIDAndUserId(loginOrgLocation.getId(), user.getId());
 		} else {
 			candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(), org.getId(), candidateStatus,
-					updatedDateRange, candidateType, isAssociate, candidateFilterSkills, availability);
+					updatedDateRange, candidateType, isAssociate,candidateFilterSkills,availability,candidateTypeFilter);
+
 		}
 
 		File file = null;
