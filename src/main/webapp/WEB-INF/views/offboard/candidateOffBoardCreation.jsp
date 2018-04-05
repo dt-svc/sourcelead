@@ -898,7 +898,7 @@ function loadOffBoardingTemplates(offboardTemplateId){
 	    	if (response.response === "AWKWARD") {
 	    	    location.href = "/errorPage";
 	    	} else if (response.response === "SUCCESS") {
-	    		var json = JSON.parse(respone.object);
+	    		var json = JSON.parse(response.object);
 	        	var result = "";
 	        	for (var i=0; i<json.length; i++) {
 	        		var report = json[i];
@@ -1649,7 +1649,7 @@ function getAssignToUsersList(){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
-	    success: function(response) {.
+	    success: function(response) {
 	    	if (response.response === "AWKWARD") {
 	    	    location.href = "/errorPage";
 	    	} else if (response.response === "SUCCESS") {
