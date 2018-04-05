@@ -685,19 +685,28 @@ function addCertification(candidateId) {
 			 var formData = getFormData("candidateCertificationEdit_form");
 			//It will escape all the special characters
 			
-			 $.post(sourceleadUrl+"/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateCertificationId"+ candidateCertificationId, formData, function(data) {
-				 closeCertificatePopup();
-     			$("#selector5").removeAttr("style");
-     			$("#selector5").css({ display: "block" });
-     			$("#cerMsgDiv").html("Certification details updated");
-					candidateCertificateList(candidateId);
-					cerMsgFadein();
-					qwikCertificates(candidateId);
-					setTimeout(function(){
-			 			candidateList();					 			
-			 		},100);
-		        });			
-
+			 $.post(sourceleadUrl+"/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateCertificationId"+ candidateCertificationId, formData, function(result) {
+				 if (result && result.response === "INVALID_DATA") {
+		    		    showError(result.responseMessage);
+		    		} else if (result.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    		} else if (result.response === "SUCCESS") {
+		    			closeCertificatePopup();
+		     			$("#selector5").removeAttr("style");
+		     			$("#selector5").css({ display: "block" });
+		     			$("#cerMsgDiv").html("Certification details updated");
+							candidateCertificateList(candidateId);
+							cerMsgFadein();
+							qwikCertificates(candidateId);
+							setTimeout(function(){
+					 			candidateList();					 			
+					 		},100);
+				        });	
+		    		} else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+					    showError("Operation failed, please try again");
+					}
 			return true;
 		} else {
 			return false;
@@ -754,7 +763,6 @@ function  deleteSelectedCertification(candidateCertificationId,candidateId){
           type : "POST",
           url: sourceleadUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
           success :function(result) {
-        	  
         	  if (result && result.response === "INVALID_DATA") {
 				    showError(result.responseMessage);
 				} else if (result.response === "AWKWARD") {
@@ -764,12 +772,12 @@ function  deleteSelectedCertification(candidateCertificationId,candidateId){
         			 $("#selector5").removeAttr("style");
          			 $("#selector5").css({ display: "block" });
          			 $("#cerMsgDiv").html("Certification deleted");
-         			$("#remove_user_pop_certificates, .project_inn_mask").fadeOut();
-         			candidateCertificateList(candidateId);
-         			cerMsgFadein();
-         			setTimeout(function(){
+         			 $("#remove_user_pop_certificates, .project_inn_mask").fadeOut();
+         			 candidateCertificateList(candidateId);
+         			 cerMsgFadein();
+         			 setTimeout(function(){
 			 			candidateList();					 			
-			 	    },100);
+			 	     },100);
 				} else if (result.indexOf('Sign In') !== -1) {
 					location.replace(sourceleadUrl);
 				} else {

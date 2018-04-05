@@ -634,19 +634,26 @@ function addCertification(candidateId) {
 		
 		if ($('#candidateCertificationEdit_form').validate(false,
 				validationSettings)) {
-
 			 var formData = getFormData("candidateCertificationEdit_form");
-			 
-			 $.post(sourceleadUrl+"/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
-				 closeCertificatePopup();
-				 $("#selector5").removeAttr("style");
-     			 $("#selector5").css({ display: "block" });
-     			 $("#cerMsgDiv").html("Certification details updated");
-				 candidateCertificateList(candidateId);
-            		cerMsgFadein();
-            		qwikCertificates(candidateId);
+			 $.post(sourceleadUrl+"/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(result) {
+				 	if (result && result.response === "INVALID_DATA") {
+		    		    showError(result.responseMessage);
+		    		} else if (result.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    		} else if (result.response === "SUCCESS") {
+		    			closeCertificatePopup();
+						 $("#selector5").removeAttr("style");
+		     			 $("#selector5").css({ display: "block" });
+		     			 $("#cerMsgDiv").html("Certification details updated");
+						 candidateCertificateList(candidateId);
+		            		cerMsgFadein();
+		            		qwikCertificates(candidateId);
+		    		} else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+					    showError("Operation failed, please try again");
+					}
 			 });
-
 			return true;
 		} else {
 			return false;
@@ -696,7 +703,6 @@ function removeCertification(candidateCertificationId, candidateId){
       
 <script>
 function  deleteSelectedCertification(candidateCertificationId,candidateId){
-	
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({  
@@ -707,12 +713,12 @@ function  deleteSelectedCertification(candidateCertificationId,candidateId){
                   location.href = "/errorPage";
               } else if (response.response === "SUCCESS") {
                   $("#popUpDivEmp").removeClass("edit-details-active");
-                $("#selector5").removeAttr("style");
-                 $("#selector5").css({ display: "block" });
-                 $("#cerMsgDiv").html("Certification deleted");
-                $("#remove_user_pop_certificates, .project_inn_mask").fadeOut();
-                candidateCertificateList(candidateId);
-                cerMsgFadein();                  
+                  $("#selector5").removeAttr("style");
+                  $("#selector5").css({ display: "block" });
+                  $("#cerMsgDiv").html("Certification deleted");
+                  $("#remove_user_pop_certificates, .project_inn_mask").fadeOut();
+                  candidateCertificateList(candidateId);
+                  cerMsgFadein();                  
               } else if (response.indexOf('Sign In') !== -1) {
                   location.replace(sourceleadUrl);
               } else {
