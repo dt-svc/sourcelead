@@ -745,28 +745,28 @@ function  deleteSelectedCertification(candidateCertificationId,candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
-          success :function(data) {
-
-				if(data != null && data != 'undefined' && data != ""){
-             		if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	}
-             		else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		}
-             		else{
-             		     $("#popUpDivEmp").removeClass("edit-details-active");
-            			 $("#selector5").removeAttr("style");
-             			 $("#selector5").css({ display: "block" });
-             			 $("#cerMsgDiv").html("Certification deleted");
-             			$("#remove_user_pop_certificates, .project_inn_mask").fadeOut();
-             			candidateCertificateList(candidateId);
-             			cerMsgFadein();
-             			setTimeout(function(){
-				 			candidateList();					 			
-				 	    },100);
-			    	}
-               } 
+          success :function(result) {
+        	  
+        	  if (result && result.response === "INVALID_DATA") {
+				    showError(result.responseMessage);
+				} else if (result.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+					 $("#popUpDivEmp").removeClass("edit-details-active");
+        			 $("#selector5").removeAttr("style");
+         			 $("#selector5").css({ display: "block" });
+         			 $("#cerMsgDiv").html("Certification deleted");
+         			$("#remove_user_pop_certificates, .project_inn_mask").fadeOut();
+         			candidateCertificateList(candidateId);
+         			cerMsgFadein();
+         			setTimeout(function(){
+			 			candidateList();					 			
+			 	    },100);
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
         },
           
      }); 

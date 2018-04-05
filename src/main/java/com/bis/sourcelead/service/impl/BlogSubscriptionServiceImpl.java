@@ -121,7 +121,7 @@ public class BlogSubscriptionServiceImpl implements BlogSubscriptionService{
 					 }
 					 if(count < 4) {
 						 if(!isNullOrEmpty(allblogs.getBlogTitle())){
-							 blogTable = blogTable.append("<div class=\"blgWrp\"><div class=\"blgText\"><a href='"+sleadUrl+"/blog/"+allblogs.getHref()+".html'>").append(allblogs.getBlogTitle()).append("</a>").append("\n").append("<p>").append(allblogs.getDescription()).append("</p></div>");
+							 blogTable = blogTable.append("<div class=\"blgWrp\"><div class=\"blgText\"><a href='"+sleadUrl+"/blog/"+allblogs.getHref()+".html'>").append(allblogs.getBlogTitle()).append("</a>").append("\n").append("<p>").append(allblogs.getShortDescription()).append("</p></div>");
 						 }
 					 }
 				 }
