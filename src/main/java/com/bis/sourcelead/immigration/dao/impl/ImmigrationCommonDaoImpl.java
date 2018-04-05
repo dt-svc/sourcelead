@@ -278,22 +278,22 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
     @SuppressWarnings("unchecked")
    	@Override
    	@Transactional(rollbackFor = { Exception.class })
-   	public List<CandidateResidence> getCandidatesResidenceListByCandidateIdAndOrgLocationID(Long candidateId) {
+   	public List<CandidateResidence> getCandidatesResidenceListByCandidateIdAndOrgLocationID(Long candidateId,String searchValue) {
    		logger.debug("Getting  CandidateResidenceDetails --->  ");
    		Session session = this.sessionFactory.getCurrentSession();
    		List<CandidateResidence> candidatesResidenceList = new ArrayList<CandidateResidence>();
-   		try {
-   			
-   			String queryString  ="from CandidateResidence cr where cr.candidate.id=:candidateId order by cr.updatedDate desc";
-   			
-   			candidatesResidenceList = session.createQuery(queryString).setLong("candidateId", candidateId).list();
-   			
-   		}catch(Exception e) {
-   		  logger.error("Exeption caught while getting dao layer --->"+e.getMessage());
-   		  e.printStackTrace();
+   		if(!"undefiend".equalsIgnoreCase(searchValue) && StringUtils.isNotBlank(searchValue)){
+   			String queryString  ="from CandidateResidence cr where cr.candidate.id=:candidateId and (cr.location =:searchValue or cr.country =:searchValue) order by cr.updatedDate desc";
+   			candidatesResidenceList = session.createQuery(queryString).setLong("candidateId", candidateId).setString("searchValue", searchValue).list();
    		}
+   		else{
+   			String queryString  ="from CandidateResidence cr where cr.candidate.id=:candidateId order by cr.updatedDate desc";
+   			candidatesResidenceList = session.createQuery(queryString).setLong("candidateId", candidateId).list();
+   		}
+   		
    		return candidatesResidenceList;
    	}
+    
     @SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })

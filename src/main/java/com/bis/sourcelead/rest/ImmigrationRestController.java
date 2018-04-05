@@ -948,11 +948,11 @@ public class ImmigrationRestController {
 	
 	@RequestMapping(value = { "/getCandidateResidenceList" })
 	public ModelAndView getCandidateResidenceList(
-			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) throws Exception {
+			@RequestParam(value = "candidateId", required = true) Long candidateId,@RequestParam(value = "searchVal", required = false) String searchVal, HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		model.setViewName("/immigration/residenceDetailsTab");
-		 List<CandidateResidence>   candidatesResidenceList = immigrationCommonService.getCandidatesResidenceListByCandidateIdAndOrgLocationID(candidateId);
+		 List<CandidateResidence>   candidatesResidenceList = immigrationCommonService.getCandidatesResidenceListByCandidateIdAndOrgLocationID(candidateId,searchVal);
 		for(CandidateResidence canRes : candidatesResidenceList){
 			canRes.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), canRes.getStartDate()));
 			canRes.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), canRes.getEndDate()));
