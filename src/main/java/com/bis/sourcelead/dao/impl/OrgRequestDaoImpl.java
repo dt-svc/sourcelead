@@ -301,11 +301,12 @@ public class OrgRequestDaoImpl implements OrgRequestDao{
 								modulesList = modulesList.append(lookupData.getUniqueKey()).append(",");
 							}
 					}	
+						String requestedModules = modulesList.toString();
+						requestedModules = requestedModules.substring(0,requestedModules.length()-1);
+						companyDTO.setRequestedModules(requestedModules);
 				}
 				
-				String requestedModules = modulesList.toString();
-				requestedModules = requestedModules.substring(0,requestedModules.length()-1);
-				companyDTO.setRequestedModules(requestedModules);
+				
 				
 				demoOrgDTOList.add(companyDTO);
 			}
