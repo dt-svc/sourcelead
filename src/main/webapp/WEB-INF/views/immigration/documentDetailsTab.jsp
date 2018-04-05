@@ -23,7 +23,7 @@
 				<c:if test="${!empty canDocList.upldedFileName}">
 				<td><div class="tbldata-dotdot-me"><span class="fileName">${canDocList.upldedFileName}</span>
 					<a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile('${canDocList.uplodedFileUrl}','${canDocList.upldedFileName}','${canDocList.upldedFileContentType}');" title="View"></a>
-					<a class="glyphicon glyphicon-download-alt" href="${canDocList.uplodedFileUrl}" title="	Download"></a></div>
+					<a class="glyphicon glyphicon-download-alt" download href="${canDocList.uplodedFileUrl}" title="	Download"></a></div>
 				</td>
 				</c:if>
 				<c:if test="${empty canDocList.upldedFileName}">
@@ -45,10 +45,13 @@
 					</div>
 				</td> -->
 				<td class="immigraAction">
-					<div><i id= "upload" title="Upload" class="fa fa-upload uploadForm"></i><i id="edit" onclick="editDocumentDetailsByRowId(${canDocList.id});"
+					<div><i id= "upload" title="Upload" class="fa fa-upload uploadForm"></i>
+					<c:if test="${canDocList.isTemplateConfigured eq 'N'}">
+					<i id="edit" onclick="editDocumentDetailsByRowId(${canDocList.id});"
 				class="glyphicon glyphicon-pencil"></i><i id="delete" 
 				 onclick="deleteDocumentDetailsByRowId(${canDocList.id});" 
 				 class="glyphicon glyphicon-trash ml10"></i>
+				 </c:if>
 						
 					</div>
 				</td>

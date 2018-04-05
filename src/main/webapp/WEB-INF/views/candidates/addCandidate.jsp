@@ -707,6 +707,7 @@
             $("#store_candidate").attr("disabled", "disabled");
             $("#store_candidate").addClass('button').val('Processing..');
 			$.post(sourceleadUrl + "/storeCandidate?" + tokenParamName + "=" + tokenValue + "", formData, function(result) {
+				
 				if (result && result.response === "INVALID_DATA") {
                     $("#store_candidate").removeAttr("disabled");
                     $("#store_candidate").removeAttr('button').val('Save');
@@ -722,6 +723,7 @@
                     $("#store_candidate").addClass('button').val('Save');
                     showError("Operation failed, please try again");
                 }
+				
 			});
             /* $.ajax({
                 type: "POST",

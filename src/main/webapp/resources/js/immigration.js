@@ -926,6 +926,7 @@ function uploadRequestDoc(){
 	var candidateId = $("#candidateID").val();
 	var immigrationId = $('#immigrationID').val();
 	var id = $("#uploadIdSave").val();
+	var templateId = $('#templateID').val();
 	$.ajax({
         url: sourceleadUrl + immiModulePath + "/uploadRequstedDoc?id="+id+"&candidateId="+candidateId+"&immigrationId="+immigrationId,
         type: "POST",
@@ -934,6 +935,7 @@ function uploadRequestDoc(){
         	if(result=='success'){
         		$('#uploadCanDocPop').hide();
             	$('.popMask').fadeOut();
+            	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId);
         	     
         	}
         }

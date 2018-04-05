@@ -141,6 +141,8 @@ public class UserManualServiceImpl implements UserManualService{
 				}
 				if(userManualsDTO.getUrlName()!=null && StringUtils.isNotBlank(userManualsDTO.getUrlName())){
 					userManualLevelThree.setUploadUrl(userManualsDTO.getUrlName());
+				}else {
+					userManualLevelThree.setUploadUrl(null);
 				}
 				
 				if(userManualLevelTwo !=null){
