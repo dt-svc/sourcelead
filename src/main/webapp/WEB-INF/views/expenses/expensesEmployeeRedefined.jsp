@@ -47,6 +47,14 @@
 </div> 
 
 
+<script>
+$(document).ready(function(){
+	if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	 }
+});
+</script>
+
 <!-- <script>
 $(document).ready(function(){
 	datatableBody();

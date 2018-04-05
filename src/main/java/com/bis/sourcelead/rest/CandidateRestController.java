@@ -240,12 +240,12 @@ public class CandidateRestController {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			Candidate candidate = candidateService.findByCandidateEmail(email, orgLocation.getId());
 			if (null != candidate) {
-				response.setResponse(Result.SUCCESS.name());
-				response.setResponseMessage(Result.SUCCESS.getValue());
+				response.setObject("true");
 			} else {
-				response.setResponse(Result.FAILED.name());
-				response.setResponseMessage(Result.FAILED.getValue());
+				response.setObject("false");
 			}
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
 		} catch (Exception e) {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());

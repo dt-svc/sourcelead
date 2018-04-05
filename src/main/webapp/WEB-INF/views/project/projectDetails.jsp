@@ -1033,7 +1033,7 @@ function projectStatus(){
 							projectDetails(projectId);
 							docMsgFadein();
 							
-							var json = JSON.parse(data);
+							var json = JSON.parse(data);endDateStr1
 							$("#empTab").removeAttr("onClick");
 			   		    	$("#empTab").attr("onclick","projectEmployee('"+projectId+"', '"+json.startDateStr+"', '"+json.endDateStr+"', '"+json.projectStatus+"', '"+json.projectName+"')");
 			   		    	
