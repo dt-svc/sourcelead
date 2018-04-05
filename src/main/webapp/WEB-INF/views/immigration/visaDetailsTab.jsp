@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <div class="immigraTabsHead">			  	
 		  	<a href="javascript:void(0)" id="addVisa"><i class="glyphicon glyphicon-plus"></i> Add Visa</a> 
-		  	<span><input class="immigraTabSerach"  id = "searchValueVisa" placeholder="idNumber" type="text" onkeyup="searchVisaValue();"></span>
+		  	<span><input class="immigraTabSerach"  id = "searchValueVisa" placeholder="Visa Type/Visa Id/Country" type="text" ></span>
 		</div>
 		
 	  	<div class="immigraTable">
@@ -143,6 +143,12 @@
 		            $("#visaValidFrom").datepicker("option", "maxDate", dt);
 		        }
 		  });
+		  $("#searchValueVisa").keyup(function (e) {
+			    if (e.which === 13) {
+			    	searchVisaValue();
+			    }
+			});
+		  
 		</script>
 		
 		
