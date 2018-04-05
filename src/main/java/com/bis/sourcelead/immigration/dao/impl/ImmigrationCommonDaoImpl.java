@@ -222,16 +222,24 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
     @SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<CandidateFamilyDetails> getCandidateFamilyDetails(Long candidateId) {
+	public List<CandidateFamilyDetails> getCandidateFamilyDetails(Long candidateId, String searchVal) {
     	logger.debug("Getting  CandidateFamilyDetails --->  ");
 		Session session = this.sessionFactory.getCurrentSession();
 		List<CandidateFamilyDetails> familyList = new ArrayList<CandidateFamilyDetails>();
 		try {
 			
-			String queryString  ="from CandidateFamilyDetails cd where cd.candidate.id=:candidateId order by cd.updatedDate desc";
+			String queryString  ="from CandidateFamilyDetails cd where cd.candidate.id=:candidateId ";
+			if(!StringUtils.isEmpty(searchVal)) {
+				queryString = queryString + " and (cd.firstName like :searchVal or cd.relation like :searchVal) ";
+			}
+			queryString = queryString+" order by cd.updatedDate desc";
 			
-			familyList = session.createQuery(queryString).setLong("candidateId", candidateId).list();
-			
+			Query query = session.createQuery(queryString).setLong("candidateId", candidateId);
+			if(!StringUtils.isEmpty(searchVal)) {
+				query.setParameter("searchVal", "%"+searchVal+"%");
+			}
+			 familyList = query.list();
+			 
 		}catch(Exception e) {
 		  logger.error("Exeption caught while getting dao layer --->"+e.getMessage());
 		  e.printStackTrace();
