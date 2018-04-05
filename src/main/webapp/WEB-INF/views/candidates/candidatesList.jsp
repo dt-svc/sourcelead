@@ -723,6 +723,15 @@ function addFavourite(candidateId){
 			type : "POST",
 			url : sourceleadUrl+"/saveCandidateAsFavourite?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
 			success : function(response) {
+				
+				if(checked){
+					 document.getElementById("favourite"+candidateId).removeAttribute("class");
+					 document.getElementById("favourite"+candidateId).className = 'iconClass pull-left star-rating activestar-rating' 
+				} else {
+					 document.getElementById("favourite"+candidateId).classList.remove("activestar-rating");
+					 document.getEmentById("favourite"+candidateId).className = 'iconClass pull-left star-rating';
+				}
+				
 				if (response && response.response === "INVALID_DATA") {
 				    showError(response.responseMessage);
 				} else if (response.response === "AWKWARD") {
@@ -741,14 +750,7 @@ function addFavourite(candidateId){
 						}
 					}
 					cacheLastJson.response.object = td;
-					if(checked){
-						 document.getElementById("favourite"+candidateId).removeAttribute("class");
-						 document.getElementById("favourite"+candidateId).className = 'iconClass pull-left star-rating activestar-rating' 
-					} else {
-						 //document.getElementById("favourite"+candidateId).removeAttribute("class");
-						 document.getElementById("favourite"+candidateId).classList.remove("activestar-rating");
-						 document.getEmentById("favourite"+candidateId).className = 'iconClass pull-left star-rating';
-					}
+				
 				} else if (response.indexOf('Sign In') !== -1) {
 					location.replace(sourceleadUrl);
 				} else {
@@ -885,7 +887,7 @@ function cancel(candidateId){
                 <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr10" onclick="resetCandidateFilter();" title="Refresh">
 				    <span class="fa fa-refresh"></span>
 				</button>
-				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filter Search" onclick="openCandidateFilterPop();"><i class="fa fa-filter faFilter padding_right"></i>
+				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openCandidateFilterPop();"><i class="fa fa-filter faFilter padding_right"></i>
 				</a>
 	</div>
      <div class="pull-left cand-advsrche">
@@ -1440,10 +1442,16 @@ function exportToPdf(){
 	       availability.push($(this).val());
 		 });
 	 
+	 var candidateTypeFilter = []
+	 $('input:checkbox[name=candidateTypeFilter]:checked').each(function() 
+	     {
+		 candidateTypeFilter.push($(this).val());
+		 });
+	 
 	  var candTypeRadio = $('input[name=candidateType]');
 	  var candidateType = candTypeRadio.filter(':checked').val();
 	  if(isCandidatesAvailable > 0){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf"+"&candidateType="+candidateType+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&isAssociate=N";	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf"+"&candidateType="+candidateType+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter+"&isAssociate=N";	
 	  }else{
 		  var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -1491,11 +1499,17 @@ function exportToExcel(){
 		     {
 		       availability.push($(this).val());
 			 });
+		 
+		 var candidateTypeFilter = []
+		 $('input:checkbox[name=candidateTypeFilter]:checked').each(function() 
+		     {
+			 candidateTypeFilter.push($(this).val());
+			 });
 	  
 	  var candTypeRadio = $('input[name=candidateType]');
 	  var candidateType = candTypeRadio.filter(':checked').val();
 	  if(isCandidatesAvailable > 0){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls"+"&candidateType="+candidateType+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&isAssociate=N";	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls"+"&candidateType="+candidateType+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter+"&isAssociate=N";	
 	  }else{
 		  var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -2644,16 +2658,20 @@ function resetCandidateFilter(){
 	$("ul#employmentFilter > li input:checkbox").prop("checked",false);
 	$("ul#availabilityFilter > li input:checkbox").prop("checked",false);
 	$("ul#skillsUL > li input:checkbox").prop("checked",false);
+	$("ul#candidateTypeFilter > li input:checkbox").prop("checked",false);
+	
+	
 	$("#dataTableSearch").val('');
 	document.getElementById("candidateTypeAll").checked = true;
 	document.getElementById("candidateAll").checked = true;
+	document.getElementById("candidateCheck").checked = true;
 	candidateList();
 }
 </script>		
 
 
   <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="candidateFilterPopup">
-	<h5 class="headerAdsrch">Filter Search
+	<h5 class="headerAdsrch">Filters
 		<a href="javascript:void(0)" class="close-div" onClick="closeCandidateFilterPop()"><i
 			class="fa fa-close"></i></a>
 	</h5>
@@ -2674,15 +2692,26 @@ function resetCandidateFilter(){
 				 </div> 
 				 
 				 
-			<div class="col-md-12 mb">
+			    <div class="col-md-12 mb">
 				<label><strong>Type</strong></label>
 				 <div class="clearfix">
 					<ul class="list-unstyled" id="TypeFilter">
 					     <li class="radioIput positionRelative" ><input id="candidateTypeAll" type="radio" name="candidateType" checked value ="All" ><label for="candidateTypeAll">All</label></li>
-						 <li class="radioIput positionRelative" ><input id="onlycandidate" type="radio" name="candidateType" value ="1" ><label for="onlycandidate">Favourite</label></li>
+						 <li class="radioIput positionRelative" ><input id="onlycandidate" type="radio" name="candidateType" value ="Favourite" ><label for="onlycandidate">Favourite</label></li>
                     </ul>
 				 </div>
-				 </div> 
+				 </div>
+				 
+				 
+				 <div class="col-md-12 mb">
+				<label><strong>Candidate Type</strong></label>
+				 <div class="clearfix">
+					<ul class="list-unstyled" id="candidateTypeFilter">
+					    <li class="checkBox positionRelative" ><input  type="checkbox" id="candidateCheck" name="candidateTypeFilter" checked value ="Candidates"  ><label>Candidates</label></li>
+						<li class="checkBox positionRelative" ><input  type="checkbox" id="associateCheck"  name="candidateTypeFilter"  value ="Associates" ><label>Associates</label></li>
+                    </ul>
+				 </div>
+				 </div>  
 			  </div>
 			</div>
 			
