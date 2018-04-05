@@ -866,17 +866,19 @@ function saveResidenceDetails(status) {
 }
 
 function getCandidateResidenceList(candidateId){
-		console.log("inside displayResidenceDetails function call test -->")
-		$.ajax({
-	        url: sourceleadUrl + immiModulePath + "/getCandidateResidenceList?candidateId="+candidateId,
-	       type: "GET",
-	        success: function (result) {
-	       	  console.log("Before  loading result---->");
-	           $("#residencesTab").html(result);
-	           console.log("After loading result---->");
-	       }
-	   });
-	}
+	console.log("inside displayResidenceDetails function call test -->")
+	var searchVal= $("#residenceSearch").val();
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/getCandidateResidenceList?candidateId="+candidateId+"&searchVal="+searchVal,
+       type: "GET",
+        success: function (result) {
+       	  console.log("Before  loading result---->");
+           $("#residencesTab").html(result);
+           $("#residenceSearch").val(searchVal);
+           console.log("After loading result---->");
+       }
+   });
+}
 
 function deleteResidenceDetailsById(id){
 	var candidateId = $("#candidateID").val();

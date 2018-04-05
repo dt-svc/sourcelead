@@ -1,7 +1,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <div class="immigraTabsHead">
 		  	<a href="javascript:void(0)" id="addResi"><i class="glyphicon glyphicon-plus"></i> Add Residence</a> 
-		  	<span><input class="immigraTabSerach" type="text"></span>
+		  	<span><input class="immigraTabSerach" type="text" id="residenceSearch" placeholder="Location/Country"></span>
 		</div>
 		
 	  	<div class="immigraTable">
@@ -184,6 +184,12 @@
 				 $(".popMask").fadeOut(200);
 				$("#popResiView").fadeOut(100); 
 			 }
+			 
+				$("#residenceSearch").keyup(function (e) {
+			        if (e.which === 13) {
+			        	getCandidateResidenceList(candidateId);
+			        }
+			    });
 		</script>
 		
 		
