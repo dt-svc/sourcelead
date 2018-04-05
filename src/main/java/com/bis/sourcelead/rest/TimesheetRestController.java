@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -1574,6 +1575,27 @@ public class TimesheetRestController {
 		  */
 		 tsDTO = getTimesheetSubmissionDTOWithEntriesList(ts, tsDTO, weekDaysMap, timesheetEntriesList,orgLocations.getDateFormat());
 
+
+		 if(!timesheetFor.equalsIgnoreCase("user") && actualStartDate != null && actualEndDate != null) {
+			 Date monthStartDate = CalendarUtil.getMonthStartDateByGivenDate(actualStartDate,Constants.CURRENT_MONTH).get("STARTDATE");
+			 Date monthEndDate = CalendarUtil.getMonthEndDateByGivenDate(actualEndDate,Constants.CURRENT_MONTH).get("ENDDATE");
+			 if(projectMember != null && projectMember.getId() != null) {
+				 SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),orgLocations.getId(),projectMember.getId(),monthStartDate,monthEndDate);
+				 if(sah != null) {
+					 tsDTO.setProjectToDateTotalHours(sah.getProjectToDateTotalHours());
+					 tsDTO.setProjectToDateBillableHours(sah.getProjectToDateBillableHours());
+					 tsDTO.setProjectToDateNonBillableHours(sah.getProjectToDateNonBillableHours());
+					 tsDTO.setPreviousMonthTotalHours(sah.getPreviousMonthTotalHours());
+					 tsDTO.setPreviousMonthBillableHours(sah.getPreviousMonthBillableHours());
+					 tsDTO.setPreviousMonthNonBillableHours(sah.getPreviousMonthNonBillableHours());
+					 tsDTO.setCurrentMonthBillableHours(sah.getCurrentMonthBillableHours());
+					 tsDTO.setCurrentMonthNonBillableHours(sah.getCurrentMonthNonBillableHours());
+					 tsDTO.setCurrentMonthTotalHours(sah.getCurrentMonthTotalHours());
+					 
+				 }
+			 }
+		 }
+		 
 		 /**
 		  * Project Task List
 		  */
@@ -2019,6 +2041,8 @@ public class TimesheetRestController {
 		 }
 		 weekDays.add(sunDayDTO);
 		 tsDTO.setWeekDays(weekDays);
+		 
+		 
 	     return tsDTO;
    }
    
