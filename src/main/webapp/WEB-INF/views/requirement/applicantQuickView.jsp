@@ -249,71 +249,81 @@ function applicantQuickViewProfile(submissionId,candidateId){
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
-					success : function(json) {
-						if (json != null && json != 'undefined' && json != "" && json != '[]') {
-								$("#reqQvemployeeSubmission").empty();
-								var result = "";
-								result = result +'            <div class="col-md-12">';
-								result = result +' 				<h4>Work Experience</h4>';
+					success : function(response) {
+						if (response && response.response === "INVALID_DATA") {
+						    showError(response.responseMessage);
+						} else if (response && response.response === "INVALID_USER") {
+						    showError(response.responseMessage);
+						} else if (response.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (response.response === "SUCCESS") {
+							$("#reqQvemployeeSubmission").empty();
+							var result = "";
+							result = result +'            <div class="col-md-12">';
+							result = result +' 				<h4>Work Experience</h4>';
 
-								for (var i = 0; i < json.length; i++) {
-									if(i < 4){
-									var opt = json[i];
-									if (opt.name != null && opt.name != '' && opt.name != 'undefined') {
-										name = opt.name;
-									} else {
-										name = " ";
-									}
-									if (opt.designation != null	&& opt.designation!='' && opt.designation != 'undefined') {
-										designation = opt.designation;
-									} else {
-										designation = " "; 
-									}
-									
-									
-									/*  if (opt.startMonth != null && opt.startMonth != '' && opt.startMonth != 'undefined') {
-										startMonth=   opt.startMonth +' - ';
-									}else{
-										startMonth = " ";
-									} */
-									
-									if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined' && opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
-										startYear=   opt.startYear  +' To '+opt.endYear;
-									}else if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined'){
-										startYear = opt.startYear;
-									}else if(opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined'){
-										startYear = opt.endYear;
-									}else{
-										startYear=" ";
-									}
-									
-									/* if (opt.endMonth != null	&& opt.endMonth != '' && opt.endMonth != 'undefined') {
-										endMonth = opt.endMonth +' - ';  
-									} else {
-										endMonth = " ";
-									} */
-									
-									if (opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
-										endYear = opt.endYear;  
-									} else {
-										endYear = " ";
-									}
-									if (opt.address != null && opt.address != '' && opt.address != 'undefined') {
-										address=   opt.address;
-									}else{
-										address = " ";
-									}
-									result = result +'<div class="resume-widget">';
-									result = result +'  <p><small>'+startYear+'</small>';
-									result = result +'  <small class="pull-right address" title="'+address+'">'+address+'</small></p>';
-									result = result +'  <h4>'+designation+'</h4>';
-									result = result +'  <h5>'+name+'</h5>';
-									result = result +'</div>';
+							for (var i = 0; i < response.data.length; i++) {
+								if(i < 4){
+								var opt = response.data[i];
+								if (opt.name != null && opt.name != '' && opt.name != 'undefined') {
+									name = opt.name;
+								} else {
+									name = " ";
 								}
-						}
-// 								result = result +'          </div>';
-								result = result +'        </div>';
-								$("#reqQvemployeeSubmission").append(result);
+								if (opt.designation != null	&& opt.designation!='' && opt.designation != 'undefined') {
+									designation = opt.designation;
+								} else {
+									designation = " "; 
+								}
+								
+								
+								/*  if (opt.startMonth != null && opt.startMonth != '' && opt.startMonth != 'undefined') {
+									startMonth=   opt.startMonth +' - ';
+								}else{
+									startMonth = " ";
+								} */
+								
+								if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined' && opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
+									startYear=   opt.startYear  +' To '+opt.endYear;
+								}else if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined'){
+									startYear = opt.startYear;
+								}else if(opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined'){
+									startYear = opt.endYear;
+								}else{
+									startYear=" ";
+								}
+								
+								/* if (opt.endMonth != null	&& opt.endMonth != '' && opt.endMonth != 'undefined') {
+									endMonth = opt.endMonth +' - ';  
+								} else {
+									endMonth = " ";
+								} */
+								
+								if (opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
+									endYear = opt.endYear;  
+								} else {
+									endYear = " ";
+								}
+								if (opt.address != null && opt.address != '' && opt.address != 'undefined') {
+									address=   opt.address;
+								}else{
+									address = " ";
+								}
+								result = result +'<div class="resume-widget">';
+								result = result +'  <p><small>'+startYear+'</small>';
+								result = result +'  <small class="pull-right address" title="'+address+'">'+address+'</small></p>';
+								result = result +'  <h4>'+designation+'</h4>';
+								result = result +'  <h5>'+name+'</h5>';
+								result = result +'</div>';
+							}
+					}
+//								result = result +'          </div>';
+							result = result +'        </div>';
+							$("#reqQvemployeeSubmission").append(result);
+						} else if (response.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
 						}
 					},
 

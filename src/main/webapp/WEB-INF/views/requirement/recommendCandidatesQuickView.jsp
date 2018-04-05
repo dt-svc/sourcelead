@@ -238,17 +238,21 @@ function recomendcandidateQuickViewProfile(candidateId,recScore){
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
-					success : function(json) {
-						if (json.data.length > 0 && json != null && json != 'undefined' && json != "" && json != '[]') {
+					success : function(response) {
+						if (response && response.response === "INVALID_DATA") {
+						    showError(response.responseMessage);
+						} else if (response.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (response.response === "SUCCESS") {
+							if(response.data.length > 0 ){
 								$("#qvemployeeSubmission").empty();
 								var result = "";
-// 								var json = JSON.parse(data);
 								result = result +'            <div class="col-md-12">';
 								result = result +' 				<h4>Work Experience</h4>';
 
-								for (var i = 0; i < json.data.length; i++) {
+								for (var i = 0; i < response.data.length; i++) {
 									if(i < 4){
-									var opt = json.data[i];
+									var opt = response.data[i];
 									if (opt.name != null && opt.name != '' && opt.name != 'undefined') {
 										name = opt.name;
 									} else {
@@ -299,17 +303,21 @@ function recomendcandidateQuickViewProfile(candidateId,recScore){
 // 								result = result +'          </div>';
 								result = result +'        </div>';
 								$("#qvemployeeSubmission").append(result);
-						}else{
-							var result = '';
-				        	  result = result +'            <div class="col-md-12" style="display:none">';
-				        	  result = result +' <h4>Work Experience</h4>';
-				        	  result = result +' <div>---</div>';
-				        	  result = result +'</div>';
-				        	  $("#qvemployeeSubmission").empty();
-				        	  $("#qvemployeeSubmission").append(result); 
+							}else{
+								var result = '';
+					        	  result = result +'            <div class="col-md-12" style="display:none">';
+					        	  result = result +' <h4>Work Experience</h4>';
+					        	  result = result +' <div>---</div>';
+					        	  result = result +'</div>';
+					        	  $("#qvemployeeSubmission").empty();
+					        	  $("#qvemployeeSubmission").append(result);
+							}
+						} else if (response.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
 						}
 					},
-
 				});
 	}
 </script>
