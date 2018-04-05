@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateComments;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -128,9 +129,9 @@ public class CandidateCommentsRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getAllCommentsOnCandidateByCandidateIdAndOrgLocation", method = RequestMethod.POST)
-	public @ResponseBody Response<String> getAllCommentsOnCandidateByCandidateIdAndOrgLocation(String candidateId,
+	public @ResponseBody ResponseList<CandidateComments> getAllCommentsOnCandidateByCandidateIdAndOrgLocation(String candidateId,
 			HttpServletRequest request) throws Exception {
-		Response<String> response = new Response<>();
+		ResponseList<CandidateComments> response = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
@@ -138,8 +139,7 @@ public class CandidateCommentsRestController {
 				if (StringUtils.isNotEmpty(candidateId)) {
 					List<CandidateComments> candidateCommentsList = candidateCommentsService
 							.getAllCommentsOnCandidateByCandidateIdAndOrgLocation(Long.parseLong(candidateId), orgLocation);
-					String resultJson = commonUtil.toJSON(candidateCommentsList);
-					response.setObject(resultJson);
+					response.setData(candidateCommentsList);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				} else {
@@ -172,9 +172,9 @@ public class CandidateCommentsRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getAllCommentsOnCandidateByCandidateIdAndOrgLocationAndSubmissionId", method = RequestMethod.POST)
-	public @ResponseBody Response<String> getAllCommentsOnCandidateByCandidateIdAndOrgLocationAndSubmissionId(String candidateId,
+	public @ResponseBody ResponseList<CandidateComments> getAllCommentsOnCandidateByCandidateIdAndOrgLocationAndSubmissionId(String candidateId,
 			String submissionId, HttpServletRequest request) throws Exception {
-		Response<String> response = new Response<>();
+		ResponseList<CandidateComments> response = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
@@ -186,8 +186,7 @@ public class CandidateCommentsRestController {
 					List<CandidateComments> candidateCommentsList = candidateCommentsService
 							.getAllCommentsOnCandidateByCandidateIdAndOrgLocationAndSubmissionId(Long.parseLong(candidateId),
 									Long.parseLong(submissionId), orgLocation);
-					String resultJson = commonUtil.toJSON(candidateCommentsList);
-					response.setObject(resultJson);
+					response.setData(candidateCommentsList);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				} else if (!StringUtils.isNumeric(submissionId) || !StringUtils.isNotEmpty(submissionId)) {
@@ -206,6 +205,7 @@ public class CandidateCommentsRestController {
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
+	 
 		return response;
 	}
 }

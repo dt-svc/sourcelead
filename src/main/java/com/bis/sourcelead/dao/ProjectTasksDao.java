@@ -56,6 +56,7 @@ public interface ProjectTasksDao {
 	ResponseList<ProjectTasks> getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(ProjectTasksDTO projectTasksDTO,Long projectId,String taskType,String taskStatus,String userRole,String assignedMembers)throws Exception;
 
 	public ProjectTasks getProjectTaskByleaveTypeId(long leaveTypeId, Long projectId);
-
+	
+	List<ProjectTasks> getTasksListByLeaveType(Long levaTypeId)throws Exception;
     
 }
