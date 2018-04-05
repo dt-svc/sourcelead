@@ -24,6 +24,14 @@
 			}
  </script>
  
+ <script>
+$(document).ready(function(){
+	if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	 }
+});
+</script>
+ 
 <meta charset="utf-8">
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
