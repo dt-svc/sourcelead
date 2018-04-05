@@ -293,12 +293,14 @@ public class OrgRequestDaoImpl implements OrgRequestDao{
 				
 				StringBuilder modulesList = new StringBuilder();
 				
-				String modules[] = orgRequest.getModules().split(",");
-				for(int i= 0 ; i < modules.length; i++) {
-					LookUpData lookupData = lookUpDataDao.getTasksById(Long.valueOf(modules[i]));
-					if(lookupData != null) {
-						modulesList = modulesList.append(lookupData.getUniqueKey()).append(",");
-					}
+				if(orgRequest.getModules() != null && !orgRequest.getModules().isEmpty()) {
+					String modules[] = orgRequest.getModules().split(",");
+						for(int i= 0 ; i < modules.length; i++) {
+							LookUpData lookupData = lookUpDataDao.getTasksById(Long.valueOf(modules[i]));
+							if(lookupData != null) {
+								modulesList = modulesList.append(lookupData.getUniqueKey()).append(",");
+							}
+					}	
 				}
 				
 				String requestedModules = modulesList.toString();
