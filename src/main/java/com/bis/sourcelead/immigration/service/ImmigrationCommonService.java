@@ -36,7 +36,7 @@ public interface ImmigrationCommonService {
 	
 	CandidateResidence saveResidenceDetails(ResidenceDTO residenceDTO, OrgLocations orgLocations, User user, Long candidateId) throws Exception;
 
-	List<CandidateFamilyDetails> getCandidateFamilyDetails(Long candidateId);
+	List<CandidateFamilyDetails> getCandidateFamilyDetails(Long candidateId, String searchVal);
 
 	String deletetCandidateFamilyDetails(Long id);
 	

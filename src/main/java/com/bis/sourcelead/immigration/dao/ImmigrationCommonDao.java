@@ -40,7 +40,7 @@ public interface ImmigrationCommonDao {
 
 	CandidateResidence saveResidenceDetails(CandidateResidence candidateResidence)	throws Exception;
 
-	List<CandidateFamilyDetails> getCandidateFamilyDetails(Long candidateId);
+	List<CandidateFamilyDetails> getCandidateFamilyDetails(Long candidateId, String searchVal);
 
 	String deletetCandidateFamilyDetails(Long id);
 	
