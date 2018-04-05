@@ -10,7 +10,7 @@
 					</ul>
 				</div>
 		  	</a> 
-		  	<span><input class="immigraTabSerach" id="familySerach" type="text"></span>
+		  	<span><input class="immigraTabSerach" id="familySerach" type="text" placeholder="Name/Relationship"></span>
 		</div>
 	  	<div class="immigraTable">
 		  <table>
