@@ -26,14 +26,14 @@ import org.joda.time.Weeks;
 import com.bis.sourcelead.constants.Constants;
 
 public  class CalendarUtil {
-	public static void main(String[] args){
+	/*public static void main(String[] args){
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 		currentCal.setLenient(false);
 		currentCal.setTime(new Date());
 		System.out.println(currentCal.getTime());
 		System.out.println(new Date());
 		
-	}
+	}*/
 	/*public static void main(String[] args){
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 		currentCal.setLenient(false);
