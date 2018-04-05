@@ -1622,7 +1622,7 @@ function savedCommentAndCount(candidateId){
         		} else if (data.response === "SUCCESS") {
         			var result = "";
                     if(data.object.length > 0) {
-                    	var json = JSON.parse(data.object);
+                    	var json = data.data;
                   		var totalComments = 0;
                   		if(json.length>0) {
                   			totalComments = json.length;
