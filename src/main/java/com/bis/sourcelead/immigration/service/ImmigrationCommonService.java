@@ -42,7 +42,7 @@ public interface ImmigrationCommonService {
 	
 	ImmigrationCandidateDocuments uploadRequstedDocForCandidate(ImmigrationTemplateDocDTO immigrationTemplateDocDTO,Long id,Long candidateId,Long immigrationId)throws Exception;
 	
-	List<CandidateResidence> getCandidatesResidenceListByCandidateIdAndOrgLocationID(Long candidateId);
+	List<CandidateResidence> getCandidatesResidenceListByCandidateIdAndOrgLocationID(Long candidateId, String searchVal);
 	
 	List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId,String idType, String searchValue);
 	

@@ -674,9 +674,10 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	}	
 	
 	@Override
- public List<CandidateResidence> getCandidatesResidenceListByCandidateIdAndOrgLocationID(Long candidateId) {
- return immigrationCommonDao.getCandidatesResidenceListByCandidateIdAndOrgLocationID(candidateId);
- }	
+	 public List<CandidateResidence> getCandidatesResidenceListByCandidateIdAndOrgLocationID(Long candidateId,String searchVal) {
+	 return immigrationCommonDao.getCandidatesResidenceListByCandidateIdAndOrgLocationID(candidateId,searchVal);
+	 }	
+	
 	@Override
 	public List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId,String idType, String searchValue) {
 		// TODO Auto-generated method stub
