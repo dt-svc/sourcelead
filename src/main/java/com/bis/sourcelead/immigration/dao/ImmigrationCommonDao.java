@@ -60,6 +60,10 @@ public interface ImmigrationCommonDao {
 	 
 	 Immigration  getImmigrationById(Long id);
 	 
+	 public String deletetImmigrationCandidateDocsById(Long id);
+	 
+	 public ImmigrationCandidateDocuments getImmigrationCandidateDocumentById(Long id);
+	 
 	 ImmigrationCandidateDocuments saveImmigrationCandidateDocs(ImmigrationCandidateDocuments immigrationCandidateDocuments) throws Exception;
 
 	 ImmigrationCandidateForms saveImmigrationCandidateForms(ImmigrationCandidateForms immigrationCandidateforms) throws Exception;
