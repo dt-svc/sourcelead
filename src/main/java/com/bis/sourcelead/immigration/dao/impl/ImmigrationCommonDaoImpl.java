@@ -29,6 +29,7 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
+import com.bis.sourcelead.entity.ImmigrationListView;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -509,6 +510,22 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 				e.printStackTrace();
 			}
 		return candidateFormLst;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ImmigrationListView> getImmigrationsList() {
+		List<ImmigrationListView> immiList = new ArrayList<ImmigrationListView>();
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String queryString = "from ImmigrationListView";
+			immiList = session.createQuery(queryString).list();
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing getting ImmigrationListView records -->" + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return immiList;
 	}
 	
 	

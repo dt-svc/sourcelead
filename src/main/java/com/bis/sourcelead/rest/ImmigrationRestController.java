@@ -44,6 +44,7 @@ import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
+import com.bis.sourcelead.entity.ImmigrationListView;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -131,6 +132,8 @@ public class ImmigrationRestController {
         model.addObject("sourceleadUrl", sourceleadUrl);
         User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
         model.setViewName("/immigration/immigrationList");
+        List<ImmigrationListView> immList= immigrationCommonService.getImmigrationsList();
+        model.addObject("immList" ,immList);
         return model;
     }
 
