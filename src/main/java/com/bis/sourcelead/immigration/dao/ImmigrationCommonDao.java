@@ -70,4 +70,6 @@ public interface ImmigrationCommonDao {
 
 	List<ImmigrationCandidateForms> getCandidateImmigartionFormsDetails(Long candidateId, Long templateId, Long immigrationId);
 
+	ImmigrationCandidateForms getImmigrationCandidateFormsById(Long id, Long candidateId, Long immigrationId) throws Exception;
+
 }

@@ -10,20 +10,30 @@
 			  <tr>
 				<th>Form Name</th>
 				<th>File</th>
+				<th>Uploaded File</th>
 				<th>Status</th>
 				<th>Action</th>
 			  </tr>
 			  <c:forEach var="items" items="${formsList}" varStatus="rows">
-			  <tr>
+			  <tr formid ="${items.id}">
 				<td><div class="tbldata-dotdot-me">${items.formName}</div></td>
 				<td><div class="tbldata-dotdot-me"><span class="fileName">${items.fileName}</span>
-					<a class="glyphicon glyphicon-download-alt" title="Download" href="${items.fileUrl}"></a></div>
+				<a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile('${items.fileUrl}','${items.fileName}','${items.fileContentType}');" title="View"></a>
+					<a class="glyphicon glyphicon-download-alt" title="Download" download href="${items.fileUrl}"></a></div>
+				</td>
+				<td><div class="tbldata-dotdot-me"><span class="fileName">${!empty items.uploadFileName ? items.uploadFileName : '---'}</span>
+				<c:if test="${not empty items.uploadFileName}">
+				<a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile('${items.uploadedFileUrl}','${items.uploadFileName}','${items.uploadedFileContentType}');" title="View"></a>
+					<a class="glyphicon glyphicon-download-alt" title="Download" download href="${items.uploadedFileUrl}"></a></c:if></div>
 				</td>
 				<td><div class="tbldata-dotdot-sm">${items.formStatus}</div></td>
 				 <td><div>
 				 <a title="Upload" class="fa fa-upload uploadForm" onclick=""></a>
+				 <c:if test="${items.isTemplateConfigured =='N'}">
 				 <i id="edit" class="glyphicon glyphicon-pencil ml10" onclick=""></i>
-				 <i id="delete" class="glyphicon glyphicon-trash ml10" onclick="" ></i></div>
+				 <i id="delete" class="glyphicon glyphicon-trash ml10" onclick="" ></i>
+				 </c:if>
+				 </div>
 				 </td>
 			  </tr>  
 			 </c:forEach>			  			  
@@ -45,7 +55,7 @@
 		<form name ="formSave_Form" id ="formSave_Form">
 		<div class="popUpOut" id="viewFormpop">
 		<div class="popupHead">
-			<h2>Add Form</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+			<h2>Add Form</h2><a href="javascript:void(0)" class="fa fa-close popCan" onclick="closeFormPopup();"></a>
 		</div>
 		
 		<div class="popupMid clearfix">
@@ -87,9 +97,11 @@
           </div>		
 	</div>
 	</form>
+	<form id = "uploadRequestForm_Form" name = "uploadRequestForm_Form" >
+	<input type= "hidden" id ="uploadFormIdSave" value=""/>
 	<div class="popUpOut" id="uploadFormPop">
 		<div class="popupHead">
-			<h2>Upload file</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+			<h2>Upload file</h2><a href="javascript:void(0)" class="fa fa-close popCan" onclick="removeFormPopUp();"></a>
 		</div>
 		
 		<div class="popupMid popupMidHeight clearfix">
@@ -99,29 +111,42 @@
               	<div class="col-md-8 padding_right">
 					<div class="input-group col-md-12" style="margin:0 auto">
 					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-					  <input type="file" style="display: none;" multiple id="uploadBtn10"  class="upload">
+					  <input type="file" style="display: none;" multiple id="uploadFormBtn"  class="upload">
 					  </span> </label>
-					<input type="text" class="form-control" readonly id="uploadFile10" placeholder="Upload Resume ...">
+					<input type="text" class="form-control" readonly id="uploadFormFile" placeholder="Upload Form ...">
 				  </div>
 				</div>
 			</div>					          	
 		
 		</div>
 		<div class="immiPopFoot">
-            <input value="Save" class="" type="button">
-            <input value="Cancel" class="popCan" type="button">
+            <input value="Save" id="uploadFormSave"  class="" type="button" onclick="uploadRequestForm();">
+            <input value="Cancel" class="popCan" type="button" onclick="removeFormPopUp();">
           </div>		
 	</div>	<!-- popup code end -->
+	</form>
 		<script>
 		$(function() {
 			$("#uploadBtn").change(function() {
 			fileUpload("uploadBtn", "immigrationCandidateForms", "formSave_Form","immigrationFormFileInfo");
 		});
 		});
+		
+		$(function() {
+			$("#uploadFormBtn").change(function() {
+			fileUpload("uploadFormBtn", "immigrationCandidateForms", "uploadRequestForm_Form","immigrationFormFileInfo");
+		});
+		});
+		
 		document.getElementById("uploadBtn").onchange = function () {
 		 	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
 
 		}; 
+		document.getElementById("uploadFormBtn").onchange = function () {
+		 	$('#uploadFormFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+
+		}; 
+		
 		 function isReqCheckForm() {
 		        var checked = document.getElementById("isRequired").checked
 		        console.log("checked value is ..->"+checked);
@@ -147,5 +172,16 @@
 				$(".popMask").fadeIn(200);
 				$("#uploadFormPop").fadeIn(100);
 			});
-			
+			$(".uploadForm").click(function(){
+				$(".popMask").fadeIn(200);
+				$("#uploadFormPop").fadeIn(100);
+				
+				$("#uploadFormIdSave").val($(this).closest('tr').attr("formid"));
+				
+				
+			});
+			function removeFormPopUp(){
+				$(".popMask").fadeOut(200);
+				$("#uploadFormPop").fadeOut(100);
+			}
 			</script>
