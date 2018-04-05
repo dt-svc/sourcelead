@@ -179,18 +179,22 @@ $(".welPop input").click(function(){
 
 <script>
 function changeTaskStatus(taskId){
-	
 	$("#task"+taskId).attr('style',' height:50px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
-	
-	 $.ajax({
-	    	type: "POST",
-	    	 url: sourceleadUrl+"/changeTaskStatusForOnboardAndOffboardCandidate?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
-	        success: function(onboardId) {
-	        	$("#task"+taskId).removeAttr("style");
-	        },
-	    });
-	
-	 
+	$.ajax({
+	   	type: "POST",
+	   	url: sourceleadUrl+"/changeTaskStatusForOnboardAndOffboardCandidate?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
+       	success: function(response) {
+       		if (response.response === "AWKWARD") {
+       	    	location.href = "/errorPage";
+	       	} else if (response.response === "SUCCESS") {
+	       		$("#task"+taskId).removeAttr("style");
+	       	} else if (response.indexOf('Sign In') !== -1) {
+	       		location.replace(sourceleadUrl);
+	       	} else {
+	       	    showError("Operation failed, please try again");
+	       	}
+       },
+	});
 }
 </script>
 	
@@ -205,25 +209,31 @@ function changeTaskStatus(taskId){
 <script>
 function goToDashboard(){
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	
-	 $.ajax({
-	    	type: "POST",
-	    	 url: sourceleadUrl+"/sendOnboardCandidateToDashboard?${_csrf.parameterName}=${_csrf.token}", 
-	        success: function(result) {
-	        	location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");  
-	        },
-	    });
+    $.ajax({
+    	type: "POST",
+    	url: sourceleadUrl+"/sendOnboardCandidateToDashboard?${_csrf.parameterName}=${_csrf.token}", 
+        success: function(response) {
+        	if (response.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (response.response === "SUCCESS") {
+        		location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");
+        	} else if (response.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+        },
+    });
 }
 </script>
 
 <script>
   function navtoggle(elementRef){
-	  
-	 if('${SourceLeadWeb_userSpocRolesListCount}' < 6){
+	 if('${SourceLeadWeb_userSpocRolesListCount}' < 6) {
 		 document.getElementById("spockLinksList").removeAttribute("class")
 		 document.getElementById('spockLinksList').className = 'spoclinks-area'
 	     document.getElementById("spockLinksList").style.display="block";
-	 }else{
+	 } else {
 		 document.getElementById("spockLinksList").removeAttribute("class")
 		 document.getElementById('spockLinksList').className = 'spoclinks-area spoclinksMore'
 		 document.getElementById("spockLinksList").style.display="block";

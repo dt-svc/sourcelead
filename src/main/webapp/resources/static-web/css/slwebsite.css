@@ -126,10 +126,11 @@ color: #a21e23 !important;
 	border-right: 2px solid #eee; padding: 15px;
 }
 .helpmsg-sidebar h5 {
-position: relative; padding: 15px 0; border-bottom: 1px solid #ededed;
+position: relative; padding: 15px 0 15px 10px; border-bottom: 1px solid #ededed;
+cursor: pointer; text-transform: capitalize;
 }
 .helpmsg-sidebar ul li {
-	padding: 10px; position: relative;
+	padding: 10px; position: relative; cursor: pointer; text-transform: capitalize;
 }
 .helpmessageSearch input[type="text"] {
 	display: block; border: none; width: 55%; border-bottom: 1px solid #E0E0E0; background: #F5F5F5;
@@ -166,7 +167,7 @@ position: relative; padding: 15px 0; border-bottom: 1px solid #ededed;
 .accordion-link a {
 	display:block; padding:11px 18px; position:relative; border-bottom:1px solid #f5f5f5; font-size:15px; font-weight:500; color:#666;
 	}
-.accordion-link span {
+.accordion-link span.arrow {
 	position: absolute; background: #999; width: 1px; height: 11px; top: 15px; right: 25px; 
 	transition: all 0.3s; -moz-transition: all 0.3s; -webkit-transition: all 0.3s; -o-transition: all 0.3s;
 	}
@@ -180,6 +181,9 @@ position: relative; padding: 15px 0; border-bottom: 1px solid #ededed;
 .accordion-on.accordion-link span {
 	transform: rotate(90deg);
 	}
+.accordion-link i {
+	position: absolute; right: 10px; font-size: 20px; top: 10px;
+}
 /* Accordion Styles */
 .helpmessage-innercotentarea h3 {
 	font-weight: 300; font-size: 30px; color: #757575; margin-top: 0;
@@ -883,8 +887,18 @@ background-color: rgba(0,0,0,0.4); clear: both; width: 100%; padding: 0px 25px; 
 .productfeatures p{
 	line-height: 30px;
 }
-.productfeatures .col-md-4 {
+/*.productfeatures .col-md-4 {
 	margin-bottom: 15px;	
+}*/
+.productfeatures .col-md-4 {
+	margin-bottom: 0px;	border: 1px dotted #dbdbdb; min-height: 550px;
+	transition: all 0.3s ease-in-out;background: #f5f5f5;
+}
+.productfeatures .col-md-4:nth-child(2n+1) {
+	background: #fff;
+}
+.productfeatures h2 {
+	margin-bottom: 15px;
 }
 .footer-copyright p {
 }
@@ -1408,4 +1422,7 @@ span.blueColor {
 
 .customNavBarTop{
 	top: 24px !important;
+}
+.jquery_form_error_message {
+	padding: 0px 0px 0px 15px !important; margin: 0px; font-size: 11px; color: #f12929; font-weight: 500;
 }

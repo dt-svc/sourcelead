@@ -83,6 +83,7 @@ import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OptionsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RestrictDayService;
 import com.bis.sourcelead.service.RolesService;
@@ -187,6 +188,8 @@ public class LeaveManagementRestController {
 	@Autowired
 	private TimesheetRestController timesheetRestController;
 	
+	@Autowired
+	private ProjectTasksService projectTasksService;
 	/**
 	 * returns Pending leaves jsp
 	 * @param request
@@ -1009,13 +1012,21 @@ public class LeaveManagementRestController {
 	{
 		boolean isDeleted = false;
 		LeaveType leaveType = leaveTypeService.getLeaveTypeByUUID(leaveTypeDTO.getLeaveTypeUUID());
+		List<ProjectTasks> projectTaskList = projectTasksService.getTasksListByLeaveType(leaveType.getId());
 		 if(leaveType !=null) {
-			 
 			 if("reactive".equalsIgnoreCase(leaveTypeDTO.getStatus())){
 				 leaveType.setStatus(Constants.RECORD_ACTIVE.toString());
+				 for(ProjectTasks pt:projectTaskList) {
+					 pt.setStatus(Constants.RECORD_ACTIVE.toString());
+					 projectTasksService.updateTasks(pt);
+				 }
 			 }else{
 			 leaveType.setStatus(Constants.RECORD_INACTIVE.toString());
 			 leaveType.setDeleteReason(leaveTypeDTO.getDeleteReason());
+			 for(ProjectTasks pt:projectTaskList) {
+				 pt.setStatus(Constants.RECORD_INACTIVE.toString());
+				 projectTasksService.updateTasks(pt);
+			 }
 			 }
 			 if(leaveTypeDTO.getLoginUserId() != null){
 				 User user = userService.getUserById(Long.parseLong(leaveTypeDTO.getLoginUserId()));

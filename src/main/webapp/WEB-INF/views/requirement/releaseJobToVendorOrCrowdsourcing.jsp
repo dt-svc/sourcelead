@@ -360,17 +360,25 @@ function releaseTo(){
 	 		    var sourceleadUrl ='${sourceleadUrl}';
 	 		    var requirementId = '${requirementId}';
 	 		    
-	 		 	 $.ajax({
+	 		 	$.ajax({
 	 		           type : "POST",
 	 		           url: sourceleadUrl+"/releaseJobsToClientsOrVendors?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds,    
-	 		            success :function(data) {
-	 		            	
- 		            	if(jobRecommendations){
-	 		       			   location.replace(sourceleadUrl+"/jobRecommendations?requirementUUID="+requirementUUID);	
- 		     		    }else{
- 		     		    	   location.replace(sourceleadUrl+"/jobs");
- 	     		    	 } 		            
-	 		            	
+	 		            success :function(result) {
+	 		            	if (result.response === "SESSION_TIMEDOUT") {
+				  				location.replace(sourceleadUrl);
+			                } else if (result.response === "AWKWARD") {
+			                    location.href = "/errorPage";
+			                } else if (result.response === "SUCCESS") {
+			                	if(jobRecommendations){
+			 		       			   location.replace(sourceleadUrl+"/jobRecommendations?requirementUUID="+requirementUUID);	
+		 		     		    }else{
+		 		     		    	   location.replace(sourceleadUrl+"/jobs");
+		 	     		    	 } 	
+			                } else if (result.indexOf('Sign In') !== -1) {
+								location.replace(sourceleadUrl);
+							} else {
+			                    showError("Operation failed, please try again");
+			                }
 	 		            },
 	 		    });  
 	 	    }else{

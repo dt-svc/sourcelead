@@ -687,55 +687,71 @@ function candidateEducationStore(candidateId){
 	 }
 	  
 	  if ($('#education_form').validate(false, validationSettings)) {
-		  
+		  if($("#candEdu").length > 0 && $("#candEdu_chosen").length > 0){
 		     var formData = getFormData("education_form");
 			 $("#education_form").attr("disabled", "disabled");
 			 $("#save_button").attr("disabled", "disabled");
 			
-			 $.post(sourceleadUrl+"/storeCandidateEducation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(data) {
-				 closePopup();
-				 $('#perVal').attr('aria-valuenow', data).css('width',data+'%');
-    			 if(data<50){
-    			   $("#perVal").removeClass('progress-bar-success');
-    			   $("#perVal").addClass("progress-bar-danger");
-    			 }
-    			 if(data>=50){
-    				 $("#perVal").removeClass("progress-bar-danger");
-    				 $("#perVal").addClass("progress-bar-success");
-    			 }
-    			 $("#disVal").empty();
-    			$("#disVal").append(data+'%');
-    			// for quick view bar update
-    			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
-      			 if(data<50){
-          			   $("#quickPerVal").removeClass('progress-bar-success');
-          			   $("#quickPerVal").addClass("progress-bar-danger");
-          			 }
-          			 if(data>=50){
-          				 $("#quickPerVal").removeClass('progress-bar-danger');
-          				 $("#quickPerVal").addClass("progress-bar-success");
-          			 }
+			 $.post(sourceleadUrl+"/storeCandidateEducation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(result) {
+				 if (result && result.response === "INVALID_DATA") {
+					    $("#update_candidate").removeAttr("disabled");
+					    $("#update_candidate").removeAttr('button').val('Save');
+					    showError(result.responseMessage);
+					} else if (result.response === "AWKWARD") {
+					    location.href = "/errorPage";
+					} else if (result.response === "SUCCESS") {
+						var data = result.object;
+						closePopup();
+						 $('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+		    			 if(data<50){
+		    			   $("#perVal").removeClass('progress-bar-success');
+		    			   $("#perVal").addClass("progress-bar-danger");
+		    			 }
+		    			 if(data>=50){
+		    				 $("#perVal").removeClass("progress-bar-danger");
+		    				 $("#perVal").addClass("progress-bar-success");
+		    			 }
+		    			 $("#disVal").empty();
+		    			$("#disVal").append(data+'%');
+		    			// for quick view bar update
+		    			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
+		      			 if(data<50){
+		          			   $("#quickPerVal").removeClass('progress-bar-success');
+		          			   $("#quickPerVal").addClass("progress-bar-danger");
+		          			 }
+		          			 if(data>=50){
+		          				 $("#quickPerVal").removeClass('progress-bar-danger');
+		          				 $("#quickPerVal").addClass("progress-bar-success");
+		          			 }
 
-    			$("#quickDisVal").empty();
-    			$("#quickDisVal").append(data+'%');
-    			
-       		    $("#popUpDiv").removeClass("edit-details-active");
-    			$("#selector4").removeAttr("style");
-    			$("#selector4").css({ display: "block" });
-				$("#eduMsgDiv").html("Success!! New Education added");
-       			candidateEducationList(candidateId);
-       			eduMsgFadeinFunction();
-       			qveducationSubmission(candidateId);
-       			setTimeout(function(){
-		 			candidateList();					 			
-		 		},100);
-		        });
-			
-			return true; 
+		    			$("#quickDisVal").empty();
+		    			$("#quickDisVal").append(data+'%');
+		    			
+		       		    $("#popUpDiv").removeClass("edit-details-active");
+		    			$("#selector4").removeAttr("style");
+		    			$("#selector4").css({ display: "block" });
+						$("#eduMsgDiv").html("Success!! New Education added");
+		       			candidateEducationList(candidateId);
+		       			eduMsgFadeinFunction();
+		       			qveducationSubmission(candidateId);
+		       			setTimeout(function(){
+				 			candidateList();					 			
+				 		},100);
+				       
+			        } else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+					    showError("Operation failed, please try again");
+					}
+			 });
+			 return true;
 		} else {
-			return false;
+			showError("Education is missing");
 		}
-} 
+	} else {
+		return false;
+	}
+	}
 $('body').on('blur', '#education_form', function() {
 	$("#education_form").showHelpOnFocus();
 	$("#education_form").validateOnBlur(false, validationSettings);
@@ -808,53 +824,56 @@ function deleteSelectedEducation(candidateEducationId,candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/removeCandidateEducationBycandidateIdandcandidateEducationId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,        
-          success :function(data) {
+          success :function(result) {
+        	  if (result && result.response === "INVALID_DATA") {
+      		    showError(result.responseMessage);
+      		} else if (result.response === "AWKWARD") {
+      		    location.href = "/errorPage";
+      		} else if (result.response === "SUCCESS") {
+      			var data = result.object;
+      			$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+      			 if(data<50){
+      			  /* $("#perVal").removeClass("progress-bar-success"); */
+      			   $("#perVal").removeClass('progress-bar-success')
+      			   $("#perVal").addClass("progress-bar-danger");
+      			 }
+      			 if(data>=50){
+      				 $("#perVal").removeClass('progress-bar-danger');
+      				 $("#perVal").addClass("progress-bar-success");
+      			 }
+      			 $("#disVal").empty();
+      			$("#disVal").append(data+'%');
+      			
+      			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
+    			 if(data<50){
+         			   $("#quickPerVal").removeClass('progress-bar-success');
+         			   $("#quickPerVal").addClass("progress-bar-danger");
+         			 }
+         			 if(data>=50){
+         				 $("#quickPerVal").removeClass('progress-bar-danger');
+         				 $("#quickPerVal").addClass("progress-bar-success");
+         			 }
 
-				if(data != null && data != 'undefined' && data != ""){
-             		if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	}else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		}else{
-             			$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
-           			 if(data<50){
-           			  /* $("#perVal").removeClass("progress-bar-success"); */
-           			   $("#perVal").removeClass('progress-bar-success')
-           			   $("#perVal").addClass("progress-bar-danger");
-           			 }
-           			 if(data>=50){
-           				 $("#perVal").removeClass('progress-bar-danger');
-           				 $("#perVal").addClass("progress-bar-success");
-           			 }
-           			 $("#disVal").empty();
-           			$("#disVal").append(data+'%');
-           			
-           			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
-         			 if(data<50){
-	          			   $("#quickPerVal").removeClass('progress-bar-success');
-	          			   $("#quickPerVal").addClass("progress-bar-danger");
-	          			 }
-	          			 if(data>=50){
-	          				 $("#quickPerVal").removeClass('progress-bar-danger');
-	          				 $("#quickPerVal").addClass("progress-bar-success");
-	          			 }
-
-       				$("#quickDisVal").empty();
-       				$("#quickDisVal").append(data+'%');
-           			
-           			
-           			 	 $("#selector4").removeAttr("style");
-            			 $("#selector4").css({ display: "block" });
-            			 $("#eduMsgDiv").html("Education deleted");
-             			 $("#popUpDiv").removeClass("edit-details-active");
-             			$("#remove_user_pop, .project_inn_mask").fadeOut();
-             			 candidateEducationList(candidateId);
-             			eduMsgFadeinFunction();
-             			 setTimeout(function(){
- 				 			candidateList();					 			
- 				 	    },100);
-			    	}
-               } 
+  				$("#quickDisVal").empty();
+  				$("#quickDisVal").append(data+'%');
+      			
+      			
+      			 	 $("#selector4").removeAttr("style");
+       			 $("#selector4").css({ display: "block" });
+       			 $("#eduMsgDiv").html("Education deleted");
+        			 $("#popUpDiv").removeClass("edit-details-active");
+        			$("#remove_user_pop, .project_inn_mask").fadeOut();
+        			 candidateEducationList(candidateId);
+        			eduMsgFadeinFunction();
+        			 setTimeout(function(){
+			 			candidateList();					 			
+			 	    },100);
+      		} else if (result.indexOf('Sign In') !== -1) {
+      			location.replace(sourceleadUrl);
+      		} else {
+      		    showError("Operation failed, please try again");
+      		}
+			 
         },
           
      }); 
@@ -992,7 +1011,12 @@ function clearSearchKeyEducation() {
 						
 						url : sourceleadUrl+"/upDateCandidateEducationByCandidateIdAndCandidateEducationId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
 						success : function(result) {
-							closePopup();
+							if (result && result.response === "INVALID_DATA") {
+							    showError(result.responseMessage);
+							} else if (result.response === "AWKWARD") {
+							    location.href = "/errorPage";
+							} else if (result.response === "SUCCESS") {
+								closePopup();
 		            			$("#selector4").removeAttr("style");
 		            			$("#selector4").css({ display: "block" });
 		            			$("#eduMsgDiv").html("Education details updated");
@@ -1002,6 +1026,11 @@ function clearSearchKeyEducation() {
 							setTimeout(function(){
 					 			candidateList();					 			
 					 		},100);
+							} else if (result.indexOf('Sign In') !== -1) {
+								location.replace(sourceleadUrl);
+							} else {
+							    showError("Operation failed, please try again");
+							}
 						},
 					}); 
 			return true;

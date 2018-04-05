@@ -47,7 +47,7 @@ function candSubmissionDocumentsList(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateDocumentsListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(json) {
+          success :function(response) {
         	  if (response && response.response === "INVALID_USER") {
         		    showError(response.responseMessage);
         		} else if (response.response === "AWKWARD") {
