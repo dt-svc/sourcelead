@@ -23,7 +23,7 @@
 <div class="clearfix"></div>
 </div>
 
-<section class="container-fluid container-area-grey">
+<section class="container-fluid container-area-white">
  		
  		<div class="clearfix">
   		<div class="col-md-4 text-center smallwidget">
@@ -55,7 +55,7 @@
 	  </div>
 	</div>
 	</section>
- <section class="container-area-white">
+ <section class="container-area-grey">
 <div id="features"></div>  
   <div class="container productfeatures">
   <h2 class="text-center colorlogo">Features</h2>

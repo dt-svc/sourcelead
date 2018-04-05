@@ -70,7 +70,7 @@ function getUserManualHelperOne(){
      		 var opt = json[i];
      		 
 			//result = result +'<div class="clearfix"></div>';
-			result = result + '<h5 onClick="getUserManualHelperTwo('+opt.id+');" class="accordion-link">'+opt.title+' <span></span></h5>';
+			result = result + '<h5 onClick="getUserManualHelperTwo('+opt.id+');" class="accordion-link">'+opt.title+' <i class="fa fa-angle-down"></i></h5>';
 			result = result + '<div id="demo'+opt.id+'" class="accordion-panel clearfix"></div>';
 			}
      		//result = result + '</div>';
@@ -84,6 +84,7 @@ function getUserManualHelperOne(){
 </script>
 <script>
 function getUserManualHelperTwo(userManualId){
+	$(".accordion-link").find("i").toggleClass("fa-angle-down fa-angle-up");
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
     type : "GET",
@@ -142,7 +143,7 @@ function getUserManualHelperThree(userManualTwoId){
 				description = "";
 			}
      		if (opt.title != null && opt.title != 'undefined') {
-    			title = opt.description;
+    			title = opt.title;
     			}else{
     				title = "";
     			}
@@ -152,10 +153,10 @@ function getUserManualHelperThree(userManualTwoId){
      		
      		result = result	+ '<div class="row mb  moduledescription-text">';
      		result = result + '<div class="col-md-7">';
-			result = result + '<h4>'+opt.title+'</h4>';
+			result = result + '<h4>'+title+'</h4>';
 			
 			result = result + '<div class="module-description">';
-			result = result + '<p>'+opt.description+'</p>';
+			result = result + '<p>'+description+'</p>';
 			result = result + '</div>';
 			result = result + '</div>';
 			
@@ -197,7 +198,7 @@ function getUserManualHelperThree(userManualTwoId){
      		result = result + '<div class="clearfix"></div>';
      		$("#UserManualWebDivThree").empty(); 
 	        $("#UserManualWebDivThree").append(result);
-	       
+	        $("a[rel^='prettyPhoto']").prettyPhoto();
      } 
 });
 }
