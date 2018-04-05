@@ -240,7 +240,26 @@ public class ImmigrationRestController {
 
 		return "success";
     }
-    
+   
+    @RequestMapping(value = { "/uploadRequstedForm" }, method = RequestMethod.POST)
+   	public String uploadRequstedForm(ImmigrationTemplateFormDTO immigrationTemplateFormDTO,@RequestParam(value = "id", required = true) Long id, 
+   			@RequestParam(value = "candidateId", required = true) Long candidateId,
+   			@RequestParam(value = "immigrationId", required = true) Long immigrationId,
+   			HttpServletRequest request) {
+   		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+   		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+   		immigrationTemplateFormDTO.setStaticPath(staticPath);
+   		try {
+   			immigrationCommonService.uploadRequstedFormForCandidate(immigrationTemplateFormDTO,id,candidateId,immigrationId, user, orgLocations);
+   			
+   		} catch (Exception e) {
+   			logger.error("Exception caught in controller --->"+e.getMessage());
+   			e.printStackTrace();
+   		}
+
+   		return "success";
+       }
+       
     @RequestMapping(value = {"/viewImmigrationById"})
     public ModelAndView getImmigrationDeatilsById(HttpServletRequest request
     		 ,@RequestParam(value = "immigrationId", required = true) String immigrationId) throws Exception {

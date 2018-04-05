@@ -939,7 +939,25 @@ function uploadRequestDoc(){
         }
     });
 }
-
+function uploadRequestForm(){
+	var formData = getFormData("uploadRequestForm_Form");
+	var candidateId = $("#candidateID").val();
+	var immigrationId = $('#immigrationID').val();
+	var id = $("#uploadFormIdSave").val();
+	console.log(" id value is --->"+id);
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/uploadRequstedForm?id="+id+"&candidateId="+candidateId+"&immigrationId="+immigrationId,
+        type: "POST",
+        data: formData,
+        success: function (result) {
+        	if(result=='success'){
+        		$('#uploadFormPop').hide();
+            	$('.popMask').fadeOut();
+            	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId); 
+        	}
+        }
+    });
+}
 function validateEduname()  
 {	var validationSettings = {
             errorMessagePosition: 'element',
