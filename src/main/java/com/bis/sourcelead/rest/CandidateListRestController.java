@@ -1293,6 +1293,7 @@ public class CandidateListRestController {
 				OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(Long.valueOf(candidateDto.getOrgloationId()));
 				Candidate candidate = candidateService.storeCandidate(candidateDto, loginOrgLocation, user);
 				if (candidate != null) {
+					response.setObject("success");
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				}

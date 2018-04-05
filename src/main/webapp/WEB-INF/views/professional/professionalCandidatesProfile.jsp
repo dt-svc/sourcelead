@@ -84,12 +84,12 @@ function editCandidate(candidateId){
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
          success :function(result) {  
-        	 var json = result.object;
       	   		if(result.response === "SESSION_TIMEDOUT") {
 					location.replace(sourceleadUrl);
 				} else if (result.response === "AWKWARD") {
 					location.href = "/errorPage";
 				} else if (result.response === "SUCCESS") {
+					var json = result.object;
               		if(json != null ){  
             			 	var lastName = '';
             			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
@@ -494,12 +494,12 @@ function professionalProfile(candidateId){
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
          success :function(result) { 
-        	 var json = result.object;
       	   	 if(result.response === "SESSION_TIMEDOUT") {
 					location.replace(sourceleadUrl);
 				} else if (result.response === "AWKWARD") {
 					location.href = "/errorPage";
 				} else if (result.response === "SUCCESS") {
+					 var json = result.object;
               		if(json != null ){  
 							var result ="";
 							var checked = "";
@@ -984,17 +984,26 @@ function removeSkillPopUp(candidateId){
 						processData: false,
 		    	        contentType:false,
 						url : sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}",
-						success : function(result) {
-							if(result && result === "failed") {
-								$("#update_candidate").removeAttr("disabled");
-								showError("Invalid data");
-							}else{
-								//$("#profileEditPopup").hide();
-								$("#selector1").removeAttr("style");
-			         			 $("#selector1").css({ display: "block" });
-					        	 $("#candMsgDiv").html("Success!!  Candidate Updated");
-					        	 candUpdateMsgFadeinFunction();
-								getProfessionalInfo();
+						success : function(response) {
+							if (response && response.response === "INVALID_DATA") {
+							    showError(response.responseMessage);
+							} else if (response.response === "AWKWARD") {
+							    location.href = "/errorPage";
+							} else if (response.response === "SUCCESS") {
+								if(response.object === "success") {
+									$("#selector1").removeAttr("style");
+				         			 $("#selector1").css({ display: "block" });
+						        	 $("#candMsgDiv").html("Success!!  Candidate Updated");
+						        	 candUpdateMsgFadeinFunction();
+									getProfessionalInfo();
+								}else{
+									$("#update_candidate").removeAttr("disabled");
+									showError("Invalid data");
+								}
+							} else if (response.indexOf('Sign In') !== -1) {
+								location.replace(sourceleadUrl);
+							} else {
+							    showError("Operation failed, please try again");
 							}
 						},
 					});
@@ -1479,13 +1488,21 @@ function makeAsPublicVisibility(){
 	 $.ajax({  
          type : "POST",
          url: Urlcheck,        
-         success :function(data) {
-        	  getProfessionalInfo();
-        	  $("#loading").removeAttr('style');
+         success :function(result) {
+        	 	if(result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+           			showError(result.responseMessage);
+           		} else if (result.response === "AWKWARD") {
+           	    	location.href = "/errorPage";
+           		} else if (result.response === "SUCCESS") {
+           			getProfessionalInfo();
+              	  $("#loading").removeAttr('style');
+           		} else if (result.indexOf('Sign In') !== -1) {
+              		location.replace(sourceleadUrl);
+              	} else {
+              	    showError("Operation failed, please try again");
+              	}
        },
-         
     }); 
-	 
  }  
 </script>
 

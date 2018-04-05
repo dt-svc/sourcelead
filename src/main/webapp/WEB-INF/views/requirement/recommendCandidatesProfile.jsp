@@ -605,27 +605,26 @@ function reActivateCandidateAlertMessage(candidateId){
 		$.ajax({
 	        type : "POST",
 	         url: sourceleadUrl+"/reActivateCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&reActivate="+reactivate,        
-	         success :function(data) {
-	               if(data != null && data != 'undefined' && data != ""){
-	            		 if( data.indexOf('Sign In') >= 0){
-				    		location.replace(sourceleadUrl);
-				    	 }
-	            		 else if (data.indexOf('exception') >= 0) {
-	            			 location.replace(sourceleadUrl+"/errorPage");
-	            		 }
-	            		 else{
-	            			 location.replace(sourceleadUrl+"/candidatesList");
-	            		 }
-	                } 
+	         success :function(result) {
+	        	 if (result && result.response === "INVALID_DATA") {
+	 			    $("#update_candidate").removeAttr("disabled");
+	 			    $("#update_candidate").removeAttr('button').val('Save');
+	 			    showError(result.responseMessage);
+	 			} else if (result.response === "AWKWARD") {
+	 			    location.href = "/errorPage";
+	 			} else if (result.response === "SUCCESS") {
+	 				location.replace(sourceleadUrl+"/candidatesList");
+	 			} else if (result.indexOf('Sign In') !== -1) {
+	 				location.replace(sourceleadUrl);
+	 			} else {
+	 			    showError("Operation failed, please try again");
+	 			}
 	                 },
 	              }); 
 		
 	}
-	
 }
 </script>
-
-
 
 <%-- 
      @author : sarath kumar.
@@ -1920,15 +1919,22 @@ function employementType(){
 	 $.ajax({  
          type : "POST",
          url: Urlcheck,        
-         success :function(data) {
-           	  	 // candidateProfile(candidateId);
-            	//  candidateQuickViewProfile(candidateId);
-            	  clientSideBar(candidateId);
-            	  $("#loading").removeAttr('style');
+         success :function(result) {
+        	 	if(result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+        			showError(result.responseMessage);
+        		} else if (result.response === "AWKWARD") {
+        	    	location.href = "/errorPage";
+        		} else if (result.response === "SUCCESS") {
+        			getProfessionalInfo();
+           	  		$("#loading").removeAttr('style');
+        		} else if (result.indexOf('Sign In') !== -1) {
+           			location.replace(sourceleadUrl);
+	           	} else {
+	           	    showError("Operation failed, please try again");
+	           	}
        },
          
     }); 
-	 
  }  
 </script>
  
