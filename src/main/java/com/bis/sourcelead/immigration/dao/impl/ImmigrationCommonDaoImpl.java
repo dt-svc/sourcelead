@@ -294,8 +294,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		if (!"undefined".equalsIgnoreCase(searchValue) && StringUtils.isNotBlank(searchValue)
 				&& searchValue != "") {
-			String queryString = "from CandidatePassportVisa cp where cp.candidate.id=:candidateId and cp.idType=:idType and (cp.idNumber =:searchValue or cp.country =:searchValue)  order by cp.updatedDate desc";
-			passportvisaList = session.createQuery(queryString).setLong("candidateId", candidateId).setString("idType", idType).setString("searchValue", searchValue).list();
+			String queryString = "from CandidatePassportVisa cp where cp.candidate.id=:candidateId and cp.idType=:idType and (cp.idNumber like :searchValue or cp.country like :searchValue or cp.visaType like :searchValue)  order by cp.updatedDate desc";
+			passportvisaList = session.createQuery(queryString).setLong("candidateId", candidateId).setString("idType", idType).setString("searchValue", "%"+searchValue+"%").list();
 		}
 		else {
 			String queryString = "from CandidatePassportVisa cp where cp.candidate.id=:candidateId and cp.idType=:idType  order by cp.updatedDate desc";
