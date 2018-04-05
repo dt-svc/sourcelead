@@ -866,17 +866,19 @@ function saveResidenceDetails(status) {
 }
 
 function getCandidateResidenceList(candidateId){
-		console.log("inside displayResidenceDetails function call test -->")
-		$.ajax({
-	        url: sourceleadUrl + immiModulePath + "/getCandidateResidenceList?candidateId="+candidateId,
-	       type: "GET",
-	        success: function (result) {
-	       	  console.log("Before  loading result---->");
-	           $("#residencesTab").html(result);
-	           console.log("After loading result---->");
-	       }
-	   });
-	}
+	console.log("inside displayResidenceDetails function call test -->")
+	var searchVal= $("#residenceSearch").val();
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/getCandidateResidenceList?candidateId="+candidateId+"&searchVal="+searchVal,
+       type: "GET",
+        success: function (result) {
+       	  console.log("Before  loading result---->");
+           $("#residencesTab").html(result);
+           $("#residenceSearch").val(searchVal);
+           console.log("After loading result---->");
+       }
+   });
+}
 
 function deleteResidenceDetailsById(id){
 	var candidateId = $("#candidateID").val();
@@ -941,6 +943,50 @@ function uploadRequestDoc(){
         }
     });
 }
+
+function editDocumentDetailsByRowId(id){
+	console.log(" inside edit record  "+id);
+	 // update the variable with residence member id in edit mode.
+	var candidateId = $("#candidateID").val();
+	$.ajax({
+     url: sourceleadUrl + immiModulePath + "/editDocumentDetailsByRowId?id="+id,
+     type: "GET",
+     success: function (data) {
+     	console.log(" inside success test --->" );
+     	var formObj='';
+     	if(data!= null){
+     		
+     			formObj = $('#candidate_Immigration_Doc')[0]; // load the child form
+     			$("#addDocu").trigger('click');
+     		/*	$('#eduName').val(data.name); // to select the dropdwon value based on id value.
+     			$('#scoreEducationType').val(data.gradeType);*/
+     			$('#documentType').val(data.documentType);
+     			$('#description1').text(data.description);
+     			$('#requiredCheck').text(data.isRequired);
+     			$('#immigrationCandidateDocId').val(data.id);
+     	
+     	   
+     	}
+     }
+ });
+}
+
+function deleteDocumentDetailsByRowId(id){
+	var templateId = $('#templateID').val();
+	var candidateId = $("#candidateID").val();
+	var immigrationId = $('#immigrationID').val();
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/deleteDocumentDetailsByRowId?id="+id,
+        type: "GET",
+        success: function (result) {
+        	if(result=='success'){
+        	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId);
+        	     
+        	}
+        }
+    });
+}
+
 function uploadRequestForm(){
 	var formData = getFormData("uploadRequestForm_Form");
 	var candidateId = $("#candidateID").val();

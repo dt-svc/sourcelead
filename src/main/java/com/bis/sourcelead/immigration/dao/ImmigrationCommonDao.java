@@ -45,7 +45,7 @@ public interface ImmigrationCommonDao {
 
 	String deletetCandidateFamilyDetails(Long id);
 	
-	List<CandidateResidence> getCandidatesResidenceListByCandidateIdAndOrgLocationID(Long candidateId);
+ 	List<CandidateResidence> getCandidatesResidenceListByCandidateIdAndOrgLocationID(Long candidateId,String searchValue);
 
 	List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId,String idType,String searchValue);
 	
@@ -60,6 +60,10 @@ public interface ImmigrationCommonDao {
 	 CandidatePassportVisa getCandidatePassportVisaDetailsById(Long id);
 	 
 	 Immigration  getImmigrationById(Long id);
+	 
+	 public String deletetImmigrationCandidateDocsById(Long id);
+	 
+	 public ImmigrationCandidateDocuments getImmigrationCandidateDocumentById(Long id);
 	 
 	 ImmigrationCandidateDocuments saveImmigrationCandidateDocs(ImmigrationCandidateDocuments immigrationCandidateDocuments) throws Exception;
 

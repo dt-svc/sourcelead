@@ -31,6 +31,8 @@ public class ImmigrationTemplateDocDTO {
 	
 	private String immigrationCandidateFileContentType;
 	
+	private Long immigrationCandidateDocId;
+	
 	public Long getId() {
 		return id;
 	}
@@ -109,6 +111,12 @@ public class ImmigrationTemplateDocDTO {
 	}
 	public void setFileInfo(List<FileInfo> fileInfo) {
 		this.fileInfo = fileInfo;
+	}
+	public Long getImmigrationCandidateDocId() {
+		return immigrationCandidateDocId;
+	}
+	public void setImmigrationCandidateDocId(Long immigrationCandidateDocId) {
+		this.immigrationCandidateDocId = immigrationCandidateDocId;
 	}
 	
 	

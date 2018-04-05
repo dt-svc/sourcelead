@@ -479,6 +479,38 @@ public class ImmigrationRestController {
        
         return "success";
     }
+    
+    @RequestMapping(value = { "/deleteDocumentDetailsByRowId" })
+	public String deleteDocumentDetailsByRowId(@RequestParam(value = "id", required = true) Long id, HttpServletRequest request) {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		String status="";
+		try {
+			status = immigrationCommonService.deletetImmigrationCandidateDocsById(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return status;
+	}
+
+@RequestMapping(value = { "/editDocumentDetailsByRowId" })
+	public @ResponseBody  ImmigrationCandidateDocuments editDocumentDetailsByRowId(
+			@RequestParam(value = "id", required = true) Long id, HttpServletRequest request) {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		System.out.println(" in controller method getCandidateResidenceDetailsById id ---> "+id);
+		ImmigrationCandidateDocuments immigDocObj= null;
+		try {
+			immigDocObj = immigrationCommonService.getImmigrationCandidateDocumentById(id);
+			} catch (Exception e) {
+			logger.error("Exception caught in controller test --->"+e.getMessage());
+			e.printStackTrace();
+		}
+
+		return immigDocObj;
+	}
+
     @RequestMapping(value = {"/saveCandidateImmigrationForms"}, method = RequestMethod.POST)
     public String saveCandidateImmigrationForms(ImmigrationTemplateFormDTO immigrationTemplateFormDTO, 
     		@RequestParam(value = "candidateId", required = false) String candidateId,
@@ -951,11 +983,11 @@ public class ImmigrationRestController {
 	
 	@RequestMapping(value = { "/getCandidateResidenceList" })
 	public ModelAndView getCandidateResidenceList(
-			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) throws Exception {
+			@RequestParam(value = "candidateId", required = true) Long candidateId,@RequestParam(value = "searchVal", required = false) String searchVal, HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		model.setViewName("/immigration/residenceDetailsTab");
-		 List<CandidateResidence>   candidatesResidenceList = immigrationCommonService.getCandidatesResidenceListByCandidateIdAndOrgLocationID(candidateId);
+		 List<CandidateResidence>   candidatesResidenceList = immigrationCommonService.getCandidatesResidenceListByCandidateIdAndOrgLocationID(candidateId,searchVal);
 		for(CandidateResidence canRes : candidatesResidenceList){
 			canRes.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), canRes.getStartDate()));
 			canRes.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), canRes.getEndDate()));

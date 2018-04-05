@@ -639,6 +639,17 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		
 		return docs;
 	}
+	
+	@Override
+	public String deletetImmigrationCandidateDocsById(Long id) {
+		return immigrationCommonDao.deletetImmigrationCandidateDocsById(id);
+	}
+	
+	@Override
+	public ImmigrationCandidateDocuments getImmigrationCandidateDocumentById(Long id) {
+		return  immigrationCommonDao.getImmigrationCandidateDocumentById(id);
+	}
+	
 	@Override
 	public ImmigrationCandidateForms uploadRequstedFormForCandidate(ImmigrationTemplateFormDTO immigrationTemplateFormDTO, Long id,
 			Long candidateId, Long immigrationId, User user, OrgLocations orgLocations) {
@@ -675,9 +686,10 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	}	
 	
 	@Override
- public List<CandidateResidence> getCandidatesResidenceListByCandidateIdAndOrgLocationID(Long candidateId) {
- return immigrationCommonDao.getCandidatesResidenceListByCandidateIdAndOrgLocationID(candidateId);
- }	
+	 public List<CandidateResidence> getCandidatesResidenceListByCandidateIdAndOrgLocationID(Long candidateId,String searchVal) {
+	 return immigrationCommonDao.getCandidatesResidenceListByCandidateIdAndOrgLocationID(candidateId,searchVal);
+	 }	
+	
 	@Override
 	public List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId,String idType, String searchValue) {
 		// TODO Auto-generated method stub
@@ -719,7 +731,15 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	@Override
 	public ImmigrationCandidateDocuments saveImmigrationCandidateDocs(ImmigrationTemplateDocDTO immigrationTemplateDocDTO, User user, OrgLocations orgLocations)
 			throws Exception {
-		ImmigrationCandidateDocuments immigrationCandidateDocuments = new ImmigrationCandidateDocuments();
+		ImmigrationCandidateDocuments immigrationCandidateDocuments = null;
+		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+		if(immigrationTemplateDocDTO.getImmigrationCandidateDocId() !=null){
+			immigrationCandidateDocuments = immigrationCommonDao.getImmigrationCandidateDocumentById(immigrationTemplateDocDTO.getImmigrationCandidateDocId());
+		}else{
+			immigrationCandidateDocuments = new ImmigrationCandidateDocuments();
+			immigrationCandidateDocuments.setCreatedDate(currentDate);
+			immigrationCandidateDocuments.setCreatedBy(user);
+		}
 		Candidate candidate =  new Candidate();
 		candidate.setId(Long.parseLong(immigrationTemplateDocDTO.getImmigrationcandidateId()));
 		ImmigrationTemplate immigrationTemplate = new ImmigrationTemplate ();
@@ -748,11 +768,8 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			FileUploadUtil.moveFile(immigrationTemplateDocDTO.getStaticPath(), fileInfo, "immigrationCandidateDocuments");
 			
 		}
-		immigrationCandidateDocuments.setCreatedBy(user);
 		immigrationCandidateDocuments.setUpdatedBy(user);
-		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 		immigrationCandidateDocuments.setUpdatedDate(currentDate);
-		immigrationCandidateDocuments.setCreatedDate(currentDate);
 		
 		return immigrationCommonDao.saveImmigrationCandidateDocs(immigrationCandidateDocuments);
 	}
