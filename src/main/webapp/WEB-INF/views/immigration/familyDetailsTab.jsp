@@ -28,7 +28,7 @@
 				<td><div class="tbldata-dotdot-me">${items.firstName}</div></td>
 				<td><div class="tbldata-dotdot-me">${items.relation}</div></td>
 				<td><div class="tbldata-dotdot-vsm">${items.dateOfBirthStr}</div></td>
-				<td><div class="tbldata-dotdot-vsm">${items.placeOfBirth}</div></td>
+				<td><div class="tbldata-dotdot-vsm">${!empty items.placeOfBirth ? items.placeOfBirth : '---'}</div></td>
 				<td><div class="tbldata-dotdot-me">${!empty items.currentAddress ? items.currentAddress : '---'}</div></td>
 				<td><div><i id="edit" class="glyphicon glyphicon-pencil"onclick="immigration.editFamilyDetailsById(${items.id},'${items.relation}');"
 				></i><i id="delete" class="glyphicon glyphicon-trash ml10"
@@ -112,9 +112,9 @@
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-4 padding_left">Place of Birth<span class="text-danger">&nbsp;*</span></label>
+				<label class="col-md-4 padding_left">Place of Birth</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="placeOfBirthSpouse" name="placeOfBirth"  class="form-control" placeholder="Place Of Birth" field-name="Place Of Birth" data-validation="required" />
+              		<input type="text" id="placeOfBirthSpouse" name="placeOfBirth"  class="form-control" placeholder="Place Of Birth" />
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
@@ -167,9 +167,9 @@
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-4 padding_left">Place of Birth<span class="text-danger">&nbsp;*</span></label>
+				<label class="col-md-4 padding_left">Place of Birth</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="placeOfBirth" name="placeOfBirth" class="form-control" placeholder="Place Of Birth" field-name="Place Of Birth" data-validation="required"/>
+              		<input type="text" id="placeOfBirth" name="placeOfBirth" class="form-control" placeholder="Place Of Birth"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
@@ -222,9 +222,9 @@
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-4 padding_left">Place of Birth<span class="text-danger">&nbsp;*</span></label>
+				<label class="col-md-4 padding_left">Place of Birth</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" id="placeOfBirth" name="placeOfBirth" class="form-control" placeholder="Place Of Birth" field-name="Place Of Birth" data-validation="required"/>
+              		<input type="text" class="form-control" id="placeOfBirth" name="placeOfBirth" class="form-control" placeholder="Place Of Birth"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
@@ -277,9 +277,9 @@
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-4 padding_left">Place of Birth<span class="text-danger">&nbsp;*</span></label>
+				<label class="col-md-4 padding_left">Place of Birth</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" id="placeOfBirth" name="placeOfBirth" class="form-control" placeholder="Place Of Birth" field-name="Place Of Birth" data-validation="required"/>
+              		<input type="text" class="form-control" id="placeOfBirth" name="placeOfBirth" class="form-control" placeholder="Place Of Birth"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
