@@ -976,7 +976,6 @@ public  class CalendarUtil {
 		  Q1EndDate.set(Calendar.DATE, Q1EndDate.getActualMaximum(Calendar.DAY_OF_MONTH));
 		  dateList.put("STARTDATE",Q1StartDate.getTime());
 		  dateList.put("ENDDATE", Q1EndDate.getTime());
-		  System.out.println(Constants.DF_MM.format(Q1EndDate.getTime()));
 	 	 return dateList;
 	
     }
