@@ -735,9 +735,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		if(immigrationTemplateDocDTO.getImmigrationCandidateDocId() !=null){
 			immigrationCandidateDocuments = immigrationCommonDao.getImmigrationCandidateDocumentById(immigrationTemplateDocDTO.getImmigrationCandidateDocId());
 		}else{
-			new ImmigrationCandidateDocuments();
-			immigrationCandidateDocuments.setCreatedBy(user);
+			immigrationCandidateDocuments = new ImmigrationCandidateDocuments();
 			immigrationCandidateDocuments.setCreatedDate(currentDate);
+			immigrationCandidateDocuments.setCreatedBy(user);
 		}
 		Candidate candidate =  new Candidate();
 		candidate.setId(Long.parseLong(immigrationTemplateDocDTO.getImmigrationcandidateId()));
