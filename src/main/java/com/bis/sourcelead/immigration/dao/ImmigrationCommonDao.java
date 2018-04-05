@@ -29,6 +29,8 @@ public interface ImmigrationCommonDao {
 	Immigration getImmigrationViewList(String immigrationId);
 
 	String getPetitionTypeById(Long petitionType, String petitionTypeConstant);
+	
+	ImmigrationCandidateDocuments getImmigrationCandidateDocsById(Long id, Long candidateId,Long immigrationId) throws Exception;
 
 	CandidateLcaI94Summary getCandidateLCADetails(Long id, String yes);
 

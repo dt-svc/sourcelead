@@ -18,6 +18,16 @@ public class ImmigrationTemplateFormDTO {
 	
 	private List<FileInfo> immigrationFormFileInfo;
 	
+	// this variables added for immigration candidate forms
+	private String immigrationId;
+	
+	private String immigrationcandidateId;
+	
+	private String immigrationTempplateId;
+	
+	private String staticPath;
+	
+	
 	public String getFormDescription() {
 		return formDescription;
 	}
@@ -75,5 +85,38 @@ public class ImmigrationTemplateFormDTO {
 		this.fileUrl = fileUrl;
 	}
 
+	public String getImmigrationId() {
+		return immigrationId;
+	}
+
+	public void setImmigrationId(String immigrationId) {
+		this.immigrationId = immigrationId;
+	}
+
+	public String getImmigrationcandidateId() {
+		return immigrationcandidateId;
+	}
+
+	public void setImmigrationcandidateId(String immigrationcandidateId) {
+		this.immigrationcandidateId = immigrationcandidateId;
+	}
+
+	public String getImmigrationTempplateId() {
+		return immigrationTempplateId;
+	}
+
+	public void setImmigrationTempplateId(String immigrationTempplateId) {
+		this.immigrationTempplateId = immigrationTempplateId;
+	}
+
+	public String getStaticPath() {
+		return staticPath;
+	}
+
+	public void setStaticPath(String staticPath) {
+		this.staticPath = staticPath;
+	}
+
+	
 	
 }
