@@ -222,6 +222,25 @@ public class ImmigrationRestController {
         model.setViewName("/immigration/immigrationView");
         return model;
     }
+    
+    @RequestMapping(value = { "/uploadRequstedDoc" }, method = RequestMethod.POST)
+	public String uploadRequstedDoc(ImmigrationTemplateDocDTO immigrationTemplateDocDTO,@RequestParam(value = "id", required = true) Long id, 
+			@RequestParam(value = "candidateId", required = true) Long candidateId,
+			@RequestParam(value = "immigrationId", required = true) Long immigrationId,
+			HttpServletRequest request) {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		immigrationTemplateDocDTO.setStaticPath(staticPath);
+		try {
+			immigrationCommonService.uploadRequstedDocForCandidate(immigrationTemplateDocDTO,id,candidateId,immigrationId);
+			
+		} catch (Exception e) {
+			logger.error("Exception caught in controller --->"+e.getMessage());
+			e.printStackTrace();
+		}
+
+		return "success";
+    }
+    
     @RequestMapping(value = {"/viewImmigrationById"})
     public ModelAndView getImmigrationDeatilsById(HttpServletRequest request
     		 ,@RequestParam(value = "immigrationId", required = true) String immigrationId) throws Exception {
@@ -438,7 +457,23 @@ public class ImmigrationRestController {
        
         return "success";
     }
-    
+    @RequestMapping(value = {"/saveCandidateImmigrationForms"}, method = RequestMethod.POST)
+    public String saveCandidateImmigrationForms(ImmigrationTemplateFormDTO immigrationTemplateFormDTO, 
+    		@RequestParam(value = "candidateId", required = false) String candidateId,
+    		@RequestParam(value = "immigrationId", required = false) String immigrationId,
+    		@RequestParam(value = "templateId", required = false) String templateId,
+    		HttpServletRequest request) throws Exception {
+    		immigrationTemplateFormDTO.setImmigrationId(immigrationId);
+    		immigrationTemplateFormDTO.setImmigrationcandidateId(candidateId);
+    		immigrationTemplateFormDTO.setImmigrationTempplateId(templateId);
+            User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+            OrgLocations  loginOrglocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+            immigrationTemplateFormDTO.setStaticPath(staticPath);
+            immigrationCommonService.saveImmigrationCandidateForms(immigrationTemplateFormDTO,user,loginOrglocation);
+            System.out.println("Candidate Form  saved succesfully --> ");
+       
+        return "success";
+    }
     @RequestMapping(value = { "/getCandidateImmigrationCandidateDocsList" })
 	public ModelAndView getCandidateImmigrationCandidateDocsList(@RequestParam(value = "candidateId", required = true) Long candidateId,
 			@RequestParam(value = "templateid", required = true) Long templateid,
@@ -907,14 +942,14 @@ public class ImmigrationRestController {
 		return model;
 	}
 	@RequestMapping(value = { "/getCandidatePassportVisaDetails" })
-	public ModelAndView getCandidatePassportVisaDetails(@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request, @RequestParam(value = "idType", required = true) String idType) throws Exception
+	public ModelAndView getCandidatePassportVisaDetails(@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request, @RequestParam(value = "idType", required = true) String idType,@RequestParam(value = "searchValue", required = true)String searchValue) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
 		System.out.println(" inisde getCandidatePassportDetails controller test -->");
 		List<CandidatePassportVisa> PassportList = new ArrayList<CandidatePassportVisa>();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		try {
-			PassportList = immigrationCommonService.getCandidatePassportVisaDetails(candidateId, idType);
+			PassportList = immigrationCommonService.getCandidatePassportVisaDetails(candidateId, idType,searchValue);
 			for(CandidatePassportVisa canPassportVisa : PassportList){
 				canPassportVisa.setValidFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),canPassportVisa.getValidFromDate()));
 				canPassportVisa.setValidToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),canPassportVisa.getValidToDate()));
@@ -939,6 +974,43 @@ public class ImmigrationRestController {
 		}
 		return model;
 	}
+	
+	/*@RequestMapping(value = { "/getCandidatePassportVisaSearchDetails" })
+	public ModelAndView getCandidatePassportVisaSearchDetails(@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request, @RequestParam(value = "idType", required = true) String idType,@RequestParam(value = "searchValue", required = true) String searchValue) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		System.out.println(" inisde getCandidatePassportDetails controller test -->");
+		List<CandidatePassportVisa> PassportList = new ArrayList<CandidatePassportVisa>();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		try {
+			PassportList = immigrationCommonService.getCandidatePassportVisaSearchDetails(candidateId, idType,searchValue);
+			for(CandidatePassportVisa canPassportVisa : PassportList){
+				canPassportVisa.setValidFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),canPassportVisa.getValidFromDate()));
+				canPassportVisa.setValidToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),canPassportVisa.getValidToDate()));
+				
+			}
+			
+			
+			List<Countries> countryList = countriesService.getAllCountries();
+			model.addObject("PassportList", PassportList);
+			model.addObject("countryList", countryList);
+		} catch (Exception e) {
+			logger.error("Exception caught in controller --->" + e.getMessage());
+			e.printStackTrace();
+		}
+		System.out.println(" after getCandidatePassportVisaDetails controller -->");
+		if (idType.equalsIgnoreCase("Passport")) {
+			model.setViewName("/immigration/passportDetailsTab");
+		}
+		else {
+			List<String> visaList = lookUpDataService.getAllVisaByCategory();
+			model.addObject("visaList", visaList);	
+			model.setViewName("/immigration/visaDetailsTab");
+		}
+		return model;
+	}
+	*/
+	
 	
 	@RequestMapping(value = { "/deleteCandidatePassportVisaDetails" })
 	public String deleteCandidatePassportVisaDetails(

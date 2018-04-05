@@ -42,6 +42,7 @@
 			  </ul>
 		</div> -->
 		<!--  popup code start-->
+		<form name ="formSave_Form" id ="formSave_Form">
 		<div class="popUpOut" id="viewFormpop">
 		<div class="popupHead">
 			<h2>Add Form</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
@@ -52,29 +53,40 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Form name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-					<input type="text" class="form-control" />
+					<input type="text" class="form-control" name="formName" id="formName"  field-name="Form Name"  data-validation = "required validate_length length2-100" placeholder="Form name" data-name="formName"/>
 				</div>
-			</div>	         
+			</div>	      
+			   
           <div class="col-sm-12 noPad mt clearfixclearfix">
 				<label class="col-md-4 padding_left">File<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
 					<div class="input-group col-md-12" style="margin:0 auto">
 					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-					  <input type="file" style="display: none;" multiple id="uploadBtn1"  class="upload">
+					  <input type="file" style="display: none;" multiple id="uploadBtn"  class="upload">
 					  </span> </label>
-					<input type="text" class="form-control" readonly id="uploadFile1" placeholder="Upload Resume ...">
+					<input type="text" class="form-control" name="docFile" id ="uploadFile" readonly placeholder="Attachment" field-name="Attachment" data-validation="required">
 				  </div>
 				</div>
 			</div>					          	
 		
 		</div>
-		
+		<div class="col-md-5 noPad">
+                  <input type="text" class="form-control" name="formDescription" id="formDescription" placeholder="Description" data-validation = "validate_length length2-100" data-validation-optional="true"/>
+            </div>
+		<div class="col-sm-12 noPad mt clearfixclearfix">
+           <div class="col-md-4 padding_left" >
+             <label class="switch mt5 text-center">
+               <input checked id="isRequired" name="isRequired" title="Is Required" type="checkbox" onclick="isReqCheckForm();" value="Y">
+                  <div class="slider round"  title="Is Required" ></div>
+                 </label>
+              </div>				  
+        </div>
 		<div class="immiPopFoot">
-            <input value="Save" class="" type="button">
-            <input value="Cancel" class="popCan" type="button">
+            <input value="Save" class="" type="button" onclick="immigration.saveCandidateForms();">
+            <input value="Cancel" class="popCan" type="button" onclick="closeFormPopup();">
           </div>		
 	</div>
-	
+	</form>
 	<div class="popUpOut" id="uploadFormPop">
 		<div class="popupHead">
 			<h2>Upload file</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
@@ -95,21 +107,45 @@
 			</div>					          	
 		
 		</div>
-		
 		<div class="immiPopFoot">
             <input value="Save" class="" type="button">
             <input value="Cancel" class="popCan" type="button">
           </div>		
 	</div>	<!-- popup code end -->
 		<script>
+		$(function() {
+			$("#uploadBtn").change(function() {
+			fileUpload("uploadBtn", "immigrationCandidateForms", "formSave_Form","immigrationFormFileInfo");
+		});
+		});
+		document.getElementById("uploadBtn").onchange = function () {
+		 	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+
+		}; 
+		 function isReqCheckForm() {
+		        var checked = document.getElementById("isRequired").checked
+		        console.log("checked value is ..->"+checked);
+		        if (checked == true) {
+		            $("#isRequired").val("Y");
+		        } else {
+		            $("#isRequired").val("N");
+		        }
+		    }
+		// close the popup.
+			function closeFormPopup() {
+				$(".popMask").fadeOut(200);
+				$("#viewFormpop").fadeOut(100);
+				$("#formSave_Form")[0].reset();
+			}
 			// Add Form PopUp
-			$("#addForm").click(function(){
+			$("#addForm").click(function() {
 				$(".popMask").fadeIn(200);
 				$("#viewFormpop").fadeIn(100);
-			});	
-			  // upload Form PopUp
-			$(".uploadForm").click(function(){
+			});
+			// upload Form PopUp
+			$(".uploadForm").click(function() {
 				$(".popMask").fadeIn(200);
 				$("#uploadFormPop").fadeIn(100);
-			});	
-		</script>
+			});
+			
+			</script>

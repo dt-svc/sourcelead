@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -138,6 +139,20 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         String name = (String) session.createQuery(query).setString("category", petitionTypeConstant).setLong("lookupId", petitionTypeId).uniqueResult();
 		return name;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ImmigrationCandidateDocuments getImmigrationCandidateDocsById(Long id, Long candidateId, Long immigrationId)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ImmigrationCandidateDocuments  ciDoc where ciDoc.id=:id and ciDoc.candidateId.id = :candidateId and ciDoc.immigrationId.id =:immigrationId";
+		List<ImmigrationCandidateDocuments> canImgDocList = session.createQuery(query).setLong("id", id).setLong("candidateId", candidateId).setLong("immigrationId", immigrationId).list();
+		ImmigrationCandidateDocuments canImgDoc = null;
+		if (canImgDocList != null && canImgDocList.size() > 0) {
+			canImgDoc = (ImmigrationCandidateDocuments) canImgDocList.iterator().next();
+		}
+		return canImgDoc;
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -264,14 +279,20 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
     @SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId, String idType)
+	public List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId, String idType, String searchValue)
 	{
-		logger.debug("Getting  CandidatepassportDetails --->  ");
-		Session session = this.sessionFactory.getCurrentSession();
 		List<CandidatePassportVisa> passportvisaList = new ArrayList<CandidatePassportVisa>();
+		logger.debug("Getting  CandidatepassportDetails --->  ");  
+		Session session = this.sessionFactory.getCurrentSession();
+		if (!"undefined".equalsIgnoreCase(searchValue) && StringUtils.isNotBlank(searchValue)
+				&& searchValue != "") {
+			String queryString = "from CandidatePassportVisa cp where cp.candidate.id=:candidateId and cp.idType=:idType and (cp.idNumber =:searchValue or cp.country =:searchValue)  order by cp.updatedDate desc";
+			passportvisaList = session.createQuery(queryString).setLong("candidateId", candidateId).setString("idType", idType).setString("searchValue", searchValue).list();
+		}
+		else {
 			String queryString = "from CandidatePassportVisa cp where cp.candidate.id=:candidateId and cp.idType=:idType  order by cp.updatedDate desc";
 			passportvisaList = session.createQuery(queryString).setLong("candidateId", candidateId).setString("idType", idType).list();
-		
+		}
 		return passportvisaList;
 	}
     @Override
@@ -471,4 +492,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			}
 		return candidateFormLst;
 	}
-}
+	
+	
+	}
+	

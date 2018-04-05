@@ -21,6 +21,7 @@ import com.bis.sourcelead.dto.ImmigrationDTO;
 import com.bis.sourcelead.dto.ImmigrationPassportVisaDTO;
 import com.bis.sourcelead.dto.ImmigrationResidenceDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
+import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
@@ -621,6 +622,22 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	public List<CandidateFamilyDetails> getCandidateFamilyDetails(Long candidateId) {
 		return immigrationCommonDao.getCandidateFamilyDetails(candidateId);
 	}
+	
+	@Override
+	public ImmigrationCandidateDocuments uploadRequstedDocForCandidate(ImmigrationTemplateDocDTO immigrationTemplateDocDTO,Long id, Long candidateId, Long immigrationId) throws Exception {
+		ImmigrationCandidateDocuments docs = immigrationCommonDao.getImmigrationCandidateDocsById(id,candidateId,immigrationId);
+		if(immigrationTemplateDocDTO.getFileInfo() != null){
+			FileInfo fileInfo = immigrationTemplateDocDTO.getFileInfo().get(0);
+			docs.setUplodedFileUrl(fileInfo.getFileURL());
+			docs.setUpldedFileContentType(fileInfo.getContentType());
+			docs.setUpldedFileName(fileInfo.getFileName());
+			FileUploadUtil.moveFile(immigrationTemplateDocDTO.getStaticPath(), fileInfo, "immigrationCandidateDocuments");
+			docs.setDocumentStatus(Constants.DOCUMENT_UPLOAD);
+			immigrationCommonDao.saveImmigrationCandidateDocs(docs);
+		}
+		
+		return docs;
+	}
 
 	@Override
 	public String deletetCandidateFamilyDetails(Long candidateId) {
@@ -632,10 +649,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
  return immigrationCommonDao.getCandidatesResidenceListByCandidateIdAndOrgLocationID(candidateId);
  }	
 	@Override
-	public List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId,String idType) {
+	public List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId,String idType, String searchValue) {
 		// TODO Auto-generated method stub
-		return immigrationCommonDao.getCandidatePassportVisaDetails(candidateId,idType);
+		return immigrationCommonDao.getCandidatePassportVisaDetails(candidateId,idType,searchValue);
 	}	
+	
+	
 	@Override
 	public CandidateFamilyDetails getCandidateFamilyDetailsById(Long id) {
 		// TODO Auto-generated method stub
@@ -703,7 +722,43 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		
 		return immigrationCommonDao.saveImmigrationCandidateDocs(immigrationCandidateDocuments);
 	}
-	
+	@Override
+	public ImmigrationCandidateForms saveImmigrationCandidateForms(ImmigrationTemplateFormDTO immigrationTemplateFormDTO, User user, OrgLocations orgLocations)
+			throws Exception {
+		ImmigrationCandidateForms immigrationCandidateForms = new ImmigrationCandidateForms();
+		Candidate candidate =  new Candidate();
+		candidate.setId(Long.parseLong(immigrationTemplateFormDTO.getImmigrationcandidateId()));
+		ImmigrationTemplate immigrationTemplate = new ImmigrationTemplate ();
+		immigrationTemplate.setId(Long.parseLong(immigrationTemplateFormDTO.getImmigrationTempplateId()));
+		Immigration immigration = new Immigration();
+		immigration.setId(Long.parseLong(immigrationTemplateFormDTO.getImmigrationId()));
+		immigrationCandidateForms.setCandidate(candidate);
+		immigrationCandidateForms.setImmigrationTempId(immigrationTemplate);
+		immigrationCandidateForms.setImmigration(immigration);
+		immigrationCandidateForms.setFormName(immigrationTemplateFormDTO.getFormName());
+		immigrationCandidateForms.setDescription(immigrationTemplateFormDTO.getFormDescription());
+		if(immigrationTemplateFormDTO.getIsRequired() != null && "Y".equalsIgnoreCase(immigrationTemplateFormDTO.getIsRequired())){
+			immigrationCandidateForms.setIsRequired(immigrationTemplateFormDTO.getIsRequired());
+		}else{
+			immigrationCandidateForms.setIsRequired(Constants.NO);	
+		}
+		immigrationCandidateForms.setStatus(Constants.RECORD_ACTIVE);
+		immigrationCandidateForms.setFormStatus(Constants.DOCUMENT_UPLOAD_REQUESTED);
+		if(immigrationTemplateFormDTO.getImmigrationFormFileInfo() != null){
+			FileInfo fileInfo = immigrationTemplateFormDTO.getImmigrationFormFileInfo().get(0);
+			immigrationCandidateForms.setFileUrl(fileInfo.getFileURL());
+			immigrationCandidateForms.setFileName(fileInfo.getFileName());
+			FileUploadUtil.moveFile(immigrationTemplateFormDTO.getStaticPath(), fileInfo, "immigrationCandidateForms");
+			
+		}
+		immigrationCandidateForms.setCreatedBy(user);
+		immigrationCandidateForms.setUpdatedBy(user);
+		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+		immigrationCandidateForms.setUpdatedDate(currentDate);
+		immigrationCandidateForms.setCreatedDate(currentDate);
+		
+		return immigrationCommonDao.saveImmigrationCandidateForms(immigrationCandidateForms);
+	}
 	 @Override
 		public Immigration getImmigrationByImmigrationId(Long immigrationId) throws Exception {
 			// TODO Auto-generated method stub
@@ -724,5 +779,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			Long immigrationId) {
 		return immigrationCommonDao.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId);
 	}
+
+	
 	
 }

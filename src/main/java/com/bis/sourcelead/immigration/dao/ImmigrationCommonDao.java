@@ -29,6 +29,8 @@ public interface ImmigrationCommonDao {
 	Immigration getImmigrationViewList(String immigrationId);
 
 	String getPetitionTypeById(Long petitionType, String petitionTypeConstant);
+	
+	ImmigrationCandidateDocuments getImmigrationCandidateDocsById(Long id, Long candidateId,Long immigrationId) throws Exception;
 
 	CandidateLcaI94Summary getCandidateLCADetails(Long id, String yes);
 
@@ -44,7 +46,7 @@ public interface ImmigrationCommonDao {
 	
 	List<CandidateResidence> getCandidatesResidenceListByCandidateIdAndOrgLocationID(Long candidateId);
 
-	List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId,String idType);
+	List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId,String idType,String searchValue);
 	
 	CandidateFamilyDetails getCandidateFamilyDetailsById(Long id);
 
@@ -67,6 +69,5 @@ public interface ImmigrationCommonDao {
 	List<ImmigrationCandidateDocuments> getImmigrationCandidateDocs(Long immigrationId, Long templateId,Long candidateId);
 
 	List<ImmigrationCandidateForms> getCandidateImmigartionFormsDetails(Long candidateId, Long templateId, Long immigrationId);
-
 
 }
