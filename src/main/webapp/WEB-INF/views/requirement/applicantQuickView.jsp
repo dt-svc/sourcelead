@@ -398,50 +398,55 @@ function reqQwikCertificates(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(json) {
-        	  if (json != null && json != 'undefined' && json != "" && json != '[]') {
-	                	 $("#reqQvcertificationSubmission").empty();
-	                	 var result = "";
-	                	 result = result +'<div class="col-md-12">';
-						 result = result +' <h4>Certifications</h4>';
-// 							var json = JSON.parse(data);
-							for (var i = 0; i < json.data.length; i++) { 
-								if(i < 3){
-		                    	var opt = json.data[i];  
-								result = result +'<div class="resume-widget resumewidget">';
-								
-								if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != "" && opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
-									result = result +'  <p><small>'+opt.candidatevalidFromDateToString+' - '+opt.candidatevalidToDateToString+'</small></p>';
-								}else if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != '' && opt.candidatevalidFromDateToString !='undefined'){
-									result = result +'  <p><small>'+opt.candidatevalidFromDateToString+'</small></p>';
-								}else if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != '' && opt.candidatevalidToDateToString !='undefined'){
-									result = result +'  <p><small>'+opt.candidatevalidToDateToString+'</small></p>';
-								}else{
-									result=' ';
-								}
-								
-								if(opt.name != null && opt.name != 'undefined' && opt.name != ""){
-									name = opt.name;
-								}else{
-									name = '';
-								}
-								if(opt.scoreType == 'Percentage'){
-									result = result +' <h4>'+name+' ('+opt.score+' %) </h4>';
-								}else{
-									result = result +' <h4>'+name+' ('+opt.score+' - '+opt.scoreType+') </h4>';
-								}
-								/* result = result +'<div class="description">';
-								result = result +'  <p>'+opt.provider+'</p>';
-								result = result +'</div>';   */
-								result = result +'                  </div>';
-							} 
-        	  }
-							result = result +'        </div>';
+          success :function(response) {
+        	  	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+        		    showError(response.responseMessage);
+        		} else if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+        			$("#reqQvcertificationSubmission").empty();
+               	 	var result = "";
+               	 	result = result +'<div class="col-md-12">';
+					 result = result +' <h4>Certifications</h4>';
+						for (var i = 0; i < response.data.length; i++) {
+							if(i < 3){
+	                    	var opt = response.data[i];  
+							result = result +'<div class="resume-widget resumewidget">';
 							
-							$("#reqQvcertificationSubmission").append(result); 
-          }
+							if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != "" && opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
+								result = result +'  <p><small>'+opt.candidatevalidFromDateToString+' - '+opt.candidatevalidToDateToString+'</small></p>';
+							}else if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != '' && opt.candidatevalidFromDateToString !='undefined'){
+								result = result +'  <p><small>'+opt.candidatevalidFromDateToString+'</small></p>';
+							}else if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != '' && opt.candidatevalidToDateToString !='undefined'){
+								result = result +'  <p><small>'+opt.candidatevalidToDateToString+'</small></p>';
+							}else{
+								result=' ';
+							}
+							
+							if(opt.name != null && opt.name != 'undefined' && opt.name != ""){
+								name = opt.name;
+							}else{
+								name = '';
+							}
+							if(opt.scoreType == 'Percentage'){
+								result = result +' <h4>'+name+' ('+opt.score+' %) </h4>';
+							}else{
+								result = result +' <h4>'+name+' ('+opt.score+' - '+opt.scoreType+') </h4>';
+							}
+							/* result = result +'<div class="description">';
+							result = result +'  <p>'+opt.provider+'</p>';
+							result = result +'</div>';   */
+							result = result +'                  </div>';
+						} 
+   	  				}
+						result = result +'        </div>';
+						$("#reqQvcertificationSubmission").append(result);
+        		} else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
         },
-          
      });
 }
 </script>

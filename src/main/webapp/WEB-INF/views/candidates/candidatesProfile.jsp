@@ -1459,7 +1459,7 @@ function certificationSubmissionProfile(candidateId) {
           type : "GET",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
-        	  if (data && data.response === "INVALID_DATA") {
+        	  if (data && (data.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
 				    $("#update_candidate").removeAttr("disabled");
 				    $("#update_candidate").removeAttr('button').val('Save');
 				    showError(data.responseMessage);

@@ -413,17 +413,21 @@ function qwikCertificates(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(json) {
-        	  if (json.data.length > 0 && json != null && json != 'undefined' && json != "" && json != '[]') {
-	                	 $("#qvcertificationSubmission").empty();
+          success :function(response) {
+        	  	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+        		    showError(response.responseMessage);
+        		} else if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+        			if(response.data.length>0) {
+        				 $("#qvcertificationSubmission").empty();
 	                	 var result = "";
-	                	 
 	                	 result = result +'<div class="col-md-12">';
 						 result = result +' <h4>Certifications</h4>';
 // 							var json = JSON.parse(data);
-							for (var i = 0; i < json.data.length; i++) { 
-								if(i < 3){
-		                    	var opt = json.data[i];  
+							for (var i = 0; i < response.data.length; i++) {
+								if(i < 3) {
+		                    	var opt = response.data[i];
 								result = result +'<div class="resume-widget resumewidget">';
 								
 								if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != "" && opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
@@ -451,21 +455,24 @@ function qwikCertificates(candidateId){
 								result = result +'</div>';   */
 								result = result +'                  </div>';
 							} 
-        	  }
+        	  				}
 							result = result +'        </div>';
-							
 							$("#qvcertificationSubmission").append(result); 
-          }else{
-        	  var result = '';
-        	  result = result +'            <div class="col-md-12 " style="display:none">';
-        	  result = result +' <h4>Certifications</h4>';
-        	  result = result +' <div>---</div>';
-        	  result = result +'            </div>';
-        	  $("#qvcertificationSubmission").empty();
-        	  $("#qvcertificationSubmission").append(result); 
-          }
+        			} else {
+        				 var result = '';
+        	        	  result = result +'            <div class="col-md-12 " style="display:none">';
+        	        	  result = result +' <h4>Certifications</h4>';
+        	        	  result = result +' <div>---</div>';
+        	        	  result = result +'            </div>';
+        	        	  $("#qvcertificationSubmission").empty();
+        	        	  $("#qvcertificationSubmission").append(result); 
+        			}
+        		} else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
         },
-          
      });
 }
 </script>

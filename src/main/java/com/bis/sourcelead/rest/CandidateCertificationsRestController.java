@@ -108,8 +108,13 @@ public class CandidateCertificationsRestController {
 				candidateCertificationDTO.setDateFormat(loginOrgLocation.getDateFormat());
 				candidateCertificationsService.storeCandidateCertifications(candidateCertificationDTO, user, loginOrgLocation, candidateId);
 				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-				response.setResponse(Result.SUCCESS.name());
-				response.setResponseMessage(Result.SUCCESS.getValue());
+				if (candidate != null) {
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setResponse(Result.FAILED.name());
+					response.setResponseMessage(Result.FAILED.getValue());
+				}
 			} else if (user == null) {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
