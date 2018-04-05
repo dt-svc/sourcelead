@@ -56,6 +56,7 @@
  
  <section class="container-fluid container-area-grey">
 <div class="clearfix container productfeatures">
+<h2 class="text-center colorlogo">Features</h2>
 	<div class="col-md-4">
 	<div class="featuresImages">
 		<img src="/resources/static-web/images/ims-billgeneration.png" alt="Image" class="animated bounceIn">
