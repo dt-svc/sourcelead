@@ -170,9 +170,11 @@ public class CandidateRestController {
 	@ResponseBody
 	public Response<String> storeCandidate(CandidateDTO candidateDto, HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if (user != null) {
 		try {
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			if (user != null && Validator.validate(candidateDto)) {
+			
+			if (Validator.validate(candidateDto)) {
 				candidateDto.setStaticPath(staticPath);
 				// FileUploadUtil.fillUploadedFileInfo(candidateDto,
 				// candidateDto.getFileInfo());
@@ -181,10 +183,8 @@ public class CandidateRestController {
 				SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", "Success new candidate is created");
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
-			} else if (user == null) {
-				response.setResponse(Result.SESSION_TIMEDOUT.name());
-				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 			} else {
+				response.setObject("DataMissing");
 				response.setResponse(Result.INVALID_DATA.name());
 				response.setResponseMessage(Result.INVALID_DATA.getValue());
 			}
@@ -192,6 +192,10 @@ public class CandidateRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		} else{
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
 		return response;
 	}
