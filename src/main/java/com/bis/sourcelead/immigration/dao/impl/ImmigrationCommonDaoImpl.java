@@ -146,14 +146,24 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ImmigrationCandidateDocuments  ciDoc where ciDoc.id=:id and ciDoc.candidateId.id = :candidateId and ciDoc.immigrationId.id =:immigrationId";
-		List<ImmigrationCandidateDocuments> canImgDocList = session.createQuery(query).setLong("id", id).setLong("candidateId", candidateId).setLong("immigrationId", immigrationId).list();
-		ImmigrationCandidateDocuments canImgDoc = null;
-		if (canImgDocList != null && canImgDocList.size() > 0) {
-			canImgDoc = (ImmigrationCandidateDocuments) canImgDocList.iterator().next();
-		}
+		ImmigrationCandidateDocuments canImgDoc = (ImmigrationCandidateDocuments)session.createQuery(query).setLong("id", id).setLong("candidateId", candidateId).setLong("immigrationId", immigrationId).uniqueResult();
 		return canImgDoc;
 	}
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ImmigrationCandidateForms getImmigrationCandidateFormsById(Long id, Long candidateId, Long immigrationId) {
+		ImmigrationCandidateForms canform = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from ImmigrationCandidateForms  ciForm where ciForm.id=:id and ciForm.candidate.id = :candidateId and ciForm.immigration.id =:immigrationId";
+			canform = (ImmigrationCandidateForms) session.createQuery(query).setLong("id", id).setLong("candidateId", candidateId).setLong("immigrationId", immigrationId).uniqueResult();
 
+		} catch (Exception e) {
+			logger.error("Exception caught in Database while getting ImmigrationCandidateForms" + e.getMessage());
+			e.printStackTrace();
+		}
+		return canform;
+	}
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public CandidateLcaI94Summary getCandidateLCADetails(Long candidateId, String yes) {
@@ -294,8 +304,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		if (!"undefined".equalsIgnoreCase(searchValue) && StringUtils.isNotBlank(searchValue)
 				&& searchValue != "") {
-			String queryString = "from CandidatePassportVisa cp where cp.candidate.id=:candidateId and cp.idType=:idType and (cp.idNumber =:searchValue or cp.country =:searchValue)  order by cp.updatedDate desc";
-			passportvisaList = session.createQuery(queryString).setLong("candidateId", candidateId).setString("idType", idType).setString("searchValue", searchValue).list();
+			String queryString = "from CandidatePassportVisa cp where cp.candidate.id=:candidateId and cp.idType=:idType and (cp.idNumber like :searchValue or cp.country like :searchValue or cp.visaType like :searchValue)  order by cp.updatedDate desc";
+			passportvisaList = session.createQuery(queryString).setLong("candidateId", candidateId).setString("idType", idType).setString("searchValue", "%"+searchValue+"%").list();
 		}
 		else {
 			String queryString = "from CandidatePassportVisa cp where cp.candidate.id=:candidateId and cp.idType=:idType  order by cp.updatedDate desc";

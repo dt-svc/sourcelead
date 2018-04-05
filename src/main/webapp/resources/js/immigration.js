@@ -343,7 +343,7 @@ function Immigration() {
            type: "GET",
            success: function (result) {
                $("#passportsTab").html(result);
-              
+               $("#searchValuePassport").val(searchValue);
            }
        });
    }	
@@ -356,6 +356,7 @@ function Immigration() {
            type: "GET",
            success: function (result) {
                $("#visasTab").html(result);
+               $("#searchValueVisa").val(searchValue);
               
            }
        });
@@ -925,7 +926,6 @@ function uploadRequestDoc(){
 	var candidateId = $("#candidateID").val();
 	var immigrationId = $('#immigrationID').val();
 	var id = $("#uploadIdSave").val();
-	alert("ooooo"+id)
 	$.ajax({
         url: sourceleadUrl + immiModulePath + "/uploadRequstedDoc?id="+id+"&candidateId="+candidateId+"&immigrationId="+immigrationId,
         type: "POST",
@@ -939,7 +939,25 @@ function uploadRequestDoc(){
         }
     });
 }
-
+function uploadRequestForm(){
+	var formData = getFormData("uploadRequestForm_Form");
+	var candidateId = $("#candidateID").val();
+	var immigrationId = $('#immigrationID').val();
+	var id = $("#uploadFormIdSave").val();
+	console.log(" id value is --->"+id);
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/uploadRequstedForm?id="+id+"&candidateId="+candidateId+"&immigrationId="+immigrationId,
+        type: "POST",
+        data: formData,
+        success: function (result) {
+        	if(result=='success'){
+        		$('#uploadFormPop').hide();
+            	$('.popMask').fadeOut();
+            	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId); 
+        	}
+        }
+    });
+}
 function validateEduname()  
 {	var validationSettings = {
             errorMessagePosition: 'element',
@@ -1016,7 +1034,6 @@ function getPetitionTypeOnCountries(selectedCountry, selectedCountryOption){
 function getNotesListByImmigration(candidateId){
 	console.log("inside displayNotesDetails function call test -->")
 	 var immigrationId = $('#immigrationID').val();
-	//alert("oooooo"+candidateId)
 	$.ajax({
         url: sourceleadUrl + immiModulePath + "/getNotesListByImmigrationId?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
        type: "GET",
@@ -1039,7 +1056,6 @@ function searchPassportValue(){
 	var candidateId = $('#candidateID').val();
 	console.log("searchValue"+searchValue);
 	immigration.displayPassportDetails(candidateId,'Passport',searchValue);
-	
 }
 
 function searchVisaValue(){
