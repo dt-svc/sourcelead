@@ -324,13 +324,10 @@ function qveducationSubmission(candidateId){
 					       		} else if (data.response === "SUCCESS") {
 					       			$("#qveducationSubmission").empty();
 				                	 var result = "";
-				                	 
 										result = result +'            <div class="col-md-12">';
 										result = result +'              <h4>Education</h4>';
-										
-									//	 var json = JSON.parse(data);
 					                     for (var i = 0; i < data.data.length; i++) {
-					                    	 if(i < 3){
+					                    	 if(i < 3) {
 						                    	 var opt = data.data[i];  
 						                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
 					                    		        EducationName = opt.name;
