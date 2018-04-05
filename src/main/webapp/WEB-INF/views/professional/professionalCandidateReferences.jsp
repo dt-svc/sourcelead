@@ -416,14 +416,26 @@
 		    $("#save_ref").attr("disabled", "disabled");
 			$("#save_ref").addClass('button').val('Processing..'); 
 		
-	        $.post(sourceleadUrl+"/saveCandidateReferences?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(data) {
-	        	closePopup();
-	        	$("#popUpDiv").removeClass("edit-details-active");
-				$("#selector10").removeAttr("style");
-				$("#selector10").css({display : "block"});
-				$("#refMsgDiv").html("Success!! New References added");
-				candReferencesList(candidateId);
-				refMsgFadein();
+	        $.post(sourceleadUrl+"/saveCandidateReferences?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(response) {
+	        	if (response && response.response === "INVALID_DATA") {
+	        	    showError(response.responseMessage);
+	        	} else if (response && response.response === "INVALID_USER") {
+	        	    showError(response.responseMessage);
+	        	} else if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+	        		closePopup();
+		        	$("#popUpDiv").removeClass("edit-details-active");
+					$("#selector10").removeAttr("style");
+					$("#selector10").css({display : "block"});
+					$("#refMsgDiv").html("Success!! New References added");
+					candReferencesList(candidateId);
+					refMsgFadein();
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
 	        });
 			return true;
 		} else {
@@ -542,14 +554,23 @@
 			
 			 $("#save_ref").attr("disabled", "disabled");
 			$("#save_ref").addClass('button').val('Processing..'); 
-	        $.post(sourceleadUrl+"/updateCandidateReferenceBycandidateIdAndReferenceId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(data) {
-	        	
-	        	$("#selector10").removeAttr("style");
-				$("#selector10").css({display : "block"});
-				$("#refMsgDiv").html("Reference details updated");
-				closePopup();
-				candReferencesList(candidateId);
-				refMsgFadein();
+	        $.post(sourceleadUrl+"/updateCandidateReferenceBycandidateIdAndReferenceId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(result) {
+	        	if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+	    		    showError(result.responseMessage);
+	    		} else if (result.response === "AWKWARD") {
+	    		    location.href = "/errorPage";
+	    		} else if (result.response === "SUCCESS") {
+	    			$("#selector10").removeAttr("style");
+					$("#selector10").css({display : "block"});
+					$("#refMsgDiv").html("Reference details updated");
+					closePopup();
+					candReferencesList(candidateId);
+					refMsgFadein();
+	    		} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
 	        });
 			return true;
 		} else {
