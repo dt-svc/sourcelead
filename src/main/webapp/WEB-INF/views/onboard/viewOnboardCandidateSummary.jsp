@@ -403,48 +403,51 @@ function getTemplateContractsDocumentsDetails(){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByonBoardingUUID?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&documentType="+documentType, 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	var result = "";
-		        	result = result +'	 <div class="row">                                                       ';
-		        	if(json.length > 0){
-			        	for (var i = 0; i < json.length; i++) { 
-	               		 var report = json[i]; 
-							result = result +'    <div class="col-md-2 text-center mb10">                                ';
-							result = result +'      <a target="_blank" href=\"'+report.fileURL+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
-							
-							if(report.documentStatus != 'ACCEPTED'){
-								result = result +'<p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>';
-							}else if(report.documentStatus == 'ACCEPTED'){
-								result = result +'<p class="small mt tbldata-dotdot-100" title="'+report.uploadedDocFileName+'">'+report.uploadedDocFileName+'</p>';
-								
-							}
-							
-							
-							if(report.documentStatus == 'NEW'){
-								result = result +'<i class="fa fa-arrow-right text-info permission"></i></a>';
-							}
-							else if(report.documentStatus == 'PENDING'){
-								result = result +'<i class="fa fa-clock-o text-info permission"></i></a>';
-							}else if(report.documentStatus == 'ACCEPTED'){
-								result = result +'<i class="fa fa-check text-success permission"></i></a>';
-								
-							}
-							result = result +'    </div>                                                                 ';
-							result = result +'    </div>                                                                 ';
+		        success: function(response) {
+		        	if (response && response.response === "INVALID_USER") {
+		        	    showError(response.responseMessage);
+		        	} else if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		var json = JSON.parse(response.object);
+			        	var result = "";
+			        	result = result +'	 <div class="row">                                                       ';
+			        	if(json.length > 0){
+				        	for (var i = 0; i < json.length; i++) { 
+		               		 var report = json[i]; 
+								result = result +'    <div class="col-md-2 text-center mb10">                                ';
+								result = result +'      <a target="_blank" href=\"'+report.fileURL+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
+								if(report.documentStatus != 'ACCEPTED'){
+									result = result +'<p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>';
+								}else if(report.documentStatus == 'ACCEPTED'){
+									result = result +'<p class="small mt tbldata-dotdot-100" title="'+report.uploadedDocFileName+'">'+report.uploadedDocFileName+'</p>';
+									
+								}
+								if(report.documentStatus == 'NEW'){
+									result = result +'<i class="fa fa-arrow-right text-info permission"></i></a>';
+								}
+								else if(report.documentStatus == 'PENDING'){
+									result = result +'<i class="fa fa-clock-o text-info permission"></i></a>';
+								}else if(report.documentStatus == 'ACCEPTED'){
+									result = result +'<i class="fa fa-check text-success permission"></i></a>';
+								}
+								result = result +'    </div>                                                                 ';
+								result = result +'    </div>                                                                 ';
+				        	}
+			        	}else{
+			        		result = result +'    <div class="col-md-2 text-center mb10">  ';
+			        		result = result +'<p>No Documents Found</p>';
+			        		result = result +'    </div> ';
 			        	}
-		        	}else{
-		        		result = result +'    <div class="col-md-2 text-center mb10">  ';
-		        		result = result +'<p>No Documents Found</p>';
-		        		result = result +'    </div> ';
+						result = result +'    </div>                                                                 ';
+						 $("#onboardTasksListViewId").empty();
+	                	 $("#employmentContractDivId").empty();
+	                	 $("#employmentContractDivId").append(result);
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
 		        	}
-					result = result +'    </div>                                                                 ';
-					 $("#onboardTasksListViewId").empty();
-                	 $("#employmentContractDivId").empty();
-                	 $("#employmentContractDivId").append(result);
-                	 
-                	 
-			        
 		        },
 		    });
 }
@@ -458,49 +461,50 @@ function getTemplateFormsDocumentsDetails(){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByonBoardingUUID?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&documentType="+documentType, 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	var result = "";
-		        	result = result +'	 <div class="row">';
-		        	
-		        	if(json.length > 0){
-			        	for (var i = 0; i < json.length; i++) { 
-	               		 var report = json[i]; 
-							result = result +'    <div class="col-md-2 text-center mb10">                                ';
-							result = result +'      <a target="_blank" href=\"'+report.fileURL+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
-							
-							
-							if(report.documentStatus != 'ACCEPTED'){
-								result = result +'<p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>';
-							}else if(report.documentStatus == 'ACCEPTED'){
-								result = result +'<p class="small mt tbldata-dotdot-100" title="'+report.uploadedDocFileName+'">'+report.uploadedDocFileName+'</p>';
-								
-							}
-							
-							if(report.documentStatus == 'NEW'){
-								result = result +'<i class="fa fa-arrow-right text-info permission"></i></a>';
-							}
-							else if(report.documentStatus == 'PENDING'){
-								result = result +'<i class="fa fa-clock-o text-info permission"></i></a>';
-							}else if(report.documentStatus == 'ACCEPTED'){
-								result = result +'<i class="fa fa-check text-success permission"></i></a>';
-								
-							}
-							result = result +'    </div>';
-							result = result +'    </div>';
+		        success: function(response) {
+		        	if (response && response.response === "INVALID_USER") {
+		        	    showError(response.responseMessage);
+		        	} else if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		var json = JSON.parse(response.object);
+			        	var result = "";
+			        	result = result +'	 <div class="row">';
+			        	if(json.length > 0){
+				        	for (var i = 0; i < json.length; i++) { 
+		               		 var report = json[i]; 
+								result = result +'    <div class="col-md-2 text-center mb10">                                ';
+								result = result +'      <a target="_blank" href=\"'+report.fileURL+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
+								if(report.documentStatus != 'ACCEPTED'){
+									result = result +'<p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>';
+								}else if(report.documentStatus == 'ACCEPTED'){
+									result = result +'<p class="small mt tbldata-dotdot-100" title="'+report.uploadedDocFileName+'">'+report.uploadedDocFileName+'</p>';
+								}
+								if(report.documentStatus == 'NEW'){
+									result = result +'<i class="fa fa-arrow-right text-info permission"></i></a>';
+								}
+								else if(report.documentStatus == 'PENDING'){
+									result = result +'<i class="fa fa-clock-o text-info permission"></i></a>';
+								}else if(report.documentStatus == 'ACCEPTED'){
+									result = result +'<i class="fa fa-check text-success permission"></i></a>';
+								}
+								result = result +'    </div>';
+								result = result +'    </div>';
+				        	}
+			        	}else{
+			        		result = result +'    <div class="col-md-2 text-center mb10">  ';
+			        		result = result +'<p>No Documents Found</p>';
+			        		result = result +'    </div> ';
 			        	}
-		        	}else{
-		        		result = result +'    <div class="col-md-2 text-center mb10">  ';
-		        		result = result +'<p>No Documents Found</p>';
-		        		result = result +'    </div> ';
+						result = result +'    </div>';
+						 $("#onboardTasksListViewId").empty();
+	                	 $("#formstDivId").empty();
+	                	 $("#formstDivId").append(result);
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
 		        	}
-					result = result +'    </div>';
-					 $("#onboardTasksListViewId").empty();
-                	 $("#formstDivId").empty();
-                	 $("#formstDivId").append(result);
-                	 
-                	 
-			        
 		        },
 		    });
 }
@@ -513,43 +517,46 @@ function getTemplatePolicyDocumentsDetails(){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByonBoardingUUID?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&documentType="+documentType, 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	var result = "";
-		        	result = result +'	 <div class="row">                                                       ';
-		        	if(json.length > 0){
-		        		for (var i = 0; i < json.length; i++) { 
-		               		 var report = json[i]; 
-		               		 
-		               		
-								result = result +'    <div class="col-md-2 text-center mb10">                                ';
-								result = result +'      <a target="_blank" href=\"'+report.fileURL+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
-								result = result +'        <p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>                        ';
-								if(report.documentStatus == 'NEW'){
-									result = result +'<i class="fa fa-arrow-right text-info permission"></i></a>';
-								}
-								else if(report.documentStatus == 'PENDING'){
-									result = result +'<i class="fa fa-clock-o text-info permission"></i></a>';
-								}else if(report.documentStatus == 'ACCEPTED'){
-									result = result +'<i class="fa fa-check text-success permission"></i></a>';
-									
-								}
-								result = result +'    </div>                                                                 ';
-								result = result +'    </div>                                                                 ';
-				        	}
-		        	}else{
-		        		result = result +'    <div class="col-md-2 text-center mb10">  ';
-		        		result = result +'<p>No Documents Found</p>';
-		        		result = result +'    </div> ';
+		        success: function(response) {
+		        	if (response && response.response === "INVALID_USER") {
+		        	    showError(response.responseMessage);
+		        	} else if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		var json = JSON.parse(response);
+			        	var result = "";
+			        	result = result +'	 <div class="row">                                                       ';
+			        	if(json.length > 0){
+			        		for (var i = 0; i < json.length; i++) { 
+			               		 var report = json[i]; 
+									result = result +'    <div class="col-md-2 text-center mb10">                                ';
+									result = result +'      <a target="_blank" href=\"'+report.fileURL+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
+									result = result +'        <p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>                        ';
+									if(report.documentStatus == 'NEW'){
+										result = result +'<i class="fa fa-arrow-right text-info permission"></i></a>';
+									}
+									else if(report.documentStatus == 'PENDING'){
+										result = result +'<i class="fa fa-clock-o text-info permission"></i></a>';
+									}else if(report.documentStatus == 'ACCEPTED'){
+										result = result +'<i class="fa fa-check text-success permission"></i></a>';
+									}
+									result = result +'    </div>                                                                 ';
+									result = result +'    </div>                                                                 ';
+					        	}
+			        	} else {
+			        		result = result +'    <div class="col-md-2 text-center mb10">  ';
+			        		result = result +'<p>No Documents Found</p>';
+			        		result = result +'    </div> ';
+			        	}
+						result = result +'    </div>                                                                 ';
+						 $("#onboardTasksListViewId").empty();
+	                	 $("#policiesDivId").empty();
+	                	 $("#policiesDivId").append(result);
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
 		        	}
-		        	
-					result = result +'    </div>                                                                 ';
-					 $("#onboardTasksListViewId").empty();
-                	 $("#policiesDivId").empty();
-                	 $("#policiesDivId").append(result);
-                	 
-                	 
-			        
 		        },
 		    });
 }
@@ -563,39 +570,42 @@ function getTemplateSupportingDocumentsDetails(){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByonBoardingUUID?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&documentType="+documentType, 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	var result = "";
-		        	result = result +'	 <div class="row">                                                       ';
-		        	if(json.length > 0){
-		        	for (var i = 0; i < json.length; i++) { 
-	               		 var report = json[i]; 
-	               		 
-	               		
-							result = result +'    <div class="col-md-2 text-center mb10">                                ';
-							result = result +'      <a target="_blank" href=\"'+report.fileURL+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
-							result = result +'        <p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>                        ';
-							result = result +'        <i class="fa fa-info-circle text-info permission"></i> </div></a>         ';
-							result = result +'    </div>                                                                 ';
+		        success: function(response) {
+		        	if (response && response.response === "INVALID_USER") {
+		        	    showError(response.responseMessage);
+		        	} else if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		var json = JSON.parse(response.object);
+			        	var result = "";
+			        	result = result +'	 <div class="row">                                                       ';
+			        	if(json.length > 0){
+			        	for (var i = 0; i < json.length; i++) { 
+		               		 var report = json[i]; 
+								result = result +'    <div class="col-md-2 text-center mb10">                                ';
+								result = result +'      <a target="_blank" href=\"'+report.fileURL+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
+								result = result +'        <p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>                        ';
+								result = result +'        <i class="fa fa-info-circle text-info permission"></i> </div></a>         ';
+								result = result +'    </div>                                                                 ';
+				        	}
+			        	} else {
+			        		result = result +'    <div class="col-md-2 text-center mb10">  ';
+			        		result = result +'<p>No Documents Found</p>';
+			        		result = result +'    </div> ';
 			        	}
-		        	}else{
-		        		result = result +'    <div class="col-md-2 text-center mb10">  ';
-		        		result = result +'<p>No Documents Found</p>';
-		        		result = result +'    </div> ';
+						result = result +'    </div>                                                                 ';
+						 $("#onboardTasksListViewId").empty();
+	                	 $("#supportedDivId").empty();
+	                	 $("#supportedDivId").append(result);
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
 		        	}
-					result = result +'    </div>                                                                 ';
-					 $("#onboardTasksListViewId").empty();
-                	 $("#supportedDivId").empty();
-                	 $("#supportedDivId").append(result);
-                	 
-                	 
-			        
 		        },
 		    });
 }
 </script>
-
-
 
 <script>
 function getOnboardingTasksList(){
