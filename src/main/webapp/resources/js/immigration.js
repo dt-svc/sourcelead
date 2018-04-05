@@ -453,12 +453,14 @@ this.deletePassportVisaDetailsById=function(id,idType){
 	}
     this.displayFamilyDetails=function(candidateId){
     	console.log("inside displayFamilyDetails function call  -->")
+    	var searchVal= $("#familySerach").val();
     	$.ajax({
-            url: sourceleadUrl + immiModulePath + "/getCandidateFamilyDetails?candidateId="+candidateId,
+            url: sourceleadUrl + immiModulePath + "/getCandidateFamilyDetails?candidateId="+candidateId+"&searchVal="+searchVal,
             type: "GET",
             success: function (result) {
                 $("#familiesTab").html(result);
                 addfamilyPopupEventListener();
+                $("#familySerach").val(searchVal);
             }
         });
     }	
