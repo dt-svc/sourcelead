@@ -262,11 +262,11 @@ public class CandidateCertificationsRestController {
 	 */
 	// @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_EDIT_ASSOCIATE_CERTIFICATION_DETAILS')")
 	@RequestMapping(value = "/getCandidateCertificateBycandidateIdandCertificateId")
-	public Response<String> getCandidateCertificateBycandidateIdandCertificateId(
+	public Response<CandidateCertifications> getCandidateCertificateBycandidateIdandCertificateId(
 			@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "candidateCertificationId", required = false) Long candidateCertificationId, HttpServletRequest request)
 			throws Exception {
-		Response<String> response = new Response<>();
+		Response<CandidateCertifications> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
@@ -284,9 +284,7 @@ public class CandidateCertificationsRestController {
 						candidateCertificationsList.setCandidatevalidToDateToString(commonUtil
 								.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), candidateCertificationsList.getValidTo()));
 					}
-					// resultJson = commonUtil.toJSON(candidateCertificationsList);
-					// return resultJson;
-					response.setObject(commonUtil.toJSON(candidateCertificationsList));
+					response.setObject(candidateCertificationsList);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				} else {

@@ -102,7 +102,7 @@ function candDocumentsList(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateDocumentsListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(json) {
+          success :function(response) {
         	  if (response && response.response === "INVALID_DATA") {
         		    showError(response.responseMessage);
         		} else if (response.response === "AWKWARD") {
@@ -124,8 +124,8 @@ function candDocumentsList(candidateId){
                     result = result +"</thead>";
                     result = result +"<tbody>"; 
                     
-                    for (var i = 0; i < json.data.length; i++) { 
-                   		var opt = json.data[i];  
+                    for (var i = 0; i < response.data.length; i++) { 
+                   		var opt = response.data[i];  
                    	 	result  = result + ' <tr>';
 	                   	if(opt.requestedDocumentsId != null && opt.requestedDocStatus != "Rejected" && opt.requestedDocStatus != "Accepted"){
 	                   		result = result +'<td><input id="'+opt.id+'" value="'+opt.id+'"  onclick="deleteRequestedDoc();" type="checkbox" name="documents[]" class="myCheckbox" >';
@@ -677,7 +677,7 @@ function getDocument(candidateId, documentId){
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getDocument?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&documentId="+documentId, 	   
-   		    success: function(data) {
+   		    success: function(response) {
    		    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
    		    	    showError(response.responseMessage);
    		    	} else if (response.response === "AWKWARD") {

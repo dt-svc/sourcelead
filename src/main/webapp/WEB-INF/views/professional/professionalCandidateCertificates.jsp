@@ -445,8 +445,7 @@ function addCertification(candidateId) {
 	    		} else if (response.response === "AWKWARD") {
 	    		    location.href = "/errorPage";
 	    		} else if (response.response === "SUCCESS") {
-					var json = JSON.parse(response.object);
-
+					var json = response.object;
 					var result = '';
 				 	result  = result + '     <!-- Popup Div -->                                                                                         ';
 					result  = result + '         <form id="candidateCertificationEdit_form" name="candidateCertificationEdit_form" method="post">        ';
@@ -687,27 +686,23 @@ function  deleteSelectedCertification(candidateCertificationId,candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
-          success :function(data) {
-
-				if(data != null && data != 'undefined' && data != ""){
-             		if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	}
-             		else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		}
-             		else{
-             		     $("#popUpDivEmp").removeClass("edit-details-active");
-            			 $("#selector5").removeAttr("style");
-             			 $("#selector5").css({ display: "block" });
-             			 $("#cerMsgDiv").html("Certification deleted");
-             			$("#remove_user_pop_certificates, .project_inn_mask").fadeOut();
-             			candidateCertificateList(candidateId);
-             			cerMsgFadein();
-			    	}
-               } 
+          success :function(response) {
+        	  if (response.response === "AWKWARD") {
+                  location.href = "/errorPage";
+              } else if (response.response === "SUCCESS") {
+                  $("#popUpDivEmp").removeClass("edit-details-active");
+                $("#selector5").removeAttr("style");
+                 $("#selector5").css({ display: "block" });
+                 $("#cerMsgDiv").html("Certification deleted");
+                $("#remove_user_pop_certificates, .project_inn_mask").fadeOut();
+                candidateCertificateList(candidateId);
+                cerMsgFadein();                  
+              } else if (response.indexOf('Sign In') !== -1) {
+                  location.replace(sourceleadUrl);
+              } else {
+                  showError("Operation failed, please try again");
+              }
         },
-          
      }); 
 }
 </script> 

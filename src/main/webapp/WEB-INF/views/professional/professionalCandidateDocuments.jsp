@@ -403,6 +403,7 @@ function storeCandidateDocument(candidateId, documentUUID) {
 							} else if (response.response === "AWKWARD") {
 							    location.href = "/errorPage";
 							} else if (response.response === "SUCCESS") {
+								var result = response.object;
 								closePopup();
 								$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
 			          			if(result<50) {
@@ -462,7 +463,7 @@ function getDocument(candidateId, documentId){
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getDocument?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentId="+documentId, 	   
-   		    success: function(data) {
+   		    success: function(response) {
    		    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
    		    	    showError(response.responseMessage);
    		    	} else if (response.response === "AWKWARD") {

@@ -1040,7 +1040,7 @@ function getOffboardingTasksList(){
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getOffboardTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
-		    success: function(respone) {
+		    success: function(response) {
 		    	if (response.response === "AWKWARD") {
 		    	    location.href = "/errorPage";
 		    	} else if (response.response === "SUCCESS") {

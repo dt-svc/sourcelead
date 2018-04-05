@@ -556,7 +556,7 @@ function deleteCandidate(candidateId,candidateType) {
 				    location.href = "/errorPage";
 				} else if (result.response === "SUCCESS") {
 					showSuccessStatusPopup("Candidate marked as teminated");
-					var json = JSON.parse(result.object);
+					var json = result.object;
 					if(candidateType == 'Associates') {
 						location.replace(sourceleadUrl+"/associatesList");
 					} else {

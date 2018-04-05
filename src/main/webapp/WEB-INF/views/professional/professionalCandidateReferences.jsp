@@ -497,26 +497,30 @@
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		//var message = confirm("You are choosing to delete the reference");
 		var userCode = '${SourceLeadWeb_userCode}';
-		$
-				.ajax({
+		$.ajax({
 					type : "POST",
 					url : sourceleadUrl
 							+ "/terminateReference?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="
 							+ candidateId + "&refId=" + refId + "&userCode="
 							+ userCode,
-					success : function(data) {
-						if (data != null && data != 'undefined' && data != "") {
-							$("#selector10").removeAttr("style");
-							$("#selector10").css({display : "block"});
-							$("#refMsgDiv").html("Reference deleted");
-							$("#popUpDiv").removeClass("edit-details-active");
-							$("#remove_user_pop_reference, .project_inn_mask").fadeOut();
-							candReferencesList(candidateId);
-							refMsgFadein();
-						}
+					success : function(response) {
+						if (response.response === "AWKWARD") {
+                            location.href = "/errorPage";
+                        } else if (response.response === "SUCCESS") {
+                            $("#selector10").removeAttr("style");
+                            $("#selector10").css({display : "block"});
+                            $("#refMsgDiv").html("Reference deleted");
+                            $("#popUpDiv").removeClass("edit-details-active");
+                            $("#remove_user_pop_reference, .project_inn_mask").fadeOut();
+                            candReferencesList(candidateId);
+                            refMsgFadein();                 
+                        } else if (response.indexOf('Sign In') !== -1) {
+                            location.replace(sourceleadUrl);
+                        } else {
+                            showError("Operation failed, please try again");
+                        }
 					},
 				});
-
 	}
 </script>
 
@@ -707,13 +711,12 @@
 							.click(function(e) {
 								e.stopPropagation();
 							});
-				}
 				} else if (response.indexOf('Sign In') !== -1) {
 					location.replace(sourceleadUrl);
 				} else {
 				    showError("Operation failed, please try again");
 				}
-
+			}
 			}).done(function() {
 				editRelation(this);
 				});

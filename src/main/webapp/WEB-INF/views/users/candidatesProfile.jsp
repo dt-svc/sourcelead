@@ -572,15 +572,20 @@ function deleteCandidate(candidateId,candidateType){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType="+candidateType,        
-         success :function(data) {
-              if(data != null && data != 'undefined' && data != ""){
-            	  var json = JSON.parse(data);
-            	  /* if(candidateType == 'Associates'){ */
-            		  location.replace(sourceleadUrl+"/usersList");
-            	 /*  }else{
-            		  location.replace(sourceleadUrl+"/usersList");
-            	  } */
-                }
+         success :function(response) {
+        	 if (response && response.response === "INVALID_DATA") {
+        		    showError(response.responseMessage);
+        		} else if (response && response.response === "INVALID_USER") {
+        		    showError(response.responseMessage);
+        		} else if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+        			location.replace(sourceleadUrl+"/usersList");
+        		} else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
                  },
               }); 
 	  

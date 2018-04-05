@@ -307,16 +307,14 @@ public class CandidateReferencesRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getCandidateReferencesByCandidateIdAndReferenceId")
-	public Response<String> getCandidateReferencesByCandidateIdAndReferenceId(
+	public Response<CandidateReferences> getCandidateReferencesByCandidateIdAndReferenceId(
 			@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "refId", required = false) Long refId) throws Exception {
-		Response<String> response = new Response<>();
+		Response<CandidateReferences> response = new Response<>();
 		try {
-			String resultJson;
 			CandidateReferences candidateReferencesList = candidateReferencesService
 					.getCandidateReferencesByCandidateIdAndReferenceId(candidateId, refId);
-			resultJson = commonUtil.toJSON(candidateReferencesList);
-			response.setObject(resultJson);
+			response.setObject(candidateReferencesList);
 			response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());
 		} catch (Exception e) {

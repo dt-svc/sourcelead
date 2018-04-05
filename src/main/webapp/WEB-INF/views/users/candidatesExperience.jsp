@@ -321,8 +321,7 @@ function closeCertificatePopup(){
 					if (response.response === "AWKWARD") {
     					location.href = "/errorPage";
 					} else if (response.response === "SUCCESS") {
-						/* var json = JSON.parse(data); */
-						var json = JSON.parse(response.object);
+						var json = response.object;
 						var result = "";
 						result = result + '      <!-- Popup Div --> ';
 						result = result	+ '         <form id="candidateExperianceEdit_form" name="candidateExperianceEdit_form" method="post">';

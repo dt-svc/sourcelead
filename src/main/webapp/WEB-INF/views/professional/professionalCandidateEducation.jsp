@@ -775,35 +775,35 @@ function deleteSelectedEducation(candidateEducationId,candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/removeCandidateEducationBycandidateIdandcandidateEducationId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,        
-          success :function(data) {
-
-				if(data != null && data != 'undefined' && data != ""){
-             		if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	}else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		}else{
-             			$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
-              			 if(data<50){
-              			  /* $("#perVal").removeClass("progress-bar-success"); */
-              			   $("#perVal").removeClass('progress-bar-success')
-              			   $("#perVal").addClass("progress-bar-danger");
-              			 }
-              			 if(data>=50){
-              				 $("#perVal").removeClass('progress-bar-danger');
-              				 $("#perVal").addClass("progress-bar-success");
-              			 }
-              			 $("#disVal").empty();
-              			$("#disVal").append(data+'%');
-           			 	 $("#selector4").removeAttr("style");
-            			 $("#selector4").css({ display: "block" });
-            			 $("#eduMsgDiv").html("Education deleted");
-             			 $("#popUpDiv").removeClass("edit-details-active");
-             			$("#remove_user_Edu_pop, .project_inn_mask").fadeOut();
-             			 candidateEducationList(candidateId);
-             			eduMsgFadeinFunction();
-			    	}
-               } 
+          success :function(response) {
+        	  if (response.response === "AWKWARD") {
+                  location.href = "/errorPage";
+              } else if (response.response === "SUCCESS") {
+                  var data = response.object;
+                  $('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+                  if(data<50){
+                   /* $("#perVal").removeClass("progress-bar-success"); */
+                    $("#perVal").removeClass('progress-bar-success')
+                    $("#perVal").addClass("progress-bar-danger");
+                  }
+                  if(data>=50){
+                      $("#perVal").removeClass('progress-bar-danger');
+                      $("#perVal").addClass("progress-bar-success");
+                  }
+                  $("#disVal").empty();
+                 $("#disVal").append(data+'%');
+                    $("#selector4").removeAttr("style");
+                $("#selector4").css({ display: "block" });
+                $("#eduMsgDiv").html("Education deleted");
+                 $("#popUpDiv").removeClass("edit-details-active");
+                $("#remove_user_Edu_pop, .project_inn_mask").fadeOut();
+                 candidateEducationList(candidateId);
+                eduMsgFadeinFunction();           
+              } else if (response.indexOf('Sign In') !== -1) {
+                  location.replace(sourceleadUrl);
+              } else {
+                  showError("Operation failed, please try again");
+              }				
         },
           
      }); 
