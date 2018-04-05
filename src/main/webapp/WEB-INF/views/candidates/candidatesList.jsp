@@ -728,7 +728,7 @@ function addFavourite(candidateId){
 				} else if (response.response === "AWKWARD") {
 				    location.href = "/errorPage";
 				} else if (response.response === "SUCCESS") {
-					var td = cacheLastJson.response.object;
+					var td = cacheLastJson.data;
 					for(var e in td) {
 						if(td[e].candidateId === candidateId) {
 							td[e]
@@ -740,7 +740,7 @@ function addFavourite(candidateId){
 							break;
 						}
 					}
-					cacheLastJson.response.object = td;
+					cacheLastJson.data = td;
 					if(checked){
 						 document.getElementById("favourite"+candidateId).removeAttribute("class");
 						 document.getElementById("favourite"+candidateId).className = 'iconClass pull-left star-rating activestar-rating' 
@@ -1622,7 +1622,7 @@ function savedCommentAndCount(candidateId){
         		} else if (data.response === "SUCCESS") {
         			var result = "";
                     if(data.object.length > 0) {
-                    	var json = JSON.parse(data.object);
+                    	var json = data.data;
                   		var totalComments = 0;
                   		if(json.length>0) {
                   			totalComments = json.length;
