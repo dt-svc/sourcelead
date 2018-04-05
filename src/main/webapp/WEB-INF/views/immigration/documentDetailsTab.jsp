@@ -44,15 +44,12 @@
 						</span>
 					</div>
 				</td> -->
-				<td class="immigraAction">
-					<div><i id= "upload" title="Upload" class="fa fa-upload uploadForm"></i>
+				<td><div>
+					<a id= "upload" title="Upload" class="fa fa-upload uploadForm"></a>
 					<c:if test="${canDocList.isTemplateConfigured eq 'N'}">
-					<i id="edit" onclick="editDocumentDetailsByRowId(${canDocList.id});"
-				class="glyphicon glyphicon-pencil"></i><i id="delete" 
-				 onclick="deleteDocumentDetailsByRowId(${canDocList.id});" 
-				 class="glyphicon glyphicon-trash ml10"></i>
+					<i id="edit" class="glyphicon glyphicon-pencil ml10" onclick="editDocumentDetailsByRowId(${canDocList.id});"></i>
+					<i id="delete" class="glyphicon glyphicon-trash ml10" onclick="deleteDocumentDetailsByRowId(${canDocList.id});" ></i>
 				 </c:if>
-						
 					</div>
 				</td>
 			  </tr>  
@@ -66,6 +63,7 @@
 		<!--  popup code start -->
 		<form id= "candidate_Immigration_Doc" name = "candidate_Immigration_Doc">
 		<div class="popUpOut" id="docuView">
+		 <input type = "hidden" id= "immigrationCandidateDocId" name="immigrationCandidateDocId"/> 
 	 	<%-- <input type = "text" id= "immigrationcandidateId" name = "immigrationcandidateId" value = "${candidateId}">
 		<input type = "text" id= "immigrationId" name = "immigrationId" value = "${immigrationId}">
 		<input type = "text" id= "immigrationTempplateId" name = "immigrationTempplateId" value = "${templateId}"> --%>
@@ -90,7 +88,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Description</label>
               	<div class="col-md-8 padding_right">
-					<textarea rows="2" class="form-control" id= "description" name = "description"></textarea>
+					<textarea rows="2" class="form-control" id= "description1" name = "description"></textarea>
 				</div>
 			</div>	
 			

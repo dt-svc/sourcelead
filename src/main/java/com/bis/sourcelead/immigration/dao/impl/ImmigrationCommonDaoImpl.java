@@ -427,6 +427,36 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
+	public String deletetImmigrationCandidateDocsById(Long id) {
+	        try {
+				Session session = this.sessionFactory.getCurrentSession();
+				ImmigrationCandidateDocuments doc = (ImmigrationCandidateDocuments)session.load(ImmigrationCandidateDocuments.class,id);
+				session.delete(doc);
+				session.flush();
+			} catch (HibernateException e) {
+				logger.error("SQL Exception occured while doing delete -->"+e.getMessage());
+				e.printStackTrace();
+			}
+		return "success";
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ImmigrationCandidateDocuments getImmigrationCandidateDocumentById(Long id) {
+		ImmigrationCandidateDocuments docObj= null;
+        try {
+			Session session = this.sessionFactory.getCurrentSession();
+			docObj = (ImmigrationCandidateDocuments)session.get(ImmigrationCandidateDocuments.class,id);
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing getting record -->"+e.getMessage());
+			e.printStackTrace();
+		}
+		return docObj;
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public Immigration  getImmigrationById(Long id) {
 		System.out.println("get CandidateFamilyDetails id ---> "+id);
 		Immigration immigration= null;
