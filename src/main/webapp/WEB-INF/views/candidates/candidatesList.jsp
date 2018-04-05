@@ -889,8 +889,6 @@ function cancel(candidateId){
                 <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr10" onclick="resetCandidateFilter();" title="Refresh">
 				    <span class="fa fa-refresh"></span>
 				</button>
-				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openCandidateFilterPop();"><i class="fa fa-filter faFilter padding_right"></i>
-				</a>
 	</div>
      <div class="pull-left cand-advsrche">
 			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();">
@@ -1174,6 +1172,11 @@ function cancel(candidateId){
 				  </div>
 			  </form:form>
       </div>
+      
+      <div class="pull-left pull-left ml mt10 mr5">
+				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openCandidateFilterPop();"><i class="fa fa-filter faFilter padding_right"></i>
+				</a>
+	</div>
       <div class="dropdown pull-left ml mt">
 			  <div class="dropdown-toggle" data-toggle="dropdown">
 			  <span class="fa fa-share-alt cursorPointer" title="Share" href="#" onclick="shareJob();"></span></div>
