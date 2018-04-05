@@ -776,7 +776,7 @@ public class ImmigrationRestController {
 	
 	@RequestMapping(value = { "/getCandidateFamilyDetails" })
 	public ModelAndView getCandidateFamilyDetails(
-			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) {
+			@RequestParam(value = "candidateId", required = true) Long candidateId, @RequestParam(value = "searchVal", required = false) String searchVal, HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
 		System.out.println(" inisde getCandidateFamilyDetails controller test -->");
 		model.setViewName("/immigration/familyDetailsTab");
@@ -784,7 +784,8 @@ public class ImmigrationRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		try {
-			familyList = immigrationCommonService.getCandidateFamilyDetails(candidateId);
+			// String searchVal = ServletRequestUtils.getStringParameter(request, "searchVal");
+			familyList = immigrationCommonService.getCandidateFamilyDetails(candidateId,searchVal);
 			for(CandidateFamilyDetails familyObj: familyList) {
 				familyObj.setMarraigeDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), familyObj.getMarraigeDate()));
 				familyObj.setMarriageEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), familyObj.getMarriageEndDate()));

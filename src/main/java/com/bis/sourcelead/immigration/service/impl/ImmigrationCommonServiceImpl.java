@@ -619,8 +619,8 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	}
 
 	@Override
-	public List<CandidateFamilyDetails> getCandidateFamilyDetails(Long candidateId) {
-		return immigrationCommonDao.getCandidateFamilyDetails(candidateId);
+	public List<CandidateFamilyDetails> getCandidateFamilyDetails(Long candidateId,String searchVal) {
+		return immigrationCommonDao.getCandidateFamilyDetails(candidateId,searchVal);
 	}
 	
 	@Override
