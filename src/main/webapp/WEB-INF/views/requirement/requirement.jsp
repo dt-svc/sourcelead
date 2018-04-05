@@ -1733,35 +1733,41 @@ function validate_fileupload(fileName)
 	  		         contentType:false, 
 					  url : sourceleadUrl+"/storeRequirement?"+tokenParamName+"="+tokenValue+"&saveType="+jobSaveType,
 					  	success : function(result) {
-					  		if(result === 'MissingData'){
+					  		if(result.object === 'MissingData'){
 					  			showError("Invalid data");
 					  			$("#requirementLoading").removeAttr("style");	
 					  		}else{
-					  		//$("#requirementLoading").removeAttr("style");	
-							  	if(saveType != 'saveAndContinue'){
-							  		location.replace(sourceleadUrl+"/jobs");
-							  	}
-							  	
-								$("#selector2").removeAttr("style");
-					    		$("#selector2").css({ display: "block" });
-					    		if(saveType == 'save'){
-					    			$("#msgJobDiv").html("Successfully job  saved..");
-					    		}else if(saveType == 'draft'){
-					    			$("#msgJobDiv").html("Successfully job  saved to Draft");
-					    		}
-					    		else if(saveType == 'submitForApproval'){
-					    			$("#msgJobDiv").html("Successfully job  submitted for approval");
-					    		}else if(saveType == 'saveAndContinue'){
-					    			if(result != 'MissingData'){
-					    				$("#msgJobDiv").html("Successfully job saved..");
-					    				location.replace(sourceleadUrl+"/jobReleaseManagement?requirementUUID="+result);	
-					    			}
-					    			
-					    		}
-				     			msgFadein();
+					  			if (result.response === "SESSION_TIMEDOUT") {
+					  				location.replace(sourceleadUrl);
+				                } else if (result.response === "AWKWARD") {
+				                    location.href = "/errorPage";
+				                } else if (result.response === "SUCCESS") {
+								  	if(saveType != 'saveAndContinue'){
+								  		location.replace(sourceleadUrl+"/jobs");
+								  	}
+									$("#selector2").removeAttr("style");
+						    		$("#selector2").css({ display: "block" });
+						    		if(saveType == 'save'){
+						    			$("#msgJobDiv").html("Successfully job  saved..");
+						    		}else if(saveType == 'draft'){
+						    			$("#msgJobDiv").html("Successfully job  saved to Draft");
+						    		}
+						    		else if(saveType == 'submitForApproval'){
+						    			$("#msgJobDiv").html("Successfully job  submitted for approval");
+						    		}else if(saveType == 'saveAndContinue'){
+						    			if(result.object != 'MissingData'){
+						    				$("#msgJobDiv").html("Successfully job saved..");
+						    				location.replace(sourceleadUrl+"/jobReleaseManagement?requirementUUID="+result.object);	
+						    			}
+						    		}
+					     			msgFadein();
+				     			
+				                } else if (result.indexOf('Sign In') !== -1) {
+									location.replace(sourceleadUrl);
+								} else {
+				                    showError("Operation failed, please try again");
+				                }
 					  		}
-					  	
-
 					},
 				});
 			return true;
