@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -97,6 +98,22 @@ public class CandidateEducationRestController {
 	 * 
 	 * @throws NullPointer
 	 */
+
+	/** @author: Mahaveer Manoj, This method is used for Android application **/
+	@RequestMapping(value = "/rest/storeCandidateEducation", method = RequestMethod.POST)
+	@ResponseBody
+	public Response<Integer> storeCandidateEducation(@RequestBody CandidateEducationDTO candidateEducationDTO, HttpServletRequest request)
+			throws Exception {
+		Response<Integer> response = new Response<>();
+		try {
+			response = storeCandidateEducation(candidateEducationDTO, candidateEducationDTO.getCandidateId() + "", request);
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
 
 	// @PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_EDUCATION_DETAILS')")
 	@RequestMapping(value = "/storeCandidateEducation", method = RequestMethod.POST)
@@ -336,8 +353,23 @@ public class CandidateEducationRestController {
 		return response;
 	}
 
-	@RequestMapping(value = { "/upDateCandidateEducationByCandidateIdAndCandidateEducationId",
-			"rest/upDateCandidateEducationByCandidateIdAndCandidateEducationId" }, method = RequestMethod.POST)
+	/** @author: Mahaveer Manoj, This method is used for Android application **/
+	@RequestMapping(value = "rest/upDateCandidateEducationByCandidateIdAndCandidateEducationId", method = RequestMethod.POST)
+	@ResponseBody
+	public Response<Boolean> upDateCandidateEducationByCandidateIdAndCandidateEducationIdForAndroid(
+			@RequestBody CandidateEducationDTO candidateEducationDTO, HttpServletRequest request) throws Exception {
+		Response<Boolean> response = new Response<>();
+		try {
+			response = upDateCandidateEducationByCandidateIdAndCandidateEducationId(candidateEducationDTO, request);
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+
+	@RequestMapping(value = "/upDateCandidateEducationByCandidateIdAndCandidateEducationId", method = RequestMethod.POST)
 	@ResponseBody
 	public Response<Boolean> upDateCandidateEducationByCandidateIdAndCandidateEducationId(CandidateEducationDTO candidateEducationDTO,
 			HttpServletRequest request) throws Exception {
