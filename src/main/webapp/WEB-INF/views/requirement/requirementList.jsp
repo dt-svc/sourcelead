@@ -45,9 +45,13 @@ function clearAllStatus(){
 }
 
 </script>
-
-
 <script>
+$(document).ready(function() {
+	getcites('apiLocation','city','recommendation');
+});
+</script>
+
+<!-- <script>
 $(document).ready(function() {
 	getcites('apiLocation','city','recommendation');
 	 $("#filter1ApprovePop").click(function(){
@@ -106,7 +110,7 @@ $(document).ready(function() {
     });	
 }); 
 
-</script>
+</script> -->
 
 
 <style>
@@ -195,15 +199,20 @@ function statusvalidating(id){
 	</section>
 	<div class="clearfix">
 		<div class="pull-left cand-advsrch advsrch_chosen">
-		<button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onClick="clearList();" title="Refresh">
+			<button type="button" class="btn btn-primary dropdown-toggle btn-sm mr pull-left" onClick="clearList();" title="Refresh">
 			    <span class="fa fa-refresh"></span>
 			</button>
 			
-			<a href="javascript:void(0)" class="btn btn-primary btn-sm"
+			<a href="javascript:void(0)" class="btn btn-primary btn-sm mr pull-left"
 				title="Advanced Search"
 				onClick="openPop();"> Advanced
 				Search&nbsp;&nbsp; <i class="fa fa-search"></i>
 			</a>
+			
+			<div class="filterSearchDiv pull-left">
+				<a href="javascript:void(0)" onClick="filterPop();" title="Filter" class="btn btn-sm btn-default"><i class="fa fa-filter"></i></a>
+			</div>
+			
 			</div>
 			<form:form id="requirement_form" name="requirement_form"
 				enctype='multipart/form-data'>
@@ -451,8 +460,8 @@ function statusvalidating(id){
 	</div>
 	<div class="timesheet_out">
 		<div class="vendor_wrap">
-			<div class="timesheet_head timesheetHead_Custom timesheetHead_filters topfilters">
-				<ul>
+			<div class="timesheet_head timesheetHead_filters topfilters">
+				<ul class="padding_right">
 					<sec:authorize
 						access="hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')">
 							<div id="filter1ApprovedPop" class="approved_pop">
@@ -476,7 +485,7 @@ function statusvalidating(id){
 								</ul>
 						 </div>
 						 
-						 <li><b id="filter5ApprovePop"><i class="fa fa-filter"></i><span>Assign To</span><i
+						 <%--  <li><b id="filter5ApprovePop"><i class="fa fa-filter"></i><span>Assign To</span><i
 								class="glyphicon glyphicon-play"></i></b>
 							<div id="filter5ApprovedPop" class="approved_pop">
 								<ul id="assignTo">
@@ -510,10 +519,10 @@ function statusvalidating(id){
 									<li><input id="c16" type="checkbox" name="requirementType" value="Full Time" onclick="requirementList('list','${sourceleadUrl}');"><label for="c16">Full Time </label></li>
 									<li><input id="c17" type="checkbox" name="requirementType" value="Other" onclick="requirementList('list','${sourceleadUrl}');"><label for="c17">Other </label></li>
 								</ul>
-							</div></li>
-							
+							</div></li> 
+							 --%>
 						<!-- for status counts add this function to below.. onClick ="requirementListIndividualStatusCounts();" -->
-						<li><b id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i
+						<%-- <li><b id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i
 								class="glyphicon glyphicon-play"></i></b>
 							<div id="filter2ApprovedPop" class="approved_pop">
 								<ul id="status">
@@ -564,7 +573,7 @@ function statusvalidating(id){
 										onclick="requirementList('list','${sourceleadUrl}');"><label for="c15">Closed<span
 											id="closedRequirementCount"></span></label></li>
 								</ul>
-							</div></li>
+							</div></li> --%>
 					</sec:authorize>
 
 					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
@@ -591,13 +600,15 @@ function statusvalidating(id){
 								</ul>
 							</div></li>
 					</sec:authorize>
-					
+					<li>
+					<div class='dynamic_search'>
+		        		<input type='text' placeholder='Search' id='dataTableSearch'/>
+	   			<span class="cursorPointer padding_right" title="Search"><i class="fa fa-search padding_right" onClick="requirementListCheck('','','','${sourceleadUrl}');"></i></span>
+		        </div>
+					</li>
 					<div class="clearfix"></div>
 				</ul>
 				 <div class="clearfix"></div>
-		        <div class='remove_search'>
-		        		<input type='text' placeholder='search' id='dataTableSearch'/>
-		        </div>
 			</div>
 			<div class="require_wrap_table datatable_filter">
 				<div id="requirementList"></div>
@@ -616,6 +627,19 @@ function statusvalidating(id){
 <jsp:include page="addApplicantFromRequirementList.jsp" />
 
 <input type="hidden" name="assignedTeamId" id="assignedTeamId" value=""/>
+
+
+<script>
+function filterPop(){
+	$("#requirementFilterPopup").toggle();
+	$(".sideMask").fadeIn();
+};
+function closeFilter(){
+	$("#requirementFilterPopup").toggle();
+	$(".sideMask").fadeOut();
+
+}
+</script>
 <!-- 
 
 <script type="text/javascript">
@@ -659,18 +683,38 @@ function changeStatus(requirementId, requirementStatus){
         	 $.ajax({
              type : "POST",
         	 url: sourceleadUrl+"/saveChangedStatusFromDraft?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status+"&userId="+userId,
-	        	 success :function(data) {
-	       		  $("#changeStatusId" +requirementId).val(status);
-	           	  //location.replace(sourceleadUrl+"/requirementList");
+	        	 success :function(result) {
+	        		 	if (result.response === "SESSION_TIMEDOUT") {
+			  				location.replace(sourceleadUrl);
+		                } else if (result.response === "AWKWARD") {
+		                    location.href = "/errorPage";
+		                } else if (result.response === "SUCCESS") {
+		                	$("#changeStatusId" +requirementId).val(status);
+		  	           	  //location.replace(sourceleadUrl+"/requirementList");	
+		                } else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+		                    showError("Operation failed, please try again");
+		                }
 	         	}
         	});
          }else{
         	 $.ajax({
              type : "POST",
         	 url: sourceleadUrl+"/saveChangedStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status,
-	        	 success :function(data) {
-	       		  $("#changeStatusId" +requirementId).val(status);
-	           	 //location.replace(sourceleadUrl+"/requirementList");
+	        	 success :function(result) {
+	        		 if (result.response === "SESSION_TIMEDOUT") {
+			  				location.replace(sourceleadUrl);
+		                } else if (result.response === "AWKWARD") {
+		                    location.href = "/errorPage";
+		                } else if (result.response === "SUCCESS") {
+		                	$("#changeStatusId" +requirementId).val(status);
+		   	           	 //location.replace(sourceleadUrl+"/requirementList");
+		                } else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+		                    showError("Operation failed, please try again");
+		                }
 	         	}
         	});
          }
@@ -803,8 +847,10 @@ function getActions(){
 		}
 		function openPop(){
 			 $("#dataTableSearch").val('');
-			$("div.cand-advsrch-popup").toggle();
+			 $("div.cand-advsrch-popup").toggle();
 			 $(".advancedsearch-mask").fadeIn();
+			 $("#requirementFilterPopup").toggle();
+			 
 		}
 		function closeAdsrch(){
 			$("div.cand-advsrch-popup").fadeOut();
@@ -944,5 +990,239 @@ function refreshGoogleApiCity(cityId){
 }
 </script> -->
 
+
+
+
+<!--  Filter Pop -->
+
+
+
+<div class="sideMask"></div>
+<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="requirementFilterPopup">
+<h5 class="headerAdsrch">Filter <a href="javascript:void(0)" class="close-div" onClick="closeFilter()"><i class="fa fa-close"></i></a></h5>
+<div class="addInner">
+<div class="row">
+ 
+ <div class='col-md-2'>
+ <div class='row'>
+ <div class='col-md-12'>
+ <label><strong>Assign To</strong></label>
+ <div class='clearfix'>
+ 	<ul id="assignTo" class="list-unstyled">
+		<li class="radioIput positionRelative"><input id="r1" type="radio" name="requirementAssignTo" value="Alljobs" ><label for="r1">All Jobs </label></li>
+		<li class="radioIput positionRelative"><input id="r2" type="radio" name="requirementAssignTo" value="Myjobs" ><label for="r2">My Jobs </label></li>
+	</ul>
+	</div>
+ </div>
+ 
+ 			<div  class="col-md-12">
+ 			<label><strong>Priority</strong></label>
+ 			<div class='clearfix'>
+								<ul id="priority" class="list-unstyled">
+									<li class="checkBox positionRelative"><input id="c1" type="checkbox" name="requirementPriority" value="Medium" ><label for="c1">Medium </label></li>
+									<li class="checkBox positionRelative"><input id="c2" type="checkbox" name="requirementPriority" value="Low" ><label for="c2">Low </label></li>
+									<li class="checkBox positionRelative"><input id="c3" type="checkbox" name="requirementPriority" value="Urgent" ><label for="c3">Urgent </label></li>
+									<li class="checkBox positionRelative"><input id="c4" type="checkbox" name="requirementPriority" value="High" ><label for="c4">High </label></li>
+								</ul>
+				</div>
+			</div>
+			
+			<div class="col-md-12">
+				<label><strong>Jobs</strong></label>
+					<div class='clearfix'>
+				<ul id="jobs" class="list-unstyled">
+					<li class="checkBox positionRelative"><input id="j1" type="checkbox" name="requirementSpecJobs" value="ClientJobs" ><label for="j1">All Client Jobs </label></li>
+					<li class="checkBox positionRelative"><input id="j2" type="checkbox" name="requirementSpecJobs" value="NormalJobs" ><label for="j2">All Internal jobs</label></li>
+				
+				</ul>
+			</div>
+           </div>
+			</div>
+			</div>
+			
+			<div  class="col-md-2">
+			<label><strong>Job Type</strong></label>
+			<div class='clearfix'>
+								<ul id="jobType" class="list-unstyled">
+									<li class="checkBox positionRelative"><input id="c11" type="checkbox" name="requirementType" value="C2C" ><label for="c11">C2C </label></li>
+									<li class="checkBox positionRelative"><input id="c12" type="checkbox" name="requirementType" value="W-2" ><label for="c12">W-2 </label></li>
+									<li class="checkBox positionRelative"><input id="c13" type="checkbox" name="requirementType" value="C2H" ><label for="c13">C2H </label></li>
+									<li class="checkBox positionRelative"><input id="c14" type="checkbox" name="requirementType" value="Contract" ><label for="c14">Contract </label></li>
+									<li class="checkBox positionRelative"><input id="c15" type="checkbox" name="requirementType" value="Part Time" ><label for="c15">Part Time </label></li>
+									<li class="checkBox positionRelative"><input id="c16" type="checkbox" name="requirementType" value="Full Time" ><label for="c16">Full Time </label></li>
+									<li class="checkBox positionRelative"><input id="c17" type="checkbox" name="requirementType" value="Other" ><label for="c17">Other </label></li>
+								</ul>
+				</div>
+							</div>
+							
+						
+						
+						<div  class="col-md-2">
+			<label><strong>Status</strong></label>
+			<div class='clearfix'>	
+			
+								<ul id="status" class="list-unstyled">
+									<li class="checkBox positionRelative"><input id="c6" type="checkbox"
+										name="requirementStatus" value="NEW"><label for="c6">New<span id="newRequirementCount"></span></label></li>
+									<li class="checkBox positionRelative"><input id="c7" name="requirementStatus" type="checkbox" value="DRAFT" ><label
+										for="c7">Draft<span id="draftRequirementCount"></span></label></li>
+									<li class="checkBox positionRelative"><input id="c8" type="checkbox"
+										name="requirementStatus" type="checkbox" value="SUBMITTED" ><label for="c8">Submitted
+											<span id="submittedRequirementCount"></span>
+									</label></li>
+									<li class="checkBox positionRelative"><input id="c9" type="checkbox"
+										name="requirementStatus" type="checkbox" value="OPEN" ><label for="c9">Open
+											<span id="openRequirementCount"></span>
+									</label></li>
+									<li class="checkBox positionRelative"><input id="c10" type="checkbox"
+										name="requirementStatus" type="checkbox" value="ONHOLD" ><label for="c10">On
+											Hold <span id="onHoldRequirementCount"></span>
+									</label></li>
+									<li class="checkBox positionRelative"><input id="c11" type="checkbox"
+										name="requirementStatus" type="checkbox" value="CANCEL" ><label for="c11">Cancel
+											<span id="cancelRequirementCount"></span>
+									</label></li>
+									<li class="checkBox positionRelative"><input id="c12" type="checkbox"
+										name="requirementStatus" type="checkbox" value="FILLEDCLOSED" ><label for="c12">Filled
+											Closed<span id="filledClosedRequirementCount"></span>
+									</label></li>
+									<li class="checkBox positionRelative"><input id="c13" type="checkbox"
+										name="requirementStatus" type="checkbox" 
+										value="UNFILLEDCLOSED" ><label
+										for="c13">UnFilled Closed<span
+											id="unFilledClosedRequirementCount"></span></label></li>
+									<li class="checkBox positionRelative"><input id="c14" type="checkbox"
+										name="requirementStatus" type="checkbox" value="REJECTED" ><label for="c14">Rejected<span
+											id="rejectedRequirementCount"></span></label></li>
+									<li class="checkBox positionRelative"><input id="c15" type="checkbox"
+										name="requirementStatus" type="checkbox" value="CLOSED" ><label for="c15">Closed<span
+											id="closedRequirementCount"></span></label></li>
+								</ul>
+							</div>
+			
+			</div>
+							
+							
+							
+							
+						<div class="col-md-3 mb positionRelative">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myClientInput" onkeyup="myClientFunction()" placeholder="Clients" title="Type in a teams">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myClientUL">
+									<c:forEach var="team" items="${add_clientList}">
+									
+									<c:if test="${team.locationId.id == loginOrgLocId}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" value ="${team.responderLocationId.org.orgName}" ><label>${team.responderLocationId.org.orgName}</label></li>
+									</c:if>
+									
+									<c:if test="${team.responderLocationId.id == loginOrgLocId}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" value ="${team.locationId.org.orgName}" ><label>${team.locationId.org.orgName}</label></li>
+									</c:if>
+									
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+			<!-- //projectList -->
+			
+			
+			<div class="col-md-3 mb positionRelative">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myProjectInput" onkeyup="myProjectFunction()" placeholder="Projects" title="Type in a teams">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myprojectUL">
+									<c:forEach var="project" items="${projectList}">
+									
+									<li class="checkBox positionRelative"><input  type="checkbox" name="projectNameById" value ="${project.id}" ><label>${project.projectId.projectName}</label></li>
+									
+									<%-- <c:if test="${team.responderLocationId.id == loginOrgLocId}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" value ="${team.locationId.org.orgName}" ><label>${team.locationId.org.orgName}</label></li>
+									</c:if> --%>
+									
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+			
+			
+			</div>
+			</div>
+			<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet" 
+								onclick="closeFilter();requirementList('list','${sourceleadUrl}');" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search"
+								onclick="resetJobFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+							
+							
+							
+ 
+</div>
+</div>
+</div>
+
+<script>
+function myClientFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myClientInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myClientUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+
+function myProjectFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myProjectInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myprojectUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+
+$(document).keyup(function(e) {
+	  if (e.keyCode === 27) {
+		  closeFilter();
+	  }
+	});
+</script>
+<script>
+function resetJobFilter(){
+	$("ul#myprojectUL > li input:checkbox").prop("checked",false);
+	$("ul#myClientUL > li input:checkbox").prop("checked",false);
+	$("ul#jobs > li input:checkbox").prop("checked",false);
+	$("ul#status > li input:checkbox").prop("checked",false);
+	$("ul#jobType > li input:checkbox").prop("checked",false);
+	$("ul#priority > li input:checkbox").prop("checked",false);
+	$("ul#assignTo > li input:radio").prop("checked",false);
+	
+	requirementList('list','${sourceleadUrl}');
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />

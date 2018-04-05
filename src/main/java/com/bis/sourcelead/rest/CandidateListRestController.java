@@ -478,6 +478,39 @@ public class CandidateListRestController {
 				boolQueryBuilder.must(employmnetTypeBoolQueryBuilder);
 			}
 		}
+		
+		if(StringUtils.isNotBlank(search.getCandidateFilterSkills())) {
+			String[] filterSkills = search.getCandidateFilterSkills().split(",");
+			List<String> filterSkillsList = new ArrayList<>();
+			for(int i=0; i<filterSkills.length; i++) {
+				filterSkillsList.add(filterSkills[i]);
+			}
+			if (filterSkillsList != null && !filterSkillsList.isEmpty()) {
+				BoolQueryBuilder filterSkillBoolQueryBuilder = QueryBuilders.boolQuery();
+				for (String keywd : filterSkillsList) {
+					filterSkillBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("skillsName", keywd));
+				}
+				boolQueryBuilder.must(filterSkillBoolQueryBuilder);
+			}
+		}
+		
+		if(StringUtils.isNotBlank(search.getAvailability())) {
+			String[] avaliability = search.getAvailability().split(",");
+			List<String> avaliabilityList = new ArrayList<>();
+			for(int i=0; i<avaliability.length; i++) {
+				avaliabilityList.add(avaliability[i]);
+			}
+			
+			BoolQueryBuilder noticePeriodBoolQueryBuilder = QueryBuilders.boolQuery();
+			for (String keywd : avaliabilityList) {
+				noticePeriodBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("noticePriod", keywd));
+			}
+			boolQueryBuilder.must(noticePeriodBoolQueryBuilder);
+		}
+		
+
+		
+
 
 		// Created By
 		List<String> createdByArray = search.getCreatedBy(); // getSearchKeywordsFromChosenSelectField(jsonObj, "createdByAdvanced");
@@ -1550,6 +1583,8 @@ public class CandidateListRestController {
 			@RequestParam(value = "updatedDateRange", required = false) String updatedDateRange,
 			@RequestParam(value = "exportType", required = false) String exportType,
 			@RequestParam(value = "candidateType", required = false) String candidateType,
+			@RequestParam(value = "candidateFilterSkills", required = false) String candidateFilterSkills,
+			@RequestParam(value = "availability", required = false) String availability,
 			@RequestParam(value = "isAssociate", required = false) String isAssociate, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
@@ -1564,7 +1599,7 @@ public class CandidateListRestController {
 			candidatesList = candidateService.getCandidatesListByOrgLocationIDAndUserId(loginOrgLocation.getId(), user.getId());
 		} else {
 			candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(), org.getId(), candidateStatus,
-					updatedDateRange, candidateType, isAssociate);
+					updatedDateRange, candidateType, isAssociate,candidateFilterSkills,availability);
 		}
 
 		File file = null;
@@ -1667,8 +1702,8 @@ public class CandidateListRestController {
 					 * "", Constants.CANDIDATE_SKILL_UPDATED, activitySummary.toString(),
 					 * "CANDIDATE"); return "failed";
 					 */
-					response.setResponse(Result.INVALID_USER.name());
-					response.setResponseMessage(Result.INVALID_USER.getValue());
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
 				}
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());

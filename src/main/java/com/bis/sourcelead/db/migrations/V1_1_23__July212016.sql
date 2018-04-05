@@ -1,1 +1,1 @@
-UPDATE `sourcelead`.`ROLES` SET `DISPLAY_NAME`='Admin' WHERE `ID`='1';
+UPDATE `ROLES` SET `DISPLAY_NAME`='Admin' WHERE `ID`='1';
