@@ -113,7 +113,7 @@
 	<table width="100%" class="table table-bordered">
 		<thead>
 		<tr>
-			<th>Previous month<br/>(Approved Hrs)</th><th>Current month<br/>(Total Hrs)</th><th>Project to Date<br/>(Approved Hrs)</th>
+			<th>Previous month<br/>(Approved Hrs)</th><th>Current month<br/>(Total Hrs) ${timesheetSubmissionDTO.currentMonthBillableHours}  </th><th>Project to Date<br/>(Approved Hrs)</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -133,13 +133,25 @@
 				</td>
 				<td>
 				<div class="week">
-					<span class="draft"><d title="Total-Hours:${timesheetSubmissionDTO.currentMonthTotalHours}">${timesheetSubmissionDTO.currentMonthTotalHours}</d></span>
+					<span class="draft">
+					    <span id="monthTotal">
+					       <input type="hidden" id="mTotal" value="${timesheetSubmissionDTO.currentMonthTotalHours}"/>
+					      <d title="Total-Hours:${timesheetSubmissionDTO.currentMonthTotalHours}">${timesheetSubmissionDTO.currentMonthTotalHours}</d>
+					    </span>
+					</span>
 					<div class="progress mb0">
 						<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width: 60%">
-							<d title="Billable:${timesheetSubmissionDTO.currentMonthBillableHours}">${timesheetSubmissionDTO.currentMonthBillableHours}</d>
+							<span id="monthBillableTotal">
+							   <input type="hidden" id="mBillableTotal" value="${timesheetSubmissionDTO.currentMonthBillableHours}"/>
+							   <d title="Billable:${timesheetSubmissionDTO.currentMonthBillableHours}">${timesheetSubmissionDTO.currentMonthBillableHours}</d>
+							</span>
 						</div>
 						<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width: 40%">
-							<d title="Non-Billable:${timesheetSubmissionDTO.currentMonthNonBillableHours}">${timesheetSubmissionDTO.currentMonthNonBillableHours}</d>
+						    <span id="monthNonBillableTotal">
+						       <input type="hidden" id="mNonBillableTotal" value="${timesheetSubmissionDTO.currentMonthNonBillableHours}"/>
+						       <d title="Non-Billable:${timesheetSubmissionDTO.currentMonthNonBillableHours}">${timesheetSubmissionDTO.currentMonthNonBillableHours}</d>
+						    </span>
+							
 						</div>
 					</div>
 				</div>
@@ -476,46 +488,7 @@
 							<div class="clearfix"></div>
 						</div>
 					</div>
-				
-	  <%-- <c:if test="${timesheetEntryDetailsDTO.timesheetFor == 'approver'}"> 
-	    <div class="clearfix"></div>
-	    <div class="clearfix">
-	    <div class="col-md-8 col-md-offset-2 tableStyles tableStyles-timesheet mt">
-	    	<table class="table">
-	    		<thead>
-	    		<tr>
-	    			<th>Hours</th>
-	    			<th>Last month</th>
-	    			<th>Current Month</th>
-	    			<th>Project hours</th>
-	    		</tr>
-	    		</thead>
-	    		<tbody>
-	    			<tr>
-		    			<th>Billable Hours</th>
-		    			<td>${timesheetSubmissionDTO.previousMonthBillableHours}</td>
-		    			<td>${timesheetSubmissionDTO.currentMonthBillableHours}</td>
-		    			<td>${timesheetSubmissionDTO.projectToDateBillableHours}</td>
-		    			
-	    			</tr>
-	    			<tr>
-		    			<th>Non Billable Hours</th>
-		    			<td>${timesheetSubmissionDTO.previousMonthNonBillableHours}</td>
-		    			<td>${timesheetSubmissionDTO.currentMonthNonBillableHours}</td>
-		    			<td>${timesheetSubmissionDTO.projectToDateNonBillableHours}</td>
-	    			</tr>
-	    			<tr>
-		    			<th>Total Hours</th>
-		    			<td>${timesheetSubmissionDTO.previousMonthTotalHours}</td>
-		    			<td>${timesheetSubmissionDTO.currentMonthTotalHours}</td>
-		    			<td>${timesheetSubmissionDTO.projectToDateTotalHours}</td>
-	    			</tr>
-	    		</tbody>
-	    	</table>
-	    </div>
-	    </div>
-	    </c:if> --%>
-	    </div>
+	            </div>
 		    </div>
 	    </div>
 	<input type="hidden" name="_ignore"
@@ -626,8 +599,10 @@ function setTotals(){
 	 		}else{
 	 			billableTotal =  "00:00";
 	 		}
+	 		currentMonthBillableHours(billableTotal);
 	 	    $("#grandBillableTotal").val(billableTotal);
 	    }else{
+	    	currentMonthBillableHours("00:00");
 	    	$("#grandBillableTotal").val("00:00");
 	    }
 	   
@@ -650,8 +625,10 @@ function setTotals(){
 			}else{
 				nonBillableTotal =  "00:00";
 			}
+			currentMonthNonBillableHours(nonBillableTotal);
 		    $("#grandNonBillableTotal").val(nonBillableTotal);
 	   }else{
+		   currentMonthNonBillableHours("00:00");
 		   $("#grandNonBillableTotal").val("00:00");
 	   }
 	   
@@ -690,9 +667,152 @@ function grandTotal(){
 	 }else{
 		 total = "00:00"; 
 	 }
-	
+	 currentMonthTotalHours(total);
 	 $("#grandTotal").val(total);
+	 
+}
+
+
+function currentMonthTotalHours(totalHours){
+	
+	   	 var thm = $("#grandTotal").val();
+	   	 var tsplit = thm.split('.');
+	   	 if(tsplit[1] == null || tsplit[1] == 'undefined' || tsplit[1] == '' ){
+	   		tsplit = thm.split(':');
+	   	 }
+	   	 var tHours     = tsplit[0];
+	   	 var tMinutes   = tsplit[1];
+			
+			
+	   	 var mhm = $("#mTotal").val();
+	   	 var msplit = mhm.split('.');
+	   	 var mHours     = msplit[0];
+	   	 var mMinutes   = msplit[1];
+	   	
+	   	 var asplit = totalHours.split(':');
+	   	 var aHours     = asplit[0];
+	   	 var aMinutes   = asplit[1];
+	   
+	   	 var first = parseInt(mHours)+parseInt(aHours)-parseInt(tHours);
+	   	 var second = parseInt(mMinutes)+parseInt(aMinutes)-parseInt(tMinutes);
+	   	 
+	   	 var minute = first * 60;
+		 var minute1 = second;
+		 var finalmin = parseInt(minute) + parseInt(minute1);
+   	 
+		 var  bsum =  parseInt(finalmin);
+		
+	     var t = bsum; 
+		 var hours = Math.floor(t / 60); 
+		 var minutes = t % 60;
+		 if (minutes < 10) {
+			minutes = '0' + minutes;
+		 }
+		 if (hours < 10) {
+			hours = '0' + hours;
+		 }
+		 var total;
+		 if(!isNaN(hours) && !isNaN(minutes)){
+			 total = hours +"."+ minutes;
+		 }else{
+			 total = "00.00"; 
+		 }
+		 $("#monthTotal").empty();
+		 $("#monthTotal").html('<input type="hidden" id="mTotal" value="'+total+'"/><d title="Total-Hours:'+total+'">'+total+'</d>');
+}
+
+function currentMonthBillableHours(totalHours){
+	 var thm = $("#grandBillableTotal").val();
+   	 var tsplit = thm.split('.');
+   	 if(tsplit[1] == null || tsplit[1] == 'undefined' || tsplit[1] == '' ){
+   		tsplit = thm.split(':');
+   	 }
+   	 var tHours     = tsplit[0];
+   	 var tMinutes   = tsplit[1];
+   	 
+   	 var mhm = $("#mBillableTotal").val();
+   	 var msplit = mhm.split('.');
+   	 var mHours     = msplit[0];
+   	 var mMinutes   = msplit[1];
+   	 
+   	 var asplit = totalHours.split(':');
+   	 var aHours     = asplit[0];
+   	 var aMinutes   = asplit[1];
+   	
+   	 var first = parseInt(mHours)+parseInt(aHours)-parseInt(tHours);
+   	 var second = parseInt(mMinutes)+parseInt(aMinutes)-parseInt(tMinutes);
+     
+   	 
+   	 var minute = first * 60;
+	 var minute1 = second;
+	 var finalmin = parseInt(minute) + parseInt(minute1);
+	 
+	 var  bsum =  parseInt(finalmin);
+	
+     var t = bsum; 
+	 var hours = Math.floor(t / 60); 
+	 var minutes = t % 60;
+	 if (minutes < 10) {
+		minutes = '0' + minutes;
+	 }
+	 if (hours < 10) {
+		hours = '0' + hours;
+	 }
+	 var total;
+	 if(!isNaN(hours) && !isNaN(minutes)){
+		 total = hours +"."+ minutes;
+	 }else{
+		 total = "00.00"; 
+	 }
+	 $("#monthBillableTotal").empty();
+	 $("#monthBillableTotal").html('<input type="hidden" id="mBillableTotal" value="'+total+'"/><d title="Billable:'+total+'">'+total+'</d>');
+}
+function currentMonthNonBillableHours(totalHours){
+	
+	 var thm = $("#grandNonBillableTotal").val();
+  	 var tsplit = thm.split('.');
+  	 if(tsplit[1] == null || tsplit[1] == 'undefined' || tsplit[1] == '' ){
+  		tsplit = thm.split(':');
+  	 }
+  	 var tHours     = tsplit[0];
+  	 var tMinutes   = tsplit[1];
+  	
+  	 var mhm = $("#mNonBillableTotal").val();
+  	 var msplit = mhm.split('.');
+  	 var mHours     = msplit[0];
+  	 var mMinutes   = msplit[1];
+  	 
+  	 var asplit = totalHours.split(':');
+  	 var aHours     = asplit[0];
+  	 var aMinutes   = asplit[1];
+  	
+  	 var first = parseInt(mHours)+parseInt(aHours)-parseInt(tHours);
+  	 var second = parseInt(mMinutes)+parseInt(aMinutes)-parseInt(tMinutes);
     
+  	 
+  	 var minute = first * 60;
+	 var minute1 = second;
+	 var finalmin = parseInt(minute) + parseInt(minute1);
+	 
+	 var  bsum =  parseInt(finalmin);
+	
+     var t = bsum; 
+	 var hours = Math.floor(t / 60); 
+	 var minutes = t % 60;
+	 if (minutes < 10) {
+		minutes = '0' + minutes;
+	 }
+	 if (hours < 10) {
+		hours = '0' + hours;
+	 }
+	 var total;
+	 if(!isNaN(hours) && !isNaN(minutes)){
+		 total = hours +"."+ minutes;
+	 }else{
+		 total = "00.00"; 
+	 }
+	 $("#monthNonBillableTotal").empty();
+	 $("#monthNonBillableTotal").html('<input type="hidden" id="mNonBillableTotal" value="'+total+'"/><d title="Non-Billable:'+total+'">'+total+'</d>');
 }
 
 </script>

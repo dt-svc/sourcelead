@@ -1578,7 +1578,7 @@ public class TimesheetRestController {
 
 		 if(!timesheetFor.equalsIgnoreCase("user") && actualStartDate != null && actualEndDate != null) {
 			 Date monthStartDate = CalendarUtil.getMonthStartDateByGivenDate(actualStartDate,Constants.CURRENT_MONTH).get("STARTDATE");
-			 Date monthEndDate = CalendarUtil.getMonthEndDateByGivenDate(actualEndDate,Constants.CURRENT_MONTH).get("ENDDATE");
+			 Date monthEndDate = CalendarUtil.getMonthEndDateByGivenDate(actualStartDate,Constants.CURRENT_MONTH).get("ENDDATE");
 			 if(projectMember != null && projectMember.getId() != null) {
 				 SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),orgLocations.getId(),projectMember.getId(),monthStartDate,monthEndDate);
 				 if(sah != null) {
@@ -1617,9 +1617,9 @@ public class TimesheetRestController {
 								
 								
 							}
-					 tsDTO.setCurrentMonthBillableHours(monthBillableTotalHours);
-					 tsDTO.setCurrentMonthNonBillableHours(monthNonBillableTotalHours);
-					 tsDTO.setCurrentMonthTotalHours(monthTotalHours);
+					 tsDTO.setCurrentMonthBillableHours(Float.parseFloat(CommonUtil.getHoursDisplayFormat(monthBillableTotalHours)));
+					 tsDTO.setCurrentMonthNonBillableHours(Float.parseFloat(CommonUtil.getHoursDisplayFormat(monthNonBillableTotalHours)));
+					 tsDTO.setCurrentMonthTotalHours(Float.parseFloat(CommonUtil.getHoursDisplayFormat(monthTotalHours)));
 					}
 				 }
 			 }
