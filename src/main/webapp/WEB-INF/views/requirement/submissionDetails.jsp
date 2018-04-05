@@ -1888,7 +1888,7 @@ function savedCommentAndCount(candidateId,submissionId) {
     			           
 			           	$("#latestMessage").empty();
 			           	$("#latestMessage").append(result);
-    			 	}
+    			 	} 
         		} else if (data.indexOf('Sign In') !== -1) {
         			location.replace(sourceleadUrl);
         		} else {

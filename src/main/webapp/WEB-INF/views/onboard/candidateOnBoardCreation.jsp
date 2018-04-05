@@ -456,7 +456,7 @@ function getEmploymentType(){
 				    	if (response.response === "AWKWARD") {
 				    	    location.href = "/errorPage";
 				    	} else if (response.response === "SUCCESS") {
-				    		var json = JSON.parse(response.object);
+				    		var json = response.object;
 				    		if(json['vendorOrgRelationId'] != null && json['vendorOrgRelationId'] != '' && json['vendorOrgRelationId'] != 'undefined' 
 			    				 && json['vendorSpocId'] != null && json['vendorSpocId'] != '' && json['vendorSpocId'] != 'undefined'){
 				    			 getVendorsByOrgLocationForAddApplicant(json['vendorOrgRelationId']);
@@ -941,7 +941,7 @@ function validateUploadFile(id)
 			    	if (response.response === "AWKWARD") {
 			    	    location.href = "/errorPage";
 			    	} else if (response.response === "SUCCESS") {
-			    		var json = JSON.parse(response.object);
+			    		var json = response.object;
 			    		$("#firstName").val(json['firstName']);
 				    	 $("#lastName").val(json['lastName']);
 				    	

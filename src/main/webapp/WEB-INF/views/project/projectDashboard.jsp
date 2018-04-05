@@ -274,6 +274,13 @@ function myManagersFunction() {
     }
 }
 
+
+$(document).keyup(function(e) {
+	  if (e.keyCode === 27) {
+		  closeFilterPop();
+	  }
+	});
+
 </script>
 <script type="text/javascript">
 window.onload = function () {
@@ -474,6 +481,7 @@ function projectsPagination(url,sourceleadUrl){
 	          },{
 		    	  "targets": colIndex++,
 	              "data": "projectManagers",
+	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	  var projectManagers = '';
@@ -504,6 +512,7 @@ function projectsPagination(url,sourceleadUrl){
 		     }, {
 		    	  "targets": colIndex++,
 	              "data": "budget",
+	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    var projectbudgetAmount = "";
@@ -535,6 +544,7 @@ function projectsPagination(url,sourceleadUrl){
 		     },{
 		    	  "targets": colIndex++,
 	              "data": "client",
+	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	  
@@ -554,7 +564,7 @@ function projectsPagination(url,sourceleadUrl){
 		     },{
 		    	  "targets": colIndex++,
 	              "data": "projectStatus",
-	              "sortable": false,
+	              "sortable": true,
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	  var projectStatus = "";
@@ -590,7 +600,7 @@ function projectsPagination(url,sourceleadUrl){
 		     
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[1,'desc']],
+	    	"aaSorting": [[5,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,

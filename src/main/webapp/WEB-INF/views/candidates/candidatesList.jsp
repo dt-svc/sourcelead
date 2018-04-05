@@ -2785,6 +2785,14 @@ function mySkillsFunction() {
         }
     }
 }
-</script>	
+
+$(document).keyup(function(e) {
+	  if (e.keyCode === 27) {
+		  closeCandidateFilterPop();
+	  }
+	});
+</script>
+
+	
 
 <jsp:include page="../masterFooter.jsp" /> 

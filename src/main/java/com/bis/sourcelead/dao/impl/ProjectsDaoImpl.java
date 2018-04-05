@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -674,11 +675,19 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		
 		String subQuery4 = " and ((:varZero  IN (:managerIdsList)) OR (:varZero NOT IN (:managerIdsList) and pc.id IN (select pah.projectClientsId.id from ProjectApproverHierarchy pah where pah.approverUserId.id IN (:managerIdsList)))) ";
 		
+		
+		//usertList shorting order
+				String sortingQry = "";
+				if(StringUtils.isNotBlank(projectsDTO.getSortColumn())) {
+					sortingQry = " order by ps."+ projectsDTO.getSortColumn() +" "+projectsDTO.getSortOrder();
+				}
+		
+		
 		query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId "+subQuery2+" "+approverQuery+" "+subQuery4+") "+projectModeQuery+" "+subQuery1+" "+subQuery3+" ";
 		if(query1.toString() != null && !query1.toString().isEmpty()){
-			 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+" ORDER BY ps.createdDate DESC");
+			 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+sortingQry);
 		}else{
-			 queryObj = session.createQuery(query + query1.toString()+" ORDER BY ps.createdDate DESC");
+			 queryObj = session.createQuery(query + query1.toString()+sortingQry);
 		}
 		
 		queryObj.setFirstResult(projectsDTO.getStart());

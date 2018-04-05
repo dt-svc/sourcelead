@@ -102,12 +102,13 @@ function candDocumentsList(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateDocumentsListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+
           success :function(response) {
         	  if (response && response.response === "INVALID_DATA") {
         		    showError(response.responseMessage);
         		} else if (response.response === "AWKWARD") {
         		    location.href = "/errorPage";
-        		} else if (response.response === "SUCCESS") {
+        		} else if (json.response === "SUCCESS") {
         			$("#candidateDocumentsList").empty();
                	 	var result = "";
                	 	result = result +"<table id='candidateDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
@@ -187,7 +188,7 @@ function candDocumentsList(candidateId){
 	                    result = result +"</table>";
 	                    $("#candidateDocumentsList").append(result); 
 	                    documentsPagination();
-        		} else if (response.indexOf('Sign In') !== -1) {
+        		} else if (json.indexOf('Sign In') !== -1) {
         			location.replace(sourceleadUrl);
         		} else {
         		    showError("Operation failed, please try again");
