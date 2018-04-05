@@ -343,7 +343,7 @@ function Immigration() {
            type: "GET",
            success: function (result) {
                $("#passportsTab").html(result);
-              
+               $("#searchValuePassport").val(searchValue);
            }
        });
    }	
@@ -356,6 +356,7 @@ function Immigration() {
            type: "GET",
            success: function (result) {
                $("#visasTab").html(result);
+               $("#searchValueVisa").val(searchValue);
               
            }
        });
@@ -925,7 +926,6 @@ function uploadRequestDoc(){
 	var candidateId = $("#candidateID").val();
 	var immigrationId = $('#immigrationID').val();
 	var id = $("#uploadIdSave").val();
-	alert("ooooo"+id)
 	$.ajax({
         url: sourceleadUrl + immiModulePath + "/uploadRequstedDoc?id="+id+"&candidateId="+candidateId+"&immigrationId="+immigrationId,
         type: "POST",
@@ -1016,7 +1016,6 @@ function getPetitionTypeOnCountries(selectedCountry, selectedCountryOption){
 function getNotesListByImmigration(candidateId){
 	console.log("inside displayNotesDetails function call test -->")
 	 var immigrationId = $('#immigrationID').val();
-	//alert("oooooo"+candidateId)
 	$.ajax({
         url: sourceleadUrl + immiModulePath + "/getNotesListByImmigrationId?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
        type: "GET",
@@ -1039,7 +1038,6 @@ function searchPassportValue(){
 	var candidateId = $('#candidateID').val();
 	console.log("searchValue"+searchValue);
 	immigration.displayPassportDetails(candidateId,'Passport',searchValue);
-	
 }
 
 function searchVisaValue(){
