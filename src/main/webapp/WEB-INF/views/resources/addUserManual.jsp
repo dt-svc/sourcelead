@@ -184,9 +184,9 @@ $(function(){
 			         </div>
 		         </div>
 		         </c:if> 
-		          <div class="timesheet_week_comm slticket uploadfileError" >
+		          <div class="timesheet_week_comm slticket uploadfileError positionRelative" >
 		          <div id="0ticketdocFileuploadFileGroup"> 
-		          <span>
+		          <span id="docErrorMsg">
 		          <input type="file"  id="0ticketdocFile" field-name="Attachment"  class="timesheetAttachmentValidation" onchange="attachFile(0);" >
 		          <!-- data-validation="validate_Space validateimage" -->
 		          <i class="fa fa-refresh faRefresh mt5" mouseOver="Refresh" title="Clear" onClick="refershDocument()"></i>
@@ -331,6 +331,10 @@ function levelFun() {
 		$('#level1Title').removeAttr('data-validation-optional');
 		$('#level1Title').attr('data-validation',"required");
 		
+		 $('#0ticketdocFile').val('');
+		 $('#docErrorMsg').find('p.jquery_form_error_message').remove();
+
+		removeDocumets();
 		getLevel1Titles();
 	}else {
 		$("#level2Div").hide();
@@ -359,6 +363,15 @@ function levelFun() {
 		$("#level3Div").hide();
 	}
 	
+}
+
+function removeDocumets(){
+	var tableHeaderRowCount = 1;
+	var table = document.getElementById('UserManualAttchTb1');
+	var rowCount = table.rows.length;
+	for (var i = tableHeaderRowCount; i < rowCount; i++) {
+	    table.deleteRow(tableHeaderRowCount);
+	}
 }
 </script>
 <!-- <script type="text/javascript">
@@ -513,7 +526,7 @@ function getLevel2Titles(){
 
 
 <div id="divTicketAttachmentTd1" style="display: none; float: left;">
-	<div class="timesheet_week_comm slticket">
+	<div class="timesheet_week_comm slticket uploadfileError positionRelaive">
 		<div class="" id="REPLACEROWIDticketdocFileuploadFileGroup">
 			<span> <input type="file" name='REPLACEROWIDticketdocFile'
 				id='REPLACEROWIDticketdocFile'
@@ -539,6 +552,7 @@ function getLevel2Titles(){
 				divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
 				cell0.innerHTML = divAttachmentTdStr;
 				
+				
 	}			
 </script>
 <script type="text/javascript">
@@ -556,6 +570,7 @@ function getLevel2Titles(){
 	
  function attachFile(id){
 		fileUpload(""+id+"ticketdocFile", "userManuals", "user_manuals_form","fileinfo");
+		$('#'+id+'ticketdocFile').attr('data-validation'," validateImg");
 	}
  </script>
  
