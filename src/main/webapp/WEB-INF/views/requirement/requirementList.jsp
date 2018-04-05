@@ -45,7 +45,11 @@ function clearAllStatus(){
 }
 
 </script>
-
+<script>
+$(document).ready(function() {
+	getcites('apiLocation','city','recommendation');
+});
+</script>
 
 <!-- <script>
 $(document).ready(function() {

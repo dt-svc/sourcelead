@@ -1076,7 +1076,7 @@ function candidateProfile(candidateId,candidateType){
 	 $.ajax({  
          type : "POST",
          url: Urlcheck,        
-         success :function(data) {
+         success :function(response) {
        	 	if (response && response.response === "INVALID_DATA") {
        		    showError(response.responseMessage);
        		} else if (response.response === "AWKWARD") {
