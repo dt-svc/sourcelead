@@ -1588,10 +1588,39 @@ public class TimesheetRestController {
 					 tsDTO.setPreviousMonthTotalHours(sah.getPreviousMonthTotalHours());
 					 tsDTO.setPreviousMonthBillableHours(sah.getPreviousMonthBillableHours());
 					 tsDTO.setPreviousMonthNonBillableHours(sah.getPreviousMonthNonBillableHours());
-					 tsDTO.setCurrentMonthBillableHours(sah.getCurrentMonthBillableHours());
-					 tsDTO.setCurrentMonthNonBillableHours(sah.getCurrentMonthNonBillableHours());
-					 tsDTO.setCurrentMonthTotalHours(sah.getCurrentMonthTotalHours());
-					 
+					 float monthTotalHours            = 0f;
+					 float monthBillableTotalHours    = 0f;
+					 float monthNonBillableTotalHours = 0f;
+					 Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),monthStartDate), commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),monthEndDate),orgLocations.getDateFormat());
+						if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
+							for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
+					    		 Date  k =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),entry.getKey().replaceAll("/", "-"));
+								try {
+					    	    	Float  weekBillableHours = 0f;
+					    	    	if(sah.getWeekBillableHoursMap().get(k) != null){
+					    	    		weekBillableHours = sah.getWeekBillableHoursMap().get(k);
+					    	    	}
+					    	    	Float  weekNonBillableHours = 0f;
+					    	    	if(sah.getWeekNonBillableHoursMap().get(k) != null){
+					    	    		weekNonBillableHours = sah.getWeekNonBillableHoursMap().get(k);
+					    	    	}
+					    	    	Float  weekTotalHours = 0f;
+					    	    	if(sah.getWeekTotalHoursMap().get(k) != null){
+					    	    		 weekTotalHours = sah.getWeekTotalHoursMap().get(k);
+					    	    	}
+					    	        monthTotalHours = CommonUtil.getCombinedHours(monthTotalHours, weekTotalHours);
+					    	        monthBillableTotalHours = CommonUtil.getCombinedHours(monthBillableTotalHours, weekBillableHours);
+					    	        monthNonBillableTotalHours =  CommonUtil.getCombinedHours(monthNonBillableTotalHours, weekNonBillableHours);
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+								
+								
+							}
+					 tsDTO.setCurrentMonthBillableHours(monthBillableTotalHours);
+					 tsDTO.setCurrentMonthNonBillableHours(monthNonBillableTotalHours);
+					 tsDTO.setCurrentMonthTotalHours(monthTotalHours);
+					}
 				 }
 			 }
 		 }

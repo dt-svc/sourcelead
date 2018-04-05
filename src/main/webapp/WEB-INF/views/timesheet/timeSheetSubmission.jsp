@@ -22,7 +22,7 @@
 			<c:if test="${not empty timesheetEntryDetailsDTO.employeeEmail}">
 				<i class="fa fa fa-envelope" title="Email"></i><input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeeEmail}">
 			</c:if>
-			<c:if test="${empty timesheetEntryDetailsDTO.employeeName}">
+			<c:if test="${empty timesheetEntryDetailsDTO.employeeEmail}">
 				<i class="fa fa fa-envelope" title="Email"></i><input type="text" readonly="readonly" value="--">
 			</c:if>
 			</li>
@@ -30,7 +30,7 @@
 			<c:if test="${not empty timesheetEntryDetailsDTO.projectNameForSubmissionPageDisplay}">
 				<i class="fa fa-bar-chart" title="Project"></i><input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.projectNameForSubmissionPageDisplay}">
 			</c:if>
-			<c:if test="${empty timesheetEntryDetailsDTO.employeeName}">
+			<c:if test="${empty timesheetEntryDetailsDTO.projectNameForSubmissionPageDisplay}">
 				<i class="fa fa-bar-chart" title="Project"></i><input type="text" readonly="readonly" value="--">
 			</c:if>
 			</li>
@@ -38,23 +38,23 @@
 			<c:if test="${not empty timesheetEntryDetailsDTO.employeePhoneNo}">
 				<i class="fa fa-phone" title="Phone No"></i><input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeePhoneNo}">
 			</c:if>
-			<c:if test="${empty timesheetEntryDetailsDTO.employeeName}">
+			<c:if test="${empty timesheetEntryDetailsDTO.employeePhoneNo}">
 				<i class="fa fa-phone" title="Phone No"></i><input type="text" readonly="readonly" value="--">
 			</c:if>
 			</li>
 			<li>
 			<c:if test="${not empty timesheetEntryDetailsDTO.employmentTypeForSubmissionPageDisplay}">
-				<i class="fa fa-briefcase"></i><input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employmentTypeForSubmissionPageDisplay}">
+				<i class="fa fa-briefcase" title="Employment Type"></i><input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employmentTypeForSubmissionPageDisplay}">
 			</c:if>
-			<c:if test="${empty timesheetEntryDetailsDTO.employeeName}">
-				<i class="fa fa-briefcase"></i><input type="text" readonly="readonly" value="--">
+			<c:if test="${empty timesheetEntryDetailsDTO.employmentTypeForSubmissionPageDisplay}">
+				<i class="fa fa-briefcase" title="Employment Type"></i><input type="text" readonly="readonly" value="--">
 			</c:if>
 			</li>
 			<li>
 			<c:if test="${not empty timesheetEntryDetailsDTO.clientNameForDisplay}">
 				<i class="fa fa-user-plus" title="Client"></i><input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.clientNameForDisplay}">
 			</c:if>
-			<c:if test="${empty timesheetEntryDetailsDTO.employeeName}">
+			<c:if test="${empty timesheetEntryDetailsDTO.clientNameForDisplay}">
 				<i class="fa fa-user-plus" title="Client"></i><input type="text" readonly="readonly" value="--">
 			</c:if>
 			</li>
@@ -113,14 +113,14 @@
 	<table width="100%" class="table table-bordered">
 		<thead>
 		<tr>
-			<th>Previous month</th><th>Current month</th><th>Project to Date</th>
+			<th>Previous month<br/>(Approved Hrs)</th><th>Current month<br/>(Total Hrs)</th><th>Project to Date<br/>(Approved Hrs)</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr>
 				<td>
 				<div class="week">
-					<span class="draft"><d title="week-Total-Hours:${timesheetSubmissionDTO.previousMonthTotalHours}">${timesheetSubmissionDTO.previousMonthTotalHours}</d></span>
+					<span class="draft"><d title="Total-Approved-Hours:${timesheetSubmissionDTO.previousMonthTotalHours}">${timesheetSubmissionDTO.previousMonthTotalHours}</d></span>
 					<div class="progress mb0">
 						<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width: 60%">
 							<d title="Billable:${timesheetSubmissionDTO.previousMonthBillableHours}">${timesheetSubmissionDTO.previousMonthBillableHours}</d>
@@ -133,7 +133,7 @@
 				</td>
 				<td>
 				<div class="week">
-					<span class="draft"><d title="week-Total-Hours:${timesheetSubmissionDTO.currentMonthTotalHours}">${timesheetSubmissionDTO.currentMonthTotalHours}</d></span>
+					<span class="draft"><d title="Total-Hours:${timesheetSubmissionDTO.currentMonthTotalHours}">${timesheetSubmissionDTO.currentMonthTotalHours}</d></span>
 					<div class="progress mb0">
 						<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width: 60%">
 							<d title="Billable:${timesheetSubmissionDTO.currentMonthBillableHours}">${timesheetSubmissionDTO.currentMonthBillableHours}</d>
@@ -146,7 +146,7 @@
 				</td>
 				<td>
 				<div class="week">
-					<span class="draft"><d title="week-Total-Hours:${timesheetSubmissionDTO.projectToDateTotalHours}">${timesheetSubmissionDTO.projectToDateTotalHours}</d></span>
+					<span class="draft"><d title="Total-Approved-Hours:${timesheetSubmissionDTO.projectToDateTotalHours}">${timesheetSubmissionDTO.projectToDateTotalHours}</d></span>
 					<div class="progress mb0">
 						<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width: 60%">
 							<d title="Billable:${timesheetSubmissionDTO.projectToDateBillableHours}">${timesheetSubmissionDTO.projectToDateBillableHours}</d>
