@@ -1702,8 +1702,8 @@ public class CandidateListRestController {
 					 * "", Constants.CANDIDATE_SKILL_UPDATED, activitySummary.toString(),
 					 * "CANDIDATE"); return "failed";
 					 */
-					response.setResponse(Result.INVALID_USER.name());
-					response.setResponseMessage(Result.INVALID_USER.getValue());
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
 				}
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
