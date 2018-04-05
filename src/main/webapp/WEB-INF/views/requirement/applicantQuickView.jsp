@@ -217,7 +217,7 @@ function applicantQuickViewProfile(submissionId,candidateId){
   				    $("#applicantQuickViewDiv").append(result); 
   				    $("#recapplicantQuickViewDiv").empty();
 				    $("#recapplicantQuickViewDiv").append(result);
-  				  reqQvemployeeSubmission(candidateId);
+  				 reqQvemployeeSubmission(candidateId);
   				 reqQveducationSubmission(candidateId);
   				reqQwikCertificates(candidateId);
   				 $("#quickLoading").removeAttr("style");
@@ -334,7 +334,7 @@ function applicantQuickViewProfile(submissionId,candidateId){
 <script>
 function reqQveducationSubmission(candidateId){
 	 $.ajax({  
-          type : "POST",
+          type : "GET",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(response) {
         	  	if (response && response.response === "INVALID_DATA") {
