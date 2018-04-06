@@ -85,6 +85,8 @@ public class TimeSheetSubmissionDTO implements Serializable{
 	private float currentMonthBillableHours;
 	
 	private float currentMonthNonBillableHours;
+	
+	private String currentMonthName;
 
 	public Long getId() {
 		return id;
@@ -380,6 +382,14 @@ public class TimeSheetSubmissionDTO implements Serializable{
 
 	public void setCurrentMonthNonBillableHours(float currentMonthNonBillableHours) {
 		this.currentMonthNonBillableHours = currentMonthNonBillableHours;
+	}
+
+	public String getCurrentMonthName() {
+		return currentMonthName;
+	}
+
+	public void setCurrentMonthName(String currentMonthName) {
+		this.currentMonthName = currentMonthName;
 	}
 	
 	
