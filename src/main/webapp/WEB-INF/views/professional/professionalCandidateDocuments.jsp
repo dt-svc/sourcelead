@@ -403,6 +403,7 @@ function storeCandidateDocument(candidateId, documentUUID) {
 							} else if (response.response === "AWKWARD") {
 							    location.href = "/errorPage";
 							} else if (response.response === "SUCCESS") {
+								var result = response.object;
 								closePopup();
 								$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
 			          			if(result<50) {
@@ -462,7 +463,7 @@ function getDocument(candidateId, documentId){
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getDocument?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentId="+documentId, 	   
-   		    success: function(data) {
+   		    success: function(response) {
    		    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
    		    	    showError(response.responseMessage);
    		    	} else if (response.response === "AWKWARD") {
@@ -543,27 +544,38 @@ function deleteDocument(candidateId, documentId){
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateDoc?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&documentId="+documentId, 	   
-   		    success: function(data) {
-   		    	if(data != null && data != 'undefined' && data != ""){
+   		    success: function(response) {
+   		    	if (response && response.response === "INVALID_DATA") {
+   		    	    showError(response.responseMessage);
+   		    	} else if (response && response.response === "INVALID_USER") {
+   		    	    showError(response.responseMessage);
+   		    	} else if (response.response === "AWKWARD") {
+   		    	    location.href = "/errorPage";
+   		    	} else if (response.response === "SUCCESS") {
+   		    		var data = response.object;
    		    		$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
-        			 if(data<50){
-        			  /* $("#perVal").removeClass("progress-bar-success"); */
-        			   $("#perVal").find('progress-bar-success').remove();
-        			   $("#perVal").addClass("progress-bar-danger");
-        			 }
-        			 if(data>=50){
-        				 $("#perVal").find('progress-bar-danger').remove();
-        				 $("#perVal").addClass("progress-bar-success");
-        			 }
-        			 $("#disVal").empty();
-        			$("#disVal").append(data+'%');
-        			 $("#selector6").removeAttr("style");
-         			 $("#selector6").css({ display: "block" });
-         			 $("#docMsgDiv").html("Document deleted");
-        			 $("#popUpDiv").removeClass("edit-details-active");
-        			 $("#remove_user_pop_documents, .project_inn_mask").fadeOut();
-        			 candDocumentsList(candidateId);
-        		     docMsgFadein();
+       			 if(data<50){
+       			  /* $("#perVal").removeClass("progress-bar-success"); */
+       			   $("#perVal").find('progress-bar-success').remove();
+       			   $("#perVal").addClass("progress-bar-danger");
+       			 }
+       			 if(data>=50){
+       				 $("#perVal").find('progress-bar-danger').remove();
+       				 $("#perVal").addClass("progress-bar-success");
+       			 }
+       			 $("#disVal").empty();
+       			$("#disVal").append(data+'%');
+       			 $("#selector6").removeAttr("style");
+        			 $("#selector6").css({ display: "block" });
+        			 $("#docMsgDiv").html("Document deleted");
+       			 $("#popUpDiv").removeClass("edit-details-active");
+       			 $("#remove_user_pop_documents, .project_inn_mask").fadeOut();
+       			 candDocumentsList(candidateId);
+       		     docMsgFadein();
+   		    	} else if (response.indexOf('Sign In') !== -1) {
+   		    		location.replace(sourceleadUrl);
+   		    	} else {
+   		    	    showError("Operation failed, please try again");
    		    	}
    		    },
 	     });

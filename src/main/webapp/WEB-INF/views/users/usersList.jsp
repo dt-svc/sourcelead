@@ -176,14 +176,14 @@ function getUsersSearchResult(searchValue){
 			    <span class="fa fa-refresh"></span>
 			</button>
 			
-			<a href="javascript:void(0)" class="btn btn-primary btn-sm"
-				title="Filter Search"
-				onClick="openPop();"> Filter&nbsp;&nbsp; <i class="fa fa-filter"></i>
-			</a>
+			
+			<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openPop();"><i class="fa fa-filter faFilter padding_right" style="color: #909090!important"></i>
+				</a>
+				
 	    </div>
 	    
 				<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
-				<h5 class="headerAdsrch">Filter Search
+				<h5 class="headerAdsrch">Filters
 					<a href="javascript:void(0)" class="close-div" onClick="closePop()"><i
 						class="fa fa-close"></i></a>
 				</h5>

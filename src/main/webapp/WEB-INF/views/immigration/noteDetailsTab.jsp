@@ -36,7 +36,7 @@
 		
 		
 		<div class="popupMid clearfix">
-			<div class="col-sm-12 noPad mt clearfix"><textarea class="form-control" rows="3" id= "noteDescription" name = "noteDescription"></textarea></div>						
+			<div class="col-sm-12 noPad mt clearfix"><textarea class="form-control" rows="3" id= "noteDescription" placeholder="Note" name = "noteDescription" field-name="Note" data-validation="required"></textarea></div>						
 		</div>
 		
 		 <div>
@@ -58,6 +58,7 @@
 			});	
 			function refreshNotes(){
 				 $(".popMask").fadeOut(200);
-				$("#popNoteView").fadeOut(100); 
+				$("#popNoteView").fadeOut(100);
+				$("#notesDetails_form")[0].reset();
 			 }
 		</script>

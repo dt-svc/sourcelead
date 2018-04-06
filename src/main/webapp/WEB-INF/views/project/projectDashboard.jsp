@@ -80,8 +80,9 @@ overflow-x: auto;
 				    <span class="fa fa-refresh"></span>
 				</button>
 				
-				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filter Search" onclick="openFilterPop();"><i class="fa fa-filter faFilter padding_right" style="color: #909090!important"></i>
+				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openFilterPop();"><i class="fa fa-filter faFilter padding_right"></i>
 				</a>
+				
 	       </div>
         	
         	
@@ -128,7 +129,7 @@ overflow-x: auto;
 		</div>
 		
 		<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
-				<h5 class="headerAdsrch">Filter Search
+				<h5 class="headerAdsrch">Filters
 					<a href="javascript:void(0)" class="close-div" onClick="closeFilterPop()"><i
 						class="fa fa-close"></i></a>
 				</h5>

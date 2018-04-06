@@ -310,18 +310,16 @@ public class CandidateEmployersRestController {
 	 */
 	// @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_EMPLOYEER','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_EDIT_ASSOCIATE_EMPLOYER')")
 	@RequestMapping(value = "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId")
-	public Response<String> getCandidateEmployerByCandidateIdAndCandidateEmpoyerId(
+	public Response<CandidateEmployers> getCandidateEmployerByCandidateIdAndCandidateEmpoyerId(
 			@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "candidateEmpId", required = false) Long candidateEmpId, HttpServletRequest request) throws Exception {
-		Response<String> response = new Response<>();
+		Response<CandidateEmployers> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
-				String resultJson;
 				CandidateEmployers candidatesEmployersList = candidateEmployersService
 						.getCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, candidateEmpId);
-				resultJson = commonUtil.toJSON(candidatesEmployersList);
-				response.setObject(resultJson);
+				response.setObject(candidatesEmployersList);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else {

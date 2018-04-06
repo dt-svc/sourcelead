@@ -56,12 +56,12 @@
                   ${sourceleadTicket.ticketURL}
                 </div>
                 
-                 <div class="require_wrap_details_cta width100percnt">
+                 <div class="width100percnt clearfix">
 				  <label><strong>Descripton:</strong></label>
                    <div class="clearfix">
-                   <p class="lineHeight small">
+                   <div class="lineHeight small">
 							${sourceleadTicket.description}
-                   </p>
+                   </div>
                    </div>
                 </div>
                 
