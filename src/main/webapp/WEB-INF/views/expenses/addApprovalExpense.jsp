@@ -9,6 +9,9 @@
  
  <script type="text/javascript">
 		window.onload = function () {
+			 if('${AWKWARD}' == "true"){
+				window.location.href =  "/errorPage";
+			}else{ 
 			var entrySize = '${expenses.expenseEntry.size()}';
 			if(entrySize>0){
 				$('#maxRecCount').val('${2*expenses.expenseEntry.size()+1}');
@@ -18,9 +21,16 @@
 			}
 			calculateTotalamount();
 			getClientBasedOnSelectedProject();
+			 }
 		 };
 </script>
-
+ <script>
+$(document).ready(function(){
+	if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	 }
+});
+</script>
 <div class="wraper"> 
 <!-- View Content Area Starts-->
 <c:if test = "${type == 'view'}">

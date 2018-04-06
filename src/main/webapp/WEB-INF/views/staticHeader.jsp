@@ -83,6 +83,8 @@ gtag('config', 'UA-115098165-1');
 				<li><a href="/pms.html" id="pmsID">PMS</a></li>
 				<li><a href="/hrms.html" id="hrmsID">HRMS/Contracts</a></li>
 				<li><a href="/ims.html" id="imsID">IMS</a></li>
+				<li><a href="/immigration.html" id="immigrationID">Immigration</a></li>
+				<li><a href="/mergers_acquisition.html" id="maId">Mergers &amp; Acquisition</a></li>
 			</ul>
 	</li>
 	<li><a href="/sourceleadJobPage.html" id="searchjobID">Search Job</a></li>

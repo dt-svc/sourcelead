@@ -901,12 +901,12 @@ public class TimesheetRestController {
 		    	 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(pm.getProjectClientsId().getOrgRelationId().getId());
 		   	 if(null != pm.getProjectClientsId().getOrgRelationId().getLocationId() && pm.getProjectClientsId().getOrgRelationId().getLocationId().getId() != null && pm.getProjectClientsId().getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 						if(orgRelations.getResponderLocationId() != null){
-							timesheetEntryDetailsDTO.setEmploymentTypeForSubmissionPageDisplay(orgRelations.getResponderLocationId().getOrgLocationName());
+							timesheetEntryDetailsDTO.setClientNameForDisplay(orgRelations.getResponderLocationId().getOrgLocationName());
 						}
 					}
 					if(null != pm.getProjectClientsId().getOrgRelationId().getResponderLocationId() && null != pm.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId() && pm.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 						if(orgRelations.getLocationId() != null){
-							timesheetEntryDetailsDTO.setEmploymentTypeForSubmissionPageDisplay(orgRelations.getLocationId().getOrgLocationName());
+							timesheetEntryDetailsDTO.setClientNameForDisplay(orgRelations.getLocationId().getOrgLocationName());
 						}
 					}
 		         }
@@ -1577,7 +1577,7 @@ public class TimesheetRestController {
 
 
 		 if(!timesheetFor.equalsIgnoreCase("user") && actualStartDate != null && actualEndDate != null) {
-			 Date monthStartDate = CalendarUtil.getMonthStartDateByGivenDate(actualStartDate,Constants.CURRENT_MONTH).get("STARTDATE");
+			 Date monthStartDate = CalendarUtil.getMonthStartDateByGivenDate(actualEndDate,Constants.CURRENT_MONTH).get("STARTDATE");
 			 Date monthEndDate = CalendarUtil.getMonthEndDateByGivenDate(actualEndDate,Constants.CURRENT_MONTH).get("ENDDATE");
 			 if(projectMember != null && projectMember.getId() != null) {
 				 SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),orgLocations.getId(),projectMember.getId(),monthStartDate,monthEndDate);
@@ -1617,9 +1617,17 @@ public class TimesheetRestController {
 								
 								
 							}
-					 tsDTO.setCurrentMonthBillableHours(monthBillableTotalHours);
-					 tsDTO.setCurrentMonthNonBillableHours(monthNonBillableTotalHours);
-					 tsDTO.setCurrentMonthTotalHours(monthTotalHours);
+					 tsDTO.setCurrentMonthBillableHours(Float.parseFloat(CommonUtil.getHoursDisplayFormat(monthBillableTotalHours)));
+					 tsDTO.setCurrentMonthNonBillableHours(Float.parseFloat(CommonUtil.getHoursDisplayFormat(monthNonBillableTotalHours)));
+					 tsDTO.setCurrentMonthTotalHours(Float.parseFloat(CommonUtil.getHoursDisplayFormat(monthTotalHours)));
+					 if(monthStartDate != null && monthEndDate != null) {
+					 LinkedHashSet<String> currentMonth  = CalendarUtil.getMonthStringsFromStartDateAndEndDate(monthStartDate, monthEndDate);
+					  String currentYear = CalendarUtil.getYearFromGivenDate(monthStartDate);
+					 if(currentMonth != null && !currentMonth.isEmpty()) {
+						 StringBuilder monthYear = new StringBuilder();
+						 tsDTO.setCurrentMonthName(monthYear.append(currentMonth.iterator().next()).append("-").append(currentYear).toString());
+					 }
+					 }
 					}
 				 }
 			 }
