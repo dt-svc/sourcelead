@@ -113,8 +113,9 @@ public class ExpensesRestController {
     }
 	
 	@RequestMapping(value = "/getExpensesList" , method=RequestMethod.POST)
-    public ModelAndView getExpensesListForWeb( ExpensesListUtilDTO elDTO,HttpServletRequest request) throws Exception{
+    public ModelAndView getExpensesListForWeb( ExpensesListUtilDTO elDTO,HttpServletRequest request){
 		 ModelAndView model = new ModelAndView();
+		 try {
 		 OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			int start = elDTO.getStart();
 			int length = 0;
@@ -141,15 +142,20 @@ public class ExpensesRestController {
 			 model.addObject("pageSize",elDTO.getLength());
 			 model.addObject("searchValue",elDTO.getSearchValue());
 			 model.setViewName("expenses/expensesEmployeeRedefined");
-			 return model;
+		 }catch(Exception e) {
+			  model.addObject("AWKWARD", true);
+			  model.setViewName("expenses/expensesEmployeeRedefined");
+		 }
+			return model;
 	}
 	
-    public ResponseList<ExpensesDTO> getExpensesList( ExpensesListUtilDTO elDTO,HttpServletRequest request) throws Exception
+    public ResponseList<ExpensesDTO> getExpensesList( ExpensesListUtilDTO elDTO,HttpServletRequest request) 
     {
         
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		ResponseList<ExpensesDTO> response = new ResponseList<ExpensesDTO>(); 
+		ResponseList<ExpensesDTO> response = new ResponseList<ExpensesDTO>();
+		try {
 		if(orgLoc == null){
 			orgLoc = orgLocationService.getOrgLocationsByLocationCode(elDTO.getLocationCode());
 		}
@@ -193,6 +199,9 @@ public class ExpensesRestController {
         response.setData(expensesDTOList);
         response.setRecordsFiltered(expensesList.getRecordsFiltered());
         response.setRecordsTotal(expensesList.getRecordsTotal());
+		}catch(Exception e) {
+			
+		}
         return response;
     }	
 	
@@ -714,9 +723,11 @@ public class ExpensesRestController {
 		}
 	}
 	
+	//unusedMethod
 	@RequestMapping(value = "/myExpensesListByStage",method= RequestMethod.GET)
-	public List<Expenses> myExpensesListByStage(HttpServletRequest request, String expenseStatus) throws Exception
+	public ResponseList<Expenses> myExpensesListByStage(HttpServletRequest request, String expenseStatus) throws Exception
 	{
+		ResponseList<Expenses> responceExpenses = new ResponseList<>();
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		List<Expenses> expensesList = expensesService.getTotalMyExpensesListByMasterCandidateIdForEmployeeLogin(candidate.getMasterCandidateId().getId(), expenseStatus);
@@ -740,10 +751,11 @@ public class ExpensesRestController {
 				ex.setExpenseLocationCode(orgLoc.getLocationCode());
 			}
 		}
-		//resultJson = commonUtil.toJSON(expensesList);
-		return expensesList;
+		responceExpenses.setData(expensesList);
+		return responceExpenses;
 	}
 	
+	//unused method
 	@RequestMapping(value = "/employeeExpensesListByStage")
 	public List<ExpensesApproverHierarchy> employeeExpensesListByStage(HttpServletRequest request, String expenseStatus) throws Exception
 	{
