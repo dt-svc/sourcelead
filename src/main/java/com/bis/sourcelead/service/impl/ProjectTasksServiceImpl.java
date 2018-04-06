@@ -978,11 +978,6 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	public ProjectTasks getProjectTaskByleaveTypeId(long leaveTypeId,Long projectId) {
 		return tasksDao.getProjectTaskByleaveTypeId(leaveTypeId,projectId);
 	}
-
-	@Override
-	public List<ProjectTasks> getTasksListByLeaveType(Long levaTypeId) throws Exception {
-		return tasksDao.getTasksListByLeaveType(levaTypeId);
-	}
 	
 	
 	

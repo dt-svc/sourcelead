@@ -413,7 +413,7 @@ function recQveducationSubmission(candidateId){
 <script>
 function recQwikCertificates(candidateId){
 	 $.ajax({  
-          type : "GET",
+          type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(response) {
         	  	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
