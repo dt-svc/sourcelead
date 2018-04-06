@@ -109,9 +109,10 @@ public class ExpensesApprovalRestController {
 	
 	@RequestMapping(value = "/getExpensesApprovalList")
 	public ModelAndView getExpensesApprovalList(HttpServletRequest request, ExpensesApproverDTO expensesApproverDTO) throws Exception {
+		 ModelAndView model = new ModelAndView();
+		try {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		ModelAndView model = new ModelAndView();
 		ExpensesApproverDTO expApperoverdto = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser, orgLoc, expensesApproverDTO);
 		model.addObject("totalRows",expApperoverdto.getTotalRows());
 		model.addObject("pageCount",expApperoverdto.getPageCount());
@@ -121,6 +122,10 @@ public class ExpensesApprovalRestController {
 		model.addObject("orgLocationDateFormat",orgLoc.getDateFormat());
 		model.addObject("expApperoverHierarchydto",expApperoverdto.getExpensesApproverHierarchyDTO());
 		model.setViewName("expenses/expensesApprovalListDataTable");
+		}catch(Exception e) {
+			 model.addObject("AWKWARD", true);
+			  model.setViewName("expenses/expensesApprovalListDataTable");
+		}
 		return model;
    }
 	
@@ -128,6 +133,7 @@ public class ExpensesApprovalRestController {
 	
 	@RequestMapping(value = "/getExpensesApprovalListForExports")
 	public void getExpensesApprovalListForExports(HttpServletRequest request,HttpServletResponse response,ExpensesApproverDTO expensesApproverDTO) throws Exception {
+
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		File file=null;
@@ -155,6 +161,7 @@ public class ExpensesApprovalRestController {
 				file.delete();
 			}
 		}
+		
    }
 	
 	//unused method
@@ -183,10 +190,6 @@ public class ExpensesApprovalRestController {
 		reponseEntries.setData(expensesEntries);
 		return reponseEntries;
    }
-	
-	
-	
-	
 	
 	
     @RequestMapping(value = "/saveExpenseApprovalStatusByExpenseId", method = RequestMethod.POST)

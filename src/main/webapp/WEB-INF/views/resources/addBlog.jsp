@@ -110,7 +110,7 @@
         </div>
         
          <div class="form-group">
-          <label class="col-md-3">Short Description</label>
+          <label class="col-md-3">Short Description<span class="text-danger paddingLeft">&nbsp;*</span></label>
           <div class="col-md-9">
 				<textarea rows="2" class="form-control" name="shortDescription" id="shortDescription" field-name="Short Description" field-name="Short Description" data-validation="required validate_Space validate_length length2-250">${sourceleadBlog.shortDescription}</textarea>
           </div>
