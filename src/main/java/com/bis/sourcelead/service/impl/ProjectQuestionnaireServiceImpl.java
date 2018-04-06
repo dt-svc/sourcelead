@@ -272,7 +272,7 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 		   }
 		   
 		   if(projects.getIsMailToTeamMembers().equals(Status.Y)){
-			   List<ProjectApproverHierarchy> approverHierarchy = projectApproverHierarchyDao.getApproverUsersByProjectClientId(projects.getId());
+			   List<ProjectApproverHierarchy> approverHierarchy = projectApproverHierarchyDao.getApproverUsersByProjectId(projects.getId());
 			   StringBuilder managers = new StringBuilder();
 			  
 			   for (ProjectApproverHierarchy projectApproverHierarchy : approverHierarchy) {
