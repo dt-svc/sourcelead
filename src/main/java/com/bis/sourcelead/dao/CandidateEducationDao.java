@@ -18,7 +18,9 @@ public interface CandidateEducationDao {
 	
 	public CandidateEducation storeCandidateEducation(CandidateEducation candidateEducation) throws Exception;
 
-	public List<CandidateEducation>   getCandidateEducationListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId, String searchVal) throws Exception;
+	public List<CandidateEducation>   getCandidateEducationListByCandidateIdAndOrgLocationIDImmigration(Long candidateId, Long orgLocationId, String searchVal) throws Exception;
+	
+	public List<CandidateEducation>   getCandidateEducationListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
 
 	public CandidateEducation getCandidateEducationBycandidateIdandEducationId(Long candidateId,Long candidateCertificateId)  throws Exception;
 	

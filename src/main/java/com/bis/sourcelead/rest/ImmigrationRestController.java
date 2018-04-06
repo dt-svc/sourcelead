@@ -960,7 +960,7 @@ public class ImmigrationRestController {
 		ModelAndView model = new ModelAndView();
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		model.setViewName("/immigration/educationDetailsTab");
-		 List<CandidateEducation>   candidatesEducationList = candidateEducationService.getCandidateEducationListByCandidateIdAndOrgLocationID(Long.valueOf(candidateId), orgLocations.getId(),searchVal);
+		 List<CandidateEducation>   candidatesEducationList = candidateEducationService.getCandidateEducationListByCandidateIdAndOrgLocationIDImmigration(Long.valueOf(candidateId), orgLocations.getId(),searchVal);
 		 List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 		 model.addObject("educationsDropList", educationsList);
 		 model.addObject("candidatesEducationList",candidatesEducationList);
@@ -976,7 +976,7 @@ public class ImmigrationRestController {
 		ModelAndView model = new ModelAndView();
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		model.setViewName("/immigration/employerDetailsTab");
-		 List<CandidateEmployers>   candidatesEmployersList = candidateEmployersService.getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long.valueOf(candidateId), orgLocations.getId(),searchVal);
+		 List<CandidateEmployers>   candidatesEmployersList = candidateEmployersService.getCandidatesEmployersListByCandidateIdAndOrgLocationIDImmigration(Long.valueOf(candidateId), orgLocations.getId(),searchVal);
 		model.addObject("candidatesEmployersList",candidatesEmployersList);
 		return model;
 	}
