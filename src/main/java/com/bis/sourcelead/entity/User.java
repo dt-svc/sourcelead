@@ -209,6 +209,7 @@ public class User implements Serializable{
     private String tempPwd;
 	
 	@Transient
+	@JsonProperty
     private int assignJobCount;
 	
 	@Transient
