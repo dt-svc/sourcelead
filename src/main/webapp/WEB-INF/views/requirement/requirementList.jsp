@@ -45,7 +45,11 @@ function clearAllStatus(){
 }
 
 </script>
-
+<script>
+$(document).ready(function() {
+	getcites('apiLocation','city','recommendation');
+});
+</script>
 
 <!-- <script>
 $(document).ready(function() {
@@ -206,7 +210,7 @@ function statusvalidating(id){
 			</a>
 			
 			<div class="filterSearchDiv pull-left">
-				<a href="javascript:void(0)" onClick="filterPop();" title="Filter" class="btn btn-sm btn-default"><i class="fa fa-filter"></i></a>
+				<a href="javascript:void(0)" onClick="filterPop();" title="Filters" class="btn btn-sm btn-default"><i class="fa fa-filter"></i></a>
 			</div>
 			
 			</div>
@@ -995,7 +999,7 @@ function refreshGoogleApiCity(cityId){
 
 <div class="sideMask"></div>
 <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="requirementFilterPopup">
-<h5 class="headerAdsrch">Filter <a href="javascript:void(0)" class="close-div" onClick="closeFilter()"><i class="fa fa-close"></i></a></h5>
+<h5 class="headerAdsrch">Filters <a href="javascript:void(0)" class="close-div" onClick="closeFilter()"><i class="fa fa-close"></i></a></h5>
 <div class="addInner">
 <div class="row">
  

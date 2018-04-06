@@ -1134,8 +1134,8 @@ function validateTemplateName(){
 		        		$('input#templateName').removeAttr("class record-exist record-exist-errormsg");
 						$('input#templateName').attr('class','valid form-control');
 						$('#templateNameDiv').find('p.jquery_form_error_message').remove();
-		        		$("#save_button").removeAttr("disabled")
-		        		$("#save_continue_button").removeAttr("disabled")
+		        		$("#save_button").removeAttr("disabled");
+		        		$("#save_continue_button").removeAttr("disabled");
 		        	}
 	        	} else if (response.indexOf('Sign In') !== -1) {
 	        		location.replace(sourceleadUrl);
