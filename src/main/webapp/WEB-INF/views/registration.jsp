@@ -186,7 +186,7 @@ window.onload = function () {
 			       <div class="form-group clearfix">
 		              <label class="col-md-4">Password <span class="text-danger">*</span></label>
 		              <span class="col-md-8" id="popemailDiv">
-		                 <input type="password" id="password" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" class="form-control"  >
+		                 <input type="password" id="password" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length8-100" class="form-control"  >
 		                  <b></b>
 		              </span>
 		            </div>
@@ -194,7 +194,7 @@ window.onload = function () {
 		            <div class="form-group clearfix">
 		              <label class="col-md-4">Confirm Password <span class="text-danger">*</span></label>
 		              <span class="col-md-8" id="popemailDiv">
-		                 <input type="password" id="confirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).checkPass();" data-validation="required validate_length length6-100" class="form-control"  >
+		                 <input type="password" id="confirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).checkPass();" data-validation="required validate_length length8-100" class="form-control"  >
 		                  <b></b>
 		              </span>
 		            </div> 
@@ -396,7 +396,7 @@ window.onload = function () {
 
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Password <span class="text-danger">*</span></label>
-	                    <input type="password" class="registePassword"  id="jsPassword" name="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d.*)(?=.*\W.*)[a-zA-Z0-9\S]{8,}$" filed-name="Password" field-name="Password" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" data-validation="required validate_length length6-100" onkeyup="passwordValidation('jsPassword','js_letter','js_capital','js_number','js_special','js_length');" >
+	                    <input type="password" class="registePassword"  id="jsPassword" name="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d.*)(?=.*\W.*)[a-zA-Z0-9\S]{8,}$" filed-name="Password" field-name="Password" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" data-validation="required validate_length length8-100" onkeyup="passwordValidation('jsPassword','js_letter','js_capital','js_number','js_special','js_length');" >
 	                    <b></b>
 	                    
 						<div id="js_message" class="passHint">
@@ -411,7 +411,7 @@ window.onload = function () {
 	                <div class="col-xs-12 col-md-6" id="passwordDiv">
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Confirm Password <span class="text-danger">*</span></label>
-	                    <input type="password" id="jsconfirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).checkProfPass();" data-validation="required validate_length length6-100" >
+	                    <input type="password" id="jsconfirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).checkProfPass();" data-validation="required validate_length length8-100" >
 	                     <i class="fa fa-eye showPassword-reg-usr" onclick="showProfConfirmPassword();"></i>
 	                    <b></b>
 	                </div>
@@ -505,7 +505,7 @@ window.onload = function () {
 	                    <label>Password <span class="text-danger">*</span></label>
 	                    <!-- <input type="password" id="recpassword" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" >
 	                    -->
-	                     <input type="password" class="registePassword"  id="recpassword" name="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d.*)(?=.*\W.*)[a-zA-Z0-9\S]{8,}$" filed-name="Password" field-name="Password" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" data-validation="required validate_length length6-100" onkeyup="passwordValidation('recpassword','fr_letter','fr_capital','fr_number','fr_special','fr_length');" >
+	                     <input type="password" class="registePassword"  id="recpassword" name="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d.*)(?=.*\W.*)[a-zA-Z0-9\S]{8,}$" filed-name="Password" field-name="Password" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" data-validation="required validate_length length8-100" onkeyup="passwordValidation('recpassword','fr_letter','fr_capital','fr_number','fr_special','fr_length');" >
 	                   
 	                    <b></b>
 	                    <div id="fr_message" class="passHint">
@@ -520,7 +520,7 @@ window.onload = function () {
 	                <div class="col-xs-12 col-md-6" id="recpasswordDiv">
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Confirm Password <span class="text-danger">*</span></label>
-	                    <input type="password" id="recconfirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).reccheckPass();" data-validation="required validate_length length6-100" >
+	                    <input type="password" id="recconfirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).reccheckPass();" data-validation="required validate_length length8-100" >
 	                     <i class="fa fa-eye showPassword-reg-usr" onclick="showRecConfirmPassword();"></i>
 	                    <b></b>
 	                </div>

@@ -45,13 +45,14 @@ public class Candidate implements Serializable{
 	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false )        
+    @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false ) 
     private MasterCandidate masterCandidateId;
 	
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="PARENT_CANDIDATE_ID")        
+    @JoinColumn(name="PARENT_CANDIDATE_ID")
+	@JsonBackReference
     private Candidate parentCandidateId;
 	
 
@@ -405,6 +406,7 @@ public class Candidate implements Serializable{
 	 private String reportingManager;
 	 
 	 @Transient
+	 @JsonProperty
 	 private String resumeUUID;
 	 
 	 @Transient

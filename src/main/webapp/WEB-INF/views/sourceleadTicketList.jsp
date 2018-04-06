@@ -243,7 +243,6 @@ function prepareSourceleadTicketList(url){
 		$("#sourceleadTicketListDivId").empty();
 		$("#sourceleadTicketListDivId").append(result);
 		dynamicTicketListPagination(url);
-		document.getElementById("customSearch").style.display="none";
 }
 
 function dynamicTicketListPagination(url){

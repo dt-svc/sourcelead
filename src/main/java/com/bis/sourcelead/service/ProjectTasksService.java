@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -7,6 +8,8 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.json.JSONObject;
 
 import com.bis.sourcelead.dto.ProjectTasksDTO;
@@ -85,8 +88,16 @@ public interface ProjectTasksService {
 	
 	 public List<ProjectTasks> getAllTasksByProjectIdAndFilter(Long projectId, Date startDateUTC, Date endDateUTC)throws Exception;
 	 
-	 ResponseList<ProjectTasksDTO> getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(ProjectTasksDTO projectTasksDTO,Long projectId,String taskType,String taskStatus,String userRole,String assignedMembers)throws Exception;
+	 ResponseList<ProjectTasks> getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(ProjectTasksDTO projectTasksDTO,Long projectId,String taskType,String taskStatus,String userRole,String assignedMembers)throws Exception;
 
 	 public void SendMailtoAssigntoMembersaboutAddingTask(ProjectAssignTask projectAssignTask, ProjectTasksDTO projectTasksDTO, ProjectTasks tasks, OrgLocations loginOrgLocation,User loginUser) throws Exception;
+
+	public Sheet getTaskExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, ResponseList<ProjectTasks> taskList, OrgLocations orgLocations) throws Exception;
+
+	public File getTaskPdfFile(ResponseList<ProjectTasks> taskList, OrgLocations orgLocations) throws Exception;
+
+	public ProjectTasks getProjectTaskByleaveTypeId(long leaveTypeId, Long projectId);
+	
+	List<ProjectTasks> getTasksListByLeaveType(Long levaTypeId)throws Exception;
  	 
 }

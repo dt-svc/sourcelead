@@ -10,8 +10,6 @@
 				$("#approverDataExpensesDiv").empty();
 	       		$("#approverDataExpensesDiv").append(localStorage.getItem("empExpensesListGrid"));
 	       		preparePagination(1);
-	       		/* pagination(); */
-	       		/* localStorage.removeItem("empExpensesListGrid"); */
 	       		localStorage.setItem("empExpensesListGrid","");
 	       		$(":checkbox[value=ALL]").prop("checked",false);
 	       		if("reopen" == $("#countType").val()){
@@ -26,7 +24,6 @@
 	       		$("#temp").val("temp");
 	       		$("#appro-pop").hide();
 			}else{
-				//expensesApprovalList('${sourceleadUrl}');
 				getExpensesApprovalDataList();
 				$("#appro-pop").show();
 			}
@@ -194,21 +191,42 @@ if(dateSearch != null && dateSearch != '' && dateSearch != 'undefined' && dateSe
 
 
 var searchData = $('#SearchExpensesData').val();
-/* var expenseStatus = $('#expenseStatusDivId').val();
+
+/* var expenseStatus = [];
+$('input:checkbox[name=expenseStatus]:checked').each(function() 
+{
+	expenseStatus.push($(this).val());
+}); */
+
+
+
+
+var expenseStatus = '';
+var expensesStatusFromDashboard = '${expensesStatusFormDashBoard}';
+if(expensesStatusFromDashboard != null && expensesStatusFromDashboard != '' && expensesStatusFromDashboard !='undefined'){
+	$(":checkbox[value=ALL]").prop("checked",false);
+	$(":checkbox[value="+expensesStatusFromDashboard+"]").prop("checked",true);
+		if(expensesStatusFromDashboard === 'SUBMITTED' || expensesStatusFromDashboard === 'submitted'){
+			$(":checkbox[value=SUBMITTEDFORAPPROVAL]").prop("checked",true);	
+		}else{
+			$(":checkbox[value=ALL]").prop("checked",false);
+		}
+}
+
 if(expenseStatus != null && expenseStatus != '' && expenseStatus !='undefined'){
-	expenseStatus = expenseStatus
+	  	expenseStatus = expenseStatus.toUpperCase();
+	  	$(":checkbox[value="+expenseStatus+"]").prop("checked","true");
 }else{
 	var expenseStatus = [];
 	$('input:checkbox[name=expenseStatus]:checked').each(function() 
 	{
 		expenseStatus.push($(this).val());
-	});	
-} */
-var expenseStatus = [];
-$('input:checkbox[name=expenseStatus]:checked').each(function() 
-{
-	expenseStatus.push($(this).val());
-});
+	});
+}
+
+
+
+
 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
  var expensesApprvListDate = getJSDateFormat(locationList);
  
@@ -252,19 +270,26 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 		    $.ajax({
 		    type: "POST",
 		    url: sourceleadUrl+"/saveExpenseApprovalStatusByExpenseId?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&approvalStatus=REJECTED"+"&rejectedReason="+(encodeMsg.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>')),       
-		    success: function(data) {    
-		   	   // approvalList();
-		       if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
-		    	   var table = $('#example').DataTable();
-			   		 table.row('#row'+expenseId).remove().draw( false );
-			   }
-		   	   else{
-		   		  	  $("#row"+expenseId).empty();
-		 	    	  $("#row"+expenseId).html(rowHtmlContent);
-		 	    	  $("#status"+expenseId).html("REJECTED");
-		 	    	  $("#action"+expenseId).empty();
-		 	    	  $("#action"+expenseId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+expenseId+"' onclick='rejectedMessage(\"rejectedMessage"+expenseId+"\");'><div class='app_error_mes' id='rejectedMessage"+expenseId+"'>"+msg+"</div></i><b class='Rname'>By :"+locationName+"</b>");
-		   	   }
+		    success: function(data) {
+		    	if(data.response === "SESSION_TIMEDOUT") {
+		    		location.replace(sourceleadUrl);
+		    	 } else if (data.response === "AWKWARD") {
+                        location.href = "/errorPage";
+		    	 } else if (data.response === "SUCCESS"){ 
+			    	if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
+			    	   var table = $('#example').DataTable();
+				   		 table.row('#row'+expenseId).remove().draw( false );
+				   }
+			   	   else{
+			   		  	  $("#row"+expenseId).empty();
+			 	    	  $("#row"+expenseId).html(rowHtmlContent);
+			 	    	  $("#status"+expenseId).html("REJECTED");
+			 	    	  $("#action"+expenseId).empty();
+			 	    	  $("#action"+expenseId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+expenseId+"' onclick='rejectedMessage(\"rejectedMessage"+expenseId+"\");'><div class='app_error_mes' id='rejectedMessage"+expenseId+"'>"+msg+"</div></i><b class='Rname'>By :"+locationName+"</b>");
+			   	   }
+		    	}else if (result.indexOf('Sign In') !== -1) {
+  					location.replace(sourceleadUrl);
+				 }
 		      }
 		    }); 
 		 }
@@ -361,14 +386,14 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 }
 </script>
     
-<script>
+<!-- <script>
 function prepareCategoryDivForApprovalPopUp(expenseId){
 	    var locationCode ='${SourceLeadWeb_locationCode}'; 
 	 $.ajax({
          type : "POST",
          url: sourceleadUrl+"/getExpensesApprovalCategoryByExpenseId?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&locationCode="+locationCode,       
-         success :function(data) {
-        		var jsonList = JSON.parse(data);
+         success :function(jsonList) {
+        		//var jsonList = JSON.parse(data);
         		var result = '';
         		result = result +'<table>';
         		result = result +'<thead>';
@@ -438,7 +463,7 @@ function prepareCategoryDivForApprovalPopUp(expenseId){
        }
 	 });
 }    
-</script>
+</script> -->
     
  <script>
 function activeTabExpenseApproval(){

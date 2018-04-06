@@ -176,14 +176,14 @@ function getUsersSearchResult(searchValue){
 			    <span class="fa fa-refresh"></span>
 			</button>
 			
-			<a href="javascript:void(0)" class="btn btn-primary btn-sm"
-				title="Filter Search"
-				onClick="openPop();"> Filter&nbsp;&nbsp; <i class="fa fa-filter"></i>
-			</a>
+			
+			<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openPop();"><i class="fa fa-filter faFilter padding_right" style="color: #909090!important"></i>
+				</a>
+				
 	    </div>
 	    
 				<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
-				<h5 class="headerAdsrch">Filter Search
+				<h5 class="headerAdsrch">Filters
 					<a href="javascript:void(0)" class="close-div" onClick="closePop()"><i
 						class="fa fa-close"></i></a>
 				</h5>
@@ -484,6 +484,12 @@ function myDepartmentFunction() {
     }
 }
 
+$(document).keyup(function(e) {
+	  if (e.keyCode === 27) {
+		  closePop();
+	  }
+	});
+
 </script>
 
 <script>
@@ -495,6 +501,7 @@ function resetFilter(){
 	$("ul#myTeamsUL > li input:checkbox").prop("checked",false);
 	$("ul#myDepartmentUL > li input:checkbox").prop("checked",false);
 	$("ul#employmentTypeFilter > li input:checkbox").prop("checked",false);
+	$("#dynamicUserDataTableSearch").val('');
 	
 	document.getElementById("activeStatus").checked = true;
 	document.getElementById("notloggedInStatus").checked = true;
@@ -957,7 +964,7 @@ function getUserSummary(userId){
   $('#selector').delay(2000).fadeOut('slow');
 	   $("#export-pop").click(function(){
 	               $("#exportPop").toggle();
-	       });
+	   });
 	   $("html").click(function() {
 	       $("#exportPop").hide();
 	   });

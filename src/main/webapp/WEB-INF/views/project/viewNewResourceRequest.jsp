@@ -240,7 +240,7 @@ function getRequestedAssociatesList(){
 						result = result +'<td>';
 						if(opt.rejectedReason==null){
 						result = result +'<div class="tbldata-dotdot-vsm paTp">';
-			     		result = result +'<b class="holdPro" title="'+opt.resourceStatus+'" >'+opt.resourceStatus+'</b>';
+			     		result = result +'<b class="text-success" title="'+opt.resourceStatus+'" >'+opt.resourceStatus+'</b>';
 						result = result +'</div>';}
 						if(opt.rejectedReason!=null){
 						result = result +'<div class="tbldata-dotdot-vsm paTp">';

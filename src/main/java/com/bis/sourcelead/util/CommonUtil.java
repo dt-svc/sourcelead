@@ -77,6 +77,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchyHistory;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
@@ -106,6 +107,8 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.VendorOnboardTemplateDocumentsService;
 import com.bis.sourcelead.service.VendorOnboardTemplateService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.icu.text.DecimalFormat;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -205,6 +208,27 @@ public class CommonUtil {
 	private ProjectTasksDao tasksDao;
 	
 	
+	/**
+	 * This method is used to store pre-defined sourcelead tasks for the particular project
+	 * @author: Naresh Bolisetty
+	 * 
+	 */
+	public static HashMap<String, String> getJsonAsMap(String json)
+	{
+	    try
+	    {
+	        ObjectMapper mapper = new ObjectMapper();
+	        TypeReference<Map<String,String>> typeRef = new TypeReference<Map<String,String>>() {};
+	        HashMap<String, String> result = mapper.readValue(json, typeRef);
+
+	        return result;
+	    }
+	    catch (Exception e)
+	    {
+	        throw new RuntimeException("Couldnt parse json:" + json, e);
+	    }
+	}
+	
 	
 	/**
 	 * This method is used to store pre-defined sourcelead tasks for the particular project
@@ -215,6 +239,9 @@ public class CommonUtil {
 	public static Date currentDate() {
         return new Date();
     }
+	
+	
+	
 	
 	/**
 	 * Converting Org based date format as string
@@ -230,6 +257,7 @@ public class CommonUtil {
 		}
 		return dateStr;
 	}
+	
 	
 	/**
 	 * Convert String to Capitalized String
@@ -547,7 +575,7 @@ public class CommonUtil {
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String actionLink="";
-		emailScenerioUtil.sendNotification(actionLink, loginUser,toUser, pmh.getProjectMemberId().getEmployee().getOrgLocations(), notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser,toUser, pmh.getProjectMemberId().getEmployee().getOrgLocations(), notificationScenario,new HashMap<String,String>());
 
 			
 		}
@@ -1946,7 +1974,8 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 					if(StringUtils.isNotBlank(loginUserRole) && (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN"))) {
 						ProjectApproverHierarchy approverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(loginUser.getId(), projectClients.getId());
 						ProjectMembers pm = projectMembersService.getProjectMembersByCandidateIdAndProjectClientId(candidateId, projectClients.getId());
-						if(approverHierarchy != null || pm != null) {
+						Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+						if(approverHierarchy != null || pm != null || projects.getCreatedBy().equalsIgnoreCase(loginUser.getUserCode())) {
 							flag = true;
 						}
 					}else {
@@ -2099,8 +2128,41 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		 String actionLink="";
 	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+pmh.getProjectMemberId().getProjects().getProjectUUID()+"&projectClientUUID="+pmh.getProjectMemberId().getProjectClientUUID()+"&tabType=team").toString();
 
-		 emailScenerioUtil.sendNotification(actionLink, loginUser,user, projectApproverHierarchy.getProjectId().getOrgLocationsId(), notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, loginUser,user, projectApproverHierarchy.getProjectId().getOrgLocationsId(), notificationScenario,new HashMap<String,String>());
 		 }
 		}
+	
+	public static SubmissionApproverHierarchyHistory getSubmissionApproverHierarchyHistory(SubmissionApproverHierarchy sah) {
+		SubmissionApproverHierarchyHistory sahh = null;
+		if(sah != null) {
+			sahh = new SubmissionApproverHierarchyHistory();
+			sahh.setHierarchyId(sah.getHierarchyId());
+			sahh.setSubmissionId(sah.getSubmissionId());
+			sahh.setSubmissionApproverHierarchyId(sah);
+			sahh.setSubmissionStatus(sah.getSubmissionStatus());
+			sahh.setSubmissionApprovalStatus(sah.getSubmissionApprovalStatus());
+			sahh.setInvoiceStatus(sah.getInvoiceStatus());
+			sahh.setBillingStatus(sah.getBillingStatus());
+			sahh.setInvoiceDate(sah.getInvoiceDate());
+			sahh.setBillDate(sah.getBillDate());
+			sahh.setInvoiceId(sah.getInvoiceId());
+			sahh.setBillId(sah.getBillId());
+			sahh.setFrequencyStartDate(sah.getFrequencyStartDate());
+			sahh.setFrequencyEndDate(sah.getFrequencyEndDate());
+			sahh.setMechanismType(sah.getMechanismType());
+			sahh.setRejectedReason(sah.getRejectedReason());
+			sahh.setActionPerformedBy(sah.getActionPerformedBy());
+			sahh.setActionPerformedByOrgLocationId(sah.getActionPerformedByOrgLocationId());
+			sahh.setStatus(sah.getStatus());
+			sahh.setReopenedUser(sah.getReopenedUser());
+			sahh.setReopenReason(sah.getReopenReason());
+			sahh.setReopenRejectedReason(sah.getReopenRejectedReason());
+			sahh.setCreatedDate(sah.getCreatedDate());
+			sahh.setCreatedBy(sah.getCreatedBy());
+			sahh.setUpdatedDate(sah.getUpdatedDate());
+			sahh.setUpdatedBy(sah.getUpdatedBy());
+		}
+		return sahh;
+	}
 		
 }

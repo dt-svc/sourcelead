@@ -2,11 +2,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-
 <script src="/resources/js/jquery.simplePagination.js"></script>
+<!-- <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script> -->
+
 <c:if test="${!empty timesheetApprovalDTO.timesheetSubmission}">
 <div id="loadingCotentDiv"></div>
-<div id="tableContent" class="timesheetRep-table timesheet_appr_table" style="overflow: auto;">
+<div id="tableContent" class="timesheetRep-table timesheet_appr_table timesheet_apprTable" style="overflow: auto;">
  <table id='exampleApprover' class='display'>
 	<thead> 
     <tr>
@@ -51,6 +52,34 @@
 		<ul id="pagination-demo" class="pagination-sm pull-right pagination"></ul>
 	</div>
 </div>
+<!-- 
+<script>
+$(document).ready(function(){
+	datatableBody();
+});
+</script> 
+<script>
+function datatableBody(){ 
+	 $('#exampleApprover').DataTable( { 
+		    "sDom": "Rlfrtip",
+		    "bPaginate": false,
+		    "bInfo" : false,
+		    "ordering": false,
+		    "searchHighlight": true
+	    } );
+}
+</script> 
+<script>
+ function searchHighlight(searchData){
+	 if(searchData != null && searchData != 'undefined' && searchData != ''){
+		    var table = $('#exampleApprover').DataTable();
+		    var body = $( table.table().body() );
+		    body.unhighlight();
+	        body.highlight(searchData);
+	 } 
+ }
+ </script> -->
+
 <script>
 function exportTimeSheetToPdfOrExcel(exportType){
 	 	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
@@ -83,6 +112,32 @@ function exportTimeSheetToPdfOrExcel(exportType){
      e.stopPropagation();
  });
 </script>  
+
+<script>
+ var selectedRecords = {};
+  $(document).ready(function () {
+	    $("#selectAllTimeSheetCheckBoxForSubmitForApproval").click(function () {
+	        $(".checkBoxForSubmitForApproval").prop('checked', $(this).prop('checked'));
+	        $(".checkBoxForSubmitForApproval").each(function() {
+	        	selectedRecords[$(this).val()] = $(this).is(":checked");
+	        });
+	        displayAcceptRejectButtonOnHedder();
+	    });
+	});
+ </script>
+ 
+ 
+ <script type="text/javascript">
+function displayAcceptRejectButtonOnHedder() {
+	if($('[name="checkBoxForSubmitForApproval"]:checked').length > 0){
+		$('#hedderAcceptRejectButton').removeAttr('style');
+	}else{
+		$('#hedderAcceptRejectButton').attr('style','display:none');
+	}
+	
+}
+</script>	
+
 
  <script>
       function getTableDataByPageSize(){
@@ -134,12 +189,18 @@ function exportTimeSheetToPdfOrExcel(exportType){
 		  var totalRows =  $('#totalRows').val();
 		  var pageMsg = '';
 		  var searchData = '${timesheetApprovalDTO.searchValue}';
+		  var notifyLink =$('#notifyLink').val(); 
 		  if(totalRows !=null && totalRows != '' && totalRows != 'undefined'){
 			  $('#paginationDiv').show();
 			  var pageCount = $('#pageCount').val();
 			  var pageSize = $("#pageSize").val();
 			  $('#dataTableSearchExpenses').val('') ;
-			  $('#dataTableSearchExpenses').val(searchData); 
+
+			  $('#dataTableSearchExpenses').val(searchData);
+			 /*  searchHighlight(searchData); */
+			  if (notifyLink != null && notifyLink != '' && notifyLink != 'undefined' && notifyLink){
+				  $('#dataTableSearchExpenses').val('') ;
+			  }
 			  var startingRecord = parseInt((pageNo*pageSize-pageSize)+1);
 			  var endingRecord = parseInt(pageNo*pageSize);
 			  if(endingRecord > totalRows){
@@ -158,6 +219,9 @@ function exportTimeSheetToPdfOrExcel(exportType){
 		      };
 		      $("#pagination-demo").pagination(options);
 		      pageMsg = " Showing "+startingRecord+" to "+endingRecord+" of "+totalRows+" entries ";
+		      if (notifyLink != null && notifyLink != '' && notifyLink != 'undefined' && notifyLink){
+		    	  $("#popuplink").click();
+		      } 
 		  }
 		  else{
 			  $("#tableContent").empty();
@@ -175,7 +239,7 @@ function exportTimeSheetToPdfOrExcel(exportType){
   
   
    
- <jsp:include page="timesheetApprovalCommonScriptsRedefined.jsp"></jsp:include>
+ <jsp:include page="timesheetApprovalCommonScripts.jsp"></jsp:include>
 
 
 

@@ -1,10 +1,12 @@
 package com.bis.sourcelead.dto;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import com.bis.sourcelead.entity.Employees;
 
-public class AssetDTO extends CommonDTO {
+public class AssetDTO extends SearchDTO implements Serializable {
 
 		private String sno;
 		
@@ -73,6 +75,23 @@ public class AssetDTO extends CommonDTO {
 		private String shiftBEmployee;
 		
 		private String issueDate;
+		
+		private List<CustomFormFieldDTO> customFormData;
+		
+		private Map<Long,String> assetCustomFieldlabelNameAndValue;
+		
+		private String macAddress;
+		
+		private String categoryIds;
+		
+
+		public List<CustomFormFieldDTO> getCustomFormData() {
+			return customFormData;
+		}
+
+		public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
+			this.customFormData = customFormData;
+		}
 
 		public String getSno() {
 			return sno;
@@ -346,5 +365,27 @@ public class AssetDTO extends CommonDTO {
 			this.issueDate = issueDate;
 		}
 
-		
+		public Map<Long, String> getAssetCustomFieldlabelNameAndValue() {
+			return assetCustomFieldlabelNameAndValue;
+		}
+
+		public void setAssetCustomFieldlabelNameAndValue(Map<Long, String> assetCustomFieldlabelNameAndValue) {
+			this.assetCustomFieldlabelNameAndValue = assetCustomFieldlabelNameAndValue;
+		}
+
+		public String getMacAddress() {
+			return macAddress;
+		}
+
+		public void setMacAddress(String macAddress) {
+			this.macAddress = macAddress;
+		}
+
+		public String getCategoryIds() {
+			return categoryIds;
+		}
+
+		public void setCategoryIds(String categoryIds) {
+			this.categoryIds = categoryIds;
+		}
 }

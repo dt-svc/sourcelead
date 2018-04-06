@@ -2,7 +2,6 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
 public class OrgLocationDTO implements Serializable{
 	
@@ -14,6 +13,10 @@ public class OrgLocationDTO implements Serializable{
 	
 	private String locationCode;
 	
+	private String location;
+	
+	private String zipCode;
+	
 	private String orgCode;
 	
 	private long orgId;
@@ -21,6 +24,8 @@ public class OrgLocationDTO implements Serializable{
 	private long orgLocationId;
 	
 	private long candidateId;
+	
+	private long orgLinceseSubscriptionId;
 	
 	private String orgImageUrl;
 	
@@ -65,6 +70,31 @@ public class OrgLocationDTO implements Serializable{
 	private int recommRate;
 	
 	private int recommKeywords;
+	
+	private String registrationStatusStr;
+	
+	private String email;
+	
+	private String firstName;
+	
+	private String lastName;
+	
+	private String phoneNumber;
+	
+	private String dateFormat;
+	
+	private Long timeZone;
+	
+	private Long subscriptionType;
+	
+    private Long userSubscriptionType;
+  
+    private Long storageSubscriptionType;
+    
+    private String subscriptionDate;
+    
+    private Double subscriptionRate;
+	
 
 	public long getId()
 	{
@@ -345,4 +375,128 @@ public class OrgLocationDTO implements Serializable{
 	{
 		this.recommKeywords = recommKeywords;
 	}
+
+	public String getRegistrationStatusStr() {
+		return registrationStatusStr;
+	}
+
+	public void setRegistrationStatusStr(String registrationStatusStr) {
+		this.registrationStatusStr = registrationStatusStr;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public String getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getDateFormat() {
+		return dateFormat;
+	}
+
+	public void setDateFormat(String dateFormat) {
+		this.dateFormat = dateFormat;
+	}
+
+	public Long getTimeZone() {
+		return timeZone;
+	}
+
+	public void setTimeZone(Long timeZone) {
+		this.timeZone = timeZone;
+	}
+
+	public long getOrgLinceseSubscriptionId() {
+		return orgLinceseSubscriptionId;
+	}
+
+	public void setOrgLinceseSubscriptionId(long orgLinceseSubscriptionId) {
+		this.orgLinceseSubscriptionId = orgLinceseSubscriptionId;
+	}
+
+	public Long getSubscriptionType() {
+		return subscriptionType;
+	}
+
+	public void setSubscriptionType(Long subscriptionType) {
+		this.subscriptionType = subscriptionType;
+	}
+
+	public Long getUserSubscriptionType() {
+		return userSubscriptionType;
+	}
+
+	public void setUserSubscriptionType(Long userSubscriptionType) {
+		this.userSubscriptionType = userSubscriptionType;
+	}
+
+	public Long getStorageSubscriptionType() {
+		return storageSubscriptionType;
+	}
+
+	public void setStorageSubscriptionType(Long storageSubscriptionType) {
+		this.storageSubscriptionType = storageSubscriptionType;
+	}
+
+	public String getSubscriptionDate() {
+		return subscriptionDate;
+	}
+
+	public void setSubscriptionDate(String subscriptionDate) {
+		this.subscriptionDate = subscriptionDate;
+	}
+
+	public Double getSubscriptionRate() {
+		return subscriptionRate;
+	}
+
+	public void setSubscriptionRate(Double subscriptionRate) {
+		this.subscriptionRate = subscriptionRate;
+	}
+
+	
+
+	
 }

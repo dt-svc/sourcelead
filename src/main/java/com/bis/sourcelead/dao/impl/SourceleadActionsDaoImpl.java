@@ -12,11 +12,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.dao.OrgLicenseSubscriptionDao;
 import com.bis.sourcelead.dao.SourceleadActionsDao;
+import com.bis.sourcelead.dao.TabsDao;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.Tabs;
 
 @Repository
 public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
@@ -25,6 +29,12 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	OrgLicenseSubscriptionDao orgLicenseSubscriptionDao;
+	
+	@Autowired
+	TabsDao tabsDao;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -76,9 +86,8 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 			 }
 		 }
 		
-	    String query = "from SourceleadActions sa where sa.id IN (select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId) "
-	    		+ "and moduleActions.sourceleadActions.id IN (:roleActonList)) ";
-	    List<SourceleadActions> actionsList = session.createQuery(query.toString()).setParameterList("modulesId", modulesId).setParameterList("roleActonList", roleActonList).list();
+	    String query = "from SourceleadActions sa where sa.id IN (:roleActonList) ";
+	    List<SourceleadActions> actionsList = session.createQuery(query.toString()).setParameterList("roleActonList", roleActonList).list();
       
       
 	    return actionsList;
@@ -214,21 +223,72 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<SourceleadActions> actionsList = null;
-		 List<Long> modulesList = new ArrayList<Long>();
-			for (String s : orgLocations.getModulesId().split(",")){
-				modulesList.add(Long.parseLong(s));
-			 }
-      
+			
 			if(org.getOrgCode().equalsIgnoreCase("slead")) {
+				 List<Long> modulesList = new ArrayList<Long>();
+					for (String s : orgLocations.getModulesId().split(",")){
+						modulesList.add(Long.parseLong(s));
+					 }
+				
 				 String query = "from SourceleadActions sa where sa.actionRole != 'ROLE_ENROLL_ORG' and sa.tabs.id NOT IN (13) "
-				    		+ "and sa.id IN(select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId)) and sa.status = '1' ";
+				    		+ "and sa.id IN(select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId)) and sa.id NOT IN (152,153) and sa.status = '1' ";
 				    actionsList = session.createQuery(query.toString()).setParameterList("modulesId", modulesList).list();
 			}else {
-				 String query = "from SourceleadActions sa where sa.actionRole != 'ROLE_ENROLL_ORG' and sa.tabs.id NOT IN (13,26,28,29) "
-				    		+ "and sa.id IN(select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId)) and sa.status = '1' ";
-				    actionsList = session.createQuery(query.toString()).setParameterList("modulesId", modulesList).list();
+				
+				     OrgLicenseSubscription orgLicenseSubscription = orgLicenseSubscriptionDao.getOrgLicenseSubscriptionByOrgIdAndCountry(org.getId(), orgLocations.getCountry());
+				     List<Long> tabsIds = new ArrayList<>();
+						String[] registeredTabs = orgLicenseSubscription.getSubscriptionTabs().split(",");
+						
+						for(int i=0; i<registeredTabs.length; i++) {
+							List<Tabs> childTabsList = tabsDao.getClildTabsListByTabId(Long.valueOf(registeredTabs[i]));
+							if(childTabsList.size() > 0) {
+								for(Tabs childTabs : childTabsList) {
+									tabsIds.add(childTabs.getId());
+								}
+							}else {
+								tabsIds.add(Long.valueOf(registeredTabs[i]));
+							}
+						}
+				     
+				     String query = "from SourceleadActions sa where sa.actionRole != 'ROLE_ENROLL_ORG' and sa.tabs.id IN (:tabsIds) and sa.id NOT IN (152,153) and sa.status = '1' ";
+				     actionsList = session.createQuery(query.toString()).setParameterList("tabsIds", tabsIds).list();
 			}
 	   
+   
+	    return actionsList;
+	}
+
+	@Override
+	@Transactional
+	public List<SourceleadActions> getAllSourceleadActionsByTabsList(List<Long> tabsList) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+      		
+	    String query = "from SourceleadActions sa where sa.actionRole != 'ROLE_ENROLL_ORG' and sa.tabs.id IN (:tabsList) and sa.status = '1' ";
+	    List<SourceleadActions> actionsList = session.createQuery(query.toString()).setParameterList("tabsList", tabsList).list();
+   
+	    return actionsList;
+	}
+
+	@Override
+	@Transactional
+	public List<SourceleadActions> getAllSourceleadGuestOrgActionsForEnroll() throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<SourceleadActions> actionsList = null;
+		
+		 String query = "from SourceleadActions sa where sa.actionRole != 'ROLE_ENROLL_ORG' and sa.tabs.id NOT IN (13,26,28,29) and sa.id NOT IN (152,153)  and sa.status = '1' ";
+		 actionsList = session.createQuery(query.toString()).list();
+		    
+		return actionsList;
+	}
+
+	@Override
+	@Transactional
+	public List<SourceleadActions> getAllSourceleadActionsByIdsList(List<Long> actionIdList) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+  		
+	    String query = "from SourceleadActions sa left join fetch sa.tabs where sa.id IN (:actionIdList)";
+	    List<SourceleadActions> actionsList = session.createQuery(query.toString()).setParameterList("actionIdList", actionIdList).list();
    
 	    return actionsList;
 	}

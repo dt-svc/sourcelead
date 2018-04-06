@@ -1,5 +1,12 @@
 package com.bis.sourcelead.rest;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -11,12 +18,17 @@ import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,13 +45,16 @@ import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
 import com.bis.sourcelead.dto.ProjectMembersRateHistoryDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -51,8 +66,10 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
@@ -144,6 +161,15 @@ public class ProjectsRestController {
 	
 	@Autowired
 	ProjectMembersRateHistoryService projectMembersRateHistoryService;
+	
+	@Autowired
+	private LeaveService leaveService;
+	
+	@Autowired
+	private CandidateService candidateService;
+	
+	@Autowired
+	private TimesheetRestController timesheetRestController;
 
 	/**
 	 * This method for save the project by json
@@ -180,12 +206,32 @@ public class ProjectsRestController {
 		    User user = userService.getUserById(userId);
 		    OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		    projectMembersService.saveAssignedProjectMembers(projectAssignedMembersDTO, projectUUID, user, orgLocations);
-		   
+		    approvedLeaveForNewlyAddedEmployee(projectAssignedMembersDTO.getProjectMembers(),orgLocations,user);
 		    return "success";
 	    }
        
        
-       @RequestMapping(value = "/storeProjectAdditionalDetails", method = RequestMethod.POST)
+	private void approvedLeaveForNewlyAddedEmployee(List<ProjectMembersDTO> projectMembers, OrgLocations orglocationId, User user) throws Exception {
+		if(projectMembers != null && !projectMembers.isEmpty()) {
+			for(ProjectMembersDTO members:projectMembers) {
+				if(members.getCandidateId()!= null) {
+					 Candidate candidate = candidateService.getCandidateByCandidateId(members.getCandidateId());
+					 if(candidate != null && candidate.getConsultantUser()!= null) {
+						 List<Leave> leaveList = leaveService.getLeaveByUserIdOrglocationIdandStatus(candidate.getConsultantUser(),orglocationId.getId(),Constants.APPROVED);
+						 if(leaveList!= null && !leaveList.isEmpty()) {
+							 for(Leave leave:leaveList) {
+							 	timesheetRestController.linkLeaveTypeWithTimeSheet(user,orglocationId, leave.getLeaveType().getId(),leave,Constants.APPROVED);
+							 } 
+						 }
+					 }
+				}
+			}	
+		}
+	}
+
+
+
+	@RequestMapping(value = "/storeProjectAdditionalDetails", method = RequestMethod.POST)
 		public  String storeProjectAdditionalDetails(ProjectAdditionalDetailsDTO projectAdditionalDetailsDTO,@RequestParam(value="projectId", required=true) Long projectId,
 			   @RequestParam(value="userId", required=true) Long userId,@RequestParam(value="orgLocationId", required=true) Long orgLocationId,
 			   @RequestParam(value="saveType", required=true) String saveType,HttpServletRequest request) throws Exception {
@@ -768,7 +814,7 @@ public class ProjectsRestController {
 			notificationScenario.setBody(notificationBody);
 			//String url = null;
 			String actionLink = "";
-			emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getEmployee().getUser(), loginOrgLocation, notificationScenario);
+			emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getEmployee().getUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());
 		}
 	    
 	    
@@ -857,4 +903,57 @@ public class ProjectsRestController {
 	protected static boolean isNullOrEmpty(String str) {
 		return str == null || "".equals(str.trim());
 	}
+	
+	
+	@RequestMapping(value = "/getExportProjects")
+	public void getExportUsersData(ProjectsDTO projectsDTO,HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 	String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		
+		 Workbook createExcelworkbook =  new XSSFWorkbook();
+		 StringBuilder excelSB = new StringBuilder();
+ 		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("projects ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
+
+		 ResponseList<ProjectsDTO> projectsList = projectsService.getProjectsListByClientsAndStatus(projectsDTO,user.getId(), projectsDTO.getClients(), projectsDTO.getValues(),orgLocations.getId(),userRole,candidateId);
+			
+ 		File file = null;
+ 		if(!"pdf".equalsIgnoreCase(projectsDTO.getExportType())){
+ 			createExcelsheet = projectsService.getExcelFile(createExcelsheet,createExcelworkbook,projectsList,orgLocations);
+ 			 StringBuilder templateSB = new StringBuilder();
+	 		  file = File.createTempFile(templateSB.append("projects_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".xls");
+	 		  file.setReadable(true);
+	 		  
+			 FileOutputStream fos = new FileOutputStream(file);
+			 try {
+				createExcelworkbook.write(fos);
+				fos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}	 	
+ 		}else {
+ 			file = projectsService.getPdfFile(projectsList,orgLocations);
+ 			
+ 		}
+ 		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();	
+		if(file!= null){
+			file.delete();
+		}
+	}
+	
+	
 }

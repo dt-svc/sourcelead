@@ -404,9 +404,9 @@ function populateInlineItemsGrid(data){
              result = result +'<td>';
              result = result +'<div class="tbldata-dotdot_80">';
              if(opt.rate != null && opt.rate !='' && opt.rate !='undefined'){
-                 result = result +'<input class="form-control input-sm allownumericwithdecimal"  id="'+i+'rate" name="lineItems['+i+'].rate" value='+opt.rate+' placeholder="Rate" type="text" data-validation="required" field-name="Rate" onblur="totalHoursCalculateAmount('+i+');">'; 
+                 result = result +'<input class="form-control input-sm allownumericwithdecimal"  id="'+i+'rate" name="lineItems['+i+'].rate" value='+opt.rate+' placeholder="Rate" type="text" data-validation="required validate_float" field-name="Rate" onblur="totalHoursCalculateAmount('+i+');">'; 
              }else{
-                 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="lineItems['+i+'].rate"  data-validation="required" field-name="Rate" placeholder="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">';
+                 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="lineItems['+i+'].rate"  data-validation="required validate_float" field-name="Rate" placeholder="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">';
              }
              result = result +'</div>';
              result = result +'</td>';
@@ -1732,7 +1732,7 @@ function maskme(){
     $.mask.definitions['p'] = "[Mm]";
     $(".inline_field").mask("Hhh:Mm"); 
 	
-    $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+    $(".allownumericwithdecimal").on("keypress keyup blur",function (evt) {
     	
     	var charCode = (evt.which) ? evt.which : event.keyCode
    	         if (charCode > 31 && (charCode < 48 || charCode > 57))

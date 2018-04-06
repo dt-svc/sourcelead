@@ -1,14 +1,18 @@
 package com.bis.sourcelead.rest;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -25,6 +29,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -37,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -249,7 +257,7 @@ public class ProjectsDashboardRestController {
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 
-				String[] tableColumns = {"projectSequeneNumber", "projectName", "projectManagers", "invoiceFrequency", "budget", "projectDate", "client","status"};
+				String[] tableColumns = {"projectSequeneNumber", "projectName", "projectManagers", "invoiceFrequency", "budget", "startDate", "client","status"};
 			    int sortColumnIndex = 1; //by default sorting using updated date
 				String sortColumnOrder = "desc"; //by default descending order
 				if(projectsDTO.getOrder() != null && !projectsDTO.getOrder().isEmpty()) {
@@ -538,7 +546,7 @@ public class ProjectsDashboardRestController {
 				 
 		 
 		 @RequestMapping(value = "/getAllProjectTasks", method = RequestMethod.POST)
-		 public @ResponseBody   ResponseList<ProjectTasksDTO> getAllProjectTasks(ProjectTasksDTO projectTasksDTO,HttpServletRequest request) throws Exception {
+		 public @ResponseBody   ResponseList<ProjectTasks> getAllProjectTasks(ProjectTasksDTO projectTasksDTO,HttpServletRequest request) throws Exception {
 			  
 			    String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				String[] tableColumns = {"taskName", "taskType", "priority", "assignedTo","status"};
@@ -550,7 +558,7 @@ public class ProjectsDashboardRestController {
 				}
 				projectTasksDTO.setSortColumn(tableColumns[sortColumnIndex]);
 				projectTasksDTO.setSortOrder(sortColumnOrder);
-				ResponseList<ProjectTasksDTO>  taskList=tasksService.getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(projectTasksDTO,Long.parseLong(projectTasksDTO.getProjectId()),projectTasksDTO.getProjectTaskType(),projectTasksDTO.getProjectTaskStatus(),userRole,projectTasksDTO.getAssignedMembers());
+				ResponseList<ProjectTasks>  taskList=tasksService.getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(projectTasksDTO,Long.parseLong(projectTasksDTO.getProjectId()),projectTasksDTO.getProjectTaskType(),projectTasksDTO.getProjectTaskStatus(),userRole,projectTasksDTO.getAssignedMembers());
 			 return taskList;
 		 }
 	/**
@@ -1012,312 +1020,361 @@ public class ProjectsDashboardRestController {
 	  * @param response
 	  * @throws Exception
 	  */
-		@RequestMapping(value = "/downloadProjectDoc", method = RequestMethod.GET)
-		public void downloadProjectDoc(@RequestParam(value = "porjectDocumentId", required = false) String porjectDocumentId, HttpServletResponse response) throws Exception
-		{
-			ProjectDocuments document = projectDocumentsService.getDocumentById(Long.valueOf(porjectDocumentId));
-			if (null != document) {
-				response.setContentType("application/octet-stream");
-				StringBuilder fileName = new StringBuilder();
-				response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(document.getFileName()).append("\"").toString());
-				InputStream inputStream = new ByteArrayInputStream(document.getFileContents());
-				try {
-					OutputStream outStream = response.getOutputStream();
-					byte[] buffer = new byte[4096];
-					int bytesRead = -1;
-					while ((bytesRead = inputStream.read(buffer)) != -1) {
-						outStream.write(buffer, 0, bytesRead);
-					}
-					inputStream.close();
-					outStream.close();
-				} catch (FileNotFoundException e) {
-					logger.error(ExceptionUtils.getFullStackTrace(e));
-				}
+@RequestMapping(value = "/downloadProjectDoc", method = RequestMethod.GET)
+public void downloadProjectDoc(@RequestParam(value = "porjectDocumentId", required = false) String porjectDocumentId, HttpServletResponse response) throws Exception
+{
+	ProjectDocuments document = projectDocumentsService.getDocumentById(Long.valueOf(porjectDocumentId));
+	if (null != document) {
+		response.setContentType("application/octet-stream");
+		StringBuilder fileName = new StringBuilder();
+		response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(document.getFileName()).append("\"").toString());
+		InputStream inputStream = new ByteArrayInputStream(document.getFileContents());
+		try {
+			OutputStream outStream = response.getOutputStream();
+			byte[] buffer = new byte[4096];
+			int bytesRead = -1;
+			while ((bytesRead = inputStream.read(buffer)) != -1) {
+				outStream.write(buffer, 0, bytesRead);
 			}
+			inputStream.close();
+			outStream.close();
+		} catch (FileNotFoundException e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		
+	}
+}
 
-		/**
-		 * @author Laxman
-		 * @param documentUUID
-		 * @param title
-		 * @param response
-		 * @throws Exception
-		 */
-		 @RequestMapping(value = "/viewProjectDocument/{title}", method = RequestMethod.GET)
-		    public void viewProjectDocument(@RequestParam(value="documentUUID", required=false) String documentUUID,
-		    		@PathVariable(value="title") String title,
-		    		HttpServletResponse response) throws Exception {
-			 
-			 ProjectDocuments document = projectDocumentsService.getDocumentById(Long.valueOf(documentUUID));	
-				    
-			 byte[] pdfBytes = null;
-				if("application/pdf".equalsIgnoreCase(document.getFileType())){
-					pdfBytes = document.getFileContents();
-				}
-				else{
-					 pdfBytes = pdfConversionUtil.convertDocToPdf(document.getFileContents());
-				}
-				 response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
-			  	    response.setContentType("application/pdf");
-			  	    ServletOutputStream sos = response.getOutputStream();
-			  	    if(null != pdfBytes){
-			  	    	response.setContentLength(pdfBytes.length);
-			  	    	sos.write(pdfBytes);
-			  	    }
-			          sos.flush();
-			          sos.close();
 
-			} 
-		 
-		 /**
-		  * @author Laxman
-		  * @param json
-		  * @param projectId
-		  * @param request
-		  * @return 
-		  * @throws Exception
-		  */
-		 @RequestMapping(value = "/saveProjectDocument", method = RequestMethod.POST)
-			public @ResponseBody String saveProjectDocument(ProjectsDocumentsDTO projectsDocumentsDTO) throws Exception
-			{
-			 projectsDocumentsDTO.setStaticPath(staticPath);
-				if (null != projectsDocumentsDTO.getProjectId()) {
-					projectDocumentsService.storeProjectDocuments(projectsDocumentsDTO);
-					return "success";
-				}
-				else {
-					return "exception";
-				}
-			}
-		 
-		 /**
-		  * @author Laxman
-		  * @param documentId
-		  * @return json
-		  * @throws Exception
-		  */
-		 @RequestMapping(value = "/getProjectDocument", method = RequestMethod.POST)
-		 public @ResponseBody String getProjectDocument(@RequestParam(value = "documentId", required = false) String documentId) throws Exception
-		 {
-			 ProjectDocuments document = projectDocumentsService.getDocumentById(Long.valueOf(documentId));	
-			 return commonUtil.toJSON(document);
-		 }
-		 
-		 
-		 /**
-		  * @author Laxman
-		  * @param projectsDocumentFolderDTO
-		  * @return success
-		  * @throws Exception
-		  */
+/**
+ * @author Laxman
+ * @param documentUUID
+ * @param title
+ * @param response
+ * @throws Exception
+ */
+ @RequestMapping(value = "/viewProjectDocument/{title}", method = RequestMethod.GET)
+    public void viewProjectDocument(@RequestParam(value="documentUUID", required=false) String documentUUID,
+    		@PathVariable(value="title") String title,
+    		HttpServletResponse response) throws Exception {
 	 
-		 @RequestMapping(value = "/saveProjectDocumentFolder", method = RequestMethod.POST)
-			public @ResponseBody String saveProjectDocumentFolder(ProjectsDocumentFolderDTO projectsDocumentFolderDTO) throws Exception
-			{
-			       projectDocumentsFolderService.saveProjectDocumentFolder(projectsDocumentFolderDTO);
-					return "success";
-			}
-		 
-		 
-		 /**
-		  * @author Laxman
-		  * @param projectId
-		  * @return projectDocumentFolderList
-		  * @throws Exception
-		  */
-		   @RequestMapping(value = "/getProjectDocumentsFolderList",method = RequestMethod.POST)
-			public List<ProjectDocumentFolder> getProjectDocumentsFolderList(@RequestParam(value = "projectId", required = false) Long projectId,@RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request) throws Exception
-			{
-			   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			    UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId,loginOrgLocation.getId());
-			    Long candidateId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
-				List<ProjectDocumentFolder> projectDocumentFolderList = projectDocumentsFolderService.getProjectDocumentFolderByProjectId(projectId,userRole.getRoles().getId(),userRole.getRoles().getRoleName(),candidateId);
-				return projectDocumentFolderList;
-			}
+	 ProjectDocuments document = projectDocumentsService.getDocumentById(Long.valueOf(documentUUID));	
+		    
+	 byte[] pdfBytes = null;
+		if("application/pdf".equalsIgnoreCase(document.getFileType())){
+			pdfBytes = document.getFileContents();
+		}
+		else{
+			 pdfBytes = pdfConversionUtil.convertDocToPdf(document.getFileContents());
+		}
+		 response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
+	  	    response.setContentType("application/pdf");
+	  	    ServletOutputStream sos = response.getOutputStream();
+	  	    if(null != pdfBytes){
+	  	    	response.setContentLength(pdfBytes.length);
+	  	    	sos.write(pdfBytes);
+	  	    }
+	          sos.flush();
+	          sos.close();
+
+	} 
+ 
+ /**
+  * @author Laxman
+  * @param json
+  * @param projectId
+  * @param request
+  * @return 
+  * @throws Exception
+  */
+ @RequestMapping(value = "/saveProjectDocument", method = RequestMethod.POST)
+	public @ResponseBody String saveProjectDocument(ProjectsDocumentsDTO projectsDocumentsDTO) throws Exception
+	{
+	 projectsDocumentsDTO.setStaticPath(staticPath);
+		if (null != projectsDocumentsDTO.getProjectId()) {
+			projectDocumentsService.storeProjectDocuments(projectsDocumentsDTO);
+			return "success";
+		}
+		else {
+			return "exception";
+		}
+	}
+ 
+ /**
+  * @author Laxman
+  * @param documentId
+  * @return json
+  * @throws Exception
+  */
+ @RequestMapping(value = "/getProjectDocument", method = RequestMethod.POST)
+ public @ResponseBody String getProjectDocument(@RequestParam(value = "documentId", required = false) String documentId) throws Exception
+ {
+	 ProjectDocuments document = projectDocumentsService.getDocumentById(Long.valueOf(documentId));	
+	 return commonUtil.toJSON(document);
+ }
+ 
+ 
+ /**
+  * @author Laxman
+  * @param projectsDocumentFolderDTO
+  * @return success
+  * @throws Exception
+  */
+ 
+	 @RequestMapping(value = "/saveProjectDocumentFolder", method = RequestMethod.POST)
+	public @ResponseBody String saveProjectDocumentFolder(ProjectsDocumentFolderDTO projectsDocumentFolderDTO) throws Exception
+	{
+	       projectDocumentsFolderService.saveProjectDocumentFolder(projectsDocumentFolderDTO);
+			return "success";
+	}
+ 
+ 
+ /**
+  * @author Laxman
+  * @param projectId
+  * @return projectDocumentFolderList
+  * @throws Exception
+  */
+   @RequestMapping(value = "/getProjectDocumentsFolderList",method = RequestMethod.POST)
+	public List<ProjectDocumentFolder> getProjectDocumentsFolderList(@RequestParam(value = "projectId", required = false) Long projectId,@RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request) throws Exception
+	{
+	   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId,loginOrgLocation.getId());
+	    Long candidateId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		List<ProjectDocumentFolder> projectDocumentFolderList = projectDocumentsFolderService.getProjectDocumentFolderByProjectId(projectId,userRole.getRoles().getId(),userRole.getRoles().getRoleName(),candidateId);
+		return projectDocumentFolderList;
+	}
+   
+   /**
+    * @author Laxman
+    * @param projectId
+    * @param folderId
+    * @return projectDocumentsList
+    * @throws Exception
+    */
+   @RequestMapping(value = "/getEachProjectDocumentsFolderList",method = RequestMethod.POST)
+	public List<ProjectDocuments> getEachProjectDocumentsFolderList(@RequestParam(value = "projectId", required = false) Long projectId,@RequestParam(value = "folderId", required = false) Long folderId,@RequestParam(value = "userId", required = false) Long userId) throws Exception
+	{
+	   
+	   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	   UserRole userRoel = userRoleService.getUserRoleByUserIdAndLocationId(userId,loginOrgLocation.getId());
+	   Long candidateId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		List<ProjectDocuments> projectDocumentsList = projectDocumentsService.getEachProjectDocumentsListByProjectIdIdAndFolderId(projectId, userRoel.getRoles().getId(),userRoel.getRoles().getRoleName(),folderId,candidateId);
+		return projectDocumentsList;
+	}
+   
+   /**
+    * @author Laxman
+    * @param documentIds
+    * @return projectDocumentsList
+    * @throws Exception
+    */
+   
+   @RequestMapping(value = "/deleteDocuments",method = RequestMethod.POST)
+	public List<ProjectDocuments> deleteDocuments(@RequestParam(value = "documentIds", required = false) String documentIds) throws Exception
+	{
+		List<ProjectDocuments> projectDocumentsList = projectDocumentsService.getDeleteProjectDocumentsListByDocumentId(documentIds);
+		return projectDocumentsList;
+	}
+   
+   /**
+    * @author Laxman
+    * @param documentId
+    * @return
+    * @throws Exception
+    */
+   @RequestMapping(value = "/eachDeleteDocuments",method = RequestMethod.POST)
+	public void eachDeleteDocuments(@RequestParam(value = "documentId", required = false) Long documentId) throws Exception
+	{
+	   genericDao.delteEachDocumentById(documentId);
+	 
+	}
+   
+   
+   /**
+    * @author Laxman
+    * @param documentId
+    * @param fileName
+    * @return
+    * @throws Exception
+    */
+   @RequestMapping(value = "/saveReNameProjectDocument", method = RequestMethod.POST)
+	public @ResponseBody String saveReNameProjectDocument(@RequestParam(value = "documentId", required = false) Long documentId,@RequestParam(value = "fileName", required = false) String fileName) throws Exception
+	{
+	   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	   ProjectDocuments pd = projectDocumentsService.getDocumentById(documentId);
+	   if(pd != null){
+			   pd.setFileName(fileName);
+			   pd.setUpdatedBy(user);
+			   pd.setUpdatedDate(commonUtil.currentDate());
+			   projectDocumentsService.updateProjectDocuments(pd);
+			   return "success";
+	   }else {
+			return "exception";
+		}
+    }
+ 
+   @RequestMapping(value = "/projectDocumentFolderRename", method = RequestMethod.POST)
+	public @ResponseBody String projectDocumentFolderRename(@RequestParam(value = "folderId", required = false) Long folderId,@RequestParam(value = "folderName", required = false) String folderName) throws Exception
+	{
+	   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	   ProjectDocumentFolder pdf = projectDocumentsFolderService.getProjectDocumentFolderByDocumentId(folderId);
+	     if(pdf != null){
+		       pdf.setFoderName(folderName);
+		       pdf.setUpdatedBy(user);
+		       pdf.setUpdatedDate(commonUtil.currentDate());
+		       projectDocumentsFolderService.saveProjectDocumentFolder(pdf);
+			   return "success";
+	   }else {
+			return "exception";
+		}
+   }
+   
+   
+   
+   @RequestMapping(value = "/deleteProjectDcoumentFolder",method = RequestMethod.POST)
+	public @ResponseBody String deleteProjectDcoumentFolder(@RequestParam(value = "folderId", required = false) Long folderId,@RequestParam(value = "projectId", required = false) Long projectId,@RequestParam(value = "userId", required = false) Long userId) throws Exception
+	{
+	   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	   UserRole userRoel = userRoleService.getUserRoleByUserIdAndLocationId(userId,loginOrgLocation.getId());
+	   Long candidateId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+	   List<ProjectDocuments> projectDocumentsList = projectDocumentsService.getEachProjectDocumentsListByProjectIdIdAndFolderId(projectId,userRoel.getId(),userRoel.getRoles().getRoleName(), folderId,candidateId);
+	   for(ProjectDocuments pd:projectDocumentsList) {
+		     genericDao.delteEachDocumentById(pd.getId());
+	   }
+		projectDocumentsFolderService.deleteProjectFolderByFolderId(folderId);
 		   
-		   /**
-		    * @author Laxman
-		    * @param projectId
-		    * @param folderId
-		    * @return projectDocumentsList
-		    * @throws Exception
-		    */
-		   @RequestMapping(value = "/getEachProjectDocumentsFolderList",method = RequestMethod.POST)
-			public List<ProjectDocuments> getEachProjectDocumentsFolderList(@RequestParam(value = "projectId", required = false) Long projectId,@RequestParam(value = "folderId", required = false) Long folderId,@RequestParam(value = "userId", required = false) Long userId) throws Exception
-			{
-			   
-			   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			   UserRole userRoel = userRoleService.getUserRoleByUserIdAndLocationId(userId,loginOrgLocation.getId());
-			   Long candidateId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
-				List<ProjectDocuments> projectDocumentsList = projectDocumentsService.getEachProjectDocumentsListByProjectIdIdAndFolderId(projectId, userRoel.getRoles().getId(),userRoel.getRoles().getRoleName(),folderId,candidateId);
-				return projectDocumentsList;
-			}
+		return "success";
+	}
+   
+   
+   @RequestMapping(value = "/projectDocumentMailSending", method = RequestMethod.POST)
+	public @ResponseBody String projectDocumentMailSending(ProjectsDocumentsDTO projectsDocumentsDTO) throws Exception
+	{
+	   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	   if(StringUtils.isNotEmpty(projectsDocumentsDTO.getSendTo()) && user != null){
+		   projectDocumentsService.sendProjectDocumentEmail(projectsDocumentsDTO, user, loginOrgLocation);
+	   }
+	   return "success";
+   }
+   
+  
+@RequestMapping(value = "/getAllDocumentDownload",method = RequestMethod.POST)
+public @ResponseBody String getAllDocumentDownload(@RequestParam(value = "documentIds", required = false) String documentid,HttpServletResponse response) throws Exception
+{
+	 File file = null;
+     if(!isNullOrEmpty(documentid)){
+		String[] documentIds = documentid.split(",");
+	
+	String path =StringUtils.removeEnd(staticPath, "/slead-static");
+	   file = File.createTempFile("ProjectDocuments",".zip");
+	   FileOutputStream   fos = new FileOutputStream(file);
+		ZipOutputStream zos = new ZipOutputStream(fos);
+	for(int j=0; j< documentIds.length; j++) {
+		ProjectDocuments projectDocuments =  projectDocumentsService.getDocumentById(Long.valueOf(documentIds[j]));
+		try {
+		      byte[] buffer = new byte[128];
+		        File currentFile = new File(path+projectDocuments.getFileUrl());
+		        if (!currentFile.isDirectory()) {
+		          ZipEntry entry = new ZipEntry(currentFile.getName());
+		          FileInputStream fis = new FileInputStream(currentFile);
+		          zos.putNextEntry(entry);
+		          int read = 0;
+		          while ((read = fis.read(buffer)) != -1) {
+		            zos.write(buffer, 0, read);
+		          }
+		          zos.closeEntry();
+		          fis.close();
+		        }
+		    } catch (FileNotFoundException e) {
+		      System.out.println("File not found : " + e);
+			    }
+			  }
+
+		  zos.close();
+	      fos.close();
+	}
+   return file.getAbsolutePath();
+	 
+}
+
+@RequestMapping(value = "/saveProjectNamePermissions", method = RequestMethod.POST)
+public @ResponseBody String saveProjectNamePermissions(ProjectsDocumentFolderDTO projectsDocumentFolderDTO) throws Exception
+{
+	projectDocumentPermissionService.saveProjectDocumentPermissionWithDTO(projectsDocumentFolderDTO);
+   return "success";
+}
+
+@RequestMapping(value = "/validateFolderName" , method = RequestMethod.GET)
+ public @ResponseBody  Boolean validateFolderName(@RequestParam(value="folderName", required=false) String folderName,@RequestParam(value="folderId", required=false) Long folderId,
+	 @RequestParam(value="projectId", required=false) Long projectId) throws Exception {
+	
+	   ProjectDocumentFolder pdf = null;
+	   if(null != folderId){
+		    pdf = projectDocumentsFolderService.validateProjectDocumentFolderByFolderIdAndFolderName(folderId,folderName);
+	   }
+	  Boolean flag = false;
+	   if(null == pdf){
+		   flag = projectDocumentsService.validateProjectDocumentFolderNameByProjectIdIdAndFolderName(projectId, folderName);
 		   
-		   /**
-		    * @author Laxman
-		    * @param documentIds
-		    * @return projectDocumentsList
-		    * @throws Exception
-		    */
-		   
-		   @RequestMapping(value = "/deleteDocuments",method = RequestMethod.POST)
-			public List<ProjectDocuments> deleteDocuments(@RequestParam(value = "documentIds", required = false) String documentIds) throws Exception
-			{
-				List<ProjectDocuments> projectDocumentsList = projectDocumentsService.getDeleteProjectDocumentsListByDocumentId(documentIds);
-				return projectDocumentsList;
-			}
-		   
-		   /**
-		    * @author Laxman
-		    * @param documentId
-		    * @return
-		    * @throws Exception
-		    */
-		   @RequestMapping(value = "/eachDeleteDocuments",method = RequestMethod.POST)
-			public void eachDeleteDocuments(@RequestParam(value = "documentId", required = false) Long documentId) throws Exception
-			{
-			   genericDao.delteEachDocumentById(documentId);
+	   }
+	return flag;
+   } 
+
+
+ @RequestMapping(value = "/validateDocumentName" , method = RequestMethod.GET)
+ public @ResponseBody  Boolean validateDocumentName(@RequestParam(value="documentName", required=false) String documentName, @RequestParam(value="projectId", required=false) Long projectId) throws Exception {
+	  Boolean flag = projectDocumentsService.validateProjectDocumentNameByProjectIdIdAndDocumentName(projectId, documentName);
+	return flag;
+ } 
+		    
+	    
+		    
+		    
+@RequestMapping(value = "/getExportTasks")
+public void getExportUsersData(ProjectTasksDTO projectTasksDTO,HttpServletRequest request, HttpServletResponse response) throws Exception {
+			 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 	 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+
+		 	 Workbook createExcelworkbook =  new XSSFWorkbook();
+			 StringBuilder excelSB = new StringBuilder();
+	 		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("project_Tasks ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
 			 
-			}
-		   
-		   
-		   /**
-		    * @author Laxman
-		    * @param documentId
-		    * @param fileName
-		    * @return
-		    * @throws Exception
-		    */
-		   @RequestMapping(value = "/saveReNameProjectDocument", method = RequestMethod.POST)
-			public @ResponseBody String saveReNameProjectDocument(@RequestParam(value = "documentId", required = false) Long documentId,@RequestParam(value = "fileName", required = false) String fileName) throws Exception
-			{
-			   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			   ProjectDocuments pd = projectDocumentsService.getDocumentById(documentId);
-			   if(pd != null){
-					   pd.setFileName(fileName);
-					   pd.setUpdatedBy(user);
-					   pd.setUpdatedDate(commonUtil.currentDate());
-					   projectDocumentsService.updateProjectDocuments(pd);
-					   return "success";
-			   }else {
-					return "exception";
-				}
-            }
-		 
-		   @RequestMapping(value = "/projectDocumentFolderRename", method = RequestMethod.POST)
-			public @ResponseBody String projectDocumentFolderRename(@RequestParam(value = "folderId", required = false) Long folderId,@RequestParam(value = "folderName", required = false) String folderName) throws Exception
-			{
-			   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			   ProjectDocumentFolder pdf = projectDocumentsFolderService.getProjectDocumentFolderByDocumentId(folderId);
-			     if(pdf != null){
-				       pdf.setFoderName(folderName);
-				       pdf.setUpdatedBy(user);
-				       pdf.setUpdatedDate(commonUtil.currentDate());
-				       projectDocumentsFolderService.saveProjectDocumentFolder(pdf);
-					   return "success";
-			   }else {
-					return "exception";
-				}
-           }
-		   
-		   
-		   
-		   @RequestMapping(value = "/deleteProjectDcoumentFolder",method = RequestMethod.POST)
-			public @ResponseBody String deleteProjectDcoumentFolder(@RequestParam(value = "folderId", required = false) Long folderId,@RequestParam(value = "projectId", required = false) Long projectId,@RequestParam(value = "userId", required = false) Long userId) throws Exception
-			{
-			   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			   UserRole userRoel = userRoleService.getUserRoleByUserIdAndLocationId(userId,loginOrgLocation.getId());
-			   Long candidateId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
-			   List<ProjectDocuments> projectDocumentsList = projectDocumentsService.getEachProjectDocumentsListByProjectIdIdAndFolderId(projectId,userRoel.getId(),userRoel.getRoles().getRoleName(), folderId,candidateId);
-			   for(ProjectDocuments pd:projectDocumentsList) {
-				     genericDao.delteEachDocumentById(pd.getId());
-			   }
-				projectDocumentsFolderService.deleteProjectFolderByFolderId(folderId);
-				   
-				return "success";
-			}
-		   
-		   
-		   @RequestMapping(value = "/projectDocumentMailSending", method = RequestMethod.POST)
-			public @ResponseBody String projectDocumentMailSending(ProjectsDocumentsDTO projectsDocumentsDTO) throws Exception
-			{
-			   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			   if(StringUtils.isNotEmpty(projectsDocumentsDTO.getSendTo()) && user != null){
-				   projectDocumentsService.sendProjectDocumentEmail(projectsDocumentsDTO, user, loginOrgLocation);
-			   }
-			   return "success";
-           }
-		   
-		  
-		   @RequestMapping(value = "/getAllDocumentDownload",method = RequestMethod.POST)
-			public @ResponseBody String getAllDocumentDownload(@RequestParam(value = "documentIds", required = false) String documentid,HttpServletResponse response) throws Exception
-			{
-		    	 File file = null;
-			     if(!isNullOrEmpty(documentid)){
-					String[] documentIds = documentid.split(",");
-					
-					String path =StringUtils.removeEnd(staticPath, "/slead-static");
-					   file = File.createTempFile("ProjectDocuments",".zip");
-					   FileOutputStream   fos = new FileOutputStream(file);
-						ZipOutputStream zos = new ZipOutputStream(fos);
-					for(int j=0; j< documentIds.length; j++) {
-						ProjectDocuments projectDocuments =  projectDocumentsService.getDocumentById(Long.valueOf(documentIds[j]));
-						try {
-						      byte[] buffer = new byte[128];
-						        File currentFile = new File(path+projectDocuments.getFileUrl());
-						        if (!currentFile.isDirectory()) {
-						          ZipEntry entry = new ZipEntry(currentFile.getName());
-						          FileInputStream fis = new FileInputStream(currentFile);
-						          zos.putNextEntry(entry);
-						          int read = 0;
-						          while ((read = fis.read(buffer)) != -1) {
-						            zos.write(buffer, 0, read);
-						          }
-						          zos.closeEntry();
-						          fis.close();
-						        }
-						    } catch (FileNotFoundException e) {
-						      System.out.println("File not found : " + e);
-						    }
-						  }
-
-					  zos.close();
-				      fos.close();
-				}
-			   return file.getAbsolutePath();
-				 
-			}
-
-		    @RequestMapping(value = "/saveProjectNamePermissions", method = RequestMethod.POST)
-			public @ResponseBody String saveProjectNamePermissions(ProjectsDocumentFolderDTO projectsDocumentFolderDTO) throws Exception
-			{
-		    	projectDocumentPermissionService.saveProjectDocumentPermissionWithDTO(projectsDocumentFolderDTO);
-			   return "success";
-            }
+	 		 ResponseList<ProjectTasks>  taskList = tasksService.getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(projectTasksDTO,Long.parseLong(projectTasksDTO.getProjectId()),projectTasksDTO.getProjectTaskType(),projectTasksDTO.getProjectTaskStatus(),userRole,projectTasksDTO.getAssignedMembers());
+	 		 File file = null;
+	 		 if(!"pdf".equalsIgnoreCase(projectTasksDTO.getExportType())){
+	  			createExcelsheet = tasksService.getTaskExcelFile(createExcelsheet,createExcelworkbook,taskList,orgLocations);
+	  			 StringBuilder templateSB = new StringBuilder();
+		 		  file = File.createTempFile(templateSB.append("project_Tasks_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".xls");
+		 		  file.setReadable(true);
+		 		  
+				 FileOutputStream fos = new FileOutputStream(file);
+				 try {
+					createExcelworkbook.write(fos);
+					fos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}	 	
+	 		 }else {
+	 			file = tasksService.getTaskPdfFile(taskList,orgLocations);
+	 		 }
+	 		 String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			 if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			 }
+			 response.setContentType(mimeType);
+			 StringBuilder fileNameSB = new StringBuilder();
+			 response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+			 response.setContentLength((int) file.length());
+			 InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			 FileCopyUtils.copy(inputStream, response.getOutputStream());
+			 inputStream.close();
+			 response.getOutputStream().close();
+			 response.getOutputStream().flush();	
+			 if(file!= null){
+				file.delete();
+			 }
+	    }
 		    
-		    @RequestMapping(value = "/validateFolderName" , method = RequestMethod.GET)
-			 public @ResponseBody  Boolean validateFolderName(@RequestParam(value="folderName", required=false) String folderName,@RequestParam(value="folderId", required=false) Long folderId,
-					 @RequestParam(value="projectId", required=false) Long projectId) throws Exception {
-		    	
-		    	   ProjectDocumentFolder pdf = null;
-		    	   if(null != folderId){
-		    		    pdf = projectDocumentsFolderService.validateProjectDocumentFolderByFolderIdAndFolderName(folderId,folderName);
-		    	   }
-				  Boolean flag = false;
-		    	   if(null == pdf){
-		    		   flag = projectDocumentsService.validateProjectDocumentFolderNameByProjectIdIdAndFolderName(projectId, folderName);
-		    		   
-		    	   }
-				return flag;
-			   } 
-		    
-		    
-		    @RequestMapping(value = "/validateDocumentName" , method = RequestMethod.GET)
-			 public @ResponseBody  Boolean validateDocumentName(@RequestParam(value="documentName", required=false) String documentName, @RequestParam(value="projectId", required=false) Long projectId) throws Exception {
-		    	  Boolean flag = projectDocumentsService.validateProjectDocumentNameByProjectIdIdAndDocumentName(projectId, documentName);
-		    	return flag;
-			   } 
 		    
 }

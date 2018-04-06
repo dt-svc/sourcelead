@@ -15,6 +15,9 @@ public class OrglocationFormFieldsDTO implements Serializable {
 	private String labelName;
 	private String fieldName;
 	private String labelinfo;
+	private String validationType;
+	private String validationRange;
+	private String validation;
 	//private String optionLabelName;
 	private List<OrglocationFormSubFieldsDTO> optionData;
 	private String fieldType;
@@ -27,6 +30,7 @@ public class OrglocationFormFieldsDTO implements Serializable {
 	private Long customDependentField;
 	private int status;
 	private String customEditType;
+	private String imagePathUrl;
 	
 	public Long getId() {
 		return id;
@@ -141,6 +145,30 @@ public class OrglocationFormFieldsDTO implements Serializable {
 	}
 	public void setCustomEditType(String customEditType) {
 		this.customEditType = customEditType;
+	}
+	public String getValidationType() {
+		return validationType;
+	}
+	public void setValidationType(String validationType) {
+		this.validationType = validationType;
+	}
+	public String getValidationRange() {
+		return validationRange;
+	}
+	public void setValidationRange(String validationRange) {
+		this.validationRange = validationRange;
+	}
+	public String getImagePathUrl() {
+		return imagePathUrl;
+	}
+	public void setImagePathUrl(String imagePathUrl) {
+		this.imagePathUrl = imagePathUrl;
+	}
+	public String getValidation() {
+		return validation;
+	}
+	public void setValidation(String validation) {
+		this.validation = validation;
 	}
 	
 	
