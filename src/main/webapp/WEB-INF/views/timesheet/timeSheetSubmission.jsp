@@ -113,7 +113,7 @@
 	<table width="100%" class="table table-bordered">
 		<thead>
 		<tr>
-			<th>Previous month<br/>(Approved Hrs)</th><th>Current month<br/>(Total Hrs) ${timesheetSubmissionDTO.currentMonthBillableHours}  </th><th>Project to Date<br/>(Approved Hrs)</th>
+			<th>Previous month<br/>(Approved Hrs)</th><th>Current month Hrs<br/>(${timesheetSubmissionDTO.currentMonthName})</th><th>Project to Date<br/>(Approved Hrs)</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -599,10 +599,10 @@ function setTotals(){
 	 		}else{
 	 			billableTotal =  "00:00";
 	 		}
-	 		currentMonthBillableHours(billableTotal);
+	 		//currentMonthBillableHours(billableTotal);
 	 	    $("#grandBillableTotal").val(billableTotal);
 	    }else{
-	    	currentMonthBillableHours("00:00");
+	    	//currentMonthBillableHours("00:00");
 	    	$("#grandBillableTotal").val("00:00");
 	    }
 	   
@@ -625,10 +625,10 @@ function setTotals(){
 			}else{
 				nonBillableTotal =  "00:00";
 			}
-			currentMonthNonBillableHours(nonBillableTotal);
+			//currentMonthNonBillableHours(nonBillableTotal);
 		    $("#grandNonBillableTotal").val(nonBillableTotal);
 	   }else{
-		   currentMonthNonBillableHours("00:00");
+		   //currentMonthNonBillableHours("00:00");
 		   $("#grandNonBillableTotal").val("00:00");
 	   }
 	   
@@ -667,7 +667,7 @@ function grandTotal(){
 	 }else{
 		 total = "00:00"; 
 	 }
-	 currentMonthTotalHours(total);
+	 //currentMonthTotalHours(total);
 	 $("#grandTotal").val(total);
 	 
 }
