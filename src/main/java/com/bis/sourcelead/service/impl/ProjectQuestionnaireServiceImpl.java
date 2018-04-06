@@ -374,7 +374,7 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 		name= sb.append(loginUser.getFirstName()).toString();
 		 }
 		 globalVarsMap.put("loginUserFirstName",name);
-	 globalVarsMap.put("loginUserLastName",loginUser.getLastName());
+//	 globalVarsMap.put("loginUserLastName",loginUser.getLastName());
 		 globalVarsMap.put("managersName",managers.toString());
 //		globalVarsMap.put("managerLastName",projectManager.getLastName());
 		 globalVarsMap.put("employeeFirstName",emailMessage.getFirstName());
