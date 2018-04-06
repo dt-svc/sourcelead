@@ -19,6 +19,9 @@ $(document).ready(function() {
 	 }
 	 
  if(submissionId != null && submissionId != '' && submissionId != 'undefined' && candidateId != null && candidateId != '' && candidateId != 'undefined'){
+	 if(type == 'applicants'){
+		 type = "all";
+	 }
 	 requirementPipeline(requirementId,type);
 	 }
   else if(submissionStatus == 'all'){
@@ -488,7 +491,7 @@ function sideBar(requirementId,type){
 				 	requirementPipeline(requirementId,type);
 					requirementStatusBar(requirementId);
 					tabEnable('','offerMadeli');
-			 }else if(type == 'APPLICANTS'){
+			 }else if(type == 'APPLICANTS' || type == 'applicants'){
 				    
 				    requirementPipeline(requirementId,'all');
 					requirementStatusBar(requirementId,type);

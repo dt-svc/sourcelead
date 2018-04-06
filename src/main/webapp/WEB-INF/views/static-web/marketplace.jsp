@@ -4,7 +4,7 @@
 <div class="clearfix"></div>
 <section class="container-fluid container-area-white">
 <div class="clearfix container">
-	<div class="col-md-4 productfeatures">
+	<div class="col-md-4 productfeatures mb">
 	<div class="featuresImages">
 		<img src="/resources/static-web/images/crowdsouring.png" alt="Image" class="animated bounceIn">
 	</div>
@@ -18,7 +18,7 @@
 			<li>More emphasis on the ability to place a candidate</li>
 		</ul>
 	</div>
-	<div class="col-md-4 productfeatures">
+	<div class="col-md-4 productfeatures mb">
 		<div class="featuresImages">
 		<img src="/resources/static-web/images/jobseeker.png" alt="Image" class="animated bounceIn">
 	</div>
@@ -37,7 +37,7 @@
 				<a href="/register" class="btn btn-custom">Register</a>
 				</div>
 	</div>
-	<div class="col-md-4 productfeatures">
+	<div class="col-md-4 productfeatures mb">
 	<div class="featuresImages">
 		<img src="/resources/static-web/images/freelancerecriter.png" alt="Image" class="animated bounceIn">
 	</div>
@@ -56,6 +56,25 @@
 					<div class="clearfix text-center mt">
 				<a href="/register" class="btn btn-custom">Register</a>
 				</div>
+	</div>
+	<div class="col-md-4 productfeatures col-md-offset-4 mb">
+<div class="featuresImages">
+		<img src="/resources/static-web/images/powerSource-icon.png" alt="Image" class="animated bounceIn">
+	</div>
+		<h4>Power Sourcing</h4>
+		<p>
+			How confused is the multitude of candidate profiles? How much a candidate profile is worth to the ecosystem adding to the magnitude of confusion? Well, Sourcelead helps you get the right worth with <strong>POWER SOURCING</strong> feature. We ensure to ascertain the fair value of your time and effort. One intriguing solution from Sourcelead as it offers the rich candidate data with great ease.
+		</p>
+		<ul class="list-styles">
+			<li>Relevancy Score with Skill- match</li>
+			<li>Suggests the best suitable profile for job</li>
+			<li>Easy selection and check-out option</li>
+			<li>Time efficient</li>
+			<li>Affordable</li>
+			<li>Easy payment option using Sourcelead wallet</li>
+			<li>Reduces effort</li>
+			<li>Valuable data</li>
+		</ul>
 	</div>
 </div>
 </section>

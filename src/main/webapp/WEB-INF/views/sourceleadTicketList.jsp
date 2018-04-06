@@ -33,10 +33,48 @@ function getTicketCustomDates(){
 	 if(dateSelection == 'custom'){
 		 document.getElementById("customSearch").style.display="block";
 		 $("#jobReportList_custome").attr("disabled", "disabled");
-		 
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormaTicket = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormaTicket = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormaTicket = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormaTicket = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormaTicket = 'yy-dd-mm'; 
+		  }
+   
+	  $('#fromDate').datepicker({
+			dateFormat : finalDateFormaTicket,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '+1d');
+				dt.setDate(dt.getDate());
+				$("#toDate").datepicker("option", "minDate", dt);
+				removeErrsgFrom();
+				
+			}
+		});
+	  
+	  $('#toDate').datepicker({
+			dateFormat : finalDateFormaTicket,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '-1d');
+				dt.setDate(dt.getDate());
+				$("#fromDate").datepicker("option", "maxDate", dt);
+				removeErrTo();
+			}
+		});
+
 	 }else{
 		 document.getElementById("customSearch").style.display="none";
 		 $("#jobReportList_custome").removeAttr("disabled");
+		 $("#fromDate").datepicker("destroy");
+		 $("#toDate").datepicker("destroy");
 		 $("#fromDate").val('');
 		 $("#toDate").val('');
 		 getSourceleadTicketList();
@@ -126,45 +164,6 @@ function getTicketCustomDates(){
   </section>
   
   <script>
-  $( function() {
-		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormaTicket = '';
-		  if(locationDate.match("yyyy-MM-dd")){
-			  finalDateFormaTicket = 'yy-mm-dd';
-		  }if(locationDate.match("dd-MM-yyyy")){
-			  finalDateFormaTicket = 'dd-mm-yy'; 
-		  }if(locationDate.match("MM-dd-yyyy")){
-			  finalDateFormaTicket = 'mm-dd-yy'; 
-		  }if(locationDate.match("yyyy-dd-MM")){
-			  finalDateFormaTicket = 'yy-dd-mm'; 
-		  }
-    
-	  $('#fromDate').datepicker({
-			dateFormat : finalDateFormaTicket,
-			changeMonth: true,
-			changeYear: true, 
-			onSelect : function(selected) {
-				var dt = $(this).datepicker('getDate', '+1d');
-				dt.setDate(dt.getDate());
-				$("#toDate").datepicker("option", "minDate", dt);
-				removeErrsgFrom();
-				
-			}
-		});
-	  
-	  $('#toDate').datepicker({
-			dateFormat : finalDateFormaTicket,
-			changeMonth: true,
-			changeYear: true, 
-			onSelect : function(selected) {
-				var dt = $(this).datepicker('getDate', '-1d');
-				dt.setDate(dt.getDate());
-				$("#fromDate").datepicker("option", "maxDate", dt);
-				removeErrTo();
-			}
-		});
-  } );
-  
   function removeErrsgFrom (){
 	  document.getElementById("fromDateDiv").style.display="none";
 	  
