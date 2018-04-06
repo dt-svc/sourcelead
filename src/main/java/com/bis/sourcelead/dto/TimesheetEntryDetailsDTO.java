@@ -47,6 +47,12 @@ public class TimesheetEntryDetailsDTO implements Serializable{
 	
 	private String locDateFomat;
 	
+	private String projectNameForSubmissionPageDisplay;
+	
+	private String employmentTypeForSubmissionPageDisplay;
+	
+	private String clientNameForDisplay;
+	
 	@JsonIgnore
 	private Map<String,String>  timesheetFrequencyMap;
 	
@@ -193,7 +199,28 @@ public class TimesheetEntryDetailsDTO implements Serializable{
 		this.weekDaysMap = weekDaysMap;
 	}
 
-	
-	
+	public String getProjectNameForSubmissionPageDisplay() {
+		return projectNameForSubmissionPageDisplay;
+	}
+
+	public void setProjectNameForSubmissionPageDisplay(String projectNameForSubmissionPageDisplay) {
+		this.projectNameForSubmissionPageDisplay = projectNameForSubmissionPageDisplay;
+	}
+
+	public String getEmploymentTypeForSubmissionPageDisplay() {
+		return employmentTypeForSubmissionPageDisplay;
+	}
+
+	public void setEmploymentTypeForSubmissionPageDisplay(String employmentTypeForSubmissionPageDisplay) {
+		this.employmentTypeForSubmissionPageDisplay = employmentTypeForSubmissionPageDisplay;
+	}
+
+	public String getClientNameForDisplay() {
+		return clientNameForDisplay;
+	}
+
+	public void setClientNameForDisplay(String clientNameForDisplay) {
+		this.clientNameForDisplay = clientNameForDisplay;
+	}
      
 }

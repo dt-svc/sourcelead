@@ -30,6 +30,24 @@
 
 
 <div class="signin_wrap SignSlide">
+<%   String ip = request.getHeader("X-Forwarded-For");  
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+            ip = request.getHeader("Proxy-Client-IP");  
+        }  
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+            ip = request.getHeader("WL-Proxy-Client-IP");  
+        }  
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+            ip = request.getHeader("HTTP_CLIENT_IP");  
+        }  
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");  
+        }  
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+            ip = request.getRemoteAddr();  
+        }
+        %>
+        
 	<a href="/"><img src="/resources/images/SourceLead-logo.png" alt="SourceLead Logo" title="SourceLead Logo" class="img-responsive"/></a>
 		<h1>Sign In</h1>
 		<div id="loginWhiteListDiv" class="orgErrorMes"></div>
@@ -77,11 +95,11 @@
 			<b></b>
 			<!--<p>Password incorrect</p>-->
 		</span>
-		
+		<input type="hidden" name="ipaddr" value="<%=ip%>" />
 		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
         <input type="hidden" name="UUID" value="${UUID}" />
         <input type="hidden" name="spocUUID" value="${spocUUID}" />
-        <input type="hidden" name="requirementUUID" value="${requirementUUID}" />
+        <input type="hidden" id="requirementUUID" name="requirementUUID" value="${requirementUUID}" />
         <input type="hidden" name="referUUID" value="${referUUID}" />
 	            
 		<div class="for-pas-text"><strong id="FgPas" onclick="forgotPassword();">Forgot Password</strong><i class="fa fa-question"></i></div>

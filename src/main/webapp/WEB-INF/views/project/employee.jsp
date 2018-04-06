@@ -752,8 +752,8 @@ function budgetRequests(){
 					result = result + '     <td><div  class="tbldata-dotdot-vsm" title="'+report.createdUserName+'">'+report.createdUserName+'</div></td>';
 					if(report.budgetStatus == "Waiting For Approval"){
 						result = result + '     <td><div class="tblminwidth-90">';
-						result = result + '     <i class="fa fa-check" alt="Approve" title="Approved" onclick="acceptBudgetRequset('+report.id+')"></i>|';
-						result = result + '     <i class="fa fa-times" alt="Rejected" title="Rejected" onclick="deleteBudgetRequaet('+report.id+');"></i>|';
+						result = result + '     <i class="fa fa-check" alt="Approve" title="Approve" onclick="acceptBudgetRequset('+report.id+')"></i>|';
+						result = result + '     <i class="fa fa-times" alt="Rejected" title="Reject" onclick="deleteBudgetRequaet('+report.id+');"></i>|';
 						result = result + '     <i class="fa fa-clock-o" alt="On hold" title="On hold" onclick="onholdBudgetRequaet('+report.id+');"></i></div></td>';
 					}
 					if(report.budgetStatus == "Rejected"){
@@ -771,8 +771,8 @@ function budgetRequests(){
 					
 					if((report.approverUserIdlLong ==  '${SourceLeadWeb_user.id}') &&  report.budgetStatus == "On Hold"){
 						result = result + '     <td><div class="tblminwidth-75">';
-						result = result + '     <i class="fa fa-check" alt="Approve" title="Approved" onclick="acceptBudgetRequset('+report.id+')"></i>|';
-						result = result + '     <i class="fa fa-times" alt="Rejected" title="Rejected" onclick="deleteBudgetRequaet('+report.id+');"></i>';
+						result = result + '     <i class="fa fa-check" alt="Approve" title="Approve" onclick="acceptBudgetRequset('+report.id+')"></i>|';
+						result = result + '     <i class="fa fa-times" alt="Rejected" title="Reject" onclick="deleteBudgetRequaet('+report.id+');"></i>';
 						result = result + '     </div></td>';
 						
 					}
@@ -896,7 +896,7 @@ function onholdBudgetRequaet(budgetRequestedId){
 	result = result +"		<p>Are you sure you want to On-Hold ?</p>";
 	result = result +"		<textarea  id='reasonForProjectBudget' name='reasonForProjectBudget'  placeholder='Comments here' field-name='Reason' data-validation='required validate_length length2-5000'></textarea>";
 	result = result +"</form>";
-	result = result +'		<b href="javascript:void(0)"><input id="onHold_budget-id" type="button" value="Delete" onclick="onHoldBudgetRequest('+budgetRequestedId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="CancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="onHold_budget-id" type="button" value="On-Hold" onclick="onHoldBudgetRequest('+budgetRequestedId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="CancelTermination();"></b>';
 	result = result +"	</div>";
 
 	$("#popUp").append(result);
@@ -955,7 +955,7 @@ function editBudgetrequest(budgetRequestedId){
 					 
 					result = result + '	    <div class="clearfix mb10">';
 					result = result + '	      <div class="col-md-12">';
-					result = result + '	        <input type="text" class="form-control inlineField" value="'+json.estimatedHours+'" id="estimatedHours" placeholder="Estimated Hours *" name="estimatedHours" field-name="Estimated Hours"  data-validation="required">';
+					result = result + '	        <input type="text" class="form-control inlineField" value="'+json.estimatedHours+'" id="estimatedHours" placeholder="Estimated Hours *" name="estimatedHours" field-name="Estimated Hours"  data-validation="required validate_length length1-10 validate_int">';
 					result = result + '	      </div>';
 					result = result + '	    </div>';
 				  
@@ -1053,7 +1053,7 @@ function addBudgetRequestPopUp(){
 	 
 	result = result + '	    <div class="clearfix mb10">';
 	result = result + '	      <div class="col-md-12">';
-	result = result + '	        <input type="text" class="form-control input-sm inlineField" value="" id="estimatedHours"  placeholder="Estimated Hours *" name="estimatedHours"  field-name="Estimated Hours"  data-validation="required">';
+	result = result + '	        <input type="text" class="form-control input-sm inlineField" value="" id="estimatedHours"  placeholder="Estimated Hours *" name="estimatedHours"  field-name="Estimated Hours"  data-validation="required validate_length length1-10 validate_int">';
 	result = result + '	      </div>';
 	result = result + '	    </div>';
  

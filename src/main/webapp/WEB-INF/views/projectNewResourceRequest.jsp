@@ -245,7 +245,7 @@ function newResourceRequestPagination(url,requestType,sourceleadUrl){
 			    				result = result +"<i class='glyphicon glyphicon-comment colB edit-reason'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i>";
 			    				result = result + '<b class="bg-red">'+opt.resourceStatus+'</b>';
 			    			}else{
-			    				result = result + '<b>'+opt.resourceStatus+'</b>';
+			    				result = result + '<b class="bg-green">'+opt.resourceStatus+'</b>';
 			    			}
 			    			
 			    		}
@@ -341,6 +341,7 @@ function rejectNewAssociate(requestUUID,roleName){
 
 <script>
 function cancelRejectedReason(){
+	$("#resourceRejectedReasonDiv").empty();
 	$(".settPop").slideUp(200);
 	$(".vendor_wrap_mask").fadeOut(200);
 }

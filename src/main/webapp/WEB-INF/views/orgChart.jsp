@@ -19,12 +19,17 @@
   <!--   Org Chart   -->
 
 	<div class="OrgChartNew">
-		<div class="OrgSearch">
-			<input type="text" placeholder="Search" id="orgChartSearch"><input id='orgChartSearchButton' class="OrgBt" type="button" value="&nbsp" />
-			<!-- <p class="OrgChBtn"></p> --> <i class="fa fa-times refresh" id='orgChartSearchClear'></i> 
-			<div class="clearfix"></div>
-		</div>
-		
+		 <div class="OrgSearch">
+			<select class="form-control select-styles" id="chartLocation">
+                    <c:forEach items="${locations}" var='l'>
+                        <option ${l.id == SourceLeadWeb_orgLocationId ? "selected='selected'" : ""} value="${l.id}">${l.orgLocationName} - ${l.city}${l.state == null || l.state.isEmpty() ? "" : ", ".concat(l.state)}${l.country == null || l.country.isEmpty() ? "" : ", ".concat(l.country)}</option>
+                    </c:forEach>
+                </select>
+            <input type="text" placeholder="Search" id="orgChartSearch"><input id='orgChartSearchButton' class="OrgBt" type="button" value="&nbsp" />
+		<i class="fa fa-times refresh" id='orgChartSearchClear'></i>
+		<div class="clearfix"></div>
+		</div> 
+		 
 		<div id="chart-container" class="text-center"></div>
 	</div>
 
@@ -35,7 +40,8 @@
 <script type="text/javascript">
 var sourceleadUrl = '${sourceleadUrl}';
 $(document).ready(function(){
-	getOrgChartData();
+    $("#chartLocation").change(function() { getOrgChartData($("#chartLocation").val()); });
+    getOrgChartData($("#chartLocation").val());
 	
 	/* $(".OrgChBtn").click(function(){
 		$(this).toggleClass("OrgChBtnAct");
@@ -102,8 +108,9 @@ function filterNodes(keyWord) {
       .end().find('.slide-up, .slide-left, .slide-right').removeClass('slide-up slide-right slide-left');
   }
   var data = {};
-  function getOrgChartData() {
-	$.post('${sourceleadUrl}/org/orgChart', {}, function(ds) {
+  function getOrgChartData(id) {
+	    $.post('${sourceleadUrl}/org/orgChart', {id: id}, function(ds) {
+	         data = {};
 	    $.each(ds, function(i) {
 	    		if(ds[i]["parentId"] == "0") {
 	    			var obj  = {};
@@ -113,7 +120,7 @@ function filterNodes(keyWord) {
 	    			if(ds[i].fileURL && ds[i].fileURL !== "")
 	          			obj.avatar = sourceleadUrl.replace("/app", "")+ds[i].fileURL;
 	    			else 
-	    				obj.avatar = sourceleadUrl.replace("/app", "")+"/resources/css/static-web/images/user-m.png";
+	    				obj.avatar = sourceleadUrl.replace("/app", "")+"/resources/images/userprofile-img.png";
 	          		data = obj;
 		    		obj.children = [];
 	    			$.each(ds, function(j) {
@@ -121,7 +128,7 @@ function filterNodes(keyWord) {
 							if(ds[j].fileURL && ds[j].fileURL !== "")	    					
 	    						ds[j].avatar = sourceleadUrl.replace("/app", "")+ds[j].fileURL;
 	    					else
-	    						ds[j].avatar = sourceleadUrl.replace("/app", "")+"/resources/css/static-web/images/user-m.png";
+	    						ds[j].avatar = sourceleadUrl.replace("/app", "")+"/resources/images/userprofile-img.png";
 	    					obj.children.push(ds[j]);
 	    				}
 	    			});
@@ -132,7 +139,7 @@ function filterNodes(keyWord) {
 	    					if(ds[j].fileURL && ds[j].fileURL !== "")	    					
 	    						ds[j].avatar = sourceleadUrl.replace("/app", "")+ds[j].fileURL;
 	    					else
-	    						ds[j].avatar = sourceleadUrl.replace("/app", "")+"/resources/css/static-web/images/user-m.png";
+	    						ds[j].avatar = sourceleadUrl.replace("/app", "")+"/resources/images/userprofile-img.png";
 	    					ds[i].children.push(ds[j]);
 	    				}
 	    			});
@@ -144,6 +151,7 @@ function filterNodes(keyWord) {
 }
 
 function initChart(data) {
+	$('#chart-container').html("");  
 	 $('#chart-container').orgchart({
 	        'data' : data,
 	        'depth': 2,

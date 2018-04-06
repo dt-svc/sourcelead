@@ -4,6 +4,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 <style type="text/css">
@@ -91,7 +92,7 @@ function getPostValueDetails(){
 <script type="text/javascript">
 window.onload = function () {
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-	if(loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'){
+	/* if(loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'){
 		document.getElementById('requirementType').value = 'OpenJobs';
 		document.getElementById('openjobs').checked = true;
 		document.getElementById('openActive').className = 'activeBackground'
@@ -100,7 +101,11 @@ window.onload = function () {
 		document.getElementById('crowdSourcingjobs').checked = true;
 		document.getElementById('crowd').className = 'ml'
 		document.getElementById('crowdActive').className = 'activeBackground'
-	}
+	} */
+	
+	document.getElementById('requirementType').value = 'allJobs';
+	document.getElementById('openjobs').checked = true;
+	document.getElementById('openActive').className = 'activeBackground'
 	
 	if('${publicRequirementId}' != null && '${publicRequirementId}' != '' && '${publicRequirementId}' != 'undefined'){
 		removeReferPopUp();
@@ -110,13 +115,15 @@ window.onload = function () {
 		}else{
 			applyToJob('${publicRequirementTitle}','${publicRequirementId}','${publicReferId}');
 			
-			var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+			//var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 			
-			if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
+			/* if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
 				selectRequirementType('OpenJobs');
 			}else{
 				selectRequirementType('CrowdSourcingJobs');
-			}
+			} */
+			
+			selectRequirementType('allJobs');
 			
 			
 		}
@@ -158,10 +165,10 @@ window.onload = function () {
           <div class="clearfix"></div> 
          <div class="reportsCount req_Crowd clearfix">
           <ul class="clearfix">
-          <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-          <li><label class="mr10"><span><i class="fa fa-folder-open-o"></i></span><b id="openActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="openjobs" onchange="selectRequirementType('OpenJobs');" value="OpenJobs">&nbsp;Open</label></b></li>
-          </c:if>
-          <li id="crowd"><label class="mr10"><span><i class="fa fa-mixcloud"></i></span><b id="crowdActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="crowdSourcingjobs" onchange="selectRequirementType('CrowdSourcingJobs');" value="CrowdSourcingJobs">&nbsp;Crowdsourcing</label></b></li>
+          <%-- <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}"> --%>
+          <li><label class="mr10"><span><i class="fa fa-folder-open-o"></i></span><b id="openActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="openjobs" onchange="selectRequirementType('allJobs');" value="OpenJobs">&nbsp;Jobs</label></b></li>
+         <%--  </c:if> --%>
+          <!-- <li id="crowd"><label class="mr10"><span><i class="fa fa-mixcloud"></i></span><b id="crowdActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="crowdSourcingjobs" onchange="selectRequirementType('CrowdSourcingJobs');" value="CrowdSourcingJobs">&nbsp;Crowdsourcing</label></b></li> -->
           
           <li id="crowd"><label class="mr10"><span><i class="fa fa-floppy-o"></i></span><b id="savedActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="crowdSourcingjobs" onchange="selectRequirementType('SavedJobs');" value="SavedJobs">&nbsp;Saved Jobs</label></b></li>
           
@@ -418,7 +425,16 @@ window.onload = function () {
           
           </form:form>
         </div> 
-		  	  		  	  
+		  	 
+		  	 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+			  	 <div class="timeNewSe" style="float:right; display: block" id="relesedJobTypeDiv" >
+	                <select class="form-control chosen-select"  id="relesedJobType" name="relesedJobType" onchange="requirementsList('0');">
+	                  <option value="">--Select Job Type--</option>
+	                  <option value="OpenJobs">Open Jobs</option>
+	                  <option value="CrowdSourcingJobs">Crowdsourcing Jobs</option>
+	                </select>
+	            </div>  
+            </c:if> 		  	  
 	  
 			<div class="timeNewSe" style="float:right;">
                 <select class="form-control chosen-select"  id="postedOn" name="postedOn" onchange="requirementsList('0');">
@@ -777,13 +793,34 @@ function getPostedOrgJobs(id){
 
 <script>
 function requirementsList(offset){
+	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	var requirementType = document.getElementById('requirementType').value;
+	
+	
+	if(loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'){
+		if(requirementType == "allJobs"){
+			var relesedJobType = document.getElementById('relesedJobType').value;
+			if(relesedJobType != null && relesedJobType != '' && relesedJobType != 'undefined'){
+				if(relesedJobType == 'OpenJobs'){
+					requirementType = "OpenJobs";
+				}else{
+					requirementType = "CrowdSourcingJobs";
+				}
+			}
+			document.getElementById("relesedJobTypeDiv").style.display="";
+		}else{
+			document.getElementById("relesedJobTypeDiv").style.display = "none";
+			$("#relesedJobType").val('').trigger("chosen:updated");
+		}
+		
+	}
+	
+	
 	var postedOn = document.getElementById('postedOn').value;
 	var jobTitleSearch = document.getElementById('jobTitleSearch').value;
 	var jobLocationSearch = document.getElementById('jobLocationSearch').value;
-	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	var candidateId = '${SourceLeadWeb_candidateId}'
-	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+	
 	var postedOrgName = $("#postedOrg").val();
     loadChosenRequirementScripts();
 	
@@ -794,7 +831,7 @@ function requirementsList(offset){
 		$('#viewMore').html("View More");
 	}
 	
-   if(requirementType == "OpenJobs" || requirementType == "CrowdSourcingJobs"){
+   if(requirementType == "allJobs" || requirementType == "OpenJobs" || requirementType == "CrowdSourcingJobs"){
 		document.getElementById("advancedSearch").style.display="";
 	}else{
 		document.getElementById("advancedSearch").style.display="none";
@@ -943,7 +980,8 @@ function requirementsList(offset){
 			 				result = result +'<div class="clearfix"></div>';
 			 				result = result +'</h5>';
 			 				
-			 				if(requirementType != "OpenJobs" && requirements.isCrowdSourcingJob == 'Y'){
+			 				
+			 				if(requirements.isCrowdSourcingJob == 'Y'){
 			 				result = result +'<div class="disCount">';
 			 				result = result +'<div class="disCountTop">';
 			 				result = result +'<span>You will get</span>';
@@ -989,7 +1027,7 @@ function requirementsList(offset){
 				 					result = result +'  <a href="#" title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="removeReferPopUp();alertFunction();createAlert(\''+requirements.requirementUUID+'\')";><i class="fa fa-bell-o"></i></a>';
 				 				}
 				 				
-				 				if((requirementType == "OpenJobs")|| ((requirementType == "CrowdSourcingJobs" || requirementType == "ReferredToMe" || requirementType == "ReferredByMe" || requirementType == "SavedJobs") && requirements.isJobApplied == 'N')){
+				 				if(((requirementType == "allJobs") || (requirementType == "OpenJobs")) || ((requirementType == "CrowdSourcingJobs" || requirementType == "ReferredToMe" || requirementType == "ReferredByMe" || requirementType == "SavedJobs") && requirements.isJobApplied == 'N')){
 				 					
 				 					if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
 				 					  result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob(\''+requirements.jobTitle+'\','+requirements.requirementId+','+requirements.referId+');"  class="jobApply">Apply</a>';
@@ -1000,7 +1038,7 @@ function requirementsList(offset){
 				 					 }
 				 				}
 				 				
-				 				if((requirementType == "CrowdSourcingJobs" || requirementType == "ReferredToMe" || requirementType == "ReferredByMe" || requirementType == "SavedJobs") && requirements.isJobApplied == 'Y'){
+				 				if((requirementType == "allJobs" || (requirementType == "OpenJobs") || requirementType == "ReferredToMe" || requirementType == "ReferredByMe" || requirementType == "SavedJobs") && requirements.isJobApplied == 'Y'){
 				 					
 				 						result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();getSubmissionDetailsSideBar(\''+requirements.jobTitle+'\','+requirements.submissionId+','+candidateId+','+requirements.requirementId+');" class="jobApply">Applied</a>';
 				 					
@@ -1282,7 +1320,7 @@ function searchRequirement(offset){
 									 				result = result +'<div class="clearfix"></div>';
 									 				result = result +'</h5>';
 									 				
-									 				if(requirementType != "OpenJobs" && requirements.isCrowdSourcingJob == 'Y'){
+									 				if(requirements.isCrowdSourcingJob == 'Y'){
 										 				result = result +'<div class="disCount">';
 										 				result = result +'<div class="disCountTop">';
 										 				result = result +'<span>You will get</span>';
@@ -1326,7 +1364,7 @@ function searchRequirement(offset){
 										 					result = result +'  <a href="#" title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="removeReferPopUp();alertFunction();createAlert(\''+requirements.requirementUUID+'\')";><i class="fa fa-bell-o"></i></a>';
 										 				}
 										 				
-										 				if((requirementType == "OpenJobs") || (requirementType == "CrowdSourcingJobs" && requirements.isJobApplied == 'N')){
+										 				if( (requirementType == "OpenJobs" || requirementType == "allJobs") || (requirementType == "CrowdSourcingJobs" && requirements.isJobApplied == 'N')){
 										 					if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
 										 					result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob(\''+requirements.jobTitle+'\','+requirements.requirementId+');"  class="jobApply">Apply</a>';
 										 					}
@@ -1801,9 +1839,9 @@ $('body').on('submit', '#referToContacts', function(e){
     	$("#requirementType").val(type);
     	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
     	
-    	if(type == "OpenJobs"){
+    	if(type == "allJobs"){
     		document.getElementById('openActive').className = 'activeBackground'
-    		document.getElementById("crowdActive").removeAttribute("class");
+    		//document.getElementById("crowdActive").removeAttribute("class");
     		document.getElementById("referByMeActive").removeAttribute("class")
     		
     		if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
@@ -1813,7 +1851,7 @@ $('body').on('submit', '#referToContacts', function(e){
     		
     		document.getElementById("savedActive").removeAttribute("class")
     	}
-    	else if (type == "CrowdSourcingJobs"){
+ /*    	else if (type == "CrowdSourcingJobs"){
    		    document.getElementById('crowdActive').className = 'activeBackground'
        		
    		    if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
@@ -1831,10 +1869,10 @@ $('body').on('submit', '#referToContacts', function(e){
        		if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
        		document.getElementById("submittedActive").removeAttribute("class")
        		}
-    	}
+    	} */
     	else if (type == "ReferredByMe"){
 	        document.getElementById('referByMeActive').className = 'activeBackground'
-       		document.getElementById("crowdActive").removeAttribute("class")
+       		//document.getElementById("crowdActive").removeAttribute("class")
        		document.getElementById("savedActive").removeAttribute("class")
        		
        		if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
@@ -1856,7 +1894,7 @@ $('body').on('submit', '#referToContacts', function(e){
     	else if (type == "ReferredToMe"){
 	        document.getElementById('referToMeActive').className = 'activeBackground'
        		document.getElementById("openActive").removeAttribute("class");
-       		document.getElementById("crowdActive").removeAttribute("class")
+       		//document.getElementById("crowdActive").removeAttribute("class")
        		document.getElementById("referByMeActive").removeAttribute("class")
        		document.getElementById("appliedActive").removeAttribute("class")
        		document.getElementById("savedActive").removeAttribute("class")
@@ -1866,7 +1904,7 @@ $('body').on('submit', '#referToContacts', function(e){
 	    }
     	    	
     	else if (type == "AppliedJobs"){
-       		document.getElementById("crowdActive").removeAttribute("class")
+       		//document.getElementById("crowdActive").removeAttribute("class")
        		document.getElementById("referByMeActive").removeAttribute("class")
        		document.getElementById("savedActive").removeAttribute("class")
        		if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
@@ -1884,9 +1922,10 @@ $('body').on('submit', '#referToContacts', function(e){
     	else if (type == "SavedJobs"){
 	        document.getElementById('savedActive').className = 'activeBackground'
         	document.getElementById("referByMeActive").removeAttribute("class")
-       		document.getElementById("crowdActive").removeAttribute("class")
+       		//document.getElementById("crowdActive").removeAttribute("class")
        		if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
        		document.getElementById("submittedActive").removeAttribute("class")
+       		document.getElementById("openActive").removeAttribute("class");
        		}
        		
        		if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
@@ -2229,16 +2268,20 @@ function createAlert(requirementUUID){
 					        	    	$.ajax({
 					        		    	type: "POST",
 					        		        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
-					        		        success: function(data) {
-					        		        	var primarySkill = data;
-					        		        	      $("#primarySkill").val(primarySkill);
-					        		        	
+					        		        success: function(response) {
+					        		        	if (response.response === "AWKWARD") {
+					        		        	    location.href = "/errorPage";
+					        		        	} else if (response.response === "SUCCESS") {
+					        		        		var primarySkill = response.object;
+						        		        	$("#primarySkill").val(primarySkill);
+					        		        	} else if (response.indexOf('Sign In') !== -1) {
+					        		        		location.replace(sourceleadUrl);
+					        		        	} else {
+					        		        	    showError("Operation failed, please try again");
+					        		        	}
 					        		        },
 					        		    });
-					        	    	
 					        	    });
-					        	    
-					        	    
 					        	  if(json['skills'] != 'undefined' && json['skills'] != null && json['skills'] != ''){
 					        		  
 					        		  var alertSkillsList = json['skills'].split(',');

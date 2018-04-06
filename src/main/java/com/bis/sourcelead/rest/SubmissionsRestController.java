@@ -28,6 +28,8 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ApplicantRejectBackOutDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -50,6 +52,7 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateCommentsService;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
@@ -67,6 +70,7 @@ import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.impl.RequirementSubmissionServiceImpl;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -146,82 +150,95 @@ public class SubmissionsRestController {
 	CandidateEmployersService candidateEmployersService;
 	
 	@Autowired
+	RequirementSubmissionServiceImpl requirementSubmissionServiceImpl;
+	
+	@Autowired
 	CandidateCommentsService candidateCommentsService;
 
 	@RequestMapping(value = "/app/getCandidateResumes")
-	public String getCandidateResumes(@RequestParam(value = "candidateId", required = false) Long candidateId,
+	@ResponseBody ResponseList<CandidateResumes> getCandidateResumes(@RequestParam(value = "candidateId", required = false) Long candidateId,
 			HttpServletRequest request) throws Exception {
-
-		String resultJson = null;
-		List<CandidateResumes> resumesList = candidateResumesService
-				.getCandidateResumesListByCandidateIdAndStatus(candidateId, Constants.CANDIDATE_ACTIVE);
-		resultJson = toJSON(resumesList);
-		return resultJson;
+		ResponseList<CandidateResumes> response = new ResponseList<>();
+		try {
+			List<CandidateResumes> resumesList = candidateResumesService
+					.getCandidateResumesListByCandidateIdAndStatus(candidateId, Constants.CANDIDATE_ACTIVE);
+			response.setData(resumesList);
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+		}catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
 
 	}
 
 	@RequestMapping(value = "/app/getCandidateDetails")
-	@ResponseBody
-	public String getCandidateDetails(@RequestParam(value = "candidateId", required = false) Long candidateId,
+	@ResponseBody Response<Candidate> getCandidateDetails(@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "requirementId", required = false) Long requirementId,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			HttpServletRequest request) throws Exception {
-
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations"); 
-		String resultJson = null;
-		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-		List<String> educationList = candidateEducationService.getCandidateEducationNamesByCandidateId(candidateId);
-		StringBuilder education = new StringBuilder();
-		if (educationList != null && educationList.size() > 0) {
-			for(String educationName : educationList){
-				education.append(educationName).append(", ");
+		Response<Candidate> response = new Response<>();
+		try {
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations"); 
+			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+			List<String> educationList = candidateEducationService.getCandidateEducationNamesByCandidateId(candidateId);
+			StringBuilder education = new StringBuilder();
+			if (educationList != null && educationList.size() > 0) {
+				for(String educationName : educationList){
+					education.append(educationName).append(", ");
+				}
+				
+				candidate.setCandidateEdu(education.substring(0,education.length()-2).toString());
+			}
+			if(candidate.getOrgRelationId() != null && candidate.getSpocId() != null){
+				candidate.setRelationId(candidate.getOrgRelationId().getId());
+				candidate.setVenSpocId(candidate.getSpocId().getId());
+			}
+			//this block of code is added to get customized score for candidate. -- pavan jampana
+			if(requirementId != null){
+				Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+				RecommendedCustomizeScore recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirement.getId());
+				String score = recommendationsService.getCandidateScore(candidate,requirement,recommendedCustomizeScore);
+				if(score != null && !"".equalsIgnoreCase(score)){
+					candidate.setCandidateScore(score);
+				}
+			}
+			int percentage = candidateService.getCandidatePercentage(candidate,orgLocation);
+			candidate.setProfilePercentage(percentage);
+			
+			boolean isSumbitted = requirementSubmissionService.isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(candidateId, requirementId);
+			if(isSumbitted == true){
+				candidate.setIsCandidateSubmitted(Constants.YES);
+			}else{
+				candidate.setIsCandidateSubmitted(Constants.NO);
 			}
 			
-			candidate.setCandidateEdu(education.substring(0,education.length()-2).toString());
-		}
-		if(candidate.getOrgRelationId() != null && candidate.getSpocId() != null){
-			candidate.setRelationId(candidate.getOrgRelationId().getId());
-			candidate.setVenSpocId(candidate.getSpocId().getId());
-		}
-		//this block of code is added to get customized score for candidate. -- pavan jampana
-		if(requirementId != null){
-			Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-			RecommendedCustomizeScore recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirement.getId());
-			String score = recommendationsService.getCandidateScore(candidate,requirement,recommendedCustomizeScore);
-			if(score != null && !"".equalsIgnoreCase(score)){
-				candidate.setCandidateScore(score);
+			CandidateResumes candidateResume = candidateResumesService.getCandidateLatesResumes(candidateId, Constants.RECORD_ACTIVE);
+			if(candidateResume != null){
+				candidate.setResumeUUID(candidateResume.getResumeUUID());
+				candidate.setCandidateResumeName(candidateResume.getFileName());
+				candidate.setFileUrl(candidateResume.getFileURL());
+				candidate.setFileContentType(candidateResume.getFileContentType());
 			}
-		}
-		int percentage = candidateService.getCandidatePercentage(candidate,orgLocation);
-		candidate.setProfilePercentage(percentage);
-		
-		boolean isSumbitted = requirementSubmissionService.isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(candidateId, requirementId);
-		if(isSumbitted == true){
-			candidate.setIsCandidateSubmitted(Constants.YES);
-		}else{
-			candidate.setIsCandidateSubmitted(Constants.NO);
-		}
-		
-		CandidateResumes candidateResume = candidateResumesService.getCandidateLatesResumes(candidateId, Constants.RECORD_ACTIVE);
-		if(candidateResume != null){
-			candidate.setResumeUUID(candidateResume.getResumeUUID());
-			candidate.setCandidateResumeName(candidateResume.getFileName());
-			candidate.setFileUrl(candidateResume.getFileURL());
-			candidate.setFileContentType(candidateResume.getFileContentType());
-		}
-		
-		CandidateEmployers currentEmployer = candidateEmployersService.getCandidateCurrentEmployer(candidateId, orgLocation.getId());
-		if(null != currentEmployer){
-			candidate.setEmployer(currentEmployer.getName());
-		}else{
-			CandidateEmployers lastCompanyEmployer = candidateEmployersService.getCandidateLastCompanyEmployer(candidateId, orgLocation.getId());
-			if(null != lastCompanyEmployer){
-				candidate.setEmployer(lastCompanyEmployer.getName());
+			
+			CandidateEmployers currentEmployer = candidateEmployersService.getCandidateCurrentEmployer(candidateId, orgLocation.getId());
+			if(null != currentEmployer){
+				candidate.setEmployer(currentEmployer.getName());
+			}else{
+				CandidateEmployers lastCompanyEmployer = candidateEmployersService.getCandidateLastCompanyEmployer(candidateId, orgLocation.getId());
+				if(null != lastCompanyEmployer){
+					candidate.setEmployer(lastCompanyEmployer.getName());
+				}
 			}
+			response.setObject(candidate);
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+		}catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
 		}
-		
-		resultJson = toJSON(candidate);
-		return resultJson;
+		return response;
 
 	}
 	
@@ -310,44 +327,57 @@ public class SubmissionsRestController {
 
 	@PreAuthorize("hasAnyRole('ROLE_ADD_APPLICANT','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/app/saveAddApplicant", method = RequestMethod.POST)
-	public String saveAddApplicant(@RequestParam(value = "jsonData", required = false) String json,
+	public @ResponseBody Response<String> saveAddApplicant(@RequestParam(value = "jsonData", required = false) String json,
 			@RequestParam(value = "con", required = false) String con, MultipartHttpServletRequest request,
 			@RequestParam(value = "locationMapFile", required = false) CommonsMultipartFile locationMapFileData)
 			throws Exception {
 
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
+		
+		Response<String> response = new Response<>();
 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 
 		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(jsonObj,user, orgLocations, con, loginUserRole);
-
-		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
-		requirementSubmissionHistory.setFromStage("NEW");
-		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
-		Requirement requirement = requirementSubmission.getRequirement();
+		if(user != null) {
+			try {
+				RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(jsonObj,user, orgLocations, con, loginUserRole);
 		
-		if(null != requirement){
-			Integer totalApplicatsCountForRequirement = 0;
-		   //updating total number of applicants for requrement
-			totalApplicatsCountForRequirement = requirementSubmissionService.getNumberOfApplicantsForRequirement(requirement.getOrgLocationId().getId(), requirement.getId());
-//			totalApplicatsCountForRequirement = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(orgLocations,requirement.getId(),user,userRoleName);
-			if(totalApplicatsCountForRequirement > 0){
-				requirement.setTotalApplicants(totalApplicatsCountForRequirement); 
-				requirementService.updateRequirement(requirement);
-			}else{
-				requirement.setTotalApplicants(0); 
+				RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+				requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
+				requirementSubmissionHistory.setFromStage("NEW");
+				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+				Requirement requirement = requirementSubmission.getRequirement();
+				
+				if(null != requirement){
+					Integer totalApplicatsCountForRequirement = 0;
+				   //updating total number of applicants for requrement
+					totalApplicatsCountForRequirement = requirementSubmissionService.getNumberOfApplicantsForRequirement(requirement.getOrgLocationId().getId(), requirement.getId());
+					if(totalApplicatsCountForRequirement > 0){
+						requirement.setTotalApplicants(totalApplicatsCountForRequirement); 
+						requirementService.updateRequirement(requirement);
+					}else{
+						requirement.setTotalApplicants(0); 
+					}
+					
+					// pass dto as parameter
+					RequirementDTO requirementDTO = commonUtil.getRequirementDTO(requirement);
+					requirementElkUtil.saveElkRequirement(requirement,requirementDTO);	
+				}
+				response.setObject("success");
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+				}catch(Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
 			}
-			
-			// pass dto as parameter
-			RequirementDTO requirementDTO = commonUtil.getRequirementDTO(requirement);
-			requirementElkUtil.saveElkRequirement(requirement,requirementDTO);	
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
-		return "success";
-
+		return response;
 	}
 	
 	/**
@@ -887,7 +917,7 @@ public class SubmissionsRestController {
 				new ArrayList<EmailAttachment>());
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();	 
-		emailScenerioUtil.sendNotification(actionLink, user,requirement.getManagerUserId(), loginOrgLocations, notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, user,requirement.getManagerUserId(), loginOrgLocations, notificationScenario,new HashMap<String,String>());
 
 	}
 
@@ -1085,6 +1115,14 @@ public class SubmissionsRestController {
 		if(requirementSubmission.getPreviousSubmissionStatus()!=null){
 		requirementSubmissionHistory.setToStage(requirementSubmission.getPreviousSubmissionStatus().toString());
 		}
+		
+		if ("Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit())
+				&& requirementSubmission.getPreviousSubmissionStatus() != null
+				&& ApplicantSubmissionStatus.REQUEST_SENT.getValue().equalsIgnoreCase(requirementSubmission.getPreviousSubmissionStatus().getValue())
+				&& requirementSubmission.getSubmissionStatus() != null
+				&& ApplicantSubmissionStatus.REJECTED.getValue().equalsIgnoreCase(requirementSubmission.getSubmissionStatus().getValue())) {
+			requirementSubmissionServiceImpl.applicantReceiveMailAboutRequirement(requirementSubmission.getId(), requirementSubmission.getRequirement(), requirementSubmission.getCandidate(), user, orgLocations);
+		}
 
 		// to update Submission status
 		requirementSubmission.setSubmissionStatus(requirementSubmission.getPreviousSubmissionStatus());
@@ -1095,7 +1133,7 @@ public class SubmissionsRestController {
 		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,
 				requirementSubmissionHistory);
-
+		
 		return "success";
 	}
 	

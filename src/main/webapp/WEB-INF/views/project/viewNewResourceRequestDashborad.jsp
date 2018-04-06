@@ -258,7 +258,7 @@ function getRequestedAssociatesList(){
 				    		}
 				    		result = result +'</div>';
 						}else{
-			    			result = result +'<div class="tbldata-dotdot_80" title="'+opt.resourceStatus+'"><strong>'+opt.resourceStatus+'</strong></div>';
+			    			result = result +'<div class="tbldata-dotdot_80 text-success" title="'+opt.resourceStatus+'"><strong>'+opt.resourceStatus+'</strong></div>';
 			    		}
 						result = result +'</td>';
 					 result = result +'</tr>';
@@ -281,7 +281,7 @@ function getRequestedAssociatesList(){
 
 <script>
 function rejectAssociate(requestUUID){
-	
+	$("#newRequestOnHoldReasonDiv").empty();
 	var result = "";
 	result = result + '	<div class="settPop">';
 	result = result + '	<div id="loading"></div>';
@@ -362,6 +362,7 @@ function saveRejectAssociate(requestUUID){
 function cancelRejectedReason(){
 	$(".settPop").slideUp(200);
 	$(".vendor_wrap_mask").fadeOut(200);
+	$("#rejectedReasonDiv").empty();
 }
 </script>
 

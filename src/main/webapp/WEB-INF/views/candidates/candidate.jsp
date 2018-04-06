@@ -225,10 +225,10 @@
        <c:if test="${SourceLeadWeb_userType != 'Recruiter'}">
        <div class="clearfix" id="hideVendor" style="display:none">
        <div class="form-group">
-			<label class="col-md-3" ><span class="pull-left">Vendor</span><span class="text-danger pull-left" id="man1">*</span></label>
+			<label class="col-md-3" ><span class="pull-left">Vendor</span></label>
 			<div class="col-md-9 chooRadius" id="errorvendor">
 			     <div class="input-group col-md-10 pull-left chooRadius">
-			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="Select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();" >
+			     <select  class="chosen-select form-control" name="vendors" id="vendors" data-validation-optional="true" placeholder="Select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();" >
                  </select>
             	 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocation();candidateEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
                </div>  
@@ -242,10 +242,10 @@
 		</div>
 		
 		 <div class="form-group">
-			<label class="col-md-3" ><span class="pull-left">Vendor Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
+			<label class="col-md-3" ><span class="pull-left">Vendor Contact</span></label>
 			<div class="col-md-9 chooRadius" id="errorvendorContact">
 			<div class="input-group col-md-10 pull-left chooRadius">
-			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="Select Vendor Contact" onchange="removeValiationVendorContact();">
+			     <select  class="chosen-select form-control" name="vendorcontact" data-validation-optional="true" id="vendorcontact" field-name="Vendor Contact"  placeholder="Select Vendor Contact" onchange="removeValiationVendorContact();">
                  </select>
                 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorContactList();"><i class="fa fa-refresh "></i></span>
                  
@@ -493,17 +493,22 @@
 			    	     contentType:false,
 			        	    	url : sourceleadUrl+"/storeCandidate?"+tokenParamName+"="+tokenValue,
 						        success : function(result) {
-						        	if(result && result === "DataMissing") {
-										$("#store_candidate").removeAttr("disabled");
-										$("#store_candidate").removeAttr('button').val('Save');	
-										showError("Invalid data");
-									} else if(result && result === "success")
-										location.replace(sourceleadUrl+"/candidatesList");
-									else {
-										$("#store_candidate").removeAttr("disabled");
-										$("#store_candidate").addClass('button').val('Save');
-										showError("Operation failed, please try again");
-									}
+						        	
+						        	if (result.response === "AWKWARD") {
+						        	    location.href = "/errorPage";
+						        	} else if (result.response === "SUCCESS") {
+						        		if(result.object === "DataMissing") {
+											$("#store_candidate").removeAttr("disabled");
+											$("#store_candidate").removeAttr('button').val('Save');	
+											showError("Invalid data");
+										}else{
+											location.replace(sourceleadUrl+"/candidatesList");	
+										}
+						        	} else if (result.indexOf('Sign In') !== -1) {
+						        		location.replace(sourceleadUrl);
+						        	} else {
+						        	    showError("Operation failed, please try again");
+						        	}
 						},
 				});
 			return true;
@@ -569,29 +574,29 @@ function validate_fileupload(fileName)
 
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
 <script type="text/javascript">
-		    
-		    $("#candidateSkills").chosen().change(function(event) {
-		    	var allSkills = $(event.target).val();
-		    	
-		    	$.ajax({
-			    	type: "POST",
-			        url: sourceleadUrl+"/profileBySkillSet?"+tokenParamName+"="+tokenValue+"&allSkills="+allSkills, 
-			        success: function(data) {
-			        	var primarySkill = data;
-			        	      $("#primarySkill").val(primarySkill);
-			        	
-			        },
-			    });
-		    	
-		    });
-		    
-			$("#candidateSkills").val('').trigger("chosen:updated");
-	       $("#candidateEducation").val('').trigger("chosen:updated");
-				
-				
+    $("#candidateSkills").chosen().change(function(event) {
+    	var allSkills = $(event.target).val();
+	   	$.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/profileBySkillSet?"+tokenParamName+"="+tokenValue+"&allSkills="+allSkills, 
+	        success: function(response) {
+	        	if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+	        		var primarySkill = response.object;
+		        	$("#primarySkill").val(primarySkill);			        		
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
+	        },
+	    });
+    });
+	$("#candidateSkills").val('').trigger("chosen:updated");
+	$("#candidateEducation").val('').trigger("chosen:updated");
 </script> 
  
-  
 <script type="text/javascript">
  function validateCandidateEmail() {
 	 var email = document.getElementById("email").value; 
@@ -601,18 +606,25 @@ function validate_fileupload(fileName)
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&candidateType=Candidate", 
-		        success: function(data) {
-		        	if(data == 'true'){
-		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
-						  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
-						  document.getElementById("email").setAttribute('record-exist','yes');
-						  document.getElementById("email").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
-		        	}
-		        	else{
-		        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
-		        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
-		        		 $("#store_candidate" ).addClass('button').val('Save');
-                         $("#store_candidate").removeAttr("disabled");
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		if(response.object == 'true'){
+			        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
+							  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+							  document.getElementById("email").setAttribute('record-exist','yes');
+							  document.getElementById("email").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
+			        	} else {
+			        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+			        		 $("#store_candidate" ).addClass('button').val('Save');
+	                         $("#store_candidate").removeAttr("disabled");
+			        	}
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
 		        	}
 		        },
 		    });
@@ -668,31 +680,17 @@ function getDesignationType(designationType){
 	
 	if(designationType.value == 'C2C'){
 		 document.getElementById("hideVendor").style.display="block";
-		 $('#vendors').attr("data-validation","required"); 
-		 $('#vendorcontact').attr("data-validation","required"); 
-		 document.getElementById("man1").style.display="block";
-		 document.getElementById("man2").style.display="block";
 		  getVendorsByOrgLocation();
 	}else{
 		 document.getElementById("hideVendor").style.display="none";
-		 $('#vendors').removeAttr("data-validation","required"); 
-		 $('#vendorcontact').removeAttr("data-validation","required"); 
 	}
 	
 	if(designationType.value == 'C2C-1099'){
 		 document.getElementById("hideVendor").style.display="block";
-		 document.getElementById("man1").style.display="none";
-		 document.getElementById("man2").style.display="none";
-		 $('#vendors').attr("data-validation-optional", "true"); 
-		 $('#vendorcontact').attr("data-validation-optional", "true");  
 		 $("#errorvendor").find("p.jquery_form_error_message").remove();
 			$("#errorvendorContact").find("p.jquery_form_error_message").remove();
 		  getVendorsByOrgLocation();
-	}else{
-		// document.getElementById("hideVendor").style.display="none";
-		 $('#vendors').removeAttr("data-validation-optional", "true"); 
-		 $('#vendorcontact').removeAttr("data-validation-optional", "true");  
-	} 
+	}
 	
 	
 	

@@ -5,9 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.bis.sourcelead.dto.ConnectionsDTO;
-import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.Connections;
-import com.bis.sourcelead.entity.User;
 
 public interface ConnectionsDao {
 
@@ -17,7 +15,7 @@ public interface ConnectionsDao {
 
 	List<ConnectionsDTO> getConnectionsListByStatus(String searchValue, Integer offset, Long userId, String connectionStatus) throws Exception;
 
-	int acceptConnection(User user, User toUser, String status);
+	/*int acceptConnection(User user, User toUser, String status);*/
 
 	Long getConnectionReceivedCount(Long id);
 	
@@ -28,6 +26,12 @@ public interface ConnectionsDao {
 	int deleteConnection(String connectionUUID);
 
 	Map<String, BigInteger> getCountValuesForSentReceivedConnected(Long userId);
+
+	List<ConnectionsDTO> getMututalConnections(Long userId, Long sessionUid);
+
+	int saveConnectionsList(List<Connections> connections);
+
+	String withdrawAllValues(String[] connectionsUerIdList);
 	
 	
 

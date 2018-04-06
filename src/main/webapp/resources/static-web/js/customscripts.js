@@ -97,12 +97,14 @@ $(document).ready(function() {
 		$("#requestDemo").removeClass("activePop");
 		$(".clPop").removeClass("clPopA");
 		$("body").css("overflow", "auto");
+		$(".backshadow").fadeOut(200);
 	});	
 });
 	function requestDemo(){
 		$("#freeTrial").addClass("activePop");
 		$(".clPop").addClass("clPopA");
 		$("body").css("overflow", "hidden");
+		$(".backshadow").fadeIn(200);
 	}
 
 // Responsive Menu bar

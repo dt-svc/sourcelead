@@ -7,12 +7,12 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <link href="/resources/css/requirement-summary.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
- 
 <script>
 $(document).ready(function() {
 	 var requirementId = '${requirementId}';
 	 var submissionId = '${submissionId}';
 	 var candidateId = '${candidateId}';
+	 var submissionStatus='${submissionStatus}'
 	 var type = '${type}';
 	 if(type != null && type != '' && type != 'undefined'){
 		 sideBar(requirementId,type);
@@ -21,8 +21,14 @@ $(document).ready(function() {
  if(submissionId != null && submissionId != '' && submissionId != 'undefined' && candidateId != null && candidateId != '' && candidateId != 'undefined'){
 	 requirementPipeline(requirementId,type);
 	 }
- if(submissionId != null && submissionId != '' && submissionId != 'undefined' && requirementId != null && requirementId != '' && requirementId != 'undefined'){
-		 requirementPipeline(requirementId,type);
+  else if(submissionStatus == 'all'){
+	 $("#detailsTab").removeClass("current");
+	 $('li[name=applicantNotification]').addClass("current");
+	 requirementStatusBar(requirementId);
+	 requirementPipeline(requirementId,"all");
+	 }  
+ else if(submissionId != null && submissionId != '' && submissionId != 'undefined' && requirementId != null && requirementId != '' && requirementId != 'undefined'){
+	 requirementPipeline(requirementId,type);
 		 }
 });	
 </script>
@@ -728,7 +734,7 @@ function requirementPipeline(requirementId,submissionType){
 
 <script>
 function requirementPipelineList(url, requirementId, submissionType){
-	  var clientSubmissions = '${clientSubmissions}';
+	var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	  $("#status-data").removeAttr("style");
@@ -1179,7 +1185,7 @@ function assignedMemberList(requirementId){
 	var url = sourceleadUrl+"/getRequirementAssignedListByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId;
 	
 		var result = '';
-		result = result +'     <div class="clearfix mt5 mb require_wrap_table datatable_filter">';
+		result = result +'     <div class="clearfix mt5 mb project_wrap_table datatable_filter dataTablesPaginate">';
 		  /* result = result + " <div class='remove_search searchCustom'>";
 			result = result
 					+ " <input type='text' placeholder='Search' id='assignedToDataTableSearch'/>";
@@ -1301,64 +1307,73 @@ function reqNotes(requirementId){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+urlForm,        
-         success :function(data) {
-		var output = "";
-	    if(data != null && data != 'undefined' && data != "" && data != '[]'){
-	    	var json = JSON.parse(data);
-	    output  = output + '   <div class="project_tabs_inn_head addUser-org"> ';
-	    output  = output + '              <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-     	for(var i=0;i<json.length;i++){
-       	var report = json[i];
-    	if(report.checkBox == 'Y' || (report.checkBox == 'N' && '${SourceLeadWeb_user.id}' == report.userIdStr)){
-   	  	output = output+'<div class="comments-div comments-inner commentsNotes clearfix">';
-   	    output = output+'    <div class="commentsimg">';
-   	    output = output+'    <i class="fa fa-comments"></i>';
-   	    output = output+'        <div class="commentsimg-inner">';
-   	    if(report.commentAuthorImage != null && report.commentAuthorImage !='' && report.commentAuthorImage !='undefined'){
-   	    output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorImage+'"/>';
-   	    }else{
-   	   	output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg"/>';
-   	    }
-   	    output = output+'        </div>';
-   	    output = output+'    </div>';
-   	    output = output+'     <div class="comments-content">';
-   	    output = output+'         <div class="commentsNotes_inner">';
-   	    output = output+'         <p class="comment-by">';
-   	    output = output+'            By <span class="text-danger" title = "'+report.userName+'">'+report.userName+'</span>';
-   	    if(report.requirementTitle !=null && report.requirementTitle != 'undefined'){
-   		 output = output+'          Job: <span class="text-danger" title = "'+report.requirementTitle+'"> '+report.requirementTitle+'</span>';
-   	    }
-   	    
-   	    else if(report.contactName !=null && report.contactName != 'undefined'){
-   	    output = output+'          Contact Name: <span class="text-danger" title = "'+report.contactName+'">'+report.contactName+'</span>';
-   	    }
-   	 	else if(report.contract !=null && report.contract != 'undefined'){
-   		output = output+'         Contract:  <span class="text-danger" title = "'+report.contract+'">'+report.contract+'</span>';
-   	    }
-   	    
-   	    else if(report.invoiceId !=null && report.invoiceId != 'undefined'){
-   		output = output+'         Invoice Id:  <span class="text-danger" title = "'+report.invoiceId+'">'+report.invoiceId+'</span>';
-   	    }
-   	    output = output+'            <span class="small pull-right">'+report.createdDateString+'</span></p>';
-   	    output = output+'         <p class="comment_text pull-left">'+report.comment+'</p>';
-   	    output = output+'         </div>';
-   	    output = output+'     </div>';
-   	    output = output+'</div>';
-    	}
-     }
-	}else{
-		
-     var output ="";
-     output = output+"   <div class='dataTables_empty'>"; 
-	 output = output+"  </div> ";
-}
-	output  = output + '              </div>';
-	output  = output + '        </div>';
-	
-	$("#clientNotesListDiv").empty(); 
-    $("#clientNotesListDiv").append(output);
- },
-      });
+		 success :function(result) {
+			 var json = result.data;
+	      	   if(result.response === "SESSION_TIMEDOUT") {
+						location.replace(sourceleadUrl);
+					} else if (result.response === "AWKWARD") {
+						location.href = "/errorPage";
+					} else if (result.response === "SUCCESS") {
+						var output = "";
+					    if(json != null && json != 'undefined' && json != "" && json != '[]'){
+					    output  = output + '   <div class="project_tabs_inn_head addUser-org"> ';
+					    output  = output + '              <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+				     	for(var i=0;i<json.length;i++){
+				       	var report = json[i];
+				    	if(report.checkBox == 'Y' || (report.checkBox == 'N' && '${SourceLeadWeb_user.id}' == report.userIdStr)){
+				   	  	output = output+'<div class="comments-div comments-inner commentsNotes clearfix">';
+				   	    output = output+'    <div class="commentsimg">';
+				   	    output = output+'    <i class="fa fa-comments"></i>';
+				   	    output = output+'        <div class="commentsimg-inner">';
+				   	    if(report.commentAuthorImage != null && report.commentAuthorImage !='' && report.commentAuthorImage !='undefined'){
+				   	    output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorImage+'"/>';
+				   	    }else{
+				   	   	output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg"/>';
+				   	    }
+				   	    output = output+'        </div>';
+				   	    output = output+'    </div>';
+				   	    output = output+'     <div class="comments-content">';
+				   	    output = output+'         <div class="commentsNotes_inner">';
+				   	    output = output+'         <p class="comment-by">';
+				   	    output = output+'            By <span class="text-danger" title = "'+report.userName+'">'+report.userName+'</span>';
+				   	    if(report.requirementTitle !=null && report.requirementTitle != 'undefined'){
+				   		 output = output+'          Job: <span class="text-danger" title = "'+report.requirementTitle+'"> '+report.requirementTitle+'</span>';
+				   	    }
+				   	    
+				   	    else if(report.contactName !=null && report.contactName != 'undefined'){
+				   	    output = output+'          Contact Name: <span class="text-danger" title = "'+report.contactName+'">'+report.contactName+'</span>';
+				   	    }
+				   	 	else if(report.contract !=null && report.contract != 'undefined'){
+				   		output = output+'         Contract:  <span class="text-danger" title = "'+report.contract+'">'+report.contract+'</span>';
+				   	    }
+				   	    
+				   	    else if(report.invoiceId !=null && report.invoiceId != 'undefined'){
+				   		output = output+'         Invoice Id:  <span class="text-danger" title = "'+report.invoiceId+'">'+report.invoiceId+'</span>';
+				   	    }
+				   	    output = output+'            <span class="small pull-right">'+report.createdDateString+'</span></p>';
+				   	    output = output+'         <p class="comment_text pull-left">'+report.comment+'</p>';
+				   	    output = output+'         </div>';
+				   	    output = output+'     </div>';
+				   	    output = output+'</div>';
+				    	}
+				     }
+					}else{
+				     var output ="";
+				     output = output+"   <div class='dataTables_empty'>"; 
+					 output = output+"  </div> ";
+					}
+					output  = output + '              </div>';
+					output  = output + '        </div>';
+					
+					$("#clientNotesListDiv").empty(); 
+				    $("#clientNotesListDiv").append(output);
+			} else if (result.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+				showError("Operation failed, please try again");
+			}
+ 		},
+     });
 }
 </script>
 
@@ -1393,8 +1408,17 @@ function reqNotes(requirementId){
 						url : sourceleadUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"",
 						success : function(result) {
 							closeDocPopup();
-							reqNotes(requirementId);
-							
+							if(result.response === "FAILED") {
+								showError("Invalid data");
+							} else if (result.response === "AWKWARD") {
+								location.href = "/errorPage";
+							} else if (result.response === "SUCCESS") {
+								reqNotes(requirementId);
+							}else if (result.indexOf('Sign In') !== -1) {
+					    		location.replace(sourceleadUrl);
+					    	} else {
+					    		showError("Operation failed, please try again");
+					    	}
 						},
 					});
 					$('.add-comment').toggle(200);
@@ -1765,309 +1789,311 @@ function clientSideBar(candidateId,recScore){
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-           success :function(json) { 
-                if(json != null){ 
-                	// var json = JSON.parse(data);
-              		/*  if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 } */
-              		/*  else if (data.indexOf('exception') >= 0) {
-              			 location.replace(sourceleadUrl+"/errorPage");
-              		 }
-              		 else{ */
-              			 candidateStatusGlobal = json.status;
-	                	 $("#candidateSideDiv").empty();
-			             
-			             var country = '';
-				         var state = '';
-				         var city = '';
-			             
-			             if(json.country != null && json.country != '' && json.country != 'undefined'){
-	         			 		country = json.country;
-	             			 	}else{
-	             			 		country = '';
-	             			 	}
-	         			 	
-	         			 	if(json.state != null && json.state != '' && json.state != 'undefined'){
-	         			 		state =json.state +',';
-	             			 	}else{
-	             			 		state = '';
-	             			 	}
-	         			 	
-	         			 	if(json.city != null && json.city != '' && json.city != 'undefined'){
-	         			 		city =json.city+',';
-	             			 	}else{
-	             			 		city = '';
-	             			 	}
-	         			 	
-	         			 	if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
-	         			 		currentRate = json.currentRate;
-	         			 	}else{
-	         			 		currentRate = '';
-	         			 	}
-	         			 	
-	         			 	if(json.rateType != null && json.rateType != '' && json.rateType != 'undefined'){
-	         			 		rateType = json.rateType;
-	         			 	}else{
-	         			 		rateType = '';
-	         			 	}
-	         			 	
-	         			 	if(json.currentRateType != null && json.currentRateType != '' && json.currentRateType != 'undefined'){
-	         			 		currentRateType = json.currentRateType;
-	         			 	}else{
-	         			 		currentRateType = '';
-	         			 	}
-	         			 	
-	         			 	if(json.currentRateCurrency != null && json.currentRateCurrency != '' && json.currentRateCurrency != 'undefined'){
-	         			 		currentRateCurrency = json.currentRateCurrency;
-	         			 	}else{
-	         			 		currentRateCurrency = '';
-	         			 	}
-	         			 	
-	         			 	if(json.expectedRate != null && json.expectedRate != '' && json.expectedRate != 'undefined'){
-	         			 		expectedRate = json.expectedRate;
-	         			 	}else{
-	         			 		expectedRate = '';
-	         			 	}
-
-	         			 	if(json.expectedRateCurrencey != null && json.expectedRateCurrencey != '' && json.expectedRateCurrencey != 'undefined'){
-	         			 		expectedRateCurrencey = json.expectedRateCurrencey;
-	         			 	}else{
-	         			 		expectedRateCurrencey = '';
-	         			 	}
-	         			 	
-	         			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefiend'){
-		                		 lastName  = json.lastName;
-		                	 }else{
-		                		 lastName = "";
-		                	 }
-			             if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
-			            	 mobilePhone = json.mobilePhone;
-			             }else{
-			            	 mobilePhone ="--";
-			             }
-	                	 var result = "";
-	                	 result = result+'<div id="popUp" ></div>  ';
-	                	 result = result+'<form id="candidate_form" name="candidate_form" method="post" >';
-			             result = result+'  <div class="profile_details clearfix" style="margin-bottom:20px;">';
-			             result = result+'               <div class="col-md-6">';
-			             result = result+'                   <div class="media">';
-			             
-			             result = result+'<div class="col-xs-12 col-sm-5 col-md-5">';
-			             result = result+'<div id="candidateImageId">';
-			             result = result+'<div class="well well-sm text-center clearfix positionRelative">';
-						 result = result+' <div class="profile-img-container profile-image text-center">';
-			               if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
-						result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
-			               }else{
-						result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
-	   
-			               }
-						if(recScore != null && recScore != '' && recScore != 'undefined'){
-							  if(recScore >=50){ 
-							 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success"></i>';        
-							  }
-						  }
-						 result = result+'  <div class="btn-group uploadfile uploadbtn-custom">';
-						 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
-						 result = result+'  <i class="fa fa-upload"></i></button>';
-						 result = result+'  <label class="btn btn-sm btn-primary">';
-						 result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateId+');"  style="display: none;">';					     result = result+'  </label>';
-					     if(json.fileUrl != null && json.fileUrl != '' && json.fileUrl != 'undefined'){
-						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
-							 result = result+'  <i class="fa fa-trash"></i></button>';
-					     } 
-					     
-						 result = result+'  </div>';
-						 result = result+'  </div>';
-						 result = result+'  </div>';
-						 
-						 
-						 result = result+'  <div class="mb mt5 UsProBar">';                                                                                                                                        
-							result = result+' <div class="progress nomr">  ';
-						if(json.profilePercentage>=50){ 
-							result = result+'   <div class="progress-bar  progress-bar-success  ';
-						}
-						else{
-							result = result+'   <div class="progress-bar  progress-bar-danger  ';
-						}
-						result = result+' progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%">  ';
-						result = result+'     <p id="disVal">'+json.profilePercentage+'%</p>                                                                                                                                                                      ';
-						result = result+'   </div>  ';
-						result = result+' </div>                 ';                                                                                                                                                      
-						result = result+' </div> ';
-						
-						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
-						/*  result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif are not support</p>';
-						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Size should not more than 200kb</p>';
-						 */ 
-						 result = result+' </div>';
-						 result = result+' </div>';
-						 result = result+'</form>';
-			             result = result+'                     <div class="media-body candidate-details candidateDetails">';
-			             
-			             result = result+' <h4 class="media-heading">'+json.firstName+' '+lastName+'</h4>';
-			            
-			             result = result+'<ul class="list-unstyled">';
-			             result = result+'<li>Type - '+json.candidateType+'</li>';
-			             
-			             if(json.designation != null && json.designation !='' && json.designation !="undefined"){
-						 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Designation</span><span class="col-md-7 padding_left padding_right tbldata-dotdot-sm" title= '+json.designation+'> '+json.designation+'</span></li>';
-			             }else{
-	                   	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Designation</span><span class="col-md-7 padding_left padding_right">---</span></li>';  
-
-			             }
-			             if(json.designationType != null && json.designationType !='' && json.designationType !="undefined"){
-
-						 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Employment Type</span><span class="col-md-7 padding_left padding_right">'+json.designationType+'</span></li>';
-			             }else{
-		                  result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Employment Type</span><span class="col-md-7 padding_left padding_right">---</span></li>';  
-			             }
-						 
-	         			 if(json.vendorName != null && json.vendorName != '' && json.vendorName != 'undefined'){
-
-						 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Vendor</span><span class="col-md-7 padding_left padding_right tbldata-dotdot-sm" title='+json.vendorName+'>'+json.vendorName+'</span></li>';
-	         			 }
-	         			 
-	         			if(json.vendorContactName != null && json.vendorContactName != '' && json.vendorContactName != 'undefined'){
-
-						result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Vendor Contact</span><span class="col-md-7 padding_left padding_right tbldata-dotdot-sm" title = '+json.vendorContactName+'>'+json.vendorContactName+'</span></li>';
-		         		}
-			             
-			              if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined' && json.experienceYears != '0'){
-			            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Experience</span><span class="col-md-7 padding_left padding_right">'+json.experienceYears+' Year(s) '+json.experienceMonths+' Month(s)</span></li>';
-              		       }else{
-                		   		 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Experience</span><span class="col-md-7 padding_left padding_right">---</span></li>';  
-              		       }
-			            
-			             
-			              if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined'){
-			                    	 
-			             result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">'+json.noticePeriod+'(s)'+'</span></li>';
-			             
-             		       }else{
-             		                                                	  
-                   		     result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">---</span></li>';  
-             		     
-             		       }
-			              result = result+'</ul>';
-			              result = result+'<div class="clearfix"></div>';
-			              result = result+'<div class="clearfix">';
-			              result = result+'<ul class="list-inline list-unstyled">';
+           success :function(result) {
+        	   var json = result.object;
+        	   if(result.response === "SESSION_TIMEDOUT") {
+					location.replace(sourceleadUrl);
+				} else if (result.response === "AWKWARD") {
+					location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+	                if(json != null){ 
+	              			 candidateStatusGlobal = json.status;
+		                	 $("#candidateSideDiv").empty();
 				             
-				             if(json.primarySkill != null && json.primarySkill != '' && json.primarySkill != 'undefined'){
-				            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Primary Skill</span><span class="padding_left padding_right">'+json.primarySkill+'</span></li>';
+				             var country = '';
+					         var state = '';
+					         var city = '';
+				             
+				             if(json.country != null && json.country != '' && json.country != 'undefined'){
+		         			 		country = json.country;
+		             			 	}else{
+		             			 		country = '';
+		             			 	}
+		         			 	
+		         			 	if(json.state != null && json.state != '' && json.state != 'undefined'){
+		         			 		state =json.state +',';
+		             			 	}else{
+		             			 		state = '';
+		             			 	}
+		         			 	
+		         			 	if(json.city != null && json.city != '' && json.city != 'undefined'){
+		         			 		city =json.city+',';
+		             			 	}else{
+		             			 		city = '';
+		             			 	}
+		         			 	
+		         			 	if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
+		         			 		currentRate = json.currentRate;
+		         			 	}else{
+		         			 		currentRate = '';
+		         			 	}
+		         			 	
+		         			 	if(json.rateType != null && json.rateType != '' && json.rateType != 'undefined'){
+		         			 		rateType = json.rateType;
+		         			 	}else{
+		         			 		rateType = '';
+		         			 	}
+		         			 	
+		         			 	if(json.currentRateType != null && json.currentRateType != '' && json.currentRateType != 'undefined'){
+		         			 		currentRateType = json.currentRateType;
+		         			 	}else{
+		         			 		currentRateType = '';
+		         			 	}
+		         			 	
+		         			 	if(json.currentRateCurrency != null && json.currentRateCurrency != '' && json.currentRateCurrency != 'undefined'){
+		         			 		currentRateCurrency = json.currentRateCurrency;
+		         			 	}else{
+		         			 		currentRateCurrency = '';
+		         			 	}
+		         			 	
+		         			 	if(json.expectedRate != null && json.expectedRate != '' && json.expectedRate != 'undefined'){
+		         			 		expectedRate = json.expectedRate;
+		         			 	}else{
+		         			 		expectedRate = '';
+		         			 	}
+	
+		         			 	if(json.expectedRateCurrencey != null && json.expectedRateCurrencey != '' && json.expectedRateCurrencey != 'undefined'){
+		         			 		expectedRateCurrencey = json.expectedRateCurrencey;
+		         			 	}else{
+		         			 		expectedRateCurrencey = '';
+		         			 	}
+		         			 	
+		         			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefiend'){
+			                		 lastName  = json.lastName;
+			                	 }else{
+			                		 lastName = "";
+			                	 }
+				             if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
+				            	 mobilePhone = json.mobilePhone;
 				             }else{
-				            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Primary Skill</span><span class="col-md-7 padding_left padding_right">---</span</li>';  
+				            	 mobilePhone ="--";
 				             }
-			             result = result+'                       </ul>';
-			             result = result+'                       </div>';
-			             result = result+'                 <div class="clearfix">';
-			             result = result+'                 <div class="socialnetwork-details">';
-			             result = result+'                 <ul class="list-inline list-unstyled">';
-			             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.facebook != null && json.consultantUser.facebook !="undefined" && json.consultantUser.facebook != ""){
-				             result = result+'<li class="bg-facebook" title="Facebook"><a target="_blank" href=\"'+json.consultantUser.facebook+'\" > <i class="fa fa-facebook-square" ></i></a></li>';
+		                	 var result = "";
+		                	 result = result+'<div id="popUp" ></div>  ';
+		                	 result = result+'<form id="candidate_form" name="candidate_form" method="post" >';
+				             result = result+'  <div class="profile_details clearfix" style="margin-bottom:20px;">';
+				             result = result+'               <div class="col-md-6">';
+				             result = result+'                   <div class="media">';
+				             
+				             result = result+'<div class="col-xs-12 col-sm-5 col-md-5">';
+				             result = result+'<div id="candidateImageId">';
+				             result = result+'<div class="well well-sm text-center clearfix positionRelative">';
+							 result = result+' <div class="profile-img-container profile-image text-center">';
+				               if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
+							result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
+				               }else{
+							result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
+		   
+				               }
+							if(recScore != null && recScore != '' && recScore != 'undefined'){
+								  if(recScore >=50){ 
+								 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success"></i>';        
+								  }
+							  }
+							 result = result+'  <div class="btn-group uploadfile uploadbtn-custom">';
+							 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
+							 result = result+'  <i class="fa fa-upload"></i></button>';
+							 result = result+'  <label class="btn btn-sm btn-primary">';
+							 result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateId+');"  style="display: none;">';					     result = result+'  </label>';
+						     if(json.fileUrl != null && json.fileUrl != '' && json.fileUrl != 'undefined'){
+							     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
+								 result = result+'  <i class="fa fa-trash"></i></button>';
+						     } 
+						     
+							 result = result+'  </div>';
+							 result = result+'  </div>';
+							 result = result+'  </div>';
+							 
+							 
+							 result = result+'  <div class="mb mt5 UsProBar">';                                                                                                                                        
+								result = result+' <div class="progress nomr">  ';
+							if(json.profilePercentage>=50){ 
+								result = result+'   <div class="progress-bar  progress-bar-success  ';
+							}
+							else{
+								result = result+'   <div class="progress-bar  progress-bar-danger  ';
+							}
+							result = result+' progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%">  ';
+							result = result+'     <p id="disVal">'+json.profilePercentage+'%</p>                                                                                                                                                                      ';
+							result = result+'   </div>  ';
+							result = result+' </div>                 ';                                                                                                                                                      
+							result = result+' </div> ';
+							
+							 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
+							/*  result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif are not support</p>';
+							 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Size should not more than 200kb</p>';
+							 */ 
+							 result = result+' </div>';
+							 result = result+' </div>';
+							 result = result+'</form>';
+				             result = result+'                     <div class="media-body candidate-details candidateDetails">';
+				             
+				             result = result+' <h4 class="media-heading">'+json.firstName+' '+lastName+'</h4>';
+				            
+				             result = result+'<ul class="list-unstyled">';
+				             result = result+'<li>Type - '+json.candidateType+'</li>';
+				             
+				             if(json.designation != null && json.designation !='' && json.designation !="undefined"){
+							 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Designation</span><span class="col-md-7 padding_left padding_right tbldata-dotdot-sm" title= '+json.designation+'> '+json.designation+'</span></li>';
+				             }else{
+		                   	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Designation</span><span class="col-md-7 padding_left padding_right">---</span></li>';  
+	
 				             }
-				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.twitter != null && json.consultantUser.twitter !="undefined" && json.consultantUser.twitter != ""){
-				             result = result+'<li class="bg-twitter" title="Twitter"><a target="_blank" href=\"'+json.consultantUser.twitter+'\"> <i class="fa fa-twitter-square" ></i></a></li>';
+				             if(json.designationType != null && json.designationType !='' && json.designationType !="undefined"){
+	
+							 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Employment Type</span><span class="col-md-7 padding_left padding_right">'+json.designationType+'</span></li>';
+				             }else{
+			                  result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Employment Type</span><span class="col-md-7 padding_left padding_right">---</span></li>';  
 				             }
-				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.googlePlus != null && json.consultantUser.googlePlus !="undefined" && json.consultantUser.googlePlus != ""){
-				             result = result+'<li class="bg-google " title="Google-Plus"><a target="_blank" href=\"'+json.consultantUser.googlePlus+'\"> <i class="fa fa-google-plus-square" ></i></a></li>';
-				             }
-				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.linkedIn != null && json.consultantUser.linkedIn !="undefined" && json.consultantUser.linkedIn != ""){
-				             result = result+'<li class="bg-linked" title="Linkedin"><a target="_blank" href=\"'+json.consultantUser.linkedIn+'\"> <i class="fa fa-linkedin-square" ></i></a></li>';
-				             }
-			             
-			             result = result+'   </ul>';
-			             result = result+'                 </div>';
-			             result = result+'                 </div>';
-			             result = result+'               </div>';
-			             result = result+'                   </div>';
-			             result = result+'                 </div>';
-			             result = result+'               <div class="col-md-6">';
-			             result = result+'                 <ul class="list-unstyled can-perdt">';
-			             result = result+'                   <li title="'+json.email+'"><i class="fa fa-envelope-o" title="Email"></i>'+json.email+'</li>';
-			             result = result+'                   <li><i class="fa fa-phone" title="PhoneNo"></i>'+mobilePhone+'</li>';
-			                                                  
-			             result = result+'                   <li title="'+city+''+state+''+country+'"><i class="fa fa-location-arrow" title="Location"></i>'+city+''+state+''+country+'</li>';
-			             
-			             result = result+'                   <li><i class="fa fa-money" title="Current Rate"></i><b>Current Rate:</b>' +currentRate+'  '+currentRateType+' / '+currentRateCurrency+'</li>';
-			             
-			             result = result+'                   <li><i class="fa fa-money" title="Expected rate"></i><b>Expected Rate:</b>'+expectedRate+'  '+rateType+' / '+expectedRateCurrencey+'</li>';
-			             result = result+'                 </ul>';
-			             result = result+'               </div>';
-			             result = result+'			</div>';
-			             result = result+'   <div class="proj_close"></div>';
-			             result = result+'   <div class="project_side_wrap_inn_tabs">';
-			             result = result+'     <ul class="canreq-tabs-menu">';
-			             result = result+'       <li class="current"><a href="#tab-11" onclick="candidateProfile('+candidateId+');">Profile</a></li>';
-			             result = result+'       <li><a href="#tab-12" onclick="candidateResumesList('+candidateId+'); candidateResume('+candidateId+');" >Resume</a></li>';
-			             result = result+'       <li><a href="#tab-13" onclick="candidateExperience('+candidateId+');">Employers</a></li>';
-			             result = result+'       <li><a href="#tab-14" onclick="candidateEducation('+candidateId+');">Education</a></li>';
-			             result = result+'       <li><a href="#tab-15" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
-			             
-			             result = result+'<li><a href="#tab-17" onclick="candidateDocuments('+candidateId+');">Documents</a></li>';
-						 result = result+'<li><a href="#tab-18" onclick="candidateReferences('+candidateId+');">References</a></li>';
-			             
-			             //result = result+'       <li><a href="#tab-16" onclick="candidateActivities('+candidateId+');">Activities</a></li>'; 
-			             result = result+'       <li><a href="#history" onclick="candidateHistory('+candidateId+');">History</a></li>';
-			             result = result+'       <div class="clearfix"></div>';
-			             result = result+'     </ul>';
-			             result = result+'     <div class="project_tabs">';
-				         result = result + ' <div id="tab-11" class="canreq-tabs-menu_inn">';
-						 result = result + '</div>';
-						 
-						 result = result + '<div id="tab-12" class="canreq-tabs-menu_inn">';
-						 result = result + '</div>';
-						 
-						 result = result + '<div id="tab-13" class="canreq-tabs-menu_inn">';
-						 result = result + '</div>';
-						 
-						 result = result + ' <div id="tab-14" class="canreq-tabs-menu_inn">';
-						 result = result + '</div>';
-						 
-						 result = result + '<div id="tab-15" class="canreq-tabs-menu_inn">';
-						 result = result + '</div>';
-						 
-						 result = result + '<div id="tab-17" class="canreq-tabs-menu_inn">';
-						 result = result + '</div>';
-						 
-						 result = result + '<div id="tab-18" class="canreq-tabs-menu_inn">';
-						 result = result + '</div>';
-						 
-						 result = result + '<div id="tab-16" class="canreq-tabs-menu_inn">';
-						 result = result + '</div>';
-						 
-						 result = result + '<div id="history" class="canreq-tabs-menu_inn">';
-						 result = result + '</div>';
-						 
-			             result = result+'     </div>';
-			             result = result+'   </div>';
-			             
-			             $("#candidateSideDiv").empty();  
-			 		     $("#candidateSideDiv").append(result);  
-				 		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
-						 $(".side_mask").fadeIn(200);
-						 $("body").css('overflow-y', 'hidden');
-						 candidateProfile(candidateId);
-						 hilightTab();
-			    	/* }  */
-                }else{
-               	 $("#candidateSideDiv").removeAttr("style");
- 	    	         var result ="";
-		    	     result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='content-area clearfix'>"; 
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Candidates Found</p>";
-					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> "; 
-					$("#candidateSideDiv").empty();
-				    $("#candidateSideDiv").append(result); 
-                }
+							 
+		         			 if(json.vendorName != null && json.vendorName != '' && json.vendorName != 'undefined'){
+	
+							 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Vendor</span><span class="col-md-7 padding_left padding_right tbldata-dotdot-sm" title='+json.vendorName+'>'+json.vendorName+'</span></li>';
+		         			 }
+		         			 
+		         			if(json.vendorContactName != null && json.vendorContactName != '' && json.vendorContactName != 'undefined'){
+	
+							result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Vendor Contact</span><span class="col-md-7 padding_left padding_right tbldata-dotdot-sm" title = '+json.vendorContactName+'>'+json.vendorContactName+'</span></li>';
+			         		}
+				             
+				              if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined' && json.experienceYears != '0'){
+				            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Experience</span><span class="col-md-7 padding_left padding_right">'+json.experienceYears+' Year(s) '+json.experienceMonths+' Month(s)</span></li>';
+	              		       }else{
+	                		   		 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Experience</span><span class="col-md-7 padding_left padding_right">---</span></li>';  
+	              		       }
+				            
+				             
+				              if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined'){
+				                    	 
+				             result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">'+json.noticePeriod+'(s)'+'</span></li>';
+				             
+	             		       }else{
+	             		                                                	  
+	                   		     result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">---</span></li>';  
+	             		     
+	             		       }
+				              result = result+'</ul>';
+				              result = result+'<div class="clearfix"></div>';
+				              result = result+'<div class="clearfix">';
+				              result = result+'<ul class="list-inline list-unstyled">';
+					             
+					             if(json.primarySkill != null && json.primarySkill != '' && json.primarySkill != 'undefined'){
+					            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Primary Skill</span><span class="padding_left padding_right">'+json.primarySkill+'</span></li>';
+					             }else{
+					            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Primary Skill</span><span class="col-md-7 padding_left padding_right">---</span</li>';  
+					             }
+				             result = result+'                       </ul>';
+				             result = result+'                       </div>';
+				             result = result+'                 <div class="clearfix">';
+				             result = result+'                 <div class="socialnetwork-details">';
+				             result = result+'                 <ul class="list-inline list-unstyled">';
+				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.facebook != null && json.consultantUser.facebook !="undefined" && json.consultantUser.facebook != ""){
+					             result = result+'<li class="bg-facebook" title="Facebook"><a target="_blank" href=\"'+json.consultantUser.facebook+'\" > <i class="fa fa-facebook-square" ></i></a></li>';
+					             }
+					             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.twitter != null && json.consultantUser.twitter !="undefined" && json.consultantUser.twitter != ""){
+					             result = result+'<li class="bg-twitter" title="Twitter"><a target="_blank" href=\"'+json.consultantUser.twitter+'\"> <i class="fa fa-twitter-square" ></i></a></li>';
+					             }
+					             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.googlePlus != null && json.consultantUser.googlePlus !="undefined" && json.consultantUser.googlePlus != ""){
+					             result = result+'<li class="bg-google " title="Google-Plus"><a target="_blank" href=\"'+json.consultantUser.googlePlus+'\"> <i class="fa fa-google-plus-square" ></i></a></li>';
+					             }
+					             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.linkedIn != null && json.consultantUser.linkedIn !="undefined" && json.consultantUser.linkedIn != ""){
+					             result = result+'<li class="bg-linked" title="Linkedin"><a target="_blank" href=\"'+json.consultantUser.linkedIn+'\"> <i class="fa fa-linkedin-square" ></i></a></li>';
+					             }
+				             
+				             result = result+'   </ul>';
+				             result = result+'                 </div>';
+				             result = result+'                 </div>';
+				             result = result+'               </div>';
+				             result = result+'                   </div>';
+				             result = result+'                 </div>';
+				             result = result+'               <div class="col-md-6">';
+				             result = result+'                 <ul class="list-unstyled can-perdt">';
+				             result = result+'                   <li title="'+json.email+'"><i class="fa fa-envelope-o" title="Email"></i>'+json.email+'</li>';
+				             result = result+'                   <li><i class="fa fa-phone" title="PhoneNo"></i>'+mobilePhone+'</li>';
+				                                                  
+				             result = result+'                   <li title="'+city+''+state+''+country+'"><i class="fa fa-location-arrow" title="Location"></i>'+city+''+state+''+country+'</li>';
+				             
+				             result = result+'                   <li><i class="fa fa-money" title="Current Rate"></i><b>Current Rate:</b>' +currentRate+'  '+currentRateType+' / '+currentRateCurrency+'</li>';
+				             
+				             result = result+'                   <li><i class="fa fa-money" title="Expected rate"></i><b>Expected Rate:</b>'+expectedRate+'  '+rateType+' / '+expectedRateCurrencey+'</li>';
+				             result = result+'                 </ul>';
+				             result = result+'               </div>';
+				             result = result+'			</div>';
+				             result = result+'   <div class="proj_close"></div>';
+				             result = result+'   <div class="project_side_wrap_inn_tabs">';
+				             result = result+'     <ul class="canreq-tabs-menu">';
+				             result = result+'       <li class="current"><a href="#tab-11" onclick="candidateProfile('+candidateId+');">Profile</a></li>';
+				             result = result+'       <li><a href="#tab-12" onclick="candidateResumesList('+candidateId+'); candidateResume('+candidateId+');" >Resume</a></li>';
+				             result = result+'       <li><a href="#tab-13" onclick="candidateExperience('+candidateId+');">Employers</a></li>';
+				             result = result+'       <li><a href="#tab-14" onclick="candidateEducation('+candidateId+');">Education</a></li>';
+				             result = result+'       <li><a href="#tab-15" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
+				             
+				             result = result+'<li><a href="#tab-17" onclick="candidateDocuments('+candidateId+');">Documents</a></li>';
+							 result = result+'<li><a href="#tab-18" onclick="candidateReferences('+candidateId+');">References</a></li>';
+				             
+				             //result = result+'       <li><a href="#tab-16" onclick="candidateActivities('+candidateId+');">Activities</a></li>'; 
+				             result = result+'       <li><a href="#history" onclick="candidateHistory('+candidateId+');">History</a></li>';
+				             result = result+'       <div class="clearfix"></div>';
+				             result = result+'     </ul>';
+				             result = result+'     <div class="project_tabs">';
+					         result = result + ' <div id="tab-11" class="canreq-tabs-menu_inn">';
+							 result = result + '</div>';
+							 
+							 result = result + '<div id="tab-12" class="canreq-tabs-menu_inn">';
+							 result = result + '</div>';
+							 
+							 result = result + '<div id="tab-13" class="canreq-tabs-menu_inn">';
+							 result = result + '</div>';
+							 
+							 result = result + ' <div id="tab-14" class="canreq-tabs-menu_inn">';
+							 result = result + '</div>';
+							 
+							 result = result + '<div id="tab-15" class="canreq-tabs-menu_inn">';
+							 result = result + '</div>';
+							 
+							 result = result + '<div id="tab-17" class="canreq-tabs-menu_inn">';
+							 result = result + '</div>';
+							 
+							 result = result + '<div id="tab-18" class="canreq-tabs-menu_inn">';
+							 result = result + '</div>';
+							 
+							 result = result + '<div id="tab-16" class="canreq-tabs-menu_inn">';
+							 result = result + '</div>';
+							 
+							 result = result + '<div id="history" class="canreq-tabs-menu_inn">';
+							 result = result + '</div>';
+							 
+				             result = result+'     </div>';
+				             result = result+'   </div>';
+				             
+				             $("#candidateSideDiv").empty();  
+				 		     $("#candidateSideDiv").append(result);  
+					 		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
+							 $(".side_mask").fadeIn(200);
+							 $("body").css('overflow-y', 'hidden');
+							 candidateProfile(candidateId);
+							 hilightTab();
+	                }else{
+	               	 $("#candidateSideDiv").removeAttr("style");
+	 	    	         var result ="";
+			    	     result = result+"   <div class='row'>"; 
+						 result = result+"	<div class='col-lg-12'>"; 
+						 result = result+"		<div class='content-area clearfix'>"; 
+						 result = result+"			<div class='blank-pages'>";
+						 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+						 result = result+"			        <p>No Candidates Found</p>";
+						 result = result+"			 </div>";
+						 result = result+"		</div>"; 
+						 result = result+"	</div>"; 
+						 result = result+"  </div> "; 
+						$("#candidateSideDiv").empty();
+					    $("#candidateSideDiv").append(result); 
+	                }
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
+				}
          },
       }); 
 }
@@ -2592,453 +2618,438 @@ function customizeScore(requirementId){
 		   	type: "GET",
 		    url: sourceleadUrl+"/getCustomizeScore?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
 		    success: function(data) {
-		    	var json = JSON.parse(data);
-		    	if(json.customizeMinExperience != null && json.customizeMinExperience != '' && json.customizeMinExperience != 'undefiend'){
-		    		customizeMinExperience = json.customizeMinExperience;
-		    	}else{
-		    		customizeMinExperience = "";
-		    	}
-		    	
-		    	if(json.customizeMaxExperience != null && json.customizeMaxExperience != '' && json.customizeMaxExperience != 'undefiend'){
-		    		customizeMaxExperience = json.customizeMaxExperience;
-		    	}else{
-		    		customizeMaxExperience = "";
-		    	}
-		    	
-		    	if(json.customizeRate != null && json.customizeRate != '' && json.customizeRate != 'undefiend'){
-		    		customizeRate = json.customizeRate;
-		    	}else{
-		    		customizeRate = "";
-		    	}
-		    	
-		    	if(json.customizeCountry != null && json.customizeCountry !='' && json.customizeCountry !='undefined'){
-		    		var customizeCountry = json.customizeCountry;
-				}
-		    	
-				if(json.customizeState != null && json.customizeState !='' && json.customizeState !='undefined'){
-					var customizeState = json.customizeState;
-				}
-				if(json.customizeCity != null && json.customizeCity !='' && json.customizeCity !='undefined'){
-					var customizeCity = json.customizeCity;
-				}
-		    	
-		    	//lookupDB skills
-		    	var lookupSkills = json.dbSkills;
-		    	var dbskills = new Array();
-		    	dbskills = lookupSkills.split(",");
-		    	
-		    	
-		    	var result = "";
-		    	//result = result +'		          <div class="cand-advsrch-popup customizescore-pop customscorePop">  ';
-		    	
-		    	result = result +'		          <div class="sideMask" style="display:block;"></div>';
-		    	result = result +'		          <div class="modal" style="display:block; z-index:9999">  ';
-		    	result = result +'		          <div class="modal-dialog modal-lg">  ';
-		    	result = result +'		          <div class="modal-content">  ';
-		    	result = result	+ ' <form id="updateCustomize_form"  name="updateCustomize_form" method="post">';
-		    	result = result +'		            <div class="row clearfix modal-body"> ';
-		        result = result +'		                <div class="clearfix mt">  ';
-		        
-		        result = result +'		                <div class="col-md-10 lblup paddingRight skills-chosen">    ';
-		        result = result +'		                   <label>Skills</label>';
-		        result = result +'		                    <select class="chosen-select" data-placeholder="Skills" multiple id="customizeSkills" name="customizeSkills"> ';
-		        
-		      //requitrement skills
-		    	if(json.customizeSkills != null  && json.customizeSkills != '' && json.customizeSkills != 'undefiend'){
-		    		var requirmentSkills = json.customizeSkills;
-			    	var customizeSkills = new Array();
-			    	customizeSkills = requirmentSkills.split(",");
-			        for (var i = 0; i < customizeSkills.length; i++) { 
-			        	 var customSkill = customizeSkills[i];
-			        	 result = result +'	<option selected value=\''+customSkill+'\'>'+customSkill+'</option> ';
+		    	var json = data.object;
+		    	if (data.response === "FAILED") {
+		    		showError(data.responseMessage);
+		    	} else if (data.response === "AWKWARD") {
+		    		location.href = "/errorPage";
+		    	} else if (data.response === "SUCCESS") {
+			    	if(json.customizeMinExperience != null && json.customizeMinExperience != '' && json.customizeMinExperience != 'undefiend'){
+			    		customizeMinExperience = json.customizeMinExperience;
+			    	}else{
+			    		customizeMinExperience = "";
+			    	}
+			    	if(json.customizeMaxExperience != null && json.customizeMaxExperience != '' && json.customizeMaxExperience != 'undefiend'){
+			    		customizeMaxExperience = json.customizeMaxExperience;
+			    	}else{
+			    		customizeMaxExperience = "";
+			    	}
+			    	if(json.customizeRate != null && json.customizeRate != '' && json.customizeRate != 'undefiend'){
+			    		customizeRate = json.customizeRate;
+			    	}else{
+			    		customizeRate = "";
+			    	}
+			    	if(json.customizeCountry != null && json.customizeCountry !='' && json.customizeCountry !='undefined'){
+			    		var customizeCountry = json.customizeCountry;
+					}
+					if(json.customizeState != null && json.customizeState !='' && json.customizeState !='undefined'){
+						var customizeState = json.customizeState;
+					}
+					if(json.customizeCity != null && json.customizeCity !='' && json.customizeCity !='undefined'){
+						var customizeCity = json.customizeCity;
+					}
+			    	//lookupDB skills
+			    	var dbskills = new Array();
+			    	if(json.dbSkills != null && json.dbSkills !='' && json.dbSkills !='undefined'){
+				    	var lookupSkills = json.dbSkills;
+				    	dbskills = lookupSkills.split(",");
+			    	}
+			    	
+			    	var result = "";
+			    	//result = result +'		          <div class="cand-advsrch-popup customizescore-pop customscorePop">  ';
+			    	
+			    	result = result +'		          <div class="sideMask" style="display:block;"></div>';
+			    	result = result +'		          <div class="modal" style="display:block; z-index:9999">  ';
+			    	result = result +'		          <div class="modal-dialog modal-lg">  ';
+			    	result = result +'		          <div class="modal-content">  ';
+			    	result = result	+ ' <form id="updateCustomize_form"  name="updateCustomize_form" method="post">';
+			    	result = result +'		            <div class="row clearfix modal-body"> ';
+			        result = result +'		                <div class="clearfix mt">  ';
+			        
+			        result = result +'		                <div class="col-md-10 lblup paddingRight skills-chosen">    ';
+			        result = result +'		                   <label>Skills</label>';
+			        result = result +'		                    <select class="chosen-select" data-placeholder="Skills" multiple id="customizeSkills" name="customizeSkills"> ';
+			        
+			      //requitrement skills
+			    	if(json.customizeSkills != null  && json.customizeSkills != '' && json.customizeSkills != 'undefiend'){
+			    		var requirmentSkills = json.customizeSkills;
+				    	var customizeSkills = new Array();
+				    	customizeSkills = requirmentSkills.split(",");
+				        for (var i = 0; i < customizeSkills.length; i++) { 
+				        	 var customSkill = customizeSkills[i];
+				        	 result = result +'	<option selected value=\''+customSkill+'\'>'+customSkill+'</option> ';
+				        }
+			    	}
+			         for (var i = 0; i < dbskills.length; i++) { 
+			        	 var skill1 = dbskills[i];
+			        	 result = result +'	<option  value=\''+skill1+'\'>'+skill1+'</option> ';
+			        } 
+			        result = result +'		                    </select> ';
+			        result = result +'		                  </div>   ';
+			        
+			        result = result +'		                   <div class="col-md-2">';
+			        result = result +'		                    <select class="chosen-select" data-placeholder="Skills" id="skillScore" name="skillScore"> ';
+			        result = result +'		                      <option disabled>Skills</option>  ';
+			        result = result +'		                      <option '+ (json.customizeSkillScore == "0" ? "selected" : '') +' value="0">0%</option> ';
+			        result = result +'		                      <option '+ (json.customizeSkillScore == "10" ? "selected" : '') +' value="10">10%</option> ';
+			        result = result +'		                      <option '+ (json.customizeSkillScore == "20" ? "selected" : '') +' value="20">20%</option> ';
+			        result = result +'		                      <option '+ (json.customizeSkillScore == "30" ? "selected" : '') +' value="30">30%</option> ';
+			        result = result +'		                      <option '+ (json.customizeSkillScore == "40" ? "selected" : '') +' value="40">40%</option> ';
+			        result = result +'		                      <option '+ (json.customizeSkillScore == "50" ? "selected" : '') +' value="50">50%</option> ';
+			        result = result +'		                      <option '+ (json.customizeSkillScore == "60" ? "selected" : '') +' value="60">60%</option> ';
+			        result = result +'		                      <option '+ (json.customizeSkillScore == "70" ? "selected" : '') +' value="70">70%</option> ';
+			        result = result +'		                      <option '+ (json.customizeSkillScore == "80" ? "selected" : '') +' value="80">80%</option> ';
+			        result = result +'		                      <option '+ (json.customizeSkillScore == "90" ? "selected" : '') +' value="90">90%</option> ';
+			        result = result +'		                      <option '+ (json.customizeSkillScore == "100" ? "selected" : '') +' value="100">100%</option>';
+			        result = result +'		                    </select>              ';
+			        result = result +'		                  </div>                   ';
+			        result = result +'		           <div class="clearfix"></div>';
+			        //result = result +'		                </div> ';
+			      
+			        result = result +'		                <div class="clearfix mt">   ';
+			        result = result +'		                    <div class="col-md-3 paddingRight lblup ">   ';
+			        result = result +'		                   <label>Choose City</label>';
+			        result = result +'                              <input type="text" class="form-control positionRelative"  multiple data-placeholder="select city" multiple name="apiLocation"  id="apiLocation">';
+			        result = result +'                              <i class="fa fa-refresh btn btn-primary refresh-icon mr2 ref-top" title="Refresh" onClick="refreshGoogleApiCity(\''+apiLocation+'\');"></i>';
+			        result = result +'		                  </div>  ';
+			        
+			        result = result +'		                  <div class="col-md-7 paddingRight lblup"> ';   
+			        result = result +'		                   <label>Selected City</label>'; 
+			        result = result +'		                    <select class="chosen-select" multiple data-placeholder="City" name="customizedCity" id="city" value="'+customizeCity+'" readonly="readonly">    ';
+			     	if(json.customizeCity != null  && json.customizeCity != '' && json.customizeCity != 'undefiend'){
+			    		var cites = json.customizeCity;
+				    	var customizeCites = new Array();
+				    	customizeCites = cites.split(",");
+				        for (var i = 0; i < customizeCites.length; i++) { 
+				        	 var customCity = customizeCites[i];
+				        	 result = result +'	<option selected value=\''+customCity+'\'>'+customCity+'</option> ';
+				        }
+			    	}
+			        result = result +'		                    </select>                  ';
+			        result = result +'		                  </div>                       ';
+			        
+			        result = result +'                      <div class="col-md-2"> ';
+			        result = result +'		                    <select class="chosen-select" data-placeholder="Location" id="locationScore" name="locationScore">';
+			        result = result +'		                      <option '+ (json.customizeLocationScore == "0" ? "selected" : '') +' value="0">0%</option> ';
+			        result = result +'		                      <option '+ (json.customizeLocationScore == "10" ? "selected" : '') +' value="10">10%</option> ';
+			        result = result +'		                      <option '+ (json.customizeLocationScore == "20" ? "selected" : '') +' value="20">20%</option> ';
+			        result = result +'		                      <option '+ (json.customizeLocationScore == "30" ? "selected" : '') +' value="30">30%</option> ';
+			        result = result +'		                      <option '+ (json.customizeLocationScore == "40" ? "selected" : '') +' value="40">40%</option> ';
+			        result = result +'		                      <option '+ (json.customizeLocationScore == "50" ? "selected" : '') +' value="50">50%</option> ';
+			        result = result +'		                      <option '+ (json.customizeLocationScore == "60" ? "selected" : '') +' value="60">60%</option> ';
+			        result = result +'		                      <option '+ (json.customizeLocationScore == "70" ? "selected" : '') +' value="70">70%</option> ';
+			        result = result +'		                      <option '+ (json.customizeLocationScore == "80" ? "selected" : '') +' value="80">80%</option> ';
+			        result = result +'		                      <option '+ (json.customizeLocationScore == "90" ? "selected" : '') +' value="90">90%</option> ';
+			        result = result +'		                      <option '+ (json.customizeLocationScore == "100" ? "selected" : '') +' value="100">100%</option>';
+			        result = result +'		                    </select>                 ';
+			        result = result +'		                  </div>                      ';
+			        result = result +'		           <div class="clearfix"></div>';
+	// 		        result = result +'		                </div>                        ';
+			        
+			        result = result +'				        <div class="clearfix mt"> ';
+			        result = result +'		                  <div class="col-md-10 lblup paddingRight">    ';
+			        result = result +'		                   <label>Notice Period</label>';
+			        result = result +'		                      <select class="chosen-select" data-placeholder="Notice" multiple id="noticeperiod" name="noticeperiod">';
+			      //split the noticeperiod
+			      var noticeperiod = new Array();
+			    	if(json.customizeNoticeperiod != null && json.customizeNoticeperiod != '' && json.customizeNoticeperiod != 'undefined'){
+			    		var customizeNoticeperiod = json.customizeNoticeperiod;
+				    	noticeperiod =  customizeNoticeperiod.split(",");
+			    	}
+		        	 result = result  +' <option value="Immediately Available" '+(noticeperiod.indexOf("Immediately Available")>=0 ? "selected" : '') +'>Immediately available</option>';
+		        	 result = result  +' <option value="15 Days" '+(noticeperiod.indexOf("15 Days")>=0 ? "selected" : '') +'>15 Days</option>';
+		        	 result = result  +' <option value="1 Month" '+(noticeperiod.indexOf("1 Month")>=0 ? "selected" : '') +'>1 Month<s/option>';
+		        	 result = result  +' <option value="2 Months" '+(noticeperiod.indexOf("2 Months")>=0 ? "selected" : '') +'>2 Months</option>';
+		        	 result = result  +' <option value="3 Months" '+(noticeperiod.indexOf( "3 Months")>=0 ? "selected" : '') +'>3 Months</option>';
+		        	 $("#noticeperiod").empty();
+		        	 $("#noticeperiod").append(result);
+	   			     $("#noticeperiod").trigger('chosen:update');
+			        result = result +'		                    </select> ';
+			        result = result +'		                    </div>  ';
+			        
+			        result = result +'		                    <div class="col-md-2">  ';
+			        result = result +'		                    <select class="chosen-select" data-placeholder="Rate" id="noticeperiodScore" name="noticeperiodScore">';
+			        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "0" ? "selected" : '') +' value="0">0%</option> ';
+			        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "10" ? "selected" : '') +' value="10">10%</option> ';
+			        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "20" ? "selected" : '') +' value="20">20%</option> ';
+			        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "30" ? "selected" : '') +' value="30">30%</option> ';
+			        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "40" ? "selected" : '') +' value="40">40%</option> ';
+			        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "50" ? "selected" : '') +' value="50">50%</option> ';
+			        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "60" ? "selected" : '') +' value="60">60%</option> ';
+			        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "70" ? "selected" : '') +' value="70">70%</option> ';
+			        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "80" ? "selected" : '') +' value="80">80%</option> ';
+			        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "90" ? "selected" : '') +' value="90">90%</option> ';
+			        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "100" ? "selected" : '') +' value="100">100%</option>';
+			        result = result +'		                    </select>               ';
+			        result = result +'		                  </div>                    ';
+			        result = result +'		                </div>                      ';
+			        
+			        result = result +'		                <div class="clearfix mt">';
+			        result = result +'		                  <div class="col-md-5 lblup"> ';
+			        result = result +'		                   <label>Experience</label>';
+			        result = result + '<select  class="chosen-select input-sm form-control" data-placeholder="Min Experience" name="minExperience"  id="minExperience" onblur="minMaxExperience();" field-name="Experience Years">';
+					result = result + '<option value="">Min Experience</option>';
+					<c:forEach var="i" begin="0" end="24" >
+						result = result  +'<option value="${i}" '  + (customizeMinExperience == "${i}" ? "selected" : '') +  '>${i}</option>';
+					</c:forEach>
+					result = result + '</select>';
+			        result = result +'		                    </div> ';
+			        
+			        result = result +'		                  <div class="col-md-5 paddingRight"> ';
+			        result = result + '<select  class="chosen-select input-sm form-control" data-placeholder="Max Experience" name="maxExperience"  onblur="minMaxExperience();" id="maxExperience" field-name="Experience Years">';
+					result = result + '<option value="">Max Experience</option>';
+					<c:forEach var="i" begin="0" end="25" >
+						result = result  +'<option value="${i}" '  + (customizeMaxExperience == "${i}" ? "selected" : '') +  '>${i}</option>';
+					</c:forEach>
+					result = result + '</select>';
+			        result = result +'		                    </div>  ';
+			        
+			        result = result +'		                    <div class="col-md-2"> ';
+			        result = result +'		                    <select class="chosen-select" data-placeholder="Experience" id="experienceScore" name="experienceScore"> ';
+			        result = result +'		                      <option '+ (json.customizeExperienceScore == "0" ? "selected" : '') +' value="0">0%</option> ';
+			        result = result +'		                      <option '+ (json.customizeExperienceScore == "10" ? "selected" : '') +' value="10">10%</option> ';
+			        result = result +'		                      <option '+ (json.customizeExperienceScore == "20" ? "selected" : '') +' value="20">20%</option> ';
+			        result = result +'		                      <option '+ (json.customizeExperienceScore == "30" ? "selected" : '') +' value="30">30%</option> ';
+			        result = result +'		                      <option '+ (json.customizeExperienceScore == "40" ? "selected" : '') +' value="40">40%</option> ';
+			        result = result +'		                      <option '+ (json.customizeExperienceScore == "50" ? "selected" : '') +' value="50">50%</option> ';
+			        result = result +'		                      <option '+ (json.customizeExperienceScore == "60" ? "selected" : '') +' value="60">60%</option> ';
+			        result = result +'		                      <option '+ (json.customizeExperienceScore == "70" ? "selected" : '') +' value="70">70%</option> ';
+			        result = result +'		                      <option '+ (json.customizeExperienceScore == "80" ? "selected" : '') +' value="80">80%</option> ';
+			        result = result +'		                      <option '+ (json.customizeExperienceScore == "90" ? "selected" : '') +' value="90">90%</option> ';
+			        result = result +'		                      <option '+ (json.customizeExperienceScore == "100" ? "selected" : '') +' value="100">100%</option>';
+			        result = result +'		                    </select>              ';
+			        result = result +'		                  </div>                   ';
+			        result = result +'<p class="jquery_form_error_message" id="experiencevalidation"> </p>';
+			        
+			        result = result +'<div id="expId">';
+			        result = result +'<input type="hidden" name="expValidation" id="expValidation">';
+			        result = result +'</div>';		        
+			        result = result +'		                </div>                     ';
+			        
+			        result = result +'		                  <div class="clearfix mt"> ';
+			        result = result +'		                  <div class="col-md-10 lblup paddingRight">   ';
+			        result = result +'		                   <label>Visa Type</label>';
+			        result = result +'		                     <select class="chosen-select" data-placeholder="Visa Type" multiple id="visaType" name="visaType">';
+			        if(json.customizeVisatype != null  && json.customizeVisatype != '' && json.customizeVisatype != 'undefiend'){
+			    		var visaType = json.customizeVisatype;
+				    	var customizeVisaType = new Array();
+				    	customizeVisaType = visaType.split(",");
+				        for (var i = 0; i < customizeVisaType.length; i++) { 
+				        	 var customizeVisaTypes = customizeVisaType[i];
+				        	 result = result +'	<option selected value=\''+customizeVisaTypes+'\'>'+customizeVisaTypes+'</option> ';
+				        }
+			    	}
+			        var dbVisaType = new Array();
+			        if(json.dbVisaType != null && json.dbVisaType !='' && json.dbVisaType !='undefined'){
+				        var lookupVisaType = json.dbVisaType;
+				    	dbVisaType = lookupVisaType.split(",");
 			        }
-		    	}
-		         for (var i = 0; i < dbskills.length; i++) { 
-		        	 var skill1 = dbskills[i];
-		        	 result = result +'	<option  value=\''+skill1+'\'>'+skill1+'</option> ';
-		        } 
-		        result = result +'		                    </select> ';
-		        result = result +'		                  </div>   ';
-		        
-		        result = result +'		                   <div class="col-md-2">';
-		        result = result +'		                    <select class="chosen-select" data-placeholder="Skills" id="skillScore" name="skillScore"> ';
-		        result = result +'		                      <option disabled>Skills</option>  ';
-		        result = result +'		                      <option '+ (json.customizeSkillScore == "0" ? "selected" : '') +' value="0">0%</option> ';
-		        result = result +'		                      <option '+ (json.customizeSkillScore == "10" ? "selected" : '') +' value="10">10%</option> ';
-		        result = result +'		                      <option '+ (json.customizeSkillScore == "20" ? "selected" : '') +' value="20">20%</option> ';
-		        result = result +'		                      <option '+ (json.customizeSkillScore == "30" ? "selected" : '') +' value="30">30%</option> ';
-		        result = result +'		                      <option '+ (json.customizeSkillScore == "40" ? "selected" : '') +' value="40">40%</option> ';
-		        result = result +'		                      <option '+ (json.customizeSkillScore == "50" ? "selected" : '') +' value="50">50%</option> ';
-		        result = result +'		                      <option '+ (json.customizeSkillScore == "60" ? "selected" : '') +' value="60">60%</option> ';
-		        result = result +'		                      <option '+ (json.customizeSkillScore == "70" ? "selected" : '') +' value="70">70%</option> ';
-		        result = result +'		                      <option '+ (json.customizeSkillScore == "80" ? "selected" : '') +' value="80">80%</option> ';
-		        result = result +'		                      <option '+ (json.customizeSkillScore == "90" ? "selected" : '') +' value="90">90%</option> ';
-		        result = result +'		                      <option '+ (json.customizeSkillScore == "100" ? "selected" : '') +' value="100">100%</option>';
-		        result = result +'		                    </select>              ';
-		        result = result +'		                  </div>                   ';
-		        result = result +'		           <div class="clearfix"></div>';
-		        //result = result +'		                </div> ';
-		      
-		        result = result +'		                <div class="clearfix mt">   ';
-		       /*  result = result +'		                  <div class="col-md-3 paddingRight lblup">    ';
-		        result = result +'		                   <label>Location</label>';
-		        result = result +' <select class="chosen-select" name="country" id="country" field-name="Country">';
-		        result = result +'<option value="">--select Country--</option>';
-		        <c:forEach var="cntry" items="${allCountryList}">
-		        if('${cntry.name}' == customizeCountry){
-		        	result = result +'		<option value="${cntry.name},${cntry.code2}" selected >${cntry.name}</option>';
-		        }else{
-		        	result = result +'		<option value="${cntry.name},${cntry.code2}">${cntry.name}</option>';
-		        }
-		        </c:forEach>
-		        result = result +'</select>';
-		        result = result +'		                  </div>                     '; */
-		        
-		        result = result +'		                    <div class="col-md-3 paddingRight lblup ">   ';
-		        result = result +'		                   <label>Choose City</label>';
-		        result = result +'                              <input type="text" class="form-control positionRelative"  multiple data-placeholder="select city" multiple name="apiLocation"  id="apiLocation">';
-		        result = result +'                              <i class="fa fa-refresh btn btn-primary refresh-icon mr2 ref-top" title="Refresh" onClick="refreshGoogleApiCity(\''+apiLocation+'\');"></i>';
-		        result = result +'		                  </div>  ';
-		        
-		        result = result +'		                  <div class="col-md-7 paddingRight lblup"> ';   
-		        result = result +'		                   <label>Selected City</label>'; 
-		        result = result +'		                    <select class="chosen-select" multiple data-placeholder="City" name="customizedCity" id="city" value="'+customizeCity+'" readonly="readonly">    ';
-		     	if(json.customizeCity != null  && json.customizeCity != '' && json.customizeCity != 'undefiend'){
-		    		var cites = json.customizeCity;
-			    	var customizeCites = new Array();
-			    	customizeCites = cites.split(",");
-			        for (var i = 0; i < customizeCites.length; i++) { 
-			        	 var customCity = customizeCites[i];
-			        	 result = result +'	<option selected value=\''+customCity+'\'>'+customCity+'</option> ';
+			    	
+			    	 for (var i = 0; i < dbVisaType.length; i++) { 
+			        	 var visatype = dbVisaType[i];
+			        	 result = result +'	<option  value=\''+visatype+'\'>'+visatype+'</option> ';
+			        } 
+			        result = result +'	</select> ';
+			  
+			        result = result +'		                    </div>  ';
+			        result = result +'		                    <div class="col-md-2">  ';
+			        result = result +'		                    <select class="chosen-select" data-placeholder="Visa Type Score" id="visaTypeScore" name="visaTypeScore" > ';
+			        result = result +'		                      <option '+ (json.customizeVisatypecore == "0" ? "selected" : '') +' value="0">0%</option> ';
+			        result = result +'		                      <option '+ (json.customizeVisatypecore == "10" ? "selected" : '') +' value="10">10%</option> ';
+			        result = result +'		                      <option '+ (json.customizeVisatypecore == "20" ? "selected" : '') +' value="20">20%</option> ';
+			        result = result +'		                      <option '+ (json.customizeVisatypecore == "30" ? "selected" : '') +' value="30">30%</option> ';
+			        result = result +'		                      <option '+ (json.customizeVisatypecore == "40" ? "selected" : '') +' value="40">40%</option> ';
+			        result = result +'		                      <option '+ (json.customizeVisatypecore == "50" ? "selected" : '') +' value="50">50%</option> ';
+			        result = result +'		                      <option '+ (json.customizeVisatypecore == "60" ? "selected" : '') +' value="60">60%</option> ';
+			        result = result +'		                      <option '+ (json.customizeVisatypecore == "70" ? "selected" : '') +' value="70">70%</option> ';
+			        result = result +'		                      <option '+ (json.customizeVisatypecore == "80" ? "selected" : '') +' value="80">80%</option> ';
+			        result = result +'		                      <option '+ (json.customizeVisatypecore == "90" ? "selected" : '') +' value="90">90%</option> ';
+			        result = result +'		                      <option '+ (json.customizeVisatypecore == "100" ? "selected" : '') +' value="100">100%</option>';
+			        result = result +'		                    </select> ';
+			        result = result +'		                  </div>  ';
+			        result = result +'		                </div>  ';
+			      
+			        result = result +'		                  <div class="clearfix mt"> ';
+			        result = result +'		                  <div class="col-md-10 lblup paddingRight">   ';
+			        result = result +'		                   <label>Education</label>';
+			        result = result +'		                     <select class="chosen-select" data-placeholder="Education" multiple id="education" name="education">';
+			        if(json.customizeEducation != null  && json.customizeEducation != '' && json.customizeEducation != 'undefiend'){
+			    		var education = json.customizeEducation;
+				    	var customizeEducation = new Array();
+				    	customizeEducation = education.split(",");
+				        for (var i = 0; i < customizeEducation.length; i++) { 
+				        	 var customizeEducations = customizeEducation[i];
+				        	 result = result +'	<option selected value=\''+customizeEducations+'\'>'+customizeEducations+'</option> ';
+				        }
+			    	}
+			        var dbEducation = new Array();
+			        if(json.dbEducation != null && json.dbEducation !='' && json.dbEducation !='undefined'){
+				        var lookupEducation = json.dbEducation;
+				    	dbEducation = lookupEducation.split(",");
 			        }
+			    	
+			    	 for (var i = 0; i < dbEducation.length; i++) { 
+			        	 var education = dbEducation[i];
+			        	 result = result +'	<option  value=\''+education+'\'>'+education+'</option> ';
+			        } 
+			        result = result +'		                    </select> ';
+			        result = result +'		                    </div>  ';
+			        result = result +'		                    <div class="col-md-2">  ';
+			        result = result +'		                    <select class="chosen-select" data-placeholder="Education" id="educationScore" name="educationScore" > ';
+			        result = result +'		                      <option '+ (json.customizeEducationScore == "0" ? "selected" : '') +' value="0">0%</option> ';
+			        result = result +'		                      <option '+ (json.customizeEducationScore == "10" ? "selected" : '') +' value="10">10%</option> ';
+			        result = result +'		                      <option '+ (json.customizeEducationScore == "20" ? "selected" : '') +' value="20">20%</option> ';
+			        result = result +'		                      <option '+ (json.customizeEducationScore == "30" ? "selected" : '') +' value="30">30%</option> ';
+			        result = result +'		                      <option '+ (json.customizeEducationScore == "40" ? "selected" : '') +' value="40">40%</option> ';
+			        result = result +'		                      <option '+ (json.customizeEducationScore == "50" ? "selected" : '') +' value="50">50%</option> ';
+			        result = result +'		                      <option '+ (json.customizeEducationScore == "60" ? "selected" : '') +' value="60">60%</option> ';
+			        result = result +'		                      <option '+ (json.customizeEducationScore == "70" ? "selected" : '') +' value="70">70%</option> ';
+			        result = result +'		                      <option '+ (json.customizeEducationScore == "80" ? "selected" : '') +' value="80">80%</option> ';
+			        result = result +'		                      <option '+ (json.customizeEducationScore == "90" ? "selected" : '') +' value="90">90%</option> ';
+			        result = result +'		                      <option '+ (json.customizeEducationScore == "100" ? "selected" : '') +' value="100">100%</option>';
+			        result = result +'		                    </select> ';
+			        result = result +'		                  </div>  ';
+			        result = result +'		                </div>  ';
+			      
+			        
+			        result = result +'		           <div class="clearfix mt">     ';
+			        
+			        
+			        result = result +'		                  <div class="col-md-5 lblup">   ';
+			        result = result +'		                   <label>Rate</label>';
+			        result = result +'		                    <input type="text" placeholder="Rate" field-name="Rate" class="form-control input-sm" value="'+customizeRate+'" id="customizeRate" name="customizeRate" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">  ';
+			        result = result +'		                    </div>   ';
+			        
+			        result = result +' <div class="col-md-5 paddingRight">   ';
+			        result = result + '<select  class="input-sm form-control" name="currentRateType"  id="currentRateType" field-name="Rate Type">';
+					result = result + '<option value="">Rate Per</option>';
+					result = result + ' <option '+(json.customizeRatetype == "Hourly" ? "selected" : '') +'>Hourly</option>';
+					result = result + '<option  '+ (json.customizeRatetype == "Weekly" ? "selected" : '') +'>Weekly</option>';
+					result = result + '<option  '+(json.customizeRatetype == "Bi-weekly" ? "selected" : '') +'>Bi-weekly</option>';
+					result = result + '<option  '+(json.customizeRatetype == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
+					result = result + '<option  '+(json.customizeRatetype == "Monthly" ? "selected" : '') +'>Monthly</option>';
+					result = result + '<option  '+(json.customizeRatetype == "Bi-Monthly" ? "selected" : '') +'>Bi-Monthly</option>';
+					result = result + '<option '+(json.customizeRatetype == "Yearly" ? "selected" : '') +'>Yearly</option>';
+					result = result + ' </select>';
+			        result = result +'	  </div>   ';
+			        
+			        result = result +'		                    <div class="col-md-2">      ';
+			        result = result +'		                    <select class="chosen-select" data-placeholder="Rate" id="rateScore" name="rateScore"> ';
+			        result = result +'		                      <option '+ (json.customizeRateScore == "0" ? "selected" : '') +' value="0">0%</option> ';
+			        result = result +'		                      <option '+ (json.customizeRateScore == "10" ? "selected" : '') +' value="10">10%</option> ';
+			        result = result +'		                      <option '+ (json.customizeRateScore == "20" ? "selected" : '') +' value="20">20%</option> ';
+			        result = result +'		                      <option '+ (json.customizeRateScore == "30" ? "selected" : '') +' value="30">30%</option> ';
+			        result = result +'		                      <option '+ (json.customizeRateScore == "40" ? "selected" : '') +' value="40">40%</option> ';
+			        result = result +'		                      <option '+ (json.customizeRateScore == "50" ? "selected" : '') +' value="50">50%</option> ';
+			        result = result +'		                      <option '+ (json.customizeRateScore == "60" ? "selected" : '') +' value="60">60%</option> ';
+			        result = result +'		                      <option '+ (json.customizeRateScore == "70" ? "selected" : '') +' value="70">70%</option> ';
+			        result = result +'		                      <option '+ (json.customizeRateScore == "80" ? "selected" : '') +' value="80">80%</option> ';
+			        result = result +'		                      <option '+ (json.customizeRateScore == "90" ? "selected" : '') +' value="90">90%</option> ';
+			        result = result +'		                      <option '+ (json.customizeRateScore == "100" ? "selected" : '') +' value="100">100%</option>';
+			        result = result +'		                    </select>               ';
+			        result = result +'		                  </div>                    ';
+			        result = result +'		                </div>                      ';
+			       
+			        result = result +'		                  <div class="clearfix mt"> ';
+			        result = result +'		                  <div class="col-md-10 lblup paddingRight">   ';
+			        result = result +'		                   <label>Keywords</label>';
+			        result = result +'		                     <select class="chosen-select" data-placeholder="Keywords" multiple id="anyKeyWord" name="anyKeyWord">';
+			      //Split the keyWords
+			    	if(json.customizeKeywords != null && json.customizeKeywords != '' && json.customizeKeywords != 'undefined'){
+			    		var customizeKeywords = json.customizeKeywords;
+				    	var Keywords = new Array();
+				    	Keywords =  customizeKeywords.split(",");
+				        for (var i = 0; i < Keywords.length; i++) { 
+				        	 var customKeywords = Keywords[i];
+				        	 result = result +'	<option selected value='+customKeywords+'>'+customKeywords+'</option> ';
+				        }
+			    	}
+			        result = result +'		                    </select> ';
+			        result = result +'		                    </div>  ';
+			        result = result +'		                    <div class="col-md-2">  ';
+			        result = result +'		                    <select class="chosen-select" data-placeholder="KeyWords" id="keywordScore" name="keywordScore" > ';
+			        result = result +'		                      <option '+ (json.customizeKeywordsScore == "0" ? "selected" : '') +' value="0">0%</option> ';
+			        result = result +'		                      <option '+ (json.customizeKeywordsScore == "10" ? "selected" : '') +' value="10">10%</option> ';
+			        result = result +'		                      <option '+ (json.customizeKeywordsScore == "20" ? "selected" : '') +' value="20">20%</option> ';
+			        result = result +'		                      <option '+ (json.customizeKeywordsScore == "30" ? "selected" : '') +' value="30">30%</option> ';
+			        result = result +'		                      <option '+ (json.customizeKeywordsScore == "40" ? "selected" : '') +' value="40">40%</option> ';
+			        result = result +'		                      <option '+ (json.customizeKeywordsScore == "50" ? "selected" : '') +' value="50">50%</option> ';
+			        result = result +'		                      <option '+ (json.customizeKeywordsScore == "60" ? "selected" : '') +' value="60">60%</option> ';
+			        result = result +'		                      <option '+ (json.customizeKeywordsScore == "70" ? "selected" : '') +' value="70">70%</option> ';
+			        result = result +'		                      <option '+ (json.customizeKeywordsScore == "80" ? "selected" : '') +' value="80">80%</option> ';
+			        result = result +'		                      <option '+ (json.customizeKeywordsScore == "90" ? "selected" : '') +' value="90">90%</option> ';
+			        result = result +'		                      <option '+ (json.customizeKeywordsScore == "100" ? "selected" : '') +' value="100">100%</option>';
+			        result = result +'		                    </select> ';
+			        result = result +'		                  </div>  ';
+			        result = result +'		                </div>  ';
+			        result = result +'		                </div>  ';
+			        result = result +'		                </div>  ';
+			      
+			        
+	// 		        =========================================================================================================================
+			        
+			        
+			        result = result +'		              </div>                          ';
+			        
+			        result = result +'		            <div class="form-footer clearfix">                                              ';
+			        result = result +'		              <div class="pull-right mr"> <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary" onclick="updateCutomize('+requirementId+');">Customize</a> <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10" onclick="closePop();">Cancel</a> </div>';
+			        result = result +'		            </div>'; 
+			        result = result	+ '               <form>';
+			        result = result +'		            </div>'; 
+			        
+			        $("#customizeScoreDiv").empty();
+			    	$("#customizeScoreDiv").append(result);
+	// 		    	getAllCountries();
+			    	var config = {
+			    			  '.chosen-select'           : {},
+			    			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			    			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			    			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			    			  '.chosen-select-width'     : {width:"95%"}
+			    			}
+			    			for (var selector in config) {
+			    			  $(selector).chosen(config[selector]);
+			    			}
+			    	
+			            $("#city").chosen();
+			            
+			         /*    $("#country").on('change', function (e) {
+			            	  getcites('apiLocation','city');
+					    	  $("#apiLocation").val('');
+					    	  $("#city").val('').trigger("chosen:updated");
+			            }); */
+						getcites('apiLocation','city','recommendation');
+						
+			    			$('.chosen-select').each(function() {
+			    				var $this = $(this);
+			    				$this.next().css({'width': '100%'});
+			    		   });
+	
+			    			 // here call experience validation
+			 		       $("#maxExperience").on('change', function (e) {
+			 		    	   minMaxExperience();
+			 		       });
+			 		       
+			 		       $("#minExperience").on('change', function (e) {
+			 		    	   minMaxExperience();
+			 		       });
+			 		       
+				          //Adding Customized Skills Keyword to the list 
+			 		      tagIt("customizeSkills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','Skills');
+				          
+			    		  //Adding Customized Educaton to the list 
+			 		      tagIt("education", 'Press Enter-Key Or Comma(,) Or Tab To Add New Education:', 'tagItBykeyForSkills','skills','Education');
+	
+			 		       
+			    		  //Adding Customized Any Of Keyword to the list 
+			    		  tagIt("anyKeyWord", 'Press Enter-Key Or Comma(,) To Add Keyword:', 'tagItBykeyForSkills','skills','Keywords');
+			    		     
+			   		     tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','sletected cites');
+		    	}else if (json.indexOf('Sign In') !== -1) {
+		    		location.replace(sourceleadUrl);
+		    	} else {
+		    		showError("Operation failed, please try again");
 		    	}
-		        result = result +'		                    </select>                  ';
-		        result = result +'		                  </div>                       ';
-		        
-		       
-		        result = result +'                      <div class="col-md-2"> ';
-		        result = result +'		                    <select class="chosen-select" data-placeholder="Location" id="locationScore" name="locationScore">';
-		        result = result +'		                      <option '+ (json.customizeLocationScore == "0" ? "selected" : '') +' value="0">0%</option> ';
-		        result = result +'		                      <option '+ (json.customizeLocationScore == "10" ? "selected" : '') +' value="10">10%</option> ';
-		        result = result +'		                      <option '+ (json.customizeLocationScore == "20" ? "selected" : '') +' value="20">20%</option> ';
-		        result = result +'		                      <option '+ (json.customizeLocationScore == "30" ? "selected" : '') +' value="30">30%</option> ';
-		        result = result +'		                      <option '+ (json.customizeLocationScore == "40" ? "selected" : '') +' value="40">40%</option> ';
-		        result = result +'		                      <option '+ (json.customizeLocationScore == "50" ? "selected" : '') +' value="50">50%</option> ';
-		        result = result +'		                      <option '+ (json.customizeLocationScore == "60" ? "selected" : '') +' value="60">60%</option> ';
-		        result = result +'		                      <option '+ (json.customizeLocationScore == "70" ? "selected" : '') +' value="70">70%</option> ';
-		        result = result +'		                      <option '+ (json.customizeLocationScore == "80" ? "selected" : '') +' value="80">80%</option> ';
-		        result = result +'		                      <option '+ (json.customizeLocationScore == "90" ? "selected" : '') +' value="90">90%</option> ';
-		        result = result +'		                      <option '+ (json.customizeLocationScore == "100" ? "selected" : '') +' value="100">100%</option>';
-		        result = result +'		                    </select>                 ';
-		        result = result +'		                  </div>                      ';
-		        result = result +'		           <div class="clearfix"></div>';
-// 		        result = result +'		                </div>                        ';
-		        
-		        result = result +'				        <div class="clearfix mt"> ';
-		        result = result +'		                  <div class="col-md-10 lblup paddingRight">    ';
-		        result = result +'		                   <label>Notice Period</label>';
-		        result = result +'		                      <select class="chosen-select" data-placeholder="Notice" multiple id="noticeperiod" name="noticeperiod">';
-		      //split the noticeperiod
-		      var noticeperiod = new Array();
-		    	if(json.customizeNoticeperiod != null && json.customizeNoticeperiod != '' && json.customizeNoticeperiod != 'undefined'){
-		    		var customizeNoticeperiod = json.customizeNoticeperiod;
-			    	noticeperiod =  customizeNoticeperiod.split(",");
-		    	}
-	        	 result = result  +' <option value="Immediately Available" '+(noticeperiod.indexOf("Immediately Available")>=0 ? "selected" : '') +'>Immediately available</option>';
-	        	 result = result  +' <option value="15 Days" '+(noticeperiod.indexOf("15 Days")>=0 ? "selected" : '') +'>15 Days</option>';
-	        	 result = result  +' <option value="1 Month" '+(noticeperiod.indexOf("1 Month")>=0 ? "selected" : '') +'>1 Month<s/option>';
-	        	 result = result  +' <option value="2 Months" '+(noticeperiod.indexOf("2 Months")>=0 ? "selected" : '') +'>2 Months</option>';
-	        	 result = result  +' <option value="3 Months" '+(noticeperiod.indexOf( "3 Months")>=0 ? "selected" : '') +'>3 Months</option>';
-	        	 $("#noticeperiod").empty();
-	        	 $("#noticeperiod").append(result);
-   			     $("#noticeperiod").trigger('chosen:update');
-		        result = result +'		                    </select> ';
-		        result = result +'		                    </div>  ';
-		        
-		        result = result +'		                    <div class="col-md-2">  ';
-		        result = result +'		                    <select class="chosen-select" data-placeholder="Rate" id="noticeperiodScore" name="noticeperiodScore">';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "0" ? "selected" : '') +' value="0">0%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "10" ? "selected" : '') +' value="10">10%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "20" ? "selected" : '') +' value="20">20%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "30" ? "selected" : '') +' value="30">30%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "40" ? "selected" : '') +' value="40">40%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "50" ? "selected" : '') +' value="50">50%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "60" ? "selected" : '') +' value="60">60%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "70" ? "selected" : '') +' value="70">70%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "80" ? "selected" : '') +' value="80">80%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "90" ? "selected" : '') +' value="90">90%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "100" ? "selected" : '') +' value="100">100%</option>';
-		        result = result +'		                    </select>               ';
-		        result = result +'		                  </div>                    ';
-		        result = result +'		                </div>                      ';
-		        
-		        result = result +'		                <div class="clearfix mt">';
-		        result = result +'		                  <div class="col-md-5 lblup"> ';
-		        result = result +'		                   <label>Experience</label>';
-		        result = result + '<select  class="chosen-select input-sm form-control" data-placeholder="Min Experience" name="minExperience"  id="minExperience" onblur="minMaxExperience();" field-name="Experience Years">';
-				result = result + '<option value="">Min Experience</option>';
-				<c:forEach var="i" begin="0" end="24" >
-					result = result  +'<option value="${i}" '  + (customizeMinExperience == "${i}" ? "selected" : '') +  '>${i}</option>';
-				</c:forEach>
-				result = result + '</select>';
-		        result = result +'		                    </div> ';
-		        
-		        
-		        result = result +'		                  <div class="col-md-5 paddingRight"> ';
-		        result = result + '<select  class="chosen-select input-sm form-control" data-placeholder="Max Experience" name="maxExperience"  onblur="minMaxExperience();" id="maxExperience" field-name="Experience Years">';
-				result = result + '<option value="">Max Experience</option>';
-				<c:forEach var="i" begin="0" end="25" >
-					result = result  +'<option value="${i}" '  + (customizeMaxExperience == "${i}" ? "selected" : '') +  '>${i}</option>';
-				</c:forEach>
-				result = result + '</select>';
-		        result = result +'		                    </div>  ';
-		        
-		        result = result +'		                    <div class="col-md-2"> ';
-		        result = result +'		                    <select class="chosen-select" data-placeholder="Experience" id="experienceScore" name="experienceScore"> ';
-		        result = result +'		                      <option '+ (json.customizeExperienceScore == "0" ? "selected" : '') +' value="0">0%</option> ';
-		        result = result +'		                      <option '+ (json.customizeExperienceScore == "10" ? "selected" : '') +' value="10">10%</option> ';
-		        result = result +'		                      <option '+ (json.customizeExperienceScore == "20" ? "selected" : '') +' value="20">20%</option> ';
-		        result = result +'		                      <option '+ (json.customizeExperienceScore == "30" ? "selected" : '') +' value="30">30%</option> ';
-		        result = result +'		                      <option '+ (json.customizeExperienceScore == "40" ? "selected" : '') +' value="40">40%</option> ';
-		        result = result +'		                      <option '+ (json.customizeExperienceScore == "50" ? "selected" : '') +' value="50">50%</option> ';
-		        result = result +'		                      <option '+ (json.customizeExperienceScore == "60" ? "selected" : '') +' value="60">60%</option> ';
-		        result = result +'		                      <option '+ (json.customizeExperienceScore == "70" ? "selected" : '') +' value="70">70%</option> ';
-		        result = result +'		                      <option '+ (json.customizeExperienceScore == "80" ? "selected" : '') +' value="80">80%</option> ';
-		        result = result +'		                      <option '+ (json.customizeExperienceScore == "90" ? "selected" : '') +' value="90">90%</option> ';
-		        result = result +'		                      <option '+ (json.customizeExperienceScore == "100" ? "selected" : '') +' value="100">100%</option>';
-		        result = result +'		                    </select>              ';
-		        result = result +'		                  </div>                   ';
-		        result = result +'<p class="jquery_form_error_message" id="experiencevalidation"> </p>';
-		        
-		        result = result +'<div id="expId">';
-		        result = result +'<input type="hidden" name="expValidation" id="expValidation">';
-		        result = result +'</div>';		        
-		        result = result +'		                </div>                     ';
-		        
-		        
-		        result = result +'		                  <div class="clearfix mt"> ';
-		        result = result +'		                  <div class="col-md-10 lblup paddingRight">   ';
-		        result = result +'		                   <label>Visa Type</label>';
-		        result = result +'		                     <select class="chosen-select" data-placeholder="Visa Type" multiple id="visaType" name="visaType">';
-		        if(json.customizeVisatype != null  && json.customizeVisatype != '' && json.customizeVisatype != 'undefiend'){
-		    		var visaType = json.customizeVisatype;
-			    	var customizeVisaType = new Array();
-			    	customizeVisaType = visaType.split(",");
-			        for (var i = 0; i < customizeVisaType.length; i++) { 
-			        	 var customizeVisaTypes = customizeVisaType[i];
-			        	 result = result +'	<option selected value=\''+customizeVisaTypes+'\'>'+customizeVisaTypes+'</option> ';
-			        }
-		    	}
-		        
-		        var lookupVisaType = json.dbVisaType;
-		    	var dbVisaType = new Array();
-		    	dbVisaType = lookupVisaType.split(",");
-		    	
-		    	 for (var i = 0; i < dbVisaType.length; i++) { 
-		        	 var visatype = dbVisaType[i];
-		        	 result = result +'	<option  value=\''+visatype+'\'>'+visatype+'</option> ';
-		        } 
-		        result = result +'	</select> ';
-		  
-		        result = result +'		                    </div>  ';
-		        result = result +'		                    <div class="col-md-2">  ';
-		        result = result +'		                    <select class="chosen-select" data-placeholder="Visa Type Score" id="visaTypeScore" name="visaTypeScore" > ';
-		        result = result +'		                      <option '+ (json.customizeVisatypecore == "0" ? "selected" : '') +' value="0">0%</option> ';
-		        result = result +'		                      <option '+ (json.customizeVisatypecore == "10" ? "selected" : '') +' value="10">10%</option> ';
-		        result = result +'		                      <option '+ (json.customizeVisatypecore == "20" ? "selected" : '') +' value="20">20%</option> ';
-		        result = result +'		                      <option '+ (json.customizeVisatypecore == "30" ? "selected" : '') +' value="30">30%</option> ';
-		        result = result +'		                      <option '+ (json.customizeVisatypecore == "40" ? "selected" : '') +' value="40">40%</option> ';
-		        result = result +'		                      <option '+ (json.customizeVisatypecore == "50" ? "selected" : '') +' value="50">50%</option> ';
-		        result = result +'		                      <option '+ (json.customizeVisatypecore == "60" ? "selected" : '') +' value="60">60%</option> ';
-		        result = result +'		                      <option '+ (json.customizeVisatypecore == "70" ? "selected" : '') +' value="70">70%</option> ';
-		        result = result +'		                      <option '+ (json.customizeVisatypecore == "80" ? "selected" : '') +' value="80">80%</option> ';
-		        result = result +'		                      <option '+ (json.customizeVisatypecore == "90" ? "selected" : '') +' value="90">90%</option> ';
-		        result = result +'		                      <option '+ (json.customizeVisatypecore == "100" ? "selected" : '') +' value="100">100%</option>';
-		        result = result +'		                    </select> ';
-		        result = result +'		                  </div>  ';
-		        result = result +'		                </div>  ';
-		      
-		        
-		        
-		        
-		        result = result +'		                  <div class="clearfix mt"> ';
-		        result = result +'		                  <div class="col-md-10 lblup paddingRight">   ';
-		        result = result +'		                   <label>Education</label>';
-		        result = result +'		                     <select class="chosen-select" data-placeholder="Education" multiple id="education" name="education">';
-		        if(json.customizeEducation != null  && json.customizeEducation != '' && json.customizeEducation != 'undefiend'){
-		    		var education = json.customizeEducation;
-			    	var customizeEducation = new Array();
-			    	customizeEducation = education.split(",");
-			        for (var i = 0; i < customizeEducation.length; i++) { 
-			        	 var customizeEducations = customizeEducation[i];
-			        	 result = result +'	<option selected value=\''+customizeEducations+'\'>'+customizeEducations+'</option> ';
-			        }
-		    	}
-		        
-		        var lookupEducation = json.dbEducation;
-		    	var dbEducation = new Array();
-		    	dbEducation = lookupEducation.split(",");
-		    	
-		    	 for (var i = 0; i < dbEducation.length; i++) { 
-		        	 var education = dbEducation[i];
-		        	 result = result +'	<option  value=\''+education+'\'>'+education+'</option> ';
-		        } 
-		        result = result +'		                    </select> ';
-		        result = result +'		                    </div>  ';
-		        result = result +'		                    <div class="col-md-2">  ';
-		        result = result +'		                    <select class="chosen-select" data-placeholder="Education" id="educationScore" name="educationScore" > ';
-		        result = result +'		                      <option '+ (json.customizeEducationScore == "0" ? "selected" : '') +' value="0">0%</option> ';
-		        result = result +'		                      <option '+ (json.customizeEducationScore == "10" ? "selected" : '') +' value="10">10%</option> ';
-		        result = result +'		                      <option '+ (json.customizeEducationScore == "20" ? "selected" : '') +' value="20">20%</option> ';
-		        result = result +'		                      <option '+ (json.customizeEducationScore == "30" ? "selected" : '') +' value="30">30%</option> ';
-		        result = result +'		                      <option '+ (json.customizeEducationScore == "40" ? "selected" : '') +' value="40">40%</option> ';
-		        result = result +'		                      <option '+ (json.customizeEducationScore == "50" ? "selected" : '') +' value="50">50%</option> ';
-		        result = result +'		                      <option '+ (json.customizeEducationScore == "60" ? "selected" : '') +' value="60">60%</option> ';
-		        result = result +'		                      <option '+ (json.customizeEducationScore == "70" ? "selected" : '') +' value="70">70%</option> ';
-		        result = result +'		                      <option '+ (json.customizeEducationScore == "80" ? "selected" : '') +' value="80">80%</option> ';
-		        result = result +'		                      <option '+ (json.customizeEducationScore == "90" ? "selected" : '') +' value="90">90%</option> ';
-		        result = result +'		                      <option '+ (json.customizeEducationScore == "100" ? "selected" : '') +' value="100">100%</option>';
-		        result = result +'		                    </select> ';
-		        result = result +'		                  </div>  ';
-		        result = result +'		                </div>  ';
-		      
-		        
-		        result = result +'		           <div class="clearfix mt">     ';
-		        
-		        
-		        result = result +'		                  <div class="col-md-5 lblup">   ';
-		        result = result +'		                   <label>Rate</label>';
-		        result = result +'		                    <input type="text" placeholder="Rate" field-name="Rate" class="form-control input-sm" value="'+customizeRate+'" id="customizeRate" name="customizeRate" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">  ';
-		        result = result +'		                    </div>   ';
-		        
-		        result = result +' <div class="col-md-5 paddingRight">   ';
-		        result = result + '<select  class="input-sm form-control" name="currentRateType"  id="currentRateType" field-name="Rate Type">';
-				result = result + '<option value="">Rate Per</option>';
-				result = result + ' <option '+(json.customizeRatetype == "Hourly" ? "selected" : '') +'>Hourly</option>';
-				result = result + '<option  '+ (json.customizeRatetype == "Weekly" ? "selected" : '') +'>Weekly</option>';
-				result = result + '<option  '+(json.customizeRatetype == "Bi-weekly" ? "selected" : '') +'>Bi-weekly</option>';
-				result = result + '<option  '+(json.customizeRatetype == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
-				result = result + '<option  '+(json.customizeRatetype == "Monthly" ? "selected" : '') +'>Monthly</option>';
-				result = result + '<option  '+(json.customizeRatetype == "Bi-Monthly" ? "selected" : '') +'>Bi-Monthly</option>';
-				result = result + '<option '+(json.customizeRatetype == "Yearly" ? "selected" : '') +'>Yearly</option>';
-				result = result + ' </select>';
-		        result = result +'	  </div>   ';
-		        
-		        result = result +'		                    <div class="col-md-2">      ';
-		        result = result +'		                    <select class="chosen-select" data-placeholder="Rate" id="rateScore" name="rateScore"> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "0" ? "selected" : '') +' value="0">0%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "10" ? "selected" : '') +' value="10">10%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "20" ? "selected" : '') +' value="20">20%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "30" ? "selected" : '') +' value="30">30%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "40" ? "selected" : '') +' value="40">40%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "50" ? "selected" : '') +' value="50">50%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "60" ? "selected" : '') +' value="60">60%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "70" ? "selected" : '') +' value="70">70%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "80" ? "selected" : '') +' value="80">80%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "90" ? "selected" : '') +' value="90">90%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "100" ? "selected" : '') +' value="100">100%</option>';
-		        result = result +'		                    </select>               ';
-		        result = result +'		                  </div>                    ';
-		        result = result +'		                </div>                      ';
-		       
-		        result = result +'		                  <div class="clearfix mt"> ';
-		        result = result +'		                  <div class="col-md-10 lblup paddingRight">   ';
-		        result = result +'		                   <label>Keywords</label>';
-		        result = result +'		                     <select class="chosen-select" data-placeholder="Keywords" multiple id="anyKeyWord" name="anyKeyWord">';
-		      //Split the keyWords
-		    	if(json.customizeKeywords != null && json.customizeKeywords != '' && json.customizeKeywords != 'undefined'){
-		    		var customizeKeywords = json.customizeKeywords;
-			    	var Keywords = new Array();
-			    	Keywords =  customizeKeywords.split(",");
-			        for (var i = 0; i < Keywords.length; i++) { 
-			        	 var customKeywords = Keywords[i];
-			        	 result = result +'	<option selected value='+customKeywords+'>'+customKeywords+'</option> ';
-			        }
-		    	}
-		        result = result +'		                    </select> ';
-		        result = result +'		                    </div>  ';
-		        result = result +'		                    <div class="col-md-2">  ';
-		        result = result +'		                    <select class="chosen-select" data-placeholder="KeyWords" id="keywordScore" name="keywordScore" > ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "0" ? "selected" : '') +' value="0">0%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "10" ? "selected" : '') +' value="10">10%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "20" ? "selected" : '') +' value="20">20%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "30" ? "selected" : '') +' value="30">30%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "40" ? "selected" : '') +' value="40">40%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "50" ? "selected" : '') +' value="50">50%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "60" ? "selected" : '') +' value="60">60%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "70" ? "selected" : '') +' value="70">70%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "80" ? "selected" : '') +' value="80">80%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "90" ? "selected" : '') +' value="90">90%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "100" ? "selected" : '') +' value="100">100%</option>';
-		        result = result +'		                    </select> ';
-		        result = result +'		                  </div>  ';
-		        result = result +'		                </div>  ';
-		        result = result +'		                </div>  ';
-		        result = result +'		                </div>  ';
-		      
-		        
-		        
-		        
-// 		        =========================================================================================================================
-		        
-		        
-		        result = result +'		              </div>                          ';
-		        
-		        result = result +'		            <div class="form-footer clearfix">                                              ';
-		        result = result +'		              <div class="pull-right mr"> <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary" onclick="updateCutomize('+requirementId+');">Customize</a> <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10" onclick="closePop();">Cancel</a> </div>';
-		        result = result +'		            </div>'; 
-		        result = result	+ '               <form>';
-		        result = result +'		            </div>'; 
-		        
-		        $("#customizeScoreDiv").empty();
-		    	$("#customizeScoreDiv").append(result);
-// 		    	getAllCountries();
-		    	var config = {
-		    			  '.chosen-select'           : {},
-		    			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-		    			  '.chosen-select-no-single' : {disable_search_threshold:10},
-		    			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-		    			  '.chosen-select-width'     : {width:"95%"}
-		    			}
-		    			for (var selector in config) {
-		    			  $(selector).chosen(config[selector]);
-		    			}
-		    	
-		            $("#city").chosen();
-		            
-		         /*    $("#country").on('change', function (e) {
-		            	  getcites('apiLocation','city');
-				    	  $("#apiLocation").val('');
-				    	  $("#city").val('').trigger("chosen:updated");
-		            }); */
-					getcites('apiLocation','city','recommendation');
-					
-		    			$('.chosen-select').each(function() {
-		    				var $this = $(this);
-		    				$this.next().css({'width': '100%'});
-		    		   });
-
-		    			 // here call experience validation
-		 		       $("#maxExperience").on('change', function (e) {
-		 		    	   minMaxExperience();
-		 		       });
-		 		       
-		 		       $("#minExperience").on('change', function (e) {
-		 		    	   minMaxExperience();
-		 		       });
-		 		       
-			          //Adding Customized Skills Keyword to the list 
-		 		      tagIt("customizeSkills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','Skills');
-			          
-		    		  //Adding Customized Educaton to the list 
-		 		      tagIt("education", 'Press Enter-Key Or Comma(,) Or Tab To Add New Education:', 'tagItBykeyForSkills','skills','Education');
-
-		 		       
-		    		  //Adding Customized Any Of Keyword to the list 
-		    		  tagIt("anyKeyWord", 'Press Enter-Key Or Comma(,) To Add Keyword:', 'tagItBykeyForSkills','skills','Keywords');
-		    		     
-		   		     tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','sletected cites');
-
 		    }
 	 });
 	
@@ -3138,10 +3149,20 @@ function updateCutomize(requirementId){
     					type : "POST",
     					url : sourceleadUrl + "/updateCustomizeScore?"+tokenParamName+"="+tokenValue+"&json="+ jsonData + "&requirementId=" + requirementId,
     					success : function(data) {
-    						if(data == "success"){
-    							$("div.cand-advsrch-popup").hide();
-    							requirementRecommendations(requirementId);	
-    						}
+    						if (data.response === "FAILED") {
+    				    		showError(data.responseMessage);
+    				    	} else if (data.response === "AWKWARD") {
+    				    		location.href = "/errorPage";
+    				    	} else if (data.response === "SUCCESS") {
+	    						if(data.object == "success"){
+	    							$("div.cand-advsrch-popup").hide();
+	    							requirementRecommendations(requirementId);	
+	    						}
+    				    	}else if (data.indexOf('Sign In') !== -1) {
+    				    		location.replace(sourceleadUrl);
+    				    	} else {
+    				    		showError("Operation failed, please try again");
+    				    	}
     					}
     				}); 
     		 return true;
@@ -3215,52 +3236,62 @@ function refreshImageBlock(candidateId){
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-           success :function(data) {   
-                if(data != null && data != 'undefined' && data != ""){  
-                	 var json = JSON.parse(data);
-	                	 $("#candidateImageId").empty();
-	                	 var result = '';
-			             result = result+'<div class="well text-center clearfix">';
-						 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
-						 if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
-						 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
-						 }else{
-						 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
-	 
-						 }
-						 result = result+'  <div class="btn-group uploadfile">';
-						 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
-						 result = result+'  <i class="fa fa-upload"></i></button>';
-						 result = result+'  <label class="btn btn-sm btn-primary">';
-						 result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateId+');" style="display: none;">';					     
-						 result = result+'  </label>';
-					     if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
-						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
-							 result = result+'  <i class="fa fa-trash"></i></button>';
-					     } 
-						 result = result+'  </div>';
-						 result = result+'  </div>';
-						 
-						 
-						 result = result+'  </div>';
-						 result = result+' <div class="mb mt5 UsProBar">';
-						 result = result+' <div class="progress nomr"> ';
-						 if(json.profilePercentage>=50){
-						 result = result+' <div class="progress-bar progress-bar-success ';
-						 }
-						 else{
-						 result = result+' <div class="progress-bar progress-bar-danger ';
-						 }
-						 result = result+' progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%"> ';
-						 result = result+' <p id="disVal">'+json.profilePercentage+'%</p> ';
-						 result = result+' </div> ';
-						 result = result+' </div> ';
-						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
-						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not supported</p>';
-						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
-						 result = result+' </div>';
-						 $("#candidateImageId").append(result);
-                }
+           success :function(result) { 
+        	   var json = result.object;
+        	   if(result.response === "SESSION_TIMEDOUT") {
+					location.replace(sourceleadUrl);
+				} else if (result.response === "AWKWARD") {
+					location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+	                	if(json != null && json != 'undefined' && json != ""){  
+		                	 $("#candidateImageId").empty();
+		                	 var result = '';
+				             result = result+'<div class="well text-center clearfix">';
+							 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
+							 if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
+							 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
+							 }else{
+							 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
+		 
+							 }
+							 result = result+'  <div class="btn-group uploadfile">';
+							 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
+							 result = result+'  <i class="fa fa-upload"></i></button>';
+							 result = result+'  <label class="btn btn-sm btn-primary">';
+							 result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateId+');" style="display: none;">';					     
+							 result = result+'  </label>';
+						     if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
+							     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
+								 result = result+'  <i class="fa fa-trash"></i></button>';
+						     } 
+							 result = result+'  </div>';
+							 result = result+'  </div>';
+							 
+							 
+							 result = result+'  </div>';
+							 result = result+' <div class="mb mt5 UsProBar">';
+							 result = result+' <div class="progress nomr"> ';
+							 if(json.profilePercentage>=50){
+							 result = result+' <div class="progress-bar progress-bar-success ';
+							 }
+							 else{
+							 result = result+' <div class="progress-bar progress-bar-danger ';
+							 }
+							 result = result+' progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%"> ';
+							 result = result+' <p id="disVal">'+json.profilePercentage+'%</p> ';
+							 result = result+' </div> ';
+							 result = result+' </div> ';
+							 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
+							 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not supported</p>';
+							 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
+							 result = result+' </div>';
+							 $("#candidateImageId").append(result);
+	                }
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
+				}
          	},
       }); 
    }
@@ -3290,12 +3321,20 @@ function deleteProfileImage(candidateId){
 	 $.ajax({
 		    type: "GET",
             url: sourceleadUrl+"/deleteCandidateImage?candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
-	        success: function(data) {
-	        	 var result = data;
-	        	 $("#popUp").empty();
-	        	 $(".project_inn_mask").fadeOut(200);
-	        	 refreshImageBlock(candidateId);
-	        	 applicantQuickViewProfile(candidateId,submissionId);
+	        success: function(response) {
+	        	if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+		        	 var result = response.object;
+		        	 $("#popUp").empty();
+		        	 $(".project_inn_mask").fadeOut(200);
+		        	 refreshImageBlock(candidateId);
+		        	 applicantQuickViewProfile(candidateId,submissionId);
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
 	       },
 	        
      }); 
@@ -3320,32 +3359,39 @@ function saveOrCancel(message,candidateId){
 <script>
 function saveCandidateImage(candidateId){
 	            		
-          		var frm = $('#candidate_form').serializeFormJSON();
-              	var con = JSON.stringify(frm);
-  			    con = con.replace(/[{}]/g, ""); 
-  			    
-  		        var jsonData = encodeURIComponent(con);
-          		
-          		var sourceleadUrl ='${sourceleadUrl}';
-          		var loginUserId = '${SourceLeadWeb_userId}';
-          		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-          		var form = $('#candidate_form')[0];
-           		var formData = new FormData(form);
-	            		
-	            $.ajax({
-	                	      type: "POST",
-	                	      data: formData,
-	                	      contentType : 'application/json; charset=utf-8',
-	                	      enctype: 'multipart/form-data',
-	            	          processData: false,
-	            	          contentType:false,
-	                	      dataType : 'json',
-	                	      
-	                      	  url: sourceleadUrl+"/saveCandidateProfile?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
-	                          success: function(result) {
-	                        	  recommendationAlertCancel(candidateId);
-	    			          },  
-	            });
+	var frm = $('#candidate_form').serializeFormJSON();
+	var con = JSON.stringify(frm);
+	con = con.replace(/[{}]/g, ""); 
+
+   var jsonData = encodeURIComponent(con);
+ 		
+	var sourceleadUrl ='${sourceleadUrl}';
+	var loginUserId = '${SourceLeadWeb_userId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var form = $('#candidate_form')[0];
+	var formData = new FormData(form);
+    		
+    $.ajax({
+    	type: "POST",
+    	data: formData,
+    	contentType : 'application/json; charset=utf-8',
+    	enctype: 'multipart/form-data',
+	    processData: false,
+	    contentType:false,
+    	dataType : 'json',
+        url: sourceleadUrl+"/saveCandidateProfile?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
+        success: function(response) {
+        	if (response.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (response.response === "SUCCESS") {
+        		recommendationAlertCancel(candidateId);        		
+        	} else if (response.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+     	},  
+    });
 }
 </script> 
 

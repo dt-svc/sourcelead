@@ -352,6 +352,8 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getRate())) {
 			requirement.setRate(requirementDTO.getRate());
+		}else {
+			requirement.setRate(null);
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getRateType())) {
 			requirement.setRateType(requirementDTO.getRateType());
@@ -369,16 +371,24 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getIndustryName())) {
 			requirement.setIndustryName(requirementDTO.getIndustryName());
+		}else {
+			requirement.setIndustryName(null);
 		}
 		if(StringUtils.isNotBlank(requirementDTO.getProjectClientID())){
 			ProjectClients projects = projectClientService.getProjectClientsByProjectID(Long.parseLong(requirementDTO.getProjectClientID()));
 			requirement.setProjectClientID(projects);
+		}else {
+			requirement.setProjectClientID(null);
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getProjectDurationMonths())) {
 			requirement.setProjectDurationMonths(requirementDTO.getProjectDurationMonths());
+		}else {
+			requirement.setProjectDurationMonths(null);
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getProjectDurationYears())) {
 			requirement.setProjectDurationYears(requirementDTO.getProjectDurationYears());
+		}else {
+			requirement.setProjectDurationYears(null);
 		}
 		
 		if (StringUtils.isNotBlank(requirementDTO.getClosedDate()) && !"".equalsIgnoreCase(requirementDTO.getClosedDate())) {
@@ -395,6 +405,8 @@ public class RequirementServiceImpl implements RequirementService {
 				&& requirementDTO.getNoticePeriod().size() > 0) {
 			String np = String.join(",", requirementDTO.getNoticePeriod());
 			requirement.setNoticePeriod(np);
+		}else {
+			requirement.setNoticePeriod(null);
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getTravelAllowance())) {
 			requirement.setTravelAllowance(requirementDTO.getTravelAllowance());
@@ -406,6 +418,8 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getMaxRate())) {
 			requirement.setMaxRate(requirementDTO.getMaxRate());
+		}else {
+			requirement.setMaxRate(null);
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getPriority())) {
 			if (!"".equalsIgnoreCase(requirementDTO.getPriority())) {
@@ -434,6 +448,8 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getEducation())) {
 			requirement.setEducation(requirementDTO.getEducation());
+		}else {
+			requirement.setEducation(null);
 		}
 		if (requirementDTO.getFileInfo() != null && !requirementDTO.getFileInfo().isEmpty()) {
 			FileInfo fileInfo = requirementDTO.getFileInfo().get(0);
@@ -819,10 +835,13 @@ public class RequirementServiceImpl implements RequirementService {
 					UUIDList.add(savedLocationDTO.getLocationUUID());
 					}
 				}
+			}
 				
-				
+			if(UUIDList != null && !UUIDList.isEmpty()) {
 				UUIDList.retainAll(savedUUIDList);
 				savedUUIDList.removeAll(UUIDList);
+			}
+			    
 				
 				if(savedUUIDList != null && !savedUUIDList.isEmpty()) {
 					for(String UUID : savedUUIDList) {
@@ -831,7 +850,7 @@ public class RequirementServiceImpl implements RequirementService {
 					}
 				}
 				
-			}
+			
 		}
 		
 		
@@ -1231,7 +1250,7 @@ public class RequirementServiceImpl implements RequirementService {
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 		String actionLink = "";
-		emailScenerioUtil.sendNotification(actionLink, loginUser, assUser, loginOrgLocation, notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, assUser, loginOrgLocation, notificationScenario,new HashMap<String,String>());
 	}
 	
 	private void updatedRequirementMailToManager(User loginUser, User managerUser, Requirement requirement, StringBuilder location, OrgLocations loginOrgLocation) throws Exception
@@ -1356,7 +1375,7 @@ public class RequirementServiceImpl implements RequirementService {
 		 StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
 	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();
-		emailScenerioUtil.sendNotification(actionLink, loginUser, managerUser, loginOrgLocation, notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, managerUser, loginOrgLocation, notificationScenario,new HashMap<String,String>());
 	}
 	
 	private void releaseUpdatedMailScenario(User loginUser, Requirement requirement, OrgSpoc spoc, OrgLocations loginOrgLocation) throws Exception
@@ -1736,7 +1755,7 @@ public class RequirementServiceImpl implements RequirementService {
 		// String actionLink=
 		// sourceleadUrl"/requirementSummary?requirementUUID="+requirement.getRequirementUUID()+"";
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendNotification(actionLink, loginUser, approverUser, loginOrgLocation, notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, approverUser, loginOrgLocation, notificationScenario,new HashMap<String,String>());
 		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 	}
 	
@@ -1829,8 +1848,10 @@ public class RequirementServiceImpl implements RequirementService {
 		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-		String actionLink = "";
-		emailScenerioUtil.sendNotification(actionLink, loginUser, approverUser, orgLocations, notificationScenario);
+		StringBuilder notificationLink = new StringBuilder();
+		 String actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();
+
+		emailScenerioUtil.sendNotification(actionLink, loginUser, approverUser, orgLocations, notificationScenario,new HashMap<String,String>());
 	}
 	
 	@SuppressWarnings("unused")
@@ -1941,7 +1962,7 @@ public class RequirementServiceImpl implements RequirementService {
 		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();
-		emailScenerioUtil.sendNotification(actionLink, loginUser, intiatorUser, orgLocations, notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, intiatorUser, orgLocations, notificationScenario,new HashMap<String,String>());
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -2272,7 +2293,7 @@ public class RequirementServiceImpl implements RequirementService {
 		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();		 
-		emailScenerioUtil.sendNotification(actionLink, loginUser, managerUser, loginOrgLocation, notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, managerUser, loginOrgLocation, notificationScenario,new HashMap<String,String>());
 	}
 	
 	@SuppressWarnings("unused")
@@ -2429,7 +2450,7 @@ public class RequirementServiceImpl implements RequirementService {
 		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();		 
-		emailScenerioUtil.sendNotification(actionLink, loginUser, assUser, orgLocations, notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, assUser, orgLocations, notificationScenario,new HashMap<String,String>());
 	}
 	
 	@Override
@@ -2548,7 +2569,7 @@ public class RequirementServiceImpl implements RequirementService {
 	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();
 
 		
-		emailScenerioUtil.sendNotification(actionLink, loginUser, requirement.getManagerUserId(), loginOrgLocation, notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, requirement.getManagerUserId(), loginOrgLocation, notificationScenario,new HashMap<String,String>());
 	}
 	
 	@Override
@@ -2663,7 +2684,7 @@ public class RequirementServiceImpl implements RequirementService {
 		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();	 
-		emailScenerioUtil.sendNotification(actionLink, loginUser, requirement.getManagerUserId(), loginOrgLocation, notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, requirement.getManagerUserId(), loginOrgLocation, notificationScenario,new HashMap<String,String>());
 	}
 	
 	@Override
@@ -2798,7 +2819,7 @@ public class RequirementServiceImpl implements RequirementService {
 		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();	 
-		emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario,new HashMap<String,String>());
 	}
 	
 	@Override
@@ -3797,8 +3818,9 @@ public class RequirementServiceImpl implements RequirementService {
 		String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(), globalVarsMap);
 		notificationScenario.setBody(notificationBody);
 		StringBuilder actionLinkBuilder = new StringBuilder();
-		String actionLink = actionLinkBuilder.append(sourceleadUrl).append("/requirementSummary?requirementUUID=").append(requirement.getRequirementUUID()).toString();
-		emailScenerioUtil.sendNotification(actionLink, loginUser, candidate.getConsultantUser(), orgLocation, notificationScenario);
+		String actionLink = actionLinkBuilder.append(sourceleadUrl).append("/jobCampaignSummary?requirementUUID=").append(requirement.getRequirementUUID()).toString();
+		if(candidate.getConsultantUser() != null)
+		emailScenerioUtil.sendNotification(actionLink, loginUser, candidate.getConsultantUser(), orgLocation, notificationScenario,new HashMap<String,String>());
 
 	}
 
@@ -3811,7 +3833,7 @@ public class RequirementServiceImpl implements RequirementService {
 		List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirementId);
 		if(locationsList != null && !locationsList.isEmpty()) {
 			for(RequirementLocations location : locationsList) {
-				tempHTML = tempHTML + "<p><span><img src='"+url+"/resources/images/location-icon.png' style='width:20px;height: 20px;position: relative;top: 5px;' alet='Location' title='Location'></span>"+location.getLocation()+"</p>";
+				tempHTML = tempHTML + "<span><span><img src='"+url+"/resources/images/location-icon.png' style='width:20px;height: 20px;position: relative;top: 5px;' alet='Location' title='Location'></span>"+location.getLocation()+"</span>";
 			}
 		}
 		return tempHTML;

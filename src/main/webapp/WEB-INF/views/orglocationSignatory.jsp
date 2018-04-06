@@ -209,7 +209,7 @@
 // 	  if (document.getElementById('legalSigner').checked) {
 // 		  $("#legalUserFormDiv").empty();
 // 	  }else{
-		  loadLeagelSignerForm();
+		  
 // 	  }
   }
   </script>
@@ -231,7 +231,7 @@ function loadLeagelSignerForm(){
 	result = result +"<div class='form-group clearfix' id='associateDiv'>";
 	result = result +"<label class='col-md-4'>Associate<span class='text-danger'>&nbsp;*</span></label>";
 	result = result +"<div class='col-md-8'>";
-	result = result +"<select class='chosen-select form-control' type='text' name='associateId' id='signatoryAssociate' field-name='Associate' data-validation='required'>";
+	result = result +"<select class='chosen-select form-control' type='text' name='associateId' id='signatoryAssociate' field-name='Associate' onchange='validateAssociate();' data-validation='required'>";
 	result = result +"</select>";
 	result = result +"<input type='hidden' name='uuid' id='signatoryUUID' value=''>";
 	result = result +"<input type='hidden' name='signatoryFromType' id='signatoryFromType' value='orgSettings'>";
@@ -288,13 +288,54 @@ function getAssociatesForSignatory(){
 		output = output + "<option value=''>-- Select Associate --</option>";
      	   for(var i=0; i<data.length;i++){
      		  var opt = data[i];
- 				output = output + "<option value='" +opt.userId+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+     		  if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
+     			 output = output + "<option value='" +opt.userId+ "'>"+opt.firstName+" "+opt.lastName+"</option>"; 
+     		  }else{
+     			 output = output + "<option value='" +opt.userId+ "'>"+opt.firstName+"</option>";
+     		  }
+ 				
      	   }
      	   $("#signatoryAssociate").empty();
      	  $("#signatoryAssociate").append(output);
      	 $("#signatoryAssociate").trigger("chosen:updated");
      }); 
 }
+
+function validateAssociate()
+{
+	
+	 var userId = document.getElementById("signatoryAssociate").value; 
+	 var id = document.getElementById("signatoryUUID").value; 
+	
+	 
+	 var sourceleadUrl ='${sourceleadUrl}';
+		
+		 if(userId != null &&  userId != "" &&  userId != 'undefined'){
+			 $("#save_signatory_button").attr("disabled", "disabled");
+			 
+			 $.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/validateAssociate?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&id="+id,
+			        success: function(data) {
+			        
+			        	if(data == true){
+			        		  $('#associateDiv').find('p.jquery_form_error_message').remove();
+							  $("#signatoryAssociate_chosen").after("<p class='jquery_form_error_message'>User with this name is already Existed</span>");
+							 // document.getElementById("signatoryAssociate").setAttribute('record-exist','yes');
+							 // document.getElementById("signatoryAssociate").setAttribute('record-exist-errorMsg','User with this name is Already Existed'); 
+			        	}
+			        	else{
+			        		 $('#signatoryAssociate_chosen').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#associateDiv').find('p.jquery_form_error_message').remove(); 
+			        		 $("#save_signatory_button" ).addClass('us-btn').val('Save');
+	                         $("#save_signatory_button").removeAttr("disabled");
+			        	}
+			        },
+			    });
+		 }
+	
+	
+ }
 
 </script>
 
@@ -329,8 +370,8 @@ function saveSignatory(){
   	  var formData = $($('#signatory_form')[0]).serialize();
   	$.post(sourceleadUrl+"/saveOrgLocationSignatory?"+tokenParamName+"="+tokenValue, formData, function(data) {
 		if(data == "success"){
-			signatoryFormDiv();
 			getAllSignatory();
+			signatoryFormDiv();
 		}
 	}); 
     	  //saveOrgLocationSignatory(formData);
@@ -422,6 +463,8 @@ function saveSignatory(){
 		         result += '    <td>';
 		         if(report.authorizedAmount != null && report.authorizedAmount != '' && report.authorizedAmount != 'undefined'){
 	        		 result += '        <div title="'+report.authorizedAmount+'" class="tblminwidth-75">'+report.authorizedAmount+'</div>'; 
+		         }else{
+		        	 result += '        <div class="tblminwidth-75"> --- </div>';
 		         }
 		         result += '    </td>';
 		         result += '    <td>';
@@ -469,12 +512,15 @@ function saveSignatory(){
   function addSignatoryDiv(){
 	  $(".signatoryFormDiv").fadeIn();
 	  $(".sideMask").fadeIn();
+	  loadLeagelSignerForm();
   }
   function signatoryFormDiv(){
 	  $(".signatoryFormDiv").fadeOut();
 	  $(".sideMask").fadeOut();  
+	  $('#signatory_form')[0].reset();
+	  $(".chosen-select").trigger("chosen:updated");
+	  $('signatory_form').validate().resetForm();
   }
-  
   </script>
   
   <script>

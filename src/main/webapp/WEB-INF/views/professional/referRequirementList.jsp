@@ -331,9 +331,9 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
 				<i class="fa fa-filter paddingRight text-info"></i>Filter Group
 				<i class="caret" style="position: relative; top: 0px;"></i></span>
 				<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding">
-				<ul class="checkBox" role="menu" aria-labelledby="menu1">
+				<ul class="checkBox newScr" role="menu" aria-labelledby="menu1">
                     	  <c:forEach var="report" items="${contactsGroupList}">
-                        	<li><label class="tbldata-dotdot-big" title="${report.groupName}"><input   name="groupsFilter" value ="${report.id}"  onclick="refercontactList();"  type="checkbox"> ${report.groupName}</label></li>
+                        	<li><label class="tbldata-dotdot-sm" title="${report.groupName}"><input   name="groupsFilter" value ="${report.id}"  onclick="refercontactList();"  type="checkbox"> ${report.groupName}</label></li>
 						  </c:forEach>
 				</ul>
 				</div>
@@ -943,7 +943,7 @@ function editContactsGroup(groupId,groupName){
 	        	outPut = outPut +'<input type="hidden" class="form-control input-sm" name="groupId"  value="'+groupId+'">';
 	        	outPut = outPut+ '<label class="small text-muted">Group Name *</label>';
 	        	outPut = outPut+ '<div class="clearfix positionRelative">';
-	        	outPut = outPut+ '<input type="text" name="groupName" id="groupName" value = "'+groupName+'" field-name="Group Name" class="form-control input-sm" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100" onblur="validateGroupName();">';
+	        	outPut = outPut+ '<input type="text" name="groupName" id="groupName" value = "'+groupName+'" field-name="Group Name" class="form-control input-sm" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100" onblur="validateGroupName('+groupId+');">';
 	      				
 	        	outPut = outPut+ '<div class="underline">';
 	        	outPut = outPut+ '</div>';
@@ -1148,9 +1148,13 @@ function selectedContactList(){
 
 
 <script type="text/javascript">
- function validateGroupName(){
+ function validateGroupName(groupId){
+	 if(groupId != null && groupId != "" && groupId != "undefined"){
+		 groupId = groupId;
+	 }else{
+		 groupId = "";
+	 }
 	 var groupName = document.getElementById("groupName").value;
-	 var groupId = '${groupId}';
 	 $('#groupNameDiv').find('p.jquery_form_error_message').remove();
 	 if(groupName != null && groupName != "" && groupId != null){
 		
@@ -1158,11 +1162,13 @@ function selectedContactList(){
 		    	type: "GET",
 		        url: sourceleadUrl+"/validateGroupName?"+tokenParamName+"="+tokenValue+"&groupName="+groupName+"&groupId="+groupId, 
 		        success: function(data) {
-		        	if(data == 'Invalid'){
+		        	if(data == true){
 		        		  $('#groupNameDiv').find('p.jquery_form_error_message').remove();
 						  $("input#groupName").after("<p class='jquery_form_error_message'>"+groupName+" is Already Existed</span>");
 						  document.getElementById("groupName").setAttribute('record-exist','yes');
 						  document.getElementById("groupName").setAttribute('record-exist-errorMsg',groupName+' is Already Existed'); 
+						  $("#add_contactgroup").attr('disabled','disabled');
+						  
 		        	}
 		        	else{
 		        		 $('input#groupName').removeAttr( "record-exist record-exist-errormsg");

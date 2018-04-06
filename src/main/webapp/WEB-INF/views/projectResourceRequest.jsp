@@ -245,7 +245,7 @@ function resourceRequestPagination(url,requestType,sourceleadUrl){
 			    				result = result +"<i class='glyphicon glyphicon-comment edit-reason'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i>";
 			    				result = result + '<b class="bg-red">'+opt.resourceStatus+'</b>';
 			    			}else{
-			    				result = result + '<b>'+opt.resourceStatus+'</b>';
+			    				result = result + '<b class="bg-green">'+opt.resourceStatus+'</b>';
 			    			}
 			    			
 			    		}
@@ -301,7 +301,7 @@ function acceptAssociate(requestUUID,requestType){
 
 <script>
 function rejectAssociate(requestUUID,candidateName){
-	
+	$("#requestOnHoldReasonDiv").empty();
 	var result = "";
 	result = result + '	<div class="settPop">';
 	result = result + '	<div id="loading"></div>';
@@ -350,6 +350,7 @@ function cancelRejectedReason(){
 function cancelRequestOnholdReason(){
 	$(".settPop").slideUp(200);
 	$(".vendor_wrap_mask").fadeOut(200);
+	$("#requestOnHoldReasonDiv").empty();
 }
 </script>
 

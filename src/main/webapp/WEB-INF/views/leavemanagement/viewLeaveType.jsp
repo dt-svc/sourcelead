@@ -4,6 +4,11 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 
+  <script src="https://cdn.jsdelivr.net/g/mark.js(jquery.mark.min.js)"></script> 
+  <script src="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.js"></script> 
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/datatables.mark.js/2.0.0/datatables.mark.min.css" type="text/css" media="all" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.min.css" media="all" />
+  
 <script type="text/javascript">
 $(document).ready(function(){
    getLeaveTypesList();
@@ -117,7 +122,7 @@ $(document).ready(function(){
 		         if(report.status == 1){
 		              	result += '            <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer" onclick="deleteLeaveType(\''+report.leaveTypeUUID+'\')"></i></span>';
 		         }else{
-		        	 	result += '            <span title="Reactive" class="paddingLeft"><i class="fa fa-repeat text-primary cursorPointer" onclick="reactiveLeaveType(\''+report.leaveTypeUUID+'\')"></i></span>';
+		        	 	result += '            <span id="spin'+report.leaveTypeUUID+'" title="Reactive" class="paddingLeft"><i class="fa fa-repeat text-primary cursorPointer" onclick="reactiveLeaveType(\''+report.leaveTypeUUID+'\')"></i></span>';
 		         }
 		         result += '        </div>';
 		         result += '    </td>';
@@ -148,6 +153,7 @@ $(document).ready(function(){
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
+	    	 "mark": true,
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": ""
@@ -164,7 +170,8 @@ function deleteLeaveType(typeId){
 	 $("#deleteLeaveTypeDiv").empty();
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a positionRelative'>";
+	result = result +"	<div id='leaveTypeReasonLoad'></div>";
 	result = result +"		<textarea id='reason' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reason' value='' placeholder='Reason' rows='2' onclick='validateReason();'></textarea>";
 	result = result + ' <div id="deleteLeaveTypeDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteType(\""+typeId+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelRejectPopup();'></b>";
@@ -180,6 +187,7 @@ function deleteType(typeId){
 	 reason = reason.replace(/\s/g, "")
 	if(reason.match(/^[^\s-](.*)*$/) != null){
 		$("#deleteLeaveTypeDiv").empty(); 
+		$("#leaveTypeReasonLoad").attr('style','position:absolute; width:100%; height:150px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 		   	type: "POST",
 		   	url: sourceleadUrl+"/deleteLeaveType?"+tokenParamName+"="+tokenValue+"&leaveTypeUUID="+typeId+"&deleteReason="+reason+"&loginUserId="+loginUserId,	    	   
@@ -187,6 +195,7 @@ function deleteType(typeId){
 	             if(data == true){
 	 				location.replace(sourceleadUrl+ "/viewLeaveTypes");
 	 			 }
+	             $("#leaveTypeReasonLoad").removeAttr("style");
 	             $("#selector1").removeAttr("style");
 	  			 $("#selector1").css({ display: "block" });
 	  			 $("#msgDiv").html("Leave Type removed");
@@ -205,8 +214,11 @@ function deleteType(typeId){
 }
 
 function reactiveLeaveType(typeId, from){
-	var loginUserId = '${SourceLeadWeb_user.id}'
 	
+	$("#spin"+typeId).empty();
+	$("#spin"+typeId).prepend('<i class="fa fa-spinner fa-spin"></i>');
+	
+	var loginUserId = '${SourceLeadWeb_user.id}'
 		$.ajax({
 		   	type: "POST",
 		   	url: sourceleadUrl+"/deleteLeaveType?"+tokenParamName+"="+tokenValue+"&leaveTypeUUID="+typeId+"&status=reactive",	    	   

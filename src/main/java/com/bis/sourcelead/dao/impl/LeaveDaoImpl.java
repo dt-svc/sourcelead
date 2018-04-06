@@ -546,8 +546,8 @@ public class LeaveDaoImpl implements LeaveDao{
 		else if("LeaveType".equalsIgnoreCase(fromTable))
 			subQuery = " and frm.name = :name ";
 			
-		String query = "from "+fromTable+" frm where frm.orgLocations.id = :orgLocationId and frm.status = '1' "+subQuery+" and frm.id <> :id";
-		List<Long> found = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("name", name).setString("id", id).list();
+		String query = "from "+fromTable+" frm where frm.orgLocations.id = :orgLocationId "+subQuery+" and frm.id <> :id";
+		List<Long> found = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("name", name.replaceAll("\\s+"," ").trim()).setString("id", id).list();
 		if(found.size() > 0){
 			return true;
 		}else{
@@ -681,8 +681,13 @@ public class LeaveDaoImpl implements LeaveDao{
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Leave> list = null;
-		String query = "from Leave leave where leave.orgLocations.id =:orgLocationId and leave.status =:status";
-		list = session.createQuery(query).setString("status", status).setLong("orgLocationId", locationId).list();
+		if(status != null && StringUtils.isNotEmpty(status)) {
+			String query = "from Leave leave where leave.orgLocations.id =:orgLocationId and leave.status =:status";
+			list = session.createQuery(query).setString("status", status).setLong("orgLocationId", locationId).list();
+		}else{
+			String query = "from Leave leave left join fetch leave.leaveType lvType where leave.orgLocations.id =:orgLocationId";
+			list = session.createQuery(query).setLong("orgLocationId", locationId).list();
+		}
 		return list;
 	}
 
@@ -755,6 +760,16 @@ public class LeaveDaoImpl implements LeaveDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Leave leave";
 		List<Leave> leaveList = session.createQuery(query).list();
+		return leaveList;
+	}
+
+
+	@Override
+	@Transactional
+	public List<Leave> getLeaveByUserIdOrglocationIdandStatus(Long userId, Long orglocationId, String approvedStatus) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Leave leave left join fetch leave.user user left join fetch leave.orgLocations orgLoc where user.id =:userId and orgLoc.id =:orglocationId and leave.status =:approvedStatus";
+		List<Leave> leaveList = session.createQuery(query).setLong("userId", userId).setLong("orglocationId", orglocationId).setString("approvedStatus", approvedStatus).setCacheable(false).list();
 		return leaveList;
 	}
 }

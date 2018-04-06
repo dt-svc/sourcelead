@@ -491,13 +491,13 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 				candidateImport.setReason("Invalid Email");
 				return false;
 			}
-			/*else if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
+			else if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
 				Candidate candidate = candidateService.findByCandidateEmail(row.getCell(2).toString(), orgLocations.getId());
 				if (candidate != null) {
 					candidateImport.setReason("Candidate already exist.!");
 					return false;
 				}
-			}*/
+			}
 			if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
 				String mobileNumber = getCellValueAsString(row.getCell(3), fileName);
 				if (mobileNumber != null && !"".equalsIgnoreCase(mobileNumber)) {
@@ -531,20 +531,13 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 			if(row.getCell(10) !=null && !"".equalsIgnoreCase(row.getCell(10).toString())){
 				List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
 				Long vendorId = 0l;
-				boolean flag = false;
 				for(OrgRelations rel : vendorsList) {
 					if((row.getCell(10).toString().equalsIgnoreCase(rel.getLocationId().getOrgLocationName())) || (row.getCell(10).toString().equalsIgnoreCase(rel.getResponderLocationId().getOrgLocationName()))) {
 						vendorId = rel.getId();
-						flag = true;
 						break;
-					}else {
-						flag = false;
 					}
 				}
-				if(!flag) {
-					candidateImport.setReason("No vendor exists..");
-					return flag;
-				}
+				
 				
 				if(row.getCell(11) !=null && !"".equalsIgnoreCase(row.getCell(11).toString())){
 					List<OrgSpoc> vendorContactsList = orgSpocService.getOrgSpocByOrgRelationId(vendorId);
@@ -561,12 +554,11 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 						candidateImport.setReason("No Active contacts exists with this vendor");
 						return false;
 					}
-				}else if(vendorId != 0) {
-					candidateImport.setReason("Contact is mandatory");
-					return false;
 				}
 				
-			}else {
+			}
+			
+			/*else {
 				if(row.getCell(11) !=null && !"".equalsIgnoreCase(row.getCell(11).toString())){
 					candidateImport.setReason("vendor is mandatory if you have entered contact");
 					return false;
@@ -574,17 +566,7 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 					candidateImport.setReason("vendor details are mandatory.");
 					return false;
 				}
-			}
-		}else {
-			if(row.getCell(10) !=null && !"".equalsIgnoreCase(row.getCell(10).toString())){
-				if(row.getCell(11) !=null && !"".equalsIgnoreCase(row.getCell(11).toString())){
-					candidateImport.setReason("Employment type should be C2C if you have entered vendor details");
-					return false;
-				}else {
-					candidateImport.setReason("Employment type should be C2C if you have entered vendor details");
-					return false;
-				}
-			}
+			}*/
 		}
 			
 		}

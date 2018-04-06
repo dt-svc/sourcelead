@@ -222,7 +222,7 @@
 			            	<tr id="divResourceTsRow0">
 			                    <th>Role</th>
 			                    <th>No <br> Resources</th>
-			                    <th>Exp</th>
+			                    <th>Experience</th>
 			                    <th>Primary Skills</th>
 			                    <th>Bill/Pay Rate</th>
 			                    <th>Duration</th>
@@ -274,7 +274,7 @@
 		    <div id="noOfResourcesRowREPLACEROWID" name="noOfResourcesRowREPLACEROWID" class="width90px">RESOURCECOUNTVALUE</div>
 		</div>
 		<div id="divAddRowTr1Td3" style="display: none; float: left;">
-		<div class="width90px inr_values"><small id="minRowREPLACEROWID">MINVALUE</small> <small id="maxRowREPLACEROWID">MAXVALUE</small></div>
+		<div class="width180px inr_values"><small id="minRowREPLACEROWID">MINVALUE</small>to<small id="maxRowREPLACEROWID">MAXVALUE</small>years</div>
 		</div>
 		<div id="divAddRowTr1Td4" style="display: none; float: left;">
 		    <div id="primarySkillsRowREPLACEROWID" class="tbldata-dotdot-vsm">PRIMARYSKILLSVALUES</div>
@@ -360,12 +360,24 @@
 			$('#startDate'+maxRowNum).datepicker({
 				dateFormat : finalDateFormatResourceReqSave,
 				changeMonth: true,
-				changeYear: true
+				changeYear: true,
+				onSelect: function (selected) {
+		            //var dt = new Date(selected);
+		            var dt = $(this).datepicker('getDate', '+1d');
+		            dt.setDate(dt.getDate() + 1);
+		            $('#endDate'+maxRowNum).datepicker("option", "minDate", dt);
+		        }
 			});
 			$('#endDate'+maxRowNum).datepicker({
 				dateFormat : finalDateFormatResourceReqSave,
 				changeMonth: true,
-				changeYear: true
+				changeYear: true,
+				onSelect: function (selected) {
+		            //var dt = new Date(selected);
+					var dt = $(this).datepicker('getDate', '-1d');
+		            dt.setDate(dt.getDate() - 1);
+		            $('#startDate'+maxRowNum).datepicker("option", "maxDate", dt);
+		        }
 			});
 			$(".addResource").removeAttr('style');
 			$(".addResource").attr('style','display:block');

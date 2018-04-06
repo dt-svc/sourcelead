@@ -53,6 +53,7 @@ import com.bis.sourcelead.dto.UserProfileDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.Department;
@@ -74,6 +75,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.RestResponsetUtil;
+import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
@@ -189,6 +191,8 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	@Autowired
 	CandidateOffBoardingService candidateOffBoardingService;
 
+	@Autowired
+	AssetService assetService;
 	private Org org;
 	
 	/**
@@ -672,7 +676,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 									  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
 									  pmh =  projectMembersHistoryService.updateProjectMembersHistory(pmh);
 									  if(sendEmailCount == 1){
-										  terminatedMailToEmployee(user,pmh,orgLocations);
+										  commonUtil.terminatedMailToEmployee(user,pmh,orgLocations);
 									  }
 									  
 									  if(pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId().getId().equals(orgLocations.getId())){
@@ -682,9 +686,9 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 										    		  employeeTerminationMailToProjectManager(user,pmh,orgLocations);
 										    	  }
 										      }*/
-										  employeeTerminationMailToProjectManager(user,pmh,orgLocations);
+										  commonUtil.employeeTerminationMailToProjectManager(user,pmh,orgLocations);
 									  }else{
-										  employeeTerminationMailToProjectManager(pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId().getUser(),pmh,pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId());
+										  commonUtil.employeeTerminationMailToProjectManager(pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId().getUser(),pmh,pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId());
 									  }
 									  commonUtil.inactivateTimesheetSubmissionsBasedOnMemberIdAndMemberTerminationDate(projectMemberId,new Date());
 									  sendEmailCount = sendEmailCount+1;
@@ -722,229 +726,9 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 			}
 			
 		 
-			 private void employeeTerminationMailToProjectManager(User loginUser, ProjectMembersHistory pmh,OrgLocations orgLocations) throws Exception {
-				 
-				 User user=null;
-				 List<ProjectApproverHierarchy>  mangerList = projectApproverHierarchyService.getApproverUsersByProjectId(pmh.getProjectMemberId().getProjects().getId());
-				 for (ProjectApproverHierarchy projectApproverHierarchy : mangerList) {
-					 if(null != pmh.getProjectMemberId()){
-						 user = userService.getUserById(projectApproverHierarchy.getApproverUserId().getId());
-				}
-				 //SimpleDateFormat dateFormat=orgLocations.getLocFullFormDateFormatter();
-				 EmailMessage emailMessage = new EmailMessage();
-				 emailMessage.setFirstName(user.getFirstName());
-				 emailMessage.setLastName(user.getLastName());
-				 emailMessage.setToEmail(user.getEmail());
-				 emailMessage.setFromEmail(loginUser.getEmail());
-				 emailMessage.setCreatedBy(loginUser.getUserCode());
-				// StringBuilder msgBuild = new StringBuilder();
-				// emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-				// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-				//setting the class filed values
-				 Map<String, String> globalVarsMap = new HashMap<String, String>();
-				 String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmh.getProjectTerminationDate());
-				 
-				 if(null != pmh.getProjectMemberId().getEmployee().getUser()){
-					 if(null != pmh.getProjectMemberId().getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getEmployee().getUser().getLastName())){
-						 StringBuilder empName = new StringBuilder();
-						 globalVarsMap.put("Employee Name", empName.append(pmh.getProjectMemberId().getEmployee().getUser().getFirstName()).append(pmh.getProjectMemberId().getEmployee().getUser().getLastName()).toString());
-					 }
-				 else{
-					 globalVarsMap.put("Employee Name", pmh.getProjectMemberId().getEmployee().getUser().getFirstName());
-					}
-				 }
-				 
-				 
-				 if(null != pmh.getProjectMemberId().getProjects()){
-					 if(null != pmh.getProjectMemberId().getProjects().getProjectName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getProjects().getProjectName())){
-						 globalVarsMap.put("ProjectName", pmh.getProjectMemberId().getProjects().getProjectName());
-					}else{
-						 globalVarsMap.put("ProjectName", "--");
-					 }
-				 }
-				 
-				 
-				 if(null != pmh.getProjectTerminationDate()){
-					 globalVarsMap.put("ProjectEndDate",endDate);
-				 }else{
-					 globalVarsMap.put("ProjectEndDate", "--");
-				 }
-				 
-				 
-				 if (null != user.getLastName() && !"".equalsIgnoreCase(user.getLastName())) {
-					 StringBuilder mangerName = new StringBuilder();
-					 globalVarsMap.put("Manager", mangerName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-					 } else {
-						 globalVarsMap.put("Manager", user.getFirstName());
-					}
-				
-				 if (null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())) {
-					 StringBuilder loginName = new StringBuilder();
-					 globalVarsMap.put("LoginUser", loginName.append(loginUser.getFirstName()).append(loginUser.getLastName()).toString());
-					 } else {
-						 globalVarsMap.put("LoginUser", loginUser.getFirstName());
-					}
-				
-				 if (null != pmh.getProjectMemberId().getTerminateReason() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getTerminateReason())) {
-					 globalVarsMap.put("Reason", pmh.getProjectMemberId().getTerminateReason());
-					 } else {
-						 globalVarsMap.put("Reason", "--");
-					}
-				 
-				 StringBuilder linkBuild = new StringBuilder();
-			     globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-			   
-				 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-				
-				 //getting the current EmailScenario by EmailScenario unique name and entity type
-				 //using same migration which has been already used in updatedRequirementMailToManager method
-				 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EMPLOYEE_TERMINATION_MAIL_TO_MANAGER,Constants.ENTITY_TYPE_EMAIL);
-				 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EMPLOYEE_TERMINATION_MAIL_TO_MANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
-
-				 
-				 //covert subject,body and signature
-				 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-				 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-				 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-				 String url = sourceleadUrl;
-				 
-				 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
-				 notificationScenario.setBody(notificationbody);
-
-				 //construct HTML template using required data
-				 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-				 emailMessage.setSubject(subject);
-				 emailMessage.setMessageBody(emailTemplate);
-				 
-				 //calling the sendEmail method of emailScenerioUtil
-				 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-				 StringBuilder notificationLink = new StringBuilder();
-				 String actionLink="";
-			     actionLink = notificationLink.append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+pmh.getProjectMemberId().getProjects().getProjectUUID()+"&projectClientUUID="+pmh.getProjectMemberId().getProjectClientUUID()+"&tabType=team").toString();
-
-				 emailScenerioUtil.sendNotification(actionLink, loginUser,user, projectApproverHierarchy.getProjectId().getOrgLocationsId(), notificationScenario);
-				 }
-				}
-
-private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh, OrgLocations orgLocations) throws Exception {
 			 
-			 User user=null;
-			 if(null != pmh.getProjectMemberId()){
-			 user = userService.getUserByUserCode(pmh.getProjectMemberId().getCreatedBy());
-			 }
-			 
-			 EmailMessage emailMessage = new EmailMessage();
-			 emailMessage.setFirstName(pmh.getProjectMemberId().getEmployee().getUser().getFirstName());
-			 emailMessage.setLastName(pmh.getProjectMemberId().getEmployee().getUser().getLastName());
-			 emailMessage.setToEmail(pmh.getProjectMemberId().getEmployee().getUser().getEmail());
-			 emailMessage.setFromEmail(loginUser.getEmail());
-			 emailMessage.setCreatedBy(loginUser.getUserCode());
-			// StringBuilder msgBuild = new StringBuilder();
-			// emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-			// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-			//setting the class filed values
-			 Map<String, String> globalVarsMap = new HashMap<String, String>();
-			 //SimpleDateFormat dateFormat=orgLocations.getLocFullFormDateFormatter();
-			 String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmh.getProjectTerminationDate());
-			 
-			 String statrDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmh.getProjectAssignedDate());
-			 
-			 if(null!= pmh.getProjectMemberId().getEmployee()){
-				 if(null != pmh.getProjectMemberId().getEmployee().getUser()){
-					 if(null != pmh.getProjectMemberId().getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getEmployee().getUser().getLastName())){
-						 StringBuilder empName = new StringBuilder();
-						 globalVarsMap.put("Employee Name", empName.append(pmh.getProjectMemberId().getEmployee().getUser().getFirstName()).append(pmh.getProjectMemberId().getEmployee().getUser().getLastName()).toString());
-					 }	 
-			 else{
-				 globalVarsMap.put("Employee Name", pmh.getProjectMemberId().getEmployee().getUser().getFirstName());
-				}
-			 }
-			 }
-			 
-			 if(null != pmh.getProjectMemberId().getProjects()){
-				 if(null != pmh.getProjectMemberId().getProjects().getProjectName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getProjects().getProjectName())){
-					 globalVarsMap.put("Project Name", pmh.getProjectMemberId().getProjects().getProjectName());
-				}else{
-					 globalVarsMap.put("Project Name", "--");
-				 }
-			 }
-			 
-			 if(null != pmh.getProjectAssignedDate()){
-				 globalVarsMap.put("Project StartDate",statrDate);
-			 }else{
-				 globalVarsMap.put("Project StartDate", "--");
-			 }
-			 
-			 if(null != pmh.getProjectTerminationDate()){
-				 globalVarsMap.put("Project EndDate",endDate);
-			 }else{
-				 globalVarsMap.put("Project EndDate", "--");
-			 }
-			 
-			 if (null != user.getLastName() && !"".equalsIgnoreCase(user.getLastName())) {
-				 StringBuilder mangerName = new StringBuilder();
-				 globalVarsMap.put("Manager", mangerName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-				 } else {
-					 globalVarsMap.put("Manager", user.getFirstName());
-				}
-			
-			 if (null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())) {
-				 StringBuilder loginName = new StringBuilder();
-				 globalVarsMap.put("LoginUser", loginName.append(loginUser.getFirstName()).append(loginUser.getLastName()).toString());
-				 } else {
-					 globalVarsMap.put("LoginUser", loginUser.getFirstName());
-				}
-			
-			 if (null != orgLocations.getOrg()) {
-				 if(null != orgLocations.getOrg().getOrgName() && !"".equalsIgnoreCase(orgLocations.getOrg().getOrgName())){
-					 globalVarsMap.put("LoginOrg", orgLocations.getOrg().getOrgName());
-				 } else {
-					 globalVarsMap.put("LoginOrg", "--");
-				}
-			 }
-			 
-			 if(pmh.getProjectMemberId().getProjects().getOrgRelationId() !=null && !equals(pmh.getProjectMemberId().getProjects().getOrgRelationId())){
-				 StringBuilder clientName = new StringBuilder();
-				 globalVarsMap.put("clientName",clientName.append("with").append(" ").append(pmh.getProjectMemberId().getProjects().getOrgRelationId().getResponderLocationId().getOrg().getOrgName()).toString());
-			 }
-			 globalVarsMap.put("reason", pmh.getProjectMemberId().getTerminateReason());
 
 
-			 StringBuilder linkBuild = new StringBuilder();
-		     globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-		   
-			
-			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-			
-			 //getting the current EmailScenario by EmailScenario unique name and entity type
-			 //using same migration which has been already used in updatedRequirementMailToManager method
-			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EMPLOYEE_TERMINATION,Constants.ENTITY_TYPE_EMAIL);
-			 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EMPLOYEE_TERMINATION,Constants.ENTITY_TYPE_NOTIFICATION);
-
-			 
-			 //covert subject,body and signature
-			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-			 String url = sourceleadUrl;
-			 
-			 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
-			 notificationScenario.setBody(notificationbody);
-
-			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-			 emailMessage.setSubject(subject);
-			 emailMessage.setMessageBody(emailTemplate);
-			 
-			 User toUser = pmh.getProjectMemberId().getEmployee().getUser();
-			 
-			 //calling the sendEmail method of emailScenerioUtil
-			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-			 String actionLink="";
-			emailScenerioUtil.sendNotification(actionLink, loginUser,toUser, pmh.getProjectMemberId().getEmployee().getOrgLocations(), notificationScenario);
-
-				
-			}
 
 		/**
 		  * to update the end date of ProjectMembers in assign project
@@ -1083,7 +867,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 			notificationScenario.setBody(notificationBody);
 			//String url = null;
 			String actionLink = "";
-			emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getEmployee().getUser(), loginOrgLocation, notificationScenario);
+			emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getEmployee().getUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());
 		}
 		
 		 
@@ -1420,7 +1204,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 			 String actionLink="";
 		     actionLink = notificationLink.append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+pmh.getProjectMemberId().getProjects().getProjectUUID()+"&projectClientUUID="+pmh.getProjectMemberId().getProjectClientUUID()).toString();
 		     
-			emailScenerioUtil.sendNotification(actionLink, loginUser,toUser, pmh.getProjectMemberId().getEmployee().getOrgLocations(), notificationScenario);
+			emailScenerioUtil.sendNotification(actionLink, loginUser,toUser, pmh.getProjectMemberId().getEmployee().getOrgLocations(), notificationScenario,new HashMap<String,String>());
 
 		}
 
@@ -1549,6 +1333,13 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 	{
 		List<ProjectMembers> projectMembersList = projectMembersService.getAllAssignedProjectsForUser(userId, orgLocationId,fromType);
 		return projectMembersList;
+	}
+	
+	@RequestMapping(value =  "/getUserBasedAssetManagementList", method = RequestMethod.GET)
+	public @ResponseBody List<Asset> getUserBasedAssetManagementList(@RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception
+	{
+	List<Asset> assementList = assetService.getUserBasedAssetManagementListandOrgLocation(orgLocationId, userId);
+	return assementList;
 	}
 	
 	 @RequestMapping(value = "/refreshRoleList", method = RequestMethod.POST)

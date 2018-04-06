@@ -15,6 +15,12 @@ public class UserMailUnsubscribeDTO {
 	private String createdDate;
 	
     private String updatedDate;
+    
+    private String uniqueToken;
+    
+    private String email;
+    
+    private String credential;
 
 	public Long getId()
 	{
@@ -84,6 +90,36 @@ public class UserMailUnsubscribeDTO {
 	public void setUpdatedDate(String updatedDate)
 	{
 		this.updatedDate = updatedDate;
+	}
+
+	public String getUniqueToken()
+	{
+		return uniqueToken;
+	}
+
+	public void setUniqueToken(String uniqueToken)
+	{
+		this.uniqueToken = uniqueToken;
+	}
+
+	public String getEmail()
+	{
+		return email;
+	}
+
+	public void setEmail(String email)
+	{
+		this.email = email;
+	}
+
+	public String getCredential()
+	{
+		return credential;
+	}
+
+	public void setCredential(String credential)
+	{
+		this.credential = credential;
 	}
     
 }

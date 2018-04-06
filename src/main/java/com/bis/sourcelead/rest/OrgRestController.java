@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -107,9 +108,9 @@ public class OrgRestController {
 	}
 	
 	@RequestMapping(value = "/orgChart", method = RequestMethod.POST)
-	public List<UserDTO> orgChart(HttpServletRequest request) throws Exception {
-		
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		return orgService.getUserListForOrgChart(loginOrgLocation.getId());
-	}
+    public List<UserDTO> orgChart(HttpServletRequest request, @RequestParam(defaultValue = "0") long id) throws Exception {
+        
+        OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+        return orgService.getUserListForOrgChart(id == 0 ? loginOrgLocation.getId() : id);
+    }
 }

@@ -20,31 +20,20 @@ import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Weeks;
 
 import com.bis.sourcelead.constants.Constants;
 
 public  class CalendarUtil {
-
-	public static void main(String[] args) throws ParseException {
+	/*public static void main(String[] args){
+		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
+		currentCal.setLenient(false);
+		currentCal.setTime(new Date());
+		System.out.println(currentCal.getTime());
+		System.out.println(new Date());
 		
-		String minString = "11-03-2018";
-		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-		Date min = dateFormat.parse(minString);
-		
-		String maxString = "15-03-2018";
-		Date max = dateFormat.parse(maxString);
-		
-		String inputString = "15-03-2018";
-		Date d = dateFormat.parse(inputString);
-		
-		System.out.println(getMonth16thDateByGivenDate(min,Constants.CURRENT_MONTH).get("STARTDATE"));
-		
-		
-		
-	}
+	}*/
 	/*public static void main(String[] args){
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 		currentCal.setLenient(false);
@@ -987,7 +976,6 @@ public  class CalendarUtil {
 		  Q1EndDate.set(Calendar.DATE, Q1EndDate.getActualMaximum(Calendar.DAY_OF_MONTH));
 		  dateList.put("STARTDATE",Q1StartDate.getTime());
 		  dateList.put("ENDDATE", Q1EndDate.getTime());
-		  System.out.println(Constants.DF_MM.format(Q1EndDate.getTime()));
 	 	 return dateList;
 	
     }
@@ -1101,4 +1089,23 @@ public  class CalendarUtil {
 		return numberofDays;
 
 	}
+ public static String getMonthFromGivenDate(Date date){
+	    SimpleDateFormat   simpleDateFormat = new SimpleDateFormat("MMMM");
+		return simpleDateFormat.format(date);
+	}
+ public static String getYearFromGivenDate(Date date){
+	    SimpleDateFormat   simpleDateFormat = new SimpleDateFormat("YYYY");
+		return simpleDateFormat.format(date);
+	}
+ 
+ public static Date removeTime(Date date) {    
+     Calendar cal = Calendar.getInstance();  
+     cal.setTime(date);  
+     cal.set(Calendar.HOUR_OF_DAY, 0);  
+     cal.set(Calendar.MINUTE, 0);  
+     cal.set(Calendar.SECOND, 0);  
+     cal.set(Calendar.MILLISECOND, 0);  
+     return cal.getTime(); 
+ }
 }
+

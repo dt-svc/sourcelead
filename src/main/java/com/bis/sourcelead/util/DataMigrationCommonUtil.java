@@ -10,6 +10,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,6 +43,7 @@ import com.bis.sourcelead.dto.ImportTimesheetDTO;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -1544,5 +1546,297 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				}
 				
 			}
+		
+		
+		
+		public void dataValidationForProjectTasks(HashMap<String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation) throws Exception {
+			 Projects project = projectsService.getProjectByProjectUUID(dataMigrationDTOJsonCopy.getString("projectUUID"));
+			if(dataMigrationDTOJsonCopy.getString("taskstype").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("taskstype"))) {
+				errorSet.put("taskstype", "Taskstype field is missing");
+			}
+			if(dataMigrationDTOJsonCopy.getString("taskName").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("taskName"))) {
+				errorSet.put("taskName", "Task Title field is missing");
+			}
+			
+			if(dataMigrationDTOJsonCopy.getString("taskStatus").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("taskStatus"))) {
+				errorSet.put("taskStatus", "TaskStatus field is missing");
+			} 
+			
+			if(dataMigrationDTOJsonCopy.getString("taskBillableType").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("taskBillableType"))) {
+				errorSet.put("taskBillableType", "Task BillableType field is missing");
+			} 
+			
+			//Project Type Epic
+			if(!dataMigrationDTOJsonCopy.getString("taskstype").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("taskstype"))) {
+				List<LookUpData> taskTypeList = lookUpDataService.getLookUpDataByCategory(Constants.TASKTYPE);
+				int incr = 0;
+				for(LookUpData taskType:taskTypeList) {
+					if(taskType.getName().trim().toLowerCase().equalsIgnoreCase(dataMigrationDTOJsonCopy.getString("taskstype").trim().toLowerCase())) {
+						incr++;
+						dataMigrationDTOJsonCopy.put("taskstype", taskType.getUniqueKey());
+					} 
+				}
+				if(incr<1) {
+					errorSet.put("taskstype", dataMigrationDTOJsonCopy.getString("taskstype").trim()+" Invalid Task Type");
+				}
+			}
+			
+			//Project Type User Story
+			if(!dataMigrationDTOJsonCopy.getString("epic").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("epic"))) {
+				if(dataMigrationDTOJsonCopy.getString("taskstype").trim().toLowerCase().equalsIgnoreCase("UserStory")) {
+					LookUpData lookupdata = lookUpDataService.getTasksTypeByUniqueKey("Epic");
+					Collection<ProjectTasks> taskList = projectTasksService.getAllTasksByProjectIdAndTaskType(project.getId(), lookupdata.getId());
+					int incr = 0;
+					for(ProjectTasks pt :taskList) {
+						if(pt.getTaskName().trim().toLowerCase().equalsIgnoreCase(dataMigrationDTOJsonCopy.getString("epic").trim().toLowerCase())) {
+							incr++;
+							dataMigrationDTOJsonCopy.put("epic", pt.getId());
+						} 
+					}
+					if(incr<1) {
+						errorSet.put("epic", dataMigrationDTOJsonCopy.getString("epic").trim()+" Invalid Epic Name");
+					}
+				}
+			}
+			
+			//Project Type Bug
+			if(!dataMigrationDTOJsonCopy.getString("userStory").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("userStory"))) {
+				if(dataMigrationDTOJsonCopy.getString("taskstype").trim().toLowerCase().equalsIgnoreCase("bug")) {
+					String userStory = dataMigrationDTOJsonCopy.getString("userStory").trim().toLowerCase();
+					LookUpData lookupdata = lookUpDataService.getTasksTypeByUniqueKey("UserStory");
+					Collection<ProjectTasks> taskList = projectTasksService.getAllTasksByProjectIdAndTaskType(project.getId(), lookupdata.getId());
+					int incr = 0;
+					for(ProjectTasks pt :taskList) {
+						if(pt.getTaskName().equalsIgnoreCase(userStory)) {
+							incr++;
+							dataMigrationDTOJsonCopy.put("userStory", pt.getId());
+						} 
+					}
+					if(incr<1) {
+						errorSet.put("userStory", dataMigrationDTOJsonCopy.getString("userStory").trim()+" Invalid UserStory Name");
+					}
+				}
+				
+			}
+			
+			
+			//Project Type Sub Tasks
+			if(!dataMigrationDTOJsonCopy.getString("subTask").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("subTask"))) {
+				if(dataMigrationDTOJsonCopy.getString("taskstype").trim().toLowerCase().equalsIgnoreCase("SubTask")) {
+					LookUpData lookupdata = lookUpDataService.getTasksTypeByUniqueKey("SubTask");
+					Collection<ProjectTasks> taskList = projectTasksService.getAllTasksByProjectIdAndTaskType(project.getId(), lookupdata.getId());
+					if(taskList != null) {
+						int incr = 0;
+						for(ProjectTasks pt :taskList) {
+							if(pt.getTaskName().trim().toLowerCase().equalsIgnoreCase(dataMigrationDTOJsonCopy.getString("subTask").trim().toLowerCase())) {
+								incr++;
+								dataMigrationDTOJsonCopy.put("subTask", pt.getId());
+							} 
+						}
+						if(incr<1) {
+							errorSet.put("subTask", dataMigrationDTOJsonCopy.getString("subTask").trim()+" Invalid SubTask Name");
+						}
+					}else {
+						errorSet.put("subTask", dataMigrationDTOJsonCopy.getString("subTask").trim()+" Task Name is required");
+					}
+				}
+			}
+			
+			
+			
+			//Project Task  Title
+			if(!dataMigrationDTOJsonCopy.getString("taskName").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("taskName"))) {
+				int length = dataMigrationDTOJsonCopy.getString("taskName").trim().length();	
+				if(length < 251 && length > 1 ) {
+					dataMigrationDTOJsonCopy.put("taskName", dataMigrationDTOJsonCopy.getString("taskName").trim());
+				}else {
+					errorSet.put("taskName", dataMigrationDTOJsonCopy.getString("taskName").trim()+"  should be between 2-250 characters");
+				}
+			}
+			
+			//Assigned To 
+			if(!dataMigrationDTOJsonCopy.getString("assignTaskId").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("assignTaskId"))) {
+			 List<ProjectMembers> projectAssignedList = projectsService.getProjectEmployeeListByProjectIdAndStatus(project.getId(),"Active",orgLocation,null,null);
+			 int incr = 0;
+			 String[] emails = dataMigrationDTOJsonCopy.getString("assignTaskId").trim().replace("\n","").toLowerCase().split(",");
+			 ArrayList<String> validEmails = new ArrayList<>();
+			 for(String email:emails) {
+				 if (isValid(email)) {
+					 validEmails.add(email);
+				 }
+			 }
+			 if(validEmails.size() > 0 ) {
+				 StringBuffer assignedSB = new StringBuffer();
+				 for(ProjectMembers pm:projectAssignedList) {
+					 if(validEmails.contains(pm.getMasterCandidateId().getEmail().trim().toLowerCase())) {
+						 incr++;
+							if(incr > 1) {
+								assignedSB.append(",");
+							}
+							assignedSB.append(pm.getId());
+			    	  } 
+				 } 
+				 if(incr > 0) {
+						 dataMigrationDTOJsonCopy.put("assignTaskId", assignedSB.toString());
+				 }else {
+					 errorSet.put("assignTaskId", dataMigrationDTOJsonCopy.getString("assignTaskId").trim()+" Assigned emails are not matchings");
+				 }
+			 }else {
+					errorSet.put("assignTaskId", dataMigrationDTOJsonCopy.getString("assignTaskId").trim()+" Invalid Email Formate");
+			  }
+			}
+			
+			//Project Status
+			
+			if(!dataMigrationDTOJsonCopy.getString("taskStatus").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("taskStatus"))) {
+				int incr = 0;
+				List<LookUpData> taskStatusList = lookUpDataService.getLookUpDataByCategory(Constants.TASKSTATUS);
+				for(LookUpData taskStatus:taskStatusList) {
+					if(taskStatus.getName().trim().toLowerCase().equalsIgnoreCase(dataMigrationDTOJsonCopy.getString("taskStatus").trim().toLowerCase())) {
+						incr++;
+						dataMigrationDTOJsonCopy.put("taskStatus", taskStatus.getId().toString());
+					} 
+				}
+				if(incr<1) {
+					errorSet.put("taskStatus", dataMigrationDTOJsonCopy.getString("taskStatus").trim()+" Invalid Task Status");
+				}
+			} 
+			
+			//Project priority
+			 List<LookUpData> taskPriorityList = lookUpDataService.getLookUpDataByCategory(Constants.TASKPRIORITY);
+			if(!dataMigrationDTOJsonCopy.getString("priority").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("priority"))) {
+             String priority = dataMigrationDTOJsonCopy.getString("priority").trim().toLowerCase(); 
+			 int incr = 0;
+				for(LookUpData taskPriority:taskPriorityList) {
+					if(taskPriority.getName().trim().toLowerCase().equalsIgnoreCase(priority)) {
+						incr++;
+						dataMigrationDTOJsonCopy.put("priority", taskPriority.getId().toString());
+					} 
+				}
+				if(incr<1) {
+					errorSet.put("priority", dataMigrationDTOJsonCopy.getString("priority").trim()+" Invalid Priority");
+				}
+			}else {
+				for(LookUpData taskPriority:taskPriorityList) {
+					if(taskPriority.getName().trim().toLowerCase().equalsIgnoreCase("p1")) {
+						dataMigrationDTOJsonCopy.put("priority", taskPriority.getId().toString());
+					} 
+				}
+			}
 
+			//Task due date
+			if(!dataMigrationDTOJsonCopy.getString("duDate").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("duDate"))) {
+					dataMigrationDTOJsonCopy.put("duDate", dataMigrationDTOJsonCopy.getString("duDate").trim());
+			}
+			
+			//Project estimates time
+			if(!dataMigrationDTOJsonCopy.getString("estimatedTime").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("estimatedTime"))) {
+				dataMigrationDTOJsonCopy.put("estimatedTime", dataMigrationDTOJsonCopy.getString("estimatedTime").trim());
+			}
+			
+			
+			//Project Severity
+			if(!dataMigrationDTOJsonCopy.getString("severity").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("severity"))) {
+				 List<LookUpData> taskSeverityList = lookUpDataService.getLookUpDataByCategory(Constants.TASKSEVERITY);
+	             String severity = dataMigrationDTOJsonCopy.getString("severity").trim().toLowerCase(); 
+
+				 int incr = 0;
+					for(LookUpData taslSeverity :taskSeverityList) {
+						if(taslSeverity.getName().trim().toLowerCase().equalsIgnoreCase(severity)) {
+							incr++;
+							dataMigrationDTOJsonCopy.put("severity", taslSeverity.getId().toString());
+						} 
+					}
+					if(incr<1) {
+						errorSet.put("severity", dataMigrationDTOJsonCopy.getString("severity").trim()+" Invalid Severity");
+					}
+				}
+			
+			//Project task Owner
+			if(!dataMigrationDTOJsonCopy.getString("taskOwner").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("taskOwner"))) {
+		      List<User> approversList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocation.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+				int incr = 0;
+		      for(User ownerUser:approversList) {
+		    	  //Email Validation.
+		    	  if (isValid(dataMigrationDTOJsonCopy.getString("taskOwner"))) {
+		    		  if(ownerUser.getEmail().trim().toLowerCase().equalsIgnoreCase(dataMigrationDTOJsonCopy.getString("taskOwner").trim().toLowerCase())) {
+							incr++;
+							dataMigrationDTOJsonCopy.put("taskOwner", ownerUser.getId().toString());
+						} 
+		    	  }
+				}
+		      if(incr<1) {
+					errorSet.put("taskOwner", dataMigrationDTOJsonCopy.getString("taskOwner").trim()+" Invalid Owner");
+				}
+			}
+			
+			
+			//Project Status
+			if(!dataMigrationDTOJsonCopy.getString("taskBillableType").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("taskBillableType"))) {
+				String billableType = dataMigrationDTOJsonCopy.getString("taskBillableType").trim().toLowerCase(); 
+				if(billableType.equalsIgnoreCase("billable")) {
+					dataMigrationDTOJsonCopy.put("taskBillableType", "Billable");
+				}else if(billableType.equalsIgnoreCase("nonbillable") || billableType.equalsIgnoreCase("non-billable")) {
+					dataMigrationDTOJsonCopy.put("taskBillableType", "Non-Billable");
+				}else {
+					errorSet.put("taskBillableType", dataMigrationDTOJsonCopy.getString("taskBillableType").trim()+" Invalid Billing Type");
+				}
+			}
+			
+			//Project Task Business Currency
+			if(!dataMigrationDTOJsonCopy.getString("currencyType").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("currencyType"))) {
+				String currency = dataMigrationDTOJsonCopy.getString("currencyType").trim().toLowerCase();
+				if(currency.equalsIgnoreCase("INR")) {
+					dataMigrationDTOJsonCopy.put("currencyType", "INR");
+				}else if(currency.equalsIgnoreCase("AUD")) {
+					dataMigrationDTOJsonCopy.put("currencyType", "AUD");
+				}else if(currency.equalsIgnoreCase("USD")) {
+					dataMigrationDTOJsonCopy.put("currencyType", "USD");
+				}else if(currency.equalsIgnoreCase("GBP")) {
+					dataMigrationDTOJsonCopy.put("currencyType", "GBP");
+				}else if(currency.equalsIgnoreCase("SGD")) {
+					dataMigrationDTOJsonCopy.put("currencyType", "SGD");
+				}else if(currency.equalsIgnoreCase("EUR")) {
+					dataMigrationDTOJsonCopy.put("currencyType", "EUR");
+				}else {
+					errorSet.put("currencyType", dataMigrationDTOJsonCopy.getString("currencyType").trim()+" Invalid currency Type");
+				}
+			}
+			
+			
+			//Project Task Business Value
+			if(!dataMigrationDTOJsonCopy.getString("businessValue").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("businessValue"))) {
+				String value = dataMigrationDTOJsonCopy.getString("businessValue");
+				if(NumberUtils.isNumber(value)){
+					if(Integer.valueOf(value) <= 99999999){
+						dataMigrationDTOJsonCopy.put("businessValue", dataMigrationDTOJsonCopy.getString("businessValue").trim());
+					}else {
+						errorSet.put("businessValue", dataMigrationDTOJsonCopy.getString("businessValue").trim()+" Incorrect integer value");
+					}
+				}
+			}
+			
+			// Project Task Description
+			if(!dataMigrationDTOJsonCopy.getString("taskDescription").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("taskDescription"))) {
+				int length = dataMigrationDTOJsonCopy.getString("taskDescription").trim().length();	
+				if(length < 251 && length > 1 ) {
+					dataMigrationDTOJsonCopy.put("taskDescription", dataMigrationDTOJsonCopy.getString("taskDescription").trim());
+				}else {
+					errorSet.put("taskDescription", dataMigrationDTOJsonCopy.getString("taskDescription").trim()+"  should be between 2-250 characters");
+				}
+			}
+			
+			
+		}
+		
+		
+		//validate Email For Excel Written by Laxman
+		private static boolean isValid(String email) {
+			String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\." + "[a-zA-Z0-9_+&*-]+)*@" + "(?:[a-zA-Z0-9-]+\\.)+[a-z" + "A-Z]{2,7}$";
+
+			Pattern pat = Pattern.compile(emailRegex);
+			if (email == null)
+				return false;
+			return pat.matcher(email).matches();
+		}
 	}

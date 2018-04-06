@@ -2,7 +2,7 @@
 
 function campaignSender(ele,senderId, fromType) {
 	/*fromProfile = fromProfile ? fromProfile : false;*/
-		$.post(sourceleadUrl+"/campaignSender?senderId="+senderId+"", {}, function(data) {
+	$.post(sourceleadUrl+"/campaignSender?senderId="+senderId+"", {}, function(data) {
 			$(".popMask").fadeIn(200);
 			$("#campaignSender").fadeIn(100);
 			$("#campaignSender").html(data);
@@ -16,16 +16,20 @@ function campaignSender(ele,senderId, fromType) {
 						$.post(sourceleadUrl+"/saveCampaignSender?"+tokenParamName+"="+tokenValue, formData, function(data) {
 							if(data == 'success'){
 								senderClose();
-								if(fromType == "hotList" || fromType == "jobList"){
-					            	$(".popMask").fadeOut(200);
-				            		$("#campaignSender").fadeOut(100);
-					             }else{
-					            	 getSendersList("success");
-//								     location.replace(sourceleadUrl+ "/campaignSendersList?&msg=success");
-					             }
-					  			 $("#popUp").empty();
-//					  			$("#senderLoading").removeAttr("style");
-					 			 $(".project_inn_mask").fadeOut(200);
+								if(senderId != ''){
+									 $("#campainSenderAlertMsg").removeAttr("style");
+						  			 $("#campainSenderAlertMsg").css({ display: "block" });
+						  			 $("#campainSenderAlertMsgDiv").html("Successfully Updated sender identity");
+								}else{
+									 $("#campainSenderAlertMsg").removeAttr("style");
+						  			 $("#campainSenderAlertMsg").css({ display: "block" });
+						  			 $("#campainSenderAlertMsgDiv").html("Successfully Created sender identity");
+								}
+					  			
+								 location.replace(sourceleadUrl+ "/campaignSendersList");
+								 $("#popUp").empty();
+					  			 $(".project_inn_mask").fadeOut(200);
+								 campainSenderAlertMsgFadein();	
 					             	
 							}else if(data == '400Body'){
 								$("#senderLoading").removeAttr("style");
@@ -49,7 +53,10 @@ function campaignSender(ele,senderId, fromType) {
 				 $('#replyMailDiv').find('p.jquery_form_error_message').remove();
 				 $('#nickNameDiv').find('p.jquery_form_error_message').remove();
 				 $("#capn_add_sender")[0].reset();
-				 $("#recipientEmail").empty();
+				 $("#cpnReplyMail").val('');
+				 $("#cpnNickName").val('');
+				 $("#cpnSenderFromMail").val('');
+				 $("#cpnSenderName").val('');
 				  $("#recipientEmail").trigger("chosen:updated");
 			 });
 			
@@ -103,13 +110,13 @@ function validateNickName(senderId){
 
 function validateFromMail(toWhom,id){
 	var email = document.getElementById("cpnSenderFromMail").value;
-	if(email != null && email != null && email !='undefined' ){
+	 if(email != null && email != null && email !='undefined' ){
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/validateFromMail?"+tokenParamName+"="+tokenValue+"&email="+email+"&toWhom="+toWhom+"&id"+id,
+			url : sourceleadUrl + "/validateFromMail?"+tokenParamName+"="+tokenValue+"&email="+email+"&toWhom="+toWhom+"&id="+id,
 			success : function(data) {
 				var result = data;
-				if(result == true) {
+				 if(result == true) {
 					$('#fromMailDiv').find('p.jquery_form_error_message').remove();
 					$("input#cpnSenderFromMail").after( "<p class='jquery_form_error_message'>You already have a sender identity with the same email.</span>");
 					document.getElementById("cpnSenderFromMail").setAttribute( 'record-exist', 'yes');
@@ -120,11 +127,14 @@ function validateFromMail(toWhom,id){
 					$('input#cpnSenderFromMail').attr('class','valid form-control');
 					$('#fromMailDiv').find('p.jquery_form_error_message').remove();
 					
+					
 				}
 			},
 
 		});
 	}
+	 
+	
 }
 
 
@@ -133,7 +143,7 @@ function validateReplyMail(toWhom,id){
 	if(email != null && email != null && email !='undefined' ){
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/validateFromMail?"+tokenParamName+"="+tokenValue+"&email="+email+"&toWhom="+toWhom+"&id"+id,
+			url : sourceleadUrl + "/validateFromMail?"+tokenParamName+"="+tokenValue+"&email="+email+"&toWhom="+toWhom+"&id="+id,
 			success : function(data) {
 				var result = data;
 				if(result == true) {
@@ -152,6 +162,7 @@ function validateReplyMail(toWhom,id){
 
 		});
 	}
+	
 }
 
 function maxAlertSenderPopUp(){

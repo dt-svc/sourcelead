@@ -20,9 +20,9 @@ border:none; background-color: none !important; padding:0 5px !important;
 .NewStyleFullWidth .form-group {
 	width: 50%; margin-bottom: 15px; float: left; padding: 0px 2%;
 }
-
-
-
+.dynamic_search .fa-search {
+position: absolute !important;
+}
 </style>
     <!-- Content Area -->
       <section class="content-wraper">
@@ -46,7 +46,7 @@ border:none; background-color: none !important; padding:0 5px !important;
                 </span>            	
             </h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Vendors list </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/vendorsList'/>"> Vendor List</a></div>
         </section>
 		<!-- Project -->
 		 <div id="loading"></div>
@@ -371,11 +371,11 @@ border:none; background-color: none !important; padding:0 5px !important;
 				    </div>
 		            </li> 
 		          </sec:authorize>
-		            
             </ul>
             <div class="clearfix"></div>
-             <div class='remove_search'>
-        		          <input type='text' placeholder='search' id='dataTableSearch'/>
+             <div class='dynamic_search dynamic_search-new'>
+        		   <input type='text' placeholder='Search' id='dataTableSearch'/>
+        		   <span class="cursorPointer" title="Search"><i class="fa fa-search" onclick="getVendorList();"></i></span>     
                 </div> 
         </div>
         
@@ -439,8 +439,10 @@ function clearSearch(){
 	$('#excludeKeyWord').val('').trigger('chosen:updated');
 	$('#orgNameAdvanced').val('').trigger('chosen:updated');
  	$('#country').val('').trigger('chosen:updated'); 
-	$('#state').val('').trigger('chosen:updated');
-	$('#city').val('').trigger('chosen:updated');
+	//$('#state').val('').trigger('chosen:updated');
+	 getStates();
+	//$('#city').val('').trigger('chosen:updated');
+	 getCities();
 	$('#tierAdvanced').val('').trigger('chosen:updated');
 	$('#createdByAdvanced').val('').trigger('chosen:updated');
 	$('#emailAdvanced').val('').trigger('chosen:updated');

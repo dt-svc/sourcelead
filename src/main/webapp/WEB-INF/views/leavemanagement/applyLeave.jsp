@@ -7,8 +7,18 @@
 	  
 <script type="text/javascript">
 window.onload = function() { 
+
 	getPieChartBasedOnUser();
 	getApproversList();
+   if($("#checkbox-1").is(':checked')){
+	   $("#checkbox-1").prop('checked', false);
+	}
+   if($("#checkbox-2").is(':checked')){
+	   $("#checkbox-2").prop('checked', false);
+	}
+   if($("#checkbox-3").is(':checked')){
+	   $("#checkbox-3").prop('checked', false);
+	}
 	}
 </script>
 
@@ -64,7 +74,7 @@ window.onload = function() {
                   <div class="col-md-5 paddingLeft"  id="fromHalfDayDiv">
                     <label class="checkBox mt5">
                       <label class="checkBox pull-left mr10">
-					<input id="checkbox-2" class="checkbox-custom checkboxCustom" id="fromHalfDay" name="fromHalfDay"  type="checkbox" onclick="checkFromHalfDay();">
+					<input id="checkbox-2" class="checkbox-custom checkboxCustom" id="fromHalfDay" name="fromHalfDay"  type="checkbox" onclick="checkFromHalfDay();validateFromHalfDay();">
 					<label for="checkbox-2" class="checkbox-custom-label"></label>
                   </label>
                       Half a Day </label>
@@ -82,7 +92,7 @@ window.onload = function() {
                   <div class="col-md-5 paddingLeft" id="toHalfDayDiv">
                     <label class="checkBox mt5">
                       <label class="checkBox pull-left mr10">
-					<input id="checkbox-3" class="checkbox-custom checkboxCustom" name="toHalfDay" value="NO" type="checkbox" onclick="checkToHalfDay();">
+					<input id="checkbox-3" class="checkbox-custom checkboxCustom" name="toHalfDay" value="NO" type="checkbox" onclick="checkToHalfDay();validateToHalfDay();">
 					<label for="checkbox-3" class="checkbox-custom-label"></label>
                   </label>
                       Half a Day </label>
@@ -105,7 +115,7 @@ window.onload = function() {
               <div class="col-md-9 errorInptgroup errorInptgroup-bottom" id="attachmentId">
                   <div style="float:left; width:100%; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#fff; color:#333; ">
                       <input  type="file" class="pull-left valid" id="uploadBtn" field-name="Attachment"  onchange="uploadButton(0);">
-                      <a id="Button0value=">
+                      <a id="Button0value">
                       <i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right" title="clear" onClick="removedocfile();"></i>
                       </a>
                   </div>
@@ -155,12 +165,120 @@ window.onload = function() {
  </script> 
  <script>
  function checkFromHalfDay(){
-	 $("#checkbox-2").val('YES');
+	
+    $("#checkbox-2").val('YES');
  }
  
  function checkToHalfDay(){
+	
 	 $("#checkbox-3").val('YES');
  }
+  function validateFromHalfDay()
+  {
+	  $("#toHalfDayDiv").hide();
+		 var fromDate = $("#fromDate").val();
+		 var toDate = $("#toDate").val();
+		 if(fromDate.length !=0 && toDate.length!=0)
+	    {
+		 if(fromDate == toDate)
+		 {
+			 
+			 $("#toHalfDayDiv").hide();
+		 }
+		else
+			{
+			 $("#toHalfDayDiv").show();
+			}
+		 
+		
+	    }
+	  
+  }
+  function validateToHalfDay()
+  {
+	  $("#fromHalfDayDiv").hide();
+		 var fromDate = $("#fromDate").val();
+		 var toDate = $("#toDate").val();
+
+		 if(fromDate.length !=0 && toDate.length!=0)
+		    {
+		 if(fromDate == toDate)
+		 {
+			$("#fromHalfDayDiv").hide();
+			
+		  }
+		   else
+			{
+				$("#fromHalfDayDiv").show();
+			}
+		 
+		
+		    } 
+   }
+ function checkFromDate(){
+	 var fromDate = $("#fromDate").val();
+	 var toDate = $("#toDate").val();
+	 
+	 if(fromDate.length !=0 && toDate.length!=0)
+	    {
+		 if(fromDate == toDate && ($("#checkbox-3").is(':checked')) && ($("#checkbox-2").is(':checked'))){
+			 $("#checkbox-3").prop('checked', false);
+			 $("#toHalfDayDiv").hide();
+		 }else{
+			 if(fromDate == toDate && ($("#checkbox-3").is(':checked')) )
+			 {
+				 $("#fromHalfDayDiv").hide();
+			 }
+			else
+				{
+				$("#fromHalfDayDiv").show();
+				}
+			 if(fromDate == toDate && ($("#checkbox-2").is(':checked')) )
+			 {
+				 $("#toHalfDayDiv").hide();
+			 }
+			else
+				{
+				$("#toHalfDayDiv").show();
+				}
+		 }
+	    }
+	 
+ }
+  function checkToDate()
+  {
+	  
+	  var fromDate = $("#fromDate").val();
+	  var toDate = $("#toDate").val();
+	  if(fromDate.length !=0 && toDate.length!=0)
+	  {
+		if(fromDate == toDate && ($("#checkbox-3").is(':checked')) && ($("#checkbox-2").is(':checked'))){
+			 $("#checkbox-3").prop('checked', false);
+			 $("#toHalfDayDiv").hide();
+	  }
+	 else
+	 {
+		 if(fromDate == toDate && ($("#checkbox-2").is(':checked')))
+		  {
+			 $("#toHalfDayDiv").hide();
+		   }
+		  else
+		  {
+			$("#toHalfDayDiv").show();
+		  }
+		 if(fromDate == toDate && ($("#checkbox-3").is(':checked')))
+		 {
+			 $("#fromHalfDayDiv").hide();
+		 }
+		 else
+		 {
+			$("#fromHalfDayDiv").show();
+		 }
+	 }
+   } 
+	  
+	  
+  }
  </script>
   
   
@@ -187,6 +305,7 @@ window.onload = function() {
 			dt.setDate(dt.getDate());
 			$("#toDate").datepicker("option", "minDate", dt);
 			removeStartValid();
+			checkFromDate();
 			getLeaveDetails(finalDateFormatEndDate);
 			}
 		});
@@ -200,6 +319,7 @@ window.onload = function() {
 			dt.setDate(dt.getDate());
 			$("#fromdate").datepicker("option", "maxDate", dt);
 			removeEndValid();
+			checkToDate();
 			validateDate();
 			getLeaveDetails();
 // 			 $('#leaveType').prop('disabled', false).trigger("chosen:updated");
@@ -450,18 +570,23 @@ function getLeaveDetails(finalDateFormatEndDate){
 	var leaveTypeUUID = $("#leaveType").val();
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
+	var skipPolicy = false;
+	var policy = $("#termsAndConditions").text();
+	if(policy != null && policy != '' && policy !='undefined'){
+		skipPolicy = true;
+	}
 	if(leaveTypeUUID !=null && leaveTypeUUID != '' && leaveTypeUUID !='undefined'){
 		$.ajax({
 		   	type: "POST",
 		   	url: sourceleadUrl+"/leaveTypeSummary?&leaveTypeUUID="+leaveTypeUUID,	 
 		    success: function(report) {
-		    	/* if(report.duration == "Full Day"){
+		    	if(report.duration == "Half Day"){
 		    		$("#fromHalfDayDiv").hide();
 		    		$("#toHalfDayDiv").hide();
 		    	}else{
 		    		$("#fromHalfDayDiv").show();
 		    		$("#toHalfDayDiv").show();
-		    	} */
+		    	} 
 		    	
 		    	if(report.reasonRequired == "Y"){
 			 		$("#reason").attr('data-validation',"required");
@@ -506,10 +631,13 @@ function getLeaveDetails(finalDateFormatEndDate){
 		        }else{
 		    		$("#applyId").prop("disabled", false);
 		        }
-		    	if(report.policyDescription !=null && report.policyDescription !='' && report.policyDescription !='undefined'){
-	 				$("#termsAndConditions").html(report.policyDescription);
-	 				document.getElementById("termsModel").style.display="block";
-	 			}
+		    	if(skipPolicy != true){
+		    		if(report.policyDescription !=null && report.policyDescription !='' && report.policyDescription !='undefined'){
+		 				$("#termsAndConditions").html(report.policyDescription);
+		 				document.getElementById("termsModel").style.display="block";
+		 			}
+		    	}
+		    	
 		    }
 		});
 	}

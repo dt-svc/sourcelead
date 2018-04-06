@@ -240,18 +240,19 @@ function assetDetails(assetId) {
 			type : "POST",
 			url : sourceleadUrl	+ "/getAssetById?"+tokenParamName+"="+tokenValue+"&assetId="+ assetId,
 			success : function(json) {
-				    var make = "NO DATA";
-				    var model = "NO DATA";
-				    var name = "NO DATA";
-				    var memory = "NO DATA";
-				    var cpu = "NO DATA";
-				    var workingStatus = "NO DATA";
-				    var hardDisk = "NO DATA";
-				    var monitor = "NO DATA";
-				    var description = "NO DATA";
+					var make = "--";
+				    var model = "--";
+				    var name = "--";
+				    var memory = "--";
+				    var cpu = "--";
+				    var workingStatus = "--";
+				    var hardDisk = "--";
+				    var monitor = "--";
+				    var description = "--";
 				    var shiftAEmpName = " ";
 				    var shiftBEmpName = " ";
-				    var issueDate = "NO DATA";
+				    var issueDate = "--";
+					var macAddress  = "--"
 					
 					if (json.make != null && json.make != '' && json.make != 'undefined') {
 						make = json.make;
@@ -290,20 +291,24 @@ function assetDetails(assetId) {
 					if (json.shiftAEmpName != null && json.shiftAEmpName != '' && json.shiftAEmpName != 'undefined') {
 						shiftAEmpName = json.shiftAEmpName;
 					}else{
-						shiftAEmpName = "NO DATA";
+						shiftAEmpName = "--";
 					}
 					
 					if (json.shiftBEmpName != null && json.shiftBEmpName != '' && json.shiftBEmpName != 'undefined') {
 						shiftBEmpName = json.shiftBEmpName;
 					}else{
-						shiftBEmpName = "NO DATA";
+						shiftBEmpName = "--";
 					}
 					if (json.issueDate != null && json.issueDate != '' && json.issueDate != 'undefined') {
 						issueDate = json.issueDate;
 					}
+					if (json.macAddress != null && json.macAddress != '' && json.macAddress != 'undefined') {
+						macAddress = json.macAddress;
+					}
+					
 					var result = "";
 					result = result + '<div class="require_wrap_details">';
-					result = result + '<h1>'+json.categoryName+' Asset details: <a id="edit-user" href="javascript:editAssetManagement('+assetId+');">Edit<i class="glyphicon glyphicon-pencil"></i>&nbsp;&nbsp</a></h1>';
+					result = result + '<h1>'+json.categoryName+' Asset details: <a class="pull-right" id="edit-user" href="javascript:editAssetManagement('+assetId+');">Edit<i class="glyphicon glyphicon-pencil"></i>&nbsp;&nbsp</a></h1>';
 					result = result + '<div class="require_one">';
 					
 					result = result + '<div class="require_wrap_details_cta"> <b><strong>Category Name:</strong></b> <span>'+json.categoryName+'</span>';
@@ -332,7 +337,7 @@ function assetDetails(assetId) {
 						result = result + ' <div class="clearfix"></div>';
 						result = result + '</div>';
 					}else{
-						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Attched File:</strong></b> <span>NO DATA</span>';
+						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Attched File:</strong></b> <span>--</span>';
 						result = result + ' <div class="clearfix"></div>';
 						result = result + '</div>';
 					}
@@ -357,6 +362,10 @@ function assetDetails(assetId) {
 						result = result + ' </div>';
 						
 						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Hard Disk:</strong></b> <span>'+hardDisk+'</span>';
+						result = result + ' <div class="clearfix"></div>';
+						result = result + ' </div>';
+						
+						result = result + ' <div class="require_wrap_details_cta"> <b><strong>MAC Address:</strong></b> <span>'+macAddress+'</span>';
 						result = result + ' <div class="clearfix"></div>';
 						result = result + ' </div>';
 						
@@ -390,6 +399,16 @@ function assetDetails(assetId) {
 							result = result + '   <div class="clearfix"></div>';
 							result = result + '  </div>';
 						}
+						
+
+					  if(json.assetCustomFieldlabelNameAndValue != null && json.assetCustomFieldlabelNameAndValue != "" && json.assetCustomFieldlabelNameAndValue != 'undefined'){
+						 $.each(json.assetCustomFieldlabelNameAndValue, function(key, value) {
+			            	  var labelNameAndlabelData = value.split("$");
+			            	  result = result + '  <div class="require_wrap_details_cta"> <b><strong>'+labelNameAndlabelData[0]+':</strong></b> <span>'+labelNameAndlabelData[1]+'</span>';
+							  result = result + '   <div class="clearfix"></div>';
+							  result = result + '  </div>';
+			              });
+		              } 
 						
 						result = result + ' <div class="require_wrap_details_cta width100percnt description80"> <b><strong>Description:</strong></b> <span>'+description+'</span>';
 						result = result + ' <div class="clearfix"></div>';
@@ -436,6 +455,13 @@ function editAssetManagement(assetId){
 			var empA = "";
 			var empB = "";
 			var issueDate = "";
+			var macAddress = "";
+			
+			 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+			  var sectionId = '${section.id}';
+			  preapareCustomFieldDetails(assetId,sectionId);
+			</c:forEach>
+			
 			if (json.make != null && json.make != '' && json.make != 'undefined') {
 				make = json.make;
 			} 
@@ -491,6 +517,10 @@ function editAssetManagement(assetId){
 			if (json.issueDate != null && json.issueDate != '' && json.issueDate != 'undefined') {
 				issueDate = json.issueDate;
 			}
+			
+			if (json.macAddress != null && json.macAddress != '' && json.macAddress != 'undefined') {
+				macAddress = json.macAddress;
+			} 
 			
 			if(json.workingStatus == 'Working'){
 				selected1 = 'selected';
@@ -555,6 +585,8 @@ function editAssetManagement(assetId){
 				result = result + '<input type="text" class="form-control input-sm" name="harddisk" value="'+hardDisk+'" data-validation-optional="true" data-validation="validate_Space validate_NumberAndAlphabet validate_length length2-100" placeholder="Hard Disk">';
 				result = result + '</div>';
 				
+				result = result + ' <div class="showEditfields" id="customFieldDataId"></div>';
+				
 				if (json.categoryName != null && json.categoryName != '' && json.categoryName != 'undefined' && json.categoryId == 2) {
 					result = result + ' <div class="col-md-3 minHeight50">';
 					result = result + '<input type="text" class="form-control input-sm" name="monitor" value="'+monitor+'" data-validation-optional="true" data-validation="validate_Space validate_length length2-100" placeholder="Monitor">';
@@ -562,6 +594,13 @@ function editAssetManagement(assetId){
 				}
 				
 			}
+		    
+		
+			result = result + ' <div class="col-md-3 minHeight50">';
+			result = result + '<input type="text" class="form-control input-sm" name="macAddress" value="'+macAddress+'" data-validation-optional="true" data-validation="validate_length length8-100" placeholder="MAC Address">';
+			result = result + '</div>';
+			
+			
 			//this block not visible to others category assets
 			
 				result = result + '<div class="clearfix"></div>';
@@ -967,7 +1006,18 @@ function clearDate(){
 $('#issueDate').val('');	
 }
 </script>
-
+<script>
+function preapareCustomFieldDetails(assetId,sectionId){
+	$.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/getAllASectionCustomFields?&assetId="+assetId+"&requestFrom=asset"+"&sectionId="+sectionId,        
+         success :function(data) {
+        	 $('#customFieldDataId').empty();
+        	 $('#customFieldDataId').append(data);
+           },
+     }); 
+}s
+</script>
 <!-- <script>
 	$("#edit-user").click(function(){
 		$(".user_summary_edit").slideToggle(100);

@@ -65,58 +65,55 @@ function offboardingTemplatesList(){
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getOffboardingTemplatesList?${_csrf.parameterName}=${_csrf.token}",    
-            success :function(data) {
-               		
-			    	     $("#offboardingLoading").removeAttr("style");
-	                	 $("#offboardingTemplatesList").empty();
-	                	 var result = "";
-	                	 result = result +"<table id='offboardingPagination' class='display' cellspacing='0' width='99.9%' >"; 
-	                     result = result +"<thead>"; 
-	                     result = result +"  <tr>"; 
-	                     result = result +"    <th>Template Name</th>";
-	                     result = result +"    <th>Description</th>";
-	                     result = result +"    <th>Created Date</th>";
-	                     result = result +"    <th>Created By</th>";
-	                     result = result +"    <th>Status</th>";
-	                     '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE\')">'
-	                    	 result = result +"<th>Actions</th>";
-	                     '</sec:authorize>';
-	                     result = result +"  </tr>"; 
-	                     result = result +"</thead>";
-	                     result = result +"<tbody>"; 
-	                     
-	                     var json = JSON.parse(data);
-	                     
-	                    	 for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i]; 
-	                    	 result = result +"<tr>";
-	                    	 
-	                    		 result = result +"<td><div class='tbldata-dotdot-sm'><span title='"+opt.templateName+"'>"+opt.templateName+"</span></div></td>";
-	                    		
-	                    		 result = result +"<td><div><span title='"+opt.description+"'>"+opt.description+"</span></div></td>";
-	                    		 
-	                    		 result = result +"<td><div><span>"+opt.templateCreatedDate+"</span></div></td>";
-	                    		 
-	                    		 result = result +"<td><div><span>"+opt.createdUser+"</span></div></td>";
-	                    		 
-	                    		 result = result +"<td><div><span>"+opt.templateStatus+"</span></div></td>";
-	                    		 
-	                    		 '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE\')">'
-			                     	result = result +"<td><div class=''><a href='"+sourceleadUrl+"/viewOffboardTemplateByTemplateUUID?templateUUID="+opt.templateUUID+"'>View</a></div></td>"; 
-			                     '</sec:authorize>';
-		                     
-		                     result = result +"</tr>";
-		                     result = result +"</tr>";
-	                     }
-	                     result = result +" </tbody>";
-	                     result = result +"</table>"; 
-	                     $("#onboardingLoading").removeAttr("style");
-	                     $("#offboardingTemplatesList").append(result); 
-	                     
-	                     offboardingPagenation(); 
+            success :function(response) {
+            	if (response.response === "AWKWARD") {
+            	    location.href = "/errorPage";
+            	} else if (response.response === "SUCCESS") {
+            		$("#offboardingLoading").removeAttr("style");
+               	 	$("#offboardingTemplatesList").empty();
+               	 	var result = "";
+               	 	result = result +"<table id='offboardingPagination' class='display' cellspacing='0' width='99.9%' >"; 
+                    result = result +"<thead>"; 
+                    result = result +"  <tr>"; 
+                    result = result +"    <th>Template Name</th>";
+                    result = result +"    <th>Description</th>";
+                    result = result +"    <th>Created Date</th>";
+                    result = result +"    <th>Created By</th>";
+                    result = result +"    <th>Status</th>";
+                    '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE\')">'
+                   	 result = result +"<th>Actions</th>";
+                    '</sec:authorize>';
+                    result = result +"  </tr>"; 
+                    result = result +"</thead>";
+                    result = result +"<tbody>"; 
                     
+                    var json = JSON.parse(response.object);
+                    
+                   	for (var i = 0; i < json.length; i++) { 
+                   		var opt = json[i]; 
+                   	 	result = result +"<tr>";
+                   		result = result +"<td><div class='tbldata-dotdot-sm'><span title='"+opt.templateName+"'>"+opt.templateName+"</span></div></td>";
+                   		result = result +"<td><div><span title='"+opt.description+"'>"+opt.description+"</span></div></td>";
+                   		result = result +"<td><div><span>"+opt.templateCreatedDate+"</span></div></td>";
+                   		result = result +"<td><div><span>"+opt.createdUser+"</span></div></td>";
+                   		result = result +"<td><div><span>"+opt.templateStatus+"</span></div></td>";
+                   		'<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE\')">'
+		                	result = result +"<td><div class=''><a href='"+sourceleadUrl+"/viewOffboardTemplateByTemplateUUID?templateUUID="+opt.templateUUID+"'>View</a></div></td>"; 
+		                '</sec:authorize>';
+	                    result = result +"</tr>";
+	                    result = result +"</tr>";
+                    }
+                    result = result +" </tbody>";
+                    result = result +"</table>"; 
+                    $("#onboardingLoading").removeAttr("style");
+                    $("#offboardingTemplatesList").append(result); 
+                    offboardingPagenation(); 
+            	} else if (response.indexOf('Sign In') !== -1) {
+            		location.replace(sourceleadUrl);
+            	} else {
+            	    showError("Operation failed, please try again");
+            	}
           },
-            
        }); 
   } 
 </script>   

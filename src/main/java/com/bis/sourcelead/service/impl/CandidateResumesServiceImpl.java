@@ -145,8 +145,12 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 					activitySummary.append("File").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(fileInfo.getFileName()).append(Constants.NEW_VALUE_TAG_END);
 				}
 				// candidateResume.setDocFile(multiFile.getBytes());
-				candidateResume.setFileURL(fileInfo.getFileURL());
-				candidateResume.setFileName(fileInfo.getFileName());
+				if(StringUtils.isNotBlank(fileInfo.getFileURL())) {
+					candidateResume.setFileURL(fileInfo.getFileURL());
+				}
+				if(StringUtils.isNotBlank(fileInfo.getFileName())) {
+					candidateResume.setFileName(fileInfo.getFileName());
+				}
 				
 				if (StringUtils.isBlank(candidateResumeDTO.getTitle())) {
 					candidateResume.setTitle(fileInfo.getFileName());

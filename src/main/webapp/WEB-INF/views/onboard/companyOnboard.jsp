@@ -190,7 +190,7 @@ right: 15px;
 				   <img id="orgImage" data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" onerror="predefineOrgImage(this);" alt="Org Image" class="comp-image img-responsive">
 				   </c:if>
 				   <c:if test="${empty SourceLeadWeb_org.fileContentType}">
-				   <img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value='/resources/images/office-image.jpg'/>" alt="Org Image" class="comp-image img-responsive">
+				   <img id="orgImage" data-id="orgLogoImage" onerror="predefineOrgImage(this);" src="<c:url value='/resources/images/office-image.jpg'/>" alt="Org Image" class="comp-image img-responsive">
 				   </c:if>
 				  <div class="btn-group uploadfile-onboard">
 					  <button type="button" class="btn btn-primary">
@@ -785,7 +785,6 @@ var validationSettings = {
 		        		document.getElementById("errorImage").style.display=""; 
              		}else{
              		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	          		
              		$.ajax({
 	              	      type: "POST",
 	              	      data: formData,

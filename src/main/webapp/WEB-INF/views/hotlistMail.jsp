@@ -76,7 +76,7 @@ display: none;
           <div class="col-md-9 positionRelative disable-choosen-dropdown">
           
 <div class="input-group positionRelative col-md-12 noPad" onclick="manuallyEnterHotlistToEmail();">
-<select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList"  data-validation="required" name="Toemails"></select>
+<select class="form-control"  field-name="To List" multiple data-placeholder="Select Multiple Mails List" id="emailsList"  data-validation="required" name="Toemails"></select>
 
 
 <!-- 		<span class="refreshicon-new input-group-addon cursorPointer bg-blue" onclick="getRecipientContactsList();"><i class="fa fa-refresh "></i></span>	 -->
@@ -1310,8 +1310,10 @@ function getRecipient(){
  <script>
 function getRecipientContactsList(){
 	    var result = "";
-	 	result = result +" <div class='remove_search'>";
+	 	result = result +" <div class='dynamic_search dynamic_search-new'>";
 	 	result = result +" <input type='text' placeholder='Search' id='vendorContactsDataTableSearch'/>";
+	 	result = result +"  <span class='cursorPointer' title='Search'><i class='fa fa-search' onclick='vendorContactDataTableList();'></i></span>";     
+
 	 	result = result +"</div>";
 	 	
 	    result = result +'<div class="clearfix popupFilter">';
@@ -1452,7 +1454,7 @@ $('input[class="myRecipantsContactsCheckbox"]').each(function(i) {
 	    $("input[type=search]").hide();
 	    $("#vendorContactsDataTableSearch").keyup(function(e) {
 	    	   if(e.which === 13) {
-	    		   vendorContactDataTableList();
+	    		   vendorContactDataTableList1();
 	    	   }
 	    	});
 }

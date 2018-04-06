@@ -25,6 +25,7 @@ import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Component
 public class RequirementHelper {
@@ -39,6 +40,9 @@ public class RequirementHelper {
 	
 	@Autowired
 	private RequirementApproverHierarchyService requirementApproverHierarchyService;
+	
+	@Autowired
+	private CommonUtil commonUtil; 
 	
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
@@ -62,7 +66,7 @@ public class RequirementHelper {
 		if (null != requirement) {
 			requirementIndex.setRequirementId(requirement.getId());
 			requirementIndex.setOrgLocationId(requirement.getOrgLocationId().getId());
-			requirementIndex.setJobTitle(requirement.getJobTitle());
+			requirementIndex.setJobTitle(commonUtil.firstLetterCapitalizedString(requirement.getJobTitle()));
 			requirementIndex.setJobType(requirement.getJobType());
 			requirementIndex.setOtherJobType(requirement.getOtherJobType());
 			requirementIndex.setIndustryName(requirement.getIndustryName());
@@ -74,6 +78,9 @@ public class RequirementHelper {
 			requirementIndex.setIsreceivingApplicants(requirement.getIsreceivingApplicants());
 			requirementIndex.setUrl(requirement.getUrl());
 			requirementIndex.setGeneratedId(requirement.getGeneratedId());
+			if(requirement.getIsClientJob() !=null){
+				requirementIndex.setIsClientJob(requirement.getIsClientJob());
+			}
 			if(requirement.getMedicalClearence() != null){
 			requirementIndex.setMedicalClearence(requirement.getMedicalClearence());
 			}
@@ -94,7 +101,7 @@ public class RequirementHelper {
 			}
 			
 			if(requirement.getProjectClientID() != null){
-				requirementIndex.setProjectClientID(requirement.getProjectClientID().toString());
+				requirementIndex.setProjectClientID(requirement.getProjectClientID().getId().toString());
 				}
 				if(requirement.getClientId() != null && requirement.getClientId().getId() != null){
 			requirementIndex.setOrgRelationId(requirement.getClientId().getId().toString());

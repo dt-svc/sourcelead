@@ -1,20 +1,36 @@
 package com.bis.sourcelead.web;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.bis.sourcelead.dto.UserManualsDTO;
+import com.bis.sourcelead.service.UserManualService;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@PropertySource("${propertyLocation:app.properties}")
 public class StaticWebController {
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
 	
 	@RequestMapping("/about-us.html")
 	public String aboutUs() {
 		return "static-web/about-us";
 	}
+	
+	@Autowired
+	UserManualService userManualService;
 	
 	@RequestMapping("/termsofuse.html")
 	public String termsofuse() {
@@ -168,14 +184,13 @@ public class StaticWebController {
 	}
 	
 	@RequestMapping("/sourceleadJobPage.html")
-	public String sourceleadJobPage(HttpServletRequest request) {
-	    Map<String,String> map =new HashMap();
-	    map.put("SourceleadStaticUrl", request.getRequestURL().toString().split(request.getRequestURI())[0]);
+	public String sourceleadJobPage() {
 		return "openJobs/sourceleadJobPage";
 	}
 	
 	@RequestMapping(value={ "/","/index.html"})
-	public String index() {
+	public String index(HttpServletRequest request) {
+		SourceLeadSessionManager.setSessionAttribute(request, "sourceleadUrl", sourceleadUrl);
 		return "static-web/index";
 	}
 	
@@ -222,5 +237,13 @@ public class StaticWebController {
 	@RequestMapping("/vms.html")
 	public String vms() {
 		return "static-web/vms";
+	}
+	
+	@RequestMapping("/sourcelead_help.html")
+	public ModelAndView sourceleadHelp() {
+		ModelAndView modal = new ModelAndView();
+		modal.addObject("sourceleadUrl",sourceleadUrl);
+		modal.setViewName("static-web/sourceleadHelp");
+		return modal;
 	}
 }

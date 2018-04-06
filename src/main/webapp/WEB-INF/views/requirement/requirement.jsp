@@ -1533,12 +1533,14 @@ function changeValidationType() {
 	
 	if(isVisible == 'N'){
 		$("div[name=fieldVisible] input").each(function() {
-			if($(this).attr('data-validation') && $(this).attr('data-validation') === "required") {
-				$(this).attr('data-validation-optional', 'true');
-				$(this).removeAttr('data-validation');
-			} else if($(this).attr('data-validation-optional')) {
-				$(this).attr('data-validation', 'required');
-				$(this).removeAttr('data-validation-optional');
+			if($(this).attr('data-check') && ($(this).attr('data-check') === true || $(this).attr('data-check') === "true")){
+				if($(this).attr('data-validation') && $(this).attr('data-validation') === "required") {
+					$(this).attr('data-validation-optional', 'true');
+					$(this).removeAttr('data-validation');
+				} else if($(this).attr('data-validation-optional')) {
+					$(this).attr('data-validation', 'required');
+					$(this).removeAttr('data-validation-optional');
+				}
 			}
 		});
 	}
@@ -1731,29 +1733,41 @@ function validate_fileupload(fileName)
 	  		         contentType:false, 
 					  url : sourceleadUrl+"/storeRequirement?"+tokenParamName+"="+tokenValue+"&saveType="+jobSaveType,
 					  	success : function(result) {
-					  	//$("#requirementLoading").removeAttr("style");	
-					  	if(saveType != 'saveAndContinue'){
-					  		location.replace(sourceleadUrl+"/jobs");
-					  	}
-					  	
-						$("#selector2").removeAttr("style");
-			    		$("#selector2").css({ display: "block" });
-			    		if(saveType == 'save'){
-			    			$("#msgJobDiv").html("Successfully job  saved..");
-			    		}else if(saveType == 'draft'){
-			    			$("#msgJobDiv").html("Successfully job  saved to Draft");
-			    		}
-			    		else if(saveType == 'submitForApproval'){
-			    			$("#msgJobDiv").html("Successfully job  submitted for approval");
-			    		}else if(saveType == 'saveAndContinue'){
-			    			if(result != 'MissingData'){
-			    				$("#msgJobDiv").html("Successfully job saved..");
-			    				location.replace(sourceleadUrl+"/jobReleaseManagement?requirementUUID="+result);	
-			    			}
-			    			
-			    		}
-		     			msgFadein();
-
+					  		if(result.object === 'MissingData'){
+					  			showError("Invalid data");
+					  			$("#requirementLoading").removeAttr("style");	
+					  		}else{
+					  			if (result.response === "SESSION_TIMEDOUT") {
+					  				location.replace(sourceleadUrl);
+				                } else if (result.response === "AWKWARD") {
+				                    location.href = "/errorPage";
+				                } else if (result.response === "SUCCESS") {
+								  	if(saveType != 'saveAndContinue'){
+								  		location.replace(sourceleadUrl+"/jobs");
+								  	}
+									$("#selector2").removeAttr("style");
+						    		$("#selector2").css({ display: "block" });
+						    		if(saveType == 'save'){
+						    			$("#msgJobDiv").html("Successfully job  saved..");
+						    		}else if(saveType == 'draft'){
+						    			$("#msgJobDiv").html("Successfully job  saved to Draft");
+						    		}
+						    		else if(saveType == 'submitForApproval'){
+						    			$("#msgJobDiv").html("Successfully job  submitted for approval");
+						    		}else if(saveType == 'saveAndContinue'){
+						    			if(result.object != 'MissingData'){
+						    				$("#msgJobDiv").html("Successfully job saved..");
+						    				location.replace(sourceleadUrl+"/jobReleaseManagement?requirementUUID="+result.object);	
+						    			}
+						    		}
+					     			msgFadein();
+				     			
+				                } else if (result.indexOf('Sign In') !== -1) {
+									location.replace(sourceleadUrl);
+								} else {
+				                    showError("Operation failed, please try again");
+				                }
+					  		}
 					},
 				});
 			return true;

@@ -18,33 +18,39 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationBankingDetails;
 import com.bis.sourcelead.entity.OrglocationOnboardDocuments;
-import com.bis.sourcelead.entity.OrglocationSignatory;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ModulesService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrglocationBankingDetailsService;
 import com.bis.sourcelead.service.OrglocationOnboardDocumentsService;
 import com.bis.sourcelead.service.OrglocationSignatoryService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+
+import opennlp.tools.parser.Cons;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
@@ -66,6 +72,9 @@ public class OrgSettingsController {
 	@Autowired
 	ModulesService modulesService;
 	
+	 @Autowired
+	 private OrgLocationService orgLocationService;
+	
 	@Autowired
 	StatesService statesService;
 	
@@ -83,6 +92,12 @@ public class OrgSettingsController {
 	
 	@Autowired
 	CountriesService countriesService;
+	
+	@Autowired
+	OrgLicenseSubscriptionService orgLicenseSubscriptionService;
+	
+	@Autowired
+	SourceleadRolesService sourceleadRolesService;
 
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
@@ -97,16 +112,6 @@ public class OrgSettingsController {
 		ModelAndView model = new ModelAndView();
 		commonUtil.highLightMenu(Constants.OrgSettings, request);
 		List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
-		List<Modules> modulesList = null;
-		List<Modules> requirementSubModulesList = null;
-		try {
-			modulesList = modulesService.getSourceLeadModules();
-			model.addObject("modulesList", modulesList);
-			requirementSubModulesList = modulesService.getRequirementSubModules();
-			model.addObject("requirementSubModulesList", requirementSubModulesList);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		
 		List<States> states = statesService.getAllStatesByCountry(orgLocations.getCountry());
 		model.addObject("statesList", states);
@@ -163,7 +168,23 @@ public class OrgSettingsController {
 		if(countries != null){
 			model.addObject("loginCountryName", countries.getName());
 		}
-
+		
+		List<OrgLicenseSubscription> subscriptionList = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByOrgId(org.getId());
+		List<String> orgSubscribedCountriesList = new ArrayList<>();
+		StringBuilder subscriptionCountries = new StringBuilder(); 
+		if(subscriptionList != null && !subscriptionList.isEmpty()) {
+			for(OrgLicenseSubscription subscription : subscriptionList) {
+				Countries subscriptionCountry = countriesService.getCountriesByCountryName(subscription.getCountry());
+				subscriptionCountries.append(subscriptionCountry.getCode2()).append(",");
+				orgSubscribedCountriesList.add(subscription.getCountry());
+			}
+		}
+		
+		 String subscribedCountries = subscriptionCountries.toString();
+		 subscribedCountries = subscribedCountries.substring(0,subscribedCountries.length()-1);
+		 
+		model.addObject("orgSubscribedCountriesList", orgSubscribedCountriesList);
+		model.addObject("subscribedCountries", subscribedCountries);
 		model.addObject("timezoneList", timezoneList);
 		model.addObject("orgLocations", orgLocations);
 		if(StringUtils.isNotBlank(tabType)) {
@@ -201,15 +222,16 @@ public class OrgSettingsController {
 	}
 	
 	// @PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
-	@RequestMapping(value = "/orgChart")
-	public ModelAndView orgChart(HttpServletRequest request) throws Exception
-	{
-//		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		ModelAndView model = new ModelAndView();
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("orgChart");
-		return model;
-	}
+	 @RequestMapping(value = "/orgChart")
+	    public ModelAndView orgChart(HttpServletRequest request) throws Exception
+	    {
+	        Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+	        ModelAndView model = new ModelAndView();
+	        model.addObject("sourceleadUrl", sourceleadUrl);
+	        model.addObject("locations", orgLocationService.getAllOrgLocationsByOrgId(org.getId()));
+	        model.setViewName("orgChart");
+	        return model;
+	    }
 	
 	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
 	@RequestMapping(value = "/orgRolesList")
@@ -217,7 +239,6 @@ public class OrgSettingsController {
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
-		commonUtil.highLightMenu(Constants.OrgSettings, request);
 		List<RoleHierarchy> hierarchyList = null;
 		try {
 			hierarchyList = roleHierarchyService.getRoleHierarchyByOrgLocationId(orgLocations.getId());
@@ -226,6 +247,17 @@ public class OrgSettingsController {
 		}
 		model.addObject("hierarchyList", hierarchyList);
 		model.setViewName("orgRolesList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	
+	@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	@RequestMapping(value = "/guestOrgActionRoles")
+	public ModelAndView guestOrgActionRoles(HttpServletRequest request)
+	{
+		ModelAndView model = new ModelAndView();
+		model.setViewName("guestOrgActionRoles");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
@@ -291,7 +323,7 @@ public class OrgSettingsController {
 		Roles roles = rolesService.getRolesByIdAndOrgLocationId(roleId, orgLocations.getId());
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		if (null != roles) {
-			List<SourceleadActions> actionsList = sourceleadActionsService.getAllSourceleadActionsByOrgLocationId(orgLocations);
+			List<SourceleadActions> actionsList = sourceleadActionsService.getAllSourceleadActionsForEnrollByOrgLocationIdAndOrgId(orgLocations,org);
 			if (null != roles.getActionId()) {
 				ArrayList<SourceleadActions> sourceleadActionsList = new ArrayList<SourceleadActions>();
 				List<Long> roleActonList = new ArrayList<Long>();
@@ -316,6 +348,56 @@ public class OrgSettingsController {
 			model.addObject("roleDisplayName", roles.getDisplayName());
 			model.addObject("roleName", roles.getRoleName());
 			model.setViewName("enrollRoleActions");
+			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "actionRolesMsg");
+			if (!isNullOrEmpty(msg)) {
+				model.addObject("msg", msg);
+				SourceLeadSessionManager.removeSessionAttribute(request, "actionRolesMsg");
+			}
+		}
+		else {
+			model.setViewName("registration/persmissionDenied");
+		}
+		return model;
+	}
+	
+	
+	
+	
+	
+	
+	@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	@RequestMapping(value = "/guestEnrollRoleActions")
+	public ModelAndView guestEnrollRoleActions(HttpServletRequest request, @RequestParam(value = "uuid", required = true) String uuid) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		SourceleadRoles roles = sourceleadRolesService.getSourceleadRolesByUUID(uuid);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		if (null != roles) {
+			List<SourceleadActions> actionsList = sourceleadActionsService.getAllSourceleadGuestOrgActionsForEnroll();
+			if (null != roles.getActionId()) {
+				ArrayList<SourceleadActions> sourceleadActionsList = new ArrayList<SourceleadActions>();
+				List<Long> roleActonList = new ArrayList<Long>();
+				for (String s : roles.getActionId().split(",")) {
+					roleActonList.add(Long.parseLong(s));
+				}
+				for (SourceleadActions sleadActions : actionsList) {
+					if (roleActonList.contains(sleadActions.getId())) {
+						sleadActions.setIsActionConfigured(Constants.YES);
+					}
+					else {
+						sleadActions.setIsActionConfigured(Constants.NO);
+					}
+					sourceleadActionsList.add(sleadActions);
+				}
+				model.addObject("actionsList", sourceleadActionsList);
+			}
+			else {
+				model.addObject("actionsList", actionsList);
+			}
+			model.addObject("roleDisplayName", roles.getDisplayName());
+			model.addObject("roleName", roles.getRoleName());
+			model.addObject("uuid", uuid);
+			model.setViewName("enrollGuestRoleActions");
 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "actionRolesMsg");
 			if (!isNullOrEmpty(msg)) {
 				model.addObject("msg", msg);

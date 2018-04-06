@@ -30,6 +30,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ExpensesApproverDTO;
 import com.bis.sourcelead.dto.ExpensesApproverHierarchyDTO;
+import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -40,6 +42,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
@@ -154,6 +157,7 @@ public class ExpensesApprovalRestController {
 		}
    }
 	
+	//unused method
 	@RequestMapping(value = "/getExpensesApprovalDetailsByExpenseId")
 	public String getExpensesApprovalListByExpenseId(@RequestParam(value="expenseId", required=false) String expenseId) throws Exception {
 		Expenses expenses = expensesService.getExpenseById(Long.parseLong(expenseId));
@@ -164,9 +168,10 @@ public class ExpensesApprovalRestController {
 		return commonUtil.toJSON(expenses);
    }
 	
-	
+	//unused method
 	@RequestMapping(value = "/getExpensesApprovalCategoryByExpenseId")
-	public String getExpensesApprovalCategoryByExpenseId(@RequestParam(value="expenseId", required=false) String expenseId,@RequestParam(value="locationCode") String locationCode) throws Exception {
+	public ResponseList<ExpensesEntries> getExpensesApprovalCategoryByExpenseId(@RequestParam(value="expenseId", required=false) String expenseId,@RequestParam(value="locationCode") String locationCode) throws Exception {
+		ResponseList<ExpensesEntries> reponseEntries = new ResponseList<ExpensesEntries>();
 		List<ExpensesEntries> expensesEntries = expensesEntriesService.getExpensesEntriesByExpenseId(Long.parseLong(expenseId));
 		
 		 OrgLocations orglo = orgLocationService.getOrgLocationsByLocationCode(locationCode);
@@ -175,7 +180,8 @@ public class ExpensesApprovalRestController {
 		for(ExpensesEntries expEntries:expensesEntries){
 			expEntries.setExpenseDateString(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),expEntries.getExpenseDate()));
 		}
-		return commonUtil.toJSON(expensesEntries);
+		reponseEntries.setData(expensesEntries);
+		return reponseEntries;
    }
 	
 	
@@ -184,10 +190,13 @@ public class ExpensesApprovalRestController {
 	
 	
     @RequestMapping(value = "/saveExpenseApprovalStatusByExpenseId", method = RequestMethod.POST)
-    public  String saveExpenseApprovalStatusByExpenseId(HttpServletRequest request,@RequestParam(value="expenseId", required=false) Long expenseId,
-                                                @RequestParam(value="approvalStatus", required=false) String approvalStatus,@RequestParam(value="rejectedReason", required=false) String rejectedReason) throws Exception{
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+    public  Response<String> saveExpenseApprovalStatusByExpenseId(HttpServletRequest request,@RequestParam(value="expenseId", required=false) Long expenseId,
+        @RequestParam(value="approvalStatus", required=false) String approvalStatus,@RequestParam(value="rejectedReason", required=false) String rejectedReason){
+    	Response<String> reponse = new Response<String>();
+    	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if(user != null && orgLoc != null) {
+    	try {
 		 String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 	 	expensesApprovalService.updateApprovalStatusByApproverForExpense(expenseId, user.getId(),approvalStatus, rejectedReason,orgLoc);
 	 	ExpensesApproverHierarchy eah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(user.getId(), expenseId, orgLoc.getId());
@@ -217,13 +226,17 @@ public class ExpensesApprovalRestController {
 			 		sendEmailToVendorAtExpensesApprovalStatus(eah.getExpenseId().getTotalAmount(),projectMembers,user,orgLoc,startDate, endDate,rejectedReason,currencyCode,approvalStatus);
 		 	   }
 	 	}
-	 	
-	 	
-	 	
-	 	
-	 	
-	 	
-        return "success";
+		 	reponse.setResponse(Result.SUCCESS.name());
+		 	reponse.setResponseMessage(Result.SUCCESS.name());
+    	}catch(Exception e) {
+    		reponse.setResponse(Result.AWKWARD.name());
+    	 	reponse.setResponseMessage(Result.AWKWARD.name());
+    	}
+	}else {
+		reponse.setResponse(Result.SESSION_TIMEDOUT.name());
+	 	reponse.setResponseMessage(Result.SESSION_TIMEDOUT.name());
+	}
+        return reponse;
     }
 
    
@@ -310,7 +323,7 @@ public class ExpensesApprovalRestController {
 			notificationScenario.setOrgCode(orgLoc.getLocationCode());
 			//String url = null;
 			String actionLink = "";
-			emailScenerioUtil.sendNotification(actionLink, user, approver.getApproverUserId(), orgLoc, notificationScenario);
+			emailScenerioUtil.sendNotification(actionLink, user, approver.getApproverUserId(), orgLoc, notificationScenario,new HashMap<String,String>());
 			
 		    }
 		}
@@ -417,7 +430,7 @@ public class ExpensesApprovalRestController {
 		String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getSubject(),globalVarsMap);
 		notificationScenario.setBody(notificationBody);
 		notificationScenario.setOrgCode(loginOrgLocation.getLocationCode());
-		emailScenerioUtil.sendNotification(actionLink, loginUser, projectMembers.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario);  
+		emailScenerioUtil.sendNotification(actionLink, loginUser, projectMembers.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());  
    }
 	
 	

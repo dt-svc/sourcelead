@@ -77,23 +77,45 @@ public class UserMailUnsubscribeDaoImpl implements UserMailUnsubscribeDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public UserMailUnsubscribe getUserMailUnsubscriptionByUserIdAndOrgLocationId(Long userId, Long orgLocationId) throws Exception
+	public UserMailUnsubscribe getUserMailUnsubscriptionByUserId(Long userId) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from UserMailUnsubscribe umus where umus.userId.id =:userId and umus.orgLocationId.id =:orgLocationId ";
-		UserMailUnsubscribe unsubscription = (UserMailUnsubscribe) session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).uniqueResult();
-		return unsubscription;
+		String query = "from UserMailUnsubscribe umus where umus.userId.id =:userId ";
+		List<UserMailUnsubscribe> unsubscriptionList =  session.createQuery(query).setLong("userId", userId).list();
+		UserMailUnsubscribe UserMailUnsubscribe = null;
+		if(unsubscriptionList != null && !unsubscriptionList.isEmpty()) {
+			UserMailUnsubscribe = unsubscriptionList.iterator().next();
+		}
+		return UserMailUnsubscribe;
 	}
 	
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public UserMailUnsubscribe getUserMailUnsubscriptionByUserEmailAndOrgLocationId(String userEmail, Long orgLocationId) throws Exception
+	public UserMailUnsubscribe getUserMailUnsubscriptionByUserEmail(String userEmail) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from UserMailUnsubscribe umus where umus.userId.email =:userEmail and umus.orgLocationId.id =:orgLocationId ";
-		UserMailUnsubscribe unsubscription = (UserMailUnsubscribe) session.createQuery(query).setString("userEmail", userEmail).setLong("orgLocationId", orgLocationId).uniqueResult();
-		return unsubscription;
+		String query = "from UserMailUnsubscribe umus where umus.userId.email =:userEmail ";
+		List<UserMailUnsubscribe> unsubscriptionList = session.createQuery(query).setString("userEmail", userEmail).list();
+		UserMailUnsubscribe UserMailUnsubscribe = null;
+		if(unsubscriptionList != null && !unsubscriptionList.isEmpty()) {
+			UserMailUnsubscribe = unsubscriptionList.iterator().next();
+		}
+		return UserMailUnsubscribe;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public UserMailUnsubscribe getUserMailUnsubscriptionByUserEmailAndOrgLocationCode(String userEmail, String orgLocationCode) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserMailUnsubscribe umus where umus.userId.email =:userEmail and umus.orgLocationId.locationCode =:orgLocationCode ";
+		List<UserMailUnsubscribe> unsubscriptionList = session.createQuery(query).setString("userEmail", userEmail).setString("orgLocationCode", orgLocationCode).list();
+		UserMailUnsubscribe UserMailUnsubscribe = null;
+		if(unsubscriptionList != null && !unsubscriptionList.isEmpty()) {
+			UserMailUnsubscribe = unsubscriptionList.iterator().next();
+		}
+		return UserMailUnsubscribe;
 	}
 	
 }

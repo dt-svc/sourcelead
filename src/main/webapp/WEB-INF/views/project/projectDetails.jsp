@@ -1018,9 +1018,10 @@ function projectStatus(){
 <script type="text/javascript">
 	function updateProjectDetails(projectId) {
 		var ee = $("#txtEditor1").val($('.Editor-editor').html()); 
-		$("#projectEditDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		
 		 if ($('#editProject_form').validate(false, validationSettings)) {
 			var formData = getFormData("editProject_form");
+			$("#projectEditDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 						type : "POST",
 						data: formData,
@@ -1032,9 +1033,12 @@ function projectStatus(){
 							projectDetails(projectId);
 							docMsgFadein();
 							
-							var json = JSON.parse(data);
+							var json = JSON.parse(data);endDateStr1
 							$("#empTab").removeAttr("onClick");
 			   		    	$("#empTab").attr("onclick","projectEmployee('"+projectId+"', '"+json.startDateStr+"', '"+json.endDateStr+"', '"+json.projectStatus+"', '"+json.projectName+"')");
+			   		    	
+			   		    	$("#teamTab").removeAttr("onClick");
+			   		    	$("#teamTab").attr("onclick","projectTeam('"+projectId+"', '"+json.startDateStr+"', '"+json.endDateStr+"', '"+json.projectStatus+"', '"+json.projectName+"')");
 			   		    	
 			   		    	$("#taskTab").removeAttr("onClick");
 			   		    	$("#taskTab").attr("onclick","projectTask('"+projectId+"', '"+json.projectStatus+"')");
@@ -1074,6 +1078,9 @@ function projectStatus(){
 							var json = JSON.parse(data);
 							$("#empTab").removeAttr("onClick");
 			   		    	$("#empTab").attr("onclick","projectEmployee('"+projectId+"', '"+json.startDateStr+"', '"+json.endDateStr+"', '"+json.projectStatus+"', '"+json.projectName+"')");
+			   		    	
+			   		    	$("#teamTab").removeAttr("onClick");
+			   		    	$("#teamTab").attr("onclick","projectTeam('"+projectId+"', '"+json.startDateStr+"', '"+json.endDateStr+"', '"+json.projectStatus+"', '"+json.projectName+"')");
 			   		    	
 			   		    	$("#taskTab").removeAttr("onClick");
 			   		    	$("#taskTab").attr("onclick","projectTask('"+projectId+"', '"+json.projectStatus+"')");
@@ -1186,25 +1193,20 @@ function projectStatus(){
 		var sourceleadUrl = '${sourceleadUrl}';
 		var currentApproverId = currentApproverId;
 		var manager2 = manager2;
-		$
-				.ajax({
+		$ .ajax({
 					type : "POST",
-					url : sourceleadUrl
-							+ "/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="
-							+ currentApproverId,
+					url : sourceleadUrl + "/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+ currentApproverId,
 					success : function(json) {
 						var output = "";
-						output = output
-								+ "<option value=''>-Select Manager-</option>";
+						output = output + "<option value=''>-Select Manager-</option>";
 						for (var i = 0; i < json.length; i++) {
-
 							var opt = json[i];
-							if (manager2 == opt.id) {
+							/* if (manager2 == opt.id) {
 								selected = 'selected';
 								output = output + "<option "+selected+" value='" +opt.id+ "'>" + opt.firstName + " " + opt.lastName + "  ("+opt.userType+")</option>";
-							} else {
+							} else { */
 								output = output + "<option value='" +opt.id+ "'>" + opt.firstName + " " + opt.lastName + "  ("+opt.userType+")</option>";
-							}
+// 							}
 
 						}
 						$("#level2Manager").empty();
@@ -1260,25 +1262,20 @@ function showLevel2Div(){
 		if (currentApproverId == manager2) {
 			if (currentApproverId != null && currentApproverId != ''
 					&& currentApproverId != 'undefined') {
-				$
-						.ajax({
-							type : "POST",
-							url : sourceleadUrl + "/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId=" + currentApproverId,
-							success : function(json) {
-								var output = "";
-								output = output
-										+ "<option value=''>-Select Manager-</option>";
-								for (var i = 0; i < json.length; i++) {
-									var opt = json[i];
-									output = output + "<option value='" +opt.id+ "'>" + opt.firstName + " " + opt.lastName + " ("+opt.userType+")</option>";
-								}
-								$("#level2Manager").empty();
-								$("#level2Manager").append(output);
-							},
-							error : function(e) {
-
-							}
-						});
+				$.ajax({ 
+					type : "POST",
+					url : sourceleadUrl + "/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId=" + currentApproverId,
+					success : function(json) {
+						var output = "";
+						output = output + "<option value=''>-Select Manager-</option>";
+						for (var i = 0; i < json.length; i++) {
+							var opt = json[i];
+							output = output + "<option value='" +opt.id+ "'>" + opt.firstName + " " + opt.lastName + " ("+opt.userType+")</option>";
+						}
+						$("#level2Manager").empty();
+						$("#level2Manager").append(output);
+					},
+				});
 			}
 		} else {
 			getApproversLevel2(currentApproverId, manager2);

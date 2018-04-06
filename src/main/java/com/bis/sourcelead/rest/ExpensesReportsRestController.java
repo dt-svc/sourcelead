@@ -53,7 +53,7 @@ public class ExpensesReportsRestController {
 	private ProjectMembersService projectMembersService;
 	
 	@RequestMapping(value = "/getExpensesReportList")
-	public String getExpensesApprovalList(HttpServletRequest request,@RequestParam(value="datequarterly", required=false) String datequarterly) throws Exception {
+	public LinkedHashSet<ProjectMembers> getExpensesApprovalList(HttpServletRequest request,@RequestParam(value="datequarterly", required=false) String datequarterly) throws Exception {
 		LinkedHashSet<ProjectMembers> finalProjectMemberList = new LinkedHashSet<>();
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -203,7 +203,11 @@ public class ExpensesReportsRestController {
 			    StringBuilder vendor=new StringBuilder();
 			 	if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType()) && (projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C-1099")||projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C"))){
      			  OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
-     			  vendor.append(projectMember.getProjectMemberCandidteId().getDesignationType()).append(",").append(orgRelation.getResponderLocationId().getOrgLocationName()).toString();
+     			  if(orgRelation != null) {
+     				  vendor.append(projectMember.getProjectMemberCandidteId().getDesignationType()).append(",").append(orgRelation.getResponderLocationId().getOrgLocationName()).toString();
+     			  }else {
+     				 vendor.append(projectMember.getProjectMemberCandidteId().getDesignationType());
+     			  }
            	     }else{
            	    	vendor.append("--").toString(); 
            	     }
@@ -528,7 +532,7 @@ public class ExpensesReportsRestController {
 			 }
 		    }
 		}
-	   return commonUtil.toJSON(finalProjectMemberList);
+	   return finalProjectMemberList;
 	}
 	
 	

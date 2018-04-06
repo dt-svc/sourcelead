@@ -64,6 +64,17 @@ function requirementList(searchType,sourceleadUrl){
 				filterAssignTo.push($(this).val());
 		    });
 			
+			var filterSpecJobs = [];
+			$('input:checkbox[name=requirementSpecJobs]:checked').each(function() 
+		    {
+				filterSpecJobs.push($(this).val());
+		    });
+			
+			var filterProjects = [];
+			$('input:checkbox[name=projectNameById]:checked').each(function() 
+		    {
+				filterProjects.push($(this).val());
+		    });
 			
 			
 			var frm = $('#requirement_form').serializeFormJSON();
@@ -76,7 +87,7 @@ function requirementList(searchType,sourceleadUrl){
 	  		searchValue = searchValue ? searchValue : "";
 	  		$("#requirementList").empty();
 			$("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	  		 url = sourceleadUrl+"/searchRequirement?searchType="+searchType+"&filterStatus="+filterStatus+"&filterClients="+filterClients+"&searchValue="+searchValue+"&filterPriority="+filterPriority+"&filterJobType="+filterJobType+"&filterAssignTo="+filterAssignTo;
+	  		 url = sourceleadUrl+"/searchRequirement?searchType="+searchType+"&filterStatus="+filterStatus+"&filterClients="+filterClients+"&searchValue="+searchValue+"&filterPriority="+filterPriority+"&filterJobType="+filterJobType+"&filterAssignTo="+filterAssignTo+"&filterSpecJobs="+filterSpecJobs+"&filterProjectId="+filterProjects;
 	  		 url += "&"+$($('#requirement_form')[0]).serialize();
 			
 			
@@ -184,6 +195,7 @@ function jpagination(url,sourceleadUrl){
    		"processing": true,
        "serverSide": true,
        "searching": false,
+       "searchHighlight": true,
        "ajax": $.fn.dataTable.pipeline( {
            url: url,
            method: 'POST',
@@ -654,7 +666,12 @@ function jpagination(url,sourceleadUrl){
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
 	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
-	     }
+	     },
+	     drawCallback: function(){
+   	      $('a.paginate_button', this.api().table().container()).on('click', function(){
+   	    	jobSearchHighlight();
+   	         }); 
+   	   }
   
    } );
    
@@ -665,10 +682,32 @@ function jpagination(url,sourceleadUrl){
    $("#dataTableSearch").keyup(function(e) {
    	   if(e.which === 13) {
    		 requirementList('list',sourceleadUrl);
+   		jobSearchHighlight();
    	   }
    	});
  }
 </script>
+
+<script>
+ function jobSearchHighlight(){
+	 setTimeout(function () {
+ 		var body = $( table.table().body() );
+	        body.unhighlight();
+	        body.highlight( $("#dataTableSearch").val() );   
+			
+			}, 1000); 
+ }
+ </script>
+ <script>
+	$(document).on( 'init.dt.dth', function (e, settings, json) {
+    table = new $.fn.dataTable.Api( settings );
+    var body = $( table.table().body() );
+    if ( $( table.table().node() ).hasClass( 'searchHighlight' ) || settings.oInit.searchHighlight ||  $.fn.dataTable.defaults.searchHighlight ) {
+	
+	}
+} );
+	</script>
+
 <script>
 function getAssignedMembersDiv(reqId){
 	$("#summaryButtonsDiv").hide();

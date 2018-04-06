@@ -13,9 +13,11 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.TabsDao;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Tabs;
+import com.bis.sourcelead.entity.User;
 
 @Repository
 public class TabsDaoImpl implements TabsDao{
@@ -77,7 +79,7 @@ public class TabsDaoImpl implements TabsDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Collection<Tabs> getTabsListByOrgLocationId(List<Long> modulesId, Long roleId, Long orgLocationId)
+	public Collection<Tabs> getTabsListByOrgLocationId(Long roleId, Long orgLocationId)
 			throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
@@ -91,9 +93,8 @@ public class TabsDaoImpl implements TabsDao{
 			 }
 		 }
 		
-		String query = "from Tabs tabs left join fetch tabs.tabs where tabs.id IN (select distinct sa.tabs.id from SourceleadActions sa where sa.id IN (select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN (:modulesId) "
-				+ " and moduleActions.sourceleadActions.id IN (:roleActonList))) and tabs.status = '1' ORDER BY tabs.tabOrder ASC ";
-	    List<Tabs> tabsList = session.createQuery(query.toString()).setParameterList("modulesId", modulesId).setParameterList("roleActonList", roleActonList).list();
+		String query = "from Tabs tabs left join fetch tabs.tabs where tabs.id IN (select distinct sa.tabs.id from SourceleadActions sa where sa.id IN (:roleActonList)) and tabs.status = '1' ORDER BY tabs.tabOrder ASC ";
+	    List<Tabs> tabsList = session.createQuery(query.toString()).setParameterList("roleActonList", roleActonList).list();
 	    return tabsList;
 	}
 
@@ -185,4 +186,54 @@ public class TabsDaoImpl implements TabsDao{
 	    return tabNamesList;
 	}
 
+	@Override
+	@Transactional
+	public Tabs getTabListByTabId(Long tabId) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Tabs> tabs = new ArrayList<Tabs>();
+		logger.debug("getTabListByTabId start");
+		tabs = session.createQuery("from Tabs tabs left join fetch tabs.tabs where tabs.id = :tabId" ).setLong( "tabId", tabId ).list();
+		logger.debug("getTabListByTabId end");
+		if (tabs.size() > 0) {
+			return tabs.get(0);
+		} else {
+			return null;
+		}
+   	
+	}
+
+	@Override
+	@Transactional
+	public Collection<Tabs> getAllTabsList() throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = "from Tabs tabs left join fetch tabs.tabs where  tabs.tabs IS NULL and tabs.status = '1' and tabs.id NOT IN(1,11,12,15,26,27) ORDER BY tabs.tabOrder ASC ";
+	    List<Tabs> tabsList = session.createQuery(query.toString()).list();
+	    return tabsList;
+	
+	}
+
+	@Override
+	@Transactional
+	public List<Tabs> getClildTabsListByTabId(Long tabId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Tabs tabs left join fetch tabs.tabs parentTab where parentTab.id = :tabId and parentTab.status = '1' ";
+	    List<Tabs> tabsList = session.createQuery(query.toString()).setLong( "tabId", tabId).list();
+	    return tabsList;
+	}
+
+	@Override
+	@Transactional
+	public List<Tabs> getTabListByActionsIds(List<Long> actionIdsList) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Tabs tabs left join fetch tabs.tabs where tabs.id IN (select distinct sa.tabs.id from SourceleadActions sa where sa.id IN (:actionIdsList)) ORDER BY tabs.tabOrder ASC ";
+	    List<Tabs> tabsList = session.createQuery(query.toString()).setParameterList("actionIdsList", actionIdsList).list();
+	    return tabsList;
+	
+	}
+	
+	 
+	
 }
