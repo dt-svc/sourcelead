@@ -44,6 +44,7 @@ import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
+import com.bis.sourcelead.entity.ImmigrationListView;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -131,6 +132,8 @@ public class ImmigrationRestController {
         model.addObject("sourceleadUrl", sourceleadUrl);
         User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
         model.setViewName("/immigration/immigrationList");
+        List<ImmigrationListView> immList= immigrationCommonService.getImmigrationsList();
+        model.addObject("immList" ,immList);
         return model;
     }
 
@@ -476,6 +479,38 @@ public class ImmigrationRestController {
        
         return "success";
     }
+    
+    @RequestMapping(value = { "/deleteDocumentDetailsByRowId" })
+	public String deleteDocumentDetailsByRowId(@RequestParam(value = "id", required = true) Long id, HttpServletRequest request) {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		String status="";
+		try {
+			status = immigrationCommonService.deletetImmigrationCandidateDocsById(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return status;
+	}
+
+@RequestMapping(value = { "/editDocumentDetailsByRowId" })
+	public @ResponseBody  ImmigrationCandidateDocuments editDocumentDetailsByRowId(
+			@RequestParam(value = "id", required = true) Long id, HttpServletRequest request) {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		System.out.println(" in controller method getCandidateResidenceDetailsById id ---> "+id);
+		ImmigrationCandidateDocuments immigDocObj= null;
+		try {
+			immigDocObj = immigrationCommonService.getImmigrationCandidateDocumentById(id);
+			} catch (Exception e) {
+			logger.error("Exception caught in controller test --->"+e.getMessage());
+			e.printStackTrace();
+		}
+
+		return immigDocObj;
+	}
+
     @RequestMapping(value = {"/saveCandidateImmigrationForms"}, method = RequestMethod.POST)
     public String saveCandidateImmigrationForms(ImmigrationTemplateFormDTO immigrationTemplateFormDTO, 
     		@RequestParam(value = "candidateId", required = false) String candidateId,

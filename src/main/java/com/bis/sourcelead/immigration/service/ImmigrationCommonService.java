@@ -14,6 +14,7 @@ import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
+import com.bis.sourcelead.entity.ImmigrationListView;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -40,6 +41,10 @@ public interface ImmigrationCommonService {
 
 	String deletetCandidateFamilyDetails(Long id);
 	
+	String deletetImmigrationCandidateDocsById(Long id);
+	 
+	ImmigrationCandidateDocuments getImmigrationCandidateDocumentById(Long id);
+	 
 	ImmigrationCandidateDocuments uploadRequstedDocForCandidate(ImmigrationTemplateDocDTO immigrationTemplateDocDTO,Long id,Long candidateId,Long immigrationId)throws Exception;
 	
 	List<CandidateResidence> getCandidatesResidenceListByCandidateIdAndOrgLocationID(Long candidateId, String searchVal);
@@ -67,6 +72,8 @@ public interface ImmigrationCommonService {
 	ImmigrationCandidateForms saveImmigrationCandidateForms(ImmigrationTemplateFormDTO immigrationTemplateFormDTO, User user, OrgLocations orgLocations) throws Exception;
 
 	ImmigrationCandidateForms uploadRequstedFormForCandidate(ImmigrationTemplateFormDTO immigrationTemplateFormDTO, Long id,	Long candidateId, Long immigrationId, User user, OrgLocations orgLocations);
+
+	List<ImmigrationListView> getImmigrationsList();
 
 
 }
