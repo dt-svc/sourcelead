@@ -733,7 +733,7 @@ function getUsersByRole(){
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
 		        	} else if (response.response === "SUCCESS") {
-		        		var json = JSON.parse(response.object);
+		        		var json = response.data;
 			        	var output = "";
 			        	output = output + "<option value=''>-- Select User --</option>"; 
 			        	for (var i=0; i<json.length; i++) {
@@ -764,7 +764,7 @@ function getUsersByRole(){
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
 		        	} else if (response.response === "SUCCESS") {
-		        		var json = JSON.parse(response.object);
+		        		var json = response.data;
 			        	var output = "";
 			        	output = output + "<option value=''>-- Select User --</option>"; 
 			        	for (var i=0; i<json.length; i++) {
