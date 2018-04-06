@@ -221,6 +221,23 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		}
 		return edulist;
 	}
+	
+	@Override
+	public List<CandidateEducation>   getCandidateEducationListByCandidateIdAndOrgLocationIDImmigration(Long candidateId, Long orgLocationId, String searchVal) throws Exception{
+      
+		List<CandidateEducation> edulist = candidateEducationDao.getCandidateEducationListByCandidateIdAndOrgLocationIDImmigration(candidateId, orgLocationId, searchVal);
+		OrgLocations locations = orgLocationService.getOrgLocations(orgLocationId);
+		//SimpleDateFormat simpleDateFormat = locations.getLocFullFormDateFormatter();
+		for(CandidateEducation education :edulist){
+			if(education.getStartDate() != null){
+			education.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),education.getStartDate()));
+			}
+			if(education.getEndDate() != null){
+			education.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),education.getEndDate()));
+			}
+		}
+		return edulist;
+	}
 
 	@Override
 	public HashSet<CandidateEducation> getCandidateEducationDetails(CandidateDTO candidateDTO,OrgLocations orgLocations,Candidate candidate,String userCode) throws Exception {

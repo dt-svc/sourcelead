@@ -230,12 +230,16 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	 * @throws Exception
     */
 	@Override
+	public List<CandidateEmployers>   getCandidatesEmployersListByCandidateIdAndOrgLocationIDImmigration(Long candidateId, Long loc,String searchVal) throws Exception {
+		
+		 return candidateEmployersDao.getCandidatesEmployersListByCandidateIdAndOrgLocationIDImmigration(candidateId, loc, searchVal);
+	}
+
+	@Override
 	public List<CandidateEmployers>   getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long candidateId, Long loc) throws Exception {
 		
 		 return candidateEmployersDao.getCandidatesEmployersListByCandidateIdAndOrgLocationID(candidateId, loc);
 	}
-
-	
 	
 	/**
 	 * This method is used for display the get Candidate Employers Details list

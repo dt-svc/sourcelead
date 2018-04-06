@@ -819,22 +819,26 @@ function displayImmigrationCandidateDocs(candidateId,templateid,immigrationId){
 
 
 function getCandidateEducationList(candidateId){
+	var searchVal = $("#educationSearchVal").val();
 	$.ajax({
-        url: sourceleadUrl + immiModulePath + "/getCandidateEducationList?candidateId="+candidateId,
+        url: sourceleadUrl + immiModulePath + "/getCandidateEducationList?candidateId="+candidateId+"&searchVal="+searchVal,
         type: "GET",
         success: function (result) {
             $("#educationsTab").html(result);
+            $("#educationSearchVal").val(searchVal);
         }
     });
 }
 
 function getCandidateEmployerList(candidateId){
 	console.log(" inside getCandidateEmployerList"+candidateId);
+	var searchEmployerVal = $("#employersDataSearch").val();
 	$.ajax({
-        url: sourceleadUrl + immiModulePath + "/getCandidateEmployerList?candidateId="+candidateId,
+        url: sourceleadUrl + immiModulePath + "/getCandidateEmployerList?candidateId="+candidateId+"&searchVal="+searchEmployerVal,
         type: "GET",
         success: function (result) {
             $("#employersTab").html(result);
+            $("#employersDataSearch").val(searchEmployerVal);
             console.log(" inside getCandidateEmployerList after success--> "+candidateId);
         }
     });
