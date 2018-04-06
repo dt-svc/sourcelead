@@ -102,10 +102,11 @@ function candDocumentsList(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateDocumentsListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(json) {
-        	  if (json && json.response === "INVALID_DATA") {
-        		    showError(json.responseMessage);
-        		} else if (json.response === "AWKWARD") {
+
+          success :function(response) {
+        	  if (response && response.response === "INVALID_DATA") {
+        		    showError(response.responseMessage);
+        		} else if (response.response === "AWKWARD") {
         		    location.href = "/errorPage";
         		} else if (json.response === "SUCCESS") {
         			$("#candidateDocumentsList").empty();
@@ -124,8 +125,8 @@ function candDocumentsList(candidateId){
                     result = result +"</thead>";
                     result = result +"<tbody>"; 
                     
-                    for (var i = 0; i < json.data.length; i++) { 
-                   		var opt = json.data[i];  
+                    for (var i = 0; i < response.data.length; i++) { 
+                   		var opt = response.data[i];  
                    	 	result  = result + ' <tr>';
 	                   	if(opt.requestedDocumentsId != null && opt.requestedDocStatus != "Rejected" && opt.requestedDocStatus != "Accepted"){
 	                   		result = result +'<td><input id="'+opt.id+'" value="'+opt.id+'"  onclick="deleteRequestedDoc();" type="checkbox" name="documents[]" class="myCheckbox" >';
@@ -763,23 +764,30 @@ function deleteDocument(candidateId, documentId){
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateDoc?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&documentId="+documentId, 	   
-   		    success: function(data) {
-   		    	if(data != null && data != 'undefined' && data != ""){
+   		    success: function(response) {
+   		    	if (response && response.response === "INVALID_DATA") {
+   		    	    showError(response.responseMessage);
+   		    	} else if (response && response.response === "INVALID_USER") {
+   		    	    showError(response.responseMessage);
+   		    	} else if (response.response === "AWKWARD") {
+   		    	    location.href = "/errorPage";
+   		    	} else if (response.response === "SUCCESS") {
+   		    		var data = response.object;
    		    		$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+        			 if(data<50){
+        			  /* $("#perVal").removeClass("progress-bar-success"); */
+        			   $("#perVal").find('progress-bar-success').remove();
+        			   $("#perVal").addClass("progress-bar-danger");
+        			 }
+        			 if(data>=50){
+        				 $("#perVal").find('progress-bar-danger').remove();
+        				 $("#perVal").addClass("progress-bar-success");
+        			 }
+        			 $("#disVal").empty();
+        			$("#disVal").append(data+'%');
+        			// for quick view bar update
+       			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
          			 if(data<50){
-         			  /* $("#perVal").removeClass("progress-bar-success"); */
-         			   $("#perVal").find('progress-bar-success').remove();
-         			   $("#perVal").addClass("progress-bar-danger");
-         			 }
-         			 if(data>=50){
-         				 $("#perVal").find('progress-bar-danger').remove();
-         				 $("#perVal").addClass("progress-bar-success");
-         			 }
-         			 $("#disVal").empty();
-         			$("#disVal").append(data+'%');
-         			// for quick view bar update
-        			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
-          			 if(data<50){
 	          			   $("#quickPerVal").removeClass('progress-bar-success');
 	          			   $("#quickPerVal").addClass("progress-bar-danger");
 	          			 }
@@ -788,18 +796,22 @@ function deleteDocument(candidateId, documentId){
 	          				 $("#quickPerVal").addClass("progress-bar-success");
 	          			 }
 
-        			$("#quickDisVal").empty();
-        			$("#quickDisVal").append(data+'%');
-        			 $("#selector9").removeAttr("style");
-         			 $("#selector9").css({ display: "block" });
-         			 $("#docMsgDiv").html("Document deleted");
-        			 $("#popUpDiv").removeClass("edit-details-active");
-        			 $("#remove_user_pop_documents, .project_inn_mask").fadeOut();
-        			 candDocumentsList(candidateId);
-        			 docMsgFadein();
-        			 setTimeout(function(){
- 			 			candidateList();					 			
- 			 	     },100);
+       			$("#quickDisVal").empty();
+       			$("#quickDisVal").append(data+'%');
+       			 $("#selector9").removeAttr("style");
+        			 $("#selector9").css({ display: "block" });
+        			 $("#docMsgDiv").html("Document deleted");
+       			 $("#popUpDiv").removeClass("edit-details-active");
+       			 $("#remove_user_pop_documents, .project_inn_mask").fadeOut();
+       			 candDocumentsList(candidateId);
+       			 docMsgFadein();
+       			 setTimeout(function(){
+			 			candidateList();					 			
+			 	     },100);
+   		    	} else if (response.indexOf('Sign In') !== -1) {
+   		    		location.replace(sourceleadUrl);
+   		    	} else {
+   		    	    showError("Operation failed, please try again");
    		    	}
    		    },
 	     });
@@ -1076,7 +1088,7 @@ $('body').on('submit', '#docrejectedReason_form', function(e) {
   	   $.ajax({
 			type: "POST",
 	    	url: sourceleadUrl+"/rejectRequestedDocuments?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&documentsIds="+documentsIds, 
-	        success: function(result) {
+	        success: function(response) {
 	        	if (response && response.response === "INVALID_DATA") {
 	        	    showError(response.responseMessage);
 	        	} else if (response.response === "AWKWARD") {

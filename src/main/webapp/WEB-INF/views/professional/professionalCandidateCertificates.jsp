@@ -104,17 +104,26 @@ function storeCertificate(candidateId){
 			 $("#Candidate_certification_form").attr("disabled", "disabled");
 			 $("#addCandidate").attr("disabled", "disabled");
 			 
-			 $.post(sourceleadUrl+"/storeCandidateCertifications?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
-				 closeCertificatePopup();
-				 $("#selector5").removeAttr("style");
-     			 $("#selector5").css({ display: "block" });
-     			 $("#cerMsgDiv").html("Success!! New Certification added");
-            		candidateCertificateList(candidateId);
-				 candidateCertificateList(candidateId);
-            		cerMsgFadein();
-            		qwikCertificates(candidateId);
+			 $.post(sourceleadUrl+"/storeCandidateCertifications?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(response) {
+				 	if (response && response.response === "INVALID_DATA") {
+		    		    showError(response.responseMessage);
+		    		} else if (response.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    		} else if (response.response === "SUCCESS") {
+		    			closeCertificatePopup();
+						 $("#selector5").removeAttr("style");
+		     			 $("#selector5").css({ display: "block" });
+		     			 $("#cerMsgDiv").html("Success!! New Certification added");
+		            		candidateCertificateList(candidateId);
+						 candidateCertificateList(candidateId);
+		            		cerMsgFadein();
+		            		qwikCertificates(candidateId);
+		    		} else if (response.indexOf('Sign In') !== -1) {
+		    			location.replace(sourceleadUrl);
+		    		} else {
+		    		    showError("Operation failed, please try again");
+		    		}
 			 });
-				
 			return true;
 		} else {
 			return false;
@@ -176,110 +185,117 @@ function candidateCertificateList(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-          success :function(json) {
-//         	  var json = JSON.parse(data);
-	                	 $("#candidateCertificateList").empty();
-	                	 var result = "";
-	                	
-	                	 result = result +"<table id='candidateCertificatePagination' class='display' cellspacing='0' width='100%' >"; 
-	                     result = result +"<thead>"; 
-	                     result = result +"  <tr>"; 
-	                     result  = result +"           <th>Name</th>";
-	                 	result  = result + "           <th>Provider</th>";
-	                 	result  = result + "           <th>Score</th>";
-	                 	result  = result + "           <th>Score Type</th>";
-	                 	result  = result + "           <th>Description</th>";
-	                 	result  = result + "           <th>Valid from<br>(<small class='custom-small'>"+candidateCertificateListDate+"</small>)</th>";
-	                 	result  = result + "           <th>Valid to<br>(<small class='custom-small'>"+candidateCertificateListDate+"</small>)</th>";
-	                 	result  = result + "           <th>Action</th>";
-	                     result = result +"  </tr>"; 
-	                     result = result +"</thead>";
-	                     result = result +"<tbody>"; 
-	                      
-	                     for (var i = 0; i < json.data.length; i++) { 
-	                    	 var opt = json.data[i];  
-	                    	 var score = "";
-	                    	 var scoreType ="";
-	                    	 var description ="";
-	                    	 var candidatevalidFromDateToString ="";
-	                    	 var candidatevalidToDateToString ="";
-				            	if(opt.score != null && opt.score != 'undefined' && opt.score != ""){
-				            		score = opt.score;
-				            	}else{
-				            		score = "----";
-				            	}
-				            	if(opt.scoreType != null && opt.scoreType != 'undefined' && opt.scoreType != ""){
-				            		scoreType = opt.scoreType;
-				            	}else{
-				            		scoreType = "----";
-				            	}
-				            	if(opt.description != null && opt.description != 'undefined' && opt.description != ""){
-				            		description = opt.description;
-				            	}else{
-				            		description = "----";
-				            	}
-				            	if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != ""){
-				            		candidatevalidFromDateToString = opt.candidatevalidFromDateToString;
-				            	}else{
-				            		candidatevalidFromDateToString = "----";
-				            	}
-				            	if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
-				            		candidatevalidToDateToString = opt.candidatevalidToDateToString;
-				            	}else{
-				            		candidatevalidToDateToString = "----";
-				            	}
-	                    	 result  = result + '         <tr>';
-	                    	 result  = result + '           <td><div><span title = "'+opt.name+'">'+opt.name+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span title = "'+opt.provider+'">'+opt.provider+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+score+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+scoreType+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span title = "'+description+'">'+description+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+candidatevalidFromDateToString+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+candidatevalidToDateToString+'</span></div></td>';
-	                    	 
-	                    	 result  = result + '           <td><div class="tblicons tblminwidth-75">';
-	                    	 
-	                    	 if(window.candidateStatusGlobal == '0'){
-	                    		 if(candidateType == "Candidates"){
-		                    		 result = result  +'	            <a href="javascript:void(0)" disabled="disabled" class="glyphicon glyphicon-pencil" id="editCandidateCertificate"></a>';
-	                    		 }else{
-		                    		 result = result  +'	            <a href="javascript:void(0)" disabled="disabled" class="glyphicon glyphicon-pencil" id="editCandidateCertificate"></a>';
-	                    		 }
-	                    		 
-	                    	 }else{
-	                    		 if(candidateType == "Candidates"){
-	 	                    		result = result  +'	            <a href="javascript:void(0)" class="glyphicon glyphicon-pencil" id="editCandidateCertificate" href="javascript:void(0)" onClick="editCertification('+ opt.id+ ','+ candidateId+ ');" title="Edit"></a>';
-	                    		 }else{
-	 	                    		result = result  +'	            <a href="javascript:void(0)" class="glyphicon glyphicon-pencil" id="editCandidateCertificate" href="javascript:void(0)" onClick="editCertification('+ opt.id+ ','+ candidateId+ ');" title="Edit"></a>';
-	                    		 }
-	                    		
-	                    	 }
-	                    	 
-	                    	 if(window.candidateStatusGlobal == '0'){
-	                    		 if(candidateType == "Candidates"){
-		                    		 result = result  +'<i class="glyphicon glyphicon-trash"></i>';
-	                    		 }else{
-		                    		 result = result  +'<i class="glyphicon glyphicon-trash"></i>';
-	                    		 }
-	                    		 
-	                    	}else{
-	                    		if(candidateType == "Candidates"){
-		                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate" title= "Remove"></i>';
-	                    		}else{
-		                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate" title= "Remove"></i>';
-	                    		}
-	                    		
-	                    	}
-	                    	 result  = result + '           </div></td>';
-	                    	 result  = result + '         </tr>';
-	                      } 
-	                     result = result +" </tbody>";
-	                     result = result +"</table>";
-	                     $("#candidateCertificateList").append(result); 
-	                     certificationPagination(); 
-	                     msgFadein(); 
+          success :function(response) {
+        	 	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+        		    showError(response.responseMessage);
+        		} else if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+        			$("#candidateCertificateList").empty();
+               	 var result = "";
+               	 result = result +"<table id='candidateCertificatePagination' class='display' cellspacing='0' width='100%' >"; 
+                    result = result +"<thead>"; 
+                    result = result +"  <tr>"; 
+                    result  = result +"           <th>Name</th>";
+                	result  = result + "           <th>Provider</th>";
+                	result  = result + "           <th>Score</th>";
+                	result  = result + "           <th>Score Type</th>";
+                	result  = result + "           <th>Description</th>";
+                	result  = result + "           <th>Valid from<br>(<small class='custom-small'>"+candidateCertificateListDate+"</small>)</th>";
+                	result  = result + "           <th>Valid to<br>(<small class='custom-small'>"+candidateCertificateListDate+"</small>)</th>";
+                	result  = result + "           <th>Action</th>";
+                    result = result +"  </tr>"; 
+                    result = result +"</thead>";
+                    result = result +"<tbody>"; 
+                     
+                    for (var i = 0; i < response.data.length; i++) { 
+                   	 var opt = response.data[i];  
+                   	 var score = "";
+                   	 var scoreType ="";
+                   	 var description ="";
+                   	 var candidatevalidFromDateToString ="";
+                   	 var candidatevalidToDateToString ="";
+			            	if(opt.score != null && opt.score != 'undefined' && opt.score != ""){
+			            		score = opt.score;
+			            	}else{
+			            		score = "----";
+			            	}
+			            	if(opt.scoreType != null && opt.scoreType != 'undefined' && opt.scoreType != ""){
+			            		scoreType = opt.scoreType;
+			            	}else{
+			            		scoreType = "----";
+			            	}
+			            	if(opt.description != null && opt.description != 'undefined' && opt.description != ""){
+			            		description = opt.description;
+			            	}else{
+			            		description = "----";
+			            	}
+			            	if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != ""){
+			            		candidatevalidFromDateToString = opt.candidatevalidFromDateToString;
+			            	}else{
+			            		candidatevalidFromDateToString = "----";
+			            	}
+			            	if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
+			            		candidatevalidToDateToString = opt.candidatevalidToDateToString;
+			            	}else{
+			            		candidatevalidToDateToString = "----";
+			            	}
+                   	 result  = result + '         <tr>';
+                   	 result  = result + '           <td><div><span title = "'+opt.name+'">'+opt.name+'</span></div></td>';
+                   	 result  = result + '           <td><div><span title = "'+opt.provider+'">'+opt.provider+'</span></div></td>';
+                   	 result  = result + '           <td><div><span>'+score+'</span></div></td>';
+                   	 result  = result + '           <td><div><span>'+scoreType+'</span></div></td>';
+                   	 result  = result + '           <td><div><span title = "'+description+'">'+description+'</span></div></td>';
+                   	 result  = result + '           <td><div><span>'+candidatevalidFromDateToString+'</span></div></td>';
+                   	 result  = result + '           <td><div><span>'+candidatevalidToDateToString+'</span></div></td>';
+                   	 
+                   	 result  = result + '           <td><div class="tblicons tblminwidth-75">';
+                   	 
+                   	 if(window.candidateStatusGlobal == '0'){
+                   		 if(candidateType == "Candidates"){
+	                    		 result = result  +'	            <a href="javascript:void(0)" disabled="disabled" class="glyphicon glyphicon-pencil" id="editCandidateCertificate"></a>';
+                   		 }else{
+	                    		 result = result  +'	            <a href="javascript:void(0)" disabled="disabled" class="glyphicon glyphicon-pencil" id="editCandidateCertificate"></a>';
+                   		 }
+                   		 
+                   	 }else{
+                   		 if(candidateType == "Candidates"){
+	                    		result = result  +'	            <a href="javascript:void(0)" class="glyphicon glyphicon-pencil" id="editCandidateCertificate" href="javascript:void(0)" onClick="editCertification('+ opt.id+ ','+ candidateId+ ');" title="Edit"></a>';
+                   		 }else{
+	                    		result = result  +'	            <a href="javascript:void(0)" class="glyphicon glyphicon-pencil" id="editCandidateCertificate" href="javascript:void(0)" onClick="editCertification('+ opt.id+ ','+ candidateId+ ');" title="Edit"></a>';
+                   		 }
+                   		
+                   	 }
+                   	 
+                   	 if(window.candidateStatusGlobal == '0'){
+                   		 if(candidateType == "Candidates"){
+	                    		 result = result  +'<i class="glyphicon glyphicon-trash"></i>';
+                   		 }else{
+	                    		 result = result  +'<i class="glyphicon glyphicon-trash"></i>';
+                   		 }
+                   		 
+                   	}else{
+                   		if(candidateType == "Candidates"){
+	                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate" title= "Remove"></i>';
+                   		}else{
+	                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate" title= "Remove"></i>';
+                   		}
+                   		
+                   	}
+                   	 result  = result + '           </div></td>';
+                   	 result  = result + '         </tr>';
+                     } 
+                    result = result +" </tbody>";
+                    result = result +"</table>";
+                    $("#candidateCertificateList").append(result); 
+                    certificationPagination(); 
+                    msgFadein();
+        		} else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
         },
-          
      }); 
 }
 </script>
@@ -445,8 +461,7 @@ function addCertification(candidateId) {
 	    		} else if (response.response === "AWKWARD") {
 	    		    location.href = "/errorPage";
 	    		} else if (response.response === "SUCCESS") {
-					var json = JSON.parse(response.object);
-
+					var json = response.object;
 					var result = '';
 				 	result  = result + '     <!-- Popup Div -->                                                                                         ';
 					result  = result + '         <form id="candidateCertificationEdit_form" name="candidateCertificationEdit_form" method="post">        ';
@@ -619,19 +634,26 @@ function addCertification(candidateId) {
 		
 		if ($('#candidateCertificationEdit_form').validate(false,
 				validationSettings)) {
-
 			 var formData = getFormData("candidateCertificationEdit_form");
-			 
-			 $.post(sourceleadUrl+"/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
-				 closeCertificatePopup();
-				 $("#selector5").removeAttr("style");
-     			 $("#selector5").css({ display: "block" });
-     			 $("#cerMsgDiv").html("Certification details updated");
-				 candidateCertificateList(candidateId);
-            		cerMsgFadein();
-            		qwikCertificates(candidateId);
+			 $.post(sourceleadUrl+"/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(result) {
+				 	if (result && result.response === "INVALID_DATA") {
+		    		    showError(result.responseMessage);
+		    		} else if (result.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    		} else if (result.response === "SUCCESS") {
+		    			closeCertificatePopup();
+						 $("#selector5").removeAttr("style");
+		     			 $("#selector5").css({ display: "block" });
+		     			 $("#cerMsgDiv").html("Certification details updated");
+						 candidateCertificateList(candidateId);
+		            		cerMsgFadein();
+		            		qwikCertificates(candidateId);
+		    		} else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+					    showError("Operation failed, please try again");
+					}
 			 });
-
 			return true;
 		} else {
 			return false;
@@ -681,33 +703,28 @@ function removeCertification(candidateCertificationId, candidateId){
       
 <script>
 function  deleteSelectedCertification(candidateCertificationId,candidateId){
-	
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
-          success :function(data) {
-
-				if(data != null && data != 'undefined' && data != ""){
-             		if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	}
-             		else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		}
-             		else{
-             		     $("#popUpDivEmp").removeClass("edit-details-active");
-            			 $("#selector5").removeAttr("style");
-             			 $("#selector5").css({ display: "block" });
-             			 $("#cerMsgDiv").html("Certification deleted");
-             			$("#remove_user_pop_certificates, .project_inn_mask").fadeOut();
-             			candidateCertificateList(candidateId);
-             			cerMsgFadein();
-			    	}
-               } 
+          success :function(response) {
+        	  if (response.response === "AWKWARD") {
+                  location.href = "/errorPage";
+              } else if (response.response === "SUCCESS") {
+                  $("#popUpDivEmp").removeClass("edit-details-active");
+                  $("#selector5").removeAttr("style");
+                  $("#selector5").css({ display: "block" });
+                  $("#cerMsgDiv").html("Certification deleted");
+                  $("#remove_user_pop_certificates, .project_inn_mask").fadeOut();
+                  candidateCertificateList(candidateId);
+                  cerMsgFadein();                  
+              } else if (response.indexOf('Sign In') !== -1) {
+                  location.replace(sourceleadUrl);
+              } else {
+                  showError("Operation failed, please try again");
+              }
         },
-          
      }); 
 }
 </script> 
