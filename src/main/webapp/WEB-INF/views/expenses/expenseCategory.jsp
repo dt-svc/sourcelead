@@ -42,7 +42,13 @@
   
 </section>
       <!-- Content Area Ends--> 
-
+<script>
+$(document).ready(function(){
+	if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	 }
+});
+</script>
 
 <script>
  window.onload = function() {

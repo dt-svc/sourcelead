@@ -93,7 +93,7 @@ public class ExpensesController {
 		model.setViewName("expenses/myExpensesList");
 		}catch(Exception e){
 			  model.addObject("AWKWARD", true);
-			  model.setViewName("expenses/addExpense");
+			  model.setViewName("expenses/myExpensesList");
 		}
 		return model;
 	}

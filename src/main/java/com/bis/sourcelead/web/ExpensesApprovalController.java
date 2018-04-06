@@ -39,7 +39,7 @@ public class ExpensesApprovalController {
 		model.setViewName("expenses/expensesApprovalList");
 		}catch(Exception e){
 			 model.addObject("AWKWARD", true);
-			  model.setViewName("expenses/expensesEmployeeRedefined");
+			  model.setViewName("expenses/expensesApprovalList");
 		}
 		return model;
 	}

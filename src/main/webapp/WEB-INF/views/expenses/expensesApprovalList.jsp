@@ -31,7 +31,13 @@
 		 
 </script>
 
-
+<script>
+$(document).ready(function(){
+	if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	 }
+});
+</script>
 
 <style type="text/css">
 .glyphicon-none:before {
@@ -370,7 +376,12 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 	    type: "POST",
 	    url: sourceleadUrl+"/saveExpenseApprovalStatusByExpenseId?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
 		    success: function(data) {
-	        	 if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
+		    	if(data.response === "SESSION_TIMEDOUT") {
+		    		location.replace(sourceleadUrl);
+		    	 } else if (data.response === "AWKWARD") {
+                        location.href = "/errorPage";
+		    	 } else if (data.response === "SUCCESS"){  
+		    	if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
 			    	 var table = $('#example').DataTable();
 			    	 table.row('#row'+expenseId).remove().draw( false );
 	        	 }
@@ -380,6 +391,9 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 			    	 $("#status"+expenseId).html("APPROVED");
 			    	 $("#action"+expenseId).html("<h3>Approved</h3><b class='Rname'>By :"+locationName+"</b>"); 
 	        	   }
+		    	}else if (result.indexOf('Sign In') !== -1) {
+  					location.replace(sourceleadUrl);
+				 }
 		    	 
 		    }
 	    });   

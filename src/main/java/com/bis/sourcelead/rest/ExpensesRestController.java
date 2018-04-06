@@ -149,13 +149,12 @@ public class ExpensesRestController {
 			return model;
 	}
 	
-    public ResponseList<ExpensesDTO> getExpensesList( ExpensesListUtilDTO elDTO,HttpServletRequest request) 
+    public ResponseList<ExpensesDTO> getExpensesList( ExpensesListUtilDTO elDTO,HttpServletRequest request) throws Exception 
     {
         
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ResponseList<ExpensesDTO> response = new ResponseList<ExpensesDTO>();
-		try {
 		if(orgLoc == null){
 			orgLoc = orgLocationService.getOrgLocationsByLocationCode(elDTO.getLocationCode());
 		}
@@ -199,9 +198,6 @@ public class ExpensesRestController {
         response.setData(expensesDTOList);
         response.setRecordsFiltered(expensesList.getRecordsFiltered());
         response.setRecordsTotal(expensesList.getRecordsTotal());
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
         return response;
     }	
 	
