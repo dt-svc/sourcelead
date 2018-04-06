@@ -231,7 +231,7 @@ function candidateQuickViewProfile(candidateId){
 <script>
 	function qvemployeeSubmission(candidateId) {
 		$.ajax({
-					type : "GET",
+					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?&candidateId=" + candidateId,
 					success : function(data) {
 						if (data && data.response === "INVALID_DATA") {
