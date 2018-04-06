@@ -386,6 +386,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			immiTemplate.setId(Long.parseLong(immigrationDTO.getTemplateId()));
 			immigration.setImmigrationTemplateId(immiTemplate);
 		}
+		immigration.setImmigrationUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 		OrgRelations orgRelations = new OrgRelations();
 		orgRelations.setId(Long.parseLong(immigrationDTO.getAttorneyId()));
 		immigration.setOrgRelations(orgRelations);

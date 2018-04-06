@@ -80,8 +80,9 @@ overflow-x: auto;
 				    <span class="fa fa-refresh"></span>
 				</button>
 				
-				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filter Search" onclick="openFilterPop();"><i class="fa fa-filter faFilter padding_right" style="color: #909090!important"></i>
+				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openFilterPop();"><i class="fa fa-filter faFilter padding_right"></i>
 				</a>
+				
 	       </div>
         	
         	
@@ -128,7 +129,7 @@ overflow-x: auto;
 		</div>
 		
 		<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
-				<h5 class="headerAdsrch">Filter Search
+				<h5 class="headerAdsrch">Filters
 					<a href="javascript:void(0)" class="close-div" onClick="closeFilterPop()"><i
 						class="fa fa-close"></i></a>
 				</h5>
@@ -160,6 +161,22 @@ overflow-x: auto;
 		                        </ul>
 							 </div>
 							 </div> 
+							 
+							 
+					 	<div class="col-md-12 mb">
+							<label><strong>Invoice Frequency</strong></label>
+							 <div class="clearfix">
+								<ul class="list-unstyled" id="frequencyFilter">
+		                    	    <li class="checkBox positionRelative" ><input  name="invoiceFrequency" type="checkbox" value ="Weekly"><label for="c7">Weekly</label></li>
+									<li class="checkBox positionRelative" ><input  type="checkbox" name="invoiceFrequency" value ="Bi-Weekly" ><label for="c9">Bi-Weekly</label></li>
+									<li class="checkBox positionRelative" ><input  type="checkbox"  name="invoiceFrequency"   value ="Semi-Monthly" ><label for="c8">Semi-Monthly</label></li>
+		               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="invoiceFrequency"  value ="Monthly"><label for="c6">Monthly</label></li>
+		               				
+		                        </ul>
+							 </div>
+						 </div> 
+							 
+							 
 						  </div>
 						</div>
 						<c:if test="${clientListSize > 0}">
@@ -232,6 +249,8 @@ function resetProjectFilter(){
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
 	$("ul#myClientsUL > li input:checkbox").prop("checked",false);
 	$("ul#myManagersUL > li input:checkbox").prop("checked",false);
+	$("ul#frequencyFilter > li input:checkbox").prop("checked",false);
+	
 	$("#projectsDataTableSearch").val('');
 	document.getElementById("c6").checked = true;
 	document.getElementById("c7").checked = true;
@@ -415,11 +434,19 @@ function projectDataTableList(){
 		projectManagers.push($(this).val());
      });
 	
+	var invoiceFrequency = [];
+	$('input:checkbox[name=invoiceFrequency]:checked').each(function() 
+		    {
+		invoiceFrequency.push($(this).val());
+     });
+	
+	
+	
 	
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#projectsDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getProjectsByStatusAndClient?searchValue="+searchValue+"&values="+values+"&clients="+clients+"&projectType="+projectType+"&projectManagers="+projectManagers;
+	 var url = sourceleadUrl+"/getProjectsByStatusAndClient?searchValue="+searchValue+"&values="+values+"&clients="+clients+"&projectType="+projectType+"&projectManagers="+projectManagers+"&invoiceFrequency="+invoiceFrequency;
 	 projectsPagination(url,sourceleadUrl);
 }
 </script>
@@ -1188,10 +1215,16 @@ function projectExport(type){
 		projectManagers.push($(this).val());
      });
 	
+	var invoiceFrequency = [];
+	$('input:checkbox[name=invoiceFrequency]:checked').each(function() 
+		    {
+		invoiceFrequency.push($(this).val());
+     });
+	
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#projectsDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 window.location.href = sourceleadUrl + "/getExportProjects?&searchValue="+searchValue+"&values="+values+"&clients="+clients+"&projectType="+projectType+"&exportType="+exportType+"&projectManagers="+projectManagers;
+	 window.location.href = sourceleadUrl + "/getExportProjects?&searchValue="+searchValue+"&values="+values+"&clients="+clients+"&projectType="+projectType+"&exportType="+exportType+"&projectManagers="+projectManagers+"&invoiceFrequency="+invoiceFrequency;
 	
 }
 </script>
