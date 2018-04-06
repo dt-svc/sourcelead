@@ -13,6 +13,12 @@
 <script type="text/javascript" src="/resources/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script>
 <script type="text/javascript" src="/resources/js/colResizable-1.6.min.js"></script>
+<style type="text/css">
+    .active {
+        color: red !important;
+    }
+
+</style>
 <title>Insert title here</title>
     <section class="content-wraper content-wraperNew">
    
@@ -127,7 +133,22 @@
 					  </li>
 					</ul>
 				  </div>
-				</li> 
+				  <li class="pull-left">
+                    <div class="dropdown">
+                        <strong>Column Chooser </strong>
+                        <button class="glyphicon glyphicon-plus" type="button" id="menu1" data-toggle="dropdown"></button>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+                            <li><a class="toggle-vis " data-column="0">Status</a></li>
+                            <li><a class="toggle-vis" data-column="1">ID</a></li>
+                            <li><a class="toggle-vis" data-column="2">Type</a></li>
+                            <li><a class="toggle-vis" data-column="3">Name</a></li>
+                            <li><a class="toggle-vis" data-column="4">Email</a></li>
+                            <li><a class="toggle-vis" data-column="6">Phone</a></li>
+                            <li><a class="toggle-vis" data-column="7">On Date</a></li>
+                             <li><a class="toggle-vis" data-column="8">Attorney</a></li>
+                        </ul>
+                    </div>
+                </li>
 				
 				  <li class="dropdown">
 					<span class="dropdown-toggle" id="" data-toggle="dropdown">
@@ -289,7 +310,7 @@
      result = result + '<th>Name</th>';
      result = result + '<th>Email</th>';
      result = result + '<th>Phone</th>';
-     result = result + '<th>On date</th>';
+     result = result + '<th>On Date</th>';
      result = result + '<th>Attorney</th>';
      result = result + '<th>Action</th>';
      result = result + '</tr>';
@@ -351,7 +372,7 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.id !== null && opt.id !== '' && opt.id !== 'undefined') {
-                         result = result + "<td><div class='tbldata-dotdot-vsm'>" + opt.id + "</div></td>";
+                         result = result + "<td><div class='tbldata-dotdot-vsm'><a href=/app/immigration/viewImmigration?immigrationId="+opt.id+"&candidateId="+opt.candidateId+"&templateId="+opt.immTemplateId+">"+opt.id+"</a></div></td>";
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
                      }
