@@ -149,7 +149,7 @@
 			<div class="col-xs-12 col-sm-12 myForm noPad clearfix">
 				<div class="pull-right mr">
 					<input type='button' id='addResourceRequestButtonREPLACEROWID' class="btn btn-primary btn-sm mr10" onclick='addNewResourceRequestTbl(REPLACEROWID);' value='Add'/> 
-				    <input type='button' id='cancelResourceRequestButtonREPLACEROWID' class="btn btn-default btn-sm cancel-btn" onclick="removeRow(REPLACEROWID);" value='Cancel'/>
+<!-- 				    <input type='button' id='cancelResourceRequestButtonREPLACEROWID' class="btn btn-default btn-sm cancel-btn" onclick="removeRow(REPLACEROWID);" value='Cancel'/> -->
 				</div>
 			</div>
 			<div class="clearfix"></div>
@@ -274,7 +274,7 @@
 		    <div id="noOfResourcesRowREPLACEROWID" name="noOfResourcesRowREPLACEROWID" class="width90px">RESOURCECOUNTVALUE</div>
 		</div>
 		<div id="divAddRowTr1Td3" style="display: none; float: left;">
-		<div class="width180px inr_values"><small id="minRowREPLACEROWID">MINVALUE</small>to<small id="maxRowREPLACEROWID">MAXVALUE</small>years</div>
+		<div class="width180px inr_values"><small id="minRowREPLACEROWID">MINVALUE</small><small id="maxRowREPLACEROWID">MAXVALUE</small></div>
 		</div>
 		<div id="divAddRowTr1Td4" style="display: none; float: left;">
 		    <div id="primarySkillsRowREPLACEROWID" class="tbldata-dotdot-vsm">PRIMARYSKILLSVALUES</div>
@@ -444,13 +444,24 @@
 			divRowTd3Str = divRowTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
 			var minEx =  $('#min'+maxRowNum).val();
 			var maxEx =  $('#max'+maxRowNum).val();
-			if(minEx == null || minEx == '' || minEx == 'undefined'){
+			var year = "Year(s)";
+			var to  = "To";
+			if((minEx == null || minEx == '' || minEx == 'undefined') && (maxEx == null || maxEx == '' || maxEx == 'undefined')){
 				minEx = "--";
-			}if(maxEx == null || maxEx == '' || maxEx == 'undefined'){
 				maxEx = "--";
+				divRowTd3Str = divRowTd3Str.replace(/MINVALUE/g,minEx);
+				divRowTd3Str = divRowTd3Str.replace(/MAXVALUE/g,maxEx);
+			}else if((minEx != null || minEx != '' || minEx != 'undefined') && (maxEx == null || maxEx == '' || maxEx == 'undefined')){
+				divRowTd3Str = divRowTd3Str.replace(/MINVALUE/g,minEx +year);
+				divRowTd3Str = divRowTd3Str.replace(/MAXVALUE/g,maxEx);
+			}else if((minEx == null || minEx == '' || minEx == 'undefined') && (maxEx !== null || maxEx != '' || maxEx != 'undefined')){
+				divRowTd3Str = divRowTd3Str.replace(/MINVALUE/g,minEx);
+				divRowTd3Str = divRowTd3Str.replace(/MAXVALUE/g,maxEx+year);
+			}else if((minEx != null || minEx != '' || minEx != 'undefined') && (maxEx != null || maxEx != '' || maxEx != 'undefined')){
+				divRowTd3Str = divRowTd3Str.replace(/MINVALUE/g,minEx+to);
+				divRowTd3Str = divRowTd3Str.replace(/MAXVALUE/g,maxEx+year);
 			}
-			divRowTd3Str = divRowTd3Str.replace(/MINVALUE/g,minEx);
-			divRowTd3Str = divRowTd3Str.replace(/MAXVALUE/g,maxEx);
+			
 			cell2.innerHTML = divRowTd3Str;
 			
 			//Primary Skills
@@ -582,17 +593,20 @@
 		var maxEx =  $('#max'+rowId).val();
 		$('#minRow'+rowId).empty();
 		$('#maxRow1'+rowId).empty();
-		if(minEx != null && minEx != ''){
-			$('#minRow'+rowId).html(minEx);
-		}else{
-			$('#minRow'+rowId).html('--');				
-		}
-		if(maxEx != null && maxEx != ''){
-			$('#maxRow'+rowId).html(maxEx);
-		}else{
+		var year = " Year(s)";
+		var to  = " To";
+		if((minEx == null || minEx == '' || minEx == 'undefined') && (maxEx == null || maxEx == '' || maxEx == 'undefined')){
+			$('#minRow'+rowId).html('--');	
 			$('#maxRow'+rowId).html('--');
+		}else if((minEx != null || minEx != '' || minEx != 'undefined') && (maxEx == null || maxEx == '' || maxEx == 'undefined')){
+			$('#minRow'+rowId).html(minEx+year);
+			$('#maxRow'+rowId).html("");
+		}else if((minEx == null || minEx == '' || minEx == 'undefined') && (maxEx !== null || maxEx != '' || maxEx != 'undefined')){
+			$('#maxRow'+rowId).html(maxEx+year);
+		}else if((minEx != null || minEx != '' || minEx != 'undefined') && (maxEx != null || maxEx != '' || maxEx != 'undefined')){
+			$('#minRow'+rowId).html(minEx + to);
+			$('#maxRow'+rowId).html(maxEx+year);
 		}
-		
 		
 		//PrimarySkill
 		var primarySkill =  $('#primarySkill'+rowId).val();
@@ -742,7 +756,7 @@ function totalEstimatedBudget(rowId){
 
 //Remove Row 
 function removeRow(rowId){
-	
+	var cancelValue = $("#cancelResourceRequestButton"+rowId+"");
 	//subtract row Total Resources
 	var totalResources = parseInt($("input[name = 'totalResourcesValue']").val());
 	var noOfResources =  $('#noOfResources'+rowId).val();
