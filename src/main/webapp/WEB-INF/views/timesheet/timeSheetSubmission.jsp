@@ -7,19 +7,61 @@
 <div class="time_pop" id="timeSheetErrorMsg"></div>
  <c:if test="${timesheetEntryDetailsDTO.timesheetFor == 'approver'}">
    <div class='data_loading' id="loadTime"></div>
- <div class="pull-left timeAppUse col-md-7">
-	<span><img id="userImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofile-img.png"> </span>
-
-	<p class="col-md-10 margin-top0">
-		<input class="timeUsName" type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeeName}">
-		<input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeeEmail}">
-		<input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.projectNameForSubmissionPageDisplay}">
-		<input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeePhoneNo}">
-		
-	</p>
+ <div class="pull-left timeAppUse-show col-md-6">
+	<span class="pull-left"><img id="userImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofile-img.png"> </span>
+		<ul class="col-md-9 margin-top0 list-unstyled padding_left">
+			<li>
+			<c:if test="${not empty timesheetEntryDetailsDTO.employeeName}">
+				<input class="timeUsName padding_left" type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeeName}">
+			</c:if>
+			<c:if test="${empty timesheetEntryDetailsDTO.employeeName}">
+				<input class="timeUsName padding_left" type="text" readonly="readonly" value="--">
+			</c:if>
+			</li>
+			<li>
+			<c:if test="${not empty timesheetEntryDetailsDTO.employeeEmail}">
+				<i class="fa fa fa-envelope" title="Email"></i><input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeeEmail}">
+			</c:if>
+			<c:if test="${empty timesheetEntryDetailsDTO.employeeEmail}">
+				<i class="fa fa fa-envelope" title="Email"></i><input type="text" readonly="readonly" value="--">
+			</c:if>
+			</li>
+			<li>
+			<c:if test="${not empty timesheetEntryDetailsDTO.projectNameForSubmissionPageDisplay}">
+				<i class="fa fa-bar-chart" title="Project"></i><input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.projectNameForSubmissionPageDisplay}">
+			</c:if>
+			<c:if test="${empty timesheetEntryDetailsDTO.projectNameForSubmissionPageDisplay}">
+				<i class="fa fa-bar-chart" title="Project"></i><input type="text" readonly="readonly" value="--">
+			</c:if>
+			</li>
+			<li>
+			<c:if test="${not empty timesheetEntryDetailsDTO.employeePhoneNo}">
+				<i class="fa fa-phone" title="Phone No"></i><input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeePhoneNo}">
+			</c:if>
+			<c:if test="${empty timesheetEntryDetailsDTO.employeePhoneNo}">
+				<i class="fa fa-phone" title="Phone No"></i><input type="text" readonly="readonly" value="--">
+			</c:if>
+			</li>
+			<li>
+			<c:if test="${not empty timesheetEntryDetailsDTO.employmentTypeForSubmissionPageDisplay}">
+				<i class="fa fa-briefcase" title="Employment Type"></i><input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employmentTypeForSubmissionPageDisplay}">
+			</c:if>
+			<c:if test="${empty timesheetEntryDetailsDTO.employmentTypeForSubmissionPageDisplay}">
+				<i class="fa fa-briefcase" title="Employment Type"></i><input type="text" readonly="readonly" value="--">
+			</c:if>
+			</li>
+			<li>
+			<c:if test="${not empty timesheetEntryDetailsDTO.clientNameForDisplay}">
+				<i class="fa fa-user-plus" title="Client"></i><input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.clientNameForDisplay}">
+			</c:if>
+			<c:if test="${empty timesheetEntryDetailsDTO.clientNameForDisplay}">
+				<i class="fa fa-user-plus" title="Client"></i><input type="text" readonly="readonly" value="--">
+			</c:if>
+			</li>
+		</ul>
 	<div class="clearfix"></div>
 </div>
-
+<div class="col-md-6 paddingRight">
  <input type="hidden" id="notificationCurrentFrequency" value="${notificationCurrentFrequency}">
  
 <div id="timesheetSubmissionStatusDiv" class="timeNewSe clearfix ${!timesheetSubmissionDTO.reopenAcceptRejectButtonVisible ? 'timeNewStatus':'timesheetApproved-status'}">
@@ -65,6 +107,63 @@
 				</c:if>
 				
 </div>
+
+<div class="clearfix"></div>
+<div class="mt pull-right mr10">
+	<table width="100%" class="table table-bordered">
+		<thead>
+		<tr>
+			<th>Previous month<br/>(Approved Hrs)</th><th>Current month<br/>(Total Hrs)</th><th>Project to Date<br/>(Approved Hrs)</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+				<div class="week">
+					<span class="draft"><d title="Total-Approved-Hours:${timesheetSubmissionDTO.previousMonthTotalHours}">${timesheetSubmissionDTO.previousMonthTotalHours}</d></span>
+					<div class="progress mb0">
+						<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width: 60%">
+							<d title="Billable:${timesheetSubmissionDTO.previousMonthBillableHours}">${timesheetSubmissionDTO.previousMonthBillableHours}</d>
+						</div>
+						<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width: 40%">
+							<d title="Non-Billable:${timesheetSubmissionDTO.previousMonthNonBillableHours}">${timesheetSubmissionDTO.previousMonthNonBillableHours}</d>
+						</div>
+					</div>
+				</div>
+				</td>
+				<td>
+				<div class="week">
+					<span class="draft"><d title="Total-Hours:${timesheetSubmissionDTO.currentMonthTotalHours}">${timesheetSubmissionDTO.currentMonthTotalHours}</d></span>
+					<div class="progress mb0">
+						<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width: 60%">
+							<d title="Billable:${timesheetSubmissionDTO.currentMonthBillableHours}">${timesheetSubmissionDTO.currentMonthBillableHours}</d>
+						</div>
+						<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width: 40%">
+							<d title="Non-Billable:${timesheetSubmissionDTO.currentMonthNonBillableHours}">${timesheetSubmissionDTO.currentMonthNonBillableHours}</d>
+						</div>
+					</div>
+				</div>
+				</td>
+				<td>
+				<div class="week">
+					<span class="draft"><d title="Total-Approved-Hours:${timesheetSubmissionDTO.projectToDateTotalHours}">${timesheetSubmissionDTO.projectToDateTotalHours}</d></span>
+					<div class="progress mb0">
+						<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width: 60%">
+							<d title="Billable:${timesheetSubmissionDTO.projectToDateBillableHours}">${timesheetSubmissionDTO.projectToDateBillableHours}</d>
+						</div>
+						<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width: 40%">
+							<d title="Non-Billable:${timesheetSubmissionDTO.projectToDateNonBillableHours}">${timesheetSubmissionDTO.projectToDateNonBillableHours}</d>
+						</div>
+					</div>
+				</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+
+</div>
 </c:if>
 <c:if test="${timesheetEntryDetailsDTO.timesheetFor == 'user'}">
              <div id="timesheetSubmissionStatusDiv" class="timeNewSe timBtnWidth">
@@ -91,6 +190,8 @@
 				
 </div>
 </c:if>
+
+
 <div class="clearfix"></div>
 <div id="timesheetNewTabs" class="timesheetNewTabs">
 	<div class="project_side_wrap_inn_tabs">
@@ -128,7 +229,7 @@
 			<div id="timesheetDivByTab">
 				<div class="project_tabs">
 					<div id="tab-1" class="project_tabs_inn" style="display: block;">
-						<div class="timesheet_tableNew">
+						<div class="timesheet_tableNew overflow_inherint">
 						   <input type='hidden' name='maxRowNumber'  class='initiateTimesheetMax' id='maxRowNumber'  value='${timesheetSubmissionDTO.maxRowCount > 0 ? timesheetSubmissionDTO.maxRowCount : 1}' />
 							<table id="timesheet" cellspacing="0" cellpadding="0">
 								<tbody>
@@ -143,12 +244,12 @@
 									<c:forEach var="entry" items="${entriesMap}" varStatus="entryCount">
 									    <tr id="timesheetRow${entryCount.index+1}">
 									      <td>
-											<div>
+											<div class="taskDropDown">
 											  <c:set var="taskType" value=""/>
 											  <c:set var="taskId" value=""/>
 											  <c:set var="taskName" value=""/>
 											  <c:if test="${timesheetSubmissionDTO.submitButtonVisible ||  timesheetSubmissionDTO.saveButtonVisible}">
-												   <select id="${entryCount.index+1}task1Id" name="${entryCount.index+1}task1Id" class="existedProjectTaskId${timesheetEntryDetailsDTO.projectId}" onchange='getProjectTasks("${entryCount.index+1}task1Id","${timesheetEntryDetailsDTO.projectId}");prepareProjectTaskDetails("${entryIndex}","${entryCount.index+1}task1Id");' data-validation="required" field-name="Task">
+												   <select id="${entryCount.index+1}task1Id" name="${entryCount.index+1}task1Id" class="existedProjectTaskId${timesheetEntryDetailsDTO.projectId}"  onchange='getProjectTasks("${entryCount.index+1}task1Id","${timesheetEntryDetailsDTO.projectId}");prepareProjectTaskDetails("${entryIndex}","${entryCount.index+1}task1Id");' data-validation="required" field-name="Task">
 														<option value=''>--select task--</option>
 														 <c:if test="${!empty timesheetSubmissionDTO.timesheetTaskList}">
 														   <c:forEach var="pt" items="${timesheetSubmissionDTO.timesheetTaskList}">
@@ -292,7 +393,8 @@
 									</tr>
 								</tbody>
 							</table>
-							 <div class="timesheet_bot">
+							<div class="clearfix"></div>
+							 <div class="timesheet_bot clearfix">
 								<div class="timesheet_week_comm">
 									<input name="attcahmentMaxRowNumber" id="attcahmentMaxRowNumber" value="1" type="hidden">
 									<input name="fileCounter" id="fileCounter" value="0" type="hidden">
@@ -374,7 +476,46 @@
 							<div class="clearfix"></div>
 						</div>
 					</div>
-				</div>
+				
+	  <%-- <c:if test="${timesheetEntryDetailsDTO.timesheetFor == 'approver'}"> 
+	    <div class="clearfix"></div>
+	    <div class="clearfix">
+	    <div class="col-md-8 col-md-offset-2 tableStyles tableStyles-timesheet mt">
+	    	<table class="table">
+	    		<thead>
+	    		<tr>
+	    			<th>Hours</th>
+	    			<th>Last month</th>
+	    			<th>Current Month</th>
+	    			<th>Project hours</th>
+	    		</tr>
+	    		</thead>
+	    		<tbody>
+	    			<tr>
+		    			<th>Billable Hours</th>
+		    			<td>${timesheetSubmissionDTO.previousMonthBillableHours}</td>
+		    			<td>${timesheetSubmissionDTO.currentMonthBillableHours}</td>
+		    			<td>${timesheetSubmissionDTO.projectToDateBillableHours}</td>
+		    			
+	    			</tr>
+	    			<tr>
+		    			<th>Non Billable Hours</th>
+		    			<td>${timesheetSubmissionDTO.previousMonthNonBillableHours}</td>
+		    			<td>${timesheetSubmissionDTO.currentMonthNonBillableHours}</td>
+		    			<td>${timesheetSubmissionDTO.projectToDateNonBillableHours}</td>
+	    			</tr>
+	    			<tr>
+		    			<th>Total Hours</th>
+		    			<td>${timesheetSubmissionDTO.previousMonthTotalHours}</td>
+		    			<td>${timesheetSubmissionDTO.currentMonthTotalHours}</td>
+		    			<td>${timesheetSubmissionDTO.projectToDateTotalHours}</td>
+	    			</tr>
+	    		</tbody>
+	    	</table>
+	    </div>
+	    </div>
+	    </c:if> --%>
+	    </div>
 		    </div>
 	    </div>
 	<input type="hidden" name="_ignore"
@@ -887,8 +1028,10 @@ function addTimeSheetRow(projectId) {
 		   var avilableProjectTaskIds = [];
 		   $('.existedProjectTaskId'+projectId).each(function() {
 				 var localId = this.value;
-				 var taskIdArray = localId.split(",");
-				 avilableProjectTaskIds.push(taskIdArray[0]);
+				 if(localId != null &&  localId !='undefined' && localId != ''){
+					 var taskIdArray = localId.split(",");
+					 avilableProjectTaskIds.push(taskIdArray[0]);
+				 }
 		   }); 
 		   $.ajax({
    	          type : "POST",
@@ -1636,6 +1779,7 @@ $(".content-wraper").click(function() {
 	//alert("hello");
 	bodyClick();
 });
+$('.selectpicker').selectpicker('refresh');
 </script>
 <!-- Tab Switching -->
 <script type="text/javascript"	src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
