@@ -2,10 +2,10 @@
 <script>
 $(document).ready(function() {
     $(".glyphicon-comment").mouseenter(function(){
-		$(".app_error_mes").addClass("app_error_mes_active");
+		$("#rejectedMessage${timesheetEntryDetailsDTO.projectMemberId}").addClass("app_error_mes_active");
 	});
     $(".glyphicon-comment").mouseleave(function(){
-		$(".app_error_mes").removeClass("app_error_mes_active");
+    	$("#rejectedMessage${timesheetEntryDetailsDTO.projectMemberId}").removeClass("app_error_mes_active");
 	});	
 });
 </script>
@@ -144,7 +144,7 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 	        		 $("#row"+projectMemberId).empty();
 			    	 $("#row"+projectMemberId).html(rowHtmlContent);
 			    	 $("#status"+projectMemberId).html("Approved");
-			    	 $("#action"+projectMemberId).html("<h3>Approved</h3><b class='Rname'>By :"+locationName+"</b>"); 
+			    	 $("#action"+projectMemberId).html("<h3>Approved</h3><b class='Rname'>By :"+locationName+"</b>");
 	        	   }
 	    	 }else if (result.indexOf('Sign In') !== -1) {
 					location.replace(sourceleadUrl);
