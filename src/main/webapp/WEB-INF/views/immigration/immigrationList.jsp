@@ -9,6 +9,16 @@
 <jsp:include page="../masterSideNav.jsp" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<script type="text/javascript" src="/resources/js/immigration.js"></script>
+<script type="text/javascript" src="/resources/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script>
+<script type="text/javascript" src="/resources/js/colResizable-1.6.min.js"></script>
+<style type="text/css">
+    .active {
+        color: red !important;
+    }
+
+</style>
 <title>Insert title here</title>
     <section class="content-wraper content-wraperNew">
    
@@ -123,7 +133,22 @@
 					  </li>
 					</ul>
 				  </div>
-				</li> 
+				  <li class="pull-left">
+                    <div class="dropdown">
+                        <strong>Column Chooser </strong>
+                        <button class="glyphicon glyphicon-plus" type="button" id="menu1" data-toggle="dropdown"></button>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+                            <li><a class="toggle-vis " data-column="0">Status</a></li>
+                            <li><a class="toggle-vis" data-column="1">ID</a></li>
+                            <li><a class="toggle-vis" data-column="2">Type</a></li>
+                            <li><a class="toggle-vis" data-column="3">Name</a></li>
+                            <li><a class="toggle-vis" data-column="4">Email</a></li>
+                            <li><a class="toggle-vis" data-column="6">Phone</a></li>
+                            <li><a class="toggle-vis" data-column="7">On Date</a></li>
+                             <li><a class="toggle-vis" data-column="8">Attorney</a></li>
+                        </ul>
+                    </div>
+                </li>
 				
 				  <li class="dropdown">
 					<span class="dropdown-toggle" id="" data-toggle="dropdown">
@@ -155,88 +180,12 @@
 			  </ul>
 			  <div class="clearfix"></div>
 			  <div class="remove_search">
-				<input placeholder="Search" type="text">
+				<input placeholder="Search"  id ="immiListSerach" type="text">
 			  </div>
 			</div>
 			
-			<div class="immigraTable">
-			  <table>
-
-				<thead>
-				  <tr>
-					<th>Status</th>
-					<th>ID</th>
-					<th>Type</th>
-					<th>Name</th>
-					<th>Email</th>
-					<th>Phone</th>
-					<th>On date</th>
-					<th>Attorney</th>
-					<th>&nbsp;</th>
-				  </tr>
-				</thead>
-
-				<tbody>
-  			<c:forEach var="items" items="${immList}" varStatus="rows">
-				<tr>
-					<td>
-					  <div class="proj_show tbldata-dotdot-100">
-						${items.currUscisStatus}             
-					  </div>
-					</td>
-					<td>
-					  <div class="proj_show tbldata-dotdot-100"><a href="<c:url value='${appPath}/immigration/viewImmigration'/>">
-						  <div class="pull-left tbldata-dotdot_80" title="">${items.id} </div>
-						  <i class="fa fa-binoculars pull-right"></i></a>
-					  </div>
-					</td>
-					<td>
-					  <div title="H1B" class="tbldata-dotdot-80">${items.petitionType}</div>
-					</td>
-					<td>
-						<div title="Vannam Mahesh" class="tbldata-dotdot-100">${items.firstName}</div>
-					</td>
-					<td>
-						<div title="mahesh@businessintelli.com" class="tbldata-dotdot-150">${items.email}</div>
-					</td>
-					<td>
-						<div title="Vannam Mahesh" class="tbldata-dotdot-100">${items.phone}</div>
-					</td>
-					<td>
-						<div title="Vannam Mahesh" class="tbldata-dotdot-100">${items.openDate}</div>
-					</td>
-					<td>
-						<div title="Vannam Mahesh" class="tbldata-dotdot-100">${items.orgName}</div>
-					</td>
-					<td class="immigraAction">
-						<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-						<div class="mmigraActionInn mmigraActionInnBig">
-							<span>
-								<a href="javascript:void(0)" title="Accept" class="fa fa-check"></a>
-								<a href="javascript:void(0)" title="Reject" class="fa fa-times"></a>
-								<a href="javascript:void(0)" title="Edit" class="fa fa-pencil"></a>
-								<a href="javascript:void(0)" title="Remove" class="fa fa-trash"></a>
-							</span>
-						</div>
-					</td>                                  
-				  </tr>
-				</c:forEach>
-				</tbody>
-
-			  </table>
-			</div>
-			
-		<div class="immigraPagi clearfix">
-			<div class="immiPagiText">Showing 1 to 6 of 6 entries</div>
-			  <ul class="pagination">
-				<li><a href="#"> << </a></li>
-				<li><a href="#">2</a></li>
-				<li><a href="#">3</a></li>
-				<li class="disabled"><a href="#">6</a></li>
-				<li data-page="last"><a href="#"> >> </a></li>
-			  </ul>
-		</div>			
-			
+			 <div id ="dynamicImmigrationListViewDiv" class="project_wrap_table datatable_filter"></div>
+		
 		</div>   
    
     </div>
@@ -255,15 +204,6 @@
     
 <!-- Footer Area --> 
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
-<script src="js/moment.min.js"></script> 
-<script src="js/bootstrap-datetimepicker.min.js"></script> 
-<script src="js/bootstrap.min.js"></script> 
-<script src="js/masterHeaderAction.js"></script> 
-<script src="js/bootstrap-select.min.js"></script> 
-<script src="js/chosen.jquery.min.js"></script> 
-<script src="js/jquery-ui.min.js"></script> 
 <script type="text/javascript">
         var config = {
         '.chosen-select'           : {},
@@ -336,6 +276,222 @@
     </script>
     <!-- Script for Linked Invoice pop -->
 <jsp:include page="../masterFooter.jsp" />
+ 
+  <!-- data table code starts below -->
  <script type="text/javascript">
 
+ var table = "";
+ $(document).ready(function () {
+     getDynamicImmigrationList();
+
+     $('a.toggle-vis').on('click', function (e) {
+         e.preventDefault();
+         // Get the column API object
+         var column = table.column($(this).attr('data-column'));
+         $(this).toggleClass("active");
+         // Toggle the visibility
+         column.visible(!column.visible());
+     });
+     $("#statusFilter a").on('click', function (e) {
+         alert($(this).data("status"));
+         getDynamicImmigrationList($(this).data("status"));
+     }); 
+ });
+
+ function getDynamicImmigrationList(status) {
+
+     var result = "";
+     result = result + '<table id="dynamicImmigrationListTbl">';
+     result = result + '<thead>';
+     result = result + '<tr>';
+     result = result + '<th>Status</th>';
+     result = result + '<th>ID</th>';
+     result = result + '<th>Type</th>';
+     result = result + '<th>Name</th>';
+     result = result + '<th>Email</th>';
+     result = result + '<th>Phone</th>';
+     result = result + '<th>On Date</th>';
+     result = result + '<th>Attorney</th>';
+     result = result + '<th>Action</th>';
+     result = result + '</tr>';
+     result = result + '</thead>';
+
+     result = result + '</table>';
+     $("#dynamicImmigrationListViewDiv").empty();
+     $("#dynamicImmigrationListViewDiv").append(result);
+
+     var sourceleadUrl = '${sourceleadUrl}';
+//     var statusFilter = $("#statusFilter").val();
+     var searchValue = $("#immiListSerach").val();
+     searchValue = searchValue ? searchValue : "";
+     var url = sourceleadUrl + "/immigration/getImmigrationViewList?searchValue=" + searchValue + "&status=" + (status ? status : 1);
+     dynamicImmigrationListPagination(url);
+ }
+
+ function dynamicImmigrationListPagination(url) {
+     var colIndex = 0;
+     table = $('#dynamicImmigrationListTbl').DataTable({
+         "processing": true,
+         "serverSide": true,
+         "searching": false,
+         "colReorder": true,
+         //'dom': 'Rlfrtip',
+         // "stateSave": true, // used to save the page state local or server side.
+         "ajax": $.fn.dataTable.pipeline({
+             url: url,
+             method: 'POST',
+             pages: 10
+         }),
+         "columns": [
+             {"data": "Status"},
+             {"data": "ID"},
+             {"data": "Type"},
+             {"data": "Name"},
+             {"data": "Email"},
+             {"data": "Phone"},
+             {"data": "On date"},
+             {"data": "Attorney"}
+         ],
+         "columnDefs": [
+             {
+                 "targets": colIndex++,
+                 "data": "currUscisStatus",
+                 "render": function (data, type, opt, meta) {
+                     var result = "";
+                     if (opt.currUscisStatus !== null && opt.currUscisStatus !== '' && opt.currUscisStatus !== 'undefined') {
+                         result = result + "<td><div class='tbldata-dotdot-sm'>" + opt.currUscisStatus + "</div></td>";
+                     } else {
+                         result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
+                     }
+                     return result;
+                 }
+             },
+             {
+                 "targets": colIndex++,
+                 "data": "id",
+                 "render": function (data, type, opt, meta) {
+                     var result = "";
+                     if (opt.id !== null && opt.id !== '' && opt.id !== 'undefined') {
+                         result = result + "<td><div class='tbldata-dotdot-vsm'><a href=/app/immigration/viewImmigration?immigrationId="+opt.id+"&candidateId="+opt.candidateId+"&templateId="+opt.immTemplateId+">"+opt.id+"</a></div></td>";
+                     } else {
+                         result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
+                     }
+                     return result;
+                 }
+             },
+             {
+                 "targets": colIndex++,
+                 "data": "petitionType",
+                 "render": function (data, type, opt, meta) {
+                     var result = "";
+                     if (opt.petitionType !== null && opt.petitionType !== 'undefined') {
+                         result = result + "<td><div class='tbldata-dotdot-vsm'>" + opt.petitionType + "</div></td>";
+                     } else {
+                         result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
+                     }
+                     return result;
+                 }
+             },
+             {
+                 "targets": colIndex++,
+                 "data": "firstName",
+                 "render": function (data, type, opt, meta) {
+                     var result = "";
+                     if (opt.firstName !== null && opt.firstName !== 'undefined') {
+                         result = result + "<td><div class='tbldata-dotdot-vsm'>" + opt.firstName + "</div></td>";
+                     } else {
+                         result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
+                     }
+                     return result;
+                 }
+             },
+             {
+                 "targets": colIndex++,
+                 "data": "email",
+                 "render": function (data, type, opt, meta) {
+                     var result = "";
+                     if (opt.email !== null && opt.email !== 'undefined') {
+                         result = result + "<td><div class='tbldata-dotdot-vsm'>" + opt.email + "</div></td>";
+                     } else {
+                         result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
+                     }
+
+                     return result;
+                 }
+             },
+             {
+                 "targets": colIndex++,
+                 "data": "phone",
+                 "render": function (data, type, opt, meta) {
+                     var result = "";
+                     if (opt.phone !== null && opt.phone !== 'undefined') {
+                         result = result + "<td><div class='tbldata-dotdot-vsm'>" + opt.phone  + "</div></td>";
+                     } else {
+                         result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
+                     }
+                     return result;
+                 }
+             },
+             {
+                 "targets": colIndex++,
+                 "data": "openDateStr",
+                 "render": function (data, type, opt, meta) {
+                     var result = "";
+                     if (opt.openDateStr !== null && opt.openDateStr !== '' && opt.openDateStr !== 'undefined') {
+                         result = result + "<td><div class='tbldata-dotdot-vsm'>" + opt.openDateStr + "</div></td>";
+                     } else {
+                         result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
+                     }
+                     return result;
+                 }
+             },
+             {
+                 "targets": colIndex++,
+                 "data": "orgName",
+                 "render": function (data, type, opt, meta) {
+                     var result = "";
+                     if (opt.orgName !== null && opt.orgName !== '' && opt.orgName !== 'undefined') {
+                         result = result + "<td><div class='tbldata-dotdot-vsm'>" + opt.orgName + "</div></td>";
+                     } else {
+                         result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
+                     }
+                     return result;
+                 }
+             },
+             {
+                 "targets": colIndex++,
+                 /*"data": "formsCount",*/
+                 "render": function (data, type, opt, meta) {
+                     var result = "";
+                     result = result + '<td><div><i id="edit' + opt.id + '" onclick="immigration.editTemplateDetailsByRowId(' + opt.id + ');" class="glyphicon glyphicon-pencil"></i><i id="delete' + opt.id + '" onclick="immigration.deleteTempalteDetailsByRowId(' + opt.id + ');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
+                     return result;
+                 }
+             }
+         ],
+         "scrollCollapse": false,
+         "lengthMenu": [[10, 15, 20], [10, 15, 20]],
+         "aaSorting": [[6, 'desc']],
+         "bLengthChange": true,
+         "bDestroy": true,
+         "ordering": true,
+         "initComplete": function (settings, json) {
+         },
+         "oLanguage": {
+             "sSearch": "",
+             "sZeroRecords": "", "sEmptyTable": "",
+             "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+         }
+     });
+    
+     $("#dynamicImmigrationListTbl").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
+
+     $("#immiListSerach").keyup(function (e) {
+         if (e.which === 13) {
+        	 getDynamicImmigrationList();
+         }
+     });
+
+     $("table").colResizable(); // for resizing columns in tables.
+ }
 </script>
+

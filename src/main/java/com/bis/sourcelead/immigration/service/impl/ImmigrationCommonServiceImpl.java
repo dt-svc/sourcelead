@@ -18,11 +18,13 @@ import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dto.CandidateFamilyDetailsDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ImmigrationDTO;
+import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.ImmigrationPassportVisaDTO;
 import com.bis.sourcelead.dto.ImmigrationResidenceDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidateIdendities;
@@ -414,7 +416,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		dto.setOpenDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),immigration.getOpenDate()));
 		dto.setCurrUscisStatus(immigrationCommonDao.getPetitionTypeById(immigration.getCurrUscisStauts(), Constants.USCIS_STATUS));
 		if(immigration.getDateOfArrival() != null) {
-			dto.setArrivalDate(immigration.getDateOfArrival().toString()); 
+			dto.setArrivalDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),immigration.getDateOfArrival())); 
 		}
 		dto.setEntryPlace(immigration.getPlaceOfEntry());
 		if(immigration.getImmigrationTemplateId() != null) {
@@ -759,6 +761,11 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		}else{
 		immigrationCandidateDocuments.setIsRequired(Constants.NO);	
 		}
+		if(immigrationTemplateDocDTO.getMultiple() != null && "Y".equalsIgnoreCase(immigrationTemplateDocDTO.getMultiple())){
+		immigrationCandidateDocuments.setAllowMultiple(immigrationTemplateDocDTO.getMultiple());
+		}else{
+		immigrationCandidateDocuments.setAllowMultiple(Constants.NO);	
+		}
 		immigrationCandidateDocuments.setStatus(Constants.RECORD_ACTIVE);
 		immigrationCandidateDocuments.setDocumentStatus(Constants.DOCUMENT_UPLOAD_REQUESTED);
 		if(immigrationTemplateDocDTO.getFileInfo() != null){
@@ -833,14 +840,10 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		return immigrationCommonDao.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId);
 	}
 
-	@Override
-	public List<ImmigrationListView> getImmigrationsList() {
-		// TODO Auto-generated method stub
-		return immigrationCommonDao.getImmigrationsList();
+	public ResponseList<ImmigrationListViewDTO> getImmigrationsList(ImmigrationListViewDTO immigrationListDTO,
+			String searchValue,  OrgLocations orgLocations) {
+		   ResponseList<ImmigrationListViewDTO> immigartionList = immigrationCommonDao.getImmigrationsList(immigrationListDTO, searchValue, orgLocations);
+		return immigartionList;
 	}
 
-	
-
-	
-	
 }
