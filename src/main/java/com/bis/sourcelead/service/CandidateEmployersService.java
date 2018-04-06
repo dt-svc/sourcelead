@@ -34,10 +34,11 @@ public interface CandidateEmployersService {
 	/**
 	 * @param candidateId
 	 * @param orgLocationId
+	 * @param searchVal 
 	 * @return
 	 * @throws Exception
 	 */
-	public List<CandidateEmployers>   getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
+	public List<CandidateEmployers>   getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId, String searchVal) throws Exception;
    
 	/**
 	 * @param jsonObj

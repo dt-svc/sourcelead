@@ -956,11 +956,11 @@ public class ImmigrationRestController {
 	
 	@RequestMapping(value = { "/getCandidateEducationList" })
 	public ModelAndView getCandidateEducationList(
-			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) throws Exception {
+			@RequestParam(value = "candidateId", required = true) Long candidateId,@RequestParam(value = "searchVal", required = false) String searchVal, HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		model.setViewName("/immigration/educationDetailsTab");
-		 List<CandidateEducation>   candidatesEducationList = candidateEducationService.getCandidateEducationListByCandidateIdAndOrgLocationID(Long.valueOf(candidateId), orgLocations.getId());
+		 List<CandidateEducation>   candidatesEducationList = candidateEducationService.getCandidateEducationListByCandidateIdAndOrgLocationID(Long.valueOf(candidateId), orgLocations.getId(),searchVal);
 		 List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 		 model.addObject("educationsDropList", educationsList);
 		 model.addObject("candidatesEducationList",candidatesEducationList);
@@ -972,11 +972,11 @@ public class ImmigrationRestController {
 	
 	@RequestMapping(value = { "/getCandidateEmployerList" })
 	public ModelAndView getCandidateEmployerList(
-			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) throws Exception {
+			@RequestParam(value = "candidateId", required = true) Long candidateId,@RequestParam(value = "searchVal", required = false) String searchVal, HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		model.setViewName("/immigration/employerDetailsTab");
-		 List<CandidateEmployers>   candidatesEmployersList = candidateEmployersService.getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long.valueOf(candidateId), orgLocations.getId());
+		 List<CandidateEmployers>   candidatesEmployersList = candidateEmployersService.getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long.valueOf(candidateId), orgLocations.getId(),searchVal);
 		model.addObject("candidatesEmployersList",candidatesEmployersList);
 		return model;
 	}

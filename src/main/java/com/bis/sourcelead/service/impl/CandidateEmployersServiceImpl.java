@@ -230,9 +230,9 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	 * @throws Exception
     */
 	@Override
-	public List<CandidateEmployers>   getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long candidateId, Long loc) throws Exception {
+	public List<CandidateEmployers>   getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long candidateId, Long loc,String searchVal) throws Exception {
 		
-		 return candidateEmployersDao.getCandidatesEmployersListByCandidateIdAndOrgLocationID(candidateId, loc);
+		 return candidateEmployersDao.getCandidatesEmployersListByCandidateIdAndOrgLocationID(candidateId, loc, searchVal);
 	}
 
 	
@@ -300,7 +300,7 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 		if(null != candidateId){
 			CandidateIndex candidateIndex = new CandidateIndex();
 			candidateIndex.setCandidateId(candidateId);
-			ArrayList<CandidateEmployers> employerList =(ArrayList<CandidateEmployers>) getCandidatesEmployersListByCandidateIdAndOrgLocationID(candidateId,locationId);
+			ArrayList<CandidateEmployers> employerList =(ArrayList<CandidateEmployers>) getCandidatesEmployersListByCandidateIdAndOrgLocationID(candidateId,locationId,null);
 			if(null != employerList && !employerList.isEmpty()){
 				ArrayList<String> empList = new ArrayList<>();
 				for(CandidateEmployers employer :employerList){
