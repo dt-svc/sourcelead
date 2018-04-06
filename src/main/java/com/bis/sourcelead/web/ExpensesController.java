@@ -82,6 +82,7 @@ public class ExpensesController {
 	{
 		
 		ModelAndView model = new ModelAndView();
+		try{
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
 		if (null == sessionData) {
 			sessionData = new SessionMaintainanceData();
@@ -90,6 +91,10 @@ public class ExpensesController {
 		request.getSession().setAttribute("sessionData", sessionData);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("expenses/myExpensesList");
+		}catch(Exception e){
+			  model.addObject("AWKWARD", true);
+			  model.setViewName("expenses/myExpensesList");
+		}
 		return model;
 	}
 	
@@ -98,6 +103,7 @@ public class ExpensesController {
 	public ModelAndView addExpense(HttpServletRequest request, @RequestParam(value="expenseId", required=false)String expenseId, @RequestParam(value="expenseLocationCode", required=false)String expenseLocationCode) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
+		 try {
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
 		if (null == sessionData) {
 			sessionData = new SessionMaintainanceData();
@@ -149,6 +155,10 @@ public class ExpensesController {
 		model.addObject("expEntry", expEntryDTO);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("expenses/addExpense");
+	  }catch(Exception e){
+			 model.addObject("AWKWARD", true);
+			  model.setViewName("expenses/addExpense");
+		 }
 		return model;
 		
 	}
@@ -156,6 +166,7 @@ public class ExpensesController {
 	public ModelAndView expenses(@PathVariable Optional<String> expensesStatus, HttpServletRequest request) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
+		try{
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
 		if (null == sessionData) {
 			sessionData = new SessionMaintainanceData();
@@ -167,6 +178,10 @@ public class ExpensesController {
 			model.addObject("expensesStatusFormDashBoard",expensesStatus.get());
 		}
 		model.setViewName("expenses/expenses");
+		}catch(Exception e){
+			 model.addObject("AWKWARD", true);
+			  model.setViewName("expenses/expenses");
+		}
 		return model;
 	}
 		
@@ -176,6 +191,7 @@ public class ExpensesController {
 	{
 		
 		ModelAndView model = new ModelAndView();
+		try{
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
 		if (null == sessionData) {
 			sessionData = new SessionMaintainanceData();
@@ -244,12 +260,11 @@ public class ExpensesController {
 		model.addObject("expEntry", expEntryDTO);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("expenses/addApprovalExpense");
+		}catch(Exception e){
+			  model.addObject("AWKWARD", true);
+			  model.setViewName("expenses/addApprovalExpense");
+		}
 		return model;
 	}
-	
-	
-	
-	
-	
 
 }
