@@ -19,6 +19,7 @@ import com.bis.sourcelead.dto.OrglocationSignatoryDTO;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
 import com.bis.sourcelead.service.OrglocationSignatoryService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -82,5 +83,14 @@ public class EmploymentVerificationTemplateController {
 		model.addObject("empTemplate", empTemplate);
 		model.setViewName("employmentVerification/addEmploymentVerificationTemplate");
 		return model;
+	}
+	
+	@RequestMapping(value = "/employementVerificationReport")
+	public ModelAndView employementVerificationReport(HttpServletRequest request) throws Exception
+	{
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/employementVerificationReport");
+		 return model;
 	}
 }

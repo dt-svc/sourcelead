@@ -2,6 +2,7 @@ package com.bis.sourcelead.rest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletOutputStream;
@@ -21,13 +22,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.EmploymentVerificationTemplateDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -43,6 +47,10 @@ import com.itextpdf.tool.xml.XMLWorkerHelper;
 @PropertySource("${propertyLocation:app.properties}")
 @RequestMapping("/app")
 public class EmploymentVerificationTemplateRestController {
+	
+	
+	@Autowired
+	UserService userService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(EmploymentVerificationTemplateRestController.class);
 	
@@ -125,4 +133,36 @@ public class EmploymentVerificationTemplateRestController {
     	
 	}
 
+	@RequestMapping(value = "/getAllEmployeesList", method = RequestMethod.GET)
+	public @ResponseBody  ResponseList<AddUserDTO> getAllEmployeesList(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		List<AddUserDTO> userDtoList =  new ArrayList<>();
+		ResponseList<AddUserDTO> employeeResponseList =  new ResponseList<>();
+		List<User> employeesList = userService.getUsersListByOrglocationId(orgLocation.getId());
+		employeesList.forEach(emp->{
+			AddUserDTO user = new AddUserDTO();
+			user.setEmployeeId(emp.getId().toString());
+			if(emp.getLastName() != null) {
+				StringBuilder sb = new StringBuilder();
+				user.setUserName(sb.append(emp.getFirstName()).append(" ").append(emp.getLastName()).toString());
+			}else {
+				user.setUserName(emp.getFirstName());
+			}
+			user.setEmail(emp.getEmail());
+			user.setPhoneNumber(emp.getMobilePhone());
+//			user.setDesignationType();
+			user.setDateofJoin(emp.getDateOfJoin());
+//			user.setDateofTermination();
+//			user.setDesignation();
+			userDtoList.add(user);
+		});
+		employeeResponseList.setData(userDtoList);
+		employeeResponseList.setRecordsFiltered(userDtoList.size());
+		employeeResponseList.setRecordsTotal(userDtoList.size());
+		return employeeResponseList;
+	}
+	
 }
