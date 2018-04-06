@@ -562,8 +562,15 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 
         StringBuilder query1 = new StringBuilder("");
         if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
-            query1.append(" and ((immView.name like '%" + searchValue + "%' )");
-            query1.append(" or (immView.description like '%" + searchValue + "%' ))");
+            query1.append(" and ((immView.email like '%" + searchValue + "%' )");
+            query1.append(" or (immView.firstName like '%" + searchValue + "%' )");
+            query1.append(" or (immView.id like '%" + searchValue + "%' )");
+            query1.append(" or (immView.currUscisStatus like '%" + searchValue + "%' )");
+            query1.append(" or (immView.petitionType like '%" + searchValue + "%' )");
+            query1.append(" or (immView.orgName like '%" + searchValue + "%' )");
+           // query1.append(" or (immView.openDate like '%" + searchValue + "%' )");
+            query1.append(" or (immView.phone like '%" + searchValue + "%' ))");
+            
             //query1.append(" or (tempView.status like '%" + searchValue + "%' )");
         }
         // usertList sorting order
@@ -571,7 +578,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         if (StringUtils.isNotBlank(immigrationListDTO.getSortColumn())) {
             sortingQry = " order by immView." + immigrationListDTO.getSortColumn() + " " + immigrationListDTO.getSortOrder();
         } else {
-            sortingQry = " order by immView.name ";
+            sortingQry = " order by immView.updatedDate desc ";
         }
 
         String listQuery = "from ImmigrationListView immView  where immView.orgLocationId=:orgLocationId " + (immigrationListDTO.getStatus() >= 0 ? "and immView.status =" + immigrationListDTO.getStatus() + " " : " ");
@@ -584,6 +591,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         if (immigrationListDTO != null) {
             if (countlist != null && !countlist.isEmpty()) {
                 totalCount = countlist.iterator().next().intValue();
+                filterCount = totalCount;
+                
             }
         }
         responseList.setRecordsTotal(totalCount);
