@@ -390,7 +390,6 @@
 	function storeCandidate() {
 		
 		rateValidations();
-		
 		var validationSettings = {
 				errorMessagePosition : 'element',
 				borderColorOnError : '',
@@ -411,13 +410,21 @@
 		    	        processData: false,
 		    	        contentType:false,
 		        	    url : sourceleadUrl+"/storeProfessionalParseCandidate?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
-						success : function(result) {
-							if(result && result === "DataMissing") {
-	                      		$("#update_user").attr("disabled", "disabled");
-	     						showError("Invalid data");
-	     					}else{
-	     						location.replace(sourceleadUrl+"/professionalProfile");	
-	     					}
+						success : function(response) {
+							
+							if (response && response.response === "INVALID_DATA") {
+			                    $("#store_candidate").removeAttr("disabled");
+			                    $("#store_candidate").removeAttr('button').val('Save');
+			                    showError(result.responseMessage);
+			                } else if (response.response === "AWKWARD") {
+			                    location.href = "/errorPage";
+			                } else if (response.response === "SUCCESS") {
+			                	location.replace(sourceleadUrl+"/professionalProfile");	
+			                } else if (response.indexOf('Sign In') !== -1) {
+								location.replace(sourceleadUrl);
+							} else {
+			                    showError("Operation failed, please try again");
+			                }
 								
 						},
 					});
