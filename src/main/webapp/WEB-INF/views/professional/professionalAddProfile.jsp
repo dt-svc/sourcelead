@@ -124,9 +124,9 @@
        </div>
        
        <div class="form-group">
-         <label class="col-md-3">Employment type</label>
+         <label class="col-md-3">Employment type<span class="text-danger">&nbsp;*</span></label>
          <div class="col-md-9">
-             <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getDesignationType(this);">
+             <select class="selectpicker form-control" id="designationType" name="designationType" field-name="Employment Type" data-validation="required" onChange="getDesignationType(this);">
                 <option value="">--Select Employment type--</option>
                  <option>C2C</option>
                  <option>W-2</option>

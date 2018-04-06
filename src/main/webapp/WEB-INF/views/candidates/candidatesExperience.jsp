@@ -695,7 +695,7 @@ function closeCertificatePopup(){
 						} else if (json.indexOf('Sign In') !== -1) {
 							location.replace(sourceleadUrl);
 						} 
-					},
+					}
 				});
 	}
 </script>
