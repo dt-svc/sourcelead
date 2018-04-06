@@ -1392,6 +1392,8 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		LinkedHashMap<Date, Float> weekBillableHours = new LinkedHashMap<>();
 		LinkedHashMap<Date, Float> weekNonBillableHours = new LinkedHashMap<>();
 		LinkedHashMap<Date, Float> weekTotalHoursMap = new LinkedHashMap<>();
+		Date monthStartDate = null;
+		Date monthEndDate = null;
 		if (submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()) {
 			int count = 0;
 			for (SubmissionApproverHierarchy sah : submissionApproverHierarchyList) {
@@ -1413,8 +1415,8 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 					String startStr = sdf.format(sah.getSubmissionId().getStartDate());
 					actualStartDate = sdf.parse(startStr);
 				}
-				Date monthStartDate = CalendarUtil.getMonthStartDateByGivenDate(actualStartDate, Constants.CURRENT_MONTH).get("STARTDATE");
-				Date monthEndDate = CalendarUtil.getMonthEndDateByGivenDate(actualStartDate, Constants.CURRENT_MONTH).get("ENDDATE");
+				monthStartDate = CalendarUtil.getMonthStartDateByGivenDate(actualStartDate, Constants.CURRENT_MONTH).get("STARTDATE");
+				monthEndDate = CalendarUtil.getMonthEndDateByGivenDate(actualStartDate, Constants.CURRENT_MONTH).get("ENDDATE");
 				float weekTotalHours = 0f;
 				float weekBillableTotalHours = 0f;
 				float weekNonBillableTotalHours = 0f;
@@ -1527,6 +1529,14 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		submissionApproverHierarchy.setProjectToDateBillableHours(projectToDateHours.get("BILLABLE_HOURS"));
 		submissionApproverHierarchy.setProjectToDateNonBillableHours(projectToDateHours.get("NONBILLABLE_HOURS"));
 		submissionApproverHierarchy.setProjectToDateTotalHours(projectToDateHours.get("TOTAL_HOURS"));
+		if(monthStartDate != null && monthEndDate != null) {
+			Map<String, Float> currentMonthMap = getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(projectMemberId, locationsId, monthStartDate, monthEndDate);
+			if(currentMonthMap != null && !currentMonthMap.isEmpty()) {
+				submissionApproverHierarchy.setCurrentMonthBillableHours(currentMonthMap.get("BILLABLE_HOURS"));
+				submissionApproverHierarchy.setCurrentMonthNonBillableHours(currentMonthMap.get("NONBILLABLE_HOURS"));
+				submissionApproverHierarchy.setCurrentMonthTotalHours(currentMonthMap.get("TOTAL_HOURS"));
+			}
+		}
 		return submissionApproverHierarchy;
 	}
 	

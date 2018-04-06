@@ -99,54 +99,51 @@ function closeCertificatePopup(){
 			
 			$("#candidateEmployersAdd").attr("disabled", "disabled");
 			$("#candidateEmployersAdd").addClass('button').val('Processing..'); 
-	        $.post(sourceleadUrl+"/storeCandidateEmployers?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
-	        	
-	        	if (data != null && data != 'undefined'
-					&& data != "") {
-				if (data.indexOf('Sign In') >= 0) {
-					location.replace(sourceleadUrl);
-				} else if (data.indexOf('exception') >= 0) {
-					location.replace(sourceleadUrl  + "/errorPage");
-				} else {
-					$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
-        			 if(data<50){
-        			   $("#perVal").removeClass('progress-bar-success');
-        			   $("#perVal").addClass("progress-bar-danger");
-        			 }
-        			 if(data>=50){
-        				 $("#perVal").removeClass("progress-bar-danger");
-        				 $("#perVal").addClass("progress-bar-success");
-        			 }
-        			 $("#disVal").empty();
-        			$("#disVal").append(data+'%');
-        			
-        			// for quick view bar update
-        			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
-          			 if(data<50){
-	          			   $("#quickPerVal").removeClass('progress-bar-success');
-	          			   $("#quickPerVal").addClass("progress-bar-danger");
-	          			 }
-	          			 if(data>=50){
-	          				 $("#quickPerVal").removeClass('progress-bar-danger');
-	          				 $("#quickPerVal").addClass("progress-bar-success");
-	          			 }
+	        $.post(sourceleadUrl+"/storeCandidateEmployers?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(response) {
+	        	if (response.response === "AWKWARD") {
+                    location.href = "/errorPage";
+                } else if (response.response === "SUCCESS") {
+                    var data = response.object;
+                    $('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+                    if(data<50){
+                      $("#perVal").removeClass('progress-bar-success');
+                      $("#perVal").addClass("progress-bar-danger");
+                    }
+                    if(data>=50){
+                        $("#perVal").removeClass("progress-bar-danger");
+                        $("#perVal").addClass("progress-bar-success");
+                    }
+                    $("#disVal").empty();
+                   $("#disVal").append(data+'%');
+                   
+                   // for quick view bar update
+                   $('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
+                      if(data<50){
+                             $("#quickPerVal").removeClass('progress-bar-success');
+                             $("#quickPerVal").addClass("progress-bar-danger");
+                           }
+                           if(data>=50){
+                               $("#quickPerVal").removeClass('progress-bar-danger');
+                               $("#quickPerVal").addClass("progress-bar-success");
+                           }
 
-        			$("#quickDisVal").empty();
-        			$("#quickDisVal").append(data+'%');
-        			
-					$("#popUpDivEmp").removeClass("edit-details-active");
-        			$("#selector3").removeAttr("style");
-        			$("#selector3").css({ display: "block" });
-        			$("#empMsgDiv").html("Success!! New Employer added");
-					candidateEmployersList(candidateId);
-					empMsgFadein();
-					qvemployeeSubmission(candidateId);
-				}
-	        	}
-			
+                   $("#quickDisVal").empty();
+                   $("#quickDisVal").append(data+'%');
+                   
+                    $("#popUpDivEmp").removeClass("edit-details-active");
+                   $("#selector3").removeAttr("style");
+                   $("#selector3").css({ display: "block" });
+                   $("#empMsgDiv").html("Success!! New Employer added");
+                    candidateEmployersList(candidateId);
+                    empMsgFadein();
+                    qvemployeeSubmission(candidateId);
+                } else if (response.indexOf('Sign In') !== -1) {
+                    location.replace(sourceleadUrl);
+                } else {
+                    showError("Operation failed, please try again");
+                } 
 	        });
 			}
-			
 			return true;
 		} else {
 			return false;
@@ -360,7 +357,7 @@ function monthIfYearRequired(){
 			url : sourceleadUrl
 					+ "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId?${_csrf.parameterName}=${_csrf.token}&candidateId="
 					+ candidateId + "&candidateEmpId=" + candidateEmpId,
-			success : function(data) {
+			success : function(response) {
 				if (response.response === "AWKWARD") {
 				    location.href = "/errorPage";
 				} else if (response.response === "SUCCESS") {
@@ -686,72 +683,78 @@ function monthIfYearRequired(){
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="
 							+ candidateId,
-					success : function(json) {
-// 								var json = JSON.parse(data);
-		             			 
-								$("#candidateEmployersList").empty();
-								var result = "";
-								result = result	+ "<table id='candidateEmployersPagination' class='display' cellspacing='0' width='100%' >";
-								result = result + "<thead>";
-								result = result + "  <tr>";
-								result = result	+ '           <th>Employer</th>';
-								result = result	+ '           <th>Designation</th>';
-								result = result + '           <th>Address</th>';
-								result = result	+ '           <th>Start Date</th>';
-								result = result	+ '           <th>End Date</th>';
-								result = result + '           <th>Action</th>';
-								result = result + "  </tr>";
-								result = result + "</thead>";
-								result = result + "<tbody>";
-								for (var i = 0; i < json.data.length; i++) {
-									var opt = json.data[i];
-									result = result + '         <tr>';
-									if (opt.name != null && opt.name != ''
-											&& opt.name != 'undefined') {
-										result = result + '<td><div><span title = "'+ opt.name+ '">'+ opt.name+ '</span></div></td>';
-									} else {
-										result = result+ '<td><div><span>--</span></div></td>';
-									}
-									if (opt.designation != null	&& opt.designation && opt.designation != 'undefined') {
-										result = result + '<td><div><span title="'+ opt.designation+ '">'+ opt.designation+ '</span></div></td>';
-									} else {
-										result = result	+ '<td><div><span>----</span></div></td>';
-									}
-									if (opt.address != null && opt.address	&& opt.address != 'undefined') {
-										result = result + '<td><div><span title="'+ opt.address+ '">'+ opt.address+ '</span></div></td>';
-									} else {
-										result = result	+ '<td><div><span>----</span></div></td>';
-									}
-
-									if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined') {
-										result = result + '<td><div><span>'+opt.startMonth+','+opt.startYear+'</span></div></td>';
-									} else {
-										result = result		+ '<td><div><span>----</span></div></td>';
-									}
-                                    
-									if (opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
-										result = result + ' <td><div><span>'+opt.endMonth+','+opt.endYear+'</span></div></td>';
-									} else {
-										result = result	+ '<td><div><span>----</span></div></td>';
-									}
-									if(window.candidateStatusGlobal == '0'){
-				                   result = result+'<td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
-									}else{
-										result = result+'<td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editEmployer('+ opt.id+ ','+ candidateId+ ');" title="Edit"></a>';	
-									}if(window.candidateStatusGlobal == '0'){
-										result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
-									}else{
-										result = result+'<i class="glyphicon glyphicon-trash" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ');" title="Remove"></i></div></td>';
-									}
-									result = result + '</tr>';
+					success : function(response) {
+						if (response && response.response === "INVALID_DATA") {
+						    showError(response.responseMessage);
+						} else if (response.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (response.response === "SUCCESS") {
+							$("#candidateEmployersList").empty();
+							var result = "";
+							result = result	+ "<table id='candidateEmployersPagination' class='display' cellspacing='0' width='100%' >";
+							result = result + "<thead>";
+							result = result + "  <tr>";
+							result = result	+ '           <th>Employer</th>';
+							result = result	+ '           <th>Designation</th>';
+							result = result + '           <th>Address</th>';
+							result = result	+ '           <th>Start Date</th>';
+							result = result	+ '           <th>End Date</th>';
+							result = result + '           <th>Action</th>';
+							result = result + "  </tr>";
+							result = result + "</thead>";
+							result = result + "<tbody>";
+							for (var i = 0; i < response.data.length; i++) {
+								var opt = response.data[i];
+								result = result + '         <tr>';
+								if (opt.name != null && opt.name != ''
+										&& opt.name != 'undefined') {
+									result = result + '<td><div><span title = "'+ opt.name+ '">'+ opt.name+ '</span></div></td>';
+								} else {
+									result = result+ '<td><div><span>--</span></div></td>';
 								}
-								result = result + " </tbody>";
-								result = result + "</table>";
-								$("#candidateEmployersList").append(result);
-								employeePagination();
-								msgFadein2();
-					},
+								if (opt.designation != null	&& opt.designation && opt.designation != 'undefined') {
+									result = result + '<td><div><span title="'+ opt.designation+ '">'+ opt.designation+ '</span></div></td>';
+								} else {
+									result = result	+ '<td><div><span>----</span></div></td>';
+								}
+								if (opt.address != null && opt.address	&& opt.address != 'undefined') {
+									result = result + '<td><div><span title="'+ opt.address+ '">'+ opt.address+ '</span></div></td>';
+								} else {
+									result = result	+ '<td><div><span>----</span></div></td>';
+								}
 
+								if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined') {
+									result = result + '<td><div><span>'+opt.startMonth+','+opt.startYear+'</span></div></td>';
+								} else {
+									result = result		+ '<td><div><span>----</span></div></td>';
+								}
+                                
+								if (opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
+									result = result + ' <td><div><span>'+opt.endMonth+','+opt.endYear+'</span></div></td>';
+								} else {
+									result = result	+ '<td><div><span>----</span></div></td>';
+								}
+								if(window.candidateStatusGlobal == '0'){
+			                   result = result+'<td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
+								}else{
+									result = result+'<td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editEmployer('+ opt.id+ ','+ candidateId+ ');" title="Edit"></a>';	
+								}if(window.candidateStatusGlobal == '0'){
+									result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
+								}else{
+									result = result+'<i class="glyphicon glyphicon-trash" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ');" title="Remove"></i></div></td>';
+								}
+								result = result + '</tr>';
+							}
+							result = result + " </tbody>";
+							result = result + "</table>";
+							$("#candidateEmployersList").append(result);
+							employeePagination();
+							msgFadein2();
+						} else if (response.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
+					},
 				});
 	}
 </script>
@@ -899,23 +902,34 @@ function removeEmployer(candidateemployerId, candidateId){
 				
 			}
 			else {
-	        $.post(sourceleadUrl+"/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateExperianceId="+candidateExperianceId, formData, function(data) {
-	        	
-	        	$(".edit-details").toggleClass("edit-details-active");
-				$(".close-div")	.click(function() {
-									$(this).parent("div.edit-details")
-											.removeClass("edit-details-active");
-								});
-				$(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details")
-						.click(function(e) {
-							e.stopPropagation();
-						});
-				$("#selector3").removeAttr("style");
-    			$("#selector3").css({ display: "block" });
-    			$("#empMsgDiv").html("Employer details updated");
-				candidateEmployersList(candidateId);
-				empMsgFadein();
-				qvemployeeSubmission(candidateId);
+	        $.post(sourceleadUrl+"/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateExperianceId="+candidateExperianceId, formData, function(response) {
+	        	if (result && result.response === "INVALID_DATA") {
+				    $("#update_candidate").removeAttr("disabled");
+				    $("#update_candidate").removeAttr('button').val('Save');
+				    showError(result.responseMessage);
+				} else if (result.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+					$(".edit-details").toggleClass("edit-details-active");
+					$(".close-div")	.click(function() {
+										$(this).parent("div.edit-details")
+												.removeClass("edit-details-active");
+									});
+					$(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details")
+							.click(function(e) {
+								e.stopPropagation();
+							});
+					$("#selector3").removeAttr("style");
+	    			$("#selector3").css({ display: "block" });
+	    			$("#empMsgDiv").html("Employer details updated");
+					candidateEmployersList(candidateId);
+					empMsgFadein();
+					qvemployeeSubmission(candidateId);
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
 	        });
 			}
 			return true;

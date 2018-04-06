@@ -130,17 +130,27 @@ public class CandidateReferencesRestController {
 	}
 
 	@RequestMapping(value = "/validateReferEmail", method = RequestMethod.POST)
-	public @ResponseBody Boolean validateReferEmail(@RequestParam("candidateId") Long candidateId, @RequestParam("referId") Long referId,
-			@RequestParam("email") String email) throws Exception {
-		CandidateReferences cr = null;
-		if (referId != null) {
-			cr = candidateReferencesService.validateReferenceEmailByReferEmailAndReferId(email, referId);
+	public @ResponseBody Response<Boolean> validateReferEmail(@RequestParam("candidateId") Long candidateId,
+			@RequestParam("referId") Long referId, @RequestParam("email") String email) throws Exception {
+		Response<Boolean> response = new Response<>();
+		try {
+			CandidateReferences cr = null;
+			if (referId != null) {
+				cr = candidateReferencesService.validateReferenceEmailByReferEmailAndReferId(email, referId);
+			}
+			Boolean flag = false;
+			if (null == cr) {
+				flag = candidateReferencesService.validateReferenceEmailByReferEmailAndCandidateId(email, candidateId);
+			}
+			response.setObject(flag);
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		Boolean flag = false;
-		if (null == cr) {
-			flag = candidateReferencesService.validateReferenceEmailByReferEmailAndCandidateId(email, candidateId);
-		}
-		return flag;
+		return response;
 	}
 
 	/**
@@ -307,16 +317,14 @@ public class CandidateReferencesRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getCandidateReferencesByCandidateIdAndReferenceId")
-	public Response<String> getCandidateReferencesByCandidateIdAndReferenceId(
+	public Response<CandidateReferences> getCandidateReferencesByCandidateIdAndReferenceId(
 			@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "refId", required = false) Long refId) throws Exception {
-		Response<String> response = new Response<>();
+		Response<CandidateReferences> response = new Response<>();
 		try {
-			String resultJson;
 			CandidateReferences candidateReferencesList = candidateReferencesService
 					.getCandidateReferencesByCandidateIdAndReferenceId(candidateId, refId);
-			resultJson = commonUtil.toJSON(candidateReferencesList);
-			response.setObject(resultJson);
+			response.setObject(candidateReferencesList);
 			response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());
 		} catch (Exception e) {
