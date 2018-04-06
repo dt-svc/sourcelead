@@ -31,10 +31,11 @@ public interface CandidateEducationService {
 	/**
 	 * @param candidateId
 	 * @param orgLocationId
+	 * @param searchVal 
 	 * @return List<CandidateEducation>
 	 * @throws Exception
 	 */
-	public List<CandidateEducation>   getCandidateEducationListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
+	public List<CandidateEducation>   getCandidateEducationListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId, String searchVal) throws Exception;
 
 	/**
 	 * @param jsonObj

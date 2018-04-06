@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <div class="immigraTabsHead">
 		  	<a href="javascript:void(0)" id="addEdu"><i class="glyphicon glyphicon-plus"></i> Add Education</a> 
-		  	<span><input class="immigraTabSerach" type="text"></span>
+		  	<span><input class="immigraTabSerach" id="educationSearchVal" type="text"></span>
 		</div>
 		
 	  	<div class="immigraTable">
@@ -181,4 +181,11 @@
 			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 			  '.chosen-select-width'     : {width:"95%"}
 			}
+	
+	$("#educationSearchVal").keyup(function (e) {
+	    if (e.which === 13) {
+	    	getCandidateEducationList(candidateId);
+	    }
+	});
+	
 		</script>
