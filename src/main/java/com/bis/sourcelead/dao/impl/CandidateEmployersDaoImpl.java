@@ -3,6 +3,8 @@ package com.bis.sourcelead.dao.impl;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -96,11 +98,19 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public List<CandidateEmployers> getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long candidateId, Long loc)
+	public List<CandidateEmployers> getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long candidateId, Long loc, String searchVal)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateEmployers candidateEmployers  left join fetch candidateEmployers.candidateId  where candidateEmployers.orgLocationId =:orgLocationId and candidateEmployers.candidateId.id =:candidateId and  candidateEmployers.status = '1' ORDER BY candidateEmployers.id DESC";  
-		List<CandidateEmployers> candidateList = session.createQuery(query).setLong("orgLocationId", loc).setLong("candidateId", candidateId).list();
+		String query = "from CandidateEmployers candidateEmployers  left join fetch candidateEmployers.candidateId  where candidateEmployers.orgLocationId =:orgLocationId and candidateEmployers.candidateId.id =:candidateId and  candidateEmployers.status = '1'";
+		if(!StringUtils.isEmpty(searchVal) && searchVal != null) {
+			query = query + " and (candidateEmployers.name like :searchVal or candidateEmployers.designation like :searchVal) ";
+		}
+			query = query + " ORDER BY candidateEmployers.id DESC";  
+		Query candidateQuery = session.createQuery(query).setLong("orgLocationId", loc).setLong("candidateId", candidateId);
+		if(!StringUtils.isEmpty(searchVal) && searchVal != null) {
+			candidateQuery.setParameter("searchVal", "%"+searchVal+"%");
+		}
+		List<CandidateEmployers> candidateList = candidateQuery.list();
 		return candidateList;
 	}
 

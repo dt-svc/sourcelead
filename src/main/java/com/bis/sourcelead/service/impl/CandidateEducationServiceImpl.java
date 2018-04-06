@@ -206,9 +206,9 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	 */
 
 	@Override
-	public List<CandidateEducation>   getCandidateEducationListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception{
+	public List<CandidateEducation>   getCandidateEducationListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId, String searchVal) throws Exception{
       
-		List<CandidateEducation> edulist = candidateEducationDao.getCandidateEducationListByCandidateIdAndOrgLocationID(candidateId, orgLocationId);
+		List<CandidateEducation> edulist = candidateEducationDao.getCandidateEducationListByCandidateIdAndOrgLocationID(candidateId, orgLocationId, searchVal);
 		OrgLocations locations = orgLocationService.getOrgLocations(orgLocationId);
 		//SimpleDateFormat simpleDateFormat = locations.getLocFullFormDateFormatter();
 		for(CandidateEducation education :edulist){
@@ -233,7 +233,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		    		  edu = edu.replace("\"", "");
 		    		  String eduTrim = edu.trim();
 		    		  if(null != candidate.getId()){
-		    		  List<CandidateEducation> eduList= candidateEducationDao.getCandidateEducationListByCandidateIdAndOrgLocationID(candidate.getId(),orgLocations.getId());
+		    		  List<CandidateEducation> eduList= candidateEducationDao.getCandidateEducationListByCandidateIdAndOrgLocationID(candidate.getId(),orgLocations.getId(),null);
 		    			if(courses.size() != eduList.size()){
 		    				for(CandidateEducation candidateEducation :eduList){
 			    				String DbEdu = candidateEducation.getName().replace("\"", "");
@@ -343,7 +343,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		if(null != candidate && null != candidate.getId()){
 			CandidateIndex candidateIndex = new CandidateIndex();
 			candidateIndex.setCandidateId(candidate.getId());
-			ArrayList<CandidateEducation> educationList =(ArrayList<CandidateEducation>) getCandidateEducationListByCandidateIdAndOrgLocationID(candidate.getId(),locationId);
+			ArrayList<CandidateEducation> educationList =(ArrayList<CandidateEducation>) getCandidateEducationListByCandidateIdAndOrgLocationID(candidate.getId(),locationId, null);
 			if(null != educationList && !educationList.isEmpty()){
 				ArrayList<String> eduList = new ArrayList<>();
 				for(CandidateEducation edu :educationList){

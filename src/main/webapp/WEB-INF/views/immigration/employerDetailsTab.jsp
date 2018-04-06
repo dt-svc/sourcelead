@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <div class="immigraTabsHead">
 		  	<a href="javascript:void(0)" id="addEmpl"><i class="glyphicon glyphicon-plus"></i> Add Employer</a> 
-		  	<span><input class="immigraTabSerach" type="text"></span>
+		  	<span><input class="immigraTabSerach" id="employersDataSearch" type="text"></span>
 		</div>
 		
 	  	<div class="immigraTable">
@@ -165,5 +165,11 @@
 		$("#emploView").fadeOut(200);
 		$("#employerDetails_form")[0].reset();
 	}
+	$("#employersDataSearch").keyup(function (e) {
+	    if (e.which === 13) {
+	    	getCandidateEmployerList(candidateId);
+	    }
+	});
+	
 </script>	
 		

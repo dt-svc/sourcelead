@@ -12,7 +12,7 @@ public interface CandidateEmployersDao {
 
 	public CandidateEmployers storeCandidateEmployers(CandidateEmployers candidateEmployers) throws Exception;
 	
-	public List<CandidateEmployers>   getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
+	public List<CandidateEmployers>   getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId, String searchVal) throws Exception;
 
 	public CandidateEmployers getCandidateEmployerBycandidateIdandCandidateEmployerID(Long candidateEmployersId,Long candidateId);
 	
