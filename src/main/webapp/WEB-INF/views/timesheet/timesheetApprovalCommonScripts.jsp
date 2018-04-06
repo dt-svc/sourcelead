@@ -96,7 +96,10 @@ function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,
 		$(".checkBoxForSubmitForApproval").click(function () {
 	    	selectedRecords[$(this).val()] = $(this).is(":checked");
 	    });
-} 
+
+$('.selectpicker').selectpicker('refresh');
+$('.existedProjectTaskId'+projectId).selectpicker('refresh');
+}	
 </script>
 <script>
 function rejecteSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from){ 

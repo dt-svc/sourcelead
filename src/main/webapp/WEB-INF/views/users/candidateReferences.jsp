@@ -396,17 +396,24 @@ function validateReferenceEmail(candidateId,referId){
 	$.ajax({
 			type : "POST",
 			url : sourceleadUrl + "/validateReferEmail?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&referId="+referId+"&email="+email,
-			success : function(data) {
-				if(data == true){
-	        		  $('#emailDivId').find('p.jquery_form_error_message').remove();
-					  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
-					  document.getElementById("email").setAttribute('record-exist','yes');
-					  document.getElementById("email").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
-	        	}
-	        	else{
-	        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
-	        		 $('#emailDivId').find('p.jquery_form_error_message').remove(); 
-	        	}
+			success : function(response) {
+				if (response.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				} else if (response.response === "SUCCESS") {
+					if(response.object == true){
+		        		  $('#emailDivId').find('p.jquery_form_error_message').remove();
+						  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+						  document.getElementById("email").setAttribute('record-exist','yes');
+						  document.getElementById("email").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
+		        	} else {
+		        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#emailDivId').find('p.jquery_form_error_message').remove(); 
+		        	}
+				} else if (response.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
 			},
 		});
 	
@@ -449,24 +456,34 @@ function validateReferenceEmail(candidateId,referId){
 			dateFormat : 'yyyy/mm/dd'
 		};
 		if ($('#canReference_form').validate(false, validationSettings)) {
-			
 			    var formData = getFormData("canReference_form");
 			    var userId = '${SourceLeadWeb_user.id}';
 			    var locationCode = '${SourceLeadWeb_locationCode}';
-				
-				 $("#save_ref").attr("disabled", "disabled");
+				$("#save_ref").attr("disabled", "disabled");
 				$("#save_ref").addClass('button').val('Processing..'); 
-		        $.post(sourceleadUrl+"/saveCandidateReferences?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(data) {
-		        	closePopup();
-		        	 $("#popUpDiv").removeClass("edit-details-active");
-					$("#selector10").removeAttr("style");
-					$("#selector10").css({display : "block"	});
-					$("#refMsgDiv").html("Success!! New References added");
-		        	candReferencesList(candidateId);
-					refMsgFadein(); 
-					setTimeout(function(){
-			 			candidateList();					 			
-			 	     },100);
+		        $.post(sourceleadUrl+"/saveCandidateReferences?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(response) {
+		        	if (response && response.response === "INVALID_DATA") {
+		        	    showError(response.responseMessage);
+		        	} else if (response && response.response === "INVALID_USER") {
+		        	    showError(response.responseMessage);
+		        	} else if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		closePopup();
+			        	$("#popUpDiv").removeClass("edit-details-active");
+						$("#selector10").removeAttr("style");
+						$("#selector10").css({display : "block"	});
+						$("#refMsgDiv").html("Success!! New References added");
+			        	candReferencesList(candidateId);
+						refMsgFadein(); 
+						setTimeout(function(){
+				 			candidateList();					 			
+				 	     },100);
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
 		        });
 		        
 			return true;
@@ -548,9 +565,11 @@ function validateReferenceEmail(candidateId,referId){
 							+ "/terminateReference?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="
 							+ candidateId + "&refId=" + refId + "&userCode="
 							+ userCode,
-					success : function(data) {
-						if (data != null && data != 'undefined' && data != "") {
-							$("#selector10").removeAttr("style");
+					success : function(response) {
+						if (response.response === "AWKWARD") {
+                            location.href = "/errorPage";
+                        } else if (response.response === "SUCCESS") {
+                        	$("#selector10").removeAttr("style");
 							$("#selector10").css({
 								display : "block"
 							});
@@ -562,8 +581,12 @@ function validateReferenceEmail(candidateId,referId){
 							refMsgFadein();
 							setTimeout(function(){
 					 			candidateList();					 			
-					 	 },100);
-						}
+					 	 },100);               
+                        } else if (response.indexOf('Sign In') !== -1) {
+                            location.replace(sourceleadUrl);
+                        } else {
+                            showError("Operation failed, please try again");
+                        }
 					},
 				});
 
@@ -589,16 +612,24 @@ function validateReferenceEmail(candidateId,referId){
 			
 			 $("#save_ref").attr("disabled", "disabled");
 			$("#save_ref").addClass('button').val('Processing..'); 
-	        $.post(sourceleadUrl+"/updateCandidateReferenceBycandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(data) {
-	        	
-	        	$("#selector10").removeAttr("style");
-				$("#selector10").css({display : "block"});
-				$("#refMsgDiv").html("Reference details updated");
-				closePopup();
-				candReferencesList(candidateId);
-				refMsgFadein();
+	        $.post(sourceleadUrl+"/updateCandidateReferenceBycandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(result) {
+	        	if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+	    		    showError(result.responseMessage);
+	    		} else if (result.response === "AWKWARD") {
+	    		    location.href = "/errorPage";
+	    		} else if (result.response === "SUCCESS") {
+	    			$("#selector10").removeAttr("style");
+					$("#selector10").css({display : "block"});
+					$("#refMsgDiv").html("Reference details updated");
+					closePopup();
+					candReferencesList(candidateId);
+					refMsgFadein();
+	    		} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
 	        });
-	        
 			return true;
 		} else {
 			return false;
