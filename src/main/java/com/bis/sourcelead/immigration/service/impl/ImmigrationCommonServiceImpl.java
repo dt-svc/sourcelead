@@ -88,7 +88,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		candidate = savePetitionCandidate(immigrationDTO,orgLocations,user);
 		
 		CandidateIdendities candidateIdendities = new CandidateIdendities();
-		candidateIdendities = savePetitionCandidateIdentities(immigrationDTO,candidate,user);
+		candidateIdendities = savePetitionCandidateIdentities(immigrationDTO,candidate,user,orgLocations);
 		
 		Requirement requirement = new Requirement();
 		if(!StringUtils.isEmpty(immigrationDTO.getJobId())){// job id optional
@@ -217,8 +217,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 					}
 					residenceEntity.setIsCurrAddress(Constants.NO); // default No for multiple residences treated as secondary residences.
 					residenceEntity.setStatus(Constants.RECORD_ACTIVE);
-					residenceEntity.setCreatedDate(new Date());
-					residenceEntity.setUpdatedDate(new Date());
+					Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+					residenceEntity.setCreatedDate(currentDate);
+					residenceEntity.setUpdatedDate(currentDate);
 					residenceEntity.setCreatedBy(user);
 					residenceEntity.setUpdatedBy(user);
 					residenceList.add(residenceEntity);
@@ -255,8 +256,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		lcaSummaryCurr.setRateType(immigrationDTO.getRateType());
 		lcaSummaryCurr.setStatus(Constants.RECORD_ACTIVE);
 		lcaSummaryCurr.setIdType(Constants.ID_TYPE_LCA);
-		lcaSummaryCurr.setCreatedDate(new Date());
-		lcaSummaryCurr.setUpdatedDate(new Date());
+		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+		lcaSummaryCurr.setCreatedDate(currentDate);
+		lcaSummaryCurr.setUpdatedDate(currentDate);
 		lcaSummaryLst.add(lcaSummaryCurr); // add current lca
 		
 		CandidateLcaI94Summary lcaSummaryPrev  = null;
@@ -286,8 +288,8 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		lcaSummaryPrev.setIdType(Constants.ID_TYPE_LCA);
 		lcaSummaryPrev.setCreatedBy(user);
 		lcaSummaryPrev.setUpdatedBy(user);
-		lcaSummaryPrev.setCreatedDate(new Date());
-		lcaSummaryPrev.setUpdatedDate(new Date());
+		lcaSummaryPrev.setCreatedDate(currentDate);
+		lcaSummaryPrev.setUpdatedDate(currentDate);
 		lcaSummaryLst.add(lcaSummaryPrev); 
 		return lcaSummaryLst;
 	}
@@ -304,8 +306,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			candidateResume.setFileContentType(fileInfo.getContentType());
 			candidateResume.setOrgLocationId(orgLocations);
 			candidateResume.setStatus(Constants.RECORD_ACTIVE);
-			candidateResume.setCreatedDate(new Date());
-			candidateResume.setUpdatedDate(new Date());
+			Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+			candidateResume.setCreatedDate(currentDate);
+			candidateResume.setUpdatedDate(currentDate);
 			candidateResume.setCreatedBy(user.getUserCode());
 			candidateResume.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			FileUploadUtil.moveFile(immigrationDTO.getStaticPath(), fileInfo, "resumes");
@@ -319,7 +322,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	}
 
 	private CandidateIdendities savePetitionCandidateIdentities(ImmigrationDTO immigrationDTO, Candidate candidate,
-			User user) {
+			User user,OrgLocations orgLocations) {
 		CandidateIdendities candidateIdendities = null;
 		candidateIdendities = candidateDao.getCandidateIdentitiesNumberByCandidateId(candidate.getId(), Constants.ID_TYPE_SSN);
 		if(candidateIdendities == null) {
@@ -330,9 +333,10 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		candidateIdendities.setIdType(Constants.ID_TYPE_SSN);
 		candidateIdendities.setStatus(Constants.RECORD_ACTIVE);
 		candidateIdendities.setCreatedBy(user);
-		candidateIdendities.setCreatedDate(new Date());
+		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+		candidateIdendities.setCreatedDate(currentDate);
 		candidateIdendities.setUpdatedBy(user);
-		candidateIdendities.setUpdatedDate(new Date());
+		candidateIdendities.setUpdatedDate(currentDate);
 		return candidateIdendities;
 	}
 
@@ -354,7 +358,8 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			candidate.setI20ServiceNo(immigrationDTO.getI_20_number());
 			candidate.setI94No(immigrationDTO.getI_94_number());
 			candidate.setUpdatedBy(user.getId().toString());
-			candidate.setUpdatedDate(new Date());
+			Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+			candidate.setUpdatedDate(currentDate);
 			candidate.setLocation(immigrationDTO.getLocation()); // considered as a primary residence address.
 			candidate.setAddress(immigrationDTO.getAddress());
 			candidate.setCity(immigrationDTO.getCity());
@@ -401,9 +406,10 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		immigration.setJob(requirement);
 		immigration.setStatus(Constants.RECORD_ACTIVE);
 		immigration.setCreatedBy(user);
-		immigration.setCreatedDate(new Date());
+		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+		immigration.setCreatedDate(currentDate);
 		immigration.setUpdatedBy(user);
-		immigration.setUpdatedDate(new Date());
+		immigration.setUpdatedDate(currentDate);
 		return immigration;
 	}
 
