@@ -839,8 +839,13 @@ public class ClientServiceImpl implements ClientService {
 		subscription.setSubscriptionType(subscriptionTypeLookUpData);
 		subscription.setCountry(orgLocations.getCountry());
 		subscription.setTimezone(orgLocations.getTimezone());
+		
+		OrgLicenseSubscriptionTypes userData = new OrgLicenseSubscriptionTypes();
+		userData.setId(8L);
+		subscription.setUserSubscriptionType(userData);
+		
 		OrgLicenseSubscriptionTypes storageLookUpData = new OrgLicenseSubscriptionTypes();
-		storageLookUpData.setId(8L);
+		storageLookUpData.setId(10L);
 		subscription.setStorageSubscriptionType(storageLookUpData);
 		subscription.setFromDate(new Date());
 		
