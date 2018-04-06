@@ -79,6 +79,9 @@ public class Immigration implements Serializable {
 	@Column(name = "IMMIGRATION_STATUS ")
 	private String immigrationStatus;
 	
+	@Column(name = "IMMIGRATION_UUID ")
+	private String immigrationUuid;
+	
 
 	@Column(name = "CREATED_DATE ")
 	private Date createdDate;
@@ -256,6 +259,14 @@ public class Immigration implements Serializable {
 
 	public void setOrgLocationId(OrgLocations orgLocationId) {
 		this.orgLocationId = orgLocationId;
+	}
+
+	public String getImmigrationUuid() {
+		return immigrationUuid;
+	}
+
+	public void setImmigrationUuid(String immigrationUuid) {
+		this.immigrationUuid = immigrationUuid;
 	}
 	
 	
