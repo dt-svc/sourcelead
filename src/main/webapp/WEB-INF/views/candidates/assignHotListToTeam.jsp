@@ -70,8 +70,7 @@ function hotListCandidates(){
             		result = result +"  </tr>"; 
             		result = result +"</thead>";
             		result = result +"<tbody>"; 
-            		/* var json = JSON.parse(data); */
-            		var json = response.object;
+            		var json = response.data;
             		for (var i = 0; i < json.length; i++) { 
             		 var opt = json[i]; 
             		 var mobilePhone = "";
