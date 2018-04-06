@@ -98,7 +98,18 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public List<CandidateEmployers> getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long candidateId, Long loc, String searchVal)
+	public List<CandidateEmployers> getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long candidateId, Long loc)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateEmployers candidateEmployers  left join fetch candidateEmployers.candidateId  where candidateEmployers.orgLocationId =:orgLocationId and candidateEmployers.candidateId.id =:candidateId and  candidateEmployers.status = '1' ORDER BY candidateEmployers.id DESC";  
+		List<CandidateEmployers> candidateList = session.createQuery(query).setLong("orgLocationId", loc).setLong("candidateId", candidateId).list();
+		return candidateList;
+	}
+
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<CandidateEmployers> getCandidatesEmployersListByCandidateIdAndOrgLocationIDImmigration(Long candidateId, Long loc, String searchVal)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from CandidateEmployers candidateEmployers  left join fetch candidateEmployers.candidateId  where candidateEmployers.orgLocationId =:orgLocationId and candidateEmployers.candidateId.id =:candidateId and  candidateEmployers.status = '1'";
@@ -113,7 +124,7 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 		List<CandidateEmployers> candidateList = candidateQuery.list();
 		return candidateList;
 	}
-
+	
 	/**
 	 * This method is used for display the get Candidate Employer By candidateId and CandidateEmployerID 
 	 * 

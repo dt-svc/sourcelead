@@ -35,7 +35,7 @@ public interface CandidateEducationService {
 	 * @return List<CandidateEducation>
 	 * @throws Exception
 	 */
-	public List<CandidateEducation>   getCandidateEducationListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId, String searchVal) throws Exception;
+	public List<CandidateEducation>   getCandidateEducationListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
 
 	/**
 	 * @param jsonObj
@@ -75,5 +75,9 @@ public interface CandidateEducationService {
 	public void saveOrUpdateCandidateElkDocumentWithEducationDetails(Candidate candidate,Long locationId) throws Exception;
 	
 	public List<String> getCandidateEducationNamesByCandidateId(Long candidateId) throws Exception;
+
+
+	List<CandidateEducation> getCandidateEducationListByCandidateIdAndOrgLocationIDImmigration(Long candidateId,
+			Long orgLocationId, String searchVal) throws Exception;
 
 }

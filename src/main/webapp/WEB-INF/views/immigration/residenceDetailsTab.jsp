@@ -117,7 +117,7 @@
            <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Start Date<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              	<div class="input-group">
+              	<div class="input-group errorInptgroup">
               		<input type="text" name = "residenceStartDate" id = "residenceStartDate" field-name = "Start Date" placeholder="Start Date" readonly="readonly" data-validation="required" class="form-control calendar"/>
 				   	<span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('residenceStartDate');"></i></span>
 				</div>
@@ -126,7 +126,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">End Date<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              	 <div class="input-group">
+              	 <div class="input-group errorInptgroup">
               		<input type="text" name = "residenceEndDate" id = "residenceEndDate" field-Name = "End Date" placeholder="End Date" readonly="readonly" data-validation="required" class="form-control calendar" />
 				  	<span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('residenceEndDate');"></i></span>
 				</div>
@@ -183,6 +183,7 @@
 			 function refreshResidency(){
 				 $(".popMask").fadeOut(200);
 				$("#popResiView").fadeOut(100); 
+				$("#residenceDetails_form")[0].reset();
 			 }
 			 
 				$("#residenceSearch").keyup(function (e) {

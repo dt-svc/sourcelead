@@ -23,9 +23,27 @@ public class ImmigrationListView implements Serializable {
 	@Id
 	@Column(name = "ID")
 	private Long id;
-
+	
 	@Column(name = "CURRENT_USCIS_STATUS ")
 	private Long currUscisStatus;
+	
+	@Column(name = "IMMIGRATION_TEMPLATE_ID")
+	private Long immTemplateId;
+	
+	@Column(name = "CANDIDATE_ID")
+	private Long candidateId;
+	
+	@Column(name = "COUNTRY")
+	private String country;
+	
+	@Column(name = "ORG_LOCATION_ID")
+	private Long orgLocationId;
+	
+	@Column(name = "STATUS")
+	private Integer status;
+	
+	@Column(name = "IMMIGRATION_STATUS")
+	private String immStatus;
 
 	@Column(name = "PETITON_TYPE")
 	private String petitionType;
@@ -44,7 +62,13 @@ public class ImmigrationListView implements Serializable {
 
 	@Column(name = "ORG_NAME ")
 	private String orgName;
+	
+	@Column(name = "CREATED_DATE")
+	private Date createdDate;
 
+	@Column(name = "UPDATED_DATE")
+	private Date updatedDate;
+	
 	public Long getId() {
 		return id;
 	}
@@ -107,6 +131,70 @@ public class ImmigrationListView implements Serializable {
 
 	public void setOrgName(String orgName) {
 		this.orgName = orgName;
+	}
+
+	public Long getImmTemplateId() {
+		return immTemplateId;
+	}
+
+	public void setImmTemplateId(Long immTemplateId) {
+		this.immTemplateId = immTemplateId;
+	}
+
+	public Long getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public Long getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(Long orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public String getImmStatus() {
+		return immStatus;
+	}
+
+	public void setImmStatus(String immStatus) {
+		this.immStatus = immStatus;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
 	}
 	
 	
