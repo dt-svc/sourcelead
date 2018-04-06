@@ -562,6 +562,7 @@ function getLevel2Titles(){
 </script>
 <script type="text/javascript">
 	function removeTicketAttachmentRow(rowId) {
+		$("#user_manuals_form input[data-id*="+rowId+"ticketdocFile]").remove();
 		 document.getElementById("divAttachmentTicketRow"+rowId).style.display = 'none';
 		 document.getElementById("divAttachmentTicketRow"+rowId).value= '';
 		 var  rId = "divAttachmentTicketRow"+rowId;
@@ -607,6 +608,7 @@ function getLevel2Titles(){
  <script>
 	function refershDocument(){
 		$("#0ticketdocFile").val('');
+		$("#user_manuals_form input[data-id*=0ticketdocFile]").remove();
 		$("#0ticketdocFileuploadFileGroup").find("p.jquery_form_error_message").hide();
 	}
 </script>
