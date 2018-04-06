@@ -236,7 +236,7 @@ public class TimesheetReportsRestController {
 		  Date startDate = dateList.get("STARTDATE");
 		  Date endDate = dateList.get("ENDDATE");
 		
-		ResponseList<ProjectMembers> projRespList = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate,null,null, orgLocations.getId(), loginUser.getId(),timesheetReportsDTO.getSearchValue(),timesheetReportsDTO.getSearchValue(),start,length,"reports");
+		ResponseList<ProjectMembers> projRespList = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate,null,null, orgLocations.getId(), loginUser.getId(),timesheetReportsDTO.getSearchValue(),null,start,length,"reports");
 		if(projRespList.getData() != null){
 			
 		List<ProjectMembers> projectMembers = projRespList.getData();
@@ -411,19 +411,19 @@ public class TimesheetReportsRestController {
 		     
 		     String combinedApprStatus = "Action Required";
 		     String combinedApprClass = "draft";
-	         if(combinedApprovalStatus.equals(Submission_ApprovalStatus.APPROVED)){
+	         if(combinedApprovalStatus != null && combinedApprovalStatus.equals(Submission_ApprovalStatus.APPROVED)){
 	    		  combinedApprStatus = "Approved";
 	    		  combinedApprClass = "appr";
 	    	 }
-	    	 else  if(combinedApprovalStatus.equals(Submission_ApprovalStatus.REJECTED)){
+	    	 else  if(combinedApprovalStatus != null && combinedApprovalStatus.equals(Submission_ApprovalStatus.REJECTED)){
 	    		  combinedApprStatus = "Rejected";
 	    		  combinedApprClass = "reje";
 	    	 }
-	    	 else  if(combinedApprovalStatus.equals(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL)){
+	    	 else  if(combinedApprovalStatus != null && combinedApprovalStatus.equals(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL)){
 	    		  combinedApprStatus = "Submitted";
 	    		  combinedApprClass = "subm";
 	    	 }
-	    	 else  if(combinedApprovalStatus.equals(Submission_ApprovalStatus.NEW)){
+	    	 else  if(combinedApprovalStatus != null &&  combinedApprovalStatus.equals(Submission_ApprovalStatus.NEW)){
 	    		  combinedApprStatus = "NEW";
 	    		  combinedApprClass = "draft";
 	    	 }

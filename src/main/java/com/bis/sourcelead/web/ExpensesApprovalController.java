@@ -25,6 +25,7 @@ public class ExpensesApprovalController {
 	{
 		
 		ModelAndView model = new ModelAndView();
+		try{
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
 		if (null == sessionData) {
 			sessionData = new SessionMaintainanceData();
@@ -36,6 +37,10 @@ public class ExpensesApprovalController {
 			model.addObject("expensesStatusFormDashBoard",expensesStatus.get());
 		}
 		model.setViewName("expenses/expensesApprovalList");
+		}catch(Exception e){
+			 model.addObject("AWKWARD", true);
+			  model.setViewName("expenses/expensesApprovalList");
+		}
 		return model;
 	}
 }
