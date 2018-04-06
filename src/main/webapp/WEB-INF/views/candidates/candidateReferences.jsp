@@ -745,12 +745,12 @@
 								e.stopPropagation();
 							});
 
-						}
 					} else if (response.indexOf('Sign In') !== -1) {
 						location.replace(sourceleadUrl);
 					} else {
 					    showError("Operation failed, please try again");
 					}
+			}
 		}).done(function() {
 			editRelation(this);
 		});
@@ -769,17 +769,24 @@ function validateReferenceEmail(candidateId,referId){
 	$.ajax({
 			type : "POST",
 			url : sourceleadUrl + "/validateReferEmail?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&referId="+referId+"&email="+email,
-			success : function(data) {
-				if(data == true){
-	        		  $('#emailDivId').find('p.jquery_form_error_message').remove();
-					  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
-					  document.getElementById("email").setAttribute('record-exist','yes');
-					  document.getElementById("email").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
-	        	}
-	        	else{
-	        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
-	        		 $('#emailDivId').find('p.jquery_form_error_message').remove(); 
-	        	}
+			success : function(response) {
+				if (response.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				} else if (response.response === "SUCCESS") {
+					if(response.object == true){
+		        		  $('#emailDivId').find('p.jquery_form_error_message').remove();
+						  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+						  document.getElementById("email").setAttribute('record-exist','yes');
+						  document.getElementById("email").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
+		        	} else {
+		        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#emailDivId').find('p.jquery_form_error_message').remove(); 
+		        	}
+				} else if (response.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
 			},
 		});
 	

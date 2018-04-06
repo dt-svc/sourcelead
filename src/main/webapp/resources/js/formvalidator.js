@@ -1225,7 +1225,7 @@ jQueryFormUtils.validateName = function(val) {
         //simple img file check
         
         else if (validationRules.indexOf('validateImg') > -1 && !jQueryFormUtils.validatefile_img(value, validationRules)) {
-            return validationErrorMsg || language.badResume;
+            return validationErrorMsg || language.badImage;
         }
         
         // simple File Pdf check

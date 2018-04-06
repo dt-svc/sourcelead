@@ -742,4 +742,9 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return userRoleDao.getAllReportingManagersAssignedToAssociates(orgLocationId);
 	}
 
+	@Override
+	public List<User> getAllProjectManagersAssignedToProjects(Long orgLocationId) throws Exception {
+		return userRoleDao.getAllProjectManagersAssignedToProjects(orgLocationId);
+	}
+
 }
