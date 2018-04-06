@@ -3463,6 +3463,67 @@ public class TimesheetRestController {
 		}
 		}
 		
+		
+		
+		@RequestMapping(value = "/getExportTimeSheetForApprovalMechanizm")
+		public void getExportTimeSheetForApprovalMechanizm(HttpServletRequest request,
+				@RequestParam(value = "startDate", required = false) String startDate,
+				@RequestParam(value = "endDate", required = false) String endDate,
+				@RequestParam(value = "exportType", required = false) String exportType,
+				@RequestParam(value = "client", required = false) String client,
+				@RequestParam(value = "stage", required = false) String stage,
+				@RequestParam(value = "timesheetFrequency", required = false) String timesheetFrequency,
+				@RequestParam(value = "frequencyMonth", required = false) String frequencyMonth,
+				@RequestParam(value = "weekFrequency", required = false) String weekFrequency, HttpServletResponse response)
+				throws Exception {
+
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			// DateFormat df = Constants.DMY;
+			// DateFormat df = LoginSessionController.DATEFORMAT;
+			Date stDate = null;
+			Date edDate = null;
+			if (null != startDate && !("undefined").equalsIgnoreCase(startDate) && null != endDate
+					&& !("undefined").equalsIgnoreCase(endDate)) {
+				stDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), startDate);
+				edDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), endDate);
+			}
+			File file = null;
+
+			if (timesheetFrequency.equalsIgnoreCase("Monthly")) {
+				Map<String, Date> dateList = CalendarUtil
+						.getMonthStartDateAndEndDateFromGivenMonthString(frequencyMonth.toString());
+
+				stDate = dateList.get("STARTDATE");
+				edDate = dateList.get("ENDDATE");
+			}
+			if ("pdf".equalsIgnoreCase(exportType)) {
+				file = exportTimesheetEntries.timeSheetApprovelExport(user, orgLocations, stDate, edDate,
+						timesheetFrequency, client, stage, frequencyMonth, weekFrequency);
+			} else {
+				file = exportTimesheetEntries.timeSheetApprovelExportExcel(user, orgLocations, stDate, edDate,
+						timesheetFrequency, client, stage, frequencyMonth, weekFrequency);
+			}
+
+			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			StringBuilder fileName = new StringBuilder();
+			response.setHeader("Content-Disposition",
+					fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();
+		}
+			
+		
+		
 		@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS')")
 		@RequestMapping(value = "/projectTasksById" , method = RequestMethod.POST)
 		public @ResponseBody  String getProjectTasks(
@@ -3484,5 +3545,5 @@ public class TimesheetRestController {
 			 	
 		 }
 
-		
+	
 }
