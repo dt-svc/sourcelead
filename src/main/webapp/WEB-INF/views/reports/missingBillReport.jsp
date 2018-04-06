@@ -20,7 +20,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Missing Bills List</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Missing Billing Lists</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Report(s) Dashboard</a> &raquo; Missing Billing Lists </div>
     </section>
     <!-- hiring Process  -->
     <div class="content-dashboard clearfix">
@@ -53,10 +53,12 @@ $(document).ready(function(){
           <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="display: none; width: 346px;">
             <div class="pull-left">
               <div class="pull-left mr5" style="width: 140px">
-                <input value="" name="fromDate" id="fromDate" placeholder="From" class="form-control calendar input-sm" type="text">
+                <input value="" name="fromDate" id="fromDate" placeholder="From" class="form-control calendar input-sm" type="text" readonly>
+                 <p id="fromDateDiv" style="display: none; font-size: 12px;"><font color="red">From Date Required</font></p>
               </div>
               <div class="pull-left mr5" style="width: 140px">
-                <input value="" name="toDate" id="toDate" placeholder="To" class="form-control calendar input-sm" type="text">
+                <input value="" name="toDate" id="toDate" placeholder="To" class="form-control calendar input-sm" type="text" readonly>
+                <p id="toDateDiv" style="display: none; font-size: 12px;"><font color="red">To Date Required</font></p>
               </div>
               <button type="button" class="btn btn-primary btn-sm" onclick="missingBillReportData();"><i class="fa fa-search"></i></button>
             </div>
@@ -65,7 +67,7 @@ $(document).ready(function(){
           
         </div>
          <div class="col-md-2">
-        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="missingBillReportData();">Customize</button>
+        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="missingBillReportData();">Run</button>
 		</div>
         <div class="col-md-1">
           <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
@@ -92,72 +94,6 @@ $(document).ready(function(){
           
           <div class="clearfix tableStyles mt5 datatable_filter">
          <div id="missingBillData"  ></div>
-          <!--   <table class="table table-bordered noMar">
-              <thead>          
-                <tr>
-                  <th>Refer ID</th>
-                  <th>Client Name</th>
-                  <th>Project Name</th>
-                  <th>Date</th>
-                  <th>Total Amount</th>
-                  <th>&nbsp;</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-				  <td><div class="tbldata-dotdot-sm">0925</div></td>
-                  <td><div class="tbldata-dotdot-me">XYZ</div></td>
-                  <td><div class="tbldata-dotdot-sm">Project1</div></td>
-                  <td><div class="tbldata-dotdot-vsm">11/12/2017</div></td>
-                  <td><div class="tbldata-dotdot-vsm">20,000.00</div></td>
-				<td><div class="tbldata-dotdot-vsm"><a href="javascript:void(0)" class="butLink"><i class="fa fa-plus"></i>Gan. Bill</a></div></td>
-                  </tr>
-                <tr>
-				  <td><div class="tbldata-dotdot-sm">0925</div></td>
-                  <td><div class="tbldata-dotdot-me">XYZ</div></td>
-                  <td><div class="tbldata-dotdot-sm">Project1</div></td>
-                  <td><div class="tbldata-dotdot-vsm">11/12/2017</div></td>
-                  <td><div class="tbldata-dotdot-vsm">20,000.00</div></td>
-				<td><div class="tbldata-dotdot-vsm"><a href="javascript:void(0)" class="butLink"><i class="fa fa-plus"></i>Gan. Bill</a></div></td>
-                  </tr>
-                <tr>
-				  <td><div class="tbldata-dotdot-sm">0925</div></td>
-                  <td><div class="tbldata-dotdot-me">XYZ</div></td>
-                  <td><div class="tbldata-dotdot-sm">Project1</div></td>
-                  <td><div class="tbldata-dotdot-vsm">11/12/2017</div></td>
-                  <td><div class="tbldata-dotdot-vsm">20,000.00</div></td>
-				<td><div class="tbldata-dotdot-vsm"><a href="javascript:void(0)" class="butLink"><i class="fa fa-plus"></i>Gan. Bill</a></div></td>
-                  </tr>
-                <tr>
-				  <td><div class="tbldata-dotdot-sm">0925</div></td>
-                  <td><div class="tbldata-dotdot-me">XYZ</div></td>
-                  <td><div class="tbldata-dotdot-sm">Project1</div></td>
-                  <td><div class="tbldata-dotdot-vsm">11/12/2017</div></td>
-                  <td><div class="tbldata-dotdot-vsm">20,000.00</div></td>
-				<td><div class="tbldata-dotdot-vsm"><a href="javascript:void(0)" class="butLink"><i class="fa fa-plus"></i>Gan. Bill</a></div></td>
-                  </tr>
-                <tr>
-				  <td><div class="tbldata-dotdot-sm">0925</div></td>
-                  <td><div class="tbldata-dotdot-me">XYZ</div></td>
-                  <td><div class="tbldata-dotdot-sm">Project1</div></td>
-                  <td><div class="tbldata-dotdot-vsm">11/12/2017</div></td>
-                  <td><div class="tbldata-dotdot-vsm">20,000.00</div></td>
-				<td><div class="tbldata-dotdot-vsm"><a href="javascript:void(0)" class="butLink"><i class="fa fa-plus"></i>Gan. Bill</a></div></td>
-                  </tr>                                                                        
-              </tbody>
-            </table>
-            Pagenation
-            <nav class="clearfix">
-              <ul id="paging" class="pagination pull-right">
-                <li><a href="#">Previous</a></li>
-                <li class="active"><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">4</a></li>
-                <li><a href="#">5</a></li>
-                <li data-page="last"><a href="#">Next</a></li>
-              </ul>
-            </nav> -->
           </div>
         </div>
         <!-- Pagenation Ends --> 
@@ -171,6 +107,7 @@ $(document).ready(function(){
   
   <script>
 function missingBillReportData(){
+	    var flag = true;
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
@@ -179,12 +116,39 @@ function missingBillReportData(){
 		if(filterType == 'undefined'){
 			filterType = "";
 		}
-		var fromDate = $("#fromDate").val();
-		var toDate = $("#toDate").val();
 		var orgIds = $("#orgIds").val();
 		var contractType = "vendorSow";
-		var url = sourceleadUrl+"/missingInvoiceData?searchValue="+searchValue+"&invoiceType="+invoiceType+"&filterType="+filterType+"&orgIds="+orgIds+"&fromDate="+fromDate+"&toDate="+toDate+"&contractType="+contractType;
-		prepareMissingBillData(url); 
+		
+		  var dateSelection = $("#filterType").val(); 
+		  var fromDate = '';
+		  var toDate = '';
+		  if(dateSelection == 'custom'){
+			   fromDate = $("#fromDate").val();
+			   toDate = $("#toDate").val();
+			  
+			  if(fromDate == '' || toDate == ''){
+				  flag = false;
+				  if(fromDate == ''){
+					  document.getElementById("fromDateDiv").style.display="block";
+				  }else{
+					  document.getElementById("fromDateDiv").style.display="none";
+				  }
+				  if(toDate == ''){
+					  document.getElementById("toDateDiv").style.display="block";
+				  }else{
+					  document.getElementById("toDateDiv").style.display="none";
+				  }
+			  }else{
+				  document.getElementById("fromDateDiv").style.display="none";
+				  document.getElementById("toDateDiv").style.display="none";
+			  }
+			  
+		  }
+		  if(flag){
+			  var url = sourceleadUrl+"/missingInvoiceData?searchValue="+searchValue+"&invoiceType="+invoiceType+"&filterType="+filterType+"&orgIds="+orgIds+"&fromDate="+fromDate+"&toDate="+toDate+"&contractType="+contractType;
+				prepareMissingBillData(url); 
+		  }
+		
 }
 </script>
 <script>
@@ -365,19 +329,6 @@ function getMissingBillCustomDates() {
 		 document.getElementById("customSearch").style.display="block";
 		 $("#jobReportList_custome").attr("disabled", "disabled");
 		 
-	 }else{
-		 document.getElementById("customSearch").style.display="none";
-		 $("#jobReportList_custome").removeAttr("disabled");
-		 $("#fromDate").val('');
-		 $("#toDate").val('');
-		 document.getElementById("fromDateDiv").style.display="none";
-		 document.getElementById("toDateDiv").style.display="none";
-	 }
-}
-</script>  
-
-<script>
-  $( function() {
 		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormatProjectSave = '';
 		  if(locationDate.match("yyyy-MM-dd")){
@@ -389,7 +340,7 @@ function getMissingBillCustomDates() {
 		  }if(locationDate.match("yyyy-dd-MM")){
 			  finalDateFormatProjectSave = 'yy-dd-mm'; 
 		  }
-    
+   
 	  $('#fromDate').datepicker({
 			dateFormat : finalDateFormatProjectSave,
 			changeMonth: true,
@@ -398,6 +349,7 @@ function getMissingBillCustomDates() {
 				var dt = $(this).datepicker('getDate', '+1d');
 				dt.setDate(dt.getDate());
 				$("#toDate").datepicker("option", "minDate", dt);
+				removeErrMsg();
 			}
 		});
 	  
@@ -409,8 +361,30 @@ function getMissingBillCustomDates() {
 				var dt = $(this).datepicker('getDate', '-1d');
 				dt.setDate(dt.getDate());
 				$("#fromDate").datepicker("option", "maxDate", dt);
+				removeErrMsgTo();
 			}
 		});
-  } );
-  </script>
+	  
+		 
+	 }else{
+		 document.getElementById("customSearch").style.display="none";
+		 $("#jobReportList_custome").removeAttr("disabled");
+		 $("#fromDate").datepicker("destroy");
+		 $("#toDate").datepicker("destroy");
+		 $("#fromDate").val('');
+		 $("#toDate").val('');
+		 document.getElementById("fromDateDiv").style.display="none";
+		 document.getElementById("toDateDiv").style.display="none";
+	 }
+}
+</script>  
+
+<script>
+function removeErrMsg(){
+	  document.getElementById("fromDateDiv").style.display="none";
+}
+function removeErrMsgTo(){
+	  document.getElementById("toDateDiv").style.display="none";
+}
+</script>
 <jsp:include page="../masterFooter.jsp" />
