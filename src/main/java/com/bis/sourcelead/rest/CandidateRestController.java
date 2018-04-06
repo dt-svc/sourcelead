@@ -79,6 +79,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PrimarySkillUtil;
+import com.bis.sourcelead.util.ResumeParserJsonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.SourceleadResumeParser;
 import com.thoughtworks.xstream.XStream;
@@ -198,17 +199,17 @@ public class CandidateRestController {
 	}
 
 	@RequestMapping(value = { "/parseResume", "/app/parseResume" }, method = RequestMethod.POST)
-	public @ResponseBody Response<String> parseResume(@RequestParam(value = "json", required = false) String json,
+	public @ResponseBody Response<ResumeParserJsonUtil> parseResume(@RequestParam(value = "json", required = false) String json,
 			MultipartHttpServletRequest request,
 			@RequestParam(value = "locationMapFile", required = false) CommonsMultipartFile locationMapFileData) throws Exception {
-		Response<String> response = new Response<>();
+		Response<ResumeParserJsonUtil> response = new Response<>();
 		try {
 			MultipartFile multiFile = null;
 			Iterator<String> itrator = request.getFileNames();
 			if (itrator.hasNext()) {
 				multiFile = request.getFile(itrator.next());
 			}
-			String resumeDetails = null;
+			ResumeParserJsonUtil resumeDetails = null;
 			if (null != multiFile) {
 				String country = (String) SourceLeadSessionManager.getSessionAttribute(request, "country");
 				resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResume(multiFile.getBytes(), country);
