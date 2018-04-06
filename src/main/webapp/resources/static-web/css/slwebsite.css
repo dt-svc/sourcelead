@@ -126,11 +126,13 @@ color: #a21e23 !important;
 	border-right: 2px solid #eee; padding: 15px;
 }
 .helpmsg-sidebar h5 {
-position: relative; padding: 15px 0 15px 10px; border-bottom: 1px solid #ededed;
-cursor: pointer; text-transform: capitalize;
+position: relative; padding: 15px 0 15px 10px; border-bottom: 1px solid #ededed; cursor: pointer; text-transform: capitalize;
 }
 .helpmsg-sidebar ul li {
 	padding: 10px; position: relative; cursor: pointer; text-transform: capitalize;
+}
+.accordion-link i {
+position: absolute; right: 10px; font-size: 20px; top: 10px;
 }
 .helpmessageSearch input[type="text"] {
 	display: block; border: none; width: 55%; border-bottom: 1px solid #E0E0E0; background: #F5F5F5;
@@ -167,7 +169,7 @@ cursor: pointer; text-transform: capitalize;
 .accordion-link a {
 	display:block; padding:11px 18px; position:relative; border-bottom:1px solid #f5f5f5; font-size:15px; font-weight:500; color:#666;
 	}
-.accordion-link span.arrow {
+.accordion-link span {
 	position: absolute; background: #999; width: 1px; height: 11px; top: 15px; right: 25px; 
 	transition: all 0.3s; -moz-transition: all 0.3s; -webkit-transition: all 0.3s; -o-transition: all 0.3s;
 	}
@@ -181,9 +183,6 @@ cursor: pointer; text-transform: capitalize;
 .accordion-on.accordion-link span {
 	transform: rotate(90deg);
 	}
-.accordion-link i {
-	position: absolute; right: 10px; font-size: 20px; top: 10px;
-}
 /* Accordion Styles */
 .helpmessage-innercotentarea h3 {
 	font-weight: 300; font-size: 30px; color: #757575; margin-top: 0;
@@ -462,6 +461,16 @@ text-align: center;
 }
 .marketplace-banner {
 	min-height: 450px; background-image: url(../images/marketplace.jpg);
+	background-position:center top; background-repeat: no-repeat; background-size: cover; margin-top:0px;
+	border-bottom: 1px solid #BDBDBD; margin-bottom: 0px;
+}
+.immigraion-banner {
+	min-height: 450px; background-image: url(../images/immigration-banner.jpg);
+	background-position:center top; background-repeat: no-repeat; background-size: cover; margin-top:0px;
+	border-bottom: 1px solid #BDBDBD; margin-bottom: 0px;
+}
+.mergers-acquisition  {
+	min-height: 450px; background-image: url(../images/MergersAcquisition.jpg);
 	background-position:center top; background-repeat: no-repeat; background-size: cover; margin-top:0px;
 	border-bottom: 1px solid #BDBDBD; margin-bottom: 0px;
 }
@@ -896,6 +905,10 @@ background-color: rgba(0,0,0,0.4); clear: both; width: 100%; padding: 0px 25px; 
 }
 .productfeatures .col-md-4:nth-child(2n+1) {
 	background: #fff;
+}
+
+.productfeatures .col-md-4:hover {
+	background-color: #fff;
 }
 .productfeatures h2 {
 	margin-bottom: 15px;
@@ -1411,6 +1424,12 @@ span.blueColor {
 }
 .sourceLeadLogo {
 	width: 150px; height: 150px; display: block; margin: 0 auto; padding: 10px;
+}
+.immigraion-content {
+	font-size: 16px; margin-bottom: 25px; line-height: 40px;
+}
+.immigraion-ul li {
+	margin-bottom: 15px; font-size: 16px !important; padding-left: 15px;
 }
 /* responsive styles */
 @media only screen and (max-width:1260px){
