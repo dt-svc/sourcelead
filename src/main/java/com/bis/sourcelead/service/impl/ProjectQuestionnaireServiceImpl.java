@@ -382,6 +382,7 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 		 globalVarsMap.put("projectName", projects.getProjectName());
 		 globalVarsMap.put("orgName",loginOrgLocation.getOrgLocationName());
 		 globalVarsMap.put("userStartDate",projectMembers.getStartDateStr());
+		 globalVarsMap.put("projectEndDate",projectMembers.getEndDateStr());
 		 StringBuilder loginURLBuilder=new StringBuilder();
 		 globalVarsMap.put("loginURL",loginURLBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		 

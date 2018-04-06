@@ -34,6 +34,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
+import org.hibernate.validator.constraints.br.CNPJ;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
@@ -233,11 +234,6 @@ public class CandidateListRestController {
 
 		boolQueryBuilderForCount.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
 
-		if (StringUtils.isNotEmpty(search.getCandidateType()) && !"All".equalsIgnoreCase(search.getCandidateType())) {
-			if (Constants.NO.equalsIgnoreCase(search.getIsAssociate())) {
-				boolQueryBuilder.must(QueryBuilders.matchQuery("isFavourite", search.getCandidateType()));
-			}
-		}
 
 		if (Constants.YES.equalsIgnoreCase(search.getIsAssociate())) {
 			boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", "Y"));
@@ -478,11 +474,11 @@ public class CandidateListRestController {
 				boolQueryBuilder.must(employmnetTypeBoolQueryBuilder);
 			}
 		}
-		
-		if(StringUtils.isNotBlank(search.getCandidateFilterSkills())) {
+
+		if (StringUtils.isNotBlank(search.getCandidateFilterSkills())) {
 			String[] filterSkills = search.getCandidateFilterSkills().split(",");
 			List<String> filterSkillsList = new ArrayList<>();
-			for(int i=0; i<filterSkills.length; i++) {
+			for (int i = 0; i < filterSkills.length; i++) {
 				filterSkillsList.add(filterSkills[i]);
 			}
 			if (filterSkillsList != null && !filterSkillsList.isEmpty()) {
@@ -493,22 +489,53 @@ public class CandidateListRestController {
 				boolQueryBuilder.must(filterSkillBoolQueryBuilder);
 			}
 		}
-		
-		if(StringUtils.isNotBlank(search.getAvailability())) {
+
+		if (StringUtils.isNotBlank(search.getAvailability())) {
 			String[] avaliability = search.getAvailability().split(",");
 			List<String> avaliabilityList = new ArrayList<>();
-			for(int i=0; i<avaliability.length; i++) {
+			for (int i = 0; i < avaliability.length; i++) {
 				avaliabilityList.add(avaliability[i]);
 			}
-			
+
 			BoolQueryBuilder noticePeriodBoolQueryBuilder = QueryBuilders.boolQuery();
 			for (String keywd : avaliabilityList) {
 				noticePeriodBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("noticePriod", keywd));
 			}
 			boolQueryBuilder.must(noticePeriodBoolQueryBuilder);
 		}
-		
 
+		
+		
+		if(search.getCandidateType().equalsIgnoreCase("Favourite") && StringUtils.isBlank(search.getCandidateTypeFilter())) {
+			BoolQueryBuilder favBoolQueryBuilder = QueryBuilders.boolQuery();
+			boolQueryBuilder.must(QueryBuilders.matchQuery("isFavourite", "1"));
+			favBoolQueryBuilder.should(QueryBuilders.matchQuery("isAssociate", "N"));
+			favBoolQueryBuilder.should(QueryBuilders.matchQuery("isAssociate", "Y"));
+			boolQueryBuilder.must(favBoolQueryBuilder);
+		}
+		
+		if(StringUtils.isNotBlank(search.getCandidateTypeFilter())) {
+			String[] candidateType = search.getCandidateTypeFilter().split(",");
+			BoolQueryBuilder candidateBoolQueryBuilder = QueryBuilders.boolQuery();
+			BoolQueryBuilder favouriteBoolQueryBuilder = QueryBuilders.boolQuery();
+			for(int i=0; i<candidateType.length; i++) {
+				if(candidateType[i].equalsIgnoreCase("Candidates")) {
+					candidateBoolQueryBuilder.should(QueryBuilders.matchQuery("isAssociate", "N"));
+					if(search.getCandidateType().equalsIgnoreCase("Favourite")) {
+						favouriteBoolQueryBuilder.should(QueryBuilders.matchQuery("isFavourite", "1"));
+					}
+				}
+				
+				if(candidateType[i].equalsIgnoreCase("Associates")) {
+					candidateBoolQueryBuilder.should(QueryBuilders.matchQuery("isAssociate", "Y"));
+					if(search.getCandidateType().equalsIgnoreCase("Favourite")) {
+						favouriteBoolQueryBuilder.should(QueryBuilders.matchQuery("isFavourite", "1"));
+					}
+				}
+			}
+			boolQueryBuilder.must(candidateBoolQueryBuilder);
+			boolQueryBuilder.must(favouriteBoolQueryBuilder);
+		}
 		
 
 
@@ -725,21 +752,18 @@ public class CandidateListRestController {
 
 	@PreAuthorize("hasRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')")
 	@RequestMapping(value = "/getHotListCandidates")
-	public Response<String> getHotListCandidates(@RequestParam(value = "candidateType", required = false) String candidateType,
+	public ResponseList<Candidate> getHotListCandidates(@RequestParam(value = "candidateType", required = false) String candidateType,
 			HttpServletRequest request) throws Exception {
-		Response<String> response = new Response<>();
+		ResponseList<Candidate> response = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
-				String resultJson;
 				Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				/* List<Candidate> candList = new ArrayList<Candidate>(); */
 				List<Candidate> candidatesList = candidateService
 						.getAllActiveCandidatesCountForCampaignByLocationAndStatus(loginOrgLocation.getId());
-
-				resultJson = commonUtil.toJSON(candidatesList);
-				response.setObject(resultJson);
+				response.setData(candidatesList);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
@@ -1059,8 +1083,6 @@ public class CandidateListRestController {
 			if (user != null) {
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
-				String resultJson;
-
 				Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
 
 				if (null != can && null != can.getSkillsName()) {
@@ -1303,6 +1325,7 @@ public class CandidateListRestController {
 				OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(Long.valueOf(candidateDto.getOrgloationId()));
 				Candidate candidate = candidateService.storeCandidate(candidateDto, loginOrgLocation, user);
 				if (candidate != null) {
+					response.setObject("success");
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				}
@@ -1335,10 +1358,10 @@ public class CandidateListRestController {
 	 */
 	@RequestMapping(value = "/deleteCandidateByCandidateId")
 	@ResponseBody
-	public Response<String> deleteCandidateByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId,
+	public Response<Candidate> deleteCandidateByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId,
 			@RequestParam(value = "candidateType", required = false) String candidateType,
 			@RequestParam(value = "reason", required = false) String reason, HttpServletRequest request) throws Exception {
-		Response<String> response = new Response<>();
+		Response<Candidate> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
@@ -1380,7 +1403,7 @@ public class CandidateListRestController {
 					StringBuilder candidateRemoveMsg = new StringBuilder();
 					SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg",
 							candidateRemoveMsg.append("").append(candidate.getFirstName()).append(" Removed").toString());
-					response.setObject(commonUtil.toJSON(candidate));
+					response.setObject(candidate);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				} else {
@@ -1588,6 +1611,7 @@ public class CandidateListRestController {
 			@RequestParam(value = "candidateType", required = false) String candidateType,
 			@RequestParam(value = "candidateFilterSkills", required = false) String candidateFilterSkills,
 			@RequestParam(value = "availability", required = false) String availability,
+			@RequestParam(value = "candidateTypeFilter", required = false) String candidateTypeFilter,
 			@RequestParam(value = "isAssociate", required = false) String isAssociate, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
@@ -1602,7 +1626,8 @@ public class CandidateListRestController {
 			candidatesList = candidateService.getCandidatesListByOrgLocationIDAndUserId(loginOrgLocation.getId(), user.getId());
 		} else {
 			candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(), org.getId(), candidateStatus,
-					updatedDateRange, candidateType, isAssociate,candidateFilterSkills,availability);
+					updatedDateRange, candidateType, isAssociate,candidateFilterSkills,availability,candidateTypeFilter);
+
 		}
 
 		File file = null;
@@ -1705,8 +1730,8 @@ public class CandidateListRestController {
 					 * "", Constants.CANDIDATE_SKILL_UPDATED, activitySummary.toString(),
 					 * "CANDIDATE"); return "failed";
 					 */
-					response.setResponse(Result.INVALID_USER.name());
-					response.setResponseMessage(Result.INVALID_USER.getValue());
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
 				}
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
@@ -1773,14 +1798,13 @@ public class CandidateListRestController {
 	}
 
 	@RequestMapping(value = "/getCandidateReportsListByOrgLocationID")
-	public Response<String> getCandidateReportsListByOrgLocationID(
+	public ResponseList<Candidate> getCandidateReportsListByOrgLocationID(
 			@RequestParam(value = "candidateType", required = false) String candidateType, HttpServletRequest request) throws Exception {
-		Response<String> response = new Response<>();
+		ResponseList<Candidate> response = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				String resultJson;
 				List<Candidate> candidatesList = candidateService.getCandidateReportsListByOrgLocationID(orgLocations.getId(),
 						candidateType);
 				/*
@@ -1788,8 +1812,7 @@ public class CandidateListRestController {
 				 * candidateService.getCandidateReportsListByOrgLocationID(orgLocations.getId(),
 				 * "Consultant");
 				 */
-				resultJson = commonUtil.toJSON(candidatesList);
-				response.setObject(resultJson);
+				response.setData(candidatesList);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
@@ -1805,12 +1828,12 @@ public class CandidateListRestController {
 	}
 
 	@RequestMapping(value = "/getCandidateReports")
-	public Response<String> getCandidateReports(@RequestParam(value = "reportType", required = false) String reportType,
+	public ResponseList<Candidate> getCandidateReports(@RequestParam(value = "reportType", required = false) String reportType,
 			@RequestParam(value = "startDate", required = false) String customStartDate,
 			@RequestParam(value = "endDate", required = false) String customEndDate,
 			@RequestParam(value = "ownersList", required = false) String ownersList, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		Response<String> result = new Response<>();
+		ResponseList<Candidate> result = new ResponseList<>();
 		try {
 			User user1 = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user1 != null) {
@@ -1905,8 +1928,7 @@ public class CandidateListRestController {
 					}
 					freshList.add(candidate);
 				}
-				String reportsList = commonUtil.toJSON(freshList);
-				result.setObject(reportsList);
+				result.setData(freshList);
 				result.setResponse(Result.SUCCESS.name());
 				result.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
@@ -1922,10 +1944,10 @@ public class CandidateListRestController {
 	}
 
 	@RequestMapping(value = "/getOwnersByCandidates")
-	public Response<String> getOwnersByCandidates(@RequestParam(value = "ownersList", required = false) String ownersList,
+	public ResponseList<Candidate> getOwnersByCandidates(@RequestParam(value = "ownersList", required = false) String ownersList,
 			@RequestParam(value = "reportType", required = false) String reportType, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		Response<String> result = new Response<>();
+		ResponseList<Candidate> result = new ResponseList<>();
 		try {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
@@ -1970,8 +1992,7 @@ public class CandidateListRestController {
 						commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), candidate.getCreatedDate()));
 				freshList.add(candidate);
 			}
-			String reportsList = commonUtil.toJSON(freshList);
-			result.setObject(reportsList);
+			result.setData(freshList);
 			result.setResponse(Result.SUCCESS.name());
 			result.setResponseMessage(Result.SUCCESS.getValue());
 		} catch (Exception e) {
