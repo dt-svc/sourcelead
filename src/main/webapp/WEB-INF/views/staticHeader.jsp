@@ -6,6 +6,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <meta name="google-site-verification" content="lRRPwOWi0M3yAREOGoDPAjQ4cj4otBXHl_uTWJd93rI" />
 <meta name="msvalidate.01" content="D6B1571D75BB0A86C42A01713002F6FF" />
+<meta name="p:domain_verify" content="e1f8f19c0866ae573868239c1f7893bc"/>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">

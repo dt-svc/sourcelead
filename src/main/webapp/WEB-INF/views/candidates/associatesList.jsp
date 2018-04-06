@@ -620,7 +620,6 @@ function refreshImageBlock(candidateId){
     				} else if (result.response === "AWKWARD") {
     					location.href = "/errorPage";
     				} else if (result.response === "SUCCESS") {
-	                	if(json != null && json != 'undefined' && json != ""){  
 		                	 $("#candidateImageId").empty();
 		                	 var result = '';
 				             result = result+'<div class="well well-sm text-center clearfix">';
@@ -659,8 +658,7 @@ function refreshImageBlock(candidateId){
 							 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
 							 result = result+' </div>';
 							 $("#candidateImageId").append(result);
-	                }
-   				}else if (data.indexOf('Sign In') !== -1) {
+   				}else if (result.indexOf('Sign In') !== -1) {
 		    		location.replace(sourceleadUrl);
 		    	} else {
 		    		showError("Operation failed, please try again");
@@ -1563,7 +1561,7 @@ function savedCommentAndCount(candidateId){
         		    location.href = "/errorPage";
         		} else if (data.response === "SUCCESS") {
         			var result = "";
-					var json = JSON.parse(data.object);
+					var json = data.data;
 	       			var totalComments = 0;
 	       			if(json.length > 0) {
 	       				totalComments = json.length;
