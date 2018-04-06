@@ -100,7 +100,7 @@
 						  </div>
 						   <div class="col-md-4">
 						   		<div class="mt5 ml5 clearfix">
-							   <input id="multipleCheck" title="Allow multiple Docs" name="multiple"  type="checkbox" value = "N" onclick = "tempDocCheckBox(0)">
+							   <input id="multipleCheckBox" title="Allow multiple Docs" name="multiple"  type="checkbox" value = "N" onclick = "allowMultipleDocs();">
 							   </div>
 						   </div>	
 						  
@@ -213,6 +213,17 @@
 
 			}; 
 		</script>
+		
+<script type="text/javascript">
+	function allowMultipleDocs(){
+		var checked = document.getElementById("multipleCheckBox").checked
+		if(checked == true){
+			$("#multipleCheckBox").val("Y");
+		}else{
+			$("#multipleCheckBox").val("N");
+		}
+	}
+	</script>		
 <!-- <script type="text/javascript">
 function uploadDoc(id){
 	uploadRequestDoc(id);

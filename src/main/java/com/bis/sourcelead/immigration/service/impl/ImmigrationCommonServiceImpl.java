@@ -759,6 +759,11 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		}else{
 		immigrationCandidateDocuments.setIsRequired(Constants.NO);	
 		}
+		if(immigrationTemplateDocDTO.getMultiple() != null && "Y".equalsIgnoreCase(immigrationTemplateDocDTO.getMultiple())){
+		immigrationCandidateDocuments.setAllowMultiple(immigrationTemplateDocDTO.getMultiple());
+		}else{
+		immigrationCandidateDocuments.setAllowMultiple(Constants.NO);	
+		}
 		immigrationCandidateDocuments.setStatus(Constants.RECORD_ACTIVE);
 		immigrationCandidateDocuments.setDocumentStatus(Constants.DOCUMENT_UPLOAD_REQUESTED);
 		if(immigrationTemplateDocDTO.getFileInfo() != null){
