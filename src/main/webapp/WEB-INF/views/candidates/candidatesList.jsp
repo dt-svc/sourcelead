@@ -2670,7 +2670,7 @@ function getRequirements(){
 
 <script>
 function closeCandidateFilterPop(){
-	$("div.cand-advsrch-popup").hide();
+	$("#candidateFilterPopup").hide();
 	$(".advancedsearch-mask").fadeOut();
 }
 function openCandidateFilterPop(){
@@ -2685,7 +2685,6 @@ function resetCandidateFilter(){
 	$("ul#availabilityFilter > li input:checkbox").prop("checked",false);
 	$("ul#skillsUL > li input:checkbox").prop("checked",false);
 	$("ul#candidateTypeFilter > li input:checkbox").prop("checked",false);
-	
 	
 	$("#dataTableSearch").val('');
 	document.getElementById("candidateTypeAll").checked = true;
