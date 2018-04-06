@@ -84,6 +84,7 @@ import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionPriceService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionTypesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRequestService;
 import com.bis.sourcelead.service.OrgService;
@@ -229,6 +230,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Autowired
 	TabsDao tabsDao;
 	 
+	@Autowired
+	OrgLicenseSubscriptionTypesService orgLicenseSubscriptionTypesService;
 	
 	protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -676,15 +679,15 @@ public class RegistrationServiceImpl implements RegistrationService{
 		Calendar toDate = Calendar.getInstance();
 		toDate.setTime(subscriptionDate);    
 	    
-	    LookUpData lookupData = lookupDataService.getTasksById(Long.parseLong(registration.getOrgEnrollment()));
+		OrgLicenseSubscriptionTypes subscriptionTypes = orgLicenseSubscriptionTypesService.getOrgLicenseSubscriptionTypesById(Long.parseLong(registration.getOrgEnrollment()));
 		
-	    if(lookupData.getName().equalsIgnoreCase("Free Trail") || lookupData.getName().equalsIgnoreCase("1 Month")) {
+	    if(subscriptionTypes.getName().equalsIgnoreCase("Free Trail") || subscriptionTypes.getName().equalsIgnoreCase("1 Month")) {
 	    	toDate.add(Calendar.MONTH, +1); 
-	    }else if(lookupData.getName().equalsIgnoreCase("6 Months")) {
+	    }else if(subscriptionTypes.getName().equalsIgnoreCase("6 Months")) {
 	    	toDate.add(Calendar.MONTH, +6); 
-	    }else if(lookupData.getName().equalsIgnoreCase("1 Year")) {
+	    }else if(subscriptionTypes.getName().equalsIgnoreCase("1 Year")) {
 	    	toDate.add(Calendar.YEAR, +1); 
-	    }else if(lookupData.getName().equalsIgnoreCase("2 Years")) {
+	    }else if(subscriptionTypes.getName().equalsIgnoreCase("2 Years")) {
 	    	toDate.add(Calendar.YEAR, +2); 
 	    }
 	    
