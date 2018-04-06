@@ -10,9 +10,8 @@
 	</c:if>
 	<c:if test="${timesheetSubmission.submissionStatus ne 'SUBMITTED FOR APPROVAL'}">
 		<td>
-		     <small class="positionRelative disbledCheckbox-timesheet">
-			<input type="checkbox" disabled="disabled">
-			<i class="fa fa-ban"></i>
+		     <small class="positionRelative">
+			<i class="fa fa-ban text-danger"></i>
 			</small>
 		</td>
 	</c:if>
