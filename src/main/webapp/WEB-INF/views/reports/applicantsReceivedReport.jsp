@@ -125,37 +125,7 @@ function requirementReportPagination(){
 }
 
 </script>
-<script>
-	$(function() {
-		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatAppreports = getJSDateFormat(locationDate);
-		$('#ExportStartDate').datepicker({
-			changeMonth: true,
-			changeYear: true, 
-			dateFormat : finalDateFormatAppreports,
-			onSelect : function(selected) {
-				 var dt = $(this).datepicker('getDate', '+1d');
-		            dt.setDate(dt.getDate() + 1);
-				$("#ExportEndDate").datepicker("option", "minDate", dt);
-				addValidClass();
-			}
-		
-		});
-		
-		$('#ExportEndDate').datepicker({
-			changeMonth: true,
-			changeYear: true, 
-			dateFormat : finalDateFormatAppreports,
-			onSelect : function(selected) {
-				 var dt = $(this).datepicker('getDate', '-1d');
-		            dt.setDate(dt.getDate() - 1);
-				$("#ExportStartDate").datepicker("option", "maxDate", dt);
-				addValidClass();
-			}
-		});
-		
-	});
-</script>	
+ 
 <script>
 function toDate(selector) {
     var from = $(selector).val().split("-");
@@ -280,9 +250,37 @@ function custDates(){
 	var reportType = $("#reportTypeId").val();
 	if(reportType=="custom"){
 	    $(".cusShow").show();
+	    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatAppreports = getJSDateFormat(locationDate);
+		$('#ExportStartDate').datepicker({
+			changeMonth: true,
+			changeYear: true, 
+			dateFormat : finalDateFormatAppreports,
+			onSelect : function(selected) {
+				 var dt = $(this).datepicker('getDate', '+1d');
+		            dt.setDate(dt.getDate() + 1);
+				$("#ExportEndDate").datepicker("option", "minDate", dt);
+				addValidClass();
+			}
+		
+		});
+		
+		$('#ExportEndDate').datepicker({
+			changeMonth: true,
+			changeYear: true, 
+			dateFormat : finalDateFormatAppreports,
+			onSelect : function(selected) {
+				 var dt = $(this).datepicker('getDate', '-1d');
+		            dt.setDate(dt.getDate() - 1);
+				$("#ExportStartDate").datepicker("option", "maxDate", dt);
+				addValidClass();
+			}
+		});
 	}
 	if(reportType!="custom"){
 	    $(".cusShow").hide();
+	    $("#ExportStartDate").datepicker("destroy");
+		 $("#ExportEndDate").datepicker("destroy");
 	}
 }
 </script>
