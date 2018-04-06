@@ -129,7 +129,8 @@
 									
 		</div>
 		
-		<div class="immiPopFoot">
+		<div class="clearfix"></div>
+		<div class="immiPopFoot mt clearfix">
             <input value="Save" id= "eduSave_Button" class="" type="button" onclick = "immigration.saveEducationImmigration('save')">
             <input value="Cancel" class="popCan" type="button" onclick="closeEdupopup();">
           </div>		

@@ -25,7 +25,7 @@ public class ImmigrationListView implements Serializable {
 	private Long id;
 	
 	@Column(name = "CURRENT_USCIS_STATUS ")
-	private Long currUscisStatus;
+	private String currUscisStatus;
 	
 	@Column(name = "IMMIGRATION_TEMPLATE_ID")
 	private Long immTemplateId;
@@ -77,11 +77,11 @@ public class ImmigrationListView implements Serializable {
 		this.id = id;
 	}
 
-	public Long getCurrUscisStatus() {
+	public String getCurrUscisStatus() {
 		return currUscisStatus;
 	}
 
-	public void setCurrUscisStatus(Long currUscisStatus) {
+	public void setCurrUscisStatus(String currUscisStatus) {
 		this.currUscisStatus = currUscisStatus;
 	}
 

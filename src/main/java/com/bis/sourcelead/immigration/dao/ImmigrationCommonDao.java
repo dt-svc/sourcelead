@@ -2,6 +2,8 @@ package com.bis.sourcelead.immigration.dao;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.ImmigrationListViewDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidateIdendities;
@@ -77,6 +79,5 @@ public interface ImmigrationCommonDao {
 
 	ImmigrationCandidateForms getImmigrationCandidateFormsById(Long id, Long candidateId, Long immigrationId) throws Exception;
 
-	List<ImmigrationListView> getImmigrationsList();
-
+	ResponseList<ImmigrationListViewDTO> getImmigrationsList(ImmigrationListViewDTO immigrationListDTO,	String searchValue, OrgLocations orgLocations);
 }
