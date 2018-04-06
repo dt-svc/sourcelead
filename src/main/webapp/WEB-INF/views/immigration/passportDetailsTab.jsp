@@ -95,6 +95,7 @@
 			function popFun() {
 				$(".popMask").fadeOut(200);
 				$("#popPassView").fadeOut(200);
+				$("#CandidatePassportform")[0].reset();
 			}
 		</script>
 		<script>
