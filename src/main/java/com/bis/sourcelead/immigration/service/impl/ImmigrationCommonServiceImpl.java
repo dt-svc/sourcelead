@@ -33,6 +33,7 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
+import com.bis.sourcelead.entity.ImmigrationListView;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
@@ -829,6 +830,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	public List<ImmigrationCandidateForms> getCandidateImmigartionFormsDetails(Long candidateId, Long templateId,
 			Long immigrationId) {
 		return immigrationCommonDao.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId);
+	}
+
+	@Override
+	public List<ImmigrationListView> getImmigrationsList() {
+		// TODO Auto-generated method stub
+		return immigrationCommonDao.getImmigrationsList();
 	}
 
 	
