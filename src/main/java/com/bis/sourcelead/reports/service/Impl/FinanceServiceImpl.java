@@ -116,7 +116,7 @@ public class FinanceServiceImpl implements FinanceService{
 						MissingInvoiceDTO missingInvoice = new MissingInvoiceDTO();
 						if(sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId() != null) {
 							Candidate candidate  = candidateService.getCandidateByParentCandidateId(sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getId());
-							if(candidate.getOrgRelationId() != null) {
+							if(candidate != null && candidate.getOrgRelationId() != null) {
 								OrgRelations orgRelations = orgRelationsService.getOrgRelationById(candidate.getOrgRelationId().getId());
 								StringBuilder name = new StringBuilder();
 								if(StringUtils.isNotBlank(candidate.getLastName())) {
