@@ -26,7 +26,14 @@ import org.joda.time.Weeks;
 import com.bis.sourcelead.constants.Constants;
 
 public  class CalendarUtil {
-
+	/*public static void main(String[] args){
+		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
+		currentCal.setLenient(false);
+		currentCal.setTime(new Date());
+		System.out.println(currentCal.getTime());
+		System.out.println(new Date());
+		
+	}*/
 	/*public static void main(String[] args){
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 		currentCal.setLenient(false);
@@ -969,7 +976,6 @@ public  class CalendarUtil {
 		  Q1EndDate.set(Calendar.DATE, Q1EndDate.getActualMaximum(Calendar.DAY_OF_MONTH));
 		  dateList.put("STARTDATE",Q1StartDate.getTime());
 		  dateList.put("ENDDATE", Q1EndDate.getTime());
-		  System.out.println(Constants.DF_MM.format(Q1EndDate.getTime()));
 	 	 return dateList;
 	
     }
@@ -1091,5 +1097,15 @@ public  class CalendarUtil {
 	    SimpleDateFormat   simpleDateFormat = new SimpleDateFormat("YYYY");
 		return simpleDateFormat.format(date);
 	}
+ 
+ public static Date removeTime(Date date) {    
+     Calendar cal = Calendar.getInstance();  
+     cal.setTime(date);  
+     cal.set(Calendar.HOUR_OF_DAY, 0);  
+     cal.set(Calendar.MINUTE, 0);  
+     cal.set(Calendar.SECOND, 0);  
+     cal.set(Calendar.MILLISECOND, 0);  
+     return cal.getTime(); 
+ }
 }
 

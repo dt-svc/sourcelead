@@ -493,17 +493,22 @@
 			    	     contentType:false,
 			        	    	url : sourceleadUrl+"/storeCandidate?"+tokenParamName+"="+tokenValue,
 						        success : function(result) {
-						        	if(result && result === "DataMissing") {
-										$("#store_candidate").removeAttr("disabled");
-										$("#store_candidate").removeAttr('button').val('Save');	
-										showError("Invalid data");
-									} else if(result && result === "success")
-										location.replace(sourceleadUrl+"/candidatesList");
-									else {
-										$("#store_candidate").removeAttr("disabled");
-										$("#store_candidate").addClass('button').val('Save');
-										showError("Operation failed, please try again");
-									}
+						        	
+						        	if (result.response === "AWKWARD") {
+						        	    location.href = "/errorPage";
+						        	} else if (result.response === "SUCCESS") {
+						        		if(result.object === "DataMissing") {
+											$("#store_candidate").removeAttr("disabled");
+											$("#store_candidate").removeAttr('button').val('Save');	
+											showError("Invalid data");
+										}else{
+											location.replace(sourceleadUrl+"/candidatesList");	
+										}
+						        	} else if (result.indexOf('Sign In') !== -1) {
+						        		location.replace(sourceleadUrl);
+						        	} else {
+						        	    showError("Operation failed, please try again");
+						        	}
 						},
 				});
 			return true;
