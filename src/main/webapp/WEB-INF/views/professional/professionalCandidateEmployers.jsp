@@ -754,6 +754,8 @@ function monthIfYearRequired(){
 							location.replace(sourceleadUrl);
 						} else {
 						    showError("Operation failed, please try again");
+						}
+						    
 					},
 				});
 	}
@@ -902,7 +904,7 @@ function removeEmployer(candidateemployerId, candidateId){
 				
 			}
 			else {
-	        $.post(sourceleadUrl+"/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateExperianceId="+candidateExperianceId, formData, function(response) {
+	        $.post(sourceleadUrl+"/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateExperianceId="+candidateExperianceId, formData, function(result) {
 	        	if (result && result.response === "INVALID_DATA") {
 				    $("#update_candidate").removeAttr("disabled");
 				    $("#update_candidate").removeAttr('button').val('Save');

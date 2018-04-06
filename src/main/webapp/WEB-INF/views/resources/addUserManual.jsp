@@ -437,25 +437,30 @@ function saveLevels(type){
 function validateUserManualTitle(){
 	var title = document.getElementById("title").value;
 	var levelValue  = $("#levelID").val();
-	$('#errMsg').find('p.jquery_form_error_message').remove();
-	$.ajax({
-		type : "GET",
-		url : sourceleadUrl+ "/validateOrgLocationUserManTitle?${_csrf.parameterName}=${_csrf.token}&title="+title+"&levelValue="+levelValue,
-		success : function(data) {
-			if (data == true) {
-				$("input#title").after("<p class='jquery_form_error_message'>"+ title+ " is Already Existed</span>");
-				document.getElementById("title").setAttribute('record-exist', 'yes');
-				document.getElementById("title").setAttribute('record-exist-errorMsg',title+ ' is Already Existed');
-				$('input#title').removeAttr( "record-exist record-exist-errorMsg");
-				$("#save_title").attr("disabled", "disabled");
-				$("#saveandcontinue").attr("disabled", "disabled");
-			} else {
-				$('input#title').removeAttr("record-exist record-exist-errormsg");
-				$("#save_title").removeAttr("disabled");
-				$("#saveandcontinue").removeAttr("disabled");
-			}
-		},
-	});
+	alert(levelValue)
+	if(levelValue.trim() != "Level-3"){
+		alert("hii")
+		$('#errMsg').find('p.jquery_form_error_message').remove();
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl+ "/validateOrgLocationUserManTitle?${_csrf.parameterName}=${_csrf.token}&title="+title+"&levelValue="+levelValue,
+			success : function(data) {
+				if (data == true) {
+					$("input#title").after("<p class='jquery_form_error_message'>"+ title+ " is Already Existed</span>");
+					document.getElementById("title").setAttribute('record-exist', 'yes');
+					document.getElementById("title").setAttribute('record-exist-errorMsg',title+ ' is Already Existed');
+					$('input#title').removeAttr( "record-exist record-exist-errorMsg");
+					$("#save_title").attr("disabled", "disabled");
+					$("#saveandcontinue").attr("disabled", "disabled");
+				} else {
+					$('input#title').removeAttr("record-exist record-exist-errormsg");
+					$("#save_title").removeAttr("disabled");
+					$("#saveandcontinue").removeAttr("disabled");
+				}
+			},
+		});
+	}
+	
 }
 </script>
 
@@ -557,6 +562,7 @@ function getLevel2Titles(){
 </script>
 <script type="text/javascript">
 	function removeTicketAttachmentRow(rowId) {
+		$("#user_manuals_form input[data-id*="+rowId+"ticketdocFile]").remove();
 		 document.getElementById("divAttachmentTicketRow"+rowId).style.display = 'none';
 		 document.getElementById("divAttachmentTicketRow"+rowId).value= '';
 		 var  rId = "divAttachmentTicketRow"+rowId;
@@ -600,12 +606,9 @@ function getLevel2Titles(){
  
  </script>
  <script>
-	function clearUpload(){
-		$("#0ticketdocFile").val("");
-		
-	}
 	function refershDocument(){
 		$("#0ticketdocFile").val('');
+		$("#user_manuals_form input[data-id*=0ticketdocFile]").remove();
 		$("#0ticketdocFileuploadFileGroup").find("p.jquery_form_error_message").hide();
 	}
 </script>

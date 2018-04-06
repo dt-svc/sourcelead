@@ -84,7 +84,7 @@ function addSubscription(licenseUUID){
 		result = result +'<label class="col-md-4 noPad">Data Storage<i class="text-danger">&nbsp;*</i></label>';
 		result = result +'<div class="col-md-6 padding_right">';
 		
-		result = result + '   <select class="form-control chosen-select" name="storageType" id="dataStorage" field-name="Data Storate" data-validation="required">';
+		result = result + '   <select class="form-control" name="storageType" id="dataStorage" field-name="Data Storate" data-validation="required">';
 	 	result = result + '       <option value="">Select Data Storage</option>';
 	 	result = result +'		<c:forEach var="dataStorage" items="${dataStorageTypeList}">';
 	 	result = result + '       <option value="${dataStorage.id}">${dataStorage.name}</option>';
@@ -483,8 +483,10 @@ function licenseSubscriptionDetails(licenseUUID){
         		 $("select[name=userSubscription]").val(json.userSubscription);
         	 }
         	 
-        	 
-        	 $("select[name=storageType]").val(json.storageType);
+        	 if(json.storageType != null && json.storageType != '' && json.storageType != 'undefined'){
+        		 $("select[name=storageType]").val(json.storageType);
+        	 }
+        	
         	 getTimezonesList(); 
         	
         	 if(json.timezone != null && json.timezone != '' && json.timezone != 'undefined'){
