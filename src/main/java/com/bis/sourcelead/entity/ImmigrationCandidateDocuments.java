@@ -53,6 +53,9 @@ public class ImmigrationCandidateDocuments implements Serializable {
 	@Column(name = "IS_REQUIRED ")
 	private String isRequired;
 	
+	@Column(name = "ALLOW_MULTIPLE")
+	private String allowMultiple;
+	
 	@Column(name="DOCUMENT_STATUS")
 	private String documentStatus;
 	
@@ -272,6 +275,14 @@ public class ImmigrationCandidateDocuments implements Serializable {
 
 	public void setIsTemplateConfigured(String isTemplateConfigured) {
 		this.isTemplateConfigured = isTemplateConfigured;
+	}
+
+	public String getAllowMultiple() {
+		return allowMultiple;
+	}
+
+	public void setAllowMultiple(String allowMultiple) {
+		this.allowMultiple = allowMultiple;
 	}
 	
 	
