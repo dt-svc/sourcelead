@@ -723,12 +723,21 @@ function addFavourite(candidateId){
 			type : "POST",
 			url : sourceleadUrl+"/saveCandidateAsFavourite?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
 			success : function(response) {
+				
+				if(checked){
+					 document.getElementById("favourite"+candidateId).removeAttribute("class");
+					 document.getElementById("favourite"+candidateId).className = 'iconClass pull-left star-rating activestar-rating' 
+				} else {
+					 document.getElementById("favourite"+candidateId).classList.remove("activestar-rating");
+					 document.getEmentById("favourite"+candidateId).className = 'iconClass pull-left star-rating';
+				}
+				
 				if (response && response.response === "INVALID_DATA") {
 				    showError(response.responseMessage);
 				} else if (response.response === "AWKWARD") {
 				    location.href = "/errorPage";
 				} else if (response.response === "SUCCESS") {
-					var td = cacheLastJson.response.object;
+					var td = cacheLastJson.data;
 					for(var e in td) {
 						if(td[e].candidateId === candidateId) {
 							td[e]
@@ -740,15 +749,10 @@ function addFavourite(candidateId){
 							break;
 						}
 					}
-					cacheLastJson.response.object = td;
-					if(checked){
-						 document.getElementById("favourite"+candidateId).removeAttribute("class");
-						 document.getElementById("favourite"+candidateId).className = 'iconClass pull-left star-rating activestar-rating' 
-					} else {
-						 //document.getElementById("favourite"+candidateId).removeAttribute("class");
-						 document.getElementById("favourite"+candidateId).classList.remove("activestar-rating");
-						 document.getEmentById("favourite"+candidateId).className = 'iconClass pull-left star-rating';
-					}
+
+					cacheLastJson.data = td;
+						
+
 				} else if (response.indexOf('Sign In') !== -1) {
 					location.replace(sourceleadUrl);
 				} else {
@@ -885,8 +889,6 @@ function cancel(candidateId){
                 <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr10" onclick="resetCandidateFilter();" title="Refresh">
 				    <span class="fa fa-refresh"></span>
 				</button>
-				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filter Search" onclick="openCandidateFilterPop();"><i class="fa fa-filter faFilter padding_right"></i>
-				</a>
 	</div>
      <div class="pull-left cand-advsrche">
 			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();">
@@ -1170,6 +1172,11 @@ function cancel(candidateId){
 				  </div>
 			  </form:form>
       </div>
+      
+      <div class="pull-left pull-left ml mt10 mr5">
+				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openCandidateFilterPop();"><i class="fa fa-filter faFilter padding_right"></i>
+				</a>
+	</div>
       <div class="dropdown pull-left ml mt">
 			  <div class="dropdown-toggle" data-toggle="dropdown">
 			  <span class="fa fa-share-alt cursorPointer" title="Share" href="#" onclick="shareJob();"></span></div>
@@ -1428,10 +1435,28 @@ function exportToPdf(){
         $("#canDiv").removeAttr("onClick");
     }
 	  
+    var candidateFilterSkills = [];
+	 $('input:checkbox[name=candidateFilterSkills]:checked').each(function() 
+     {
+		 candidateFilterSkills.push($(this).val());
+	 });
+	 
+	 var availability = []
+	 $('input:checkbox[name=availability]:checked').each(function() 
+	     {
+	       availability.push($(this).val());
+		 });
+	 
+	 var candidateTypeFilter = []
+	 $('input:checkbox[name=candidateTypeFilter]:checked').each(function() 
+	     {
+		 candidateTypeFilter.push($(this).val());
+		 });
+	 
 	  var candTypeRadio = $('input[name=candidateType]');
 	  var candidateType = candTypeRadio.filter(':checked').val();
 	  if(isCandidatesAvailable > 0){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf"+"&candidateType="+candidateType+"&isAssociate=N";	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf"+"&candidateType="+candidateType+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter+"&isAssociate=N";	
 	  }else{
 		  var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -1468,10 +1493,28 @@ function exportToExcel(){
        $("#canDiv").removeAttr("onClick");
    }
 	  
+	  var candidateFilterSkills = [];
+		 $('input:checkbox[name=candidateFilterSkills]:checked').each(function() 
+	     {
+			 candidateFilterSkills.push($(this).val());
+		 });
+		 
+		 var availability = []
+		 $('input:checkbox[name=availability]:checked').each(function() 
+		     {
+		       availability.push($(this).val());
+			 });
+		 
+		 var candidateTypeFilter = []
+		 $('input:checkbox[name=candidateTypeFilter]:checked').each(function() 
+		     {
+			 candidateTypeFilter.push($(this).val());
+			 });
+	  
 	  var candTypeRadio = $('input[name=candidateType]');
 	  var candidateType = candTypeRadio.filter(':checked').val();
 	  if(isCandidatesAvailable > 0){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls"+"&candidateType="+candidateType+"&isAssociate=N";	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls"+"&candidateType="+candidateType+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter+"&isAssociate=N";	
 	  }else{
 		  var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -1598,7 +1641,7 @@ function savedCommentAndCount(candidateId){
         		} else if (data.response === "SUCCESS") {
         			var result = "";
                     if(data.object.length > 0) {
-                    	var json = JSON.parse(data.object);
+                    	var json = data.data;
                   		var totalComments = 0;
                   		if(json.length>0) {
                   			totalComments = json.length;
@@ -2618,22 +2661,28 @@ function resetCandidateFilter(){
 	$("ul#AllTypeFilter > li input:radio").prop("checked",false);
 	$("ul#UpdatedFilter > li input:radio").prop("checked",false);
 	$("ul#employmentFilter > li input:checkbox").prop("checked",false);
+	$("ul#availabilityFilter > li input:checkbox").prop("checked",false);
+	$("ul#skillsUL > li input:checkbox").prop("checked",false);
+	$("ul#candidateTypeFilter > li input:checkbox").prop("checked",false);
+	
+	
 	$("#dataTableSearch").val('');
 	document.getElementById("candidateTypeAll").checked = true;
 	document.getElementById("candidateAll").checked = true;
+	document.getElementById("candidateCheck").checked = true;
 	candidateList();
 }
 </script>		
 
 
-  <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small" id="candidateFilterPopup">
-	<h5 class="headerAdsrch">Filter Search
+  <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="candidateFilterPopup">
+	<h5 class="headerAdsrch">Filters
 		<a href="javascript:void(0)" class="close-div" onClick="closeCandidateFilterPop()"><i
 			class="fa fa-close"></i></a>
 	</h5>
 	<div class="addInner">
 		<div class="row">
-			<div class="col-md-4">
+			<div class="col-md-2">
 			<div class="row">
 			
 			<div class="col-md-12 mb">
@@ -2648,19 +2697,30 @@ function resetCandidateFilter(){
 				 </div> 
 				 
 				 
-			<div class="col-md-12 mb">
+			    <div class="col-md-12 mb">
 				<label><strong>Type</strong></label>
 				 <div class="clearfix">
 					<ul class="list-unstyled" id="TypeFilter">
 					     <li class="radioIput positionRelative" ><input id="candidateTypeAll" type="radio" name="candidateType" checked value ="All" ><label for="candidateTypeAll">All</label></li>
-						 <li class="radioIput positionRelative" ><input id="onlycandidate" type="radio" name="candidateType" value ="1" ><label for="onlycandidate">Favourite</label></li>
+						 <li class="radioIput positionRelative" ><input id="onlycandidate" type="radio" name="candidateType" value ="Favourite" ><label for="onlycandidate">Favourite</label></li>
                     </ul>
 				 </div>
-				 </div> 
+				 </div>
+				 
+				 
+				 <div class="col-md-12 mb">
+				<label><strong>Candidate Type</strong></label>
+				 <div class="clearfix">
+					<ul class="list-unstyled" id="candidateTypeFilter">
+					    <li class="checkBox positionRelative" ><input  type="checkbox" id="candidateCheck" name="candidateTypeFilter" checked value ="Candidates"  ><label>Candidates</label></li>
+						<li class="checkBox positionRelative" ><input  type="checkbox" id="associateCheck"  name="candidateTypeFilter"  value ="Associates" ><label>Associates</label></li>
+                    </ul>
+				 </div>
+				 </div>  
 			  </div>
 			</div>
 			
-			<div class="col-md-3">
+			<div class="col-md-2">
 				<div class="row">
 			       <div class="col-md-12 mb">
 				     <label><strong>Updated</strong></label>
@@ -2681,7 +2741,7 @@ function resetCandidateFilter(){
 			 </div>
 			</div> 
 			
-			<div class="col-md-4">
+			<div class="col-md-2">
 				<div class="row">
 					<div class="col-md-12 mb">
 						<label><strong>Employment Type</strong></label>
@@ -2701,6 +2761,37 @@ function resetCandidateFilter(){
 			</div>
 			
 			
+			<div class="col-md-2">
+				<div class="row">
+					<div class="col-md-12 mb">
+						<label><strong>Availability</strong></label>
+						 <div class="clearfix">
+							<ul class="list-unstyled" id="availabilityFilter">
+	                    	    <li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="Immediately available"  ><label>Immediately available</label></li>
+								<li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="15 Days" ><label>15 Days</label></li>
+								<li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="1 Month" ><label>1 Month</label></li>
+	               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="2 Months"  ><label>2 Months</label></li>
+	               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="3 Months" ><label>3 Months</label></li>
+	                        </ul>
+						 </div>
+						 </div> 
+				     </div>
+			</div>
+			
+			<div class="col-md-3">
+					<div class="clearfix dynamic_search filterDynamicsearch">
+						<input type="text" id="mySkillsInput" onkeyup="mySkillsFunction()" placeholder="Skills" title="Type in a skills">
+						<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+					</div>
+					 <div class="clearfix filterSearch-ul">
+						<ul class="list-unstyled positionRelative filterSearch mt5" id="skillsUL">
+							<c:forEach var="skill" items="${skillsList}">
+							<li class="checkBox positionRelative"><input  type="checkbox" name="candidateFilterSkills" value ="${skill.name}" ><label>${skill.name}</label></li>
+							</c:forEach>
+						</ul>
+					 </div> 
+		 </div> 
+			
 		</div>
 		</div>
 		<div class="clearfix advancedsearch-footer">
@@ -2710,6 +2801,32 @@ function resetCandidateFilter(){
 			</div>
 		</div>
 </div>
+	
+<script>
+function mySkillsFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("mySkillsInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("skillsUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+$(document).keyup(function(e) {
+	  if (e.keyCode === 27) {
+		  closeCandidateFilterPop();
+	  }
+	});
+</script>
+
 	
 
 <jsp:include page="../masterFooter.jsp" /> 

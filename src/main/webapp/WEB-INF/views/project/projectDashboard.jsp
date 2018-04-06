@@ -80,8 +80,9 @@ overflow-x: auto;
 				    <span class="fa fa-refresh"></span>
 				</button>
 				
-				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filter Search" onclick="openFilterPop();"><i class="fa fa-filter faFilter padding_right" style="color: #909090!important"></i>
+				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openFilterPop();"><i class="fa fa-filter faFilter padding_right"></i>
 				</a>
+				
 	       </div>
         	
         	
@@ -128,7 +129,7 @@ overflow-x: auto;
 		</div>
 		
 		<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
-				<h5 class="headerAdsrch">Filter Search
+				<h5 class="headerAdsrch">Filters
 					<a href="javascript:void(0)" class="close-div" onClick="closeFilterPop()"><i
 						class="fa fa-close"></i></a>
 				</h5>
@@ -273,6 +274,13 @@ function myManagersFunction() {
         }
     }
 }
+
+
+$(document).keyup(function(e) {
+	  if (e.keyCode === 27) {
+		  closeFilterPop();
+	  }
+	});
 
 </script>
 <script type="text/javascript">
@@ -474,6 +482,7 @@ function projectsPagination(url,sourceleadUrl){
 	          },{
 		    	  "targets": colIndex++,
 	              "data": "projectManagers",
+	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	  var projectManagers = '';
@@ -504,6 +513,7 @@ function projectsPagination(url,sourceleadUrl){
 		     }, {
 		    	  "targets": colIndex++,
 	              "data": "budget",
+	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    var projectbudgetAmount = "";
@@ -535,6 +545,7 @@ function projectsPagination(url,sourceleadUrl){
 		     },{
 		    	  "targets": colIndex++,
 	              "data": "client",
+	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	  
@@ -554,7 +565,7 @@ function projectsPagination(url,sourceleadUrl){
 		     },{
 		    	  "targets": colIndex++,
 	              "data": "projectStatus",
-	              "sortable": false,
+	              "sortable": true,
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	  var projectStatus = "";
@@ -590,7 +601,7 @@ function projectsPagination(url,sourceleadUrl){
 		     
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[1,'desc']],
+	    	"aaSorting": [[5,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,

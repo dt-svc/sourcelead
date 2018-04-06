@@ -312,11 +312,10 @@ function closeCertificatePopup(){
 			url : sourceleadUrl
 					+ "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId?"+tokenParamName+"="+tokenValue+"&candidateId="
 					+ candidateId + "&candidateEmpId=" + candidateEmpId,
-			success : function(data) {
+			success : function(response) {
 				if (response.response === "AWKWARD") {
 				    location.href = "/errorPage";
 				} else if (response.response === "SUCCESS") {
-					/* var json = JSON.parse(data); */
 					var json = response.object;
 					var result = "";
 					result = result + '      <!-- Popup Div --> ';
@@ -615,13 +614,13 @@ function closeCertificatePopup(){
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="
 							+ candidateId,
 					success : function(json) {
-						if (result && result.response === "INVALID_DATA") {
+						if (json && json.response === "INVALID_DATA") {
 						    $("#update_candidate").removeAttr("disabled");
 						    $("#update_candidate").removeAttr('button').val('Save');
-						    showError(result.responseMessage);
-						} else if (result.response === "AWKWARD") {
+						    showError(json.responseMessage);
+						} else if (json.response === "AWKWARD") {
 						    location.href = "/errorPage";
-						} else if (result.response === "SUCCESS") {
+						} else if (json.response === "SUCCESS") {
 							$("#candidateEmployersList").empty();
 							var result = "";
 							result = result	+ "<table id='candidateEmployersPagination' class='display' cellspacing='0' width='100%' >";
@@ -693,7 +692,7 @@ function closeCertificatePopup(){
 							$("#candidateEmployersList").append(result);
 							employeePagination();
 							msgFadein2();
-						} else if (result.indexOf('Sign In') !== -1) {
+						} else if (json.indexOf('Sign In') !== -1) {
 							location.replace(sourceleadUrl);
 						} 
 					},
