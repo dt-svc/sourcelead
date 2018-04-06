@@ -680,18 +680,19 @@ public class ReportRestController {
 	}
 	
 	@RequestMapping (value = "/userUsageGraph")
-	public @ResponseBody UsersUsageReportDTO userUsageGraph(UsersUsageReportDTO usersUsageReportDTO,HttpServletRequest request)throws Exception{
-	Map<String, Integer> count = userRoleService.getUserCountListByOrgLocationId(usersUsageReportDTO.getLocationId(), usersUsageReportDTO);
+	public @ResponseBody List<UsersUsageReportDTO> userUsageGraph(UsersUsageReportDTO usersUsageReportDTO,HttpServletRequest request)throws Exception{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<UsersUsageReportDTO> count = userRoleService.getUsageReportUserCountListByOrgLocationId(usersUsageReportDTO.getLocationId(), usersUsageReportDTO,orgLocations);
 	
-	UsersUsageReportDTO useDTO = new UsersUsageReportDTO();
-	
-	useDTO.setActiveCount(count.get("ACTIVE"));
-	useDTO.setInactiveCount(count.get("INACTIVE"));
-	useDTO.setNotLoggedinCount(count.get("NOT_LOGGEDIN"));
+//	UsersUsageReportDTO useDTO = new UsersUsageReportDTO();
+//	
+//	useDTO.setActiveCount(count.get("ACTIVE"));
+//	useDTO.setInactiveCount(count.get("INACTIVE"));
+//	useDTO.setNotLoggedinCount(count.get("NOT_LOGGEDIN"));
 //	useDTO.setMultipleIps(count.get("MULTIPLE_IPS"));
 	
 	
-	return useDTO;
+	return count;
 	}
 
 

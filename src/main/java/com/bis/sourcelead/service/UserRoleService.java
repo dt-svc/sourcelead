@@ -156,6 +156,6 @@ public interface UserRoleService {
 	
 	List<User> getAllProjectManagersAssignedToProjects(Long orgLocationId) throws Exception;
 
-	public Map<String, Integer> getUserCountListByOrgLocationId(Long orgLocationId, UsersUsageReportDTO usersUsageReportDTO);
+	public List<UsersUsageReportDTO> getUsageReportUserCountListByOrgLocationId(Long orgLocationId, UsersUsageReportDTO usersUsageReportDTO, OrgLocations orgLocations) throws Exception;
 
 }

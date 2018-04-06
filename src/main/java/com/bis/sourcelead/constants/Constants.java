@@ -1048,6 +1048,7 @@ public class Constants {
 	public static final String REPORT_FILTER_3_MONTHS = "3_months";
 	public static final String REPORT_FILTER_YTD = "YTD";
 	public static final String REPORT_FILTER_LAST_YEAR = "Last_Year";
+	public static final String REPORT_FILTER_CURRENT_YEAR = "Current_Year";
 	public static final String CLIENT_REPORT = "clientReport";
 	public static final String GENERAL = "General";
 	public static final Long TaskStatusID = 1069L;

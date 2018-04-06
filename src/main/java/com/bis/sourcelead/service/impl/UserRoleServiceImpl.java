@@ -2,7 +2,10 @@ package com.bis.sourcelead.service.impl;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -743,9 +746,53 @@ public class UserRoleServiceImpl implements UserRoleService{
 	}
 
 	@Override
-	public Map<String, Integer> getUserCountListByOrgLocationId(Long orgLocationId, UsersUsageReportDTO usersUsageReportDTO)
+	public List<UsersUsageReportDTO> getUsageReportUserCountListByOrgLocationId(Long orgLocationId, UsersUsageReportDTO usersUsageReportDTO, OrgLocations orgLocations) throws Exception
 	{
-		return userRoleDao.getUserCountListByOrgLocationId(orgLocationId, usersUsageReportDTO);
+		int Year = 0;
+		int diffMonth = 11;
+		Date[] freqDates = new Date[2];
+		int month = 0;
+		List<UsersUsageReportDTO> user = new ArrayList<>();
+		if ("Custom".equalsIgnoreCase(usersUsageReportDTO.getCustomDates())) {
+			freqDates[0] = commonUtil.getDateFormat(usersUsageReportDTO.getFromDate());
+			freqDates[1] = commonUtil.getDateFormat(usersUsageReportDTO.getToDate());
+			Calendar startCalendar = new GregorianCalendar();
+			startCalendar.setTime(freqDates[0]);
+			month = startCalendar.get(Calendar.MONTH);
+			Year = startCalendar.get(Calendar.YEAR);
+			Calendar endCalendar = new GregorianCalendar();
+			endCalendar.setTime(freqDates[1]);
+			// int endMonth = endCalendar.get(Calendar.MONTH);
+			int diffYear = endCalendar.get(Calendar.YEAR) - startCalendar.get(Calendar.YEAR);
+			diffMonth = diffYear * 12 + endCalendar.get(Calendar.MONTH)- startCalendar.get(Calendar.MONTH);
+		}else{
+			
+			if (usersUsageReportDTO.getCustomDates().equalsIgnoreCase(Constants.REPORT_FILTER_CURRENT_YEAR)) {
+				Year = Calendar.getInstance().get(Calendar.YEAR);
+			}else if (usersUsageReportDTO.getCustomDates().equalsIgnoreCase(Constants.REPORT_FILTER_LAST_YEAR)) {
+				reportsUtil.getJobFilterDate(usersUsageReportDTO.getCustomDates(), orgLocations);
+				Calendar prevYear = Calendar.getInstance();
+				prevYear.add(Calendar.YEAR, -1);
+				Year = prevYear.get(Calendar.YEAR);
+			}
+		}
+		
+		
+		for (int i = 0; i <= diffMonth; i++) {
+			UsersUsageReportDTO userDto = new UsersUsageReportDTO();
+			freqDates = commonUtil.getMonthStartDateEndDateByYearAndMonth(Year, month);
+			Map<String, Integer> map = userRoleDao.getUsageReportUserCountListByOrgLocationId(orgLocationId, usersUsageReportDTO, orgLocations, freqDates);
+			userDto.setActiveCount(map.get("ACTIVE"));
+			userDto.setInactiveCount(map.get("INACTIVE"));
+			userDto.setNotLoggedinCount(map.get("NOT_LOGGEDIN"));
+			StringBuilder sb = new StringBuilder();
+			userDto.setDates(sb.append(Year).append("-").append(month+1).toString());
+			user.add(userDto);
+			month += 1;
+		}
+		
+		
+		return user;
 	}
     @Override
 	public List<User> getAllProjectManagersAssignedToProjects(Long orgLocationId) throws Exception {

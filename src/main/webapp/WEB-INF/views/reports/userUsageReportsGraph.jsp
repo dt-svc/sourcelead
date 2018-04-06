@@ -1,6 +1,7 @@
 <script>
 $(document).ready(function() {
 	userUsageReportsGraph();
+	getAllOrgs();
 });
 </script>
 
@@ -18,7 +19,18 @@ $(document).ready(function() {
 });
   </script>
     <!-- amCharts javascript code -->
-	<script type="text/javascript">
+<script type="text/javascript">
+ function prepareAmchart(data){
+		 var chartData = [];
+		 for (var i = 0; i < data.length; i++) { 
+		 var opt = data[i]; 
+		 chartData.push({
+			 date: opt.dates,
+			 activeCount: opt.activeCount,
+			 inactiveCount: opt.inactiveCount,
+			 notLoggedinCount: opt.notLoggedinCount
+		 });
+		 }
 			AmCharts.makeChart("useractiveGraph",
 				{
 					"type": "serial",
@@ -51,21 +63,21 @@ $(document).ready(function() {
 					"graphs": [
 						{
 							"bullet": "round",
-							"id": "active",
+// 							"id": "active",
 							"title": "Active",
-							"valueField": "column-1"
+							"valueField": "activeCount"
 						},
 						{
 							"bullet": "square",
-							"id": "inactive",
+// 							"id": "inactive",
 							"title": "Inactive",
-							"valueField": "column-2"
+							"valueField": "inactiveCount"
 						},
 						{
 							"bullet": "diamond",
-							"id": "notLogin",
+// 							"id": "notLogin",
 							"title": "Not Login",
-							"valueField": "column-3"
+							"valueField": "notLoggedinCount"
 						}
 					],
 					"guides": [],
@@ -81,52 +93,10 @@ $(document).ready(function() {
 						"markerSize": 15,
                         "position": "top"
 					},
-					"dataProvider": [
-						{
-							"date": "2017-01",
-							"column-1": 8,
-							"column-2": 5,
-							"column-3": "10"
-						},
-						{
-							"date": "2017-02",
-							"column-1": 6,
-							"column-2": 7,
-							"column-3": "8"
-						},
-						{
-							"date": "2017-03",
-							"column-1": 2,
-							"column-2": 3,
-							"column-3": "6"
-						},
-						{
-							"date": "2017-04",
-							"column-1": 1,
-							"column-2": 3,
-							"column-3": "8"
-						},
-						{
-							"date": "2017-05",
-							"column-1": 2,
-							"column-2": 1,
-							"column-3": "12"
-						},
-						{
-							"date": "2017-06",
-							"column-1": 3,
-							"column-2": 2,
-							"column-3": "10"
-						},
-						{
-							"date": "2017-07",
-							"column-1": 6,
-							"column-2": 8,
-							"column-3": "8"
-						}
-					]
+					"dataProvider": chartData
 				}
 			);
+	}
 		</script>
    <script type="text/javascript">
 var config = {
