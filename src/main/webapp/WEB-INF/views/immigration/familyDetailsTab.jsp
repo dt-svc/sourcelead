@@ -32,7 +32,7 @@
 				<td><div class="tbldata-dotdot-me">${!empty items.currentAddress ? items.currentAddress : '---'}</div></td>
 				<td><div><i id="edit" class="glyphicon glyphicon-pencil"onclick="immigration.editFamilyDetailsById(${items.id},'${items.relation}');"
 				></i><i id="delete" class="glyphicon glyphicon-trash ml10"
-				 onclick="immigration.delet eFamilyDetailsById(${items.id});" 
+				 onclick="immigration.deleteFamilyDetailsById(${items.id});" 
 				 ></i></div></td>
 			  </tr> 
 			  </c:forEach>
