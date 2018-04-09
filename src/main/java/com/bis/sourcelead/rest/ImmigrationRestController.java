@@ -258,9 +258,10 @@ public class ImmigrationRestController {
 			@RequestParam(value = "immigrationId", required = true) Long immigrationId,
 			HttpServletRequest request) {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 		immigrationTemplateDocDTO.setStaticPath(staticPath);
 		try {
-			immigrationCommonService.uploadRequstedDocForCandidate(immigrationTemplateDocDTO,id,candidateId,immigrationId);
+			immigrationCommonService.uploadRequstedDocForCandidate(immigrationTemplateDocDTO,id,candidateId,immigrationId,user,orgLocations);
 			
 		} catch (Exception e) {
 			logger.error("Exception caught in controller --->"+e.getMessage());
