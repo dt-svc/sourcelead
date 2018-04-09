@@ -25,6 +25,7 @@ import com.bis.sourcelead.dto.CandidateEmployerDTO;
 import com.bis.sourcelead.dto.CandidateFamilyDetailsDTO;
 import com.bis.sourcelead.dto.CandidateResumeDTO;
 import com.bis.sourcelead.dto.ImmigrationDTO;
+import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.ImmigrationPassportVisaDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
@@ -132,8 +133,6 @@ public class ImmigrationRestController {
         model.addObject("sourceleadUrl", sourceleadUrl);
         User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
         model.setViewName("/immigration/immigrationList");
-        List<ImmigrationListView> immList= immigrationCommonService.getImmigrationsList();
-        model.addObject("immList" ,immList);
         return model;
     }
 
@@ -189,7 +188,34 @@ public class ImmigrationRestController {
         // gsondata=gson.toJson(candidateList);//.replace("\\", "\\\\");
         return candidateList;
     }
-
+    @RequestMapping(value = "/getImmigrationViewList")
+    public @ResponseBody
+    ResponseList<ImmigrationListViewDTO> getAllImmigartionList(
+    		ImmigrationListViewDTO immigrationListDTO,
+            @RequestParam(value = "searchValue", required = false) String searchValue, HttpServletRequest request) {
+        ResponseList<ImmigrationListViewDTO> immigrationListDTOList = null;
+        System.out.println("inisde controller  getAllImmigartionList  --> ");
+        try {
+            String[] tableColumns = {"currUscisStatus", "id", "petitionType", "firstName", "email", "phone", "openDate","orgName"};// should be
+            // entity names
+            int sortColumnIndex = 0; // by default sorting using updated date
+            String sortColumnOrder = "desc"; // by default ascending order
+            if (immigrationListDTO.getOrder() != null && !immigrationListDTO.getOrder().isEmpty()) {
+                sortColumnIndex = Integer.parseInt(immigrationListDTO.getOrder().get(0).get("column"));
+                sortColumnOrder = immigrationListDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means direction
+                // of the sorting.
+            }
+            immigrationListDTO.setSortColumn(tableColumns[sortColumnIndex]);
+            immigrationListDTO.setSortOrder(sortColumnOrder);
+            OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+                    "orgLocations");
+            immigrationListDTOList= immigrationCommonService.getImmigrationsList(immigrationListDTO, searchValue , orgLocations);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("after controller  getAllImmigartionList  --> ");
+        return immigrationListDTOList;
+    }
     @RequestMapping(value = {"/getPetitionTemplateEmployers"})
     public List<CandidateEmployerDTO> getPetitionTemplateEmployers(HttpServletRequest request) {
         Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
