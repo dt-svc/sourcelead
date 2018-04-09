@@ -1286,8 +1286,7 @@ function removeSkillById(candidateId, skillId){
 						} else {
 						    showError("Operation failed, please try again");
 						}
-					},
-
+					}
 				});
 	}
 </script>
