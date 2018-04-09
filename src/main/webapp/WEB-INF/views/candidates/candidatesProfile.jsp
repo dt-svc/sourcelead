@@ -1458,7 +1458,7 @@ function educationSubmissionProfile(candidateId){
 <script>
 function certificationSubmissionProfile(candidateId) {
 	 $.ajax({  
-          type : "GET",
+          type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
         	  if (data && (data.response === "INVALID_DATA" || response.response === "INVALID_USER")) {

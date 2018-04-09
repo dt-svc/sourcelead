@@ -108,7 +108,7 @@ function candDocumentsList(candidateId){
         		    showError(response.responseMessage);
         		} else if (response.response === "AWKWARD") {
         		    location.href = "/errorPage";
-        		} else if (json.response === "SUCCESS") {
+        		} else if (response.response === "SUCCESS") {
         			$("#candidateDocumentsList").empty();
                	 	var result = "";
                	 	result = result +"<table id='candidateDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
