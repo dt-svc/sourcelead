@@ -560,7 +560,7 @@ this.deletePassportVisaDetailsById=function(id,idType){
             			immigration.udpatePopupFormdata(formObj,motherPopNames,data);
             			$('#dateOfBirthMother').val(data.dateOfBirthStr);
             		}
-            		familyMemberId = ''// reset the value
+            		//familyMemberId = ''// reset the value
             	}
             }
         });
