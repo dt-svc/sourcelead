@@ -325,8 +325,7 @@ function applicantQuickViewProfile(submissionId,candidateId){
 						} else {
 						    showError("Operation failed, please try again");
 						}
-					},
-
+					}
 				});
 	}
 </script>

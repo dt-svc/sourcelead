@@ -563,11 +563,11 @@ function preventTabkey(e){
 					<a title="Contacts" href="<c:url value='${sourceleadUrl}/referRequirementList'/>"><i class="fa fa-address-book-o"></i></a>
 	        </li>
             
-<%--             <sec:authorize access="hasRole('ROLE_DASHBOARD_REPORTS')"> --%>
+            <sec:authorize access="hasRole('ROLE_DASHBOARD_REPORTS')"> 
 	            <li class="reportsH">
 					<a title="Reports" href="<c:url value='${sourceleadUrl}/reportsDashboard'/>"><i class="fa fa-pie-chart"></i></a>
 	            </li>
-<%--             </sec:authorize> --%>
+             </sec:authorize> 
             
             <%-- <sec:authorize access="hasRole('ROLE_ENROLL_ORG')">
 	            <li class="reportsH">

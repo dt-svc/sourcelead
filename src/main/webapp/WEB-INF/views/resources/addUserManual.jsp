@@ -437,9 +437,7 @@ function saveLevels(type){
 function validateUserManualTitle(){
 	var title = document.getElementById("title").value;
 	var levelValue  = $("#levelID").val();
-	alert(levelValue)
 	if(levelValue.trim() != "Level-3"){
-		alert("hii")
 		$('#errMsg').find('p.jquery_form_error_message').remove();
 		$.ajax({
 			type : "GET",
