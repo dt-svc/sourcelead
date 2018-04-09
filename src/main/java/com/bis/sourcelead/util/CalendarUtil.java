@@ -317,6 +317,37 @@ public  class CalendarUtil {
 	}
 
 	
+	public static String getHalfTimesheetHoursDisplayFormat(Float hours2){
+		float cthHours = 0;
+		float cthHoursValue = (int) cthHours;
+		float cthMinutesValue = cthHours - cthHoursValue;
+		float totalCthMinutes = (cthHoursValue* 60)+(cthMinutesValue*100);
+
+		float wthHours = hours2;
+		float wthHoursValue = (int) wthHours;
+		float wthMinutesValue = wthHours - wthHoursValue;
+		float totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
+
+		float totalMinutes = totalCthMinutes+totalWthMinutes;
+
+		float halfDayMinutes = totalMinutes/2;
+		
+		float actualHours = (int) (halfDayMinutes / 60); //since both are ints, you get an int
+		float actualMinutes = (halfDayMinutes % 60)/100;
+		
+		final DecimalFormat decimalFormat = new DecimalFormat("00.00");                
+		String actualTimeString = null;
+		if(actualMinutes != 0){
+			actualTimeString = decimalFormat.format((actualHours+actualMinutes));
+		}
+		else{
+			actualTimeString = decimalFormat.format(actualHours+actualMinutes);
+		}
+		
+		return actualTimeString;
+	}
+	
+	
 	public static LinkedHashSet<String> getMonthStringsFromStartDateAndEndDate(Date frequencyStartDate,Date frequencyEndDate) {
 	 	 int monthDiff =monthsBetween(frequencyStartDate, frequencyEndDate);
 	      LinkedHashSet<String> monthString = new LinkedHashSet<>();
