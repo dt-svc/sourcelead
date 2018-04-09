@@ -660,16 +660,16 @@ public class ProjectTasksRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/updateTaskDescription", method = RequestMethod.POST)
-	public String updateTaskDescription(@RequestParam(value = "description", required = false) String description,
+	public String updateTaskDescription(ProjectTasksDTO projectTasksDTO, @RequestParam(value = "description", required = false) String description,
 			@RequestParam(value = "taskId", required = false) String taskId,
 			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
-		User user = userService.getUserById(userId);
+		User user = userService.getUserById(Long.valueOf(projectTasksDTO.getLoginUserId()));
 		StringBuffer activity = new StringBuffer();
 		StringBuffer activitySummary = new StringBuffer();
-		ProjectTasks projectTasks = tasksService.getTasksId(taskId);
-		ProjectTasks oldProjectTasks = tasksService.getTasksId(taskId);
+		ProjectTasks projectTasks = tasksService.getTasksId(String.valueOf(projectTasksDTO.getId()));
+		ProjectTasks oldProjectTasks = tasksService.getTasksId(String.valueOf(projectTasksDTO.getId()));
 		activity.append("Description");
-		projectTasks.setDescription(description);
+		projectTasks.setDescription(projectTasksDTO.getTaskDescription());
 		projectTasks.setUpdatedDate(commonUtil.currentDate());
 		tasksService.updateTasks(projectTasks);
 		String resourceTable = getUpdateDescription(projectTasks, oldProjectTasks);
