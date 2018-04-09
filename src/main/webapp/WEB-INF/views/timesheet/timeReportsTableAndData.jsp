@@ -3,7 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <script src="/resources/js/jquery.simplePagination.js"></script>
-<script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script>
+<!-- <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script> -->
 <div id="reportTableData"></div>
 <div class="timesheetRepTab timesheetRep-table">
    	<table id="fixTable" class="display">
@@ -55,7 +55,7 @@ $(document).ready(function(){
 <script>
 function datatableBody(){ 
 	 $('#fixTable').DataTable( { 
-		    "sDom": "Rlfrtip",
+		   /*  "sDom": "Rlfrtip", */
 		    "bPaginate": false,
 		    "bInfo" : false,
 		    "ordering": false,

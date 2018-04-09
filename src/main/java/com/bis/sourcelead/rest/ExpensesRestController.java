@@ -149,13 +149,12 @@ public class ExpensesRestController {
 			return model;
 	}
 	
-    public ResponseList<ExpensesDTO> getExpensesList( ExpensesListUtilDTO elDTO,HttpServletRequest request) 
+    public ResponseList<ExpensesDTO> getExpensesList( ExpensesListUtilDTO elDTO,HttpServletRequest request) throws Exception 
     {
         
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ResponseList<ExpensesDTO> response = new ResponseList<ExpensesDTO>();
-		try {
 		if(orgLoc == null){
 			orgLoc = orgLocationService.getOrgLocationsByLocationCode(elDTO.getLocationCode());
 		}
@@ -199,9 +198,6 @@ public class ExpensesRestController {
         response.setData(expensesDTOList);
         response.setRecordsFiltered(expensesList.getRecordsFiltered());
         response.setRecordsTotal(expensesList.getRecordsTotal());
-		}catch(Exception e) {
-			
-		}
         return response;
     }	
 	
@@ -649,10 +645,12 @@ public class ExpensesRestController {
 	@RequestMapping(value = "/exportMyExpensesList")
 	public void exportMyExpensesList(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "type", required = false) String type, @RequestParam(value = "Expid", required = false) String Expid, @RequestParam(value = "ApproverType", required = false) String ApproverType) throws Exception
 	{
+		try{
 		File file = null;
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Expenses ExpenseDetails = expensesService.getExpenseById(Long.parseLong(Expid));
+		
 		if (ExpenseDetails != null) {
 			if (type.equalsIgnoreCase("PDF")) {
 				file = expensesService.exportMyExpensesToPdf(ExpenseDetails, orgLoc, loginUser, ApproverType);
@@ -677,11 +675,15 @@ public class ExpensesRestController {
 		if (file != null) {
 			file.delete();
 		}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 	
 	@RequestMapping(value = "/exportAllMyExpensesList")
 	public void exportAllMyExpensesList(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "type", required = false) String type, @RequestParam(value = "expenseStatus", required = false) String expenseStatus, @RequestParam(value = "startDate", required = false) String startDate, @RequestParam(value = "endDate", required = false) String endDate) throws Exception
 	{
+		try{
 		File file = null;
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -720,6 +722,9 @@ public class ExpensesRestController {
 		response.getOutputStream().flush();
 		if (file != null) {
 			file.delete();
+		}
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 	}
 	

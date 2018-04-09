@@ -65,6 +65,7 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionTypesService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
@@ -155,6 +156,9 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 	
 	@Autowired
 	OrgLicenseSubscriptionPriceDao orgLicenseSubscriptionPriceDao;
+	
+	@Autowired
+	OrgLicenseSubscriptionTypesService orgLicenseSubscriptionTypesService;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -702,15 +706,15 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 			Calendar toDate = Calendar.getInstance();
 			toDate.setTime(subscriptionDate);    
 		    
-		    LookUpData lookupData = lookupDataDao.getTasksById(Long.parseLong(orgLicenseSubscriptionDTO.getSubscriptionType()));
+		    OrgLicenseSubscriptionTypes orgLicenseSubscriptionTypes = orgLicenseSubscriptionTypesService.getOrgLicenseSubscriptionTypesById(Long.parseLong(orgLicenseSubscriptionDTO.getSubscriptionType()));
 			
-		    if(lookupData.getName().equalsIgnoreCase("Free Trail") || lookupData.getName().equalsIgnoreCase("1 Month")) {
+		    if(orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("Free Trail") || orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("1 Month")) {
 		    	toDate.add(Calendar.MONTH, +1); 
-		    }else if(lookupData.getName().equalsIgnoreCase("6 Months")) {
+		    }else if(orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("6 Months")) {
 		    	toDate.add(Calendar.MONTH, +6); 
-		    }else if(lookupData.getName().equalsIgnoreCase("1 Year")) {
+		    }else if(orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("1 Year")) {
 		    	toDate.add(Calendar.YEAR, +1); 
-		    }else if(lookupData.getName().equalsIgnoreCase("2 Years")) {
+		    }else if(orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("2 Years")) {
 		    	toDate.add(Calendar.YEAR, +2); 
 		    }
 		    
@@ -723,7 +727,7 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 			
 			
 		    
-			if(!lookupData.getName().equalsIgnoreCase("Free Trail") && !lookupData.getName().equalsIgnoreCase("Guest") && !lookupData.getName().equalsIgnoreCase("Unlimited")) {
+			if(!orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("Free Trail") && !orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("Guest") && !orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("Unlimited")) {
 				OrgLicenseSubscriptionPrice subscriptionPrice = orgLicenseSubscriptionPriceDao.getOrgLicenseSubscriptionPriceBySubscriptionTypeAndUserType(Long.parseLong(orgLicenseSubscriptionDTO.getSubscriptionType()), Long.parseLong(orgLicenseSubscriptionDTO.getUserSubscription()));		
 				orgLicenseSubscription.setInvoiceAmount(subscriptionPrice.getSubscriptionRate());
 				/*if(orgLicenseSubscriptionDTO.getCountry().equalsIgnoreCase("United States")) {

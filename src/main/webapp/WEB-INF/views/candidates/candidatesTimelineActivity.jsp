@@ -25,11 +25,10 @@
            	       	result = result + '    <div class="timeline_inner">';
            	       	result = result + '      <div class="row mt">';
            	       	result = result + '        <div class="col-md-12"> ';
-           	        var data = response.object;   
-                  	if(data != null && data != 'undefined' && data != "" && data != "[]"){
+           	     	var data = response.data;  
+                  	if(data && data.length > 0){
                	   		result = result + '          <ul class="timeline">';
-                  	 	var json = JSON.parse(data);
-                  		for (var i = 0; i < json.length; i++) {
+                  		for (var i = 0; i < data.length; i++) {
       	         	 		var opt = json[i];
    		   	         		result = result + '      <li> <i class="'+opt.actionIconClass+' bg-blue"></i>';
    		                	result = result + '      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i> '+opt.actionTimeStr+' </span>';
@@ -41,17 +40,15 @@
    		                	result = result + '     </li>';
                   		}
                   		result = result + '  </ul>';
-                  } else {
-               	   		result = result + '      <div class="noActivities">';
-               	   		result = result + '      </div>';
-                  }
+	                } else {
+	               		result = result + '      <div class="noActivities">';
+	               	   	result = result + '      </div>';
+	                }
                   	result = result + '  </div>';
-              
               		result = result + ' </div>';
               		result = result + ' </div>';
               		result = result + ' </div>';
               		result = result + ' </div>';
-      
       				result = result + ' </div>';
       				result = result + ' </div>';
       		 		$("#candidateTimelineDiv").empty();

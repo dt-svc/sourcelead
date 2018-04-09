@@ -479,7 +479,7 @@ function getResume(candidateId, resumeId){
    		    	if (response.response === "AWKWARD") {
    		    	    location.href = "/errorPage";
    		    	} else if (response.response === "SUCCESS") {
-   		    		 var json = JSON.parse(response.object);
+   		    		 var json = response.object;
 	       			 $("#uploadResumeDiv").hide();
 	       			 $("#resumeAddButton").hide();
 	       			 $("#uploadFile").removeAttr("data-validation");
