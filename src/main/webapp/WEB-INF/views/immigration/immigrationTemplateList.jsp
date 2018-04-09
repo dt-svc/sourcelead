@@ -75,7 +75,6 @@
 <jsp:include page="../masterFooter.jsp" />
 <script>
     var table = "";
-    var inlineSearch = '';
     $(document).ready(function () {
 
         getDynamicTemplateList();

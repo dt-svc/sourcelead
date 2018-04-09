@@ -335,6 +335,30 @@ function Immigration() {
 	}
  
     
+    this.editImmigrationCandidateForm=function(id){
+		$.ajax({
+	        url: sourceleadUrl + immiModulePath + "/editImmigrationCandidateFormDetailsById?id="+id,
+	        type: "GET",
+	        success: function (data) {
+	        	console.log(" inside success test --->" );
+	        	var formObj='';
+	        	if(data!= null){
+	        		console.log(" record successfully fetched by id  --> "+id);
+	        		
+	        			formObj = $('#formSave_Form')[0]; // load the child form
+	        			//var fomValues=["name","designation", "address","startMonth","startYear","endMonth","endYear"];
+	        			$("#addForm").trigger('click');
+	        			//udpateEduFormdata(formObj,fomValues,data);
+	        			$('#formName').val(data.formName); // to select the dropdwon value based on id value.
+	        			$('#formDescription12').text(data.description);
+	        			
+	        			$('#immigrationCandidateFormId').val(data.id);
+	        	
+	        	   
+	        	}
+	        }
+	    });
+	}
 
     this.displayPassportDetails=function(candidateId,Passport,searchValue){
    	console.log("inside displayPassportDetails function call  -->")
@@ -452,6 +476,23 @@ this.deletePassportVisaDetailsById=function(id,idType){
 	    }
 		
 	}
+    
+    this.deleteImmigrationCandidateForm=function(id){
+    	var candidateId = $("#candidateID").val();
+    	var templateId = $('#templateID').val();
+		var immigrationId = $('#immigrationID').val();
+    	$.ajax({
+            url: sourceleadUrl + immiModulePath + "/deleteImmigrationCandidateFormDetails?id="+id,
+            type: "GET",
+            success: function (result) {
+            	if(result=='success'){
+            		immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId);
+            	     
+            	}
+            }
+        });
+    }
+    
     this.displayFamilyDetails=function(candidateId){
     	console.log("inside displayFamilyDetails function call  -->")
     	var searchVal= $("#familySerach").val();
@@ -662,6 +703,8 @@ function deleteEmpDetailsById(id){
         }
     });
 }
+
+
 
 function validateTemplateName() {
     var templateName = document.getElementById("templateName").value.trim();

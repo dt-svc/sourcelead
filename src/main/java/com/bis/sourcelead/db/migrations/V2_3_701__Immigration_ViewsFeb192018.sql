@@ -34,8 +34,7 @@ CREATE OR REPLACE VIEW IMMIGRATON_TEMPLATE_VIEW AS
    /* Created on 5 April 2018 by Srinvias Sabbu */     
 CREATE OR REPLACE VIEW IMMIGRATON_LIST_VIEW AS
      SELECT 
-        IMM.CURRENT_USCIS_STATUS,
-        IMM.ID,
+      IMM.ID,
         IMM.IMMIGRATION_TEMPLATE_ID,
         IMM.CANDIDATE_ID,
         IMM.COUNTRY,
@@ -44,6 +43,12 @@ CREATE OR REPLACE VIEW IMMIGRATON_LIST_VIEW AS
         IMM.IMMIGRATION_STATUS,
         IMM.CREATED_DATE,
         IMM.UPDATED_DATE,
+         (SELECT 
+                NAME
+            FROM
+                SOURCELEAD.LOOKUP_DATA
+            WHERE
+                ID = IMM.CURRENT_USCIS_STATUS) AS CURRENT_USCIS_STATUS,
         (SELECT 
                 NAME
             FROM

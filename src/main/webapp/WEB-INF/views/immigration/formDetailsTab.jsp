@@ -30,8 +30,8 @@
 				 <td><div>
 				 <a title="Upload" class="fa fa-upload uploadForm" onclick=""></a>
 				 <c:if test="${items.isTemplateConfigured =='N'}">
-				 <i id="edit" class="glyphicon glyphicon-pencil ml10" onclick=""></i>
-				 <i id="delete" class="glyphicon glyphicon-trash ml10" onclick="" ></i>
+				 <i id="edit" class="glyphicon glyphicon-pencil ml10" onclick="immigration.editImmigrationCandidateForm(${items.id});"></i>
+				 <i id="delete" class="glyphicon glyphicon-trash ml10" onclick="immigration.deleteImmigrationCandidateForm(${items.id});" ></i>
 				 </c:if>
 				 </div>
 				 </td>
@@ -72,16 +72,16 @@
               	<div class="col-md-8 padding_right">
 					<div class="input-group col-md-12" style="margin:0 auto">
 					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-					  <input type="file" style="display: none;" multiple id="uploadBtn"  class="upload">
+					  <input type="file" style="display: none;" multiple id="uploadBtnForm"  class="upload">
 					  </span> </label>
-					<input type="text" class="form-control" name="docFile" id ="uploadFile" readonly placeholder="Attachment" field-name="Attachment" data-validation="required">
+					<input type="text" class="form-control" name="docFile" id ="uploadFileForm" readonly placeholder="Attachment" field-name="Attachment" data-validation="required">
 				  </div>
 				</div>
 			</div>					          	
 		
 		</div>
 		<div class="col-md-5 noPad">
-                  <input type="text" class="form-control" name="formDescription" id="formDescription" placeholder="Description" data-validation = "validate_length length2-100" data-validation-optional="true"/>
+                  <input type="text" class="form-control" name="formDescription" id="formDescription12" placeholder="Description" data-validation = "validate_length length2-100" data-validation-optional="true"/>
             </div>
 		<div class="col-sm-12 noPad mt clearfixclearfix">
            <div class="col-md-4 padding_left" >
@@ -127,8 +127,8 @@
 	</form>
 		<script>
 		$(function() {
-			$("#uploadBtn").change(function() {
-			fileUpload("uploadBtn", "immigrationCandidateForms", "formSave_Form","immigrationFormFileInfo");
+			$("#uploadBtnForm").change(function() {
+			fileUpload("uploadBtnForm", "immigrationCandidateForms", "formSave_Form","immigrationFormFileInfo");
 		});
 		});
 		
@@ -138,8 +138,8 @@
 		});
 		});
 		
-		document.getElementById("uploadBtn").onchange = function () {
-		 	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+		document.getElementById("uploadBtnForm").onchange = function () {
+		 	$('#uploadFileForm').val($(this).val().replace(/C:\\fakepath\\/i, ''))
 
 		}; 
 		document.getElementById("uploadFormBtn").onchange = function () {

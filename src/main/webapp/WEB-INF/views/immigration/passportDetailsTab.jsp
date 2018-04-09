@@ -76,8 +76,9 @@
 				<span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onClick="clearDateValue('validTo');"></i></span>
 				</div>
 				</div>
-			</div>									
-		<div class="immiPopFoot">
+			</div>		
+			<div class="clearfix"></div>							
+		<div class="immiPopFoot mt clearfix">
             <input value="Save" class="" type="button" id="passport_save_id" onclick="immigration.savePassportVisaDetails('Passport')">
             <input value="Cancel" class="popCan" type="button" onClick="popFun();">
           </div>		
@@ -95,6 +96,7 @@
 			function popFun() {
 				$(".popMask").fadeOut(200);
 				$("#popPassView").fadeOut(200);
+				$("#CandidatePassportform")[0].reset();
 			}
 		</script>
 		<script>

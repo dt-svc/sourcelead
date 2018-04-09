@@ -1076,6 +1076,11 @@ public class RegistrationServiceImpl implements RegistrationService{
 			
 			orgUser.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			orgUser.setUpdatedDate(new Date());
+			orgUser.setVerificationUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			orgUser.setIsVerified(Constants.NO);
+			user.setUrlSentTime(new Date());
+			user.setLoginSecurity(Constants.NO);
+			user.setRegistrationType("Newly Registered");
 			userService.addUser(orgUser);
 			userRole.setIsPrimary(1);
 			

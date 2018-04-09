@@ -4,10 +4,12 @@ import java.util.List;
 
 import com.bis.sourcelead.dto.CandidateFamilyDetailsDTO;
 import com.bis.sourcelead.dto.ImmigrationDTO;
+import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.ImmigrationPassportVisaDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.CandidateResidence;
@@ -59,6 +61,10 @@ public interface ImmigrationCommonService {
 	 
 	 CandidateResidence getCandidateResidenceDetailsById(Long id);
 	 
+	 ImmigrationCandidateForms getImmigrationCandidateFormById(Long id);
+		
+	 String deletetImmigrationCandidateFormsById(Long id);
+	 
 	 CandidatePassportVisa getCandidatePassportVisaDetailsById(Long id);
 	 
 	 ImmigrationCandidateDocuments saveImmigrationCandidateDocs(ImmigrationTemplateDocDTO immigrationTemplateDocDTO,User user, OrgLocations orgLocations) throws Exception;
@@ -73,7 +79,7 @@ public interface ImmigrationCommonService {
 
 	ImmigrationCandidateForms uploadRequstedFormForCandidate(ImmigrationTemplateFormDTO immigrationTemplateFormDTO, Long id,	Long candidateId, Long immigrationId, User user, OrgLocations orgLocations);
 
-	List<ImmigrationListView> getImmigrationsList();
+	ResponseList<ImmigrationListViewDTO> getImmigrationsList(ImmigrationListViewDTO immigrationListDTO, String searchValue,  OrgLocations orgLocations);
 
 
 }
