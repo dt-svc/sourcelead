@@ -7,19 +7,61 @@
 <div class="time_pop" id="timeSheetErrorMsg"></div>
  <c:if test="${timesheetEntryDetailsDTO.timesheetFor == 'approver'}">
    <div class='data_loading' id="loadTime"></div>
- <div class="pull-left timeAppUse col-md-7">
-	<span><img id="userImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofile-img.png"> </span>
-
-	<p class="col-md-10 margin-top0">
-		<input class="timeUsName" type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeeName}">
-		<input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeeEmail}">
-		<input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.projectNameForSubmissionPageDisplay}">
-		<input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeePhoneNo}">
-		
-	</p>
+ <div class="pull-left timeAppUse-show col-md-6">
+	<span class="pull-left"><img id="userImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofile-img.png"> </span>
+		<ul class="col-md-9 margin-top0 list-unstyled padding_left">
+			<li>
+			<c:if test="${not empty timesheetEntryDetailsDTO.employeeName}">
+				<input class="timeUsName padding_left" type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeeName}">
+			</c:if>
+			<c:if test="${empty timesheetEntryDetailsDTO.employeeName}">
+				<input class="timeUsName padding_left" type="text" readonly="readonly" value="--">
+			</c:if>
+			</li>
+			<li>
+			<c:if test="${not empty timesheetEntryDetailsDTO.employeeEmail}">
+				<i class="fa fa fa-envelope" title="Email"></i><input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeeEmail}">
+			</c:if>
+			<c:if test="${empty timesheetEntryDetailsDTO.employeeEmail}">
+				<i class="fa fa fa-envelope" title="Email"></i><input type="text" readonly="readonly" value="--">
+			</c:if>
+			</li>
+			<li>
+			<c:if test="${not empty timesheetEntryDetailsDTO.projectNameForSubmissionPageDisplay}">
+				<i class="fa fa-bar-chart" title="Project"></i><input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.projectNameForSubmissionPageDisplay}">
+			</c:if>
+			<c:if test="${empty timesheetEntryDetailsDTO.projectNameForSubmissionPageDisplay}">
+				<i class="fa fa-bar-chart" title="Project"></i><input type="text" readonly="readonly" value="--">
+			</c:if>
+			</li>
+			<li>
+			<c:if test="${not empty timesheetEntryDetailsDTO.employeePhoneNo}">
+				<i class="fa fa-phone" title="Phone No"></i><input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeePhoneNo}">
+			</c:if>
+			<c:if test="${empty timesheetEntryDetailsDTO.employeePhoneNo}">
+				<i class="fa fa-phone" title="Phone No"></i><input type="text" readonly="readonly" value="--">
+			</c:if>
+			</li>
+			<li>
+			<c:if test="${not empty timesheetEntryDetailsDTO.employmentTypeForSubmissionPageDisplay}">
+				<i class="fa fa-briefcase" title="Employment Type"></i><input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employmentTypeForSubmissionPageDisplay}">
+			</c:if>
+			<c:if test="${empty timesheetEntryDetailsDTO.employmentTypeForSubmissionPageDisplay}">
+				<i class="fa fa-briefcase" title="Employment Type"></i><input type="text" readonly="readonly" value="--">
+			</c:if>
+			</li>
+			<li>
+			<c:if test="${not empty timesheetEntryDetailsDTO.clientNameForDisplay}">
+				<i class="fa fa-user-plus" title="Client"></i><input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.clientNameForDisplay}">
+			</c:if>
+			<c:if test="${empty timesheetEntryDetailsDTO.clientNameForDisplay}">
+				<i class="fa fa-user-plus" title="Client"></i><input type="text" readonly="readonly" value="--">
+			</c:if>
+			</li>
+		</ul>
 	<div class="clearfix"></div>
 </div>
-
+<div class="col-md-6 paddingRight">
  <input type="hidden" id="notificationCurrentFrequency" value="${notificationCurrentFrequency}">
  
 <div id="timesheetSubmissionStatusDiv" class="timeNewSe clearfix ${!timesheetSubmissionDTO.reopenAcceptRejectButtonVisible ? 'timeNewStatus':'timesheetApproved-status'}">
@@ -65,6 +107,75 @@
 				</c:if>
 				
 </div>
+
+<div class="clearfix"></div>
+<div class="mt pull-right mr10">
+	<table width="100%" class="table table-bordered">
+		<thead>
+		<tr>
+			<th>Previous month<br/>(Approved Hrs)</th><th>Current month Hrs<br/>(${timesheetSubmissionDTO.currentMonthName})</th><th>Project to Date<br/>(Approved Hrs)</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+				<div class="week">
+					<span class="draft"><d title="Total-Approved-Hours:${timesheetSubmissionDTO.previousMonthTotalHours}">${timesheetSubmissionDTO.previousMonthTotalHours}</d></span>
+					<div class="progress mb0">
+						<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width: 60%">
+							<d title="Billable:${timesheetSubmissionDTO.previousMonthBillableHours}">${timesheetSubmissionDTO.previousMonthBillableHours}</d>
+						</div>
+						<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width: 40%">
+							<d title="Non-Billable:${timesheetSubmissionDTO.previousMonthNonBillableHours}">${timesheetSubmissionDTO.previousMonthNonBillableHours}</d>
+						</div>
+					</div>
+				</div>
+				</td>
+				<td>
+				<div class="week">
+					<span class="draft">
+					    <span id="monthTotal">
+					       <input type="hidden" id="mTotal" value="${timesheetSubmissionDTO.currentMonthTotalHours}"/>
+					      <d title="Total-Hours:${timesheetSubmissionDTO.currentMonthTotalHours}">${timesheetSubmissionDTO.currentMonthTotalHours}</d>
+					    </span>
+					</span>
+					<div class="progress mb0">
+						<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width: 60%">
+							<span id="monthBillableTotal">
+							   <input type="hidden" id="mBillableTotal" value="${timesheetSubmissionDTO.currentMonthBillableHours}"/>
+							   <d title="Billable:${timesheetSubmissionDTO.currentMonthBillableHours}">${timesheetSubmissionDTO.currentMonthBillableHours}</d>
+							</span>
+						</div>
+						<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width: 40%">
+						    <span id="monthNonBillableTotal">
+						       <input type="hidden" id="mNonBillableTotal" value="${timesheetSubmissionDTO.currentMonthNonBillableHours}"/>
+						       <d title="Non-Billable:${timesheetSubmissionDTO.currentMonthNonBillableHours}">${timesheetSubmissionDTO.currentMonthNonBillableHours}</d>
+						    </span>
+							
+						</div>
+					</div>
+				</div>
+				</td>
+				<td>
+				<div class="week">
+					<span class="draft"><d title="Total-Approved-Hours:${timesheetSubmissionDTO.projectToDateTotalHours}">${timesheetSubmissionDTO.projectToDateTotalHours}</d></span>
+					<div class="progress mb0">
+						<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width: 60%">
+							<d title="Billable:${timesheetSubmissionDTO.projectToDateBillableHours}">${timesheetSubmissionDTO.projectToDateBillableHours}</d>
+						</div>
+						<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width: 40%">
+							<d title="Non-Billable:${timesheetSubmissionDTO.projectToDateNonBillableHours}">${timesheetSubmissionDTO.projectToDateNonBillableHours}</d>
+						</div>
+					</div>
+				</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+
+</div>
 </c:if>
 <c:if test="${timesheetEntryDetailsDTO.timesheetFor == 'user'}">
              <div id="timesheetSubmissionStatusDiv" class="timeNewSe timBtnWidth">
@@ -91,6 +202,8 @@
 				
 </div>
 </c:if>
+
+
 <div class="clearfix"></div>
 <div id="timesheetNewTabs" class="timesheetNewTabs">
 	<div class="project_side_wrap_inn_tabs">
@@ -128,7 +241,7 @@
 			<div id="timesheetDivByTab">
 				<div class="project_tabs">
 					<div id="tab-1" class="project_tabs_inn" style="display: block;">
-						<div class="timesheet_tableNew">
+						<div class="timesheet_tableNew overflow_inherint">
 						   <input type='hidden' name='maxRowNumber'  class='initiateTimesheetMax' id='maxRowNumber'  value='${timesheetSubmissionDTO.maxRowCount > 0 ? timesheetSubmissionDTO.maxRowCount : 1}' />
 							<table id="timesheet" cellspacing="0" cellpadding="0">
 								<tbody>
@@ -143,12 +256,12 @@
 									<c:forEach var="entry" items="${entriesMap}" varStatus="entryCount">
 									    <tr id="timesheetRow${entryCount.index+1}">
 									      <td>
-											<div>
+											<div class="taskDropDown">
 											  <c:set var="taskType" value=""/>
 											  <c:set var="taskId" value=""/>
 											  <c:set var="taskName" value=""/>
 											  <c:if test="${timesheetSubmissionDTO.submitButtonVisible ||  timesheetSubmissionDTO.saveButtonVisible}">
-												   <select id="${entryCount.index+1}task1Id" name="${entryCount.index+1}task1Id" class="existedProjectTaskId${timesheetEntryDetailsDTO.projectId}" onchange='getProjectTasks("${entryCount.index+1}task1Id","${timesheetEntryDetailsDTO.projectId}");prepareProjectTaskDetails("${entryIndex}","${entryCount.index+1}task1Id");' data-validation="required" field-name="Task">
+												   <select id="${entryCount.index+1}task1Id" name="${entryCount.index+1}task1Id" class="existedProjectTaskId${timesheetEntryDetailsDTO.projectId}"  onchange='getProjectTasks("${entryCount.index+1}task1Id","${timesheetEntryDetailsDTO.projectId}");prepareProjectTaskDetails("${entryIndex}","${entryCount.index+1}task1Id");' data-validation="required" field-name="Task">
 														<option value=''>--select task--</option>
 														 <c:if test="${!empty timesheetSubmissionDTO.timesheetTaskList}">
 														   <c:forEach var="pt" items="${timesheetSubmissionDTO.timesheetTaskList}">
@@ -292,7 +405,8 @@
 									</tr>
 								</tbody>
 							</table>
-							 <div class="timesheet_bot">
+							<div class="clearfix"></div>
+							 <div class="timesheet_bot clearfix">
 								<div class="timesheet_week_comm">
 									<input name="attcahmentMaxRowNumber" id="attcahmentMaxRowNumber" value="1" type="hidden">
 									<input name="fileCounter" id="fileCounter" value="0" type="hidden">
@@ -374,7 +488,7 @@
 							<div class="clearfix"></div>
 						</div>
 					</div>
-				</div>
+	            </div>
 		    </div>
 	    </div>
 	<input type="hidden" name="_ignore"
@@ -485,8 +599,10 @@ function setTotals(){
 	 		}else{
 	 			billableTotal =  "00:00";
 	 		}
+	 		//currentMonthBillableHours(billableTotal);
 	 	    $("#grandBillableTotal").val(billableTotal);
 	    }else{
+	    	//currentMonthBillableHours("00:00");
 	    	$("#grandBillableTotal").val("00:00");
 	    }
 	   
@@ -509,8 +625,10 @@ function setTotals(){
 			}else{
 				nonBillableTotal =  "00:00";
 			}
+			//currentMonthNonBillableHours(nonBillableTotal);
 		    $("#grandNonBillableTotal").val(nonBillableTotal);
 	   }else{
+		   //currentMonthNonBillableHours("00:00");
 		   $("#grandNonBillableTotal").val("00:00");
 	   }
 	   
@@ -549,9 +667,152 @@ function grandTotal(){
 	 }else{
 		 total = "00:00"; 
 	 }
-	
+	 //currentMonthTotalHours(total);
 	 $("#grandTotal").val(total);
+	 
+}
+
+
+function currentMonthTotalHours(totalHours){
+	
+	   	 var thm = $("#grandTotal").val();
+	   	 var tsplit = thm.split('.');
+	   	 if(tsplit[1] == null || tsplit[1] == 'undefined' || tsplit[1] == '' ){
+	   		tsplit = thm.split(':');
+	   	 }
+	   	 var tHours     = tsplit[0];
+	   	 var tMinutes   = tsplit[1];
+			
+			
+	   	 var mhm = $("#mTotal").val();
+	   	 var msplit = mhm.split('.');
+	   	 var mHours     = msplit[0];
+	   	 var mMinutes   = msplit[1];
+	   	
+	   	 var asplit = totalHours.split(':');
+	   	 var aHours     = asplit[0];
+	   	 var aMinutes   = asplit[1];
+	   
+	   	 var first = parseInt(mHours)+parseInt(aHours)-parseInt(tHours);
+	   	 var second = parseInt(mMinutes)+parseInt(aMinutes)-parseInt(tMinutes);
+	   	 
+	   	 var minute = first * 60;
+		 var minute1 = second;
+		 var finalmin = parseInt(minute) + parseInt(minute1);
+   	 
+		 var  bsum =  parseInt(finalmin);
+		
+	     var t = bsum; 
+		 var hours = Math.floor(t / 60); 
+		 var minutes = t % 60;
+		 if (minutes < 10) {
+			minutes = '0' + minutes;
+		 }
+		 if (hours < 10) {
+			hours = '0' + hours;
+		 }
+		 var total;
+		 if(!isNaN(hours) && !isNaN(minutes)){
+			 total = hours +"."+ minutes;
+		 }else{
+			 total = "00.00"; 
+		 }
+		 $("#monthTotal").empty();
+		 $("#monthTotal").html('<input type="hidden" id="mTotal" value="'+total+'"/><d title="Total-Hours:'+total+'">'+total+'</d>');
+}
+
+function currentMonthBillableHours(totalHours){
+	 var thm = $("#grandBillableTotal").val();
+   	 var tsplit = thm.split('.');
+   	 if(tsplit[1] == null || tsplit[1] == 'undefined' || tsplit[1] == '' ){
+   		tsplit = thm.split(':');
+   	 }
+   	 var tHours     = tsplit[0];
+   	 var tMinutes   = tsplit[1];
+   	 
+   	 var mhm = $("#mBillableTotal").val();
+   	 var msplit = mhm.split('.');
+   	 var mHours     = msplit[0];
+   	 var mMinutes   = msplit[1];
+   	 
+   	 var asplit = totalHours.split(':');
+   	 var aHours     = asplit[0];
+   	 var aMinutes   = asplit[1];
+   	
+   	 var first = parseInt(mHours)+parseInt(aHours)-parseInt(tHours);
+   	 var second = parseInt(mMinutes)+parseInt(aMinutes)-parseInt(tMinutes);
+     
+   	 
+   	 var minute = first * 60;
+	 var minute1 = second;
+	 var finalmin = parseInt(minute) + parseInt(minute1);
+	 
+	 var  bsum =  parseInt(finalmin);
+	
+     var t = bsum; 
+	 var hours = Math.floor(t / 60); 
+	 var minutes = t % 60;
+	 if (minutes < 10) {
+		minutes = '0' + minutes;
+	 }
+	 if (hours < 10) {
+		hours = '0' + hours;
+	 }
+	 var total;
+	 if(!isNaN(hours) && !isNaN(minutes)){
+		 total = hours +"."+ minutes;
+	 }else{
+		 total = "00.00"; 
+	 }
+	 $("#monthBillableTotal").empty();
+	 $("#monthBillableTotal").html('<input type="hidden" id="mBillableTotal" value="'+total+'"/><d title="Billable:'+total+'">'+total+'</d>');
+}
+function currentMonthNonBillableHours(totalHours){
+	
+	 var thm = $("#grandNonBillableTotal").val();
+  	 var tsplit = thm.split('.');
+  	 if(tsplit[1] == null || tsplit[1] == 'undefined' || tsplit[1] == '' ){
+  		tsplit = thm.split(':');
+  	 }
+  	 var tHours     = tsplit[0];
+  	 var tMinutes   = tsplit[1];
+  	
+  	 var mhm = $("#mNonBillableTotal").val();
+  	 var msplit = mhm.split('.');
+  	 var mHours     = msplit[0];
+  	 var mMinutes   = msplit[1];
+  	 
+  	 var asplit = totalHours.split(':');
+  	 var aHours     = asplit[0];
+  	 var aMinutes   = asplit[1];
+  	
+  	 var first = parseInt(mHours)+parseInt(aHours)-parseInt(tHours);
+  	 var second = parseInt(mMinutes)+parseInt(aMinutes)-parseInt(tMinutes);
     
+  	 
+  	 var minute = first * 60;
+	 var minute1 = second;
+	 var finalmin = parseInt(minute) + parseInt(minute1);
+	 
+	 var  bsum =  parseInt(finalmin);
+	
+     var t = bsum; 
+	 var hours = Math.floor(t / 60); 
+	 var minutes = t % 60;
+	 if (minutes < 10) {
+		minutes = '0' + minutes;
+	 }
+	 if (hours < 10) {
+		hours = '0' + hours;
+	 }
+	 var total;
+	 if(!isNaN(hours) && !isNaN(minutes)){
+		 total = hours +"."+ minutes;
+	 }else{
+		 total = "00.00"; 
+	 }
+	 $("#monthNonBillableTotal").empty();
+	 $("#monthNonBillableTotal").html('<input type="hidden" id="mNonBillableTotal" value="'+total+'"/><d title="Non-Billable:'+total+'">'+total+'</d>');
 }
 
 </script>
@@ -571,7 +832,11 @@ function maskme(){
 
 <script>
 $(document).ready(function() {  
-	maskme();    
+	if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	 }else{
+		 maskme(); 
+	 }
  });
 </script>
 
@@ -883,8 +1148,10 @@ function addTimeSheetRow(projectId) {
 		   var avilableProjectTaskIds = [];
 		   $('.existedProjectTaskId'+projectId).each(function() {
 				 var localId = this.value;
-				 var taskIdArray = localId.split(",");
-				 avilableProjectTaskIds.push(taskIdArray[0]);
+				 if(localId != null &&  localId !='undefined' && localId != ''){
+					 var taskIdArray = localId.split(",");
+					 avilableProjectTaskIds.push(taskIdArray[0]);
+				 }
 		   }); 
 		   $.ajax({
    	          type : "POST",
@@ -1318,7 +1585,8 @@ function newSaveTimesheet(status){
 }
 </script>
 <script type="text/javascript">
-function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMembersId,from){ 
+function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMembersId,from){
+	    $('#notifyLink').val('');
 		 if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
 			 $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
 	    	 $(".side_mask").fadeOut(200); 
@@ -1447,8 +1715,16 @@ function notifyReopenTimeSheet(projectMemberId,timesheetFrequency,totalHours){
 		   	type: "POST",
 		    url: sourceleadUrl+"/notifyReopenTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&reason="+(reason.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>'))+"&totalHours="+totalHours,	    	   
 		    success: function(data) {
-		    	 cancelReOpen();
-   			    timesheetDivAfterSaving();
+		    	if(data.response === "SESSION_TIMEDOUT") {
+		    		location.replace(sourceleadUrl);
+		    	 } else if (data.response === "AWKWARD") {
+                        location.href = "/errorPage";
+		    	 } else if (data.response === "SUCCESS") {
+			    		cancelReOpen();
+	   			    	timesheetDivAfterSaving();
+		    	 }else if (result.indexOf('Sign In') !== -1) {
+	  					location.replace(sourceleadUrl);
+				 }
 		    }
 	   });
 	}else{
@@ -1623,6 +1899,7 @@ $(".content-wraper").click(function() {
 	//alert("hello");
 	bodyClick();
 });
+$('.selectpicker').selectpicker('refresh');
 </script>
 <!-- Tab Switching -->
 <script type="text/javascript"	src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>

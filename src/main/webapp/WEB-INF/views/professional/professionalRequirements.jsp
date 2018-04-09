@@ -2268,16 +2268,20 @@ function createAlert(requirementUUID){
 					        	    	$.ajax({
 					        		    	type: "POST",
 					        		        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
-					        		        success: function(data) {
-					        		        	var primarySkill = data;
-					        		        	      $("#primarySkill").val(primarySkill);
-					        		        	
+					        		        success: function(response) {
+					        		        	if (response.response === "AWKWARD") {
+					        		        	    location.href = "/errorPage";
+					        		        	} else if (response.response === "SUCCESS") {
+					        		        		var primarySkill = response.object;
+						        		        	$("#primarySkill").val(primarySkill);
+					        		        	} else if (response.indexOf('Sign In') !== -1) {
+					        		        		location.replace(sourceleadUrl);
+					        		        	} else {
+					        		        	    showError("Operation failed, please try again");
+					        		        	}
 					        		        },
 					        		    });
-					        	    	
 					        	    });
-					        	    
-					        	    
 					        	  if(json['skills'] != 'undefined' && json['skills'] != null && json['skills'] != ''){
 					        		  
 					        		  var alertSkillsList = json['skills'].split(',');

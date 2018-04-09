@@ -192,10 +192,13 @@ $(function() {
 	}
 	function refershDocument(){
 		$("#0ticketdocFile").val('');
+		$("#sourceleadTicket_form input[data-id*=0ticketdocFile]").remove();
+
 	}
 </script>
 <script type="text/javascript">
 	function removeTicketAttachmentRow(rowId) {
+		$("#sourceleadTicket_form input[data-id*="+rowId+"ticketdocFile]").remove();
 		 document.getElementById("divAttachmentTicketRow"+rowId).style.display = 'none';
 		 document.getElementById("divAttachmentTicketRow"+rowId).value= '';
 		 var  rId = "divAttachmentTicketRow"+rowId;

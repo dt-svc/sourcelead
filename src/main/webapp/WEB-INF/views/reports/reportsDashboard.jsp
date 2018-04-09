@@ -1,6 +1,8 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <section class="content-wraper">
     <section class="content-header clearfix">
@@ -12,9 +14,11 @@
     <div class="content-area content-new clearfix">
       <div class="clearfix form-horizontal inner-content mt mb col-md-12">
           <div class="leaveConfigure clerfix">
+          <sec:authorize access="!hasRole('ROLE_ENROLL_ORG')">
              <div class="col-md-4 mb">
                  
                  <!-- DropDown -->
+                 
 			<div class="dropdown pull-right report-dropdown">
 				<span class="dropdown-toggle btn btn-sm btn-default" type="button" id="menu1" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
@@ -158,6 +162,43 @@
                   </div>
                   <div class="clearfix text-center">
 					  <h4 class="text-danger"><a href="#">Associate Report</a></h4>
+                      <!-- <small class="text-muted">Loremipsum Loremipsum</small> -->
+                      <div class="clearfix mt10 hidden">
+                          <a href="expenses-report.html" class="btn btn-primary btn-sm" title="View">View</a>
+                      </div>
+                  </div>
+                      </div>
+                      
+                      </sec:authorize>   
+                      
+                      <div class="col-md-4 mb">
+                  <!-- DropDown -->
+			<div class="dropdown pull-right report-dropdown">
+				<span class="dropdown-toggle btn btn-sm btn-default" type="button" id="menu4" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
+				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
+				<li><a href="${appPath}/userUsageReport">Usage Report</a></li>
+					<%-- <li><a href="${appPath}/payrollReport">Associate ROI</a></li>
+					<li><a href="${appPath}/payrollAllBalanceReport">All Associate ROI</a></li>
+					<li><a href='${appPath}/campaignStats'>Campaign Reports</a></li> --%>
+					<!--<li><a href="#">Bank Report</a></li>
+					 <li><a href="#">Performance</a></li>
+					<li><a href="#">Payrol</a></li>
+					<li><a href="#">360 View</a></li>
+					<li><a href="#">Pay History</a></li>
+					<li><a href="#">Bill Histroy</a></li> -->
+				</ul>
+			</div>
+                 <!-- Dropdown -->
+                  
+             
+                  
+                  
+                  
+                  <div class="clearfix text-center mb10">
+                      <i class="fa fa-hourglass-2 fa-4x text-info"></i>
+                  </div>
+                  <div class="clearfix text-center">
+					  <h4 class="text-danger"><a href="#">Users Usage Reports</a></h4>
                       <!-- <small class="text-muted">Loremipsum Loremipsum</small> -->
                       <div class="clearfix mt10 hidden">
                           <a href="expenses-report.html" class="btn btn-primary btn-sm" title="View">View</a>

@@ -115,7 +115,7 @@ window.onload = function() {
               <div class="col-md-9 errorInptgroup errorInptgroup-bottom" id="attachmentId">
                   <div style="float:left; width:100%; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#fff; color:#333; ">
                       <input  type="file" class="pull-left valid" id="uploadBtn" field-name="Attachment"  onchange="uploadButton(0);">
-                      <a id="Button0value=">
+                      <a id="Button0value">
                       <i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right" title="clear" onClick="removedocfile();"></i>
                       </a>
                   </div>

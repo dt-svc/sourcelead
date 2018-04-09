@@ -198,6 +198,7 @@ public class AddElkRequirement {
 				if(null != education && !"".equalsIgnoreCase(education)){
 					requirementIndex.setEducation(education.split(","));
 				}
+				requirementIndex.setIsClientJob(rs.getString("IS_CLIENT_JOB"));
 				if(rs.getString("ORG_RELATION_ID") !=null && !"".equalsIgnoreCase(rs.getString("ORG_RELATION_ID"))){
 					requirementIndex.setIsClientJob(rs.getString("IS_CLIENT_JOB"));
 					ResultSet rs1 = getClientContactDetails(rs.getString("ORG_RELATION_ID"),conn);

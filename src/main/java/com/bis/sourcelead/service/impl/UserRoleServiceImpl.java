@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -31,18 +33,22 @@ import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
+import com.bis.sourcelead.dto.UsersUsageReportDTO;
+import com.bis.sourcelead.entity.ActionHistory;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.ActionHistoryService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfUtil;
+import com.bis.sourcelead.util.ReportsUtil;
 
-@Service
+@Service 
 public class UserRoleServiceImpl implements UserRoleService{
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserRoleServiceImpl.class);
@@ -79,6 +85,13 @@ public class UserRoleServiceImpl implements UserRoleService{
 	
 	@Autowired
 	OrgDocumentsDao orgDocumentsDao;
+	
+	@Autowired
+	ActionHistoryService actionHistoryService;
+	
+	@Autowired
+	ReportsUtil reportsUtil;
+	
 
 	@Override
 	public UserRole addUserRole(UserRole userRole) throws Exception {
@@ -639,6 +652,81 @@ public class UserRoleServiceImpl implements UserRoleService{
 	}
 
 	@Override
+	public ResponseList<UsersUsageReportDTO> getUserRoleListByLocationIdAndUserType(UsersUsageReportDTO usersUsageReportDTO,OrgLocations orgLocation) throws Exception
+	{
+		Date[] freqDates = new Date[2];
+		if("Custom".equalsIgnoreCase(usersUsageReportDTO.getCustomDates())){
+			freqDates[0] = commonUtil.getDateFormat(usersUsageReportDTO.getFromDate());
+			freqDates[1] = commonUtil.getDateFormat(usersUsageReportDTO.getToDate());
+		}else{
+			freqDates = reportsUtil.getJobFilterDate(usersUsageReportDTO.getCustomDates(),orgLocation);
+		}
+		if(!"NOT_LOGGEDIN".equalsIgnoreCase(usersUsageReportDTO.getUserType())){
+		List<Long> userIds = actionHistoryService.getAllUserIdsByFrequencyBasedOnActivity(freqDates);
+		usersUsageReportDTO.setUserIds(userIds);
+		}
+		ResponseList<UserRole> userlist = userRoleDao.getUserRoleListByLocationIdAndUserType(usersUsageReportDTO,orgLocation);
+		ResponseList<UsersUsageReportDTO> responseList = new ResponseList<>();
+		List<UsersUsageReportDTO> userUsageDtoList = new ArrayList<>();
+		if(userlist.getData() != null){
+			for(UserRole userRole : userlist.getData()){
+				
+				User user = userRole.getUser();
+				Employees employee = employeesService.getEmployeeByUserId(user.getId());
+				StringBuilder sb = new StringBuilder();
+				if(employee != null){
+					if(StringUtils.isNotBlank(employee.getEmployeeId())){
+						sb.append(employee.getEmployeeId());
+					}
+				}
+				
+				UsersUsageReportDTO usageDto = new UsersUsageReportDTO();
+				usageDto.setUserRoleId(userRole.getId());
+				usageDto.setLocationId(userRole.getOrgLocations().getId());
+				
+				if(StringUtils.isNotBlank(user.getLastName())){
+					usageDto.setUserName(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+				}else{
+					usageDto.setUserName(sb.append(user.getFirstName()).toString());
+				}
+				
+				usageDto.setUserEmail(user.getEmail());
+				usageDto.setUserType(user.getUserType());
+				
+				List<UserRole> userRoleList =  userRoleDao.getUsersListByUserId(user.getId());
+				for(UserRole ur:userRoleList){
+					ur.setOrgName(ur.getOrgLocations().getOrgLocationName());
+				}
+				usageDto.setEnrolledOrgs(userRoleList);
+				usageDto.setCreatedOn(commonUtil.dateStrFromDate(user.getCreatedDate()));
+				
+				UserDTO actionHistory = actionHistoryService.getAllActionHistoryByUserId(user.getId());
+				usageDto.setNoOfActivities(actionHistory.getNoOfActivities());
+				
+				if(StringUtils.isNotBlank(actionHistory.getLastActivity())){
+				usageDto.setLastActivity(actionHistory.getLastActivity());
+				}
+				
+				List<ActionHistory>  actionHis = actionHistoryService.getAllMultipleIpsByUserId(user.getId());
+				usageDto.setMultipleIps(actionHis.size());
+				
+				
+				userUsageDtoList.add(usageDto);
+			}
+			responseList.setRecordsFiltered(userlist.getRecordsFiltered());
+			responseList.setRecordsTotal(userlist.getRecordsTotal());
+		}
+		
+		responseList.setData(userUsageDtoList);
+		return responseList;
+	}
+
+	@Override
+	public Map<String, Integer> getUserCountListByOrgLocationId(Long orgLocationId,List<Long> orgId)
+	{
+		return userRoleDao.getUserCountListByOrgLocationId(orgLocationId, orgId);
+	}
+
 	public List<UserRole> getAllUsersBasedOrgLocationId(Long orgLocationId) throws Exception {
 		return userRoleDao.getAllUsersBasedOrgLocationId(orgLocationId);
 	}
@@ -652,6 +740,11 @@ public class UserRoleServiceImpl implements UserRoleService{
 	@Override
 	public List<User> getAllReportingManagersAssignedToAssociates(Long orgLocationId) throws Exception {
 		return userRoleDao.getAllReportingManagersAssignedToAssociates(orgLocationId);
+	}
+
+	@Override
+	public List<User> getAllProjectManagersAssignedToProjects(Long orgLocationId) throws Exception {
+		return userRoleDao.getAllProjectManagersAssignedToProjects(orgLocationId);
 	}
 
 }

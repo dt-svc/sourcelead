@@ -40,7 +40,10 @@ $(function(){
           <%-- <a href="${appPath}/addUserManual" class="pull-right btn btn-primary btn-sm mb">Add</a> --%>
           <%-- <a href="${appPath}/applicantDeclineReports" title="Grid View" id="GView" class="btn btn-default " ><i class="fa fa-pie-chart"></i></a>
           --%> 
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; User Manuals </div>
+          <div class="pull-right brud-crum" id="level1Bred" style="display:block"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>" class="paddingLeft">Home</a> &raquo; Level-1 User Manuals </div>
+          <div class="pull-right brud-crum" id="level2Bred" style="display:none"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>" class="paddingLeft">Home</a> &raquo; <a onclick="getUserManualList();" class="paddingLeft">Level-1</a> &raquo; Level-2 User Manuals </div>
+          <div class="pull-right brud-crum" id="level3Bred" style="display:none"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>" class="paddingLeft">Home</a> &raquo;<a onclick="getUserManualList();" class="paddingLeft">Level-1</a> &raquo;<a id="level2cum" style="display:none" class="paddingLeft"></a> &raquo; Level-3 User Manuals </div>
+       
         </section>
         
         <div class="content-area clearfix">
@@ -66,6 +69,9 @@ $('.note-editable').css({"min-height":"200px"});
 
 <script>
  function getUserManualList() {
+	 document.getElementById("level1Bred").style.display="block";
+	 document.getElementById("level2Bred").style.display="none";
+	 document.getElementById("level3Bred").style.display="none";
 	 
 	 var searchValue = $("#UserManualSearch").val();
 	 searchValue = searchValue ? searchValue : "";
@@ -240,6 +246,10 @@ function cancelTermination(){
  
  <script>
  function getAllLevelTwo(id){
+	 document.getElementById("level1Bred").style.display="none";
+	 document.getElementById("level2Bred").style.display="block";
+	 document.getElementById("level3Bred").style.display="none";
+	 level3Breadcrumbs(id)
 	 var searchValue = $("#UserManualTwoSearch").val();
 	 searchValue = searchValue ? searchValue : "";
 	 var url = sourceleadUrl	+"/getAllUseManualLevelTwoList?searchValue="+searchValue+"&id="+id;
@@ -428,18 +438,25 @@ function cancelTermination(){
  
   <script>
  function getAllLevelThree(id){
+	 document.getElementById("level1Bred").style.display="none";
+	 document.getElementById("level2Bred").style.display="none";
+	 document.getElementById("level3Bred").style.display="block";
 	 var searchValue = $("#UserManualThreeSearch").val();
 	 searchValue = searchValue ? searchValue : "";
 	 var url = sourceleadUrl	+"/getAllUseManualLevelThreeList?searchValue="+searchValue+"&id="+id;
 		prepareLevelThreeList(url,id);
  }
+ function level3Breadcrumbs(id){
+	 document.getElementById("level2cum").style.display="inline-block";
+	 var result = "";
+	 result=result+'<a onclick="getAllLevelTwo('+id+');">Level-2</a>';
+	 $("#level2cum").empty();  
+	 $("#level2cum").append(result);  
+ }
  </script>
  
  <script>
  function prepareLevelThreeList(url,id){
-	 
-	 
-	 
 		 var result = "";
 		result = result	+ '<div class="positionRelative table_head">';
 		
@@ -651,7 +668,7 @@ function cancelTermination(){
 					updatedBy = "--";
 				}
 			if (json.updatedDate != null && json.updatedDate != '' && json.updatedDate != 'undefined') {
-				updatedDate = json.updatedBy;
+				updatedDate = json.updatedDate;
 				} else {
 					updatedDate = "--";
 				}
@@ -755,7 +772,7 @@ function cancelTermination(){
 					updatedBy = "--";
 				}
 			if (json.updatedDate != null && json.updatedDate != '' && json.updatedDate != 'undefined') {
-				updatedDate = json.updatedBy;
+				updatedDate = json.updatedDate;
 				} else {
 					updatedDate = "--";
 				}
@@ -860,7 +877,7 @@ function cancelTermination(){
 					updatedBy = "--";
 				}
 			if (json.updatedDate != null && json.updatedDate != '' && json.updatedDate != 'undefined') {
-				updatedDate = json.updatedBy;
+				updatedDate = json.updatedDate;
 				} else {
 					updatedDate = "--";
 				}

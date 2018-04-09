@@ -465,8 +465,8 @@ function addContactsGroup(){
 	result = result +'<div class="clearfix"></div >';
 	result = result + '<div class="form-group">';
 	result = result + '<div class="pull-right">';
-     result = result + '	<button type="button" class="btn mr btn-default btn-sm" onClick="maskFade();">Cancel</button>';
-	 result = result + '	<button type="button" value="Save" onclick= "contactgrp();" id="add_contactgroup" class="btn btn-sm btn-primary">Save</button>';
+	result = result +'<input type="button" value="Save" onClick="contactgrp()" class="btn btn-primary ml10">';
+	result = result +'<input type="button" value="Cancel" onClick="maskFade()"  class="btn btn-default ml">';
 	 result = result + '</div >';
 	 result = result + '</div >';
 	 result = result + '</form>';
@@ -1017,8 +1017,8 @@ function editContactsGroup(groupId,groupName){
 	        	outPut = outPut+ '</div>';
 	        	outPut = outPut+ '<div class="form-group">';
 	        	outPut = outPut+ '<div class="pull-right">';
-	        	outPut = outPut+ '<button type="button" class="btn mr btn-default btn-sm" onClick="maskFade();">Cancel</button>';
-	        	outPut = outPut+ '	<button type="submit" value="Save" id="edit_contactgroup" onclick= "contactgrp();" class="btn btn-sm btn-primary">Save</button>';
+	        	outPut = outPut +'<input type="button" value="Save" onClick="contactgrp()" class="btn btn-primary ml10">';
+	        	outPut = outPut +'<input type="button" value="Cancel" onClick="maskFade()"  class="btn btn-default ml">';
 				outPut = outPut+ '</div>';
 	        	outPut = outPut+ '</div>';
 	        	outPut = outPut+ '</form>';

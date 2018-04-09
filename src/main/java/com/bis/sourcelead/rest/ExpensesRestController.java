@@ -70,6 +70,7 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
@@ -111,9 +112,10 @@ public class ExpensesRestController {
 		return getExpensesList( elDTO, request);
     }
 	
-	@RequestMapping(value = "/getExpensesList")
-    public ModelAndView getExpensesListForWeb( ExpensesListUtilDTO elDTO,HttpServletRequest request) throws Exception{
+	@RequestMapping(value = "/getExpensesList" , method=RequestMethod.POST)
+    public ModelAndView getExpensesListForWeb( ExpensesListUtilDTO elDTO,HttpServletRequest request){
 		 ModelAndView model = new ModelAndView();
+		 try {
 		 OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			int start = elDTO.getStart();
 			int length = 0;
@@ -140,15 +142,19 @@ public class ExpensesRestController {
 			 model.addObject("pageSize",elDTO.getLength());
 			 model.addObject("searchValue",elDTO.getSearchValue());
 			 model.setViewName("expenses/expensesEmployeeRedefined");
-			 return model;
+		 }catch(Exception e) {
+			  model.addObject("AWKWARD", true);
+			  model.setViewName("expenses/expensesEmployeeRedefined");
+		 }
+			return model;
 	}
 	
-    public ResponseList<ExpensesDTO> getExpensesList( ExpensesListUtilDTO elDTO,HttpServletRequest request) throws Exception
+    public ResponseList<ExpensesDTO> getExpensesList( ExpensesListUtilDTO elDTO,HttpServletRequest request) throws Exception 
     {
         
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		ResponseList<ExpensesDTO> response = new ResponseList<ExpensesDTO>(); 
+		ResponseList<ExpensesDTO> response = new ResponseList<ExpensesDTO>();
 		if(orgLoc == null){
 			orgLoc = orgLocationService.getOrgLocationsByLocationCode(elDTO.getLocationCode());
 		}
@@ -639,10 +645,12 @@ public class ExpensesRestController {
 	@RequestMapping(value = "/exportMyExpensesList")
 	public void exportMyExpensesList(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "type", required = false) String type, @RequestParam(value = "Expid", required = false) String Expid, @RequestParam(value = "ApproverType", required = false) String ApproverType) throws Exception
 	{
+		try{
 		File file = null;
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Expenses ExpenseDetails = expensesService.getExpenseById(Long.parseLong(Expid));
+		
 		if (ExpenseDetails != null) {
 			if (type.equalsIgnoreCase("PDF")) {
 				file = expensesService.exportMyExpensesToPdf(ExpenseDetails, orgLoc, loginUser, ApproverType);
@@ -667,11 +675,15 @@ public class ExpensesRestController {
 		if (file != null) {
 			file.delete();
 		}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 	
 	@RequestMapping(value = "/exportAllMyExpensesList")
 	public void exportAllMyExpensesList(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "type", required = false) String type, @RequestParam(value = "expenseStatus", required = false) String expenseStatus, @RequestParam(value = "startDate", required = false) String startDate, @RequestParam(value = "endDate", required = false) String endDate) throws Exception
 	{
+		try{
 		File file = null;
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -711,11 +723,16 @@ public class ExpensesRestController {
 		if (file != null) {
 			file.delete();
 		}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 	
+	//unusedMethod
 	@RequestMapping(value = "/myExpensesListByStage",method= RequestMethod.GET)
-	public List<Expenses> myExpensesListByStage(HttpServletRequest request, String expenseStatus) throws Exception
+	public ResponseList<Expenses> myExpensesListByStage(HttpServletRequest request, String expenseStatus) throws Exception
 	{
+		ResponseList<Expenses> responceExpenses = new ResponseList<>();
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		List<Expenses> expensesList = expensesService.getTotalMyExpensesListByMasterCandidateIdForEmployeeLogin(candidate.getMasterCandidateId().getId(), expenseStatus);
@@ -739,10 +756,11 @@ public class ExpensesRestController {
 				ex.setExpenseLocationCode(orgLoc.getLocationCode());
 			}
 		}
-		//resultJson = commonUtil.toJSON(expensesList);
-		return expensesList;
+		responceExpenses.setData(expensesList);
+		return responceExpenses;
 	}
 	
+	//unused method
 	@RequestMapping(value = "/employeeExpensesListByStage")
 	public List<ExpensesApproverHierarchy> employeeExpensesListByStage(HttpServletRequest request, String expenseStatus) throws Exception
 	{

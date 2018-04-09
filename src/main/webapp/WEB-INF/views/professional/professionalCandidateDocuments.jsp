@@ -85,79 +85,79 @@ function candDocumentsList(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateDocumentsListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-          success :function(json) {
-           
-//              			 var json = JSON.parse(data); 
-             			 
-	                	 $("#candidateDocumentsList").empty();
-	                	 var result = "";
-	                	 result = result +"<table id='candidateDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
-	                     result = result +"<thead>"; 
-	                     result = result +"  <tr>"; 
-	                     result  = result + '<th>Document Type</th>';
-	                 	 result  = result + '<th>Document</th>';
-	                 	 result  = result + '<th>Description</th>';
-	                 	 result  = result + '<th>Action</th>';
-	                     result = result +"  </tr>"; 
-	                     result = result +"</thead>";
-	                     result = result +"<tbody>"; 
-	                     
-	                     for (var i = 0; i < json.data.length; i++) { 
-	                    	 var opt = json.data[i];  
+          success :function(response) {
+        	  if (response && response.response === "INVALID_USER") {
+        		    showError(response.responseMessage);
+        		} else if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+        			$("#candidateDocumentsList").empty();
+                	var result = "";
+                	result = result +"<table id='candidateDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
+                    result = result +"<thead>"; 
+                    result = result +"  <tr>"; 
+                    result  = result + '<th>Document Type</th>';
+                 	result  = result + '<th>Document</th>';
+                 	result  = result + '<th>Description</th>';
+                 	result  = result + '<th>Action</th>';
+                    result = result +"  </tr>"; 
+                    result = result +"</thead>";
+                    result = result +"<tbody>"; 
+                     
+                    for (var i = 0; i < response.data.length; i++) {
+                    	var opt = response.data[i]; 
+                    	if(opt.isConfidential == 'N' || (opt.isConfidential == 'Y' && '${SourceLeadWeb_user.userCode}' == opt.userIdStr)) {
+	                    	result  = result + ' <tr>';
+							if(opt.documentType != null && opt.documentType != '' && opt.documentType != "undefined") {
+	    	            		if(opt.documentOtherType !=null && opt.documentOtherType !='' && opt.documentOtherType !="undefined"){
+	    	                   		result = result +"  <td><div title='"+opt.documentOtherType+"' class='tbldata-dotdot-me'>"+opt.documentOtherType+"</div></td>";
+	    	             	 	} else {
+	    	             			result = result +"  <td><div title='"+opt.documentType+"'>"+opt.documentType+"</div></td>"; 
+	    	             	 	}
+	    	             	} else {
+	    	             		result = result +"  <td><div>----</div></td>"; 
+	    	             	}
 	                    	 
-	                    	
-                    	 if(opt.isConfidential == 'N' || (opt.isConfidential == 'Y' && '${SourceLeadWeb_user.userCode}' == opt.userIdStr)){
-	                    	 result  = result + ' <tr>';
+	                    	if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined') {
+	                    		result  = result + ' <td><div> <span title="'+opt.fileName+'">'+opt.fileName+'</span><a class="fa fa-eye" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');" title="View"></a><a download class="glyphicon glyphicon-download-alt" target="_blank" download href=\"'+opt.fileURL+'\" title="Download"></a></div></td>';
+	                    	} else {
+	                    		result  = result + ' <td><div><span>----</span></div></td>';
+	                    	}
 	                    	 
-	                    	 if(opt.documentType != null && opt.documentType != '' && opt.documentType != "undefined")
-	    	             	 {
-	    	            	  if(opt.documentOtherType !=null && opt.documentOtherType !='' && opt.documentOtherType !="undefined"){
-	    	                   result = result +"  <td><div title='"+opt.documentOtherType+"' class='tbldata-dotdot-me'>"+opt.documentOtherType+"</div></td>";
-	    	             	 }else{
-	    	             		result = result +"  <td><div title='"+opt.documentType+"'>"+opt.documentType+"</div></td>"; 
-	    	             	 }
-	    	             	 }else{
-	    	             		 result = result +"  <td><div>----</div></td>"; 
-	    	             	 }
-	                    	 
-	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
-	                    	 result  = result + ' <td><div> <span title="'+opt.fileName+'">'+opt.fileName+'</span><a class="fa fa-eye" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');" title="View"></a><a download class="glyphicon glyphicon-download-alt" target="_blank" download href=\"'+opt.fileURL+'\" title="Download"></a></div></td>';
-
-	                    	 }else{
-	                    		 result  = result + ' <td><div><span>----</span></div></td>';
-	                    	 }
-	                    	 
-	                    	 if(opt.description != null && opt.description != '' && opt.description != 'undefined'){
-		                    	 result  = result + ' <td><div><span title="'+opt.description+'">'+opt.description+'</span></div></td>';
-		                    	 }else{
-		                    		 result  = result + ' <td><div><span>----</span></div></td>';
-		                    	 }
+	                    	if(opt.description != null && opt.description != '' && opt.description != 'undefined') {
+		                   		result  = result + ' <td><div><span title="'+opt.description+'">'+opt.description+'</span></div></td>';
+		                    } else {
+		                    	result  = result + ' <td><div><span>----</span></div></td>';
+		                    }
 		                    	
-		                   result = result+'<td><div class="tblicons">';
-			           		if(window.candidateStatusGlobal == 0){
+		                   	result = result+'<td><div class="tblicons">';
+			           		if(window.candidateStatusGlobal == 0) {
 			           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 				           		result = result+'<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
-			           		}else{
+			           		} else {
 			           			var docUUID = opt.documentUUID;
 			           			result = result+' <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+candidateId+',\''+docUUID+'\'); getDocument('+candidateId+', '+opt.id+');" title="Edit"></a>';
-			           			if(candidateType =="Candidates"){
-				           				result = result+'<i class="glyphicon glyphicon-trash" onclick="removeDocument('+candidateId+','+opt.id+');" title= "Remove"></i>';
-			           			}else{
-				           				result = result+'<i class="glyphicon glyphicon-trash" onclick="removeDocument('+candidateId+','+opt.id+');" title= "Remove"></i>';
+			           			if(candidateType =="Candidates") {
+				           			result = result+'<i class="glyphicon glyphicon-trash" onclick="removeDocument('+candidateId+','+opt.id+');" title= "Remove"></i>';
+			           			} else {
+				           			result = result+'<i class="glyphicon glyphicon-trash" onclick="removeDocument('+candidateId+','+opt.id+');" title= "Remove"></i>';
 			           			}
-			           			
 			           		}
 			           		result = result+'</div></td>';
-	                    	 result  = result + '</tr>';
-	                      } 
-	                     
+	                    	result  = result + '</tr>';
+                      	} 
+      				}
+                    result = result +" </tbody>";
+                    result = result +"</table>";
+                    $("#candidateDocumentsList").append(result); 
+                    documentsPagination();
+        		} else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
           }
-	                     result = result +" </tbody>";
-	                     result = result +"</table>";
-	                     $("#candidateDocumentsList").append(result); 
-	                     documentsPagination();
-          }
-          });     
+	});     
 }
 </script>
 
@@ -379,62 +379,68 @@ function getDocumentType(documentType){
      3.ajax url implementation in CandidateDocumentRestController.
 --%>
 <script type="text/javascript">
-	function storeCandidateDocument(candidateId, documentUUID){
-			var validationSettings = {
-			        errorMessagePosition : 'element',
-			        borderColorOnError : '',
-					scrollToTopOnError : true,
-					dateFormat : 'yyyy/mm/dd' 
-		         }; 
-			 if ($('#documentType_form').validate(false, validationSettings)){
-				
-				 var form = $('#documentType_form')[0];
-				var formData = new FormData(form);
-				$("#save_doc").attr("disabled", "disabled");
-         		$("#save_doc" ).addClass('button').val('Processing..');
-         		
-         		$.ajax({
-					type : "POST",
-	        	    data: formData,
-	    	        processData: false,
-	    	        contentType:false,
-					url : sourceleadUrl+"/saveCandidateDocument?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentUUID="+documentUUID,
-					success : function(result) {
-							closePopup();
-							$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
-		          			 if(result<50){
-		          			   $("#perVal").removeClass('progress-bar-success');
-		          			   $("#perVal").addClass("progress-bar-danger");
-		          			 }
-		          			 if(result>=50){
-		          				 $("#perVal").removeClass('progress-bar-danger');
-		          				 $("#perVal").addClass("progress-bar-success");
-		          			 }
-		          			 $("#disVal").empty();
-		          			$("#disVal").append(result+'%');
-							$("#popUpDiv").removeClass("edit-details-active");
-	            			$("#selector6").removeAttr("style");
-	            			$("#selector6").css({ display: "block" });
-	            			if(documentUUID != null && documentUUID !="" && documentUUID !="undefined")
-            				$("#docMsgDiv").html("Document updated");
-	            			else
-	            			$("#docMsgDiv").html("Success!! New Document added");
-	             			candDocumentsList(candidateId);
-					 		docMsgFadein();
-	            		 
-					},
-				});
-				
-					return true;
-			 }else{ 
-					return false;
-			 } 
-		}
-		$('body').on('blur', '#documentType_form', function() {
-		$("#documentType_form").showHelpOnFocus();
-		$("#documentType_form").validateOnBlur(false, validationSettings);
-	});
-		
+function storeCandidateDocument(candidateId, documentUUID) {
+	var validationSettings = {
+		errorMessagePosition : 'element',
+		borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+	}; 
+	if ($('#documentType_form').validate(false, validationSettings)){
+		var form = $('#documentType_form')[0];
+		var formData = new FormData(form);
+		$("#save_doc").attr("disabled", "disabled");
+        	$("#save_doc" ).addClass('button').val('Processing..');
+        	$.ajax({
+			type : "POST",
+        	data: formData,
+    	    processData: false,
+    	    contentType:false,
+			url : sourceleadUrl+"/saveCandidateDocument?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentUUID="+documentUUID,
+			success : function(response) {
+							if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+					    		showError(response.responseMessage);
+							} else if (response.response === "AWKWARD") {
+							    location.href = "/errorPage";
+							} else if (response.response === "SUCCESS") {
+								var result = response.object;
+								closePopup();
+								$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
+			          			if(result<50) {
+			          				$("#perVal").removeClass('progress-bar-success');
+			          			   	$("#perVal").addClass("progress-bar-danger");
+			          			}
+			          			if(result>=50){
+			          				$("#perVal").removeClass('progress-bar-danger');
+			          				$("#perVal").addClass("progress-bar-success");
+			          			}
+			          			$("#disVal").empty();
+			          			$("#disVal").append(result+'%');
+								$("#popUpDiv").removeClass("edit-details-active");
+		            			$("#selector6").removeAttr("style");
+		            			$("#selector6").css({ display: "block" });
+		            			if(documentUUID != null && documentUUID !="" && documentUUID !="undefined")
+	            					$("#docMsgDiv").html("Document updated");
+		            			else
+		            				$("#docMsgDiv").html("Success!! New Document added");
+		             			candDocumentsList(candidateId);
+						 		docMsgFadein();
+							} else if (response.indexOf('Sign In') !== -1) {
+								location.replace(sourceleadUrl);
+							} else {
+							    showError("Operation failed, please try again");
+							}
+			},
+		});
+		return true;
+	} else { 
+		return false;
+	} 
+}
+$('body').on('blur', '#documentType_form', function() {
+	$("#documentType_form").showHelpOnFocus();
+	$("#documentType_form").validateOnBlur(false, validationSettings);
+});		
 </script>
 
 <script>
@@ -457,41 +463,43 @@ function getDocument(candidateId, documentId){
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getDocument?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentId="+documentId, 	   
-   		    success: function(data) {
-        			 $("#uploadDocDiv").hide();
-        			 $("#docAddButton").hide();
-        			 $("#uploadFile").removeAttr("data-validation");
-        			 $("#docNameDiv").show();
-        			 $("#docsName").append(data.fileName);
-        			 $("#docsName").prop('title', data.fileName);
-        			 $("#docsUpdateButton").show();
-        			 if(data.documentType != null && data.documentType != "undefined" && data.documentType != ""){
-	                     $("select#docuName").val(data.documentType);
-	                    
-	                     $("select#docuName").trigger('chosen:updated');
-	                    
-	                    //here documentType is Other then documentOtherType  also display in Edit.
-	                   
-	                     if(data.documentType == 'Other'){
-		        				 if(data.documentOtherType !=null && data.documentOtherType !='' && data.documentOtherType !="undefined"){
-		        					 document.getElementById("documentTypeDiv").style.display="block";
-		        					 $("#documentOtherType").val(data.documentOtherType);
-			    	             }
-	        			 }
-
-        			 }
-        			 
-        			 $("#updates_doc").attr("onclick", "storeCandidateDocument("+data.candidateId.id+", \""+data.documentUUID+"\");");
-        			 
-        			 if(data.description != null && data.description != "undefined" && data.description != ""){
-        				 $("textarea#description").val(data.description);
-        			 }
-        			 
-        			 if(data.isConfidential == "Y"){
-        			 $("#isConfidential").attr('checked', true)
-        			 }
-        			 
-        			 
+   		    success: function(response) {
+   		    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+   		    	    showError(response.responseMessage);
+   		    	} else if (response.response === "AWKWARD") {
+   		    	    location.href = "/errorPage";
+   		    	} else if (response.response === "SUCCESS") {
+   		    		var data = response.object;
+   		    		$("#uploadDocDiv").hide();
+       			 	$("#docAddButton").hide();
+	       			$("#uploadFile").removeAttr("data-validation");
+	       			$("#docNameDiv").show();
+	       			$("#docsName").append(data.fileName);
+	       			$("#docsName").prop('title', data.fileName);
+	       			$("#docsUpdateButton").show();
+	       			if(data.documentType != null && data.documentType != "undefined" && data.documentType != "") {
+		            	$("select#docuName").val(data.documentType);
+		                $("select#docuName").trigger('chosen:updated');
+		                //here documentType is Other then documentOtherType  also display in Edit.
+		                if(data.documentType == 'Other') {
+			        		if(data.documentOtherType !=null && data.documentOtherType !='' && data.documentOtherType !="undefined") {
+			        			document.getElementById("documentTypeDiv").style.display="block";
+			        			$("#documentOtherType").val(data.documentOtherType);
+				    		}
+		        		}
+	       			}
+	       			$("#updates_doc").attr("onclick", "storeCandidateDocument("+data.candidateId.id+", \""+data.documentUUID+"\");");
+	       			if(data.description != null && data.description != "undefined" && data.description != "") {
+	       				$("textarea#description").val(data.description);
+	       			}
+	       			if(data.isConfidential == "Y") {
+	       				$("#isConfidential").attr('checked', true)
+	       			}   		    		
+   		    	} else if (response.indexOf('Sign In') !== -1) {
+   		    		location.replace(sourceleadUrl);
+   		    	} else {
+   		    	    showError("Operation failed, please try again");
+   		    	}
    		    }
 	     });
 }
@@ -536,27 +544,38 @@ function deleteDocument(candidateId, documentId){
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateDoc?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&documentId="+documentId, 	   
-   		    success: function(data) {
-   		    	if(data != null && data != 'undefined' && data != ""){
+   		    success: function(response) {
+   		    	if (response && response.response === "INVALID_DATA") {
+   		    	    showError(response.responseMessage);
+   		    	} else if (response && response.response === "INVALID_USER") {
+   		    	    showError(response.responseMessage);
+   		    	} else if (response.response === "AWKWARD") {
+   		    	    location.href = "/errorPage";
+   		    	} else if (response.response === "SUCCESS") {
+   		    		var data = response.object;
    		    		$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
-        			 if(data<50){
-        			  /* $("#perVal").removeClass("progress-bar-success"); */
-        			   $("#perVal").find('progress-bar-success').remove();
-        			   $("#perVal").addClass("progress-bar-danger");
-        			 }
-        			 if(data>=50){
-        				 $("#perVal").find('progress-bar-danger').remove();
-        				 $("#perVal").addClass("progress-bar-success");
-        			 }
-        			 $("#disVal").empty();
-        			$("#disVal").append(data+'%');
-        			 $("#selector6").removeAttr("style");
-         			 $("#selector6").css({ display: "block" });
-         			 $("#docMsgDiv").html("Document deleted");
-        			 $("#popUpDiv").removeClass("edit-details-active");
-        			 $("#remove_user_pop_documents, .project_inn_mask").fadeOut();
-        			 candDocumentsList(candidateId);
-        		     docMsgFadein();
+       			 if(data<50){
+       			  /* $("#perVal").removeClass("progress-bar-success"); */
+       			   $("#perVal").find('progress-bar-success').remove();
+       			   $("#perVal").addClass("progress-bar-danger");
+       			 }
+       			 if(data>=50){
+       				 $("#perVal").find('progress-bar-danger').remove();
+       				 $("#perVal").addClass("progress-bar-success");
+       			 }
+       			 $("#disVal").empty();
+       			$("#disVal").append(data+'%');
+       			 $("#selector6").removeAttr("style");
+        			 $("#selector6").css({ display: "block" });
+        			 $("#docMsgDiv").html("Document deleted");
+       			 $("#popUpDiv").removeClass("edit-details-active");
+       			 $("#remove_user_pop_documents, .project_inn_mask").fadeOut();
+       			 candDocumentsList(candidateId);
+       		     docMsgFadein();
+   		    	} else if (response.indexOf('Sign In') !== -1) {
+   		    		location.replace(sourceleadUrl);
+   		    	} else {
+   		    	    showError("Operation failed, please try again");
    		    	}
    		    },
 	     });
@@ -595,17 +614,24 @@ function refreshDocList(candidateId){
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateDocName?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&name="+name, 
-		        success: function(data) {
-		        	if(data == true){
-		        		  $('#nameDocIdDiv').find('p.jquery_form_error_message').remove();
-						   $("#docuName").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
-						  $("#save_doc").attr('disabled','disabled');
-						  $("#updates_doc").attr('disabled','disabled');
-		        	}
-		        	else{
-		        		 $('#nameDocIdDiv').removeAttr( "record-exist record-exist-errormsg");
-		        		 $('#nameDocIdDiv').find('p.jquery_form_error_message').remove(); 
-                         $("#save_doc").removeAttr("disabled");
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		if(response.object == true) {
+			        		  $('#nameDocIdDiv').find('p.jquery_form_error_message').remove();
+							  $("#docuName").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
+							  $("#save_doc").attr('disabled','disabled');
+							  $("#updates_doc").attr('disabled','disabled');
+			        	} else{
+			        		 $('#nameDocIdDiv').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#nameDocIdDiv').find('p.jquery_form_error_message').remove(); 
+	                         $("#save_doc").removeAttr("disabled");
+			        	}
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
 		        	}
 		        },
 		    });

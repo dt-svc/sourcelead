@@ -23,6 +23,8 @@ public class UserRoleDTO extends SearchDTO implements Serializable  {
 	private Integer receivedCount;
 	private Integer connectedCount;
 	private String connectionUUID;
+	private String userType;
+	private String noOfActivites;
 	private String orgClients;
 	private String orgManagers;
 	private String orgTeams;
@@ -143,6 +145,22 @@ public class UserRoleDTO extends SearchDTO implements Serializable  {
 	public void setConnectionUUID(String connectionUUID) {
 		this.connectionUUID = connectionUUID;
 	}
+	public String getUserType()
+	{
+		return userType;
+	}
+	public void setUserType(String userType)
+	{
+		this.userType = userType;
+	}
+	public String getNoOfActivites()
+	{
+		return noOfActivites;
+	}
+	public void setNoOfActivites(String noOfActivites)
+	{
+		this.noOfActivites = noOfActivites;
+	}
 	public String getOrgClients() {
 		return orgClients;
 	}
@@ -167,4 +185,5 @@ public class UserRoleDTO extends SearchDTO implements Serializable  {
 	public void setOrgDepartments(String orgDepartments) {
 		this.orgDepartments = orgDepartments;
 	}
+
 }

@@ -9,6 +9,9 @@
  
  <script type="text/javascript">
 		window.onload = function () {
+			 if('${AWKWARD}' == "true"){
+				window.location.href =  "/errorPage";
+			}else{ 
 			var entrySize = '${expenses.expenseEntry.size()}';
 			if(entrySize>0){
 				$('#maxRecCount').val('${2*expenses.expenseEntry.size()+1}');
@@ -18,9 +21,16 @@
 			}
 			calculateTotalamount();
 			getClientBasedOnSelectedProject();
+			 }
 		 };
 </script>
-
+ <script>
+$(document).ready(function(){
+	if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	 }
+});
+</script>
 <div class="wraper"> 
 <!-- View Content Area Starts-->
 <c:if test = "${type == 'view'}">
@@ -117,10 +127,10 @@
 	              <div class="col-md-9" >
 						<div class="row">
 						  <div class="col-lg-6 evDaPa" id="dateDiv">
-							  <input type="text" autocomplete="off" class="form-control calendar" data-validation="required" value="${expenses.startDate}" field-name="Start Date" name="startDate" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
+							  <input type="text" autocomplete="off" class="form-control calendar" data-validation="required" value="${expenses.startDate}" field-name="Start Date" name="startDate" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly" onclick="expensesDatePickerStartDate('${expenses.startDate}','${expenses.endDate}');">
 						  </div>
 						  <div class="col-lg-6" id="errEnd">
-							  <input type="text" autocomplete="off" class="form-control calendar" data-validation="required" value="${expenses.endDate}" name="endDate"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">						 
+							  <input type="text" autocomplete="off" class="form-control calendar" data-validation="required" value="${expenses.endDate}" name="endDate"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly" onclick="expensesDatePickerStartDate('${expenses.startDate}','${expenses.endDate}');">						 
 						  </div>					  
 						</div>
 	              </div>

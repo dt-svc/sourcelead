@@ -77,6 +77,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchyHistory;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
@@ -1973,7 +1974,8 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 					if(StringUtils.isNotBlank(loginUserRole) && (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN"))) {
 						ProjectApproverHierarchy approverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(loginUser.getId(), projectClients.getId());
 						ProjectMembers pm = projectMembersService.getProjectMembersByCandidateIdAndProjectClientId(candidateId, projectClients.getId());
-						if(approverHierarchy != null || pm != null) {
+						Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+						if(approverHierarchy != null || pm != null || projects.getCreatedBy().equalsIgnoreCase(loginUser.getUserCode())) {
 							flag = true;
 						}
 					}else {
@@ -2129,5 +2131,38 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		 emailScenerioUtil.sendNotification(actionLink, loginUser,user, projectApproverHierarchy.getProjectId().getOrgLocationsId(), notificationScenario,new HashMap<String,String>());
 		 }
 		}
+	
+	public static SubmissionApproverHierarchyHistory getSubmissionApproverHierarchyHistory(SubmissionApproverHierarchy sah) {
+		SubmissionApproverHierarchyHistory sahh = null;
+		if(sah != null) {
+			sahh = new SubmissionApproverHierarchyHistory();
+			sahh.setHierarchyId(sah.getHierarchyId());
+			sahh.setSubmissionId(sah.getSubmissionId());
+			sahh.setSubmissionApproverHierarchyId(sah);
+			sahh.setSubmissionStatus(sah.getSubmissionStatus());
+			sahh.setSubmissionApprovalStatus(sah.getSubmissionApprovalStatus());
+			sahh.setInvoiceStatus(sah.getInvoiceStatus());
+			sahh.setBillingStatus(sah.getBillingStatus());
+			sahh.setInvoiceDate(sah.getInvoiceDate());
+			sahh.setBillDate(sah.getBillDate());
+			sahh.setInvoiceId(sah.getInvoiceId());
+			sahh.setBillId(sah.getBillId());
+			sahh.setFrequencyStartDate(sah.getFrequencyStartDate());
+			sahh.setFrequencyEndDate(sah.getFrequencyEndDate());
+			sahh.setMechanismType(sah.getMechanismType());
+			sahh.setRejectedReason(sah.getRejectedReason());
+			sahh.setActionPerformedBy(sah.getActionPerformedBy());
+			sahh.setActionPerformedByOrgLocationId(sah.getActionPerformedByOrgLocationId());
+			sahh.setStatus(sah.getStatus());
+			sahh.setReopenedUser(sah.getReopenedUser());
+			sahh.setReopenReason(sah.getReopenReason());
+			sahh.setReopenRejectedReason(sah.getReopenRejectedReason());
+			sahh.setCreatedDate(sah.getCreatedDate());
+			sahh.setCreatedBy(sah.getCreatedBy());
+			sahh.setUpdatedDate(sah.getUpdatedDate());
+			sahh.setUpdatedBy(sah.getUpdatedBy());
+		}
+		return sahh;
+	}
 		
 }

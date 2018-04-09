@@ -3,6 +3,12 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
+<script src="/resources/amcharts/amcharts.js"></script>
+<script src="/resources/amcharts/serial.js"></script>
+<script src="/resources/amcharts/plugins/export/export.min.js"></script>
+<link rel="stylesheet" href="/resources/amcharts/plugins/export/export.css" type="text/css" media="all" />
+
+
 
 <script type="text/javascript">
 $(document).ready(function(){
@@ -66,7 +72,7 @@ $(document).ready(function(){
         
         
         <div class="col-md-2">
-        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick="getApplicantBySourceChart();">Customize</button>
+        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick="getApplicantBySourceChart();">Run</button>
 		</div>
 		
 		
@@ -101,11 +107,51 @@ function getCustomDates(){
 		 document.getElementById("customSearch").style.display="block";
 		 $("#customize_btn").attr("disabled", "disabled");
 		 
+			 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+			  var finalDateFormatProjectSave = '';
+			  if(locationDate.match("yyyy-MM-dd")){
+				  finalDateFormatProjectSave = 'yy-mm-dd';
+			  }if(locationDate.match("dd-MM-yyyy")){
+				  finalDateFormatProjectSave = 'dd-mm-yy'; 
+			  }if(locationDate.match("MM-dd-yyyy")){
+				  finalDateFormatProjectSave = 'mm-dd-yy'; 
+			  }if(locationDate.match("yyyy-dd-MM")){
+				  finalDateFormatProjectSave = 'yy-dd-mm'; 
+			  }
+	    
+		  $('#fromDate').datepicker({
+				dateFormat : finalDateFormatProjectSave,
+				changeMonth: true,
+				changeYear: true, 
+				onSelect : function(selected) {
+					var dt = $(this).datepicker('getDate', '+1d');
+					dt.setDate(dt.getDate());
+					removeErrMsg();
+					$("#toDate").datepicker("option", "minDate", dt);
+				}
+			});
+		  
+		  $('#toDate').datepicker({
+				dateFormat : finalDateFormatProjectSave,
+				changeMonth: true,
+				changeYear: true, 
+				onSelect : function(selected) {
+					var dt = $(this).datepicker('getDate', '-1d');
+					dt.setDate(dt.getDate());
+					removeErrMsgTo();
+					$("#fromDate").datepicker("option", "maxDate", dt);
+				}
+			});
+		 
 	 }else{
 		 document.getElementById("customSearch").style.display="none";
 		 $("#customize_btn").removeAttr("disabled");
+		 $("#fromDate").datepicker("destroy");
+		 $("#toDate").datepicker("destroy");
 		 $("#fromDate").val('');
 		 $("#toDate").val('');
+		 document.getElementById("fromDateDiv").style.display="none";
+		  document.getElementById("toDateDiv").style.display="none";
 	 }
 }
 
@@ -488,40 +534,12 @@ function getCustomDates(){
  }
  </script>
  <script>
-  $( function() {
-		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatProjectSave = '';
-		  if(locationDate.match("yyyy-MM-dd")){
-			  finalDateFormatProjectSave = 'yy-mm-dd';
-		  }if(locationDate.match("dd-MM-yyyy")){
-			  finalDateFormatProjectSave = 'dd-mm-yy'; 
-		  }if(locationDate.match("MM-dd-yyyy")){
-			  finalDateFormatProjectSave = 'mm-dd-yy'; 
-		  }if(locationDate.match("yyyy-dd-MM")){
-			  finalDateFormatProjectSave = 'yy-dd-mm'; 
-		  }
-    
-	  $('#fromDate').datepicker({
-			dateFormat : finalDateFormatProjectSave,
-			changeMonth: true,
-			changeYear: true, 
-			onSelect : function(selected) {
-				var dt = $(this).datepicker('getDate', '+1d');
-				dt.setDate(dt.getDate());
-				$("#toDate").datepicker("option", "minDate", dt);
-			}
-		});
+ function removeErrMsg(){
+	  document.getElementById("fromDateDiv").style.display="none";
+ }
+ function removeErrMsgTo(){
+	  document.getElementById("toDateDiv").style.display="none";
 	  
-	  $('#toDate').datepicker({
-			dateFormat : finalDateFormatProjectSave,
-			changeMonth: true,
-			changeYear: true, 
-			onSelect : function(selected) {
-				var dt = $(this).datepicker('getDate', '-1d');
-				dt.setDate(dt.getDate());
-				$("#fromDate").datepicker("option", "maxDate", dt);
-			}
-		});
-  } );
+ }
   </script>
  
