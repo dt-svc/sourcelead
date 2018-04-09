@@ -61,7 +61,7 @@ function requirementHistoryList(candidateId){
         	 if (response.response === "AWKWARD") {
         		    location.href = "/errorPage";
         		} else if (response.response === "SUCCESS") {
-        			var json = JSON.parse(response.object);
+        			var json = response.data;
                	 $("#requirementHistoryDiv").empty();
                	 var result = "";
             	    result = result  +'	      <table id="requirementHistoryPagination" class="display" cellspacing="0" width="100%">';
@@ -176,8 +176,7 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
         	if (response.response === "AWKWARD") {
         	    location.href = "/errorPage";
         	} else if (response.response === "SUCCESS") {
-        		var json = JSON.parse(response.object);
-            	
+        		var json = response.data;
             	var result = "";
          		result = result  +'	<div class="reqPopInn reqHistTitle">';
          		result = result  +'		<div class="reqClose clearfix">';
@@ -185,7 +184,6 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
          		result = result  +'		</div>';
          		result = result  +'		<h3 title="'+positionType+'"><a href="'+sourceleadUrl+'/requirementSummary?requirementUUID='+requirementUUID+'">'+positionType+'</a><span onclick="getRateListDiv('+candidateId+',\''+submissionId+'\');">Rate</span><i class="ratepop" id="ratepop"></i><div class="clearfix"></div></h3>';
          		result = result  +'		<ul>';
-         		   
          		    var report2 = json[0];
          		    if(report2.requirementOfferHistoryList != null && report2.requirementOfferHistoryList != "undefined" && report2.requirementOfferHistoryList.length > 0){
          			   for(var k=0;k<report2.requirementOfferHistoryList.length;k++){

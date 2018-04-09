@@ -772,7 +772,7 @@ function discordApplicant(){
 	    	if (response.response === "AWKWARD") {
 	    	    location.href = "/errorPage";
 	    	} else if (response.response === "SUCCESS") {
-	    		if(response.object == "true"){
+	    		if(response.object === true){
 		    		isCoolingOffAlert();
 		    		return true;
 		    	} else {
@@ -844,7 +844,7 @@ function discordApplicant(){
 			        	if (response.response === "AWKWARD") {
 			        	    location.href = "/errorPage";
 			        	} else if (response.response === "SUCCESS") {
-			        		var json = JSON.parse(response.object);
+			        		var json = response.data;
 				        	var output = "";
 				        	output = output + "<option value=''>-- Select "+candidateType+" --</option>"; 
 				        	for (var i=0; i<json.length; i++) {
@@ -2399,7 +2399,7 @@ function SubmissionUploadFileDoc1(){
 						if (response.response === "AWKWARD") {
 						    location.href = "/errorPage";
 						} else if (response.response === "SUCCESS") {
-							var json = JSON.parse(response.object);
+							var json = response.object;
 							var name = json.name;
 							var firstName = '';
 							var lastName = '';
