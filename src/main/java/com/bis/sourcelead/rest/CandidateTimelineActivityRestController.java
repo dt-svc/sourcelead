@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.CandidateTimelineActivity;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateService;
@@ -51,10 +52,10 @@ public class CandidateTimelineActivityRestController {
 	private CandidateTimelineActivityService candidateTimelineActivityService;
 
 	@RequestMapping(value = "/getCandidateActivitiesByCandidateIdAndLocationCode", method = RequestMethod.POST)
-	public @ResponseBody Response<String> getCandidateActivitiesByCandidateIdAndLocationCode(
+	public @ResponseBody ResponseList<CandidateTimelineActivity> getCandidateActivitiesByCandidateIdAndLocationCode(
 			@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "locationId", required = false) Long locationId) throws Exception {
-		Response<String> response = new Response<>();
+		ResponseList<CandidateTimelineActivity> response = new ResponseList<>();
 		try {
 			logger.debug("Calling getCandidateTimelineActivities mrthod to fetch Candidate Activities");
 			List<CandidateTimelineActivity> activitiesList = candidateTimelineActivityService.getCandidateTimelineActivities(candidateId,
@@ -102,7 +103,7 @@ public class CandidateTimelineActivityRestController {
 
 				activity.setCreatedUserId(activity.getCreatedUser().getId());
 			}
-			response.setObject(toJSON(activitiesList));
+			response.setData(activitiesList);
 			response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());
 		} catch (Exception e) {
