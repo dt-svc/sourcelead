@@ -667,32 +667,18 @@ function inlineEditDescription(taskId){
 	         contentType:false, 
 	         url : sourceleadUrl+"/ProjectTasks/updateTaskDescription?${_csrf.parameterName}=${_csrf.token}&id="+taskId+"&loginUserId="+userId,
 			  success : function(data) {
-				/*   $("#jobAlert2").removeAttr("style");
+				   $("#jobAlert2").removeAttr("style");
 	    			$("#jobAlert2").css({ display: "block" });
 					$("#editJobAlertMsgDiv").html("Successfully Update Description");
 						editAlertMsgFadeinFunction();
-						getTaskActivities(); */
+						getTaskActivities(); 
 			}, 
 		});
 		return true;
 	}else {
 		return false;
 	} 
-	 
-	/* taskdescription_form
-	var desc = $(".Editor-editor").html(); 
-	var userId = '${SourceLeadWeb_userId}';
-	 $.ajax({
-		   	type: "POST",
-		    url: sourceleadUrl+"/ProjectTasks/updateTaskDescription?${_csrf.parameterName}=${_csrf.token}&taskDescription="+desc+"&taskId="+taskId+"&userId="+userId,    
-		    success: function(data) {
-		    	$("#jobAlert2").removeAttr("style");
-    			$("#jobAlert2").css({ display: "block" });
-				$("#editJobAlertMsgDiv").html("Successfully Update Description");
-					editAlertMsgFadeinFunction();
-					getTaskActivities();
-		    }
-	 });  */
+	
 }
 function inlineEditTaskPercentage(taskId){
 	var percentageId = $("#taskPercentageId").val();
