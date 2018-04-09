@@ -967,6 +967,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 			 orgLocationDTO.setCity(orgLocations.getCity());
 			 orgLocationDTO.setOrgLocationAddress(orgLocations.getOrgLocationAddress());
 			 orgLocationDTO.setWebsite(orgLocations.getWebsite());
+			 orgLocationDTO.setDateFormat(orgLocations.getDateFormat());
 			 if(useRole.getIsPrimary().equals(1)){
 				 orgLocationDTO.setIsPrimaryOrg(Constants.YES);
 			 }else{

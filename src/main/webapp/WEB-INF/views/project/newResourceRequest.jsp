@@ -149,7 +149,7 @@
 			<div class="col-xs-12 col-sm-12 myForm noPad clearfix">
 				<div class="pull-right mr">
 					<input type='button' id='addResourceRequestButtonREPLACEROWID' class="btn btn-primary btn-sm mr10" onclick='addNewResourceRequestTbl(REPLACEROWID);' value='Add'/> 
-				    <input type='button' id='cancelResourceRequestButtonREPLACEROWID' class="btn btn-default btn-sm cancel-btn" onclick="removeRow(REPLACEROWID);" value='Cancel'/>
+<!-- 				    <input type='button' id='cancelResourceRequestButtonREPLACEROWID' class="btn btn-default btn-sm cancel-btn" onclick="removeRow(REPLACEROWID);" value='Cancel'/> -->
 				</div>
 			</div>
 			<div class="clearfix"></div>
@@ -756,13 +756,10 @@ function totalEstimatedBudget(rowId){
 
 //Remove Row 
 function removeRow(rowId){
-	
+	var cancelValue = $("#cancelResourceRequestButton"+rowId+"");
 	//subtract row Total Resources
 	var totalResources = parseInt($("input[name = 'totalResourcesValue']").val());
 	var noOfResources =  $('#noOfResources'+rowId).val();
-/* 	alert("totalResources>>>> "+totalResources)
-	alert("noOfResources >>>> "+noOfResources) */
-
 	var resourceTotal = totalResources - noOfResources; 
 	$("#totalResourcesId").val(resourceTotal);
 	

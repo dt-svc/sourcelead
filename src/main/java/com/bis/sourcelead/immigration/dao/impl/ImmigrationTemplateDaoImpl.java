@@ -225,6 +225,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
         if (templateListDTO != null) {
             if (countlist != null && !countlist.isEmpty()) {
                 totalCount = countlist.iterator().next().intValue();
+                filterCount = totalCount;
             }
         }
         responseList.setRecordsTotal(totalCount);

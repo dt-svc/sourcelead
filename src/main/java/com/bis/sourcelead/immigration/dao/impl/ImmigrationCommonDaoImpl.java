@@ -393,7 +393,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return residenceObj;
 	}
 	
-	  @Override
+	  	@Override
 			@Transactional(rollbackFor = { Exception.class })
 			public CandidatePassportVisa getCandidatePassportVisaDetailsById(Long id) {
 				System.out.println("get CandidateFamilyDetails id ---> "+id);
@@ -432,6 +432,36 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return immigrationCandidateDocuments;
 }
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ImmigrationCandidateForms getImmigrationCandidateFormById(Long id) {
+		ImmigrationCandidateForms formObj= null;
+        try {
+			Session session = this.sessionFactory.getCurrentSession();
+			formObj = (ImmigrationCandidateForms)session.get(ImmigrationCandidateForms.class,id);
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing getting record -->"+e.getMessage());
+			e.printStackTrace();
+		}
+		return formObj;
+	}
+	
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public String deletetImmigrationCandidateFormsById(Long id) {
+	        try {
+				Session session = this.sessionFactory.getCurrentSession();
+				ImmigrationCandidateForms forms = (ImmigrationCandidateForms)session.load(ImmigrationCandidateForms.class,id);
+				session.delete(forms);
+				session.flush();
+			} catch (HibernateException e) {
+				logger.error("SQL Exception occured while doing delete -->"+e.getMessage());
+				e.printStackTrace();
+			}
+		return "success";
+	}
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -562,8 +592,15 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 
         StringBuilder query1 = new StringBuilder("");
         if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
-            query1.append(" and ((immView.name like '%" + searchValue + "%' )");
-            query1.append(" or (immView.description like '%" + searchValue + "%' ))");
+            query1.append(" and ((immView.email like '%" + searchValue + "%' )");
+            query1.append(" or (immView.firstName like '%" + searchValue + "%' )");
+            query1.append(" or (immView.id like '%" + searchValue + "%' )");
+            query1.append(" or (immView.currUscisStatus like '%" + searchValue + "%' )");
+            query1.append(" or (immView.petitionType like '%" + searchValue + "%' )");
+            query1.append(" or (immView.orgName like '%" + searchValue + "%' )");
+           // query1.append(" or (immView.openDate like '%" + searchValue + "%' )");
+            query1.append(" or (immView.phone like '%" + searchValue + "%' ))");
+            
             //query1.append(" or (tempView.status like '%" + searchValue + "%' )");
         }
         // usertList sorting order
@@ -571,7 +608,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         if (StringUtils.isNotBlank(immigrationListDTO.getSortColumn())) {
             sortingQry = " order by immView." + immigrationListDTO.getSortColumn() + " " + immigrationListDTO.getSortOrder();
         } else {
-            sortingQry = " order by immView.name ";
+            sortingQry = " order by immView.updatedDate desc ";
         }
 
         String listQuery = "from ImmigrationListView immView  where immView.orgLocationId=:orgLocationId " + (immigrationListDTO.getStatus() >= 0 ? "and immView.status =" + immigrationListDTO.getStatus() + " " : " ");
@@ -584,6 +621,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         if (immigrationListDTO != null) {
             if (countlist != null && !countlist.isEmpty()) {
                 totalCount = countlist.iterator().next().intValue();
+                filterCount = totalCount;
+                
             }
         }
         responseList.setRecordsTotal(totalCount);

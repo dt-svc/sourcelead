@@ -63,6 +63,10 @@ public interface ImmigrationCommonDao {
 	 
 	 Immigration  getImmigrationById(Long id);
 	 
+	 ImmigrationCandidateForms getImmigrationCandidateFormById(Long id);
+		 
+	 public String deletetImmigrationCandidateFormsById(Long id);
+	 
 	 public String deletetImmigrationCandidateDocsById(Long id);
 	 
 	 public ImmigrationCandidateDocuments getImmigrationCandidateDocumentById(Long id);

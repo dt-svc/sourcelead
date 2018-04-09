@@ -706,7 +706,7 @@ function closeCertificatePopup(){
 						} else {
 						    showError("Operation failed, please try again");
 						}
-					},
+					}
 				});
 	}
 </script>

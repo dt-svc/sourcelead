@@ -1,10 +1,6 @@
 package com.bis.sourcelead.rest;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Writer;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -20,12 +16,12 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -35,6 +31,8 @@ import org.elasticsearch.search.SearchHit;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -56,6 +54,7 @@ import com.bis.sourcelead.dto.CrowdSourcingUserBankAccountsDTO;
 import com.bis.sourcelead.dto.ReferContactsDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementReferDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.index.CandidateIndex;
@@ -75,9 +74,9 @@ import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.SavedJobs;
-import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContactsGroupService;
 import com.bis.sourcelead.service.CrowdSourcingUserBankAccountsService;
@@ -105,6 +104,8 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 @RestController
 @RequestMapping("/app")
 public class CrowdSourcingRequirementsRestController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(CrowdSourcingRequirementsRestController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -1450,36 +1451,39 @@ public class CrowdSourcingRequirementsRestController {
 	 
 	 
 	 
-	 @RequestMapping(value = "/storeProfessionalParseCandidate", method = RequestMethod.POST)
-		public @ResponseBody String storeCandidate(CandidateDTO candidateDTO,
+	    @RequestMapping(value = "/storeProfessionalParseCandidate", method = RequestMethod.POST)
+		public @ResponseBody Response<String> storeCandidate(CandidateDTO candidateDTO,
 				@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
 			
-		 if(Validator.validate(candidateDTO)) {
-			 candidateDTO.setStaticPath(staticPath);
-				//FileUploadUtil.fillUploadedFileInfo(candidateDTO, candidateDTO.getFileInfo());
-				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				candidateDTO.setDateFormat(orgLocation.getDateFormat());
-				Candidate candidate = candidateService.storeProfessionalParseCandidate(candidateDTO,orgLocation,user,candidateId);
-			} else
-				return "DataMissing";
-			
-			return "success";
-			
-			
-			
-			/*if(candidate.getCandidateType().equalsIgnoreCase("Candidate")){
-				StringBuilder candidateCreateMsg = new StringBuilder();
-			    SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", candidateCreateMsg.append("Success !! ").append(candidate.getFirstName()).append(" Candidate Added").toString());
-			}
-			else{
-				StringBuilder consultantCreateMsg = new StringBuilder();
-				SourceLeadSessionManager.setSessionAttribute(request, "consultantCreateMsg", consultantCreateMsg.append("Success !! ").append(candidate.getFirstName()).append(" Consultant Added").toString());
-			}
-			return "success";*/
-		}
-	 
-	 
+
+		 Response<String> response = new Response<>(); 
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 if (user != null) {
+			 try {
+					if (Validator.validate(candidateDTO)) {
+						 candidateDTO.setStaticPath(staticPath);
+							//FileUploadUtil.fillUploadedFileInfo(candidateDTO, candidateDTO.getFileInfo());
+							OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+							Candidate candidate = candidateService.storeProfessionalParseCandidate(candidateDTO,orgLocation,user,candidateId);
+							response.setResponse(Result.SUCCESS.name());
+							response.setResponseMessage(Result.SUCCESS.getValue());
+					} else {
+						response.setObject("DataMissing");
+						response.setResponse(Result.INVALID_DATA.name());
+						response.setResponseMessage(Result.INVALID_DATA.getValue());
+					}
+				} catch (Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+				}
+				} else{
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+				return response; 
+		 }
+
 	 
 		@RequestMapping(value = "/getRefercontactList", method = RequestMethod.GET)
 		public  ResponseList<ReferContactsDTO> getRefercontactList(ReferContactsDTO referContactsDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
