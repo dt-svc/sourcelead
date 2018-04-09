@@ -67,6 +67,26 @@ public class TimeSheetSubmissionDTO implements Serializable{
 	private String responseStatus;
 	
 	private String reopenUserId;
+	
+	private float previousMonthTotalHours;
+	
+	private float previousMonthBillableHours;
+	
+	private float previousMonthNonBillableHours;
+	
+	private float projectToDateTotalHours;
+	
+	private float projectToDateBillableHours;
+	
+	private float projectToDateNonBillableHours;
+	
+	private float currentMonthTotalHours;
+	
+	private float currentMonthBillableHours;
+	
+	private float currentMonthNonBillableHours;
+	
+	private String currentMonthName;
 
 	public Long getId() {
 		return id;
@@ -292,4 +312,85 @@ public class TimeSheetSubmissionDTO implements Serializable{
 		this.entriesMap = entriesMap;
 	}
 
+	public float getPreviousMonthTotalHours() {
+		return previousMonthTotalHours;
+	}
+
+	public void setPreviousMonthTotalHours(float previousMonthTotalHours) {
+		this.previousMonthTotalHours = previousMonthTotalHours;
+	}
+
+	public float getPreviousMonthBillableHours() {
+		return previousMonthBillableHours;
+	}
+
+	public void setPreviousMonthBillableHours(float previousMonthBillableHours) {
+		this.previousMonthBillableHours = previousMonthBillableHours;
+	}
+
+	public float getPreviousMonthNonBillableHours() {
+		return previousMonthNonBillableHours;
+	}
+
+	public void setPreviousMonthNonBillableHours(float previousMonthNonBillableHours) {
+		this.previousMonthNonBillableHours = previousMonthNonBillableHours;
+	}
+
+	public float getProjectToDateTotalHours() {
+		return projectToDateTotalHours;
+	}
+
+	public void setProjectToDateTotalHours(float projectToDateTotalHours) {
+		this.projectToDateTotalHours = projectToDateTotalHours;
+	}
+
+	public float getProjectToDateBillableHours() {
+		return projectToDateBillableHours;
+	}
+
+	public void setProjectToDateBillableHours(float projectToDateBillableHours) {
+		this.projectToDateBillableHours = projectToDateBillableHours;
+	}
+
+	public float getProjectToDateNonBillableHours() {
+		return projectToDateNonBillableHours;
+	}
+
+	public void setProjectToDateNonBillableHours(float projectToDateNonBillableHours) {
+		this.projectToDateNonBillableHours = projectToDateNonBillableHours;
+	}
+
+	public float getCurrentMonthTotalHours() {
+		return currentMonthTotalHours;
+	}
+
+	public void setCurrentMonthTotalHours(float currentMonthTotalHours) {
+		this.currentMonthTotalHours = currentMonthTotalHours;
+	}
+
+	public float getCurrentMonthBillableHours() {
+		return currentMonthBillableHours;
+	}
+
+	public void setCurrentMonthBillableHours(float currentMonthBillableHours) {
+		this.currentMonthBillableHours = currentMonthBillableHours;
+	}
+
+	public float getCurrentMonthNonBillableHours() {
+		return currentMonthNonBillableHours;
+	}
+
+	public void setCurrentMonthNonBillableHours(float currentMonthNonBillableHours) {
+		this.currentMonthNonBillableHours = currentMonthNonBillableHours;
+	}
+
+	public String getCurrentMonthName() {
+		return currentMonthName;
+	}
+
+	public void setCurrentMonthName(String currentMonthName) {
+		this.currentMonthName = currentMonthName;
+	}
+	
+	
 }

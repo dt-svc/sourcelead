@@ -267,8 +267,18 @@ function deleteDocument(documentUUID){
 	 $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/deleteOnboardCandidateUploadedDocument?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
-	        success: function(result) {
-	        	location.replace(sourceleadUrl+"/onboardingCandidateSetp3");  
+	        success: function(response) {
+	        	if (response && response.response === "INVALID_DATA") {
+	        	    showError(response.responseMessage);
+	        	} else if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+	        		location.replace(sourceleadUrl+"/onboardingCandidateSetp3");  
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
 	        },
 	    });
 }
@@ -282,8 +292,16 @@ function acceptPolicy(documentUUID){
 	 $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/acceptCandidatePolicyDocument?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
-	        success: function(result) {
-	        	$("#loading").removeAttr("style"); 
+	        success: function(response) {
+	        	if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+	        		$("#loading").removeAttr("style"); 
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
 	        },
 	    });
 }
@@ -304,19 +322,26 @@ function saveOnboardingCandidateDocs(saveType){
 	  if ($('#onboardCandidateDocs_form').validate(false, validationSettings)){ 
 		 var formData = getFormData1("onboardCandidateDocs_form");
 	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.ajax({
+	   $.ajax({
 	        type : "POST",
 		      data: formData,
 	          processData: false,
 	          contentType:false,
 	    	  url: sourceleadUrl+"/storeOnboardingCandidateDocsStep3?${_csrf.parameterName}=${_csrf.token}",		
-		      success :function(result) {
-		    	  location.replace(sourceleadUrl+"/onboardingCandidateStep4");  
-	      }
-	    	  
+		      success :function(response) {
+		    	  if (response.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    		} else if (response.response === "SUCCESS") {
+		    			 location.replace(sourceleadUrl+"/onboardingCandidateStep4");  
+		    		} else if (response.indexOf('Sign In') !== -1) {
+		    			location.replace(sourceleadUrl);
+		    		} else {
+		    		    showError("Operation failed, please try again");
+		    		}
+	      	}
 	  });
 		return true;
-	  }else{
+	  } else {
 		  return false;
 	  }
 }

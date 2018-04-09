@@ -1,1 +1,2 @@
-CALL sourcelead.AlterTableAddColumn ('sourcelead','ASSET','MAC_ADDRESS','VARCHAR(50) NULL AFTER `MEMRORY`');
+CALL AlterTableAddColumn ('sourcelead','ASSET','MAC_ADDRESS','VARCHAR(50) NULL AFTER `MEMRORY`');
+

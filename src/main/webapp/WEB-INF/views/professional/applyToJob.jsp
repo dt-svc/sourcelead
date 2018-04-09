@@ -1266,7 +1266,7 @@ function ApplicantNotifyRequiremnentProRecruter(){
 						if (response.response === "AWKWARD") {
 						    location.href = "/errorPage";
 						} else if (response.response === "SUCCESS") {
-							var json = JSON.parse(response.object);
+							var json = response.object;
 							var name = json.name;
 							var firstName = '';
 							var lastName = '';
@@ -2359,7 +2359,7 @@ function setRateTypesByLocation(){
 						if (response.response === "AWKWARD") {
 						    location.href = "/errorPage";
 						} else if (response.response === "SUCCESS") {
-							var json = JSON.parse(response.object);
+							var json = response.object;
 							var name = json.name;
 							var firstName = '';
 							var lastName = '';

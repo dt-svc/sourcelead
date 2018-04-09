@@ -352,6 +352,8 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getRate())) {
 			requirement.setRate(requirementDTO.getRate());
+		}else {
+			requirement.setRate(null);
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getRateType())) {
 			requirement.setRateType(requirementDTO.getRateType());
@@ -369,16 +371,24 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getIndustryName())) {
 			requirement.setIndustryName(requirementDTO.getIndustryName());
+		}else {
+			requirement.setIndustryName(null);
 		}
 		if(StringUtils.isNotBlank(requirementDTO.getProjectClientID())){
 			ProjectClients projects = projectClientService.getProjectClientsByProjectID(Long.parseLong(requirementDTO.getProjectClientID()));
 			requirement.setProjectClientID(projects);
+		}else {
+			requirement.setProjectClientID(null);
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getProjectDurationMonths())) {
 			requirement.setProjectDurationMonths(requirementDTO.getProjectDurationMonths());
+		}else {
+			requirement.setProjectDurationMonths(null);
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getProjectDurationYears())) {
 			requirement.setProjectDurationYears(requirementDTO.getProjectDurationYears());
+		}else {
+			requirement.setProjectDurationYears(null);
 		}
 		
 		if (StringUtils.isNotBlank(requirementDTO.getClosedDate()) && !"".equalsIgnoreCase(requirementDTO.getClosedDate())) {
@@ -395,6 +405,8 @@ public class RequirementServiceImpl implements RequirementService {
 				&& requirementDTO.getNoticePeriod().size() > 0) {
 			String np = String.join(",", requirementDTO.getNoticePeriod());
 			requirement.setNoticePeriod(np);
+		}else {
+			requirement.setNoticePeriod(null);
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getTravelAllowance())) {
 			requirement.setTravelAllowance(requirementDTO.getTravelAllowance());
@@ -406,6 +418,8 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getMaxRate())) {
 			requirement.setMaxRate(requirementDTO.getMaxRate());
+		}else {
+			requirement.setMaxRate(null);
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getPriority())) {
 			if (!"".equalsIgnoreCase(requirementDTO.getPriority())) {
@@ -434,6 +448,8 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getEducation())) {
 			requirement.setEducation(requirementDTO.getEducation());
+		}else {
+			requirement.setEducation(null);
 		}
 		if (requirementDTO.getFileInfo() != null && !requirementDTO.getFileInfo().isEmpty()) {
 			FileInfo fileInfo = requirementDTO.getFileInfo().get(0);

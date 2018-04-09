@@ -45,7 +45,11 @@ function clearAllStatus(){
 }
 
 </script>
-
+<script>
+$(document).ready(function() {
+	getcites('apiLocation','city','recommendation');
+});
+</script>
 
 <!-- <script>
 $(document).ready(function() {
@@ -206,7 +210,7 @@ function statusvalidating(id){
 			</a>
 			
 			<div class="filterSearchDiv pull-left">
-				<a href="javascript:void(0)" onClick="filterPop();" title="Filter" class="btn btn-sm btn-default"><i class="fa fa-filter"></i></a>
+				<a href="javascript:void(0)" onClick="filterPop();" title="Filters" class="btn btn-sm btn-default"><i class="fa fa-filter"></i></a>
 			</div>
 			
 			</div>
@@ -679,18 +683,38 @@ function changeStatus(requirementId, requirementStatus){
         	 $.ajax({
              type : "POST",
         	 url: sourceleadUrl+"/saveChangedStatusFromDraft?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status+"&userId="+userId,
-	        	 success :function(data) {
-	       		  $("#changeStatusId" +requirementId).val(status);
-	           	  //location.replace(sourceleadUrl+"/requirementList");
+	        	 success :function(result) {
+	        		 	if (result.response === "SESSION_TIMEDOUT") {
+			  				location.replace(sourceleadUrl);
+		                } else if (result.response === "AWKWARD") {
+		                    location.href = "/errorPage";
+		                } else if (result.response === "SUCCESS") {
+		                	$("#changeStatusId" +requirementId).val(status);
+		  	           	  //location.replace(sourceleadUrl+"/requirementList");	
+		                } else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+		                    showError("Operation failed, please try again");
+		                }
 	         	}
         	});
          }else{
         	 $.ajax({
              type : "POST",
         	 url: sourceleadUrl+"/saveChangedStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status,
-	        	 success :function(data) {
-	       		  $("#changeStatusId" +requirementId).val(status);
-	           	 //location.replace(sourceleadUrl+"/requirementList");
+	        	 success :function(result) {
+	        		 if (result.response === "SESSION_TIMEDOUT") {
+			  				location.replace(sourceleadUrl);
+		                } else if (result.response === "AWKWARD") {
+		                    location.href = "/errorPage";
+		                } else if (result.response === "SUCCESS") {
+		                	$("#changeStatusId" +requirementId).val(status);
+		   	           	 //location.replace(sourceleadUrl+"/requirementList");
+		                } else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+		                    showError("Operation failed, please try again");
+		                }
 	         	}
         	});
          }
@@ -975,7 +999,7 @@ function refreshGoogleApiCity(cityId){
 
 <div class="sideMask"></div>
 <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="requirementFilterPopup">
-<h5 class="headerAdsrch">Filter <a href="javascript:void(0)" class="close-div" onClick="closeFilter()"><i class="fa fa-close"></i></a></h5>
+<h5 class="headerAdsrch">Filters <a href="javascript:void(0)" class="close-div" onClick="closeFilter()"><i class="fa fa-close"></i></a></h5>
 <div class="addInner">
 <div class="row">
  
@@ -1002,6 +1026,17 @@ function refreshGoogleApiCity(cityId){
 								</ul>
 				</div>
 			</div>
+			
+			<div class="col-md-12">
+				<label><strong>Jobs</strong></label>
+					<div class='clearfix'>
+				<ul id="jobs" class="list-unstyled">
+					<li class="checkBox positionRelative"><input id="j1" type="checkbox" name="requirementSpecJobs" value="ClientJobs" ><label for="j1">All Client Jobs </label></li>
+					<li class="checkBox positionRelative"><input id="j2" type="checkbox" name="requirementSpecJobs" value="NormalJobs" ><label for="j2">All Internal jobs</label></li>
+				
+				</ul>
+			</div>
+           </div>
 			</div>
 			</div>
 			
@@ -1069,18 +1104,8 @@ function refreshGoogleApiCity(cityId){
 							
 							
 							
-							<div class="col-md-2">
- 			<label><strong>Jobs</strong></label>
- 			<div class='clearfix'>
-								<ul id="jobs" class="list-unstyled">
-									<li class="checkBox positionRelative"><input id="j1" type="checkbox" name="requirementSpecJobs" value="ClientJobs" ><label for="j1">All Client Jobs </label></li>
-									<li class="checkBox positionRelative"><input id="j2" type="checkbox" name="requirementSpecJobs" value="NormalJobs" ><label for="j2">All Internal jobs</label></li>
-								
-								</ul>
-				</div>
-			</div>
-			
-						<div class="col-md-2 mb positionRelative">
+							
+						<div class="col-md-3 mb positionRelative">
 							<div class="clearfix dynamic_search filterDynamicsearch">
 								<input type="text" id="myClientInput" onkeyup="myClientFunction()" placeholder="Clients" title="Type in a teams">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
@@ -1104,7 +1129,7 @@ function refreshGoogleApiCity(cityId){
 			<!-- //projectList -->
 			
 			
-			<div class="col-md-2 mb positionRelative">
+			<div class="col-md-3 mb positionRelative">
 							<div class="clearfix dynamic_search filterDynamicsearch">
 								<input type="text" id="myProjectInput" onkeyup="myProjectFunction()" placeholder="Projects" title="Type in a teams">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
@@ -1178,6 +1203,13 @@ function myProjectFunction() {
         }
     }
 }
+
+
+$(document).keyup(function(e) {
+	  if (e.keyCode === 27) {
+		  closeFilter();
+	  }
+	});
 </script>
 <script>
 function resetJobFilter(){

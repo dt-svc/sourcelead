@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +65,7 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -84,6 +86,7 @@ import com.bis.sourcelead.service.ExportTimesheetEntries;
 import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
@@ -198,6 +201,9 @@ public class TimesheetRestController {
 	
 	@Autowired
 	private ProjectClientService projectClientService;
+	
+	@Autowired
+	private OrgRelationsService orgRelationsService;
 	
 	/***
 	 * @purpose : Getting ProjectList For Login User (Step - 1)
@@ -889,6 +895,22 @@ public class TimesheetRestController {
 			 timesheetEntryDetailsDTO.setEmployeeEmail(pm.getProjectMemberCandidteId().getEmail());
 			 timesheetEntryDetailsDTO.setEmployeePhoneNo(pm.getProjectMemberCandidteId().getMobilePhone());
 			 timesheetEntryDetailsDTO.setProjectNameForSubmissionPageDisplay(pm.getProjects().getProjectName());
+			 timesheetEntryDetailsDTO.setEmploymentTypeForSubmissionPageDisplay(pm.getProjectMemberCandidteId().getDesignationType());
+			 
+			 if(pm.getProjectClientsId().getOrgRelationId()!= null){
+		    	 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(pm.getProjectClientsId().getOrgRelationId().getId());
+		   	 if(null != pm.getProjectClientsId().getOrgRelationId().getLocationId() && pm.getProjectClientsId().getOrgRelationId().getLocationId().getId() != null && pm.getProjectClientsId().getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+						if(orgRelations.getResponderLocationId() != null){
+							timesheetEntryDetailsDTO.setClientNameForDisplay(orgRelations.getResponderLocationId().getOrgLocationName());
+						}
+					}
+					if(null != pm.getProjectClientsId().getOrgRelationId().getResponderLocationId() && null != pm.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId() && pm.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+						if(orgRelations.getLocationId() != null){
+							timesheetEntryDetailsDTO.setClientNameForDisplay(orgRelations.getLocationId().getOrgLocationName());
+						}
+					}
+		         }
+			 
 			 List<ProjectTasks> projectsTasks = projectTasksService.getAllTasksByProjectId(eedDTO.getProjectsId());
 			 TimeSheetSubmissionDTO tsDTO =  getTimesheetSubmissionDetails(eedDTO, request);
 			 model.addObject("timesheetSubmissionDTO",tsDTO);
@@ -1553,6 +1575,64 @@ public class TimesheetRestController {
 		  */
 		 tsDTO = getTimesheetSubmissionDTOWithEntriesList(ts, tsDTO, weekDaysMap, timesheetEntriesList,orgLocations.getDateFormat());
 
+
+		 if(!timesheetFor.equalsIgnoreCase("user") && actualStartDate != null && actualEndDate != null) {
+			 Date monthStartDate = CalendarUtil.getMonthStartDateByGivenDate(actualEndDate,Constants.CURRENT_MONTH).get("STARTDATE");
+			 Date monthEndDate = CalendarUtil.getMonthEndDateByGivenDate(actualEndDate,Constants.CURRENT_MONTH).get("ENDDATE");
+			 if(projectMember != null && projectMember.getId() != null) {
+				 SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),orgLocations.getId(),projectMember.getId(),monthStartDate,monthEndDate);
+				 if(sah != null) {
+					 tsDTO.setProjectToDateTotalHours(sah.getProjectToDateTotalHours());
+					 tsDTO.setProjectToDateBillableHours(sah.getProjectToDateBillableHours());
+					 tsDTO.setProjectToDateNonBillableHours(sah.getProjectToDateNonBillableHours());
+					 tsDTO.setPreviousMonthTotalHours(sah.getPreviousMonthTotalHours());
+					 tsDTO.setPreviousMonthBillableHours(sah.getPreviousMonthBillableHours());
+					 tsDTO.setPreviousMonthNonBillableHours(sah.getPreviousMonthNonBillableHours());
+					 float monthTotalHours            = 0f;
+					 float monthBillableTotalHours    = 0f;
+					 float monthNonBillableTotalHours = 0f;
+					 Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),monthStartDate), commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),monthEndDate),orgLocations.getDateFormat());
+						if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
+							for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
+					    		 Date  k =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),entry.getKey().replaceAll("/", "-"));
+								try {
+					    	    	Float  weekBillableHours = 0f;
+					    	    	if(sah.getWeekBillableHoursMap().get(k) != null){
+					    	    		weekBillableHours = sah.getWeekBillableHoursMap().get(k);
+					    	    	}
+					    	    	Float  weekNonBillableHours = 0f;
+					    	    	if(sah.getWeekNonBillableHoursMap().get(k) != null){
+					    	    		weekNonBillableHours = sah.getWeekNonBillableHoursMap().get(k);
+					    	    	}
+					    	    	Float  weekTotalHours = 0f;
+					    	    	if(sah.getWeekTotalHoursMap().get(k) != null){
+					    	    		 weekTotalHours = sah.getWeekTotalHoursMap().get(k);
+					    	    	}
+					    	        monthTotalHours = CommonUtil.getCombinedHours(monthTotalHours, weekTotalHours);
+					    	        monthBillableTotalHours = CommonUtil.getCombinedHours(monthBillableTotalHours, weekBillableHours);
+					    	        monthNonBillableTotalHours =  CommonUtil.getCombinedHours(monthNonBillableTotalHours, weekNonBillableHours);
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+								
+								
+							}
+					 tsDTO.setCurrentMonthBillableHours(Float.parseFloat(CommonUtil.getHoursDisplayFormat(monthBillableTotalHours)));
+					 tsDTO.setCurrentMonthNonBillableHours(Float.parseFloat(CommonUtil.getHoursDisplayFormat(monthNonBillableTotalHours)));
+					 tsDTO.setCurrentMonthTotalHours(Float.parseFloat(CommonUtil.getHoursDisplayFormat(monthTotalHours)));
+					 if(monthStartDate != null && monthEndDate != null) {
+					 LinkedHashSet<String> currentMonth  = CalendarUtil.getMonthStringsFromStartDateAndEndDate(monthStartDate, monthEndDate);
+					  String currentYear = CalendarUtil.getYearFromGivenDate(monthStartDate);
+					 if(currentMonth != null && !currentMonth.isEmpty()) {
+						 StringBuilder monthYear = new StringBuilder();
+						 tsDTO.setCurrentMonthName(monthYear.append(currentMonth.iterator().next()).append("-").append(currentYear).toString());
+					 }
+					 }
+					}
+				 }
+			 }
+		 }
+		 
 		 /**
 		  * Project Task List
 		  */
@@ -1998,6 +2078,8 @@ public class TimesheetRestController {
 		 }
 		 weekDays.add(sunDayDTO);
 		 tsDTO.setWeekDays(weekDays);
+		 
+		 
 	     return tsDTO;
    }
    
@@ -2112,6 +2194,32 @@ public class TimesheetRestController {
 		            	 timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(submissionId.toString());
 		            	 if(timesheetSubmissions != null){
 		            		 List<SubmissionApproverHierarchy> saHierarchyList =  submissionApproverHierarchyService.getSubmissionApproverHierarchyBySubmissionId(timesheetSubmissions.getId());
+		            		if(saHierarchyList == null || saHierarchyList.isEmpty()) {
+		            			ArrayList<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
+				    	    	List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectMemberMasterCandidateIdAndProjectId(projectMember.getMasterCandidateId().getId(), projectMember.getProjects().getId());
+				    	        if(hierarchyList != null && !hierarchyList.isEmpty()){
+				    					for(ProjectApproverHierarchy hierarchy : hierarchyList){
+				    						SubmissionApproverHierarchy saHierarchy = new SubmissionApproverHierarchy();
+				    						saHierarchy.setHeirarchyId(hierarchy);
+				    						saHierarchy.setSubmissionId(timesheetSubmissions);
+				    						saHierarchy.setSubmissionStatus(Submission_Status.getNameByValue(status));
+				    						saHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("new"));
+				    						saHierarchy.setCreatedDate(timesheetSubmissions.getCreatedDate());
+				    						if(frequencyStartDate != null)
+					    			        saHierarchy.setFrequencyStartDate(frequencyStartDate);
+											if(frequencyEndDate != null)
+										    saHierarchy.setFrequencyEndDate(frequencyEndDate);
+				    						saHierarchy.setCreatedBy(timesheetSubmissions.getCreatedBy());
+				    						saHierarchy.setUpdatedDate(timesheetSubmissions.getUpdatedDate());
+				    						saHierarchy.setUpdatedBy(timesheetSubmissions.getUpdatedBy());
+				    						saHierarchy.setStatus(Constants.RECORD_ACTIVE+"");
+				    						freshSaHierarchyList.add(saHierarchy);
+				    					}
+				    					timesheetSubmissions.setApproverHierarchyList(freshSaHierarchyList);
+				    			}
+				    			timesheetSubmissionsList.add(timesheetSubmissions);
+				    			timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
+		            		  }
 		            		 for(SubmissionApproverHierarchy saHierarchy : saHierarchyList){
 		            			   Submission_Status currentSahStatus = saHierarchy.getSubmissionStatus();
 		            			   if(currentSahStatus != null && currentSahStatus.equals(Submission_Status.SUBMITTED)  && StringUtils.isNotEmpty(savingType) && !savingType.equalsIgnoreCase("user") && StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("Draft")){
@@ -3355,4 +3463,87 @@ public class TimesheetRestController {
 		}
 		}
 		
+		
+		
+		@RequestMapping(value = "/getExportTimeSheetForApprovalMechanizm")
+		public void getExportTimeSheetForApprovalMechanizm(HttpServletRequest request,
+				@RequestParam(value = "startDate", required = false) String startDate,
+				@RequestParam(value = "endDate", required = false) String endDate,
+				@RequestParam(value = "exportType", required = false) String exportType,
+				@RequestParam(value = "client", required = false) String client,
+				@RequestParam(value = "stage", required = false) String stage,
+				@RequestParam(value = "timesheetFrequency", required = false) String timesheetFrequency,
+				@RequestParam(value = "frequencyMonth", required = false) String frequencyMonth,
+				@RequestParam(value = "weekFrequency", required = false) String weekFrequency, HttpServletResponse response)
+				throws Exception {
+
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			// DateFormat df = Constants.DMY;
+			// DateFormat df = LoginSessionController.DATEFORMAT;
+			Date stDate = null;
+			Date edDate = null;
+			if (null != startDate && !("undefined").equalsIgnoreCase(startDate) && null != endDate
+					&& !("undefined").equalsIgnoreCase(endDate)) {
+				stDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), startDate);
+				edDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), endDate);
+			}
+			File file = null;
+
+			if (timesheetFrequency.equalsIgnoreCase("Monthly")) {
+				Map<String, Date> dateList = CalendarUtil
+						.getMonthStartDateAndEndDateFromGivenMonthString(frequencyMonth.toString());
+
+				stDate = dateList.get("STARTDATE");
+				edDate = dateList.get("ENDDATE");
+			}
+			if ("pdf".equalsIgnoreCase(exportType)) {
+				file = exportTimesheetEntries.timeSheetApprovelExport(user, orgLocations, stDate, edDate,
+						timesheetFrequency, client, stage, frequencyMonth, weekFrequency);
+			} else {
+				file = exportTimesheetEntries.timeSheetApprovelExportExcel(user, orgLocations, stDate, edDate,
+						timesheetFrequency, client, stage, frequencyMonth, weekFrequency);
+			}
+
+			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			StringBuilder fileName = new StringBuilder();
+			response.setHeader("Content-Disposition",
+					fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();
+		}
+			
+		
+		
+		@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS')")
+		@RequestMapping(value = "/projectTasksById" , method = RequestMethod.POST)
+		public @ResponseBody  String getProjectTasks(
+				 @RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="avilableProjectTaskIds", required=false) String  avilableProjectTaskIds) throws Exception {
+			 	
+				 
+				List<Long> ids = new ArrayList<Long>();
+				String[] avilableProjectTaskId = avilableProjectTaskIds.split(",");
+				for(String id  : avilableProjectTaskId){
+					if(id != null && !id.isEmpty()){
+						ids.add(Long.parseLong(id));
+					}
+				}
+				
+				 String resultJson;
+				 Collection<ProjectTasks> taskList=projectTasksService.getAllTasksByProjectIdAndExistedProjectTaskIds(projectId, ids);
+				 resultJson = commonUtil.toJSON(taskList);
+				 return resultJson;
+			 	
+		 }
+
+	
 }

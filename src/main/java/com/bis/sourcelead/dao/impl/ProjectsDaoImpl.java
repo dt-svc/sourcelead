@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -611,6 +612,16 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			clientIdsList.add(0L);
 		}
 		
+		List<Long> managerIdsList = new ArrayList<>();
+		if(projectsDTO.getProjectManagers() != null && !projectsDTO.getProjectManagers().isEmpty()){
+			String[] manager = projectsDTO.getProjectManagers().split(",");
+			for(int i=0; i<manager.length; i++){
+				managerIdsList.add(Long.valueOf(manager[i]));
+			}
+		}else {
+			managerIdsList.add(0L);
+		}
+		
 		if(!userRole.equalsIgnoreCase("ROLE_ADMIN") && !userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
 			approverQuery = " and (pc.id IN (select pah.projectClientsId.id from ProjectApproverHierarchy pah where pah.approverUserId = "+userId+") OR pc.createdBy.id = "+userId+" "
 					+ " OR pc.id IN (select pm.projectClientsId.id from ProjectMembers pm where pm.projectMemberCandidteId.id = "+candidateId+" and pm.status = '1') ) ";
@@ -650,25 +661,71 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		
 		String subQuery2 = " and ((:varZero  IN (:clientIdsList)) OR (:varZero NOT IN (:clientIdsList) and pc.orgRelationId.id IN (:clientIdsList)))";
 		
+		String subQuery3 ="";
+		if(projectsDTO.getProjectType() != null && !projectsDTO.getProjectType().isEmpty()){
+			String[] projectsType = projectsDTO.getProjectType().split(",");
+			if (Arrays.asList(projectsType).contains("Internal")) {
+				subQuery3 = subQuery3 + "ps.orgLocationsId = :orgLocationsId or ";
+			}
+			if (Arrays.asList(projectsType).contains("Client")) {
+				subQuery3 = subQuery3 + "ps.orgLocationsId <> :orgLocationsId or ";
+			}
+			subQuery3 = "and (" + subQuery3.substring(0, subQuery3.length() - 4) + ")";
+		}
 		
-		query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId "+subQuery2+" "+approverQuery+") "+projectModeQuery+" "+subQuery1+"  ";
+		String subQuery4 = " and ((:varZero  IN (:managerIdsList)) OR (:varZero NOT IN (:managerIdsList) and pc.id IN (select pah.projectClientsId.id from ProjectApproverHierarchy pah where pah.approverUserId.id IN (:managerIdsList)))) ";
+		
+		
+		
+		String subQuery5 ="";
+		if(projectsDTO.getInvoiceFrequency() != null && !projectsDTO.getInvoiceFrequency().isEmpty()){
+			String[] frequencyFilter = projectsDTO.getInvoiceFrequency().split(",");
+			if (Arrays.asList(frequencyFilter).contains("Weekly")) {
+				subQuery5 = subQuery5 + "ps.invoiceFrequency = 'Weekly' or ";
+			}
+			
+			if (Arrays.asList(frequencyFilter).contains("Bi-Weekly")) {
+				subQuery5 = subQuery5 + "ps.invoiceFrequency = 'Bi-Weekly' or ";
+			}
+			
+			if (Arrays.asList(frequencyFilter).contains("Semi-Monthly")) {
+				subQuery5 = subQuery5 + "ps.invoiceFrequency = 'Semi-Monthly' or ";
+			}
+			
+			if (Arrays.asList(frequencyFilter).contains("Monthly")) {
+				subQuery5 = subQuery5 + "ps.invoiceFrequency = 'Monthly' or ";
+			}
+			
+			subQuery5 = "and (" + subQuery5.substring(0, subQuery5.length() - 4) + ")";
+		}
+		
+		
+		
+		//usertList shorting order
+				String sortingQry = "";
+				if(StringUtils.isNotBlank(projectsDTO.getSortColumn())) {
+					sortingQry = " order by ps."+ projectsDTO.getSortColumn() +" "+projectsDTO.getSortOrder();
+				}
+		
+		
+		query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId "+subQuery2+" "+approverQuery+" "+subQuery4+") "+projectModeQuery+" "+subQuery1+" "+subQuery3+" "+subQuery5+" ";
 		if(query1.toString() != null && !query1.toString().isEmpty()){
-			 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+" ORDER BY ps.createdDate DESC");
+			 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+sortingQry);
 		}else{
-			 queryObj = session.createQuery(query + query1.toString()+" ORDER BY ps.createdDate DESC");
+			 queryObj = session.createQuery(query + query1.toString()+sortingQry);
 		}
 		
 		queryObj.setFirstResult(projectsDTO.getStart());
 		queryObj.setMaxResults(projectsDTO.getLength());
-		queryObj.setLong("orgLocationsId", orgLocationsId).setLong("varZero", 0).setParameterList("clientIdsList", clientIdsList).list();
+		queryObj.setLong("orgLocationsId", orgLocationsId).setLong("varZero", 0).setParameterList("clientIdsList", clientIdsList).setParameterList("managerIdsList", managerIdsList).list();
 		projectsList = queryObj.list();
 		
 		
 		if(query1.toString() != null && !query1.toString().isEmpty()){
-			countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+")").setLong("varZero", 0).setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).list();
+			countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+")").setLong("varZero", 0).setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).setParameterList("managerIdsList", managerIdsList).list();
 			filterCount = countlist.iterator().next().intValue();
 		}else {
-			countlist = session.createQuery("select count(*) " + query).setLong("varZero", 0).setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).list();
+			countlist = session.createQuery("select count(*) " + query).setLong("varZero", 0).setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).setParameterList("managerIdsList", managerIdsList).list();
 			filterCount = countlist.iterator().next().intValue();
 		}
 		

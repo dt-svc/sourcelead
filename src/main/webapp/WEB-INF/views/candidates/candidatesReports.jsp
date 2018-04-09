@@ -33,7 +33,7 @@ window.onload = function() {
             	if (response.response === "AWKWARD") {
             	    location.href = "/errorPage";
             	} else if (response.response === "SUCCESS") {
-            		prepareCandidateReportsDataDiv(data);            		
+            		prepareCandidateReportsDataDiv(response.data);            		
             	} else if (response.indexOf('Sign In') !== -1) {
             		location.replace(sourceleadUrl);
             	} else {
@@ -363,7 +363,7 @@ function getCandidatesByOwners(){
         	if (response.response === "AWKWARD") {
         	    location.href = "/errorPage";
         	} else if (response.response === "SUCCESS") {
-        		prepareCandidateReportsDataDiv(data);
+        		prepareCandidateReportsDataDiv(response.data);
         	} else if (response.indexOf('Sign In') !== -1) {
         		location.replace(sourceleadUrl);
         	} else {
@@ -416,7 +416,7 @@ function getDayWiseReports(){
         	 	if (response.response === "AWKWARD") {
 	       		    location.href = "/errorPage";
 	       		} else if (response.response === "SUCCESS") {
-	       			prepareCandidateReportsDataDiv(data);
+	       			prepareCandidateReportsDataDiv(response.data);
 	       		} else if (response.indexOf('Sign In') !== -1) {
 	       			location.replace(sourceleadUrl);
 	       		} else {
@@ -467,7 +467,7 @@ function getCustomReports(){
 	        	 	if (response.response === "AWKWARD") {
 	        		    location.href = "/errorPage";
 	        		} else if (response.response === "SUCCESS") {
-	        			 prepareCandidateReportsDataDiv(data);
+	        			 prepareCandidateReportsDataDiv(response.data);
 	        		} else if (response.indexOf('Sign In') !== -1) {
 	        			location.replace(sourceleadUrl);
 	        		} else {
