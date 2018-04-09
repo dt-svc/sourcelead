@@ -70,8 +70,7 @@ function hotListCandidates(){
             		result = result +"  </tr>"; 
             		result = result +"</thead>";
             		result = result +"<tbody>"; 
-            		/* var json = JSON.parse(data); */
-            		var json = response.object;
+            		var json = response.data;
             		for (var i = 0; i < json.length; i++) { 
             		 var opt = json[i]; 
             		 var mobilePhone = "";
@@ -200,7 +199,7 @@ function selectedHotList(){
 				    	if (response.response === "AWKWARD") {
 				    	    location.href = "/errorPage";
 				    	} else if (response.response === "SUCCESS") {
-				    		var json = JSON.parse(response.object);
+				    		var json = response.data;
 				        	var output = "";
 				        	output = output + "<option value=''>-- Assign To Team --</option>"; 
 				        	for (var i=0; i<json.length; i++) {

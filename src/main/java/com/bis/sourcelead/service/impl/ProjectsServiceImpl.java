@@ -114,6 +114,7 @@ import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
@@ -1466,7 +1467,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
 	 	//SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
-		 Date currentDate = new Date();
+		 Date currentDate = CalendarUtil.removeTime(new Date());
 		 Date previousEndDate = null;
          Projects projects = getProjectById(projectId);
 	        	 
@@ -1745,10 +1746,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    	projects = commonUtil.terminateProject(projects);
 			    	 updateProject(projects);
 			    }
-			    else if(projects.getEndDate() != null && currentDate.after(projects.getEndDate()) && !(projects.getEndDate().equals(currentDate))) {
+			    else if(projects.getEndDate() != null && currentDate.after(projects.getEndDate())) {
 			    		projects = commonUtil.terminateProject(projects);
 				    	updateProject(projects);
-			    	
 			    }
 			    else{
 			    	projects = updateProject(projects);

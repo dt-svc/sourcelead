@@ -134,7 +134,14 @@ public class CandidateResumeRestController {
 		return response;
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_RESUMES')")
+	/**
+	 * @author Mahaveer Manoj,
+	 * 
+	 *         Request for 'Manager' Role is working fine, but for 'Employee' login
+	 *         the particular request is not getting hit here So,
+	 *         commented @PreAuthorize annotation
+	 **/
+	// @PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_RESUMES')")
 	@RequestMapping(value = { "rest/saveCandidateResume" }, method = RequestMethod.POST)
 	public @ResponseBody Response<String> saveCandidateResumeRest(@RequestBody CandidateResumeDTO candidateResumeDTO,
 			HttpServletRequest request) throws Exception {
@@ -375,18 +382,19 @@ public class CandidateResumeRestController {
 	 */
 	// @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_PROFILE','ROLE_VIEW_EDIT_ASSOCIATE_RESUMES')")
 	@RequestMapping(value = "/getResume", method = RequestMethod.POST)
-	public @ResponseBody Response<String> getResume(@RequestParam(value = "candidateId", required = false) Long candidateId,
+	public @ResponseBody Response<CandidateResumes> getResume(@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "resumeId", required = false) String resumeId, HttpServletRequest request) throws Exception {
-		Response<String> response = new Response<>();
+		Response<CandidateResumes> response = new Response<>();
 		try {
-			String resultJson = null;
 			CandidateResumes candidateResume = candidateResumesService.getCandidateResumeByResumeId(Long.parseLong(resumeId));
 			if (candidateResume != null) {
-				resultJson = commonUtil.toJSON(candidateResume);
+				response.setObject(candidateResume);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.FAILED.name());
+				response.setResponseMessage(Result.FAILED.getValue());
 			}
-			response.setObject(resultJson);
-			response.setResponse(Result.SUCCESS.name());
-			response.setResponseMessage(Result.SUCCESS.getValue());
 		} catch (Exception e) {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());

@@ -3,14 +3,13 @@ package com.bis.sourcelead.rest;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -79,6 +78,22 @@ public class CandidateReferencesRestController {
 	 * @throws Exception
 	 */
 
+	/** @author: Mahaveer Manoj, This method is used for Android application **/
+	@RequestMapping(value = "/rest/saveCandidateReferences", method = RequestMethod.POST)
+	public @ResponseBody Response<String> saveCandidateReferences(@RequestBody CandidateReferencesDTO candidateReferencesDTO)
+			throws Exception {
+		Response<String> response = new Response<>();
+		try {
+			response = saveCandidateReferences(candidateReferencesDTO, candidateReferencesDTO.getCandidateId(),
+					candidateReferencesDTO.getUserId(), candidateReferencesDTO.getLocationCode());
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+
 	// @PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_REFERENCE','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_REFERENCE')")
 	@RequestMapping(value = "/saveCandidateReferences", method = RequestMethod.POST)
 	public @ResponseBody Response<String> saveCandidateReferences(CandidateReferencesDTO candidateReferencesDTO,
@@ -113,17 +128,27 @@ public class CandidateReferencesRestController {
 	}
 
 	@RequestMapping(value = "/validateReferEmail", method = RequestMethod.POST)
-	public @ResponseBody Boolean validateReferEmail(@RequestParam("candidateId") Long candidateId, @RequestParam("referId") Long referId,
-			@RequestParam("email") String email) throws Exception {
-		CandidateReferences cr = null;
-		if (referId != null) {
-			cr = candidateReferencesService.validateReferenceEmailByReferEmailAndReferId(email, referId);
+	public @ResponseBody Response<Boolean> validateReferEmail(@RequestParam("candidateId") Long candidateId,
+			@RequestParam("referId") Long referId, @RequestParam("email") String email) throws Exception {
+		Response<Boolean> response = new Response<>();
+		try {
+			CandidateReferences cr = null;
+			if (referId != null) {
+				cr = candidateReferencesService.validateReferenceEmailByReferEmailAndReferId(email, referId);
+			}
+			Boolean flag = false;
+			if (null == cr) {
+				flag = candidateReferencesService.validateReferenceEmailByReferEmailAndCandidateId(email, candidateId);
+			}
+			response.setObject(flag);
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		Boolean flag = false;
-		if (null == cr) {
-			flag = candidateReferencesService.validateReferenceEmailByReferEmailAndCandidateId(email, candidateId);
-		}
-		return flag;
+		return response;
 	}
 
 	/**
@@ -227,8 +252,23 @@ public class CandidateReferencesRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = { "/updateCandidateReferenceBycandidateIdAndReferenceId",
-			"rest/updateCandidateReferenceBycandidateIdAndReferenceId" }, method = RequestMethod.POST)
+
+	/** @author: Mahaveer Manoj, This method is used for Android application **/
+	@RequestMapping(value = "rest/updateCandidateReferenceBycandidateIdAndReferenceId", method = RequestMethod.POST)
+	public @ResponseBody Response<String> updateCandidateReferenceBycandidateIdAndReferenceIdforAndroid(
+			@RequestBody CandidateReferencesDTO candidateReferencesDTO) throws Exception {
+		Response<String> response = new Response<>();
+		try {
+			response = updateCandidateReferenceBycandidateIdAndReferenceId(candidateReferencesDTO);
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+
+	@RequestMapping(value = "/updateCandidateReferenceBycandidateIdAndReferenceId", method = RequestMethod.POST)
 	public @ResponseBody Response<String> updateCandidateReferenceBycandidateIdAndReferenceId(CandidateReferencesDTO candidateReferencesDTO)
 			throws Exception {
 		Response<String> response = new Response<>();
@@ -275,16 +315,14 @@ public class CandidateReferencesRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getCandidateReferencesByCandidateIdAndReferenceId")
-	public Response<String> getCandidateReferencesByCandidateIdAndReferenceId(
+	public Response<CandidateReferences> getCandidateReferencesByCandidateIdAndReferenceId(
 			@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "refId", required = false) Long refId) throws Exception {
-		Response<String> response = new Response<>();
+		Response<CandidateReferences> response = new Response<>();
 		try {
-			String resultJson;
 			CandidateReferences candidateReferencesList = candidateReferencesService
 					.getCandidateReferencesByCandidateIdAndReferenceId(candidateId, refId);
-			resultJson = commonUtil.toJSON(candidateReferencesList);
-			response.setObject(resultJson);
+			response.setObject(candidateReferencesList);
 			response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());
 		} catch (Exception e) {

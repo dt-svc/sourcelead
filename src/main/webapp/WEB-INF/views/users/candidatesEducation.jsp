@@ -116,101 +116,110 @@ function candidateEducationList(candidateId){
 	 $.ajax({  
           type : "GET",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(json) {
-             			 
-	                	 $("#candidateEducationList").empty();
-	                	 var result = "";
-	                	 result = result +"<table id='candidateEducationPagination' class='display' cellspacing='0' width='100%' >"; 
-	                     result = result +"<thead>"; 
-	                     result = result +"  <tr>"; 
-	                     result  = result + '           <th>Education</th>';
-	                 	 result  = result + '           <th>Specialization</th>';
-	                 	 result  = result + '           <th>Start date <br>(<small class="custom-small">'+canEduDatePattern+'</small>)</th>';
-	                 	 result  = result + '           <th>End date <br>(<small class="custom-small">'+canEduDatePattern+'</small>)</th>';
-	                 	 result  = result + '           <th>Score</th>';
-	                 	 result  = result + '           <th>Score Type</th>';
-	                 	 result  = result + '           <th>Institute/University</th>';
-	                 	 result  = result + '           <th>Address</th>';
-	                 	 result  = result + '           <th>Action</th>';
-	                     result = result +"  </tr>"; 
-	                     result = result +"</thead>";
-	                     result = result +"<tbody>"; 
-	                     
-	                     for (var i = 0; i < json.data.length; i++) { 
-	                    	 var opt = json.data[i];  
-	                    	 result  = result + '         <tr>';
-	                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
-	                    	 result  = result + '<td><div><span title = "'+opt.name+'">'+opt.name+'</span></div></td>';
-	                    	    }else{
-	                    	    	 result  = result + ' <td><div><span>----</span></div></td>';
-	                    	    }
-	                    	 if(opt.specialization != null && opt.specialization != '' && opt.specialization != 'undefined'){
-	                    	 result  = result + ' <td><div><span title="'+opt.specialization+'">'+opt.specialization+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + ' <td><div><span>----</span></div></td>';
-	                    	 }
-	                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
-	                    	 result  = result + ' <td><div><span>'+opt.startDateStr+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + ' <td><div><span>----</span></div></td>';
-	                    	 }
-	                    	 if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){ 
-	                    	 result  = result + '<td><div><span>'+opt.endDateStr+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + '<td><div><span>----</span></div></td>';
-	                    	 }
-	                    	 if(opt.grade != null && opt.grade != '' && opt.grade  != 'undefined'){
-	                    	 result  = result + '<td><div><span>'+opt.grade+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + '<td><div><span>----</span></div></td>'; 
-	                    	 }
-	                    	 if(opt.gradeType != null && opt.gradeType != '' && opt.grgradeTypeade  != 'undefined'){
-			                 result  = result + '<td><div><span>'+opt.gradeType+'</span></div></td>';
-			                 }else{
-			                 result  = result + '<td><div><span>----</span></div></td>'; 
-			                 }
-	                    	 if(opt.institute != null && opt.institute != '' && opt.institute != 'undefined'){
-	                    	 result  = result + '<td><div><span title="'+opt.institute+'">'+opt.institute+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + '<td><div><span>----</span></div></td>';
-	                    	 }
-	                    	 if(opt.address != null && opt.address != '' && opt.address != 'undefined'){
-	                    	 result  = result + ' <td><div><span title="'+opt.address+'">'+opt.address+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + ' <td><div><span>----</span></div></td>';
-	                    	 }
-	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
-	                    		 if(window.candidateStatusGlobal == '0'){
-	                    			 result = result+' <td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
-	                    		 }
-	                    		 else{
-	                    			 if(candidateType == "Candidates"){
-	                    				 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');" title="Edit"></a></sec:authorize>';
-	                    			 }else{
-	                    				 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');" title="Edit"></a></sec:authorize>';
-	                    			 }
-	                    				 
-	                    		 }
-	                    		 if(window.candidateStatusGlobal == '0'){
-									result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
-	                    		 }else{
-	                    			 if(candidateType == "Candidates"){
-	                    				 result = result+'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');" title="Remove"></i></sec:authorize></div></td>';	 
-	                    			 }else{
-	                    				 result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS\')"> <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');" title="Remove"></i></sec:authorize></div></td>';
-	                    			 }
-	                    			  
-	                    		 }
-	                    	}
-	                    	 result  = result + '</tr>';
-	                      } 
-	                     result = result +" </tbody>";
-	                     result = result +"</table>";
-	                     $("#candidateEducationList").append(result); 
-	                     educationPagination(); 
-			    	
+          success :function(response) {
+        	  	if (response && response.response === "INVALID_DATA") {
+        		    showError(response.responseMessage);
+        		} else if (response && response.response === "INVALID_USER") {
+        		    showError(response.responseMessage);
+        		} else if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+        			$("#candidateEducationList").empty();
+               	 var result = "";
+               	 result = result +"<table id='candidateEducationPagination' class='display' cellspacing='0' width='100%' >"; 
+                    result = result +"<thead>"; 
+                    result = result +"  <tr>"; 
+                    result  = result + '           <th>Education</th>';
+                	 result  = result + '           <th>Specialization</th>';
+                	 result  = result + '           <th>Start date <br>(<small class="custom-small">'+canEduDatePattern+'</small>)</th>';
+                	 result  = result + '           <th>End date <br>(<small class="custom-small">'+canEduDatePattern+'</small>)</th>';
+                	 result  = result + '           <th>Score</th>';
+                	 result  = result + '           <th>Score Type</th>';
+                	 result  = result + '           <th>Institute/University</th>';
+                	 result  = result + '           <th>Address</th>';
+                	 result  = result + '           <th>Action</th>';
+                    result = result +"  </tr>"; 
+                    result = result +"</thead>";
+                    result = result +"<tbody>"; 
+                    
+                    for (var i = 0; i < response.data.length; i++) { 
+                   	 var opt = response.data[i];  
+                   	 result  = result + '         <tr>';
+                   	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
+                   	 result  = result + '<td><div><span title = "'+opt.name+'">'+opt.name+'</span></div></td>';
+                   	    }else{
+                   	    	 result  = result + ' <td><div><span>----</span></div></td>';
+                   	    }
+                   	 if(opt.specialization != null && opt.specialization != '' && opt.specialization != 'undefined'){
+                   	 result  = result + ' <td><div><span title="'+opt.specialization+'">'+opt.specialization+'</span></div></td>';
+                   	 }else{
+                   		 result  = result + ' <td><div><span>----</span></div></td>';
+                   	 }
+                   	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
+                   	 result  = result + ' <td><div><span>'+opt.startDateStr+'</span></div></td>';
+                   	 }else{
+                   		 result  = result + ' <td><div><span>----</span></div></td>';
+                   	 }
+                   	 if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){ 
+                   	 result  = result + '<td><div><span>'+opt.endDateStr+'</span></div></td>';
+                   	 }else{
+                   		 result  = result + '<td><div><span>----</span></div></td>';
+                   	 }
+                   	 if(opt.grade != null && opt.grade != '' && opt.grade  != 'undefined'){
+                   	 result  = result + '<td><div><span>'+opt.grade+'</span></div></td>';
+                   	 }else{
+                   		 result  = result + '<td><div><span>----</span></div></td>'; 
+                   	 }
+                   	 if(opt.gradeType != null && opt.gradeType != '' && opt.grgradeTypeade  != 'undefined'){
+		                 result  = result + '<td><div><span>'+opt.gradeType+'</span></div></td>';
+		                 }else{
+		                 result  = result + '<td><div><span>----</span></div></td>'; 
+		                 }
+                   	 if(opt.institute != null && opt.institute != '' && opt.institute != 'undefined'){
+                   	 result  = result + '<td><div><span title="'+opt.institute+'">'+opt.institute+'</span></div></td>';
+                   	 }else{
+                   		 result  = result + '<td><div><span>----</span></div></td>';
+                   	 }
+                   	 if(opt.address != null && opt.address != '' && opt.address != 'undefined'){
+                   	 result  = result + ' <td><div><span title="'+opt.address+'">'+opt.address+'</span></div></td>';
+                   	 }else{
+                   		 result  = result + ' <td><div><span>----</span></div></td>';
+                   	 }
+                   	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
+                   		 if(window.candidateStatusGlobal == '0'){
+                   			 result = result+' <td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
+                   		 }
+                   		 else{
+                   			 if(candidateType == "Candidates"){
+                   				 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');" title="Edit"></a></sec:authorize>';
+                   			 }else{
+                   				 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');" title="Edit"></a></sec:authorize>';
+                   			 }
+                   				 
+                   		 }
+                   		 if(window.candidateStatusGlobal == '0'){
+								result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
+                   		 }else{
+                   			 if(candidateType == "Candidates"){
+                   				 result = result+'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');" title="Remove"></i></sec:authorize></div></td>';	 
+                   			 }else{
+                   				 result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS\')"> <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');" title="Remove"></i></sec:authorize></div></td>';
+                   			 }
+                   			  
+                   		 }
+                   	}
+                   	 result  = result + '</tr>';
+                     } 
+                    result = result +" </tbody>";
+                    result = result +"</table>";
+                    $("#candidateEducationList").append(result); 
+                    educationPagination();
+        		} else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
         },
-          
      }); 
 }
 </script>
@@ -687,55 +696,70 @@ function candidateEducationStore(candidateId){
 	 }
 	  
 	  if ($('#education_form').validate(false, validationSettings)) {
-		  
+		  if($("#candEdu").length > 0 && $("#candEdu_chosen").length > 0){
 		     var formData = getFormData("education_form");
 			 $("#education_form").attr("disabled", "disabled");
 			 $("#save_button").attr("disabled", "disabled");
 			
-			 $.post(sourceleadUrl+"/storeCandidateEducation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(data) {
-				 closePopup();
-				 $('#perVal').attr('aria-valuenow', data).css('width',data+'%');
-    			 if(data<50){
-    			   $("#perVal").removeClass('progress-bar-success');
-    			   $("#perVal").addClass("progress-bar-danger");
-    			 }
-    			 if(data>=50){
-    				 $("#perVal").removeClass("progress-bar-danger");
-    				 $("#perVal").addClass("progress-bar-success");
-    			 }
-    			 $("#disVal").empty();
-    			$("#disVal").append(data+'%');
-    			// for quick view bar update
-    			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
-      			 if(data<50){
-          			   $("#quickPerVal").removeClass('progress-bar-success');
-          			   $("#quickPerVal").addClass("progress-bar-danger");
-          			 }
-          			 if(data>=50){
-          				 $("#quickPerVal").removeClass('progress-bar-danger');
-          				 $("#quickPerVal").addClass("progress-bar-success");
-          			 }
+			 $.post(sourceleadUrl+"/storeCandidateEducation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(result) {
+				 if (result && result.response === "INVALID_DATA") {
+					    $("#update_candidate").removeAttr("disabled");
+					    $("#update_candidate").removeAttr('button').val('Save');
+					    showError(result.responseMessage);
+					} else if (result.response === "AWKWARD") {
+					    location.href = "/errorPage";
+					} else if (result.response === "SUCCESS") {
+						var data = result.object;
+						closePopup();
+						 $('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+		    			 if(data<50){
+		    			   $("#perVal").removeClass('progress-bar-success');
+		    			   $("#perVal").addClass("progress-bar-danger");
+		    			 }
+		    			 if(data>=50){
+		    				 $("#perVal").removeClass("progress-bar-danger");
+		    				 $("#perVal").addClass("progress-bar-success");
+		    			 }
+		    			 $("#disVal").empty();
+		    			$("#disVal").append(data+'%');
+		    			// for quick view bar update
+		    			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
+		      			 if(data<50){
+		          			   $("#quickPerVal").removeClass('progress-bar-success');
+		          			   $("#quickPerVal").addClass("progress-bar-danger");
+		          			 }
+		          			 if(data>=50){
+		          				 $("#quickPerVal").removeClass('progress-bar-danger');
+		          				 $("#quickPerVal").addClass("progress-bar-success");
+		          			 }
 
-    			$("#quickDisVal").empty();
-    			$("#quickDisVal").append(data+'%');
-    			
-       		    $("#popUpDiv").removeClass("edit-details-active");
-    			$("#selector4").removeAttr("style");
-    			$("#selector4").css({ display: "block" });
-				$("#eduMsgDiv").html("Success!! New Education added");
-       			candidateEducationList(candidateId);
-       			eduMsgFadeinFunction();
-       			qveducationSubmission(candidateId);
-       			setTimeout(function(){
-		 			candidateList();					 			
-		 		},100);
-		        });
-			
-			return true; 
+		    			$("#quickDisVal").empty();
+		    			$("#quickDisVal").append(data+'%');
+		    			
+		       		    $("#popUpDiv").removeClass("edit-details-active");
+		    			$("#selector4").removeAttr("style");
+		    			$("#selector4").css({ display: "block" });
+						$("#eduMsgDiv").html("Success!! New Education added");
+		       			candidateEducationList(candidateId);
+		       			eduMsgFadeinFunction();
+		       			qveducationSubmission(candidateId);
+		       			setTimeout(function(){
+				 			candidateList();					 			
+				 		},100);
+			        } else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+					    showError("Operation failed, please try again");
+					}
+			 });
+			 return true;
 		} else {
-			return false;
+			showError("Education is missing");
 		}
-} 
+	} else {
+		return false;
+	}
+	}
 $('body').on('blur', '#education_form', function() {
 	$("#education_form").showHelpOnFocus();
 	$("#education_form").validateOnBlur(false, validationSettings);
@@ -808,53 +832,56 @@ function deleteSelectedEducation(candidateEducationId,candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/removeCandidateEducationBycandidateIdandcandidateEducationId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,        
-          success :function(data) {
+          success :function(result) {
+        	  if (result && result.response === "INVALID_DATA") {
+      		    showError(result.responseMessage);
+      		} else if (result.response === "AWKWARD") {
+      		    location.href = "/errorPage";
+      		} else if (result.response === "SUCCESS") {
+      			var data = result.object;
+      			$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+      			 if(data<50){
+      			  /* $("#perVal").removeClass("progress-bar-success"); */
+      			   $("#perVal").removeClass('progress-bar-success')
+      			   $("#perVal").addClass("progress-bar-danger");
+      			 }
+      			 if(data>=50){
+      				 $("#perVal").removeClass('progress-bar-danger');
+      				 $("#perVal").addClass("progress-bar-success");
+      			 }
+      			 $("#disVal").empty();
+      			$("#disVal").append(data+'%');
+      			
+      			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
+    			 if(data<50){
+         			   $("#quickPerVal").removeClass('progress-bar-success');
+         			   $("#quickPerVal").addClass("progress-bar-danger");
+         			 }
+         			 if(data>=50){
+         				 $("#quickPerVal").removeClass('progress-bar-danger');
+         				 $("#quickPerVal").addClass("progress-bar-success");
+         			 }
 
-				if(data != null && data != 'undefined' && data != ""){
-             		if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	}else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		}else{
-             			$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
-           			 if(data<50){
-           			  /* $("#perVal").removeClass("progress-bar-success"); */
-           			   $("#perVal").removeClass('progress-bar-success')
-           			   $("#perVal").addClass("progress-bar-danger");
-           			 }
-           			 if(data>=50){
-           				 $("#perVal").removeClass('progress-bar-danger');
-           				 $("#perVal").addClass("progress-bar-success");
-           			 }
-           			 $("#disVal").empty();
-           			$("#disVal").append(data+'%');
-           			
-           			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
-         			 if(data<50){
-	          			   $("#quickPerVal").removeClass('progress-bar-success');
-	          			   $("#quickPerVal").addClass("progress-bar-danger");
-	          			 }
-	          			 if(data>=50){
-	          				 $("#quickPerVal").removeClass('progress-bar-danger');
-	          				 $("#quickPerVal").addClass("progress-bar-success");
-	          			 }
-
-       				$("#quickDisVal").empty();
-       				$("#quickDisVal").append(data+'%');
-           			
-           			
-           			 	 $("#selector4").removeAttr("style");
-            			 $("#selector4").css({ display: "block" });
-            			 $("#eduMsgDiv").html("Education deleted");
-             			 $("#popUpDiv").removeClass("edit-details-active");
-             			$("#remove_user_pop, .project_inn_mask").fadeOut();
-             			 candidateEducationList(candidateId);
-             			eduMsgFadeinFunction();
-             			 setTimeout(function(){
- 				 			candidateList();					 			
- 				 	    },100);
-			    	}
-               } 
+  				$("#quickDisVal").empty();
+  				$("#quickDisVal").append(data+'%');
+      			
+      			
+      			 	 $("#selector4").removeAttr("style");
+       			 $("#selector4").css({ display: "block" });
+       			 $("#eduMsgDiv").html("Education deleted");
+        			 $("#popUpDiv").removeClass("edit-details-active");
+        			$("#remove_user_pop, .project_inn_mask").fadeOut();
+        			 candidateEducationList(candidateId);
+        			eduMsgFadeinFunction();
+        			 setTimeout(function(){
+			 			candidateList();					 			
+			 	    },100);
+      		} else if (result.indexOf('Sign In') !== -1) {
+      			location.replace(sourceleadUrl);
+      		} else {
+      		    showError("Operation failed, please try again");
+      		}
+			 
         },
           
      }); 
@@ -992,7 +1019,12 @@ function clearSearchKeyEducation() {
 						
 						url : sourceleadUrl+"/upDateCandidateEducationByCandidateIdAndCandidateEducationId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
 						success : function(result) {
-							closePopup();
+							if (result && result.response === "INVALID_DATA") {
+							    showError(result.responseMessage);
+							} else if (result.response === "AWKWARD") {
+							    location.href = "/errorPage";
+							} else if (result.response === "SUCCESS") {
+								closePopup();
 		            			$("#selector4").removeAttr("style");
 		            			$("#selector4").css({ display: "block" });
 		            			$("#eduMsgDiv").html("Education details updated");
@@ -1002,6 +1034,11 @@ function clearSearchKeyEducation() {
 							setTimeout(function(){
 					 			candidateList();					 			
 					 		},100);
+							} else if (result.indexOf('Sign In') !== -1) {
+								location.replace(sourceleadUrl);
+							} else {
+							    showError("Operation failed, please try again");
+							}
 						},
 					}); 
 			return true;

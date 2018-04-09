@@ -78,6 +78,9 @@ public class RequirementHelper {
 			requirementIndex.setIsreceivingApplicants(requirement.getIsreceivingApplicants());
 			requirementIndex.setUrl(requirement.getUrl());
 			requirementIndex.setGeneratedId(requirement.getGeneratedId());
+			if(requirement.getIsClientJob() !=null){
+				requirementIndex.setIsClientJob(requirement.getIsClientJob());
+			}
 			if(requirement.getMedicalClearence() != null){
 			requirementIndex.setMedicalClearence(requirement.getMedicalClearence());
 			}
@@ -98,7 +101,7 @@ public class RequirementHelper {
 			}
 			
 			if(requirement.getProjectClientID() != null){
-				requirementIndex.setProjectClientID(requirement.getProjectClientID().toString());
+				requirementIndex.setProjectClientID(requirement.getProjectClientID().getId().toString());
 				}
 				if(requirement.getClientId() != null && requirement.getClientId().getId() != null){
 			requirementIndex.setOrgRelationId(requirement.getClientId().getId().toString());

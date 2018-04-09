@@ -2,10 +2,10 @@
 <script>
 $(document).ready(function() {
     $(".glyphicon-comment").mouseenter(function(){
-		$(".app_error_mes").addClass("app_error_mes_active");
+		$("#rejectedMessage${timesheetEntryDetailsDTO.projectMemberId}").addClass("app_error_mes_active");
 	});
     $(".glyphicon-comment").mouseleave(function(){
-		$(".app_error_mes").removeClass("app_error_mes_active");
+    	$("#rejectedMessage${timesheetEntryDetailsDTO.projectMemberId}").removeClass("app_error_mes_active");
 	});	
 });
 </script>
@@ -96,7 +96,10 @@ function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,
 		$(".checkBoxForSubmitForApproval").click(function () {
 	    	selectedRecords[$(this).val()] = $(this).is(":checked");
 	    });
-} 
+
+$('.selectpicker').selectpicker('refresh');
+$('.existedProjectTaskId'+projectId).selectpicker('refresh');
+}	
 </script>
 <script>
 function rejecteSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from){ 
@@ -141,7 +144,12 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 	        		 $("#row"+projectMemberId).empty();
 			    	 $("#row"+projectMemberId).html(rowHtmlContent);
 			    	 $("#status"+projectMemberId).html("Approved");
-			    	 $("#action"+projectMemberId).html("<h3>Approved</h3><b class='Rname'>By :"+locationName+"</b>"); 
+			    	 $("#action"+projectMemberId).html("<h3>Approved</h3><b class='Rname'>By :"+locationName+"</b>");
+			    	 $("#row"+projectMemberId).each(function() {
+			    		   $(this).find('input:checkbox:first').remove();
+			    		   var banIcon = '<small class="positionRelative"><i class="fa fa-ban text-danger"></i></small>';
+			    		   $(this).find('td:first-child').html(banIcon);
+         	        });
 	        	   }
 	    	 }else if (result.indexOf('Sign In') !== -1) {
 					location.replace(sourceleadUrl);
@@ -188,6 +196,11 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 	  	 	    	  $("#status"+projectMemberId).html("Rejected");
 	  	 	    	  $("#action"+projectMemberId).empty();
 	  	 	    	  $("#action"+projectMemberId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'><div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>"+msg+"</div></i><b class='Rname'>By :"+locationName+"</b>");
+	  	 	    	  $("#row"+projectMemberId).each(function() {
+			    		   $(this).find('input:checkbox:first').remove();
+			    		   var banIcon = '<small class="positionRelative"><i class="fa fa-ban text-danger"></i></small>';
+			    		   $(this).find('td:first-child').html(banIcon);
+       	        	  });
 	  	   	     }
 	  	   	     cancelRejectSubmission(projectMemberId);
 	  	   	    pagination();

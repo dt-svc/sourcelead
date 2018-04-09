@@ -1853,7 +1853,7 @@ function savedCommentAndCount(candidateId,submissionId) {
         		    location.href = "/errorPage";
         		} else if (data.response === "SUCCESS") {
         			var result = "";
-               	 	var json = JSON.parse(data.object);
+               	 	var json = data.data;
                	 	var totalComments = 0;
     			 	if(json.length > 0) {
     					totalComments = json.length;
@@ -1888,7 +1888,7 @@ function savedCommentAndCount(candidateId,submissionId) {
     			           
 			           	$("#latestMessage").empty();
 			           	$("#latestMessage").append(result);
-    			 	}
+    			 	} 
         		} else if (data.indexOf('Sign In') !== -1) {
         			location.replace(sourceleadUrl);
         		} else {
