@@ -13,6 +13,7 @@ import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
+import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.ImmigrationListView;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
@@ -70,6 +71,8 @@ public interface ImmigrationCommonDao {
 	 public String deletetImmigrationCandidateDocsById(Long id);
 	 
 	 public ImmigrationCandidateDocuments getImmigrationCandidateDocumentById(Long id);
+	 
+	 ImmigrationCandidateDocumentsHistory saveImmigrationCandidateDocumentHistory(ImmigrationCandidateDocumentsHistory immigrationCandidateDocumentsHistory) throws Exception;
 	 
 	 ImmigrationCandidateDocuments saveImmigrationCandidateDocs(ImmigrationCandidateDocuments immigrationCandidateDocuments) throws Exception;
 
