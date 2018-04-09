@@ -298,12 +298,22 @@ function getUserList(teamType){
 				                     var isSelected = "";
 				                     var isBlockedBySelected = "";
 				                     var selectAssignUsersIdsStr = ""+selectAssignUsersIds+"";
-				                     if(selectAssignUsersIds.includes(opt.id+','+opt.assignedTeamId)){
+				                     var str_array = selectAssignUsersIdsStr.match(/[^,]+,[^,]+/g);
+				                     for(var j = 0; j < str_array.length; j++) {
+				                        if((""+str_array[j]+"") === (""+opt.id+','+opt.assignedTeamId+"")){
+					                    	 isSelected = "checked disabled";
+					                     }else if((""+str_array[j]+"") === (""+opt.id+"")){
+					                    	 isBlockedBySelected = "fa fa-ban";
+					                    	 isSelected = "disabled";
+					                     }
+				                     }
+				                     
+				                     /* if(selectAssignUsersIds.includes(opt.id+','+opt.assignedTeamId)){
 				                    	 isSelected = "checked disabled";
 				                     }else if(selectAssignUsersIdsStr.includes(opt.id)){
 				                    	 isBlockedBySelected = "fa fa-ban";
 				                    	 isSelected = "disabled";
-				                     }
+				                     } */
 			                    	 result = result +'<tr>';
 			                    	 
 			                    	 var lastName = '';

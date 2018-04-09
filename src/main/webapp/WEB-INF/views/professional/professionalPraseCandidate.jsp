@@ -206,7 +206,7 @@
         <div class="form-group">
          <label class="col-md-3">Employment type<span class="text-danger">&nbsp;*</span></label>
          <div class="col-md-9">
-              <select class="selectpicker form-control" id="designationType" field-name="Employement Type" name="designationType" data-validation="required" onChange="getDesignationType(this);">
+              <select class="selectpicker form-control" id="designationType" field-name="Employment Type" name="designationType" data-validation="required" onChange="getDesignationType(this);">
                 <option value="">--Select--</option>
                  <option>C2C</option>
                  <option>W-2</option>
