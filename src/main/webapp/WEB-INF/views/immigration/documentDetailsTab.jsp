@@ -92,17 +92,19 @@
 				</div>
 			</div>	
 			
-			<div class="col-md-4 noPad">
-							<label class="switch mt5 text-center">
+						   <div class="col-md-4 col-md-offset-4">
+						   	<div class="mt5 clearfix">
+							   <input id="multipleCheckBox" title="Allow multiple Docs" name="multiple"  type="checkbox" value = "N" onclick = "allowMultipleDocs();">
+							   <label class="padding_left">Allow Multiple</label>
+							</div>
+						   </div>
+						   <div class="clearfix"></div>
+						   <div class="col-md-3 pull-right">
+							<label class="switch mt5 text-center pull-right">
 							<input id="requiredCheck" name="isRequired" title="Is Required" type="checkbox" value = "Y" onclick = "tempDocReq();">
 							<div class="slider round" title="Is Required"></div>
 							</label>
-						  </div>
-						   <div class="col-md-4">
-						   		<div class="mt5 ml5 clearfix">
-							   <input id="multipleCheckBox" title="Allow multiple Docs" name="multiple"  type="checkbox" value = "N" onclick = "allowMultipleDocs();">
-							   </div>
-						   </div>	
+						  </div>	
 						  
 				  <!-- <div class="col-md-4">
 				<div class="mt5 ml5 clearfix">
@@ -242,7 +244,7 @@ function removeDocPopUp(){
 	$(".popMask").fadeOut(200);
 	$("#docuView").fadeOut(100);
 	$("#candidate_Immigration_Doc")[0].reset();
-	$("#description1").val('');
+	//$("#description1").val('');
 }
 $(function() {
 	$("#uploadBtn").change(function() {

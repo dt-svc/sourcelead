@@ -800,7 +800,16 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	@Override
 	public ImmigrationCandidateForms saveImmigrationCandidateForms(ImmigrationTemplateFormDTO immigrationTemplateFormDTO, User user, OrgLocations orgLocations)
 			throws Exception {
-		ImmigrationCandidateForms immigrationCandidateForms = new ImmigrationCandidateForms();
+		ImmigrationCandidateForms immigrationCandidateForms = null;
+		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+		if(immigrationTemplateFormDTO.getImmigrationCandidateFormId() !=null){
+			immigrationCandidateForms = immigrationCommonDao.getImmigrationCandidateFormById(immigrationTemplateFormDTO.getImmigrationCandidateFormId());
+		}else{
+			immigrationCandidateForms = new ImmigrationCandidateForms();
+			immigrationCandidateForms.setCreatedBy(user);
+			immigrationCandidateForms.setCreatedDate(currentDate);
+
+		}
 		Candidate candidate =  new Candidate();
 		candidate.setId(Long.parseLong(immigrationTemplateFormDTO.getImmigrationcandidateId()));
 		ImmigrationTemplate immigrationTemplate = new ImmigrationTemplate ();
@@ -827,11 +836,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			FileUploadUtil.moveFile(immigrationTemplateFormDTO.getStaticPath(), fileInfo, "immigrationCandidateForms");
 			
 		}
-		immigrationCandidateForms.setCreatedBy(user);
+		
 		immigrationCandidateForms.setUpdatedBy(user);
-		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 		immigrationCandidateForms.setUpdatedDate(currentDate);
-		immigrationCandidateForms.setCreatedDate(currentDate);
 		
 		return immigrationCommonDao.saveImmigrationCandidateForms(immigrationCandidateForms);
 	}
