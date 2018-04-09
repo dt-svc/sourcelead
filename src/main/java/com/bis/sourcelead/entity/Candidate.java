@@ -520,6 +520,10 @@ public class Candidate implements Serializable {
 	 @JsonProperty
 	 private String commentsCount;
 	 
+	 @Transient
+	 @JsonProperty
+	 private String dateofBirthString;
+	 
 	public int getProfilePercentage()
 	{
 
