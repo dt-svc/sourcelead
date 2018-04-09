@@ -23,7 +23,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +41,7 @@ import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -78,8 +78,8 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PrimarySkillUtil;
+import com.bis.sourcelead.util.ResumeParserJsonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.SourceleadResumeParser;
 import com.thoughtworks.xstream.XStream;
@@ -170,28 +170,28 @@ public class CandidateRestController {
 		Response<String> response = new Response<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if (user != null) {
-		try {
-			
-			if (Validator.validate(candidateDto)) {
-				candidateDto.setStaticPath(staticPath);
-				// FileUploadUtil.fillUploadedFileInfo(candidateDto,
-				// candidateDto.getFileInfo());
-				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				Candidate candidate = candidateService.storeCandidate(candidateDto, orgLocation, user);
-				SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", "Success new candidate is created");
-				response.setResponse(Result.SUCCESS.name());
-				response.setResponseMessage(Result.SUCCESS.getValue());
-			} else {
-				response.setObject("DataMissing");
-				response.setResponse(Result.INVALID_DATA.name());
-				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			try {
+
+				if (Validator.validate(candidateDto)) {
+					candidateDto.setStaticPath(staticPath);
+					// FileUploadUtil.fillUploadedFileInfo(candidateDto,
+					// candidateDto.getFileInfo());
+					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					Candidate candidate = candidateService.storeCandidate(candidateDto, orgLocation, user);
+					SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", "Success new candidate is created");
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
-		} catch (Exception e) {
-			response.setResponse(Result.AWKWARD.name());
-			response.setResponseMessage(Result.AWKWARD.getValue());
-			logger.error(ExceptionUtils.getFullStackTrace(e));
-		}
-		} else{
+		} else {
 			response.setResponse(Result.SESSION_TIMEDOUT.name());
 			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
@@ -199,17 +199,17 @@ public class CandidateRestController {
 	}
 
 	@RequestMapping(value = { "/parseResume", "/app/parseResume" }, method = RequestMethod.POST)
-	public @ResponseBody Response<String> parseResume(@RequestParam(value = "json", required = false) String json,
+	public @ResponseBody Response<ResumeParserJsonUtil> parseResume(@RequestParam(value = "json", required = false) String json,
 			MultipartHttpServletRequest request,
 			@RequestParam(value = "locationMapFile", required = false) CommonsMultipartFile locationMapFileData) throws Exception {
-		Response<String> response = new Response<>();
+		Response<ResumeParserJsonUtil> response = new Response<>();
 		try {
 			MultipartFile multiFile = null;
 			Iterator<String> itrator = request.getFileNames();
 			if (itrator.hasNext()) {
 				multiFile = request.getFile(itrator.next());
 			}
-			String resumeDetails = null;
+			ResumeParserJsonUtil resumeDetails = null;
 			if (null != multiFile) {
 				String country = (String) SourceLeadSessionManager.getSessionAttribute(request, "country");
 				resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResume(multiFile.getBytes(), country);
@@ -266,12 +266,12 @@ public class CandidateRestController {
 	 * candidateSkillsService.validateSkillName(skillName); } return flag; }
 	 */
 	@RequestMapping(value = "/app/getCandidatesList", method = RequestMethod.POST)
-	public @ResponseBody Response<String> getCandidatesList(@RequestParam(value = "requirementId", required = false) Long requirementId,
+	public @ResponseBody ResponseList<CandidateIndex> getCandidatesList(
+			@RequestParam(value = "requirementId", required = false) Long requirementId,
 			@RequestParam(value = "candidateType", required = false) String candidateType,
 			@RequestParam(value = "isAssociate", required = false) String isAssociate, HttpServletRequest request) throws Exception {
-		Response<String> response = new Response<>();
+		ResponseList<CandidateIndex> responseList = new ResponseList<>();
 		try {
-			String resultJson = null;
 			String candidateStatus = null;
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			// List<Candidate> candidatesList =
@@ -324,16 +324,15 @@ public class CandidateRestController {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			resultJson = toJSON(candidatesList);
-			response.setObject(resultJson);
-			response.setResponse(Result.SUCCESS.name());
-			response.setResponseMessage(Result.SUCCESS.getValue());
+			responseList.setData(candidatesList);
+			responseList.setResponse(Result.SUCCESS.name());
+			responseList.setResponseMessage(Result.SUCCESS.getValue());
 		} catch (Exception e) {
-			response.setResponse(Result.AWKWARD.name());
-			response.setResponseMessage(Result.AWKWARD.getValue());
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		return response;
+		return responseList;
 	}
 
 	/**
@@ -345,11 +344,10 @@ public class CandidateRestController {
 	 * @throws NullPointer
 	 */
 	@RequestMapping(value = "/app/checkCandidateState", method = RequestMethod.POST)
-	public @ResponseBody Response<String> checkCandidateState(@RequestParam(value = "candidateId", required = false) Long candidateId,
+	public @ResponseBody Response<Boolean> checkCandidateState(@RequestParam(value = "candidateId", required = false) Long candidateId,
 			HttpServletRequest request) throws Exception {
-		Response<String> response = new Response<>();
+		Response<Boolean> response = new Response<>();
 		try {
-			String resultJson = null;
 			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 			Boolean isCandidateActive = false;
 			if (null != candidate) {
@@ -357,8 +355,7 @@ public class CandidateRestController {
 					isCandidateActive = true;
 				}
 			}
-			resultJson = toJSON(isCandidateActive);
-			response.setObject(resultJson);
+			response.setObject(isCandidateActive);
 			response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());
 		} catch (Exception e) {
@@ -402,15 +399,13 @@ public class CandidateRestController {
 	}
 
 	@RequestMapping(value = "/app/getUserByRoleId", method = RequestMethod.POST)
-	public @ResponseBody Response<String> getUserByRoleId(@RequestParam(value = "roleId", required = false) Long roleId,
+	public @ResponseBody ResponseList<User> getUserByRoleId(@RequestParam(value = "roleId", required = false) Long roleId,
 			HttpServletRequest request) throws Exception {
-		Response<String> response = new Response<>();
+		ResponseList<User> response = new ResponseList<>();
 		try {
-			String resultJson = null;
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			List<User> userList = userService.getUsersForConsultantsByUserRoleIdAndOrgLocationId(roleId, orgLocations.getId());
-			resultJson = toJSON(userList);
-			response.setObject(resultJson);
+			response.setData(userList);
 			response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());
 		} catch (Exception e) {
@@ -422,10 +417,9 @@ public class CandidateRestController {
 	}
 
 	@RequestMapping(value = "/app/getAllRoleUsers", method = RequestMethod.POST)
-	public @ResponseBody Response<String> getAllRoleUsers(HttpServletRequest request) throws Exception {
-		Response<String> response = new Response<>();
+	public @ResponseBody ResponseList<User> getAllRoleUsers(HttpServletRequest request) throws Exception {
+		ResponseList<User> response = new ResponseList<>();
 		try {
-			String resultJson = null;
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			List<User> userList = userService.getUsersForAddAsConsultant(org, orgLocations.getId());
@@ -435,8 +429,7 @@ public class CandidateRestController {
 					user.setUserType(userRole.getRoles().getDisplayName());
 				}
 			}
-			resultJson = toJSON(userList);
-			response.setObject(resultJson);
+			response.setData(userList);
 			response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());
 		} catch (Exception e) {
@@ -448,8 +441,8 @@ public class CandidateRestController {
 	}
 
 	@RequestMapping(value = "/app/getConsultantUserDetailsById", method = RequestMethod.POST)
-	public @ResponseBody Response<String> getConsultantUserDetailsById(@RequestParam(value = "userId", required = false) Long userId) {
-		Response<String> response = new Response<>();
+	public @ResponseBody ResponseList<String> getConsultantUserDetailsById(@RequestParam(value = "userId", required = false) Long userId) {
+		ResponseList<String> response = new ResponseList<>();
 		try {
 			ArrayList<String> userList = new ArrayList<String>();
 			User user = null;
@@ -465,7 +458,7 @@ public class CandidateRestController {
 				userList.add(user.getMobilePhone());
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
-				response.setObject(commonUtil.toJSON(userList));
+				response.setData(userList);
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
@@ -515,22 +508,20 @@ public class CandidateRestController {
 
 	@PreAuthorize("hasRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')")
 	@RequestMapping(value = "/app/getTeams", method = RequestMethod.POST)
-	public @ResponseBody Response<String> getTeams(HttpServletRequest request) throws Exception {
-		Response<String> response = new Response<>();
+	public @ResponseBody ResponseList<Team> getTeams(HttpServletRequest request) throws Exception {
+		ResponseList<Team> responseList = new ResponseList<>();
 		try {
-			String resultJson = null;
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			List<Team> teamList = teamService.getTeamListByOrgLocationID(orgLocations.getId());
-			resultJson = toJSON(teamList);
-			response.setObject(resultJson);
-			response.setResponse(Result.SUCCESS.name());
-			response.setResponseMessage(Result.SUCCESS.getValue());
+			responseList.setData(teamList);
+			responseList.setResponse(Result.SUCCESS.name());
+			responseList.setResponseMessage(Result.SUCCESS.getValue());
 		} catch (Exception e) {
-			response.setResponse(Result.AWKWARD.name());
-			response.setResponseMessage(Result.AWKWARD.getValue());
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		return response;
+		return responseList;
 	}
 
 	/**
@@ -541,14 +532,13 @@ public class CandidateRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/app/verifyCoolingOffPeriod")
-	public Response<String> verifyCoolingOffPeriod(@RequestParam(value = "requirementId", required = false) Long requirementId,
+	public Response<Boolean> verifyCoolingOffPeriod(@RequestParam(value = "requirementId", required = false) Long requirementId,
 			@RequestParam(value = "candidateEmail", required = false) String candidateEmail,
 			@RequestParam(value = "reqCoolingOffPeriod", required = false) String reqCoolingOffPeriod, Long orgLocationId)
 			throws Exception {
-		Response<String> response = new Response<>();
+		Response<Boolean> response = new Response<>();
 		try {
 			OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
-			String resultJson = "false";
 			String[] coolingOffArr = null;
 			String period = "0";
 			if (reqCoolingOffPeriod != null && !reqCoolingOffPeriod.isEmpty() && reqCoolingOffPeriod != "undefined") {
@@ -588,12 +578,11 @@ public class CandidateRestController {
 					.isInCoolingOffPeriodByEmailAndLocationsId(candidateEmail, loginOrgLocation, reqCoolingOffPeriodDays, requirementId);
 			if (null != requirementSubmissionHistory) {
 				if (requirementSubmissionHistory.getIsInCoolingOffPeriod()) {
-					resultJson = commonUtil.toJSON(requirementSubmissionHistory.getIsInCoolingOffPeriod());
+					response.setObject(requirementSubmissionHistory.getIsInCoolingOffPeriod());
 				} else {
-					resultJson = commonUtil.toJSON("false");
+					response.setObject(false);
 				}
 			}
-			response.setObject(resultJson);
 			response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());
 		} catch (Exception e) {
@@ -614,12 +603,11 @@ public class CandidateRestController {
 	 */
 	@RequestMapping(value = "/app/getRequirementHistoryListByCandidateId")
 
-	public Response<String> getRequirementHistoryListByCandidateId(@RequestParam(value = "candidateId", required = false) Long candidateId,
-			HttpServletRequest request) throws Exception {
-		Response<String> response = new Response<>();
+	public ResponseList<RequirementSubmission> getRequirementHistoryListByCandidateId(
+			@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request) throws Exception {
+		ResponseList<RequirementSubmission> responseList = new ResponseList<>();
 		try {
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			String resultJson;
 			// SimpleDateFormat format = loginOrgLocation.getLocFullFormDateFormatter();
 			List<RequirementSubmission> requirementSubmission = requirementSubmissionService
 					.getRequirementHistoryListByCandidateIdAndOrgLocationID(candidateId, loginOrgLocation.getId());
@@ -657,16 +645,15 @@ public class CandidateRestController {
 				}
 
 			}
-			resultJson = commonUtil.toJSON(requirementSubmission);
-			response.setObject(resultJson);
-			response.setResponse(Result.SUCCESS.name());
-			response.setResponseMessage(Result.SUCCESS.getValue());
+			responseList.setData(requirementSubmission);
+			responseList.setResponse(Result.SUCCESS.name());
+			responseList.setResponseMessage(Result.SUCCESS.getValue());
 		} catch (Exception e) {
-			response.setResponse(Result.AWKWARD.name());
-			response.setResponseMessage(Result.AWKWARD.getValue());
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		return response;
+		return responseList;
 	}
 
 	/**
@@ -678,14 +665,13 @@ public class CandidateRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/app/getRequirementHistoryDetailsByCandidateId")
-	public Response<String> getRequirementHistoryDetailsByCandidateId(
+	public ResponseList<RequirementSubmissionHistory> getRequirementHistoryDetailsByCandidateId(
 			@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "requirementId", required = false) Long requirementId,
 			@RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request) throws Exception {
-		Response<String> response = new Response<>();
+		ResponseList<RequirementSubmissionHistory> response = new ResponseList<>();
 		try {
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			String resultJson;
 			List<RequirementSubmissionHistory> requirementSubmissionhistory = requirementSubmissionHistoryService
 					.getRequirementHistoryListByCandidateIdAndOrgLocationIdAndRequirementIdAndSubmissionId(candidateId,
 							loginOrgLocation.getId(), requirementId, submissionId);
@@ -829,8 +815,7 @@ public class CandidateRestController {
 					rsh.setInterviewType(requirementInterview.getInterviewType());
 				}
 			}
-			resultJson = commonUtil.toJSON(requirementSubmissionhistory);
-			response.setObject(resultJson);
+			response.setData(requirementSubmissionhistory);
 			response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());
 		} catch (Exception e) {
