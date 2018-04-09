@@ -77,7 +77,13 @@ function datatableBody(){
 	 } 
  }
  </script> -->
-
+<script>
+$(document).ready(function(){
+	if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	 }
+});
+</script>
 
 <script>
 $("#SearchExpensesData").keyup(function(event) {
