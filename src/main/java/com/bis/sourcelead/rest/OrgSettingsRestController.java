@@ -31,12 +31,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.WhiteListIpAddressDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CompanyRegistrationDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.dto.OrgSettingsDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.dto.SourceleadRolesDTO;
 import com.bis.sourcelead.dto.WhiteListIPAddressDTO;
@@ -53,6 +55,7 @@ import com.bis.sourcelead.entity.SourceleadSignature;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.WhiteListIPAddress;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.ExpensesService;
@@ -131,7 +134,7 @@ public class OrgSettingsRestController {
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/app/saveOrgSettings", method = RequestMethod.POST)
-	public String saveOrgSettings(OrgSettingsDTO orgSettingsDTO, HttpServletRequest request) throws Exception
+	public Response<String> saveOrgSettings(OrgSettingsDTO orgSettingsDTO, HttpServletRequest request) throws Exception
 	{
 		/*
 		 * Iterator<String> itrator = request.getFileNames(); MultipartFile
@@ -139,27 +142,45 @@ public class OrgSettingsRestController {
 		 */
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		ModelMapper mapper1 = new ModelMapper();
-		OrgSettings orgSettings = mapper1.map(orgSettingsDTO, OrgSettings.class);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Response<String> response = new Response<>();
+	
 		try {
-			// org = orgService.saveOrgSettings(orgSettings, multiFile, org);
-			orgLocations = orgLocationService.saveOrgLocations(orgSettings, orgLocations);
-			if (orgLocations.getGeneratedUserId() != null) {
-				changeShortCodeForExpenses(orgLocations.getGeneratedUserId(), orgLocations.getId());
+			if(user != null){
+			if (Validator.validate(orgSettingsDTO)) {
+				ModelMapper mapper1 = new ModelMapper();
+				OrgSettings orgSettings = mapper1.map(orgSettingsDTO, OrgSettings.class);
+				
+					orgLocations = orgLocationService.saveOrgLocations(orgSettings, orgLocations);
+					if (orgLocations.getGeneratedUserId() != null) {
+						changeShortCodeForExpenses(orgLocations.getGeneratedUserId(), orgLocations.getId());
+					}
+					SourceLeadSessionManager.setSessionAttribute(request, "org", org);
+					SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
+					SourceLeadSessionManager.setSessionAttribute(request, "orgName", orgLocations.getOrgLocationName());
+					SourceLeadSessionManager.setSessionAttribute(request, "address", orgLocations.getOrgLocationAddress());
+					SourceLeadSessionManager.setSessionAttribute(request, "website", orgLocations.getWebsite());
+					SourceLeadSessionManager.setSessionAttribute(request, "dba", orgLocations.getDba());
+					SourceLeadSessionManager.setSessionAttribute(request, "businessType", orgSettings.getBusinessType());
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+			}else{
+				response.setObject("DataMissing");
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
 			}
-			// LoginSessionController.DATEFORMAT = new
-			// SimpleDateFormat(orgLocations.getDateFormat());
-			SourceLeadSessionManager.setSessionAttribute(request, "org", org);
-			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
-			SourceLeadSessionManager.setSessionAttribute(request, "orgName", orgLocations.getOrgLocationName());
-			SourceLeadSessionManager.setSessionAttribute(request, "address", orgLocations.getOrgLocationAddress());
-			SourceLeadSessionManager.setSessionAttribute(request, "website", orgLocations.getWebsite());
-			SourceLeadSessionManager.setSessionAttribute(request, "dba", orgLocations.getDba());
-			SourceLeadSessionManager.setSessionAttribute(request, "businessType", orgSettings.getBusinessType());
-		} catch (Exception e) {
+		}else{
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+
+	} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		return "home";
+
+		return response;
 	}
 	
 	private void changeShortCodeForExpenses(String generatedUserId, Long orgLocationId) throws Exception
