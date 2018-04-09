@@ -145,6 +145,11 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 			    	 $("#row"+projectMemberId).html(rowHtmlContent);
 			    	 $("#status"+projectMemberId).html("Approved");
 			    	 $("#action"+projectMemberId).html("<h3>Approved</h3><b class='Rname'>By :"+locationName+"</b>");
+			    	 $("#row"+projectMemberId).each(function() {
+			    		   $(this).find('input:checkbox:first').remove();
+			    		   var banIcon = '<small class="positionRelative"><i class="fa fa-ban text-danger"></i></small>';
+			    		   $(this).find('td:first-child').html(banIcon);
+         	        });
 	        	   }
 	    	 }else if (result.indexOf('Sign In') !== -1) {
 					location.replace(sourceleadUrl);
@@ -191,6 +196,11 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 	  	 	    	  $("#status"+projectMemberId).html("Rejected");
 	  	 	    	  $("#action"+projectMemberId).empty();
 	  	 	    	  $("#action"+projectMemberId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'><div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>"+msg+"</div></i><b class='Rname'>By :"+locationName+"</b>");
+	  	 	    	  $("#row"+projectMemberId).each(function() {
+			    		   $(this).find('input:checkbox:first').remove();
+			    		   var banIcon = '<small class="positionRelative"><i class="fa fa-ban text-danger"></i></small>';
+			    		   $(this).find('td:first-child').html(banIcon);
+       	        	  });
 	  	   	     }
 	  	   	     cancelRejectSubmission(projectMemberId);
 	  	   	    pagination();

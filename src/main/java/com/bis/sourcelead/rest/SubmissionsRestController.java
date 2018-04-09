@@ -203,16 +203,16 @@ public class SubmissionsRestController {
 				if(score != null && !"".equalsIgnoreCase(score)){
 					candidate.setCandidateScore(score);
 				}
+				
+				boolean isSumbitted = requirementSubmissionService.isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(candidateId, requirementId);
+				if(isSumbitted == true){
+					candidate.setIsCandidateSubmitted(Constants.YES);
+				}else{
+					candidate.setIsCandidateSubmitted(Constants.NO);
+				}
 			}
 			int percentage = candidateService.getCandidatePercentage(candidate,orgLocation);
 			candidate.setProfilePercentage(percentage);
-			
-			boolean isSumbitted = requirementSubmissionService.isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(candidateId, requirementId);
-			if(isSumbitted == true){
-				candidate.setIsCandidateSubmitted(Constants.YES);
-			}else{
-				candidate.setIsCandidateSubmitted(Constants.NO);
-			}
 			
 			CandidateResumes candidateResume = candidateResumesService.getCandidateLatesResumes(candidateId, Constants.RECORD_ACTIVE);
 			if(candidateResume != null){

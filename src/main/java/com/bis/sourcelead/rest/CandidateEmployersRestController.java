@@ -163,7 +163,6 @@ public class CandidateEmployersRestController {
 				Long loc = employers.getOrgLocationId().getId();
 
 				List<CandidateEmployerDTO> candidateEmployeeDTOList = new ArrayList<>();
-				String resultJson;
 				List<CandidateEmployers> candidatesEmployersList = candidateEmployersService
 						.getCandidatesEmployersListByCandidateIdAndOrgLocationID(candidateEmployer.getCandidateId(), loc);
 

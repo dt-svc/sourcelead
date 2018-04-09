@@ -61,7 +61,7 @@ function requirementHistoryList(candidateId){
         	 if (response.response === "AWKWARD") {
         		    location.href = "/errorPage";
         		} else if (response.response === "SUCCESS") {
-        			var json = JSON.parse(response.object);
+        			var json = response.data;
                	 	$("#requirementHistoryDiv").empty();
                	 	var result = "";
             	    result = result  +'	      <table id="requirementHistoryPagination" class="display" cellspacing="0" width="100%">';
@@ -174,8 +174,7 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
         	if (response.response === "AWKWARD") {
        		    location.href = "/errorPage";
        		} else if (response.response === "SUCCESS") {
-       			var json = JSON.parse(response.object);
-            	
+       			var json = response.data;
             	var result = "";
          		result = result  +'	<div class="reqPopInn reqHistTitle">';
          		result = result  +'		<div class="reqClose">';
