@@ -393,7 +393,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return residenceObj;
 	}
 	
-	  @Override
+	  	@Override
 			@Transactional(rollbackFor = { Exception.class })
 			public CandidatePassportVisa getCandidatePassportVisaDetailsById(Long id) {
 				System.out.println("get CandidateFamilyDetails id ---> "+id);
@@ -432,6 +432,36 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return immigrationCandidateDocuments;
 }
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ImmigrationCandidateForms getImmigrationCandidateFormById(Long id) {
+		ImmigrationCandidateForms formObj= null;
+        try {
+			Session session = this.sessionFactory.getCurrentSession();
+			formObj = (ImmigrationCandidateForms)session.get(ImmigrationCandidateForms.class,id);
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing getting record -->"+e.getMessage());
+			e.printStackTrace();
+		}
+		return formObj;
+	}
+	
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public String deletetImmigrationCandidateFormsById(Long id) {
+	        try {
+				Session session = this.sessionFactory.getCurrentSession();
+				ImmigrationCandidateForms forms = (ImmigrationCandidateForms)session.load(ImmigrationCandidateForms.class,id);
+				session.delete(forms);
+				session.flush();
+			} catch (HibernateException e) {
+				logger.error("SQL Exception occured while doing delete -->"+e.getMessage());
+				e.printStackTrace();
+			}
+		return "success";
+	}
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })

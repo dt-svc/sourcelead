@@ -718,6 +718,16 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		 immigrationCommonDao.removeCandidatePassportVisaDetails(candidateId, id, user, orgLocations,idType);
 
 	}
+	
+	@Override
+	public String deletetImmigrationCandidateFormsById(Long id) {
+		return immigrationCommonDao.deletetImmigrationCandidateFormsById(id);
+	}
+	
+	@Override
+	public ImmigrationCandidateForms getImmigrationCandidateFormById(Long id) {
+		return  immigrationCommonDao.getImmigrationCandidateFormById(id);
+	}
 
 	@Override
 	public String deleteCandidateResidenceDetails(Long id,Long candidateId) {
