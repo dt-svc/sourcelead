@@ -133,13 +133,14 @@
 			</div>	 								
 		</div>
 		<div class="clearfix"></div>
+		</div>	
 		<div class="immiPopFoot mt clearfix">
             <input value="Save" class="" type="button" id="save_Buton" onclick="saveResidenceDetails('save');">
             <input value="Cancel" class="popCan" type="button" onclick="refreshResidency();">
           </div>		
         
        
-	</div>	<!-- popcode code End -->
+	<!-- popcode code End -->
 	</div>
 		</form>
 		
