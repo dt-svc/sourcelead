@@ -676,6 +676,31 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		String subQuery4 = " and ((:varZero  IN (:managerIdsList)) OR (:varZero NOT IN (:managerIdsList) and pc.id IN (select pah.projectClientsId.id from ProjectApproverHierarchy pah where pah.approverUserId.id IN (:managerIdsList)))) ";
 		
 		
+		
+		String subQuery5 ="";
+		if(projectsDTO.getInvoiceFrequency() != null && !projectsDTO.getInvoiceFrequency().isEmpty()){
+			String[] frequencyFilter = projectsDTO.getInvoiceFrequency().split(",");
+			if (Arrays.asList(frequencyFilter).contains("Weekly")) {
+				subQuery5 = subQuery5 + "ps.invoiceFrequency = 'Weekly' or ";
+			}
+			
+			if (Arrays.asList(frequencyFilter).contains("Bi-Weekly")) {
+				subQuery5 = subQuery5 + "ps.invoiceFrequency = 'Bi-Weekly' or ";
+			}
+			
+			if (Arrays.asList(frequencyFilter).contains("Semi-Monthly")) {
+				subQuery5 = subQuery5 + "ps.invoiceFrequency = 'Semi-Monthly' or ";
+			}
+			
+			if (Arrays.asList(frequencyFilter).contains("Monthly")) {
+				subQuery5 = subQuery5 + "ps.invoiceFrequency = 'Monthly' or ";
+			}
+			
+			subQuery5 = "and (" + subQuery5.substring(0, subQuery5.length() - 4) + ")";
+		}
+		
+		
+		
 		//usertList shorting order
 				String sortingQry = "";
 				if(StringUtils.isNotBlank(projectsDTO.getSortColumn())) {
@@ -683,7 +708,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 				}
 		
 		
-		query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId "+subQuery2+" "+approverQuery+" "+subQuery4+") "+projectModeQuery+" "+subQuery1+" "+subQuery3+" ";
+		query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId "+subQuery2+" "+approverQuery+" "+subQuery4+") "+projectModeQuery+" "+subQuery1+" "+subQuery3+" "+subQuery5+" ";
 		if(query1.toString() != null && !query1.toString().isEmpty()){
 			 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+sortingQry);
 		}else{

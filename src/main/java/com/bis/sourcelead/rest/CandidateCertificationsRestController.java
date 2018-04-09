@@ -276,7 +276,6 @@ public class CandidateCertificationsRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 				if (candidateId > 0 && candidateCertificationId > 0) {
-					// String resultJson;
 					Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 					OrgLocations orgLocations = orgLocationService.getOrgLocations(candidate.getOrgLocationId().getId());
 					CandidateCertifications candidateCertificationsList = candidateCertificationsService

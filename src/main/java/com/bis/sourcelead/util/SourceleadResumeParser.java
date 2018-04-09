@@ -43,7 +43,7 @@ public class SourceleadResumeParser {
 	@Autowired
 	LookUpDataService lookUpDataService;
 
-	public String getCandidateDetailsFromResume(byte[] source, String country) throws Exception {
+	public ResumeParserJsonUtil getCandidateDetailsFromResume(byte[] source, String country) throws Exception {
 
 		BodyContentHandler htmlHandler = new BodyContentHandler();
 		ByteArrayInputStream stream = new ByteArrayInputStream(source);
@@ -71,7 +71,7 @@ public class SourceleadResumeParser {
 			skills = skills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]", "");
 			jsonUtil.setSkills(skills);
 		}
-		return toJSON(jsonUtil);
+		return jsonUtil;
 	}
 
 	public ResumeParserJsonUtil getCandidateDetailsFromResume1(File file, String country) throws Exception {

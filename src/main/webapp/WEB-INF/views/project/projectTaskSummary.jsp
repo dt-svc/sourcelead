@@ -656,19 +656,29 @@ function inlineEditTaskSeverity(taskId){
 }
 
 function inlineEditDescription(taskId){
-	var desc = $(".Editor-editor").html(); 
-	var userId = '${SourceLeadWeb_userId}';
-	 $.ajax({
-		   	type: "POST",
-		    url: sourceleadUrl+"/ProjectTasks/updateTaskDescription?${_csrf.parameterName}=${_csrf.token}&description="+desc+"&taskId="+taskId+"&userId="+userId,    
-		    success: function(data) {
-		    	$("#jobAlert2").removeAttr("style");
-    			$("#jobAlert2").css({ display: "block" });
-				$("#editJobAlertMsgDiv").html("Successfully Update Description");
-					editAlertMsgFadeinFunction();
-					getTaskActivities();
-		    }
-	 }); 
+	var ee = $("#txtEditor2").val($('.Editor-editor').html()); 
+	 if ($('#taskdescription_form').validate(false, validationSettings)) {
+		var formData = getFormData1("taskdescription_form");
+		var userId = '${SourceLeadWeb_userId}';
+		$.ajax({
+			 type : "POST",
+			 data: formData,
+	         processData: false,
+	         contentType:false, 
+	         url : sourceleadUrl+"/ProjectTasks/updateTaskDescription?${_csrf.parameterName}=${_csrf.token}&id="+taskId+"&loginUserId="+userId,
+			  success : function(data) {
+				   $("#jobAlert2").removeAttr("style");
+	    			$("#jobAlert2").css({ display: "block" });
+					$("#editJobAlertMsgDiv").html("Successfully Update Description");
+						editAlertMsgFadeinFunction();
+						getTaskActivities(); 
+			}, 
+		});
+		return true;
+	}else {
+		return false;
+	} 
+	
 }
 function inlineEditTaskPercentage(taskId){
 	var percentageId = $("#taskPercentageId").val();
@@ -719,11 +729,12 @@ function inlineEditBillingType(taskId){
 		    	 result = result +' <div class="success_pop" id="jobAlert2" style="display: none;">';
 				 result = result +'  <i class="fa fa-check-circle"></i><span id="editJobAlertMsgDiv"></span>';
 				 result = result +' </div> ';
-				 
+				 result  = result + '<form id="taskdescription_form" name="taskdescription_form" method="post">';
 			   	 result  = result + '<div class="col-md-12 clearfix txtEditor_p saveBtn">';
 			   	 result = result + '<textarea id="txtEditor2" name="taskDescription" value="'+ json.description +'" class="form-control newContrtextarea">' + json.description + '</textarea>';
 			   	 result  = result  + '<div class="mt5 clearfix"><button type"button" class="pull-right btn btn-sm btn-warning save-btn" onclick="inlineEditDescription('+projectTaskId+');">Save</button></span>';
 			   	 result  = result  + '</div>';
+			   	 result  = result + '</form>';
 			   	 result  = result  + '</div>';
 			     $("#descrptionid").append(result);
 			     $("#txtEditor2").Editor();

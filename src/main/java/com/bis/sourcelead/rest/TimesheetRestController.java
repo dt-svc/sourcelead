@@ -2194,6 +2194,32 @@ public class TimesheetRestController {
 		            	 timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(submissionId.toString());
 		            	 if(timesheetSubmissions != null){
 		            		 List<SubmissionApproverHierarchy> saHierarchyList =  submissionApproverHierarchyService.getSubmissionApproverHierarchyBySubmissionId(timesheetSubmissions.getId());
+		            		if(saHierarchyList == null || saHierarchyList.isEmpty()) {
+		            			ArrayList<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
+				    	    	List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectMemberMasterCandidateIdAndProjectId(projectMember.getMasterCandidateId().getId(), projectMember.getProjects().getId());
+				    	        if(hierarchyList != null && !hierarchyList.isEmpty()){
+				    					for(ProjectApproverHierarchy hierarchy : hierarchyList){
+				    						SubmissionApproverHierarchy saHierarchy = new SubmissionApproverHierarchy();
+				    						saHierarchy.setHeirarchyId(hierarchy);
+				    						saHierarchy.setSubmissionId(timesheetSubmissions);
+				    						saHierarchy.setSubmissionStatus(Submission_Status.getNameByValue(status));
+				    						saHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("new"));
+				    						saHierarchy.setCreatedDate(timesheetSubmissions.getCreatedDate());
+				    						if(frequencyStartDate != null)
+					    			        saHierarchy.setFrequencyStartDate(frequencyStartDate);
+											if(frequencyEndDate != null)
+										    saHierarchy.setFrequencyEndDate(frequencyEndDate);
+				    						saHierarchy.setCreatedBy(timesheetSubmissions.getCreatedBy());
+				    						saHierarchy.setUpdatedDate(timesheetSubmissions.getUpdatedDate());
+				    						saHierarchy.setUpdatedBy(timesheetSubmissions.getUpdatedBy());
+				    						saHierarchy.setStatus(Constants.RECORD_ACTIVE+"");
+				    						freshSaHierarchyList.add(saHierarchy);
+				    					}
+				    					timesheetSubmissions.setApproverHierarchyList(freshSaHierarchyList);
+				    			}
+				    			timesheetSubmissionsList.add(timesheetSubmissions);
+				    			timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
+		            		  }
 		            		 for(SubmissionApproverHierarchy saHierarchy : saHierarchyList){
 		            			   Submission_Status currentSahStatus = saHierarchy.getSubmissionStatus();
 		            			   if(currentSahStatus != null && currentSahStatus.equals(Submission_Status.SUBMITTED)  && StringUtils.isNotEmpty(savingType) && !savingType.equalsIgnoreCase("user") && StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("Draft")){
@@ -3100,7 +3126,11 @@ public class TimesheetRestController {
 					String dateList = commonUtil.getDaysBetweenDates(leave.getFromDate(), leave.getToDate(), orgLocations.getDateFormat());
 					String leaveDate[] = dateList.split(",");
 					for(int i=0;i<leaveDate.length;i++) {
-						addTimesheetDayEntriesByProjectIdAndProjectMemberId(projectTask.getProjectId().getId(), projectMember.getId(), projectTask.getProjectTasksUUID(), leaveDate[i],CalendarUtil.getTimesheetHoursDisplayFormat(orgLocations.getAverageWorkingHours().floatValue()).replace(".", ":"), leave.getReason(), leaveApproverUserId, orgLocations,leaveStatusType);
+						if((leave.getFromHalfDay().equalsIgnoreCase("YES") || leave.getToHalfDay().equalsIgnoreCase("YES")) && orgLocations.getAverageWorkingHours() != null && orgLocations.getAverageWorkingHours().floatValue() > 0) {
+							addTimesheetDayEntriesByProjectIdAndProjectMemberId(projectTask.getProjectId().getId(), projectMember.getId(), projectTask.getProjectTasksUUID(), leaveDate[i],CalendarUtil.getHalfTimesheetHoursDisplayFormat(orgLocations.getAverageWorkingHours().floatValue()).replace(".", ":"), leave.getReason(), leaveApproverUserId, orgLocations,leaveStatusType);
+						}else {
+							addTimesheetDayEntriesByProjectIdAndProjectMemberId(projectTask.getProjectId().getId(), projectMember.getId(), projectTask.getProjectTasksUUID(), leaveDate[i],CalendarUtil.getTimesheetHoursDisplayFormat(orgLocations.getAverageWorkingHours().floatValue()).replace(".", ":"), leave.getReason(), leaveApproverUserId, orgLocations,leaveStatusType);
+						}
 						}
 					}
 				}
@@ -3437,6 +3467,67 @@ public class TimesheetRestController {
 		}
 		}
 		
+		
+		
+		@RequestMapping(value = "/getExportTimeSheetForApprovalMechanizm")
+		public void getExportTimeSheetForApprovalMechanizm(HttpServletRequest request,
+				@RequestParam(value = "startDate", required = false) String startDate,
+				@RequestParam(value = "endDate", required = false) String endDate,
+				@RequestParam(value = "exportType", required = false) String exportType,
+				@RequestParam(value = "client", required = false) String client,
+				@RequestParam(value = "stage", required = false) String stage,
+				@RequestParam(value = "timesheetFrequency", required = false) String timesheetFrequency,
+				@RequestParam(value = "frequencyMonth", required = false) String frequencyMonth,
+				@RequestParam(value = "weekFrequency", required = false) String weekFrequency, HttpServletResponse response)
+				throws Exception {
+
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			// DateFormat df = Constants.DMY;
+			// DateFormat df = LoginSessionController.DATEFORMAT;
+			Date stDate = null;
+			Date edDate = null;
+			if (null != startDate && !("undefined").equalsIgnoreCase(startDate) && null != endDate
+					&& !("undefined").equalsIgnoreCase(endDate)) {
+				stDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), startDate);
+				edDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), endDate);
+			}
+			File file = null;
+
+			if (timesheetFrequency.equalsIgnoreCase("Monthly")) {
+				Map<String, Date> dateList = CalendarUtil
+						.getMonthStartDateAndEndDateFromGivenMonthString(frequencyMonth.toString());
+
+				stDate = dateList.get("STARTDATE");
+				edDate = dateList.get("ENDDATE");
+			}
+			if ("pdf".equalsIgnoreCase(exportType)) {
+				file = exportTimesheetEntries.timeSheetApprovelExport(user, orgLocations, stDate, edDate,
+						timesheetFrequency, client, stage, frequencyMonth, weekFrequency);
+			} else {
+				file = exportTimesheetEntries.timeSheetApprovelExportExcel(user, orgLocations, stDate, edDate,
+						timesheetFrequency, client, stage, frequencyMonth, weekFrequency);
+			}
+
+			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			StringBuilder fileName = new StringBuilder();
+			response.setHeader("Content-Disposition",
+					fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();
+		}
+			
+		
+		
 		@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS')")
 		@RequestMapping(value = "/projectTasksById" , method = RequestMethod.POST)
 		public @ResponseBody  String getProjectTasks(
@@ -3458,5 +3549,5 @@ public class TimesheetRestController {
 			 	
 		 }
 
-		
+	
 }
