@@ -61,6 +61,10 @@ public interface ImmigrationCommonService {
 	 
 	 CandidateResidence getCandidateResidenceDetailsById(Long id);
 	 
+	 ImmigrationCandidateForms getImmigrationCandidateFormById(Long id);
+		
+	 String deletetImmigrationCandidateFormsById(Long id);
+	 
 	 CandidatePassportVisa getCandidatePassportVisaDetailsById(Long id);
 	 
 	 ImmigrationCandidateDocuments saveImmigrationCandidateDocs(ImmigrationTemplateDocDTO immigrationTemplateDocDTO,User user, OrgLocations orgLocations) throws Exception;

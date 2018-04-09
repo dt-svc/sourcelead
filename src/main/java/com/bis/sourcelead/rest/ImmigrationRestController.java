@@ -554,6 +554,40 @@ public class ImmigrationRestController {
        
         return "success";
     }
+    
+	
+    @RequestMapping(value = { "/deleteImmigrationCandidateFormDetails" })
+	public String deleteImmigrationCandidateFormDetails(@RequestParam(value = "id", required = true) Long id, HttpServletRequest request) {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		String status="";
+		try {
+			status = immigrationCommonService.deletetImmigrationCandidateFormsById(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return status;
+	}
+
+
+    @RequestMapping(value = { "/editImmigrationCandidateFormDetailsById" })
+	public @ResponseBody ImmigrationCandidateForms editImmigrationCandidateFormDetailsById(
+			@RequestParam(value = "id", required = true) Long id, HttpServletRequest request) {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		System.out.println(" in controller method getCandidateResidenceDetailsById id ---> " + id);
+		ImmigrationCandidateForms immigFormObj = null;
+		try {
+			immigFormObj = immigrationCommonService.getImmigrationCandidateFormById(id);
+		} catch (Exception e) {
+			logger.error("Exception caught in controller test --->" + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return immigFormObj;
+	}	
+
     @RequestMapping(value = { "/getCandidateImmigrationCandidateDocsList" })
 	public ModelAndView getCandidateImmigrationCandidateDocsList(@RequestParam(value = "candidateId", required = true) Long candidateId,
 			@RequestParam(value = "templateid", required = true) Long templateid,
