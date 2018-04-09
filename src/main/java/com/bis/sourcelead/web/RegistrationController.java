@@ -1,6 +1,7 @@
 package com.bis.sourcelead.web;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,12 +20,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.OrgLocationsDao;
+import com.bis.sourcelead.dao.ReferContactsDao;
 import com.bis.sourcelead.entity.EmailDomains;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -101,6 +105,10 @@ public class RegistrationController {
 	 
 	 @Autowired
 	 EmailDomainsService emailDomainsService;
+	 
+	 @Autowired
+	 ReferContactsDao referContactsDao;
+	 
 	 
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	 @RequestMapping(value = "/app/enrolledOrgsList")
@@ -261,6 +269,8 @@ public class RegistrationController {
 							org.setUser(orgSpoc.getClientUser());
 						}
 					}
+					
+					
 					orgService.addOrganization(org);
 					orgLocations.setStatus(Status.ACTIVE);
 					orgLocationService.updateOrgLocations(orgLocations);
@@ -290,6 +300,32 @@ public class RegistrationController {
 						 orgSpoc.setInvitationStatus(Constants.MAIL_ACCEPTED);
 						 orgSpocService.addOrgSpoc(orgSpoc);
 					 }
+					 
+					 ReferContacts referContact=referContactsDao.getReferContactsByEmails(orgSpoc.getVendorUser().getId(), orgSpoc.getVendorUser().getEmail());
+					 if(referContact ==null){
+						 ReferContacts referContacts=new ReferContacts();
+						 referContacts.setReferFromUser(orgSpoc.getClientUser());
+						 referContacts.setFirstName(orgSpoc.getVendorUser().getFirstName());
+						 referContacts.setLastName(orgSpoc.getVendorUser().getLastName());
+						 referContacts.setContactUserEmail(orgSpoc.getVendorUser().getEmail());
+						 referContacts.setContactUserPhone(orgSpoc.getVendorUser().getMobilePhone());
+						 referContacts.setContactUser(orgSpoc.getVendorUser());
+						 
+						 if(orgSpoc.getOrgRelations().getInitiatorType().equalsIgnoreCase("Vendor")){
+							 String compName=orgSpoc.getOrgRelations().getLocationId().getOrgLocationName(); 
+								//OrgLocations OrgLocations =orgLocationsDao.getOrgLocations(id);
+								referContacts.setCompanyName(compName);
+						 }
+						 if(orgSpoc.getOrgRelations().getResponderType().equalsIgnoreCase("Vendor")){
+							 String compName=orgSpoc.getOrgRelations().getResponderLocationId().getOrgLocationName(); 
+								referContacts.setCompanyName(compName);
+							 }
+						 referContacts.setVendorType(1);
+						 referContacts.setCreatedDate(new Date());
+						 referContacts.setCreatedBy(orgSpoc.getClientUser().getUserCode());
+						 referContactsDao.addReferContacts(referContacts); 
+					 }
+					 
 					 
 					 clientService.sendAcceptEmailToClientOrVendor(orgSpoc,orgSpoc.getClientUser(),orgLocations);
 				 }else if("rejectNotification".equalsIgnoreCase(actionLink)){

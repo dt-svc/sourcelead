@@ -31,6 +31,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesCategoryDao;
 import com.bis.sourcelead.dao.LookUpDataDao;
 import com.bis.sourcelead.dao.ReferContactsDao;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
@@ -184,6 +185,9 @@ public class ClientServiceImpl implements ClientService {
 	
 	@Autowired
 	ReferContactsDao referContactsDao;
+	
+	@Autowired
+	UserDao userDao;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -619,8 +623,7 @@ public class ClientServiceImpl implements ClientService {
 
 		}
 		clientOrgLocations.setVendorSpocId(spocUser.getId());
-		ReferContacts referContacts=null;
-			 referContacts=referContactsDao.getReferContactsByEmails(user.getId(), clientDTO.getEmail());
+		 ReferContacts referContacts=referContactsDao.getReferContactsByEmails(user.getId(), clientDTO.getEmail());
 		
 			if(referContacts !=null){
 				if(clientDTO.getFirstName() != null){
@@ -669,6 +672,13 @@ public class ClientServiceImpl implements ClientService {
 				}
 				if(clientDTO.getOrgName() != null){
 					referContacts.setCompanyName(clientDTO.getOrgName());
+				}
+				if(StringUtils.isNotBlank(clientDTO.getEmail())){
+					referContacts.setContactUserEmail(clientDTO.getEmail());
+					User contactUser = userDao.getUserByEmail(clientDTO.getEmail());
+					if(null != contactUser){
+						referContacts.setContactUser(contactUser);
+					}
 				}
 				referContacts.setReferFromUser(user);
 				String contactUUID = SourceLeadRandomCodeHelper.generateUUID();
