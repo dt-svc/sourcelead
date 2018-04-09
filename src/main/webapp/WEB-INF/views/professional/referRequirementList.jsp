@@ -355,33 +355,34 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
 				  <div class="referWrapInn">
 					<div class="form-group col-md-6" id="firstNameDiv">
 					  <label class="col-md-12">First Name *</label>
+					  
 					  <div class="col-md-12">
-						<input type="text" class="form-control" name="firstName" id="firstName" field-name="First Name" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">
+						<input type="text" class="form-control margin-top0" name="firstName" id="firstName" field-name="First Name" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">
 						<span class="hidden"></span> </div>
 					</div> 
 					<div class="form-group col-md-6" id="lastNameDiv">
 					  <label class="col-md-12">Last Name</label>
 					  <div class="col-md-12">
-						<input type="text" class="form-control" name="lastName" id="lastName" field-name="Last Name" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">
+						<input type="text" class="form-control margin-top0" name="lastName" id="lastName" field-name="Last Name" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">
 						<span class="hidden"></span> </div>
 					</div> 
 					<div class="form-group col-md-6" id="emailDiv">
 					  <label class="col-md-12">Email Id *</label>
 					  <div class="col-md-12">
-						<input type="text" class="form-control input-sm" name="email" id="email" onblur="validateContactEmail()"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">
+						<input type="text" class="form-control input-sm margin-top0" name="email" id="email" onblur="validateContactEmail()"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">
 						<span class="hidden"></span> </div>
 					</div> 
 					<div class="form-group col-md-6" id="phoneDiv">
 					  <label class="col-md-12">Phone </label>
 					  <div class="col-md-12" >
-						<input type="text" class="form-control"  name="phone" id="phone" field-name="Phone" data-validation-optional="true" data-validation="validate_Space validate_phone validate_length length9-20">
+						<input type="text" class="form-control margin-top0"  name="phone" id="phone" field-name="Phone" data-validation-optional="true" data-validation="validate_Space validate_phone validate_length length9-20">
 						<span class="hidden"></span> </div>
 					</div> 
 					
 					<div class="form-group col-md-6">
 							<label class="col-md-12" >Contact Type</label>
 							<div class="col-md-12 select-field">
-								<select class="form-control" name="contactType" id="contactType"  field-name="contactType">
+								<select class="form-control margin-top0" name="contactType" id="contactType"  field-name="contactType">
 									<option value="">Select ContactType</option>
 									<option value="Vendor">Vendor</option>
 									<option value="Candidate">Candidate</option>
@@ -394,7 +395,7 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
 						<div class="form-group col-md-6" id="companyName">
 					  <label class="col-md-12">Company Name</label>
 					  <div class="col-md-12">
-						<input type="text" class="form-control" name="companyName" id="companyName" field-name="companyName" >
+						<input type="text" class="form-control margin-top0" name="companyName" id="companyName" field-name="companyName" >
 						<span class="hidden"></span> </div>
 					</div> 
 					
