@@ -212,15 +212,19 @@ public class Candidate implements Serializable {
 	private OrgSpoc spocId;
 
 	@Transient
+	@JsonProperty
 	private String skills;
 
 	@Transient
+	@JsonProperty
 	private String totalExp;
 
 	@Transient
+	@JsonProperty
 	private String rate;
 
 	@Transient
+	@JsonProperty
 	private String userRole;
 
 	@Transient
@@ -228,9 +232,11 @@ public class Candidate implements Serializable {
 	private String candidateName;
 
 	@Transient
+	@JsonProperty
 	private String candidateLocation;
 
 	@Transient
+	@JsonProperty
 	private String systemGeneratedId;
 
 	@Column(name = "SKILLS_NAME", columnDefinition = "TEXT default NULL")
@@ -320,162 +326,202 @@ public class Candidate implements Serializable {
 	private Set<CandidateEmployers> candidateEmployers = new HashSet<CandidateEmployers>(0);
 
 	@Transient
+	@JsonProperty
 	private String candidateEdu;
 
 	@Transient
+	@JsonProperty
 	private String skillsList;
 
 	@Transient
+	@JsonProperty
 	private Long candidateId;
 
 	@Transient
+	@JsonProperty
 	private String candidateUpdateDateToString;
+	
+	 @Transient
+	 @JsonProperty
+	 private String candidateScore;
+	 
+	 @Transient
+	 @JsonProperty
+	 private String isCandidateSubmitted;
+	    
+	 @Transient
+	 @JsonProperty
+	 private int noOfReq;
+	 
+	 @Transient
+	 @JsonProperty
+	 private String candidateResume;
+	 
+	 @Transient
+	 @JsonProperty
+	 private boolean isCandidateAdedd;
+	 
+	 @Transient
+	 @JsonProperty
+	 private String reqSubmissionId;
+	 
+	 @Transient
+	 @JsonProperty
+	 private float skillPercentage;
+	 
+	 @Transient
+	 @JsonProperty
+	 private float expPercentage;
+	 
+	 @Transient
+	 @JsonProperty
+	 private float locationPercentage;
+	 
+	 @Transient
+	 @JsonProperty
+	 private float ratePercentage;
+	 
+	 @Transient
+	 @JsonProperty
+	 private float noticePeriodPercentage;
+	 
+	 @Transient
+	 @JsonProperty
+	 private float totalKeyWordPerPercentage;
+	 
+	 @Transient
+	 @JsonProperty
+	 private Long currentResumeId;
+	 
+	 @Transient
+	 @JsonProperty
+	 private String linkedIn;
+		
+	 @Transient
+	 @JsonProperty
+	 private String facebook;
+		
+	 @Transient
+	 @JsonProperty
+	 private String twitter;
+		
+	 @Transient
+	 @JsonProperty
+	 private String googlePlus;
+	 
+	 @Transient
+	 @JsonProperty
+	 private String postedDateStr;
+	 
+	 @Transient
+	 @JsonProperty
+	 private String vendorName;
+	 
+	 @Transient
+	 @JsonProperty
+	 private String vendorContactName;
+	 
+	 @Transient
+	 @JsonProperty
+	 private Integer assignedProjectsCount;
+	 
 
 	@Transient
 	@JsonProperty
-	private String candidateScore;
-
-	@Transient
-	@JsonProperty
-	private String isCandidateSubmitted;
-
-	@Transient
-	private int noOfReq;
-
-	@Transient
-	private String candidateResume;
-
-	@Transient
-	private boolean isCandidateAdedd;
-
-	@Transient
-	private String reqSubmissionId;
-
-	@Transient
-	private float skillPercentage;
-
-	@Transient
-	private float expPercentage;
-
-	@Transient
-	private float locationPercentage;
-
-	@Transient
-	private float ratePercentage;
-
-	@Transient
-	private float noticePeriodPercentage;
-
-	@Transient
-	private float totalKeyWordPerPercentage;
-
-	@Transient
-	private Long currentResumeId;
-
-	@Transient
-	private String linkedIn;
-
-	@Transient
-	private String facebook;
-
-	@Transient
-	private String twitter;
-
-	@Transient
-	private String googlePlus;
-
-	@Transient
-	private String postedDateStr;
-
-	@Transient
-	@JsonProperty
-	private String vendorName;
-
-	@Transient
-	@JsonProperty
-	private String vendorContactName;
-
-	@Transient
-	private Integer assignedProjectsCount;
-
-	@Transient
 	private String vendorOrgRelationId;
 
 	@Transient
+	@JsonProperty
 	private String employeList;
 
 	@Transient
+	@JsonProperty
 	private String vendorSpocId;
 
+	 
+	 @Transient
+	 @JsonProperty
+	 private List<RequirementSubmission> requirementSubmisstions;
+	 
+	 @Transient
+	 @JsonProperty
+	 private LinkedHashSet<String> allAndCandidateSkills;
+	 
+	 @Transient
+	 @JsonProperty
+	 private LinkedHashSet<String> allAndCandidateEducation;
+	 
+	 @Transient
+	 @JsonProperty
+	 private Integer candidateRequiementCount;
+	 
+	 @Transient
+	 @JsonProperty
+	 private  List<String> candidateSkillsList;
+	 
+	 @Transient
+	 @JsonProperty
+	 private String employer;
+	 
+	 @Transient
+	 @JsonProperty
+	 private String sowContractName;
+	 
+	 @Transient
+	 @JsonProperty
+	 private LinkedHashSet<String> allAndCandidateVisa;
+	 
+	 @Transient
+	 @JsonProperty
+	 private String candidateResumeName;
+	 
+	 @Transient
+	 @JsonProperty
+	 private String candidateResumeFileType;
+	 
+	 @Transient
+	 @JsonProperty
+	 private List<Contracts> contractsList;
+	 
 
-	@Transient
-	private List<RequirementSubmission> requirementSubmisstions;
+	 @Transient
+	 @JsonProperty
+	 private String reportingManager;
+	 
+	 @Transient
+	 @JsonProperty
+	 private String resumeUUID;
+	 
+	 @Transient
+	 @JsonProperty
+	 private String isResumeExists;
+	 
 
-	@Transient
-	private LinkedHashSet<String> allAndCandidateSkills;
+	 @Column(name = "GENERATED_ID")
+	 private String generatedId;
 
-	@Transient
-	private LinkedHashSet<String> allAndCandidateEducation;
-
-	@Transient
-	private Integer candidateRequiementCount;
-
-	@Transient
-	private List<String> candidateSkillsList;
-
-	@Transient
-	private String employer;
-
-	@Transient
-	private String sowContractName;
-
-	@Transient
-	private LinkedHashSet<String> allAndCandidateVisa;
-
-	@Transient
-	private String candidateResumeName;
-
-	@Transient
-	private String candidateResumeFileType;
-
-	@Transient
-	private List<Contracts> contractsList;
-
-	@Transient
-	private String reportingManager;
-
-	@Transient
-	private String resumeUUID;
-
-	@Transient
-	private String isResumeExists;
-
-	@Column(name = "GENERATED_ID")
-	private String generatedId;
-
-	@Transient
-	@JsonProperty
-	private int profilePercentage;
-
-	@Transient
-	@JsonProperty
-	private String candLocation;
-
-	@Transient
-	private Long relationId;
-
-	@Transient
-	@JsonProperty
-	private String dateofBirthString;
-
-	@Transient
-	private Long venSpocId;
-
-	@Transient
-	@JsonProperty
-	private String commentsCount;
-
-	public int getProfilePercentage() {
+	 @Transient
+	 @JsonProperty
+	 private int profilePercentage;
+	 
+	 @Transient
+	 @JsonProperty
+	 private String candLocation;
+	 
+	 @Transient
+	 @JsonProperty
+	 private Long relationId;
+	 
+	 @Transient
+	 @JsonProperty
+	 private Long venSpocId;
+	 
+	 @Transient
+	 @JsonProperty
+	 private String commentsCount;
+	 
+	public int getProfilePercentage()
+	{
 
 		return profilePercentage;
 	}

@@ -245,9 +245,9 @@
        </div>
        
         <div class="form-group">
-         <label class="col-md-3">Employment type</label>
+         <label class="col-md-3">Employment type<span class="text-danger">&nbsp;*</span></label>
          <div class="col-md-9">
-              <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getDesignationType(this);">
+              <select class="selectpicker form-control" id="designationType" field-name="Employment Type" name="designationType" data-validation="required" onChange="getDesignationType(this);">
                 <option value="">--Select--</option>
                  <option>C2C</option>
                  <option>W-2</option>
@@ -516,13 +516,20 @@
 		        	    processData: false,
 		    	        contentType:false,
 						url : sourceleadUrl+"/storeProfessionalParseCandidate?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
-						success : function(result) {
-							if(result && result === "DataMissing") {
-	                      		$("#update_user").attr("disabled", "disabled");
-	     						showError("Invalid data");
-	     					}else{
-	     						location.replace(sourceleadUrl+"/professionalProfile");	
-	     					}
+						success : function(response) {
+							if (response && response.response === "INVALID_DATA") {
+			                    $("#store_candidate").removeAttr("disabled");
+			                    $("#store_candidate").removeAttr('button').val('Save');
+			                    showError(result.responseMessage);
+			                } else if (response.response === "AWKWARD") {
+			                    location.href = "/errorPage";
+			                } else if (response.response === "SUCCESS") {
+			                	location.replace(sourceleadUrl+"/professionalProfile");	
+			                } else if (response.indexOf('Sign In') !== -1) {
+								location.replace(sourceleadUrl);
+							} else {
+			                    showError("Operation failed, please try again");
+			                }
 						},
 					});
 			return true;

@@ -1683,7 +1683,7 @@ public class CandidateListRestController {
 				Candidate can = candidateService.getCandidateByCandidateId(candidateId);
 				OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 				StringBuffer activitySummary = new StringBuffer();
-				if (null != can && StringUtils.isNotEmpty(skillName)) {
+//				if (null != can && StringUtils.isNotEmpty(skillName)) {
 					ArrayList<String> oldSkills = new ArrayList<>();
 					if (StringUtils.isNotBlank(can.getSkillsName())) {
 						oldSkills.addAll(Arrays.asList(can.getSkillsName().split("\\s*,\\s*")));
@@ -1706,33 +1706,33 @@ public class CandidateListRestController {
 					candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_SKILL_UPDATED,
 							activitySummary.toString(), "CANDIDATE");
 					// return "success";
-					response.setResponse(Result.SUCCESS.name());
-					response.setResponseMessage(Result.SUCCESS.getValue());
-				} else {
-					/*
-					 * ArrayList<String> oldSkills = new ArrayList<>(); if
-					 * (StringUtils.isNotBlank(can.getSkillsName())) {
-					 * oldSkills.addAll(Arrays.asList(can.getSkillsName().split("\\s*,\\s*"))); }
-					 * ArrayList<String> newSkills = new
-					 * ArrayList<>(Arrays.asList(skillName.split("\\s*,\\s*"))); ArrayList<String>
-					 * actualNewSkills = new ArrayList<>(); actualNewSkills.addAll(newSkills);
-					 * newSkills.removeAll(oldSkills); oldSkills.removeAll(actualNewSkills);
-					 * 
-					 * activitySummary.append("Skills").append(" : ").append(Constants.
-					 * OLD_VALUE_TAG_INITIATION) .append(String.join(",",
-					 * oldSkills)).append(Constants.OLD_VALUE_TAG_END).append(" ")
-					 * .append(Constants.NEW_VALUE_TAG_INITIATION).append(String.join(",",
-					 * newSkills)) .append(Constants.NEW_VALUE_TAG_END); can.setSkillsName("");
-					 * candidateService.saveOrUpdateCandidate(can);
-					 * candidateService.saveOrUpdateCandidateElkDocument(can);
-					 * candidateActivityCommonUtil.storeCandidateHistory(can, user);
-					 * candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can,
-					 * "", Constants.CANDIDATE_SKILL_UPDATED, activitySummary.toString(),
-					 * "CANDIDATE"); return "failed";
-					 */
-					response.setResponse(Result.INVALID_DATA.name());
-					response.setResponseMessage(Result.INVALID_DATA.getValue());
-				}
+//				}
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+//				} else {
+//					/*
+//					 * ArrayList<String> oldSkills = new ArrayList<>(); if
+//					 * (StringUtils.isNotBlank(can.getSkillsName())) {
+//					 * oldSkills.addAll(Arrays.asList(can.getSkillsName().split("\\s*,\\s*"))); }
+//					 * ArrayList<String> newSkills = new
+//					 * ArrayList<>(Arrays.asList(skillName.split("\\s*,\\s*"))); ArrayList<String>
+//					 * actualNewSkills = new ArrayList<>(); actualNewSkills.addAll(newSkills);
+//					 * newSkills.removeAll(oldSkills); oldSkills.removeAll(actualNewSkills);
+//					 * 
+//					 * activitySummary.append("Skills").append(" : ").append(Constants.
+//					 * OLD_VALUE_TAG_INITIATION) .append(String.join(",",
+//					 * oldSkills)).append(Constants.OLD_VALUE_TAG_END).append(" ")
+//					 * .append(Constants.NEW_VALUE_TAG_INITIATION).append(String.join(",",
+//					 * newSkills)) .append(Constants.NEW_VALUE_TAG_END); can.setSkillsName("");
+//					 * candidateService.saveOrUpdateCandidate(can);
+//					 * candidateService.saveOrUpdateCandidateElkDocument(can);
+//					 * candidateActivityCommonUtil.storeCandidateHistory(can, user);
+//					 * candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can,
+//					 * "", Constants.CANDIDATE_SKILL_UPDATED, activitySummary.toString(),
+//					 * "CANDIDATE"); return "failed";
+//					 */
+//					response.setResponse(Result.INVALID_DATA.name());
+//					response.setResponseMessage(Result.INVALID_DATA.getValue());
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
@@ -1756,7 +1756,7 @@ public class CandidateListRestController {
 				Candidate can = candidateService.getCandidateByCandidateId(candidateId);
 				OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 				StringBuffer activitySummary = new StringBuffer();
-				if (null != can && StringUtils.isNotEmpty(visaName)) {
+//				if (null != can && StringUtils.isNotEmpty(visaName)) {
 					activitySummary.append("Immigration Status").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION)
 							.append(can.getVisaType()).append(Constants.OLD_VALUE_TAG_END).append(" ")
 							.append(Constants.NEW_VALUE_TAG_INITIATION).append(visaName).append(Constants.NEW_VALUE_TAG_END);
@@ -1767,24 +1767,9 @@ public class CandidateListRestController {
 					candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_VISA_UPDATED,
 							activitySummary.toString(), "CANDIDATE");
 					// return "success";
-					response.setResponse(Result.SUCCESS.name());
-					response.setResponseMessage(Result.SUCCESS.getValue());
-				} else {
-					// activitySummary.append("Immigration Status").append(" :
-					// ").append(Constants.OLD_VALUE_TAG_INITIATION)
-					// .append(can.getVisaType()).append(Constants.OLD_VALUE_TAG_END).append(" ")
-					// .append(Constants.NEW_VALUE_TAG_INITIATION).append(visaName).append(Constants.NEW_VALUE_TAG_END);
-					// can.setVisaType(null);
-					// candidateService.saveOrUpdateCandidate(can);
-					// candidateService.saveOrUpdateCandidateElkDocument(can);
-					// candidateActivityCommonUtil.storeCandidateHistory(can, user);
-					// candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can,
-					// "", Constants.CANDIDATE_VISA_UPDATED,
-					// activitySummary.toString(), "CANDIDATE");
-					// return "failed";
-					response.setResponse(Result.INVALID_USER.name());
-					response.setResponseMessage(Result.INVALID_USER.getValue());
-				}
+//				}
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
