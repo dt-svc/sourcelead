@@ -190,18 +190,11 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			orgLicenseSubscription = getOrgLicenseSubscriptionById(orgLicenseSubscriptionDTO.getOrgLinceseSubscriptionId());
 			orgLicenseSubscription.setSubscriptionTabs(orgLicenseSubscriptionDTO.getRegisteredModules());
 			
-				/*Countries countries = countriesDao.getCountriesByCountryName(orgLicenseSubscription.getCountry());*/
 				orgLicenseSubscription.setCurrency("USD");
 			
 		    if(!orgLicenseSubscription.getStorageSubscriptionType().getName().equalsIgnoreCase("Free Trail")) {
 		    	orgLicenseSubscription.setInvoiceAmount(orgLicenseSubscriptionDTO.getInvoiceAmount());
-			/*	if(orgLicenseSubscription.getCountry().equalsIgnoreCase("United States")) {
-					orgLicenseSubscription.setInvoiceAmount(orgLicenseSubscriptionDTO.getInvoiceAmount());
-				}else {
-					Double invoiceAmount = conversionUtil.currencyConvert("USD", countries.getCurrency(),orgLicenseSubscriptionDTO.getInvoiceAmount());
-					DecimalFormat df = new DecimalFormat(".##");
-					orgLicenseSubscription.setInvoiceAmount(Double.valueOf(df.format(invoiceAmount)));
-				}*/
+			
 			}else {
 				orgLicenseSubscription.setInvoiceAmount(0d);
 			}
@@ -721,8 +714,6 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 		    Date subscriptionToDate = commonUtil.getOrgLocationCurrentDate("dd-MM-yyyy",toDate.getTime());
 		    subscriptionToDate = CalendarUtil.getDateTimeForGivenTimeZone(orgLicenseSubscriptionDTO.getTimezone(), subscriptionToDate, "dd-MM-yyyy");
 			orgLicenseSubscription.setToDate(subscriptionToDate);
-			
-			/*Countries countries = countriesDao.getCountriesByCountryName(orgLicenseSubscriptionDTO.getCountry());*/
 			orgLicenseSubscription.setCurrency("USD");
 			
 			
@@ -730,23 +721,77 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 			if(!orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("Free Trail") && !orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("Guest") && !orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("Unlimited")) {
 				OrgLicenseSubscriptionPrice subscriptionPrice = orgLicenseSubscriptionPriceDao.getOrgLicenseSubscriptionPriceBySubscriptionTypeAndUserType(Long.parseLong(orgLicenseSubscriptionDTO.getSubscriptionType()), Long.parseLong(orgLicenseSubscriptionDTO.getUserSubscription()));		
 				orgLicenseSubscription.setInvoiceAmount(subscriptionPrice.getSubscriptionRate());
-				/*if(orgLicenseSubscriptionDTO.getCountry().equalsIgnoreCase("United States")) {
-							orgLicenseSubscription.setInvoiceAmount(subscriptionPrice.getSubscriptionRate());
-						}else {
-							Double invoiceAmount = conversionUtil.currencyConvert("USD", countries.getCurrency(),subscriptionPrice.getSubscriptionRate());
-							DecimalFormat df = new DecimalFormat(".##");
-							orgLicenseSubscription.setInvoiceAmount(Double.valueOf(df.format(invoiceAmount)));
-						}*/
-					}else {
-						orgLicenseSubscription.setInvoiceAmount(0d);
-					}
+			}else {
+				orgLicenseSubscription.setInvoiceAmount(0d);
+				}
 			orgLicenseSubscription.setIsInvoiceAmountPaid(Constants.NO);
 			orgLicenseSubscription.setSubscriptionTabs(orgLicenseSubscriptionDTO.getRegisteredModules());
+			
+			updateOrgBasedRoles(orgLicenseSubscriptionDTO,orgId);
 			saveOrgLicenseSubscription(orgLicenseSubscription);
 			
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	
+	
+public void updateOrgBasedRoles(OrgLicenseSubscriptionDTO orgLicenseSubscriptionDTO,Long orgId) throws Exception{
+		
+		List<Long> tabsIds = new ArrayList<>();
+		String[] registeredTabs = orgLicenseSubscriptionDTO.getRegisteredModules().split(",");
+		
+		for(int i=0; i<registeredTabs.length; i++) {
+			List<Tabs> childTabsList = tabsDao.getClildTabsListByTabId(Long.valueOf(registeredTabs[i]));
+			if(childTabsList.size() > 0) {
+				for(Tabs childTabs : childTabsList) {
+					tabsIds.add(childTabs.getId());
+				}
+			}else {
+				tabsIds.add(Long.valueOf(registeredTabs[i]));
+			}
+		}
+		
+		List<Long> sourceLeadActionsIdsList =  sourceleadActionsDao.getAllSourceleadActionsIdsByTabsList(tabsIds);
+		
+		List<Long> orgLocationsIdsList = orgLocationsDao.getOrgLocationsIdsListByOrgIdAndCountry(orgId, orgLicenseSubscriptionDTO.getCountry());
+		if(orgLocationsIdsList != null && !orgLocationsIdsList.isEmpty()) {
+			List<Roles> rolesList = rolesDao.getAllRolesListByOrgLocationIdList(orgLocationsIdsList);
+			if(rolesList != null && !rolesList.isEmpty()) {
+				for(Roles roles : rolesList) {
+					
+					List<Long> roleActonsList = new ArrayList<Long>();
+					if(null != roles.getActionId()){
+						for (String s : roles.getActionId().split(",")){
+							 roleActonsList.add(Long.parseLong(s));
+						 }
+					}
+					
+					roleActonsList.retainAll(sourceLeadActionsIdsList);
+					
+					StringBuilder strbul  = new StringBuilder();
+					
+					if(roleActonsList != null && !roleActonsList.isEmpty()) {
+						for(Long actionId : roleActonsList) {
+							strbul.append(Long.valueOf(actionId)).append(",");
+						}
+					
+						String actionId = strbul.toString();
+						
+						if(!isNullOrEmpty(actionId)){
+							actionId = actionId.substring(0, actionId.length()-1);
+							roles.setActionId(actionId);
+						}else{
+							roles.setActionId(null);
+						}
+					}
+					
+					rolesDao.storeRoles(roles);
+				}
+			}
+		}
+		
 	}
 
 	@Override
