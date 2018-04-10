@@ -165,6 +165,7 @@
 		$(".popMask").fadeOut(200);
 		$("#emploView").fadeOut(200);
 		$("#employerDetails_form")[0].reset();
+		$("#candidateEmpId").val('');
 	}
 	$("#employersDataSearch").keyup(function (e) {
 	    if (e.which === 13) {

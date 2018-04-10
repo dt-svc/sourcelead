@@ -27,6 +27,7 @@ public class ImmigrationTemplateFormDTO {
 	
 	private String staticPath;
 	
+	private Long immigrationCandidateFormId;
 	
 	public String getFormDescription() {
 		return formDescription;
@@ -115,6 +116,14 @@ public class ImmigrationTemplateFormDTO {
 
 	public void setStaticPath(String staticPath) {
 		this.staticPath = staticPath;
+	}
+
+	public Long getImmigrationCandidateFormId() {
+		return immigrationCandidateFormId;
+	}
+
+	public void setImmigrationCandidateFormId(Long immigrationCandidateFormId) {
+		this.immigrationCandidateFormId = immigrationCandidateFormId;
 	}
 
 	

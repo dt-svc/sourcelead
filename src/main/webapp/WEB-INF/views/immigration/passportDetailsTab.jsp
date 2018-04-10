@@ -97,6 +97,7 @@
 				$(".popMask").fadeOut(200);
 				$("#popPassView").fadeOut(200);
 				$("#CandidatePassportform")[0].reset();
+				$("#candidatePassportId").val('');
 			}
 		</script>
 		<script>

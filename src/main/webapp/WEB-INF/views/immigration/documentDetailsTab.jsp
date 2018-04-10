@@ -17,7 +17,7 @@
 				<th>Action</th>
 			  </tr>
 			  <c:forEach var="canDocList" items="${immigrationCanDocList}" varStatus="rows">			  			  
-			<tr docid="${canDocList.id}" >
+			<tr docid="${canDocList.id}" allowMultpleDocs= "${canDocList.allowMultiple}">
 				<td><div class="tbldata-dotdot-vsm">${canDocList.documentTypeName}</div></td>
 				<td><div class="tbldata-dotdot-vsm">${canDocList.isRequired == 'Y' ? "YES":"NO"}</div></td>
 				<c:if test="${!empty canDocList.upldedFileName}">
@@ -92,17 +92,19 @@
 				</div>
 			</div>	
 			
-			<div class="col-md-4 noPad">
-							<label class="switch mt5 text-center">
+						   <div class="col-md-4 col-md-offset-4">
+						   	<div class="mt5 clearfix">
+							   <input id="multipleCheckBox" title="Allow multiple Docs" name="multiple"  type="checkbox" value = "N" onclick = "allowMultipleDocs();">
+							   <label class="padding_left">Allow Multiple</label>
+							</div>
+						   </div>
+						   <div class="clearfix"></div>
+						   <div class="col-md-3 pull-right">
+							<label class="switch mt5 text-center pull-right">
 							<input id="requiredCheck" name="isRequired" title="Is Required" type="checkbox" value = "Y" onclick = "tempDocReq();">
 							<div class="slider round" title="Is Required"></div>
 							</label>
-						  </div>
-						   <div class="col-md-4">
-						   		<div class="mt5 ml5 clearfix">
-							   <input id="multipleCheckBox" title="Allow multiple Docs" name="multiple"  type="checkbox" value = "N" onclick = "allowMultipleDocs();">
-							   </div>
-						   </div>	
+						  </div>	
 						  
 				  <!-- <div class="col-md-4">
 				<div class="mt5 ml5 clearfix">
@@ -170,8 +172,8 @@
 		</div>
 		
 		<div class="popupMid popupMidHeight clearfix">
-         
-          <div class="col-sm-12 noPad mt clearfixclearfix">
+ 
+          <div class="col-sm-12 noPad mt clearfix" id ="dynamicUplodDiv">
 				<label class="col-md-4 padding_left">File<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
 					<div class="input-group col-md-12" style="margin:0 auto">
@@ -179,10 +181,13 @@
 					  <input type="file" style="display: none;" multiple id="uploadBtn"  class="upload">
 					  </span> </label>
 					<input type="text" class="form-control" readonly id="uploadFile" name = "docFile" placeholder="Upload Resume ...">
+					 <div id="divAddButton" class="col-md-4" style="display:none">
+						  		<button type="button" id="btnDynamicRow0" onclick="appendDynamicUploaRow()" class="btn btm-sm"><i class="fa fa-plus text-primary"></i></button>
+						  </div>	
 				  </div>
 				</div>
 			</div>					          	
-		
+	
 		</div>
 		
 		<div class="immiPopFoot">
@@ -195,10 +200,16 @@
 		
 			 // Import Document PopUp
 			$(".uploadForm").click(function(){
-				$(".popMask").fadeIn(200);
 				$("#uploadCanDocPop").fadeIn(100);
 
+                 var allowMultiple = $(this).closest('tr').attr("allowMultpleDocs");
 				$("#uploadIdSave").val($(this).closest('tr').attr("docid"));
+				console.log("allowMultiple ---">+allowMultiple);
+				if(allowMultiple=="Y"){
+					$('#divAddButton').show();
+				}else{
+					$('#divAddButton').hide();
+				}
 				
 				
 				
@@ -242,11 +253,40 @@ function removeDocPopUp(){
 	$(".popMask").fadeOut(200);
 	$("#docuView").fadeOut(100);
 	$("#candidate_Immigration_Doc")[0].reset();
-	$("#description1").val('');
+	//$("#description1").val('');
 }
 $(function() {
 	$("#uploadBtn").change(function() {
 	fileUpload("uploadBtn", "immigrationCandidateDocuments", "uploadRequestDoc_Form");
 });
 });
+var rowId =0;
+function prepareDynamicUploadRow(rowId){
+	
+	  var dynamicUploadRowHtml = "";
+	  
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<div id='dynamicRow"+rowId+"' class='col-sm-12 noPad mt clearfix'>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<label class='col-md-4 padding_left'>File<span class='text-danger'>&nbsp;*</span></label>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<div class='col-md-8 padding_right'>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	<div class='input-group col-md-12' style='margin:0 auto'>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	<label class='input-group-btn'> <span class='btn btn-primary'><i class='fa fa-folder-open-o'></i>&nbsp;Browse File";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	<input type='file' style='display:none'; multiple id='uploadBtn"+rowId+"  class='upload'>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"		  </span> </label>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"		<input type='text' class='form-control' readonly id='uploadFile"+rowId+" name = 'docFile' placeholder='Upload Resume ...'>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"				 <div id='divAddButton' class='col-md-4'>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"		  		<button type='button' id='btnDynamicRow"+rowId+"'onclick='appendDynamicUploaRow()' class='btn btm-sm'><i class='fa fa-plus text-primary'></i></button>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	 <div class='col-md-4'><button type='button' class='btn btm-sm' id='btnDynamicRow"+rowId+"' onclick='removeDynamicUploaRow("+rowId+")' ><i class='fa fa-remove text-danger'></i></button></div>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"			  </div>	";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	  </div>"; 
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	  </div>";
+	  console.log(dynamicUploadRowHtml);
+	 return dynamicUploadRowHtml;
+}
+function appendDynamicUploaRow(){
+	   $("#dynamicUplodDiv").append(prepareDynamicUploadRow(rowId++)); 
+}
+function removeDynamicUploaRow(id){
+	   $("#dynamicRow"+id).remove();
+	   rowId--;// decrement rowid when deleted in UI.
+}
 </script>		
