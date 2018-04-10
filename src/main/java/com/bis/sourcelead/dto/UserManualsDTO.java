@@ -4,22 +4,26 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
+import com.bis.sourcelead.annotations.Required;
 import com.bis.sourcelead.entity.UserManualAttachment;
  
 public class UserManualsDTO  extends SearchDTO implements Serializable{
 	
 	private String id;
 	
+	// @Required(desc = "level1Title")
 	private String level1Title;
 	
 	private String userManualUUID;
 	
+	@Required(desc = "title")
 	private String title;
 	
 	private String description;
 	
 	private String level;
 	
+	// @Required(desc = "level2Title")
 	private String level2Title;
 	
 	private String levelName;
