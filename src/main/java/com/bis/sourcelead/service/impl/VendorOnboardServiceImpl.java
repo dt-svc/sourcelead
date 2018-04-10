@@ -21,6 +21,7 @@ import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.OrgRelationsDao;
+import com.bis.sourcelead.dao.ReferContactsDao;
 import com.bis.sourcelead.dao.TaskDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.VendorOnboardDao;
@@ -40,6 +41,7 @@ import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadRoles;
@@ -156,10 +158,14 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 	OrgRelationsService orgRelationsService;
 	
 	@Autowired
+	ReferContactsDao referContactsDao;
+	
+	@Autowired
 	TabsService tabService;
 	
 	@Autowired
 	OrgLicenseSubscriptionService orgLicenseSubscriptionService;
+
 	 
 	
 	@Override
@@ -687,7 +693,44 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 					 }
 					
 					 orgSpocService.addOrgSpoc(orgSpoc);
-				 }
+					 
+					 if(actionType.equalsIgnoreCase(Constants.MAIL_ACCEPTED)){
+						 Long LogInid=user.getId();
+							 if(LogInid != orgSpoc.getClientUser().getId()){
+								 
+								 ReferContacts referContact=referContactsDao.getReferContactsByEmails(LogInid, orgSpoc.getClientUser().getEmail());
+								 
+								 if(referContact == null){
+									 ReferContacts referContacts=new ReferContacts();
+									 referContacts.setReferFromUser(orgSpoc.getVendorUser());
+									 referContacts.setFirstName(orgSpoc.getClientUser().getFirstName());
+									 referContacts.setLastName(orgSpoc.getClientUser().getLastName());
+									 referContacts.setContactUserEmail(orgSpoc.getClientUser().getEmail());
+									 referContacts.setContactUserPhone(orgSpoc.getClientUser().getMobilePhone());
+									 referContacts.setContactUser(orgSpoc.getClientUser());
+									 
+
+									 if(orgSpoc.getOrgRelations().getInitiatorType().equalsIgnoreCase("Client")){
+										String compName=orgSpoc.getOrgRelations().getLocationId().getOrgLocationName(); 
+										//OrgLocations OrgLocations =orgLocationsDao.getOrgLocations(id);
+										referContacts.setCompanyName(compName);
+									 }
+									 if(orgSpoc.getOrgRelations().getResponderType().equalsIgnoreCase("Client")){
+											//Long id=Long.valueOf(orgSpoc.getOrgRelations().getResponderId()).longValue(); 
+											//OrgLocations OrgLocations =orgLocationsDao.getOrgLocations(id);
+										 String compName=orgSpoc.getOrgRelations().getResponderLocationId().getOrgLocationName(); 
+											referContacts.setCompanyName(compName);
+										 }
+									 
+									 referContacts.setClientType(1);
+									 referContacts.setCreatedDate(new Date());
+									 referContacts.setCreatedBy(user.getUserCode());
+									 referContactsDao.addReferContacts(referContacts);
+								 }
+								 
+							 }
+						 }
+					 }
 				 
 				 if(actionType.equalsIgnoreCase(Constants.MAIL_ACCEPTED)){
 					 clientService.sendAcceptEmailToClientOrVendor(orgSpoc,orgSpoc.getClientUser(),vendorOrgLocations);
