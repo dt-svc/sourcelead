@@ -180,10 +180,10 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
 				             <div class="clearfix mb">
 				             <div class="col-md-6">
 				             <div class="row">
-				             <div class="col-md-7 pdRight" id="errMsgDate">
+				             <div class="col-md-6" id="errMsgDate">
 				             	<input type="text" class="form-control calendar" placeholder="Date *" id="demoDate" name="demoDate" field-name="Date" readonly data-validation="required" >
 				             </div>
-				             <div class="col-md-5 pdLeft">
+				             <div class="col-md-6">
 				             	<input type="text" class="form-control timeicon" placeholder="Time" id="demoTime" name="demoTime">
 				             </div>
 				             </div>
