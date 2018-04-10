@@ -1,4 +1,4 @@
-
+	
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -280,10 +280,33 @@
   <!-- data table code starts below -->
  <script type="text/javascript">
 
+ /* function getUscisStatusList(){
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/immigration/getUscisTypeDropDown", 
+	        success: function(data) {
+	        	$('#currUscisStatus').empty();
+	        	$('#currUscisStatus').append('<option value="">--Select Type --</option>');
+	            for(var i=0;i<data.length;i++){
+	            	  var opt = data[i];
+	            	  	if(opt.name == "Request to fill"){
+	            	  		$('#currUscisStatus').append('<option selected value='+opt.id+' >'+opt.name+'</option>');
+	            	  	}else{
+	            			$('#currUscisStatus').append('<option value='+opt.id+' >'+opt.name+'</option>');
+	            	  	}
+	            }
+	            $('#currUscisStatus').trigger("chosen:updated");		        	
+	        }
+	 });
+ } */
+ 
+ 
+ 
+ 
  var table = "";
  $(document).ready(function () {
      getDynamicImmigrationList();
-
+     /* getUscisStatusList(); */
      $('a.toggle-vis').on('click', function (e) {
          e.preventDefault();
          // Get the column API object
@@ -327,9 +350,9 @@
      var url = sourceleadUrl + "/immigration/getImmigrationViewList?searchValue=" + searchValue + "&status=" + (status ? status : 1);
      dynamicImmigrationListPagination(url);
  }
-
+ //var count = 0;
  function dynamicImmigrationListPagination(url) {
-     var colIndex = 0;
+	 var colIndex = 0;
      table = $('#dynamicImmigrationListTbl').DataTable({
          "processing": true,
          "serverSide": true,
@@ -359,7 +382,7 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.currUscisStatus !== null && opt.currUscisStatus !== '' && opt.currUscisStatus !== 'undefined') {
-                         result = result + "<td><div class='tbldata-dotdot-sm'>" + opt.currUscisStatus + "</div></td>";
+                         result = result + "<td><div class='tbldata-dotdot-sm'>"+opt.currUscisStatus+"</div></td>";
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
                      }
