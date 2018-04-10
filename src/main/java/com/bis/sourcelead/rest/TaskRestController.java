@@ -9,6 +9,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.xmlbeans.impl.xb.xmlschema.SpaceAttribute.Space;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -139,7 +140,7 @@ public class TaskRestController {
 				ur.setUserId(ur.getUser().getId());
 				if(null != ur.getUser()){
 					if(null != ur.getUser().getLastName()){
-						ur.setUserName(userName.append(ur.getUser().getFirstName()).append("").append(ur.getUser().getLastName()).toString());
+						ur.setUserName(userName.append(ur.getUser().getFirstName()).append(" ").append(ur.getUser().getLastName()).toString());
 					}else{
 						ur.setUserName(userName.append(ur.getUser().getFirstName()).toString());
 					}
