@@ -22,7 +22,6 @@ public class RequirementDTO extends CommonDTO {
 	@Required(desc = "job title")
 	private String jobTitle;
 
-	@Required(desc = "Job Type")
 	private String jobType;
 
 	private String jobId;
@@ -262,6 +261,7 @@ public class RequirementDTO extends CommonDTO {
 
 	private String saveType;
 
+	@Required(desc = "clientContact", dependsOn = "isClient", parentValue = "true")
 	private String selectContact;
 
 	private String assignedToMaxCount;
