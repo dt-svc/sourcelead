@@ -48,7 +48,7 @@
 					   
 					   <div class="row" id="customOther0" style="display:none;">
 						   	<div class="col-md-5">
-						   	<input type="text" name="otherType0" id="immigrationDocList[0].otherType" title='Name' class="form-control" placeholder="Name" data-validation="required validate_length length2-500" data-validation-optional="true"/>
+						   	<input type="text" name="otherType0" id="immigrationDocList[0].otherType" title='Name' class="form-control" placeholder="Name"  field-name="Name" data-validation="required validate_length length2-500" />
 						   	</div>
 						   	<div class="col-md-7">
 						   	<input type="text" name="immigrationDocList[0].description" id="description0" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
@@ -156,7 +156,7 @@
 		templateDocDetails = templateDocDetails+ "<div class='col-md-7 noPad'>";
 		templateDocDetails = templateDocDetails+ "<div class='row' id='customOther"+rowId+"' style='display:none;'>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-5'>";
-		templateDocDetails = templateDocDetails+ "<input type='text' name='otherType"+rowId+"' id='immigrationDocList["+rowId+"].otherType' title='Name' class='form-control' placeholder='Name' data-validation='validate_length length2-500' data-validation='required'/>";
+		templateDocDetails = templateDocDetails+ "<input type='text' name='otherType"+rowId+"' id='immigrationDocList["+rowId+"].otherType' title='Name' class='form-control' placeholder='Name' field-name='Name' data-validation='required validate_length length2-500'/>";
 		templateDocDetails = templateDocDetails+ "</div>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-7'>";
 		templateDocDetails = templateDocDetails+ "<input type='text' name='immigrationDocList["+rowId+"].description' id='description"+rowId+"' title='Description' class='form-control' placeholder='Description' data-validation='validate_length length2-500' data-validation-optional='true'/>";
