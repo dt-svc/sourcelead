@@ -607,7 +607,7 @@ function getVendorDetails(){
 				<div class="col-lg-12">
 					<div class="pull-right">
 						<input type="button" value="Save & Continue" id="save_vendor"
-							onclick="saveVendor(); flushSaveClient()" class="btn btn-primary">
+							onclick="saveVendor(); saveVendorContact();flushSaveClient();" class="btn btn-primary">
 						
 						<input type="button" value="Save & Continue" id="update_vendor" style="display: none"
 							onclick="updateVendor(); flushSaveClient()" class="btn btn-primary">

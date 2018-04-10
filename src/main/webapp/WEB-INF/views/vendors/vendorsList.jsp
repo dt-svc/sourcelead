@@ -1248,7 +1248,7 @@ function cancelTerminationReson(){
 </script>
 
 <script>
-function terminateSpoc1(spocId, orgRelationID){
+function terminateSpoc1(spocId, orgRelationID,spocEmail){
 	$(".project_inn_mask").remove();
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
@@ -1256,7 +1256,7 @@ function terminateSpoc1(spocId, orgRelationID){
 	//result = result +"		<p>Do you want to delete this vendor contact?</p>";
 	result = result +"		<textarea id='reasonForSpoc' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Reason' rows='2' onkeypress='vendorDashboardRemoveSpacesForRejectReason();'></textarea>";
 	result = result + ' <div id="reasonForVendorSpocDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTerminationReson();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReason1("+spocId+","+orgRelationID+",\""+spocEmail+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTerminationReson();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -1273,7 +1273,7 @@ function terminateSpoc1(spocId, orgRelationID){
 	}
 </script>
 <script>
-function saveReason1(spocId, orgRelationID){
+function saveReason1(spocId, orgRelationID,spocEmail){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
 	var userId = '${SourceLeadWeb_userId}';
@@ -1286,7 +1286,7 @@ function saveReason1(spocId, orgRelationID){
 		$("#reasonForVendorSpocDiv").empty();
 		$.ajax({
 		   	type: "POST",
-		 	url: sourceleadUrl+"/terminateSpoc?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&responderType=Vendor",	    	   
+		 	url: sourceleadUrl+"/terminateSpoc?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&spocEmail="+spocEmail+"&responderType=Vendor+",	    	   
 		    success: function(data) {
 		    	getVendorContactList();
 		    	 $("#venselector").removeAttr("style");
