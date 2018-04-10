@@ -22,6 +22,7 @@ public class RequirementDTO extends CommonDTO {
 	@Required(desc = "job title")
 	private String jobTitle;
 
+	@Required(desc = "Job Type")
 	private String jobType;
 
 	private String jobId;
@@ -101,6 +102,7 @@ public class RequirementDTO extends CommonDTO {
 
 	private String isClient;
 
+	@Required(desc = "client", dependsOn = "isClient", parentValue = "true")
 	private String selectClient;
 
 	private String clientCurrencyCode;
@@ -111,6 +113,7 @@ public class RequirementDTO extends CommonDTO {
 
 	private String clientRateType;
 
+	@Required(desc = "clientForm", dependsOn = "isClient", parentValue = "true")
 	private String clientSubmissionForm;
 
 	private String cd;
