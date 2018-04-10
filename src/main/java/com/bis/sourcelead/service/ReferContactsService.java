@@ -33,5 +33,7 @@ public interface ReferContactsService {
 	ReferContacts findByEmail(String recipientMail)throws Exception;
 	
 	ReferContacts getReferContactsByFromUserIdAndToUserId(Long fromUserId, Long toUserId) throws Exception;
+	
+	boolean deleteContactById(Long id) throws Exception;
 
 }
