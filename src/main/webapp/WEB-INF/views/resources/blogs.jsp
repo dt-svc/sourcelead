@@ -203,12 +203,24 @@ function deleteBlog(blogId) {
 		 $.ajax({  
 	          type : "POST",
 	          url: sourceleadUrl+"/removeSourceleadBlogByBlogId?"+tokenParamName+"="+tokenValue+"&blogId="+blogId,        
-	          success :function(data) {
+	          success :function(result) {
+	        	  
+	        	  if (result && result.response === "INVALID_DATA") {
+					    showError(result.responseMessage);
+					} else if (result.response === "AWKWARD") {
+					    location.href = "/errorPage";
+					} else if (result.response === "SUCCESS") {
+						location.replace(sourceleadUrl+"/blogs");
+					} else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+					    showError("Operation failed, please try again");
+					}
 
-					if(data != null && data != 'undefined' && data != ""){
+					/* if(data != null && data != 'undefined' && data != ""){
 	             		
 						 location.replace(sourceleadUrl+"/blogs");
-	               } 
+	               }  */
 	        },
 	          
 	     }); 

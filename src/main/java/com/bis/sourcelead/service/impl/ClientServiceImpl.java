@@ -30,6 +30,8 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesCategoryDao;
 import com.bis.sourcelead.dao.LookUpDataDao;
+import com.bis.sourcelead.dao.ReferContactsDao;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
@@ -56,6 +58,7 @@ import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
@@ -65,6 +68,7 @@ import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.VendorOnboarding;
+import com.bis.sourcelead.enums.Contact_Source;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.service.CandidateService;
@@ -182,6 +186,12 @@ public class ClientServiceImpl implements ClientService {
 
 	@Autowired
 	private OrglocationFormFieldsService orglocationFormFieldsService;
+	
+	@Autowired
+	ReferContactsDao referContactsDao;
+	
+	@Autowired
+	UserDao userDao;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -625,7 +635,87 @@ public class ClientServiceImpl implements ClientService {
 
 		}
 		clientOrgLocations.setVendorSpocId(spocUser.getId());
+		 ReferContacts referContacts=referContactsDao.getReferContactsByEmails(user.getId(), clientDTO.getEmail());
 		
+			if(referContacts !=null){
+				if(clientDTO.getFirstName() != null){
+					referContacts.setFirstName(clientDTO.getFirstName());
+				}
+				if(clientDTO.getLastName() != null){
+					referContacts.setLastName(clientDTO.getLastName());
+				}
+				if(clientDTO.getPhoneNumber() != null){
+					referContacts.setContactUserPhone(clientDTO.getPhoneNumber());
+				}
+				referContacts.setUpdatedDate(new Date());
+				referContacts.setUpdatedBy(user.getUserCode());
+				if(clientDTO.getResponderType() != null){
+					if(clientDTO.getResponderType().equalsIgnoreCase("vendor")){
+						referContacts.setVendorType(1);
+					}else{
+						referContacts.setClientType(1);
+					}
+				}else{
+					if(responderType !=null){
+						if(responderType.equalsIgnoreCase("vendor")){
+							referContacts.setVendorType(1);
+						}else{
+							referContacts.setClientType(1);
+						}
+					}
+				}
+			}else{
+				 referContacts = new ReferContacts();
+				
+				if(clientDTO.getEmail() != null){
+					referContacts.setContactUserEmail(clientDTO.getEmail());
+				}
+				if(clientDTO.getOrgName() != null){
+					referContacts.setCompanyName(clientDTO.getOrgName());
+				}
+				if(clientDTO.getFirstName() != null){
+					referContacts.setFirstName(clientDTO.getFirstName());
+				}
+				if(clientDTO.getLastName() != null){
+					referContacts.setLastName(clientDTO.getLastName());
+				}
+				if(clientDTO.getPhoneNumber() != null){
+					referContacts.setContactUserPhone(clientDTO.getPhoneNumber());
+				}
+				if(clientDTO.getOrgName() != null){
+					referContacts.setCompanyName(clientDTO.getOrgName());
+				}
+				if(StringUtils.isNotBlank(clientDTO.getEmail())){
+					referContacts.setContactUserEmail(clientDTO.getEmail());
+					User contactUser = userDao.getUserByEmail(clientDTO.getEmail());
+					if(null != contactUser){
+						referContacts.setContactUser(contactUser);
+					}
+				}
+				referContacts.setReferFromUser(user);
+				String contactUUID = SourceLeadRandomCodeHelper.generateUUID();
+				referContacts.setContactUserUUID(contactUUID);
+				referContacts.setCreatedDate(new Date());
+				if(clientDTO.getResponderType() != null){
+					if(clientDTO.getResponderType().equalsIgnoreCase("vendor")){
+						referContacts.setVendorType(1);
+					}else{
+						referContacts.setClientType(1);
+					}
+				}else{
+					if(responderType !=null){
+						if(responderType.equalsIgnoreCase("vendor")){
+							referContacts.setVendorType(1);
+						}else{
+							referContacts.setClientType(1);
+						}
+					}
+				}
+				
+				referContacts.setCreatedBy(user.getUserCode());
+			}
+		
+		referContactsDao.addReferContacts(referContacts);
 		return clientOrgLocations;
 	}
 	
