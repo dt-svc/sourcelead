@@ -1,7 +1,13 @@
 package com.bis.sourcelead.immigration.dao.impl;
 
 import java.text.MessageFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -17,6 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
@@ -583,26 +590,25 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public ResponseList<ImmigrationListViewDTO> getImmigrationsList(ImmigrationListViewDTO immigrationListDTO,
-			String searchValue, OrgLocations orgLocations) {
+			String searchValue, OrgLocations orgLocations) throws Exception
+	{
 		Session session = this.sessionFactory.getCurrentSession();
-        List<Long> countlist = null;
-        Integer filterCount = 0;
-        List<ImmigrationListView> ImmigrationViewLst = null;
-        ResponseList<ImmigrationListViewDTO> responseList = new ResponseList<>();
-
-        StringBuilder query1 = new StringBuilder("");
-        if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
-            query1.append(" and ((immView.email like '%" + searchValue + "%' )");
-            query1.append(" or (immView.firstName like '%" + searchValue + "%' )");
-            query1.append(" or (immView.id like '%" + searchValue + "%' )");
-            query1.append(" or (immView.currUscisStatus like '%" + searchValue + "%' )");
-            query1.append(" or (immView.petitionType like '%" + searchValue + "%' )");
-            query1.append(" or (immView.orgName like '%" + searchValue + "%' )");
-           // query1.append(" or (immView.openDate like '%" + searchValue + "%' )");
-            query1.append(" or (immView.phone like '%" + searchValue + "%' ))");
-            
-            //query1.append(" or (tempView.status like '%" + searchValue + "%' )");
-        }
+		List<Long> countlist = null;
+		Integer filterCount = 0;
+		List<ImmigrationListView> ImmigrationViewLst = null;
+		ResponseList<ImmigrationListViewDTO> responseList = new ResponseList<>();
+		StringBuilder query1 = new StringBuilder("");
+		if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
+			query1.append(" and ((immView.email like '%" + searchValue + "%' )");
+			query1.append(" or (immView.firstName like '%" + searchValue + "%' )");
+			query1.append(" or (immView.id like '%" + searchValue + "%' )");
+			query1.append(" or (immView.currUscisStatus like '%" + searchValue + "%' )");
+			query1.append(" or (immView.petitionType like '%" + searchValue + "%' )");
+			query1.append(" or (immView.orgName like '%" + searchValue + "%' )");
+			query1.append(" or (immView.phone like '%" + searchValue + "%' ))");
+			// query1.append(" or (tempView.status like '%" + searchValue + "%'
+			// )");
+		}
         // usertList sorting order
         String sortingQry = "";
         if (StringUtils.isNotBlank(immigrationListDTO.getSortColumn())) {
@@ -610,10 +616,23 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         } else {
             sortingQry = " order by immView.updatedDate desc ";
         }
-
-        String listQuery = "from ImmigrationListView immView  where immView.orgLocationId=:orgLocationId " + (immigrationListDTO.getStatus() >= 0 ? "and immView.status =" + immigrationListDTO.getStatus() + " " : " ");
-
+		String listQuery = "";
+		if (searchValue.contains("-") || searchValue.contains("/")) {
+			DateTimeFormatter orgFormat = new DateTimeFormatterBuilder().appendPattern(orgLocations.getDateFormat()).toFormatter();
+			LocalDate parsedDate = LocalDate.parse(searchValue, orgFormat);
+			DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			String newDate = parsedDate.format(f2);
+			Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
+			java.sql.Date sqlDate1 = new java.sql.Date(searchDate.getTime());
+			System.out.println("---test-----" + sqlDate1);
+			listQuery = "from ImmigrationListView immView where immView.openDate =:sqlDate1";
+			query1.append(" or (immView.openDate like '%" + sqlDate1 + "%' )");
+			ImmigrationViewLst = session.createQuery(listQuery + query1 + sortingQry).setDate("sqlDate1", sqlDate1).list();
+		}
+		else {
+        listQuery = "from ImmigrationListView immView  where immView.orgLocationId=:orgLocationId " + (immigrationListDTO.getStatus() >= 0 ? "and immView.status =" + immigrationListDTO.getStatus() + " " : " ");
         ImmigrationViewLst = session.createQuery(listQuery + query1 + sortingQry).setLong("orgLocationId", orgLocations.getId()).list();
+             }
         String listQueryCount = "select count(*) from ImmigrationListView immView where immView.orgLocationId=:orgLocationId " + (immigrationListDTO.getStatus() >= 0 ? "and immView.status =" + immigrationListDTO.getStatus() + " " : " ");
         countlist = session.createQuery(listQueryCount + query1).setLong("orgLocationId", orgLocations.getId()).setFirstResult(immigrationListDTO.getStart())
                 .setMaxResults(immigrationListDTO.getLength()).list();
@@ -622,7 +641,6 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
             if (countlist != null && !countlist.isEmpty()) {
                 totalCount = countlist.iterator().next().intValue();
                 filterCount = totalCount;
-                
             }
         }
         responseList.setRecordsTotal(totalCount);
@@ -631,6 +649,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         } else {
             responseList.setRecordsFiltered(totalCount);
         }
+        //opendate
+        
         List<ImmigrationListViewDTO> ImmigarionDTOList = new ArrayList<ImmigrationListViewDTO>();
         for (ImmigrationListView source : ImmigrationViewLst) {
             //System.out.println(" DocsCount"+source.getDocsCount());
