@@ -37,7 +37,7 @@
 				  		<div class="col-md-3">
 					  
 						<select class="form-control chosen-select" 
-										name="immigrationDocList[0].documentType" title='Document Type' field-name="Select Document" data-validation="required" id="candidateEducation0">
+										name="immigrationDocList[0].documentType"  onchange="updateUIforOthers(0);" title='Document Type' field-name="Select Document" data-validation="required" id="candidateEducation0">
 							<option value="" selected>--Select Document--</option>
 							<c:forEach var="edu" items="${educationsList}">
 											<option value="${edu.id}">${edu.name}</option>
@@ -45,8 +45,21 @@
 						</select>
 					   </div>
 					   <div class="col-md-7 noPad">
+					   
+					   <div class="row" id="customOther0" style="display:none;">
+						   	<div class="col-md-5">
+						   	<input type="text" name="otherType0" id="immigrationDocList[0].otherType" title='Name' class="form-control" placeholder="Name" data-validation="required validate_length length2-500" data-validation-optional="true"/>
+						   	</div>
+						   	<div class="col-md-7">
+						   	<input type="text" name="immigrationDocList[0].description" id="description0" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
+						   	</div>
+					   </div>
+					   
+					   <div id="customOther-defaults0">
 							<input type="text" name="immigrationDocList[0].description" id="description0" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
 					   </div>
+					   
+					    </div>
 					  <div class="col-md-2 clearfix">
 						  <div class="col-md-4 noPad">
 							<label class="switch mt5 text-center">
@@ -134,14 +147,24 @@
 	   var templateDocDetails = "";
 		templateDocDetails = templateDocDetails+ "<div id='dynamicRow"+rowId+"' class='col-md-12 clearfix noPad mt'>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-3'>";
-		templateDocDetails = templateDocDetails+ "<select class='form-control chosen-select' title='Document Type' field-name='Select Document' data-validation='required' name='immigrationDocList["+rowId+"].documentType' id='candidateEducation"+rowId+"' data-validation='validate_Space'>";
+		templateDocDetails = templateDocDetails+ "<select class='form-control chosen-select' title='Document Type' onchange='updateUIforOthers("+rowId+")' field-name='Select Document' data-validation='required' name='immigrationDocList["+rowId+"].documentType' id='candidateEducation"+rowId+"' data-validation='validate_Space'>";
 		templateDocDetails = templateDocDetails+ "<option value='' selected>--Select Document--</option>";
 		<c:forEach var='edu' items='${educationsList}'>
 		templateDocDetails = templateDocDetails+ "<option value='${edu.id}'>${edu.name}</option>";
 		</c:forEach>
 		templateDocDetails = templateDocDetails+ "</select></div>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-7 noPad'>";
-		templateDocDetails = templateDocDetails+ "<input type='text' title='Description' name='immigrationDocList["+rowId+"].description' id='description"+rowId+"' class='form-control' placeholder='Description' data-validation='validate_length length2-500' data-validation-optional='true'/></div>";
+		templateDocDetails = templateDocDetails+ "<div class='row' id='customOther"+rowId+"' style='display:none;'>";
+		templateDocDetails = templateDocDetails+ "<div class='col-md-5'>";
+		templateDocDetails = templateDocDetails+ "<input type='text' name='otherType"+rowId+"' id='immigrationDocList["+rowId+"].otherType' title='Name' class='form-control' placeholder='Name' data-validation='validate_length length2-500' data-validation='required'/>";
+		templateDocDetails = templateDocDetails+ "</div>";
+		templateDocDetails = templateDocDetails+ "<div class='col-md-7'>";
+		templateDocDetails = templateDocDetails+ "<input type='text' name='immigrationDocList["+rowId+"].description' id='description"+rowId+"' title='Description' class='form-control' placeholder='Description' data-validation='validate_length length2-500' data-validation-optional='true'/>";
+		templateDocDetails = templateDocDetails+ "	</div>";
+		templateDocDetails = templateDocDetails+ "	</div>";
+		templateDocDetails = templateDocDetails+ "	<div id='customOther-defaults"+rowId+"'>";
+		templateDocDetails = templateDocDetails+ "<input type='text' title='Description' name='immigrationDocList["+rowId+"].description' id='description"+rowId+"' class='form-control' placeholder='Description' data-validation='validate_length length2-500' data-validation-optional='true'/></div>";	
+		templateDocDetails = templateDocDetails+ "	</div>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-2 clearfix'>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-4 noPad'>";
 		templateDocDetails = templateDocDetails+ "<label class='switch mt5 text-center'>";
@@ -156,15 +179,17 @@
 	
    var rowId ='<c:out value ="${rowIndex}"/>'// set the value for dyamic row when clicked on add button in UI.
    function appendTempDocDiv(){
+	   console.log("added rowId --->"+rowId)
 	   $("#templateDocDivStatic").append(appendTemplateDocDetails(rowId++)); 
    }
    var deletedDocListIds = new Array();
    function removeTempDocDiv(id){
+	   console.log("deleted id  --->"+id)
 	   if($("#templateId"+id).val() !==  undefined ){
 		   deletedDocListIds.push($("#templateId"+id).val());   
 	   }
 	   $("#dynamicRow"+id).remove();
-	   rowId--;// decrement rowid when deleted in UI.
+	   //rowId--;// decrement rowid when deleted in UI.
    }
    	</script>
 	<script type="text/javascript">
@@ -186,6 +211,17 @@
 		}else{
 			$("#multipleCheck"+id).val("N");
 		}
+	}
+	function updateUIforOthers(id){
+		console.log("rowId is "+id);
+	  if($("#candidateEducation"+id+"  :selected").text() =="Other"){
+		  $("#customOther"+id).show();
+		  $("#customOther-defaults"+id).hide();
+	    }else{
+		     $("#customOther"+id).hide();
+		     $("#customOther-defaults"+id).show();
+	    }
+
 	}
 	</script>
 	
