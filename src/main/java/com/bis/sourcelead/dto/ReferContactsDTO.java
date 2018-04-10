@@ -38,6 +38,10 @@ public class ReferContactsDTO {
 	 private int length;
 	 
 	 List<String> groupsList;
+	 
+	 private String contactType;
+	 
+	 private String companyName;
 
 	public String getFirstName()
 	{
@@ -190,5 +194,21 @@ public class ReferContactsDTO {
 	{
 		this.groupIdsList = groupIdsList;
 	}
-	 
+
+	public String getContactType() {
+		return contactType;
+	}
+
+	public void setContactType(String contactType) {
+		this.contactType = contactType;
+	}
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+	
 }
