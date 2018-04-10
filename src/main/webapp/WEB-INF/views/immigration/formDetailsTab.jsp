@@ -206,5 +206,6 @@
 function removeImmigDoc(){
 	$("#immigrationEditDocDiv").hide();
 	$("#immigrationDocDiv").show();
+	$('#uploadFileForm').attr("data-validation", "required");
 }
 </script>
