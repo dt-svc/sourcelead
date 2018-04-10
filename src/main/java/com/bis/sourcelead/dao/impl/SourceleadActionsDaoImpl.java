@@ -293,4 +293,16 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 	    return actionsList;
 	}
 
+	@Override
+	@Transactional
+	public List<Long> getAllSourceleadActionsIdsByTabsList(List<Long> tabsList) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+      		
+	    String query = "select sa.id from SourceleadActions sa where sa.actionRole != 'ROLE_ENROLL_ORG' and sa.tabs.id IN (:tabsList) and sa.status = '1' ";
+	    List<Long> actionsList = session.createQuery(query.toString()).setParameterList("tabsList", tabsList).list();
+   
+	    return actionsList;
+	}
+
 }

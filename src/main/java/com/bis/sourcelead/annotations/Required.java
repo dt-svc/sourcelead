@@ -14,4 +14,8 @@ import java.lang.annotation.Target;
 public @interface Required {
     public String desc();
     public boolean alphaNumericOnly() default false;
+    
+    public String dependsOn() default "";
+    public String[] parentValue() default "";
+    public boolean onlyDependsContainsValue() default true;
 }
