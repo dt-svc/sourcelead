@@ -47,7 +47,7 @@ public class UserManualServiceImpl implements UserManualService{
 	UserManualDao userManualDao;
 
 	@Override
-	public void storeUserManuals(UserManualsDTO userManualsDTO) throws Exception {
+	public String storeUserManuals(UserManualsDTO userManualsDTO) throws Exception {
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		UserManualLevelOne userManualLevelOne=null;
 		UserManualLevelTwo userManualLevelTwo=null;
@@ -73,7 +73,10 @@ public class UserManualServiceImpl implements UserManualService{
 				userManualLevelOne.setDescription(userManualsDTO.getDescription());
 			}
 			
-			userManualDao.storeUserManuals(userManualLevelOne);
+			UserManualLevelOne levelOne=userManualDao.storeUserManuals(userManualLevelOne);
+			if(levelOne != null){
+				return "success";
+			}
 		}else if((userManualsDTO.getLevelName()).equalsIgnoreCase("Level-2")){
 			
 			if(userManualsDTO.getId()!=null && StringUtils.isNotBlank(userManualsDTO.getId())){
@@ -101,7 +104,10 @@ public class UserManualServiceImpl implements UserManualService{
 			if(userManualsDTO.getDescription()!=null && StringUtils.isNotBlank(userManualsDTO.getDescription())){
 				userManualLevelTwo.setDescription(userManualsDTO.getDescription());
 			}
-			userManualDao.storeUserManualstwo(userManualLevelTwo);
+			UserManualLevelTwo levelTwo=userManualDao.storeUserManualstwo(userManualLevelTwo);
+			if(levelTwo != null){
+				return "success";
+			}
 			
 		}else{
 			
@@ -157,10 +163,13 @@ public class UserManualServiceImpl implements UserManualService{
 				Set<UserManualAttachment> userManuAttchList=getUserManualsDocuments(userManualsDTO,user,userManualLevelThree);
 				userManualLevelThree.setUserManualAttachment(userManuAttchList);
 			}
-			userManualDao.storeUserManualsThree(userManualLevelThree);
+			UserManualLevelThree levelThree=userManualDao.storeUserManualsThree(userManualLevelThree);
+			if(levelThree != null){
+				return "success";
+			}
 		}
 			
-		
+		return "fail";
 		
 	}
 
@@ -318,22 +327,24 @@ public class UserManualServiceImpl implements UserManualService{
 	}
 
 	@Override
-	public void deleteUserManualThree(Long id) throws Exception{
+	public UserManualLevelThree deleteUserManualThree(Long id) throws Exception{
 		UserManualLevelThree userManualLevelThree=userManualDao.getUserManualThreeById(id);
-		 userManualDao.deleteUserManualThree(userManualLevelThree);
-		
+		UserManualLevelThree levelThree= userManualDao.deleteUserManualThree(userManualLevelThree);
+		return levelThree;
 	}
 
 	@Override
-	public void deleteUserManualTwo(Long id) throws Exception {
+	public UserManualLevelTwo deleteUserManualTwo(Long id) throws Exception {
 		UserManualLevelTwo userManualLevelTwo=userManualDao.getUserManualTwoById(id);
-		userManualDao.deleteUserManualTwo(userManualLevelTwo);
+		UserManualLevelTwo levelTwo=userManualDao.deleteUserManualTwo(userManualLevelTwo);
+		return levelTwo;
 	}
 
 	@Override
-	public void deleteUserManualOne(Long id) throws Exception {
+	public UserManualLevelOne deleteUserManualOne(Long id) throws Exception {
 		UserManualLevelOne UserManualLevelOne=userManualDao.getUserManualById(id);
-		userManualDao.deleteUserManualOne(UserManualLevelOne);
+		UserManualLevelOne levelOne=userManualDao.deleteUserManualOne(UserManualLevelOne);
+		return levelOne;
 	}
 
 	@Override
@@ -342,9 +353,10 @@ public class UserManualServiceImpl implements UserManualService{
 	}
 
 	@Override
-	public void deleteUserManualAttachments(Long id) throws Exception {
+	public UserManualAttachment deleteUserManualAttachments(Long id) throws Exception {
 		UserManualAttachment userManualAttList=userManualDao.getUserManualAttchListById(id);
-		userManualDao.deleteUserManualAttachments(userManualAttList);
+		UserManualAttachment attchment=userManualDao.deleteUserManualAttachments(userManualAttList);
+		return attchment;
 	}
 
 	@Override
