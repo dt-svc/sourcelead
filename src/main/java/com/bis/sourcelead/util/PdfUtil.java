@@ -1322,7 +1322,11 @@ public class PdfUtil {
 	private String[] prepareProjectTasksStringArray(ProjectTasks projectTassks, String[] headers, OrgLocations orgLocations) {
 		String projectTaskArray[] = new String[headers.length];
 		
-		projectTaskArray[0] = projectTassks.getGeneratedId() +"-"+ projectTassks.getTaskName(); 
+		if(projectTassks.getGeneratedId() != null) {
+			projectTaskArray[0] = projectTassks.getGeneratedId() +"-"+ projectTassks.getTaskName(); 
+		}else {
+			projectTaskArray[0] = projectTassks.getTaskName(); 
+		}
 		projectTaskArray[1] = projectTassks.getTaskTypes(); 
 		if(projectTassks.getTaskPriotiry() != null) {
 			projectTaskArray[2] = projectTassks.getTaskPriotiry(); 

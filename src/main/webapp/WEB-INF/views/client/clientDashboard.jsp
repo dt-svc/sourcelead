@@ -2002,7 +2002,7 @@ function cancelRejectPopupClient(){
 </script>
 
 <script>
-function terminateSpoc1(spocId, orgRelationID){
+function terminateSpoc1(spocId, orgRelationID, spocEmail){
 	
 	$(".project_inn_mask").remove();
 	var result = "";
@@ -2011,7 +2011,7 @@ function terminateSpoc1(spocId, orgRelationID){
 	//result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc'  placeholder='Comments here'></textarea>";
 	result = result +"		<textarea id='reasonForSpoc' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Reason' rows='2' onkeypress='clientDashboardRemoveSpacesForRejectReason();'></textarea>";
 	result = result + ' <div id="reasonForSpocDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelRejectPopupClient();'></b>";
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="saveReason1('+spocId+',\''+spocEmail+'\','+orgRelationID+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelRejectPopupClient();"></b>';
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -2028,7 +2028,7 @@ function terminateSpoc1(spocId, orgRelationID){
 	}
 </script>
 <script>
-function saveReason1(spocId, orgRelationID){
+function saveReason1(spocId,spocEmail, orgRelationID){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
 	var reason1 = document.getElementById("reasonForSpoc").value;
@@ -2040,7 +2040,7 @@ function saveReason1(spocId, orgRelationID){
 	
 		$.ajax({
 		   	type: "POST",
-		   url: sourceleadUrl+"/terminateSpoc?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&responderType=Client",	    	   
+		   url: sourceleadUrl+"/terminateSpoc?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&spocEmail="+spocEmail+"&responderType=Client",	    	   
 		    success: function(data) {
 		    	getClientContactList();
 	   			 $("#selector1").removeAttr("style");

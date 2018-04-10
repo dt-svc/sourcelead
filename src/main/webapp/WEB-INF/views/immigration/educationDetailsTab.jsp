@@ -173,6 +173,7 @@
 		$(".popMask").fadeOut(200);
 		$("#popEduView").fadeOut(100);
 		$("#eduSave_Form")[0].reset();
+		$("#candidateEducationId").val('');
 	}
 	
 	var config = {

@@ -350,8 +350,12 @@ function Immigration() {
 	        			$("#addForm").trigger('click');
 	        			//udpateEduFormdata(formObj,fomValues,data);
 	        			$('#formName').val(data.formName); // to select the dropdwon value based on id value.
-	        			$('#formDescription12').text(data.description);
-	        			
+	        			$('#formDescription').text(data.description);
+	        			//$('#immigrationDocumentName').text(data.fileUrl); 
+	        			$('#immigrationEditDocDiv').show();
+	        			$('#immigrationDocDiv').hide();
+	        			$('#uploadFileForm').removeAttr("data-validation");
+	        			$('#immigrationDocumentName').text(data.fileName);
 	        			$('#immigrationCandidateFormId').val(data.id);
 	        	
 	        	   
@@ -560,7 +564,7 @@ this.deletePassportVisaDetailsById=function(id,idType){
             			immigration.udpatePopupFormdata(formObj,motherPopNames,data);
             			$('#dateOfBirthMother').val(data.dateOfBirthStr);
             		}
-            		familyMemberId = ''// reset the value
+            		//familyMemberId = ''// reset the value
             	}
             }
         });
@@ -1120,7 +1124,7 @@ function getPetitionTypeOnCountries(selectedCountry, selectedCountryOption){
             	 var opt = json[i];
             	 $('#petitionTypeTemplate').append('<option value='+opt.id+'>'+opt.name+'</option>');
             } 
-            $('#petitionTypeTemplate option[value='+selectedCountryOption+']').prop("selected", true);
+            $('#petitionTypeTemplate option[value="'+selectedCountryOption+'"]').prop("selected", true);
             $('#petitionTypeTemplate').trigger("chosen:updated");
         }
 	}); 

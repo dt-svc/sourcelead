@@ -54,6 +54,8 @@
 		<!--  popup code start-->
 		<form name ="formSave_Form" id ="formSave_Form">
 		<div class="popUpOut" id="viewFormpop">
+		<input type = "hidden" id = "immigrationCandidateFormId" name = "immigrationCandidateFormId"/>
+		
 		<div class="popupHead">
 			<h2>Add Form</h2><a href="javascript:void(0)" class="fa fa-close popCan" onclick="closeFormPopup();"></a>
 		</div>
@@ -67,7 +69,7 @@
 				</div>
 			</div>	      
 			   
-          <div class="col-sm-12 noPad mt clearfixclearfix">
+          <div class="col-sm-12 noPad mt clearfixclearfix" id = "immigrationDocDiv">
 				<label class="col-md-4 padding_left">File<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
 					<div class="input-group col-md-12" style="margin:0 auto">
@@ -77,19 +79,32 @@
 					<input type="text" class="form-control" name="docFile" id ="uploadFileForm" readonly placeholder="Attachment" field-name="Attachment" data-validation="required">
 				  </div>
 				</div>
-			</div>					          	
+			</div>	
+			
+			 <div class="col-md-7 minHeight50" id="immigrationEditDocDiv" style="display: none">
+				  <label id="immigrationDocumentName" name="immigrationDocumentName" class="text-primary tbldata-dotdot-vsm pull-left" title="" >hh</label>&nbsp;&nbsp;<span id="delete_immiDocFile" onclick="removeImmigDoc();"><i class="fa fa-trash removeIcon"></i></span>
+				<input type="hidden" id="immigrationDocumentExisitngFile" name="immigrationDocumentExisitngFile" value="">
+				  </div>			          	
 		
-		</div>
-		<div class="col-md-5 noPad">
-                  <input type="text" class="form-control" name="formDescription" id="formDescription12" placeholder="Description" data-validation = "validate_length length2-100" data-validation-optional="true"/>
-            </div>
+		
+		<!-- <div class="col-md-5 noPad">
+		
+                  <input type="text" class="form-control" name="formDescription" id="formDescription" placeholder="Description" data-validation = "validate_length length2-100" data-validation-optional="true"/>
+            </div> -->
+             <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Description</label>
+              	<div class="col-md-8 padding_right">
+					<textarea rows="2" class="form-control" id= "formDescription" name = "formDescription"></textarea>
+				</div>
+			</div>	
 		<div class="col-sm-12 noPad mt clearfixclearfix">
-           <div class="col-md-4 padding_left" >
-             <label class="switch mt5 text-center">
+           <div class="col-md-3 pull-right" >
+             <label class="switch mt5 text-center pull-right">
                <input checked id="isRequired" name="isRequired" title="Is Required" type="checkbox" onclick="isReqCheckForm();" value="Y">
                   <div class="slider round"  title="Is Required" ></div>
                  </label>
               </div>				  
+        </div>
         </div>
 		<div class="immiPopFoot">
             <input value="Save" class="" type="button" onclick="immigration.saveCandidateForms();">
@@ -185,3 +200,12 @@
 				$("#uploadFormPop").fadeOut(100);
 			}
 			</script>
+			
+			
+<script type="text/javascript">
+function removeImmigDoc(){
+	$("#immigrationEditDocDiv").hide();
+	$("#immigrationDocDiv").show();
+	$('#uploadFileForm').attr("data-validation", "required");
+}
+</script>

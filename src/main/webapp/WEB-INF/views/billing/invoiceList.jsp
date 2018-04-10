@@ -811,9 +811,9 @@ function invoicePagination(url){
             				}else{
             					if(report.invoiceStatus == "Accepted"){
             						if(report.paymentStatus == "Paid"){
-            							result = result +'           <span class=" primary pull-left">Receive</span>   ';	
+            							result = result +'           <span class=" primary pull-left">paid</span>   ';	
             						}else{
-            							result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>';
+            							result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">pay</span> </td>';
             						}
             						
             					}else{
