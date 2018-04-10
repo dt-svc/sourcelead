@@ -1120,7 +1120,7 @@ function getPetitionTypeOnCountries(selectedCountry, selectedCountryOption){
             	 var opt = json[i];
             	 $('#petitionTypeTemplate').append('<option value='+opt.id+'>'+opt.name+'</option>');
             } 
-            $('#petitionTypeTemplate option[value='+selectedCountryOption+']').prop("selected", true);
+            $('#petitionTypeTemplate option[value="'+selectedCountryOption+'"]').prop("selected", true);
             $('#petitionTypeTemplate').trigger("chosen:updated");
         }
 	}); 
