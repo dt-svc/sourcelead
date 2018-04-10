@@ -1491,7 +1491,7 @@ public class CrowdSourcingRequirementsRestController {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
       		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
       		
-      		String[] tableColumns = {"contactName", "groups", "email", "phone", "source"};
+      		String[] tableColumns = {"contactName", "groups", "email", "phone", "source","getRefercontactList"};
 		    int sortColumnIndex = 1; //by default sorting using updated date
 			String sortColumnOrder = "desc"; //by default referContactsDTO order
 			if(referContactsDTO.getOrder() != null && !referContactsDTO.getOrder().isEmpty()) {
@@ -2653,4 +2653,52 @@ public class CrowdSourcingRequirementsRestController {
 	        });
 	        return xstream.toXML(obj);
 	    }
+		
+		@RequestMapping(value = "/getContactById", method = RequestMethod.POST)
+		public  ReferContactsDTO getContactById(ReferContactsDTO referContactsDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
+			ReferContactsDTO referContacDTO=new ReferContactsDTO();
+			
+      		ReferContacts referContacts= referContactsService.getReferContactsById(referContactsDTO.getId());
+      		if(referContacts != null){
+      			if(referContacts.getId() != null){
+      				referContacDTO.setId(referContacts.getId());
+      			}
+      			if(referContacts.getFirstName() != null){
+      				referContacDTO.setFirstName(referContacts.getFirstName());
+      			}
+      			if(referContacts.getLastName() != null){
+      				referContacDTO.setLastName(referContacts.getLastName());
+      			}
+      			if(referContacts.getContactUserEmail() != null){
+      				referContacDTO.setEmail(referContacts.getContactUserEmail());
+      			}
+      			if(referContacts.getCompanyName() != null){
+      				referContacDTO.setCompanyName(referContacts.getCompanyName());
+      			}
+      			if(referContacts.getVendorType() != null){
+      				referContacDTO.setContactType("Vendor");
+      			}
+      			if(referContacts.getCandidateType() != null){
+      				referContacDTO.setContactType("Candidate");
+      			}
+      			if(referContacts.getClientType() != null){
+      				referContacDTO.setContactType("Client");
+      			}
+      			if(referContacts.getOtherType() != null){
+      				referContacDTO.setContactType("Other");
+      			}
+      			if(referContacts.getContactUserPhone() != null){
+      				referContacDTO.setPhone(referContacts.getContactUserPhone());
+      			}
+      		}
+      		
+      		return referContacDTO;
+		}
+		
+		@RequestMapping(value = "/deleteContact", method = RequestMethod.POST)
+		public  boolean deleteContact(ReferContactsDTO referContactsDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
+			 
+			return referContactsService.deleteContactById(referContactsDTO.getId());
+			
+		}
 }

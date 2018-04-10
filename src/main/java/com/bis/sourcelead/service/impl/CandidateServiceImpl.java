@@ -39,7 +39,9 @@ import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateTimelineActivityDao;
 import com.bis.sourcelead.dao.EmployeesDao;
 import com.bis.sourcelead.dao.OrgSpocDao;
+import com.bis.sourcelead.dao.ReferContactsDao;
 import com.bis.sourcelead.dao.RolesDao;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.AddAssociateDTO;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AssociateDTO;
@@ -67,6 +69,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.OrglocationFormFields;
+import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -113,6 +116,9 @@ public class CandidateServiceImpl implements CandidateService {
 
 	@Autowired
 	CandidateDao candidateDao;
+	
+	@Autowired
+	UserDao userDao;
 
 	@Autowired
 	private CommonUtil commonUtil;
@@ -198,6 +204,9 @@ public class CandidateServiceImpl implements CandidateService {
     
     @Autowired
     private CandidateCustomFieldDataService candidateCustomFieldDataService;
+    
+    @Autowired
+	ReferContactsDao referContactsDao;
     
        
     protected boolean isNullOrEmpty(String str) {
@@ -722,6 +731,53 @@ public class CandidateServiceImpl implements CandidateService {
 		 * Saving Candidate DB data as ElasticSearch Documents
 		 */
 		saveOrUpdateCandidateElkDocument(savedCandidate);
+		
+		// store candidate as a contact
+		
+		ReferContacts referContacts=null;
+		 referContacts=referContactsDao.getReferContactsByEmails(user.getId(), candidateDto.getEmail());
+	
+		if(referContacts !=null){
+			if(candidateDto.getFirstName() != null){
+				referContacts.setFirstName(candidateDto.getFirstName());
+			}
+			if(candidateDto.getLastName() != null){
+				referContacts.setLastName(candidateDto.getLastName());
+			}
+			if(candidateDto.getPhoneNumber() != null){
+				referContacts.setContactUserPhone(candidateDto.getPhoneNumber());
+			}
+			referContacts.setUpdatedDate(new Date());
+			referContacts.setUpdatedBy(user.getUserCode());
+					referContacts.setCandidateType(1);
+		}else{
+			 referContacts = new ReferContacts();
+			
+			if(candidateDto.getEmail() != null){
+				referContacts.setContactUserEmail(candidateDto.getEmail());
+			}
+			
+			if(candidateDto.getFirstName() != null){
+				referContacts.setFirstName(candidateDto.getFirstName());
+			}
+			if(candidateDto.getLastName() != null){
+				referContacts.setLastName(candidateDto.getLastName());
+			}
+			if(candidateDto.getPhoneNumber() != null){
+				referContacts.setContactUserPhone(candidateDto.getPhoneNumber());
+			}
+			
+			referContacts.setReferFromUser(user);
+			String contactUUID = SourceLeadRandomCodeHelper.generateUUID();
+			referContacts.setContactUserUUID(contactUUID);
+			referContacts.setCreatedDate(new Date());
+			referContacts.setCandidateType(1);
+			
+			referContacts.setCreatedBy(user.getUserCode());
+		}
+	
+	referContactsDao.addReferContacts(referContacts);
+		
 		// resume details update in elk
 		if(candidateDto.getFileInfo()!= null && !candidateDto.getFileInfo().isEmpty()){
 		candidateResumesService.saveOrUpdateCandidateElkDocumentWithResumeDetails(savedCandidate);
