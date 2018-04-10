@@ -233,6 +233,7 @@ public class Invoice {
 	private String dueDateStr;
 
 	@Transient
+	@JsonProperty
 	private Long vendorOrgRelationId;
 	
 	@Transient

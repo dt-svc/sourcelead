@@ -1,3 +1,4 @@
+
 package com.bis.sourcelead.rest;
 
 
@@ -47,6 +48,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.beans.BillingReportDTO;
 import com.bis.sourcelead.beans.CurrencyConversionResponse;
 import com.bis.sourcelead.constants.Constants;
@@ -59,6 +61,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoicePaymentDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
@@ -82,6 +85,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -257,24 +261,44 @@ public class InvoiceRestController {
  }*/
 	
 	@RequestMapping(value = "/saveInvoice", method = RequestMethod.POST)
-	public @ResponseBody String saveInvoice(InvoiceDTO invoiceDTO,@RequestParam(value = "saveType", required = false) String saveType,
+	public @ResponseBody Response<String> saveInvoice(InvoiceDTO invoiceDTO,@RequestParam(value = "saveType", required = false) String saveType,
 			@RequestParam(value = "invoiceType", required = false) String invoiceType,HttpServletRequest request) throws Exception {
-
-		String invoiceSaved = "failed";
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
-		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-        invoiceDTO.setStaticPath(staticPath);
-		Invoice invoice = invoiceService.saveInvoice(user,orgLocation,saveType,invoiceType,org,currencyCode,invoiceDTO);
-		
-		if(null !=invoice){
-			if(null != invoice.getProjectID()){
-				invoiceService.updateSubmissionApproverHiearachy(invoice,invoiceType);
-			}
-			invoiceSaved = "success";
-		}
-		return invoiceSaved;	
+        Response<String> response = new Response<>();
+        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+        
+        if (user != null) {
+        	try {
+        		if(Validator.validate(invoiceDTO)){
+        			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+            		String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+            		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+                    invoiceDTO.setStaticPath(staticPath);
+            		Invoice invoice = invoiceService.saveInvoice(user,orgLocation,saveType,invoiceType,org,currencyCode,invoiceDTO);
+            		if(null !=invoice){
+            			if(null != invoice.getProjectID()){
+            				invoiceService.updateSubmissionApproverHiearachy(invoice,invoiceType);
+            			}
+            			  response.setResponse(Result.SUCCESS.name());
+            	          response.setResponseMessage(Result.SUCCESS.getValue());
+            		}
+        		}else{
+        			response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+        		}
+        		
+        	}catch (Exception e) {
+        		  response.setResponse(Result.AWKWARD.name());
+        		  response.setResponseMessage(Result.AWKWARD.getValue());
+        		  logger.error(ExceptionUtils.getFullStackTrace(e));
+        			}
+        }else if (user == null){
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}  
+         
+		return response;
+			
 	} 
 	
 	

@@ -1963,9 +1963,17 @@ function saveInvoice(saveType){
 		        	
 		    	        
 		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		        	  $.post(sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=payable", formData, function(data) {
-			  				if(data == "success"){
-			  					$("#invoiceLoading").removeAttr("style");
+		        	  $.post(sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=payable", formData, function(result) {
+		        		 alert("1");
+		        		  if (result && result.response === "INVALID_DATA") {
+		        			  alert("2");
+			          		    showError(result.responseMessage);
+			          		} else if (result.response === "AWKWARD") {
+			          			alert("3");
+			          		    location.href = "/errorPage";
+			          		} else if (result.response === "SUCCESS") {
+			          			alert("4");
+			          			$("#invoiceLoading").removeAttr("style");
 	    		     			location.replace(sourceleadUrl+"/payablesList");
 	    		     			$("#selector1").removeAttr("style");
 					    		$("#selector1").css({ display: "block" });
@@ -1975,7 +1983,12 @@ function saveInvoice(saveType){
 					    			$("#msgDiv").html("Bill saved Successfully..");
 					    		}
 	    		     			msgFadein();
-			  				}
+			          		} else if (result.indexOf('Sign In') !== -1) {
+			          			location.replace(sourceleadUrl);
+			          		} else {
+			          		    showError("Operation failed, please try again");
+			          		}
+		        		  
 			  			   }); 
 		    	         return true; 
 	        }

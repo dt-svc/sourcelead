@@ -81,7 +81,7 @@ function errRemoveClientContact(){
 				              <div class="col-md-9 select-field chooRadius" id="errClient">
                					<div class="input-group col-md-10 pull-left">				              
 
-				                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();getPaymentTerms();" data-validation="required" field-name="Client">             
+				                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();getPaymentTerms();" data-validation="required" field-name="clientName">             
 				                </select>
 				                <span class="input-group-addon cursorPointer bg-blue" onclick="getClients();createInvoiceEmptyClientContact();"><i class="fa fa-refresh "></i></span>
 				                </div>
@@ -2059,19 +2059,29 @@ function saveInvoice(saveType){
 	     		$(".project_inn_mask").fadeIn(200);
 		        }else{
 		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		        	  $.post(sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=Receivable", formData, function(data) {
-		  				if(data == "success"){
-		  					$("#invoiceLoading").removeAttr("style");
-    		     			location.replace(sourceleadUrl+"/invoiceList");
-    		     			$("#selector1").removeAttr("style");
-				    		$("#selector1").css({ display: "block" });
+		        	  $.post(sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=Receivable", formData, function(result) {
+		        		  if (result && result.response === "INVALID_DATA") {
+		          		    showError(result.responseMessage);
+		          		} else if (result.response === "AWKWARD") {
+		          		    location.href = "/errorPage";
+		          		} else if (result.response === "SUCCESS") {
+			  					$("#invoiceLoading").removeAttr("style");
+	    		     			location.replace(sourceleadUrl+"/invoiceList");
+	    		     			$("#selector1").removeAttr("style");
+					    		$("#selector1").css({ display: "block" });
 				    		if(saveType == 'SENT'){
 				    			$("#msgDiv").html("Successfully you have sent a Invoice..");
 				    		}else if(saveType == 'DRAFT'){
 				    			$("#msgDiv").html("Invoice saved Successfully..");
 				    		}
     		     			msgFadein();
-		  				}
+		          		} else if (result.indexOf('Sign In') !== -1) {
+		          			location.replace(sourceleadUrl);
+		          		} else {
+		          		    showError("Operation failed, please try again");
+		          		}
+		        		  $("#invoiceLoading").hide();
+		        		  
 		  			   }); 
 		        	  
 		    	         return true; 

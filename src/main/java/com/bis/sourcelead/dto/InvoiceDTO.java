@@ -3,16 +3,29 @@ package com.bis.sourcelead.dto;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class InvoiceDTO extends SearchDTO {
 
+//	@Required (desc = "ClientOrgRelationId")
 	private String clientOrgRelationId;
 	private String savedInvoiceId;
 	private String clientCurrency;
+	
+//	@Required (desc = "ClientContact")
 	private String clientContact;
+	
+	@Required (desc = "InvoiceId")
 	private String invoiceId;
+	
+	@Required (desc = "InvoiceDate")
 	private String invoiceDate;
+	
 	private String paymentFrequency;
+	
+	@Required (desc = "DueDate")
 	private String dueDate;
+	
 	private String billingAddress;
 	private String accountDetails;
 	private List<FileInfo> fileInfo;
@@ -26,7 +39,9 @@ public class InvoiceDTO extends SearchDTO {
 	private String afterDiscountTotal;
 	private String grandTotal;
 	private String disCount;
+	@Required (desc = "vendorOrgRelationId")
     private String vendorOrgRelationId;
+	@Required (desc = "vendorContact")
     private String vendorContact;
     private String projectId;
     private String frequency;
@@ -37,7 +52,9 @@ public class InvoiceDTO extends SearchDTO {
     private String expensesId;
     private List<InvoiceExpensesDTO> expenseInvoice;
     private String staticPath;
+    
     private String clientName;
+    
     private String projectName;
     private String inoviceDue;
     private String invoiceStatus;
