@@ -327,7 +327,7 @@
 			$(".popCan").click(function(){
 				$(".popMask").fadeOut(200);
 				$("#spousePopView, #childPopView, #fathPopView, #mothPopView").fadeOut(100);
-				
+				familyMemberId =""; 
 			});	
 		</script>
 	
