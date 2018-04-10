@@ -134,9 +134,19 @@ function saveBlogCategory(uuid) {
 	if ($('#blog_category_form').validate(false, validationSettings)) {
 	  	var formData = $($('#blog_category_form')[0]).serialize();
 		$("#blogCategoryLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.post(sourceleadUrl+"/addBlogCategory?"+tokenParamName+"="+tokenValue+"&categoryUUID="+uuid, formData, function(data) {
-			if(data == true){
+		$.post(sourceleadUrl+"/addBlogCategory?"+tokenParamName+"="+tokenValue+"&categoryUUID="+uuid, formData, function(result) {
+			
+			if (result && result.response === "INVALID_DATA") {
+				$("#blogCategoryLoading").hide();
+			    showError(result.responseMessage);
+			} else if (result.response === "AWKWARD") {
+			    location.href = "/errorPage";
+			} else if (result.response === "SUCCESS") {
 				location.replace(sourceleadUrl+ "/categoryList");
+			} else if (result.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+			    showError("Operation failed, please try again");
 			}
 		}); 
 		return true;
@@ -298,12 +308,20 @@ function deleteBlogCategory(blogCategoryId) {
 		 $.ajax({  
 	          type : "POST",
 	          url: sourceleadUrl+"/removeBlogCategoryByBlogId?"+tokenParamName+"="+tokenValue+"&blogCategoryId="+blogCategoryId,        
-	          success :function(data) {
+	          success :function(result) {
 
-					if(data != null && data != 'undefined' && data != ""){
-	             		
-						 location.replace(sourceleadUrl+"/categoryList");
-	               } 
+	        	  if (result && result.response === "INVALID_DATA") {
+					    showError(result.responseMessage);
+					} else if (result.response === "AWKWARD") {
+					    location.href = "/errorPage";
+					} else if (result.response === "SUCCESS") {
+						location.replace(sourceleadUrl+"/categoryList");
+					} else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+					    showError("Operation failed, please try again");
+					}
+					
 	        },
 	          
 	     }); 
