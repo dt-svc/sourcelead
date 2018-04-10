@@ -44,10 +44,10 @@ function orgSubscriptionApiLocation(locationId,countryId,stateId,cityId,zipCodeI
 		country[i] = '' + country[i] + ''
 	}
 	
-	initialize(locationId,countryId,stateId,cityId,zipCodeId,country,addressId);
+	initializeLocation(locationId,countryId,stateId,cityId,zipCodeId,country,addressId);
 	
 }
-function initialize(locationId,countryId,stateId,cityId,zipCodeId,country,addressId) {
+function initializeLocation(locationId,countryId,stateId,cityId,zipCodeId,country,addressId) {
 	 var input = (document.getElementById(locationId));
 	 var countries =  "country:["+country+"]";
 	 options.types=['geocode'];

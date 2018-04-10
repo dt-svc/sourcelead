@@ -354,6 +354,7 @@ function Immigration() {
 	        			//$('#immigrationDocumentName').text(data.fileUrl); 
 	        			$('#immigrationEditDocDiv').show();
 	        			$('#immigrationDocDiv').hide();
+	        			$('#uploadFileForm').removeAttr("data-validation");
 	        			$('#immigrationDocumentName').text(data.fileName);
 	        			$('#immigrationCandidateFormId').val(data.id);
 	        	
