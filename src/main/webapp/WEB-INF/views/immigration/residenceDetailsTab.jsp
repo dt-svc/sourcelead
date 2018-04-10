@@ -185,6 +185,7 @@
 				 $(".popMask").fadeOut(200);
 				$("#popResiView").fadeOut(100); 
 				$("#residenceDetails_form")[0].reset();
+				$("#residenceId").val('');
 			 }
 			 
 				$("#residenceSearch").keyup(function (e) {
