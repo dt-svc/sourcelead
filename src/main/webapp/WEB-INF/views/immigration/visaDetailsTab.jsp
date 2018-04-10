@@ -115,6 +115,7 @@
 				$(".popMask").fadeOut(200);
 				$("#popUpVisa").fadeOut(200);
 				$("#CandidateVisaform")[0].reset();
+				$("#candidateVisaId").val('');
 			}
 		   	
 		</script>
