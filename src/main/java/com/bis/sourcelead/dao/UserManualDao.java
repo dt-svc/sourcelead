@@ -12,9 +12,9 @@ import com.bis.sourcelead.entity.UserManualLevelTwo;
 
 public interface UserManualDao {
 	
-	public void storeUserManuals(UserManualLevelOne userManualLevelOne) throws Exception;
+	public UserManualLevelOne storeUserManuals(UserManualLevelOne userManualLevelOne) throws Exception;
 	
-	public void storeUserManualstwo(UserManualLevelTwo userManualLevelTwo) throws Exception;
+	public UserManualLevelTwo storeUserManualstwo(UserManualLevelTwo userManualLevelTwo) throws Exception;
 	
 	public UserManualLevelThree storeUserManualsThree(UserManualLevelThree userManualLevelThree) throws Exception;
 	
@@ -50,11 +50,11 @@ public interface UserManualDao {
 	
 	List<UserManualLevelTwo> getAllUserManuallsTwoById(Long id) throws Exception;
 	
-	public void deleteUserManualThree(UserManualLevelThree userManualLevelThree)throws Exception;
+	public UserManualLevelThree deleteUserManualThree(UserManualLevelThree userManualLevelThree)throws Exception;
 	
-	public void deleteUserManualTwo(UserManualLevelTwo userManualLevelTwo)throws Exception;
+	public UserManualLevelTwo deleteUserManualTwo(UserManualLevelTwo userManualLevelTwo)throws Exception;
 	
-	public void deleteUserManualOne(UserManualLevelOne UserManualLevelOne)throws Exception;
+	public UserManualLevelOne deleteUserManualOne(UserManualLevelOne UserManualLevelOne)throws Exception;
 	
 	//attachments
 	
@@ -62,7 +62,7 @@ public interface UserManualDao {
 	
 	UserManualAttachment getUserManualAttchListById(Long id);
 	
-	public void deleteUserManualAttachments(UserManualAttachment UserManualAttachments) throws Exception;
+	public UserManualAttachment deleteUserManualAttachments(UserManualAttachment UserManualAttachments) throws Exception;
 	
 	//for publishing the data in website
 	

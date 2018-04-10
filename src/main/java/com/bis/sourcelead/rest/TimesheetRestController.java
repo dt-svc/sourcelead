@@ -3126,7 +3126,13 @@ public class TimesheetRestController {
 					String dateList = commonUtil.getDaysBetweenDates(leave.getFromDate(), leave.getToDate(), orgLocations.getDateFormat());
 					String leaveDate[] = dateList.split(",");
 					for(int i=0;i<leaveDate.length;i++) {
-						addTimesheetDayEntriesByProjectIdAndProjectMemberId(projectTask.getProjectId().getId(), projectMember.getId(), projectTask.getProjectTasksUUID(), leaveDate[i],CalendarUtil.getTimesheetHoursDisplayFormat(orgLocations.getAverageWorkingHours().floatValue()).replace(".", ":"), leave.getReason(), leaveApproverUserId, orgLocations,leaveStatusType);
+							if(projectTask != null && projectMember != null && leave != null) {
+								if((leave.getFromHalfDay().equalsIgnoreCase("YES") || leave.getToHalfDay().equalsIgnoreCase("YES")) && orgLocations.getAverageWorkingHours() != null && orgLocations.getAverageWorkingHours().floatValue() > 0) {
+									addTimesheetDayEntriesByProjectIdAndProjectMemberId(projectTask.getProjectId().getId(), projectMember.getId(), projectTask.getProjectTasksUUID(), leaveDate[i],CalendarUtil.getHalfTimesheetHoursDisplayFormat(orgLocations.getAverageWorkingHours().floatValue()).replace(".", ":"), leave.getReason(), leaveApproverUserId, orgLocations,leaveStatusType);
+								}else {
+									addTimesheetDayEntriesByProjectIdAndProjectMemberId(projectTask.getProjectId().getId(), projectMember.getId(), projectTask.getProjectTasksUUID(), leaveDate[i],CalendarUtil.getTimesheetHoursDisplayFormat(orgLocations.getAverageWorkingHours().floatValue()).replace(".", ":"), leave.getReason(), leaveApproverUserId, orgLocations,leaveStatusType);
+								}
+							}
 						}
 					}
 				}
@@ -3528,7 +3534,6 @@ public class TimesheetRestController {
 		@RequestMapping(value = "/projectTasksById" , method = RequestMethod.POST)
 		public @ResponseBody  String getProjectTasks(
 				 @RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="avilableProjectTaskIds", required=false) String  avilableProjectTaskIds) throws Exception {
-			 	
 				 
 				List<Long> ids = new ArrayList<Long>();
 				String[] avilableProjectTaskId = avilableProjectTaskIds.split(",");
@@ -3537,7 +3542,6 @@ public class TimesheetRestController {
 						ids.add(Long.parseLong(id));
 					}
 				}
-				
 				 String resultJson;
 				 Collection<ProjectTasks> taskList=projectTasksService.getAllTasksByProjectIdAndExistedProjectTaskIds(projectId, ids);
 				 resultJson = commonUtil.toJSON(taskList);
