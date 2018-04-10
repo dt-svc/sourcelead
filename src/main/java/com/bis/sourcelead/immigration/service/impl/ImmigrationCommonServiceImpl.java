@@ -34,8 +34,8 @@ import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
+import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
-import com.bis.sourcelead.entity.ImmigrationListView;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
@@ -634,16 +634,35 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	}
 	
 	@Override
-	public ImmigrationCandidateDocuments uploadRequstedDocForCandidate(ImmigrationTemplateDocDTO immigrationTemplateDocDTO,Long id, Long candidateId, Long immigrationId) throws Exception {
+	public ImmigrationCandidateDocuments uploadRequstedDocForCandidate(ImmigrationTemplateDocDTO immigrationTemplateDocDTO,Long id, Long candidateId, Long immigrationId,User user, OrgLocations orgLocations) throws Exception {
 		ImmigrationCandidateDocuments docs = immigrationCommonDao.getImmigrationCandidateDocsById(id,candidateId,immigrationId);
+		Date date = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 		if(immigrationTemplateDocDTO.getFileInfo() != null){
 			FileInfo fileInfo = immigrationTemplateDocDTO.getFileInfo().get(0);
 			docs.setUplodedFileUrl(fileInfo.getFileURL());
 			docs.setUpldedFileContentType(fileInfo.getContentType());
 			docs.setUpldedFileName(fileInfo.getFileName());
-			FileUploadUtil.moveFile(immigrationTemplateDocDTO.getStaticPath(), fileInfo, "immigrationCandidateDocuments");
 			docs.setDocumentStatus(Constants.DOCUMENT_UPLOAD);
+			docs.setUpdatedDate(date);
+			docs.setUpdatedBy(user);
 			immigrationCommonDao.saveImmigrationCandidateDocs(docs);
+			List<FileInfo> fileInfo1 = immigrationTemplateDocDTO.getFileInfo();
+			for(FileInfo info: fileInfo1){
+			ImmigrationCandidateDocumentsHistory docsHistory = new ImmigrationCandidateDocumentsHistory();
+			docsHistory.setCandidateId(docs.getCandidateId());
+			docsHistory.setImmigrationCandidateDocumentId(docs);
+			docsHistory.setImmigrationId(docs.getImmigrationId());
+			docsHistory.setUpldedFileContentType(info.getContentType());
+			docsHistory.setUpldedFileName(info.getFileName());
+			docsHistory.setUplodedFileUrl(info.getFileURL());
+			docsHistory.setStatus(Constants.RECORD_ACTIVE);
+			docsHistory.setUpdatedDate(date);
+			docsHistory.setCreatedDate(date);
+			docsHistory.setCreatedBy(user);
+			docsHistory.setUpdatedBy(user);
+			FileUploadUtil.moveFile(immigrationTemplateDocDTO.getStaticPath(), info, "immigrationCandidateDocuments");
+			immigrationCommonDao.saveImmigrationCandidateDocumentHistory(docsHistory);
+			}
 		}
 		
 		return docs;

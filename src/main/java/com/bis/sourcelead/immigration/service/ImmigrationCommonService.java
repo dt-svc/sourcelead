@@ -47,7 +47,7 @@ public interface ImmigrationCommonService {
 	 
 	ImmigrationCandidateDocuments getImmigrationCandidateDocumentById(Long id);
 	 
-	ImmigrationCandidateDocuments uploadRequstedDocForCandidate(ImmigrationTemplateDocDTO immigrationTemplateDocDTO,Long id,Long candidateId,Long immigrationId)throws Exception;
+	ImmigrationCandidateDocuments uploadRequstedDocForCandidate(ImmigrationTemplateDocDTO immigrationTemplateDocDTO,Long id,Long candidateId,Long immigrationId,User user, OrgLocations orgLocations)throws Exception;
 	
 	List<CandidateResidence> getCandidatesResidenceListByCandidateIdAndOrgLocationID(Long candidateId, String searchVal);
 	
