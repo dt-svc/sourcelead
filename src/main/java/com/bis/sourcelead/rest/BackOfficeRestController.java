@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AssetDao;
+import com.bis.sourcelead.dto.AssetCategoryDTO;
 import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
@@ -693,19 +694,36 @@ public class BackOfficeRestController {
 	
 
 	@RequestMapping(value = "/saveCategory", method = RequestMethod.POST)
-	 @ResponseBody String saveCategory(@RequestParam(value = "json", required = false) String json,
+	 @ResponseBody Response<String> saveCategory(AssetCategoryDTO assetCategoryDTO,
 			 @RequestParam(value = "categoryId", required = false) String categoryId,
 			 @RequestParam(value = "catLocationId", required = false) String catLocationId,
 			HttpServletRequest request) throws Exception {
-
-		String json1 = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json1);
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		assetCategoryService.addAssetCategory(jsonObj,orgLocation,user,categoryId,catLocationId);
-			return "success";
 		
-		
+			Response<String> response = new Response<>();
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			try {
+				if (user != null && orgLocation != null) {
+	
+					if (Validator.validate(assetCategoryDTO)) {
+						assetCategoryService.addAssetCategory(assetCategoryDTO,orgLocation,user,categoryId,catLocationId);
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					} else {
+						response.setResponse(Result.INVALID_DATA.name());
+						response.setResponseMessage(Result.INVALID_DATA.getValue());
+					}
+	
+				} else {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+			return response;
 	} 
 	
 	@RequestMapping(value = "/getCategoryById")
@@ -786,19 +804,39 @@ public class BackOfficeRestController {
 	    
 	   }
 	
-	
 	@RequestMapping(value = "/terminateCategory", method = RequestMethod.GET)
-	 @ResponseBody String terminateCategory(@RequestParam(value = "categoryId", required = false) String categoryId,
+	 @ResponseBody Response<String> terminateCategory(@RequestParam(value = "categoryId", required = false) String categoryId,
 			HttpServletRequest request) throws Exception {
-
+		
+		Response<String> response = new Response<>();
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		AssetCategory assetCategory = assetCategoryService.getAssetCategoryListByLocationIdAndCatId(orgLocation.getId(),Long.parseLong(categoryId));
-		assetCategory.setId(Long.parseLong(categoryId));
-		assetCategory.setStatus(Integer.parseInt(Constants.MEMBER_IN_ACTIVE));
-		assetCategoryService.addAssetCategory(assetCategory);
-		return "success";
+		
+		try {
+			if (loginUser != null && orgLocation != null) {
+			if(categoryId != null) {
+				AssetCategory assetCategory = assetCategoryService.getAssetCategoryListByLocationIdAndCatId(orgLocation.getId(),Long.parseLong(categoryId));
+				assetCategory.setId(Long.parseLong(categoryId));
+				assetCategory.setStatus(Integer.parseInt(Constants.MEMBER_IN_ACTIVE));
+				assetCategoryService.addAssetCategory(assetCategory);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			}else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());	
+			}
+			}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());	
+			}
+		}catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		
+		return response;
 	} 
-	
 	
 	private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
