@@ -268,9 +268,21 @@ function deleteDocument(documentId){
 					type : "POST",
 					url : sourceleadUrl + "/deleteManualAttachment?${_csrf.parameterName}=${_csrf.token}&attachmentId="+ documentId,
 					success : function(data) {
-						$("#ticketDocument" + documentId).remove();
-						$("#userManualDeletePopUp").empty();
-						$(".project_inn_mask").fadeOut(200);
+						
+						if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+			    		    showError(response.responseMessage);
+			    	  	} else if (response.response === "AWKWARD") {
+			    		    location.href = "/errorPage";
+			    		} else if (response.response === "SUCCESS") {
+			    			$("#ticketDocument" + documentId).remove();
+							$("#userManualDeletePopUp").empty();
+							$(".project_inn_mask").fadeOut(200);
+			    		}else if (response.indexOf('Sign In') !== -1) {
+			    			location.replace(sourceleadUrl);
+			    		} else {
+			    		    showError("Operation failed, please try again");
+			    		}
+						
 					},
 				});
 	}
@@ -399,6 +411,7 @@ function saveLevels(type){
 <<script type="text/javascript">
 
 function saveLevels(type){
+	
 	var ee = $("#summernote").val($('.note-editable').html()); 
 	if ($('#user_manuals_form').validate(false, validationSettings)) {
 		
@@ -418,8 +431,18 @@ function saveLevels(type){
 		      contentType:false, 
 			  url : sourceleadUrl+"/storeUserManuals?"+tokenParamName+"="+tokenValue+"&save="+type,
 			  	success : function(result) {
-			  	
-				  		location.replace(sourceleadUrl+ "/userManuals");
+			  		if (result && result.response === "INVALID_DATA") {
+		    		    showError(result.responseMessage);
+		    		} else if (result.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    		} else if (result.response === "SUCCESS") {
+		    			location.replace(sourceleadUrl+ "/userManuals");			 			
+		    		} else if (result.indexOf('Sign In') !== -1) {
+		    			location.replace(sourceleadUrl);
+		    		} else {
+		    		    showError("Operation failed, please try again");
+		    		}
+				  		
 
 			},
 		});

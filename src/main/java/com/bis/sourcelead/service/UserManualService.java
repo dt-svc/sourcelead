@@ -13,7 +13,7 @@ import com.bis.sourcelead.entity.UserManualLevelTwo;
 public interface UserManualService {
 	
 	//level one
-	public void storeUserManuals(UserManualsDTO userManualsDTO) throws Exception;
+	public String storeUserManuals(UserManualsDTO userManualsDTO) throws Exception;
 	
 	UserManualLevelOne getUserManualByTitle(String UserManTitle) throws Exception;
 	
@@ -37,11 +37,11 @@ public interface UserManualService {
 	
 	List<UserManualLevelTwo> getAllUserManuallsTwoById(Long id) throws Exception;
 	
-	public void deleteUserManualThree(Long id)throws Exception;
+	public UserManualLevelThree deleteUserManualThree(Long id)throws Exception;
 	
-	public void deleteUserManualTwo(Long id)throws Exception;
+	public UserManualLevelTwo deleteUserManualTwo(Long id)throws Exception;
 	
-	public void deleteUserManualOne(Long id)throws Exception;
+	public UserManualLevelOne deleteUserManualOne(Long id)throws Exception;
 	
 	//level Three 
 	
@@ -60,7 +60,7 @@ public interface UserManualService {
 	List<UserManualAttachment> getUsermanualAttachmentList(Long levelThreeId);
 	
 	
-	public void deleteUserManualAttachments(Long id)throws Exception;
+	public UserManualAttachment deleteUserManualAttachments(Long id)throws Exception;
 	
 	//for publishing the data in website
 	
