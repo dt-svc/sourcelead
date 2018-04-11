@@ -2,6 +2,7 @@ package com.bis.sourcelead.dto;
 
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Required;
 import com.bis.sourcelead.entity.Employees;
 /**
  * @author SanjeevReddy Indurthi
@@ -10,6 +11,7 @@ public class ResidenceDTO extends CommonDTO {
 	
 	     private Long residenceId;
 	     
+	    @Required(desc="location")
 		private String location;
 	    
 		private String streetAddress;
@@ -22,8 +24,10 @@ public class ResidenceDTO extends CommonDTO {
 		
 		private String zipcode;
 		
+		@Required(desc="residence start date")
 		private String residenceStartDate;
 		
+		@Required(desc="residence end date")
 		private String residenceEndDate;
 
 		public String getLocation() {
