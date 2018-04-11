@@ -204,7 +204,9 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
         StringBuilder query1 = new StringBuilder("");
         if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
             query1.append(" and ((tempView.name like '%" + searchValue + "%' )");
-            query1.append(" or (tempView.description like '%" + searchValue + "%' ))");
+            query1.append(" or (tempView.description like '%" + searchValue + "%' )");
+            query1.append(" or (tempView.country like '%" + searchValue + "%' )");
+            query1.append(" or (tempView.petitionType like '%" + searchValue + "%' ))");
             //query1.append(" or (tempView.status like '%" + searchValue + "%' )");
         }
         // usertList sorting order
@@ -356,7 +358,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
             templateDto.setTemplateName(entityObj.getName());
             templateDto.setTemplateDescription(entityObj.getDescription());
             templateDto.setCountry(entityObj.getCountry());
-            templateDto.setPetitionType(entityObj.getPetitionType());
+            templateDto.setPetitionType(entityObj.getPetitionType().getName());
             // 
 
         } catch (Exception e) {

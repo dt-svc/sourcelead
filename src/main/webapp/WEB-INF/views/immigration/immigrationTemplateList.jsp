@@ -101,6 +101,8 @@
         result = result + '<thead>';
         result = result + '<tr>';
         result = result + '<th>Template Name</th>';
+        result = result + '<th>Country</th>';
+        result = result + '<th>Petition Type</th>';
         result = result + '<th>Description</th>';
         result = result + '<th>No. of Docs</th>';
         result = result + '<th>No. of Forms</th>';
@@ -140,6 +142,8 @@
             }),
             "columns": [
                 {"data": "name"},
+                {"data": "country"},
+                {"data": "petitionType"},
                 {"data": "description"},
                 {"data": "docsCount"},
                 {"data": "formsCount"},
@@ -157,6 +161,32 @@
                             result = result + "<td><div class='tbldata-dotdot-me'>" + opt.name + "</div></td>";
                         } else {
                             result = result + "<td><div class='tbldata-dotdot-me'>---</div></td>";
+                        }
+                        return result;
+                    }
+                },
+                {
+                    "targets": colIndex++,
+                    "data": "country",
+                    "render": function (data, type, opt, meta) {
+                        var result = "";
+                        if (opt.country !== null && opt.country !== '' && opt.country !== 'undefined') {
+                            result = result + "<td><div class='tbldata-dotdot-big'>" + opt.country + "</div></td>";
+                        } else {
+                            result = result + "<td><div class='tbldata-dotdot-big'>---</div></td>";
+                        }
+                        return result;
+                    }
+                },
+                {
+                    "targets": colIndex++,
+                    "data": "petitionType",
+                    "render": function (data, type, opt, meta) {
+                        var result = "";
+                        if (opt.petitionType !== null && opt.petitionType !== '' && opt.petitionType !== 'undefined') {
+                            result = result + "<td><div class='tbldata-dotdot-big'>" + opt.petitionType + "</div></td>";
+                        } else {
+                            result = result + "<td><div class='tbldata-dotdot-big'>---</div></td>";
                         }
                         return result;
                     }

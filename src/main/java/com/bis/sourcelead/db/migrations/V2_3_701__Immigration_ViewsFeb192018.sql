@@ -7,6 +7,13 @@ CREATE OR REPLACE VIEW IMMIGRATON_TEMPLATE_VIEW AS
         TEMP.DESCRIPTION,
         TEMP.STATUS,
         TEMP.UPDATED_DATE,
+        TEMP.COUNTRY,
+        (SELECT 
+                NAME
+           FROM  `SOURCELEAD`.`LOOKUP_DATA`
+            WHERE
+                ID = TEMP.PETITION_TYPE) AS PETITION_TYPE,
+        
         (SELECT 
                 COUNT(DOCS.ID)
             FROM

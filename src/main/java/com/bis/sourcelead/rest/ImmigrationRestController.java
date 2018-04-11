@@ -405,7 +405,7 @@ public class ImmigrationRestController {
             @RequestParam(value = "searchValue", required = false) String searchValue, HttpServletRequest request) {
         ResponseList<ImmigrationTemplateListDTO> templateListDTOList = null;
         try {
-            String[] tableColumns = {"name", "description", "docsCount", "formsCount", "tasksCount", "status", "id"};// should be
+            String[] tableColumns = {"name", "country", "petitionType" ,"description", "docsCount", "formsCount", "tasksCount", "status", "id"};// should be
             // entity names
             int sortColumnIndex = 0; // by default sorting using updated date
             String sortColumnOrder = "desc"; // by default ascending order

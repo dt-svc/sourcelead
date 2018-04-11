@@ -18,6 +18,8 @@ public class ImmigrationTemplateListDTO extends SearchDTO implements Serializabl
     private Long formsCount;
     private Long tasksCount;
     private Long updatedDate;
+	private String petitionType;
+	private String country;
 
     public Long getId() {
         return id;
@@ -88,5 +90,21 @@ public class ImmigrationTemplateListDTO extends SearchDTO implements Serializabl
     public void setUpdatedDate(Long updatedDate) {
         this.updatedDate = updatedDate;
     }
+
+	public String getPetitionType() {
+		return petitionType;
+	}
+
+	public void setPetitionType(String petitionType) {
+		this.petitionType = petitionType;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
 
 }
