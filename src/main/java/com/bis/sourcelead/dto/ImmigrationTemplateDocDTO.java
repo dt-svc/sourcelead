@@ -2,10 +2,13 @@ package com.bis.sourcelead.dto;
 
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class ImmigrationTemplateDocDTO {
 	
 	private Long id;
 	
+    @Required(desc="documentType")
 	private Long documentType;
 	
 	private String description;
@@ -19,6 +22,8 @@ public class ImmigrationTemplateDocDTO {
 	private String immigrationcandidateId;
 	
 	private String immigrationTempplateId;
+	
+	private String otherType;
 	
 	// this variables added for immigration candidate docs
 	private List<FileInfo> fileInfo;
@@ -117,6 +122,12 @@ public class ImmigrationTemplateDocDTO {
 	}
 	public void setImmigrationCandidateDocId(Long immigrationCandidateDocId) {
 		this.immigrationCandidateDocId = immigrationCandidateDocId;
+	}
+	public String getOtherType() {
+		return otherType;
+	}
+	public void setOtherType(String otherType) {
+		this.otherType = otherType;
 	}
 	
 	

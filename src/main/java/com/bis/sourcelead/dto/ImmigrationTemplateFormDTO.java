@@ -2,6 +2,8 @@ package com.bis.sourcelead.dto;
 
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class ImmigrationTemplateFormDTO {
 	
 	private Long id;
@@ -10,6 +12,7 @@ public class ImmigrationTemplateFormDTO {
 	
 	private String isRequired;
 	
+    @Required(desc="formName")
 	private String formName;
 	
 	private String fileName;

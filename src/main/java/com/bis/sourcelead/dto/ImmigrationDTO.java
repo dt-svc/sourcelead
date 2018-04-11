@@ -32,29 +32,32 @@ public class ImmigrationDTO extends SearchDTO {
 
 	private String candidateType;
 	
-	@Required(desc = "Petition type")
+	@Required(desc = "petition type")
 	private String petitionType;
 	
 	private String receiptNo;
 
-	@Required(desc = "Current USCIS Status")
 	private String currUscisStatus;
 
-	@Required(desc = "Petition open date")
+	@Required(desc = "petition open date")
 	private String openDate;
 	
 	private String arrivalDate;
 	
+	@Required(desc="entry place")
 	private String entryPlace;
 
+	@Required(desc="templet id")
 	private String templateId;
 	
 	private String templateName;
 
 	private String attorneyId;
 	
+	@Required(desc="attorney name")
 	private String attorneyName;
 
+	@Required(desc="attorney contact")
 	private String attorneyContact;
 	
 	private String associateName;
@@ -71,7 +74,8 @@ public class ImmigrationDTO extends SearchDTO {
 	private String firstName;
 
 	private String middleName;
-
+	
+	@Required(desc = "last name")
 	private String lastName;
 
 	private String gender;
@@ -85,7 +89,7 @@ public class ImmigrationDTO extends SearchDTO {
 
 	private String alternateMobile;
 
-	@Required(desc = "Date of Birth")
+	@Required(desc = "date of birth")
 	private String birthDate;
 
 	private String birthPlace;
@@ -114,6 +118,7 @@ public class ImmigrationDTO extends SearchDTO {
 
 	private String jobId;
 
+	@Required(desc = "job title")
 	private String jobTitle;
 	
 	private String employmentLevel;
@@ -148,15 +153,18 @@ public class ImmigrationDTO extends SearchDTO {
 	private String city;
 
 	private String address;
-
+	
+	@Required(desc = "location")
 	private String location;
 
 	private String zipcode;
 
 	private String isCurrResidence;
-
+	
+	@Required(desc = "residence start date")
 	private String residenceStartDate;
 
+	@Required(desc = "residence end date")
 	private String residenceEndDate;
 	
 	private String militaryServiceCountry;

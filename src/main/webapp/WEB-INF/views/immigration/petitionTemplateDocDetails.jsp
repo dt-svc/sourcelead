@@ -45,19 +45,21 @@
 						</select>
 					   </div>
 					   <div class="col-md-7 noPad">
-					   
+					   <div id="customOther-defaults0">
+					  
+							<input type="text" name="immigrationDocList[0].description" id="description0" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
+				
+					   </div>
 					   <div class="row" id="customOther0" style="display:none;">
 						   	<div class="col-md-5">
-						   	<input type="text" name="otherType0" id="immigrationDocList[0].otherType" title='Name' class="form-control" placeholder="Name"  field-name="Name" data-validation="required validate_length length2-500" />
+						   	<input type="text" id="otherType0" name="immigrationDocList[0].otherType" title='Name' class="form-control" placeholder="Name"  field-name="Name"  data-validation="validate_length length2-200" />
 						   	</div>
-						   	<div class="col-md-7">
+						   	 <div class="col-md-7">
 						   	<input type="text" name="immigrationDocList[0].description" id="description0" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
-						   	</div>
+						   	</div> 
 					   </div>
 					   
-					   <div id="customOther-defaults0">
-							<input type="text" name="immigrationDocList[0].description" id="description0" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
-					   </div>
+					   
 					   
 					    </div>
 					  <div class="col-md-2 clearfix">
@@ -154,16 +156,17 @@
 		</c:forEach>
 		templateDocDetails = templateDocDetails+ "</select></div>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-7 noPad'>";
+		templateDocDetails = templateDocDetails+ "	<div id='customOther-defaults"+rowId+"'>";
+		templateDocDetails = templateDocDetails+ "<input type='text' title='Description' name='immigrationDocList["+rowId+"].description' id='description"+rowId+"' class='form-control' placeholder='Description' data-validation='validate_length length2-500' data-validation-optional='true'/>";	
+		templateDocDetails = templateDocDetails+ "	</div>";
 		templateDocDetails = templateDocDetails+ "<div class='row' id='customOther"+rowId+"' style='display:none;'>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-5'>";
-		templateDocDetails = templateDocDetails+ "<input type='text' name='otherType"+rowId+"' id='immigrationDocList["+rowId+"].otherType' title='Name' class='form-control' placeholder='Name' field-name='Name' data-validation='required validate_length length2-500'/>";
+		templateDocDetails = templateDocDetails+ "<input type='text' id='otherType"+rowId+"' name='immigrationDocList["+rowId+"].otherType' title='Name' class='form-control' placeholder='Name' field-name='Name' data-validation='validate_length length2-200'/>";
 		templateDocDetails = templateDocDetails+ "</div>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-7'>";
 		templateDocDetails = templateDocDetails+ "<input type='text' name='immigrationDocList["+rowId+"].description' id='description"+rowId+"' title='Description' class='form-control' placeholder='Description' data-validation='validate_length length2-500' data-validation-optional='true'/>";
 		templateDocDetails = templateDocDetails+ "	</div>";
 		templateDocDetails = templateDocDetails+ "	</div>";
-		templateDocDetails = templateDocDetails+ "	<div id='customOther-defaults"+rowId+"'>";
-		templateDocDetails = templateDocDetails+ "<input type='text' title='Description' name='immigrationDocList["+rowId+"].description' id='description"+rowId+"' class='form-control' placeholder='Description' data-validation='validate_length length2-500' data-validation-optional='true'/></div>";	
 		templateDocDetails = templateDocDetails+ "	</div>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-2 clearfix'>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-4 noPad'>";
@@ -174,6 +177,7 @@
 		templateDocDetails = templateDocDetails+ "<input title='Allow multiple Docs' id='multipleCheck"+rowId+"' class='' name='immigrationDocList["+rowId+"].multiple' type='checkbox' value = 'N' onclick = 'tempDocCheckBox("+rowId+")'>";
 		templateDocDetails = templateDocDetails+ "<label for='checkbox-1' class='checkbox-custom-label fmcheckbox-lable'></label></div></div>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-4'><button type='button' class='btn btm-sm' id='btnDynamicRow"+rowId+"' onclick='removeTempDocDiv("+rowId+")' ><i class='fa fa-remove text-danger'></i></button></div></div></div>";
+		
 		return templateDocDetails 
    }
 	
@@ -216,10 +220,12 @@
 		console.log("rowId is "+id);
 	  if($("#candidateEducation"+id+"  :selected").text() =="Other"){
 		  $("#customOther"+id).show();
+		  $("#otherType"+id).attr("data-validation","required");
 		  $("#customOther-defaults"+id).hide();
 	    }else{
 		     $("#customOther"+id).hide();
-		     $("#customOther-defaults"+id).show();
+		    $("#customOther-defaults"+id).show();
+		     $("#otherType"+id).removeAttr("data-validation");
 	    }
 
 	}
