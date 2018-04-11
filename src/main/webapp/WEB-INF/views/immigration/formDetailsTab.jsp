@@ -69,10 +69,10 @@
 				</div>
 			</div>	      
 			   
-          <div class="col-sm-12 noPad mt clearfixclearfix" id = "immigrationDocDiv">
+          <div class="col-sm-12 noPad mt clearfix" id="immigrationDocDiv">
 				<label class="col-md-4 padding_left">File<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-					<div class="input-group col-md-12" style="margin:0 auto">
+					<div class="input-group col-md-12 validation_p" style="margin:0 auto">
 					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 					  <input type="file" style="display: none;" multiple id="uploadBtnForm"  class="upload">
 					  </span> </label>
@@ -80,12 +80,13 @@
 				  </div>
 				</div>
 			</div>	
-			
-			 <div class="col-md-7 minHeight50" id="immigrationEditDocDiv" style="display: none">
-				  <label id="immigrationDocumentName" name="immigrationDocumentName" class="text-primary tbldata-dotdot-vsm pull-left" title="" >hh</label>&nbsp;&nbsp;<span id="delete_immiDocFile" onclick="removeImmigDoc();"><i class="fa fa-trash removeIcon"></i></span>
+			<div class="col-sm-12 noPad mt clearfix" id="immigrationEditDocDiv" style="display: none">
+			<label class="col-md-4 padding_left">File<span class="text-danger">&nbsp;*</span></label>
+			 <div class="col-md-8">
+				  <label id="immigrationDocumentName" name="immigrationDocumentName" class="text-primary tbldata-dotdot-200 pull-left" title="" >hh</label>&nbsp;&nbsp;<span id="delete_immiDocFile" onclick="removeImmigDoc();"><i class="fa fa-trash removeIcon text-danger cursorPointer pull-right"></i></span>
 				<input type="hidden" id="immigrationDocumentExisitngFile" name="immigrationDocumentExisitngFile" value="">
 				  </div>			          	
-		
+			</div>
 		
 		<!-- <div class="col-md-5 noPad">
 		
@@ -121,10 +122,10 @@
 		
 		<div class="popupMid popupMidHeight clearfix">
          
-          <div class="col-sm-12 noPad mt clearfixclearfix">
-				<label class="col-md-4 padding_left">File<span class="text-danger">&nbsp;*</span></label>
-              	<div class="col-md-8 padding_right">
-					<div class="input-group col-md-12" style="margin:0 auto">
+          <div class="mt row clearfix">
+				<label class="col-md-2">File<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-10">
+					<div class="input-group" style="margin:0 auto">
 					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 					  <input type="file" style="display: none;" multiple id="uploadFormBtn"  class="upload">
 					  </span> </label>
