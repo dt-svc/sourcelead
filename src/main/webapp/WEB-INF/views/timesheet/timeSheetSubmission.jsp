@@ -772,7 +772,13 @@ function currentMonthHours(){
 		
 			 var total1;
 			 if(!isNaN(hours1) && !isNaN(minutes1)){
-				 total1 = parseInt(hours1) +"."+ parseInt(minutes1);
+				 if(parseInt(minutes1) <10){
+					 minutes1 = parseInt(minutes1);
+				 }
+				 if(parseInt(hours1) <10){
+					 hours1 = parseInt(hours1);
+				 }
+				 total1 = hours1 +"."+ minutes1;
 			 }else{
 				 total1 = "0.0"; 
 			 }
@@ -827,7 +833,13 @@ function currentMonthHours(){
 			 }
 			 var total1;
 			 if(!isNaN(hours1) && !isNaN(minutes1)){
-				 total1 = parseInt(hours1) +"."+ parseInt(minutes1);
+				 if(parseInt(minutes1) <10){
+					 minutes1 = parseInt(minutes1);
+				 }
+				 if(parseInt(hours1) <10){
+					 hours1 = parseInt(hours1);
+				 }
+				 total1 = hours1 +"."+ minutes1;
 			 }else{
 				 total1 = "0.0"; 
 			 }
@@ -900,7 +912,13 @@ function currentMonthTotalHours(){
 
 	 var total1;
 	 if(!isNaN(hours1) && !isNaN(minutes1)){
-		 total1 = parseInt(hours1) +"."+ parseInt(minutes1);
+		 if(parseInt(minutes1) <10){
+			 minutes1 = parseInt(minutes1);
+		 }
+		 if(parseInt(hours1) <10){
+			 hours1 = parseInt(hours1);
+		 }
+		 total1 = hours1 +"."+ minutes1;
 	 }else{
 		 total1 = "0.0"; 
 	 }
