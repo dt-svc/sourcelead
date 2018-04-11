@@ -57,8 +57,9 @@ public class ImmigrationTemplate implements Serializable {
 	@JoinColumn(name = "UPDATED_BY")
 	private User updatedBy;
 	
-	@Column(name = "PETITION_TYPE")
-	private String petitionType;
+	@ManyToOne
+	@JoinColumn(name = "PETITION_TYPE")
+	private LookUpData petitionType;
 	
 	@Column(name = "COUNTRY")
 	private String country;
@@ -144,11 +145,11 @@ public class ImmigrationTemplate implements Serializable {
 		this.orgLocations = orgLocations;
 	}
 
-	public String getPetitionType() {
+	public LookUpData getPetitionType() {
 		return petitionType;
 	}
 
-	public void setPetitionType(String petitionType) {
+	public void setPetitionType(LookUpData petitionType) {
 		this.petitionType = petitionType;
 	}
 
