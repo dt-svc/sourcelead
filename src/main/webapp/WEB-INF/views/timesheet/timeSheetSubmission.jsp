@@ -850,7 +850,7 @@ function currentMonthHours(){
 	   }
 	   var timesheetFor = '${timesheetEntryDetailsDTO.timesheetFor}';
 	   if(timesheetFor != null && timesheetFor != 'undefined' && timesheetFor != '' && timesheetFor == 'approver'){
-		   //currentMonthTotalHours();
+		   currentMonthTotalHours();
 	   }
 	  
 }
