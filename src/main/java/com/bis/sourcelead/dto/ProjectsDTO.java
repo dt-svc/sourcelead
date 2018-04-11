@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.bis.sourcelead.annotations.Required;
  
 public class ProjectsDTO extends SearchDTO implements Serializable{
 
@@ -15,10 +19,12 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String expenseId;
 	
+	@Required(desc="startDate")
 	private String startDate;
 	
 	private String endDate;
 	
+	@Required(desc="status")
 	private String status;
 	
 	private String timeSheetFrequency;
@@ -31,12 +37,15 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String flatPercentageId;
 	
+	@Required(desc="projectName")
 	private String projectName;
 	
+	@Required(desc="level1Manager")
 	private String level1Manager;
 	
 	private String level2Manager;
 	
+	@Required(desc="invoiceFrequency")
 	private String invoiceFrequency;
 	
 	private String isTimesheetAttachmentRequired;
@@ -85,6 +94,7 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String budgetStatus;
 	
+	@Required(desc="projectShortCode")
 	private String projectShortCode;
 	
 	private String projectStatusId;

@@ -1791,9 +1791,20 @@ function saveTasks(){
 	         processData: false,
 	         contentType:false, 
 			 url : sourceleadUrl + "/ProjectTasks/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&userId="+userId+"&projectClientUUID="+projectClientUUID,
-			  success : function(data) {
-				  getSubTaskList();
-				  cancelTask();
+			  success : function(result) {
+				  if (result && result.response === "INVALID_DATA") {
+	                    showError(result.responseMessage);
+	                } else if (result.response === "AWKWARD") {
+	                    location.href = "/errorPage";
+	                } else if (result.response === "SUCCESS") {
+	  				  getSubTaskList();
+	  				  cancelTask();
+	                }else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+	                    showError("Operation failed, please try again");
+	                }
+				  
 			}, 
 		});
 		return true;

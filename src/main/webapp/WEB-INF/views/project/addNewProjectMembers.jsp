@@ -59,12 +59,9 @@
 		<div id="REPLACEROWIDcandidateName" class="tbldata-dotdot pull-left">
 		</div>
 		
-		<input type="hidden" class="form-control input-sm"
-			id="REPLACEROWIDcandidateId" name="projectMembers[REPLACEROWID].candidateId" />
-		
-		<input type="hidden" class="form-control input-sm"
-			id="REPLACEROWIDprojectMemberId" name="projectMembers[REPLACEROWID].projectMemberId">
-		</input>
+		<input type="hidden" class="form-control input-sm" id="REPLACEROWIDcandidateId" name="projectMembers[REPLACEROWID].candidateId" />
+		<input type="hidden"  name="projectMembers[REPLACEROWID].validateRow" value="true">
+		<input type="hidden" class="form-control input-sm" id="REPLACEROWIDprojectMemberId" name="projectMembers[REPLACEROWID].projectMemberId">
 		
 	</div>
 </div>
@@ -1217,7 +1214,18 @@ function assignMembers(){
 	  	    	    data : formData,
 					url : sourceleadUrl+"/assignProjectMembersToProject?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&userId="+userId+"&orgLocationId="+orgLocationId, 
 					success : function(result) {
-						location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&projectClientUUID="+projectClientUUID+"&tabType=team");
+						if (result && result.response === "INVALID_DATA") {
+							$("#associateRequestLoading").removeAttr("style");
+		                    showError(result.responseMessage);
+		                } else if (result.response === "AWKWARD") {
+		                    location.href = "/errorPage";
+		                } else if (result.response === "SUCCESS") {
+							location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&projectClientUUID="+projectClientUUID+"&tabType=team");
+		                }else if (result.indexOf('Sign In') !== -1) {
+								location.replace(sourceleadUrl);
+							} else {
+			                    showError("Operation failed, please try again");
+			                }
 					},
 				}); 
       		 return true;

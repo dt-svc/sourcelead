@@ -38,6 +38,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TimeSheetDayEntriesDTO;
 import com.bis.sourcelead.dto.TimeSheetDayEntriesDTOList;
@@ -60,6 +61,7 @@ import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -211,18 +213,25 @@ public class ProjectTasksRestController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_PROJECT_TASKS')")
 	@RequestMapping(value = "/saveProjectTasks", method = RequestMethod.POST)
-	public @ResponseBody String saveProjectTasks(ProjectTasksDTO projectTasksDTO,
-			@RequestParam(value = "projectId", required = false) Long projectId,
+	public @ResponseBody Response<String> saveProjectTasks(ProjectTasksDTO projectTasksDTO, @RequestParam(value = "projectId", required = false) Long projectId,
 			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
-		if (Validator.validate(projectTasksDTO)) {
-			projectTasksDTO.setStaticPath(staticPath);
-			// FileUploadUtil.fillUploadedFileInfo(projectTasksDTO,
-			// projectTasksDTO.getFileInfo());
-			String saveProjectTasks = tasksService.saveProjectTasksDTOByProjectId(projectId, projectTasksDTO, userId);
-		} else
-			return "DataMissing";
-
-		return "success";
+		Response<String> response = new Response<>();
+		
+		try {
+			if (Validator.validate(projectTasksDTO)) {
+				projectTasksDTO.setStaticPath(staticPath);
+				String saveProjectTasks = tasksService.saveProjectTasksDTOByProjectId(projectId, projectTasksDTO, userId);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			}else {
+	    		 response.setResponse(Result.INVALID_DATA.name());
+				 response.setResponseMessage(Result.INVALID_DATA.getValue());
+	    	 }
+		  }catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		   }
+		return response;
 	}
 
 	
