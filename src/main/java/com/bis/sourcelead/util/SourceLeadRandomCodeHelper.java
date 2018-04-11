@@ -57,4 +57,9 @@ public class SourceLeadRandomCodeHelper {
 		String expensesIdCode = RandomStringUtils.randomAlphanumeric(6);
 		return expensesIdCode;
 	}
+	
+	public static String generateRandomTransactionOrderId() {
+		String UUID = RandomStringUtils.randomAlphanumeric(20);
+		return UUID;
+	}
 }

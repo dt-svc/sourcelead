@@ -39,14 +39,14 @@ top:0;
                     <tbody>
                     
                     <c:forEach var="orgSubscription" items="${orgLicenseSubscriptionList}">
-						 <tr>
+						 <tr id="subscription${orgSubscription.uuid}">
 	                    	 <td><div class="tbldata-dotdot-100">${orgSubscription.country}</div></td>
-	                    	 <td><div class="tbldata-dotdot-100">${orgSubscription.subscriptionType.name}</div></td>
+	                    	 <td><div class="tbldata-dotdot_80">${orgSubscription.subscriptionType.name}</div></td>
 	                    	 <td><div class="tbldata-dotdot-100">${orgSubscription.userSubscriptionType.name}</div></td>
 	                    	 <td><div class="tbldata-dotdot-100">${orgSubscription.currency} ${orgSubscription.invoiceAmount}</div></td>
 	                    	 <td><div class="tbldata-dotdot-100">${orgSubscription.fromDateStr}</div></td>
 	                    	 <td><div class="tbldata-dotdot-100">${orgSubscription.toDateStr}</div></td>
-	                    	 <td><div class="tbldata-dotdot-100">${orgSubscription.storageSubscriptionType.name}</div></td>
+	                    	 <td><div class="tbldata-dotdot_80">${orgSubscription.storageSubscriptionType.name}</div></td>
 	                    	 
 	                    	<td>
 		   		        		<div class="positionRelative">
@@ -67,7 +67,7 @@ top:0;
 				   		        	</div>
 			   		        	</div>
 		   		        	</td>
-		   		        	<td><a href='#'>Subscribe</a></td>
+		   		        	<td class="tbldata-dotdot-100 mt"><a href='#'>Upgrade</a> | <a href='#' onclick='initPayment("${orgSubscription.uuid}")'>Renewal</a></td>
 	                     </tr>
 		  			</c:forEach>
 			  			
@@ -78,3 +78,18 @@ top:0;
  </section>
 
  <jsp:include page="masterFooter.jsp" />	
+ 
+ 
+ <script type="text/javascript">
+    function initPayment(uuid) {
+        
+    	$("#subscription"+uuid).html("<td colspan='10'  id='loading"+uuid+"'></td>");
+		$("#loading"+uuid).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+    	
+    	 $.post("/app/init-payment", {type: 'renewal', subscriptionUUID: uuid}, function (data) {
+            if (data) {
+                location.href = data;
+            }
+        }); 
+    }
+</script>

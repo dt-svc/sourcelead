@@ -1,6 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -64,7 +63,6 @@ import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
-import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionTypesService;
@@ -672,7 +670,7 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 			OrgLicenseSubscriptionHistory orgLicenseSubscriptionHistory = null;
 			if(orgLicenseSubscriptionDTO.getLicenseUUID() != null && !orgLicenseSubscriptionDTO.getLicenseUUID().isEmpty()) {
 				orgLicenseSubscription = orgLicenseSubscriptionDao.getOrgLicenseSubscriptionByUUID(orgLicenseSubscriptionDTO.getLicenseUUID());
-				orgLicenseSubscriptionHistory =  getOrgLicenseSubscriptionHistory(orgLicenseSubscription,loginUser);
+				orgLicenseSubscriptionHistory =  commonUtil.getOrgLicenseSubscriptionHistory(orgLicenseSubscription,loginUser);
 			}else {
 				orgLicenseSubscription = new OrgLicenseSubscription();
 				orgLicenseSubscription.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -744,28 +742,6 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicenseSubscription orgLicenseSubscription,User loginUser) {
-		
-		OrgLicenseSubscriptionHistory history = new OrgLicenseSubscriptionHistory();
-		history.setOrgLicenseSubscription(orgLicenseSubscription);
-		history.setSubscriptionType(orgLicenseSubscription.getSubscriptionType());
-		history.setUserSubscriptionType(orgLicenseSubscription.getUserSubscriptionType());
-		history.setStorageSubscriptionType(orgLicenseSubscription.getStorageSubscriptionType());
-		history.setCurrency(orgLicenseSubscription.getCurrency());
-		history.setInvoiceAmount(orgLicenseSubscription.getInvoiceAmount());
-		history.setSubscriptionTabs(orgLicenseSubscription.getSubscriptionTabs());
-		history.setFromDate(orgLicenseSubscription.getFromDate());
-		history.setToDate(orgLicenseSubscription.getToDate());
-		history.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-		history.setTimezone(orgLicenseSubscription.getTimezone());
-		history.setCreatedBy(loginUser);
-		history.setUpdatedBy(loginUser);
-		history.setCreatedDate(new Date());
-		history.setUpdatedDate(new Date());
-		return history;
-		
 	}
 	
 	
