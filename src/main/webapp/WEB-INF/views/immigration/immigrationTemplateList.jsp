@@ -246,7 +246,7 @@
                 },
                 {
                     "targets": colIndex++,
-                    "data": "tasksCount",
+                    "data": "status",
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.status !== null && opt.status !== 'undefined') {
