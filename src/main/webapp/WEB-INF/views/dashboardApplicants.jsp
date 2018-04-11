@@ -52,8 +52,12 @@ function ApplicantAuthorization(status){
 			type : "POST",
 			url : sourceleadUrl+"/getApplicantsByStatus?${_csrf.parameterName}=${_csrf.token}&status="+status,
 			success : function(data) {
-				var json = JSON.parse(data);
-				/* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
+					if (data.response === "FAILED") {
+			    		showError(data.responseMessage);
+			    	} else if (data.response === "AWKWARD") {
+			    		location.href = "/errorPage";
+			    	} else if (data.response === "SUCCESS") {
+	            	 	 var json = data.data;
 	              			$("#accepted").empty();
 	        	        	$("#requestSent").empty();
 	              			$("#accepted").removeAttr("style");
@@ -156,17 +160,11 @@ function ApplicantAuthorization(status){
 	            				$("#requestSentTab").removeClass("active");
 	            				
 	            	        } 
-					/* }else{
-	               	 	$("#accepted").removeAttr("style");
-	               	 	$("#accepted").empty();
-     	        		$("#requestSent").empty();
-	 	    	        var result ="";
-						result = result+"			<div class='blank-pages'>";
-						result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-						result = result+"			        <p>No Applicants Found</p>";
-						result = result+"			 </div>";
-					    $("#accepted").append(result); 
-	               } */
+			    	}else if (data.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    		showError("Operation failed, please try again");
+			    	}
 			},
 	});
 	return true;
@@ -230,15 +228,22 @@ function rejectApplicantAlertMessage(submissionId, status){
 				type : "POST",
 	    	    data: formData,
 			    url: sourceleadUrl+"/acceptRejectCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status,	    	   
-			    success: function(data) {
-                                	 ApplicantAuthorization('requestSent');
-                                	 $("#selector4").removeAttr("style");
-				            			$("#selector4").css({ display: "block" });
-			            				$("#eduMsgDiv").html("Accepted");
-                                    
-                                 	eduMsgFadeinFunction();
-                                   
-								 
+			    success: function(result) {
+				    	if (result.response === "FAILED") {
+		  		    		showError(result.responseMessage);
+		  		    	} else if (result.response === "AWKWARD") {
+		  		    		location.href = "/errorPage";
+		  		    	} else if (result.response === "SUCCESS") {
+		  		    		ApplicantAuthorization('requestSent');
+                       	 	$("#selector4").removeAttr("style");
+		            		$("#selector4").css({ display: "block" });
+	            			$("#eduMsgDiv").html("Accepted");
+                        	eduMsgFadeinFunction();
+		  		    	}else if (result.indexOf('Sign In') !== -1) {
+				    		location.replace(sourceleadUrl);
+				    	} else {
+				    		showError("Operation failed, please try again");
+				    	}
                      },
                 });return true;
 		}else{
@@ -302,17 +307,25 @@ function cancelAlert(){
 				type : "POST",
 	    	    data: formData,
 			    url: sourceleadUrl+"/acceptRejectCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status,	    	   
-			    success: function(data) {
-			    	$("#popUp").empty();
-			    	$("#rejectApplicantAlert").empty();
-			    	$(".vendor_wrap_mask").fadeOut(200);
-			    	ApplicantAuthorization('requestSent');
-			    	 $("#selector4").removeAttr("style");
-         			$("#selector4").css({ display: "block" });
-     				$("#eduMsgDiv").html("Rejected");
-                 
-              	eduMsgFadeinFunction();
-			    	
+			    success: function(result) {
+			    	if (result.response === "FAILED") {
+	  		    		showError(result.responseMessage);
+	  		    	} else if (result.response === "AWKWARD") {
+	  		    		location.href = "/errorPage";
+	  		    	} else if (result.response === "SUCCESS") {
+	  		    		$("#popUp").empty();
+				    	$("#rejectApplicantAlert").empty();
+				    	$(".vendor_wrap_mask").fadeOut(200);
+				    	ApplicantAuthorization('requestSent');
+				    	$("#selector4").removeAttr("style");
+	         			$("#selector4").css({ display: "block" });
+	     				$("#eduMsgDiv").html("Rejected");
+	              		eduMsgFadeinFunction();
+	  		    	}else if (result.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    		showError("Operation failed, please try again");
+			    	}
 			    }
 		   });
 			return true;
