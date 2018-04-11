@@ -2,10 +2,13 @@ package com.bis.sourcelead.dto;
 
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class ImmigrationTemplateDocDTO {
 	
 	private Long id;
 	
+    @Required(desc="documentType")
 	private Long documentType;
 	
 	private String description;

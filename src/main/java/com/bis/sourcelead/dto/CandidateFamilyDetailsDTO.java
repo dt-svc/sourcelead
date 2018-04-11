@@ -37,6 +37,7 @@ public class CandidateFamilyDetailsDTO extends SearchDTO {
 	@Required(desc = "last name")
 	private String lastName;
 	
+	@Required(desc = "date of birth")
 	private String dateOfBirth;
 	
 	private String relation;
@@ -45,8 +46,10 @@ public class CandidateFamilyDetailsDTO extends SearchDTO {
 	
 	private String nationality;
 	
+	@Required(desc = "marriage place")
 	private String marriagePlace;
 	
+	@Required(desc = "marraige date")
 	private String marraigeDate;
 	
 	private String marriageEndDate;

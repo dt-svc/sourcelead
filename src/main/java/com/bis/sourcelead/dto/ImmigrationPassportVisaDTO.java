@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dto;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class ImmigrationPassportVisaDTO extends SearchDTO{
 	
 	private static final long serialVersionUID = 1L;
@@ -9,6 +11,7 @@ public class ImmigrationPassportVisaDTO extends SearchDTO{
      *@author Mamatha Adla
      */
  
+	@Required(desc = "candidate passportId")
     private Long candidatePassportId;
     
     private String candidateId;
@@ -16,15 +19,20 @@ public class ImmigrationPassportVisaDTO extends SearchDTO{
 	private String idNumber;
 
 	private String idType;
-
+	
+	@Required(desc = "VisaId")
 	private String VisaId;
-
+	
+	@Required(desc = "visaType")
 	private String visaType;
 
+	@Required(desc = "country")
 	private String country;
 	
+	@Required(desc = "validFrom")
 	private String validFrom;
-
+	
+	@Required(desc = "validTo")
 	private String validTo;
 	
 	private Integer Status;
