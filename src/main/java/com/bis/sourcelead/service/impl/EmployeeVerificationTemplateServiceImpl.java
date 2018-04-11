@@ -92,6 +92,7 @@ public class EmployeeVerificationTemplateServiceImpl implements EmployeeVerifica
 		for (EmployeeVerificationTemplate emp : empList.getData()) {
 			
 			EmploymentVerificationTemplateDTO tempDto = new EmploymentVerificationTemplateDTO();
+			
 			tempDto.setTemplateName(emp.getTemplateName());
 			tempDto.setDescription(emp.getDescription());
 			tempDto.setTemplateUUID(emp.getTemplateUUID());

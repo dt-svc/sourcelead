@@ -104,20 +104,21 @@ $(document).ready(function(){
 			<div class="form-group">
 				<label>Choose Template <span class="text-danger paddingRight">*</span></label>
 				<div class="clearfix">
-					<select class="selectpicker form-control" data-live-search="true" id="empTemplateId">
+					<select class="chosen-select form-control" data-live-search="true" id="empTemplateId">
 					</select>
 				</div>
+				<input type="hidden" name="hiddenUserId" id="hiddenUserId" value=""/>
 			</div>
 			<div class="form-group">
 				<label>To whom it may concern</label>
 				<div class="clearfix">
-					<textarea rows="2" class="form-control"></textarea>
+					<textarea rows="2" id="toAddress" class="form-control"></textarea>
 				</div>
 			</div>
 		</div>
 		<div class="modal-footer">
 			<div class="clearfix">
-				<button type="button" class="btn btn-primary mr">View</button>
+				<button type="button" class="btn btn-primary mr" onclick="viewCompleteTemplate();">View</button>
 				<button type="button" class="btn btn-default" onClick="closePOP()">Cancel</button>
 			</div>
 		</div>
@@ -240,9 +241,9 @@ $(document).ready(function(){
 		$(".sideMask").fadeIn();
 		$(".shareEVR").fadeIn();
 	}
-	function viewEVR() {
-		
-		 $.ajax({
+	function viewEVR(employeeId) {
+		$("#hiddenUserId").val(employeeId);
+		$.ajax({
 	         type : "GET",
 	          url: sourceleadUrl+"/getAllEmploymentVerificationListByOrgLocationId?"+tokenParamName+"="+tokenValue,    
 	          success :function(json) {
@@ -250,8 +251,7 @@ $(document).ready(function(){
 		        	for (var i = 0;i<json.data.length;i++)
 					{
 	        		 	var opt = json.data[i];
-		        		output = output + "<option selected>"+opt.templateName+"</option>";
-			        		
+		        		output = output + "<option value="+opt.templateUUID+" selected>"+opt.templateName+"</option>";
 					}
 		        	$("#empTemplateId").empty();
 			        $("#empTemplateId").append(output);
@@ -454,7 +454,7 @@ function emplyoeesListPagination(url){
 				           result = result + '          <li><a href="javascript:void(0)" title="Print" class="fa fa-print" onClick="printEVR()"></a></li>';
 				           result = result + '          <li><a href="javascript:void(0)" title="Download" class="fa fa-download" onClick="downloadEVR()"></a></li>';
 				           result = result + '          <li><a href="javascript:void(0)" title="Share" class="fa fa-share-alt" onClick="shareEVR()"></a></li>';
-				           result = result + '          <li><a href="javascript:void(0)" title="View" class="fa fa-eye" onClick="viewEVR()"></a></li>';
+				           result = result + '          <li><a href="javascript:void(0)" title="View" class="fa fa-eye" onClick="viewEVR('+user.employeeId+')"></a></li>';
 				           result = result + '        </ul>';
 				           result = result + '      </div>';
 				           result = result + '    </div>';
@@ -483,6 +483,34 @@ $("#employeeDataTableSearch").keydown(function(e) {
 		   getAllEmployeesList();
 	   }
 	});
+</script>
+
+
+<script>
+function viewCompleteTemplate(){
+	var templateUUID = $("#empTemplateId").val();
+	var toAddress = $("#toAddress").val();
+	var employeeId = $("#hiddenUserId").val();
+	window.open(sourceleadUrl+'/previewCompleteTemplateByTemplateId?&templateUUID='+templateUUID+'&toAddress='+toAddress+'&employeeId='+employeeId,'_newtab');
+}
 </script> 
+
+
+<script type="text/javascript">
+			var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+			})
+</script>
 
 <jsp:include page="../masterFooter.jsp" />

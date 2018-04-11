@@ -20,17 +20,38 @@
 <div class="content-area content-new clearfix">
       <div class="clearfix form-horizontal">
        <form:form id="employment_template_form" name="employment_template_form" method="post">
-        <div class="row newContrWrap">
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
-           
+        <div class="newContrWrap">
+          <div class="col-xs-12 col-sm-6 col-md-6">
             <div class="form-group">
               <label class="col-md-4">Name<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
                 <input type="text" class="form-control" name="templateName" field-name="Name" value="${empTemplate.templateName}" data-validation="required validate_length length1-250">
               </div>
             </div>
-            
             <div class="form-group">
+              <label class="col-md-4">Choose Letterhead<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-8">
+                  <select class="form-control selectpicker" data-live-search="true" title="Select Letterhead" name="LetterHead" data-validation="required">
+                    <%-- <c:forEach var="title" items="${signatoryList}">
+					<c:if test = "${title.associateId == empTemplate.signatory.id}">
+				         <option selected value="${title.associateId}">${title.firstName} ${title.lastName}</option>
+				    </c:if>
+				    <c:if test = "${title.associateId != empTemplate.signatory.id}">
+				         <option value="${title.associateId}">${title.firstName} ${title.lastName}</option>
+				    </c:if>
+                     </c:forEach>   --%> 
+                  </select>
+            </div>
+            </div>
+                         <div class="form-group">
+              <label class="col-md-4">Description</label>
+              <div class="col-md-8">
+					<textarea class="form-control" rows="3" name="description">${empTemplate.description}</textarea>
+              </div>
+            </div> 
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-6">
+                    <div class="form-group">
               <label class="col-md-4">Signatory<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
                   <select class="form-control selectpicker" data-live-search="true" title="Select Signatory" name="signatory" field-name="Signatory" data-validation="required">
@@ -45,14 +66,8 @@
                   </select>
             </div>
             </div>
-             <div class="form-group">
-              <label class="col-md-4">Description</label>
-              <div class="col-md-8">
-					<textarea class="form-control" rows="3" name="description">${empTemplate.description}</textarea>
-              </div>
-            </div> 
-            
-             <div class="form-group">
+        
+                     <div class="form-group">
               <label class="col-md-4">Choose Signature Style</label>
               <div class="col-md-8">
                   <select class="form-control selectpicker" data-live-search="true">
@@ -61,7 +76,6 @@
                     <option>Style-3</option>
                   </select>
             </div>
-            
              <div class="clearfix mt10 mb10 text-center col-md-8 col-md-offset-4">--- OR ---</div>
               <label class="col-md-4">Upload Signature</label>
               <div class="col-md-8">
@@ -79,7 +93,6 @@
 			</div>
            </div>
             </div>
-            
         </div>
       </div>
       
@@ -127,7 +140,7 @@
 								<li onclick="copyToClipboard('text_element12')"><i></i>
 								<p class="copyText" id="text_element12">[Start_Date]</p></li>
 								<li onclick="copyToClipboard('text_element13')"><i></i>
-								<p class="copyText" id="text_element13">[End_date]</p></li>
+								<p class="copyText" id="text_element13">[End_Date]</p></li>
 								<li onclick="copyToClipboard('text_element14')"><i></i>
 								<p class="copyText" id="text_element14">[Signatory_Name]</p></li>
 								<li onclick="copyToClipboard('text_element15')"><i></i>

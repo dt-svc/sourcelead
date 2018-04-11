@@ -41,6 +41,9 @@ public class EmployeeVerificationTemplate {
 	@JoinColumn(name = "SIGNATORY")
 	private User signatory;
 	
+	@Column(name = "TEMPLATE_STYLE")
+	private String templateStyle;
+	
 	@Column(name = "LETTER_HEAD")
 	private String letterHead;
 	
