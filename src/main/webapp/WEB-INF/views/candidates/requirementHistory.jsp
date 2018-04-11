@@ -319,110 +319,113 @@ function getRateListDiv(candidateId,submissionId){
         type : "POST",
          url: sourceleadUrl+"/getRateHistoryBySubmissionId?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&candidateId="+candidateId,        
          success :function(data) {
-        	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
-            	 var json = JSON.parse(data);
-          		 if( data.indexOf('Sign In') >= 0){
+        	 if (data.response === "FAILED") {
+		    		showError(data.responseMessage);
+		    	} else if (data.response === "AWKWARD") {
+		    		location.href = "/errorPage";
+		    	} else if (data.response === "SUCCESS") {
+		        	 if(data.data != null && data.data != 'undefined' && data.data != ""){
+		            	 var json = data.data;
+		          			     var result = "";
+		      			         result = result + '<i class="fa fa-times close-ratepop" title="Close" onClick="closeratediv();"></i>';
+		      			         result = result + '<p><strong>Rate Negotiation History</strong></p>';
+		         			     result = result + '<section class="tbl-scroll require_wrap_table">';
+			                     result = result + '  <table>';
+			                     result = result + '    <thead>';
+			                     result = result + '      <tr>';
+			                     result = result + '        <th>By</th>';
+			                     result = result + '        <th>Rate</th>';
+			                     result = result + '        <th>Comment</th>';
+			                     result = result + '        <th>Date <br>(<small class="custom-small">'+reqHistryRateListDate+'</small>)</th>';
+			                     result = result + '        <th>Status</th>';
+			                     result = result + '      </tr>';
+			                     result = result + '    </thead>';
+			                     result = result + '    <tbody>';
+			                     var divState = "";
+			                     var isLastNegotiator = "";
+			                     for (var i=0; i<json.length; i++)
+					   				{
+							    	 var report = json[i];
+							    	 if(i == json.length-1){
+				                    	 divState = report.rateInitiatorType;
+				                    	 if((report.rateInitiatorType != "ORG" && report.rateInitiatorType != "CANDIDATE") && (report.initiatorOrgLocationIdStr==orgLocationId)){
+				                    		 isLastNegotiator = "true";
+				                    	 }else{
+				                    		 isLastNegotiator = "false";
+				                    	 }
+			                    	 }
+				                     result = result + '<tr>';
+				                     if(report.proposeByName != null && report.proposeByName != '' && report.proposeByName != 'undefined'){
+				                     result = result + '<td><div class="tbldata-dotdot-sm">'+report.proposeByName+'</div></td>';
+				                     }
+				                     else{
+				                    	 result = result + ' <td><div class="tbldata-dotdot-sm">----</div></td>'; 
+				                     }
+				                    
+				                     if(report.rateAndType != null && report.rateAndType != '' && report.rateAndType != 'undefined'){
+				                         result = result + '<td><div class="tblminwidth-75">'+report.rateAndType+'</div></td>';
+				                     } 
+				                     else{
+				                    	 result = result + ' <td><div class="tblminwidth-75">----</div></td>'; 
+				                     }
+				                     
+				                     if(report.rateReason != null && report.rateReason != '' && report.rateReason != 'undefined'){
+				                         result = result + '<td><div class="tbldata-dotdot">'+report.rateReason+'</div></td>';
+				                     }
+				                     else{
+				                         result = result + '<td><div class="tbldata-dotdot">----</div></td>';
+				                     }
+				                     
+				                     if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
+				                         result = result + '<td><div class="tblminwidth-75">'+report.createdDateStr+'</div></td>';
+				                     }
+				                     else{
+				                         result = result + '<td><div class="tblminwidth-75">----</div></td>'; 
+				                     }
+				                     
+				                     if(report.rateStage == 'ACCEPTED'){
+				                    	 result = result + ' <td><div class="tblminwidth-75">Accepted</div></td>';
+				                     	}else if(report.rateStage == 'REJECTED'){
+				                     		result = result + ' <td><div class="tblminwidth-75">Rejected</div></td>';
+				                     	}else{
+				                     		result = result + ' <td><div class="tblminwidth-75">----</div></td>';
+				                     	}
+				                     
+				                      
+				                     result = result + '      </tr>';
+					   				}
+			                     result = result + '    </tbody>';
+			                     result = result + '  </table>';
+			                     result = result + '</section>';
+			                     result = result + '</i>';
+			                     $("#ratepop").empty();  
+			      	 		     $("#ratepop").append(result); 
+			      	 		 	 $("#ratepop").fadeIn(); 
+		        	 		}else{
+		        	 		$("#ratepop").removeAttr("style");
+				    	     var result ="";
+				    	     result = result + '<i class="fa fa-times text-danger close-ratepop" title="closediv" onClick="closeratediv();"></i>';
+				    	     result = result + '<p><strong>Rate Negotiation History</strong></p>';
+				    	     result = result+"   <div class='row'>"; 
+							 result = result+"	<div class='col-lg-12'>"; 
+							 result = result+"		<div class='clearfix'>"; 
+							 result = result+"			<div class='blank-data'>";
+							 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+							 result = result+"			        <p>No rate history found</p>";
+							 result = result+"			 </div>";
+							 result = result+"		</div>"; 
+							 result = result+"	</div>"; 
+							 result = result+"  </div> ";
+		                     result = result + '</i>';
+		                     $("#ratepop").empty();  
+			      	 		 $("#ratepop").append(result); 
+			      	 		 $("#ratepop").fadeIn(); 
+		            	}
+		    	}else if (data.indexOf('Sign In') !== -1) {
 		    		location.replace(sourceleadUrl);
-		    	 }
-          		 else if (data.indexOf('exception') >= 0) {
-          			 location.replace(sourceleadUrl+"/errorPage");
-          		 }else{
-          			     var result = "";
-      			         result = result + '<i class="fa fa-times close-ratepop" title="Close" onClick="closeratediv();"></i>';
-      			         result = result + '<p><strong>Rate Negotiation History</strong></p>';
-         			     result = result + '<section class="tbl-scroll require_wrap_table">';
-	                     result = result + '  <table>';
-	                     result = result + '    <thead>';
-	                     result = result + '      <tr>';
-	                     result = result + '        <th>By</th>';
-	                     result = result + '        <th>Rate</th>';
-	                     result = result + '        <th>Comment</th>';
-	                     result = result + '        <th>Date <br>(<small class="custom-small">'+reqHistryRateListDate+'</small>)</th>';
-	                     result = result + '        <th>Status</th>';
-	                     result = result + '      </tr>';
-	                     result = result + '    </thead>';
-	                     result = result + '    <tbody>';
-	                     var divState = "";
-	                     var isLastNegotiator = "";
-	                     for (var i=0; i<json.length; i++)
-			   				{
-					    	 var report = json[i];
-					    	 if(i == json.length-1){
-		                    	 divState = report.rateInitiatorType;
-		                    	 if((report.rateInitiatorType != "ORG" && report.rateInitiatorType != "CANDIDATE") && (report.initiatorOrgLocationIdStr==orgLocationId)){
-		                    		 isLastNegotiator = "true";
-		                    	 }else{
-		                    		 isLastNegotiator = "false";
-		                    	 }
-	                    	 }
-		                     result = result + '<tr>';
-		                     if(report.proposeByName != null && report.proposeByName != '' && report.proposeByName != 'undefined'){
-		                     result = result + '<td><div class="tbldata-dotdot-sm">'+report.proposeByName+'</div></td>';
-		                     }
-		                     else{
-		                    	 result = result + ' <td><div class="tbldata-dotdot-sm">----</div></td>'; 
-		                     }
-		                    
-		                     if(report.rateAndType != null && report.rateAndType != '' && report.rateAndType != 'undefined'){
-		                         result = result + '<td><div class="tblminwidth-75">'+report.rateAndType+'</div></td>';
-		                     } 
-		                     else{
-		                    	 result = result + ' <td><div class="tblminwidth-75">----</div></td>'; 
-		                     }
-		                     
-		                     if(report.rateReason != null && report.rateReason != '' && report.rateReason != 'undefined'){
-		                         result = result + '<td><div class="tbldata-dotdot">'+report.rateReason+'</div></td>';
-		                     }
-		                     else{
-		                         result = result + '<td><div class="tbldata-dotdot">----</div></td>';
-		                     }
-		                     
-		                     if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
-		                         result = result + '<td><div class="tblminwidth-75">'+report.createdDateStr+'</div></td>';
-		                     }
-		                     else{
-		                         result = result + '<td><div class="tblminwidth-75">----</div></td>'; 
-		                     }
-		                     
-		                     if(report.rateStage == 'ACCEPTED'){
-		                    	 result = result + ' <td><div class="tblminwidth-75">Accepted</div></td>';
-		                     	}else if(report.rateStage == 'REJECTED'){
-		                     		result = result + ' <td><div class="tblminwidth-75">Rejected</div></td>';
-		                     	}else{
-		                     		result = result + ' <td><div class="tblminwidth-75">----</div></td>';
-		                     	}
-		                     
-		                      
-		                     result = result + '      </tr>';
-			   				}
-	                     result = result + '    </tbody>';
-	                     result = result + '  </table>';
-	                     result = result + '</section>';
-	                     result = result + '</i>';
-	                     $("#ratepop").empty();  
-	      	 		     $("#ratepop").append(result); 
-	      	 		 	 $("#ratepop").fadeIn(); 
-          		 	}
-        	 	}else{
-        	 		$("#ratepop").removeAttr("style");
-		    	     var result ="";
-		    	     result = result + '<i class="fa fa-times text-danger close-ratepop" title="closediv" onClick="closeratediv();"></i>';
-		    	     result = result + '<p><strong>Rate Negotiation History</strong></p>';
-		    	     result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='clearfix'>"; 
-					 result = result+"			<div class='blank-data'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No rate history found</p>";
-					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> ";
-                     result = result + '</i>';
-                     $("#ratepop").empty();  
-	      	 		 $("#ratepop").append(result); 
-	      	 		 $("#ratepop").fadeIn(); 
-            	}
+		    	} else {
+		    		showError("Operation failed, please try again");
+		    	}
          	},
       	}); 
 	};

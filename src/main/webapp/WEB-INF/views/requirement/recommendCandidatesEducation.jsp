@@ -768,51 +768,50 @@ function deleteSelectedEducation(candidateEducationId,candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/removeCandidateEducationBycandidateIdandcandidateEducationId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,        
-          success :function(data) {
-
-				if(data != null && data != 'undefined' && data != ""){
-             		if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	}else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		}else{
-             			$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
-              			 if(data<50){
-              			  /* $("#perVal").removeClass("progress-bar-success"); */
-              			   $("#perVal").removeClass('progress-bar-success')
-              			   $("#perVal").addClass("progress-bar-danger");
-              			 }
-              			 if(data>=50){
-              				 $("#perVal").removeClass('progress-bar-danger');
-              				 $("#perVal").addClass("progress-bar-success");
-              			 }
-              			 $("#disVal").empty();
-              			$("#disVal").append(data+'%');
-              			
-              			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
-            			 if(data<50){
-   	          			   $("#quickPerVal").removeClass('progress-bar-success');
-   	          			   $("#quickPerVal").addClass("progress-bar-danger");
-   	          			 }
-   	          			 if(data>=50){
-   	          				 $("#quickPerVal").removeClass('progress-bar-danger');
-   	          				 $("#quickPerVal").addClass("progress-bar-success");
-   	          			 }
-   	          	   	$("#selector4").removeAttr("style");
-       			 $("#selector4").css({ display: "block" });
-       			 $("#eduMsgDiv").html("Education deleted");
-             			 $("#popUpDiv").removeClass("edit-details-active");
-             			$("#remove_user_pop, .project_inn_mask").fadeOut();
-             			candidateEducationList(candidateId);
-             			recQveducationSubmission(candidateId);
-             			eduMsgFadeinFunction();
-             			
-			    	}
-               } 
+          success :function(result) {
+        	  
+	        		if (result && result.response === "INVALID_DATA") {
+					    showError(result.responseMessage);
+					} else if (result.response === "AWKWARD") {
+					    location.href = "/errorPage";
+					} else if (result.response === "SUCCESS") {
+						$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
+	         			 if(result<50){
+	         			   $("#perVal").removeClass('progress-bar-success')
+	         			   $("#perVal").addClass("progress-bar-danger");
+	         			 }
+	         			 if(result>=50){
+	         			  $("#perVal").removeClass('progress-bar-danger');
+	         			  $("#perVal").addClass("progress-bar-success");
+	         			 }
+	         			 $("#disVal").empty();
+	         			 $("#disVal").append(result+'%');
+	         			 $('#quickPerVal').attr('aria-valuenow', result).css('width',result+'%');
+	       			   if(result<50){
+	          			   $("#quickPerVal").removeClass('progress-bar-success');
+	          			   $("#quickPerVal").addClass("progress-bar-danger");
+	          			 }
+	          			 if(result>=50){
+	          			  $("#quickPerVal").removeClass('progress-bar-danger');
+	          			  $("#quickPerVal").addClass("progress-bar-success");
+	          			 }
+		          	   	$("#selector4").removeAttr("style");
+	  			        $("#selector4").css({ display: "block" });
+	  			        $("#eduMsgDiv").html("Education deleted");
+	        			$("#popUpDiv").removeClass("edit-details-active");
+	        			$("#remove_user_pop, .project_inn_mask").fadeOut();
+	        			candidateEducationList(candidateId);
+	        			recQveducationSubmission(candidateId);
+	        			eduMsgFadeinFunction();
+					
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
         },
           
      }); 
-	 
 }
 </script> 
  <script type="text/javascript">

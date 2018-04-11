@@ -149,7 +149,7 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 					 HashSet<ExpensesEntryDocuments> eeDocList = new HashSet<>();
  	                   if(entryCategory.getFileInfo() != null && !entryCategory.getFileInfo().isEmpty()) {
 				    		for ( FileInfo fileinfo:entryCategory.getFileInfo()) {
-				    			if(StringUtils.isEmpty(fileinfo.getFileDbId()))	{
+				    			if(StringUtils.isEmpty(fileinfo.getFileDbId()) || (fileinfo.getFileDbId().contains("null")))	{
 				    		      ExpensesEntryDocuments eedoc = new ExpensesEntryDocuments();
 				    		  	  FileUploadUtil.moveFile(staticPath, fileinfo, "expsesDocuments");
 					    		  eedoc.setExpensesEntriesId(entries);	
