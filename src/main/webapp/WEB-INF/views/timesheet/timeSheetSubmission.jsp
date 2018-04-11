@@ -848,7 +848,11 @@ function currentMonthHours(){
 			 $("#monthNonBillableTotal").empty();
 			 $("#monthNonBillableTotal").html('<input type="hidden" id="mNonBillableTotal" value="'+total1+'"/><d title="Non-Billable: '+total1+'">'+total1+'</d>');
 	   }
-	   currentMonthTotalHours();
+	   var timesheetFor = '${timesheetEntryDetailsDTO.timesheetFor}';
+	   if(timesheetFor != null && timesheetFor != 'undefined' && timesheetFor != '' && timesheetFor == 'approver'){
+		   //currentMonthTotalHours();
+	   }
+	  
 }
 
 function currentMonthTotalHours(){
