@@ -717,6 +717,10 @@ function preventTabkey(e){
 	                     <li><a href="<c:url value='${sourceleadUrl}/loadScheduleMaintenance'/>" id="scheduleMPopup"><i class="fa fa-cubes" aria-hidden="true"></i>Schedule Maintenance</a></li>
 	                     </sec:authorize>
 	                     
+	                     <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
+	                        <li><a href="<c:url value="/app/orgLicenseSubscriptionList" />"><i class="fa fa-location-arrow" aria-hidden="true"></i>License Upgrade</a></li>
+	                     </c:if>
+	                     
 	                     <sec:authorize access="!hasRole('ROLE_ENROLL_ORG')"> 
 	                      <li><a id="subMenu" href="javascript:void(0)"><i class="fa fa-upload"></i>Bulk Import<i class="fa fa-caret-down arrRight"></i></a>
 						 	<div class="subMenuView">
@@ -1909,13 +1913,25 @@ function saveInviteCompany() {
 					  data: formData,
 					url : sourceleadUrl+ "/storeInviteCompany?${_csrf.parameterName}=${_csrf.token}",
 					success : function(result) {
-						 $(".modalInvite").fadeOut();
-						  $(".sideMask").fadeOut(); 
-						  $("#inviteCompanyId").removeAttr("style");
-	            		  $("#inviteCompanyId").css({ display: "block" });
-	        			  $("#inviteCompanyMsgDiv").html("Thank you for referring sourcelead");
-	        			  companyMsgFadeinFunction();
-	        			  flushInviteCompany();
+						
+						if (result && result.response === "INVALID_DATA") {
+						    showError(result.responseMessage);
+						} else if (result.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (result.response === "SUCCESS") {
+							  $(".modalInvite").fadeOut();
+							  $(".sideMask").fadeOut(); 
+							  $("#inviteCompanyId").removeAttr("style");
+		            		  $("#inviteCompanyId").css({ display: "block" });
+		        			  $("#inviteCompanyMsgDiv").html("Thank you for referring sourcelead");
+		        			  companyMsgFadeinFunction();
+		        			  flushInviteCompany();
+						} else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
+						}
+	        			  
 					},
 				});
 		return true;
