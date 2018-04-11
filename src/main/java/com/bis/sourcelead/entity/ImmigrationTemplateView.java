@@ -49,6 +49,12 @@ public class ImmigrationTemplateView implements Serializable {
 
 	@Column(name = "TASKS_COUNT ")
 	private Long tasksCount;
+	
+	@Column(name = "PETITION_TYPE")
+	private String petitionType;
+	
+	@Column(name = "COUNTRY")
+	private String country;
 
 	public Long getId() {
 		return id;
@@ -122,6 +128,20 @@ public class ImmigrationTemplateView implements Serializable {
 		this.tasksCount = tasksCount;
 	}
 
-	
+	public String getPetitionType() {
+		return petitionType;
+	}
+
+	public void setPetitionType(String petitionType) {
+		this.petitionType = petitionType;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
 
 }
