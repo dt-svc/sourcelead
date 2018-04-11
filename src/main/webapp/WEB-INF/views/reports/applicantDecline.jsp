@@ -133,52 +133,63 @@ function getDeclineApplicants(){
 		  $.ajax({ 
 			   	type: "GET",
 			   	url: sourceleadUrl+"/getDeclinedApplicantsCount?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection+"&fromDate="+fromDate+"&toDate="+toDate,
-			    success: function(data) {
-			    	var total=data.skillsCount + data.unsuitableCount + data.badfitCount + data.interviewCount + data.salaryCount + data.otherCount;
+			    success: function(response) {
 			    	
-			    	var listView = document.getElementById("listView");
-		        	 listView.addEventListener("click", function() {
-		        		 getDeclineApplicantList();
-		        		 document.getElementById("applicantDeclineGraph").style.display="none";
-					    	document.getElementById("applicantDeclineListDivId").style.display="block";
-					    	var element = document.getElementById("listView");
-					    	var grid = document.getElementById("graphView");
-					    	element.classList.add("rAct");
-					    	grid.classList.remove("rAct");
-					    	
-					  });
-		        	 
-		        	 var graphicView = document.getElementById("graphView");
-		        	 graphicView.addEventListener("click", function() {
-		        		 if(total>0){
-		        			 getAplicantDeclineAmChart(data);
-		        		 }else{
-		        			 var result = '';
-		 	 	   			result = result+"<div class='dataTables_empty'>"; 
-		 	 	   			result = result+"</div> ";
-		 	 	   	        $("#applicantDecline").empty();
-		 	                $("#applicantDecline").append(result);
-		        		 }
-		        		 document.getElementById("applicantDeclineGraph").style.display="block";
-					    	document.getElementById("applicantDeclineListDivId").style.display="none";
-					    	
-					    	var element = document.getElementById("listView");
-					    	var grid = document.getElementById("graphView");
-					    	element.classList.remove("rAct");
-					    	grid.classList.add("rAct");
-					  });
-			    if(total>0){
-			    	getAplicantDeclineAmChart(data);
-			    	
-			    }
-			   	else{
-			   		var result = '';
-	 	   			result = result+"<div class='dataTables_empty'>"; 
-	 	   			result = result+"</div> ";
-	 	   	        $("#applicantDecline").empty();
-	                $("#applicantDecline").append(result);
-			   	}
-			    	
+			    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+		    		    showError(response.responseMessage);
+		    	  	} else if (response.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    		} else if (response.response === "SUCCESS") {
+		    			
+		    			var total=response.object.skillsCount + response.object.unsuitableCount + response.object.badfitCount + response.object.interviewCount + response.object.salaryCount + response.object.otherCount;
+				    	
+				    	var listView = document.getElementById("listView");
+			        	 listView.addEventListener("click", function() {
+			        		 getDeclineApplicantList();
+			        		 document.getElementById("applicantDeclineGraph").style.display="none";
+						    	document.getElementById("applicantDeclineListDivId").style.display="block";
+						    	var element = document.getElementById("listView");
+						    	var grid = document.getElementById("graphView");
+						    	element.classList.add("rAct");
+						    	grid.classList.remove("rAct");
+						    	
+						  });
+			        	 
+			        	 var graphicView = document.getElementById("graphView");
+			        	 graphicView.addEventListener("click", function() {
+			        		 if(total>0){
+			        			 getAplicantDeclineAmChart(response);
+			        		 }else{
+			        			 var result = '';
+			 	 	   			result = result+"<div class='dataTables_empty'>"; 
+			 	 	   			result = result+"</div> ";
+			 	 	   	        $("#applicantDecline").empty();
+			 	                $("#applicantDecline").append(result);
+			        		 }
+			        		 document.getElementById("applicantDeclineGraph").style.display="block";
+						    	document.getElementById("applicantDeclineListDivId").style.display="none";
+						    	
+						    	var element = document.getElementById("listView");
+						    	var grid = document.getElementById("graphView");
+						    	element.classList.remove("rAct");
+						    	grid.classList.add("rAct");
+						  });
+				    if(total>0){
+				    	getAplicantDeclineAmChart(response);
+				    	
+				    }
+				   	else{
+				   		var result = '';
+		 	   			result = result+"<div class='dataTables_empty'>"; 
+		 	   			result = result+"</div> ";
+		 	   	        $("#applicantDecline").empty();
+		                $("#applicantDecline").append(result);
+				   	}
+		    		}else if (response.indexOf('Sign In') !== -1) {
+		    			location.replace(sourceleadUrl);
+		    		} else {
+		    		    showError("Operation failed, please try again");
+		    		}
 			    }
 		        	 
 			 });
@@ -228,48 +239,61 @@ function getDeclineApplicantList(){
 		  $.ajax({ 
 			   	type: "GET",
 			   	url: sourceleadUrl+"/getDeclinedApplicantsList?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection+"&fromDate="+fromDate+"&toDate="+toDate,
-			    success: function(data) {
-	           	 var result = "";
-	             result  = result + '    <table class="table table-bordered" id="applicantDeclinePagenationId">     ';
-				 result  = result + '     <thead>                                 ';
-				 result  = result + '       <tr>                                  ';
-				 result  = result + '         <th>Jobs</th>                       ';
-				 result  = result + '         <th>Skills</th>                     ';
-				 result  = result + '         <th>Over Qualified</th>             ';
-				 result  = result + '         <th>Bad Fit</th>                    ';
-				 result  = result + '         <th>Interview</th>                  ';
-				 result  = result + '         <th>Salary</th>                     ';
-				 result  = result + '         <th>Other</th>                      ';
-				 result  = result + '         <th>Total</th>                      ';
-				 result  = result + '       </tr>                                 ';
-				 result  = result + '       </thead>                              ';
-				 result  = result + '       <tbody>                               ';
-				 for (var i = 0; i < data.length; i++) { 
-					 var report = data[i];
-					 
-					 if(report.totalCount>0){
-						 result  = result + '       <tr>                                  ';	
-					 result  = result + '		  <td><div>'+report.jobName+'</div></td>  ';
-					 result  = result + '         <td><div>'+report.skillsCount+'</div></td>               ';
-					 result  = result + '         <td><div>'+report.unsuitableCount+'</div></td>               ';
-					 result  = result + '         <td><div>'+report.badfitCount+'</div></td>               ';
-					 result  = result + '         <td><div>'+report.interviewCount+'</div></td>               ';
-					 result  = result + '         <td><div>'+report.salaryCount+'</div></td>               ';
-					 result  = result + '         <td><div>'+report.otherCount+'</div></td>               ';
-					 result  = result + '         <td><div>'+report.totalCount+'</div></td>               ';
-					 result  = result + '         </tr>                               ';
-					 
-				 }
-					
-				 }
-				
-				 
-				 result  = result + '     </tbody>                                ';
-				 result  = result + '   </table>                                  ';
-				 $("#applicantDeclineListDiv").empty();
-				 $("#applicantDeclineListDiv").append(result);
-				 applicantDeclineListPagination();
+			    success: function(response) {
 			    	
+			    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+		    		    showError(response.responseMessage);
+		    	  	} else if (response.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    		} else if (response.response === "SUCCESS") {
+		    		 	
+			           	 var result = "";
+			             result  = result + '    <table class="table table-bordered" id="applicantDeclinePagenationId">     ';
+						 result  = result + '     <thead>                                 ';
+						 result  = result + '       <tr>                                  ';
+						 result  = result + '         <th>Jobs</th>                       ';
+						 result  = result + '         <th>Skills</th>                     ';
+						 result  = result + '         <th>Over Qualified</th>             ';
+						 result  = result + '         <th>Bad Fit</th>                    ';
+						 result  = result + '         <th>Interview</th>                  ';
+						 result  = result + '         <th>Salary</th>                     ';
+						 result  = result + '         <th>Other</th>                      ';
+						 result  = result + '         <th>Total</th>                      ';
+						 result  = result + '       </tr>                                 ';
+						 result  = result + '       </thead>                              ';
+						 result  = result + '       <tbody>                               ';
+						 for (var i = 0; i < response.data.length; i++) { 
+							 var report = response.data[i];
+							 
+							 if(report.totalCount>0){
+								 result  = result + '       <tr>                                  ';	
+							 result  = result + '		  <td><div>'+report.jobName+'</div></td>  ';
+							 result  = result + '         <td><div>'+report.skillsCount+'</div></td>               ';
+							 result  = result + '         <td><div>'+report.unsuitableCount+'</div></td>               ';
+							 result  = result + '         <td><div>'+report.badfitCount+'</div></td>               ';
+							 result  = result + '         <td><div>'+report.interviewCount+'</div></td>               ';
+							 result  = result + '         <td><div>'+report.salaryCount+'</div></td>               ';
+							 result  = result + '         <td><div>'+report.otherCount+'</div></td>               ';
+							 result  = result + '         <td><div>'+report.totalCount+'</div></td>               ';
+							 result  = result + '         </tr>                               ';
+							 
+						 }
+							
+						 }
+						
+						 
+						 result  = result + '     </tbody>                                ';
+						 result  = result + '   </table>                                  ';
+						 $("#applicantDeclineListDiv").empty();
+						 $("#applicantDeclineListDiv").append(result);
+						 applicantDeclineListPagination();
+					    
+		    		}else if (response.indexOf('Sign In') !== -1) {
+		    			location.replace(sourceleadUrl);
+		    		} else {
+		    		    showError("Operation failed, please try again");
+		    		}
+			   	
 			    }
 			 });
 		  
@@ -350,62 +374,62 @@ function getCustomDates(){
 </script>
 
 <script type="text/javascript">
-  function getAplicantDeclineAmChart(data){
+  function getAplicantDeclineAmChart(response){
 	  
-	  var total=data.skillsCount + data.unsuitableCount + data.badfitCount + data.interviewCount + data.salaryCount + data.otherCount;
+	  var total=response.object.skillsCount + response.object.unsuitableCount + response.object.badfitCount + response.object.interviewCount + response.object.salaryCount + response.object.otherCount;
 	  var mainChar = [];
-		 if(data.skillsCount>0){
+		 if(response.object.skillsCount>0){
 			 mainChar.push( {
 				    "category": "Skills",
-					"column-1": data.skillsCount,
+					"column-1": response.object.skillsCount,
 					"color": "#9FA8DA",
-					"count": data.skillsCount,
-		            "percentage":(((data.skillsCount)/total)*100).toFixed(2)
+					"count": response.object.skillsCount,
+		            "percentage":(((response.object.skillsCount)/total)*100).toFixed(2)
 			    } );
 			 }
-		 if(data.unsuitableCount>0){
+		 if(response.object.unsuitableCount>0){
 			 mainChar.push( {
 				    "category": "Over Qualified",
 					"color": "#90CAF9",
-					"column-1": data.unsuitableCount,
-					"count": data.unsuitableCount,
-		            "percentage": (((data.unsuitableCount)/total)*100).toFixed(2)
+					"column-1": response.object.unsuitableCount,
+					"count": response.object.unsuitableCount,
+		            "percentage": (((response.object.unsuitableCount)/total)*100).toFixed(2)
 			    } );
 			 }
-		 if(data.badfitCount>0){
+		 if(response.object.badfitCount>0){
 			 mainChar.push( {
 				 "category": "Bad Fit",
-					"column-1": data.badfitCount,
+					"column-1": response.object.badfitCount,
 					"color": "#FFAB91",
-					"count": data.badfitCount,
-		            "percentage": (((data.badfitCount)/total)*100).toFixed(2)
+					"count": response.object.badfitCount,
+		            "percentage": (((response.object.badfitCount)/total)*100).toFixed(2)
 			    } );
 			 }
-		 if(data.interviewCount>0){
+		 if(response.object.interviewCount>0){
 			 mainChar.push( {
 				    "category": "Interview",
-					"column-1": data.interviewCount,
+					"column-1": response.object.interviewCount,
 					"color": "#A5D6A7",
-					"count": data.interviewCount,
-		            "percentage": (((data.interviewCount)/total)*100).toFixed(2)
+					"count": response.object.interviewCount,
+		            "percentage": (((response.object.interviewCount)/total)*100).toFixed(2)
 			    } );
 			 }
-		 if(data.salaryCount>0){
+		 if(response.object.salaryCount>0){
 			 mainChar.push( {
 				    "category": "Salary",
-					"column-1": data.salaryCount,
+					"column-1": response.object.salaryCount,
 					"color": "#FFE0B2",
-					"count": data.salaryCount,
-		            "percentage": (((data.salaryCount)/total)*100).toFixed(2)
+					"count": response.object.salaryCount,
+		            "percentage": (((response.object.salaryCount)/total)*100).toFixed(2)
 			    } );
 			 }
-		 if(data.otherCount>0){
+		 if(response.object.otherCount>0){
 			 mainChar.push( {
 					"category": "Other",
-					"column-1": data.otherCount,
+					"column-1": response.object.otherCount,
 					"color": "#BCAAA4",
-					"count": data.otherCount,
-		            "percentage": (((data.otherCount)/total)*100).toFixed(2)
+					"count": response.object.otherCount,
+		            "percentage": (((response.object.otherCount)/total)*100).toFixed(2)
 			    } );
 			 }
       AmCharts.makeChart("applicantDecline",
