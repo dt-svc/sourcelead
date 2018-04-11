@@ -63,7 +63,7 @@
 					   
 					    </div>
 					  <div class="col-md-2 clearfix">
-						  <div class="col-md-4 noPad">
+						  <div class="col-md-4 noPad" id="currentRow0">
 							<label class="switch mt5 text-center">
 							<input checked id="requiredCheck0" name="immigrationDocList[0].isRequired" title="Is Required" type="checkbox" value = "Y" onclick = "tempDocReq(0);">
 							<div class="slider round" title="Is Required"></div>
@@ -93,16 +93,54 @@
 					  <input type="hidden" name="immigrationDocList[${rows.count-1}].id" value="${items.id}" id="templateId${rows.count-1}"/>
 					  
 						<select class="form-control chosen-select" 
-										name="immigrationDocList[${rows.count-1}].documentType" title='Document Type' field-name="Select Document" data-validation="required" id="candidateEducation0">
+								onchange="updateUIforOthers(${rows.count-1});"		name="immigrationDocList[${rows.count-1}].documentType" title='Document Type' field-name="Select Document" data-validation="required" id="candidateEducation${rows.count-1}">
 							<option value="" selected>--Select Document--</option>
 							<c:forEach var="edu" items="${educationsList}">
 											<option ${edu.id == items.documentType? 'selected': ''} value="${items.documentType}">${edu.name}</option>
 							</c:forEach>
 						</select>
 					  </div>
-					  <div class="col-md-7 noPad">
+					
+					<div class="col-md-7 noPad" id="currentRow${rows.count-1}">
+					<c:choose>
+    			   <c:when  test="${empty items.otherType}">
+					   <div id="customOther-defaults${rows.count-1}">
+					  
+							<input type="text" name="immigrationDocList[${rows.count-1}].description" id="description0"  value ="${items.description}" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
+				
+					   </div>
+					   <div class="row" id="customOther${rows.count-1}" style="display:none;">
+						   	<div class="col-md-5">
+						   	<input type="text" id="otherType${rows.count-1}" resetVal="true"   name="immigrationDocList[${rows.count-1}].otherType"  value ="${items.otherType}" title='Name' class="form-control" placeholder="Name"  field-name="Name"  data-validation="validate_length length2-200" />
+						   	</div>
+						   	 <div class="col-md-7">
+						   <input type="text" name="immigrationDocList[${rows.count-1}].description"   id="description${rows.count-1}" value ="${items.description}" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
+						   	</div> 
+					   </div>
+					   </c:when>
+					   <c:otherwise>
+					    <div id="customOther-defaults${rows.count-1}" style="display:none;">
+					  
+							<input type="text" name="immigrationDocList[${rows.count-1}].description" id="description0"  value ="${items.description}" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
+				
+					   </div>
+					   <div class="row" id="customOther${rows.count-1}" >
+						   	<div class="col-md-5">
+						   	<input type="text" id="otherType${rows.count-1}" name="immigrationDocList[${rows.count-1}].otherType" resetVal="true"  value ="${items.otherType}" title='Name' class="form-control" placeholder="Name"  field-name="Name"  data-validation="validate_length length2-200" />
+						   	</div>
+						   	 <div class="col-md-7">
+						   <input type="text" name="immigrationDocList[${rows.count-1}].description" id="description0"   value ="${items.description}" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
+						   	</div> 
+					   </div>
+					    </c:otherwise>
+					   </c:choose>
+					    </div>
+					 <%--  <div class="col-md-7 noPad">
 							<input type="text" name="immigrationDocList[${rows.count-1}].description" id="description0" value ="${items.description}" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
-					  </div>
+					  </div> --%>
+					  
+					  
+					  
 					  <div class="col-md-2 clearfix">
 						  <div class="col-md-4 noPad">
 							<label class="switch mt5 text-center">
@@ -155,7 +193,7 @@
 		templateDocDetails = templateDocDetails+ "<option value='${edu.id}'>${edu.name}</option>";
 		</c:forEach>
 		templateDocDetails = templateDocDetails+ "</select></div>";
-		templateDocDetails = templateDocDetails+ "<div class='col-md-7 noPad'>";
+		templateDocDetails = templateDocDetails+ "<div class='col-md-7 noPad' id='currentRow"+rowId+"'>";
 		templateDocDetails = templateDocDetails+ "	<div id='customOther-defaults"+rowId+"'>";
 		templateDocDetails = templateDocDetails+ "<input type='text' title='Description' name='immigrationDocList["+rowId+"].description' id='description"+rowId+"' class='form-control' placeholder='Description' data-validation='validate_length length2-500' data-validation-optional='true'/>";	
 		templateDocDetails = templateDocDetails+ "	</div>";
@@ -227,7 +265,9 @@
 		    $("#customOther-defaults"+id).show();
 		     $("#otherType"+id).removeAttr("data-validation");
 	    }
-
+	 
+	  // reset the values of all input elements when changed value in dropdown 
+	  $("#currentRow"+id).find('input:text').val('');
 	}
 	</script>
 	
