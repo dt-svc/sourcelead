@@ -318,10 +318,10 @@ window.onload = function () {
         <div class="company_logo companyLogo pull-left mb10"><a href="<c:url value='/'/>"><img src="/resources/images/SourceLead-logo.png" alt="Sourcelead Logo" title="Sourcelead Logo" class="img-responsive" width="300"></a></div>
       <div class="clearfix"></div>
       <ul class="nav nav-tabs">
-          <li class="active"><a data-toggle="tab" href="#professional" onclick="resetCredentials('Professional')"><i class="fa fa-user"></i>&nbsp;&nbsp;Job Seeker</a></li>
+          <li class="active"><a data-toggle="tab" href="#professional" onclick="resetCredentials('Professional')"><i class="fa fa-user paddingRight"></i>Job Seeker</a></li>
           <c:if test="${empty contactUUID}">
-          <li><a data-toggle="tab" href="#recruiter" onclick="resetCredentials('Recruiter')"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;<span class="hidden-xs">Freelance</span></a></li>
-          <li><a data-toggle="tab" href="#employee" onclick="resetCredentials('Employer')"><i class="fa fa-address-book-o"></i>&nbsp;&nbsp;Company</a></li>
+          <li><a data-toggle="tab" href="#recruiter" onclick="resetCredentials('Recruiter')"><i class="fa fa-black-tie paddingRight"></i><span>Freelance</span></a></li>
+          <li><a data-toggle="tab" href="#employee" onclick="resetCredentials('Employer')"><i class="fa fa-address-book-o paddingRight"></i>Company</a></li>
           </c:if>
           <input type="hidden" id="tabType" />
       </ul>
@@ -346,8 +346,11 @@ window.onload = function () {
             	<div class="clearfix"></div>
             </div>
             <div class="clearfix"></div>
-            <div class=" text-muted small mb10 text-center clearfix">
+            <div class="text-muted small mb10 text-center clearfix hidden-xs">
             -------------------------------------------------- ( OR ) --------------------------------------------------
+            </div>
+           <div class="text-muted small mb10 text-center clearfix hidden-or">
+            --------------------- ( OR ) ---------------------
             </div>
             <div class="row mt10 regDemoFields">
             <div class="form-group clearfix">
@@ -460,8 +463,11 @@ window.onload = function () {
             	<div class="clearfix"></div>
             </div>
             <div class="clearfix"></div>
-            <div class=" text-muted small mb10 text-center clearfix">
+            <div class="text-muted small mb10 text-center clearfix hidden-xs">
             -------------------------------------------------- ( OR ) --------------------------------------------------
+            </div>
+           <div class="text-muted small mb10 text-center clearfix hidden-or">
+            --------------------- ( OR ) ---------------------
             </div>
             <div class="row mt10 regDemoFields">
             <div class="form-group clearfix">

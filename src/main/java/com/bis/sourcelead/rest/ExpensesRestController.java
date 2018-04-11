@@ -572,41 +572,42 @@ public class ExpensesRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/rest/getExpenseDetailsByExpenseId")
+	@RequestMapping(value = "/rest/getExpenseDetailsByExpenseId", method = { RequestMethod.GET, RequestMethod.POST })
 	public ExpensesDTO getExpenseDetailsByExpenseId(@RequestBody ExpensesListUtilDTO elDTO) throws Exception
 	{
 		ExpensesDTO expensesDTO = null;
 		OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(elDTO.getExpenseLocationCode());
-		// Expenses expenses = expensesService.getExpenseByExpenseUniqueId(elDTO.getExpenseId(), orgLocations.getId());
-		Expenses expen = expensesService.getExpenseByExpenseUniqueId(elDTO.getExpenseId(),orgLocations.getId());
-		 Expenses expenses= null;
-		 if(expen !=null){
-			 expenses = expensesService.getExpenseByExpenseUniqueId(expen.getExpenseId(), orgLocations.getId());
-		 }
-		//loginSessionController.DATEFORMAT= new SimpleDateFormat(orgLocations.getDateFormat());
-		if (expenses != null) {
-			expensesDTO = ExpensesDTOConverter.getExpensesDTOFromExpenses(expenses, expensesDTO);
-			expensesDTO.setMasterCandidateId(expenses.getProjectMembers().getMasterCandidateId().getId());
-			ExpensesApproverHierarchy eah = expensesApprovalService.getexpensesApproverHierarchyForEmployeeByExpenseId(expenses.getId());
-			Submission_Status submissionStatus = eah.getExpenseStatus();
-			expensesDTO.setCombinedSubmissionStatus(submissionStatus.getValue().toUpperCase());
-			ExpensesApproverHierarchy isSah = expensesApprovalService.isThereAnyApproverApprovedTheExpense(expenses.getId());
-			boolean isSahApproved = false;
-			if (isSah != null) {
-				isSahApproved = true;
-			}
-			if (expenses.getCreatedBy() != null) {
-				User createduser = userService.getUserByUserCode(expenses.getCreatedBy());
-				StringBuilder createdName = new StringBuilder();
-				if (createduser.getFirstName() != null && createduser.getLastName() != null) {
-					createdName.append(createduser.getFirstName()).append(" ").append(createduser.getLastName());
+		if(orgLocations != null) {
+			Expenses expen = expensesService.getExpenseByExpenseUniqueId(elDTO.getExpenseId(),orgLocations.getId());
+			 Expenses expenses= null;
+			 if(expen !=null){
+				 expenses = expensesService.getExpenseByExpenseUniqueId(expen.getExpenseId(), orgLocations.getId());
+			 }
+			//loginSessionController.DATEFORMAT= new SimpleDateFormat(orgLocations.getDateFormat());
+			if (expenses != null) {
+				expensesDTO = ExpensesDTOConverter.getExpensesDTOFromExpenses(expenses, expensesDTO);
+				expensesDTO.setMasterCandidateId(expenses.getProjectMembers().getMasterCandidateId().getId());
+				ExpensesApproverHierarchy eah = expensesApprovalService.getexpensesApproverHierarchyForEmployeeByExpenseId(expenses.getId());
+				Submission_Status submissionStatus = eah.getExpenseStatus();
+				expensesDTO.setCombinedSubmissionStatus(submissionStatus.getValue().toUpperCase());
+				ExpensesApproverHierarchy isSah = expensesApprovalService.isThereAnyApproverApprovedTheExpense(expenses.getId());
+				boolean isSahApproved = false;
+				if (isSah != null) {
+					isSahApproved = true;
 				}
-				else {
-					createdName.append(createduser.getFirstName());
+				if (expenses.getCreatedBy() != null) {
+					User createduser = userService.getUserByUserCode(expenses.getCreatedBy());
+					StringBuilder createdName = new StringBuilder();
+					if (createduser.getFirstName() != null && createduser.getLastName() != null) {
+						createdName.append(createduser.getFirstName()).append(" ").append(createduser.getLastName());
+					}
+					else {
+						createdName.append(createduser.getFirstName());
+					}
+					expensesDTO.setCreatedBy(createdName.toString());
 				}
-				expensesDTO.setCreatedBy(createdName.toString());
+				expensesDTO.setSahApproved(isSahApproved);
 			}
-			expensesDTO.setSahApproved(isSahApproved);
 		}
 		return expensesDTO;
 	}

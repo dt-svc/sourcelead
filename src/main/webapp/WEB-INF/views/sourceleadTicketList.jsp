@@ -407,7 +407,19 @@ function changeStatus(ticketUUID,e){
 		 type : "POST",
 		 url : sourceleadUrl+ "/changeTicketStatus?${_csrf.parameterName}=${_csrf.token}&ticketStatus="+ticketStatus+"&ticketUUID="+ticketUUID,
 		 success : function(result) {
-			location.replace(sourceleadUrl+"/sourceleadTicketList");
+			 
+			 if (result && result.response === "INVALID_DATA") {
+	    		    showError(result.responseMessage);
+	    		} else if (result.response === "AWKWARD") {
+	    		    location.href = "/errorPage";
+	    		} else if (result.response === "SUCCESS") {
+	    			location.replace(sourceleadUrl+"/sourceleadTicketList");			 			
+	    		} else if (result.indexOf('Sign In') !== -1) {
+	    			location.replace(sourceleadUrl);
+	    		} else {
+	    		    showError("Operation failed, please try again");
+	    		}
+			 
 		},
 	});
 	
