@@ -1,16 +1,11 @@
 package com.bis.sourcelead.rest;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,17 +17,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.dto.InviteCompanyDTO;
-import com.bis.sourcelead.dto.ProjectTasksDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.ScheduleMaintenanceDTO;
-import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.InviteCompanyService;
 import com.bis.sourcelead.service.TimeZoneService;
-import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -61,9 +54,34 @@ public class InviteCompanyRestController {
 	
 
     @RequestMapping(value = "/storeInviteCompany", method = RequestMethod.POST)
-	public @ResponseBody  void storeInviteCompany(InviteCompanyDTO inviteCompanyDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	public @ResponseBody  Response<Void> storeInviteCompany(InviteCompanyDTO inviteCompanyDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-    	  String inviteCompany =  inviteCompanyService.saveInviteCompany(inviteCompanyDTO);
+    	/*  String inviteCompany =  inviteCompanyService.saveInviteCompany(inviteCompanyDTO);*/
+    	
+    	Response<Void> inviteCompanyResponse = new Response<>();
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		try {
+			if (loginUser != null) {
+
+				if (Validator.validate(inviteCompanyDTO)) {
+					String inviteCompany =  inviteCompanyService.saveInviteCompany(inviteCompanyDTO);
+					inviteCompanyResponse.setResponse(Result.SUCCESS.name());
+					inviteCompanyResponse.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					inviteCompanyResponse.setResponse(Result.INVALID_DATA.name());
+					inviteCompanyResponse.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+
+			} else {
+				inviteCompanyResponse.setResponse(Result.SESSION_TIMEDOUT.name());
+				inviteCompanyResponse.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			inviteCompanyResponse.setResponse(Result.AWKWARD.name());
+			inviteCompanyResponse.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return inviteCompanyResponse;
 	}
    
     @RequestMapping(value = "/storeScheduleMaintenance", method =RequestMethod.POST)
