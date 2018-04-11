@@ -177,10 +177,10 @@
 				<label class="col-md-4 padding_left">File<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
 					<div class="input-group col-md-12" style="margin:0 auto">
-					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-					  <input type="file" style="display: none;" multiple id="uploadBtn"  class="upload">
+					<label class="input-group-btn"> <span class="btn btn-primary" onchange="uploadRerqDocsList(0);"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+					  <input type="file" style="display: none;" multiple id="uploadBtn0" onchange="uploadBtnFilesList(0);" class="upload">
 					  </span> </label>
-					<input type="text" class="form-control" readonly id="uploadFile" name = "docFile" placeholder="Upload Resume ...">
+					<input type="text" class="form-control" readonly id="uploadFile0" name = "docFile0" placeholder="Upload Resume ...">
 					 <div id="divAddButton" class="col-md-4" style="display:none">
 						  		<button type="button" id="btnDynamicRow0" onclick="appendDynamicUploaRow()" class="btn btm-sm"><i class="fa fa-plus text-primary"></i></button>
 						  </div>	
@@ -219,10 +219,7 @@
 				$(".popMask").fadeIn(200);
 				$("#docuView").fadeIn(100);
 			});
-			document.getElementById("uploadBtn").onchange = function () {
-			 	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
-
-			}; 
+			
 		</script>
 		
 <script type="text/javascript">
@@ -234,6 +231,11 @@
 			$("#multipleCheckBox").val("N");
 		}
 	}
+	
+	function uploadBtnFilesList(id) {
+	 	$('#uploadFile'+id).val($("#uploadBtn"+id).val().replace(/C:\\fakepath\\/i, ''))
+		
+	}
 	</script>		
 <!-- <script type="text/javascript">
 function uploadDoc(id){
@@ -241,6 +243,11 @@ function uploadDoc(id){
 	alert("ggggg"+id)
 }
 </script> -->
+<script type="text/javascript">
+function uploadRerqDocsList(id) {
+	fileUpload("uploadBtn"+id+"", "immigrationCandidateDocuments", "uploadRequestDoc_Form");
+}
+</script>
 		
 <script type="text/javascript">
 
@@ -255,12 +262,12 @@ function removeDocPopUp(){
 	$("#candidate_Immigration_Doc")[0].reset();
 	//$("#description1").val('');
 }
-$(function() {
-	$("#uploadBtn").change(function() {
-	fileUpload("uploadBtn", "immigrationCandidateDocuments", "uploadRequestDoc_Form");
+/* $(function() {
+	$("#uploadBtn"+id).change(function() {
+	fileUpload("uploadBtn"+id, "immigrationCandidateDocuments", "uploadRequestDoc_Form");
 });
-});
-var rowId =0;
+}); */
+var rowId =1;
 function prepareDynamicUploadRow(rowId){
 	
 	  var dynamicUploadRowHtml = "";
@@ -269,10 +276,10 @@ function prepareDynamicUploadRow(rowId){
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<label class='col-md-4 padding_left'>File<span class='text-danger'>&nbsp;*</span></label>";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<div class='col-md-8 padding_right'>";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	<div class='input-group col-md-12' style='margin:0 auto'>";
-	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	<label class='input-group-btn'> <span class='btn btn-primary'><i class='fa fa-folder-open-o'></i>&nbsp;Browse File";
-	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	<input type='file' style='display:none'; multiple id='uploadBtn"+rowId+"  class='upload'>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	<label class='input-group-btn'> <span class='btn btn-primary' onchange='uploadRerqDocsList("+rowId+")'><i class='fa fa-folder-open-o'></i>&nbsp;Browse File";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	<input type='file' style='display:none'; onchange='uploadBtnFilesList(" + rowId + ");' multiple id='uploadBtn"+rowId+"'  class='upload'>";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"		  </span> </label>";
-	  dynamicUploadRowHtml =dynamicUploadRowHtml+"		<input type='text' class='form-control' readonly id='uploadFile"+rowId+" name = 'docFile' placeholder='Upload Resume ...'>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"		<input type='text' class='form-control' readonly id='uploadFile"+rowId+"' name = 'docFile"+rowId+"' placeholder='Upload Resume ...'>";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"				 <div id='divAddButton' class='col-md-4'>";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"		  		<button type='button' id='btnDynamicRow"+rowId+"'onclick='appendDynamicUploaRow()' class='btn btm-sm'><i class='fa fa-plus text-primary'></i></button>";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	 <div class='col-md-4'><button type='button' class='btn btm-sm' id='btnDynamicRow"+rowId+"' onclick='removeDynamicUploaRow("+rowId+")' ><i class='fa fa-remove text-danger'></i></button></div>";
