@@ -98,50 +98,58 @@ function requirementSubmissionsCount(daterange){
 		    	type: "GET",
 		        url: sourceleadUrl+"/getRequirementSubmissionsCount?${_csrf.parameterName}=${_csrf.token}&daterange="+daterange, 
 		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	$("#applicantsCountLoading, #submissionsCountLoading, #interviewsCountLoading, #offersCountLoading").removeAttr("style");
-		        	 var  submissionsCount = json.submissionCount;
-		        	 var  applicantsCount =json.applicantsCount;
-		        	 var  interviewsCount =json.interviewsCount;
-		        	 var  offersCount = json.offersCount; 
-		        	 
-		        	 if(submissionsCount>0){
-	                      $("#submissionsCount").text(submissionsCount);
-	                      $('#submissionsCount').attr("onClick", "loadRequirementSubmissions(); return false;"); 
-	                      $('#subDiv').attr("style", "cursor:pointer"); 
-	                  }else{
-	                      $("#submissionsCount").html("0");
-	                      $("#submissionsCount").removeAttr("onclick");
-	                      $("#subDiv").removeAttr("style");
-	                  } 
-		        	 if(applicantsCount>0){
-	                      $("#applicantsCount").text(applicantsCount);
-	                      $('#applicantsCount').attr("onClick", "loadRequirementApplicants(); return false;"); 
-	                      $('#appDiv').attr("style", "cursor:pointer"); 
-	                  }else{
-	                      $("#applicantsCount").html("0");
-	                      $("#applicantsCount").removeAttr("onclick");
-	                      $("#appDiv").removeAttr("style");
-	                  }
-		        	if(interviewsCount>0){
-	                      $("#interviewsCount").text(interviewsCount);
-	                      $('#interviewsCount').attr("onClick", "loadRequirementInterviews(); return false;"); 
-	                      $('#intDiv').attr("style", "cursor:pointer"); 
-	                  }else{
-	                      $("#interviewsCount").html("0");
-	                      $("#interviewsCount").removeAttr("onclick");
-	                      $("#intDiv").removeAttr("style");
-	                  }
-		        	if(offersCount>0){
-	                      $("#offersCount").text(offersCount);
-	                      $('#offersCount').attr("onClick", "loadRequirementOffers(); return false;"); 
-	                      $('#offDiv').attr("style", "cursor:pointer"); 
-	                  }else{
-	                      $("#offersCount").html("0");
-	                      $("#offersCount").removeAttr("onclick");
-	                      $("#offDiv").removeAttr("style");
-	                  } 
-		        	
+		        	if (data.response === "FAILED") {
+			    		showError(data.responseMessage);
+			    	} else if (data.response === "AWKWARD") {
+			    		location.href = "/errorPage";
+			    	} else if (data.response === "SUCCESS") {
+			        	var json = data.object;
+			        	$("#applicantsCountLoading, #submissionsCountLoading, #interviewsCountLoading, #offersCountLoading").removeAttr("style");
+			        	 var  submissionsCount = json.submissionCount;
+			        	 var  applicantsCount =json.applicantsCount;
+			        	 var  interviewsCount =json.interviewsCount;
+			        	 var  offersCount = json.offersCount; 
+			        	 if(submissionsCount>0){
+		                      $("#submissionsCount").text(submissionsCount);
+		                      $('#submissionsCount').attr("onClick", "loadRequirementSubmissions(); return false;"); 
+		                      $('#subDiv').attr("style", "cursor:pointer"); 
+		                  }else{
+		                      $("#submissionsCount").html("0");
+		                      $("#submissionsCount").removeAttr("onclick");
+		                      $("#subDiv").removeAttr("style");
+		                  } 
+			        	 if(applicantsCount>0){
+		                      $("#applicantsCount").text(applicantsCount);
+		                      $('#applicantsCount').attr("onClick", "loadRequirementApplicants(); return false;"); 
+		                      $('#appDiv').attr("style", "cursor:pointer"); 
+		                  }else{
+		                      $("#applicantsCount").html("0");
+		                      $("#applicantsCount").removeAttr("onclick");
+		                      $("#appDiv").removeAttr("style");
+		                  }
+			        	if(interviewsCount>0){
+		                      $("#interviewsCount").text(interviewsCount);
+		                      $('#interviewsCount').attr("onClick", "loadRequirementInterviews(); return false;"); 
+		                      $('#intDiv').attr("style", "cursor:pointer"); 
+		                  }else{
+		                      $("#interviewsCount").html("0");
+		                      $("#interviewsCount").removeAttr("onclick");
+		                      $("#intDiv").removeAttr("style");
+		                  }
+			        	if(offersCount>0){
+		                      $("#offersCount").text(offersCount);
+		                      $('#offersCount').attr("onClick", "loadRequirementOffers(); return false;"); 
+		                      $('#offDiv').attr("style", "cursor:pointer"); 
+		                  }else{
+		                      $("#offersCount").html("0");
+		                      $("#offersCount").removeAttr("onclick");
+		                      $("#offDiv").removeAttr("style");
+		                  } 
+			    	}else if (data.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    		showError("Operation failed, please try again");
+			    	}
 		 		}
 		  });
 		 
