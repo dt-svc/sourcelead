@@ -20,6 +20,8 @@ public class ImmigrationTemplateDocDTO {
 	
 	private String immigrationTempplateId;
 	
+	private String otherType;
+	
 	// this variables added for immigration candidate docs
 	private List<FileInfo> fileInfo;
 	
@@ -117,6 +119,12 @@ public class ImmigrationTemplateDocDTO {
 	}
 	public void setImmigrationCandidateDocId(Long immigrationCandidateDocId) {
 		this.immigrationCandidateDocId = immigrationCandidateDocId;
+	}
+	public String getOtherType() {
+		return otherType;
+	}
+	public void setOtherType(String otherType) {
+		this.otherType = otherType;
 	}
 	
 	

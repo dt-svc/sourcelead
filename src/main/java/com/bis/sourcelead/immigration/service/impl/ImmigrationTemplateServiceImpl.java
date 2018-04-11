@@ -113,6 +113,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
             immigrationTemplateDocs.setUpdatedBy(user);
             immigrationTemplateDocs.setDocumentType(tempObj.getDocumentType());
             immigrationTemplateDocs.setDescription(tempObj.getDescription());
+            immigrationTemplateDocs.setDocumentOtherType(tempObj.getOtherType());
             if (tempObj.getIsRequired() != null && "Y".equalsIgnoreCase(tempObj.getIsRequired())) {
                 immigrationTemplateDocs.setIsRequired(tempObj.getIsRequired());
             } else {
