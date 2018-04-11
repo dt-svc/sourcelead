@@ -67,7 +67,11 @@ top:0;
 				   		        	</div>
 			   		        	</div>
 		   		        	</td>
-		   		        	<td class="tbldata-dotdot-100 mt"><a href='#'>Upgrade</a> | <a href='#' onclick='initPayment("${orgSubscription.uuid}")'>Renewal</a></td>
+		   		        	<td class="tbldata-dotdot-100 mt"><a href='#'>Upgrade</a> 
+		   		        	<c:if test="${orgSubscription.showRenewal == 'Y'}">
+		   		        	   | <a href='#' onclick='initPayment("${orgSubscription.uuid}")'>Renewal</a>
+		   		        	</c:if>
+		   		        	</td>
 	                     </tr>
 		  			</c:forEach>
 			  			

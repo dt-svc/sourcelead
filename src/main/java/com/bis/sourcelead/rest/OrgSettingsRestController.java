@@ -73,8 +73,10 @@ import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.WhiteListIpAddressService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.ibm.icu.util.Calendar;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -926,6 +928,17 @@ public class OrgSettingsRestController {
 				
 				if(subscription.getToDate() != null) {
 					subscription.setToDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),subscription.getToDate()));
+				}
+				
+				Date currentDate = CalendarUtil.getDateTimeForGivenTimeZone(subscription.getTimezone().getTimeZoneId(), new Date(), "dd-MM-yyyy");
+				Calendar toDate = Calendar.getInstance();
+				toDate.setTime(currentDate); 
+				toDate.add(Calendar.DATE, +15); 
+				Date upcommingDate = toDate.getTime();
+				Date subscriptionDate = CalendarUtil.getDateTimeForGivenTimeZone(subscription.getTimezone().getTimeZoneId(), subscription.getToDate(), "dd-MM-yyyy");
+				
+				if(upcommingDate.after(subscriptionDate) || upcommingDate.equals(subscriptionDate)) {
+					subscription.setShowRenewal(Constants.YES);
 				}
 				
 				orgLicenseSubscriptionList.add(subscription);
