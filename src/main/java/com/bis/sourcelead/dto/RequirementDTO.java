@@ -101,7 +101,7 @@ public class RequirementDTO extends CommonDTO {
 
 	private String isClient;
 
-	@Required(desc = "client", dependsOn = "isClient", parentValue = "true")
+	@Required(desc = "client", dependsOn = "isClient", parentValue = "Y")
 	private String selectClient;
 
 	private String clientCurrencyCode;
@@ -112,7 +112,7 @@ public class RequirementDTO extends CommonDTO {
 
 	private String clientRateType;
 
-	@Required(desc = "clientForm", dependsOn = "isClient", parentValue = "true")
+	@Required(desc = "clientForm", dependsOn = "isClient", parentValue = "Y")
 	private String clientSubmissionForm;
 
 	private String cd;
@@ -261,7 +261,7 @@ public class RequirementDTO extends CommonDTO {
 
 	private String saveType;
 
-	@Required(desc = "clientContact", dependsOn = "isClient", parentValue = "true")
+	@Required(desc = "clientContact", dependsOn = "isClient", parentValue = "Y")
 	private String selectContact;
 
 	private String assignedToMaxCount;
