@@ -2,6 +2,8 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class TimesheetEntriesDTO implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -10,12 +12,15 @@ public class TimesheetEntriesDTO implements Serializable{
 	
     private TimesheetTaskDTO timesheetTaskDTO;
     
+    @Required(desc = "dayOfTheDate")
     private String dayOfTheDate;
     
+    @Required(desc = "date")
     private String date;
     
     private boolean editable;
     
+    @Required(desc = "hours")
     private String hours;
     
     private String comments;

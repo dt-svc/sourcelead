@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.annotations.Required;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -25,16 +26,19 @@ public class TimesheetEntryDetailsDTO implements Serializable{
     
     private Map<String,String> timeFrequencies;
 	
+    @Required(desc = "currentTimeFrequency",alphaNumericOnly=true)
 	private String currentTimeFrequency;
 	
 	private Map<String,String> timeSubFrequencies;
 	
 	private LinkedList<String> filledTimeSubFrequencies;
 	
+	@Required(desc = "currentTimeSubFrequency")
 	private String currentTimeSubFrequency;
 	
 	private TimeSheetSubmissionDTO timesheetSubmission;
 	
+	@Required(desc = "timesheetFor")
 	private String timesheetFor;
 	
 	private String profileImageFileUrl;
