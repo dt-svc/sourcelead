@@ -318,24 +318,31 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	
 	 
 	@Transient
+	@JsonProperty
 	private String closedDateStringFormat;
 	
 	@Transient
+	@JsonProperty
 	private String clientSubmissionTemplate;
 	
 	@Transient
+	@JsonProperty
 	private String requirementCreatedDateToString;
 
 	@Transient
+	@JsonProperty
 	private  Long  requirementId;
 	
 	@Transient
+	@JsonProperty
 	private String isJobApplied;
 	
 	@Transient
+	@JsonProperty
 	private String projectName;
 	
 	@Transient
+	@JsonProperty
 	private String msg;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
@@ -356,6 +363,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	
 	
 	@Transient
+	@JsonProperty
 	private String searchType;;
 	
 	@Transient
@@ -375,21 +383,27 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String spocUUID;
 	
 	@Transient
+	@JsonProperty
 	private String requirementApproverHierarchyStatus;
 	
 	@Transient
+	@JsonProperty
 	private String spocName;
 	
 	@Transient
+	@JsonProperty
 	private String spocEmail;
 	
 	@Transient
+	@JsonProperty
 	private String spocMobilePhone;
 	
 	@Transient
+	@JsonProperty
 	private String[] reqEducationList;
 	
 	@Transient
+	@JsonProperty
 	private String reqEducationListString;
 	
 	@Transient
@@ -397,21 +411,27 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String manager;
 	
 	@Transient
+	@JsonProperty
 	private String[] reqSkillsList;
 	
 	@Transient
+	@JsonProperty
 	private String reqIndustryList;
 	
 	@Transient
+	@JsonProperty
 	private String reqSkillsListString;
 	
 	@Transient
+	@JsonProperty
 	private String industrySavedName;
 	
 	@Transient
+	@JsonProperty
 	private ArrayList<String> approverNames;
 	
 	@Transient
+	@JsonProperty
 	private Integer highestLevel;
 	
 	@Transient
@@ -466,24 +486,31 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String isLoginUserAsInitiator;
 	
 	@Transient
+	@JsonProperty
 	private String mailBody;
 	
 	@Transient
+	@JsonProperty
 	private String submitToClientFromMailId;
 	
 	@Transient
+	@JsonProperty
 	private String submitToClientToMailId;
 	
 	@Transient
+	@JsonProperty
 	private String submitToClientMailSubject;
 	
 	@Transient
+	@JsonProperty
 	private Integer totalApplicantsForRequirement;
 	
 	@Transient
+	@JsonProperty
 	private String approvedBy;
 	
 	@Transient
+	@JsonProperty
 	private String createdByName;
 	
 	@Transient
@@ -495,12 +522,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String[] level2ApproverUserId;
 	
 	@Transient
+	@JsonProperty
 	private String level1ApproverStatus;
 	
 	@Transient
+	@JsonProperty
 	private String level2ApproverStatus;
 	
 	@Transient
+	@JsonProperty
 	private String[] requirementAssignedToUsersId;
 	
 	@Transient
@@ -512,48 +542,62 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String isRequirementReleased;
 	
 	@Transient
+	@JsonProperty
 	private String orgcode;
 
 	@Transient
+	@JsonProperty
 	private String isAllowStageAccess;
 	
 	@Transient
+	@JsonProperty
 	private String reqlevel1ApproverStatus;
 	
 	@Transient
+	@JsonProperty
 	private String reqlevel2ApproverStatus;
 	
 	@Transient
+	@JsonProperty
 	private String rejectReasonForRequirement;
 	
 	@Transient
+	@JsonProperty
 	private String approvalMechanismType;
 	
 	@Transient
+	@JsonProperty
 	private String postedDateStr;
 	
 	@Transient
+	@JsonProperty
 	private Long submissionId;
 
 	@Transient
+	@JsonProperty
 	private String requirementOrgName;
 	
 	@Column(name = "GENERATED_ID")
 	private String generatedId;
 	
 	@Transient
+	@JsonProperty
 	private String systemGeneratedId;
 	
 	@Transient
+	@JsonProperty
 	private Integer vendorInterviewsCount;
 	
 	@Transient
+	@JsonProperty
 	private Integer vendorBackoutCount;
 	
 	@Transient
+	@JsonProperty
 	private Integer vendorOfferedCount;
 	
 	@Transient
+	@JsonProperty
 	private Long referId;
 	
     @Transient
