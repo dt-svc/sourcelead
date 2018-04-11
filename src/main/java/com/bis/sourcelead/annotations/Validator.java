@@ -18,7 +18,7 @@ public class Validator {
                 if (field.isAnnotationPresent(Required.class)) {
                     try {
                         field.setAccessible(true);
-                        if (field.get(object) == null || field.get(object).toString().isEmpty()) {
+                        if (field.get(object) == null || field.get(object).toString().isEmpty() || "undefined".equalsIgnoreCase(field.get(object).toString())) {
                             object.getClass().getMethod("setErrorKey", String.class).invoke(object, "error.required");
                             object.getClass().getMethod("setParams", new Class[]{String[].class}).invoke(object, new Object[]{new String[]{field.getAnnotation(Required.class).desc()}});
                             return false;

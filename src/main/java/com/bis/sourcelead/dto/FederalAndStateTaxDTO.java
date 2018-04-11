@@ -2,12 +2,17 @@ package com.bis.sourcelead.dto;
 
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class FederalAndStateTaxDTO {
 
+	@Required(desc = "fedralEIN")
 	private String fedralEIN;
 	
+	@Required(desc="depositeSchedule")
 	private String depositeSchedule;
 	
+	@Required(desc="fillingForm")
 	private String fillingForm;
 	
 	private String unemploymentTax;

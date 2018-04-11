@@ -728,12 +728,34 @@ public class OrgSettingsRestController {
 	}
 	
 	@RequestMapping(value = "/app/saveWhiteListIps", method = RequestMethod.GET)
-	public String saveWhiteListIps(WhiteListIPAddressDTO whiteListIPAddressDTO, HttpServletRequest request) throws Exception
+	public Response<String> saveWhiteListIps(WhiteListIPAddressDTO whiteListIPAddressDTO, HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		whiteListIpAddressService.addWhiteListIps(whiteListIPAddressDTO, orgLocations, user);
-		return "Success";
+		Response<String> response = new Response<>();
+		if (user != null) {
+			try {
+				if (Validator.validate(whiteListIPAddressDTO)) {
+					whiteListIpAddressService.addWhiteListIps(whiteListIPAddressDTO, orgLocations, user);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+				else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			}catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+ 
+		return response;
 	}
 	
 	@RequestMapping(value = "/app/getWhiteListIps", method = RequestMethod.GET)

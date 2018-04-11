@@ -1058,8 +1058,15 @@ function saveWhiteListIps(){
 			      type : "GET",
 			      url : url,
 			               
-			       success :function(data) {
-			       if(data == "Success"){
+			       success :function(result) {
+			    		if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+	      	    		    showError(result.responseMessage);
+	      	    		    $("#loading").removeAttr('style');
+	      	    		}
+			    		else if(result.response === "AWKWARD"){
+			        		 location.href = "/errorPage";
+			        	}
+			    		else if(result.response === "SUCCESS"){
 			    	   $("#fromIpAddress").val("");
 			    	   $("#toIpAddress").val("");
 			    	   $(".modal.addipPopup-modal").fadeOut();
@@ -1067,6 +1074,12 @@ function saveWhiteListIps(){
 			    	   closeWhiteListIp();
 			    	   getWhiteListIps();
 			       	} 
+			    		else if (result.indexOf('Sign In') !== -1) {
+	      					location.replace(sourceleadUrl);
+	      				} else {
+	      				    showError("Operation failed, please try again");
+	      				    $("#loading").removeAttr('style');
+	      				}
 			      },
 			  }); 
 		
