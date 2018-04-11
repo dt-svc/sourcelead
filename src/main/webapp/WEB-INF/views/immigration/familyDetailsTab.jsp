@@ -87,7 +87,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Date of Marriage<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              	<div class="input-group">
+              	<div class="input-group errorInptgroup">
               		<input type="text" id="marraigeDate" name="marraigeDate" class="form-control calendar" placeholder="Date Of Marriage" field-name="Date Of Marriage" readonly="readonly" data-validation="required"/>
               		<span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('marraigeDate');"></i></span>
 				</div>
@@ -105,7 +105,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Date of Birth<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              	<div class="input-group">
+              	<div class="input-group errorInptgroup">
               		<input type="text" id="dateOfBirthSpouse" name="dateOfBirth" class="form-control calendar"  placeholder="Date Of Birth" field-name="Date Of Birth" readonly="readonly" data-validation="required"/>
               		<span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('dateOfBirthSpouse');"></i></span>
 				</div>
@@ -160,7 +160,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Date of Birth<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              	<div class="input-group">
+              	<div class="input-group errorInptgroup">
               		<input type="text"  id="dateOfBirthChild" name="dateOfBirth" class="form-control calendar" placeholder="Date Of Birth" field-name="Date Of Birth" readonly="readonly" data-validation="required"  />
               		<span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('dateOfBirthChild');"></i></span>
 				</div>
@@ -215,7 +215,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Date of Birth<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              	<div class="input-group">
+              	<div class="input-group errorInptgroup">
               		<input type="text" id="dateOfBirthFather" name="dateOfBirth" class="form-control calendar" placeholder="Date Of Birth" field-name="Date Of Birth" readonly="readonly" data-validation="required"  />
               		<span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('dateOfBirthFather');"></i></span>
 				</div>
@@ -270,7 +270,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Date of Birth<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              	<div class="input-group">
+              	<div class="input-group errorInptgroup">
               		<input type="text" id="dateOfBirthMother" name="dateOfBirth" class="form-control calendar" placeholder="Date Of Birth" field-name="Date Of Birth" readonly="readonly" data-validation="required"  />
               		<span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('dateOfBirthMother');"></i></span>
 				</div>

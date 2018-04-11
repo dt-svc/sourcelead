@@ -33,7 +33,7 @@
             <div class="form-group">
               <label class="col-md-4">Open date<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
-               <div class="input-group">
+               <div class="input-group errorInptgroup">
                 <input type="text" id ="openDate" class="form-control calendar" name="openDate" placeholder="Open Date" field-name="Open date" data-validation="required"/>
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('openDate');"></i></span>
               </div>
@@ -99,7 +99,7 @@
 								<label class="col-md-4"><span class="pull-left">Attorney Name</span><span
 									class="text-danger pull-left" id="man1">*</span></label>
 								<div class="col-md-8 chooRadius" id="errorAttorney">
-								<div class="input-group col-md-10 pull-left chooRadius">
+								<div class="input-group col-md-10 pull-left chooRadius errorInptgroup">
 									<select class="chosen-select form-control" name="attorneyId"
 										id="attorneyId" placeholder="Select Attorney" field-name="Attorney Name" data-validation="required"
 										onchange="getAttorneyContactList();removeValidationAttorney();">
@@ -116,9 +116,9 @@
 							<div class="form-group">
 								<label class="col-md-4"><span class="pull-left">Attorney Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
 								<div class="col-md-8 chooRadius" id="errorAttorneyContact">
-								<div class="input-group col-md-10 pull-left chooRadius">
-									<select class="chosen-select form-control" name="attorneyContact" id="attorneyContact" placeholder="Select Attorney Contact"
-										onchange="removeValidationAttorneyContact();">
+								<div class="input-group col-md-10 pull-left chooRadius errorInptgroup">
+									<select class="chosen-select form-control" name="attorneyContact" id="attorneyContact" placeholder="Select Attorney Contact" field-name="Attorney Contact"
+										 data-validation="required" onchange="removeValidationAttorneyContact();">
 									</select>
                   <span class="input-group-addon cursorPointer bg-blue" onclick="getAttorneysByOrgLocation();addCandiadateEmptyAttorneyContact();"><i class="fa fa-refresh "></i></span>
 			</div>		
@@ -138,8 +138,8 @@
 								<label class="col-md-4"><span class="pull-left">Associate (Beneficiary)</span><span
 									class="text-danger pull-left" id="man1">*</span></label>
 								<div class="col-md-8 chooRadius" id="errorAttorney">
-								<div class="input-group col-md-10 pull-left chooRadius">
-									<select class="chosen-select form-control" name="candidateId"
+								<div class="input-group col-md-10 pull-left chooRadius errorInptgroup">
+									<select class="chosen-select form-control" name="candidateId" field-name="Associate" data-validation="required"
 										id="candidateId" placeholder="Select Beneficiary" onchange="getCandidatesResumeDetailsById($(this).val());updateCandiateInfo($(this));">
 									</select>
 								 <span class="input-group-addon cursorPointer bg-blue" onclick="getCandidatesByOrgLocation();"><i class="fa fa-refresh "></i></span>
@@ -199,7 +199,7 @@
            <div class="form-group">
               <label class="col-md-4">DOB<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
-					<div class="input-group">
+					<div class="input-group errorInptgroup">
                 <input type="text" class="form-control calendar" name="birthDate" id="birthDate" placeholder="Date Of Birth" field-name="Date Of Birth" data-validation="required">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onClick="clearDateValue('birthDate');"></i></span>
               </div>
@@ -519,7 +519,7 @@
          <div class="form-group">
               <label class="col-md-4">Start Date<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
-					<div class="input-group">
+					<div class="input-group errorInptgroup">
                 <input type="text" class="form-control calendar" id="residenceStartDate"  name="residenceStartDate" placeholder="Start Date" field-name="Start Date" data-validation="required">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('residenceStartDate')"></i></span>
               </div>
@@ -609,7 +609,7 @@
 	   prepareResidencediv =prepareResidencediv+ "  <div class='form-group'>";
 	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>Start Date<span class='text-danger paddingLeft'>*</span></label>";
 	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
-	   prepareResidencediv =prepareResidencediv+ " 			<div class='input-group'>";
+	   prepareResidencediv =prepareResidencediv+ " 			<div class='input-group errorInptgroup'>";
 	   prepareResidencediv =prepareResidencediv+ "         <input type='text' class='form-control calendar' id='residenceStartDate"+rowId+"' onClick='showStartDatePicker("+rowId+")' name='residenceList["+rowId+"].residenceStartDate' field-name='Start Date' data-validation='required' placeholder='Start Date'>";
 	   prepareResidencediv =prepareResidencediv+ "         <span class='input-group-addon'><i class='fa fa-times text-danger cursorPointer' onclick='clearDateValue(\"residenceStartDate"+rowId+"\")'></i></span>";
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
@@ -618,7 +618,7 @@
 	   prepareResidencediv =prepareResidencediv+ "  <div class='form-group'>";
 	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>End Date<span class='text-danger paddingLeft'>*</span></label>";
 	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
-	   prepareResidencediv =prepareResidencediv+ " 			<div class='input-group'>";
+	   prepareResidencediv =prepareResidencediv+ " 			<div class='input-group errorInptgroup'>";
 	   prepareResidencediv =prepareResidencediv+ "        <input type='text' class='form-control calendar'  id='residenceEndDate"+rowId+"' onClick='showEndDatePicker("+rowId+")'  name='residenceList["+rowId+"].residenceEndDate' field-name='End Date' data-validation='required' placeholder='End Date'>";
 	   prepareResidencediv =prepareResidencediv+ "        <span class='input-group-addon'><i class='fa fa-times text-danger cursorPointer' onclick='clearDateValue(\"residenceEndDate"+rowId+"\")'></i></span>";
 	   prepareResidencediv =prepareResidencediv+ "      </div>";

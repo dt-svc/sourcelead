@@ -44,7 +44,8 @@
 						</span>
 					</div>
 				</td> -->
-				<td><div>
+				<td>
+				<div class="tblminwidth-90">
 					<a id= "upload" title="Upload" class="fa fa-upload uploadForm"></a>
 					<c:if test="${canDocList.isTemplateConfigured eq 'N'}">
 					<i id="edit" class="glyphicon glyphicon-pencil ml10" onclick="editDocumentDetailsByRowId(${canDocList.id});"></i>
@@ -173,17 +174,21 @@
 		
 		<div class="popupMid popupMidHeight clearfix">
  
-          <div class="col-sm-12 noPad mt clearfix" id ="dynamicUplodDiv">
-				<label class="col-md-4 padding_left">File<span class="text-danger">&nbsp;*</span></label>
-              	<div class="col-md-8 padding_right">
-					<div class="input-group col-md-12" style="margin:0 auto">
+          <div class="row mt clearfix" id ="dynamicUplodDiv">
+				<label class="col-md-2">File<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-10">
+					<div class="row">
+					<div class="col-md-10 paddingRight">
+					<div class="input-group">
 					<label class="input-group-btn"> <span class="btn btn-primary" onchange="uploadRerqDocsList(0);"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 					  <input type="file" style="display: none;" multiple id="uploadBtn0" onchange="uploadBtnFilesList(0);" class="upload">
 					  </span> </label>
 					<input type="text" class="form-control" readonly id="uploadFile0" name = "docFile0" placeholder="Upload Resume ...">
-					 <div id="divAddButton" class="col-md-4" style="display:none">
-						  		<button type="button" id="btnDynamicRow0" onclick="appendDynamicUploaRow()" class="btn btm-sm"><i class="fa fa-plus text-primary"></i></button>
-						  </div>	
+					 </div>
+					 </div>
+					 <div id="divAddButton" class="col-md-2" style="display:none">
+						<button type="button" id="btnDynamicRow0" onclick="appendDynamicUploaRow()" class="btn btm-sm"><i class="fa fa-plus text-primary"></i></button>
+				  </div>
 				  </div>
 				</div>
 			</div>					          	
@@ -196,11 +201,13 @@
           </div>		
 	</div>	<!--  popup code end  -->
 	</form>	
+	<div class="comMask"></div>
 		<script>
 		
 			 // Import Document PopUp
 			$(".uploadForm").click(function(){
 				$("#uploadCanDocPop").fadeIn(100);
+				$(".comMask").fadeIn(100);
 
                  var allowMultiple = $(this).closest('tr').attr("allowMultpleDocs");
 				$("#uploadIdSave").val($(this).closest('tr').attr("docid"));
@@ -254,6 +261,7 @@ function uploadRerqDocsList(id) {
 function removeDocPopUp12(){
 	$(".popMask").fadeOut(200);
 	$("#uploadCanDocPop").fadeOut(100);
+	$(".comMask").fadeOut(100);
 }
 
 function removeDocPopUp(){
@@ -271,19 +279,29 @@ var rowId =1;
 function prepareDynamicUploadRow(rowId){
 	
 	  var dynamicUploadRowHtml = "";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<div class='clearfix'></div>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<div id='dynamicRow"+rowId+"' class='mt clearfix'>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<label class='col-md-2'>File<span class='text-danger'>&nbsp;*</span></label>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<div class='col-md-10'>";
 	  
-	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<div id='dynamicRow"+rowId+"' class='col-sm-12 noPad mt clearfix'>";
-	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<label class='col-md-4 padding_left'>File<span class='text-danger'>&nbsp;*</span></label>";
-	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<div class='col-md-8 padding_right'>";
-	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	<div class='input-group col-md-12' style='margin:0 auto'>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<div class='row'>";
+
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<div class='col-md-10 paddingRight'>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	<div class='input-group'>";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	<label class='input-group-btn'> <span class='btn btn-primary' onchange='uploadRerqDocsList("+rowId+")'><i class='fa fa-folder-open-o'></i>&nbsp;Browse File";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	<input type='file' style='display:none'; onchange='uploadBtnFilesList(" + rowId + ");' multiple id='uploadBtn"+rowId+"'  class='upload'>";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"		  </span> </label>";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"		<input type='text' class='form-control' readonly id='uploadFile"+rowId+"' name = 'docFile"+rowId+"' placeholder='Upload Resume ...'>";
-	  dynamicUploadRowHtml =dynamicUploadRowHtml+"				 <div id='divAddButton' class='col-md-4'>";
-	  dynamicUploadRowHtml =dynamicUploadRowHtml+"		  		<button type='button' id='btnDynamicRow"+rowId+"'onclick='appendDynamicUploaRow()' class='btn btm-sm'><i class='fa fa-plus text-primary'></i></button>";
-	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	 <div class='col-md-4'><button type='button' class='btn btm-sm' id='btnDynamicRow"+rowId+"' onclick='removeDynamicUploaRow("+rowId+")' ><i class='fa fa-remove text-danger'></i></button></div>";
-	  dynamicUploadRowHtml =dynamicUploadRowHtml+"			  </div>	";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"			  </div>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"			  </div>";
+	  
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"				 <div id='divAddButton' class='col-md-2'>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<button type='button' class='btn btm-sm' id='btnDynamicRow"+rowId+"' onclick='removeDynamicUploaRow("+rowId+")' ><i class='fa fa-remove text-danger'></i></button>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"			  </div>";
+	  
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"			  </div>";
+	  
+	  
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	  </div>"; 
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	  </div>";
 	  console.log(dynamicUploadRowHtml);
