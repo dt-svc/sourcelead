@@ -295,7 +295,7 @@
                 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
             }
         });
-        table.column(6).visible(false);
+        table.column(8).visible(false);
         $("#dynamicTemplateListTbl").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
 
         $("#immiTemplateSerach").keyup(function (e) {
@@ -304,6 +304,6 @@
             }
         });
 
-        $("table").colResizable(); // for resizing columns in tables.
+       // $("table").colResizable(); // for resizing columns in tables.
     }
 </script>
