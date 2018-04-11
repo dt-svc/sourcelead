@@ -43,7 +43,7 @@
 </div> -->
         <div class="addImmiContent clearfix">
             <div class="immigraTabsHead">
-                <a href="javascript:void(0)"  onclick="getAssignToUsersList();" id="addTask"><i class="glyphicon glyphicon-plus"></i> Add Task</a> 
+                <a href="javascript:void(0)"  onclick="getAssignToUsersList(null);" id="addTask"><i class="glyphicon glyphicon-plus"></i> Add Task</a> 
                 <span><input id="immigraListTabSerach" class="immigraTabSerach" placeholder="Subject/Priority/Repeat type="text"></span>
             </div>	
             <div id="immigrationTempDynamicTaskList" class="project_wrap_table datatable_filter">
@@ -431,8 +431,8 @@
             url: sourceleadUrl + "/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",
             success: function (json) {
                 var result = "";
-                for (var i = 0; i < json.length; i++) {
-                    var report = json[i];
+                for (var i = 0; i < json.data.length; i++) {
+                    var report = json.data[i];
                     $('#petitionAssignedTo1 option[value="' + report.userId + '"]').remove();
                     $('#petitionAssignedTo1')
                             .append($("<option></option>")

@@ -315,9 +315,9 @@ public class ImmigrationRestController {
         try {
             if (status.equalsIgnoreCase("templateDetails")) {
                 ImmigrationTemplateDTO dto = (ImmigrationTemplateDTO) request.getSession().getAttribute("templateDTO");
-                List<Countries> countryList = countriesService.getAllCountries();
+                //List<Countries> countryList = countriesService.getAllCountries();
                 //List<LookUpData> petitionTypeList = immigrationTemplateService.getLookupDataByType(Constants.PETITION_TYPE);
-                model.addObject("countriesList", countryList);
+                //model.addObject("countriesList", countryList);
                 //model.addObject("petitionTypeList", petitionTypeList);
                 model.addObject("templateDTO", dto);
                 model.setViewName("/immigration/petitionTemplateDetails");
@@ -450,9 +450,9 @@ public class ImmigrationRestController {
             model.addObject("sourceleadUrl", sourceleadUrl);
             if (forwardTo.equalsIgnoreCase("tempDetails")) {
                 model.setViewName("/immigration/petitionTemplateDetails");
-                List<Countries> countryList = countriesService.getAllCountries();
+                //List<Countries> countryList = countriesService.getAllCountries();
                 //List<LookUpData> petitionTypeList = immigrationTemplateService.getLookupDataByType(Constants.PETITION_TYPE);
-                model.addObject("countriesList", countryList);
+                //model.addObject("countriesList", countryList);
                 //model.addObject("petitionTypeList", petitionTypeList);
             } else if (forwardTo.equalsIgnoreCase("docDetails")) {
                 List<LookUpData> educationsList = null;
@@ -1217,7 +1217,7 @@ public class ImmigrationRestController {
 	
 	@RequestMapping(value = {"/getPetitionTypeOnLocation"})
     public List<LookUpData> getPetitionTypeOnLocation(@RequestParam(value="locationVal", required=false) String  locationVal, HttpServletRequest request) {
-        List<LookUpData> petitionTypeDTOs = immigrationTemplateService.getLookupDataByTypeAndLocation(Constants.PETITION_TYPE,locationVal);
+        List<LookUpData> petitionTypeDTOs = immigrationTemplateService.getLookupDataByTypeAndLocation(Constants.VISA,locationVal);
         return petitionTypeDTOs;
 	}
 	

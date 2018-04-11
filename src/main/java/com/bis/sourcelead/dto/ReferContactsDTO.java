@@ -3,14 +3,18 @@ package com.bis.sourcelead.dto;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class ReferContactsDTO {
 
 	 private Long id;
 	 
+	 @Required(desc = "first name")
 	 private String firstName;
 	 
 	 private String lastName;
 	 
+	 @Required(desc = "email")
 	 private String email;
 	 
 	 private String phone;
