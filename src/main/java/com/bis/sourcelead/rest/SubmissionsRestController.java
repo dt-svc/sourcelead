@@ -773,37 +773,50 @@ public class SubmissionsRestController {
 
 
 	@RequestMapping(value = "/app/rejectApplicant")
-	public @ResponseBody String rejectApplicant(ApplicantRejectBackOutDTO applicantRejectBackOutDTO, @RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request) throws Exception
+	public @ResponseBody Response<String> rejectApplicant(ApplicantRejectBackOutDTO applicantRejectBackOutDTO, @RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request) throws Exception
 
 	{
-		
+		Response<String> response = new Response<>();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
-		// to update submission history
-		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-		requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().toString());
-		requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.REJECTED.toString());
-		// to update Submission status
-		requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
-		if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getReasonForReject())) {
-			requirementSubmission.setRejectedReason(applicantRejectBackOutDTO.getReasonForReject());
+		if(user != null) {
+			try {
+				RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+				// to update submission history
+				RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+				requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().toString());
+				requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.REJECTED.toString());
+				// to update Submission status
+				requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
+				if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getReasonForReject())) {
+					requirementSubmission.setRejectedReason(applicantRejectBackOutDTO.getReasonForReject());
+				}
+				if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getRejectedCategory())) {
+					requirementSubmission.setRejectedCategoryType(applicantRejectBackOutDTO.getRejectedCategory());
+				}
+				if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getRejectedCategoryOther())) {
+					requirementSubmission.setRejectedCategoryOther(applicantRejectBackOutDTO.getRejectedCategoryOther());
+				}
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+				requirementSubmission.setUpdatedBy(user.getUserCode());
+				StringBuilder sb = new StringBuilder();
+				requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+				requirementSubmission.setUpdatedDate(new Date());
+				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+				requirementSubmissionService.sendRejectionMailToVendorContact(user, requirementSubmission.getRejectedReason(), submissionId, orgLocations);
+				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+				response.setObject("success");
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			}catch(Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
-		if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getRejectedCategory())) {
-			requirementSubmission.setRejectedCategoryType(applicantRejectBackOutDTO.getRejectedCategory());
-		}
-		if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getRejectedCategoryOther())) {
-			requirementSubmission.setRejectedCategoryOther(applicantRejectBackOutDTO.getRejectedCategoryOther());
-		}
-		requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
-		requirementSubmission.setUpdatedBy(user.getUserCode());
-		StringBuilder sb = new StringBuilder();
-		requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-		requirementSubmission.setUpdatedDate(new Date());
-		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-		 requirementSubmissionService.sendRejectionMailToVendorContact(user, requirementSubmission.getRejectedReason(), submissionId, orgLocations);
-		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
-		return "success";
+		return response;
 	}
 	
 	// vendors mail sending the private method
