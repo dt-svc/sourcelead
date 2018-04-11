@@ -59,7 +59,7 @@ public class SourceLeadRandomCodeHelper {
 	}
 	
 	public static String generateRandomTransactionOrderId() {
-		String UUID = RandomStringUtils.randomAlphanumeric(20);
+		String UUID = RandomStringUtils.randomNumeric(8);
 		return UUID;
 	}
 }
