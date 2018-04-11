@@ -883,7 +883,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	}
 
 	public ResponseList<ImmigrationListViewDTO> getImmigrationsList(ImmigrationListViewDTO immigrationListDTO,
-			String searchValue,  OrgLocations orgLocations) {
+			String searchValue,  OrgLocations orgLocations)  throws Exception{
 		   ResponseList<ImmigrationListViewDTO> immigartionList = immigrationCommonDao.getImmigrationsList(immigrationListDTO, searchValue, orgLocations);
 		return immigartionList;
 	}

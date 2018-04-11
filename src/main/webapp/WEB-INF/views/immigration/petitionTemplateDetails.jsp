@@ -30,10 +30,13 @@
                             <label class="col-md-3">Country<span class="text-danger paddingLeft">*</span></label>
                            	<div class="col-md-8 padding_right">
 								<select class="chosen-select form-control" name="country" onchange="getPetitionTypeOnCountries($(this), null);" id= "countryName" field-name="Country" data-validation="required">
-								<option value="" selected>--Select Country--</option>
-								  <c:forEach var="country"  items="${countriesList}">
-									<option value="${country.name}" ${templateDTO.country == country.name ? 'selected' : ''} >${country.name}</option>
-								</c:forEach>
+									<option value="">--Select Country--</option>
+									<option value="Singapore" ${templateDTO.country == 'Singapore' ? 'selected' : ''}>Singapore</option>
+									<option value="Canada" ${templateDTO.country == 'Canada' ? 'selected' : ''}>Canada</option>
+									<option value="United States" ${templateDTO.country == 'United States' ? 'selected' : 'selected'}>United States</option>
+									<option value="Australia" ${templateDTO.country == 'Australia' ? 'selected' : ''}>Australia</option>
+									<option value="India" ${templateDTO.country == 'India' ? 'selected' : ''}>India</option>
+									<option value="United Kingdom" ${templateDTO.country == 'United Kingdom' ? 'selected' : ''}>United Kingdom</option>
 								</select>
 							</div>
                         </div> 
