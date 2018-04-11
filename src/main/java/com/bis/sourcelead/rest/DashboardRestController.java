@@ -34,6 +34,7 @@ import com.bis.sourcelead.dto.EventsDTO;
 import com.bis.sourcelead.dto.ExpensesAndTimesheetDashBordCountDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.RestrictDayDTO;
 import com.bis.sourcelead.dto.TimesheetExpenseEntryDetailsUtilDTO;
@@ -58,6 +59,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ExpensesApproverHierarchyService;
@@ -449,78 +451,90 @@ public class DashboardRestController {
 	 
 	 @PreAuthorize("hasRole('ROLE_VIEW_REQUIREMENT')")
 	 @RequestMapping(value = "/getAssignedRequirementListByOrgLocationIDAndUserId")
-	 public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,HttpServletRequest request) throws Exception {
-
+	 public ResponseList<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,HttpServletRequest request) throws Exception {
+		ResponseList<Requirement> response = new ResponseList<>();
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		
-		String userCode = user.getUserCode();
-		String userType = null;
-		List<Requirement>   requirementList = null;
-		
-		if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
-			userType = Constants.ADMIN;
-			//requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
-			requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode);
-		}else{
-			//requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
-			requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode);
-		}
-		
-		//List<Requirement>   requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
-		for(Requirement requirement : requirementList){
-			/*if(requirement.getClientId() != null){
-				requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
-			}*/
-			//changed ny prasad salina
-			if(requirement.getClientId() != null){
-				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
-					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
-					requirement.setOrgRelationUUID(requirement.getClientId().getUUID());
+		if(user != null) {
+			try {
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				
+				String userCode = user.getUserCode();
+				String userType = null;
+				List<Requirement>   requirementList = null;
+				
+				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+					userType = Constants.ADMIN;
+					//requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
+					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode);
+				}else{
+					//requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
+					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode);
 				}
-				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
-					requirement.setClientName(requirement.getClientId().getLocationId().getOrgLocationName());
-					requirement.setOrgRelationUUID(requirement.getClientId().getUUID());
+				
+				//List<Requirement>   requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
+				for(Requirement requirement : requirementList){
+					/*if(requirement.getClientId() != null){
+						requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
+					}*/
+					//changed ny prasad salina
+					if(requirement.getClientId() != null){
+						if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
+							requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
+							requirement.setOrgRelationUUID(requirement.getClientId().getUUID());
+						}
+						if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+							requirement.setClientName(requirement.getClientId().getLocationId().getOrgLocationName());
+							requirement.setOrgRelationUUID(requirement.getClientId().getUUID());
+						}
+					}
+					
+					Integer requirementAssignToListCount = requirementAssignToService.getRequirementAssignToListCountByRequirementId(requirement.getId());
+		    		requirement.setAssignedMembersCount(requirementAssignToListCount.toString());
+					
+					int applicantsCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "APPLICANTS");
+					int shortlistedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "SHORTLISTED");
+					int submittedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "SUBMITTED");
+					int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "INTERVIEWED");
+					int offeredCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "OFFERED");
+					
+					requirement.setNoOfApplicants(String.valueOf(applicantsCount));
+					requirement.setNoOfShortlistedApplicants(String.valueOf(shortlistedCount));
+					requirement.setNoOfSubmittedApplicants(String.valueOf(submittedCount));
+					requirement.setNoOfInterviewedApplicants(String.valueOf(interviewedCount));
+					requirement.setNoOfOfferedApplicants(String.valueOf(offeredCount));
+					
+					if(null != requirement.getReleasedBy() && !"".equalsIgnoreCase(requirement.getReleasedBy())){
+						List<Long> userId = new ArrayList<Long>();
+						for (String s : requirement.getReleasedBy().split(",")){
+							userId.add(Long.parseLong(s));
+						 }
+						boolean flag = userId.contains(user.getId());
+			     		if(flag == true){
+			     			requirement.setIsRequirementReleasedByuser("Y");
+			     		}else{
+			     			requirement.setIsRequirementReleasedByuser("N");
+			     		}
+			     		
+			     		
+			     		if(userRole.equalsIgnoreCase("ROLE_ADMIN") || userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
+		         			requirement.setIsRequirementReleasedByuser("Y");
+		         		}
+					}
 				}
+				response.setData(requirementList);
+			    response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			}catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
 			}
-			
-			Integer requirementAssignToListCount = requirementAssignToService.getRequirementAssignToListCountByRequirementId(requirement.getId());
-    		requirement.setAssignedMembersCount(requirementAssignToListCount.toString());
-			
-			int applicantsCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "APPLICANTS");
-			int shortlistedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "SHORTLISTED");
-			int submittedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "SUBMITTED");
-			int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "INTERVIEWED");
-			int offeredCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "OFFERED");
-			
-			requirement.setNoOfApplicants(String.valueOf(applicantsCount));
-			requirement.setNoOfShortlistedApplicants(String.valueOf(shortlistedCount));
-			requirement.setNoOfSubmittedApplicants(String.valueOf(submittedCount));
-			requirement.setNoOfInterviewedApplicants(String.valueOf(interviewedCount));
-			requirement.setNoOfOfferedApplicants(String.valueOf(offeredCount));
-			
-			if(null != requirement.getReleasedBy() && !"".equalsIgnoreCase(requirement.getReleasedBy())){
-				List<Long> userId = new ArrayList<Long>();
-				for (String s : requirement.getReleasedBy().split(",")){
-					userId.add(Long.parseLong(s));
-				 }
-				boolean flag = userId.contains(user.getId());
-	     		if(flag == true){
-	     			requirement.setIsRequirementReleasedByuser("Y");
-	     		}else{
-	     			requirement.setIsRequirementReleasedByuser("N");
-	     		}
-	     		
-	     		
-	     		if(userRole.equalsIgnoreCase("ROLE_ADMIN") || userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
-         			requirement.setIsRequirementReleasedByuser("Y");
-         		}
-			}
-
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
-		
-		return requirementList;
+		//return requirementList;
+		return response;
 	 }
 	 
 	 /**
@@ -533,81 +547,92 @@ public class DashboardRestController {
 	  */
 	
 	 @RequestMapping(value = "/getRequirementSubmissionsCount" , method = RequestMethod.GET)
-	 public String  getRequirementSubmissionsCount(@RequestParam(value="daterange", required=false) String daterange,HttpServletRequest request) throws Exception {
-		
-		String resultJson;
+	 public Response<DashboardCounts>  getRequirementSubmissionsCount(@RequestParam(value="daterange", required=false) String daterange,HttpServletRequest request) throws Exception {
+		 Response<DashboardCounts> response = new Response<>();
 	    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		DashboardCounts dc= new DashboardCounts();
 		Timezone timezone = null;
 		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
-		if(loginOrgLocations.getTimezone() != null){
-			timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
+		if(user != null) {
+			try {
+				if(loginOrgLocations.getTimezone() != null){
+					timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
+				}
+				String userType = null;
+				Date startUTCDate = null;
+				Date endUTCDate = null;
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
+				 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd 23:59:59");
+				if("today".equals(daterange)){
+					 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+					 String customStartTimeStr = outputFormatter.print(zoned);
+					 startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+					 String endDate = outputFormatter1.print(zoned);
+					 Date endDateString = TZ_DF_TS.parse(endDate);
+					 endUTCDate = endDateString;
+					 	/*old logic*/
+					/* DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
+					 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+					 String startDate = outputFormatter.print(zoned);
+					 String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
+					 startUTCDate = TZ_DF_TS.parse(startDateString);
+					 String endDate = outputFormatter1.print(zoned);
+					 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
+					 endUTCDate = TZ_DF_TS.parse(endDateString);*/
+				}else{
+					 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+					 String customStartTimeStr = outputFormatter.print(zoned);
+					 startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+					 /*old logic*/
+					 /*DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
+					 String startDate = outputFormatter.print(zoned);
+					 String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
+					 startUTCDate = TZ_DF_TS.parse(startDateString);*/
+				}
+				
+				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+					userType = Constants.ADMIN;
+				} 
+				
+				int toDayReqSubmissionscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMIT_TO_CLIENT",daterange,userType,user,startUTCDate,endUTCDate);
+				//int previousReqSubmissionscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION","previous");
+				
+				int toDayReqApplicantscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION",daterange,userType,user,startUTCDate,endUTCDate);
+				//int previousReqApplicantscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION","previous");
+			   
+				int toDayReqInterviewscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"INTERVIEW",daterange,userType,user,startUTCDate,endUTCDate);
+			    //  int previousReqInterviewscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"INTERVIEW","previous");
+			   
+			    int toDayReqOfferscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"OFFERMADE",daterange,userType,user,startUTCDate,endUTCDate);
+			    // int previousReqOfferscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"OFFERMADE","previous");
+				
+			    dc.setSubmissionCount(toDayReqSubmissionscount);
+			    //dc.setSubmissionCount(previousReqSubmissionscount);
+			    
+			    dc.setApplicantsCount(toDayReqApplicantscount);
+			   // dc.setApplicantsCount(previousReqApplicantscount);
+			    
+			    dc.setInterviewsCount(toDayReqInterviewscount);
+			   // dc.setInterviewsCount(previousReqInterviewscount);
+			    
+			    dc.setOffersCount(toDayReqOfferscount);
+			   // dc.setOffersCount(previousReqOfferscount);
+			   
+			    response.setObject(dc);
+			    response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			}catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
-		String userType = null;
-		Date startUTCDate = null;
-		Date endUTCDate = null;
-		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-		 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
-		 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd 23:59:59");
-		if("today".equals(daterange)){
-			 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-			 String customStartTimeStr = outputFormatter.print(zoned);
-			 startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
-			 String endDate = outputFormatter1.print(zoned);
-			 Date endDateString = TZ_DF_TS.parse(endDate);
-			 endUTCDate = endDateString;
-			 	/*old logic*/
-			/* DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-			 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
-			 String startDate = outputFormatter.print(zoned);
-			 String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
-			 startUTCDate = TZ_DF_TS.parse(startDateString);
-			 String endDate = outputFormatter1.print(zoned);
-			 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
-			 endUTCDate = TZ_DF_TS.parse(endDateString);*/
-		}else{
-			 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-			 String customStartTimeStr = outputFormatter.print(zoned);
-			 startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
-			 /*old logic*/
-			 /*DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-			 String startDate = outputFormatter.print(zoned);
-			 String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
-			 startUTCDate = TZ_DF_TS.parse(startDateString);*/
-		}
-		
-		if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
-			userType = Constants.ADMIN;
-		} 
-		
-		int toDayReqSubmissionscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMIT_TO_CLIENT",daterange,userType,user,startUTCDate,endUTCDate);
-		//int previousReqSubmissionscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION","previous");
-		
-		int toDayReqApplicantscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION",daterange,userType,user,startUTCDate,endUTCDate);
-		//int previousReqApplicantscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"SUBMISSION","previous");
-	   
-		int toDayReqInterviewscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"INTERVIEW",daterange,userType,user,startUTCDate,endUTCDate);
-	    //  int previousReqInterviewscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"INTERVIEW","previous");
-	   
-	    int toDayReqOfferscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"OFFERMADE",daterange,userType,user,startUTCDate,endUTCDate);
-	    // int previousReqOfferscount = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),"OFFERMADE","previous");
-		
-	    dc.setSubmissionCount(toDayReqSubmissionscount);
-	    //dc.setSubmissionCount(previousReqSubmissionscount);
-	    
-	    dc.setApplicantsCount(toDayReqApplicantscount);
-	   // dc.setApplicantsCount(previousReqApplicantscount);
-	    
-	    dc.setInterviewsCount(toDayReqInterviewscount);
-	   // dc.setInterviewsCount(previousReqInterviewscount);
-	    
-	    dc.setOffersCount(toDayReqOfferscount);
-	   // dc.setOffersCount(previousReqOfferscount);
-	   
-	    resultJson = commonUtil.toJSON(dc);
-		return resultJson;
+		return response;
 	   }
 
 	 
