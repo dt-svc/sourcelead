@@ -30,21 +30,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.WhiteListIpAddressDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CompanyRegistrationDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
-import com.bis.sourcelead.dto.OrglocationSignatoryDTO;
+import com.bis.sourcelead.dto.OrgSettingsDTO;
 import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.dto.SourceleadRolesDTO;
 import com.bis.sourcelead.dto.WhiteListIPAddressDTO;
-import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrglocationSignatory;
@@ -52,6 +52,7 @@ import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SourceleadSignature;
+import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.WhiteListIPAddress;
@@ -59,6 +60,7 @@ import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.ModulesService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
@@ -67,6 +69,7 @@ import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.SourceleadSignatureService;
+import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.WhiteListIpAddressService;
@@ -111,6 +114,10 @@ public class OrgSettingsRestController {
 	private ExpensesService expensesService;
 	@Autowired
 	private AddExpensesService addExpensesService;
+	@Autowired
+	OrgLicenseSubscriptionService orgLicenseSubscriptionService;
+	@Autowired
+	TabsService tabsService;
 
 	@Autowired
 	UserService userService;
@@ -133,7 +140,7 @@ public class OrgSettingsRestController {
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/app/saveOrgSettings", method = RequestMethod.POST)
-	public String saveOrgSettings(CompanyRegistrationDTO companyRegistrationDTO, HttpServletRequest request) throws Exception
+	public String saveOrgSettings(OrgSettingsDTO orgSettingsDTO, HttpServletRequest request) throws Exception
 	{
 		/*
 		 * Iterator<String> itrator = request.getFileNames(); MultipartFile
@@ -142,7 +149,7 @@ public class OrgSettingsRestController {
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelMapper mapper1 = new ModelMapper();
-		OrgSettings orgSettings = mapper1.map(companyRegistrationDTO, OrgSettings.class);
+		OrgSettings orgSettings = mapper1.map(orgSettingsDTO, OrgSettings.class);
 		try {
 			// org = orgService.saveOrgSettings(orgSettings, multiFile, org);
 			orgLocations = orgLocationService.saveOrgLocations(orgSettings, orgLocations);
@@ -882,5 +889,56 @@ public class OrgSettingsRestController {
 		}
 		return "failed";
 	}
+	
+	
+	
+	@RequestMapping(value = "/app/orgLicenseSubscriptionList")
+	public ModelAndView orgLicenseSubscriptionList(HttpServletRequest request) throws Exception
+	{
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		commonUtil.highLightMenu(Constants.OrgSettings, request);
+		List<OrgLicenseSubscription> orgLicenseSubscriptionList = new ArrayList<>();
+		List<OrgLicenseSubscription> licenseSubscriptionList =  orgLicenseSubscriptionService.getOrgLicenseSubscriptionByOrgId(org.getId());
+		if(licenseSubscriptionList != null && !licenseSubscriptionList.isEmpty()) {
+			
+			for(OrgLicenseSubscription subscription :licenseSubscriptionList ) {
+				List<Long> tabIdsList = new ArrayList<>();
+				String[] subscribedTabsList = subscription.getSubscriptionTabs().split(",");
+				for(int i=0; i<subscribedTabsList.length; i++) {
+			    	tabIdsList.add(Long.parseLong(subscribedTabsList[i]));
+			    }
+				
+				List<Tabs> tabsList = tabsService.getTabsListByIds(tabIdsList);
+				List<String> registeredTabs = new ArrayList<>();
+				if(tabsList != null && !tabsList.isEmpty()) {
+					for(Tabs tabs : tabsList) {
+						registeredTabs.add(tabs.getTabName());
+					}
+				}
+				subscription.setModulesList(registeredTabs);
+				
+				
+				if(subscription.getFromDate() != null) {
+					subscription.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),subscription.getFromDate()));
+				}
+				
+				if(subscription.getToDate() != null) {
+					subscription.setToDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),subscription.getToDate()));
+				}
+				
+				orgLicenseSubscriptionList.add(subscription);
+			}
+	
+		}
+		
+		model.setViewName("orgLicenseSubscriptionList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("orgLicenseSubscriptionList", orgLicenseSubscriptionList);
+		
+		return model;
+	}
+	
 
 }

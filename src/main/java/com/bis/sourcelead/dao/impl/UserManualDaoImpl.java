@@ -53,7 +53,7 @@ public class UserManualDaoImpl implements UserManualDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public void storeUserManuals(UserManualLevelOne userManualLevelOne) throws Exception {
+	public UserManualLevelOne storeUserManuals(UserManualLevelOne userManualLevelOne) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		
@@ -66,12 +66,12 @@ public class UserManualDaoImpl implements UserManualDao {
 		    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"userManualLevelOne"));
 			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 	}
-		
+		return userManualLevelOne;
 	}
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public void storeUserManualstwo(UserManualLevelTwo userManualLevelTwo) throws Exception {
+	public UserManualLevelTwo storeUserManualstwo(UserManualLevelTwo userManualLevelTwo) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		
@@ -84,6 +84,7 @@ public class UserManualDaoImpl implements UserManualDao {
 		    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"userManualLevelTwo"));
 			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 	}
+		return userManualLevelTwo;
 		
 	}
 	
@@ -411,7 +412,7 @@ public class UserManualDaoImpl implements UserManualDao {
 
 	@Override
 	@Transactional
-	public void deleteUserManualThree(UserManualLevelThree userManualLevelThree) throws Exception{
+	public UserManualLevelThree deleteUserManualThree(UserManualLevelThree userManualLevelThree) throws Exception{
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		try {
@@ -423,12 +424,13 @@ public class UserManualDaoImpl implements UserManualDao {
 		    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"userManualLevelThree"));
 			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
+		return userManualLevelThree;
 
 	}
 
 	@Override
 	@Transactional
-	public void deleteUserManualTwo(UserManualLevelTwo userManualLevelTwo) throws Exception {
+	public UserManualLevelTwo deleteUserManualTwo(UserManualLevelTwo userManualLevelTwo) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		try {
@@ -440,12 +442,13 @@ public class UserManualDaoImpl implements UserManualDao {
 		    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"userManualLevelTwo"));
 			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
+		return userManualLevelTwo;
 		
 	}
 
 	@Override
 	@Transactional
-	public void deleteUserManualOne(UserManualLevelOne UserManualLevelOne) throws Exception {
+	public UserManualLevelOne deleteUserManualOne(UserManualLevelOne UserManualLevelOne) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		try {
@@ -457,6 +460,7 @@ public class UserManualDaoImpl implements UserManualDao {
 		    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"UserManualLevelOne"));
 			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
+		return UserManualLevelOne;
 		
 	}
 
@@ -487,7 +491,7 @@ public class UserManualDaoImpl implements UserManualDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public void deleteUserManualAttachments(UserManualAttachment UserManualAttachments) throws Exception{
+	public UserManualAttachment deleteUserManualAttachments(UserManualAttachment UserManualAttachments) throws Exception{
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		try {
@@ -499,7 +503,7 @@ public class UserManualDaoImpl implements UserManualDao {
 		    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"UserManualAttachments"));
 			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
-
+		return UserManualAttachments;
 		
 	}
 	

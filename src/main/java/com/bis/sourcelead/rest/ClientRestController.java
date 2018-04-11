@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ReferContactsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
@@ -63,6 +64,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -200,6 +202,9 @@ public class ClientRestController {
 	
 	@Autowired
 	private RequirementLocationsService requirementLocationsService;
+	
+	@Autowired
+	ReferContactsDao referContactsDao;
 	
 	/**
 	 * Handles to get Orgs
@@ -593,6 +598,7 @@ public class ClientRestController {
 	@PreAuthorize("hasAnyRole('ROLE_DELETE_CLIENT_CONTACT','ROLE_DELETE_VENDOR_CONTACT')")
 	 @RequestMapping(value = "/terminateSpoc", method = RequestMethod.POST)
 	 public @ResponseBody String terminateSpoc(@RequestParam(value = "spocId", required = false) Long spocId,
+			 @RequestParam(value = "spocEmail", required = false) String spocEmail,
 			 @RequestParam(value="reason", required=false) String reason,
 			 @RequestParam(value="userId", required=false) String userId,
 			 @RequestParam(value="orgLocationId", required=false) String orgLocationId,
@@ -603,6 +609,19 @@ public class ClientRestController {
 					orgSpoc.setTerminateReason(reason);
 					orgSpocService.addOrgSpoc(orgSpoc);
 					logger.debug("Spoc was terminated");
+					
+				ReferContacts referContacts=referContactsDao.getReferContactsByEmails(Long.parseLong(userId), spocEmail);
+				
+				if(referContacts !=null){
+					referContacts.setUpdatedDate(new Date());
+					if(responderType.equalsIgnoreCase("client")){
+						referContacts.setClientType(0);
+					}else{
+						referContacts.setVendorType(0);
+					}
+					referContactsDao.addReferContacts(referContacts);
+				}
+				
 					List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgSpoc.getOrgRelations().getId(), Long.parseLong(userId), Long.parseLong(orgLocationId), responderType);
 					ClientVendorIndex clientVendorIndex = new ClientVendorIndex();
 					clientVendorIndex.setNoContacts((long)orgSpocsList.size());
@@ -675,6 +694,26 @@ public class ClientRestController {
 	        			 notifications.setUserNotificationStatus("Accepted");
 						 notificationsService.saveNotification(notifications);
 	        		}
+	        		
+	        		
+					 if(loginUser != orgSpoc.getVendorUser()){
+						 
+						 ReferContacts referContact=referContactsDao.getReferContactsByEmails(loginUser.getId(), orgSpoc.getVendorUser().getEmail());
+						 if(referContact ==null){
+							 ReferContacts referContacts=new ReferContacts();
+							 referContacts.setReferFromUser(orgSpoc.getClientUser());
+							 referContacts.setFirstName(orgSpoc.getVendorUser().getFirstName());
+							 referContacts.setLastName(orgSpoc.getVendorUser().getLastName());
+							 referContacts.setContactUserEmail(orgSpoc.getVendorUser().getEmail());
+							 referContacts.setContactUserPhone(orgSpoc.getVendorUser().getMobilePhone());
+							 referContacts.setContactUser(orgSpoc.getVendorUser());
+							 referContacts.setVendorType(1);
+							 referContacts.setCreatedDate(new Date());
+							 referContacts.setCreatedBy(loginUser.getUserCode());
+							 referContactsDao.addReferContacts(referContacts);
+						 }
+						
+					 }
 	        		
 	        		SourceLeadSessionManager.setSessionAttribute(request, "acceptContact","Success !! Accepted the invitation.");
 	        	}else if(invitationStaus != null && "Rejected".equals(invitationStaus)){

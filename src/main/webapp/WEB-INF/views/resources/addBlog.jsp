@@ -6,6 +6,7 @@
 
 <link href="/resources/css/summernote-new.css" rel="stylesheet" type="text/css">
 
+
 <div class="wraper">
 <!-- Content Area -->
 <section class="content-wraper">
@@ -122,7 +123,7 @@
 			<div class="form-group row">
 				<label class="col-md-12">Description <span class="text-danger paddingLeft">&nbsp;*</span></label>
 				<div class="col-md-12">
-					<textarea rows="2" class="form-control" name="description" id="summernote" field-name="Description" field-name="Description" data-validation="required">${sourceleadBlog.description}</textarea>
+					<textarea rows="2" class="form-control"  name="description" id="summernote" field-name="Description" field-name="Description" data-validation="required">${sourceleadBlog.description}</textarea>
 					<div id="editor"></div>
 				</div>
 			</div>  
@@ -152,10 +153,20 @@ function saveBlog(saveType) {
 	if ($('#add_blog_form').validate(false, validationSettings)) {
 	  	var formData = $($('#add_blog_form')[0]).serialize();
 		$("#blogLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.post(sourceleadUrl+"/addBlog?"+tokenParamName+"="+tokenValue+"&blogUUID="+blogUUID+"&blogStatus="+saveType, formData, function(data) {
-			if(data == true){
+		$.post(sourceleadUrl+"/addBlog?"+tokenParamName+"="+tokenValue+"&blogUUID="+blogUUID+"&blogStatus="+saveType, formData, function(result) {
+			if (result && result.response === "INVALID_DATA") {
+				$("#blogLoading").hide();
+			    showError(result.responseMessage);
+			} else if (result.response === "AWKWARD") {
+			    location.href = "/errorPage";
+			} else if (result.response === "SUCCESS") {
 				location.replace(sourceleadUrl+ "/blogs");
+			} else if (result.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+			    showError("Operation failed, please try again");
 			}
+			
 		}); 
 		return true;
 		} else {
@@ -217,12 +228,24 @@ function removeBlogImg(blogId){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/deleteBlogImg?"+tokenParamName+"="+tokenValue+"&blogId="+blogId, 	   
-		    success: function(data) {
-		    	$("#uploadImgNameDiv").hide();
-		     	$("#uploadImgGroup123").show();
-		     	$("#uploadExisitngFile").val('');
-		     	$('#uploadFile').attr("data-validation-optional","true"); 
-		     	$("#uploadFile").attr("data-validation", "validatedoc"); 
+		    success: function(result) {
+		    	
+		    	 if (result && result.response === "INVALID_DATA") {
+					    showError(result.responseMessage);
+					} else if (result.response === "AWKWARD") {
+					    location.href = "/errorPage";
+					} else if (result.response === "SUCCESS") {
+						$("#uploadImgNameDiv").hide();
+				     	$("#uploadImgGroup123").show();
+				     	$("#uploadExisitngFile").val('');
+				     	$('#uploadFile').attr("data-validation-optional","true"); 
+				     	$("#uploadFile").attr("data-validation", "validateimage"); 
+					} else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+					    showError("Operation failed, please try again");
+					}
+		    	
 		    },
 		    });		
 	
@@ -265,6 +288,16 @@ function validateBlogTitle(blogUUID){
 </script>  
 <script src="/resources/js/summernote.min.js"></script>
 <script>
+$(function() { 
+  setTimeout(function () {
+    var description = '${sourceleadBlog.description}';
+	 $("textarea[name=description]").val(description);
+	 $('.note-editable').html(description);
+	
+	}, 100); 
+});
+</script>
+<script>
 $(function() {
 	$('#summernote').summernote();
     $('.note-editable').find('p').remove();
@@ -274,3 +307,4 @@ $(function() {
 	
 });
 </script>
+

@@ -3,14 +3,18 @@ package com.bis.sourcelead.dto;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class ReferContactsDTO {
 
 	 private Long id;
 	 
+	 @Required(desc = "first name")
 	 private String firstName;
 	 
 	 private String lastName;
 	 
+	 @Required(desc = "email")
 	 private String email;
 	 
 	 private String phone;
@@ -38,6 +42,10 @@ public class ReferContactsDTO {
 	 private int length;
 	 
 	 List<String> groupsList;
+	 
+	 private String contactType;
+	 
+	 private String companyName;
 
 	public String getFirstName()
 	{
@@ -190,5 +198,21 @@ public class ReferContactsDTO {
 	{
 		this.groupIdsList = groupIdsList;
 	}
-	 
+
+	public String getContactType() {
+		return contactType;
+	}
+
+	public void setContactType(String contactType) {
+		this.contactType = contactType;
+	}
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+	
 }

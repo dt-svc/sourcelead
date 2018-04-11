@@ -183,6 +183,7 @@ function getExpensesList(dateSearch){
 	    	 $("#expensesListDiv").empty();
 			 $("#expensesListDiv").append(data);
 			 $("#loadingId").removeAttr('style');
+			 $("#temp").val('temp');
 			 preparePaginationEmployee(1);
 	  		}
 		});
@@ -452,7 +453,7 @@ function getEditExpense(eId){
 </script>
 
 <script>
-function exportToPdf(type){                                                                        
+function exportToPdf(type){    
 	var temp = $("#temp").val();
 	if(temp != null && temp != ''){
 		var expenseStatus = [];
