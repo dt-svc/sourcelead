@@ -466,18 +466,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String isLoginUserAsInitiator;
 	
 	@Transient
+	@JsonProperty
 	private String mailBody;
 	
 	@Transient
+	@JsonProperty
 	private String submitToClientFromMailId;
 	
 	@Transient
+	@JsonProperty
 	private String submitToClientToMailId;
 	
 	@Transient
+	@JsonProperty
 	private String submitToClientMailSubject;
 	
 	@Transient
+	@JsonProperty
 	private Integer totalApplicantsForRequirement;
 	
 	@Transient
@@ -485,6 +490,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String approvedBy;
 	
 	@Transient
+	@JsonProperty
 	private String createdByName;
 	
 	@Transient

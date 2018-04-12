@@ -70,48 +70,56 @@ left:0;
 		$.ajax({
 	    	type: "POST",
 	    	url : sourceleadUrl+"/getInterviewFeedbackTemplatesList?"+tokenParamName+"="+tokenValue+"", 
-	        success: function(json) {
-				var result = "";
-				result = result +"<table id='templatePagination' class='display' cellspacing='0' width='100%' >"; 
-	        	result = result +'<thead>';
-	        	result = result +'<tr>';
-	        	result = result + '<th>Template Name</th>';
-	            result = result + '<th>Description</th>';
-	            result = result + '<th style="width:100px;">Action</th>';
-	        	result = result +'</tr>';
-	        	result = result +'</thead>';
-	        	result = result +'<tbody>';
-
-	        	for (var i=0; i<json.length; i++)
-				  {	        		
-	        		var opt = json[i];
-	        		result = result + '<tr>';
-	                result = result + '<td><div><span class="mid-span">'+opt.templateName+'</span></a></div></td>';
-	                result = result + '<td><div class="tbldata-dotdot" title="'+opt.description+'"><span class="mid-span">'+opt.description+'</span></div></td>';
-	                result = result + '<td><div>';
-	                 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE\')">' 
-	                    result = result + '<a href="javascript:void(0)" onclick="viewInterviewFeedbackTemplate('+opt.id+',\''+opt.templateName+'\')">View</a>&nbsp;|&nbsp;';
-	                 '</sec:authorize>';
-	                 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE\')">'
-	                    result = result + '<a href="javascript:void(0)" >View</a>&nbsp;|&nbsp;';
-	                 '</sec:authorize>'; 
-	                    
-                    '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE\')">' 
-	                    result = result + '&nbsp;<a href="javascript:void(0)" onclick="addSubmissionTemplateFields('+opt.id+',\''+opt.templateName+'\')">Edit</a>';
-	                    result = result + '<input type="hidden" name="description" id="description'+opt.id+'" value="'+opt.description+'" >';
-                    '</sec:authorize>';
-                    '<sec:authorize access="!hasAnyRole(\'ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE\')">'
-                    result = result + '&nbsp;<a href="javascript:void(0)">Edit</a>';
-                  '</sec:authorize>'; 
-	                result = result +'</div></td>';
-	                result = result + '	 </tr>';
-				}  
-	        		
-	        	result = result +'</tbody>';
-	        	result = result +"</table>";
-    	       $("#clientSubmissionTemplateList").append(result); 
-    	       templatepagination();
-    	  
+	        success: function(data) {
+	        	if (data.response === "FAILED") {
+  		    		showError(data.responseMessage);
+  		    	} else if (data.response === "AWKWARD") {
+  		    		location.href = "/errorPage";
+  		    	} else if (data.response === "SUCCESS") {
+  		    		var json = data.data;
+					var result = "";
+					result = result +"<table id='templatePagination' class='display' cellspacing='0' width='100%' >"; 
+		        	result = result +'<thead>';
+		        	result = result +'<tr>';
+		        	result = result + '<th>Template Name</th>';
+		            result = result + '<th>Description</th>';
+		            result = result + '<th style="width:100px;">Action</th>';
+		        	result = result +'</tr>';
+		        	result = result +'</thead>';
+		        	result = result +'<tbody>';
+	
+		        	for (var i=0; i<json.length; i++)
+					  {	        		
+		        		var opt = json[i];
+		        		result = result + '<tr>';
+		                result = result + '<td><div><span class="mid-span">'+opt.templateName+'</span></a></div></td>';
+		                result = result + '<td><div class="tbldata-dotdot" title="'+opt.description+'"><span class="mid-span">'+opt.description+'</span></div></td>';
+		                result = result + '<td><div>';
+		                 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE\')">' 
+		                    result = result + '<a href="javascript:void(0)" onclick="viewInterviewFeedbackTemplate('+opt.id+',\''+opt.templateName+'\')">View</a>&nbsp;|&nbsp;';
+		                 '</sec:authorize>';
+		                 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE\')">'
+		                    result = result + '<a href="javascript:void(0)" >View</a>&nbsp;|&nbsp;';
+		                 '</sec:authorize>'; 
+		                    
+	                    '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE\')">' 
+		                    result = result + '&nbsp;<a href="javascript:void(0)" onclick="addSubmissionTemplateFields('+opt.id+',\''+opt.templateName+'\')">Edit</a>';
+		                    result = result + '<input type="hidden" name="description" id="description'+opt.id+'" value="'+opt.description+'" >';
+	                    '</sec:authorize>';
+	                    '<sec:authorize access="!hasAnyRole(\'ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE\')">'
+	                    result = result + '&nbsp;<a href="javascript:void(0)">Edit</a>';
+	                  '</sec:authorize>'; 
+		                result = result +'</div></td>';
+		                result = result + '	 </tr>';
+					}  
+		        		
+		        	result = result +'</tbody>';
+		        	result = result +"</table>";
+	    	       $("#clientSubmissionTemplateList").append(result); 
+	    	       templatepagination();
+  		    	}else {
+		    		showError("Operation failed, please try again");
+		    	}
 	        },
 	    });
 	}
