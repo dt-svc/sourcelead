@@ -12,15 +12,12 @@ public class TimesheetEntriesDTO implements Serializable{
 	
     private TimesheetTaskDTO timesheetTaskDTO;
     
-    @Required(desc = "dayOfTheDate")
     private String dayOfTheDate;
     
-    @Required(desc = "date")
     private String date;
     
     private boolean editable;
     
-    @Required(desc = "hours")
     private String hours;
     
     private String comments;

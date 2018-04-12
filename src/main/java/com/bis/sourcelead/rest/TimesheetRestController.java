@@ -2092,25 +2092,12 @@ public class TimesheetRestController {
     	 */
     	ModelAndView model = new ModelAndView();
     	try {
-    		if(Validator.validate(tedDTO)) {
-    			if(Validator.validate(tedDTO.getTimesheetSubmission())) {
-    			for( TimesheetTaskDTO timesheetTask: tedDTO.getTimesheetSubmission().getTimesheetTaskList()) {
-    				for( TimesheetEntriesDTO timesheetEntries: tedDTO.getTimesheetSubmission().getTimesheetEntries()) {
-	    					if(Validator.validate(timesheetTask)) {
-		    					if(Validator.validate(timesheetEntries)) {
-		        					tedDTO =saveTimesheetEntries(tedDTO, request);
-		    				         model.addObject("timesheetSubmissionDTO",tedDTO.getTimesheetSubmission());
-		    				         LinkedHashMap<Long, LinkedList<TimesheetEntriesDTO>> entriesMap = getEntriesMapForDisplayWeb(tedDTO.getTimesheetSubmission(),request);
-		    				    	 model.addObject("entriesMap",entriesMap);
-		    				         model.addObject("timesheetEntryDetailsDTO",tedDTO);
-		    				    	 model.setViewName("timesheet/timeSheetSubmission");
-		    				    }
-	    					}
-    						
-    					}
-    				}
-    			}
-    		}
+    		 tedDTO =saveTimesheetEntries(tedDTO, request);
+	         model.addObject("timesheetSubmissionDTO",tedDTO.getTimesheetSubmission());
+	         LinkedHashMap<Long, LinkedList<TimesheetEntriesDTO>> entriesMap = getEntriesMapForDisplayWeb(tedDTO.getTimesheetSubmission(),request);
+	    	 model.addObject("entriesMap",entriesMap);
+	         model.addObject("timesheetEntryDetailsDTO",tedDTO);
+	    	 model.setViewName("timesheet/timeSheetSubmission");
     	}catch(Exception e) {
     		model.addObject("AWKWARD", true);
 			model.setViewName("timesheet/timeSheetSubmission");
