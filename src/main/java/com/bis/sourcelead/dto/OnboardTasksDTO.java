@@ -17,15 +17,17 @@ public class OnboardTasksDTO implements Serializable {
 	  
 	  private String templateId;
 	  
+	  @Required(desc="assignedToType")
 	  private String assignedToType;
 	  
-	  @Required(desc = "taskName", dependsOn = "assignedToType", parentValue = "Level-3")
+	  @Required(desc = "taskName", dependsOn = "assignedToType", parentValue = "Associate")
 	  private String onboardAssignedTo;
 	  
 	  private String taskPriority;
 	  
 	  private String taskRepeat;
 	  
+	  @Required(desc="taskMonths")
 	  private String taskMonths;
 	  
 	  private String taskDays;

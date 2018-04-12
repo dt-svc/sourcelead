@@ -161,16 +161,19 @@ public class CandidateOnBoardRestController {
 		Response<OnBoardingTemplate> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			if (user != null) {
+			if (user != null && Validator.validate(onBoardingTemplateDTO)) {
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				OnBoardingTemplate onBoardingTemplate = onBoardingTemplateService.getOnBoardTemplateDetails(onBoardingTemplateDTO, user,
 						orgLocations);
 				response.setObject(onBoardingTemplate);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
-			} else {
+			} else if(user == null) {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}else{
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
 			}
 		} catch (Exception e) {
 			response.setResponse(Result.AWKWARD.name());
@@ -400,14 +403,14 @@ public class CandidateOnBoardRestController {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return responseList;
-	}
+	} 
 
 	@RequestMapping(value = "/saveOnBoardTasks", method = RequestMethod.POST)
 	public @ResponseBody Response<String> saveOnBoardTasks(OnboardTasksDTO onboardTasksDTO, HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			if (user != null) {
+			if (user != null && Validator.validate(onboardTasksDTO)) {
 				OnboardTasks onboardTasks = new OnboardTasks();
 				if (StringUtils.isNotBlank(onboardTasksDTO.getTaskName())) {
 					onboardTasks.setTaskName(onboardTasksDTO.getTaskName());
@@ -465,19 +468,29 @@ public class CandidateOnBoardRestController {
 				onboardTasks.setUpdatedDate(CommonUtil.currentDate());
 				onboardTasks.setUpdatedBy(user.getUserCode());
 
-				onboardTasksService.saveOnboardTasks(onboardTasks);
-				response.setResponse(Result.SUCCESS.name());
-				response.setResponseMessage(Result.SUCCESS.getValue());
-			} else {
+				OnboardTasks tasks=onboardTasksService.saveOnboardTasks(onboardTasks);
+				
+				if(tasks != null){
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}else {
+					response.setResponse(Result.FAILED.name());
+					response.setResponseMessage(Result.FAILED.getValue());
+				}
+				
+			} else if(user == null) {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
 			}
 		} catch (Exception e) {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		return response;
+ 		return response;
 	}
 
 	@RequestMapping(value = { "/getOnboardTasksListByTemplateId", "/rest/getOnboardTasksListByTemplateId" }, method = RequestMethod.POST)
@@ -539,21 +552,36 @@ public class CandidateOnBoardRestController {
 		return responseList;
 	}
 
+	@SuppressWarnings("unused")
 	@RequestMapping(value = "/saveAndFinishOnboardTemplate", method = RequestMethod.POST)
 	@ResponseBody
 	Response<String> saveAndFinishOnboardTemplate(@RequestParam(value = "templateId", required = false) Long templateId,
 			HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();
 		try {
-			OnBoardingTemplate template = onBoardingTemplateService.getOnBoardingTemplateById(templateId);
-			if (null != template) {
-				template.setTemplateStatus("Finished");
-				onBoardingTemplateService.saveOnBoardingTemplate(template);
-				SourceLeadSessionManager.setSessionAttribute(request, "OnboardCreateMsg", "Success!! New OnBoard Template created");
-			} else {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if(user != null){
+				OnBoardingTemplate template = onBoardingTemplateService.getOnBoardingTemplateById(templateId);
+				if (null != template) {
+					template.setTemplateStatus("Finished");
+					OnBoardingTemplate temp=onBoardingTemplateService.saveOnBoardingTemplate(template);
+					SourceLeadSessionManager.setSessionAttribute(request, "OnboardCreateMsg", "Success!! New OnBoard Template created");
+					if(temp != null){
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					}else {
+						response.setResponse(Result.FAILED.name());
+						response.setResponseMessage(Result.FAILED.getValue());
+					}
+				} 
+			}else if(user == null){
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}else {
 				response.setResponse(Result.INVALID_DATA.name());
 				response.setResponseMessage(Result.INVALID_DATA.getValue());
 			}
+			
 		} catch (Exception e) {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
