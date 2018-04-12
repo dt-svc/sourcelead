@@ -197,7 +197,7 @@ public class ExpensesRestController {
         }
         response.setData(expensesDTOList);
         response.setRecordsFiltered(expensesList.getRecordsFiltered());
-        response.setRecordsTotal(expensesList.getRecordsTotal());
+        response.setRecordsTotal(expensesList.getData().size());
         return response;
     }	
 	
