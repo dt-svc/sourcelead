@@ -197,13 +197,17 @@ function getCustomDates(){
 			$.ajax({ 
 				   	type: "GET",
 				 	url: sourceleadUrl+"/getApplicantBySourceDetails?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection+"&fromDate="+fromDate+"&toDate="+toDate,
-				    success: function(json) {
-				    	
-				        	if(json.length > 0)	
+				    success: function(response) {
+				    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+			    		    showError(response.responseMessage);
+			    	  	} else if (response.response === "AWKWARD") {
+			    		    location.href = "/errorPage";
+			    		} else if (response.response === "SUCCESS") {
+			    			if(response.data.length > 0)	
 				 	   		{
 				        		    var chartData = [];
-									for(var i=0; i < json.length ; i++){
-				        			 var applicantSource = json[i];
+									for(var i=0; i < response.data.length ; i++){
+				        			 var applicantSource = response.data[i];
 				        			 
 				        			    chartData.push( {
 				        			    	category: applicantSource.category,
@@ -234,7 +238,7 @@ function getCustomDates(){
 				        		 
 				        		 var listView = document.getElementById("listView");
 					        	 listView.addEventListener("click", function() {
-									 getListView(json);
+									 getListView(response);
 								  });
 					        	 
 					        	 var graphicView = document.getElementById("graphicView");
@@ -248,9 +252,13 @@ function getCustomDates(){
 				 	   	        $("#applicantSource").empty();
 				                $("#applicantSource").append(result);
 				 	   		}
-				        	
-				        	 
-			        	
+			    			
+			    		}else if (response.indexOf('Sign In') !== -1) {
+			    			location.replace(sourceleadUrl);
+			    		} else {
+			    		    showError("Operation failed, please try again");
+			    		}
+			    		
 			        },
 			        error: function(e){
 			        }
@@ -453,8 +461,8 @@ function getCustomDates(){
  </script> 
 
  <script>
- function getListView(json){
-	 if(json.length > 0)	
+ function getListView(response){
+	 if(response.data.length > 0)	
  		{
 		 var result = "";
 		 result = result +"<div class='clearfix tableStyles mt'>"; 
@@ -474,8 +482,8 @@ function getCustomDates(){
          result = result +"  </tr>"; 
          result = result +"</thead>";
          result = result +"<tbody>"; 
-			 for(var i=0; i < json.length ; i++){
-				 var applicantSource = json[i];
+			 for(var i=0; i < response.data.length ; i++){
+				 var applicantSource = response.data[i];
 				 
 	   					
 				 result = result +"<tr>"; 
