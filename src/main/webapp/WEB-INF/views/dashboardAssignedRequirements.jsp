@@ -64,7 +64,13 @@ function requirementList(){
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getAssignedRequirementListByOrgLocationIDAndUserId?${_csrf.parameterName}=${_csrf.token}",    
-            success :function(json) {
+            success :function(data) {
+            	if (data.response === "FAILED") {
+		    		showError(data.responseMessage);
+		    	} else if (data.response === "AWKWARD") {
+		    		location.href = "/errorPage";
+		    	} else if (data.response === "SUCCESS") {
+            	 var json = data.data;
                  if(json != null && json != 'undefined' && json != "" && json != '[]'){
 			    	     $("#requirementList").removeAttr("style");
 	                	 $("#requirementList").empty();
@@ -219,9 +225,13 @@ function requirementList(){
 								$(".side_mask").fadeOut(200);
 								$("body").css('overflow-y', 'auto');
 						 });	
-			 			 
 	                     pagination(); 
-                 }
+                 	}
+		    	}else if (data.indexOf('Sign In') !== -1) {
+		    		location.replace(sourceleadUrl);
+		    	} else {
+		    		showError("Operation failed, please try again");
+		    	}
           },
             
        }); 

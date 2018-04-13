@@ -481,6 +481,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private Integer totalApplicantsForRequirement;
 	
 	@Transient
+	@JsonProperty
 	private String approvedBy;
 	
 	@Transient

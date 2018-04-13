@@ -29,11 +29,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AssetDao;
+import com.bis.sourcelead.dto.AssetCategoryDTO;
 import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
+import com.bis.sourcelead.dto.ReferContactsDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Asset;
@@ -44,9 +48,10 @@ import com.bis.sourcelead.entity.BoJmpcTrans;
 import com.bis.sourcelead.entity.BoUploadedFiles;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.SourceleadBlogs;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.AssetCustomFieldService;
 import com.bis.sourcelead.service.AssetService;
@@ -468,7 +473,7 @@ public class BackOfficeRestController {
 	@RequestMapping(value = "/getAssetDynamicList")
 	@ResponseBody
 	public ResponseList<Asset> getAssetDynamicList(AssetDTO assetDTO,HttpServletRequest request) throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		/*OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String[] tableColumns = {"slno", "assetCategory", "model", "shiftAEmployee","shiftBEmployee","workingStatus"};
 	    int sortColumnIndex = 1; //by default sorting using updated date
 		String sortColumnOrder = "asc"; //by default descending order
@@ -479,7 +484,40 @@ public class BackOfficeRestController {
 		assetDTO.setSortColumn(tableColumns[sortColumnIndex]);
 		assetDTO.setSortOrder(sortColumnOrder);
 		ResponseList<Asset> assetList = assetService.getDynamicAssetFilterListByLocationId(orgLocations.getId(), assetDTO);
-		return assetList;
+		return assetList;*/
+		
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+  		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		ResponseList<Asset> responseList = new ResponseList<>();
+		try {
+			
+			if (user != null && orgLocations != null) {
+				
+				String[] tableColumns = {"slno", "assetCategory", "model", "shiftAEmployee","shiftBEmployee","workingStatus"};
+		    int sortColumnIndex = 1; //by default sorting using updated date
+			String sortColumnOrder = "asc"; //by default referContactsDTO order
+			if(assetDTO.getOrder() != null && !assetDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(assetDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = assetDTO.getOrder().get(0).get("dir");
+			}
+			assetDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			assetDTO.setSortOrder(sortColumnOrder);
+			responseList = assetService.getDynamicAssetFilterListByLocationId(orgLocations.getId(), assetDTO);
+			responseList.setResponse(Result.SUCCESS.name());
+			responseList.setResponseMessage(Result.SUCCESS.getValue());
+			}else {
+				
+			responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+			responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			
+			}
+		} catch (Exception e) {
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return responseList;
 	}
 	
 	/**
@@ -508,13 +546,32 @@ public class BackOfficeRestController {
 	  * To remove Asset Management
 	  */
 	 @RequestMapping(value = "/removeAssetManagement", method = RequestMethod.POST)
-	 @ResponseBody String removeAssetManagement(@RequestParam(value = "assetId", required = false) Long assetId) throws Exception {
-	       Asset asset = assetService.getAssetById(assetId);
-           if(asset != null){
-				asset.setStatus(Constants.RECORD_INACTIVE);
-				assetService.saveAsset(asset);
+	 @ResponseBody  Response<String> removeAssetManagement(@RequestParam(value = "assetId", required = false) Long assetId,HttpServletRequest request) throws Exception {
+		 
+		    Response<String> response = new Response<>();
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			try {
+				if (loginUser != null) {
+					Asset asset = assetService.getAssetById(assetId);
+					if(asset != null){
+						asset.setStatus(Constants.RECORD_INACTIVE);
+						assetService.saveAsset(asset);
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					}else {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());	
+				}
+				}else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());	
+				}
+			}catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
-			return "success";
+			return response;
 	 }
 	
 	/**
@@ -539,6 +596,7 @@ public class BackOfficeRestController {
 		if(asset.getAssetCategory() != null){
 			assetDTO.setCategoryName(asset.getAssetCategory().getCategoryName());	
 			assetDTO.setCategoryId(asset.getAssetCategory().getId().toString());
+			assetDTO.setCatagoryHiddenId(asset.getAssetCategory().getId());
 			
 			if(asset.getShiftAEmployee() != null){
 			assetDTO.setShiftAEmployee(asset.getShiftAEmployee().getId().toString());
@@ -636,19 +694,36 @@ public class BackOfficeRestController {
 	
 
 	@RequestMapping(value = "/saveCategory", method = RequestMethod.POST)
-	 @ResponseBody String saveCategory(@RequestParam(value = "json", required = false) String json,
+	 @ResponseBody Response<String> saveCategory(AssetCategoryDTO assetCategoryDTO,
 			 @RequestParam(value = "categoryId", required = false) String categoryId,
 			 @RequestParam(value = "catLocationId", required = false) String catLocationId,
 			HttpServletRequest request) throws Exception {
-
-		String json1 = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json1);
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		assetCategoryService.addAssetCategory(jsonObj,orgLocation,user,categoryId,catLocationId);
-			return "success";
 		
-		
+			Response<String> response = new Response<>();
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			try {
+				if (user != null && orgLocation != null) {
+	
+					if (Validator.validate(assetCategoryDTO)) {
+						assetCategoryService.addAssetCategory(assetCategoryDTO,orgLocation,user,categoryId,catLocationId);
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					} else {
+						response.setResponse(Result.INVALID_DATA.name());
+						response.setResponseMessage(Result.INVALID_DATA.getValue());
+					}
+	
+				} else {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+			return response;
 	} 
 	
 	@RequestMapping(value = "/getCategoryById")
@@ -662,18 +737,35 @@ public class BackOfficeRestController {
 		}
 
 	@RequestMapping(value = "/addCategoryAssets" , method = RequestMethod.POST)
-	   public String addCategoryAssets(AssetDTO assetDTO,@RequestParam(value="assetId", required=false) String assetId,HttpServletRequest request) throws Exception {
+	   public Response<String> addCategoryAssets(AssetDTO assetDTO,@RequestParam(value="assetId", required=false) String assetId,HttpServletRequest request) throws Exception {
 			
-		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		    assetDTO.setStaticPath(staticPath);
-		    /*String json1 = "{" + json + "}";
-			JSONObject jsonObj = new JSONObject(json1);*/
-		    assetDTO.setDateFormat(orgLocations.getDateFormat());
-			assetService.saveAssetDetails(assetDTO, assetId, user, orgLocations);
-			
-		
-		   return "home";
+		Response<String> response = new Response<>();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		try {
+			if (user != null && orgLocations != null) {
+
+				if (Validator.validate(assetDTO)) {
+					assetDTO.setStaticPath(staticPath);
+					assetDTO.setDateFormat(orgLocations.getDateFormat());
+					assetService.saveAssetDetails(assetDTO, assetId, user, orgLocations);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response; 
 	    
 	   }
 	
@@ -712,19 +804,39 @@ public class BackOfficeRestController {
 	    
 	   }
 	
-	
 	@RequestMapping(value = "/terminateCategory", method = RequestMethod.GET)
-	 @ResponseBody String terminateCategory(@RequestParam(value = "categoryId", required = false) String categoryId,
+	 @ResponseBody Response<String> terminateCategory(@RequestParam(value = "categoryId", required = false) String categoryId,
 			HttpServletRequest request) throws Exception {
-
+		
+		Response<String> response = new Response<>();
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		AssetCategory assetCategory = assetCategoryService.getAssetCategoryListByLocationIdAndCatId(orgLocation.getId(),Long.parseLong(categoryId));
-		assetCategory.setId(Long.parseLong(categoryId));
-		assetCategory.setStatus(Integer.parseInt(Constants.MEMBER_IN_ACTIVE));
-		assetCategoryService.addAssetCategory(assetCategory);
-		return "success";
+		
+		try {
+			if (loginUser != null && orgLocation != null) {
+			if(categoryId != null) {
+				AssetCategory assetCategory = assetCategoryService.getAssetCategoryListByLocationIdAndCatId(orgLocation.getId(),Long.parseLong(categoryId));
+				assetCategory.setId(Long.parseLong(categoryId));
+				assetCategory.setStatus(Integer.parseInt(Constants.MEMBER_IN_ACTIVE));
+				assetCategoryService.addAssetCategory(assetCategory);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			}else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());	
+			}
+			}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());	
+			}
+		}catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		
+		return response;
 	} 
-	
 	
 	private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

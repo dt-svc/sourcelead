@@ -272,13 +272,13 @@ $(document).ready(function(){
   
   <script type="text/javascript">
   function storeAsset() {
-var validationSettings = {
-        errorMessagePosition : 'element',
-       borderColorOnError : '',
-		scrollToTopOnError : true,
-		dateFormat : 'yyyy/mm/dd' 
-   };  
-			if ($('#addAsset_form').validate(false, validationSettings)){
+			var validationSettings = {
+			        errorMessagePosition : 'element',
+			       borderColorOnError : '',
+					scrollToTopOnError : true,
+					dateFormat : 'yyyy/mm/dd' 
+			   };  
+			   if ($('#addAsset_form').validate(false, validationSettings)){
         	        var form = $('#addAsset_form')[0];
 	           		var formData = new FormData(form);
 	           		
@@ -293,9 +293,19 @@ var validationSettings = {
 		        	    dataType : 'json',
 	     		    	 url: sourceleadUrl+"/addCategoryAssets?"+tokenParamName+"="+tokenValue+"", 
 	     		        success: function(result) {
-	     		        	if(result == 'home'){
-	     	   	        	    location.replace(sourceleadUrl+ "/assetManagement");
-	     		        	}
+	     		        	
+	     		       	if (result && result.response === "INVALID_DATA") {
+						    showError(result.responseMessage);
+						    $("#loading").hide();
+						} else if (result.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (result.response === "SUCCESS") {
+							location.replace(sourceleadUrl+ "/assetManagement");
+						} else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
+						}
 	     			        
 	     		        },
 	     		    }); 
@@ -692,9 +702,20 @@ function removeAssetManagement(assetId){
 	 $.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/removeAssetManagement?"+tokenParamName+"="+tokenValue+"&assetId="+assetId,	    	   
-	    success: function(data) {
-	    	 var table = $('#assetManagementList').DataTable();
-  		     table.row("#asset"+assetId).remove().draw( false );
+	    success: function(result) {
+  			if (result && result.response === "INVALID_DATA") {
+			    showError(result.responseMessage);
+			} else if (result.response === "AWKWARD") {
+			    location.href = "/errorPage";
+			} else if (result.response === "SUCCESS") {
+				location.replace(sourceleadUrl + "/assetManagement");
+				/*  var table = $('#assetManagementList').DataTable();
+	  		     table.row("#asset"+assetId).remove().draw( false );  */
+			} else if (result.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+			    showError("Operation failed, please try again");
+			}
 	    }
    });
 }

@@ -1595,7 +1595,9 @@ public class TimesheetRestController {
 						if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
 							for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
 					    		 Date  k =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),entry.getKey().replaceAll("/", "-"));
-								try {
+								 if(actualStartDate.equals(k))
+									 continue;
+					    		 try {
 					    	    	Float  weekBillableHours = 0f;
 					    	    	if(sah.getWeekBillableHoursMap().get(k) != null){
 					    	    		weekBillableHours = sah.getWeekBillableHoursMap().get(k);
@@ -1620,6 +1622,17 @@ public class TimesheetRestController {
 					 tsDTO.setCurrentMonthBillableHours(Float.parseFloat(CommonUtil.getHoursDisplayFormat(monthBillableTotalHours)));
 					 tsDTO.setCurrentMonthNonBillableHours(Float.parseFloat(CommonUtil.getHoursDisplayFormat(monthNonBillableTotalHours)));
 					 tsDTO.setCurrentMonthTotalHours(Float.parseFloat(CommonUtil.getHoursDisplayFormat(monthTotalHours)));
+					 
+					 if(CalendarUtil.isGivenDateBetweenDateRange(actualStartDate, actualEndDate, monthStartDate)) {
+						 if(CalendarUtil.getDayOfTheDate(monthStartDate) != 1) {
+							 tsDTO.setIncrStartsFrom(CalendarUtil.getDayOfTheDate(monthStartDate)-1);
+						 }else {
+							 tsDTO.setIncrStartsFrom(7);
+						 }
+						
+					 }else {
+						 tsDTO.setIncrStartsFrom(1);
+					 }
 					 if(monthStartDate != null && monthEndDate != null) {
 					 LinkedHashSet<String> currentMonth  = CalendarUtil.getMonthStringsFromStartDateAndEndDate(monthStartDate, monthEndDate);
 					  String currentYear = CalendarUtil.getYearFromGivenDate(monthStartDate);
