@@ -102,11 +102,11 @@ public class UserProfileRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value =  {"/saveUserProfile","/rest/saveUserProfile"}, method = RequestMethod.POST)
-	public Response<String> saveUserProfile(AddUserProfileDTO addUserProfileDTO, HttpServletRequest request)
+	public Response<AddUserProfileDTO> saveUserProfile(AddUserProfileDTO addUserProfileDTO, HttpServletRequest request)
 			throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		Response<String> response=new Response<>();
+		Response<AddUserProfileDTO> response=new Response<>();
 		addUserProfileDTO.setStaticPath(staticPath);
 		if(user == null){
 			user = userService.getUserById(addUserProfileDTO.getUserId());
@@ -162,11 +162,11 @@ public class UserProfileRestController {
 					profileDTO.setDesignation(addUserProfileDTO.getDesignation());
 					profileDTO.setUserId(addUserProfileDTO.getUserId());
 					profileDTO.setOrgLocationId(addUserProfileDTO.getOrgLocationId());
+					response.setObject(profileDTO);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				}
 				else{
-					response.setObject("DataMissing");
 					response.setResponse(Result.INVALID_DATA.name());
 					response.setResponseMessage(Result.INVALID_DATA.getValue());
 				}
