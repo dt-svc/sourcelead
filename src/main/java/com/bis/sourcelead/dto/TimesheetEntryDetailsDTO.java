@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.annotations.Required;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
