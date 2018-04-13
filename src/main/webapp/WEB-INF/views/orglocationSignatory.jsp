@@ -368,11 +368,26 @@ function saveSignatory(){
          }; 
       var sourceleadUrl ='${sourceleadUrl}';
   	  var formData = $($('#signatory_form')[0]).serialize();
-  	$.post(sourceleadUrl+"/saveOrgLocationSignatory?"+tokenParamName+"="+tokenValue, formData, function(data) {
-		if(data == "success"){
-			getAllSignatory();
+  	$.post(sourceleadUrl+"/saveOrgLocationSignatory?"+tokenParamName+"="+tokenValue, formData, function(result) {
+  		if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+  		    showError(result.responseMessage);
+  		    $("#loading").removeAttr('style');
+  		}
+    	else if(result.response === "AWKWARD"){
+    		 location.href = "/errorPage";
+    	}
+    	else if(result.response === "SUCCESS"){
+    		$("#loading").removeAttr('style');
+    		getAllSignatory();
 			signatoryFormDiv();
 		}
+    	else if (result.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+			    showError("Operation failed, please try again");
+			    $("#loading").removeAttr('style');
+			}
+  		
 	}); 
     	  //saveOrgLocationSignatory(formData);
     
