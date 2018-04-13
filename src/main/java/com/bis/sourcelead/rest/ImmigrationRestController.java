@@ -633,6 +633,7 @@ public class ImmigrationRestController {
             response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());
 			response.setObject(immigrationId.toString());
+			templateDTO.setId(immigrationId);
         }else{
         	response.setObject("DataMissing");
 			response.setResponse(Result.INVALID_DATA.name());

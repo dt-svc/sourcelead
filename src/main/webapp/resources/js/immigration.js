@@ -152,10 +152,10 @@ function Immigration() {
                 data: formData,
                 processData: false,
                 contentType: false,
-                success: function (data) {
+                success: function (result) {
                     $(".popMask").fadeOut(200);
                     $("#taskViewPopup").fadeOut(100);
-                    if (data == 'success') {
+                    if (result.response === 'SUCCESS') {
                         $("#addNewPetitionTemplateDiv").empty();
                         $("#addNewPetitionTemplateDiv").load(sourceleadUrl + immiModulePath + "/gotoTemplatePreviousPage?status=taskList");
                     }
@@ -173,6 +173,8 @@ function Immigration() {
 
     this.editTemplateDetailsByRowId = function (templateId) {
         immTemplId = templateId; //updating global variable "immTemplId" with templateId.
+        alert("llll"+templateId);
+        alert("kkkk"+immTemplId);
         window.location.href = sourceleadUrl + immiModulePath + "/addNewPetitionTemplate?templateId=" + immTemplId; // for editing mode  
     }
 

@@ -52,7 +52,7 @@
 					   </div>
 					   <div class="row" id="customOther0" style="display:none;">
 						   	<div class="col-md-5">
-						   	<input type="text" id="otherType0" name="immigrationDocList[0].otherType" title='Name' class="form-control" placeholder="Name"  field-name="Name"  data-validation="validate_length length2-200" />
+						   	<input type="text" id="otherType0" name="immigrationDocList[0].otherType" title='Name' class="form-control" placeholder="Name"  field-name="Name"  data-validation="validate_length length2-200" data-validation-optional="true"/>
 						   	</div>
 						   	 <div class="col-md-7">
 						   	<input type="text" name="immigrationDocList[0].descriptionOther" id="description0" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
@@ -111,7 +111,7 @@
 					   </div>
 					   <div class="row" id="customOther${rows.count-1}" style="display:none;">
 						   	<div class="col-md-5">
-						   	<input type="text" id="otherType${rows.count-1}"    name="immigrationDocList[${rows.count-1}].otherType"  value ="" title='Name' class="form-control" placeholder="Name"  field-name="Name"  data-validation="validate_length length2-200" />
+						   	<input type="text" id="otherType${rows.count-1}"    name="immigrationDocList[${rows.count-1}].otherType"  value ="" title='Name' class="form-control" placeholder="Name"  field-name="Name" />
 						   	</div>
 						   	 <div class="col-md-7">
 						   <input type="text" name="immigrationDocList[${rows.count-1}].descriptionOther"   id="description${rows.count-1}" value ="" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
@@ -126,7 +126,7 @@
 					   </div>
 					   <div class="row" id="customOther${rows.count-1}" >
 						   	<div class="col-md-5">
-						   	<input type="text" id="otherType${rows.count-1}" name="immigrationDocList[${rows.count-1}].otherType"  value ="${items.otherType}" title='Name' class="form-control" placeholder="Name"  field-name="Name"  data-validation="validate_length length2-200" />
+						   	<input type="text" id="otherType${rows.count-1}" name="immigrationDocList[${rows.count-1}].otherType"  value ="${items.otherType}" title='Name' class="form-control" placeholder="Name"  field-name="Name"  data-validation="validate_length length2-200"  data-validation-optional="true"/>
 						   	</div>
 						   	 <div class="col-md-7">
 						   <input type="text" name="immigrationDocList[${rows.count-1}].descriptionOther" id="description${rows.count-1}"    value ="${items.descriptionOther}" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
@@ -273,6 +273,6 @@
 	
 	<script>
 	$(document).ready(function(){
-		$("#templateId").val(jsonObj.id);
+		$("#templateId").val(immTemplId);
 	});
 	</script>
