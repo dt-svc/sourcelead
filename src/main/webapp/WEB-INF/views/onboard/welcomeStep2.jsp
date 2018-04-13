@@ -363,7 +363,11 @@
 
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
   
-  
+  				<div class="location-alert alert alert-danger alert-dismissable zInPop" id="locationAlert">
+    <a href="#" class="loc-alertclose close">&times;</a>
+    <strong>Alert !</strong> <span>Your are not able to Save Required data is Missing.</span>
+  </div>
+  		  
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
   <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script> 
   <script src="/resources/js/moment.min.js?staticTime=${staticTime}"></script> 
@@ -388,6 +392,9 @@
 				$this.next().css({'width': '100%'});
 
 });
+			  $(".loc-alertclose").click(function(){
+					 $(".location-alert").fadeOut();
+				})		 
 </script> 
 
 <script src="/resources/js/formvalidator.js"></script>
@@ -518,7 +525,11 @@ function getOnBoardCandidateCities(country,state,city){
 		    	data: formData,
 		    	 url: sourceleadUrl+"/saveOnboardingCandidateStepDetails?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(response) {
-		        	if (response.response === "AWKWARD") {
+		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+      	    		    showError(response.responseMessage);
+      	    		    $("#loading").removeAttr('style');
+      	    		}
+		        	else if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
 		        	} else if (response.response === "SUCCESS") {
 		        		location.replace(sourceleadUrl+"/onboardingCandidateStep3");  
