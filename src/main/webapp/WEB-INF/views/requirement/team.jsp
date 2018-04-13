@@ -277,23 +277,8 @@ function storeEditedTeam(teamId){
 			$("#team_form").attr("disabled", "disabled");
 	       
 			$.post(sourceleadUrl+"/storeEditedTeam?"+tokenParamName+"="+tokenValue+"", formData, function(data) {
-				  
-				if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
-		        		showError(data.responseMessage);
-  	    		}
-            		else if (data.response === "AWKWARD") {
-            			location.href = "/errorPage";
-  	    		}
-            		else if(data.response === "SUCCESS"){
-            			sideBar(teamId);
-      				  	teamList();
-		        	    }
-            		else if (data.indexOf('Sign In') !== -1) {
-            			location.replace(sourceleadUrl);
-  				} else {
-  					showError("Operation failed, please try again");
-  				}
-				
+				  sideBar(teamId);
+				  teamList();
 	        });
 		   
 			return true; 
@@ -307,7 +292,7 @@ function storeEditedTeam(teamId){
 			$("#team_form").validateOnBlur(false, validationSettings);
 		});
 
-</script>   
+</script>  
 
 <script>
 function addTeam(){ 
@@ -693,7 +678,7 @@ function TeamMemberpagination(){
 
 <!--   Error Message   --> 
  
- <script>
+<script>
 function storeTeam(){
 	
 	   var validationSettings = {
@@ -714,25 +699,8 @@ function storeTeam(){
 	  		         processData: false,
 	  		         contentType:false, 
 					url : sourceleadUrl+ "/storeTeam?"+tokenParamName+"="+tokenValue+"",
-					success : function(data) {
-						
-						if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
-	 		        		showError(data.responseMessage);
-	      	    		}
-	                		else if (data.response === "AWKWARD") {
-	                			location.href = "/errorPage";
-	      	    		}
-	                		else if(data.response === "SUCCESS"){
-	                			location.replace(sourceleadUrl+"/team");
-				        	    }
-	                		else if (data.indexOf('Sign In') !== -1) {
-	                			location.replace(sourceleadUrl);
-	      				} else {
-	      					showError("Operation failed, please try again");
-	      				}
-						
-						
-						
+					success : function(result) {
+						location.replace(sourceleadUrl+"/team");
 
 					},
 				});
@@ -746,7 +714,7 @@ function storeTeam(){
 			$("#team_form").showHelpOnFocus();
 			$("#team_form").validateOnBlur(false, validationSettings);
 		});
-</script>   
+</script>     
 
 <script type="text/javascript">
 function getTeamOwners(){ 
