@@ -3,12 +3,8 @@
  */
 package com.bis.sourcelead.immigration.service.impl;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -21,33 +17,24 @@ import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.CandidateEmployerDTO;
 import com.bis.sourcelead.dto.FileInfo;
-import com.bis.sourcelead.dto.ImmigrationDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
+import com.bis.sourcelead.dto.ImmigrationTemplateTaskDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
-import com.bis.sourcelead.entity.CandidateIdendities;
-import com.bis.sourcelead.entity.CandidateLcaI94Summary;
-import com.bis.sourcelead.entity.CandidateResumes;
-import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
 import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.LookUpData;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgSpoc;
-import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-import com.itextpdf.text.log.SysoCounter;
 
 /**
  * @author Srinivas.Sabbu
@@ -145,7 +132,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
     }
 
     @Override
-    public void savePetitionTemplateTaskDetails(ImmigrationTemplateDTO templateDTO, User user) {
+    public void savePetitionTemplateTaskDetails(ImmigrationTemplateTaskDTO templateDTO, User user) {
 
         ImmigrationTemplate immiTemplate = new ImmigrationTemplate();
         immiTemplate.setId(templateDTO.getTemplateId());
@@ -265,17 +252,16 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
     }
 
     @Override
-    public ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO,
+    public ResponseList<ImmigrationTemplateTaskDTO> getTemplateTaskList(ImmigrationTemplateTaskDTO templateDTO,
             String searchValue) throws Exception {
-        ResponseList<ImmigrationTemplateDTO> responseList = immigrationTemplateDao.getTemplateTaskList(templateDTO,
-                searchValue);
+        ResponseList<ImmigrationTemplateTaskDTO> responseList = immigrationTemplateDao.getTemplateTaskList(templateDTO,searchValue);
         return responseList;
     }
 
     @Override
-    public ImmigrationTemplateDTO editImmigrationTaskList(String id) throws Exception {
+    public ImmigrationTemplateTaskDTO editImmigrationTaskList(String id) throws Exception {
         ImmigrationTemplateTasks templateTasks = immigrationTemplateDao.editImmigrationTaskList(id);
-        ImmigrationTemplateDTO templateDTO = new ImmigrationTemplateDTO();
+        ImmigrationTemplateTaskDTO templateDTO = new ImmigrationTemplateTaskDTO();
         if (templateTasks != null) {
             BeanUtils.copyProperties(templateTasks, templateDTO);
             templateDTO.setTemplateId(templateTasks.getImmigrationTempId().getId());

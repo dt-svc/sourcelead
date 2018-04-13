@@ -64,7 +64,10 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        immTemplId = '<c:out value ="${not empty templateDTO.id ? templateDTO.id : ''}"/>';
+    	//var immTemplId = $("#templateId").val(immTemplId);
+    	//var immTemplId = immTemplId;
+    	 immTemplId = '<c:out value ="${not empty templateDTO.id ? templateDTO.id : ''}"/>';
+
         getPetitionTypeOnCountries($("#countryName"),"${templateDTO.petitionType}");
     });
 </script>
