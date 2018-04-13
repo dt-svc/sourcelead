@@ -25,6 +25,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.ReferContactsDao;
+import com.bis.sourcelead.dto.OrgLocationDTO;
+import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.entity.EmailDomains;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Notifications;
@@ -441,14 +443,51 @@ public class RegistrationController {
 		}
 		
 		
+		
 		@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
-		@RequestMapping(value = "/app/getRegisteredOrgRoles", method = RequestMethod.POST)
-		public @ResponseBody String getReportingManager(
+		@RequestMapping(value = "/app/getOrgSubscribedCountries", method = RequestMethod.GET)
+		public @ResponseBody List<String> getOrgSubscribedCountries(
+				@RequestParam(value = "orgId", required = true) Long orgId,HttpServletRequest request) throws Exception {
+			List<String> countriesList = orgLicenseSubscriptionService.getOrgLicenseSubscribedCountriesByOrgId(orgId);
+			return countriesList;
+		}
+		
+		
+		@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+		@RequestMapping(value = "/app/getLocationEnrolledCompanies", method = RequestMethod.GET)
+		public @ResponseBody List<OrgLocationDTO> getLocationEnrolledCompanies(
+				@RequestParam(value = "orgId", required = true) Long orgId,@RequestParam(value = "country", required = true) String country,HttpServletRequest request) throws Exception {
+			List<OrgLocations> orgLocationsList = orgLocationService.getAllCurrentRegisteredOrgLocationsByOrgIdAndCountry(orgId, country);
+			List<OrgLocationDTO> orgLocationsDTOList = new ArrayList<>();
+			if(orgLocationsList != null && !orgLocationsList.isEmpty()) {
+				for(OrgLocations orgLocations : orgLocationsList) {
+					OrgLocationDTO orgLocationDTO = new OrgLocationDTO();
+					orgLocationDTO.setId(orgLocations.getId());
+					orgLocationDTO.setOrgName(orgLocations.getOrgLocationName());
+					orgLocationsDTOList.add(orgLocationDTO);
+				}
+			
+			}
+			return orgLocationsDTOList;
+		}
+		
+		
+		
+		@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+		@RequestMapping(value = "/app/getRegisteredOrgRoles", method = RequestMethod.GET)
+		public @ResponseBody List<RoleDTO> getRegisteredOrgRoles(
 				@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request) throws Exception {
-			String resultJson = null;
 			List<Roles> rolesList = roleService.getRoles(orgLocationId);
-			resultJson = commonUtil.toJSON(rolesList);
-			return resultJson;
+			List<RoleDTO> rolesDTOList = new ArrayList<>();
+			if(rolesList != null && !rolesList.isEmpty()) {
+				for(Roles roles : rolesList) {
+					RoleDTO rolesDTO = new RoleDTO();
+					rolesDTO.setId(roles.getId());
+					rolesDTO.setDisplayName(roles.getDisplayName());
+					rolesDTOList.add(rolesDTO);
+				}
+			}
+			return rolesDTOList;
 		}
 		
 		@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")

@@ -808,4 +808,9 @@ public void updateOrgBasedRoles(OrgLicenseSubscriptionDTO orgLicenseSubscription
 		return orgLicenseSubscriptionDao.getOrgLicenseSubscriptionByUUID(uuid);
 	}
 
+	@Override
+	public List<String> getOrgLicenseSubscribedCountriesByOrgId(Long orgId) throws Exception {
+		return orgLicenseSubscriptionDao.getOrgLicenseSubscribedCountriesByOrgId(orgId);
+	}
+
 }

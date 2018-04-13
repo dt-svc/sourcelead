@@ -8,8 +8,8 @@
 	         		<i class="fa fa-check-circle"></i><span>Mail Send Successfully.</span>
 		      </div>
 			 
-			 <div class="project_tabs_inn_table vendor_wrap_inn_table mt">
-			 <a href="javascript:void(0)" class="addcon-pop btn btn-sm btn-primary mb10" onclick="getRegisteredOrgRoles();"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add User</a>
+			 <div class="clearfix">
+			 <a href="javascript:void(0)" class="addcon-pop btn btn-sm btn-primary mb10" onclick="getOrgSubscribedCountries();"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add User</a>
 			 <!-- Popup Div -->
                     <div class="collapse-div-adduser orgsummaryuser-pop orgsummary-adduser col-md-4" id="addNewUserPopup"> <i class="fa fa-close close-div closediv-pop" onclick="flushUser();"></i>
                           <div class="form-horizontal clearfix">
@@ -17,9 +17,25 @@
                         <form:form id="adduser_form"  name="adduser_form" method="post">                             
                             
                             <div class="clearfix mb10">
+                              <div class="col-md-12" id="userRoleDiv">
+                                <select class="form-control chosen-select" data-validation="required" field-name="Country" id="subscribedCountry" onchange="getLocationRegisteredCompanies();">
+                                	 <option value="">-Select Country-</option>
+                                </select>
+                              </div>
+                            </div>
+                            
+                            
+                            <div class="clearfix mb10">
+                              <div class="col-md-12" id="userRoleDiv">
+                                <select class="form-control chosen-select" data-validation="required" field-name="Company" onchange="getRegisteredOrgRoles();" id="registeredLocation" name="registeredLocation">
+                                	 <option value="">-Select Company-</option>
+                                </select>
+                              </div>
+                            </div>
+                            
+                            <div class="clearfix mb10">
 	                              <div class="col-md-12" id="userEmailDiv">
-	                                <input type="text" data-validation="required validate_Space validate_length length2-100 validate_email"  field-name="Email" onblur="getUserByUserEmail(); validateUserEmail();" onKeyUp="validateUserEmail();"  name="email" id="email" class="form-control input-sm"  placeholder="Email*">
-	                              	<input type="hidden" name="registeredOrgLocationId" value="${registeredOrgLocationId}">
+	                                <input type="text" data-validation="required validate_Space validate_length length2-100 validate_email"  field-name="Email" onblur="getUserByUserEmail(); validateUserEmail();"  name="email" id="email" class="form-control input-sm"  placeholder="Email*">
 	                              	<input type="hidden" name="registredOrgId" value="${orgId}">
 	                              </div>
                               </div>
@@ -53,10 +69,72 @@
                         </div>
 				<!-- Popup Div --> 
 				
-			 <div id="userList"></div>
+			 <div id="userList" class="project_tabs_inn_table vendor_wrap_inn_table mt"></div>
 			 <div id="loading"></div>
 			 </div>
 			</div>
+			
+			
+			
+<script>
+
+function getOrgSubscribedCountries(){
+	 var orgId = '${orgId}';
+	 if(orgId != null && orgId != ""){
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getOrgSubscribedCountries?${_csrf.parameterName}=${_csrf.token}&orgId="+orgId, 
+		        success: function(json) {
+		        	var output = "";
+		        	output = output + "<option value=''>-- Select Country --</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt+ "'>"+opt+"</option>";
+					}
+		        	$("#subscribedCountry").empty();
+			        $("#subscribedCountry").append(output);
+			        $('#subscribedCountry').trigger("chosen:updated");
+		        },
+		    });
+	}
+	 
+}
+
+
+function getLocationRegisteredCompanies(){
+	 var country = document.getElementById("subscribedCountry").value; 
+	 var orgId = '${orgId}';
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 
+	 if(orgId != null && orgId != ""){
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getLocationEnrolledCompanies?${_csrf.parameterName}=${_csrf.token}&orgId="+orgId+"&country="+country, 
+		        success: function(json) {
+		        	var output = "";
+		        	output = output + "<option value=''>-- Select Company --</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.orgName+"</option>";
+					}
+		        	$("#registeredLocation").empty();
+			        $("#registeredLocation").append(output);
+			        $('#registeredLocation').trigger("chosen:updated");
+			        
+					$("#email").val('');
+			        
+				    $("#firstName").removeAttr("readonly");
+	       			$("#firstName").val('');
+	       			 
+	       			$("#lastName").removeAttr("readonly");
+	       			$("#lastName").val('');
+		        },
+		    });
+	}
+}
+</script>			
 			
 <script type="text/javascript">
  function getUserByUserEmail() {
@@ -254,7 +332,7 @@ function makeAsPrimaryAdmin(userId){
 	$("#choicepopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 	
-	var orgLocationId = '${registeredOrgLocationId}';
+	var orgLocationId = document.getElementById("registeredLocation").value;
 	var orgId = '${orgId}';
 	
 	$("#loading").attr('style','position:absolute; width:100%; height:450px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -328,9 +406,9 @@ $(".addcon-pop").click(function(){
 <script type="text/javascript">
  function validateUserEmail() {
 	 var emailId = document.getElementById("email").value; 
-	 var orgLocationId = '${registeredOrgLocationId}';
+	 var orgLocationId = document.getElementById("registeredLocation").value;
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 if(emailId != null && emailId != ""){
+	 if(emailId != null && emailId != "" && orgLocationId != "" && orgLocationId != null){
 		 $("#add_user").attr("disabled", "disabled");
 		 $.ajax({
 		    	type: "POST",
@@ -367,6 +445,7 @@ var validationSettings = {
 	          		
         		    var formData = getFormData('adduser_form');
 	          		var sourceleadUrl ='${sourceleadUrl}';
+	          		var registeredOrgLocationId = document.getElementById("registeredLocation").value;
 	          		
 	          		 $("#add_user").attr("disabled", "disabled");
 	          		 $("#userLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -374,7 +453,7 @@ var validationSettings = {
 	          	      $.ajax({
 	     		    	type: "POST",
 	     		    	data : formData,
-	     		    	 url: sourceleadUrl+"/createUesrBySourceleadAdmin?${_csrf.parameterName}=${_csrf.token}", 
+	     		    	 url: sourceleadUrl+"/createUesrBySourceleadAdmin?${_csrf.parameterName}=${_csrf.token}"+"&registeredOrgLocationId="+registeredOrgLocationId, 
 	     		        success: function(data) {
 	     		        	if(data != null && data != '' && data == 'success'){
 	     		        		$("#userLoading").removeAttr("style");
@@ -403,14 +482,12 @@ var validationSettings = {
 <script type="text/javascript">
  function getRegisteredOrgRoles() {
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 var orgLocationId = '${registeredOrgLocationId}';
-	 
-	 var orgId = '${orgId}';
-		 $.ajax({
-		    	type: "POST",
+	 var orgLocationId = document.getElementById("registeredLocation").value;
+	 if(orgLocationId != null && orgLocationId != '' && orgLocationId != 'undefined'){
+	 $.ajax({
+		    	type: "GET",
 		        url: sourceleadUrl+"/getRegisteredOrgRoles?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId, 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
 		        	var output = "";
 		        	output = output + "<option value=''>-- Select Role --</option>"; 
 		        	for (var i=0; i<json.length; i++)
@@ -423,7 +500,7 @@ var validationSettings = {
 			        $('#roleTypeId').trigger("chosen:updated");
 		        },
 		    });
-	
+	 }
  }
 </script>
 
