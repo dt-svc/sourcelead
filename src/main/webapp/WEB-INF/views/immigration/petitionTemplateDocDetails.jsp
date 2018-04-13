@@ -55,7 +55,7 @@
 						   	<input type="text" id="otherType0" name="immigrationDocList[0].otherType" title='Name' class="form-control" placeholder="Name"  field-name="Name"  data-validation="validate_length length2-200" />
 						   	</div>
 						   	 <div class="col-md-7">
-						   	<input type="text" name="immigrationDocList[0].description" id="description0" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
+						   	<input type="text" name="immigrationDocList[0].descriptionOther" id="description0" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
 						   	</div> 
 					   </div>
 					   
@@ -111,25 +111,25 @@
 					   </div>
 					   <div class="row" id="customOther${rows.count-1}" style="display:none;">
 						   	<div class="col-md-5">
-						   	<input type="text" id="otherType${rows.count-1}" resetVal="true"   name="immigrationDocList[${rows.count-1}].otherType"  value ="${items.otherType}" title='Name' class="form-control" placeholder="Name"  field-name="Name"  data-validation="validate_length length2-200" />
+						   	<input type="text" id="otherType${rows.count-1}"    name="immigrationDocList[${rows.count-1}].otherType"  value ="" title='Name' class="form-control" placeholder="Name"  field-name="Name"  data-validation="validate_length length2-200" />
 						   	</div>
 						   	 <div class="col-md-7">
-						   <input type="text" name="immigrationDocList[${rows.count-1}].description"   id="description${rows.count-1}" value ="${items.description}" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
+						   <input type="text" name="immigrationDocList[${rows.count-1}].descriptionOther"   id="description${rows.count-1}" value ="" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
 						   	</div> 
 					   </div>
 					   </c:when>
 					   <c:otherwise>
 					    <div id="customOther-defaults${rows.count-1}" style="display:none;">
 					  
-							<input type="text" name="immigrationDocList[${rows.count-1}].description" id="description0"  value ="${items.description}" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
+							<input type="text" name="immigrationDocList[${rows.count-1}].description" id="description0"  value ="" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
 				
 					   </div>
 					   <div class="row" id="customOther${rows.count-1}" >
 						   	<div class="col-md-5">
-						   	<input type="text" id="otherType${rows.count-1}" name="immigrationDocList[${rows.count-1}].otherType" resetVal="true"  value ="${items.otherType}" title='Name' class="form-control" placeholder="Name"  field-name="Name"  data-validation="validate_length length2-200" />
+						   	<input type="text" id="otherType${rows.count-1}" name="immigrationDocList[${rows.count-1}].otherType"  value ="${items.otherType}" title='Name' class="form-control" placeholder="Name"  field-name="Name"  data-validation="validate_length length2-200" />
 						   	</div>
 						   	 <div class="col-md-7">
-						   <input type="text" name="immigrationDocList[${rows.count-1}].description" id="description0"   value ="${items.description}" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
+						   <input type="text" name="immigrationDocList[${rows.count-1}].descriptionOther" id="description${rows.count-1}"    value ="${items.descriptionOther}" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
 						   	</div> 
 					   </div>
 					    </c:otherwise>
@@ -174,10 +174,10 @@
  		</div>
    </form>
 		<div class="addImmiFoot">
-			<a href="javascript:void(0)" onclick="immigration.gotoTemplatePreviousPage('templateDetails')" class="pull-left">Prev</a>
-			<a href="javascript:void(0)" onclick="immigration.savePetitionDoc('saveContinue')" class="ml10 nextBtn">Save &amp; Continue</a>
-			<a href="javascript:void(0)" onclick="immigration.savePetitionDoc('save')" class="nextBtn">Save</a>
-			<a href="javascript:void(0)" onclick="immigration.resetFormData('PetitionTemplateDocDetails')">Reset</a>
+			<a onclick="immigration.gotoTemplatePreviousPage('templateDetails')" class="pull-left">Prev</a>
+			<a onclick="immigration.savePetitionDoc('saveContinue')" class="ml10 nextBtn">Save &amp; Continue</a>
+			<a onclick="immigration.savePetitionDoc('save')" class="nextBtn">Save</a>
+			<a onclick="immigration.resetFormData('PetitionTemplateDocDetails')">Reset</a>
 			<div class="clearfix"></div>
 		</div>   
    </div>
@@ -202,7 +202,7 @@
 		templateDocDetails = templateDocDetails+ "<input type='text' id='otherType"+rowId+"' name='immigrationDocList["+rowId+"].otherType' title='Name' class='form-control' placeholder='Name' field-name='Name' data-validation='validate_length length2-200'/>";
 		templateDocDetails = templateDocDetails+ "</div>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-7'>";
-		templateDocDetails = templateDocDetails+ "<input type='text' name='immigrationDocList["+rowId+"].description' id='description"+rowId+"' title='Description' class='form-control' placeholder='Description' data-validation='validate_length length2-500' data-validation-optional='true'/>";
+		templateDocDetails = templateDocDetails+ "<input type='text' name='immigrationDocList["+rowId+"].descriptionOther' id='description"+rowId+"' title='Description' class='form-control' placeholder='Description' data-validation='validate_length length2-500' data-validation-optional='true'/>";
 		templateDocDetails = templateDocDetails+ "	</div>";
 		templateDocDetails = templateDocDetails+ "	</div>";
 		templateDocDetails = templateDocDetails+ "	</div>";
