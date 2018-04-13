@@ -490,7 +490,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String approvedBy;
 	
 	@Transient
-	@JsonProperty
 	private String createdByName;
 	
 	@Transient
