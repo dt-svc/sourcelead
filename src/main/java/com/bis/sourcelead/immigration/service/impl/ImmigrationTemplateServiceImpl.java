@@ -103,6 +103,9 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
             immigrationTemplateDocs.setDocumentType(tempObj.getDocumentType());
             immigrationTemplateDocs.setDescription(tempObj.getDescription());
             immigrationTemplateDocs.setDocumentOtherType(tempObj.getOtherType());
+            if(!StringUtils.isEmpty(tempObj.getOtherType())){ // if other the value is not empty overriding the description value.
+           	 immigrationTemplateDocs.setDescription(tempObj.getDescriptionOther());	
+            }
             if (tempObj.getIsRequired() != null && "Y".equalsIgnoreCase(tempObj.getIsRequired())) {
                 immigrationTemplateDocs.setIsRequired(tempObj.getIsRequired());
             } else {
@@ -119,6 +122,9 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
             tempObj.setId(docs.getId());
             tempObj.setIsRequired(docs.getIsRequired());
             tempObj.setMultiple(docs.getIsMultipleRequired());
+            if(!StringUtils.isEmpty(docs.getDocumentOtherType())){ // if other the value is not empty overriding the description value.
+            	tempObj.setDescriptionOther(docs.getDescription()); // mapping to descriptionOther value in jsp.
+               }
             docsListAfterSave.add(tempObj);
         }
         return docsListAfterSave;

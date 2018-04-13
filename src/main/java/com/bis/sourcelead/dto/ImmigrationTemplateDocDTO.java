@@ -13,6 +13,8 @@ public class ImmigrationTemplateDocDTO {
 	
 	private String description;
 	
+	private String descriptionOther;
+	
 	private String isRequired;
 	
 	private String multiple;
@@ -128,6 +130,12 @@ public class ImmigrationTemplateDocDTO {
 	}
 	public void setOtherType(String otherType) {
 		this.otherType = otherType;
+	}
+	public String getDescriptionOther() {
+		return descriptionOther;
+	}
+	public void setDescriptionOther(String descriptionOther) {
+		this.descriptionOther = descriptionOther;
 	}
 	
 	
