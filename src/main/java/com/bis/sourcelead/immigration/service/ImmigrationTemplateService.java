@@ -30,7 +30,7 @@ public interface ImmigrationTemplateService {
 
     void savePetitionTemplateTaskDetails(ImmigrationTemplateDTO templateDTO, User user);
 
-    ResponseList<ImmigrationTemplateListDTO> getAllTemplateDetails(ImmigrationTemplateListDTO templateListDTO, String searchValue, Long orgLocationId);
+    ResponseList<ImmigrationTemplateListDTO> getAllTemplateDetails(ImmigrationTemplateListDTO templateListDTO, String searchValue, Long orgLocationId, String[] countriesList);
 
     List<ImmigrationTemplateFormDTO> savePetitionTemplateFormDetails(ImmigrationTemplateDTO templateDTO, User user);
 

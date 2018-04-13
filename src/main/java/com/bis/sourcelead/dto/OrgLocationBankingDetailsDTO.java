@@ -1,13 +1,19 @@
 package com.bis.sourcelead.dto;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class OrgLocationBankingDetailsDTO {
 
+	@Required(desc="accountType")
 	private String accountType;
 	
+	@Required(desc="accountName")
 	private String accountName;
 	
+	@Required(desc="routingNumber")
 	private String routingNumber;
 	
+	@Required(desc="accountNumber")
 	private String accountNumber;
 	
 	private String uuid;
