@@ -1391,58 +1391,70 @@ public class CandidateOffBoardRestController {
 	public @ResponseBody Response<String> saveOffboardingCandidateStep1Details(OffboardingCandidateSetpsDTO offboardingCandidateSetpsDTO,
 			HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();
-		try {
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			if (user != null) {
-				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				CandidateOffBoarding offboarding = candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(user.getId(),
-						loginOrgLocation.getId());
-				if (null != offboarding) {
-					offboarding.setRating(Integer.parseInt(offboardingCandidateSetpsDTO.getRating()));
-					if (StringUtils.isNotBlank(offboardingCandidateSetpsDTO.getSellProperty())
-							&& offboardingCandidateSetpsDTO.getSellProperty().equalsIgnoreCase("Y")) {
-						offboarding.setWantedToSellProperty(Constants.YES);
-					} else {
-						offboarding.setWantedToSellProperty(Constants.NO);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		try{
+			if(user !=null){
+				if(Validator.validate(offboardingCandidateSetpsDTO)){
+					OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					CandidateOffBoarding offboarding = candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(user.getId(),
+							loginOrgLocation.getId());
+					if (null != offboarding) {
+						offboarding.setRating(Integer.parseInt(offboardingCandidateSetpsDTO.getRating()));
+						if (StringUtils.isNotBlank(offboardingCandidateSetpsDTO.getSellProperty())
+								&& offboardingCandidateSetpsDTO.getSellProperty().equalsIgnoreCase("Y")) {
+							offboarding.setWantedToSellProperty(Constants.YES);
+						} else {
+							offboarding.setWantedToSellProperty(Constants.NO);
+						}
+						if (StringUtils.isNotBlank(offboardingCandidateSetpsDTO.getSublease())
+								&& offboardingCandidateSetpsDTO.getSublease().equalsIgnoreCase("Y")) {
+							offboarding.setWantedToSubLease(Constants.YES);
+						} else {
+							offboarding.setWantedToSubLease(Constants.NO);
+						}
+						if (StringUtils.isNotBlank(offboardingCandidateSetpsDTO.getItemsStorage())
+								&& offboardingCandidateSetpsDTO.getItemsStorage().equalsIgnoreCase("Y")) {
+							offboarding.setLookingForPublicStorage(Constants.YES);
+						} else {
+							offboarding.setLookingForPublicStorage(Constants.NO);
+						}
+						if (StringUtils.isNotBlank(offboardingCandidateSetpsDTO.getAccommodation())
+								&& offboardingCandidateSetpsDTO.getAccommodation().equalsIgnoreCase("Y")) {
+							offboarding.setLookingForAccommodation(Constants.YES);
+						} else {
+							offboarding.setLookingForAccommodation(Constants.NO);
+						}
+						if (StringUtils.isNotBlank(offboardingCandidateSetpsDTO.getSurveyReason())) {
+							offboarding.setSurveyReason(offboardingCandidateSetpsDTO.getSurveyReason());
+						}
+						if (StringUtils.isNotBlank(offboardingCandidateSetpsDTO.getSurveyExplanation())) {
+							offboarding.setSurveyExplanation(offboardingCandidateSetpsDTO.getSurveyExplanation());
+						}
+						candidateOffBoardingService.saveCandidateOffBoarding(offboarding);
 					}
-					if (StringUtils.isNotBlank(offboardingCandidateSetpsDTO.getSublease())
-							&& offboardingCandidateSetpsDTO.getSublease().equalsIgnoreCase("Y")) {
-						offboarding.setWantedToSubLease(Constants.YES);
-					} else {
-						offboarding.setWantedToSubLease(Constants.NO);
-					}
-					if (StringUtils.isNotBlank(offboardingCandidateSetpsDTO.getItemsStorage())
-							&& offboardingCandidateSetpsDTO.getItemsStorage().equalsIgnoreCase("Y")) {
-						offboarding.setLookingForPublicStorage(Constants.YES);
-					} else {
-						offboarding.setLookingForPublicStorage(Constants.NO);
-					}
-					if (StringUtils.isNotBlank(offboardingCandidateSetpsDTO.getAccommodation())
-							&& offboardingCandidateSetpsDTO.getAccommodation().equalsIgnoreCase("Y")) {
-						offboarding.setLookingForAccommodation(Constants.YES);
-					} else {
-						offboarding.setLookingForAccommodation(Constants.NO);
-					}
-					if (StringUtils.isNotBlank(offboardingCandidateSetpsDTO.getSurveyReason())) {
-						offboarding.setSurveyReason(offboardingCandidateSetpsDTO.getSurveyReason());
-					}
-					if (StringUtils.isNotBlank(offboardingCandidateSetpsDTO.getSurveyExplanation())) {
-						offboarding.setSurveyExplanation(offboardingCandidateSetpsDTO.getSurveyExplanation());
-					}
-					candidateOffBoardingService.saveCandidateOffBoarding(offboarding);
+					response.setObject("success");
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+					
+				}else{
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
 				}
-				response.setObject("success");
-				response.setResponse(Result.SUCCESS.name());
-				response.setResponseMessage(Result.SUCCESS.getValue());
-			} else {
-				response.setResponse(Result.SESSION_TIMEDOUT.name());
-				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				
+			}else{
+				
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				
 			}
-		} catch (Exception e) {
+			
+		}catch (Exception e) {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
+		
 		return response;
 	}
 

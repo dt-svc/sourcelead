@@ -164,6 +164,7 @@ public class ExpensesRestController {
         String expenseStatus = "";
         if(elDTO.getExpenseStatus() != null && !elDTO.getExpenseStatus().isEmpty()){
             expenseStatus = elDTO.getExpenseStatus().stream ().map (i -> i.toString ()).collect (Collectors.joining (","));
+            expenseStatus = expenseStatus.toUpperCase();
         }
         ResponseList<Expenses> expensesList = expensesService.getAllExpenses(orgLoc, loginUser,expenseStatus, elDTO.getStartDate(), elDTO.getEndDate(),elDTO.getSearchValue(),elDTO.getStart(),elDTO.getLength());
         List<ExpensesDTO> expensesDTOList = new ArrayList<>();
@@ -197,7 +198,7 @@ public class ExpensesRestController {
         }
         response.setData(expensesDTOList);
         response.setRecordsFiltered(expensesList.getRecordsFiltered());
-        response.setRecordsTotal(expensesList.getRecordsTotal());
+        response.setRecordsTotal(expensesList.getData().size());
         return response;
     }	
 	

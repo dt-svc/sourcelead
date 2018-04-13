@@ -6,6 +6,7 @@ import java.awt.image.WritableRaster;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +19,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
 import com.bis.sourcelead.dto.PasswordSettingsDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.UserMailUnsubscribeDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserMailUnsubscribe;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.UserMailUnsubscribeService;
@@ -166,12 +170,12 @@ public class UserProfileRestController {
 	
 
 	@RequestMapping(value = { "/passwordSettings", "/rest/passwordSettings" }, method = RequestMethod.POST)
-	public String passwordSettings(PasswordSettingsDTO passwordSettingsDTO,
+	public Response<String> passwordSettings(PasswordSettingsDTO passwordSettingsDTO,
 			HttpServletRequest request) throws Exception {
 		
 		 User user = null;
 		 OrgLocations orgLocations = null;
-		 
+		 Response<String> response=new Response<>();
 		 user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		
@@ -182,21 +186,38 @@ public class UserProfileRestController {
 		if(orgLocations == null) {
 			orgLocations = orgLocationService.getOrgLocations(passwordSettingsDTO.getOrgLocationId());
 		}
+		
+		try{
+		if(user !=null){
+			if(Validator.validate(passwordSettingsDTO)){
 
-		if (sourceleadPasswordEncoder.matches(passwordSettingsDTO.getCurrentPassword(), user.getPassword())) {
-			user.setPassword(sourceleadPasswordEncoder.encode(passwordSettingsDTO.getPassword()));
-			try {
-				userService.addUser(user);
-			} catch (Exception e) {
-				e.printStackTrace();
+				if (sourceleadPasswordEncoder.matches(passwordSettingsDTO.getCurrentPassword(), user.getPassword())) {
+					user.setPassword(sourceleadPasswordEncoder.encode(passwordSettingsDTO.getPassword()));
+					userService.addUser(user);
+					SourceLeadSessionManager.setSessionAttribute(request, "resetPwdMsg",
+							"Your password has reset successfully");
+					userService.passwordResetMailToLoginUser(user,orgLocations);
+					
+				}
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			}else{
+				response.setObject("DataMissing");
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
 			}
-			SourceLeadSessionManager.setSessionAttribute(request, "resetPwdMsg",
-					"Your password has reset successfully");
-			userService.passwordResetMailToLoginUser(user,orgLocations);
-			return "success";
-		} else {
-			return "Invalid Password";
+		}else{
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}	
+		}catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
+		
+			return response;
+		
 
 	}
 

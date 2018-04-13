@@ -28,14 +28,14 @@
 
 
 <sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">                                                                                                                                            
-	<c:if test="${not empty expensesDTO.projectUUID and  not empty expensesDTO.projectClientUUID and not empty expensesDTO.projectName}">
+	<c:if test="${not empty expensesDTO.projectUUID and  not empty expensesDTO.projectClientUUID and not empty expensesDTO.projectName and expensesDTO.projectStatus ne 'COMPLETED'}">
 		<td>
 			<div class="tbldata-dotdot-vsm">
 				<a class="btnNoBg" href="${sourceleadUrl}/projectSummary?projectUUID=${expensesDTO.projectUUID}&projectClientUUID=${expensesDTO.projectClientUUID}" title="${expensesDTO.projectName}">${expensesDTO.projectName}</a>
 			</div>
 		</td>
 	</c:if>
-	<c:if test="${empty expensesDTO.projectUUID or empty expensesDTO.projectClientUUID}">
+	<c:if test="${empty expensesDTO.projectUUID or empty expensesDTO.projectClientUUID or expensesDTO.projectStatus eq 'COMPLETED'}">
 		<td>
 			<div class="tbldata-dotdot-vsm">
 				<a class="btnNoBg" title="${expensesDTO.projectName}">${expensesDTO.projectName}</a>

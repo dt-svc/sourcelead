@@ -32,12 +32,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.WhiteListIpAddressDao;
+import com.bis.sourcelead.dto.AddNewRoleDTO;
+import com.bis.sourcelead.dto.AddNewRoleHierarcyDTO;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CompanyRegistrationDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.dto.OrgSettingsDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.dto.SourceleadRolesDTO;
 import com.bis.sourcelead.dto.WhiteListIPAddressDTO;
@@ -56,6 +60,7 @@ import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.WhiteListIPAddress;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.ExpensesService;
@@ -142,7 +147,7 @@ public class OrgSettingsRestController {
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/app/saveOrgSettings", method = RequestMethod.POST)
-	public String saveOrgSettings(OrgSettingsDTO orgSettingsDTO, HttpServletRequest request) throws Exception
+	public Response<String> saveOrgSettings(OrgSettingsDTO orgSettingsDTO, HttpServletRequest request) throws Exception
 	{
 		/*
 		 * Iterator<String> itrator = request.getFileNames(); MultipartFile
@@ -150,27 +155,45 @@ public class OrgSettingsRestController {
 		 */
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		ModelMapper mapper1 = new ModelMapper();
-		OrgSettings orgSettings = mapper1.map(orgSettingsDTO, OrgSettings.class);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Response<String> response = new Response<>();
+	
 		try {
-			// org = orgService.saveOrgSettings(orgSettings, multiFile, org);
-			orgLocations = orgLocationService.saveOrgLocations(orgSettings, orgLocations);
-			if (orgLocations.getGeneratedUserId() != null) {
-				changeShortCodeForExpenses(orgLocations.getGeneratedUserId(), orgLocations.getId());
+			if(user != null){
+			if (Validator.validate(orgSettingsDTO)) {
+				ModelMapper mapper1 = new ModelMapper();
+				OrgSettings orgSettings = mapper1.map(orgSettingsDTO, OrgSettings.class);
+				
+					orgLocations = orgLocationService.saveOrgLocations(orgSettings, orgLocations);
+					if (orgLocations.getGeneratedUserId() != null) {
+						changeShortCodeForExpenses(orgLocations.getGeneratedUserId(), orgLocations.getId());
+					}
+					SourceLeadSessionManager.setSessionAttribute(request, "org", org);
+					SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
+					SourceLeadSessionManager.setSessionAttribute(request, "orgName", orgLocations.getOrgLocationName());
+					SourceLeadSessionManager.setSessionAttribute(request, "address", orgLocations.getOrgLocationAddress());
+					SourceLeadSessionManager.setSessionAttribute(request, "website", orgLocations.getWebsite());
+					SourceLeadSessionManager.setSessionAttribute(request, "dba", orgLocations.getDba());
+					SourceLeadSessionManager.setSessionAttribute(request, "businessType", orgSettings.getBusinessType());
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+			}else{
+				response.setObject("DataMissing");
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
 			}
-			// LoginSessionController.DATEFORMAT = new
-			// SimpleDateFormat(orgLocations.getDateFormat());
-			SourceLeadSessionManager.setSessionAttribute(request, "org", org);
-			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
-			SourceLeadSessionManager.setSessionAttribute(request, "orgName", orgLocations.getOrgLocationName());
-			SourceLeadSessionManager.setSessionAttribute(request, "address", orgLocations.getOrgLocationAddress());
-			SourceLeadSessionManager.setSessionAttribute(request, "website", orgLocations.getWebsite());
-			SourceLeadSessionManager.setSessionAttribute(request, "dba", orgLocations.getDba());
-			SourceLeadSessionManager.setSessionAttribute(request, "businessType", orgSettings.getBusinessType());
-		} catch (Exception e) {
+		}else{
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+
+	} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		return "home";
+
+		return response;
 	}
 	
 	private void changeShortCodeForExpenses(String generatedUserId, Long orgLocationId) throws Exception
@@ -296,34 +319,58 @@ public class OrgSettingsRestController {
 	
 	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
 	@RequestMapping(value = "/app/addNewRoleHierarcy", method = RequestMethod.POST)
-	public String addNewRoleHierarcy(@RequestParam(value = "json", required = false) String json, HttpServletRequest request) throws Exception
+	public Response<String> addNewRoleHierarcy(AddNewRoleHierarcyDTO addNewRoleHierarcyDTO, HttpServletRequest request) throws Exception
 	{
-		json = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		RoleHierarchy hierarchy = null;
-		if (jsonObj.has("hierarchyId") && !isNullOrEmpty(jsonObj.getString("hierarchyId"))) {
-			hierarchy = roleHierarchyService.getRoleHierarchyById(Long.parseLong(jsonObj.getString("hierarchyId")));
-			hierarchy.setHierarchyName(jsonObj.getString("level"));
-			hierarchy.setOrgLocations(orgLocations);
-			hierarchy.setUpdatedBy(user.getUserCode());
-			hierarchy.setUpdatedDate(new Date());
+		Response<String> response=new Response<>();
+		
+		try{
+			if(user !=null){
+				if (Validator.validate(addNewRoleHierarcyDTO)) {	
+					if (addNewRoleHierarcyDTO.getHierarchyId()!= null) {
+					hierarchy = roleHierarchyService.getRoleHierarchyById(addNewRoleHierarcyDTO.getHierarchyId());
+					hierarchy.setHierarchyName(addNewRoleHierarcyDTO.getLevel());
+					hierarchy.setOrgLocations(orgLocations);
+					hierarchy.setUpdatedBy(user.getUserCode());
+					hierarchy.setUpdatedDate(new Date());
+					}else{
+						Integer maxHirearchyLevel = roleHierarchyService.getMaxHierarchyValueByOrgLocationId(orgLocations.getId());
+						hierarchy = new RoleHierarchy();
+						hierarchy.setHierarchyName(addNewRoleHierarcyDTO.getLevel());
+						hierarchy.setHierarchyLevel(maxHirearchyLevel + 1);
+						hierarchy.setOrgLocations(orgLocations);
+						hierarchy.setStatus(Constants.RECORD_ACTIVE);
+						hierarchy.setCreatedDate(new Date());
+						hierarchy.setCreatedBy(user.getUserCode());
+						hierarchy.setUpdatedBy(user.getUserCode());
+						hierarchy.setUpdatedDate(new Date());
+					}
+					roleHierarchyService.saveRoleHierarchy(hierarchy);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+					
+			}
+				else{
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+					}
+				}
+			else{
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				
+			}
+			
+			
+		}catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		else {
-			Integer maxHirearchyLevel = roleHierarchyService.getMaxHierarchyValueByOrgLocationId(orgLocations.getId());
-			hierarchy = new RoleHierarchy();
-			hierarchy.setHierarchyName(jsonObj.getString("level"));
-			hierarchy.setHierarchyLevel(maxHirearchyLevel + 1);
-			hierarchy.setOrgLocations(orgLocations);
-			hierarchy.setStatus(Constants.RECORD_ACTIVE);
-			hierarchy.setCreatedDate(new Date());
-			hierarchy.setCreatedBy(user.getUserCode());
-			hierarchy.setUpdatedBy(user.getUserCode());
-			hierarchy.setUpdatedDate(new Date());
-		}
-		roleHierarchyService.saveRoleHierarchy(hierarchy);
-		return "home";
+		return response;
 	}
 	
 	@RequestMapping(value = "/app/getOrgEnrolledList")
@@ -485,31 +532,39 @@ public class OrgSettingsRestController {
 	
 	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
 	@RequestMapping(value = "/app/addNewRole", method = RequestMethod.POST)
-	public String addNewRole(@RequestParam(value = "json", required = false) String json, HttpServletRequest request) throws Exception
+	public String addNewRole(AddNewRoleDTO addNewRoleDTO, HttpServletRequest request) throws Exception
 	{
-		json = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		Roles roles = new Roles();
-		if (jsonObj.has("roleName") && !isNullOrEmpty(jsonObj.getString("roleName"))) {
-			StringBuilder role = new StringBuilder();
-			roles.setRoleName(role.append("ROLE_").append(jsonObj.getString("roleName")).toString().replaceAll(" ", "_").toUpperCase());
-			roles.setDisplayName(jsonObj.getString("roleName"));
-			roles.setOrg(org);
-			roles.setOrgLocations(orgLocations);
-			roles.setStatus("1");
-			roles.setDefaultRole(0);
-			RoleHierarchy roleHierarchy = roleHierarchyService.getRoleHierarchyById(Long.parseLong(jsonObj.getString("level")));
-			roles.setRoleHierarchy(roleHierarchy);
-			roles.setCreatedBy(user.getUserCode());
-			roles.setCreatedDate(new Date());
-			roles = rolesService.storeRoles(roles);
+		String response = null;
+		try{
+			if(user != null){
+				if (Validator.validate(addNewRoleDTO)) {
+					StringBuilder role = new StringBuilder();
+					roles.setRoleName(role.append("ROLE_").append(addNewRoleDTO.getRoleName()).toString().replaceAll(" ", "_").toUpperCase());
+					roles.setDisplayName(addNewRoleDTO.getRoleName());
+					roles.setOrg(org);
+					roles.setOrgLocations(orgLocations);
+					roles.setStatus("1");
+					roles.setDefaultRole(0);
+					RoleHierarchy roleHierarchy = roleHierarchyService.getRoleHierarchyById(Long.parseLong(addNewRoleDTO.getLevel()));
+					roles.setRoleHierarchy(roleHierarchy);
+					roles.setCreatedBy(user.getUserCode());
+					roles.setCreatedDate(new Date());
+					roles = rolesService.storeRoles(roles);
+					response = roles.getId().toString();
+				}else{
+					response = "INVALID_DATA";
+				}
+			}else{
+				response = "SESSION_TIMEDOUT";
+			}
+		}catch (Exception e) {
+			response = "AWKWARD";
 		}
-		ArrayList<String> rolesList = new ArrayList<String>();
-		rolesList.add(roles.getId().toString());
-		return commonUtil.toJSON(rolesList);
+		return response;
 	}
 	
 	
@@ -718,12 +773,34 @@ public class OrgSettingsRestController {
 	}
 	
 	@RequestMapping(value = "/app/saveWhiteListIps", method = RequestMethod.GET)
-	public String saveWhiteListIps(WhiteListIPAddressDTO whiteListIPAddressDTO, HttpServletRequest request) throws Exception
+	public Response<String> saveWhiteListIps(WhiteListIPAddressDTO whiteListIPAddressDTO, HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		whiteListIpAddressService.addWhiteListIps(whiteListIPAddressDTO, orgLocations, user);
-		return "Success";
+		Response<String> response = new Response<>();
+		if (user != null) {
+			try {
+				if (Validator.validate(whiteListIPAddressDTO)) {
+					whiteListIpAddressService.addWhiteListIps(whiteListIPAddressDTO, orgLocations, user);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+				else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			}catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+ 
+		return response;
 	}
 	
 	@RequestMapping(value = "/app/getWhiteListIps", method = RequestMethod.GET)

@@ -8,6 +8,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -18,11 +21,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.FederalAndStateTaxDTO;
 import com.bis.sourcelead.dto.OrgLocationBankingDetailsDTO;
 import com.bis.sourcelead.dto.OrglocationOnboardDocumentsDTO;
 import com.bis.sourcelead.dto.OrglocationSignatoryDTO;
+import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.SingnatoryDTO;
 import com.bis.sourcelead.dto.StateTaxesList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -31,6 +37,7 @@ import com.bis.sourcelead.entity.OrglocationOnboardDocuments;
 import com.bis.sourcelead.entity.OrglocationSignatory;
 import com.bis.sourcelead.entity.OrglocationStateTax;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrglocationBankingDetailsService;
@@ -46,6 +53,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @PropertySource("${propertyLocation:app.properties}")
 public class CompanyOnboardRestController {
 
+	private static final Logger logger = LoggerFactory.getLogger(CompanyOnboardRestController.class);
 	@Autowired
 	OrgLocationService orgLocationService;
 	
@@ -71,18 +79,42 @@ public class CompanyOnboardRestController {
 	private String staticPath;
 	
 	@RequestMapping(value = "/saveOrgLocationsFederalAndStatesTax", method = RequestMethod.POST)
-	public @ResponseBody String saveOrgLocationsFederalAndStatesTax(FederalAndStateTaxDTO federalAndStateTaxDTO, HttpServletRequest request) throws Exception
+	@ResponseBody
+	public Response<String> saveOrgLocationsFederalAndStatesTax(FederalAndStateTaxDTO federalAndStateTaxDTO, HttpServletRequest request) throws Exception
 	{
+		
+		Response<String> response = new Response<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		loginOrgLocation.setFederalEin(federalAndStateTaxDTO.getFedralEIN());
-		loginOrgLocation.setDepositSchedule(federalAndStateTaxDTO.getDepositeSchedule());
-		loginOrgLocation.setFillingForm(federalAndStateTaxDTO.getFillingForm());
-		loginOrgLocation.setUnemploymentTax(federalAndStateTaxDTO.getUnemploymentTax());
-		orgLocationService.updateOrgLocations(loginOrgLocation);
-		SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", loginOrgLocation);
-		String result = orglocationStateTaxService.addOrglocationStateTax(federalAndStateTaxDTO, loginOrgLocation, user);
-		return result;
+		try {
+			if (user != null) {
+				if (Validator.validate(federalAndStateTaxDTO)) {
+					loginOrgLocation.setFederalEin(federalAndStateTaxDTO.getFedralEIN());
+					loginOrgLocation.setDepositSchedule(federalAndStateTaxDTO.getDepositeSchedule());
+					loginOrgLocation.setFillingForm(federalAndStateTaxDTO.getFillingForm());
+					loginOrgLocation.setUnemploymentTax(federalAndStateTaxDTO.getUnemploymentTax());
+					orgLocationService.updateOrgLocations(loginOrgLocation);
+					SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", loginOrgLocation);
+					String result = orglocationStateTaxService.addOrglocationStateTax(federalAndStateTaxDTO, loginOrgLocation, user);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+				else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			}
+			else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
 	}
 	
 	
@@ -126,16 +158,19 @@ public class CompanyOnboardRestController {
 	
 	
 	@RequestMapping(value = "/saveOrgLocationsBankingDetails", method = RequestMethod.POST)
-	public @ResponseBody String saveOrgLocationsBankingDetails(OrgLocationBankingDetailsDTO bankingDetailsDTO, HttpServletRequest request) throws Exception
+	@ResponseBody
+	public  Response<String> saveOrgLocationsBankingDetails(OrgLocationBankingDetailsDTO bankingDetailsDTO, HttpServletRequest request) throws Exception
 	{
+		Response<String> response=new Response<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		OrglocationBankingDetails bankingDetails = null;
 		String result = "invalid";
 		
 		try {
-			
-			if(bankingDetailsDTO.getUuid() != null && !bankingDetailsDTO.getUuid().isEmpty()) {
+			if(user !=null){
+			if(Validator.validate(bankingDetailsDTO)){
+				if(bankingDetailsDTO.getUuid() != null && !bankingDetailsDTO.getUuid().isEmpty()) {
 				bankingDetails = orglocationBankingDetailsService.getOrglocationBankingDetailsByUUID(bankingDetailsDTO.getUuid());
 			}else {
 				bankingDetails = new OrglocationBankingDetails();
@@ -152,23 +187,60 @@ public class CompanyOnboardRestController {
 			bankingDetails.setCreatedDate(commonUtil.getOrgLocationCurrentDate(loginOrgLocation.getDateFormat(), new Date()));
 			bankingDetails.setUpdatedDate(commonUtil.getOrgLocationCurrentDate(loginOrgLocation.getDateFormat(), new Date()));
 			orglocationBankingDetailsService.saveOrglocationBankingDetails(bankingDetails);
-			result = "success";
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+			}
+			else{
+				response.setObject("DataMissing");
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+			}
+			else{
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+    			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());	
+			}
 		} catch (Exception e) {
-			System.out.println(e.getStackTrace());
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 	
-		return result;
+		return response;
 	}
 	
 	
 	@RequestMapping(value = "/saveOrgLocationDocuments", method = RequestMethod.POST)
-	public @ResponseBody String saveOrgLocationDocuments(OrglocationOnboardDocumentsDTO documentsDTO, HttpServletRequest request) throws Exception
+	@ResponseBody
+	public  Response<String> saveOrgLocationDocuments(OrglocationOnboardDocumentsDTO documentsDTO, HttpServletRequest request) throws Exception
 	{
+		Response<String> response=new Response<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		documentsDTO.setStaticPath(staticPath);
-		String result = orglocationOnboardDocumentsService.addOrglocationOnboardDocuments(documentsDTO, loginOrgLocation, user);
-		return result;
+		try {
+			if (user != null) {
+				if (Validator.validate(documentsDTO)) {
+					documentsDTO.setStaticPath(staticPath);
+					String result = orglocationOnboardDocumentsService.addOrglocationOnboardDocuments(documentsDTO, loginOrgLocation, user);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+				else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			}
+			else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
 	}
 	
 	@RequestMapping(value = "/deleteOnboardDocument", method = RequestMethod.POST)
@@ -188,15 +260,72 @@ public class CompanyOnboardRestController {
 	
 	
 	@RequestMapping(value = "/saveOrgLocationSignatory", method = RequestMethod.POST)
-	public @ResponseBody String saveOrgLocationSignatory(OrglocationSignatoryDTO orglocationSignatoryDTO,HttpServletRequest request) throws Exception
+	@ResponseBody
+	public Response<String> saveOrgLocationSignatory(OrglocationSignatoryDTO orglocationSignatoryDTO,HttpServletRequest request) throws Exception
 	{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		String result = orglocationSignatoryService.addOrglocationSignatory(orglocationSignatoryDTO, user, loginOrgLocation);
-		if(!"orgSettings".equalsIgnoreCase(orglocationSignatoryDTO.getSignatoryFromType()))
-			commonUtil.onboardCreationCandidateGeneratedIdUpdated(candidate,loginOrgLocation);
-		return result;
+		Response<String> response = new Response<>();
+		try {
+			if (user != null) {
+				if (Validator.validate(orglocationSignatoryDTO)) {
+					String result = orglocationSignatoryService.addOrglocationSignatory(orglocationSignatoryDTO, user, loginOrgLocation);
+					if (!"orgSettings".equalsIgnoreCase(orglocationSignatoryDTO.getSignatoryFromType()))
+						commonUtil.onboardCreationCandidateGeneratedIdUpdated(candidate, loginOrgLocation);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+				else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			}
+			else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+	@RequestMapping(value = "/saveCompanyOnBoardSignatory", method = RequestMethod.POST)
+	@ResponseBody
+	public Response<String> saveCompanyOnBoardSignatory(SingnatoryDTO singnatoryDTO,HttpServletRequest request) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Response<String> response = new Response<>();
+		try {
+			if (user != null) {
+				if (Validator.validate(singnatoryDTO)) {
+					String result = orglocationSignatoryService.addCompanyOrglocationSignatory(singnatoryDTO, user, loginOrgLocation);
+					commonUtil.onboardCreationCandidateGeneratedIdUpdated(candidate, loginOrgLocation);
+						
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+				else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			}
+			else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
 	}
 	
 	@RequestMapping(value = "/skipAndSaveOrglocationSignatory", method = RequestMethod.POST)
