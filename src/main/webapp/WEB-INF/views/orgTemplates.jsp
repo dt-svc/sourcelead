@@ -141,7 +141,7 @@
 		<h2 class="text-info">Immigration</h2>
 		<p>Manage Your Immigration Templates</p>
 		<span>
-		<sec:authorize access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE')">
+		 <sec:authorize access="hasAnyRole('ROLE_ADD_PETITION_TEMPLATE','ROLE_EDIT_VIEW_PETITION_TEMPLATE','ROLE_DELETE_PETITION_TEMPLATE')">
 			<a  class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/immigration/addNewPetitionTemplate'/>">Add</a> 
 			<a  class="btn btn-primary btn-sm" href="<c:url value='${appPath}/immigration/viewImmigrationTemplateList'/>">View</a>
 			</sec:authorize>
