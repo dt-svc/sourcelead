@@ -651,7 +651,9 @@ function createTemplate(saveType) {
 		    	data: formData,
 		    	 url: sourceleadUrl+"/createNewOffBoardingTemplate?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(response) {
-		        	if (response.response === "AWKWARD") {
+		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+	        		    showError(response.responseMessage);
+	        	  	}else if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
 		        	} else if (response.response === "SUCCESS") {
 		        		var json = response.object;
@@ -763,7 +765,9 @@ function saveOffboardTask(){
 			     contentType:false,
 		    	 url: sourceleadUrl+"/saveOffBoardTasks?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(response) {
-		        	if (response.response === "AWKWARD") {
+		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+	        		    showError(response.responseMessage);
+	        	  	}else  if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
 		        	} else if (response.response === "SUCCESS") {
 		        		$("#offboardtasksLoading").removeAttr("style");
@@ -1154,7 +1158,9 @@ function saveAndFinishOffboardTemplate(templateId){
 	   	type: "POST",
 	    url: sourceleadUrl+"/saveAndFinishOffboardTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
 	    success: function(response) {
-	    	if (response.response === "AWKWARD") {
+	    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+    		    showError(response.responseMessage);
+    	  	}else if (response.response === "AWKWARD") {
 	    	    location.href = "/errorPage";
 	    	} else if (response.response === "SUCCESS") {
 	    		$("#finish_task").removeAttr("disabled");
