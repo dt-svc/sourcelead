@@ -102,69 +102,86 @@ public class UserProfileRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value =  {"/saveUserProfile","/rest/saveUserProfile"}, method = RequestMethod.POST)
-	public AddUserProfileDTO saveUserProfile(AddUserProfileDTO addUserProfileDTO, HttpServletRequest request)
+	public Response<String> saveUserProfile(AddUserProfileDTO addUserProfileDTO, HttpServletRequest request)
 			throws Exception {
-		addUserProfileDTO.setStaticPath(staticPath);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Response<String> response=new Response<>();
+		addUserProfileDTO.setStaticPath(staticPath);
 		if(user == null){
 			user = userService.getUserById(addUserProfileDTO.getUserId());
 		}
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		if(orgLocations == null){
 			 orgLocations = orgLocationService.getOrgLocations(Long.parseLong(addUserProfileDTO.getOrgLocationId()));
 		}
 		UserRole userRoleElk = null;
 		AddUserProfileDTO profileDTO = null;
-		try {
-			user = userService.saveUserProfile(addUserProfileDTO, user);
-			UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocations.getId());
-			userRole.setDesignation(addUserProfileDTO.getDesignation());
-			userRoleElk = userRoleService.addUserRole(userRole);
-			/*
-			 * update common user (single user different orgs) details in ElasticSearch
-			 * Documents (User)
-			 */
-			commonUtil.commonUserUpdate(user);
-			/*
-			 * Save or update the user in Elk.
-			 */
-			userService.saveOrUpdateUserElkDocument(userRoleElk, null, user.getUserCode());
+		
+		try{
+			if(user !=null){
+				if(Validator.validate(addUserProfileDTO)){
+					user = userService.saveUserProfile(addUserProfileDTO, user);
+					UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocations.getId());
+					userRole.setDesignation(addUserProfileDTO.getDesignation());
+					userRoleElk = userRoleService.addUserRole(userRole);
+					/*
+					 * update common user (single user different orgs) details in ElasticSearch
+					 * Documents (User)
+					 */
+					commonUtil.commonUserUpdate(user);
+					/*
+					 * Save or update the user in Elk.
+					 */
+					userService.saveOrUpdateUserElkDocument(userRoleElk, null, user.getUserCode());
 
-			/*
-			 * updating user in the Spock
-			 * 
-			 */
+					/*
+					 * updating user in the Spock
+					 * 
+					 */
 
-			commonUtil.updateSpockDetails(user, orgLocations);
+					commonUtil.updateSpockDetails(user, orgLocations);
 
-			SourceLeadSessionManager.setSessionAttribute(request, "user", user);
-			StringBuilder userNameSB = new StringBuilder();
-			SourceLeadSessionManager.setSessionAttribute(request, "userName",
-					userNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-			SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
-
-		} catch (Exception e) {
-			logger.info("--exception--" + e);
-
+					SourceLeadSessionManager.setSessionAttribute(request, "user", user);
+					StringBuilder userNameSB = new StringBuilder();
+					SourceLeadSessionManager.setSessionAttribute(request, "userName",
+							userNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+					SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());	
+					
+					profileDTO = new AddUserProfileDTO();
+					profileDTO.setId(String.valueOf(user.getId()));
+					profileDTO.setFirstName(user.getFirstName());
+					profileDTO.setLastName(user.getLastName());
+					profileDTO.setStaticPath(staticPath);
+					profileDTO.setMobilePhone(user.getMobilePhone());
+					profileDTO.setJobTitle(user.getJobTitle());
+					profileDTO.setLocation(user.getLocation());
+					profileDTO.setLinkedIn(user.getLinkedIn());
+					profileDTO.setFacebook(user.getFacebook());
+					profileDTO.setTwitter(user.getTwitter());
+					profileDTO.setGooglePlus(user.getGooglePlus());
+					profileDTO.setDesignation(addUserProfileDTO.getDesignation());
+					profileDTO.setUserId(addUserProfileDTO.getUserId());
+					profileDTO.setOrgLocationId(addUserProfileDTO.getOrgLocationId());
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+				else{
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			}else{
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		}catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		if (user != null) {
-			profileDTO = new AddUserProfileDTO();
-			profileDTO.setId(String.valueOf(user.getId()));
-			profileDTO.setFirstName(user.getFirstName());
-			profileDTO.setLastName(user.getLastName());
-			profileDTO.setStaticPath(staticPath);
-			profileDTO.setMobilePhone(user.getMobilePhone());
-			profileDTO.setJobTitle(user.getJobTitle());
-			profileDTO.setLocation(user.getLocation());
-			profileDTO.setLinkedIn(user.getLinkedIn());
-			profileDTO.setFacebook(user.getFacebook());
-			profileDTO.setTwitter(user.getTwitter());
-			profileDTO.setGooglePlus(user.getGooglePlus());
-			profileDTO.setDesignation(addUserProfileDTO.getDesignation());
-			profileDTO.setUserId(addUserProfileDTO.getUserId());
-			profileDTO.setOrgLocationId(addUserProfileDTO.getOrgLocationId());
-		}
-		return profileDTO;
+		
+		
+		return response;
 
 	}
 	
