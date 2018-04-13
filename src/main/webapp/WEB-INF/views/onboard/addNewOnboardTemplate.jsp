@@ -659,7 +659,7 @@ function createTemplate(saveType){
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
          }; 
-	
+		var tab="details";
 	  if ($('#onboardTemplate_form').validate(false, validationSettings)){
 	        var sourceleadUrl ='${sourceleadUrl}';
 	    	$("#save_button").attr("disabled", "disabled");
@@ -669,9 +669,11 @@ function createTemplate(saveType){
 	        $.ajax({
 	        	type : "POST",
   	    	    data: formData,
-		    	url: sourceleadUrl+"/createNewOnBoardingTemplate?${_csrf.parameterName}=${_csrf.token}", 
+		    	url: sourceleadUrl+"/createNewOnBoardingTemplate?${_csrf.parameterName}=${_csrf.token}&tab="+tab, 
 		        success: function(response) {
-		        	if (response.response === "AWKWARD") {
+					if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+	        		    showError(response.responseMessage);
+	        	  	}else if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
 		        	} else if (response.response === "SUCCESS") {
 		        		var json = response.object;
@@ -790,25 +792,30 @@ function saveOnboardTask(){
 		        contentType:false,
 		    	 url: sourceleadUrl+"/saveOnBoardTasks?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(response) {
-	        	 	if (response.response === "AWKWARD") {
+		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+	        		    showError(response.responseMessage);
+	        	  	} else if (response.response === "AWKWARD") {
 	        		    location.href = "/errorPage";
 	        		} else if (response.response === "SUCCESS") {
-		        		$("#onboardtasksLoading").removeAttr("style");
-			        	flushOnboardTask();
-			        	getAssignToUsersList();
-			        	getOnboardingTasksList();
-			        	document.getElementById("selector").style.display = 'block';
-			        	$("#selector").fadeIn(150);
-			        	$('#selector')s.delay(1000).fadeOut('slow');
-	        		} else if (response.indexOf('Sign In') !== -1) {
+			        		$("#onboardtasksLoading").removeAttr("style");
+				        	flushOnboardTask();
+				        	getAssignToUsersList();
+				        	getOnboardingTasksList();
+				        	
+				        	document.getElementById("selector").style.display = 'block';
+				        	$("#selector").fadeIn(150);
+				        	$('#selector').delay(1000).fadeOut('slow');
+	        		}else if (response.indexOf('Sign In') !== -1) {
 	        			location.replace(sourceleadUrl);
 	        		} else {
 	        		    showError("Operation failed, please try again");
 	        		}
+		        	
 		        },
 		    });  
 	        return true;
-	  } else {
+		
+	  }else{
 		return false;
 	  }
 }
@@ -992,7 +999,10 @@ function getTemplateContractsDocumentsDetails(templateId){
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getOnboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
 		        success: function(response) {
-		        	if (response.response === "AWKWARD") {
+		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+		        		
+	        		    showError(response.responseMessage);
+	        	  	}else if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
 		        	} else if (response.response === "SUCCESS") {
 		        		 var json = response.data;
@@ -1268,7 +1278,9 @@ function saveAndFinishOnboardTemplate(templateId) {
 	   	type: "POST",
 	    url: sourceleadUrl+"/saveAndFinishOnboardTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
 	    success: function(response) {
-	    	if (response.response === "AWKWARD") {
+	    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+    		    showError(response.responseMessage);
+    	  	}else if (response.response === "AWKWARD") {
 	    	    location.href = "/errorPage";
 	    	} else if (response.response === "SUCCESS") {
 	    		 $("#finish_task").removeAttr("disabled");
