@@ -123,27 +123,38 @@ backdrop: 'static'
 		
 		 if ($('#addnew_hierarchy').validate(false, validationSettings)){ 
 			
-          		
-    		    var frm = $('#addnew_hierarchy').serializeFormJSON();
-    	        var con = JSON.stringify(frm);
-    	        con = con.replace(/[{}]/g, "");
-    	        
-    	        //It will escape all the special characters
-   	        var jsonData = encodeURIComponent(con);
-       		var sourceleadUrl ='${sourceleadUrl}';
+        	var sourceleadUrl ='${sourceleadUrl}';
        		$("#add_hierarchy").attr("disabled", "disabled");
        		$("#hierarchyLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-       		
+       		var formData = getFormData1("addnew_hierarchy");
 
 			$.ajax({
 			 	
 				type: "POST",
-		    	 url: sourceleadUrl+"/addNewRoleHierarcy?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+				data: formData,
+ 		    	processData: false, 
+		 		contentType: false,
+		    	 url: sourceleadUrl+"/addNewRoleHierarcy?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(data) {
-		        	if(data != null && data != ''){
-	   	        	    location.replace(sourceleadUrl+"/roleHierarchy");  
-		        	}
-			        
+		        	
+		        	if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
+ 		        		showError(data.responseMessage);
+      	    		    $("#hierarchyLoading").removeAttr('style');
+      	    		}
+                		else if (data.response === "AWKWARD") {
+                			location.href = "/errorPage";
+      	    		}
+                		else if(data.response === "SUCCESS"){
+                			$("#hierarchyLoading").removeAttr('style');
+                			location.replace(sourceleadUrl+"/roleHierarchy"); 
+			        	    }
+                		else if (data.indexOf('Sign In') !== -1) {
+                			location.replace(sourceleadUrl);
+      				} else {
+      					showError("Operation failed, please try again");
+      				    $("#hierarchyLoading").removeAttr('style');
+      				}
+		            
 		        },
 					});
 			return true;

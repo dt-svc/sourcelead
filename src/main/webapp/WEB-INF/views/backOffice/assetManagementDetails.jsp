@@ -311,20 +311,21 @@ function assetDetails(assetId) {
 					result = result + '<h1>'+json.categoryName+' Asset details: <a class="pull-right" id="edit-user" href="javascript:editAssetManagement('+assetId+');">Edit<i class="glyphicon glyphicon-pencil"></i>&nbsp;&nbsp</a></h1>';
 					result = result + '<div class="require_one">';
 					
-					result = result + '<div class="require_wrap_details_cta"> <b><strong>Category Name:</strong></b> <span class="tbldata-dotdot-me mr10">'+json.categoryName+'</span>';
+					result = result + '<div class="require_wrap_details_cta"> <b><strong>Category Name:</strong></b> <span class = "wordWrap-breakword">'+json.categoryName+'</span>';
 					result = result + '<div class="clearfix"></div>';
 					result = result + ' </div>';
 					
-					result = result + '<div class="require_wrap_details_cta"> <b><strong>Serial Number:</strong></b> <span class="tbldata-dotdot-me mr10">'+json.sno+'</span>';
+					result = result + '<div class="require_wrap_details_cta"> <b><strong>Serial Number:</strong></b> <span class = "wordWrap-breakword">'+json.sno+'</span>';
 					result = result + '<div class="clearfix"></div>';
 					result = result + ' </div>';
 					
-					result = result + '<div class="require_wrap_details_cta"> <b><strong>Make:</strong></b> <span class="tbldata-dotdot-me mr10">'+make+'</span>';
+
+					result = result + '<div class="require_wrap_details_cta"> <b><strong>Make:</strong></b> <span class = "wordWrap-breakword">'+make+'</span>';
 
 					result = result + '  <div class="clearfix"></div>';
 					result = result + '</div>';
 					
-					result = result + ' <div class="require_wrap_details_cta"> <b><strong>Model:</strong></b> <span class="tbldata-dotdot-me mr10">'+model+'</span>';
+					result = result + ' <div class="require_wrap_details_cta"> <b><strong>Model:</strong></b> <span class = "wordWrap-breakword">'+model+'</span>';
 					result = result + '  <div class="clearfix"></div>';
 					result = result + ' </div>';
 					
@@ -333,7 +334,7 @@ function assetDetails(assetId) {
 					result = result + ' </div>';
 					
 					if (json.fileName != null && json.fileName != '' && json.fileName != 'undefined') {
-						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Attched File:</strong></b> <span class="tbldata-dotdot-me mr10">'+json.fileName+'</span><a download class="glyphicon glyphicon-download-alt mr10" target="_blank" href=\"'+json.fileUrl+'\" download title="Download"></a>';
+						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Attched File:</strong></b> <span class = "wordWrap-breakword">'+json.fileName+'</span><a download class="glyphicon glyphicon-download-alt mr10" target="_blank" href=\"'+json.fileUrl+'\" download title="Download"></a>';
 		           		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+json.fileUrl+'\',\''+json.fileName+'\',\''+json.fileContentType+'\');"title="preview"></a>';		           						          
 						result = result + ' <div class="clearfix"></div>';
 						result = result + '</div>';
@@ -343,35 +344,35 @@ function assetDetails(assetId) {
 						result = result + '</div>';
 					}
 					if(json.monitor != null && json.monitor != '' && json.monitor != 'undefined'){
-					result = result + ' <div class="require_wrap_details_cta"> <b><strong>Monitor:</strong></b> <span class="tbldata-dotdot-me mr10">'+json.monitor+'</span>';
+					result = result + ' <div class="require_wrap_details_cta"> <b><strong>Monitor:</strong></b> <span class = "wordWrap-breakword">'+json.monitor+'</span>';
 					result = result + ' <div class="clearfix"></div>';
 					result = result + '</div>';
 					}
 					
-					result = result + '<div class="require_wrap_details_cta"> <b><strong>Working Status:</strong></b> <span class="tbldata-dotdot-me mr10">'+workingStatus+'</span>';
+					result = result + '<div class="require_wrap_details_cta"> <b><strong>Working Status:</strong></b> <span class = "wordWrap-breakword">'+workingStatus+'</span>';
 					result = result + ' <div class="clearfix"></div>';
 					result = result + ' </div>';
 					
 					//this block not visible to others category assets
 					if (json.categoryName != null && json.categoryName != '' && json.categoryName != 'undefined' && (json.categoryId == 1 || json.categoryId ==2)) {
-						result = result + '<div class="require_wrap_details_cta"> <b><strong>Memory:</strong></b> <span class="tbldata-dotdot-me mr10">'+memory+'</span>';
+						result = result + '<div class="require_wrap_details_cta"> <b><strong>Memory:</strong></b> <span class = "wordWrap-breakword">'+memory+'</span>';
 						result = result + ' <div class="clearfix"></div>';
 						result = result + '</div>';
 						
-						result = result + '<div class="require_wrap_details_cta"> <b><strong>CPU:</strong></b> <span class="tbldata-dotdot-me mr10">'+cpu+'</span>';
+						result = result + '<div class="require_wrap_details_cta"> <b><strong>CPU:</strong></b> <span class = "wordWrap-breakword">'+cpu+'</span>';
 						result = result + ' <div class="clearfix"></div>';
 						result = result + ' </div>';
 						
-						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Hard Disk:</strong></b> <span class="tbldata-dotdot-me mr10">'+hardDisk+'</span>';
+						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Hard Disk:</strong></b> <span class = "wordWrap-breakword">'+hardDisk+'</span>';
 						result = result + ' <div class="clearfix"></div>';
 						result = result + ' </div>';
 						
-						result = result + ' <div class="require_wrap_details_cta"> <b><strong>MAC Address:</strong></b> <span class="tbldata-dotdot-me mr10">'+macAddress+'</span>';
+						result = result + ' <div class="require_wrap_details_cta"> <b><strong>MAC Address:</strong></b> <span class = "wordWrap-breakword">'+macAddress+'</span>';
 						result = result + ' <div class="clearfix"></div>';
 						result = result + ' </div>';
 						
 						if (json.categoryName != null && json.categoryName != '' && json.categoryName != 'undefined' && json.categoryId == 2) {
-							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Monitor:</strong></b> <span class="tbldata-dotdot-me mr10">'+monitor+'</span>';
+							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Monitor:</strong></b> <span class = "wordWrap-breakword">'+monitor+'</span>';
 							result = result + ' <div class="clearfix"></div>';
 							result = result + ' </div>';
 						}
@@ -411,7 +412,9 @@ function assetDetails(assetId) {
 			              });
 		              } 
 						
-						result = result + ' <div class="require_wrap_details_cta width100percnt description80"> <b><strong>Description:</strong></b> <span class="wordWrap-breakword">'+description+'</span>';
+
+						result = result + ' <div class="require_wrap_details_cta width100percnt description80"> <b><strong>Description:</strong></b> <span class = "wordWrap-breakword">'+description+'</span>';
+
 						result = result + ' <div class="clearfix"></div>';
 						result = result + '</div>';
 					
