@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateEducationDTO;
 import com.bis.sourcelead.dto.CandidateEmployerDTO;
@@ -31,7 +32,9 @@ import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
+import com.bis.sourcelead.dto.ImmigrationTemplateTaskDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadNotesDTO;
 import com.bis.sourcelead.entity.Candidate;
@@ -45,13 +48,13 @@ import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
-import com.bis.sourcelead.entity.ImmigrationListView;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SourceleadNotes;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
 import com.bis.sourcelead.service.CandidateEducationService;
@@ -609,77 +612,142 @@ public class ImmigrationRestController {
 		return model;
 	}
 
-    @RequestMapping(value = {
-        "/savePetitionTemplateDetails"}, method = RequestMethod.POST, produces = "application/json")
-    public String savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request,
+    @RequestMapping(value = {"/savePetitionTemplateDetails"}, method = RequestMethod.POST, produces = "application/json")
+    public Response<String> savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request,
             @RequestParam(value = "templateId", required = false) String templateId) {
-        ModelAndView model = new ModelAndView();
+        
+    	Response<String> response = new Response<>();
+    	ModelAndView model = new ModelAndView();
         model.addObject("sourceleadUrl", sourceleadUrl);
         Long immigrationId = null;
+       
+        	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+             OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+                     "orgLocations");
+         if(user != null){    
+      
         try {
-            User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-            OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-                    "orgLocations");
-
+        	  if(Validator.validate(templateDTO)){
             immigrationId = immigrationTemplateService.savePetitionTemplateDetails(templateDTO, user, orgLocations,
                     templateId);
+            response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+			response.setObject(immigrationId.toString());
+        }else{
+        	response.setObject("DataMissing");
+			response.setResponse(Result.INVALID_DATA.name());
+			response.setResponseMessage(Result.INVALID_DATA.getValue());
+			
+        }
         } catch (Exception e) {
             logger.error("Exception occured while saving Petition Template Deatils" + e.getMessage());
             e.printStackTrace();
         }
-        request.getSession().setAttribute("templateDTO", templateDTO);
-        return "{status:'success', id:" + immigrationId + "}";
+       /* return "{status:'success', id:" + immigrationId + "}";*/
+         }else{
+        	response.setResponse(Result.SESSION_TIMEDOUT.name());
+ 			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+         }
+         request.getSession().setAttribute("templateDTO", templateDTO);
+        return response;
     }
 
     @RequestMapping(value = {"/savePetitionTemplateDocDetails"}, method = RequestMethod.POST)
-    public String savePetitionTemplateDocDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request,
+    public Response<String> savePetitionTemplateDocDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request,
             @RequestParam(value = "templateId", required = false) String templateId) {
-        ModelAndView model = new ModelAndView();
+        Response<String> response = new Response<>();
+    	ModelAndView model = new ModelAndView();
         model.addObject("sourceleadUrl", sourceleadUrl);
         List<ImmigrationTemplateDocDTO> templateDocList = null;
+        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+        if (user !=null){
         try {
-            User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+            if(Validator.validate(templateDTO.getImmigrationDocList())){
             templateDocList = immigrationTemplateService.savePetitionTemplateDocDetails(templateDTO, user);
+            response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+            }else{
+            	response.setObject("DataMissing");
+    			response.setResponse(Result.INVALID_DATA.name());
+    			response.setResponseMessage(Result.INVALID_DATA.getValue());
+            }
         } catch (Exception e) {
             logger.error("Exception occured while saving Petition Template Doc Details" + e.getMessage());
             e.printStackTrace();
         }
+        }else{
+        	response.setResponse(Result.SESSION_TIMEDOUT.name());
+ 			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+        }
         request.getSession().setAttribute("templateDocList", templateDocList);
-        return "success";
+        return response;
     }
 
     @RequestMapping(value = {"/savePetitionTemplateFormDetails"}, method = RequestMethod.POST)
-    public String savePetitionTemplateFormDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request) {
-        ModelAndView model = new ModelAndView();
+    public Response<String> savePetitionTemplateFormDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request) {
+        Response<String> response = new Response<>();
+    	ModelAndView model = new ModelAndView();
         List<ImmigrationTemplateFormDTO> templateFormsList = null;
         model.addObject("sourceleadUrl", sourceleadUrl);
         templateDTO.setStaticPath(staticPath);
         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-        templateFormsList = immigrationTemplateService.savePetitionTemplateFormDetails(templateDTO, user);
+        if(user != null){
+        	try{
+        		if(Validator.validate(templateDTO.getImmigrationFormList())){
+        		templateFormsList = immigrationTemplateService.savePetitionTemplateFormDetails(templateDTO, user);
+        		response.setResponse(Result.SUCCESS.name());
+     			response.setResponseMessage(Result.SUCCESS.getValue());
+        	}else{
+        		response.setObject("DataMissing");
+    			response.setResponse(Result.INVALID_DATA.name());
+    			response.setResponseMessage(Result.INVALID_DATA.getValue());	
+        	}
+        	}catch (Exception e) {
+        		 e.printStackTrace();
+			}
+        
+        }else{
+        	response.setResponse(Result.SESSION_TIMEDOUT.name());
+ 			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+        }
         request.getSession().setAttribute("templateFormsList", templateFormsList);
-        return "success";
+        return response;
     }
 
     @RequestMapping(value = {"/savePetitionTemplateTaskDetails"}, method = RequestMethod.POST)
-    public String savePetitionTemplateTaskDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request) {
-        ModelAndView model = new ModelAndView();
+    public Response<String> savePetitionTemplateTaskDetails(ImmigrationTemplateTaskDTO taskTemplateDTO, HttpServletRequest request) {
+        Response<String> response = new Response<>();
+    	ModelAndView model = new ModelAndView();
         model.addObject("sourceleadUrl", sourceleadUrl);
+        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+        if(user != null){
         try {
-            User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-            immigrationTemplateService.savePetitionTemplateTaskDetails(templateDTO, user);
+           if(Validator.validate(taskTemplateDTO)){
+            immigrationTemplateService.savePetitionTemplateTaskDetails(taskTemplateDTO, user);
+        	response.setResponse(Result.SUCCESS.name());
+ 			response.setResponseMessage(Result.SUCCESS.getValue());
+           }else{
+        	response.setObject("DataMissing");
+   			response.setResponse(Result.INVALID_DATA.name());
+   			response.setResponseMessage(Result.INVALID_DATA.getValue());	
+           }
         } catch (Exception e) {
             logger.error("Exception occured while saving Template Task Details" + e.getMessage());
             e.printStackTrace();
         }
-        return "success";
+        }else{
+        	response.setResponse(Result.SESSION_TIMEDOUT.name());
+ 			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+        }
+        return response;
     }
 
     @RequestMapping(value = {"/getTemplateTaskList"}, method = RequestMethod.POST)
     public @ResponseBody
-    ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO,
+    ResponseList<ImmigrationTemplateTaskDTO> getTemplateTaskList(ImmigrationTemplateTaskDTO templateDTO,
             HttpServletRequest request, @RequestParam(value = "templateId", required = false) String templateId,
             @RequestParam(value = "searchValue", required = false) String searchValue) throws Exception {
-        ResponseList<ImmigrationTemplateDTO> immiTemplateList = new ResponseList<>();
+        ResponseList<ImmigrationTemplateTaskDTO> immiTemplateList = new ResponseList<>();
         String[] tableColumns = {"taskName", "assignedTo", "priority", "taskRepeat"};
         int sortColumnIndex = 3; // by default sorting using updated date
         String sortColumnOrder = "desc"; // by default descending order
@@ -695,9 +763,9 @@ public class ImmigrationRestController {
     }
 
     @RequestMapping(value = {"/editImmigrationTaskList"})
-    public ImmigrationTemplateDTO editImmigrationTaskList(HttpServletRequest request,
+    public ImmigrationTemplateTaskDTO editImmigrationTaskList(HttpServletRequest request,
             @RequestParam(value = "id", required = false) String id) throws NumberFormatException, Exception {
-        ImmigrationTemplateDTO templateDTO = immigrationTemplateService.editImmigrationTaskList(id);
+    	ImmigrationTemplateTaskDTO templateDTO = immigrationTemplateService.editImmigrationTaskList(id);
         return templateDTO;
     }
 

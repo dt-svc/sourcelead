@@ -22,14 +22,14 @@ function Immigration() {
     this.savePetitionTemplateAndContinue = function (status) {
         if ($('#petitionTemplateDetails').validate(false, validationSettings)) {
             var formData = getFormData("petitionTemplateDetails");
+            alert("ssss"+immTemplId)
             $.ajax({
                 url: sourceleadUrl + immiModulePath + "/savePetitionTemplateDetails?templateId=" + immTemplId,
                 type: "POST",
                 data: formData,
-                success: function (data) {
-                    eval("jsonObj=" + data);
-                    if (jsonObj.status == 'success') {
-                        immTemplId = jsonObj.id;
+                success: function (result) {
+                    if (result.response === "SUCCESS") {
+                        immTemplId = result.object;
                         if (status == 'saveContinue') {
                             $("#addNewPetitionTemplateDiv").empty();
                             $("#addNewPetitionTemplateDiv").load(sourceleadUrl + immiModulePath + "/gotoTemplatePreviousPage?status=docDetails");
@@ -90,8 +90,8 @@ function Immigration() {
                 url: sourceleadUrl + immiModulePath + "/savePetitionTemplateDocDetails",
                 type: "POST",
                 data: formData,
-                success: function (data) {
-                    if (data == 'success') {
+                success: function (result) {
+                    if (result.response === 'SUCCESS') {
                         if (status == 'saveContinue') {
                             $("#addNewPetitionTemplateDiv").empty();
                             $("#addNewPetitionTemplateDiv").load(sourceleadUrl + immiModulePath + "/gotoTemplatePreviousPage?status=formDetails");
@@ -116,8 +116,8 @@ function Immigration() {
                 url: sourceleadUrl + immiModulePath + "/savePetitionTemplateFormDetails",
                 type: "POST",
                 data: formData,
-                success: function (data) {
-                    if (data == 'success') {
+                success: function (result) {
+                    if (result.response === 'SUCCESS') {
                         if (status == 'saveContinue') {
                             $("#addNewPetitionTemplateDiv").empty();
                             $("#addNewPetitionTemplateDiv").load(sourceleadUrl + immiModulePath + "/gotoTemplatePreviousPage?status=taskList");

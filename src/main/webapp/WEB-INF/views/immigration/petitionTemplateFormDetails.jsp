@@ -244,7 +244,7 @@
 
 <script>
     $(document).ready(function () {
-        $("#templateId").val(jsonObj.id);
+        $("#templateId").val(immTemplId);
         applyChangeEvent();
         checkFormNames();
     });
