@@ -194,11 +194,11 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
      */
     @Override
     @Transactional(rollbackFor = {Exception.class})
-    public ResponseList<ImmigrationTemplateListDTO> getAllTemplateDetails(ImmigrationTemplateListDTO templateListDTO, String searchValue, Long orgLocationId) {
+    public ResponseList<ImmigrationTemplateListDTO> getAllTemplateDetails(ImmigrationTemplateListDTO templateListDTO, String searchValue, Long orgLocationId,String[] countriesList) {
         Session session = this.sessionFactory.getCurrentSession();
         List<Long> countlist = null;
         Integer filterCount = 0;
-        List<ImmigrationTemplateView> ImmigrationTemplateViewLst = null;
+        List<ImmigrationTemplateView> immigrationTemplateViewLst = null;
         ResponseList<ImmigrationTemplateListDTO> responseList = new ResponseList<>();
 
         StringBuilder query1 = new StringBuilder("");
@@ -209,6 +209,10 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
             query1.append(" or (tempView.petitionType like '%" + searchValue + "%' ))");
             //query1.append(" or (tempView.status like '%" + searchValue + "%' )");
         }
+        StringBuilder query2 = new StringBuilder("");
+        if (countriesList != null && countriesList.length !=0) {
+        	query2 = query2.append(" and (tempView.country IN ( :countriesList ))");
+        }
         // usertList sorting order
         String sortingQry = "";
         if (StringUtils.isNotBlank(templateListDTO.getSortColumn())) {
@@ -218,8 +222,11 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
         }
 
         String listQuery = "from ImmigrationTemplateView tempView  where tempView.orgLocationId=:orgLocationId " + (templateListDTO.getStatus() >= 0 ? "and tempView.status =" + templateListDTO.getStatus() + " " : " ");
-
-        ImmigrationTemplateViewLst = session.createQuery(listQuery + query1 + sortingQry).setLong("orgLocationId", orgLocationId).list();
+        Query hqlQuery = session.createQuery(listQuery + query1 + query2 + sortingQry);
+        if (countriesList != null && countriesList.length !=0) {
+        	hqlQuery.setParameterList("countriesList", countriesList);
+        }
+        immigrationTemplateViewLst = hqlQuery.setLong("orgLocationId", orgLocationId).list();
         String listQueryCount = "select count(*) from ImmigrationTemplateView tempView where tempView.orgLocationId=:orgLocationId " + (templateListDTO.getStatus() >= 0 ? "and tempView.status =" + templateListDTO.getStatus() + " " : " ");
         countlist = session.createQuery(listQueryCount + query1).setLong("orgLocationId", orgLocationId).setFirstResult(templateListDTO.getStart())
                 .setMaxResults(templateListDTO.getLength()).list();
@@ -237,7 +244,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
             responseList.setRecordsFiltered(totalCount);
         }
         List<ImmigrationTemplateListDTO> tempalteDTOList = new ArrayList<ImmigrationTemplateListDTO>();
-        for (ImmigrationTemplateView source : ImmigrationTemplateViewLst) {
+        for (ImmigrationTemplateView source : immigrationTemplateViewLst) {
             //System.out.println(" DocsCount"+source.getDocsCount());
             ImmigrationTemplateListDTO target = new ImmigrationTemplateListDTO();
             BeanUtils.copyProperties(source, target);

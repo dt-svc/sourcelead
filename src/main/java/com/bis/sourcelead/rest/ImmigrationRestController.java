@@ -402,7 +402,7 @@ public class ImmigrationRestController {
     public @ResponseBody
     ResponseList<ImmigrationTemplateListDTO> getAlltemplateList(
             ImmigrationTemplateListDTO templateListDTO,
-            @RequestParam(value = "searchValue", required = false) String searchValue, HttpServletRequest request) {
+            @RequestParam(value = "searchValue", required = false) String searchValue, @RequestParam(value = "countriesList", required = false)  String[] countriesList,   HttpServletRequest request) {
         ResponseList<ImmigrationTemplateListDTO> templateListDTOList = null;
         try {
             String[] tableColumns = {"name", "country", "petitionType" ,"description", "docsCount", "formsCount", "tasksCount", "status", "id"};// should be
@@ -420,7 +420,7 @@ public class ImmigrationRestController {
                     "orgLocations");
 
             templateListDTOList = immigrationTemplateService.getAllTemplateDetails(templateListDTO, searchValue,
-                    orgLocations.getId());
+                    orgLocations.getId(), countriesList);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -176,9 +176,9 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 
     @Override
     public ResponseList<ImmigrationTemplateListDTO> getAllTemplateDetails(ImmigrationTemplateListDTO templateListDTO,
-            String searchValue, Long orgLocationId) {
+            String searchValue, Long orgLocationId, String[] countriesList) {
         ResponseList<ImmigrationTemplateListDTO> templateList = immigrationTemplateDao
-                .getAllTemplateDetails(templateListDTO, searchValue, orgLocationId);
+                .getAllTemplateDetails(templateListDTO, searchValue, orgLocationId, countriesList);
         return templateList;
     }
 

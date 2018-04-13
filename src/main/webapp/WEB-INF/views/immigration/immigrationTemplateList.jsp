@@ -59,8 +59,43 @@
                                         </ul>
                                     </div>
                                 </div>-->
+						<span>
+						<div class="dropdown mr">
+					<span class="dropdown-toggle" id="" data-toggle="dropdown" aria-expanded="false">
+						<i class="fa fa-filter"></i><span>Country</span><i class="fa fa-caret-down paddingLeft"></i></span>
+					<div id="showListCountry" class="dropdown-menu bootstrap_dropdownMenu" role="menu" aria-labelledby="menu1">
+					<ul class="list-unstyled ml10 mr10">
+					  <li>
+						<input value="Australia" name="resourcerequest" id="ch15" type="checkbox">
+						<label for="ch15">Australia</label>
+					  </li>
+					  <li>
+						<input id="ch16" value="Canada" name="resourcerequest" type="checkbox">
+						<label for="ch16">Canada</label>
+					  </li>
+					  <li>
+						<input id="ch17" value="India" name="resourcerequest" type="checkbox">
+						<label for="ch17">India</label>
+					  </li>
+					  <li>
+						<input id="ch18" value="Singapore" name="resourcerequest" type="checkbox">
+						<label for="ch18">Singapore</label>
+					  </li>
+					  	<li>
+						<input id="ch19" value="United Kingdom" name="resourcerequest" type="checkbox">
+						<label for="ch19">United Kingdom</label>
+					  </li>
+					  <li>
+						<input id="ch20" value="United States" name="resourcerequest" type="checkbox">
+						<label for="ch20">United States</label>
+					  </li>						  
+					  						  
+					</ul>
+				  </div>
+						</div>
+						</span>
 
-                <select id="statusFilter" onchange="getDynamicTemplateList($(this).val())" style="padding: 3px 5px;">
+                <select id="statusFilter" onchange="getDynamicTemplateList($(this).val(),'')" style="padding: 3px 5px;">
                     <option value="-1">All</option>
                     <option value="1" selected="selected">Active</option>
                     <option value="0">Inactive</option>
@@ -74,10 +109,25 @@
 </section>
 <jsp:include page="../masterFooter.jsp" />
 <script>
+var checkedCountries = [];
+$(document).on('change', "#showListCountry ul li input[type=checkbox]", function(){
+	if($(this).prop('checked')==true){
+		checkedCountries.push($(this).val());
+	}
+	if($(this).prop('checked')==false){
+		var uncheckedVal = $(this).val();
+		checkedCountries = jQuery.grep(checkedCountries, function(value) {
+			  return value != uncheckedVal;
+		}); 
+	}
+	getDynamicTemplateList("",checkedCountries);
+});
+
+
     var table = "";
     $(document).ready(function () {
 
-        getDynamicTemplateList();
+        getDynamicTemplateList("","");
 
         $('a.toggle-vis').on('click', function (e) {
             e.preventDefault();
@@ -94,8 +144,7 @@
         });
     });
 
-    function getDynamicTemplateList(status) {
-
+    function getDynamicTemplateList(status,countriesList) {
         var result = "";
         result = result + '<table id="dynamicTemplateListTbl">';
         result = result + '<thead>';
@@ -122,7 +171,7 @@
         var searchValue = $("#immiTemplateSerach").val();
         searchValue = searchValue ? searchValue : "";
 
-        var url = sourceleadUrl + "/immigration/getImmigrationTemplateList?searchValue=" + searchValue + "&status=" + (status ? status : 1);
+        var url = sourceleadUrl + "/immigration/getImmigrationTemplateList?searchValue=" + searchValue + "&status=" + (status ? status : 1)+"&countriesList="+countriesList;
         dynamicImmigrationListPagination(url);
     }
 
@@ -300,7 +349,7 @@
 
         $("#immiTemplateSerach").keyup(function (e) {
             if (e.which === 13) {
-                getDynamicTemplateList();
+                getDynamicTemplateList("","");
             }
         });
 
