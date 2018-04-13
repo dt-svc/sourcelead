@@ -698,7 +698,7 @@ function editAssetManagement(assetId){
 			
 			result = result + '<div class="clearfix mr col-md-12">';
 			result = result + '<div class="pull-right">';
-			result = result + ' <input type="button" value="Add" id="update_asset" onclick="updateAsset();" class="btn btn-sm btn-primary">';
+			result = result + ' <input type="button" value="update" id="update_asset" onclick="updateAsset();" class="btn btn-sm btn-primary">';
 			result = result + ' <input class="btn btn-sm btn-default ml10" value="Cancel" onClick="editAssetManagement('+assetId+');" type="button">';
 			
 			result = result + '</div>';
