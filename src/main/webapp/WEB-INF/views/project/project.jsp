@@ -685,18 +685,29 @@ function getStatus(){
 		  		        processData: false,
 		  		        contentType:false, 
 						url : sourceleadUrl+ "/storeProject?${_csrf.parameterName}=${_csrf.token}",
-						success : function(projects) {
-								 $("#projectId").val(projects.id);
-								 $("#projectUUID").val(projects.projectUUID);
-								 $("#startDateStr").val(projects.startDateStr);
-								 $("#endDateStr").val(projects.endDateStr);
-								 
-								 $("#projectDetailsloading").removeAttr("style");
-								 var assignedMembers = document.getElementById("assignedMembers");
-								 document.getElementById("assignedMembers").removeAttribute("class");
-								 assignedMembers.href="#tab-b"; 
-								 $("#assignedMembers").click();
-// 								 assignedMembers.click();
+						success : function(result) {
+								if (result && result.response === "INVALID_DATA") {
+	  								$("#projectDetailsloading").removeAttr("style");
+	  			                    showError(result.responseMessage);
+	  			                } else if (result.response === "AWKWARD") {
+	  			                    location.href = "/errorPage";
+	  			                } else if (result.response === "SUCCESS") {
+	  			                	var projects = result.object;
+	  			                	 $("#projectId").val(projects.id);
+									 $("#projectUUID").val(projects.projectUUID);
+									 $("#startDateStr").val(projects.startDateStr);
+									 $("#endDateStr").val(projects.endDateStr);
+									 
+									 $("#projectDetailsloading").removeAttr("style");
+									 var assignedMembers = document.getElementById("assignedMembers");
+									 document.getElementById("assignedMembers").removeAttribute("class");
+									 assignedMembers.href="#tab-b"; 
+									 $("#assignedMembers").click();
+	  			                } else if (result.indexOf('Sign In') !== -1) {
+	  								location.replace(sourceleadUrl);
+	  							} else {
+	  			                    showError("Operation failed, please try again");
+	  			                }
 
 						},
 					});

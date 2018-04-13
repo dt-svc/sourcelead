@@ -239,13 +239,14 @@ public class CandidateOffBoardRestController {
 		return response;
 	}
 
+	@SuppressWarnings("unused")
 	@RequestMapping(value = "/createNewOffBoardingTemplate", method = RequestMethod.POST)
 	public @ResponseBody Response<OffBoardingTemplate> createNewOffBoardingTemplate(OffBoardingTemplateDTO offBoardingTemplateDTO,
 			HttpServletRequest request) throws Exception {
 		Response<OffBoardingTemplate> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			if (user != null) {
+			if (user != null && Validator.validate(offBoardingTemplateDTO)) {
 				OffBoardingTemplate offBoardingTemplate = null;
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				if (StringUtils.isNotBlank(offBoardingTemplateDTO.getTemplateId())) {
@@ -280,9 +281,12 @@ public class CandidateOffBoardRestController {
 				response.setObject(offBoardingTemplate);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
-			} else {
+			}else if (user == null) {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
 			}
 		} catch (Exception e) {
 			response.setResponse(Result.AWKWARD.name());
@@ -513,21 +517,34 @@ public class CandidateOffBoardRestController {
 		return responseList;
 	}
 
+	@SuppressWarnings("unused")
 	@RequestMapping(value = "/saveAndFinishOffboardTemplate", method = RequestMethod.POST)
 	@ResponseBody
 	Response<String> saveAndFinishOffboardTemplate(@RequestParam(value = "templateId", required = false) Long templateId,
 			HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();
 		try {
-			OffBoardingTemplate template = offBoardingTemplateService.getOffBoardingTemplateById(templateId);
-			if (null != template) {
-				template.setTemplateStatus("Finished");
-				offBoardingTemplateService.saveOffBoardingTemplate(template);
-				SourceLeadSessionManager.setSessionAttribute(request, "OffboardCreateMsg", "Success!! New OffBoard Template created");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if(user != null){
+				OffBoardingTemplate template = offBoardingTemplateService.getOffBoardingTemplateById(templateId);
+				OffBoardingTemplate temp=null;
+				if (null != template) {
+					template.setTemplateStatus("Finished");
+					temp=offBoardingTemplateService.saveOffBoardingTemplate(template);
+					SourceLeadSessionManager.setSessionAttribute(request, "OffboardCreateMsg", "Success!! New OffBoard Template created");
+				}
+				if(temp != null){
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+			}else if (user == null) {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
 			}
-			response.setObject("success");
-			response.setResponse(Result.SUCCESS.name());
-			response.setResponseMessage(Result.SUCCESS.getValue());
+			
 		} catch (Exception e) {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
@@ -542,7 +559,7 @@ public class CandidateOffBoardRestController {
 		Response<String> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			if (user != null) {
+			if (user != null && Validator.validate(offboardTasksDTO)) {
 				OffboardTasks offboardTasks = new OffboardTasks();
 				if (StringUtils.isNotBlank(offboardTasksDTO.getTaskName())) {
 					offboardTasks.setTaskName(offboardTasksDTO.getTaskName());
@@ -591,9 +608,12 @@ public class CandidateOffBoardRestController {
 				response.setObject("success");
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
-			} else {
+			} else if (user == null) {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
 			}
 		} catch (Exception e) {
 			response.setResponse(Result.AWKWARD.name());
