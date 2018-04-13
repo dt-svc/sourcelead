@@ -110,8 +110,8 @@
 		  </div>	
 		  
 		  <div class="welBtns">
-			<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='${appPath}/offboardStep2'/>'" >
-			<input type="button"  value="Proceed to next step" id="save_button"  onclick="javascript:window.location.href = '<c:url value='${appPath}/offboardStep4'/>'" class="Brig">
+			<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='/app/offboardStep2'/>'" >
+			<input type="button"  value="Proceed to next step" id="save_button"  onclick="javascript:window.location.href = '<c:url value='/app/offboardStep4'/>'" class="Brig">
 			<div class="clearfix"></div>
 		</div>
 		
