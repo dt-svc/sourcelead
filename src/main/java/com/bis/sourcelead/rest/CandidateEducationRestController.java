@@ -102,11 +102,12 @@ public class CandidateEducationRestController {
 	/** @author: Mahaveer Manoj, This method is used for Android application **/
 	@RequestMapping(value = "/rest/storeCandidateEducation", method = RequestMethod.POST)
 	@ResponseBody
-	public Response<Integer> storeCandidateEducation(@RequestBody CandidateEducationDTO candidateEducationDTO, HttpServletRequest request)
-			throws Exception {
+	public Response<Integer> storeCandidateEducation(@RequestBody CandidateEducationDTO candidateEducationDTO,
+			HttpServletRequest request) throws Exception {
 		Response<Integer> response = new Response<>();
 		try {
-			response = storeCandidateEducation(candidateEducationDTO, candidateEducationDTO.getCandidateId() + "", request);
+			response = storeCandidateEducation(candidateEducationDTO, candidateEducationDTO.getCandidateId() + "",
+					request);
 		} catch (Exception e) {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
@@ -119,12 +120,14 @@ public class CandidateEducationRestController {
 	@RequestMapping(value = "/storeCandidateEducation", method = RequestMethod.POST)
 	@ResponseBody
 	public Response<Integer> storeCandidateEducation(CandidateEducationDTO candidateEducationDTO,
-			@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception {
+			@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request)
+			throws Exception {
 		Response<Integer> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null && Validator.validate(candidateEducationDTO)) {
-				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+						"orgLocations");
 				candidateEducationDTO.setDateFormat(loginOrgLocation.getDateFormat());
 				candidateEducationService.storeCandidateEducation(candidateEducationDTO, Long.parseLong(candidateId),
 						loginOrgLocation.getId(), user);
@@ -162,15 +165,17 @@ public class CandidateEducationRestController {
 	 */
 	@RequestMapping(value = { "/getCandidateEducationListByCandidateId",
 			"/rest/getCandidateEducationListByCandidateId" }, method = RequestMethod.GET)
-	public ResponseList<CandidateEducationDTO> getCandidateEducationListByCandidateId(@RequestParam(defaultValue = "0") long candidateId,
-			HttpServletRequest request) throws Exception {
+	public ResponseList<CandidateEducationDTO> getCandidateEducationListByCandidateId(
+			@RequestParam(defaultValue = "0") long candidateId, HttpServletRequest request) throws Exception {
 		ResponseList<CandidateEducationDTO> reponseList = new ResponseList<>();
 		try {
-			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
 			if (loginOrgLocation != null) {
 				if (candidateId > 0) {
 					List<CandidateEducation> candidatesEducationList = candidateEducationService
-							.getCandidateEducationListByCandidateIdAndOrgLocationID(candidateId, loginOrgLocation.getId());
+							.getCandidateEducationListByCandidateIdAndOrgLocationID(candidateId,
+									loginOrgLocation.getId());
 					List<CandidateEducationDTO> eduList = new ArrayList<>();
 					for (CandidateEducation candidateEducation : candidatesEducationList) {
 						CandidateEducationDTO edu = new CandidateEducationDTO();
@@ -227,19 +232,22 @@ public class CandidateEducationRestController {
 	// @PreAuthorize("hasAnyRole('ROLE_DELETE_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS')")
 	@RequestMapping(value = { "/removeCandidateEducationBycandidateIdandcandidateEducationId",
 			"rest/removeCandidateEducationBycandidateIdandcandidateEducationId" })
-	public Response<String> removeCandidateEducationBycandidateIdandcandidateEducationId(CandidateEducationDTO candidateEducationDTO)
-			throws Exception {
+	public Response<String> removeCandidateEducationBycandidateIdandcandidateEducationId(
+			CandidateEducationDTO candidateEducationDTO) throws Exception {
 		Response<String> response = new Response<>();
 		try {
 			User user = userService.getUserById(candidateEducationDTO.getLoginUserId());
 			if (user != null) {
-				OrgLocations orgLocations = orgLocationService.getOrgLocations(candidateEducationDTO.getOrgLocationId());
+				OrgLocations orgLocations = orgLocationService
+						.getOrgLocations(candidateEducationDTO.getOrgLocationId());
 				CandidateEducation candidateEducation = candidateEducationService
-						.removeCandidateEducationBycandidateIdandcandidateEducationId(candidateEducationDTO.getCandidateId(),
-								candidateEducationDTO.getCandidateEducationId(), user, orgLocations);
+						.removeCandidateEducationBycandidateIdandcandidateEducationId(
+								candidateEducationDTO.getCandidateId(), candidateEducationDTO.getCandidateEducationId(),
+								user, orgLocations);
 				// OrgLocations loginOrgLocation = (OrgLocations)
 				// SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				Candidate candidate = candidateService.getCandidateByCandidateId(candidateEducationDTO.getCandidateId());
+				Candidate candidate = candidateService
+						.getCandidateByCandidateId(candidateEducationDTO.getCandidateId());
 				if (null != candidate && null != candidate.getId()) {
 					CandidateIndex candidateIndex = new CandidateIndex();
 					candidateIndex.setCandidateId(candidate.getId());
@@ -315,12 +323,12 @@ public class CandidateEducationRestController {
 				}
 
 				if (candidatesEducationList.getStartDate() != null) {
-					candEduDTO.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(can.getOrgLocationId().getDateFormat(),
-							candidatesEducationList.getStartDate()));
+					candEduDTO.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(
+							can.getOrgLocationId().getDateFormat(), candidatesEducationList.getStartDate()));
 				}
 				if (candidatesEducationList.getEndDate() != null) {
-					candEduDTO.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(can.getOrgLocationId().getDateFormat(),
-							candidatesEducationList.getEndDate()));
+					candEduDTO.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(
+							can.getOrgLocationId().getDateFormat(), candidatesEducationList.getEndDate()));
 				}
 
 				LinkedHashSet<String> lhs = new LinkedHashSet<String>();
@@ -371,16 +379,17 @@ public class CandidateEducationRestController {
 
 	@RequestMapping(value = "/upDateCandidateEducationByCandidateIdAndCandidateEducationId", method = RequestMethod.POST)
 	@ResponseBody
-	public Response<Boolean> upDateCandidateEducationByCandidateIdAndCandidateEducationId(CandidateEducationDTO candidateEducationDTO,
-			HttpServletRequest request) throws Exception {
+	public Response<Boolean> upDateCandidateEducationByCandidateIdAndCandidateEducationId(
+			CandidateEducationDTO candidateEducationDTO, HttpServletRequest request) throws Exception {
 		Response<Boolean> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null && Validator.validate(candidateEducationDTO)) {
-				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+						"orgLocations");
 				candidateEducationDTO.setDateFormat(loginOrgLocation.getDateFormat());
-				CandidateEducation candidateEdu = candidateEducationService.storeCandidateEducation(candidateEducationDTO,
-						candidateEducationDTO.getCandidateId(), loginOrgLocation.getId(), user);
+				CandidateEducation candidateEdu = candidateEducationService.storeCandidateEducation(
+						candidateEducationDTO, candidateEducationDTO.getCandidateId(), loginOrgLocation.getId(), user);
 				if (candidateEdu != null) {
 					response.setObject(true);
 					response.setResponse(Result.SUCCESS.name());
@@ -406,7 +415,8 @@ public class CandidateEducationRestController {
 
 	@RequestMapping(value = "/validateEduname")
 	public Response<Boolean> validateEduname(@RequestParam(value = "name", required = false) String name,
-			@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request) throws Exception {
+			@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request)
+			throws Exception {
 		Response<Boolean> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -429,6 +439,29 @@ public class CandidateEducationRestController {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return response;
+	}
+
+	@RequestMapping(value = { "/rest/getAllEducations" }, method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseList<LookUpData> getAllEducationList(HttpServletRequest request) throws Exception {
+		ResponseList<LookUpData> reponseList = new ResponseList<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				List<LookUpData> lookupDataList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+				reponseList.setData(lookupDataList);
+				reponseList.setResponse(Result.SUCCESS.name());
+				reponseList.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				reponseList.setResponse(Result.SESSION_TIMEDOUT.name());
+				reponseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			reponseList.setResponse(Result.AWKWARD.name());
+			reponseList.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return reponseList;
 	}
 
 }
