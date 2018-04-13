@@ -421,7 +421,7 @@ function usersListPagination(url,sourceleadUrl){
     $("input[type=search]").hide();
     $("#usersListDataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
-    		   projectDataTableList();
+    		   getUserList();
     	   }
     	});
 }
