@@ -537,7 +537,7 @@ function editAssetManagement(assetId){
            result = result + '<div class="col-md-12 edit-category edit-amd">';
            result = result + '<div class="clearfix assetaddpop-ul col-md-6 category">';
            result = result + '<div class="row">';
-          
+           result = result	+ '<input type="hidden" name ="category" id="assetCategory" value="'+json.catagoryHiddenId+'">';
            result = result + '</div>';
            result = result + '</div>';
 			result = result + '<div class="clearfix" id="laptop-edit">';
@@ -555,6 +555,7 @@ function editAssetManagement(assetId){
 			result = result + '</select>';	
 			result = result + ' </div>';
 			
+			
 			result = result + '<div class="col-md-3 minHeight50">';
 			result = result + '  <input type="text" class="form-control input-sm" name="make" value="'+make+'" data-validation-optional="true" data-validation="validate_Space validate_length length2-100" placeholder="Make">';
 			result = result + '</div>';
@@ -570,7 +571,6 @@ function editAssetManagement(assetId){
                 result = result + '      <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>   ';
                 result = result + '   </div>  ';
                 result = result + '  </div>  ';
-			
 			if (json.categoryName != null && json.categoryName != '' && json.categoryName != 'undefined' && (json.categoryId == 1 || json.categoryId ==2)) {
 			
 				result = result + ' <div class="col-md-3 minHeight50">';
@@ -695,8 +695,6 @@ function editAssetManagement(assetId){
 			result = result	+ '<input type="hidden" id="generalExisitingFile" name="generalExisitingFile" value="'+fileName+'">';
 			result = result+'  </div>';
 			
-			
-			
 			result = result + '<div class="clearfix mr col-md-12">';
 			result = result + '<div class="pull-right">';
 			result = result + ' <input type="button" value="Add" id="update_asset" onclick="updateAsset();" class="btn btn-sm btn-primary">';
@@ -707,20 +705,15 @@ function editAssetManagement(assetId){
 			result = result + '</div>';
 			result = result + '</div>';
 			
-			
 			result = result + '</div>';
-				  
 			result = result + ' </div>';
 			result = result  +'</form> ';         
 			result = result + '</div>';
-			
 			$(".user_summary_edit").slideToggle(100);
 			$(".error").removeClass("error");
 			$('#editUserDiv').find('p.jquery_form_error_message').remove();
 			$("#editUserDiv").empty(); 
 			$("#editUserDiv").append(result);  
-			
-			
 
          var config = {
 		  '.chosen-select'           : {},
@@ -752,8 +745,6 @@ function editAssetManagement(assetId){
 		 document.getElementById("fileAttachment").onchange = function () {
 			 $('#uploadFile1Attachment').val($(this).val().replace(/C:\\fakepath\\/i, ''))
 		  };
-			
-		
 		
 	    },
 	});
@@ -924,12 +915,12 @@ function removeDoc(assetId,url,block){
 
 <script type="text/javascript">
 function updateAsset() {
-var validationSettings = {
-        errorMessagePosition : 'element',
-       borderColorOnError : '',
-		scrollToTopOnError : true,
-		dateFormat : 'yyyy/mm/dd' 
-   };  
+			var validationSettings = {
+			        errorMessagePosition : 'element',
+			       borderColorOnError : '',
+					scrollToTopOnError : true,
+					dateFormat : 'yyyy/mm/dd' 
+			   };  
         	 if ($('#updateAsset_form').validate(false, validationSettings)){
         	        var form = $('#updateAsset_form')[0];
 	           		var formData = new FormData(form);
@@ -945,10 +936,23 @@ var validationSettings = {
               	        dataType : 'json',
 	     		    	 url: sourceleadUrl+"/addCategoryAssets?"+tokenParamName+"="+tokenValue+"&assetId="+assetId, 
 	     		        success: function(result) {
-	     		        	if(result == 'home'){
+	     		        	/* if(result == 'home'){
 	     		        		assetDetails(assetId);
 	     		        		getAssetList();
-	     		        	}
+	     		        	} */
+	     		        	
+	     		       	if (result && result.response === "INVALID_DATA") {
+						    showError(result.responseMessage);
+						} else if (result.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (result.response === "SUCCESS") {
+							assetDetails(assetId);
+     		        		getAssetList();
+						} else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
+						}
 	     			        
 	     		        },
 	     		    }); 
