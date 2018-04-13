@@ -17,8 +17,8 @@
                         <form:form id="adduser_form"  name="adduser_form" method="post">                             
                             
                             <div class="clearfix mb10">
-                              <div class="col-md-12" id="userRoleDiv">
-                                <select class="form-control chosen-select" data-validation="required" field-name="Country" id="subscribedCountry" onchange="getLocationRegisteredCompanies();">
+                              <div class="col-md-12" id="subscribedCountryDiv">
+                                <select class="form-control chosen-select" data-validation="required" field-name="Country" id="subscribedCountry"  onchange="getLocationRegisteredCompanies();">
                                 	 <option value="">-Select Country-</option>
                                 </select>
                               </div>
@@ -26,7 +26,7 @@
                             
                             
                             <div class="clearfix mb10">
-                              <div class="col-md-12" id="userRoleDiv">
+                              <div class="col-md-12" id="companiesDiv">
                                 <select class="form-control chosen-select" data-validation="required" field-name="Company" onchange="getRegisteredOrgRoles();" id="registeredLocation" name="registeredLocation">
                                 	 <option value="">-Select Company-</option>
                                 </select>
@@ -512,12 +512,29 @@ var validationSettings = {
 		$('#firstName').val('');
 		$('#lastName').val('');
 		$('#email').val('');
+		
+		$('#roleTypeId').empty();
+		$('#roleTypeId').append("<option value=''>-- Select Company --</option>");
 		$('#roleTypeId').val('');
+		$('#roleTypeId').trigger("chosen:updated");
+		
+		
+		$('#subscribedCountry').empty();
+		$('#subscribedCountry').trigger("chosen:updated");
+		
+		$("#registeredLocation").empty();
+		$('#registeredLocation').append("<option value=''>-- Select Company --</option>");
+		$("#registeredLocation").val('');
+		$('#registeredLocation').trigger("chosen:updated");
+		
+		
 		$(".error").removeClass("error");
 		$('#firstNameDiv').find('p.jquery_form_error_message').remove();
 		$('#lastNameDiv').find('p.jquery_form_error_message').remove();
 		$('#userEmailDiv').find('p.jquery_form_error_message').remove();
 		$('#userRoleDiv').find('p.jquery_form_error_message').remove();
+		$('#subscribedCountryDiv').find('p.jquery_form_error_message').remove();
+		$('#companiesDiv').find('p.jquery_form_error_message').remove();
 		
 	}
 </script>
