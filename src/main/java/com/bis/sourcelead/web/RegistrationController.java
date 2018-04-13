@@ -23,12 +23,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.ReferContactsDao;
 import com.bis.sourcelead.dto.OrgLocationDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.RoleDTO;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.EmailDomains;
-import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
@@ -417,29 +417,25 @@ public class RegistrationController {
 	 
 		@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 		@RequestMapping(value = "/app/getOrgRegisteredUsers")
-		public @ResponseBody String getOrgRegisteredUsers(@RequestParam(value = "registeredOrgLocationId", required = false) Long registeredOrgLocationId,
+		public @ResponseBody ResponseList<UserDTO> getOrgRegisteredUsers(UserDTO userDTO,@RequestParam(value = "registeredOrgLocationId", required = false) Long registeredOrgLocationId,
 				HttpServletRequest request) throws Exception {
 
 		    String resultJson;
 		    OrgLocations orgLocations = orgLocationService.getOrgLocations(registeredOrgLocationId);
-
-			List<User> usersList = userService.getUsersListByOrglocationId(orgLocations.getId());
-			List<User> orgUsersList = new ArrayList<User>(); 
-			if(null != usersList){
-				for(User user : usersList){
-					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
-					user.setUserState(userRole.getUserState());
-					user.setRole(userRole.getRoles().getDisplayName());
-					
-					if(null != userRole.getOrgLocations().getUser() && user.getId().equals(userRole.getOrgLocations().getUser().getId())){
-						user.setIsPrimaryAdmin("Y");
-					}
-					
-					orgUsersList.add(user);
-				}
+		    
+		    String[] tableColumns = {"id","firstName", "email", "mobilePhone", "role", "status", "actions"};
+		    int sortColumnIndex = 1; //by default sorting using updated date
+			String sortColumnOrder = "desc"; //by default descending order
+			if(userDTO.getOrder() != null && !userDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(userDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = userDTO.getOrder().get(0).get("dir");
 			}
-		    resultJson = commonUtil.toJSON(orgUsersList);
-			return resultJson;
+			userDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			userDTO.setSortOrder(sortColumnOrder);
+		    
+
+			ResponseList<UserDTO> usersDTOList = userService.getUsersDTOListByOrglocationId(orgLocations.getId(),userDTO);
+			return usersDTOList;
 		}
 		
 		

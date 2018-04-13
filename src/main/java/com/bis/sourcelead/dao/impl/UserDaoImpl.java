@@ -6,11 +6,12 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -23,13 +24,16 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
-import com.bis.sourcelead.entity.Requirement;
-import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -1259,5 +1263,116 @@ public class UserDaoImpl implements UserDao {
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	@Transactional
+	public ResponseList<UserDTO> getUsersDTOListByOrglocationId(Long orgLocationId,UserDTO userDTO) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		List<Long> countlist = null;
+		Integer filterCount = 0;
+		ResponseList<UserDTO> response = new ResponseList<>();
+		Query queryObj = null;
+		List<User> usersList = null;
+		
+		StringBuilder query1 = new StringBuilder("");
+		
+		
+		if(userDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userDTO.getSearchValue())) {
+			 query1.append(" user.firstName like '%" + userDTO.getSearchValue() + "%' ")
+					.append("OR user.lastName like '%" + userDTO.getSearchValue() + "%' ")
+					.append("OR concat(user.firstName,user.lastName) like '%" + userDTO.getSearchValue() + "%' ")
+					.append("OR user.email like '%" + userDTO.getSearchValue() + "%' ")
+					.append("OR user.mobilePhone like '%" + userDTO.getSearchValue() + "%' ")
+					.append("OR user.id IN (select userRole.user.id from UserRole userRole where userRole.roles.displayName like '%" + userDTO.getSearchValue() + "%' and userRole.orgLocations.id = :orgLocationId) ");
+					
+			 
+				 if(userDTO.getSearchValue().toLowerCase().equalsIgnoreCase("Resend")) {
+					 query1.append("OR user.id IN (select userRole.user.id from UserRole userRole where userRole.userState = 'NOT_LOGGEDIN' and userRole.orgLocations.id = :orgLocationId)");
+				 }else if(userDTO.getSearchValue().toLowerCase().equalsIgnoreCase("In-active") || userDTO.getSearchValue().toLowerCase().equalsIgnoreCase("In active")) {
+					 query1.append("OR user.id IN (select userRole.user.id from UserRole userRole where userRole.userState = 'INACTIVE' and userRole.orgLocations.id = :orgLocationId)");
+				 }else if(userDTO.getSearchValue().toLowerCase().equalsIgnoreCase("Active")) {
+					 query1.append("OR user.id IN (select userRole.user.id from UserRole userRole where userRole.userState = 'ACTIVE' and userRole.orgLocations.id = :orgLocationId)");
+				 }
+						
+			}
+		
+		
+		
+		String sortingQry = "";
+		if(StringUtils.isNotBlank(userDTO.getSortColumn())) {
+			sortingQry = " order by user."+ userDTO.getSortColumn() +" "+userDTO.getSortOrder();
+		}
+
+		
+
+
+	     query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations.id = :orgLocationId)";
+	
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			 queryObj = session.createQuery(query + " and "+"("+query1.toString()+")"+sortingQry);
+		}else{
+			 queryObj = session.createQuery(query + query1.toString()+sortingQry);
+		}
+		
+		queryObj.setFirstResult(userDTO.getStart());
+		queryObj.setMaxResults(userDTO.getLength());
+		queryObj.setLong("orgLocationId", orgLocationId).list();
+		usersList = queryObj.list();
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+")").setLong("orgLocationId", orgLocationId).list();
+			filterCount = countlist.iterator().next().intValue();
+		}else {
+			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationId", orgLocationId).list();
+			filterCount = countlist.iterator().next().intValue();
+		}
+		
+        int totalCount = 0;
+
+		
+		if (userDTO != null) {
+			if(countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+			}
+		} 
+		response.setRecordsTotal(totalCount);
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			response.setRecordsFiltered(filterCount);
+		}else {
+			response.setRecordsFiltered(totalCount);
+		}
+		
+		response.setData(getUsersListDetails(usersList,orgLocationId));
+		return response;
+		
+	}
+	
+	
+	private List<UserDTO> getUsersListDetails(List<User> usersList,Long orgLocationId) throws Exception {
+		
+		List<UserDTO> userDTOList = new ArrayList<>();
+		if(null != usersList){
+			for(User user : usersList){
+				UserDTO userDTO = new UserDTO();
+				UserRole userRole = userRoleDao.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+				userDTO.setUserState(userRole.getUserState().toString());
+				userDTO.setRole(userRole.getRoles().getDisplayName());
+				userDTO.setFirstName(user.getFirstName());
+				userDTO.setLastName(user.getLastName());
+				userDTO.setEmail(user.getEmail());
+				if(null != userRole.getOrgLocations().getUser() && user.getId().equals(userRole.getOrgLocations().getUser().getId())){
+					userDTO.setIsPrimaryAdmin("Y");
+				}
+				
+				userDTOList.add(userDTO);
+			}
+		}
+		
+		return userDTOList;
+	
 	}
 }

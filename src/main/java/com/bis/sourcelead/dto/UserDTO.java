@@ -39,6 +39,8 @@ public class UserDTO extends SearchDTO implements Serializable {
 	private String email;
 	private String fullName;
 	private String unSubscribeTabIds;
+	private String isPrimaryAdmin;
+	private String role;
 
 	
 	public String getUnSubscribeTabIds()
@@ -339,6 +341,22 @@ public class UserDTO extends SearchDTO implements Serializable {
 	public void setCustomDates(String customDates)
 	{
 		this.customDates = customDates;
+	}
+
+	public String getIsPrimaryAdmin() {
+		return isPrimaryAdmin;
+	}
+
+	public void setIsPrimaryAdmin(String isPrimaryAdmin) {
+		this.isPrimaryAdmin = isPrimaryAdmin;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 	

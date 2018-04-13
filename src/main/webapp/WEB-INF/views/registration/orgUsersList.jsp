@@ -69,14 +69,58 @@
                         </div>
 				<!-- Popup Div --> 
 				
-			 <div id="userList" class="project_tabs_inn_table vendor_wrap_inn_table mt"></div>
-			 <div id="loading"></div>
+				
+			<!--  <div id="userList" class="project_tabs_inn_table vendor_wrap_inn_table mt"></div>
+			 <div id="loading"></div> -->
 			 </div>
+			
+			
+	<div class="timesheet_out timesheet_background">
+		
+        <div class="timesheet_head timesheetHead topfilters">
+			 <div class="pull-left cand-advsrch advsrch_chosen">
+			     <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetUsersFilter();" title="Refresh">
+				    <span class="fa fa-refresh"></span>
+				</button>
+				
+				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openFilterPop();"><i class="fa fa-filter faFilter padding_right"></i>
+				</a>
+				
+	       </div> 
+        	
+        	<ul>
+        	<li class="positionRelative">
+				  <div class="dynamic_search">
+		   			<input type='text' placeholder='Search' id='usersListDataTableSearch'/>
+		   			<span class="cursorPointer faSearch" title="Search"><i class="fa fa-search" onClick="getUserList();"></i></span>
+				  </div>
+			  </li>
+	             
+                <div class="clearfix"></div>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+			
+	<div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew">
+    	<div id="userList" class="datatable_filter"></div>
+    	 <div id="loading"></div>
+	</div>	   
+				
+		</div>
+			
+			
 			</div>
 			
 			
 			
 <script>
+
+
+function resetUsersFilter(){
+	
+	$("#usersListDataTableSearch").val('');
+	getUserList();
+}
 
 function getOrgSubscribedCountries(){
 	 var orgId = '${orgId}';
@@ -180,118 +224,211 @@ function getLocationRegisteredCompanies(){
 		
 	 }
  }
- </script>     
+ </script> 
+ 
+ 
  
  <script>
-function getUserList(){  
-	 flushUser(); 
-	 removeAddUserPopUp();
+function getUserList(){
+	   flushUser(); 
+	   removeAddUserPopUp();
+	   
+	    var result = "";
+	 	result = result +" <div class='remove_search'>";
+	 	result = result +"</div>";
+	 	
+	 	result = result + '<table id="usersListTable" class="display" cellspacing="0" width="100%" >';
+		result = result + '<thead>';
+		result = result + '<tr>';
+		result = result +'<th>Name</th>';
+ 		result = result +'<th>Email</th>';
+ 		result = result +'<th>Phone</th>';
+ 		result = result +'<th>Role</th>';
+ 		result = result +'<th>Status</th>';
+ 		result = result +'<th>Action</th>';
+		result = result + '</tr>';
+		result = result + '</thead>	';
+	    result = result +"</table>";
+	    $("#userList").empty();
+	    $("#userList").append(result);
+	    
+	    usersListDataTableList();
+	  
+}
+
+</script>
+
+
+<script>
+function usersListDataTableList(){
+	
 	  var sourceleadUrl ='${sourceleadUrl}';
       var orgId = '${orgId}';
       var registeredOrgLocationId = '${registeredOrgLocationId}';
-	  
-	  $("#loading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	  $.ajax({
-		  type : "POST",
-		  url: sourceleadUrl+"/getOrgRegisteredUsers?${_csrf.parameterName}=${_csrf.token}&registeredOrgLocationId="+registeredOrgLocationId,      
-            success :function(data) {
-                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
-			    	     $("#userList").removeAttr("style");
-	                	 $("#userList").empty();
-	                	 var result = "";
-	                	 result = result +"<table id='example' class='display' cellspacing='0' width='100%' >"; 
-	                     result = result +"<thead>"; 
-	                     result = result +"<tr>"; 
-	                     result = result +'<th>Name</th>';
-                		 result = result +'<th>Email</th>';
-                		 result = result +'<th>Phone</th>';
-                		 result = result +'<th>Role</th>';
-                		 result = result +'<th>Status</th>';
-                		 result = result +'<th>Action</th>';
-	                     result = result +"</tr>"; 
-	                     result = result +"</thead>";
-	                     result = result +"<tbody>"; 
-	                     
-	                     var json = JSON.parse(data);
-	                     for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i]; 
-	                    	 var mobilePhone = '';
-	                    	 var checked = '';
-	                    	 var name = '';
-	                    	 
-                    		if(opt.isPrimaryAdmin == 'Y'){
-    							checked = "checked"+" "+"value = 'Y'"+" "+"disabled = 'disabled'";
-    						}else{
-    							checked = "value = 'N'";
-    						}
-	                    	 
-	                    	 
-	                    	 if(opt.mobilePhone != null && opt.mobilePhone != '' && opt.mobilePhone != 'undefined' ){
-	                    		 mobilePhone = opt.mobilePhone;
-	                    	 }else{
-	                    		 mobilePhone = '------'
-	                    	 }
-	                    	 
-	                    	 if(opt.lastName && opt.lastName != '' && opt.lastName != 'undefined'){
-	                    		 name = opt.firstName +" "+ opt.lastName;
-	                    	 }
-	                    	 else{
-	                    		 name = opt.firstName;
-	                    	 }
-	                    	 
-	                    	 result = result +'<tr>';
-	                    	 result = result +'<td><div class="tbldata-dotdot-me" title='+name+'>'+name+'</div></td>';
-	                    	 result = result +'<td><div class="tbldata-dotdot-me" title='+opt.email+'>'+opt.email+'</div></td>';
-	                    	 result = result +'<td><div class="tbldata-dotdot-100" title='+mobilePhone+'>'+mobilePhone+'</div></td>';
-	                    	 result = result +'<td>'+opt.role+'</td>';
-	                    	 
-	                    	 if(opt.userState == 'NOT_LOGGEDIN'){
-				 			    	 result = result +"<td><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+opt.id+");' >&nbsp;&nbsp;Resend</a></td>";
-			 			      }else if(opt.userState == 'ACTIVE'){
-			 			    	  result = result +'<td>Active</td>';
-				 			    }else if(opt.userState == 'INACTIVE'){
-				 			    	result = result +'<td>In-active</td>';
-				 			    } 
-	                    	 
-	                    	 if(opt.userState == 'ACTIVE' && opt.role == 'Admin'){
-		                    	 result = result +'<td>'
-			                    	 result = result +'<div class="col-md-7 orgrole-switch">';
-			                    	 result = result +'<label class="switch">';
-			                    	 result = result +'<input type="checkbox" onclick="checkUser('+opt.id+',\''+name+'\')"  name="check'+opt.id+'"  id="check'+opt.id+'" '+checked+'  >';
-			                    	 result = result +'<div class="slider round" title="set as primary contact"></div>';
-			                    	 result = result +'</label>';
-			                    	 result = result +'</div>';
-		                    	
-		                         result = result +'</td>'; 
-	                    	 }else{
-	                    		 result = result +'<td>-----</td>';
-	                    	 }
-	                    	 
-	                    	 result = result +'</tr>';
-	                    	
-                     }
-	                     result = result +" </tbody>";
-	                     result = result +"</table>"; 
-	                     $("#userList").append(result); 
-	                     $("#loading").removeAttr("style");
-	                     pagination(); 
-                 }else{
-                	 $("#loading").removeAttr("style");
-  	    	         var result ="";
-		    	    
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No User Found</p>";
-					 result = result+"			 </div>";
-					
-					$("#userList").empty();
-				    $("#userList").append(result); 
-                }
-          },
-            
-       }); 
-  } 
+      
+	 var searchValue = $("#usersListDataTableSearch").val();
+	 searchValue = searchValue ? searchValue : "";
+	 url: sourceleadUrl+"/getOrgRegisteredUsers?${_csrf.parameterName}=${_csrf.token}&registeredOrgLocationId="+registeredOrgLocationId;
+	 var url = sourceleadUrl+"/getOrgRegisteredUsers?searchValue="+searchValue+"&registeredOrgLocationId="+registeredOrgLocationId;
+	 usersListPagination(url,sourceleadUrl);
+}
 </script>
+
+
+<script>
+function usersListPagination(url,sourceleadUrl){
+	
+
+	var colIndex = 0;
+    $('#usersListTable').DataTable( { 
+	  "processing": true,
+      "serverSide": true,
+      "searching": false,
+      "ajax": $.fn.dataTable.pipeline( {
+          url: url,
+          method: 'POST',
+          pages: 1
+        }),
+        "columns": [
+            { "data": "userName" },
+            { "data": "email"},
+            { "data": "mobilePhone"},
+            { "data": "role" },
+            { "data": "status" },
+            { "data": "actions" }
+        ],
+        "columnDefs": [ {
+	    	  	"targets": colIndex++,
+	    	  	"data": "userName",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		  var result = "";
+	    	  		  var name = "";
+	    	  		 if(opt.lastName && opt.lastName != '' && opt.lastName != 'undefined'){
+                		 name = opt.firstName +" "+ opt.lastName;
+                	 }
+                	 else{
+                		 name = opt.firstName;
+                	 }
+	    	  		 
+	    	  		 result = result + '<td><div class="tblminwidth-75"><span title="'+name+'">'+name+'</span></div></td>';
+		             return result;
+	    	  	}
+	      },{
+	    	  "targets": colIndex++,
+              "data": "email",
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+            	  
+            	  result = result + '<td><div class="tblminwidth-75"><span title="'+opt.email+'">'+opt.email+'</span></div></td>';
+            	  
+	              return result;
+              		
+              }
+	      
+	          },{
+		    	  "targets": colIndex++,
+	              "data": "mobilePhone",
+	              "sortable": false,
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  var mobilePhone = "";
+	            	  if(opt.mobilePhone != null && opt.mobilePhone != '' && opt.mobilePhone != 'undefined' ){
+                 		 mobilePhone = opt.mobilePhone;
+                 	 }else{
+                 		 mobilePhone = '------'
+                 	 }
+	            		
+	            	   result = result + '<td><div class="tblminwidth-75"><span title="'+mobilePhone+'">'+mobilePhone+'</span></div></td>';
+	            		return result;
+	              }
+		     },{
+		    	  "targets": colIndex++,
+	              "data": "role",
+	              "render": function ( data, type, opt, meta ) {
+	            	    var result = "";
+	            	    result = result + '<td><div class="tblminwidth-75"><span title="'+opt.role+'">'+opt.role+'</span></div></td>';
+	            		return result;
+	              }
+		     }, {
+		    	  "targets": colIndex++,
+	              "data": "status",
+	              "sortable": false,
+	              "render": function ( data, type, opt, meta ) {
+	            	 var result = "";
+	            	   
+	               	 if(opt.userState == 'NOT_LOGGEDIN'){
+	 			    	 result = result +"<td><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+opt.id+");' >&nbsp;&nbsp;Resend</a></td>";
+ 			          }else if(opt.userState == 'ACTIVE'){
+ 			    	  result = result +'<td>Active</td>';
+	 			      }else if(opt.userState == 'INACTIVE'){
+	 			    	result = result +'<td>In-active</td>';
+	 			      } 
+	            	    
+	            		return result;
+	              }
+		     },{
+		    	  "targets": colIndex++,
+	              "data": "actions",
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  
+	            	     var name = "";
+	            	     var checked = "";
+		    	  		 if(opt.lastName && opt.lastName != '' && opt.lastName != 'undefined'){
+	                		 name = opt.firstName +" "+ opt.lastName;
+	                	 }
+	                	 else{
+	                		 name = opt.firstName;
+	                	 }
+		    	  		 
+		    	  		if(opt.isPrimaryAdmin == 'Y'){
+							checked = "checked"+" "+"value = 'Y'"+" "+"disabled = 'disabled'";
+						}else{
+							checked = "value = 'N'";
+						}
+	            	 
+	               	 if(opt.userState == 'ACTIVE' && opt.role == 'Admin'){
+                    	     result = result +'<td>'
+	                    	 result = result +'<div class="col-md-7 orgrole-switch">';
+	                    	 result = result +'<label class="switch">';
+	                    	 result = result +'<input type="checkbox" onclick="checkUser('+opt.id+',\''+name+'\')"  name="check'+opt.id+'"  id="check'+opt.id+'" '+checked+'  >';
+	                    	 result = result +'<div class="slider round" title="set as primary contact"></div>';
+	                    	 result = result +'</label>';
+	                    	 result = result +'</div>';
+                    	
+                         result = result +'</td>'; 
+                	 }else{
+                		 result = result +'<td>-----</td>';
+                	 }
+	               	 
+	            		return result;
+	              }
+		     }],
+		     
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"aaSorting": [[0,'desc']],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     }
+    } );
+    $("#usersListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("input[type=search]").hide();
+    $("#usersListDataTableSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+    		   projectDataTableList();
+    	   }
+    	});
+}
+</script>
+    
+ 
+ 
 
 
 <script>
@@ -524,7 +661,7 @@ var validationSettings = {
 		
 		$("#registeredLocation").empty();
 		$('#registeredLocation').append("<option value=''>-- Select Company --</option>");
-		$("#registeredLocation").val('');
+		$("#registeredLocation").val()
 		$('#registeredLocation').trigger("chosen:updated");
 		
 		
