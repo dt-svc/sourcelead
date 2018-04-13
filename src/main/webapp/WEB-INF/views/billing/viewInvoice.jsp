@@ -188,10 +188,17 @@ function getViewInvoice(){
 						result = result +'<label class="col-md-4 control-label">Vendor :</label>                ';
 					}
 					result = result +'<div class="col-md-8"> ';
-					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_VENDOR\')">';
+					if(invoiceType == "Receivable"){
+					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
 					result = result +'<label><strong> <a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.clientName+'">'+report.clientName+' </a></strong></label>  ';
 					'</sec:authorize>';
+					}
 					
+					if(invoiceType == "Payables"){
+					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
+					result = result +'<label><strong> <a href="'+sourceleadUrl+'/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.clientName+'">'+report.clientName+' </a></strong></label>  ';
+					'</sec:authorize>';
+					}
 					'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_VENDOR\')">';
 					result = result +'<label><strong> '+report.clientName+'</strong></label>  ';
 					'</sec:authorize>';
@@ -852,7 +859,7 @@ function paymentHistroy(){
 					result = result +'              </td>                                 ';
 					result = result +'              <td><div class="tbldata-dotdot-me">   ';
 					result = result +'                      <a class="memo_text">         ';
-					result = result +'                          <p class="pull-left" title="LoremIpsumhasbeentheindustry" title="'+paymentComment+'">'+paymentComment+'</p>';
+					result = result +'                          <p class="pull-left" title="'+paymentComment+'">'+paymentComment+'</p>';
 					result = result +'                         <i class="fa fa-comments pull-right" title="Memo"></i>  ';
 					result = result +'                      </a> ';
 					result = result +'                  </div>   ';
