@@ -705,31 +705,40 @@ function getApplicantsForRequirement(){
 		    	type: "POST",
 		        url: sourceleadUrl+"/getAllShortListCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+selectedReqId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientInterview="+isClientInterview,  
 		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	var appCount = json.length;
-		        	$("#1applicant").attr("data-placeholder", appCount+" Applicants available");
-		        	$("#reqDiv").find('p.jquery_form_error_message').remove();		        	
-		        	var output = "";
-		        	for (var i=0; i<appCount; i++)
-					{
-		        		var opt = json[i];
-		        		if(opt.createdUser !=null && opt.createdUser !='' && opt.createdUser != 'undefined'){
-		        			output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+" ("+opt.createdUser+")</option>";	
-		        		}else{
-		        			output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+"</option>";
-		        		}
-		        		
-		        		if(opt.isClientSubmission == 'Y'){
-		        			$("#isClientInterviewDiv").css("display","block");
-		        		}else{
-		        			$('#isClientInterview').attr('checked', false);
-		        			$("#isClientInterviewDiv").hide();
-		        		}
-					}
-		        	$("#1applicant").empty();
-		        	$("#1applicant").append(output);
-		        	$("#1applicant").trigger("chosen:updated");
-			       
+		        	if (data.response === "FAILED") {
+			    		showError(data.responseMessage);
+			    	} else if (data.response === "AWKWARD") {
+			    		location.href = "/errorPage";
+			    	} else if (data.response === "SUCCESS") {
+			    		var json = data.data;
+			        	var appCount = json.length;
+			        	$("#1applicant").attr("data-placeholder", appCount+" Applicants available");
+			        	$("#reqDiv").find('p.jquery_form_error_message').remove();		        	
+			        	var output = "";
+			        	for (var i=0; i<appCount; i++)
+						{
+			        		var opt = json[i];
+			        		if(opt.createdUser !=null && opt.createdUser !='' && opt.createdUser != 'undefined'){
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+" ("+opt.createdUser+")</option>";	
+			        		}else{
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+"</option>";
+			        		}
+			        		
+			        		if(opt.isClientSubmission == 'Y'){
+			        			$("#isClientInterviewDiv").css("display","block");
+			        		}else{
+			        			$('#isClientInterview').attr('checked', false);
+			        			$("#isClientInterviewDiv").hide();
+			        		}
+						}
+			        	$("#1applicant").empty();
+			        	$("#1applicant").append(output);
+			        	$("#1applicant").trigger("chosen:updated");
+			    	}else if (data.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    		showError("Operation failed, please try again");
+			    	}
 		        },
 		    });
 	}else{

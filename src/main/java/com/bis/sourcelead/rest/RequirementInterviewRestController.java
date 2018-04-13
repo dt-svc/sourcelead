@@ -120,27 +120,39 @@ public class RequirementInterviewRestController {
 	}
 	
 	@RequestMapping(value = "/app/getAllShortListCandidates")
-	public @ResponseBody String getAllShortListCandidates(@RequestParam(value="requirementId", required=false) Long requirementId,
+	public @ResponseBody ResponseList<RequirementSubmission> getAllShortListCandidates(@RequestParam(value="requirementId", required=false) Long requirementId,
 			                                              @RequestParam(value="existingApplicantsIds", required=false) List<Long> existingApplicantsIds,
 			                                              @RequestParam(value="isClientInterview", required=false) String isClientInterview,
 			                                              HttpServletRequest request) throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ResponseList<RequirementSubmission> response = new ResponseList<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
-		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		String resultJson = null;
-		List<RequirementSubmission> shortListCandidatesList = requirementSubmissionService.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations, requirementId,existingApplicantsIds,isClientInterview,user,loginUserRole);
-		for (RequirementSubmission sub : shortListCandidatesList) {
-			 StringBuilder nameBuilder = new StringBuilder();
-			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(sub.getId());
-			if(StringUtils.isNotBlank(requirementSubmissionTemplateFields.getLastName())){
-				sub.setCandidateName(nameBuilder.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
-			}else{
-				sub.setCandidateName(requirementSubmissionTemplateFields.getFirstName());
+		if(user != null) {
+			try {
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				List<RequirementSubmission> shortListCandidatesList = requirementSubmissionService.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations, requirementId,existingApplicantsIds,isClientInterview,user,loginUserRole);
+				for (RequirementSubmission sub : shortListCandidatesList) {
+					 StringBuilder nameBuilder = new StringBuilder();
+					RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(sub.getId());
+					if(StringUtils.isNotBlank(requirementSubmissionTemplateFields.getLastName())){
+						sub.setCandidateName(nameBuilder.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
+					}else{
+						sub.setCandidateName(requirementSubmissionTemplateFields.getFirstName());
+					}
+					sub.setIsClientSubmission(sub.getRequirement().getIsClientJob());
+				}
+				response.setData(shortListCandidatesList);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			}catch(Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
 			}
-			sub.setIsClientSubmission(sub.getRequirement().getIsClientJob());
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
-		resultJson = commonUtil.toJSON(shortListCandidatesList);
-		return resultJson;
+		return response;
 	}
 	
 	/**To add interview
