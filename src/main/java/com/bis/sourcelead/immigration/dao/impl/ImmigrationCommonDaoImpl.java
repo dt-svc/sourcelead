@@ -1,7 +1,7 @@
 package com.bis.sourcelead.immigration.dao.impl;
 
+import java.math.BigInteger;
 import java.text.MessageFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -27,7 +27,6 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
-import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
@@ -278,6 +277,19 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return familyList;
 	}
 
+    @Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getImmigrationGeneratedIdByOrgLocationId(Long orgLocationId,Integer generatedIdCount) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'"+generatedIdCount+"') AS UNSIGNED)) FROM sourcelead.IMMIGRATION WHERE ORG_LOCATION_ID = '"+ orgLocationId + "'";
+		List<BigInteger> maxCountList = session.createSQLQuery(query).list();
+		Long count = 0L;
+		if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
+			count = (Long) maxCountList.iterator().next().longValue();
+		}
+		return count;
+	}
+    
     @Override
 	@Transactional(rollbackFor = { Exception.class })
 	public String deletetCandidateFamilyDetails(Long id) {

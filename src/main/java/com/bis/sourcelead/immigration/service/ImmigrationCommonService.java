@@ -44,6 +44,8 @@ public interface ImmigrationCommonService {
 	String deletetCandidateFamilyDetails(Long id);
 	
 	String deletetImmigrationCandidateDocsById(Long id);
+	
+	public String getImmigrationIdForGeneratedId(OrgLocations orgLocations);
 	 
 	ImmigrationCandidateDocuments getImmigrationCandidateDocumentById(Long id);
 	 
