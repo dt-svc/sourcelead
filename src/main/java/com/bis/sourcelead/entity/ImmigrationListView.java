@@ -24,6 +24,9 @@ public class ImmigrationListView implements Serializable {
 	@Column(name = "ID")
 	private Long id;
 	
+	@Column(name = "CURRENT_USCIS_STATUS_ID ")
+	private Long currUscisStatusId;
+	
 	@Column(name = "CURRENT_USCIS_STATUS ")
 	private String currUscisStatus;
 	
@@ -196,6 +199,13 @@ public class ImmigrationListView implements Serializable {
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
 	}
-	
+
+	public Long getCurrUscisStatusId() {
+		return currUscisStatusId;
+	}
+
+	public void setCurrUscisStatusId(Long currUscisStatusId) {
+		this.currUscisStatusId = currUscisStatusId;
+	}
 	
 }
