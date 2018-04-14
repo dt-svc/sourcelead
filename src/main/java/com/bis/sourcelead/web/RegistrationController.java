@@ -392,6 +392,7 @@ public class RegistrationController {
 				model.addObject("registeredOrgLocationId",orgLocations.getId());
 				model.addObject("registeredCountry",orgLocations.getCountry());
 				model.addObject("orgId",org.getId());
+				model.addObject("orgCode",orgCode);
 				model.setViewName("registration/enrolledOrgSummary");
 				
 				if(null != orgLocations.getUser()){
@@ -427,7 +428,7 @@ public class RegistrationController {
 		    String resultJson;
 		    OrgLocations orgLocations = orgLocationService.getOrgLocations(registeredOrgLocationId);
 		    
-		    String[] tableColumns = {"id","firstName", "email", "mobilePhone", "role", "status", "actions"};
+		    String[] tableColumns = {"firstName", "email", "mobilePhone", "displayName", "status", "actions"};
 		    int sortColumnIndex = 1; //by default sorting using updated date
 			String sortColumnOrder = "desc"; //by default descending order
 			if(userDTO.getOrder() != null && !userDTO.getOrder().isEmpty()) {

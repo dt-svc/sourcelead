@@ -539,6 +539,7 @@ function usersListPagination(url,sourceleadUrl){
 	      },{
 	    	  "targets": colIndex++,
               "data": "email",
+              "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  
@@ -567,6 +568,7 @@ function usersListPagination(url,sourceleadUrl){
 		     },{
 		    	  "targets": colIndex++,
 	              "data": "role",
+	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    result = result + '<td><div class="tblminwidth-75"><span title="'+opt.role+'">'+opt.role+'</span></div></td>';
@@ -592,6 +594,7 @@ function usersListPagination(url,sourceleadUrl){
 		     },{
 		    	  "targets": colIndex++,
 	              "data": "actions",
+	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	  
@@ -692,21 +695,21 @@ function makeAsPrimaryAdmin(userId){
 	$("#choicepopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 	
-	var orgLocationId = document.getElementById("registeredLocation").value;
-	var orgId = '${orgId}';
+	var orgLocationId =   $('input[name=subscribedOrgLocation]:checked').val();
+	var orgCode = '${orgCode}';
 	
-	$("#loading").attr('style','position:absolute; width:100%; height:450px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+ 	$("#loading").attr('style','position:absolute; width:100%; height:450px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(userId != null && userId != "" && orgLocationId != null && orgLocationId != ""){
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/changePrimaryAdmin?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgLocationId="+orgLocationId, 
 		        success: function(result) {
-		        	location.replace(sourceleadUrl+"/enrolledOrgSummary?orgId="+orgId);
+		        	location.replace(sourceleadUrl+"/enrolledOrgSummary?orgCode="+orgCode);
 		        },
 		    });
 	 }
-	
+	 
 }
 </script>
 
@@ -716,10 +719,11 @@ function makeAsPrimaryAdmin(userId){
 function resendInvitation(userId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var orgId = '${orgId}';
+	var orgLocationId =   $('input[name=subscribedOrgLocation]:checked').val();
 	if(userId != null && userId != ""){
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgId="+orgId, 
+			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgId="+orgId+"&orgLocationId="+orgLocationId, 
 			        success: function(result) {
 			        	
 			        	document.getElementById("mailSendSuccessMsg").style.display = 'block';
