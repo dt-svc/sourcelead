@@ -75,7 +75,7 @@
 		
         <div class="timesheet_head timesheetHead topfilters">
 			 <div class="pull-left cand-advsrch advsrch_chosen">
-			     <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetUsersFilter();" title="Refresh">
+			     <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetUsersSearchFilter();" title="Refresh">
 				    <span class="fa fa-refresh"></span>
 				</button>
 				
@@ -118,7 +118,7 @@
 								 <div class="clearfix">
 									<ul class="list-unstyled" id="AllTypeFilter">
 										    <c:forEach var="countries" items="${orgSubscribedCountriesList}">
-												<li class="radioIput positionRelative"><input type="radio"  ${registeredCountry == countries ? 'checked' : ''} value="${countries}"  name="subscribedOrgCountry" onclick="resetOrgLocationRadio();getSearchLocationRegisteredCompanies();"><label>${countries}</label></li>
+												<li class="radioIput positionRelative"><input type="radio" id="country${countries}"  ${registeredCountry == countries ? 'checked' : ''} value="${countries}"  name="subscribedOrgCountry" onclick="resetOrgLocationRadio();getSearchLocationRegisteredCompanies();"><label>${countries}</label></li>
 											</c:forEach>
 									    
 				                    </ul>
@@ -134,7 +134,7 @@
 						<div class="col-md-12 mb">
 							<label><strong>Status</strong></label>
 							 <div class="clearfix">
-								<ul class="list-unstyled" id="availabilityFilter">
+								<ul class="list-unstyled" id="userLoggedInStatusFilter">
 		                    	    <li class="checkBox positionRelative" ><input  type="checkbox"  name="userLoggedInStatus"  value ="Active"  ><label>Active</label></li>
 									<li class="checkBox positionRelative" ><input  type="checkbox"  name="userLoggedInStatus"  value ="In Active" ><label>In Active</label></li>
 									<li class="checkBox positionRelative" ><input  type="checkbox"  name="userLoggedInStatus"  value ="Not Logged In" ><label>Not Logged In</label></li>
@@ -174,13 +174,34 @@
 				</div>
 					 
 				</div>
+				
+				<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet"
+								onclick="closeFilterPop();getUserList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search"
+								onclick="resetUsersSearchFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
 	</div>
 			
 			
 	</div>
+	
+	
+	
 			
 
 <script>
+
+function resetUsersSearchFilter(){
+	$("#filteredOrgLocationId").val('');
+	$("ul#companyFilterDiv > li input:checkbox").prop("checked",false);
+	$("ul#userLoggedInStatusFilter > li input:checkbox").prop("checked",false);
+	document.getElementById("country"+'${registeredCountry}').checked = true;
+	getSearchLocationRegisteredCompanies(); 
+}
+
 function subscribedOrgLocCompanies() {
     var input, filter, ul, li, a, i;
     input = document.getElementById("OrgLocCompaniesInput");
