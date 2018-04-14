@@ -44,6 +44,8 @@ public interface ImmigrationCommonService {
 	String deletetCandidateFamilyDetails(Long id);
 	
 	String deletetImmigrationCandidateDocsById(Long id);
+	
+	public String getImmigrationIdForGeneratedId(OrgLocations orgLocations);
 	 
 	ImmigrationCandidateDocuments getImmigrationCandidateDocumentById(Long id);
 	 
@@ -80,6 +82,8 @@ public interface ImmigrationCommonService {
 	ImmigrationCandidateForms uploadRequstedFormForCandidate(ImmigrationTemplateFormDTO immigrationTemplateFormDTO, Long id,	Long candidateId, Long immigrationId, User user, OrgLocations orgLocations);
 
 	ResponseList<ImmigrationListViewDTO> getImmigrationsList(ImmigrationListViewDTO immigrationListDTO, String searchValue,  OrgLocations orgLocations) throws Exception;
+
+	String updateUscisTypeDropDown(Long templateId, Long uscisId);
 
 
 }

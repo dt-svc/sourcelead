@@ -357,7 +357,7 @@
          "serverSide": true,
          "searching": false,
          "colReorder": true,
-         //'dom': 'Rlfrtip',
+     	 'dom': 'Rlfrtip',
          // "stateSave": true, // used to save the page state local or server side.
          "ajax": $.fn.dataTable.pipeline({
              url: url,
@@ -377,14 +377,21 @@
          "columnDefs": [
              {
                  "targets": colIndex++,
-                 "data": "currUscisStatus",
+                 bSortable: false,
+                 aTargets: [ -1 ],
+                 /* "data": "currUscisStatus", */
                  "render": function (data, type, opt, meta) {
                      var result = "";
-                     if (opt.currUscisStatus !== null && opt.currUscisStatus !== '' && opt.currUscisStatus !== 'undefined') {
-                    	 result = result + "<td><select id='currUscisStatus' name='currUscisStatus' class='form-control'>";
+                     if (opt.currUscisStatusId !== null && opt.currUscisStatusId !== '' && opt.currUscisStatusId !== 'undefined') {
+                    	 result = result + "<td><select id='currUscisStatus' onchange='changeSaveUscisStatus($(this),"+opt.id+");' name='currUscisStatus' class='form-control'>";
+                    	 //alert(opt.currUscisStatusId);
                     	 for(var i=0;i<opt.currUsicisStatusList.length;i++){
                         	data = opt.currUsicisStatusList[i];
-                        	result = result + "<option value="+data.id+">"+data.name+"</option>";
+                        	if(data.id == opt.currUscisStatusId){
+                        		result = result + "<option selected value="+data.id+">"+data.name+"</option>";
+                        	}else{
+                        		result = result + "<option value="+data.id+">"+data.name+"</option>";
+                        	}
                     	 }
                          result = result + "</select></td>";
                      } else {
@@ -519,6 +526,20 @@
      });
 
      $("table").colResizable(); // for resizing columns in tables.
+ }
+ 
+ function changeSaveUscisStatus(idVal,templateId){
+	 var uscisId = idVal.val();
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/immigration/updateUscisTypeDropDown?templateId="+templateId+"&uscisId="+uscisId, 
+	        success: function(data) {
+	        	if(data == "success"){
+	        		//getDynamicImmigrationList();
+	        	}
+	        }
+	 });
+	 //alert(idVal.val()+" : "+templateId);
  }
 </script>
 

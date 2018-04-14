@@ -3,6 +3,7 @@
  */
 package com.bis.sourcelead.immigration.service.impl;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -669,6 +670,39 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		return docs;
 	}
 	
+	
+	@Override
+	public String getImmigrationIdForGeneratedId(OrgLocations orgLocations) {
+	    	String companyShortCode = null;
+	    	Long number = 1L;
+			String immigrationId = null;
+			Integer generatedIdcount =0;
+			StringBuilder sbuilder = new StringBuilder();
+			sbuilder.append(orgLocations.getGeneratedUserId()).append(Constants.IMMIGRATION_ENTITY);
+			String generatedUsreId = sbuilder.toString();
+			for(int i=0;i< generatedUsreId.length();i++){
+				char ch = generatedUsreId.charAt(i);
+				if(Character.isAlphabetic(ch)){
+					generatedIdcount++;
+				}
+			}
+			generatedIdcount = generatedIdcount+1;
+			Long checkNumber = immigrationCommonDao.getImmigrationGeneratedIdByOrgLocationId(orgLocations.getId(),generatedIdcount);
+			if(checkNumber == null){
+				immigrationId = number.toString();
+			}else{
+			Long reqId = checkNumber+1;
+			immigrationId = reqId.toString();
+			}
+			final DecimalFormat decimalFormat = new DecimalFormat("0");                
+	        String convetredRequirementsId = decimalFormat.format(Long.parseLong(immigrationId));
+	        StringBuffer sb = new StringBuffer();
+	        if(orgLocations.getGeneratedUserId() != null && !"".equalsIgnoreCase(orgLocations.getGeneratedUserId())){
+	        	 companyShortCode = orgLocations.getGeneratedUserId();
+	        }
+			return sb.append(companyShortCode).append(Constants.IMMIGRATION_ENTITY).append(convetredRequirementsId).toString();
+	}
+	
 	@Override
 	public String deletetImmigrationCandidateDocsById(Long id) {
 		return immigrationCommonDao.deletetImmigrationCandidateDocsById(id);
@@ -889,6 +923,11 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		  
 		   
 		return immigartionList;
+	}
+
+	@Override
+	public String updateUscisTypeDropDown(Long templateId, Long uscisId) {
+		return immigrationCommonDao.updateUscisTypeDropDown(templateId,uscisId);
 	}
 
 }

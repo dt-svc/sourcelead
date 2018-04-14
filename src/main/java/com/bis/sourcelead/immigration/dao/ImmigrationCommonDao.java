@@ -48,6 +48,8 @@ public interface ImmigrationCommonDao {
 
 	String deletetCandidateFamilyDetails(Long id);
 	
+	Long getImmigrationGeneratedIdByOrgLocationId(Long orgLocationId, Integer generatedIdCount);
+	
  	List<CandidateResidence> getCandidatesResidenceListByCandidateIdAndOrgLocationID(Long candidateId,String searchValue);
 
 	List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId,String idType,String searchValue);
@@ -87,4 +89,6 @@ public interface ImmigrationCommonDao {
 	ImmigrationCandidateForms getImmigrationCandidateFormsById(Long id, Long candidateId, Long immigrationId) throws Exception;
 
 	ResponseList<ImmigrationListViewDTO> getImmigrationsList(ImmigrationListViewDTO immigrationListDTO,	String searchValue, OrgLocations orgLocations)throws Exception;
+
+	String updateUscisTypeDropDown(Long templateId, Long uscisId);
 }
