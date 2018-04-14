@@ -42,10 +42,12 @@ import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.ImmigrationListView;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.immigration.dao.ImmigrationCommonDao;
+import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
 import com.bis.sourcelead.util.CommonUtil;
 
 
@@ -64,6 +66,9 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	
 	@Autowired
 	CandidateDao candidateDao;
+	
+	@Autowired
+	private ImmigrationTemplateDao immigrationTemplateDao;
 
 	@Autowired
 	private CommonUtil commonUtil;
@@ -653,15 +658,20 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         //opendate
         
         List<ImmigrationListViewDTO> ImmigarionDTOList = new ArrayList<ImmigrationListViewDTO>();
-        for (ImmigrationListView source : ImmigrationViewLst) {
-            //System.out.println(" DocsCount"+source.getDocsCount());
-        	ImmigrationListViewDTO target = new ImmigrationListViewDTO();
-            BeanUtils.copyProperties(source, target);
-            //System.out.println(" DocsCount target"+target.getDocsCount());
-            target.setOpenDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getOpenDate()));
-            ImmigarionDTOList.add(target);
+        if(!ImmigrationViewLst.isEmpty()) {
+        	 List<LookUpData> caEmployerDTOs = immigrationTemplateDao.getLookupDataByType(Constants.USCIS_STATUS);
+	        for (ImmigrationListView source : ImmigrationViewLst) {
+	            //System.out.println(" DocsCount"+source.getDocsCount());
+	        	ImmigrationListViewDTO target = new ImmigrationListViewDTO();
+	            BeanUtils.copyProperties(source, target);
+	            target.setCurrUsicisStatusList(caEmployerDTOs);
+	            //System.out.println(" DocsCount target"+target.getDocsCount());
+	            target.setOpenDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getOpenDate()));
+	            ImmigarionDTOList.add(target);
+	        }
+	        responseList.setData(ImmigarionDTOList);
         }
-        responseList.setData(ImmigarionDTOList);
+        
         
         System.out.println(" after dao impl  ---responseList getRecordsTotal is -->" +responseList.getRecordsTotal());
         return responseList;

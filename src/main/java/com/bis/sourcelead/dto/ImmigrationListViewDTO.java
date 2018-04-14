@@ -2,6 +2,9 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+
+import com.bis.sourcelead.entity.LookUpData;
 
 public class ImmigrationListViewDTO extends SearchDTO implements Serializable {
 
@@ -27,6 +30,7 @@ public class ImmigrationListViewDTO extends SearchDTO implements Serializable {
     private Date createdDate;
     private Date updatedDate;
     private String openDateStr;
+    private List<LookUpData> currUsicisStatusList;
      
     
 	public Long getId() {
@@ -130,6 +134,12 @@ public class ImmigrationListViewDTO extends SearchDTO implements Serializable {
 	}
 	public void setOpenDateStr(String openDateStr) {
 		this.openDateStr = openDateStr;
+	}
+	public List<LookUpData> getCurrUsicisStatusList() {
+		return currUsicisStatusList;
+	}
+	public void setCurrUsicisStatusList(List<LookUpData> currUsicisStatusList) {
+		this.currUsicisStatusList = currUsicisStatusList;
 	}
   
 }
