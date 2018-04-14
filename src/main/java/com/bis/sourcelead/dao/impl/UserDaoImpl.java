@@ -1276,7 +1276,7 @@ public class UserDaoImpl implements UserDao {
 		ResponseList<UserDTO> response = new ResponseList<>();
 		Query queryObj = null;
 		List<User> usersList = null;
-		
+		String subQuery1 =""; 
 		StringBuilder query1 = new StringBuilder("");
 		
 		
@@ -1305,11 +1305,41 @@ public class UserDaoImpl implements UserDao {
 		if(StringUtils.isNotBlank(userDTO.getSortColumn())) {
 			sortingQry = " order by user."+ userDTO.getSortColumn() +" "+userDTO.getSortOrder();
 		}
-
 		
-
-
-	     query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations.id = :orgLocationId)";
+		
+		if(userDTO.getUserloggedInStatus() != null && !userDTO.getUserloggedInStatus().isEmpty()){
+			String[] statusFilter = userDTO.getUserloggedInStatus().split(",");
+			if (Arrays.asList(statusFilter).contains("Not-Logged-In")) {
+				subQuery1 = subQuery1 + "userRole.userState = 'NOT_LOGGEDIN' or ";
+			}
+			
+			if (Arrays.asList(statusFilter).contains("Active")) {
+				subQuery1 = subQuery1 + "userRole.userState = 'ACTIVE' or ";
+			}
+			
+			if (Arrays.asList(statusFilter).contains("In-Active")) {
+				subQuery1 = subQuery1 + "userRole.userState = 'INACTIVE' or ";
+			}
+			
+			
+			
+			
+			subQuery1 = "and (" + subQuery1.substring(0, subQuery1.length() - 4) + ")";
+		}
+		
+		List<Long> rolesIdsList = new ArrayList<>();
+		if(userDTO.getSubscribedOrgLocationRoles() != null && !userDTO.getSubscribedOrgLocationRoles().isEmpty()){
+			String[] roles = userDTO.getSubscribedOrgLocationRoles().split(",");
+			for(int i=0; i<roles.length; i++){
+				rolesIdsList.add(Long.valueOf(roles[i]));
+			}
+		}else {
+			rolesIdsList.add(0L);
+		}
+		
+		String subQuery2 = " and ((:varZero  IN (:rolesIdsList)) OR (:varZero NOT IN (:rolesIdsList) and userRole.roles.id IN (:rolesIdsList)))";
+		
+	     query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations.id = :orgLocationId "+subQuery1+" "+subQuery2+")";
 	
 		if(query1.toString() != null && !query1.toString().isEmpty()){
 			 queryObj = session.createQuery(query + " and "+"("+query1.toString()+")"+sortingQry);
@@ -1319,14 +1349,14 @@ public class UserDaoImpl implements UserDao {
 		
 		queryObj.setFirstResult(userDTO.getStart());
 		queryObj.setMaxResults(userDTO.getLength());
-		queryObj.setLong("orgLocationId", orgLocationId).list();
+		queryObj.setLong("orgLocationId", orgLocationId).setLong("varZero", 0).setParameterList("rolesIdsList", rolesIdsList).list();
 		usersList = queryObj.list();
 		
 		if(query1.toString() != null && !query1.toString().isEmpty()){
-			countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+")").setLong("orgLocationId", orgLocationId).list();
+			countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+")").setLong("varZero", 0).setParameterList("rolesIdsList", rolesIdsList).setLong("orgLocationId", orgLocationId).list();
 			filterCount = countlist.iterator().next().intValue();
 		}else {
-			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationId", orgLocationId).list();
+			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationId", orgLocationId).setLong("varZero", 0).setParameterList("rolesIdsList", rolesIdsList).list();
 			filterCount = countlist.iterator().next().intValue();
 		}
 		

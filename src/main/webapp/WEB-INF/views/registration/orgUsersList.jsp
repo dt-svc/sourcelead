@@ -2,6 +2,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+
+<style>
+.zindex{
+z-index: 1000 !important;
+}
+</style>
+
 <div id="users" class="tab-pane fade">
 			 
 			 <div class="success_pop" id="mailSendSuccessMsg"  style="display: none;">
@@ -11,7 +18,7 @@
 			 <div class="clearfix">
 			 <a href="javascript:void(0)" class="addcon-pop btn btn-sm btn-primary mb10" onclick="getOrgSubscribedCountries();"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add User</a>
 			 <!-- Popup Div -->
-                    <div class="collapse-div-adduser orgsummaryuser-pop orgsummary-adduser col-md-4" id="addNewUserPopup"> <i class="fa fa-close close-div closediv-pop" onclick="flushUser();"></i>
+                    <div class="collapse-div-adduser orgsummaryuser-pop orgsummary-adduser col-md-4 zindex" id="addNewUserPopup"> <i class="fa fa-close close-div closediv-pop" onclick="flushUser();"></i>
                           <div class="form-horizontal clearfix">
                           <div id="userLoading"></div> 
                         <form:form id="adduser_form"  name="adduser_form" method="post">                             
@@ -105,6 +112,7 @@
 </div>
 
 <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
+	<div id="searchFilterLoading"></div>
 				<h5 class="headerAdsrch">Filters
 					<a href="javascript:void(0)" class="close-div" onClick="closeFilterPop()"><i
 						class="fa fa-close"></i></a>
@@ -136,8 +144,8 @@
 							 <div class="clearfix">
 								<ul class="list-unstyled" id="userLoggedInStatusFilter">
 		                    	    <li class="checkBox positionRelative" ><input  type="checkbox"  name="userLoggedInStatus"  value ="Active"  ><label>Active</label></li>
-									<li class="checkBox positionRelative" ><input  type="checkbox"  name="userLoggedInStatus"  value ="In Active" ><label>In Active</label></li>
-									<li class="checkBox positionRelative" ><input  type="checkbox"  name="userLoggedInStatus"  value ="Not Logged In" ><label>Not Logged In</label></li>
+									<li class="checkBox positionRelative" ><input  type="checkbox"  name="userLoggedInStatus"  value ="In-Active" ><label>In Active</label></li>
+									<li class="checkBox positionRelative" ><input  type="checkbox"  name="userLoggedInStatus"  value ="Not-Logged-In" ><label>Not Logged In</label></li>
 		                        </ul>
 							 </div>
 							 </div> 
@@ -200,6 +208,13 @@ function resetUsersSearchFilter(){
 	$("ul#userLoggedInStatusFilter > li input:checkbox").prop("checked",false);
 	document.getElementById("country"+'${registeredCountry}').checked = true;
 	getSearchLocationRegisteredCompanies(); 
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	setTimeout(function () {
+		getUserList();
+		 $("#loading").removeAttr('style');
+			}, 2000);
+	
+	
 }
 
 function subscribedOrgLocCompanies() {
@@ -247,9 +262,26 @@ function closeFilterPop(){
 function openFilterPop(){
 	$("div.cand-advsrch-popup").toggle();
 	 $(".advancedsearch-mask").fadeIn();
-	 
+	
+	  var subscribedOrgLocationRoles = [];
+		$('input:checkbox[name=subscribedOrgLocationRoles]:checked').each(function() {
+			subscribedOrgLocationRoles.push($(this).val());
+	    });
+		
 	 getSearchLocationRegisteredCompanies();
-	 getRegisteredOrgLocationRoles();
+	 
+	 if(subscribedOrgLocationRoles != null && subscribedOrgLocationRoles != '' && subscribedOrgLocationRoles != 'undefined'){ 
+		 $("#searchFilterLoading").attr('style','position:absolute; width:100%; height:450px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 setTimeout(function () {
+			 
+			   for(var i=0; i<subscribedOrgLocationRoles.length; i++){
+					document.getElementById("role"+subscribedOrgLocationRoles[i]).checked = true;
+				 } 
+				   $("#searchFilterLoading").removeAttr("style");
+			
+		}, 1000);
+	 }
+	
 }
 
 function resetUsersFilter(){
@@ -441,14 +473,26 @@ function getUserList(){
 <script>
 function usersListDataTableList(){
 	
+	  var subscribedOrgCountry =  $('input[name=subscribedOrgCountry]:checked').val();
+	  var registeredOrgLocationId = $('input[name=subscribedOrgLocation]:checked').val();
+	  if(registeredOrgLocationId == null || registeredOrgLocationId == '' || registeredOrgLocationId == 'undefined'){
+		  registeredOrgLocationId = '${registeredOrgLocationId}'
+		 }
+	  var subscribedOrgLocationRoles = [];
+		$('input:checkbox[name=subscribedOrgLocationRoles]:checked').each(function() {
+			subscribedOrgLocationRoles.push($(this).val());
+	    });
+	 var userloggedInStatus = [];
+		$('input:checkbox[name=userLoggedInStatus]:checked').each(function() {
+			userloggedInStatus.push($(this).val());
+	    });
+	
 	  var sourceleadUrl ='${sourceleadUrl}';
       var orgId = '${orgId}';
-      var registeredOrgLocationId = '${registeredOrgLocationId}';
       
 	 var searchValue = $("#usersListDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 url: sourceleadUrl+"/getOrgRegisteredUsers?${_csrf.parameterName}=${_csrf.token}&registeredOrgLocationId="+registeredOrgLocationId;
-	 var url = sourceleadUrl+"/getOrgRegisteredUsers?searchValue="+searchValue+"&registeredOrgLocationId="+registeredOrgLocationId;
+	 var url = sourceleadUrl+"/getOrgRegisteredUsers?searchValue="+searchValue+"&registeredOrgLocationId="+registeredOrgLocationId+"&subscribedOrgLocationRoles="+subscribedOrgLocationRoles+"&userloggedInStatus="+userloggedInStatus;
 	 usersListPagination(url,sourceleadUrl);
 }
 </script>
@@ -841,7 +885,7 @@ var validationSettings = {
 			        	for (var i=0; i<json.length; i++)
 						{
 				        		var opt = json[i];
-				        		output = output + "<li class='radioIput positionRelative'><input type='checkbox' value='" +opt.id+ "'  name='subscribedOrgLocationRoles'><label>"+opt.displayName+"</label></li>";
+				        		output = output + "<li class='radioIput positionRelative'><input type='checkbox' id='role"+opt.id+"' value='" +opt.id+ "'  name='subscribedOrgLocationRoles'><label>"+opt.displayName+"</label></li>";
 						}
 			        	$("#rolesFilterDiv").empty();
 				        $("#rolesFilterDiv").append(output);
