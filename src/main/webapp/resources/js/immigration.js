@@ -22,19 +22,24 @@ function Immigration() {
     this.savePetitionTemplateAndContinue = function (status) {
         if ($('#petitionTemplateDetails').validate(false, validationSettings)) {
             var formData = getFormData("petitionTemplateDetails");
-            alert("ssss"+immTemplId)
             $.ajax({
                 url: sourceleadUrl + immiModulePath + "/savePetitionTemplateDetails?templateId=" + immTemplId,
                 type: "POST",
                 data: formData,
                 success: function (result) {
-                    if (result.response === "SUCCESS") {
-                        immTemplId = result.object;
+                    if (result && result.response === "INVALID_DATA") {
+                    	 showError(result.responseMessage);
+                    }else if (result.response === "AWKWARD") {
+                        location.href = "/errorPage";
+                    }else if(result.response === "SUCCESS") {
+                    	immTemplId = result.object;
                         if (status == 'saveContinue') {
                             $("#addNewPetitionTemplateDiv").empty();
                             $("#addNewPetitionTemplateDiv").load(sourceleadUrl + immiModulePath + "/gotoTemplatePreviousPage?status=docDetails");
                         }
-
+		               
+                    }else{
+                    	 showError("Operation failed, please try again");
                     }
                 }
             });
@@ -91,14 +96,20 @@ function Immigration() {
                 type: "POST",
                 data: formData,
                 success: function (result) {
-                    if (result.response === 'SUCCESS') {
-                        if (status == 'saveContinue') {
+                    if (result && result.response === "INVALID_DATA") {
+                    	showError(result.responseMessage);
+                    }else if (result.response === "AWKWARD") {
+                        location.href = "/errorPage";
+                    }else if(result.response === 'SUCCESS') {
+                    	if (status == 'saveContinue') {
                             $("#addNewPetitionTemplateDiv").empty();
                             $("#addNewPetitionTemplateDiv").load(sourceleadUrl + immiModulePath + "/gotoTemplatePreviousPage?status=formDetails");
                         } else if (status == 'save') {
                             $("#addNewPetitionTemplateDiv").empty();
                             $("#addNewPetitionTemplateDiv").load(sourceleadUrl + immiModulePath + "/gotoTemplatePreviousPage?status=docDetails");
-                        }
+                        } 
+                    }else{
+                    	 showError("Operation failed, please try again");
                     }
                 }
             });
@@ -117,14 +128,20 @@ function Immigration() {
                 type: "POST",
                 data: formData,
                 success: function (result) {
-                    if (result.response === 'SUCCESS') {
-                        if (status == 'saveContinue') {
+                    if ( result && result.response === "INVALID_DATA") {
+                    	showError(result.responseMessage);
+                    }else if (result.response === "AWKWARD") {
+                        location.href = "/errorPage";
+                    }else if(result.response === 'SUCCESS') {
+                    	if (status == 'saveContinue') {
                             $("#addNewPetitionTemplateDiv").empty();
                             $("#addNewPetitionTemplateDiv").load(sourceleadUrl + immiModulePath + "/gotoTemplatePreviousPage?status=taskList");
                         } else if (status == 'save') {
                             $("#addNewPetitionTemplateDiv").empty();
                             $("#addNewPetitionTemplateDiv").load(sourceleadUrl + immiModulePath + "/gotoTemplatePreviousPage?status=formDetails");
                         }
+                    }else{
+                    	 showError("Operation failed, please try again");
                     }
                 }
             });
@@ -155,9 +172,15 @@ function Immigration() {
                 success: function (result) {
                     $(".popMask").fadeOut(200);
                     $("#taskViewPopup").fadeOut(100);
-                    if (result.response === 'SUCCESS') {
-                        $("#addNewPetitionTemplateDiv").empty();
+                    if (result && result.response === "INVALID_DATA") {
+                    	 showError(result.responseMessage);
+                    }else if (result.response === "AWKWARD") {
+                        location.href = "/errorPage";
+                    }else if(result.response === 'SUCCESS') {
+                    	$("#addNewPetitionTemplateDiv").empty();
                         $("#addNewPetitionTemplateDiv").load(sourceleadUrl + immiModulePath + "/gotoTemplatePreviousPage?status=taskList");
+                    }else{
+                    	 showError("Operation failed, please try again");
                     }
                 }
             });
