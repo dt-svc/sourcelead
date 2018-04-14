@@ -100,7 +100,9 @@
                     <option value="1" selected="selected">Active</option>
                     <option value="0">Inactive</option>
                 </select>
-                <a href="<c:url value='${appPath}/immigration/addNewPetitionTemplate'/>"><i class="glyphicon glyphicon-plus"></i> Add Template</a> 
+                <sec:authorize access="hasAnyRole('ROLE_ADD_PETITION_TEMPLATE','ROLE_EDIT_VIEW_PETITION_TEMPLATE','ROLE_DELETE_PETITION_TEMPLATE')">
+                <a href="<c:url value='${appPath}/immigration/addNewPetitionTemplate'/>"><i class="glyphicon glyphicon-plus"></i> Add Template</a>
+ 				</sec:authorize>
                 <span><input class="immigraTabSerach" id ="immiTemplateSerach" placeholder="Name/Description" type="text"></span>
             </div>
             <div id ="dynamicImmigrationListViewDiv" class="project_wrap_table datatable_filter"></div>
@@ -325,7 +327,13 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                     /*"data": "formsCount",*/
                     "render": function (data, type, opt, meta) {
                         var result = "";
-                        result = result + '<td><div><i id="edit' + opt.id + '" onclick="immigration.editTemplateDetailsByRowId(' + opt.id + ');" class="glyphicon glyphicon-pencil"></i><i id="delete' + opt.id + '" onclick="immigration.deleteTempalteDetailsByRowId(' + opt.id + ');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
+                        result = result + '<td><div>';
+                        '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_VIEW_PETITION_TEMPLATE\')">';
+                        result = result +' <i id="edit' + opt.id + '" onclick="immigration.editTemplateDetailsByRowId(' + opt.id + ');" class="glyphicon glyphicon-pencil"></i>';
+                        '</sec:authorize>';
+                        '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_PETITION_TEMPLATE\')">';
+                        result = result +' <i id="delete' + opt.id + '" onclick="immigration.deleteTempalteDetailsByRowId(' + opt.id + ');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
+                        '</sec:authorize>';
                         return result;
                     }
                 }

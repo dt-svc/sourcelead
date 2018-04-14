@@ -2,7 +2,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <jsp:include page="../masterHeader.jsp" />
@@ -382,7 +381,12 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.currUscisStatus !== null && opt.currUscisStatus !== '' && opt.currUscisStatus !== 'undefined') {
-                         result = result + "<td><div class='tbldata-dotdot-sm'>"+opt.currUscisStatus+"</div></td>";
+                    	 result = result + "<td><select id='currUscisStatus' name='currUscisStatus' class='form-control'>";
+                    	 for(var i=0;i<opt.currUsicisStatusList.length;i++){
+                        	data = opt.currUsicisStatusList[i];
+                        	result = result + "<option value="+data.id+">"+data.name+"</option>";
+                    	 }
+                         result = result + "</select></td>";
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
                      }

@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -350,7 +351,7 @@ public class ImmigrationRestController {
         }
         return model;
     }
-
+    @PreAuthorize("hasAnyRole('ROLE_ADD_PETITION_TEMPLATE','ROLE_EDIT_VIEW_PETITION_TEMPLATE')")
     @RequestMapping(value = {"/addNewPetitionTemplate"})
     public ModelAndView loadAddPetitionTemplate(HttpServletRequest request) throws ServletRequestBindingException {
         ModelAndView model = new ModelAndView();
@@ -429,7 +430,7 @@ public class ImmigrationRestController {
         }
         return templateListDTOList;
     }
-
+    @PreAuthorize("hasRole('ROLE_DELETE_PETITION_TEMPLATE')")
     @RequestMapping(value = "/deleteImmigrationTemplateDetatils")
     public String deleteTemplateDetailsById(@RequestParam(value = "deleteId", required = true) Long deleteId,
             HttpServletRequest request) {

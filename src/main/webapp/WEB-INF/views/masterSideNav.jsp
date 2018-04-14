@@ -352,7 +352,10 @@
 		          	<c:if test="${userTabs.tabName == 'Payroll' && SourceLeadWeb_loginUserRole != 'ROLE_ADMIN'}">
 		              <li class="${sessionData.nav == 'Pay' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/userPay'/>" title="Pay"><span><i class="fa fa-usd"></i></span><i class="subMenu">Pay</i></a></li>
 		          	</c:if>	
-
+					<c:if test="${userTabs.tabName == 'Immigration'}">
+			
+          				 <li class="${sessionData.nav == 'Immigration' || sessionData.nav == 'ImmigrationSender' || sessionData.nav == 'ImmigrationRecipient' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/immigration/viewImmigrationList'/>" title="Immigration"><span><i class="fa fa-plane"></i></span><i class="subMenu">Immigration</i></a></li>			
+	       			</c:if>
           </c:forEach>
             
           	
@@ -386,8 +389,6 @@
 		 
 			</sec:authorize> --%>
 			
-          		 <li class="${sessionData.nav == 'Immigration' || sessionData.nav == 'ImmigrationSender' || sessionData.nav == 'ImmigrationRecipient' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/immigration/viewImmigrationList'/>" title="Immigration"><span><i class="fa fa-plane"></i></span><i class="subMenu">Immigration</i></a></li>			
-	
           	
         </ul>
       </div>
