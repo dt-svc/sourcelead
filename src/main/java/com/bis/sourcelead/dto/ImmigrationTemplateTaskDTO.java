@@ -16,12 +16,15 @@ public class ImmigrationTemplateTaskDTO extends SearchDTO implements Serializabl
 	private Long templateId;
 	
 	// add form form list property here
+	@Required(desc = "Task Name")
 	private String taskName; // Immigration task related properties
 
 	private String priority;
 
+	@Required(desc = "Due After Months")
 	private Integer dueAfterMonths;
 
+	@Required(desc = "Due After Days")
 	private Integer dueAfterDays;
 
 	private String taskRepeat;
@@ -44,6 +47,7 @@ public class ImmigrationTemplateTaskDTO extends SearchDTO implements Serializabl
 
 	private String staticPath;
 
+	@Required(desc = "Petition AssignedTo")
 	private String petitionAssignedTo;
 	
 	private String petitionAssignedToName;
