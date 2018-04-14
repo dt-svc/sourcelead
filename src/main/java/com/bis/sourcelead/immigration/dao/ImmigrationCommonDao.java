@@ -48,6 +48,8 @@ public interface ImmigrationCommonDao {
 
 	String deletetCandidateFamilyDetails(Long id);
 	
+	Long getImmigrationGeneratedIdByOrgLocationId(Long orgLocationId, Integer generatedIdCount);
+	
  	List<CandidateResidence> getCandidatesResidenceListByCandidateIdAndOrgLocationID(Long candidateId,String searchValue);
 
 	List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId,String idType,String searchValue);

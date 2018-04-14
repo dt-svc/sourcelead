@@ -426,6 +426,7 @@ public class Constants {
 	public static final int TAB_CONTRACTS = 16;
 	public static final String Dashboard = "Dashboard";
 	public static final String Users = "Users";
+	public static final String Immigration = "Immigration";
 	public static final String Projects = "Projects";
 	public static final String Clients = "Clients";
 	public static final String TimeSheet = "TimeSheet";
@@ -908,6 +909,7 @@ public class Constants {
 	
 	public static final String CANDIDATE_ENTITY = "CD";
 	public static final String JOB_ENTITY = "JB";
+	public static final String IMMIGRATION_ENTITY = "IM";
 	public static final String PROJECT_ENTITY = "PJ";
 	public static final String EXPENSES_ENTITY = "EP";
 	public static final String TICKET_ENTITY = "ST-";
