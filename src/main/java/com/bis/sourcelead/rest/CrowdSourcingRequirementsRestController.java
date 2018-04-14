@@ -768,40 +768,62 @@ public class CrowdSourcingRequirementsRestController {
 
 	/*@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")*/
 	@RequestMapping(value = "/saveBankAccountDetails", method = RequestMethod.POST)
-	public String saveBankAccountDetails(CrowdSourcingUserBankAccountsDTO csuBankAccountsDTO,HttpServletRequest request)
+	public Response<String> saveBankAccountDetails(CrowdSourcingUserBankAccountsDTO csuBankAccountsDTO,HttpServletRequest request)
 			throws Exception {
 
 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		CrowdSourcingUserBankAccounts bankAccount = null;
+		Response<String> response=new Response<>();
 		
-		bankAccount = crowdSourcingUserBankAccountsService.getUserBankAccountByUserId(user.getId());
 		
-		if(null == bankAccount){
-			bankAccount = new CrowdSourcingUserBankAccounts();
-			bankAccount.setAccountUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-			bankAccount.setCreatedDate(new Date());
+		try{
+			if(user != null){
+				if(Validator.validate(csuBankAccountsDTO)){
+					bankAccount = crowdSourcingUserBankAccountsService.getUserBankAccountByUserId(user.getId());	
+					if(null == bankAccount){
+						bankAccount = new CrowdSourcingUserBankAccounts();
+						bankAccount.setAccountUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+						bankAccount.setCreatedDate(new Date());
+					}
+					
+					bankAccount.setAccountUserId(user);
+					bankAccount.setAccountHolderName(csuBankAccountsDTO.getAccountHolderName());
+					bankAccount.setCountry(csuBankAccountsDTO.getCountry());
+					bankAccount.setCurrency(csuBankAccountsDTO.getCurrency());
+					
+					if(StringUtils.isNotBlank(csuBankAccountsDTO.getBankName())){
+					  bankAccount.setBankName(csuBankAccountsDTO.getBankName());
+					}
+					
+					bankAccount.setAccountNumber(csuBankAccountsDTO.getAccountNumber());
+					
+					bankAccount.setBankCode(csuBankAccountsDTO.getBankCode());
+					bankAccount.setCreatedBy(user.getUserCode());
+					bankAccount.setUpdatedBy(user.getUserCode());
+					bankAccount.setUpdatedDate(new Date());
+					
+					crowdSourcingUserBankAccountsService.addUserBankAccounts(bankAccount);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+					
+				}else{
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+						
+				}
+			}else{
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		}catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		
-		bankAccount.setAccountUserId(user);
-		bankAccount.setAccountHolderName(csuBankAccountsDTO.getAccountHolderName());
-		bankAccount.setCountry(csuBankAccountsDTO.getCountry());
-		bankAccount.setCurrency(csuBankAccountsDTO.getCurrency());
-		
-		if(StringUtils.isNotBlank(csuBankAccountsDTO.getBankName())){
-		  bankAccount.setBankName(csuBankAccountsDTO.getBankName());
-		}
-		
-		bankAccount.setAccountNumber(csuBankAccountsDTO.getAccountNumber());
-		
-		bankAccount.setBankCode(csuBankAccountsDTO.getBankCode());
-		bankAccount.setCreatedBy(user.getUserCode());
-		bankAccount.setUpdatedBy(user.getUserCode());
-		bankAccount.setUpdatedDate(new Date());
-		
-		crowdSourcingUserBankAccountsService.addUserBankAccounts(bankAccount);
-		
-		return "success";
+		return response;
 
 	}
 	

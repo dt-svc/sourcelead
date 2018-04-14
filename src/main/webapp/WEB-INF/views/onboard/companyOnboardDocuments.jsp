@@ -336,7 +336,11 @@ $(function(){
 		</section>
 	</section>
 </div>
-
+					<div class="location-alert alert alert-danger alert-dismissable zInPop" id="locationAlert">
+    <a href="#" class="loc-alertclose close">&times;</a>
+    <strong>Alert !</strong> <span>Your are not able to Save Required data is Missing.</span>
+  </div>
+  
  <script type="text/javascript" src="/resources/js/jquery-1.11.0.min.js?staticTime=${staticTime}"></script>
  <script type="text/javascript" src="/resources/js/jquery.liquidcarousel.pack.js?staticTime=${staticTime}"></script>	
 	
@@ -381,7 +385,10 @@ if(document.getElementById("uploadBusinessLicenseBtn") != null){
 		  	$('#orglocw9Document').val($(this).val().replace(/C:\\fakepath\\/i, ''));
 	  };
   }
-	  
+
+  $(".loc-alertclose").click(function(){
+		 $(".location-alert").fadeOut();
+	})  
  </script>
  
  
@@ -425,12 +432,22 @@ if(document.getElementById("uploadBusinessLicenseBtn") != null){
 						 data: formData,
 						 url: sourceleadUrl+"/saveOrgLocationDocuments",
 								success : function(result) {
-									
-									if(result == 'success'){
-						        		location.replace(sourceleadUrl+"/companyOnboardSignatory"); 
-						        	}else{
-						        		$("#loading").removeAttr("style"); 
-						        	}
+									if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+				      	    		    showError(result.responseMessage);
+				      	    		    $("#loading").removeAttr('style');
+				      	    		}
+						        	else if (result.response === "AWKWARD") {
+				      	    		    location.href = "/errorPage";
+				      	    		}
+				                	else if(result.response === "SUCCESS"){
+				                		 $("#loading").removeAttr('style');
+				                		location.replace(sourceleadUrl+"/companyOnboardSignatory"); 
+				                	}else if (result.indexOf('Sign In') !== -1) {
+				      					location.replace(sourceleadUrl);
+				      				}else {
+				      				    showError("Operation failed, please try again");
+				      				    $("#loading").removeAttr('style');
+				      				}
 						
 						},
 					}); 

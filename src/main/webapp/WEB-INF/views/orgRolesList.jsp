@@ -228,26 +228,37 @@ var validationSettings = {
         	  if ($(this).validate(false, validationSettings)){
         		    e.preventDefault(); 
 	          		
-        		    var frm = $('#addRole_form').serializeFormJSON();
-        	        var con = JSON.stringify(frm);
-        	        con = con.replace(/[{}]/g, "");
-        	        
-        	        //It will escape all the special characters
-        	        var jsonData = encodeURIComponent(con);
-				    
-	          		var sourceleadUrl ='${sourceleadUrl}';
+        		    var formData = getFormData1("addRole_form");
+        		    
+        			var sourceleadUrl ='${sourceleadUrl}';
 	          		
 	          		 $("#add_role").attr("disabled", "disabled");
 	          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	          		
 	          	     $.ajax({
 	     		    	type: "POST",
-	     		    	 url: sourceleadUrl+"/addNewRole?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
-	     		        success: function(data) {
-	     		        	if(data != null && data != ''){
-	     	   	        		var json = JSON.parse(data);
-	     	   	        	    location.replace(sourceleadUrl+ "/roleActions/"+json[0]+"");
-	     		        	}
+	     		    	data: formData,
+	     		    	processData: false, 
+	    		 		contentType: false,
+	     		    	 url: sourceleadUrl+"/addNewRole?${_csrf.parameterName}=${_csrf.token}", 
+	     		    			 success: function(data) {
+	     		        	if (data && (data === "INVALID_DATA" || data === "INVALID_USER")) {
+	     		        		showError(data);
+	          	    		    $("#loading").removeAttr('style');
+	          	    		}
+	                    		else if (data === "AWKWARD") {
+	                    			location.href = "/errorPage";
+	          	    		}
+	                    		else if(data != 'INVALID_DATA' && data != 'AWKWARD'){
+	                    			$("#loading").removeAttr('style');
+	                    		   location.replace(sourceleadUrl+ "/roleActions/"+data+"");  
+	    			        	    }
+	                    		else if (data.indexOf('Sign In') !== -1) {
+	                    			location.replace(sourceleadUrl);
+	          				} else {
+	          					showError("Operation failed, please try again");
+	          				    $("#loading").removeAttr('style');
+	          				}
+	     		        	
 	     			        
 	     		        },
 	     		    });
