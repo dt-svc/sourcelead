@@ -214,6 +214,7 @@ public class ImmigrationRestController {
             OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
                     "orgLocations");
             immigrationListDTOList= immigrationCommonService.getImmigrationsList(immigrationListDTO, searchValue , orgLocations);
+            commonUtil.highLightMenu(Constants.Immigration, request);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -673,6 +674,7 @@ public class ImmigrationRestController {
             flag = true;
             }else{
             	flag = false;
+            	break;
             }
             }
         } catch (Exception e) {
@@ -713,6 +715,7 @@ public class ImmigrationRestController {
                     flag = true;
                     }else{
                     	flag = false;
+                    	break;
                     }
                     }
         	}catch (Exception e) {

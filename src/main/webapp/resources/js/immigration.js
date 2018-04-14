@@ -196,8 +196,6 @@ function Immigration() {
 
     this.editTemplateDetailsByRowId = function (templateId) {
         immTemplId = templateId; //updating global variable "immTemplId" with templateId.
-        alert("llll"+templateId);
-        alert("kkkk"+immTemplId);
         window.location.href = sourceleadUrl + immiModulePath + "/addNewPetitionTemplate?templateId=" + immTemplId; // for editing mode  
     }
 
