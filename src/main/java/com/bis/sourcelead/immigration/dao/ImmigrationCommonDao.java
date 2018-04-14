@@ -89,4 +89,6 @@ public interface ImmigrationCommonDao {
 	ImmigrationCandidateForms getImmigrationCandidateFormsById(Long id, Long candidateId, Long immigrationId) throws Exception;
 
 	ResponseList<ImmigrationListViewDTO> getImmigrationsList(ImmigrationListViewDTO immigrationListDTO,	String searchValue, OrgLocations orgLocations)throws Exception;
+
+	String updateUscisTypeDropDown(Long templateId, Long uscisId);
 }

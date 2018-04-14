@@ -712,6 +712,27 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return immigrationCandidateDocumentsHistory;
 
 }
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public String updateUscisTypeDropDown(Long templateId, Long uscisId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			Immigration immigration = session.get(Immigration.class, templateId);
+			immigration.setCurrUscisStauts(uscisId);
+			session.update(immigration);
+			logger.debug("updateUscisTypeDropDown updated Successfully");
+		} catch (Exception exception) {
+			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"immigrationCandidateDocumentsHistory"));
+			    try {
+	                throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
+	            } catch (SourceLeadConstraintViolationException e) {
+	                e.printStackTrace();
+	            }
+			return "failed";
+		}
+		return "success";
+	}
 	
 	}
 	

@@ -925,4 +925,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		return immigartionList;
 	}
 
+	@Override
+	public String updateUscisTypeDropDown(Long templateId, Long uscisId) {
+		return immigrationCommonDao.updateUscisTypeDropDown(templateId,uscisId);
+	}
+
 }

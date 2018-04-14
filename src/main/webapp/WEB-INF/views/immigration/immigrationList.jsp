@@ -383,7 +383,7 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.currUscisStatusId !== null && opt.currUscisStatusId !== '' && opt.currUscisStatusId !== 'undefined') {
-                    	 result = result + "<td><select id='currUscisStatus' onchange='changeSaveUscisStatus($(this));' name='currUscisStatus' class='form-control'>";
+                    	 result = result + "<td><select id='currUscisStatus' onchange='changeSaveUscisStatus($(this),"+opt.id+");' name='currUscisStatus' class='form-control'>";
                     	 //alert(opt.currUscisStatusId);
                     	 for(var i=0;i<opt.currUsicisStatusList.length;i++){
                         	data = opt.currUsicisStatusList[i];
@@ -528,8 +528,18 @@
      $("table").colResizable(); // for resizing columns in tables.
  }
  
- function changeSaveUscisStatus(idVal){
-	 alert(idVal.val());
+ function changeSaveUscisStatus(idVal,templateId){
+	 var uscisId = idVal.val();
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/immigration/updateUscisTypeDropDown?templateId="+templateId+"&uscisId="+uscisId, 
+	        success: function(data) {
+	        	if(data == "success"){
+	        		//getDynamicImmigrationList();
+	        	}
+	        }
+	 });
+	 //alert(idVal.val()+" : "+templateId);
  }
 </script>
 

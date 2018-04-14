@@ -83,5 +83,7 @@ public interface ImmigrationCommonService {
 
 	ResponseList<ImmigrationListViewDTO> getImmigrationsList(ImmigrationListViewDTO immigrationListDTO, String searchValue,  OrgLocations orgLocations) throws Exception;
 
+	String updateUscisTypeDropDown(Long templateId, Long uscisId);
+
 
 }
