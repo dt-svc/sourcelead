@@ -67,11 +67,7 @@
                             
                           </div>
                         </div>
-				<!-- Popup Div --> 
 				
-				
-			<!--  <div id="userList" class="project_tabs_inn_table vendor_wrap_inn_table mt"></div>
-			 <div id="loading"></div> -->
 			 </div>
 			
 			
@@ -106,15 +102,134 @@
     	 <div id="loading"></div>
 	</div>	   
 				
-		</div>
+</div>
+
+<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
+				<h5 class="headerAdsrch">Filters
+					<a href="javascript:void(0)" class="close-div" onClick="closeFilterPop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				
+				<div class="addInner">
+					<div class="row">
+						<div class="col-md-2 mb positionRelative">
+								<div class="col-md-12 mb">
+								<label><strong>Country</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="AllTypeFilter">
+										    <c:forEach var="countries" items="${orgSubscribedCountriesList}">
+												<li class="radioIput positionRelative"><input type="radio"  ${registeredCountry == countries ? 'checked' : ''} value="${countries}"  name="subscribedOrgCountry" onclick="resetOrgLocationRadio();getSearchLocationRegisteredCompanies();"><label>${countries}</label></li>
+											</c:forEach>
+									    
+				                    </ul>
+								 </div>
+								 </div> 
+								 
+                            
+						</div>
+						
+						
+			   <div class="col-md-2">
+					<div class="row">
+						<div class="col-md-12 mb">
+							<label><strong>Status</strong></label>
+							 <div class="clearfix">
+								<ul class="list-unstyled" id="availabilityFilter">
+		                    	    <li class="checkBox positionRelative" ><input  type="checkbox"  name="userLoggedInStatus"  value ="Active"  ><label>Active</label></li>
+									<li class="checkBox positionRelative" ><input  type="checkbox"  name="userLoggedInStatus"  value ="In Active" ><label>In Active</label></li>
+									<li class="checkBox positionRelative" ><input  type="checkbox"  name="userLoggedInStatus"  value ="Not Logged In" ><label>Not Logged In</label></li>
+		                        </ul>
+							 </div>
+							 </div> 
+					     </div>
+				</div> 
+						
+					
+					<div class="col-md-3 mb positionRelative">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="OrgLocCompaniesInput" onkeyup="subscribedOrgLocCompanies()" placeholder="Company" title="Type in a company">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="companyFilterDiv">
+										</ul>
+										<input type="hidden" name="filteredOrgLocationId" id="filteredOrgLocationId">
+									 </div> 
+					 </div> 
+					 
+					 
+					 <div class="col-md-3 mb positionRelative">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="OrgLocRolesInput" onkeyup="subscribedOrgLocRoles()" placeholder="Roles" title="Type in a company">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="rolesFilterDiv">
+										</ul>
+									 </div> 
+					 </div>
+					 
+				 
+					
+				</div>
+					 
+				</div>
+	</div>
 			
 			
-			</div>
+	</div>
 			
-			
+
+<script>
+function subscribedOrgLocCompanies() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("OrgLocCompaniesInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("companyFilterDiv");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+function subscribedOrgLocRoles() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("OrgLocRolesInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("rolesFilterDiv");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+</script>			
 			
 <script>
 
+function closeFilterPop(){
+	$("div.cand-advsrch-popup").hide();
+	$(".advancedsearch-mask").fadeOut();
+}
+function openFilterPop(){
+	$("div.cand-advsrch-popup").toggle();
+	 $(".advancedsearch-mask").fadeIn();
+	 
+	 getSearchLocationRegisteredCompanies();
+	 getRegisteredOrgLocationRoles();
+}
 
 function resetUsersFilter(){
 	
@@ -178,6 +293,49 @@ function getLocationRegisteredCompanies(){
 		    });
 	}
 }
+
+	function resetOrgLocationRadio(){
+		$("#filteredOrgLocationId").val('');
+	}	
+		
+	function getSearchLocationRegisteredCompanies(){
+		
+		var country =   $('input[name=subscribedOrgCountry]:checked').val();
+		 var orgId = '${orgId}';
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 if(orgId != null && orgId != ""){
+			 $.ajax({
+			    	type: "GET",
+			        url: sourceleadUrl+"/getLocationEnrolledCompanies?${_csrf.parameterName}=${_csrf.token}&orgId="+orgId+"&country="+country, 
+			        success: function(json) {
+			        	var output = "";
+			        	for (var i=0; i<json.length; i++)
+						{
+				        		var opt = json[i];
+				        		var checked = '';
+				        		var filteredOrgLocationId = document.getElementById("filteredOrgLocationId").value;
+				        		if(filteredOrgLocationId != null && filteredOrgLocationId != '' && filteredOrgLocationId != 'undefined'){
+				        			if(opt.id == filteredOrgLocationId){
+					        			checked = 'checked';
+					        		}
+				        		}else{
+						        		if(i == 0){
+						        			checked = 'checked';
+						        		}
+				        		}
+				        		
+				        		output = output + "<li class='radioIput positionRelative'><input type='radio' value='" +opt.id+ "' "+checked+"  name='subscribedOrgLocation' onclick='getRegisteredOrgLocationRoles(" +opt.id+ ");'><label>"+opt.orgName+"</label></li>";
+				        		
+						}
+			        	
+			        	$("#companyFilterDiv").empty();
+				        $("#companyFilterDiv").append(output);
+				        getRegisteredOrgLocationRoles();
+			        	
+			        },
+			    });
+		}
+	}
 </script>			
 			
 <script type="text/javascript">
@@ -638,6 +796,38 @@ var validationSettings = {
 		        },
 		    });
 	 }
+ }
+ 
+ 
+ function getRegisteredOrgLocationRoles(orgLocationId){
+	
+	 if(orgLocationId != null && orgLocationId != '' && orgLocationId != 'undefined'){
+		 $("#filteredOrgLocationId").val(orgLocationId);
+	 }else{
+		 orgLocationId =   $('input[name=subscribedOrgLocation]:checked').val();
+		 if(orgLocationId == null || orgLocationId == '' || orgLocationId == 'undefined'){
+			 orgLocationId = '${registeredOrgLocationId}'
+		 }
+	 }
+	 
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(orgLocationId != null && orgLocationId != '' && orgLocationId != 'undefined'){
+		 $.ajax({
+			    	type: "GET",
+			        url: sourceleadUrl+"/getRegisteredOrgRoles?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId, 
+			        success: function(json) {
+			        	var output = "";
+			        	for (var i=0; i<json.length; i++)
+						{
+				        		var opt = json[i];
+				        		output = output + "<li class='radioIput positionRelative'><input type='checkbox' value='" +opt.id+ "'  name='subscribedOrgLocationRoles'><label>"+opt.displayName+"</label></li>";
+						}
+			        	$("#rolesFilterDiv").empty();
+				        $("#rolesFilterDiv").append(output);
+			        },
+			    });
+		 }
+	 
  }
 </script>
 

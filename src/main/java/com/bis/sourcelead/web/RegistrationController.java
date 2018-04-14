@@ -390,6 +390,7 @@ public class RegistrationController {
 				
 				model.addObject("orgloc",orgLocations);
 				model.addObject("registeredOrgLocationId",orgLocations.getId());
+				model.addObject("registeredCountry",orgLocations.getCountry());
 				model.addObject("orgId",org.getId());
 				model.setViewName("registration/enrolledOrgSummary");
 				
@@ -407,6 +408,9 @@ public class RegistrationController {
 				
 				List<OrgLicenseSubscriptionTypes> dataStorageTypeList = orgLicenseSubscriptionTypesService.getLicenseSubscriptionTypesByCategory(Constants.DATA_STORAGE);
 				model.addObject("dataStorageTypeList", dataStorageTypeList);
+				
+				List<String> orgSubscribedCountriesList = orgLicenseSubscriptionService.getOrgLicenseSubscribedCountriesByOrgId(org.getId());
+				model.addObject("orgSubscribedCountriesList", orgSubscribedCountriesList);
 				
 				model.addObject("sourceleadUrl", sourceleadUrl);
 			
