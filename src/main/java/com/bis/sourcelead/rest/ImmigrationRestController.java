@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -350,7 +351,7 @@ public class ImmigrationRestController {
         }
         return model;
     }
-
+    @PreAuthorize("hasAnyRole('ROLE_ADD_PETITION_TEMPLATE','ROLE_EDIT_VIEW_PETITION_TEMPLATE')")
     @RequestMapping(value = {"/addNewPetitionTemplate"})
     public ModelAndView loadAddPetitionTemplate(HttpServletRequest request) throws ServletRequestBindingException {
         ModelAndView model = new ModelAndView();
@@ -429,7 +430,7 @@ public class ImmigrationRestController {
         }
         return templateListDTOList;
     }
-
+    @PreAuthorize("hasRole('ROLE_DELETE_PETITION_TEMPLATE')")
     @RequestMapping(value = "/deleteImmigrationTemplateDetatils")
     public String deleteTemplateDetailsById(@RequestParam(value = "deleteId", required = true) Long deleteId,
             HttpServletRequest request) {
@@ -658,23 +659,34 @@ public class ImmigrationRestController {
             @RequestParam(value = "templateId", required = false) String templateId) {
         Response<String> response = new Response<>();
     	ModelAndView model = new ModelAndView();
+   
+    	
         model.addObject("sourceleadUrl", sourceleadUrl);
         List<ImmigrationTemplateDocDTO> templateDocList = null;
         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+        Boolean flag = false;
         if (user !=null){
         try {
-            if(Validator.validate(templateDTO.getImmigrationDocList())){
-            templateDocList = immigrationTemplateService.savePetitionTemplateDocDetails(templateDTO, user);
-            response.setResponse(Result.SUCCESS.name());
-			response.setResponseMessage(Result.SUCCESS.getValue());
+        	for(ImmigrationTemplateDocDTO doc:templateDTO.getImmigrationDocList()){
+        	
+            if(Validator.validate(doc)){
+            flag = true;
             }else{
-            	response.setObject("DataMissing");
-    			response.setResponse(Result.INVALID_DATA.name());
-    			response.setResponseMessage(Result.INVALID_DATA.getValue());
+            	flag = false;
+            }
             }
         } catch (Exception e) {
             logger.error("Exception occured while saving Petition Template Doc Details" + e.getMessage());
             e.printStackTrace();
+        }
+        if(flag == true){
+         	templateDocList = immigrationTemplateService.savePetitionTemplateDocDetails(templateDTO, user);
+            response.setResponse(Result.SUCCESS.name());
+    		response.setResponseMessage(Result.SUCCESS.getValue());
+        }else{
+        	response.setObject("DataMissing");
+			response.setResponse(Result.INVALID_DATA.name());
+			response.setResponseMessage(Result.INVALID_DATA.getValue());
         }
         }else{
         	response.setResponse(Result.SESSION_TIMEDOUT.name());
@@ -691,22 +703,30 @@ public class ImmigrationRestController {
         List<ImmigrationTemplateFormDTO> templateFormsList = null;
         model.addObject("sourceleadUrl", sourceleadUrl);
         templateDTO.setStaticPath(staticPath);
+        Boolean flag = false;
         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
         if(user != null){
         	try{
-        		if(Validator.validate(templateDTO.getImmigrationFormList())){
-        		templateFormsList = immigrationTemplateService.savePetitionTemplateFormDetails(templateDTO, user);
-        		response.setResponse(Result.SUCCESS.name());
-     			response.setResponseMessage(Result.SUCCESS.getValue());
-        	}else{
-        		response.setObject("DataMissing");
-    			response.setResponse(Result.INVALID_DATA.name());
-    			response.setResponseMessage(Result.INVALID_DATA.getValue());	
-        	}
+        		for(ImmigrationTemplateFormDTO form:templateDTO.getImmigrationFormList()){
+                	
+                    if(Validator.validate(form)){
+                    flag = true;
+                    }else{
+                    	flag = false;
+                    }
+                    }
         	}catch (Exception e) {
         		 e.printStackTrace();
 			}
-        
+        if(flag == true){
+        	templateFormsList = immigrationTemplateService.savePetitionTemplateFormDetails(templateDTO, user);
+    		response.setResponse(Result.SUCCESS.name());
+ 			response.setResponseMessage(Result.SUCCESS.getValue());
+        }else{
+        	response.setObject("DataMissing");
+			response.setResponse(Result.INVALID_DATA.name());
+			response.setResponseMessage(Result.INVALID_DATA.getValue());
+        }
         }else{
         	response.setResponse(Result.SESSION_TIMEDOUT.name());
  			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
