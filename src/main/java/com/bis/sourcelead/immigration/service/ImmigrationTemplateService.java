@@ -6,11 +6,11 @@ package com.bis.sourcelead.immigration.service;
 import java.util.List;
 
 import com.bis.sourcelead.dto.CandidateEmployerDTO;
-import com.bis.sourcelead.dto.ImmigrationDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
+import com.bis.sourcelead.dto.ImmigrationTemplateTaskDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -28,15 +28,15 @@ public interface ImmigrationTemplateService {
 
     List<ImmigrationTemplateDocDTO> savePetitionTemplateDocDetails(ImmigrationTemplateDTO templateDTO, User user);
 
-    void savePetitionTemplateTaskDetails(ImmigrationTemplateDTO templateDTO, User user);
+    void savePetitionTemplateTaskDetails(ImmigrationTemplateTaskDTO templateDTO, User user);
 
     ResponseList<ImmigrationTemplateListDTO> getAllTemplateDetails(ImmigrationTemplateListDTO templateListDTO, String searchValue, Long orgLocationId, String[] countriesList);
 
     List<ImmigrationTemplateFormDTO> savePetitionTemplateFormDetails(ImmigrationTemplateDTO templateDTO, User user);
 
-    ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO, String searchValue) throws Exception;
+    ResponseList<ImmigrationTemplateTaskDTO> getTemplateTaskList(ImmigrationTemplateTaskDTO templateDTO, String searchValue) throws Exception;
 
-    ImmigrationTemplateDTO editImmigrationTaskList(String id) throws Exception;
+    ImmigrationTemplateTaskDTO editImmigrationTaskList(String id) throws Exception;
 
     List<ImmigrationTemplateDocDTO> getImmigrationTemplateDocsListById(Long templateId);
 

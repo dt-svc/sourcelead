@@ -23,15 +23,14 @@ import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
+import com.bis.sourcelead.dto.ImmigrationTemplateTaskDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateLcaI94Summary;
-import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
-import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
@@ -281,13 +280,13 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 
     @Override
     @Transactional(rollbackFor = {Exception.class})
-    public ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO,
+    public ResponseList<ImmigrationTemplateTaskDTO> getTemplateTaskList(ImmigrationTemplateTaskDTO templateDTO,
             String searchValue) throws Exception {
         Session session = this.sessionFactory.getCurrentSession();
         List<Long> countlist = null;
         Integer filterCount = 0;
         List<ImmigrationTemplateTasks> immigrationTemplateTasks = null;
-        ResponseList<ImmigrationTemplateDTO> response = new ResponseList<>();
+        ResponseList<ImmigrationTemplateTaskDTO> response = new ResponseList<>();
 
         StringBuilder query1 = new StringBuilder("");
         if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
@@ -317,9 +316,9 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
         } else {
             response.setRecordsFiltered(totalCount);
         }
-        List<ImmigrationTemplateDTO> maintenanceDTOs = new ArrayList<ImmigrationTemplateDTO>();
+        List<ImmigrationTemplateTaskDTO> maintenanceDTOs = new ArrayList<ImmigrationTemplateTaskDTO>();
         for (ImmigrationTemplateTasks source : immigrationTemplateTasks) {
-            ImmigrationTemplateDTO target = new ImmigrationTemplateDTO();
+        	ImmigrationTemplateTaskDTO target = new ImmigrationTemplateTaskDTO();
             BeanUtils.copyProperties(source, target);
             target.setTemplateId(source.getImmigrationTempId().getId());
             if (source.getAssignToCandidate() != null) {

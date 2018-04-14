@@ -98,11 +98,21 @@ function validateShiftName(){
 		 if ($('#addshift_form').validate(false, validationSettings)) {
 			var formData = getFormData("addshift_form");
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			$.post( sourceleadUrl+ "/saveShift?$ "+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&shiftUUID="+shiftUUID, formData, function(data) {
-                       if(data == "success"){
-                    	   $("#loading").removeAttr("style");
+			$.post( sourceleadUrl+ "/saveShift?$ "+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&shiftUUID="+shiftUUID, formData, function(result) {
+				if (result && result.response === "INVALID_DATA") {
+	    		    showError(result.responseMessage);
+	    		   } else if (result.response === "AWKWARD") {
+	    		    location.href = "/errorPage";
+	    		   }  else if (result.response === "SUCCESS") {     
+				
+				         $("#loading").removeAttr("style");
                     	   location.replace(sourceleadUrl+"/viewShift");
-                       }
+                       }else if (result.indexOf('Sign In') !== -1) {
+               			location.replace(sourceleadUrl);
+               		} else {
+               		    showError("Operation failed, please try again");
+               		}
+				$("#loading").hide();
                     });
             
 // 			$("addshift_form").validate().resetForm();

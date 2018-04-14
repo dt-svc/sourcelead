@@ -6,6 +6,7 @@ import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
+import com.bis.sourcelead.dto.ImmigrationTemplateTaskDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
@@ -46,7 +47,7 @@ public interface ImmigrationTemplateDao {
 
     ImmigrationTemplateForms getImmigrationTemplateFormsById(Long immigrationId);
 
-    ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO, String searchValue) throws Exception;
+    ResponseList<ImmigrationTemplateTaskDTO> getTemplateTaskList(ImmigrationTemplateTaskDTO templateDTO, String searchValue) throws Exception;
 
     ImmigrationTemplateTasks editImmigrationTaskList(String id);
 
