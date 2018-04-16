@@ -328,12 +328,15 @@
      result = result + '<tr>';
      result = result + '<th>Status</th>';
      result = result + '<th>ID</th>';
+     result = result + '<th>Country</th>';
      result = result + '<th>Type</th>';
      result = result + '<th>Name</th>';
      result = result + '<th>Email</th>';
      result = result + '<th>Phone</th>';
      result = result + '<th>On Date</th>';
      result = result + '<th>Attorney</th>';
+     result = result + '<th>LCA Start Date</th>';
+     result = result + '<th>LCA End Date</th>';
      result = result + '<th>Action</th>';
      result = result + '</tr>';
      result = result + '</thead>';
@@ -367,12 +370,15 @@
          "columns": [
              {"data": "Status"},
              {"data": "ID"},
+             {"data": "Country"},
              {"data": "Type"},
              {"data": "Name"},
              {"data": "Email"},
              {"data": "Phone"},
              {"data": "On date"},
-             {"data": "Attorney"}
+             {"data": "Attorney"},
+             {"data": "LCA Start Date"},
+             {"data": "LCA End Date"}
          ],
          "columnDefs": [
              {
@@ -417,6 +423,19 @@
              },
              {
                  "targets": colIndex++,
+                 "data": "country",
+                 "render": function (data, type, opt, meta) {
+                     var result = "";
+                     if (opt.country !== null && opt.country !== '' && opt.country !== 'undefined') {
+                         result = result + "<td><div class='tbldata-dotdot-vsm'>" + opt.country + "</div></td>";
+                     } else {
+                         result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
+                     }
+                     return result;
+                 }
+             },
+             {
+                 "targets": colIndex++,
                  "data": "petitionType",
                  "render": function (data, type, opt, meta) {
                      var result = "";
@@ -428,6 +447,7 @@
                      return result;
                  }
              },
+             
              {
                  "targets": colIndex++,
                  "data": "firstName",
@@ -496,6 +516,32 @@
              },
              {
                  "targets": colIndex++,
+                 "data": "lcaStartDateStr",
+                 "render": function (data, type, opt, meta) {
+                     var result = "";
+                     if (opt.lcaStartDateStr !== null && opt.lcaStartDateStr !== '' && opt.lcaStartDateStr !== 'undefined') {
+                         result = result + "<td><div class='tbldata-dotdot-vsm'>" + opt.lcaStartDateStr + "</div></td>";
+                     } else {
+                         result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
+                     }
+                     return result;
+                 }
+             },
+             {
+                 "targets": colIndex++,
+                 "data": "lcaEndDateStr",
+                 "render": function (data, type, opt, meta) {
+                     var result = "";
+                     if (opt.lcaEndDateStr !== null && opt.lcaEndDateStr !== '' && opt.lcaEndDateStr !== 'undefined') {
+                         result = result + "<td><div class='tbldata-dotdot-vsm'>" + opt.lcaEndDateStr + "</div></td>";
+                     } else {
+                         result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
+                     }
+                     return result;
+                 }
+             },
+             {
+                 "targets": colIndex++,
                  /*"data": "formsCount",*/
                  "render": function (data, type, opt, meta) {
                      var result = "";
@@ -527,7 +573,7 @@
          }
      });
 
-     $("table").colResizable(); // for resizing columns in tables.
+    // $("table").colResizable(); // for resizing columns in tables.
  }
  
  function changeSaveUscisStatus(idVal,templateId){

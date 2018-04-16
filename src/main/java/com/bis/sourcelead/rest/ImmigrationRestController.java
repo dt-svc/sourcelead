@@ -200,7 +200,7 @@ public class ImmigrationRestController {
         ResponseList<ImmigrationListViewDTO> immigrationListDTOList = null;
         System.out.println("inisde controller  getAllImmigartionList  --> ");
         try {
-            String[] tableColumns = {"currUscisStatus", "id", "petitionType", "firstName", "email", "phone", "openDate","orgName"};// should be
+            String[] tableColumns = {"currUscisStatus", "id", "petitionType", "country","firstName", "email", "phone", "openDate","orgName","lcaStartDate","lcaEndDate"};// should be
             // entity names
             int sortColumnIndex = 0; // by default sorting using updated date
             String sortColumnOrder = "desc"; // by default ascending order
