@@ -45,6 +45,9 @@ public class Immigration implements Serializable {
 	@Column(name = "PLACE_OF_ENTRY ")
 	private String placeOfEntry;
 	
+	@Column(name = "GENERATED_ID")
+	private String generatedId;
+	
 	@ManyToOne
 	@JoinColumn(name = "IMMIGRATION_TEMPLATE_ID")
 	private ImmigrationTemplate immigrationTemplateId;
@@ -269,5 +272,14 @@ public class Immigration implements Serializable {
 	public void setCurrUscisStauts(LookUpData currUscisStauts) {
 		this.currUscisStauts = currUscisStauts;
 	}
+
+	public String getGeneratedId() {
+		return generatedId;
+	}
+
+	public void setGeneratedId(String generatedId) {
+		this.generatedId = generatedId;
+	}
+
 	
 }
