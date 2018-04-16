@@ -221,9 +221,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 	}
   
 	@Override
-	public Boolean getInvoiceByInvoiceId(String invoiceId, Long orgLocationsId) throws Exception {
+	public Boolean getInvoiceByInvoiceId(String invoiceId, Long orgLocationsId,  String invoiceType) throws Exception {
 		
-		return invoiceDao.getInvoiceByInvoiceId(invoiceId, orgLocationsId);
+		return invoiceDao.getInvoiceByInvoiceId(invoiceId, orgLocationsId, invoiceType);
 	}
 	
 	@Override
