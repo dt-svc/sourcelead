@@ -83,7 +83,21 @@ CREATE OR REPLACE VIEW IMMIGRATON_LIST_VIEW AS
                 SOURCELEAD.CANDIDATE
             WHERE
                 ID = IMM.CANDIDATE_ID) AS PHONE,
-        (SELECT 
+            (SELECT 
+            START_DATE
+        FROM
+            SOURCELEAD.CANDIDATE_LCA_I94_SUMMARY LCA
+        WHERE
+            LCA.CANDIDATE_ID = IMM.CANDIDATE_ID
+                AND LCA.IS_CURR = 'Y') AS LCA_START_DATE,
+    	(SELECT 
+            END_DATE
+        FROM
+            SOURCELEAD.CANDIDATE_LCA_I94_SUMMARY LCA
+        WHERE
+            LCA.CANDIDATE_ID = IMM.CANDIDATE_ID
+                AND LCA.IS_CURR = 'Y') AS LCA_END_DATE,
+                (SELECT 
                 O.ORG_NAME
             FROM
                 SOURCELEAD.ORG_RELATIONS ORL,
