@@ -451,7 +451,7 @@ function openAssetFilterPop(){
 function resetAssetFilter(){
 	$("ul#workStatusFilter > li input:checkbox").prop("checked",false);
 	$("ul#myCategoryUL > li input:checkbox").prop("checked",false);
-	
+	getDynamicAssetList();
 	
 }
 
