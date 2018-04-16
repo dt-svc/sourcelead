@@ -103,7 +103,7 @@ z-index: 9999999999 !important;
 	                  
 	                  
 	                  <div class="col-md-6">
-								<c:if test="${!empty orgloc.user.id}">
+								<%-- <c:if test="${!empty orgloc.user.id}"> --%>
 								<div class="form-group">
 								<div class="col-md-12 clearfix">
 								<h5>Contact Details&nbsp; <c:if test="${userState == 'NOT_LOGGEDIN'}"><a id="edit-user" href="javascript:editPrimaryUser();"><i class="fa fa-edit" title="Edit Contact Details"></i></a></c:if></h5>
@@ -112,7 +112,13 @@ z-index: 9999999999 !important;
 								
 								<div class="form-group">
 								<label class="col-md-4">First Name : </label>
-								<p class="tbldata-dotdot-me">${orgloc.user.firstName}</p>
+								<c:if test="${not empty orgloc.user.firstName}">
+									<p class="tbldata-dotdot-me">${orgloc.user.firstName}</p>
+								</c:if>
+								<c:if test="${empty orgloc.user.firstName}">
+									<p>--</p>
+								</c:if>
+								
 								</div>
 								
 								<div class="form-group">
@@ -121,14 +127,20 @@ z-index: 9999999999 !important;
 									<p class="tbldata-dotdot-me">${orgloc.user.lastName}</p>
 								</c:if>
 								<c:if test="${empty orgloc.user.lastName}">
-									<p>-----</p>
+									<p>--</p>
 								</c:if>
 								
 								</div>
 								
 								<div class="form-group">
-								<label class="col-md-4">Email : </label>
-								<p class="tbldata-dotdot-me">${orgloc.user.email}</p>
+								<label class="col-md-4">Email: </label>
+								<c:if test="${!empty orgloc.user.email}">
+									<p class="tbldata-dotdot-me">${orgloc.user.email}</p>
+								</c:if>
+								<c:if test="${empty orgloc.user.email}">
+									<p>--</p>
+								</c:if>
+								
 								</div>
 								
 								<div class="form-group">
@@ -137,10 +149,10 @@ z-index: 9999999999 !important;
 									<p>${orgloc.user.mobilePhone}</p>
 								</c:if>
 								<c:if test="${empty orgloc.user.mobilePhone}">
-									<p>-----</p>
+									<p>--</p>
 								</c:if>
 								</div>
-							</c:if>
+							<%-- </c:if> --%>
 								
 	                  </div>
 	                  
