@@ -20,6 +20,7 @@ public class ImmigrationTemplateListDTO extends SearchDTO implements Serializabl
     private Long updatedDate;
 	private String petitionType;
 	private String country;
+	private String rejectReason;
 
     public Long getId() {
         return id;
@@ -106,5 +107,15 @@ public class ImmigrationTemplateListDTO extends SearchDTO implements Serializabl
 	public void setCountry(String country) {
 		this.country = country;
 	}
+
+	public String getRejectReason() {
+		return rejectReason;
+	}
+
+	public void setRejectReason(String rejectReason) {
+		this.rejectReason = rejectReason;
+	}
+
+	
 
 }

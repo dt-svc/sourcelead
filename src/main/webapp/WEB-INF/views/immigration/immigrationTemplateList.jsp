@@ -337,7 +337,7 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                         '</sec:authorize>';
                         
                     	}else{
-                    		result = result + "</div></td>";
+                    		result = result + "<i class='glyphicon glyphicon-comment ml10 edit-reason'><div class='edit-status'><p>"+opt.rejectReason+"</p></div></i></div></td>";
                     	}
                     	 return result;
                     }
