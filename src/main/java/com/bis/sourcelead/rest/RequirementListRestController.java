@@ -1812,6 +1812,7 @@ public class RequirementListRestController {
 							boolQueryBuilderForCount.must(reqStatusBoolQueryBuilder);
 						}
 					} 
+
 				}
 					
 				
@@ -1825,6 +1826,7 @@ public class RequirementListRestController {
 						boolQueryBuilderForCount.must(reqAssignToBoolQueryBuilder);
 					}
 				}
+
 				
 				  //requirementPriority
 		
@@ -1922,7 +1924,9 @@ public class RequirementListRestController {
 						if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
 							boolQueryBuilderForCount.must(employerBoolQueryBuilder);
 						}
+
 					}
+
 				}
 				
 				//projects
