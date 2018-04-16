@@ -11,7 +11,7 @@
 <script type="text/javascript" src="/resources/js/immigration.js"></script>
 <script type="text/javascript" src="/resources/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script>
-<script type="text/javascript" src="/resources/js/colResizable-1.6.min.js"></script>
+<!-- <script type="text/javascript" src="/resources/js/colResizable-1.6.min.js"></script> -->
 <style type="text/css">
     .active {
         color: red !important;
@@ -383,17 +383,19 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.currUscisStatusId !== null && opt.currUscisStatusId !== '' && opt.currUscisStatusId !== 'undefined') {
-                    	 result = result + "<td><select id='currUscisStatus' onchange='changeSaveUscisStatus($(this),"+opt.id+");' name='currUscisStatus' class='form-control'>";
+                    	 result = result + "<td><div class='mt5 mb5' style='width:150px;'><select id='currUscisStatus' onchange='changeSaveUscisStatus($(this),"+opt.id+");' name='currUscisStatus' class='form-control'>";
                     	 //alert(opt.currUscisStatusId);
                     	 for(var i=0;i<opt.currUsicisStatusList.length;i++){
                         	data = opt.currUsicisStatusList[i];
                         	if(data.id == opt.currUscisStatusId){
+                        		//alert("inside selected");
                         		result = result + "<option selected value="+data.id+">"+data.name+"</option>";
                         	}else{
                         		result = result + "<option value="+data.id+">"+data.name+"</option>";
                         	}
                     	 }
-                         result = result + "</select></td>";
+                         result = result + "</select></div></td>";
+                         $('#currUscisStatus').trigger("chosen:updated");
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
                      }
@@ -406,9 +408,9 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.id !== null && opt.id !== '' && opt.id !== 'undefined') {
-                         result = result + "<td><div class='tbldata-dotdot-vsm'><a href=/app/immigration/viewImmigration?immigrationId="+opt.id+"&candidateId="+opt.candidateId+"&templateId="+opt.immTemplateId+">"+opt.id+"</a></div></td>";
+                         result = result + "<td><div class='tbldata-dotdot-100'><a href=/app/immigration/viewImmigration?immigrationId="+opt.id+"&candidateId="+opt.candidateId+"&templateId="+opt.immTemplateId+">"+opt.id+"</a></div></td>";
                      } else {
-                         result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
+                         result = result + "<td><div class='tbldata-dotdot-100'>---</div></td>";
                      }
                      return result;
                  }
@@ -459,9 +461,9 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.phone !== null && opt.phone !== 'undefined') {
-                         result = result + "<td><div class='tbldata-dotdot-vsm'>" + opt.phone  + "</div></td>";
+                         result = result + "<td><div class='tbldata-dotdot-100'>" + opt.phone  + "</div></td>";
                      } else {
-                         result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
+                         result = result + "<td><div class='tbldata-dotdot-100'>---</div></td>";
                      }
                      return result;
                  }
@@ -472,9 +474,9 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.openDateStr !== null && opt.openDateStr !== '' && opt.openDateStr !== 'undefined') {
-                         result = result + "<td><div class='tbldata-dotdot-vsm'>" + opt.openDateStr + "</div></td>";
+                         result = result + "<td><div class='tbldata-dotdot-100'>" + opt.openDateStr + "</div></td>";
                      } else {
-                         result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
+                         result = result + "<td><div class='tbldata-dotdot-100'>---</div></td>";
                      }
                      return result;
                  }
