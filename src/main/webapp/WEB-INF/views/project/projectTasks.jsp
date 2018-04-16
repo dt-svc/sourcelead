@@ -237,7 +237,7 @@ function projectTaskPaginations(url){
 					}else{
 						generatedId = "";
 					}
-	    	  		result = result+ '<td><div class="proj_show width215px"><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" title="'+generatedId+' '+ opt.taskName+ '" class="tbldata-dotdot pull-left anchorBlack">'+generatedId+' '+ opt.taskName+ '</a><i class="fa fa-binoculars pull-right"></i></div></td>';
+	    	  		result = result+ '<td><div class="proj_show width215px"><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" title="'+generatedId+' '+ opt.taskName+ '" class="tbldata-dotdot pull-left anchorBlack">'+generatedId+' '+ opt.taskName+ '<i class="fa fa-binoculars pull-right"></i></a></div></td>';
 		             return result;
 	    	  	}
 	      },{
@@ -1210,7 +1210,4 @@ function projectTaskExport(type){
 	
 }
 </script>
-
-
-
 

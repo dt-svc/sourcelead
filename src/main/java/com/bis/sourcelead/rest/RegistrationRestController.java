@@ -580,10 +580,6 @@ public class RegistrationRestController {
 	 @RequestMapping(value = "/app/createUesrBySourceleadAdmin" , method = RequestMethod.POST)
 	 public  String createUser(AddUserDTO addUserDTO, CandidateDTO candidateDTO,HttpServletRequest request) throws Exception {
 		 	
-		 /*json = "{"+json+"}";
-		 
-		 JSONObject jsonObj = new JSONObject(json);*/
-		 	
 	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	 registrationService.addUserBySourcelead(user, addUserDTO,candidateDTO);
 	 	
