@@ -55,6 +55,9 @@ public class ImmigrationTemplateView implements Serializable {
 	
 	@Column(name = "COUNTRY")
 	private String country;
+	
+	@Column(name = "REJECT_REASON")
+	private String rejectReason;
 
 	public Long getId() {
 		return id;
@@ -142,6 +145,14 @@ public class ImmigrationTemplateView implements Serializable {
 
 	public void setCountry(String country) {
 		this.country = country;
+	}
+
+	public String getRejectReason() {
+		return rejectReason;
+	}
+
+	public void setRejectReason(String rejectReason) {
+		this.rejectReason = rejectReason;
 	}
 
 }
