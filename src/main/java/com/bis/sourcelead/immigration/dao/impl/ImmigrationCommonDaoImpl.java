@@ -632,7 +632,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		}else if(searchValue != null && !"".equalsIgnoreCase(searchValue)) {
 			query1.append(" and ((immView.email like '%" + searchValue + "%' )");
 			query1.append(" or (immView.firstName like '%" + searchValue + "%' )");
-			query1.append(" or (immView.id like '%" + searchValue + "%' )");
+			query1.append(" or (immView.generatedId like '%" + searchValue + "%' )");
 			query1.append(" or (immView.currUscisStatus like '%" + searchValue + "%' )");
 			query1.append(" or (immView.petitionType like '%" + searchValue + "%' )");
 			query1.append(" or (immView.orgName like '%" + searchValue + "%' )");

@@ -36,7 +36,7 @@
 				</li>			
 				<li class="clearfix">
 					<span><i class="fa fa-plane"></i></span>
-					<p> New <b>1000</b></p>
+					<p> Sent Request <b>1000</b></p>
 				</li>
 				<li class="clearfix">
 					<span><i class="fa fa-plane"></i></span>
@@ -44,7 +44,7 @@
 				</li>
 				<li class="clearfix">
 					<span><i class="fa fa-plane"></i></span>
-					<p>Accepted <b>1000</b></p>
+					<p>Approved <b>1000</b></p>
 				</li>
 				<li class="clearfix">
 					<span><i class="fa fa-plane"></i></span>
@@ -410,11 +410,11 @@
              },
              {
                  "targets": colIndex++,
-                 "data": "id",
+                 "data": "generatedId",
                  "render": function (data, type, opt, meta) {
                      var result = "";
-                     if (opt.id !== null && opt.id !== '' && opt.id !== 'undefined') {
-                         result = result + "<td><div class='tbldata-dotdot-100'><a href=/app/immigration/viewImmigration?immigrationId="+opt.id+"&candidateId="+opt.candidateId+"&templateId="+opt.immTemplateId+">"+opt.id+"</a></div></td>";
+                     if (opt.generatedId !== null && opt.generatedId !== '' && opt.generatedId !== 'undefined') {
+                         result = result + "<td><div class='tbldata-dotdot-100'><a href=/app/immigration/viewImmigration?immigrationId="+opt.id+"&candidateId="+opt.candidateId+"&templateId="+opt.immTemplateId+">"+opt.generatedId+"</a></div></td>";
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-100'>---</div></td>";
                      }

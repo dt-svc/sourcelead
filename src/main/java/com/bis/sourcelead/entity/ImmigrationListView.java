@@ -26,7 +26,7 @@ public class ImmigrationListView implements Serializable {
 	
 	
 	@Column(name = "GENERATED_ID")
-	private String genratedId;
+	private String generatedId;
 	
 	@Column(name = "CURRENT_USCIS_STATUS_ID ")
 	private Long currUscisStatusId;
@@ -235,12 +235,12 @@ public class ImmigrationListView implements Serializable {
 		this.currUscisStatusId = currUscisStatusId;
 	}
 
-	public String getGenratedId() {
-		return genratedId;
+	public String getGeneratedId() {
+		return generatedId;
 	}
 
-	public void setGenratedId(String genratedId) {
-		this.genratedId = genratedId;
+	public void setGeneratedId(String generatedId) {
+		this.generatedId = generatedId;
 	}
-	
+
 }

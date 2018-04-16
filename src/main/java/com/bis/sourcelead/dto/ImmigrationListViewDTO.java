@@ -34,7 +34,7 @@ public class ImmigrationListViewDTO extends SearchDTO implements Serializable {
     private String lcaEndDateStr;
     private List<LookUpData> currUsicisStatusList;
 	private Long currUscisStatusId;
-     
+	private String generatedId;
     
 	public Long getId() {
 		return id;
@@ -163,6 +163,12 @@ public class ImmigrationListViewDTO extends SearchDTO implements Serializable {
 	public void setCurrUscisStatusId(Long currUscisStatusId) {
 		this.currUscisStatusId = currUscisStatusId;
 	}
-	
+	public String getGeneratedId() {
+		return generatedId;
+	}
+	public void setGeneratedId(String generatedId) {
+		this.generatedId = generatedId;
+	}
+
   
 }
