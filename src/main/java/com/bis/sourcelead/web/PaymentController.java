@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLicensePaymentTransactionHistory;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLicenseSubscriptionHistory;
@@ -221,6 +222,7 @@ public class PaymentController {
 					    Date subscriptionToDate = commonUtil.getOrgLocationCurrentDate("dd-MM-yyyy",toDate.getTime());
 					    subscriptionToDate = CalendarUtil.getDateTimeForGivenTimeZone(orgLicenseSubscription.getTimezone().getTimeZoneId(), subscriptionToDate, "dd-MM-yyyy");
 						orgLicenseSubscription.setToDate(subscriptionToDate);
+						orgLicenseSubscription.setIsInvoiceAmountPaid(Constants.YES);
 						orgLicenseSubscriptionHistoryService.saveOrgLicenseSubscriptionHistory(orgLicenseSubscriptionHistory);
 						orgLicenseSubscriptionService.saveOrgLicenseSubscription(orgLicenseSubscription);
 						
