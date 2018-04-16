@@ -425,7 +425,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		ImmigrationDTO dto = new ImmigrationDTO();
 		try {
 		Immigration immigration = immigrationCommonDao.getImmigrationViewList(immigrationId);
-		dto.setPetitionType(immigrationCommonDao.getPetitionTypeById(immigration.getPetitionType().getId(), Constants.PETITION_TYPE));
+		dto.setPetitionType(immigration.getPetitionType().getName());
 		dto.setOpenDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),immigration.getOpenDate()));
 		dto.setCurrUscisStatus(immigrationCommonDao.getPetitionTypeById(immigration.getCurrUscisStauts().getId(), Constants.USCIS_STATUS));
 		if(immigration.getDateOfArrival() != null) {
