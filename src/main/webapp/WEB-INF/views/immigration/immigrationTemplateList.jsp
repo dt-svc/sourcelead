@@ -362,7 +362,7 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
 
         $("#immiTemplateSerach").keyup(function (e) {
             if (e.which === 13) {
-                getDynamicTemplateList("","");
+                getDynamicTemplateList( $("#statusFilter").val(),"");
             }
         });
 
