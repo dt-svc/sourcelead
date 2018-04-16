@@ -87,12 +87,12 @@
 	   	  			<c:if test="${customForm.id eq dataMap.key}">
 	   	  			<label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
 		              <div class="col-md-9">
-		                <div class="checkbox checkBox">
+		                <div class="checkBox">
 		                  <div class="checkboxLable">
 		                  <input type="hidden" value="${dataMap.value[2]}" name="customFormData[${currentIndex+customFormIndex.index}].entityId">
 		                  <input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
 		                    <c:forEach var="optionValue" items="${customForm.optionData}">
-		     	 				<input type="checkbox" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" value="${optionValue.option}" ${fn:contains(dataMap.value[1],optionValue.option) ? 'checked="checked"':''} ${customForm.isRequired == 1 ? 'data-validation="required"':''} placeholder="${customForm.placeHolder}" field-name="${customForm.labelName}">${optionValue.option}<br>
+		     	 				<input type="checkbox" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" value="${optionValue.option}" ${fn:contains(dataMap.value[1],optionValue.option) ? 'checked="checked"':''} ${customForm.isRequired == 1 ? 'data-validation="required"':''} placeholder="${customForm.placeHolder}" field-name="${customForm.labelName}">${optionValue.option}
 		     	 			</c:forEach>
 		                    </div>
 		                </div>
@@ -101,15 +101,15 @@
 		        </c:forEach>
 	   	  </c:if>
 	   	  <c:if test="${empty dataMapList}">
-	   	  	<label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label><br>
+	   	  	<label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
 		              <div class="col-md-9 mb10">
-		                <div class="checkbox checkBox">
-		                <label>
+		                <div class="checkBox">
 		                  <input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
 		                    <c:forEach var="optionValue" items="${customForm.optionData}">
+			     	 			<span class="mr">
 			     	 			<input type="checkbox" value="${optionValue.option}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" ${customForm.isRequired == 1 ? 'data-validation="required"':''} field-name="${customForm.labelName}">${optionValue.option}<br>
+			     	 		</span>
 			     	 		</c:forEach>
-			     	 		 </label>
 		                </div>
 		             </div>
 	   	  </c:if>
@@ -122,22 +122,26 @@
 		        <c:forEach var="dataMap" items="${dataMapList}">
 			        <c:if test="${customForm.id eq dataMap.key}">
 				         <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
-				    	 <div class="col-md-9">
+				    	 <div class="col-md-9 radioIput">
+				    	 <div class="mr">
 				    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
 				    		<input type="hidden" value="${dataMap.value[2]}" name="customFormData[${currentIndex+customFormIndex.index}].entityId">
 				     	 	<c:forEach var="optionValue" items="${customForm.optionData}">
 			     	 			<input type="radio" value="${optionValue.option}" ${customForm.isRequired == 1 ? 'data-validation="required"':''} name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" field-name="${customForm.labelName}">&nbsp;&nbsp;${optionValue.option}
 			     	 		</c:forEach>
+			     	 		</div>
 				    	</div>
 			        </c:if>
 		        </c:forEach>
 	        </c:if>
 	       <c:if test="${empty dataMapList}">
 		        <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
-		    	 <div class="col-md-9">
+		    	 <div class="col-md-9 radioIput">
 		    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
 		     	 	<c:forEach var="optionValue" items="${customForm.optionData}">
-			     	 			<input type="radio" value="${optionValue.option}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" field-name="${customForm.labelName}">&nbsp;&nbsp;${optionValue.option}
+			     	 			<span class="mr">
+			     	 			<input type="radio" value="${optionValue.option}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" field-name="${customForm.labelName}">${optionValue.option}
+			     	 			</span>
 			     	</c:forEach>
 		    	</div>
 	    	</c:if>
