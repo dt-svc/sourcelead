@@ -26,13 +26,13 @@ public interface ImmigrationTemplateService {
 
     ImmigrationTemplateDTO getPetitionTemplateDetails(Long templateId);
 
-    List<ImmigrationTemplateDocDTO> savePetitionTemplateDocDetails(ImmigrationTemplateDTO templateDTO, User user);
+    List<ImmigrationTemplateDocDTO> savePetitionTemplateDocDetails(ImmigrationTemplateDTO templateDTO, User user,OrgLocations orgLocations);
 
-    void savePetitionTemplateTaskDetails(ImmigrationTemplateTaskDTO templateDTO, User user);
+    void savePetitionTemplateTaskDetails(ImmigrationTemplateTaskDTO templateDTO, User user,OrgLocations orgLocations);
 
     ResponseList<ImmigrationTemplateListDTO> getAllTemplateDetails(ImmigrationTemplateListDTO templateListDTO, String searchValue, Long orgLocationId, String[] countriesList);
 
-    List<ImmigrationTemplateFormDTO> savePetitionTemplateFormDetails(ImmigrationTemplateDTO templateDTO, User user);
+    List<ImmigrationTemplateFormDTO> savePetitionTemplateFormDetails(ImmigrationTemplateDTO templateDTO, User user,OrgLocations orgLocations);
 
     ResponseList<ImmigrationTemplateTaskDTO> getTemplateTaskList(ImmigrationTemplateTaskDTO templateDTO, String searchValue) throws Exception;
 
