@@ -174,7 +174,7 @@
  		</div>
    </form>
 		<div class="addImmiFoot">
-			<a onclick="immigration.gotoTemplatePreviousPage('templateDetails')" class="pull-left">Prev</a>
+			<a onclick="immigration.gotoTemplatePreviousPage('templateDetails')" class="pull-left">Back</a>
 			<a onclick="immigration.savePetitionDoc('saveContinue')" class="ml10 nextBtn">Save &amp; Continue</a>
 			<a onclick="immigration.savePetitionDoc('save')" class="nextBtn">Save</a>
 			<a onclick="immigration.resetFormData('PetitionTemplateDocDetails')">Reset</a>
