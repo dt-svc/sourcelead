@@ -11,7 +11,7 @@
 <script type="text/javascript" src="/resources/js/immigration.js"></script>
 <script type="text/javascript" src="/resources/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script>
-<script type="text/javascript" src="/resources/js/colResizable-1.6.min.js"></script>
+<!-- <script type="text/javascript" src="/resources/js/colResizable-1.6.min.js"></script> -->
 
 
 <style type="text/css">
@@ -209,9 +209,9 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.name !== null && opt.name !== '' && opt.name !== 'undefined') {
-                            result = result + "<td><div class='tbldata-dotdot-me'>" + opt.name + "</div></td>";
+                            result = result + "<td><div class='tbldata-dotdot'>" + opt.name + "</div></td>";
                         } else {
-                            result = result + "<td><div class='tbldata-dotdot-me'>---</div></td>";
+                            result = result + "<td><div class='tbldata-dotdot'>---</div></td>";
                         }
                         return result;
                     }
@@ -222,9 +222,9 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.country !== null && opt.country !== '' && opt.country !== 'undefined') {
-                            result = result + "<td><div class='tbldata-dotdot-big'>" + opt.country + "</div></td>";
+                            result = result + "<td><div class='tbldata-dotdot-vsm'>" + opt.country + "</div></td>";
                         } else {
-                            result = result + "<td><div class='tbldata-dotdot-big'>---</div></td>";
+                            result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
                         }
                         return result;
                     }
@@ -235,9 +235,9 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.petitionType !== null && opt.petitionType !== '' && opt.petitionType !== 'undefined') {
-                            result = result + "<td><div class='tbldata-dotdot-big'>" + opt.petitionType + "</div></td>";
+                            result = result + "<td><div class='tbldata-dotdot-vsm'>" + opt.petitionType + "</div></td>";
                         } else {
-                            result = result + "<td><div class='tbldata-dotdot-big'>---</div></td>";
+                            result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
                         }
                         return result;
                     }
@@ -248,9 +248,9 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.description !== null && opt.description !== '' && opt.description !== 'undefined') {
-                            result = result + "<td><div class='tbldata-dotdot-big'>" + opt.description + "</div></td>";
+                            result = result + "<td><div class='tbldata-dotdot'>" + opt.description + "</div></td>";
                         } else {
-                            result = result + "<td><div class='tbldata-dotdot-big'>---</div></td>";
+                            result = result + "<td><div class='tbldata-dotdot'>---</div></td>";
                         }
                         return result;
                     }
@@ -261,9 +261,9 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.docsCount !== null && opt.docsCount !== 'undefined') {
-                            result = result + "<td><div class='tbldata-dotdot-vsm'>" + opt.docsCount + "</div></td>";
+                            result = result + "<td><div class='tbldata-dotdot_80'>" + opt.docsCount + "</div></td>";
                         } else {
-                            result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
+                            result = result + "<td><div class='tbldata-dotdot_80'>---</div></td>";
                         }
                         return result;
                     }
@@ -274,9 +274,9 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.formsCount !== null && opt.formsCount !== 'undefined') {
-                            result = result + "<td><div class='tbldata-dotdot-vsm'>" + opt.formsCount + "</div></td>";
+                            result = result + "<td><div class='tbldata-dotdot_80'>" + opt.formsCount + "</div></td>";
                         } else {
-                            result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
+                            result = result + "<td><div class='tbldata-dotdot_80'>---</div></td>";
                         }
                         return result;
                     }
@@ -287,9 +287,9 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.tasksCount !== null && opt.tasksCount !== 'undefined') {
-                            result = result + "<td><div class='tbldata-dotdot-vsm'>" + opt.tasksCount + "</div></td>";
+                            result = result + "<td><div class='tbldata-dotdot_80'>" + opt.tasksCount + "</div></td>";
                         } else {
-                            result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
+                            result = result + "<td><div class='tbldata-dotdot_80'>---</div></td>";
                         }
 
                         return result;
@@ -301,9 +301,9 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.status !== null && opt.status !== 'undefined') {
-                            result = result + "<td><div class='tbldata-dotdot-vsm " + (opt.status === 1 ? 'temp_active' : 'temp_inactive') + "'>" + (opt.status === 1 ? "Active" : "Inactive") + "</div></td>";
+                            result = result + "<td><div class='tbldata-dotdot_80 " + (opt.status === 1 ? 'temp_active' : 'temp_inactive') + "'>" + (opt.status === 1 ? "Active" : "Inactive") + "</div></td>";
                         } else {
-                            result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
+                            result = result + "<td><div class='tbldata-dotdot_80 '>---</div></td>";
                         }
 
                         return result;
@@ -315,9 +315,9 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.id !== null && opt.id !== '' && opt.id !== 'undefined') {
-                            result = result + "<td><div class='tbldata-dotdot-me'>" + opt.id + "</div></td>";
+                            result = result + "<td><div class='tbldata-dotdot_80'>" + opt.id + "</div></td>";
                         } else {
-                            result = result + "<td><div class='tbldata-dotdot-me'>---</div></td>";
+                            result = result + "<td><div class='tbldata-dotdot_80'>---</div></td>";
                         }
                         return result;
                     }
