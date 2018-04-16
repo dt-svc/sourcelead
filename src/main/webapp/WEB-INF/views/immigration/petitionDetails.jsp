@@ -1,8 +1,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <section class="addImmiWrap">
 	<div class="addImmiInnWrap">
-		<div class="immiStepsHead clearfix">
-			<!--<h2>1. Petition detail</h2>-->
+		<!-- <div class="immiStepsHead clearfix"> removed steps process.
+			<h2>1. Petition detail</h2>
 			<ul class="addImmiSteps">
 				<li class="active">1</li>
 				<li>2</li>
@@ -14,7 +14,7 @@
 				<b></b>
 				<div class="clearfix"></div>
 			</ul>
-		</div>
+		</div> -->
 		
 		<div class="addImmiContent clearfix">
 			<form id="petitionDetailsForm" name="petitionDetailsForm">
@@ -50,7 +50,7 @@
             
             
             <div class="form-group">
-              <label class="col-md-4">Current USCIS Status</label>
+              <label class="col-md-4">Status</label> <!-- renamed form Current USCIS as Status as per request change -->
               <div class="col-md-8 dropdown-select">
                 <select id="currUscisStatus" name="currUscisStatus" class="form-control">
                     
@@ -535,10 +535,7 @@
 		<div class="addImmiFoot">
 			<!--<a href="javascript:void(0)" class="pull-left">Prev</a>-->
 			<a href="javascript:void(0)" onclick="immigration.savePageAndContinue('saveContinue')" id="savePageOneContinue" class="nextBtn">Save &amp; Continue</a>
-			<a href="javascript:void(0)" onclick="immigration.savePageAndContinue('save')" class="nextBtn">Save</a>
-<!--
-			<a href="new-petition-step2.html" class="nextBtn">Send Request</a>
--->
+			<a href="javascript:void(0)" onclick="immigration.savePageAndContinue('save')" class="nextBtn">Save</a><!--  should be Send Request -->
 			<div class="clearfix"></div>
 		</div>
 	</div>
