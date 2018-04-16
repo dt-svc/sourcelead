@@ -57,6 +57,7 @@ public class ImmigrationTemplateView implements Serializable {
 	private String country;
 	
 	@Column(name = "REJECT_REASON")
+	@Type(type = "text")
 	private String rejectReason;
 
 	public Long getId() {
