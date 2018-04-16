@@ -69,6 +69,8 @@ public interface OrgLocationService {
 	public OrgLocationDTO getRegisteredOrgLocationDetails(Long id) throws Exception;
 	
 	List<Long> getOrgLocationsIdsListByOrgIdAndCountry(Long orgId,String country) throws Exception;
+	
+	public List<OrgLocations> getAllCurrentRegisteredOrgLocationsByOrgIdAndCountry(Long orgId,String country) throws Exception;
 
 
 }

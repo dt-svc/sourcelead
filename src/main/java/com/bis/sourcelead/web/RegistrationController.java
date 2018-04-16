@@ -23,10 +23,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.ReferContactsDao;
+import com.bis.sourcelead.dto.OrgLocationDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.RoleDTO;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.EmailDomains;
-import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
@@ -388,7 +390,9 @@ public class RegistrationController {
 				
 				model.addObject("orgloc",orgLocations);
 				model.addObject("registeredOrgLocationId",orgLocations.getId());
+				model.addObject("registeredCountry",orgLocations.getCountry());
 				model.addObject("orgId",org.getId());
+				model.addObject("orgCode",orgCode);
 				model.setViewName("registration/enrolledOrgSummary");
 				
 				if(null != orgLocations.getUser()){
@@ -406,6 +410,9 @@ public class RegistrationController {
 				List<OrgLicenseSubscriptionTypes> dataStorageTypeList = orgLicenseSubscriptionTypesService.getLicenseSubscriptionTypesByCategory(Constants.DATA_STORAGE);
 				model.addObject("dataStorageTypeList", dataStorageTypeList);
 				
+				List<String> orgSubscribedCountriesList = orgLicenseSubscriptionService.getOrgLicenseSubscribedCountriesByOrgId(org.getId());
+				model.addObject("orgSubscribedCountriesList", orgSubscribedCountriesList);
+				
 				model.addObject("sourceleadUrl", sourceleadUrl);
 			
 			return model;
@@ -415,40 +422,73 @@ public class RegistrationController {
 	 
 		@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 		@RequestMapping(value = "/app/getOrgRegisteredUsers")
-		public @ResponseBody String getOrgRegisteredUsers(@RequestParam(value = "registeredOrgLocationId", required = false) Long registeredOrgLocationId,
+		public @ResponseBody ResponseList<UserDTO> getOrgRegisteredUsers(UserDTO userDTO,@RequestParam(value = "registeredOrgLocationId", required = false) Long registeredOrgLocationId,
 				HttpServletRequest request) throws Exception {
 
 		    String resultJson;
 		    OrgLocations orgLocations = orgLocationService.getOrgLocations(registeredOrgLocationId);
-
-			List<User> usersList = userService.getUsersListByOrglocationId(orgLocations.getId());
-			List<User> orgUsersList = new ArrayList<User>(); 
-			if(null != usersList){
-				for(User user : usersList){
-					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
-					user.setUserState(userRole.getUserState());
-					user.setRole(userRole.getRoles().getDisplayName());
-					
-					if(null != userRole.getOrgLocations().getUser() && user.getId().equals(userRole.getOrgLocations().getUser().getId())){
-						user.setIsPrimaryAdmin("Y");
-					}
-					
-					orgUsersList.add(user);
-				}
+		    
+		    String[] tableColumns = {"firstName", "email", "mobilePhone", "displayName", "status", "actions"};
+		    int sortColumnIndex = 1; //by default sorting using updated date
+			String sortColumnOrder = "desc"; //by default descending order
+			if(userDTO.getOrder() != null && !userDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(userDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = userDTO.getOrder().get(0).get("dir");
 			}
-		    resultJson = commonUtil.toJSON(orgUsersList);
-			return resultJson;
+			userDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			userDTO.setSortOrder(sortColumnOrder);
+		    
+
+			ResponseList<UserDTO> usersDTOList = userService.getUsersDTOListByOrglocationId(orgLocations.getId(),userDTO);
+			return usersDTOList;
+		}
+		
+		
+		
+		@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+		@RequestMapping(value = "/app/getOrgSubscribedCountries", method = RequestMethod.GET)
+		public @ResponseBody List<String> getOrgSubscribedCountries(
+				@RequestParam(value = "orgId", required = true) Long orgId,HttpServletRequest request) throws Exception {
+			List<String> countriesList = orgLicenseSubscriptionService.getOrgLicenseSubscribedCountriesByOrgId(orgId);
+			return countriesList;
 		}
 		
 		
 		@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
-		@RequestMapping(value = "/app/getRegisteredOrgRoles", method = RequestMethod.POST)
-		public @ResponseBody String getReportingManager(
+		@RequestMapping(value = "/app/getLocationEnrolledCompanies", method = RequestMethod.GET)
+		public @ResponseBody List<OrgLocationDTO> getLocationEnrolledCompanies(
+				@RequestParam(value = "orgId", required = true) Long orgId,@RequestParam(value = "country", required = true) String country,HttpServletRequest request) throws Exception {
+			List<OrgLocations> orgLocationsList = orgLocationService.getAllCurrentRegisteredOrgLocationsByOrgIdAndCountry(orgId, country);
+			List<OrgLocationDTO> orgLocationsDTOList = new ArrayList<>();
+			if(orgLocationsList != null && !orgLocationsList.isEmpty()) {
+				for(OrgLocations orgLocations : orgLocationsList) {
+					OrgLocationDTO orgLocationDTO = new OrgLocationDTO();
+					orgLocationDTO.setId(orgLocations.getId());
+					orgLocationDTO.setOrgName(orgLocations.getOrgLocationName());
+					orgLocationsDTOList.add(orgLocationDTO);
+				}
+			
+			}
+			return orgLocationsDTOList;
+		}
+		
+		
+		
+		@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+		@RequestMapping(value = "/app/getRegisteredOrgRoles", method = RequestMethod.GET)
+		public @ResponseBody List<RoleDTO> getRegisteredOrgRoles(
 				@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request) throws Exception {
-			String resultJson = null;
 			List<Roles> rolesList = roleService.getRoles(orgLocationId);
-			resultJson = commonUtil.toJSON(rolesList);
-			return resultJson;
+			List<RoleDTO> rolesDTOList = new ArrayList<>();
+			if(rolesList != null && !rolesList.isEmpty()) {
+				for(Roles roles : rolesList) {
+					RoleDTO rolesDTO = new RoleDTO();
+					rolesDTO.setId(roles.getId());
+					rolesDTO.setDisplayName(roles.getDisplayName());
+					rolesDTOList.add(rolesDTO);
+				}
+			}
+			return rolesDTOList;
 		}
 		
 		@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")

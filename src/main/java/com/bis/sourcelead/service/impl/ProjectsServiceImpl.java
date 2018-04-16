@@ -1165,6 +1165,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	projectsDTO.setProjectSequeneNumber(projects.getProjectSequeneNumber());
 	    }
 	   
+	    if(projects.getProjectShortCode() != null){
+	    	projectsDTO.setProjectShortCode(projects.getProjectShortCode());
+	    }
+	    
 	    User createdByUseraName= userService.getUserDetailsByUserCode(projects.getCreatedBy());
 	    if(null !=createdByUseraName){
 	    	StringBuilder userName = new StringBuilder();
@@ -1528,7 +1532,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 				}
 				
 					    	
-		    	projects.setProjectStatus(Project_Status.getNameByValue(projectDTO.getProjectStatusId()));
+		    	projects.setProjectStatus(Project_Status.getNameByValue(projectDTO.getStatus()));
 		    	
 		    			 //SimpleDateFormat format=loginOrgLocation.getLocFullFormDateFormatter();
 //			    	     SimpleDateFormat format = new SimpleDateFormat(pattern);
