@@ -237,7 +237,7 @@ function projectTaskPaginations(url){
 					}else{
 						generatedId = "";
 					}
-	    	  		result = result+ '<td><div class="proj_show width215px"><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" title="'+generatedId+' '+ opt.taskName+ '" class="tbldata-dotdot pull-left anchorBlack">'+generatedId+' '+ opt.taskName+ '</a><i class="fa fa-binoculars pull-right"></i></div></td>';
+	    	  		result = result+ '<td><div class="proj_show width215px"><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" title="'+generatedId+' '+ opt.taskName+ '" class="tbldata-dotdot pull-left anchorBlack">'+generatedId+' '+ opt.taskName+ '<i class="fa fa-binoculars pull-right"></i></a></div></td>';
 		             return result;
 	    	  	}
 	      },{
@@ -937,10 +937,21 @@ function saveTasks(){
 	         processData: false,
 	         contentType:false, 
 	         url : sourceleadUrl + "/ProjectTasks/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&userId="+userId+"&projectClientUUID="+projectClientUUID,
-			  success : function(data) {
-				var status = $("#projectStatus").val();
-				projectTask(projectId, status);
-				cancelTask();
+			  success : function(result) {
+				  if (result && result.response === "INVALID_DATA") {
+	                    showError(result.responseMessage);
+	                } else if (result.response === "AWKWARD") {
+	                    location.href = "/errorPage";
+	                } else if (result.response === "SUCCESS") {
+	                	var status = $("#projectStatus").val();
+	    				projectTask(projectId, status);
+	    				cancelTask();
+	                }else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+	                    showError("Operation failed, please try again");
+	                }
+				
 			}, 
 		});
 		return true;
@@ -1199,7 +1210,4 @@ function projectTaskExport(type){
 	
 }
 </script>
-
-
-
 

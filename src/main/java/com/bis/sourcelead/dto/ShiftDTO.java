@@ -1,13 +1,22 @@
 package com.bis.sourcelead.dto;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class ShiftDTO {
 	
 	private long id;
 	private String userId;
 	private String orgLocationId;
+	
+	@Required(desc = "Shift Name")
 	private String shiftName;
+	
+	@Required(desc = "Time In")
 	private String timeIn;
+	
+	@Required(desc = "Time Out")
 	private String timeOut;
+	
 	private String shiftDescription;
 	private String shiftId;
 	private String status;

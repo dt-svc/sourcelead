@@ -195,8 +195,26 @@ function getCurrency(){
  		          processData: false,
  		          contentType:false, 
                 	  url: sourceleadUrl+"/saveBankAccountDetails?"+tokenParamName+"="+tokenValue+"",
-                  	success: function(result) {
-                  		location.replace(sourceleadUrl+"/bankAccountDetails");
+                  	success: function(data) {
+                  		
+                  		if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
+     		        		showError(data.responseMessage);
+          	    		    $("#loading").removeAttr('style');
+          	    		}
+                    		else if (data.response === "AWKWARD") {
+                    			location.href = "/errorPage";
+          	    		}
+                    		else if(data.response === "SUCCESS"){
+                    			$("#loading").removeAttr('style');
+                    			location.replace(sourceleadUrl+"/bankAccountDetails"); 
+    			        	    }
+                    		else if (data.indexOf('Sign In') !== -1) {
+                    			location.replace(sourceleadUrl);
+          				} else {
+          					showError("Operation failed, please try again");
+          				    $("#loading").removeAttr('style');
+          				}
+                  		
 			        },  
                }); 
             	  return true;

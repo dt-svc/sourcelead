@@ -292,7 +292,7 @@ function storeEditedTeam(teamId){
 			$("#team_form").validateOnBlur(false, validationSettings);
 		});
 
-</script>   
+</script>  
 
 <script>
 function addTeam(){ 
@@ -678,7 +678,7 @@ function TeamMemberpagination(){
 
 <!--   Error Message   --> 
  
- <script>
+<script>
 function storeTeam(){
 	
 	   var validationSettings = {
@@ -714,7 +714,7 @@ function storeTeam(){
 			$("#team_form").showHelpOnFocus();
 			$("#team_form").validateOnBlur(false, validationSettings);
 		});
-</script>   
+</script>     
 
 <script type="text/javascript">
 function getTeamOwners(){ 
