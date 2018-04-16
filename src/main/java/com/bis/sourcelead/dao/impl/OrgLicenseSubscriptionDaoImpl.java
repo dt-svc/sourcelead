@@ -132,5 +132,14 @@ public class OrgLicenseSubscriptionDaoImpl implements OrgLicenseSubscriptionDao 
 	
 	}
 
+	@Override
+	@Transactional
+	public List<String> getOrgLicenseSubscribedCountriesByOrgId(Long orgId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select subscription.country from OrgLicenseSubscription subscription where subscription.org.id = :orgId order by subscription.id ASC ";
+		List<String> orgLicenseSubscribedCountriesList = session.createQuery(query.toString()).setLong("orgId", orgId).list();
+		return orgLicenseSubscribedCountriesList;
+	}
+
 	
 }
