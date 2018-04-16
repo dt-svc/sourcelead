@@ -2,8 +2,15 @@ package com.bis.sourcelead.annotations;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.bis.sourcelead.dto.TimesheetEntriesDTO;
 
 /**
  *
@@ -34,7 +41,27 @@ public class Validator {
 							object.getClass().getMethod("setParams", new Class[] { String[].class }).invoke(object,
 									new Object[] { new String[] { field.getAnnotation(Required.class).desc() } });
 							return false;
+						}else if(field.getAnnotation(Required.class).timesheetListValidate()) {
+							Object timesheetDayEntries = field.get(object);
+							System.out.println(timesheetDayEntries);
+							List<Object> timeEntryList = new ArrayList<Object>();
+							timeEntryList.add(timesheetDayEntries);
+							if(timeEntryList != null  && !timeEntryList.isEmpty() && timeEntryList.size() > 0) {
+								return true;
+							}else {
+								return false;
+							}
+						}else if(field.getAnnotation(Required.class).timesheetHours()) {
+							Object timesheetHours = field.get(object);
+							if(timesheetHours!= null && StringUtils.isNotEmpty(timesheetHours.toString())) {
+								if(timesheetHours.toString().contains(":")) {
+									String[] time =  timesheetHours.toString().split(":");
+								}
+							}
 						}
+						
+						
+						
 					} catch (IllegalArgumentException | IllegalAccessException ex) {
 						return false;
 					} catch (NoSuchMethodException | SecurityException | InvocationTargetException ex) {

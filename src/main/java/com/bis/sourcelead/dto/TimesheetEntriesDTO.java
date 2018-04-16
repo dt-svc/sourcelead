@@ -18,6 +18,7 @@ public class TimesheetEntriesDTO implements Serializable{
     
     private boolean editable;
     
+    @Required(desc="hours",timesheetHours=true)
     private String hours;
     
     private String comments;
