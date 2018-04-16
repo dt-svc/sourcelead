@@ -215,6 +215,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	@Column(name = "REQUIREMENT_SUBMISSION_STATUS")
 	@Enumerated(EnumType.STRING)
+	@JsonProperty
 	private REQUIREMENT_SUBMISSION_STATUS requirementSubmissionStatus;
 	
 	@Column(name = "REQUIREMENT_SUBMISSION_PREVIOUS_STATUS")
@@ -375,6 +376,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String spocUUID;
 	
 	@Transient
+	@JsonProperty
 	private String requirementApproverHierarchyStatus;
 	
 	@Transient

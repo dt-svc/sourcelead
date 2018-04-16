@@ -478,7 +478,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             emailMessage.setFromEmail(loginUser.getEmail());
             emailMessage.setCreatedBy(loginUser.getUserCode());
             StringBuilder nameBuilder=new StringBuilder();
-            emailMessage.setFromName(nameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+            emailMessage.setFromName(nameBuilder.append(loginUser.getFullName()).toString());
             emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
             // setting the class filed values
             Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -500,8 +500,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
                     globalVarsMap.put("requirementName", "--");
             }
             
-            if (loginUser.getFirstName() != null && !"".equalsIgnoreCase(loginUser.getUserName())) {
-                    globalVarsMap.put("loginUser", loginUser.getFirstName());
+            if (loginUser != null && !"".equalsIgnoreCase(loginUser.getFullName())) {
+                    globalVarsMap.put("loginUser", loginUser.getFullName());
             } else {
                     globalVarsMap.put("loginUser", "--");
             }
@@ -565,15 +565,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             emailMessage.setToEmail(requirementSubmissionTemplateFields.getEmailId());
             emailMessage.setFromEmail(loginUser.getEmail());
             emailMessage.setCreatedBy(loginUser.getUserCode());
-            StringBuilder attachmentBuilder=new StringBuilder();
-            if(loginUser.getLastName()!=null  && loginUser.getLastName()!= "" && loginUser.getLastName()!="undefined")
-            {
-            emailMessage.setFromName(attachmentBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-	         }
-	       else
-	        {
-	    	   emailMessage.setFromName(loginUser.getFirstName());
-	        }
+	    	emailMessage.setFromName(loginUser.getFullName());
             
             emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
             //SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
@@ -624,8 +616,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             
     
             
-            if (loginUser.getFirstName() != null && !"".equalsIgnoreCase(loginUser.getFirstName())) {
-                    globalVarsMap.put("loginUser", loginUser.getFirstName());
+            if (loginUser != null && !"".equalsIgnoreCase(loginUser.getFullName())) {
+                    globalVarsMap.put("loginUser", loginUser.getFullName());
             } else {
                     globalVarsMap.put("loginUser", "--");
             }
