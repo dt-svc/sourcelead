@@ -3072,7 +3072,7 @@ function customizeScore(requirementId){
 			    		  tagIt("anyKeyWord", 'Press Enter-Key Or Comma(,) To Add Keyword:', 'tagItBykeyForSkills','skills','Keywords');
 			    		     
 			   		     tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','sletected cites');
-		    	}else if (json.indexOf('Sign In') !== -1) {
+		    	}else if (data.indexOf('Sign In') !== -1) {
 		    		location.replace(sourceleadUrl);
 		    	} else {
 		    		showError("Operation failed, please try again");
