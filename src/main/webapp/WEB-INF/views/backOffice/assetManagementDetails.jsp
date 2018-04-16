@@ -331,7 +331,9 @@ function assetDetails(assetId) {
 					result = result + '<div class="clearfix"></div>';
 					result = result + ' </div>';
 					
+
 					result = result + '<div class="require_wrap_details_cta"> <b><strong>Make:</strong></b> <span class = "wordWrap-breakword">'+make+'</span>';
+
 					result = result + '  <div class="clearfix"></div>';
 					result = result + '</div>';
 					
@@ -422,7 +424,9 @@ function assetDetails(assetId) {
 			              });
 		              } 
 						
+
 						result = result + ' <div class="require_wrap_details_cta width100percnt description80"> <b><strong>Description:</strong></b> <span class = "wordWrap-breakword">'+description+'</span>';
+
 						result = result + ' <div class="clearfix"></div>';
 						result = result + '</div>';
 					
@@ -709,7 +713,7 @@ function editAssetManagement(assetId){
 			
 			result = result + '<div class="clearfix mr col-md-12">';
 			result = result + '<div class="pull-right">';
-			result = result + ' <input type="button" value="Add" id="update_asset" onclick="updateAsset();" class="btn btn-sm btn-primary">';
+			result = result + ' <input type="button" value="update" id="update_asset" onclick="updateAsset();" class="btn btn-sm btn-primary">';
 			result = result + ' <input class="btn btn-sm btn-default ml10" value="Cancel" onClick="editAssetManagement('+assetId+');" type="button">';
 			
 			result = result + '</div>';
