@@ -52,6 +52,9 @@ public class ImmigrationTemplate implements Serializable {
 
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
+	
+	@Column(name = "REJECT_REASON",columnDefinition = "TEXT default NULL")
+	private String rejectReason;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "UPDATED_BY")
@@ -160,5 +163,15 @@ public class ImmigrationTemplate implements Serializable {
 	public void setCountry(String country) {
 		this.country = country;
 	}
+
+	public String getRejectReason() {
+		return rejectReason;
+	}
+
+	public void setRejectReason(String rejectReason) {
+		this.rejectReason = rejectReason;
+	}
+	
+	
 	
 }

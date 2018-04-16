@@ -434,9 +434,10 @@ public class ImmigrationRestController {
     @PreAuthorize("hasRole('ROLE_DELETE_PETITION_TEMPLATE')")
     @RequestMapping(value = "/deleteImmigrationTemplateDetatils")
     public String deleteTemplateDetailsById(@RequestParam(value = "deleteId", required = true) Long deleteId,
+    		@RequestParam(value = "reason",required = true) String reason,
             HttpServletRequest request) {
         try {
-            immigrationTemplateService.deleteAllPetitionTemplateDetailsById(deleteId);// only soft delete operation in
+            immigrationTemplateService.deleteAllPetitionTemplateDetailsById(deleteId,reason);// only soft delete operation in
             // Database.
             // "+deleteId);
             logger.debug("inside delete controller method calling ----->>>>>>>: " + deleteId);

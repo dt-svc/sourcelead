@@ -437,7 +437,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 
     @Override
     @Transactional(rollbackFor = {Exception.class})
-    public void deleteAllPetitionTemplateDetailsById(Long templateId) {
+    public void deleteAllPetitionTemplateDetailsById(Long templateId, String reason) {
         // only Soft delete operation, just status change in the Database.
         Session session = this.sessionFactory.getCurrentSession();
         if (templateId != null) {
@@ -445,9 +445,10 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
             //System.out.println(" updated template id -->: " + templateId);
             logger.debug(" updated template id -->: " + templateId);
 
-            String queryString = "UPDATE ImmigrationTemplate SET status = 0 where id =:templateId";
+            String queryString = "UPDATE ImmigrationTemplate SET status = 0, rejectReason =:reason where id =:templateId";
             Query query = session.createQuery(queryString);
             query.setLong("templateId", templateId);
+            query.setString("reason", reason);
             int result = query.executeUpdate();
             //System.out.println(" updated ImmigrationTemplate records count : " + result);
             logger.debug(" updated ImmigrationTemplate records count : " + result);

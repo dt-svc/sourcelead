@@ -304,8 +304,8 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
     }
 
     @Override
-    public void deleteAllPetitionTemplateDetailsById(Long templateId) {
-        immigrationTemplateDao.deleteAllPetitionTemplateDetailsById(templateId);
+    public void deleteAllPetitionTemplateDetailsById(Long templateId,String reason) {
+        immigrationTemplateDao.deleteAllPetitionTemplateDetailsById(templateId,reason);
     }
 
     @Override
