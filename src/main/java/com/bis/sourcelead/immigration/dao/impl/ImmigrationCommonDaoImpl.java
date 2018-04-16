@@ -616,7 +616,20 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		List<ImmigrationListView> ImmigrationViewLst = null;
 		ResponseList<ImmigrationListViewDTO> responseList = new ResponseList<>();
 		StringBuilder query1 = new StringBuilder("");
-		if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
+		 if (searchValue.contains("-") || searchValue.contains("/")) {
+			DateTimeFormatter orgFormat = new DateTimeFormatterBuilder().appendPattern(orgLocations.getDateFormat()).toFormatter();
+			LocalDate parsedDate = LocalDate.parse(searchValue, orgFormat);
+			DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			String newDate = parsedDate.format(f2);
+			Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
+			java.sql.Date sqlDate1 = new java.sql.Date(searchDate.getTime());
+			System.out.println("---test-----" + sqlDate1);
+			//listQuery = "from ImmigrationListView immView where immView.openDate =:sqlDate1";
+			query1.append(" and ((immView.openDate like '%" + sqlDate1 + "%' )");
+			query1.append(" or (immView.lcaStartDate like '%" + sqlDate1 + "%' )");
+			query1.append(" or (immView.lcaEndDate like '%" + sqlDate1 + "%' ))");
+			//ImmigrationViewLst = session.createQuery(listQuery + query1 + sortingQry).setDate("sqlDate1", sqlDate1).list();
+		}else if(searchValue != null && !"".equalsIgnoreCase(searchValue)) {
 			query1.append(" and ((immView.email like '%" + searchValue + "%' )");
 			query1.append(" or (immView.firstName like '%" + searchValue + "%' )");
 			query1.append(" or (immView.id like '%" + searchValue + "%' )");
@@ -635,22 +648,11 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
             sortingQry = " order by immView.updatedDate desc ";
         }
 		String listQuery = "";
-		if (searchValue.contains("-") || searchValue.contains("/")) {
-			DateTimeFormatter orgFormat = new DateTimeFormatterBuilder().appendPattern(orgLocations.getDateFormat()).toFormatter();
-			LocalDate parsedDate = LocalDate.parse(searchValue, orgFormat);
-			DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-			String newDate = parsedDate.format(f2);
-			Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
-			java.sql.Date sqlDate1 = new java.sql.Date(searchDate.getTime());
-			System.out.println("---test-----" + sqlDate1);
-			listQuery = "from ImmigrationListView immView where immView.openDate =:sqlDate1";
-			query1.append(" or (immView.openDate like '%" + sqlDate1 + "%' )");
-			ImmigrationViewLst = session.createQuery(listQuery + query1 + sortingQry).setDate("sqlDate1", sqlDate1).list();
-		}
-		else {
+		
+	System.out.println(" latest code deployed 55555 --->");
         listQuery = "from ImmigrationListView immView  where immView.orgLocationId=:orgLocationId " + (immigrationListDTO.getStatus() >= 0 ? "and immView.status =" + immigrationListDTO.getStatus() + " " : " ");
         ImmigrationViewLst = session.createQuery(listQuery + query1 + sortingQry).setLong("orgLocationId", orgLocations.getId()).list();
-             }
+          
         String listQueryCount = "select count(*) from ImmigrationListView immView where immView.orgLocationId=:orgLocationId " + (immigrationListDTO.getStatus() >= 0 ? "and immView.status =" + immigrationListDTO.getStatus() + " " : " ");
         countlist = session.createQuery(listQueryCount + query1).setLong("orgLocationId", orgLocations.getId()).setFirstResult(immigrationListDTO.getStart())
                 .setMaxResults(immigrationListDTO.getLength()).list();
@@ -679,6 +681,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	            target.setCurrUsicisStatusList(caEmployerDTOs);
 	            //System.out.println(" DocsCount target"+target.getDocsCount());
 	            target.setOpenDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getOpenDate()));
+	            target.setLcaStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getLcaStartDate()));
+	            target.setLcaEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getLcaEndDate()));
 	            ImmigarionDTOList.add(target);
 	        }
 	        responseList.setData(ImmigarionDTOList);
