@@ -103,6 +103,10 @@ public class OrgLicenseSubscription implements Serializable{
     @JsonProperty
     private String toDateStr;
     
+    @Transient
+    @JsonProperty
+    private String showRenewal;
+    
     
 
 	public Long getId() {
@@ -280,5 +284,13 @@ public class OrgLicenseSubscription implements Serializable{
 
 	public void setToDateStr(String toDateStr) {
 		this.toDateStr = toDateStr;
+	}
+
+	public String getShowRenewal() {
+		return showRenewal;
+	}
+
+	public void setShowRenewal(String showRenewal) {
+		this.showRenewal = showRenewal;
 	}
 }

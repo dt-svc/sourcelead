@@ -46,7 +46,8 @@
                     <p class="text-muted clearfix">Invoice sent to your Registered Email.</p>
                 </div>
                 <div class="clearfix text-center mt25">
-                    <a href="javascript:void(0)" class="btn btn-primary"><i class="fa fa-angle-double-left paddingRight"></i>Back to Dashboard</a>
+                    <a href="<c:url value='${appPath}/dashboard'/>" class="btn btn-primary"><i class="fa fa-angle-double-left paddingRight"></i>Take me home<span>&nbsp;&nbsp;<i class="fa fa-angle-double-right"></i>
+                    </span></a>
                 </div>
             </section>
             <!-- Content Area Ends--> 

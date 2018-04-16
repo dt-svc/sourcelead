@@ -154,7 +154,7 @@
             </div>
         </form>
         <div class="addImmiFoot">
-            <a href="javascript:void(0)" onclick="immigration.gotoTemplatePreviousPage('templateDocs')" class="pull-left">Prev</a>
+            <a href="javascript:void(0)" onclick="immigration.gotoTemplatePreviousPage('templateDocs')" class="pull-left">Back</a>
             <a href="javascript:void(0)" onclick="immigration.savePetitionFormDetails('saveContinue')" class="nextBtn">Save &amp; Continue</a>
             <a href="javascript:void(0)" onclick="immigration.savePetitionFormDetails('save')" class="nextBtn">Save</a>
             <a href="javascript:void(0)" onclick="immigration.resetFormData('petitionTemplateFormDetails')">Reset</a>

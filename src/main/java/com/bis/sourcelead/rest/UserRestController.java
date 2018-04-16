@@ -548,7 +548,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	  */
 	  @RequestMapping(value = "/resendInvitationEmail" , method = RequestMethod.POST)
 	  public @ResponseBody  String resendInvitationEmail(@RequestParam(value="userId", required=false) String userId,
-			  @RequestParam(value="orgId", required=false) Long orgId,HttpServletRequest request) throws Exception {
+			  @RequestParam(value="orgId", required=false) Long orgId, @RequestParam(value="orgLocationId", required=false) Long orgLocationId,HttpServletRequest request) throws Exception {
 		    
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -566,8 +566,8 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	 			userService.addUser(user);
 	 			
 	 			// mail should forward user when action done in sourcelead admin 
-	 			if(orgId != null){
-	 			userService.sendEmailFromSourcelead(user,loginUser,password,orgLocations.getId(),orgId);
+	 			if(orgId != null && orgLocationId != null){
+	 			userService.sendEmailFromSourcelead(user,loginUser,password,orgLocationId,orgId);
 	 			}else{
 	 				userService.sendEmail(user,loginUser,password,orgLocations.getId());
 	 			}
