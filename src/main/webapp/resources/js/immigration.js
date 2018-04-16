@@ -199,6 +199,19 @@ function Immigration() {
         window.location.href = sourceleadUrl + immiModulePath + "/addNewPetitionTemplate?templateId=" + immTemplId; // for editing mode  
     }
 
+    this.reactiveImmigrationTemplateById = function (templateId){
+    	$.ajax({
+            url: sourceleadUrl + immiModulePath + "/reactiveImmigrationTemplateDetailsById?templateId=" + templateId,
+            type: "GET",
+            data: templateId,
+            success: function (data) {
+                if (data == 'success') {
+                    window.location.href = sourceleadUrl + immiModulePath + "/viewImmigrationTemplateList"; // redirect to tempalte list.
+                }
+            }
+        });
+    }
+    
     this.deleteTempalteDetailsByRowId = function (templateId) {
         var reason = $("#reasonForTemplate").val();
         reason = reason.replace(/\s/g, "");

@@ -447,6 +447,17 @@ public class ImmigrationRestController {
         }
         return "success";
     }
+    
+    @RequestMapping(value = "/reactiveImmigrationTemplateDetailsById")
+    public String reactiveImmigrationTemplateDetailsById(@RequestParam(value = "templateId", required = true) Long templateId,
+            HttpServletRequest request) {
+        try {
+            immigrationTemplateService.reactiveImmigrationTemplateById(templateId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "success";
+    }
 
     @RequestMapping(value = {"/addPetitionTemplate"})
     public ModelAndView addPetitionTemplatePage(HttpServletRequest request,

@@ -468,6 +468,30 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
             logger.debug(" updated ImmigrationTemplateForms records count : " + result);
         }
     }
+    
+    @Override
+    @Transactional(rollbackFor = {Exception.class})
+    public void reactiveImmigrationTemplateById(Long templateId) {
+        // only Soft delete operation, just status change in the Database.
+        Session session = this.sessionFactory.getCurrentSession();
+        if (templateId != null) {
+            // update ImmigrationTemplate
+            String queryString = "UPDATE ImmigrationTemplate SET status = 1 where id =:templateId";
+            Query query = session.createQuery(queryString);
+            query.setLong("templateId", templateId);
+            int result = query.executeUpdate();
+            // update ImmigrationTemplateDocs
+            queryString = "UPDATE ImmigrationTemplateDocs SET status = 1  where immigrationTempId = :templateId";
+            query = session.createQuery(queryString);
+            query.setLong("templateId", templateId);
+            result = query.executeUpdate();
+            // update ImmigrationTemplateForms
+            queryString = "UPDATE ImmigrationTemplateForms SET status = 1  where immigrationTempId = :templateId";
+            query = session.createQuery(queryString);
+            query.setLong("templateId", templateId);
+            result = query.executeUpdate();
+            }
+    }
 
     @Override
     @Transactional(rollbackFor = {Exception.class})
