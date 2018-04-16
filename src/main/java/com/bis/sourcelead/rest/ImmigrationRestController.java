@@ -616,7 +616,7 @@ public class ImmigrationRestController {
         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
         List<ImmigrationCandidateDocuments> immigrationCanDocList = immigrationCommonService.getImmigrationCandidateDocs(immigrationId,templateid,candidateId,user,orgLocations);
         for(ImmigrationCandidateDocuments docs : immigrationCanDocList){
-        	LookUpData data = lookUpDataService.getTasksById(docs.getDocumentType());
+        	LookUpData data = lookUpDataService.getTasksById(docs.getDocumentType().getId());
 			docs.setDocumentTypeName(data.getName());
 		}
         model.setViewName("/immigration/documentDetailsTab");

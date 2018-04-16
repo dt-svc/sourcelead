@@ -380,11 +380,15 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 
 	private Immigration savePetitionImmigration(ImmigrationDTO immigrationDTO, OrgLocations orgLocations, Candidate candidate, Requirement requirement, User user) {
 		Immigration immigration = new Immigration();
-		immigration.setPetitionType(Long.parseLong(immigrationDTO.getPetitionType()));
+		LookUpData petitionTypeId = new LookUpData();
+		petitionTypeId.setId(Long.parseLong(immigrationDTO.getPetitionType()));
+		immigration.setPetitionType(petitionTypeId);
 		//DateFormat dateFormat = new SimpleDateFormat ("dd-MM-yyyy");
 		immigration.setOpenDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), immigrationDTO.getOpenDate()));
 		if(immigrationDTO.getCurrUscisStatus()!=null && !StringUtils.isEmpty(immigrationDTO.getCurrUscisStatus())) {
-			immigration.setCurrUscisStauts(Long.parseLong(immigrationDTO.getCurrUscisStatus()));
+			LookUpData uscisStatus = new LookUpData();
+			uscisStatus.setId(Long.parseLong(immigrationDTO.getCurrUscisStatus()));
+			immigration.setCurrUscisStauts(uscisStatus);
 		}
 		if(immigrationDTO.getArrivalDate()!=null && !StringUtils.isEmpty(immigrationDTO.getArrivalDate())) {
 			immigration.setDateOfArrival(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationDTO.getArrivalDate()));
@@ -421,9 +425,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		ImmigrationDTO dto = new ImmigrationDTO();
 		try {
 		Immigration immigration = immigrationCommonDao.getImmigrationViewList(immigrationId);
-		dto.setPetitionType(immigrationCommonDao.getPetitionTypeById(immigration.getPetitionType(), Constants.PETITION_TYPE));
+		dto.setPetitionType(immigration.getPetitionType().getName());
 		dto.setOpenDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),immigration.getOpenDate()));
-		dto.setCurrUscisStatus(immigrationCommonDao.getPetitionTypeById(immigration.getCurrUscisStauts(), Constants.USCIS_STATUS));
+		dto.setCurrUscisStatus(immigrationCommonDao.getPetitionTypeById(immigration.getCurrUscisStauts().getId(), Constants.USCIS_STATUS));
 		if(immigration.getDateOfArrival() != null) {
 			dto.setArrivalDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),immigration.getDateOfArrival())); 
 		}
@@ -824,7 +828,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		immigrationCandidateDocuments.setCandidateId(candidate);
 		immigrationCandidateDocuments.setImmigrationTemplateId(immigrationTemplate);
 		immigrationCandidateDocuments.setImmigrationId(immigration);
-		immigrationCandidateDocuments.setDocumentType(immigrationTemplateDocDTO.getDocumentType());
+		LookUpData documentTypeId = new LookUpData();
+		documentTypeId.setId(immigrationTemplateDocDTO.getDocumentType());
+		immigrationCandidateDocuments.setDocumentType(documentTypeId);
 		immigrationCandidateDocuments.setDocUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		immigrationCandidateDocuments.setDescription(immigrationTemplateDocDTO.getDescription());
 		immigrationCandidateDocuments.setIsTemplateConfigured(Constants.NO);
