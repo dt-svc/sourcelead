@@ -28,8 +28,9 @@ public class ImmigrationTemplateDocs implements Serializable {
 	@JoinColumn(name = "IMMIGRATION_TEMPLATE_ID", nullable = false)
 	private ImmigrationTemplate immigrationTempId;
 
-	@Column(name = "DOCUMENT_TYPE")
-	private Long documentType;
+	@ManyToOne
+	@JoinColumn(name = "DOCUMENT_TYPE")
+	private LookUpData documentType;
 
 	@Column(name = "DOCUMENT_OTHER_TYPE")
 	private String documentOtherType;
@@ -82,12 +83,11 @@ public class ImmigrationTemplateDocs implements Serializable {
 		this.immigrationTempId = immigrationTempId;
 	}
 
-
-	public Long getDocumentType() {
+	public LookUpData getDocumentType() {
 		return documentType;
 	}
 
-	public void setDocumentType(Long documentType) {
+	public void setDocumentType(LookUpData documentType) {
 		this.documentType = documentType;
 	}
 

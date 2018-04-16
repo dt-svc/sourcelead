@@ -2,9 +2,9 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,8 +12,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -41,8 +39,9 @@ public class ImmigrationCandidateDocuments implements Serializable {
 	@JoinColumn(name = "CANDIDATE_ID")
 	private Candidate candidateId;
 	
-	@Column(name = "DOCUMENT_TYPE")
-	private Long documentType;
+	@ManyToOne
+	@JoinColumn(name = "DOCUMENT_TYPE")
+	private LookUpData documentType;
 	
 	@Column(name = "DOCUMENT_UUID ")
 	private String docUUID;
@@ -131,14 +130,6 @@ public class ImmigrationCandidateDocuments implements Serializable {
 
 	public void setCandidateId(Candidate candidateId) {
 		this.candidateId = candidateId;
-	}
-
-	public Long getDocumentType() {
-		return documentType;
-	}
-
-	public void setDocumentType(Long documentType) {
-		this.documentType = documentType;
 	}
 
 	public String getDocUUID() {
@@ -284,9 +275,13 @@ public class ImmigrationCandidateDocuments implements Serializable {
 	public void setAllowMultiple(String allowMultiple) {
 		this.allowMultiple = allowMultiple;
 	}
+
+	public LookUpData getDocumentType() {
+		return documentType;
+	}
+
+	public void setDocumentType(LookUpData documentType) {
+		this.documentType = documentType;
+	}
 	
-	
-	
-	
-		
 }
