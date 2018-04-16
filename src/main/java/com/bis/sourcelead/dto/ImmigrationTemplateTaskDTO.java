@@ -47,7 +47,7 @@ public class ImmigrationTemplateTaskDTO extends SearchDTO implements Serializabl
 
 	private String staticPath;
 
-	@Required(desc = "Petition AssignedTo")
+	//@Required(desc = "Petition AssignedTo")
 	private String petitionAssignedTo;
 	
 	private String petitionAssignedToName;
