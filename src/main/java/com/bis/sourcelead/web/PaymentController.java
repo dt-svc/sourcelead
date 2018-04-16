@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.OrgLicenseSubscriptionDTO;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicensePaymentTransactionHistory;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLicenseSubscriptionHistory;
@@ -80,7 +82,8 @@ public class PaymentController {
 
     @RequestMapping("/init-payment")
     @ResponseBody
-    public String initPayment(HttpServletRequest request, String type, @RequestParam(defaultValue = "") String subscriptionUUID, @RequestParam(defaultValue = "0") int model) {
+    public String initPayment(HttpServletRequest request, String type, @RequestParam(defaultValue = "") String subscriptionUUID, 
+    		@RequestParam(defaultValue = "0") int model,@RequestParam(defaultValue = "") String registeredModules,OrgLicenseSubscriptionDTO orgLicenseSubscriptionDTO) {
 
     	OrgLicenseSubscription orgLicenseSubscription = null;
         Payer payer = new Payer();
@@ -96,8 +99,13 @@ public class PaymentController {
         redirectUrls.setReturnUrl(sourceleadUrl + "/processPayment.html?guid=" + guid);
         if(subscriptionUUID != null && !subscriptionUUID.isEmpty()) {
         	try {
-        		orgLicenseSubscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByUUID(subscriptionUUID);
-        		 payment.setTransactions(getTransactions(guid,type,orgLicenseSubscription.getInvoiceAmount()));
+        		 orgLicenseSubscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByUUID(subscriptionUUID);
+        		 if(orgLicenseSubscriptionDTO.getInvoiceAmount() != null) {
+        			 payment.setTransactions(getTransactions(guid,type,orgLicenseSubscriptionDTO.getInvoiceAmount()));
+        		 }else {
+        			 payment.setTransactions(getTransactions(guid,type,orgLicenseSubscription.getInvoiceAmount()));
+        		 }
+        		 
         	}catch (Exception e) {
         		e.printStackTrace();
 			}
@@ -115,6 +123,7 @@ public class PaymentController {
             request.getSession().setAttribute("model", model);
             request.getSession().setAttribute(guid, createdPayment.getId());
             request.getSession().setAttribute("type", type);
+            request.getSession().setAttribute("orgLicenseSubscriptionDTO", orgLicenseSubscriptionDTO);
             if(orgLicenseSubscription != null) {
             	 request.getSession().setAttribute("subscriptionUUID", subscriptionUUID);
             	 request.getSession().setAttribute("subscriptionId", orgLicenseSubscription.getId());
@@ -179,59 +188,71 @@ public class PaymentController {
 
     @RequestMapping(value = {"/payment-success.html", "/payment-failed.html"})
     public String paymentResponse(HttpServletRequest request, ModelMap map) {
-    	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+    	
         boolean success = request.getRequestURI().contains("success");
         Payment payment = (Payment) request.getSession().getAttribute("createdPayment");
-        if (payment != null) {
-        	
+        if (payment != null && success == true) {
+        	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+        	Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
         	 String type = (String) request.getSession().getAttribute("type");
-        	 if(type.equalsIgnoreCase("renewal")) {
+        	 OrgLicenseSubscriptionDTO orgLicenseSubscriptionDTO = (OrgLicenseSubscriptionDTO) request.getSession().getAttribute("orgLicenseSubscriptionDTO");
+        	
         		 String subscriptionUUID = (String) request.getSession().getAttribute("subscriptionUUID");
         		 if(subscriptionUUID != null && !subscriptionUUID.isEmpty()) {
         			 try {
-						OrgLicenseSubscription orgLicenseSubscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByUUID(subscriptionUUID);
-						OrgLicenseSubscriptionHistory orgLicenseSubscriptionHistory =  commonUtil.getOrgLicenseSubscriptionHistory(orgLicenseSubscription,loginUser);
 						
-						Date subscriptionDate = null;
-						Date subscribedToDate = orgLicenseSubscription.getToDate();
-						if(subscribedToDate.after(new Date()) || subscribedToDate.equals(new Date())) {
-							String toDateStr = commonUtil.dateStrFromOrgDateFormatter("dd-MM-yyyy",orgLicenseSubscription.getToDate());
-							subscriptionDate = commonUtil.orgLocationDateFormat("dd-MM-yyyy",toDateStr);
-							subscriptionDate = CalendarUtil.getDateTimeForGivenTimeZone(orgLicenseSubscription.getTimezone().getTimeZoneId(), subscriptionDate, "dd-MM-yyyy");
-							//orgLicenseSubscription.setFromDate(subscriptionDate);
-						}else{
-							subscriptionDate = CalendarUtil.getDateTimeForGivenTimeZone(orgLicenseSubscription.getTimezone().getTimeZoneId(), new Date(), "dd-MM-yyyy");
-							//orgLicenseSubscription.setFromDate(subscriptionDate);
-						}
-						
-						Calendar toDate = Calendar.getInstance();
-						toDate.setTime(subscriptionDate); 
-						
-						OrgLicenseSubscriptionTypes orgLicenseSubscriptionTypes = orgLicenseSubscriptionTypesService.getOrgLicenseSubscriptionTypesById(orgLicenseSubscription.getSubscriptionType().getId());
-						
-					    if(orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("Free Trail") || orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("1 Month")) {
-					    	toDate.add(Calendar.MONTH, +1); 
-					    }else if(orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("6 Months")) {
-					    	toDate.add(Calendar.MONTH, +6); 
-					    }else if(orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("1 Year")) {
-					    	toDate.add(Calendar.YEAR, +1); 
-					    }else if(orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("2 Years")) {
-					    	toDate.add(Calendar.YEAR, +2); 
-					    }
-					    
-					    Date subscriptionToDate = commonUtil.getOrgLocationCurrentDate("dd-MM-yyyy",toDate.getTime());
-					    subscriptionToDate = CalendarUtil.getDateTimeForGivenTimeZone(orgLicenseSubscription.getTimezone().getTimeZoneId(), subscriptionToDate, "dd-MM-yyyy");
-						orgLicenseSubscription.setToDate(subscriptionToDate);
-						orgLicenseSubscription.setInvoiceAmount(0d);
-						orgLicenseSubscription.setIsInvoiceAmountPaid(Constants.YES);
-						orgLicenseSubscriptionHistoryService.saveOrgLicenseSubscriptionHistory(orgLicenseSubscriptionHistory);
-						orgLicenseSubscriptionService.saveOrgLicenseSubscription(orgLicenseSubscription);
+						 if(type.equalsIgnoreCase("renewal")) {
+							    OrgLicenseSubscription orgLicenseSubscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByUUID(subscriptionUUID);
+								OrgLicenseSubscriptionHistory orgLicenseSubscriptionHistory =  commonUtil.getOrgLicenseSubscriptionHistory(orgLicenseSubscription,loginUser);
+								Date subscriptionDate = null;
+								Date subscribedToDate = orgLicenseSubscription.getToDate();
+								if(subscribedToDate.after(new Date()) || subscribedToDate.equals(new Date())) {
+									String toDateStr = commonUtil.dateStrFromOrgDateFormatter("dd-MM-yyyy",orgLicenseSubscription.getToDate());
+									subscriptionDate = commonUtil.orgLocationDateFormat("dd-MM-yyyy",toDateStr);
+									subscriptionDate = CalendarUtil.getDateTimeForGivenTimeZone(orgLicenseSubscription.getTimezone().getTimeZoneId(), subscriptionDate, "dd-MM-yyyy");
+									//orgLicenseSubscription.setFromDate(subscriptionDate);
+								}else{
+									subscriptionDate = CalendarUtil.getDateTimeForGivenTimeZone(orgLicenseSubscription.getTimezone().getTimeZoneId(), new Date(), "dd-MM-yyyy");
+									//orgLicenseSubscription.setFromDate(subscriptionDate);
+								}
+								
+								Calendar toDate = Calendar.getInstance();
+								toDate.setTime(subscriptionDate); 
+								
+								OrgLicenseSubscriptionTypes orgLicenseSubscriptionTypes = orgLicenseSubscriptionTypesService.getOrgLicenseSubscriptionTypesById(orgLicenseSubscription.getSubscriptionType().getId());
+								
+							    if(orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("Free Trail") || orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("1 Month")) {
+							    	toDate.add(Calendar.MONTH, +1); 
+							    }else if(orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("6 Months")) {
+							    	toDate.add(Calendar.MONTH, +6); 
+							    }else if(orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("1 Year")) {
+							    	toDate.add(Calendar.YEAR, +1); 
+							    }else if(orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("2 Years")) {
+							    	toDate.add(Calendar.YEAR, +2); 
+							    }
+							    
+							    Date subscriptionToDate = commonUtil.getOrgLocationCurrentDate("dd-MM-yyyy",toDate.getTime());
+							    subscriptionToDate = CalendarUtil.getDateTimeForGivenTimeZone(orgLicenseSubscription.getTimezone().getTimeZoneId(), subscriptionToDate, "dd-MM-yyyy");
+								orgLicenseSubscription.setToDate(subscriptionToDate);
+								orgLicenseSubscription.setInvoiceAmount(0d);
+								orgLicenseSubscription.setIsInvoiceAmountPaid(Constants.YES);
+								orgLicenseSubscriptionHistoryService.saveOrgLicenseSubscriptionHistory(orgLicenseSubscriptionHistory);
+								orgLicenseSubscriptionService.saveOrgLicenseSubscription(orgLicenseSubscription);
+						 }else if(type.equalsIgnoreCase("pay")) {
+							    OrgLicenseSubscription orgLicenseSubscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByUUID(subscriptionUUID);
+								OrgLicenseSubscriptionHistory orgLicenseSubscriptionHistory =  commonUtil.getOrgLicenseSubscriptionHistory(orgLicenseSubscription,loginUser);
+								orgLicenseSubscription.setInvoiceAmount(0d);
+								orgLicenseSubscription.setIsInvoiceAmountPaid(Constants.YES);
+								orgLicenseSubscriptionHistoryService.saveOrgLicenseSubscriptionHistory(orgLicenseSubscriptionHistory);
+								orgLicenseSubscriptionService.saveOrgLicenseSubscription(orgLicenseSubscription);
+						 }else if(type.equalsIgnoreCase("upgrade")) {
+							 orgLicenseSubscriptionService.upgradeLicenseSubscription(orgLicenseSubscriptionDTO, loginUser, org.getId(), subscriptionUUID);
+						 }
 						
 					} catch (Exception e) {
 						e.printStackTrace();
 					} 
         		 }
-        	 }
         }
         return success ? "payment/success" : "payment/failed";
     }
@@ -250,7 +271,11 @@ public class PaymentController {
 	    	   item.setName("Licence Upgrade");
 	       }else if(type.equalsIgnoreCase("renewal")) {
 	    	   item.setName("Licence Renewal");
-         }
+          }else if(type.equalsIgnoreCase("pay")) {
+	    	   item.setName("Licence Payment");
+          }else if(type.equalsIgnoreCase("upgrade")) {
+	    	   item.setName("Licence Upgrade");
+          }
         
         item.setQuantity("1").setCurrency("USD").setPrice(f.format(amt));
         items.add(item);

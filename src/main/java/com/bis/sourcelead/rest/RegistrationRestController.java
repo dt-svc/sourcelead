@@ -536,7 +536,27 @@ public class RegistrationRestController {
      }
 	
 	
-	@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	@RequestMapping(value = "/app/getUpgradeInvoiceRateBySubscriptionRateAndUserSubscription" , method = RequestMethod.POST)
+	   public Double getUpgradeInvoiceRateBySubscriptionRateAndUserSubscription(@RequestParam(value="subscriptionType", required=true) Long subscriptionType,
+			   @RequestParam(value="userSubscription", required=true) Long userSubscription,@RequestParam(value="subscriptionUUID", required=true) String subscriptionUUID,
+			   HttpServletRequest request) throws Exception {
+		Double invoiceAmount = 0d;
+		OrgLicenseSubscriptionPrice subscriptionPrice = orgLicenseSubscriptionPriceService.getOrgLicenseSubscriptionPriceBySubscriptionTypeAndUserType(subscriptionType, userSubscription);
+		OrgLicenseSubscription subscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByUUID(subscriptionUUID);
+	
+		if(subscriptionPrice != null) {
+			if(subscription.getSubscriptionType().getId().equals(subscriptionType) && subscription.getUserSubscriptionType().getId().equals(userSubscription)) {
+				invoiceAmount = subscriptionPrice.getSubscriptionRate();
+			}else {
+				invoiceAmount = subscription.getInvoiceAmount()+subscriptionPrice.getSubscriptionRate();
+			}
+		}
+		
+		return invoiceAmount;
+		
+  }
+	
+	
 	@RequestMapping(value = "/app/saveOrgLocationSubscription" , method = RequestMethod.POST)
 	   public String saveOrgLocationSubscription(OrgLicenseSubscriptionDTO orgLicenseSubscriptionDTO,
 			   @RequestParam(value="orgId", required=true) Long orgId,HttpServletRequest request) {
