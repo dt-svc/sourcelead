@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -45,6 +46,7 @@ import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
 import com.bis.sourcelead.dto.ProjectMembersRateHistoryDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
@@ -66,6 +68,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -181,33 +184,72 @@ public class ProjectsRestController {
 	 */
 
 	@RequestMapping(value = { "/storeProject", "/rest/storeProject" }, method = RequestMethod.POST)
-	public @ResponseBody ProjectsDTO storeProject(ProjectsDTO projectsDTO) throws Exception {
-		
+	public @ResponseBody Response<ProjectsDTO> storeProject(ProjectsDTO projectsDTO) throws Exception {
+		Response<ProjectsDTO> response =new  Response<>();
 		Projects projects = null;
+		try {
 		 if(Validator.validate(projectsDTO)) {
 			 projectsDTO.setStaticPath(staticPath);
 			 projects = projectsService.storeProject(projectsDTO);
-		 }
-		 
-		ProjectsDTO stroredProjectsDTO = new ProjectsDTO();
-		stroredProjectsDTO.setId(projects.getId());
-		stroredProjectsDTO.setProjectUUID(projects.getProjectUUID());
-		stroredProjectsDTO.setStartDateStr(projects.getStartDateStr());
-		stroredProjectsDTO.setEndDateStr(projects.getEndDateStr());
-		return stroredProjectsDTO;
+			 
+		    ProjectsDTO stroredProjectsDTO = new ProjectsDTO();
+			stroredProjectsDTO.setId(projects.getId());
+			stroredProjectsDTO.setProjectUUID(projects.getProjectUUID());
+			stroredProjectsDTO.setStartDateStr(projects.getStartDateStr());
+			stroredProjectsDTO.setEndDateStr(projects.getEndDateStr());
+			response.setObject(stroredProjectsDTO);
+			
+			 response.setResponse(Result.SUCCESS.name());
+			 response.setResponseMessage(Result.SUCCESS.getValue());
+		 }else {
+    		 response.setResponse(Result.INVALID_DATA.name());
+			 response.setResponseMessage(Result.INVALID_DATA.getValue());
+    	 }
+		}catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
 	}
 	
 	
 	
        @RequestMapping(value = "/assignProjectMembersToProject", method = RequestMethod.POST)
-		public  String assignProjectMembersToProject(ProjectAssignedMembersDTO projectAssignedMembersDTO,@RequestParam(value="projectUUID", required=true) String projectUUID,
+		public  Response<String> assignProjectMembersToProject(ProjectAssignedMembersDTO projectAssignedMembersDTO,@RequestParam(value="projectUUID", required=true) String projectUUID,
 			   @RequestParam(value="userId", required=true) Long userId,@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
-		    
-		    User user = userService.getUserById(userId);
-		    OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		    projectMembersService.saveAssignedProjectMembers(projectAssignedMembersDTO, projectUUID, user, orgLocations);
-		    approvedLeaveForNewlyAddedEmployee(projectAssignedMembersDTO.getProjectMembers(),orgLocations,user);
-		    return "success";
+			Response<String> response = new Response<>();
+			 User user = userService.getUserById(userId);
+			try {
+				if(user != null) {
+					outerLoop:{
+					    if(projectAssignedMembersDTO.getProjectMembers() != null && projectAssignedMembersDTO.getProjectMembers().size() > 0){
+				   			for(ProjectMembersDTO projectMembersDTO : projectAssignedMembersDTO.getProjectMembers()){
+				   				if(StringUtils.isEmpty(projectMembersDTO.getValidateRow()))
+									 continue;
+								if(!Validator.validate(projectMembersDTO)) {
+									response.setObject("DataMissing");
+									response.setResponse(Result.INVALID_DATA.name());
+									response.setResponseMessage(Result.INVALID_DATA.getValue());
+									break outerLoop;
+								}
+				   			}
+				   		    OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+						    projectMembersService.saveAssignedProjectMembers(projectAssignedMembersDTO, projectUUID, user, orgLocations);
+						    approvedLeaveForNewlyAddedEmployee(projectAssignedMembersDTO.getProjectMembers(),orgLocations,user);
+						    response.setResponse(Result.SUCCESS.name());
+							response.setResponseMessage(Result.SUCCESS.getValue());
+					     }
+				       }
+				}else {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+			}catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+		   
+		    return response;
 	    }
        
        
@@ -232,30 +274,62 @@ public class ProjectsRestController {
 
 
 	@RequestMapping(value = "/storeProjectAdditionalDetails", method = RequestMethod.POST)
-		public  String storeProjectAdditionalDetails(ProjectAdditionalDetailsDTO projectAdditionalDetailsDTO,@RequestParam(value="projectId", required=true) Long projectId,
+		public  Response<String> storeProjectAdditionalDetails(ProjectAdditionalDetailsDTO projectAdditionalDetailsDTO,@RequestParam(value="projectId", required=true) Long projectId,
 			   @RequestParam(value="userId", required=true) Long userId,@RequestParam(value="orgLocationId", required=true) Long orgLocationId,
 			   @RequestParam(value="saveType", required=true) String saveType,HttpServletRequest request) throws Exception {
-		    
-		    User user = userService.getUserById(userId);
-		    OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		    projectAdditionalDetailsDTO.setSaveType(saveType);
-		    projectQuestionnaireService.saveProjectQuestionnaireDetails(projectAdditionalDetailsDTO, projectId, user, orgLocations);
-		    SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "Success !!New project created");
-		    return "success";
+		       User user = userService.getUserById(userId);
+		       Response<String> response = new Response<>();
+				try {
+					if(user != null) {
+						if(Validator.validate(projectAdditionalDetailsDTO)) {
+							OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+						    projectAdditionalDetailsDTO.setSaveType(saveType);
+						    projectQuestionnaireService.saveProjectQuestionnaireDetails(projectAdditionalDetailsDTO, projectId, user, orgLocations);
+						    SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "Success !!New project created");
+							response.setResponse(Result.SUCCESS.name());
+							response.setResponseMessage(Result.SUCCESS.getValue());
+						}else {
+							response.setResponse(Result.INVALID_DATA.name());
+							response.setResponseMessage(Result.INVALID_DATA.getValue());
+						}
+					}else {
+			    		 response.setResponse(Result.INVALID_DATA.name());
+						 response.setResponseMessage(Result.INVALID_DATA.getValue());
+			    	 }
+				}catch (Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+				}
+			   
+			    
+			    return response;
 	    }
        
        
        
        
 	   @RequestMapping(value = { "/storeClientProject", "/rest/storeClientProject" }, method = RequestMethod.POST)
-	   	public @ResponseBody ProjectsDTO storeClientProject(ClientProjectDTO clientProjectDTO) throws Exception {
-	   		
-	   		Projects projects = null;
-	   		projects = projectsService.storeClientProject(clientProjectDTO);
-	   		ProjectsDTO projectsDTO = new ProjectsDTO();
-	   		projectsDTO.setProjectUUID(projects.getProjectUUID());
-	   		projectsDTO.setProjectClientUUID(projects.getProjectClientUUID());
-	   		return projectsDTO;
+	   	public @ResponseBody  Response<ProjectsDTO> storeClientProject(ClientProjectDTO clientProjectDTO) throws Exception {
+		   Response<ProjectsDTO> response = new Response<>();
+		   try {
+			   if(Validator.validate(clientProjectDTO)) {
+				   Projects projects = null;
+			   		projects = projectsService.storeClientProject(clientProjectDTO);
+			   		ProjectsDTO projectsDTO = new ProjectsDTO();
+			   		projectsDTO.setProjectUUID(projects.getProjectUUID());
+			   		projectsDTO.setProjectClientUUID(projects.getProjectClientUUID());
+			   		response.setObject(projectsDTO);
+			   		response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+			   }else {
+				     response.setResponse(Result.INVALID_DATA.name());
+					 response.setResponseMessage(Result.INVALID_DATA.getValue());
+			     }
+		    }catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+	   		return response;
 	   	}
        
        

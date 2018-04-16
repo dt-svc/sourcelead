@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.annotations.Required;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
@@ -87,6 +88,8 @@ public class TimeSheetSubmissionDTO implements Serializable{
 	private float currentMonthNonBillableHours;
 	
 	private String currentMonthName;
+	
+	private int incrStartsFrom;
 
 	public Long getId() {
 		return id;
@@ -390,6 +393,14 @@ public class TimeSheetSubmissionDTO implements Serializable{
 
 	public void setCurrentMonthName(String currentMonthName) {
 		this.currentMonthName = currentMonthName;
+	}
+
+	public int getIncrStartsFrom() {
+		return incrStartsFrom;
+	}
+
+	public void setIncrStartsFrom(int incrStartsFrom) {
+		this.incrStartsFrom = incrStartsFrom;
 	}
 	
 	

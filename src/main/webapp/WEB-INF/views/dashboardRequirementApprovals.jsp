@@ -50,8 +50,12 @@ function requirementApproverList(statusType){
            type : "GET",
            url: sourceleadUrl+"/getApproverRequirementApproverListByOrgLocationIDAndUserId?statusType="+statusType,    
             success :function(data) {
-                 /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */  
-               	
+	            	if (data.response === "FAILED") {
+			    		showError(data.responseMessage);
+			    	} else if (data.response === "AWKWARD") {
+			    		location.href = "/errorPage";
+			    	} else if (data.response === "SUCCESS") {
+	            	 	 var json = data.data;
 			    	     $("#requirementApproverList").removeAttr("style");
 	                	 $("#requirementApproverList").empty();
 	                	 var result = "";
@@ -74,7 +78,6 @@ function requirementApproverList(statusType){
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
 	                     
-	                     var json = JSON.parse(data);
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
@@ -131,22 +134,11 @@ function requirementApproverList(statusType){
 	                     result = result +"</table>"; 
 	                     $("#requirementApproverList").append(result); 
 	                     requirementApprovalPagination(); 
-                 /* } *//* else{
-                	 $("#requirementApproverList").removeAttr("style");
-					 $("#requirementApproverList").empty();
-					 $("#requirementApproverList").removeAttr("style");
-                	 $("#requirementApproverList").empty();
-					
-                	 if(statusType == "SUBMITTED"){
-                	     statusType = 'Waiting';
-                	 }
-					 var result ="";
-						result = result+"			<div class='blank-pages'>";
-						result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-						result = result+"			        <p> No Records found in  "+statusType+" Stage</p>";
-						result = result+"			 </div>";
-				    $("#requirementApproverList").append(result); 
-                } */
+			    	}else if (data.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    		showError("Operation failed, please try again");
+			    	}
           },
             
        }); 
@@ -185,13 +177,9 @@ function requirementApprovalPagination(){
 </script> 
 <script>
 function updateReuqirementStatusAccept(status,requirementId){
-    
     var sourceleadUrl = '${sourceleadUrl}';
     var requirementId = requirementId;
-    
-    
-    
-     var reason;
+    var reason;
      if ($('#rejectReason').length)
      {
          reason = document.getElementById("rejectReason").value;
@@ -203,30 +191,28 @@ function updateReuqirementStatusAccept(status,requirementId){
     $.ajax({
       type : "POST",
       url: sourceleadUrl+"/requirementsAcceptOrReject?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status+"&reason="+reason,
-              success :function(data) {  
-            if(data != null && data != 'undefined' && data != ""){  
-                   if( data.indexOf('Sign In') >= 0){
-                        location.replace(sourceleadUrl);
-                     }
-                   else if (data.indexOf('exception') >= 0) {
-                       location.replace(sourceleadUrl+"/errorPage");
-                   }
-                   else{
-                      requirementApproverList('SUBMITTED');
-                      if(status=='APPROVED'){
-         				 
-         				 $("#selector4").removeAttr("style");
-		            			$("#selector4").css({ display: "block" });
-	            				$("#eduMsgDiv").html("Approved");
-	            				
-		               			eduMsgFadeinFunction();
-		               				 
-         				 
-         				 
-         			 }
-                   }
-            }
-       },
+              success :function(result) {  
+            	if (result.response === "FAILED") {
+  		    		showError(result.responseMessage);
+  		    	} else if (result.response === "AWKWARD") {
+  		    		location.href = "/errorPage";
+  		    	} else if (result.response === "SUCCESS") {
+              	 	var data = result.object;
+		            if(data != null && data != 'undefined' && data != ""){  
+	                      requirementApproverList('SUBMITTED');
+	                      if(status=='APPROVED'){
+	         				$("#selector4").removeAttr("style");
+	            			$("#selector4").css({ display: "block" });
+            				$("#eduMsgDiv").html("Approved");
+	               			eduMsgFadeinFunction();
+	         			 }
+		            }
+  		    	}else if (result.indexOf('Sign In') !== -1) {
+		    		location.replace(sourceleadUrl);
+		    	} else {
+		    		showError("Operation failed, please try again");
+		    	}
+       		},
       });
 }
 </script>
@@ -234,7 +220,6 @@ function updateReuqirementStatusAccept(status,requirementId){
 
 <script>
 function updateReuqirementStatus(status,requirementId){
-	
 	var sourceleadUrl = '${sourceleadUrl}';
 	var requirementId = requirementId;
 	 var reason = document.getElementById("rejectReason").value;
@@ -242,33 +227,31 @@ function updateReuqirementStatus(status,requirementId){
 	$.ajax({
       type : "POST",
       url: sourceleadUrl+"/requirementsAcceptOrReject?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status+"&reason="+reason, 
-    		  success :function(data) {  
-            if(data != null && data != 'undefined' && data != ""){  
-          		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-          		 else if (data.indexOf('exception') >= 0) {
-          			 location.replace(sourceleadUrl+"/errorPage");
-          		 }
-          		 else{ 
-          			requirementApproverList('SUBMITTED');
-          			 if(status=='REJECTED'){
-            			 
+    		  success :function(result) {
+    			if (result.response === "FAILED") {
+  		    		showError(result.responseMessage);
+  		    	} else if (result.response === "AWKWARD") {
+  		    		location.href = "/errorPage";
+  		    	} else if (result.response === "SUCCESS") {
+              	 var data = result.object;
+		            if(data != null && data != 'undefined' && data != ""){  
+	          			 requirementApproverList('SUBMITTED');
+	          			 if(status=='REJECTED'){
 	            			$("#selector4").removeAttr("style");
 	            			$("#selector4").css({ display: "block" });
-         				$("#eduMsgDiv").html("Rejected");
+         					$("#eduMsgDiv").html("Rejected");
 	               			eduMsgFadeinFunction();
-	               			
-         			 }
-          			
-          			
-          		 }
-            }
-       },
+	         			 }
+		            }
+  		    	}else if (result.indexOf('Sign In') !== -1) {
+		    		location.replace(sourceleadUrl);
+		    	} else {
+		    		showError("Operation failed, please try again");
+		    	}
+       		},
 	  }); 
 	
 	  }
-	  
 	  else{
 		  if(reason){
 				$("#reasonDasbordDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
@@ -276,7 +259,6 @@ function updateReuqirementStatus(status,requirementId){
 				$("#reasonDasbordDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
 			}
 	  }
-	  
 }
 </script>
 

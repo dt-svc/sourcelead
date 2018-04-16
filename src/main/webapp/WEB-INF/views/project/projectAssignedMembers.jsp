@@ -26,18 +26,15 @@
 </form:form>
 </div> 
 	
-	
 <div id="divTaskTd1" style="display: none; float: left;">
 	<div class="width215px">
 		<div id="REPLACEROWIDcandidateName" class="tbldata-dotdot pull-left">
 		</div>
 		
-		<input type="hidden" class="form-control input-sm"
-			id="REPLACEROWIDcandidateId" name="projectMembers[REPLACEROWID].candidateId" />
-		
+		<input type="hidden" class="form-control input-sm" id="REPLACEROWIDcandidateId" name="projectMembers[REPLACEROWID].candidateId" />
+		<input type="hidden"  name="projectMembers[REPLACEROWID].validateRow" value="true">
 		<input type="hidden" class="form-control input-sm"
 			id="REPLACEROWIDprojectMemberId" name="projectMembers[REPLACEROWID].projectMemberId">
-		</input>
 		
 	</div>
 </div>
@@ -1204,13 +1201,22 @@ function assignMembers(){
 	  	    	    data : formData,
 					url : sourceleadUrl+"/assignProjectMembersToProject?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&userId="+userId+"&orgLocationId="+orgLocationId, 
 					success : function(result) {
-
-						$("#associateRequestLoading").removeAttr("style");
-						 var additionalDetails = document.getElementById("additionalDetails");
-						 document.getElementById("additionalDetails").removeAttribute("class")
-						 additionalDetails.href="#tab-c"; 
-						 $("#additionalDetails").click();
-// 						 additionalDetails.click();
+						if (result && result.response === "INVALID_DATA") {
+								$("#associateRequestLoading").removeAttr("style");
+			                    showError(result.responseMessage);
+			                } else if (result.response === "AWKWARD") {
+			                    location.href = "/errorPage";
+			                } else if (result.response === "SUCCESS") {
+							 $("#associateRequestLoading").removeAttr("style");
+							 var additionalDetails = document.getElementById("additionalDetails");
+							 document.getElementById("additionalDetails").removeAttribute("class")
+							 additionalDetails.href="#tab-c"; 
+							 $("#additionalDetails").click();
+			                }else if (result.indexOf('Sign In') !== -1) {
+  								location.replace(sourceleadUrl);
+  							} else {
+  			                    showError("Operation failed, please try again");
+  			                }
 					},
 				}); 
       		 return true;

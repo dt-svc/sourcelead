@@ -922,8 +922,10 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 			 location = locationBuilder.append(requirement.getCountry()).append(", ").append(requirement.getState()).append(", ").append(requirement.getCity()).toString();
 		 }else if(!isNullOrEmpty(requirement.getState()) && isNullOrEmpty(requirement.getCity())){
 			 location = locationBuilder.append(requirement.getCountry()).append(", ").append(requirement.getState()).append(", ").toString();
-		 }else{
+		 }else if(!isNullOrEmpty(requirement.getCountry())){
 			 location = locationBuilder.append(requirement.getCountry()).toString();
+		 }else{
+			 location = locationBuilder.append("--").toString(); 
 		 }
 		 
 		 emailMessage.setToEmail(user.getEmail());
