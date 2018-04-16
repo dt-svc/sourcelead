@@ -814,7 +814,7 @@ public class ImmigrationRestController {
 
     @RequestMapping(value = {"/getPetitionTypeDropDown"})
     public List<LookUpData> getPetitionTypeDropDown(HttpServletRequest request) {
-        List<LookUpData> caEmployerDTOs = immigrationTemplateService.getLookupDataByType(Constants.PETITION_TYPE);
+        List<LookUpData> caEmployerDTOs = immigrationTemplateService.getLookupDataByType(Constants.VISA);
         return caEmployerDTOs;
     }
 

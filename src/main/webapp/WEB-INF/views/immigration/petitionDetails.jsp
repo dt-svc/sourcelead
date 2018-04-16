@@ -25,7 +25,7 @@
          	<div class="form-group">
               <label class="col-md-4">Petition type<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8 dropdown-select">
-                  <select id="petitionType" name="petitionType" class="form-control" field-name="Petition type" data-validation="required">
+                  <select id="petitionType" name="petitionType" class="chosen-select form-control	" field-name="Petition type" data-validation="required">
                   </select>
               </div>
           </div> 
@@ -52,7 +52,7 @@
             <div class="form-group">
               <label class="col-md-4">Status</label> <!-- renamed form Current USCIS as Status as per request change -->
               <div class="col-md-8 dropdown-select">
-                <select id="currUscisStatus" name="currUscisStatus" class="form-control">
+                <select id="currUscisStatus" name="currUscisStatus" class="chosen-select form-control">
                     
                   </select>
               </div>
@@ -543,6 +543,25 @@
    </div>
    </div>
    </section>
+   
+       <script type="text/javascript">
+			var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				});
+</script>
+
+   
     <script type="text/javascript">
    
     function prepareDynamicResidenceDiv(rowId){
@@ -670,7 +689,7 @@ function getCandidatesByOrgLocation(){
 		            for(var i=0;i<data.length;i++){
 		            	 var opt = data[i];
 		            	 candidateByOrgObject[opt.id]= opt;
-		            	$('#candidateId').append('<option value='+opt.id+' >'+opt.firstName+" "+opt.lastName+'</option>');
+		            	$('#candidateId').append('<option value='+opt.id+' >'+opt.firstName+" "+opt.lastName+" ( "+opt.email+" )"+'</option>');
 		            }
 		            $('#candidateId').trigger("chosen:updated"); 
 		           /*  updateCandiateInfo(); */
