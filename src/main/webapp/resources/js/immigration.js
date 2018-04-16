@@ -200,9 +200,9 @@ function Immigration() {
     }
 
     this.deleteTempalteDetailsByRowId = function (templateId) {
-
-        $.ajax({
-            url: sourceleadUrl + immiModulePath + "/deleteImmigrationTemplateDetatils?deleteId=" + templateId,
+        var reason = $("#reasonForTemplate").val();
+    	$.ajax({
+            url: sourceleadUrl + immiModulePath + "/deleteImmigrationTemplateDetatils?deleteId=" + templateId+"&reason="+reason,
             type: "GET",
             data: templateId,
             success: function (data) {

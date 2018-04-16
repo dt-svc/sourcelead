@@ -59,7 +59,7 @@ public interface ImmigrationTemplateDao {
 
     List<ImmigrationTemplateFormDTO> getImmigrationTemplateformsListById(Long templateId);
 
-    void deleteAllPetitionTemplateDetailsById(Long templateId);
+    void deleteAllPetitionTemplateDetailsById(Long templateId,String reason);
 
     User getUserById(Long Id) throws Exception;
 

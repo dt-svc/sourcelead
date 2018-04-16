@@ -42,7 +42,7 @@ public interface ImmigrationTemplateService {
 
     List<ImmigrationTemplateFormDTO> getImmigrationTemplateformsListById(Long templateId);
 
-    void deleteAllPetitionTemplateDetailsById(Long templateId);
+    void deleteAllPetitionTemplateDetailsById(Long templateId,String reason);
 
     void deleteImmigrationTaskList(String id);
 

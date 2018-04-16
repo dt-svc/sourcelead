@@ -19,7 +19,7 @@ public class Validator {
 					try {
 						field.setAccessible(true);
 						boolean flag = verifyParentInfo(object, fields, field);
-						if (flag && (field.get(object) == null || field.get(object).toString().isEmpty()) || "undefined".equalsIgnoreCase(field.get(object).toString())) {
+						if (flag && (field.get(object) == null || field.get(object).toString().isEmpty() || "undefined".equalsIgnoreCase(field.get(object).toString()))) {
 							object.getClass().getMethod("setErrorKey", String.class).invoke(object, "error.required");
 							object.getClass().getMethod("setParams", new Class[] { String[].class }).invoke(object,
 									new Object[] { new String[] { field.getAnnotation(Required.class).desc() } });
