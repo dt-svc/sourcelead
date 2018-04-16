@@ -201,6 +201,9 @@ function Immigration() {
 
     this.deleteTempalteDetailsByRowId = function (templateId) {
         var reason = $("#reasonForTemplate").val();
+        reason = reason.replace(/\s/g, "");
+        if(reason.match(/^[^\s-](.*)*$/) != null && reason !="" && reason.length <= 250){
+        $("#reasonForTemplateDiv").empty();
     	$.ajax({
             url: sourceleadUrl + immiModulePath + "/deleteImmigrationTemplateDetatils?deleteId=" + templateId+"&reason="+reason,
             type: "GET",
@@ -211,7 +214,13 @@ function Immigration() {
                 }
             }
         });
-
+        }else if (reason.length >= 251){
+        	$("#reasonForTemplateDiv").find('p.jquery_form_error_message').remove();
+			$("#reasonForTemplateDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason Length 1-250</font>") ; 
+        }else{
+        	$("#reasonForTemplateDiv").find('p.jquery_form_error_message').remove();
+			$("#reasonForTemplateDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+        }
     }
     // immigration view navigation if don't required comment below code start here.
     this.savePageAndContinue = function (status) {
