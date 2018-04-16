@@ -317,9 +317,9 @@ $(function(){
 });
 </script>
 
-<script>
+<!-- <script>
 function clearDate(){
 	$('.customDate').val('');
 }
 
-</script>
+</script> -->
