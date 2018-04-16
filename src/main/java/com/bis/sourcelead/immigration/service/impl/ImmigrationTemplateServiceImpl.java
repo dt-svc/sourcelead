@@ -307,6 +307,11 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
     public void deleteAllPetitionTemplateDetailsById(Long templateId,String reason) {
         immigrationTemplateDao.deleteAllPetitionTemplateDetailsById(templateId,reason);
     }
+    
+    @Override
+    public void reactiveImmigrationTemplateById(Long templateId) {
+        immigrationTemplateDao.reactiveImmigrationTemplateById(templateId);
+    }
 
     @Override
     public void deleteImmigrationTaskList(String id) {

@@ -60,6 +60,8 @@ public interface ImmigrationTemplateDao {
     List<ImmigrationTemplateFormDTO> getImmigrationTemplateformsListById(Long templateId);
 
     void deleteAllPetitionTemplateDetailsById(Long templateId,String reason);
+    
+    void reactiveImmigrationTemplateById(Long templateId);
 
     User getUserById(Long Id) throws Exception;
 

@@ -337,7 +337,12 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                         '</sec:authorize>';
                         
                     	}else{
-                    		result = result + "<i class='glyphicon glyphicon-comment ml10 edit-reason'><div class='edit-status'><p>"+opt.rejectReason+"</p></div></i></div></td>";
+                    		
+                    		result = result +' <div class="tblminwidth-75">';
+                    		result = result + "<span class='glyphicon glyphicon-comment ml10 edit-reason text-info cursorPointer'><div class='edit-status'><p>"+opt.rejectReason+"</p></div></span>";
+                            result = result +' <span onclick="immigration.reactiveImmigrationTemplateById(' + opt.id + ');" class="cursorPointer glyphicon fa fa-repeat ml10 text-success"></span></div></td>';
+                            result = result +' </div>';
+
                     	}
                     	 return result;
                     }
