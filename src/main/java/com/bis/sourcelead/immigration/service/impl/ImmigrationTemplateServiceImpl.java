@@ -33,6 +33,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -48,6 +49,9 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 
     @Autowired
     CandidateDao candidateDao;
+    
+    @Autowired
+    private CommonUtil commonUtil;
 
     @Autowired
     private UserDao userDao;
@@ -62,13 +66,15 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
         }else {
         	immigrationTemplate.setStatus(0);
         }
+        Date date = new Date();
+        Date latestDate = commonUtil.orgLocationCommonDate(date, orgLocations);
         immigrationTemplate.setOrgLocations(orgLocations);
         immigrationTemplate.setName(templateDTO.getTemplateName());
         immigrationTemplate.setDescription(templateDTO.getTemplateDescription());
         immigrationTemplate.setCreatedBy(user);
-        immigrationTemplate.setCreatedDate(new Date());
+        immigrationTemplate.setCreatedDate(latestDate);
         immigrationTemplate.setUpdatedBy(user);
-        immigrationTemplate.setUpdatedDate(new Date());
+        immigrationTemplate.setUpdatedDate(latestDate);
         immigrationTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
         LookUpData lookUpData = new LookUpData();
         lookUpData.setId(Long.parseLong(templateDTO.getPetitionType()));
@@ -80,10 +86,12 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 
     @Override
     public List<ImmigrationTemplateDocDTO> savePetitionTemplateDocDetails(ImmigrationTemplateDTO templateDTO,
-            User user) {
+            User user,OrgLocations orgLocations) {
 
         List<ImmigrationTemplateDocDTO> docsList = templateDTO.getImmigrationDocList();
         ImmigrationTemplate immiTemplate = new ImmigrationTemplate();
+        Date date = new Date();
+        Date latestDate = commonUtil.orgLocationCommonDate(date, orgLocations);
         immiTemplate.setId(templateDTO.getId());
         if (!StringUtils.isEmpty(templateDTO.getImmigrationDocDeletedListIds())) {
             immigrationTemplateDao.deletePetitionTemplateDocDetails(templateDTO.getImmigrationDocDeletedListIds());
@@ -96,9 +104,9 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
             ImmigrationTemplateDocs immigrationTemplateDocs = new ImmigrationTemplateDocs();
             immigrationTemplateDocs.setId(tempObj.getId());
             immigrationTemplateDocs.setImmigrationTempId(immiTemplate);
-            immigrationTemplateDocs.setCreatedDate(new Date());
+            immigrationTemplateDocs.setCreatedDate(latestDate);
             immigrationTemplateDocs.setCreatedBy(user);
-            immigrationTemplateDocs.setUpdatedDate(new Date());
+            immigrationTemplateDocs.setUpdatedDate(latestDate);
             immigrationTemplateDocs.setUpdatedBy(user);
             LookUpData documentTypeId = new LookUpData();
             documentTypeId.setId(tempObj.getDocumentType());
@@ -134,12 +142,14 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
     }
 
     @Override
-    public void savePetitionTemplateTaskDetails(ImmigrationTemplateTaskDTO templateDTO, User user) {
+    public void savePetitionTemplateTaskDetails(ImmigrationTemplateTaskDTO templateDTO, User user,OrgLocations orgLocations) {
 
         ImmigrationTemplate immiTemplate = new ImmigrationTemplate();
         immiTemplate.setId(templateDTO.getTemplateId());
         ImmigrationTemplateTasks immigrationTemplateTask = new ImmigrationTemplateTasks();
         immigrationTemplateTask.setImmigrationTempId(immiTemplate);
+        Date date = new Date();
+        Date latestDate = commonUtil.orgLocationCommonDate(date, orgLocations);
         if (templateDTO.getId() != null) {
             immigrationTemplateTask.setId(templateDTO.getId());
         }
@@ -161,9 +171,9 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
         immigrationTemplateTask.setDescription(templateDTO.getTaskDescription());
         immigrationTemplateTask.setStatus(Constants.RECORD_ACTIVE);// 1 for active
 
-        immigrationTemplateTask.setCreatedDate(new Date());
+        immigrationTemplateTask.setCreatedDate(latestDate);
         immigrationTemplateTask.setCreatedBy(user);
-        immigrationTemplateTask.setUpdatedDate(new Date());
+        immigrationTemplateTask.setUpdatedDate(latestDate);
         immigrationTemplateTask.setUpdatedBy(user);
 
         immigrationTemplateDao.savePetitionTemplateTaskDetails(immigrationTemplateTask);
@@ -179,11 +189,12 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 
     @Override
     public List<ImmigrationTemplateFormDTO> savePetitionTemplateFormDetails(ImmigrationTemplateDTO templateDTO,
-            User user) {
+            User user,OrgLocations orgLocations) {
         List<ImmigrationTemplateFormDTO> formsList = templateDTO.getImmigrationFormList();
         ImmigrationTemplate immiTemplate = new ImmigrationTemplate();
         immiTemplate.setId(templateDTO.getId());
-
+        Date date = new Date();
+        Date latestDate = commonUtil.orgLocationCommonDate(date, orgLocations);
         List<ImmigrationTemplateFormDTO> savedFormList = new ArrayList<ImmigrationTemplateFormDTO>();
 
         if (!StringUtils.isEmpty(templateDTO.getImmigrationFormDeletedListIds())) {
@@ -212,9 +223,9 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
             } else {
                 immigrationTemplateForms.setIsRequired(Constants.NO);
             }
-            immigrationTemplateForms.setCreatedDate(new Date());
+            immigrationTemplateForms.setCreatedDate(latestDate);
             immigrationTemplateForms.setCreatedBy(user);
-            immigrationTemplateForms.setUpdatedDate(new Date());
+            immigrationTemplateForms.setUpdatedDate(latestDate);
             immigrationTemplateForms.setUpdatedBy(user);
             immigrationTemplateForms.setStatus(Constants.RECORD_ACTIVE);
             immigrationTemplateForms.setFormUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
