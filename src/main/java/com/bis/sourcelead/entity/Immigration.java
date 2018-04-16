@@ -43,6 +43,9 @@ public class Immigration implements Serializable {
 	@Column(name = "PLACE_OF_ENTRY ")
 	private String placeOfEntry;
 	
+	@Column(name = "GENERATED_ID")
+	private String generatedId;
+	
 	@ManyToOne
 	@JoinColumn(name = "IMMIGRATION_TEMPLATE_ID")
 	private ImmigrationTemplate immigrationTemplateId;
@@ -267,6 +270,14 @@ public class Immigration implements Serializable {
 
 	public void setImmigrationUuid(String immigrationUuid) {
 		this.immigrationUuid = immigrationUuid;
+	}
+
+	public String getGeneratedId() {
+		return generatedId;
+	}
+
+	public void setGeneratedId(String generatedId) {
+		this.generatedId = generatedId;
 	}
 	
 	
