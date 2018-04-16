@@ -332,7 +332,7 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                         result = result +' <i id="edit' + opt.id + '" onclick="immigration.editTemplateDetailsByRowId(' + opt.id + ');" class="glyphicon glyphicon-pencil"></i>';
                         '</sec:authorize>';
                         '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_PETITION_TEMPLATE\')">';
-                        result = result +' <i id="delete' + opt.id + '" onclick="immigration.deleteTempalteDetailsByRowId(' + opt.id + ');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
+                        result = result +' <i id="delete' + opt.id + '" onclick="disableTemplateStatus(' + opt.id + ');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
                         '</sec:authorize>';
                         return result;
                     }
@@ -363,4 +363,25 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
 
        // $("table").colResizable(); // for resizing columns in tables.
     }
+</script>
+<div id="popUp"></div>
+<script>
+function cancelTerminationReson(){
+	$("#remove_template_pop, .project_inn_mask").fadeOut();
+	$("#reasonForTemplate").val('');
+	$("#reasonForTemplateDiv").find("p.jquery_form_error_message").remove();
+	$("#reasonForTemplateDiv").empty(); 
+}
+function disableTemplateStatus(templateId){ // only stauts updated with reason. active 1 , deactive 0.
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_template_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<textarea  id='reasonForTemplate' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>";
+	result = result + ' <div id="reasonForTemplateDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='immigration.deleteTempalteDetailsByRowId("+templateId+"');><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTerminationReson();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_template_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
 </script>

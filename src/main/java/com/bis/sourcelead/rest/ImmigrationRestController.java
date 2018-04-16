@@ -1342,6 +1342,18 @@ public class ImmigrationRestController {
         model.addObject("formsList" ,candidateFormsLst);
 		return model;
     }
+	
+	
+	@RequestMapping(value = { "/updateUscisTypeDropDown" })
+	public String updateUscisTypeDropDown(
+			@RequestParam(value = "templateId", required = false) Long templateId,
+			@RequestParam(value = "uscisId", required = false) Long uscisId,
+			HttpServletRequest request) throws Exception {
+		String resultVal = immigrationCommonService.updateUscisTypeDropDown(templateId,uscisId);
+		return resultVal;
+	}
+	
+	
 
 }
 
