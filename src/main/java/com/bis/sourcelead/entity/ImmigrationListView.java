@@ -54,6 +54,13 @@ public class ImmigrationListView implements Serializable {
 	@Column(name = "OPEN_DATE")
 	private Date openDate;
 
+	@Column(name = "LCA_START_DATE")
+	private Date lcaStartDate;
+	
+	@Column(name = "LCA_END_DATE")
+	private Date lcaEndDate;
+	
+	
 	@Column(name = "FIRS_TNAME")
 	private String firstName;
 
@@ -102,6 +109,22 @@ public class ImmigrationListView implements Serializable {
 
 	public void setOpenDate(Date openDate) {
 		this.openDate = openDate;
+	}
+
+	public Date getLcaStartDate() {
+		return lcaStartDate;
+	}
+
+	public void setLcaStartDate(Date lcaStartDate) {
+		this.lcaStartDate = lcaStartDate;
+	}
+
+	public Date getLcaEndDate() {
+		return lcaEndDate;
+	}
+
+	public void setLcaEndDate(Date lcaEndDate) {
+		this.lcaEndDate = lcaEndDate;
 	}
 
 	public String getFirstName() {
