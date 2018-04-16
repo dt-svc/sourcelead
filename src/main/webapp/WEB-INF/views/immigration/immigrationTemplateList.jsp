@@ -326,7 +326,8 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                     "targets": colIndex++,
                     /*"data": "formsCount",*/
                     "render": function (data, type, opt, meta) {
-                        var result = "";
+                    	  var result = "";
+                    	if (opt.status !== null && opt.status !== '' && opt.status !== 0) {
                         result = result + '<td><div>';
                         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_VIEW_PETITION_TEMPLATE\')">';
                         result = result +' <i id="edit' + opt.id + '" onclick="immigration.editTemplateDetailsByRowId(' + opt.id + ');" class="glyphicon glyphicon-pencil"></i>';
@@ -334,13 +335,17 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                         '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_PETITION_TEMPLATE\')">';
                         result = result +' <i id="delete' + opt.id + '" onclick="disableTemplateStatus(' + opt.id + ');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
                         '</sec:authorize>';
-                        return result;
+                        
+                    	}else{
+                    		result = result + "</div></td>";
+                    	}
+                    	 return result;
                     }
                 }
             ],
             "scrollCollapse": false,
             "lengthMenu": [[10, 15, 20], [10, 15, 20]],
-            "aaSorting": [[6, 'desc']],
+            "aaSorting": [[8, 'desc']],
             "bLengthChange": true,
             "bDestroy": true,
             "ordering": true,
