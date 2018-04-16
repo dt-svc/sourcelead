@@ -214,7 +214,6 @@ function Immigration() {
     
     this.deleteTempalteDetailsByRowId = function (templateId) {
         var reason = $("#reasonForTemplate").val();
-        reason = reason.replace(/\s/g, "");
         if(reason.match(/^[^\s-](.*)*$/) != null && reason !="" && reason.length <= 250){
         $("#reasonForTemplateDiv").empty();
     	$.ajax({
