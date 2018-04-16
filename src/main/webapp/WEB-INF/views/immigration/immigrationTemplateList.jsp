@@ -373,6 +373,7 @@ function cancelTerminationReson(){
 	$("#reasonForTemplateDiv").empty(); 
 }
 function disableTemplateStatus(templateId){ // only stauts updated with reason. active 1 , deactive 0.
+	$(".project_inn_mask").remove();
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_template_pop' class='remove_user_pop remove_user_pop_a'>";
