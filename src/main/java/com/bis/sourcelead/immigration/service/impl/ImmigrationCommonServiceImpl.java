@@ -435,7 +435,8 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		dto.setAttorneyEmail(immigration.getOrgSpoc().getVendorUser().getEmail());
 		dto.setAttorneyPhone(immigration.getOrgSpoc().getVendorUser().getMobilePhone());
 		dto.setAttorneyFax(""); //no data need to update
-		dto.setAttorneyLawFirm(""); //no data need to update
+		//dto.setAttorneyLawFirm(""); //removed column as per request
+		dto.setAttorneyContact(immigration.getOrgSpoc().getVendorUser().getFullName());
 		
 		/*attorney end*/
 		if(immigration.getJob() != null) {

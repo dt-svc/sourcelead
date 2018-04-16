@@ -15,7 +15,7 @@
 				  <h2>Attorney Details</h2>
 				  <ul>
 					  <li class="clearfix"><span>Attorney Name</span><p>: ${immigration.attorneyName}</p></li>
-					  <li class="clearfix"><span>Contact name</span><p>: </p></li>
+					  <li class="clearfix"><span>Contact name</span><p>: ${immigration.attorneyContact}</p></li>
 					  <li class="clearfix"><span>Email</span><p>: ${immigration.attorneyEmail} </p></li>
 					  <li class="clearfix"><span>Phone</span><p>: ${immigration.attorneyPhone}</p></li>
 					  <li class="clearfix"><span>Fax</span><p>: ${immigration.attorneyFax}</p></li>
