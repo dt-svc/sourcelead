@@ -719,7 +719,9 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			Immigration immigration = session.get(Immigration.class, templateId);
-			immigration.setCurrUscisStauts(uscisId);
+			LookUpData uscisStatusId = new LookUpData();
+			uscisStatusId.setId(uscisId);
+			immigration.setCurrUscisStauts(uscisStatusId);
 			session.update(immigration);
 			logger.debug("updateUscisTypeDropDown updated Successfully");
 		} catch (Exception exception) {

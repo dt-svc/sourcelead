@@ -25,14 +25,16 @@ public class Immigration implements Serializable {
 	@Column(name = "ID", nullable = false)
 	private Long id;
 
-	@Column(name = "PETITION_TYPE")
-	private Long petitionType;
+	@ManyToOne
+	@JoinColumn(name = "PETITION_TYPE")
+	private LookUpData petitionType;
 	
 	@Column(name = "RECEIPT_NO ")
 	private String receiptNo;
 
-	@Column(name = "CURRENT_USCIS_STATUS")
-	private Long currUscisStauts;
+	@ManyToOne
+	@JoinColumn(name = "CURRENT_USCIS_STATUS")
+	private LookUpData currUscisStauts;
 
 	@Column(name = "OPEN_DATE")
 	private Date openDate;
@@ -108,14 +110,6 @@ public class Immigration implements Serializable {
 		this.id = id;
 	}
 
-	public Long getPetitionType() {
-		return petitionType;
-	}
-
-	public void setPetitionType(Long petitionType) {
-		this.petitionType = petitionType;
-	}
-
 	public String getReceiptNo() {
 		return receiptNo;
 	}
@@ -123,15 +117,6 @@ public class Immigration implements Serializable {
 	public void setReceiptNo(String receiptNo) {
 		this.receiptNo = receiptNo;
 	}
-
-	public Long getCurrUscisStauts() {
-		return currUscisStauts;
-	}
-
-	public void setCurrUscisStauts(Long currUscisStauts) {
-		this.currUscisStauts = currUscisStauts;
-	}
-	
 
 	public String getPlaceOfEntry() {
 		return placeOfEntry;
@@ -268,6 +253,21 @@ public class Immigration implements Serializable {
 	public void setImmigrationUuid(String immigrationUuid) {
 		this.immigrationUuid = immigrationUuid;
 	}
-	
+
+	public LookUpData getPetitionType() {
+		return petitionType;
+	}
+
+	public void setPetitionType(LookUpData petitionType) {
+		this.petitionType = petitionType;
+	}
+
+	public LookUpData getCurrUscisStauts() {
+		return currUscisStauts;
+	}
+
+	public void setCurrUscisStauts(LookUpData currUscisStauts) {
+		this.currUscisStauts = currUscisStauts;
+	}
 	
 }
