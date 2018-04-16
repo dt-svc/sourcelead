@@ -677,6 +677,7 @@ public class ImmigrationRestController {
         model.addObject("sourceleadUrl", sourceleadUrl);
         List<ImmigrationTemplateDocDTO> templateDocList = null;
         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
         Boolean flag = false;
         if (user !=null){
         try {
@@ -694,7 +695,7 @@ public class ImmigrationRestController {
             e.printStackTrace();
         }
         if(flag == true){
-         	templateDocList = immigrationTemplateService.savePetitionTemplateDocDetails(templateDTO, user);
+         	templateDocList = immigrationTemplateService.savePetitionTemplateDocDetails(templateDTO, user,orgLocations);
             response.setResponse(Result.SUCCESS.name());
     		response.setResponseMessage(Result.SUCCESS.getValue());
         }else{
@@ -719,6 +720,7 @@ public class ImmigrationRestController {
         templateDTO.setStaticPath(staticPath);
         Boolean flag = false;
         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
         if(user != null){
         	try{
         		for(ImmigrationTemplateFormDTO form:templateDTO.getImmigrationFormList()){
@@ -734,7 +736,7 @@ public class ImmigrationRestController {
         		 e.printStackTrace();
 			}
         if(flag == true){
-        	templateFormsList = immigrationTemplateService.savePetitionTemplateFormDetails(templateDTO, user);
+        	templateFormsList = immigrationTemplateService.savePetitionTemplateFormDetails(templateDTO, user,orgLocations);
     		response.setResponse(Result.SUCCESS.name());
  			response.setResponseMessage(Result.SUCCESS.getValue());
         }else{
@@ -756,10 +758,11 @@ public class ImmigrationRestController {
     	ModelAndView model = new ModelAndView();
         model.addObject("sourceleadUrl", sourceleadUrl);
         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
         if(user != null){
         try {
            if(Validator.validate(taskTemplateDTO)){
-            immigrationTemplateService.savePetitionTemplateTaskDetails(taskTemplateDTO, user);
+            immigrationTemplateService.savePetitionTemplateTaskDetails(taskTemplateDTO, user,orgLocations);
         	response.setResponse(Result.SUCCESS.name());
  			response.setResponseMessage(Result.SUCCESS.getValue());
            }else{
