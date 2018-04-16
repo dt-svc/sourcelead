@@ -292,10 +292,11 @@ public class TeamRestController {
 		try{
 			if(user != null){
 				if(Validator.validate(teamDTO)){
+					teamService.storeTeam(teamDTO, orgLocations);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
-					teamService.storeTeam(teamDTO, orgLocations);
 					SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Team Created Successfully");
+					
 				}
 				else{
 					response.setObject("DataMissing");
