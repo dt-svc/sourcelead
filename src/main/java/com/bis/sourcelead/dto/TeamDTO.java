@@ -1,17 +1,10 @@
 package com.bis.sourcelead.dto;
 
-import com.bis.sourcelead.annotations.Required;
-
 public class TeamDTO extends TeamMemberDTO{
 
-	@Required(desc="name")
 	private String name;
 	private String editOwnerUserId;
-	
-	@Required(desc="memberUserId")
 	private String memberUserId;
-	
-	@Required(desc="ownerUserId")
 	private String ownerUserId;
 	private String teamId;
 	//private String teamMemberUserId;

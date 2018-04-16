@@ -382,7 +382,7 @@ public class CandidateServiceImpl implements CandidateService {
 		}
 		
 		if(StringUtils.isNotBlank(candidateDto.getDateofBirth())){
-			candidate.setDateOfBirth(commonUtil.orgLocationDateFormat(candidateDto.getDateFormat(), candidateDto.getDateofBirth()));
+			candidate.setDateOfBirth(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), candidateDto.getDateofBirth()));
 		}else{
 			candidate.setDateOfBirth(null);
 		}
