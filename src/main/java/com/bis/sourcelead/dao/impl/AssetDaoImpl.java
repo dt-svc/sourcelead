@@ -180,7 +180,7 @@ public class AssetDaoImpl implements AssetDao{
 	public Boolean validateAssetId(String assetSno, Long orgLocationsId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		
-				String query = "from Asset asset where asset.orgLocations.id = :orgLocationsId and asset.slno = :assetSno ";
+				String query = "from Asset asset where asset.orgLocations.id = :orgLocationsId and asset.slno = :assetSno and asset.status = '1' ";
 				List<Asset> assetList = session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setString("assetSno", assetSno).list();
 
 				if (assetList.size() > 0) {
