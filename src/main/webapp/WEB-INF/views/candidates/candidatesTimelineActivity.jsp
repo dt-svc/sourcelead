@@ -25,11 +25,11 @@
            	       	result = result + '    <div class="timeline_inner">';
            	       	result = result + '      <div class="row mt">';
            	       	result = result + '        <div class="col-md-12"> ';
-           	     	var data = response.data;  
+           	     	var data = response.data; 
                   	if(data && data.length > 0){
                	   		result = result + '          <ul class="timeline">';
                   		for (var i = 0; i < data.length; i++) {
-      	         	 		var opt = json[i];
+                  			var opt = data[i];
    		   	         		result = result + '      <li> <i class="'+opt.actionIconClass+' bg-blue"></i>';
    		                	result = result + '      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i> '+opt.actionTimeStr+' </span>';
    		                	result = result + '        <h3 class="timeline-header"><a href="'+sourceleadUrl+'/userSummaryDetails?userId='+opt.createdUserId+'">'+opt.actionBy+'</a> has '+opt.actionDesc+' <a href="#">'+opt.actionOn+'</a></h3>';
