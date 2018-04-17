@@ -687,7 +687,6 @@ public class ImmigrationRestController {
             flag = true;
             }else{
             	flag = false;
-            	break;
             }
             }
         } catch (Exception e) {
@@ -729,7 +728,6 @@ public class ImmigrationRestController {
                     flag = true;
                     }else{
                     	flag = false;
-                    	break;
                     }
                     }
         	}catch (Exception e) {

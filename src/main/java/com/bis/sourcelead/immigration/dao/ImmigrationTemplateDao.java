@@ -37,9 +37,9 @@ public interface ImmigrationTemplateDao {
 
     void savePetitionTemplateTaskDetails(ImmigrationTemplateTasks immigrationTemplateTask);
 
-    void deletePetitionTemplateDocDetails(String remainingDocsIds);
+    void deletePetitionTemplateDocDetails(Long remainingDocsIds[]);
 
-    void deletePetitionTemplateFormDetails(String remainingFormIds);
+    void deletePetitionTemplateFormDetails(Long remainingFormIds[]);
 
     ResponseList<ImmigrationTemplateListDTO> getAllTemplateDetails(ImmigrationTemplateListDTO templateListDTO, String searchValue, Long orgLocationId, String[] countriesList);
 
