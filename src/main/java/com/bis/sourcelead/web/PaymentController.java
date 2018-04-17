@@ -222,6 +222,7 @@ public class PaymentController {
 					    Date subscriptionToDate = commonUtil.getOrgLocationCurrentDate("dd-MM-yyyy",toDate.getTime());
 					    subscriptionToDate = CalendarUtil.getDateTimeForGivenTimeZone(orgLicenseSubscription.getTimezone().getTimeZoneId(), subscriptionToDate, "dd-MM-yyyy");
 						orgLicenseSubscription.setToDate(subscriptionToDate);
+						orgLicenseSubscription.setInvoiceAmount(0d);
 						orgLicenseSubscription.setIsInvoiceAmountPaid(Constants.YES);
 						orgLicenseSubscriptionHistoryService.saveOrgLicenseSubscriptionHistory(orgLicenseSubscriptionHistory);
 						orgLicenseSubscriptionService.saveOrgLicenseSubscription(orgLicenseSubscription);
