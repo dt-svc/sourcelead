@@ -93,7 +93,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
         Date date = new Date();
         Date latestDate = commonUtil.orgLocationCommonDate(date, orgLocations);
         immiTemplate.setId(templateDTO.getId());
-        if (!StringUtils.isEmpty(templateDTO.getImmigrationDocDeletedListIds())) {
+        if (templateDTO.getImmigrationDocDeletedListIds().length>0) {
             immigrationTemplateDao.deletePetitionTemplateDocDetails(templateDTO.getImmigrationDocDeletedListIds());
         }
         List<ImmigrationTemplateDocDTO> docsListAfterSave = new ArrayList<ImmigrationTemplateDocDTO>();
@@ -197,7 +197,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
         Date latestDate = commonUtil.orgLocationCommonDate(date, orgLocations);
         List<ImmigrationTemplateFormDTO> savedFormList = new ArrayList<ImmigrationTemplateFormDTO>();
 
-        if (!StringUtils.isEmpty(templateDTO.getImmigrationFormDeletedListIds())) {
+        if (templateDTO.getImmigrationFormDeletedListIds().length>0) {
             immigrationTemplateDao.deletePetitionTemplateFormDetails(templateDTO.getImmigrationFormDeletedListIds());
         }
 

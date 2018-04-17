@@ -21,9 +21,9 @@ public class ImmigrationTemplateDTO extends SearchDTO implements Serializable {
 	@Required(desc = "Template Description")
 	private String templateDescription;
 
-	private String immigrationDocDeletedListIds;
+	private Long immigrationDocDeletedListIds[];
 
-	private String immigrationFormDeletedListIds;
+	private Long immigrationFormDeletedListIds[];
 
 	private List<ImmigrationTemplateDocDTO> immigrationDocList;
 
@@ -69,19 +69,23 @@ public class ImmigrationTemplateDTO extends SearchDTO implements Serializable {
 		this.templateDescription = templateDescription;
 	}
 
-	public String getImmigrationDocDeletedListIds() {
+	
+
+	public Long[] getImmigrationDocDeletedListIds() {
 		return immigrationDocDeletedListIds;
 	}
 
-	public void setImmigrationDocDeletedListIds(String immigrationDocDeletedListIds) {
+	public void setImmigrationDocDeletedListIds(Long[] immigrationDocDeletedListIds) {
 		this.immigrationDocDeletedListIds = immigrationDocDeletedListIds;
 	}
 
-	public String getImmigrationFormDeletedListIds() {
+	
+
+	public Long[] getImmigrationFormDeletedListIds() {
 		return immigrationFormDeletedListIds;
 	}
 
-	public void setImmigrationFormDeletedListIds(String immigrationFormDeletedListIds) {
+	public void setImmigrationFormDeletedListIds(Long[] immigrationFormDeletedListIds) {
 		this.immigrationFormDeletedListIds = immigrationFormDeletedListIds;
 	}
 

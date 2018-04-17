@@ -154,20 +154,20 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 
     @Override
     @Transactional(rollbackFor = {Exception.class})
-    public void deletePetitionTemplateDocDetails(String remainingDocsIds) {
+    public void deletePetitionTemplateDocDetails(Long remainingDocsIds[]) {
         logger.debug("Delete Template Docs-->");
         Session session = this.sessionFactory.getCurrentSession();
-        Query query = session.createQuery("delete from ImmigrationTemplateDocs docs where docs.id in (:templateIds)").setString("templateIds", remainingDocsIds);
+        Query query = session.createQuery("delete from ImmigrationTemplateDocs docs where docs.id in (:templateIds)").setParameterList("templateIds", remainingDocsIds);
         int count = query.executeUpdate();
         logger.debug("Number of records deleted-->" + count);
     }
 
     @Override
     @Transactional(rollbackFor = {Exception.class})
-    public void deletePetitionTemplateFormDetails(String remainingFormIds) {
+    public void deletePetitionTemplateFormDetails(Long remainingFormIds[]) {
         logger.debug("Delete Template Docs-->");
         Session session = this.sessionFactory.getCurrentSession();
-        Query query = session.createQuery("delete from ImmigrationTemplateForms itf where itf.id in (:templateIds)").setString("templateIds", remainingFormIds);
+        Query query = session.createQuery("delete from ImmigrationTemplateForms itf where itf.id in (:templateIds)").setParameterList("templateIds", remainingFormIds);
         int count = query.executeUpdate();
         logger.debug("Number of records deleted-->" + count);
     }
