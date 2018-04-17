@@ -29,6 +29,7 @@ top:0;
 	               	    <th>Subscription Type</th>
 	               	    <th>User Subscription</th>
 	               		<th>Invoice Amount</th>
+	               		<th>Amount Paid</th>
 	               		<th>From Date <br/><span>(${SourceLeadWeb_orgLocations.dateFormat})</span></th>
 	               		<th>To Date<br/><span>(${SourceLeadWeb_orgLocations.dateFormat})</span></th>
 	               		<th>Storage</th>
@@ -44,6 +45,7 @@ top:0;
 	                    	 <td><div class="tbldata-dotdot_80">${orgSubscription.subscriptionType.name}</div></td>
 	                    	 <td><div class="tbldata-dotdot-100">${orgSubscription.userSubscriptionType.name}</div></td>
 	                    	 <td><div class="tbldata-dotdot-100">${orgSubscription.currency} ${orgSubscription.invoiceAmount}</div></td>
+	                    	 <td><div class="tbldata-dotdot-80">${orgSubscription.isInvoiceAmountPaid == 'Y' ? "Yes" : "No"}</div></td>
 	                    	 <td><div class="tbldata-dotdot-100">${orgSubscription.fromDateStr}</div></td>
 	                    	 <td><div class="tbldata-dotdot-100">${orgSubscription.toDateStr}</div></td>
 	                    	 <td><div class="tbldata-dotdot_80">${orgSubscription.storageSubscriptionType.name}</div></td>

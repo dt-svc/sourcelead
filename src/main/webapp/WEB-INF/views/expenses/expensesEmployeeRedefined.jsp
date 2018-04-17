@@ -88,7 +88,7 @@ $("#SearchExpensesData").keyup(function(event) {
     if (event.keyCode === 13) {
     	$('#SearchExpensesData').parent().find('p.jquery_form_error_message').remove();
     	var searchData = $('#SearchExpensesData').val();
-    	var regex =  new RegExp(/[^\w\s]/gi);
+    	var regex =  new RegExp(/[\\]/g);
     	if(regex.test(searchData) == false){
     		getExpensesList();
     	}else{
