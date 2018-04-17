@@ -88,8 +88,14 @@ $(document).ready(function(){
 <script>
 $("#SearchExpensesData").keyup(function(event) {
     if (event.keyCode === 13) {
+    	$('#SearchExpensesData').parent().find('p.jquery_form_error_message').remove();
     	var searchData = $('#SearchExpensesData').val();
-    	getExpensesApprovalDataList();
+    	var regex =  new RegExp(/[\\]/g);
+    	if(regex.test(searchData) == false){
+    		getExpensesApprovalDataList();
+    	}else{
+    		$("#SearchExpensesData").after("<p class='jquery_form_error_message'><span>Enter valid Search Data</span>");
+    	}
     	$('#SearchExpensesData').val(searchData);
     }
 });
