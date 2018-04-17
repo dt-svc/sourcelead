@@ -90,7 +90,7 @@ function redirectlocation(location){
 		var searchValue = $("#requestedEmployeesTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
 		var url = sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=PENDING";
-	    prepareRequestedEmployeesList(url);
+		prepareRequestedEmployeesList(url);
 }
 </script> 
   
@@ -148,7 +148,7 @@ function requestedEmployeesPagination(url){
 	    	  	"targets": colIndex++,
 	    	  	"data": "empName",
 	    	  	"render": function(data, type, opt, meta) {
-	    	  		    var result = "";
+	    	  		 var result = "";
 		    	  		if(opt.empType !=null && opt.empType != '' && opt.empType !='undefined'){
 		    	  			result = result + '     <div class="proj_show divmax-width">';
 		    	  			result = result + '     <div class="pull-left tbldata-dotdot cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.leaveUUID+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" onclick="getRequestedAproveSummary(\''+opt.leaveUUID+'\','+opt.orgLocationId+');"></i>';
@@ -294,8 +294,12 @@ function approveLeave(leaveUUID,leaveTypeId,approveStatus,numberOfDays){
 	 if((reason != null && reason != '' && reason != 'undefined') || (approveStatus == 'APPROVED')) {
 			 $("#rejectReasonDiv").find('p.jquery_form_error_message').remove();
 			 $("#appRejLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			 $.get(sourceleadUrl+"/approveRequestedLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveUUID="+leaveUUID+"&leaveTypeId="+leaveTypeId+"&approveStatus="+approveStatus+"&userId="+userId+"&numberOfDays="+numberOfDays+"&reason="+reason, function(data) {
-					if(data == true){
+			 $.get(sourceleadUrl+"/approveRequestedLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveUUID="+leaveUUID+"&leaveTypeId="+leaveTypeId+"&approveStatus="+approveStatus+"&userId="+userId+"&numberOfDays="+numberOfDays+"&reason="+reason, function(response) {
+				 if (response && response.response === "INVALID_DATA") {
+		    		    showError(response.responseMessage);
+		    		} else if (response.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    		} else if (response.response === "SUCCESS") {
 						$("#popUp").empty();
 						$("#appRejLoading").removeAttr("style");
 			 			$("#remove_user_pop, .side_mask").fadeOut();
@@ -311,7 +315,11 @@ function approveLeave(leaveUUID,leaveTypeId,approveStatus,numberOfDays){
 			    	 	$(".side_mask").fadeOut(200);
 			    	 	$("body").css('overflow-y', 'auto');
 						getRequestedEmployeesList();
-					}
+					} else if (response.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				 } else {
+				    showError("Operation failed, please try again");
+				 }
 				});
  }else{
 	 $("#rejectReasonDiv").find('p.jquery_form_error_message').remove();
@@ -322,11 +330,13 @@ function approveLeave(leaveUUID,leaveTypeId,approveStatus,numberOfDays){
 
 <script>
 function getRequestedAproveSummary(leaveUUID,orgLocationId){
-	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveUUID="+leaveUUID+"&orgLocationId="+orgLocationId, function(data) {
-		if(data != null){
+	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveUUID="+leaveUUID+"&orgLocationId="+orgLocationId, function(response) {
+		   if(response.response === "SUCCESS") {
+		   if(response != null){
 			$(".new_side_wrap").addClass("new_side_wrap_active");
 			$(".side_mask").fadeIn(200);
 			$("body").css('overflow-y', 'hidden');
+			var data = response.object;
 			 var result = "";	
 			 result = result +' <div class="viewgrid-header pull-right zIndex positionRelative">';
 			 result = result +'<span class="btn btn-primary btn-sm mr10" title="APPROVE" onclick="approveLeavePopup(\''+data.leaveUUID+'\',\''+data.leaveTypeId+'\',\'APPROVED\',\''+data.noOfDays+'\');">APPROVE</span>';
@@ -479,6 +489,19 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId){
              $("#leaveSummaryId").append(result);
             
 		}	
+		   
+		   } else if (response && response.response === "INVALID_DATA") {
+				//$(".new_side_wrap").removeClass("new_side_wrap_active");
+ 		    showError(response.responseMessage);
+		   } else if (response.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+		    } else if (response.response === "AWKWARD") {
+			    location.href = "/errorPage";
+		     }
+			else {
+			    showError("Operation failed, please try again");
+			}	   
+		 
 		 
 	});  
 }
