@@ -322,11 +322,14 @@ function Immigration() {
             url: sourceleadUrl + immiModulePath + "/savePassportVisaDetailsPage?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId+"&idType="+idType,
             type : "POST",
 			data : formData,
-			success : function(data) {
+			success : function(result) {
 							console.log(" inside success function"+idType);
-							if (data == 'Success') {
-								console.log("data successfully saved for the candidate id "+ immigrationId);
-								if (idType == 'Passport') {
+							if (result && result.response === "INVALID_DATA") {
+		                    	 showError(result.responseMessage);
+		                    }else if (result.response === "AWKWARD") {
+		                        location.href = "/errorPage";
+		                    }else if(result.response === 'SUCCESS') {
+		                    	if (idType == 'Passport') {
 									$('#popPassView').hide();
 									$('.popMask').fadeOut();
 									immigration.displayPassportDetails(candidateId, 'Passport');
@@ -335,8 +338,10 @@ function Immigration() {
 									$(".popMask").fadeOut(200); // close the popup code															// popup code
 									immigration.displayVisaDetails(candidateId,'Visa');
 								}
-    					
-				}
+		                    }else{
+		                    	 showError("Operation failed, please try again");
+		                    }
+							
 			}
 		});
 		return true;
@@ -945,12 +950,19 @@ function saveResidenceDetails(status) {
             url: sourceleadUrl + immiModulePath + "/saveImmigrationResidenceDetails?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
             type: "POST",
             data: formData,
-            success: function (data) {
-            	if (data === 'success') {
-                	$('#popResiView').hide();
-                	$('.popMask').fadeOut();
-                	getCandidateResidenceList(candidateId);
-                }
+            success: function (result) {
+            	if (result && result.response === "INVALID_DATA") {
+               	 showError(result.responseMessage);
+               }else if (result.response === "AWKWARD") {
+                   location.href = "/errorPage";
+               }else if(result.response === 'SUCCESS') {
+            	   $('#popResiView').hide();
+               	  $('.popMask').fadeOut();
+               	  getCandidateResidenceList(candidateId);
+               }else{
+               	 showError("Operation failed, please try again");
+               }
+            	
             }
         });
 
