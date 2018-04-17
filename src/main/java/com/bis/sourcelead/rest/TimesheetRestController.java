@@ -2105,16 +2105,16 @@ public class TimesheetRestController {
     	 */
     	ModelAndView model = new ModelAndView();
     	try {
-    		if(Validator.validate(tedDTO)) {
-    			if(Validator.validate(tedDTO.getTimesheetSubmission())) {
+    		/*if(Validator.validate(tedDTO)) {
+    			if(Validator.validate(tedDTO.getTimesheetSubmission())) {*/
 		    		 tedDTO =saveTimesheetEntries(tedDTO, request);
 			         model.addObject("timesheetSubmissionDTO",tedDTO.getTimesheetSubmission());
 			         LinkedHashMap<Long, LinkedList<TimesheetEntriesDTO>> entriesMap = getEntriesMapForDisplayWeb(tedDTO.getTimesheetSubmission(),request);
 			    	 model.addObject("entriesMap",entriesMap);
 			         model.addObject("timesheetEntryDetailsDTO",tedDTO);
 			    	 model.setViewName("timesheet/timeSheetSubmission");
-    			}
-    		}
+    			/*}
+    		}*/
     	}catch(Exception e) {
     		model.addObject("AWKWARD", true);
 			model.setViewName("timesheet/timeSheetSubmission");

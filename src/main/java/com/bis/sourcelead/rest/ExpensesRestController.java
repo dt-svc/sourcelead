@@ -201,6 +201,7 @@ public class ExpensesRestController {
         		if(expenses.getStartDate() != null){
         			expDate.setStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenses.getStartDate()));	
         		}
+        		
         		if(expenses.getEndDate() != null){
         			expDate.setEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenses.getEndDate()));	
         		}
