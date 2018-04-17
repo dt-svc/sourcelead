@@ -10,4 +10,5 @@ public interface OrgLicenseSubscriptionTypesDao {
 	
 	OrgLicenseSubscriptionTypes getOrgLicenseSubscriptionTypesById(Long id) throws Exception;
 
+	public List<OrgLicenseSubscriptionTypes> getUpgradeLicenseSubscriptionTypesByCategoryAndSubscriptionTypeOrderId(String category,Integer id) throws Exception;
 }
