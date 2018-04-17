@@ -30,27 +30,27 @@
     <div class="immigrationWrap">
 		<div class="immigraCountHead">
 			<ul class="clearfix">
-				<li class="clearfix">
+				<li class="clearfix" title="${dashboardResult.draftsCount}" >
 					<span><i class="fa fa-plane"></i></span>
 					<p>Draft <b>${dashboardResult.draftsCount}</b></p>
 				</li>			
-				<li class="clearfix">
+				<li class="clearfix" title="${dashboardResult.reqSentCount}">
 					<span><i class="fa fa-plane"></i></span>
 					<p> Sent Request <b>${dashboardResult.reqSentCount}</b></p>
 				</li>
-				<li class="clearfix">
+				<li class="clearfix" title="${dashboardResult.inProgressCount}">
 					<span><i class="fa fa-plane"></i></span>
 					<p> Inprogress <b>${dashboardResult.inProgressCount}</b></p>
 				</li>
-				<li class="clearfix">
+				<li class="clearfix" title="${dashboardResult.apporovedCount}">
 					<span><i class="fa fa-plane"></i></span>
 					<p>Approved <b>${dashboardResult.apporovedCount}</b></p>
 				</li>
-				<li class="clearfix">
+				<li class="clearfix" title="${dashboardResult.rejectedCount}">
 					<span><i class="fa fa-plane"></i></span>
 					<p>Rejected <b>${dashboardResult.rejectedCount}</b></p>
 				</li>
-				<li class="clearfix">
+				<li class="clearfix"title="${dashboardResult.othersCount}">
 					<span><i class="fa fa-plane"></i></span>
 					<p>Others <b>${dashboardResult.othersCount}</b></p>
 				</li>				
@@ -394,7 +394,7 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.currUscisStatusId !== null && opt.currUscisStatusId !== '' && opt.currUscisStatusId !== 'undefined') {
-                    	 result = result + "<td><div class='mt5 mb5' style='width:150px;'><select id='currUscisStatus' onchange='changeSaveUscisStatus($(this),"+opt.id+");' name='currUscisStatus' class='form-control'>";
+                    	 result = result + "<td><div class='mt5 mb5' style='width:150px;'><select id='currUscisStatus' title='"+opt.currUscisStatus+"' onchange='changeSaveUscisStatus($(this),"+opt.id+");' name='currUscisStatus' class='form-control'>";
                     	 //alert(opt.currUscisStatusId);
                     	 for(var i=0;i<opt.currUsicisStatusList.length;i++){
                         	data = opt.currUsicisStatusList[i];
@@ -419,7 +419,7 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.generatedId !== null && opt.generatedId !== '' && opt.generatedId !== 'undefined') {
-                         result = result + "<td><div class='tbldata-dotdot-100'><a href=/app/immigration/viewImmigration?immigrationId="+opt.id+"&candidateId="+opt.candidateId+"&templateId="+opt.immTemplateId+">"+opt.generatedId+"</a></div></td>";
+                         result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.generatedId+"'><a href=/app/immigration/viewImmigration?immigrationId="+opt.id+"&candidateId="+opt.candidateId+"&templateId="+opt.immTemplateId+">"+opt.generatedId+"</a></div></td>";
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-100'>---</div></td>";
                      }
@@ -432,7 +432,7 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.country !== null && opt.country !== '' && opt.country !== 'undefined') {
-                         result = result + "<td><div class='tbldata-dotdot-vsm'>" + opt.country + "</div></td>";
+                         result = result + "<td><div class='tbldata-dotdot-vsm' title='"+opt.country+"'>" + opt.country + "</div></td>";
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
                      }
@@ -445,7 +445,7 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.petitionType !== null && opt.petitionType !== 'undefined') {
-                         result = result + "<td><div class='tbldata-dotdot-vsm'>" + opt.petitionType + "</div></td>";
+                         result = result + "<td><div class='tbldata-dotdot-vsm' title='"+opt.petitionType+"'>" + opt.petitionType + "</div></td>";
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
                      }
@@ -459,7 +459,7 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.firstName !== null && opt.firstName !== 'undefined') {
-                         result = result + "<td><div class='tbldata-dotdot-vsm'>" + opt.firstName + "</div></td>";
+                         result = result + "<td><div class='tbldata-dotdot-vsm' title='"+opt.firstName+"'>" + opt.firstName + "</div></td>";
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
                      }
@@ -472,7 +472,7 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.email !== null && opt.email !== 'undefined') {
-                         result = result + "<td><div class='tbldata-dotdot-vsm'>" + opt.email + "</div></td>";
+                         result = result + "<td><div class='tbldata-dotdot-vsm' title='"+opt.email+"'>" + opt.email + "</div></td>";
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
                      }
@@ -486,7 +486,7 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.phone !== null && opt.phone !== 'undefined') {
-                         result = result + "<td><div class='tbldata-dotdot-100'>" + opt.phone  + "</div></td>";
+                         result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.phone+"'>" + opt.phone  + "</div></td>";
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-100'>---</div></td>";
                      }
@@ -499,7 +499,7 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.openDateStr !== null && opt.openDateStr !== '' && opt.openDateStr !== 'undefined') {
-                         result = result + "<td><div class='tbldata-dotdot-100'>" + opt.openDateStr + "</div></td>";
+                         result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.openDateStr+"'>" + opt.openDateStr + "</div></td>";
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-100'>---</div></td>";
                      }
@@ -512,7 +512,7 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.orgName !== null && opt.orgName !== '' && opt.orgName !== 'undefined') {
-                         result = result + "<td><div class='tbldata-dotdot-vsm'>" + opt.orgName + "</div></td>";
+                         result = result + "<td><div class='tbldata-dotdot-vsm' title='"+opt.orgName+"'>" + opt.orgName + "</div></td>";
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
                      }
@@ -525,7 +525,7 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.lcaStartDateStr !== null && opt.lcaStartDateStr !== '' && opt.lcaStartDateStr !== 'undefined') {
-                         result = result + "<td><div class='tbldata-dotdot-vsm'>" + opt.lcaStartDateStr + "</div></td>";
+                         result = result + "<td><div class='tbldata-dotdot-vsm' title='"+opt.lcaStartDateStr+"'>" + opt.lcaStartDateStr + "</div></td>";
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
                      }
@@ -538,7 +538,7 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.lcaEndDateStr !== null && opt.lcaEndDateStr !== '' && opt.lcaEndDateStr !== 'undefined') {
-                         result = result + "<td><div class='tbldata-dotdot-vsm'>" + opt.lcaEndDateStr + "</div></td>";
+                         result = result + "<td><div class='tbldata-dotdot-vsm' title='"+opt.lcaEndDateStr+"'>" + opt.lcaEndDateStr + "</div></td>";
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
                      }
@@ -550,7 +550,7 @@
                  /*"data": "formsCount",*/
                  "render": function (data, type, opt, meta) {
                      var result = "";
-                     result = result + '<td><div><i id="edit' + opt.id + '" onclick="immigration.editTemplateDetailsByRowId(' + opt.id + ');" class="glyphicon glyphicon-pencil"></i><i id="delete' + opt.id + '" onclick="immigration.deleteTempalteDetailsByRowId(' + opt.id + ');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
+                     result = result + '<td><div><i title="Edit" id="edit' + opt.id + '" onclick="immigration.editTemplateDetailsByRowId(' + opt.id + ');" class="glyphicon glyphicon-pencil"></i><i title="Delete" id="delete' + opt.id + '" onclick="immigration.deleteTempalteDetailsByRowId(' + opt.id + ');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
                      return result;
                  }
              }
