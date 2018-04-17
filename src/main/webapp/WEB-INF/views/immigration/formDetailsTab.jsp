@@ -1,7 +1,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <div class="immigraTabsHead">			  	
 		  	<a href="javascript:void(0)" id="addForm"><i class="glyphicon glyphicon-plus"></i> Add Form</a> 
-		  	<span><input class="immigraTabSerach" type="text"></span>
+		  	<span><input class="immigraTabSerach" id="immigraFormTabSerach" type="text"></span>
 		</div>
 		
 	  	<div class="immigraTable">
@@ -200,6 +200,13 @@
 				$(".popMask").fadeOut(200);
 				$("#uploadFormPop").fadeOut(100);
 			}
+			
+			$("#immigraFormTabSerach").keyup(function (e) {
+			    if (e.which === 13) {
+			    	var searchVal = $("#immigraFormTabSerach").val();
+			    	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,searchVal);
+			    }
+			});
 			</script>
 			
 			
