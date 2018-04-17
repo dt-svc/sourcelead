@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +22,7 @@ import com.bis.sourcelead.dto.SourceleadNotesDTO;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.SourceleadBlogs;
 import com.bis.sourcelead.entity.SourceleadNotes;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
@@ -87,26 +89,31 @@ public class SourceleadNotesRestController {
 			@RequestParam("userId") Long userId,
 			@RequestParam("locationCode") String locationCode) throws Exception
 	{
-		Response<String> response = new Response<>();
-		if (Validator.validate(sourceleadNotesDTO)) {
+		
+			Response<String> response = new Response<>();
+			User user =  userService.getUserById(userId);
+			OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 			try {
-					User user =  userService.getUserById(userId);
-					OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
-					sourceleadNotesService.storeComments(sourceleadNotesDTO, user,orgLocation);
-					response.setObject("success");
-					response.setResponse(Result.SUCCESS.name());
-					response.setResponseMessage(Result.SUCCESS.getValue());
-				}catch(Exception e) {
-					response.setResponse(Result.AWKWARD.name());
-					response.setResponseMessage(Result.AWKWARD.getValue());
+				if (user != null & orgLocation != null) {
+	
+					if (Validator.validate(sourceleadNotesDTO)) {
+						sourceleadNotesService.storeComments(sourceleadNotesDTO, user,orgLocation);
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					} else {
+						response.setResponse(Result.INVALID_DATA.name());
+						response.setResponseMessage(Result.INVALID_DATA.getValue());
+					}
+	
+				} else {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 				}
-			return response;
-		}else {
-			response.setObject("MissingData");
-			response.setResponse(Result.FAILED.name());
-			response.setResponseMessage(Result.FAILED.getValue());
-			return response;
-		}
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+		return response;
 	}
 	
 	

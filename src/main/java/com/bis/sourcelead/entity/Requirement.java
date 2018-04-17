@@ -215,6 +215,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	@Column(name = "REQUIREMENT_SUBMISSION_STATUS")
 	@Enumerated(EnumType.STRING)
+	@JsonProperty
 	private REQUIREMENT_SUBMISSION_STATUS requirementSubmissionStatus;
 	
 	@Column(name = "REQUIREMENT_SUBMISSION_PREVIOUS_STATUS")
@@ -375,6 +376,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String spocUUID;
 	
 	@Transient
+	@JsonProperty
 	private String requirementApproverHierarchyStatus;
 	
 	@Transient
@@ -466,21 +468,27 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String isLoginUserAsInitiator;
 	
 	@Transient
+	@JsonProperty
 	private String mailBody;
 	
 	@Transient
+	@JsonProperty
 	private String submitToClientFromMailId;
 	
 	@Transient
+	@JsonProperty
 	private String submitToClientToMailId;
 	
 	@Transient
+	@JsonProperty
 	private String submitToClientMailSubject;
 	
 	@Transient
+	@JsonProperty
 	private Integer totalApplicantsForRequirement;
 	
 	@Transient
+	@JsonProperty
 	private String approvedBy;
 	
 	@Transient

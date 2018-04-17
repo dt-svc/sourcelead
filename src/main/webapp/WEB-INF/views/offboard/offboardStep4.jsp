@@ -131,7 +131,7 @@
 				</div>
 			</div>
 			<div class="welBtns">
-				<input type="button" onClick="javascript:window.location.href = '<c:url value='${appPath}/offboardStep3'/>'" value="Previous"><input type="button" value="Finish" class="Brig">
+				<input type="button" onClick="javascript:window.location.href = '<c:url value='/app/offboardStep3'/>'" value="Previous"><input type="button" value="Finish" class="Brig">
 				<div class="clearfix"></div>
 			</div>
 		</section>

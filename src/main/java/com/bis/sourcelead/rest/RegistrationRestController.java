@@ -41,10 +41,13 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CompanyRegistrationDTO;
 import com.bis.sourcelead.dto.CrowdSourcingUserRegistrationDTO;
 import com.bis.sourcelead.dto.EmployerRegistrationDTO;
+import com.bis.sourcelead.dto.LocationEnrollmentDTO;
 import com.bis.sourcelead.dto.OrgDTO;
 import com.bis.sourcelead.dto.OrgLicenseSubscriptionDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
+import com.bis.sourcelead.dto.OrgSettingsDTO;
 import com.bis.sourcelead.dto.RegistrationDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TabsDTO;
 import com.bis.sourcelead.entity.Org;
@@ -58,6 +61,7 @@ import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.form.RestResponsetUtil;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionPriceService;
@@ -409,30 +413,43 @@ public class RegistrationRestController {
 	
 	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/app/companyLocationRegistration" , method = RequestMethod.POST)
-	   public String companyLocationRegistration(
-			   CompanyRegistrationDTO companyRegistrationDTO,CandidateDTO candidateDTO,
+	   public Response<String> companyLocationRegistration(
+			   LocationEnrollmentDTO locationEnrollmentDTO,CandidateDTO candidateDTO,
 	   			HttpServletRequest request) {
-		if(Validator.validate(companyRegistrationDTO)){
-		try {
-
-				Registration registration = new Registration();
-				ModelMapper mapper1 = new ModelMapper();
-				registration = mapper1.map(companyRegistrationDTO, Registration.class);
-				
-				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			   
-				registrationService.addRegistration(registration,user,orgLocations.getId(),candidateDTO);
-				 StringBuilder orgCreateMsg = new StringBuilder();
-				SourceLeadSessionManager.setSessionAttribute(request, "orgCreateMsg", orgCreateMsg.append(registration.getCompanyName()).append(" Org has created sucessfully.").toString());
-			} catch (Exception e) {
+		
+		Response<String> response = new Response<>();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+	    	try{
+	    		if(user != null){
+	    		if(Validator.validate(locationEnrollmentDTO)){
+	    			Registration registration = new Registration();
+					ModelMapper mapper1 = new ModelMapper();
+					registration = mapper1.map(locationEnrollmentDTO, Registration.class);
+				   
+					registrationService.addRegistration(registration,user,orgLocations.getId(),candidateDTO);
+					StringBuilder orgCreateMsg = new StringBuilder();
+					SourceLeadSessionManager.setSessionAttribute(request, "orgCreateMsg", orgCreateMsg.append(registration.getCompanyName()).append(" Org has created sucessfully.").toString());
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+		    	}else{
+		    		response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+		    	}
+    		}else{
+    	    	response.setResponse(Result.SESSION_TIMEDOUT.name());
+    			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+    	    }
+    	  }catch (Exception e) {
+	    		response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
-			
-			return "orgList";
-		}else{
-			return "DataMissing";
-		}
+	    	
+	    
+		return response;
 	     
 	   }
 	
@@ -562,10 +579,6 @@ public class RegistrationRestController {
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	 @RequestMapping(value = "/app/createUesrBySourceleadAdmin" , method = RequestMethod.POST)
 	 public  String createUser(AddUserDTO addUserDTO, CandidateDTO candidateDTO,HttpServletRequest request) throws Exception {
-		 	
-		 /*json = "{"+json+"}";
-		 
-		 JSONObject jsonObj = new JSONObject(json);*/
 		 	
 	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	 registrationService.addUserBySourcelead(user, addUserDTO,candidateDTO);

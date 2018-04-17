@@ -211,8 +211,11 @@ function uploadFileDoc(){
 				$this.next().css({'width': '100%'});
 
       });
-$("#blogKeywords").trigger("chosen:updated");
-$("#publishOn").datetimepicker(); 
+   $("#blogKeywords").trigger("chosen:updated");
+   // current Date And Time Script.
+	$('#publishOn').datetimepicker({
+		minDate: new Date()
+	});
 
 </script>
 	

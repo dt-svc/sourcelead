@@ -1249,7 +1249,6 @@ function selectedContactList(){
 	 var groupName = document.getElementById("groupName").value;
 	 $('#groupNameDiv').find('p.jquery_form_error_message').remove();
 	 if(groupName != null && groupName != "" && groupId != null){
-		
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/validateGroupName?"+tokenParamName+"="+tokenValue+"&groupName="+groupName+"&groupId="+groupId, 

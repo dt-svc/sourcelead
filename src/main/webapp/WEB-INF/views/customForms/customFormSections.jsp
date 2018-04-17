@@ -329,8 +329,10 @@ var validationSettings = {
 		 	 	success : function(data) {
 		 	 		$("#deletFildRow"+customRowId).removeAttr("class");
 		 	 		if(status == 'activate'){
+
 		 	 			$("#deletFildRow"+customRowId).prop('title', 'De-Activate');
 		 	 			$("#deletFildRow"+customRowId).attr("class","fa  fa-trash");
+
 		 	 			$("#deletFildRow"+customRowId).removeAttr("onclick");
 		 	 			$("#deletFildRow"+customRowId).attr("onclick","activateOrDeactivateCustomField('"+customRowId+"', 'deactivate')");
 		 	 			$("#customFieldStatus"+customRowId).empty();
