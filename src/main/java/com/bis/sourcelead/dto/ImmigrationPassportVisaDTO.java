@@ -11,19 +11,17 @@ public class ImmigrationPassportVisaDTO extends SearchDTO{
      *@author Mamatha Adla
      */
  
-	@Required(desc = "candidate passportId")
     private Long candidatePassportId;
     
     private String candidateId;
 	
+    @Required(desc = "IdNumber")
 	private String idNumber;
 
 	private String idType;
 	
-	@Required(desc = "VisaId")
 	private String VisaId;
 	
-	@Required(desc = "visaType")
 	private String visaType;
 
 	@Required(desc = "country")

@@ -942,14 +942,17 @@ public class ImmigrationRestController {
 
     
     @RequestMapping(value = {"/savePassportVisaDetailsPage"}, method = RequestMethod.POST)
-    public String  savePassportDetailsPage(ImmigrationPassportVisaDTO immigrationPassportVisaDTO, HttpServletRequest request,
+    public Response <String>  savePassportDetailsPage(ImmigrationPassportVisaDTO immigrationPassportVisaDTO, HttpServletRequest request,
     		@RequestParam(value = "idType", required = true) String idType,
     		@RequestParam(value = "candidateId", required = false) String candidateId,
     		@RequestParam(value = "immigrationId", required = false) String immigrationId) {
         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		System.out.println("Candidate ID ----> :  "+immigrationPassportVisaDTO.getCandidateId());
+		Response<String> response = new Response<>();
+        System.out.println("Candidate ID ----> :  "+immigrationPassportVisaDTO.getCandidateId());
+        if(user != null){
         try {
+        	if(Validator.validate(immigrationPassportVisaDTO)){
         	 if(idType.trim().equalsIgnoreCase(Constants.ID_TYPE_PASSPORT)) {
         		 immigrationPassportVisaDTO.setIdType(Constants.ID_TYPE_PASSPORT);
    		  }
@@ -957,12 +960,22 @@ public class ImmigrationRestController {
    			 immigrationPassportVisaDTO.setIdType(Constants.ID_TYPE_VISA);
    		  }
         	  immigrationCommonService.savePassportDetails(immigrationPassportVisaDTO, user, orgLocations);
+        	  response.setResponse(Result.SUCCESS.name());
+   			  response.setResponseMessage(Result.SUCCESS.getValue());
+        	}else{
+        		response.setObject("DataMissing");
+       			response.setResponse(Result.INVALID_DATA.name());
+       			response.setResponseMessage(Result.INVALID_DATA.getValue());
+        	}
          } catch (Exception e) {
             logger.error("Exception caugth in savePetitionDetailsPage controller" + e.getMessage());
             e.printStackTrace();
         }
-       
-        return "Success";
+        }else{
+        	response.setResponse(Result.SESSION_TIMEDOUT.name());
+ 			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+        }
+        return response;
          
     }
     
@@ -983,15 +996,31 @@ public class ImmigrationRestController {
     }
 
     @RequestMapping(value = {"/saveImmigrationResidenceDetails"})
-    public String saveCandidateResidence(ResidenceDTO residenceDTO, HttpServletRequest request, 
+    public Response <String> saveCandidateResidence(ResidenceDTO residenceDTO, HttpServletRequest request, 
     		@RequestParam(value = "candidateId", required = false) Long candidateId,
     		@RequestParam(value = "immigrationId", required = false) String immigrationId ) throws Exception {
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-        immigrationCommonService.saveResidenceDetails(residenceDTO,orgLocations,user,candidateId);
-        System.out.println("Template Task Details saved succesfully --> ");
-
-		return "success";
+        Response<String> response = new Response<>();
+        if(user != null){
+        	try{
+        		if(Validator.validate(residenceDTO)){
+        		immigrationCommonService.saveResidenceDetails(residenceDTO,orgLocations,user,candidateId);
+        		  response.setResponse(Result.SUCCESS.name());
+       			  response.setResponseMessage(Result.SUCCESS.getValue());
+        		}else{
+        			response.setObject("DataMissing");
+           			response.setResponse(Result.INVALID_DATA.name());
+           			response.setResponseMessage(Result.INVALID_DATA.getValue());	
+        		}
+        	}catch (Exception e) {
+        	logger.error("Exception caugth in controller" + e.getMessage());
+			}
+        }else{
+        	response.setResponse(Result.SESSION_TIMEDOUT.name());
+ 			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());	
+        }
+		return response;
     }
     
 	

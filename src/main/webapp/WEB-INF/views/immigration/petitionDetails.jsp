@@ -332,7 +332,7 @@
              <div class="form-group">
               <label class="col-md-4">Job Title<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
-               <select id="jobId" name="jobId" class="form-control" field-name="Job Title" data-validation="required">
+               <select id="jobId" name="jobId" class="chosen-select form-control" field-name="Job Title" data-validation="required">
                   </select>
               </div>
           </div>  
