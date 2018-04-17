@@ -405,6 +405,10 @@ function Immigration() {
 	        			$('#immigrationDocDiv').hide();
 	        			$('#uploadFileForm').removeAttr("data-validation");
 	        			$('#immigrationDocumentName').text(data.fileName);
+	        			if(data.isRequired == 'Y'){
+	        				//$('#isRequired').prop("checked",true);	
+	        				$('#formSave_Form input[name="isRequired"]').prop('checked', true);
+	        			}
 	        			$('#immigrationCandidateFormId').val(data.id);
 	        	
 	        	   
@@ -1071,9 +1075,10 @@ function editDocumentDetailsByRowId(id){
      			$('#documentType').val(data.documentType.id);
      			$('#description1').text(data.description);
      			if(data.allowMultiple == 'Y'){
-     				$('#multipleCheckBox').attr('checked',true);
+     				$('#candidate_Immigration_Doc input[name="multiple"]').prop('checked', true);
+     			}if(data.isRequired == 'Y'){
+     				$('#candidate_Immigration_Doc input[name="isRequired"]').prop('checked', true);
      			}
-     			$('#requiredCheck').text(data.isRequired);
      			$('#immigrationCandidateDocId').val(data.id);
      	
      	   
