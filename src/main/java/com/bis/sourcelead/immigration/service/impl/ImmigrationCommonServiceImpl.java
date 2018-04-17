@@ -37,6 +37,7 @@ import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
+import com.bis.sourcelead.entity.ImmigrationDashboardView;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
@@ -936,6 +937,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	@Override
 	public String updateUscisTypeDropDown(Long templateId, Long uscisId) {
 		return immigrationCommonDao.updateUscisTypeDropDown(templateId,uscisId);
+	}
+
+	@Override
+	public ImmigrationDashboardView getImmigrationDashBoardDetails(OrgLocations orgLocations) {
+		// TODO Auto-generated method stub
+		return immigrationCommonDao.getImmigrationDashBoardDetails(orgLocations);
 	}
 
 }

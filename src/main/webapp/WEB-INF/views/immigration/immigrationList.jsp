@@ -32,23 +32,27 @@
 			<ul class="clearfix">
 				<li class="clearfix">
 					<span><i class="fa fa-plane"></i></span>
-					<p>Draft <b>1000</b></p>
+					<p>Draft <b>${dashboardResult.draftsCount}</b></p>
 				</li>			
 				<li class="clearfix">
 					<span><i class="fa fa-plane"></i></span>
-					<p> Sent Request <b>1000</b></p>
+					<p> Sent Request <b>${dashboardResult.reqSentCount}</b></p>
 				</li>
 				<li class="clearfix">
 					<span><i class="fa fa-plane"></i></span>
-					<p> Inprogress <b>1000</b></p>
+					<p> Inprogress <b>${dashboardResult.inProgressCount}</b></p>
 				</li>
 				<li class="clearfix">
 					<span><i class="fa fa-plane"></i></span>
-					<p>Approved <b>1000</b></p>
+					<p>Approved <b>${dashboardResult.apporovedCount}</b></p>
 				</li>
 				<li class="clearfix">
 					<span><i class="fa fa-plane"></i></span>
-					<p>Rejected <b>1000</b></p>
+					<p>Rejected <b>${dashboardResult.rejectedCount}</b></p>
+				</li>
+				<li class="clearfix">
+					<span><i class="fa fa-plane"></i></span>
+					<p>Others <b>${dashboardResult.othersCount}</b></p>
 				</li>				
 			</ul>
 		</div>

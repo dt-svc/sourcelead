@@ -39,6 +39,7 @@ import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
+import com.bis.sourcelead.entity.ImmigrationDashboardView;
 import com.bis.sourcelead.entity.ImmigrationListView;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.LookUpData;
@@ -757,6 +758,20 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			return "failed";
 		}
 		return "success";
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ImmigrationDashboardView getImmigrationDashBoardDetails(OrgLocations orgLocations) {
+		ImmigrationDashboardView dashboardObj= null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String queryString ="from ImmigrationDashboardView dbview where dbview.orgLocationId=:orgLocationId";
+			dashboardObj = (ImmigrationDashboardView) session.createQuery(queryString).setLong("orgLocationId", orgLocations.getId()).uniqueResult();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return dashboardObj;
 	}
 	
 	}
