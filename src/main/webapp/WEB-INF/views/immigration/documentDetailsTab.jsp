@@ -95,7 +95,7 @@
 			
 						   <div class="col-md-4 col-md-offset-4">
 						   	<div class="mt5 clearfix">
-							   <input id="multipleCheckBox" title="Allow multiple Docs" name="multiple"  type="checkbox" value = "N" onclick = "allowMultipleDocs();">
+							   <input id="multipleCheckBox" title="Allow multiple Docs" name="multiple"  type="checkbox" value = "Y" onclick = "allowMultipleDocs();">
 							   <label class="padding_left">Allow Multiple</label>
 							</div>
 						   </div>
@@ -269,6 +269,8 @@ function removeDocPopUp(){
 	$("#docuView").fadeOut(100);
 	$("#candidate_Immigration_Doc")[0].reset();
 	$("#description1").val('');
+	$("#immigrationCandidateDocId").val('');
+	
 }
 /* $(function() {
 	$("#uploadBtn"+id).change(function() {

@@ -1070,6 +1070,9 @@ function editDocumentDetailsByRowId(id){
      			$('#scoreEducationType').val(data.gradeType);*/
      			$('#documentType').val(data.documentType.id);
      			$('#description1').text(data.description);
+     			if(data.allowMultiple == 'Y'){
+     				$('#multipleCheckBox').attr('checked',true);
+     			}
      			$('#requiredCheck').text(data.isRequired);
      			$('#immigrationCandidateDocId').val(data.id);
      	
