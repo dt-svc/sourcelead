@@ -614,13 +614,14 @@ this.deletePassportVisaDetailsById=function(id,idType){
         });
 	}
 	
-	this.displayImmigrationCandidateForms = function(candidateId,templateId, immigrationId){
+	this.displayImmigrationCandidateForms = function(candidateId,templateId, immigrationId,searchVal){
 		console.log(" inside forms list candidateId--->"+candidateId);
 		$.ajax({
-	        url: sourceleadUrl + immiModulePath + "/getCandidateImmigrationFormsList?candidateId="+candidateId+"&templateId="+templateId+"&immigrationId="+immigrationId,
+	        url: sourceleadUrl + immiModulePath + "/getCandidateImmigrationFormsList?candidateId="+candidateId+"&templateId="+templateId+"&immigrationId="+immigrationId+"&searchVal="+searchVal,
 	        type: "GET",
 	        success: function (result) {
 	            $("#formsTab").html(result);
+	            $("#immigraFormTabSerach").val(searchVal);
 	            console.log(" inside forms list success--->");
 	        }
 	    });
@@ -897,13 +898,13 @@ $('body').on('blur', '#candidate_Immigration_Doc', function () {
 });
 
 
-function displayImmigrationCandidateDocs(candidateId,templateid,immigrationId){
-	
+function displayImmigrationCandidateDocs(candidateId,templateid,immigrationId,searchVal){
 	$.ajax({
-        url: sourceleadUrl + immiModulePath + "/getCandidateImmigrationCandidateDocsList?candidateId="+candidateId+"&templateid="+templateid+"&immigrationId="+immigrationId,
+        url: sourceleadUrl + immiModulePath + "/getCandidateImmigrationCandidateDocsList?candidateId="+candidateId+"&templateid="+templateid+"&immigrationId="+immigrationId+"&searchVal="+searchVal,
         type: "GET",
         success: function (result) {
             $("#docsTab").html(result);
+            $("#immigraDocTabSerach").val(searchVal);
         }
     });
 }

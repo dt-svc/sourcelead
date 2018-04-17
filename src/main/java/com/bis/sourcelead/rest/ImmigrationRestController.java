@@ -610,11 +610,12 @@ public class ImmigrationRestController {
 	public ModelAndView getCandidateImmigrationCandidateDocsList(@RequestParam(value = "candidateId", required = true) Long candidateId,
 			@RequestParam(value = "templateid", required = true) Long templateid,
 			@RequestParam(value = "immigrationId", required = true) Long immigrationId,
+			@RequestParam(value = "searchVal", required = false) String searchVal,
 			HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-        List<ImmigrationCandidateDocuments> immigrationCanDocList = immigrationCommonService.getImmigrationCandidateDocs(immigrationId,templateid,candidateId,user,orgLocations);
+        List<ImmigrationCandidateDocuments> immigrationCanDocList = immigrationCommonService.getImmigrationCandidateDocs(immigrationId,templateid,candidateId,user,orgLocations,searchVal);
         for(ImmigrationCandidateDocuments docs : immigrationCanDocList){
         	LookUpData data = lookUpDataService.getTasksById(docs.getDocumentType().getId());
 			docs.setDocumentTypeName(data.getName());
@@ -687,7 +688,6 @@ public class ImmigrationRestController {
             flag = true;
             }else{
             	flag = false;
-            	break;
             }
             }
         } catch (Exception e) {
@@ -729,7 +729,6 @@ public class ImmigrationRestController {
                     flag = true;
                     }else{
                     	flag = false;
-                    	break;
                     }
                     }
         	}catch (Exception e) {
@@ -1345,14 +1344,15 @@ public class ImmigrationRestController {
     public ModelAndView getCandidateImmigrationForms(HttpServletRequest request, 
     		@RequestParam(value = "candidateId", required = false) Long candidateId
     	    ,@RequestParam(value = "templateId", defaultValue = "0") Long templateId
-    		,@RequestParam(value = "immigrationId", required = false) Long immigrationId ) throws Exception {
+    		,@RequestParam(value = "immigrationId", required = false) Long immigrationId,
+    		@RequestParam(value = "searchVal", required = false) String searchVal) throws Exception {
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
         System.out.println("inside controller method getCandidateImmigrationForms--> ");
     	
         ModelAndView model = new ModelAndView();
     	model.setViewName("/immigration/formDetailsTab");
-        List<ImmigrationCandidateForms> candidateFormsLst = immigrationCommonService.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId);
+        List<ImmigrationCandidateForms> candidateFormsLst = immigrationCommonService.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId,searchVal);
         System.out.println("Candidate forms Details updated succesfully  candidateFormsLst size  is --> "+candidateFormsLst.size());
         model.addObject("formsList" ,candidateFormsLst);
 		return model;

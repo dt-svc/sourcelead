@@ -912,17 +912,17 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 
 	@Override
 	public List<ImmigrationCandidateDocuments> getImmigrationCandidateDocs(Long immigrationId, Long templateId,
-			Long candidateId,User user,OrgLocations orgLocations) throws Exception {
+			Long candidateId,User user,OrgLocations orgLocations, String searchVal) throws Exception {
 		
-		List <ImmigrationCandidateDocuments> immigrationCanididateDocList =immigrationCommonDao.getImmigrationCandidateDocs(immigrationId,templateId,candidateId);
+		List <ImmigrationCandidateDocuments> immigrationCanididateDocList =immigrationCommonDao.getImmigrationCandidateDocs(immigrationId,templateId,candidateId, searchVal);
 		
 		return immigrationCanididateDocList;
 	}
 
 	@Override
 	public List<ImmigrationCandidateForms> getCandidateImmigartionFormsDetails(Long candidateId, Long templateId,
-			Long immigrationId) {
-		return immigrationCommonDao.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId);
+			Long immigrationId,  String searchVal) {
+		return immigrationCommonDao.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId, searchVal);
 	}
 
 	public ResponseList<ImmigrationListViewDTO> getImmigrationsList(ImmigrationListViewDTO immigrationListDTO,
