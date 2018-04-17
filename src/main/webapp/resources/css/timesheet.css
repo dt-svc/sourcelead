@@ -6375,6 +6375,9 @@ position: absolute;
 .immigraCountHead ul li:first-child + li + li + li + li {
 	border-top: 4px solid #ff8686;;
 }
+.immigraCountHead ul li:first-child + li + li + li + li + li {
+	border-top: 4px solid #dcd740;;
+}
 .immigraCountHead ul li span {
 	float: left; display: block; width: 50px; text-align: center;
 }
@@ -6399,7 +6402,10 @@ position: absolute;
 	color: #59a459;
 }
 .immigraCountHead ul li:first-child + li + li + li + li p b {
-	color: #e96060;
+	color: #e96060; 
+}
+.immigraCountHead ul li:first-child + li + li + li + li + li p b {
+	color: #dcd740; 
 }
 .immigraInnWrap {
 }
