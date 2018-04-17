@@ -944,7 +944,7 @@ $(document).ready(function () {
 			  <c:when test="${val == 'Y'}">
 			   				<div class="ml">
 			   				<!-- here the isClient checkbox name is changes to isClientEdit because, readonly check box is not working and onclick methods are effected (Venkat Kesav) -->
-					            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
+					            <input type="checkbox" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
 					            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();" hidden="true" checked="checked">
 					            <label>&nbsp;&nbsp;<strong>Is Client Job <i class='fa fa-info-circle' title='Post the job including the related client information'></i>
 					            </strong>
@@ -977,13 +977,13 @@ $(document).ready(function () {
                    <c:set var="val" value="${requirement.isClientJob}"/>
                    <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
-			   				<select class="chosen-select form-control select-bg" disabled="disabled" data-validation-optional="true" field-name = "Client" name="selectClient" id="addClientId">
+			   				<select class="chosen-select form-control select-bg" disabled="disabled" data-validation-optional="true" field-name = "Client" id="addClientId">
                     			<c:set var="report" value="${orgClient}"/>
 							 	<c:if test="${report.locationId.id == loginOrgLocId}">  
-			                    	<option selected="selected" value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.org.orgName}</option>
+			                    	<option value="${report.id},${report.responderLocationId.id}" selected="selected">${report.responderLocationId.org.orgName}</option>
 			                    </c:if>  
 			                    <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
-			                  	 	<option selected="selected" value="${report.id},${report.locationId.id}">${report.locationId.org.orgName}</option>
+			                  	 	<option value="${report.id},${report.locationId.id}" selected="selected">${report.locationId.org.orgName}</option>
 			                    </c:if>
                    		    </select>
 						 </c:when>
@@ -1170,7 +1170,7 @@ $(document).ready(function () {
                   <c:set var="val" value="${requirement.isClientJob}"/>
                   <c:choose> 
 				 	<c:when test="${val == 'Y'}">
-				   		<select class="chosen-select form-control" onchange="false" id="clientSubmissionForm" name="clientSubmissionForm" field-name = "Submission Form" data-validation-optional="true" >
+				   		<select class="chosen-select form-control" onchange="false" id="clientSubmissionForm"  field-name = "Submission Form" data-validation-optional="true" >
 	                       <c:set var="report" value="${clientSubmissionTemplete}"/>
 				           <option value="${report.id}">${report.templateName}</option>
 						</select>
