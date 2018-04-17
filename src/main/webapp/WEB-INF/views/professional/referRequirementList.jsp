@@ -790,18 +790,17 @@ function validateContactEmail(){
 
 <script type="text/javascript">
 function saveReferContacts(){
-	var validationSettings = {
+	        var validationSettings = {
             errorMessagePosition : 'element',
             borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
             };
-		 if ($('#addcontact_form').validate(false, validationSettings)){ 
-		var formData = getFormData1("addcontact_form");
-  		$("#add_contact").attr("disabled", "disabled");
-  		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	     
-		$.ajax({
+			if ($('#addcontact_form').validate(false, validationSettings)){ 
+			var formData = getFormData1("addcontact_form");
+	  		$("#add_contact").attr("disabled", "disabled");
+	  		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$.ajax({
 					type : "POST",
 					 data: formData,
 	  		         processData: false,
@@ -809,23 +808,31 @@ function saveReferContacts(){
 					url : sourceleadUrl+"/addCrowdSourcingUserContact?"+tokenParamName+"="+tokenValue+"",
 					success : function(result) {
 						
-						location.replace(sourceleadUrl+ "/referRequirementList");
+						if (result && result.response === "INVALID_DATA") {
+						    showError(result.responseMessage);
+						    $("#loading").hide();
+						} else if (result.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (result.response === "SUCCESS") {
+							location.replace(sourceleadUrl+ "/referRequirementList");
+						} else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
+						}
+						
 					},
 				});
     
 	    return true;
-}else{
-	return false;
+		}else{
+			return false;
+		}
 }
-}
-	
-        
-            $('body').on('blur', '#addcontact_form', function() {
-        		$("#addcontact_form").showHelpOnFocus();
-        		$("#addcontact_form").validateOnBlur(false, validationSettings);  
-           });
-            
-     
+$('body').on('blur', '#addcontact_form', function() {
+$("#addcontact_form").showHelpOnFocus();
+$("#addcontact_form").validateOnBlur(false, validationSettings);  
+ });
 </script> 
 <script>
 function flushContactDetails(){
@@ -933,23 +940,33 @@ $("#contactsFilter").click(function(){
 
 
 <script type="text/javascript">
-	var validationSettings = {
-	        errorMessagePosition : 'element',
-	       borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd' 
-	   };  
-	function contactgrp(){
+			var validationSettings = {
+			        errorMessagePosition : 'element',
+			       borderColorOnError : '',
+					scrollToTopOnError : true,
+					dateFormat : 'yyyy/mm/dd' 
+			   };  
+			function contactgrp(){
         	  if ($('#contactgroup_form').validate(false, validationSettings)){
 	          		$("#add_contactgroup").attr("disabled", "disabled");
 	          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        	     var formData = getFormData("contactgroup_form");
 	        		$.ajax({
-	        					type : "POST",
-	        					data: formData,
-	        					url : sourceleadUrl+"/addContactsGroup?"+tokenParamName+"="+tokenValue+"",
-	        					success : function(result) {
-	        						location.replace(sourceleadUrl+"/referRequirementList");
+        					type : "POST",
+        					data: formData,
+        					url : sourceleadUrl+"/addContactsGroup?"+tokenParamName+"="+tokenValue+"",
+        					success : function(result) {
+	        				if (result && result.response === "INVALID_DATA") {
+							    showError(result.responseMessage);
+							} else if (result.response === "AWKWARD") {
+							    location.href = "/errorPage";
+							} else if (result.response === "SUCCESS") {
+								location.replace(sourceleadUrl+"/referRequirementList");
+							} else if (result.indexOf('Sign In') !== -1) {
+								location.replace(sourceleadUrl);
+							} else {
+							    showError("Operation failed, please try again");
+							}
 	        					},
 	        				});
                 
@@ -1073,11 +1090,19 @@ function deleteSelectedContactsGroup(groupId){
 		    url: sourceleadUrl+"/deleteContactsGroupById?"+tokenParamName+"="+tokenValue+"&groupId="+groupId, 
    		    success: function(data) {
    		    	
-   		    	if(data != null && data != 'undefined' && data != ""){
-   		    		    $("#loading"+groupId).removeAttr("style");
-             			document.getElementById("deleteGroup"+groupId).remove();
-             			location.replace(sourceleadUrl+"/referRequirementList");
-   		    	}
+   		    	if (result && result.response === "INVALID_DATA") {
+				    showError(result.responseMessage);
+				} else if (result.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+					 $("#loading"+groupId).removeAttr("style");
+          			document.getElementById("deleteGroup"+groupId).remove();
+          			location.replace(sourceleadUrl+"/referRequirementList");
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
    		    }
 	     }); 
 	} 
@@ -1224,7 +1249,6 @@ function selectedContactList(){
 	 var groupName = document.getElementById("groupName").value;
 	 $('#groupNameDiv').find('p.jquery_form_error_message').remove();
 	 if(groupName != null && groupName != "" && groupId != null){
-		
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/validateGroupName?"+tokenParamName+"="+tokenValue+"&groupName="+groupName+"&groupId="+groupId, 
@@ -1488,19 +1512,19 @@ function resetContactFilter(){
  
  <script type="text/javascript">
 function saveReEditContacts(contactId){
-	var validationSettings = {
+	       var validationSettings = {
             errorMessagePosition : 'element',
             borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
             };
-		 if ($('#editcontact_form').validate(false, validationSettings)){ 
-		var formData = getFormData1("editcontact_form");
-  		$("#edit_contact").attr("disabled", "disabled");
-  		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			if ($('#editcontact_form').validate(false, validationSettings)){ 
+			var formData = getFormData1("editcontact_form");
+	  		$("#edit_contact").attr("disabled", "disabled");
+	  		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	     
-		$.ajax({
-					type : "POST",
+		    $.ajax({
+					 type : "POST",
 					 data: formData,
 	  		         processData: false,
 	  		         contentType:false, 
@@ -1508,24 +1532,31 @@ function saveReEditContacts(contactId){
 					url : sourceleadUrl+ "/addCrowdSourcingUserContact?"+tokenParamName+"="+tokenValue+"&id="+contactId,
 					success : function(result) {
 						
+						if (result && result.response === "INVALID_DATA") {
+						    showError(result.responseMessage);
+						    $("#loading").hide();
+						} else if (result.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (result.response === "SUCCESS") {
+							location.replace(sourceleadUrl+ "/referRequirementList");
+						} else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
+						}
 						
-						location.replace(sourceleadUrl+ "/referRequirementList");
 					},
 				});
     
 	    return true;
-}else{
-	return false;
+		}else{
+			return false;
+		}
 }
-}
-	
-        
-            $('body').on('blur', '#addcontact_form', function() {
-        		$("#addcontact_form").showHelpOnFocus();
-        		$("#addcontact_form").validateOnBlur(false, validationSettings);  
-           });
-            
-     
+$('body').on('blur', '#addcontact_form', function() {
+$("#addcontact_form").showHelpOnFocus();
+$("#addcontact_form").validateOnBlur(false, validationSettings);  
+ });
 </script> 
  
  <script type="text/javascript">
@@ -1558,12 +1589,22 @@ function deleteSelectedContact(contactId){
 	
 	$.ajax({	type : "POST",
 		url : sourceleadUrl+ "/deleteContact?"+tokenParamName+"="+tokenValue+"&id="+contactId,
-		success : function(data) {
-			$("#remove_user_pop, .project_inn_mask").fadeOut();
-			contactsDataTableList();
-		}
-	});
-	
+		success : function(result) {
+
+	    	 if (result && result.response === "INVALID_DATA") {
+				    showError(result.responseMessage);
+				} else if (result.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+					contactsDataTableList();
+					$("#remove_user_pop, .project_inn_mask").fadeOut();
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
+	    },
+	    });		
 }
 
 </script>

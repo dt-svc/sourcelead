@@ -2,6 +2,8 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 
+import com.bis.sourcelead.annotations.Required;
+
 /**
  * @author Laxman
  *
@@ -9,6 +11,7 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class OffboardingCandidateSetpsDTO implements Serializable {
 	
+	@Required(desc="rating")
 	private String rating;
 	
 	private String sellProperty;
@@ -19,6 +22,7 @@ public class OffboardingCandidateSetpsDTO implements Serializable {
 	
 	private String accommodation;
 	
+	@Required(desc="surveyReason")
 	private String surveyReason;
 	
 	private String surveyExplanation;

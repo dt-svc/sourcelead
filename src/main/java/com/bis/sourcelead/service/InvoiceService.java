@@ -28,7 +28,7 @@ public interface InvoiceService {
 
 	Invoice getInvoicetById(Long invoiceId) throws Exception;
 	
-	public Boolean getInvoiceByInvoiceId(String invoiceId, Long orgLocationsId) throws Exception;
+	public Boolean getInvoiceByInvoiceId(String invoiceId, Long orgLocationsId, String invoiceType) throws Exception;
 	
 	List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId,String contractType)throws Exception;
 

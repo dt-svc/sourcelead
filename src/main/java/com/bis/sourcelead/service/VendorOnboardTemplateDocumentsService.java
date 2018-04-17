@@ -11,7 +11,7 @@ public interface VendorOnboardTemplateDocumentsService {
 
 	List<VendorOnboardingTemplateDocuments> getVendorOnBoardingTemplateDocumentsByTemplateId(Long templateId,String documentType) throws Exception;
 	
-	void storeVendorOnBoardTemplateDocuments(OnBoardingTemplateDTO onBoardingTemplateDTO, User loginUser) throws Exception;
+	VendorOnboardingTemplateDocuments storeVendorOnBoardTemplateDocuments(OnBoardingTemplateDTO onBoardingTemplateDTO, User loginUser) throws Exception;
 	
 	VendorOnboardingTemplateDocuments saveVendorOnBoardingTemplateDocuments(VendorOnboardingTemplateDocuments vendorOnboardingTemplateDocuments)throws Exception;
 	

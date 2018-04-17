@@ -700,12 +700,13 @@ function addCertification(candidateId) {
 							setTimeout(function(){
 					 			candidateList();					 			
 					 		},100);
-				        });	
+				        
 		    		} else if (result.indexOf('Sign In') !== -1) {
 						location.replace(sourceleadUrl);
 					} else {
 					    showError("Operation failed, please try again");
 					}
+			 });	
 			return true;
 		} else {
 			return false;

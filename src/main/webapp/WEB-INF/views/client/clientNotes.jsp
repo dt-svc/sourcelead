@@ -316,9 +316,19 @@ var validationSettings = {
 		    	        contentType:false,
 						url : sourceleadUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&locationCode="+locationCode,
 						success : function(result) {
-							closeDocPopup();
-							clientNotes(orgRelationId);
 							
+							if (result && result.response === "INVALID_DATA") {
+							    showError(result.responseMessage);
+							} else if (result.response === "AWKWARD") {
+							    location.href = "/errorPage";
+							} else if (result.response === "SUCCESS") {
+								closeDocPopup();
+								clientNotes(orgRelationId);
+							} else if (result.indexOf('Sign In') !== -1) {
+								location.replace(sourceleadUrl);
+							} else {
+							    showError("Operation failed, please try again");
+							}
 						},
 					});
 					$('.add-comment').toggle(200);

@@ -273,16 +273,18 @@ public class InvoiceRestController {
 		return response;
 	}
 	
-	@RequestMapping(value = "/validateInvoiceId", method = RequestMethod.POST)
-	public @ResponseBody Boolean validateInvoiceId(@RequestParam(value = "invoiceId", required = false) String invoiceId, HttpServletRequest request) throws Exception
-	{
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Boolean flag = false;
-		if (null != invoiceId) {
-			flag = invoiceService.getInvoiceByInvoiceId(invoiceId, orgLocation.getId());
-		}
-		return flag;
-	}
+	
+	@RequestMapping(value = "/validateInvoiceId",  method = RequestMethod.POST)
+    public @ResponseBody Boolean validateInvoiceId(@RequestParam(value="invoiceId", required=false) String invoiceId, @RequestParam(value="invoiceType", required=false) String invoiceType,
+    		HttpServletRequest request) throws Exception {
+	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	       Boolean flag = false;
+	       if(null != invoiceId){
+	        flag = invoiceService.getInvoiceByInvoiceId(invoiceId, orgLocation.getId(), invoiceType);
+	       }
+	      return flag;
+		 
+	    }
 	
 	@RequestMapping(value = "/getInvoiceAssociatesList", method = RequestMethod.GET)
 	public @ResponseBody ResponseList<Candidate> getInvoiceAssociatesList(@RequestParam(value = "selectedAssociates", required = false) String selectedAssociates, @RequestParam(value = "orgRelationId", required = false) Long orgRelationId, @RequestParam(value = "contractType", required = false) String contractType, HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -640,11 +642,20 @@ public class InvoiceRestController {
 					invoice.setOrgRelationUUID(invoice.getOrgRelationID().getUUID());
 				}
 			}
-			if (invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == LoginOrgLocations.getId().longValue()) {
-				invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
-				StringBuilder contactName = new StringBuilder();
-				if (invoice.getContactUser().getLastName() != null) {
-					invoice.setClientContactName(contactName.append(invoice.getOwnerUserId().getFirstName()).append(" ").append(invoice.getOwnerUserId().getLastName()).toString());
+				if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == LoginOrgLocations.getId().longValue()){
+					invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
+					StringBuilder contactName = new StringBuilder();
+					if(invoice.getContactUser().getLastName() != null){
+						invoice.setClientContactName(contactName.append(invoice.getOwnerUserId().getFirstName()).append(" ").append(invoice.getOwnerUserId().getLastName()).toString());	
+					}else{
+						invoice.setClientContactName(contactName.append(invoice.getOwnerUserId().getFirstName()).toString());
+					}
+					if(null != invoice.getContactUser()){
+						invoice.setClientContactEmail(invoice.getOwnerUserId().getEmail());	
+					}
+					if(invoice.getOrgRelationID() != null){
+						invoice.setOrgRelationUUID(invoice.getOrgRelationID().getUUID());
+						}
 				}
 				else {
 					invoice.setClientContactName(contactName.append(invoice.getOwnerUserId().getFirstName()).toString());
@@ -652,7 +663,7 @@ public class InvoiceRestController {
 				if (null != invoice.getContactUser()) {
 					invoice.setClientContactEmail(invoice.getOwnerUserId().getEmail());
 				}
-			}
+			
 			invoice.setExchangeRate(invoice.getExchangeRate());
 			if (invoice.getConvertAmount() != null) {
 				invoice.setConvertAmount(String.format("%.2f", Float.valueOf(invoice.getConvertAmount())));

@@ -299,15 +299,16 @@ function getUserList(teamType){
 				                     var isBlockedBySelected = "";
 				                     var selectAssignUsersIdsStr = ""+selectAssignUsersIds+"";
 				                     var str_array = selectAssignUsersIdsStr.match(/[^,]+,[^,]+/g);
-				                     for(var j = 0; j < str_array.length; j++) {
-				                        if((""+str_array[j]+"") === (""+opt.id+','+opt.assignedTeamId+"")){
-					                    	 isSelected = "checked disabled";
-					                     }else if((""+str_array[j]+"") === (""+opt.id+"")){
-					                    	 isBlockedBySelected = "fa fa-ban";
-					                    	 isSelected = "disabled";
+				                     if(str_array != null && str_array != 'undefined' && str_array != "" && str_array != '[]'){
+					                     for(var j = 0; j < str_array.length; j++) {
+					                        if((""+str_array[j]+"") === (""+opt.id+','+opt.assignedTeamId+"")){
+						                    	 isSelected = "checked disabled";
+						                     }else if((""+str_array[j]+"") === (""+opt.id+"")){
+						                    	 isBlockedBySelected = "fa fa-ban";
+						                    	 isSelected = "disabled";
+						                     }
 					                     }
 				                     }
-				                     
 				                     /* if(selectAssignUsersIds.includes(opt.id+','+opt.assignedTeamId)){
 				                    	 isSelected = "checked disabled";
 				                     }else if(selectAssignUsersIdsStr.includes(opt.id)){

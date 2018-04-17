@@ -1195,7 +1195,7 @@ function pagination(){
          //$("#create_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateInvoiceId?"+tokenParamName+"="+tokenValue+"&invoiceId="+invoiceId, 
+		        url: sourceleadUrl+"/validateInvoiceId?"+tokenParamName+"="+tokenValue+"&invoiceId="+invoiceId+"&invoiceType=Receivable", 
 		        success: function(data) {
 		        	 if(data == true){
 		        		  $('#invoiceIdDiv').find('p.jquery_form_error_message').remove();
