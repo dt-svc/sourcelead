@@ -391,6 +391,10 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
                 docDto.setDescription(entityObj.getDescription());
                 docDto.setIsRequired(entityObj.getIsRequired());
                 docDto.setMultiple(entityObj.getIsMultipleRequired());
+                docDto.setOtherType(entityObj.getDocumentOtherType());
+                if(StringUtils.isNotBlank(entityObj.getDocumentOtherType())){
+                docDto.setDescriptionOther(entityObj.getDescription());
+                }
                 immiDocsDtoLst.add(docDto);
             }
 
