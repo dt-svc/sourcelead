@@ -158,11 +158,11 @@ $(document).ready(function() {
         }else if(tab=='#visasTab'){
         immigration.displayVisaDetails(candidateId,'Visa');
         }else if(tab=='#docsTab'){
-        	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId);
+        	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,"");
         }else if(tab =='#notesTab'){
         	getNotesListByImmigration(candidateId);
         } else if(tab=='#formsTab'){
-        	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId);
+        	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,"");
         	console.log("immigrationId --->"+immigrationId)
         }
 		

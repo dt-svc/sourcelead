@@ -551,13 +551,23 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ImmigrationCandidateDocuments> getImmigrationCandidateDocs(Long immigrationId, Long templateId,
-			Long candidateId) {
+			Long candidateId, String searchVal) {
 		logger.debug("Getting  CandidatepassportDetails --->  ");
 		Session session = this.sessionFactory.getCurrentSession();
+		StringBuilder query1 = new StringBuilder("");
+		if(StringUtils.isNotEmpty(searchVal) && searchVal != null) {
+			query1.append(" and ((cd.documentType.name like :searchVal )");
+			query1.append(" or (cd.documentStatus like :searchVal )");
+			query1.append(" or (cd.description like :searchVal ))");
+		}
 		List<ImmigrationCandidateDocuments> immigrationCandidateDocumentsList = new ArrayList<ImmigrationCandidateDocuments>();
-			String queryString = "from ImmigrationCandidateDocuments cd where cd.candidateId.id=:candidateId and cd.immigrationId.id=:immigrationId and cd.immigrationTemplateId.id=:templateId  order by cd.updatedDate desc";
-			immigrationCandidateDocumentsList = session.createQuery(queryString).setLong("candidateId", candidateId).setLong("templateId", templateId).setLong("immigrationId", immigrationId).list();
-		
+			String queryString = "from ImmigrationCandidateDocuments cd where cd.candidateId.id=:candidateId and cd.immigrationId.id=:immigrationId and cd.immigrationTemplateId.id=:templateId ";
+			String orderByString = " order by cd.updatedDate desc";
+			Query query = session.createQuery(queryString+query1+orderByString).setLong("candidateId", candidateId).setLong("templateId", templateId).setLong("immigrationId", immigrationId);
+			if(StringUtils.isNotEmpty(searchVal) && searchVal != null) {
+				query.setParameter("searchVal", "%"+searchVal+"%");
+			}
+			immigrationCandidateDocumentsList = query.list();
 		return immigrationCandidateDocumentsList;
 	}
 	@Override
@@ -587,15 +597,24 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ImmigrationCandidateForms> getCandidateImmigartionFormsDetails(Long candidateId, Long templateId,
-			Long immigrationId) {
+			Long immigrationId, String searchVal) {
 		List<ImmigrationCandidateForms> candidateFormLst= null;
 		 try {
 				Session session = this.sessionFactory.getCurrentSession();
+				StringBuilder query1 = new StringBuilder("");
+				if(StringUtils.isNotEmpty(searchVal) && searchVal != null) {
+					query1.append(" and ((icf.formName like :searchVal )");
+					query1.append(" or (icf.formStatus like :searchVal ))");
+				}
                 String queryString ="from ImmigrationCandidateForms icf where  icf.immigrationTempId.id= :templateId and icf.immigration.id=:immigrationId and icf.candidate=:candidateId";
-                candidateFormLst =session.createQuery(queryString)
+                Query query =session.createQuery(queryString+query1)
                 		                                     .setLong("templateId", templateId)
                 		                                     .setLong("immigrationId", immigrationId)
-                		                                     .setLong("candidateId", candidateId).list();
+                		                                     .setLong("candidateId", candidateId);
+                if(StringUtils.isNotEmpty(searchVal) && searchVal != null) {
+                	query.setParameter("searchVal", "%"+searchVal+"%");
+                }
+                candidateFormLst = query.list();
                 System.out.println("candidateFormLst size is ---> "+candidateFormLst.size());
 		 } catch (HibernateException e) {
 				logger.error("SQL Exception occured while doing getting ImmigrationCandidateForms records -->"+e.getMessage());
