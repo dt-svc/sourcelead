@@ -1027,9 +1027,9 @@ function cancelDelDoc(){
 	   $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getInvoiceAssociatesList?"+tokenParamName+"="+tokenValue+"&selectedAssociates="+selectedAssociates+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
-	        success: function(data) {
+	        success: function(json) {
 	        	
-	        	if(data != null && data != 'undefined' && data != "" && data != '[]'){
+	        	if(json.data != null && json.data != 'undefined' && json.data != "" && json.data != '[]'){
 	        		
 	        		
 	        		    var result = '';
@@ -1046,10 +1046,10 @@ function cancelDelDoc(){
 	             		result = result +'           </thead>';
 	                    result = result +"<tbody>"; 
 	                    
-	                    var json = JSON.parse(data);
+// 	                    var json = JSON.parse(data);
 	                    
-	                    for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i]; 
+	                    for (var i = 0; i < json.data.length; i++) { 
+	                    	 var opt = json.data[i]; 
 	                    	 var mobilephone = '';
 	                    	 var associateName
 	                    	 
@@ -1225,14 +1225,14 @@ function pagination(){
 			  $.ajax({
 			    	type: "GET",
 			        url: sourceleadUrl+"/getSowcontractListByAssociateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
-			        success: function(data) {
+			        success: function(json) {
 			        	var result = "";
 			        	result = result + "<option value='' >select sow</option>"
-			        	if(data != null && data != ''){
-			        		var json = JSON.parse(data);
-				        	 for (var i=0; i<json.length; i++)
+			        	if(json.data != null && json.data != ''){
+// 			        		var json = JSON.parse(data);
+				        	 for (var i=0; i<json.data.length; i++)
 							{
-					        		var opt = json[i];
+					        		var opt = json.data[i];
 					        		 var selected = '';
 					        		 if(contractId != null && contractId != "" && contractId !="undefined" && contractId == opt.id){
 					        			selected = 'selected';
@@ -1405,9 +1405,9 @@ function pagination(){
 		   $.ajax({
 				type : "GET",
 				url: sourceleadUrl+"/getConversionExchangeRate?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
-				success :function(data) {
-					if(data !='' && data != 'undefined' && data != null){
-						var json = JSON.parse(data);
+				success :function(json) {
+					if(json.data !='' && json.data != 'undefined' && json.data != null){
+// 						var json = JSON.parse(data);
 						$("#exchangeRate").html(json.exchangeRate);
 						$("#exchangeCurrency").html(json.exchangeCurrency);
 						$("#vendorCurrencyCode").html(json.vendorCurrencyCode);
@@ -1814,9 +1814,9 @@ function getSowRate(id){
 	$.ajax({
     	type: "GET",
     	url: sourceleadUrl+"/getSowRateByContractId?"+tokenParamName+"="+tokenValue+"&contractId="+contractId,
-        success: function(data) {
-        	 if(data != null && data != ''){
-        		var json = JSON.parse(data);
+        success: function(json) {
+        	 if(json.data != null && json.data != ''){
+//         		var json = JSON.parse(data);
 	        	 $ ('#'+id+'rate').val(json.billingAmount);
 	        	 totalHoursCalculateAmount(id);
         	} 
@@ -1944,13 +1944,13 @@ function getClientContacts(clientContactId){
 	$.ajax({
 	type : "GET",
 	url: sourceleadUrl+"/getClientContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
-	success :function(data) {
-	var json = JSON.parse(data);
+	success :function(json) {
+// 	var json = JSON.parse(data);
 	var output = "";
 	output = output + "<option value=''>Select Client Contact</option>";
-	for (var i=0; i<json.length; i++)
+	for (var i=0; i<json.data.length; i++)
 	{
-	var opt = json[i];
+	var opt = json.data[i];
 	var selected = "";
 	if(clientContactId != null && clientContactId != "" && clientContactId !="undefined" && clientContactId == opt.spocUserId){
 		selected = 'selected';

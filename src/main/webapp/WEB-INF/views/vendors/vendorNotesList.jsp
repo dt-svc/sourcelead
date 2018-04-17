@@ -433,12 +433,12 @@ function selectClientCategory(){
 				$.ajax({
 			    	type: "POST",
 			    	url : sourceleadUrl+"/getInvoiceListBasedOnOrgrelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&clientLocationId="+vendorLocationId+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceStatus="+invoice+"&paymentStatus="+payment+"&invoiceType=payables", 
-			        success: function(data) {
-		        	  var json = JSON.parse(data);
+			        success: function(json) {
+// 		        	  var json = JSON.parse(data);
 		        	  var result ="";
 		        	  result = result +"<select id='vendorcontact' name='vendorcontact' class='chosen-select form-control'  data-validation='required' field-name='Category'>";
-              		    for (var i = 0; i < json.length; i++) {
-              		    	var opt= json[i];
+              		    for (var i = 0; i < json.data.length; i++) {
+              		    	var opt= json.data[i];
               		    	 result = result +"<option value="+opt.id+">"+opt.invoiceId+"</option>";
               		    }
               		  result = result +"</select>";

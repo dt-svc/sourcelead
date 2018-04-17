@@ -7,12 +7,13 @@ import com.bis.sourcelead.annotations.Required;
 
 public class InvoiceDTO extends SearchDTO {
 
-//	@Required (desc = "ClientOrgRelationId")
+	@Required (desc = "ClientOrgRelationId")
 	private String clientOrgRelationId;
+	
 	private String savedInvoiceId;
 	private String clientCurrency;
 	
-//	@Required (desc = "ClientContact")
+	@Required (desc = "ClientContact")
 	private String clientContact;
 	
 	@Required (desc = "InvoiceId")
@@ -39,12 +40,17 @@ public class InvoiceDTO extends SearchDTO {
 	private String afterDiscountTotal;
 	private String grandTotal;
 	private String disCount;
-	@Required (desc = "vendorOrgRelationId")
+	
     private String vendorOrgRelationId;
-	@Required (desc = "vendorContact")
+	
     private String vendorContact;
+	
+	@Required (desc = "projectId")
     private String projectId;
+	
+	@Required (desc = "frequency")
     private String frequency;
+	
     private String vendorCurrency;
     private String hiddenHours;
     private String invoiceforexpenses;
@@ -71,6 +77,7 @@ public class InvoiceDTO extends SearchDTO {
     private String vendorName;
     private String locationdateForList;
     private String orgLocationId;
+    private String invoiceUUID;
 	public List<InvoiceExpensesDTO> getExpenseInvoice() {
 		return expenseInvoice;
 	}
@@ -466,6 +473,16 @@ public class InvoiceDTO extends SearchDTO {
 	public void setOrgLocationId(String orgLocationId)
 	{
 		this.orgLocationId = orgLocationId;
+	}
+
+	public String getInvoiceUUID()
+	{
+		return invoiceUUID;
+	}
+
+	public void setInvoiceUUID(String invoiceUUID)
+	{
+		this.invoiceUUID = invoiceUUID;
 	}
 	
 }

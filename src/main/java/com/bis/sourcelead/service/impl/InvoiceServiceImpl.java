@@ -2369,10 +2369,10 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		return invoiceDao.getInvoicetByParentId(invoiceId);
 	}
 	@Override
-	public boolean deleteInvoice(Long invoiceId,String reason,String invoiceType) throws Exception
+	public boolean deleteInvoice(String invoiceUUID,String reason,String invoiceType) throws Exception
 	{
 		boolean result = false;
-		Invoice invoice = invoiceDao.getInvoicetById(invoiceId);
+		Invoice invoice = invoiceDao.getInvoicetByInvoiceUUID(invoiceUUID);
 		
 		if(invoice.getProjectID() != null){
 				invoice.setRejectReason(reason);

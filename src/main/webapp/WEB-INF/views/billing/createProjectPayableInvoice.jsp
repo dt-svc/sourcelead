@@ -261,8 +261,8 @@ function getProjectsList(projectName){
 	//var json = JSON.parse(data);
 	var output = "";
 	output = output + "<option value=''>--Select Project--</option>";
-	for (var i=0; i<json.length; i++){
-	var opt = json[i];
+	for (var i=0; i<json.data.length; i++){
+	var opt = json.data[i];
 	/* output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>"; */
 	var selected = "";
 	if(projectName != null && projectName != "" && projectName !="undefined" && projectName == opt.projectName){
@@ -292,13 +292,13 @@ function getProjectFrequency(invoiceFrequency){
 			$.ajax({
 			type : "GET",
 			url: sourceleadUrl+"/getProjectFrequency?"+tokenParamName+"="+tokenValue+"&projectId="+projectId,
-			success :function(data) {
-				var json = JSON.parse(data);
+			success :function(json) {
+// 				var json = JSON.parse(data);
 				var output = "";
 				output = output + "<option value=''>Select Frequency</option>";
-				for (var i=0; i<json.length; i++)
+				for (var i=0; i<json.data.length; i++)
 				{
-				var opt = json[i];
+				var opt = json.data[i];
 				/* output = output + "<option value='" +opt+ "'>"+opt+"</option>"; */
 				var selected = "";
 				if(invoiceFrequency == opt){
@@ -334,8 +334,8 @@ function getProjectAssignedMem(){
 	$.ajax({
 	type : "GET",
 	url: sourceleadUrl+"/getAllProjectVendorAssignedMembers?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&frequency="+frequency+"&orgRelationId="+orgRelationId+"&contractType=vendorSow",
-	success :function(data) {
-		populateInlineItemsGrid(data);
+	success :function(json) {
+		populateInlineItemsGrid(json);
 	},
 	}); 
 
@@ -350,10 +350,10 @@ function getProjectAssignedMem1(invoiceLineItemsList){
 
 </script>
 <script>
-function populateInlineItemsGrid(data){
+function populateInlineItemsGrid(json){
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
-    if(data != '' && data !=null){
-        var json = JSON.parse(data);
+    if(json.data != '' && json.data !=null){
+//         var json = JSON.parse(data);
         var result = '';
             result = result +'    <table width="100%">';
             result = result +' <thead>';
@@ -369,8 +369,8 @@ function populateInlineItemsGrid(data){
             result = result +' </thead>';
             result = result +' <tbody>';
             result = result +' <input type="hidden" value='+json.length+' id="maxTsRowNum" name="maxTsRowNum">';
-        for (var i = 0; i < json.length; i++) { 
-             var opt = json[i]; 
+        for (var i = 0; i < json.data.length; i++) { 
+             var opt = json.data[i]; 
              result = result +'<tr>';
              result = result +' <td>';
              result = result +'<div class="inputCustom">';
@@ -617,13 +617,13 @@ function populateInlineItemsGrid1(data){
 			  $.ajax({
 			    	type: "GET",
 			        url: sourceleadUrl+"/getSowcontractListByAssociateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=vendorSow",
-			        success: function(data) {
+			        success: function(json) {
 			        	
-			        	if(data != null && data != ''){
-			        		var json = JSON.parse(data);
-				        	 for (var i=0; i<json.length; i++)
+			        	if(json.data != null && json.data != ''){
+// 			        		var json = JSON.parse(data);
+				        	 for (var i=0; i<json.data.length; i++)
 							{
-					        		var opt = json[i];
+					        		var opt = json.data[i];
 					        		var selected = '';
 					        		 if(contractId != null && contractId != "" && contractId !="undefined" && contractId == opt.id){
 					        			selected = 'selected';
@@ -650,9 +650,9 @@ function getSowRate(id){
 	$.ajax({
     	type: "GET",
     	url: sourceleadUrl+"/getSowRateByContractId?"+tokenParamName+"="+tokenValue+"&contractId="+contractId,
-        success: function(data) {
-        	 if(data != null && data != ''){
-        		var json = JSON.parse(data);
+        success: function(json) {
+        	 if(json.data != null && json.data != ''){
+//         		var json = JSON.parse(data);
 	        	 $ ('#'+id+'rate').val(json.billingAmount);
 	        	 totalHoursCalculateAmount(id);
         	} 
@@ -821,9 +821,9 @@ function getSowRate(id){
 		   $.ajax({
 				type : "GET",
 				url: sourceleadUrl+"/getConversionExchangeRate?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
-				success :function(data) {
-					if(data !='' && data != 'undefined' && data != null){
-						var json = JSON.parse(data);
+				success :function(json) {
+					if(json.data !='' && json.data != 'undefined' && json.data != null){
+// 						var json = JSON.parse(data);
 						$("#exchangeRate").html(json.exchangeRate);
 						$("#exchangeCurrency").html(json.exchangeCurrency);
 						$("#vendorCurrencyCode").html(json.vendorCurrencyCode);
@@ -1235,9 +1235,13 @@ function saveBill(saveType){
  	 	     var formData = getFormData("project_payable_invoice_form");
 		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		    	     
-		        	  $.post(sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=payable", formData, function(data) {
-			  				if(data == "success"){
-			  					$("#invoiceLoading").removeAttr("style");
+		        	  $.post(sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=payable", formData, function(result) {
+		        		  if (result && result.response === "INVALID_DATA") {
+			          		    showError(result.responseMessage);
+			          		} else if (result.response === "AWKWARD") {
+			          		    location.href = "/errorPage";
+			          		} else if (result.response === "SUCCESS") {
+			          			$("#invoiceLoading").removeAttr("style");
 	    		     			location.replace(sourceleadUrl+"/payablesList");
 	    		     			$("#selector1").removeAttr("style");
 					    		$("#selector1").css({ display: "block" });
@@ -1247,7 +1251,13 @@ function saveBill(saveType){
 					    			$("#msgDiv").html("Bill saved Successfully..");
 					    		}
 	    		     			msgFadein();
-			  				}
+			          		} else if (result.indexOf('Sign In') !== -1) {
+			          			location.replace(sourceleadUrl);
+			          		} else {
+			          		    showError("Operation failed, please try again");
+			          		}
+		        		      $("#invoiceLoading").hide();
+		        		  
 			  			   }); 
 		        	 
 		    	         return true; 

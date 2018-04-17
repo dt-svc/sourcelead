@@ -1142,14 +1142,14 @@ function pagination(){
 			  $.ajax({
 			    	type: "GET",
 			        url: sourceleadUrl+"/getSowcontractListByAssociateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=vendorSow",
-			        success: function(data) {
+			        success: function(json) {
 			        	var result = "";
 			        	result = result + "<option value='' >select sow</option>"
-			        	if(data != null && data != ''){
-			        		var json = JSON.parse(data);
-				        	 for (var i=0; i<json.length; i++)
+			        	if(json.data != null && json.data != ''){
+// 			        		var json = JSON.parse(data);
+				        	 for (var i=0; i<json.data.length; i++)
 							{
-					        		var opt = json[i];
+					        		var opt = json.data[i];
 					        		 var selected = '';
 					        		 if(contractId != null && contractId != "" && contractId !="undefined" && contractId == opt.id){
 					        			selected = 'selected';
@@ -1324,9 +1324,9 @@ function pagination(){
 		   $.ajax({
 				type : "GET",
 				url: sourceleadUrl+"/getConversionExchangeRate?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
-				success :function(data) {
-					if(data !='' && data != 'undefined' && data != null){
-						var json = JSON.parse(data);
+				success :function(json) {
+					if(json.data !='' && json.data != 'undefined' && json.data != null){
+// 						var json = JSON.parse(data);
 						$("#exchangeRate").html(json.exchangeRate);
 						$("#exchangeCurrency").html(json.exchangeCurrency);
 						$("#vendorCurrencyCode").html(json.vendorCurrencyCode);
@@ -1964,15 +1964,11 @@ function saveInvoice(saveType){
 		    	        
 		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		        	  $.post(sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=payable", formData, function(result) {
-		        		 alert("1");
 		        		  if (result && result.response === "INVALID_DATA") {
-		        			  alert("2");
 			          		    showError(result.responseMessage);
 			          		} else if (result.response === "AWKWARD") {
-			          			alert("3");
 			          		    location.href = "/errorPage";
 			          		} else if (result.response === "SUCCESS") {
-			          			alert("4");
 			          			$("#invoiceLoading").removeAttr("style");
 	    		     			location.replace(sourceleadUrl+"/payablesList");
 	    		     			$("#selector1").removeAttr("style");
@@ -1988,7 +1984,7 @@ function saveInvoice(saveType){
 			          		} else {
 			          		    showError("Operation failed, please try again");
 			          		}
-		        		  
+		        		     $("#invoiceLoading").hide();
 			  			   }); 
 		    	         return true; 
 	        }
@@ -2061,9 +2057,9 @@ function getSowRate(id){
 	$.ajax({
     	type: "GET",
     	url: sourceleadUrl+"/getSowRateByContractId?"+tokenParamName+"="+tokenValue+"&contractId="+contractId,
-        success: function(data) {
-        	 if(data != null && data != ''){
-        		var json = JSON.parse(data);
+        success: function(json) {
+        	 if(json.data != null && json.data != ''){
+//         		var json = JSON.parse(data);
 	        	 $ ('#'+id+'rate').val(json.billingAmount);
 	        	 totalHoursCalculateAmount(id);
         	} 
