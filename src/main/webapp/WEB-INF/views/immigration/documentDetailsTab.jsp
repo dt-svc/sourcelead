@@ -2,7 +2,7 @@
 		<div class="immigraTabsHead">
 		<!-- <a href="javascript:void(0)" id="immDocu"><i class="glyphicon glyphicon-plus"></i> Request Document</a> 		 -->	  	
 		  	<a href="javascript:void(0)" id="addDocu"><i class="glyphicon glyphicon-plus"></i> Add Document</a> 
-		  	<span><input class="immigraTabSerach" type="text"></span>
+		  	<span><input class="immigraTabSerach" id="immigraDocTabSerach" type="text"></span>
 		</div>
 		
 	  	<div class="immigraTable">
@@ -314,4 +314,11 @@ function removeDynamicUploaRow(id){
 	   $("#dynamicRow"+id).remove();
 	   rowId--;// decrement rowid when deleted in UI.
 }
+$("#immigraDocTabSerach").keyup(function (e) {
+    if (e.which === 13) {
+    	var searchVal = $("#immigraDocTabSerach").val();
+    	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,searchVal);
+    }
+});
+
 </script>		
