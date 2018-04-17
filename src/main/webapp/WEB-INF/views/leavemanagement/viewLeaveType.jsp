@@ -200,17 +200,22 @@ function deleteType(typeId){
 		$.ajax({
 		   	type: "POST",
 		   	url: sourceleadUrl+"/deleteLeaveType?"+tokenParamName+"="+tokenValue+"&leaveTypeUUID="+typeId+"&deleteReason="+reason+"&loginUserId="+loginUserId,	    	   
-		    success: function(data) {
-	             if(data == true){
+		    success: function(result) {
+	             if(result.response === "SUCCESS"){
 	 				location.replace(sourceleadUrl+ "/viewLeaveTypes");
-	 			 }
-	             $("#leaveTypeReasonLoad").removeAttr("style");
-	             $("#selector1").removeAttr("style");
-	  			 $("#selector1").css({ display: "block" });
-	  			 $("#msgDiv").html("Leave Type removed");
-	  			 $("#popUp").empty();
-	 			 $(".project_inn_mask").fadeOut(200);
-	             msgFadein();
+	 				$("#leaveTypeReasonLoad").removeAttr("style");
+		             $("#selector1").removeAttr("style");
+		  			 $("#selector1").css({ display: "block" });
+		  			 $("#msgDiv").html("Leave Type removed");
+		  			 $("#popUp").empty();
+		 			 $(".project_inn_mask").fadeOut(200);
+		             msgFadein();
+	 			 }else if (result.indexOf('Sign In') !== -1) {
+	 				location.replace(sourceleadUrl);
+	 			} else {
+	 			    showError("Operation failed, please try again");
+	 			}
+	             
 		    }
 	   });
 	}else{

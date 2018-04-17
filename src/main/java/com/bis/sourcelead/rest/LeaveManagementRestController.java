@@ -47,7 +47,6 @@ import com.bis.sourcelead.dao.OptionsDao;
 import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dao.RestrictDayDao;
 import com.bis.sourcelead.dao.ShiftDao;
-import com.bis.sourcelead.dto.CandidateCertificationDTO;
 import com.bis.sourcelead.dto.HolidayDTO;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.LeaveReportsDTO;
@@ -68,7 +67,6 @@ import com.bis.sourcelead.entity.LeaveManagementHistory;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.LookUpData;
-import com.bis.sourcelead.entity.MonthlyLeaves;
 import com.bis.sourcelead.entity.Option;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -1248,34 +1246,42 @@ public class LeaveManagementRestController {
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = { "/deleteLeaveType", "/rest/deleteLeaveType" }, method = RequestMethod.POST)
 	@ResponseBody
-	public boolean deleteLeaveType(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request) throws Exception {
-		boolean isDeleted = false;
-		LeaveType leaveType = leaveTypeService.getLeaveTypeByUUID(leaveTypeDTO.getLeaveTypeUUID());
-		List<ProjectTasks> projectTaskList = projectTasksService.getTasksListByLeaveType(leaveType.getId());
-		if (leaveType != null) {
-			if ("reactive".equalsIgnoreCase(leaveTypeDTO.getStatus())) {
-				leaveType.setStatus(Constants.RECORD_ACTIVE.toString());
-				for (ProjectTasks pt : projectTaskList) {
-					pt.setStatus(Constants.RECORD_ACTIVE.toString());
-					projectTasksService.updateTasks(pt);
-				}
-			} else {
-				leaveType.setStatus(Constants.RECORD_INACTIVE.toString());
-				leaveType.setDeleteReason(leaveTypeDTO.getDeleteReason());
-				for (ProjectTasks pt : projectTaskList) {
-					pt.setStatus(Constants.RECORD_INACTIVE.toString());
-					projectTasksService.updateTasks(pt);
-				}
-			}
-			if (leaveTypeDTO.getLoginUserId() != null) {
-				User user = userService.getUserById(Long.parseLong(leaveTypeDTO.getLoginUserId()));
-				leaveType.setUpdatedBy(user.getUserCode());
-			}
-			leaveType.setUpdatedDate(new Date());
-			leaveTypeDao.addLeaveType(leaveType);
-			isDeleted = true;
-		}
-		return isDeleted;
+	public Response<String> deleteLeaveType(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request) throws Exception {
+		
+	        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	        Response<String> response = new Response<>();
+	        if(orgLocations != null){
+	            LeaveType leaveType = leaveTypeService.getLeaveTypeByUUID(leaveTypeDTO.getLeaveTypeUUID());
+	            List<ProjectTasks> projectTaskList = projectTasksService.getTasksListByLeaveType(leaveType.getId());
+	             if(leaveType !=null) {
+	                 if("reactive".equalsIgnoreCase(leaveTypeDTO.getStatus())){
+	                     leaveType.setStatus(Constants.RECORD_ACTIVE.toString());
+	                     for(ProjectTasks pt:projectTaskList) {
+	                         pt.setStatus(Constants.RECORD_ACTIVE.toString());
+	                         projectTasksService.updateTasks(pt);
+	                     }
+	                 }else{
+	                 leaveType.setStatus(Constants.RECORD_INACTIVE.toString());
+	                 leaveType.setDeleteReason(leaveTypeDTO.getDeleteReason());
+	                 for(ProjectTasks pt:projectTaskList) {
+	                     pt.setStatus(Constants.RECORD_INACTIVE.toString());
+	                     projectTasksService.updateTasks(pt);
+	                 }
+	                 }
+	                 if(leaveTypeDTO.getLoginUserId() != null){
+	                     User user = userService.getUserById(Long.parseLong(leaveTypeDTO.getLoginUserId()));
+	                     leaveType.setUpdatedBy(user.getUserCode());
+	                 }
+	                 leaveType.setUpdatedDate(new Date());
+	                 leaveTypeDao.addLeaveType(leaveType);
+	                 response.setResponse(Result.SUCCESS.name());
+	                 response.setResponseMessage(Result.SUCCESS.getValue());
+	            }
+	        }else {
+	            response.setResponse(Result.SESSION_TIMEDOUT.name());
+	            response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+	        }
+           return response;		
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
