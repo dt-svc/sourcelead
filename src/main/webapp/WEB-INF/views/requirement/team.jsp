@@ -179,6 +179,7 @@ function teamEditDetails(teamId){
 	        	outPut = outPut+ '<div class="clearfix mb10">';
 	        	outPut = outPut+ '<div class="col-md-6" id="teamNameDiv">';
 	        	outPut = outPut +'<input type="hidden" class="form-control input-sm" name="teamId"  value="'+teamId+'">';
+	        	outPut = outPut+ '<input type = "hidden" name="tabType" value="editTeamForm"/>';
 	        	outPut = outPut+ '<label>Team Name<b class="text-danger">*</b> </label>';
 	        	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" id="candidateName" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_Name validate_length length2-100" field-name="Team Name" value="'+json.name+'"  onblur="validateTeamName();">';
 	        	outPut = outPut+ '                </div>';
@@ -277,8 +278,21 @@ function storeEditedTeam(teamId){
 			$("#team_form").attr("disabled", "disabled");
 	       
 			$.post(sourceleadUrl+"/storeEditedTeam?"+tokenParamName+"="+tokenValue+"", formData, function(data) {
-				  sideBar(teamId);
-				  teamList();
+				if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
+	        		showError(data.responseMessage);
+	    		}
+        		else if (data.response === "AWKWARD") {
+        			location.href = "/errorPage";
+	    		}
+        		else if(data.response === "SUCCESS"){
+        			sideBar(teamId);
+  				  	teamList();
+	        	    }
+        		else if (data.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
+				}
 	        });
 		   
 			return true; 
@@ -302,6 +316,7 @@ function addTeam(){
 	outPut = outPut+ '<div class="form-horizontal clearfix">';
 	outPut = outPut+ '<div class="clearfix mb10">';
 	/* outPut = outPut + '<input type="hidden" class="form-control input-sm" name="teamId"  value="'+teamId+'">'; */
+	outPut = outPut+ '<input type = "hidden" name="tabType" value="teamForm"/>';
 	outPut = outPut+ '<div class="col-md-12">';
 	outPut = outPut+ '<label>Team Name<b class="text-danger">*</b> </label>';
 	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" id="candidateName" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_length length2-100" field-name="Team Name" value="" onblur="validateTeamName();">';
@@ -699,8 +714,24 @@ function storeTeam(){
 	  		         processData: false,
 	  		         contentType:false, 
 					url : sourceleadUrl+ "/storeTeam?"+tokenParamName+"="+tokenValue+"",
-					success : function(result) {
-						location.replace(sourceleadUrl+"/team");
+					success : function(data) {
+						if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
+	 		        		showError(data.responseMessage);
+	      	    		}
+	                		else if (data.response === "AWKWARD") {
+	                			location.href = "/errorPage";
+	      	    		}
+	                		else if(data.response === "SUCCESS"){
+	                			location.replace(sourceleadUrl+"/team");
+				        	    }
+	                		else if (data.indexOf('Sign In') !== -1) {
+	                			location.replace(sourceleadUrl);
+	      				} else {
+	      					showError("Operation failed, please try again");
+	      				}
+						
+						
+						
 
 					},
 				});
@@ -848,7 +879,7 @@ function storeTeamMembers(teamId){
     	        processData: false,
     	        contentType:false,
         	   	url : sourceleadUrl+"/storeTeamMembers?"+tokenParamName+"="+tokenValue+"teamId="+teamId,
-				success : function(data) {
+        		success : function(data) {
 					sideBar(teamId);
 					teamList();
             		 
