@@ -279,12 +279,12 @@ public class InvoiceRestController {
 	
 	
 	@RequestMapping(value = "/validateInvoiceId",  method = RequestMethod.POST)
-    public @ResponseBody Boolean validateInvoiceId(@RequestParam(value="invoiceId", required=false) String invoiceId,
+    public @ResponseBody Boolean validateInvoiceId(@RequestParam(value="invoiceId", required=false) String invoiceId, @RequestParam(value="invoiceType", required=false) String invoiceType,
     		HttpServletRequest request) throws Exception {
 	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	       Boolean flag = false;
 	       if(null != invoiceId){
-	        flag = invoiceService.getInvoiceByInvoiceId(invoiceId, orgLocation.getId());
+	        flag = invoiceService.getInvoiceByInvoiceId(invoiceId, orgLocation.getId(), invoiceType);
 	       }
 	      return flag;
 		 
@@ -628,6 +628,9 @@ public class InvoiceRestController {
 					if(null != invoice.getContactUser()){
 						invoice.setClientContactEmail(invoice.getOwnerUserId().getEmail());	
 					}
+					if(invoice.getOrgRelationID() != null){
+						invoice.setOrgRelationUUID(invoice.getOrgRelationID().getUUID());
+						}
 				}
 				invoice.setExchangeRate(invoice.getExchangeRate());
 				if(invoice.getConvertAmount() != null) {
