@@ -177,6 +177,10 @@
 				$(".popMask").fadeOut(200);
 				$("#viewFormpop").fadeOut(100);
 				$("#formSave_Form")[0].reset();
+				$("#immigrationCandidateFormId").val('');
+				$("#formDescription").val('');
+				removeImmigDoc();
+				
 			}
 			// Add Form PopUp
 			$("#addForm").click(function() {

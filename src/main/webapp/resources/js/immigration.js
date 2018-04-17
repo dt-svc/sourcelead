@@ -518,7 +518,7 @@ this.deletePassportVisaDetailsById=function(id,idType){
 	                if (data == 'success') {
 	                	$('#viewFormpop').hide();
 	                	$('.popMask').fadeOut();
-	                	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId);
+	                	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,'');
 	                }
 	            }
 	        });
@@ -538,8 +538,8 @@ this.deletePassportVisaDetailsById=function(id,idType){
             url: sourceleadUrl + immiModulePath + "/deleteImmigrationCandidateFormDetails?id="+id,
             type: "GET",
             success: function (result) {
-            	if(result=='success'){
-            		immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId);
+            	if(result =='success'){
+            		immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,'');
             	     
             	}
             }
@@ -886,7 +886,7 @@ function saveCandidateDocs() {
                 if (data == 'success') {
                 	$('#docuView').hide();
                 	$('.popMask').fadeOut();
-                	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId);
+                	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'');
                 }
             }
         });
@@ -1045,7 +1045,7 @@ function uploadRequestDoc(){
         	if(result=='success'){
         		$('#uploadCanDocPop').hide();
             	$('.popMask').fadeOut();
-            	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId);
+            	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'');
         	     
         	}
         }
@@ -1068,7 +1068,7 @@ function editDocumentDetailsByRowId(id){
      			$("#addDocu").trigger('click');
      		/*	$('#eduName').val(data.name); // to select the dropdwon value based on id value.
      			$('#scoreEducationType').val(data.gradeType);*/
-     			$('#documentType').val(data.documentType);
+     			$('#documentType').val(data.documentType.id);
      			$('#description1').text(data.description);
      			$('#requiredCheck').text(data.isRequired);
      			$('#immigrationCandidateDocId').val(data.id);
@@ -1088,7 +1088,7 @@ function deleteDocumentDetailsByRowId(id){
         type: "GET",
         success: function (result) {
         	if(result=='success'){
-        	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId);
+        	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'');
         	     
         	}
         }
@@ -1109,7 +1109,7 @@ function uploadRequestForm(){
         	if(result=='success'){
         		$('#uploadFormPop').hide();
             	$('.popMask').fadeOut();
-            	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId); 
+            	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,''); 
         	}
         }
     });
