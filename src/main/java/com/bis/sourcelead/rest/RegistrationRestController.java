@@ -556,7 +556,7 @@ public class RegistrationRestController {
 		
   }
 	
-	
+	@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	@RequestMapping(value = "/app/saveOrgLocationSubscription" , method = RequestMethod.POST)
 	   public String saveOrgLocationSubscription(OrgLicenseSubscriptionDTO orgLicenseSubscriptionDTO,
 			   @RequestParam(value="orgId", required=true) Long orgId,HttpServletRequest request) {
@@ -576,7 +576,24 @@ public class RegistrationRestController {
 		
      }
 	
-	
+	@RequestMapping(value = "/app/upgradeOrgLocationLicenseSubscription" , method = RequestMethod.POST)
+	   public String upgradeOrgLocationLicenseSubscription(OrgLicenseSubscriptionDTO orgLicenseSubscriptionDTO,
+			   @RequestParam(value="orgId", required=true) Long orgId,HttpServletRequest request) {
+		
+		if(Validator.validate(orgLicenseSubscriptionDTO)){
+			try {
+				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				orgLicenseSubscriptionService.upgradeLicenseSubscription(orgLicenseSubscriptionDTO, loginUser, orgId, orgLicenseSubscriptionDTO.getLicenseUUID());
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return "subscribeList";
+		}else {
+			return "DataMissing";
+		}
+		
+  }
 	
 	
 	

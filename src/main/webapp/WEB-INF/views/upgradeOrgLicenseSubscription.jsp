@@ -193,7 +193,7 @@ var validationSettings = {
          		 $.ajax({
              	      type: "POST",
              	    	data: formData,
-                   	    url: sourceleadUrl+"/saveOrgLocationSubscription?${_csrf.parameterName}=${_csrf.token}&orgId="+orgId+"&registeredModules="+registeredModules,
+                   	    url: sourceleadUrl+"/upgradeOrgLocationLicenseSubscription?${_csrf.parameterName}=${_csrf.token}&orgId="+orgId+"&registeredModules="+registeredModules+"&licenseUUID="+subscriptionUUID,
                      	success: function(result) {
    			         	if(result == 'subscribeList'){
    			         	    location.replace(sourceleadUrl+"/orgLicenseSubscriptionList");

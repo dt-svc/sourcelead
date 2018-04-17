@@ -44,7 +44,12 @@ top:0;
 	                    	 <td><div class="tbldata-dotdot-100">${orgSubscription.country}</div></td>
 	                    	 <td><div class="tbldata-dotdot_80">${orgSubscription.subscriptionType.name}</div></td>
 	                    	 <td><div class="tbldata-dotdot-100">${orgSubscription.userSubscriptionType.name}</div></td>
-	                    	 <td><div class="tbldata-dotdot-100">${orgSubscription.currency} ${orgSubscription.invoiceAmount}</div></td>
+	                    	 <c:if test="${!empty orgSubscription.invoiceAmount}">
+	                    	 	<td><div class="tbldata-dotdot-100">${orgSubscription.currency} ${orgSubscription.invoiceAmount}</div></td>
+	                    	 </c:if>
+	                    	 <c:if test="${empty orgSubscription.invoiceAmount}">
+	                    	 	<td><div class="tbldata-dotdot-100">--</div></td>
+	                    	 </c:if>
 	                    	 <td><div class="tbldata-dotdot-80">${orgSubscription.isInvoiceAmountPaid == 'Y' ? "Yes" : "No"}</div></td>
 	                    	 <td><div class="tbldata-dotdot-100">${orgSubscription.fromDateStr}</div></td>
 	                    	 <td><div class="tbldata-dotdot-100">${orgSubscription.toDateStr}</div></td>

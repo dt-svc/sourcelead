@@ -57,6 +57,7 @@ import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Tabs;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Project_Status;
@@ -837,6 +838,10 @@ public void updateOrgBasedRoles(OrgLicenseSubscriptionDTO orgLicenseSubscription
 			OrgLicenseSubscriptionTypes storageSubscriptionType = new OrgLicenseSubscriptionTypes();
 			storageSubscriptionType.setId(Long.parseLong(orgLicenseSubscriptionDTO.getStorageType()));
 			orgLicenseSubscription.setStorageSubscriptionType(storageSubscriptionType);
+			
+			Timezone timezone = new Timezone();
+			timezone.setId(Long.parseLong(orgLicenseSubscriptionDTO.getTimezone()));
+			orgLicenseSubscription.setTimezone(timezone);
 			
 			orgLicenseSubscription.setCreatedBy(loginUser);
 			orgLicenseSubscription.setCreatedDate(new Date());

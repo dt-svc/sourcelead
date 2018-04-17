@@ -70,10 +70,16 @@ public class PaymentController {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Value("${clientId}")
+	private String clientId;
+	
+	@Value("${clientSecret}")
+	private String clientSecret;
+	
+	@Value("${paymentMode}")
+	private String paymentMode;
 
-    private final String clientId = "Ac30ZMUM8NcfYN6bFs4RAq3R83_0x8l604YTO2cnFTCpxBlyhCxAB28RZX8sm6kRVooNcWkrlmKFO3jJ";
-    private final String clientSecret = "EI1lSaIvZ8t0AjBVh5wK-9CPNK4d8WK0Imy7Tn0PjKua-iNnq_9o5lhxGFPrF0u6gPupv2OTmaD2W3cI";
-    private final String paymentMode = "sandbox";
 
     @RequestMapping("/license")
     public String license(HttpServletRequest request, ModelMap map) {
@@ -160,21 +166,23 @@ public class PaymentController {
             try {
                 req.getSession().setAttribute("payId", payment.getId());
                 Payment createdPayment = payment.execute(apiContext, paymentExecution);
-                req.getSession().setAttribute("createdPayment", createdPayment);
-                OrgLicensePaymentTransactionHistory paymentHistory = getTransactionPaymentHistory(createdPayment,req);
-                try {
-					orgLicensePaymentTransactionHistoryService.saveOrgLicensePaymentTransactionHistory(paymentHistory);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-                
-                
-                req.getSession().setAttribute("orderId", paymentHistory.getOrderId());
-                req.getSession().setAttribute("transactionId", paymentHistory.getTransactionId());
-                req.getSession().setAttribute("amount", paymentHistory.getInvoiceAmount());
-             	
-                
-                if (createdPayment.getState().equalsIgnoreCase("approved")) {
+                if (createdPayment != null && createdPayment.getState().equalsIgnoreCase("approved")) {
+                	
+                	req.getSession().setAttribute("createdPayment", createdPayment);
+                    OrgLicensePaymentTransactionHistory paymentHistory = getTransactionPaymentHistory(createdPayment,req);
+                    try {
+    					orgLicensePaymentTransactionHistoryService.saveOrgLicensePaymentTransactionHistory(paymentHistory);
+    				} catch (Exception e) {
+    					e.printStackTrace();
+    				}
+                    
+                    
+                    req.getSession().setAttribute("orderId", paymentHistory.getOrderId());
+                    req.getSession().setAttribute("transactionId", paymentHistory.getTransactionId());
+                    req.getSession().setAttribute("amount", paymentHistory.getInvoiceAmount());
+                    Transaction transactions = createdPayment.getTransactions().iterator().next();
+                    Item item = transactions.getItemList().getItems().iterator().next();
+                    req.getSession().setAttribute("subscriptionType", item.getName());
                     return "redirect:/app/payment-success.html";
                 } else {
                     return "redirect:/app/payment-failed.html";
@@ -191,7 +199,7 @@ public class PaymentController {
     	
         boolean success = request.getRequestURI().contains("success");
         Payment payment = (Payment) request.getSession().getAttribute("createdPayment");
-        if (payment != null && success == true) {
+        if (payment != null && success == true && payment.getState().equalsIgnoreCase("approved")) {
         	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
         	Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
         	 String type = (String) request.getSession().getAttribute("type");
