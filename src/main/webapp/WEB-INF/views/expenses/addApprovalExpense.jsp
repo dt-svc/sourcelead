@@ -60,7 +60,7 @@ $(document).ready(function(){
                 <div class="form-group">
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
-					<c:if test="${submissionStatus != 'SUBMITTED'}">
+					<c:if test="${submissionStatus ne 'SUBMITTED' and submissionStatus ne 'REJECTED'}">
 						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject();" id="projectId" name="projectId" field-name="Project" data-validation="required">
 
 							 <c:if test="${fn:length(expEntry.projectsList) gt 0}">
@@ -71,7 +71,7 @@ $(document).ready(function(){
 							</c:forEach>
 						</select>
 					</c:if>
-					<c:if test ="${submissionStatus == 'SUBMITTED'}">
+					<c:if test ="${submissionStatus eq 'SUBMITTED' or submissionStatus eq 'REJECTED'}">
 						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject();" id="projectId" name="projectId" field-name="Project" disabled="disabled" >
 							 <c:if test="${fn:length(expEntry.projectsList) gt 0}">
 								<option value="">Select Project</option>
@@ -125,14 +125,26 @@ $(document).ready(function(){
 	            <div class="form-group">
 	              <label class="col-md-3">Start & End date<span class="text-danger">&nbsp;*</span></label>
 	              <div class="col-md-9" >
-						<div class="row">
-						  <div class="col-lg-6 evDaPa" id="dateDiv">
-							  <input type="text" autocomplete="off" class="form-control calendar" data-validation="required" value="${expenses.startDate}" field-name="Start Date" name="startDate" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly" onclick="expensesDatePickerStartDate('${expenses.startDate}','${expenses.endDate}');">
-						  </div>
-						  <div class="col-lg-6" id="errEnd">
-							  <input type="text" autocomplete="off" class="form-control calendar" data-validation="required" value="${expenses.endDate}" name="endDate"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly" onclick="expensesDatePickerStartDate('${expenses.startDate}','${expenses.endDate}');">						 
-						  </div>					  
-						</div>
+						<c:if test ="${submissionStatus ne 'SUBMITTED' and submissionStatus ne 'REJECTED'}">
+							<div class="row">
+							  <div class="col-lg-6 evDaPa" id="dateDiv">
+								  <input type="text" autocomplete="off" class="form-control calendar" data-validation="required" value="${expenses.startDate}" field-name="Start Date" name="startDate" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
+							  </div>
+							  <div class="col-lg-6" id="errEnd">
+								  <input type="text" autocomplete="off" class="form-control calendar" data-validation="required" value="${expenses.endDate}" name="endDate"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">						 
+							  </div>					  
+							</div>
+						</c:if>
+						<c:if test ="${submissionStatus eq 'SUBMITTED' or submissionStatus eq 'REJECTED'}">
+							<div class="row">
+							  <div class="col-lg-6 evDaPa" id="dateDiv">
+								  <input type="text" autocomplete="off" class="form-control calendar" data-validation="required" value="${expenses.startDate}" field-name="Start Date" name="startDate" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly" onclick="getProjectMemberStartDateAndEndDate();">
+							  </div>
+							  <div class="col-lg-6" id="errEnd">
+								  <input type="text" autocomplete="off" class="form-control calendar" data-validation="required" value="${expenses.endDate}" name="endDate"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly" onclick="getProjectMemberStartDateAndEndDate();">						 
+							  </div>					  
+							</div>
+						</c:if>
 	              </div>
 	            </div>
 		</div>

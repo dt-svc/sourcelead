@@ -9,7 +9,7 @@
 		<i class="fa fa-eye" onclick="editFileDetails(${customFormDetails.id},'summary');"></i>
 		<i class="fa fa-file-text-o" title="edit file" onclick="editFileDetails(${customFormDetails.id},'editCustomRowField');"></i>
 		<c:if test="${customFormDetails.status eq 1}">
-			<i class="fa fa-trash" title="De-Activate" id="deletFildRow${customFormDetails.id}" onclick="activateOrDeactivateCustomField(${customFormDetails.id},'deactivate');"></i>
+			<i class="fa fa-trash" title="Delete" id="deletFildRow${customFormDetails.id}" onclick="activateOrDeactivateCustomField(${customFormDetails.id},'deactivate');"></i>
 		</c:if>
 		<c:if test="${customFormDetails.status eq 0}">
 			<i class="fa fa-check" title="Activate" id="deletFildRow${customFormDetails.id}" onclick="activateOrDeactivateCustomField(${customFormDetails.id},'activate');"></i>

@@ -3,16 +3,21 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Required;
+
 @SuppressWarnings("serial")
 public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	private Long id;
 	
+	@Required(desc="taskName")
 	private String taskName;
 	
+	@Required(desc="taskBillableType")
 	private String taskBillableType;
 
 	private String epic;
 	
+	@Required(desc="taskstype")
 	private String taskstype;
 	
 	private String userStory;
@@ -29,6 +34,7 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	
 	private String estimatedTime;
 	
+	@Required(desc="taskStatus")
 	private Long taskStatus;
 	
 	private String taskDescription;

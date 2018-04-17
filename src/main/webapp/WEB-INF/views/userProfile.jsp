@@ -749,8 +749,29 @@ var validationSettings = {
                 	      type: "POST",
                       	  url: sourceleadUrl+"/passwordSettings?${_csrf.parameterName}=${_csrf.token}",
                       	  data: formData,
-                        	success: function(result) {
-    			        	 if(result == 'success'){
+                        	success: function(data) {
+    			        	 
+                        		if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
+             		        		showError(data.responseMessage);
+                  	    		    $("#loading").removeAttr('style');
+                  	    		}
+                            		else if (data.response === "AWKWARD") {
+                            			location.href = "/errorPage";
+                  	    		}
+                            		else if(data.response === "SUCCESS"){
+                            			$("#loading").removeAttr('style');
+                            			location.replace(sourceleadUrl+"/dashboard"); 
+            			        	    }
+                            		else if (data.indexOf('Sign In') !== -1) {
+                            			location.replace(sourceleadUrl);
+                  				} else {
+                  					showError("Operation failed, please try again");
+                  				    $("#loading").removeAttr('style');
+                  				}
+                        		
+                        		
+                        		
+                        /* 		if(result == 'success'){
     			        		location.replace(sourceleadUrl+"/dashboard");  
     			        	}else if(result == 'Invalid Password'){
     			        		 $('#passwordDiv').find('span.jquery_form_error_message').remove();
@@ -760,7 +781,7 @@ var validationSettings = {
                  				 document.getElementById("currentPassword").setAttribute('pass-exist-errorMsg', ' Invalid Password'); 
                  				 $("input#currentPassword").removeAttr("style");
                  				 $("#loading").removeAttr("style");
-    			        	} 
+    			        	}  */
     			        },  
                     });
                 
@@ -797,10 +818,25 @@ var validationSettings = {
                 	      type: "POST",
                 	      data: formData,
                       	  url: sourceleadUrl+"/saveUserProfile?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId,
-                        	success: function(result) {
-    			        	 if(result != null){
-    			        		location.replace(sourceleadUrl+"/userProfile");  
-    			        	}
+                        	success: function(data) {
+                        		if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
+             		        		showError(data.responseMessage);
+                  	    		    $("#loading").removeAttr('style');
+                  	    		}
+                            		else if (data.response === "AWKWARD") {
+                            			location.href = "/errorPage";
+                  	    		}
+                            		else if(data.response === "SUCCESS"){
+                            			$("#loading").removeAttr('style');
+                            			location.replace(sourceleadUrl+"/userProfile");  
+            			        	    }
+                            		else if (data.indexOf('Sign In') !== -1) {
+                            			location.replace(sourceleadUrl);
+                  				} else {
+                  					showError("Operation failed, please try again");
+                  				    $("#loading").removeAttr('style');
+                  				}
+                        	
     			        },  
                     });
                 

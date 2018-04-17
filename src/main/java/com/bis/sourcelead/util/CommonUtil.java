@@ -65,6 +65,8 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLicenseSubscription;
+import com.bis.sourcelead.entity.OrgLicenseSubscriptionHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -2163,6 +2165,29 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 			sahh.setUpdatedBy(sah.getUpdatedBy());
 		}
 		return sahh;
+	}
+	
+	
+  public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicenseSubscription orgLicenseSubscription,User loginUser) {
+		
+		OrgLicenseSubscriptionHistory history = new OrgLicenseSubscriptionHistory();
+		history.setOrgLicenseSubscription(orgLicenseSubscription);
+		history.setSubscriptionType(orgLicenseSubscription.getSubscriptionType());
+		history.setUserSubscriptionType(orgLicenseSubscription.getUserSubscriptionType());
+		history.setStorageSubscriptionType(orgLicenseSubscription.getStorageSubscriptionType());
+		history.setCurrency(orgLicenseSubscription.getCurrency());
+		history.setInvoiceAmount(orgLicenseSubscription.getInvoiceAmount());
+		history.setSubscriptionTabs(orgLicenseSubscription.getSubscriptionTabs());
+		history.setFromDate(orgLicenseSubscription.getFromDate());
+		history.setToDate(orgLicenseSubscription.getToDate());
+		history.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		history.setTimezone(orgLicenseSubscription.getTimezone());
+		history.setCreatedBy(loginUser);
+		history.setUpdatedBy(loginUser);
+		history.setCreatedDate(new Date());
+		history.setUpdatedDate(new Date());
+		return history;
+		
 	}
 		
 }

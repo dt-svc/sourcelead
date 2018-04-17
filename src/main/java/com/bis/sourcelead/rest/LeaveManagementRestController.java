@@ -643,23 +643,48 @@ public class LeaveManagementRestController {
 		return model;
 	}
 
-	@RequestMapping(value = "/storeRestrictedDay")
-	public String storeRestrictedDay(RestrictDayDTO restrictDayDTO) throws Exception {
-
-		restrictDayService.storeRestrictedDay(restrictDayDTO);
-		return "success";
+	@RequestMapping(value = "/storeRestrictedDay", method = RequestMethod.POST)
+	public @ResponseBody Response<String> storeRestrictedDay(RestrictDayDTO restrictDayDTO, HttpServletRequest request) throws Exception {
+		Response<String> response = new Response<>();
+	try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if (user != null && Validator.validate(restrictDayDTO)) { 
+			RestrictDay restrictDay= restrictDayService.storeRestrictedDay(restrictDayDTO);
+			if (restrictDay != null) {
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.FAILED.name());
+				response.setResponseMessage(Result.FAILED.getValue());
+			}
+		} else if (user == null) {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		} else {
+			response.setResponse(Result.INVALID_DATA.name());
+			response.setResponseMessage(Result.INVALID_DATA.getValue());
+		}
+	} catch (Exception e) {
+		response.setResponse(Result.AWKWARD.name());
+		response.setResponseMessage(Result.AWKWARD.getValue());
+		logger.error(ExceptionUtils.getFullStackTrace(e));
+	}
+	return response;
+		
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
-	@RequestMapping(value = { "/getRestrictDayList", "/rest/getRestrictDayList" }, method = RequestMethod.GET)
-	public ResponseList<RestrictDayDTO> getRestrictDayList(
-			@RequestParam(value = "orgLocationId", required = true) Long orgLocationId) throws Exception {
+	@RequestMapping(value = {"/getRestrictDayList", "/rest/getRestrictDayList"}, method = RequestMethod.GET)
+	public ResponseList<RestrictDayDTO> getRestrictDayList(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId, HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.valueOf(orgLocationId));
 		ResponseList<RestrictDayDTO> responseList = new ResponseList<>();
-
-		List<RestrictDay> restrictDayList = restrictDayService.getRestrictDayListByOrgLocationId(orgLocationId);
+		try {
+	
 		List<RestrictDayDTO> restrictDayDTOList = new ArrayList<>();
-		for (RestrictDay restrictDay : restrictDayList) {
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if (loginOrgLocation != null) {
+		List<RestrictDay> restrictDayList = restrictDayService.getRestrictDayListByOrgLocationId(orgLocationId);
+		for(RestrictDay restrictDay : restrictDayList){
 			RestrictDayDTO restrictDayDTO = new RestrictDayDTO();
 
 			restrictDayDTO.setRestrictName(restrictDay.getRestrictName());
@@ -675,6 +700,18 @@ public class LeaveManagementRestController {
 			restrictDayDTOList.add(restrictDayDTO);
 		}
 		responseList.setData(restrictDayDTOList);
+		responseList.setResponse(Result.SUCCESS.name());
+		responseList.setResponseMessage(Result.SUCCESS.getValue());
+		} else {
+			responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+			responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		
+	} catch (Exception e) {
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
 		return responseList;
 	}
 
@@ -687,49 +724,85 @@ public class LeaveManagementRestController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = { "/saveShift", "/rest/saveShift" }, method = RequestMethod.POST)
-	public String saveShift(ShiftDTO shiftDTO) throws Exception {
+	public  @ResponseBody Response<String> saveShift(ShiftDTO shiftDTO, HttpServletRequest request) throws Exception {
 		String isInserted = "failure";
+		Response<String> response = new Response<>();
+		try {
+			
+	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	if (user != null && Validator.validate(shiftDTO)) {
 		Shift shift = shiftService.saveShift(shiftDTO);
 		if (shift != null) {
-			isInserted = "success";
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+		}else {
+			response.setResponse(Result.FAILED.name());
+			response.setResponseMessage(Result.FAILED.getValue());
 		}
-		return isInserted;
-
+	 } else if (user == null) {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		} else {
+			response.setResponse(Result.INVALID_DATA.name());
+			response.setResponseMessage(Result.INVALID_DATA.getValue());
+		}
+	 }catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+			
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
-	@RequestMapping(value = { "/getShiftList", "/rest/getShiftList" }, method = RequestMethod.GET)
-	public ResponseList<ShiftDTO> getShiftList(
-			@RequestParam(value = "orgLocationId", required = true) Long orgLocationId) throws Exception {
+	@RequestMapping(value = {"/getShiftList", "/rest/getShiftList"}, method = RequestMethod.GET)
+	public ResponseList<ShiftDTO> getShiftList(@RequestParam (value = "orgLocationId", required = true )Long orgLocationId, HttpServletRequest request) throws Exception{
 		ResponseList<ShiftDTO> responseList = new ResponseList<>();
-		List<Shift> shiftList = shiftService.getShiftList(orgLocationId);
-		List<ShiftDTO> shiftDTOList = new ArrayList<>();
-
-		for (Shift shift : shiftList) {
-			ShiftDTO shiftDTO = new ShiftDTO();
-			shiftDTO.setId(shift.getId());
-			shiftDTO.setShiftName(shift.getShiftName());
-			shiftDTO.setTimeIn(shift.getTimeIn());
-			shiftDTO.setTimeOut(shift.getTimeOut());
-			shiftDTO.setShiftDescription(shift.getShiftDescription());
-			shiftDTO.setStatus(shift.getStatus());
-			shiftDTO.setShiftUUID(shift.getShiftUUID());
-			User user = userService.getUserByUserCode(shift.getCreatedBy());
-			StringBuilder sb = new StringBuilder();
-			if (StringUtils.isNotBlank(user.getLastName())) {
-				sb.append(user.getFirstName()).append("").append(user.getLastName());
-			} else {
-				sb.append(user.getFirstName());
-			}
-			shiftDTO.setUpdatedBy(sb.toString());
-			shiftDTO.setUserId(sb.toString());
-			shiftDTOList.add(shiftDTO);
-
+		try
+		{
+		
+	    List<ShiftDTO> shiftDTOList = new ArrayList<>();
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if (loginOrgLocation != null) {
+			List<Shift> shiftList = shiftService.getShiftList(orgLocationId);
+	      for(Shift shift : shiftList){
+		     ShiftDTO shiftDTO = new ShiftDTO();
+		        shiftDTO.setId(shift.getId());
+				shiftDTO.setShiftName(shift.getShiftName());
+				shiftDTO.setTimeIn(shift.getTimeIn());
+				shiftDTO.setTimeOut(shift.getTimeOut());
+				shiftDTO.setShiftDescription(shift.getShiftDescription());
+				shiftDTO.setStatus(shift.getStatus());
+				shiftDTO.setShiftUUID(shift.getShiftUUID());
+				User user = userService.getUserByUserCode(shift.getCreatedBy());
+				StringBuilder sb = new StringBuilder();
+				if(StringUtils.isNotBlank(user.getLastName())) {
+					sb.append(user.getFirstName()).append("").append(user.getLastName());
+				}else {
+					sb.append(user.getFirstName());
+				}
+				shiftDTO.setUpdatedBy(sb.toString());
+				shiftDTO.setUserId(sb.toString());
+				shiftDTOList.add(shiftDTO);
+	
+	            }
+				responseList.setData(shiftDTOList);
+				responseList.setResponse(Result.SUCCESS.name());
+				responseList.setResponseMessage(Result.SUCCESS.getValue());
+		}else {
+			responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+			responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
-		responseList.setData(shiftDTOList);
-		return responseList;
-	}
-
+	
+      } catch (Exception e) {
+	responseList.setResponse(Result.AWKWARD.name());
+	responseList.setResponseMessage(Result.AWKWARD.getValue());
+	logger.error(ExceptionUtils.getFullStackTrace(e));
+      }
+				return responseList;
+	         }
+	
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/editleaveshift")
 	public ModelAndView editShift(@RequestParam(value = "shiftUUID", required = false) String shiftUUID,
@@ -933,30 +1006,67 @@ public class LeaveManagementRestController {
 	 * @throws Exception
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
-	@RequestMapping(value = { "/saveLeaveOption", "/rest/saveLeaveOption" }, method = RequestMethod.POST)
-	@ResponseBody
-	public boolean saveLeaveOption(OptionsDTO optionsDTO, HttpServletRequest request) throws Exception {
-
+	@RequestMapping(value = {"/saveLeaveOption","/rest/saveLeaveOption"}, method = RequestMethod.POST)
+	
+	public @ResponseBody Response<String> saveLeaveOption(OptionsDTO optionsDTO, HttpServletRequest request) throws Exception {
+ 
 		boolean isInserted = false;
+		Response<String> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null && Validator.validate(optionsDTO)) {
 		Option options = optionsService.saveLeaveOptions(optionsDTO);
 		if (options != null) {
-			isInserted = true;
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+		} else {
+			response.setResponse(Result.FAILED.name());
+			response.setResponseMessage(Result.FAILED.getValue());
 		}
-		return isInserted;
+	} else if (user == null) {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		
+		return response;
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = { "/viewLeaveOption", "/rest/viewLeaveOption" }, method = RequestMethod.GET)
 	@ResponseBody
-	public List<OptionsDTO> getDeductionsDetailsbyId(
-			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request)
-			throws Exception {
-		List<OptionsDTO> optionsDTOList = null;
-		optionsDTOList = optionsService.getOptionsListByLocationId(orgLocationId);
-		if (optionsDTOList != null) {
-			return optionsDTOList;
+	public  ResponseList<OptionsDTO> getDeductionsDetailsbyId(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request) throws Exception
+	{
+		ResponseList<OptionsDTO> responseList = new ResponseList<>();
+		try {
+			
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if (loginOrgLocation != null) {
+			List<OptionsDTO> optionsDTOList = new ArrayList<>();
+			 optionsDTOList = optionsService.getOptionsListByLocationId(orgLocationId);
+			 if(optionsDTOList !=null) {
+				 responseList.setData(optionsDTOList);
+				 responseList.setResponse(Result.SUCCESS.name());
+				 responseList.setResponseMessage(Result.SUCCESS.getValue());
+			 }
+			} else {
+				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		return optionsDTOList;
+		
+		return responseList;
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")

@@ -72,22 +72,28 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String feedbackStatus;
 	
 	@Transient
+	@JsonProperty
 	private String interviewStartTime;
 	
 	@Transient
+	@JsonProperty
 	private String interviewEndTime;
 	
 	@Transient
+	@JsonProperty
 	private String requirementTitle;
 	
 	
 	@Transient
+	@JsonProperty
 	private String interviewType;
 
 	@Transient
+	@JsonProperty
 	private List<RequirementInterviewer> interviewerList;
 	
 	@Transient
+	@JsonProperty
 	private List<RequirementInterview> applicantsList;
 	
 	

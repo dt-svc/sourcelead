@@ -22,6 +22,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -46,6 +47,7 @@ public class Asset implements Serializable{
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ASSET_CATEGORY_ID")
+	@JsonBackReference
 	private AssetCategory assetCategory;
 	
 	@Column(name = "MAKE")

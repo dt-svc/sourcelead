@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class ProjectMembersDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Long id;
@@ -28,12 +30,14 @@ public class ProjectMembersDTO implements Serializable {
 	
 	private String payRateCurrency;
 	
+	@Required(desc="payRate")
 	private Double payRate;
 	
 	private String payRateRateType;
 	
 	private String billRateCurrency;
 	
+	@Required(desc="billRate")
 	private Double billRate;
 	
 	private String billRateRateType;
@@ -51,6 +55,8 @@ public class ProjectMembersDTO implements Serializable {
 	private Double estBudget;
 	
 	private Long projectId;
+	
+	private String validateRow;
 	
 	List<ExpensesCategoryListDTO> expenseCategoryList;
 	
@@ -261,6 +267,14 @@ public class ProjectMembersDTO implements Serializable {
 
 	public void setPayRateEstimatedDate(String payRateEstimatedDate) {
 		this.payRateEstimatedDate = payRateEstimatedDate;
+	}
+
+	public String getValidateRow() {
+		return validateRow;
+	}
+
+	public void setValidateRow(String validateRow) {
+		this.validateRow = validateRow;
 	}
 	
 }
