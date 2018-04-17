@@ -60,10 +60,11 @@
 		<div class="immigraInnWrap">
 			<div class="timesheet_head">
 			  <ul>
+			    <sec:authorize access="hasAnyRole('ROLE_ADD_PETITION','ROLE_EDIT_VIEW_PETITION','ROLE_DELETE_PETITION')">
 				  <li>
 					  <a href="${appPath}/immigration/loadNewPetition"><i class="fa fa-plus paddingRight"></i> New </a>
 				  </li>
-
+                 </sec:authorize>
 				  <li class="dropdown">
 					<span class="dropdown-toggle" id="menu1" data-toggle="dropdown">
 						<i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></span>|
