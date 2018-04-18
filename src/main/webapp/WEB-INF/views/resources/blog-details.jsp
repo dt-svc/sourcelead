@@ -80,14 +80,14 @@
         <form:form id="blog_subscription_form" name="blog_subscription_form" method="post">
        		<div class="subscribe" id="emailError" >
 			    <input type="text" class="form-control" name="email" id="email" placeholder="Subscribe News Letter" field-name="Email"
-								data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateBlogSubscriptionEmail();" onkeyup="validateBlogSubscriptionEmail();">
+								data-validation="required validate_Space validate_length length2-100 validate_email">
 			    <input type="button" value="Subscribe" class="btn btn-danger pull-right" id="saveSubscription" onclick="saveBlogSubscription(${blogDetails.id});" >
   			</div>
   			
   			<div class="clearfix"></div>
   			 <div class="success_pop text-success text-center panel-heading bg-success" id="selector4" style="display: none;"> 
 		     <i class="fa fa-check-circle mr"></i><span id="subMsgDiv"></span> 
-		   </div>
+		    </div>
 		   
 		  
   	   </form:form>		
