@@ -11,7 +11,6 @@ import javax.mail.internet.InternetAddress;
 import org.apache.commons.lang3.StringUtils;
 
 import com.bis.sourcelead.dto.TimesheetEntriesDTO;
-import com.bis.sourcelead.dto.TimesheetEntryDetailsDTO;
 
 /**
  *
@@ -27,15 +26,13 @@ public class Validator {
 					try {
 						field.setAccessible(true);
 						boolean flag = verifyParentInfo(object, fields, field);
-				        boolean isTsHours = field.getAnnotation(Required.class).timesheetHours();
-							
-						if (!isTsHours && flag && (field.get(object) == null || field.get(object).toString().isEmpty() || "undefined".equalsIgnoreCase(field.get(object).toString()))) {
+						boolean flag1 = verifyEitherInfo(object, fields, field);
+						if (flag && !flag1 && (field.get(object) == null || field.get(object).toString().isEmpty() || "undefined".equalsIgnoreCase(field.get(object).toString()))) {
 							object.getClass().getMethod("setErrorKey", String.class).invoke(object, "error.required");
 							object.getClass().getMethod("setParams", new Class[] { String[].class }).invoke(object,
 									new Object[] { new String[] { field.getAnnotation(Required.class).desc() } });
 							return false;
-						}
-						else if (field.getAnnotation(Required.class).alphaNumericOnly()) {
+						} else if (field.getAnnotation(Required.class).alphaNumericOnly()) {
 							String value = field.get(object).toString();
 							String pattern = "^[a-zA-Z0-9]*$";
 							if (value.matches(pattern)) {
@@ -45,7 +42,7 @@ public class Validator {
 							object.getClass().getMethod("setParams", new Class[] { String[].class }).invoke(object,
 									new Object[] { new String[] { field.getAnnotation(Required.class).desc() } });
 							return false;
-						}else if(field.getAnnotation(Required.class).timesheetListValidate()) {
+						} else if(field.getAnnotation(Required.class).timesheetListValidate()) {
 							Object timesheetDayEntries = field.get(object);
 							@SuppressWarnings("unchecked")
 							List<TimesheetEntriesDTO> timeEntryList = (ArrayList<TimesheetEntriesDTO>) timesheetDayEntries;
@@ -94,15 +91,6 @@ public class Validator {
 							}
 							return returnValue;
 						}
-						
-						
-						
-						
-						
-						
-						
-						
-						
 						
 					} catch (IllegalArgumentException | IllegalAccessException ex) {
 						return false;
@@ -171,6 +159,36 @@ public class Validator {
 		return false;
 	}
 
+	private static boolean verifyEitherInfo(Object object, Field[] fields, Field field) throws Exception
+	{
+		boolean flag = false;
+		field.setAccessible(true);
+		Required r = field.getAnnotation(Required.class);
+		if (r.either() != null && r.either().length > 0) {
+			List<Object> value = new ArrayList<>()	;
+			for (Field field1 : fields) {
+				field1.setAccessible(true);
+				for(String e : r.either()) {
+					if(e.equals(field1.getName())) {
+						value.add(field1.get(object));
+					}
+				}
+			}
+			if (value.isEmpty()) {
+				return false;
+			}
+			for (Object v1 : value) {
+				if (v1 != null && !v1.toString().isEmpty()) {
+					flag = true;
+					break;
+				}
+			}
+		} else {
+			flag = false;
+		}
+		return flag;
+	}
+
 	private static boolean verifyParentInfo(Object object, Field[] fields, Field field) throws Exception {
 		boolean flag = false;
 		field.setAccessible(true);
@@ -189,7 +207,8 @@ public class Validator {
 			}
 			String[] d = r.parentValue();
 			for (String d1 : d) {
-				if (value.toString().equals(d1)) {
+				if ((r.parentValueAny() && !value.toString().isEmpty())
+						|| value.toString().equals(d1)) {
 					flag = true;
 					break;
 				}

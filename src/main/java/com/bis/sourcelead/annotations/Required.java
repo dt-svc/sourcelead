@@ -20,4 +20,6 @@ public @interface Required {
     public boolean onlyDependsContainsValue() default true;
     public boolean timesheetListValidate() default false;
     public boolean timesheetHours() default false;
+    public boolean parentValueAny() default false;
+    public String[] either() default "";
 }

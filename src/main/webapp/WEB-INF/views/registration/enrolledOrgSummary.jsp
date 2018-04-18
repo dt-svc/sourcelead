@@ -289,25 +289,39 @@ function validatePrimaryUserEmail(){
 		   }; 
 	 if ($('#editPrimaryUser_form').validate(false, validationSettings)){ 
 		 
-		 var frm = $('#editPrimaryUser_form').serializeFormJSON();
-         var con = JSON.stringify(frm);
-         con = con.replace(/[{}]/g, "");
-         var jsonData = encodeURIComponent(con);
-         var sourceleadUrl ='${sourceleadUrl}';
+		 var sourceleadUrl ='${sourceleadUrl}';
+         var formData = getFormData("editPrimaryUser_form");
          var userId = '${orgloc.user.id}';
          var orgId = '${orgId}';
-         
+         var orgCode = '${orgCode}';
          var orgLocationId = '${registeredOrgLocationId}'
          
         $("#editPrimaryUserLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
           
           $.ajax({
              type: "POST",
-             url: sourceleadUrl+"/editOrgPrimaryUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgLocationId="+orgLocationId+"&json="+jsonData,
-             success: function(data) {
-                 if(data == "success"){
-                	 location.replace(sourceleadUrl+"/enrolledOrgSummary?orgId="+orgId);
-                 }
+             data: formData,
+             url: sourceleadUrl+"/editOrgPrimaryUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgLocationId="+orgLocationId,
+             success: function(result) {
+                 
+            	 if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+ 	    		    showError(result.responseMessage);
+ 	    		    $("#editPrimaryUserLoading").removeAttr('style');
+ 	    		}
+           		else if (result.response === "AWKWARD") {
+ 	    		    location.href = "/errorPage";
+ 	    		}
+           		else if(result.response === "SUCCESS"){
+           			 $("#editPrimaryUserLoading").removeAttr("style");
+           			 location.replace(sourceleadUrl+"/enrolledOrgSummary?orgCode="+orgCode);
+		        	    }
+           		else if (result.indexOf('Sign In') !== -1) {
+ 					location.replace(sourceleadUrl);
+ 				} else {
+ 				    showError("Operation failed, please try again");
+ 				    $("#editPrimaryUserLoading").removeAttr('style');
+ 				}
+            	 
                  
              }
              });  
