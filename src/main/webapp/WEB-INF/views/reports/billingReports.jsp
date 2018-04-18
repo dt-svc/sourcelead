@@ -203,8 +203,8 @@ function getCustomBillingReports(invoiceType){
 		$.ajax({
 	         type : "GET",
 	         url: sourceleadUrl+"/getBillingReportByFrequency?"+tokenParamName+"="+tokenValue+"&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate,     
-	         success :function(data) {
-	        	  var json = JSON.parse(data);
+	         success :function(json) {
+// 	        	  var json = JSON.parse(data);
 		        	 getBillingReportsChart(invoiceType,json);
 	        	/*  var json = JSON.parse(data);
 	        	 var result = "";
@@ -267,8 +267,8 @@ function getCustomPayableBillingReports(invoiceType){
 		$.ajax({
 	         type : "GET",
 	         url: sourceleadUrl+"/getBillingReportByFrequency?"+tokenParamName+"="+tokenValue+"&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate,     
-	         success :function(data) {
-	        	 var json = JSON.parse(data);
+	         success :function(json) {
+// 	        	 var json = JSON.parse(data);
 	        	 var result = "";
 	        	 result = result +'<div class="project_tabs_inn_head">';
 	        	 result = result +'</div>';
@@ -285,8 +285,8 @@ function getCustomPayableBillingReports(invoiceType){
 	        	 result = result +'</tr>';
 	        	 result = result +'</thead>';	
 	        	 result = result +'<tbody>';
-	        	 for (var i = 0; i < json.length; i++) { 
-	        		 var opt = json[i]; 
+	        	 for (var i = 0; i < json.data.length; i++) { 
+	        		 var opt = json.data[i]; 
 	        		 $("#netIncome").html(opt.netIncome);
 		        	 $("#receivedAmount").html(opt.recievableAmount);
 		        	 $("#payableAmount").html(opt.payableAmount); 
@@ -492,8 +492,8 @@ function getBillingReports(invoiceType){
 			$.ajax({
 		    	type: "GET",
 		    	 url: sourceleadUrl+"/getBillingReportByFrequency?"+tokenParamName+"="+tokenValue+"&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate, 
-		         success: function(data) {
-		        	 var json = JSON.parse(data);
+		         success: function(json) {
+// 		        	 var json = JSON.parse(data);
 		        	 getBillingReportsChart(invoiceType,json);
 		         }
 			});	

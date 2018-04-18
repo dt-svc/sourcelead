@@ -27,7 +27,6 @@ public class OffboardTasksDTO implements Serializable {
 	  
 	  private String taskRepeat;
 	  
-	  @Required(desc = "taskMonths")
 	  private String taskMonths;
 	  
 	  private String taskDays;

@@ -65,7 +65,10 @@ $(document).ready(function(){
  function getLeaveTypesList(){
 	 var locationId = '${SourceLeadWeb_orgLocationId}';
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	 $.get( sourceleadUrl+ "/getLeaveTypesByLocationid?&orgLocationId="+locationId, function(data) {
+	 $.get( sourceleadUrl+ "/getLeaveTypesByLocationid?&orgLocationId="+locationId, function(response) {
+		 if (response.response === "AWKWARD") {
+			    location.href = "/errorPage";
+			} else if (response.response === "SUCCESS") {
 	    	 var result = "";
 	    	 result += '<table id="leaveTypeListTable" class="display" cellspacing="0" width="100%" >';
 	         result += '<thead>';
@@ -80,8 +83,8 @@ $(document).ready(function(){
 	         result += '</thead>';
 	         result += '<tbody>';
 	         
-	    	 for(i=0;i < data.length;i++){
-	    		 var report = data[i];
+	    	 for(i=0;i < response.data.length;i++){
+	    		 var report = response.data[i];
 	    		 result += '<tr>';
 		         result += '    <td>';
 		         if(report.name != null && report.name != '' && report.name != 'undefined'){
@@ -141,6 +144,12 @@ $(document).ready(function(){
        			$(".side_mask").fadeIn(200);
        			$("body").css('overflow-y', 'hidden');
        		});
+       		
+			} else if (response.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+			    showError("Operation failed, please try again");
+			}
      });
  }
  </script>
@@ -191,17 +200,22 @@ function deleteType(typeId){
 		$.ajax({
 		   	type: "POST",
 		   	url: sourceleadUrl+"/deleteLeaveType?"+tokenParamName+"="+tokenValue+"&leaveTypeUUID="+typeId+"&deleteReason="+reason+"&loginUserId="+loginUserId,	    	   
-		    success: function(data) {
-	             if(data == true){
+		    success: function(result) {
+	             if(result.response === "SUCCESS"){
 	 				location.replace(sourceleadUrl+ "/viewLeaveTypes");
-	 			 }
-	             $("#leaveTypeReasonLoad").removeAttr("style");
-	             $("#selector1").removeAttr("style");
-	  			 $("#selector1").css({ display: "block" });
-	  			 $("#msgDiv").html("Leave Type removed");
-	  			 $("#popUp").empty();
-	 			 $(".project_inn_mask").fadeOut(200);
-	             msgFadein();
+	 				$("#leaveTypeReasonLoad").removeAttr("style");
+		             $("#selector1").removeAttr("style");
+		  			 $("#selector1").css({ display: "block" });
+		  			 $("#msgDiv").html("Leave Type removed");
+		  			 $("#popUp").empty();
+		 			 $(".project_inn_mask").fadeOut(200);
+		             msgFadein();
+	 			 }else if (result.indexOf('Sign In') !== -1) {
+	 				location.replace(sourceleadUrl);
+	 			} else {
+	 			    showError("Operation failed, please try again");
+	 			}
+	             
 		    }
 	   });
 	}else{
@@ -266,7 +280,14 @@ function openLeaveTypeSummary(leaveTypeUUID){
 	$.ajax({
 	   	type: "POST",
 	   	url: sourceleadUrl+"/leaveTypeSummary?&leaveTypeUUID="+leaveTypeUUID,	    	   
-	    success: function(report) {
+	    success: function(response) {
+	    	if (response.response === "AWKWARD") {
+			    location.href = "/errorPage";
+			} else if (response.response === "SUCCESS") {	    	
+				if(response !=null && response !=''){
+					 for (var i=0; i<response.data.length; i++)
+						{
+			        		 var report = response.data[i];
 	    	var result = "";
 			result +='<div class="new_side_wrap">';
 			result +='  <div class="clients_side_wrap_inn">';
@@ -569,7 +590,8 @@ function openLeaveTypeSummary(leaveTypeUUID){
 			result +='  </div>';
 			result +='  </div>';
 			result +='</div>';
-			
+						}
+				}
 			$("#typeSummaryDiv").empty();
 			$("#typeSummaryDiv").append(result);
 			$(".new_side_wrap").addClass("new_side_wrap_active");
@@ -578,6 +600,12 @@ function openLeaveTypeSummary(leaveTypeUUID){
 				$(".side_mask").fadeOut(200);
 				$("body").css('overflow-y', 'auto');
 			});	
+	    }else if (response.indexOf('Sign In') !== -1) {
+			location.replace(sourceleadUrl);
+		} else {
+		    showError("Operation failed, please try again");
+		}
+	    	
 	    }
 	   });
 }
