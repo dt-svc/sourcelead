@@ -73,6 +73,8 @@ function errRemoveClientContact(){
 	<div class="content-area content-new clearfix">
 		<div id="invoiceLoading"></div>
 		<form:form id="invoice_form" name="invoice_form" method="post">
+		<input type="hidden" name="clientOrgRelation" value="createInvoice"/>
+		<input type="hidden" name="clientContact" value="createInvoice"/>
 			<div class="clearfix form-horizontal inner-content">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
@@ -81,7 +83,7 @@ function errRemoveClientContact(){
 				              <div class="col-md-9 select-field chooRadius" id="errClient">
                					<div class="input-group col-md-10 pull-left">				              
 
-				                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();getPaymentTerms();" data-validation="required" field-name="Client">             
+				                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();getPaymentTerms();" data-validation="required" field-name="clientName">             
 				                </select>
 				                <span class="input-group-addon cursorPointer bg-blue" onclick="getClients();createInvoiceEmptyClientContact();"><i class="fa fa-refresh "></i></span>
 				                </div>
@@ -1027,9 +1029,9 @@ function cancelDelDoc(){
 	   $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getInvoiceAssociatesList?"+tokenParamName+"="+tokenValue+"&selectedAssociates="+selectedAssociates+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
-	        success: function(data) {
+	        success: function(json) {
 	        	
-	        	if(data != null && data != 'undefined' && data != "" && data != '[]'){
+	        	if(json.data != null && json.data != 'undefined' && json.data != "" && json.data != '[]'){
 	        		
 	        		
 	        		    var result = '';
@@ -1046,10 +1048,10 @@ function cancelDelDoc(){
 	             		result = result +'           </thead>';
 	                    result = result +"<tbody>"; 
 	                    
-	                    var json = JSON.parse(data);
+// 	                    var json = JSON.parse(data);
 	                    
-	                    for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i]; 
+	                    for (var i = 0; i < json.data.length; i++) { 
+	                    	 var opt = json.data[i]; 
 	                    	 var mobilephone = '';
 	                    	 var associateName
 	                    	 
@@ -1225,14 +1227,14 @@ function pagination(){
 			  $.ajax({
 			    	type: "GET",
 			        url: sourceleadUrl+"/getSowcontractListByAssociateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
-			        success: function(data) {
+			        success: function(json) {
 			        	var result = "";
 			        	result = result + "<option value='' >select sow</option>"
-			        	if(data != null && data != ''){
-			        		var json = JSON.parse(data);
-				        	 for (var i=0; i<json.length; i++)
+			        	if(json.data != null && json.data != ''){
+// 			        		var json = JSON.parse(data);
+				        	 for (var i=0; i<json.data.length; i++)
 							{
-					        		var opt = json[i];
+					        		var opt = json.data[i];
 					        		 var selected = '';
 					        		 if(contractId != null && contractId != "" && contractId !="undefined" && contractId == opt.id){
 					        			selected = 'selected';
@@ -1405,9 +1407,9 @@ function pagination(){
 		   $.ajax({
 				type : "GET",
 				url: sourceleadUrl+"/getConversionExchangeRate?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
-				success :function(data) {
-					if(data !='' && data != 'undefined' && data != null){
-						var json = JSON.parse(data);
+				success :function(json) {
+					if(json.data !='' && json.data != 'undefined' && json.data != null){
+// 						var json = JSON.parse(data);
 						$("#exchangeRate").html(json.exchangeRate);
 						$("#exchangeCurrency").html(json.exchangeCurrency);
 						$("#vendorCurrencyCode").html(json.vendorCurrencyCode);
@@ -1814,9 +1816,9 @@ function getSowRate(id){
 	$.ajax({
     	type: "GET",
     	url: sourceleadUrl+"/getSowRateByContractId?"+tokenParamName+"="+tokenValue+"&contractId="+contractId,
-        success: function(data) {
-        	 if(data != null && data != ''){
-        		var json = JSON.parse(data);
+        success: function(json) {
+        	 if(json.data != null && json.data != ''){
+//         		var json = JSON.parse(data);
 	        	 $ ('#'+id+'rate').val(json.billingAmount);
 	        	 totalHoursCalculateAmount(id);
         	} 
@@ -1944,13 +1946,13 @@ function getClientContacts(clientContactId){
 	$.ajax({
 	type : "GET",
 	url: sourceleadUrl+"/getClientContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
-	success :function(data) {
-	var json = JSON.parse(data);
+	success :function(json) {
+// 	var json = JSON.parse(data);
 	var output = "";
 	output = output + "<option value=''>Select Client Contact</option>";
-	for (var i=0; i<json.length; i++)
+	for (var i=0; i<json.data.length; i++)
 	{
-	var opt = json[i];
+	var opt = json.data[i];
 	var selected = "";
 	if(clientContactId != null && clientContactId != "" && clientContactId !="undefined" && clientContactId == opt.spocUserId){
 		selected = 'selected';
@@ -2059,19 +2061,29 @@ function saveInvoice(saveType){
 	     		$(".project_inn_mask").fadeIn(200);
 		        }else{
 		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		        	  $.post(sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=Receivable", formData, function(data) {
-		  				if(data == "success"){
-		  					$("#invoiceLoading").removeAttr("style");
-    		     			location.replace(sourceleadUrl+"/invoiceList");
-    		     			$("#selector1").removeAttr("style");
-				    		$("#selector1").css({ display: "block" });
+		        	  $.post(sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=Receivable", formData, function(result) {
+		        		  if (result && result.response === "INVALID_DATA") {
+		          		    showError(result.responseMessage);
+		          		} else if (result.response === "AWKWARD") {
+		          		    location.href = "/errorPage";
+		          		} else if (result.response === "SUCCESS") {
+			  					$("#invoiceLoading").removeAttr("style");
+	    		     			location.replace(sourceleadUrl+"/invoiceList");
+	    		     			$("#selector1").removeAttr("style");
+					    		$("#selector1").css({ display: "block" });
 				    		if(saveType == 'SENT'){
 				    			$("#msgDiv").html("Successfully you have sent a Invoice..");
 				    		}else if(saveType == 'DRAFT'){
 				    			$("#msgDiv").html("Invoice saved Successfully..");
 				    		}
     		     			msgFadein();
-		  				}
+		          		} else if (result.indexOf('Sign In') !== -1) {
+		          			location.replace(sourceleadUrl);
+		          		} else {
+		          		    showError("Operation failed, please try again");
+		          		}
+		        		  $("#invoiceLoading").hide();
+		        		  
 		  			   }); 
 		        	  
 		    	         return true; 
