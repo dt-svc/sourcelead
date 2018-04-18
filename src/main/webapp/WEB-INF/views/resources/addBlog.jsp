@@ -256,8 +256,8 @@ function removeBlogImg(blogId){
 </script>
   
 <script type="text/javascript">
-$(function() { 
-	tagIt("blogKeywords", 'Enter Keywords And Press Enter-Key Or Comma(,) Or Space To Add New Keywords', 'tagItBykeyForEmails','skills');
+$(function() {
+	tagIt("blogKeywords", 'Enter Keywords And Press Enter-Key Or Comma(,) Or Space To Add New Keywords', 'tagItBykeyForSkills','skills');
 });
 </script>
  
