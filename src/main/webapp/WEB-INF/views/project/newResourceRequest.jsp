@@ -976,7 +976,7 @@ function loadRequestDetails(){
 }
 </script>
 <script>
-function loadResourceRequestsList(newResourceRequestList,estimatedHours,estimatedBudget,requestedResources){
+function loadResourceRequestsList(newResourceRequestList,estimatedHoursTotal,estimatedBudgetTotal,requestedResources){
 // 	 $("#maxRecCount").val(newResourceRequestList.length + 1);
 	removeValidation();
 	 for(var i=0; i<newResourceRequestList.length; i++){
@@ -1148,9 +1148,10 @@ function loadResourceRequestsList(newResourceRequestList,estimatedHours,estimate
 			totalEstimatedBudget(maxRowNum);			
 	 }
 	     $("input[name = 'maxRowCount']").val(newResourceRequestList.length);
+	     
 	    $("#totalResourcesId").val(requestedResources);
-		$("#totalEstHours").val(estimatedHours);
-		$("#totalEstBudget").val(estimatedBudget);
+		$("#totalEstHours").val(estimatedHoursTotal);
+		$("#totalEstBudget").val(estimatedBudgetTotal);
 }
 </script>
 <script>
