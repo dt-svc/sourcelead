@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -133,10 +134,12 @@ public class SourceleadBlogServiceImpl implements SourceleadBlogService{
 			}
 			
 			if(sb.getDescription() != null) {
-			sbDTO.setDescription(sb.getDescription());
+			String des = sb.getDescription().replaceAll("\\<.*?\\>", "");
+			sbDTO.setDescription(des);
 			}
 			
 			if(sb.getShortDescription() != null) {
+				
 				sbDTO.setShortDescription(sb.getShortDescription());
 			}
 			if(sb.getCategoryId() != null) {

@@ -5,10 +5,15 @@ import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.TreeMap;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntries;
+import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.service.ExpensesApprovalService;
 
 public class ExpensesDTOConverter {
 

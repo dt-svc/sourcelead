@@ -56,12 +56,20 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	
 	@Override
 	@Transactional
-	public Boolean getInvoiceByInvoiceId(String invoiceId, Long orgLocationsId) throws Exception {
+	public Boolean getInvoiceByInvoiceId(String invoiceId, Long orgLocationsId, String invoiceType) throws Exception {
 		
 			Session session = this.sessionFactory.getCurrentSession();
+			String query=null;
+			if(invoiceType.equalsIgnoreCase("payables")){
 			
-			String query = "from Invoice invoice where invoice.orgLocation.id = :orgLocationsId and invoice.invoiceId = :invoiceId and invoice.status='1'";
-			List<Invoice> invoiceList = session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setString("invoiceId", invoiceId).list();
+			query = "from Invoice invoice where invoice.orgLocation.id = :orgLocationsId and invoice.invoiceId = :invoiceId and invoice.invoiceType = 'Payables'  and invoice.status='1'";
+			}
+			else {
+				
+			query = "from Invoice invoice where invoice.orgLocation.id = :orgLocationsId and invoice.invoiceId = :invoiceId and invoice.invoiceType = 'Receivable' and invoice.status='1'";
+				
+			}
+			List<Invoice> invoiceList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setString("invoiceId", invoiceId).list();
 
 					if (invoiceList.size() > 0) {
 						return true;

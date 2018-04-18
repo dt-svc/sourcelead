@@ -211,8 +211,11 @@ function uploadFileDoc(){
 				$this.next().css({'width': '100%'});
 
       });
-$("#blogKeywords").trigger("chosen:updated");
-$("#publishOn").datetimepicker(); 
+   $("#blogKeywords").trigger("chosen:updated");
+   // current Date And Time Script.
+	$('#publishOn').datetimepicker({
+		minDate: new Date()
+	});
 
 </script>
 	
@@ -253,8 +256,8 @@ function removeBlogImg(blogId){
 </script>
   
 <script type="text/javascript">
-$(function() { 
-	tagIt("blogKeywords", 'Enter Keywords And Press Enter-Key Or Comma(,) Or Space To Add New Keywords', 'tagItBykeyForEmails','skills');
+$(function() {
+	tagIt("blogKeywords", 'Enter Keywords And Press Enter-Key Or Comma(,) Or Space To Add New Keywords', 'tagItBykeyForSkills','skills');
 });
 </script>
  
