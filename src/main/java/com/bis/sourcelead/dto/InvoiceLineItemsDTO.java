@@ -1,12 +1,20 @@
 package com.bis.sourcelead.dto;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class InvoiceLineItemsDTO {
 	private String candidateName;
 	private String candidate;
 	private String lineItemId;
+	
+	@Required (desc = "Description")
 	private String Description;
+	
 	private String sow;
+	
+	@Required (desc = "Rate")
 	private String rate;
+	
 	private String totalHours;
 	private String amount;
 	private String invoiceStartDate;

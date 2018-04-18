@@ -12,6 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "ORG_LICENSE_PAYMENT_TRANSACTION_HISTORY")
@@ -63,6 +66,10 @@ public class OrgLicensePaymentTransactionHistory implements Serializable{
 	
 	@Column(name = "TRANSACTION_DATE")
 	private Date transactionDate;
+	
+	@Transient
+	@JsonProperty
+	private String subscriptionType;
 	
 	
 
@@ -176,6 +183,14 @@ public class OrgLicensePaymentTransactionHistory implements Serializable{
 
 	public void setPaymentId(String paymentId) {
 		this.paymentId = paymentId;
+	}
+
+	public String getSubscriptionType() {
+		return subscriptionType;
+	}
+
+	public void setSubscriptionType(String subscriptionType) {
+		this.subscriptionType = subscriptionType;
 	}
 	
 	

@@ -16,8 +16,10 @@ public class TimesheetEntryDetailsDTO implements Serializable{
 	
 	private List<ProjectMembersDTO> projectMembersList;
 	
+	@Required(desc="projectMemberId")
 	private Long projectMemberId;
 	
+	@Required(desc="projectId")
 	private Long projectId;
 	
 	private Long masterCandidateId;
@@ -34,6 +36,7 @@ public class TimesheetEntryDetailsDTO implements Serializable{
 	
 	private String currentTimeSubFrequency;
 	
+	@Required(desc = "timesheetSubmission")
 	private TimeSheetSubmissionDTO timesheetSubmission;
 	
 	private String timesheetFor;
