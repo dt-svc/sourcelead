@@ -80,6 +80,9 @@ public class PaymentController {
 	
 	@Value("${paymentMode}")
 	private String paymentMode;
+	
+	@Value("${env}")
+	private String environment;
 
 
     @RequestMapping("/license")
@@ -192,6 +195,11 @@ public class PaymentController {
                     
                     try {
 						commonUtil.paymentAcknowledgementMail(paymentHistory, loginUser, org, orgLocations);
+						
+						if (environment.equalsIgnoreCase("prod")) {
+							commonUtil.paymentAcknowledgementDetailsMail(paymentHistory, loginUser, org, orgLocations);
+						}
+						
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
