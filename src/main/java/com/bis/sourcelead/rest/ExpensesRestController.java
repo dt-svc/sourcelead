@@ -145,6 +145,7 @@ public class ExpensesRestController {
 		 }catch(Exception e) {
 			  model.addObject("AWKWARD", true);
 			  model.setViewName("expenses/expensesEmployeeRedefined");
+			  e.printStackTrace();
 		 }
 			return model;
 	}
@@ -188,13 +189,23 @@ public class ExpensesRestController {
                         }
                     }
                 }
-                
+        		Submission_Status submissionStatus = eah.getExpenseStatus();
+        		expenses.setExpenseStatus(submissionStatus);
             }
             /*if(expenses.getOrgRelationId() != null && !expenses.getOrgRelationId().isEmpty()){
     			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(Long.parseLong(expenses.getOrgRelationId()));
     			expenses.setOrgRelationUUID(orgRelations.getUUID());
     		}*/
             expensesDTOList.add(ExpensesDTOConverter.getExpensesDTOFromExpenses(expenses,new ExpensesDTO()));
+            for(ExpensesDTO expDate:expensesDTOList) {
+        		if(expenses.getStartDate() != null){
+        			expDate.setStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenses.getStartDate()));	
+        		}
+        		
+        		if(expenses.getEndDate() != null){
+        			expDate.setEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenses.getEndDate()));	
+        		}
+            }
         }
         response.setData(expensesDTOList);
         response.setRecordsFiltered(expensesList.getRecordsFiltered());
