@@ -12,6 +12,8 @@ private static final long serialVersionUID = 1L;
 	
 	private String tabIcon;
 	
+	private String isTabSubscribed;
+	
 
 	public long getId() {
 		return id;
@@ -35,5 +37,13 @@ private static final long serialVersionUID = 1L;
 
 	public void setTabIcon(String tabIcon) {
 		this.tabIcon = tabIcon;
+	}
+
+	public String getIsTabSubscribed() {
+		return isTabSubscribed;
+	}
+
+	public void setIsTabSubscribed(String isTabSubscribed) {
+		this.isTabSubscribed = isTabSubscribed;
 	}
 }

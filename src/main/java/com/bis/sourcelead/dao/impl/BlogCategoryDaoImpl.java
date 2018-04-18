@@ -96,7 +96,7 @@ public class BlogCategoryDaoImpl implements BlogCategoryDao {
 		      .append("OR bc.description like '%" + blogCategoryDTO.getSearchValue() + "%') ) ");
 		}
 
-		String query = "from BlogCategory bc where bc.status = 1 " + query1 + "";
+		String query = "from BlogCategory bc where bc.status = 1 " + query1 + " ORDER BY bc.id DESC ";
 		List<BlogCategory> blogCategoryList = session.createQuery(query.toString())
 				.setFirstResult(blogCategoryDTO.getStart()).setMaxResults(blogCategoryDTO.getLength()).list();
 
