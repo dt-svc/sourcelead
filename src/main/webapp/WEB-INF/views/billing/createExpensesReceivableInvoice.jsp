@@ -155,6 +155,17 @@ function checkBox(){
                   Invoice for Expenses
               </div>
             </div>
+            <div class="form-group">
+              <label class="col-md-3">Payment Account<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-9 select-field" id="projectMemberIdDiv">
+                <select class="form-control" id="paymentAccountId" name="paymentAccountId" field-name="paymentAccountId Name">
+                    <option>--Select Account--</option>
+                    <c:forEach items="${paymentAccountList}" var="p">
+                        <option value="${p.id}" ${p.defaultAccount ? 'selected="selected"' : ""}>${p.accountType == "WEPAY" ? p.email.concat(" (WePay)") : p.accountNumber.concat(" (").concat(p.bankName).concat(")")}</option>
+                    </c:forEach>
+                </select>
+              </div>
+            </div>
             
               <div id="associate-expenses" style="display: none">
                <div class="form-group">
