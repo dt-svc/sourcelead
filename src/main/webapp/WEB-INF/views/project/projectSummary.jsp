@@ -145,8 +145,18 @@ window.onload = function () {
 		    $("#projectNameById").append(projectName); 
 		  	if(tabType != null && tabType != '' && tabType != 'undefined'){
 				 if(tabType == "tasks"){
-					 document.getElementById('projectTaskTab').className = 'current'
-					 projectTask(projectId, status)
+					 if('${isClientOrgActive}' == "N" || '${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){   
+				  		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">' ; 
+						  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">' 
+ 									document.getElementById('projectTaskTab').className = 'current'
+									projectTask(projectId, status);
+						  	'</sec:authorize>';
+						  	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">' 
+									document.getElementById('projectTaskTab').className = 'current'
+									projectTask(projectId, status);
+						  	'</sec:authorize>';
+					  	'</sec:authorize>';
+				  	 }
 				 }else  if(tabType == "projectMembers"){
 					 document.getElementById('requestResources').className = 'current'
 				      $( "#details" ).removeClass( "current" );
