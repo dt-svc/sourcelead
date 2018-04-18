@@ -1081,5 +1081,7 @@ public class Constants {
 	
 	public static final String ROLE_GUEST_VENDOR = "ROLE_GUEST_VENDOR";
 	public static final String ROLE_GUEST_CLIENT = "ROLE_GUEST_CLIENT";
+	
+	public static final String LICENSE_PAYMENT_ACKNOWLEDGEMENT = "licensePaymentAcknowledgement";
 
 }

@@ -24,6 +24,7 @@ import com.bis.sourcelead.entity.OrgLicensePaymentTransactionHistory;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLicenseSubscriptionHistory;
 import com.bis.sourcelead.entity.OrgLicenseSubscriptionTypes;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgLicensePaymentTransactionHistoryService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionHistoryService;
@@ -168,6 +169,10 @@ public class PaymentController {
                 Payment createdPayment = payment.execute(apiContext, paymentExecution);
                 if (createdPayment != null && createdPayment.getState().equalsIgnoreCase("approved")) {
                 	
+                	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(req, "user");
+                	Org org = (Org) SourceLeadSessionManager.getSessionAttribute(req, "org");
+                	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
+                	
                 	req.getSession().setAttribute("createdPayment", createdPayment);
                     OrgLicensePaymentTransactionHistory paymentHistory = getTransactionPaymentHistory(createdPayment,req);
                     try {
@@ -183,6 +188,14 @@ public class PaymentController {
                     Transaction transactions = createdPayment.getTransactions().iterator().next();
                     Item item = transactions.getItemList().getItems().iterator().next();
                     req.getSession().setAttribute("subscriptionType", item.getName());
+                    paymentHistory.setSubscriptionType(item.getName());
+                    
+                    try {
+						commonUtil.paymentAcknowledgementMail(paymentHistory, loginUser, org, orgLocations);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+                    
                     return "redirect:/app/payment-success.html";
                 } else {
                     return "redirect:/app/payment-failed.html";
