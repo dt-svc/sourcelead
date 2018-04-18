@@ -18,6 +18,6 @@ public @interface Required {
     public String dependsOn() default "";
     public String[] parentValue() default "";
     public boolean onlyDependsContainsValue() default true;
-   // public boolean timesheetListValidate() default true;
-    //public boolean timesheetHours() default true;
+    public boolean timesheetListValidate() default false;
+    public boolean timesheetHours() default false;
 }

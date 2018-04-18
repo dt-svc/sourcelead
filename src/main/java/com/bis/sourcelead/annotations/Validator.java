@@ -11,6 +11,7 @@ import javax.mail.internet.InternetAddress;
 import org.apache.commons.lang3.StringUtils;
 
 import com.bis.sourcelead.dto.TimesheetEntriesDTO;
+import com.bis.sourcelead.dto.TimesheetEntryDetailsDTO;
 
 /**
  *
@@ -26,12 +27,15 @@ public class Validator {
 					try {
 						field.setAccessible(true);
 						boolean flag = verifyParentInfo(object, fields, field);
-						if (flag && (field.get(object) == null || field.get(object).toString().isEmpty() || "undefined".equalsIgnoreCase(field.get(object).toString()))) {
+				        boolean isTsHours = field.getAnnotation(Required.class).timesheetHours();
+							
+						if (!isTsHours && flag && (field.get(object) == null || field.get(object).toString().isEmpty() || "undefined".equalsIgnoreCase(field.get(object).toString()))) {
 							object.getClass().getMethod("setErrorKey", String.class).invoke(object, "error.required");
 							object.getClass().getMethod("setParams", new Class[] { String[].class }).invoke(object,
 									new Object[] { new String[] { field.getAnnotation(Required.class).desc() } });
 							return false;
-						} else if (field.getAnnotation(Required.class).alphaNumericOnly()) {
+						}
+						else if (field.getAnnotation(Required.class).alphaNumericOnly()) {
 							String value = field.get(object).toString();
 							String pattern = "^[a-zA-Z0-9]*$";
 							if (value.matches(pattern)) {
@@ -41,7 +45,64 @@ public class Validator {
 							object.getClass().getMethod("setParams", new Class[] { String[].class }).invoke(object,
 									new Object[] { new String[] { field.getAnnotation(Required.class).desc() } });
 							return false;
+						}else if(field.getAnnotation(Required.class).timesheetListValidate()) {
+							Object timesheetDayEntries = field.get(object);
+							@SuppressWarnings("unchecked")
+							List<TimesheetEntriesDTO> timeEntryList = (ArrayList<TimesheetEntriesDTO>) timesheetDayEntries;
+							if(timeEntryList != null  && !timeEntryList.isEmpty() && timeEntryList.size() > 0) {
+								List<String> hoursList = new ArrayList<>();
+								for(TimesheetEntriesDTO time:timeEntryList) {
+									if(StringUtils.isNotEmpty(time.getHours())) {
+									hoursList.add(time.getHours());
+									}
+								}
+									if(hoursList.size() >= 1) {
+										return true;
+									}else {
+										return false;
+									}
+							}else {
+								return false;
+							}
+						}else if(field.getAnnotation(Required.class).timesheetHours()) {
+							Object timesheetHours = field.get(object);
+							boolean returnValue = true;
+							if(timesheetHours!= null) {
+								if(timesheetHours.toString().contains(":")) {
+									String[] time =  timesheetHours.toString().split(":");
+									float hours = 0;
+									float minutes =  0;
+									if(!time[0].isEmpty() && time[0]!= null && StringUtils.isNotEmpty(time[0])) {
+										 hours = Float.parseFloat(time[0]);
+									}
+									if(!time[0].isEmpty() && time[0]!= null && StringUtils.isNotEmpty(time[0])) {
+										 minutes = Float.parseFloat(time[1]);
+									}
+									float wthHours = hours;
+									float wthHoursValue = (int) wthHours;
+									float wthMinutesValue = wthHours - wthHoursValue;
+									float totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
+									float dayHoursInMinutes = 24*60;
+									
+									float totalMinutes = totalWthMinutes + minutes;
+									
+									if(totalMinutes > dayHoursInMinutes) {
+										returnValue =  false;
+									}
+									
+								}
+							}
+							return returnValue;
 						}
+						
+						
+						
+						
+						
+						
+						
+						
+						
 						
 					} catch (IllegalArgumentException | IllegalAccessException ex) {
 						return false;
