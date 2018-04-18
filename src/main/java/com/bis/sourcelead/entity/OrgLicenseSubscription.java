@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.bis.sourcelead.dto.TabsDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -106,6 +107,15 @@ public class OrgLicenseSubscription implements Serializable{
     @Transient
     @JsonProperty
     private String showRenewal;
+    
+    
+    @Transient
+    @JsonProperty
+    private List<Long> tabIdsList;
+    
+    @Transient
+    @JsonProperty
+    private List<TabsDTO> tabsDTOList;
     
     
 
@@ -293,4 +303,22 @@ public class OrgLicenseSubscription implements Serializable{
 	public void setShowRenewal(String showRenewal) {
 		this.showRenewal = showRenewal;
 	}
+
+	public List<Long> getTabIdsList() {
+		return tabIdsList;
+	}
+
+	public void setTabIdsList(List<Long> tabIdsList) {
+		this.tabIdsList = tabIdsList;
+	}
+
+	public List<TabsDTO> getTabsDTOList() {
+		return tabsDTOList;
+	}
+
+	public void setTabsDTOList(List<TabsDTO> tabsDTOList) {
+		this.tabsDTOList = tabsDTOList;
+	}
+
+	
 }

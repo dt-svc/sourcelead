@@ -76,6 +76,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Shift;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
@@ -93,6 +94,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RestrictDayService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.ShiftService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
@@ -195,6 +197,9 @@ public class LeaveManagementRestController {
 	
 	@Autowired
 	private ProjectTasksService projectTasksService;
+	
+	@Autowired
+	TimeZoneService timeZoneService;
 	/**
 	 * returns Pending leaves jsp
 	 * @param request
@@ -480,11 +485,15 @@ public class LeaveManagementRestController {
 	 * @param request
 	 * @param response
 	 * @return ModelAndView
+	 * @throws Exception 
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/addShift")
-	public ModelAndView addShiftJsp(HttpServletRequest request,HttpServletResponse response) {
+	public ModelAndView addShiftJsp(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		  Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		   ModelAndView model = new ModelAndView();
+		   model.addObject("timezone", timezone.getTimeZoneId());
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.setViewName("leavemanagement/addShift");
 	       return model;
@@ -769,9 +778,12 @@ public class LeaveManagementRestController {
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = "/editleaveshift")
 	public ModelAndView editShift(@RequestParam (value = "shiftUUID", required = false )String shiftUUID,HttpServletRequest request,HttpServletResponse response) throws Exception{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		ModelAndView model = new ModelAndView();
 		
 	    Shift shift = shiftService.getShiftById(shiftUUID);
+	    model.addObject("timezone", timezone.getTimeZoneId());
 		model.addObject("shift", shift);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("leavemanagement/addShift");
