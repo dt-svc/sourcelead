@@ -25,9 +25,9 @@ INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES 
 INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Level 3','Level 3','EmploymentLevel');
 INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Level 4','Level 4','EmploymentLevel');
 
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('H1B Filing (Cap/Transfer)','H1B Filing (Cap/Transfer)','VisaCategory');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('H1B Filing (Amendment)','H1B Filing (Amendment)','VisaCategory');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('H1B Filing (Extension)','H1B Filing (Extension)','VisaCategory');
+INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('H1B Filing (Cap/Transfer)(United States)','H1B Filing (Cap/Transfer)','VisaCategory');
+INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('H1B Filing (Amendment)(United States)','H1B Filing (Amendment)','VisaCategory');
+INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('H1B Filing (Extension)(United States)','H1B Filing (Extension)','VisaCategory');
 
 
 INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('C2C','C2C','EmploymentType');

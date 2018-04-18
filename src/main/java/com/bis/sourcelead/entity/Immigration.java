@@ -57,6 +57,14 @@ public class Immigration implements Serializable {
 	private OrgLocations orgLocationId;
 	
 	@ManyToOne
+	@JoinColumn(name = "ATTORNEY_LOCATION_ID")
+	private OrgLocations attorneyOrgLocationId;
+	
+	@ManyToOne
+	@JoinColumn(name = "SPOC_USER_ID")
+	private User spocUserId;
+	
+	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID")
 	private Candidate candidate;
 	
@@ -279,6 +287,22 @@ public class Immigration implements Serializable {
 
 	public void setGeneratedId(String generatedId) {
 		this.generatedId = generatedId;
+	}
+
+	public OrgLocations getAttorneyOrgLocationId() {
+		return attorneyOrgLocationId;
+	}
+
+	public void setAttorneyOrgLocationId(OrgLocations attorneyOrgLocationId) {
+		this.attorneyOrgLocationId = attorneyOrgLocationId;
+	}
+
+	public User getSpocUserId() {
+		return spocUserId;
+	}
+
+	public void setSpocUserId(User spocUserId) {
+		this.spocUserId = spocUserId;
 	}
 
 	
