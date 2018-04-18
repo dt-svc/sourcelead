@@ -673,10 +673,19 @@
 						.attr(
 								'style',
 								'position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-				$.post(sourceleadUrl + "/saveNewLeaveType?&orgLocationId=" + locationId	+ "&loginUserId=" + loginUserId, formData, function(data) {
-					if (data == "success") {
-						location.replace(sourceleadUrl + "/viewLeaveTypes");
-					}
+				$.post(sourceleadUrl + "/saveNewLeaveType?&orgLocationId=" + locationId	+ "&loginUserId=" + loginUserId, formData, function(result) {
+					if (result && result.response === "INVALID_DATA") {
+		    		    showError(result.responseMessage);
+		    		} else if (result.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    		} else if (result.response === "SUCCESS") {
+		    			location.replace(sourceleadUrl + "/viewLeaveTypes");
+		    		} else if (result.indexOf('Sign In') !== -1) {
+		    			location.replace(sourceleadUrl);
+		    		} else {
+		    		    showError("Operation failed, please try again");
+		    		}
+					 $("#loading").hide();
 				});
 
 				return true;
