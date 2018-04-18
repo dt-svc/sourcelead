@@ -1442,10 +1442,12 @@ public class LeaveManagementRestController {
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
 			if (loginOrgLocation != null) {
-				List<LeaveType> leaveType = new ArrayList<>();
-				leaveType = (List<LeaveType>) leaveTypeService.getLeaveTypeByUUID(leaveTypeDTO.getLeaveTypeUUID());
-				if (leaveType != null) {
-					responseList.setData(leaveType);
+				LeaveType leaveType = new LeaveType();
+				List<LeaveType> list = new ArrayList<>();
+				leaveType =  leaveTypeService.getLeaveTypeByUUID(leaveTypeDTO.getLeaveTypeUUID());
+				list.add(leaveType);
+				if (list != null) {
+					responseList.setData(list);
 					responseList.setResponse(Result.SUCCESS.name());
 					responseList.setResponseMessage(Result.SUCCESS.getValue());
 				}
@@ -1460,6 +1462,9 @@ public class LeaveManagementRestController {
 		}
 
 		return responseList;
+					
+		/*LeaveType leaveType = leaveTypeService.getLeaveTypeByUUID(leaveTypeDTO.getLeaveTypeUUID());
+		return leaveType;*/
 	}
 
 	/**
