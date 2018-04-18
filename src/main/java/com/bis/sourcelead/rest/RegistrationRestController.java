@@ -536,6 +536,26 @@ public class RegistrationRestController {
      }
 	
 	
+	@RequestMapping(value = "/app/getUpgradeInvoiceRateBySubscriptionRateAndUserSubscription" , method = RequestMethod.POST)
+	   public Double getUpgradeInvoiceRateBySubscriptionRateAndUserSubscription(@RequestParam(value="subscriptionType", required=true) Long subscriptionType,
+			   @RequestParam(value="userSubscription", required=true) Long userSubscription,@RequestParam(value="subscriptionUUID", required=true) String subscriptionUUID,
+			   HttpServletRequest request) throws Exception {
+		Double invoiceAmount = 0d;
+		OrgLicenseSubscriptionPrice subscriptionPrice = orgLicenseSubscriptionPriceService.getOrgLicenseSubscriptionPriceBySubscriptionTypeAndUserType(subscriptionType, userSubscription);
+		OrgLicenseSubscription subscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByUUID(subscriptionUUID);
+	
+		if(subscriptionPrice != null) {
+			if(subscription.getSubscriptionType().getId().equals(subscriptionType) && subscription.getUserSubscriptionType().getId().equals(userSubscription)) {
+				invoiceAmount = subscriptionPrice.getSubscriptionRate();
+			}else {
+				invoiceAmount = subscription.getInvoiceAmount()+subscriptionPrice.getSubscriptionRate();
+			}
+		}
+		
+		return invoiceAmount;
+		
+  }
+	
 	@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	@RequestMapping(value = "/app/saveOrgLocationSubscription" , method = RequestMethod.POST)
 	   public String saveOrgLocationSubscription(OrgLicenseSubscriptionDTO orgLicenseSubscriptionDTO,
@@ -556,7 +576,24 @@ public class RegistrationRestController {
 		
      }
 	
-	
+	@RequestMapping(value = "/app/upgradeOrgLocationLicenseSubscription" , method = RequestMethod.POST)
+	   public String upgradeOrgLocationLicenseSubscription(OrgLicenseSubscriptionDTO orgLicenseSubscriptionDTO,
+			   @RequestParam(value="orgId", required=true) Long orgId,HttpServletRequest request) {
+		
+		if(Validator.validate(orgLicenseSubscriptionDTO)){
+			try {
+				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				orgLicenseSubscriptionService.upgradeLicenseSubscription(orgLicenseSubscriptionDTO, loginUser, orgId, orgLicenseSubscriptionDTO.getLicenseUUID());
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return "subscribeList";
+		}else {
+			return "DataMissing";
+		}
+		
+  }
 	
 	
 	
@@ -579,10 +616,6 @@ public class RegistrationRestController {
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	 @RequestMapping(value = "/app/createUesrBySourceleadAdmin" , method = RequestMethod.POST)
 	 public  String createUser(AddUserDTO addUserDTO, CandidateDTO candidateDTO,HttpServletRequest request) throws Exception {
-		 	
-		 /*json = "{"+json+"}";
-		 
-		 JSONObject jsonObj = new JSONObject(json);*/
 		 	
 	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	 registrationService.addUserBySourcelead(user, addUserDTO,candidateDTO);

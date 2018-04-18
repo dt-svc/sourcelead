@@ -74,6 +74,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -918,12 +919,13 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 			 experience = "Not Mentioned";
 		 }
 		 
-		 if(!isNullOrEmpty(requirement.getCity())){
-			 location = locationBuilder.append(requirement.getCountry()).append(", ").append(requirement.getState()).append(", ").append(requirement.getCity()).toString();
-		 }else if(!isNullOrEmpty(requirement.getState()) && isNullOrEmpty(requirement.getCity())){
-			 location = locationBuilder.append(requirement.getCountry()).append(", ").append(requirement.getState()).append(", ").toString();
-		 }else{
-			 location = locationBuilder.append(requirement.getCountry()).toString();
+		 if(requirement.getRequirementLocations() != null){
+			 for(RequirementLocations reqLoc : requirement.getRequirementLocations()) {
+				 locationBuilder.append(reqLoc.getCity()).append(", ");
+			 }
+			 location = locationBuilder.toString().replaceAll("\\s*,\\s*$", "");
+		 }else {
+			 location = "---";
 		 }
 		 
 		 emailMessage.setToEmail(user.getEmail());

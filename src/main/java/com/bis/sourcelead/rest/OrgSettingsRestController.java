@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -44,11 +45,13 @@ import com.bis.sourcelead.dto.OrgSettingsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.dto.SourceleadRolesDTO;
+import com.bis.sourcelead.dto.TabsDTO;
 import com.bis.sourcelead.dto.WhiteListIPAddressDTO;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
+import com.bis.sourcelead.entity.OrgLicenseSubscriptionTypes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrglocationSignatory;
@@ -57,6 +60,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SourceleadSignature;
 import com.bis.sourcelead.entity.Tabs;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.WhiteListIPAddress;
@@ -66,6 +70,7 @@ import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionTypesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
@@ -75,11 +80,14 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.SourceleadSignatureService;
 import com.bis.sourcelead.service.TabsService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.WhiteListIpAddressService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.ibm.icu.util.Calendar;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -123,9 +131,12 @@ public class OrgSettingsRestController {
 	OrgLicenseSubscriptionService orgLicenseSubscriptionService;
 	@Autowired
 	TabsService tabsService;
-
 	@Autowired
 	UserService userService;
+	@Autowired
+	OrgLicenseSubscriptionTypesService orgLicenseSubscriptionTypesService;
+	@Autowired
+	TimeZoneService timeZoneService;
 
 	@Value("${static.path}")
 	private String staticPath;
@@ -1005,6 +1016,17 @@ public class OrgSettingsRestController {
 					subscription.setToDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),subscription.getToDate()));
 				}
 				
+				Date currentDate = CalendarUtil.getDateTimeForGivenTimeZone(subscription.getTimezone().getTimeZoneId(), new Date(), "dd-MM-yyyy");
+				Calendar toDate = Calendar.getInstance();
+				toDate.setTime(currentDate); 
+				toDate.add(Calendar.DATE, +15); 
+				Date upcommingDate = toDate.getTime();
+				Date subscriptionDate = CalendarUtil.getDateTimeForGivenTimeZone(subscription.getTimezone().getTimeZoneId(), subscription.getToDate(), "dd-MM-yyyy");
+				
+				if(upcommingDate.after(subscriptionDate) || upcommingDate.equals(subscriptionDate)) {
+					subscription.setShowRenewal(Constants.YES);
+				}
+				
 				orgLicenseSubscriptionList.add(subscription);
 			}
 	
@@ -1014,6 +1036,85 @@ public class OrgSettingsRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("orgLicenseSubscriptionList", orgLicenseSubscriptionList);
 		
+		return model;
+	}
+	
+	
+	 @RequestMapping(value = "/app/upgradeOrgLicenseSubscription/{orgSubscriptionUUID}" , method = RequestMethod.GET)
+	 public @ResponseBody void upgradeOrgLicenseSubscription(@PathVariable String orgSubscriptionUUID,HttpServletRequest request,HttpServletResponse response) throws Exception {
+			StringBuilder redirectUrl = new StringBuilder();
+			response.sendRedirect(redirectUrl.append("/app/upgradeLicenseSubscription?licenseSubscriptionUUID=").append(orgSubscriptionUUID).toString());
+			
+	   }
+	
+	@RequestMapping(value = "/app/upgradeLicenseSubscription")
+	public ModelAndView upgradeLicenseSubscription(@RequestParam(value="licenseSubscriptionUUID", required=true) String orgSubscriptionUUID,HttpServletRequest request) throws Exception
+	{
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		commonUtil.highLightMenu(Constants.OrgSettings, request);
+		OrgLicenseSubscription orgLicenseSubscription = null;
+		if(orgSubscriptionUUID != null && !orgSubscriptionUUID.isEmpty()) {
+			orgLicenseSubscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByUUID(orgSubscriptionUUID);
+			
+			OrgLicenseSubscriptionTypes subscriptionType = orgLicenseSubscription.getSubscriptionType();
+			List<OrgLicenseSubscriptionTypes> subscriptionTypeList = orgLicenseSubscriptionTypesService.getUpgradeLicenseSubscriptionTypesByCategoryAndSubscriptionTypeOrderId(Constants.SUBSCRIPTION_TYPE,subscriptionType.getSubscriptionTypeOrder());
+			model.addObject("subscriptionTypeList", subscriptionTypeList);
+			
+			OrgLicenseSubscriptionTypes userSubscriptionType = orgLicenseSubscription.getUserSubscriptionType();
+			List<OrgLicenseSubscriptionTypes> userSubscriptionTypeList = orgLicenseSubscriptionTypesService.getUpgradeLicenseSubscriptionTypesByCategoryAndSubscriptionTypeOrderId(Constants.USER_SUBSCRIPTION,userSubscriptionType.getSubscriptionTypeOrder());
+			model.addObject("userSubscriptionTypeList", userSubscriptionTypeList);
+			
+			OrgLicenseSubscriptionTypes storageSubscriptionType = orgLicenseSubscription.getStorageSubscriptionType();
+			List<OrgLicenseSubscriptionTypes> dataStorageTypeList = orgLicenseSubscriptionTypesService.getUpgradeLicenseSubscriptionTypesByCategoryAndSubscriptionTypeOrderId(Constants.DATA_STORAGE,storageSubscriptionType.getSubscriptionTypeOrder());
+			model.addObject("dataStorageTypeList", dataStorageTypeList);
+			
+			orgLicenseSubscription.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),orgLicenseSubscription.getFromDate()));
+			
+			String[] subscribedTabsList = orgLicenseSubscription.getSubscriptionTabs().split(",");
+			List<Long> tabIdsList = new ArrayList<>();
+		    for(int i=0; i<subscribedTabsList.length; i++) {
+		    	tabIdsList.add(Long.parseLong(subscribedTabsList[i]));
+		    }
+		    orgLicenseSubscription.setTabIdsList(tabIdsList);
+		
+		
+		List<TabsDTO> tabsDTOList = new ArrayList<>();
+		Collection<Tabs> tabsList = tabsService.getAllTabsList();
+		List<Long> tabIs = new ArrayList<>();
+		tabIs.add(14L);
+		tabIs.add(11L);
+		List<Tabs> otherTabsList = tabsService.getTabsListByIds(tabIs);
+		tabsList.addAll(otherTabsList);
+		if(tabsList != null) {
+			for(Tabs tabs : tabsList) {
+				TabsDTO tabsDTO = new TabsDTO();
+				tabsDTO.setId(tabs.getId());
+				if(tabs.getTabName().equalsIgnoreCase("Billing")) {
+					tabsDTO.setTabName("Finance");
+				}else {
+					tabsDTO.setTabName(tabs.getTabName());
+				}
+				tabsDTO.setTabIcon(tabs.getTabIcon());
+				if(tabIdsList.contains(tabs.getId())) {
+					tabsDTO.setIsTabSubscribed(Constants.YES);
+				}else {
+					tabsDTO.setIsTabSubscribed(Constants.NO);
+				}
+				tabsDTOList.add(tabsDTO);
+			}
+		}
+		orgLicenseSubscription.setTabsDTOList(tabsDTOList);
+		}
+		
+		List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
+		
+		model.setViewName("upgradeOrgLicenseSubscription");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("orgSubscriptionUUID", orgSubscriptionUUID);
+		model.addObject("orgLicenseSubscription", orgLicenseSubscription);
+		model.addObject("timezoneList", timezoneList);
 		return model;
 	}
 	
