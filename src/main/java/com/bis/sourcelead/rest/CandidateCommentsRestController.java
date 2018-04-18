@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.annotations.Validator;
+import com.bis.sourcelead.dto.CandidateCommentsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
@@ -75,15 +77,14 @@ public class CandidateCommentsRestController {
 
 	@PreAuthorize("hasAnyRole('ROLE_POST_COMMENTS','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/saveCandidateComment", method = RequestMethod.POST)
-	public @ResponseBody Response<String> saveCandidateComment(@RequestParam(value = "json", required = false) String json,
+	public @ResponseBody Response<String> saveCandidateComment(CandidateCommentsDTO candidateCommentsDTO,
 			String candidateId, String submissionId, HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
-				String json1 = "{" + json + "}";
-				JSONObject jsonObj = new JSONObject(json1);
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				
 				if (StringUtils.isNotEmpty(candidateId)) {
 					Candidate candidate = null;
 					if (StringUtils.isNumeric(candidateId)) {
@@ -95,13 +96,15 @@ public class CandidateCommentsRestController {
 						submission = new RequirementSubmission();
 						submission.setId(Long.parseLong(submissionId));
 					}
-					candidateCommentsService.storeCandidateComments(jsonObj, user, candidate, orgLocation, submission);
+					if (Validator.validate(candidateCommentsDTO)) {
+					candidateCommentsService.storeCandidateComments(candidateCommentsDTO, user, candidate, orgLocation, submission);
 					SourceLeadSessionManager.setSessionAttribute(request, "resumeAddMessage", "Successfully you have added");
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
-				} else {
-					response.setResponse(Result.INVALID_USER.name());
-					response.setResponseMessage(Result.INVALID_USER.getValue());
+				    }else {
+						response.setResponse(Result.INVALID_USER.name());
+						response.setResponseMessage(Result.INVALID_USER.getValue());
+					}
 				}
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
