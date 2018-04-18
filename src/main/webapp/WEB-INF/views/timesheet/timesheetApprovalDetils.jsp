@@ -197,9 +197,9 @@
 <script>
 $("#dataTableSearchExpenses").keyup(function(event) {
 	if (event.keyCode === 13) {
-    	$('#dataTableSearchExpenses').find('p.jquery_form_error_message').remove();
+    	$('#dataTableSearchExpenses').parent().find('p.jquery_form_error_message').remove();
     	var searchData = $('#dataTableSearchExpenses').val();
-    	var regex =  new RegExp(/[^\w\s]/gi);
+    	var regex =  new RegExp(/[\\]/g);
     	if(regex.test(searchData) == false){
     		timesheetApprovalDetils('',searchData)
     	}else{

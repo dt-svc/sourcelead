@@ -95,17 +95,19 @@
 			
 						   <div class="col-md-4 col-md-offset-4">
 						   	<div class="mt5 clearfix">
-							   <input id="multipleCheckBox" title="Allow multiple Docs" name="multiple"  type="checkbox" value = "N" onclick = "allowMultipleDocs();">
+							   <input id="multipleCheckBox123" title="Allow multiple Docs" name="multiple"  type="checkbox" value = "Y" onclick = "allowMultipleDocs();">
 							   <label class="padding_left">Allow Multiple</label>
 							</div>
 						   </div>
 						   <div class="clearfix"></div>
+						   <div class="col-sm-12 noPad mt clearfixclearfix">
 						   <div class="col-md-3 pull-right">
 							<label class="switch mt5 text-center pull-right">
-							<input id="requiredCheck" name="isRequired" title="Is Required" type="checkbox" value = "Y" onclick = "tempDocReq();">
+							<input id="requiredCheck" name="isRequired" title="Is Required" type="checkbox" value = "Y" onclick = "imgDocReq();">
 							<div class="slider round" title="Is Required"></div>
 							</label>
 						  </div>	
+						  </div>
 						  
 				  <!-- <div class="col-md-4">
 				<div class="mt5 ml5 clearfix">
@@ -243,6 +245,17 @@
 	 	$('#uploadFile'+id).val($("#uploadBtn"+id).val().replace(/C:\\fakepath\\/i, ''))
 		
 	}
+	
+
+	function imgDocReq(){
+		var checked = document.getElementById("requiredCheck").checked
+		if(checked == true){
+			$("#requiredCheck").val("Y");
+		}else{
+			$("#requiredCheck").val("N");
+		}
+	}
+
 	</script>		
 <!-- <script type="text/javascript">
 function uploadDoc(id){
@@ -268,7 +281,11 @@ function removeDocPopUp(){
 	$(".popMask").fadeOut(200);
 	$("#docuView").fadeOut(100);
 	$("#candidate_Immigration_Doc")[0].reset();
-	//$("#description1").val('');
+	$("#description1").val('');
+	$("#immigrationCandidateDocId").val('');
+	$('#candidate_Immigration_Doc input[name="multiple"]').prop('checked', false);
+	$('#candidate_Immigration_Doc input[name="isRequired"]').prop('checked', false);
+	
 }
 /* $(function() {
 	$("#uploadBtn"+id).change(function() {

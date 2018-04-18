@@ -16,6 +16,7 @@ import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
+import com.bis.sourcelead.entity.ImmigrationDashboardView;
 import com.bis.sourcelead.entity.ImmigrationListView;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -87,5 +88,6 @@ public interface ImmigrationCommonService {
 
 	ImmigrationDTO editImmigrationDetails(Long immigrationId, OrgLocations orgLocations);
 
+	ImmigrationDashboardView getImmigrationDashBoardDetails(OrgLocations orgLocations);
 
 }

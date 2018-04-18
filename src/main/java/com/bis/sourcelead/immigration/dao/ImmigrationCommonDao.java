@@ -15,6 +15,7 @@ import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
+import com.bis.sourcelead.entity.ImmigrationDashboardView;
 import com.bis.sourcelead.entity.ImmigrationListView;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -91,4 +92,6 @@ public interface ImmigrationCommonDao {
 	ResponseList<ImmigrationListViewDTO> getImmigrationsList(ImmigrationListViewDTO immigrationListDTO,	String searchValue, OrgLocations orgLocations)throws Exception;
 
 	String updateUscisTypeDropDown(Long templateId, Long uscisId);
+
+	ImmigrationDashboardView getImmigrationDashBoardDetails(OrgLocations orgLocations);
 }
