@@ -13,7 +13,6 @@
 var sourceleadUrl = '${sourceleadUrl}';
 </script>
 <script>
-//description script
 	$(document).ready(function(){ 
 		var projectId = "${projectId}";
 		tasksAssignList(projectId);
@@ -526,10 +525,13 @@ $('.chosen-select').chosen().on('change', function() {
 
 <script>
 function tasksAssignList(projectId){
+    $("#assignedUsers").trigger("chosen:updated");
+	    
 	var values = "Active";
-	  var map = new Object(); // or var map = {};
+// 	  var map = new Object(); 
+	  var assignedUsers = [];
       <c:forEach var="assign" items="${assignedUsers}">
-              map['${assign.projectMemberId.id}'] = '${assign.assignedUserName}';
+      	assignedUsers.push('${assign.projectMemberId.id}');
       </c:forEach>
 	$.ajax({
     	type: "POST",
@@ -539,24 +541,26 @@ function tasksAssignList(projectId){
         	for (var i=0; i<json.length; i++)
 			{
         		var opt = json[i];
-
-        		if(!jQuery.isEmptyObject(map)){
-        			 $.each(map, function(key, value) {
-                         if(opt.id == key){
-                             output = output +  '<option value="'+key+'" selected> '+value+'</option>';
+        		if(assignedUsers.length > 0){
+        			var selected = "";
+        			 for(var j=0; j<assignedUsers.length; j++) {
+                         if(opt.id == assignedUsers[j]){
+                        	 selected = "selected";
+                        	 break;
                          }else{
-         	        		output = output + "<option value='" +opt.id+ "'>"+opt.empName+"</option>";
+                        	 selected = "";
                          }
-                       });
+                       }
+        			 output = output +  '<option value="'+opt.id+'" '+selected+'> '+opt.empName+'</option>';
         		}else{
         			output = output + "<option value='" +opt.id+ "'>"+opt.empName+"</option>";
         		}
-        		
 			}
         	$("#assignedUsers").empty();
      		$("#assignedUsers").append(output);
      		$("#assignedUsers").chosen();
      	    $("#assignedUsers").trigger("chosen:updated");
+     		
         }
 	});	
 }
