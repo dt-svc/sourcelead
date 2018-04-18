@@ -73,6 +73,8 @@ function errRemoveClientContact(){
 	<div class="content-area content-new clearfix">
 		<div id="invoiceLoading"></div>
 		<form:form id="invoice_form" name="invoice_form" method="post">
+		<input type="hidden" name="clientOrgRelation" value="createInvoice"/>
+		<input type="hidden" name="clientContact" value="createInvoice"/>
 			<div class="clearfix form-horizontal inner-content">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">

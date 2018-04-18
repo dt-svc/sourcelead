@@ -888,7 +888,7 @@ function payablePagination(url){
             						if(report.paymentStatus == "Paid"){
             							result = result +'           <span class="text-primary primary pull-left" title="Paid" >Paid</span> </td>          ';
             						}else if(report.invoiceStatus == "DRAFT"){
-            							result = result +'           <span class="successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill('+report.id+');";></i></td>          ';
+            							result = result +'           <span class="successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill(\''+report.invoiceUUID+'\');";></i></td>          ';
             						}else if(report.invoiceStatus == "Rejected"){
             							result = result +'           <div class="primary pull-left bg-red">Rejected</div>   ';	
             						}
@@ -909,7 +909,7 @@ function payablePagination(url){
             						if(report.paymentStatus == "Paid"){
             							result = result +'           <span class=" primary pull-left" title="Paid" >Paid</span> </td>          ';	
             						}else if(report.invoiceStatus == "DRAFT"){
-            							result = result +'           <span class="successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill('+report.id+');";></i></td>          ';
+            							result = result +'           <span class="successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill(\''+report.invoiceUUID+'\');";></i></td>          ';
             						}else if(report.invoiceStatus == "SENT"){
             							result = result +'           <span class=" primary pull-left" title="Paid" >Sent</span> </td>          ';
             						}else if(report.invoiceStatus == "Rejected"){
@@ -1712,7 +1712,7 @@ function unLinkBill(invoiceUUID){
 </script>
 
 <script>
-function deleteBill(billId){ 
+function deleteBill(invoiceUUID){ 
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
@@ -1720,7 +1720,7 @@ function deleteBill(billId){
 	result = result +"		<p>Are you sure you want to delete ?</p>";
 	result = result +"		<textarea  id='reasonForBill' name='reasonForBill'  placeholder='Comments here' ></textarea>";
 	result = result + ' <div id="reasonForBillDiv"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="saveBillRejectedReason('+billId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="saveBillRejectedReason(\''+invoiceUUID+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -1732,7 +1732,7 @@ function cancelTermination(){
 	 $(".project_inn_mask").fadeOut(200);
 }
 
-function saveBillRejectedReason(billId){
+function saveBillRejectedReason(invoiceUUID){
 	var reason = $("#reasonForBill").val();
 	if(reason != null && reason != ''){
 		 $("#reasonForBillDiv").empty();
@@ -1741,7 +1741,7 @@ function saveBillRejectedReason(billId){
 		}else{
 			 $.ajax({
 				   	type: "POST",
-				    url: sourceleadUrl+"/deleteInvoice?"+tokenParamName+"="+tokenValue+"&invoiceType=payables&invoiceId="+billId+"&reason="+reason,
+				    url: sourceleadUrl+"/deleteInvoice?"+tokenParamName+"="+tokenValue+"&invoiceType=payables&invoiceUUID="+invoiceUUID+"&reason="+reason,
 		   		    success: function(data) {
 		   		    	$("#popUp").empty();
 		   			 	$(".project_inn_mask").fadeOut(200);

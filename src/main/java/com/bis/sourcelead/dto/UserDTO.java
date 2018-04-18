@@ -366,6 +366,7 @@ public class UserDTO extends SearchDTO implements Serializable {
 	public void setToDate(String toDate)
 	{
 		this.toDate = toDate;
+	}
 
 	public String getIsPrimaryAdmin() {
 		return isPrimaryAdmin;

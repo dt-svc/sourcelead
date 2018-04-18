@@ -30,6 +30,8 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
       <div class="clearfix form-horizontal inner-content">
        <div id="invoiceLoading"></div>
        <form:form id="project_invoice_form"  name="project_invoice_form" method="post"  enctype='multipart/form-data'> 
+       <input type="hidden" name="project"/>
+       <input type="hidden" name="frequency"/>
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
             <div class="form-group">
@@ -420,7 +422,7 @@ function populateInlineItemsGrid(json){
             result = result +' </tr>';
             result = result +' </thead>';
             result = result +' <tbody>';
-            result = result +' <input type="hidden" value='+json.length+' id="maxTsRowNum" name="maxTsRowNum">';
+            result = result +' <input type="hidden" value='+json.data.length+' id="maxTsRowNum" name="maxTsRowNum">';
         for (var i = 0; i < json.data.length; i++) { 
              var opt = json.data[i]; 
              result = result +'<tr>';

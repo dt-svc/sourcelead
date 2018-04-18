@@ -315,17 +315,17 @@ public class InvoiceServiceImpl implements InvoiceService{
 			invoice.setPaymentFrequency(invoiceDTO.getPaymentFrequency());
 		}
 		if(StringUtils.isNotBlank(invoiceDTO.getDisCount())){
-			invoice.setDiscountType(invoiceDTO.getDisCount());;
+			invoice.setDiscountType(invoiceDTO.getDisCount());
 		}
 		
 		if(StringUtils.isNotBlank(invoiceDTO.getDiscountValue())){
-			invoice.setDiscountAmount(invoiceDTO.getDiscountValue());;
+			invoice.setDiscountAmount(invoiceDTO.getDiscountValue());
 		}
 		if(StringUtils.isNotBlank(invoiceDTO.getDiscountTotal())){
-			invoice.setDiscountValue(invoiceDTO.getDiscountTotal());;
+			invoice.setDiscountValue(invoiceDTO.getDiscountTotal());
 		}
 		if(StringUtils.isNotBlank(invoiceDTO.getInoviceTotal())){
-			invoice.setSubTotal(invoiceDTO.getInoviceTotal());;
+			invoice.setSubTotal(invoiceDTO.getInoviceTotal());
 		}
 		
 		if(StringUtils.isNotBlank(invoiceDTO.getComment())){

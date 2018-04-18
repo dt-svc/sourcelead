@@ -642,9 +642,9 @@ public class InvoiceRestController {
 					invoice.setOrgRelationUUID(invoice.getOrgRelationID().getUUID());
 				}
 			}
+		    	StringBuilder contactName = new StringBuilder();
 				if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == LoginOrgLocations.getId().longValue()){
 					invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
-					StringBuilder contactName = new StringBuilder();
 					if(invoice.getContactUser().getLastName() != null){
 						invoice.setClientContactName(contactName.append(invoice.getOwnerUserId().getFirstName()).append(" ").append(invoice.getOwnerUserId().getLastName()).toString());	
 					}else{
@@ -1588,7 +1588,7 @@ public class InvoiceRestController {
 		List<Invoice> clientinvoiceList = invoiceService.getClientBasedInvoiceLists(orgRelId.getId(), orgLocation.getId(), invoiceType);
 		List<Invoice> clientList = new ArrayList<Invoice>();
 		for (Invoice invce : clientinvoiceList) {
-			if (invoiceUUID.equalsIgnoreCase(invce.getInvoiceUUID())) {
+			if (!invoiceUUID.equalsIgnoreCase(invce.getInvoiceUUID())) {
 				if (invce.getInvoiceDate() != null) {
 					invce.setInvoiceDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), invce.getInvoiceDate()));
 				}

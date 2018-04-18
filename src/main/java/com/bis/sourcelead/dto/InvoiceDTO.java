@@ -7,13 +7,13 @@ import com.bis.sourcelead.annotations.Required;
 
 public class InvoiceDTO extends SearchDTO {
 
-	@Required (desc = "ClientOrgRelationId")
+	@Required (desc = "ClientOrgRelationId", dependsOn = "clientOrgRelation", parentValue = "createInvoice")
 	private String clientOrgRelationId;
 	
 	private String savedInvoiceId;
 	private String clientCurrency;
 	
-	@Required (desc = "ClientContact")
+	@Required (desc = "ClientContact", either = "vendorContact")
 	private String clientContact;
 	
 	@Required (desc = "InvoiceId")
@@ -41,14 +41,16 @@ public class InvoiceDTO extends SearchDTO {
 	private String grandTotal;
 	private String disCount;
 	
+	@Required (desc = "vendorOrgRelationId", dependsOn = "vendorOrgRelation", parentValue = "createPayables")
     private String vendorOrgRelationId;
 	
+	@Required (desc = "vendorContact", either = "clientContact")
     private String vendorContact;
 	
-	@Required (desc = "projectId")
+	@Required (desc = "projectId", dependsOn = "project", parentValueAny = true)
     private String projectId;
 	
-	@Required (desc = "frequency")
+	@Required (desc = "frequency", dependsOn = "frequency", parentValueAny = true)
     private String frequency;
 	
     private String vendorCurrency;
