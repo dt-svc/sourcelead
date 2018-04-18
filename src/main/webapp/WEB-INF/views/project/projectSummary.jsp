@@ -172,20 +172,15 @@ window.onload = function () {
 				    '</sec:authorize>';
 				'</sec:authorize>';
 				
-				 if('${isClientOrgActive}' == "N" || '${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){   
-			  		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">' ; 
-					  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">' 
-					      	projectTask(projectId, status)
-					  	'</sec:authorize>';
-					  	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">' 
-					  	    projectTask(projectId, status)
-					  	'</sec:authorize>';
-				  	'</sec:authorize>';
-			  	 }
+				'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">' ; 
+				 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
+				      projectTask(projectId, status)
+				  '</sec:authorize>';
+			  	'</sec:authorize>'; 
 				 
-				'<sec:authorize access="hasAnyRole(\'ROLE_ADD_DOCUMENTS\',\'ROLE_VIEW_EDIT_DOCUMENTS\')">'; 
-			  	projectDocuments(projectId)
-			  	'</sec:authorize>';
+// 				'<sec:authorize access="hasAnyRole(\'ROLE_ADD_DOCUMENTS\',\'ROLE_VIEW_EDIT_DOCUMENTS\')">'; 
+// 			  	projectDocuments(projectId)
+// 			  	'</sec:authorize>';
 			  	
 			}
  }

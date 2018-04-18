@@ -377,7 +377,7 @@
 										   <div class="col-md-6 paddingRight">
 											<label class="small">Months</label> <br>
 												<div class="select-field">
-													<select class="form-control input-sm" id="taskMonths" data-validation="required" field-name="Due after" name="taskMonths" onchange="validateDueAfter();">
+													<select class="form-control input-sm" id="taskMonths" data-validation="required" field-name="Due before" name="taskMonths" onchange="validateDueAfter();">
 														<option selected value=''>--Select Month--</option>
 														<option value="1">1</option>
 														<option value="2">2</option>
@@ -1457,9 +1457,9 @@ function getOffboardingTasksList(){
 			    url: sourceleadUrl+"/getCandidateOffboardTasksList?${_csrf.parameterName}=${_csrf.token}&offboardId="+offboardId,	    	   
 			    success: function(response) {
 			    	if (response.response === "AWKWARD") {
-			    	    location.href = "/errorPage";
+			    		location.href = "/errorPage";
 			    	} else if (response.response === "SUCCESS") {
-			    		var json = response.object;
+			    		var json = response.data;
 			        	var result = "";
 			        	if(json.length > 0){ 
 				        	for (var i=0; i<json.length; i++) {
