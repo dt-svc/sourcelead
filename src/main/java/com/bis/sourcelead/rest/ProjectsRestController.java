@@ -238,6 +238,9 @@ public class ProjectsRestController {
 						    approvedLeaveForNewlyAddedEmployee(projectAssignedMembersDTO.getProjectMembers(),orgLocations,user);
 						    response.setResponse(Result.SUCCESS.name());
 							response.setResponseMessage(Result.SUCCESS.getValue());
+					     }else {
+					    	 response.setResponse(Result.SUCCESS.name());
+						     response.setResponseMessage(Result.SUCCESS.getValue());
 					     }
 				       }
 				}else {

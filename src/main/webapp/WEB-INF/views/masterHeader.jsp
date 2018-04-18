@@ -1121,26 +1121,31 @@ function notificationStatusAsRead(){
 <script type="text/javascript">
 	function saveTask() {
 		if ($('#task_form').validate(false, validationSettings)) {
-			var frm = $('#task_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var jsonData = encodeURIComponent(con);
+			 var form = $('#task_form')[0];
+	         var formData = $($('#task_form')[0]).serialize();
 			var sourceleadUrl = '${sourceleadUrl}';
-			$.ajax({
-						type : "POST",
-						url : sourceleadUrl+ "/storeTasks?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
-						success : function(result) {
-							taskwidget();
-							    document.getElementById("assignedTasksDivId").className = 'active'
-								document.getElementById("closedTasksDivId").removeAttribute("class")
-								document.getElementById("myTaskDivId").removeAttribute("class")
-								$("#closed-task, #my-task").hide();
-							    $("#other-task").show().css("opacity", "1");
-							assignedTasksList('assignedTasks');
-							/* tasksList('myTask');
-							assignTasksList(); */
-						},
-					});
+			$.post(sourceleadUrl + "/storeTasks?" + tokenParamName + "=" + tokenValue + "", formData, function(result) {
+				
+				if (result && result.response === "INVALID_DATA") {
+				    showError(result.responseMessage);
+				}else if (result.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				}else if (result.response === "SUCCESS") {
+					taskwidget();
+				    document.getElementById("assignedTasksDivId").className = 'active'
+					document.getElementById("closedTasksDivId").removeAttribute("class")
+					document.getElementById("myTaskDivId").removeAttribute("class")
+					$("#closed-task, #my-task").hide();
+				    $("#other-task").show().css("opacity", "1");
+				    assignedTasksList('assignedTasks');
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
+			
+			});
+	
 			return true;
 		} else {
 			return false;

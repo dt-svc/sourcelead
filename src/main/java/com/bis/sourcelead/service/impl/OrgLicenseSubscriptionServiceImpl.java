@@ -57,6 +57,7 @@ import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Tabs;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Project_Status;
@@ -811,6 +812,81 @@ public void updateOrgBasedRoles(OrgLicenseSubscriptionDTO orgLicenseSubscription
 	@Override
 	public List<String> getOrgLicenseSubscribedCountriesByOrgId(Long orgId) throws Exception {
 		return orgLicenseSubscriptionDao.getOrgLicenseSubscribedCountriesByOrgId(orgId);
+	}
+
+	@Override
+	public void upgradeLicenseSubscription(OrgLicenseSubscriptionDTO orgLicenseSubscriptionDTO, User loginUser,
+			Long orgId,String subscriptionUUID) throws Exception {
+		
+		try {
+			
+			OrgLicenseSubscription orgLicenseSubscription = null;
+			OrgLicenseSubscriptionHistory orgLicenseSubscriptionHistory = null;
+		
+			orgLicenseSubscription = orgLicenseSubscriptionDao.getOrgLicenseSubscriptionByUUID(subscriptionUUID);
+			orgLicenseSubscriptionHistory =  commonUtil.getOrgLicenseSubscriptionHistory(orgLicenseSubscription,loginUser);
+			
+			
+			OrgLicenseSubscriptionTypes subscriptionType = new OrgLicenseSubscriptionTypes();
+			subscriptionType.setId(Long.parseLong(orgLicenseSubscriptionDTO.getSubscriptionType()));
+			orgLicenseSubscription.setSubscriptionType(subscriptionType);
+			
+			OrgLicenseSubscriptionTypes userSubscriptionType = new OrgLicenseSubscriptionTypes();
+			userSubscriptionType.setId(Long.parseLong(orgLicenseSubscriptionDTO.getUserSubscription()));
+			orgLicenseSubscription.setUserSubscriptionType(userSubscriptionType);
+			
+			OrgLicenseSubscriptionTypes storageSubscriptionType = new OrgLicenseSubscriptionTypes();
+			storageSubscriptionType.setId(Long.parseLong(orgLicenseSubscriptionDTO.getStorageType()));
+			orgLicenseSubscription.setStorageSubscriptionType(storageSubscriptionType);
+			
+			Timezone timezone = new Timezone();
+			timezone.setId(Long.parseLong(orgLicenseSubscriptionDTO.getTimezone()));
+			orgLicenseSubscription.setTimezone(timezone);
+			
+			orgLicenseSubscription.setCreatedBy(loginUser);
+			orgLicenseSubscription.setCreatedDate(new Date());
+			orgLicenseSubscription.setUpdatedBy(loginUser);
+			orgLicenseSubscription.setUpdatedDate(new Date());
+			orgLicenseSubscription.setStatus(1);
+			
+			Date subscriptionDate = CalendarUtil.getDateTimeForGivenTimeZone(orgLicenseSubscriptionDTO.getTimezone(), new Date(), "dd-MM-yyyy");
+			orgLicenseSubscription.setFromDate(subscriptionDate);
+			
+			Calendar toDate = Calendar.getInstance();
+			toDate.setTime(subscriptionDate);    
+		    
+		    OrgLicenseSubscriptionTypes orgLicenseSubscriptionTypes = orgLicenseSubscriptionTypesService.getOrgLicenseSubscriptionTypesById(Long.parseLong(orgLicenseSubscriptionDTO.getSubscriptionType()));
+			
+		    if(orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("Free Trail") || orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("1 Month")) {
+		    	toDate.add(Calendar.MONTH, +1); 
+		    }else if(orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("6 Months")) {
+		    	toDate.add(Calendar.MONTH, +6); 
+		    }else if(orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("1 Year")) {
+		    	toDate.add(Calendar.YEAR, +1); 
+		    }else if(orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("2 Years")) {
+		    	toDate.add(Calendar.YEAR, +2); 
+		    }
+		    
+		    Date subscriptionToDate = commonUtil.getOrgLocationCurrentDate("dd-MM-yyyy",toDate.getTime());
+		    subscriptionToDate = CalendarUtil.getDateTimeForGivenTimeZone(orgLicenseSubscriptionDTO.getTimezone(), subscriptionToDate, "dd-MM-yyyy");
+			orgLicenseSubscription.setToDate(subscriptionToDate);
+			orgLicenseSubscription.setCurrency("USD");
+			orgLicenseSubscription.setInvoiceAmount(0d);
+			orgLicenseSubscription.setIsInvoiceAmountPaid(Constants.YES);
+			orgLicenseSubscription.setSubscriptionTabs(orgLicenseSubscriptionDTO.getRegisteredModules());
+			
+			if(orgLicenseSubscriptionDTO.getLicenseUUID() != null && !orgLicenseSubscriptionDTO.getLicenseUUID().isEmpty()) {
+				updateOrgBasedRoles(orgLicenseSubscriptionDTO,orgId);
+				orgLicenseSubscriptionHistoryDao.saveOrgLicenseSubscriptionHistory(orgLicenseSubscriptionHistory);
+			}
+			
+			saveOrgLicenseSubscription(orgLicenseSubscription);
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	
+		
 	}
 
 }
