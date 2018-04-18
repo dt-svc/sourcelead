@@ -20,6 +20,7 @@ public class TimeSheetSubmissionDTO implements Serializable{
 	
 	private List<WeekDaysDTO> weekDays;
 	
+	@Required(desc="timesheetEntries",timesheetListValidate = true)
 	private List<TimesheetEntriesDTO> timesheetEntries;
 	
 	private Map<String,List<TimesheetEntriesDTO>> entriesMap;

@@ -51,7 +51,7 @@ padding-right: 254px; padding-top: 10px;
                         <form:form id="addRole_form"  name="addRole_form" method="post">                             
                             <div class="clearfix mb10">
                               <div class="col-md-12" id="roleDiv">
-                                <input type="text" data-validation="required" field-name="Role Name" onblur="validateRoleName();" onkeyup="validateRoleName();" name="roleName" id="roleName" class="form-control input-sm"  placeholder="Role Name">
+                                <input type="text" data-validation="required" field-name="Role Name" onblur="validateRoleName();" name="roleName" id="roleName" class="form-control input-sm"  placeholder="Role Name">
                               </div>
                             </div>
                             <div class="clearfix mb10">
@@ -94,9 +94,9 @@ padding-right: 254px; padding-top: 10px;
  
  <script type="text/javascript">
 function validateRoleName(){
-	var roleName = document.getElementById("roleName").value;
+	var roleName = document.getElementById("roleName").value.trim();
 	var sourceleadUrl = '${sourceleadUrl}';
-	if(roleName != null && roleName != '') {
+	if(roleName.match(/^[^\s-](.*)*$/) !== null) {
 		$.ajax({
 			type : "GET",
 			url: sourceleadUrl+"/validateRoleName?${_csrf.parameterName}=${_csrf.token}&roleName="+roleName, 
