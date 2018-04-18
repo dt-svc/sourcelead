@@ -1420,11 +1420,36 @@ public class LeaveManagementRestController {
 	}
 
 	// @PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = { "/leaveTypeSummary", "/rest/leaveTypeSummary" }, method = RequestMethod.POST)
 	@ResponseBody
-	public LeaveType leaveTypeSummary(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request) throws Exception {
-		LeaveType leaveType = leaveTypeService.getLeaveTypeByUUID(leaveTypeDTO.getLeaveTypeUUID());
-		return leaveType;
+	public ResponseList<LeaveType> leaveTypeSummary(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request)
+			throws Exception {
+
+		ResponseList<LeaveType> responseList = new ResponseList<>();
+		try {
+
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			if (loginOrgLocation != null) {
+				List<LeaveType> leaveType = new ArrayList<>();
+				leaveType = (List<LeaveType>) leaveTypeService.getLeaveTypeByUUID(leaveTypeDTO.getLeaveTypeUUID());
+				if (leaveType != null) {
+					responseList.setData(leaveType);
+					responseList.setResponse(Result.SUCCESS.name());
+					responseList.setResponseMessage(Result.SUCCESS.getValue());
+				}
+			} else {
+				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+
+		return responseList;
 	}
 
 	/**

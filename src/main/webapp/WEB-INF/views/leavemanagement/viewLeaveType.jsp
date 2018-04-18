@@ -280,7 +280,19 @@ function openLeaveTypeSummary(leaveTypeUUID){
 	$.ajax({
 	   	type: "POST",
 	   	url: sourceleadUrl+"/leaveTypeSummary?&leaveTypeUUID="+leaveTypeUUID,	    	   
-	    success: function(report) {
+	    success: function(response) {
+	    	alert("hi 1")
+	    	if (response.response === "AWKWARD") {
+			    location.href = "/errorPage";
+			} else if (response.response === "SUCCESS") {	    	
+				alert("hi 2")
+				if(response !=null && response !=''){
+					 for (var i=0; i<response.data.length; i++)
+						{
+						 alert("hi 3")
+			        		 var report = response.data[i];
+						 alert("hi 4")
+						  alert("report "+report.name);
 	    	var result = "";
 			result +='<div class="new_side_wrap">';
 			result +='  <div class="clients_side_wrap_inn">';
@@ -583,7 +595,8 @@ function openLeaveTypeSummary(leaveTypeUUID){
 			result +='  </div>';
 			result +='  </div>';
 			result +='</div>';
-			
+						}
+				}
 			$("#typeSummaryDiv").empty();
 			$("#typeSummaryDiv").append(result);
 			$(".new_side_wrap").addClass("new_side_wrap_active");
@@ -592,6 +605,12 @@ function openLeaveTypeSummary(leaveTypeUUID){
 				$(".side_mask").fadeOut(200);
 				$("body").css('overflow-y', 'auto');
 			});	
+	    }else if (response.indexOf('Sign In') !== -1) {
+			location.replace(sourceleadUrl);
+		} else {
+		    showError("Operation failed, please try again");
+		}
+	    	
 	    }
 	   });
 }
