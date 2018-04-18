@@ -37,6 +37,9 @@ public class OrgLicenseSubscriptionTypes {
 	@Column(name = "STATUS")
 	private Integer status;
 	
+	@Column(name = "SUBSCRIPTION_TYPE_ORDER")
+	private Integer subscriptionTypeOrder;
+	
 	
 
 	public Long getId() {
@@ -88,6 +91,14 @@ public class OrgLicenseSubscriptionTypes {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public Integer getSubscriptionTypeOrder() {
+		return subscriptionTypeOrder;
+	}
+
+	public void setSubscriptionTypeOrder(Integer subscriptionTypeOrder) {
+		this.subscriptionTypeOrder = subscriptionTypeOrder;
 	}
 	
 }

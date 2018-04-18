@@ -73,4 +73,22 @@ private static final Logger logger = LoggerFactory.getLogger(OrgLicenseSubscript
 		}
    	}
 
+	@Override
+	@Transactional
+	public List<OrgLicenseSubscriptionTypes> getUpgradeLicenseSubscriptionTypesByCategoryAndSubscriptionTypeOrderId(
+			String category, Integer id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		if(category.equalsIgnoreCase(Constants.SUBSCRIPTION_TYPE)) {
+			query = "from OrgLicenseSubscriptionTypes subTypes where subTypes.category = :category "
+					+ " and subTypes.uniqueKey <> 'Guest' and subTypes.uniqueKey <> 'Unlimited' and subTypes.subscriptionTypeOrder >= :id and subTypes.status = '1' ";
+		}else {
+			query = "from OrgLicenseSubscriptionTypes subTypes where subTypes.category = :category and subTypes.subscriptionTypeOrder >= :id and subTypes.status = '1' ";
+		}
+	    
+	    List<OrgLicenseSubscriptionTypes> subscriptionTypesList = session.createQuery(query.toString()).setString("category", category).setInteger("id", id).list();
+      
+	    return subscriptionTypesList;
+	}
+
 }
