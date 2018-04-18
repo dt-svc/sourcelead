@@ -2791,8 +2791,7 @@ function editPrimaryUser(orgLocationId){
 function validatePrimaryUserEmail(){
 	var email = document.getElementById("primaryUserEmail").value;
 	var sourceleadUrl ='${sourceleadUrl}';
-// 	var orgLocationId = '${registeredOrgLocationId}';
-	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var orgLocationId = '${registeredOrgLocationId}';
 	if(null != email  && '' != email){
 		$("#update_primaryuser").attr("disabled", "disabled");
 		$.ajax({
