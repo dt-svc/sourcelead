@@ -652,6 +652,16 @@ this.deletePassportVisaDetailsById=function(id,idType){
 		});
 	}
 	
+	this.editImmigrationDetails = function(id){
+		$.ajax({
+	        url: sourceleadUrl + immiModulePath + "/editImmigrationDetails?immigrationId="+id,
+	        type: "GET",
+	        success: function (result) {
+	        	
+	        }
+		});
+	}
+	
 	
 }
 

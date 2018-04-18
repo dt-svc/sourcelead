@@ -545,7 +545,7 @@
                  /*"data": "formsCount",*/
                  "render": function (data, type, opt, meta) {
                      var result = "";
-                     result = result + '<td><div><i id="edit' + opt.id + '" onclick="immigration.editTemplateDetailsByRowId(' + opt.id + ');" class="glyphicon glyphicon-pencil"></i><i id="delete' + opt.id + '" onclick="immigration.deleteTempalteDetailsByRowId(' + opt.id + ');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
+                     result = result + '<td><div><i id="edit' + opt.id + '" onclick="immigration.editImmigrationDetails(' + opt.id + ');" class="glyphicon glyphicon-pencil"></i><i id="delete' + opt.id + '" onclick="immigration.deleteTempalteDetailsByRowId(' + opt.id + ');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
                      return result;
                  }
              }

@@ -84,7 +84,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	@Override
 	public Immigration savePetitionDetails(ImmigrationDTO immigrationDTO, User user,OrgLocations orgLocations){
 		Immigration immigrationObj = null;
-		try {
+		try {.
 			
 		Candidate candidate = new Candidate();
 		candidate = savePetitionCandidate(immigrationDTO,orgLocations,user);
@@ -195,7 +195,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	}
 	
 	private List<CandidateResidence> savePetitionResidenceList(ImmigrationDTO immigrationDTO, Candidate candidate,
-			User user, OrgLocations orgLocations) {
+			User user, OrgLocations orgLocations) {.
 		List<CandidateResidence> residenceList = new ArrayList<CandidateResidence>(); // add residences to immigration candidate tables
 			if (immigrationDTO.getResidenceList() != null) { 
 				List<ImmigrationResidenceDTO> residenceDtoLst = immigrationDTO.getResidenceList();
@@ -936,6 +936,85 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	@Override
 	public String updateUscisTypeDropDown(Long templateId, Long uscisId) {
 		return immigrationCommonDao.updateUscisTypeDropDown(templateId,uscisId);
+	}
+
+	@Override
+	public ImmigrationDTO editImmigrationDetails(Long immigrationId, OrgLocations orgLocations) {
+		Immigration immigration = immigrationCommonDao.getImmigrationById(immigrationId);
+		ImmigrationDTO immigrationDTO = new ImmigrationDTO();
+		/*============================from immigration Table=================*/
+		immigrationDTO.setPetitionType(immigration.getPetitionType().getId().toString());
+		immigrationDTO.setOpenDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), immigration.getOpenDate()));
+		if(immigration.getCurrUscisStauts()!=null) {
+			immigrationDTO.setCurrUscisStatus(immigration.getCurrUscisStauts().getId().toString());
+		}
+		if(immigration.getDateOfArrival()!=null) {
+			immigrationDTO.setArrivalDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), immigration.getDateOfArrival()));
+		}
+		immigrationDTO.setEntryPlace(immigration.getPlaceOfEntry());
+		immigrationDTO.setTemplateId(immigration.getImmigrationTemplateId().getId().toString());
+		immigrationDTO.setAttorneyId(immigration.getOrgRelations().getId().toString());
+		immigrationDTO.setAttorneyContact(immigration.getOrgSpoc().getId().toString());
+		immigrationDTO.setReceiptNo(immigration.getReceiptNo());
+		/*===============from Candidate Table=============================*/
+		immigrationDTO.setFirstName(immigration.getCandidate().getFirstName());
+		immigrationDTO.setMiddleName(immigration.getCandidate().getMiddelName());
+		immigrationDTO.setLastName(immigration.getCandidate().getLastName());
+		immigrationDTO.setGender(immigration.getCandidate().getGender());
+		immigrationDTO.setEmail(immigration.getCandidate().getEmail());
+		immigrationDTO.setMobile(immigration.getCandidate().getMobilePhone());
+		immigrationDTO.setAlternateMobile(immigration.getCandidate().getAlternateMobilePhone());
+		immigrationDTO.setBirthDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),immigration.getCandidate().getDateOfBirth()));
+		immigrationDTO.setBirthPlace(immigration.getCandidate().getPlaceOfBirth());
+		immigrationDTO.setNationality(immigration.getCandidate().getNationality());
+		immigrationDTO.setMaritalStatus(immigration.getCandidate().getMaritalStatus());
+		immigrationDTO.setEadNumber(immigration.getCandidate().getEadNo());
+		immigrationDTO.setI_20_number(immigration.getCandidate().getI20ServiceNo());
+		immigrationDTO.setI_94_number(immigration.getCandidate().getI94No());
+		immigrationDTO.setLocation(immigration.getCandidate().getLocation());
+		immigrationDTO.setAddress(immigration.getCandidate().getAddress());
+		immigrationDTO.setCity(immigration.getCandidate().getCity());
+		immigrationDTO.setState(immigration.getCandidate().getState());
+		immigrationDTO.setCountry(immigration.getCandidate().getCountry());
+		immigrationDTO.setZipcode(immigration.getCandidate().getZipCode());
+		immigrationDTO.setExperienceMonths(immigration.getCandidate().getExperienceMonths());
+		immigrationDTO.setExperienceYears(immigration.getCandidate().getExperienceYears());
+		/*===============================from Candidate Identities Table==========================*/
+		CandidateIdendities candidateIdendities = null;
+		candidateIdendities = candidateDao.getCandidateIdentitiesNumberByCandidateId(immigration.getCandidate().getId(), Constants.ID_TYPE_SSN);
+		immigrationDTO.setSsnNumber(candidateIdendities.getIdNumber());
+		/*===============================from Requirement Table==========================*/
+		immigrationDTO.setJobId(immigration.getJob().getId().toString());
+		/*===============================from Lcasummary Table==========================*/
+		CandidateLcaI94Summary lcaSummaryCurr = immigrationCommonDao.getCandidateLCADetails(immigration.getCandidate().getId(), Constants.YES);
+		immigrationDTO.setLcaStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lcaSummaryCurr.getStartDate()));
+		immigrationDTO.setLcaEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lcaSummaryCurr.getEndDate()));
+		immigrationDTO.setIsCurrResidence(lcaSummaryCurr.getIsCurrent());
+		immigrationDTO.setEmploymentLevel(lcaSummaryCurr.getEmploymentLevel());
+		immigrationDTO.setEmployer(lcaSummaryCurr.getEmployerName());
+		immigrationDTO.setJobLocation(lcaSummaryCurr.getEmployerLocation());
+		immigrationDTO.setRateCurrency(lcaSummaryCurr.getRateCurrency());
+		immigrationDTO.setRate(lcaSummaryCurr.getRate());
+		immigrationDTO.setRateType(lcaSummaryCurr.getRateType());
+		CandidateLcaI94Summary lcaSummaryPrev = immigrationCommonDao.getCandidateLCADetails(immigration.getCandidate().getId(), Constants.NO);
+		immigrationDTO.setPrevLcaStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lcaSummaryPrev.getStartDate()));
+		immigrationDTO.setPrevLcaEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lcaSummaryPrev.getEndDate()));
+		List<CandidateResidence> candidateResidences = immigrationCommonDao.getCandidatesResidenceListByCandidateIdAndOrgLocationID(immigration.getCandidate().getId(),"");
+		if(!candidateResidences.isEmpty()) {
+			for(CandidateResidence residence : candidateResidences) {
+				ImmigrationResidenceDTO residenceDTO = new ImmigrationResidenceDTO();
+				residenceDTO.setAddress(residence.getStreetAddress());
+				residenceDTO.setCity(residence.getCity());
+				residenceDTO.setCountry(residence.getCountry());
+				residenceDTO.setLocation(residence.getLocation());
+				residenceDTO.setResidenceStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),residence.getStartDate()));
+				residenceDTO.setResidenceEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),residence.getEndDate()));
+				
+			}
+			
+		}
+		
+		return null;
 	}
 
 }

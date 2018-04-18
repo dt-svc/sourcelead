@@ -85,5 +85,7 @@ public interface ImmigrationCommonService {
 
 	String updateUscisTypeDropDown(Long templateId, Long uscisId);
 
+	ImmigrationDTO editImmigrationDetails(Long immigrationId, OrgLocations orgLocations);
+
 
 }

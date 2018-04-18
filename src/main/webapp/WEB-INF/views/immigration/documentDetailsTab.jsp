@@ -2,7 +2,7 @@
 		<div class="immigraTabsHead">
 		<!-- <a href="javascript:void(0)" id="immDocu"><i class="glyphicon glyphicon-plus"></i> Request Document</a> 		 -->	  	
 		  	<a href="javascript:void(0)" id="addDocu"><i class="glyphicon glyphicon-plus"></i> Add Document</a> 
-		  	<span><input class="immigraTabSerach" id="immigraDocTabSerach" type="text"></span>
+		  	<span><input class="immigraTabSerach" id="immigraDocTabSerach" placeholder="Document Type/Description/Status" type="text"></span>
 		</div>
 		
 	  	<div class="immigraTable">

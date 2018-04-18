@@ -1398,6 +1398,17 @@ public class ImmigrationRestController {
 	}
 	
 	
+	@RequestMapping(value = { "/editImmigrationDetails" })
+	public String editImmigrationDetails(
+			@RequestParam(value = "immigrationId", required = false) Long immigrationId,
+			HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ImmigrationDTO immigrationDTO = immigrationCommonService.editImmigrationDetails(immigrationId,orgLocations);
+		return null;
+	}
+	
+		
+		
 
 }
 
