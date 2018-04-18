@@ -84,7 +84,7 @@ function initializeLocation(locationId,countryId,stateId,cityId,zipCodeId,countr
  $("#"+addressId).val($("#"+locationId).val().replace(", "+$("#"+cityId).val()+", "+$("#"+stateId).val()+", "+$("#"+countryId).val(), ""));
  $("#"+countryId).val(address.country).change();
  $("#"+countryId).trigger("chosen:updated");
-
+getTimezonesList();
 
   });
 }

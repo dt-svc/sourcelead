@@ -38,7 +38,7 @@
         </div>
         <div class="modal-body">
            <div class="form-group" id="levelDiv">
-            <input type="text" class="form-control input-sm" data-validation="required validate_Space validate_length length2-20" field-name="Level" onblur="validateLevelName();"onkeyup="validateLevelName();"  placeholder="Enter Level" name="level" id="level" autocomplete="off" autofocus>
+            <input type="text" class="form-control input-sm" data-validation="required validate_Space validate_length length2-20" field-name="Level" onkeyup="validateLevelName();" onblur="validateLevelName();"  placeholder="Enter Level" name="level" id="level" autocomplete="off" autofocus>
             <input type="hidden" name="hierarchyId" id="hierarchyId">
            </div>
         </div>
@@ -205,7 +205,8 @@ backdrop: 'static'
  
  <script type="text/javascript">
 function validateLevelName(){
-	var levelName = document.getElementById("level").value;
+	// 	var levelName = document.getElementById("level").value;
+	var levelName = document.getElementById("level").value.trim();
 	var hierarchyId = document.getElementById("hierarchyId").value;
 	var sourceleadUrl = '${sourceleadUrl}';
 	if(levelName) {

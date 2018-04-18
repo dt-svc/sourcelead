@@ -149,7 +149,7 @@ overflow-x: auto;
 								 
 								 
 						<div class="col-md-12 mb">
-							<label><strong>Status</strong></label>
+							<label><strong>Project Status</strong></label>
 							 <div class="clearfix">
 								<ul class="list-unstyled" id="statusFilter">
 		                    	    <li class="checkBox positionRelative" ><input id="c7" name="projectStatus" type="checkbox" value ="In-Progress"  checked ><label for="c7">In-Progress</label></li>
