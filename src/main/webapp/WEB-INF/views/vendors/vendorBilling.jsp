@@ -703,7 +703,7 @@ function vendorInvoicePagination(){
 				  result = result +'        <div class="clearfix mb10"> ';
 				  result = result +'            <img src="/resources/images/invoice_icon.png" class="text-center" alt="create_receivables">';
 				  result = result +'        </div>';
-				  result = result +'        <strong class="clearfix">Custom</strong></a>';
+				  result = result +'        <strong class="clearfix">Vendor Based</strong></a>';
 				  result = result +'        </div>';
 				  result = result +'    </div>';
 				  result = result +'      <div class="col-md-4 mt25">';
@@ -1100,7 +1100,7 @@ function linkPayableInvoice(invoiceId,totalAmount){
 			result = result +' <input type="hidden" value='+invoiceId+' name="masterInvoiceId" id="masterInvoiceId">   ';
 			result = result +'      <div class="modal-header" id="vendorBilllinkId">                                                                                              ';
 			result = result +'        <button type="button" class="close" data-dismiss="modal" onClick="closeLinkInvoice();">×</button>                                                   ';
-			result = result +'        <h4 class="modal-title">Link Invoice</h4>                                                                             ';
+			result = result +'        <h4 class="modal-title">Link Bill</h4>                                                                             ';
 			result = result +'      </div>                                                                                                                  ';
 			result = result +'      <div class="modal-body clearfix">                                                                                       ';
 			result = result +' <div class="timesheet_out clearfix">                                                                                         ';
