@@ -336,5 +336,10 @@ public class ResourcesRestController {
 		}
 		return flag;
 	}
+	
+	@RequestMapping(value = "/publishBlog", method = RequestMethod.POST)
+	 public @ResponseBody  boolean publishBlog(@RequestParam(value = "blogId", required = false) Long blogId,HttpServletRequest request) throws Exception {
+		return sourceleadBlogService.publishBlog(blogId);
+	 }
 
 }
