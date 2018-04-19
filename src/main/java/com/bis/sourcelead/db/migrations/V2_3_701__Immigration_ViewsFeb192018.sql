@@ -48,6 +48,7 @@ CREATE OR REPLACE VIEW IMMIGRATION_LIST_VIEW AS
         IMM.CANDIDATE_ID,
         IMM.COUNTRY,
 		IMM.ORG_LOCATION_ID,
+		IMM.ATTORNEY_LOCATION_ID,
         IMM.STATUS,
         IMM.IMMIGRATION_STATUS,
         IMM.CREATED_DATE,
@@ -98,16 +99,23 @@ CREATE OR REPLACE VIEW IMMIGRATION_LIST_VIEW AS
         WHERE
             LCA.CANDIDATE_ID = IMM.CANDIDATE_ID
                 AND LCA.IS_CURR = 'Y') AS LCA_END_DATE,
-                (SELECT 
-                O.ORG_NAME
-            FROM
-                SOURCELEAD.ORG_RELATIONS ORL,
-                SOURCELEAD.ORG_LOCATIONS OL,
-                SOURCELEAD.ORG O
-            WHERE
-                ORL.RESPONDER_LOCATION_ID = OL.ID
-                    AND OL.ORG_ID = O.ID
-                    AND ORL.ID = IMM.ORG_REL_ID) AS ORG_NAME
+    (SELECT 
+            O.ORG_NAME
+        FROM
+            SOURCELEAD.ORG_LOCATIONS OL,
+            SOURCELEAD.ORG O
+        WHERE
+            OL.ORG_ID = O.ID
+                AND OL.ID = IMM.ORG_LOCATION_ID) AS ORG1,
+    (SELECT 
+            O.ORG_NAME
+        FROM
+            SOURCELEAD.ORG_LOCATIONS OL,
+            SOURCELEAD.ORG O
+        WHERE
+            OL.ORG_ID = O.ID
+                AND OL.ID = IMM.ATTORNEY_LOCATION_ID) AS ORG2
+                    
     FROM
         SOURCELEAD.IMMIGRATION IMM
         

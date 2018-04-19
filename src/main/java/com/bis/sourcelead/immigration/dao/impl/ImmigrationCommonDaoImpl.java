@@ -647,6 +647,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			//listQuery = "from ImmigrationListView immView where immView.openDate =:sqlDate1";
 			query1.append(" and ((immView.openDate like '%" + sqlDate1 + "%' )");
 			query1.append(" or (immView.lcaStartDate like '%" + sqlDate1 + "%' )");
+			query1.append(" or (immView.lcaStartDate like '%" + sqlDate1 + "%' )");
 			query1.append(" or (immView.lcaEndDate like '%" + sqlDate1 + "%' ))");
 			//ImmigrationViewLst = session.createQuery(listQuery + query1 + sortingQry).setDate("sqlDate1", sqlDate1).list();
 		}else if(searchValue != null && !"".equalsIgnoreCase(searchValue)) {
@@ -654,6 +655,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			query1.append(" or (immView.firstName like '%" + searchValue + "%' )");
 			query1.append(" or (immView.generatedId like '%" + searchValue + "%' )");
 			query1.append(" or (immView.currUscisStatus like '%" + searchValue + "%' )");
+			query1.append(" or (immView.country like '%" + searchValue + "%' )");
 			query1.append(" or (immView.petitionType like '%" + searchValue + "%' )");
 			query1.append(" or (immView.orgName like '%" + searchValue + "%' )");
 			query1.append(" or (immView.phone like '%" + searchValue + "%' ))");
@@ -669,11 +671,11 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         }
 		String listQuery = "";
 		
-	System.out.println(" latest code deployed 55555 --->");
-        listQuery = "from ImmigrationListView immView  where immView.orgLocationId=:orgLocationId " + (immigrationListDTO.getStatus() >= 0 ? "and immView.status =" + immigrationListDTO.getStatus() + " " : " ");
+	System.out.println(" latest code deployed 6666 --->"+orgLocations.getId());
+        listQuery = "from ImmigrationListView immView  where immView.status = 1  and (immView.orgLocationId=:orgLocationId or immView.attorneyOrgLocationId =:orgLocationId) ";
         ImmigrationViewLst = session.createQuery(listQuery + query1 + sortingQry).setLong("orgLocationId", orgLocations.getId()).list();
           
-        String listQueryCount = "select count(*) from ImmigrationListView immView where immView.orgLocationId=:orgLocationId " + (immigrationListDTO.getStatus() >= 0 ? "and immView.status =" + immigrationListDTO.getStatus() + " " : " ");
+        String listQueryCount = "select count(*) from ImmigrationListView immView where  immView.status = 1  and (immView.orgLocationId=:orgLocationId or immView.attorneyOrgLocationId =:orgLocationId)  ";
         countlist = session.createQuery(listQueryCount + query1).setLong("orgLocationId", orgLocations.getId()).setFirstResult(immigrationListDTO.getStart())
                 .setMaxResults(immigrationListDTO.getLength()).list();
         int totalCount = 0;
@@ -703,6 +705,12 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	            target.setOpenDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getOpenDate()));
 	            target.setLcaStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getLcaStartDate()));
 	            target.setLcaEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getLcaEndDate()));
+	            if(orgLocations.getId() == source.getOrgLocationId()) {
+	            	target.setOrgName(source.getOrg2());
+	            }
+	            else {
+	            	target.setOrgName(source.getOrg1());
+	            }
 	            ImmigarionDTOList.add(target);
 	        }
 	        responseList.setData(ImmigarionDTOList);

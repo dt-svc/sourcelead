@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
+import com.bis.sourcelead.dao.OrgRelationsDao;
+import com.bis.sourcelead.dao.OrgSpocDao;
 import com.bis.sourcelead.dto.CandidateFamilyDetailsDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ImmigrationDTO;
@@ -75,6 +77,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private OrgRelationsDao orgRelationsDao; 
+	
+	@Autowired
+	private OrgSpocDao orgSpocDao;
 	
 	@Override
 	public List<ImmigrationTemplate> getImmigrationTemplateList(OrgLocations orgLocations) {
@@ -379,7 +387,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		return null;
 	}
 
-	private Immigration savePetitionImmigration(ImmigrationDTO immigrationDTO, OrgLocations orgLocations, Candidate candidate, Requirement requirement, User user) {
+	private Immigration savePetitionImmigration(ImmigrationDTO immigrationDTO, OrgLocations orgLocations, Candidate candidate, Requirement requirement, User user) throws Exception, Exception {
 		Immigration immigration = new Immigration();
 		LookUpData petitionTypeId = new LookUpData();
 		petitionTypeId.setId(Long.parseLong(immigrationDTO.getPetitionType()));
@@ -396,17 +404,17 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		}
 		immigration.setPlaceOfEntry(immigrationDTO.getEntryPlace());
 		if(immigrationDTO.getTemplateId()!=null && !StringUtils.isEmpty(immigrationDTO.getTemplateId())) {
-			ImmigrationTemplate immiTemplate = new ImmigrationTemplate();
-			immiTemplate.setId(Long.parseLong(immigrationDTO.getTemplateId()));
+			ImmigrationTemplate immiTemplate = immigrationTemplateDao.getImmigrationTemplateById(Long.parseLong(immigrationDTO.getTemplateId()));
 			immigration.setImmigrationTemplateId(immiTemplate);
+			immigration.setCountry(immiTemplate.getCountry());
 		}
 		immigration.setImmigrationUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-		OrgRelations orgRelations = new OrgRelations();
-		orgRelations.setId(Long.parseLong(immigrationDTO.getAttorneyId()));
+		OrgRelations orgRelations =orgRelationsDao.getOrgRelationById(Long.parseLong(immigrationDTO.getAttorneyId()));
 		immigration.setOrgRelations(orgRelations);
-		OrgSpoc orgSpoc = new OrgSpoc();
-		orgSpoc.setId(Long.parseLong(immigrationDTO.getAttorneyContact()));
+		immigration.setAttorneyOrgLocationId(orgRelations.getResponderLocationId());
+		OrgSpoc orgSpoc = orgSpocDao.getOrgSpocById(Long.parseLong(immigrationDTO.getAttorneyContact()));
 		immigration.setOrgSpoc(orgSpoc);
+		immigration.setSpocUserId(orgSpoc.getVendorUser());
 		immigration.setCandidate(candidate);
 		immigration.setOrgLocationId(orgLocations);
 		immigration.setReceiptNo(immigrationDTO.getReceiptNo());
@@ -437,13 +445,21 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			dto.setTemplateName(immigration.getImmigrationTemplateId().getName());
 		}
 		/*petition details end*/
+		if(orgLocations.getId() == immigration.getOrgLocationId().getId()) {
 		dto.setAttorneyName(immigration.getOrgRelations().getResponderLocationId().getOrgLocationName());
 		dto.setAttorneyEmail(immigration.getOrgSpoc().getVendorUser().getEmail());
 		dto.setAttorneyPhone(immigration.getOrgSpoc().getVendorUser().getMobilePhone());
 		dto.setAttorneyFax(""); //no data need to update
 		//dto.setAttorneyLawFirm(""); //removed column as per request
 		dto.setAttorneyContact(immigration.getOrgSpoc().getVendorUser().getFullName());
-		
+		}else {
+			dto.setAttorneyName(immigration.getOrgRelations().getLocationId().getOrgLocationName());
+			dto.setAttorneyEmail(immigration.getOrgSpoc().getClientUser().getEmail());
+			dto.setAttorneyPhone(immigration.getOrgSpoc().getClientUser().getMobilePhone());
+			dto.setAttorneyFax(""); //no data need to update
+			//dto.setAttorneyLawFirm(""); //removed column as per request
+			dto.setAttorneyContact(immigration.getOrgSpoc().getClientUser().getFullName());
+		}
 		/*attorney end*/
 		if(immigration.getJob() != null) {
 			dto.setJobTitle(immigration.getJob().getJobTitle());
