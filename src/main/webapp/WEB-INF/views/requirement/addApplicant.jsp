@@ -1234,7 +1234,7 @@ function addRequirementRecommendations(){
 	      
 	      con = encodeURIComponent(con);
 	     
-	      
+	     
 			
 	       $("#addApplicantLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	      
@@ -1260,6 +1260,7 @@ function addRequirementRecommendations(){
 			    		$("#recSumbmitbtn"+candidateId).removeAttr("onclick");
 			    		
 			    		$(".sideMask").fadeOut(200);
+			    		requirementRecommendations(requirementId);
 					} else if (result.indexOf('Sign In') !== -1) {
 						location.replace(sourceleadUrl);
 					} else {
