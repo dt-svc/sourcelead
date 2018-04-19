@@ -48,6 +48,7 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
+import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.ImmigrationDashboardView;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
@@ -634,7 +635,9 @@ public class ImmigrationRestController {
         for(ImmigrationCandidateDocuments docs : immigrationCanDocList){
         	LookUpData data = lookUpDataService.getTasksById(docs.getDocumentType().getId());
 			docs.setDocumentTypeName(data.getName());
-		}
+			List<ImmigrationCandidateDocumentsHistory> history = immigrationCommonService.getImmigrationCandidateDocumentHistoryList(immigrationId,candidateId,docs.getId());
+        
+        }
         model.setViewName("/immigration/documentDetailsTab");
 		 List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
 	       model.addObject("documentsList", documentsList);
