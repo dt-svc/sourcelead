@@ -418,6 +418,8 @@ result = result  +'    <div class="billingArea"> ';
 						}else{
 							result = result +'           <span class="successBtn primary pull-left" >Send</span>   ';	
 						}
+						}else if(report.invoiceStatus == "Linked"){
+							result = result +' <a class="successBtn primary pull-left" onClick="unLinkInvoice(\''+report.invoiceUUID+'\')">UnLink</a>  ';
 						}else{
 							result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span>';
 						}
@@ -1263,6 +1265,20 @@ function cancel(){
 	$(".project_inn_mask").fadeOut(200);
 	var sourceleadUrl ='${sourceleadUrl}';
 	location.replace(sourceleadUrl+"/invoiceList");	
+}
+</script>
+
+
+<script>
+function unLinkInvoice(invoiceUUID){
+	$.ajax({
+	   	 type: "POST",
+		     dataType : 'json',
+		    	 url: sourceleadUrl+"/unLinkInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
+	            success: function(data) {
+	            	location.replace(sourceleadUrl+"/invoiceList");	
+	       },
+	   });  
 }
 </script>
 
