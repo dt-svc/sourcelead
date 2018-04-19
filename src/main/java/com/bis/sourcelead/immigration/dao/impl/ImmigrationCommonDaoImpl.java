@@ -718,9 +718,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	            }
 	            ImmigarionDTOList.add(target);
 	        }
-	        responseList.setData(ImmigarionDTOList);
         }
-        
+        responseList.setData(ImmigarionDTOList);
         
         System.out.println(" after dao impl  ---responseList getRecordsTotal is -->" +responseList.getRecordsTotal());
         return responseList;

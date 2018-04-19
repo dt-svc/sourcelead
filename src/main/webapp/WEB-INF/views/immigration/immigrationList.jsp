@@ -437,7 +437,7 @@
 //     var statusFilter = $("#statusFilter").val();
      var searchValue = $("#immiListSerach").val();
      searchValue = searchValue ? searchValue : "";
-     var url = sourceleadUrl + "/immigration/getImmigrationViewList?searchValue=" + searchValue + "&status=" + (status ? status : 1);
+     var url = sourceleadUrl + "/immigration/getImmigrationViewList?searchValue=" + searchValue;
      dynamicImmigrationListPagination(url);
  }
  //var count = 0;
