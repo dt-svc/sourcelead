@@ -2,8 +2,12 @@ package com.bis.sourcelead.dto;
 
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class LeaveTypeDTO {
+	@Required(desc = "Name")
 	private String name;
+	@Required(desc = "Duration")
 	private String duration;
 	private String hours;
 	private String hoursType;
@@ -23,6 +27,7 @@ public class LeaveTypeDTO {
 	private String loginUserId;
 	private long leaveTypeId;
 	private String deleteReason;
+	@Required(desc = "Color Code")
 	private String colorCode;
 	private int approvedCount;
 	private int pendingCount;
@@ -30,7 +35,9 @@ public class LeaveTypeDTO {
 	private int cancelCount;
 	private String numberOfDaysCount;
 	private String status;
+	@Required(desc = "Period")
 	private String period;
+	@Required(desc = "Leave Effective")
 	private String leaveEffective;
 	private String newJoinee;
 	private String experiencedType;
@@ -45,6 +52,7 @@ public class LeaveTypeDTO {
 	private String leaveDuration;
 	private String minDays;
 	private String maxDays;
+	@Required(desc = "No. of Days")
 	private String noOfDays;
 	private String leaveTypeUUID;
 	
