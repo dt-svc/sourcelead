@@ -41,10 +41,14 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CompanyRegistrationDTO;
 import com.bis.sourcelead.dto.CrowdSourcingUserRegistrationDTO;
 import com.bis.sourcelead.dto.EmployerRegistrationDTO;
+import com.bis.sourcelead.dto.LocationEnrollmentDTO;
 import com.bis.sourcelead.dto.OrgDTO;
 import com.bis.sourcelead.dto.OrgLicenseSubscriptionDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
+import com.bis.sourcelead.dto.OrgPrimaryUserDTO;
+import com.bis.sourcelead.dto.OrgSettingsDTO;
 import com.bis.sourcelead.dto.RegistrationDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TabsDTO;
 import com.bis.sourcelead.entity.Org;
@@ -58,6 +62,7 @@ import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.form.RestResponsetUtil;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionPriceService;
@@ -409,30 +414,43 @@ public class RegistrationRestController {
 	
 	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/app/companyLocationRegistration" , method = RequestMethod.POST)
-	   public String companyLocationRegistration(
-			   CompanyRegistrationDTO companyRegistrationDTO,CandidateDTO candidateDTO,
+	   public Response<String> companyLocationRegistration(
+			   LocationEnrollmentDTO locationEnrollmentDTO,CandidateDTO candidateDTO,
 	   			HttpServletRequest request) {
-		if(Validator.validate(companyRegistrationDTO)){
-		try {
-
-				Registration registration = new Registration();
-				ModelMapper mapper1 = new ModelMapper();
-				registration = mapper1.map(companyRegistrationDTO, Registration.class);
-				
-				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			   
-				registrationService.addRegistration(registration,user,orgLocations.getId(),candidateDTO);
-				 StringBuilder orgCreateMsg = new StringBuilder();
-				SourceLeadSessionManager.setSessionAttribute(request, "orgCreateMsg", orgCreateMsg.append(registration.getCompanyName()).append(" Org has created sucessfully.").toString());
-			} catch (Exception e) {
+		
+		Response<String> response = new Response<>();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+	    	try{
+	    		if(user != null){
+	    		if(Validator.validate(locationEnrollmentDTO)){
+	    			Registration registration = new Registration();
+					ModelMapper mapper1 = new ModelMapper();
+					registration = mapper1.map(locationEnrollmentDTO, Registration.class);
+				   
+					registrationService.addRegistration(registration,user,orgLocations.getId(),candidateDTO);
+					StringBuilder orgCreateMsg = new StringBuilder();
+					SourceLeadSessionManager.setSessionAttribute(request, "orgCreateMsg", orgCreateMsg.append(registration.getCompanyName()).append(" Org has created sucessfully.").toString());
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+		    	}else{
+		    		response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+		    	}
+    		}else{
+    	    	response.setResponse(Result.SESSION_TIMEDOUT.name());
+    			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+    	    }
+    	  }catch (Exception e) {
+	    		response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
-			
-			return "orgList";
-		}else{
-			return "DataMissing";
-		}
+	    	
+	    
+		return response;
 	     
 	   }
 	
@@ -519,6 +537,26 @@ public class RegistrationRestController {
      }
 	
 	
+	@RequestMapping(value = "/app/getUpgradeInvoiceRateBySubscriptionRateAndUserSubscription" , method = RequestMethod.POST)
+	   public Double getUpgradeInvoiceRateBySubscriptionRateAndUserSubscription(@RequestParam(value="subscriptionType", required=true) Long subscriptionType,
+			   @RequestParam(value="userSubscription", required=true) Long userSubscription,@RequestParam(value="subscriptionUUID", required=true) String subscriptionUUID,
+			   HttpServletRequest request) throws Exception {
+		Double invoiceAmount = 0d;
+		OrgLicenseSubscriptionPrice subscriptionPrice = orgLicenseSubscriptionPriceService.getOrgLicenseSubscriptionPriceBySubscriptionTypeAndUserType(subscriptionType, userSubscription);
+		OrgLicenseSubscription subscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByUUID(subscriptionUUID);
+	
+		if(subscriptionPrice != null) {
+			if(subscription.getSubscriptionType().getId().equals(subscriptionType) && subscription.getUserSubscriptionType().getId().equals(userSubscription)) {
+				invoiceAmount = subscriptionPrice.getSubscriptionRate();
+			}else {
+				invoiceAmount = subscription.getInvoiceAmount()+subscriptionPrice.getSubscriptionRate();
+			}
+		}
+		
+		return invoiceAmount;
+		
+  }
+	
 	@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	@RequestMapping(value = "/app/saveOrgLocationSubscription" , method = RequestMethod.POST)
 	   public String saveOrgLocationSubscription(OrgLicenseSubscriptionDTO orgLicenseSubscriptionDTO,
@@ -539,7 +577,24 @@ public class RegistrationRestController {
 		
      }
 	
-	
+	@RequestMapping(value = "/app/upgradeOrgLocationLicenseSubscription" , method = RequestMethod.POST)
+	   public String upgradeOrgLocationLicenseSubscription(OrgLicenseSubscriptionDTO orgLicenseSubscriptionDTO,
+			   @RequestParam(value="orgId", required=true) Long orgId,HttpServletRequest request) {
+		
+		if(Validator.validate(orgLicenseSubscriptionDTO)){
+			try {
+				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				orgLicenseSubscriptionService.upgradeLicenseSubscription(orgLicenseSubscriptionDTO, loginUser, orgId, orgLicenseSubscriptionDTO.getLicenseUUID());
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return "subscribeList";
+		}else {
+			return "DataMissing";
+		}
+		
+  }
 	
 	
 	
@@ -562,10 +617,6 @@ public class RegistrationRestController {
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	 @RequestMapping(value = "/app/createUesrBySourceleadAdmin" , method = RequestMethod.POST)
 	 public  String createUser(AddUserDTO addUserDTO, CandidateDTO candidateDTO,HttpServletRequest request) throws Exception {
-		 	
-		 /*json = "{"+json+"}";
-		 
-		 JSONObject jsonObj = new JSONObject(json);*/
 		 	
 	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	 registrationService.addUserBySourcelead(user, addUserDTO,candidateDTO);
@@ -599,49 +650,66 @@ public class RegistrationRestController {
 	 
 	 @PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	 @RequestMapping(value = "/app/editOrgPrimaryUser" , method = RequestMethod.POST)
-	 public  String editOrgPrimaryUser(@RequestParam(value="json", required=false) String json, 
+	 public  Response<String> editOrgPrimaryUser(OrgPrimaryUserDTO OrgPrimaryUserDTO, 
 			 @RequestParam(value="userId", required=false) Long userId ,
 			 @RequestParam(value="orgLocationId", required=false) Long orgLocationId ,HttpServletRequest request) throws Exception {
 		 	
-		 json = "{"+json+"}";
-		 
-		 JSONObject jsonObj = new JSONObject(json);
-		 	
 	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	 OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+	 	 Response<String> response=new Response<>();
 	 	 
-	 	 User primaryUser = userService.getUserById(userId);
-	 	 if(null != primaryUser){
-	 		 if(!isNullOrEmpty(jsonObj.getString("primaryUserFirstName"))){
-	 			primaryUser.setFirstName(jsonObj.getString("primaryUserFirstName"));
-	 		 }
-	 		 
-	 		 if(jsonObj.has("primaryUserLastName") && !isNullOrEmpty(jsonObj.getString("primaryUserLastName"))){
-		 			primaryUser.setLastName(jsonObj.getString("primaryUserLastName"));
-	 		 }else{
-	 			primaryUser.setLastName(null);
-	 		 }
-	 		 
-	 		 if(!isNullOrEmpty(jsonObj.getString("primaryUserEmail"))){
-		 			primaryUser.setEmail(jsonObj.getString("primaryUserEmail"));
-		 			primaryUser.setUserName(jsonObj.getString("primaryUserEmail"));
-	 		 }
-	 		 
-	 		 if(jsonObj.has("mobilePhone") && !isNullOrEmpty(jsonObj.getString("mobilePhone"))){
-	 			primaryUser.setMobilePhone(jsonObj.getString("mobilePhone"));
-	 		 }else{
-	 			primaryUser.setMobilePhone(null);
-	 		 }
-	 		 
-	 		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
-	 		primaryUser.setPassword(sourceleadPasswordEncoder.encode(password));
-	 		userService.addUser(primaryUser);
-	 		
-	 		userService.sendEmail(primaryUser, user, password,orgLocations.getId());
-	 		
-	 	 }
+	 	 try{
+	 		if(user !=null){
+	 			if(Validator.validate(OrgPrimaryUserDTO)){
+	 			 	 User primaryUser = userService.getUserById(userId);
+	 			 	 if(null != primaryUser){
+	 			 		 if(!isNullOrEmpty(OrgPrimaryUserDTO.getPrimaryUserFirstName())){
+	 			 			primaryUser.setFirstName(OrgPrimaryUserDTO.getPrimaryUserFirstName());
+	 			 		 }
+	 			 		 
+	 			 		 if(!isNullOrEmpty(OrgPrimaryUserDTO.getPrimaryUserLastName())){
+	 				 			primaryUser.setLastName(OrgPrimaryUserDTO.getPrimaryUserLastName());
+	 			 		 }else{
+	 			 			primaryUser.setLastName(null);
+	 			 		 }
+	 			 		 
+	 			 		 if(!isNullOrEmpty(OrgPrimaryUserDTO.getPrimaryUserEmail())){
+	 				 			primaryUser.setEmail(OrgPrimaryUserDTO.getPrimaryUserEmail());
+	 				 			primaryUser.setUserName(OrgPrimaryUserDTO.getPrimaryUserEmail());
+	 			 		 }
+	 			 		 
+	 			 		 if(!isNullOrEmpty(OrgPrimaryUserDTO.getMobilePhone())){
+	 			 			primaryUser.setMobilePhone(OrgPrimaryUserDTO.getMobilePhone());
+	 			 		 }else{
+	 			 			primaryUser.setMobilePhone(null);
+	 			 		 }
+	 			 		 
+	 			 		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
+	 			 		primaryUser.setPassword(sourceleadPasswordEncoder.encode(password));
+	 			 		userService.addUser(primaryUser);
+	 			 		
+	 			 		userService.sendEmail(primaryUser, user, password,orgLocations.getId());
+	 			 		response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+	 			 	 }
+	 				
+	 			}else{
+	 				response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+	 			}
+	 		} else{
+	 			response.setResponse(Result.SESSION_TIMEDOUT.name());
+    			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+	 		}
+	 	 }catch (Exception e) {
+	 		response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+	 
 	 	
-		 return "success";
+		 return response;
 	   }
 	
 	

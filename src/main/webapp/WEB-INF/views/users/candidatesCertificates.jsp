@@ -662,7 +662,6 @@ function addCertification(candidateId) {
       
       <script type="text/javascript">
 	function updateCandidateCertification(candidateId, candidateCertificationId) {
-
 		var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
@@ -701,12 +700,13 @@ function addCertification(candidateId) {
 							setTimeout(function(){
 					 			candidateList();					 			
 					 		},100);
-				        });	
+				        
 		    		} else if (result.indexOf('Sign In') !== -1) {
 						location.replace(sourceleadUrl);
 					} else {
 					    showError("Operation failed, please try again");
 					}
+			 });	
 			return true;
 		} else {
 			return false;

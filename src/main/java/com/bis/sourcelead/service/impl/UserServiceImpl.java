@@ -44,6 +44,8 @@ import com.bis.sourcelead.dto.AddUserProfileDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.UserIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -1488,6 +1490,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User getUserByUserCodeAndOrgLocationsId(String userCode, Long orgLocationsId) throws Exception {
 		return userDao.getUserByUserCodeAndOrgLocationsId(userCode, orgLocationsId);
+	}
+
+	@Override
+	public ResponseList<UserDTO> getUsersDTOListByOrglocationId(Long orgLocationId,UserDTO userDTO) throws Exception {
+		return userDao.getUsersDTOListByOrglocationId(orgLocationId,userDTO);
 	}
 	
 }

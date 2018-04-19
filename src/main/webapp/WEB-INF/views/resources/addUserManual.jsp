@@ -267,7 +267,7 @@ function deleteDocument(documentId){
 		$.ajax({
 					type : "POST",
 					url : sourceleadUrl + "/deleteManualAttachment?${_csrf.parameterName}=${_csrf.token}&attachmentId="+ documentId,
-					success : function(data) {
+					success : function(response) {
 						
 						if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
 			    		    showError(response.responseMessage);

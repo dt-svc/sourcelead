@@ -4,12 +4,14 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.annotations.Required;
 import com.bis.sourcelead.entity.Employees;
 
 public class AssetDTO extends SearchDTO implements Serializable {
 
+	    @Required(desc="sno")
 		private String sno;
-		
+	    
 		private String make;
 		
 		private String model;
@@ -24,8 +26,12 @@ public class AssetDTO extends SearchDTO implements Serializable {
 		
 		private String monitor;
 		
+		private Long catagoryHiddenId;
+		
+		@Required(desc="category")
 		private String category;
 		
+		@Required(desc="working status")
 		private String workingStatus;
 		
 		private String shiftAEmp;
@@ -388,4 +394,14 @@ public class AssetDTO extends SearchDTO implements Serializable {
 		public void setCategoryIds(String categoryIds) {
 			this.categoryIds = categoryIds;
 		}
+
+		public Long getCatagoryHiddenId() {
+			return catagoryHiddenId;
+		}
+
+		public void setCatagoryHiddenId(Long catagoryHiddenId) {
+			this.catagoryHiddenId = catagoryHiddenId;
+		}
+		
+		
 }

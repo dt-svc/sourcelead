@@ -598,7 +598,12 @@ function customizeScore(requirementId){
 		   	type: "GET",
 		    url: sourceleadUrl+"/getCustomizeScore?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
 		    success: function(data) {
-		    	var json = JSON.parse(data);
+		    	var json = data.object;
+		    	if (data.response === "FAILED") {
+		    		showError(data.responseMessage);
+		    	} else if (data.response === "AWKWARD") {
+		    		location.href = "/errorPage";
+		    	} else if (data.response === "SUCCESS") {
 		    	if(json.customizeMinExperience != null && json.customizeMinExperience != '' && json.customizeMinExperience != 'undefiend'){
 		    		customizeMinExperience = json.customizeMinExperience;
 		    	}else{
@@ -1049,7 +1054,11 @@ function customizeScore(requirementId){
 		    		  tagIt("anyKeyWord", 'Press Enter-Key Or Comma(,) To Add Keyword:', 'tagItBykeyForSkills','skills','Keywords');
 		    		     
 			   		  tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','sletected cites');
-
+		    	}else if (data.indexOf('Sign In') !== -1) {
+		    		location.replace(sourceleadUrl);
+		    	} else {
+		    		showError("Operation failed, please try again");
+		    	}
 		    }
 	 });
 	
@@ -1129,10 +1138,20 @@ function updateCutomize(requirementId){
     					type : "POST",
     					url : sourceleadUrl + "/updateCustomizeScore?"+tokenParamName+"="+tokenValue+"&json="+ jsonData + "&requirementId=" + requirementId,
     					success : function(data) {
-    						if(data == "success"){
-    							requirementRecommendations(requirementId);	
-    							closePop();
-    						}
+    						if (data.response === "FAILED") {
+    				    		showError(data.responseMessage);
+    				    	} else if (data.response === "AWKWARD") {
+    				    		location.href = "/errorPage";
+    				    	} else if (data.response === "SUCCESS") {
+	    						if(data.object == "success"){
+        							requirementRecommendations(requirementId);	
+        							closePop();
+	    						}
+    				    	}else if (data.indexOf('Sign In') !== -1) {
+    				    		location.replace(sourceleadUrl);
+    				    	} else {
+    				    		showError("Operation failed, please try again");
+    				    	}
     					}
     				}); 
     		 return true;

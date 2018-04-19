@@ -5,11 +5,10 @@ import java.util.List;
 import com.bis.sourcelead.annotations.Email;
 import com.bis.sourcelead.annotations.Required;
 
-public class OrgSettingsDTO {
+public class OrgSettingsDTO extends CommonDTO{
 
 	private Integer id;
 	
-	@Required(desc = "first name")
 	private String firstName;
 	
 	private String lastName;
@@ -20,14 +19,15 @@ public class OrgSettingsDTO {
 	@Required(desc = "website")
 	private String website;
 	
-	@Required(desc = "email")
-	@Email
 	private String email;
 	
+	@Required(desc = "country")
 	private String country;
 	
+	@Required(desc = "state")
 	private String state;
 	
+	@Required(desc = "city")
 	private String city;
 	
 	private String address;
@@ -47,7 +47,6 @@ public class OrgSettingsDTO {
 	
 	private String orgLocationId;
 	
-	@Required(desc = "location")
 	private String location;
 	
 	private String zipCode;
@@ -60,8 +59,10 @@ public class OrgSettingsDTO {
 	
 	private String dateFormat1;
 	
+	@Required(desc = "dba")
 	private String dba;
 	
+	@Required(desc = "generatedUserId")
 	private String generatedUserId;
 	
 	private Integer averageWorkingHours;
@@ -72,6 +73,7 @@ public class OrgSettingsDTO {
     
     private String remittanceEmail;
     
+    @Required(desc = "businessType")
     private String businessType;
     
     private String otherBusinessType;

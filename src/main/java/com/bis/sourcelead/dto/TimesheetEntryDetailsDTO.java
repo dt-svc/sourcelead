@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.annotations.Required;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -15,8 +16,10 @@ public class TimesheetEntryDetailsDTO implements Serializable{
 	
 	private List<ProjectMembersDTO> projectMembersList;
 	
+	@Required(desc="projectMemberId")
 	private Long projectMemberId;
 	
+	@Required(desc="projectId")
 	private Long projectId;
 	
 	private Long masterCandidateId;
@@ -33,6 +36,7 @@ public class TimesheetEntryDetailsDTO implements Serializable{
 	
 	private String currentTimeSubFrequency;
 	
+	@Required(desc = "timesheetSubmission")
 	private TimeSheetSubmissionDTO timesheetSubmission;
 	
 	private String timesheetFor;

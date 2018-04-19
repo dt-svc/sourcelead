@@ -2,29 +2,34 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 
+import com.bis.sourcelead.annotations.Required;
+
 /**
  * @author Laxman
  *
  */
 @SuppressWarnings("serial")
 public class OnboardingCandidateSetp2DTO implements Serializable {
-	
+	@Required(desc="firstName")
 	private String firstName;
 	
 	private String lastName;
 	
 	private String country;
 	
+	@Required(desc="mobileNumber")
 	private String mobileNumber;
 	
 	private String state;
 	
 	private String city;
 	
+	@Required(desc="location")
 	private String location;
 	
 	private String zipCode;
 	
+	@Required(desc="address1")
 	private String address1;
 	
 	private String address2;

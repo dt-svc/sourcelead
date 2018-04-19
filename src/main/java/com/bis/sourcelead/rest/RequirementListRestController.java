@@ -1812,6 +1812,7 @@ public class RequirementListRestController {
 							boolQueryBuilderForCount.must(reqStatusBoolQueryBuilder);
 						}
 					} 
+
 				}
 					
 				
@@ -1825,8 +1826,9 @@ public class RequirementListRestController {
 						boolQueryBuilderForCount.must(reqAssignToBoolQueryBuilder);
 					}
 				}
+
 				
-				  //requirementPriority
+				 /* //requirementPriority
 		
 						if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterStatus())){
 							String priority = "";
@@ -1872,7 +1874,7 @@ public class RequirementListRestController {
 								}
 							} 
 						}
-						
+						*/
 						
 						//filter for is Client job
 						if(StringUtils.isNotEmpty(search.getFilterSpecJobs()) && "ClientJobs".equalsIgnoreCase(search.getFilterSpecJobs())){
@@ -1922,7 +1924,9 @@ public class RequirementListRestController {
 						if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
 							boolQueryBuilderForCount.must(employerBoolQueryBuilder);
 						}
+
 					}
+
 				}
 				
 				//projects

@@ -1,9 +1,15 @@
 package com.bis.sourcelead.util;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Writer;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -40,6 +46,11 @@ import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Entities.EscapeMode;
+import org.jsoup.safety.Cleaner;
+import org.jsoup.safety.Whitelist;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +76,9 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLicensePaymentTransactionHistory;
+import com.bis.sourcelead.entity.OrgLicenseSubscription;
+import com.bis.sourcelead.entity.OrgLicenseSubscriptionHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -207,9 +221,12 @@ public class CommonUtil {
 	@Autowired
 	private ProjectTasksDao tasksDao;
 	
+	@Value("${paymentSuccessReturnEmail}")
+	private String paymentSuccessReturnEmail;
+	
 	
 	/**
-	 * This method is used to store pre-defined sourcelead tasks for the particular project
+	 * This method is used to convert JSON String to HashMap<Key,Value>
 	 * @author: Naresh Bolisetty
 	 * 
 	 */
@@ -229,6 +246,44 @@ public class CommonUtil {
 	    }
 	}
 	
+	/**
+	 * This method is used to clean html content
+	 * @author: Naresh Bolisetty
+	 * 
+	 */
+	public static String cleanContent(String content) {
+		Whitelist allowedTags = Whitelist.simpleText(); 
+		   // This whitelist allows only simple text formatting: b, em, i, strong, u. All other HTML (tags and attributes) will be removed.
+		   allowedTags.addTags("a", "b", "blockquote", "br", "caption", "cite", "code", "col",
+              "colgroup", "dd", "div", "dl", "dt", "em", "h1", "h2", "h3", "h4", "h5", "h6",
+              "i", "img", "li", "ol", "p", "pre", "q", "small", "strike", "strong",
+              "sub", "sup", "table", "tbody", "td", "tfoot", "th", "thead", "tr", "u",
+              "ul");
+	        allowedTags.addAttributes("a", "href", "title");
+	        allowedTags.addAttributes("blockquote", "cite");
+	        allowedTags.addAttributes("col", "span", "width");
+	        allowedTags.addAttributes("colgroup", "span", "width");
+	        allowedTags.addAttributes("img", "align", "alt", "height", "src", "title", "width");
+	        allowedTags.addAttributes("ol", "start", "type");
+	        allowedTags.addAttributes("q", "cite");
+	        allowedTags.addAttributes("table", "summary", "width");
+	        allowedTags.addAttributes("td", "abbr", "axis", "colspan", "rowspan", "width");
+	        allowedTags.addAttributes("th", "abbr", "axis", "colspan", "rowspan", "scope", "width");
+	        allowedTags.addAttributes("ul", "type");
+	       /* allowedTags.addProtocols("a", "href", "//", "#","ftp", "http", "https", "mailto");*/
+	        allowedTags.removeProtocols("a", "href", "javascript");
+	        allowedTags.addProtocols("blockquote", "cite", "http", "https");
+	        allowedTags.addProtocols("cite", "cite", "http", "https");
+	        allowedTags.addProtocols("img", "src", "http", "https");
+	        allowedTags.addProtocols("q", "cite", "http", "https");
+	        allowedTags.addAttributes(":all","class","style","title");
+ 		Document dirty = Jsoup.parseBodyFragment(content, "");
+ 		Cleaner cleaner = new Cleaner(allowedTags);
+ 		Document clean = cleaner.clean(dirty);
+ 		clean.outputSettings().escapeMode(EscapeMode.xhtml); // Non fa l'escape dei caratteri utf-8
+ 		String safe = clean.body().html();
+		    return safe;
+	}
 	
 	/**
 	 * This method is used to store pre-defined sourcelead tasks for the particular project
@@ -832,6 +887,30 @@ public class CommonUtil {
  		 }
 	}
 	
+ 	
+ 	public  String getCleanHTML(String html) throws Exception{
+      	 URL url = new URL(sourceleadUrl);
+         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+         conn.setDoInput(true);
+         conn.setRequestMethod("POST");
+         byte data[] = ("html="+(URLEncoder.encode(String.valueOf(html), "utf-8"))).getBytes();
+         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+         conn.setRequestProperty("Content-Length", String.valueOf(data.length));
+         conn.setDoOutput(true);
+         OutputStream os = conn.getOutputStream();
+         os.write(data);
+         os.flush();
+         
+         conn.getResponseCode();
+         
+         BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+         String line = null;
+         StringBuilder sb = new StringBuilder();
+         while((line = br.readLine()) != null) {
+            sb.append(line);
+         }
+         return sb.toString();
+     }
 	
 	/**
 	 * This method is used to storeTimesheetSubmissionRecords based on projectMemberAssignDate and projectMemberEndDate(optional)
@@ -2164,5 +2243,118 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		}
 		return sahh;
 	}
+	
+	
+  public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicenseSubscription orgLicenseSubscription,User loginUser) {
+		
+		OrgLicenseSubscriptionHistory history = new OrgLicenseSubscriptionHistory();
+		history.setOrgLicenseSubscription(orgLicenseSubscription);
+		history.setSubscriptionType(orgLicenseSubscription.getSubscriptionType());
+		history.setUserSubscriptionType(orgLicenseSubscription.getUserSubscriptionType());
+		history.setStorageSubscriptionType(orgLicenseSubscription.getStorageSubscriptionType());
+		history.setCurrency(orgLicenseSubscription.getCurrency());
+		history.setInvoiceAmount(orgLicenseSubscription.getInvoiceAmount());
+		history.setSubscriptionTabs(orgLicenseSubscription.getSubscriptionTabs());
+		history.setFromDate(orgLicenseSubscription.getFromDate());
+		history.setToDate(orgLicenseSubscription.getToDate());
+		history.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		history.setTimezone(orgLicenseSubscription.getTimezone());
+		history.setCreatedBy(loginUser);
+		history.setUpdatedBy(loginUser);
+		history.setCreatedDate(new Date());
+		history.setUpdatedDate(new Date());
+		return history;
+		
+	}
+  
+  
+  public void paymentAcknowledgementMail(OrgLicensePaymentTransactionHistory paymentHistory,User loginUser,Org org, OrgLocations orgLocations)
+			throws Exception {
+	  
+	    EmailMessage emailMessage = new EmailMessage();
+	    emailMessage.setFirstName(paymentHistory.getTransactionUser());
+		emailMessage.setToEmail(paymentHistory.getTransactionUserEmail());
+		emailMessage.setFromEmail("donotreply@sourcelead.com");
+		emailMessage.setFromName("donotreply@sourcelead.com");
+		emailMessage.setCreatedBy(loginUser.getUserCode());
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		globalVarsMap.put("customerName", paymentHistory.getTransactionUser());
+		
+		StringBuilder paymentDetailsBuilder = paymentDetailsTable(paymentHistory);
+		globalVarsMap.put("paymentDetails", paymentDetailsBuilder.toString());
+		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LICENSE_PAYMENT_ACKNOWLEDGEMENT, Constants.ENTITY_TYPE_EMAIL);
+		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
+		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
+		String url = sourceleadUrl;
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
+				null, url, null, null);
+		emailMessage.setSubject(subject);
+		emailMessage.setMessageBody(emailTemplate);
+		// calling the sendEmail method of emailScenerioUtil
+		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+  }
+  
+  
+  
+  public void paymentAcknowledgementDetailsMail(OrgLicensePaymentTransactionHistory paymentHistory,User loginUser,Org org, OrgLocations orgLocations)
+			throws Exception {
+	  
+	    EmailMessage emailMessage = new EmailMessage();
+	    emailMessage.setFirstName(paymentHistory.getTransactionUser());
+		emailMessage.setToEmail(paymentSuccessReturnEmail);
+		emailMessage.setFromEmail(paymentHistory.getTransactionUserEmail());
+		emailMessage.setFromName(paymentHistory.getTransactionUser());
+		emailMessage.setCreatedBy(loginUser.getUserCode());
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		globalVarsMap.put("companyName", orgLocations.getOrgLocationName());
+		
+		StringBuilder paymentDetailsBuilder = paymentDetailsTable(paymentHistory);
+		globalVarsMap.put("paymentDetails", paymentDetailsBuilder.toString());
+		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LICENSE_PAYMENT_ACKNOWLEDGEMENT_DETAILS, Constants.ENTITY_TYPE_EMAIL);
+		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
+		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
+		String url = sourceleadUrl;
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
+				null, url, org, orgLocations);
+		emailMessage.setSubject(subject);
+		emailMessage.setMessageBody(emailTemplate);
+		// calling the sendEmail method of emailScenerioUtil
+		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+}
+  
+  
+  public StringBuilder paymentDetailsTable(OrgLicensePaymentTransactionHistory paymentHistory) throws Exception {
+	  StringBuilder tempHTML = new StringBuilder();
+	  String transactionDate = dateStrFromOrgDateFormatter("dd-MM-yyyy",paymentHistory.getTransactionDate());
+	  
+	     tempHTML.append("<table style='display:table-cell;vertical-align:middle; width:650px; font-size: 12px;  margin:0px;'>");
+		 tempHTML.append("<tr align='center'>");
+		 tempHTML.append("<th style='padding:5px 10px' width='20%' bgcolor='#E5E8E8'><span>License Type<span></th>");
+		 tempHTML.append("<th style='padding:5px 10px' width='15%' bgcolor='#E5E8E8'><span>Order Id<span></th>");
+		 tempHTML.append("<th style='padding:5px 10px' width='15%' bgcolor='#E5E8E8'><span>Transaction Id<span></th>");
+		 tempHTML.append("<th style='padding:5px 10px' width='20%' bgcolor='#E5E8E8'><span>Transaction Date<span></th>");
+		 tempHTML.append("<th style='padding:5px 10px' width='30%' bgcolor='#E5E8E8'><span>Amount<span></th>");
+		 tempHTML.append("</tr>");
+		 tempHTML.append("<tbody>");
+		 tempHTML.append("<tr align='center'>");
+		 
+		 tempHTML.append("<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+paymentHistory.getSubscriptionType()+"</td>");
+		 tempHTML.append("<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+paymentHistory.getOrderId()+"</td>");
+		 tempHTML.append("<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+paymentHistory.getTransactionId()+"</td>");
+		 tempHTML.append("<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+transactionDate+"</td>");
+		 tempHTML.append("<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+paymentHistory.getCurrency()+"&nbsp;"+paymentHistory.getInvoiceAmount()+"</td>");
+		 
+		 tempHTML.append("</tr>");
+		 tempHTML.append("</tbody>");
+		 tempHTML.append("</table>");
+	  
+	     return tempHTML;
+  }
+  
+  
+  
+  
 		
 }

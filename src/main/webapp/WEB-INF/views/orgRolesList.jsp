@@ -51,7 +51,7 @@ padding-right: 254px; padding-top: 10px;
                         <form:form id="addRole_form"  name="addRole_form" method="post">                             
                             <div class="clearfix mb10">
                               <div class="col-md-12" id="roleDiv">
-                                <input type="text" data-validation="required" field-name="Role Name" onblur="validateRoleName();" onkeyup="validateRoleName();" name="roleName" id="roleName" class="form-control input-sm"  placeholder="Role Name">
+                                <input type="text" data-validation="required" field-name="Role Name" onblur="validateRoleName();" name="roleName" id="roleName" class="form-control input-sm"  placeholder="Role Name">
                               </div>
                             </div>
                             <div class="clearfix mb10">
@@ -94,9 +94,9 @@ padding-right: 254px; padding-top: 10px;
  
  <script type="text/javascript">
 function validateRoleName(){
-	var roleName = document.getElementById("roleName").value;
+	var roleName = document.getElementById("roleName").value.trim();
 	var sourceleadUrl = '${sourceleadUrl}';
-	if(roleName != null && roleName != '') {
+	if(roleName.match(/^[^\s-](.*)*$/) !== null) {
 		$.ajax({
 			type : "GET",
 			url: sourceleadUrl+"/validateRoleName?${_csrf.parameterName}=${_csrf.token}&roleName="+roleName, 
@@ -228,26 +228,37 @@ var validationSettings = {
         	  if ($(this).validate(false, validationSettings)){
         		    e.preventDefault(); 
 	          		
-        		    var frm = $('#addRole_form').serializeFormJSON();
-        	        var con = JSON.stringify(frm);
-        	        con = con.replace(/[{}]/g, "");
-        	        
-        	        //It will escape all the special characters
-        	        var jsonData = encodeURIComponent(con);
-				    
-	          		var sourceleadUrl ='${sourceleadUrl}';
+        		    var formData = getFormData1("addRole_form");
+        		    
+        			var sourceleadUrl ='${sourceleadUrl}';
 	          		
 	          		 $("#add_role").attr("disabled", "disabled");
 	          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	          		
 	          	     $.ajax({
 	     		    	type: "POST",
-	     		    	 url: sourceleadUrl+"/addNewRole?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
-	     		        success: function(data) {
-	     		        	if(data != null && data != ''){
-	     	   	        		var json = JSON.parse(data);
-	     	   	        	    location.replace(sourceleadUrl+ "/roleActions/"+json[0]+"");
-	     		        	}
+	     		    	data: formData,
+	     		    	processData: false, 
+	    		 		contentType: false,
+	     		    	 url: sourceleadUrl+"/addNewRole?${_csrf.parameterName}=${_csrf.token}", 
+	     		    			 success: function(data) {
+	     		        	if (data && (data === "INVALID_DATA" || data === "INVALID_USER")) {
+	     		        		showError(data);
+	          	    		    $("#loading").removeAttr('style');
+	          	    		}
+	                    		else if (data === "AWKWARD") {
+	                    			location.href = "/errorPage";
+	          	    		}
+	                    		else if(data != 'INVALID_DATA' && data != 'AWKWARD'){
+	                    			$("#loading").removeAttr('style');
+	                    		   location.replace(sourceleadUrl+ "/roleActions/"+data+"");  
+	    			        	    }
+	                    		else if (data.indexOf('Sign In') !== -1) {
+	                    			location.replace(sourceleadUrl);
+	          				} else {
+	          					showError("Operation failed, please try again");
+	          				    $("#loading").removeAttr('style');
+	          				}
+	     		        	
 	     			        
 	     		        },
 	     		    });

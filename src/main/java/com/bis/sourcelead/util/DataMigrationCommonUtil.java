@@ -42,6 +42,7 @@ import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dto.ImportTimesheetDTO;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetCategory;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -61,6 +62,7 @@ import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.AssetService;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -153,6 +155,9 @@ public class DataMigrationCommonUtil {
 	
 	@Autowired
 	private EmployeesService employeesService;
+	
+	@Autowired 
+	private CountriesService countriesService;
 	
 	
 	@SuppressWarnings("unchecked")
@@ -283,6 +288,11 @@ public class DataMigrationCommonUtil {
 					if(NumberUtils.isNumber(rate)){
 						if(Long.valueOf(rate) <= 99999999){
 							dataMigrationDTOJsonCopy.put("rate", rate);
+							Countries countries = countriesService.getCountriesByCountryName(orgLocation.getCountry());
+							if(null != countries){
+								dataMigrationDTOJsonCopy.put("currencyCode", countries.getCurrency());
+							}
+							dataMigrationDTOJsonCopy.put("rateType", "Monthly");
 						}else{
 							errorSet.put("rate", dataMigrationDTOJsonCopy.getString("rate")+" is invalid Rate, should between 1 to 8 digits");
 						}

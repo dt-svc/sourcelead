@@ -2,12 +2,16 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class PasswordSettingsDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
+	@Required(desc="password")
     private String password;
 	
+    @Required(desc="currentPassword")
 	private String currentPassword;
 	
 	private Long userId;

@@ -5,10 +5,15 @@ import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.TreeMap;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntries;
+import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.service.ExpensesApprovalService;
 
 public class ExpensesDTOConverter {
 
@@ -33,6 +38,7 @@ public class ExpensesDTOConverter {
 			expensesDTO.setProjectName(expenses.getProjectMembers().getProjects().getProjectName());
 			expensesDTO.setProjectUUID(expenses.getProjectMembers().getProjects().getProjectUUID());
 			expensesDTO.setProjectClientUUID(expenses.getProjectMembers().getProjectClientUUID());
+			expensesDTO.setProjectStatus(expenses.getProjectMembers().getProjects().getProjectStatus().name());
 		}
 		SimpleDateFormat dateFormat=expenses.getOrgLocationId().getLocFullFormDateFormatter();
 		if(expenses.getStartDate() != null){
