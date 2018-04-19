@@ -15,9 +15,9 @@ import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
+import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.ImmigrationDashboardView;
-import com.bis.sourcelead.entity.ImmigrationListView;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -89,5 +89,7 @@ public interface ImmigrationCommonService {
 	ImmigrationDTO editImmigrationDetails(Long immigrationId, OrgLocations orgLocations);
 
 	ImmigrationDashboardView getImmigrationDashBoardDetails(OrgLocations orgLocations);
+	
+	List<ImmigrationCandidateDocumentsHistory> getImmigrationCandidateDocumentHistoryList(Long immigrationId,Long candidateId,Long immigrationCanDocid) throws Exception;
 
 }

@@ -787,5 +787,16 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return dashboardObj;
 	}
 	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ImmigrationCandidateDocumentsHistory> getImmigrationCandidateDocumentHistoryList(Long immigrationId,Long candidateId,Long immigrationCanDocid) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ImmigrationCandidateDocumentsHistory cdh where  cdh.immigrationId.id =:immigrationId and cdh.immigrationCandidateDocumentId.id =:immigrationCanDocid and cdh.candidateId.id = :candidateId  ORDER BY cdh.id DESC";
+		List<ImmigrationCandidateDocumentsHistory> candidateEducation = session.createQuery(query).setLong("immigrationId", immigrationId).setLong("candidateId", candidateId).setLong("immigrationCanDocid", immigrationCanDocid).list();
+		return candidateEducation;
+	}
+	
 	}
 	

@@ -941,7 +941,8 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			Long immigrationId,  String searchVal) {
 		return immigrationCommonDao.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId, searchVal);
 	}
-
+	
+	@Override
 	public ResponseList<ImmigrationListViewDTO> getImmigrationsList(ImmigrationListViewDTO immigrationListDTO,
 			String searchValue,  OrgLocations orgLocations)  throws Exception{
 		   ResponseList<ImmigrationListViewDTO> immigartionList = immigrationCommonDao.getImmigrationsList(immigrationListDTO, searchValue, orgLocations);
@@ -1044,6 +1045,14 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		// TODO Auto-generated method stub
 		return immigrationCommonDao.getImmigrationDashBoardDetails(orgLocations);
 
+	}
+	
+	@Override
+	public List<ImmigrationCandidateDocumentsHistory> getImmigrationCandidateDocumentHistoryList(Long immigrationId, Long candidateId,Long immigrationCanDocid) throws Exception {
+		
+		List <ImmigrationCandidateDocumentsHistory> immigrationCanididateDocHistoryList =immigrationCommonDao.getImmigrationCandidateDocumentHistoryList(immigrationId,candidateId,immigrationCanDocid);
+		
+		return immigrationCanididateDocHistoryList;
 	}
 
 }
