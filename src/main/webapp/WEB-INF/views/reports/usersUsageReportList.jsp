@@ -6,6 +6,11 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
+<script src="/resources/amcharts/amcharts.js"></script>
+<script src="/resources/amcharts/serial.js"></script>
+<script src="/resources/amcharts/plugins/export/export.min.js"></script>
+<link rel="stylesheet" href="/resources/amcharts/plugins/export/export.css" type="text/css" media="all" />
+
 <!-- Content Area -->
 <script>
  $(document).ready(function() {
@@ -18,7 +23,7 @@
  </script>
 <input type="hidden" id="emptyUserUsageReportsId" name="emptyUserUsageReportsId"/>
 <input type="hidden" id="userTypeId" name="userTypeId"/>
-  <section class="content-wraper" id="userUsageReportsListSection">
+  <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Users Usage Report List</h2>
@@ -31,8 +36,8 @@
 <div class="clearfix">
       <div class="ReqRepHead clearfix mb reports-head">
     		      <div class="col-md-2 pull-left reqListBtn">
-<!--           <a  title="List View" id="GView" class="btn btn-default"><i class="fa fa-pie-chart"></i></a> -->
-<!--           <a  title="List View" id="LView" class="btn btn-default rAct"><i class="fa fa-list"></i></a> -->
+          <a  title="Graph View" id="GView" class="btn btn-default" onclick="usageReportsGraph();"><i class="fa fa-pie-chart"></i></a>
+          <a  title="List View" id="LView" class="btn btn-default rAct" onclick="usageReportsShowList();"><i class="fa fa-list"></i></a>
     		      </div>
      		<!--<a href="jobsPipline-list.html" class="btn btn-primary">List</a>-->
        
@@ -48,18 +53,24 @@
 		</sec:authorize>
 	</div>
         </div>
-        <!-- <div class="col-md-2 dropdown-select">
+        
+          <div class="col-md-2">
+        
+        <sec:authorize access="hasRole('ROLE_ENROLL_ORG')">
+        <button type="button" class="btn btn-primary mt2  pull-left mr" id="reportCustomize" onclick="usageReportList('ACTIVE');">Customize</button>
+        </sec:authorize>
+        
+		</div> 
+         <div class="col-md-2 dropdown-select">
         <div class="dropdown-select positionRelative">
-        <select class="form-control" id="customDates" onchange="showCustomFields();">
-          <option>Select Date</option>
-          <option value="Last_7_days" selected>Last 7 days</option>
-          <option value="Last_15_days">Last 15 days</option>
-          <option value="1_month">1 month</option>
-          <option value="3_months">3 months</option>
+        <select class="form-control" id="customGraphDates" style= display:none onchange="showCustomFieldsGraph();">
+<!--           <option>Select Date</option> -->
+          <option value="Current_Year">Current Year</option>
           <option value="Last_Year">Last year</option>
           <option value="Custom">Custom</option>
         </select>
-        Top Leave Takers Custom Date
+        <!-- Top Leave Takers Custom Date -->
+        
     <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-select" style="display: none; width: 346px;" >
 		<div class="pull-left">
 		<div class="pull-left mr5" style="width: 140px" id="custFromDateDiv">
@@ -71,25 +82,11 @@
 		<button type="button" class="btn btn-primary btn-sm" onclick="validateCustDates();"><i class="fa fa-search"></i></button>
 		</div>
     </div>
-Top Leave Takers Custom Date 
+<!-- Top Leave Takers Custom Date  -->
       </div>
 
-        </div> -->
-       <div class="col-md-2">
-        
-        <sec:authorize access="hasRole('ROLE_ENROLL_ORG')">
-        <button type="button" class="btn btn-primary mt2  pull-left mr" onclick="usageReportList('ACTIVE')">Customize</button>
-        </sec:authorize>
-        
-			<!-- <div title="Export" class="mrPOP mt10 pull-right hidden" id="mypop2"><i class="glyphicon glyphicon-export"></i>
-			     	<div id="exportPop2" class="ExpPop" style="left:0">
-			           <ul>
-			             <li onclick="exportUserUsageReportPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
-			     <li onclick="exportUserUsageReportExcel();"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
-			    </ul>
-			  </div>
-			</div> -->
-		</div> 
+        </div>
+     
 <!-- 		<div class="col-md-1"> -->
 <!--           <div class="btn-group bootstrap_dropdownMenu dropdownPadding"> -->
 <!--             <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-download"></i></button> -->
@@ -102,8 +99,10 @@ Top Leave Takers Custom Date
                       
       </div>
     </div>
-                 <div class="dashboard-widget">
-          <div class="positionRelative"> 
+                 <div class="dashboard-widget" >
+                 
+                 <div id="userUsageReportsListSection">
+                 <div class="positionRelative"> 
 <div class="col-md-12 mt">
   <ul class="list-unstyled list-inline col-md-offset-2">
     <li class="col-md-2">
@@ -196,6 +195,7 @@ Top Leave Takers Custom Date
   <div id="activeDiv"></div>
   <div id="multipleIpsDiv"></div>
   
+  
   </div>
   
   </div>
@@ -222,9 +222,63 @@ Top Leave Takers Custom Date
    
 
           </div>
+                 </div>
+                 
+          <div id="useractiveGraph" style="width: 100%; height: 300px; display:none"></div>
         </div>
       <!-- Tabs html --> 
+      
+      
+      
   </section>
+  
+ <script>
+ function usageReportsGraph(){
+	 $('#reportCustomize').removeAttr("onclick");
+	 $('#reportCustomize').attr("onclick", "usageReportsGraph()");
+	 $("#custom-select").hide();
+     $('#custFromDate').removeAttr('data-validation');
+     $('#custToDate').attr('data-validation',"required");
+	 $("#customGraphDates").show();
+	 $("#customDates").hide();
+	 $("#GView").addClass("rAct");
+	 $("#LView").removeClass("rAct");
+	 $("#useractiveGraph").show();
+	 $("#activeDiv").hide();
+	 $("#userUsageReportsListSection").hide();
+	 
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+		var fromDate = $("#custFromDate").val();
+	    var toDate = $("#custToDate").val();
+	    var sourceleadUrl ='${sourceleadUrl}';
+	    var customGraphDates = $("#customGraphDates").val();
+	    var orgId = $("#orgs").val();
+	    if(orgId != null && orgId != '' && orgId != 'undefined'){
+	    	orgId = $("#orgs").val();
+	    }else{
+	    	orgId = "";
+	    }
+	    var url = sourceleadUrl+"/userUsageGraph?locationId="+orgLocationId+"&customDates="+customGraphDates+"&fromDate="+fromDate+"&toDate="+toDate+"&orgId="+orgId;
+	    $.get(url, function(data) {
+	     prepareAmchart(data);
+		});
+ }
+ 
+ function usageReportsShowList(){
+	 $("#custom-select").hide();
+	 $('#reportCustomize').removeAttr("onclick");
+	 $('#reportCustomize').attr("onclick", "usageReportList(\'ACTIVE\')");
+     $('#custFromDate').removeAttr('data-validation');
+     $('#custToDate').attr('data-validation',"required");
+	 $("#customGraphDates").hide();
+	 $("#customDates").show();
+	 $("#LView").addClass("rAct");
+	 $("#GView").removeClass("rAct");
+	 $("#useractiveGraph").hide();
+	 $("#activeDiv").show();
+	 $("#userUsageReportsListSection").show();
+ }
+ </script>
   
   <script type="text/javascript">
        function usageReportList(userType){
@@ -1183,5 +1237,99 @@ function closeIp(){
 }
 </script>  
 
-<%-- <jsp:include page="userUsageReportsGraph.jsp" /> --%>
+<script>
+function showCustomFieldsGraph(){
+    var frequency = $("#customGraphDates").val();
+    var userType = $("#userTypeId").val();
+    if(frequency == "Custom"){
+        $("#custom-select").show();
+         $('#custFromDate').attr('data-validation',"required");
+         $('#custToDate').attr('data-validation',"required");
+    }else{
+        $("#custom-select").hide();
+        $('#custFromDate').removeAttr('data-validation');
+        $('#custToDate').attr('data-validation',"required");
+        usageReportsGraph();
+    }
+    
+    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+    var finalDateFormatEndDate = '';
+    if(locationDate.match("yyyy-MM-dd")){
+        finalDateFormatEndDate = 'yy-mm-dd';
+    }if(locationDate.match("dd-MM-yyyy")){
+        finalDateFormatEndDate = 'dd-mm-yy'; 
+    }if(locationDate.match("MM-dd-yyyy")){
+        finalDateFormatEndDate = 'mm-dd-yy'; 
+    }if(locationDate.match("yyyy-dd-MM")){
+        finalDateFormatEndDate = 'yy-dd-mm'; 
+    }
+
+    $( "#custFromDate" ).datepicker({
+         dateFormat : finalDateFormatEndDate,
+          changeMonth: true,
+          changeYear: true,
+          maxDate: new Date() ,
+          onSelect : function(selected) {
+          var dt = $(this).datepicker('getDate', '+1d');
+          dt.setDate(dt.getDate());
+          $("#custToDate").datepicker("option", "minDate", dt);
+           removeStartValid();
+          } 
+    
+    });
+    
+    $( "#custToDate" ).datepicker({
+         dateFormat : finalDateFormatEndDate,
+          changeMonth: true,
+          changeYear: true,
+        maxDate: new Date() ,
+    onSelect : function(selected) {
+          var dt = $(this).datepicker('getDate', '+1d');
+          dt.setDate(dt.getDate());
+          $("#custFromDate").datepicker("option", "maxDate", dt);
+           removeEndValid();
+          }});
+}
+
+function removeStartValid(){
+  $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+}
+function removeEndValid(){
+  $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+}
+
+function validateCustDates(){
+	var userType = $("#userTypeId").val();
+  var frequency = $("#customGraphDates").val();
+  var fromDate = $("#custFromDate").val();
+  var toDate = $("#custToDate").val();
+  if(frequency == "Custom"){
+      if(fromDate == ''){
+          $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+          $("input#custFromDate").after( "<p class='jquery_form_error_message'>FromDate is required.</span>");
+      }
+      if(toDate == ''){
+          $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+          $("input#custToDate").after( "<p class='jquery_form_error_message'>ToDate is required.</span>");
+      }
+      if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
+          $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+          $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+          if(userType == "MULTIPLE_IP"){
+          	usagemultipleipslist();
+          }else{
+        	  usageReportsGraph();
+          }
+      }
+  }else{
+      $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+      $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+      usageReportsGraph();
+//       usagemultipleipslist()
+  } 
+}
+    
+    </script>
+
+<jsp:include page="userUsageReportsGraph.jsp" />
 <jsp:include page="../masterFooter.jsp" />
