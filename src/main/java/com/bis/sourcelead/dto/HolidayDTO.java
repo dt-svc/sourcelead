@@ -17,8 +17,10 @@ private static final long serialVersionUID = 1L;
 	@Required(desc = "Holiday Name")
 	private String holidayName;  
 	
+	@Required(desc = "From Date")
 	private String fromDate;
 	
+	@Required(desc = "To Date")
 	private String toDate;
 	
 	private String fromHalfDayCheckBox;
