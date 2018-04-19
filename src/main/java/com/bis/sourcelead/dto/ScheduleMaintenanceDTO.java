@@ -2,12 +2,21 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class ScheduleMaintenanceDTO extends SearchDTO implements Serializable{
 
 	private Long id;
+	
+	@Required(desc="start Date")
 	private String startDate;
+	
+	@Required(desc="schedule Message")
 	private String scheduleMessage;
+	
+	@Required(desc="end Date")
 	private String endDate;
+	
 	private String mainMessage;
 
 	public String getScheduleMessage() {
