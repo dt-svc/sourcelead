@@ -23,6 +23,8 @@ public class ImmigrationResidenceDTO {
 	private String residenceStartDate;
 
 	private String residenceEndDate;
+	
+	private String isCurrResidence;
 
 	public String getCountry() {
 		return country;
@@ -87,6 +89,13 @@ public class ImmigrationResidenceDTO {
 	public void setResidenceEndDate(String residenceEndDate) {
 		this.residenceEndDate = residenceEndDate;
 	}
-	
+
+	public String getIsCurrResidence() {
+		return isCurrResidence;
+	}
+
+	public void setIsCurrResidence(String isCurrResidence) {
+		this.isCurrResidence = isCurrResidence;
+	}
 	
 }
