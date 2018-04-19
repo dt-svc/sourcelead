@@ -59,6 +59,86 @@
    
 		<div class="immigraInnWrap">
 			<div class="timesheet_head">
+			
+			<div class="pull-left colCho">
+				<a href="javascript:void(0)" onclick="columPop();" title="Column Chooser" class="btn btn-sm btn-default"><i class="fa fa-table"></i></a>
+			</div>
+			
+			<div class="filterSearchDiv pull-left colCho">
+				<a href="javascript:void(0)" onclick="filterPop();" title="Filters" class="btn btn-sm btn-default"><i class="fa fa-filter"></i></a>
+<div class="colPop">
+	<div class="colPopMid">
+		<ul>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="a" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
+					<label for="a" class="checkbox-custom-label">Lable Name Here....</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="b" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
+					<label for="b" class="checkbox-custom-label">Lable Name Here....</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="c" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
+					<label for="c" class="checkbox-custom-label">Lable Name Here....</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="d" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
+					<label for="d" class="checkbox-custom-label">Lable Name Here....</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="e" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
+					<label for="e" class="checkbox-custom-label">Lable Name Here....</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="e" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
+					<label for="e" class="checkbox-custom-label">Lable Name Here....</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="e" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
+					<label for="e" class="checkbox-custom-label">Lable Name Here....</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="e" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
+					<label for="e" class="checkbox-custom-label">Lable Name Here....</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="e" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
+					<label for="e" class="checkbox-custom-label">Lable Name Here....</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="e" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
+					<label for="e" class="checkbox-custom-label">Lable Name Here....</label>
+				</span>
+			</li>
+		</ul>
+	</div>
+	<div class="colPopFot">
+		<a href="javascript:void(0)">Apply</a>
+		<a href="javascript:void(0)" onclick="columClose();">Cancel</a>
+	</div>
+</div>				
+			</div>
+			
+			
 			  <ul>
 			    <sec:authorize access="hasAnyRole('ROLE_ADD_PETITION','ROLE_EDIT_VIEW_PETITION','ROLE_DELETE_PETITION')">
 				  <li>
@@ -137,6 +217,7 @@
 					  </li>
 					</ul>
 				  </div>
+				  </li>
 				  <li class="pull-left">
                     <div class="dropdown">
                         <strong>Column Chooser </strong>
@@ -265,6 +346,8 @@
         $('.pop_mask').fadeOut(200);
        }
     </script>
+    
+
     
     <!-- Script for Linked Invoice pop -->
     <script>
@@ -550,7 +633,7 @@
                  /*"data": "formsCount",*/
                  "render": function (data, type, opt, meta) {
                      var result = "";
-                     result = result + '<td><div><i title="Edit" id="edit' + opt.id + '" onclick="immigration.editTemplateDetailsByRowId(' + opt.id + ');" class="glyphicon glyphicon-pencil"></i><i title="Delete" id="delete' + opt.id + '" onclick="immigration.deleteTempalteDetailsByRowId(' + opt.id + ');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
+                     result = result + '<td><div><a href=/app/immigration/editImmigrationDetails?immigrationId='+opt.id+'><i id="edit' + opt.id + '" class="glyphicon glyphicon-pencil"></i></a><i id="delete' + opt.id + '" onclick="immigration.deleteTempalteDetailsByRowId(' + opt.id + ');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
                      return result;
                  }
              }
@@ -594,5 +677,14 @@
 	 });
 	 //alert(idVal.val()+" : "+templateId);
  }
+</script>
+
+<script type="text/javascript">
+	function columPop(){
+		$(".colPop").show();
+	}
+	function columClose(){
+		$(".colPop").hide();
+	}
 </script>
 

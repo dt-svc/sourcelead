@@ -1,7 +1,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <div class="immigraTabsHead">			  	
 		  	<a href="javascript:void(0)" id="addForm"><i class="glyphicon glyphicon-plus"></i> Add Form</a> 
-		  	<span><input class="immigraTabSerach" id="immigraFormTabSerach" type="text"></span>
+		  	<span><input class="immigraTabSerach" id="immigraFormTabSerach" placeholder="Form Name/Status" type="text"></span>
 		</div>
 		
 	  	<div class="immigraTable">
