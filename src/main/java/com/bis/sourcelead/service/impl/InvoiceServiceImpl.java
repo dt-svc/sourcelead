@@ -83,6 +83,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
@@ -297,8 +298,14 @@ public class InvoiceServiceImpl implements InvoiceService{
 		if(StringUtils.isNotBlank(invoiceDTO.getBillingAddress())){
 			invoice.setBillingAddress(invoiceDTO.getBillingAddress());
 		}
-		if(StringUtils.isNotBlank(invoiceDTO.getAccountDetails())){
+		/*if(StringUtils.isNotBlank(invoiceDTO.getAccountDetails())){
 			invoice.setAccountDetails(invoiceDTO.getAccountDetails());
+		}*/
+		
+		if(StringUtils.isNotBlank(invoiceDTO.getPaymentAccount())){
+			PaymentAccount paymentaccount = new PaymentAccount();
+			paymentaccount.setId(Long.valueOf(invoiceDTO.getPaymentAccount()));
+			invoice.setPaymentAccount(paymentaccount);
 		}
 		
 		if(StringUtils.isNotBlank(invoiceDTO.getInvoiceDate())){
@@ -2500,6 +2507,12 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 			invoice.setPaymentFrequency(null);
 		}
 
+		if(StringUtils.isNotBlank(invoiceDTO.getPaymentAccount())){
+			PaymentAccount paymentaccount = new PaymentAccount();
+			paymentaccount.setId(Long.valueOf(invoiceDTO.getPaymentAccount()));
+			invoice.setPaymentAccount(paymentaccount);
+		}
+		
 		if (StringUtils.isNotBlank(invoiceDTO.getDisCount())) {
 			invoice.setDiscountType(invoiceDTO.getDisCount());
 

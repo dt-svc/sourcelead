@@ -265,18 +265,83 @@ function getViewInvoice(){
 						result = result +'              </div>';
 						result = result +'            </div>';
 					}else{
-						result = result +'            <div class="col-md-6">                                                 ';
+						result = result +'            <div class="col-md-6">';
 						result = result +'              <label class="col-md-4 control-label">Invoice Address :</label>        ';
 						result = result +'              <div class="col-md-8 addressInvoice">                                ';
 						result = result +'                <p>'+billingAddress+'</p>';
 						result = result +'              </div>';
 						result = result +'            </div>';
 					}
-				
+					
+
+					
+					
+					
+					
 					result = result +'          </div>';
 					result = result +'      </div>';
 					
+					if(report.paymentAccountDTO != null){
+					result = result +  '<h4 class="accDetHead">Account Details</h4>';
+					result = result +'<div class="invoiceview_area clearfix">';
+					result = result +'<div class="form-horizontal row">';
 					
+					result = result +'            <div class="col-md-6">                                                 ';
+					result = result +'              <label class="col-md-4 control-label">Account Type :</label>        ';
+					result = result +'              <div class="col-md-8 addressInvoice">                                ';
+					result = result +'                <p>'+report.paymentAccountDTO.accountType+'</p>';
+					result = result +'              </div>';
+					result = result +'            </div>';
+					
+					if(report.paymentAccountDTO.accountType == "WEPAY"){
+						result = result +'            <div class="col-md-6">                                                 ';
+						result = result +'              <label class="col-md-4 control-label">Bank Name :</label>        ';
+						result = result +'              <div class="col-md-8 addressInvoice">                                ';
+						result = result +'                <p>'+report.paymentAccountDTO.email+'</p>';
+						result = result +'              </div>';
+						result = result +'            </div>';
+					}else{
+					result = result +'            <div class="col-md-6">                                                 ';
+					result = result +'              <label class="col-md-4 control-label">Bank Name :</label>        ';
+					result = result +'              <div class="col-md-8 addressInvoice">                                ';
+					result = result +'                <p>'+report.paymentAccountDTO.bankName+'</p>';
+					result = result +'              </div>';
+					result = result +'            </div>';
+					
+					result = result +'            <div class="col-md-6">                                                 ';
+					result = result +'              <label class="col-md-4 control-label">Account Number :</label>        ';
+					result = result +'              <div class="col-md-8 addressInvoice">                                ';
+					result = result +'                <p>'+report.paymentAccountDTO.accountNumber+'</p>';
+					result = result +'              </div>';
+					result = result +'            </div>';
+					
+					result = result +'            <div class="col-md-6">                                                 ';
+					result = result +'              <label class="col-md-4 control-label">IFSC Code :</label>        ';
+					result = result +'              <div class="col-md-8 addressInvoice">                                ';
+					result = result +'                <p>'+report.paymentAccountDTO.routingNumber+'</p>';
+					result = result +'              </div>';
+					result = result +'            </div>';	
+						
+					}
+					result = result +'            <div class="col-md-6">                                                 ';
+					result = result +'              <label class="col-md-4 control-label">First Name :</label>        ';
+					result = result +'              <div class="col-md-8 addressInvoice">                                ';
+					result = result +'                <p>'+report.paymentAccountDTO.firstName+'</p>';
+					result = result +'              </div>';
+					result = result +'            </div>';					
+					
+					
+					result = result +'            <div class="col-md-6">                                                 ';
+					result = result +'              <label class="col-md-4 control-label">Last Name :</label>        ';
+					result = result +'              <div class="col-md-8 addressInvoice">                                ';
+					result = result +'                <p>'+report.paymentAccountDTO.lastName+'</p>';
+					result = result +'              </div>';
+					result = result +'            </div>';					
+					
+					
+					result = result +'          </div>';
+					result = result +'      </div>';
+					}
 					
 					/* ======================== InvoiceItem List start============================ */
 					result = result +'	     <div class="invoiceGridview clearfix">                                  ';

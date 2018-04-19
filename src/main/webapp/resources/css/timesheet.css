@@ -7931,3 +7931,6 @@ text-align: center; color: #EF5350;
 .connCtaBtn u {
 	text-decoration: none; padding: 8px 0px 0px 0px; display: inline-block;
 }
+.accDetHead {
+	margin: 0px 30px; padding: 0px 0px 5px 30px; font-size: 15px; font-weight: 500; color: #454545;
+}

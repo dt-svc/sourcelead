@@ -180,11 +180,11 @@ public class OrgSettingsController {
 			}
 		}
 		
-		 String subscribedCountries = subscriptionCountries.toString();
-		 subscribedCountries = subscribedCountries.substring(0,subscribedCountries.length()-1);
+//		 String subscribedCountries = subscriptionCountries.toString();
+//		 subscribedCountries = subscribedCountries.substring(0,subscribedCountries.length()-1);
 		 
 		model.addObject("orgSubscribedCountriesList", orgSubscribedCountriesList);
-		model.addObject("subscribedCountries", subscribedCountries);
+//		model.addObject("subscribedCountries", subscribedCountries);
 		model.addObject("timezoneList", timezoneList);
 		model.addObject("orgLocations", orgLocations);
 		if(StringUtils.isNotBlank(tabType)) {

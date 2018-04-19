@@ -679,7 +679,7 @@ public class OrgDaoImpl implements OrgDao {
             Session session = this.sessionFactory.getCurrentSession();
             PaymentAccount pay = session.get(PaymentAccount.class, id);
             PaymentAccountDTO account = new PaymentAccountDTO();
-            if (Objects.equals(pay.getOrg().getId(), orgId)) {
+            if (orgId == null || Objects.equals(pay.getOrg().getId(), orgId)) {
                 applyEntityDataToDTO(pay, account);
             } else {
                 return null;

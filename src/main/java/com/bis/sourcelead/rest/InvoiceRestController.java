@@ -59,6 +59,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoicePaymentDTO;
+import com.bis.sourcelead.dto.PaymentAccountDTO;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
@@ -77,6 +78,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
@@ -93,6 +95,7 @@ import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.InvoiceTaxService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -193,6 +196,9 @@ public class InvoiceRestController {
 	
 	@Autowired
 	private ExpensesService expensesService;
+	
+	@Autowired
+	private OrgService orgService;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -641,6 +647,9 @@ public class InvoiceRestController {
 				
 				invoice.setDueDateStr(formatter.format(invoice.getDueDate()));
 				invoice.setInvoiceDateStr(formatter.format(invoice.getInvoiceDate()));
+				if(invoice.getPaymentAccount() != null) {
+					invoice.setPaymentAccountDTO(orgService.getPaymentAccount(invoice.getPaymentAccount().getId(), null));
+				}
 				
 				
 				//get the Invoice Items List
@@ -1848,5 +1857,15 @@ public class InvoiceRestController {
 		List<ProjectMembers> associatesList = projectMembersService.getVendorAssignedMembersForProjects(projectId,orgLocationId,orgRelationId);
 		return associatesList;
 	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/getAllPaymentAccountList", method = RequestMethod.GET)
+	public List<PaymentAccountDTO> getAllPaymentAccountList(HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<PaymentAccountDTO> paymentAccountList = orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId());
+		return paymentAccountList;
+	}
+	
+	
 	
 }

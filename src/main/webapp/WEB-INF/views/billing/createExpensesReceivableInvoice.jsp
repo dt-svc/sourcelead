@@ -141,12 +141,24 @@ function checkBox(){
               </div>
             </div>
             <div class="form-group">
+              <label class="col-md-3">Payment Account</label>
+              <div class="col-md-9 select-field" id="projectMemberIdDiv">
+                <select class="form-control" id="paymentAccountId"  field-name="paymentAccountId Name" name="paymentAccount">
+                   <option>--Select Account--</option>
+                    <c:forEach items="${paymentAccountList}" var="p">
+                        <option value="${p.id}" ${p.defaultAccount ? 'selected="selected"' : ""}>${p.accountType == "WEPAY" ? p.email.concat(" (WePay)") : p.accountNumber.concat(" (").concat(p.bankName).concat(")")}</option>
+                    </c:forEach>
+                </select>
+              </div>
+            </div>
+            
+            <!-- <div class="form-group">
 							<label class="col-md-3">Account Details</label>
 							<div class="col-md-9">
 								<textarea class="form-control" rows="2" id="accountDetails"
 									name="accountDetails" placeholder="Account Details"></textarea>
 		</div>
-			</div>
+			</div> -->
 			<div class="clearfix mb"></div>
 			<div class="form-group">
               <label class="col-md-3">&nbsp;</label>
@@ -155,17 +167,7 @@ function checkBox(){
                   Invoice for Expenses
               </div>
             </div>
-            <div class="form-group">
-              <label class="col-md-3">Payment Account<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 select-field" id="projectMemberIdDiv">
-                <select class="form-control" id="paymentAccountId" name="paymentAccountId" field-name="paymentAccountId Name">
-                    <option>--Select Account--</option>
-                    <c:forEach items="${paymentAccountList}" var="p">
-                        <option value="${p.id}" ${p.defaultAccount ? 'selected="selected"' : ""}>${p.accountType == "WEPAY" ? p.email.concat(" (WePay)") : p.accountNumber.concat(" (").concat(p.bankName).concat(")")}</option>
-                    </c:forEach>
-                </select>
-              </div>
-            </div>
+            
             
               <div id="associate-expenses" style="display: none">
                <div class="form-group">
@@ -1397,6 +1399,9 @@ function toDate(selector) {
 		        	 var json = JSON.parse(data);
 		        	 var result = '';
 		        	 var selected = 'selected';
+		        	 if(json.paymentAccountId > 0) {
+		        		 $("#paymentAccountId").val(json.paymentAccountId);
+		        	 }
 		        	 result = result +'<option disabled selected>--Select Client--</option>';
 		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' >'+json['orgName']+'</option>';
 		        	 $("#clientOrgRelationId").empty();
@@ -1425,9 +1430,9 @@ function toDate(selector) {
 		           	if(json['billingAddress'] != null && json['billingAddress'] != '' && json['billingAddress'] != 'undefined'){
 		           		$("#billingAddress").val(json['billingAddress']);
 		           	}
-		           	if(json['accountDetails'] != null && json['accountDetails'] != '' && json['accountDetails'] != 'undefined'){
+		          /*  	if(json['accountDetails'] != null && json['accountDetails'] != '' && json['accountDetails'] != 'undefined'){
 		           		$("#accountDetails").val(json['accountDetails']);
-		           	}
+		           	} */
 		           	/* buildLineItemAndTaxAddRows(); */
 		           	
 		           	/* editInvoice(json['invoiceLineItemsList']);*/
@@ -1471,6 +1476,7 @@ $(document).ready(function(){
 		loadInvoiceDetails(invoiceUUID); 
 	}else{
 		getClients();
+		getPaymentAccountList();
 		$("#invoiceId").val("");
 		$("#paymentFrequency").val("");
 		$("#paymentFrequency").trigger("chosen:updated");
@@ -1511,6 +1517,31 @@ function getClientContactsExisted(clientContactId){
 	}
 </script>
 
+<script>
+function getPaymentAccountList(){
+	$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getAllPaymentAccountList?"+tokenParamName+"="+tokenValue+"",
+		success :function(json) {
+			var result = "";
+			result = result +"<option>--Select Account--</option>"
+			for (var i=0; i<json.length; i++)
+			{
+			  var report = json[i];
+			  
+			}
+			
+//             <c:forEach items="${paymentAccountList}" var="p">
+//                 <option value="${p.id}" ${p.defaultAccount ? 'selected="selected"' : ""}>${p.accountType == "WEPAY" ? p.email.concat(" (WePay)") : p.accountNumber.concat(" (").concat(p.bankName).concat(")")}</option>
+//             </c:forEach>
+            
+// 			alert("length"+json.length)
+		}
+	});
+}
+
+
+</script>
 <!-- Get alla clients when editing -->
 <script>
 function getClients(){
@@ -1524,7 +1555,6 @@ function getClients(){
 		output = output + "<option value=''>Select Client</option>";
 		for (var i=0; i<json.length; i++)
 		{
-		var opt = json[i];
 		if(orgRelationId == opt.id){
 			var selected = 'selected';
 			output = output + "<option value='" +opt.id+ "'"+selected+">"+opt.orgName+"</option>";

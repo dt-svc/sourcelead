@@ -55,7 +55,7 @@ public class InvoiceController {
 	@Autowired
 	OrgRelationsService orgRelationsService;
         
-        @Autowired
+    @Autowired
 	private OrgService orgService;
 	
 	@Autowired
@@ -106,6 +106,7 @@ public class InvoiceController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		Date currentDate = new Date();
 		String convertedDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),currentDate);
+        model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId()));
 		model.addObject("currentDate", convertedDate);
 		sessionData.setNav(Constants.Receivable);
 		request.getSession().setAttribute("sessionData",sessionData);
@@ -126,6 +127,7 @@ public class InvoiceController {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
+		model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId()));
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		if(null != countries){
         model.addObject("loginCountryName", countries.getName());
@@ -279,6 +281,7 @@ public class InvoiceController {
 		
 		Date currentDate = new Date();
 		String convertedDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),currentDate);
+        model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId()));
 		model.addObject("currentDate", convertedDate);
 		model.setViewName("billing/createProjectReceivableInvoice");
 		model.addObject("sourceleadUrl", sourceleadUrl);
