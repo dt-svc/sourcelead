@@ -46,6 +46,9 @@ public class ImmigrationListView implements Serializable {
 	@Column(name = "ORG_LOCATION_ID")
 	private Long orgLocationId;
 	
+	@Column(name = "ATTORNEY_LOCATION_ID")
+	private Long attorneyOrgLocationId;
+	
 	@Column(name = "STATUS")
 	private Integer status;
 	
@@ -74,8 +77,11 @@ public class ImmigrationListView implements Serializable {
 	@Column(name = "PHONE ")
 	private String phone;
 
-	@Column(name = "ORG_NAME ")
-	private String orgName;
+	@Column(name = "ORG1 ")
+	private String org1;
+	
+	@Column(name = "ORG2 ")
+	private String org2;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -155,12 +161,21 @@ public class ImmigrationListView implements Serializable {
 		this.phone = phone;
 	}
 
-	public String getOrgName() {
-		return orgName;
+
+	public String getOrg1() {
+		return org1;
 	}
 
-	public void setOrgName(String orgName) {
-		this.orgName = orgName;
+	public void setOrg1(String org1) {
+		this.org1 = org1;
+	}
+
+	public String getOrg2() {
+		return org2;
+	}
+
+	public void setOrg2(String org2) {
+		this.org2 = org2;
 	}
 
 	public Long getImmTemplateId() {
@@ -241,6 +256,14 @@ public class ImmigrationListView implements Serializable {
 
 	public void setGeneratedId(String generatedId) {
 		this.generatedId = generatedId;
+	}
+
+	public Long getAttorneyOrgLocationId() {
+		return attorneyOrgLocationId;
+	}
+
+	public void setAttorneyOrgLocationId(Long attorneyOrgLocationId) {
+		this.attorneyOrgLocationId = attorneyOrgLocationId;
 	}
 
 }

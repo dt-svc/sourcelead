@@ -88,7 +88,7 @@
                	
                	<option value="" selected>--Choose Template--</option>
 							<c:forEach var="item" items="${templateList}">
-											<option ${immigrationDTO.templateId == item.id ? 'selected': ''} value="${item.id}">${item.name}</option>
+											<option ${immigrationDTO.templateId == item.id ? 'selected': ''} value="${item.id}">${item.name}(${item.country})</option>
 							</c:forEach>
                </select>
               </div>
