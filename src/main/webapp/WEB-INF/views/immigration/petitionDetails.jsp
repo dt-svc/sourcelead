@@ -88,7 +88,7 @@
                	
                	<option value="" selected>--Choose Template--</option>
 							<c:forEach var="item" items="${templateList}">
-											<option ${immigrationDTO.templateId == item.id ? 'selected': ''} value="${item.id}">${item.name}(${item.country})</option>
+											<option ${immigrationDTO.templateId == item.id ? 'selected': ''} value="${item.id}">${item.name}</option>
 							</c:forEach>
                </select>
               </div>
@@ -293,7 +293,7 @@
            <div class="form-group" >
               <label class="col-md-4">Upload Resume</label><!-- need to updated  -->
               <div class="col-md-3 mt10" id="docNameDiv" style="display: none;">
-                    <label id="documentName"  class="text-primary tbldata-dotdot-vsm pull-left" title=""></label>&nbsp;&nbsp;<span id="delete_file" onclick = "deleteResumeDoc()"><i class="fa fa-trash removeIcon"></i></span>
+                    <label id="documentName" class="text-primary tbldata-dotdot-vsm pull-left" title=""></label>&nbsp;&nbsp;<span id="delete_file" onclick = "deleteResumeDoc()"><i class="fa fa-trash removeIcon"></i></span>
                    <input  type="hidden" id="generalExisitingFile" name = "" value="">
                    <a  class="glyphicon glyphicon-download-alt" id="downloadBrowseFile" href="" download title="Download"></a>
              </div>
@@ -453,6 +453,7 @@
             </div>
               </div>
             </div>
+
            <div class="clearfix"></div>
            	<div class="col-md-12 mb margin-top0">
             	<h4 class="pull-left">5. Residence</h4>
@@ -465,7 +466,7 @@
               <div class="col-md-8">
                   <div class="positionRelative">
 								<input class="form-control positionRelative"
-									id="location" name="location" value="${immigrationDTO.residenceList[0].location}" onclick="initLocationAuto('location','country','state','city','zipcode','','','','address');"
+									id="location" name="location" value="${immigrationDTO.location}" onclick="initLocationAuto('location','country','state','city','zipcode','','','','address');"
 									placeholder="Enter Location" type="text" field-name="Location" data-validation="required"></input> <i
 									class="fa fa-refresh btn btn-primary refresh-icon"
 									title="Refresh"
@@ -477,7 +478,7 @@
               <label class="col-md-4">Street Address</label>
               <div class="col-md-8">
                   <input type="text" class="form-control" id="address"
-								name="address" value="${immigrationDTO.residenceList[0].address}" field-name="Street Address" placeholder="Enter Street Addres"
+								name="address" value="${immigrationDTO.address}" field-name="Street Address" placeholder="Enter Street Addres"
 								data-validation="validate_Space validate_length length2-250"
 								data-validation-optional="true">
               </div>
@@ -485,25 +486,25 @@
             <div class="form-group">
               <label class="col-md-4">City</label>
               <div class="col-md-8">
-                  <input class="form-control" id="city" value="${immigrationDTO.residenceList[0].city}" name="city" placeholder="City" type="text"></input>
+                  <input class="form-control" id="city" value="${immigrationDTO.city}" name="city" placeholder="City" type="text"></input>
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-4">State</label>
               <div class="col-md-8">
-                  <input class="form-control" id="state" name="state" value="${immigrationDTO.residenceList[0].state}" placeholder="State" type="text" ></input>
+                  <input class="form-control" id="state" name="state" value="${immigrationDTO.state}" placeholder="State" type="text" ></input>
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-4">Country</label>
               <div class="col-md-8">
-                  <input class="form-control" id="country" name="country" placeholder="Country" value="${loginCountryName == null ? immigrationDTO.residenceList[0].country : loginCountryName}" type="text" ></input>
+                  <input class="form-control" id="country" name="country" placeholder="Country" value="${loginCountryName == null ? immigrationDTO.country : loginCountryName}" type="text" ></input>
               </div>
             </div>                                                                                               
 		    <div class="form-group">
               <label class="col-md-4">Zip Code</label>
               <div class="col-md-8">
-                  <input class="form-control" value="${immigrationDTO.residenceList[0].zipcode}" id="zipcode" name="zipcode"
+                  <input class="form-control" value="${immigrationDTO.zipcode}" id="zipcode" name="zipcode"
 								placeholder="Zip code" type="text" ></input>
               </div>
             </div>
@@ -519,13 +520,12 @@
               <label class="col-md-4">Start Date<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
 					<div class="input-group errorInptgroup">
-                <input type="text" class="form-control calendar" id="residenceStartDate" value="${immigrationDTO.residenceList[0].residenceStartDate}" name="residenceStartDate" placeholder="Start Date" field-name="Start Date" data-validation="required">
+                <input type="text" class="form-control calendar" id="residenceStartDate" value="${immigrationDTO.residenceStartDate}" name="residenceStartDate" placeholder="Start Date" field-name="Start Date" data-validation="required">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('residenceStartDate')"></i></span>
               </div>
               </div>
           </div>
-          
-         
+
          <div id ="dynamicResidenceGroupDiv" ><!--  dynamic div start -->
           
          </div> <!--  dynamic div end -->
@@ -565,8 +565,7 @@
     <script type="text/javascript">
    
     function prepareDynamicResidenceDiv(rowId,residenceVal){
-    	alert(residenceVal);
-    	//alert("inside ++++++++++ :"+"${residenceVal.address}");
+    	//alert("inside ++++++++++ :"+residenceVal[0]+residenceVal[1]);
 	   var prepareResidencediv =''; 
 		   
 		   
@@ -582,7 +581,7 @@
 	   prepareResidencediv =prepareResidencediv+ "           <div class='positionRelative'>";
 	   prepareResidencediv =prepareResidencediv+ ' 						<input class="form-control positionRelative"';
 	   prepareResidencediv =prepareResidencediv+ ' 						id="location'+rowId+'" name="residenceList['+rowId+'].location"';
-	   prepareResidencediv =prepareResidencediv+ ' 							placeholder="Enter Location" value="'+residenceVal.location+'" field-name="Location" data-validation="required" type="text" onClick="initLocationAuto(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipcode'+rowId+'\',\'\',\'\',\'\',\'address'+rowId+'\'); refreshGoogleApiLocation(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipcode'+rowId+'\',\'\',\'\',\'\',\'address'+rowId+'\');"></input> <i';
+	   prepareResidencediv =prepareResidencediv+ ' 							placeholder="Enter Location" value="'+residenceVal[0]+'" field-name="Location" data-validation="required" type="text" onClick="initLocationAuto(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipcode'+rowId+'\',\'\',\'\',\'\',\'address'+rowId+'\'); refreshGoogleApiLocation(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipcode'+rowId+'\',\'\',\'\',\'\',\'address'+rowId+'\');"></input> <i';
 	   prepareResidencediv =prepareResidencediv+ ' 							class="fa fa-refresh btn btn-primary refresh-icon"';
 	   prepareResidencediv =prepareResidencediv+ ' 							title="Refresh"';
 	   prepareResidencediv =prepareResidencediv+ ' 							onClick="refreshGoogleApiLocation(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipcode'+rowId+'\',\'\',\'\',\'\',\'address'+rowId+'\');"></i>';
@@ -593,7 +592,7 @@
 	   prepareResidencediv =prepareResidencediv+ "      <label class='col-md-4'>Street Address</label>";
 	   prepareResidencediv =prepareResidencediv+ "      <div class='col-md-8'>";
 	   prepareResidencediv =prepareResidencediv+ "           <input type='text' class='form-control' id='address"+rowId+"'";
-	   prepareResidencediv =prepareResidencediv+ " 						name='residenceList["+rowId+"].address' value='${address}' field-name='Street Address' placeholder='Enter Street Addres'";
+	   prepareResidencediv =prepareResidencediv+ " 						name='residenceList["+rowId+"].address' value='"+residenceVal[1]+"' field-name='Street Address' placeholder='Enter Street Addres'";
 	   prepareResidencediv =prepareResidencediv+ " 						data-validation='validate_Space validate_length length2-250'";
 	   prepareResidencediv =prepareResidencediv+ " 						data-validation-optional='true'>";
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
@@ -601,25 +600,25 @@
 	   prepareResidencediv =prepareResidencediv+ "     <div class='form-group'>";
 	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>City</label>";
 	   prepareResidencediv =prepareResidencediv+ "        <div class='col-md-8'>";
-	   prepareResidencediv =prepareResidencediv+ "           <input class='form-control' id='city"+rowId+"' name='residenceList["+rowId+"].city' placeholder='City' type='text'></input>";
+	   prepareResidencediv =prepareResidencediv+ "           <input class='form-control' id='city"+rowId+"' name='residenceList["+rowId+"].city' value='"+residenceVal[2]+"' placeholder='City' type='text'></input>";
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
 	   prepareResidencediv =prepareResidencediv+ "      </div>";
 	   prepareResidencediv =prepareResidencediv+ "     <div class='form-group'>";
 	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>State</label>";
 	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
-	   prepareResidencediv =prepareResidencediv+ "           <input class='form-control' id='state"+rowId+"' name='residenceList["+rowId+"].state' placeholder='State' type='text' ></input>";
+	   prepareResidencediv =prepareResidencediv+ "           <input class='form-control' id='state"+rowId+"' name='residenceList["+rowId+"].state' value='"+residenceVal[3]+"' placeholder='State' type='text' ></input>";
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
 	   prepareResidencediv =prepareResidencediv+ "     </div>";
 	   prepareResidencediv =prepareResidencediv+ "     <div class='form-group'>";
 	   prepareResidencediv =prepareResidencediv+ "        <label class='col-md-4'>Country</label>";
 	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
-	   prepareResidencediv =prepareResidencediv+ "           <input class='form-control' id='country"+rowId+"' name='residenceList["+rowId+"].country' placeholder='Country' value='${loginCountryName}' type='text' ></input>";
+	   prepareResidencediv =prepareResidencediv+ "           <input class='form-control' id='country"+rowId+"' name='residenceList["+rowId+"].country' value='"+residenceVal[4]+"' placeholder='Country' value='${loginCountryName}' type='text' ></input>";
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
 	   prepareResidencediv =prepareResidencediv+ "     </div> ";                                                                                              
 	   prepareResidencediv =prepareResidencediv+ "     <div class='form-group'>";
 	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>Zip Code</label>";
 	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
-	   prepareResidencediv =prepareResidencediv+ "          <input class='form-control' id='zipcode"+rowId+"' name='residenceList["+rowId+"].zipcode'";
+	   prepareResidencediv =prepareResidencediv+ "          <input class='form-control' id='zipcode"+rowId+"' value='"+residenceVal[5]+"' name='residenceList["+rowId+"].zipcode'";
 	   prepareResidencediv =prepareResidencediv+ " 						placeholder='Zip code' type='text' ></input>";
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
 	   prepareResidencediv =prepareResidencediv+ "     </div>";
@@ -628,7 +627,7 @@
 	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>Start Date<span class='text-danger paddingLeft'>*</span></label>";
 	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
 	   prepareResidencediv =prepareResidencediv+ " 			<div class='input-group errorInptgroup'>";
-	   prepareResidencediv =prepareResidencediv+ "         <input type='text' class='form-control calendar' id='residenceStartDate"+rowId+"' onClick='showStartDatePicker("+rowId+")' name='residenceList["+rowId+"].residenceStartDate' field-name='Start Date' data-validation='required' placeholder='Start Date'>";
+	   prepareResidencediv =prepareResidencediv+ "         <input type='text' class='form-control calendar' id='residenceStartDate"+rowId+"' value='"+residenceVal[6]+"' onClick='showStartDatePicker("+rowId+")' name='residenceList["+rowId+"].residenceStartDate' field-name='Start Date' data-validation='required' placeholder='Start Date'>";
 	   prepareResidencediv =prepareResidencediv+ "         <span class='input-group-addon'><i class='fa fa-times text-danger cursorPointer' onclick='clearDateValue(\"residenceStartDate"+rowId+"\")'></i></span>";
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
@@ -637,7 +636,7 @@
 	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>End Date<span class='text-danger paddingLeft'>*</span></label>";
 	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
 	   prepareResidencediv =prepareResidencediv+ " 			<div class='input-group errorInptgroup'>";
-	   prepareResidencediv =prepareResidencediv+ "        <input type='text' class='form-control calendar'  id='residenceEndDate"+rowId+"' onClick='showEndDatePicker("+rowId+")'  name='residenceList["+rowId+"].residenceEndDate' field-name='End Date' data-validation='required' placeholder='End Date'>";
+	   prepareResidencediv =prepareResidencediv+ "        <input type='text' class='form-control calendar'  id='residenceEndDate"+rowId+"' value='"+residenceVal[7]+"' onClick='showEndDatePicker("+rowId+")'  name='residenceList["+rowId+"].residenceEndDate' field-name='End Date' data-validation='required' placeholder='End Date'>";
 	   prepareResidencediv =prepareResidencediv+ "        <span class='input-group-addon'><i class='fa fa-times text-danger cursorPointer' onclick='clearDateValue(\"residenceEndDate"+rowId+"\")'></i></span>";
 	   prepareResidencediv =prepareResidencediv+ "      </div>";
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
@@ -894,10 +893,34 @@ $("#experienceValue").change(function () {
 		  var sizeOfResidence = "${fn:length(immigrationDTO.residenceList)}";
 		  if(sizeOfResidence > 1){
 		  	var count = 1;
+		  	var residenceArr = [];
+		  	
 		  	<c:forEach var='edu' items="${immigrationDTO.residenceList}">
-		  		$("#dynamicResidenceGroupDiv").append(prepareDynamicResidenceDiv(count,"${edu"));
+		  		var currentResidence = "${edu.isCurrResidence}";
+		  		if(currentResidence != 'Y'){
+			  		residenceArr.push("${edu.location}");
+			  		residenceArr.push("${edu.address}");
+			  		residenceArr.push("${edu.city}");
+			  		residenceArr.push("${edu.state}");
+			  		residenceArr.push("${edu.country}");
+			  		residenceArr.push("${edu.zipcode}");
+			  		residenceArr.push("${edu.residenceStartDate}");
+			  		residenceArr.push("${edu.residenceEndDate}");
+			  		$("#dynamicResidenceGroupDiv").append(prepareDynamicResidenceDiv(count,residenceArr));
+			  		residenceArr = [];
+		  		}
 		  		count++;
 		  	</c:forEach>
+		  	var fileNameVal = "${immigrationDTO.fileName}";
+		  	if(fileNameVal != ""){
+        		$("#docNameDiv").show();
+        		$("#resumeEmpty").hide();
+	        	$("#documentName").html("${immigrationDTO.fileName}");
+	        	$("#downloadBrowseFile").attr("href","${immigrationDTO.fileUrl}");
+        	}else{
+        		$("#docNameDiv").hide();
+        		$("#resumeEmpty").show();
+        	}
 			/* $.each(list, function( index, value ) {
 				alert("The address is :");
 				$("#dynamicResidenceGroupDiv").append(prepareDynamicResidenceDiv(count,value));	
