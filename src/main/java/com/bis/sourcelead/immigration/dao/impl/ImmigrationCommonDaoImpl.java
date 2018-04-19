@@ -657,7 +657,12 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			query1.append(" or (immView.currUscisStatus like '%" + searchValue + "%' )");
 			query1.append(" or (immView.country like '%" + searchValue + "%' )");
 			query1.append(" or (immView.petitionType like '%" + searchValue + "%' )");
-			query1.append(" or (immView.orgName like '%" + searchValue + "%' )");
+			if (orgLocations.getId() == immigrationListDTO.getOrgLocationId()) {
+				query1.append(" or (immView.org2 like '%" + searchValue + "%' )");
+			}
+			else {
+				query1.append(" or (immView.org1 like '%" + searchValue + "%' )");
+			}
 			query1.append(" or (immView.phone like '%" + searchValue + "%' ))");
 			// query1.append(" or (tempView.status like '%" + searchValue + "%'
 			// )");
