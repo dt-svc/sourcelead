@@ -11,6 +11,7 @@ import javax.mail.internet.InternetAddress;
 import org.apache.commons.lang3.StringUtils;
 
 import com.bis.sourcelead.dto.TimesheetEntriesDTO;
+import com.bis.sourcelead.util.CommonUtil;
 
 /**
  *
@@ -22,6 +23,12 @@ public class Validator {
 		try {
 			Field[] fields = object.getClass().getDeclaredFields();
 			for (Field field : fields) {
+				if (field.isAnnotationPresent(CleanHtml.class) && (field.get(object) != null && !field.get(object).toString().isEmpty() && !"undefined".equalsIgnoreCase(field.get(object).toString()))) {
+					 if(!field.getAnnotation(CleanHtml.class).escape()) {
+						 String value = field.get(object).toString();
+						 field.set(object,CommonUtil.cleanContent(value));
+					 }
+				}
 				if (field.isAnnotationPresent(Required.class)) {
 					try {
 						field.setAccessible(true);
