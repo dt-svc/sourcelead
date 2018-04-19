@@ -22,6 +22,13 @@
 .NewStyleFullWidth .form-group {
 	width: 50%; margin-bottom: 15px; float: left; padding: 0px 2%;
 }
+	
+.checkBox input[type="checkbox"], .radioIput input[type="radio"] {
+width: auto; height: auto; margin-bottom: 15px;
+}
+.checkboxLable {
+margin-bottom: 15px;
+}
 </style>
  
 <script type="text/javascript">
