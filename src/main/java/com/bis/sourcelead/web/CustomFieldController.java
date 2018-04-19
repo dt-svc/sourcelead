@@ -25,11 +25,6 @@ private String sourceleadUrl;
 public ModelAndView CustomField() throws Exception {
 	ModelAndView model = new ModelAndView();
 	List<SourceleadActions> entityList = SourceleadFormSectionsDao.getAllSourceleadActions();
-	for( SourceleadActions listData:entityList){
-		if(listData.getActionName().equalsIgnoreCase("Add User")){
-			listData.setActionName("Add Associate");
-		}
-	}
 	model.addObject("Sourcelead_Entities",entityList);
 	model.addObject("sourceleadUrl",sourceleadUrl);
 	model.setViewName("customForms/customForm");
