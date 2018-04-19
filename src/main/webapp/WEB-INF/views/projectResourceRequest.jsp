@@ -192,7 +192,7 @@ function resourceRequestPagination(url,requestType,sourceleadUrl){
               "data": "candidateName",
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-            	  result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/candidatesList?candidateUUID='+opt.candidateUUID+'" title="'+opt.candidateName+'">'+opt.candidateName+'</a></div></td>';
+            	  result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/userSummary/'+opt.userCode+'" title="'+opt.candidateName+'">'+opt.candidateName+'</a></div></td>';
 	              return result;
               		
               }

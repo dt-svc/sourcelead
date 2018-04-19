@@ -336,7 +336,10 @@ function getHolidaysList(){
 	if($("#reportYear").val() !=null && $("#reportYear").val() != 'undefined' && $("#reportYear").val() != ''){
 		reportYear = $("#reportYear").val();
 	}
-	$.get(sourceleadUrl+"/getHolidaysList?orgLocationId="+orgLocationId+"&reportYear="+reportYear+"", function(data) {
+	$.get(sourceleadUrl+"/getHolidaysList?orgLocationId="+orgLocationId+"&reportYear="+reportYear+"", function(response) {
+		if (response.response === "AWKWARD") {
+		    location.href = "/errorPage";
+		} else if (response.response === "SUCCESS") {
 		var result = "";				        	
 				result = result + '<table id="viewHolidaysTable" class="display table table-bordered" cellspacing="0" width="100%" >';
 				result = result + '<thead>';
@@ -348,11 +351,11 @@ function getHolidaysList(){
 				result = result + '</tr>';
 				result = result + '</thead>	';
 				result = result + '<tbody>';
-				if(data !=null && data !=''){
+				if(response !=null && response !=''){
 					var j = 1;
-					 for (var i=0; i<data.length; i++)
+					 for (var i=0; i<response.data.length; i++)
 						{
-			        		 var opt = data[i];
+			        		 var opt = response.data[i];
 			        		 if(opt.isFuture == 'Y'){
 			        			 result = result + ' <tr class="text-success">';
 			        		 }else{
@@ -377,6 +380,11 @@ function getHolidaysList(){
 				$("#holidayListDiv").empty();
 				$("#holidayListDiv").append(result);
 				viewHolidaysTable();
+		} else if (response.indexOf('Sign In') !== -1) {
+			location.replace(sourceleadUrl);
+		} else {
+		    showError("Operation failed, please try again");
+		}
 		}); 
 }
 </script>

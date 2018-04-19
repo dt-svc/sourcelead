@@ -208,9 +208,20 @@ $(document).ready(function() {
 		if ($('#holiday_form').validate(false, validationSettings)) {
 		  	var formData = $($('#holiday_form')[0]).serialize();
 		  	 $("#holidayLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			$.post(sourceleadUrl+"/saveHoliday?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"", formData, function(data) {
-				$("#holidayLoading").removeAttr("style");	
-				location.replace(sourceleadUrl+ "/viewHoliday");
+			$.post(sourceleadUrl+"/saveHoliday?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"", formData, function(result) {
+				if (result && result.response === "INVALID_DATA") {
+	    		    showError(result.responseMessage);
+	    		} else if (result.response === "AWKWARD") {
+	    		    location.href = "/errorPage";
+	    		} else if (result.response === "SUCCESS") {
+	    			$("#holidayLoading").removeAttr("style");	
+					location.replace(sourceleadUrl+ "/viewHoliday");
+	    		} else if (result.indexOf('Sign In') !== -1) {
+	    			location.replace(sourceleadUrl);
+	    		} else {
+	    		    showError("Operation failed, please try again");
+	    		}
+				 $("#holidayLoading").hide();
 			});
 			return true;
 		} else {

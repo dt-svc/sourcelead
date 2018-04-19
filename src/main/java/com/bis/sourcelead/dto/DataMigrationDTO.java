@@ -41,6 +41,10 @@ public class DataMigrationDTO extends CommonDTO {
 	private String rate;
 
 	private String maxRate;
+	
+	private String currencyCode;
+
+	private String rateType;
 
 	private String travelAllowance;
 
@@ -603,6 +607,22 @@ public class DataMigrationDTO extends CommonDTO {
 
 	public void setMaxRate(String maxRate) {
 		this.maxRate = maxRate;
+	}
+
+	public String getCurrencyCode() {
+		return currencyCode;
+	}
+
+	public void setCurrencyCode(String currencyCode) {
+		this.currencyCode = currencyCode;
+	}
+
+	public String getRateType() {
+		return rateType;
+	}
+
+	public void setRateType(String rateType) {
+		this.rateType = rateType;
 	}
 
 	public String getTravelAllowance() {
