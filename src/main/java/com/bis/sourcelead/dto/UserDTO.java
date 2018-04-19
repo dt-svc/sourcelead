@@ -1,6 +1,10 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.List;
+
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.UserRole;
 
 public class UserDTO extends SearchDTO implements Serializable {
 	private long id;
@@ -18,9 +22,31 @@ public class UserDTO extends SearchDTO implements Serializable {
 	private String loginUserRole;
 	private String roleId;
 	private String fileURL;
+	private String userName;
+	private String userEmail;
+	private String createdOn;
+	private List<UserRole> enrolledOrgs;
+	private int activeCount;
+	private int inactiveCount;
+	private int notLoggedinCount;
+	private List<Long> orgId;
+	private String noOfActivities;
+	private String lastActivity;
+	private long userRoleId;
+	private long locationId;
+	private long multipleIps;
+	private String customDates;
 	private String email;
 	private String fullName;
 	private String unSubscribeTabIds;
+	private String fromDate;
+	private String toDate;
+	private String isPrimaryAdmin;
+	private String role;
+	private String subscribedOrgLocationRoles;
+	private String userloggedInStatus;
+
+
 	
 	public String getUnSubscribeTabIds()
 	{
@@ -181,4 +207,199 @@ public class UserDTO extends SearchDTO implements Serializable {
 	public void setRoleId(String roleId) {
 		this.roleId = roleId;
 	}
+
+	public String getUserName()
+	{
+		return userName;
+	}
+
+	public void setUserName(String userName)
+	{
+		this.userName = userName;
+	}
+
+	public String getUserEmail()
+	{
+		return userEmail;
+	}
+
+	public void setUserEmail(String userEmail)
+	{
+		this.userEmail = userEmail;
+	}
+
+	public String getCreatedOn()
+	{
+		return createdOn;
+	}
+
+	public void setCreatedOn(String createdOn)
+	{
+		this.createdOn = createdOn;
+	}
+
+	public List<UserRole> getEnrolledOrgs()
+	{
+		return enrolledOrgs;
+	}
+
+	public void setEnrolledOrgs(List<UserRole> enrolledOrgs)
+	{
+		this.enrolledOrgs = enrolledOrgs;
+	}
+
+	public int getActiveCount()
+	{
+		return activeCount;
+	}
+
+	public void setActiveCount(int activeCount)
+	{
+		this.activeCount = activeCount;
+	}
+
+	public int getInactiveCount()
+	{
+		return inactiveCount;
+	}
+
+	public void setInactiveCount(int inactiveCount)
+	{
+		this.inactiveCount = inactiveCount;
+	}
+
+	public int getNotLoggedinCount()
+	{
+		return notLoggedinCount;
+	}
+
+	public void setNotLoggedinCount(int notLoggedinCount)
+	{
+		this.notLoggedinCount = notLoggedinCount;
+	}
+
+	public List<Long> getOrgId()
+	{
+		return orgId;
+	}
+
+	public void setOrgId(List<Long> orgId)
+	{
+		this.orgId = orgId;
+	}
+
+	public String getNoOfActivities()
+	{
+		return noOfActivities;
+	}
+
+	public void setNoOfActivities(String noOfActivities)
+	{
+		this.noOfActivities = noOfActivities;
+	}
+
+	public String getLastActivity()
+	{
+		return lastActivity;
+	}
+
+	public void setLastActivity(String lastActivity)
+	{
+		this.lastActivity = lastActivity;
+	}
+
+	public long getUserRoleId()
+	{
+		return userRoleId;
+	}
+
+	public void setUserRoleId(long userRoleId)
+	{
+		this.userRoleId = userRoleId;
+	}
+
+	public long getLocationId()
+	{
+		return locationId;
+	}
+
+	public void setLocationId(long locationId)
+	{
+		this.locationId = locationId;
+	}
+
+	public long getMultipleIps()
+	{
+		return multipleIps;
+	}
+
+	public void setMultipleIps(long multipleIps)
+	{
+		this.multipleIps = multipleIps;
+	}
+
+	public String getCustomDates()
+	{
+		return customDates;
+	}
+
+	public void setCustomDates(String customDates)
+	{
+		this.customDates = customDates;
+	}
+
+	public String getFromDate()
+	{
+		return fromDate;
+	}
+
+	public void setFromDate(String fromDate)
+	{
+		this.fromDate = fromDate;
+	}
+
+	public String getToDate()
+	{
+		return toDate;
+	}
+
+	public void setToDate(String toDate)
+	{
+		this.toDate = toDate;
+	}
+
+	public String getIsPrimaryAdmin() {
+		return isPrimaryAdmin;
+	}
+
+	public void setIsPrimaryAdmin(String isPrimaryAdmin) {
+		this.isPrimaryAdmin = isPrimaryAdmin;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
+	public String getSubscribedOrgLocationRoles() {
+		return subscribedOrgLocationRoles;
+	}
+
+	public void setSubscribedOrgLocationRoles(String subscribedOrgLocationRoles) {
+		this.subscribedOrgLocationRoles = subscribedOrgLocationRoles;
+	}
+
+	public String getUserloggedInStatus() {
+		return userloggedInStatus;
+	}
+
+	public void setUserloggedInStatus(String userloggedInStatus) {
+		this.userloggedInStatus = userloggedInStatus;
+
+	}
+
+	
 }

@@ -299,9 +299,23 @@ function saveClientProject(){
 				type : "POST",
   	    	    data : formData,
 				url : sourceleadUrl+"/storeClientProject?${_csrf.parameterName}=${_csrf.token}", 
-				success : function(project) {
-					 location.replace(sourceleadUrl+"/projectSummary?projectUUID="+project.projectUUID+"&projectClientUUID="+project.projectClientUUID+"&tabType=team");
-					 $("#loading").removeAttr("style");
+				success : function(result) {
+					if (result && result.response === "INVALID_DATA") {
+							$("#loading").removeAttr("style");
+		                    showError(result.responseMessage);
+		                } else if (result.response === "AWKWARD") {
+		                    location.href = "/errorPage";
+		                } else if (result.response === "SUCCESS") {
+		                	var project = result.object;
+		                	 location.replace(sourceleadUrl+"/projectSummary?projectUUID="+project.projectUUID+"&projectClientUUID="+project.projectClientUUID+"&tabType=team");
+							 $("#loading").removeAttr("style");
+		                } else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+		                    showError("Operation failed, please try again");
+		                }
+					
+					
 				},
 			}); 
   		 return true;

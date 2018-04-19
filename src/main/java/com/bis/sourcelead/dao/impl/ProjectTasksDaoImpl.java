@@ -210,7 +210,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ProjectTasks> getAllTasksByProjectIdAndTaskType(Long projectId, Long TaskType) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.taskType = :TaskType" ;
+		String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.taskType = :TaskType and pt.status ='1'" ;
 		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setLong("TaskType", TaskType).list(); 
 		return projectTasksList; 
 	}
@@ -220,7 +220,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	public List<ProjectTasks> getAllTasksByProjectIdAndSubTaskType(Long projectId, Long subTaskType)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.taskType <> :subTaskType" ;
+		String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.taskType <> :subTaskType and pt.status ='1'" ;
 		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setLong("subTaskType", subTaskType).list(); 
 		return projectTasksList; 
 	} 
@@ -491,4 +491,29 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		}
 		return projectTasks;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ProjectTasks getProjectTaskByleaveTypeId(long leaveTypeId,Long projectId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectTasks projectsTasks left join fetch projectsTasks.leaveType leave left join fetch projectsTasks.projectId proId where leave.id =:leaveTypeId and proId =:projectId";
+		List<ProjectTasks> projectTasksList =session.createQuery(query).setLong("leaveTypeId", leaveTypeId).setLong("projectId", projectId).list();
+		ProjectTasks projectTasks = null;
+		if(projectTasksList != null && !projectTasksList.isEmpty())
+		{
+			projectTasks = (ProjectTasks) projectTasksList.iterator().next();
+		}
+		return projectTasks;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectTasks> getTasksListByLeaveType(Long levaTypeId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectTasks pt where pt.leaveType.id = :levaTypeId ";
+		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setLong("levaTypeId", levaTypeId).list(); 
+		return projectTasksList; 
+	}
+	 
 }

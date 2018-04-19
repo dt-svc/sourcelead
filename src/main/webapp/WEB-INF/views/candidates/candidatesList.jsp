@@ -13,7 +13,7 @@
   <div id="shareEmptypopUp"></div>
    <div class="success_pop" id="selector4" style="display: none;"> 
      <i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span> 
-   </div>  
+   </div>
 <script>
   function noAccess(id){ 	
 	 
@@ -460,7 +460,7 @@ function candidateSideBar(candidateId){
 			             '</sec:authorize>';
 			             
 			             <%--- This is for Documents(tab-9) Tab in Candidate Summary -----%>
-			             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE_DOCUMENT\',\'ROLE_VIEW_EDIT_ASSOCIATE_DOCUMENT\',\'ROLE_DELETE_ASSOCIATE_DOCUMENT\',\'ROLE_CREATE_ASSOCIATE_DOCUMENT\')">';
+			             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE_DOCUMENT\',\'ROLE_VIEW_EDIT_ASSOCIATE_DOCUMENT\',\'ROLE_DELETE_ASSOCIATE_DOCUMENT\',\'ROLE_CREATE_ASSOCIATE_DOCUMENT\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 			             result = result+'<li id="candidateDocumentsTab"><a href="#tab-9" onclick="candidateDocuments('+candidateId+');">Documents</a></li>';
 			             '</sec:authorize>';
 			             
@@ -627,15 +627,22 @@ function deleteProfileImage(candidateId){
 	 $.ajax({
 		    type: "GET",
             url: sourceleadUrl+"/deleteCandidateImage?candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
-	        success: function(data) {
-	        	 var result = data;
-	        	 $("#popUp").empty();
-	        	 $(".project_inn_mask").fadeOut(200);
-	        	 $("[data-id=profileImage]").attr('src', '/resources/images/userprofileImg.jpg');
-	        	 candidateQuickViewProfile(candidateId);
-	        	 refreshImageBlock(candidateId);
+	        success: function(response) {
+	        	if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+	        		var result = response.object;
+		        	 $("#popUp").empty();
+		        	 $(".project_inn_mask").fadeOut(200);
+		        	 $("[data-id=profileImage]").attr('src', '/resources/images/userprofileImg.jpg');
+		        	 candidateQuickViewProfile(candidateId);
+		        	 refreshImageBlock(candidateId);
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
 	       },
-	        
      }); 
 }
 </script>
@@ -650,9 +657,14 @@ function refreshImageBlock(candidateId){
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-           success :function(json) {   
-                if(data){  
-//                 	 var json = JSON.parse(data);
+           success :function(result) { 
+        	   var json = result.object;
+        	   if(result.response === "SESSION_TIMEDOUT") {
+					location.replace(sourceleadUrl);
+				} else if (result.response === "AWKWARD") {
+					location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+					if(json != null){
 	                	 $("#candidateImageId").empty();
 	                	 var result = '';
 			             result = result+'<div class="well well-sm text-center clearfix">';
@@ -691,7 +703,12 @@ function refreshImageBlock(candidateId){
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
 						 result = result+' </div>';
 						 $("#candidateImageId").append(result);
-                }
+                	}
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
+				}
          	},
       }); 
    }
@@ -705,34 +722,44 @@ function addFavourite(candidateId){
 	 	$.ajax({
 			type : "POST",
 			url : sourceleadUrl+"/saveCandidateAsFavourite?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
-			success : function(result) {
-				var td = cacheLastJson.data;
-				for(var e in td) {
-					if(td[e].candidateId === candidateId) {
-						td[e]
-						if(isAssociate == "N"){
-							td[e].isFavourite = checked ? 1 : 0;
-		            	} else if(td[e].isFavouriteAssociate == '1' && isAssociate == "Y") {
-		            		td[e].isFavouriteAssociate = checked ? 1 : 0;
-		            	}
-						break;
-					}
-				}
-				cacheLastJson.data = td;
+			success : function(response) {
+				
 				if(checked){
 					 document.getElementById("favourite"+candidateId).removeAttribute("class");
 					 document.getElementById("favourite"+candidateId).className = 'iconClass pull-left star-rating activestar-rating' 
-				}else{
-					 //document.getElementById("favourite"+candidateId).removeAttribute("class");
+				} else {
 					 document.getElementById("favourite"+candidateId).classList.remove("activestar-rating");
 					 document.getEmentById("favourite"+candidateId).className = 'iconClass pull-left star-rating';
 				}
 				
+				if (response && response.response === "INVALID_DATA") {
+				    showError(response.responseMessage);
+				} else if (response.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				} else if (response.response === "SUCCESS") {
+					var td = cacheLastJson.data;
+					for(var e in td) {
+						if(td[e].candidateId === candidateId) {
+							td[e]
+							if(isAssociate == "N"){
+								td[e].isFavourite = checked ? 1 : 0;
+			            	} else if(td[e].isFavouriteAssociate == '1' && isAssociate == "Y") {
+			            		td[e].isFavouriteAssociate = checked ? 1 : 0;
+			            	}
+							break;
+						}
+					}
+
+					cacheLastJson.data = td;
+						
+
+				} else if (response.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
 			},
 		}); 
-		 
-		
-	
 }
 </script>
 
@@ -862,8 +889,6 @@ function cancel(candidateId){
                 <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr10" onclick="resetCandidateFilter();" title="Refresh">
 				    <span class="fa fa-refresh"></span>
 				</button>
-				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filter Search" onclick="openCandidateFilterPop();"><i class="fa fa-filter faFilter padding_right"></i>
-				</a>
 	</div>
      <div class="pull-left cand-advsrche">
 			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();">
@@ -1147,6 +1172,11 @@ function cancel(candidateId){
 				  </div>
 			  </form:form>
       </div>
+      
+      <div class="pull-left pull-left ml mt10 mr5">
+				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openCandidateFilterPop();"><i class="fa fa-filter faFilter padding_right"></i>
+				</a>
+	</div>
       <div class="dropdown pull-left ml mt">
 			  <div class="dropdown-toggle" data-toggle="dropdown">
 			  <span class="fa fa-share-alt cursorPointer" title="Share" href="#" onclick="shareJob();"></span></div>
@@ -1203,6 +1233,10 @@ function cancel(candidateId){
     <div class="side_mask">
        <div class="proj_close" onclick="activeTab();"></div>
     </div>
+    <div class="success_pop" id="statusAlert">
+		<i class="fa fa-check-circle"></i>
+   		<span></span>
+   </div>
  <div class="clients_side_wrap quickviewTabs">
     
  <ul class="nav nav-tabs">
@@ -1251,6 +1285,7 @@ function cancel(candidateId){
 		$("#detailview").removeClass("active in");
 		$("#candTimelineView").removeClass("active");
 		$("#timelineview").removeClass("active in");
+		$(".location-alert").fadeOut();
 	}
 </script>
 
@@ -1400,10 +1435,28 @@ function exportToPdf(){
         $("#canDiv").removeAttr("onClick");
     }
 	  
+    var candidateFilterSkills = [];
+	 $('input:checkbox[name=candidateFilterSkills]:checked').each(function() 
+     {
+		 candidateFilterSkills.push($(this).val());
+	 });
+	 
+	 var availability = []
+	 $('input:checkbox[name=availability]:checked').each(function() 
+	     {
+	       availability.push($(this).val());
+		 });
+	 
+	 var candidateTypeFilter = []
+	 $('input:checkbox[name=candidateTypeFilter]:checked').each(function() 
+	     {
+		 candidateTypeFilter.push($(this).val());
+		 });
+	 
 	  var candTypeRadio = $('input[name=candidateType]');
 	  var candidateType = candTypeRadio.filter(':checked').val();
 	  if(isCandidatesAvailable > 0){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf"+"&candidateType="+candidateType+"&isAssociate=N";	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf"+"&candidateType="+candidateType+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter+"&isAssociate=N";	
 	  }else{
 		  var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -1440,10 +1493,28 @@ function exportToExcel(){
        $("#canDiv").removeAttr("onClick");
    }
 	  
+	  var candidateFilterSkills = [];
+		 $('input:checkbox[name=candidateFilterSkills]:checked').each(function() 
+	     {
+			 candidateFilterSkills.push($(this).val());
+		 });
+		 
+		 var availability = []
+		 $('input:checkbox[name=availability]:checked').each(function() 
+		     {
+		       availability.push($(this).val());
+			 });
+		 
+		 var candidateTypeFilter = []
+		 $('input:checkbox[name=candidateTypeFilter]:checked').each(function() 
+		     {
+			 candidateTypeFilter.push($(this).val());
+			 });
+	  
 	  var candTypeRadio = $('input[name=candidateType]');
 	  var candidateType = candTypeRadio.filter(':checked').val();
 	  if(isCandidatesAvailable > 0){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls"+"&candidateType="+candidateType+"&isAssociate=N";	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls"+"&candidateType="+candidateType+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter+"&isAssociate=N";	
 	  }else{
 		  var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -1494,42 +1565,27 @@ function closeComment(){
 					scrollToTopOnError : true,
 					dateFormat : 'yyyy/mm/dd' 
 		         }; 
-			 if ($('#candidateComments_form').validate(false, validationSettings)){
-				var frm = $('#candidateComments_form').serializeFormJSON();
-				var con = JSON.stringify(frm);
-				con = con.replace(/[{}]/g, "");
-				var form = $('#candidateComments_form')[0];
-	      		var formData = new FormData(form); 
+			 if ($('#candidateComments_form').validate(false, validationSettings)) {
+	      		 var formData = getFormData("candidateComments_form");
 				$("#submit_comment").attr("disabled", "disabled");
          		$("#submit_comment" ).addClass('button').val('Processing..');
-				//It will escape all the special characters
-		        var jsonData = encodeURIComponent(con);
-				$.ajax({
-						type : "POST",
-		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/saveCandidateComment?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&candidateId="+candidateId,
-						success : function(result) {
-							savedCommentAndCount(candidateId);
-							 /* if( result.indexOf('Sign In') >= 0){
-					    		location.replace(sourceleadUrl);
-					    	 }
-		            		 else if (result.indexOf('exception') >= 0) {
-		            			 location.replace(sourceleadUrl+"/errorPage");
-		            		 }
-		            		 else{
-						 		$("#popUpDivResume").removeClass("edit-details-active");
-						 		candidateResumesList(candidateId);
-		            		 } */
-						},
-					});
-					$('.add-comment').toggle(200);
-					return true;
-			 }else{ 
+				
+				$.post(sourceleadUrl+"/saveCandidateComment?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,formData,function(result){
+					if (result && result.response === "INVALID_USER") {
+		    		    showError(result.responseMessage);
+		    		} else if (result.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    		} else if (result.response === "SUCCESS") {
+		    			savedCommentAndCount(candidateId);
+		    		} else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+					    showError("Operation failed, please try again");
+					}
+				});
+				$('.add-comment').toggle(200);
+				return true;
+			 } else { 
 					return false;
 			 }
 		}
@@ -1549,46 +1605,55 @@ function savedCommentAndCount(candidateId){
         type : "POST",
          url: sourceleadUrl+"/getAllCommentsOnCandidateByCandidateIdAndOrgLocation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(data) {
-        	 var result = "";
-              if(data != null && data != 'undefined' && data != ""){
-              	 	 var json = JSON.parse(data);
-            			 var totalComments = 0;
-            			 if(json.length>0){
-            				totalComments = json.length;
-         	            	var report = json[0];
-	 			            
-	 			            result = result+'    <div class="commentsimg">';
-				            result = result+'    <i class="fa fa-comments"></i>';
-				            result = result+'        <div class="commentsimg-inner">';
-				            
-				            result = result+'        	<img data-id="userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorUserImage+'"/>';
-				            result = result+'        </div>';
-				            result = result+'    </div>';
-				            result = result+'     <div class="comments-content">';
-				            result = result+'         <div class="pull-left" id="latestMessage">';
-				            result = result+'         <p class="comment-by">';
-				            result = result+'            By <span class="text-danger">'+report.commentAuthor+'</span>';
-				            result = result+'            <span class="small">('+report.commentTime+')</span></p>';
-				            result = result+'         <p class="comment-text">'+report.comment+'</p>';
-				            result = result+'         </div>';
-				            result = result+'         <div class="pull-right cmt-button">';
-				            result = result+'          <span class="comments-button">';
-				            
-				            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateId+')">';
-				            result = result+'            	<i class="fa fa-plus"></i>&nbsp;Comments';
-				            result = result+'            </button>';
-				            result = result+'            <div class="add-comment">';
-				            result = result+'            </div>';
-				            result = result+'          </span>';
-				            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+');">View more <span class="label label-warning">'+totalComments+'</span></a>';
-				 			result = result+'		</div>';
-				            result = result+'     </div>';
-	 			           
-	 			           $("#latestMessage").empty();
-	 			           $("#latestMessage").append(result);
-            			 }
-            			 
-              }
+        	 if (data && data.response === "INVALID_DATA") {
+        		    showError(data.responseMessage);
+        		} else if (data.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (data.response === "SUCCESS") {
+        			var result = "";
+                    if(data.object.length > 0) {
+                    	var json = data.data;
+                  		var totalComments = 0;
+                  		if(json.length>0) {
+                  			totalComments = json.length;
+            	            var report = json[0];
+   	 			            
+   	 			            result = result+'    <div class="commentsimg">';
+   				            result = result+'    <i class="fa fa-comments"></i>';
+   				            result = result+'        <div class="commentsimg-inner">';
+   				            
+   				            result = result+'        	<img data-id="userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorUserImage+'"/>';
+   				            result = result+'        </div>';
+   				            result = result+'    </div>';
+   				            result = result+'     <div class="comments-content">';
+   				            result = result+'         <div class="pull-left" id="latestMessage">';
+   				            result = result+'         <p class="comment-by">';
+   				            result = result+'            By <span class="text-danger">'+report.commentAuthor+'</span>';
+   				            result = result+'            <span class="small">('+report.commentTime+')</span></p>';
+   				            result = result+'         <p class="comment-text">'+report.comment+'</p>';
+   				            result = result+'         </div>';
+   				            result = result+'         <div class="pull-right cmt-button">';
+   				            result = result+'          <span class="comments-button">';
+   				            
+   				            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateId+')">';
+   				            result = result+'            	<i class="fa fa-plus"></i>&nbsp;Comments';
+   				            result = result+'            </button>';
+   				            result = result+'            <div class="add-comment">';
+   				            result = result+'            </div>';
+   				            result = result+'          </span>';
+   				            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+');">View more <span class="label label-warning">'+totalComments+'</span></a>';
+   				 			result = result+'		</div>';
+   				            result = result+'     </div>';
+   	 			           
+   	 			           	$("#latestMessage").empty();
+   	 			           	$("#latestMessage").append(result);
+                  		}
+					}
+        		} else if (data.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
 			},
       });
 }
@@ -2555,7 +2620,7 @@ function getRequirements(){
 
 <script>
 function closeCandidateFilterPop(){
-	$("div.cand-advsrch-popup").hide();
+	$("#candidateFilterPopup").hide();
 	$(".advancedsearch-mask").fadeOut();
 }
 function openCandidateFilterPop(){
@@ -2567,22 +2632,27 @@ function resetCandidateFilter(){
 	$("ul#AllTypeFilter > li input:radio").prop("checked",false);
 	$("ul#UpdatedFilter > li input:radio").prop("checked",false);
 	$("ul#employmentFilter > li input:checkbox").prop("checked",false);
+	$("ul#availabilityFilter > li input:checkbox").prop("checked",false);
+	$("ul#skillsUL > li input:checkbox").prop("checked",false);
+	$("ul#candidateTypeFilter > li input:checkbox").prop("checked",false);
 	
+	$("#dataTableSearch").val('');
 	document.getElementById("candidateTypeAll").checked = true;
 	document.getElementById("candidateAll").checked = true;
+	document.getElementById("candidateCheck").checked = true;
 	candidateList();
 }
 </script>		
 
 
-  <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small" id="candidateFilterPopup">
-	<h5 class="headerAdsrch">Filter Search
+  <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="candidateFilterPopup">
+	<h5 class="headerAdsrch">Filters
 		<a href="javascript:void(0)" class="close-div" onClick="closeCandidateFilterPop()"><i
 			class="fa fa-close"></i></a>
 	</h5>
 	<div class="addInner">
 		<div class="row">
-			<div class="col-md-4">
+			<div class="col-md-2">
 			<div class="row">
 			
 			<div class="col-md-12 mb">
@@ -2597,19 +2667,30 @@ function resetCandidateFilter(){
 				 </div> 
 				 
 				 
-			<div class="col-md-12 mb">
+			    <div class="col-md-12 mb">
 				<label><strong>Type</strong></label>
 				 <div class="clearfix">
 					<ul class="list-unstyled" id="TypeFilter">
 					     <li class="radioIput positionRelative" ><input id="candidateTypeAll" type="radio" name="candidateType" checked value ="All" ><label for="candidateTypeAll">All</label></li>
-						 <li class="radioIput positionRelative" ><input id="onlycandidate" type="radio" name="candidateType" value ="1" ><label for="onlycandidate">Favourite</label></li>
+						 <li class="radioIput positionRelative" ><input id="onlycandidate" type="radio" name="candidateType" value ="Favourite" ><label for="onlycandidate">Favourite</label></li>
                     </ul>
 				 </div>
-				 </div> 
+				 </div>
+				 
+				 
+				 <div class="col-md-12 mb">
+				<label><strong>Candidate Type</strong></label>
+				 <div class="clearfix">
+					<ul class="list-unstyled" id="candidateTypeFilter">
+					    <li class="checkBox positionRelative" ><input  type="checkbox" id="candidateCheck" name="candidateTypeFilter" checked value ="Candidates"  ><label>Candidates</label></li>
+						<li class="checkBox positionRelative" ><input  type="checkbox" id="associateCheck"  name="candidateTypeFilter"  value ="Associates" ><label>Associates</label></li>
+                    </ul>
+				 </div>
+				 </div>  
 			  </div>
 			</div>
 			
-			<div class="col-md-3">
+			<div class="col-md-2">
 				<div class="row">
 			       <div class="col-md-12 mb">
 				     <label><strong>Updated</strong></label>
@@ -2630,7 +2711,7 @@ function resetCandidateFilter(){
 			 </div>
 			</div> 
 			
-			<div class="col-md-4">
+			<div class="col-md-2">
 				<div class="row">
 					<div class="col-md-12 mb">
 						<label><strong>Employment Type</strong></label>
@@ -2650,6 +2731,37 @@ function resetCandidateFilter(){
 			</div>
 			
 			
+			<div class="col-md-2">
+				<div class="row">
+					<div class="col-md-12 mb">
+						<label><strong>Availability</strong></label>
+						 <div class="clearfix">
+							<ul class="list-unstyled" id="availabilityFilter">
+	                    	    <li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="Immediately available"  ><label>Immediately available</label></li>
+								<li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="15 Days" ><label>15 Days</label></li>
+								<li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="1 Month" ><label>1 Month</label></li>
+	               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="2 Months"  ><label>2 Months</label></li>
+	               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="3 Months" ><label>3 Months</label></li>
+	                        </ul>
+						 </div>
+						 </div> 
+				     </div>
+			</div>
+			
+			<div class="col-md-3">
+					<div class="clearfix dynamic_search filterDynamicsearch">
+						<input type="text" id="mySkillsInput" onkeyup="mySkillsFunction()" placeholder="Skills" title="Type in a skills">
+						<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+					</div>
+					 <div class="clearfix filterSearch-ul">
+						<ul class="list-unstyled positionRelative filterSearch mt5" id="skillsUL">
+							<c:forEach var="skill" items="${skillsList}">
+							<li class="checkBox positionRelative"><input  type="checkbox" name="candidateFilterSkills" value ="${skill.name}" ><label>${skill.name}</label></li>
+							</c:forEach>
+						</ul>
+					 </div> 
+		 </div> 
+			
 		</div>
 		</div>
 		<div class="clearfix advancedsearch-footer">
@@ -2659,6 +2771,32 @@ function resetCandidateFilter(){
 			</div>
 		</div>
 </div>
+	
+<script>
+function mySkillsFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("mySkillsInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("skillsUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+$(document).keyup(function(e) {
+	  if (e.keyCode === 27) {
+		  closeCandidateFilterPop();
+	  }
+	});
+</script>
+
 	
 
 <jsp:include page="../masterFooter.jsp" /> 

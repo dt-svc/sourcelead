@@ -66,6 +66,9 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLicensePaymentTransactionHistory;
+import com.bis.sourcelead.entity.OrgLicenseSubscription;
+import com.bis.sourcelead.entity.OrgLicenseSubscriptionHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -78,6 +81,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchyHistory;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
@@ -86,7 +90,6 @@ import com.bis.sourcelead.entity.VendorOnboardingTemplate;
 import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
-import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
@@ -109,6 +112,8 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.VendorOnboardTemplateDocumentsService;
 import com.bis.sourcelead.service.VendorOnboardTemplateService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.icu.text.DecimalFormat;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -210,6 +215,30 @@ public class CommonUtil {
 	@Autowired
 	private EmployeeVerificationTemplateService employeeVerificationTemplateService;
 	
+	@Value("${paymentSuccessReturnEmail}")
+	private String paymentSuccessReturnEmail;
+	
+	
+	/**
+	 * This method is used to store pre-defined sourcelead tasks for the particular project
+	 * @author: Naresh Bolisetty
+	 * 
+	 */
+	public static HashMap<String, String> getJsonAsMap(String json)
+	{
+	    try
+	    {
+	        ObjectMapper mapper = new ObjectMapper();
+	        TypeReference<Map<String,String>> typeRef = new TypeReference<Map<String,String>>() {};
+	        HashMap<String, String> result = mapper.readValue(json, typeRef);
+
+	        return result;
+	    }
+	    catch (Exception e)
+	    {
+	        throw new RuntimeException("Couldnt parse json:" + json, e);
+	    }
+	}
 	
 	
 	/**
@@ -221,6 +250,9 @@ public class CommonUtil {
 	public static Date currentDate() {
         return new Date();
     }
+	
+	
+	
 	
 	/**
 	 * Converting Org based date format as string
@@ -236,6 +268,7 @@ public class CommonUtil {
 		}
 		return dateStr;
 	}
+	
 	
 	/**
 	 * Convert String to Capitalized String
@@ -1952,7 +1985,8 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 					if(StringUtils.isNotBlank(loginUserRole) && (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN"))) {
 						ProjectApproverHierarchy approverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(loginUser.getId(), projectClients.getId());
 						ProjectMembers pm = projectMembersService.getProjectMembersByCandidateIdAndProjectClientId(candidateId, projectClients.getId());
-						if(approverHierarchy != null || pm != null) {
+						Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+						if(approverHierarchy != null || pm != null || projects.getCreatedBy().equalsIgnoreCase(loginUser.getUserCode())) {
 							flag = true;
 						}
 					}else {
@@ -2125,5 +2159,151 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		 emailScenerioUtil.sendNotification(actionLink, loginUser,user, projectApproverHierarchy.getProjectId().getOrgLocationsId(), notificationScenario,new HashMap<String,String>());
 		 }
 		}
+	
+	public static SubmissionApproverHierarchyHistory getSubmissionApproverHierarchyHistory(SubmissionApproverHierarchy sah) {
+		SubmissionApproverHierarchyHistory sahh = null;
+		if(sah != null) {
+			sahh = new SubmissionApproverHierarchyHistory();
+			sahh.setHierarchyId(sah.getHierarchyId());
+			sahh.setSubmissionId(sah.getSubmissionId());
+			sahh.setSubmissionApproverHierarchyId(sah);
+			sahh.setSubmissionStatus(sah.getSubmissionStatus());
+			sahh.setSubmissionApprovalStatus(sah.getSubmissionApprovalStatus());
+			sahh.setInvoiceStatus(sah.getInvoiceStatus());
+			sahh.setBillingStatus(sah.getBillingStatus());
+			sahh.setInvoiceDate(sah.getInvoiceDate());
+			sahh.setBillDate(sah.getBillDate());
+			sahh.setInvoiceId(sah.getInvoiceId());
+			sahh.setBillId(sah.getBillId());
+			sahh.setFrequencyStartDate(sah.getFrequencyStartDate());
+			sahh.setFrequencyEndDate(sah.getFrequencyEndDate());
+			sahh.setMechanismType(sah.getMechanismType());
+			sahh.setRejectedReason(sah.getRejectedReason());
+			sahh.setActionPerformedBy(sah.getActionPerformedBy());
+			sahh.setActionPerformedByOrgLocationId(sah.getActionPerformedByOrgLocationId());
+			sahh.setStatus(sah.getStatus());
+			sahh.setReopenedUser(sah.getReopenedUser());
+			sahh.setReopenReason(sah.getReopenReason());
+			sahh.setReopenRejectedReason(sah.getReopenRejectedReason());
+			sahh.setCreatedDate(sah.getCreatedDate());
+			sahh.setCreatedBy(sah.getCreatedBy());
+			sahh.setUpdatedDate(sah.getUpdatedDate());
+			sahh.setUpdatedBy(sah.getUpdatedBy());
+		}
+		return sahh;
+	}
+	
+	
+  public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicenseSubscription orgLicenseSubscription,User loginUser) {
+		
+		OrgLicenseSubscriptionHistory history = new OrgLicenseSubscriptionHistory();
+		history.setOrgLicenseSubscription(orgLicenseSubscription);
+		history.setSubscriptionType(orgLicenseSubscription.getSubscriptionType());
+		history.setUserSubscriptionType(orgLicenseSubscription.getUserSubscriptionType());
+		history.setStorageSubscriptionType(orgLicenseSubscription.getStorageSubscriptionType());
+		history.setCurrency(orgLicenseSubscription.getCurrency());
+		history.setInvoiceAmount(orgLicenseSubscription.getInvoiceAmount());
+		history.setSubscriptionTabs(orgLicenseSubscription.getSubscriptionTabs());
+		history.setFromDate(orgLicenseSubscription.getFromDate());
+		history.setToDate(orgLicenseSubscription.getToDate());
+		history.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		history.setTimezone(orgLicenseSubscription.getTimezone());
+		history.setCreatedBy(loginUser);
+		history.setUpdatedBy(loginUser);
+		history.setCreatedDate(new Date());
+		history.setUpdatedDate(new Date());
+		return history;
+		
+	}
+  
+  
+  public void paymentAcknowledgementMail(OrgLicensePaymentTransactionHistory paymentHistory,User loginUser,Org org, OrgLocations orgLocations)
+			throws Exception {
+	  
+	    EmailMessage emailMessage = new EmailMessage();
+	    emailMessage.setFirstName(paymentHistory.getTransactionUser());
+		emailMessage.setToEmail(paymentHistory.getTransactionUserEmail());
+		emailMessage.setFromEmail("donotreply@sourcelead.com");
+		emailMessage.setFromName("donotreply@sourcelead.com");
+		emailMessage.setCreatedBy(loginUser.getUserCode());
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		globalVarsMap.put("customerName", paymentHistory.getTransactionUser());
+		
+		StringBuilder paymentDetailsBuilder = paymentDetailsTable(paymentHistory);
+		globalVarsMap.put("paymentDetails", paymentDetailsBuilder.toString());
+		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LICENSE_PAYMENT_ACKNOWLEDGEMENT, Constants.ENTITY_TYPE_EMAIL);
+		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
+		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
+		String url = sourceleadUrl;
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
+				null, url, null, null);
+		emailMessage.setSubject(subject);
+		emailMessage.setMessageBody(emailTemplate);
+		// calling the sendEmail method of emailScenerioUtil
+		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+  }
+  
+  
+  
+  public void paymentAcknowledgementDetailsMail(OrgLicensePaymentTransactionHistory paymentHistory,User loginUser,Org org, OrgLocations orgLocations)
+			throws Exception {
+	  
+	    EmailMessage emailMessage = new EmailMessage();
+	    emailMessage.setFirstName(paymentHistory.getTransactionUser());
+		emailMessage.setToEmail(paymentSuccessReturnEmail);
+		emailMessage.setFromEmail(paymentHistory.getTransactionUserEmail());
+		emailMessage.setFromName(paymentHistory.getTransactionUser());
+		emailMessage.setCreatedBy(loginUser.getUserCode());
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		globalVarsMap.put("companyName", orgLocations.getOrgLocationName());
+		
+		StringBuilder paymentDetailsBuilder = paymentDetailsTable(paymentHistory);
+		globalVarsMap.put("paymentDetails", paymentDetailsBuilder.toString());
+		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LICENSE_PAYMENT_ACKNOWLEDGEMENT_DETAILS, Constants.ENTITY_TYPE_EMAIL);
+		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
+		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
+		String url = sourceleadUrl;
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
+				null, url, org, orgLocations);
+		emailMessage.setSubject(subject);
+		emailMessage.setMessageBody(emailTemplate);
+		// calling the sendEmail method of emailScenerioUtil
+		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+}
+  
+  
+  public StringBuilder paymentDetailsTable(OrgLicensePaymentTransactionHistory paymentHistory) throws Exception {
+	  StringBuilder tempHTML = new StringBuilder();
+	  String transactionDate = dateStrFromOrgDateFormatter("dd-MM-yyyy",paymentHistory.getTransactionDate());
+	  
+	     tempHTML.append("<table style='display:table-cell;vertical-align:middle; width:650px; font-size: 12px;  margin:0px;'>");
+		 tempHTML.append("<tr align='center'>");
+		 tempHTML.append("<th style='padding:5px 10px' width='20%' bgcolor='#E5E8E8'><span>License Type<span></th>");
+		 tempHTML.append("<th style='padding:5px 10px' width='15%' bgcolor='#E5E8E8'><span>Order Id<span></th>");
+		 tempHTML.append("<th style='padding:5px 10px' width='15%' bgcolor='#E5E8E8'><span>Transaction Id<span></th>");
+		 tempHTML.append("<th style='padding:5px 10px' width='20%' bgcolor='#E5E8E8'><span>Transaction Date<span></th>");
+		 tempHTML.append("<th style='padding:5px 10px' width='30%' bgcolor='#E5E8E8'><span>Amount<span></th>");
+		 tempHTML.append("</tr>");
+		 tempHTML.append("<tbody>");
+		 tempHTML.append("<tr align='center'>");
+		 
+		 tempHTML.append("<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+paymentHistory.getSubscriptionType()+"</td>");
+		 tempHTML.append("<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+paymentHistory.getOrderId()+"</td>");
+		 tempHTML.append("<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+paymentHistory.getTransactionId()+"</td>");
+		 tempHTML.append("<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+transactionDate+"</td>");
+		 tempHTML.append("<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+paymentHistory.getCurrency()+"&nbsp;"+paymentHistory.getInvoiceAmount()+"</td>");
+		 
+		 tempHTML.append("</tr>");
+		 tempHTML.append("</tbody>");
+		 tempHTML.append("</table>");
+	  
+	     return tempHTML;
+  }
+  
+  
+  
+  
 		
 }

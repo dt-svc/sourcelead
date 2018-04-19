@@ -17,11 +17,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AssociateRequestDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
 import com.bis.sourcelead.dto.ProjectBudgetRequestDTO;
+import com.bis.sourcelead.dto.ProjectMembersDTO;
 import com.bis.sourcelead.dto.ProjectPlanningNewResourceRequestDTO;
 import com.bis.sourcelead.dto.ProjectPlanningResourceRequestDTO;
+import com.bis.sourcelead.dto.ResourceRequestDTO;
+import com.bis.sourcelead.dto.ResourcesDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -32,10 +39,12 @@ import com.bis.sourcelead.entity.ProjectPlanningResourceRequest;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectBudgetService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectPlanningNewResourceRequestService;
 import com.bis.sourcelead.service.ProjectPlanningRequestService;
 import com.bis.sourcelead.service.ProjectPlanningResourceRequestService;
@@ -85,6 +94,9 @@ public class ProjectPlanningRestController {
 	
 	@Autowired
 	OrgLocationService orgLocationService;
+	
+	@Autowired
+	ProjectMembersService projectMembersService;
 	
 	 @RequestMapping(value = "/getRequestedAssociatesList", method = RequestMethod.GET)
 	 public @ResponseBody ResponseList<CandidateDTO>  getRequestedAssociatesList(CandidateDTO candidateDTO) throws Exception{ 
@@ -148,10 +160,8 @@ public class ProjectPlanningRestController {
 		    	}
 		    }
 		}
-		
 		ResponseList<CandidateDTO> candidateDTOList = candidateService.getRequestedCandidatesList(candidateDTO,candidateDTO.getOrgLocationId(), roleIds,teamIds, candidateDTO.getResourceType(),associateIds,projects.getId());
-		 
-		 return candidateDTOList;
+		return candidateDTOList;
 	  }
 	 
 	 
@@ -207,36 +217,105 @@ public class ProjectPlanningRestController {
 	 
 	 
 	  @RequestMapping(value = "/saveResourceRequest")
-		public @ResponseBody String saveResourceRequest(@RequestParam("json") String jsonPayload,@RequestParam(value="projectUUID", required=true) String projectUUID,
-				@RequestParam(value="saveType", required=true) String saveType,@RequestParam(value="", required=true) Long userId,
-				@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
-		    
-		    User user = userService.getUserById(userId);
-		    OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		    
-		    JSONObject jsonObj = new JSONObject(jsonPayload);
-		    projectPlanningRequestService.saveProjectPlanningRequest(jsonObj, user, orgLocations, projectUUID,saveType);
+		public @ResponseBody Response<String> saveResourceRequest(ResourceRequestDTO  resourceRequestDTO) throws Exception {
+		    Response<String> response = new Response<>();
+		     User user = userService.getUserById(Long.valueOf(resourceRequestDTO.getLoginuserId()));
+		     if(user != null) {
+		    	 try {
+		    		 outerLoop:{
+						if (Validator.validate(resourceRequestDTO) && resourceRequestDTO.getAssociateResources() != null && !resourceRequestDTO.getAssociateResources().isEmpty()) {
+							 for(AssociateRequestDTO associateRequestDTO :resourceRequestDTO.getAssociateResources()) {
+								if(StringUtils.isEmpty(associateRequestDTO.getValidateRow()))
+									 continue;
+								if(!Validator.validate(associateRequestDTO)) {
+									response.setObject("DataMissing");
+									response.setResponse(Result.INVALID_DATA.name());
+									response.setResponseMessage(Result.INVALID_DATA.getValue());
+									break outerLoop;
+								}
+							  }
+							 OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.valueOf(resourceRequestDTO.getLoginOrglocationId()));
+						     projectPlanningRequestService.saveProjectPlanningRequest(resourceRequestDTO, user, orgLocations);
+							 response.setResponse(Result.SUCCESS.name());
+							 response.setResponseMessage(Result.SUCCESS.getValue());
+						} else {
+							response.setObject("DataMissing");
+							response.setResponse(Result.INVALID_DATA.name());
+							response.setResponseMessage(Result.INVALID_DATA.getValue());
+						}
+				     }
+		    	 }catch (Exception e) {
+						response.setResponse(Result.AWKWARD.name());
+						response.setResponseMessage(Result.AWKWARD.getValue());
+					}
+		     }else {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
 		   
-		    return "success";
+		    return response;
 	    }
 	  
 	  @RequestMapping(value = "/saveNewResourceRequest")
-	  public @ResponseBody String saveNewResourceRequest(@RequestParam(value="projectUUID", required=true) String projectUUID,
-			@RequestParam(value="saveType", required=true) String saveType,HttpServletRequest request) throws Exception {
+	  public @ResponseBody Response<String> saveNewResourceRequest(ResourceRequestDTO  resourceRequestDTO ,HttpServletRequest request) throws Exception {
+		    Response<String> response = new Response<>();
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		    JSONObject jsonObj = new JSONObject(request.getParameter("json"));
-		    projectPlanningRequestService.saveProjectNewResourceRequest(jsonObj, user, orgLocations, projectUUID,saveType);
-		   
-		    return "success";
+		    if (user != null) {
+				try {
+					outerLoop:{
+						if (Validator.validate(resourceRequestDTO) &&resourceRequestDTO.getPlanningResources() != null && !resourceRequestDTO.getPlanningResources().isEmpty()) {
+							 for(ResourcesDTO resourcesDTO :resourceRequestDTO.getPlanningResources()) {
+								if(StringUtils.isEmpty(resourcesDTO.getValidateRow()))
+									 continue;
+								if(!Validator.validate(resourcesDTO)) {
+									response.setObject("DataMissing");
+									response.setResponse(Result.INVALID_DATA.name());
+									response.setResponseMessage(Result.INVALID_DATA.getValue());
+									break outerLoop;
+								}
+							}
+								    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+								    projectPlanningRequestService.saveProjectNewResourceRequest(resourceRequestDTO, user, orgLocations);
+									response.setResponse(Result.SUCCESS.name());
+									response.setResponseMessage(Result.SUCCESS.getValue());
+							
+						} else {
+							response.setObject("DataMissing");
+							response.setResponse(Result.INVALID_DATA.name());
+							response.setResponseMessage(Result.INVALID_DATA.getValue());
+						}
+				     }
+				}catch (Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+				}
+		    } else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+			return response;
       }
 	  
 	  @RequestMapping(value = "/getPlanningRequestListByProjectUUID")
-		public @ResponseBody List<ProjectPlanningRequest> getPlanningRequestListByProjectUUID(@RequestParam(value="projectUUID", required=true) String projectUUID) throws Exception {
-		    
-		  Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
-		  List<ProjectPlanningRequest> projectPlanningRequestList = projectPlanningRequestService.getProjectPlanningRequestByProjectId(projects.getId());
-		  return projectPlanningRequestList;
+		public @ResponseBody ResponseList<ProjectPlanningRequest> getPlanningRequestListByProjectUUID(@RequestParam(value="projectUUID", required=true) String projectUUID) throws Exception {
+		    ResponseList<ProjectPlanningRequest> response = new ResponseList<>();
+		    try {
+		    	 Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+		    	 if(projects != null) {
+		    		 List<ProjectPlanningRequest> projectPlanningRequestList = projectPlanningRequestService.getProjectPlanningRequestByProjectId(projects.getId());
+					   response.setData(projectPlanningRequestList);
+					   response.setResponse(Result.SUCCESS.name());
+					   response.setResponseMessage(Result.SUCCESS.getValue());
+		    	 }else {
+		    		 response.setResponse(Result.INVALID_DATA.name());
+					 response.setResponseMessage(Result.INVALID_DATA.getValue());
+		    	 }
+		    }catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+		  
+		  return response;
 	    }
 	  
 	  
@@ -487,6 +566,33 @@ public class ProjectPlanningRestController {
 	    		 Integer allocatedResouresCount = projectPlanningRequest.getAllocatedResources()+1;
 	    		 projectPlanningRequest.setAllocatedResources(allocatedResouresCount);
 	    		 projectPlanningRequestService.storeProjectPlanningRequest(projectPlanningRequest);
+	    		 
+	    		 Projects projects = projectsService.getProjectById(projectPlanningResourceRequest.getProjectPlanningRequestId().getProjectId().getId());
+	    		 List<ProjectMembersDTO> projectMembersDTOList = new ArrayList<>();
+	    		 ProjectMembersDTO projectMembersDTO = new ProjectMembersDTO();
+	    		 projectMembersDTO.setCandidateId(projectPlanningResourceRequest.getCandidateId().getId());
+	    		 projectMembersDTO.setPayRate(projectPlanningResourceRequest.getPayRate());
+	    		 projectMembersDTO.setPayRateCurrency(projectPlanningResourceRequest.getPayRateCurrency());
+	    		 projectMembersDTO.setPayRateRateType(projectPlanningResourceRequest.getPayRateType());
+	    		 projectMembersDTO.setBillRate(projectPlanningResourceRequest.getBillRate());
+	    		 projectMembersDTO.setBillRateCurrency(projectPlanningResourceRequest.getBillRateCurrency());
+	    		 projectMembersDTO.setBillRateRateType(projectPlanningResourceRequest.getBillRateType());
+	    		
+	    		 if(projectPlanningResourceRequest.getStartDate() != null) {
+	    			 projectMembersDTO.setMemberStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projectPlanningResourceRequest.getStartDate()));
+	    		 }
+	    		
+	    		 if(projectPlanningResourceRequest.getEndDate() != null) {
+	    			 projectMembersDTO.setMemberEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projectPlanningResourceRequest.getEndDate()));
+	    		 }
+	    		 projectMembersDTO.setEstHours(projectPlanningResourceRequest.getEstimatedHours());
+	    		 projectMembersDTO.setEstBudget(projectPlanningResourceRequest.getEstimatedBudget());
+	    		 projectMembersDTOList.add(projectMembersDTO);
+	    		
+	    		 ProjectAssignedMembersDTO projectAssignedMembersDTO = new ProjectAssignedMembersDTO();
+	    		 projectAssignedMembersDTO.setProjectMembers(projectMembersDTOList);
+	 		   
+			     projectMembersService.saveAssignedProjectMembers(projectAssignedMembersDTO, projects.getProjectUUID(), user, orgLocations);
 
 	    		 //Sending emil To Aprover
 	    		 projectPlanningResourceRequestService.sendMailToAcceptAndRejectSingleResourceRequestApprover(projectPlanningResourceRequest, user, orgLocations);
@@ -592,11 +698,27 @@ public class ProjectPlanningRestController {
 	         * @throws Exception
 	         */
 	        @RequestMapping(value = "/getBudgetRequestListByProjectUUID")
-			public @ResponseBody List<ProjectBudget> getBudgetRequestListByProjectUUID(@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
+			public @ResponseBody ResponseList<ProjectBudget> getBudgetRequestListByProjectUUID(@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
 	        	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	        	Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
-			  List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetByProjectTaskId(projects.getId(),loginOrgLocation.getId());
-			  return projectBudgetList;
+	        	ResponseList<ProjectBudget> response = new ResponseList<>();
+	        	try {
+	        		Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+		        	if(projects != null) {
+		        		List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetByProjectTaskId(projects.getId(),loginOrgLocation.getId());
+		        		response.setData(projectBudgetList);
+					    response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+		        	}else {
+						response.setResponse(Result.INVALID_DATA.name());
+						response.setResponseMessage(Result.INVALID_DATA.getValue());
+		        	}
+	        	}catch (Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+				}
+	        	
+			    
+			  return response;
 		    }
 	        
 		 /**
@@ -606,10 +728,29 @@ public class ProjectPlanningRestController {
 		  * @throws Exception
 		  */
 	        @RequestMapping(value = "/saveBudgetRequest",method = RequestMethod.POST)
-			public @ResponseBody String saveBudgetRequest(ProjectBudgetRequestDTO projectBudgetRequestDTO) throws Exception {
+			public @ResponseBody Response<String> saveBudgetRequest(ProjectBudgetRequestDTO projectBudgetRequestDTO) throws Exception {
 			       User user = userService.getUserById(Long.valueOf(projectBudgetRequestDTO.getLoginUserid()));
-			       projectBudgetService.saveProjectBudgetRequset(projectBudgetRequestDTO, user);
-			    return "success";
+			       Response<String> response = new Response<>();
+			       if(user != null) {
+			    	   try {
+			    		   if(Validator.validate(projectBudgetRequestDTO)) {
+			    			   projectBudgetService.saveProjectBudgetRequset(projectBudgetRequestDTO, user);
+			    			   response.setResponse(Result.SUCCESS.name());
+							   response.setResponseMessage(Result.SUCCESS.getValue());
+							}else {
+								response.setObject("DataMissing");
+								response.setResponse(Result.INVALID_DATA.name());
+								response.setResponseMessage(Result.INVALID_DATA.getValue());
+							}
+			    	   }catch (Exception e) {
+							response.setResponse(Result.AWKWARD.name());
+							response.setResponseMessage(Result.AWKWARD.getValue());
+						}
+			       } else {
+						response.setResponse(Result.SESSION_TIMEDOUT.name());
+						response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+					}
+			    return response;
 		    }
 	        
 	        

@@ -647,7 +647,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	            table.addCell(cell);
 	        }
             table.completeRow();
-            ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate, null,null,orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(), 0, timesheetReportsDTO.getTotalRows(),"reports");
+            ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate, null,null,orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(),"", 0, timesheetReportsDTO.getTotalRows(),"reports");
             
             java.util.List<String[]> reportList = new ArrayList<>();
             for(ProjectMembers promembers:projectMembers.getData()){
@@ -715,18 +715,22 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			 }else{
 				 timeSheetReportsArray[5] = "--";
 			 }
-			
 			 
-			 if(projectMember.getProjectClientsId() != null ){
-				 OrgRelations orgRelation = projectMember.getProjectClientsId().getOrgRelationId();
-				 if(projectMember.getProjectClientsId().getOrgRelationId() != null) { 
-				 OrgLocations orglocations = orgLocationService.getOrgLocations(orgRelation.getResponderLocationId().getId());
-						timeSheetReportsArray[6] =orglocations.getOrg().getOrgName();
-				 	}else {
-						timeSheetReportsArray[6] = " ";
-					}
-				}else {
-					timeSheetReportsArray[6] = " ";
+			 if(null != projectMember.getProjectClientsId().getOrgRelationId()){
+			   	 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(projectMember.getProjectClientsId().getOrgRelationId().getId());
+			  	 if(null != projectMember.getProjectClientsId().getOrgRelationId().getLocationId() && projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getId() != null && projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getId().longValue() == locationId.longValue()){
+							if(orgRelations.getResponderLocationId() != null){
+								timeSheetReportsArray[6] = orgRelations.getResponderLocationId().getOrgLocationName();
+								
+							}
+						}
+						if(null != projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId() && null != projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId() && projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId().longValue() == locationId.longValue()){
+							if(orgRelations.getLocationId() != null){
+								timeSheetReportsArray[6] = orgRelations.getLocationId().getOrgLocationName();
+							}
+						}
+			    }else{
+			    	timeSheetReportsArray[6] = "--";
 				}
 			 
 			if(null != projectMember.getProjectMemberCandidteId() && null !=  projectMember.getProjectMemberCandidteId().getOrgRelationId() && (projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C-1099")||projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C"))){
@@ -909,7 +913,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		
 		
 		int column = 0;
-		 ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate,null,null, orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(), 0, timesheetReportsDTO.getTotalRows(),"reports");
+		 ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate,null,null, orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(),"", 0, timesheetReportsDTO.getTotalRows(),"reports");
 		 for(ProjectMembers promembers:projectMembers.getData()){
 			 writeRow = createExcelsheet.createRow(column + 1);
 			 createExcelsheet = prepareTimesheetReportDataExcel(promembers,displayWeeksList,loginUser,createExcelsheet,writeRow,startDate,endDate,orgLocations);

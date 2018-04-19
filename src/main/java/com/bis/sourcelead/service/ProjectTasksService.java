@@ -95,5 +95,9 @@ public interface ProjectTasksService {
 	public Sheet getTaskExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, ResponseList<ProjectTasks> taskList, OrgLocations orgLocations) throws Exception;
 
 	public File getTaskPdfFile(ResponseList<ProjectTasks> taskList, OrgLocations orgLocations) throws Exception;
+
+	public ProjectTasks getProjectTaskByleaveTypeId(long leaveTypeId, Long projectId);
+	
+	List<ProjectTasks> getTasksListByLeaveType(Long levaTypeId)throws Exception;
  	 
 }

@@ -29,8 +29,16 @@ window.onload = function() {
 	  $.ajax({
            type : "POST",
             url: sourceleadUrl+"/getCandidateReportsListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateType="+candidateType,       
-            success :function(data) {
-            	prepareCandidateReportsDataDiv(data);
+            success :function(response) {
+            	if (response.response === "AWKWARD") {
+            	    location.href = "/errorPage";
+            	} else if (response.response === "SUCCESS") {
+            		prepareCandidateReportsDataDiv(response.data);            		
+            	} else if (response.indexOf('Sign In') !== -1) {
+            		location.replace(sourceleadUrl);
+            	} else {
+            	    showError("Operation failed, please try again");
+            	}
            },
             
        }); 
@@ -346,16 +354,23 @@ function toDate(selector) {
 </script> 
 <script type="text/javascript">
 function getCandidatesByOwners(){
-		var ownersList = $("#user").val();
-		var reportType = "Candidate";
- 		$.ajax({
- 	         type : "POST",
-				url: sourceleadUrl+"/getOwnersByCandidates?"+tokenParamName+"="+tokenValue+"&ownersList="+ownersList+"&reportType="+reportType,
- 	         success :function(data) {
-  		        	 prepareCandidateReportsDataDiv(data);
-  	        },
- 	          
- 	     }); 
+	var ownersList = $("#user").val();
+	var reportType = "Candidate";
+	$.ajax({
+		type : "POST",
+		url: sourceleadUrl+"/getOwnersByCandidates?"+tokenParamName+"="+tokenValue+"&ownersList="+ownersList+"&reportType="+reportType,
+	    success :function(response) {
+        	if (response.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (response.response === "SUCCESS") {
+        		prepareCandidateReportsDataDiv(response.data);
+        	} else if (response.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+ 		},
+	}); 
 }
 
 </script>
@@ -397,13 +412,19 @@ function getDayWiseReports(){
 		$.ajax({
          type : "POST",
          url: sourceleadUrl+"/getCandidateReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate+"&ownersList="+userList,     
-         success :function(data) {
-	        	 prepareCandidateReportsDataDiv(data);
+         success :function(response) {
+        	 	if (response.response === "AWKWARD") {
+	       		    location.href = "/errorPage";
+	       		} else if (response.response === "SUCCESS") {
+	       			prepareCandidateReportsDataDiv(response.data);
+	       		} else if (response.indexOf('Sign In') !== -1) {
+	       			location.replace(sourceleadUrl);
+	       		} else {
+	       		    showError("Operation failed, please try again");
+	       		}
         },
-          
      });  
 	}
-	
 }
 
 </script>
@@ -442,13 +463,19 @@ function getCustomReports(){
 		$.ajax({
 	         type : "POST",
 	         url: sourceleadUrl+"/getCandidateReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate+"&ownersList="+userList,     
-	         success :function(data) {
-		        	 prepareCandidateReportsDataDiv(data);
+	         success :function(response) {
+	        	 	if (response.response === "AWKWARD") {
+	        		    location.href = "/errorPage";
+	        		} else if (response.response === "SUCCESS") {
+	        			 prepareCandidateReportsDataDiv(response.data);
+	        		} else if (response.indexOf('Sign In') !== -1) {
+	        			location.replace(sourceleadUrl);
+	        		} else {
+	        		    showError("Operation failed, please try again");
+	        		}
 	        },
-	          
 	     });  
 	}
-	 
 }
 </script>
 <script type="text/javascript"> 

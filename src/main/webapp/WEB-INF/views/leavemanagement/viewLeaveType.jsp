@@ -65,7 +65,10 @@ $(document).ready(function(){
  function getLeaveTypesList(){
 	 var locationId = '${SourceLeadWeb_orgLocationId}';
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	 $.get( sourceleadUrl+ "/getLeaveTypesByLocationid?&orgLocationId="+locationId, function(data) {
+	 $.get( sourceleadUrl+ "/getLeaveTypesByLocationid?&orgLocationId="+locationId, function(response) {
+		 if (response.response === "AWKWARD") {
+			    location.href = "/errorPage";
+			} else if (response.response === "SUCCESS") {
 	    	 var result = "";
 	    	 result += '<table id="leaveTypeListTable" class="display" cellspacing="0" width="100%" >';
 	         result += '<thead>';
@@ -80,8 +83,8 @@ $(document).ready(function(){
 	         result += '</thead>';
 	         result += '<tbody>';
 	         
-	    	 for(i=0;i < data.length;i++){
-	    		 var report = data[i];
+	    	 for(i=0;i < response.data.length;i++){
+	    		 var report = response.data[i];
 	    		 result += '<tr>';
 		         result += '    <td>';
 		         if(report.name != null && report.name != '' && report.name != 'undefined'){
@@ -122,7 +125,7 @@ $(document).ready(function(){
 		         if(report.status == 1){
 		              	result += '            <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer" onclick="deleteLeaveType(\''+report.leaveTypeUUID+'\')"></i></span>';
 		         }else{
-		        	 	result += '            <span title="Reactive" class="paddingLeft"><i class="fa fa-repeat text-primary cursorPointer" onclick="reactiveLeaveType(\''+report.leaveTypeUUID+'\')"></i></span>';
+		        	 	result += '            <span id="spin'+report.leaveTypeUUID+'" title="Reactive" class="paddingLeft"><i class="fa fa-repeat text-primary cursorPointer" onclick="reactiveLeaveType(\''+report.leaveTypeUUID+'\')"></i></span>';
 		         }
 		         result += '        </div>';
 		         result += '    </td>';
@@ -141,6 +144,12 @@ $(document).ready(function(){
        			$(".side_mask").fadeIn(200);
        			$("body").css('overflow-y', 'hidden');
        		});
+       		
+			} else if (response.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+			    showError("Operation failed, please try again");
+			}
      });
  }
  </script>
@@ -170,7 +179,8 @@ function deleteLeaveType(typeId){
 	 $("#deleteLeaveTypeDiv").empty();
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a positionRelative'>";
+	result = result +"	<div id='leaveTypeReasonLoad'></div>";
 	result = result +"		<textarea id='reason' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reason' value='' placeholder='Reason' rows='2' onclick='validateReason();'></textarea>";
 	result = result + ' <div id="deleteLeaveTypeDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteType(\""+typeId+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelRejectPopup();'></b>";
@@ -186,19 +196,26 @@ function deleteType(typeId){
 	 reason = reason.replace(/\s/g, "")
 	if(reason.match(/^[^\s-](.*)*$/) != null){
 		$("#deleteLeaveTypeDiv").empty(); 
+		$("#leaveTypeReasonLoad").attr('style','position:absolute; width:100%; height:150px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 		   	type: "POST",
 		   	url: sourceleadUrl+"/deleteLeaveType?"+tokenParamName+"="+tokenValue+"&leaveTypeUUID="+typeId+"&deleteReason="+reason+"&loginUserId="+loginUserId,	    	   
-		    success: function(data) {
-	             if(data == true){
+		    success: function(result) {
+	             if(result.response === "SUCCESS"){
 	 				location.replace(sourceleadUrl+ "/viewLeaveTypes");
-	 			 }
-	             $("#selector1").removeAttr("style");
-	  			 $("#selector1").css({ display: "block" });
-	  			 $("#msgDiv").html("Leave Type removed");
-	  			 $("#popUp").empty();
-	 			 $(".project_inn_mask").fadeOut(200);
-	             msgFadein();
+	 				$("#leaveTypeReasonLoad").removeAttr("style");
+		             $("#selector1").removeAttr("style");
+		  			 $("#selector1").css({ display: "block" });
+		  			 $("#msgDiv").html("Leave Type removed");
+		  			 $("#popUp").empty();
+		 			 $(".project_inn_mask").fadeOut(200);
+		             msgFadein();
+	 			 }else if (result.indexOf('Sign In') !== -1) {
+	 				location.replace(sourceleadUrl);
+	 			} else {
+	 			    showError("Operation failed, please try again");
+	 			}
+	             
 		    }
 	   });
 	}else{
@@ -211,8 +228,11 @@ function deleteType(typeId){
 }
 
 function reactiveLeaveType(typeId, from){
-	var loginUserId = '${SourceLeadWeb_user.id}'
 	
+	$("#spin"+typeId).empty();
+	$("#spin"+typeId).prepend('<i class="fa fa-spinner fa-spin"></i>');
+	
+	var loginUserId = '${SourceLeadWeb_user.id}'
 		$.ajax({
 		   	type: "POST",
 		   	url: sourceleadUrl+"/deleteLeaveType?"+tokenParamName+"="+tokenValue+"&leaveTypeUUID="+typeId+"&status=reactive",	    	   
@@ -260,7 +280,14 @@ function openLeaveTypeSummary(leaveTypeUUID){
 	$.ajax({
 	   	type: "POST",
 	   	url: sourceleadUrl+"/leaveTypeSummary?&leaveTypeUUID="+leaveTypeUUID,	    	   
-	    success: function(report) {
+	    success: function(response) {
+	    	if (response.response === "AWKWARD") {
+			    location.href = "/errorPage";
+			} else if (response.response === "SUCCESS") {	    	
+				if(response !=null && response !=''){
+					 for (var i=0; i<response.data.length; i++)
+						{
+			        		 var report = response.data[i];
 	    	var result = "";
 			result +='<div class="new_side_wrap">';
 			result +='  <div class="clients_side_wrap_inn">';
@@ -563,7 +590,8 @@ function openLeaveTypeSummary(leaveTypeUUID){
 			result +='  </div>';
 			result +='  </div>';
 			result +='</div>';
-			
+						}
+				}
 			$("#typeSummaryDiv").empty();
 			$("#typeSummaryDiv").append(result);
 			$(".new_side_wrap").addClass("new_side_wrap_active");
@@ -572,6 +600,12 @@ function openLeaveTypeSummary(leaveTypeUUID){
 				$(".side_mask").fadeOut(200);
 				$("body").css('overflow-y', 'auto');
 			});	
+	    }else if (response.indexOf('Sign In') !== -1) {
+			location.replace(sourceleadUrl);
+		} else {
+		    showError("Operation failed, please try again");
+		}
+	    	
 	    }
 	   });
 }

@@ -53,6 +53,9 @@ public class SourceleadBlogs {
 	@Column(name="DESCRIPTION", columnDefinition = "LONGTEXT default NULL")
 	private String description;
 	
+	@Column(name="SHORT_DESCRIPTION")
+	private String shortDescription;
+	
 	@Column(name = "STATUS")
 	private Integer status;
 	
@@ -224,6 +227,14 @@ public class SourceleadBlogs {
 
 	public void setHref(String href) {
 		this.href = href;
+	}
+
+	public String getShortDescription() {
+		return shortDescription;
+	}
+
+	public void setShortDescription(String shortDescription) {
+		this.shortDescription = shortDescription;
 	}
 	
 }

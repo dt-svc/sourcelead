@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,17 +15,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationBankingDetails;
 import com.bis.sourcelead.entity.OrglocationOnboardDocuments;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.Timezone;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ModulesService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrglocationBankingDetailsService;
 import com.bis.sourcelead.service.OrglocationOnboardDocumentsService;
 import com.bis.sourcelead.service.RolesService;
@@ -66,6 +71,12 @@ public class CompanyOnboardController {
 	@Autowired
 	CommonUtil commonUtil;
 	
+	@Autowired
+	CountriesService countriesService;
+	
+	@Autowired
+	OrgLicenseSubscriptionService orgLicenseSubscriptionService;
+	
 	
 	
 		@RequestMapping(value = "/companyOnboard")
@@ -93,19 +104,29 @@ public class CompanyOnboardController {
 			
 			ModelAndView model = new ModelAndView();  
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			
 			if(StringUtils.isNotBlank(orgLocations.getIsCompanyOnboarded()) && orgLocations.getIsCompanyOnboarded().equalsIgnoreCase("N")) {
 			List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
-			List<Modules> modulesList = null;
-			List<Modules> requirementSubModulesList = null;
-			try {
-				modulesList = modulesService.getSourceLeadModules();
-				model.addObject("modulesList", modulesList);
-				requirementSubModulesList = modulesService.getRequirementSubModules();
-				model.addObject("requirementSubModulesList", requirementSubModulesList);
-			} catch (Exception e) {
-				e.printStackTrace();
+			
+			
+			List<OrgLicenseSubscription> subscriptionList = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByOrgId(org.getId());
+			List<String> orgSubscribedCountriesList = new ArrayList<>();
+			StringBuilder subscriptionCountries = new StringBuilder(); 
+			if(subscriptionList != null && !subscriptionList.isEmpty()) {
+				for(OrgLicenseSubscription subscription : subscriptionList) {
+					Countries subscriptionCountry = countriesService.getCountriesByCountryName(subscription.getCountry());
+					subscriptionCountries.append(subscriptionCountry.getCode2()).append(",");
+					orgSubscribedCountriesList.add(subscription.getCountry());
+				}
 			}
+			
+			 String subscribedCountries = subscriptionCountries.toString();
+			 subscribedCountries = subscribedCountries.substring(0,subscribedCountries.length()-1);
+			 
+			model.addObject("orgSubscribedCountriesList", orgSubscribedCountriesList);
+			model.addObject("subscribedCountries", subscribedCountries);
+			
 			model.addObject("timezoneList", timezoneList);
 			model.addObject("orgLocations", orgLocations);
 			model.setViewName("orgSettings");

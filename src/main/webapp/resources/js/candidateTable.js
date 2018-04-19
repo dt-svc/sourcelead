@@ -37,8 +37,27 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
       {
  		employmnetTypes.push($(this).val());
  	 });
- 	
-	  
+ 	 
+ 	var candidateFilterSkills = [];
+	 $('input:checkbox[name=candidateFilterSkills]:checked').each(function() 
+     {
+		 candidateFilterSkills.push($(this).val());
+	 });
+	 
+	 
+	 var availability = []
+	 $('input:checkbox[name=availability]:checked').each(function() 
+	     {
+	       availability.push($(this).val());
+		 });
+	 
+	 var candidateTypeFilter = []
+	 $('input:checkbox[name=candidateTypeFilter]:checked').each(function() 
+	     {
+		 candidateTypeFilter.push($(this).val());
+		 });
+	 
+	 
  	  var candTypeRadio = $('input[name=candidateType]');
  	  var candidateType = candTypeRadio.filter(':checked').val();
 	  
@@ -79,10 +98,10 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 	  		var formData = new FormData(form); 
 	  		var searchValue = $("#dataTableSearch").val();
 	  		searchValue = searchValue ? searchValue : "";
-	  		var url = sourceleadUrl+"/searchCandidate?"+_csrfParam+"="+_csrfToken+"&candidateStatus="+candidateStatus+"&searchValue="+searchValue+"&updatedDateRange="+upcandidateStatus+"&isAssociate="+isAssociate+"&candidateType="+candidateType+"&employmnetTypes="+employmnetTypes;
+	  		var url = sourceleadUrl+"/searchCandidate?"+_csrfParam+"="+_csrfToken+"&candidateStatus="+candidateStatus+"&searchValue="+searchValue+"&updatedDateRange="+upcandidateStatus+"&isAssociate="+isAssociate+"&candidateType="+candidateType+"&employmnetTypes="+employmnetTypes+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter;
 	  		url += "&"+$($('#candidatelist_form')[0]).serialize();
 	  		prepareCandidateList(url);
-	  		closePop();
+//	  		closePop();
 			return true;
 		 }else{ 
 				return false;
@@ -345,7 +364,7 @@ function cpagination(url){
                   } ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[10,'desc']],
+	    	"aaSorting": [[9,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,

@@ -4,10 +4,13 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class AddUserProfileDTO{
 	
 	private String id;
 	
+	@Required(desc="firstName")
 	private String firstName;
 	
 	private String staticPath;

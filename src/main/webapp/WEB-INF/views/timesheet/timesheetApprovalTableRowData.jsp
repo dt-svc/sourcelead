@@ -10,9 +10,8 @@
 	</c:if>
 	<c:if test="${timesheetSubmission.submissionStatus ne 'SUBMITTED FOR APPROVAL'}">
 		<td>
-		     <small class="positionRelative disbledCheckbox-timesheet">
-			<input type="checkbox" disabled="disabled">
-			<i class="fa fa-ban"></i>
+		     <small class="positionRelative">
+			<i class="fa fa-ban text-danger"></i>
 			</small>
 		</td>
 	</c:if>
@@ -69,7 +68,7 @@
     <c:if test="${!empty timesheetSubmission.tableFor && timesheetSubmission.tableFor == 'approver'}">
 		<td>
 			<div class="sm">
-				<a href="#" onclick="timesheetApprovalPopUpByProjectMemberId('${timesheetApprovalDTO.weekFrequency}','${timesheetSubmission.projectId}','${timesheetSubmission.projectMemberId}','${timesheetSubmission.masterCandidateId}','${timesheetSubmission.totalHours}','approver');">${timesheetSubmission.totalHours}/${timesheetSubmission.estimatedHours}</a>
+				<a href="#" id="popuplink" onclick="timesheetApprovalPopUpByProjectMemberId('${timesheetApprovalDTO.weekFrequency}','${timesheetSubmission.projectId}','${timesheetSubmission.projectMemberId}','${timesheetSubmission.masterCandidateId}','${timesheetSubmission.totalHours}','approver');">${timesheetSubmission.totalHours}/${timesheetSubmission.estimatedHours}</a>
 			</div>
 		</td>
 	</c:if>
@@ -108,3 +107,11 @@
 		<div  class="sm">--</div>
 	</td>
 </c:if>
+
+<script>
+  $(document).ready(function () {
+	  if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	  }
+	});
+</script>

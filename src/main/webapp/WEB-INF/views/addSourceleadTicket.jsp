@@ -192,10 +192,13 @@ $(function() {
 	}
 	function refershDocument(){
 		$("#0ticketdocFile").val('');
+		$("#sourceleadTicket_form input[data-id*=0ticketdocFile]").remove();
+
 	}
 </script>
 <script type="text/javascript">
 	function removeTicketAttachmentRow(rowId) {
+		$("#sourceleadTicket_form input[data-id*="+rowId+"ticketdocFile]").remove();
 		 document.getElementById("divAttachmentTicketRow"+rowId).style.display = 'none';
 		 document.getElementById("divAttachmentTicketRow"+rowId).value= '';
 		 var  rId = "divAttachmentTicketRow"+rowId;
@@ -229,10 +232,20 @@ $(function() {
 	 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateTicketAtteachment?${_csrf.parameterName}=${_csrf.token}&attachmentId="+documentId, 	   
-			    success: function(data) {
-			    	$("#ticketDocument"+documentId).remove();
-			    	$("#ticketDeletePopUp").empty();
-				 	$(".project_inn_mask").fadeOut(200);
+			    success: function(result) {
+			    	if (result && result.response === "INVALID_DATA") {
+		    		    showError(result.responseMessage);
+		    		} else if (result.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    		} else if (result.response === "SUCCESS") {
+		    			$("#ticketDocument"+documentId).remove();
+				    	$("#ticketDeletePopUp").empty();
+					 	$(".project_inn_mask").fadeOut(200);			 			
+		    		} else if (result.indexOf('Sign In') !== -1) {
+		    			location.replace(sourceleadUrl);
+		    		} else {
+		    		    showError("Operation failed, please try again");
+		    		}
 			    },
 	     });
  }
@@ -255,9 +268,20 @@ function saveTickt(){
 			 data: formData,
 	         processData: false,
 	         contentType:false, 
-			url : sourceleadUrl+ "/storeDepartment?${_csrf.parameterName}=${_csrf.token}",
+			url : sourceleadUrl+ "/storeSourceleadTicket?${_csrf.parameterName}=${_csrf.token}",
 			success : function(result) {
-				location.replace(sourceleadUrl+"/sourceleadTicketList");
+				if (result && result.response === "INVALID_DATA") {
+	    		    showError(result.responseMessage);
+	    		} else if (result.response === "AWKWARD") {
+	    		    location.href = "/errorPage";
+	    		} else if (result.response === "SUCCESS") {
+	    			location.replace(sourceleadUrl+"/sourceleadTicketList");			 			
+	    		} else if (result.indexOf('Sign In') !== -1) {
+	    			location.replace(sourceleadUrl);
+	    		} else {
+	    		    showError("Operation failed, please try again");
+	    		}
+				
 			},
 		});
 		return true;

@@ -20,7 +20,7 @@ window.onload = function() {
     </div>
    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Blog </div>
   </section>
-  <div class="content-area content-new clearfix tableStyles">
+  <div class="content-area content-new clearfix">
    <div class="timesheet_head minHeight50 list-borderright">
 		<ul>
 			<li><a href="/app/categoryList" title="Add Blog"><i class="fa fa-plus paddingRight"></i>Category</a></li>
@@ -57,7 +57,7 @@ function prepareBlogList(url){
 	    result = result +" <input type='text' placeholder='Search' id='blogTableSearch'/>";
 		result = result	+ '</div>';
 		result = result	+ '</div>';
-		result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
+		result = result	+ '<div class="">';
 		result = result + '<table id="blogListView" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
@@ -203,12 +203,24 @@ function deleteBlog(blogId) {
 		 $.ajax({  
 	          type : "POST",
 	          url: sourceleadUrl+"/removeSourceleadBlogByBlogId?"+tokenParamName+"="+tokenValue+"&blogId="+blogId,        
-	          success :function(data) {
+	          success :function(result) {
+	        	  
+	        	  if (result && result.response === "INVALID_DATA") {
+					    showError(result.responseMessage);
+					} else if (result.response === "AWKWARD") {
+					    location.href = "/errorPage";
+					} else if (result.response === "SUCCESS") {
+						location.replace(sourceleadUrl+"/blogs");
+					} else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+					    showError("Operation failed, please try again");
+					}
 
-					if(data != null && data != 'undefined' && data != ""){
+					/* if(data != null && data != 'undefined' && data != ""){
 	             		
 						 location.replace(sourceleadUrl+"/blogs");
-	               } 
+	               }  */
 	        },
 	          
 	     }); 

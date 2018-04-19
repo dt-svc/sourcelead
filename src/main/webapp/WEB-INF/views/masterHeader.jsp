@@ -24,6 +24,14 @@
 			}
  </script>
  
+ <script>
+$(document).ready(function(){
+	if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	 }
+});
+</script>
+ 
 <meta charset="utf-8">
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
@@ -91,7 +99,7 @@
 	<script src="/resources/reports/exporting.js"></script> 
 </c:if>
 
-<c:if test='${viewPage == "reports/requirementStageReports"}'>
+<c:if test='${viewPage == "reports/requirementStageReports" || viewPage == "reports/usersUsageReportList"}'>
 	<script src="/resources/reports/amcharts.js?staticTime=${staticTime}"></script>
 	<script src="/resources/reports/piechart.js?staticTime=${staticTime}"></script>
 	<script src="/resources/reports/export.min.js?staticTime=${staticTime}"></script>
@@ -555,11 +563,17 @@ function preventTabkey(e){
 					<a title="Contacts" href="<c:url value='${sourceleadUrl}/referRequirementList'/>"><i class="fa fa-address-book-o"></i></a>
 	        </li>
             
-            <sec:authorize access="hasRole('ROLE_DASHBOARD_REPORTS')">
+            <sec:authorize access="hasAnyRole('ROLE_DASHBOARD_REPORTS','ROLE_ENROLL_ORG')"> 
 	            <li class="reportsH">
 					<a title="Reports" href="<c:url value='${sourceleadUrl}/reportsDashboard'/>"><i class="fa fa-pie-chart"></i></a>
 	            </li>
-            </sec:authorize>
+             </sec:authorize> 
+            
+            <%-- <sec:authorize access="hasRole('ROLE_ENROLL_ORG')">
+	            <li class="reportsH">
+					<a title="Usage Reports" href="${appPath}/userUsageReport"><i class="fa fa-pie-chart"></i></a>
+	            </li>
+            </sec:authorize> --%>
             
             <sec:authorize access="hasAnyRole('ROLE_MAIL_BOX','ROLE_HOTLIST_CAMPAIGN')">
             	<li><a href="<c:url value='${sourceleadUrl}/mailBox/mails'/>" title="Mailbox" id="mailbox"><i class="fa fa-envelope"></i>  <span class="label label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount > 0 ?SourceLeadWeb_unReadMailsCount : ''}</span> </a></li>
@@ -703,6 +717,10 @@ function preventTabkey(e){
 	                     <li><a href="<c:url value='${sourceleadUrl}/loadScheduleMaintenance'/>" id="scheduleMPopup"><i class="fa fa-cubes" aria-hidden="true"></i>Schedule Maintenance</a></li>
 	                     </sec:authorize>
 	                     
+	                     <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
+	                        <li><a href="<c:url value="/app/orgLicenseSubscriptionList" />"><i class="fa fa-location-arrow" aria-hidden="true"></i>License Upgrade</a></li>
+	                     </c:if>
+	                     
 	                     <sec:authorize access="!hasRole('ROLE_ENROLL_ORG')"> 
 	                      <li><a id="subMenu" href="javascript:void(0)"><i class="fa fa-upload"></i>Bulk Import<i class="fa fa-caret-down arrRight"></i></a>
 						 	<div class="subMenuView">
@@ -752,8 +770,13 @@ function preventTabkey(e){
 								</div>
 							 </li> 	
 						   </sec:authorize>
-						   
-						   <li><a href="<c:url value="/app/letterHeadList" />"><i class="fa fa-file" aria-hidden="true"></i>Letter Head</a></li>
+
+					   <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
+	                     <li><a href="<c:url value='${sourceleadUrl}/guestOrgActionRoles'/>" ><i class="fa fa-key" aria-hidden="true"></i>Guest Action Roles</a></li>
+                       </sec:authorize>
+					   
+					   <li><a href="<c:url value="/app/letterHeadList" />"><i class="fa fa-file" aria-hidden="true"></i>Letter Head</a></li>
+
 	              </ul>
 	            </div>
 	          </li>
@@ -806,9 +829,9 @@ function preventTabkey(e){
   </div>
   
   <!--  Alert message for Switching Locaction -->
-  <div class="location-alert alert alert-danger alert-dismissable" id="locationAlert">
+  <div class="location-alert alert alert-danger alert-dismissable zInPop" id="locationAlert">
     <a href="#" class="loc-alertclose close">&times;</a>
-    <strong>Alert !</strong> Your are not able to Save Required data is Missing.
+    <strong>Alert !</strong> <span>Your are not able to Save Required data is Missing.</span>
   </div>
  <!--  Alert message for Switching Locaction -->
   
@@ -1101,26 +1124,31 @@ function notificationStatusAsRead(){
 <script type="text/javascript">
 	function saveTask() {
 		if ($('#task_form').validate(false, validationSettings)) {
-			var frm = $('#task_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var jsonData = encodeURIComponent(con);
+			 var form = $('#task_form')[0];
+	         var formData = $($('#task_form')[0]).serialize();
 			var sourceleadUrl = '${sourceleadUrl}';
-			$.ajax({
-						type : "POST",
-						url : sourceleadUrl+ "/storeTasks?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
-						success : function(result) {
-							taskwidget();
-							    document.getElementById("assignedTasksDivId").className = 'active'
-								document.getElementById("closedTasksDivId").removeAttribute("class")
-								document.getElementById("myTaskDivId").removeAttribute("class")
-								$("#closed-task, #my-task").hide();
-							    $("#other-task").show().css("opacity", "1");
-							assignedTasksList('assignedTasks');
-							/* tasksList('myTask');
-							assignTasksList(); */
-						},
-					});
+			$.post(sourceleadUrl + "/storeTasks?" + tokenParamName + "=" + tokenValue + "", formData, function(result) {
+				
+				if (result && result.response === "INVALID_DATA") {
+				    showError(result.responseMessage);
+				}else if (result.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				}else if (result.response === "SUCCESS") {
+					taskwidget();
+				    document.getElementById("assignedTasksDivId").className = 'active'
+					document.getElementById("closedTasksDivId").removeAttribute("class")
+					document.getElementById("myTaskDivId").removeAttribute("class")
+					$("#closed-task, #my-task").hide();
+				    $("#other-task").show().css("opacity", "1");
+				    assignedTasksList('assignedTasks');
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
+			
+			});
+	
 			return true;
 		} else {
 			return false;
@@ -1893,13 +1921,25 @@ function saveInviteCompany() {
 					  data: formData,
 					url : sourceleadUrl+ "/storeInviteCompany?${_csrf.parameterName}=${_csrf.token}",
 					success : function(result) {
-						 $(".modalInvite").fadeOut();
-						  $(".sideMask").fadeOut(); 
-						  $("#inviteCompanyId").removeAttr("style");
-	            		  $("#inviteCompanyId").css({ display: "block" });
-	        			  $("#inviteCompanyMsgDiv").html("Thank you for referring sourcelead");
-	        			  companyMsgFadeinFunction();
-	        			  flushInviteCompany();
+						
+						if (result && result.response === "INVALID_DATA") {
+						    showError(result.responseMessage);
+						} else if (result.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (result.response === "SUCCESS") {
+							  $(".modalInvite").fadeOut();
+							  $(".sideMask").fadeOut(); 
+							  $("#inviteCompanyId").removeAttr("style");
+		            		  $("#inviteCompanyId").css({ display: "block" });
+		        			  $("#inviteCompanyMsgDiv").html("Thank you for referring sourcelead");
+		        			  companyMsgFadeinFunction();
+		        			  flushInviteCompany();
+						} else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
+						}
+	        			  
 					},
 				});
 		return true;

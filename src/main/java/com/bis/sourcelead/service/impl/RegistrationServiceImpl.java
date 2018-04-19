@@ -33,12 +33,12 @@ import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesCategoryDao;
 import com.bis.sourcelead.dao.OrgDao;
-import com.bis.sourcelead.dao.OrgRequestDao;
+import com.bis.sourcelead.dao.TabsDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
-import com.bis.sourcelead.dto.CompanyRegistrationDTO;
 import com.bis.sourcelead.dto.CrowdSourcingUserRegistrationDTO;
 import com.bis.sourcelead.dto.EmployerRegistrationDTO;
+import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -51,6 +51,9 @@ import com.bis.sourcelead.entity.ExpensesCategory;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLicenseSubscription;
+import com.bis.sourcelead.entity.OrgLicenseSubscriptionPrice;
+import com.bis.sourcelead.entity.OrgLicenseSubscriptionTypes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRequest;
 import com.bis.sourcelead.entity.PasswordResets;
@@ -64,6 +67,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
+import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -78,6 +82,9 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExpensesCategoryService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.MasterCandidateService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionPriceService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionTypesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRequestService;
 import com.bis.sourcelead.service.OrgService;
@@ -97,6 +104,7 @@ import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -210,20 +218,80 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Autowired
 	OrgRequestService orgRequestService;
 	
+	@Autowired
+	OrgLicenseSubscriptionService orgLicenseSubscriptionService;
+	
+	@Autowired
+	LookUpDataService lookupDataService;
+	
+	@Autowired
+	OrgLicenseSubscriptionPriceService orgLicenseSubscriptionPriceService;
+	
+	@Autowired
+	TabsDao tabsDao;
+	 
+	@Autowired
+	OrgLicenseSubscriptionTypesService orgLicenseSubscriptionTypesService;
 	
 	protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
 	}
 	
+	
 	@Override
-	public void addRegistration(Registration registration,User loginUser,String modules,String subModules, Long orgLocationsId,CandidateDTO candidateDTO) throws Exception {
+	public OrgLocationDTO addCompanyRegistration(Registration registration, User loginUser, Long orgLocationsId,
+			CandidateDTO candidateDTO) throws Exception {
 		
-		String[] registredModules =  modules.split(",");
+		OrgLocationDTO orgLocationDTO = new OrgLocationDTO();
+		
+		Org org = getOrgDetails(registration);
+		try {
+			orgService.addOrganization(org);
+			orgLocationDTO.setOrgId(org.getId());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		String password = "";
+		User user = getUserDetails(registration,password);
+		userService.addUser(user);
+		OrgLocations orgLocations = getOrgLocationsDetails(registration, org, user);
+		orgLocations.setRegistrationStatus("Draft");
+		Timezone timeZone = timeZoneService.getTimezone(Long.parseLong(registration.getTimeZone()));
+		orgLocations.setTimezone(timeZone);
+		try {
+			orgLocationService.updateOrgLocations(orgLocations);
+			orgLocationDTO.setId(orgLocations.getId());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		OrgLicenseSubscription orgLicenseSubscription =  getOrgLicenseSubscriptionDetails(registration, org, user,orgLocations,loginUser);
+		try {
+			orgLicenseSubscriptionService.saveOrgLicenseSubscription(orgLicenseSubscription);
+			orgLocationDTO.setOrgLinceseSubscriptionId(orgLicenseSubscription.getId());
+			OrgLicenseSubscriptionPrice orgLicenseSubscriptionPrice = orgLicenseSubscriptionPriceService.getOrgLicenseSubscriptionPriceBySubscriptionTypeAndUserType(Long.parseLong(registration.getOrgEnrollment()), Long.parseLong(registration.getUserSubscription()));
+			   if(orgLicenseSubscriptionPrice != null) {
+				   orgLocationDTO.setSubscriptionRate(orgLicenseSubscriptionPrice.getSubscriptionRate());
+			   }else {
+				   orgLocationDTO.setSubscriptionRate(0d);
+			   }
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return orgLocationDTO;
+	}
+	
+	
+	@Override
+	public void addRegistration(Registration registration,User loginUser,Long orgLocationsId,CandidateDTO candidateDTO) throws Exception {
+		
 		Org org = null;
 		//For Saving of Org Details
 		
 		if(isNullOrEmpty(registration.getRegisteredOrgId())){
-			org = getOrgDetails(registration,subModules,modules);
+			org = getOrgDetails(registration);
 			try {
 				orgService.addOrganization(org);
 			} catch (Exception e) {
@@ -265,7 +333,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		}
 		
 		//For saving of orgLocation Details which location has choose in the registration
-		OrgLocations orgLocations = getOrgLocationsDetails(registration, org, user,subModules,modules);
+		OrgLocations orgLocations = getOrgLocationsDetails(registration, org, user);
+		orgLocations.setRegistrationStatus("Registered");
 		Timezone timeZone = timeZoneService.getTimezone(Long.parseLong(registration.getTimeZone()));
 		orgLocations.setTimezone(timeZone);
 		try {
@@ -335,7 +404,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		commonUtil.saveDefaultContractTemplate(org,orgLocations,user," Default Client SOW Template",Constants.Client_SOW);
 		commonUtil.saveDefaultContractTemplate(org,orgLocations,user," Default Vendor SOW Template",Constants.Vendor_SOW);
 		commonUtil.saveDefaultContractTemplate(org,orgLocations,user," Default NDA Template",Constants.NDA);
-		
+
 		commonUtil.saveDefaultEmployeeVerificationTemplate(org,orgLocations,user,"Default Employee Verification Template");
 //		saveDefaultContractTemplate(org,orgLocations,user," Default NCA Template","NSA");
 		
@@ -395,57 +464,56 @@ public class RegistrationServiceImpl implements RegistrationService{
 
 	
 	
-	private Org getOrgDetails(Registration registration,String subModules,String modules){
+	private Org getOrgDetails(Registration registration){
 		
-		Org org = new Org();
+		Org org = null;
+		if(StringUtils.isNotBlank(registration.getRegisteredOrgId())) {
+			try {
+				org = orgService.findOrgByID(Long.parseLong(registration.getRegisteredOrgId()));
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}else {
+			 org = new Org();
+		}
+		
 		org.setOrgName(registration.getCompanyName());
 		org.setWebSite(convertWebsite(registration.getWebsite()));
 		org.setOrgType("Company");
 		org.setOrgCode(SourceLeadRandomCodeHelper.generateRandomOrgCode());
 		org.setStatus(Status.ACTIVE);
-		
-		/*String orgModules = "";
-		if(!isNullOrEmpty(subModules)){
-			String[] registeredSubModules =  subModules.split(",");
-			for(int i=0; i<registeredSubModules.length; i++){
-					orgModules = orgModules+registeredSubModules[i]+",";
-			}
-		}
-		
-		if(!isNullOrEmpty(modules)){
-			String[] registeredModules =  modules.split(",");
-			for(int i=0; i<registeredModules.length; i++){
-				if(Long.parseLong(registeredModules[i]) != 1L){
-					orgModules = orgModules+registeredModules[i]+",";
-				}
-			}
-		}
-		orgModules = orgModules.substring(0, orgModules.length()-1);
-		org.setModulesId(orgModules);*/
-		
 		org.setCreatedBy("sladmin");
-		
 		org.setCreatedDate(new Date());
 		return org;
 	}
 	
 	private User getUserDetails(Registration registration,String password){
-		User user = new User();
+		User user = null;
+		user = userService.findByUserName(registration.getEmail());
+		if(user == null) {
+			user = new User();
+			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
+			user.setIsVerified(Constants.NO);
+			user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
+			user.setUrlSentTime(new Date());
+			user.setLoginSecurity(Constants.NO);
+			user.setRegistrationType("Newly Registered");
+		}
 		user.setFirstName(registration.getFirstName());
 		user.setLastName(registration.getLastName());
 		user.setEmail(registration.getEmail());
 		user.setUserName(registration.getEmail());
-		user.setPassword(sourceleadPasswordEncoder.encode(password));
-		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
+		if(StringUtils.isNotBlank(password)) {
+			user.setPassword(sourceleadPasswordEncoder.encode(password));
+		}
+		
 		user.setMobilePhone(registration.getMobilePhone());
 		user.setCreatedBy(user.getUserCode());
 		user.setCreatedDate(new Date());
 		
-		user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
-		user.setUrlSentTime(new Date());
-		user.setIsVerified(Constants.NO);
-		user.setLoginSecurity(Constants.NO);
-		user.setRegistrationType("Newly Registered");
+		
 		return user;
 	}
 	
@@ -468,7 +536,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	    	projects.setStartDate(projStartDate);
 
 	    	projects.setInvoiceFrequency(Constants.WEEKLY);
-	    	projects.setTimesheetFrequency(Constants.WEEKLY);
+	    	projects.setTimesheetFrequency(Constants.MONTHLY);
 	    	projects.setProjectStatus(Project_Status.INPROGRESS);
 	    	projects.setIsPrimary(1);
 	    	projects.setCreatedDate(new Date());
@@ -525,9 +593,16 @@ public class RegistrationServiceImpl implements RegistrationService{
 		}
 	 
 	 
-	private OrgLocations getOrgLocationsDetails(Registration registration,Org org,User user,String subModules,String modules ) throws Exception{
+	private OrgLocations getOrgLocationsDetails(Registration registration,Org org,User user) throws Exception{
 		
-		OrgLocations orgLocations = new OrgLocations();
+		OrgLocations orgLocations = null;
+		
+		if(StringUtils.isNotBlank(registration.getOrgLocationId())) {
+			orgLocations = orgLocationService.getOrgLocations(Long.parseLong(registration.getOrgLocationId()));
+		}else {
+			orgLocations = new OrgLocations();
+			orgLocations.setLocationCode(SourceLeadRandomCodeHelper.generateRandomOrgLocationCode());
+		}
 		orgLocations.setCountry(registration.getCountry());
 		orgLocations.setState(registration.getState());
 		orgLocations.setCity(registration.getCity());
@@ -541,7 +616,6 @@ public class RegistrationServiceImpl implements RegistrationService{
 
 		orgLocations.setLoginSecurity(Constants.NO);
 		Countries countries = countriesService.getCountriesByCountryName(registration.getCountry());
-		orgLocations.setLocationCode(SourceLeadRandomCodeHelper.generateRandomOrgLocationCode());
 		orgLocations.setCreatedBy(user.getUserCode());
 		orgLocations.setCreatedDate(new Date());
 		orgLocations.setOrgLocationName(registration.getCompanyName().trim());
@@ -564,38 +638,67 @@ public class RegistrationServiceImpl implements RegistrationService{
 			orgLocations.setIsPrimary(Constants.YES);
 		}
 		
-		String orgModules = "";
-		
-		if(!isNullOrEmpty(subModules)){
-			String[] registeredSubModules =  subModules.split(",");
-			for(int i=0; i<registeredSubModules.length; i++){
-					orgModules = orgModules+registeredSubModules[i]+",";
-			}
-		}
-		
-		if(!isNullOrEmpty(modules)){
-			String[] registeredModules =  modules.split(",");
-			for(int i=0; i<registeredModules.length; i++){
-				if(Long.parseLong(registeredModules[i]) != 1L){
-					orgModules = orgModules+registeredModules[i]+",";
-				}
-			}
-		}
-		
-		
-		orgModules = orgModules.substring(0, orgModules.length()-1);
-		
-		if(!isNullOrEmpty(subModules)){
-			String[] registeredModules =  modules.split(",");
-			if(registeredModules.length == 1) {
-				orgModules = orgModules+","+Constants.MODULE_TIMESHEET;
-			}
-		}
-		
-		orgLocations.setModulesId(orgModules);
-		
+		orgLocations.setModulesId("2,3,4");
 		
 		return orgLocations;
+	}
+	
+	
+	private OrgLicenseSubscription getOrgLicenseSubscriptionDetails(Registration registration,Org org,User user,OrgLocations orgLocations,User loginUser) throws Exception{
+		OrgLicenseSubscription orgLicenseSubscription = null;
+		if(StringUtils.isNotBlank(registration.getOrgLinceseSubscriptionId())) {
+			orgLicenseSubscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionById(Long.parseLong(registration.getOrgLinceseSubscriptionId()));
+		}else {
+			orgLicenseSubscription = new OrgLicenseSubscription();
+			orgLicenseSubscription.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		}
+		orgLicenseSubscription.setOrg(org);
+		orgLicenseSubscription.setCountry(registration.getCountry());
+		
+		OrgLicenseSubscriptionTypes subscriptionType = new OrgLicenseSubscriptionTypes();
+		subscriptionType.setId(Long.parseLong(registration.getOrgEnrollment()));
+		orgLicenseSubscription.setSubscriptionType(subscriptionType);
+		
+		OrgLicenseSubscriptionTypes userSubscriptionType = new OrgLicenseSubscriptionTypes();
+		userSubscriptionType.setId(Long.parseLong(registration.getUserSubscription()));
+		orgLicenseSubscription.setUserSubscriptionType(userSubscriptionType);
+		
+		OrgLicenseSubscriptionTypes storageSubscriptionType = new OrgLicenseSubscriptionTypes();
+		storageSubscriptionType.setId(Long.parseLong(registration.getDataStorage()));
+		orgLicenseSubscription.setStorageSubscriptionType(storageSubscriptionType);
+		
+		orgLicenseSubscription.setCreatedBy(loginUser);
+		orgLicenseSubscription.setCreatedDate(new Date());
+		orgLicenseSubscription.setUpdatedBy(loginUser);
+		orgLicenseSubscription.setUpdatedDate(new Date());
+		orgLicenseSubscription.setStatus(1);
+		
+		Date subscriptionDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),registration.getSubscriptionDate());
+		subscriptionDate = CalendarUtil.getDateTimeForGivenTimeZone(orgLocations.getTimezone().getTimeZoneId(), subscriptionDate, orgLocations.getDateFormat());
+		orgLicenseSubscription.setFromDate(subscriptionDate);
+		
+		orgLicenseSubscription.setTimezone(orgLocations.getTimezone());
+		
+		Calendar toDate = Calendar.getInstance();
+		toDate.setTime(subscriptionDate);    
+	    
+		OrgLicenseSubscriptionTypes subscriptionTypes = orgLicenseSubscriptionTypesService.getOrgLicenseSubscriptionTypesById(Long.parseLong(registration.getOrgEnrollment()));
+		
+	    if(subscriptionTypes.getName().equalsIgnoreCase("Free Trail") || subscriptionTypes.getName().equalsIgnoreCase("1 Month")) {
+	    	toDate.add(Calendar.MONTH, +1); 
+	    }else if(subscriptionTypes.getName().equalsIgnoreCase("6 Months")) {
+	    	toDate.add(Calendar.MONTH, +6); 
+	    }else if(subscriptionTypes.getName().equalsIgnoreCase("1 Year")) {
+	    	toDate.add(Calendar.YEAR, +1); 
+	    }else if(subscriptionTypes.getName().equalsIgnoreCase("2 Years")) {
+	    	toDate.add(Calendar.YEAR, +2); 
+	    }
+	    
+	    Date subscriptionToDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(),toDate.getTime());
+	    subscriptionToDate = CalendarUtil.getDateTimeForGivenTimeZone(orgLocations.getTimezone().getTimeZoneId(), subscriptionToDate, orgLocations.getDateFormat());
+		orgLicenseSubscription.setToDate(subscriptionToDate);
+	    
+		return orgLicenseSubscription;
 	}
 	
 	private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
@@ -661,48 +764,67 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 	
 	public void saveOrgBasedRoles(Org org,OrgLocations orgLocations,User user) throws Exception{
-		List<SourceleadRoles> rolesList = sourceleadRolesService.getSourceleadRoles();
-		if(null != rolesList){
-			for(SourceleadRoles roles : rolesList){
-				Roles orgRoles = new Roles();
-				orgRoles.setRoleName(roles.getRoleName());
-				orgRoles.setDisplayName(roles.getDisplayName());
-				orgRoles.setOrgLocations(orgLocations);
-				RoleHierarchy roleHierarchy = roleHierarchyService.getRoleHierarchyByHierarchyLevelAndOrgLocationId(roles.getRoleHierarchy().getHierarchyLevel(), orgLocations.getId());
-				orgRoles.setRoleHierarchy(roleHierarchy);
-				orgRoles.setOrg(orgLocations.getOrg());
-				orgRoles.setDefaultRole(1);
-				StringBuilder strbul  = new StringBuilder();
+		
+		OrgLicenseSubscription orgLicenseSubscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByOrgIdAndCountry(org.getId(), orgLocations.getCountry());
 				
-				List<Long> roleActonsList = new ArrayList<Long>();
-				if(null != roles.getActionId()){
-					for (String s : roles.getActionId().split(",")){
-						 roleActonsList.add(Long.parseLong(s));
-					 }
-				}
+				List<Long> tabsIds = new ArrayList<>();
+				String[] registeredTabs = orgLicenseSubscription.getSubscriptionTabs().split(",");
 				
-				List<SourceleadActions> sourceLeadActionsList =  sourceleadActionsService.getAllSourceleadActionsByOrgLocationId(orgLocations);
-				for(SourceleadActions actions : sourceLeadActionsList){
-					if(roleActonsList.contains(actions.getId())){
-						 strbul.append(actions.getId()).append(",");
+				for(int i=0; i<registeredTabs.length; i++) {
+					List<Tabs> childTabsList = tabsDao.getClildTabsListByTabId(Long.valueOf(registeredTabs[i]));
+					if(childTabsList.size() > 0) {
+						for(Tabs childTabs : childTabsList) {
+							tabsIds.add(childTabs.getId());
+						}
+					}else {
+						tabsIds.add(Long.valueOf(registeredTabs[i]));
 					}
 				}
 				
-				String actionId = strbul.toString();
+				List<SourceleadRoles> rolesList = sourceleadRolesService.getSourceleadRoles();
+				List<SourceleadActions> sourceLeadActionsList =  sourceleadActionsService.getAllSourceleadActionsByTabsList(tabsIds);
 				
-				if(!isNullOrEmpty(actionId)){
-					actionId = actionId.substring(0, actionId.length()-1);
-					orgRoles.setActionId(actionId);
-				}else{
-					orgRoles.setActionId(null);
+				if(null != rolesList){
+					for(SourceleadRoles roles : rolesList){
+						Roles orgRoles = new Roles();
+						orgRoles.setRoleName(roles.getRoleName());
+						orgRoles.setDisplayName(roles.getDisplayName());
+						orgRoles.setOrgLocations(orgLocations);
+						RoleHierarchy roleHierarchy = roleHierarchyService.getRoleHierarchyByHierarchyLevelAndOrgLocationId(roles.getRoleHierarchy().getHierarchyLevel(), orgLocations.getId());
+						orgRoles.setRoleHierarchy(roleHierarchy);
+						orgRoles.setOrg(orgLocations.getOrg());
+						orgRoles.setDefaultRole(1);
+						StringBuilder strbul  = new StringBuilder();
+						
+						List<Long> roleActonsList = new ArrayList<Long>();
+						if(null != roles.getActionId()){
+							for (String s : roles.getActionId().split(",")){
+								 roleActonsList.add(Long.parseLong(s));
+							 }
+						}
+						
+						
+						for(SourceleadActions actions : sourceLeadActionsList){
+							if(roleActonsList.contains(actions.getId())){
+								 strbul.append(actions.getId()).append(",");
+							}
+						}
+						
+						String actionId = strbul.toString();
+						
+						if(!isNullOrEmpty(actionId)){
+							actionId = actionId.substring(0, actionId.length()-1);
+							orgRoles.setActionId(actionId);
+						}else{
+							orgRoles.setActionId(null);
+						}
+						
+						orgRoles.setStatus(roles.getStatus().toString());
+						orgRoles.setCreatedBy(user.getUserCode());
+						orgRoles.setCreatedDate(new Date());
+						rolesService.storeRoles(orgRoles);
+					}
 				}
-				
-				orgRoles.setStatus(roles.getStatus().toString());
-				orgRoles.setCreatedBy(user.getUserCode());
-				orgRoles.setCreatedDate(new Date());
-				rolesService.storeRoles(orgRoles);
-			}
-		}
 		
 	}
 	
@@ -957,6 +1079,11 @@ public class RegistrationServiceImpl implements RegistrationService{
 			
 			orgUser.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			orgUser.setUpdatedDate(new Date());
+			orgUser.setVerificationUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			orgUser.setIsVerified(Constants.NO);
+			user.setUrlSentTime(new Date());
+			user.setLoginSecurity(Constants.NO);
+			user.setRegistrationType("Newly Registered");
 			userService.addUser(orgUser);
 			userRole.setIsPrimary(1);
 			
@@ -2124,5 +2251,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		Boolean flag = orgRequestService.validateOrgRequestCompanyNameByName(companyName);
 		return flag;
 	}
+
+
 
 }

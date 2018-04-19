@@ -250,6 +250,10 @@
 	</section>  
 </div>
 
+					<div class="location-alert alert alert-danger alert-dismissable zInPop" id="locationAlert">
+    <a href="#" class="loc-alertclose close">&times;</a>
+    <strong>Alert !</strong> <span>Your are not able to Save Required data is Missing.</span>
+  </div>
 
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
  <script type="text/javascript" src="/resources/js/jquery-1.11.0.min.js?staticTime=${staticTime}"></script>
@@ -278,6 +282,9 @@
 				$this.next().css({'width': '100%'});
 
 });
+			  $(".loc-alertclose").click(function(){
+					 $(".location-alert").fadeOut();
+				})
 </script> 
 
 <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
@@ -293,23 +300,32 @@
 	         }; 
 	 
 	 if ($('#offCandidate_form').validate(false, validationSettings)){ 
-	        
 	        var formData = getFormData1("offCandidate_form");
-	       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	       	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	          $.ajax({
 		    	type: "POST",
 		    	data: formData,
 		        processData: false,
 		        contentType:false,
 		    	 url: sourceleadUrl+"/saveOffboardingCandidateStep1Details?${_csrf.parameterName}=${_csrf.token}", 
-		        success: function(data) {
-		        	
-		        	location.replace(sourceleadUrl+"/offboardStep2");  
+		        success: function(response) {
+		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+      	    		    showError(response.responseMessage);
+      	    		    $("#loading").removeAttr('style');
+      	    		}
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		location.replace(sourceleadUrl+"/offboardStep2"); 
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
 		        },
 		    });  
 	        return true;
-		
-	  }else{
+	  } else {
 		return false;
 	  }
  }
@@ -317,7 +333,7 @@
  $('body').on('blur', '#offCandidate_form', function() {
 		$("#offCandidate_form").showHelpOnFocus();
 		$("#offCandidate_form").validateOnBlur(false, validationSettings);  
-	});
+ });
  </script>
  
  <script src="/resources/js/slead-common.js"></script>

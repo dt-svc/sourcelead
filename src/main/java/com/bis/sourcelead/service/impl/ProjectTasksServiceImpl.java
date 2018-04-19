@@ -417,12 +417,15 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 			 }else{
 				 globalVarsMap.put("LoginUser",loginUser.getFirstName());
 			}
-		      String priority=tasks.getPriority().getName();
+		      
 		      if( projectAssignTask.getProjectMemberId().getEmpName()!=null && !"".equalsIgnoreCase( projectAssignTask.getProjectMemberId().getEmpName())){
 				 globalVarsMap.put("Assignedmember",projectAssignTask.getProjectMemberId().getEmpName());}
-		         if( priority!=null && !"".equalsIgnoreCase(priority)){
-				 globalVarsMap.put("Priority",priority);
-		         }		         
+		         if(tasks.getPriority() != null) {
+		        	 String priority=tasks.getPriority().getName();
+			         if( priority!=null && !"".equalsIgnoreCase(priority)){
+					 globalVarsMap.put("Priority",priority);
+			         } 
+		         }
 				 if(tasks.getSeverity()!=null ){
 				 globalVarsMap.put("Severity",tasks.getSeverity().getName());
 				 }				 
@@ -484,10 +487,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		 Set<ProjectAssignTask> projectAssignTaskSet = new HashSet<>();
 		 
 		if(projectTasksDTO != null && projectTasksDTO.getAssignTaskId() != null){
-			String assignId =null;
-				List<Long> jsonArray = projectTasksDTO.getAssignTaskId();
-				assignId = jsonArray.toString().replaceAll("\\[", "").replaceAll("\\]","").trim();
-			String[] assign = assignId.split(",");
+			String[] assign = projectTasksDTO.getAssignTaskId().split(",");
 			for(String memberId : assign)
 			{
 				ProjectAssignTask assignTask = new ProjectAssignTask();
@@ -888,7 +888,11 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	
 	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, int column, ProjectTasks projectTassks, OrgLocations orgLocations) {
 		
-		 writeRow.createCell(0).setCellValue(projectTassks.getGeneratedId() +"-"+ projectTassks.getTaskName()); 
+		if(projectTassks.getGeneratedId() != null) {
+			 writeRow.createCell(0).setCellValue(projectTassks.getGeneratedId() +"-"+ projectTassks.getTaskName()); 
+		}else {
+			 writeRow.createCell(0).setCellValue(projectTassks.getTaskName()); 
+		}
 
 		 //Task Type
 		 writeRow.createCell(1).setCellValue(projectTassks.getTaskTypes()); 
@@ -972,6 +976,16 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
         style.setFont(font);
         String headers [] = Constants.PROJECT_TASKS_EXCEL_HEADERS;
 		return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
+	}
+
+	@Override
+	public ProjectTasks getProjectTaskByleaveTypeId(long leaveTypeId,Long projectId) {
+		return tasksDao.getProjectTaskByleaveTypeId(leaveTypeId,projectId);
+	}
+
+	@Override
+	public List<ProjectTasks> getTasksListByLeaveType(Long levaTypeId) throws Exception {
+		return tasksDao.getTasksListByLeaveType(levaTypeId);
 	}
 	
 	

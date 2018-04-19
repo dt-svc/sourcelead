@@ -19,7 +19,7 @@ public interface InvoiceDao{
 	
 	Invoice getInvoicetById(Long invoiceId) throws Exception;
 	
-	public Boolean getInvoiceByInvoiceId(String invoiceId, Long orgLocationsId) throws Exception;
+	public Boolean getInvoiceByInvoiceId(String invoiceId, Long orgLocationsId,  String invoiceType) throws Exception;
 
 	Invoice getInvoicetByParentInvoiceId(Long parentInvoiceId) throws Exception;
 	

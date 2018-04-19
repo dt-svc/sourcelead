@@ -224,6 +224,9 @@ public class OrgLocations implements Serializable{
 	
 	@Column(name = "RECOMMENDED_KEYWORDS_PERCENT")
 	private Integer recommendedKeywordsPercent;
+	
+	@Column(name = "REGISTRATION_STATUS")
+	private String registrationStatus;
     
     @Transient
     private String orgName;
@@ -949,5 +952,14 @@ public class OrgLocations implements Serializable{
 	public void setRecommendedKeywordsPercent(Integer recommendedKeywordsPercent)
 	{
 		this.recommendedKeywordsPercent = recommendedKeywordsPercent;
+	}
+
+
+	public String getRegistrationStatus() {
+		return registrationStatus;
+	}
+
+	public void setRegistrationStatus(String registrationStatus) {
+		this.registrationStatus = registrationStatus;
 	}
 }

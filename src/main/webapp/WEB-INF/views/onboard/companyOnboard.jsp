@@ -91,6 +91,7 @@ right: 15px;
 </style>
 
 
+
 <div class="wraper"> 
   <!--   Welcome Screens   -->
   
@@ -430,9 +431,9 @@ right: 15px;
   </div>
   
   <!--  Alert message for Switching Locaction -->
-  <div class="location-alert alert alert-danger alert-dismissable" id="locationAlert">
+ <div class="location-alert alert alert-danger alert-dismissable zInPop" id="locationAlert">
     <a href="#" class="loc-alertclose close">&times;</a>
-    <strong>Alert !</strong> Your are not allowded to access this Location.
+    <strong>Alert !</strong> <span>Your are not able to Save Required data is Missing.</span>
   </div>
 	
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
@@ -785,13 +786,27 @@ var validationSettings = {
 		        		document.getElementById("errorImage").style.display=""; 
              		}else{
              		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	          		
              		$.ajax({
 	              	      type: "POST",
 	              	      data: formData,
 	                    	  url: sourceleadUrl+"/saveOrgSettings?"+tokenParamName+"="+tokenValue+"",
 	                      	success: function(result) {
+	                      		if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+	            	    		    showError(result.responseMessage);
+	            	    		    $("#loading").removeAttr('style');
+	            	    		}
+	                      		else if (result.response === "AWKWARD") {
+	            	    		    location.href = "/errorPage";
+	            	    		}
+	                      		else if (result.response === "SUCCESS") {
 	                      		location.replace(sourceleadUrl+"/companyOnboardLocations");	
+	                      		}
+	                      		else if (result.indexOf('Sign In') !== -1) {
+	            					location.replace(sourceleadUrl);
+	            				} else {
+	            				    showError("Operation failed, please try again");
+	            				    $("#loading").removeAttr('style');
+	            				}
 	  			        },  
 	                  }); 
              		}

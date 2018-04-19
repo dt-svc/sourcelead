@@ -16,7 +16,7 @@ window.onload = function() {
     <div class="pull-left">
       <h2>Category List</h2>
     </div>
-   <%--  <div class="pull-right brud-crum"><a href="<c:url value='/app/categoryList'/>">CategoryList</a>&raquo;Category</div> --%>
+   <div class="pull-right brud-crum"><a href="<c:url value='/app/blogs'/>">Blogs</a> &raquo;Blog Category</div>
   </section>
   <div class="content-area content-new clearfix">
    <div class="timesheet_head minHeight50 list-borderright">
@@ -62,7 +62,7 @@ function addBlogCategory(uuid){
 	result = result+ '<div class="clearfix mb10">';
 	result = result+ '<div class="col-md-12">';
 	result = result+ '<label>Description</label>';
-	result = result + '<textarea cols="3" class="form-control" name="description" id="description" field-name="Description" data-validation=" validate_length length1-500" data-validation-optional="true">';
+	result = result + '<textarea cols="3" class="form-control" name="description" id="description" field-name="Description" data-validation="validate_length length1-500" data-validation-optional="true">';
     result = result + '</textarea>';
 	result = result+ '                </div>';
 	result = result+ '              </div> ';
@@ -134,9 +134,19 @@ function saveBlogCategory(uuid) {
 	if ($('#blog_category_form').validate(false, validationSettings)) {
 	  	var formData = $($('#blog_category_form')[0]).serialize();
 		$("#blogCategoryLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.post(sourceleadUrl+"/addBlogCategory?"+tokenParamName+"="+tokenValue+"&categoryUUID="+uuid, formData, function(data) {
-			if(data == true){
+		$.post(sourceleadUrl+"/addBlogCategory?"+tokenParamName+"="+tokenValue+"&categoryUUID="+uuid, formData, function(result) {
+			
+			if (result && result.response === "INVALID_DATA") {
+				$("#blogCategoryLoading").hide();
+			    showError(result.responseMessage);
+			} else if (result.response === "AWKWARD") {
+			    location.href = "/errorPage";
+			} else if (result.response === "SUCCESS") {
 				location.replace(sourceleadUrl+ "/categoryList");
+			} else if (result.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+			    showError("Operation failed, please try again");
 			}
 		}); 
 		return true;
@@ -173,7 +183,7 @@ function prepareBlogCategoryList(url){
 	    result = result +" <input type='text' placeholder='Search' id='blogCategoryTableSearch'/>";
 		result = result	+ '</div>';
 		result = result	+ '</div>';
-		result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
+		result = result	+ '<div class="clearfix">';
 		result = result + '<table id="blogCategoryListView" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
@@ -298,12 +308,20 @@ function deleteBlogCategory(blogCategoryId) {
 		 $.ajax({  
 	          type : "POST",
 	          url: sourceleadUrl+"/removeBlogCategoryByBlogId?"+tokenParamName+"="+tokenValue+"&blogCategoryId="+blogCategoryId,        
-	          success :function(data) {
+	          success :function(result) {
 
-					if(data != null && data != 'undefined' && data != ""){
-	             		
-						 location.replace(sourceleadUrl+"/categoryList");
-	               } 
+	        	  if (result && result.response === "INVALID_DATA") {
+					    showError(result.responseMessage);
+					} else if (result.response === "AWKWARD") {
+					    location.href = "/errorPage";
+					} else if (result.response === "SUCCESS") {
+						location.replace(sourceleadUrl+"/categoryList");
+					} else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+					    showError("Operation failed, please try again");
+					}
+					
 	        },
 	          
 	     }); 

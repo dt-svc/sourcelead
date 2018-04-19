@@ -4,16 +4,21 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class ClientProjectDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L; 
 	
+	@Required(desc="level1Manager")
     private String level1Manager;
 	
 	private String level2Manager;
 	
+	@Required(desc="clientOrgLocId")
 	private String clientOrgLocId;
 	
+	@Required(desc="clientProject")
 	private String clientProject;
 
 	public String getLevel1Manager() {

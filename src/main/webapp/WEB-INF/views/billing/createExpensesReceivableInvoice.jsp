@@ -65,6 +65,7 @@ function checkBox(){
     <div class="content-area content-new clearfix">
       <div class="clearfix form-horizontal inner-content">
        <div id="invoiceLoading"></div>
+        <div id="expenseAlertPopUp"></div>
        <form:form id="project_invoice_form"  name="project_invoice_form" method="post"> 
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
@@ -294,13 +295,13 @@ function getClientContacts(){
 	$.ajax({
 	type : "GET",
 	url: sourceleadUrl+"/getClientContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
-	success :function(data) {
-	var json = JSON.parse(data);
+	success :function(json) {
+// 	var json = JSON.parse(data);
 	var output = "";
 	output = output + "<option value=''>Select Client Contact</option>";
-	for (var i=0; i<json.length; i++)
+	for (var i=0; i<json.data.length; i++)
 	{
-	var opt = json[i];
+	var opt = json.data[i];
 	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"</option>";
 	$("#clientCurrency").val(opt.clientCurrency);
 	}
@@ -325,9 +326,9 @@ function getProjectsList(projectName){
 // 	var json = JSON.parse(data);
 	var output = "";
 	output = output + "<option value=''>Select Project</option>";
-	for (var i=0; i<json.length; i++)
+	for (var i=0; i<json.data.length; i++)
 	{
-	var opt = json[i];
+	var opt = json.data[i];
 	var selected = "";
 	if(projectName != null && projectName != "" && projectName !="undefined" && projectName == opt.projectName){
 		selected = 'selected';
@@ -421,6 +422,8 @@ function populateExpensesDetailsGrid(data){
          		      result = result +' </tr>';
          		      
                  }	
+            }else{
+                  alertMessageInExpense();
             }
            
             
@@ -447,8 +450,28 @@ function populateExpensesDetailsGrid(data){
 }
 </script>
 
+<script type="text/javascript">
+function alertMessageInExpense(){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>No Members Found</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancelPayableAlert();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelPayableAlert();'></b>";
+	result = result +"	</div>";
+	$("#expenseAlertPopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+ 
+}
+</script>
 
-
+<script type="text/javascript">
+ function cancelPayableAlert(){
+	$("#expenseAlertPopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+ }
+</script>
 
 <script>
 function editExpensesDetailsEdit(data){
@@ -605,13 +628,13 @@ function getProjectFrequency(invoiceFrequency){
 	$.ajax({
 	type : "GET",
 	url: sourceleadUrl+"/getProjectFrequency?"+tokenParamName+"="+tokenValue+"&projectId="+projectId,
-	success :function(data) {
-		var json = JSON.parse(data);
+	success :function(json) {
+// 		var json = JSON.parse(data);
 		var output = "";
 		output = output + "<option value=''>Select Frequency</option>";
-		for (var i=0; i<json.length; i++)
+		for (var i=0; i<json.data.length; i++)
 		{
-		var opt = json[i];
+		var opt = json.data[i];
 		var convertOpt = opt.replace(/\//g, " to ");
 		var selected = "";
 		if(invoiceFrequency != null && invoiceFrequency != "" && invoiceFrequency !="undefined" && invoiceFrequency == opt){
@@ -888,9 +911,9 @@ function cancelReceivableAlert(){
 		   $.ajax({
 				type : "GET",
 				url: sourceleadUrl+"/getConversionExchangeRate?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
-				success :function(data) {
-					if(data !='' && data != 'undefined' && data != null){
-						var json = JSON.parse(data);
+				success :function(json) {
+					if(json.data !='' && json.data != 'undefined' && json.data != null){
+// 						var json = JSON.parse(data);
 						$("#exchangeRate").html(json.exchangeRate);
 						$("#exchangeCurrency").html(json.exchangeCurrency);
 						$("#vendorCurrencyCode").html(json.vendorCurrencyCode);
@@ -1009,7 +1032,7 @@ function calculateDisCount(){
   <div id="divTaxTd1" style="display: none; float: left;">
 	<div class="select-field tblminwidth-75">
 		  <div class="tblminwidth-50">
-		        <input type="text" class="form-control input-sm" value="" placeholder="Tax type" name='invoiceTax[REPLACEROWID].taxType' id='REPLACEROWIDtaxType'>
+		        <input type="text" class="form-control input-sm" value="" placeholder="Tax type" name='invoiceTax[REPLACEROWID].taxType' id='REPLACEROWIDtaxType' data-validation="required" field-name="Tax Type">
 		         <input type="hidden" name="REPLACEROWIDinvoiceTaxId" id="REPLACEROWIDinvoiceTaxId">
 		  </div>
 	 </div>
@@ -1228,7 +1251,7 @@ function calculateTaxDiscount(){
          //$("#create_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateInvoiceId?"+tokenParamName+"="+tokenValue+"&invoiceId="+invoiceId, 
+		        url: sourceleadUrl+"/validateInvoiceId?"+tokenParamName+"="+tokenValue+"&invoiceId="+invoiceId+"&invoiceType=Receivable", 
 		        success: function(data) {
 		        	 if(data == true){
 		        		  $('#invoiceIdDiv').find('p.jquery_form_error_message').remove();
@@ -1454,13 +1477,13 @@ function getClientContactsExisted(clientContactId){
 	$.ajax({
 	type : "GET",
 	url: sourceleadUrl+"/getClientContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
-	success :function(data) {
-	var json = JSON.parse(data);
+	success :function(json) {
+// 	var json = JSON.parse(data);
 	var output = "";
 	output = output + "<option value=''>Select Client Contact</option>";
-	for (var i=0; i<json.length; i++)
+	for (var i=0; i<json.data.length; i++)
 	{
-	var opt = json[i];
+	var opt = json.data[i];
 	var selected = "";
 	if(clientContactId != null && clientContactId != "" && clientContactId !="undefined" && clientContactId == opt.spocUserId){
 		selected = 'selected';

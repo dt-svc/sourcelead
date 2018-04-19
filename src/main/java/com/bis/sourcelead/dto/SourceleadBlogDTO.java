@@ -3,6 +3,8 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class SourceleadBlogDTO extends SearchDTO implements Serializable{
 	
 	/**
@@ -14,6 +16,7 @@ public class SourceleadBlogDTO extends SearchDTO implements Serializable{
 	
 	private String blogId;
 	
+	@Required(desc = "blog Title")
 	private String blogTitle;
 	
 	private String categoryId;
@@ -28,7 +31,11 @@ public class SourceleadBlogDTO extends SearchDTO implements Serializable{
 	
 	private String imgFileUrl;
 	
+	@Required(desc = "description")
 	private String description;
+	
+	@Required(desc = "short description")
+	private String shortDescription;
 
 	private String status;
 	
@@ -124,6 +131,14 @@ public class SourceleadBlogDTO extends SearchDTO implements Serializable{
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	public String getShortDescription() {
+		return shortDescription;
+	}
+
+	public void setShortDescription(String shortDescription) {
+		this.shortDescription = shortDescription;
 	}
 
 	public String getStatus() {

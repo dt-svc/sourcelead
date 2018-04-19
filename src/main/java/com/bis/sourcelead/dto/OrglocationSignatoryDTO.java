@@ -2,6 +2,8 @@ package com.bis.sourcelead.dto;
 
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class OrglocationSignatoryDTO {
 
 	private String firstName;
@@ -22,8 +24,10 @@ public class OrglocationSignatoryDTO {
 	
 	private String uuid;
 	
+	@Required(desc="associateId")
 	private long associateId;
 	
+	@Required(desc="authorizedType")
 	private List<String> authorizedType;
 	
 	private String authorizedAmount;

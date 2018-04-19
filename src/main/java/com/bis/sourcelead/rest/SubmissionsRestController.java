@@ -28,6 +28,8 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ApplicantRejectBackOutDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -50,6 +52,7 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateCommentsService;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
@@ -153,79 +156,89 @@ public class SubmissionsRestController {
 	CandidateCommentsService candidateCommentsService;
 
 	@RequestMapping(value = "/app/getCandidateResumes")
-	public String getCandidateResumes(@RequestParam(value = "candidateId", required = false) Long candidateId,
+	@ResponseBody ResponseList<CandidateResumes> getCandidateResumes(@RequestParam(value = "candidateId", required = false) Long candidateId,
 			HttpServletRequest request) throws Exception {
-
-		String resultJson = null;
-		List<CandidateResumes> resumesList = candidateResumesService
-				.getCandidateResumesListByCandidateIdAndStatus(candidateId, Constants.CANDIDATE_ACTIVE);
-		resultJson = toJSON(resumesList);
-		return resultJson;
+		ResponseList<CandidateResumes> response = new ResponseList<>();
+		try {
+			List<CandidateResumes> resumesList = candidateResumesService
+					.getCandidateResumesListByCandidateIdAndStatus(candidateId, Constants.CANDIDATE_ACTIVE);
+			response.setData(resumesList);
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+		}catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
 
 	}
 
 	@RequestMapping(value = "/app/getCandidateDetails")
-	@ResponseBody
-	public String getCandidateDetails(@RequestParam(value = "candidateId", required = false) Long candidateId,
+	@ResponseBody Response<Candidate> getCandidateDetails(@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "requirementId", required = false) Long requirementId,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			HttpServletRequest request) throws Exception {
-
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations"); 
-		String resultJson = null;
-		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-		List<String> educationList = candidateEducationService.getCandidateEducationNamesByCandidateId(candidateId);
-		StringBuilder education = new StringBuilder();
-		if (educationList != null && educationList.size() > 0) {
-			for(String educationName : educationList){
-				education.append(educationName).append(", ");
+		Response<Candidate> response = new Response<>();
+		try {
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations"); 
+			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+			List<String> educationList = candidateEducationService.getCandidateEducationNamesByCandidateId(candidateId);
+			StringBuilder education = new StringBuilder();
+			if (educationList != null && educationList.size() > 0) {
+				for(String educationName : educationList){
+					education.append(educationName).append(", ");
+				}
+				
+				candidate.setCandidateEdu(education.substring(0,education.length()-2).toString());
+			}
+			if(candidate.getOrgRelationId() != null && candidate.getSpocId() != null){
+				candidate.setRelationId(candidate.getOrgRelationId().getId());
+				candidate.setVenSpocId(candidate.getSpocId().getId());
+			}
+			//this block of code is added to get customized score for candidate. -- pavan jampana
+			if(requirementId != null){
+				Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+				RecommendedCustomizeScore recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirement.getId());
+				String score = recommendationsService.getCandidateScore(candidate,requirement,recommendedCustomizeScore);
+				if(score != null && !"".equalsIgnoreCase(score)){
+					candidate.setCandidateScore(score);
+				}
+				
+				boolean isSumbitted = requirementSubmissionService.isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(candidateId, requirementId);
+				if(isSumbitted == true){
+					candidate.setIsCandidateSubmitted(Constants.YES);
+				}else{
+					candidate.setIsCandidateSubmitted(Constants.NO);
+				}
+			}
+			int percentage = candidateService.getCandidatePercentage(candidate,orgLocation);
+			candidate.setProfilePercentage(percentage);
+			
+			CandidateResumes candidateResume = candidateResumesService.getCandidateLatesResumes(candidateId, Constants.RECORD_ACTIVE);
+			if(candidateResume != null){
+				candidate.setResumeUUID(candidateResume.getResumeUUID());
+				candidate.setCandidateResumeName(candidateResume.getFileName());
+				candidate.setFileUrl(candidateResume.getFileURL());
+				candidate.setFileContentType(candidateResume.getFileContentType());
 			}
 			
-			candidate.setCandidateEdu(education.substring(0,education.length()-2).toString());
-		}
-		if(candidate.getOrgRelationId() != null && candidate.getSpocId() != null){
-			candidate.setRelationId(candidate.getOrgRelationId().getId());
-			candidate.setVenSpocId(candidate.getSpocId().getId());
-		}
-		//this block of code is added to get customized score for candidate. -- pavan jampana
-		if(requirementId != null){
-			Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-			RecommendedCustomizeScore recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirement.getId());
-			String score = recommendationsService.getCandidateScore(candidate,requirement,recommendedCustomizeScore);
-			if(score != null && !"".equalsIgnoreCase(score)){
-				candidate.setCandidateScore(score);
+			CandidateEmployers currentEmployer = candidateEmployersService.getCandidateCurrentEmployer(candidateId, orgLocation.getId());
+			if(null != currentEmployer){
+				candidate.setEmployer(currentEmployer.getName());
+			}else{
+				CandidateEmployers lastCompanyEmployer = candidateEmployersService.getCandidateLastCompanyEmployer(candidateId, orgLocation.getId());
+				if(null != lastCompanyEmployer){
+					candidate.setEmployer(lastCompanyEmployer.getName());
+				}
 			}
+			response.setObject(candidate);
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+		}catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
 		}
-		int percentage = candidateService.getCandidatePercentage(candidate,orgLocation);
-		candidate.setProfilePercentage(percentage);
-		
-		boolean isSumbitted = requirementSubmissionService.isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(candidateId, requirementId);
-		if(isSumbitted == true){
-			candidate.setIsCandidateSubmitted(Constants.YES);
-		}else{
-			candidate.setIsCandidateSubmitted(Constants.NO);
-		}
-		
-		CandidateResumes candidateResume = candidateResumesService.getCandidateLatesResumes(candidateId, Constants.RECORD_ACTIVE);
-		if(candidateResume != null){
-			candidate.setResumeUUID(candidateResume.getResumeUUID());
-			candidate.setCandidateResumeName(candidateResume.getFileName());
-			candidate.setFileUrl(candidateResume.getFileURL());
-			candidate.setFileContentType(candidateResume.getFileContentType());
-		}
-		
-		CandidateEmployers currentEmployer = candidateEmployersService.getCandidateCurrentEmployer(candidateId, orgLocation.getId());
-		if(null != currentEmployer){
-			candidate.setEmployer(currentEmployer.getName());
-		}else{
-			CandidateEmployers lastCompanyEmployer = candidateEmployersService.getCandidateLastCompanyEmployer(candidateId, orgLocation.getId());
-			if(null != lastCompanyEmployer){
-				candidate.setEmployer(lastCompanyEmployer.getName());
-			}
-		}
-		
-		resultJson = toJSON(candidate);
-		return resultJson;
+		return response;
 
 	}
 	
@@ -314,44 +327,57 @@ public class SubmissionsRestController {
 
 	@PreAuthorize("hasAnyRole('ROLE_ADD_APPLICANT','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/app/saveAddApplicant", method = RequestMethod.POST)
-	public String saveAddApplicant(@RequestParam(value = "jsonData", required = false) String json,
+	public @ResponseBody Response<String> saveAddApplicant(@RequestParam(value = "jsonData", required = false) String json,
 			@RequestParam(value = "con", required = false) String con, MultipartHttpServletRequest request,
 			@RequestParam(value = "locationMapFile", required = false) CommonsMultipartFile locationMapFileData)
 			throws Exception {
 
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
+		
+		Response<String> response = new Response<>();
 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 
 		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(jsonObj,user, orgLocations, con, loginUserRole);
-
-		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
-		requirementSubmissionHistory.setFromStage("NEW");
-		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
-		Requirement requirement = requirementSubmission.getRequirement();
+		if(user != null) {
+			try {
+				RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(jsonObj,user, orgLocations, con, loginUserRole);
 		
-		if(null != requirement){
-			Integer totalApplicatsCountForRequirement = 0;
-		   //updating total number of applicants for requrement
-			totalApplicatsCountForRequirement = requirementSubmissionService.getNumberOfApplicantsForRequirement(requirement.getOrgLocationId().getId(), requirement.getId());
-//			totalApplicatsCountForRequirement = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(orgLocations,requirement.getId(),user,userRoleName);
-			if(totalApplicatsCountForRequirement > 0){
-				requirement.setTotalApplicants(totalApplicatsCountForRequirement); 
-				requirementService.updateRequirement(requirement);
-			}else{
-				requirement.setTotalApplicants(0); 
+				RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+				requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
+				requirementSubmissionHistory.setFromStage("NEW");
+				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+				Requirement requirement = requirementSubmission.getRequirement();
+				
+				if(null != requirement){
+					Integer totalApplicatsCountForRequirement = 0;
+				   //updating total number of applicants for requrement
+					totalApplicatsCountForRequirement = requirementSubmissionService.getNumberOfApplicantsForRequirement(requirement.getOrgLocationId().getId(), requirement.getId());
+					if(totalApplicatsCountForRequirement > 0){
+						requirement.setTotalApplicants(totalApplicatsCountForRequirement); 
+						requirementService.updateRequirement(requirement);
+					}else{
+						requirement.setTotalApplicants(0); 
+					}
+					
+					// pass dto as parameter
+					RequirementDTO requirementDTO = commonUtil.getRequirementDTO(requirement);
+					requirementElkUtil.saveElkRequirement(requirement,requirementDTO);	
+				}
+				response.setObject("success");
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+				}catch(Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
 			}
-			
-			// pass dto as parameter
-			RequirementDTO requirementDTO = commonUtil.getRequirementDTO(requirement);
-			requirementElkUtil.saveElkRequirement(requirement,requirementDTO);	
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
-		return "success";
-
+		return response;
 	}
 	
 	/**
@@ -477,143 +503,154 @@ public class SubmissionsRestController {
 
 	@PreAuthorize("hasAnyRole('ROLE_SHORTLIST')")
 	@RequestMapping(value = "/app/getSubmissionCandidates", method = RequestMethod.POST)
-	public String getSubmissionCandidates(@RequestParam(value = "requirementId", required = false) Long requirementId,
+	public ResponseList<RequirementSubmission> getSubmissionCandidates(@RequestParam(value = "requirementId", required = false) Long requirementId,
 			@RequestParam(value = "status", required = false) String status, HttpServletRequest request)
 			throws Exception {
-
-		String resultJson = null;
+		ResponseList<RequirementSubmission> response = new ResponseList<>();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		if(user != null) {
+			try {
+				String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				//java.text.SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
+				List<RequirementSubmission> shortlistedList = requirementSubmissionService.getAllSubmissionListByRequirementIdAndSubmissionStage(orgLocations, requirementId, status,user,loginUserRole);
+				
+				ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
 		
-		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		//java.text.SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
-		List<RequirementSubmission> shortlistedList = requirementSubmissionService.getAllSubmissionListByRequirementIdAndSubmissionStage(orgLocations, requirementId, status,user,loginUserRole);
+				for (RequirementSubmission requirementSubmission : shortlistedList) {
+					RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService
+							.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
+					if (null != requirementSubmissionTemplateFields.getLastName()) {
+						StringBuilder canNameSB = new StringBuilder();
+						requirementSubmission.setCandidateName(canNameSB.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
+					} else {
+						requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName());
+					}
 		
-		ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
-
-		for (RequirementSubmission requirementSubmission : shortlistedList) {
-			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService
-					.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
-			if (null != requirementSubmissionTemplateFields.getLastName()) {
-				StringBuilder canNameSB = new StringBuilder();
-				requirementSubmission.setCandidateName(canNameSB.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
-			} else {
-				requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName());
+					requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
+					RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
+					if(pastRequirementRateSubmissionNegotiation != null){
+						requirementSubmission.setLastRateIniLocId(pastRequirementRateSubmissionNegotiation.getInitiatorOrgLocationId().getId().toString());
+						requirementSubmission.setLastRateIniType(pastRequirementRateSubmissionNegotiation.getRateInitiatorType().getValue());
+						requirementSubmission.setLastRateIniUserCode(pastRequirementRateSubmissionNegotiation.getCreatedBy());
+						requirementSubmission.setLastRateStage(pastRequirementRateSubmissionNegotiation.getRateStage().getValue());
+						requirementSubmission.setExpectedCTC(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+					}else{
+						requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
+					}
+					
+					requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
+					requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
+					if(requirementSubmission.getCandidateResumes() != null) {
+						requirementSubmission.setFileURL(requirementSubmission.getCandidateResumes().getFileURL());
+						requirementSubmission.setFilename((requirementSubmission.getCandidateResumes().getFileName()));
+						requirementSubmission.setFileContentType(requirementSubmission.getCandidateResumes().getFileContentType());
+					}
+					
+					if(requirementSubmission.getVendorLocationId() != null){
+						requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrgLocationName());
+					}
+					
+					if (requirementSubmission.getCreatedDate() != null) {
+						requirementSubmission.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getCreatedDate()));
+					}
+					candidatesList.add(requirementSubmission);
+				}
+				response.setData(candidatesList);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			}catch(Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
 			}
-
-			requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
-			RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
-			if(pastRequirementRateSubmissionNegotiation != null){
-				requirementSubmission.setLastRateIniLocId(pastRequirementRateSubmissionNegotiation.getInitiatorOrgLocationId().getId().toString());
-				requirementSubmission.setLastRateIniType(pastRequirementRateSubmissionNegotiation.getRateInitiatorType().getValue());
-				requirementSubmission.setLastRateIniUserCode(pastRequirementRateSubmissionNegotiation.getCreatedBy());
-				requirementSubmission.setLastRateStage(pastRequirementRateSubmissionNegotiation.getRateStage().getValue());
-				requirementSubmission.setExpectedCTC(pastRequirementRateSubmissionNegotiation.getExpectedRate());
-			}else{
-				requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
-			}
-			
-			
-			
-			requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
-			requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
-			if(requirementSubmission.getCandidateResumes() != null) {
-				requirementSubmission.setFileURL(requirementSubmission.getCandidateResumes().getFileURL());
-				requirementSubmission.setFilename((requirementSubmission.getCandidateResumes().getFileName()));
-				requirementSubmission.setFileContentType(requirementSubmission.getCandidateResumes().getFileContentType());
-			}
-			
-			
-			if(requirementSubmission.getVendorLocationId() != null){
-				requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrgLocationName());
-			}
-			
-			if (requirementSubmission.getCreatedDate() != null) {
-				requirementSubmission.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getCreatedDate()));
-			}
-			candidatesList.add(requirementSubmission);
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
-		resultJson = toJSON(candidatesList);
-		return resultJson;
-
+		return response;
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_SUBMIT_TO_CLIENT')")
 	@RequestMapping(value = "/app/getShortListedCandidates", method = RequestMethod.POST)
-	public String getShortListedCandidates(@RequestParam(value = "requirementId", required = false) Long requirementId,
+	public ResponseList<RequirementSubmission> getShortListedCandidates(@RequestParam(value = "requirementId", required = false) Long requirementId,
 			HttpServletRequest request) throws Exception {
-
-		String resultJson = null;
-		boolean submitToClient = true;
-		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-		
+		ResponseList<RequirementSubmission> response = new ResponseList<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
-		
-		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		
-		if(null != requirement){
-			if(null != requirement.getParentRequirement() && requirement.getIsClientJob().equalsIgnoreCase("Y")){
-				if(!requirement.getParentRequirement().getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.OPEN) && 
-						!requirement.getParentRequirement().getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.NEW)){
-					submitToClient = false;
+		if(user != null) {
+			try {
+				boolean submitToClient = true;
+				Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+				String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				
+				if(null != requirement){
+					if(null != requirement.getParentRequirement() && requirement.getIsClientJob().equalsIgnoreCase("Y")){
+						if(!requirement.getParentRequirement().getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.OPEN) && 
+								!requirement.getParentRequirement().getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.NEW)){
+							submitToClient = false;
+						}
+					}
 				}
-			}
-		}
+				
+				if(submitToClient){
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+						"orgLocations");
+				List<RequirementSubmission> shortlistedList = requirementSubmissionService
+						.getAllShortLitstedCandidatesForClientSubmissionByRequirementId(orgLocations, requirement,user,loginUserRole);
+				ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
+				for (RequirementSubmission requirementSubmission : shortlistedList) {
+					RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService
+							.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
+					if (requirementSubmissionTemplateFields.getLastName() != null) {
+						StringBuilder canNameSB = new StringBuilder();
+						requirementSubmission.setCandidateName(canNameSB.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
+					} else {
+						requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName());
+					}
 		
-		if(submitToClient){
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		List<RequirementSubmission> shortlistedList = requirementSubmissionService
-				.getAllShortLitstedCandidatesForClientSubmissionByRequirementId(orgLocations, requirement,user,loginUserRole);
-		ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
-		//DateFormat dateFormat = LoginSessionController.DATEFORMAT;
-		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
-		for (RequirementSubmission requirementSubmission : shortlistedList) {
+					requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
+					requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
+					requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
+					requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
+					if(requirementSubmission.getCandidateResumes() != null) {
+						requirementSubmission.setFileURL(requirementSubmission.getCandidateResumes().getFileURL());
+					}
+					
+					if(StringUtils.isNotEmpty(requirementSubmission.getFinalizedRate())){
+						requirementSubmission.setSubmitToClientRate(requirementSubmission.getFinalizedRate());
+					}else{
+						requirementSubmission.setSubmitToClientRate(requirementSubmissionTemplateFields.getExpectedCTC());
+					}
+					
+					if(StringUtils.isNotEmpty(requirementSubmission.getFinalizedRateType())){
+						requirementSubmission.setSubmitToClientRateType(requirementSubmission.getFinalizedRateType());
+					}else{
+						requirementSubmission.setSubmitToClientRateType(requirementSubmissionTemplateFields.getExpectedRatePer());
+					}
+					
+					if(requirementSubmission.getVendorLocationId() != null){
+						requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrgLocationName());
+					}
 			
-			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService
-					.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
-			if (requirementSubmissionTemplateFields.getLastName() != null) {
-				StringBuilder canNameSB = new StringBuilder();
-				requirementSubmission.setCandidateName(canNameSB.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
-			} else {
-				requirementSubmission.setCandidateName(requirementSubmissionTemplateFields.getFirstName());
-			}
-
-			requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
-			requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
-			requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
-			requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
-			if(requirementSubmission.getCandidateResumes() != null) {
-				requirementSubmission.setFileURL(requirementSubmission.getCandidateResumes().getFileURL());
-			}
-			
-			if(StringUtils.isNotEmpty(requirementSubmission.getFinalizedRate())){
-				requirementSubmission.setSubmitToClientRate(requirementSubmission.getFinalizedRate());
-			}else{
-				requirementSubmission.setSubmitToClientRate(requirementSubmissionTemplateFields.getExpectedCTC());
-			}
-			
-			if(StringUtils.isNotEmpty(requirementSubmission.getFinalizedRateType())){
-				requirementSubmission.setSubmitToClientRateType(requirementSubmission.getFinalizedRateType());
-			}else{
-				requirementSubmission.setSubmitToClientRateType(requirementSubmissionTemplateFields.getExpectedRatePer());
-			}
-			
-			if(requirementSubmission.getVendorLocationId() != null){
-				requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrgLocationName());
-			}
-	
-			if (requirementSubmission.getCreatedDate() != null) {
-				requirementSubmission.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getCreatedDate()));
-			}
-			candidatesList.add(requirementSubmission);
+					if (requirementSubmission.getCreatedDate() != null) {
+						requirementSubmission.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getCreatedDate()));
+					}
+					candidatesList.add(requirementSubmission);
+				}
+				response.setData(candidatesList);
+				}else{
+					response.setError("failed");
+				}
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+		}catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
 		}
-		resultJson = toJSON(candidatesList);
-		return resultJson;
-		}else{
-			return "failed";
-		}
-
+	}else {
+		response.setResponse(Result.SESSION_TIMEDOUT.name());
+		response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+	}
+		return response;
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_SUBMIT_TO_CLIENT')")
@@ -634,41 +671,52 @@ public class SubmissionsRestController {
 	}
 
 	@RequestMapping(value = "/app/candidateShortList", method = RequestMethod.POST)
-	public String candidateShortList(@RequestParam(value = "requirementId", required = false) Long requirementId,
+	public Response<String> candidateShortList(@RequestParam(value = "requirementId", required = false) Long requirementId,
 			@RequestParam(value = "submissionsList", required = false) String submissionsList,
 			HttpServletRequest request) throws Exception {
-
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		Response<String> response = new Response<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		int  count = 0;
-		String[] submissionId = submissionsList.split(",");
-
-		for (int i = 0; i < submissionId.length; i++) {
-			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-			RequirementSubmission submission = requirementSubmissionService .getRequirementSubmissionById(Long.parseLong(submissionId[i]));
-			requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
-			submission.setSubmissionStatus(ApplicantSubmissionStatus.SHORTLIST);
-			submission.setUpdatedBy(user.getUserCode());
-			submission.setUpdatedUser(user.getFullName());
-			if(null != submission.getSourceSubmission()){
-				count = count + 1;
+		if(user != null) {
+			try {
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+				int  count = 0;
+				String[] submissionId = submissionsList.split(",");
+		
+				for (int i = 0; i < submissionId.length; i++) {
+					RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+					RequirementSubmission submission = requirementSubmissionService .getRequirementSubmissionById(Long.parseLong(submissionId[i]));
+					requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
+					submission.setSubmissionStatus(ApplicantSubmissionStatus.SHORTLIST);
+					submission.setUpdatedBy(user.getUserCode());
+					submission.setUpdatedUser(user.getFullName());
+					if(null != submission.getSourceSubmission()){
+						count = count + 1;
+					}
+					submission.setUpdatedDate(new Date());
+					RequirementSubmission requirementSubmission = requirementSubmissionService.storeRequirementSubmission(submission);
+					requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+				}
+				int shotListCount = submissionId.length;
+				Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+				if (requirement.getManagerUserId().getEmail() != null && requirement.getManagerUserId().getId().longValue() != user.getId().longValue()) {
+					sendEmailToManages(requirement, orgLocations, user, shotListCount, loginOrg);
+				}
+				if(count>0){
+					requirementSubmissionService.shortListedMailToVendorFromClient(requirement,submissionsList,orgLocations,user);
+				}
+				response.setObject("success");
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			}catch(Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
 			}
-			submission.setUpdatedDate(new Date());
-			RequirementSubmission requirementSubmission = requirementSubmissionService.storeRequirementSubmission(submission);
-			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
-
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
-		int shotListCount = submissionId.length;
-		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-		if (requirement.getManagerUserId().getEmail() != null && requirement.getManagerUserId().getId().longValue() != user.getId().longValue()) {
-			sendEmailToManages(requirement, orgLocations, user, shotListCount, loginOrg);
-		}
-		if(count>0){
-			requirementSubmissionService.shortListedMailToVendorFromClient(requirement,submissionsList,orgLocations,user);
-		}
-		return "success";
+		return response;
 	}
 
 	@PreAuthorize("hasRole('ROLE_VIEW_APPLICANT')")
@@ -747,37 +795,50 @@ public class SubmissionsRestController {
 
 
 	@RequestMapping(value = "/app/rejectApplicant")
-	public @ResponseBody String rejectApplicant(ApplicantRejectBackOutDTO applicantRejectBackOutDTO, @RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request) throws Exception
+	public @ResponseBody Response<String> rejectApplicant(ApplicantRejectBackOutDTO applicantRejectBackOutDTO, @RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request) throws Exception
 
 	{
-		
+		Response<String> response = new Response<>();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
-		// to update submission history
-		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-		requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().toString());
-		requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.REJECTED.toString());
-		// to update Submission status
-		requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
-		if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getReasonForReject())) {
-			requirementSubmission.setRejectedReason(applicantRejectBackOutDTO.getReasonForReject());
+		if(user != null) {
+			try {
+				RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+				// to update submission history
+				RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+				requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().toString());
+				requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.REJECTED.toString());
+				// to update Submission status
+				requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
+				if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getReasonForReject())) {
+					requirementSubmission.setRejectedReason(applicantRejectBackOutDTO.getReasonForReject());
+				}
+				if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getRejectedCategory())) {
+					requirementSubmission.setRejectedCategoryType(applicantRejectBackOutDTO.getRejectedCategory());
+				}
+				if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getRejectedCategoryOther())) {
+					requirementSubmission.setRejectedCategoryOther(applicantRejectBackOutDTO.getRejectedCategoryOther());
+				}
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+				requirementSubmission.setUpdatedBy(user.getUserCode());
+				StringBuilder sb = new StringBuilder();
+				requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+				requirementSubmission.setUpdatedDate(new Date());
+				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+				requirementSubmissionService.sendRejectionMailToVendorContact(user, requirementSubmission.getRejectedReason(), submissionId, orgLocations);
+				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+				response.setObject("success");
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			}catch(Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
-		if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getRejectedCategory())) {
-			requirementSubmission.setRejectedCategoryType(applicantRejectBackOutDTO.getRejectedCategory());
-		}
-		if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getRejectedCategoryOther())) {
-			requirementSubmission.setRejectedCategoryOther(applicantRejectBackOutDTO.getRejectedCategoryOther());
-		}
-		requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
-		requirementSubmission.setUpdatedBy(user.getUserCode());
-		StringBuilder sb = new StringBuilder();
-		requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-		requirementSubmission.setUpdatedDate(new Date());
-		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-		 requirementSubmissionService.sendRejectionMailToVendorContact(user, requirementSubmission.getRejectedReason(), submissionId, orgLocations);
-		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
-		return "success";
+		return response;
 	}
 	
 	// vendors mail sending the private method
@@ -950,89 +1011,50 @@ public class SubmissionsRestController {
 	@PreAuthorize("hasAnyRole('ROLE_SUBMIT_TO_CLIENT')")
 	@RequestMapping(value = "/app/addEmailtemplate", method = RequestMethod.GET)
 	@ResponseBody
-	public String addEmailtemplate(@RequestParam(value = "requirementId", required = false) Long requirementId,
+	public Response<Requirement> addEmailtemplate(@RequestParam(value = "requirementId", required = false) Long requirementId,
 			@RequestParam(value = "selectedShortlistsCount", required = false) String submissionIds,
 			HttpServletRequest request) throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		String resultJson = null;
-		String[] submissions = submissionIds.split(",");
+		Response<Requirement> response = new Response<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		String fullName = null;
-		if (!"".equalsIgnoreCase(user.getLastName()) && user.getLastName() != null) {
-			StringBuilder nameSB = new StringBuilder();
-			fullName = nameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
-		} else {
-			fullName = user.getFirstName();
-		}
-		StringBuilder sb = new StringBuilder();
-		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-		requirement.setSubmitToClientFromMailId(user.getEmail());
-		if(requirement.getParentRequirement() != null && StringUtils.isNotEmpty(requirement.getParentRequirement().getReleasedBy())){
-			User releasedUser = userService.getUserById(Long.parseLong(requirement.getParentRequirement().getReleasedBy()));
-			requirement.setSubmitToClientToMailId(releasedUser.getEmail());
-		}else{
-			requirement.setSubmitToClientToMailId(requirement.getSpocId().getClientUser().getEmail());
-		}
-		/*if(requirement.getSpocId().getInitiatorLocationId().getId().longValue() == orgLocations.getId().longValue() ){
-				requirement.setSubmitToClientToMailId(requirement.getSpocId().getClientUser().getEmail());
-		 }
-		if(requirement.getSpocId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-			requirement.setSubmitToClientToMailId(requirement.getSpocId().getOwnerUser().getEmail());
-		}*/
-		StringBuilder subjectSB = new StringBuilder();
-		if(null != requirement.getCity() && !"".equalsIgnoreCase(requirement.getCity())){
-			requirement.setSubmitToClientMailSubject(subjectSB.append("Applicants received for the").append(" ").append(requirement.getJobTitle()).append("/").append(requirement.getCity()).append(",").append(requirement.getState()).append(",").append(requirement.getCountry()).toString());	
-		}else if(null != requirement.getState() && !"".equalsIgnoreCase(requirement.getState())){
-			requirement.setSubmitToClientMailSubject(subjectSB.append("Applicants received for the").append(" ").append(requirement.getJobTitle()).append("/").append(requirement.getState()).append(",").append(requirement.getCountry()).toString());	
-		}else if(null != requirement.getCountry() && !"".equalsIgnoreCase(requirement.getCountry())){
-			requirement.setSubmitToClientMailSubject(subjectSB.append("Applicants received for the").append(" ").append(requirement.getJobTitle()).append("/").append(requirement.getCountry()).toString());
-		}else {
-			requirement.setSubmitToClientMailSubject(subjectSB.append("Applicants received for the").append(" ").append(requirement.getJobTitle()).toString());
-		}
-
-		if (requirement != null && requirement.getParentRequirement() != null) {
-			if(requirement != null && requirement.getParentRequirement().getManagerUserId() != null){
-				sb.append("<p>").append("Hi,").append(requirement.getParentRequirement().getManagerUserId().getFullName()).append("</p>")
-				.append("<p>").append(fullName).append(" submitted the applicants for the").append(" ")
-				.append(requirement.getJobTitle()).append("</p>")
-				.append("<p>").append("Total no.of submitted applicants :").append(submissions.length).append("<p>");
-				}if(null != requirement.getCity() && !"".equalsIgnoreCase(requirement.getCity())){
-				sb.append("<p>").append("Location :").append(requirement.getCity()).append(",").append(requirement.getState()).append(",").append(requirement.getCountry()).append("<p>");
+		if(user != null) {
+			try {
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				String resultJson = null;
+				String[] submissions = submissionIds.split(",");
+				String fullName = null;
+				if (!"".equalsIgnoreCase(user.getLastName()) && user.getLastName() != null) {
+					StringBuilder nameSB = new StringBuilder();
+					fullName = nameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
+				} else {
+					fullName = user.getFirstName();
+				}
+				StringBuilder sb = new StringBuilder();
+				Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+				requirement.setSubmitToClientFromMailId(user.getEmail());
+				if(requirement.getParentRequirement() != null && StringUtils.isNotEmpty(requirement.getParentRequirement().getReleasedBy())){
+					User releasedUser = userService.getUserById(Long.parseLong(requirement.getParentRequirement().getReleasedBy()));
+					requirement.setSubmitToClientToMailId(releasedUser.getEmail());
+				}else{
+					requirement.setSubmitToClientToMailId(requirement.getSpocId().getClientUser().getEmail());
+				}
+				StringBuilder subjectSB = new StringBuilder();
+				if(null != requirement.getCity() && !"".equalsIgnoreCase(requirement.getCity())){
+					requirement.setSubmitToClientMailSubject(subjectSB.append("Applicants received for the").append(" ").append(requirement.getJobTitle()).append("/").append(requirement.getCity()).append(",").append(requirement.getState()).append(",").append(requirement.getCountry()).toString());	
 				}else if(null != requirement.getState() && !"".equalsIgnoreCase(requirement.getState())){
-				sb.append("<p>").append("Location :").append(requirement.getState()).append(",").append(requirement.getCountry()).append("<p>");
-				}else if((null != requirement.getCountry())){
-				sb.append("<p>").append("Location :").append(requirement.getCountry()).append("<p>");
-				}else{
-				sb.append("<p>").append("Location :").append("--").append("<p>");
+					requirement.setSubmitToClientMailSubject(subjectSB.append("Applicants received for the").append(" ").append(requirement.getJobTitle()).append("/").append(requirement.getState()).append(",").append(requirement.getCountry()).toString());	
+				}else if(null != requirement.getCountry() && !"".equalsIgnoreCase(requirement.getCountry())){
+					requirement.setSubmitToClientMailSubject(subjectSB.append("Applicants received for the").append(" ").append(requirement.getJobTitle()).append("/").append(requirement.getCountry()).toString());
+				}else {
+					requirement.setSubmitToClientMailSubject(subjectSB.append("Applicants received for the").append(" ").append(requirement.getJobTitle()).toString());
 				}
-				if(null !=requirement.getMaxExp() && !"".equalsIgnoreCase(requirement.getMaxExp())){
-				sb.append("<p>").append("Experience :").append(requirement.getMinExp()).append("-").append(requirement.getMaxExp()).append("Years").append("<p>");
-				}else if(null !=requirement.getMinExp() && !"".equalsIgnoreCase(requirement.getMinExp())){
-				sb.append("<p>").append("Experience :").append(requirement.getMinExp()).append("Years").append("<p>");
-				}else{
-				sb.append("<p>").append("Experience :").append("--").append("<p>");	
-				}
-				if(null !=requirement.getSkills()){
-				sb.append("<p>").append("Skills :").append(requirement.getSkills()).append("<p>");
-				}else{
-				sb.append("<p>").append("Skills :").append("--").append("<p>");	
-				}
-				sb.append("<p>").append("Best Regards,").append("</p>")
-				.append("<p>").append(fullName).append("</p>");
-				requirement.setMailBody(sb.toString());
-		}else{
-			if(null != requirement.getSpocId()){
-				if(null != requirement.getSpocId().getClientUser()){
-					sb.append("<p>").append("Hi,");
-					if(user.getId().longValue() == requirement.getSpocId().getClientUser().getId().longValue()){
-						sb.append(" ").append(requirement.getSpocId().getOwnerUser().getFirstName()).append(" ")
-						.append(requirement.getSpocId().getOwnerUser().getLastName()).append("</p>").append("\n");
-						}else{
-						sb.append(" ").append(requirement.getSpocId().getClientUser().getFirstName()).append(" ")
-						.append(requirement.getSpocId().getClientUser().getLastName()).append("</p>").append("\n");
-						}sb.append("<p>").append(fullName).append(" submitted the applicants for the").append(" ").append(requirement.getJobTitle()).append("</p>")
-						.append("<p>").append("Total no.of submitted applicants :").append(submissions.length).append("</p>");
-						if(null != requirement.getCity() && !"".equalsIgnoreCase(requirement.getCity())){
+		
+				if (requirement != null && requirement.getParentRequirement() != null) {
+					if(requirement != null && requirement.getParentRequirement().getManagerUserId() != null){
+						sb.append("<p>").append("Hi,").append(requirement.getParentRequirement().getManagerUserId().getFullName()).append("</p>")
+						.append("<p>").append(fullName).append(" submitted the applicants for the").append(" ")
+						.append(requirement.getJobTitle()).append("</p>")
+						.append("<p>").append("Total no.of submitted applicants :").append(submissions.length).append("<p>");
+						}if(null != requirement.getCity() && !"".equalsIgnoreCase(requirement.getCity())){
 						sb.append("<p>").append("Location :").append(requirement.getCity()).append(",").append(requirement.getState()).append(",").append(requirement.getCountry()).append("<p>");
 						}else if(null != requirement.getState() && !"".equalsIgnoreCase(requirement.getState())){
 						sb.append("<p>").append("Location :").append(requirement.getState()).append(",").append(requirement.getCountry()).append("<p>");
@@ -1052,14 +1074,60 @@ public class SubmissionsRestController {
 						sb.append("<p>").append("Skills :").append(requirement.getSkills()).append("<p>");
 						}else{
 						sb.append("<p>").append("Skills :").append("--").append("<p>");	
-						}sb.append("<p>").append("Best Regards,").append("</p>")
+						}
+						sb.append("<p>").append("Best Regards,").append("</p>")
 						.append("<p>").append(fullName).append("</p>");
 						requirement.setMailBody(sb.toString());
+				}else{
+					if(null != requirement.getSpocId()){
+						if(null != requirement.getSpocId().getClientUser()){
+							sb.append("<p>").append("Hi,");
+							if(user.getId().longValue() == requirement.getSpocId().getClientUser().getId().longValue()){
+								sb.append(" ").append(requirement.getSpocId().getOwnerUser().getFirstName()).append(" ")
+								.append(requirement.getSpocId().getOwnerUser().getLastName()).append("</p>").append("\n");
+								}else{
+								sb.append(" ").append(requirement.getSpocId().getClientUser().getFirstName()).append(" ")
+								.append(requirement.getSpocId().getClientUser().getLastName()).append("</p>").append("\n");
+								}sb.append("<p>").append(fullName).append(" submitted the applicants for the").append(" ").append(requirement.getJobTitle()).append("</p>")
+								.append("<p>").append("Total no.of submitted applicants :").append(submissions.length).append("</p>");
+								if(null != requirement.getCity() && !"".equalsIgnoreCase(requirement.getCity())){
+								sb.append("<p>").append("Location :").append(requirement.getCity()).append(",").append(requirement.getState()).append(",").append(requirement.getCountry()).append("<p>");
+								}else if(null != requirement.getState() && !"".equalsIgnoreCase(requirement.getState())){
+								sb.append("<p>").append("Location :").append(requirement.getState()).append(",").append(requirement.getCountry()).append("<p>");
+								}else if((null != requirement.getCountry())){
+								sb.append("<p>").append("Location :").append(requirement.getCountry()).append("<p>");
+								}else{
+								sb.append("<p>").append("Location :").append("--").append("<p>");
+								}
+								if(null !=requirement.getMaxExp() && !"".equalsIgnoreCase(requirement.getMaxExp())){
+								sb.append("<p>").append("Experience :").append(requirement.getMinExp()).append("-").append(requirement.getMaxExp()).append("Years").append("<p>");
+								}else if(null !=requirement.getMinExp() && !"".equalsIgnoreCase(requirement.getMinExp())){
+								sb.append("<p>").append("Experience :").append(requirement.getMinExp()).append("Years").append("<p>");
+								}else{
+								sb.append("<p>").append("Experience :").append("--").append("<p>");	
+								}
+								if(null !=requirement.getSkills()){
+								sb.append("<p>").append("Skills :").append(requirement.getSkills()).append("<p>");
+								}else{
+								sb.append("<p>").append("Skills :").append("--").append("<p>");	
+								}sb.append("<p>").append("Best Regards,").append("</p>")
+								.append("<p>").append(fullName).append("</p>");
+								requirement.setMailBody(sb.toString());
+						}
+					}
 				}
+				response.setObject(requirement);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			}catch(Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
 			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
-		resultJson = toJSON(requirement);
-		return resultJson;
+		return response;
 	}
 	
 	/**

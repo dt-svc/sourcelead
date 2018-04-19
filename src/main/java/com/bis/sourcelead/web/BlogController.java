@@ -28,10 +28,9 @@ public class BlogController {
 
 	@Autowired
 	private BlogCategoryService blogCategoryService;
-	
+
 	@Autowired
 	private UserRoleService userRoleService;
-	
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -56,21 +55,29 @@ public class BlogController {
 
 		ModelAndView modelAndView = new ModelAndView();
 		SourceleadBlogs blogDetails = sourceleadBlogService.getSourceleadBlogsByBlogTitle(blogTitle);
-		
-		List<SourceleadBlogs> relatedBlogs = sourceleadBlogService.getRelatedSourceleadBlogs(blogDetails.getCategoryId().getId());
+
+		if (blogDetails.getCategoryId() != null) {
+			List<SourceleadBlogs> relatedBlogs = sourceleadBlogService
+					.getRelatedSourceleadBlogs(blogDetails.getCategoryId().getId());
+			modelAndView.addObject("relatedBlogs", relatedBlogs);
+		}
+
 		List<BlogCategoryDTO> blogCategoryList = blogCategoryService.getBlogCategoryListByActiveBlogs();
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(blogDetails.getCreatedBy().getId(), 1l);
-		
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-		DateFormat dateFormatResult = new SimpleDateFormat ("MM/dd/yyyy hh:mm a");
-		
-		String publishon = dateFormatResult.format(dateFormat.parse(blogDetails.getPublishOn().toString()));
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		DateFormat dateFormatResult = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
+
+		if (blogDetails.getPublishOn() != null) {
+			String publishon = dateFormatResult.format(dateFormat.parse(blogDetails.getPublishOn().toString()));
+			modelAndView.addObject("publishon", publishon);
+		}
+
 		String createdDate = dateFormatResult.format(dateFormat.parse(blogDetails.getCreatedDate().toString()));
 
 		modelAndView.addObject("blogCategoryList", blogCategoryList);
-		modelAndView.addObject("relatedBlogs", relatedBlogs);
+
 		modelAndView.addObject("blogDetails", blogDetails);
-		modelAndView.addObject("publishon", publishon);
+
 		modelAndView.addObject("createdDate", createdDate);
 		String sleadUrl = sourceleadUrl.replace("/app", "");
 		modelAndView.addObject("sleadUrl", sleadUrl);
@@ -80,14 +87,28 @@ public class BlogController {
 		return modelAndView;
 	}
 
-	@RequestMapping(value = "/{category}")
-	public ModelAndView blogsByCategory(@PathVariable String category, HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/topic/{category}.html")
+	public ModelAndView blogCategoryRedirect(@PathVariable String category, HttpServletRequest request)
+			throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
-		List<SourceleadBlogs> allBlogs = sourceleadBlogService.getAllSourceleadBlogsByCategoryName(category);
-		modelAndView.addObject("allBlogs", allBlogs);
+		List<SourceleadBlogs> blogsByCategory = sourceleadBlogService.getAllSourceleadBlogsByCategoryName(category);
+		modelAndView.addObject("allBlogs", blogsByCategory);
+		String sleadUrl = sourceleadUrl.replace("/app", "");
+		modelAndView.addObject("sleadUrl", sleadUrl);
 		modelAndView.setViewName("/resources/all-blogs");
 		return modelAndView;
 	}
+
+	// @RequestMapping(value = "/{category}")
+	// public ModelAndView blogsByCategory(@PathVariable String category,
+	// HttpServletRequest request) throws Exception {
+	// ModelAndView modelAndView = new ModelAndView();
+	// List<SourceleadBlogs> allBlogs =
+	// sourceleadBlogService.getAllSourceleadBlogsByCategoryName(category);
+	// modelAndView.addObject("allBlogs", allBlogs);
+	// modelAndView.setViewName("/resources/all-blogs");
+	// return modelAndView;
+	// }
 
 	private boolean isNullOrEmpty(String msg) {
 		// TODO Auto-generated method stub

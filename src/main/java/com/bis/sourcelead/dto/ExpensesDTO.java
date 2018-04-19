@@ -56,6 +56,8 @@ private static final long serialVersionUID = 1L;
 	private String orgRelationUUID;
 	
 	private String expensesRejectedReason;
+	
+	private String projectStatus;
 
 	public Long getId() {
 		return id;
@@ -266,6 +268,14 @@ private static final long serialVersionUID = 1L;
 	}
 	public void setExpensesRejectedReason(String expensesRejectedReason) {
 		this.expensesRejectedReason = expensesRejectedReason;
+	}
+
+	public String getProjectStatus() {
+		return projectStatus;
+	}
+
+	public void setProjectStatus(String projectStatus) {
+		this.projectStatus = projectStatus;
 	}
 	
 	
