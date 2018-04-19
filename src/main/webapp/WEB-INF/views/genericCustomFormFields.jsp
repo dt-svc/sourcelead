@@ -157,7 +157,7 @@
 		                        <div class="col-md-9">
 		                          <div class="input-group">
 		                             <input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
-		                             <input type="text" readonly value="${dataMap.value[1]}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" field-name="${customForm.labelName}" class="form-control calendar customDate" onclick="dateScriptsCustomDate('${customForm.minDate}','${customForm.maxDate}');" id="${customForm.fieldName}" ${customForm.isRequired == 1 ? 'data-validation="required"':''}>
+		                             <input type="text"  id = "date${customForm.id}" readonly value="${dataMap.value[1]}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" field-name="${customForm.labelName}" class="form-control calendar customDate" onclick="dateScriptsCustomDate('${customForm.id}');" id="${customForm.fieldName}" ${customForm.isRequired == 1 ? 'data-validation="required"':''}>
 		                             <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
 		                          </div>
 		                       </div>
@@ -171,7 +171,7 @@
                         <div class="col-md-9">
                           <div class="input-group">
                              <input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
-                             <input type="text" readonly value="" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" field-name="${customForm.labelName}" class="form-control calendar customDate" onclick="dateScriptsCustomDate('${customForm.minDate}','${customForm.maxDate}');" id="${customForm.fieldName}" ${customForm.isRequired == 1 ? 'data-validation="required"':''}>
+                             <input type="text" id ="date${customForm.id}" readonly value="" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" field-name="${customForm.labelName}" class="form-control calendar customDate" onclick="dateScriptsCustomDate('${customForm.id}');" id="${customForm.fieldName}" ${customForm.isRequired == 1 ? 'data-validation="required"':''}>
                              <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
                           </div>
                        </div>
@@ -285,18 +285,16 @@ $('.email').blur(function() {
 
 
 <script>
-	function dateScriptsCustomDate(minDate, maxDate) {
-		 $('#date').datepicker('destroy');
+	function dateScriptsCustomDate(customDateId) {
+		 $('#date'+customDateId).datepicker('destroy');
 		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}';
 		 var finalDateFormat= getJSDateFormat(locationDate);
-		 $('.customDate').datepicker({
-		 minDate: new Date(minDate),
-		 maxDate: new Date(maxDate),
+		 $('#date'+customDateId).datepicker({
 		 dateFormat: finalDateFormat,
 		 changeMonth: true,
 		 changeYear: true, 
 		 });
-		 $('.customDate').datepicker("show");
+		 $('#date'+customDateId).datepicker("show");
 	 }
 </script>
 
@@ -317,9 +315,9 @@ $(function(){
 });
 </script>
 
-<!-- <script>
+ <script>
 function clearDate(){
 	$('.customDate').val('');
 }
 
-</script> -->
+</script> 
