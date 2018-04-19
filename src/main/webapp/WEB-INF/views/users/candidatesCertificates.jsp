@@ -662,7 +662,6 @@ function addCertification(candidateId) {
       
       <script type="text/javascript">
 	function updateCandidateCertification(candidateId, candidateCertificationId) {
-
 		var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',

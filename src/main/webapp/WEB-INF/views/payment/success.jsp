@@ -33,7 +33,7 @@
                             <th>Type</th><th>Description</th><th>Amount</th>
                             </thead>
                             <tbody>
-                            <td class="text-left">Subscriptions</td><td class="text-left">Description Descriptions</td><td class="text-left">$${amount}</td>
+                            <td class="text-left">${subscriptionType}</td><td class="text-left">License Subscription</td><td class="text-left">$ ${amount}</td>
                             </tbody>
                             <tfoot>
                             <td>&nbsp;</td>

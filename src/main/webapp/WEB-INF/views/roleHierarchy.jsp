@@ -38,7 +38,7 @@
         </div>
         <div class="modal-body">
            <div class="form-group" id="levelDiv">
-            <input type="text" class="form-control input-sm" data-validation="required validate_Space validate_length length2-20" field-name="Level" onblur="validateLevelName();"onkeyup="validateLevelName();"  placeholder="Enter Level" name="level" id="level" autocomplete="off" autofocus>
+            <input type="text" class="form-control input-sm" data-validation="required validate_Space validate_length length2-20" field-name="Level"  onblur="validateLevelName();"  placeholder="Enter Level" name="level" id="level" autocomplete="off" autofocus>
             <input type="hidden" name="hierarchyId" id="hierarchyId">
            </div>
         </div>
@@ -205,18 +205,19 @@ backdrop: 'static'
  
  <script type="text/javascript">
 function validateLevelName(){
-	var levelName = document.getElementById("level").value;
+	// 	var levelName = document.getElementById("level").value;
+	var levelName = document.getElementById("level").value.trim();
 	var hierarchyId = document.getElementById("hierarchyId").value;
 	var sourceleadUrl = '${sourceleadUrl}';
-	if(levelName) {
-		$("#add_hierarchy").attr("disabled", "disabled");
+	if(levelName.match(/^[^\s-](.*)*$/) !== null) {
+		 $('#levelDiv').find('p.jquery_form_error_message').remove(); 
 		$.ajax({
 			type : "GET",
 			url: sourceleadUrl+"/validateRoleHierarchyLevelName?${_csrf.parameterName}=${_csrf.token}&levelName="+levelName+"&hierarchyId="+hierarchyId, 
 			success : function(data) {
 				var result = data;
 				if (result == "invalid") {
-					$("#add_hierarchy").removeAttr("disabled");
+					$("#add_hierarchy").attr("disabled", "disabled");
 				    $('#levelDiv').find('p.jquery_form_error_message').remove(); 
 		    	    $("input#level").after("<p class='jquery_form_error_message'>"+levelName+" is Already Existed</span>");
     				$('input#level').attr('record-exist','yes');

@@ -847,7 +847,7 @@ public class UserDaoImpl implements UserDao {
 		
 	  Session session = this.sessionFactory.getCurrentSession();
 	  String query = "";
-	  Boolean isAdmin = userRoleDao.isUserAdmin(currentApproverId);
+	  Boolean isAdmin = userRoleDao.isUserAdminByOrgLocationId(currentApproverId,orgLocationsId);
 	  if(isAdmin){
 		  query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList) and userRole.roles.roleName = 'ROLE_ADMIN' and userRole.user.id != :currentApproverId)";
 	  }else{
