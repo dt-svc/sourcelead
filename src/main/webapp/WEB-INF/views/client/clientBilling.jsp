@@ -665,7 +665,7 @@ function clientInvoicePagination(){
 			  result = result +'        <div class="clearfix mb10"> ';
 			  result = result +'            <img src="/resources/images/invoice_icon.png" class="text-center" alt="create_receivables">';
 			  result = result +'        </div>';
-			  result = result +'        <strong class="clearfix">Custom</strong></a>';
+			  result = result +'        <strong class="clearfix">Client Based</strong></a>';
 			  result = result +'        </div>';
 			  result = result +'    </div>';
 			  result = result +'      <div class="col-md-4 mt25">';
