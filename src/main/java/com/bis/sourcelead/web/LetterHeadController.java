@@ -4,16 +4,28 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.LetterHeadDTO;
+import com.bis.sourcelead.dto.OrglocationSignatoryDTO;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
+import com.bis.sourcelead.entity.LetterHead;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.service.LetterHeadService;
 import com.bis.sourcelead.util.FileUploadUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
@@ -51,6 +63,9 @@ public class LetterHeadController extends PdfPageEventHelper {
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Autowired
+	LetterHeadService letterHeadService;
 
 	@RequestMapping (value="/letterHead")
 	public ModelAndView CustomField() throws Exception {
@@ -65,6 +80,20 @@ public class LetterHeadController extends PdfPageEventHelper {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl",sourceleadUrl);
 		model.setViewName("letterHead/letterHeadList");
+		return model;
+	}
+	
+	
+	@RequestMapping(value = "/editLetterhead")
+    public ModelAndView editTemplate(@RequestParam(value="letterHeadUUID", required=false) String letterHeadUUID ,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		
+		LetterHead letter = letterHeadService.getLetterheadByUUID(letterHeadUUID);
+		
+		ModelAndView model = new ModelAndView();
+		model.addObject("letterHeadUUID", letterHeadUUID);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("letterHead", letter);
+		model.setViewName("letterHead/letterHead");
 		return model;
 	}
 

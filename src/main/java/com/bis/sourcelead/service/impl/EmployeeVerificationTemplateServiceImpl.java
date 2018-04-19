@@ -17,9 +17,11 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.VendorContractsDTO;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
+import com.bis.sourcelead.entity.LetterHead;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
+import com.bis.sourcelead.service.LetterHeadService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -32,6 +34,9 @@ public class EmployeeVerificationTemplateServiceImpl implements EmployeeVerifica
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	LetterHeadService letterHeadService;
 	
 	@Value("${static.path}")
 	private String staticPath;
@@ -56,6 +61,9 @@ public class EmployeeVerificationTemplateServiceImpl implements EmployeeVerifica
 		
 		User signatoryUser = userService.getUserById(employmentVerificationTemplateDTO.getSignatory());
 		employeeVerificationTemplate.setSignatory(signatoryUser);
+		
+		LetterHead letter = letterHeadService.getLetterheadByUUID(employmentVerificationTemplateDTO.getLetterHead());
+		employeeVerificationTemplate.setLetterHead(letter);
 		
 		employeeVerificationTemplate.setOrgLocationId(orgLocation);
 		employeeVerificationTemplate.setDescription(employmentVerificationTemplateDTO.getDescription());

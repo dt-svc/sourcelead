@@ -1,5 +1,8 @@
 package com.bis.sourcelead.util;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.StringReader;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -8,9 +11,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
@@ -19,21 +27,42 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.jsoup.Jsoup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
+import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.LetterHead;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.reports.dao.ApplicantsBySourceDao;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.html.WebColors;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfName;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.tool.xml.XMLWorkerHelper;
 
 @Component
 public class ReportsUtil {
@@ -51,6 +80,15 @@ public class ReportsUtil {
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Value("${static.path}")
+	private String staticPath;
+	
+	@Autowired
+	EmployeesService employeesService;
+	
+	@Autowired
+	UserRoleService userRoleService;
 	
 	
      public List<RequirementDTO> getAllRequirementsByOrgLocationId(Long orgLocationId,User user,String userRole,HttpServletRequest request){
@@ -460,7 +498,173 @@ public class ReportsUtil {
 		dates[1] = endDate;
 		return dates;
 	}
+
+	public void viewCompleteletterheadData(String templateContent, LetterHead letterHead, HttpServletResponse response) throws Exception {
+
+		org.jsoup.nodes.Document doc = Jsoup.parse(templateContent);
+	    doc.outputSettings().syntax(org.jsoup.nodes.Document.OutputSettings.Syntax.xml);    
+        String finalString=doc.html();
+	    ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+	   
+	    Document document = new Document();
+	    PdfWriter writer = PdfWriter.getInstance(document, byteArray);
+	    document.open();
+	    
+	    
+	    PdfPTable header = new PdfPTable(1);
+       header.setWidths(new int[]{2});
+       header.setTotalWidth(527);
+       header.setLockedWidth(true);
+       header.getDefaultCell().setFixedHeight(40);
+       header.getDefaultCell().setBorder(Rectangle.BOTTOM);
+       header.getDefaultCell().setBorderColor(BaseColor.BLUE);
+       header.addCell(getCell(letterHead));
+       document.add(header);
+       
+       PdfPTable footer = new PdfPTable(1);
+       // set defaults
+		footer.setWidths(new int[]{2});
+		footer.setTotalWidth(527);
+		footer.setLockedWidth(true);
+		footer.getDefaultCell().setFixedHeight(40);
+		footer.getDefaultCell().setBorder(Rectangle.TOP);
+		footer.getDefaultCell().setBorderColor(BaseColor.LIGHT_GRAY);
+//   	footer.addCell(getCell1(letterHead));
+   	
+   	// add copyright
+   	
+   	footer.addCell(new Phrase(letterHead.getFooterText(), new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
+   	
+   	// add current page count
+//   	footer.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
+//   	footer.addCell(String.format(writer.getPageNumber()+""));
+   	
+   	// add placeholder for total page count
+   	//    PdfPCell totalPageCount = new PdfPCell(total);
+   	PdfPCell totalPageCount = new PdfPCell();
+   	totalPageCount.setBorder(Rectangle.TOP);
+   	totalPageCount.setBorderColor(BaseColor.LIGHT_GRAY);
+   	footer.addCell(totalPageCount);
+   	
+   	// write page
+   	PdfContentByte canvas = writer.getDirectContent();
+   	canvas.beginMarkedContentSequence(PdfName.ARTIFACT);
+   	footer.writeSelectedRows(0, -1, 34, 50, canvas);
+   	canvas.endMarkedContentSequence();
+   	
+    XMLWorkerHelper.getInstance().parseXHtml(writer, document, new StringReader(finalString));
+    document.close();
+   	byte[] pdfBytes = byteArray.toByteArray();
+   	response.setHeader("Content-disposition","inline; filename=Letterhead.pdf");
+   	response.setContentType("application/pdf");
+   	response.setContentLength(pdfBytes.length);
+     ServletOutputStream sos = response.getOutputStream();
+     sos.write(pdfBytes);
+     sos.flush();
+     sos.close();
+		
+	}
 	
+	private PdfPCell getCell(LetterHead letterHead) throws Exception
+	{
+		    PdfPCell cell = new PdfPCell();
+		    
+		    if(letterHead.getHeaderBgColor() != null && letterHead.getHeaderBgColor() != "") {
+		    	BaseColor myColor = WebColors.getRGBColor(letterHead.getHeaderBgColor());
+		    	cell.setBackgroundColor(myColor);
+		    }
+		    
+		    String removedUrl = StringUtils.removeEnd(staticPath, staticPath.substring(staticPath.lastIndexOf("/")));
+		    Image img1 = Image.getInstance(removedUrl+letterHead.getFileURL());
+		    img1.setAbsolutePosition(50,50);
+		    
+		    if("Right".equalsIgnoreCase(letterHead.getAlignLogo())) {
+		    	cell.setPaddingRight(0);
+		    	cell.setPaddingLeft(476);
+		    }else if("Left".equalsIgnoreCase(letterHead.getAlignLogo())){
+		    	cell.setPaddingRight(476);
+		    	cell.setPaddingLeft(0);
+		    }else {
+		    	cell.setPaddingRight(233);
+		    	cell.setPaddingLeft(233);
+		    }
+		    
+	    	cell.addElement(img1);
+		    return cell;
+	}
+	
+	public String replaceAllTemplatePlaceHolders(String templateContent, EmployeeVerificationTemplate empTemplate, String toAddress, User user, OrgLocations orgLocation) throws Exception {
+        
+		Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocation.getId());
+		UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocation.getId());
+	         Pattern logEntry = Pattern.compile("\\[(.*?)\\]");
+	            Matcher matchPattern = logEntry.matcher(templateContent);
+	            StringBuffer sb = new StringBuffer();
+	            while(matchPattern.find()) {
+	                if(matchPattern.group().equalsIgnoreCase("[Issued_Date]")){
+	                    matchPattern.appendReplacement(sb, new Date().toString());
+	                }else if(matchPattern.group().equalsIgnoreCase("[To_Whom_It_May_Concern]")){
+	                	if(StringUtils.isNotEmpty(toAddress))
+	                    matchPattern.appendReplacement(sb, toAddress);
+	                	else
+	                	matchPattern.appendReplacement(sb, "--");
+	                }else if(matchPattern.group().equalsIgnoreCase("[Company_Location]")){
+	                    matchPattern.appendReplacement(sb, "");    
+	                }else if(matchPattern.group().equalsIgnoreCase("[Company_Name]")){
+	                    matchPattern.appendReplacement(sb, orgLocation.getOrgLocationName());
+		            }else if(matchPattern.group().equalsIgnoreCase("[Company_Email]")){
+	                	matchPattern.appendReplacement(sb,"--");	
+		            }else if(matchPattern.group().equalsIgnoreCase("[Company_Contact]")){
+		            	if(StringUtils.isNotEmpty(orgLocation.getPhone()))
+	                	matchPattern.appendReplacement(sb,orgLocation.getPhone());
+	                }else if(matchPattern.group().equalsIgnoreCase("[Associate_Name]")){
+	                	StringBuilder name = new StringBuilder();
+	                	if(StringUtils.isNotEmpty(user.getLastName()))
+	                	matchPattern.appendReplacement(sb,name.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+	                	else
+	                	matchPattern.appendReplacement(sb,user.getFirstName());
+		            }else if(matchPattern.group().equalsIgnoreCase("[Associate_Designation_Role]")){
+	                    matchPattern.appendReplacement(sb,userRole.getUserType());
+	                }else if(matchPattern.group().equalsIgnoreCase("[Associate_Employment_Type]")){
+	                   matchPattern.appendReplacement(sb, "--");
+	                }else if(matchPattern.group().equalsIgnoreCase("[SSN]")){
+		               matchPattern.appendReplacement(sb, "--");
+	                }else if(matchPattern.group().equalsIgnoreCase("[PAN]")){
+		               matchPattern.appendReplacement(sb, "--");
+	                }else if(matchPattern.group().equalsIgnoreCase("[Pay_Rate]")){
+		               matchPattern.appendReplacement(sb, "--");
+	                }else if(matchPattern.group().equalsIgnoreCase("[Start_Date]")){
+	                   if(employee.getHireDate() != null)
+		               matchPattern.appendReplacement(sb, commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),employee.getHireDate()));
+	                   else
+	                   matchPattern.appendReplacement(sb, "--");
+		            }else if(matchPattern.group().equalsIgnoreCase("[End_Date]")){
+		            	
+		            	if(Constants.INACTIVE.equalsIgnoreCase(userRole.getUserState().toString())) {
+		            		matchPattern.appendReplacement(sb,commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),userRole.getUpdatedDate()));
+		    			}else {
+		    				matchPattern.appendReplacement(sb,"Till Date");
+		    			}
+	                }else if(matchPattern.group().equalsIgnoreCase("[Signatory_Name]")){
+	                	StringBuilder signatoryName = new StringBuilder();
+	                	if(StringUtils.isNotEmpty(empTemplate.getSignatory().getLastName()))
+	                	matchPattern.appendReplacement(sb,signatoryName.append(empTemplate.getSignatory().getFirstName()).append(" ").append(empTemplate.getSignatory().getLastName()).toString());
+	                	else
+	                	matchPattern.appendReplacement(sb,empTemplate.getSignatory().getFirstName());
+		            }else if(matchPattern.group().equalsIgnoreCase("[Signatory_Designation]")){
+		               matchPattern.appendReplacement(sb, "");
+		            }else if(matchPattern.group().equalsIgnoreCase("[Signatory_Email]")){
+		               matchPattern.appendReplacement(sb, empTemplate.getSignatory().getEmail());
+		            }else if(matchPattern.group().equalsIgnoreCase("[Signatory_Contact]")){
+			           matchPattern.appendReplacement(sb, empTemplate.getSignatory().getMobilePhone());
+		            }else if(matchPattern.group().equalsIgnoreCase("[Signature]")){
+		               matchPattern.appendReplacement(sb,"--");
+		            }
+	                }
+	            	   matchPattern.appendTail(sb);
+	            	   return sb.toString();
+	
+}
 	
 	
 }

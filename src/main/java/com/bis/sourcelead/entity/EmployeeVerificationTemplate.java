@@ -14,7 +14,7 @@ import javax.persistence.Table;
 
 /**
  * Entity for EMPLOYEE_VERIFICATION_TEMPLATE
- * @author root
+ * @author Rakshith
  *
  */
 
@@ -44,8 +44,9 @@ public class EmployeeVerificationTemplate {
 	@Column(name = "TEMPLATE_STYLE")
 	private String templateStyle;
 	
-	@Column(name = "LETTER_HEAD")
-	private String letterHead;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "LETTER_HEAD_ID")
+	private LetterHead letterHead;
 	
 	@Column(name = "DESCRIPTION",columnDefinition = "TEXT default NULL")
 	private String description;
@@ -127,11 +128,11 @@ public class EmployeeVerificationTemplate {
 		this.signatory = signatory;
 	}
 
-	public String getLetterHead() {
+	public LetterHead getLetterHead() {
 		return letterHead;
 	}
 
-	public void setLetterHead(String letterHead) {
+	public void setLetterHead(LetterHead letterHead) {
 		this.letterHead = letterHead;
 	}
 

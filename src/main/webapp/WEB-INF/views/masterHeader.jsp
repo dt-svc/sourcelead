@@ -753,7 +753,7 @@ function preventTabkey(e){
 							 </li> 	
 						   </sec:authorize>
 						   
-						   <li><a href="<c:url value="/app/letterHead" />"><i class="fa fa-file" aria-hidden="true"></i>Letter Head</a></li>
+						   <li><a href="<c:url value="/app/letterHeadList" />"><i class="fa fa-file" aria-hidden="true"></i>Letter Head</a></li>
 	              </ul>
 	            </div>
 	          </li>

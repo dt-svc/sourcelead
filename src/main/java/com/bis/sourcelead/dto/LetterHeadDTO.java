@@ -2,10 +2,11 @@ package com.bis.sourcelead.dto;
 
 import java.util.List;
 
-public class LetterHeadDTO {
+public class LetterHeadDTO extends SearchDTO {
 
 	private String letterHeadName;
 	private String letterHeadDescription;
+	private String letterHeadUUID;
 	private String templateBackgroundColor;
 	private String templateType;
 	private String paddingLeft;
@@ -33,6 +34,12 @@ public class LetterHeadDTO {
 	}
 	public void setTemplateType(String templateType) {
 		this.templateType = templateType;
+	}
+	public String getLetterHeadUUID() {
+		return letterHeadUUID;
+	}
+	public void setLetterHeadUUID(String letterHeadUUID) {
+		this.letterHeadUUID = letterHeadUUID;
 	}
 	public String getPaddingLeft() {
 		return paddingLeft;

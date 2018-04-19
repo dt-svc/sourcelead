@@ -16,7 +16,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Employment Verfication Report</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Employment Verfication Report</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a>&raquo; Employment Verfication Report</div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="clearfix form-horizontal">
@@ -39,7 +39,7 @@ $(document).ready(function(){
               <li>
               <div class="dynamic_search" style="top:-10px;">
         		          <input type="text" placeholder="Search" id="employeeDataTableSearch">
-        		          <span class="cursorPointer" title="Search"><i class="fa fa-search" onclick="getClientList();"></i></span>    
+        		          <span class="cursorPointer" title="Search"><i class="fa fa-search" onclick="getAllEmployeesList();"></i></span>    
                 </div>
               </li>
               <div class="clearfix"></div>
@@ -68,10 +68,7 @@ $(document).ready(function(){
 			<div class="form-group">
 				<label>Choose Template <span class="text-danger paddingRight">*</span></label>
 				<div class="clearfix">
-					<select class="selectpicker form-control" data-live-search="true">
-						<option>Template-1</option>
-						<option>Template-2</option>
-						<option>Template-3</option>
+					<select class="chosen-select form-control chose-all-template" data-live-search="true">
 					</select>
 				</div>
 			</div>
@@ -104,7 +101,7 @@ $(document).ready(function(){
 			<div class="form-group">
 				<label>Choose Template <span class="text-danger paddingRight">*</span></label>
 				<div class="clearfix">
-					<select class="chosen-select form-control" data-live-search="true" id="empTemplateId">
+					<select class="chosen-select form-control chose-all-template" data-live-search="true" id="empTemplateId">
 					</select>
 				</div>
 				<input type="hidden" name="hiddenUserId" id="hiddenUserId" value=""/>
@@ -151,10 +148,7 @@ $(document).ready(function(){
 			<div class="form-group">
 				<label>Choose Template <span class="text-danger paddingRight">*</span></label>
 				<div class="clearfix">
-					<select class="selectpicker form-control" data-live-search="true">
-						<option>Template-1</option>
-						<option>Template-2</option>
-						<option>Template-3</option>
+					<select class="chosen-select form-control chose-all-template" data-live-search="true">
 					</select>
 				</div>
 			</div>
@@ -186,10 +180,7 @@ $(document).ready(function(){
 			<div class="form-group">
 				<label>Choose Template <span class="text-danger paddingRight">*</span></label>
 				<div class="clearfix">
-					<select class="selectpicker form-control" data-live-search="true">
-						<option>Template-1</option>
-						<option>Template-2</option>
-						<option>Template-3</option>
+					<select class="chosen-select form-control chose-all-template" data-live-search="true">
 					</select>
 				</div>
 			</div>
@@ -241,7 +232,12 @@ $(document).ready(function(){
 		$(".sideMask").fadeIn();
 		$(".shareEVR").fadeIn();
 	}
-	function viewEVR(employeeId) {
+	function viewEVR() {
+		$(".sideMask").fadeIn();
+		$(".viewEVR").fadeIn();
+	}
+	
+	function commonview(employeeId) {
 		$("#hiddenUserId").val(employeeId);
 		$.ajax({
 	         type : "GET",
@@ -253,15 +249,16 @@ $(document).ready(function(){
 	        		 	var opt = json.data[i];
 		        		output = output + "<option value="+opt.templateUUID+" selected>"+opt.templateName+"</option>";
 					}
-		        	$("#empTemplateId").empty();
-			        $("#empTemplateId").append(output);
-			        $("#empTemplateId").trigger("chosen:updated");
+// 		        	$("#empTemplateId").empty();
+// 			        $("#empTemplateId").append(output);
+// 			        $("#empTemplateId").trigger("chosen:updated");
+
+		        	$('.chose-all-template').empty();
+		        	$('.chose-all-template').append(output);
+		        	$('.chose-all-template').trigger("chosen:updated");
 	          }
 	          
 	     });
-		
-		$(".sideMask").fadeIn();
-		$(".viewEVR").fadeIn();
 	}
 	
 	
@@ -285,8 +282,6 @@ function getAllEmployeesList(){
 <script>
 function prepareAllEmployeesList(url){
 	 	var result = "";
-	 	//result = result +'<input type="text" placeholder="Search" id="employeeDataTableSearch"/>';
-	 	//result = result +' <span class="cursorPointer" title="Search"><i class="fa fa-search" onclick=""></i></span>';
 		result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
 		result = result + '<table id="dynamicEmployeeListView" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
@@ -391,12 +386,12 @@ function emplyoeesListPagination(url){
 		            "sortable": false,
 		            "render": function ( data, type, user, meta ) {
 		            	var result = '';
-/* 		            	if(user.phoneNumber !=null && user.phoneNumber !='' && user.phoneNumber !='undefined'){
-							result = result + ' <td><div class="tbldata-dotdot" title = "'+user.phoneNumber+'">'+user.phoneNumber+'</div></td>';
+ 		            	if(user.employmentType !=null && user.employmentType !='' && user.employmentType !='undefined'){
+							result = result + ' <td><div class="tbldata-dotdot" title = "'+user.employmentType+'">'+user.employmentType+'</div></td>';
 						}else{
 							result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
 						}
- */
+ 
 			              return result;
 		            }
 		      },
@@ -421,11 +416,11 @@ function emplyoeesListPagination(url){
 		        "sortable": false,
 		        "render": function ( data, type, user, meta ) {
 		        	var result = '';
-		        	/* if(user.dateofJoin !=null && user.dateofJoin !='' && user.dateofJoin !='undefined'){
-						result = result + ' <td><div class="tbldata-dotdot" title = "'+user.dateofJoin+'">'+user.dateofJoin+'</div></td>';
+		        	 if(user.dateOfTermination !=null && user.dateOfTermination !='' && user.dateOfTermination !='undefined'){
+						result = result + ' <td><div class="tbldata-dotdot" title = "'+user.dateOfTermination+'">'+user.dateOfTermination+'</div></td>';
 					}else{
 						result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
-					} */
+					}
 		              return result;
 		        }
 		    },
@@ -451,10 +446,10 @@ function emplyoeesListPagination(url){
 					       result = result + '      <td><div class="tblminwidth-75 text-center">             ';
 				           result = result + '      <div class="positionRelative actionList-vdse-div">';
 				           result = result + '        <ul class="list-unstyled list-inline clearfix actionList-vdse">';
-				           result = result + '          <li><a href="javascript:void(0)" title="Print" class="fa fa-print" onClick="printEVR()"></a></li>';
-				           result = result + '          <li><a href="javascript:void(0)" title="Download" class="fa fa-download" onClick="downloadEVR()"></a></li>';
-				           result = result + '          <li><a href="javascript:void(0)" title="Share" class="fa fa-share-alt" onClick="shareEVR()"></a></li>';
-				           result = result + '          <li><a href="javascript:void(0)" title="View" class="fa fa-eye" onClick="viewEVR('+user.employeeId+')"></a></li>';
+				           result = result + '          <li><a href="javascript:void(0)" title="Print" class="fa fa-print" onClick="printEVR();commonview('+user.employeeId+');"></a></li>';
+				           result = result + '          <li><a href="javascript:void(0)" title="Download" class="fa fa-download" onClick="downloadEVR();commonview('+user.employeeId+');"></a></li>';
+				           result = result + '          <li><a href="javascript:void(0)" title="Share" class="fa fa-share-alt" onClick="shareEVR();commonview('+user.employeeId+');"></a></li>';
+				           result = result + '          <li><a href="javascript:void(0)" title="View" class="fa fa-eye" onClick="viewEVR();commonview('+user.employeeId+')"></a></li>';
 				           result = result + '        </ul>';
 				           result = result + '      </div>';
 				           result = result + '    </div>';
@@ -491,7 +486,7 @@ function viewCompleteTemplate(){
 	var templateUUID = $("#empTemplateId").val();
 	var toAddress = $("#toAddress").val();
 	var employeeId = $("#hiddenUserId").val();
-	window.open(sourceleadUrl+'/previewCompleteTemplateByTemplateId?&templateUUID='+templateUUID+'&toAddress='+toAddress+'&employeeId='+employeeId,'_newtab');
+	window.open(sourceleadUrl+'/previewCompleteTemplateByTemplateUUID?&templateUUID='+templateUUID+'&toAddress='+toAddress+'&employeeId='+employeeId,'_newtab');
 }
 </script> 
 

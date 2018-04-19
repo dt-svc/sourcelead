@@ -2,14 +2,17 @@ package com.bis.sourcelead.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
  * Entity for LETTER_HEAD
- * @author root
+ * @author Rakshith
  *
  */
 
@@ -29,6 +32,13 @@ public class LetterHead {
 	
 	@Column(name = "LETTERHEAD_DESCRIPTION",columnDefinition = "TEXT default NULL")
 	private String letterHeadDescription;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="ORGLOCATION_ID", nullable=false )     
+	private OrgLocations orgLocationId;
+	
+	@Column(name = "LETTERHEAD_UUID")
+	private String letterHeadUUID;
 	
 	@Column(name = "TEMPLATE_BACKGROUND_COLOR")
 	private String templateBgColor;
@@ -77,6 +87,9 @@ public class LetterHead {
 	
 	@Column(name = "FILE_URL")
 	private String fileURL;
+	
+	@Column(name = "STATUS")
+	private String status;
 
 	public Long getId() {
 		return id;
@@ -100,6 +113,22 @@ public class LetterHead {
 
 	public void setLetterHeadDescription(String letterHeadDescription) {
 		this.letterHeadDescription = letterHeadDescription;
+	}
+	
+	public OrgLocations getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(OrgLocations orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+	
+	public String getLetterHeadUUID() {
+		return letterHeadUUID;
+	}
+
+	public void setLetterHeadUUID(String letterHeadUUID) {
+		this.letterHeadUUID = letterHeadUUID;
 	}
 
 	public String getTemplateBgColor() {
@@ -230,5 +259,12 @@ public class LetterHead {
 		this.fileURL = fileURL;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 	
 }

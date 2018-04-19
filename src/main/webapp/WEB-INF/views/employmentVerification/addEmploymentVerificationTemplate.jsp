@@ -31,15 +31,19 @@
             <div class="form-group">
               <label class="col-md-4">Choose Letterhead<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="form-control selectpicker" data-live-search="true" title="Select Letterhead" name="LetterHead" data-validation="required">
-                    <%-- <c:forEach var="title" items="${signatoryList}">
-					<c:if test = "${title.associateId == empTemplate.signatory.id}">
-				         <option selected value="${title.associateId}">${title.firstName} ${title.lastName}</option>
+                  <select class="form-control selectpicker" data-live-search="true" title="Select Letterhead" name="letterHead" field-name="Letterhead" data-validation="required">
+                    <c:forEach var="letter" items="${letterHeadList}">
+				         <option value="${letter.letterHeadUUID}">${letter.letterHeadName}</option>
+                     </c:forEach>
+                     
+                       <c:forEach var="letter" items="${letterHeadList}">
+					<c:if test = "${letter.id == empTemplate.letterHead.id}">
+				         <option selected value="${letter.letterHeadUUID}">${letter.letterHeadName}</option>
 				    </c:if>
-				    <c:if test = "${title.associateId != empTemplate.signatory.id}">
+				    <c:if test = "${letter.id != empTemplate.letterHead.id}">
 				         <option value="${title.associateId}">${title.firstName} ${title.lastName}</option>
 				    </c:if>
-                     </c:forEach>   --%> 
+                     </c:forEach>    
                   </select>
             </div>
             </div>
@@ -86,7 +90,7 @@
 			<span class="btn btn-primary">Browse<input id="uploadBtn" style="display: none;" multiple type="file">
 			</span>
 			</label>
-			<input type="text" class="form-control" readonly id="imageFile" name="imageFile" value="${empTemplate.fileName}" placeholder="Upload Sign Image." field-name="Attachment" data-validation-optional="true" data-validation="validate_Space validateimage">
+			<input type="text" class="form-control" readonly id="imageFile" name="imageFile" value="${empTemplate.fileName}" placeholder="Upload Sign Image."  data-validation-optional="true" data-validation="validate_Space validateimage">
 			<i class="refreshinputfile"></i>
 			</div>
 

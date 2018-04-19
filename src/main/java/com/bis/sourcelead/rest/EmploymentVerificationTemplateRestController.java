@@ -20,6 +20,7 @@ import org.jsoup.Jsoup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +37,8 @@ import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
+import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.LetterHead;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
@@ -45,12 +48,21 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
+import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.LetterHeadService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.html.WebColors;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.tool.xml.XMLWorkerHelper;
 
@@ -66,11 +78,26 @@ import com.itextpdf.tool.xml.XMLWorkerHelper;
 public class EmploymentVerificationTemplateRestController {
 	
 	
+	@Value("${static.path}")
+	private String staticPath;
+	
 	@Autowired
 	UserService userService;
 	
 	@Autowired
 	UserRoleService userRoleService;
+	
+	@Autowired
+	LetterHeadService letterHeadService;
+	
+	@Autowired
+	EmployeesService employeesService;
+	
+	@Autowired
+	CommonUtil commonUtil;
+	
+	@Autowired
+	ReportsUtil reportsUtil;
 	
 	private static final Logger logger = LoggerFactory.getLogger(EmploymentVerificationTemplateRestController.class);
 	
@@ -113,7 +140,6 @@ public class EmploymentVerificationTemplateRestController {
 	@RequestMapping(value = "/previewEmpTemplate/{templateUUID}/{templateName}", method = RequestMethod.GET)
 	public @ResponseBody  void previewEmpTemplate(@PathVariable("templateUUID") String tempUUID,@PathVariable("templateName") String tempName,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		//ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateById(Long.parseLong(id));	
 		EmployeeVerificationTemplate empTemplate = employeeVerificationTemplateService.getEmploymentVerificationtemplateByTemplateUUID(tempUUID);
 		
 		try {
@@ -163,6 +189,15 @@ public class EmploymentVerificationTemplateRestController {
 		ResponseList<AddUserDTO> employeeResponseList =  new ResponseList<>();
 		List<User> employeesList = userService.getUsersListByOrglocationId(orgLocation.getId());
 		employeesList.forEach(emp->{
+			
+			Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(emp.getId(), orgLocation.getId());
+			UserRole userRole = null;
+			try {
+				 userRole = userRoleService.getUserDetailsByUserIdAndLocationId(emp.getId(), orgLocation.getId());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 			AddUserDTO user = new AddUserDTO();
 			user.setEmployeeId(emp.getId().toString());
 			if(emp.getLastName() != null) {
@@ -173,9 +208,19 @@ public class EmploymentVerificationTemplateRestController {
 			}
 			user.setEmail(emp.getEmail());
 			user.setPhoneNumber(emp.getMobilePhone());
-//			user.setDesignationType();
-			user.setDateofJoin(emp.getDateOfJoin());
-//			user.setDateofTermination();
+			
+			if(employee.getHireDate() != null)
+			user.setDateofJoin(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),employee.getHireDate()));
+			
+			if(Constants.INACTIVE.equalsIgnoreCase(userRole.getUserState().toString())) {
+				user.setDateOfTermination(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),userRole.getUpdatedDate()));
+			}else {
+				user.setDateOfTermination("Till Date");
+			}
+			
+			if(employee.getUserEmploymentType() != null)
+			user.setEmploymentType(employee.getUserEmploymentType());
+			
 //			user.setDesignation();
 			userDtoList.add(user);
 		});
@@ -185,100 +230,20 @@ public class EmploymentVerificationTemplateRestController {
 		return employeeResponseList;
 	}
 	
-	@RequestMapping(value = "/previewCompleteTemplateByTemplateId", method = RequestMethod.GET)
+	@RequestMapping(value = "/previewCompleteTemplateByTemplateUUID", method = RequestMethod.GET)
 	public @ResponseBody  void previewCompleteTemplateByTemplateId(@RequestParam("templateUUID") String templateUUID,@RequestParam("toAddress") String toAddress,@RequestParam("employeeId") Long employeeId,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		try {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			EmployeeVerificationTemplate empTemplate = employeeVerificationTemplateService.getEmploymentVerificationtemplateByTemplateUUID(templateUUID);
+			LetterHead letterHead = letterHeadService.getLetterheadById(empTemplate.getLetterHead().getId());
 			User user = userService.getUserById(employeeId);
-//			String header = "<div style='text-align: center;'>"+empTemplate.getTemplateName()+"<br></br></div><br></br><br></br><br></br>";
-			String templateContent = replaceAllTemplatePlaceHolders(empTemplate.getTemplateContent(),empTemplate,toAddress,user,orgLocation);
-		     org.jsoup.nodes.Document doc = Jsoup.parse(templateContent);
-		     doc.outputSettings().syntax(org.jsoup.nodes.Document.OutputSettings.Syntax.xml);    
-	         String finalString=doc.html();
-		    ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
-		   
-		    Document document = new Document();
-		    PdfWriter writer = PdfWriter.getInstance(document, byteArray);
-		    document.open();
-		    XMLWorkerHelper.getInstance().parseXHtml(writer, document, new StringReader(finalString));
-		    document.close();
-		    byte[] pdfBytes = byteArray.toByteArray();
-	  	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
-	  	    response.setContentType("application/pdf");
-	  	    response.setContentLength(pdfBytes.length);
-	          ServletOutputStream sos = response.getOutputStream();
-	          sos.write(pdfBytes);
-	          sos.flush();
-	          sos.close();
+			String templateContent = reportsUtil.replaceAllTemplatePlaceHolders(empTemplate.getTemplateContent(),empTemplate,toAddress,user,orgLocation);
+			reportsUtil.viewCompleteletterheadData(templateContent,letterHead,response);
+		    
 		} catch (Exception e) {
 		    e.printStackTrace();
 		}
 	}
 
-
-	private String replaceAllTemplatePlaceHolders(String templateContent, EmployeeVerificationTemplate empTemplate, String toAddress, User user, OrgLocations orgLocation) throws Exception {
-	        
-		
-		UserRole userRole = userRoleService.getUserRoleByUserId(user.getId());
-	         Pattern logEntry = Pattern.compile("\\[(.*?)\\]");
-	            Matcher matchPattern = logEntry.matcher(templateContent);
-	            StringBuffer sb = new StringBuffer();
-	            while(matchPattern.find()) {
-	                if(matchPattern.group().equalsIgnoreCase("[Issued_Date]")){
-	                    matchPattern.appendReplacement(sb, new Date().toString());
-	                }else if(matchPattern.group().equalsIgnoreCase("[To_Whom_It_May_Concern]")){
-	                	if(StringUtils.isNotEmpty(toAddress))
-	                    matchPattern.appendReplacement(sb, toAddress);
-	                }else if(matchPattern.group().equalsIgnoreCase("[Company_Location]")){
-	                    matchPattern.appendReplacement(sb, "");    
-	                }else if(matchPattern.group().equalsIgnoreCase("[Company_Name]")){
-	                    matchPattern.appendReplacement(sb, orgLocation.getOrgLocationName());
-		            }else if(matchPattern.group().equalsIgnoreCase("Company_Email")){
-	                	matchPattern.appendReplacement(sb,"");	
-		            }else if(matchPattern.group().equalsIgnoreCase("[Company_Contact]")){
-		            	if(StringUtils.isNotEmpty(orgLocation.getPhone()))
-	                	matchPattern.appendReplacement(sb,orgLocation.getPhone());
-	                }else if(matchPattern.group().equalsIgnoreCase("[Associate_Name]")){
-	                	StringBuilder name = new StringBuilder();
-	                	if(StringUtils.isNotEmpty(user.getLastName()))
-	                	matchPattern.appendReplacement(sb,name.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-	                	else
-	                	matchPattern.appendReplacement(sb,user.getFirstName());
-		            }else if(matchPattern.group().equalsIgnoreCase("[Associate_Designation_Role]")){
-	                    matchPattern.appendReplacement(sb,userRole.getUserType());
-	                }else if(matchPattern.group().equalsIgnoreCase("[Associate_Employment_Type]")){
-	                   matchPattern.appendReplacement(sb, "");
-	                }else if(matchPattern.group().equalsIgnoreCase("[SSN]")){
-		               matchPattern.appendReplacement(sb, "");
-	                }else if(matchPattern.group().equalsIgnoreCase("[PAN]")){
-		               matchPattern.appendReplacement(sb, "");
-	                }else if(matchPattern.group().equalsIgnoreCase("[Pay_Rate]")){
-		               matchPattern.appendReplacement(sb, "");
-	                }else if(matchPattern.group().equalsIgnoreCase("[Start_Date]")){
-	                	if(StringUtils.isNotEmpty(user.getDateOfJoin()))
-		               matchPattern.appendReplacement(sb, user.getDateOfJoin());
-		            }else if(matchPattern.group().equalsIgnoreCase("[End_Date]")){
-	                   matchPattern.appendReplacement(sb, "");
-	                }else if(matchPattern.group().equalsIgnoreCase("[Signatory_Name]")){
-	                	StringBuilder signatoryName = new StringBuilder();
-	                	if(StringUtils.isNotEmpty(empTemplate.getSignatory().getLastName()))
-	                	matchPattern.appendReplacement(sb,signatoryName.append(empTemplate.getSignatory().getFirstName()).append(" ").append(empTemplate.getSignatory().getLastName()).toString());
-	                	else
-	                	matchPattern.appendReplacement(sb,empTemplate.getSignatory().getFirstName());
-		            }else if(matchPattern.group().equalsIgnoreCase("[Signatory_Designation]")){
-		               matchPattern.appendReplacement(sb, "");
-		            }else if(matchPattern.group().equalsIgnoreCase("[Signatory_Email]")){
-		               matchPattern.appendReplacement(sb, empTemplate.getSignatory().getEmail());
-		            }else if(matchPattern.group().equalsIgnoreCase("[Signatory_Contact]")){
-			           matchPattern.appendReplacement(sb, empTemplate.getSignatory().getMobilePhone());
-		            }else if(matchPattern.group().equalsIgnoreCase("[Signature]")){
-		               matchPattern.appendReplacement(sb,"");
-		            }
-	                }
-	            	   matchPattern.appendTail(sb);
-	            	   return sb.toString();
-	
-}
 }

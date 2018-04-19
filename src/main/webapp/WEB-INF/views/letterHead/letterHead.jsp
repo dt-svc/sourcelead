@@ -27,14 +27,14 @@
             <div class="form-group row">
             <label class="col-md-12">Letterhead Name</label>
              <div class="col-md-12">
-                     <input type="text" class="form-control" id="letterHeadName" name="letterHeadName"  field-name="Letterhead Name">
+                     <input type="text" class="form-control" id="letterHeadName" name="letterHeadName"  field-name="Letterhead Name" value="${letterHead.letterHeadName}" data-validation="required">
               </div>
               </div>
                     
                 <div class="form-group row">    
                <label class="col-md-12">Letterhead Description</label>
               <div class="col-md-12">
-                <textarea class="form-control" rows="3" id="letterHeadDescription" name="letterHeadDescription"></textarea>
+                <textarea class="form-control" rows="3" id="letterHeadDescription" name="letterHeadDescription">${letterHead.letterHeadDescription}</textarea>
               </div>
               </div>
               </div>
@@ -49,14 +49,14 @@
                       <label  class="mt5"><strong>Background Color</strong></label>
                       </div>
                       <div class="col-md-4 paddingLeft">
-                      	<input type="color" id="templateBackgroundColor" name="templateBackgroundColor" value="#f5f5f5" style="width: 100%; height: 34px;">
+                      	<input type="color" id="templateBackgroundColor" name="templateBackgroundColor" value="${letterHead.templateBgColor}" style="width: 100%; height: 34px;">
 						</div>
                   </div>
                   <div class="row form-group clearfix">
                     <label class="col-md-12">Template Type</label>
                     <div class="col-md-12">
                       <div class="clearfix">
-                        <select id="templateType" class="sel form-control" name="templateType" onChange="templateType()">
+                        <select id="templateType" class="sel form-control" name="templateType" onChange="templateType()" value="${letterHead.templateType}">
                       	<option value="">-- Select --</option>
                       	<option value="Letter">Letter (8.5" x 11")</option>	
                       	<option value="A4">A4 (8.268" x 11.693")</option>
@@ -69,16 +69,16 @@
                 <div class="row form-group clearfix">
                     <label class="col-md-12">Padding</label>
                     <div class="col-md-3 paddingRight">
-                      <input type="text" name="paddingTop" placeholder="Top" class="form-control input-sm" value="15">
+                      <input type="text" name="paddingTop" placeholder="Top" class="form-control input-sm" value="${letterHead.paddingTop}">
                     </div>
                     <div class="col-md-3 paddingLeft paddingRight">
-                      <input type="text" name="paddingRight" placeholder="Right" class="form-control input-sm" value="15">
+                      <input type="text" name="paddingRight" placeholder="Right" class="form-control input-sm" value="${letterHead.paddingRight}">
                     </div>
                     <div class="col-md-3 paddingLeft paddingRight">
-                      <input type="text" name="paddingBottom" placeholder="Bottom" class="form-control input-sm" value="15">
+                      <input type="text" name="paddingBottom" placeholder="Bottom" class="form-control input-sm" value="${letterHead.paddingBottom}">
                     </div>
                     <div class="col-md-3 paddingLeft">
-                      <input type="text" name="paddingLeft" placeholder="Left" class="form-control input-sm" value="15">
+                      <input type="text" name="paddingLeft" placeholder="Left" class="form-control input-sm" value="${letterHead.paddingLeft}">
                     </div>
                 </div>
             </div>
@@ -95,7 +95,7 @@
 					Browse <input style="display: none;" id="uploadBtn" multiple type="file">
 					</span>
 					</label>
-					<input class="form-control input-custom" readonly type="text">
+					<input class="form-control input-custom" id="letterHeadFile" placeholder="Upload logo." field-name="Logo" readonly type="text" value="${letterHead.fileName}" data-validation="required validate_Space validateimage">
 					<i class="refreshinputfile"></i>
 					</div>
 					</div>
@@ -103,7 +103,7 @@
 					<div class="row">
 					<div class="col-md-8 paddingRight">
 					<label class="clearfix">Align logo</label>
-					<select class="form-control sel" id="alignLogo" name="alignLogo">
+					<select class="form-control sel" id="alignLogo" name="alignLogo" value="${letterHead.alignLogo}">
 						<option value="">-- Select --</option>
 						<option value="Left">Left</option>
 						<option value="Middle">Middle</option>
@@ -112,7 +112,7 @@
 					</div>
 					<div class="col-md-4 paddingLeft">
                		<label class="clearfix">Background</label>
-               			<input type="color" id="headerBackgroundColor" name="headerBackgroundColor" value="#f5f5f5" style="width: 100%; height: 34px;">
+               			<input type="color" id="headerBackgroundColor" name="headerBackgroundColor" value="${letterHead.headerBgColor}" style="width: 100%; height: 34px;">
 					</div>
 						</div>
 					</div>
@@ -122,24 +122,24 @@
 					<div class="row form-group clearfix">
 					<label class="col-md-12">Text</label>
 					<div class="col-md-12">
-					<input type="text" class="form-control" id="headerText" name="headerText" value=""  data-validation="validate_Space validate_length length1-100">
+					<input type="text" class="form-control" id="headerText" name="headerText" value="${letterHead.headerText}" data-validation-optional="true"  data-validation="validate_Space validate_length length2-100">
 					</div>
 					
 					<div class="col-md-12 mt">
 					<div class="row">
 					<div class="col-md-8 paddingRight">
 					<label class="clearfix">Align Text</label>
-					<select class="form-control sel" id="headerTextAlign" name="headerTextAlign">
+					<select class="form-control sel" id="headerTextAlign" name="headerTextAlign" value="${letterHead.alignHeaderText}">
 						<option value="">-- Select --</option>
 						<option value="Left">Left</option>
 						<option value="Middle">Middle</option>
 						<option value="Right">Right</option>
 					</select>
 					</div>
-					 <div class="col-md-4 paddingLeft">
+					<!--  <div class="col-md-4 paddingLeft">
                		<label class="clearfix">Text Color</label>
                			<input type="color" id="headerTextColor" name="headerTextColor" value="#f5f5f5" style="width: 100%; height: 34px;">
-					</div> 
+					</div>  -->
 						</div>
 					</div>
 					</div>
@@ -153,13 +153,13 @@
               	   <div class="row form-group clearfix">
                     <label class="col-md-12">Text</label>
 					<div class="col-md-12">
-						<input type="text" class="form-control" id="footerText" name="footerText" value=""  data-validation="validate_Space validate_length length1-100">
+						<input type="text" class="form-control" id="footerText" name="footerText" value="${letterHead.footerText}" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
 					</div>
 					<div class="col-md-12 mt10">
 						<div class="row">
 						<div class="col-md-8 paddingRight">
 						<label class="clearfix">Align footer</label>
-						<select class="form-control sel" id="alignFooter" name="alignFooter">
+						<select class="form-control sel" id="alignFooter" name="alignFooter" value="${letterHead.alignFooterText}">
 						<option value="">-- Select --</option>
 						<option value="Left">Left</option>
 						<option value="Middle">Middle</option>
@@ -168,7 +168,7 @@
 						</div>
 						<div class="col-md-4 paddingLeft">
 						<label class="clearfix">Background</label>
-						<input type="color" id="footerBackgroundColor" name="footerBackgroundColor" value="#f5f5f5" style="width: 100%; height: 34px;">
+						<input type="color" id="footerBackgroundColor" name="footerBackgroundColor" value="${letterHead.footerBgColor}" style="width: 100%; height: 34px;">
 						</div>
 						</div>
 					</div>
@@ -184,10 +184,11 @@
              <div class="letterhead-savefooter clearfix mt">
               <div class="col-md-12">
                 <div class="pull-right">
-                  <button type="button" class="btn btn-default">Stored</button>
-                  <button type="button" class="btn btn-default">Preview</button>
-                  <button type="button" class="btn btn-default" id="saveButton" onclick="saveLetterheadData();">Save</button>
-                  <button type="button" class="btn btn-primary">Print</button>
+<!--                   <button type="button" class="btn btn-default">Stored</button> -->
+<!--                   <button type="button" class="btn btn-default">Preview</button> -->
+                  <button type="button" class="btn btn-primary" id="saveButton" onclick="saveLetterheadData();">Save</button>
+<!--                   <button type="button" class="btn btn-primary">Print</button> -->
+						<button type="button" class="btn btn-default" onClick="javascript:window.location.href = '<c:url value='${appPath}/letterHeadList'/>'">Cancel</button>
                 </div>
               </div>
             </div>
@@ -202,17 +203,18 @@
   <script>
   
   function saveLetterheadData(){
-// 	  		if ($('#letterHead_form').validate(false, validationSettings)) {
+	  var letterHeadUUID = '${letterHeadUUID}';
+	  		if ($('#letterHead_form').validate(false, validationSettings)) {
 			var formData = $($('#letterHead_form')[0]).serialize();
-            $.post(sourceleadUrl+ "/saveLetterheadData", formData, function(data) {
+            $.post(sourceleadUrl+ "/saveLetterheadData?${_csrf.parameterName}=${_csrf.token}&letterHeadUUID="+letterHeadUUID, formData, function(data) {
                        if(data == "success"){
-                    	   alert("in")
+                    	   location.replace(sourceleadUrl+"/letterHeadList");
                        }
             });
 			return true;
-// 		} else {
-// 			return false;
-// 		}
+		} else {
+			return false;
+		}
   }
   
   </script>
@@ -222,6 +224,11 @@
 		$("#uploadBtn").change(function() {
 			fileUpload("uploadBtn", "LetterHeadDocs", "letterHead_form");
 		});
+		
+ 		document.getElementById("uploadBtn").onchange = function () {
+ 	    document.getElementById("letterHeadFile").value = this.value.split( '\\' ).pop();
+ 	    };
+		 	    
 	 });
   
   </script>

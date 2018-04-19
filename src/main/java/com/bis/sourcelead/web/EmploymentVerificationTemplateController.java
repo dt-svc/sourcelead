@@ -9,18 +9,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.dto.OrglocationSignatoryDTO;
-import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
+import com.bis.sourcelead.entity.LetterHead;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
+import com.bis.sourcelead.service.LetterHeadService;
 import com.bis.sourcelead.service.OrglocationSignatoryService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -39,6 +38,9 @@ public class EmploymentVerificationTemplateController {
 	@Autowired
 	EmployeeVerificationTemplateService employeeVerificationTemplateService;
 	
+	@Autowired
+	LetterHeadService letterHeadService;
+	
 	/**
 	 * 	Display add template page
 	 * @return
@@ -49,8 +51,10 @@ public class EmploymentVerificationTemplateController {
 		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<OrglocationSignatoryDTO> signatoryList = orglocationSignatoryService.getAllSignatoriesByLocationId(orgLocation.getId());
+		List<LetterHead> letterHeadList = letterHeadService.getLetterheadBylocationId(orgLocation.getId());
 		ModelAndView model = new ModelAndView();
 		model.addObject("signatoryList",signatoryList);
+		model.addObject("letterHeadList",letterHeadList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("employmentVerification/addEmploymentVerificationTemplate");
@@ -75,10 +79,12 @@ public class EmploymentVerificationTemplateController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		List<OrglocationSignatoryDTO> signatoryList = orglocationSignatoryService.getAllSignatoriesByLocationId(orgLocation.getId());
+		List<LetterHead> letterHeadList = letterHeadService.getLetterheadBylocationId(orgLocation.getId());
 		EmployeeVerificationTemplate empTemplate = employeeVerificationTemplateService.getEmploymentVerificationtemplateByTemplateUUID(templateUUID);
 		ModelAndView model = new ModelAndView();
 		model.addObject("templateUUID", templateUUID);
 		model.addObject("signatoryList", signatoryList);
+		model.addObject("letterHeadList",letterHeadList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("empTemplate", empTemplate);
 		model.setViewName("employmentVerification/addEmploymentVerificationTemplate");

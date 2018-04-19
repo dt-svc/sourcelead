@@ -50,12 +50,10 @@ public class EmploymentVerificationTemplateDTO extends SearchDTO implements Seri
 	{
 		this.orgLocationId = orgLocationId;
 	}
-	public String getLetterHead()
-	{
+	public String getLetterHead() {
 		return letterHead;
 	}
-	public void setLetterHead(String letterHead)
-	{
+	public void setLetterHead(String letterHead) {
 		this.letterHead = letterHead;
 	}
 	public String getDescription()
