@@ -75,7 +75,7 @@ top:0;
 			   		        	</div>
 		   		        	</td>
 		   		        	<td class="tbldata-dotdot-100 mt">
-		   		        	<c:if test="${orgSubscription.isInvoiceAmountPaid == 'N'}">
+		   		        	<c:if test="${orgSubscription.isInvoiceAmountPaid == 'N' && orgSubscription.invoiceAmount > 0}">
 		   		        	   <a href='#' onclick='initPayment("${orgSubscription.uuid}","pay")'>Pay</a> |
 		   		        	</c:if>
 		   		        	<a href='<c:url value="/app/upgradeOrgLicenseSubscription/${orgSubscription.uuid}"/>'>Upgrade</a> 
