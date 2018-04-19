@@ -656,7 +656,6 @@ this.deletePassportVisaDetailsById=function(id,idType){
 		});
 	}
 	
-	
 }
 
 function deleteEDucationDetailsById(id){

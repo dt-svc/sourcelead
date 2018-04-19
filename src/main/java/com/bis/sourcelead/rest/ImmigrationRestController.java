@@ -160,11 +160,17 @@ public class ImmigrationRestController {
 
     @RequestMapping(value = {"/loadNewPetitionPage"})
     public ModelAndView loagNewPetitionPageView(HttpServletRequest request,
-            @RequestParam(value = "forward", required = false) String forward) {
+            @RequestParam(value = "forward", required = false) String forward,
+            @RequestParam(value = "immigrationId", required = false) Long immigrationId) {
         ModelAndView model = new ModelAndView();
         model.addObject("sourceleadUrl", sourceleadUrl);
         if (forward.equalsIgnoreCase("petitionDetails")) {
             model.setViewName("/immigration/petitionDetails");
+            if(immigrationId != null) {
+            	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+        		ImmigrationDTO immigrationDTO = immigrationCommonService.editImmigrationDetails(immigrationId,orgLocations);
+        		model.addObject("immigrationDTO", immigrationDTO);
+            }
             OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
                     "orgLocations");
             List<ImmigrationTemplate> templateList = immigrationCommonService.getImmigrationTemplateList(orgLocations);
@@ -1407,6 +1413,19 @@ public class ImmigrationRestController {
 	}
 	
 	
+	@RequestMapping(value = { "/editImmigrationDetails" })
+	public ModelAndView editImmigrationDetails(
+			@RequestParam(value = "immigrationId", required = false) Long immigrationId,
+			HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+        model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("immigrationIdCode", immigrationId);
+		model.setViewName("/immigration/newPetition");
+		return model;
+	}
+	
+		
+		
 
 }
 
