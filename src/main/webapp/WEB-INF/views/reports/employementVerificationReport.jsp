@@ -26,13 +26,15 @@ $(document).ready(function(){
               <li>
                 <div class="clearfix pull-lefet col-md-12 paddingRight mt10" id="custom-select" style="width: 346px; display: block;">
                   <div class="pull-left">
-                    <div class="pull-left mr5" style="width: 140px">
-                      <input value="" name="Date" id="datepicker4" placeholder="From" class="form-control calendar input-sm margin-top0" type="text">
+                    <div class="posiRela pull-left mr5" style="width: 140px">
+                      <input value="" id="fromDate" name="fromDate" placeholder="From" class="form-control calendar input-sm margin-top0" type="text">
+                    	<p id="fromDateDiv" class="ReError"></p>
                     </div>
-                    <div class="pull-left mr5" style="width: 140px">
-                      <input value="" name="Date" id="datepicker2" placeholder="To" class="form-control calendar input-sm margin-top0" type="text">
+                    <div class="posiRela pull-left mr5" style="width: 140px">
+                      <input value="" id="toDate" name="toDate" placeholder="To" class="form-control calendar input-sm margin-top0" type="text">
+                    	<p id="toDateDiv" class="ReError"></p>
                     </div>
-                    <button type="button" class="btn btn-primary btn-sm margin-top0"><i class="fa fa-search"></i></button>
+                    <button type="button" class="btn btn-primary btn-sm margin-top0"><i class="fa fa-search" onclick="searchThroughDates();";></i></button>
                   </div>
                 </div>
               </li>
@@ -204,9 +206,9 @@ $(document).ready(function(){
 
 <script>
  $( function() {
-    $("#datepicker4").datepicker(
+    $("#fromDate").datepicker(
 		{changeMonth: true});
-	 $("#datepicker2").datepicker(
+	 $("#toDate").datepicker(
 	 {changeMonth: true});
   });
 </script> 
@@ -249,9 +251,6 @@ $(document).ready(function(){
 	        		 	var opt = json.data[i];
 		        		output = output + "<option value="+opt.templateUUID+" selected>"+opt.templateName+"</option>";
 					}
-// 		        	$("#empTemplateId").empty();
-// 			        $("#empTemplateId").append(output);
-// 			        $("#empTemplateId").trigger("chosen:updated");
 
 		        	$('.chose-all-template').empty();
 		        	$('.chose-all-template').append(output);
@@ -271,7 +270,30 @@ $(document).ready(function(){
 	</script>
 	
 <script>
+	function searchThroughDates(){
+		var fromDate = $("#fromDate").val();
+		var toDate = $("#toDate").val();
+		
+		$('#fromDateDiv').empty();
+		$('#toDateDiv').empty(); 
+		
+		if(fromDate == null || fromDate == '' || fromDate == 'undefined'){
+			$("#fromDateDiv").append("Start Date is Required") ; 
+		}
+		
+		if(toDate == null || toDate == '' || toDate == 'undefined'){
+			$("#toDateDiv").append("End Date is Required") ; 
+		}
+		
+// 		getAllEmployeesList();
+		
+	}
+
+</script>
+	
+<script>
 function getAllEmployeesList(){
+	
 	var searchValue = $("#employeeDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
 	var url = sourceleadUrl+"/getAllEmployeesList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue;
@@ -430,11 +452,11 @@ function emplyoeesListPagination(url){
 			          "sortable": false,
 			          "render": function ( data, type, user, meta ) {
 			          	var result = '';
-			        /* 	if(user.dateofJoin !=null && user.dateofJoin !='' && user.dateofJoin !='undefined'){
-							result = result + ' <td><div class="tbldata-dotdot" title = "'+user.dateofJoin+'">'+user.dateofJoin+'</div></td>';
+			         	if(user.designation !=null && user.designation !='' && user.designation !='undefined'){
+							result = result + ' <td><div class="tbldata-dotdot" title = "'+user.designation+'">'+user.designation+'</div></td>';
 						}else{
 							result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
-						} */
+						} 
 				        return result;
 			          }
 			},{

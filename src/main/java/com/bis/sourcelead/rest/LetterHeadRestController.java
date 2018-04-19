@@ -107,104 +107,12 @@ public @ResponseBody  void previewLetterHead(@PathVariable("letterHeadUUID") Str
 {
 	
 	try {
-		
 		LetterHead letterHead = letterHeadService.getLetterheadByUUID(letterHeadUUID);
-		
-		letterHeadData(letterHead, response);
+		letterHeadService.letterHeadData(letterHead, response);
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
 	
 	
-}
-
-
-private void letterHeadData(LetterHead letterHead,HttpServletResponse response) throws Exception {
-
-	ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
-    Document document = new Document();
-    PdfWriter writer = PdfWriter.getInstance(document, byteArray); // Important to display data
-    document.open();
-    
-    PdfPTable header = new PdfPTable(1);
-    header.setWidths(new int[]{2});
-    header.setTotalWidth(527);
-    header.setLockedWidth(true);
-    header.getDefaultCell().setFixedHeight(40);
-    header.getDefaultCell().setBorder(Rectangle.BOTTOM);
-    header.getDefaultCell().setBorderColor(BaseColor.BLUE);
-    header.addCell(getCell(letterHead));
-    
-    PdfPTable footer = new PdfPTable(1);
-    // set defaults
-	footer.setWidths(new int[]{2});
-	footer.setTotalWidth(527);
-	footer.setLockedWidth(true);
-	footer.getDefaultCell().setFixedHeight(40);
-	footer.getDefaultCell().setBorder(Rectangle.TOP);
-	footer.getDefaultCell().setBorderColor(BaseColor.LIGHT_GRAY);
-	
-	// add copyright
-	
-	footer.addCell(new Phrase(letterHead.getFooterText(), new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
-	
-	// add current page count
-//	footer.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
-//	footer.addCell(String.format(writer.getPageNumber()+""));
-	
-	// add placeholder for total page count
-	//    PdfPCell totalPageCount = new PdfPCell(total);
-	PdfPCell totalPageCount = new PdfPCell();
-	totalPageCount.setBorder(Rectangle.TOP);
-	totalPageCount.setBorderColor(BaseColor.LIGHT_GRAY);
-	footer.addCell(totalPageCount);
-	
-	// write page
-	PdfContentByte canvas = writer.getDirectContent();
-	canvas.beginMarkedContentSequence(PdfName.ARTIFACT);
-	footer.writeSelectedRows(0, -1, 34, 50, canvas);
-	canvas.endMarkedContentSequence();
-	
-	document.add(header);
-	document.close();
-	
-	byte[] pdfBytes = byteArray.toByteArray();
-	response.setHeader("Content-disposition","inline; filename=Letterhead.pdf");
-	response.setContentType("application/pdf");
-	response.setContentLength(pdfBytes.length);
-  ServletOutputStream sos = response.getOutputStream();
-  sos.write(pdfBytes);
-  sos.flush();
-  sos.close();
-	
-}
-
-
-private PdfPCell getCell(LetterHead letterHead) throws Exception
-{
-	    PdfPCell cell = new PdfPCell();
-	    
-	    if(letterHead.getHeaderBgColor() != null && letterHead.getHeaderBgColor() != "") {
-	    	BaseColor myColor = WebColors.getRGBColor(letterHead.getHeaderBgColor());
-	    	cell.setBackgroundColor(myColor);
-	    }
-	    
-	    String removedUrl = StringUtils.removeEnd(staticPath, staticPath.substring(staticPath.lastIndexOf("/")));
-	    Image img1 = Image.getInstance(removedUrl+letterHead.getFileURL());
-	    img1.setAbsolutePosition(50,50);
-	    
-	    if("Right".equalsIgnoreCase(letterHead.getAlignLogo())) {
-	    	cell.setPaddingRight(0);
-	    	cell.setPaddingLeft(476);
-	    }else if("Left".equalsIgnoreCase(letterHead.getAlignLogo())){
-	    	cell.setPaddingRight(476);
-	    	cell.setPaddingLeft(0);
-	    }else {
-	    	cell.setPaddingRight(233);
-	    	cell.setPaddingLeft(233);
-	    }
-	    
-    	cell.addElement(img1);
-	    return cell;
 }
 }

@@ -2,6 +2,8 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import com.bis.sourcelead.dto.LetterHeadDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.LetterHead;
@@ -18,5 +20,7 @@ List<LetterHead> getLetterheadBylocationId(Long orgLocationId);
 LetterHead getLetterheadByUUID(String UUID);
 
 LetterHead getLetterheadById(Long letterHeadId);
+
+void letterHeadData(LetterHead letterHead, HttpServletResponse response) throws Exception;
 
 }

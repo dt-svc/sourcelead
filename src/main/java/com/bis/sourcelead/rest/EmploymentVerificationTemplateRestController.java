@@ -34,6 +34,7 @@ import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.EmploymentVerificationTemplateDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.RoleDTO;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
@@ -180,15 +181,15 @@ public class EmploymentVerificationTemplateRestController {
 	}
 
 	@RequestMapping(value = "/getAllEmployeesList", method = RequestMethod.GET)
-	public @ResponseBody  ResponseList<AddUserDTO> getAllEmployeesList(HttpServletRequest request, HttpServletResponse response) throws Exception
+	public @ResponseBody  ResponseList<UserDTO> getAllEmployeesList(UserDTO userDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		List<AddUserDTO> userDtoList =  new ArrayList<>();
-		ResponseList<AddUserDTO> employeeResponseList =  new ResponseList<>();
-		List<User> employeesList = userService.getUsersListByOrglocationId(orgLocation.getId());
-		employeesList.forEach(emp->{
+		List<UserDTO> userDtoList =  new ArrayList<>();
+		ResponseList<UserDTO> employeeResponseList =  new ResponseList<>();
+		ResponseList<User> employeesList = userService.getUsersResponseListByOrglocationId(userDTO,orgLocation);
+		employeesList.getData().forEach(emp->{
 			
 			Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(emp.getId(), orgLocation.getId());
 			UserRole userRole = null;
@@ -198,7 +199,7 @@ public class EmploymentVerificationTemplateRestController {
 				e.printStackTrace();
 			}
 			
-			AddUserDTO user = new AddUserDTO();
+			UserDTO user = new UserDTO();
 			user.setEmployeeId(emp.getId().toString());
 			if(emp.getLastName() != null) {
 				StringBuilder sb = new StringBuilder();
@@ -207,7 +208,7 @@ public class EmploymentVerificationTemplateRestController {
 				user.setUserName(emp.getFirstName());
 			}
 			user.setEmail(emp.getEmail());
-			user.setPhoneNumber(emp.getMobilePhone());
+			user.setMobilePhone(emp.getMobilePhone());
 			
 			if(employee.getHireDate() != null)
 			user.setDateofJoin(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),employee.getHireDate()));
@@ -221,7 +222,8 @@ public class EmploymentVerificationTemplateRestController {
 			if(employee.getUserEmploymentType() != null)
 			user.setEmploymentType(employee.getUserEmploymentType());
 			
-//			user.setDesignation();
+			if(userRole.getDesignation() != null)
+			user.setDesignation(userRole.getDesignation());
 			userDtoList.add(user);
 		});
 		employeeResponseList.setData(userDtoList);
