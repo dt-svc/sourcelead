@@ -803,7 +803,7 @@ function invoicePagination(url){
             				if(report.invoiceType == "Receivable" && (report.invoiceParentId == null || report.invoiceParentId == '' || report.invoiceParentId == "undefined")){
             					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected" || report.invoiceStatus == "SENT"){
             						if(report.paymentStatus == "Paid"){
-            							result = result +'           <span class="text-primary primary pull-left" >Receive</span>   ';
+            							result = result +'           <span class="text-primary primary pull-left" >Received</span>   ';
             						}else if(report.invoiceStatus == "DRAFT"){
             							result = result +'           <span class="successBtn primary pull-left">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Invoice" onClick="deleteInvoice(\''+report.invoiceUUID+'\');";></i>';	
             						}else if(report.invoiceStatus == "Rejected"){
@@ -822,9 +822,9 @@ function invoicePagination(url){
             				}else{
             					if(report.invoiceStatus == "Accepted"){
             						if(report.paymentStatus == "Paid"){
-            							result = result +'           <span class=" primary pull-left">paid</span>   ';	
+            							result = result +'           <span class=" primary pull-left">Received</span>   ';	
             						}else{
-            							result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">pay</span> </td>';
+            							result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>';
             						}
             						
             					}else{

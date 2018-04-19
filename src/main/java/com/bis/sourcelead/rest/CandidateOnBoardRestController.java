@@ -1645,11 +1645,14 @@ public class CandidateOnBoardRestController {
 					loginOrgLocation.getId());
 			if (onBoarding != null) {
 				response.setObject("Invalid");
+				response.setResponse(Result.FAILED.name());
+				response.setResponseMessage(Result.FAILED.getValue());
 			} else {
 				response.setObject("Success");
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
 			}
-			response.setResponse(Result.SUCCESS.name());
-			response.setResponseMessage(Result.SUCCESS.getValue());
+			
 		} catch (Exception e) {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());

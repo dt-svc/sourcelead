@@ -139,10 +139,21 @@ function saveScheduleMaintenance() {
 					 data: formData,
 					url : sourceleadUrl+"/storeScheduleMaintenance?${_csrf.parameterName}=${_csrf.token}",
 					success : function(result) {
+						
+ 	       			if (result && result.response === "INVALID_DATA") {
+					    showError(result.responseMessage);
+					} else if (result.response === "AWKWARD") {
+					    location.href = "/errorPage";
+					} else if (result.response === "SUCCESS") {
 						$("#scheduleMPopDiv").fadeOut();
 						$(".popMask").fadeOut(); 
 						scheduleDataTableList();
  	       			    flushScheduleMaintenance();
+					} else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+					    showError("Operation failed, please try again");
+					}
 					}
 				}); 
 		return true;
@@ -257,8 +268,19 @@ function deleteScheduleRow(idValue){
 		type : "GET",
 		url : sourceleadUrl+"/deleteScheduleMaintenance?${_csrf.parameterName}=${_csrf.token}&id="+idValue,
 		success : function(result) {
-			scheduleDataTableList();
-			flushScheduleMaintenance();
+			
+			if (result && result.response === "INVALID_DATA") {
+			    showError(result.responseMessage);
+			} else if (result.response === "AWKWARD") {
+			    location.href = "/errorPage";
+			} else if (result.response === "SUCCESS") {
+				scheduleDataTableList();
+				flushScheduleMaintenance();
+			} else if (result.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+			    showError("Operation failed, please try again");
+			}
 		}
 	}); 
 }
