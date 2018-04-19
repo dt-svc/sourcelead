@@ -1,11 +1,13 @@
 package com.bis.sourcelead.dto;
 
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.annotations.Required;
 
 public class CandidateCommentsDTO extends CommonDTO {
 
 	
 	@Required(desc = "comment")
+	@CleanHtml(escape=false)
 	private String comment;
 	
 	private String createdDate;

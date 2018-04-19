@@ -83,7 +83,8 @@
 								+ tokenParamName + "=" + tokenValue
 								+ "&orgLocationId=" + orgLocationId
 								+ "&status=CANCELLED&userId=" + userId,
-						function(json) {
+						function(response) {
+						if (response.response === "SUCCESS") {
 							var result = "";
 							result = result
 									+ '<table id="cancelledListTable" class="display" cellspacing="0" width="100%" >';
@@ -100,10 +101,10 @@
 							result = result + '</tr>';
 							result = result + '</thead>	';
 							result = result + '<tbody>';
-							var data = json.data;
-							if (data != null && data != '') {
-								for (var i = 0; i < data.length; i++) {
-									var opt = data[i];
+							//var data = json.data;
+							if (response != null && response != '') {
+								for (var i = 0; i < response.data.length; i++) {
+									var opt = response.data[i];
 									result = result + ' <tr>';
 									result = result + ' <td>';
 									result = result
@@ -219,6 +220,14 @@
 										$("body").css('overflow-y', 'auto');
 										$('.addcandidate-popup').fadeOut(200);
 									});
+						}else if (response.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+					    } else if (response.response === "AWKWARD") {
+						    location.href = "/errorPage";
+					     }
+						else {
+						    showError("Operation failed, please try again");
+						}
 						});
 	}
 </script>
@@ -230,12 +239,14 @@
 								+ tokenParamName + "=" + tokenValue
 								+ "&leaveUUID=" + leaveUUID + "&orgLocationId="
 								+ orgLocationId,
-						function(data) {
-							if (data != null) {
+						function(response) {
+							if(response.response === "SUCCESS") {
+								   if(response != null){
 								$(".new_side_wrap").addClass(
 										"new_side_wrap_active");
 								$(".side_mask").fadeIn(200);
 								$("body").css('overflow-y', 'hidden');
+								var data = response.object;
 								var result = "";
 								result = result
 										+ ' <div class="viewgrid-header pull-right zIndex positionRelative">';
@@ -414,6 +425,17 @@
 								$("#leaveSummaryId").append(result);
 
 							}
+							   } else if (response && response.response === "INVALID_DATA") {
+									//$(".new_side_wrap").removeClass("new_side_wrap_active");
+					   		    showError(response.responseMessage);
+							   } else if (response.indexOf('Sign In') !== -1) {
+									location.replace(sourceleadUrl);
+							    } else if (response.response === "AWKWARD") {
+								    location.href = "/errorPage";
+							     }
+								else {
+								    showError("Operation failed, please try again");
+								}   
 
 						});
 	}

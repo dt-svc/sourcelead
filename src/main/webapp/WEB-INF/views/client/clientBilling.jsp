@@ -41,6 +41,7 @@ z-index: 9999999;
 .exlpdf_btns table tr td div i {
     color: #333;
 }
+
 </style>
 
 
@@ -145,7 +146,7 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			            <div class="tab-pane active" id="unbilled">                                                                                                                                                            ';
  result = result + '			              <div class="timesheet_out">                                                                                                                                                                       ';
  result = result + '			                <div class="clearfix">                                                                                                                                                                             ';
- result = result + '			                  <div class="timesheet_head timesheetHead">                                                                                                                                                                     ';
+ result = result + '			                  <div class="timesheet_head timesheetHead-UL">                                                                                                                                                                     ';
  result = result + '			                    <ul>                                                                                                                                                                                           ';
  result = result + '			                                                                                                                                                                                                                   ';
  result = result + '			                    	                                                                                                                                                                                           ';

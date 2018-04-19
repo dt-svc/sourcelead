@@ -1528,7 +1528,7 @@ function calculateDiscount(){
 		<div class="tblminwidth-50">
 			<input type="text" class="form-control input-sm" value=""
 				placeholder="Tax type" name='invoiceTax[REPLACEROWID].taxType'
-				id='REPLACEROWIDtaxType'> <input type="hidden"
+				id='REPLACEROWIDtaxType' data-validation="required" field-name="Tax Type"> <input type="hidden"
 				name="REPLACEROWIDinvoiceTaxId" id="REPLACEROWIDinvoiceTaxId">
 		</div>
 	</div>

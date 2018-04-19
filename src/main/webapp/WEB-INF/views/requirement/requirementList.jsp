@@ -997,7 +997,7 @@ function refreshGoogleApiCity(cityId){
 
 
 
-<div class="sideMask"></div>
+<!-- <div class="sideMask"></div> -->
 <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="requirementFilterPopup">
 <h5 class="headerAdsrch">Filters <a href="javascript:void(0)" class="close-div" onClick="closeFilter()"><i class="fa fa-close"></i></a></h5>
 <div class="addInner">
