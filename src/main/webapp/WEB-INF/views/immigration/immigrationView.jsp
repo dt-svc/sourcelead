@@ -27,12 +27,12 @@
               <li class="current"><a href="#detailsTab">Details</a></li>
               <li><a href="#passportsTab">Passport</a></li>
               <li><a href="#visasTab">Visa</a></li>
-              <li><a href="#formsTab">Forms</a></li>
-              <li><a href="#docsTab">Documents</a></li>
               <li><a href="#employersTab">Employers</a></li>
               <li><a href="#residencesTab">Residence</a></li>
               <li><a href="#educationsTab">Educations</a></li>
               <li><a href="#familiesTab">Family</a></li>
+              <li><a href="#formsTab">Forms</a></li>
+              <li><a href="#docsTab">Documents</a></li>
               <li><a href="#notesTab">Notes</a></li>
               <li><a href="#activitiesTab">Activities</a></li>
               <div class="clearfix"></div>
