@@ -125,7 +125,7 @@
           <div class="mt row clearfix" id = "uploadFormDiv">
 				<label class="col-md-2">File<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-10">
-					<div class="input-group" style="margin:0 auto">
+					<div class="input-group col-md-12 validation_p" style="margin:0 auto">
 					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 					  <input type="file" style="display: none;" multiple id="uploadFormBtn"  class="upload">
 					  </span> </label>
