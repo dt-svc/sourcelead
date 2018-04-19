@@ -54,7 +54,7 @@
 				  <option value ="TextBox" ${customFormPopDetails.fieldType =='textBox' ? 'selected':''} selected>Text field</option>
 				  <option value ="Date" ${customFormPopDetails.fieldType =='datefield' ? 'selected':''} >Date field</option>
 				  <option value ="selectBox" ${customFormPopDetails.fieldType =='selectBox' ? 'selected':''} >Select field</option>
-				  <option value ="CheckBox" ${customFormPopDetails.fieldType =='checkBox' ? 'selected':''} >Check box</option>
+				  <option value ="CheckBox" ${customFormPopDetails.fieldType =='CheckBox' ? 'selected':''} >Check box</option>
 				  <option value ="radioButton" ${customFormPopDetails.fieldType =='radioButton' ? 'selected':''} >Radio button</option>
 				   <option value ="textArea" ${customFormPopDetails.fieldType =='textArea' ? 'selected':''} >Text Area</option>
 				    <option value ="email" ${customFormPopDetails.fieldType =='email' ? 'selected':''} >Email</option>
