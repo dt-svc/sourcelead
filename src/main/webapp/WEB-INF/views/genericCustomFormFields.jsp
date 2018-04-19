@@ -127,7 +127,7 @@
 				    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
 				    		<input type="hidden" value="${dataMap.value[2]}" name="customFormData[${currentIndex+customFormIndex.index}].entityId">
 				     	 	<c:forEach var="optionValue" items="${customForm.optionData}">
-			     	 			<input type="radio" value="${optionValue.option}" ${customForm.isRequired == 1 ? 'data-validation="required"':''} name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" field-name="${customForm.labelName}">&nbsp;&nbsp;${optionValue.option}
+			     	 			<input type="radio" value="${optionValue.option}" ${customForm.isRequired == 1 ? 'data-validation="required"':''} name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData"   ${fn:contains(dataMap.value[1],optionValue.option) ? 'checked="checked"':''} field-name="${customForm.labelName}">&nbsp;&nbsp;${optionValue.option}
 			     	 		</c:forEach>
 			     	 		</div>
 				    	</div>
