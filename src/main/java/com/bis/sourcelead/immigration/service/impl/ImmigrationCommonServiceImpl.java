@@ -85,7 +85,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	@Override
 	public Immigration savePetitionDetails(ImmigrationDTO immigrationDTO, User user,OrgLocations orgLocations){
 		Immigration immigrationObj = null;
-		try {.
+		try {
 			
 		Candidate candidate = new Candidate();
 		candidate = savePetitionCandidate(immigrationDTO,orgLocations,user);
@@ -196,7 +196,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	}
 	
 	private List<CandidateResidence> savePetitionResidenceList(ImmigrationDTO immigrationDTO, Candidate candidate,
-			User user, OrgLocations orgLocations) {.
+			User user, OrgLocations orgLocations) {
 		List<CandidateResidence> residenceList = new ArrayList<CandidateResidence>(); // add residences to immigration candidate tables
 			if (immigrationDTO.getResidenceList() != null) { 
 				List<ImmigrationResidenceDTO> residenceDtoLst = immigrationDTO.getResidenceList();
@@ -958,6 +958,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		immigrationDTO.setAttorneyContact(immigration.getOrgSpoc().getId().toString());
 		immigrationDTO.setReceiptNo(immigration.getReceiptNo());
 		/*===============from Candidate Table=============================*/
+		immigrationDTO.setCandidateId(immigration.getCandidate().getId().toString());
 		immigrationDTO.setFirstName(immigration.getCandidate().getFirstName());
 		immigrationDTO.setMiddleName(immigration.getCandidate().getMiddelName());
 		immigrationDTO.setLastName(immigration.getCandidate().getLastName());
@@ -990,6 +991,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		CandidateLcaI94Summary lcaSummaryCurr = immigrationCommonDao.getCandidateLCADetails(immigration.getCandidate().getId(), Constants.YES);
 		immigrationDTO.setLcaStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lcaSummaryCurr.getStartDate()));
 		immigrationDTO.setLcaEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lcaSummaryCurr.getEndDate()));
+		immigrationDTO.setLcaNumber(lcaSummaryCurr.getIdNumber());
 		immigrationDTO.setIsCurrResidence(lcaSummaryCurr.getIsCurrent());
 		immigrationDTO.setEmploymentLevel(lcaSummaryCurr.getEmploymentLevel());
 		immigrationDTO.setEmployer(lcaSummaryCurr.getEmployerName());
@@ -1000,22 +1002,25 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		CandidateLcaI94Summary lcaSummaryPrev = immigrationCommonDao.getCandidateLCADetails(immigration.getCandidate().getId(), Constants.NO);
 		immigrationDTO.setPrevLcaStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lcaSummaryPrev.getStartDate()));
 		immigrationDTO.setPrevLcaEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lcaSummaryPrev.getEndDate()));
+		immigrationDTO.setPrevLcaNumber(lcaSummaryPrev.getIdNumber());
 		List<CandidateResidence> candidateResidences = immigrationCommonDao.getCandidatesResidenceListByCandidateIdAndOrgLocationID(immigration.getCandidate().getId(),"");
 		if(!candidateResidences.isEmpty()) {
+			List<ImmigrationResidenceDTO> residenceList = new ArrayList<ImmigrationResidenceDTO>();
 			for(CandidateResidence residence : candidateResidences) {
 				ImmigrationResidenceDTO residenceDTO = new ImmigrationResidenceDTO();
 				residenceDTO.setAddress(residence.getStreetAddress());
 				residenceDTO.setCity(residence.getCity());
 				residenceDTO.setCountry(residence.getCountry());
 				residenceDTO.setLocation(residence.getLocation());
+				residenceDTO.setState(residence.getState());
+				residenceDTO.setZipcode(residence.getZipcode());
 				residenceDTO.setResidenceStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),residence.getStartDate()));
 				residenceDTO.setResidenceEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),residence.getEndDate()));
-				
+				residenceList.add(residenceDTO);
 			}
-			
+			immigrationDTO.setResidenceList(residenceList);
 		}
-		
-		return null;
+		return immigrationDTO;
 	}
 	
 	@Override

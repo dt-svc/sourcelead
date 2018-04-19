@@ -29,8 +29,8 @@
 					  <li class="clearfix"><span>Employment Level</span><p>: ${immigration.employmentLevelName}</p></li>
 					  <li class="clearfix"><span>Employer</span><p>: ${immigration.employer}</p></li>
 					  <li class="clearfix"><span>Location</span><p>: ${immigration.jobLocation}</p></li>
-					  <li class="clearfix"><span>Start Date</span><p>: ${immigration.lcaStartDate}</p></li>
-					  <li class="clearfix"><span>End Date</span><p>: ${immigration.lcaEndDate}</p></li>
+					  <li class="clearfix"><span>Start Date</span><p>: ${immigration.jobStartDate}</p></li>
+					  <li class="clearfix"><span>End Date</span><p>: ${immigration.jobEndDate}</p></li>
 				  </ul>
 			  </div>			  
 			  </div>

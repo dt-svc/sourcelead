@@ -1,4 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
+<c:set var = "immigrationDTO" scope = "page" value = '<%= session.getAttribute("immigrationDTO")%>'/>
 <section class="addImmiWrap">
 	<div class="addImmiInnWrap">
 		<!-- <div class="immiStepsHead clearfix"> removed steps process.
@@ -34,7 +36,7 @@
               <label class="col-md-4">Open date<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
                <div class="input-group errorInptgroup">
-                <input type="text" id ="openDate" class="form-control calendar" name="openDate" placeholder="Open Date" field-name="Open date" data-validation="required"/>
+                <input type="text" id ="openDate" class="form-control calendar" value="${immigrationDTO.openDate}" name="openDate" placeholder="Open Date" field-name="Open date" data-validation="required"/>
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('openDate');"></i></span>
               </div>
             </div>
@@ -44,7 +46,7 @@
              <div class="form-group">
               <label class="col-md-4">Receipt No</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="receiptNo" id="receiptNo">
+					<input type="text" class="form-control" value="${immigrationDTO.receiptNo}" name="receiptNo" id="receiptNo">
               </div>
           </div>
             
@@ -62,7 +64,7 @@
               <label class="col-md-4">Date of arrival</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" id="arrivalDate" class="form-control calendar" name="arrivalDate" placeholder="Date of arrival"/>
+                <input type="text" id="arrivalDate" class="form-control calendar" value="${immigrationDTO.arrivalDate}" name="arrivalDate" placeholder="Date of arrival"/>
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('arrivalDate');"></i></span>
               </div>
               </div>
@@ -72,7 +74,7 @@
           		<label class="col-md-4">Place of entry<span class="text-danger">&nbsp;*</span></label>
          			 <div class="col-md-8" id="locationField">
           			<div class="positionRelative">
-          			<input class="form-control positionRelative" id="entryPlace" name="entryPlace" onclick="initLocationAuto('entryPlace');" placeholder="Enter your Location"  type="text" field-name="Place Of Entry" data-validation="required"></input>
+          			<input class="form-control positionRelative" id="entryPlace" value="${immigrationDTO.entryPlace}" name="entryPlace" onclick="initLocationAuto('entryPlace');" placeholder="Enter your Location"  type="text" field-name="Place Of Entry" data-validation="required"></input>
           				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onclick="refreshGoogleApiLocation('entryPlace');"></i>
          				 </div>
         			  </div>
@@ -86,7 +88,7 @@
                	
                	<option value="" selected>--Choose Template--</option>
 							<c:forEach var="item" items="${templateList}">
-											<option value="${item.id}">${item.name}</option>
+											<option ${immigrationDTO.templateId == item.id ? 'selected': ''} value="${item.id}">${item.name}</option>
 							</c:forEach>
                </select>
               </div>
@@ -142,7 +144,7 @@
 									<select class="chosen-select form-control" name="candidateId" field-name="Associate" data-validation="required"
 										id="candidateId" placeholder="Select Beneficiary" onchange="getCandidatesResumeDetailsById($(this).val());updateCandiateInfo($(this));">
 									</select>
-								 <span class="input-group-addon cursorPointer bg-blue" onclick="getCandidatesByOrgLocation();"><i class="fa fa-refresh "></i></span>
+								 <span class="input-group-addon cursorPointer bg-blue" onclick="getCandidatesByOrgLocation(${immigrationDTO.candidateId});"><i class="fa fa-refresh "></i></span>
 									
 								</div>
 							</div>
@@ -151,48 +153,48 @@
          <div class="form-group">
               <label class="col-md-4">First Name<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
-					<input type="text" class="form-control" id="firstName" name="firstName" field-name="First Name" data-validation="required"/>
+					<input type="text" class="form-control" id="firstName" value="${immigrationDTO.firstName}" name="firstName" field-name="First Name" data-validation="required"/>
               </div>
           </div>
           <div class="form-group">
               <label class="col-md-4">Middle Name</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="middleName" id="middleName">
+					<input type="text" class="form-control" value="${immigrationDTO.middleName}" name="middleName" id="middleName">
               </div>
           </div> 
           <div class="form-group">
               <label class="col-md-4">Last Name<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="lastName" id="lastName" field-name="Last Name" data-validation="required">
+					<input type="text" class="form-control" name="lastName" id="lastName" value="${immigrationDTO.lastName}" field-name="Last Name" data-validation="required">
               </div>
           </div>  
          <div class="form-group">
 						<label class="col-md-4">Gender</label>
 						<div class="col-md-8" id= "errorGenderMsg">
-						<label class="paddingRight"><input type="radio"  value="Male"  name="gender"><span class="mr5"></span>Male</label>
-						<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</label>
-						<label class="paddingRight"><input type="radio"  value="Transgender" name="gender" ><span class="mr5"></span>Transgender</label>
+						<label class="paddingRight"><input type="radio" ${immigrationDTO.gender == 'Male'? 'checked': '' } value="Male"  name="gender"><span class="mr5"></span>Male</label>
+						<label class="paddingLeft paddingRight"><input type="radio" ${immigrationDTO.gender == 'Female'? 'checked': '' } value="Female" name="gender"><span class="mr5"></span>Female</label>
+						<label class="paddingRight"><input type="radio" ${immigrationDTO.gender == 'Transgender'? 'checked': '' } value="Transgender" name="gender" ><span class="mr5"></span>Transgender</label>
 						<!-- <input type="hidden"  id="genderValue" name="genderValue"/> --> 		
 			</div>
 			</div>
           <div class="form-group">
               <label class="col-md-4">Email<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="email" id="email" field-name="Email" data-validation="required">
+					<input type="text" class="form-control" name="email" value="${immigrationDTO.email}" id="email" field-name="Email" data-validation="required">
               </div>
           </div>
                       	
           <div class="form-group">
               <label class="col-md-4">Mobile</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="mobile" id="mobile">
+					<input type="text" class="form-control" name="mobile" id="mobile" value="${immigrationDTO.mobile}">
               </div>
           </div>
           
            <div class="form-group">
               <label class="col-md-4">Alternative Mobile</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="alternateMobile" id="alternateMobile">
+					<input type="text" class="form-control" name="alternateMobile" id="alternateMobile" value="${immigrationDTO.alternateMobile}">
               </div>
           </div> 
             
@@ -200,7 +202,7 @@
               <label class="col-md-4">DOB<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
 					<div class="input-group errorInptgroup">
-                <input type="text" class="form-control calendar" name="birthDate" id="birthDate" placeholder="Date Of Birth" field-name="Date Of Birth" data-validation="required">
+                <input type="text" class="form-control calendar" name="birthDate" id="birthDate" value="${immigrationDTO.birthDate}" placeholder="Date Of Birth" field-name="Date Of Birth" data-validation="required">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onClick="clearDateValue('birthDate');"></i></span>
               </div>
               </div>
@@ -209,7 +211,7 @@
               <label class="col-md-4">Place of Birth</label>
               <div class="col-md-8">
                    <div class="positionRelative">
-          			<input class="form-control positionRelative" id="birthPlace" name="birthPlace" onclick="initLocationAuto('birthPlace');" type="text" field-name="Place of Birth"></input>
+          			<input class="form-control positionRelative" id="birthPlace" name="birthPlace" value="${immigrationDTO.birthPlace}" onclick="initLocationAuto('birthPlace');" type="text" field-name="Place of Birth"></input>
           				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('birthPlace');"></i>
          			</div>
               </div>
@@ -219,7 +221,7 @@
               <label class="col-md-4">Nationality</label>
               <div class="col-md-8">
                   <div class="positionRelative">
-          			<input class="form-control positionRelative" id="nationality" onclick="editOrgLocationAuto('nationality');" name="nationality" value="" placeholder="Select Country"  type="text"></input>
+          			<input class="form-control positionRelative" id="nationality" onclick="editOrgLocationAuto('nationality');" name="nationality" value="${immigrationDTO.nationality}" placeholder="Select Country"  type="text"></input>
           				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('nationality');"></i>
          			</div>
               </div>
@@ -227,42 +229,42 @@
             <div class="form-group">
               <label class="col-md-4">Marital status</label>
               <div class="col-md-8">
-                  <label class="radioIput paddingRight"><input type="radio" value="Single" name="maritalStatus">Single</label>
-                  <label class="radioIput paddingLeft"><input type="radio" value="Married"  name="maritalStatus">Married</label>
-                  <label class="radioIput paddingLeft"><input type="radio" value="Divorced"  name="maritalStatus">Divorced</label>
-                  <label class="radioIput paddingLeft"><input type="radio" value="Separated"  name="maritalStatus">Separated</label>
+                  <label class="radioIput paddingRight"><input type="radio" ${immigrationDTO.maritalStatus == 'Single'? 'checked': ''} value="Single" name="maritalStatus">Single</label>
+                  <label class="radioIput paddingLeft"><input type="radio"  ${immigrationDTO.maritalStatus == 'Married'? 'checked': ''} value="Married"  name="maritalStatus">Married</label>
+                  <label class="radioIput paddingLeft"><input type="radio"  ${immigrationDTO.maritalStatus == 'Divorced'? 'checked': ''} value="Divorced"  name="maritalStatus">Divorced</label>
+                  <label class="radioIput paddingLeft"><input type="radio"   ${immigrationDTO.maritalStatus == 'Separated'? 'checked': ''} value="Separated"  name="maritalStatus">Separated</label>
               </div>
             </div>  
              <div class="form-group">
               <label class="col-md-4">SSN</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="ssnNumber" id="ssnNumber" placeholder="000-00-0000">
+                <input type="text" class="form-control" name="ssnNumber" id="ssnNumber" value="${immigrationDTO.ssnNumber}" placeholder="000-00-0000">
               </div>
             </div>
              <div class="form-group">
               <label class="col-md-4">I-94 Number</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="i_94_number" id ="i_94_number" placeholder="XXXXXXXXX-XX">
+                <input type="text" class="form-control" name="i_94_number" id ="i_94_number" value="${immigrationDTO.i_94_number}" placeholder="XXXXXXXXX-XX">
               </div>
             </div>
            
              <div class="form-group">
               <label class="col-md-4">I-20 SEVIS Number If Student</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="i_20_number"  id="i_20_number" placeholder="N-XXXXXXXXXX">
+					<input type="text" class="form-control" name="i_20_number"  id="i_20_number" value="${immigrationDTO.i_20_number}" placeholder="N-XXXXXXXXXX">
               </div>
             </div>
                          
             <div class="form-group">
               <label class="col-md-4">EAD Number If Student</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="eadNumber" id="eadNumber" placeholder="">
+                <input type="text" class="form-control" name="eadNumber" id="eadNumber" value="${immigrationDTO.eadNumber}" placeholder="">
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-4">Previous LCA Number</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="prevLcaNumber" id="prevLcaNumber" placeholder="I-XXX-XXXXX-XXXXXX">
+                <input type="text" class="form-control" name="prevLcaNumber" id="prevLcaNumber" value="${immigrationDTO.prevLcaNumber}" placeholder="I-XXX-XXXXX-XXXXXX">
               </div>
             </div>
             
@@ -270,7 +272,7 @@
               <label class="col-md-4">Previous LCA Start Date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input class="form-control calendar" id="prevLcaStartDate" name="prevLcaStartDate" placeholder="Previous LCA Start Dates" type="text">
+                <input class="form-control calendar" id="prevLcaStartDate" name="prevLcaStartDate" value="${immigrationDTO.prevLcaStartDate}" placeholder="Previous LCA Start Dates" type="text">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('prevLcaStartDate');"></i></span>
             </div>
               </div>
@@ -280,7 +282,7 @@
               <label class="col-md-4">Previous LCA End date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input class="form-control calendar" id="prevLcaEndDate" name="prevLcaEndDate" placeholder="Previous LCA End date" type="text">
+                <input class="form-control calendar" id="prevLcaEndDate" name="prevLcaEndDate" value="${immigrationDTO.prevLcaEndDate}" placeholder="Previous LCA End date" type="text">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('prevLcaEndDate');"></i></span>
             </div>
               </div>
@@ -310,16 +312,16 @@
                 <select id="experienceYears" name="experienceYears">
                 	<option value="">--Select Year--</option>
                 	<c:forEach begin="0" end="25" varStatus="loop">
-				    	<option value="${loop.index}" >${loop.index}</option>
+				    	<option ${immigrationDTO.experienceYears == loop.index ? 'selected' : ''} value="${loop.index}" >${loop.index}</option>
 					</c:forEach>
-                	<option value="25+" >25+</option>
+                	<option ${immigrationDTO.experienceYears == '25+' ? 'selected' : ''} value="25+" >25+</option>
                 </select>
               </div>
              <div class="col-md-4 dropdown-select">
                 <select id="experienceMonths" name="experienceMonths">
                 	<option value="">--Select Month--</option>
                 	<c:forEach begin="0" end="11" varStatus="loop">
-				    	<option value="${loop.index}" >${loop.index}</option>
+				    	<option value="${loop.index}"  ${immigrationDTO.experienceMonths == loop.index ? 'selected' : ''} >${loop.index}</option>
 					</c:forEach>
                 </select>
               </div>
@@ -352,7 +354,7 @@
             <div class="form-group">
               <label class="col-md-4">Employer</label>
               <div class="col-md-8">
-                <input type="text"  class="form-control" name="employer" id="employer">
+                <input type="text"  class="form-control" value="${immigrationDTO.employer}" name="employer" id="employer">
               </div>
             </div>
             
@@ -360,7 +362,7 @@
               <label class="col-md-4">Location</label>
               <div class="col-md-8">
                  <div class="positionRelative">
-          			<input class="form-control positionRelative" id="jobLocation" name="jobLocation" onclick="initLocationAuto('jobLocation');" placeholder="Enter your Location"  type="text"></input>
+          			<input class="form-control positionRelative" id="jobLocation" value="${immigrationDTO.jobLocation}" name="jobLocation" onclick="initLocationAuto('jobLocation');" placeholder="Enter your Location"  type="text"></input>
           				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('jobLocation');"></i>
          			</div>
               </div>
@@ -374,32 +376,30 @@
 
 									<select class="form-control selectpicker" id="rateCurrency"
 										name="rateCurrency">
-
-										<option>INR</option>
-										<option>AUD</option>
-										<option>USD</option>
-										<option>GBP</option>
-										<option>SGD</option>
-										<option>EUR</option> 
-
+										<option value="INR" ${immigrationDTO.rateCurrency == 'INR' ? 'selected' : ''}>INR</option>
+										<option value="AUD" ${immigrationDTO.rateCurrency == 'AUD' ? 'selected' : ''}>AUD</option>
+										<option value="USD" ${immigrationDTO.rateCurrency == 'USD' ? 'selected' : ''}>USD</option>
+										<option value="GBP" ${immigrationDTO.rateCurrency == 'GBP' ? 'selected' : ''}>GBP</option>
+										<option value="SGD" ${immigrationDTO.rateCurrency == 'SGD' ? 'selected' : ''}>SGD</option>
+										<option value="EUR" ${immigrationDTO.rateCurrency == 'EUR' ? 'selected' : ''}>EUR</option> 
 									</select>
 
 								</div>
 								<input type="text" id="rate" name="rate"
-									value="" field-name="Current Rate"
+									field-name="Current Rate"
 									data-validation="validate_Space validate_float validate_length length1-8"
-									data-validation-optional="true" value="" class="form-control">
+									data-validation-optional="true" value="${immigrationDTO.rate}" class="form-control">
 								<div class="input-group-btn tblminwidth-75 ratetype">
 									<select class="selectpicker form-control" id="rateType"
 										name="rateType" field-name="Rate Per">
-										 <option value="">Rate Per</option>
-										<option>Hourly</option>
-										<option>Weekly</option>
-										<option >Bi-weekly</option>
-										<option >Semi-Monthly</option>
-										<option>Monthly</option>
-										<option>Bi-Monthly</option>
-										<option>Yearly</option> 
+										 <option ${immigrationDTO.rateType == 'Rate Per' ? 'selected' : ''} value="Rate Per">Rate Per</option>
+										<option ${immigrationDTO.rateType == 'Hourly' ? 'selected' : ''} value="Hourly">Hourly</option>
+										<option ${immigrationDTO.rateType == 'Weekly' ? 'selected' : ''} value="Weekly">Weekly</option>
+										<option ${immigrationDTO.rateType == 'Bi-Weekly' ? 'selected' : ''} value="Bi-Weekly">Bi-Weekly</option>
+										<option ${immigrationDTO.rateType == 'Semi-Monthly' ? 'selected' : ''} value="Semi-Monthly">Semi-Monthly</option>
+										<option ${immigrationDTO.rateType == 'Monthly' ? 'selected' : ''} value="Monthly">Monthly</option>
+										<option ${immigrationDTO.rateType == 'Bi-Monthly' ? 'selected' : ''} value="Bi-Monthly">Bi-Monthly</option>
+										<option ${immigrationDTO.rateType == 'Yearly' ? 'selected' : ''} value="Yearly">Yearly</option> 
 									</select>
 								</div>
 								<div class="clearfix"></div>
@@ -412,7 +412,7 @@
               <label class="col-md-4">Start Date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" class="form-control calendar" id="jobStartDate" name="jobStartDate" placeholder="Start Date">
+                <input type="text" class="form-control calendar" id="jobStartDate" value="${immigrationDTO.jobStartDate}" name="jobStartDate" placeholder="Start Date">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('jobStartDate');"></i></span>
             </div>
               </div>
@@ -422,7 +422,7 @@
               <label class="col-md-4">End Date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" class="form-control calendar" name="jobEndDate" id="jobEndDate" placeholder="Start Date">
+                <input type="text" class="form-control calendar" name="jobEndDate" id="jobEndDate" placeholder="End Date">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('jobEndDate');"></i></span>
             </div>
               </div>
@@ -431,7 +431,7 @@
              <div class="form-group">
               <label class="col-md-4">LCA Number</label>
               <div class="col-md-8">
-                 <input type="text" class="form-control" name="lcaNumber" id="lcaNumber" placeholder="I-XXX-XXXXX-XXXXXX">
+                 <input type="text" class="form-control" value="${immigrationDTO.lcaNumber}" name="lcaNumber" id="lcaNumber" placeholder="I-XXX-XXXXX-XXXXXX">
               </div>
           </div>
             
@@ -439,7 +439,7 @@
               <label class="col-md-4">LCA Start date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" class="form-control calendar" id="lcaStartDate" name="lcaStartDate" placeholder="LCA Start dates">
+                <input type="text" class="form-control calendar" id="lcaStartDate" value="${immigrationDTO.lcaStartDate}" name="lcaStartDate" placeholder="LCA Start dates">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('lcaStartDate');"></i></span>
             </div>
               </div>
@@ -448,12 +448,11 @@
               <label class="col-md-4">LCA End date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" class="form-control calendar" id="lcaEndDate" name="lcaEndDate" placeholder="LCA End date">
+                <input type="text" class="form-control calendar" value="${immigrationDTO.lcaEndDate}" id="lcaEndDate" name="lcaEndDate" placeholder="LCA End date">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('lcaEndDate');"></i></span>
             </div>
               </div>
             </div>
-   
            <div class="clearfix"></div>
            	<div class="col-md-12 mb margin-top0">
             	<h4 class="pull-left">5. Residence</h4>
@@ -466,7 +465,7 @@
               <div class="col-md-8">
                   <div class="positionRelative">
 								<input class="form-control positionRelative"
-									id="location" name="location" onclick="initLocationAuto('location','country','state','city','zipcode','','','','address');"
+									id="location" name="location" value="${immigrationDTO.residenceList[0].location}" onclick="initLocationAuto('location','country','state','city','zipcode','','','','address');"
 									placeholder="Enter Location" type="text" field-name="Location" data-validation="required"></input> <i
 									class="fa fa-refresh btn btn-primary refresh-icon"
 									title="Refresh"
@@ -478,7 +477,7 @@
               <label class="col-md-4">Street Address</label>
               <div class="col-md-8">
                   <input type="text" class="form-control" id="address"
-								name="address" value="" field-name="Street Address" placeholder="Enter Street Addres"
+								name="address" value="${immigrationDTO.residenceList[0].address}" field-name="Street Address" placeholder="Enter Street Addres"
 								data-validation="validate_Space validate_length length2-250"
 								data-validation-optional="true">
               </div>
@@ -486,25 +485,25 @@
             <div class="form-group">
               <label class="col-md-4">City</label>
               <div class="col-md-8">
-                  <input class="form-control" id="city" name="city" placeholder="City" type="text"></input>
+                  <input class="form-control" id="city" value="${immigrationDTO.residenceList[0].city}" name="city" placeholder="City" type="text"></input>
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-4">State</label>
               <div class="col-md-8">
-                  <input class="form-control" id="state" name="state" placeholder="State" type="text" ></input>
+                  <input class="form-control" id="state" name="state" value="${immigrationDTO.residenceList[0].state}" placeholder="State" type="text" ></input>
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-4">Country</label>
               <div class="col-md-8">
-                  <input class="form-control" id="country" name="country" placeholder="Country" value="${loginCountryName}" type="text" ></input>
+                  <input class="form-control" id="country" name="country" placeholder="Country" value="${loginCountryName == null ? immigrationDTO.residenceList[0].country : loginCountryName}" type="text" ></input>
               </div>
             </div>                                                                                               
 		    <div class="form-group">
               <label class="col-md-4">Zip Code</label>
               <div class="col-md-8">
-                  <input class="form-control" id="zipcode" name="zipcode"
+                  <input class="form-control" value="${immigrationDTO.residenceList[0].zipcode}" id="zipcode" name="zipcode"
 								placeholder="Zip code" type="text" ></input>
               </div>
             </div>
@@ -520,12 +519,11 @@
               <label class="col-md-4">Start Date<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
 					<div class="input-group errorInptgroup">
-                <input type="text" class="form-control calendar" id="residenceStartDate"  name="residenceStartDate" placeholder="Start Date" field-name="Start Date" data-validation="required">
+                <input type="text" class="form-control calendar" id="residenceStartDate" value="${immigrationDTO.residenceList[0].residenceStartDate}" name="residenceStartDate" placeholder="Start Date" field-name="Start Date" data-validation="required">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('residenceStartDate')"></i></span>
               </div>
               </div>
           </div>
-          
           
          
          <div id ="dynamicResidenceGroupDiv" ><!--  dynamic div start -->
@@ -566,7 +564,9 @@
    
     <script type="text/javascript">
    
-    function prepareDynamicResidenceDiv(rowId){
+    function prepareDynamicResidenceDiv(rowId,residenceVal){
+    	alert(residenceVal);
+    	//alert("inside ++++++++++ :"+"${residenceVal.address}");
 	   var prepareResidencediv =''; 
 		   
 		   
@@ -582,7 +582,7 @@
 	   prepareResidencediv =prepareResidencediv+ "           <div class='positionRelative'>";
 	   prepareResidencediv =prepareResidencediv+ ' 						<input class="form-control positionRelative"';
 	   prepareResidencediv =prepareResidencediv+ ' 						id="location'+rowId+'" name="residenceList['+rowId+'].location"';
-	   prepareResidencediv =prepareResidencediv+ ' 							placeholder="Enter Location" field-name="Location" data-validation="required" type="text" onClick="initLocationAuto(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipcode'+rowId+'\',\'\',\'\',\'\',\'address'+rowId+'\'); refreshGoogleApiLocation(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipcode'+rowId+'\',\'\',\'\',\'\',\'address'+rowId+'\');"></input> <i';
+	   prepareResidencediv =prepareResidencediv+ ' 							placeholder="Enter Location" value="'+residenceVal.location+'" field-name="Location" data-validation="required" type="text" onClick="initLocationAuto(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipcode'+rowId+'\',\'\',\'\',\'\',\'address'+rowId+'\'); refreshGoogleApiLocation(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipcode'+rowId+'\',\'\',\'\',\'\',\'address'+rowId+'\');"></input> <i';
 	   prepareResidencediv =prepareResidencediv+ ' 							class="fa fa-refresh btn btn-primary refresh-icon"';
 	   prepareResidencediv =prepareResidencediv+ ' 							title="Refresh"';
 	   prepareResidencediv =prepareResidencediv+ ' 							onClick="refreshGoogleApiLocation(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipcode'+rowId+'\',\'\',\'\',\'\',\'address'+rowId+'\');"></i>';
@@ -653,7 +653,7 @@
   var rowId =0;
    function appendDynamicResidenceDiv(){
 	   console.log("rowId value is --->"+rowId);
-	   $("#dynamicResidenceGroupDiv").append(prepareDynamicResidenceDiv(rowId++)); 
+	   $("#dynamicResidenceGroupDiv").append(prepareDynamicResidenceDiv(rowId++,"")); 
    }
    //var deletedResicenceListIds = new Array();
    function removeDynamicResidenceDiv(id){
@@ -678,7 +678,7 @@
 <script>
 
 var candidateByOrgObject = {};
-function getCandidatesByOrgLocation(){
+function getCandidatesByOrgLocation(candidateId){
 	 console.log(" before getCandidatesByOrgLocation function calling ---->");
 	 $("#loadingPetitionDiv").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 urltest = sourceleadUrl+immiModulePath+"/getAllActiveCandidatesByLocation";
@@ -691,7 +691,11 @@ function getCandidatesByOrgLocation(){
 		            for(var i=0;i<data.length;i++){
 		            	 var opt = data[i];
 		            	 candidateByOrgObject[opt.id]= opt;
-		            	$('#candidateId').append('<option value='+opt.id+' >'+opt.firstName+" "+opt.lastName+" ( "+opt.email+" )"+'</option>');
+		            	 if(opt.id == candidateId){
+		            		 $('#candidateId').append('<option selected value='+opt.id+' >'+opt.firstName+" "+opt.lastName+" ( "+opt.email+" )"+'</option>');
+		            	 }else{
+		            		$('#candidateId').append('<option value='+opt.id+' >'+opt.firstName+" "+opt.lastName+" ( "+opt.email+" )"+'</option>');
+		            	 }
 		            }
 		            $('#candidateId').trigger("chosen:updated"); 
 		           /*  updateCandiateInfo(); */
@@ -742,7 +746,7 @@ $("#experienceValue").change(function () {
 </script>
 	<script>
 	
-	function getPetitionTypeDropDown(){
+	function getPetitionTypeDropDown(petitionType){
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+immiModulePath+"/getPetitionTypeDropDown", 
@@ -751,14 +755,18 @@ $("#experienceValue").change(function () {
 		        	$('#petitionType').append('<option selected value="">--Select Type --</option>');
 		            for(var i=0;i<data.length;i++){
 		            	  var opt = data[i];
+		            	  if(opt.id == petitionType){
+		            		  $('#petitionType').append('<option selected value='+opt.id+' >'+opt.name+'</option>');
+		            	  }else{
 		            		$('#petitionType').append('<option value='+opt.id+' >'+opt.name+'</option>');
+		            	  }
 		            }
 		            $('#petitionType').trigger("chosen:updated");		        	
 		        }
 		 });
 	}
 	
-	function getUscisTypeDropDown(){
+	function getUscisTypeDropDown(status){
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+immiModulePath+"/getUscisTypeDropDown", 
@@ -767,18 +775,20 @@ $("#experienceValue").change(function () {
 		        	$('#currUscisStatus').append('<option value="">--Select Type --</option>');
 		            for(var i=0;i<data.length;i++){
 		            	  var opt = data[i];
-		            	  	if(opt.name == "Request to fill"){
-		            	  		$('#currUscisStatus').append('<option selected value='+opt.id+' >'+opt.name+'</option>');
-		            	  	}else{
-		            			$('#currUscisStatus').append('<option value='+opt.id+' >'+opt.name+'</option>');
-		            	  	}
+		            	  if(opt.id == status){
+		            		$('#currUscisStatus').append('<option selected value='+opt.id+' >'+opt.name+'</option>');
+		            	  }else if(opt.name == "Request to fill"){
+		            	  	$('#currUscisStatus').append('<option selected value='+opt.id+' >'+opt.name+'</option>');
+		            	  }else{
+		            		$('#currUscisStatus').append('<option value='+opt.id+' >'+opt.name+'</option>');
+		            	  }
 		            }
 		            $('#currUscisStatus').trigger("chosen:updated");		        	
 		        }
 		 });
 	}
 	
-	function employmentLevelDropDown(){
+	function employmentLevelDropDown(employmentLevelId){
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+immiModulePath+"/getEmploymentLevelDropDown", 
@@ -787,14 +797,18 @@ $("#experienceValue").change(function () {
 		        	$('#employmentLevel').append('<option value="">--Select Type --</option>');
 		            for(var i=0;i<data.length;i++){
 		            	  var opt = data[i];
+		            	  if(opt.id == employmentLevelId){
+		            		  $('#employmentLevel').append('<option selected value='+opt.id+' >'+opt.name+'</option>');
+		            	  }else{
 		            		$('#employmentLevel').append('<option value='+opt.id+' >'+opt.name+'</option>');
+		            	  }
 		            }
 		            $('#employmentLevel').trigger("chosen:updated");		        	
 		        }
 		 });
 	}
 	
-	function jobTitleDropDown(){
+	function jobTitleDropDown(jobId){
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+immiModulePath+"/getJobTitleDropDown", 
@@ -803,7 +817,11 @@ $("#experienceValue").change(function () {
 		        	$('#jobId').append('<option value="">--Select Type --</option>');
 		            for(var i=0;i<data.length;i++){
 		            	  var opt = data[i];
+		            	  if(opt.id == jobId){
+		            		  $('#jobId').append('<option selected value='+opt.id+' >'+opt.jobTitle+'</option>');
+		            	  }else{
 		            		$('#jobId').append('<option value='+opt.id+' >'+opt.jobTitle+'</option>');
+		            	  }
 		            }
 		            $('#jobId').trigger("chosen:updated");		        	
 		        }
@@ -811,7 +829,7 @@ $("#experienceValue").change(function () {
 	}
 	
 	
- function getAttorneysByOrgLocation(){
+ function getAttorneysByOrgLocation(attorneyId){
 	 console.log(" before function calling ---->");
 		 $.ajax({
 		    	type: "GET",
@@ -822,7 +840,11 @@ $("#experienceValue").change(function () {
 		        	$('#attorneyId').append('<option value="">--Select Attorney --</option>');
 		            for(var i=0;i<json.length;i++){
 		            	  var opt = json[i];
+		            	  if(opt.id == attorneyId){
+		            		  $('#attorneyId').append('<option selected value='+opt.id+' >'+opt.orgName+'</option>');
+		            	  }else{
 		            		$('#attorneyId').append('<option value='+opt.id+' >'+opt.orgName+'</option>');
+		            	  }
 		            }
 		            $('#attorneyId').trigger("chosen:updated");
 		            //getVendorContactList();
@@ -831,8 +853,13 @@ $("#experienceValue").change(function () {
 		 });
  }
  
- function getAttorneyContactList(){
-		var orgRelationID = $('#attorneyId').val();
+ function getAttorneyContactList(attorneyId,attorneyContactId){
+	 var orgRelationID = null;
+	 	if(attorneyId != null){
+	 		orgRelationID = attorneyId;
+	 	}else{
+			var orgRelationID = $('#attorneyId').val();
+	 	}
 			 $.ajax({
 				    type: "POST",
 			        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
@@ -842,7 +869,11 @@ $("#experienceValue").change(function () {
 			        	$('#attorneyContact').append('<option value="">--Select Attorney contact--</option>');
 			             for(var i=0;i<json.data.length;i++){
 			            	 var opt = json.data[i];
-			            	 $('#attorneyContact').append('<option value='+opt.id+' >'+opt.spocName+' ('+opt.ownerName+')</option>');
+			            	 if(opt.id == attorneyContactId){
+			            		 $('#attorneyContact').append('<option selected value='+opt.id+' >'+opt.spocName+' ('+opt.ownerName+')</option>');
+			            	 }else{
+				            	 $('#attorneyContact').append('<option value='+opt.id+' >'+opt.spocName+' ('+opt.ownerName+')</option>');
+			            	 }
 			            } 
 			            $('#attorneyContact').trigger("chosen:updated");
 			        }
@@ -853,12 +884,26 @@ $("#experienceValue").change(function () {
 	  $( document ).ready(function() {
 		  $('#rateCurrency').selectpicker('refresh');  // manually refreshing select picker due to bootstrap css loading issue.
 		  $('#rateType').selectpicker('refresh');
-		  getAttorneysByOrgLocation();
-		 getCandidatesByOrgLocation();
-		  getPetitionTypeDropDown();
-		  getUscisTypeDropDown();
-		  employmentLevelDropDown();
-		  jobTitleDropDown();
+		  getAttorneysByOrgLocation("${immigrationDTO.attorneyId}");
+		  getAttorneyContactList("${immigrationDTO.attorneyId}","${immigrationDTO.attorneyContact}");
+		 getCandidatesByOrgLocation("${immigrationDTO.candidateId}");
+		  getPetitionTypeDropDown("${immigrationDTO.petitionType}");
+		  getUscisTypeDropDown("${immigrationDTO.currUscisStatus}");
+		  employmentLevelDropDown("${immigrationDTO.employmentLevel}");
+		  jobTitleDropDown("${immigrationDTO.jobId}");
+		  var sizeOfResidence = "${fn:length(immigrationDTO.residenceList)}";
+		  if(sizeOfResidence > 1){
+		  	var count = 1;
+		  	<c:forEach var='edu' items="${immigrationDTO.residenceList}">
+		  		$("#dynamicResidenceGroupDiv").append(prepareDynamicResidenceDiv(count,"${edu"));
+		  		count++;
+		  	</c:forEach>
+			/* $.each(list, function( index, value ) {
+				alert("The address is :");
+				$("#dynamicResidenceGroupDiv").append(prepareDynamicResidenceDiv(count,value));	
+			}); */
+		  }
+		  
 		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
 		 
