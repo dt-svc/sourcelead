@@ -47,6 +47,7 @@ import com.bis.sourcelead.dao.OptionsDao;
 import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dao.RestrictDayDao;
 import com.bis.sourcelead.dao.ShiftDao;
+import com.bis.sourcelead.dto.CandidateCertificationDTO;
 import com.bis.sourcelead.dto.HolidayDTO;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.LeaveReportsDTO;
@@ -57,6 +58,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.RestrictDayDTO;
 import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.dto.ShiftDTO;
+import com.bis.sourcelead.entity.CandidateCertifications;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Holiday;
@@ -1482,21 +1484,53 @@ public class LeaveManagementRestController {
 	public @ResponseBody ResponseList<LeaveDTO> getEmployeeRequestedLeaves(LeaveDTO leaveDTO,
 			HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.valueOf(leaveDTO.getOrgLocationId()));
-		ResponseList<LeaveDTO> requestedLeavesList = leaveService.getEmployeeRequestedLeavesBylocationId(leaveDTO,
-				orgLocations);
-		return requestedLeavesList;
+		ResponseList<LeaveDTO> responseList= null;
+		try {
+			
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if (loginOrgLocation != null) {
+		 responseList = leaveService.getEmployeeRequestedLeavesBylocationId(leaveDTO,orgLocations);
+		 responseList.setResponse(Result.SUCCESS.name());
+			responseList.setResponseMessage(Result.SUCCESS.getValue());
+		}else {
+			responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+			responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		
+	} catch (Exception e) {
+		responseList.setResponse(Result.AWKWARD.name());
+		responseList.setResponseMessage(Result.AWKWARD.getValue());
+		logger.error(ExceptionUtils.getFullStackTrace(e));
+	}
+			
+	return responseList;
 	}
 
-	@RequestMapping(value = { "/getLeavesListByLocationIdAndStatus",
-			"/rest/getLeavesListByLocationIdAndStatus" }, method = RequestMethod.GET)
-	public @ResponseBody ResponseList<LeaveDTO> getLeavesListByLocationIdAndStatus(
-			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
-			@RequestParam(value = "status", required = false) String status,
-			@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		ResponseList<LeaveDTO> leaveDtoList = leaveService.getLeavesListByLocationIdAndStatus(orgLocationId, status,
-				userId);
-		return leaveDtoList;
+	@RequestMapping(value = {"/getLeavesListByLocationIdAndStatus","/rest/getLeavesListByLocationIdAndStatus"}, method = RequestMethod.GET)
+	public @ResponseBody ResponseList<LeaveDTO> getLeavesListByLocationIdAndStatus(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "status", required = false) String status,@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		
+		ResponseList<LeaveDTO> responseList= null;
+		try {
+			
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if (loginOrgLocation != null) {
+				responseList = leaveService.getLeavesListByLocationIdAndStatus(orgLocationId,status,userId);
+				responseList.setResponse(Result.SUCCESS.name());
+				responseList.setResponseMessage(Result.SUCCESS.getValue());
+			}else {
+				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+			
+		} catch (Exception e) {
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+				
+		return responseList;
+
 	}
 
 	/**
@@ -1512,7 +1546,10 @@ public class LeaveManagementRestController {
 	@PreAuthorize("hasAnyRole('ROLE_APPROVE_LEAVE')")
 	@RequestMapping(value = { "/approveRequestedLeave", "/rest/approveRequestedLeave" }, method = RequestMethod.GET)
 	@ResponseBody
-	public boolean approveRequestedLeave(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+
+	public Response<String> approveRequestedLeave(
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+
 			@RequestParam(value = "leaveUUID", required = false) String leaveUUID,
 			@RequestParam(value = "leaveTypeId", required = false) Long leaveTypeId,
 			@RequestParam(value = "approveStatus", required = false) String approveStatus,
@@ -1520,13 +1557,34 @@ public class LeaveManagementRestController {
 			@RequestParam(value = "numberOfDays", required = false) int numberOfDays,
 			@RequestParam(value = "reason", required = false) String reason, HttpServletRequest request)
 			throws Exception {
-
+		Response<String> response = new Response<>();
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		User user = userService.getUserById(userId);
-		boolean isApproved = leaveService.approveRequestLeave(orgLocations, user, leaveUUID, leaveTypeId, approveStatus,
-				numberOfDays, reason);
-		return isApproved;
-
+		 boolean isApproved = false;
+	 try {
+		User user1 = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if (user1 != null){
+		  isApproved = leaveService.approveRequestLeave(orgLocations,user,leaveUUID,leaveTypeId,approveStatus,numberOfDays,reason);
+		if(isApproved == true){
+		    response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+		}
+		else{
+			response.setResponse(Result.INVALID_DATA.name());
+			response.setResponseMessage(Result.INVALID_DATA.getValue());
+		}
+		}  else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}	
+	 	
+	} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+		return response;
+	
 	}
 
 	/**
@@ -1541,13 +1599,18 @@ public class LeaveManagementRestController {
 	 */
 	@RequestMapping(value = { "/getRequestedAproveSummary" }, method = RequestMethod.GET)
 	@ResponseBody
-	public LeaveDTO getRequestedAproveSummary(@RequestParam(value = "leaveUUID", required = false) String leaveUUID,
+	public Response<LeaveDTO> getRequestedAproveSummary(@RequestParam(value = "leaveUUID", required = false) String leaveUUID,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request)
 			throws Exception {
-		Leave leave = leaveService.getLeaveByLeaveUUId(leaveUUID);
+		
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		LeaveDTO leaveDto = new LeaveDTO();
-		if (leave != null) {
+		Response<LeaveDTO> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+			 Leave leave = leaveService.getLeaveByLeaveUUId(leaveUUID);
+		     if (leave != null) {
 			StringBuilder sb = new StringBuilder();
 			StringBuilder durationSb = new StringBuilder();
 			leaveDto.setId(leave.getId());
@@ -1676,45 +1739,79 @@ public class LeaveManagementRestController {
 			// nuberOfLeavestaken.get("numberOfExtraLeaves");
 			float balLeaves = totalLeavesperYear - leavesTaken;
 			leaveDto.setTotalBalLeaves(balLeaves);
-		}
-		return leaveDto;
+			response.setObject(leaveDto);
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+		} else {
+			response.setResponse(Result.INVALID_DATA.name());
+			response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+	} else {
+		response.setResponse(Result.SESSION_TIMEDOUT.name());
+		response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		
+	}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}	
+			
+		return response;
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_CANCEL_LEAVE')")
 	@RequestMapping(value = { "/storeCancelReason" })
 	@ResponseBody
-	public boolean storeCancelReason(@RequestParam(value = "leaveUUID", required = false) String leaveUUID,
-			@RequestParam(value = "reason", required = false) String reason,
-			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
+	public Response<String> storeCancelReason(@RequestParam(value = "leaveUUID", required = false) String leaveUUID,@RequestParam(value = "reason", required = false) String reason,@RequestParam(value = "userId", required = false) Long userId,  HttpServletRequest request) throws Exception
+	{
 		boolean isCancelled = false;
+		Response<String> response = new Response<>();
 		LeaveManagementHistory leaveManagementHistory = new LeaveManagementHistory();
-		Leave leave = leaveService.getLeaveByLeaveUUId(leaveUUID);
-		leaveManagementHistory.setFromStage(leave.getStatus());
 		User user = userService.getUserById(userId);
-		if (leave != null) {
-			leave.setDeleteReason(reason);
-			leave.setCancelledBy(user);
-			leave.setStatus(Constants.LEAVE_CANCELLED);
-			leaveDao.saveLeave(leave);
-			isCancelled = true;
+	  try {
+			User user1 = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if (user1 != null){
+			Leave leave = leaveService.getLeaveByLeaveUUId(leaveUUID);
+			leaveManagementHistory.setFromStage(leave.getStatus());
+		 if(leave !=null) {
+			 leave.setDeleteReason(reason);
+			 leave.setCancelledBy(user);
+			 leave.setStatus(Constants.LEAVE_CANCELLED);
+			 leaveDao.saveLeave(leave);
+			 isCancelled = true;
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+		 }
+		 else{
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+		 	leaveManagementHistory.setLeaveid(leave);
+			leaveManagementHistory.setType(Constants.LEAVE);
+//			leaveManagementHistory.setStatus(leave.getStatus());
+			leaveManagementHistory.setCreatedBy(user.getUserCode());
+			leaveManagementHistory.setCreatedDate(new Date());
+			leaveManagementHistory.setUpdatedBy(user.getUserCode());
+			leaveManagementHistory.setUpdatedDate(new Date());
+			leaveManagementHistory.setToStage(Constants.LEAVE_CANCELLED);
+			leaveManagementHistoryDao.saveLeaveManagementHistory(leaveManagementHistory);
+			leaveService.LeaveCancelEmailToUser(user,leaveManagementHistory,reason);
+			if(leave != null && leave.getLeaveType() != null && leave.getOrgLocations() != null) {
+				timesheetRestController.linkLeaveTypeWithTimeSheet(user, leave.getOrgLocations(), leave.getLeaveType().getId(), leave, Constants.LEAVE_CANCELLED);
+			}
+		}  else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}	
+	  } catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		leaveManagementHistory.setLeaveid(leave);
-		leaveManagementHistory.setType(Constants.LEAVE);
-		// leaveManagementHistory.setStatus(leave.getStatus());
-		leaveManagementHistory.setCreatedBy(user.getUserCode());
-		leaveManagementHistory.setCreatedDate(new Date());
-		leaveManagementHistory.setUpdatedBy(user.getUserCode());
-		leaveManagementHistory.setUpdatedDate(new Date());
-		leaveManagementHistory.setToStage(Constants.LEAVE_CANCELLED);
-		leaveManagementHistoryDao.saveLeaveManagementHistory(leaveManagementHistory);
-		leaveService.LeaveCancelEmailToUser(user, leaveManagementHistory, reason);
-		if (leave != null && leave.getLeaveType() != null && leave.getOrgLocations() != null) {
-			timesheetRestController.linkLeaveTypeWithTimeSheet(user, leave.getOrgLocations(),
-					leave.getLeaveType().getId(), leave, Constants.LEAVE_CANCELLED);
-		}
-		return isCancelled;
-	}
-
+	return response;
+	}	
+	
 	@PreAuthorize("hasAnyRole('ROLE_APPROVE_LEAVE')")
 	@RequestMapping(value = { "/getEmployeeLeavesList", "/rest/getEmployeeLeavesList" }, method = RequestMethod.GET)
 	@ResponseBody
@@ -1953,17 +2050,38 @@ public class LeaveManagementRestController {
 	@PreAuthorize("hasAnyRole('ROLE_APPLY_LEAVE')")
 	@RequestMapping(value = "/withdrawLeave")
 	@ResponseBody
-	public boolean withdrawLeave(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+	public Response<String> withdrawLeave(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "leaveUUID", required = false) String leaveUUID,
 			@RequestParam(value = "userId", required = false) Long userId,
-			@RequestParam(value = "reason", required = false) String reason) throws Exception {
-
+			@RequestParam(value = "reason", required = false) String reason, HttpServletRequest request) throws Exception {
+		
+		Response<String> response = new Response<>();
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		User user = userService.getUserById(userId);
+	try {
+		User user1 = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if (user1 != null){
 		boolean isValid = false;
-		isValid = leaveService.getWithdrawLeave(orgLocations, leaveUUID, user, reason);
-		return isValid;
-
+		isValid = leaveService.getWithdrawLeave(orgLocations,leaveUUID,user,reason);
+		if(isValid == true){
+		    response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+		}
+		else{
+			response.setResponse(Result.INVALID_DATA.name());
+			response.setResponseMessage(Result.INVALID_DATA.getValue());
+		}
+		}  else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}	
+	 	
+	} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+		return response;
 	}
 
 	/**
