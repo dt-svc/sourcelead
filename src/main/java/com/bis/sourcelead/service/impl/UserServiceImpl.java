@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -11,6 +13,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.TimeZone;
 
 import javax.mail.internet.InternetAddress;
@@ -104,6 +107,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private UserDao userDao;
+	
+	@Value("${static.path}")
+    private String staticPath;
 	
 	
 	@Autowired
@@ -707,8 +713,6 @@ public class UserServiceImpl implements UserService {
 		 }else{
 			 globalVarsMap.put("firstName", user.getFirstName());	 
 		 }
-		 /*globalVarsMap.put("lastName",emailMessage.getLastName());*/
-//		 globalVarsMap.put("administratorFirstName", loginUser.getFullName());
 		 String loginUserFullName = loginUser.getFullName().substring(0, 1).toUpperCase() + loginUser.getFullName().substring(1);
 		 globalVarsMap.put("loginUser",loginUserFullName);
 		 globalVarsMap.put("orgName", locations.getOrgLocationName());
@@ -727,12 +731,28 @@ public class UserServiceImpl implements UserService {
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		 
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_USER,Constants.ENTITY_TYPE_EMAIL);
+		 EmailScenario  emailScenario = null;
+		 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.INVITE_USER,Constants.ENTITY_TYPE_EMAIL, locations.getId());
+		  if(emailScenario == null){
+				emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_USER,Constants.ENTITY_TYPE_EMAIL);
+		   }
+		 
+		 
+		 String emailBody = null;
+		 String path=staticPath.substring(0, staticPath.lastIndexOf("/"));
+		 try {
+			    BufferedReader lineReader = new BufferedReader(new FileReader(path+emailScenario.getBodyUrl().replace("\\","\\\\")));
+			    emailBody = new Scanner(lineReader).useDelimiter("\\Z").next();
+			   // System.out.println(emailBody);
+			   
+			} catch (IOException ex) {
+			    System.err.println(ex);
+			}
 		
 		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+		 String body = emailScenerioUtil.buildTemplateBody(emailBody,globalVarsMap,emailScenario);
+		 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data

@@ -774,6 +774,9 @@ function preventTabkey(e){
 					   <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
 	                     <li><a href="<c:url value='${sourceleadUrl}/guestOrgActionRoles'/>" ><i class="fa fa-key" aria-hidden="true"></i>Guest Action Roles</a></li>
                        </sec:authorize>
+                       <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
+	                     <li><a href="<c:url value='${sourceleadUrl}/emailTemplates'/>" ><i class="fa fa-key" aria-hidden="true"></i>Email Templates</a></li>
+                       </sec:authorize>
 	              </ul>
 	            </div>
 	          </li>

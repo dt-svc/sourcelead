@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dao;
 
+import java.util.List;
+
 import com.bis.sourcelead.entity.EmailScenario;
 
 public interface EmailScenarioDao {
@@ -9,4 +11,14 @@ public interface EmailScenarioDao {
 	EmailScenario save(EmailScenario scenario) throws Exception;
 
 	EmailScenario getEmailScenarioByUniqueName(String uniqueScenarioName, String entityType) throws Exception;
+	
+	List<EmailScenario> getEmailScenarioList();
+	
+	EmailScenario getEmailTemplateById(Long id);
+	
+	EmailScenario getEmailDefTemplateNo(String uniqueScenarioName, String defaultTemp) throws Exception ;
+	
+	List<EmailScenario> getEmailScenarioList(String sourceLead) throws Exception;
+	
+	EmailScenario getEmailScenarioByUniqueNameAndOrgLocationId(String uniqueScenarioName, String entityType,Long orgLocationId) throws Exception;
 }

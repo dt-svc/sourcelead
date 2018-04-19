@@ -1,5 +1,8 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -8,6 +11,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
@@ -34,6 +38,7 @@ import com.bis.sourcelead.dto.VendorOnboardTaskDTO;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.EntityType;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgBankDetails;
@@ -54,6 +59,7 @@ import com.bis.sourcelead.entity.VendorOnboardTasks;
 import com.bis.sourcelead.entity.VendorOnboarding;
 import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.ClassFieldService;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.NotificationsService;
@@ -165,6 +171,12 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 	
 	@Autowired
 	OrgLicenseSubscriptionService orgLicenseSubscriptionService;
+	
+	@Value("${static.path}")
+    private String staticPath;
+	
+	@Autowired
+	ClassFieldService classFieldService;
 
 	 
 	
@@ -424,12 +436,22 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		 
 		 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_VENDOR_INVITATION,Constants.ENTITY_TYPE_EMAIL);
 		 noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_VENDOR_INVITATION,Constants.ENTITY_TYPE_NOTIFICATION);
+		 String emailBody = null;
+		 String path=staticPath.substring(0, staticPath.lastIndexOf("/"));
+		 try {
+			    BufferedReader lineReader = new BufferedReader(new FileReader(path+emailScenario.getBodyUrl().replace("\\","\\\\")));
+			    emailBody = new Scanner(lineReader).useDelimiter("\\Z").next();
+			    System.out.println(emailBody);
+			   
+			} catch (IOException ex) {
+			    System.err.println(ex);
+			}
 		 
-		 
-		 
+		 EntityType entityType=classFieldService.getEntityTypeById(Constants.ACCEPT_VENDOR_INVITATION, Constants.ENTITY_TYPE_EMAIL);
 		 //covert subject,body and signature
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 //String body = emailScenerioUtil.buildTempBody(emailBody,globalVarsMap);
+		 String body = emailScenerioUtil.buildTemplateBody(emailBody,globalVarsMap,emailScenario);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
 		 String url = sourceleadUrl;
 		 
