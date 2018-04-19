@@ -85,8 +85,8 @@ gtag('config', 'UA-115098165-1');
 				<li><a href="/ims.html" id="imsID">IMS</a></li>
 			</ul>
 	</li>
-	<li><a href="/sourceleadJobPage.html" id="searchjobID">Search Job</a></li>
-	<li><a href="/marketplace.html" id="marketplaceID">Marketplace</a></li>
+	<li><a href="/search-jobs.html" id="searchjobID">Search Job</a></li>
+	<li><a href="/market-place.html" id="marketplaceID">Marketplace</a></li>
 	<li><a href="/about-us.html" id="aboutusID">About Us</a></li>
 	<!--<li><a href="helpManuals.html">Help</a></li>-->
 

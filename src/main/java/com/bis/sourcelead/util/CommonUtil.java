@@ -2189,5 +2189,9 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		return history;
 		
 	}
+  
+  public void sample(String pagename,String title,String keywords,String descrption){
+	  
+  }
 		
 }

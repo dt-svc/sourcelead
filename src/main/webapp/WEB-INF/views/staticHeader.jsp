@@ -84,11 +84,11 @@ gtag('config', 'UA-115098165-1');
 				<li><a href="/hrms.html" id="hrmsID">HRMS/Contracts</a></li>
 				<li><a href="/ims.html" id="imsID">IMS</a></li>
 				<li><a href="/immigration.html" id="immigrationID">Immigration</a></li>
-				<li><a href="/mergers_acquisition.html" id="maId">Mergers &amp; Acquisition</a></li>
+				<li><a href="/mergers-acquisition.html" id="maId">Mergers &amp; Acquisition</a></li>
 			</ul>
 	</li>
-	<li><a href="/sourceleadJobPage.html" id="searchjobID">Search Job</a></li>
-	<li><a href="/marketplace.html" id="marketplaceID">Marketplace</a></li>
+	<li><a href="/search-jobs.html" id="searchjobID">Search Job</a></li>
+	<li><a href="/market-place.html" id="marketplaceID">Marketplace</a></li>
 	<li><a href="/about-us.html" id="aboutusID">About Us</a></li>
 	<!--<li><a href="helpManuals.html">Help</a></li>-->
 

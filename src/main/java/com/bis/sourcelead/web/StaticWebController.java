@@ -1,7 +1,5 @@
 package com.bis.sourcelead.web;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,11 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.dto.UserManualsDTO;
 import com.bis.sourcelead.service.UserManualService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -32,14 +27,14 @@ public class StaticWebController {
 	@Autowired
 	UserManualService userManualService;
 	
-	@RequestMapping("/termsofuse.html")
+	@RequestMapping("/terms-of-use.html")
 	public String termsofuse() {
-		return "static-web/termsofuse";
+		return "static-web/terms-of-use";
 	}
 	
-	@RequestMapping("/privacypolicy.html")
+	@RequestMapping("/privacy-policy.html")
 	public String privacypolicy() {
-		return "static-web/privacypolicy";
+		return "static-web/privacy-policy";
 	}
 	
 	@RequestMapping("/crms.html")
@@ -52,9 +47,9 @@ public class StaticWebController {
 		return "static-web/disclaimer";
 	}
 	
-	@RequestMapping("/helpManuals.html")
+	@RequestMapping("/help-manuals.html")
 	public String helpManuals() {
-		return "static-web/helpManuals";
+		return "static-web/help-manuals";
 	}
 	
 	@RequestMapping("/hrms.html")
@@ -67,9 +62,9 @@ public class StaticWebController {
 		return "static-web/ims";
 	}
 	
-	@RequestMapping("/marketplace.html")
+	@RequestMapping("/market-place.html")
 	public String marketplace() {
-		return "static-web/marketplace";
+		return "static-web/market-place";
 	}
 	
 	@RequestMapping("/pms.html")
@@ -77,14 +72,14 @@ public class StaticWebController {
 		return "static-web/pms";
 	}
 	
-	@RequestMapping("/searchprofile.html")
+	@RequestMapping("/search-profile.html")
 	public String searchprofile() {
-		return "static-web/searchprofile";
+		return "static-web/search-profile";
 	}
 	
-	@RequestMapping("/termsnconditions.html")
+	@RequestMapping("/terms-and-conditions.html")
 	public String termsnconditions() {
-		return "static-web/termsnconditions";
+		return "static-web/terms-and-conditions";
 	}
 	
 	@RequestMapping("/ats.html")
@@ -97,9 +92,9 @@ public class StaticWebController {
 		return "static-web/immigration";
 	}
 	
-	@RequestMapping("/mergers_acquisition.html")
+	@RequestMapping("/mergers-acquisition.html")
 	public String mergersAcquisition() {
-		return "static-web/mergers_acquisition";
+		return "static-web/mergers-acquisition";
 	}
 	
 	@RequestMapping("/blog.html")
@@ -193,9 +188,9 @@ public class StaticWebController {
 		return "static-web/home";
 	}
 	
-	@RequestMapping("/sourceleadJobPage.html")
+	@RequestMapping("/search-jobs.html")
 	public String sourceleadJobPage() {
-		return "openJobs/sourceleadJobPage";
+		return "openJobs/search-jobs";
 	}
 	
 	@RequestMapping(value={ "/","/index.html"})
@@ -249,11 +244,11 @@ public class StaticWebController {
 		return "static-web/vms";
 	}
 	
-	@RequestMapping("/sourcelead_help.html")
+	@RequestMapping("/sourcelead-help.html")
 	public ModelAndView sourceleadHelp() {
 		ModelAndView modal = new ModelAndView();
 		modal.addObject("sourceleadUrl",sourceleadUrl);
-		modal.setViewName("static-web/sourceleadHelp");
+		modal.setViewName("static-web/sourcelead-help");
 		return modal;
 	}
 }
