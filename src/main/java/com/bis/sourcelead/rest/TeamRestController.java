@@ -7,6 +7,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.TeamDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Org;
@@ -27,6 +30,7 @@ import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.TeamMembersService;
@@ -279,12 +283,38 @@ public class TeamRestController {
 	 */
 	@PreAuthorize("hasRole('ROLE_ADD_TEAM')")
 	@RequestMapping(value = "/storeTeam", method = RequestMethod.POST)
-	public @ResponseBody String storeTeam(TeamDTO teamDTO, HttpServletRequest request) throws Exception
+	@ResponseBody
+	public  Response<String> storeTeam(TeamDTO teamDTO, HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		teamService.storeTeam(teamDTO, orgLocations);
-		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Team Created Successfully");
-		return "success";
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Response<String> response=new Response<>();
+		try{
+			if(user != null){
+				if(Validator.validate(teamDTO)){
+					teamService.storeTeam(teamDTO, orgLocations);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+					SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Team Created Successfully");
+					
+				}
+				else{
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			}else{
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());	
+			}
+			
+		}catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		
+		return response;
 	}
 	
 	/**
@@ -371,11 +401,34 @@ public class TeamRestController {
 	}
 	
 	@RequestMapping(value = "/storeEditedTeam")
-	public @ResponseBody String storeEditedTeam(TeamDTO teamDTO, HttpServletRequest request) throws Exception
+	public Response<String> storeEditedTeam(TeamDTO teamDTO, HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		teamService.storeTeam(teamDTO, orgLocations);
-		return "success";
+		Response<String> response=new Response<>();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		try{
+			
+			if(user !=null){
+				if(Validator.validate(teamDTO)){
+					teamService.storeTeam(teamDTO, orgLocations);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}else{
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+				
+			}else{
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		}catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
 	}
 	
 	@RequestMapping(value = "/getHotCandidateListForTeamByTeamId")

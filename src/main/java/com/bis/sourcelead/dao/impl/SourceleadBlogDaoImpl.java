@@ -106,7 +106,7 @@ public class SourceleadBlogDaoImpl implements SourceleadBlogDao{
 		}
 		
 		
-		String query = "from SourceleadBlogs sb left join fetch sb.createdBy user where sb.status = 1 "+query1+"";
+		String query = "from SourceleadBlogs sb left join fetch sb.createdBy user where sb.status = 1 "+query1+" ORDER BY sb.id DESC";
 		List<SourceleadBlogs> sourceleadBlogsList = session.createQuery(query.toString()).setFirstResult(sourceleadBlogDTO.getStart()).setMaxResults(sourceleadBlogDTO.getLength()).list();
 		
 		

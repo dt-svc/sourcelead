@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -47,7 +46,9 @@ import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SingnatoryDTO;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserProfileDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
@@ -73,6 +74,7 @@ import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.RestResponsetUtil;
 import com.bis.sourcelead.service.AssetService;
@@ -309,6 +311,59 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	 }
 }
 	 
+	 
+	 @PreAuthorize("hasRole('ROLE_CREATE_ASSOCIATE')")
+	 @RequestMapping(value = "/createSingnatoryUser" , method = RequestMethod.POST)
+	public Response<String> createUser(SingnatoryDTO singnatoryDTO,CandidateDTO candidateDTO, HttpServletRequest request)
+			throws Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Response<String> response = new Response<>();
+		try {
+			if (user != null) {
+				if (Validator.validate(singnatoryDTO)) {
+					AddUserDTO addUserDTO = new AddUserDTO();
+					addUserDTO.setDateFormat(orgLocations.getDateFormat());
+					addUserDTO.setFirstName(singnatoryDTO.getFirstName());
+					addUserDTO.setLastName(singnatoryDTO.getLastName());
+					if (StringUtils.isNoneBlank(singnatoryDTO.getDesignation())) {
+						addUserDTO.setDesignation(singnatoryDTO.getDesignation());
+					}
+					addUserDTO.setEmail(singnatoryDTO.getEmail());
+					addUserDTO.setRoleType(singnatoryDTO.getRoleType());
+					addUserDTO.setSsn(singnatoryDTO.getSsn());
+					if (StringUtils.isNoneBlank(singnatoryDTO.getPhoneNumber())) {
+						addUserDTO.setPhoneNumber(singnatoryDTO.getPhoneNumber());
+					}
+					candidateDTO.setDateFormat(orgLocations.getDateFormat());
+					commonUtil.onboardCreationCandidateGeneratedIdUpdated(candidate, orgLocations);
+					userService.storeUser(addUserDTO, candidateDTO, user, orgLocations, "CREATEUSER", "", new Org());
+					SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success !!New associate created");
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+				else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			}
+			else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+	
+		
+ 
+	 
 	 /**
 	  * To get the Project Manager Name by using projectId
 	  * @param projectId
@@ -493,7 +548,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	  */
 	  @RequestMapping(value = "/resendInvitationEmail" , method = RequestMethod.POST)
 	  public @ResponseBody  String resendInvitationEmail(@RequestParam(value="userId", required=false) String userId,
-			  @RequestParam(value="orgId", required=false) Long orgId,HttpServletRequest request) throws Exception {
+			  @RequestParam(value="orgId", required=false) Long orgId, @RequestParam(value="orgLocationId", required=false) Long orgLocationId,HttpServletRequest request) throws Exception {
 		    
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -511,8 +566,8 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	 			userService.addUser(user);
 	 			
 	 			// mail should forward user when action done in sourcelead admin 
-	 			if(orgId != null){
-	 			userService.sendEmailFromSourcelead(user,loginUser,password,orgLocations.getId(),orgId);
+	 			if(orgId != null && orgLocationId != null){
+	 			userService.sendEmailFromSourcelead(user,loginUser,password,orgLocationId,orgId);
 	 			}else{
 	 				userService.sendEmail(user,loginUser,password,orgLocations.getId());
 	 			}

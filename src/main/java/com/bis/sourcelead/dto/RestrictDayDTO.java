@@ -2,12 +2,21 @@ package com.bis.sourcelead.dto;
 
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class RestrictDayDTO extends SearchDTO {
 
 	private long restrictDayId;
+	
+	@Required(desc = "Restrict Name")
 	private String restrictName;
+	
+	@Required(desc = "Start date")
 	private String startDate;
+	
+	@Required(desc = "End Date")
 	private String endDate;
+	
 	private String reason;
 	private String status;
 	private String orgLocationId;

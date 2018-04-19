@@ -501,6 +501,39 @@
 <script>
 /* this script is for calculate total hours */
 $(document).ready(function() {
+	
+	var invalidDate = "${INVALID_DATA}";
+	var emptyData = "${INVALID_DATA_EMPTY}"
+		var outPut;
+		if(invalidDate != "" && invalidDate != null && invalidDate != 'undefined'){
+			outPut = "<p>"+invalidDate+" hours should not be more than 24<b>X</b></p>";
+		}
+		if(emptyData != "" && emptyData != null && emptyData != 'undefined'){
+			outPut = "<p>"+emptyData+"<b>X</b></p>";
+		}
+	if((invalidDate != "" && invalidDate != null && invalidDate != 'undefined')|| (emptyData != "" && emptyData != null && emptyData != 'undefined')){
+		outPut = outPut;
+		$("#timeSheetErrorMsg").removeAttr('style');
+		$("#timeSheetErrorMsg").attr('style','display:block;');
+		$("#timeSheetErrorMsg").empty();
+		$("#timeSheetErrorMsg").append(outPut);
+		var error = "<input  type='hidden' name='timesheetHiddenError' id='timesheetHiddenError'  data-validation='required' />";
+		$("#hideError").empty();
+		$("#hideError").append(error);
+	 }else{
+	    $("#timeSheetErrorMsg").removeAttr('style');
+	    $("#timeSheetErrorMsg").attr('style','display:none;');
+		$("#timeSheetErrorMsg").empty();
+		$("#hideError").empty();
+	} 
+	
+	$(".time_pop b").click(function(){
+		$("#timeSheetErrorMsg").removeAttr('style');
+		$("#timeSheetErrorMsg").attr('style','display:none;');
+	    $("#timeSheetErrorMsg").empty();
+	}); 
+	
+	
 	maskme();
 	if($("#timesheet_form input[data-id*=docFile]").length > 0) {
 		$("#timesheet_form input[data-id*=docFile]").remove();
@@ -513,11 +546,13 @@ function setTotals(){
 	 var billableSum = 0;
 	 var nonBillableTotal;
 	 var nonBillableSum = 0;
+	 var rowNum = $("#maxRowNumber").val();
+	 var jValue = parseInt(rowNum)+1
 	 for (var i = 1; i < 8; i++){
 		 var bsum = 0;
 		 var nbsum = 0;
 		 var total = 0;
-		 for (var j = 1; j < 50; j++){
+		 for (var j = 1; j < jValue; j++){
 			    var btemp = $("#"+j+"timeSheetDay"+i+"Id").val();
 			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
 			    	 var hours = btemp;
@@ -578,11 +613,7 @@ function setTotals(){
 		}
 	    $("#rowTotal"+i+"Id").val(total);
        }	
-	    //alert("total>>>>"+total);
-	   //alert("billableSum>>>>"+billableSum);
-	  // alert("nonBillableSum>>>>"+nonBillableSum);
 	   //for calculate billable count
-	   
 	    if(!isNaN(billableSum)){
 	        var t1 = billableSum; 
 	 		var billableHours = Math.floor(t1 / 60); 
@@ -599,10 +630,8 @@ function setTotals(){
 	 		}else{
 	 			billableTotal =  "00:00";
 	 		}
-	 		//currentMonthBillableHours(billableTotal);
 	 	    $("#grandBillableTotal").val(billableTotal);
 	    }else{
-	    	//currentMonthBillableHours("00:00");
 	    	$("#grandBillableTotal").val("00:00");
 	    }
 	   
@@ -625,10 +654,8 @@ function setTotals(){
 			}else{
 				nonBillableTotal =  "00:00";
 			}
-			//currentMonthNonBillableHours(nonBillableTotal);
 		    $("#grandNonBillableTotal").val(nonBillableTotal);
 	   }else{
-		   //currentMonthNonBillableHours("00:00");
 		   $("#grandNonBillableTotal").val("00:00");
 	   }
 	   
@@ -640,11 +667,11 @@ function grandTotal(){
     var total;
     var bsum = 0;
     for(var i=1 ;i<8;i++){
-   	 var hours = $("#rowTotal"+i+"Id").val();
+   	     var hours = $("#rowTotal"+i+"Id").val();
 
-   	 var split = hours.split(':');
-   	 var first = split[0];
-   	 var second = split[1];
+	   	 var split = hours.split(':');
+	   	 var first = split[0];
+	   	 var second = split[1];
 		 
 		 var minute = first * 60;
 		 var minute1 = second;
@@ -667,89 +694,218 @@ function grandTotal(){
 	 }else{
 		 total = "00:00"; 
 	 }
-	 //currentMonthTotalHours(total);
 	 $("#grandTotal").val(total);
+	 currentMonthHours();
+}
+function currentMonthHours(){
+	 var total;
+	 var billableTotal;
+	 var billableSum = 0;
+	 var nonBillableTotal;
+	 var nonBillableSum = 0;
+	 var rowNum = $("#maxRowNumber").val();
+	 var jValue = parseInt(rowNum)+1;
+	  var iValue = '${timesheetSubmissionDTO.incrStartsFrom}';
+	 for (var i = parseInt(iValue); i < 8; i++){
+		 var bsum = 0;
+		 var nbsum = 0;
+		 var total = 0;
+		 for (var j = 1; j < jValue; j++){
+			    var btemp = $("#"+j+"timeSheetDay"+i+"Id").val();
+			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
+			    	 var hours = btemp;
+			    	 var split = hours.split(':');
+			    	 var first = split[0];
+			    	 var second = split[1];
+					 
+					 var minute = first * 60;
+					 var minute1 = second;
+					 var finalmin = parseInt(minute) + parseInt(minute1);
+			    	 
+				     bsum = parseFloat(bsum) + parseInt(finalmin);
+				     
+				     var billableType = $("#"+j+"task1IdBillableTypeId").text();
+				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && billableType == 'Billable') {
+				    	 var billableHours = btemp;
+				    	 var billableSplit = billableHours.split(':');
+				    	 var billableFirst = billableSplit[0];
+				    	 var billableSecond = billableSplit[1];
+						 
+						 var billableMinute = billableFirst * 60;
+						 var billableMinute1 = billableSecond;
+						 var billableFinalmin1 = parseInt(billableMinute) + parseInt(billableMinute1);
+				    	 
+						 billableSum = parseFloat(billableSum) + parseInt(billableFinalmin1);
+				    }
+				     
+				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && billableType == 'Non-Billable') {
+				    	 var nonBillableHours = btemp;
+				    	 var nonBillableSplit = nonBillableHours.split(':');
+				    	 var nonBillableFirst = nonBillableSplit[0];
+				    	 var nonBillableSecond = nonBillableSplit[1];
+						 
+						 var nonBillableMinute = nonBillableFirst * 60;
+						 var nonBillableMinute1 = nonBillableSecond;
+						 var nonBillableFinalmin1 = parseInt(nonBillableMinute) + parseInt(nonBillableMinute1);
+				    	 
+						 nonBillableSum = parseFloat(nonBillableSum) + parseInt(nonBillableFinalmin1);
+				    }
+				}
+			    
+		 }
+       }	
 	 
+	   //for calculate billable count
+	    if(!isNaN(billableSum)){
+	        var t1 = billableSum; 
+	 		var billableHours = Math.floor(t1 / 60); 
+	 		var billableMinutes = t1 % 60;
+	 		
+	 		if (billableMinutes < 10) {
+	 			billableMinutes = '0' + billableMinutes;
+	 		}
+	 		if (billableHours < 10) {
+	 			billableHours = '0' + billableHours;
+	 		}
+	 		if(!isNaN(billableHours) && !isNaN(billableMinutes)){
+	 			billableTotal = billableHours +":"+ billableMinutes;
+	 		}else{
+	 			billableTotal =  "00:00";
+	 		}
+	 		
+	 		
+	 		 var mhm = '${timesheetSubmissionDTO.currentMonthBillableHours}';
+		   	 var msplit = mhm.split('.');
+		   	 var mHours     = msplit[0];
+		   	 var mMinutes   = msplit[1];
+		   	 
+		 	
+		   	 var asplit = billableTotal.split(':');
+		   	 var aHours     = asplit[0];
+		   	 var aMinutes   = asplit[1];
+		   	 
+		   	 var first = parseInt(mHours)+parseInt(aHours);
+		   	 var second = parseInt(mMinutes)+parseInt(aMinutes);
+		     
+		     
+		   	 var minute2 = first * 60;
+			 var minute3 = second;
+			 
+			 var finalmin1 = parseInt(minute2) + parseInt(minute3);
+			
+		     var t1 = parseInt(finalmin1);
+			 var hours1 = Math.floor(t1 / 60); 
+			 var minutes1 = t1 % 60;
+			 if (minutes1 < 10) {
+				minutes1 = '0' + minutes1;
+			 }
+			 if (hours1 < 10) {
+				hours1 = '0' + hours1;
+			 }
+		
+			 var total1;
+			 if(!isNaN(hours1) && !isNaN(minutes1)){
+				 if(parseInt(minutes1) <10){
+					 minutes1 = parseInt(minutes1);
+				 }
+				 if(parseInt(hours1) <10){
+					 hours1 = parseInt(hours1);
+				 }
+				 total1 = hours1 +"."+ minutes1;
+			 }else{
+				 total1 = "0.0"; 
+			 }
+			 
+	 		$("#monthBillableTotal").empty();
+	 		$("#monthBillableTotal").html('<input type="hidden" id="mBillableTotal" value="'+total1+'"/><d title="Billable: '+total1+'">'+total1+'</d>');
+	    }
+	    
+	  //for calculate non-billable count
+	   if(!isNaN(nonBillableSum)){
+		    var t2 = nonBillableSum; 
+			var nonBillableHours = Math.floor(t2 / 60); 
+			var nonBillableMinutes = t2 % 60;
+			
+			if (nonBillableMinutes < 10) {
+				nonBillableMinutes = '0' + nonBillableMinutes;
+			}
+			if (nonBillableHours < 10) {
+				nonBillableHours = '0' + nonBillableHours;
+			}
+			if(!isNaN(nonBillableHours) && !isNaN(nonBillableMinutes)){
+				nonBillableTotal = nonBillableHours +":"+ nonBillableMinutes;
+			}else{
+				nonBillableTotal =  "00:00";
+			}
+			
+			 var mhm = '${timesheetSubmissionDTO.currentMonthNonBillableHours}';
+		   	 var msplit = mhm.split('.');
+		   	 var mHours     = msplit[0];
+		   	 var mMinutes   = msplit[1];
+		 	
+		   	 var asplit = nonBillableTotal.split(':');
+		   	 var aHours     = asplit[0];
+		   	 var aMinutes   = asplit[1];
+		  
+		   	 var first = parseInt(mHours)+parseInt(aHours);
+		   	 var second = parseInt(mMinutes)+parseInt(aMinutes);
+			 
+		   	 var minute2 = first * 60;
+			 var minute3 = second;
+			 
+			 var finalmin1 = parseInt(minute2) + parseInt(minute3);
+			
+		     var t1 = parseInt(finalmin1);
+			 var hours1 = Math.floor(t1 / 60); 
+			 var minutes1 = t1 % 60;
+			 if (minutes1 < 10) {
+				minutes1 = '0' + minutes1;
+			 }
+			 if (hours1 < 10) {
+				hours1 = '0' + hours1;
+			 }
+			 var total1;
+			 if(!isNaN(hours1) && !isNaN(minutes1)){
+				 if(parseInt(minutes1) <10){
+					 minutes1 = parseInt(minutes1);
+				 }
+				 if(parseInt(hours1) <10){
+					 hours1 = parseInt(hours1);
+				 }
+				 total1 = hours1 +"."+ minutes1;
+			 }else{
+				 total1 = "0.0"; 
+			 }
+			
+			 
+			 $("#monthNonBillableTotal").empty();
+			 $("#monthNonBillableTotal").html('<input type="hidden" id="mNonBillableTotal" value="'+total1+'"/><d title="Non-Billable: '+total1+'">'+total1+'</d>');
+	   }
+	   var timesheetFor = '${timesheetEntryDetailsDTO.timesheetFor}';
+	   if(timesheetFor != null && timesheetFor != 'undefined' && timesheetFor != '' && timesheetFor == 'approver'){
+		   currentMonthTotalHours();
+	   }
+	  
 }
 
-
-function currentMonthTotalHours(totalHours){
-	
-	   	 var thm = $("#grandTotal").val();
-	   	 var tsplit = thm.split('.');
-	   	 if(tsplit[1] == null || tsplit[1] == 'undefined' || tsplit[1] == '' ){
-	   		tsplit = thm.split(':');
-	   	 }
-	   	 var tHours     = tsplit[0];
-	   	 var tMinutes   = tsplit[1];
-			
-			
-	   	 var mhm = $("#mTotal").val();
-	   	 var msplit = mhm.split('.');
-	   	 var mHours     = msplit[0];
-	   	 var mMinutes   = msplit[1];
-	   	
-	   	 var asplit = totalHours.split(':');
-	   	 var aHours     = asplit[0];
-	   	 var aMinutes   = asplit[1];
-	   
-	   	 var first = parseInt(mHours)+parseInt(aHours)-parseInt(tHours);
-	   	 var second = parseInt(mMinutes)+parseInt(aMinutes)-parseInt(tMinutes);
-	   	 
-	   	 var minute = first * 60;
+function currentMonthTotalHours(){
+    var total;
+    var bsum = 0;
+    var iValue = '${timesheetSubmissionDTO.incrStartsFrom}';
+    for(var i=parseInt(iValue);i<8;i++){
+  	     var hours = $("#rowTotal"+i+"Id").val();
+	   	 var split = hours.split(':');
+	   	 var first = split[0];
+	   	 var second = split[1];
+		 
+		 var minute = first * 60;
 		 var minute1 = second;
 		 var finalmin = parseInt(minute) + parseInt(minute1);
-   	 
-		 var  bsum =  parseInt(finalmin);
-		
-	     var t = bsum; 
-		 var hours = Math.floor(t / 60); 
-		 var minutes = t % 60;
-		 if (minutes < 10) {
-			minutes = '0' + minutes;
-		 }
-		 if (hours < 10) {
-			hours = '0' + hours;
-		 }
-		 var total;
-		 if(!isNaN(hours) && !isNaN(minutes)){
-			 total = hours +"."+ minutes;
-		 }else{
-			 total = "00.00"; 
-		 }
-		 $("#monthTotal").empty();
-		 $("#monthTotal").html('<input type="hidden" id="mTotal" value="'+total+'"/><d title="Total-Hours:'+total+'">'+total+'</d>');
-}
+	     bsum = parseFloat(bsum) + parseInt(finalmin);
+    }
 
-function currentMonthBillableHours(totalHours){
-	 var thm = $("#grandBillableTotal").val();
-   	 var tsplit = thm.split('.');
-   	 if(tsplit[1] == null || tsplit[1] == 'undefined' || tsplit[1] == '' ){
-   		tsplit = thm.split(':');
-   	 }
-   	 var tHours     = tsplit[0];
-   	 var tMinutes   = tsplit[1];
-   	 
-   	 var mhm = $("#mBillableTotal").val();
-   	 var msplit = mhm.split('.');
-   	 var mHours     = msplit[0];
-   	 var mMinutes   = msplit[1];
-   	 
-   	 var asplit = totalHours.split(':');
-   	 var aHours     = asplit[0];
-   	 var aMinutes   = asplit[1];
-   	
-   	 var first = parseInt(mHours)+parseInt(aHours)-parseInt(tHours);
-   	 var second = parseInt(mMinutes)+parseInt(aMinutes)-parseInt(tMinutes);
-     
-   	 
-   	 var minute = first * 60;
-	 var minute1 = second;
-	 var finalmin = parseInt(minute) + parseInt(minute1);
-	 
-	 var  bsum =  parseInt(finalmin);
-	
-     var t = bsum; 
+    var t = bsum; 
+    
 	 var hours = Math.floor(t / 60); 
 	 var minutes = t % 60;
 	 if (minutes < 10) {
@@ -758,61 +914,53 @@ function currentMonthBillableHours(totalHours){
 	 if (hours < 10) {
 		hours = '0' + hours;
 	 }
-	 var total;
 	 if(!isNaN(hours) && !isNaN(minutes)){
-		 total = hours +"."+ minutes;
+		 total = hours +":"+ minutes;
 	 }else{
-		 total = "00.00"; 
+		 total = "00:00"; 
 	 }
-	 $("#monthBillableTotal").empty();
-	 $("#monthBillableTotal").html('<input type="hidden" id="mBillableTotal" value="'+total+'"/><d title="Billable:'+total+'">'+total+'</d>');
-}
-function currentMonthNonBillableHours(totalHours){
-	
-	 var thm = $("#grandNonBillableTotal").val();
-  	 var tsplit = thm.split('.');
-  	 if(tsplit[1] == null || tsplit[1] == 'undefined' || tsplit[1] == '' ){
-  		tsplit = thm.split(':');
-  	 }
-  	 var tHours     = tsplit[0];
-  	 var tMinutes   = tsplit[1];
-  	
-  	 var mhm = $("#mNonBillableTotal").val();
+		
+  	 var mhm = '${timesheetSubmissionDTO.currentMonthTotalHours}';
   	 var msplit = mhm.split('.');
   	 var mHours     = msplit[0];
   	 var mMinutes   = msplit[1];
-  	 
-  	 var asplit = totalHours.split(':');
+	
+  	 var asplit = total.split(':');
   	 var aHours     = asplit[0];
   	 var aMinutes   = asplit[1];
-  	
-  	 var first = parseInt(mHours)+parseInt(aHours)-parseInt(tHours);
-  	 var second = parseInt(mMinutes)+parseInt(aMinutes)-parseInt(tMinutes);
-    
-  	 
-  	 var minute = first * 60;
-	 var minute1 = second;
-	 var finalmin = parseInt(minute) + parseInt(minute1);
+ 
+  	 var first = parseInt(mHours)+parseInt(aHours);
+  	 var second = parseInt(mMinutes)+parseInt(aMinutes);
 	 
-	 var  bsum =  parseInt(finalmin);
+  	 var minute2 = first * 60;
+	 var minute3 = second;
+	 
+	 var finalmin1 = parseInt(minute2) + parseInt(minute3);
 	
-     var t = bsum; 
-	 var hours = Math.floor(t / 60); 
-	 var minutes = t % 60;
-	 if (minutes < 10) {
-		minutes = '0' + minutes;
+    var t1 = parseInt(finalmin1);
+	 var hours1 = Math.floor(t1 / 60); 
+	 var minutes1 = t1 % 60;
+	 if (minutes1 < 10) {
+		minutes1 = '0' + minutes1;
 	 }
-	 if (hours < 10) {
-		hours = '0' + hours;
+	 if (hours1 < 10) {
+		hours1 = '0' + hours1;
 	 }
-	 var total;
-	 if(!isNaN(hours) && !isNaN(minutes)){
-		 total = hours +"."+ minutes;
+
+	 var total1;
+	 if(!isNaN(hours1) && !isNaN(minutes1)){
+		 if(parseInt(minutes1) <10){
+			 minutes1 = parseInt(minutes1);
+		 }
+		 if(parseInt(hours1) <10){
+			 hours1 = parseInt(hours1);
+		 }
+		 total1 = hours1 +"."+ minutes1;
 	 }else{
-		 total = "00.00"; 
+		 total1 = "0.0"; 
 	 }
-	 $("#monthNonBillableTotal").empty();
-	 $("#monthNonBillableTotal").html('<input type="hidden" id="mNonBillableTotal" value="'+total+'"/><d title="Non-Billable:'+total+'">'+total+'</d>');
+	 $("#monthTotal").empty();
+	 $("#monthTotal").html('<input type="hidden" id="mTotal" value="'+total1+'"/><d title="Total-Hours:'+total1+'">'+total1+'</d>');
 }
 
 </script>
@@ -1288,11 +1436,13 @@ function editMe(local){
 function checkHours(){ 
 	 var result = "";		
 	 var total; 
+	 var rowNum = $("#maxRowNumber").val();
+	 var jValue = parseInt(rowNum)+1;
 	 for (var i = 1; i < 8; i++){
 		 var bsum = 0;
 		 var nbsum = 0;
 		 var total = 0;
-		 for (var j = 1; j < 50; j++){  
+		 for (var j = 1; j < jValue; j++){  
 			    var btemp = $("#"+j+"timeSheetDay"+i+"Id").val();
 			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
 			    	 var hours = btemp;
@@ -1317,31 +1467,32 @@ function checkHours(){
 	    	 
 	 }else{
 	    	if(i == '1'){
-	    		result = result+"Monday ,";
+	    		result = result+"Mon ,";
 	    	}
 	    	if(i == '2'){  
-	    		result = result+"Tuesday ,";
+	    		result = result+"Tue ,";
 	    	}
 	    	if(i == '3'){  
-	    		result = result+"Wednesday ,";
+	    		result = result+"Wed ,";
 	    	}
 	    	if(i == '4'){  
-	    		result = result+"Thursday ,";
+	    		result = result+"Thu ,";
 	    	}
 	    	if(i == '5'){
-	    		result = result+"Friday ,";
+	    		result = result+"Fri ,";
 	    	}
 	    	if(i == '6'){
-	    		result = result+"Saturday ,";
+	    		result = result+"Sat ,";
 	    	}
 	    	if(i == '7'){
-	    		result = result+"Sunday ,";
+	    		result = result+"Sun ,";
 	    	}
 	    	
 	 }
    }
 }   
-	if(result != "" && result != null && result != 'undefined'){   
+	if(result != "" && result != null && result != 'undefined'){
+		//showError(result+" hours should not be more than 24");
 		var outPut = "<p>"+result+" hours should not be more than 24<b>X</b></p>";
 		$("#timeSheetErrorMsg").removeAttr('style');
 		$("#timeSheetErrorMsg").attr('style','display:block;');
@@ -1896,7 +2047,6 @@ function acceptReopenTimeSheetBySuperUser(projectMemberId,reOpenedUserId){
 </script> 
 <script type="text/javascript">
 $(".content-wraper").click(function() {
-	//alert("hello");
 	bodyClick();
 });
 $('.selectpicker').selectpicker('refresh');

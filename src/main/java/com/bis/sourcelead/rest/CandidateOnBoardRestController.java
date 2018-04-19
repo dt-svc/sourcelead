@@ -359,6 +359,7 @@ public class CandidateOnBoardRestController {
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				} else {
+					response.setObject("DataMissing");
 					response.setResponse(Result.INVALID_DATA.name());
 					response.setResponseMessage(Result.INVALID_DATA.getValue());
 				}
@@ -1644,11 +1645,14 @@ public class CandidateOnBoardRestController {
 					loginOrgLocation.getId());
 			if (onBoarding != null) {
 				response.setObject("Invalid");
+				response.setResponse(Result.FAILED.name());
+				response.setResponseMessage(Result.FAILED.getValue());
 			} else {
 				response.setObject("Success");
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
 			}
-			response.setResponse(Result.SUCCESS.name());
-			response.setResponseMessage(Result.SUCCESS.getValue());
+			
 		} catch (Exception e) {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
@@ -1692,6 +1696,7 @@ public class CandidateOnBoardRestController {
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
+				if(Validator.validate(onboardingCandidateSetp2DTO)){
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService
 						.getCandidateOnBoardingByUserIdAndLocationId(user.getId(), loginOrgLocation.getId());
@@ -1768,6 +1773,11 @@ public class CandidateOnBoardRestController {
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
+				response.setObject("DataMissing");
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+			}else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 			}

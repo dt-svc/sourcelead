@@ -221,9 +221,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 	}
   
 	@Override
-	public Boolean getInvoiceByInvoiceId(String invoiceId, Long orgLocationsId) throws Exception {
+	public Boolean getInvoiceByInvoiceId(String invoiceId, Long orgLocationsId,  String invoiceType) throws Exception {
 		
-		return invoiceDao.getInvoiceByInvoiceId(invoiceId, orgLocationsId);
+		return invoiceDao.getInvoiceByInvoiceId(invoiceId, orgLocationsId, invoiceType);
 	}
 	
 	@Override
@@ -315,17 +315,17 @@ public class InvoiceServiceImpl implements InvoiceService{
 			invoice.setPaymentFrequency(invoiceDTO.getPaymentFrequency());
 		}
 		if(StringUtils.isNotBlank(invoiceDTO.getDisCount())){
-			invoice.setDiscountType(invoiceDTO.getDisCount());;
+			invoice.setDiscountType(invoiceDTO.getDisCount());
 		}
 		
 		if(StringUtils.isNotBlank(invoiceDTO.getDiscountValue())){
-			invoice.setDiscountAmount(invoiceDTO.getDiscountValue());;
+			invoice.setDiscountAmount(invoiceDTO.getDiscountValue());
 		}
 		if(StringUtils.isNotBlank(invoiceDTO.getDiscountTotal())){
-			invoice.setDiscountValue(invoiceDTO.getDiscountTotal());;
+			invoice.setDiscountValue(invoiceDTO.getDiscountTotal());
 		}
 		if(StringUtils.isNotBlank(invoiceDTO.getInoviceTotal())){
-			invoice.setSubTotal(invoiceDTO.getInoviceTotal());;
+			invoice.setSubTotal(invoiceDTO.getInoviceTotal());
 		}
 		
 		if(StringUtils.isNotBlank(invoiceDTO.getComment())){
@@ -2369,10 +2369,10 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		return invoiceDao.getInvoicetByParentId(invoiceId);
 	}
 	@Override
-	public boolean deleteInvoice(Long invoiceId,String reason,String invoiceType) throws Exception
+	public boolean deleteInvoice(String invoiceUUID,String reason,String invoiceType) throws Exception
 	{
 		boolean result = false;
-		Invoice invoice = invoiceDao.getInvoicetById(invoiceId);
+		Invoice invoice = invoiceDao.getInvoicetByInvoiceUUID(invoiceUUID);
 		
 		if(invoice.getProjectID() != null){
 				invoice.setRejectReason(reason);

@@ -195,7 +195,11 @@ $(function(){
 			</section>
 	</section>
 </div>
-
+					<div class="location-alert alert alert-danger alert-dismissable zInPop" id="locationAlert">
+    <a href="#" class="loc-alertclose close">&times;</a>
+    <strong>Alert !</strong> <span>Your are not able to Save Required data is Missing.</span>
+  </div>
+  
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
  <script type="text/javascript" src="/resources/js/jquery-1.11.0.min.js?staticTime=${staticTime}"></script>
  <script type="text/javascript" src="/resources/js/jquery.liquidcarousel.pack.js?staticTime=${staticTime}"></script>	
@@ -277,6 +281,9 @@ $(function(){
 		 $("#phone").removeAttr("readonly", "readonly");
 	 }
  }
+ $(".loc-alertclose").click(function(){
+	 $(".location-alert").fadeOut();
+})
  </script>  
  
  
@@ -482,10 +489,25 @@ $('body').on('submit', '#signatory_form', function(e){
 	       $.ajax({
 		    	type: "POST",
 		    	data : formData,
-		    	  url: sourceleadUrl+"/createUser?${_csrf.parameterName}=${_csrf.token}&isMailSent="+isMailSent,		
+		    	  url: sourceleadUrl+"/createSingnatoryUser?${_csrf.parameterName}=${_csrf.token}&isMailSent="+isMailSent,		
 		        success: function(result) {
-		        	
+		        	if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+      	    		    showError(result.responseMessage);
+      	    		    $("#loading").removeAttr('style');
+      	    		}
+		        	else if(result.response === "AWKWARD"){
+		        		 location.href = "/errorPage";
+		        	}
+		        	else if(result.response === "SUCCESS"){
+		        		$("#loading").removeAttr('style');
 		        	saveOrgLocationSignatory(formData);
+		        	
+		        	}else if (result.indexOf('Sign In') !== -1) {
+      					location.replace(sourceleadUrl);
+      				} else {
+      				    showError("Operation failed, please try again");
+      				    $("#loading").removeAttr('style');
+      				}
 		        },
 		    });   
       }
@@ -510,12 +532,26 @@ $('body').on('submit', '#signatory_form', function(e){
 		   $.ajax({
 		    	type: "POST",
 		    	data : formData,
-		    	 url: sourceleadUrl+"/saveOrgLocationSignatory?${_csrf.parameterName}=${_csrf.token}", 
-		        success: function(data) {
-		        	if(data == 'success'){
+		    	 url: sourceleadUrl+"/saveCompanyOnBoardSignatory?${_csrf.parameterName}=${_csrf.token}", 
+		        success: function(result) {
+		        	if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+      	    		    showError(result.responseMessage);
+      	    		    $("#loading").removeAttr('style');
+      	    		}
+		        	else if(result.response === "AWKWARD"){
+		        		 location.href = "/errorPage";
+		        	}
+		        	else if(result.response === "SUCCESS"){
 		        		$("#loading").removeAttr("style");
 		        		onboardMessage();
-		        	}
+		        	
+		        	}else if (result.indexOf('Sign In') !== -1) {
+      					location.replace(sourceleadUrl);
+      				} else {
+      				    showError("Operation failed, please try again");
+      				    $("#loading").removeAttr('style');
+      				}
+		        
 		        },
 		    });
   }

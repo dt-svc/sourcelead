@@ -200,7 +200,9 @@ public class ConnectionsServiceImpl implements ConnectionsService {
 		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, locationId, iAdressArray, new ArrayList<EmailAttachment>());
-		String actionLink = "";
+		 StringBuilder notificationLink = new StringBuilder();
+		 String actionLink="";
+	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("loadReceivedConnections?status=received").toString();
 		UserRole role = userRoleService.getUserRoleByUserId(toUser.getId());
 		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, role.getOrgLocations(),
 				noificationEmailScenario, null);

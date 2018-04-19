@@ -118,7 +118,7 @@ public class OrgLicenseSubscriptionDaoImpl implements OrgLicenseSubscriptionDao 
 		Session session = this.sessionFactory.getCurrentSession();
 		List<OrgLicenseSubscription> orgLicenseSubscription = new ArrayList<OrgLicenseSubscription>();
 		logger.debug("getOrgLicenseSubscriptionById start");
-		String query = "from OrgLicenseSubscription subscription left join fetch subscription.org org "
+		String query = "from OrgLicenseSubscription subscription left join fetch subscription.org org left join fetch subscription.timezone "
 				+ "left join fetch subscription.subscriptionType left join fetch subscription.userSubscriptionType left join fetch subscription.storageSubscriptionType "
 				+ "where subscription.uuid = :uuid ";
 		orgLicenseSubscription = session.createQuery(query).setString( "uuid", uuid ).list();
@@ -130,6 +130,15 @@ public class OrgLicenseSubscriptionDaoImpl implements OrgLicenseSubscriptionDao 
 		}
    	
 	
+	}
+
+	@Override
+	@Transactional
+	public List<String> getOrgLicenseSubscribedCountriesByOrgId(Long orgId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select subscription.country from OrgLicenseSubscription subscription where subscription.org.id = :orgId order by subscription.id ASC ";
+		List<String> orgLicenseSubscribedCountriesList = session.createQuery(query.toString()).setLong("orgId", orgId).list();
+		return orgLicenseSubscribedCountriesList;
 	}
 
 	

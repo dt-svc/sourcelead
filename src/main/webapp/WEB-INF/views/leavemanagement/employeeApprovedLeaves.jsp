@@ -291,10 +291,20 @@ function confirmCancel(leaveUUID){
 			 $.ajax({
 				   	type: "POST",
 				    url: sourceleadUrl+"/storeCancelReason?"+tokenParamName+"="+tokenValue+"&leaveUUID="+leaveUUID+"&reason="+reason+"&userId="+userId,
-		   		    success: function(data) {
+		   		    success: function(response) {
+		   		     if (response && response.response === "INVALID_DATA") {
+			    		    showError(response.responseMessage);
+			    		} else if (response.response === "AWKWARD") {
+			    		    location.href = "/errorPage";
+			    		} else if (response.response === "SUCCESS") {
 		   		    	$("#popUp").empty();
 		   			 	$(".project_inn_mask").fadeOut(200);
-		   			 	location.replace(sourceleadUrl+"/employeeCancelLeaves");	
+		   			 	location.replace(sourceleadUrl+"/employeeCancelLeaves");
+			    		} else if (response.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
+						}
 		   		    }
 			     });
 		}
@@ -316,11 +326,13 @@ function cancelTermination(){
 
 <script>
 function getRequestedAproveSummary(leaveUUID,orgLocationId){
-	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveUUID="+leaveUUID+"&orgLocationId="+orgLocationId, function(data) {
-		   if(data != null){
+	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveUUID="+leaveUUID+"&orgLocationId="+orgLocationId, function(response) {
+		   if(response.response === "SUCCESS") {
+			   if(response != null){
 			$(".new_side_wrap").addClass("new_side_wrap_active");
 			$(".side_mask").fadeIn(200);
 			$("body").css('overflow-y', 'hidden');
+			var data = response.object;
 			 var result = "";	
 			 result = result +' <div class="viewgrid-header pull-right zIndex positionRelative">';
 			 result = result +' <span class="btn btn-primary btn-sm mr10">APPROVED</span>';
@@ -492,7 +504,19 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId){
              $("#leaveSummaryId").empty();
              $("#leaveSummaryId").append(result);
             
-		}	
+		}
+		   } else if (response && response.response === "INVALID_DATA") {
+				//$(".new_side_wrap").removeClass("new_side_wrap_active");
+		    showError(response.responseMessage);
+		   } else if (response.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+		    } else if (response.response === "AWKWARD") {
+			    location.href = "/errorPage";
+		     }
+			else {
+			    showError("Operation failed, please try again");
+			}	   
+		 
 		 
 	});  
 }
