@@ -15,7 +15,7 @@
 				<th>Action</th>
 			  </tr>
 			  <c:forEach var="items" items="${formsList}" varStatus="rows">
-			  <tr formid ="${items.id}">
+			  <tr formid ="${items.id}" savedFormDocName = "${items.uploadFileName}">
 				<td><div class="tbldata-dotdot-me">${items.formName}</div></td>
 				<td><div class="tbldata-dotdot-me"><span class="fileName">${items.fileName}</span>
 				<a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile('${items.fileUrl}','${items.fileName}','${items.fileContentType}');" title="View"></a>
@@ -122,17 +122,25 @@
 		
 		<div class="popupMid popupMidHeight clearfix">
          
-          <div class="mt row clearfix">
+          <div class="mt row clearfix" id = "uploadFormDiv">
 				<label class="col-md-2">File<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-10">
 					<div class="input-group" style="margin:0 auto">
 					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 					  <input type="file" style="display: none;" multiple id="uploadFormBtn"  class="upload">
 					  </span> </label>
-					<input type="text" class="form-control" readonly id="uploadFormFile" placeholder="Upload Form ...">
+					<input type="text" class="form-control" readonly id="uploadFormFile" field-name = "Document" placeholder="Upload Form ..." data-validation="required">
 				  </div>
 				</div>
-			</div>					          	
+			</div>		
+			
+			<div class="col-sm-12 noPad mt clearfix" id="uploadFormDivEditDocDiv" style="display: none">
+			<label class="col-md-4 padding_left">File<span class="text-danger">&nbsp;*</span></label>
+			 <div class="col-md-8">
+				  <label id="uploadFormDocumentName" name="uploadFormDocumentName" class="text-primary tbldata-dotdot-200 pull-left" title=""></label>&nbsp;&nbsp;<span id="delete_immiDocFile" onclick="removeImmigFormDoc1();"><i class="fa fa-trash removeIcon text-danger cursorPointer pull-right"></i></span>
+				<input type="hidden" id="uploadFormDocumentNameDocumentExisitngFile" name="uploadFormDocumentNameDocumentExisitngFile" value="">
+				  </div>			          	
+			</div>			          	
 		
 		</div>
 		<div class="immiPopFoot">
@@ -200,8 +208,16 @@
 				$("#uploadFormPop").fadeIn(100);
 				
 				$("#uploadFormIdSave").val($(this).closest('tr').attr("formid"));
-				
-				
+				var fileName = $(this).closest('tr').attr("savedFormDocName");
+				$("#uploadFormDocumentName").text(fileName);
+				if(fileName !='' && fileName !=null){
+					$("#uploadFormDiv").hide();
+					$("#uploadFormDivEditDocDiv").show();
+				}else{
+					$("#uploadFormDiv").show();
+					$("#uploadFormDivEditDocDiv").hide();
+				}
+								
 			});
 			function removeFormPopUp(){
 				$(".popMask").fadeOut(200);
@@ -222,5 +238,12 @@ function removeImmigDoc(){
 	$("#immigrationEditDocDiv").hide();
 	$("#immigrationDocDiv").show();
 	$('#uploadFileForm').attr("data-validation", "required");
+}
+
+function removeImmigFormDoc1(){
+	
+	$("#uploadFormDivEditDocDiv").hide();
+	$("#uploadFormDiv").show();
+	$('#uploadFormFile').attr("data-validation", "required");
 }
 </script>

@@ -1036,6 +1036,7 @@ function editResidenceDEtailsByRowId(id){
 }
 
 function uploadRequestDoc(){
+	if ($('#uploadRequestDoc_Form').validate(false, validationSettings)) {
 	var formData = getFormData("uploadRequestDoc_Form");
 	var candidateId = $("#candidateID").val();
 	var immigrationId = $('#immigrationID').val();
@@ -1054,6 +1055,7 @@ function uploadRequestDoc(){
         	}
         }
     });
+	}
 }
 
 function editDocumentDetailsByRowId(id){
@@ -1104,6 +1106,7 @@ function deleteDocumentDetailsByRowId(id){
 }
 
 function uploadRequestForm(){
+	if ($('#uploadRequestForm_Form').validate(false, validationSettings)) {
 	var formData = getFormData("uploadRequestForm_Form");
 	var candidateId = $("#candidateID").val();
 	var immigrationId = $('#immigrationID').val();
@@ -1121,6 +1124,7 @@ function uploadRequestForm(){
         	}
         }
     });
+	}
 }
 function validateEduname()  
 {	var validationSettings = {
