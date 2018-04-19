@@ -70,7 +70,7 @@ public class ProjectPlanningResourceRequestDTO implements Serializable{
 	 
 	 private String candidateUUID;
 	
-
+	 private String userCode;
 	
 
 	public String getProjectPlanningRequestId() {
@@ -303,5 +303,13 @@ public class ProjectPlanningResourceRequestDTO implements Serializable{
 
 	public void setCandidateUUID(String candidateUUID) {
 		this.candidateUUID = candidateUUID;
+	}
+
+	public String getUserCode() {
+		return userCode;
+	}
+
+	public void setUserCode(String userCode) {
+		this.userCode = userCode;
 	}
 }

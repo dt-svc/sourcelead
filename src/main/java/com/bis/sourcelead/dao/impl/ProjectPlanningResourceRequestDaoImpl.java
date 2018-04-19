@@ -244,6 +244,7 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningReso
   				Candidate candidate = candidateDao.getCandidateByCandidateId(resourceRequest.getCandidateId().getId());
   				if(candidate != null) {
   					requestDTO.setCandidateUUID(resourceRequest.getCandidateId().getCandidateUUID());
+  					requestDTO.setUserCode(candidate.getConsultantUser().getUserCode());
   				}
   				
   				requestDTOList.add(requestDTO);
