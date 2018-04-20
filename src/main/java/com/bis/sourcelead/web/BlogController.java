@@ -73,7 +73,6 @@ public class BlogController {
 		}
 
 		String createdDate = dateFormatResult.format(dateFormat.parse(blogDetails.getCreatedDate().toString()));
-
 		modelAndView.addObject("blogCategoryList", blogCategoryList);
 
 		modelAndView.addObject("blogDetails", blogDetails);
