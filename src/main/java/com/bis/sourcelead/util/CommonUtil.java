@@ -3,6 +3,7 @@ package com.bis.sourcelead.util;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -22,6 +23,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -223,6 +225,9 @@ public class CommonUtil {
 	
 	@Value("${paymentSuccessReturnEmail}")
 	private String paymentSuccessReturnEmail;
+	
+	@Value("${static.path}")
+    private String staticPath;
 	
 	
 	/**
@@ -2355,6 +2360,42 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
   
   
   
-  
+  public void sendTemplateEmail(EmailMessage emailMessage,Map<String, String> globalVarsMap,EmailScenario emailScenario,Org org,OrgLocations orgLocations){
+	  
+	 
+	  try{
+		//setting the Recipient information
+			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+			 
+			 
+			 String emailBody = null;
+			 String path=staticPath.substring(0, staticPath.lastIndexOf("/"));
+			 try {
+				    BufferedReader lineReader = new BufferedReader(new FileReader(path+emailScenario.getBodyUrl().replace("\\","\\\\")));
+				    emailBody = new Scanner(lineReader).useDelimiter("\\Z").next();
+				   // System.out.println(emailBody);
+				   
+				} catch (IOException ex) {
+				    System.err.println(ex);
+				}
+			
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+			 String body = emailScenerioUtil.buildTemplateBody(emailBody,globalVarsMap,emailScenario);
+			 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
+			 String url = sourceleadUrl;
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url,org,orgLocations);
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 
+			 //calling the sendEmail method of emailScenerioUtil
+			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+	  }catch (Exception e) {
+		  e.printStackTrace();
+	}
+	  
+  }
 		
 }

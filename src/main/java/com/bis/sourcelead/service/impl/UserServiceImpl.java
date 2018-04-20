@@ -727,43 +727,15 @@ public class UserServiceImpl implements UserService {
 		 }else{
 			 globalVarsMap.put("password","Login with your existing sourcelead credentials");
 		 }
-		 
 		
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		 
-		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		//getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = null;
 		 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.INVITE_USER,Constants.ENTITY_TYPE_EMAIL, locations.getId());
 		  if(emailScenario == null){
 				emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_USER,Constants.ENTITY_TYPE_EMAIL);
 		   }
-		 
-		 
-		 String emailBody = null;
-		 String path=staticPath.substring(0, staticPath.lastIndexOf("/"));
-		 try {
-			    BufferedReader lineReader = new BufferedReader(new FileReader(path+emailScenario.getBodyUrl().replace("\\","\\\\")));
-			    emailBody = new Scanner(lineReader).useDelimiter("\\Z").next();
-			   // System.out.println(emailBody);
-			   
-			} catch (IOException ex) {
-			    System.err.println(ex);
-			}
-		
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
-		 String body = emailScenerioUtil.buildTemplateBody(emailBody,globalVarsMap,emailScenario);
-		 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
-		 String url = sourceleadUrl;
-		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations());
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		 
-		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,locationId,iAdressArray,new ArrayList<EmailAttachment>());
+		  
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,emailScenario,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations());
 		
 	}
 
