@@ -21,6 +21,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  *  to handle the documents of the client and vendors
  * @author Prasanna Vadla
@@ -120,6 +122,10 @@ public class OrgDocuments implements Serializable{
 	
 	@Transient
 	private Long ownerId;
+	
+	@Transient
+	@JsonProperty
+	private Long spocId;
 	
 	@Transient
 	private List<OrgSpoc> orgSpocsList;
@@ -365,6 +371,16 @@ public class OrgDocuments implements Serializable{
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public Long getSpocId()
+	{
+		return spocId;
+	}
+
+	public void setSpocId(Long spocId)
+	{
+		this.spocId = spocId;
 	}
 	
 	

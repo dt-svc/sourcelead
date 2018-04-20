@@ -975,9 +975,9 @@ public class UserRoleDaoImpl implements UserRoleDao {
         
         String userType = "";
         if("ACTIVE".equalsIgnoreCase(usersUsageReportDTO.getUserType())){
-        	userType = " userRole.userState = 'ACTIVE'";
+        	userType = " userRole.userState = 'ACTIVE' and";
 		}else if("INACTIVE".equalsIgnoreCase(usersUsageReportDTO.getUserType())){
-			userType = " userRole.userState = 'INACTIVE'";
+			userType = " userRole.userState = 'INACTIVE' and";
 		}else if("NOT_LOGGEDIN".equalsIgnoreCase(usersUsageReportDTO.getUserType())){
 			userType = " userRole.userState = 'NOT_LOGGEDIN'";
 		}
@@ -1016,16 +1016,16 @@ public class UserRoleDaoImpl implements UserRoleDao {
     		
     		if(!"NOT_LOGGEDIN".equalsIgnoreCase(usersUsageReportDTO.getUserType())){
     			if(usersUsageReportDTO.getOrgId() != null && usersUsageReportDTO.getOrgId().size() > 0){
-        			query = " from UserRole uRole where uRole.user.id <> 1 and uRole.user.id <> 2 and uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+" and userRole.user.id IN (:userIds)) "+query1+" and uRole.orgLocations.org.id IN (:orgList) group by uRole.user.id";
+        			query = " from UserRole uRole where uRole.user.id <> 1 and uRole.user.id <> 2 and uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+" userRole.user.id IN (:userIds)) "+query1+" and uRole.orgLocations.org.id IN (:orgList) group by uRole.user.id";
         			userList =   session.createQuery(query.toString()).setParameterList("orgList", usersUsageReportDTO.getOrgId()).setParameterList("userIds", usersUsageReportDTO.getUserIds()).list();
-        		    countQuery ="select count(*) from UserRole uRole where uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+" and userRole.user.id IN (:userIds)) and uRole.orgLocations.org.id IN (:orgList)";
+        		    countQuery ="select count(*) from UserRole uRole where uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+" userRole.user.id IN (:userIds)) and uRole.orgLocations.org.id IN (:orgList)";
         		    Query listCountQuery = session.createQuery(countQuery + query1 + " group by uRole.user.id");
         		    countlist =listCountQuery.setParameterList("orgList", usersUsageReportDTO.getOrgId()).setParameterList("userIds", usersUsageReportDTO.getUserIds()).list();
         		}else{
         			if(usersUsageReportDTO.getUserIds() != null && !usersUsageReportDTO.getUserIds().isEmpty()){
-        				query = " from UserRole uRole where uRole.user.id <> 1 and uRole.user.id <> 2 and uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+" and userRole.user.id IN (:userIds)) "+query1+" group by uRole.user.id";
+        				query = " from UserRole uRole where uRole.user.id <> 1 and uRole.user.id <> 2 and uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+" userRole.user.id IN (:userIds)) "+query1+" group by uRole.user.id";
             			userList =   session.createQuery(query.toString()).setParameterList("userIds", usersUsageReportDTO.getUserIds()).list();
-            		    countQuery ="select count(*) from UserRole uRole where uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+" and userRole.user.id IN (:userIds)) ";
+            		    countQuery ="select count(*) from UserRole uRole where uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+" userRole.user.id IN (:userIds)) ";
             		    Query listCountQuery = session.createQuery(countQuery + query1 + " group by uRole.user.id");
             		    countlist =listCountQuery.setParameterList("userIds", usersUsageReportDTO.getUserIds()).list();
         			}

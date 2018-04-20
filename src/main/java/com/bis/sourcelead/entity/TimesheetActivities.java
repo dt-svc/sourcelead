@@ -4,8 +4,6 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,24 +13,27 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
-
-import com.bis.sourcelead.enums.Approval_Mechanism_Type;
-import com.bis.sourcelead.enums.Submission_ApprovalStatus;
-import com.bis.sourcelead.enums.Submission_Status;
+import org.joda.time.DateTime;
 @Entity
-@Table(name = "SUBMISSION_APPROVER_HIERARCHY_HISTORY")
-public class SubmissionApproverHierarchyHistory {
-
+@Table(name = "TIMESHEET_ACTIVITIES")
+public class TimesheetActivities {
 	
-	
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 1L;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+   	@JoinColumn(name = "PROJECT_ID", nullable = false)
+	private Projects projectId;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+   	@JoinColumn(name = "MASTER_CANDIDATE_ID", nullable = false)
+	private MasterCandidate masterCandidate;
+	
+	/*
 	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "HIERARCHY_ID", nullable = false)
 	private ProjectApproverHierarchy hierarchyId;
@@ -55,10 +56,10 @@ public class SubmissionApproverHierarchyHistory {
 	
 	@Column(name = "SUBMISSION_APPROVALSTATUS")
 	@Enumerated(EnumType.STRING)
-	private Submission_ApprovalStatus submissionApprovalStatus;
+	private Submission_ApprovalStatus submissionApprovalStatus;*/
 	
 	 
-	@Column(name = "INVOICE_STATUS")
+	/*@Column(name = "INVOICE_STATUS")
     private String invoiceStatus;
 	
 	@Column(name = "BILLING_STATUS")
@@ -79,7 +80,11 @@ public class SubmissionApproverHierarchyHistory {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "BILL_ID", nullable = false)
-	private Invoice billId;
+	private Invoice billId;*/
+	
+	@Column(name = "ACTIVITY_STATUS")
+	private String activityStatus;
+	
 	
 	@Column(name = "FREQUENCY_START_DATE")
     private Date frequencyStartDate;
@@ -87,9 +92,9 @@ public class SubmissionApproverHierarchyHistory {
 	@Column(name = "FREQUENCY_END_DATE")
     private Date frequencyEndDate;
 	
-	@Column(name = "MECHANISM_TYPE")
+	/*@Column(name = "MECHANISM_TYPE")
 	@Enumerated(EnumType.STRING)
-	private Approval_Mechanism_Type mechanismType;
+	private Approval_Mechanism_Type mechanismType;*/
 	
 	@Column(name = "REJECTED_REASON")
 	@Type(type="text")
@@ -124,11 +129,11 @@ public class SubmissionApproverHierarchyHistory {
 	@Column(name = "CREATED_BY")
 	private String createdBy;
 	
-	@Column(name = "UPDATED_DATE")
+	/*@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 	
 	@Column(name = "UPDATED_BY")
-	private String updatedBy;
+	private String updatedBy;*/
 
 	public Long getId() {
 		return id;
@@ -136,95 +141,6 @@ public class SubmissionApproverHierarchyHistory {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public ProjectApproverHierarchy getHierarchyId() {
-		return hierarchyId;
-	}
-
-	public void setHierarchyId(ProjectApproverHierarchy hierarchyId) {
-		this.hierarchyId = hierarchyId;
-	}
-
-	public TimesheetSubmissions getSubmissionId() {
-		return submissionId;
-	}
-
-	public void setSubmissionId(TimesheetSubmissions submissionId) {
-		this.submissionId = submissionId;
-	}
-
-	
-	public SubmissionApproverHierarchy getSubmissionApproverHierarchyId() {
-		return submissionApproverHierarchyId;
-	}
-
-	public void setSubmissionApproverHierarchyId(SubmissionApproverHierarchy submissionApproverHierarchyId) {
-		this.submissionApproverHierarchyId = submissionApproverHierarchyId;
-	}
-
-	public Submission_Status getSubmissionStatus() {
-		return submissionStatus;
-	}
-
-	public void setSubmissionStatus(Submission_Status submissionStatus) {
-		this.submissionStatus = submissionStatus;
-	}
-
-	public Submission_ApprovalStatus getSubmissionApprovalStatus() {
-		return submissionApprovalStatus;
-	}
-
-	public void setSubmissionApprovalStatus(Submission_ApprovalStatus submissionApprovalStatus) {
-		this.submissionApprovalStatus = submissionApprovalStatus;
-	}
-
-	public String getInvoiceStatus() {
-		return invoiceStatus;
-	}
-
-	public void setInvoiceStatus(String invoiceStatus) {
-		this.invoiceStatus = invoiceStatus;
-	}
-
-	public String getBillingStatus() {
-		return billingStatus;
-	}
-
-	public void setBillingStatus(String billingStatus) {
-		this.billingStatus = billingStatus;
-	}
-
-	public Date getInvoiceDate() {
-		return invoiceDate;
-	}
-
-	public void setInvoiceDate(Date invoiceDate) {
-		this.invoiceDate = invoiceDate;
-	}
-
-	public Date getBillDate() {
-		return billDate;
-	}
-
-	public void setBillDate(Date billDate) {
-		this.billDate = billDate;
-	}
-
-	public Invoice getInvoiceId() {
-		return invoiceId;
-	}
-
-	public void setInvoiceId(Invoice invoiceId) {
-		this.invoiceId = invoiceId;
-	}
-
-	public Invoice getBillId() {
-		return billId;
-	}
-
-	public void setBillId(Invoice billId) {
-		this.billId = billId;
 	}
 
 	public Date getFrequencyStartDate() {
@@ -299,6 +215,14 @@ public class SubmissionApproverHierarchyHistory {
 		this.reopenRejectedReason = reopenRejectedReason;
 	}
 
+	public String getActivityStatus() {
+		return activityStatus;
+	}
+
+	public void setActivityStatus(String activityStatus) {
+		this.activityStatus = activityStatus;
+	}
+
 	public Date getCreatedDate() {
 		return createdDate;
 	}
@@ -315,34 +239,20 @@ public class SubmissionApproverHierarchyHistory {
 		this.createdBy = createdBy;
 	}
 
-	public Date getUpdatedDate() {
-		return updatedDate;
+	public Projects getProjectId() {
+		return projectId;
 	}
 
-	public void setUpdatedDate(Date updatedDate) {
-		this.updatedDate = updatedDate;
+	public void setProjectId(Projects projectId) {
+		this.projectId = projectId;
 	}
 
-	public String getUpdatedBy() {
-		return updatedBy;
+	public MasterCandidate getMasterCandidate() {
+		return masterCandidate;
 	}
 
-	public void setUpdatedBy(String updatedBy) {
-		this.updatedBy = updatedBy;
+	public void setMasterCandidate(MasterCandidate masterCandidate) {
+		this.masterCandidate = masterCandidate;
 	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
-	public Approval_Mechanism_Type getMechanismType() {
-		return mechanismType;
-	}
-
-	public void setMechanismType(Approval_Mechanism_Type mechanismType) {
-		this.mechanismType = mechanismType;
-	}
-	
-
 	
 }
