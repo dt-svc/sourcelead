@@ -1470,3 +1470,12 @@ span.blueColor {
 .blogInn ul li img {
 	width: auto; max-width: 60%;
 }
+.blogInn ol {
+	padding: 0px 0px 0px 15px;
+}
+.blogInn ol li {
+	list-style-type: inherit;
+}
+
+
+
