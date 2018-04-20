@@ -24,8 +24,8 @@ $(document).ready(function(){
 <script>
 function checkBox(){
 	var invoiceforexpenses = $("#invoiceforexpenses").val();
-	if(invoiceforexpenses == 'Y'){
-		$('#projectIdDiv').find('p.jquery_form_error_message').remove();
+	 if(invoiceforexpenses == 'Y'){
+	    $('#projectIdDiv').find('p.jquery_form_error_message').remove();
 		$('#projectMemberIdDiv').find('p.jquery_form_error_message').remove();
 		$('#expensesIdDiv').find('p.jquery_form_error_message').remove();
 		$('#projectId').removeAttr('data-validation');
@@ -354,7 +354,12 @@ function getExpensesDetails(expId){
 		type : "GET",
 		url: sourceleadUrl+"/getExpensesEntries?"+tokenParamName+"="+tokenValue+"&expensesId="+expensesId,
 		success :function(data) {
+			if(data !=null && data !=''){
 			populateExpensesDetailsGrid(data);
+			}else{
+                  alertMessageInExpense();
+            }
+			
 		},
 		});	
 }
@@ -364,7 +369,7 @@ function getExpensesDetails(expId){
 
 <script>
 function populateExpensesDetailsGrid(data){
-	var currencyCode = '${SourceLeadWeb_currencyCode}';
+  var currencyCode = '${SourceLeadWeb_currencyCode}';
            var result = '';
            var subTotal = 0;
             result = result +'<input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber" value='+data.length+' />';
@@ -422,8 +427,6 @@ function populateExpensesDetailsGrid(data){
          		      result = result +' </tr>';
          		      
                  }	
-            }else{
-                  alertMessageInExpense();
             }
            
             
