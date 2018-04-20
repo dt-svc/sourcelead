@@ -75,7 +75,7 @@ function errRemoveVendorContact(){
 							<div class="input-group col-md-10 pull-left">
 								<select class="chosen-select form-control"
 									id="vendorOrgRelationId" name="vendorOrgRelationId"
-									onchange="getVendorContacts();errRemoveVendor();getPaymentTerms();" data-validation="required" field-name="Vendor">
+									onchange="getVendorContacts();errRemoveVendor();getPaymentTerms();getPaymentAccountList();" data-validation="required" field-name="Vendor">
 								</select>
 								  <span class="input-group-addon cursorPointer bg-blue" onclick="getVendors();createpayablesEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
 							</div>
@@ -153,13 +153,23 @@ function errRemoveVendorContact(){
 									name="billingAddress" placeholder="Billing Address"></textarea>
 							</div>
 						</div>
-						<div class="form-group">
+						
+						 <div class="form-group">
+			              <label class="col-md-3">Payment Account</label>
+			              <div class="col-md-9 select-field" id="projectMemberIdDiv">
+			                <select class="form-control" id="paymentAccountId"  field-name="paymentAccount Name" name="paymentAccount">
+			                   <option value="">--Select Account--</option>
+			                </select>
+			              </div>
+			            </div>
+			            
+						<!-- <div class="form-group">
 							<label class="col-md-3">Account Details</label>
 							<div class="col-md-9">
 								<textarea class="form-control" rows="2" id="accountDetails"
 									 name="accountDetails" placeholder="Account Details"></textarea>
 							</div>
-						</div>
+						</div> -->
 						
 					</div>
 				</div>
@@ -424,7 +434,9 @@ function remove(){
 		    	 url: sourceleadUrl+"/getInvoiceDetailsByInvoiceUUID?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
 		         success: function(data) {
 		        	 var json = JSON.parse(data);
-		        	 
+		        	 if(json.paymentAccountId > 0) {
+		        		 getPaymentAccountList(json.vendorOrgRelationId,json.paymentAccountId)
+		        	 }
 		        	 var result = '';
 		        	 var selected = 'selected';
 		        	 result = result +'<option disabled selected>--Select Vendor--</option>';
@@ -1824,9 +1836,41 @@ function getVendors(){
 	});
 
 	}
+ 
 </script>
 
-
+<script>
+function getPaymentAccountList(dbOrgRelationId,paymentAccoutId){
+	var	orgRelationId = $("#vendorOrgRelationId").val();
+	if(orgRelationId == null){
+		orgRelationId = dbOrgRelationId;
+	}
+	$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getAllPaymentAccountList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
+		success :function(json) {
+			var result = "";
+			   result = result +"<option>-- Select Account --</option>";
+			   for (var i=0; i<json.length; i++)
+				{
+				  var report = json[i];
+				  var selected = '';
+					if((paymentAccoutId != null && paymentAccoutId != "" && paymentAccoutId !="undefined" && paymentAccoutId == report.id) || (report.defaultAccount == 1)){
+						selected = 'selected';
+					}
+					if(report.accountType === 'WEPAY'){
+						  result = result +'<option value='+report.id+' '+selected+'> '+report.email+'</option>';
+					  }else{
+						  result = result +'<option value='+report.id+' '+selected+'>'+report.accountNumber+' ('+report.bankName+')</option>';
+					  }
+				}
+			   
+			     $("#paymentAccountId").empty();
+		         $("#paymentAccountId").append(result);
+		}
+	});
+}
+</script>
 <script>
 function getVendorContacts(vendorContactId){
 	var orgRelationId = $("#vendorOrgRelationId").val();

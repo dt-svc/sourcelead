@@ -1860,9 +1860,9 @@ public class InvoiceRestController {
 	
 	@ResponseBody
 	@RequestMapping(value = "/getAllPaymentAccountList", method = RequestMethod.GET)
-	public List<PaymentAccountDTO> getAllPaymentAccountList(HttpServletRequest request) throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<PaymentAccountDTO> paymentAccountList = orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId());
+	public List<PaymentAccountDTO> getAllPaymentAccountList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
+		OrgRelations orgRealation =  orgRelationsService.getOrgRelationById(orgRelationId); 
+		List<PaymentAccountDTO> paymentAccountList = orgService.getPaymentAccountList(orgRealation.getResponderLocationId().getOrg().getId(), orgRealation.getResponderLocationId().getId());
 		return paymentAccountList;
 	}
 	

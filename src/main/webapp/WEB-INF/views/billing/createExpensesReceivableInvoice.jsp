@@ -1476,7 +1476,6 @@ $(document).ready(function(){
 		loadInvoiceDetails(invoiceUUID); 
 	}else{
 		getClients();
-		getPaymentAccountList();
 		$("#invoiceId").val("");
 		$("#paymentFrequency").val("");
 		$("#paymentFrequency").trigger("chosen:updated");
@@ -1517,31 +1516,7 @@ function getClientContactsExisted(clientContactId){
 	}
 </script>
 
-<script>
-function getPaymentAccountList(){
-	$.ajax({
-		type : "GET",
-		url: sourceleadUrl+"/getAllPaymentAccountList?"+tokenParamName+"="+tokenValue+"",
-		success :function(json) {
-			var result = "";
-			result = result +"<option>--Select Account--</option>"
-			for (var i=0; i<json.length; i++)
-			{
-			  var report = json[i];
-			  
-			}
-			
-//             <c:forEach items="${paymentAccountList}" var="p">
-//                 <option value="${p.id}" ${p.defaultAccount ? 'selected="selected"' : ""}>${p.accountType == "WEPAY" ? p.email.concat(" (WePay)") : p.accountNumber.concat(" (").concat(p.bankName).concat(")")}</option>
-//             </c:forEach>
-            
-// 			alert("length"+json.length)
-		}
-	});
-}
 
-
-</script>
 <!-- Get alla clients when editing -->
 <script>
 function getClients(){

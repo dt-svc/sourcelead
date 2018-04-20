@@ -141,7 +141,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
             
             <div class="form-group">
               <label class="col-md-3">Payment Account</label>
-              <div class="col-md-9 select-field" id="projectMemberIdDiv">
+              <div class="col-md-9 select-field">
                 <select class="form-control" id="paymentAccountId"  field-name="paymentAccountId Name" name="paymentAccount">
                    <option>--Select Account--</option>
                     <c:forEach items="${paymentAccountList}" var="p">
