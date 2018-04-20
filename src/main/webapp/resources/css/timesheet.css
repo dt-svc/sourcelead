@@ -7934,3 +7934,17 @@ text-align: center; color: #EF5350;
 .accDetHead {
 	margin: 0px 30px; padding: 0px 0px 5px 30px; font-size: 15px; font-weight: 500; color: #454545;
 }
+
+.invoicePopRg ul {
+	top: -24px !important; left: 15px !important;
+}
+.menupop_2 .close-div.closediv-small {
+	left: 440px !important;
+}
+.menupop_1 .close-div.closediv-small {
+	left: 190px !important;
+}
+.menupop_3 .close-div.closediv-small {
+	left: 290px !important;
+}
+

@@ -295,7 +295,7 @@ function getViewInvoice(){
 					
 					if(report.paymentAccountDTO.accountType == "WEPAY"){
 						result = result +'            <div class="col-md-6">                                                 ';
-						result = result +'              <label class="col-md-4 control-label">Bank Name :</label>        ';
+						result = result +'              <label class="col-md-4 control-label">Email :</label>        ';
 						result = result +'              <div class="col-md-8 addressInvoice">                                ';
 						result = result +'                <p>'+report.paymentAccountDTO.email+'</p>';
 						result = result +'              </div>';
