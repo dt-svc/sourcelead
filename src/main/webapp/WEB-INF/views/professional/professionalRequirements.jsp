@@ -2371,10 +2371,9 @@ var validationSettings = {
 		dateFormat : 'yyyy/mm/dd' 
    };  
          $('body').on('submit', '#create_alert_form', function(e){
-        	 
         	  if ($(this).validate(false, validationSettings)){
-        		
         		var sourceleadUrl = '${sourceleadUrl}';
+        		e.preventDefault();
         	    var formData = getFormData1("create_alert_form");
         		$.ajax({
         					type : "POST",
@@ -2383,11 +2382,24 @@ var validationSettings = {
         	  		         contentType:false, 
         					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}",
         					success : function(result) {
-	        					    $("#selector4").removeAttr("style");
+        						if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+    	        	    		    showError(result.responseMessage);
+    	        	    		}
+    	                  		else if (result.response === "AWKWARD") {
+    	        	    		    location.href = "/errorPage";
+    	        	    		}
+    	                  		else if(result.response === "SUCCESS"){
+    	                  			$("#selector4").removeAttr("style");
 			            			$("#selector4").css({ display: "block" });
 			            			$("#eduMsgDiv").html("Job Alert updated successfully"); 
 			            			alertMsgFadeinFunction();
-        							location.replace(sourceleadUrl+"/professionalRequirements");
+        							location.replace(sourceleadUrl+"/professionalRequirements"); 
+    				        	    }
+    	                  		else if (result.indexOf('Sign In') !== -1) {
+    	        					location.replace(sourceleadUrl);
+    	        				} else {
+    	        				    showError("Operation failed, please try again");
+    	        				}
         					},
         				});
                 

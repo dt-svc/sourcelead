@@ -138,7 +138,7 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			            <div class="tab-pane active" id="unbilled">                                                                                                                                                            ';
  result = result + '			              <div class="timesheet_out">                                                                                                                                                                       ';
  result = result + '			                <div class="clearfix">                                                                                                                                                                             ';
- result = result + '			                  <div class="timesheet_head timesheetHead-UL">                                                                                                                                                                     ';
+ result = result + '			                  <div class="timesheet_head timesheetHead-UL exportUl">                                                                                                                                                                     ';
  result = result + '			                    <ul>                                                                                                                                                                                           ';
  result = result + '			                                                                                                                                                                                                                   ';
  result = result + '			                    	                                                                                                                                                                                           ';
@@ -703,7 +703,7 @@ function vendorInvoicePagination(){
 				  result = result +'        <div class="clearfix mb10"> ';
 				  result = result +'            <img src="/resources/images/invoice_icon.png" class="text-center" alt="create_receivables">';
 				  result = result +'        </div>';
-				  result = result +'        <strong class="clearfix">Custom</strong></a>';
+				  result = result +'        <strong class="clearfix">Vendor Based</strong></a>';
 				  result = result +'        </div>';
 				  result = result +'    </div>';
 				  result = result +'      <div class="col-md-4 mt25">';
@@ -1037,7 +1037,7 @@ function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount){
 	     if(invoiceParentId == 'undefined'){
 	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_2"> ';
 	     }else{
-	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_1"> ';
+	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_3"> ';
 	     }
 		 result = result+' <i class="fa fa-close close-div closediv-small" onClick="removePopup();"></i>';
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+invoiceUUID+'"> ';
@@ -1142,7 +1142,7 @@ function linkPayableInvoice(invoiceUUID,totalAmount){
 			result = result +' <input type="hidden" value='+invoiceUUID+' name="masterInvoiceId" id="masterInvoiceId">   ';
 			result = result +'      <div class="modal-header" id="vendorBilllinkId">                                                                                              ';
 			result = result +'        <button type="button" class="close" data-dismiss="modal" onClick="closeLinkInvoice();">×</button>                                                   ';
-			result = result +'        <h4 class="modal-title">Link Invoice</h4>                                                                             ';
+			result = result +'        <h4 class="modal-title">Link Bill</h4>                                                                             ';
 			result = result +'      </div>                                                                                                                  ';
 			result = result +'      <div class="modal-body clearfix">                                                                                       ';
 			result = result +' <div class="timesheet_out clearfix">                                                                                         ';
@@ -1272,14 +1272,15 @@ function mergeInvoice(parentTotalAmount){
 <script>
 function showDiffAmountPopup(calculatedAmount,currencyCode){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"	<div class='project_inn_mask zInMask'></div>";
+	result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a zInPop'>";
 	result = result +"		<p>Variation Amount  = "+calculatedAmount+" "+currencyCode+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#invoice_pop").slideDown(200);
+	$(".project_inn_mask").show();
 }
 
 </script>

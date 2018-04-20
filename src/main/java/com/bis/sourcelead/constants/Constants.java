@@ -1033,6 +1033,7 @@ public class Constants {
 	public static final String LEAVE_EMAIL_ON_BEHALF_EMAIL = "OnBehafLeaveEmail";
 	public static final String LEAVE_EMAIL_ON_BEHALF_NOTIFICATION = "OnBehafLeaveNotification";
 
+	public static final String ROLE_CREATE_ASSOCIATE="ROLE_CREATE_ASSOCIATE";
 	public static final String ROLE_CREATE_USER="ROLE_CREATE_USER";
 	public static final String ROLE_CREATE_REQUIREMENT = "ROLE_CREATE_REQUIREMENT";
 	public static final String ROLE_CREATE_CLIENT = "ROLE_CREATE_CLIENT";

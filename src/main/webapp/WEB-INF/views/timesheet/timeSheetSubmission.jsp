@@ -488,6 +488,9 @@
 							<div class="clearfix"></div>
 						</div>
 					</div>
+					<div id="activityDiv">
+						<%-- <jsp:include page="timesheetActivity.jsp"></jsp:include> --%>
+					</div>					
 	            </div>
 		    </div>
 	    </div>
