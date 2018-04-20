@@ -289,6 +289,10 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 	        if(documents.getOwnerUser() != null){
 	        	documents.setOwnerId(documents.getOwnerUser().getId());
 	        }
+	        if(documents.getSpocUser() != null){
+	        	
+	        	documents.setSpocId(documents.getSpocUser().getId());
+	        }
 	        return documents;
 	}
 	
