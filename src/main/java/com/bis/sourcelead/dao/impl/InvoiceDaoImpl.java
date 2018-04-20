@@ -60,7 +60,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		
 			Session session = this.sessionFactory.getCurrentSession();
 			String query=null;
-			if(invoiceType.equalsIgnoreCase("payables")){
+			if(invoiceType.equalsIgnoreCase("Payables")){
 			
 			query = "from Invoice invoice where invoice.orgLocation.id = :orgLocationsId and invoice.invoiceId = :invoiceId and invoice.invoiceType = 'Payables'  and invoice.status='1'";
 			}
