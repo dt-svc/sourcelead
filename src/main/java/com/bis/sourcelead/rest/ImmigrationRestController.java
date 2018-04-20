@@ -1,11 +1,12 @@
 package com.bis.sourcelead.rest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.jadira.usertype.spi.utils.lang.StringUtils;
+//import org.jadira.usertype.spi.utils.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateEducationDTO;
@@ -73,6 +73,8 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import  org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
 
 @RestController
 @RequestMapping("/app/immigration")
@@ -635,8 +637,16 @@ public class ImmigrationRestController {
         for(ImmigrationCandidateDocuments docs : immigrationCanDocList){
         	LookUpData data = lookUpDataService.getTasksById(docs.getDocumentType().getId());
 			docs.setDocumentTypeName(data.getName());
-			List<ImmigrationCandidateDocumentsHistory> history = immigrationCommonService.getImmigrationCandidateDocumentHistoryList(immigrationId,candidateId,docs.getId());
-        
+			HashMap<Long, String> fileIdNameMap = new HashMap<Long, String>();
+			JSONArray jsonArray= new JSONArray();
+			List<ImmigrationCandidateDocumentsHistory> docHistoryList = immigrationCommonService.getImmigrationCandidateDocumentHistoryList(immigrationId,candidateId,docs.getId());
+		    for(ImmigrationCandidateDocumentsHistory historyObj: docHistoryList){
+		    	
+			 fileIdNameMap.put(historyObj.getId(), historyObj.getUpldedFileName());
+		    }
+		    System.out.println("Doc id ==========="+docs.getId());
+		    docs.setDocsHistoryList(jsonArray.put(fileIdNameMap));
+		    System.out.println("jsonArray to String  ==========="+jsonArray.toString());
         }
         model.setViewName("/immigration/documentDetailsTab");
 		 List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
