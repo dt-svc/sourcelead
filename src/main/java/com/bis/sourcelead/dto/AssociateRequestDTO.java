@@ -32,6 +32,8 @@ public class AssociateRequestDTO {
 	
 	private String estHours;
 	
+	private String estBudgetCurrencyType;
+	
 	private String estimatedBudgetCurrencyType;
 	
 	private String estBudget;
@@ -90,10 +92,6 @@ public class AssociateRequestDTO {
 		return estHours;
 	}
 
-	public String getEstimatedBudgetCurrencyType() {
-		return estimatedBudgetCurrencyType;
-	}
-
 	public String getEstBudget() {
 		return estBudget;
 	}
@@ -150,10 +148,6 @@ public class AssociateRequestDTO {
 		this.estHours = estHours;
 	}
 
-	public void setEstimatedBudgetCurrencyType(String estimatedBudgetCurrencyType) {
-		this.estimatedBudgetCurrencyType = estimatedBudgetCurrencyType;
-	}
-
 	public void setEstBudget(String estBudget) {
 		this.estBudget = estBudget;
 	}
@@ -165,4 +159,21 @@ public class AssociateRequestDTO {
 	public void setValidateRow(String validateRow) {
 		this.validateRow = validateRow;
 	}
+
+	public String getEstBudgetCurrencyType() {
+		return estBudgetCurrencyType;
+	}
+
+	public void setEstBudgetCurrencyType(String estBudgetCurrencyType) {
+		this.estBudgetCurrencyType = estBudgetCurrencyType;
+	}
+
+	public String getEstimatedBudgetCurrencyType() {
+		return estimatedBudgetCurrencyType;
+	}
+
+	public void setEstimatedBudgetCurrencyType(String estimatedBudgetCurrencyType) {
+		this.estimatedBudgetCurrencyType = estimatedBudgetCurrencyType;
+	}
+	
 }
