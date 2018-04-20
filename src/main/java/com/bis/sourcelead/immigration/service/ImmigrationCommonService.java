@@ -68,6 +68,8 @@ public interface ImmigrationCommonService {
 		
 	 String deletetImmigrationCandidateFormsById(Long id);
 	 
+	 String deleteDocumentHistoryRecordById(Long id);
+	 
 	 CandidatePassportVisa getCandidatePassportVisaDetailsById(Long id);
 	 
 	 ImmigrationCandidateDocuments saveImmigrationCandidateDocs(ImmigrationTemplateDocDTO immigrationTemplateDocDTO,User user, OrgLocations orgLocations) throws Exception;
@@ -92,4 +94,5 @@ public interface ImmigrationCommonService {
 	
 	List<ImmigrationCandidateDocumentsHistory> getImmigrationCandidateDocumentHistoryList(Long immigrationId,Long candidateId,Long immigrationCanDocid) throws Exception;
 
+	
 }

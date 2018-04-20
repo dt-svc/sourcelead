@@ -178,8 +178,9 @@
 		<div class="popupMid popupMidHeight clearfix">
  
           <div class="row mt clearfix" id ="dynamicUplodDiv">
-				<label class="col-md-2">File<span class="text-danger">&nbsp;*</span></label>
-              	<div class="col-md-10">
+				
+              	<div class="col-md-10" id= "uploadDocSaveDiv">
+              	<label class="col-md-2">File<span class="text-danger">&nbsp;*</span></label>
 					<div class="row">
 					<div class="col-md-10 paddingRight">
 					<div class="input-group validation_p">
@@ -189,11 +190,20 @@
 					<input type="text" class="form-control" readonly id="uploadFile0" name = "docFile0" field-name ="Document" data-validation = "required" placeholder="Upload Document ...">
 					 </div>
 					 </div>
-					 <div id="divAddButton" class="col-md-2" style="display:none">
-						<button type="button" id="btnDynamicRow0" onclick="appendDynamicUploaRow()" class="btn btm-sm"><i class="fa fa-plus text-primary"></i></button>
-				  </div>
+					 
 				  </div>
 				</div>
+				
+				<div class="col-sm-12 noPad mt clearfix" id="uploadDocEditDiv" style="display: none">
+			<label class="col-md-4 padding_left">File<span class="text-danger">&nbsp;*</span></label>
+			 <div class="col-md-8">
+				  <label id="uploadDocumentName0" name="uploadDocumentName0" class="text-primary tbldata-dotdot-200 pull-left" title=""></label>&nbsp;&nbsp;<span id="delete_immiDocFile" onclick="removeImmigDocumrntDynamic(0);"><i class="fa fa-trash removeIcon text-danger cursorPointer pull-right"></i></span>
+				<input type="hidden" id="uploadDocumentNameExisitngFile" name="uploadDocumentNameExisitngFile" value="">
+				  </div>			          	
+			</div>	
+			<div id="divAddButton" class="col-md-2" style="display:none">
+						<button type="button" id="btnDynamicRow0" onclick="appendDynamicUploaRow()" class="btn btm-sm"><i class="fa fa-plus text-primary"></i></button>
+				  </div>
 			</div>					          	
 	
 		</div>
@@ -205,6 +215,15 @@
 	</div>	<!--  popup code end  -->
 	</form>	
 	<div class="comMask"></div>
+	
+	<script type="text/javascript">
+function removeImmigDocumrntDynamic(id){
+	$("#uploadDocSaveDiv"+id).show();
+	$("#uploadDocEditDiv"+id).hide();
+	$('#uploadDocumentName'+id).val('');
+	
+}
+</script>
 		<script>
 		
 			 // Import Document PopUp
@@ -219,19 +238,45 @@
 				if(fileNamesString!=''){
 				  fileNames = fileNamesString.split(",");
 			    } */
-				console.log(JSON.parse(jsonfileNamesObj));
-			    
 			    var dataMap = JSON.parse(jsonfileNamesObj);
-			    console.log("dataMap");
-			    console.log(dataMap);
-			    console.log(dataMap.length);
+			    var fileUploadRow=0;
+			    if(Object.keys(dataMap[0]).length >0){
+			     if(allowMultiple =='Y'){
 			     $.each( dataMap[0], function( key, value ) {
-			    	  console.log( key + ": " + value );
-			    	  if(allowMultiple =='Y'){
-			    	  appendDynamicUploaRow();
-			    	  }
+			    		  if(fileUploadRow == 0){
+			    			  console.log("row id  if BLOCK value is >>>  "+rowId);
+			    			  $("#uploadDocSaveDiv").hide();
+								$("#uploadDocEditDiv").show();
+								 $('#uploadDocumentName0').text(value);  
+								 $("#uploadFile0").attr("data-validation-optional","true");
+			    			  
+			    		  }else{
+			    			  appendDynamicUploaRow();	
+			    			  console.log("row id  ELSE BLOCK value is >>>  "+rowId);
+	    					  $("#uploadDocSaveDiv"+fileUploadRow).hide();
+	    					  $("#uploadFile"+fileUploadRow).attr("data-validation-optional","true");
+			    			  $("#uploadDocEditDiv"+fileUploadRow).show();
+			    			  $('#uploadDocumentName'+fileUploadRow).text(value);
+			    			  
+			    		  }
+			    	  
+			    	  console.log("row id value is "+rowId +", fileUploadRow --> "+fileUploadRow);
+			    	   $('#uploadFile'+fileUploadRow).attr("docId", key);
+			    	  $('#uploadDocumentName'+fileUploadRow).attr("fileName", value);
+			    	  fileUploadRow =fileUploadRow+1;
 			    	}); 
-				console.log("allowMultiple ---">+allowMultiple);
+			     }else{
+			    	 var docHistoryId =Object.keys(dataMap[0]);
+			    	
+			    	var fileName = Object.values(dataMap[0]);
+			    	$('#uploadDocumentName0').text(fileName);
+			    	$("#uploadDocSaveDiv").hide();// uploadDocSaveDiv used for browse file div id 
+					$("#uploadDocEditDiv").show(); // uploadDocEditDiv used for show file name div id
+			     }
+			    }else{
+			    	$("#uploadDocSaveDiv").show();
+					$("#uploadDocEditDiv").hide();
+			    }
 				if(allowMultiple=="Y"){
 					$('#divAddButton').show();
 				}else{
@@ -322,7 +367,7 @@ function prepareDynamicUploadRow(rowId){
 	  
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<div class='row'>";
 
-	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<div class='col-md-10 paddingRight'>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<div class='col-md-10 paddingRight' id= 'uploadDocSaveDiv"+rowId+"'>";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	<div class='input-group validation_p'>";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	<label class='input-group-btn'> <span class='btn btn-primary' onchange='uploadRerqDocsList("+rowId+")'><i class='fa fa-folder-open-o'></i>&nbsp;Browse File";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	<input type='file' style='display:none'; onchange='uploadBtnFilesList(" + rowId + ");' multiple id='uploadBtn"+rowId+"'  class='upload'>";
@@ -331,8 +376,16 @@ function prepareDynamicUploadRow(rowId){
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"			  </div>";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"			  </div>";
 	  
+	dynamicUploadRowHtml= dynamicUploadRowHtml+'<div class="col-sm-12 noPad mt clearfix" id="uploadDocEditDiv'+rowId+'" style="display: none"> ';
+	//dynamicUploadRowHtml=dynamicUploadRowHtml+'	<label class="col-md-4 padding_left">File<span class="text-danger">&nbsp;*</span></label> ';
+	dynamicUploadRowHtml=dynamicUploadRowHtml+'	 <div class="col-md-8"> ';
+	dynamicUploadRowHtml=dynamicUploadRowHtml+'	  <label id="uploadDocumentName'+rowId+'" name="uploadDocumentName'+rowId+'" class="text-primary tbldata-dotdot-200 pull-left" title=""></label>&nbsp;&nbsp;<span id="delete_immiDocFile" onclick="removeImmigDocumrntDynamic('+rowId+');"><i class="fa fa-trash removeIcon text-danger cursorPointer pull-right"></i></span>';
+	dynamicUploadRowHtml=dynamicUploadRowHtml+'	<input type="hidden" id="uploadDocumentNameExisitngFile" name="uploadDocumentNameExisitngFile" value="">';
+	dynamicUploadRowHtml=dynamicUploadRowHtml+'	  </div>';		          	
+	dynamicUploadRowHtml=dynamicUploadRowHtml+'	</div>	';
+
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"				 <div id='divAddButton' class='col-md-2'>";
-	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<button type='button' class='btn btm-sm' id='btnDynamicRow"+rowId+"' onclick='removeDynamicUploaRow("+rowId+")' ><i class='fa fa-remove text-danger'></i></button>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<button type='button' class='btn btm-sm' id='btnDynamicRow"+rowId+"' onclick='removeDynamicUploaRow("+rowId+");' ><i class='fa fa-remove text-danger'></i></button>";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"			  </div>";
 	  
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"			  </div>";
@@ -340,15 +393,30 @@ function prepareDynamicUploadRow(rowId){
 	  
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	  </div>"; 
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	  </div>";
-	  console.log(dynamicUploadRowHtml);
 	 return dynamicUploadRowHtml;
 }
 function appendDynamicUploaRow(){
 	   $("#dynamicUplodDiv").append(prepareDynamicUploadRow(rowId++)); 
 }
 function removeDynamicUploaRow(id){
-	   $("#dynamicRow"+id).remove();
-	   rowId--;// decrement rowid when deleted in UI.
+	
+	  var  recordDelete = $("#uploadFile"+id).attr("docid");
+	   
+	  if(typeof recordDelete != "undefined" && recordDelete != null && recordDelete !='' ){
+	  $.ajax({
+          url: sourceleadUrl + immiModulePath + "/deleteDocumentHistoryRecordById?recordDelete="+recordDelete,
+          type: "GET",
+          success: function (result) {
+          if(result=='success'){
+          	console.log(" record successfully delete id  --> "+recordDeletes);
+          	 
+          	} 
+          }
+      });
+	 
+	  }
+	  $("#dynamicRow"+id).remove();     
+	   //rowId--;// decrement rowid when deleted in UI.
 }
 $("#immigraDocTabSerach").keyup(function (e) {
     if (e.which === 13) {

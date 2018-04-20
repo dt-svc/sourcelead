@@ -796,6 +796,23 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		List<ImmigrationCandidateDocumentsHistory> candidateEducation = session.createQuery(query).setLong("immigrationId", immigrationId).setLong("candidateId", candidateId).setLong("immigrationCanDocid", immigrationCanDocid).list();
 		return candidateEducation;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public String deleteDocumentHistoryRecordById(Long id) {
+		String deletedFileUrl="";
+	        try {
+				Session session = this.sessionFactory.getCurrentSession();
+				ImmigrationCandidateDocumentsHistory doc = (ImmigrationCandidateDocumentsHistory)session.load(ImmigrationCandidateDocumentsHistory.class,id);
+				session.delete(doc);
+				session.flush();
+				deletedFileUrl= doc.getUplodedFileUrl();
+			} catch (HibernateException e) {
+				logger.error("SQL Exception occured while doing delete -->"+e.getMessage());
+				e.printStackTrace();
+			}
+		return deletedFileUrl;
 	
 	}
+}
 	
