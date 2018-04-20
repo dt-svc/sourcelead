@@ -2349,13 +2349,18 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
   
   
   
-  public void sendTemplateEmail(EmailMessage emailMessage,Map<String, String> globalVarsMap,EmailScenario emailScenario,Org org,OrgLocations orgLocations){
+  public void sendTemplateEmail(EmailMessage emailMessage,Map<String, String> globalVarsMap,Org org,OrgLocations orgLocations,String uniqueScenerioName){
 	  
-	 
 	  try{
 		//setting the Recipient information
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			 
+			//getting the current EmailScenario by EmailScenario unique name and entity type
+			 EmailScenario  emailScenario = null;
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(uniqueScenerioName,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(uniqueScenerioName,Constants.ENTITY_TYPE_EMAIL);
+			   }
 			 
 			 String emailBody = null;
 			 String path=staticPath.substring(0, staticPath.lastIndexOf("/"));

@@ -21,4 +21,6 @@ public interface EmailScenarioDao {
 	List<EmailScenario> getEmailScenarioList(String sourceLead) throws Exception;
 	
 	EmailScenario getEmailScenarioByUniqueNameAndOrgLocationId(String uniqueScenarioName, String entityType,Long orgLocationId) throws Exception;
+	
+	EmailScenario getEmailTemplateByUUID(String templateUUID);
 }

@@ -728,14 +728,7 @@ public class UserServiceImpl implements UserService {
 			 globalVarsMap.put("password","Login with your existing sourcelead credentials");
 		 }
 		
-		//getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = null;
-		 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.INVITE_USER,Constants.ENTITY_TYPE_EMAIL, locations.getId());
-		  if(emailScenario == null){
-				emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_USER,Constants.ENTITY_TYPE_EMAIL);
-		   }
-		  
-		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,emailScenario,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.INVITE_USER);
 		
 	}
 

@@ -185,4 +185,21 @@ logger.debug("In EmailScenarioDaoImpl class getEmailScenarioByUniqueNameAndOrgCo
 	
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public EmailScenario getEmailTemplateByUUID(String templateUUID) {
+		// TODO Auto-generated method stub
+		logger.debug("In EmailScenarioDaoImpl class getEmailTemplateByUUID method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from EmailScenario es left join fetch es.parentId where es.templateUUID = :templateUUID ";
+		List<EmailScenario> emailScenariosList =  session.createQuery(query.toString())
+				                                         .setString("templateUUID", templateUUID).list();
+		EmailScenario emailScenario = null;
+		if(emailScenariosList != null && !emailScenariosList.isEmpty())
+		{
+			emailScenario = (EmailScenario) emailScenariosList.iterator().next();
+		}
+		return emailScenario;
+	}
+
 }

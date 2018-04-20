@@ -71,4 +71,9 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioServic
 		return emailScenarioDao.getEmailScenarioByUniqueNameAndOrgLocationId(uniqueScenarioName, entityType, orgLocationId);
 	}
 
+	@Override
+	public EmailScenario getEmailTemplateByUUID(String templateUUID) {
+		return emailScenarioDao.getEmailTemplateByUUID(templateUUID);
+	}
+
 }
