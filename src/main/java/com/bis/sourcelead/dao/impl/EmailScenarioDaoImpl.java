@@ -191,7 +191,7 @@ logger.debug("In EmailScenarioDaoImpl class getEmailScenarioByUniqueNameAndOrgCo
 		// TODO Auto-generated method stub
 		logger.debug("In EmailScenarioDaoImpl class getEmailTemplateByUUID method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from EmailScenario es left join fetch es.parentId where es.templateUUID = :templateUUID ";
+		String query = "from EmailScenario es left join fetch es.parentId where es.emailUUID = :templateUUID ";
 		List<EmailScenario> emailScenariosList =  session.createQuery(query.toString())
 				                                         .setString("templateUUID", templateUUID).list();
 		EmailScenario emailScenario = null;
