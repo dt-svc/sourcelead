@@ -258,7 +258,7 @@ public class CommonUtil {
               "colgroup", "dd", "div", "dl", "dt", "em", "h1", "h2", "h3", "h4", "h5", "h6",
               "i", "img", "li", "ol", "p", "pre", "q", "small", "strike", "strong",
               "sub", "sup", "table", "tbody", "td", "tfoot", "th", "thead", "tr", "u",
-              "ul");
+              "ul","xml");
 	        allowedTags.addAttributes("a", "href", "title");
 	        allowedTags.addAttributes("blockquote", "cite");
 	        allowedTags.addAttributes("col", "span", "width");
@@ -271,7 +271,7 @@ public class CommonUtil {
 	        allowedTags.addAttributes("th", "abbr", "axis", "colspan", "rowspan", "scope", "width");
 	        allowedTags.addAttributes("ul", "type");
 	       /* allowedTags.addProtocols("a", "href", "//", "#","ftp", "http", "https", "mailto");*/
-	        allowedTags.removeProtocols("a", "href", "javascript");
+	        
 	        allowedTags.addProtocols("blockquote", "cite", "http", "https");
 	        allowedTags.addProtocols("cite", "cite", "http", "https");
 	        allowedTags.addProtocols("img", "src", "http", "https");

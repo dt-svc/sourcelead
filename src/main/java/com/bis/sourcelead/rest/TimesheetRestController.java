@@ -3576,8 +3576,8 @@ public class TimesheetRestController {
 					String leaveDate[] = dateList.split(",");
 					for (int i = 0; i < leaveDate.length; i++) {
 						if (projectTask != null && projectMember != null && leave != null) {
-							if ((leave.getFromHalfDay().equalsIgnoreCase("YES")
-									|| leave.getToHalfDay().equalsIgnoreCase("YES"))
+							if ((leave.getFromHalfDay() !=null && leave.getFromHalfDay().equalsIgnoreCase("YES")
+									|| leave.getToHalfDay() !=null && leave.getToHalfDay().equalsIgnoreCase("YES"))
 									&& orgLocations.getAverageWorkingHours() != null
 									&& orgLocations.getAverageWorkingHours().floatValue() > 0) {
 								addTimesheetDayEntriesByProjectIdAndProjectMemberId(projectTask.getProjectId().getId(),

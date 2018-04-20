@@ -994,7 +994,7 @@ function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,fileUrl
 	     '</sec:authorize>'
 	     if(invoiceStatus != 'DRAFT')
 	     {
-	     result = result +'      <li onclick="linkPayableInvoice('+invoiceUUID+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Bill"></i>Link Bill</li>';
+	     result = result +'      <li onclick="linkPayableInvoice(\''+invoiceUUID+'\',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Bill"></i>Link Bill</li>';
 	     }
 	     result = result +'    </ul>';
     	 $("#popupDiv"+invoiceUUID+"").append(result);

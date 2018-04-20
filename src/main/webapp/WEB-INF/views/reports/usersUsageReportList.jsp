@@ -131,7 +131,7 @@
       <div class="text-center well well-sm" id="totalLi">
         <div class="clearfix"><i class="fa fa-users fa-2x text-info"></i></div>
         <h4>Total</h4>
-        <label class="views-count rejected" id="totalUserCount"></label>
+        <label class="view-count" id="totalUserCount"></label>
       </div>
     </li>
          <li class="col-md-2">
@@ -654,6 +654,7 @@ function activePagination(url, userType){
         	    	  	"data": "ipAddress",
         	    	  	"render": function(data, type, opt, meta) {
         	    	  		  var result = "";
+        	    	  		$("#emptyUserUsageReportsId").val(1);
         	    	  		 if(opt.ipAddress !=null && opt.ipAddress !='' && opt.ipAddress !='undefined'){
         							result = result + ' <td><div><span>'+opt.ipAddress+'</span></div></td>';
         						}else{

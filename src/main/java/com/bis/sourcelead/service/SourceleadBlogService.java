@@ -37,5 +37,7 @@ public interface SourceleadBlogService {
 	public SourceleadBlogs validateSourceleadBlogTitleByBlogTitleAndBlogId(String blogTitle,String blogUUID) throws Exception;
 
 	Boolean validateSourceleadBlogTitleByBlogTitle(String blogTitle) throws Exception;
+	
+	boolean publishBlog(Long id) throws Exception;
 
 }
