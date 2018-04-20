@@ -268,14 +268,23 @@ function getVendorOnboardTasksList(){
 
 <script>
 function deleteTask(taskId){
-	
 	   $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/deleteVendorOnboardTaskByTaskId?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
-	        success: function(data) {
-	        	if(data == 'success'){
-	        		document.getElementById("onboardTask"+taskId).remove();
-	        	}
+	        success: function(result) {
+	        	if (result && result.response === "INVALID_DATA") {
+          		    showError(result.responseMessage);
+          		} else if (result.response === "AWKWARD") {
+          		    location.href = "/errorPage";
+          		} else if (result.response === "SUCCESS") {
+          			document.getElementById("onboardTask"+taskId).remove();
+	        		getVendorOnboardTasksList();
+          		} else if (result.indexOf('Sign In') !== -1) {
+          			location.replace(sourceleadUrl);
+          		} else {
+          		    showError("Operation failed, please try again");
+          		}
+	        		
 	        },
 	    });
 }
@@ -317,6 +326,8 @@ function saveOnboardTask(){
 			        	flushOnboardTask();
 			        	getAssignToUsersList();
 			        	getVendorOnboardTasksList();
+			        	$("#addTask").hide();
+			        	$(".modal-backdrop").fadeOut(150);
 			        	
 			        	document.getElementById("selector").style.display = 'block';
 			        	$("#selector").fadeIn(150);

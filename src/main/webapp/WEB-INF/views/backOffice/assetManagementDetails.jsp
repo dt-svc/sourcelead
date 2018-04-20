@@ -613,7 +613,7 @@ function editAssetManagement(assetId){
 		    
 		
 			result = result + ' <div class="col-md-3 minHeight50">';
-			result = result + '<input type="text" class="form-control input-sm" name="macAddress" value="'+macAddress+'" data-validation-optional="true" data-validation="validate_length length8-100" placeholder="MAC Address">';
+			result = result + '<input type="text" class="form-control input-sm" name="macAddress" value="'+macAddress+'" data-validation-optional="true" data-validation="validate_length length8-50" placeholder="MAC Address">';
 			result = result + '</div>';
 			
 			
