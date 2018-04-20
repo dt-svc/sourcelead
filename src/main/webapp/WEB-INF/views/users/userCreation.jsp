@@ -670,7 +670,9 @@ function getEmployeementType(designationType){
 		        		}
 		        		
 		        		$("#loading").removeAttr('style');
-		        		
+		        		if(validateEmailForExistenceUniversally(EmailId) === false){
+		        			$("input#EmailId").after("<p class='jquery_form_error_message textWarning'><i class='fa fa-exclamation-triangle' aria-hidden='true'></i>This email universally not existed</span>");
+		        		}
 		        },
 		    });
 	 }else{
