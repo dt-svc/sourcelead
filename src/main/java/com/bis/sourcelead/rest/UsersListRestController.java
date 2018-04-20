@@ -776,12 +776,16 @@ public class UsersListRestController {
 			 userRole.setCurrencyConversionWithCountry(countries.getCurrency());
 		 }
 		 
+
 		 if (userRole.getUser().getDateOfBirth() != null) {
 				userRole.setDateofBirthStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),userRole.getUser().getDateOfBirth()));
 			} else {
 				userRole.setDateofBirthStr("");
 			}
-		 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_USER);
+
+		 
+		 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_ASSOCIATE);
+
 		 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
 		 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
 		 if(sections != null && !sections.isEmpty()) {

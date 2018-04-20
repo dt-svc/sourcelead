@@ -15,7 +15,7 @@
       <div class="pull-left">
         <h2>Campaigns Stats</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='hotListCampaigns'/>">Bank Office</a> &raquo; Campaigns Stats</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/reportsDashboard'/>"> Reports Dashboard</a> &raquo; Campaigns Stats</div>
     </section>
           <div class="clearfix vendor_wrap">
           <div id="campaignStatsDev" class="datatable_filter"></div>
@@ -52,7 +52,7 @@ function prepareCampaignStatsList(url){
 		 result = result +' <th>No.Of Recipients</th>';
 	    result = result +' <th>Opens</th>';
 	    result = result +' <th>Delivered</th>';
-	    result = result +' <th>CLicks</th>';
+	    result = result +' <th>Clicks</th>';
 	    result = result +' <th>Bounces</th>';
 	    result = result +' <th>Action</th>';
 		result = result + '</tr>';

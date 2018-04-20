@@ -138,7 +138,7 @@ public class SourceleadBlogDaoImpl implements SourceleadBlogDao{
 	public List<SourceleadBlogs> getAllSourceleadBlogsByCategoryName(String categoryName) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		
-		String query = "from SourceleadBlogs sb left join fetch sb.categoryId cat where cat.categoryName =:categoryName and  sb.status = 1 ORDER BY sb.id DESC";
+		String query = "from SourceleadBlogs sb left join fetch sb.categoryId cat where cat.href =:categoryName and cat.status = 1 and  sb.status = 1 ORDER BY sb.id DESC";
 		List<SourceleadBlogs> sourceleadBlogsList = session.createQuery(query.toString()).setString("categoryName", categoryName).list();
 		return sourceleadBlogsList;
 	}
@@ -148,7 +148,7 @@ public class SourceleadBlogDaoImpl implements SourceleadBlogDao{
 	public List<SourceleadBlogs> getAllSourceleadBlogsByCategoryId(Long categoryId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		
-		String query = "from SourceleadBlogs sb left join fetch sb.categoryId cat where cat.id =:categoryId and  sb.status = 1 ORDER BY sb.id DESC";
+		String query = "from SourceleadBlogs sb left join fetch sb.categoryId cat where cat.id =:categoryId and cat.status= 1 and  sb.status = 1 ORDER BY sb.id DESC";
 		List<SourceleadBlogs> sourceleadBlogsList = session.createQuery(query.toString()).setLong("categoryId", categoryId).list();
 		return sourceleadBlogsList;
 	}
@@ -197,7 +197,7 @@ public class SourceleadBlogDaoImpl implements SourceleadBlogDao{
 	public List<SourceleadBlogs> getRelatedSourceleadBlogs(Long categoryId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from SourceleadBlogs sb left join fetch sb.categoryId cat where cat.id =:categoryId ORDER BY rand()";
+		String query = "from SourceleadBlogs sb left join fetch sb.categoryId cat where cat.id =:categoryId and sb.status = 1 ORDER BY rand()";
 		List<SourceleadBlogs> sourceleadBlogsList = session.createQuery(query.toString()).setLong("categoryId", categoryId).list();
 		return sourceleadBlogsList;
 	}
@@ -208,7 +208,7 @@ public class SourceleadBlogDaoImpl implements SourceleadBlogDao{
 	public SourceleadBlogs validateSourceleadBlogTitleByBlogTitleAndBlogId(String blogTitle, String blogUUID)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from SourceleadBlogs sb  where sb.blogUUID =:blogUUID and sb.blogTitle =:blogTitle ";
+		String query = "from SourceleadBlogs sb  where sb.blogUUID =:blogUUID and sb.blogTitle =:blogTitle and sb.status = 1";
 		List<SourceleadBlogs> sourceleadBlogList =session.createQuery(query) .setString("blogTitle", blogTitle).setString("blogUUID", blogUUID).list();
 		SourceleadBlogs sourceleadBlogs = null;
 		if(sourceleadBlogList != null && !sourceleadBlogList.isEmpty())
@@ -224,7 +224,7 @@ public class SourceleadBlogDaoImpl implements SourceleadBlogDao{
 	public Boolean validateSourceleadBlogTitleByBlogTitle(String blogTitle) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		 boolean flag = false;
-			 String query = "from SourceleadBlogs sb where sb.blogTitle =:blogTitle";
+			 String query = "from SourceleadBlogs sb where sb.blogTitle =:blogTitle and sb.status = 1";
 				Collection<SourceleadBlogs> sourceleadBlogList = session.createQuery(query) .setString("blogTitle", blogTitle).list();
 				if (sourceleadBlogList != null && sourceleadBlogList.size() > 0) {
 					flag = true;

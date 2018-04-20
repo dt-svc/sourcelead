@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import org.json.JSONArray;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -99,6 +102,10 @@ public class ImmigrationCandidateDocuments implements Serializable {
 	@Transient
 	@JsonProperty
 	private String documentTypeName;
+	
+	@Transient
+	@JsonProperty
+	private JSONArray docsHistoryList;
 
 	public Long getId() {
 		return id;
@@ -283,5 +290,14 @@ public class ImmigrationCandidateDocuments implements Serializable {
 	public void setDocumentType(LookUpData documentType) {
 		this.documentType = documentType;
 	}
-	
+
+	public JSONArray getDocsHistoryList() {
+		return docsHistoryList;
+	}
+
+	public void setDocsHistoryList(JSONArray docsHistoryList) {
+		this.docsHistoryList = docsHistoryList;
+	}
+
+
 }

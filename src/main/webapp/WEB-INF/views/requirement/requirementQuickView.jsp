@@ -40,7 +40,7 @@
 									</c:forEach>
 									</li> --%>
 									
-									<li><i class="fa fa-map-marker pull-left mt5"></i>
+									<li><i class="fa fa-map-marker pull-left mt5" title="Locations"></i>
 									<ul class="list-unstyled joblocations-public col-md-10">
 									<c:forEach var ="reqLocs" items="${locationsList}">
 									 <li title="${reqLocs.location}">${reqLocs.location}</li>

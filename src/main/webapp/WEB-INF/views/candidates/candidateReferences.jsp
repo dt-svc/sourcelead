@@ -42,7 +42,7 @@
 		result = result + '</div>';
 		if (window.candidateStatusGlobal == '0') {
 			if (candidateType == "Candidates") {
-				'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_REFERENCE\')">';
+				'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_REFERENCE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 				result = result
 						+ '<a href="javascript:void(0)"  class="addUser-org" ></a> ';
 				'</sec:authorize>';
@@ -55,7 +55,7 @@
 
 		} else {
 			if (candidateType == "Candidates") {
-				'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_REFERENCE\')">';
+				'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_REFERENCE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 				result = result + '<span class="pad-sea"><a href="javascript:void(0)"  onClick="addReference('+ candidateId + ')" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Reference</a></span>';
 				'</sec:authorize>';
 				
