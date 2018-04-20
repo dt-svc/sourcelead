@@ -3,6 +3,7 @@
  */
 package com.bis.sourcelead.immigration.service.impl;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
@@ -87,6 +89,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	
 	@Autowired
 	private CandidateResumesDao candidateResumesDao;
+	
+	@Value("${static.path}")
+	private String staticPath;
 	
 	
 	@Override
@@ -1088,6 +1093,25 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		List <ImmigrationCandidateDocumentsHistory> immigrationCanididateDocHistoryList =immigrationCommonDao.getImmigrationCandidateDocumentHistoryList(immigrationId,candidateId,immigrationCanDocid);
 		
 		return immigrationCanididateDocHistoryList;
+	}
+
+	@Override
+	public String deleteDocumentHistoryRecordById(Long id) {
+		String DeleteFileUrl = immigrationCommonDao.deleteDocumentHistoryRecordById(id);
+		try {
+			String rootPath = StringUtils.removeEnd(staticPath, staticPath.substring(staticPath.lastIndexOf("/")));
+			File file = new File(rootPath + DeleteFileUrl);
+			
+			if (file.delete()) {
+				logger.debug(file.getName() + " is deleted!");
+			} else {
+				logger.error(file.getName() + " is deleted!");
+			}
+
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return "success";
 	}
 
 }
