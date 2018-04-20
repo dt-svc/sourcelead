@@ -227,7 +227,9 @@
 			    console.log(dataMap.length);
 			     $.each( dataMap[0], function( key, value ) {
 			    	  console.log( key + ": " + value );
+			    	  if(allowMultiple =='Y'){
 			    	  appendDynamicUploaRow();
+			    	  }
 			    	}); 
 				console.log("allowMultiple ---">+allowMultiple);
 				if(allowMultiple=="Y"){
