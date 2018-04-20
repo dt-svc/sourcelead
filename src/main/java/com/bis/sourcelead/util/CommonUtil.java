@@ -91,8 +91,8 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
-import com.bis.sourcelead.entity.SubmissionApproverHierarchyHistory;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
+import com.bis.sourcelead.entity.TimesheetActivities;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -258,7 +258,7 @@ public class CommonUtil {
               "colgroup", "dd", "div", "dl", "dt", "em", "h1", "h2", "h3", "h4", "h5", "h6",
               "i", "img", "li", "ol", "p", "pre", "q", "small", "strike", "strong",
               "sub", "sup", "table", "tbody", "td", "tfoot", "th", "thead", "tr", "u",
-              "ul");
+              "ul","xml");
 	        allowedTags.addAttributes("a", "href", "title");
 	        allowedTags.addAttributes("blockquote", "cite");
 	        allowedTags.addAttributes("col", "span", "width");
@@ -271,7 +271,7 @@ public class CommonUtil {
 	        allowedTags.addAttributes("th", "abbr", "axis", "colspan", "rowspan", "scope", "width");
 	        allowedTags.addAttributes("ul", "type");
 	       /* allowedTags.addProtocols("a", "href", "//", "#","ftp", "http", "https", "mailto");*/
-	        allowedTags.removeProtocols("a", "href", "javascript");
+	        
 	        allowedTags.addProtocols("blockquote", "cite", "http", "https");
 	        allowedTags.addProtocols("cite", "cite", "http", "https");
 	        allowedTags.addProtocols("img", "src", "http", "https");
@@ -2211,37 +2211,26 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		 }
 		}
 	
-	public static SubmissionApproverHierarchyHistory getSubmissionApproverHierarchyHistory(SubmissionApproverHierarchy sah) {
-		SubmissionApproverHierarchyHistory sahh = null;
+	public static TimesheetActivities getTimesheetActivity(SubmissionApproverHierarchy sah,String activityStatus) {
+		TimesheetActivities timesheetActivity = null;
 		if(sah != null) {
-			sahh = new SubmissionApproverHierarchyHistory();
-			sahh.setHierarchyId(sah.getHierarchyId());
-			sahh.setSubmissionId(sah.getSubmissionId());
-			sahh.setSubmissionApproverHierarchyId(sah);
-			sahh.setSubmissionStatus(sah.getSubmissionStatus());
-			sahh.setSubmissionApprovalStatus(sah.getSubmissionApprovalStatus());
-			sahh.setInvoiceStatus(sah.getInvoiceStatus());
-			sahh.setBillingStatus(sah.getBillingStatus());
-			sahh.setInvoiceDate(sah.getInvoiceDate());
-			sahh.setBillDate(sah.getBillDate());
-			sahh.setInvoiceId(sah.getInvoiceId());
-			sahh.setBillId(sah.getBillId());
-			sahh.setFrequencyStartDate(sah.getFrequencyStartDate());
-			sahh.setFrequencyEndDate(sah.getFrequencyEndDate());
-			sahh.setMechanismType(sah.getMechanismType());
-			sahh.setRejectedReason(sah.getRejectedReason());
-			sahh.setActionPerformedBy(sah.getActionPerformedBy());
-			sahh.setActionPerformedByOrgLocationId(sah.getActionPerformedByOrgLocationId());
-			sahh.setStatus(sah.getStatus());
-			sahh.setReopenedUser(sah.getReopenedUser());
-			sahh.setReopenReason(sah.getReopenReason());
-			sahh.setReopenRejectedReason(sah.getReopenRejectedReason());
-			sahh.setCreatedDate(sah.getCreatedDate());
-			sahh.setCreatedBy(sah.getCreatedBy());
-			sahh.setUpdatedDate(sah.getUpdatedDate());
-			sahh.setUpdatedBy(sah.getUpdatedBy());
+			timesheetActivity = new TimesheetActivities();
+			timesheetActivity.setProjectId(sah.getSubmissionId().getProjects());
+			timesheetActivity.setActivityStatus(activityStatus);
+			timesheetActivity.setMasterCandidate(sah.getSubmissionId().getMasterCandidateId());
+			timesheetActivity.setFrequencyStartDate(sah.getFrequencyStartDate());
+			timesheetActivity.setFrequencyEndDate(sah.getFrequencyEndDate());
+			timesheetActivity.setRejectedReason(sah.getRejectedReason());
+			timesheetActivity.setActionPerformedBy(sah.getActionPerformedBy());
+			timesheetActivity.setActionPerformedByOrgLocationId(sah.getActionPerformedByOrgLocationId());
+			timesheetActivity.setStatus(sah.getStatus());
+			timesheetActivity.setReopenedUser(sah.getReopenedUser());
+			timesheetActivity.setReopenReason(sah.getReopenReason());
+			timesheetActivity.setReopenRejectedReason(sah.getReopenRejectedReason());
+			timesheetActivity.setCreatedDate(sah.getCreatedDate());
+			timesheetActivity.setCreatedBy(sah.getCreatedBy());
 		}
-		return sahh;
+		return timesheetActivity;
 	}
 	
 	

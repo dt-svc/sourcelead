@@ -54,7 +54,6 @@ import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
@@ -94,6 +93,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
@@ -225,6 +225,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	@Value("${env}")
 	private String environment;
 	
+	@Autowired
+	RequirementLocationsService requirementLocationsService;
 	
 	
 	@Override
@@ -4164,7 +4166,6 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 EmailMessage emailMessage = new EmailMessage();
 		 String professionalName = null;
 		 String experience = null;
-		 String location = null;
 		 
 		 if(!isNullOrEmpty(user.getLastName())){
 			 professionalName = nameBuilder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
@@ -4182,13 +4183,35 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 experience = "Not Mentioned";
 		 }
 		 
-		 if(!isNullOrEmpty(requirement.getCity())){
+		/* if(!isNullOrEmpty(requirement.getCity())){
 			 location = locationBuilder.append(requirement.getCountry()).append(", ").append(requirement.getState()).append(", ").append(requirement.getCity()).toString();
 		 }else if(!isNullOrEmpty(requirement.getState()) && isNullOrEmpty(requirement.getCity())){
 			 location = locationBuilder.append(requirement.getCountry()).append(", ").append(requirement.getState()).append(", ").toString();
 		 }else{
 			 location = locationBuilder.append(requirement.getCountry()).toString();
-		 }
+		 }*/
+		 
+		 
+		 List<String> requirementLocationsList = new ArrayList<>();
+			List<RequirementLocations> locationsList;
+			String location = "";
+			StringBuilder requirementBuilder=new StringBuilder();
+			try {
+				locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+				if(locationsList != null && !locationsList.isEmpty()) {
+					for(RequirementLocations locationsJob : locationsList) {
+						requirementLocationsList.add(locationsJob.getLocation());
+						if(locationsJob.getLocation() !=null && locationsJob.getLocation() !=null){
+							location = requirementBuilder.append(locationsJob.getLocation()).toString();
+						}else{
+							location = "--";
+						}
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		 
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromName("Sourcelead Admin");
@@ -4204,7 +4227,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 globalVarsMap.put("employerName", requirement.getPostedOrgName());
 		// globalVarsMap.put("requirementTitle", requirement.getJobTitle());
 		 globalVarsMap.put("experience", experience);
-		 globalVarsMap.put("location", location);
+		 if(location !=null && !"".equalsIgnoreCase(location)){
+			 globalVarsMap.put("location", location); 
+		 }
 		 globalVarsMap.put("professionalEmail", user.getEmail());
 		 
 		 if(requirement.getJobId() !=null && !"".equalsIgnoreCase(requirement.getJobId())){
