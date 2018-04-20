@@ -213,9 +213,9 @@ function uploadFileDoc(){
    $("#blogKeywords").trigger("chosen:updated");
    // current Date And Time Script.
 	$('#publishOn').datetimepicker({
-		useCurrent: false,
+		//useCurrent: false,
 		minDate: new Date()
-	});
+	}).val('');
 
 </script>
 	
