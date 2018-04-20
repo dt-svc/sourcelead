@@ -54,7 +54,7 @@
 				  <option value ="TextBox" ${customFormPopDetails.fieldType =='textBox' ? 'selected':''} selected>Text field</option>
 				  <option value ="Date" ${customFormPopDetails.fieldType =='datefield' ? 'selected':''} >Date field</option>
 				  <option value ="selectBox" ${customFormPopDetails.fieldType =='selectBox' ? 'selected':''} >Select field</option>
-				  <option value ="CheckBox" ${customFormPopDetails.fieldType =='checkBox' ? 'selected':''} >Check box</option>
+				  <option value ="CheckBox" ${customFormPopDetails.fieldType =='CheckBox' ? 'selected':''} >Check box</option>
 				  <option value ="radioButton" ${customFormPopDetails.fieldType =='radioButton' ? 'selected':''} >Radio button</option>
 				   <option value ="textArea" ${customFormPopDetails.fieldType =='textArea' ? 'selected':''} >Text Area</option>
 				    <option value ="email" ${customFormPopDetails.fieldType =='email' ? 'selected':''} >Email</option>
@@ -75,7 +75,7 @@
 					  <div class="col-md-6"><input name="isRequired" value="${empty customFormPopDetails.isRequired ? '0' : customFormPopDetails.isRequired}" ${customFormPopDetails.isRequired == '1'?'checked':''} id="isRequired" class="toggle-required" field-name="isRequired" type="checkbox"></div>
 				</div>
 				
-				<div class="col-sm-12 noPad mt clearfix">
+				<div class="col-sm-12 noPad mt clearfix" style="display: none;" id = "validateRangeDiv">
 				  <div class="col-md-3 noPad labHeight">Validation Range<span class="text-danger paddingLeft">*</span></div>
 				  <div class="col-md-6 dropdown-select">
 					  <select name="validationRange" data-placeholder="Select Validation Range" class="form-control input-sm" id="validationRange" field-name="validation Range" data-validation="required">
@@ -87,7 +87,7 @@
 				  </div>
 				</div>
 
-				<div class="col-sm-12 noPad mt clearfix">
+				<div class="col-sm-12 noPad mt clearfix" style="display: none;" id="validateLengthDiv">
 				  <div class="col-md-3 noPad labHeight">Validation Type<span class="text-danger paddingLeft">*</span></div>
 				  <div class="col-md-6 dropdown-select">
 					  <select name="validationType" data-placeholder="Select Validation Type" class="chosen-select form-control input-sm" id="validationType" field-name="validation Type" data-validation="required">
@@ -99,7 +99,7 @@
 				  </div>
 				</div>
 			  
-				<div class="clearfix"></div>
+				<%-- <div class="clearfix"></div>
 				<div  id="dateFieldDiv" style="display: none">
 					<div class="col-sm-12 noPad mt clearfix">
 					   <div class="col-md-3 noPad labHeight">Min Date</div>
@@ -112,7 +112,7 @@
 							<div class="col-md-6"><input name="maxDate" readonly id="maxDate" value="${customFormPopDetails.maxDate}" id = "maxDate" class="field-label form-control input-sm calendar" type="text"> </div>
 							<div class="col-md-3 lblHeight"><span>&nbsp;</span></div>
 					</div>
-			  </div>
+			  </div> --%>
 
 
             <div  id="selectFieldDiv" style="display: none">

@@ -2683,7 +2683,9 @@ function resetCandidateFilter(){
 				 <div class="clearfix">
 					<ul class="list-unstyled" id="candidateTypeFilter">
 					    <li class="checkBox positionRelative" ><input  type="checkbox" id="candidateCheck" name="candidateTypeFilter" checked value ="Candidates"  ><label>Candidates</label></li>
+						 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
 						<li class="checkBox positionRelative" ><input  type="checkbox" id="associateCheck"  name="candidateTypeFilter"  value ="Associates" ><label>Associates</label></li>
+                   </c:if>
                     </ul>
 				 </div>
 				 </div>  

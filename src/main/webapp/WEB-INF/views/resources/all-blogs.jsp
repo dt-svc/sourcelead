@@ -27,7 +27,7 @@
 			</c:forEach> 
 			
 			<c:if test="${empty allBlogs}">
-			<div class="dataTables_empty"></div>
+			<div class="dataTables_empty"> No Blogs Found</div>
 			</c:if>
 		 <div class="clear"></div>
 	</section>
