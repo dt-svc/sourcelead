@@ -1,4 +1,5 @@
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+	<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 		<div class="immigraTabsHead">
 		<!-- <a href="javascript:void(0)" id="immDocu"><i class="glyphicon glyphicon-plus"></i> Request Document</a> 		 -->	  	
 		  	<a href="javascript:void(0)" id="addDocu"><i class="glyphicon glyphicon-plus"></i> Add Document</a> 
@@ -17,7 +18,7 @@
 				<th>Action</th>
 			  </tr>
 			  <c:forEach var="canDocList" items="${immigrationCanDocList}" varStatus="rows">			  			  
-			<tr docid="${canDocList.id}" allowMultpleDocs= "${canDocList.allowMultiple}">
+			<tr docid="${canDocList.id}" allowMultpleDocs= "${canDocList.allowMultiple}" docsHistoryList = "${fn:escapeXml(canDocList.docsHistoryList)}">
 				<td><div class="tbldata-dotdot-vsm">${canDocList.documentTypeName}</div></td>
 				<td><div class="tbldata-dotdot-vsm">${canDocList.isRequired == 'Y' ? "YES":"NO"}</div></td>
 				<c:if test="${!empty canDocList.upldedFileName}">
@@ -210,9 +211,26 @@
 			$(".uploadForm").click(function(){
 				$("#uploadCanDocPop").fadeIn(100);
 				$(".comMask").fadeIn(100);
-
+				 var fileNames ='';
                  var allowMultiple = $(this).closest('tr').attr("allowMultpleDocs");
 				$("#uploadIdSave").val($(this).closest('tr').attr("docid"));
+				 var jsonfileNamesObj =  $(this).closest('tr').attr("docsHistoryList"); 
+				/*  
+				if(fileNamesString!=''){
+				  fileNames = fileNamesString.split(",");
+			    } */
+				console.log(JSON.parse(jsonfileNamesObj));
+			    
+			    var dataMap = JSON.parse(jsonfileNamesObj);
+			    console.log("dataMap");
+			    console.log(dataMap);
+			    console.log(dataMap.length);
+			     $.each( dataMap[0], function( key, value ) {
+			    	  console.log( key + ": " + value );
+			    	  if(allowMultiple =='Y'){
+			    	  appendDynamicUploaRow();
+			    	  }
+			    	}); 
 				console.log("allowMultiple ---">+allowMultiple);
 				if(allowMultiple=="Y"){
 					$('#divAddButton').show();
@@ -275,6 +293,7 @@ function removeDocPopUp12(){
 	$(".popMask").fadeOut(200);
 	$("#uploadCanDocPop").fadeOut(100);
 	$(".comMask").fadeOut(100);
+	 $("div[id*='dynamicRow']").remove();
 }
 
 function removeDocPopUp(){
@@ -338,4 +357,5 @@ $("#immigraDocTabSerach").keyup(function (e) {
     }
 });
 
-</script>		
+</script>	
+

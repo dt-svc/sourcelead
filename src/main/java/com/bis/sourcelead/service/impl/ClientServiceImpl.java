@@ -945,6 +945,8 @@ public class ClientServiceImpl implements ClientService {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		Date endDate = dateFormat.parse(dateFormat.format(toDate.getTime()));
 		subscription.setToDate(endDate);
+		subscription.setCurrency("USD");
+		subscription.setInvoiceAmount(0d);
 		
 		StringBuilder tabIds = new StringBuilder();
 		List<Tabs> tabsList =  tabsService.getTabListByActionsIds(soureleadActionIdList);

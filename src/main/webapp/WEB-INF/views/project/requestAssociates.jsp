@@ -47,7 +47,7 @@
 								<div class="col-md-9">
 									<div class="form-icon">
 										<input type="text" class="form-control pull-left"
-											name="requestId" id="requestId" data-validation="required"
+											name="requestId" id="requestId" data-validation="required validate_Space validate_length length1-15 validate_int"
 											field-name="Project Id"> <i
 											class="fa fa-refresh btn btn-default formic1"
 											title="Request Id" onclick='$("#requestId").val("");'></i>
@@ -238,8 +238,9 @@
 
 <div id="divTaskTd8" style="display: none; float: left;">
 	<div class="changeRate_div estRate_div">
-
 		<div class="pull-left mt10">
+			<input type="hidden" name="associateResources[REPLACEROWID].estimatedBudgetCurrencyType" value="${SourceLeadWeb_currencyCode}">
+		
 			<div id="REPLACEROWIDestBudgetCurrencyType"
 				name="associateResources[REPLACEROWID].estBudgetCurrencyType"
 				value='${SourceLeadWeb_currencyCode}'>${SourceLeadWeb_currencyCode}</div>
@@ -1437,7 +1438,7 @@ function cancel(){
 			var startDateText = "";
 			var cell3 = row.insertCell(3);
 			startDateText = startDateText+"<div  class='tbldata-dotdot-100'>";
-			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'sdate-input"  value="'+projectStartDate+'" name="'+maxRowNum+'requestStartDate" readonly >';
+			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'sdate-input"  value="'+projectStartDate+'" name="associateResources['+maxRowNum+'].requestStartDate" readonly >';
 			startDateText = startDateText+'</div>';
 			cell3.innerHTML = startDateText;
 			
@@ -1445,7 +1446,7 @@ function cancel(){
 			var endDateText = "";
 			var cell4 = row.insertCell(4);
 			endDateText = endDateText+"<div  class='tbldata-dotdot-100'>";
-			endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'edate-input"  value="'+projectEndDate+'" name="'+maxRowNum+'requestEndDate" readonly>';
+			endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'edate-input"  value="'+projectEndDate+'" name="associateResources['+maxRowNum+'].requestEndDate" readonly>';
 			endDateText = endDateText+'</div>';
 			cell4.innerHTML = endDateText;
 			

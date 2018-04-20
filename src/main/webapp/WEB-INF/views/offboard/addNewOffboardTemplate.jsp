@@ -227,7 +227,7 @@
 										   <div class="col-md-6 paddingRight">
 											<label class="small">Months</label> <br>
 												<div class="select-field">
-													<select class="form-control input-sm" id="taskMonths" data-validation="required" field-name="Due after" name="taskMonths" onchange="validateDueAfter();">
+													<select class="form-control input-sm" id="taskMonths" data-validation="required" field-name="Due before" name="taskMonths" onchange="validateDueAfter();">
 														<option selected value=''>--Select Month--</option>
 														<option value="1">1</option>
 														<option value="2">2</option>
@@ -392,13 +392,11 @@
   
   <script>
   function validateDueAfter(){
-	  
 	  var taskMonths = document.getElementById("taskMonths").value;
 	  var taskDays = document.getElementById("taskDays").value;
 	  
-	  
 	  if(taskMonths == '' && taskDays == '' ){
-			  $('#taskMonths').removeAttr('data-validation-optional');
+		  $('#taskMonths').removeAttr('data-validation-optional');
 			  $("#taskMonths").attr("data-validation", "required");
 		    
 	  }else{
@@ -767,6 +765,7 @@ function saveOffboardTask(){
 		        success: function(response) {
 		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
 	        		    showError(response.responseMessage);
+	        		    $("#offboardtasksLoading").removeAttr('style');
 	        	  	}else  if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
 		        	} else if (response.response === "SUCCESS") {
