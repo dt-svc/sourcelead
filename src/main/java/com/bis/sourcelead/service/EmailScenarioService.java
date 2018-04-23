@@ -21,6 +21,8 @@ public interface EmailScenarioService {
 	
 	List<EmailScenario> getEmailScenarioList(String sourceLead) throws Exception;
 	
+	List<EmailScenario> getEmailScenarioListByOrgLocId(Long orgLocId) throws Exception;
+	
 	EmailScenario getEmailTemplateById(Long id);
 	
 	EmailScenario getEmailDefTemplateNo(String uniqueScenarioName, String defaultTemp) throws Exception;

@@ -19,6 +19,16 @@ public class EmailScenarioDTO implements Serializable{
 	private String signature;
 	
 	private String body;
+	
+	private String scenarioName;
+	
+	public String getScenarioName() {
+		return scenarioName;
+	}
+
+	public void setScenarioName(String scenarioName) {
+		this.scenarioName = scenarioName;
+	}
 
 	public String getId() {
 		return id;

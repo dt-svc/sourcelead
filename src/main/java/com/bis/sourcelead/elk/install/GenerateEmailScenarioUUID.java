@@ -25,8 +25,8 @@ public class GenerateEmailScenarioUUID {
 	private ComboPooledDataSource comboPooledDataSource;
 	
 /**
- * @author Venkat
- * this method is using for update the UUID for OrgRelations
+ * @author
+ * this method is using for update the UUID for emailScenario
  * @throws IOException
  * @throws SQLException
  */

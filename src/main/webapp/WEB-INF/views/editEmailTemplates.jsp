@@ -37,7 +37,7 @@
 			<div class="row">
 				<label class="col-md-3">Template Title <span class="text-danger paddingLeft">*</span></label>
 				<div class="col-md-9" id="errMsg">
-				        <input type="text" name="uniqueScenarioName" id="uniqueScenarioName" class="form-control" field-name="title"  data-validation="required validate_length length1-500" value="${emailScenario.scenarioName}">
+				        <input type="text" name="scenarioName" id="senarioName" class="form-control" field-name="title"  data-validation="required validate_length length1-500" value="${emailScenario.scenarioName}">
 					</div>
 				</div>
 			</div>
