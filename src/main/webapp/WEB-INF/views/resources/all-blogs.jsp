@@ -13,9 +13,9 @@
 	<section class="blogNewInn">
 		     <c:forEach var="all" items="${allBlogs}">
 		       <article>
-				<a href="/blog/${all.href}.html"><span><img src="${all.imgFileUrl}" alt="" class="img-responsive"></span>
+				<a href="/blog/${all.href}.html"><span class="blImg"><img src="${all.imgFileUrl}" alt="" class="img-responsive"></span>
 				 
-				 <h2>${all.blogTitle}</h2>
+				 <h2 class="blHeading">${all.blogTitle}</h2>
 					<div class="clearfix blogNewInn-content">
 						<p>${all.shortDescription}</p>
 					</div>
