@@ -1,14 +1,24 @@
 package com.bis.sourcelead.dto;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class TeamDTO extends TeamMemberDTO{
 
+	@Required(desc="name")
 	private String name;
+	
+	@Required(desc="editOwnerUserId", dependsOn = "tabType", parentValue = "editTeamForm")
 	private String editOwnerUserId;
+	
+	@Required(desc="memberUserId", dependsOn = "tabType", parentValue = "teamForm")
 	private String memberUserId;
+	
+	@Required(desc="ownerUserId", dependsOn = "tabType", parentValue = "teamForm")
 	private String ownerUserId;
+	
 	private String teamId;
 	//private String teamMemberUserId;
-	
+	private String tabType;
 	public String getName()
 	{
 		return name;
@@ -48,6 +58,14 @@ public class TeamDTO extends TeamMemberDTO{
 	public void setTeamId(String teamId)
 	{
 		this.teamId = teamId;
+	}
+	public String getTabType()
+	{
+		return tabType;
+	}
+	public void setTabType(String tabType)
+	{
+		this.tabType = tabType;
 	}
 	
 }

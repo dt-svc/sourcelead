@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -130,5 +131,9 @@ public interface UserRoleDao {
 	public ResponseList<UserRole> getUserRoleListByLocationIdAndUserType(UsersUsageReportDTO usersUsageReportDTO,OrgLocations orglocation)throws Exception;
 	
 	Map<String, Integer> getUserCountListByOrgLocationId(Long orgLocationId,List<Long> orgId);
+	
+	List<User> getAllProjectManagersAssignedToProjects(Long orgLocationId) throws Exception;
+
+	public Map<String, Integer> getUsageReportUserCountListByOrgLocationId(Long orgLocationId, UsersUsageReportDTO usersUsageReportDTO, OrgLocations orgLocations, Date[] freqDates) throws Exception;
 
 }

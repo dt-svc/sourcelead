@@ -151,7 +151,9 @@ function blogListPagination(url){
 		          "sortable": false,
 		          "render": function ( data, type, opt, meta ) {
 		          	var result = "";
-		          	 if(opt.publishStatus !=null && opt.publishStatus !='' && opt.publishStatus !='undefined'){
+		          	 if(opt.publishStatus !=null && opt.publishStatus !='' && opt.publishStatus !='undefined' && opt.publishStatus ==='Publish'){
+							result = result + ' <td><div class="tbldata-dotdot-100" title = "'+opt.publishStatus+'"><span ><a href="javascript:void(0)" onclick="blogPublish('+opt.id+');">'+opt.publishStatus+'</span ></a></div></td>';
+						}else if(opt.publishStatus !=null && opt.publishStatus !='' && opt.publishStatus !='undefined'){
 							result = result + ' <td><div class="tbldata-dotdot-100" title = "'+opt.publishStatus+'">'+opt.publishStatus+'</div></td>';
 						}else{
 							result = result + ' <td><div class="tbldata-dotdot-100">--</div></td>';
@@ -203,12 +205,24 @@ function deleteBlog(blogId) {
 		 $.ajax({  
 	          type : "POST",
 	          url: sourceleadUrl+"/removeSourceleadBlogByBlogId?"+tokenParamName+"="+tokenValue+"&blogId="+blogId,        
-	          success :function(data) {
+	          success :function(result) {
+	        	  
+	        	  if (result && result.response === "INVALID_DATA") {
+					    showError(result.responseMessage);
+					} else if (result.response === "AWKWARD") {
+					    location.href = "/errorPage";
+					} else if (result.response === "SUCCESS") {
+						location.replace(sourceleadUrl+"/blogs");
+					} else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+					    showError("Operation failed, please try again");
+					}
 
-					if(data != null && data != 'undefined' && data != ""){
+					/* if(data != null && data != 'undefined' && data != ""){
 	             		
 						 location.replace(sourceleadUrl+"/blogs");
-	               } 
+	               }  */
 	        },
 	          
 	     }); 
@@ -241,6 +255,21 @@ function deleteBlog(blogId) {
 
 });
 </script> 
+
+ <script>
+	 function blogPublish(id){
+		 var sourceleadUrl = '${sourceleadUrl}';
+			$.ajax({
+				type : "POST",
+				url : sourceleadUrl+ "/publishBlog?${_csrf.parameterName}=${_csrf.token}&blogId="+id,
+				success : function(data) {
+					location.replace(sourceleadUrl+ "/blogs");
+				}
+			});	
+		 
+	 }
+ </script>
+ 
 </body>
 
 <jsp:include page="../masterFooter.jsp" />

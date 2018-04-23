@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +13,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.bis.sourcelead.dto.TabsDTO;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "ORG_LICENSE_SUBSCRIPTION")
@@ -86,6 +91,31 @@ public class OrgLicenseSubscription implements Serializable{
     
     @Column(name = "UPDATED_DATE")
 	private Date updatedDate;
+    
+    @Transient
+    @JsonProperty
+    private List<String> modulesList;
+    
+    @Transient
+    @JsonProperty
+    private String fromDateStr;
+    
+    @Transient
+    @JsonProperty
+    private String toDateStr;
+    
+    @Transient
+    @JsonProperty
+    private String showRenewal;
+    
+    
+    @Transient
+    @JsonProperty
+    private List<Long> tabIdsList;
+    
+    @Transient
+    @JsonProperty
+    private List<TabsDTO> tabsDTOList;
     
     
 
@@ -241,4 +271,54 @@ public class OrgLicenseSubscription implements Serializable{
 	public void setIsInvoiceAmountPaid(String isInvoiceAmountPaid) {
 		this.isInvoiceAmountPaid = isInvoiceAmountPaid;
 	}
+
+	public List<String> getModulesList() {
+		return modulesList;
+	}
+
+	public void setModulesList(List<String> modulesList) {
+		this.modulesList = modulesList;
+	}
+
+	public String getFromDateStr() {
+		return fromDateStr;
+	}
+
+	public void setFromDateStr(String fromDateStr) {
+		this.fromDateStr = fromDateStr;
+	}
+
+	public String getToDateStr() {
+		return toDateStr;
+	}
+
+	public void setToDateStr(String toDateStr) {
+		this.toDateStr = toDateStr;
+	}
+
+	public String getShowRenewal() {
+		return showRenewal;
+	}
+
+	public void setShowRenewal(String showRenewal) {
+		this.showRenewal = showRenewal;
+	}
+
+	public List<Long> getTabIdsList() {
+		return tabIdsList;
+	}
+
+	public void setTabIdsList(List<Long> tabIdsList) {
+		this.tabIdsList = tabIdsList;
+	}
+
+	public List<TabsDTO> getTabsDTOList() {
+		return tabsDTOList;
+	}
+
+	public void setTabsDTOList(List<TabsDTO> tabsDTOList) {
+		this.tabsDTOList = tabsDTOList;
+	}
+
+	
 }

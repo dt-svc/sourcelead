@@ -321,7 +321,7 @@ function cancelOrgImg(){
 							</div>
 							</div>
 							
-							<div class="form-group mt" id="generatedUserIdDiv">
+						<div class="form-group mt" id="generatedUserIdDiv">
 							<label class="col-md-3">Org Short Code<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title="The internal unique code used to auto generate the ID's for jobs, candidates, etc"></i></label>
 							<div class="col-md-9">
 							<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" readonly="readonly" data-validation="required validate_length length1-4" maxlength="4" value="${SourceLeadWeb_orgLocations.generatedUserId}" />
@@ -1058,8 +1058,15 @@ function saveWhiteListIps(){
 			      type : "GET",
 			      url : url,
 			               
-			       success :function(data) {
-			       if(data == "Success"){
+			       success :function(result) {
+			    		if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+	      	    		    showError(result.responseMessage);
+	      	    		    $("#loading").removeAttr('style');
+	      	    		}
+			    		else if(result.response === "AWKWARD"){
+			        		 location.href = "/errorPage";
+			        	}
+			    		else if(result.response === "SUCCESS"){
 			    	   $("#fromIpAddress").val("");
 			    	   $("#toIpAddress").val("");
 			    	   $(".modal.addipPopup-modal").fadeOut();
@@ -1067,6 +1074,12 @@ function saveWhiteListIps(){
 			    	   closeWhiteListIp();
 			    	   getWhiteListIps();
 			       	} 
+			    		else if (result.indexOf('Sign In') !== -1) {
+	      					location.replace(sourceleadUrl);
+	      				} else {
+	      				    showError("Operation failed, please try again");
+	      				    $("#loading").removeAttr('style');
+	      				}
 			      },
 			  }); 
 		
@@ -1243,9 +1256,22 @@ var validationSettings = {
 	              	      data: formData,
 	                    	  url: sourceleadUrl+"/saveOrgSettings?"+tokenParamName+"="+tokenValue+"",
 	                      	success: function(result) {
-	  			        	 if((result == 'home')){
+	                      		if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+	            	    		    showError(result.responseMessage);
+	            	    		    $("#loading").removeAttr('style');
+	            	    		}
+	                      		else if (result.response === "AWKWARD") {
+	            	    		    location.href = "/errorPage";
+	            	    		}
+	                      		else if(result.response === "SUCCESS"){
 	  			        		location.replace(sourceleadUrl+"/orgSettings");  
-	  			        	}
+	  			        	    }
+	                      		else if (result.indexOf('Sign In') !== -1) {
+	            					location.replace(sourceleadUrl);
+	            				} else {
+	            				    showError("Operation failed, please try again");
+	            				    $("#loading").removeAttr('style');
+	            				}
 	  			        },  
 	                  });
              		}
@@ -2109,7 +2135,23 @@ function createOrg(){
 	result = result +'<span class="hidden">Company</span>';
 	result = result +'</div>';
 	result = result +'</div>';
-          
+	
+	result = result +'<div class="form-group">';
+	result = result +'<label class="col-md-3">DBA<span class="text-danger">&nbsp;*</span></label>';
+	result = result +'<div class="col-md-9">';
+	result = result +'<div class="col-md-10 noPad">';
+	result = result +'<input id="dbaLoc" name="dba" class="form-control" type="text" field-name="DBA" data-validation="required validate_Space validate_length length2-250">';
+	result = result +'</div>';
+	result = result +'<div class="col-md-2 dbaCheck dbaCheck-cs">';
+             
+	result = result +'<div class="ml10">';
+	result = result +'<input id="dbaLocCheckbox" name="dbaLocCheckbox"  class="checkbox-custom" onclick="getLocDBAName();"  type="checkbox">';
+	result = result +'<label for="dbaLocCheckbox" class="checkbox-custom-label" title="Make company name as dba"></label>';
+	result = result +'</div>';
+	result = result +'</div>';
+	result = result +'</div>';
+	result = result +'</div>';	
+	
 	            result = result +'<div class="form-group">';
 	            result = result +'<label class="col-md-3">Website<span class="text-danger">&nbsp;*</span></label>';
 	            result = result +'<div class="col-md-9">';
@@ -2151,15 +2193,26 @@ function createOrg(){
 	            result = result +'<span class="hidden">Phone Number</span>';
 	            result = result +'</div>';
 	            result = result +'</div>';
+	            
+	            result = result +'<div class="form-group" >';
+	        	result = result +'<label class="col-md-3">Org Short Code<span class="text-danger">*</span></label>';
+	        	result = result +'<div class="col-md-9">';
+	        	result = result +'<div id="generatedShortCodeIdDiv">';
+	        	result = result +'<input type="text"  class="form-control" name="generatedUserId" id="generatedShortCodeId" field-name="Org Short Code" style="text-transform:uppercase" data-validation="required validate_length length1-4"  onkeyup="validateOrgLocationShortCode();" maxlength="4" />';
+	            result = result +'<span class="hidden">Short Code</span>';
+	        	result = result +'</div>';
+	        	result = result +'</div>';
+	        	result = result +'</div>';
+	        	
+	        	
+	        	result = result +'<div class="form-group">';
+	            result = result +'<label class="col-md-3">Working Hours<span class="text-danger">&nbsp;*</span></label>';
+	            result = result +'<div class="col-md-9" id="averageLocWorkingHoursDiv">';
+	            result = result +'<input type="text" class="form-control" id="averageLocWorkingHours" name="averageWorkingHours" maxlength="2" field-name="Working Hours" data-validation="required validate_int" />';
+	            result = result +'<span class="hidden">Working Hours</span>';
+	            result = result +'</div>';
+	            result = result +'</div>';
           
-	            result = result +'<div class="form-group">';
-	            result = result +'<label class="col-md-3">Date Format</label>';
-	            result = result +'<div class="col-md-9">';
-	            result = result +'<select class="chosen-select form-control" data-placeholder="Date Format" field-name="Date Format" data-validation="required" id="dateFormat" name="dateFormat">';
-	            result = result +'</select>';
-	            result = result +'</div>';
-	            result = result +'</div>';
-        
         
 	            result = result +'</div>';
                                  
@@ -2227,7 +2280,13 @@ function createOrg(){
 	            result = result +'</div>';
 	            result = result +'</div>';
 	            
-	          
+	            result = result +'<div class="form-group">';
+	            result = result +'<label class="col-md-3">Date Format</label>';
+	            result = result +'<div class="col-md-9">';
+	            result = result +'<select class="chosen-select form-control" data-placeholder="Date Format" field-name="Date Format" data-validation="required" id="dateFormat" name="dateFormat">';
+	            result = result +'</select>';
+	            result = result +'</div>';
+	            result = result +'</div>';
 	            
           
 	            
@@ -2773,23 +2832,32 @@ function validatePrimaryUserEmail(){
 		   }; 
 	 if ($('#editPrimaryUser_form').validate(false, validationSettings)){ 
 		 
-		 var frm = $('#editPrimaryUser_form').serializeFormJSON();
-         var con = JSON.stringify(frm);
-         con = con.replace(/[{}]/g, "");
-         var jsonData = encodeURIComponent(con);
          var sourceleadUrl ='${sourceleadUrl}';
-         
+         var formData = getFormData("editPrimaryUser_form");
          $("#editPrimaryUserLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
           
           $.ajax({
              type: "POST",
-             url: sourceleadUrl+"/editOrgPrimaryUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgLocationId="+orgLocationId+"&json="+jsonData,
-             success: function(data) {
-                 if(data == "success"){
-                	 $("#editPrimaryUserLoading").removeAttr("style");
-                	 getOrgLocationDetails(orgLocationId);
-                 }
-                 
+             data: formData,
+             url: sourceleadUrl+"/editOrgPrimaryUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgLocationId="+orgLocationId,
+             success: function(result) {
+            		if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+    	    		    showError(result.responseMessage);
+    	    		    $("#editPrimaryUserLoading").removeAttr('style');
+    	    		}
+              		else if (result.response === "AWKWARD") {
+    	    		    location.href = "/errorPage";
+    	    		}
+              		else if(result.response === "SUCCESS"){
+              			 $("#editPrimaryUserLoading").removeAttr("style");
+                    	 getOrgLocationDetails(orgLocationId); 
+		        	    }
+              		else if (result.indexOf('Sign In') !== -1) {
+    					location.replace(sourceleadUrl);
+    				} else {
+    				    showError("Operation failed, please try again");
+    				    $("#editPrimaryUserLoading").removeAttr('style');
+    				}
              }
              });  
          
@@ -2832,18 +2900,25 @@ var validationSettings = {
                 			  
                 			  
                   	success: function(result) {
-			        	if((result == 'orgList')){
-			        		$("#regLoading").removeAttr('style');
-			        		loadRegisteredOrgs();
-			        	}
-			        	else if((result == 'Invalid Sub Modules')){
-			        		$("#regLoading").removeAttr("style");
-			        		document.getElementById("subModule").style.display="";
-			        	}else if((result == 'DataMissing')){
-			        		showError("Invalid data");
-			        		$("#regLoading").removeAttr('style');
-			        	}
-			        	
+                  		
+                  		if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+        	    		    showError(result.responseMessage);
+        	    		    $("#regLoading").removeAttr('style');
+        	    		}
+                  		else if (result.response === "AWKWARD") {
+        	    		    location.href = "/errorPage";
+        	    		}
+                  		else if(result.response === "SUCCESS"){
+                  		   $("#regLoading").removeAttr('style');
+                  			loadRegisteredOrgs();  
+			        	    }
+                  		else if (result.indexOf('Sign In') !== -1) {
+        					location.replace(sourceleadUrl);
+        				} else {
+        				    showError("Operation failed, please try again");
+        				    $("#regLoading").removeAttr('style');
+        				}
+                  		
 			        },  
                });  
                 
@@ -2894,14 +2969,46 @@ function validateOrgShortCode(){
 		        }
 		 }); 
 }
+
+function validateOrgLocationShortCode(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var orgLocShortId = $("#generatedShortCodeId").val();
+	$('#generatedShortCodeIdDiv').parent().find('p.jquery_form_error_message').remove();
+		  $.ajax({
+		    	type: "POST",
+		    	url : sourceleadUrl+"/validateOrgShortCode?${_csrf.parameterName}=${_csrf.token}&orgShortId="+orgLocShortId, 
+		        success: function(data) {
+		        	if(data == true){
+		        		$('#generatedShortCodeIdDiv').parent().find('p.jquery_form_error_message').remove();
+		        		$("input#generatedShortCodeId").parent().after("<p class='jquery_form_error_message'><span>Org Short Code Already Exists !!!</span>");
+		        		$("#register_button").attr("disabled","disabled");
+		        		
+		        	}else{
+		        		 $('#generatedShortCodeIdDiv').parent().find('p.jquery_form_error_message').remove();
+		        		 $("#register_button").removeAttr("disabled","disabled");
+		        	}
+		        }
+		 }); 
+}
+
+
 $(function(){
 	$("#generatedUserId").keypress(function (event) {
         return event.key.length > 1 || event.ctrlKey || !!event.key.match(/[a-zA-Z]/);
     });
 });
+
+
+$(function(){
+	$("#generatedShortCodeId").keypress(function (event) {
+        return event.key.length > 1 || event.ctrlKey || !!event.key.match(/[a-zA-Z]/);
+    });
+});
+
 $(function() {
 	  $('#averageWorkingHoursDiv').on('keydown', '#averageWorkingHours', function(e){-1!==$.inArray(e.keyCode,[46,8,9,27,13,110,190])||/65|67|86|88/.test(e.keyCode)&&(!0===e.ctrlKey||!0===e.metaKey)||35<=e.keyCode&&40>=e.keyCode||(e.shiftKey||48>e.keyCode||57<e.keyCode)&&(96>e.keyCode||105<e.keyCode)&&e.preventDefault()});
 });
+
 $(function(){
     $("#averageWorkingHours").keyup(function(event){
         var ew = $("#averageWorkingHours").val();
@@ -2912,6 +3019,22 @@ $(function(){
         }
     });
 });
+
+$(function() {
+	  $('#averageLocWorkingHoursDiv').on('keydown', '#averageLocWorkingHours', function(e){-1!==$.inArray(e.keyCode,[46,8,9,27,13,110,190])||/65|67|86|88/.test(e.keyCode)&&(!0===e.ctrlKey||!0===e.metaKey)||35<=e.keyCode&&40>=e.keyCode||(e.shiftKey||48>e.keyCode||57<e.keyCode)&&(96>e.keyCode||105<e.keyCode)&&e.preventDefault()});
+});
+
+$(function(){
+  $("#averageLocWorkingHours").keyup(function(event){
+      var ew = $("#averageLocWorkingHours").val();
+      $('#averageLocWorkingHoursDiv').parent().find('p.jquery_form_error_message').remove(); 
+      if(ew > 24){
+      	$("#averageLocWorkingHours").val('');
+      	$("input#averageLocWorkingHours").parent().after("<p class='jquery_form_error_message'><span>Average Working Hours should be less then or equal to 24</span>");
+      }
+  });
+});
+
 
 </script>
 
@@ -2925,6 +3048,20 @@ function getDBAName(){
 		 }
      }else{
     	 $("#dba").val('');
+     } 
+}
+</script>
+
+
+<script>
+function getLocDBAName(){
+	 if (document.getElementById('dbaLocCheckbox').checked) {
+		 var companyName = document.getElementById("companyName").value;
+		 if(companyName != null && companyName != '' && companyName != 'undefined'){
+			$("#dbaLoc").val(companyName); 
+		 }
+     }else{
+    	 $("#dbaLoc").val('');
      } 
 }
 </script>

@@ -26,7 +26,14 @@ import org.joda.time.Weeks;
 import com.bis.sourcelead.constants.Constants;
 
 public  class CalendarUtil {
-
+	/*public static void main(String[] args){
+		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
+		currentCal.setLenient(false);
+		currentCal.setTime(new Date());
+		System.out.println(currentCal.getTime());
+		System.out.println(new Date());
+		
+	}*/
 	/*public static void main(String[] args){
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 		currentCal.setLenient(false);
@@ -309,6 +316,37 @@ public  class CalendarUtil {
 		return actualTimeString;
 	}
 
+	
+	public static String getHalfTimesheetHoursDisplayFormat(Float hours2){
+		float cthHours = 0;
+		float cthHoursValue = (int) cthHours;
+		float cthMinutesValue = cthHours - cthHoursValue;
+		float totalCthMinutes = (cthHoursValue* 60)+(cthMinutesValue*100);
+
+		float wthHours = hours2;
+		float wthHoursValue = (int) wthHours;
+		float wthMinutesValue = wthHours - wthHoursValue;
+		float totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
+
+		float totalMinutes = totalCthMinutes+totalWthMinutes;
+
+		float halfDayMinutes = totalMinutes/2;
+		
+		float actualHours = (int) (halfDayMinutes / 60); //since both are ints, you get an int
+		float actualMinutes = (halfDayMinutes % 60)/100;
+		
+		final DecimalFormat decimalFormat = new DecimalFormat("00.00");                
+		String actualTimeString = null;
+		if(actualMinutes != 0){
+			actualTimeString = decimalFormat.format((actualHours+actualMinutes));
+		}
+		else{
+			actualTimeString = decimalFormat.format(actualHours+actualMinutes);
+		}
+		
+		return actualTimeString;
+	}
+	
 	
 	public static LinkedHashSet<String> getMonthStringsFromStartDateAndEndDate(Date frequencyStartDate,Date frequencyEndDate) {
 	 	 int monthDiff =monthsBetween(frequencyStartDate, frequencyEndDate);
@@ -969,7 +1007,6 @@ public  class CalendarUtil {
 		  Q1EndDate.set(Calendar.DATE, Q1EndDate.getActualMaximum(Calendar.DAY_OF_MONTH));
 		  dateList.put("STARTDATE",Q1StartDate.getTime());
 		  dateList.put("ENDDATE", Q1EndDate.getTime());
-		  System.out.println(Constants.DF_MM.format(Q1EndDate.getTime()));
 	 	 return dateList;
 	
     }
@@ -1091,5 +1128,15 @@ public  class CalendarUtil {
 	    SimpleDateFormat   simpleDateFormat = new SimpleDateFormat("YYYY");
 		return simpleDateFormat.format(date);
 	}
+ 
+ public static Date removeTime(Date date) {    
+     Calendar cal = Calendar.getInstance();  
+     cal.setTime(date);  
+     cal.set(Calendar.HOUR_OF_DAY, 0);  
+     cal.set(Calendar.MINUTE, 0);  
+     cal.set(Calendar.SECOND, 0);  
+     cal.set(Calendar.MILLISECOND, 0);  
+     return cal.getTime(); 
+ }
 }
 

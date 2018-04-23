@@ -46,7 +46,7 @@
 		<c:if
 			test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
 			<div class="pull-right brud-crum">
-				<a href="<c:url value='/app/recruiterDashboard'/>">Home</a>&raquo;<a
+				   <a href="<c:url value='${appPath}/recruiterDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}/'/>">Home</a>&raquo;<a
 					href="<c:url value='/app/candidatesList'/>"> Candidate List</a>
 				&raquo; Add Candidate
 			</div>
@@ -647,11 +647,13 @@
         if ($('#addcandidate_form').validate(false, validationSettings)) {
             var form = $('#addcandidate_form')[0];
             /* var formData = new FormData(form); */
-            var formData = getFormData("addcandidate_form");
+           /*  var formData = getFormData("addcandidate_form"); */
+            var formData = $($('#addcandidate_form')[0]).serialize();
             //It will escape all the special characters
             $("#store_candidate").attr("disabled", "disabled");
             $("#store_candidate").addClass('button').val('Processing..');
 			$.post(sourceleadUrl + "/storeCandidate?" + tokenParamName + "=" + tokenValue + "", formData, function(result) {
+				
 				if (result && result.response === "INVALID_DATA") {
                     $("#store_candidate").removeAttr("disabled");
                     $("#store_candidate").removeAttr('button').val('Save');
@@ -667,6 +669,7 @@
                     $("#store_candidate").addClass('button').val('Save');
                     showError("Operation failed, please try again");
                 }
+				
 			});
             /* $.ajax({
                 type: "POST",
@@ -761,23 +764,25 @@
 <script type="text/javascript">
     $("#candidateSkills").chosen().change(function (event) {
         var allSkills = $(event.target).val();
-
         $.ajax({
             type: "POST",
             url: sourceleadUrl + "/profileBySkillSet?" + tokenParamName + "=" + tokenValue + "&allSkills=" + allSkills,
-            success: function (data) {
-                var primarySkill = data;
-                $("#primarySkill").val(primarySkill);
-
+            success: function (response) {
+            	if (response.response === "AWKWARD") {
+            	    location.href = "/errorPage";
+            	} else if (response.response === "SUCCESS") {
+            		var primarySkill = response.object;
+                    $("#primarySkill").val(primarySkill);
+            	} else if (response.indexOf('Sign In') !== -1) {
+            		location.replace(sourceleadUrl);
+            	} else {
+            	    showError("Operation failed, please try again");
+            	}
             },
         });
-
     });
-
     $("#candidateSkills").val('').trigger("chosen:updated");
     $("#candidateEducation").val('').trigger("chosen:updated");
-
-
 </script>
 <!-- Candidate Email validation script starts here -->
 
@@ -789,18 +794,26 @@
             $.ajax({
                 type: "POST",
                 url: sourceleadUrl + "/validateCandidateEmail?" + tokenParamName + "=" + tokenValue + "&email=" + email + "&candidateType=N",
-                success: function (data) {
-                    if (data == 'true') {
-                        $('#emailDiv').find('p.jquery_form_error_message').remove();
-                        $("input#email").after("<p class='jquery_form_error_message'>" + email + " is Already Existed</span>");
-                        document.getElementById("email").setAttribute('record-exist', 'yes');
-                        document.getElementById("email").setAttribute('record-exist-errorMsg', email + ' is Already Existed');
-                    } else {
-                        $('input#email').removeAttr("record-exist record-exist-errormsg");
-                        $('#emailDiv').find('p.jquery_form_error_message').remove();
-                        $("#store_candidate").addClass('button').val('Save');
-                        $("#store_candidate").removeAttr("disabled");
-                    }
+                success: function (response) {
+                	if (response.response === "AWKWARD") {
+                	    location.href = "/errorPage";
+                	} else if (response.response === "SUCCESS") {
+                		if (response.object == 'true') {
+                            $('#emailDiv').find('p.jquery_form_error_message').remove();
+                            $("input#email").after("<p class='jquery_form_error_message'>" + email + " is Already Existed</span>");
+                            document.getElementById("email").setAttribute('record-exist', 'yes');
+                            document.getElementById("email").setAttribute('record-exist-errorMsg', email + ' is Already Existed');
+                        } else {
+                            $('input#email').removeAttr("record-exist record-exist-errormsg");
+                            $('#emailDiv').find('p.jquery_form_error_message').remove();
+                            $("#store_candidate").addClass('button').val('Save');
+                            $("#store_candidate").removeAttr("disabled");
+                        }
+                	} else if (response.indexOf('Sign In') !== -1) {
+                		location.replace(sourceleadUrl);
+                	} else {
+                	    showError("Operation failed, please try again");
+                	}
                 },
             });
         }

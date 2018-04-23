@@ -227,13 +227,19 @@ function getAddApplicant(requirementId){
 	    	$.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/profileBySkillSet?"+tokenParamName+"="+tokenValue+"&allSkills="+allSkills, 
-		        success: function(data) {
-		        	var primarySkill = data;
-		        	      $("#primarySkill").val(primarySkill);
-		        	
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		var primarySkill = response.object;
+			        	$("#primarySkill").val(primarySkill);
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
 		        },
 		    });
-	    	
 	    });
 	    
 	    chosen.search_field.on('keydown keyup', function(e)
@@ -762,13 +768,22 @@ function discordApplicant(){
 	$.ajax({
 		type: "POST",
 	    url: sourceleadUrl+"/verifyCoolingOffPeriod?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&candidateEmail="+candidateEmail+"&reqCoolingOffPeriod="+reqCoolingOffPeriod+"&orgLocationId="+orgLocationId, 
-	    success: function(data) {
-	    	if(data == "true"){
-	    		isCoolingOffAlert();
-	    		return true;
-	    	}else{
-	    		return false;
+	    success: function(response) {
+	    	if (response.response === "AWKWARD") {
+	    	    location.href = "/errorPage";
+	    	} else if (response.response === "SUCCESS") {
+	    		if(response.object === true){
+		    		isCoolingOffAlert();
+		    		return true;
+		    	} else {
+		    		return false;
+		    	}
+	    	} else if (response.indexOf('Sign In') !== -1) {
+	    		location.replace(sourceleadUrl);
+	    	} else {
+	    	    showError("Operation failed, please try again");
 	    	}
+	    	
 	    },
 	});
 }
@@ -825,24 +840,31 @@ function discordApplicant(){
 			 $.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/getCandidatesList?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&isAssociate="+isAssociate, 
-			        success: function(data) {
-			        	var json = JSON.parse(data);
-			        	var output = "";
-			        	output = output + "<option value=''>-- Select "+candidateType+" --</option>"; 
-			        	for (var i=0; i<json.length; i++)
-						{
-				        		var opt = json[i];
-				        		var lastName = "";
-				        		if(opt.lastName != null && opt.lastName != "" && opt.lastName != 'undefined'){
-				        			lastName = opt.lastName;
-				        		}
-				        		output = output + "<option value='" +opt.candidateId+ "'>"+opt.firstName+" "+lastName+"</option>";
-						}
-			        	$("#candidateId").empty();
-				        $("#candidateId").append(output);
-				        $('#candidateId').trigger("chosen:updated");
-				        
-				        getCandidateResumes();
+			        success: function(response) {
+			        	if (response.response === "AWKWARD") {
+			        	    location.href = "/errorPage";
+			        	} else if (response.response === "SUCCESS") {
+			        		var json = response.data;
+				        	var output = "";
+				        	output = output + "<option value=''>-- Select "+candidateType+" --</option>"; 
+				        	for (var i=0; i<json.length; i++) {
+					        		var opt = json[i];
+					        		var lastName = "";
+					        		if(opt.lastName != null && opt.lastName != "" && opt.lastName != 'undefined'){
+					        			lastName = opt.lastName;
+					        		}
+					        		output = output + "<option value='" +opt.candidateId+ "'>"+opt.firstName+" "+lastName+"</option>";
+							}
+				        	$("#candidateId").empty();
+					        $("#candidateId").append(output);
+					        $('#candidateId').trigger("chosen:updated");
+					        
+					        getCandidateResumes();
+			        	} else if (response.indexOf('Sign In') !== -1) {
+			        		location.replace(sourceleadUrl);
+			        	} else {
+			        	    showError("Operation failed, please try again");
+			        	}
 			        },
 			    }); 
 		 }else{
@@ -1212,7 +1234,7 @@ function addRequirementRecommendations(){
 	      
 	      con = encodeURIComponent(con);
 	     
-	      
+	     
 			
 	       $("#addApplicantLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	      
@@ -1236,7 +1258,9 @@ function addRequirementRecommendations(){
 			    		$("body").css('overflow-y', 'auto');
 			    		$("#recCandidate"+candidateId).html("Added");
 			    		$("#recSumbmitbtn"+candidateId).removeAttr("onclick");
+			    		
 			    		$(".sideMask").fadeOut(200);
+			    		requirementRecommendations(requirementId);
 					} else if (result.indexOf('Sign In') !== -1) {
 						location.replace(sourceleadUrl);
 					} else {
@@ -1248,7 +1272,7 @@ function addRequirementRecommendations(){
 			return false;
 		}
 }
-    
+$('.project-tabs-menu li a[href="#tab-3"]').click();
    	$('body').on('blur', '#submitRecomendedApplicant_form', function() {
 		$("#submitRecomendedApplicant_form").showHelpOnFocus();
 		$("#submitRecomendedApplicant_form").validateOnBlur(false, validationSettings);
@@ -2373,54 +2397,62 @@ function SubmissionUploadFileDoc1(){
 			        contentType:false,
 		   	        dataType : 'json',
 					url : sourceleadUrl+"/parseResume?"+tokenParamName+"="+tokenValue+"",
-					success : function(data) {
-						var json = JSON.parse(data);
-						var name = json.name;
-						var firstName = '';
-						var lastName = '';
-						if(name != null && name != 'undefined' && name != ''){
-							 firstName = name.split(".")[0]; 
-							 lastName = name.split(".")[1]; 
-							 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
-									 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
-								 firstName = name;
-							 }
+					success : function(response) {
+						if (response.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (response.response === "SUCCESS") {
+							var json = response.object;
+							var name = json.name;
+							var firstName = '';
+							var lastName = '';
+							if(name != null && name != 'undefined' && name != ''){
+								 firstName = name.split(".")[0]; 
+								 lastName = name.split(".")[1]; 
+								 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
+										 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
+									 firstName = name;
+								 }
+							}
+							
+							
+							 $("input[name=FirstName]").val(firstName);
+				        	 $("input[name=LastName]").val(lastName);
+				        	 $("input[name=EmailId]").val(json.email);
+				        	 $("input[name=PhoneNumber]").val(json.phoneNumbers);
+				        	 
+				        	 // Here parseresume skills and parseresume skills,lookup skills duplicate check
+				        	 $("#candidateSkills").empty();
+				        	 var internalOutput = "";
+					        	 var skills = json.skills;
+		 						 <c:forEach var="skill" items="${skillsList}">
+		 						var existed = 0;
+		 						if(skills != null && skills != 'undefined' && skills != ''){
+		 							var str_array = skills.split(',');
+		 							for(var i = 0; i < str_array.length; i++) {
+		 							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+		 							  if(str_array[i] == "${skill.name}"){
+		 								 existed = 1;
+		 								internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+		 							  }
+		 							}
+		 						}
+		 						if(existed == 0){
+		 							internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
+				                }
+		 	                     </c:forEach>
+	 						
+	 						$("#candidateSkills").append(internalOutput);
+	 		        		$("#candidateSkills").trigger("chosen:updated");
+	  						
+				        	 
+							 validateSubmissionCandidateEmail();
+							 getUserByUserEmail();
+							 $("#addApplicantLoading").removeAttr("style");
+						} else if (response.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
 						}
-						
-						
-						 $("input[name=FirstName]").val(firstName);
-			        	 $("input[name=LastName]").val(lastName);
-			        	 $("input[name=EmailId]").val(json.email);
-			        	 $("input[name=PhoneNumber]").val(json.phoneNumbers);
-			        	 
-			        	 // Here parseresume skills and parseresume skills,lookup skills duplicate check
-			        	 $("#candidateSkills").empty();
-			        	 var internalOutput = "";
-				        	 var skills = json.skills;
-	 						 <c:forEach var="skill" items="${skillsList}">
-	 						var existed = 0;
-	 						if(skills != null && skills != 'undefined' && skills != ''){
-	 							var str_array = skills.split(',');
-	 							for(var i = 0; i < str_array.length; i++) {
-	 							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-	 							  if(str_array[i] == "${skill.name}"){
-	 								 existed = 1;
-	 								internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
-	 							  }
-	 							}
-	 						}
-	 						if(existed == 0){
-	 							internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
-			                }
-	 	                     </c:forEach>
- 						
- 						$("#candidateSkills").append(internalOutput);
- 		        		$("#candidateSkills").trigger("chosen:updated");
-  						
-			        	 
-						 validateSubmissionCandidateEmail();
-						 getUserByUserEmail();
-						 $("#addApplicantLoading").removeAttr("style");
 					},
 				});
  	 }

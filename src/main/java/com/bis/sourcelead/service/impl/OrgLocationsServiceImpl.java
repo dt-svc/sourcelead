@@ -437,4 +437,14 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 		
 		return orgLocationDTO;
 	}
+
+	@Override
+	public List<Long> getOrgLocationsIdsListByOrgIdAndCountry(Long orgId, String country) throws Exception {
+		return orgLocationsDao.getOrgLocationsIdsListByOrgIdAndCountry(orgId, country);
+	}
+
+	@Override
+	public List<OrgLocations> getAllCurrentRegisteredOrgLocationsByOrgIdAndCountry(Long orgId,String country) throws Exception {
+		return orgLocationsDao.getAllCurrentRegisteredOrgLocationsByOrgIdAndCountry(orgId,country);
+	}
 }

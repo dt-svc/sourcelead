@@ -325,7 +325,7 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
        <!-- ManageLabels div -->
 			  	</div>
 			</li>
-			<li>
+			<%-- <li>
 				<div class="dropdown bootstrap_dropdownMenu filterActive dropdown-label" style="position: relative; top: -2px;">
 				<span class="dropdown-toggle cursorPointer" type="button" id="menu1" data-toggle="dropdown">
 				<i class="fa fa-filter paddingRight text-info"></i>Filter Group
@@ -338,50 +338,78 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
 				</ul>
 				</div>
 			</div>
+			</li> --%>
+			
+			<li>
+			<div class="filterSearchDiv pull-left">
+				<a href="javascript:void(0)" onClick="filterPop();" title="Filter" class="btn btn-sm btn-default"><i class="fa fa-filter"></i></a>
+			</div>
 			</li>
-            
             <li><a href="javascript:void(0)" id="imCon"><i class="fa fa-plus"></i>Import Contacts</a></li>
-            <li><a id="addPop" href="javascript:void(0)"><i class="fa fa-plus"></i>Add Contact</a>
-            
+            <li>
+            <a id="addPop" href="javascript:void(0)"><i class="fa fa-plus"></i>Add Contact</a>
+            <div id="" class="col-md-4">
             <form:form id="addcontact_form"  name="addcontact_form" method="post"> 
 				<div class="referWrap referWrap_custom">
 				<div id="loading"></div> 
 				  <div class="referWrapInn">
 					<div class="form-group col-md-6" id="firstNameDiv">
 					  <label class="col-md-12">First Name *</label>
+					  
 					  <div class="col-md-12">
-						<input type="text" class="form-control" name="firstName" id="firstName" field-name="First Name" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">
+						<input type="text" class="form-control margin-top0" name="firstName" id="firstName" field-name="First Name" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">
 						<span class="hidden"></span> </div>
 					</div> 
 					<div class="form-group col-md-6" id="lastNameDiv">
 					  <label class="col-md-12">Last Name</label>
 					  <div class="col-md-12">
-						<input type="text" class="form-control" name="lastName" id="lastName" field-name="Last Name" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">
+						<input type="text" class="form-control margin-top0" name="lastName" id="lastName" field-name="Last Name" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">
 						<span class="hidden"></span> </div>
 					</div> 
 					<div class="form-group col-md-6" id="emailDiv">
 					  <label class="col-md-12">Email Id *</label>
 					  <div class="col-md-12">
-						<input type="text" class="form-control input-sm" name="email" id="email" onblur="validateContactEmail()"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">
+						<input type="text" class="form-control input-sm margin-top0" name="email" id="email" onblur="validateContactEmail()"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">
 						<span class="hidden"></span> </div>
 					</div> 
 					<div class="form-group col-md-6" id="phoneDiv">
 					  <label class="col-md-12">Phone </label>
 					  <div class="col-md-12" >
-						<input type="text" class="form-control"  name="phone" id="phone" field-name="Phone" data-validation-optional="true" data-validation="validate_Space validate_phone validate_length length9-20">
+						<input type="text" class="form-control margin-top0"  name="phone" id="phone" field-name="Phone" data-validation-optional="true" data-validation="validate_Space validate_phone validate_length length9-20">
 						<span class="hidden"></span> </div>
 					</div> 
+					
+					<div class="form-group col-md-6">
+							<label class="col-md-12" >Contact Type</label>
+							<div class="col-md-12 select-field">
+								<select class="form-control margin-top0" name="contactType" id="contactType"  field-name="contactType">
+									<option value="">Select ContactType</option>
+									<option value="Vendor">Vendor</option>
+									<option value="Candidate">Candidate</option>
+									<option value="Client">Client</option>
+									<option value="Other">Other</option>
+								</select> <span class="hidden">Select Status</span>
+							</div>
+						</div>
+						
+						<div class="form-group col-md-6" id="companyName">
+					  <label class="col-md-12">Company Name</label>
+					  <div class="col-md-12">
+						<input type="text" class="form-control margin-top0" name="companyName" id="companyName" field-name="companyName" >
+						<span class="hidden"></span> </div>
+					</div> 
+					
 					<div class="col-md-12 mt10 clearfix">            
 					<div class="pull-right">
 					  <input type="button" value="Add Contact" id="add_contact" onclick="saveReferContacts();" class="btn btn-primary">
 					  <input type="button" value="Cancel" onclick="flushContactDetails()" class="btn btn-default ml10 canBtn">
 					</div>    
 					</div> 
-
 				  <div class="clearfix"></div>
 				  </div>
 			  </div> 
 		</form:form>
+		</div>
             </li>
           </ul>
           <div class="clearfix"></div>
@@ -399,7 +427,7 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
 
 <div id="deleteGroupPopUp"></div>
 <div id="contactsPopUp"></div>
-<div class="sideMask"></div>
+<!-- <div class="sideMask"></div> -->
 <div class="movefolder-popdiv">
 <form id="addcontacttogroup_form"  name="addcontacttogroup_form">
 	<a class="close">&times;</a>
@@ -438,8 +466,8 @@ function addContactsGroup(){
 	result = result +'<div class="clearfix"></div >';
 	result = result + '<div class="form-group">';
 	result = result + '<div class="pull-right">';
-     result = result + '	<button type="button" class="btn mr btn-default btn-sm" onClick="maskFade();">Cancel</button>';
-	 result = result + '	<button type="button" value="Save" onclick= "contactgrp();" id="add_contactgroup" class="btn btn-sm btn-primary">Save</button>';
+	result = result +'<input type="button" value="Save" onClick="contactgrp()" class="btn btn-primary ml10">';
+	result = result +'<input type="button" value="Cancel" onClick="maskFade()"  class="btn btn-default ml">';
 	 result = result + '</div >';
 	 result = result + '</div >';
 	 result = result + '</form>';
@@ -476,6 +504,8 @@ function refercontactList(){
 		result = result +'<th>Groups</th>';
 		result = result +'<th>Phone</th>';
 		result = result +'<th>Source</th>';
+		result = result +'<th>Company Name</th>';
+		result = result +'<th>Action</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
 	    result = result +"</table>";
@@ -501,10 +531,15 @@ function contactsDataTableList(){
 			groupIdsList.push($(this).val());
 	    });
 		
+	 var contactTypes = [];
+		$('input:checkbox[name=contactTypename]:checked').each(function() 
+	    {
+			contactTypes.push($(this).val());
+	    });
 	 
 	 var searchValue = $("#contactsDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getRefercontactList?searchValue="+searchValue+"&groupIdsList="+groupIdsList;
+	 var url = sourceleadUrl+"/getRefercontactList?searchValue="+searchValue+"&groupIdsList="+groupIdsList+"&contactType="+contactTypes;
 	 contactsPagination(url);
 }
 </script>
@@ -556,8 +591,9 @@ function contactsPagination(url,sourceleadUrl){
         	{ "data": "contactName" },
         	{ "data": "email"},
         	{ "data": "groups" },
-            { "data": "source"}
-           
+            { "data": "source"},
+            { "data": "contactType"},
+        	{ "data": "contactAction"}
         ],
         "columnDefs": [{
     	  	"targets": colIndex++,
@@ -627,10 +663,41 @@ function contactsPagination(url,sourceleadUrl){
 	              "data": "source",
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
-	            		result = result + '<td><div class="tblminwidth-75"><span title="'+opt.source+'">'+opt.source+'</span></div></td>';
+	            	    if(opt.source != null && opt.source != '' && opt.source != 'undefined'){
+	            	    	source = opt.source;
+	              	  }else{
+	              		source = '---';
+	              	  }
+	            		result = result + '<td><div class="tblminwidth-75"><span title="'+source+'">'+source+'</span></div></td>';
 	            		return result;
 	              }
-		     }],
+		     },{
+		    	  "targets": colIndex++,
+	              "data": "companyName",
+	              "render": function ( data, type, opt, meta ) {
+	            	    var result = "";
+	            	    var contactType = "";
+	              	  if(opt.companyName != null && opt.companyName != '' && opt.companyName != 'undefined'){
+	              		companyName = opt.companyName;
+	              	  }else{
+	              		companyName = '---';
+	              	  }
+	            		result = result + '<td><div class="tblminwidth-75"><span title="'+companyName+'">'+companyName+'</span></div></td>';
+	            		return result;
+	              }
+		     },{
+	              "targets": colIndex++,
+	              "data": "contactAction",
+	              "sortable": false,
+	              "render": function ( data, type, opt, meta ) {
+	               
+	              	var result = "";
+	              	result = result	+ '<td><div class="tbldata-dotdot_50" >';
+	              	result = result	+ '<a class="glyphicon glyphicon-edit" title="Edit" onClick="editContactType('+opt.id+');" ></a> <a class="glyphicon glyphicon-trash text-danger" title="Delete" onclick="deleteContactType('+opt.id+');"></a>';
+	              	result = result	+ '</div></td>';
+	  	              return result;
+	              }
+	        }],
 		     
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
@@ -723,18 +790,17 @@ function validateContactEmail(){
 
 <script type="text/javascript">
 function saveReferContacts(){
-	var validationSettings = {
+	        var validationSettings = {
             errorMessagePosition : 'element',
             borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
             };
-		 if ($('#addcontact_form').validate(false, validationSettings)){ 
-		var formData = getFormData1("addcontact_form");
-  		$("#add_contact").attr("disabled", "disabled");
-  		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	     
-		$.ajax({
+			if ($('#addcontact_form').validate(false, validationSettings)){ 
+			var formData = getFormData1("addcontact_form");
+	  		$("#add_contact").attr("disabled", "disabled");
+	  		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$.ajax({
 					type : "POST",
 					 data: formData,
 	  		         processData: false,
@@ -742,23 +808,31 @@ function saveReferContacts(){
 					url : sourceleadUrl+"/addCrowdSourcingUserContact?"+tokenParamName+"="+tokenValue+"",
 					success : function(result) {
 						
-						location.replace(sourceleadUrl+ "/referRequirementList");
+						if (result && result.response === "INVALID_DATA") {
+						    showError(result.responseMessage);
+						    $("#loading").hide();
+						} else if (result.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (result.response === "SUCCESS") {
+							location.replace(sourceleadUrl+ "/referRequirementList");
+						} else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
+						}
+						
 					},
 				});
     
 	    return true;
-}else{
-	return false;
+		}else{
+			return false;
+		}
 }
-}
-	
-        
-            $('body').on('blur', '#addcontact_form', function() {
-        		$("#addcontact_form").showHelpOnFocus();
-        		$("#addcontact_form").validateOnBlur(false, validationSettings);  
-           });
-            
-     
+$('body').on('blur', '#addcontact_form', function() {
+$("#addcontact_form").showHelpOnFocus();
+$("#addcontact_form").validateOnBlur(false, validationSettings);  
+ });
 </script> 
 <script>
 function flushContactDetails(){
@@ -866,23 +940,33 @@ $("#contactsFilter").click(function(){
 
 
 <script type="text/javascript">
-	var validationSettings = {
-	        errorMessagePosition : 'element',
-	       borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd' 
-	   };  
-	function contactgrp(){
+			var validationSettings = {
+			        errorMessagePosition : 'element',
+			       borderColorOnError : '',
+					scrollToTopOnError : true,
+					dateFormat : 'yyyy/mm/dd' 
+			   };  
+			function contactgrp(){
         	  if ($('#contactgroup_form').validate(false, validationSettings)){
 	          		$("#add_contactgroup").attr("disabled", "disabled");
 	          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        	     var formData = getFormData("contactgroup_form");
 	        		$.ajax({
-	        					type : "POST",
-	        					data: formData,
-	        					url : sourceleadUrl+"/addContactsGroup?"+tokenParamName+"="+tokenValue+"",
-	        					success : function(result) {
-	        						location.replace(sourceleadUrl+"/referRequirementList");
+        					type : "POST",
+        					data: formData,
+        					url : sourceleadUrl+"/addContactsGroup?"+tokenParamName+"="+tokenValue+"",
+        					success : function(result) {
+	        				if (result && result.response === "INVALID_DATA") {
+							    showError(result.responseMessage);
+							} else if (result.response === "AWKWARD") {
+							    location.href = "/errorPage";
+							} else if (result.response === "SUCCESS") {
+								location.replace(sourceleadUrl+"/referRequirementList");
+							} else if (result.indexOf('Sign In') !== -1) {
+								location.replace(sourceleadUrl);
+							} else {
+							    showError("Operation failed, please try again");
+							}
 	        					},
 	        				});
                 
@@ -951,8 +1035,8 @@ function editContactsGroup(groupId,groupName){
 	        	outPut = outPut+ '</div>';
 	        	outPut = outPut+ '<div class="form-group">';
 	        	outPut = outPut+ '<div class="pull-right">';
-	        	outPut = outPut+ '<button type="button" class="btn mr btn-default btn-sm" onClick="maskFade();">Cancel</button>';
-	        	outPut = outPut+ '	<button type="submit" value="Save" id="edit_contactgroup" onclick= "contactgrp();" class="btn btn-sm btn-primary">Save</button>';
+	        	outPut = outPut +'<input type="button" value="Save" onClick="contactgrp()" class="btn btn-primary ml10">';
+	        	outPut = outPut +'<input type="button" value="Cancel" onClick="maskFade()"  class="btn btn-default ml">';
 				outPut = outPut+ '</div>';
 	        	outPut = outPut+ '</div>';
 	        	outPut = outPut+ '</form>';
@@ -1006,11 +1090,19 @@ function deleteSelectedContactsGroup(groupId){
 		    url: sourceleadUrl+"/deleteContactsGroupById?"+tokenParamName+"="+tokenValue+"&groupId="+groupId, 
    		    success: function(data) {
    		    	
-   		    	if(data != null && data != 'undefined' && data != ""){
-   		    		    $("#loading"+groupId).removeAttr("style");
-             			document.getElementById("deleteGroup"+groupId).remove();
-             			location.replace(sourceleadUrl+"/referRequirementList");
-   		    	}
+   		    	if (result && result.response === "INVALID_DATA") {
+				    showError(result.responseMessage);
+				} else if (result.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+					 $("#loading"+groupId).removeAttr("style");
+          			document.getElementById("deleteGroup"+groupId).remove();
+          			location.replace(sourceleadUrl+"/referRequirementList");
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
    		    }
 	     }); 
 	} 
@@ -1157,7 +1249,6 @@ function selectedContactList(){
 	 var groupName = document.getElementById("groupName").value;
 	 $('#groupNameDiv').find('p.jquery_form_error_message').remove();
 	 if(groupName != null && groupName != "" && groupId != null){
-		
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/validateGroupName?"+tokenParamName+"="+tokenValue+"&groupName="+groupName+"&groupId="+groupId, 
@@ -1182,7 +1273,71 @@ function selectedContactList(){
  }
  </script>
  
- 
+ <script>
+function filterPop(){
+	$("#contactFilterPopup").toggle();
+	$(".sideMask").fadeIn();
+};
+function closeFilter(){
+	$("#contactFilterPopup").toggle();
+	$(".sideMask").fadeOut();
+
+}
+
+function resetContactFilter(){
+	$("ul#contactType > li input:checkbox").prop("checked",false);
+	$("ul#contactgroup > li input:checkbox").prop("checked",false);
+	
+	contactsDataTableList()
+}
+</script>
+
+<!-- For filter -->
+
+<!-- <div class="sideMask"></div> -->
+<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="contactFilterPopup">
+<h5 class="headerAdsrch">Filter <a href="javascript:void(0)" class="close-div" onClick="closeFilter()"><i class="fa fa-close"></i></a></h5>
+<div class="addInner">
+<div class="row">
+
+<div  class="col-md-2">
+			<label><strong>Type</strong></label>
+			<div class='clearfix'>
+								<ul id="contactType" class="list-unstyled">
+									<li class="checkBox positionRelative"><input id="c11" type="checkbox" name="contactTypename" value="Candidate" ><label for="c11">Candidate </label></li>
+									<li class="checkBox positionRelative"><input id="c12" type="checkbox" name="contactTypename" value="Vendor" ><label for="c12">Vendor </label></li>
+									<li class="checkBox positionRelative"><input id="c13" type="checkbox" name="contactTypename" value="Client" ><label for="c13">Client </label></li>
+									<li class="checkBox positionRelative"><input id="c14" type="checkbox" name="contactTypename" value="Other" ><label for="c14">Other </label></li>
+								</ul>
+				</div>
+							</div>
+						
+						<div  class="col-md-2">
+						<label><strong>Filter Group</strong></label>
+						<div class='clearfix'>	
+				<ul id="contactgroup" class="list-unstyled" >
+                    	  <c:forEach var="report" items="${contactsGroupList}">
+                        	<li><label class="tbldata-dotdot-big" title="${report.groupName}"><input   name="groupsFilter" value ="${report.id}"  onclick="refercontactList();"  type="checkbox"> ${report.groupName}</label></li>
+						  </c:forEach>
+				</ul>
+				</div>
+				</div>	
+				</div>			
+							
+							
+
+			<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet" 
+								onclick="closeFilter();contactsDataTableList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search"
+								onclick="resetContactFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+
+</div>
+</div>
+</div>
  
  <script>
  function removeGroupsPopUp(){
@@ -1221,3 +1376,235 @@ function selectedContactList(){
  });
  
  </script>
+ <!-- <div class="sideMask"></div> -->
+ <div id="popUpContactDiv" class="modal editContactDiv" style='display: none; top:15%;'></div>
+ <script>
+ function editContactType(contactId){
+	 $.ajax({	type : "POST",
+			url : sourceleadUrl+ "/getContactById?"+tokenParamName+"="+tokenValue+"&id="+contactId,
+			success : function(json) {
+				var firstName = "";
+				var lastName = "";
+				var email = "";
+				var contactType  = "";
+				var companyName  = "";
+				var phone  = "";
+				
+				if(json.firstName !=null && json.firstName !='undefined' && json.firstName !=''){
+					firstName = json.firstName;
+				}
+				if(json.lastName !=null && json.lastName !='undefined' && json.lastName !=''){
+					lastName = json.lastName;
+				}
+				if(json.email !=null && json.email !='undefined' && json.email !=''){
+					email = json.email;
+				}
+				if(json.phone !=null && json.phone !='undefined' && json.phone !=''){
+					phone = json.phone;
+				}
+				if(json.contactType !=null && json.contactType !='undefined' && json.contactType !=''){
+					contactType = json.contactType;
+				}
+				if(json.companyName !=null && json.companyName !='undefined' && json.companyName !=''){
+					companyName = json.companyName;
+				}
+				
+				var result = "";
+				
+		result = result  +'<form id="editcontact_form"  name="editcontact_form" method="post"> ';
+		result = result  +'<div class="modal-dialog">                                                                                                                                                                               ';
+		result = result  +'<div id="loading"></div>                                                                                                                                                                                               ';
+		result = result  +'  <div class="modal-content">                                                                                                                                                                                           ';
+		result = result  +'  <div class="modal-body">                                                                                                                                                                                           ';
+		result = result  +'<a href="javascript:void(0)" class="close" onClick="closeEditContactDiv();">&times;</a>';
+		result = result  +'	<div class="form-group col-md-6" id="firstNameDiv">                                                                                                                                                                   ';
+		result = result  +'	  <label class="col-md-12">First Name *</label>                                                                                                                                                                       ';
+		result = result  +'	  <div class="col-md-12">                                                                                                                                                                                             ';
+		result = result  +'		<input type="text" class="form-control" name="firstName" id="firstName" field-name="First Name" value="'+firstName+'" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">                      ';
+		result = result  +'		<span class="hidden"></span> </div>                                                                                                                                                                               ';
+		result = result  +'	</div>                                                                                                                                                                                                                ';
+		result = result  +'	<div class="form-group col-md-6" id="lastNameDiv">                                                                                                                                                                    ';
+		result = result  +'	  <label class="col-md-12">Last Name</label>                                                                                                                                                                          ';
+		result = result  +'	  <div class="col-md-12">                                                                                                                                                                                             ';
+		result = result  +'		<input type="text" class="form-control" name="lastName" id="lastName" field-name="Last Name" data-validation-optional="true" value="'+lastName+'" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">  ';
+		result = result  +'		<span class="hidden"></span> </div>                                                                                                                                                                               ';
+		result = result  +'	</div>                                                                                                                                                                                                                ';
+		result = result  +'	<div class="form-group col-md-6" id="emailDiv">                                                                                                                                                                       ';
+		result = result  +'	  <label class="col-md-12">Email Id *</label>                                                                                                                                                                         ';
+		result = result  +'	  <div class="col-md-12">                                                                                                                                                                                             ';
+		result = result  +'		<input type="text" class="form-control input-sm" name="email" id="email" onblur="validateContactEmail()"  field-name="Email" value="'+email+'" data-validation="required validate_Space validate_length length2-100 validate_email">';
+		result = result  +'		<span class="hidden"></span> </div>                                                                                                                                                             ';
+		result = result  +'	</div>                                                                                                                                                                                              ';
+		result = result  +'	<div class="form-group col-md-6" id="phoneDiv">                                                                                                                                                     ';
+		result = result  +'	  <label class="col-md-12">Phone </label>                                                                                                                                                           ';
+		result = result  +'	  <div class="col-md-12" >                                                                                                                                                                          ';
+		result = result  +'		<input type="text" class="form-control"  name="phone" id="phone" field-name="Phone" value="'+phone+'" data-validation-optional="true" data-validation="validate_Space validate_phone validate_length length9-20"> ';
+		result = result  +'		<span class="hidden"></span> </div>                                                                             ';
+		result = result  +'	</div>                                                                                                              ';
+		result = result  +'	                                                                                                                    ';
+		result = result  +'	<div class="form-group col-md-6">                                                                                   ';
+		result = result  +'			<label class="col-md-12" >Contact Type</label>                                                              ';
+		result = result  +'			<div class="col-md-12 select-field">                                                                        ';
+		result = result  +'				<select class="form-control" name="contactType" id="contactType" value="'+contactType+'" field-name="contactType">             ';
+		
+		result = result  +'					<option value="">Select ContactType</option>                                                        ';
+							if (contactType == "Vendor"){
+								result = result  +'	<option selected>Vendor</option>   ';
+							}else{
+								result = result  +'	<option value="Vendor">Vendor</option>   ';
+							}
+							if (contactType == "Candidate"){
+								result = result  +'	<option selected>Candidate</option>   ';
+							}else{
+								result = result  +'	<option value="Candidate">Candidate</option>   ';
+							}
+							if (contactType == "Client"){
+								result = result  +'	<option selected>Client</option>   ';
+							}else{
+								result = result  +'	<option value="Client">Client</option>   ';
+							}
+							if (contactType == "Other"){
+								result = result  +'	<option selected>Other</option>   ';
+							}else{
+								result = result  +'	<option value="Other">Other</option>   ';
+							}
+								
+		result = result  +'				</select> <span class="hidden">Select Status</span>                                                     ';
+		result = result  +'			</div>                                                                                                      ';
+		result = result  +'		</div>                                                                                                          ';
+		result = result  +'		                                                                                                                ';
+		result = result  +'		<div class="form-group col-md-6" id="companyName">                                                              ';
+		result = result  +'	  <label class="col-md-12">Company Name</label>                                                                     ';
+		result = result  +'	  <div class="col-md-12">                                                                                           ';
+		result = result  +'		<input type="text" class="form-control" name="companyName" value="'+companyName+'" id="companyName" field-name="companyName" >          ';
+		result = result  +'		<span class="hidden"></span> </div>                                                                             ';
+		result = result  +'	</div>                                                                                                              ';
+		result = result  +'	                                                                                                                    ';
+		result = result  +'	<div class="col-md-12 mt10 clearfix">                                                                               ';
+		result = result  +'	<div class="pull-right">                                                                                            ';
+		result = result  +'	  <input type="button" value="save Contact" id="edit_contact" onclick="saveReEditContacts('+json.id+');" class="btn btn-primary"> ';
+		result = result  +'	  <input type="button" value="Cancel" onClick="closeEditContactDiv();" class="btn btn-default ml10 canBtn">           ';
+		result = result  +'	</div>                                                                                                               ';
+		result = result  +'	</div>                                                                                                               ';
+        result = result  +'                                                                                                                      ';
+		result = result  +'  <div class="clearfix"></div>                                                                                        ';
+		result = result  +'  </div>                                                                                                              ';
+		result = result  +'  </div>';
+		result = result  +' </div>                                                                                                               ';
+		result = result  +'</form>';
+		$("#popUpContactDiv").empty();
+		$("#popUpContactDiv").append(result);
+		
+			}
+	 });
+	 //$(".sideMask").fadeIn();
+	 $("#popUpContactDiv").fadeIn();
+ }
+ </script>
+ <script>
+ function closeEditContactDiv(){
+	 $(".sideMask").fadeOut();
+	 $("#popUpContactDiv").fadeOut();
+
+ }
+ </script>
+ 
+ 
+ <script type="text/javascript">
+function saveReEditContacts(contactId){
+	       var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+			if ($('#editcontact_form').validate(false, validationSettings)){ 
+			var formData = getFormData1("editcontact_form");
+	  		$("#edit_contact").attr("disabled", "disabled");
+	  		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	     
+		    $.ajax({
+					 type : "POST",
+					 data: formData,
+	  		         processData: false,
+	  		         contentType:false, 
+					//url : sourceleadUrl+"/addCrowdSourcingUserContact?"+tokenParamName+"="+tokenValue+"",
+					url : sourceleadUrl+ "/addCrowdSourcingUserContact?"+tokenParamName+"="+tokenValue+"&id="+contactId,
+					success : function(result) {
+						
+						if (result && result.response === "INVALID_DATA") {
+						    showError(result.responseMessage);
+						    $("#loading").hide();
+						} else if (result.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (result.response === "SUCCESS") {
+							location.replace(sourceleadUrl+ "/referRequirementList");
+						} else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
+						}
+						
+					},
+				});
+    
+	    return true;
+		}else{
+			return false;
+		}
+}
+$('body').on('blur', '#addcontact_form', function() {
+$("#addcontact_form").showHelpOnFocus();
+$("#addcontact_form").validateOnBlur(false, validationSettings);  
+ });
+</script> 
+ 
+ <script type="text/javascript">
+function deleteContPopup(){
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+}
+</script>
+
+<div id="deleteContPopUp"></div>
+ 
+ <script type="text/javascript">
+function deleteContactType(contactId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Do you want to delete the contact</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedContact("+contactId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteContPopup();'></b>";
+	result = result +"	</div>";
+	$("#deleteContPopUp").empty();
+	$("#deleteContPopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+  
+<script>
+function deleteSelectedContact(contactId){
+	
+	$.ajax({	type : "POST",
+		url : sourceleadUrl+ "/deleteContact?"+tokenParamName+"="+tokenValue+"&id="+contactId,
+		success : function(result) {
+
+	    	 if (result && result.response === "INVALID_DATA") {
+				    showError(result.responseMessage);
+				} else if (result.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+					contactsDataTableList();
+					$("#remove_user_pop, .project_inn_mask").fadeOut();
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
+	    },
+	    });		
+}
+
+</script>

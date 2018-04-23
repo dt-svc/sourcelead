@@ -77,60 +77,80 @@ public class RequirementSubmissionHistory implements Serializable{
     private String contentType;
 	 
     @Transient
+    @JsonProperty
     private String resumeid;
     
     @Transient
+    @JsonProperty
     private String createdDateStr;
     
     @Transient
+    @JsonProperty
     private String orgLocationId;
     
     @Transient
+    @JsonProperty
     private Long offerResumeid;
     
     @Transient
+    @JsonProperty
     @Lob
     private  byte[] docFile;
+    
     @Transient
+    @JsonProperty
     private String fileContentType;
     
     @Transient
+    @JsonProperty
     private String loginUserName;
     
     @Transient
+    @JsonProperty
     private String userName;
     
     @Transient
+    @JsonProperty
     private String submissionStage;
     
     @Transient
+    @JsonProperty
     private String requirementReson;
     
     @Transient
+    @JsonProperty
     private String interviewStartTime;
     
     @Transient
+    @JsonProperty
     private String interviewEndTime;
     
     @Transient
+    @JsonProperty
     private String interviewDateStr;
     
     @Transient
+    @JsonProperty
     private String interviewType;
     
     @Transient
+    @JsonProperty
     private String interviewerName;
     
     @Transient
+    @JsonProperty
     private String intervieweSourceType;
     
     @Transient
+    @JsonProperty
     private String clientName;
     
     @Transient
+    @JsonProperty
     private Boolean isInCoolingOffPeriod;
     
     @Transient
+    @JsonProperty
     private String coolingOffPeriodEndDateStr;
     
     

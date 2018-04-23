@@ -20,4 +20,15 @@ public class OrgLicenseSubscriptionTypesServiceImpl implements OrgLicenseSubscri
 		return orgLicenseSubscriptionTypesDao.getLicenseSubscriptionTypesByCategory(category);
 	}
 
+	@Override
+	public OrgLicenseSubscriptionTypes getOrgLicenseSubscriptionTypesById(Long id) throws Exception {
+		return orgLicenseSubscriptionTypesDao.getOrgLicenseSubscriptionTypesById(id);
+	}
+
+	@Override
+	public List<OrgLicenseSubscriptionTypes> getUpgradeLicenseSubscriptionTypesByCategoryAndSubscriptionTypeOrderId(
+			String category,Integer id) throws Exception {
+		return orgLicenseSubscriptionTypesDao.getUpgradeLicenseSubscriptionTypesByCategoryAndSubscriptionTypeOrderId(category, id);
+	}
+
 }

@@ -59,72 +59,83 @@ function onboardingTemplatesList(){
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getVendorOnboardingTemplatesList?${_csrf.parameterName}=${_csrf.token}",    
-            success :function(json) {
-               		
-			    	     $("#onboardingLoading").removeAttr("style");
-	                	 $("#onboardingTemplatesList").empty();
-	                	 var result = "";
-	                	 result = result +"<table id='onboardingPagination' class='display' cellspacing='0' width='99.9%' >"; 
-	                     result = result +"<thead>"; 
-	                     result = result +"  <tr>"; 
-	                     result = result +"    <th>Template Name</th>";
-	                     result = result +"    <th>Description</th>";
-	                     result = result +"    <th>Documents</th>";
-	                     result = result +"    <th>Tasks</th>";
-	                     result = result +"    <th>Created Date</th>";
-	                     result = result +"    <th>Created By</th>"; 
-	                     result = result +"    <th>Status</th>";
-	              /*        result = result +"    <th>Action</th>"; */
-	                    '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE\')">'
-	                    		 result = result +"<th>Actions</th>";
-	                     '</sec:authorize>';
-	                     
-	                     result = result +"  </tr>"; 
-	                     result = result +"</thead>";
-	                     result = result +"<tbody>"; 
-	                     
-	                     
-	                    	 for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i]; 
-	                    	 result = result +"<tr id='template"+opt.id+"'>";
-	                    	 
-	                    		 result = result +"<td><div class='tbldata-dotdot-sm'><span title='"+opt.templateName+"'>"+opt.templateName+"</span></div></td>";
-	                    		
-	                    		 if(opt.description != null && opt.description != '' && opt.description != 'undefineda'){
-	                    			 result = result +"<td><div><span title='"+opt.description+"'>"+opt.description+"</span></div></td>";
-	                    		 }else{
-	                    			 result = result +"<td><div><span>--------</span></div></td>";
-	                    		 }
-	                    		 
-	                    		 result = result +"<td><div><span>"+opt.documentsCount+"</span></div></td>";
-	                    		 
-	                    		 result = result +"<td><div><span>"+opt.tasksCount+"</span></div></td>";
-	                    		
-	                    		 result = result +"<td><div><span>"+opt.templateCreatedDate+"</span></div></td>";
-	                    		 
-	                    		 result = result +"<td><div><span>"+opt.createdUser+"</span></div></td>";
-	                    		 
-	                    		 result = result +"<td><div><span>"+opt.templateStatus+"</span></div></td>";
-	                    		 
-		                    	 result = result +"<td>";
-		                    	 result = result +"<div class=''>";
-		                    	 result = result +"<a href='"+sourceleadUrl+"/viewVendorOnboardTemplateByTemplateUUID?templateUUID="+opt.templateUUID+"'>Edit</a> ";
-		                    	
-		                    	 if(opt.isDefaultTemplate != 'Y'){
-		                    		 result = result +'| <a href="javascript:void(0)" onclick="deleteOnboadTemplate(\''+opt.templateUUID+'\','+opt.id+');">Delete</a>';
-		                    	 }
-		                    	 result = result +"</div></td>"; 
+            success :function(response) {
+		            	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+			    		    showError(response.responseMessage);
+			    	  	} else if (response.response === "AWKWARD") {
+			    		    location.href = "/errorPage";
+			    		} else if (response.response === "SUCCESS") {
+			    			
+			    			$("#onboardingLoading").removeAttr("style");
+		                	 $("#onboardingTemplatesList").empty();
+		                	 var result = "";
+		                	 result = result +"<table id='onboardingPagination' class='display' cellspacing='0' width='99.9%' >"; 
+		                     result = result +"<thead>"; 
+		                     result = result +"  <tr>"; 
+		                     result = result +"    <th>Template Name</th>";
+		                     result = result +"    <th>Description</th>";
+		                     result = result +"    <th>Documents</th>";
+		                     result = result +"    <th>Tasks</th>";
+		                     result = result +"    <th>Created Date</th>";
+		                     result = result +"    <th>Created By</th>"; 
+		                     result = result +"    <th>Status</th>";
+		              /*        result = result +"    <th>Action</th>"; */
+		                    '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE\')">'
+		                    		 result = result +"<th>Actions</th>";
+		                     '</sec:authorize>';
 		                     
-		                     result = result +"</tr>";
-		                     result = result +"</tr>";
-	                     }
-	                     result = result +" </tbody>";
-	                     result = result +"</table>"; 
-	                     $("#onboardingLoading").removeAttr("style");
-	                     $("#onboardingTemplatesList").append(result); 
-	                     
-	                     onboardingPagenation(); 
-                    
+		                     result = result +"  </tr>"; 
+		                     result = result +"</thead>";
+		                     result = result +"<tbody>"; 
+		                     
+		                     
+		                    	 for (var i = 0; i < response.data.length; i++) { 
+		                    	 var opt = response.data[i]; 
+		                    	 result = result +"<tr id='template"+opt.id+"'>";
+		                    	 
+		                    		 result = result +"<td><div class='tbldata-dotdot-sm'><span title='"+opt.templateName+"'>"+opt.templateName+"</span></div></td>";
+		                    		
+		                    		 if(opt.description != null && opt.description != '' && opt.description != 'undefineda'){
+		                    			 result = result +"<td><div><span title='"+opt.description+"'>"+opt.description+"</span></div></td>";
+		                    		 }else{
+		                    			 result = result +"<td><div><span>--------</span></div></td>";
+		                    		 }
+		                    		 
+		                    		 result = result +"<td><div><span>"+opt.documentsCount+"</span></div></td>";
+		                    		 
+		                    		 result = result +"<td><div><span>"+opt.tasksCount+"</span></div></td>";
+		                    		
+		                    		 result = result +"<td><div><span>"+opt.templateCreatedDate+"</span></div></td>";
+		                    		 
+		                    		 result = result +"<td><div><span>"+opt.createdUser+"</span></div></td>";
+		                    		 
+		                    		 result = result +"<td><div><span>"+opt.templateStatus+"</span></div></td>";
+		                    		 
+			                    	 result = result +"<td>";
+			                    	 result = result +"<div class=''>";
+			                    	 result = result +"<a href='"+sourceleadUrl+"/viewVendorOnboardTemplateByTemplateUUID?templateUUID="+opt.templateUUID+"'>Edit</a> ";
+			                    	
+			                    	 if(opt.isDefaultTemplate != 'Y'){
+			                    		 result = result +'| <a href="javascript:void(0)" onclick="deleteOnboadTemplate(\''+opt.templateUUID+'\','+opt.id+');">Delete</a>';
+			                    	 }
+			                    	 result = result +"</div></td>"; 
+			                     
+			                     result = result +"</tr>";
+			                     result = result +"</tr>";
+		                     }
+		                     result = result +" </tbody>";
+		                     result = result +"</table>"; 
+		                     $("#onboardingLoading").removeAttr("style");
+		                     $("#onboardingTemplatesList").append(result); 
+		                     
+		                     onboardingPagenation(); 
+	    
+			    			
+			    		}else if (response.indexOf('Sign In') !== -1) {
+			    			location.replace(sourceleadUrl);
+			    		} else {
+			    		    showError("Operation failed, please try again");
+			    		}
           },
             
        }); 
@@ -139,10 +150,19 @@ function deleteOnboadTemplate(templateUUID,id){
 	  $.ajax({
           type : "POST",
           url: sourceleadUrl+"/deleteVendorOnboardTemplateByTemplateUUID?${_csrf.parameterName}=${_csrf.token}&templateUUID="+templateUUID,    
-           success :function(data) {
-        	   
-    			document.getElementById("template"+id).remove();
-    			 $("#onboardingLoading").removeAttr("style");
+           success :function(response) {
+        	   if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+	    		    showError(response.responseMessage);
+	    	  	} else if (response.response === "AWKWARD") {
+	    		    location.href = "/errorPage";
+	    		} else if (response.response === "SUCCESS") {
+	    			document.getElementById("template"+id).remove();
+	    			 $("#onboardingLoading").removeAttr("style");
+	    		}else if (response.indexOf('Sign In') !== -1) {
+	    			location.replace(sourceleadUrl);
+	    		} else {
+	    		    showError("Operation failed, please try again");
+	    		}
            },
            
       }); 

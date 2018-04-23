@@ -84,6 +84,7 @@ import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionPriceService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionTypesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRequestService;
 import com.bis.sourcelead.service.OrgService;
@@ -229,6 +230,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Autowired
 	TabsDao tabsDao;
 	 
+	@Autowired
+	OrgLicenseSubscriptionTypesService orgLicenseSubscriptionTypesService;
 	
 	protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -489,6 +492,11 @@ public class RegistrationServiceImpl implements RegistrationService{
 		if(user == null) {
 			user = new User();
 			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
+			user.setIsVerified(Constants.NO);
+			user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
+			user.setUrlSentTime(new Date());
+			user.setLoginSecurity(Constants.NO);
+			user.setRegistrationType("Newly Registered");
 		}
 		user.setFirstName(registration.getFirstName());
 		user.setLastName(registration.getLastName());
@@ -502,11 +510,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		user.setCreatedBy(user.getUserCode());
 		user.setCreatedDate(new Date());
 		
-		user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
-		user.setUrlSentTime(new Date());
-		user.setIsVerified(Constants.NO);
-		user.setLoginSecurity(Constants.NO);
-		user.setRegistrationType("Newly Registered");
+		
 		return user;
 	}
 	
@@ -675,15 +679,15 @@ public class RegistrationServiceImpl implements RegistrationService{
 		Calendar toDate = Calendar.getInstance();
 		toDate.setTime(subscriptionDate);    
 	    
-	    LookUpData lookupData = lookupDataService.getTasksById(Long.parseLong(registration.getOrgEnrollment()));
+		OrgLicenseSubscriptionTypes subscriptionTypes = orgLicenseSubscriptionTypesService.getOrgLicenseSubscriptionTypesById(Long.parseLong(registration.getOrgEnrollment()));
 		
-	    if(lookupData.getName().equalsIgnoreCase("Free Trail") || lookupData.getName().equalsIgnoreCase("1 Month")) {
+	    if(subscriptionTypes.getName().equalsIgnoreCase("Free Trail") || subscriptionTypes.getName().equalsIgnoreCase("1 Month")) {
 	    	toDate.add(Calendar.MONTH, +1); 
-	    }else if(lookupData.getName().equalsIgnoreCase("6 Months")) {
+	    }else if(subscriptionTypes.getName().equalsIgnoreCase("6 Months")) {
 	    	toDate.add(Calendar.MONTH, +6); 
-	    }else if(lookupData.getName().equalsIgnoreCase("1 Year")) {
+	    }else if(subscriptionTypes.getName().equalsIgnoreCase("1 Year")) {
 	    	toDate.add(Calendar.YEAR, +1); 
-	    }else if(lookupData.getName().equalsIgnoreCase("2 Years")) {
+	    }else if(subscriptionTypes.getName().equalsIgnoreCase("2 Years")) {
 	    	toDate.add(Calendar.YEAR, +2); 
 	    }
 	    
@@ -1072,6 +1076,11 @@ public class RegistrationServiceImpl implements RegistrationService{
 			
 			orgUser.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			orgUser.setUpdatedDate(new Date());
+			orgUser.setVerificationUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			orgUser.setIsVerified(Constants.NO);
+			user.setUrlSentTime(new Date());
+			user.setLoginSecurity(Constants.NO);
+			user.setRegistrationType("Newly Registered");
 			userService.addUser(orgUser);
 			userRole.setIsPrimary(1);
 			

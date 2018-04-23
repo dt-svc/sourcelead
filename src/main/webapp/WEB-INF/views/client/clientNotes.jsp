@@ -316,9 +316,19 @@ var validationSettings = {
 		    	        contentType:false,
 						url : sourceleadUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&locationCode="+locationCode,
 						success : function(result) {
-							closeDocPopup();
-							clientNotes(orgRelationId);
 							
+							if (result && result.response === "INVALID_DATA") {
+							    showError(result.responseMessage);
+							} else if (result.response === "AWKWARD") {
+							    location.href = "/errorPage";
+							} else if (result.response === "SUCCESS") {
+								closeDocPopup();
+								clientNotes(orgRelationId);
+							} else if (result.indexOf('Sign In') !== -1) {
+								location.replace(sourceleadUrl);
+							} else {
+							    showError("Operation failed, please try again");
+							}
 						},
 					});
 					$('.add-comment').toggle(200);
@@ -437,13 +447,13 @@ function selectCategory(){
 				$.ajax({
 			    	type: "POST",
 			    	url : sourceleadUrl+"/getInvoiceListBasedOnOrgrelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&clientLocationId="+clientLocationId+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceStatus="+invoice+"&paymentStatus="+payment+"&invoiceType=receivable", 
-			        success: function(data) {
-		        	  var json = JSON.parse(data);
+			        success: function(json) {
+// 		        	  var json = JSON.parse(data);
 		        	  var result ="";
 		        	  result = result +"<select id='vendorcontact' name='vendorcontact' class='chosen-select form-control'  data-validation='required' field-name='Category'>";
 		        	
-              		    for (var i = 0; i < json.length; i++) {
-              		    	var opt= json[i];
+              		    for (var i = 0; i < json.data.length; i++) {
+              		    	var opt= json.data[i];
               		    	 result = result +"<option value="+opt.id+">"+opt.invoiceId+"</option>";
               		    }
               		  result = result +"</select>";

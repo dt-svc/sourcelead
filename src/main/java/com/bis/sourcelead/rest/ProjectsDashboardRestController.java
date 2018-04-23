@@ -26,6 +26,7 @@ import java.util.zip.ZipOutputStream;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -53,6 +54,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.GenericDao;
 import com.bis.sourcelead.dto.ClientOrgRelationsDTO;
@@ -62,6 +64,7 @@ import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ProjectsDocumentFolderDTO;
 import com.bis.sourcelead.dto.ProjectsDocumentsDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.dto.UserDTO;
@@ -84,6 +87,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.ClientVendorExport;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -257,7 +261,7 @@ public class ProjectsDashboardRestController {
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 
-				String[] tableColumns = {"projectSequeneNumber", "projectName", "projectManagers", "invoiceFrequency", "budget", "projectDate", "client","status"};
+				String[] tableColumns = {"projectSequeneNumber", "projectName", "projectManagers", "invoiceFrequency", "budget", "startDate", "client","status"};
 			    int sortColumnIndex = 1; //by default sorting using updated date
 				String sortColumnOrder = "desc"; //by default descending order
 				if(projectsDTO.getOrder() != null && !projectsDTO.getOrder().isEmpty()) {
@@ -508,13 +512,29 @@ public class ProjectsDashboardRestController {
 	  */
 	 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_PROJECT')")
 	 @RequestMapping(value = "/updateProjectByProjectId", method = RequestMethod.POST)
-	 public String updateProjectByProjectId(ProjectsDTO projectsDTO,@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
-		 String resultJson;
-		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user"); 
-		 Projects projects = projectsService.getProjectDetailsUpdateByProjectId(projectId, user, projectsDTO);
-	
-		 resultJson = commonUtil.toJSON(projects);
-		 return resultJson;
+	 public Response<Projects> updateProjectByProjectId(ProjectsDTO projectsDTO,@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
+		 Response<Projects> response = new Response<>();
+		 try {
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user"); 
+			 if(user != null) {
+				 if(Validator.validate(projectsDTO)) {
+					 Projects projects = projectsService.getProjectDetailsUpdateByProjectId(projectId, user, projectsDTO);
+					 response.setObject(projects);
+					 response.setResponse(Result.SUCCESS.name());
+					 response.setResponseMessage(Result.SUCCESS.getValue());
+				 }else {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				 }
+			 }else {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		  }catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+		 return response;
 	 }
 	 
 	 
@@ -547,19 +567,32 @@ public class ProjectsDashboardRestController {
 		 
 		 @RequestMapping(value = "/getAllProjectTasks", method = RequestMethod.POST)
 		 public @ResponseBody   ResponseList<ProjectTasks> getAllProjectTasks(ProjectTasksDTO projectTasksDTO,HttpServletRequest request) throws Exception {
-			  
-			    String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-				String[] tableColumns = {"taskName", "taskType", "priority", "assignedTo","status"};
-			    int sortColumnIndex = 1; //by default sorting using updated date
-				String sortColumnOrder = "asc"; //by default descending order
-				if(projectTasksDTO.getOrder() != null && !projectTasksDTO.getOrder().isEmpty()) {
-					sortColumnIndex = Integer.parseInt(projectTasksDTO.getOrder().get(0).get("column"));
-					sortColumnOrder = projectTasksDTO.getOrder().get(0).get("dir");
+			 ResponseList<ProjectTasks> response =  new  ResponseList<ProjectTasks>();
+			 try {
+				 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				 if(userRole != null) {
+					 String[] tableColumns = {"taskName", "taskType", "priority", "assignedTo","status"};
+					    int sortColumnIndex = 1; //by default sorting using updated date
+						String sortColumnOrder = "asc"; //by default descending order
+						if(projectTasksDTO.getOrder() != null && !projectTasksDTO.getOrder().isEmpty()) {
+							sortColumnIndex = Integer.parseInt(projectTasksDTO.getOrder().get(0).get("column"));
+							sortColumnOrder = projectTasksDTO.getOrder().get(0).get("dir");
+						}
+						projectTasksDTO.setSortColumn(tableColumns[sortColumnIndex]);
+						projectTasksDTO.setSortOrder(sortColumnOrder);
+						response = tasksService.getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(projectTasksDTO,Long.parseLong(projectTasksDTO.getProjectId()),projectTasksDTO.getProjectTaskType(),projectTasksDTO.getProjectTaskStatus(),userRole,projectTasksDTO.getAssignedMembers());
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+				 }else {
+					 response.setResponse(Result.INVALID_DATA.name());
+					 response.setResponseMessage(Result.INVALID_DATA.getValue());
+				 }
+			  }catch (Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
 				}
-				projectTasksDTO.setSortColumn(tableColumns[sortColumnIndex]);
-				projectTasksDTO.setSortOrder(sortColumnOrder);
-				ResponseList<ProjectTasks>  taskList=tasksService.getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(projectTasksDTO,Long.parseLong(projectTasksDTO.getProjectId()),projectTasksDTO.getProjectTaskType(),projectTasksDTO.getProjectTaskStatus(),userRole,projectTasksDTO.getAssignedMembers());
-			 return taskList;
+				
+			 return response;
 		 }
 	/**
 	 * Get Employees list based on project id

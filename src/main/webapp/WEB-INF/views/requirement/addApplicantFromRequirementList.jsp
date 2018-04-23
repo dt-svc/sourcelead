@@ -212,15 +212,20 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	    	$.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/profileBySkillSet?"+tokenParamName+"="+tokenValue+"&allSkills="+allSkills, 
-		        success: function(data) {
-		        	var primarySkill = data;
-		        	      $("#primarySkill").val(primarySkill);
-		        	
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		var primarySkill = response.object;
+			        	$("#primarySkill").val(primarySkill);
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
 		        },
 		    });
-	    	
 	    });
-	    
 	    chosen.search_field.on('keydown keyup', function(e)
 			    {
 			    	   var skillsArray = this.value.split(",");
@@ -380,12 +385,20 @@ function discordApplicant(){
 	$.ajax({
 		type: "POST",
 	    url: sourceleadUrl+"/verifyCoolingOffPeriod?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&candidateEmail="+candidateEmail+"&reqCoolingOffPeriod="+reqCoolingOffPeriod+"&orgLocationId="+orgLocationId, 
-	    success: function(data) {
-	    	if(data == "true"){
-	    		isCoolingOffAlert();
-	    		return true;
-	    	}else{
-	    		return false;
+	    success: function(response) {
+	    	if (response.response === "AWKWARD") {
+	    	    location.href = "/errorPage";
+	    	} else if (response.response === "SUCCESS") {
+	    		if(response.object === true) {
+		    		isCoolingOffAlert();
+		    		return true;
+		    	} else {
+		    		return false;
+		    	}
+	    	} else if (response.indexOf('Sign In') !== -1) {
+	    		location.replace(sourceleadUrl);
+	    	} else {
+	    	    showError("Operation failed, please try again");
 	    	}
 	    },
 	});
@@ -443,24 +456,30 @@ function discordApplicant(){
 			 $.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/getCandidatesList?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&isAssociate="+isAssociate, 
-			        success: function(data) {
-			        	var json = JSON.parse(data);
-			        	var output = "";
-			        	output = output + "<option value=''>-- Select "+candidateType+" --</option>"; 
-			        	for (var i=0; i<json.length; i++)
-						{
-				        		var opt = json[i];
-				        		var lastName = "";
-				        		if(opt.lastName != null && opt.lastName != "" && opt.lastName != 'undefined'){
-				        			lastName = opt.lastName;
-				        		}
-				        		output = output + "<option value='" +opt.candidateId+ "'>"+opt.firstName+" "+lastName+"</option>";
-						}
-			        	$("#candidateId").empty();
-				        $("#candidateId").append(output);
-				        $('#candidateId').trigger("chosen:updated");
-				        
-				        getCandidateResumes();
+			        success: function(response) {
+			        	if (response.response === "AWKWARD") {
+			        	    location.href = "/errorPage";
+			        	} else if (response.response === "SUCCESS") {
+			        		var json = response.data;
+				        	var output = "";
+				        	output = output + "<option value=''>-- Select "+candidateType+" --</option>"; 
+				        	for (var i=0; i<json.length; i++) {
+					        		var opt = json[i];
+					        		var lastName = "";
+					        		if(opt.lastName != null && opt.lastName != "" && opt.lastName != 'undefined'){
+					        			lastName = opt.lastName;
+					        		}
+					        		output = output + "<option value='" +opt.candidateId+ "'>"+opt.firstName+" "+lastName+"</option>";
+							}
+				        	$("#candidateId").empty();
+					        $("#candidateId").append(output);
+					        $('#candidateId').trigger("chosen:updated");
+					        getCandidateResumes();
+			        	} else if (response.indexOf('Sign In') !== -1) {
+			        		location.replace(sourceleadUrl);
+			        	} else {
+			        	    showError("Operation failed, please try again");
+			        	}
 			        },
 			    }); 
 		 }else{
@@ -1341,46 +1360,54 @@ function setRateTypesByLocation(){
 			        contentType:false,
 		   	        dataType : 'json',
 					url : sourceleadUrl+"/parseResume?"+tokenParamName+"="+tokenValue+"",
-					success : function(data) {
-						var json = JSON.parse(data);
-						var name = json.name;
-						var firstName = '';
-						var lastName = '';
-						if(name != null && name != 'undefined' && name != ''){
-							 firstName = name.split(".")[0]; 
-							 lastName = name.split(".")[1]; 
-							 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
-									 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
-								 firstName = name;
-							 }
+					success : function(response) {
+						if (response.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (response.response === "SUCCESS") {
+							var json = response.object;
+							var name = json.name;
+							var firstName = '';
+							var lastName = '';
+							if(name != null && name != 'undefined' && name != ''){
+								 firstName = name.split(".")[0]; 
+								 lastName = name.split(".")[1]; 
+								 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
+										 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
+									 firstName = name;
+								 }
+							}
+							
+							
+							 $("input[name=FirstName]").val(firstName);
+				        	 $("input[name=LastName]").val(lastName);
+				        	 $("input[name=EmailId]").val(json.email);
+				        	 $("input[name=PhoneNumber]").val(json.phoneNumbers);
+				        	 
+				        	 $("#candidateSkills").empty();
+				        	 var internalOutput = "";
+	 						 <c:forEach var="skill" items="${skillList}">
+	 						    internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
+	 	                     </c:forEach>
+	 						var skills = json.skills;
+	 						if(skills != null && skills != 'undefined' && skills != ''){
+	 							var str_array = skills.split(',');
+	 							for(var i = 0; i < str_array.length; i++) {
+	 							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+	 							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+	 							}
+	 						}
+	 						$("#candidateSkills").append(internalOutput);
+	 		        		$("#candidateSkills").trigger("chosen:updated");
+	  						
+				        	 
+							 validateSubmissionCandidateEmail();
+							 getUserByUserEmail();
+							 $("#loading").removeAttr("style");
+						} else if (response.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
 						}
-						
-						
-						 $("input[name=FirstName]").val(firstName);
-			        	 $("input[name=LastName]").val(lastName);
-			        	 $("input[name=EmailId]").val(json.email);
-			        	 $("input[name=PhoneNumber]").val(json.phoneNumbers);
-			        	 
-			        	 $("#candidateSkills").empty();
-			        	 var internalOutput = "";
- 						 <c:forEach var="skill" items="${skillList}">
- 						    internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
- 	                     </c:forEach>
- 						var skills = json.skills;
- 						if(skills != null && skills != 'undefined' && skills != ''){
- 							var str_array = skills.split(',');
- 							for(var i = 0; i < str_array.length; i++) {
- 							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
- 							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
- 							}
- 						}
- 						$("#candidateSkills").append(internalOutput);
- 		        		$("#candidateSkills").trigger("chosen:updated");
-  						
-			        	 
-						 validateSubmissionCandidateEmail();
-						 getUserByUserEmail();
-						 $("#loading").removeAttr("style");
 					},
 				});
  	 }

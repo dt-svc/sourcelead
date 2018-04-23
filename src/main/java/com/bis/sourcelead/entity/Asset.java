@@ -22,6 +22,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -44,8 +45,9 @@ public class Asset implements Serializable{
 	private String name;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ASSET_CATEGORY_ID")
+	@JsonBackReference
 	private AssetCategory assetCategory;
 	
 	@Column(name = "MAKE")
@@ -80,6 +82,9 @@ public class Asset implements Serializable{
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	
+	@Column(name = "MAC_ADDRESS")
+	private String macAddress;
+	
 	@Column(name = "FILE_NAME")
 	private String fileName;
 	
@@ -87,7 +92,7 @@ public class Asset implements Serializable{
 	private String fileUrl;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SHIFT_A_EMPLOYEE")
 	@JsonProperty
 	private Employees shiftAEmployee;
@@ -106,7 +111,7 @@ public class Asset implements Serializable{
 	private String shiftAFileUrl;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SHIFT_B_EMPLOYEE")
 	@JsonProperty
 	private Employees shiftBEmployee;
@@ -125,7 +130,7 @@ public class Asset implements Serializable{
 	private String shiftBFileUrl;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID")
 	private OrgLocations orgLocations;
 	
@@ -149,12 +154,15 @@ public class Asset implements Serializable{
 	private String updatedBy;
 	
 	@Transient
+	@JsonProperty
 	private String shiftAEmpName;
 	
 	@Transient 
+	@JsonProperty
 	private String shiftBEmpName;
 	
 	@Transient 
+	@JsonProperty
 	private String categoryName;
 	
 	@Transient 
@@ -356,6 +364,14 @@ public class Asset implements Serializable{
 	}
 
 	public String getShiftAEmpName() {
+		if(shiftAEmployee != null){
+			if(shiftAEmployee.getUser().getLastName() != null) {
+				shiftAEmpName = shiftAEmployee.getUser().getFirstName() +" "+shiftAEmployee.getUser().getLastName();
+			}else {
+				shiftAEmpName = shiftAEmployee.getUser().getFirstName();
+			}
+			
+		}
 		return shiftAEmpName;
 	}
 
@@ -364,6 +380,13 @@ public class Asset implements Serializable{
 	}
 
 	public String getShiftBEmpName() {
+		if(shiftBEmployee != null){
+			if(shiftBEmployee.getUser().getLastName() != null) {
+				shiftBEmpName = shiftBEmployee.getUser().getFirstName() +" "+ shiftBEmployee.getUser().getLastName();
+			}else {
+				shiftBEmpName = shiftBEmployee.getUser().getFirstName();
+			}
+		}
 		return shiftBEmpName;
 	}
 
@@ -388,6 +411,9 @@ public class Asset implements Serializable{
 	}
 
 	public String getCategoryName() {
+		if(assetCategory !=null) {
+			categoryName = assetCategory.getCategoryName();
+		}
 		return categoryName;
 	}
 
@@ -465,4 +491,11 @@ public class Asset implements Serializable{
 		this.issueDate = issueDate;
 	}
 
+	public String getMacAddress() {
+		return macAddress;
+	}
+
+	public void setMacAddress(String macAddress) {
+		this.macAddress = macAddress;
+	}
 }

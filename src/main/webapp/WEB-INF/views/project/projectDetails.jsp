@@ -542,10 +542,10 @@ function editClientProjectDetails(projectId){
 							projectSequeneNumber = "";
 						}
 						
-
 						var result = "";
 						result = result	+ '<div id="projectEditDetailsLoading"></div>';
 						result = result	+ ' <form id="editProject_form"  name="editProject_form" method="post">';
+						result = result	+ '<input type="hidden" name="projectShortCode" value="'+json.projectShortCode+'" >';
 						result = result	+ '<div class="user_summary_edit_cta projectdetails_edit_cta" id="ProjectIdDiv">';
 						result = result + '	<label>Project Id</label>';
 						result = result	+ '	<input type="text"  id="ProjectSequeneNumber" name="projectSequeneNumber" value="'+projectSequeneNumber+'" placeholder="Project Id" data-validation="validate_Space validate_length length2-50" data-validation-optional="true" onKeyUp="validateProjectSequeneNumber();" class="project_detfield">';
@@ -553,7 +553,7 @@ function editClientProjectDetails(projectId){
 
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '	<label>Status<span	class="text-danger">*</span></label>';
-						result = result	+ '<select id="projectStatusId" name="projectStatusId" onchange="projectStatus();" field-name="Status" data-validation="required">';
+						result = result	+ '<select id="projectStatusId" name="status" onchange="projectStatus();" field-name="Status" data-validation="required">';
 						result = result	+ '<option value="">Select Status</option>';
 						if (json.projectStatus == 'NOTSTARTED') {
 							result = result	+ '<option selected value="Not Started">Not Started</option>';
@@ -739,7 +739,7 @@ function editClientProjectDetails(projectId){
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '	<label>Start date <span class="text-danger">*</span></label>';
 						result = result
-								+ '	<input class="calendar" value='+json.startDateStr+' type="text" disabled="disabled" id="startDateStr1">';
+								+ '	<input class="calendar" value='+json.startDateStr+' type="text" name="startDate" readonly id="startDateStr1">';
 						result = result + '</div>	';
 						
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta" id="endDateDiv">';
@@ -755,12 +755,14 @@ function editClientProjectDetails(projectId){
 						
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '<label>Invoice Frequency<span class="text-danger">*</span></label>';
-						result = result  +'	<select   name="invoiceFrequency" id="invoiceFrequency" class="input-sm form-control" disabled="disabled">';
-						result = result  +' <option '+(json.invoiceFrequency == "Weekly" ? "selected" : '') +'>Weekly</option>';
-						result = result  +'	 <option '+(json.invoiceFrequency == "Bi-Weekly" ? "selected" : '') +'>Bi-Weekly</option>';
-						result = result  +'	 <option '+(json.invoiceFrequency == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
-						result = result  +'	<option '+(json.invoiceFrequency == "Monthly" ? "selected" : '') +'>Monthly</option>';
-						result = result  +'	</select>';
+						result = result  +'	<input type="text"  name="invoiceFrequency" id="invoiceFrequency" value="'+json.invoiceFrequency+'" class="input-sm form-control" readonly>';
+
+// 						result = result  +'	<select   name="invoiceFrequency" id="invoiceFrequency" class="input-sm form-control" readonly>';
+// 						result = result  +' <option '+(json.invoiceFrequency == "Weekly" ? "selected" : '') +'>Weekly</option>';
+// 						result = result  +'	 <option '+(json.invoiceFrequency == "Bi-Weekly" ? "selected" : '') +'>Bi-Weekly</option>';
+// 						result = result  +'	 <option '+(json.invoiceFrequency == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
+// 						result = result  +'	<option '+(json.invoiceFrequency == "Monthly" ? "selected" : '') +'>Monthly</option>';
+// 						result = result  +'	</select>';
 						result = result + '</div>';
 						
 						/* result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
@@ -1026,22 +1028,31 @@ function projectStatus(){
 						type : "POST",
 						data: formData,
 						url : sourceleadUrl + "/updateProjectByProjectId?${_csrf.parameterName}=${_csrf.token}&ProjectId=" + projectId,
-						success : function(data) {
-							$("#selector2").removeAttr("style");
-	            			$("#selector2").css({ display: "block" });
-	            			$("#docMsgDiv2").html("Success!! Project details updated");
-							projectDetails(projectId);
-							docMsgFadein();
+						success : function(result) {
+							if (result && result.response === "INVALID_DATA") {
+  								$("#projectEditDetailsLoading").removeAttr("style");
+  			                    showError(result.responseMessage);
+  			                } else if (result.response === "AWKWARD") {
+  			                    location.href = "/errorPage";
+  			                } else if (result.response === "SUCCESS") {
+  			                	$("#selector2").removeAttr("style");
+  		            			$("#selector2").css({ display: "block" });
+  		            			$("#docMsgDiv2").html("Success!! Project details updated");
+  								projectDetails(projectId);
+  								docMsgFadein();
+  								
+  								var json = data.object;
+  								
+  								$("#empTab").removeAttr("onClick");
+  				   		    	$("#empTab").attr("onclick","projectEmployee('"+projectId+"', '"+json.startDateStr+"', '"+json.endDateStr+"', '"+json.projectStatus+"', '"+json.projectName+"')");
+  				   		    	
+  				   		    	$("#teamTab").removeAttr("onClick");
+  				   		    	$("#teamTab").attr("onclick","projectTeam('"+projectId+"', '"+json.startDateStr+"', '"+json.endDateStr+"', '"+json.projectStatus+"', '"+json.projectName+"')");
+  				   		    	
+  				   		    	$("#taskTab").removeAttr("onClick");
+  				   		    	$("#taskTab").attr("onclick","projectTask('"+projectId+"', '"+json.projectStatus+"')");
+  			                }
 							
-							var json = JSON.parse(data);
-							$("#empTab").removeAttr("onClick");
-			   		    	$("#empTab").attr("onclick","projectEmployee('"+projectId+"', '"+json.startDateStr+"', '"+json.endDateStr+"', '"+json.projectStatus+"', '"+json.projectName+"')");
-			   		    	
-			   		    	$("#teamTab").removeAttr("onClick");
-			   		    	$("#teamTab").attr("onclick","projectTeam('"+projectId+"', '"+json.startDateStr+"', '"+json.endDateStr+"', '"+json.projectStatus+"', '"+json.projectName+"')");
-			   		    	
-			   		    	$("#taskTab").removeAttr("onClick");
-			   		    	$("#taskTab").attr("onclick","projectTask('"+projectId+"', '"+json.projectStatus+"')");
 						}
 					});
 			return true;

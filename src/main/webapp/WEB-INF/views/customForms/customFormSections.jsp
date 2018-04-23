@@ -190,19 +190,35 @@ function getSelectedFieldDetails(){
 		$("#optionDiv"+i).remove();
 	}
 	 var field = $('#fieldsDropDown').val();
+	 if(field == 'TextBox'){
+		 $('#validateRangeDiv').show();
+		 $('#validateLengthDiv').show();
+	 }else{
+		 $('#validateRangeDiv').hide();
+		 $('#validateLengthDiv').hide();
+		 
+		 $('#validationRange').removeAttr("data-validation","required");
+		 $('#validationRange').attr('data-validation-optional');
+		 
+		 $('#validationType').removeAttr("data-validation","required");
+		 $('#validationType').attr('data-validation-optional');
+		 
+	 }
 	 if(field == 'selectBox' || field == 'CheckBox' || field == 'radioButton'){
 		 $('#selectFieldDiv').show();
 		 $('#textBoxDiv').hide();
 		 if(field == 'selectBox'){
 			 $("#selectFieldDiv p:contains('Choices')").html("Options");
 			 $("#addOptionDiv p:contains('Add Choice')").html("Add Option");
-			
+			 $('#placeHolderDiv').show();
 		 }else if(field == 'CheckBox' || field == 'radioButton'){
 			 $("#selectFieldDiv p:contains('Options')").html("Choices");
 			 $("#addOptionDiv p:contains('Add Option')").html("Add Choice");
+			 $('#placeHolderDiv').hide();
 		 }
 		 $('#selectOptionId').removeAttr('data-validation-optional');
-		 $('#selectOptionId').attr("data-validation","required"); 
+		 $('#selectOptionId').attr("data-validation","required");
+		 
 	 }else{
 		 $('#selectFieldDiv').hide();
 		 $('#textBoxDiv').show();
@@ -214,7 +230,7 @@ function getSelectedFieldDetails(){
 	 if(field == 'Date'){
 		 $('#selectFieldDiv').hide();
 		 $('#dateFieldDiv').show();
-		 $( "#datepicker" ).datepicker();
+		 $('#placeHolderDiv').show();
 	 }else{
 		 $('#dateFieldDiv').hide();
 		 $('#dateFieldDiv').find('p.jquery_form_error_message').remove(); 
@@ -329,8 +345,10 @@ var validationSettings = {
 		 	 	success : function(data) {
 		 	 		$("#deletFildRow"+customRowId).removeAttr("class");
 		 	 		if(status == 'activate'){
+
 		 	 			$("#deletFildRow"+customRowId).prop('title', 'De-Activate');
 		 	 			$("#deletFildRow"+customRowId).attr("class","fa  fa-trash");
+
 		 	 			$("#deletFildRow"+customRowId).removeAttr("onclick");
 		 	 			$("#deletFildRow"+customRowId).attr("onclick","activateOrDeactivateCustomField('"+customRowId+"', 'deactivate')");
 		 	 			$("#customFieldStatus"+customRowId).empty();

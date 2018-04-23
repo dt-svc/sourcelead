@@ -40,7 +40,10 @@ $(function(){
           <%-- <a href="${appPath}/addUserManual" class="pull-right btn btn-primary btn-sm mb">Add</a> --%>
           <%-- <a href="${appPath}/applicantDeclineReports" title="Grid View" id="GView" class="btn btn-default " ><i class="fa fa-pie-chart"></i></a>
           --%> 
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; User Manuals </div>
+          <div class="pull-right brud-crum" id="level1Bred" style="display:block"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>" class="paddingLeft">Home</a> &raquo; Level-1 User Manuals </div>
+          <div class="pull-right brud-crum" id="level2Bred" style="display:none"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>" class="paddingLeft">Home</a> &raquo; <a onclick="getUserManualList();" class="paddingLeft">Level-1</a> &raquo; Level-2 User Manuals </div>
+          <div class="pull-right brud-crum" id="level3Bred" style="display:none"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>" class="paddingLeft">Home</a> &raquo;<a onclick="getUserManualList();" class="paddingLeft">Level-1</a> &raquo;<a id="level2cum" style="display:none" class="paddingLeft"></a> &raquo; Level-3 User Manuals </div>
+       
         </section>
         
         <div class="content-area clearfix">
@@ -66,6 +69,9 @@ $('.note-editable').css({"min-height":"200px"});
 
 <script>
  function getUserManualList() {
+	 document.getElementById("level1Bred").style.display="block";
+	 document.getElementById("level2Bred").style.display="none";
+	 document.getElementById("level3Bred").style.display="none";
 	 
 	 var searchValue = $("#UserManualSearch").val();
 	 searchValue = searchValue ? searchValue : "";
@@ -222,10 +228,20 @@ function deleteUserManualonee(userManualId){
 		type : "GET",
 		url : sourceleadUrl+ "/deleteUserManualOne?${_csrf.parameterName}=${_csrf.token}&userManualId="+userManualId,
 		
-		success : function(json) {
-			    $("#userManualDelete").empty();
-			 	$(".project_inn_mask").fadeOut(200);
-			 	getUserManualList();
+		success : function(response) {
+			if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+    		    showError(response.responseMessage);
+    	  	} else if (response.response === "AWKWARD") {
+    		    location.href = "/errorPage";
+    		} else if (response.response === "SUCCESS") {
+    			$("#userManualDelete").empty();
+ 			 	$(".project_inn_mask").fadeOut(200);
+ 			 	getUserManualList();
+    		}else if (response.indexOf('Sign In') !== -1) {
+    			location.replace(sourceleadUrl);
+    		} else {
+    		    showError("Operation failed, please try again");
+    		}
 		}
 	});
 }
@@ -240,6 +256,10 @@ function cancelTermination(){
  
  <script>
  function getAllLevelTwo(id){
+	 document.getElementById("level1Bred").style.display="none";
+	 document.getElementById("level2Bred").style.display="block";
+	 document.getElementById("level3Bred").style.display="none";
+	 level3Breadcrumbs(id)
 	 var searchValue = $("#UserManualTwoSearch").val();
 	 searchValue = searchValue ? searchValue : "";
 	 var url = sourceleadUrl	+"/getAllUseManualLevelTwoList?searchValue="+searchValue+"&id="+id;
@@ -408,10 +428,22 @@ function deleteUserManualTwoo(userManualId){
 		type : "GET",
 		url : sourceleadUrl+ "/deleteUserManualTwo?${_csrf.parameterName}=${_csrf.token}&userManualId="+userManualId,
 		
-		success : function(json) {
-			    $("#userManualDelete").empty();
-			 	$(".project_inn_mask").fadeOut(200);
-			 	getUserManualList();
+		success : function(response) {
+			
+			if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+    		    showError(response.responseMessage);
+    	  	} else if (response.response === "AWKWARD") {
+    		    location.href = "/errorPage";
+    		} else if (response.response === "SUCCESS") {
+    			 $("#userManualDelete").empty();
+ 			 	$(".project_inn_mask").fadeOut(200);
+ 			 	getUserManualList();
+    		}else if (response.indexOf('Sign In') !== -1) {
+    			location.replace(sourceleadUrl);
+    		} else {
+    		    showError("Operation failed, please try again");
+    		}
+			
 		}
 	});
 }
@@ -428,18 +460,25 @@ function cancelTermination(){
  
   <script>
  function getAllLevelThree(id){
+	 document.getElementById("level1Bred").style.display="none";
+	 document.getElementById("level2Bred").style.display="none";
+	 document.getElementById("level3Bred").style.display="block";
 	 var searchValue = $("#UserManualThreeSearch").val();
 	 searchValue = searchValue ? searchValue : "";
 	 var url = sourceleadUrl	+"/getAllUseManualLevelThreeList?searchValue="+searchValue+"&id="+id;
 		prepareLevelThreeList(url,id);
  }
+ function level3Breadcrumbs(id){
+	 document.getElementById("level2cum").style.display="inline-block";
+	 var result = "";
+	 result=result+'<a onclick="getAllLevelTwo('+id+');">Level-2</a>';
+	 $("#level2cum").empty();  
+	 $("#level2cum").append(result);  
+ }
  </script>
  
  <script>
  function prepareLevelThreeList(url,id){
-	 
-	 
-	 
 		 var result = "";
 		result = result	+ '<div class="positionRelative table_head">';
 		
@@ -602,10 +641,22 @@ function deleteUserManualThre(userManualId){
 		type : "GET",
 		url : sourceleadUrl+ "/deleteUserManualThree?${_csrf.parameterName}=${_csrf.token}&userManualId="+userManualId,
 		
-		success : function(json) {
-			    $("#userManualDelete").empty();
-			 	$(".project_inn_mask").fadeOut(200);
-			 	getUserManualList();
+		success : function(response) {
+			
+			if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+    		    showError(response.responseMessage);
+    	  	} else if (response.response === "AWKWARD") {
+    		    location.href = "/errorPage";
+    		} else if (response.response === "SUCCESS") {
+    			$("#userManualDelete").empty();
+ 			 	$(".project_inn_mask").fadeOut(200);
+ 			 	getUserManualList();
+    		}else if (response.indexOf('Sign In') !== -1) {
+    			location.replace(sourceleadUrl);
+    		} else {
+    		    showError("Operation failed, please try again");
+    		}
+			
 		}
 	});
 }
@@ -627,95 +678,120 @@ function cancelTermination(){
 			type : "POST",
 			url : sourceleadUrl+ "/userManualOneSummary?${_csrf.parameterName}=${_csrf.token}&userManualId="+userManualId,
 			
-			success : function(json) {
-				var title = "";
-				var description = "";
+			success : function(response) {
+				if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+        		    showError(response.responseMessage);
+        	  	} else if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+        			var title = "";
+    				var description = "";
+    				
+    				/* for (var i = 0; i < response.response.length; i++) { 
+                      	 var opt = response.response[i];  
+                      	 alert(opt.title);
+    				} */
+    				if (response.object.title != null && response.object.title != '' && response.object.title != 'undefined') {
+    						title = response.object.title;
+    					} else {
+    						title = "--";
+    					}
+    				
+    			if (response.object.description != null && response.object.description != ''
+    					&& response.object.description != 'undefined') {
+    				description = response.object.description;
+    			} else {
+    				description = "----";
+    			}
+    			
+    			if (response.object.updatedBy != null && response.object.updatedBy != '' && response.object.updatedBy != 'undefined') {
+    				updatedBy = response.object.updatedBy;
+    				} else {
+    					updatedBy = "--";
+    				}
+    			if (response.object.updatedDate != null && response.object.updatedDate != '' && response.object.updatedDate != 'undefined') {
+    				updatedDate = response.object.updatedDate;
+    				} else {
+    					updatedDate = "--";
+    				}
+    			if (response.object.createdBy != null && response.object.createdBy != '' && response.object.createdBy != 'undefined') {
+    				createdBy = response.object.createdBy;
+    				} else {
+    					createdBy = "--";
+    				}
+    			if (response.object.createdDate != null && response.object.createdDate != '' && response.object.createdDate != 'undefined') {
+    				createdDate = response.object.createdDate;
+    				} else {
+    					createdDate = "--";
+    				}
+    			
+    			var result = "";
+    			result = result	+ '<div class="project_tabs_inn_table">';
+    			result = result + '<div class="project_details">';
+    			
+    			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
+    			result = result + '<strong>User Manual Title:</strong>';
+    			result = result + '<span>'+title+'</span>';
+    			result = result + '<div class="clearfix"></div>';
+    			result = result + '</div>';
+    			
+    			result = result + '<div class="clearfix"></div>';
+    			
+    			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
+    			result = result + '<strong>CreatedBy:</strong>';
+    			result = result + '<span>'+createdBy+'</span>';
+    			result = result + '<div class="clearfix"></div>';
+    			result = result + '</div>';
+    			
+    			result = result + '<div class="clearfix"></div>';
+    			
+    			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
+    			result = result + '<strong>CreatedDate:</strong>';
+    			result = result + '<span>'+createdDate+'</span>';
+    			result = result + '<div class="clearfix"></div>';
+    			result = result + '</div>';
+    			
+    			result = result + '<div class="clearfix"></div>';
+    			
+    			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
+    			result = result + '<strong>UpdatedBy:</strong>';
+    			result = result + '<span>'+updatedBy+'</span>';
+    			result = result + '<div class="clearfix"></div>';
+    			result = result + '</div>';
+    			
+    			result = result + '<div class="clearfix"></div>';
+    			
+    			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
+    			result = result + '<strong>UpdatedDate:</strong>';
+    			result = result + '<span>'+updatedDate+'</span>';
+    			result = result + '<div class="clearfix"></div>';
+    			result = result + '</div>';
+    			
+    			result = result + '<div class="clearfix"></div>';
+    			
+    			result = result	+ '<div class="" id="ProjectIdDiv">';
+    			result = result + '<strong>Description:</strong>';
+    			result = result + '<span>'+description+'</span>';
+    			result = result + '<div class="clearfix"></div>';
+    			result = result + '</div>';
+    			
+    			result = result + '</div>';
+    			result = result + '</div>';
+    			
+    			$("#UserManualDivId").empty();  
+    			$("#UserManualDivId").append(result); 
+    			
+    			 document.getElementById("level1summary").style.display="block";
+    			 document.getElementById("usermanualList").style.display="none";
+    			 document.getElementById("level2summary").style.display="none";
+    			 document.getElementById("level3summary").style.display="none";
+        		}
 				
-				
-				if (json.title != null && json.title != '' && json.title != 'undefined') {
-						title = json.title;
-					} else {
-						title = "--";
-					}
-				
-			if (json.description != null && json.description != ''
-					&& json.description != 'undefined') {
-				description = json.description;
-			} else {
-				description = "----";
-			}
-			
-			if (json.updatedBy != null && json.updatedBy != '' && json.updatedBy != 'undefined') {
-				updatedBy = json.updatedBy;
-				} else {
-					updatedBy = "--";
-				}
-			if (json.updatedDate != null && json.updatedDate != '' && json.updatedDate != 'undefined') {
-				updatedDate = json.updatedBy;
-				} else {
-					updatedDate = "--";
-				}
-			
-			var result = "";
-			result = result	+ '<div class="project_tabs_inn_table">';
-			result = result + '<div class="project_details">';
-			
-			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
-			result = result + '<strong>User Manual Title:</strong>';
-			result = result + '<span>'+title+'</span>';
-			result = result + '<div class="clearfix"></div>';
-			result = result + '</div>';
-			
-			result = result + '<div class="clearfix"></div>';
-			
-			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
-			result = result + '<strong>CreatedBy:</strong>';
-			result = result + '<span>'+json.createdBy+'</span>';
-			result = result + '<div class="clearfix"></div>';
-			result = result + '</div>';
-			
-			result = result + '<div class="clearfix"></div>';
-			
-			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
-			result = result + '<strong>CreatedDate:</strong>';
-			result = result + '<span>'+json.createdDate+'</span>';
-			result = result + '<div class="clearfix"></div>';
-			result = result + '</div>';
-			
-			result = result + '<div class="clearfix"></div>';
-			
-			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
-			result = result + '<strong>UpdatedBy:</strong>';
-			result = result + '<span>'+updatedBy+'</span>';
-			result = result + '<div class="clearfix"></div>';
-			result = result + '</div>';
-			
-			result = result + '<div class="clearfix"></div>';
-			
-			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
-			result = result + '<strong>UpdatedDate:</strong>';
-			result = result + '<span>'+updatedDate+'</span>';
-			result = result + '<div class="clearfix"></div>';
-			result = result + '</div>';
-			
-			result = result + '<div class="clearfix"></div>';
-			
-			result = result	+ '<div class="" id="ProjectIdDiv">';
-			result = result + '<strong>Description:</strong>';
-			result = result + '<span>'+description+'</span>';
-			result = result + '<div class="clearfix"></div>';
-			result = result + '</div>';
-			
-			result = result + '</div>';
-			result = result + '</div>';
-			
-			$("#UserManualDivId").empty();  
-			$("#UserManualDivId").append(result); 
-			
-			 document.getElementById("level1summary").style.display="block";
-			 document.getElementById("usermanualList").style.display="none";
-			 document.getElementById("level2summary").style.display="none";
-			 document.getElementById("level3summary").style.display="none";
+        		else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
 			
 			}
 		});
@@ -733,95 +809,116 @@ function cancelTermination(){
 			type : "POST",
 			url : sourceleadUrl+ "/userManualTwoSummary?${_csrf.parameterName}=${_csrf.token}&userManualId="+userManualId,
 			
-			success : function(json) {
-				var title = "";
-				var description = "";
+			success : function(response) {
+				
+				if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+        		    showError(response.responseMessage);
+        	  	} else if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+        			var title = "";
+    				var description = "";
+    				
+    				
+    				if (response.object.title != null && response.object.title != '' && response.object.title != 'undefined') {
+    					title = response.object.title;
+    					} else {
+    				title = "--";
+    			}
+    			if (response.object.description != null && response.object.description != ''
+    					&& response.object.description != 'undefined') {
+    				description = response.object.description;
+    			} else {
+    				description = "----";
+    			}
+    			if (response.object.updatedBy != null && response.object.updatedBy != '' && response.object.updatedBy != 'undefined') {
+    				updatedBy = response.object.updatedBy;
+    				} else {
+    					updatedBy = "--";
+    				}
+    			if (response.object.updatedDate != null && response.object.updatedDate != '' && response.object.updatedDate != 'undefined') {
+    				updatedDate = response.object.updatedDate;
+    				} else {
+    					updatedDate = "--";
+    				}
+    			if (response.object.createdBy != null && response.object.createdBy != '' && response.object.createdBy != 'undefined') {
+    				createdBy = response.object.createdBy;
+    				} else {
+    					createdBy = "--";
+    				}
+    			if (response.object.createdDate != null && response.object.createdDate != '' && response.object.createdDate != 'undefined') {
+    				createdDate = response.object.createdDate;
+    				} else {
+    					createdDate = "--";
+    				}
+    			
+    			
+    			var result = "";
+    			result = result	+ '<div class="project_tabs_inn_table">';
+    			result = result + '<div class="project_details">';
+    			
+    			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
+    			result = result + '<strong>User Manual Title:</strong>';
+    			result = result + '<span>'+title+'</span>';
+    			result = result + '<div class="clearfix"></div>';
+    			result = result + '</div>';
+    			
+    			result = result + '<div class="clearfix"></div>';
+    			
+    			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
+    			result = result + '<strong>CreatedBy:</strong>';
+    			result = result + '<span>'+createdBy+'</span>';
+    			result = result + '<div class="clearfix"></div>';
+    			result = result + '</div>';
+    			
+    			result = result + '<div class="clearfix"></div>';
+    			
+    			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
+    			result = result + '<strong>CreatedDate:</strong>';
+    			result = result + '<span>'+createdDate+'</span>';
+    			result = result + '<div class="clearfix"></div>';
+    			result = result + '</div>';
+    			
+    			result = result + '<div class="clearfix"></div>';
+    			
+    			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
+    			result = result + '<strong>UpdatedBy:</strong>';
+    			result = result + '<span>'+updatedBy+'</span>';
+    			result = result + '<div class="clearfix"></div>';
+    			result = result + '</div>';
+    			
+    			result = result + '<div class="clearfix"></div>';
+    			
+    			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
+    			result = result + '<strong>UpdatedDate:</strong>';
+    			result = result + '<span>'+updatedDate+'</span>';
+    			result = result + '<div class="clearfix"></div>';
+    			result = result + '</div>';
+    			
+    			result = result + '<div class="clearfix"></div>';
+    			
+    			result = result	+ '<div class="" id="ProjectIdDiv">';
+    			result = result + '<strong>Description:</strong>';
+    			result = result + '<span>'+description+'</span>';
+    			result = result + '<div class="clearfix"></div>';
+    			result = result + '</div>';
+    			
+    			
+    			
+    			$("#UserManualDivId").empty();  
+    			$("#UserManualDivId").append(result); 
+    			
+    			 document.getElementById("level3summary").style.display="none";
+    			 document.getElementById("level2summary").style.display="block";
+    			 document.getElementById("level1summary").style.display="none";
+    			 document.getElementById("usermanualList").style.display="none";
+        		}else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
 				
 				
-				if (json.title != null && json.title != '' && json.title != 'undefined') {
-					title = json.title;
-					} else {
-				title = "--";
-			}
-			if (json.description != null && json.description != ''
-					&& json.description != 'undefined') {
-				description = json.description;
-			} else {
-				description = "----";
-			}
-			if (json.updatedBy != null && json.updatedBy != '' && json.updatedBy != 'undefined') {
-				updatedBy = json.updatedBy;
-				} else {
-					updatedBy = "--";
-				}
-			if (json.updatedDate != null && json.updatedDate != '' && json.updatedDate != 'undefined') {
-				updatedDate = json.updatedBy;
-				} else {
-					updatedDate = "--";
-				}
-			
-			
-			var result = "";
-			result = result	+ '<div class="project_tabs_inn_table">';
-			result = result + '<div class="project_details">';
-			
-			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
-			result = result + '<strong>User Manual Title:</strong>';
-			result = result + '<span>'+title+'</span>';
-			result = result + '<div class="clearfix"></div>';
-			result = result + '</div>';
-			
-			result = result + '<div class="clearfix"></div>';
-			
-			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
-			result = result + '<strong>CreatedBy:</strong>';
-			result = result + '<span>'+json.createdBy+'</span>';
-			result = result + '<div class="clearfix"></div>';
-			result = result + '</div>';
-			
-			result = result + '<div class="clearfix"></div>';
-			
-			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
-			result = result + '<strong>CreatedDate:</strong>';
-			result = result + '<span>'+json.createdDate+'</span>';
-			result = result + '<div class="clearfix"></div>';
-			result = result + '</div>';
-			
-			result = result + '<div class="clearfix"></div>';
-			
-			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
-			result = result + '<strong>UpdatedBy:</strong>';
-			result = result + '<span>'+updatedBy+'</span>';
-			result = result + '<div class="clearfix"></div>';
-			result = result + '</div>';
-			
-			result = result + '<div class="clearfix"></div>';
-			
-			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
-			result = result + '<strong>UpdatedDate:</strong>';
-			result = result + '<span>'+updatedDate+'</span>';
-			result = result + '<div class="clearfix"></div>';
-			result = result + '</div>';
-			
-			result = result + '<div class="clearfix"></div>';
-			
-			result = result	+ '<div class="" id="ProjectIdDiv">';
-			result = result + '<strong>Description:</strong>';
-			result = result + '<span>'+description+'</span>';
-			result = result + '<div class="clearfix"></div>';
-			result = result + '</div>';
-			
-			
-			
-			$("#UserManualDivId").empty();  
-			$("#UserManualDivId").append(result); 
-			
-			 document.getElementById("level3summary").style.display="none";
-			 document.getElementById("level2summary").style.display="block";
-			 document.getElementById("level1summary").style.display="none";
-			 document.getElementById("usermanualList").style.display="none";
-				
-			
 			}
 		});
 	}
@@ -839,155 +936,176 @@ function cancelTermination(){
 			type : "POST",
 			url : sourceleadUrl+ "/userManualThreeSummary?${_csrf.parameterName}=${_csrf.token}&userManualId="+userManualId,
 			
-			success : function(json) {
-				var title = "";
-				var description = "";
+			success : function(response) {
 				
-				if (json.title != null && json.title != '' && json.title != 'undefined') {
-					title = json.title;
-					} else {
-				title = "--";
-			}
-			if (json.description != null && json.description != ''
-					&& json.description != 'undefined') {
-				description = json.description;
-			} else {
-				description = "----";
-			}
-			if (json.updatedBy != null && json.updatedBy != '' && json.updatedBy != 'undefined') {
-				updatedBy = json.updatedBy;
-				} else {
-					updatedBy = "--";
-				}
-			if (json.updatedDate != null && json.updatedDate != '' && json.updatedDate != 'undefined') {
-				updatedDate = json.updatedBy;
-				} else {
-					updatedDate = "--";
-				}
-			if (json.urlName != null && json.urlName != '' && json.urlName != 'undefined') {
-				urlName = json.urlName;
-				} else {
-					urlName = "--";
-				}
-			if (json.publishOn != null && json.publishOn != '' && json.publishOn != 'undefined') {
-				publishOn = json.publishOn;
-				} else {
-					publishOn = "--";
-				}
-			
-			var result = "";
-			result = result	+ '<div class="project_tabs_inn_table">';
-			result = result + '<div class="project_details">';
-			
-			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
-			result = result + '<strong>User Manual Title:</strong>';
-			result = result + '<span>'+title+'</span>';
-			result = result + '<div class="clearfix"></div>';
-			result = result + '</div>';
-			
-			/* result = result + '<div class="clearfix"></div>';
-			
-			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
-			result = result + '<strong>PublishedOn:</strong>';
-			result = result + '<span>'+publishOn+'</span>';
-			result = result + '<div class="clearfix"></div>';
-			result = result + '</div>'; */
-			
-			result = result + '<div class="clearfix"></div>';
-			
-			result = result	+ '<div class="" id="ProjectIdDiv">';
-			result = result + '<strong>Video URL Name:</strong>';
-			result = result + '<span>'+urlName+'</span>';
-			result = result + '<div class="clearfix"></div>';
-			result = result + '</div>';
-			
-			result = result + '<div class="clearfix"></div>';
-			
-			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
-			result = result + '<strong>CreatedBy:</strong>';
-			result = result + '<span>'+json.createdBy+'</span>';
-			result = result + '<div class="clearfix"></div>';
-			result = result + '</div>';
-			
-			result = result + '<div class="clearfix"></div>';
-			
-			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
-			result = result + '<strong>CreatedDate:</strong>';
-			result = result + '<span>'+json.createdDate+'</span>';
-			result = result + '<div class="clearfix"></div>';
-			result = result + '</div>';
-			
-			result = result + '<div class="clearfix"></div>';
-			
-			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
-			result = result + '<strong>UpdatedBy:</strong>';
-			result = result + '<span>'+updatedBy+'</span>';
-			result = result + '<div class="clearfix"></div>';
-			result = result + '</div>';
-			
-			result = result + '<div class="clearfix"></div>';
-			
-			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
-			result = result + '<strong>UpdatedDate:</strong>';
-			result = result + '<span>'+updatedDate+'</span>';
-			result = result + '<div class="clearfix"></div>';
-			result = result + '</div>';
-			
-			result = result + '<div class="clearfix"></div>';
-			
-			result = result	+ '<div class="" id="ProjectIdDiv">';
-			result = result + '<strong>Description:</strong>';
-			result = result + '<span>'+description+'</span>';
-			result = result + '<div class="clearfix"></div>';
-			result = result + '</div>';
-			
-			result = result + '<div class="clearfix"></div>';
-			
-			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
-			result = result + '<strong>attachments:</strong>';
-			if(undefined !== json.userManualAttachment){
-				for (var i=0; i<json.userManualAttachment.length; i++)
-				{
-				var att = json.userManualAttachment[i];
-				
-				result = result+' <div class="clearfix"></div>';
-				result = result+' <div class="clearfix mt">';
-				result = result+'<div>';
-				result = result+' <div class="timesheet_week_comm invoiceDocs invoiceDocsInput">';
-				result = result+'<span class="pull-left">';
-				result = result+'<strong>';
-				result = result+'<i class="downloadIcon-new" style="position:absolute; top:13px; font-size:15px; left:10px;"><a download class="glyphicon glyphicon-save" href="'+att.fileUrl+'" title="download"></a></i>';
-				result = result+'<input type="button" title="'+att.fileName+'" value="'+att.fileName+'" style="cursor:initial !important">';
-				result = result+'<a href="javascript:void(0)" class="fa fa-eye pull-left paddingLeft ml5 mt anchorBlack" title="view attachment" onclick="viewFile(\''+att.fileUrl+'\',\''+att.fileName+'\');"></a>';
-				
-				/* result = result+'	            <td><div class="tblminwidth-125"><a download class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\" title="Download"></a>';
-           		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"title="preview"></a>';
-				 */
-           		result = result+'</strong>';
-				result = result+'</span>';
-				result = result+' </div>';
-				result = result+'</div>';
-				result = result+' </div>';
+				if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+        		    showError(response.responseMessage);
+        	  	} else if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+        			
+        			
+    				var title = "";
+    				var description = "";
+    				
+    				if (response.object.title != null && response.object.title != '' && response.object.title != 'undefined') {
+    					title = response.object.title;
+    					} else {
+    				title = "--";
+    			}
+    			if (response.object.description != null && response.object.description != '' && response.object.description != 'undefined') {
+    				description = response.object.description;
+    			} else {
+    				description = "----";
+    			}
+    			if (response.object.updatedBy != null && response.object.updatedBy != '' && response.object.updatedBy != 'undefined') {
+    				updatedBy = response.object.updatedBy;
+    				} else {
+    					updatedBy = "--";
+    				}
+    			if (response.object.updatedDate != null && response.object.updatedDate != '' && response.object.updatedDate != 'undefined') {
+    				updatedDate = response.object.updatedDate;
+    				} else {
+    					updatedDate = "--";
+    				}
+    			if (response.object.createdBy != null && response.object.createdBy != '' && response.object.createdBy != 'undefined') {
+    				createdBy = response.object.createdBy;
+    				} else {
+    					createdBy = "--";
+    				}
+    			if (response.object.createdDate != null && response.object.createdDate != '' && response.object.createdDate != 'undefined') {
+    				createdDate = response.object.createdDate;
+    				} else {
+    					createdDate = "--";
+    				}
+    			if (response.object.urlName != null && response.object.urlName != '' && response.object.urlName != 'undefined') {
+    				urlName = response.object.urlName;
+    				} else {
+    					urlName = "--";
+    				}
+    			if (response.object.publishOn != null && response.object.publishOn != '' && response.object.publishOn != 'undefined') {
+    				publishOn = response.object.publishOn;
+    				} else {
+    					publishOn = "--";
+    				}
+    			
+    			var result = "";
+    			result = result	+ '<div class="project_tabs_inn_table">';
+    			result = result + '<div class="project_details">';
+    			
+    			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
+    			result = result + '<strong>User Manual Title:</strong>';
+    			result = result + '<span>'+title+'</span>';
+    			result = result + '<div class="clearfix"></div>';
+    			result = result + '</div>';
+    			
+    			/* result = result + '<div class="clearfix"></div>';
+    			
+    			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
+    			result = result + '<strong>PublishedOn:</strong>';
+    			result = result + '<span>'+publishOn+'</span>';
+    			result = result + '<div class="clearfix"></div>';
+    			result = result + '</div>'; */
+    			
+    			result = result + '<div class="clearfix"></div>';
+    			
+    			result = result	+ '<div class="" id="ProjectIdDiv">';
+    			result = result + '<strong>Video URL Name:</strong>';
+    			result = result + '<span>'+urlName+'</span>';
+    			result = result + '<div class="clearfix"></div>';
+    			result = result + '</div>';
+    			
+    			result = result + '<div class="clearfix"></div>';
+    			
+    			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
+    			result = result + '<strong>CreatedBy:</strong>';
+    			result = result + '<span>'+createdBy+'</span>';
+    			result = result + '<div class="clearfix"></div>';
+    			result = result + '</div>';
+    			
+    			result = result + '<div class="clearfix"></div>';
+    			
+    			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
+    			result = result + '<strong>CreatedDate:</strong>';
+    			result = result + '<span>'+createdDate+'</span>';
+    			result = result + '<div class="clearfix"></div>';
+    			result = result + '</div>';
+    			
+    			result = result + '<div class="clearfix"></div>';
+    			
+    			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
+    			result = result + '<strong>UpdatedBy:</strong>';
+    			result = result + '<span>'+updatedBy+'</span>';
+    			result = result + '<div class="clearfix"></div>';
+    			result = result + '</div>';
+    			
+    			result = result + '<div class="clearfix"></div>';
+    			
+    			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
+    			result = result + '<strong>UpdatedDate:</strong>';
+    			result = result + '<span>'+updatedDate+'</span>';
+    			result = result + '<div class="clearfix"></div>';
+    			result = result + '</div>';
+    			
+    			result = result + '<div class="clearfix"></div>';
+    			
+    			result = result	+ '<div class="" id="ProjectIdDiv">';
+    			result = result + '<strong>Description:</strong>';
+    			result = result + '<span>'+description+'</span>';
+    			result = result + '<div class="clearfix"></div>';
+    			result = result + '</div>';
+    			
+    			result = result + '<div class="clearfix"></div>';
+    			
+    			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
+    			result = result + '<strong>attachments:</strong>';
+    			if(undefined !== response.object.userManualAttachment){
+    				for (var i=0; i<response.object.userManualAttachment.length; i++)
+    				{
+    				var att = response.object.userManualAttachment[i];
+    				
+    				result = result+' <div class="clearfix"></div>';
+    				result = result+' <div class="clearfix mt">';
+    				result = result+'<div>';
+    				result = result+' <div class="timesheet_week_comm invoiceDocs invoiceDocsInput">';
+    				result = result+'<span class="pull-left">';
+    				result = result+'<strong>';
+    				result = result+'<i class="downloadIcon-new" style="position:absolute; top:13px; font-size:15px; left:10px;"><a download class="glyphicon glyphicon-save" href="'+att.fileUrl+'" title="download"></a></i>';
+    				result = result+'<input type="button" title="'+att.fileName+'" value="'+att.fileName+'" style="cursor:initial !important">';
+    				result = result+'<a href="javascript:void(0)" class="fa fa-eye pull-left paddingLeft ml5 mt anchorBlack" title="view attachment" onclick="viewFile(\''+att.fileUrl+'\',\''+att.fileName+'\');"></a>';
+    				
+    				/* result = result+'	            <td><div class="tblminwidth-125"><a download class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\" title="Download"></a>';
+               		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"title="preview"></a>';
+    				 */
+               		result = result+'</strong>';
+    				result = result+'</span>';
+    				result = result+' </div>';
+    				result = result+'</div>';
+    				result = result+' </div>';
 
-				}
-			}
-			  
-			result = result + '<div class="clearfix"></div>';
-			result = result + '</div>';
-			
-			
-			
-			result = result + '</div>';
-			result = result + '</div>';
-			
-			$("#UserManualDivId").empty();  
-			$("#UserManualDivId").append(result); 
-			document.getElementById("level3summary").style.display="block";
-			 document.getElementById("level2summary").style.display="none";
-			document.getElementById("level1summary").style.display="none";
-			 document.getElementById("usermanualList").style.display="none";
-			 
-			
+    				}
+    			}
+    			  
+    			result = result + '<div class="clearfix"></div>';
+    			result = result + '</div>';
+    			
+    			
+    			
+    			result = result + '</div>';
+    			result = result + '</div>';
+    			
+    			$("#UserManualDivId").empty();  
+    			$("#UserManualDivId").append(result); 
+    			document.getElementById("level3summary").style.display="block";
+    			 document.getElementById("level2summary").style.display="none";
+    			document.getElementById("level1summary").style.display="none";
+    			 document.getElementById("usermanualList").style.display="none";		
+        			
+        		}else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
 			}
 		});
 	}

@@ -217,8 +217,20 @@ function assetNotesList(assetId){
 		        	    dataType : 'json',
 						url : sourceleadUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"",
 						success : function(result) {
-							closeDocPopup();
-							assetNotesList(assetId);
+							/* closeDocPopup();
+							assetNotesList(assetId); */
+							if (result && result.response === "INVALID_DATA") {
+							    showError(result.responseMessage);
+							} else if (result.response === "AWKWARD") {
+							    location.href = "/errorPage";
+							} else if (result.response === "SUCCESS") {
+								closeDocPopup();
+								assetNotesList(assetId);
+							} else if (result.indexOf('Sign In') !== -1) {
+								location.replace(sourceleadUrl);
+							} else {
+							    showError("Operation failed, please try again");
+							}
 							
 						},
 					});
@@ -240,18 +252,19 @@ function assetDetails(assetId) {
 			type : "POST",
 			url : sourceleadUrl	+ "/getAssetById?"+tokenParamName+"="+tokenValue+"&assetId="+ assetId,
 			success : function(json) {
-					var make = "NO DATA";
-				    var model = "NO DATA";
-				    var name = "NO DATA";
-				    var memory = "NO DATA";
-				    var cpu = "NO DATA";
-				    var workingStatus = "NO DATA";
-				    var hardDisk = "NO DATA";
-				    var monitor = "NO DATA";
-				    var description = "NO DATA";
+					var make = "--";
+				    var model = "--";
+				    var name = "--";
+				    var memory = "--";
+				    var cpu = "--";
+				    var workingStatus = "--";
+				    var hardDisk = "--";
+				    var monitor = "--";
+				    var description = "--";
 				    var shiftAEmpName = " ";
 				    var shiftBEmpName = " ";
-				    var issueDate = "NO DATA";
+				    var issueDate = "--";
+					var macAddress  = "--"
 					
 					if (json.make != null && json.make != '' && json.make != 'undefined') {
 						make = json.make;
@@ -290,35 +303,41 @@ function assetDetails(assetId) {
 					if (json.shiftAEmpName != null && json.shiftAEmpName != '' && json.shiftAEmpName != 'undefined') {
 						shiftAEmpName = json.shiftAEmpName;
 					}else{
-						shiftAEmpName = "NO DATA";
+						shiftAEmpName = "--";
 					}
 					
 					if (json.shiftBEmpName != null && json.shiftBEmpName != '' && json.shiftBEmpName != 'undefined') {
 						shiftBEmpName = json.shiftBEmpName;
 					}else{
-						shiftBEmpName = "NO DATA";
+						shiftBEmpName = "--";
 					}
 					if (json.issueDate != null && json.issueDate != '' && json.issueDate != 'undefined') {
 						issueDate = json.issueDate;
 					}
+					if (json.macAddress != null && json.macAddress != '' && json.macAddress != 'undefined') {
+						macAddress = json.macAddress;
+					}
+					
 					var result = "";
 					result = result + '<div class="require_wrap_details">';
-					result = result + '<h1>'+json.categoryName+' Asset details: <a id="edit-user" href="javascript:editAssetManagement('+assetId+');">Edit<i class="glyphicon glyphicon-pencil"></i>&nbsp;&nbsp</a></h1>';
+					result = result + '<h1>'+json.categoryName+' Asset details: <a class="pull-right" id="edit-user" href="javascript:editAssetManagement('+assetId+');">Edit<i class="glyphicon glyphicon-pencil"></i>&nbsp;&nbsp</a></h1>';
 					result = result + '<div class="require_one">';
 					
-					result = result + '<div class="require_wrap_details_cta"> <b><strong>Category Name:</strong></b> <span>'+json.categoryName+'</span>';
+					result = result + '<div class="require_wrap_details_cta"> <b><strong>Category Name:</strong></b> <span class = "wordWrap-breakword">'+json.categoryName+'</span>';
 					result = result + '<div class="clearfix"></div>';
 					result = result + ' </div>';
 					
-					result = result + '<div class="require_wrap_details_cta"> <b><strong>Serial Number:</strong></b> <span>'+json.sno+'</span>';
+					result = result + '<div class="require_wrap_details_cta"> <b><strong>Serial Number:</strong></b> <span class = "wordWrap-breakword">'+json.sno+'</span>';
 					result = result + '<div class="clearfix"></div>';
 					result = result + ' </div>';
 					
-					result = result + '<div class="require_wrap_details_cta"> <b><strong>Make:</strong></b> <span>'+make+'</span>';
+
+					result = result + '<div class="require_wrap_details_cta"> <b><strong>Make:</strong></b> <span class = "wordWrap-breakword">'+make+'</span>';
+
 					result = result + '  <div class="clearfix"></div>';
 					result = result + '</div>';
 					
-					result = result + ' <div class="require_wrap_details_cta"> <b><strong>Model:</strong></b> <span>'+model+'</span>';
+					result = result + ' <div class="require_wrap_details_cta"> <b><strong>Model:</strong></b> <span class = "wordWrap-breakword">'+model+'</span>';
 					result = result + '  <div class="clearfix"></div>';
 					result = result + ' </div>';
 					
@@ -327,41 +346,45 @@ function assetDetails(assetId) {
 					result = result + ' </div>';
 					
 					if (json.fileName != null && json.fileName != '' && json.fileName != 'undefined') {
-						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Attched File:</strong></b> <span class="tbldata-dotdot-me mr10">'+json.fileName+'</span><a download class="glyphicon glyphicon-download-alt mr10" target="_blank" href=\"'+json.fileUrl+'\" download title="Download"></a>';
+						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Attched File:</strong></b> <span class = "wordWrap-breakword">'+json.fileName+'</span><a download class="glyphicon glyphicon-download-alt mr10" target="_blank" href=\"'+json.fileUrl+'\" download title="Download"></a>';
 		           		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+json.fileUrl+'\',\''+json.fileName+'\',\''+json.fileContentType+'\');"title="preview"></a>';		           						          
 						result = result + ' <div class="clearfix"></div>';
 						result = result + '</div>';
 					}else{
-						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Attched File:</strong></b> <span>NO DATA</span>';
+						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Attched File:</strong></b> <span>--</span>';
 						result = result + ' <div class="clearfix"></div>';
 						result = result + '</div>';
 					}
 					if(json.monitor != null && json.monitor != '' && json.monitor != 'undefined'){
-					result = result + ' <div class="require_wrap_details_cta"> <b><strong>Monitor:</strong></b> <span>'+json.monitor+'</span>';
+					result = result + ' <div class="require_wrap_details_cta"> <b><strong>Monitor:</strong></b> <span class = "wordWrap-breakword">'+json.monitor+'</span>';
 					result = result + ' <div class="clearfix"></div>';
 					result = result + '</div>';
 					}
 					
-					result = result + '<div class="require_wrap_details_cta"> <b><strong>Working Status:</strong></b> <span>'+workingStatus+'</span>';
+					result = result + '<div class="require_wrap_details_cta"> <b><strong>Working Status:</strong></b> <span class = "wordWrap-breakword">'+workingStatus+'</span>';
 					result = result + ' <div class="clearfix"></div>';
 					result = result + ' </div>';
 					
 					//this block not visible to others category assets
 					if (json.categoryName != null && json.categoryName != '' && json.categoryName != 'undefined' && (json.categoryId == 1 || json.categoryId ==2)) {
-						result = result + '<div class="require_wrap_details_cta"> <b><strong>Memory:</strong></b> <span>'+memory+'</span>';
+						result = result + '<div class="require_wrap_details_cta"> <b><strong>Memory:</strong></b> <span class = "wordWrap-breakword">'+memory+'</span>';
 						result = result + ' <div class="clearfix"></div>';
 						result = result + '</div>';
 						
-						result = result + '<div class="require_wrap_details_cta"> <b><strong>CPU:</strong></b> <span>'+cpu+'</span>';
+						result = result + '<div class="require_wrap_details_cta"> <b><strong>CPU:</strong></b> <span class = "wordWrap-breakword">'+cpu+'</span>';
 						result = result + ' <div class="clearfix"></div>';
 						result = result + ' </div>';
 						
-						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Hard Disk:</strong></b> <span>'+hardDisk+'</span>';
+						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Hard Disk:</strong></b> <span class = "wordWrap-breakword">'+hardDisk+'</span>';
+						result = result + ' <div class="clearfix"></div>';
+						result = result + ' </div>';
+						
+						result = result + ' <div class="require_wrap_details_cta"> <b><strong>MAC Address:</strong></b> <span class = "wordWrap-breakword">'+macAddress+'</span>';
 						result = result + ' <div class="clearfix"></div>';
 						result = result + ' </div>';
 						
 						if (json.categoryName != null && json.categoryName != '' && json.categoryName != 'undefined' && json.categoryId == 2) {
-							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Monitor:</strong></b> <span>'+monitor+'</span>';
+							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Monitor:</strong></b> <span class = "wordWrap-breakword">'+monitor+'</span>';
 							result = result + ' <div class="clearfix"></div>';
 							result = result + ' </div>';
 						}
@@ -401,7 +424,9 @@ function assetDetails(assetId) {
 			              });
 		              } 
 						
-						result = result + ' <div class="require_wrap_details_cta width100percnt description80"> <b><strong>Description:</strong></b> <span>'+description+'</span>';
+
+						result = result + ' <div class="require_wrap_details_cta width100percnt description80"> <b><strong>Description:</strong></b> <span class = "wordWrap-breakword">'+description+'</span>';
+
 						result = result + ' <div class="clearfix"></div>';
 						result = result + '</div>';
 					
@@ -446,13 +471,12 @@ function editAssetManagement(assetId){
 			var empA = "";
 			var empB = "";
 			var issueDate = "";
+			var macAddress = "";
 			
 			 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 			  var sectionId = '${section.id}';
 			  preapareCustomFieldDetails(assetId,sectionId);
 			</c:forEach>
-			
-			
 			
 			if (json.make != null && json.make != '' && json.make != 'undefined') {
 				make = json.make;
@@ -510,6 +534,10 @@ function editAssetManagement(assetId){
 				issueDate = json.issueDate;
 			}
 			
+			if (json.macAddress != null && json.macAddress != '' && json.macAddress != 'undefined') {
+				macAddress = json.macAddress;
+			} 
+			
 			if(json.workingStatus == 'Working'){
 				selected1 = 'selected';
 			} 
@@ -525,7 +553,7 @@ function editAssetManagement(assetId){
            result = result + '<div class="col-md-12 edit-category edit-amd">';
            result = result + '<div class="clearfix assetaddpop-ul col-md-6 category">';
            result = result + '<div class="row">';
-          
+           result = result	+ '<input type="hidden" name ="category" id="assetCategory" value="'+json.catagoryHiddenId+'">';
            result = result + '</div>';
            result = result + '</div>';
 			result = result + '<div class="clearfix" id="laptop-edit">';
@@ -543,6 +571,7 @@ function editAssetManagement(assetId){
 			result = result + '</select>';	
 			result = result + ' </div>';
 			
+			
 			result = result + '<div class="col-md-3 minHeight50">';
 			result = result + '  <input type="text" class="form-control input-sm" name="make" value="'+make+'" data-validation-optional="true" data-validation="validate_Space validate_length length2-100" placeholder="Make">';
 			result = result + '</div>';
@@ -558,7 +587,6 @@ function editAssetManagement(assetId){
                 result = result + '      <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>   ';
                 result = result + '   </div>  ';
                 result = result + '  </div>  ';
-			
 			if (json.categoryName != null && json.categoryName != '' && json.categoryName != 'undefined' && (json.categoryId == 1 || json.categoryId ==2)) {
 			
 				result = result + ' <div class="col-md-3 minHeight50">';
@@ -582,6 +610,13 @@ function editAssetManagement(assetId){
 				}
 				
 			}
+		    
+		
+			result = result + ' <div class="col-md-3 minHeight50">';
+			result = result + '<input type="text" class="form-control input-sm" name="macAddress" value="'+macAddress+'" data-validation-optional="true" data-validation="validate_length length8-50" placeholder="MAC Address">';
+			result = result + '</div>';
+			
+			
 			//this block not visible to others category assets
 			
 				result = result + '<div class="clearfix"></div>';
@@ -676,11 +711,9 @@ function editAssetManagement(assetId){
 			result = result	+ '<input type="hidden" id="generalExisitingFile" name="generalExisitingFile" value="'+fileName+'">';
 			result = result+'  </div>';
 			
-			
-			
 			result = result + '<div class="clearfix mr col-md-12">';
 			result = result + '<div class="pull-right">';
-			result = result + ' <input type="button" value="Add" id="update_asset" onclick="updateAsset();" class="btn btn-sm btn-primary">';
+			result = result + ' <input type="button" value="update" id="update_asset" onclick="updateAsset();" class="btn btn-sm btn-primary">';
 			result = result + ' <input class="btn btn-sm btn-default ml10" value="Cancel" onClick="editAssetManagement('+assetId+');" type="button">';
 			
 			result = result + '</div>';
@@ -688,20 +721,15 @@ function editAssetManagement(assetId){
 			result = result + '</div>';
 			result = result + '</div>';
 			
-			
 			result = result + '</div>';
-				  
 			result = result + ' </div>';
 			result = result  +'</form> ';         
 			result = result + '</div>';
-			
 			$(".user_summary_edit").slideToggle(100);
 			$(".error").removeClass("error");
 			$('#editUserDiv').find('p.jquery_form_error_message').remove();
 			$("#editUserDiv").empty(); 
 			$("#editUserDiv").append(result);  
-			
-			
 
          var config = {
 		  '.chosen-select'           : {},
@@ -733,8 +761,6 @@ function editAssetManagement(assetId){
 		 document.getElementById("fileAttachment").onchange = function () {
 			 $('#uploadFile1Attachment').val($(this).val().replace(/C:\\fakepath\\/i, ''))
 		  };
-			
-		
 		
 	    },
 	});
@@ -905,12 +931,12 @@ function removeDoc(assetId,url,block){
 
 <script type="text/javascript">
 function updateAsset() {
-var validationSettings = {
-        errorMessagePosition : 'element',
-       borderColorOnError : '',
-		scrollToTopOnError : true,
-		dateFormat : 'yyyy/mm/dd' 
-   };  
+			var validationSettings = {
+			        errorMessagePosition : 'element',
+			       borderColorOnError : '',
+					scrollToTopOnError : true,
+					dateFormat : 'yyyy/mm/dd' 
+			   };  
         	 if ($('#updateAsset_form').validate(false, validationSettings)){
         	        var form = $('#updateAsset_form')[0];
 	           		var formData = new FormData(form);
@@ -926,10 +952,23 @@ var validationSettings = {
               	        dataType : 'json',
 	     		    	 url: sourceleadUrl+"/addCategoryAssets?"+tokenParamName+"="+tokenValue+"&assetId="+assetId, 
 	     		        success: function(result) {
-	     		        	if(result == 'home'){
+	     		        	/* if(result == 'home'){
 	     		        		assetDetails(assetId);
 	     		        		getAssetList();
-	     		        	}
+	     		        	} */
+	     		        	
+	     		       	if (result && result.response === "INVALID_DATA") {
+						    showError(result.responseMessage);
+						} else if (result.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (result.response === "SUCCESS") {
+							assetDetails(assetId);
+     		        		getAssetList();
+						} else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
+						}
 	     			        
 	     		        },
 	     		    }); 

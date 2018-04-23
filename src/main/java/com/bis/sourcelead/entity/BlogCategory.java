@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -75,7 +76,12 @@ public class BlogCategory {
 	}
 
 	public List<SourceleadBlogs> getBlogList() {
-		return blogList;
+		List<SourceleadBlogs> sbList = new LinkedList<>();
+		for(SourceleadBlogs sb : blogList) {
+			if(sb.getStatus()==1)
+				sbList.add(sb);
+		}
+		return sbList;
 	}
 
 	public void setBlogList(List<SourceleadBlogs> blogList) {

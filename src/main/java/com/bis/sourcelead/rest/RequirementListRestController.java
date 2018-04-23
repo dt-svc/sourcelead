@@ -54,6 +54,7 @@ import com.bis.sourcelead.dto.RequirementAssignToDTO;
 import com.bis.sourcelead.dto.RequirementLocationsDTO;
 import com.bis.sourcelead.dto.RequirementSearchDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.VendorOnboardingTemplateDocumentDTO;
 import com.bis.sourcelead.elk.index.RequirementIndex;
@@ -903,55 +904,83 @@ public class RequirementListRestController {
 	
 	@RequestMapping(value = "/saveChangedStatus", method = RequestMethod.POST)
 	@ResponseBody
-	String saveChangedStatus(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "status", required = false) String status, HttpServletRequest request) throws Exception
+	Response<String> saveChangedStatus(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "status", required = false) String status, HttpServletRequest request) throws Exception
 	{
+		Response<String> response =  new Response<>();
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		// authorizing if the login user as Team Member Or Not
-		Boolean isLoginUserAsTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
-		if (isLoginUserAsTeamMember && !"ROLE_ADMIN".equalsIgnoreCase(userRoleName) && !"ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)) {
-			return "false";
+		if(loginUser != null) {
+			try {
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				// authorizing if the login user as Team Member Or Not
+				Boolean isLoginUserAsTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
+				if (isLoginUserAsTeamMember && !"ROLE_ADMIN".equalsIgnoreCase(userRoleName) && !"ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)) {
+					response.setObject("false");
+				}
+				else {
+					Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+					REQUIREMENT_SUBMISSION_STATUS previousStatus = requirement.getRequirementSubmissionStatus();
+					REQUIREMENT_SUBMISSION_STATUS changedStatus = Enum.valueOf(REQUIREMENT_SUBMISSION_STATUS.class, status);
+					requirement.setRequirementSubmissionStatus(changedStatus);
+					requirement.setRequirementSubmissionPreviousStatus(previousStatus);
+					requirement.setUpdatedBy(loginUser.getUserCode());
+					requirement.setUpdatedDate(commonUtil.currentDate());
+					requirementService.addRequirement(requirement);
+					StringBuilder reqStatusChange = new StringBuilder();
+					SourceLeadSessionManager.setSessionAttribute(request, "reqStatusChange", reqStatusChange.append(" ").append(requirement.getJobTitle()).append(" Status changed ").append(requirement.getRequirementSubmissionPreviousStatus()).append(" to ").append(requirement.getRequirementSubmissionStatus()).append(" ").toString());
+					modifiedReqStatusMailtoVendorContact(requirement, loginUser, loginOrgLocation);
+				}
+				response.setObject("true");
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			}catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
-		else {
-			Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-			REQUIREMENT_SUBMISSION_STATUS previousStatus = requirement.getRequirementSubmissionStatus();
-			REQUIREMENT_SUBMISSION_STATUS changedStatus = Enum.valueOf(REQUIREMENT_SUBMISSION_STATUS.class, status);
-			requirement.setRequirementSubmissionStatus(changedStatus);
-			requirement.setRequirementSubmissionPreviousStatus(previousStatus);
-			requirement.setUpdatedBy(loginUser.getUserCode());
-			requirement.setUpdatedDate(commonUtil.currentDate());
-			requirementService.addRequirement(requirement);
-			StringBuilder reqStatusChange = new StringBuilder();
-			SourceLeadSessionManager.setSessionAttribute(request, "reqStatusChange", reqStatusChange.append(" ").append(requirement.getJobTitle()).append(" Status changed ").append(requirement.getRequirementSubmissionPreviousStatus()).append(" to ").append(requirement.getRequirementSubmissionStatus()).append(" ").toString());
-			modifiedReqStatusMailtoVendorContact(requirement, loginUser, loginOrgLocation);
-		}
-		return "true";
+		return response;
 	}
 	
 	@RequestMapping(value = "/saveChangedStatusFromDraft", method = RequestMethod.POST)
 	@ResponseBody
-	String saveChangedStatusFromDraft(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "status", required = false) String status, @RequestParam(value = "userId", required = true) Long userId, HttpServletRequest request) throws Exception
+	Response<String> saveChangedStatusFromDraft(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "status", required = false) String status, @RequestParam(value = "userId", required = true) Long userId, HttpServletRequest request) throws Exception
 	{
-		User loginUser = userService.getUserById(userId);
-		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		// authorizing if the login user as Team Member Or Not
-		Boolean isLoginUserAsTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
-		if (isLoginUserAsTeamMember && !"ROLE_ADMIN".equalsIgnoreCase(userRoleName) && !"ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)) {
-			return "false";
+		Response<String> response =  new Response<>();
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(loginUser != null) {
+			try {
+				String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				// authorizing if the login user as Team Member Or Not
+				Boolean isLoginUserAsTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
+				if (isLoginUserAsTeamMember && !"ROLE_ADMIN".equalsIgnoreCase(userRoleName) && !"ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)) {
+					response.setObject("false");
+				}
+				else {
+					Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+					REQUIREMENT_SUBMISSION_STATUS previousStatus = requirement.getRequirementSubmissionStatus();
+					REQUIREMENT_SUBMISSION_STATUS changedStatus = Enum.valueOf(REQUIREMENT_SUBMISSION_STATUS.class, status);
+					requirement.setRequirementSubmissionStatus(changedStatus);
+					requirement.setRequirementSubmissionPreviousStatus(previousStatus);
+					requirement.setManagerUserId(loginUser);
+					requirement.setUpdatedBy(loginUser.getUserCode());
+					requirement.setUpdatedDate(commonUtil.currentDate());
+					requirementService.addRequirement(requirement);
+				}
+				response.setObject("true");
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			}catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
-		else {
-			Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-			REQUIREMENT_SUBMISSION_STATUS previousStatus = requirement.getRequirementSubmissionStatus();
-			REQUIREMENT_SUBMISSION_STATUS changedStatus = Enum.valueOf(REQUIREMENT_SUBMISSION_STATUS.class, status);
-			requirement.setRequirementSubmissionStatus(changedStatus);
-			requirement.setRequirementSubmissionPreviousStatus(previousStatus);
-			requirement.setManagerUserId(loginUser);
-			requirement.setUpdatedBy(loginUser.getUserCode());
-			requirement.setUpdatedDate(commonUtil.currentDate());
-			requirementService.addRequirement(requirement);
-		}
-		return "true";
+		return response;
 	}
 	
 	@RequestMapping(value = "/changeStatusAuthorisation", method = RequestMethod.POST)
@@ -1783,6 +1812,7 @@ public class RequirementListRestController {
 							boolQueryBuilderForCount.must(reqStatusBoolQueryBuilder);
 						}
 					} 
+
 				}
 					
 				
@@ -1796,10 +1826,11 @@ public class RequirementListRestController {
 						boolQueryBuilderForCount.must(reqAssignToBoolQueryBuilder);
 					}
 				}
+
 				
-				  //requirementPriority
+				 /* //requirementPriority
 		
-					/*	if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterStatus())){
+						if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterStatus())){
 							String priority = "";
 							if(StringUtils.isNotEmpty(search.getRequirementStatus())){
 								priority = search.getRequirementStatus();
@@ -1842,7 +1873,28 @@ public class RequirementListRestController {
 									boolQueryBuilderForCount.must(reqJobTypeBoolQueryBuilder);
 								}
 							} 
-						}*/
+						}
+						*/
+						
+						//filter for is Client job
+						if(StringUtils.isNotEmpty(search.getFilterSpecJobs()) && "ClientJobs".equalsIgnoreCase(search.getFilterSpecJobs())){
+							BoolQueryBuilder clientBoolQueryBuilder = new BoolQueryBuilder();
+							clientBoolQueryBuilder.must(QueryBuilders.matchPhraseQuery("isClientJob", "Y"));
+							boolQueryBuilder.must(clientBoolQueryBuilder);
+							if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
+								boolQueryBuilderForCount.must(clientBoolQueryBuilder);
+							}
+						}
+						
+						//filter for Normal jobs
+						if(StringUtils.isNotEmpty(search.getFilterSpecJobs()) && "NormalJobs".equalsIgnoreCase(search.getFilterSpecJobs())){
+							BoolQueryBuilder nonClientBoolQueryBuilder = new BoolQueryBuilder();
+							nonClientBoolQueryBuilder.must(QueryBuilders.matchQuery("isClientJob", "N"));
+							boolQueryBuilder.must(nonClientBoolQueryBuilder);
+							if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
+								boolQueryBuilderForCount.must(nonClientBoolQueryBuilder);
+							}
+						}
 						
 					
 				if(StringUtils.isNotEmpty(search.getUpdatedOn())){
@@ -1864,16 +1916,40 @@ public class RequirementListRestController {
 					}
 					ArrayList<String> employerArray = getSearchKeywordsFromChosenSelectField(clients);
 					if(employerArray != null && !employerArray.isEmpty()){
-						BoolQueryBuilder employerBoolQueryBuilder = QueryBuilders.boolQuery();
+						BoolQueryBuilder employerBoolQueryBuilder = new BoolQueryBuilder();
 						for(String keywd : employerArray){
-							employerBoolQueryBuilder.should(QueryBuilders.matchQuery("client", keywd));
+							employerBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("client", keywd));
 						}
 						boolQueryBuilder.must(employerBoolQueryBuilder);
 						if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
 							boolQueryBuilderForCount.must(employerBoolQueryBuilder);
 						}
+
 					}
+
 				}
+				
+				//projects
+						if(StringUtils.isNotEmpty(search.getFilterProjectId())){
+							
+							String	projects = search.getFilterProjectId();
+							
+							ArrayList<String> projectArray = getSearchKeywordsFromChosenSelectField(projects);
+							if(projectArray != null && !projectArray.isEmpty()){
+								BoolQueryBuilder projectBoolQueryBuilder = new BoolQueryBuilder();
+								for(String keywd : projectArray){
+									projectBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("projectClientID", keywd));
+									
+								}
+								boolQueryBuilder.must(projectBoolQueryBuilder);
+								if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
+									boolQueryBuilderForCount.must(projectBoolQueryBuilder);
+								}
+							}
+						}
+						
+						
+					
 				
 				if(userRole != null&& !("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
 					BoolQueryBuilder assignedBoolQueryBuilder = QueryBuilders.boolQuery();

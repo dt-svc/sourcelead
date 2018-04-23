@@ -1791,7 +1791,7 @@ function closeComment(){
          		$("#submit_comment" ).addClass('button').val('Processing..');
 				//It will escape all the special characters
 		        var jsonData = encodeURIComponent(con);
-				$.ajax({
+				/* $.ajax({
 						type : "POST",
 		        	    data: formData,
 		        	    contentType : 'application/json; charset=utf-8',
@@ -1801,11 +1801,34 @@ function closeComment(){
 		        	    dataType : 'json',
 						url : sourceleadUrl+"/saveCandidateComment?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&candidateId="+candidateId+"&submissionId="+submissionId,
 						success : function(result) {
-							savedCommentAndCount(candidateId,submissionId);
+							if (result && result.response === "INVALID_USER") {
+				    		    showError(result.responseMessage);
+				    		} else if (result.response === "AWKWARD") {
+				    		    location.href = "/errorPage";
+				    		} else if (result.response === "SUCCESS") {
+				    			savedCommentAndCount(candidateId,submissionId);
+				    		} else if (result.indexOf('Sign In') !== -1) {
+								location.replace(sourceleadUrl);
+							} else {
+							    showError("Operation failed, please try again");
+							}
 						},
-					});
-					$('.add-comment').toggle(200);
-					return true;
+				}); */
+				$.post(sourceleadUrl+"/saveCandidateComment?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&candidateId="+candidateId+"&submissionId="+submissionId,{},function(result){
+					if (result && result.response === "INVALID_USER") {
+		    		    showError(result.responseMessage);
+		    		} else if (result.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    		} else if (result.response === "SUCCESS") {
+		    			savedCommentAndCount(candidateId,submissionId);
+		    		} else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+					    showError("Operation failed, please try again");
+					}
+				});
+				$('.add-comment').toggle(200);
+				return true;
 			 }else{ 
 					return false;
 			 }
@@ -1818,69 +1841,67 @@ function closeComment(){
 </script>
 
 <script>
-function savedCommentAndCount(candidateId,submissionId){
+function savedCommentAndCount(candidateId,submissionId) {
 	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getAllCommentsOnCandidateByCandidateIdAndOrgLocationAndSubmissionId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&submissionId="+submissionId,        
          success :function(data) {
-        	 var result = "";
-              if(data != null && data != 'undefined' && data != ""){
-              	 	 var json = JSON.parse(data);
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{
-            			 var totalComments = 0;
-            			 if(json.length>0){
-            				totalComments = json.length;
-         	            	var report = json[0];
-	 			            
-	 			            result = result+'    <div class="commentsimg">';
-				            result = result+'    <i class="fa fa-comments"></i>';
-				            result = result+'        <div class="commentsimg-inner">';
-				            
-				            result = result+'        	<img onerror="predefineProfileImage(this);" src="'+report.commentAuthorUserImage+'"/>';
-				            result = result+'        </div>';
-				            result = result+'    </div>';
-				            result = result+'     <div class="comments-content">';
-				            result = result+'         <div class="pull-left" id="latestMessage">';
-				            result = result+'         <p class="comment-by">';
-				            result = result+'            By <span class="text-danger">'+report.commentAuthor+'</span>';
-				            result = result+'            <span class="small">('+report.commentTime+')</span></p>';
-				            result = result+'         <p class="comment-text">'+report.comment+'</p>';
-				            result = result+'         </div>';
-				            result = result+'         <div class="pull-right cmt-button">';
-				            result = result+'          <span class="comments-button">';
-				            
-				            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateId+','+submissionId+')">';
-				            result = result+'            	<i class="fa fa-plus"></i>&nbsp;Comments';
-				            result = result+'            </button>';
-				            result = result+'            <div class="add-comment">';
-				            result = result+'            </div>';
-				            result = result+'          </span>';
-				            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+','+submissionId+');">View more <span class="label label-warning">'+totalComments+'</span></a>';
-				 			result = result+'		</div>';
-				            result = result+'     </div>';
-	 			           
-	 			           $("#latestMessage").empty();
-	 			           $("#latestMessage").append(result);
-            			 }
-            			 
-            		 }
-              }
+        	 if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
+        		    showError(data.responseMessage);
+        		} else if (data.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (data.response === "SUCCESS") {
+        			var result = "";
+               	 	var json = data.data;
+               	 	var totalComments = 0;
+    			 	if(json.length > 0) {
+    					totalComments = json.length;
+ 	            		var report = json[0];
+			            
+			            result = result+'    <div class="commentsimg">';
+    		            result = result+'    <i class="fa fa-comments"></i>';
+    		            result = result+'        <div class="commentsimg-inner">';
+    		            
+    		            result = result+'        	<img onerror="predefineProfileImage(this);" src="'+report.commentAuthorUserImage+'"/>';
+    		            result = result+'        </div>';
+    		            result = result+'    </div>';
+    		            result = result+'     <div class="comments-content">';
+    		            result = result+'         <div class="pull-left" id="latestMessage">';
+    		            result = result+'         <p class="comment-by">';
+    		            result = result+'            By <span class="text-danger">'+report.commentAuthor+'</span>';
+    		            result = result+'            <span class="small">('+report.commentTime+')</span></p>';
+    		            result = result+'         <p class="comment-text">'+report.comment+'</p>';
+    		            result = result+'         </div>';
+    		            result = result+'         <div class="pull-right cmt-button">';
+    		            result = result+'          <span class="comments-button">';
+    		            
+    		            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateId+','+submissionId+')">';
+    		            result = result+'            	<i class="fa fa-plus"></i>&nbsp;Comments';
+    		            result = result+'            </button>';
+    		            result = result+'            <div class="add-comment">';
+    		            result = result+'            </div>';
+    		            result = result+'          </span>';
+    		            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+','+submissionId+');">View more <span class="label label-warning">'+totalComments+'</span></a>';
+    		 			result = result+'		</div>';
+    		            result = result+'     </div>';
+    			           
+			           	$("#latestMessage").empty();
+			           	$("#latestMessage").append(result);
+    			 	} 
+        		} else if (data.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
 			},
       });
 }
 </script>
 
-
 <!-- this script using for interview feedback Start -->
 <script type="text/javascript">
-function interviewFeedback(interviewId,templateId,id){
+function interviewFeedback(interviewId,templateId,id) {
 	$("#mask_inner").fadeIn();
 	$("#feedbackdiv"+interviewId+"").show();
 	$(".reSchPop").removeClass("reSchPopActive");
@@ -1889,8 +1910,8 @@ function interviewFeedback(interviewId,templateId,id){
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
-	type: "GET",
-	url: sourceleadUrl+"/getInterviewrsFeedbackList?"+tokenParamName+"="+tokenValue+"&interviewId="+interviewId+"&locationId="+locationId,
+		type: "GET",
+		url: sourceleadUrl+"/getInterviewrsFeedbackList?"+tokenParamName+"="+tokenValue+"&interviewId="+interviewId+"&locationId="+locationId,
 		success: function(json) {
 			var result = "";
 			result = result +"<strong>Interview Feedback</strong>";
@@ -1903,8 +1924,7 @@ function interviewFeedback(interviewId,templateId,id){
 		    result = result +"  </tr>"; 
 		    result = result +"</thead>";
 		    result = result +"<tbody>"; 
-			for (var i=0; i<json.length; i++)
-			{
+			for (var i=0; i<json.length; i++) {
 				var report = json[i];
 				if(report.feedbackDate != null && report.feedbackDate != '' && report.feedbackDate != 'undefined'){
 					feedbackDate  = report.feedbackDate;
@@ -1929,7 +1949,6 @@ function interviewFeedback(interviewId,templateId,id){
 			
 		},
 	});
-    
 }
 
 </script>

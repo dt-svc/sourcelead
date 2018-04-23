@@ -629,25 +629,30 @@ function validate_fileupload(fileName)
 
 <script type="text/javascript">
 			 
-	       $("#candidateSkills").val('').trigger("chosen:updated");
-	       $("#candidateEducation").val('').trigger("chosen:updated");
-	       
-	     
-		    $("#candidateSkills").chosen().change(function(event) {
-		    	 var sourceleadUrl ='${sourceleadUrl}';
-		    	var allSkills = $(event.target).val();
-		    	$.ajax({
-			    	type: "POST",
-			        url: sourceleadUrl+"/profileBySkillSet?"+tokenParamName+"="+tokenValue+"&allSkills="+allSkills, 
-			        success: function(data) {
-			        	var primarySkill = data;
-			        	      $("#primarySkill").val(primarySkill);
-			        	
-			        },
-			    });
-		    	
-		    });
-		    
+   	$("#candidateSkills").val('').trigger("chosen:updated");
+    $("#candidateEducation").val('').trigger("chosen:updated");
+      
+    
+    $("#candidateSkills").chosen().change(function(event) {
+    	 var sourceleadUrl ='${sourceleadUrl}';
+    	var allSkills = $(event.target).val();
+    	$.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/profileBySkillSet?"+tokenParamName+"="+tokenValue+"&allSkills="+allSkills, 
+	        success: function(response) {
+	        	if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+	        		var primarySkill = response.object;
+		        	$("#primarySkill").val(primarySkill);			        		
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
+	        },
+	    });
+    });
 </script> 
 <!-- Eductions and Skills Autocomplete Scripts End Here -->
 
@@ -663,18 +668,26 @@ function validate_fileupload(fileName)
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&candidateType=Y", 
-		        success: function(data) {
-		        	if(data == 'true'){
-		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
-						  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
-						  document.getElementById("email").setAttribute('record-exist','yes');
-						  document.getElementById("email").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
-		        	}
-		        	else{
-		        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
-		        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
-		        		 $("#store_candidate" ).addClass('button').val('Save');
-                         $("#store_candidate").removeAttr("disabled");
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		if(response.object == 'true'){
+			        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
+							  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+							  document.getElementById("email").setAttribute('record-exist','yes');
+							  document.getElementById("email").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
+			        	}
+			        	else{
+			        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+			        		 $("#store_candidate" ).addClass('button').val('Save');
+	                         $("#store_candidate").removeAttr("disabled");
+			        	}		        		
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
 		        	}
 		        },
 		    });
@@ -712,45 +725,49 @@ function validate_fileupload(fileName)
 function getUsersByRole(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var roleId = document.getElementById("role").value;
-	if(roleId != 'All' && roleId != ''  && roleId != 'undefined'){
-		
+	if(roleId != 'All' && roleId != ''  && roleId != 'undefined') {
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getUserByRoleId?"+tokenParamName+"="+tokenValue+"&roleId="+roleId, 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	var output = "";
-		        	output = output + "<option value=''>-- Select User --</option>"; 
-		        	for (var i=0; i<json.length; i++)
-					{
-		        		var opt = json[i];
-		        		var name = '';
-		        		if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
-		        			name = opt.firstName+" "+opt.lastName;
-		        		}else{
-		        			name = opt.firstName;
-		        		}
-			        		
-		        		output = output + "<option value='" +opt.id+ "'>"+name+"</option>";
-					}
-		        	$("#consultantUser").empty();
-			        $("#consultantUser").append(output);
-			        $('#consultantUser').trigger("chosen:updated");
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		var json = response.data;
+			        	var output = "";
+			        	output = output + "<option value=''>-- Select User --</option>"; 
+			        	for (var i=0; i<json.length; i++) {
+			        		var opt = json[i];
+			        		var name = '';
+			        		if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
+			        			name = opt.firstName+" "+opt.lastName;
+			        		}else{
+			        			name = opt.firstName;
+			        		}
+			        		output = output + "<option value='" +opt.id+ "'>"+name+"</option>";
+						}
+			        	$("#consultantUser").empty();
+				        $("#consultantUser").append(output);
+				        $('#consultantUser').trigger("chosen:updated");
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
 		        },
 		    });
-		
-		
-	}else if(roleId == 'All'){
-		
+	} else if(roleId == 'All') {
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getAllRoleUsers?"+tokenParamName+"="+tokenValue+"", 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	var output = "";
-		        	output = output + "<option value=''>-- Select User --</option>"; 
-		        	for (var i=0; i<json.length; i++)
-					{
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		var json = response.data;
+			        	var output = "";
+			        	output = output + "<option value=''>-- Select User --</option>"; 
+			        	for (var i=0; i<json.length; i++) {
 			        		var opt = json[i];
 			        		var name = '';
 			        		if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
@@ -759,23 +776,24 @@ function getUsersByRole(){
 			        			name = opt.firstName;
 			        		}
 			        		output = output + "<option value='" +opt.id+ "'>"+name+"&nbsp;("+opt.userType+")</option>";
-					}
-		        	$("#consultantUser").empty();
-			        $("#consultantUser").append(output);
-			        $('#consultantUser').trigger("chosen:updated");
+						}
+			        	$("#consultantUser").empty();
+				        $("#consultantUser").append(output);
+				        $('#consultantUser').trigger("chosen:updated");
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
 		        },
 		    });
-		
-		
-	}else{
-		
+	} else {
 		 var output = "";
     	 output = output + "<option value=''>-- Select User --</option>"; 
     	 $("#consultantUser").empty();
 	     $("#consultantUser").append(output);
 	     $('#consultantUser').trigger("chosen:updated");
 	}
-	
 	
 	$("#firstName").val('');
     $("#lastName").val('');
@@ -1612,70 +1630,77 @@ function getCandidateDetails(){
    	    	        contentType:false,
    	        	    dataType : 'json',
    				 	url : sourceleadUrl+"/parseResume?"+tokenParamName+"="+tokenValue+"", 
-   					success : function(data) {
-   						var json = JSON.parse(data);
-   						var name = json.name;
-  						var firstName = '';
-  						var lastName = '';
-  						if(name != null && name != 'undefined' && name != ''){
-  							 firstName = name.split(".")[0]; 
-  							 lastName = name.split(".")[1]; 
-  							 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
-  									 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
-  								 firstName = name;
-  							 }
-  						}
-  						
-  						
-  						 $("input[name=firstName]").val(firstName);
-  			        	 $("input[name=lastName]").val(lastName);
-  			        	 $("input[name=email]").val(json.email);
-   						 var mobilePhone = $("#mobilePhone").val();
-   						 if(mobilePhone == null || mobilePhone == '' || mobilePhone == 'undefined'){
-   							$("#mobilePhone").val(json.phoneNumbers); 
+   					success : function(response) {
+   						if (response.response === "AWKWARD") {
+   						    location.href = "/errorPage";
+   						} else if (response.response === "SUCCESS") {
+   							var json = response.object;
+   	   						var name = json.name;
+   	  						var firstName = '';
+   	  						var lastName = '';
+   	  						if(name != null && name != 'undefined' && name != ''){
+   	  							 firstName = name.split(".")[0]; 
+   	  							 lastName = name.split(".")[1]; 
+   	  							 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
+   	  									 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
+   	  								 firstName = name;
+   	  							 }
+   	  						}
+   	  						
+   	  						
+   	  						 $("input[name=firstName]").val(firstName);
+   	  			        	 $("input[name=lastName]").val(lastName);
+   	  			        	 $("input[name=email]").val(json.email);
+   	   						 var mobilePhone = $("#mobilePhone").val();
+   	   						 if(mobilePhone == null || mobilePhone == '' || mobilePhone == 'undefined'){
+   	   							$("#mobilePhone").val(json.phoneNumbers); 
+   	   						}
+   	   						
+   	   						
+   	   						validateCandidateEmail();
+   	   						$("#candidateSkills").empty();
+   	   						 var internalOutput = "";
+   	   						 <c:forEach var="skill" items="${skillsList}">
+   	   						    internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
+   	   	                     </c:forEach>
+   	   						var skills = json.skills;
+   	   						if(skills != null && skills != 'undefined' && skills != ''){
+   	   							var str_array = skills.split(',');
+   	   							for(var i = 0; i < str_array.length; i++) {
+   	   							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+   	   							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+   	   							}
+   	   						}
+   	   						$("#candidateSkills").append(internalOutput);
+   	   		        		$("#candidateSkills").trigger("chosen:updated");
+   	   		        		
+   	   		        		
+   	   		        		$("#candidateEducation").empty();
+   	   						 var internalOutput = "";
+   	   						 <c:forEach var="edu" items="${educationsList}">
+   	   						    internalOutput = internalOutput+"<option value='${edu.name}'>${edu.name}</option>";
+   	   	                     </c:forEach>
+   	   						var edu = json.edu;
+   	   						if(edu != null && edu != 'undefined' && edu != ''){
+   	   							var str_array = edu.split(',');
+   	   							for(var i = 0; i < str_array.length; i++) {
+   	   							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+   	   							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+   	   							}
+   	   						}
+   	   						$("#candidateEducation").append(internalOutput);
+   	   		        		$("#candidateEducation").trigger("chosen:updated");
+   	   		        		
+   	   		        		
+   	   						$("#loading").removeAttr("style");
+   						} else if (response.indexOf('Sign In') !== -1) {
+   							location.replace(sourceleadUrl);
+   						} else {
+   						    showError("Operation failed, please try again");
    						}
-   						
-   						
-   						validateCandidateEmail();
-   						$("#candidateSkills").empty();
-   						 var internalOutput = "";
-   						 <c:forEach var="skill" items="${skillsList}">
-   						    internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
-   	                     </c:forEach>
-   						var skills = json.skills;
-   						if(skills != null && skills != 'undefined' && skills != ''){
-   							var str_array = skills.split(',');
-   							for(var i = 0; i < str_array.length; i++) {
-   							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-   							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
-   							}
-   						}
-   						$("#candidateSkills").append(internalOutput);
-   		        		$("#candidateSkills").trigger("chosen:updated");
-   		        		
-   		        		
-   		        		$("#candidateEducation").empty();
-   						 var internalOutput = "";
-   						 <c:forEach var="edu" items="${educationsList}">
-   						    internalOutput = internalOutput+"<option value='${edu.name}'>${edu.name}</option>";
-   	                     </c:forEach>
-   						var edu = json.edu;
-   						if(edu != null && edu != 'undefined' && edu != ''){
-   							var str_array = edu.split(',');
-   							for(var i = 0; i < str_array.length; i++) {
-   							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-   							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
-   							}
-   						}
-   						$("#candidateEducation").append(internalOutput);
-   		        		$("#candidateEducation").trigger("chosen:updated");
-   		        		
-   		        		
-   						$("#loading").removeAttr("style");
-   						
    					},
    				});
-    	 }
+    	 	}
     	 }
     });
 

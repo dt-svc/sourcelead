@@ -92,6 +92,16 @@ public class StaticWebController {
 		return "static-web/ats";
 	}
 	
+	@RequestMapping("/immigration.html")
+	public String immigration() {
+		return "static-web/immigration";
+	}
+	
+	@RequestMapping("/mergers_acquisition.html")
+	public String mergersAcquisition() {
+		return "static-web/mergers_acquisition";
+	}
+	
 	@RequestMapping("/blog.html")
 	public String blog() {
 		return "static-web/blog";

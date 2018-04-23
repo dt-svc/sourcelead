@@ -33,14 +33,14 @@
 						<div class="form-group clearfix">
 								<label class="col-md-4 noPad">Routing Number<span class="text-danger">&nbsp;*</span></label>
 								<div class="col-md-8 padding_right">
-								 <input class=" form-control" type="text" name="routingNumber" id="routingNumber" field-name="Routing Number" value='${SourceLeadWeb_bankingDetails.routingNumber}' data-validation="required validate_space validate_length length9-9" maxlength="9" >
+								 <input class=" form-control" type="text" name="routingNumber" id="routingNumber" field-name="Routing Number" value='${SourceLeadWeb_bankingDetails.routingNumber}' data-validation="required validate_space validate_int validate_length length9-9" maxlength="9" >
 								</div>
 						</div>
 						
 						<div class="form-group clearfix">
 								<label class="col-md-4 noPad">Account Number<span class="text-danger">&nbsp;*</span></label>
 								<div class="col-md-8 padding_right">
-								 <input class=" form-control" type="text" name="accountNumber" id="accountNumber" field-name="Account Number" value='${SourceLeadWeb_bankingDetails.accountNumber}' data-validation="required validate_space validate_length length9-15"  >
+								 <input class=" form-control" type="text" name="accountNumber" id="accountNumber" field-name="Account Number" value='${SourceLeadWeb_bankingDetails.accountNumber}' data-validation="required validate_space validate_int validate_length length9-15"  >
 								</div>
 						</div>
 						
@@ -85,8 +85,22 @@ $('body').on('submit', '#bankingDetails_form', function(e){
 		    	data : formData,
 		    	  url: sourceleadUrl+"/saveOrgLocationsBankingDetails?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid,		
 		        success: function(result) {
-		        	
+		        	if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+      	    		    showError(result.responseMessage);
+      	    		    $("#loading").removeAttr('style');
+      	    		}
+		        	else if (result.response === "AWKWARD") {
+      	    		    location.href = "/errorPage";
+      	    		}
+                	else if(result.response === "SUCCESS"){
 		        	$("#loading").removeAttr("style");
+                	}
+                	else if (result.indexOf('Sign In') !== -1) {
+      					location.replace(sourceleadUrl);
+      				}else {
+      				    showError("Operation failed, please try again");
+      				    $("#loading").removeAttr('style');
+      				}
 		        },
 		    });    
       return true; 

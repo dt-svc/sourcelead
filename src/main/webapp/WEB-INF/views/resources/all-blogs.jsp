@@ -13,20 +13,21 @@
 	<section class="blogNewInn">
 		     <c:forEach var="all" items="${allBlogs}">
 		       <article>
-				<a href="/blog/${all.href}.html"><span><img src="${all.imgFileUrl}" alt="" class="img-responsive"></span>
+				<a href="/blog/${all.href}.html"><span class="blImg"><img src="${all.imgFileUrl}" alt="" class="img-responsive"></span>
 				 
-				 <h2>${all.blogTitle}</h2>
+				 <h2 class="blHeading">${all.blogTitle}</h2>
 					<div class="clearfix blogNewInn-content">
-						<p>${all.description}</p>
+						<p>${all.shortDescription}</p>
 					</div>
-				<b>Read more...</b>	
-				
+					<c:if test="${!empty all.shortDescription}">		
+						<b>Read more...</b>	
+					</c:if>	
 				</a>	
 				</article>
 			</c:forEach> 
 			
 			<c:if test="${empty allBlogs}">
-			<div class="dataTables_empty"></div>
+			<div class="dataTables_empty"> No Blogs Found</div>
 			</c:if>
 		 <div class="clear"></div>
 	</section>

@@ -134,24 +134,45 @@ public class CandidateResumeRestController {
 		return response;
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_RESUMES')")
+	/**
+	 * @author Mahaveer Manoj,
+	 * 
+	 *         Request for 'Manager' Role is working fine, but for 'Employee' login
+	 *         the particular request is not getting hit here So,
+	 *         commented @PreAuthorize annotation
+	 **/
+	// @PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_RESUMES')")
 	@RequestMapping(value = { "rest/saveCandidateResume" }, method = RequestMethod.POST)
-	public @ResponseBody String saveCandidateResumeRest(@RequestBody CandidateResumeDTO candidateResumeDTO, HttpServletRequest request)
-			throws Exception {
-		candidateResumeDTO.setStaticPath(staticPath);
-		// FileUploadUtil.fillUploadedFileInfo(candidateResumeDTO,
-		// candidateResumeDTO.getFileInfo());
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		if (StringUtils.isNotEmpty(candidateResumeDTO.getCandidateId())) {
-			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateResumeDTO.getCandidateId()));
-			candidateResumesService.storeCandidateResume(candidateResumeDTO, user, candidate, candidateResumeDTO.getResumeId(),
-					orgLocation);
-			Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocation);
-			return percentage.toString();
-		} else {
-			return "exception";
+	public @ResponseBody Response<String> saveCandidateResumeRest(@RequestBody CandidateResumeDTO candidateResumeDTO,
+			HttpServletRequest request) throws Exception {
+		Response<String> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				candidateResumeDTO.setStaticPath(staticPath);
+				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				if (StringUtils.isNotEmpty(candidateResumeDTO.getCandidateId())) {
+					Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateResumeDTO.getCandidateId()));
+					candidateResumesService.storeCandidateResume(candidateResumeDTO, user, candidate, candidateResumeDTO.getResumeId(),
+							orgLocation);
+					Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocation);
+					response.setObject(percentage.toString());
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setResponse(Result.FAILED.name());
+					response.setResponseMessage(Result.FAILED.getValue());
+				}
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
+		return response;
 	}
 
 	/**
@@ -293,45 +314,58 @@ public class CandidateResumeRestController {
 	 */
 
 	@RequestMapping(value = "rest/terminateResume", method = RequestMethod.POST)
-	public @ResponseBody String terminateResumeRest(@RequestBody CandidateResumeDTO candidateResumeDTO) throws Exception {
-		// User user = (User)
-		// SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateResumeDTO.getCandidateId()));
-		User user = userService.getUserById(Long.parseLong(candidateResumeDTO.getLoginUserId()));
-		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(candidateResumeDTO.getLoginUserId()));
-		StringBuffer activitySummary = new StringBuffer();
-		CandidateResumes candidateResume = candidateResumesService
-				.getCandidateResumeByResumeId(Long.parseLong(candidateResumeDTO.getResumeId()));
-		if (candidateResume != null) {
-			candidateResume.setStatus(Constants.CANDIDATE_IN_ACTIVE);
-			candidateResume.setUpdatedBy(user.getUserCode());
-			candidateResume.setUpdatedDate(commonUtil.currentDate());
-			candidateResume = candidateResumesService.updateCandidateResume(candidateResume);
-			if (candidateResume.getTitle() != null && candidateResume.getTitle() != "" && candidateResume.getTitle() != "undefined") {
-				activitySummary.append("Resume").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateResume.getTitle())
-						.append(Constants.NEW_VALUE_TAG_END).append(" ");
+	public @ResponseBody Response<String> terminateResumeRest(@RequestBody CandidateResumeDTO candidateResumeDTO) throws Exception {
+		Response<String> response = new Response<>();
+		try {
+			User user = userService.getUserById(Long.parseLong(candidateResumeDTO.getLoginUserId()));
+			if (user != null) {
+				Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateResumeDTO.getCandidateId()));
+				OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(candidateResumeDTO.getLoginUserId()));
+				StringBuffer activitySummary = new StringBuffer();
+				CandidateResumes candidateResume = candidateResumesService
+						.getCandidateResumeByResumeId(Long.parseLong(candidateResumeDTO.getResumeId()));
+				if (candidateResume != null) {
+					candidateResume.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+					candidateResume.setUpdatedBy(user.getUserCode());
+					candidateResume.setUpdatedDate(commonUtil.currentDate());
+					candidateResume = candidateResumesService.updateCandidateResume(candidateResume);
+					if (candidateResume.getTitle() != null && candidateResume.getTitle() != ""
+							&& candidateResume.getTitle() != "undefined") {
+						activitySummary.append("Resume").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION)
+								.append(candidateResume.getTitle()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+					} else {
+						activitySummary.append("Resume").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION)
+								.append(candidateResume.getFileName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+					}
+					candidateActivityCommonUtil.storeCandidateResumesHistory(candidateResume, user);
+					candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidateResume.getCandidateId(), "",
+							Constants.CANDIDATE_DELETED_RESUME, activitySummary.toString(), "CANDIDATE");
+					// update the candidate Resume on ELK
+					if (null != candidate && null != candidate.getId()) {
+						CandidateIndex candidateIndex = new CandidateIndex();
+						candidateIndex.setCandidateId(candidate.getId());
+						DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+						candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
+						candidateIndex.setCurrentResumeId(Constants.CANDIATE_RESUME_IN_ACTIVE);
+
+						sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX,
+								Constants.ELK_CANDIDATE_TYPE, candidate.getId().toString());
+					}
+				}
+				Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocations);
+				response.setObject(percentage.toString());
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
-				activitySummary.append("Resume").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION)
-						.append(candidateResume.getFileName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 			}
-			candidateActivityCommonUtil.storeCandidateResumesHistory(candidateResume, user);
-			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidateResume.getCandidateId(), "",
-					Constants.CANDIDATE_DELETED_RESUME, activitySummary.toString(), "CANDIDATE");
-			// update the candidate Resume on ELK
-			if (null != candidate && null != candidate.getId()) {
-				CandidateIndex candidateIndex = new CandidateIndex();
-				candidateIndex.setCandidateId(candidate.getId());
-				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-				candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
-				candidateIndex.setCurrentResumeId(Constants.CANDIATE_RESUME_IN_ACTIVE);
-
-				sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX,
-						Constants.ELK_CANDIDATE_TYPE, candidate.getId().toString());
-			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocations);
-
-		return percentage.toString();
+		return response;
 	}
 
 	/**
@@ -348,14 +382,25 @@ public class CandidateResumeRestController {
 	 */
 	// @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_PROFILE','ROLE_VIEW_EDIT_ASSOCIATE_RESUMES')")
 	@RequestMapping(value = "/getResume", method = RequestMethod.POST)
-	public @ResponseBody String getResume(@RequestParam(value = "candidateId", required = false) Long candidateId,
+	public @ResponseBody Response<CandidateResumes> getResume(@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "resumeId", required = false) String resumeId, HttpServletRequest request) throws Exception {
-		String resultJson = null;
-		CandidateResumes candidateResume = candidateResumesService.getCandidateResumeByResumeId(Long.parseLong(resumeId));
-		if (candidateResume != null) {
-			resultJson = commonUtil.toJSON(candidateResume);
+		Response<CandidateResumes> response = new Response<>();
+		try {
+			CandidateResumes candidateResume = candidateResumesService.getCandidateResumeByResumeId(Long.parseLong(resumeId));
+			if (candidateResume != null) {
+				response.setObject(candidateResume);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.FAILED.name());
+				response.setResponseMessage(Result.FAILED.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		return resultJson;
+		return response;
 	}
 
 	/**

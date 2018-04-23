@@ -62,20 +62,31 @@ function getUserManualHelperOne(){
 	 $.ajax({
     type : "GET",
      url: sourceleadUrl+"/ws/getUserManualHelperOneTitles",       
-     success: function(json) {
-     	var result = "";
-    	 //result = result	+ '<div class="helpmsg-sidebar accordion-toggle">';
-     	for (var i=0; i<json.length; i++)
-			{
-     		 var opt = json[i];
-     		 
-			//result = result +'<div class="clearfix"></div>';
-			result = result + '<h5 onClick="getUserManualHelperTwo('+opt.id+');" class="accordion-link">'+opt.title+' <span></span></h5>';
-			result = result + '<div id="demo'+opt.id+'" class="accordion-panel clearfix"></div>';
-			}
-     		//result = result + '</div>';
-     		$("#UserManualWebDiv").empty(); 
-	        $("#UserManualWebDiv").append(result);
+     success: function(response) {
+    	 
+    	 if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+ 		    showError(response.responseMessage);
+ 	  	} else if (response.response === "AWKWARD") {
+ 		    location.href = "/errorPage";
+ 		} else if (response.response === "SUCCESS") {
+ 			var result = "";
+ 	    	 //result = result	+ '<div class="helpmsg-sidebar accordion-toggle">';
+ 	     	for (var i=0; i<response.data.length; i++)
+ 				{
+ 	     		 var opt = response.data[i];
+ 	     		 
+ 				//result = result +'<div class="clearfix"></div>';
+ 				result = result + '<h5 onClick="getUserManualHelperTwo('+opt.id+');" class="accordion-link">'+opt.title+' <i class="fa fa-angle-down"></i></h5>';
+ 				result = result + '<div id="demo'+opt.id+'" class="accordion-panel clearfix"></div>';
+ 				}
+ 	     		//result = result + '</div>';
+ 	     		$("#UserManualWebDiv").empty(); 
+ 		        $("#UserManualWebDiv").append(result);
+ 		}
+ 		 else {
+ 		    showError("Operation failed, please try again");
+ 		}
+     	
 	       
      }
 });
@@ -84,24 +95,36 @@ function getUserManualHelperOne(){
 </script>
 <script>
 function getUserManualHelperTwo(userManualId){
+	$(".accordion-link").find("i").toggleClass("fa-angle-down fa-angle-up");
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
     type : "GET",
      url: sourceleadUrl+"/ws/getUserManualHelperTwoTitles?${_csrf.parameterName}=${_csrf.token}&userManualId="+userManualId,   
-     success: function(json) {
-     	var result = "";
-    	 result = result	+ '<ul class="list-unstyled">';
-     	for (var i=0; i<json.length; i++)
-			{
-     		 var opt = json[i];
-     		 
-			result = result + '<li onClick="getUserManualHelperThree('+opt.id+');">'+opt.title+'</li>';
-			
-			}
-     		result = result + '</ul>';
-     		result = result + '<div class="clearfix"></div>';
-     		$("#demo"+userManualId).empty(); 
-	        $("#demo"+userManualId).append(result); 
+     success: function(response) {
+    	 
+    	 if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+  		    showError(response.responseMessage);
+  	  	} else if (response.response === "AWKWARD") {
+  		    location.href = "/errorPage";
+  		} else if (response.response === "SUCCESS") {
+  			var result = "";
+  	    	 result = result	+ '<ul class="list-unstyled">';
+  	     	for (var i=0; i<response.data.length; i++)
+  				{
+  	     		 var opt = response.data[i];
+  	     		 
+  				result = result + '<li onClick="getUserManualHelperThree('+opt.id+');">'+opt.title+'</li>';
+  				
+  				}
+  	     		result = result + '</ul>';
+  	     		result = result + '<div class="clearfix"></div>';
+  	     		$("#demo"+userManualId).empty(); 
+  		        $("#demo"+userManualId).append(result); 
+  		}
+    	 
+  		else {
+ 		    showError("Operation failed, please try again");
+ 		}
 	       
      } 
 });
@@ -128,76 +151,87 @@ function getUserManualHelperThree(userManualTwoId){
 	 $.ajax({
     type : "GET",
      url: sourceleadUrl+"/ws/getUserManualHelperThree?${_csrf.parameterName}=${_csrf.token}&userManualId="+userManualTwoId,   
-     success: function(json) {
-     	var result = "";
-    	 result = result	+ '<div class="clearfix">';
+     success: function(response) {
     	 
-     	for (var i=0; i<json.length; i++)
-			{
-     		 var opt = json[i];
-     		 
-     		if (opt.description != null && opt.description != 'undefined') {
-			description = opt.description;
-			}else{
-				description = "";
-			}
-     		if (opt.title != null && opt.title != 'undefined') {
-    			title = opt.description;
-    			}else{
-    				title = "";
-    			}
-     		if (opt.urlName != null && opt.urlName != 'undefined') {
-     			urlName = opt.urlName;
-    			}
-     		
-     		result = result	+ '<div class="row mb  moduledescription-text">';
-     		result = result + '<div class="col-md-7">';
-			result = result + '<h4>'+opt.title+'</h4>';
-			
-			result = result + '<div class="module-description">';
-			result = result + '<p>'+opt.description+'</p>';
-			result = result + '</div>';
-			result = result + '</div>';
-			
-			if (opt.urlName != null && opt.urlName != 'undefined') {
-				result = result + '<div class="col-md-5">';
-				result = result + '<a href="'+urlName+'" rel="prettyPhoto" title="Know about Jobs"><img src="/resources/static-web/images/videoBanner.jpg" alt="YouTube" class="img-responsive"/></a>';
-				result = result + '</div>';
-					
-			}
-			//result = result + '<a href="'+urlName+'" rel="prettyPhoto" title="Know about Jobs"><img src="/resources/static-web/images/videoBanner.jpg" alt="YouTube" class="img-responsive"/></a>';
-			//result = result + '<p>'+opt.urlName+'</p>';
-			
-				if('undefined' != opt.userManualAttachment){
-					result = result + '<div class="col-md-5">';
-				for (var j=0; j < opt.userManualAttachment.length; j++)
-				{
-				var value = opt.userManualAttachment[j];
-					if(value.fileUrl !=null && value.fileUrl !='' && value.fileUrl !='undefined'){
-						
-						
-						result = result + '<div class="demo-images clearfix">';
-						result = result + '<img src="'+value.fileUrl+'" class="img-responsive">';
-						result = result + '</div>';
-						
-						
-						
+    	 if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+   		    showError(response.responseMessage);
+   	  	} else if (response.response === "AWKWARD") {
+   		    location.href = "/errorPage";
+   		} else if (response.response === "SUCCESS") {
+   			var result = "";
+       	 result = result	+ '<div class="clearfix">';
+       	 
+        	for (var i=0; i<response.data.length; i++)
+   			{
+        		 var opt = response.data[i];
+        		 
+        		if (opt.description != null && opt.description != 'undefined') {
+   						description = opt.description;
+   				}else{
+   				description = "";
+   				}
+        		if (opt.title != null && opt.title != 'undefined') {
+       			title = opt.title;
+       			}else{
+       				title = "";
+       			}
+        		if (opt.urlName != null && opt.urlName != 'undefined') {
+        			urlName = opt.urlName;
+       			}
+        		
+        		result = result	+ '<div class="row mb  moduledescription-text">';
+        		result = result + '<div class="col-md-7">';
+   			result = result + '<h4>'+title+'</h4>';
+   			
+   			result = result + '<div class="module-description">';
+   			result = result + '<p>'+description+'</p>';
+   			result = result + '</div>';
+   			result = result + '</div>';
+   			
+   			if (opt.urlName != null && opt.urlName != 'undefined') {
+   				result = result + '<div class="col-md-5">';
+   				result = result + '<a href="'+urlName+'" rel="prettyPhoto" title="Know about Jobs"><img src="/resources/static-web/images/videoBanner.jpg" alt="YouTube" class="img-responsive"/></a>';
+   				result = result + '</div>';
+   					
+   			}
+   			//result = result + '<a href="'+urlName+'" rel="prettyPhoto" title="Know about Jobs"><img src="/resources/static-web/images/videoBanner.jpg" alt="YouTube" class="img-responsive"/></a>';
+   			//result = result + '<p>'+opt.urlName+'</p>';
+   			
+   				if('undefined' != opt.userManualAttachment){
+   					result = result + '<div class="col-md-5">';
+   				for (var j=0; j < opt.userManualAttachment.length; j++)
+   				{
+   				var value = opt.userManualAttachment[j];
+   					if(value.fileUrl !=null && value.fileUrl !='' && value.fileUrl !='undefined'){
+   						
+   						
+   						result = result + '<div class="demo-images clearfix">';
+   						result = result + '<img src="'+value.fileUrl+'" class="img-responsive">';
+   						result = result + '</div>';
+   						
+   						
+   						
 
-// 						result = result + ' <img class="img-circle" title='+value.fileName+'  src='+value.fileUrl+'>';
-					 }
-				}	
-				result = result + '</div>';
-			}
-			
-				result = result + '</div>';
-			
-			}
-     		
-     		result = result + '</div>';
-     		result = result + '<div class="clearfix"></div>';
-     		$("#UserManualWebDivThree").empty(); 
-	        $("#UserManualWebDivThree").append(result);
-	       
+//    						result = result + ' <img class="img-circle" title='+value.fileName+'  src='+value.fileUrl+'>';
+   					 }
+   				}	
+   				result = result + '</div>';
+   			}
+   			
+   				result = result + '</div>';
+   			
+   			}
+        		
+        		result = result + '</div>';
+        		result = result + '<div class="clearfix"></div>';
+        		$("#UserManualWebDivThree").empty(); 
+   	        $("#UserManualWebDivThree").append(result);
+   	        $("a[rel^='prettyPhoto']").prettyPhoto();
+   		}
+   		else {
+ 		    showError("Operation failed, please try again");
+ 		}
+     	
      } 
 });
 }

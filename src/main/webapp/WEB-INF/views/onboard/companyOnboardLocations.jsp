@@ -216,8 +216,13 @@ $(function(){
         </div>
 			</section>
 	</section>
+	 <jsp:include page="../googleApiLocation.jsp" />
 </div>
-
+ <div class="location-alert alert alert-danger alert-dismissable zInPop" id="locationAlert">
+    <a href="#" class="loc-alertclose close">&times;</a>
+    <strong>Alert !</strong> <span>Your are not able to Save Required data is Missing.</span>
+  </div>
+	
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
  <script type="text/javascript" src="/resources/js/jquery-1.11.0.min.js?staticTime=${staticTime}"></script>
  <script type="text/javascript" src="/resources/js/jquery.liquidcarousel.pack.js?staticTime=${staticTime}"></script>	
@@ -334,6 +339,9 @@ function loadRegisteredOrgs(){
 	        }
 	    }); 
 }
+$(".loc-alertclose").click(function(){
+	 $(".location-alert").fadeOut();
+})
 </script>
 
 
@@ -470,7 +478,7 @@ function createOrg(){
 	result = result +'<label class="col-md-4 noPad">Country<span class="text-danger">&nbsp;*</span></label>';
 	result = result +'<div class="col-md-8 padding_right">';
 	
-	result = result + '   <select class="form-control chosen-select" name="country" id="orgSetCountry" field-name="Country" data-placeholder="Select Country" data-validation="required" onchange="changeCountry();">';
+	result = result + '   <select class="form-control chosen-select" name="country" id="orgSetCountry" field-name="Country" data-placeholder="Select Country" data-validation="required">';
  	result = result + '       <option value="">Select Country</option>';
  	result = result +'		<c:forEach var="subscibedCountries" items="${orgSubscribedCountriesList}">';
  	result = result + '       <option value="${subscibedCountries}">${subscibedCountries}</option>';
@@ -538,10 +546,6 @@ function createOrg(){
 	            
 	            document.getElementById("enrollNewOrgLocation").style.display="none";
 	            document.getElementById("orgsList").style.display="";
-	            
-	            setTimeout(function () {
-	    			 editOrgLocationAuto('orgSetLocation','orgSetCountry','orgSetState','orgSetCity','orgSetZipCode');
-	     			}, 2000);
 	            
 	            
 	            var config = {
@@ -664,54 +668,7 @@ $(function(){
 </script>
 
 
-<script>
-function editOrgLocationAuto(orgLocationId,orgCountry,orgStateId,orgCityId,orgZipCodeId) {
-	editOrgInitialize(orgLocationId,orgCountry,orgStateId,orgCityId,orgZipCodeId);
-}
-function editOrgInitialize(orgLocationId,orgCountry,orgStateId,orgCityId,orgZipCodeId) {
-   /* 	autocomplete = new google.maps.places.Autocomplete((document.getElementById(orgLocationId)), {
-   	 types: ['geocode']
-     
-       }); */
-       
-  	 var input = (document.getElementById(orgLocationId));
-	    var options = {
-	    		types: ['geocode'],
-	        componentRestrictions: {
-	        	country: ["IN","US","AU","SG","GB","FR"]
-	        }
-	    };
-	    autocomplete = new google.maps.places.Autocomplete(input, options);
-  
- google.maps.event.addListener(autocomplete, 'place_changed', function() {
- place = autocomplete.getPlace();
- var address = {};
- for (var i = 0; i < place.address_components.length; i++) {
-   var addressType = place.address_components[i].types[0];
-   switch (addressType) {
-     case "locality":
-       address.city = place.address_components[i].long_name;
-       break;
-     case "administrative_area_level_1":
-       address.state = place.address_components[i].long_name;
-       break;
-     case "country":
-       address.country = place.address_components[i].long_name;
-       break;
-     case "postal_code":
-       address.zipcode = place.address_components[i].long_name;
-       
-   }
- }
- $("#"+orgCountry).val(address.country).change();
- $("#"+orgStateId).val(address.state).change();
- $("#"+orgCityId).val(address.city).change();
- $("#"+orgZipCodeId).val(address.zipcode).change();
-	  getTimezonesList();
- 
-});
-}
-</script>
+
 
 <script>
 function getTimezonesList(){
@@ -995,19 +952,27 @@ var validationSettings = {
          	 	 	$.ajax({
           	      type: "POST",
           	      data: formData,
-                	  url: sourceleadUrl+"/companyLocationRegistration?${_csrf.parameterName}=${_csrf.token}",		  
-                			  
-                  	success: function(result) {
-			        	if((result == 'orgList')){
-			        		loadRegisteredOrgs();
-			        	}
-			        	else if((result == 'Invalid Sub Modules')){
-			        		$("#loading").removeAttr("style");
-			        		document.getElementById("subModule").style.display="";
-			        	}else if((result == 'DataMissing')){
-			        		showError("Invalid data");
-			        		$("#loading").removeAttr('style');
-			        	}
+          		  url: sourceleadUrl+"/companyLocationRegistration?${_csrf.parameterName}=${_csrf.token}",		  
+    			  
+                	success: function(result) {
+                		
+               		if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+      	    		    showError(result.responseMessage);
+      	    		    $("#loading").removeAttr('style');
+      	    		}
+                		else if (result.response === "AWKWARD") {
+      	    		    location.href = "/errorPage";
+      	    		}
+                		else if(result.response === "SUCCESS"){
+                		   $("#loading").removeAttr('style');
+                			loadRegisteredOrgs();  
+			        	    }
+                		else if (result.indexOf('Sign In') !== -1) {
+      					location.replace(sourceleadUrl);
+      				} else {
+      				    showError("Operation failed, please try again");
+      				    $("#loading").removeAttr('style');
+      				}
 			        	
 			        },  
                });    
@@ -1065,62 +1030,3 @@ var validationSettings = {
 </form>
 
 
-<script>
- var options = {
- 		types: [],
-     componentRestrictions: {
-     	country:[]
-     }
- };
-function orgSubscriptionApiLocation(locationId,countryId,stateId,cityId,zipCodeId,type,addressId) {
-	var country = type.split(",");
-	var subscriptionCountries = '';
-	for(var i=0; i<country.length; i++){
-		country[i] = '' + country[i] + ''
-	}
-	
-	initialize(locationId,countryId,stateId,cityId,zipCodeId,country,addressId);
-	
-}
-function initialize(locationId,countryId,stateId,cityId,zipCodeId,country,addressId) {
-	 var input = (document.getElementById(locationId));
-	 var countries =  "country:["+country+"]";
-	 options.types=['geocode'];
-	 options.componentRestrictions.country=country; 
-	    autocomplete = new google.maps.places.Autocomplete(input, options);
-  
- google.maps.event.addListener(autocomplete, 'place_changed', function() {
- place = autocomplete.getPlace();
- var address = {};
- for (var i = 0; i < place.address_components.length; i++) {
-   var addressType = place.address_components[i].types[0];
-   switch (addressType) {
-      case "route":
-   	 address.name=place.address_components[i].long_name;
-   	 break;
-     case "locality":
-       address.city = place.address_components[i].long_name;
-       break;
-     case "administrative_area_level_1":
-       address.state = place.address_components[i].long_name;
-       break;
-     case "country":
-       address.country = place.address_components[i].long_name;
-       break;
-     case "postal_code":
-       address.zipcode = place.address_components[i].long_name;
-       
-   }
- }
-
- $("#"+stateId).val(address.state).change();
- $("#"+cityId).val(address.city).change();
- $("#"+zipCodeId).val(address.zipcode).change();
- $("#"+addressId).val($("#"+locationId).val().replace(", "+$("#"+cityId).val()+", "+$("#"+stateId).val()+", "+$("#"+countryId).val(), ""));
- $("#"+countryId).val(address.country).change();
- $("#"+countryId).trigger("chosen:updated");
-
-
-  });
-}
-</script>

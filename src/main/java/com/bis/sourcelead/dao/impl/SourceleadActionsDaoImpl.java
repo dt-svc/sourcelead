@@ -231,7 +231,7 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 					 }
 				
 				 String query = "from SourceleadActions sa where sa.actionRole != 'ROLE_ENROLL_ORG' and sa.tabs.id NOT IN (13) "
-				    		+ "and sa.id IN(select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId)) and sa.status = '1' ";
+				    		+ "and sa.id IN(select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId)) and sa.id NOT IN (152,153) and sa.status = '1' ";
 				    actionsList = session.createQuery(query.toString()).setParameterList("modulesId", modulesList).list();
 			}else {
 				
@@ -250,7 +250,7 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 							}
 						}
 				     
-				     String query = "from SourceleadActions sa where sa.actionRole != 'ROLE_ENROLL_ORG' and sa.tabs.id IN (:tabsIds)  and sa.status = '1' ";
+				     String query = "from SourceleadActions sa where sa.actionRole != 'ROLE_ENROLL_ORG' and sa.tabs.id IN (:tabsIds) and sa.id NOT IN (152,153) and sa.status = '1' ";
 				     actionsList = session.createQuery(query.toString()).setParameterList("tabsIds", tabsIds).list();
 			}
 	   
@@ -276,7 +276,7 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<SourceleadActions> actionsList = null;
 		
-		 String query = "from SourceleadActions sa where sa.actionRole != 'ROLE_ENROLL_ORG' and sa.tabs.id NOT IN (13,26,28,29)  and sa.status = '1' ";
+		 String query = "from SourceleadActions sa where sa.actionRole != 'ROLE_ENROLL_ORG' and sa.tabs.id NOT IN (13,26,28,29) and sa.id NOT IN (152,153)  and sa.status = '1' ";
 		 actionsList = session.createQuery(query.toString()).list();
 		    
 		return actionsList;
@@ -289,6 +289,18 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
   		
 	    String query = "from SourceleadActions sa left join fetch sa.tabs where sa.id IN (:actionIdList)";
 	    List<SourceleadActions> actionsList = session.createQuery(query.toString()).setParameterList("actionIdList", actionIdList).list();
+   
+	    return actionsList;
+	}
+
+	@Override
+	@Transactional
+	public List<Long> getAllSourceleadActionsIdsByTabsList(List<Long> tabsList) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+      		
+	    String query = "select sa.id from SourceleadActions sa where sa.actionRole != 'ROLE_ENROLL_ORG' and sa.tabs.id IN (:tabsList) and sa.status = '1' ";
+	    List<Long> actionsList = session.createQuery(query.toString()).setParameterList("tabsList", tabsList).list();
    
 	    return actionsList;
 	}

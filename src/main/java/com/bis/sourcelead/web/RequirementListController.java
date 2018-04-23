@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,12 +22,16 @@ import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.ProjectClients;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.ProjectClientService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -46,6 +49,12 @@ public class RequirementListController {
 	
 	@Autowired
 	OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	ProjectsService projectsService;
+	
+	@Autowired
+	private ProjectClientService projectClientService;
 	
 	@Autowired
 	RequirementService requirementService;
@@ -97,6 +106,22 @@ public class RequirementListController {
 		    model.addObject("add_clientList", orgClientList);
 		}
 	    model.addObject("loginOrgLocId", orgLocations.getId());
+	    
+	    List<ProjectClients> projectList = projectClientService.getAllProjectsByOrgLocationIdAndStatusInProgressAndNotStarted(orgLocations.getId());
+		for(ProjectClients projectClients : projectList){
+			if(projectClients.getOrgRelationId() != null){
+			if(projectClients.getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+				projectClients.setClientName(projectClients.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+			}else if(projectClients.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+				projectClients.setClientName(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
+			}
+		}
+		}
+		model.addObject("projectList", projectList);
+	    
+	    /*List<Projects> projectList=projectsService.getProjectByOrgLocationsId(orgLocations.getId());
+	    
+	    model.addObject("projectList", projectList);*/
 	    
 	    List<String> visaList = lookUpDataService.getAllVisaByCategory();
 	    model.addObject("visaList", visaList);

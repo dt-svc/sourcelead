@@ -131,55 +131,60 @@ $(window).load(function() {
 			  $.ajax({ 
 				   	type: "GET",
 				   	url: sourceleadUrl+"/getApplicantBackoutReport?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection+"&fromDate="+fromDate+"&toDate="+toDate,
-				    success: function(json) {
-				  	  var total = (json.currentCompany + json.compensation + json.betterOffer + json.coldFeet +json.personal + json.other);
-				  	var listView = document.getElementById("listView");
-		        	 listView.addEventListener("click", function() {
-		        		 getBackoutApplicantList();
-		        		 document.getElementById("applicantBackoutGraph").style.display="none";
-					    	document.getElementById("applicantBackoutListDivId").style.display="block";
-					    	var element = document.getElementById("listView");
-					    	var grid = document.getElementById("graphView");
-					    	element.classList.add("rAct");
-					    	grid.classList.remove("rAct");
-					    	
-					  });
-		        	 
-		        	 var graphicView = document.getElementById("graphView");
-		        	 graphicView.addEventListener("click", function() {
-		        		 if(total > 0 ){
-								loadApplicantBackoutChart(json);
-
-						    	
-							}else{
-								var result = '';
-				 	   			result = result+"<div class='dataTables_empty'>"; 
-				 	   			result = result+"</div> ";
-				 	   	        $("#backoutReason").empty();
-				                $("#backoutReason").append(result);
-							}
-		        		 document.getElementById("applicantBackoutGraph").style.display="block";
-					    	document.getElementById("applicantBackoutListDivId").style.display="none";
-					    	
-					    	var element = document.getElementById("listView");
-					    	var grid = document.getElementById("graphView");
-					    	element.classList.remove("rAct");
-					    	grid.classList.add("rAct");
-					  });
-						if(total > 0 ){
-							loadApplicantBackoutChart(json);
-
-					    	
-						}else{
-							var result = '';
-			 	   			result = result+"<div class='dataTables_empty'>"; 
-			 	   			result = result+"</div> ";
-			 	   	        $("#backoutReason").empty();
-			                $("#backoutReason").append(result);
-						}
-				  	  
-		        		 
-		        		 
+				    success: function(response) {
+				    	
+				    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+			    		    showError(response.responseMessage);
+			    	  	} else if (response.response === "AWKWARD") {
+			    		    location.href = "/errorPage";
+			    		} else if (response.response === "SUCCESS") {
+						  	  var total = (response.object.currentCompany + response.object.compensation + response.object.betterOffer + response.object.coldFeet +response.object.personal + response.object.other);
+							  	var listView = document.getElementById("listView");
+					        	 listView.addEventListener("click", function() {
+					        		 getBackoutApplicantList();
+					        		 document.getElementById("applicantBackoutGraph").style.display="none";
+								    	document.getElementById("applicantBackoutListDivId").style.display="block";
+								    	var element = document.getElementById("listView");
+								    	var grid = document.getElementById("graphView");
+								    	element.classList.add("rAct");
+								    	grid.classList.remove("rAct");
+								    	
+								  });
+					        	 
+					        	 var graphicView = document.getElementById("graphView");
+					        	 graphicView.addEventListener("click", function() {
+					        		 if(total > 0 ){
+											loadApplicantBackoutChart(response);
+										}else{
+											var result = '';
+							 	   			result = result+"<div class='dataTables_empty'>"; 
+							 	   			result = result+"</div> ";
+							 	   	        $("#backoutReason").empty();
+							                $("#backoutReason").append(result);
+										}
+					        		 document.getElementById("applicantBackoutGraph").style.display="block";
+								    	document.getElementById("applicantBackoutListDivId").style.display="none";
+								    	
+								    	var element = document.getElementById("listView");
+								    	var grid = document.getElementById("graphView");
+								    	element.classList.remove("rAct");
+								    	grid.classList.add("rAct");
+								  });
+									if(total > 0 ){
+										loadApplicantBackoutChart(response);
+									}else{
+										var result = '';
+						 	   			result = result+"<div class='dataTables_empty'>"; 
+						 	   			result = result+"</div> ";
+						 	   	        $("#backoutReason").empty();
+						                $("#backoutReason").append(result);
+									}
+			    		}else if (response.indexOf('Sign In') !== -1) {
+			    			location.replace(sourceleadUrl);
+			    		} else {
+			    		    showError("Operation failed, please try again");
+			    		}
+				    	
 				},
 		error: function(e){
 		}
@@ -230,48 +235,55 @@ $(window).load(function() {
 			  $.ajax({ 
 				   	type: "GET",
 				   	url: sourceleadUrl+"/getApplicantBackoutReportForInduvidualJob?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection+"&fromDate="+fromDate+"&toDate="+toDate,
-				    success: function(data) {
-				    	
-				    	var result = "";
-			             result  = result + '    <table class="table table-bordered" id="applicantBackoutPagenationId">     ';
-						 result  = result + '     <thead>                                 ';
-						 result  = result + '       <tr>                                  ';
-						 result  = result + '         <th>Jobs</th>                       ';
-						 result  = result + '         <th>Current Company</th>                     ';
-						 result  = result + '         <th>Compensation</th>             ';
-						 result  = result + '         <th>Better Offer</th>                    ';
-						 result  = result + '         <th>Cold Feet</th>                  ';
-						 result  = result + '         <th>Personal</th>                     ';
-						 result  = result + '         <th>Other</th>                      ';
-						 result  = result + '         <th>Total</th>                      ';
-						 result  = result + '       </tr>                                 ';
-						 result  = result + '       </thead>                              ';
-						 result  = result + '       <tbody>                               ';
-						 for (var i = 0; i < data.length; i++) { 
-							 var report = data[i];
-							 if(report.totalCount != 0){
+				    success: function(response) {
+				    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+			    		    showError(response.responseMessage);
+			    	  	} else if (response.response === "AWKWARD") {
+			    		    location.href = "/errorPage";
+			    		} else if (response.response === "SUCCESS") {
+			    			var result = "";
+				             result  = result + '    <table class="table table-bordered" id="applicantBackoutPagenationId">     ';
+							 result  = result + '     <thead>                                 ';
 							 result  = result + '       <tr>                                  ';
-							 result  = result + '		  <td><div>'+report.jobName+'</div></td>  ';
-							 result  = result + '         <td><div>'+report.currentCompany+'</div></td>               ';
-							 result  = result + '         <td><div>'+report.compensation+'</div></td>               ';
-							 result  = result + '         <td><div>'+report.betterOffer+'</div></td>               ';
-							 result  = result + '         <td><div>'+report.coldFeet+'</div></td>               ';
-							 result  = result + '         <td><div>'+report.personal+'</div></td>               ';
-							 result  = result + '         <td><div>'+report.other+'</div></td>               ';
-							 result  = result + '         <td><div>'+report.totalCount+'</div></td>               ';
-							 //result  = result + '         <td><div>31</div></td>              ';
-							 result  = result + '         </tr>     ';
+							 result  = result + '         <th>Jobs</th>                       ';
+							 result  = result + '         <th>Current Company</th>                     ';
+							 result  = result + '         <th>Compensation</th>             ';
+							 result  = result + '         <th>Better Offer</th>                    ';
+							 result  = result + '         <th>Cold Feet</th>                  ';
+							 result  = result + '         <th>Personal</th>                     ';
+							 result  = result + '         <th>Other</th>                      ';
+							 result  = result + '         <th>Total</th>                      ';
+							 result  = result + '       </tr>                                 ';
+							 result  = result + '       </thead>                              ';
+							 result  = result + '       <tbody>                               ';
+							 for (var i = 0; i < response.data.length; i++) { 
+								 var report = response.data[i];
+								 if(report.totalCount != 0){
+								 result  = result + '       <tr>                                  ';
+								 result  = result + '		  <td><div>'+report.jobName+'</div></td>  ';
+								 result  = result + '         <td><div>'+report.currentCompany+'</div></td>               ';
+								 result  = result + '         <td><div>'+report.compensation+'</div></td>               ';
+								 result  = result + '         <td><div>'+report.betterOffer+'</div></td>               ';
+								 result  = result + '         <td><div>'+report.coldFeet+'</div></td>               ';
+								 result  = result + '         <td><div>'+report.personal+'</div></td>               ';
+								 result  = result + '         <td><div>'+report.other+'</div></td>               ';
+								 result  = result + '         <td><div>'+report.totalCount+'</div></td>               ';
+								 //result  = result + '         <td><div>31</div></td>              ';
+								 result  = result + '         </tr>     ';
+								 }
 							 }
-						 }
-						
-						 
-						 result  = result + '     </tbody>                                ';
-						 result  = result + '   </table>                                  ';
-						 $("#applicantBackoutListDiv").empty();
-						 $("#applicantBackoutListDiv").append(result);
-						 applicantBackoutListPagination();
-			 
-			 
+							
+							 
+							 result  = result + '     </tbody>                                ';
+							 result  = result + '   </table>                                  ';
+							 $("#applicantBackoutListDiv").empty();
+							 $("#applicantBackoutListDiv").append(result);
+							 applicantBackoutListPagination();
+			    		}else if (response.indexOf('Sign In') !== -1) {
+			    			location.replace(sourceleadUrl);
+			    		} else {
+			    		    showError("Operation failed, please try again");
+			    		}
 		}
 			  });
 			  
@@ -339,10 +351,48 @@ function getCustomDates(){
 	 if(dateSelection == 'custom'){
 		 document.getElementById("customSearch").style.display="block";
 		 $("#customize_btn").attr("disabled", "disabled");
+			 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+			  var finalDateFormatProjectSave = '';
+			  if(locationDate.match("yyyy-MM-dd")){
+				  finalDateFormatProjectSave = 'yy-mm-dd';
+			  }if(locationDate.match("dd-MM-yyyy")){
+				  finalDateFormatProjectSave = 'dd-mm-yy'; 
+			  }if(locationDate.match("MM-dd-yyyy")){
+				  finalDateFormatProjectSave = 'mm-dd-yy'; 
+			  }if(locationDate.match("yyyy-dd-MM")){
+				  finalDateFormatProjectSave = 'yy-dd-mm'; 
+			  }
+	    
+		  $('#fromDate').datepicker({
+				dateFormat : finalDateFormatProjectSave,
+				changeMonth: true,
+				changeYear: true, 
+				onSelect : function(selected) {
+					var dt = $(this).datepicker('getDate', '+1d');
+					dt.setDate(dt.getDate());
+					$("#toDate").datepicker("option", "minDate", dt);
+					removeErrMsg();
+				}
+			});
+		  
+		  $('#toDate').datepicker({
+				dateFormat : finalDateFormatProjectSave,
+				changeMonth: true,
+				changeYear: true, 
+				onSelect : function(selected) {
+					var dt = $(this).datepicker('getDate', '-1d');
+					dt.setDate(dt.getDate());
+					$("#fromDate").datepicker("option", "maxDate", dt);
+					removeErrMsgTo();
+				}
+			});
+		 
 		 
 	 }else{
 		 document.getElementById("customSearch").style.display="none";
 		 $("#customize_btn").removeAttr("disabled");
+		 $("#fromDate").datepicker("destroy");
+		 $("#toDate").datepicker("destroy");
 		 $("#fromDate").val('');
 		 $("#toDate").val('');
 		 document.getElementById("fromDateDiv").style.display="none";
@@ -354,61 +404,61 @@ function getCustomDates(){
   
   
   <script type="text/javascript">
-  function loadApplicantBackoutChart(json){
-	  var total = (json.currentCompany + json.compensation + json.betterOffer + json.coldFeet +json.personal + json.other);
+  function loadApplicantBackoutChart(response){
+	  var total = (response.object.currentCompany + response.object.compensation + response.object.betterOffer + response.object.coldFeet +response.object.personal + response.object.other);
 	  var mainChar = [];
-	  if(json.currentCompany>0){
+	  if(response.object.currentCompany>0){
 		  mainChar.push({
 				"category": "Current Company",
-				"column-1": json.currentCompany,
+				"column-1": response.object.currentCompany,
 				"color": "#9FA8DA",
-				"count": json.currentCompany,
-				"percentage": (((json.currentCompany/total)*100)).toFixed(2)
+				"count": response.object.currentCompany,
+				"percentage": (((response.object.currentCompany/total)*100)).toFixed(2)
 			});
 	  }
-	  if(json.compensation>0){
+	  if(response.object.compensation>0){
 		  mainChar.push({
 			  "category": "Compensation",
 				"color": "#90CAF9",
-				"column-1": json.compensation,
-				"count": json.compensation,
-				"percentage": (((json.compensation/total)*100)).toFixed(2)
+				"column-1": response.object.compensation,
+				"count": response.object.compensation,
+				"percentage": (((response.object.compensation/total)*100)).toFixed(2)
 			});
 	  }
-	  if(json.betterOffer>0){
+	  if(response.object.betterOffer>0){
 		  mainChar.push( {
 			  "category": "Better Offer",
-				"column-1": json.betterOffer,
+				"column-1": response.object.betterOffer,
 				"color": "#FFAB91",
-				"count": json.betterOffer,
-				"percentage": (((json.betterOffer/total)*100)).toFixed(2)
+				"count": response.object.betterOffer,
+				"percentage": (((response.object.betterOffer/total)*100)).toFixed(2)
 			} );
 	  }
-	  if(json.coldFeet>0){
+	  if(response.object.coldFeet>0){
 		  mainChar.push( {
 			  "category": "Cold Feet",
-				"column-1": json.coldFeet,
+				"column-1": response.object.coldFeet,
 				"color": "#A5D6A7",
-				"count": json.coldFeet,
-				"percentage": (((json.coldFeet/total)*100)).toFixed(2)
+				"count": response.object.coldFeet,
+				"percentage": (((response.object.coldFeet/total)*100)).toFixed(2)
 			} );
 	  }
-	  if(json.personal>0){
+	  if(response.object.personal>0){
 		  mainChar.push( {
 			  "category": "Personal",
-				"column-1": json.personal,
+				"column-1": response.object.personal,
 				"color": "#FFE0B2",
-				"count": json.personal,
-				"percentage": (((json.personal/total)*100)).toFixed(2)
+				"count": response.object.personal,
+				"percentage": (((response.object.personal/total)*100)).toFixed(2)
 			} );
 	  }
-	  if(json.other>0){
+	  if(response.object.other>0){
 		  mainChar.push( {
 			  "category": "Other",
 				"column-1": json.other,
 				"color": "#BCAAA4",
-				"count": json.other,
-				"percentage": (((json.other/total)*100)).toFixed(2)
+				"count": response.object.other,
+				"percentage": (((response.object.other/total)*100)).toFixed(2)
 			} );
 	  }
 	  
@@ -472,43 +522,6 @@ function getCustomDates(){
 		
 
 <script>
-  $( function() {
-		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatProjectSave = '';
-		  if(locationDate.match("yyyy-MM-dd")){
-			  finalDateFormatProjectSave = 'yy-mm-dd';
-		  }if(locationDate.match("dd-MM-yyyy")){
-			  finalDateFormatProjectSave = 'dd-mm-yy'; 
-		  }if(locationDate.match("MM-dd-yyyy")){
-			  finalDateFormatProjectSave = 'mm-dd-yy'; 
-		  }if(locationDate.match("yyyy-dd-MM")){
-			  finalDateFormatProjectSave = 'yy-dd-mm'; 
-		  }
-    
-	  $('#fromDate').datepicker({
-			dateFormat : finalDateFormatProjectSave,
-			changeMonth: true,
-			changeYear: true, 
-			onSelect : function(selected) {
-				var dt = $(this).datepicker('getDate', '+1d');
-				dt.setDate(dt.getDate());
-				$("#toDate").datepicker("option", "minDate", dt);
-				removeErrMsg();
-			}
-		});
-	  
-	  $('#toDate').datepicker({
-			dateFormat : finalDateFormatProjectSave,
-			changeMonth: true,
-			changeYear: true, 
-			onSelect : function(selected) {
-				var dt = $(this).datepicker('getDate', '-1d');
-				dt.setDate(dt.getDate());
-				$("#fromDate").datepicker("option", "maxDate", dt);
-				removeErrMsgTo();
-			}
-		});
-  } );
   function removeErrMsg(){
 	  document.getElementById("fromDateDiv").style.display="none";
   }

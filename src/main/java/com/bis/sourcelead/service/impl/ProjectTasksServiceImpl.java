@@ -888,7 +888,11 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	
 	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, int column, ProjectTasks projectTassks, OrgLocations orgLocations) {
 		
-		 writeRow.createCell(0).setCellValue(projectTassks.getGeneratedId() +"-"+ projectTassks.getTaskName()); 
+		if(projectTassks.getGeneratedId() != null) {
+			 writeRow.createCell(0).setCellValue(projectTassks.getGeneratedId() +"-"+ projectTassks.getTaskName()); 
+		}else {
+			 writeRow.createCell(0).setCellValue(projectTassks.getTaskName()); 
+		}
 
 		 //Task Type
 		 writeRow.createCell(1).setCellValue(projectTassks.getTaskTypes()); 
@@ -972,6 +976,16 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
         style.setFont(font);
         String headers [] = Constants.PROJECT_TASKS_EXCEL_HEADERS;
 		return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
+	}
+
+	@Override
+	public ProjectTasks getProjectTaskByleaveTypeId(long leaveTypeId,Long projectId) {
+		return tasksDao.getProjectTaskByleaveTypeId(leaveTypeId,projectId);
+	}
+
+	@Override
+	public List<ProjectTasks> getTasksListByLeaveType(Long levaTypeId) throws Exception {
+		return tasksDao.getTasksListByLeaveType(levaTypeId);
 	}
 	
 	

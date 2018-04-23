@@ -13,8 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,9 +25,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.TimesheetEntryDetailsDTO;
-import com.bis.sourcelead.dto.TimesheetExpenseEntryDetailsUtilDTO;
-import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -37,7 +32,7 @@ import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.rest.TimesheetRestController;
+import com.bis.sourcelead.rest.TimesheetEmailUtil;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
@@ -55,7 +50,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @RequestMapping("/app")
 public class TimesheetController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(TimesheetController.class);
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	 
@@ -75,13 +69,13 @@ public class TimesheetController {
 	private ProjectMembersService projectMembersService;
 	
 	@Autowired
-	SubmissionApproverHierarchyService submissionApproverHierarchyService;
+	private SubmissionApproverHierarchyService submissionApproverHierarchyService;
 	
 	@Autowired
-	UserService userService;
+	private UserService userService;
 	
 	@Autowired
-	TimeZoneService timeZoneService;
+	private TimeZoneService timeZoneService;
 	
 	@Autowired
 	private TimesheetSubmissionsDocumentsService timesheetSubmissionsDocumentsService;
@@ -90,7 +84,7 @@ public class TimesheetController {
 	private PdfConversionUtil pdfConversionUtil;
 	
 	@Autowired
-	private TimesheetRestController timesheetRestController;
+	private TimesheetEmailUtil timesheetEmailUtil;
 	
 	/**
 	 * @author naresh bolisetty and sarath kumar
@@ -168,7 +162,7 @@ public class TimesheetController {
 			model.addObject("ProjectMembersList", projectMembersList);
 			
 			model.addObject("sourceleadUrl", sourceleadUrl);
-			model.setViewName("timesheet/timesheetRedefined");
+			model.setViewName("timesheet/timesheet");
 			return model;
 
 	}
@@ -207,7 +201,7 @@ public class TimesheetController {
 					 Date endDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),weekEndDate.replaceAll("/", "-"));
 					 User reopenedUser = submissionApproverHierarchyService.updateSubmissionStatusByProjectMemberIdStartDateAndEndDateWithReOpenReason(projectMemberId, startDate, endDate,reason,superUser,type,Constants.NO);
 				  	//send mail & notification logic
-				  	 submissionApproverHierarchyService.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,superUser,projectMembers.getProjects().getOrgLocationsId(),timesheetFrequency,type,reopenedUser);
+					 timesheetEmailUtil.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,superUser,projectMembers.getProjects().getOrgLocationsId(),timesheetFrequency,type,reopenedUser);
 				}else if(!approvalStatus.equalsIgnoreCase("new") && (StringUtils.isNotEmpty(timesheetFrequency) && null != type && "reject".equalsIgnoreCase(type) && null != reason && !"".equalsIgnoreCase(reason))){
 					String[] frequency = timesheetFrequency.split("To");
 				 	 String weekStartDate = frequency[0].trim();
@@ -216,7 +210,7 @@ public class TimesheetController {
 				  	 Date endDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),weekEndDate.replaceAll("/", "-"));
 					 User reopenedUser = submissionApproverHierarchyService.updateSubmissionStatusByProjectMemberIdStartDateAndEndDateWithReOpenReason(projectMemberId, startDate, endDate,reason,superUser,type,Constants.NO);
 				  	//send mail & notification logic
-				  	 submissionApproverHierarchyService.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,superUser,projectMembers.getProjects().getOrgLocationsId(),timesheetFrequency,type,reopenedUser);
+					 timesheetEmailUtil.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,superUser,projectMembers.getProjects().getOrgLocationsId(),timesheetFrequency,type,reopenedUser);
 				}	
 			}
 			 
@@ -276,24 +270,7 @@ public class TimesheetController {
 	
 	private void calculateDays(List<Notifications> notificationList, Timezone timezone) throws ParseException {
 		for (Notifications notifications : notificationList) {
-					/*//differentiating date and time
-						Date date = notifications.getCreatedDate();
-					    String[] parts = date.toString().split(" ");
-					    notifications.setDateValue(parts[0]);
-					    final SimpleDateFormat sdf = new SimpleDateFormat("H:mm");
-					    final Date dateObj = sdf.parse(parts[1]);
-					    notifications.setTime(new SimpleDateFormat("K:mm a").format(dateObj));
-					    
-					    // calculating days b/w dates 
-					    Date currentDate = new Date();
-						Date d1 = notifications.getCreatedDate();
-						SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-						String strDate = dateFormat.format(currentDate);
-						Date d2 = dateFormat.parse(strDate);
-						long diff = d2.getTime() - d1.getTime();
-						long diffDays = diff / (24 * 60 * 60 * 1000);
-						notifications.setCalDays(String.valueOf(diffDays));*/
-			long diff = commonUtil.currentDate().getTime() - notifications.getCreatedDate().getTime();
+			long diff = CommonUtil.currentDate().getTime() - notifications.getCreatedDate().getTime();
 		    long diffSeconds = diff / 1000 % 60;
 			long diffMinutes = diff / (60 * 1000) % 60;
 			long diffHours = diff / (60 * 60 * 1000) % 24;

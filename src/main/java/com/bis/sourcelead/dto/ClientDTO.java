@@ -49,6 +49,8 @@ public class ClientDTO {
 	
 	private String paymentTerms;
 	
+	private String type;
+	
 	@Required(desc = "email")
 	@Email
 	private String email;
@@ -404,6 +406,12 @@ public class ClientDTO {
 	}
 	public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
 		this.customFormData = customFormData;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
 	}
 	
 }

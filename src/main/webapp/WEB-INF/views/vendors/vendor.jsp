@@ -493,7 +493,7 @@ function getVendorDetails(){
 								<input type="text" class="form-control" id="email" name="email"
 									value="${emailId}" field-name="Email"
 									data-validation="required validate_Space validate_length length1-100 validate_email"
-									onblur="validateEmail();getSpocUserDetails();"> <span
+									onkeyup="validateEmail();getSpocUserDetails();"> <span
 									class="hidden">Valid Email</span>
 							</div>
 						</div>
@@ -607,7 +607,7 @@ function getVendorDetails(){
 				<div class="col-lg-12">
 					<div class="pull-right">
 						<input type="button" value="Save & Continue" id="save_vendor"
-							onclick="saveVendor(); flushSaveClient()" class="btn btn-primary">
+							onclick="saveVendor(); saveVendorContact();flushSaveClient();" class="btn btn-primary">
 						
 						<input type="button" value="Save & Continue" id="update_vendor" style="display: none"
 							onclick="updateVendor(); flushSaveClient()" class="btn btn-primary">
@@ -963,7 +963,7 @@ function getSpocUserDetails(){
 		        		    $("#lastName").val(json[1]);
 	        		 }else{
 	        			    $("#lastName").attr("disabled", false);
-	        			    //$("#lastName").val('');
+	        			    $("#lastName").val('');
 	        		 }
 		        		
 	        		 if(json[2] != null && json[2] != ''){
@@ -971,7 +971,7 @@ function getSpocUserDetails(){
 		        		    $("#phoneNumber").val(json[2]);
 	        		 }else{
 	        			    $("#phoneNumber").attr("disabled", false);
-	        			    //$("#phoneNumber").val('');
+	        			    $("#phoneNumber").val('');
 	        		 }
 	        		 
 	        		 
