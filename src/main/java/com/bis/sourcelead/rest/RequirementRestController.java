@@ -982,15 +982,36 @@ public class RequirementRestController {
 	    
 
 	@RequestMapping(value = "/refreshRequirementClientList", method = RequestMethod.POST)
-		public @ResponseBody Collection<OrgRelations> refreshClientList(HttpServletRequest request) throws Exception {
-	    	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
-			for(OrgRelations ocl :orgClientList){
-				ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
-				ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
-			 }
-			return orgClientList;
-		   
+		public @ResponseBody ResponseList<OrgRelations> refreshClientList(HttpServletRequest request) throws Exception {
+			ResponseList<OrgRelations> response = new ResponseList<>();
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if(user != null) {
+				try {
+					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					List<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
+					for(OrgRelations ocl :orgClientList){
+						/*ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
+						ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());*/
+						if(orgLocations.getId() == ocl.getLocationId().getId()){
+							ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
+							ocl.setLocationID(ocl.getResponderLocationId().getId().toString());
+		        		}if(orgLocations.getId() == ocl.getResponderLocationId().getId()){
+		        			ocl.setOrgName(ocl.getLocationId().getOrgLocationName());
+		        			ocl.setLocationID(ocl.getLocationId().getId().toString());
+		        		}
+					 }
+					response.setData(orgClientList);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}catch (Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+				}
+			}else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		   return response;
 		}
 	    
 
