@@ -24,7 +24,7 @@ public class SourceleadTicketDTO extends SearchDTO implements Serializable{
 	private String ticketUrl;
 	
 	@Required(desc = "description")
-	@CleanHtml(escape=false)
+	@CleanHtml(escape=true)
 	private String description;
 	
 	private List<FileInfo> fileInfo;
