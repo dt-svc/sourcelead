@@ -1,6 +1,9 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.DateFormat;
 import java.text.MessageFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -11,6 +14,9 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +28,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
 import com.bis.sourcelead.dto.AccountDeductionsDTO;
 import com.bis.sourcelead.dto.ContractTemplateDTO;
+import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
@@ -31,6 +38,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.payroll.entity.AccountDeductions;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 
 @Repository
@@ -40,6 +48,9 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 	
 	@Autowired
 	private ConversionUtil conversionUtil;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
 	private static final Logger logger = LoggerFactory.getLogger(ContractsTemplateDaoImpl.class);
 	
@@ -292,7 +303,6 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 			}
 		}
 		
-		String subQuery1 = "";
 		String[] status = null;
 		if(null != contractStatus && !"".equals(contractStatus)){	
 			status = contractStatus.split(",");
@@ -302,6 +312,16 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 			for(int i=0;i<status.length;i++){
 				statusList.add(status[i]);
 			}
+			statusList.add(submissionType);
+		}
+		
+		String subquery1 = "";
+		if("WAITING_FOR_APPROVER".equalsIgnoreCase(submissionType)){
+			subquery1 += " (contracts.templateSubmissionStatus = 'WAITING_FOR_APPROVER' or contracts.templateSubmissionStatus = 'WAITING_TO_SEND') ";
+		}else if("WAITING_TO_BE_SIGNED".equalsIgnoreCase(submissionType)){
+			subquery1 += " (contracts.templateSubmissionStatus = 'WAITING_TO_BE_SIGNED' or contracts.templateSubmissionStatus = 'PENDING') ";
+		}else{
+			subquery1 += " contracts.templateSubmissionStatus = '"+submissionType+"'";
 		}
 		
 		Session session = this.sessionFactory.getCurrentSession();
@@ -338,11 +358,11 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 					+ "left join fetch contracts.contactUser "
 					+ "left join fetch contracts.approverUser "
 					+ "left join fetch contracts.candidate "
-					+ "where contracts.orgLocationId.id = :orgLocationId and contracts.templateSubmissionStatus = :submissionType and contracts.contractType like '%"+tabType+"%' "+subQuery+" "+userRoleCondition;
+					+ "where contracts.orgLocationId.id = :orgLocationId and "+subquery1+" and contracts.contractType like '%"+tabType+"%' "+subQuery+" "+userRoleCondition;
 			if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
-				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setString("submissionType", submissionType).list();
+				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).list();
 			}else{
-				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setString("submissionType", submissionType).setLong("userId", userId).setString("userCode", userCode).list();
+				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setLong("userId", userId).setString("userCode", userCode).list();
 			}
 		}
 		
@@ -735,11 +755,41 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 	    	 
 	     }
 		 
-	     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)) and user.id IN (Select ols.userId.id from OrglocationSignatory ols where ols.authorizedType LIKE '%,Contracts,%')";
+	     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)) and user.id IN (Select ols.userId.id from OrglocationSignatory ols where ols.authorizedType LIKE '%Contracts%')";
 	     List<User> userRoleList = session.createQuery(query.toString()).setParameterList("ownerRolesList", ownerRolesList).list();
 	     return userRoleList;
 	}
 
-	
-
+	@Override
+	@Transactional
+	public List<Contracts> validateAlreadyGeneratedContract(ContractsDTO contractsDTO, OrgLocations loginOrgLocation) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
+		DateFormat ts = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String startDate = outputFormatter1.print(commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),contractsDTO.getStartDate()).getTime());
+		String startDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, startDate);
+		Date startDateUTC = ts.parse(startDateString);
+		String endDate = outputFormatter.print(commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),contractsDTO.getEndDate()).getTime());
+		String endDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, endDate);
+		Date endDateUTC = ts.parse(endDateString);
+		
+		String query = "";
+		List<Contracts> contractsList = null;
+		if("Client SOW".equalsIgnoreCase(contractsDTO.getContractType()) || "Vendor SOW".equalsIgnoreCase(contractsDTO.getContractType())){
+			query = "from Contracts contracts where contracts.orgLocationId.id =:orgLocationId and contracts.contractType =:contractType and contracts.requirementSubmission.id = :submissionId and ((contracts.startDate <= :startDate and contracts.endDate >= :startDate) or (contracts.startDate <= :endDate and contracts.endDate >= :endDate) or (contracts.startDate >= :startDate and contracts.endDate <= :endDate))";
+			contractsList = session.createQuery(query).setLong("orgLocationId", loginOrgLocation.getId()).setLong("submissionId", Long.parseLong(contractsDTO.getSubmissionOffersList())).setString("contractType", contractsDTO.getContractType()).setParameter("startDate", startDateUTC).setParameter("endDate", endDateUTC).list();
+		}else{
+			query = "from Contracts contracts where contracts.orgLocationId.id =:orgLocationId and contracts.orgRelations.id =:orgRelationId and contracts.contractType =:contractType and ((contracts.startDate <= :startDate and contracts.endDate >= :startDate) or (contracts.startDate <= :endDate and contracts.endDate >= :endDate) or (contracts.startDate >= :startDate and contracts.endDate <= :endDate))";
+			contractsList = session.createQuery(query).setLong("orgLocationId", loginOrgLocation.getId()).setLong("orgRelationId", Long.parseLong(contractsDTO.getOrgRelationId())).setString("contractType", contractsDTO.getContractType()).setParameter("startDate", startDateUTC).setParameter("endDate", endDateUTC).list();
+		}
+		
+		
+		if (contractsList != null && contractsList.size() > 0) {
+			return contractsList;
+		}
+		else
+			return null;
+	}
 }

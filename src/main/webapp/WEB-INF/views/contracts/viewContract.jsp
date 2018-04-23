@@ -567,15 +567,20 @@ function displyContract(stage){
 		}
 			result = result +	'<h4>History</h4>';
 			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Created On</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.createdDateStr+'</div>';
-			result = result +	'	</div>';
+			if(null != json.createdDateStr && 'undefined' != json.createdDateStr && json.createdDateStr != ''){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Created On</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.createdDateStr+'</div>';
+				result = result +	'	</div>';
+			}
 			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Created By</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.createdByName+'</div>';
-			result = result +	'	</div>';
+			if(null != json.createdByName && 'undefined' != json.createdByName && json.createdByName != ''){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Created By</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.createdByName+'</div>';
+				result = result +	'	</div>';
+			}
+			
 			if(null != json.updatedDateStr && 'undefined' != json.updatedDateStr && json.updatedDateStr != json.createdDateStr){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Updated On</div>';

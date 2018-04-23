@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.ContractTemplateDTO;
+import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
@@ -60,4 +61,6 @@ public interface ContractsTemplateDao {
 	List<Contracts> getContractByLocationId(Long orgLocationId);
 
 	List<User> getSigningAuthoritiesForContract(Long orgLocationsId, Long tabId);
+
+	List<Contracts> validateAlreadyGeneratedContract(ContractsDTO contractsDTO, OrgLocations loginOrgLocation) throws Exception;
 }

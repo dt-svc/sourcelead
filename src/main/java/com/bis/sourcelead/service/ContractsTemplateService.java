@@ -80,6 +80,12 @@ public interface ContractsTemplateService {
 
 	List<User> getSigningAuthoritiesForContract(Long locationId, Long tabId) throws Exception;
 
+	boolean sendContractFromOwnertoReceiver(ContractsDTO contractsDTO, User loginUser, OrgLocations loginOrgLocation) throws Exception;
+
+	List<Contracts> validateAlreadyGeneratedContract(ContractsDTO contractsDTO, OrgLocations loginOrgLocation) throws Exception;
+
+	boolean reviseContract(ContractsDTO contractsDTO, OrgLocations loginOrgLocation) throws Exception;
+
 
 	
 }

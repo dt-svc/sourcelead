@@ -870,6 +870,10 @@ public class Constants {
     public static final String WAITING_TO_BE_SIGNED = "WAITING_TO_BE_SIGNED";
     public static final String DELETED = "DELETED";   
     public static final String APPROVED = "APPROVED";  
+    public static final String SEQUENTIAL = "Sequential";  
+    public static final String PARALLEL = "Parallel";  
+    public static final String WAITING_TO_SEND = "WAITING_TO_SEND";  
+    public static final String WAITING = "WAITING";  
     
     public static final String PENDING = "PENDING";
 
