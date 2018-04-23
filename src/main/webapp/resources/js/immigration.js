@@ -243,7 +243,7 @@ function Immigration() {
             if ($("#petitionDetailsForm").validate(false, validationSettings)) {
                 var formData = getFormData("petitionDetailsForm");
                 $.ajax({
-                    url: sourceleadUrl + immiModulePath + "/savePetitionDetailsPage",
+                    url: sourceleadUrl + immiModulePath + "/savePetitionDetailsPage?removedResidenceIds="+removedResidenceIds,
                     type: "POST",
                     data: formData,
                     success: function (data) {
