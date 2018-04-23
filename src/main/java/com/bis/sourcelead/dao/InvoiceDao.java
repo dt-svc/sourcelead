@@ -18,6 +18,8 @@ public interface InvoiceDao{
 	ResponseList<Invoice> invoiceListByOrgLocationId(OrgLocations orgLocations,Date startDateUTC,Date endDateUTC,InvoiceDTO invoiceDTO) throws Exception;
 	
 	Invoice getInvoicetById(Long invoiceId) throws Exception;
+	
+	public Boolean getInvoiceByInvoiceId(String invoiceId, Long orgLocationsId,  String invoiceType) throws Exception;
 
 	Invoice getInvoicetByParentInvoiceId(Long parentInvoiceId) throws Exception;
 	
@@ -46,5 +48,7 @@ public interface InvoiceDao{
 	Invoice getInvoicetByParentId(Long invoiceId)throws Exception;
 
 	Invoice getParentInvoiceByInvoiceId(Long invoiceId)throws Exception;
+
+	List<Invoice> getAllBillsAndInvoicesBYProjectIdOrgLocationIdInvoiceStatusStartDateAndEndDate(Long projectId, Long orgLocationId, String invoiceStatus, Date startDate, Date endDate);
 
 }

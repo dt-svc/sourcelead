@@ -1,0 +1,1 @@
+CALL AlterTableAddColumn ('sourcelead','CONNECTIONS','CONNECTION_UID','VARCHAR(20)  AFTER `STATUS`');

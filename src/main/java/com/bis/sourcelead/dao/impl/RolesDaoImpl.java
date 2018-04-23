@@ -20,6 +20,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -53,7 +54,7 @@ public class RolesDaoImpl implements RolesDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Roles> roles = new ArrayList<Roles>();
 		logger.debug("Roles start");
-		roles = session.createQuery("from Roles where roleName = :roleName" ).setString( "roleName", roleName ).setCacheable(true).list();
+		roles = session.createQuery("from Roles where roleName = :roleName" ).setString( "roleName", roleName ).list();
 		logger.debug("Roles end");
 		if (roles.size() > 0) {
 			return roles.get(0);
@@ -67,7 +68,7 @@ public class RolesDaoImpl implements RolesDao{
 	public List<Roles> getRoles(Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		return session.createQuery("from Roles roles where roles.orgLocations.id = :orgLocationId and roles.actionId IS NOT NULL)")
-				.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+				.setLong("orgLocationId", orgLocationId).list();
 	}
 
 	@Override
@@ -76,7 +77,7 @@ public class RolesDaoImpl implements RolesDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Roles> roles = new ArrayList<Roles>();
 		logger.debug("Roles start");
-		roles = session.createQuery("from Roles where displayName = :displayName" ).setString( "displayName", displayName ).setCacheable(true).list();
+		roles = session.createQuery("from Roles where displayName = :displayName" ).setString( "displayName", displayName ).list();
 		logger.debug("Roles end");
 		if (roles.size() > 0) {
 			return roles.get(0);
@@ -125,7 +126,7 @@ public class RolesDaoImpl implements RolesDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		return session.createQuery("from Roles roles where roles.id IN (select distinct actionRoles.roles.id from ActionRoles actionRoles "
 				+ "where actionRoles.org.id = :orgId "+subQuery+" "+subQuery1+") ")
-				.setLong("orgId", orgId).setCacheable(true).list();
+				.setLong("orgId", orgId).list();
 	}
 
 	@Override
@@ -134,7 +135,7 @@ public class RolesDaoImpl implements RolesDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Roles> roles = new ArrayList<Roles>();
 		logger.debug("Roles start");
-		roles = session.createQuery("from Roles role where role.id = :id" ).setLong( "id", id ).setCacheable(true).list();
+		roles = session.createQuery("from Roles role left join fetch role.roleHierarchy where role.id = :id" ).setLong( "id", id ).list();
 		logger.debug("Roles end");
 		if (roles.size() > 0) {
 			return roles.get(0);
@@ -147,7 +148,7 @@ public class RolesDaoImpl implements RolesDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Roles> getSourceleadRoles(Long orgId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		return session.createQuery("from Roles roles where roles.id <> '4' and roles.org.id = :orgId ").setLong("orgId", orgId).setCacheable(true).list();
+		return session.createQuery("from Roles roles where roles.id <> '4' and roles.org.id = :orgId ").setLong("orgId", orgId).list();
 	}
 
 	@Override
@@ -174,7 +175,7 @@ public class RolesDaoImpl implements RolesDao{
 		List<Roles> roles = new ArrayList<Roles>();
 		logger.debug("Roles start");
 		roles = session.createQuery("from Roles roles where roles.roleName = :roleName and roles.orgLocations.id = :orgLocationId " ).setString( "roleName", roleName )
-				.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+				.setLong("orgLocationId", orgLocationId).list();
 		logger.debug("Roles end");
 		if (roles.size() > 0) {
 			return roles.get(0);
@@ -204,7 +205,7 @@ public class RolesDaoImpl implements RolesDao{
 		}
         
 	    String query = "from Roles roles where roles.roleHierarchy.hierarchyLevel between ("+hierarchy.getHierarchyLevel()+") and (select max(rh.hierarchyLevel) from RoleHierarchy rh where rh.orgLocations.id = :orgLocationId) and (roles.actionId IS NOT NULL) and roles.orgLocations.id = :orgLocationId  "+subQuery+" ";
-	    List<Roles> rolesList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	    List<Roles> rolesList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 		
 		return rolesList;
 	}
@@ -239,11 +240,11 @@ public class RolesDaoImpl implements RolesDao{
 		 Session session = this.sessionFactory.getCurrentSession();
         
         String query = "select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId) and moduleActions.sourceleadActions.tabs.id = :tabId  ";
-	    List<Long> actionsList = session.createQuery(query.toString()).setParameterList("modulesId", modulesList).setLong("tabId", tabId).setCacheable(true).list();
+	    List<Long> actionsList = session.createQuery(query.toString()).setParameterList("modulesId", modulesList).setLong("tabId", tabId).list();
 			
 	    
 	    String query1 = "from Roles roles where roles.orgLocations.id = :orgLocationId "+subQuery+" ";
-	    List<Roles> rolesList = session.createQuery(query1.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	    List<Roles> rolesList = session.createQuery(query1.toString()).setLong("orgLocationId", orgLocationId).list();
 		 for(Roles roles : rolesList){
 			 List<Long> roleActonList = new ArrayList<Long>();
 			 if(null != roles.getActionId()){
@@ -272,8 +273,8 @@ public class RolesDaoImpl implements RolesDao{
 			subQuery = "and roles.roleName != 'ROLE_SOURCELEAD_ADMIN' and roles.roleName != 'ROLE_CROWDSOURCING_PROFESSIONAL' and roles.roleName != 'ROLE_CROWDSOURCING_RECRUITER' ";
 		}
         
-	    String query = "from Roles roles where roles.orgLocations.id = :orgLocationId and roles.status = '1'  "+subQuery+" ";
-	    List<Roles> rolesList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	    String query = "from Roles roles left join fetch roles.roleHierarchy where roles.orgLocations.id = :orgLocationId and roles.status = '1'  "+subQuery+" ";
+	    List<Roles> rolesList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 		
 		return rolesList;
 	}
@@ -284,7 +285,7 @@ public class RolesDaoImpl implements RolesDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Roles> roles = new ArrayList<Roles>();
 		logger.debug("Roles start");
-		roles = session.createQuery("from Roles role where role.id = :id and role.orgLocations.id = :orgLocationId" ).setLong( "id", id ).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		roles = session.createQuery("from Roles role where role.id = :id and role.orgLocations.id = :orgLocationId" ).setLong( "id", id ).setLong("orgLocationId", orgLocationId).list();
 		logger.debug("Roles end");
 		if (roles.size() > 0) {
 			return roles.get(0);
@@ -299,7 +300,7 @@ public class RolesDaoImpl implements RolesDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Roles> roles = new ArrayList<Roles>();
 		logger.debug("Roles start");
-		roles = session.createQuery("from Roles roles where roles.displayName = :displayName and roles.orgLocations.id = :orgLocationId " ).setString( "displayName", roleName ).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		roles = session.createQuery("from Roles roles where roles.displayName = :displayName and roles.orgLocations.id = :orgLocationId " ).setString( "displayName", roleName ).setLong("orgLocationId", orgLocationId).list();
 		logger.debug("Roles end");
 		if (roles.size() > 0) {
 			return roles.get(0);
@@ -315,10 +316,10 @@ public class RolesDaoImpl implements RolesDao{
 	  Session session = this.sessionFactory.getCurrentSession();
 		
 	 String actionsQuery = "select sa.id from SourceleadActions sa where sa.tabs.id = :tabId  ";
-     List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong( "tabId", tabId).setCacheable(true).list();
+     List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong( "tabId", tabId).list();
      
      String rolesQuery = "from Roles roles where roles.orgLocations.id = :orgLocationsId ";
-     List<Roles> rolesList = session.createQuery(rolesQuery.toString()).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
+     List<Roles> rolesList = session.createQuery(rolesQuery.toString()).setLong( "orgLocationsId", orgLocationsId).list();
      List<Roles> ownerRolesList = new ArrayList<Roles>();
      
      for(Roles roles : rolesList){
@@ -344,7 +345,7 @@ public class RolesDaoImpl implements RolesDao{
 	public List<Roles> getRolesListExpcetCurrentUserRole(Long roleId, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		return session.createQuery("from Roles roles where roles.id <> :roleId and roles.orgLocations.id = :orgLocationId and roles.actionId IS NOT NULL ")
-				.setLong("roleId", roleId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+				.setLong("roleId", roleId).setLong("orgLocationId", orgLocationId).list();
 	}
 
 	@Override
@@ -362,7 +363,7 @@ public class RolesDaoImpl implements RolesDao{
 	        
 		    String query = "from Roles roles  where "
 				+ "roles.roleHierarchy.id = :hierarchyId and roles.orgLocations.id = :orgLocationId and roles.status = '1' "+subQuery+" ";
-		    List<Roles> rolesList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("hierarchyId", hierarchyId).setCacheable(true).list();
+		    List<Roles> rolesList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("hierarchyId", hierarchyId).list();
 			
 			return rolesList;
 	}
@@ -374,7 +375,7 @@ public class RolesDaoImpl implements RolesDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Roles> roles = new ArrayList<Roles>();
 		logger.debug("Roles start");
-		roles = session.createQuery("from Roles roles left join fetch roles.org where roles.roleName = :roleName and roles.org.id = :orgId" ).setString( "roleName", roleName ).setLong("orgId", orgId).setCacheable(true).list();
+		roles = session.createQuery("from Roles roles left join fetch roles.org where roles.roleName = :roleName and roles.org.id = :orgId" ).setString( "roleName", roleName ).setLong("orgId", orgId).list();
 		logger.debug("Roles end");
 		if (roles.size() > 0) {
 			return roles.get(0);
@@ -382,6 +383,15 @@ public class RolesDaoImpl implements RolesDao{
 			return null;
 		}
    	}
+
+	@Override
+	@Transactional
+	public List<Roles> getAllRolesListByOrgLocationIdList(List<Long> orgLocationIdsList) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Roles roles where roles.orgLocations.id IN (:orgLocationIdsList) ";
+		List<Roles> rolesList = session.createQuery(query.toString()).setParameterList("orgLocationIdsList", orgLocationIdsList).list();
+		return rolesList;
+	}
 
 
 }

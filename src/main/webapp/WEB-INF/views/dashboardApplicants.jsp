@@ -34,7 +34,8 @@ $(document).ready(function(){
 <script>
 function ApplicantAuthorization(status){
 	var sourceleadUrl = '${sourceleadUrl}';
-	//$("#accepted").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	var loginUser = '${SourceLeadWeb_userName}';
+	//$("#accepted").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
@@ -51,8 +52,12 @@ function ApplicantAuthorization(status){
 			type : "POST",
 			url : sourceleadUrl+"/getApplicantsByStatus?${_csrf.parameterName}=${_csrf.token}&status="+status,
 			success : function(data) {
-				var json = JSON.parse(data);
-				/* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
+					if (data.response === "FAILED") {
+			    		showError(data.responseMessage);
+			    	} else if (data.response === "AWKWARD") {
+			    		location.href = "/errorPage";
+			    	} else if (data.response === "SUCCESS") {
+	            	 	 var json = data.data;
 	              			$("#accepted").empty();
 	        	        	$("#requestSent").empty();
 	              			$("#accepted").removeAttr("style");
@@ -67,11 +72,11 @@ function ApplicantAuthorization(status){
 	            				resultToday = resultToday+'	    <th>Team Member</th>';
 	            				if(status == 'accepted'){
 	            					resultToday = resultToday+'	    <th>Accepted By</th>';
-		            				resultToday = resultToday+'	    <th>Accepted On<br>(<small class="custom-small">'+dashBoardDate+'</small>)</th>';
+		            				resultToday = resultToday+'	    <th><div class="tblminwidth-100">Accepted On<br>(<small class="custom-small">'+dashBoardDate+'</small>)</div></th>';
 	            				}
 	            				if(status == 'REJECTED'){
 	            					resultToday = resultToday+'	    <th>Rejected By</th>';
-		            				resultToday = resultToday+'	    <th>Rejected On<br>(<small class="custom-small">'+dashBoardDate+'</small>)</th>';
+		            				resultToday = resultToday+'	    <th><div class="tblminwidth-100">Rejected On<br>(<small class="custom-small">'+dashBoardDate+'</small>)</div></th>';
 	            				}
 	            				if(status == 'requestSent'){
 	            					resultToday = resultToday+'	    <th>Status</th>';
@@ -109,7 +114,7 @@ function ApplicantAuthorization(status){
 
                                     	  }
                                     		  
-                                    	  resultToday  = resultToday + '           <td><div><span title="'+report.submittedOn+'">'+report.submittedOn+'</span></div></td>';
+                                    	  resultToday  = resultToday + '           <td><div class="tblminwidth-100"><span title="'+report.submittedOn+'">'+report.submittedOn+'</span></div></td>';
                                       }
                                       if(status == 'REJECTED'){
                                     	  if(report.submissionRequestUser != null && report.submissionRequestUser != 'undefined'){
@@ -119,15 +124,18 @@ function ApplicantAuthorization(status){
 
                                     	  }
                                     		  
-                                    	  resultToday  = resultToday + '           <td><div><span title="'+report.submittedOn+'">'+report.submittedOn+'</span></div></td>';
+                                    	  resultToday  = resultToday + '           <td><div class="tblminwidth-100"><span title="'+report.submittedOn+'">'+report.submittedOn+'</span></div></td>';
                                       }
+
                                       if(status == 'requestSent'){ 
                                     	    resultToday  = resultToday + '<td><div>Received</div></td>';
                                     	    resultToday = resultToday +"<td>";
-                                    	    if(report.submissionRateStatus == 'REQUEST'){
+                                    	     if(report.submissionRateStatus == 'REQUEST' && report.createdUser.trim() != loginUser.trim()){
                                     	    	resultToday = resultToday + '<a  class="paddingRight"  href="javascript:void(0)" title="Accept"  onClick="acceptCandidateFromDashboard(\''+report.id+'\', \'accept\');"><i class="fa fa-check text-success"></i></a>';
                                     	    	resultToday = resultToday + '<a class="paddingLeft" href="javascript:void(0)" title="Reject"   onClick="rejectApplicantAlertMessage(\''+report.id+'\', \'rejected\');"><i class="fa fa-close text-danger"></i></a>';
-                                    	    }
+                                    	    }else{
+                                    	    resultToday = resultToday + '---';
+                                    	    } 
                                     	    resultToday = resultToday +"</td>";
                                       }
                                       resultToday = resultToday+'     </tr>';
@@ -152,17 +160,11 @@ function ApplicantAuthorization(status){
 	            				$("#requestSentTab").removeClass("active");
 	            				
 	            	        } 
-					/* }else{
-	               	 	$("#accepted").removeAttr("style");
-	               	 	$("#accepted").empty();
-     	        		$("#requestSent").empty();
-	 	    	        var result ="";
-						result = result+"			<div class='blank-pages'>";
-						result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-						result = result+"			        <p>No Applicants Found</p>";
-						result = result+"			 </div>";
-					    $("#accepted").append(result); 
-	               } */
+			    	}else if (data.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    		showError("Operation failed, please try again");
+			    	}
 			},
 	});
 	return true;
@@ -226,15 +228,22 @@ function rejectApplicantAlertMessage(submissionId, status){
 				type : "POST",
 	    	    data: formData,
 			    url: sourceleadUrl+"/acceptRejectCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status,	    	   
-			    success: function(data) {
-                                	 ApplicantAuthorization('requestSent');
-                                	 $("#selector4").removeAttr("style");
-				            			$("#selector4").css({ display: "block" });
-			            				$("#eduMsgDiv").html("Accepted");
-                                    
-                                 	eduMsgFadeinFunction();
-                                   
-								 
+			    success: function(result) {
+				    	if (result.response === "FAILED") {
+		  		    		showError(result.responseMessage);
+		  		    	} else if (result.response === "AWKWARD") {
+		  		    		location.href = "/errorPage";
+		  		    	} else if (result.response === "SUCCESS") {
+		  		    		ApplicantAuthorization('requestSent');
+                       	 	$("#selector4").removeAttr("style");
+		            		$("#selector4").css({ display: "block" });
+	            			$("#eduMsgDiv").html("Accepted");
+                        	eduMsgFadeinFunction();
+		  		    	}else if (result.indexOf('Sign In') !== -1) {
+				    		location.replace(sourceleadUrl);
+				    	} else {
+				    		showError("Operation failed, please try again");
+				    	}
                      },
                 });return true;
 		}else{
@@ -298,17 +307,25 @@ function cancelAlert(){
 				type : "POST",
 	    	    data: formData,
 			    url: sourceleadUrl+"/acceptRejectCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status,	    	   
-			    success: function(data) {
-			    	$("#popUp").empty();
-			    	$("#rejectApplicantAlert").empty();
-			    	$(".vendor_wrap_mask").fadeOut(200);
-			    	ApplicantAuthorization('requestSent');
-			    	 $("#selector4").removeAttr("style");
-         			$("#selector4").css({ display: "block" });
-     				$("#eduMsgDiv").html("Rejected");
-                 
-              	eduMsgFadeinFunction();
-			    	
+			    success: function(result) {
+			    	if (result.response === "FAILED") {
+	  		    		showError(result.responseMessage);
+	  		    	} else if (result.response === "AWKWARD") {
+	  		    		location.href = "/errorPage";
+	  		    	} else if (result.response === "SUCCESS") {
+	  		    		$("#popUp").empty();
+				    	$("#rejectApplicantAlert").empty();
+				    	$(".vendor_wrap_mask").fadeOut(200);
+				    	ApplicantAuthorization('requestSent');
+				    	$("#selector4").removeAttr("style");
+	         			$("#selector4").css({ display: "block" });
+	     				$("#eduMsgDiv").html("Rejected");
+	              		eduMsgFadeinFunction();
+	  		    	}else if (result.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    		showError("Operation failed, please try again");
+			    	}
 			    }
 		   });
 			return true;

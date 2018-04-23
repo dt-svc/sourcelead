@@ -26,6 +26,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/app")
 public class ExpensesCategoryController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesCategoryController.class);
@@ -62,10 +63,12 @@ public class ExpensesCategoryController {
 	@RequestMapping(value = "/expenseCategory")
  	public ModelAndView expenseCategory(HttpServletRequest request) throws Exception {
 		
+
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    
 		    ModelAndView model = new ModelAndView();
+		    try {
 		    commonUtil.highLightMenu(Constants.OrgSettings, request);
 		    
 		    List<LookUpData> lookUpExpCatList = lookUpDataService.getLookUpDataByCategory(Constants.EXPENSESCATEGORY);
@@ -93,6 +96,10 @@ public class ExpensesCategoryController {
 		    
 		    model.setViewName("expenses/expenseCategory");
  			model.addObject("sourceleadUrl", sourceleadUrl);
+		}catch(Exception e){
+			  model.addObject("AWKWARD", true);
+			  model.setViewName("expenses/expenseCategory");
+		}
  			
  			return model;
  	}

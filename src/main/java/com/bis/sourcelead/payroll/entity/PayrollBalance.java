@@ -1,8 +1,13 @@
 package com.bis.sourcelead.payroll.entity;
 
-public class PayrollBalance {
+import java.io.Serializable;
+
+import com.bis.sourcelead.dto.SearchDTO;
+
+public class PayrollBalance extends SearchDTO implements Serializable{
 	
 	private String income;
+	private String orgLocationId;
 	private String directDepositGross;
 	private String directDepositNet;
 	private String processedWithCheckOptionGross;
@@ -18,13 +23,24 @@ public class PayrollBalance {
 	private String balance;
 	private String due;
 	private String billed;
-
+	private String empName;
+	
 	public String getBalance() {
 		return balance;
 	}
 
 	public void setBalance(String balance) {
 		this.balance = balance;
+	}
+
+	
+	
+	public String getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(String orgLocationId) {
+		this.orgLocationId = orgLocationId;
 	}
 
 	public String getDirectDepositGross() {
@@ -145,6 +161,14 @@ public class PayrollBalance {
 
 	public void setBilled(String billed) {
 		this.billed = billed;
+	}
+
+	public String getEmpName() {
+		return empName;
+	}
+
+	public void setEmpName(String empName) {
+		this.empName = empName;
 	}
 	
 

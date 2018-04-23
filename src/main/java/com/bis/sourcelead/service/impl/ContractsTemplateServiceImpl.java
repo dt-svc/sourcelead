@@ -19,16 +19,18 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
+import com.bis.sourcelead.dto.ClientContractsDTO;
 import com.bis.sourcelead.dto.ContractDocumentsDTO;
-import com.bis.sourcelead.dto.ContractReqDocsDTO;
-import com.bis.sourcelead.dto.ContractsDTO;
-import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ContractTemplateDTO;
+import com.bis.sourcelead.dto.ContractsDTO;
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
+import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.FullTimeContractsDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.VendorContractsDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ContractRequestDocuments;
 import com.bis.sourcelead.entity.Contracts;
@@ -38,29 +40,35 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.JobCustomFieldData;
+import com.bis.sourcelead.entity.NewContractCustomFieldData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractRequestDocumentsService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.NewContractCustomFieldDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SignatureRequestUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -79,6 +87,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	
 	
 	@Autowired
 	private UserService userService;
@@ -115,6 +127,15 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	
 	@Autowired
 	ProjectMembersService projectMembersService;
+	
+	@Autowired
+	private NewContractCustomFieldDataService newContractCustomFieldDataService;
+	
+	@Autowired
+	private OrglocationFormFieldsService orglocationFormFieldsService;
+	
+	@Autowired
+	UserRoleService userRoleService;
 	
 	@Override
 	public ContractsTemplate saveContractTemplate(ContractTemplateDTO contractTemplateDTO, JSONObject jsonObj, User user, OrgLocations orgLocation) throws Exception {
@@ -529,6 +550,26 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		Contracts savedContracts = contractsTemplateDao.saveNewContract(contracts);
 		
+		if(contractsDTO.getCustomFormData() !=null) {
+			for( CustomFormFieldDTO customFields:contractsDTO.getCustomFormData()) {
+				if(customFields != null && customFields.getCustomFormFieldId() > 0) {
+					NewContractCustomFieldData contractsCustomFields = null;
+					if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+						contractsCustomFields = newContractCustomFieldDataService.getNewContractCustomFieldDataById(customFields.getEntityId());
+					}else {
+						contractsCustomFields = new NewContractCustomFieldData();
+					}
+				contractsCustomFields.setContracts(savedContracts);
+				OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+				contractsCustomFields.setOrglocationsFormFields(orgFormField);
+				contractsCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+				newContractCustomFieldDataService.saveNewContractCustomFieldData(contractsCustomFields);
+				}
+				
+			}	
+		}
+		
+		
 		if (contractsDTO.getDocument() != null && contractsDTO.getDocument().size() > 0) {
 			for (ContractDocumentsDTO doc : contractsDTO.getDocument()) {
 				if (doc.getDocumentName() != null) {
@@ -709,9 +750,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				}
 			}
 			
+	//TODO commented by Rakshith
 			
 			//  if(null != vendorContactsUser && null == approverUser && !Constants.DRAFT.equalsIgnoreCase(saveType)){
-			 if(null == approverUser && !Constants.DRAFT.equalsIgnoreCase(saveType)){
+		/*	 if(null == approverUser && !Constants.DRAFT.equalsIgnoreCase(saveType)){
 				  Contracts con = null;
 				  if (Constants.FULL_TIME_OFFER.equalsIgnoreCase(contractsDTO.getContractType())){
 					  if (null != contractType && !"".equalsIgnoreCase(contractType)
@@ -742,26 +784,33 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		        	if(null != vendorContracts){
 		        		contractsTemplateDao.saveNewContract(vendorContracts);
 		        	}
-			  }
+			  }*/
+			if(!Constants.FULL_TIME_OFFER.equalsIgnoreCase(contractsDTO.getContractType())) {
+				sendContractForSignature(contracts,orgLocation,user);
+			}
 		}
+		
 		return savedContracts;
 		
 		
 	}
 
 	@Override
-	public Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation,String contractSubmissionType, String tabType, String contractsType, String contractStatus, User user, String userRoleName) throws Exception
+	public ContractsDTO getAllContractsByLocationIdAndStatus(OrgLocations orgLocation,String contractSubmissionType, String tabType, String contractsType, String contractStatus, User user, String userRoleName) throws Exception
 	{
 		List<Contracts> vendorcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,Constants.VENDOR, contractsType, contractStatus, user, userRoleName);
 		List<Contracts> clientcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,Constants.CLIENT, contractsType, contractStatus, user, userRoleName);
 		List<Contracts> fullTimeoffercontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation, contractSubmissionType, Constants.FULL_TIME_OFFER, contractsType, contractStatus, user, userRoleName);
 		Contracts contractsForList = new Contracts();
+		ContractsDTO contractsDTO = new ContractsDTO();
 		
+		List<VendorContractsDTO> venContractsList = new ArrayList<>();
 		for(Contracts contracts :vendorcontractsList ){
+			VendorContractsDTO venContractsDto = new VendorContractsDTO();
 			StringBuilder ownerName = new StringBuilder();
 			StringBuilder vendorName = new StringBuilder();
 			if(null != contracts.getOwnerUserId()){
-				contracts.setOwnerUser(contracts.getOwnerUserId().getId());
+				venContractsDto.setOwnerUser(contracts.getOwnerUserId().getId());
 				if(null != contracts.getOwnerUserId().getFirstName() && null != contracts.getOwnerUserId().getLastName()){
 					ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
 				}else{
@@ -770,8 +819,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}else{
 				ownerName.append("---");
 			}
+			if(contracts.getContractsTemplate() != null){
+			venContractsDto.setTemplateId(contracts.getContractsTemplate().getId().toString());
+			}
 			
-			contracts.setOwnerName(ownerName.toString());
+			
+			venContractsDto.setOwnerName(ownerName.toString());
 			if(null != contracts.getContactUser()){
 				if(null != contracts.getContactUser().getFirstName() && null != contracts.getContactUser().getLastName()){
 					vendorName.append(contracts.getContactUser().getFirstName()).append((contracts.getContactUser().getLastName()));
@@ -781,18 +834,20 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}else{
 				vendorName.append("---");
 			}
-			contracts.setVendorContactName(vendorName.toString());
+			venContractsDto.setVendorContactName(vendorName.toString());
 			
 			if(null != contracts.getOrgRelations()){
 			 	OrgRelations orgRelations = orgRelationsService.getClientAndVendorOrgDeatilsById(orgLocation.getId(), contracts.getOrgRelations().getId());
 			 	if(null != orgRelations){
 			 		if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-			 			contracts.setContractWith(orgRelations.getResponderLocationId().getOrgLocationName());
+			 			venContractsDto.setContractWith(orgRelations.getResponderLocationId().getOrgLocationName());
 					}	
 					else if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-						contracts.setContractWith(orgRelations.getLocationId().getOrgLocationName());
+						venContractsDto.setContractWith(orgRelations.getLocationId().getOrgLocationName());
 					}
 			 	}
+			 	
+			 	venContractsDto.setOrgRelationUUID(contracts.getOrgRelations().getUUID());
 			}
 			
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
@@ -803,14 +858,14 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
 				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
 				currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),converteDate);
-				contracts.setStartDateStr(currentDateInTimezone);
+				venContractsDto.setStartDateStr(currentDateInTimezone);
 			}
 			if(null != contracts && null != contracts.getEndDate()){
 				String endTimeStr = Constants.TZ_DF.format(contracts.getEndDate());  
 				String endDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), endTimeStr);
 				Date endconverteDate = TZ_DF_TS.parse(endDateInTimezone);
 				endDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),endconverteDate);
-				contracts.setEndDateStr(endDateInTimezone);
+				venContractsDto.setEndDateStr(endDateInTimezone);
 			}
 			
 			/*contracts.setStartDateStr(Constants.DF_DMY.format(contracts.getStartDate()));
@@ -818,20 +873,69 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				contracts.setEndDateStr(Constants.DF_DMY.format(contracts.getEndDate()));	
 			}*/
 			
+			if(contracts.getTemplateFileURL() != null){
+				venContractsDto.setTemplateFileURL(contracts.getTemplateFileURL());
+			}
+			
+			if(contracts.getId() != null){
+				venContractsDto.setId(contracts.getId());
+			}
+			
+			if(contracts.getContractUUID() != null){
+				venContractsDto.setContractUUID(contracts.getContractUUID());
+			}
+			
+			if(contracts.getContractTitle() != null){
+				venContractsDto.setContractTitle(contracts.getContractTitle());
+			}
+			
+			if(contracts.getContractType() != null){
+				venContractsDto.setContractType(contracts.getContractType());
+			}
+			
+			if(contracts.getTemplateSubmissionStatus() != null){
+				venContractsDto.setTemplateSubmissionStatus(contracts.getTemplateSubmissionStatus());
+			}
+			
+			if(contracts.getTypeOfContract() != null){
+				venContractsDto.setTypeOfContract(contracts.getTypeOfContract());
+			}
+			
+			if(contracts.getFileURL() != null){
+				venContractsDto.setFileURL(contracts.getFileURL());
+			}
+			
+			if(contracts.getContractStatus() != null){
+				venContractsDto.setContractStatus(contracts.getContractStatus());
+			}
+			
+			if(contracts.getFileType() != null){
+				venContractsDto.setFileType(contracts.getFileType());
+			}
+			
+			if(contracts.getFileName() != null){
+				venContractsDto.setFileName(contracts.getFileName());
+			}
+			
+			if(contracts.getInvoiceFrequency() != null){
+				venContractsDto.setBillingCycle(contracts.getInvoiceFrequency());
+			}
+			
 			if(null != contracts.getParentContractId()){
-			contracts.setParentId(contracts.getParentContractId().getId().toString());
+				venContractsDto.setParentContractId(contracts.getParentContractId().getId());
+				venContractsDto.setParentId(contracts.getParentContractId().getId().toString());
 			}
 			else{
-				contracts.setParentId("--");
+				venContractsDto.setParentId("--");
 			}
 
 			if(null != contracts.getApproverUser() ){
-				contracts.setApproverUserId(contracts.getApproverUser().getId());
+				venContractsDto.setApproverUserId(contracts.getApproverUser().getId());
 				if(null != contracts.getApproverUser().getFirstName() && null != contracts.getApproverUser().getLastName()){
 					StringBuilder sb = new StringBuilder();
-					contracts.setApproverUserName(sb.append(contracts.getApproverUser().getFirstName()).append(" ").append(contracts.getApproverUser().getLastName()).toString());	
+					venContractsDto.setApproverUserName(sb.append(contracts.getApproverUser().getFirstName()).append(" ").append(contracts.getApproverUser().getLastName()).toString());	
 				}else{
-					contracts.setApproverUserName(contracts.getApproverUser().getFirstName());
+					venContractsDto.setApproverUserName(contracts.getApproverUser().getFirstName());
 				}
 			}
 			//Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
@@ -839,18 +943,21 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
     		if(null != contracts.getParentContractId()){
     			Contracts parentcontracts  = contractsTemplateDao.getContractById(contracts.getParentContractId().getId());
     			countOfDoc  = contractRequestDocumentsService.getCountOfDocByContractedId(parentcontracts.getId());
-    			contracts.setReqDocCount(countOfDoc);
+    			venContractsDto.setReqDocCount(countOfDoc);
     		}else{
     			countOfDoc  = contractRequestDocumentsService.getCountOfDocByContractedId(contracts.getId());
-    			contracts.setReqDocCount(countOfDoc);
+    			venContractsDto.setReqDocCount(countOfDoc);
     		}
-			
+    		venContractsList.add(venContractsDto);
 			}
+		
+		List<ClientContractsDTO> clientContractsList = new ArrayList<>();
 		for(Contracts contracts :clientcontractsList ){
+			ClientContractsDTO clientConDto = new ClientContractsDTO();
 			StringBuilder ownerName = new StringBuilder();
 			StringBuilder vendorName = new StringBuilder();
 			if(null != contracts.getOwnerUserId()){
-				contracts.setOwnerUser(contracts.getOwnerUserId().getId());
+				clientConDto.setOwnerUser(contracts.getOwnerUserId().getId());
 				if(null != contracts.getOwnerUserId().getFirstName() && null != contracts.getOwnerUserId().getLastName()){
 					ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
 				}else{
@@ -859,7 +966,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}else{
 				ownerName.append("---");
 			}
-			contracts.setOwnerName(ownerName.toString());
+			clientConDto.setOwnerName(ownerName.toString());
 			if(null != contracts.getContactUser()){
 				if(null != contracts.getContactUser().getFirstName() && null != contracts.getContactUser().getLastName()){
 					vendorName.append(contracts.getContactUser().getFirstName()).append((contracts.getContactUser().getLastName()));
@@ -869,18 +976,23 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}else{
 				vendorName.append("---");
 			}
-			contracts.setVendorContactName(vendorName.toString());
+			clientConDto.setVendorContactName(vendorName.toString());
+			if(contracts.getContractsTemplate() != null){
+			clientConDto.setTemplateId(contracts.getContractsTemplate().getId().toString());
+			}
 			
 			if(null != contracts.getOrgRelations()){
 			 	OrgRelations orgRelations = orgRelationsService.getClientAndVendorOrgDeatilsById(orgLocation.getId(), contracts.getOrgRelations().getId());
 			 	if(null != orgRelations){
 			 		if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-			 			contracts.setContractWith(orgRelations.getResponderLocationId().getOrgLocationName());
+			 			clientConDto.setContractWith(orgRelations.getResponderLocationId().getOrgLocationName());
 					}	
 					else if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-						contracts.setContractWith(orgRelations.getLocationId().getOrgLocationName());
+						clientConDto.setContractWith(orgRelations.getLocationId().getOrgLocationName());
 					}
 			 	}
+			 	
+			 	clientConDto.setOrgRelationUUID(contracts.getOrgRelations().getUUID());
 			}
 			
 			/*contracts.setStartDateStr(Constants.DF_DMY.format(contracts.getStartDate()));
@@ -896,46 +1008,100 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
 				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
 				currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),converteDate);
-				contracts.setStartDateStr(currentDateInTimezone);
+				clientConDto.setStartDateStr(currentDateInTimezone);
 			}
 			if(null != contracts && null != contracts.getEndDate()){
 				String endTimeStr = Constants.TZ_DF.format(contracts.getEndDate());  
 				String endDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), endTimeStr);
 				Date endconverteDate = TZ_DF_TS.parse(endDateInTimezone);
 				endDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),endconverteDate);
-				contracts.setEndDateStr(endDateInTimezone);
+				clientConDto.setEndDateStr(endDateInTimezone);
 			}
+			
+			if(contracts.getTemplateFileURL() != null){
+				clientConDto.setTemplateFileURL(contracts.getTemplateFileURL());
+			}
+			
+			if(contracts.getId() != null){
+				clientConDto.setId(contracts.getId());
+			}
+			
+			if(contracts.getContractUUID() != null){
+				clientConDto.setContractUUID(contracts.getContractUUID());
+			}
+			
+			if(contracts.getContractTitle() != null){
+				clientConDto.setContractTitle(contracts.getContractTitle());
+			}
+			
+			if(contracts.getContractType() != null){
+				clientConDto.setContractType(contracts.getContractType());
+			}
+			
+			if(contracts.getContractStatus() != null){
+				clientConDto.setContractStatus(contracts.getContractStatus());
+			}
+			
+			if(contracts.getTemplateSubmissionStatus() != null){
+				clientConDto.setTemplateSubmissionStatus(contracts.getTemplateSubmissionStatus());
+			}
+			
+			if(contracts.getTypeOfContract() != null){
+				clientConDto.setTypeOfContract(contracts.getTypeOfContract());
+			}
+			
+			if(contracts.getFileURL() != null){
+				clientConDto.setFileURL(contracts.getFileURL());
+			}
+			
+			if(contracts.getFileType() != null){
+				clientConDto.setFileType(contracts.getFileType());
+			}
+			
+			if(contracts.getFileName() != null){
+				clientConDto.setFileName(contracts.getFileName());
+			}
+			
+			if(contracts.getInvoiceFrequency() != null){
+				clientConDto.setBillingCycle(contracts.getInvoiceFrequency());
+			}
+			
 			if(null != contracts.getParentContractId()){
-			contracts.setParentId(contracts.getParentContractId().getId().toString());
+				clientConDto.setParentContractId(contracts.getParentContractId().getId());
+				clientConDto.setParentId(contracts.getParentContractId().getId().toString());
 			}
 			else{
-				contracts.setParentId("--");
+				clientConDto.setParentId("--");
 			}
 			
 			if(null != contracts.getApproverUser()){
-				contracts.setApproverUserId(contracts.getApproverUser().getId());
+				clientConDto.setApproverUserId(contracts.getApproverUser().getId());
 				if(null != contracts.getApproverUser().getFirstName() && null != contracts.getApproverUser().getLastName()){
 					StringBuilder sb = new StringBuilder();
-					contracts.setApproverUserName(sb.append(contracts.getApproverUser().getFirstName()).append(" ").append(contracts.getApproverUser().getLastName()).toString());	
+					clientConDto.setApproverUserName(sb.append(contracts.getApproverUser().getFirstName()).append(" ").append(contracts.getApproverUser().getLastName()).toString());	
 				}else{
-					contracts.setApproverUserName(contracts.getApproverUser().getFirstName());
+					clientConDto.setApproverUserName(contracts.getApproverUser().getFirstName());
 				}
 			}
 			Integer countOfDoc = 0;
     		if(null != contracts.getParentContractId()){
     			Contracts parentcontracts  = contractsTemplateDao.getContractById(contracts.getParentContractId().getId());
     			countOfDoc  = contractRequestDocumentsService.getCountOfDocByContractedId(parentcontracts.getId());
-    			contracts.setReqDocCount(countOfDoc);
+    			clientConDto.setReqDocCount(countOfDoc);
     		}else{
     			countOfDoc  = contractRequestDocumentsService.getCountOfDocByContractedId(contracts.getId());
-    			contracts.setReqDocCount(countOfDoc);
+    			clientConDto.setReqDocCount(countOfDoc);
     		}
+    		clientContractsList.add(clientConDto);
 		}
+		
 		//fullTimeoffercontractsList 
+		List<FullTimeContractsDTO> fullTimeContractsList = new ArrayList<>();
 		for(Contracts contracts : fullTimeoffercontractsList ){
+			FullTimeContractsDTO fullTimeContract = new FullTimeContractsDTO();
 			StringBuilder ownerName = new StringBuilder();
 			if(null != contracts.getOwnerUserId()){
-				contracts.setOwnerUser(contracts.getOwnerUserId().getId());
+				fullTimeContract.setOwnerUser(contracts.getOwnerUserId().getId());
 				if(null != contracts.getOwnerUserId().getFirstName() && null != contracts.getOwnerUserId().getLastName()){
 					ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
 				}else{
@@ -944,8 +1110,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}else{
 				ownerName.append("---");
 			}
-			contracts.setOwnerName(ownerName.toString());
-		
+			fullTimeContract.setOwnerName(ownerName.toString());
+			
+			if(contracts.getContractsTemplate() != null){
+			fullTimeContract.setTemplateId(contracts.getContractsTemplate().getId().toString());
+			}
+			
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 		//	SimpleDateFormat formatter = orgLocation.getLocFullFormDateFormatter();
@@ -955,49 +1125,98 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
 				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
 				currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),converteDate);
-				contracts.setJoinedDateStr(currentDateInTimezone);
+				fullTimeContract.setJoinedDateStr(currentDateInTimezone);
 			}
 			else{
-				contracts.setJoinedDateStr("--");
+				fullTimeContract.setJoinedDateStr("--");
+			}
+			
+			if(contracts.getId() != null){
+				fullTimeContract.setId(contracts.getId());
+			}
+			
+			if(contracts.getContractUUID() != null){
+				fullTimeContract.setContractUUID(contracts.getContractUUID());
+			}
+			
+			if(contracts.getContractTitle() != null){
+				fullTimeContract.setContractTitle(contracts.getContractTitle());
+			}
+			
+			if(contracts.getContractType() != null){
+				fullTimeContract.setContractType(contracts.getContractType());
+			}
+			
+			if(contracts.getTemplateSubmissionStatus() != null){
+				fullTimeContract.setTemplateSubmissionStatus(contracts.getTemplateSubmissionStatus());
+			}
+			
+			if(contracts.getTypeOfContract() != null){
+				fullTimeContract.setTypeOfContract(contracts.getTypeOfContract());
+			}
+			
+			if(contracts.getContractStatus() != null){
+				fullTimeContract.setContractStatus(contracts.getContractStatus());
+			}
+			
+			if(contracts.getBillingAmount() != null){
+				fullTimeContract.setBillingAmount(contracts.getBillingAmount());
+			}
+			
+			if(contracts.getFileURL() != null){
+				fullTimeContract.setFileURL(contracts.getFileURL());
+			}
+			
+			if(contracts.getFileType() != null){
+				fullTimeContract.setFileType(contracts.getFileType());
+			}
+			
+			if(contracts.getFileName() != null){
+				fullTimeContract.setFileName(contracts.getFileName());
 			}
 			
 			if(null != contracts.getParentContractId()){
-			contracts.setParentId(contracts.getParentContractId().getId().toString());
+				fullTimeContract.setParentContractId(contracts.getParentContractId().getId());
+				fullTimeContract.setParentId(contracts.getParentContractId().getId().toString());
 			}
 			else{
-				contracts.setParentId("--");
+				fullTimeContract.setParentId("--");
 			}
 			RequirementSubmission reqSub = requirementSubmissionService.getRequirementSubmissionById(contracts.getRequirementSubmission().getId());
         	if(null != reqSub.getCandidate().getLastName()){
-        		contracts.setEmpName(reqSub.getCandidate().getFirstName()+" "+reqSub.getCandidate().getLastName());	
+        		fullTimeContract.setEmpName(reqSub.getCandidate().getFirstName()+" "+reqSub.getCandidate().getLastName());	
 			}else{
-				contracts.setEmpName(reqSub.getCandidate().getFirstName());
+				fullTimeContract.setEmpName(reqSub.getCandidate().getFirstName());
 			}
 			
 			if(null != contracts.getApproverUser()){
-				contracts.setApproverUserId(contracts.getApproverUser().getId());
+				fullTimeContract.setApproverUserId(contracts.getApproverUser().getId());
 				if(null != contracts.getApproverUser().getFirstName() && null != contracts.getApproverUser().getLastName()){
 					StringBuilder sb = new StringBuilder();
-					contracts.setApproverUserName(sb.append(contracts.getApproverUser().getFirstName()).append(" ").append(contracts.getApproverUser().getLastName()).toString());	
+					fullTimeContract.setApproverUserName(sb.append(contracts.getApproverUser().getFirstName()).append(" ").append(contracts.getApproverUser().getLastName()).toString());	
 				}else{
-					contracts.setApproverUserName(contracts.getApproverUser().getFirstName());
+					fullTimeContract.setApproverUserName(contracts.getApproverUser().getFirstName());
 				}
 			}
 			Integer countOfDoc = 0;
     		if(null != contracts.getParentContractId()){
     			Contracts parentcontracts  = contractsTemplateDao.getContractById(contracts.getParentContractId().getId());
     			countOfDoc  = contractRequestDocumentsService.getCountOfDocByContractedId(parentcontracts.getId());
-    			contracts.setReqDocCount(countOfDoc);
+    			fullTimeContract.setReqDocCount(countOfDoc);
     		}else{
     			countOfDoc  = contractRequestDocumentsService.getCountOfDocByContractedId(contracts.getId());
-    			contracts.setReqDocCount(countOfDoc);
+    			fullTimeContract.setReqDocCount(countOfDoc);
     		}
+    		fullTimeContractsList.add(fullTimeContract);
 		}
 		
-		contractsForList.setVendorcontractsList(vendorcontractsList);
-		contractsForList.setClientcontractsList(clientcontractsList);
-		contractsForList.setFullTimeoffercontractsList(fullTimeoffercontractsList);
-		return contractsForList;
+		contractsDTO.setVendorcontractsList(venContractsList);
+		contractsDTO.setClientcontractsList(clientContractsList);
+		contractsDTO.setFullTimeoffercontractsList(fullTimeContractsList);
+//		contractsForList.setVendorcontractsList(vendorcontractsList);
+//		contractsForList.setClientcontractsList(clientcontractsList);
+//		contractsForList.setFullTimeoffercontractsList(fullTimeoffercontractsList);
+		return contractsDTO;
 	}
 	
 	@Override
@@ -1163,7 +1382,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				childContractsHistory.setUpdatedBy(user.getUserCode());
 				contractsTemplateDao.saveContractsHistory(childContractsHistory);
 				
-					  Contracts con = null;
+				//TODO Commented by Rakshith
+				
+					 /* Contracts con = null;
 					  if (Constants.FULL_TIME_OFFER.equalsIgnoreCase(contracts.getContractType())){
 						  if (null != contracts.getContractType() && !"".equalsIgnoreCase(contracts.getContractType())
 									&& "custom".equalsIgnoreCase(contracts.getContractType())) {
@@ -1187,9 +1408,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					  savedChildContracts.setEnvelopId(con.getTempEnvId());
 					  savedChildContracts.setContractStatus(con.getContractStatus());
 					  contractsTemplateDao.saveNewContract(upadatedContracts);
-			        	Contracts updateEnvContracts = contractsTemplateDao.saveNewContract(savedChildContracts);
+			          Contracts updateEnvContracts = contractsTemplateDao.saveNewContract(savedChildContracts);*/
 				contractApproveEmail(contracts,user,org,orgLocation);
 				sendMailToOwner(contracts,user,org,orgLocation);
+				if(!Constants.FULL_TIME_OFFER.equalsIgnoreCase(contracts.getContractType())) {
+				sendContractForSignature(contracts, orgLocation, user);
+				}
 		}else{
 
 			contracts.setRejectedReason(rejectReason);
@@ -1255,6 +1479,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					 globalVarsMap.put("rejectReason","--");
 				 }
 			 
+			 if(contracts.getContactUser() != null){
 			 if(contracts.getContactUser().getLastName() !=null && !"".equalsIgnoreCase(contracts.getContactUser().getLastName())){
 				 
 				 StringBuilder builder=new StringBuilder();
@@ -1263,8 +1488,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			 else{
 			 globalVarsMap.put("clientContact",contracts.getContactUser().getFirstName());
 			 }
+			 }
 			 StringBuilder linkBuild = new StringBuilder();
-			 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			
 		//	SimpleDateFormat dateFormat=orgLocation.getLocFullFormDateFormatter();
 			if(contracts.getStartDate() != null){
@@ -1332,9 +1558,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 emailMessage.setMessageBody(emailTemplate);
 		
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
+	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("contractListbyStatus?"+"contractType="+contracts.getContractType()+"&status=rejected").toString();
+
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-		 emailScenerioUtil.sendNotification(actionLink, loginUser,createdUser, orgLocation, notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, loginUser,createdUser, orgLocation, notificationScenario,new HashMap<String,String>());
 		
 		
 	}
@@ -1393,7 +1622,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 globalVarsMap.put("clientContact",contracts.getContactUser().getFirstName());
 		 }
 		 StringBuilder linkBuild = new StringBuilder();
-		 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		
 		//SimpleDateFormat dateFormat=orgLocation.getLocFullFormDateFormatter();
 		if(contracts.getStartDate() != null){
@@ -1456,7 +1685,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		 String actionLink="";
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-		 emailScenerioUtil.sendNotification(actionLink, loginUser,createdUser, orgLocation, notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, loginUser,createdUser, orgLocation, notificationScenario,new HashMap<String,String>());
 		
 	}
 
@@ -1503,7 +1732,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			globalVarsMap.put("OwnerName","--");
 		}
 		 StringBuilder linkBuild = new StringBuilder();
-		 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		
 	//	SimpleDateFormat dateFormat=orgLocation.getLocFullFormDateFormatter();
 		if(contracts.getStartDate() != null){
@@ -1612,13 +1841,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		
-		// StringBuilder actionLinkStringBuilder = new StringBuilder();
-		// String actionLink= actionLinkStringBuilder.append(sourceleadUrl).append("/requirementSummary?requirementUUID=").append(requirement.getRequirementUUID()).toString();
-//		 String actionLink= sourceleadUrl"/requirementSummary?requirementUUID="+requirement.getRequirementUUID()+"";
-		//calling the sendEmail method of emailScenerioUtil
+	
+		 StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
+	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("contractListbyStatus?"+"contractType="+contracts.getContractType()+"&status=waiting").toString();
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, orgLocation, notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, orgLocation, notificationScenario,new HashMap<String,String>());
 		
 	}
 	
@@ -1949,7 +2177,11 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				contracts.setFileURL(info.getFileURL());
 				contracts.setFileName(info.getFileName());
 				contracts.setFileType(info.getContentType());
-				contracts.setFileName(info.getFileName());
+				
+				vendorContracts.setFileURL(info.getFileURL());
+				vendorContracts.setFileName(info.getFileName());
+				vendorContracts.setFileType(info.getContentType());
+				
 				}
 				//move the document file temp to your(ContractDocs here) folder
 				FileUploadUtil.moveFile(contractsDTO.getStaticPath(), info, "ContractDocs");
@@ -1986,8 +2218,18 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		contracts.setStatus("0");
 		contracts.setOrgLocationId(orgLocation);
-		vendorContracts.setTemplateSubmissionStatus(Constants.FINALIZED);
-		contracts.setTemplateSubmissionStatus(Constants.FINALIZED);
+		
+		Date date = new Date();
+		String currentTimeStr = TZ_DF_TS.format(date);
+		Date curDate = TZ_DF_TS.parse(currentTimeStr);
+		if(contracts.getEndDate() != null && (contracts.getEndDate().before(curDate)|| contracts.getEndDate().equals(curDate))){
+			vendorContracts.setTemplateSubmissionStatus(Constants.EXPIRED);
+			contracts.setTemplateSubmissionStatus(Constants.EXPIRED);
+		}else{
+			vendorContracts.setTemplateSubmissionStatus(Constants.FINALIZED);
+			contracts.setTemplateSubmissionStatus(Constants.FINALIZED);
+		}
+		
 		vendorContracts.setStatus("0");
 		contracts.setCreatedDate(new Date());
 		contracts.setCreatedBy(user.getUserCode());
@@ -2017,7 +2259,6 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			else if(Constants.NSA.equalsIgnoreCase(contracts.getContractType())){
 				vendorContracts.setContractType(Constants.VENDOR_NSA);
 			}
-				vendorContracts.setContractType(Constants.CLIENT_MSA);
 				vendorContracts.setInitiatorType(Constants.CLIENT);
 				vendorContracts.setContractOrgLocationId(orgLocation);
 				vendorContracts.setParentContractId(savedContracts);
@@ -2066,6 +2307,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 							contractRequestDocuments.setDocFileName(file.getFileName());
 							contractRequestDocuments.setFileType(file.getContentType());
 							contractRequestDocuments.setFileName(doc.getDocumentName());
+							contractRequestDocuments.setDocType(doc.getCandiDoc());
+							contractRequestDocuments.setDescription(doc.getDescription());
 							
 							FileUploadUtil.moveFile(contractsDTO.getStaticPath(), file, "RequestDocuments");
 							contractRequestDocuments.setContractId(savedContracts);
@@ -2161,7 +2404,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		
 		StringBuilder loginBuilder = new StringBuilder();
-		globalVarsMap.put("loginUrl",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("loginUrl",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		
 		 if(contracts.getContactUser().getFirstName() != null && contracts.getContactUser().getLastName()!=null && !"".equalsIgnoreCase(contracts.getContactUser().getFirstName()) && !"".equalsIgnoreCase(contracts.getContactUser().getLastName())){
 			 StringBuilder userBuild = new StringBuilder();
@@ -2193,7 +2436,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		 String actionLink="";
 		 emailScenerioUtil.sendEmail(emailMessage,contracts.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
-		 emailScenerioUtil.sendNotification(actionLink, loginUser,owner, contracts.getOrgLocationId(), notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, loginUser,owner, contracts.getOrgLocationId(), notificationScenario,new HashMap<String,String>());
 		
 	}
 
@@ -2490,7 +2733,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				if(contracts.getCandidate() != null && contracts.getCandidate().getFirstName() != null && !"".equalsIgnoreCase(contracts.getCandidate().getFirstName()) && contracts.getCandidate().getLastName()!= null && !"".equalsIgnoreCase(contracts.getCandidate().getLastName())){
 					StringBuilder creatorSb = new StringBuilder();
 					globalVarsMap.put("Associate", creatorSb.append(contracts.getCandidate().getFirstName()).append(" ").append(contracts.getCandidate().getLastName()).toString());
-				}else if(contracts.getCandidate().getFirstName() != null && !"".equalsIgnoreCase(contracts.getCandidate().getFirstName())){
+				}else if(contracts.getCandidate() != null && contracts.getCandidate().getFirstName() != null && !"".equalsIgnoreCase(contracts.getCandidate().getFirstName())){
 					globalVarsMap.put("Associate",contracts.getCandidate().getFirstName());
 				}else{
 					globalVarsMap.put("Associate","--");
@@ -2510,24 +2753,27 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		EmailScenario  emailScenario = null;
+		EmailScenario  notificationScenario = null;
 		if(Constants.CLIENT_MSA.equalsIgnoreCase(contracts.getContractType()) || Constants.VENDOR_MSA.equalsIgnoreCase(contracts.getContractType())){
 			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MSA_CONTRACT_FINALIZED,Constants.ENTITY_TYPE_EMAIL);
-		}else if(Constants.CLIENT_SOW.equalsIgnoreCase(contracts.getContractType()) || Constants.VENDOR_SOW.equalsIgnoreCase(contracts.getContractType())){
+		    notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MSA_FINALIZED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+		}else if(Constants.Client_SOW.equalsIgnoreCase(contracts.getContractType()) || Constants.Vendor_SOW.equalsIgnoreCase(contracts.getContractType())){
 			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SOW_CONTRACT_FINALIZED,Constants.ENTITY_TYPE_EMAIL);
-		}else if(Constants.NDA.equalsIgnoreCase(contracts.getContractType()) || Constants.NSA.equalsIgnoreCase(contracts.getContractType())){
+			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SOW_FINALIZED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+		}else if(Constants.VENDOR_NDA.equalsIgnoreCase(contracts.getContractType()) || Constants.VENDOR_NSA.equalsIgnoreCase(contracts.getContractType())){
 			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.NDA_NSA_CONTRACT_FINALIZED,Constants.ENTITY_TYPE_EMAIL);
+			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.NDA_NSA_CONTRACT_FINALIZED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+
 		}
 		 
-//		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPROVER_UPDATED_CONTRACT,Constants.ENTITY_TYPE_NOTIFICATION);
-		
 		 //covert subject,body and signature
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
 		 String url = sourceleadUrl;
 		 
-		/* String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
-		 notificationScenario.setBody(notificationbody);*/
+		 String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		 notificationScenario.setBody(notificationbody);
 		 
 		 //construct HTML template using required data
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocation.getOrg(),orgLocation);
@@ -2535,9 +2781,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 emailMessage.setMessageBody(emailTemplate);
 		
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		 String actionLink="";
+		 StringBuilder notificationLink = new StringBuilder();
+		 String notificationActionLink="";
+	     notificationActionLink = notificationLink.append(sourceleadUrl).append("/").append("viewContract?"+"contractUUID="+contracts.getContractUUID()).toString();
+
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-//		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, orgLocation, notificationScenario);
+		 emailScenerioUtil.sendNotification(notificationActionLink, loginUser,contracts.getContactUser(), contracts.getContractOrgLocationId(), notificationScenario,new HashMap<String,String>());
 		
 
 	}
@@ -2610,12 +2859,17 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		globalVarsMap.put("receiverOrg", contracts.getContractOrgLocationId().getOrgLocationName());
 		StringBuilder loginBuilder = new StringBuilder();
-		globalVarsMap.put("loginUrl", loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("loginUrl", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		// setting the Recipient information
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
 		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MODIFY_CONTRACT_ENDDATE, Constants.ENTITY_TYPE_EMAIL);
+		
+        EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MODIFY_CONTRACT_ENDDATE_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+		String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		notificationScenario.setBody(notificationbody);
+		
 		// covert subject,body and signature
 		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
 		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
@@ -2627,6 +2881,11 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, contracts.getOrgLocationId().getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		 StringBuilder notificationLink = new StringBuilder();
+		 String actionLink="";
+	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewContract?"+"contractUUID="+contracts.getContractUUID()).toString();
+
+		emailScenerioUtil.sendNotification(actionLink,ownerUser,contactUser, contracts.getContractOrgLocationId(), notificationScenario,new HashMap<String,String>());
 	}
 
 	@Override
@@ -2736,7 +2995,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		globalVarsMap.put("PartnerOrganisation", contracts.getContractOrgLocationId().getOrgLocationName());
 		StringBuilder loginBuilder = new StringBuilder();
-		globalVarsMap.put("loginUrl", loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("loginUrl", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		// setting the Recipient information
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		// getting the current EmailScenario by EmailScenario unique name and
@@ -2753,6 +3012,148 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, contracts.getOrgLocationId().getId(), iAdressArray, new ArrayList<EmailAttachment>());
+	}
+
+	@Override
+	public List<Contracts> getContractByLocationId(Long orgLocationId) {
+		return contractsTemplateDao.getContractByLocationId(orgLocationId);
+	}
+	
+	private void sendContractForSignature(Contracts contracts, OrgLocations orgLocation, User user) throws Exception {
+		
+		User owner = userService.getUserByUserCode(contracts.getOwnerUserId().getUserCode());
+		User receiver = userService.getUserByUserCode(contracts.getContactUser().getUserCode());
+		EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(owner.getFirstName());
+		 if(owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
+			 emailMessage.setLastName(owner.getLastName());
+		 }else{
+			 emailMessage.setLastName("");
+		 }
+		 emailMessage.setFromEmail(owner.getEmail());
+		 emailMessage.setToEmail(receiver.getEmail());
+		 emailMessage.setCreatedBy("sladmin");
+		 if(owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
+			 StringBuilder sb = new StringBuilder();
+			 emailMessage.setFromName(sb.append(owner.getFirstName()).append(" ").append(owner.getLastName()).toString());
+		 }else{
+			 emailMessage.setFromName(owner.getFirstName());
+		 }
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 
+		 if(contracts.getContractTitle()!= null && !"".equalsIgnoreCase(contracts.getContractTitle())){
+			 globalVarsMap.put("contractTitle", contracts.getContractTitle());
+			 }else{
+				 globalVarsMap.put("contractTitle","--");
+			 }
+		 
+		 if(owner.getLastName() != null && !"".equalsIgnoreCase(owner.getLastName())){
+			StringBuilder ownersb = new StringBuilder();
+			 globalVarsMap.put("contractCreator", ownersb.append(owner.getFirstName()).append(" ").append(owner.getLastName()).toString());
+			 }else{
+				 globalVarsMap.put("contractCreator",owner.getFirstName());
+			 }
+		 
+		 if(receiver.getLastName() != null && !"".equalsIgnoreCase(receiver.getLastName())){
+				StringBuilder receiversb = new StringBuilder();
+				 globalVarsMap.put("receiverUser", receiversb.append(receiver.getFirstName()).append(" ").append(receiver.getLastName()).toString());
+				 }else{
+					 globalVarsMap.put("receiverUser",receiver.getFirstName());
+				 }
+		
+		 if(contracts.getCandidate() != null){
+			 if(contracts.getCandidate().getLastName() != null && !"".equalsIgnoreCase(contracts.getCandidate().getLastName())) {
+				 StringBuilder applicant = new StringBuilder();
+				 globalVarsMap.put("Applicant", applicant.append(contracts.getCandidate().getFirstName()).append(" ").append(contracts.getCandidate().getLastName()).toString());
+			 }else{
+				 globalVarsMap.put("Applicant",contracts.getCandidate().getFirstName());
+			}
+		 }
+		 
+		 if(contracts.getContractType() != null){
+			 globalVarsMap.put("contractType", contracts.getContractType());
+			 }else{
+				 globalVarsMap.put("contractType","--");
+			 }
+		 
+		 if(orgLocation != null){
+			 globalVarsMap.put("loginOrg", orgLocation.getOrgLocationName());
+			 }else{
+				 globalVarsMap.put("loginOrg","--");
+			 }
+		 
+		 if(contracts.getEndDate() != null){
+			 StringBuilder contractDur = new StringBuilder();
+			 globalVarsMap.put("contractDuration", contractDur.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), contracts.getStartDate())).append(" - ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),contracts.getEndDate())).toString());
+			 }else{
+				 globalVarsMap.put("contractDuration",commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), contracts.getStartDate()).toString());
+			 }
+		 
+		 if(user.getLastName() != null){
+			 StringBuilder logUser = new StringBuilder();
+			 globalVarsMap.put("loginUser", logUser.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+			 }else{
+				 globalVarsMap.put("loginUser",user.getFirstName().toString());
+			 }
+		 
+		 StringBuilder linkBuild = new StringBuilder();
+		 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px; float:left;'>Login</div></a>").toString());
+		 
+		 StringBuilder signatureBuild = new StringBuilder();
+		 globalVarsMap.put("signatureLink",signatureBuild.append("<a href='").append(sourceleadUrl).append("/").append("ws/docusign?contractUUID=").append(contracts.getContractUUID()).append("&type=public").append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px; float:left;'>Sign Here</div></a>").toString());
+		 
+		 EmailScenario  emailScenario = null;
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 if(Constants.Client_SOW.equalsIgnoreCase(contracts.getContractType()) || Constants.Vendor_SOW.equalsIgnoreCase(contracts.getContractType())) {
+			   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SEND_SOW_CONTRACT,Constants.ENTITY_TYPE_EMAIL);
+		 }else {
+			   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SEND_CONTRACT,Constants.ENTITY_TYPE_EMAIL);
+		 }
+		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SEND_CONTRACT,Constants.ENTITY_TYPE_NOTIFICATION);
+		 
+		 String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		 notificationScenario.setBody(notificationbody);
+
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, contracts.getOrgLocationId().getOrg(),contracts.getOrgLocationId());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 StringBuilder notificationLink = new StringBuilder();
+		 String actionLink="";
+	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("contractListbyStatus?"+"contractType="+contracts.getContractType()+"&status=sign").toString();
+
+		 emailScenerioUtil.sendEmail(emailMessage,contracts.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 
+	 emailScenerioUtil.sendNotification(actionLink,owner,receiver, contracts.getContractOrgLocationId(), notificationScenario,new HashMap<String,String>());
+		
+	}
+
+	@Override
+	public List<User> getSigningAuthoritiesForContract(Long orgLocationsId, Long tabId) throws Exception
+	{
+		List<User> userList = null;
+		userList = contractsTemplateDao.getSigningAuthoritiesForContract(orgLocationsId, tabId);
+		if(null != userList && !userList.isEmpty()){
+			for (User user : userList) {
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),orgLocationsId);
+				if(null != userRole){
+					user.setUserType(userRole.getUserType());
+				}
+			}
+		}
+		return userList;
 	}
 	
 }

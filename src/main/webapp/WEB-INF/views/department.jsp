@@ -15,7 +15,7 @@ font-size: 1.5em;
       <div class="pull-left">
         <h2>Department List</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="orgRolesList">Roles List</a> &raquo;  Department List </div>
+      <div class="pull-right brud-crum"><a href="${appPath}/orgRolesList">Roles List</a> &raquo;  Department List </div>
     </section>
 <script type="text/javascript">
 $(document).ready(function(){
@@ -203,17 +203,34 @@ function departmentPagination(){
 <script>
 function saveDepartment(){
 	if ($('#department_form').validate(false, validationSettings)) {
-		var frm = $('#department_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, "");
-		var jsonData = encodeURIComponent(con);
 		var sourceleadUrl = '${sourceleadUrl}';
+		var formData = getFormData1("department_form");
 		$.ajax({
-			type : "GET",
-			url : sourceleadUrl+ "/storeDepartment?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
-			success : function(result) {
-				 $("#departmentCloseDiv").toggleClass('show-div');
-				 location.reload();
+			type: "POST",
+			data: formData,
+		    processData: false, 
+	 		contentType: false,
+			url : sourceleadUrl+ "/storeDepartment?${_csrf.parameterName}=${_csrf.token}",
+			success : function(data) {
+				if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
+		        		showError(data.responseMessage);
+  	    		    $("#hierarchyLoading").removeAttr('style');
+  	    		}
+            		else if (data.response === "AWKWARD") {
+            			location.href = "/errorPage";
+  	    		}
+            		else if(data.response === "SUCCESS"){
+            			 $("#departmentCloseDiv").toggleClass('show-div');
+        				 location.reload();
+		        	    }
+            		else if (data.indexOf('Sign In') !== -1) {
+            			location.replace(sourceleadUrl);
+  				} else {
+  					showError("Operation failed, please try again");
+  				    $("#hierarchyLoading").removeAttr('style');
+  				}
+				
+				
 			},
 		});
 		return true;
@@ -336,17 +353,34 @@ function editCancel(){
 <script>
 function saveEditDepartment(departmentId){
 	if ($('#editDepartment_form').validate(false, validationSettings)) {
-		var frm = $('#editDepartment_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, "");
-		var jsonData = encodeURIComponent(con);
+		
 		var sourceleadUrl = '${sourceleadUrl}';
+		var formData = getFormData1("editDepartment_form");
 		$.ajax({
-			type : "GET",
-			url : sourceleadUrl+ "/updateDepartment?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&departmentId="+departmentId,
-			success : function(result) {
-				cancelTermination();
-				location.reload();
+			type : "POST",
+			data: formData,
+		    processData: false, 
+	 		contentType: false,
+	 		url : sourceleadUrl+ "/updateDepartment?${_csrf.parameterName}=${_csrf.token}&departmentId="+departmentId,
+			success : function(data) {
+				
+				if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
+	        		showError(data.responseMessage);
+	    		}
+        		else if (data.response === "AWKWARD") {
+        			location.href = "/errorPage";
+	    		}
+        		else if(data.response === "SUCCESS"){
+        			cancelTermination();
+    				location.reload();
+	        	    }
+        		else if (data.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
+				}
+				
+				
 			},
 		});
 		return true;

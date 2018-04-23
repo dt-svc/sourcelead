@@ -17,6 +17,8 @@ public List<SourceleadNotes> getNotesListByOrglocationIdAndType(Long orgrelation
 	
 public List<SourceleadNotes> getNotesListByRequirementId(Long requirementId,Long orgLocationId) throws Exception;
 
+public List<SourceleadNotes> getNotesListByAssetId(Long assetId,Long orgLocationId) throws Exception;
+
 public List<SourceleadNotes> getNotesListByInvoiceID(Long invoiceId,Long orgLocationId) throws Exception;
 
 public List<SourceleadNotes> getNotesListByContractId(Long contractId,Long orgLocationId) throws Exception;

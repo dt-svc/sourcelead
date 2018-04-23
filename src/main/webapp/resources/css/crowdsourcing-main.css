@@ -88,12 +88,12 @@ textarea {
     border: none;
 }
 .outsoucing-registaion > ul.nav-tabs li{
-    float: none;
+    float: left;
     margin: 0;
     padding: 0;
     border: 0;
     outline: none;
-    margin-bottom: 5px;
+    margin-bottom: 0px;
 }
 
 .outsoucing-registaion div.tab-content h4{
@@ -102,7 +102,7 @@ textarea {
 .outsoucing-registaion .nav-tabs li a {
     box-shadow: inset -8px 0 7px -9px rgba(0,0,0,.4),-2px -2px 5px -2px rgba(0,0,0,.4);
     border-radius: 0;
-    padding: 15px;
+    padding:8px 15px;
     transition-duration: .15s;
 }
 .outsoucing-registaion .nav-tabs li a:hover {
@@ -114,29 +114,25 @@ textarea {
     margin: 0;
     border-radius: 0;
     box-shadow:none;
-    border-radius: 5px 0 0 0;
-    background: #cbd0d2;
-    color: #263238;
+    border-radius: 3px 3px 0 0;
+    background: #b5b5b5;
+    color: #fff;
 }
 .outsoucing-registaion .nav > li > a{
     background-color: #fff;
     border: none;
     color: #90a4ae;
     font-weight: 500;
-    margin-right: 0; border-radius:5px 0 0 0;
+    margin-right: 0; border-radius:3px 3px 0 0;
 }
 .regis_wrap_styles {
-    background-color:#cbd0d2;
+    background-color:#b5b5b5;
     float: left;
     min-width: 78%;
-    border-radius: 0 10px 10px 10px;
-    -o-box-shadow: 0 0 5px rgba(0,0,0,.6);
-    -ms-box-shadow: 0 0 5px rgba(0,0,0,.6);
-    -moz-box-shadow: 0 0 5px rgba(0,0,0,.6);
-    -webkit-box-shadow: 0 0 5px rgba(0,0,0,.6);
-    box-shadow: 0 0 5px rgba(0,0,0,.6);
+/*     border-radius: 0 10px 10px 10px;  -o-box-shadow: 0 0 5px rgba(0,0,0,.6); -ms-box-shadow: 0 0 5px rgba(0,0,0,.6);
+    -moz-box-shadow: 0 0 5px rgba(0,0,0,.6); -webkit-box-shadow: 0 0 5px rgba(0,0,0,.6); box-shadow: 0 0 5px rgba(0,0,0,.6); */
     min-height: 150px;
-    padding:30px 15px;
+    padding:10px; border-radius: 0px 3px 3px 3px; box-shadow: 5px 5px 1px rgba(0,0,0,0.4);
 }
 .outsoucing-registaion div.tab-content{
     border-radius:8px;
@@ -173,7 +169,7 @@ textarea {
 	transition:0.2s all ease-in-out; -webkit-transition:0.2s all ease-in-out; -moz-transition:0.2s all ease-in-out; padding:1px 5px;
 	}
 .test {
-	top:-8px !important; font-size:11px !important; /*background-color:#fff; box-shadow:0px 0px 3px rgba(0,0,0,0.2);*/
+	top:-9px !important; font-size:11px !important; /*background-color:#fff; box-shadow:0px 0px 3px rgba(0,0,0,0.2);*/
 }
 label.test{
     color: #3b5998;
@@ -200,7 +196,8 @@ label.test{
     background:url(../images/background-repeat.png) repeat center  center, radial-gradient(ellipse at center,  #40aef5 10%,#156ea8 70%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#40aef5', endColorstr='#156ea8',GradientType=1 ); 
  */
- 	background: #e5e5e5;
+ 	/* background: #e5e5e5; */
+ 	background:#e5e5e5 url(../images/signinBg.jpg) no-repeat 0 top; background-size: 100%; background-position: bottom;
  }
 .wraper {
     width: 900px;
@@ -237,7 +234,7 @@ label.test{
 	margin: 0;
 	font-size: 10px;
 	color:red;
-	margin-top: 2px;
+	margin-top: 0px;
 }
 .select-field p.jquery_form_error_message{
 	margin-top: 7px;
@@ -300,14 +297,14 @@ max-width: 50%;
     border-radius: 50%; padding: 5px 8px;
 }
 .terms_conditions {
-position: absolute; left: 0px; right: 0px; width: 90%; height: auto; padding: 15px; margin: 0px auto; display: none; top: 5%; z-index: 10000;
+position: absolute; left: 0px; right: 0px; width: 90%; padding: 15px; margin: 0px auto; display: none; top: 5%; z-index: 10000;
 background-color: #fff; border-radius: 5px; box-shadow: 0px 0px 10px rgba(0,0,0,0.5); height: 90%;
 }
 .outsoucing-registaion.registerwith {
-	width: 700px; top:10%;
+	width: 550px; position: static; margin: 0px auto; float: right;
 }
 .outsoucing-registaion.registerwith .regis_wrap_styles{
-	  max-width: 75%;  min-width: auto;
+	  max-width: 100%;  min-width: auto;
 }
 .outsoucing-registaion.registerwith .btn_styles i {
 	position: relative; top:0; left: -10px;
@@ -343,3 +340,78 @@ background-color: #fff; border-radius: 5px; box-shadow: 0px 0px 10px rgba(0,0,0,
 #professional .btn-primary, #recruiter .btn-primary {
 background-color:#a31e23; border-color: #a31e23;
 }
+
+.form-control.formControlCustom {
+border: 1px solid #ccc !important;
+}
+.positionRelative {
+position: relative;
+}
+.registration-successpop {
+position: absolute; width: 100%; height: 100%; padding:30px; background-color: #fff;
+top: 0; left: 0; z-index: 9999; text-align: center;
+box-sizing: border-box; border: 1px solid #ddd; border-radius: 12px; display: none; transition:all 0.3s ease-in-out;
+}
+.registration-successpop h4 {
+color:#a21e23; font-size: 20px !important; margin-bottom: 15px !important; margin-top: 50px !important;
+}
+.registration-successpop p{
+line-height: 30px; margin-bottom: 25px !important; font-size: 15px;
+}
+.btns-successpop .btn{
+min-width: 125px; border-radius:3px; margin: 0 15px; font-size: 15px;
+}
+.regDemoFields .col-md-6 {
+	min-height: 58px;
+}
+.regDemoFields .col-md-6 {
+	min-height: 58px;
+}
+.locationCountryDiv-drop .btn-default {
+border-color: transparent;
+}
+.locationCountryDiv-drop .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
+margin-left: 15px; width: 200px;
+}
+.companyLogo {
+	width: 250px; height: auto; margin-top: 10px;
+}
+
+.showPassword-reg-usr {
+     	top: 0; right: 15px; font-size: 15px !important; padding: 5px !important;
+     	position:absolute; height: 34px; line-height: 25px; width: 30px; text-align: center;  cursor: pointer;
+     	border-radius:0 3px 3px 0;
+}
+.hidden-or {
+	display: none;
+	}
+	.paddingRight {
+		padding-right: 5px;
+	}
+	@media only screen and (max-width:1020px) { 
+	.outsoucing-registaion.registerwith {
+	 float: none;
+	}
+	}
+@media only screen and (max-width:600px) {
+	.outsoucing-registaion.registerwith {
+		width: 300px; margin-left: -7px;
+	}
+	.outsoucing-registaion .nav-tabs li a {
+		padding: 10px 8px;
+	}
+	#proffessionalConnect {
+    	margin: 0 auto !important; width: 260px !important;
+	}
+	.social_icons #recruiterConnect {
+	margin: 0 auto;
+	}
+	.hidden-or {
+	display: block;
+	}
+	.checkbox-area {
+	width: 20% !important;
+	}
+}
+
+

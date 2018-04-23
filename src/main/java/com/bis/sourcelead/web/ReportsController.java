@@ -1,7 +1,6 @@
 package com.bis.sourcelead.web;
 
 import java.util.Collection;
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,16 +17,14 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.TabsService;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
-import oauth.signpost.http.HttpRequest;
-
 @Controller
+@RequestMapping("/app")
 public class ReportsController {
 
 private static final Logger logger = LoggerFactory.getLogger(ReportsController.class);
@@ -52,22 +49,68 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
 	 
 	 boolean requirementTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
-	 boolean vendorTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_VENDOR));
-	 boolean billingTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_BILLING));
-	  
+	
 	 
 	 
 	 ModelAndView model = new ModelAndView();
 	 List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
 	 model.addObject("userList", userList);
 	 model.addObject("requirementTabAccess", requirementTabAccess);
-	 model.addObject("vendorTabAccess", vendorTabAccess);
-	 model.addObject("billingTabAccess", billingTabAccess);
 	 model.addObject("sourceleadUrl", sourceleadUrl);
-	 model.setViewName("reports/userReports");
+	 model.setViewName("reports/recruitersReports");
 	 return model;
 		
     }	
+	
+	
+	
+	@RequestMapping(value = "/reportsDashboard")
+	public ModelAndView reportsDashboard(HttpServletRequest request) throws Exception
+	{
+		 ModelAndView model = new ModelAndView();
+		 model.setViewName("reports/reportsDashboard");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+		
+	
+	/*@RequestMapping(value = "/reportsDashboard")
+	public ModelAndView userReports(HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		 
+		 boolean requirementTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
+		 boolean vendorTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_VENDOR));
+		 boolean billingTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_BILLING));
+		  
+		
+		ModelAndView model = new ModelAndView();
+		 model.addObject("requirementTabAccess", requirementTabAccess);
+		 model.addObject("vendorTabAccess", vendorTabAccess);
+		 model.addObject("billingTabAccess", billingTabAccess);
+		 model.setViewName("reports/userReports");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}*/
+	
+	@RequestMapping(value = "/billingReports")
+	public ModelAndView billingReports(HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		 boolean billingTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_BILLING));
+
+		 
+		ModelAndView model = new ModelAndView();
+		List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+		 model.addObject("userList", userList);
+		 model.addObject("billingTabAccess", billingTabAccess);
+		 model.setViewName("reports/billingReports");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
 	
 	 @RequestMapping(value = "/applicantsListForReports")
 		public ModelAndView applicantsListForReports() throws Exception {
@@ -145,6 +188,38 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 model.addObject("vendorTabAccess", vendorTabAccess);
 		 model.setViewName("reports/vendorsReport");
+		 return model;
+	 }	
+	 
+	 @RequestMapping(value = "/userUsageReport")
+		public ModelAndView userUsageReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		 
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		 
+//		 boolean vendorTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_VENDOR));
+		 
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+//		 model.addObject("vendorTabAccess", vendorTabAccess);
+		 model.setViewName("reports/usersUsageReportList");
+		 return model;
+	 }	
+	 
+	 @RequestMapping(value = "/userUsageReportsGraph")
+		public ModelAndView userUsageReportsGraph(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		 
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		 
+//		 boolean vendorTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_VENDOR));
+		 
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+//		 model.addObject("vendorTabAccess", vendorTabAccess);
+		 model.setViewName("reports/userUsageReportsGraph");
 		 return model;
 	 }	
 }

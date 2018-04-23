@@ -34,5 +34,7 @@ public interface RequirementSubmissionHistoryService {
 	Long getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(Long orgLocationId, User user, String submissionStage ,Date startDateUTC, Date endDateUTC) throws Exception ;
 
 	List<RequirementSubmissionHistory> getRequirementHistoryByLocationIdAndSubId(Long orgLocationID, Long submissionId);
+	
+	RequirementSubmissionHistory addRequirementHistory(RequirementSubmissionHistory requirementSubmissionHistory)throws Exception;
 
 }

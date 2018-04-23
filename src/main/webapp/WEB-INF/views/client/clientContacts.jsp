@@ -59,11 +59,11 @@ function clientContacts(orgRelationID,clientLocationId){
 		$.ajax({
 	    	type: "POST",
 	    	url : sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Client", 
-	        success: function(data) {
+	        success: function(json) {
 	        	
-	        var json = JSON.parse(data);
-	        for (var i = 0; i < 1; i++) { 
- 				var val= json[i];
+	     //   var json = JSON.parse(data);
+	     /*    for (var i = 0; i < 1; i++) { 
+ 				var val= json.data[i];
  				var opt = "";
  					if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
      					opt  = opt + '<div class="success_pop" id="clientMsgSelector" style="display: block;">';
@@ -72,9 +72,8 @@ function clientContacts(orgRelationID,clientLocationId){
  						}
  					$("#clientMsgDiv").empty();
  					$("#clientMsgDiv").append(opt);
- 				}
+ 				} */
 	      
-    		if(json.length != null && json.length != ''){
     			$("#clientContactList").empty();
 				var result = "";
 				result = result +"<table id='clientContactsPagination' class='display' cellspacing='0' width='100%' >"; 
@@ -91,9 +90,9 @@ function clientContacts(orgRelationID,clientLocationId){
 	        	result = result +'</thead>';
 	        	result = result +'<tbody>';
 
-	        	for (var i=0; i<json.length; i++)
+	        	for (var i=0; i<json.data.length; i++)
 				  {	        		
-	        		var opt = json[i];
+	        		var opt = json.data[i];
 	        		var selected1 = '';
 					var selected2 = '';
 					var selected3 = '';
@@ -138,7 +137,7 @@ function clientContacts(orgRelationID,clientLocationId){
 	                if(opt.invitationStatus == 'Rejected'){
 	        			result = result + '<span>'+opt.spocStatus+'</span>';
 	        		}else{
-	        			result = result + ' <select id="spocStatus'+json[i].id+'" name="spocStatus" onChange="changeSpocStatus('+json[i].id+'\,'+clientLocationId+');">';
+	        			result = result + ' <select id="spocStatus'+json.data[i].id+'" name="spocStatus" onChange="changeSpocStatus('+json.data[i].id+'\,'+clientLocationId+');">';
 						result = result + ' <option value="Active"  '+selected1+'>Active</option>';
 						result = result + ' <option value="In-Active"    '+selected2+'>In-Active</option>';
 						/* result = result + ' <option value="New" '+selected3+'>New</option>';
@@ -184,9 +183,9 @@ function clientContacts(orgRelationID,clientLocationId){
    		    		result = result +'</div></td>';
 	                
    		    		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
-	                if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "INACTIVE"){
+	                if(json.data[i].status != null && json.data[i].status != '' && json.data[i].status !='undefined' && json.data[i].status != "INACTIVE"){
 	                result = result + '	    <td><div>';
-	                                        result = result + '<i class="glyphicon glyphicon-trash" onClick="terminateClientSpoc('+json[i].id+'\,\''+orgRelationID+'\',\''+clientLocationId+'\',\''+opt.spocName+'\')"; title = "Remove client contact"></i>';
+	                                        result = result + '<i class="glyphicon glyphicon-trash" onClick="terminateClientSpoc('+json.data[i].id+'\,\''+orgRelationID+'\',\''+clientLocationId+'\',\''+opt.spocName+'\')"; title = "Remove client contact"></i>';
 	                	                    result = result +'</div></td>';
                      }
                      else{
@@ -196,7 +195,7 @@ function clientContacts(orgRelationID,clientLocationId){
 	                
 	                
 	                '<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
-	                if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "INACTIVE"){
+	                if(json.data[i].status != null && json.data[i].status != '' && json.data[i].status !='undefined' && json.data[i].status != "INACTIVE"){
 	                						result = result + '	    <td><div>';
 	                                        result = result + '--';
 	                	                    result = result +'</div></td>';
@@ -215,23 +214,8 @@ function clientContacts(orgRelationID,clientLocationId){
 			    result = result + '	<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> ';
 			    result = result + '</div>';
 			    $("#clientContactList").append(result); 
-	    	    contactPagination();
 	    	    clientMsgFadein();
-    		}else{
-    			 var result ="";
-	    	     result = result+"   <div class='row'>"; 
-				 result = result+"	<div class='col-lg-12'>"; 
-				 result = result+"		<div class='content-area clearfix'>"; 
-				 result = result+"			<div class='blank-pages'>";
-				 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-				 result = result+"			        <p>No Contacts Found</p>";
-				 result = result+"			 </div>";
-				 result = result+"		</div>"; 
-				 result = result+"	</div>"; 
-				 result = result+"  </div> "; 
-				$("#clientContactList").empty();
-			    $("#clientContactList").append(result); 
-       		 }
+ 				contactPagination();
     		$("#tab-4").empty();  
     		$("#tab-2-addContact").empty();  
     	    $("#tab-2-addContact").append(res);
@@ -261,10 +245,14 @@ function clientContacts(orgRelationID,clientLocationId){
 function contactPagination(){ 
     $('#clientContactsPagination').DataTable( {
         "scrollCollapse": false,
-        "lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+        "lengthMenu": [[10, 15, 20], [10, 15, 20]],
         "bLengthChange": true,
         "bDestroy": true,
         "ordering": true,
+        "aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': [5,6]
+			}],
         "oLanguage": {
              "sSearch": "",
              "sZeroRecords": "", "sEmptyTable": ""
@@ -404,7 +392,7 @@ function changeSpocStatus(spocId,clientLocationId){
 function resendSpocInvitation(spocUserId,orgRelationID,clientLocationId,spocId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(spocUserId != null && spocUserId != ""){
-		//$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		//$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/resendSpocInvitationEmail?"+tokenParamName+"="+tokenValue+"&spocUserId="+spocUserId+"&orgSpocId="+spocId+"&responderType=Client&orgRelationID="+orgRelationID, 
@@ -428,7 +416,7 @@ function addContact(orgRelationID,clientLocationId) {
 	
 	result = result  +'	 <div class="clearfix mb10" id="EmailIdDiv">';
 	result = result  +'	  <div class="col-md-12">';
-	result = result  +'	    <input type="text" class="form-control input-sm" id="email" name="email"  value="" field-name="Email" placeholder="Email Id *" onblur="validateEmail('+orgRelationID+'); getSpocUserDetails('+clientLocationId+','+orgRelationID+');" data-validation="required validate_Space validate_length length2-100 validate_email">';
+	result = result  +'	    <input type="text" class="form-control input-sm" id="EmailId" name="email"  value="" field-name="Email" placeholder="Email Id *" onblur="validateEmail('+orgRelationID+'); getSpocUserDetails('+clientLocationId+','+orgRelationID+');" data-validation="required validate_Space validate_length length2-100 validate_email">';
 	result = result  +'	   </div>';
 	result = result  +'	 </div>';
 	
@@ -554,7 +542,7 @@ function closePopupDiv(){
 <script type="text/javascript">
 	function checkClientContactAdd(orgRelationId,clientLocationId) {
 		if ($('#clinetContact_form').validate(false, validationSettings)) {
-	        var formData = $($('#clinetContact_form')[0]).serialize();
+	  	        var formData = $($('#clinetContact_form')[0]).serialize();
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#addClientContact").attr("disabled", "disabled");
 			$("#addClientContact").addClass('button').val('Processing..');
@@ -813,7 +801,7 @@ function validateEmail(orgRelationID){
 	if(email != null){
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email,
+			url : sourceleadUrl + "/validateClientOrVendorEmails?"+tokenParamName+"="+tokenValue+"&email="+email,
 			success : function(data) {
 				var result = data;
 				if(result == 'Invalid Email') {

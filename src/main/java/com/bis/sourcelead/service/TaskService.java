@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import com.bis.sourcelead.dto.AddTaskDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.Timezone;
@@ -16,7 +17,7 @@ public interface TaskService {
 	
 	Tasks getTasksById(Long id);
 	
-	String  saveTasks(JSONObject jsonObj) throws Exception;
+	 String  saveTasksDTO(AddTaskDTO addTaskDTO) throws Exception;
 	
 	List<Tasks> tasksListByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId,Long userId,String Status,String date, Date converteDate, Timezone timezone)throws Exception;
 	
@@ -38,4 +39,7 @@ public interface TaskService {
 	
 	List<Tasks> getTasksListOnboardingId(Long onboardingId)throws Exception;
 	
+	List<Tasks> getTaskByAssignedUserIdAndOrgLocationIdAndVendorOnboardingId(Long orgLocationId,Long userId,Long vendorOnboardingId)throws Exception;
+	
+	Long taskCountByIdAndOrgLocationIdAssignedUserId(Long orgLocationId,Long userId,String Status)throws Exception;
 }

@@ -3,16 +3,30 @@ package com.bis.sourcelead.dto;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class InvoiceDTO extends SearchDTO {
 
+	@Required (desc = "ClientOrgRelationId", dependsOn = "clientOrgRelation", parentValue = "createInvoice")
 	private String clientOrgRelationId;
+	
 	private String savedInvoiceId;
 	private String clientCurrency;
+	
+	@Required (desc = "ClientContact", either = "vendorContact")
 	private String clientContact;
+	
+	@Required (desc = "InvoiceId")
 	private String invoiceId;
+	
+	@Required (desc = "InvoiceDate")
 	private String invoiceDate;
+	
 	private String paymentFrequency;
+	
+	@Required (desc = "DueDate")
 	private String dueDate;
+	
 	private String billingAddress;
 	private String accountDetails;
 	private List<FileInfo> fileInfo;
@@ -26,10 +40,19 @@ public class InvoiceDTO extends SearchDTO {
 	private String afterDiscountTotal;
 	private String grandTotal;
 	private String disCount;
+	
+	@Required (desc = "vendorOrgRelationId", dependsOn = "vendorOrgRelation", parentValue = "createPayables")
     private String vendorOrgRelationId;
+	
+	@Required (desc = "vendorContact", either = "clientContact")
     private String vendorContact;
+	
+	@Required (desc = "projectId", dependsOn = "project", parentValueAny = true)
     private String projectId;
+	
+	@Required (desc = "frequency", dependsOn = "frequency", parentValueAny = true)
     private String frequency;
+	
     private String vendorCurrency;
     private String hiddenHours;
     private String invoiceforexpenses;
@@ -37,7 +60,9 @@ public class InvoiceDTO extends SearchDTO {
     private String expensesId;
     private List<InvoiceExpensesDTO> expenseInvoice;
     private String staticPath;
+    
     private String clientName;
+    
     private String projectName;
     private String inoviceDue;
     private String invoiceStatus;
@@ -53,7 +78,8 @@ public class InvoiceDTO extends SearchDTO {
     private String exportEndDate;
     private String vendorName;
     private String locationdateForList;
-    
+    private String orgLocationId;
+    private String invoiceUUID;
 	public List<InvoiceExpensesDTO> getExpenseInvoice() {
 		return expenseInvoice;
 	}
@@ -439,6 +465,26 @@ public class InvoiceDTO extends SearchDTO {
 
 	public void setLocationdateForList(String locationdateForList) {
 		this.locationdateForList = locationdateForList;
+	}
+
+	public String getOrgLocationId()
+	{
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(String orgLocationId)
+	{
+		this.orgLocationId = orgLocationId;
+	}
+
+	public String getInvoiceUUID()
+	{
+		return invoiceUUID;
+	}
+
+	public void setInvoiceUUID(String invoiceUUID)
+	{
+		this.invoiceUUID = invoiceUUID;
 	}
 	
 }

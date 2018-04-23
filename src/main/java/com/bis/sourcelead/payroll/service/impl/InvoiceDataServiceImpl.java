@@ -82,7 +82,8 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 					Row row = rowIterator.next();
 					if (row.getRowNum() > 0) { // Excluding column names
 						InvoiceData invoiceData = new InvoiceData();
-						
+						boolean notEmpty = checkRowEmptyOrNot(row);
+						if(notEmpty) {
 						if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 							String sku = getCellValueAsString(row.getCell(0), fileName);
 							invoiceData.setSku(sku.split("\\.")[0]);
@@ -147,12 +148,13 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 						if (saveInvoiceData != null) {
 							count++;
 						}
-						count++;
+//						count++;
+						
 					}
 				}
 
 			}
-
+			}
 			fis.close();
 		} catch (IOException e) {
 			logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
@@ -161,6 +163,32 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 		return count;
 
 	
+	}
+	
+	/**
+	 * check the rows empty or not
+	 * @param row
+	 * @return boolean
+	 */
+		
+	private boolean checkRowEmptyOrNot(Row row) {
+		       if(row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString()) 
+		        || row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString()) 
+		        || row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString()) 
+		        || row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())
+		        || row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())
+                || row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())
+                || row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())
+                || row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())
+                || row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())
+                || row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString()) 
+                || row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())
+                || row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString()) 
+                || row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString())) {
+
+			return true;
+		}
+		return false;
 	}
 /**
  * To read cell value as string

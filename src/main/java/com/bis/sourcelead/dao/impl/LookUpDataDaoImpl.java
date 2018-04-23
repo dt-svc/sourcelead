@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LookUpDataDao;
 import com.bis.sourcelead.entity.LookUpData;
 
@@ -57,8 +59,10 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
 	@Transactional
 	public List<LookUpData> getLookUpDataByCategory(String category) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-	    String query = "from LookUpData lookupdata where lookupdata.category = :category ";
-	    List<LookUpData> educationsList = session.createQuery(query.toString()).setString("category", category).setCacheable(true).list();
+		String query = null;
+		query = "from LookUpData lookupdata where lookupdata.category = :category  ";
+	    
+	    List<LookUpData> educationsList = session.createQuery(query.toString()).setString("category", category).list();
       
 	    return educationsList;
 	}
@@ -69,7 +73,7 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
 	public LinkedHashSet<String> getLookUpDataByCategoryWithSortedOrder(String category) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "Select name from LookUpData lookupdata where lookupdata.category = :category ";
-	    LinkedHashSet<String> skillsList = new LinkedHashSet<>(session.createQuery(query.toString()).setString("category", category).setCacheable(true).list());
+	    LinkedHashSet<String> skillsList = new LinkedHashSet<>(session.createQuery(query.toString()).setString("category", category).list());
       
 	    return skillsList;
 	}
@@ -80,7 +84,7 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
 	public List<String> getAllSkillsBySkillCategory() throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "select lookupdata.name from LookUpData lookupdata where lookupdata.category = 'Skills' ";
-	    List<String> skillsList = session.createQuery(query.toString()).setCacheable(true).list();
+	    List<String> skillsList = session.createQuery(query.toString()).list();
       
 	    return skillsList;
 	}
@@ -93,10 +97,10 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
 		List<LookUpData> skillsList;
 		if(skillNames != null && !skillNames.isEmpty()){
 			String query = " from LookUpData lookupdata where lookupdata.category = 'Skills' and lookupdata.name NOT IN (:skillNames)";
-		    skillsList = session.createQuery(query).setParameterList("skillNames", skillNames).setCacheable(true).list();
+		    skillsList = session.createQuery(query).setParameterList("skillNames", skillNames).list();
 		}else{
 			String query = " from LookUpData lookupdata where lookupdata.category = 'Skills'";
-		    skillsList = session.createQuery(query).setCacheable(true).list();
+		    skillsList = session.createQuery(query).list();
 		}
 	    return skillsList;
 	}
@@ -106,7 +110,7 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "select lookupdata.name from LookUpData lookupdata where lookupdata.category = 'Educations' ";
-	    List<String> educationList = session.createQuery(query.toString()).setCacheable(true).list();
+	    List<String> educationList = session.createQuery(query.toString()).list();
 	    return educationList;
 	}
 	
@@ -115,7 +119,7 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "select lookupdata.name from LookUpData lookupdata where lookupdata.category = 'Industries' ";
-	    List<String> educationList = session.createQuery(query.toString()).setCacheable(true).list();
+	    List<String> educationList = session.createQuery(query.toString()).list();
 	    return educationList;
 	}
 
@@ -124,8 +128,49 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
 	public List<String> getAllVisaByCategory() throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "select lookupdata.name from LookUpData lookupdata where lookupdata.category = 'VisaCategory' ";
-	    List<String> visaList = session.createQuery(query.toString()).setCacheable(true).list();
+	    List<String> visaList = session.createQuery(query.toString()).list();
 	    return visaList;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public LookUpData getTasksById(Long id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<LookUpData> tasks = new ArrayList<LookUpData>();
+		tasks = session.createQuery("from LookUpData lookupdata where lookupdata.id = :id").setLong( "id",id ).list();
+		logger.debug("getUserById end");
+		if (tasks.size() > 0) {
+			return tasks.get(0);
+		} else {
+			return null;
+		}		
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public LookUpData getTasksTypeByUniqueKey(String uniqueKey) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<LookUpData> tasks = new ArrayList<LookUpData>();
+		tasks = session.createQuery("from LookUpData lookupdata where lookupdata.uniqueKey = :uniqueKey").setString( "uniqueKey",uniqueKey ).list();
+		if (tasks.size() > 0) {
+			return tasks.get(0);
+		} else {
+			return null;
+		}		
+	}
+
+	@Override
+	public LookUpData getRequirementExperienceLevelyUniqueKey(String uniqueKey) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<LookUpData> tasks = new ArrayList<LookUpData>();
+		tasks = session.createQuery("from LookUpData lookupdata where lookupdata.uniqueKey = :uniqueKey").setString( "uniqueKey",uniqueKey ).list();
+		if (tasks.size() > 0) {
+			return tasks.get(0);
+		} else {
+			return null;
+		}		
+	}
+ 
 }

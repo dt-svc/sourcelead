@@ -5,19 +5,14 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -27,9 +22,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
  */
 
 @Entity
-@Table(name = "CANDIDATE_RESUMES", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateResumes")
-
+@Table(name = "CANDIDATE_RESUMES")
 public class CandidateResumes implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -40,15 +33,14 @@ public class CandidateResumes implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID", nullable=false)
-	@JsonBackReference
 	private Candidate candidateId;
 	
 	@Transient
@@ -60,10 +52,6 @@ public class CandidateResumes implements Serializable{
 	
 	@Column(name = "DESCRIPTION ")
 	private String description ;
-	
-//	@Column(name = " DOC_FILE",columnDefinition="mediumblob")
-//	@Lob
-//	private  byte[] docFile;
 	
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
@@ -157,14 +145,6 @@ public class CandidateResumes implements Serializable{
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
-//	public byte[] getDocFile() {
-//		return docFile;
-//	}
-//
-//	public void setDocFile(byte[] docFile) {
-//		this.docFile = docFile;
-//	}
 
 	public String getFileContentType() {
 		return fileContentType;

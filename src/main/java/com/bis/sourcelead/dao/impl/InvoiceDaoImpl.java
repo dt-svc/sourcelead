@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -24,6 +25,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoicePayment;
@@ -50,6 +52,34 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}
 		return invoice;
 	}
+	
+	
+	@Override
+	@Transactional
+	public Boolean getInvoiceByInvoiceId(String invoiceId, Long orgLocationsId, String invoiceType) throws Exception {
+		
+			Session session = this.sessionFactory.getCurrentSession();
+			String query=null;
+			if(invoiceType.equalsIgnoreCase("Payables")){
+			
+			query = "from Invoice invoice where invoice.orgLocation.id = :orgLocationsId and invoice.invoiceId = :invoiceId and invoice.invoiceType = 'Payables'  and invoice.status='1'";
+			}
+			else {
+				
+			query = "from Invoice invoice where invoice.orgLocation.id = :orgLocationsId and invoice.invoiceId = :invoiceId and invoice.invoiceType = 'Receivable' and invoice.status='1'";
+				
+			}
+			List<Invoice> invoiceList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setString("invoiceId", invoiceId).list();
+
+					if (invoiceList.size() > 0) {
+						return true;
+					} else {
+						return false;
+					}
+			 
+		}
+		
+		
 
 
 	@Override
@@ -118,16 +148,24 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		
 		List<Invoice> invoiceList = null;
 		ResponseList<Invoice> response = new ResponseList<>();
-		String query = "from Invoice invoice  left join fetch invoice.projectMemberId pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user "
+		
+		String qry = "";
+		if(StringUtils.isNotBlank(invoiceDTO.getSortColumn())) {
+			qry = " order by invoice."+ invoiceDTO.getSortColumn() +" "+invoiceDTO.getSortOrder();
+		}
+
+		String query = "from Invoice invoice  left join fetch  invoice.orgRelationID left join fetch invoice.projectMemberId pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user "
 		 		+ "left join fetch invoice.expensesId left join fetch invoice.projectID where  invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" "+subQuery3+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
 		String countQuery = "";
 		if(invoiceDTO.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)){
-			countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='Receivable' and invoice.status = '1'";
+			countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='Receivable' and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" "+subQuery3+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
 		}else{
-		    countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='payables' and invoice.status = '1'";
+		    countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='payables' and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" "+subQuery3+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
 		}
 		
-		if(invoiceDTO.getSearchValue().contains("/") || invoiceDTO.getSearchValue().contains("-")){
+		StringBuilder query1 = new StringBuilder("");
+		if(StringUtils.isNotBlank(invoiceDTO.getSearchValue())){
+			if(invoiceDTO.getSearchValue().contains("/") || invoiceDTO.getSearchValue().contains("-")){
 			String convertedDate=invoiceDTO.getSearchValue();
 			if(invoiceDTO.getSearchValue().contains("/")){
 				convertedDate = invoiceDTO.getSearchValue().replaceAll("/", "-");
@@ -141,10 +179,8 @@ public class InvoiceDaoImpl implements InvoiceDao {
             String queryDate = "from Invoice invoice where invoice.orgLocation.id =:orgLocationId and ( invoice.invoiceDate =:sqlDate or invoice.dueDate =:sqlDate )";
             Query queryObjDate = session.createQuery(queryDate.toString()).setDate("sqlDate", sqlDate).setLong("orgLocationId", orgLocations.getId());
             response.setData(queryObjDate.list());
-
-		}else{
-		StringBuilder query1 = new StringBuilder("");
-			if(invoiceDTO.getSearchValue() !=null && !"".equalsIgnoreCase(invoiceDTO.getSearchValue())) {
+			}else{
+				if(invoiceDTO.getSearchValue() !=null && !"".equalsIgnoreCase(invoiceDTO.getSearchValue())) {
 				query1.append(" and (invoice.invoiceId like '%" + invoiceDTO.getSearchValue() + "%' ")
 				.append("OR invoice.responderLocationId.orgLocationName like '%" + invoiceDTO.getSearchValue() + "%' ")
 				.append("OR invoice.orgLocation.orgLocationName like '%" + invoiceDTO.getSearchValue() + "%' ")
@@ -159,32 +195,32 @@ public class InvoiceDaoImpl implements InvoiceDao {
 				.append("OR invoice.paymentStatus like '%" + invoiceDTO.getSearchValue() + "%' )");
 						
 			}
-		Query queryObj = session.createQuery(query + query1.toString() + "  ORDER BY invoice.id DESC");
+			}
+		}
+		Query queryObj = session.createQuery(query + query1.toString()+qry);
 		if (invoiceDTO != null && invoiceDTO.getLength() > 0) {
 			queryObj.setFirstResult(invoiceDTO.getStart());
 			queryObj.setMaxResults(invoiceDTO.getLength());
-//			queryObj.setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
+//			queryObj.setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
 		}
-		invoiceList = queryObj.setLong("orgLocationId", orgLocations.getId()).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
+		invoiceList = queryObj.setLong("orgLocationId", orgLocations.getId()).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
 		int count = 0;
 		int filteredCount = 0;
-		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocations.getId()).setCacheable(true).list();
+
+		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocations.getId()).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
+
 		if(countlist != null && !countlist.isEmpty()) {
 			count = countlist.iterator().next().intValue();
 		}
 		response.setRecordsTotal(count);
 		if (invoiceDTO != null) {
-			List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery + query1.toString()).setLong("orgLocationId", orgLocations.getId()).list();
+			List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery + query1.toString()).setLong("orgLocationId", orgLocations.getId()).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
 			if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
 				filteredCount = filteredCountlist.iterator().next().intValue();
 			}
 			response.setRecordsFiltered(filteredCount);
-		} else {
-			response.setRecordsFiltered(filteredCount);
-		}
-
+		} 
 			response.setData(invoiceList);
-		}
 			return response;
 		
 		
@@ -202,7 +238,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from Contracts contract left join fetch contract.requirementSubmission submission left join fetch submission.requirement where contract.orgLocationId.id = :orgLocationId and "
 					+ "contract.orgRelations.id = :orgRelationId and contract.candidate.id = :candidateId and contract.contractType = :contractType and contract.templateSubmissionStatus = 'FINALIZED'";
-		     contractsList = session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setString("contractType", contractType).setCacheable(true).list();
+		     contractsList = session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setString("contractType", contractType).list();
 		  if(null != contractsList){
 			  return contractsList;
 		  }
@@ -221,7 +257,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	public Invoice getInvoicetById(Long invoiceId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Invoice> invoice = session.createQuery("from Invoice invoice  where invoice.id =:invoiceId" ).setLong( "invoiceId", invoiceId ).setCacheable(true).list();
+		List<Invoice> invoice = session.createQuery("from Invoice invoice  where invoice.id =:invoiceId" ).setLong( "invoiceId", invoiceId ).list();
 		if (invoice.size() > 0) {
 			return invoice.get(0);
 		} else {
@@ -235,7 +271,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	public List<Invoice> getViewInvoiceListByInvoiceIdAndOrglocationId(Long invoiceId, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Invoice invoice  where invoice.id = :invoiceId and invoice.orgLocation.id = :orgLocationId ";
-		List<Invoice> viewInvoiceList = session.createQuery(query.toString()).setLong("invoiceId", invoiceId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<Invoice> viewInvoiceList = session.createQuery(query.toString()).setLong("invoiceId", invoiceId).setLong("orgLocationId", orgLocationId).list();
 		return viewInvoiceList;
 }
 	@Override 
@@ -243,7 +279,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	public Invoice getInvoicetByInvoiceUUID(String invoiceUUID) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Invoice> invoice = session.createQuery("from Invoice invoice  where invoice.invoiceUUID =:invoiceUUID" ).setString( "invoiceUUID", invoiceUUID ).setCacheable(true).list();
+		List<Invoice> invoice = session.createQuery("from Invoice invoice  where invoice.invoiceUUID =:invoiceUUID" ).setString( "invoiceUUID", invoiceUUID ).list();
 		if (invoice.size() > 0) {
 			return invoice.get(0);
 		} else {
@@ -272,7 +308,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	@Transactional(rollbackFor = { Exception.class })	
 	public Invoice getInvoicetByParentInvoiceId(Long parentInvoiceId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Invoice> parentInvoice = session.createQuery("from Invoice invoice  where invoice.id =:parentInvoiceId" ).setLong( "parentInvoiceId", parentInvoiceId ).setCacheable(true).list();
+		List<Invoice> parentInvoice = session.createQuery("from Invoice invoice  where invoice.id =:parentInvoiceId" ).setLong( "parentInvoiceId", parentInvoiceId ).list();
 		if (parentInvoice.size() > 0) {
 			return parentInvoice.get(0);
 		} else {
@@ -284,7 +320,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	@Transactional(rollbackFor = { Exception.class })	
 	public Invoice getInvoicetBySelfJoinInvoiceId(Long parentInvoiceId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Invoice> parentInvoice = session.createQuery("from Invoice invoice  where invoice.parentInvoiceId =:parentInvoiceId" ).setLong( "parentInvoiceId", parentInvoiceId ).setCacheable(true).list();
+		List<Invoice> parentInvoice = session.createQuery("from Invoice invoice  where invoice.parentInvoiceId =:parentInvoiceId" ).setLong( "parentInvoiceId", parentInvoiceId ).list();
 		if (parentInvoice.size() > 0) {
 			return parentInvoice.get(0);
 		} else {
@@ -328,7 +364,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 				qry.setString(str, (String) params.get("invoiceType"));
 			}
         }
-		return qry.setCacheable(true).list();
+		return qry.list();
 	}
 	
 	@Override
@@ -343,8 +379,8 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Invoice invoice  where invoice.orgRelationID.id = :orgRelationId and invoice.orgLocation.id = :orgLocationId and invoice.linkInvoiceReferenceId IS NULL and invoice.invoiceStatus <> 'Linked'"+subQuery+"";
-		List<Invoice> clientInvoiceList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+		String query = "from Invoice invoice  where invoice.orgRelationID.id = :orgRelationId and invoice.orgLocation.id = :orgLocationId and invoice.linkInvoiceReferenceId IS NULL and invoice.status = '1' and invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus <> 'DRAFT'"+subQuery+"";
+		List<Invoice> clientInvoiceList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).list();
 		return clientInvoiceList;
 
 	}
@@ -407,14 +443,19 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			subQuery3 = " and invoice.invoiceType = 'Receivable' ";
 		}
 		
+		String subQuery4 = "";
+		if("".equalsIgnoreCase(invoiceStatus) || invoiceStatus == null || invoiceStatus.equalsIgnoreCase("undefined")){
+			subQuery4 = " and invoice.invoiceStatus <> 'Linked' ";
+		}
+		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query =null;
 		if(invoiceType.equalsIgnoreCase("payables")){
-		 query = "from Invoice invoice  where invoice.orgRelationID =:orgRelationId and invoice.responderLocationId =:clientLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
+		 query = "from Invoice invoice  where invoice.orgRelationID =:orgRelationId and invoice.responderLocationId =:clientLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" "+subQuery4+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
 		}else{
-		 query = "from Invoice invoice  where invoice.orgRelationID =:orgRelationId and invoice.responderLocationId =:clientLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery3+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
+		 query = "from Invoice invoice  where invoice.orgRelationID =:orgRelationId and invoice.responderLocationId =:clientLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery3+" "+subQuery4+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
 		}
-		List<Invoice> invoiceList = session.createQuery(query).setLong( "clientLocationId", clientLocationId ).setLong( "orgRelationId", orgRelationId ).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
+		List<Invoice> invoiceList = session.createQuery(query).setLong( "clientLocationId", clientLocationId ).setLong( "orgRelationId", orgRelationId ).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
 		return invoiceList;
 	}
 
@@ -434,7 +475,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			params.put("endDateUTC", endDateUTC);
 			subQuery = "and invoice.invoiceDate >= :startDateUTC and invoice.invoiceDate <= :endDateUTC";
 		}
-		String query = "from Invoice invoice  where invoice.orgLocation =:orgLocationId and invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus <> 'Rejected' "+subQuery;
+		String query = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus <> 'Rejected' "+subQuery;
 		
 		Query qry = session.createQuery(query);
 		for (String str : qry.getNamedParameters())
@@ -449,7 +490,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 				qry.setParameter(str, (Date) params.get("endDateUTC"));
 			}
         }
-		return qry.setCacheable(true).list();
+		return qry.list();
 	}
 
 
@@ -459,7 +500,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Invoice invoice  where invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus <> 'Rejected' and invoice.invoiceStatus <> 'DRAFT' and invoice.paymentStatus <> 'Paid'";
 		@SuppressWarnings("unchecked")
-		List<Invoice> clientInvoiceList = session.createQuery(query.toString()).setCacheable(true).list();
+		List<Invoice> clientInvoiceList = session.createQuery(query.toString()).list();
 		return clientInvoiceList;
 	}
 
@@ -468,8 +509,8 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	@Transactional(rollbackFor = { Exception.class })	
 	public List<InvoicePayment> getPaymentHistroyByInvoiceId(Long invoiceId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from InvoicePayment invoicePayment left join fetch invoicePayment.invoiceId where invoicePayment.invoiceId = :invoiceId";
-		List<InvoicePayment> invoicePaymentList = session.createQuery(query.toString()).setLong("invoiceId", invoiceId).setCacheable(true).list();
+		String query = "from InvoicePayment invoicePayment left join fetch invoicePayment.invoiceId where invoicePayment.invoiceId.id = :invoiceId";
+		List<InvoicePayment> invoicePaymentList = session.createQuery(query.toString()).setLong("invoiceId", invoiceId).list();
 		return invoicePaymentList;
 		
 	}
@@ -479,7 +520,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public Invoice getInvoicetByParentId(Long parentInvoiceId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Invoice> parentInvoice = session.createQuery("from Invoice invoice  where invoice.parentInvoiceId.id =:parentInvoiceId" ).setLong( "parentInvoiceId", parentInvoiceId ).setCacheable(true).list();
+		List<Invoice> parentInvoice = session.createQuery("from Invoice invoice  where invoice.parentInvoiceId.id =:parentInvoiceId" ).setLong( "parentInvoiceId", parentInvoiceId ).list();
 		if (parentInvoice.size() > 0) {
 			return parentInvoice.get(0);
 		} else {
@@ -493,12 +534,31 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	public Invoice getParentInvoiceByInvoiceId(Long invoiceId) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Invoice> parentInvoice = session.createQuery("from Invoice invoice  where invoice.parentInvoiceId =:invoiceId" ).setLong( "invoiceId", invoiceId ).setCacheable(true).list();
+		List<Invoice> parentInvoice = session.createQuery("from Invoice invoice  where invoice.parentInvoiceId =:invoiceId" ).setLong( "invoiceId", invoiceId ).list();
 		if (parentInvoice.size() > 0) {
 			return parentInvoice.get(0);
 		} else {
 			return null;
 		}
 	}
-	 
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<Invoice> getAllBillsAndInvoicesBYProjectIdOrgLocationIdInvoiceStatusStartDateAndEndDate(Long projectId,
+			Long orgLocationId, String invoiceStatus, Date startDate, Date endDate) {
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlStartDate = null;
+		if(startDate != null){
+			sqlStartDate = new java.sql.Date(startDate.getTime());
+		}
+		java.sql.Date sqlEndDate = null;
+		if(endDate != null){
+			sqlEndDate = new java.sql.Date(endDate.getTime());
+		}
+		String query = "from Invoice invoice  where invoice.projectID.id = :projectId and invoice.invoiceStatus =:invoiceStatus and invoice.orgLocation.id = :orgLocationId and date(invoice.createdDate) BETWEEN :startDate and :endDate";
+		List<Invoice> viewInvoiceList = session.createQuery(query.toString()).setString("invoiceStatus", invoiceStatus).setLong("projectId", projectId).setLong("orgLocationId", orgLocationId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list();
+		return viewInvoiceList;
+	}
 }
