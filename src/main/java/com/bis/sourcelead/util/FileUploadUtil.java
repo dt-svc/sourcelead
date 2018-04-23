@@ -293,7 +293,7 @@ public class FileUploadUtil {
 			fos = new FileOutputStream(file);
 			zos = new ZipOutputStream(fos);
 			
-			File folder = new File(staticPath, orgId+"/"+orgLocationId+"/immigrationCandidateDocuments"+"-"+immigrationId);
+			File folder = new File(staticPath, orgId+"/"+orgLocationId+"/immigrationCandidateDocuments");
 			if(!folder.exists() || folder.list().length == 0) {
 				return "No ";
 			}
