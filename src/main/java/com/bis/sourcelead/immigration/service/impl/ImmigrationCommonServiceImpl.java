@@ -413,6 +413,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 
 	private Immigration savePetitionImmigration(ImmigrationDTO immigrationDTO, OrgLocations orgLocations, Candidate candidate, Requirement requirement, User user) throws Exception, Exception {
 		Immigration immigration = new Immigration();
+		if(immigrationDTO.getImmigrationId() != null) {
+			immigration = immigrationCommonDao.getImmigrationById(Long.parseLong(immigrationDTO.getImmigrationId()));
+		}
 		LookUpData petitionTypeId = new LookUpData();
 		petitionTypeId.setId(Long.parseLong(immigrationDTO.getPetitionType()));
 		immigration.setPetitionType(petitionTypeId);
