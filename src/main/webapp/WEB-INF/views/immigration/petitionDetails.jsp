@@ -21,7 +21,9 @@
 		<div class="addImmiContent clearfix">
 			<form id="petitionDetailsForm" name="petitionDetailsForm">
           <div class="col-md-12 col-lg-12 myForm margin-top0">
-          
+          	<input type="hidden" name="immigrationId" value="${immigrationDTO.immigrationId}">
+          	<input type="hidden" name="candidateId" value="${immigrationDTO.candidateId}">
+          	<input type="hidden" name="templateId" value="${immigrationDTO.templateId}">
             <h4 class="col-md-12 mb clearfix">1. Petition detail</h4>
             <div class="clearfix"></div>         
          	<div class="form-group">
@@ -422,7 +424,7 @@
               <label class="col-md-4">End Date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" class="form-control calendar" name="jobEndDate" id="jobEndDate" placeholder="End Date">
+                <input type="text" class="form-control calendar" value="${immigrationDTO.jobEndDate}" name="jobEndDate" id="jobEndDate" placeholder="End Date">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('jobEndDate');"></i></span>
             </div>
               </div>
@@ -565,15 +567,12 @@
     <script type="text/javascript">
    
     function prepareDynamicResidenceDiv(rowId,residenceVal){
-    	//alert("inside ++++++++++ :"+residenceVal[0]+residenceVal[1]);
-	   var prepareResidencediv =''; 
-		   
-		   
+    	var prepareResidencediv ='';
 	   prepareResidencediv =prepareResidencediv+ "<div id ='dynamicResidenceDiv"+rowId+"'>";
 	   prepareResidencediv =prepareResidencediv+ "   <div class='clearfix'></div>";
 	   prepareResidencediv =prepareResidencediv+ "     	<div class='col-md-12 mb margin-top0'>";
-	   prepareResidencediv =prepareResidencediv+ "   <h4 class='pull-left'>Residence</h4> <button type='button' class='btn btn-default pull-right' onclick='removeDynamicResidenceDiv("+rowId+")'><i class='fa fa-remove text-danger paddingRight'></i>Remove Residence</button>";
-	   prepareResidencediv =prepareResidencediv+ "   </div>";
+	   prepareResidencediv =prepareResidencediv+ "   <h4 class='pull-left'>Residence</h4> <button type='button' class='btn btn-default pull-right' onclick='removeDynamicResidenceDiv("+rowId,(typeof residenceVal[0]==="undefined"?"":residenceVal[0])+")'><i class='fa fa-remove text-danger paddingRight'></i>Remove Residence</button>";
+	   prepareResidencediv =prepareResidencediv+ "   </div><input type='hidden' name='residenceList["+rowId+"].id' value='"+(typeof residenceVal[0]==="undefined"?"":residenceVal[0])+"'>";
 	   prepareResidencediv =prepareResidencediv+ "   <div class='clearfix'></div>";
 	   prepareResidencediv =prepareResidencediv+ " <div class='form-group'>";
 	   prepareResidencediv =prepareResidencediv+ "     <label class='col-md-4'>Location<span class='text-danger paddingLeft'>*</span></label>";
@@ -581,7 +580,7 @@
 	   prepareResidencediv =prepareResidencediv+ "           <div class='positionRelative'>";
 	   prepareResidencediv =prepareResidencediv+ ' 						<input class="form-control positionRelative"';
 	   prepareResidencediv =prepareResidencediv+ ' 						id="location'+rowId+'" name="residenceList['+rowId+'].location"';
-	   prepareResidencediv =prepareResidencediv+ ' 							placeholder="Enter Location" value="'+residenceVal[0]+'" field-name="Location" data-validation="required" type="text" onClick="initLocationAuto(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipcode'+rowId+'\',\'\',\'\',\'\',\'address'+rowId+'\'); refreshGoogleApiLocation(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipcode'+rowId+'\',\'\',\'\',\'\',\'address'+rowId+'\');"></input> <i';
+	   prepareResidencediv =prepareResidencediv+ ' 							placeholder="Enter Location" value="'+(typeof residenceVal[1]==="undefined"?"":residenceVal[1])+'" field-name="Location" data-validation="required" type="text" onclick="initLocationAuto(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipcode'+rowId+'\',\'\',\'\',\'\',\'address'+rowId+'\');"></input> <i';
 	   prepareResidencediv =prepareResidencediv+ ' 							class="fa fa-refresh btn btn-primary refresh-icon"';
 	   prepareResidencediv =prepareResidencediv+ ' 							title="Refresh"';
 	   prepareResidencediv =prepareResidencediv+ ' 							onClick="refreshGoogleApiLocation(\'location'+rowId+'\',\'country'+rowId+'\',\'state'+rowId+'\',\'city'+rowId+'\',\'zipcode'+rowId+'\',\'\',\'\',\'\',\'address'+rowId+'\');"></i>';
@@ -592,7 +591,7 @@
 	   prepareResidencediv =prepareResidencediv+ "      <label class='col-md-4'>Street Address</label>";
 	   prepareResidencediv =prepareResidencediv+ "      <div class='col-md-8'>";
 	   prepareResidencediv =prepareResidencediv+ "           <input type='text' class='form-control' id='address"+rowId+"'";
-	   prepareResidencediv =prepareResidencediv+ " 						name='residenceList["+rowId+"].address' value='"+residenceVal[1]+"' field-name='Street Address' placeholder='Enter Street Addres'";
+	   prepareResidencediv =prepareResidencediv+ " 						name='residenceList["+rowId+"].address' value='"+(typeof residenceVal[2]==="undefined"?"":residenceVal[2])+"' field-name='Street Address' placeholder='Enter Street Addres'";
 	   prepareResidencediv =prepareResidencediv+ " 						data-validation='validate_Space validate_length length2-250'";
 	   prepareResidencediv =prepareResidencediv+ " 						data-validation-optional='true'>";
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
@@ -600,25 +599,25 @@
 	   prepareResidencediv =prepareResidencediv+ "     <div class='form-group'>";
 	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>City</label>";
 	   prepareResidencediv =prepareResidencediv+ "        <div class='col-md-8'>";
-	   prepareResidencediv =prepareResidencediv+ "           <input class='form-control' id='city"+rowId+"' name='residenceList["+rowId+"].city' value='"+residenceVal[2]+"' placeholder='City' type='text'></input>";
+	   prepareResidencediv =prepareResidencediv+ "           <input class='form-control' id='city"+rowId+"' name='residenceList["+rowId+"].city' value='"+(typeof residenceVal[3]==="undefined"?"":residenceVal[3])+"' placeholder='City' type='text'></input>";
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
 	   prepareResidencediv =prepareResidencediv+ "      </div>";
 	   prepareResidencediv =prepareResidencediv+ "     <div class='form-group'>";
 	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>State</label>";
 	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
-	   prepareResidencediv =prepareResidencediv+ "           <input class='form-control' id='state"+rowId+"' name='residenceList["+rowId+"].state' value='"+residenceVal[3]+"' placeholder='State' type='text' ></input>";
+	   prepareResidencediv =prepareResidencediv+ "           <input class='form-control' id='state"+rowId+"' name='residenceList["+rowId+"].state' value='"+(typeof residenceVal[4]==="undefined"?"":residenceVal[4])+"' placeholder='State' type='text' ></input>";
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
 	   prepareResidencediv =prepareResidencediv+ "     </div>";
 	   prepareResidencediv =prepareResidencediv+ "     <div class='form-group'>";
 	   prepareResidencediv =prepareResidencediv+ "        <label class='col-md-4'>Country</label>";
 	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
-	   prepareResidencediv =prepareResidencediv+ "           <input class='form-control' id='country"+rowId+"' name='residenceList["+rowId+"].country' value='"+residenceVal[4]+"' placeholder='Country' value='${loginCountryName}' type='text' ></input>";
+	   prepareResidencediv =prepareResidencediv+ "           <input class='form-control' id='country"+rowId+"' name='residenceList["+rowId+"].country' value='"+(typeof residenceVal[5]==="undefined"?"":residenceVal[5])+"' placeholder='Country' value='${loginCountryName}' type='text' ></input>";
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
 	   prepareResidencediv =prepareResidencediv+ "     </div> ";                                                                                              
 	   prepareResidencediv =prepareResidencediv+ "     <div class='form-group'>";
 	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>Zip Code</label>";
 	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
-	   prepareResidencediv =prepareResidencediv+ "          <input class='form-control' id='zipcode"+rowId+"' value='"+residenceVal[5]+"' name='residenceList["+rowId+"].zipcode'";
+	   prepareResidencediv =prepareResidencediv+ "          <input class='form-control' id='zipcode"+rowId+"' value='"+(typeof residenceVal[6]==="undefined"?"":residenceVal[6])+"' name='residenceList["+rowId+"].zipcode'";
 	   prepareResidencediv =prepareResidencediv+ " 						placeholder='Zip code' type='text' ></input>";
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
 	   prepareResidencediv =prepareResidencediv+ "     </div>";
@@ -627,7 +626,7 @@
 	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>Start Date<span class='text-danger paddingLeft'>*</span></label>";
 	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
 	   prepareResidencediv =prepareResidencediv+ " 			<div class='input-group errorInptgroup'>";
-	   prepareResidencediv =prepareResidencediv+ "         <input type='text' class='form-control calendar' id='residenceStartDate"+rowId+"' value='"+residenceVal[6]+"' onClick='showStartDatePicker("+rowId+")' name='residenceList["+rowId+"].residenceStartDate' field-name='Start Date' data-validation='required' placeholder='Start Date'>";
+	   prepareResidencediv =prepareResidencediv+ "         <input type='text' class='form-control calendar' id='residenceStartDate"+rowId+"' value='"+(typeof residenceVal[7]==="undefined"?"":residenceVal[7])+"' onClick='showStartDatePicker("+rowId+")' name='residenceList["+rowId+"].residenceStartDate' field-name='Start Date' data-validation='required' placeholder='Start Date'>";
 	   prepareResidencediv =prepareResidencediv+ "         <span class='input-group-addon'><i class='fa fa-times text-danger cursorPointer' onclick='clearDateValue(\"residenceStartDate"+rowId+"\")'></i></span>";
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
@@ -636,7 +635,7 @@
 	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>End Date<span class='text-danger paddingLeft'>*</span></label>";
 	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
 	   prepareResidencediv =prepareResidencediv+ " 			<div class='input-group errorInptgroup'>";
-	   prepareResidencediv =prepareResidencediv+ "        <input type='text' class='form-control calendar'  id='residenceEndDate"+rowId+"' value='"+residenceVal[7]+"' onClick='showEndDatePicker("+rowId+")'  name='residenceList["+rowId+"].residenceEndDate' field-name='End Date' data-validation='required' placeholder='End Date'>";
+	   prepareResidencediv =prepareResidencediv+ "        <input type='text' class='form-control calendar'  id='residenceEndDate"+rowId+"' value='"+(typeof residenceVal[8]==="undefined"?"":residenceVal[8])+"' onClick='showEndDatePicker("+rowId+")'  name='residenceList["+rowId+"].residenceEndDate' field-name='End Date' data-validation='required' placeholder='End Date'>";
 	   prepareResidencediv =prepareResidencediv+ "        <span class='input-group-addon'><i class='fa fa-times text-danger cursorPointer' onclick='clearDateValue(\"residenceEndDate"+rowId+"\")'></i></span>";
 	   prepareResidencediv =prepareResidencediv+ "      </div>";
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
@@ -655,6 +654,7 @@
 	   $("#dynamicResidenceGroupDiv").append(prepareDynamicResidenceDiv(rowId++,"")); 
    }
    //var deletedResicenceListIds = new Array();
+   var removedResidenceIds = [];
    function removeDynamicResidenceDiv(id){
 	   /* if($("#templateId"+id).val() !==  undefined ){
 		   deletedResicenceListIds.push($("#templateId"+id).val());   
@@ -663,16 +663,6 @@
 	   rowId--;// decrement rowid when deleted in UI.
    } 
    	</script>
-   <script type="text/javascript">
-		window.onload = function () {
-			//editOrgLocationAuto('nationality');
-			//initLocationAuto('entryPlace');
- 		//	initLocationAuto('jobLocation');
- 			//initLocationAuto('birthPlace');
- 			//initLocationAuto('location','country','state','city','zipcode','','','','address');
-			
-		 };
-	</script>
 	
 <script>
 
@@ -898,6 +888,7 @@ $("#experienceValue").change(function () {
 		  	<c:forEach var='edu' items="${immigrationDTO.residenceList}">
 		  		var currentResidence = "${edu.isCurrResidence}";
 		  		if(currentResidence != 'Y'){
+		  			residenceArr.push("${edu.id == 'undefined' ? '':edu.id}");
 			  		residenceArr.push("${edu.location}");
 			  		residenceArr.push("${edu.address}");
 			  		residenceArr.push("${edu.city}");

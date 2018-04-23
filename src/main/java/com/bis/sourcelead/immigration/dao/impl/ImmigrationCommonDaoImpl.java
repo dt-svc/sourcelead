@@ -134,6 +134,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			if(residenceList != null && residenceList.size() != 0) { // saving multiple residence for candidates only for immigration
 				for(CandidateResidence residence : residenceList) {
 					session.saveOrUpdate(residence);
+					System.out.println("The residence id is: +++++++++++++++ :"+residence.getId());
 				}
 			}
 		} catch (Exception exception) {
@@ -797,6 +798,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return candidateEducation;
 	}
 
+
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public String deleteDocumentHistoryRecordById(Long id) {
@@ -814,5 +816,6 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return deletedFileUrl;
 	
 	}
+
 }
 	

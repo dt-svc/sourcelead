@@ -97,4 +97,5 @@ public interface ImmigrationCommonDao {
 	ImmigrationDashboardView getImmigrationDashBoardDetails(OrgLocations orgLocations);
 	
 	List<ImmigrationCandidateDocumentsHistory> getImmigrationCandidateDocumentHistoryList(Long immigrationId,Long candidateId,Long immigrationCanDocid) throws Exception;
+
 }
