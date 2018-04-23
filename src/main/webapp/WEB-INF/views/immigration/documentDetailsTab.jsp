@@ -3,10 +3,16 @@
 		<div class="immigraTabsHead">
 		<!-- <a href="javascript:void(0)" id="immDocu"><i class="glyphicon glyphicon-plus"></i> Request Document</a> 		 -->	  	
 		  	<a href="javascript:void(0)" id="addDocu"><i class="glyphicon glyphicon-plus"></i> Add Document</a> 
+		  	<ul>
+		  	<li id='docZipfile'>Download All Documents</li> 
+		  	</ul>
 		  	<span><input class="immigraTabSerach" id="immigraDocTabSerach" placeholder="Document Type/Description/Status" type="text"></span>
 		</div>
 		
 	  	<div class="immigraTable">
+	  	<!-- <ul>
+		<li id='docZipfile'>Download All Documents</li> 
+	</ul> -->
 		  <table>
 			<tbody>
 			  <tr>
@@ -330,6 +336,21 @@ function uploadDoc(id){
 function uploadRerqDocsList(id) {
 	fileUpload("uploadBtn"+id+"", "immigrationCandidateDocuments", "uploadRequestDoc_Form");
 }
+
+
+$("#docZipfile").click(function() {
+	if(immigrationId == 0)
+		return;
+	$.post("downloadImmigrationDocsZip",{immigrationId: immigrationId}, function(data) {
+		if(data !== "" && data.indexOf("Documents Found") === -1)
+			location.href = '/app/downloadFile.html?file='+data;
+		else if(data !== "" && data.indexOf("immigrationId Found") !== -1)
+			alert(data);
+		else
+			alert("Unable to locate logs for this upload");
+	});
+});
+
 </script>
 		
 <script type="text/javascript">
