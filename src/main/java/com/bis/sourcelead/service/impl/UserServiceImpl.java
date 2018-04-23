@@ -711,31 +711,24 @@ public class UserServiceImpl implements UserService {
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 StringBuilder builder=new StringBuilder();
 		 if(user.getLastName() != null && user.getLastName() !=""){
-			 globalVarsMap.put("firstName",builder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());	 
+			 globalVarsMap.put("FirstName",builder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());	 
 		 }else{
-			 globalVarsMap.put("firstName", user.getFirstName());	 
+			 globalVarsMap.put("FirstName", user.getFirstName());	 
 		 }
 		 String loginUserFullName = loginUser.getFullName().substring(0, 1).toUpperCase() + loginUser.getFullName().substring(1);
 		 globalVarsMap.put("loginUser",loginUserFullName);
 		 globalVarsMap.put("orgName", locations.getOrgLocationName());
-		 globalVarsMap.put("role",userRole.getUserType());
+		 globalVarsMap.put("Role",userRole.getUserType());
 		 StringBuilder loginBuilder = new StringBuilder();
-		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Login</div></a>").toString());
-		 globalVarsMap.put("userEmailId",user.getEmail());
+		 globalVarsMap.put("LoginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Login</div></a>").toString());
+		 globalVarsMap.put("UserEmailId",user.getEmail());
 		 if(password != null){
-			 globalVarsMap.put("password",password);
+			 globalVarsMap.put("Password",password);
 		 }else{
-			 globalVarsMap.put("password","Login with your existing sourcelead credentials");
+			 globalVarsMap.put("Password","Login with your existing sourcelead credentials");
 		 }
 		
-		//getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = null;
-		 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.INVITE_USER,Constants.ENTITY_TYPE_EMAIL, locations.getId());
-		  if(emailScenario == null){
-				emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_USER,Constants.ENTITY_TYPE_EMAIL);
-		   }
-		  
-		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,emailScenario,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.INVITE_USER);
 		
 	}
 

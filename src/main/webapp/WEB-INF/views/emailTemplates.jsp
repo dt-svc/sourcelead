@@ -90,7 +90,7 @@ left:0;
 	                result = result + '<td><div class="tbldata-dotdot" title="'+opt.entityType+'"><span class="mid-span">'+opt.entityType+'</span></div></td>';
 	                result = result + '<td><div>';
 	                    result = result + '<a class="fa fa-eye text-blue ml" title="summary" onclick="viewEmailTemplate('+opt.id+',\''+opt.uniqueScenarioName+'\')"></a>';
-	                    result = result + '&nbsp;<a href="'+sourceleadUrl+'/editEmailTemplate?templateId='+opt.id+'" title="Edit"><i class="fa fa-edit"></i></a>';
+	                    result = result + '&nbsp;<a href="'+sourceleadUrl+'/editEmailTemplate?templateUUID='+opt.emailUUID+'" title="Edit"><i class="fa fa-edit"></i></a>';
 	                result = result +'</div></td>';
 	                result = result + '	 </tr>';
 				}  
