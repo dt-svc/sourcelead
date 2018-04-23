@@ -1648,7 +1648,11 @@ function getExpensesDetails(expId){
 		type : "GET",
 		url: sourceleadUrl+"/getExpensesEntries?"+tokenParamName+"="+tokenValue+"&expensesId="+expensesId,
 		success :function(data) {
+			if(data !=null && data !=''){
 			populateExpensesEntriesGrid(data);
+			}else{
+                alertMessageInExpense();
+          }
 		},
 		});	
 }
@@ -1715,8 +1719,6 @@ function populateExpensesEntriesGrid(data){
          		      result = result +' </tr>';
          		      
                  }	
-            }else{
-            	alertMessageInExpense();
             }
            
             
