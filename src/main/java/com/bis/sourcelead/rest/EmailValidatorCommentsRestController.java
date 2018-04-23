@@ -48,17 +48,21 @@ public class EmailValidatorCommentsRestController {
 		Response<String> response = new Response<>();
 		try {
 			OkHttpClient client = new OkHttpClient();
-			Request req = new Request.Builder().url("https://trumail.io/json/" + email).get().build();
+			Request req = new Request.Builder().url("https://api.trumail.io/v1/json/" + email).get().build();
 			com.squareup.okhttp.Response res = client.newCall(req).execute();
 			JSONObject json = new JSONObject(res.body().string());
-			if (json.has("deliverable") && json.getBoolean("deliverable")) {
-				response.setObject("true");
-			} else {
-				response.setObject("false");
+			if (json.has("hostExists") && json.getBoolean("hostExists")) {
+				if (json.has("deliverable") && json.getBoolean("deliverable")) {
+					response.setObject("true");
+				} else {
+					response.setObject("false");
+				}
+			}else {
+				response.setObject("fakeDomain");
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			response.setObject("false");
+			response.setObject("noResponse");
 		}
 		return response;
 	}

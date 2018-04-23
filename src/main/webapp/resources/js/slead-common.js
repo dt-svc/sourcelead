@@ -545,8 +545,12 @@ $.ajax({
     success: function (data) {
     	if(data.object === "true"){
     		flag =  true;
-    	}else{
+    	}else if(data.object === "false"){
     		flag= false;
+    	}else if(data.object === "fakeDomain"){
+    		flag= "fakeDomain";
+    	}else if(data.object === "noResponse"){
+    		flag = "noResponse";
     	}
     }
 });
