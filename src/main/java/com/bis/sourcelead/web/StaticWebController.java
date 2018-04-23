@@ -19,7 +19,7 @@ public class StaticWebController {
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
-
+	
 	public ModelAndView setMetaProperties(String viewPage) throws MissingResourceException {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -38,10 +38,12 @@ public class StaticWebController {
 			}
 		} catch (java.util.MissingResourceException e) {
 			e.printStackTrace();
-			System.out.println("Could not load Resources");
-			System.exit(0);
-
 		}
+		if (viewPage.equalsIgnoreCase("search-jobs"))
+			model.setViewName("openJobs/" + viewPage);
+		else
+			model.setViewName("static-web/" + viewPage);
+		
 		return model;
 	}
 
@@ -150,10 +152,10 @@ public class StaticWebController {
 		return setMetaProperties("blog5");
 	}
 
-	@RequestMapping("/careers.html")
+	/*@RequestMapping("/careers.html")
 	public ModelAndView careers() {
 		return setMetaProperties("careers");
-	}
+	}*/
 
 	@RequestMapping("/careers-details.html")
 	public ModelAndView careersDetails() {
@@ -268,10 +270,6 @@ public class StaticWebController {
 
 	@RequestMapping("/help.html")
 	public ModelAndView sourceleadHelp() {
-		/*ModelAndView modal = new ModelAndView();
-		modal.addObject("sourceleadUrl", sourceleadUrl);
-		modal.setViewName("static-web/help");
-		return modal;*/
 		return setMetaProperties("help");
 	}
 

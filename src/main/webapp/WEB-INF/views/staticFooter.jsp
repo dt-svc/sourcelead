@@ -8,7 +8,7 @@
 		  <li><a href="/search-jobs.html">Search Job</a></li>
 		  <li><a href="/market-place.html">Marketplace</a></li>
 		  <li><a href="/about-us.html">About Us</a></li>
-		  <li><a href="/help-manuals.html">Help</a></li>
+		  <li><a href="/help.html">Help</a></li>
 		  <li><a href="/blog.html">Blog</a></li>
 		  <li><a href="/contact.html">Contact</a></li>
 	</ul>
@@ -103,7 +103,7 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
 			  <span class="fa fa-angle-down"></span></a>
 			<ul id="featureshome" class="collapse list-unstyled dropdownmenu-custom">
 				<li><a class="helpbtn" href="/help.html">Help</a></li>
-				<li><a href="/blog.html" id="blogID">Blog</a></li>
+				<li><a href="/all.html" id="blogID">Blog</a></li>
 			</ul>
 	</li>
 
