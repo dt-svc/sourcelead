@@ -102,7 +102,7 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
 	 <a data-target="#featureshome" href="javascript:void(0)" id="resourcesID">Resources
 			  <span class="fa fa-angle-down"></span></a>
 			<ul id="featureshome" class="collapse list-unstyled dropdownmenu-custom">
-				<li><a class="helpbtn" href="/sourcelead_help.html">Help</a></li>
+				<li><a class="helpbtn" href="/help.html">Help</a></li>
 				<li><a href="/blog.html" id="blogID">Blog</a></li>
 			</ul>
 	</li>
