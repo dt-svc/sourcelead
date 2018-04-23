@@ -816,6 +816,15 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return deletedFileUrl;
 	
 	}
+	
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ImmigrationCandidateDocumentsHistory> getImmigrationCandidateDocumentHistoryListByImmigrationId(Long immigrationId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ImmigrationCandidateDocumentsHistory cdh where  cdh.immigrationId.id =:immigrationId ORDER BY cdh.id DESC";
+		List<ImmigrationCandidateDocumentsHistory> immigrationCandidateDocumentHistoryList = session.createQuery(query).setLong("immigrationId", immigrationId).list();
+		return immigrationCandidateDocumentHistoryList;
+	}
 
 }
 	

@@ -53,6 +53,7 @@ import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.ImmigrationDashboardView;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SourceleadNotes;
@@ -72,6 +73,7 @@ import com.bis.sourcelead.service.SourceleadNotesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import  org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
@@ -1451,8 +1453,22 @@ public class ImmigrationRestController {
 		return model;
 	}
 	
-		
-		
+	@RequestMapping("/downloadImmigrationDocsZip")	
+	@ResponseBody
+	public String exportImmigrationDocuments(HttpServletRequest request,Long immigrationId) throws Exception {
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		long orgId = 0, orgLocationId = 0;
+		if (org != null) {
+			orgId = org.getId();
+		}
+		if (loginOrgLocation != null) {
+			orgLocationId = loginOrgLocation.getId();
+		}
+		List <ImmigrationCandidateDocumentsHistory> immigrationCanididateDocHistoryList =immigrationCommonService.getImmigrationCandidateDocumentHistoryListByImmigrationId(immigrationId);
+		return FileUploadUtil.getImmigrationZipFiles(staticPath, orgId, orgLocationId,immigrationId, immigrationCanididateDocHistoryList);
+	}
 
 }
 
