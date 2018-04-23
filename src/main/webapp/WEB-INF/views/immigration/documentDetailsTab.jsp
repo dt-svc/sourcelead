@@ -343,7 +343,7 @@ $("#docZipfile").click(function() {
 		return;
 	$.post("downloadImmigrationDocsZip",{immigrationId: immigrationId}, function(data) {
 		if(data !== "" && data.indexOf("Documents Found") === -1)
-			location.href = '/app/downloadFile.html?file='+data;
+			location.href = '/app/downloadFile.html?file='+encodeURI(data); // encodeURI used for encoding file path in request parameter.
 		else if(data !== "" && data.indexOf("immigrationId Found") !== -1)
 			alert(data);
 		else

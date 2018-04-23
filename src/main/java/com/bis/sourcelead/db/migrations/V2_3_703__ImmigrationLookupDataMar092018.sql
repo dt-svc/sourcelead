@@ -7,10 +7,10 @@ INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES 
 INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Reviewed & Filed','Reviewed & Filed','USCISStatus');
 INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('RFE','RFE','USCISStatus');
 INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('RFE Received','RFE Received','USCISStatus');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Approved','Approved','USCISStatus');
 INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Denied','Denied','USCISStatus');
 INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Motion to Re-Open','Motion to Re-Open','USCISStatus');
 INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('RFE Approved','RFE Approved','USCISStatus');
+INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Approved','Approved','USCISStatus');
 INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('RFE Denied','RFE Denied','USCISStatus');
 INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Revoked','Revoked','USCISStatus');
 INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Cancelled','Cancelled','USCISStatus');

@@ -163,7 +163,7 @@
 					  </li>
 					  <li>
 						<input id="ch2" name="resourcerequest" type="checkbox">
-						<label for="ch2">New</label>
+						<label for="ch2">Sent Request</label>
 					  </li>
 					  <li>
 						<input id="ch3" name="resourcerequest" type="checkbox">
@@ -171,12 +171,16 @@
 					  </li>
 					  <li>
 						<input id="ch4" name="resourcerequest" type="checkbox">
-						<label for="ch4">Accepted</label>
+						<label for="ch4">Appoved</label>
 					  </li>
 					  <li>
 						<input id="ch5" name="resourcerequest" type="checkbox">
 						<label for="ch5">Rejected</label>
-					  </li>					  					  
+					  </li>	
+					   <li>
+						<input id="ch6" name="resourcerequest" type="checkbox">
+						<label for="ch6">Others</label>
+					  </li>						  					  
 					</ul>
 				  </div>
 				</li>
