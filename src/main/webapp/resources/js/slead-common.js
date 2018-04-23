@@ -535,4 +535,22 @@ function refreshGoogleApiCity(cityId){
 	$("#"+cityId).val('');
 }
 
+function validateEmailForExistenceUniversally(email) {
+var flag = false;
+$.ajax({
+    type: "GET",
+    url: sourceleadUrl + "/validateEmailForExistenceUniversally?email="+email,
+    async: false,
+    cache: false,
+    success: function (data) {
+    	if(data.object === "true"){
+    		flag =  true;
+    	}else{
+    		flag= false;
+    	}
+    }
+});
+return flag;
+}
+
 
