@@ -64,6 +64,12 @@ public class CandidateLcaI94Summary {
 	@Column(name = "IS_CURR")
 	private String isCurrent;
 	
+	@Column(name = "JOB_START_DATE ")
+	private Date jobStartDate;
+	
+	@Column(name = "JOB_END_DATE ")
+	private Date jobEndDate;
+	
 	@Column(name = "RATE_CURRENCY")
 	private String rateCurrency;
 	
@@ -250,6 +256,22 @@ public class CandidateLcaI94Summary {
 
 	public void setEmployerLocation(String employerLocation) {
 		this.employerLocation = employerLocation;
+	}
+
+	public Date getJobStartDate() {
+		return jobStartDate;
+	}
+
+	public void setJobStartDate(Date jobStartDate) {
+		this.jobStartDate = jobStartDate;
+	}
+
+	public Date getJobEndDate() {
+		return jobEndDate;
+	}
+
+	public void setJobEndDate(Date jobEndDate) {
+		this.jobEndDate = jobEndDate;
 	}
 	
 }
