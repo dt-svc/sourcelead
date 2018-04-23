@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.EmailScenarioDao;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UserManualLevelOne;
 import com.bis.sourcelead.exception.NoRecordsFoundException;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -160,7 +161,7 @@ logger.debug("In EmailScenarioDaoImpl class getEmailScenarioByUniqueNameAndOrgCo
 	@Transactional(rollbackFor = { Exception.class })
 	public List<EmailScenario> getEmailScenarioList(String sourceLead) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from EmailScenario emailScenario where templateType not in(:sourceLead) "; 
+		String query = "from EmailScenario emailScenario where templateType not in(:sourceLead) and orgLocationId is Null "; 
 		List<EmailScenario> emailScenarioList =session.createQuery(query).setString(sourceLead, sourceLead).list();
 		return emailScenarioList;
 	}
@@ -183,6 +184,15 @@ logger.debug("In EmailScenarioDaoImpl class getEmailScenarioByUniqueNameAndOrgCo
 		}
 		return emailScenario;
 	
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<EmailScenario> getEmailScenarioListByOrgLocId(Long orgLocId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from EmailScenario emailScenario where  emailScenario.orgLocationId.id=:orgLocId "; 
+		List<EmailScenario> emailScenarioList =session.createQuery(query.toString()).setLong("orgLocId", orgLocId).list();
+		return emailScenarioList;
 	}
 
 }

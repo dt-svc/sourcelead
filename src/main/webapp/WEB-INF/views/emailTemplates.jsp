@@ -83,10 +83,10 @@ left:0;
 	        	result = result +'<tbody>';
 
 	        	for (var i=0; i<json.length; i++)
-				  {	        		
+				  {	 
 	        		var opt = json[i];
 	        		result = result + '<tr>';
-	                result = result + '<td><div><span class="mid-span">'+opt.uniqueScenarioName+'</span></a></div></td>';
+	                result = result + '<td><div><span class="mid-span">'+opt.scenarioName+'</span></a></div></td>';
 	                result = result + '<td><div class="tbldata-dotdot" title="'+opt.entityType+'"><span class="mid-span">'+opt.entityType+'</span></div></td>';
 	                result = result + '<td><div>';
 	                    result = result + '<a class="fa fa-eye text-blue ml" title="summary" onclick="viewEmailTemplate('+opt.id+',\''+opt.uniqueScenarioName+'\')"></a>';

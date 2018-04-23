@@ -71,4 +71,9 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioServic
 		return emailScenarioDao.getEmailScenarioByUniqueNameAndOrgLocationId(uniqueScenarioName, entityType, orgLocationId);
 	}
 
+	@Override
+	public List<EmailScenario> getEmailScenarioListByOrgLocId(Long orgLocId) throws Exception {
+		return emailScenarioDao.getEmailScenarioListByOrgLocId(orgLocId);
+	}
+
 }

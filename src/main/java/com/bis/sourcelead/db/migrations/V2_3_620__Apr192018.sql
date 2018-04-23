@@ -15,3 +15,4 @@ CALL AlterTableAddColumn ('sourcelead','EMAIL_SCENARIO','EMAIL_UUID','VARCHAR(20
 CALL AlterTableAddColumn ('sourcelead','EMAIL_SCENARIO','UPDATED_DATE','DATE NULL');
 CALL AlterTableAddColumn ('sourcelead','EMAIL_SCENARIO','UPDATED_BY','VARCHAR(10) NULL');
 
+CALL AlterTableAddColumn ('sourcelead','CLASS_FIELD','DELIMITER_STR','VARCHAR(100) NULL');
