@@ -886,8 +886,9 @@
             }
         }
 
-
+      alert(designationType.value)
         if (designationType.value == 'C2C') {
+        	alert("1")
             document.getElementById("hideVendor").style.display = "block";
             getVendorsByOrgLocation();
         } else {
