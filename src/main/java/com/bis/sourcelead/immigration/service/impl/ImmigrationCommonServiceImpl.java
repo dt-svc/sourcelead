@@ -445,7 +445,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		immigration.setCandidate(candidate);
 		immigration.setOrgLocationId(orgLocations);
 		immigration.setReceiptNo(immigrationDTO.getReceiptNo());
-		immigration.setGeneratedId(getImmigrationIdForGeneratedId(orgLocations));
+		if(immigrationDTO.getImmigrationId() == null) {
+			immigration.setGeneratedId(getImmigrationIdForGeneratedId(orgLocations));
+		}
 		immigration.setJob(requirement);
 		immigration.setStatus(Constants.RECORD_ACTIVE);
 		immigration.setCreatedBy(user);
