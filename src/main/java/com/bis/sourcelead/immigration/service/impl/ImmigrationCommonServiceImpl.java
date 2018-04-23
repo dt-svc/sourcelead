@@ -1126,9 +1126,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	}
 	
 	@Override
-	public List<ImmigrationCandidateDocumentsHistory> getImmigrationCandidateDocumentHistoryListByImmigrationId(Long immigrationId) throws Exception {
+	public List<ImmigrationCandidateDocumentsHistory> getImmigrationCandidateDocumentHistoryListByImmigrationId(Long immigrationId, Long docId) throws Exception {
 		
-		List <ImmigrationCandidateDocumentsHistory> immigrationCanididateDocHistoryList =immigrationCommonDao.getImmigrationCandidateDocumentHistoryListByImmigrationId(immigrationId);
+		List <ImmigrationCandidateDocumentsHistory> immigrationCanididateDocHistoryList =immigrationCommonDao.getImmigrationCandidateDocumentHistoryListByImmigrationId(immigrationId, docId);
 		
 		return immigrationCanididateDocHistoryList;
 	}

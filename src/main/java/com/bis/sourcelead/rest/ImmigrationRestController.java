@@ -1455,7 +1455,7 @@ public class ImmigrationRestController {
 	
 	@RequestMapping("/downloadImmigrationDocsZip")	
 	@ResponseBody
-	public String exportImmigrationDocuments(HttpServletRequest request,Long immigrationId) throws Exception {
+	public String exportImmigrationDocuments(HttpServletRequest request,Long immigrationId, Long docId) throws Exception {
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
@@ -1466,8 +1466,8 @@ public class ImmigrationRestController {
 		if (loginOrgLocation != null) {
 			orgLocationId = loginOrgLocation.getId();
 		}
-		List <ImmigrationCandidateDocumentsHistory> immigrationCanididateDocHistoryList =immigrationCommonService.getImmigrationCandidateDocumentHistoryListByImmigrationId(immigrationId);
-		return FileUploadUtil.getImmigrationZipFiles(staticPath, orgId, orgLocationId,immigrationId, immigrationCanididateDocHistoryList);
+		List <ImmigrationCandidateDocumentsHistory> immigrationCanididateDocHistoryList =immigrationCommonService.getImmigrationCandidateDocumentHistoryListByImmigrationId(immigrationId,docId);
+		return FileUploadUtil.getImmigrationZipFiles(staticPath, orgId, orgLocationId,immigrationId, docId, immigrationCanididateDocHistoryList);
 	}
 
 }

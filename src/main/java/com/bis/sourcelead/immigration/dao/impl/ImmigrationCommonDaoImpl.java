@@ -818,11 +818,20 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	}
 	
 	@Transactional(rollbackFor = { Exception.class })
-	public List<ImmigrationCandidateDocumentsHistory> getImmigrationCandidateDocumentHistoryListByImmigrationId(Long immigrationId) throws Exception
+	public List<ImmigrationCandidateDocumentsHistory> getImmigrationCandidateDocumentHistoryListByImmigrationId(Long immigrationId, Long docId) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ImmigrationCandidateDocumentsHistory cdh where  cdh.immigrationId.id =:immigrationId ORDER BY cdh.id DESC";
-		List<ImmigrationCandidateDocumentsHistory> immigrationCandidateDocumentHistoryList = session.createQuery(query).setLong("immigrationId", immigrationId).list();
+		String query ="";
+		List<ImmigrationCandidateDocumentsHistory> immigrationCandidateDocumentHistoryList = null;
+		if(docId == null) {
+		 query = "from ImmigrationCandidateDocumentsHistory cdh where  cdh.immigrationId.id =:immigrationId ORDER BY cdh.id DESC";
+		 immigrationCandidateDocumentHistoryList = session.createQuery(query).setLong("immigrationId", immigrationId).list();
+		}
+		else if(immigrationId == null) {
+			 query = "from ImmigrationCandidateDocumentsHistory cdh where  cdh.immigrationCandidateDocumentId =:docId ORDER BY cdh.id DESC";
+			  immigrationCandidateDocumentHistoryList = session.createQuery(query).setLong("docId", docId).list();
+		}
+		
 		return immigrationCandidateDocumentHistoryList;
 	}
 

@@ -30,7 +30,14 @@
 				<c:if test="${!empty canDocList.upldedFileName}">
 				<td><div class="tbldata-dotdot-me"><span class="fileName">${canDocList.upldedFileName}</span>
 					<a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile('${canDocList.uplodedFileUrl}','${canDocList.upldedFileName}','${canDocList.upldedFileContentType}');" title="View"></a>
-					<a class="glyphicon glyphicon-download-alt" download href="${canDocList.uplodedFileUrl}" title="	Download"></a></div>
+					<c:choose>
+					<c:when test = "${fn:contains(canDocList.docsHistoryList, ',')}">
+					<a class="fa fa-file-archive-o" onclick ="downlaodZipfileByDocId(${canDocList.id})"; title="Download Zip File"></a></div>
+					</c:when>
+					<c:otherwise>
+					<a class="glyphicon glyphicon-download-alt" download href="${canDocList.uplodedFileUrl}" title="Download"></a></div>
+					</c:otherwise>
+					</c:choose>
 				</td>
 				</c:if>
 				<c:if test="${empty canDocList.upldedFileName}">
@@ -341,7 +348,7 @@ function uploadRerqDocsList(id) {
 $("#docZipfile").click(function() {
 	if(immigrationId == 0)
 		return;
-	$.post("downloadImmigrationDocsZip",{immigrationId: immigrationId}, function(data) {
+	$.post("downloadImmigrationDocsZip",{immigrationId: immigrationId, docId: ''}, function(data) {//  passing empty value for docId to do immigration level zip download
 		if(data !== "" && data.indexOf("Documents Found") === -1)
 			location.href = '/app/downloadFile.html?file='+encodeURI(data); // encodeURI used for encoding file path in request parameter.
 		else if(data !== "" && data.indexOf("immigrationId Found") !== -1)
@@ -445,6 +452,17 @@ $("#immigraDocTabSerach").keyup(function (e) {
     	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,searchVal);
     }
 });
-
+function downlaodZipfileByDocId(docId){
+	if(docId == "")
+		return;
+    alert("Doc Id --->"+docId);
+	$.post("downloadImmigrationDocsZip",{immigrationId: '', docId: docId}, function(data) { //  passing empty value for immigrationId to do doc level zip download
+		if(data !== "" && data.indexOf("Documents Found") === -1)
+			location.href = '/app/downloadFile.html?file='+encodeURI(data); // encodeURI used for encoding file path in request parameter.
+		else
+			alert("Unable to locate Documents.");
+	});
+	
+}
 </script>	
 

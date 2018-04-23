@@ -284,18 +284,23 @@ public class FileUploadUtil {
 	}
 	
 	
-	public static String getImmigrationZipFiles(String staticPath, long orgId, long orgLocationId,long immigrationId, List <ImmigrationCandidateDocumentsHistory> docsList) {
+	public static String getImmigrationZipFiles(String staticPath, Long orgId, Long orgLocationId,Long immigrationId,  Long docId , List <ImmigrationCandidateDocumentsHistory> docsList) {
 		File file = null;
 		FileOutputStream fos = null;
 		ZipOutputStream zos = null;
 	    try {
-			file = File.createTempFile("temp/"+"immigrationCandidateDocuments", ""+ immigrationId + ".zip");
-			fos = new FileOutputStream(file);
+			if(docId == null) {
+	    	file = new File(com.google.common.io.Files.createTempDir(),"ImmigrationCandidateDocuments_ImmigrationID_"+ immigrationId+".zip");
+			}
+			else if(immigrationId == null) {
+				file =  new File(com.google.common.io.Files.createTempDir(),"ImmigrationCandidateDocuments_DocID_"+ docId+".zip");
+			}
+	    	fos = new FileOutputStream(file);
 			zos = new ZipOutputStream(fos);
-			
 			File folder = new File(staticPath, orgId+"/"+orgLocationId+"/immigrationCandidateDocuments");
 			if(!folder.exists() || folder.list().length == 0) {
-				return "No ";
+				if(immigrationId == null)
+				return "No Documents Found";
 			}
 			File files[] = folder.listFiles();
 			for (File f : files) {
