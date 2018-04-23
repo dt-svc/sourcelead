@@ -70,6 +70,8 @@ public interface ImmigrationCommonDao {
 		 
 	 public String deletetImmigrationCandidateFormsById(Long id);
 	 
+	 String deleteDocumentHistoryRecordById(Long id);
+	 
 	 public String deletetImmigrationCandidateDocsById(Long id);
 	 
 	 public ImmigrationCandidateDocuments getImmigrationCandidateDocumentById(Long id);

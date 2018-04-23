@@ -72,61 +72,67 @@
 			<li>
 				<span class="checkbox-new clearfix">
 					<input id="a" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
-					<label for="a" class="checkbox-custom-label">Lable Name Here....</label>
+					<label for="a" class="checkbox-custom-label toggle-vis " data-column="0">Status</label>
 				</span>
 			</li>
 			<li>
 				<span class="checkbox-new clearfix">
 					<input id="b" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
-					<label for="b" class="checkbox-custom-label">Lable Name Here....</label>
+					<label for="b" class="checkbox-custom-label toggle-vis" data-column="1">ID</label>
 				</span>
 			</li>
 			<li>
 				<span class="checkbox-new clearfix">
 					<input id="c" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
-					<label for="c" class="checkbox-custom-label">Lable Name Here....</label>
+					<label for="c" class="checkbox-custom-label toggle-vis" data-column="2">Country</label>
 				</span>
 			</li>
 			<li>
 				<span class="checkbox-new clearfix">
 					<input id="d" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
-					<label for="d" class="checkbox-custom-label">Lable Name Here....</label>
+					<label for="d" class="checkbox-custom-label toggle-vis" data-column="3">Type</label>
 				</span>
 			</li>
 			<li>
 				<span class="checkbox-new clearfix">
 					<input id="e" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
-					<label for="e" class="checkbox-custom-label">Lable Name Here....</label>
+					<label for="e" class="checkbox-custom-label toggle-vis" data-column="4">Name</label>
 				</span>
 			</li>
 			<li>
 				<span class="checkbox-new clearfix">
-					<input id="e" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
-					<label for="e" class="checkbox-custom-label">Lable Name Here....</label>
+					<input id="f" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
+					<label for="f" class="checkbox-custom-label toggle-vis" data-column="5">Email</label>
 				</span>
 			</li>
 			<li>
 				<span class="checkbox-new clearfix">
-					<input id="e" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
-					<label for="e" class="checkbox-custom-label">Lable Name Here....</label>
+					<input id="g" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
+					<label for="g" class="checkbox-custom-label toggle-vis" data-column="6">Phone</label>
 				</span>
 			</li>
 			<li>
 				<span class="checkbox-new clearfix">
-					<input id="e" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
-					<label for="e" class="checkbox-custom-label">Lable Name Here....</label>
+					<input id="h" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
+					<label for="h" class="checkbox-custom-label toggle-vis" data-column="7">On Date</label>
 				</span>
 			</li>
 			<li>
 				<span class="checkbox-new clearfix">
-					<input id="e" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
-					<label for="e" class="checkbox-custom-label">Lable Name Here....</label>
+					<input id="i" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
+					<label for="i" class="checkbox-custom-label toggle-vis" data-column="8">Attorney</label>
 				</span>
 			</li>
 			<li>
 				<span class="checkbox-new clearfix">
-					<input id="e" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
-					<label for="e" class="checkbox-custom-label">Lable Name Here....</label>
+					<input id="j" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
+					<label for="j" class="checkbox-custom-label toggle-vis" data-column="9">LCA Start Date</label>
+				</span>
+			</li>
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="k" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
+					<label for="k" class="checkbox-custom-label toggle-vis" data-column="10">LCA End Date</label>
 				</span>
 			</li>
 		</ul>
@@ -218,7 +224,7 @@
 					</ul>
 				  </div>
 				  </li>
-				  <li class="pull-left">
+				  <!-- <li class="pull-left">
                     <div class="dropdown">
                         <strong>Column Chooser </strong>
                         <button class="glyphicon glyphicon-plus" type="button" id="menu1" data-toggle="dropdown"></button>
@@ -233,7 +239,7 @@
                              <li><a class="toggle-vis" data-column="8">Attorney</a></li>
                         </ul>
                     </div>
-                </li>
+                </li> -->
 				
 				  <li class="dropdown">
 					<span class="dropdown-toggle" id="" data-toggle="dropdown">
@@ -394,7 +400,7 @@
  $(document).ready(function () {
      getDynamicImmigrationList();
      /* getUscisStatusList(); */
-     $('a.toggle-vis').on('click', function (e) {
+     $('label.toggle-vis').on('click', function (e) {
          e.preventDefault();
          // Get the column API object
          var column = table.column($(this).attr('data-column'));

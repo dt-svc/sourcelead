@@ -623,6 +623,20 @@ public class ImmigrationRestController {
 
 		return immigFormObj;
 	}	
+    
+    @RequestMapping(value = { "/deleteDocumentHistoryRecordById" })
+	public @ResponseBody String deleteDocumentHistoryRecordById(
+			@RequestParam(value = "recordDelete", required = true) Long recordDelete, HttpServletRequest request) {
+		String status = "";
+		try {
+			status =immigrationCommonService.deleteDocumentHistoryRecordById(recordDelete);
+		} catch (Exception e) {
+			logger.error("Exception caught in controller test --->" + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return status;
+	}	
 
     @RequestMapping(value = { "/getCandidateImmigrationCandidateDocsList" })
 	public ModelAndView getCandidateImmigrationCandidateDocsList(@RequestParam(value = "candidateId", required = true) Long candidateId,
