@@ -31,7 +31,13 @@
 		 
 </script>
 
-
+<script>
+$(document).ready(function(){
+	if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	 }
+});
+</script>
 
 <style type="text/css">
 .glyphicon-none:before {
@@ -270,19 +276,26 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 		    $.ajax({
 		    type: "POST",
 		    url: sourceleadUrl+"/saveExpenseApprovalStatusByExpenseId?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&approvalStatus=REJECTED"+"&rejectedReason="+(encodeMsg.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>')),       
-		    success: function(data) {    
-		   	   // approvalList();
-		       if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
-		    	   var table = $('#example').DataTable();
-			   		 table.row('#row'+expenseId).remove().draw( false );
-			   }
-		   	   else{
-		   		  	  $("#row"+expenseId).empty();
-		 	    	  $("#row"+expenseId).html(rowHtmlContent);
-		 	    	  $("#status"+expenseId).html("REJECTED");
-		 	    	  $("#action"+expenseId).empty();
-		 	    	  $("#action"+expenseId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+expenseId+"' onclick='rejectedMessage(\"rejectedMessage"+expenseId+"\");'><div class='app_error_mes' id='rejectedMessage"+expenseId+"'>"+msg+"</div></i><b class='Rname'>By :"+locationName+"</b>");
-		   	   }
+		    success: function(data) {
+		    	if(data.response === "SESSION_TIMEDOUT") {
+		    		location.replace(sourceleadUrl);
+		    	 } else if (data.response === "AWKWARD") {
+                        location.href = "/errorPage";
+		    	 } else if (data.response === "SUCCESS"){ 
+			    	if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
+			    	   var table = $('#example').DataTable();
+				   		 table.row('#row'+expenseId).remove().draw( false );
+				   }
+			   	   else{
+			   		  	  $("#row"+expenseId).empty();
+			 	    	  $("#row"+expenseId).html(rowHtmlContent);
+			 	    	  $("#status"+expenseId).html("REJECTED");
+			 	    	  $("#action"+expenseId).empty();
+			 	    	  $("#action"+expenseId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+expenseId+"' onclick='rejectedMessage(\"rejectedMessage"+expenseId+"\");'><div class='app_error_mes' id='rejectedMessage"+expenseId+"'>"+msg+"</div></i><b class='Rname'>By :"+locationName+"</b>");
+			   	   }
+		    	}else if (result.indexOf('Sign In') !== -1) {
+  					location.replace(sourceleadUrl);
+				 }
 		      }
 		    }); 
 		 }
@@ -363,7 +376,12 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 	    type: "POST",
 	    url: sourceleadUrl+"/saveExpenseApprovalStatusByExpenseId?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
 		    success: function(data) {
-	        	 if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
+		    	if(data.response === "SESSION_TIMEDOUT") {
+		    		location.replace(sourceleadUrl);
+		    	 } else if (data.response === "AWKWARD") {
+                        location.href = "/errorPage";
+		    	 } else if (data.response === "SUCCESS"){  
+		    	if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
 			    	 var table = $('#example').DataTable();
 			    	 table.row('#row'+expenseId).remove().draw( false );
 	        	 }
@@ -373,20 +391,23 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 			    	 $("#status"+expenseId).html("APPROVED");
 			    	 $("#action"+expenseId).html("<h3>Approved</h3><b class='Rname'>By :"+locationName+"</b>"); 
 	        	   }
+		    	}else if (result.indexOf('Sign In') !== -1) {
+  					location.replace(sourceleadUrl);
+				 }
 		    	 
 		    }
 	    });   
 }
 </script>
     
-<script>
+<!-- <script>
 function prepareCategoryDivForApprovalPopUp(expenseId){
 	    var locationCode ='${SourceLeadWeb_locationCode}'; 
 	 $.ajax({
          type : "POST",
          url: sourceleadUrl+"/getExpensesApprovalCategoryByExpenseId?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&locationCode="+locationCode,       
-         success :function(data) {
-        		var jsonList = JSON.parse(data);
+         success :function(jsonList) {
+        		//var jsonList = JSON.parse(data);
         		var result = '';
         		result = result +'<table>';
         		result = result +'<thead>';
@@ -456,7 +477,7 @@ function prepareCategoryDivForApprovalPopUp(expenseId){
        }
 	 });
 }    
-</script>
+</script> -->
     
  <script>
 function activeTabExpenseApproval(){

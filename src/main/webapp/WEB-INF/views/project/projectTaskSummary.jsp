@@ -13,7 +13,6 @@
 var sourceleadUrl = '${sourceleadUrl}';
 </script>
 <script>
-//description script
 	$(document).ready(function(){ 
 		var projectId = "${projectId}";
 		tasksAssignList(projectId);
@@ -117,6 +116,15 @@ var sourceleadUrl = '${sourceleadUrl}';
 	<div class="taskview_wrapinn">
 	      
 	<div class="clearfix">
+	
+			<c:forEach var="section" items="${sourceleadSectionListForProjectTask}" varStatus="sectionOrder">
+				 <script>
+				 $(document).ready(function() {
+					 preapareCustomFieldDetails('${projectTask.id}','${section.id}');					 
+				 });
+				 </script>
+			</c:forEach>
+	
           <div class="col-md-9">
 	          
 	          <div class="bg-success taskheaader-inlineedit mb10 clearfix">
@@ -397,11 +405,45 @@ var sourceleadUrl = '${sourceleadUrl}';
 		                   <select class="form-control chosen-select choose" multiple id="assignedUsers" name="assignedUsers"></select> 
 		              </div>
 		              </div>
-		              
+			              <form name="projectTaskCustomForm" id="projectTaskCustomForm">
+			             	<div id="projectTaskCustomId" onClick="inlinesaveProjectTaskCustomFieldDetails();"></div>
+			             </form>
 		          </div>
 		      </div>
       </div>
   </section>
+
+
+<script>
+function inlinesaveProjectTaskCustomFieldDetails(){
+		var projectTaskId = '${projectTask.id}';
+	  /*  if ($('#projectTaskCustomForm').validate(false, validationSettings)) { */
+		var formData = getFormData("projectTaskCustomForm");
+		$.ajax({
+			type : "POST",
+			 data: formData,
+			 url : sourceleadUrl+"/ProjectTasks/saveProjectTaskCustomFieldDetails?&id="+projectTaskId,
+			  success : function(data) {
+			}, 
+		});
+		return true;
+	/* } */
+}
+</script>
+
+
+<script>
+function preapareCustomFieldDetails(projecttaskId,sectionId){
+	 $.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/getAllASectionCustomFields?&projectTask="+projecttaskId+"&requestFrom=projectTask"+"&sectionId="+sectionId,        
+         success :function(data) {
+        	 $('#projectTaskCustomId').empty();
+        	 $('#projectTaskCustomId').append(data);
+           },
+     }); 
+}
+</script>
 
 <script>
 	var validationSettings = {
@@ -483,10 +525,13 @@ $('.chosen-select').chosen().on('change', function() {
 
 <script>
 function tasksAssignList(projectId){
+    $("#assignedUsers").trigger("chosen:updated");
+	    
 	var values = "Active";
-	  var map = new Object(); // or var map = {};
+// 	  var map = new Object(); 
+	  var assignedUsers = [];
       <c:forEach var="assign" items="${assignedUsers}">
-              map['${assign.projectMemberId.id}'] = '${assign.assignedUserName}';
+      	assignedUsers.push('${assign.projectMemberId.id}');
       </c:forEach>
 	$.ajax({
     	type: "POST",
@@ -496,24 +541,26 @@ function tasksAssignList(projectId){
         	for (var i=0; i<json.length; i++)
 			{
         		var opt = json[i];
-
-        		if(!jQuery.isEmptyObject(map)){
-        			 $.each(map, function(key, value) {
-                         if(opt.id == key){
-                             output = output +  '<option value="'+key+'" selected> '+value+'</option>';
+        		if(assignedUsers.length > 0){
+        			var selected = "";
+        			 for(var j=0; j<assignedUsers.length; j++) {
+                         if(opt.id == assignedUsers[j]){
+                        	 selected = "selected";
+                        	 break;
                          }else{
-         	        		output = output + "<option value='" +opt.id+ "'>"+opt.empName+"</option>";
+                        	 selected = "";
                          }
-                       });
+                       }
+        			 output = output +  '<option value="'+opt.id+'" '+selected+'> '+opt.empName+'</option>';
         		}else{
         			output = output + "<option value='" +opt.id+ "'>"+opt.empName+"</option>";
         		}
-        		
 			}
         	$("#assignedUsers").empty();
      		$("#assignedUsers").append(output);
      		$("#assignedUsers").chosen();
      	    $("#assignedUsers").trigger("chosen:updated");
+     		
         }
 	});	
 }
@@ -613,19 +660,29 @@ function inlineEditTaskSeverity(taskId){
 }
 
 function inlineEditDescription(taskId){
-	var desc = $(".Editor-editor").html(); 
-	var userId = '${SourceLeadWeb_userId}';
-	 $.ajax({
-		   	type: "POST",
-		    url: sourceleadUrl+"/ProjectTasks/updateTaskDescription?${_csrf.parameterName}=${_csrf.token}&description="+desc+"&taskId="+taskId+"&userId="+userId,    
-		    success: function(data) {
-		    	$("#jobAlert2").removeAttr("style");
-    			$("#jobAlert2").css({ display: "block" });
-				$("#editJobAlertMsgDiv").html("Successfully Update Description");
-					editAlertMsgFadeinFunction();
-					getTaskActivities();
-		    }
-	 }); 
+	var ee = $("#txtEditor2").val($('.Editor-editor').html()); 
+	 if ($('#taskdescription_form').validate(false, validationSettings)) {
+		var formData = getFormData1("taskdescription_form");
+		var userId = '${SourceLeadWeb_userId}';
+		$.ajax({
+			 type : "POST",
+			 data: formData,
+	         processData: false,
+	         contentType:false, 
+	         url : sourceleadUrl+"/ProjectTasks/updateTaskDescription?${_csrf.parameterName}=${_csrf.token}&id="+taskId+"&loginUserId="+userId,
+			  success : function(data) {
+				   $("#jobAlert2").removeAttr("style");
+	    			$("#jobAlert2").css({ display: "block" });
+					$("#editJobAlertMsgDiv").html("Successfully Update Description");
+						editAlertMsgFadeinFunction();
+						getTaskActivities(); 
+			}, 
+		});
+		return true;
+	}else {
+		return false;
+	} 
+	
 }
 function inlineEditTaskPercentage(taskId){
 	var percentageId = $("#taskPercentageId").val();
@@ -676,11 +733,12 @@ function inlineEditBillingType(taskId){
 		    	 result = result +' <div class="success_pop" id="jobAlert2" style="display: none;">';
 				 result = result +'  <i class="fa fa-check-circle"></i><span id="editJobAlertMsgDiv"></span>';
 				 result = result +' </div> ';
-				 
+				 result  = result + '<form id="taskdescription_form" name="taskdescription_form" method="post">';
 			   	 result  = result + '<div class="col-md-12 clearfix txtEditor_p saveBtn">';
 			   	 result = result + '<textarea id="txtEditor2" name="taskDescription" value="'+ json.description +'" class="form-control newContrtextarea">' + json.description + '</textarea>';
 			   	 result  = result  + '<div class="mt5 clearfix"><button type"button" class="pull-right btn btn-sm btn-warning save-btn" onclick="inlineEditDescription('+projectTaskId+');">Save</button></span>';
 			   	 result  = result  + '</div>';
+			   	 result  = result + '</form>';
 			   	 result  = result  + '</div>';
 			     $("#descrptionid").append(result);
 			     $("#txtEditor2").Editor();
@@ -913,7 +971,7 @@ function addDocumentEntry(){
 		result  = result + '	  </div>';
 		result  = result + '	  <div class="row clearfix">';
 		result = result + '    <form id="addDocument_form" name="addDocument_form">';
-		
+		result = result + ' <input type="hidden" name="tabType" value="attachment">';
 		result  = result + '	    <div class="col-md-12 mb10">';
 		result  = result + '	      <textarea class="form-control" rows="1" placeholder="Description" name="taskDescription" data-validation-optional="true" data-validation="validate_length length1-250" ></textarea>';
 		result  = result + '	    </div>';
@@ -982,8 +1040,14 @@ function documentTableList(){
 	$.ajax({
 		type : "POST",
 		url : sourceleadUrl+ "/ProjectTasks/getProjectTasksDocuments?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId,
-		success : function(json) {
-			 result = "";
+		success : function(data) {
+			 if (data && data.response === "INVALID_DATA") {
+                 showError(result.responseMessage);
+             } else if (data.response === "AWKWARD") {
+                 location.href = "/errorPage";
+             } else if (data.response === "SUCCESS") {
+            	 var json = data.data;
+			    result = "";
 			    result  = result + '	<div class="clearfix project_wrap_table datatable_filter">';
 				result  = result + '	  <table id="taskDocumentPagination">';
 				result = result +  '    <thead>';
@@ -1037,6 +1101,11 @@ function documentTableList(){
 				$("#documentTableId").empty();
 		        $("#documentTableId").append(result);
 		        taskDocumentPagination();
+             }else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+                 showError("Operation failed, please try again");
+             }
 		}
 	});
 		
@@ -1068,7 +1137,7 @@ function getEditTaskDocument(projectTaskDocId){
 					result  = result + '	  </div>';
 					result  = result + '	  <div class="row clearfix">';
 					result = result + '    <form id="updateDocument_form" name="updateDocument_form">';
-					
+					result = result + ' <input type="hidden" name="tabType" value="attachment">';
 					result  = result + '	    <div class="col-md-12 mb10">';
 					result  = result + '	      <textarea class="form-control" rows="1" placeholder="Description" id="description" name="taskDescription" value="'+description+'" data-validation-optional="true" data-validation="validate_length length1-250" >'+description+'</textarea>';
 					result  = result + '	    </div>';
@@ -1096,6 +1165,7 @@ function getEditTaskDocument(projectTaskDocId){
 					result = result+'<div class="col-md-7" id="docNameDiv">';
 		   			result = result+'	  <div class="col-md-12 clearfix form-control">';
 		   			result = result + '	      <div class="input-group col-md-12 pull-left">';
+		   			result = result + '	      <input type="hidden" id="validDcoument" name="validDcoument" value="true">';
 		   			result = result+'		   <label id="docsName" name="docName" class="text-primary pull-left paddingRight tbldata-dotdot-verybig" title="'+json.fileName+'">'+json.fileName+'</label><span id="delete_doc" onclick="removeDocNameDiv();"><i class="cursorPointer text-danger paddingLeft fa fa-trash removeIcon" title="Delete"></i></span>';
 		   			result = result+'	     </div>';
 		   			result = result+'	  </div>';
@@ -1147,6 +1217,7 @@ function editUploadFile(){
 </script>
 <script>
 function removeDocNameDiv(){
+	$("#validDcoument").val('');
 	$("#documentName").val('');
 	document.getElementById("uploadDocDiv").style.display="block";
 	document.getElementById("docNameDiv").style.display="none";
@@ -1169,10 +1240,21 @@ function saveDocument(){
 				 data: formData,
 		         processData: false,
 		         contentType:false, 
-				 url : sourceleadUrl + "/ProjectTasks/saveProjectTaskDocuments?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId+"&userId="+userId,
-				  success : function(data) {
-					  closeTimeEntry();
-					  documentTableList();
+				 url : sourceleadUrl + "/ProjectTasks/saveProjectTaskDocuments?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId+"&loginUserId="+userId,
+				  success : function(result) {
+					  if (result && result.response === "INVALID_DATA") {
+		                    showError(result.responseMessage);
+		                } else if (result.response === "AWKWARD") {
+		                    location.href = "/errorPage";
+		                } else if (result.response === "SUCCESS") {
+		                	  closeTimeEntry();
+							  documentTableList();
+		                }else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+		                    showError("Operation failed, please try again");
+		                }
+					
 				}, 
 			});
 			return true;
@@ -1202,10 +1284,22 @@ function updateDocument(documentId){
 	         processData: false,
 	         contentType:false, 
    	         dataType : 'json',
-			 url : sourceleadUrl + "/ProjectTasks/saveProjectTaskDocuments?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId+"&documentId="+documentId+"&userId="+userId,
-			  success : function(data) {
-				  closeTimeEntry();
-				  documentTableList();
+			 url : sourceleadUrl + "/ProjectTasks/saveProjectTaskDocuments?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId+"&documentId="+documentId+"&loginUserId="+userId,
+			  success : function(result) {
+				  if (result && result.response === "INVALID_DATA") {
+	                    showError(result.responseMessage);
+	                } else if (result.response === "AWKWARD") {
+	                    location.href = "/errorPage";
+	                } else if (result.response === "SUCCESS") {
+	                	closeTimeEntry();
+	  				  documentTableList();
+	                }else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+	                    showError("Operation failed, please try again");
+	                }
+				  
+				  
 			}, 
 		});
 		
@@ -1737,9 +1831,20 @@ function saveTasks(){
 	         processData: false,
 	         contentType:false, 
 			 url : sourceleadUrl + "/ProjectTasks/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&userId="+userId+"&projectClientUUID="+projectClientUUID,
-			  success : function(data) {
-				  getSubTaskList();
-				  cancelTask();
+			  success : function(result) {
+				  if (result && result.response === "INVALID_DATA") {
+	                    showError(result.responseMessage);
+	                } else if (result.response === "AWKWARD") {
+	                    location.href = "/errorPage";
+	                } else if (result.response === "SUCCESS") {
+	  				  getSubTaskList();
+	  				  cancelTask();
+	                }else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+	                    showError("Operation failed, please try again");
+	                }
+				  
 			}, 
 		});
 		return true;
@@ -1926,6 +2031,7 @@ function addComment(){
 	result  = result + '   <p><strong>Add Comment</strong></p>';
 	result  = result + ' </div>';
 	result = result + '    <form id="addComment_form" name="addComment_form">';
+	result = result + ' <input type="hidden" name="tabType" value="comment">';
 	result  = result + ' <div class="row clearfix">';
 	result  = result + '   <div class="col-md-12 mb10">';
 	result  = result + '     <textarea class="form-control" rows="1" id="taskComment" name="taskComment" placeholder="Comment here ..." data-validation="required validate_Space  validate_length length2-500" field-name="Task Comment" ></textarea>';
@@ -1948,16 +2054,28 @@ function saveComment(){
  			var projectTaskId = '${projectTask.id}';
 		  	var sourceleadUrl = '${sourceleadUrl}';
 		  	var userId = '${SourceLeadWeb_userId}';
-		  	var comment = $("#taskComment").val();
+			var formData = getFormData("addComment_form");
 		  	$("#save_comment").attr("disabled", "disabled");
 			$("#save_comment").addClass('button').val('Processing..');
 			$.ajax({
 				 type : "POST",
-	    	     contentType : 'application/json; charset=utf-8',
-				 url : sourceleadUrl + "/ProjectTasks/saveProjectTaskComment?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId+"&userId="+userId+"&comment="+comment,
-				  success : function(data) {
-					  closeComment();
-					  commentTableList();
+				 data: formData,
+				 url : sourceleadUrl + "/ProjectTasks/saveProjectTaskComment?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId+"&loginUserId="+userId,
+				  success : function(result) {
+					  if (result && result.response === "INVALID_DATA") {
+		                    showError(result.responseMessage);
+		                } else if (result.response === "AWKWARD") {
+		                    location.href = "/errorPage";
+		                } else if (result.response === "SUCCESS") {
+		                	 closeComment();
+							  commentTableList();
+		                }else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+		                    showError("Operation failed, please try again");
+		                }
+					  
+					 
 				}, 
 			});
 			return true;

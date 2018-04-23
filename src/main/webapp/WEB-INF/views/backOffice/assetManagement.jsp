@@ -18,7 +18,7 @@ min-height: 100px; max-height: 450px; overflow-y:auto;
 
 <script>
 $(document).ready(function(){
-	getAssetList();
+	getDynamicAssetList();
 	loadCategory();
 });
 </script> 
@@ -42,38 +42,16 @@ $(document).ready(function(){
 <div class="timesheet_out">
   <div class="vendor_wrap">
     <div class="timesheet_head">
+    <div class="pull-left cand-advsrch advsrch_chosen">
+	     <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetAssetFilter();" title="Refresh">
+		    <span class="fa fa-refresh"></span>
+		</button>
+		
+		<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filter Search" onclick="openAssetFilterPop();"><i class="fa fa-filter faFilter padding_right" style="color: #909090!important"></i>
+		</a>
+      </div>
+      
       <ul>
-        <li id="category"><i class="fa fa-filter"></i><span>Category</span><i class="glyphicon glyphicon-play"></i>|
-          <div class="approved_pop">
-            <ul>
-                   <c:forEach var="report" items="${assetCategoriesList}">  
-		               <li><input  id="category${report.id}" name="categoryId" value ="${report.id}"  onclick="getAssetList();"  type="checkbox"><label>${report.categoryName}</label></li>
-				   </c:forEach>
-            </ul>
-          </div>
-        </li>
-        
-         <li id="workingStatus"><i class="fa fa-filter"></i><span>Working Status</span><i class="glyphicon glyphicon-play"></i>|
-          <div class="approved_pop">
-            <ul>
-                    <li><input id="c1" type="checkbox"  name="workingStatus"  value ="Working"  onclick="getAssetList();"  ><label>Working</label></li>
-				    <li><input id="c2" type="checkbox"  name="workingStatus"  value ="Out Of Service"   onclick="getAssetList();"><label>Out Of Service</label></li>
-            </ul>
-          </div>
-        </li>
-        
-         <!-- <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>|
-          <div class="export_pop">
-            <ul>
-              <li><i class="fa fa-file-pdf-o"></i>&nbsp;PDF</li>
-              <li><i class="fa fa-file-excel-o"></i>&nbsp;Excel</li>
-              <li><i class="fa fa-file-word-o"></i>&nbsp;Word</li>
-            </ul>
-          </div>
-        </li> -->
-       <!--  <li><i class="glyphicon glyphicon-save"></i><span>Import</span>|</li> -->
-            
-              
         <li>
           <a href="javascript:void(0)" class="addcon-pop"><i class="fa fa-plus"></i>Add Asset</a> 
            <li title="Import"><a href="<c:url value='${appPath}/uploadassetManagement'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
@@ -143,13 +121,20 @@ $(document).ready(function(){
                     <input type="text" class="form-control input-sm" id="monitor" name="monitor" placeholder="Monitor"  data-validation-optional="true" data-validation="validate_Space validate_NumberAndAlphabet validate_length length2-100">
                   </div>
                 </div>
+                
+                <div class="clearfix mb10">
+                  <div class="col-md-6">
+                    <input type="text" class="form-control input-sm" id="macAddress" name="macAddress" placeholder="MAC Address" field-name="MAC Address"  data-validation="validate_length length8-50" data-validation-optional="true">
+                  </div>
+                </div>
+                
                 <div class="clearfix mb10">
                   <div class="col-md-6" id="attachmentDiv">
                     <div class="input-group attachfile-error" >
                       <label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFile();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                         <input type="file" id="attachment"   style="display: none;" class="upload">
                         </b> </label>
-                      <input type="text" class="form-control" name="abc" data-validation-optional="true"  readonly id="uploadFileAttachment" placeholder="Files are not selected...">
+                      <input type="text" class="form-control" name="abc" data-validation = "validatedoc" data-validation-optional="true"  readonly id="uploadFileAttachment" placeholder="Files are not selected...">
                     </div>
                   </div>
                   <div class="col-md-6" id="descriptionDiv">
@@ -173,7 +158,7 @@ $(document).ready(function(){
                     <select class="form-control chosen-select" id="shiftAEmp" name="shiftAEmp">
                       <option selected value="">-Select Employee-</option>
                       <c:forEach var="option" items="${employeesList}">
-					     <option value="${option.id}">${option.user.firstName} ${option.user.lastName}</option>
+					     <option value="${option.user.id}">${option.user.firstName} ${option.user.lastName}</option>
 					  </c:forEach>
                     </select>
                   </div>
@@ -182,7 +167,7 @@ $(document).ready(function(){
                       <label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFileShiftA();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                         <input type="file"id="uploadBtn-dskA"  style="display: none;" class="upload">
                         </b> </label>
-                      <input type="text"  class="form-control" data-validation-optional="true"  name="shiftAAttachment" readonly id="uploadFileShiftA" placeholder="Files are not selected...">
+                      <input type="text"  class="form-control" data-validation = "validatedoc" data-validation-optional="true"  name="shiftAAttachment" readonly id="uploadFileShiftA" placeholder="Files are not selected...">
                     </div>
                   </div>
                 </div>
@@ -208,7 +193,7 @@ $(document).ready(function(){
                       <label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFileShiftB();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                          <input type="file" id="uploadBtn-dskB"  style="display: none;" class="upload">
                         </b> </label>
-                      <input type="text"  class="form-control" data-validation-optional="true"  name="shiftBAttachment" readonly id="uploadFileShiftB" placeholder="Files are not selected...">
+                      <input type="text"  class="form-control" data-validation = "validatedoc" data-validation-optional="true"  name="shiftBAttachment" readonly id="uploadFileShiftB" placeholder="Files are not selected...">
                     </div>
                   </div>
                 </div>
@@ -236,6 +221,7 @@ $(document).ready(function(){
     <div class="require_wrap_table table-wrap datatable_filter overflow_inherint">
     <div id= "assetManagementLoderDiv"></div>
     <table id="assetManagementList" class="display" cellspacing="0" width="100%"> </table>
+    <div id="dynamicAssetManagementList"></div>
       
     </div>
     
@@ -286,13 +272,13 @@ $(document).ready(function(){
   
   <script type="text/javascript">
   function storeAsset() {
-var validationSettings = {
-        errorMessagePosition : 'element',
-       borderColorOnError : '',
-		scrollToTopOnError : true,
-		dateFormat : 'yyyy/mm/dd' 
-   };  
-			if ($('#addAsset_form').validate(false, validationSettings)){
+			var validationSettings = {
+			        errorMessagePosition : 'element',
+			       borderColorOnError : '',
+					scrollToTopOnError : true,
+					dateFormat : 'yyyy/mm/dd' 
+			   };  
+			   if ($('#addAsset_form').validate(false, validationSettings)){
         	        var form = $('#addAsset_form')[0];
 	           		var formData = new FormData(form);
 	           		
@@ -307,9 +293,19 @@ var validationSettings = {
 		        	    dataType : 'json',
 	     		    	 url: sourceleadUrl+"/addCategoryAssets?"+tokenParamName+"="+tokenValue+"", 
 	     		        success: function(result) {
-	     		        	if(result == 'home'){
-	     	   	        	    location.replace(sourceleadUrl+ "/assetManagement");
-	     		        	}
+	     		        	
+	     		       	if (result && result.response === "INVALID_DATA") {
+						    showError(result.responseMessage);
+						    $("#loading").hide();
+						} else if (result.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (result.response === "SUCCESS") {
+							location.replace(sourceleadUrl+ "/assetManagement");
+						} else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
+						}
 	     			        
 	     		        },
 	     		    }); 
@@ -394,123 +390,260 @@ var validationSettings = {
   
   </script>
   
-  <script>
-	function getAssetList(){
-		var categoryIds = [];
-		$('input:checkbox[name=categoryId]:checked').each(function() 
-	    {
-			categoryIds.push($(this).val());
-	    });
-		
-		var workingStatus = [];
-		$('input:checkbox[name=workingStatus]:checked').each(function() 
-	    {
-			workingStatus.push($(this).val());
-	    });
-		$("#assetManagementLoderDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		  $.ajax({
-			   	type: "POST",
-			    url: sourceleadUrl+"/getAssetList?"+tokenParamName+"="+tokenValue+"&categoryIds="+categoryIds+"&workingStatus="+workingStatus, 	   
-	   		    success: function(data) {
-	   		    	
-	   		    	
-	   		    	var json = JSON.parse(data);
-	   	        	var result = "";
-	   	        	result = result +'<thead>';
-	   	        	result = result +'<tr>';
-	   	        	result = result +'	<th>Serial / Port Number</th>';
-	   	        	result = result +'  <th>Category</th>';
-	   	        	result = result +'  <th>Model</th>';
-	   	        	result = result +'  <th>Shift-A</th>';
-	   	        	result = result +'  <th>Shift-B</th>';
-	   	        	result = result +' <th>Status</th>';
-	   	        	result = result +' <th>Action</th>';
-	   	        	result = result +'</tr>';
-	   	        	result = result +'	</thead>';
-	   	        	result = result +'<tbody>';
-	   	        	
-		   	     	for (var i=0; i<json.length; i++)
-	   				{  
-		   	     	    var shiftAEmpName = "--- ";
-					    var shiftBEmpName = "--- ";
-					    var model = "---";
-					    var selected1 = '';
-	   					var selected2 = '';
-					    
-					    var report = json[i];
-					    
-					    if (report.shiftAEmpName != null && report.shiftAEmpName != '' && report.shiftAEmpName != 'undefined') {
-							shiftAEmpName = report.shiftAEmpName;
-						}
-						
-						if (report.shiftBEmpName != null && report.shiftBEmpName != '' && report.shiftBEmpName != 'undefined') {
-							shiftBEmpName = report.shiftBEmpName;
-						}
-						
-						if (report.model != null && report.model != '' && report.model != 'undefined') {
-							model = report.model;
-						}
-						
-						if(report.workingStatus == 'Working'){
-							selected1 = 'selected';
-						} 
-					
-						if(report.workingStatus == 'Out Of Service'){
-							selected2 = 'selected';
-						} 
-
-						result = result+'<tr id="asset'+report.id+'">';
-			   	        result = result+'<td><a href="javascript:void(0)" class="tbldata-dotdot-sm">';
-	       		       	result = result +"<a href='<c:url value='/app/assetManagementSummary?assetId="+report.id+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+report.slno+"'>"+report.slno+"</span><i class='fa fa-binoculars'></i></div></a>";
-					   	//result = result+'<div class="proj_show" onclick="assetSideBar('+report.id+');" title="'+report.slno+'"> <span class="tbldata-dotdot-100">'+report.slno+'</span> <i class="fa fa-binoculars"></i> </div>';
-					   	result = result+'</a></td>';
-					   	result = result+'<td><div class="tbldata-dotdot-sm" title="'+report.categoryName+'">'+report.categoryName+'</div></td>';
-						result = result+'<td><div class="tbldata-dotdot-vsm" title="'+model+'">'+model+'</div></td>';
-					   	result = result+'<td><div class="tbldata-dotdot-vsm" title="'+shiftAEmpName+'" >'+shiftAEmpName+'</div></td>';
-					   	result = result+'<td><div class="tbldata-dotdot-vsm" title="'+shiftBEmpName+'">'+shiftBEmpName+'</div></td>';
-					   	
-					   	result = result + ' <td><div class="tbldata-dotdot-100">';
-						result = result + ' <select id="workingStatus'+report.id+'" name="workingStatus" onChange="updateWorkingStatus(\''+report.id+'\');">';
-						result = result + ' <option '+selected1+'>Working</option>';
-						result = result + ' <option '+selected2+'>Out Of Service</option>';
-						result = result + ' </select>';
-						result = result + ' </div></td>';
-					   	
-					   	result = result+'<td><div class="tblminwidth-50"><i class="fa fa-trash-o text-danger" onClick="deleteAsset(\''+report.id+'\')";></i></div></td>';
-			   	        result = result +'</tr>';
-	   				}
-		   	     	
-	   	        	result = result +'</tbody>';
-	   	    	    $("#assetManagementList").empty();  
-	   	    	    $("#assetManagementList").append(result);
-	   	    	    $("#assetManagementLoderDiv").empty();
-	   	    	    $("#assetManagementLoderDiv").removeAttr('style');
-	   	    	    assetPagination();
-	   	    	     
-	   	    	    
-	   		    	
-	   		    }
-		  });
-	}
-</script>
-
-
 <script>
-function assetPagination(){ 
-    $('#assetManagementList').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": false,
-    	"oLanguage": {
-     		"sSearch": "",
-     		 "sZeroRecords": "", "sEmptyTable": ""
-     	}
-    })
+function closeAssetFilterPop(){
+	$("#assetFilterId").hide();
+	$(".advancedsearch-mask").fadeOut();
+}
+function openAssetFilterPop(){
+	 $("#assetFilterId").toggle();
+	 $(".advancedsearch-mask").fadeIn();
 }
 
 </script>
+<div class="advancedsearch-mask"></div>
+          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small" id="assetFilterId">
+				<h5 class="headerAdsrch">Filter Search
+					<a href="javascript:void(0)" class="close-div" onClick="closeAssetFilterPop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+						<div class="col-md-4">
+						<div class="row">
+						<div class="col-md-12 mb">
+							<label><strong>Working Status</strong></label>
+							 <div class="clearfix">
+								<ul class="list-unstyled" id="workStatusFilter">
+				                    <li class="checkBox positionRelative"><input id="c1" type="checkbox"  name="workingStatus"  value ="Working" ><label>Working</label></li>
+                                    <li class="checkBox positionRelative"><input id="c2" type="checkbox"  name="workingStatus"  value ="Out Of Service" ><label>Out Of Service</label></li>
+		                        </ul>
+							 </div>
+						</div> 
+						 </div>
+						</div>
+						
+						<div class="col-md-4 mb positionRelative">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myCategoryInput" onkeyup="myCategoryFunction()" placeholder="Category" title="Type in a clients">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myCategoryUL">
+								    <c:forEach var="report" items="${assetCategoriesList}">
+									     <li class="checkBox positionRelative"><input  id="category${report.id}" name="categoryId" value ="${report.id}"  type="checkbox"><label>${report.categoryName}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+					   </div> 
+						
+					</div>
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet" onclick="closeAssetFilterPop();getDynamicAssetList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetAssetFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+				</div>
+<!-- ========================================== Dynamic pageLoading in AssetManegment written By Laxman  Start============================== -->
+<script>
+function resetAssetFilter(){
+	$("ul#workStatusFilter > li input:checkbox").prop("checked",false);
+	$("ul#myCategoryUL > li input:checkbox").prop("checked",false);
+	getDynamicAssetList();
+	
+}
+
+function myCategoryFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myCategoryInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myCategoryUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+function getDynamicAssetList(){
+	
+	var categoryIds = [];
+	$('input:checkbox[name=categoryId]:checked').each(function() 
+    {
+		categoryIds.push($(this).val());
+    });
+	
+	var workingStatus = [];
+	$('input:checkbox[name=workingStatus]:checked').each(function() 
+    {
+		workingStatus.push($(this).val());
+    });
+	
+	var searchValue = $("#assetDataTableSearch").val();
+	 searchValue = searchValue ? searchValue : "";
+	var url = sourceleadUrl	+"/getAssetDynamicList?searchValue="+searchValue+"&categoryIds="+categoryIds+"&workingStatus="+workingStatus;
+	prepareDynamicAssetList(url);	
+}
+function prepareDynamicAssetList(url){
+	var result = "";
+    result = result	+ '<div class="remove_search">';
+    result = result +" <input type='text' placeholder='Search' id='assetDataTableSearch'/>";
+	result = result	+ '</div><div class="project_tabs_inn_table project_tabs_inn_table_a">';
+	result = result	+ '<div id="tasksLoadingImg"></div>';
+	result = result + '<table id="assetPagination" class="display" cellspacing="0" width="100%">';
+	result = result + '<thead>';
+	result = result + '<tr">';
+	result = result +'	<th>Serial / Port Number</th>';
+   	result = result +'  <th>Category</th>';
+   	result = result +'  <th>Model</th>';
+   	result = result +'  <th>Shift-A</th>';
+   	result = result +'  <th>Shift-B</th>';
+   	result = result +' <th>Status</th>';
+   	result = result +' <th>Action</th>';
+	result = result + '</tr>';
+	result = result + '</thead>';
+	result = result + '</table>';
+	result = result	+ '</div>';
+	$("#dynamicAssetManagementList").empty();  
+	$("#dynamicAssetManagementList").append(result);  
+	projectAssetPaginations(url);
+}
+function projectAssetPaginations(url){
+	var colIndex = 0;
+    $('#assetPagination').DataTable( { 
+	  "processing": true,
+      "serverSide": true,
+      "searching": false,
+      "ajax": $.fn.dataTable.pipeline( {
+          url: url,
+          method: 'POST',
+          pages: 10
+        }),
+        
+        "columnDefs": [{
+    	  	"targets": colIndex++,
+    	  	"data": "",
+    	  	"render": function(data, type, report) {
+    	  		var result = "";
+    	  	    result = result+'<td><a href="javascript:void(0)" class="tbldata-dotdot-sm">';
+   		       	result = result +"<a href='<c:url value='/app/assetManagementSummary?assetId="+report.id+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+report.slno+"'>"+report.slno+"</span><i class='fa fa-binoculars'></i></div></a>";
+			   	result = result+'</a></td>';
+	             return result;
+    	  	}
+        },{
+	  	  	"targets": colIndex++,
+		  	"data": "",
+		  	"render": function(data, type, report) {
+		  		var result = "";
+			   	result = result+'<td><div class="tbldata-dotdot-sm" title="'+report.categoryName+'">'+report.categoryName+'</div></td>';
+
+	             return result;
+	  	      }
+	  		},{
+		  	  	"targets": colIndex++,
+			  	"data": "",
+			  	"render": function(data, type, report) {
+			  		var result = "";
+			  		if (report.model != null && report.model != '' && report.model != 'undefined') {
+						result = result+'<td><div class="tbldata-dotdot-vsm" title="'+model+'">'+report.model+'</div></td>';
+					}else{
+						result = result+'<td><div class="tbldata-dotdot-vsm" >--</div></td>';
+					}
+		           return result;
+		  	  }
+	  		},{
+		  	  	"targets": colIndex++,
+			  	"data": "",
+			  	"render": function(data, type, report) {
+			  		var result = "";
+			  		 if (report.shiftAEmpName != null && report.shiftAEmpName != '' && report.shiftAEmpName != 'undefined') {
+					   	result = result+'<td><div class="tbldata-dotdot-vsm" title="'+report.shiftAEmpName+'" >'+report.shiftAEmpName+'</div></td>';
+					}else{
+					   	result = result+'<td><div class="tbldata-dotdot-vsm">--</div></td>';
+					}
+		           return result;
+		  	  }
+	  		},{
+		  	  	"targets": colIndex++,
+			  	"data": "",
+			  	"render": function(data, type, report) {
+			  		var result = "";
+			  		 if (report.shiftBEmpName != null && report.shiftBEmpName != '' && report.shiftBEmpName != 'undefined') {
+						   	result = result+'<td><div class="tbldata-dotdot-vsm" title="'+report.shiftBEmpName+'">'+report.shiftBEmpName+'</div></td>';
+					}else{
+					   	result = result+'<td><div class="tbldata-dotdot-vsm">--</div></td>';
+					}
+		           return result;
+		  	  }
+	  		},{
+		  	  	"targets": colIndex++,
+			  	"data": "",
+			  	"render": function(data, type, report) {
+			  		var result = "";
+			  		 var selected1 = '';
+	   				 var selected2 = '';
+			  		 if(report.workingStatus == 'Working'){
+						selected1 = 'selected';
+					 } 
+				
+					 if(report.workingStatus == 'Out Of Service'){
+						selected2 = 'selected';
+					 } 
+					
+			  	 	result = result + ' <td><div class="tbldata-dotdot-100">';
+					result = result + ' <select id="workingStatus'+report.id+'" name="workingStatus" onChange="updateWorkingStatus(\''+report.id+'\');">';
+					result = result + ' <option '+selected1+'>Working</option>';
+					result = result + ' <option '+selected2+'>Out Of Service</option>';
+					result = result + ' </select>';
+					result = result + ' </div></td>';
+		           return result;
+		  	  }
+	  		},{
+		  	  	"targets": colIndex++,
+			  	"data": "",
+			  	"sortable": false,
+			  	"render": function(data, type, report) {
+			  		var result = "";
+				   	result = result+'<td><div class="tblminwidth-50"><i class="fa fa-trash-o text-danger" onClick="deleteAsset(\''+report.id+'\')";></i></div></td>';
+		           return result;
+		  	  }
+	  		} ],
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     }
+    } );
+    $("assetPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("input[type=search]").hide();
+    $("#assetDataTableSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+    		   getDynamicAssetList();
+    	   }
+    	});
+}
+ 
+</script>
+
+
+
+
+
+
+
+<!-- ===================================================Dynamic pageLoading End ================================== -->
 
 <script>
 function updateWorkingStatus(assetId){
@@ -569,9 +702,20 @@ function removeAssetManagement(assetId){
 	 $.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/removeAssetManagement?"+tokenParamName+"="+tokenValue+"&assetId="+assetId,	    	   
-	    success: function(data) {
-	    	 var table = $('#assetManagementList').DataTable();
-  		     table.row("#asset"+assetId).remove().draw( false );
+	    success: function(result) {
+  			if (result && result.response === "INVALID_DATA") {
+			    showError(result.responseMessage);
+			} else if (result.response === "AWKWARD") {
+			    location.href = "/errorPage";
+			} else if (result.response === "SUCCESS") {
+				location.replace(sourceleadUrl + "/assetManagement");
+				/*  var table = $('#assetManagementList').DataTable();
+	  		     table.row("#asset"+assetId).remove().draw( false );  */
+			} else if (result.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+			    showError("Operation failed, please try again");
+			}
 	    }
    });
 }
@@ -862,14 +1006,6 @@ $(document).ready(function(){
                 });
             });
         </script>
-  <!-- <div class="theme-color"> <span class="icon-theme" title="click here"><i class="fa fa-gears"></i></span>
-    <ul class="list-unstyled">
-      <li><a href="#" class="" id="btn1"><span class="dark-blue"></span><span class="light-grey"></span></a></li>
-      <li><a href="#" class="" id="btn2"><span class="flat-green"></span><span class="dark-purle"></span></a></li>
-      <li><a href="#" class="" id="btn3"><span class="hdr-blue"></span><span class="sidenav-blue"></span></a></li>
-    </ul>
-  </div> -->
-</div>
 <script>
 $(".addcon-pop").click(function(){
 	 $(".collapse-div-adduser").toggleClass("show-div");

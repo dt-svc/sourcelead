@@ -61,9 +61,10 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
+import com.bis.sourcelead.entity.Leave;
+import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MasterCandidate;
-import com.bis.sourcelead.entity.NewContractCustomFieldData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -92,6 +93,8 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
 import com.bis.sourcelead.service.ExpensesService;
+import com.bis.sourcelead.service.LeaveTypeService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -111,6 +114,7 @@ import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
@@ -188,7 +192,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 private SourceleadPasswordEncoder sourceleadPasswordEncoder;
 	 
 	 @Autowired
-	 private ProjectTasksService tasksService;
+	 private LookUpDataService lookUpDataService;
 	 
 	 @Autowired
 	 private ProjectTasksService projectTasksService;
@@ -249,6 +253,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	
 	@Autowired
 	private PdfUtil pdfUtil;
+	
+	@Autowired
+	private LeaveTypeService leaveTypeService;
 	
 	 
 /*	 @Override
@@ -565,10 +572,14 @@ public class ProjectsServiceImpl implements ProjectsService{
     	//save the default tasks
 	    if(projects.getId() == null){
 	    	Set<ProjectTasks>  projectTasksList = getDefaultTasksForProject(projects);
+	    	Set<ProjectTasks> leaveTypeTasksList  = getLeaveTasksForProjectBasedOnOrgLocationId(projects,loginOrgLocation);
+	    	if(leaveTypeTasksList != null && !leaveTypeTasksList.isEmpty()) {
+	    		projectTasksList.addAll(leaveTypeTasksList);
+	    	}
 			projects.setProjectTasks(projectTasksList);
 	    }
-		
-		Set<ProjectClients> projectClientsList = getProjectClientsForProject(projectsDTO,projects,loginOrgLocation,user);
+
+	    Set<ProjectClients> projectClientsList = getProjectClientsForProject(projectsDTO,projects,loginOrgLocation,user);
 		projects.setProjectClients(projectClientsList);
 		
 		
@@ -785,6 +796,38 @@ public class ProjectsServiceImpl implements ProjectsService{
 		}
 		return set;
 	}
+	
+	private Set<ProjectTasks> getLeaveTasksForProjectBasedOnOrgLocationId(Projects projects, OrgLocations loginOrgLocation) throws Exception {
+		Set<ProjectTasks> set = new HashSet<>();			
+		List<LeaveType> leaveTypeList  = leaveTypeService.getLeaveTypeListByLocationId(loginOrgLocation.getId().toString());
+					for(LeaveType leaveType:leaveTypeList) {
+						if(projects != null) {
+							ProjectTasks  tasks  = new ProjectTasks();
+							LookUpData taskType = lookUpDataService.getTasksTypeByUniqueKey(Constants.GENERAL);
+							tasks.setProjectTasksUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+							tasks.setTaskName(leaveType.getName());
+							tasks.setDescription(leaveType.getName());
+							if(leaveType.getLeaveType().equalsIgnoreCase("Non Billable")) {
+								tasks.setBillableType("Non-Billable");
+							}else {
+								tasks.setBillableType("Billable");
+							}
+							tasks.setProjectId(projects);
+							tasks.setTaskType(taskType);
+							tasks.setLeaveType(leaveType);
+							LookUpData taskStatus = lookUpDataService.getTasksById(Constants.TaskStatusID);
+							tasks.setTaskStatus(taskStatus);
+							tasks.setStatus(String.valueOf(Constants.CANDIDATE_ACTIVE));
+							tasks.setCreatedBy(leaveType.getCreatedBy());
+							tasks.setCreatedDate(new Date());
+							tasks.setUpdatedBy(leaveType.getCreatedBy());
+							tasks.setUpdatedDate(new Date());
+							set.add(tasks);
+							}
+						}
+			return set;
+	}
+	
 	
 	public String getProjectTaskGenaratedId(Projects projects) throws Exception {
 		Integer generatedIdcount = 0;
@@ -1046,7 +1089,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 				OrgLocations loginOrgLocation = new OrgLocations();
 			   loginOrgLocation.setLocationCode(emp.getOrgLocations().getLocationCode());
 			   loginOrgLocation.setOrg(emp.getOrgLocations().getOrg());
-			   emailScenerioUtil.sendNotification(actionLink, fromUser, toUser, loginOrgLocation, emailScenario);	
+			   emailScenerioUtil.sendNotification(actionLink, fromUser, toUser, loginOrgLocation, emailScenario,new HashMap<String,String>());	
 		}
 	}
 	
@@ -1080,7 +1123,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 						OrgLocations loginOrgLocation = new OrgLocations();
 					   loginOrgLocation.setLocationCode(emp.getOrgLocations().getLocationCode());
 					   loginOrgLocation.setOrg(emp.getOrgLocations().getOrg());
-					   emailScenerioUtil.sendNotification(actionLink, fromUser, toUser, loginOrgLocation, emailScenario);
+					   emailScenerioUtil.sendNotification(actionLink, fromUser, toUser, loginOrgLocation, emailScenario,new HashMap<String,String>());
 //		    	}
 		    }
 		}
@@ -1122,6 +1165,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	projectsDTO.setProjectSequeneNumber(projects.getProjectSequeneNumber());
 	    }
 	   
+	    if(projects.getProjectShortCode() != null){
+	    	projectsDTO.setProjectShortCode(projects.getProjectShortCode());
+	    }
+	    
 	    User createdByUseraName= userService.getUserDetailsByUserCode(projects.getCreatedBy());
 	    if(null !=createdByUseraName){
 	    	StringBuilder userName = new StringBuilder();
@@ -1344,7 +1391,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		notificationScenario.setOrgCode(loginOrgCode);
 		//String url = null;
 		String actionLink = "";
-		emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, loginOrgLocation, notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, loginOrgLocation, notificationScenario,new HashMap<String,String>());
 	}
 	 
 	 
@@ -1416,7 +1463,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		notificationScenario.setOrgCode(loginOrgCode);
 		//String url = null;
 		String actionLink = "";
-		emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getUser(), loginOrgLocation, notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());
 	}
 	
 	@Override
@@ -1424,7 +1471,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
 	 	//SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
-		 Date currentDate = new Date();
+		 Date currentDate = CalendarUtil.removeTime(new Date());
 		 Date previousEndDate = null;
          Projects projects = getProjectById(projectId);
 	        	 
@@ -1485,7 +1532,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 				}
 				
 					    	
-		    	projects.setProjectStatus(Project_Status.getNameByValue(projectDTO.getProjectStatusId()));
+		    	projects.setProjectStatus(Project_Status.getNameByValue(projectDTO.getStatus()));
 		    	
 		    			 //SimpleDateFormat format=loginOrgLocation.getLocFullFormDateFormatter();
 //			    	     SimpleDateFormat format = new SimpleDateFormat(pattern);
@@ -1703,10 +1750,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    	projects = commonUtil.terminateProject(projects);
 			    	 updateProject(projects);
 			    }
-			    else if(projects.getEndDate() != null && currentDate.after(projects.getEndDate()) && !(projects.getEndDate().equals(currentDate))) {
+			    else if(projects.getEndDate() != null && currentDate.after(projects.getEndDate())) {
 			    		projects = commonUtil.terminateProject(projects);
 				    	updateProject(projects);
-			    	
 			    }
 			    else{
 			    	projects = updateProject(projects);
@@ -2444,7 +2490,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				 //calling the sendEmail method of emailScenerioUtil
 				 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 				 String actionLink="";
-				 emailScenerioUtil.sendNotification(actionLink, loginUser, assUserName, orgLocations, notificationScenario);
+				 emailScenerioUtil.sendNotification(actionLink, loginUser, assUserName, orgLocations, notificationScenario,new HashMap<String,String>());
 				}
 			
 			

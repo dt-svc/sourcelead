@@ -181,45 +181,42 @@ $(".addcon-pop").click(function(){
 
 <script type="text/javascript">
 	function addCategory(catLocationId,categoryId){
-			var validationSettings = {
-			        errorMessagePosition : 'element',
-			        borderColorOnError : '',
-					scrollToTopOnError : true,
-					dateFormat : 'yyyy/mm/dd' 
-		         }; 
-			 if ($('#addCategory_form').validate(false, validationSettings)){
-				var frm = $('#addCategory_form').serializeFormJSON();
-				var con = JSON.stringify(frm);
-		        con = con.replace(/[{}]/g, "");
-		        var jsonData = encodeURIComponent(con);
-				$("#save_button").attr("disabled", "disabled");
-				$( "#save_button" ).addClass('button').val('Processing..');
-				$("#addCategory_form").attr("disabled", "disabled");
-				//It will escape all the special characters
-				$.ajax({
-						type : "POST",
-						url : sourceleadUrl+"/saveCategory?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&categoryId="+categoryId+"&catLocationId="+catLocationId,
-						success : function(result) {
-							 if(result.indexOf('Sign In') >= 0){
-					    		location.replace(sourceleadUrl);
-					    	 }
-		            		 else if (result.indexOf('exception') >= 0) {
-		            			 location.replace(sourceleadUrl+"/errorPage");
-		            		 }
-		            		 else{ 
-		            			  document.getElementById("popUpDiv").style.display="none"; 
-		            			 getAssetCategoryList();
-		            		  } 
-						},
-					});
+				var validationSettings = {
+				        errorMessagePosition : 'element',
+				        borderColorOnError : '',
+						scrollToTopOnError : true,
+						dateFormat : 'yyyy/mm/dd' 
+			         }; 
+				 if ($('#addCategory_form').validate(false, validationSettings)){
+			        var formData = getFormData("addCategory_form");
+					$("#save_button").attr("disabled", "disabled");
+					$( "#save_button" ).addClass('button').val('Processing..');
+					$("#addCategory_form").attr("disabled", "disabled");
+					$.post(sourceleadUrl+"/saveCategory?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId+"&catLocationId="+catLocationId, formData, function(result) {
+						if (result && result.response === "INVALID_DATA") {
+							$("#blogLoading").hide();
+						    showError(result.responseMessage);
+						} else if (result.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (result.response === "SUCCESS") {
+						document.getElementById("popUpDiv").style.display="none"; 
+	           			 getAssetCategoryList();
+						} else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
+						}
+				
+			          }); 
+				
 					return true;
-			 }else{ 
-					return false;
-			 } 
-		}
-		$('body').on('blur', '#addCategory_form', function() {
-		$("#addCategory_form").showHelpOnFocus();
-		$("#addCategory_form").validateOnBlur(false, validationSettings);
+				 }else{ 
+						return false;
+				 } 
+		   }
+			$('body').on('blur', '#addCategory_form', function() {
+			$("#addCategory_form").showHelpOnFocus();
+			$("#addCategory_form").validateOnBlur(false, validationSettings);
 	});
 </script>
 <script>
@@ -367,10 +364,20 @@ function terminateCategory(categoryId){
 		$.ajax({
 			type : "GET",
 			url : sourceleadUrl + "/terminateCategory?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId,
-			success : function(data) {
-				$("#popUp").empty();
-				$(".project_inn_mask").fadeOut(200);
-					document.getElementById("category"+categoryId).remove();
+			success : function(result) {
+					if (result && result.response === "INVALID_DATA") {
+					    showError(result.responseMessage);
+					} else if (result.response === "AWKWARD") {
+					    location.href = "/errorPage";
+					} else if (result.response === "SUCCESS") {
+						$("#popUp").empty();
+						$(".project_inn_mask").fadeOut(200);
+							document.getElementById("category"+categoryId).remove();
+					} else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+					    showError("Operation failed, please try again");
+					}
 				},
 		});
 	}

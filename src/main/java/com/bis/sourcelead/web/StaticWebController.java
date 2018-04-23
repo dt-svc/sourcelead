@@ -1,15 +1,20 @@
 package com.bis.sourcelead.web;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.dto.UserManualsDTO;
+import com.bis.sourcelead.service.UserManualService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
@@ -23,6 +28,9 @@ public class StaticWebController {
 	public String aboutUs() {
 		return "static-web/about-us";
 	}
+	
+	@Autowired
+	UserManualService userManualService;
 	
 	@RequestMapping("/termsofuse.html")
 	public String termsofuse() {
@@ -82,6 +90,16 @@ public class StaticWebController {
 	@RequestMapping("/ats.html")
 	public String ats() {
 		return "static-web/ats";
+	}
+	
+	@RequestMapping("/immigration.html")
+	public String immigration() {
+		return "static-web/immigration";
+	}
+	
+	@RequestMapping("/mergers_acquisition.html")
+	public String mergersAcquisition() {
+		return "static-web/mergers_acquisition";
 	}
 	
 	@RequestMapping("/blog.html")
@@ -229,5 +247,13 @@ public class StaticWebController {
 	@RequestMapping("/vms.html")
 	public String vms() {
 		return "static-web/vms";
+	}
+	
+	@RequestMapping("/sourcelead_help.html")
+	public ModelAndView sourceleadHelp() {
+		ModelAndView modal = new ModelAndView();
+		modal.addObject("sourceleadUrl",sourceleadUrl);
+		modal.setViewName("static-web/sourceleadHelp");
+		return modal;
 	}
 }

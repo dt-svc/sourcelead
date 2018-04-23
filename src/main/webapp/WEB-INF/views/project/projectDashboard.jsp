@@ -76,13 +76,14 @@ overflow-x: auto;
 		
         <div class="timesheet_head timesheetHead topfilters">
 			<div class="pull-left cand-advsrch advsrch_chosen">
-		<button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetProjectFilter();" title="Refresh">
-			    <span class="fa fa-refresh"></span>
-			</button>
-			
-			<a href="javascript:void(0)" class="btn btn-primary btn-sm anchorWhite" title="Filter Search" onclick="openFilterPop();"> Filter&nbsp;&nbsp; <i class="fa fa-filter faFilter"></i>
-			</a>
-	    </div>
+			     <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetProjectFilter();" title="Refresh">
+				    <span class="fa fa-refresh"></span>
+				</button>
+				
+				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openFilterPop();"><i class="fa fa-filter faFilter padding_right"></i>
+				</a>
+				
+	       </div>
         	
         	
         	
@@ -127,28 +128,28 @@ overflow-x: auto;
 				
 		</div>
 		
-		<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small">
-				<h5 class="headerAdsrch">Filter Search
+		<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
+				<h5 class="headerAdsrch">Filters
 					<a href="javascript:void(0)" class="close-div" onClick="closeFilterPop()"><i
 						class="fa fa-close"></i></a>
 				</h5>
 				<div class="addInner">
 					<div class="row">
-						<div class="col-md-4">
+						<div class="col-md-3">
 						<div class="row">
-						<div class="col-md-12 mb hidden">
+						<div class="col-md-12 mb">
 								<label><strong>Project Type</strong></label>
 								 <div class="clearfix">
 									<ul class="list-unstyled" id="typeFilter">
-			                    	    <li class="checkBox positionRelative" ><input id="c11" name="projectType" type="checkbox" value=""><label for="c7">Internal Project(s)</label></li>
-										<li class="checkBox positionRelative" ><input id="c12" type="checkbox" name="projectType" value="N" ><label for="c9">Client Project(s)</label></li>
+			                    	    <li class="checkBox positionRelative" ><input id="c11" name="projectType" type="checkbox" value="Internal"><label for="c7">Internal Project(s)</label></li>
+										<li class="checkBox positionRelative" ><input id="c12" type="checkbox" name="projectType" value="Client" ><label for="c9">Client Project(s)</label></li>
 			                        </ul>
 								 </div>
 								 </div> 
 								 
 								 
 						<div class="col-md-12 mb">
-							<label><strong>Status</strong></label>
+							<label><strong>Project Status</strong></label>
 							 <div class="clearfix">
 								<ul class="list-unstyled" id="statusFilter">
 		                    	    <li class="checkBox positionRelative" ><input id="c7" name="projectStatus" type="checkbox" value ="In-Progress"  checked ><label for="c7">In-Progress</label></li>
@@ -160,6 +161,22 @@ overflow-x: auto;
 		                        </ul>
 							 </div>
 							 </div> 
+							 
+							 
+					 	<div class="col-md-12 mb">
+							<label><strong>Invoice Frequency</strong></label>
+							 <div class="clearfix">
+								<ul class="list-unstyled" id="frequencyFilter">
+		                    	    <li class="checkBox positionRelative" ><input  name="invoiceFrequency" type="checkbox" value ="Weekly"><label for="c7">Weekly</label></li>
+									<li class="checkBox positionRelative" ><input  type="checkbox" name="invoiceFrequency" value ="Bi-Weekly" ><label for="c9">Bi-Weekly</label></li>
+									<li class="checkBox positionRelative" ><input  type="checkbox"  name="invoiceFrequency"   value ="Semi-Monthly" ><label for="c8">Semi-Monthly</label></li>
+		               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="invoiceFrequency"  value ="Monthly"><label for="c6">Monthly</label></li>
+		               				
+		                        </ul>
+							 </div>
+						 </div> 
+							 
+							 
 						  </div>
 						</div>
 						<c:if test="${clientListSize > 0}">
@@ -172,6 +189,22 @@ overflow-x: auto;
 										<ul class="list-unstyled positionRelative filterSearch mt5" id="myClientsUL">
 										    <c:forEach var="report" items="${add_client}">
 											     <li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" value ="${report.id}" ><label>${report.clientName}</label></li>
+											</c:forEach>
+										</ul>
+									 </div> 
+							 </div> 
+							 </c:if>
+							 
+							 <c:if test="${projectManagersListSize > 0}">
+							 <div class="col-md-4 mb positionRelative">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="myManagersInput" onkeyup="myManagersFunction()" placeholder="Managers" title="Type in a managers">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myManagersUL">
+											<c:forEach var="manager" items="${projectManagersList}">
+											<li class="checkBox positionRelative"><input  type="checkbox" name="projectManagers" value ="${manager.id}" ><label>${manager.fullName}</label></li>
 											</c:forEach>
 										</ul>
 									 </div> 
@@ -215,7 +248,10 @@ function resetProjectFilter(){
 	$("ul#typeFilter > li input:checkbox").prop("checked",false);
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
 	$("ul#myClientsUL > li input:checkbox").prop("checked",false);
+	$("ul#myManagersUL > li input:checkbox").prop("checked",false);
+	$("ul#frequencyFilter > li input:checkbox").prop("checked",false);
 	
+	$("#projectsDataTableSearch").val('');
 	document.getElementById("c6").checked = true;
 	document.getElementById("c7").checked = true;
 	filter();
@@ -238,6 +274,31 @@ function myClientsFunction() {
         }
     }
 }
+
+
+function myManagersFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myManagersInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myManagersUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+
+$(document).keyup(function(e) {
+	  if (e.keyCode === 27) {
+		  closeFilterPop();
+	  }
+	});
 
 </script>
 <script type="text/javascript">
@@ -365,10 +426,27 @@ function projectDataTableList(){
 	$('input:checkbox[name=clientNameById]:checked').each(function() {
 		clients.push($(this).val());
 	});
+	
+	
+	var projectManagers = [];
+	$('input:checkbox[name=projectManagers]:checked').each(function() 
+		    {
+		projectManagers.push($(this).val());
+     });
+	
+	var invoiceFrequency = [];
+	$('input:checkbox[name=invoiceFrequency]:checked').each(function() 
+		    {
+		invoiceFrequency.push($(this).val());
+     });
+	
+	
+	
+	
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#projectsDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getProjectsByStatusAndClient?searchValue="+searchValue+"&values="+values+"&clients="+clients+"&projectType="+projectType;
+	 var url = sourceleadUrl+"/getProjectsByStatusAndClient?searchValue="+searchValue+"&values="+values+"&clients="+clients+"&projectType="+projectType+"&projectManagers="+projectManagers+"&invoiceFrequency="+invoiceFrequency;
 	 projectsPagination(url,sourceleadUrl);
 }
 </script>
@@ -430,6 +508,7 @@ function projectsPagination(url,sourceleadUrl){
 	          },{
 		    	  "targets": colIndex++,
 	              "data": "projectManagers",
+	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	  var projectManagers = '';
@@ -460,6 +539,7 @@ function projectsPagination(url,sourceleadUrl){
 		     }, {
 		    	  "targets": colIndex++,
 	              "data": "budget",
+	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    var projectbudgetAmount = "";
@@ -491,6 +571,7 @@ function projectsPagination(url,sourceleadUrl){
 		     },{
 		    	  "targets": colIndex++,
 	              "data": "client",
+	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	  
@@ -510,7 +591,7 @@ function projectsPagination(url,sourceleadUrl){
 		     },{
 		    	  "targets": colIndex++,
 	              "data": "projectStatus",
-	              "sortable": false,
+	              "sortable": true,
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	  var projectStatus = "";
@@ -546,7 +627,7 @@ function projectsPagination(url,sourceleadUrl){
 		     
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[1,'desc']],
+	    	"aaSorting": [[5,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
@@ -1127,32 +1208,26 @@ function projectExport(type){
 	$('input:checkbox[name=clientNameById]:checked').each(function() {
 		clients.push($(this).val());
 	});
+	
+	var projectManagers = [];
+	$('input:checkbox[name=projectManagers]:checked').each(function() 
+		    {
+		projectManagers.push($(this).val());
+     });
+	
+	var invoiceFrequency = [];
+	$('input:checkbox[name=invoiceFrequency]:checked').each(function() 
+		    {
+		invoiceFrequency.push($(this).val());
+     });
+	
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#projectsDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 window.location.href = sourceleadUrl + "/getExportProjects?&searchValue="+searchValue+"&values="+values+"&clients="+clients+"&projectType="+projectType+"&exportType="+exportType;
+	 window.location.href = sourceleadUrl + "/getExportProjects?&searchValue="+searchValue+"&values="+values+"&clients="+clients+"&projectType="+projectType+"&exportType="+exportType+"&projectManagers="+projectManagers+"&invoiceFrequency="+invoiceFrequency;
 	
 }
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 <jsp:include page="../masterFooter.jsp" />	

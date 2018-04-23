@@ -1,6 +1,8 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,7 +12,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -54,7 +58,35 @@ public class BlogCategory {
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 	
+	@OneToMany(mappedBy = "categoryId")
+	private List<SourceleadBlogs> blogList;
 	
+	@Column(name = "HREF")
+	private String href;
+	
+	@Transient
+	private int count;
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
+	}
+
+	public List<SourceleadBlogs> getBlogList() {
+		List<SourceleadBlogs> sbList = new LinkedList<>();
+		for(SourceleadBlogs sb : blogList) {
+			if(sb.getStatus()==1)
+				sbList.add(sb);
+		}
+		return sbList;
+	}
+
+	public void setBlogList(List<SourceleadBlogs> blogList) {
+		this.blogList = blogList;
+	}
 
 	public Long getId() {
 		return id;
@@ -134,6 +166,14 @@ public class BlogCategory {
 
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	public String getHref() {
+		return href;
+	}
+
+	public void setHref(String href) {
+		this.href = href;
 	}
 	
 }

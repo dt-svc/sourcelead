@@ -621,8 +621,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	@Override
 	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(
 			String timesheetFrequency, Date startDate, Date endDate, Long clientId, String status, Long locationsId,
-			Long approverUserId,String searchValue, int start, int length,String timesheetFor) {
-		return projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, status, locationsId, approverUserId,searchValue,start,length,timesheetFor);
+			Long approverUserId,String searchValue,String projectName, int start, int length,String timesheetFor) {
+		return projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, status, locationsId, approverUserId,searchValue,projectName,start,length,timesheetFor);
 	}
 	
 	@Override
@@ -693,7 +693,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		notificationScenario.setOrgCode(loginOrgCode);
 		//String url = null;
 		String actionLink = "";
-		emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getUser(), loginOrgLocation, notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());
 	}
 
 	@Override
@@ -981,6 +981,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 					
 					if(candidate.getParentCandidateId() != null && (candidate.getDesignationType().equalsIgnoreCase("C2C") || candidate.getDesignationType().equalsIgnoreCase("C2C-1099"))){
 						Long parentCandidatId = candidate.getParentCandidateId().getId();
+						Long orgLocationId = candidate.getOrgLocationId().getId();
 						int level = 1;
 						while(parentCandidatId != null){
 							Candidate cand = candidateService.getCandidateByCandidateId(parentCandidatId);
@@ -991,7 +992,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 							if(cand != null){
 								projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), cand.getOrgLocationId().getId());
 								if(projectClients == null){
-									Candidate clildCandidate = candidateService.getCandidateByParentCandidateId(parentCandidatId);
+									Candidate clildCandidate = candidateService.getCandidateByParentCandidateIdAndOrgLocationId(parentCandidatId,orgLocationId);
 									projectClients = new ProjectClients();
 									projectClients.setProjectId(projects);
 									projectClients.setOrgRelationId(clildCandidate.getOrgRelationId());
@@ -1005,6 +1006,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 										ProjectClients pClient = projectClientService.getProjectClientsByProjectIdAndOrgLocationIdAndOrgRelationId(projects.getId(), clildCandidate.getOrgLocationId().getId(),pCandidate.getOrgRelationId().getId());
 										if(pClient != null && pClient.getLevel() != null){
 											level = pClient.getLevel()+1;
+										}else {
+											level = level+1;
 										}
 									}
 									else{
@@ -1049,6 +1052,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 								saveProjectMembersHistory(projectMembers,user,projectClients);
 								if(cand.getParentCandidateId() != null){
 									parentCandidatId = cand.getParentCandidateId().getId();
+									orgLocationId = cand.getOrgLocationId().getId();
 								}else{
 									parentCandidatId = null;
 								}
@@ -1364,18 +1368,14 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 							 }
 							 boolean flag = moduleIds.contains(Constants.MODULE_VMS);
 							 if(flag == false){
-								 Long moduleId = (long) Constants.MODULE_ATS;
 							     modules = modules+","+Constants.MODULE_VMS;
-							     registrationController.saveUserRoleActions(moduleId,orgLoc);
 							 }
 							 
-							 Long tsModuleId = (long) Constants.MODULE_TIMESHEET;
 							 boolean tsflag = moduleIds.contains(Constants.MODULE_TIMESHEET);
 							 if(tsflag == false) {
 				    				modules = modules+","+Constants.MODULE_TIMESHEET;
-				    				registrationController.saveUserRoleActions(tsModuleId,orgLoc);
 				    			}
-							
+							 registrationController.saveUserRoleActions(orgLoc);
 							 
 							 orgLoc.setModulesId(modules);
 							 orgLocationService.updateOrgLocations(orgLoc);

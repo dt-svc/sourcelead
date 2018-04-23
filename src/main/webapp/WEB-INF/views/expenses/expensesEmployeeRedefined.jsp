@@ -4,10 +4,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="/resources/js/jquery.simplePagination.js"></script>
+<!-- <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script> -->
 
 <input type="hidden" id="tempVar" value="tempVar">
 <input type="hidden" value="${expenseDashBoardStatus}" id="expenseStatusDivId">
-<table id='example' class='display' cellspacing='0' width='100%' >                
+<table id='example' class='display'>                
 		<thead>                                                                           
 			<tr>                                                                              
 				<th>Exp Id</th>                                                                   
@@ -44,12 +45,55 @@
 		<ul id="pagination-demo" class="pagination-sm pull-right pagination"></ul>
 	</div>
 </div> 
+
+
+<script>
+$(document).ready(function(){
+	if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	 }
+});
+</script>
+
+<!-- <script>
+$(document).ready(function(){
+	datatableBody();
+});
+</script> 
+<script>
+function datatableBody(){ 
+	 $('#example').DataTable( { 
+		    "sDom": "Rlfrtip",
+		    "bPaginate": false,
+		    "bInfo" : false,
+		    "ordering": false,
+		    "searchHighlight": true
+	    } );
+}
+</script> 
+<script>
+ function searchHighlight(searchData){
+	 if(searchData != null && searchData != 'undefined' && searchData != ''){
+		    var table = $('#example').DataTable();
+		    var body = $( table.table().body() );
+		    body.unhighlight();
+	        body.highlight(searchData);
+	 } 
+ }
+ </script> -->
 		
 <script>
 $("#SearchExpensesData").keyup(function(event) {
+	$('#SearchExpensesData').parent().find('p.jquery_form_error_message').remove();
     if (event.keyCode === 13) {
+    	$('#SearchExpensesData').parent().find('p.jquery_form_error_message').remove();
     	var searchData = $('#SearchExpensesData').val();
-    	getExpensesList();
+    	var regex =  new RegExp(/[\\]/g);
+    	if(regex.test(searchData) == false){
+    		getExpensesList();
+    	}else{
+    		$("#SearchExpensesData").after("<p class='jquery_form_error_message'><span>Enter valid Search Data</span>");
+    	}
     	$('#SearchExpensesData').val(searchData);
     }
 });
@@ -105,7 +149,8 @@ function getTableData(pageNo){
 			  var pageCount = $('#pageCount').val();
 			  var pageSize = $("#pageSize").val();
 			  $('#SearchExpensesDataEmployee').val('') ;
-			  $('#SearchExpensesDataEmployee').val(searchData); 
+			  $('#SearchExpensesDataEmployee').val(searchData);
+			  /* searchHighlight(searchData); */
 			  var startingRecord = parseInt((pageNo*pageSize-pageSize)+1);
 			  var endingRecord = parseInt(pageNo*pageSize);
 			  if(endingRecord > totalRows){

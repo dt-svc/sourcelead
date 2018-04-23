@@ -21,9 +21,49 @@ function getJobsReportCustomDates(){
 		 document.getElementById("customSearch").style.display="block";
 		 $("#jobReportList_custome").attr("disabled", "disabled");
 		 
+			 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+			  var finalDateFormatProjectSave = '';
+			  if(locationDate.match("yyyy-MM-dd")){
+				  finalDateFormatProjectSave = 'yy-mm-dd';
+			  }if(locationDate.match("dd-MM-yyyy")){
+				  finalDateFormatProjectSave = 'dd-mm-yy'; 
+			  }if(locationDate.match("MM-dd-yyyy")){
+				  finalDateFormatProjectSave = 'mm-dd-yy'; 
+			  }if(locationDate.match("yyyy-dd-MM")){
+				  finalDateFormatProjectSave = 'yy-dd-mm'; 
+			  }
+	    
+		  $('#fromDate').datepicker({
+				dateFormat : finalDateFormatProjectSave,
+				changeMonth: true,
+				changeYear: true, 
+				onSelect : function(selected) {
+					var dt = $(this).datepicker('getDate', '+1d');
+					dt.setDate(dt.getDate());
+					$("#toDate").datepicker("option", "minDate", dt);
+					removeErrsgFrom();
+					
+				}
+			});
+		  
+		  $('#toDate').datepicker({
+				dateFormat : finalDateFormatProjectSave,
+				changeMonth: true,
+				changeYear: true, 
+				onSelect : function(selected) {
+					var dt = $(this).datepicker('getDate', '-1d');
+					dt.setDate(dt.getDate());
+					$("#fromDate").datepicker("option", "maxDate", dt);
+					removeErrTo();
+				}
+			});
+	  
+		 
 	 }else{
 		 document.getElementById("customSearch").style.display="none";
 		 $("#jobReportList_custome").removeAttr("disabled");
+		 $("#fromDate").datepicker("destroy");
+		 $("#toDate").datepicker("destroy");
 		 $("#fromDate").val('');
 		 $("#toDate").val('');
 		 document.getElementById("fromDateDiv").style.display="none";
@@ -343,20 +383,20 @@ function getJobPipelineReports(){
 	  $.ajax({ 
 		   	type: "POST",
 		   	url: sourceleadUrl+"/getAllJobsPipelineReoportsList?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection+"&fromDate="+fromDate+"&toDate="+toDate,
-		    success: function(data) {
-		    	if(data.applicantsCount>0){
-		    		getJobsPipelineAmcahrt(data);
-		    		getJobPipelineReportsList(data);
+		    success: function(response) {
+		    	if(response.object.applicantsCount>0){
+		    		getJobsPipelineAmcahrt(response);
+		    		getJobPipelineReportsList(response);
 		    		var listView = document.getElementById("ListView");
 		        	 listView.addEventListener("click", function() {
-		        		 getJobPipelineReportsList(data);
+		        		 getJobPipelineReportsList(response);
 		        		 document.getElementById("jobPipelineListDivId").style.display="block";
 		        		 document.getElementById("jobPipelineReportDivId").style.display="none";
 					  });
 		        	 
 		        	 var graphicView = document.getElementById("GraphView");
 		        	 graphicView.addEventListener("click", function() {
-		        		 getJobsPipelineAmcahrt(data);
+		        		 getJobsPipelineAmcahrt(response);
 		        		 document.getElementById("jobPipelineListDivId").style.display="none";
 		        		 document.getElementById("jobPipelineReportDivId").style.display="block";
 		        	 });
@@ -372,99 +412,60 @@ function getJobPipelineReports(){
 		 });
 	  }	  
 }
-function getJobPipelineReportsList(data){
+function getJobPipelineReportsList(response){
 	//Aplicant Details
-	$("#applicantCount").text(data.applicantsCount);
-	$("#applicantCountDays").text(data.applicantsDays);
+	$("#applicantCount").text(response.object.applicantsCount);
+	$("#applicantCountDays").text(response.object.applicantsDays);
 	
 	//request sent details
-	$("#requestSentCount").text(data.requestSentCount);
+	$("#requestSentCount").text(response.object.requestSentCount);
 	$("#requestSentDays").text(0);
 	 
 	//shortlisted details
-	$("#shortListedCount").text(data.shortlistedCount);
-	$("#shortListedDays").text(data.shortlistedDays);
-	$("#shortListedMove").text(data.shortlistedMove);
+	$("#shortListedCount").text(response.object.shortlistedCount);
+	$("#shortListedDays").text(response.object.shortlistedDays);
+	$("#shortListedMove").text(response.object.shortlistedMove);
 	
 	//interview details
-	$("#interviewCount").text(data.interviewsCount);
-	$("#interviewMove").text(data.interviewsMove);
-	$("#interviewDays").text(data.interviewsDays);
+	$("#interviewCount").text(response.object.interviewsCount);
+	$("#interviewMove").text(response.object.interviewsMove);
+	$("#interviewDays").text(response.object.interviewsDays);
 	
 	
 	//submit to client
-	$("#submitToClientCount").text(data.submitToClientCount);
-	$("#submitToClientMove").text(data.submitToClientMove);
-	$("#submitToClientDays").text(data.submitToClientDays)
+	$("#submitToClientCount").text(response.object.submitToClientCount);
+	$("#submitToClientMove").text(response.object.submitToClientMove);
+	$("#submitToClientDays").text(response.object.submitToClientDays)
 	
 	//offer details
-	$("#offerCount").text(data.offeredCount)
-	$("#offerDays").text(data.offeredDays)
-	$("#offerMove").text(data.offeredMove)
+	$("#offerCount").text(response.object.offeredCount)
+	$("#offerDays").text(response.object.offeredDays)
+	$("#offerMove").text(response.object.offeredMove)
 	
 	//offer Accepted details
-	$("#offerAcceptedCount").text(data.offeredAcceptedCount)
-	$("#offerAcceptedDays").text(data.offeredAcceptedDays)
-	$("#offerAcceptedMove").text(data.offeredAcceptedMove)
+	$("#offerAcceptedCount").text(response.object.offeredAcceptedCount)
+	$("#offerAcceptedDays").text(response.object.offeredAcceptedDays)
+	$("#offerAcceptedMove").text(response.object.offeredAcceptedMove)
 	
 	//backout details
-	$("#backoutCount").text(data.backoutCount);
-	$("#backoutDays").text(data.backoutDays);
-	$("#backoutMove").text(data.backoutMove);
+	$("#backoutCount").text(response.object.backoutCount);
+	$("#backoutDays").text(response.object.backoutDays);
+	$("#backoutMove").text(response.object.backoutMove);
 	
 	//rejected details
-	$("#rejectedCount").text(data.rejectedCount);
-	$("#rejectedMove").text(data.rejectedMove);
-	$("#rejectedDays").text(data.rejectedDays);
+	$("#rejectedCount").text(response.object.rejectedCount);
+	$("#rejectedMove").text(response.object.rejectedMove);
+	$("#rejectedDays").text(response.object.rejectedDays);
 	
 	//jobs count
-	$("#allJobsCount").text(data.allJobsCount);
-	$("#openJobsCount").text(data.openJobsCount);
-	$("#closedJobsCount").text(data.closedJonbsCount);
-	$("#onHoldJobsCount").text(data.onHoldJobsCount);
-	$("#cancelledJobsCount").text(data.cancelledjobsCount);
+	$("#allJobsCount").text(response.object.allJobsCount);
+	$("#openJobsCount").text(response.object.openJobsCount);
+	$("#closedJobsCount").text(response.object.closedJonbsCount);
+	$("#onHoldJobsCount").text(response.object.onHoldJobsCount);
+	$("#cancelledJobsCount").text(response.object.cancelledjobsCount);
 }
 </script>
 <script>
-  $( function() {
-		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatProjectSave = '';
-		  if(locationDate.match("yyyy-MM-dd")){
-			  finalDateFormatProjectSave = 'yy-mm-dd';
-		  }if(locationDate.match("dd-MM-yyyy")){
-			  finalDateFormatProjectSave = 'dd-mm-yy'; 
-		  }if(locationDate.match("MM-dd-yyyy")){
-			  finalDateFormatProjectSave = 'mm-dd-yy'; 
-		  }if(locationDate.match("yyyy-dd-MM")){
-			  finalDateFormatProjectSave = 'yy-dd-mm'; 
-		  }
-    
-	  $('#fromDate').datepicker({
-			dateFormat : finalDateFormatProjectSave,
-			changeMonth: true,
-			changeYear: true, 
-			onSelect : function(selected) {
-				var dt = $(this).datepicker('getDate', '+1d');
-				dt.setDate(dt.getDate());
-				$("#toDate").datepicker("option", "minDate", dt);
-				removeErrsgFrom();
-				
-			}
-		});
-	  
-	  $('#toDate').datepicker({
-			dateFormat : finalDateFormatProjectSave,
-			changeMonth: true,
-			changeYear: true, 
-			onSelect : function(selected) {
-				var dt = $(this).datepicker('getDate', '-1d');
-				dt.setDate(dt.getDate());
-				$("#fromDate").datepicker("option", "maxDate", dt);
-				removeErrTo();
-			}
-		});
-  } );
-  
   function removeErrsgFrom (){
 	  document.getElementById("fromDateDiv").style.display="none";
 	  
@@ -474,72 +475,72 @@ function getJobPipelineReportsList(data){
   }
   </script>
 <script>
-function getJobsPipelineAmcahrt(data){
+function getJobsPipelineAmcahrt(response){
 	var mainChar = [];
-	if(data.applicantsCount>0){
+	if(response.object.applicantsCount>0){
 		mainChar.push( {
 			"category": "Applicant(s)",
-			"column-1": data.applicantsCount,
+			"column-1": response.object.applicantsCount,
 			"Color": "#90CAF9",
-			"Days": data.applicantsDays,
+			"Days": response.object.applicantsDays,
 			"moveforward": "100"
 		    } );
 	}
 	
-	if(data.shortlistedCount>0){
+	if(response.object.shortlistedCount>0){
 		mainChar.push( {
 			"category": "Shortlisted",
-			"column-1": data.shortlistedCount,
+			"column-1": response.object.shortlistedCount,
 			"Color": "#F48FB1",
-			"Days": data.shortlistedDays,
-			"moveforward": data.shortlistedMove
+			"Days": response.object.shortlistedDays,
+			"moveforward": response.object.shortlistedMove
 		    } );
 	}
 	
-	if(data.submitToClientCount>0){
+	if(response.object.submitToClientCount>0){
 		mainChar.push( {
 			"category": "Submit To Client",
-			"column-1": data.submitToClientCount,
+			"column-1": response.object.submitToClientCount,
 			"Color": "#EAEA23",
-			"Days": data.submitToClientDays,
-			"moveforward": data.submitToClientMove
+			"Days": response.object.submitToClientDays,
+			"moveforward": response.object.submitToClientMove
 		    } );
 	}
-	if(data.interviewsCount>0){
+	if(response.object.interviewsCount>0){
 		mainChar.push( {
 			"category": "Interviewed",
-		    "column-1": data.interviewsCount,
+		    "column-1": response.object.interviewsCount,
 		    "Color": "#FFCC80",
-		    "Days": data.interviewsDays,
-		    "moveforward": data.interviewsMove
+		    "Days": response.object.interviewsDays,
+		    "moveforward": response.object.interviewsMove
 		} );
 	}
 	
-	if(data.offeredCount>0){
+	if(response.object.offeredCount>0){
 		mainChar.push({
 			"category": "Offered",
-			"column-1": data.offeredCount,
+			"column-1": response.object.offeredCount,
 			"Color": "#B39DDB",
-			"Days": data.offeredDays,
-			"moveforward": data.offeredMove
+			"Days": response.object.offeredDays,
+			"moveforward": response.object.offeredMove
 		});
 	}
-	if(data.offeredAcceptedCount>0){
+	if(response.object.offeredAcceptedCount>0){
 		mainChar.push({
 			"category": "Offers Accepted",
-			"column-1": data.offeredAcceptedCount,
+			"column-1": response.object.offeredAcceptedCount,
 			"Color": "#81C784",
-			"Days": data.offeredAcceptedDays,
-			"moveforward": data.offeredAcceptedMove
+			"Days": response.object.offeredAcceptedDays,
+			"moveforward": response.object.offeredAcceptedMove
 		});
 	}
 	
-	if(data.backoutCount>0){
+	if(response.object.backoutCount>0){
 		mainChar.push({
 			"category": "Backout(s)",
-			"column-1": data.backoutCount,
+			"column-1": response.object.backoutCount,
 			"Color": "#E57373",
-			"Days": data.backoutDays,
+			"Days": response.object.backoutDays,
 			"moveforward": 84
 		});
 	}

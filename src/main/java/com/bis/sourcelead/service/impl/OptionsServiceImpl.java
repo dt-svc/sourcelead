@@ -55,7 +55,7 @@ public class OptionsServiceImpl implements OptionsService{
 		User user = userService.getUserById(Long.parseLong(optionsDTO.getUserId()));
 		Option option = null;
 		if(StringUtils.isNotBlank(optionsDTO.getOptionId())) {
-			option = optionsDao.getOptionsById(optionsDTO.getOptionId());
+			option = optionsDao.getOptionsByOptionId(optionsDTO.getOptionId());
 		}
 		else {
 			option = new Option();

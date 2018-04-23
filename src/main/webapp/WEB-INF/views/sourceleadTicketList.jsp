@@ -33,10 +33,48 @@ function getTicketCustomDates(){
 	 if(dateSelection == 'custom'){
 		 document.getElementById("customSearch").style.display="block";
 		 $("#jobReportList_custome").attr("disabled", "disabled");
-		 
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormaTicket = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormaTicket = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormaTicket = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormaTicket = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormaTicket = 'yy-dd-mm'; 
+		  }
+   
+	  $('#fromDate').datepicker({
+			dateFormat : finalDateFormaTicket,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '+1d');
+				dt.setDate(dt.getDate());
+				$("#toDate").datepicker("option", "minDate", dt);
+				removeErrsgFrom();
+				
+			}
+		});
+	  
+	  $('#toDate').datepicker({
+			dateFormat : finalDateFormaTicket,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '-1d');
+				dt.setDate(dt.getDate());
+				$("#fromDate").datepicker("option", "maxDate", dt);
+				removeErrTo();
+			}
+		});
+
 	 }else{
 		 document.getElementById("customSearch").style.display="none";
 		 $("#jobReportList_custome").removeAttr("disabled");
+		 $("#fromDate").datepicker("destroy");
+		 $("#toDate").datepicker("destroy");
 		 $("#fromDate").val('');
 		 $("#toDate").val('');
 		 getSourceleadTicketList();
@@ -126,45 +164,6 @@ function getTicketCustomDates(){
   </section>
   
   <script>
-  $( function() {
-		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormaTicket = '';
-		  if(locationDate.match("yyyy-MM-dd")){
-			  finalDateFormaTicket = 'yy-mm-dd';
-		  }if(locationDate.match("dd-MM-yyyy")){
-			  finalDateFormaTicket = 'dd-mm-yy'; 
-		  }if(locationDate.match("MM-dd-yyyy")){
-			  finalDateFormaTicket = 'mm-dd-yy'; 
-		  }if(locationDate.match("yyyy-dd-MM")){
-			  finalDateFormaTicket = 'yy-dd-mm'; 
-		  }
-    
-	  $('#fromDate').datepicker({
-			dateFormat : finalDateFormaTicket,
-			changeMonth: true,
-			changeYear: true, 
-			onSelect : function(selected) {
-				var dt = $(this).datepicker('getDate', '+1d');
-				dt.setDate(dt.getDate());
-				$("#toDate").datepicker("option", "minDate", dt);
-				removeErrsgFrom();
-				
-			}
-		});
-	  
-	  $('#toDate').datepicker({
-			dateFormat : finalDateFormaTicket,
-			changeMonth: true,
-			changeYear: true, 
-			onSelect : function(selected) {
-				var dt = $(this).datepicker('getDate', '-1d');
-				dt.setDate(dt.getDate());
-				$("#fromDate").datepicker("option", "maxDate", dt);
-				removeErrTo();
-			}
-		});
-  } );
-  
   function removeErrsgFrom (){
 	  document.getElementById("fromDateDiv").style.display="none";
 	  
@@ -243,7 +242,6 @@ function prepareSourceleadTicketList(url){
 		$("#sourceleadTicketListDivId").empty();
 		$("#sourceleadTicketListDivId").append(result);
 		dynamicTicketListPagination(url);
-		document.getElementById("customSearch").style.display="none";
 }
 
 function dynamicTicketListPagination(url){
@@ -409,7 +407,19 @@ function changeStatus(ticketUUID,e){
 		 type : "POST",
 		 url : sourceleadUrl+ "/changeTicketStatus?${_csrf.parameterName}=${_csrf.token}&ticketStatus="+ticketStatus+"&ticketUUID="+ticketUUID,
 		 success : function(result) {
-			location.replace(sourceleadUrl+"/sourceleadTicketList");
+			 
+			 if (result && result.response === "INVALID_DATA") {
+	    		    showError(result.responseMessage);
+	    		} else if (result.response === "AWKWARD") {
+	    		    location.href = "/errorPage";
+	    		} else if (result.response === "SUCCESS") {
+	    			location.replace(sourceleadUrl+"/sourceleadTicketList");			 			
+	    		} else if (result.indexOf('Sign In') !== -1) {
+	    			location.replace(sourceleadUrl);
+	    		} else {
+	    		    showError("Operation failed, please try again");
+	    		}
+			 
 		},
 	});
 	

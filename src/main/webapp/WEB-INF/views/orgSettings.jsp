@@ -321,7 +321,7 @@ function cancelOrgImg(){
 							</div>
 							</div>
 							
-							<div class="form-group mt" id="generatedUserIdDiv">
+						<div class="form-group mt" id="generatedUserIdDiv">
 							<label class="col-md-3">Org Short Code<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title="The internal unique code used to auto generate the ID's for jobs, candidates, etc"></i></label>
 							<div class="col-md-9">
 							<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" readonly="readonly" data-validation="required validate_length length1-4" maxlength="4" value="${SourceLeadWeb_orgLocations.generatedUserId}" />
@@ -856,6 +856,7 @@ function cancelOrgImg(){
      		 <jsp:include page="orglocationBankingDetails.jsp" />
      		 <jsp:include page="orglocationDocuments.jsp" />
      		 <jsp:include page="orglocationSignatory.jsp" />
+     		 <jsp:include page="googleApiLocation.jsp" />
      		 
     			</div>
      		
@@ -1057,8 +1058,15 @@ function saveWhiteListIps(){
 			      type : "GET",
 			      url : url,
 			               
-			       success :function(data) {
-			       if(data == "Success"){
+			       success :function(result) {
+			    		if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+	      	    		    showError(result.responseMessage);
+	      	    		    $("#loading").removeAttr('style');
+	      	    		}
+			    		else if(result.response === "AWKWARD"){
+			        		 location.href = "/errorPage";
+			        	}
+			    		else if(result.response === "SUCCESS"){
 			    	   $("#fromIpAddress").val("");
 			    	   $("#toIpAddress").val("");
 			    	   $(".modal.addipPopup-modal").fadeOut();
@@ -1066,6 +1074,12 @@ function saveWhiteListIps(){
 			    	   closeWhiteListIp();
 			    	   getWhiteListIps();
 			       	} 
+			    		else if (result.indexOf('Sign In') !== -1) {
+	      					location.replace(sourceleadUrl);
+	      				} else {
+	      				    showError("Operation failed, please try again");
+	      				    $("#loading").removeAttr('style');
+	      				}
 			      },
 			  }); 
 		
@@ -1242,9 +1256,22 @@ var validationSettings = {
 	              	      data: formData,
 	                    	  url: sourceleadUrl+"/saveOrgSettings?"+tokenParamName+"="+tokenValue+"",
 	                      	success: function(result) {
-	  			        	 if((result == 'home')){
+	                      		if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+	            	    		    showError(result.responseMessage);
+	            	    		    $("#loading").removeAttr('style');
+	            	    		}
+	                      		else if (result.response === "AWKWARD") {
+	            	    		    location.href = "/errorPage";
+	            	    		}
+	                      		else if(result.response === "SUCCESS"){
 	  			        		location.replace(sourceleadUrl+"/orgSettings");  
-	  			        	}
+	  			        	    }
+	                      		else if (result.indexOf('Sign In') !== -1) {
+	            					location.replace(sourceleadUrl);
+	            				} else {
+	            				    showError("Operation failed, please try again");
+	            				    $("#loading").removeAttr('style');
+	            				}
 	  			        },  
 	                  });
              		}
@@ -2022,84 +2049,6 @@ function getOrgLocationDetails(orgLocationId){
 	    	        
     	            result = result +'</div>';
     	            
-    	             result = result +'<div class="col-md-6">';
-	    	            
-    	            	result = result +'<div class="form-group">';
-		    	        result = result +'<div class="col-md-12 clearfix">';
-		    	        result = result +'<h5>Registered Modules</h5>';
-		    	        result = result +'</div>';
-		    	        result = result +'</div>';
-		    	        
-		    	        result = result +'<div class="form-group">';
-		    	        result = result +'<div class="col-md-12 checkbox">';
-		    	        
-		    	        if(json.modulesList != null && json.modulesList != "" && json.modulesList != 'undefined' && json.modulesList.length > 0){
-		    	        	
-		    	        	 for(var i=0; i<json.modulesList.length; i++){
-				    	        	var module = json.modulesList[i];
-				    	        	
-				    	       	 result = result +'<ul class="list-unstyled pull-left">';
-			    	        	 result = result +'<li>';
-			    	        	 
-			    	        	 	if(module.id == '1'){
-			    	        	 		result = result +'<label class="mr pull-left NoPad">';
-			    	        	        result = result +'<p>'+module.moduleName+'</p>';
-			    	        	        result = result +'</label>';
-			    	        	        
-			    	        	        result = result +'<ul class="list-unstyled pull-left tree-checkbox">';
-			    	        	        if(json.subModulesList != null && json.subModulesList != "" && json.subModulesList != 'undefined' && json.subModulesList.length > 0){
-			    	        	        	for(var j=0; j<json.subModulesList.length; j++){
-			    	        	        		var subModules = json.subModulesList[j];
-			    	        	        		    result = result +'<label>';
-			    	        	        	        if(subModules.isModuleConfigured == 'Y'){
-				    	        	        	         result = result +'<input type="checkbox" class="allsubmodules" id="submodules"  checked="checked" disabled="disabled">';
-				    	        	        	         result = result +'<p>'+subModules.moduleName+'</p>';
-			    	        	        			} 
-			    	        	        	        if(subModules.isModuleConfigured != 'Y'){
-				    	        	        	         result = result +'<input type="checkbox" class="allsubmodules" value="'+subModules.id+'"  id="submodules"  name="submodulesList[]">';
-				    	        	        	         result = result +'<p>'+subModules.moduleName+'</p>';
-			    	        	        			} 
-			    	        	        	        result = result +'</label><br/>';
-			    	        	        	}
-			    	        	        }
-			    	        	        
-			    	        	        result = result +'</ul>';
-			    	        	 	}
-			    	        	 
-			    	        	 result = result +'</li>';
-			    	        	 
-			    	        	 
-			    	        	 
-			    	        	 
-			    	        	 result = result +'<li>';
-			    	             result = result +'<label class="mr pull-left">';
-				    	             if(module.id != "1" && module.isModuleConfigured  == "Y"){
-				    	            	 result = result +'<input type="checkbox" id="isRecruiting"  checked="checked" disabled="disabled" >';
-				    	            	 result = result +'<p>'+module.moduleName+'</p>';
-				    	             }
-				    	             
-				    	             if(module.id != "1" && module.isModuleConfigured  != "Y"){
-				    	            	 result = result +'<input type="checkbox" id="isRecruiting" value="'+module.id+'"  name="modulesList[]"  >';
-				    	            	 result = result +'<p>'+module.moduleName+'</p>';
-				    	             } 
-			    	             result = result +'</label>';
-			    	             result = result +'</li>';
-			    	        	 
-			    	        	 result = result +'</ul>';
-				    	        	
-				    	        	
-				    	        }
-		    	        }
-		    	        
-		    	        result = result +'</div>';
-		    	        result = result +'</div>';
-		    	        
-		    	        result = result +'<div class="clearfix">';
-		    	        result = result +'<div class="pull-right">';
-		    	        result = result +'<input type="button" value="Upgrade" onclick="updateModules('+orgLocationId+');" id="save_button" class="btn btn-primary mr">';
-		    	        result = result +'<input type="button" value="Cancel" class="btn btn-default" onClick="loadRegisteredOrgs();">';
-		    	        result = result +'</div>';
-		    	        result = result +'</div>';
 		    	        
     	                result = result +'</div>'; 
     	       	
@@ -2112,27 +2061,18 @@ function getOrgLocationDetails(orgLocationId){
 </script>
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 	function updateModules(orgLocationId) {
 		
 			var sourceleadUrl ='${sourceleadUrl}'; 
 			
-			 var modulesList = [];
-			 $("input[name='modulesList[]']:checked").each( function (i) {
-				modulesList[i] = $(this).val();
-			});
-			 
 			
-			 var submodulesList = [];
-			 $("input[name='submodulesList[]']:checked").each( function (i) {
-				submodulesList[i] = $(this).val();
-			});
 			 
 	 	 
 		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({ 
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/updateOrgModules?${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&orgLocationId="+orgLocationId,
+		    	 url: sourceleadUrl+"/updateOrgModules?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&submodulesList="+submodulesList+"&orgLocationId="+orgLocationId,
 		        success: function(result) {
 		        	if((result == 'success')){
 		        		loadRegisteredOrgs();
@@ -2142,7 +2082,7 @@ function getOrgLocationDetails(orgLocationId){
 		  
 	}
 
-</script>
+</script> -->
 
 
 
@@ -2175,7 +2115,14 @@ function createOrg(){
 	$("#registeredOrgs").empty();
 	$("#registeredOrgLocationSummary").empty();
 	$("#editPrimaryUserContactDiv").empty();
-	 
+	
+	var subscribedCountries = '${subscribedCountries}';
+	var countries= [];
+	var res = subscribedCountries.split(",");
+	for(var i=0; i <res.length; i++){
+		countries.push(res[i]);
+	};
+	
 	var result = '';
 	
 	result = result +'<div class="row">';
@@ -2188,7 +2135,23 @@ function createOrg(){
 	result = result +'<span class="hidden">Company</span>';
 	result = result +'</div>';
 	result = result +'</div>';
-          
+	
+	result = result +'<div class="form-group">';
+	result = result +'<label class="col-md-3">DBA<span class="text-danger">&nbsp;*</span></label>';
+	result = result +'<div class="col-md-9">';
+	result = result +'<div class="col-md-10 noPad">';
+	result = result +'<input id="dbaLoc" name="dba" class="form-control" type="text" field-name="DBA" data-validation="required validate_Space validate_length length2-250">';
+	result = result +'</div>';
+	result = result +'<div class="col-md-2 dbaCheck dbaCheck-cs">';
+             
+	result = result +'<div class="ml10">';
+	result = result +'<input id="dbaLocCheckbox" name="dbaLocCheckbox"  class="checkbox-custom" onclick="getLocDBAName();"  type="checkbox">';
+	result = result +'<label for="dbaLocCheckbox" class="checkbox-custom-label" title="Make company name as dba"></label>';
+	result = result +'</div>';
+	result = result +'</div>';
+	result = result +'</div>';
+	result = result +'</div>';	
+	
 	            result = result +'<div class="form-group">';
 	            result = result +'<label class="col-md-3">Website<span class="text-danger">&nbsp;*</span></label>';
 	            result = result +'<div class="col-md-9">';
@@ -2230,36 +2193,26 @@ function createOrg(){
 	            result = result +'<span class="hidden">Phone Number</span>';
 	            result = result +'</div>';
 	            result = result +'</div>';
+	            
+	            result = result +'<div class="form-group" >';
+	        	result = result +'<label class="col-md-3">Org Short Code<span class="text-danger">*</span></label>';
+	        	result = result +'<div class="col-md-9">';
+	        	result = result +'<div id="generatedShortCodeIdDiv">';
+	        	result = result +'<input type="text"  class="form-control" name="generatedUserId" id="generatedShortCodeId" field-name="Org Short Code" style="text-transform:uppercase" data-validation="required validate_length length1-4"  onkeyup="validateOrgLocationShortCode();" maxlength="4" />';
+	            result = result +'<span class="hidden">Short Code</span>';
+	        	result = result +'</div>';
+	        	result = result +'</div>';
+	        	result = result +'</div>';
+	        	
+	        	
+	        	result = result +'<div class="form-group">';
+	            result = result +'<label class="col-md-3">Working Hours<span class="text-danger">&nbsp;*</span></label>';
+	            result = result +'<div class="col-md-9" id="averageLocWorkingHoursDiv">';
+	            result = result +'<input type="text" class="form-control" id="averageLocWorkingHours" name="averageWorkingHours" maxlength="2" field-name="Working Hours" data-validation="required validate_int" />';
+	            result = result +'<span class="hidden">Working Hours</span>';
+	            result = result +'</div>';
+	            result = result +'</div>';
           
-	            result = result +'<div class="form-group">';
-	            result = result +'<label class="col-md-3">Modules<span class="text-danger">&nbsp;*</label>';
-	            result = result +'<div class="col-md-9 checkBox">';
-	            result = result +'<div class="clearfix reMar">';
-	            result = result +'<c:forEach var="module" items="${modulesList}">';
-	            result = result +'<ul class="list-unstyled pull-left">';
-	            result = result +'<li>';
-	            result = result +'<label class="mr pull-left">';
-	            result = result +'<input type="checkbox" id="isRecruiting" value="${module.id}" onclick="getRecruitmentTypes(this)" name="modulesList[]" onblur="moduleCheckValidation(this)">${module.moduleName}';
-	            result = result +'</label>';
-	            result = result +'<ul class="list-unstyled pull-left tree-checkbox" id="recrutmentTypes" style="display: none;">';
-	            result = result +'<li>';
-	            result = result +'<c:forEach var="submodules" items="${requirementSubModulesList}">';
-	            result = result +'<label>';
-	            result = result +'<input type="checkbox" class="allsubmodules" id="submodules" value="${submodules.id}" name="submodulesList[]" >';
-	            result = result +'${submodules.moduleName}';
-	            result = result +'</label><br/>';
-	            result = result +'</c:forEach>';
-	            result = result +'</li>';
-	            result = result +'</ul>';
-	            result = result +'</li>';
-	            result = result +'</ul>';
-	            result = result +'</c:forEach>';
-	            result = result +'</div>';
-	            result = result +'<p id="subModule" style="display: none;"><font color="red">Sub Modules Required</font></p>';
-	            result = result +'<input type="hidden"  id="moduleValue" name="module" value="${module}" field-name="Module" data-validation="required"/>'; 			    
-	            result = result +'</div>';
-	            result = result +'</div>'; 
-        
         
 	            result = result +'</div>';
                                  
@@ -2269,7 +2222,7 @@ function createOrg(){
 				result = result +' 			<label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>';
 				result = result +' 			 <div class="col-md-9" id="locationField">';
 				result = result +' 		          <div class="positionRelative">';
-				result = result +' 			          <input class="form-control positionRelative" id="orgSetLocation" name="location" placeholder="Enter Addres"  type="text" field-name="Location" onclick="initLocationAuto(\'orgSetLocation\',\'orgSetCountry\',\'orgSetState\',\'orgSetCity\',\'orgSetZipCode\',\'orgSetLatitude\',\'orgSetLongitude\',\'invite\',\'addressId\');" data-validation="required"></input>';
+				result = result +' 			          <input class="form-control positionRelative" id="orgSetLocation" name="location" placeholder="Enter Addres"  type="text" field-name="Location" onclick="orgSubscriptionApiLocation(\'orgSetLocation\',\'orgSetCountry\',\'orgSetState\',\'orgSetCity\',\'orgSetZipCode\',\''+countries+'\',\'addressId\');" data-validation="required"></input>';
 				result = result +' 			          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="addOrgRefreshGoogleApiLocation();"></i>';
 				result = result +' 			        </div>';
 				result = result +' 	          </div>';
@@ -2308,20 +2261,15 @@ function createOrg(){
 				result = result +'       <div class="form-group" id="errCoutryMsg">';
 				result = result +'         <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>';
 				result = result +'         <div class="col-md-9">';
-			 	 result = result + '   <select class="form-control chosen-select" name="country" id="orgSetCountry" field-name="Country" data-placeholder="Select Country" data-validation="required" onchange="changeCountry();">';
+			 	result = result + '   <select class="form-control chosen-select" name="country" id="orgSetCountry" field-name="Country" data-placeholder="Select Country" data-validation="required" onchange="changeCountry();">';
 			 	result = result + '       <option value="">Select Country</option>';
-				result = result + '       <option >Australia</option>';
-				result = result + '       <option >France</option>';
-				result = result + '       <option >India</option>';
-				result = result + '       <option >Singapore</option>';
-				result = result + '       <option >United Kingdom</option>';
-				result = result + '       <option >United States</option>'; 
+			 	result = result +'		<c:forEach var="subscibedCountries" items="${orgSubscribedCountriesList}">';
+			 	result = result + '       <option value="${subscibedCountries}">${subscibedCountries}</option>';
+		        result = result +'		</c:forEach>';
                 result = result + '    </select>';
 				result = result +'         </div>';
 				result = result +'       </div>';
 				
-						        
-	          
      
 	            result = result +'<div class="form-group">';
 	            result = result +'<label class="col-md-3">Time Zone<span class="text-danger">&nbsp;*</span></label>';
@@ -2337,7 +2285,6 @@ function createOrg(){
 	            result = result +'<div class="col-md-9">';
 	            result = result +'<select class="chosen-select form-control" data-placeholder="Date Format" field-name="Date Format" data-validation="required" id="dateFormat" name="dateFormat">';
 	            result = result +'</select>';
-	            //result = result +'<span class="hidden">Time Zone</span>';
 	            result = result +'</div>';
 	            result = result +'</div>';
 	            
@@ -2885,23 +2832,32 @@ function validatePrimaryUserEmail(){
 		   }; 
 	 if ($('#editPrimaryUser_form').validate(false, validationSettings)){ 
 		 
-		 var frm = $('#editPrimaryUser_form').serializeFormJSON();
-         var con = JSON.stringify(frm);
-         con = con.replace(/[{}]/g, "");
-         var jsonData = encodeURIComponent(con);
          var sourceleadUrl ='${sourceleadUrl}';
-         
+         var formData = getFormData("editPrimaryUser_form");
          $("#editPrimaryUserLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
           
           $.ajax({
              type: "POST",
-             url: sourceleadUrl+"/editOrgPrimaryUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgLocationId="+orgLocationId+"&json="+jsonData,
-             success: function(data) {
-                 if(data == "success"){
-                	 $("#editPrimaryUserLoading").removeAttr("style");
-                	 getOrgLocationDetails(orgLocationId);
-                 }
-                 
+             data: formData,
+             url: sourceleadUrl+"/editOrgPrimaryUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgLocationId="+orgLocationId,
+             success: function(result) {
+            		if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+    	    		    showError(result.responseMessage);
+    	    		    $("#editPrimaryUserLoading").removeAttr('style');
+    	    		}
+              		else if (result.response === "AWKWARD") {
+    	    		    location.href = "/errorPage";
+    	    		}
+              		else if(result.response === "SUCCESS"){
+              			 $("#editPrimaryUserLoading").removeAttr("style");
+                    	 getOrgLocationDetails(orgLocationId); 
+		        	    }
+              		else if (result.indexOf('Sign In') !== -1) {
+    					location.replace(sourceleadUrl);
+    				} else {
+    				    showError("Operation failed, please try again");
+    				    $("#editPrimaryUserLoading").removeAttr('style');
+    				}
              }
              });  
          
@@ -2934,37 +2890,35 @@ var validationSettings = {
         	
          		var sourceleadUrl ='${sourceleadUrl}';
          		var formData = getFormData("createOrg_form");
-         		 var modulesList = [];
-         		 $("input[name='modulesList[]']:checked").each( function (i) {
-         			modulesList[i] = $(this).val();
-         		});
-         		 
          		
-         		 var submodulesList = [];
-         		 $("input[name='submodulesList[]']:checked").each( function (i) {
-         			submodulesList[i] = $(this).val();
-         		});
          		
          		$("#regLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          		 	$.ajax({
           	      type: "POST",
           	      data: formData,
-                	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList,
+                	  url: sourceleadUrl+"/companyLocationRegistration?${_csrf.parameterName}=${_csrf.token}",
                 			  
                 			  
                   	success: function(result) {
-			        	if((result == 'orgList')){
-			        		$("#regLoading").removeAttr('style');
-			        		loadRegisteredOrgs();
-			        	}
-			        	else if((result == 'Invalid Sub Modules')){
-			        		$("#regLoading").removeAttr("style");
-			        		document.getElementById("subModule").style.display="";
-			        	}else if((result == 'DataMissing')){
-			        		showError("Invalid data");
-			        		$("#regLoading").removeAttr('style');
-			        	}
-			        	
+                  		
+                  		if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+        	    		    showError(result.responseMessage);
+        	    		    $("#regLoading").removeAttr('style');
+        	    		}
+                  		else if (result.response === "AWKWARD") {
+        	    		    location.href = "/errorPage";
+        	    		}
+                  		else if(result.response === "SUCCESS"){
+                  		   $("#regLoading").removeAttr('style');
+                  			loadRegisteredOrgs();  
+			        	    }
+                  		else if (result.indexOf('Sign In') !== -1) {
+        					location.replace(sourceleadUrl);
+        				} else {
+        				    showError("Operation failed, please try again");
+        				    $("#regLoading").removeAttr('style');
+        				}
+                  		
 			        },  
                });  
                 
@@ -3015,14 +2969,46 @@ function validateOrgShortCode(){
 		        }
 		 }); 
 }
+
+function validateOrgLocationShortCode(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var orgLocShortId = $("#generatedShortCodeId").val();
+	$('#generatedShortCodeIdDiv').parent().find('p.jquery_form_error_message').remove();
+		  $.ajax({
+		    	type: "POST",
+		    	url : sourceleadUrl+"/validateOrgShortCode?${_csrf.parameterName}=${_csrf.token}&orgShortId="+orgLocShortId, 
+		        success: function(data) {
+		        	if(data == true){
+		        		$('#generatedShortCodeIdDiv').parent().find('p.jquery_form_error_message').remove();
+		        		$("input#generatedShortCodeId").parent().after("<p class='jquery_form_error_message'><span>Org Short Code Already Exists !!!</span>");
+		        		$("#register_button").attr("disabled","disabled");
+		        		
+		        	}else{
+		        		 $('#generatedShortCodeIdDiv').parent().find('p.jquery_form_error_message').remove();
+		        		 $("#register_button").removeAttr("disabled","disabled");
+		        	}
+		        }
+		 }); 
+}
+
+
 $(function(){
 	$("#generatedUserId").keypress(function (event) {
         return event.key.length > 1 || event.ctrlKey || !!event.key.match(/[a-zA-Z]/);
     });
 });
+
+
+$(function(){
+	$("#generatedShortCodeId").keypress(function (event) {
+        return event.key.length > 1 || event.ctrlKey || !!event.key.match(/[a-zA-Z]/);
+    });
+});
+
 $(function() {
 	  $('#averageWorkingHoursDiv').on('keydown', '#averageWorkingHours', function(e){-1!==$.inArray(e.keyCode,[46,8,9,27,13,110,190])||/65|67|86|88/.test(e.keyCode)&&(!0===e.ctrlKey||!0===e.metaKey)||35<=e.keyCode&&40>=e.keyCode||(e.shiftKey||48>e.keyCode||57<e.keyCode)&&(96>e.keyCode||105<e.keyCode)&&e.preventDefault()});
 });
+
 $(function(){
     $("#averageWorkingHours").keyup(function(event){
         var ew = $("#averageWorkingHours").val();
@@ -3033,6 +3019,22 @@ $(function(){
         }
     });
 });
+
+$(function() {
+	  $('#averageLocWorkingHoursDiv').on('keydown', '#averageLocWorkingHours', function(e){-1!==$.inArray(e.keyCode,[46,8,9,27,13,110,190])||/65|67|86|88/.test(e.keyCode)&&(!0===e.ctrlKey||!0===e.metaKey)||35<=e.keyCode&&40>=e.keyCode||(e.shiftKey||48>e.keyCode||57<e.keyCode)&&(96>e.keyCode||105<e.keyCode)&&e.preventDefault()});
+});
+
+$(function(){
+  $("#averageLocWorkingHours").keyup(function(event){
+      var ew = $("#averageLocWorkingHours").val();
+      $('#averageLocWorkingHoursDiv').parent().find('p.jquery_form_error_message').remove(); 
+      if(ew > 24){
+      	$("#averageLocWorkingHours").val('');
+      	$("input#averageLocWorkingHours").parent().after("<p class='jquery_form_error_message'><span>Average Working Hours should be less then or equal to 24</span>");
+      }
+  });
+});
+
 
 </script>
 
@@ -3046,6 +3048,20 @@ function getDBAName(){
 		 }
      }else{
     	 $("#dba").val('');
+     } 
+}
+</script>
+
+
+<script>
+function getLocDBAName(){
+	 if (document.getElementById('dbaLocCheckbox').checked) {
+		 var companyName = document.getElementById("companyName").value;
+		 if(companyName != null && companyName != '' && companyName != 'undefined'){
+			$("#dbaLoc").val(companyName); 
+		 }
+     }else{
+    	 $("#dbaLoc").val('');
      } 
 }
 </script>

@@ -444,7 +444,11 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 						String empType = projectMember.getProjectMemberCandidteId().getDesignationType();
 							if(empType.equalsIgnoreCase("C2C") || empType.equalsIgnoreCase("C2C-1099")){
 								OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
-								expenseArray[4] = orgRelation.getResponderLocationId().getOrgLocationName();
+								if(orgRelation != null){
+									expenseArray[4] = orgRelation.getResponderLocationId().getOrgLocationName();
+								}else{
+									expenseArray[4] = "--";
+								}
 							 }
 						}else{
 							expenseArray[4] = "--";
@@ -630,9 +634,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 							String empType = projectMember.getProjectMemberCandidteId().getDesignationType();
 							if(empType.equalsIgnoreCase("C2C") || empType.equalsIgnoreCase("C2C-1099")){
 								OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
+								if(orgRelation != null){
 								 writeRow.createCell(4).setCellValue(orgRelation.getResponderLocationId().getOrgLocationName());
 								 createExcelsheet.autoSizeColumn(4);
 							 }
+							}
 						}
 					}
 				}
@@ -801,7 +807,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 				notificationScenario.setBody(notificationBody);
 				String actionLink = "";
-				emailScenerioUtil.sendNotification(actionLink, orgLoc.getUser(), reopenedUser, orgLoc, notificationScenario);
+				emailScenerioUtil.sendNotification(actionLink, orgLoc.getUser(), reopenedUser, orgLoc, notificationScenario,new HashMap<String,String>());
 
 		}
 

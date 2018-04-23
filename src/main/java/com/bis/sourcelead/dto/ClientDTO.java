@@ -49,6 +49,8 @@ public class ClientDTO {
 	
 	private String paymentTerms;
 	
+	private String type;
+	
 	@Required(desc = "email")
 	@Email
 	private String email;
@@ -102,7 +104,17 @@ public class ClientDTO {
 	
 	private CandidateDTO candidateDTO;
 	
+	public String getClientSaveFromType()
+	{
+		return clientSaveFromType;
+	}
+	public void setClientSaveFromType(String clientSaveFromType)
+	{
+		this.clientSaveFromType = clientSaveFromType;
+	}
 	private String UUID;
+	
+	private String clientSaveFromType;
 	
 	private List<CustomFormFieldDTO> customFormData;
 	
@@ -394,6 +406,12 @@ public class ClientDTO {
 	}
 	public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
 		this.customFormData = customFormData;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
 	}
 	
 }

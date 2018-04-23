@@ -28,7 +28,7 @@ public interface InvoiceService {
 
 	Invoice getInvoicetById(Long invoiceId) throws Exception;
 	
-	public Boolean getInvoiceByInvoiceId(String invoiceId, Long orgLocationsId) throws Exception;
+	public Boolean getInvoiceByInvoiceId(String invoiceId, Long orgLocationsId, String invoiceType) throws Exception;
 	
 	List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId,String contractType)throws Exception;
 
@@ -77,7 +77,7 @@ public interface InvoiceService {
 
 	Invoice getInvoicetByParentId(Long invoiceId)throws Exception;
 
-	boolean deleteInvoice(Long invoiceId, String reason, String invoiceType)throws Exception;
+	boolean deleteInvoice(String invoiceUUID, String reason, String invoiceType)throws Exception;
 
 	Invoice saveExpenseInvoice(InvoiceDTO invoiceDTO, User user, OrgLocations orgLocation, String saveType,String invoiceType, Org org, String currencyCode, String invoiceCategory)throws Exception;
 

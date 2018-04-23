@@ -29,4 +29,12 @@ public interface SourceleadActionsDao {
 	SourceleadActions getSourceleadActionsByActionRole(String actionRole);
 	
 	List<SourceleadActions> getAllSourceleadActionsForEnrollByOrgLocationIdAndOrgId(OrgLocations orgLocations,Org org) throws Exception;
+	
+	List<SourceleadActions> getAllSourceleadActionsByTabsList(List<Long> tabsList) throws Exception;
+	
+	List<SourceleadActions> getAllSourceleadGuestOrgActionsForEnroll() throws Exception;
+	
+	List<SourceleadActions> getAllSourceleadActionsByIdsList(List<Long> actionIdList) throws Exception;
+	
+	List<Long> getAllSourceleadActionsIdsByTabsList(List<Long> tabsList) throws Exception;
 }

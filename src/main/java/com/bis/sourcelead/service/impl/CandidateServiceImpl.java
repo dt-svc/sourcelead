@@ -39,7 +39,9 @@ import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateTimelineActivityDao;
 import com.bis.sourcelead.dao.EmployeesDao;
 import com.bis.sourcelead.dao.OrgSpocDao;
+import com.bis.sourcelead.dao.ReferContactsDao;
 import com.bis.sourcelead.dao.RolesDao;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.AddAssociateDTO;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AssociateDTO;
@@ -67,6 +69,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.OrglocationFormFields;
+import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -113,6 +116,9 @@ public class CandidateServiceImpl implements CandidateService {
 
 	@Autowired
 	CandidateDao candidateDao;
+	
+	@Autowired
+	UserDao userDao;
 
 	@Autowired
 	private CommonUtil commonUtil;
@@ -198,6 +204,9 @@ public class CandidateServiceImpl implements CandidateService {
     
     @Autowired
     private CandidateCustomFieldDataService candidateCustomFieldDataService;
+    
+    @Autowired
+	ReferContactsDao referContactsDao;
     
        
     protected boolean isNullOrEmpty(String str) {
@@ -704,6 +713,53 @@ public class CandidateServiceImpl implements CandidateService {
 		 * Saving Candidate DB data as ElasticSearch Documents
 		 */
 		saveOrUpdateCandidateElkDocument(savedCandidate);
+		
+		// store candidate as a contact
+		
+		ReferContacts referContacts=null;
+		 referContacts=referContactsDao.getReferContactsByEmails(user.getId(), candidateDto.getEmail());
+	
+		if(referContacts !=null){
+			if(candidateDto.getFirstName() != null){
+				referContacts.setFirstName(candidateDto.getFirstName());
+			}
+			if(candidateDto.getLastName() != null){
+				referContacts.setLastName(candidateDto.getLastName());
+			}
+			if(candidateDto.getPhoneNumber() != null){
+				referContacts.setContactUserPhone(candidateDto.getPhoneNumber());
+			}
+			referContacts.setUpdatedDate(new Date());
+			referContacts.setUpdatedBy(user.getUserCode());
+					referContacts.setCandidateType(1);
+		}else{
+			 referContacts = new ReferContacts();
+			
+			if(candidateDto.getEmail() != null){
+				referContacts.setContactUserEmail(candidateDto.getEmail());
+			}
+			
+			if(candidateDto.getFirstName() != null){
+				referContacts.setFirstName(candidateDto.getFirstName());
+			}
+			if(candidateDto.getLastName() != null){
+				referContacts.setLastName(candidateDto.getLastName());
+			}
+			if(candidateDto.getPhoneNumber() != null){
+				referContacts.setContactUserPhone(candidateDto.getPhoneNumber());
+			}
+			
+			referContacts.setReferFromUser(user);
+			String contactUUID = SourceLeadRandomCodeHelper.generateUUID();
+			referContacts.setContactUserUUID(contactUUID);
+			referContacts.setCreatedDate(new Date());
+			referContacts.setCandidateType(1);
+			
+			referContacts.setCreatedBy(user.getUserCode());
+		}
+	
+	referContactsDao.addReferContacts(referContacts);
+		
 		// resume details update in elk
 		if(candidateDto.getFileInfo()!= null && !candidateDto.getFileInfo().isEmpty()){
 		candidateResumesService.saveOrUpdateCandidateElkDocumentWithResumeDetails(savedCandidate);
@@ -795,8 +851,8 @@ public class CandidateServiceImpl implements CandidateService {
 	 * @throws Exception
     */
 	@Override
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,Integer candidateStatus,String updatedDateRange,String candidateType,String isAssociate) throws Exception {
-		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationID(orgLocationId,orgId,candidateStatus,updatedDateRange,candidateType,isAssociate);
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,Integer candidateStatus,String updatedDateRange,String candidateType,String isAssociate,String candidateFilterSkills,String availability,String candidateTypeFilter) throws Exception {
+		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationID(orgLocationId,orgId,candidateStatus,updatedDateRange,candidateType,isAssociate,candidateFilterSkills,availability,candidateTypeFilter);
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		for(Candidate can :candidateList){
@@ -1883,17 +1939,14 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 							 }
 							 boolean flag = moduleIds.contains(Constants.MODULE_VMS);
 							 if(flag == false){
-								 Long moduleId = (long) Constants.MODULE_VMS;
 							     modules = modules+","+Constants.MODULE_VMS;
-							     registrationController.saveUserRoleActions(moduleId,vendorOrgLocation);
 							 }
 							 
-							 Long tsModuleId = (long) Constants.MODULE_TIMESHEET;
 							 boolean tsflag = moduleIds.contains(Constants.MODULE_TIMESHEET);
 							 if(tsflag == false) {
 				    				modules = modules+","+Constants.MODULE_TIMESHEET;
-				    				registrationController.saveUserRoleActions(tsModuleId,vendorOrgLocation);
 				    			}
+							 registrationController.saveUserRoleActions(vendorOrgLocation);
 							
 							 
 							 vendorOrgLocation.setModulesId(modules);
@@ -1907,9 +1960,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 								 }
 								 boolean flag1 = moduleIds.contains(Constants.MODULE_ATS);
 								 if(flag1 == false){
-									 Long moduleId = (long) Constants.MODULE_ATS;
 									 clientModules = clientModules+","+Constants.MODULE_ATS;
-								     registrationController.saveUserRoleActions(moduleId,orgLocations);
+								     registrationController.saveVendorUserRoleActions(orgLocations);
 								 }
 								 
 								 orgLocations.setModulesId(clientModules);
@@ -2069,6 +2121,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public Candidate getCandidateByEmail(String email) throws Exception {
 		return candidateDao.getCandidateByEmail(email);
+	}
+
+	@Override
+	public Candidate getCandidateByParentCandidateIdAndOrgLocationId(Long parentCandidateId, Long orgLocationId)
+			throws Exception {
+		return candidateDao.getCandidateByParentCandidateIdAndOrgLocationId(parentCandidateId, orgLocationId);
 	}
 
 }

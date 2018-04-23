@@ -192,7 +192,7 @@ function resourceRequestPagination(url,requestType,sourceleadUrl){
               "data": "candidateName",
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-            	  result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/candidatesList?candidateUUID='+opt.candidateUUID+'" title="'+opt.candidateName+'">'+opt.candidateName+'</a></div></td>';
+            	  result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/userSummary/'+opt.userCode+'" title="'+opt.candidateName+'">'+opt.candidateName+'</a></div></td>';
 	              return result;
               		
               }
@@ -245,7 +245,7 @@ function resourceRequestPagination(url,requestType,sourceleadUrl){
 			    				result = result +"<i class='glyphicon glyphicon-comment edit-reason'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i>";
 			    				result = result + '<b class="bg-red">'+opt.resourceStatus+'</b>';
 			    			}else{
-			    				result = result + '<b>'+opt.resourceStatus+'</b>';
+			    				result = result + '<b class="bg-green">'+opt.resourceStatus+'</b>';
 			    			}
 			    			
 			    		}

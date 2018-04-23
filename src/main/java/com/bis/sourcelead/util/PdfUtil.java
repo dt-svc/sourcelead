@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
+import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
@@ -32,6 +33,7 @@ import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
@@ -1120,12 +1122,12 @@ public class PdfUtil {
 	            table.addCell(cell);
 	        }
 	        table.completeRow();
-	        java.util.List<String[]> usersList = new ArrayList<>();
+	        java.util.List<String[]> projectList = new ArrayList<>();
 	        java.util.List<ProjectsDTO> list =  projectsList.getData();
 	        for(ProjectsDTO projects : list){
-	        	usersList.add(prepareProjectsStringArray(projects,headers,orgLocations));
+	        	projectList.add(prepareProjectsStringArray(projects,headers,orgLocations));
 	        }
-	        for (String[] userArray: usersList) {
+	        for (String[] userArray: projectList) {
                 for (int i = 0; i < userArray.length; i++) {
                     String datum = userArray[i];
                     PdfPCell cell = new PdfPCell();
@@ -1242,6 +1244,104 @@ public class PdfUtil {
 			}
 		
 		return projectArray;
+	}
+	public File createProjectTasksPdfTable(ResponseList<ProjectTasks> responseTaskList, OrgLocations orgLocations) throws Exception {
+		String[] headers = Constants.PROJECT_TASKS_PDF_HEADERS;
+	    Document document = new Document(PageSize.LETTER.rotate());
+
+	    StringBuilder sbUser =  new StringBuilder();
+	    sbUser.append("projects_Tasks_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
+
+	    StringBuilder fileSB = new StringBuilder();
+	    File file = File.createTempFile(fileSB.append("project_Tasks_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".pdf");
+	    file.setReadable(true);
+	    
+	    try {
+	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
+	        PdfWriter.getInstance(document, new FileOutputStream(file));
+	        document.open();
+
+	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+	        BaseColor myColor = WebColors.getRGBColor("#000000");
+	        boldFont.setColor(myColor);
+	        StringBuilder userStyle = new StringBuilder();
+	        userStyle.append(orgLocations.getOrgLocationName()).append(" ").append("Project_Tasks");
+          
+
+	        StringBuilder orgNameSB = new StringBuilder();
+            Paragraph para = new Paragraph(orgNameSB.append("Organization : ").append(orgLocations.getOrgLocationName()).toString());
+            para.setAlignment(Element.ALIGN_CENTER);
+            document.add(para);
+	        List orderedList = new List(List.ORDERED);
+	        document.add(orderedList);
+	        // Create an instance of PdfPTable. After that we transform the header and
+	        PdfPTable table = new PdfPTable(headers.length);
+	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+	        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
+	        cell1.setColspan(9);
+	        headerCellStyle(cell1);
+	        table.setWidthPercentage(100);
+            table.setWidths(new int[]{5,3,3,5,3});
+            table.addCell(cell1);
+	        for (int i = 0; i < headers.length; i++) {
+	            String header = headers[i];
+	            PdfPCell cell = new PdfPCell();
+	            cell.setGrayFill(0.9f);
+	            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+	            BaseColor myBorderColor = WebColors.getRGBColor("#808080");
+	            cell.setBackgroundColor(myBorderColor);
+	            table.addCell(cell);
+	        }
+	        table.completeRow();
+	        java.util.List<String[]> arrayTaskLists = new ArrayList<>();
+	        for(ProjectTasks tasks : responseTaskList.getData()){
+	        	arrayTaskLists.add(prepareProjectTasksStringArray(tasks,headers,orgLocations));
+	        }
+	        for (String[] userArray: arrayTaskLists) {
+                for (int i = 0; i < userArray.length; i++) {
+                    String datum = userArray[i];
+                    PdfPCell cell = new PdfPCell();
+                    cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+                    table.addCell(cell);
+                }
+                table.completeRow();
+            }
+	        document.addTitle("Projects Table");
+	        table.setSpacingBefore(15f);
+	        document.add(table);
+	        logger.info("Pdf table created !!");
+	    } catch (DocumentException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } catch (FileNotFoundException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } finally {
+	        document.close();
+	    }
+		return file;
+	}
+	private String[] prepareProjectTasksStringArray(ProjectTasks projectTassks, String[] headers, OrgLocations orgLocations) {
+		String projectTaskArray[] = new String[headers.length];
+		
+		if(projectTassks.getGeneratedId() != null) {
+			projectTaskArray[0] = projectTassks.getGeneratedId() +"-"+ projectTassks.getTaskName(); 
+		}else {
+			projectTaskArray[0] = projectTassks.getTaskName(); 
+		}
+		projectTaskArray[1] = projectTassks.getTaskTypes(); 
+		if(projectTassks.getTaskPriotiry() != null) {
+			projectTaskArray[2] = projectTassks.getTaskPriotiry(); 
+		}else {
+			projectTaskArray[2] = "--"; 
+		}
+		if(projectTassks.getTaskAssignedUsers() != null) {
+			String assignedTo = projectTassks.getTaskAssignedUsers().toString().replaceAll("\\[", "").replaceAll("\\]","");
+			projectTaskArray[3] = assignedTo; 
+		}else {
+			projectTaskArray[3] = "--"; 
+		}
+		projectTaskArray[4] = projectTassks.getTaskStaus(); 
+		
+		return projectTaskArray;
 	}
 	
 	}

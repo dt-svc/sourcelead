@@ -2,7 +2,6 @@ package com.bis.sourcelead.service.impl;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.ResultSet;
 import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
@@ -31,6 +30,8 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesCategoryDao;
 import com.bis.sourcelead.dao.LookUpDataDao;
+import com.bis.sourcelead.dao.ReferContactsDao;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
@@ -48,6 +49,8 @@ import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.ExpensesCategory;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLicenseSubscription;
+import com.bis.sourcelead.entity.OrgLicenseSubscriptionTypes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -55,14 +58,17 @@ import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
+import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.entity.VendorOnboarding;
+import com.bis.sourcelead.enums.Contact_Source;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.service.CandidateService;
@@ -71,6 +77,7 @@ import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
@@ -85,8 +92,10 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
+import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.VendorOnboardService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -178,6 +187,12 @@ public class ClientServiceImpl implements ClientService {
 	@Autowired
 	private OrglocationFormFieldsService orglocationFormFieldsService;
 	
+	@Autowired
+	ReferContactsDao referContactsDao;
+	
+	@Autowired
+	UserDao userDao;
+	
 	@Value("${SourceLead.100}")
 	private String notFound;
 	@Value("${SourceLead.101}")
@@ -206,6 +221,16 @@ public class ClientServiceImpl implements ClientService {
 	
 	@Autowired
 	LookUpDataDao lookUpDataDao;
+	
+	@Autowired
+	OrgLicenseSubscriptionService orgLicenseSubscriptionService;
+	
+	@Autowired
+	TabsService tabsService;
+
+	@Autowired
+	VendorOnboardService vendorOnboardService;
+
 
 	/**
 	 * @author VenkatKesav
@@ -330,6 +355,7 @@ public class ClientServiceImpl implements ClientService {
 			clientOrgLocations.setIsPrimary(Constants.YES);
 			clientOrgLocations.setIsCompanyOnboarded(Constants.NO);
 			clientOrgLocations.setCoolingOffPeriod("3 Months");
+			clientOrgLocations.setRegistrationStatus("Registered");
 			orgLocationsList.add(clientOrgLocations);
 			org.setOrgLocationsList(orgLocationsList);
 			Org savedClient = orgService.addOrganization(org);
@@ -362,7 +388,7 @@ public class ClientServiceImpl implements ClientService {
 				expensesCategoryDao.storeExpenseCategory(expensesCategory); 
 		    }
 			saveOrgRoleHierarchy(clientOrgLocations, user);
-			saveOrgBasedRoles(org, clientOrgLocations, user);
+			saveOrgBasedRoles(org, clientOrgLocations, user,responderType);
 			newlyRegistred = "Y";
 		} else {
 			
@@ -474,6 +500,15 @@ public class ClientServiceImpl implements ClientService {
 			}
 		}
 
+		
+		if ("BulkVendorSaving".equalsIgnoreCase(clientDTO.getClientSaveFromType())) {
+			clientOrgLocations.setVendorOrgRelationId(orgSpoc.getOrgRelations().getId());
+			clientOrgLocations.setVendorSpocId(spocUser.getId());
+			User bulkUser = userService.getUserById(spocUser.getId());
+			VendorOnboarding vendorOnboarding = vendorOnboardService.saveVendorOnboarding(clientOrgLocations, orgLocations, user);
+			vendorOnboardService.saveVendorOnboardForVendorBulkImports(vendorOnboarding.getId(),user,bulkUser,orgLocations);
+			}
+		
 		// store default submission template in guest
 		if (Constants.GUEST.equalsIgnoreCase(org.getOrgType())) {
 			submissionTemplate = new SubmissionTemplate();
@@ -600,7 +635,87 @@ public class ClientServiceImpl implements ClientService {
 
 		}
 		clientOrgLocations.setVendorSpocId(spocUser.getId());
+		 ReferContacts referContacts=referContactsDao.getReferContactsByEmails(user.getId(), clientDTO.getEmail());
 		
+			if(referContacts !=null){
+				if(clientDTO.getFirstName() != null){
+					referContacts.setFirstName(clientDTO.getFirstName());
+				}
+				if(clientDTO.getLastName() != null){
+					referContacts.setLastName(clientDTO.getLastName());
+				}
+				if(clientDTO.getPhoneNumber() != null){
+					referContacts.setContactUserPhone(clientDTO.getPhoneNumber());
+				}
+				referContacts.setUpdatedDate(new Date());
+				referContacts.setUpdatedBy(user.getUserCode());
+				if(clientDTO.getResponderType() != null){
+					if(clientDTO.getResponderType().equalsIgnoreCase("vendor")){
+						referContacts.setVendorType(1);
+					}else{
+						referContacts.setClientType(1);
+					}
+				}else{
+					if(responderType !=null){
+						if(responderType.equalsIgnoreCase("vendor")){
+							referContacts.setVendorType(1);
+						}else{
+							referContacts.setClientType(1);
+						}
+					}
+				}
+			}else{
+				 referContacts = new ReferContacts();
+				
+				if(clientDTO.getEmail() != null){
+					referContacts.setContactUserEmail(clientDTO.getEmail());
+				}
+				if(clientDTO.getOrgName() != null){
+					referContacts.setCompanyName(clientDTO.getOrgName());
+				}
+				if(clientDTO.getFirstName() != null){
+					referContacts.setFirstName(clientDTO.getFirstName());
+				}
+				if(clientDTO.getLastName() != null){
+					referContacts.setLastName(clientDTO.getLastName());
+				}
+				if(clientDTO.getPhoneNumber() != null){
+					referContacts.setContactUserPhone(clientDTO.getPhoneNumber());
+				}
+				if(clientDTO.getOrgName() != null){
+					referContacts.setCompanyName(clientDTO.getOrgName());
+				}
+				if(StringUtils.isNotBlank(clientDTO.getEmail())){
+					referContacts.setContactUserEmail(clientDTO.getEmail());
+					User contactUser = userDao.getUserByEmail(clientDTO.getEmail());
+					if(null != contactUser){
+						referContacts.setContactUser(contactUser);
+					}
+				}
+				referContacts.setReferFromUser(user);
+				String contactUUID = SourceLeadRandomCodeHelper.generateUUID();
+				referContacts.setContactUserUUID(contactUUID);
+				referContacts.setCreatedDate(new Date());
+				if(clientDTO.getResponderType() != null){
+					if(clientDTO.getResponderType().equalsIgnoreCase("vendor")){
+						referContacts.setVendorType(1);
+					}else{
+						referContacts.setClientType(1);
+					}
+				}else{
+					if(responderType !=null){
+						if(responderType.equalsIgnoreCase("vendor")){
+							referContacts.setVendorType(1);
+						}else{
+							referContacts.setClientType(1);
+						}
+					}
+				}
+				
+				referContacts.setCreatedBy(user.getUserCode());
+			}
+		
+		referContactsDao.addReferContacts(referContacts);
 		return clientOrgLocations;
 	}
 	
@@ -628,6 +743,7 @@ public class ClientServiceImpl implements ClientService {
 	    	}
 
 	    	projects.setInvoiceFrequency(Constants.WEEKLY);
+	    	projects.setTimesheetFrequency(Constants.MONTHLY);
 	    	projects.setProjectStatus(Project_Status.INPROGRESS);
 	    	projects.setIsDefaultProject(Constants.YES);
 	    	projects.setIsPrimary(1);
@@ -739,8 +855,26 @@ public class ClientServiceImpl implements ClientService {
 
 	}
 
-	public void saveOrgBasedRoles(Org org, OrgLocations orgLocations, User user) throws Exception {
+	public void saveOrgBasedRoles(Org org, OrgLocations orgLocations, User user,String responderType) throws Exception {
 		List<SourceleadRoles> rolesList = sourceleadRolesService.getSourceleadRoles();
+		List<Long> soureleadActionIdList = new ArrayList<>();
+		String[] actionsIds = null;
+		SourceleadRoles sourceleadRoles = null;
+		if(responderType.equalsIgnoreCase("Vendor")) {
+			 sourceleadRoles = sourceleadRolesService.getSourceleadRolesByRoleName(Constants.ROLE_GUEST_VENDOR);
+			 actionsIds = sourceleadRoles.getActionId().split(",");
+			 for(int i=0 ; i < actionsIds.length; i++) {
+				 soureleadActionIdList.add(Long.parseLong(actionsIds[i]));
+			 }
+		}else if(responderType.equalsIgnoreCase("Client")) {
+			sourceleadRoles = sourceleadRolesService.getSourceleadRolesByRoleName(Constants.ROLE_GUEST_CLIENT);
+			 actionsIds = sourceleadRoles.getActionId().split(",");
+			 for(int i=0 ; i < actionsIds.length; i++) {
+				 soureleadActionIdList.add(Long.parseLong(actionsIds[i]));
+			 }
+		}
+		
+		
 		if (null != rolesList) {
 			for (SourceleadRoles roles : rolesList) {
 				Roles orgRoles = new Roles();
@@ -762,11 +896,9 @@ public class ClientServiceImpl implements ClientService {
 					}
 				}
 
-				List<SourceleadActions> sourceLeadActionsList = sourceleadActionsService
-						.getAllSourceleadActionsByOrgLocationId(orgLocations);
-				for (SourceleadActions actions : sourceLeadActionsList) {
-					if (roleActonsList.contains(actions.getId())) {
-						strbul.append(actions.getId()).append(",");
+				for (Long actionId : soureleadActionIdList) {
+					if (roleActonsList.contains(actionId)) {
+						strbul.append(actionId).append(",");
 					}
 				}
 
@@ -785,6 +917,59 @@ public class ClientServiceImpl implements ClientService {
 			}
 		}
 
+		saveLincenseSubscription(org,orgLocations,soureleadActionIdList);
+	}
+	
+	
+	public void saveLincenseSubscription(Org org,OrgLocations orgLocations,List<Long> soureleadActionIdList) throws Exception {
+		OrgLicenseSubscription subscription = new OrgLicenseSubscription();
+		subscription.setOrg(org);
+		OrgLicenseSubscriptionTypes subscriptionTypeLookUpData = new OrgLicenseSubscriptionTypes();
+		subscriptionTypeLookUpData.setId(6L);
+		subscription.setSubscriptionType(subscriptionTypeLookUpData);
+		subscription.setCountry(orgLocations.getCountry());
+		subscription.setTimezone(orgLocations.getTimezone());
+		
+		OrgLicenseSubscriptionTypes userData = new OrgLicenseSubscriptionTypes();
+		userData.setId(8L);
+		subscription.setUserSubscriptionType(userData);
+		
+		OrgLicenseSubscriptionTypes storageLookUpData = new OrgLicenseSubscriptionTypes();
+		storageLookUpData.setId(10L);
+		subscription.setStorageSubscriptionType(storageLookUpData);
+		subscription.setFromDate(new Date());
+		
+		Calendar toDate = Calendar.getInstance();
+		toDate.setTime(new Date());
+		toDate.add(Calendar.MONTH, +1); 
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date endDate = dateFormat.parse(dateFormat.format(toDate.getTime()));
+		subscription.setToDate(endDate);
+		subscription.setCurrency("USD");
+		subscription.setInvoiceAmount(0d);
+		
+		StringBuilder tabIds = new StringBuilder();
+		List<Tabs> tabsList =  tabsService.getTabListByActionsIds(soureleadActionIdList);
+		Set<Long> tabIdsList = new HashSet<>();
+		if(tabsList != null && !tabsList.isEmpty()) {
+			for(Tabs tabs : tabsList) {
+				if(tabs.getTabs() != null) {
+					tabIdsList.add(tabs.getTabs().getId());
+				}else {
+					tabIdsList.add(tabs.getId());
+				}
+			}
+		}
+		
+		for(Long tab :tabIdsList) {
+			tabIds = tabIds.append(tab).append(",");
+		}
+	
+		String enrolledTabs = tabIds.toString();
+		enrolledTabs = enrolledTabs.substring(0, enrolledTabs.length()-1);
+		subscription.setSubscriptionTabs(enrolledTabs);
+		subscription.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		orgLicenseSubscriptionService.saveOrgLicenseSubscription(subscription);
 	}
 
 	// This method is not in use so commented by David S
@@ -1380,7 +1565,7 @@ public class ClientServiceImpl implements ClientService {
 		String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(), globalVarsMap);
 		noificationEmailScenario.setBody(notificationbody);
 
-		emailScenerioUtil.sendNotification(actionLink, loginUser, changedUser, orgLocation, noificationEmailScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, changedUser, orgLocation, noificationEmailScenario,new HashMap<String,String>());
 
 	}
 

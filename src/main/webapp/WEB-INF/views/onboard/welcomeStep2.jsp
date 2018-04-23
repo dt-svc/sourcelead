@@ -363,7 +363,11 @@
 
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
   
-  
+  				<div class="location-alert alert alert-danger alert-dismissable zInPop" id="locationAlert">
+    <a href="#" class="loc-alertclose close">&times;</a>
+    <strong>Alert !</strong> <span>Your are not able to Save Required data is Missing.</span>
+  </div>
+  		  
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
   <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script> 
   <script src="/resources/js/moment.min.js?staticTime=${staticTime}"></script> 
@@ -388,6 +392,9 @@
 				$this.next().css({'width': '100%'});
 
 });
+			  $(".loc-alertclose").click(function(){
+					 $(".location-alert").fadeOut();
+				})		 
 </script> 
 
 <script src="/resources/js/formvalidator.js"></script>
@@ -511,21 +518,30 @@ function getOnBoardCandidateCities(country,state,city){
 	         }; 
 	 
 	 if ($('#onboardCandidate_form').validate(false, validationSettings)){ 
-	        
 	        var formData = getFormData("onboardCandidate_form");
-	       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	         $.ajax({
 		    	type: "POST",
 		    	data: formData,
 		    	 url: sourceleadUrl+"/saveOnboardingCandidateStepDetails?${_csrf.parameterName}=${_csrf.token}", 
-		        success: function(onboardId) {
-		        	
-		        	location.replace(sourceleadUrl+"/onboardingCandidateStep3");  
+		        success: function(response) {
+		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+      	    		    showError(response.responseMessage);
+      	    		    $("#loading").removeAttr('style');
+      	    		}
+		        	else if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		location.replace(sourceleadUrl+"/onboardingCandidateStep3");  
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
 		        },
 		    });  
 	        return true;
-		
-	  }else{
+	  } else {
 		return false;
 	  }
  }

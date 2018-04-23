@@ -34,6 +34,7 @@ public class ExpensesEntriesDTOConverter {
 				expensesEntriesDTO.setCategoryTypeId(expensesEntries.getExpensesCategoryId().getId());
 				expensesEntriesDTO.setCategoryName(expensesEntries.getExpensesCategoryId().getExpensesName());
 				expensesEntriesDTO.setCategoryType(expensesEntries.getExpensesCategoryId().getId()+","+expensesEntries.getExpensesCategoryId().getAllowedAmount());
+				expensesEntriesDTO.setAllowedAmount(expensesEntries.getExpensesCategoryId().getAllowedAmount());
 			}
 			List<FileInfo> fileInfoList = new ArrayList<>();
 			if(expensesEntries.getExpensesEntryDocuments() != null && expensesEntries.getExpensesEntryDocuments().size() > 0){

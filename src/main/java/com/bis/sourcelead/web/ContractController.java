@@ -649,7 +649,7 @@ public class ContractController {
 	
 	
 	@RequestMapping(value = "/viewContract")
-	public ModelAndView viewContract(HttpServletRequest request) throws Exception
+	public ModelAndView viewContract(HttpServletRequest request,@RequestParam(value="contractUUID", required=false)String contractUUID) throws Exception
 	{
 		logger.debug("display contract view page");
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
@@ -661,6 +661,7 @@ public class ContractController {
 		
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("contractUUID", contractUUID);
 		model.setViewName("contracts/viewContract");
 		return model;
 	}

@@ -231,7 +231,7 @@ function loadLeagelSignerForm(){
 	result = result +"<div class='form-group clearfix' id='associateDiv'>";
 	result = result +"<label class='col-md-4'>Associate<span class='text-danger'>&nbsp;*</span></label>";
 	result = result +"<div class='col-md-8'>";
-	result = result +"<select class='chosen-select form-control' type='text' name='associateId' id='signatoryAssociate' field-name='Associate' data-validation='required'>";
+	result = result +"<select class='chosen-select form-control' type='text' name='associateId' id='signatoryAssociate' field-name='Associate' onchange='validateAssociate();' data-validation='required'>";
 	result = result +"</select>";
 	result = result +"<input type='hidden' name='uuid' id='signatoryUUID' value=''>";
 	result = result +"<input type='hidden' name='signatoryFromType' id='signatoryFromType' value='orgSettings'>";
@@ -301,6 +301,42 @@ function getAssociatesForSignatory(){
      }); 
 }
 
+function validateAssociate()
+{
+	
+	 var userId = document.getElementById("signatoryAssociate").value; 
+	 var id = document.getElementById("signatoryUUID").value; 
+	
+	 
+	 var sourceleadUrl ='${sourceleadUrl}';
+		
+		 if(userId != null &&  userId != "" &&  userId != 'undefined'){
+			 $("#save_signatory_button").attr("disabled", "disabled");
+			 
+			 $.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/validateAssociate?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&id="+id,
+			        success: function(data) {
+			        
+			        	if(data == true){
+			        		  $('#associateDiv').find('p.jquery_form_error_message').remove();
+							  $("#signatoryAssociate_chosen").after("<p class='jquery_form_error_message'>User with this name is already Existed</span>");
+							 // document.getElementById("signatoryAssociate").setAttribute('record-exist','yes');
+							 // document.getElementById("signatoryAssociate").setAttribute('record-exist-errorMsg','User with this name is Already Existed'); 
+			        	}
+			        	else{
+			        		 $('#signatoryAssociate_chosen').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#associateDiv').find('p.jquery_form_error_message').remove(); 
+			        		 $("#save_signatory_button" ).addClass('us-btn').val('Save');
+	                         $("#save_signatory_button").removeAttr("disabled");
+			        	}
+			        },
+			    });
+		 }
+	
+	
+ }
+
 </script>
 
 
@@ -332,11 +368,26 @@ function saveSignatory(){
          }; 
       var sourceleadUrl ='${sourceleadUrl}';
   	  var formData = $($('#signatory_form')[0]).serialize();
-  	$.post(sourceleadUrl+"/saveOrgLocationSignatory?"+tokenParamName+"="+tokenValue, formData, function(data) {
-		if(data == "success"){
-			getAllSignatory();
+  	$.post(sourceleadUrl+"/saveOrgLocationSignatory?"+tokenParamName+"="+tokenValue, formData, function(result) {
+  		if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+  		    showError(result.responseMessage);
+  		    $("#loading").removeAttr('style');
+  		}
+    	else if(result.response === "AWKWARD"){
+    		 location.href = "/errorPage";
+    	}
+    	else if(result.response === "SUCCESS"){
+    		$("#loading").removeAttr('style');
+    		getAllSignatory();
 			signatoryFormDiv();
 		}
+    	else if (result.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+			    showError("Operation failed, please try again");
+			    $("#loading").removeAttr('style');
+			}
+  		
 	}); 
     	  //saveOrgLocationSignatory(formData);
     

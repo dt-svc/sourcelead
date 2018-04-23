@@ -277,7 +277,7 @@ function getUnsubscribeList(){
 						<label class="col-md-4">New Password<span class="text-danger paddingLeft">*</span></label>
 						
 						<div class="col-md-6 posiRela positionRelative">
-						  <input type="password" name="password" id="password" field-name="New Password" class="form-control" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d.*)(?=.*\W.*)[a-zA-Z0-9\S]{8,}$" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" data-validation="required validate_length length6-100"  onkeyup="passwordValidation_pf('password','np_letter','np_capital','np_number','np_special','np_length');" />
+						  <input type="password" name="password" id="password" field-name="New Password" class="form-control" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d.*)(?=.*\W.*)[a-zA-Z0-9\S]{8,}$" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" data-validation="required validate_length length8-100"  onkeyup="passwordValidation_pf('password','np_letter','np_capital','np_number','np_special','np_length');" />
 	             	    <div id="np_message" class="passHintNew">
 				  			<p  id="np_letter" class="invalid">At least one lowercase letter</p>
 				  			<p  id="np_capital" class="invalid">At least one uppercase letter</p>
@@ -749,8 +749,29 @@ var validationSettings = {
                 	      type: "POST",
                       	  url: sourceleadUrl+"/passwordSettings?${_csrf.parameterName}=${_csrf.token}",
                       	  data: formData,
-                        	success: function(result) {
-    			        	 if(result == 'success'){
+                        	success: function(data) {
+    			        	 
+                        		if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
+             		        		showError(data.responseMessage);
+                  	    		    $("#loading").removeAttr('style');
+                  	    		}
+                            		else if (data.response === "AWKWARD") {
+                            			location.href = "/errorPage";
+                  	    		}
+                            		else if(data.response === "SUCCESS"){
+                            			$("#loading").removeAttr('style');
+                            			location.replace(sourceleadUrl+"/dashboard"); 
+            			        	    }
+                            		else if (data.indexOf('Sign In') !== -1) {
+                            			location.replace(sourceleadUrl);
+                  				} else {
+                  					showError("Operation failed, please try again");
+                  				    $("#loading").removeAttr('style');
+                  				}
+                        		
+                        		
+                        		
+                        /* 		if(result == 'success'){
     			        		location.replace(sourceleadUrl+"/dashboard");  
     			        	}else if(result == 'Invalid Password'){
     			        		 $('#passwordDiv').find('span.jquery_form_error_message').remove();
@@ -760,7 +781,7 @@ var validationSettings = {
                  				 document.getElementById("currentPassword").setAttribute('pass-exist-errorMsg', ' Invalid Password'); 
                  				 $("input#currentPassword").removeAttr("style");
                  				 $("#loading").removeAttr("style");
-    			        	} 
+    			        	}  */
     			        },  
                     });
                 
@@ -797,10 +818,25 @@ var validationSettings = {
                 	      type: "POST",
                 	      data: formData,
                       	  url: sourceleadUrl+"/saveUserProfile?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId,
-                        	success: function(result) {
-    			        	 if(result != null){
-    			        		location.replace(sourceleadUrl+"/userProfile");  
-    			        	}
+                        	success: function(data) {
+                        		if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
+             		        		showError(data.responseMessage);
+                  	    		    $("#loading").removeAttr('style');
+                  	    		}
+                            		else if (data.response === "AWKWARD") {
+                            			location.href = "/errorPage";
+                  	    		}
+                            		else if(data.response === "SUCCESS"){
+                            			$("#loading").removeAttr('style');
+                            			location.replace(sourceleadUrl+"/userProfile");  
+            			        	    }
+                            		else if (data.indexOf('Sign In') !== -1) {
+                            			location.replace(sourceleadUrl);
+                  				} else {
+                  					showError("Operation failed, please try again");
+                  				    $("#loading").removeAttr('style');
+                  				}
+                        	
     			        },  
                     });
                 

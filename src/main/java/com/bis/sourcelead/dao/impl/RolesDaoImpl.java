@@ -20,6 +20,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -272,7 +273,7 @@ public class RolesDaoImpl implements RolesDao{
 			subQuery = "and roles.roleName != 'ROLE_SOURCELEAD_ADMIN' and roles.roleName != 'ROLE_CROWDSOURCING_PROFESSIONAL' and roles.roleName != 'ROLE_CROWDSOURCING_RECRUITER' ";
 		}
         
-	    String query = "from Roles roles where roles.orgLocations.id = :orgLocationId and roles.status = '1'  "+subQuery+" ";
+	    String query = "from Roles roles left join fetch roles.roleHierarchy where roles.orgLocations.id = :orgLocationId and roles.status = '1'  "+subQuery+" ";
 	    List<Roles> rolesList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 		
 		return rolesList;
@@ -382,6 +383,15 @@ public class RolesDaoImpl implements RolesDao{
 			return null;
 		}
    	}
+
+	@Override
+	@Transactional
+	public List<Roles> getAllRolesListByOrgLocationIdList(List<Long> orgLocationIdsList) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Roles roles where roles.orgLocations.id IN (:orgLocationIdsList) ";
+		List<Roles> rolesList = session.createQuery(query.toString()).setParameterList("orgLocationIdsList", orgLocationIdsList).list();
+		return rolesList;
+	}
 
 
 }

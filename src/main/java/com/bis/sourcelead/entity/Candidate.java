@@ -45,13 +45,14 @@ public class Candidate implements Serializable{
 	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false )        
+    @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false ) 
     private MasterCandidate masterCandidateId;
 	
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="PARENT_CANDIDATE_ID")        
+    @JoinColumn(name="PARENT_CANDIDATE_ID")
+	@JsonBackReference
     private Candidate parentCandidateId;
 	
 
@@ -222,15 +223,19 @@ public class Candidate implements Serializable{
     private OrgSpoc spocId; 
 	
 	@Transient
+	@JsonProperty
 	private String skills;
 	
 	@Transient
+	@JsonProperty
 	private String totalExp;
 	
 	@Transient
+	@JsonProperty
 	private String rate;
 	
 	@Transient
+	@JsonProperty
 	private String userRole;
 	
 	@Transient
@@ -238,9 +243,11 @@ public class Candidate implements Serializable{
 	private String candidateName;
 	
 	@Transient
+	@JsonProperty
 	private String candidateLocation;
 	
 	@Transient
+	@JsonProperty
 	private String systemGeneratedId;
 	
 	@Column(name = "SKILLS_NAME", columnDefinition = "TEXT default NULL")
@@ -280,15 +287,19 @@ public class Candidate implements Serializable{
 	
 	
 	@Transient
+	@JsonProperty
 	private String candidateEdu;
 	
 	@Transient
+	@JsonProperty
 	private String skillsList;
 	
 	@Transient
+	@JsonProperty
 	private Long candidateId;
 	
 	@Transient
+	@JsonProperty
 	private String candidateUpdateDateToString;
 	
 	 @Transient
@@ -300,51 +311,67 @@ public class Candidate implements Serializable{
 	 private String isCandidateSubmitted;
 	    
 	 @Transient
+	 @JsonProperty
 	 private int noOfReq;
 	 
 	 @Transient
+	 @JsonProperty
 	 private String candidateResume;
 	 
 	 @Transient
+	 @JsonProperty
 	 private boolean isCandidateAdedd;
 	 
 	 @Transient
+	 @JsonProperty
 	 private String reqSubmissionId;
 	 
 	 @Transient
+	 @JsonProperty
 	 private float skillPercentage;
 	 
 	 @Transient
+	 @JsonProperty
 	 private float expPercentage;
 	 
 	 @Transient
+	 @JsonProperty
 	 private float locationPercentage;
 	 
 	 @Transient
+	 @JsonProperty
 	 private float ratePercentage;
 	 
 	 @Transient
+	 @JsonProperty
 	 private float noticePeriodPercentage;
 	 
 	 @Transient
+	 @JsonProperty
 	 private float totalKeyWordPerPercentage;
 	 
 	 @Transient
+	 @JsonProperty
 	 private Long currentResumeId;
 	 
 	 @Transient
+	 @JsonProperty
 	 private String linkedIn;
 		
 	 @Transient
+	 @JsonProperty
 	 private String facebook;
 		
 	 @Transient
+	 @JsonProperty
 	 private String twitter;
 		
 	 @Transient
+	 @JsonProperty
 	 private String googlePlus;
 	 
 	 @Transient
+	 @JsonProperty
 	 private String postedDateStr;
 	 
 	 @Transient
@@ -356,58 +383,76 @@ public class Candidate implements Serializable{
 	 private String vendorContactName;
 	 
 	 @Transient
+	 @JsonProperty
 	 private Integer assignedProjectsCount;
 	 
 	@Transient
+	@JsonProperty
 	private String vendorOrgRelationId;
 	
 	@Transient
+	@JsonProperty
 	private String employeList;
 	
 	@Transient
+	@JsonProperty
 	private String vendorSpocId;
 	 
 	 @Transient
+	 @JsonProperty
 	 private List<RequirementSubmission> requirementSubmisstions;
 	 
 	 @Transient
+	 @JsonProperty
 	 private LinkedHashSet<String> allAndCandidateSkills;
 	 
 	 @Transient
+	 @JsonProperty
 	 private LinkedHashSet<String> allAndCandidateEducation;
 	 
 	 @Transient
+	 @JsonProperty
 	 private Integer candidateRequiementCount;
 	 
 	 @Transient
+	 @JsonProperty
 	 private  List<String> candidateSkillsList;
 	 
 	 @Transient
+	 @JsonProperty
 	 private String employer;
 	 
 	 @Transient
+	 @JsonProperty
 	 private String sowContractName;
 	 
 	 @Transient
+	 @JsonProperty
 	 private LinkedHashSet<String> allAndCandidateVisa;
 	 
 	 @Transient
+	 @JsonProperty
 	 private String candidateResumeName;
 	 
 	 @Transient
+	 @JsonProperty
 	 private String candidateResumeFileType;
 	 
 	 @Transient
+	 @JsonProperty
 	 private List<Contracts> contractsList;
 	 
 
 	 @Transient
+	 @JsonProperty
 	 private String reportingManager;
 	 
 	 @Transient
+	 @JsonProperty
 	 private String resumeUUID;
 	 
 	 @Transient
+	 @JsonProperty
 	 private String isResumeExists;
 	 
 
@@ -423,9 +468,11 @@ public class Candidate implements Serializable{
 	 private String candLocation;
 	 
 	 @Transient
+	 @JsonProperty
 	 private Long relationId;
 	 
 	 @Transient
+	 @JsonProperty
 	 private Long venSpocId;
 	 
 	 @Transient

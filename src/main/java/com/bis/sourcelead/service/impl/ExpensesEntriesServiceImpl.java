@@ -81,26 +81,26 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 			}
 			
 		    HashSet<ExpensesEntries> expensesEntriesList = new HashSet<ExpensesEntries>(); 
-		    for(ExpensesEntriesDTO category:addExpensesDTO.getExpenseEntry()){
-			    if(StringUtils.isNotEmpty(category.getCategoryType())){
+		    for(ExpensesEntriesDTO entryCategory:addExpensesDTO.getExpenseEntry()){
+			    if(StringUtils.isNotEmpty(entryCategory.getCategoryType())){
 						ExpensesEntries  entries  = new ExpensesEntries();
-						if(category.getId() != null){
-							entries.setId(category.getId());
+						if(entryCategory.getId() != null){
+							entries.setId(entryCategory.getId());
 						}
 						ExpensesCategory ec = new ExpensesCategory();
-						if(category.getCategoryTypeId() > 0){
-							ec.setId(category.getCategoryTypeId());
+						if(entryCategory.getCategoryTypeId() > 0){
+							ec.setId(entryCategory.getCategoryTypeId());
 						}
 						else{
-							ec.setId(Long.parseLong(category.getCategoryType().split(",")[0]));
+							ec.setId(Long.parseLong(entryCategory.getCategoryType().split(",")[0]));
 						}
 						entries.setExpensesCategoryId(ec);
 						
-						if(StringUtils.isNotBlank(category.getDateOccurred())){
+						if(StringUtils.isNotBlank(entryCategory.getDateOccurred())){
 							/*Timezone timezone = null;
 							timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 							DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");*/
-							Date date = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),category.getDateOccurred());
+							Date date = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),entryCategory.getDateOccurred());
 							/*String currentTimeStr = Constants.TZ_DF.format(date);  
 							String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
 							Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);*/
@@ -109,31 +109,31 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 							entries.setExpenseDate(date);
 						}
 						
-						if(StringUtils.isNotBlank(category.getReceiptIssuedBy())){
-							entries.setReceiptIssuedBy(category.getReceiptIssuedBy());
+						if(StringUtils.isNotBlank(entryCategory.getReceiptIssuedBy())){
+							entries.setReceiptIssuedBy(entryCategory.getReceiptIssuedBy());
 						}
-						if(StringUtils.isNotBlank(category.getCategoryAmount()) && StringUtils.isNotBlank(category.getCategoryAmountType())){
+						if(StringUtils.isNotBlank(entryCategory.getCategoryAmount()) && StringUtils.isNotBlank(entryCategory.getCategoryAmountType())){
 							Countries country = countriesService.getCountriesByCountryName(orgLocation.getCountry());
-							if(!country.getCurrency().equalsIgnoreCase(category.getCategoryAmountType())){
-							 Float amount = conversionUtil.convert(category.getCategoryAmountType(),country.getCurrency(),Float.valueOf(category.getCategoryAmount()));
+							if(!country.getCurrency().equalsIgnoreCase(entryCategory.getCategoryAmountType())){
+							 Float amount = conversionUtil.convert(entryCategory.getCategoryAmountType(),country.getCurrency(),Float.valueOf(entryCategory.getCategoryAmount()));
 							 entries.setCurrencyType(country.getCurrency());
 							 entries.setAmount(amount);
 							}else{
-								entries.setCurrencyType((category.getCategoryAmountType()));
-								entries.setAmount(Float.valueOf(category.getCategoryAmount()));
+								entries.setCurrencyType((entryCategory.getCategoryAmountType()));
+								entries.setAmount(Float.valueOf(entryCategory.getCategoryAmount()));
 							}
 						}
-					if(StringUtils.isNotBlank(category.getEntryDescription())){
-						entries.setDescription(category.getEntryDescription());
+					if(StringUtils.isNotBlank(entryCategory.getEntryDescription())){
+						entries.setDescription(entryCategory.getEntryDescription());
 					}
 					
 					
-					if (StringUtils.isNotBlank(category.getPaidBy())){
-						entries.setPaidBy(category.getPaidBy());
+					if (StringUtils.isNotBlank(entryCategory.getPaidBy())){
+						entries.setPaidBy(entryCategory.getPaidBy());
 					 }
 					
-					if(StringUtils.isNotBlank(category.getPaymentMode())){
-						entries.setPaymentMode(PaymentModes.getNameByValue(category.getPaymentMode()));
+					if(StringUtils.isNotBlank(entryCategory.getPaymentMode())){
+						entries.setPaymentMode(PaymentModes.getNameByValue(entryCategory.getPaymentMode()));
 					}
 					
 					//category.setStaticPath(staticPath);
@@ -147,9 +147,9 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 					
 				    //save  mutliple attachments.
 					 HashSet<ExpensesEntryDocuments> eeDocList = new HashSet<>();
- 	                   if(category.getFileInfo() != null && !category.getFileInfo().isEmpty()) {
-				    		for ( FileInfo fileinfo:category.getFileInfo()) {
-				    			if(StringUtils.isEmpty(fileinfo.getFileDbId()))	{
+ 	                   if(entryCategory.getFileInfo() != null && !entryCategory.getFileInfo().isEmpty()) {
+				    		for ( FileInfo fileinfo:entryCategory.getFileInfo()) {
+				    			if(StringUtils.isEmpty(fileinfo.getFileDbId()) || (fileinfo.getFileDbId().contains("null")))	{
 				    		      ExpensesEntryDocuments eedoc = new ExpensesEntryDocuments();
 				    		  	  FileUploadUtil.moveFile(staticPath, fileinfo, "expsesDocuments");
 					    		  eedoc.setExpensesEntriesId(entries);	

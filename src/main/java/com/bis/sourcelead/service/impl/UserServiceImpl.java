@@ -41,6 +41,8 @@ import com.bis.sourcelead.dto.AddUserProfileDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.UserIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -975,9 +977,9 @@ public class UserServiceImpl implements UserService {
 			 globalVarsMap.put("vendorOrgName",orgLocation.getOrgLocationName());
 			 StringBuilder clientLoginUser = new StringBuilder();
 			 if(null != loginUser.getLastName()){
-				 globalVarsMap.put("loginUsername",clientLoginUser.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+				 globalVarsMap.put("loginUsername",clientLoginUser.append(ownerUser.getFirstName()).append(" ").append(ownerUser.getLastName()).toString());
 			 }else{
-				 globalVarsMap.put("loginUsername",loginUser.getLastName());
+				 globalVarsMap.put("loginUsername",ownerUser.getLastName());
 			 }
 			 StringBuilder urlBuilder = new StringBuilder();
 			 globalVarsMap.put("acceptURL",urlBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
@@ -1038,9 +1040,9 @@ public class UserServiceImpl implements UserService {
 			 
 			 StringBuilder vendorLoginUser = new StringBuilder();
 			 if(null != loginUser.getLastName()){
-				 globalVarsMap.put("loginUsername",vendorLoginUser.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+				 globalVarsMap.put("loginUsername",vendorLoginUser.append(ownerUser.getFirstName()).append(" ").append(ownerUser.getLastName()).toString());
 			 }else{
-				 globalVarsMap.put("loginUsername",loginUser.getLastName());
+				 globalVarsMap.put("loginUsername",ownerUser.getLastName());
 			 }
 			 StringBuilder actionUrlBuilder = new StringBuilder();
 			 globalVarsMap.put("acceptURL",actionUrlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("ws/acceptClientOrVendorInvitation?respondingOrgType=ATS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("&spocUUID=").append(spocUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
@@ -1426,7 +1428,7 @@ public class UserServiceImpl implements UserService {
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String actionLink="";
-		 emailScenerioUtil.sendNotification(actionLink, user, user, orgLocations, notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, user, user, orgLocations, notificationScenario,new HashMap<String,String>());
 		}
 	
 	
@@ -1468,6 +1470,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User getUserByUserCodeAndOrgLocationsId(String userCode, Long orgLocationsId) throws Exception {
 		return userDao.getUserByUserCodeAndOrgLocationsId(userCode, orgLocationsId);
+	}
+
+	@Override
+	public ResponseList<UserDTO> getUsersDTOListByOrglocationId(Long orgLocationId,UserDTO userDTO) throws Exception {
+		return userDao.getUsersDTOListByOrglocationId(orgLocationId,userDTO);
 	}
 	
 }

@@ -478,7 +478,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             emailMessage.setFromEmail(loginUser.getEmail());
             emailMessage.setCreatedBy(loginUser.getUserCode());
             StringBuilder nameBuilder=new StringBuilder();
-            emailMessage.setFromName(nameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+            emailMessage.setFromName(nameBuilder.append(loginUser.getFullName()).toString());
             emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
             // setting the class filed values
             Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -500,8 +500,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
                     globalVarsMap.put("requirementName", "--");
             }
             
-            if (loginUser.getFirstName() != null && !"".equalsIgnoreCase(loginUser.getUserName())) {
-                    globalVarsMap.put("loginUser", loginUser.getFirstName());
+            if (loginUser != null && !"".equalsIgnoreCase(loginUser.getFullName())) {
+                    globalVarsMap.put("loginUser", loginUser.getFullName());
             } else {
                     globalVarsMap.put("loginUser", "--");
             }
@@ -546,7 +546,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
                 StringBuilder actionLinkBuilder = new StringBuilder();
                 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=OFFERMADE&requirementUUID="+clientrequirement.getRequirementUUID()).toString();	 
                OrgLocations vendorLocation = clientrequirement.getOrgLocationId();
-				emailScenerioUtil.sendNotification(actionLink, loginUser, clientrequirement.getSpocId().getVendorUser(), vendorLocation, notificationScenario);
+				emailScenerioUtil.sendNotification(actionLink, loginUser, clientrequirement.getSpocId().getVendorUser(), vendorLocation, notificationScenario,new HashMap<String,String>());
         		}catch (MessagingException e) {
         			logger.error(ExceptionUtils.getFullStackTrace(new RuntimeException(e)));
         		} catch (UnsupportedEncodingException e) {
@@ -565,15 +565,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             emailMessage.setToEmail(requirementSubmissionTemplateFields.getEmailId());
             emailMessage.setFromEmail(loginUser.getEmail());
             emailMessage.setCreatedBy(loginUser.getUserCode());
-            StringBuilder attachmentBuilder=new StringBuilder();
-            if(loginUser.getLastName()!=null  && loginUser.getLastName()!= "" && loginUser.getLastName()!="undefined")
-            {
-            emailMessage.setFromName(attachmentBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-	         }
-	       else
-	        {
-	    	   emailMessage.setFromName(loginUser.getFirstName());
-	        }
+	    	emailMessage.setFromName(loginUser.getFullName());
             
             emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
             //SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
@@ -624,8 +616,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             
     
             
-            if (loginUser.getFirstName() != null && !"".equalsIgnoreCase(loginUser.getFirstName())) {
-                    globalVarsMap.put("loginUser", loginUser.getFirstName());
+            if (loginUser != null && !"".equalsIgnoreCase(loginUser.getFullName())) {
+                    globalVarsMap.put("loginUser", loginUser.getFullName());
             } else {
                     globalVarsMap.put("loginUser", "--");
             }
@@ -694,7 +686,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     		StringBuilder actionLinkBuilder = new StringBuilder();                          
 			String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=OFFERMADE&requirementUUID="+applicant.getRequirement().getRequirementUUID()).toString();	 
             User applicantuser = applicant.getOrgLocations().getOrg().getUser();
-			emailScenerioUtil.sendNotification(actionLink, loginUser, applicantuser, orgLocations, notificationScenario);
+			emailScenerioUtil.sendNotification(actionLink, loginUser, applicantuser, orgLocations, notificationScenario,new HashMap<String,String>());
             
             
     }
@@ -1271,7 +1263,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 StringBuilder actionLinkBuilder = new StringBuilder();                          
 		 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirementOffers.getSubmissionId().getRequirement().getRequirementUUID()).toString();	 
-		 emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario,new HashMap<String,String>());
 		   }
 		  }
 		 }
@@ -1347,7 +1339,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 StringBuilder actionLinkBuilder = new StringBuilder();
 		 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getRequirementUUID()).toString();	 
-		 emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario,new HashMap<String,String>());
 		
 		// TODO Auto-generated method stub
 			 }
@@ -1706,7 +1698,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
        
        StringBuilder actionLinkBuilder = new StringBuilder();
        String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirementOffers.getSubmissionId().getRequirement().getRequirementUUID()).toString();	 
-       emailScenerioUtil.sendNotification(actionLink, touser, touser , orgloc, notificationScenario);
+       emailScenerioUtil.sendNotification(actionLink, touser, touser , orgloc, notificationScenario,new HashMap<String,String>());
 		
 	}
 	
@@ -1792,7 +1784,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
        
        StringBuilder actionLinkBuilder = new StringBuilder();
        String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=APPLICANTS&requirementUUID="+requirementOffers.getSubmissionId().getRequirement().getRequirementUUID()+"&candidateUUID="+requirementOffers.getSubmissionId().getCandidate().getCandidateUUID()+"&submissionId="+requirementOffers.getSubmissionId().getId()).toString();	 
-       emailScenerioUtil.sendNotification(actionLink, touser, touser , orgloc, notificationScenario);
+       emailScenerioUtil.sendNotification(actionLink, touser, touser , orgloc, notificationScenario,new HashMap<String,String>());
 		
 	}
 

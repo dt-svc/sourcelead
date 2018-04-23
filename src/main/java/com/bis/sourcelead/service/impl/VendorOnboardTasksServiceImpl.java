@@ -48,7 +48,7 @@ public class VendorOnboardTasksServiceImpl implements VendorOnboardTasksService{
 	}
 
 	@Override
-	public void saveVendorOnboardTemplateTask(OnboardTasksDTO onboardTasksDTO, User user)
+	public VendorOnboardTasks saveVendorOnboardTemplateTask(OnboardTasksDTO onboardTasksDTO, User user)
 			throws Exception {
 		
 		VendorOnboardTasks onboardTasks = new VendorOnboardTasks();
@@ -122,7 +122,8 @@ public class VendorOnboardTasksServiceImpl implements VendorOnboardTasksService{
 		 onboardTasks.setUpdatedDate(CommonUtil.currentDate());
 		 onboardTasks.setUpdatedBy(user);
 		 
-		 vendorOnboardTasksDao.saveVendorOnboardTasks(onboardTasks);
+		 VendorOnboardTasks tasks= vendorOnboardTasksDao.saveVendorOnboardTasks(onboardTasks);
+		 return tasks;
 	}
 
 	@Override
