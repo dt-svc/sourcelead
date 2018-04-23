@@ -750,21 +750,30 @@ function refreshClientList(){
 		 $.ajax({
 	      type : "POST",
 	       url: sourceleadUrl+"/refreshRequirementClientList",       
-	       success: function(json) {
-	        	var output = "";
-	        	output = output + "<option value=''>Select Client</option>"; 
-	        	for (var i=0; i<json.length; i++)
-				{
-		        		var opt = json[i];
-		        		if(opt.id == selectedOrgId){
-		        			output = output + "<option value='"+opt.id+","+opt.orgid+"' selected>"+opt.orgName+"</option>";
-		        		}else{
-		        			output = output + "<option value='"+opt.id+","+opt.orgid+"'>"+opt.orgName+"</option>";
-		        		}
-				}
-	        	$("#vendorName").empty();
-		        $("#vendorName").append(output);
-		        $('#vendorName').trigger("chosen:updated");
+	       success: function(result) {
+	    	   	  if (result.response === "SESSION_TIMEDOUT") {
+	  				 location.replace(sourceleadUrl);
+	              } else if (result.response === "AWKWARD") {
+	                  location.href = "/errorPage";
+	              } else if (result.response === "SUCCESS") {
+	           	    if(result.data != null && result.data != "" && result.data != 'undefined'){
+	           	    	var json = result.data;
+				        	var output = "";
+				        	output = output + "<option value=''>Select Client</option>"; 
+				        	for (var i=0; i<json.length; i++)
+							{
+				        		var opt = json[i];
+				        		output = output + "<option value='"+opt.id+","+opt.locationID+"' >"+opt.orgName+"</option>";
+							}
+	           	    }
+	           	 	$("#vendorName").empty();
+			        $("#vendorName").append(output);
+			        $('#vendorName').trigger("chosen:updated");
+	              } else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+				  } else {
+	                  showError("Operation failed, please try again");
+	              }
 	        }
 		 });
 }
