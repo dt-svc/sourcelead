@@ -237,13 +237,14 @@ function Immigration() {
     // immigration view navigation if don't required comment below code start here.
     this.savePageAndContinue = function (status) {
         //$("#newPetitionTemplateDiv").empty();
+    	alert(removedResidenceIds);
         if (status == 'petitionDetails') {
             $("#newPetitionTemplateDiv").load("/app" + immiModulePath + "/loadNewPetitionPage?forward=petitionDetails");
         } else if (status == 'saveContinue') {
             if ($("#petitionDetailsForm").validate(false, validationSettings)) {
                 var formData = getFormData("petitionDetailsForm");
                 $.ajax({
-                    url: sourceleadUrl + immiModulePath + "/savePetitionDetailsPage",
+                    url: sourceleadUrl + immiModulePath + "/savePetitionDetailsPage?removedResidenceIds="+removedResidenceIds,
                     type: "POST",
                     data: formData,
                     success: function (data) {

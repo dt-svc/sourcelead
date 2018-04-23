@@ -191,6 +191,8 @@ public class ImmigrationDTO extends SearchDTO {
     
     private String immigrationId;
     
+    private String[] removedResidenceIds;
+    
 	public Long getId() {
 		return id;
 	}
@@ -842,6 +844,13 @@ public class ImmigrationDTO extends SearchDTO {
 	public void setImmigrationId(String immigrationId) {
 		this.immigrationId = immigrationId;
 	}
-	
+
+	public String[] getRemovedResidenceIds() {
+		return removedResidenceIds;
+	}
+
+	public void setRemovedResidenceIds(String[] removedResidenceIds) {
+		this.removedResidenceIds = removedResidenceIds;
+	}
 	
 }

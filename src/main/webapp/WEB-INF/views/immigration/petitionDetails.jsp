@@ -571,7 +571,7 @@
 	   prepareResidencediv =prepareResidencediv+ "<div id ='dynamicResidenceDiv"+rowId+"'>";
 	   prepareResidencediv =prepareResidencediv+ "   <div class='clearfix'></div>";
 	   prepareResidencediv =prepareResidencediv+ "     	<div class='col-md-12 mb margin-top0'>";
-	   prepareResidencediv =prepareResidencediv+ "   <h4 class='pull-left'>Residence</h4> <button type='button' class='btn btn-default pull-right' onclick='removeDynamicResidenceDiv("+rowId,(typeof residenceVal[0]==="undefined"?"":residenceVal[0])+")'><i class='fa fa-remove text-danger paddingRight'></i>Remove Residence</button>";
+	   prepareResidencediv =prepareResidencediv+ "   <h4 class='pull-left'>Residence</h4> <button type='button' class='btn btn-default pull-right' onclick='removeDynamicResidenceDiv("+rowId+","+(typeof residenceVal[0]==="undefined"?"":residenceVal[0])+")'><i class='fa fa-remove text-danger paddingRight'></i>Remove Residence</button>";
 	   prepareResidencediv =prepareResidencediv+ "   </div><input type='hidden' name='residenceList["+rowId+"].id' value='"+(typeof residenceVal[0]==="undefined"?"":residenceVal[0])+"'>";
 	   prepareResidencediv =prepareResidencediv+ "   <div class='clearfix'></div>";
 	   prepareResidencediv =prepareResidencediv+ " <div class='form-group'>";
@@ -655,7 +655,8 @@
    }
    //var deletedResicenceListIds = new Array();
    var removedResidenceIds = [];
-   function removeDynamicResidenceDiv(id){
+   function removeDynamicResidenceDiv(id,residenceId){
+	   removedResidenceIds.push(residenceId);
 	   /* if($("#templateId"+id).val() !==  undefined ){
 		   deletedResicenceListIds.push($("#templateId"+id).val());   
 	   } */

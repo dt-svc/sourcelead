@@ -100,7 +100,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	}
 	
 	@Override
-	public Immigration savePetitionDetails(ImmigrationDTO immigrationDTO, User user,OrgLocations orgLocations){
+	public Immigration savePetitionDetails(ImmigrationDTO immigrationDTO, User user,OrgLocations orgLocations, String[] ids){
 		Immigration immigrationObj = null;
 		try {
 			
@@ -123,6 +123,11 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		
 		List<CandidateLcaI94Summary> lcaSummaryLst  = new ArrayList<CandidateLcaI94Summary>();
 		lcaSummaryLst = savePetitionLcaSummaryList(immigrationDTO, candidate, user, requirement, orgLocations);
+		if(ids.length != 0) {
+			for(String id: ids) {
+				immigrationCommonDao.deleteCandidateResidenceDetails(Long.parseLong(id), Long.parseLong("0"));
+			}
+		}
 		
 		List<CandidateResidence> residenceList = new ArrayList<CandidateResidence>(); // add residences to immigration candidate tables
 		residenceList = savePetitionResidenceList(immigrationDTO,candidate, user, orgLocations);
@@ -282,8 +287,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 		lcaSummaryCurr.setCreatedDate(currentDate);
 		lcaSummaryCurr.setUpdatedDate(currentDate);
-		lcaSummaryCurr.setJobStartDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationDTO.getJobStartDate()));
-		lcaSummaryCurr.setJobEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationDTO.getJobEndDate()));
+		if(immigrationDTO.getJobStartDate() != null && StringUtils.isNotEmpty(immigrationDTO.getJobStartDate())) {
+			lcaSummaryCurr.setJobStartDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationDTO.getJobStartDate()));
+		}
+		if(immigrationDTO.getJobEndDate() != null && StringUtils.isNotEmpty(immigrationDTO.getJobEndDate())) {
+			lcaSummaryCurr.setJobEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationDTO.getJobEndDate()));
+		}
 		lcaSummaryLst.add(lcaSummaryCurr); // add current lca
 		
 		CandidateLcaI94Summary lcaSummaryPrev  = null;

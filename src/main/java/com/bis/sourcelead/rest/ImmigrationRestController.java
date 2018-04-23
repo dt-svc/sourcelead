@@ -894,13 +894,13 @@ public class ImmigrationRestController {
     }
 
     @RequestMapping(value = {"/savePetitionDetailsPage"}, method = RequestMethod.POST)
-    public String  savePetitionDetailsPage(ImmigrationDTO immigrationDTO, HttpServletRequest request) {
+    public String  savePetitionDetailsPage(ImmigrationDTO immigrationDTO,@RequestParam(value = "removedResidenceIds", required = false) String[] ids, HttpServletRequest request) {
         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
         immigrationDTO.setStaticPath(staticPath);
 		Immigration immigration = null;
         try {
-        	immigration = immigrationCommonService.savePetitionDetails(immigrationDTO, user, orgLocations);
+        	immigration = immigrationCommonService.savePetitionDetails(immigrationDTO, user, orgLocations,ids);
         } catch (Exception e) {
             logger.error("Exception caugth in savePetitionDetailsPage controller" + e.getMessage());
             e.printStackTrace();
