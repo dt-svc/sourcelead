@@ -24,6 +24,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.bis.sourcelead.constants.Constants;
@@ -34,6 +35,7 @@ import com.bis.sourcelead.dto.OrgStorageDetailDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -261,6 +263,59 @@ public class FileUploadUtil {
 				} catch(Exception ex) {
 					ex.printStackTrace();
 				}
+			}
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		} finally {
+			if(zos != null)
+				try {
+					zos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			if(fos != null)
+				try {
+					fos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		}	
+		return file == null ? "" : file.getAbsolutePath();
+	}
+	
+	
+	public static String getImmigrationZipFiles(String staticPath, long orgId, long orgLocationId,long immigrationId, List <ImmigrationCandidateDocumentsHistory> docsList) {
+		File file = null;
+		FileOutputStream fos = null;
+		ZipOutputStream zos = null;
+	    try {
+			file = File.createTempFile("temp/"+"immigrationCandidateDocuments", ""+ immigrationId + ".zip");
+			fos = new FileOutputStream(file);
+			zos = new ZipOutputStream(fos);
+			
+			File folder = new File(staticPath, orgId+"/"+orgLocationId+"/immigrationCandidateDocuments"+"-"+immigrationId);
+			if(!folder.exists() || folder.list().length == 0) {
+				return "No ";
+			}
+			File files[] = folder.listFiles();
+			for (File f : files) {
+			for(ImmigrationCandidateDocumentsHistory docObj: docsList){
+				String fullFileName = FilenameUtils.getName(docObj.getUplodedFileUrl());
+				if(f.getName().equalsIgnoreCase(fullFileName)){
+				try(FileInputStream fis = new FileInputStream(f);) {
+					byte[] buffer = new byte[128];
+					ZipEntry entry = new ZipEntry(f.getName());
+				    zos.putNextEntry(entry);
+				    int read = 0;
+			          while ((read = fis.read(buffer)) != -1) {
+			            zos.write(buffer, 0, read);
+			          }
+				    zos.closeEntry();
+				} catch(Exception ex) {
+					ex.printStackTrace();
+				}
+			 }
+			}
 			}
 		} catch (Exception e1) {
 			e1.printStackTrace();
