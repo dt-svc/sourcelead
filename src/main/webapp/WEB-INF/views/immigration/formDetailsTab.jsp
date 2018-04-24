@@ -1,6 +1,9 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <div class="immigraTabsHead">			  	
-		  	<a href="javascript:void(0)" id="addForm"><i class="glyphicon glyphicon-plus"></i> Add Form</a> 
+		  	<a href="javascript:void(0)" id="addForm"><i class="glyphicon glyphicon-plus"></i> Add Form</a>
+		  	<ul>
+		  	<li id='formZipfile'>Download All Documents</li> 
+		  	</ul> 
 		  	<span><input class="immigraTabSerach" id="immigraFormTabSerach" placeholder="Form Name/Status" type="text"></span>
 		</div>
 		
@@ -246,4 +249,21 @@ function removeImmigFormDoc1(){
 	$("#uploadFormDiv").show();
 	$('#uploadFormFile').attr("data-validation", "required");
 }
+
+
+$("#formZipfile").click(function() {
+	if(immigrationId == 0)
+		return;
+	$.post("downloadImmigrationFormZip",{immigrationId: immigrationId}, function(data) {//  passing empty value for docId to do immigration level zip download
+		if(data !== "" && data.indexOf("Documents Found") === -1){
+			location.href = '/app/downloadFile.html?file='+encodeURI(data); // encodeURI used for encoding file path in request parameter.
+		}
+		else if(data !== "" && data.indexOf("immigrationId Found") !== -1){
+			alert(data);
+		}
+		else{
+			alert("Unable to locate logs for this upload");
+		}
+	});
+});
 </script>

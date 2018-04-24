@@ -102,4 +102,6 @@ public interface ImmigrationCommonDao {
 
 	String deleteImmigrationDetailsById(Long immigrationId);
 
+	List<ImmigrationCandidateForms> getImmigrationCandidateFormsByImmigrationId(Long immigrationId);
+
 }
