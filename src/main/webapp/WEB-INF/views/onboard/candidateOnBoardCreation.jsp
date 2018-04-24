@@ -894,6 +894,7 @@ function validateUploadFile(id)
 			    	    location.href = "/errorPage";
 			    	} else if (response.response === "SUCCESS") {
 			    		var json = response.object;
+			    		alert("1")
 			    		$("#firstName").val(json['firstName']);
 				    	 $("#lastName").val(json['lastName']);
 				    	 
@@ -909,7 +910,7 @@ function validateUploadFile(id)
 				    	 $("#country").val(json['country']);
 				    	 $("#state").val(json['state']);
 				    	 $("#city").val(json['city']);
-				    	 $("#zipCode").val(json['zipCode']);
+				    	 $("#zipCode").val(json['zipcode']);
 				    	 
 				    	 validateOnboardCandidate(json['email']);
 			    	} else if (response.indexOf('Sign In') !== -1) {
