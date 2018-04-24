@@ -96,5 +96,7 @@ public interface ImmigrationCommonService {
 
 	List<ImmigrationCandidateDocumentsHistory> getImmigrationCandidateDocumentHistoryListByImmigrationId(Long immigrationId, Long docId) throws Exception;
 
+	String deleteImmigrationDetailsById(Long immigrationId);
+
 	
 }

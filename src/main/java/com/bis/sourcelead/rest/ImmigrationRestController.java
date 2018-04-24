@@ -1469,6 +1469,16 @@ public class ImmigrationRestController {
 		List <ImmigrationCandidateDocumentsHistory> immigrationCanididateDocHistoryList =immigrationCommonService.getImmigrationCandidateDocumentHistoryListByImmigrationId(immigrationId,docId);
 		return FileUploadUtil.getImmigrationZipFiles(staticPath, orgId, orgLocationId,immigrationId, docId, immigrationCanididateDocHistoryList);
 	}
+	
+	
+	@RequestMapping(value = { "/deleteImmigrationDetailsById" })
+	public String deleteImmigrationDetailsById(
+			@RequestParam(value = "immigrationId", required = false) Long immigrationId,
+			HttpServletRequest request) throws Exception {
+		String result = immigrationCommonService.deleteImmigrationDetailsById(immigrationId);
+		return result;
+		
+	}
 
 }
 

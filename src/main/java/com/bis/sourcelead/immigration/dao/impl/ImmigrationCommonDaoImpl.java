@@ -835,5 +835,20 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return immigrationCandidateDocumentHistoryList;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public String deleteImmigrationDetailsById(Long immigrationId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			Immigration immigration = session.get(Immigration.class,immigrationId);
+			session.delete(immigration);
+			session.flush();
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing delete -->"+e.getMessage());
+			e.printStackTrace();
+		}
+		return "success";
+	}
+
 }
 	

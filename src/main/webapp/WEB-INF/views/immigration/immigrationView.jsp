@@ -20,8 +20,36 @@
       <input type="hidden" id = "candidateID" value = "${candidateId}">
 		<input type="hidden" id = "immigrationID" value = "${immigrationId}">
 		<input type="hidden" id = "templateID" value = "${templateId}">
-		
-		<div class="clearfix"></div>
+      
+    </section>
+    
+	<section class="immigraTabsWrap">
+	
+  	<div class="immHeadWrap">
+  		<div class="immHead clearfix">
+  			<div class="col-md-4">
+  				<h2>Mahesh Vannam</h2>
+  				<h3>mahesh.vannam@domain.com</h3>
+  			</div>
+  			<div class="col-md-4">
+				<p><strong>Visa Type</strong>: H1B</p>
+				<p><strong>Attorney</strong>: Srinivas</p>
+  			</div>
+  			<div class="col-md-4 immHeadactions clearfix">
+  				<a href="javascript:void(0)">
+  					<i class="fa fa-caret-down"></i>
+  					<ul>
+  						<li>Status 1</li>
+  						<li>Status 2</li>
+  						<li>Status 3</li>
+  						<li>Status 4</li>
+  						<li>Status 5</li>
+  					</ul>
+  				</a>  			
+  				<span>New</span>
+  			</div>
+  		</div>
+	
 		<div class="immigraHead">
 			<ul class="immigraTabs">
               <li class="current"><a href="#detailsTab">Details</a></li>
@@ -37,11 +65,12 @@
               <li><a href="#activitiesTab">Activities</a></li>
               <div class="clearfix"></div>
             </ul>
+		</div>	
+		
 		</div>
-      
-    </section>
-    
-	<section class="immigraTabsWrap">
+		
+	
+	
   
 	  <div id="detailsTab" class="immigraTabs_inn">
 		 	<jsp:include page="petitionDetailsTab.jsp" />	  		  		  
@@ -214,6 +243,14 @@ $(document).ready(function() {
 	   $("#"+id).val(""); 
    }
    </script>
+   
+<script>
+$(document).ready(function(){
+	$(".immHeadactions i").click(function(){
+		$(".immHeadactions ul").slideToggle(0);
+	});
+});	
+</script>
    
     <!-- Script for Linked Invoice pop -->
 <jsp:include page="../masterFooter.jsp" />

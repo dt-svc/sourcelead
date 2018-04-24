@@ -84,6 +84,15 @@
           </div>		
 	</div>
 	</div>
+	
+	
+		<div class="immFoot clearfix">
+			<div class="pull-right text-right">
+             	<input type="button" value="Skip" class="btn btn-default btn-sm">             
+              <input type="button" value="Save and Continue" class="btn btn-primary btn-sm ml10">
+            </div>
+		</div>	
+	
 	<!--popcode end  -->
 		</form>
 		

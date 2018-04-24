@@ -2,6 +2,9 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
@@ -110,8 +114,49 @@ public class Immigration implements Serializable {
 	@JoinColumn(name = "UPDATED_BY")
 	private User updatedBy;
 	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="immigrationId",orphanRemoval=true)
+	private List<ImmigrationCandidateDocuments> candidateDocuments;
 	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="immigrationId",orphanRemoval=true)
+	private List<ImmigrationCandidateDocumentsHistory> candidateDocumentsHistories;
 	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="immigration",orphanRemoval=true)
+	private List<ImmigrationCandidateForms> candidateForms;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="immigration",orphanRemoval=true)
+	private List<SourceleadNotes> notes;
+	
+	public List<ImmigrationCandidateDocuments> getCandidateDocuments() {
+		return candidateDocuments;
+	}
+
+	public void setCandidateDocuments(List<ImmigrationCandidateDocuments> candidateDocuments) {
+		this.candidateDocuments = candidateDocuments;
+	}
+	
+	public List<ImmigrationCandidateDocumentsHistory> getCandidateDocumentsHistories() {
+		return candidateDocumentsHistories;
+	}
+
+	public void setCandidateDocumentsHistories(List<ImmigrationCandidateDocumentsHistory> candidateDocumentsHistories) {
+		this.candidateDocumentsHistories = candidateDocumentsHistories;
+	}
+
+	public List<ImmigrationCandidateForms> getCandidateForms() {
+		return candidateForms;
+	}
+
+	public void setCandidateForms(List<ImmigrationCandidateForms> candidateForms) {
+		this.candidateForms = candidateForms;
+	}
+
+	public List<SourceleadNotes> getNotes() {
+		return notes;
+	}
+
+	public void setNotes(List<SourceleadNotes> notes) {
+		this.notes = notes;
+	}
 
 	public Long getId() {
 		return id;

@@ -656,6 +656,18 @@ this.deletePassportVisaDetailsById=function(id,idType){
 		});
 	}
 	
+	this.deleteImmigrationDetailsByRowId = function(immigrationId){
+		$.ajax({
+	        url: sourceleadUrl + immiModulePath + "/deleteImmigrationDetailsById?immigrationId="+immigrationId,
+	        type: "GET",
+	        success: function (result) {
+	        	$("#remove_immigration_pop").fadeOut(200);
+	    		$(".project_inn_mask").fadeOut(200);
+	    		window.location.href = sourceleadUrl + immiModulePath + "/viewImmigrationList";
+	        }
+		});
+	}
+	
 }
 
 function deleteEDucationDetailsById(id){

@@ -1135,4 +1135,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		return immigrationCanididateDocHistoryList;
 	}
 
+	@Override
+	public String deleteImmigrationDetailsById(Long immigrationId) {
+		return immigrationCommonDao.deleteImmigrationDetailsById(immigrationId);
+	}
+
 }

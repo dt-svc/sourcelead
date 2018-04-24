@@ -295,7 +295,7 @@
     </ul>
   </div>
 </div>
-
+<div id="popUp"></div>
     
 <!-- Footer Area --> 
 
@@ -643,7 +643,7 @@
                  /*"data": "formsCount",*/
                  "render": function (data, type, opt, meta) {
                      var result = "";
-                     result = result + '<td><div><a href=/app/immigration/editImmigrationDetails?immigrationId='+opt.id+'><i id="edit' + opt.id + '" class="glyphicon glyphicon-pencil"></i></a><i id="delete' + opt.id + '" onclick="immigration.deleteTempalteDetailsByRowId(' + opt.id + ');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
+                     result = result + '<td><div><a href=/app/immigration/editImmigrationDetails?immigrationId='+opt.id+'><i id="edit' + opt.id + '" class="glyphicon glyphicon-pencil"></i></a><i id="delete' + opt.id + '" onclick="deleteImmigrationListId(' + opt.id + ');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
                      return result;
                  }
              }
@@ -674,6 +674,21 @@
     // $("table").colResizable(); // for resizing columns in tables.
  }
  
+ function deleteImmigrationListId(immigrationId){ // only stauts updated with reason. active 1 , deactive 0.
+		$(".project_inn_mask").remove();
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='remove_immigration_pop' class='remove_user_pop remove_user_pop_a'>";
+		/* result = result +"		<  id='reasonForTemplate' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>"; */
+		result = result +" <b>Do you want to remove record permanently?</b>";
+		result = result + ' <div id="reasonForTemplateDiv"/>';
+		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='immigration.deleteImmigrationDetailsByRowId("+immigrationId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelImmigrationDelete();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#remove_immigration_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+ 
  function changeSaveUscisStatus(idVal,templateId){
 	 var uscisId = idVal.val();
 	 $.ajax({
@@ -690,6 +705,11 @@
 </script>
 
 <script type="text/javascript">
+
+	function cancelImmigrationDelete(){
+		$("#remove_immigration_pop").fadeOut(200);
+		$(".project_inn_mask").fadeOut(200);
+	}
 	function columPop(){
 		$(".colPop").show();
 	}
