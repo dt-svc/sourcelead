@@ -1140,4 +1140,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		return immigrationCommonDao.deleteImmigrationDetailsById(immigrationId);
 	}
 
+	@Override
+	public List<ImmigrationCandidateForms> getImmigrationCandidateFormsByImmigrationId(Long immigrationId) {
+		return immigrationCommonDao.getImmigrationCandidateFormsByImmigrationId(immigrationId);
+	}
+
 }

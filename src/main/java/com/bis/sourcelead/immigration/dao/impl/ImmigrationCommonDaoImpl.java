@@ -850,5 +850,14 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return "success";
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ImmigrationCandidateForms> getImmigrationCandidateFormsByImmigrationId(Long immigrationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ImmigrationCandidateForms icf where icf.immigration.id = :immigrationId ORDER BY icf.id DESC";
+		List<ImmigrationCandidateForms> candidateForms = session.createQuery(query).setLong("immigrationId", immigrationId).list();
+		return candidateForms;
+	}
+
 }
 	

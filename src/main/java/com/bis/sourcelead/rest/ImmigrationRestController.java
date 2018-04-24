@@ -1479,6 +1479,23 @@ public class ImmigrationRestController {
 		return result;
 		
 	}
+	
+	@RequestMapping("/downloadImmigrationFormZip")	
+	@ResponseBody
+	public String exportImmigrationForms(HttpServletRequest request,Long immigrationId) throws Exception {
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		long orgId = 0, orgLocationId = 0;
+		if (org != null) {
+			orgId = org.getId();
+		}
+		if (loginOrgLocation != null) {
+			orgLocationId = loginOrgLocation.getId();
+		}
+		List <ImmigrationCandidateForms> immigrationCandidateForms =immigrationCommonService.getImmigrationCandidateFormsByImmigrationId(immigrationId);
+		return FileUploadUtil.getImmigrationFormZipFiles(staticPath, orgId, orgLocationId,immigrationId, immigrationCandidateForms);
+	}
 
 }
 

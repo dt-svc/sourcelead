@@ -36,6 +36,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
+import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -306,6 +307,58 @@ public class FileUploadUtil {
 			for (File f : files) {
 			for(ImmigrationCandidateDocumentsHistory docObj: docsList){
 				String fullFileName = FilenameUtils.getName(docObj.getUplodedFileUrl());
+				if(f.getName().equalsIgnoreCase(fullFileName)){
+				try(FileInputStream fis = new FileInputStream(f);) {
+					byte[] buffer = new byte[128];
+					ZipEntry entry = new ZipEntry(f.getName());
+				    zos.putNextEntry(entry);
+				    int read = 0;
+			          while ((read = fis.read(buffer)) != -1) {
+			            zos.write(buffer, 0, read);
+			          }
+				    zos.closeEntry();
+				} catch(Exception ex) {
+					ex.printStackTrace();
+				}
+			 }
+			}
+			}
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		} finally {
+			if(zos != null)
+				try {
+					zos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			if(fos != null)
+				try {
+					fos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		}	
+		return file == null ? "" : file.getAbsolutePath();
+	}
+	
+	
+	public static String getImmigrationFormZipFiles(String staticPath, Long orgId, Long orgLocationId,Long immigrationId, List <ImmigrationCandidateForms> formsList) {
+		File file = null;
+		FileOutputStream fos = null;
+		ZipOutputStream zos = null;
+	    try {
+	    	file = new File(com.google.common.io.Files.createTempDir(),"ImmigrationCandidateForms_ImmigrationID_"+ immigrationId+".zip");
+	    	fos = new FileOutputStream(file);
+			zos = new ZipOutputStream(fos);
+			File folder = new File(staticPath, orgId+"/"+orgLocationId+"/immigrationCandidateForms");
+			if(!folder.exists() || folder.list().length == 0) {
+				return "No Documents Found";
+			}
+			File files[] = folder.listFiles();
+			for (File f : files) {
+			for(ImmigrationCandidateForms docObj: formsList){
+				String fullFileName = FilenameUtils.getName(docObj.getUploadedFileUrl());
 				if(f.getName().equalsIgnoreCase(fullFileName)){
 				try(FileInputStream fis = new FileInputStream(f);) {
 					byte[] buffer = new byte[128];
