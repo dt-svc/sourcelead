@@ -42,12 +42,13 @@ public class BlogController {
 
 	@RequestMapping("/all")
 	public ModelAndView allBlogs(HttpServletRequest request) throws Exception {
-		ModelAndView modelAndView = new ModelAndView();
+		ModelAndView modal = new ModelAndView();
 
 		List<SourceleadBlogs> allBlogs = sourceleadBlogService.getAllSourceleadBlogs();
-		modelAndView.addObject("allBlogs", allBlogs);
-		modelAndView.setViewName("/resources/all-blogs");
-		return modelAndView;
+		modal.addObject("allBlogs", allBlogs);
+		modal.addObject("sourceleadUrl",sourceleadUrl);
+		modal.setViewName("/resources/all-blogs");
+		return modal;
 	}
 
 	@RequestMapping(value = "/{blogTitle}.html")
