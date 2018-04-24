@@ -71,74 +71,56 @@
 		<ul>
 			<li>
 				<span class="checkbox-new clearfix">
-					<input id="a" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
-					<label for="a" class="checkbox-custom-label toggle-vis " data-column="0">Status</label>
+					<input id="a" class="checkbox-custom toggle-vis" name="paidComponent" data-column="0" type="checkbox" checked="">
+					<label for="a" class="checkbox-custom-label" >Status</label>
 				</span>
 			</li>
 			<li>
 				<span class="checkbox-new clearfix">
-					<input id="b" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
-					<label for="b" class="checkbox-custom-label toggle-vis" data-column="1">ID</label>
+					<input id="c" class="checkbox-custom toggle-vis" name="paidComponent" data-column="2" type="checkbox" checked="">
+					<label for="c" class="checkbox-custom-label" >Country</label>
 				</span>
 			</li>
 			<li>
 				<span class="checkbox-new clearfix">
-					<input id="c" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
-					<label for="c" class="checkbox-custom-label toggle-vis" data-column="2">Country</label>
+					<input id="d" class="checkbox-custom toggle-vis" name="paidComponent" data-column="3" type="checkbox" checked="">
+					<label for="d" class="checkbox-custom-label" >Type</label>
 				</span>
 			</li>
 			<li>
 				<span class="checkbox-new clearfix">
-					<input id="d" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
-					<label for="d" class="checkbox-custom-label toggle-vis" data-column="3">Type</label>
+					<input id="f" class="checkbox-custom toggle-vis" name="paidComponent" data-column="5" type="checkbox" checked="">
+					<label for="f" class="checkbox-custom-label" >Email</label>
 				</span>
 			</li>
 			<li>
 				<span class="checkbox-new clearfix">
-					<input id="e" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
-					<label for="e" class="checkbox-custom-label toggle-vis" data-column="4">Name</label>
+					<input id="g" class="checkbox-custom toggle-vis" name="paidComponent" data-column="6" type="checkbox" checked="">
+					<label for="g" class="checkbox-custom-label" >Phone</label>
 				</span>
 			</li>
 			<li>
 				<span class="checkbox-new clearfix">
-					<input id="f" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
-					<label for="f" class="checkbox-custom-label toggle-vis" data-column="5">Email</label>
+					<input id="h" class="checkbox-custom toggle-vis" name="paidComponent" data-column="7" type="checkbox" checked="">
+					<label for="h" class="checkbox-custom-label" >On Date</label>
 				</span>
 			</li>
 			<li>
 				<span class="checkbox-new clearfix">
-					<input id="g" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
-					<label for="g" class="checkbox-custom-label toggle-vis" data-column="6">Phone</label>
+					<input id="j" class="checkbox-custom toggle-vis" name="paidComponent" data-column="9"  type="checkbox" checked="">
+					<label for="j" class="checkbox-custom-label" >LCA Start Date</label>
 				</span>
 			</li>
 			<li>
 				<span class="checkbox-new clearfix">
-					<input id="h" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
-					<label for="h" class="checkbox-custom-label toggle-vis" data-column="7">On Date</label>
-				</span>
-			</li>
-			<li>
-				<span class="checkbox-new clearfix">
-					<input id="i" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
-					<label for="i" class="checkbox-custom-label toggle-vis" data-column="8">Attorney</label>
-				</span>
-			</li>
-			<li>
-				<span class="checkbox-new clearfix">
-					<input id="j" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
-					<label for="j" class="checkbox-custom-label toggle-vis" data-column="9">LCA Start Date</label>
-				</span>
-			</li>
-			<li>
-				<span class="checkbox-new clearfix">
-					<input id="k" class="checkbox-custom" name="paidComponent" type="checkbox" checked="">
-					<label for="k" class="checkbox-custom-label toggle-vis" data-column="10">LCA End Date</label>
+					<input id="k" class="checkbox-custom toggle-vis" name="paidComponent" type="checkbox"  data-column="10" checked="">
+					<label for="k" class="checkbox-custom-label" >LCA End Date</label>
 				</span>
 			</li>
 		</ul>
 	</div>
 	<div class="colPopFot">
-		<a href="javascript:void(0)">Apply</a>
+		<a href="javascript:void(0)" onclick="columHide();">Apply</a>
 		<a href="javascript:void(0)" onclick="columClose();">Cancel</a>
 	</div>
 </div>				
@@ -399,7 +381,7 @@
  
  
  
- 
+ var hideColumns = [];
  var table = "";
  $(document).ready(function () {
      getDynamicImmigrationList();
@@ -668,6 +650,9 @@
      $("#immiListSerach").keyup(function (e) {
          if (e.which === 13) {
         	 getDynamicImmigrationList();
+        	 for (var i=0; i<hideColumns.length; i++) {
+        		 table.column(hideColumns[i]).visible(false); // hide the columns after filters also.
+        		}
          }
      });
 
@@ -712,9 +697,26 @@
 	}
 	function columPop(){
 		$(".colPop").show();
-	}
+	}s
 	function columClose(){
 		$(".colPop").hide();
+	}
+	
+		
+	function columHide(){
+		hideColumns=[]; // reset the array object.
+		$(".toggle-vis").each(function() {
+		   var chkdVal= $(this).prop('checked');
+		   var column = table.column($(this).attr('data-column'));
+			  if(chkdVal == true){
+			         column.visible(true);
+			    }
+			    else{
+			      column.visible(false);
+			      hideColumns.push($(this).attr('data-column'));
+			  }
+	    });
+	   
 	}
 </script>
 
