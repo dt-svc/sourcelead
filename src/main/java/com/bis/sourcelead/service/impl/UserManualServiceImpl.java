@@ -426,7 +426,7 @@ public class UserManualServiceImpl implements UserManualService{
 			userManualsDTO.setTitle(userManualLevelThree.getTitle());
 		}
 		if(userManualLevelThree.getDescription()!=null ){
-			userManualsDTO.setDescription(userManualLevelThree.getDescription().replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", " "));
+			userManualsDTO.setDescription(userManualLevelThree.getDescription());
 		}
 		if(userManualLevelThree.getCreatedBy()!=null ){
 			userManualsDTO.setCreatedBy(userManualLevelThree.getCreatedBy().getFullName());
