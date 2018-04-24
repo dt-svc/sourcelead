@@ -68,6 +68,20 @@
 				<a href="javascript:void(0)" onclick="filterPop();" title="Filters" class="btn btn-sm btn-default"><i class="fa fa-filter"></i></a>
 <div class="colPop">
 	<div class="colPopMid">
+	<div class="clearfix">
+		<div class="row">
+				<div class="col-md-10 mb10 mt5 col-md-offset-2">
+				<span class="checkbox-new  pull-left mr">
+					<input id="columnsPickerUnCheckAll" class="radio-custom toggle-vis" name="columnsPicker" onclick="checkAllColumns(this);"  type="radio">
+					<label for="columnsPickerUnCheckAll" class="radio-custom-label">Uncheck All</label>
+				</span>
+				<span class="checkbox-new pull-left">
+					<input id="columnsPickerCheckAll" class="radio-custom toggle-vis" name="columnsPicker" onclick="checkAllColumns(this);"  type="radio" checked="">
+					<label for="columnsPickerCheckAll" class="radio-custom-label" >Check All</label>
+				</span>
+			</div>
+		</div>
+	<div class="clearfix"></div>
 		<ul>
 			<li>
 				<span class="checkbox-new clearfix">
@@ -713,10 +727,19 @@
 			    }
 			    else{
 			      column.visible(false);
-			      hideColumns.push($(this).attr('data-column'));
+			      hideColumns.push($(this).attr('data-column')); // used for hiding the columns when user searched the data.
 			  }
 	    });
 	   
+	}
+	function checkAllColumns(obj){
+		var id = obj.id;
+		if(id =='columnsPickerCheckAll'){
+			$('.toggle-vis:input:checkbox').prop('checked',true);
+		}
+		else if(id =='columnsPickerUnCheckAll'){
+			$('.toggle-vis:input:checkbox').prop('checked',false);
+		}
 	}
 </script>
 
