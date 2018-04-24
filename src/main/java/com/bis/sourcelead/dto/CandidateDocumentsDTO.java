@@ -3,7 +3,8 @@
 package com.bis.sourcelead.dto;
 
 import java.util.List;
-import java.util.Map;
+
+import com.bis.sourcelead.annotations.CleanHtml;
 
 public class CandidateDocumentsDTO {
 
@@ -19,6 +20,7 @@ public class CandidateDocumentsDTO {
 	
 	private String documentOtherType;
 	
+	@CleanHtml(escape=false)
 	private String description;
 	
 	private String isConfidential;
