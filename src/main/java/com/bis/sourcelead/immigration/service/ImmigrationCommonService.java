@@ -98,5 +98,7 @@ public interface ImmigrationCommonService {
 
 	String deleteImmigrationDetailsById(Long immigrationId);
 
+	List<ImmigrationCandidateForms> getImmigrationCandidateFormsByImmigrationId(Long immigrationId);
+
 	
 }
