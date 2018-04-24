@@ -34,7 +34,7 @@ public class ImmigrationCandidateDocuments implements Serializable {
 	@JoinColumn(name = "IMMIGRATION_TEMPLATE_ID")
 	private ImmigrationTemplate immigrationTemplateId;
 	
-	@ManyToOne(cascade=CascadeType.REMOVE) 
+	@ManyToOne() 
 	@JoinColumn(name = "IMMIGRATION_ID")
 	private Immigration immigrationId;
 	
