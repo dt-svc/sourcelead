@@ -105,7 +105,12 @@
                  <div class="form-group" id="EmailIdDiv">
                   <label class="col-md-3">Email Id<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="EmailId" name="email" value="" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email"  onblur="getUserByUserEmail(); validateUserEmail();" onKeyUp="validateUserEmail();" >
+	                  <div class="input-group errorInptgroup">
+	                    <input type="text" class="form-control" id="EmailId" name="email" value="" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email"  onblur="getUserByUserEmail(); validateUserEmail();" onKeyUp="validateUserEmail();" >
+	                    <span id="emailStatusIconDiv" class="input-group-addon">
+	                    	<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>
+	                  	</span>
+	                  </div>
                   </div>
                   </div>
                   
@@ -670,8 +675,18 @@ function getEmployeementType(designationType){
 		        		}
 		        		
 		        		$("#loading").removeAttr('style');
-		        		if(validateEmailForExistenceUniversally(EmailId) === false){
+		        		var mailResponse = validateEmailForExistenceUniversally(EmailId);
+		        		if(mailResponse === true){
+		        			$("#emailStatusIconDiv").find("i").remove();
+		        			$("#emailStatusIconDiv").append('<i class="fa fa-check text-succes"></i>');
+		        		}else if(mailResponse === false){
+		        			$("#emailStatusIconDiv").find("i").remove();
+		        			$("#emailStatusIconDiv").append('<i class="fa fa-exclamation-triangle text-warning"></i>');
 		        			$("input#EmailId").after("<p class='jquery_form_error_message textWarning'><i class='fa fa-exclamation-triangle' aria-hidden='true'></i>This email universally not existed</span>");
+		        		}else if(mailResponse === "fakeDomain"){
+		        			$("#emailStatusIconDiv").find("i").remove();
+		        			$("#emailStatusIconDiv").append('<i class="fa fa-ban text-danger"></i>');
+		        			$("input#EmailId").after("<p class='jquery_form_error_message textWarning'><i class='fa fa-ban' aria-hidden='true'></i>This domain universally not existed</span>");
 		        		}
 		        },
 		    });
@@ -696,7 +711,8 @@ function getEmployeementType(designationType){
 		 $("#employeementType").val('');
 	     $('#employeementType').trigger("chosen:updated");
 	     
-		 
+	     $("#emailStatusIconDiv").find("i").remove();
+		 $("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>');
 	 }
  }
  </script>   
