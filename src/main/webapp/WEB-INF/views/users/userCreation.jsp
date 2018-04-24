@@ -673,21 +673,10 @@ function getEmployeementType(designationType){
 		        			 $("#phone").removeAttr("readonly", "readonly");
 		        			 //$("#phone").val('');
 		        		}
-		        		
 		        		$("#loading").removeAttr('style');
-		        		var mailResponse = validateEmailForExistenceUniversally(EmailId);
-		        		if(mailResponse === true){
-		        			$("#emailStatusIconDiv").find("i").remove();
-		        			$("#emailStatusIconDiv").append('<i class="fa fa-check text-succes"></i>');
-		        		}else if(mailResponse === false){
-		        			$("#emailStatusIconDiv").find("i").remove();
-		        			$("#emailStatusIconDiv").append('<i class="fa fa-exclamation-triangle text-warning"></i>');
-		        			$("input#EmailId").after("<p class='jquery_form_error_message textWarning'><i class='fa fa-exclamation-triangle' aria-hidden='true'></i>This email universally not existed</span>");
-		        		}else if(mailResponse === "fakeDomain"){
-		        			$("#emailStatusIconDiv").find("i").remove();
-		        			$("#emailStatusIconDiv").append('<i class="fa fa-ban text-danger"></i>');
-		        			$("input#EmailId").after("<p class='jquery_form_error_message textWarning'><i class='fa fa-ban' aria-hidden='true'></i>This domain universally not existed</span>");
-		        		}
+		        		
+		        		validateEmailForExistenceUniversally(EmailId, "input#EmailId");
+		        		
 		        },
 		    });
 	 }else{
