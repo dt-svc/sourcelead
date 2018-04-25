@@ -459,11 +459,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	}
 
 	@Override
-	public ImmigrationDTO getImmigrationViewList(String immigrationId, OrgLocations orgLocations) {
+	public ImmigrationDTO getImmigrationDetails(String immigrationId, OrgLocations orgLocations) {
 		ImmigrationDTO dto = new ImmigrationDTO();
 		try {
-		Immigration immigration = immigrationCommonDao.getImmigrationViewList(immigrationId);
+		Immigration immigration = immigrationCommonDao.getImmigrationDetails(immigrationId);
 		dto.setPetitionType(immigration.getPetitionType().getName());
+		dto.setGeneratedId(immigration.getGeneratedId());
 		dto.setOpenDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),immigration.getOpenDate()));
 		dto.setCurrUscisStatus(immigrationCommonDao.getPetitionTypeById(immigration.getCurrUscisStauts().getId(), Constants.USCIS_STATUS));
 		if(immigration.getDateOfArrival() != null) {

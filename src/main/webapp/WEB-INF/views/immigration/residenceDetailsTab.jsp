@@ -142,6 +142,13 @@
        
 	<!-- popcode code End -->
 	</div>
+	<div class="immFoot clearfix">
+			<div class="pull-right text-right">
+				<input type="button" value="Back" onclick="goToSummaryTab('#employersTab');" class="btn btn-default btn-sm">
+             	<input type="button" value="Skip" onclick="goToSummaryTab('#educationsTab');" class="btn btn-default btn-sm"> 
+              	<input type="button" value="Continue" onclick="goToSummaryTab('#educationsTab');" class="btn btn-primary btn-sm ml10">
+            </div>
+		</div>
 		</form>
 		
 		    <script type="text/javascript">

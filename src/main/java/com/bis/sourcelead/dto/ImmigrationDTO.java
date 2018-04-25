@@ -15,6 +15,8 @@ public class ImmigrationDTO extends SearchDTO {
 
 	private Long id;
 
+	private String generatedId; 
+	
 	@Required(desc = "candidate id")
 	private String candidateId;
 
@@ -199,6 +201,14 @@ public class ImmigrationDTO extends SearchDTO {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getGeneratedId() {
+		return generatedId;
+	}
+
+	public void setGeneratedId(String generatedId) {
+		this.generatedId = generatedId;
 	}
 
 	public String getCandidateId() {
