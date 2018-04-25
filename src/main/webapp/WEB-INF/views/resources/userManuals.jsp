@@ -990,11 +990,11 @@ function cancelTermination(){
     				}
     			
     			var result = "";
-    			result = result	+ '<div class="project_tabs_inn_table">';
-    			result = result + '<div class="project_details">';
+    			result = result	+ '<div class="project_tabs_inn_table clearfix mt10 mb">';
+    			result = result + '<div class="clearfix">';
     			
     			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
-    			result = result + '<strong>User Manual Title:</strong>';
+    			result = result + '<strong>User Manual Title: </strong>';
     			result = result + '<span>'+title+'</span>';
     			result = result + '<div class="clearfix"></div>';
     			result = result + '</div>';
@@ -1009,8 +1009,8 @@ function cancelTermination(){
     			
     			result = result + '<div class="clearfix"></div>';
     			
-    			result = result	+ '<div class="" id="ProjectIdDiv">';
-    			result = result + '<strong>Video URL Name:</strong>';
+    			result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
+    			result = result + '<strong>Video URL Name: </strong>';
     			result = result + '<span>'+urlName+'</span>';
     			result = result + '<div class="clearfix"></div>';
     			result = result + '</div>';
@@ -1049,10 +1049,10 @@ function cancelTermination(){
     			
     			result = result + '<div class="clearfix"></div>';
     			
-    			result = result	+ '<div class="" id="ProjectIdDiv">';
+    			result = result	+ '<div class="blogWrap" id="ProjectIdDiv">';
     			result = result + '<strong>Description:</strong>';
-    			result = result + '<span>'+description+'</span>';
     			result = result + '<div class="clearfix"></div>';
+    			result = result + '<div class="blogpreviewContent">'+description+'</div>';
     			result = result + '</div>';
     			
     			result = result + '<div class="clearfix"></div>';

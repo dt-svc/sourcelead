@@ -535,21 +535,38 @@ function refreshGoogleApiCity(cityId){
 	$("#"+cityId).val('');
 }
 
-function validateEmailForExistenceUniversally(email) {
-var flag = false;
-$.ajax({
-    type: "GET",
-    url: sourceleadUrl + "/validateEmailForExistenceUniversally?email="+email,
-    async: false,
-    cache: false,
-    success: function (data) {
-    	if(data.object === "true"){
-    		flag =  true;
-    	}else{
-    		flag= false;
-    	}
-    }
-});
+function validateEmailForExistenceUniversally(email, divId) {
+	var flag = null;
+	$.ajax({
+	    type: "GET",
+	    url: sourceleadUrl + "/validateEmailForExistenceUniversally?email="+email,
+	    async: false,
+	    cache: false,
+	    success: function (data) {
+	    	if(data.object === "true"){
+	    		flag =  true;
+	    	}else if(data.object === "false"){
+	    		flag= false;
+	    	}else if(data.object === "invalidDomain"){
+	    		flag= "invalidDomain";
+	    	}else if(data.object === "noResponse"){
+	    		flag = "noResponse";
+	    	}
+	    }
+	});
+
+	if(flag === true){
+		$("#emailStatusIconDiv").find("i").remove();
+		$("#emailStatusIconDiv").append('<i class="fa fa-check text-succes"></i>');
+	}else if(flag === false){
+		$("#emailStatusIconDiv").find("i").remove();
+		$("#emailStatusIconDiv").append('<i class="fa fa-exclamation-triangle text-warning"></i>');
+		$(divId).after("<p class='jquery_form_error_message textWarning'><i class='fa fa-exclamation-triangle' aria-hidden='true'></i>This email universally not existed</span>");
+	}else if(flag === "invalidDomain"){
+		$("#emailStatusIconDiv").find("i").remove();
+		$("#emailStatusIconDiv").append('<i class="fa fa-ban text-danger"></i>');
+		$(divId).after("<p class='jquery_form_error_message textWarning'><i class='fa fa-ban' aria-hidden='true'></i>This domain universally not existed</span>");
+	}
 return flag;
 }
 

@@ -241,6 +241,7 @@ public class RequirementRestController {
 				}catch(Exception e) {
 					response.setResponse(Result.AWKWARD.name());
 					response.setResponseMessage(Result.AWKWARD.getValue());
+					e.printStackTrace();
 				}
 			}else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
