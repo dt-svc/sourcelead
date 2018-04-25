@@ -15,7 +15,7 @@
 		       <article>
 				<a onclick="blogTitles('${all.href}');" class="cursor"><span class="blImg"><img src="${all.imgFileUrl}" alt="" class="img-responsive"></span>
 				 
-				 <h2 class="blHeading" >${all.blogTitle}</h2>
+				 <h2 class="blHeading Cursor" >${all.blogTitle}</h2>
 					<div class="clearfix blogNewInn-content">
 						<p>${all.shortDescription}</p>
 					</div>
