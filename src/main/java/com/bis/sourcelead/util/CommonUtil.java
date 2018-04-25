@@ -2357,6 +2357,7 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 			 
 			//getting the current EmailScenario by EmailScenario unique name and entity type
 			 EmailScenario  emailScenario = null;
+			 if(orgLocations != null)
 			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(uniqueScenerioName,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
 			  if(emailScenario == null){
 					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(uniqueScenerioName,Constants.ENTITY_TYPE_EMAIL);
