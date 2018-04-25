@@ -705,7 +705,7 @@ public class OrgDaoImpl implements OrgDao {
             if (Objects.equals(pay.getOrg().getId(), orgId)) {
                 pay.setDefaultAccount(defaultAccount);
                 if(defaultAccount) {
-                	pay.setDisabled(true);
+                	pay.setDisabled(false);
                     String query = "from PaymentAccount p where p.org.id = :orgId";
                     query += " and p.orgLocation.id = :orgLocationId and p.id != :pid";
                     Query queryObj = session.createQuery(query);
