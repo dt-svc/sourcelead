@@ -14,7 +14,7 @@
    
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Immigrations</h2>
+        <h2>${immigration.generatedId}</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/viewImmigrationList">Immigrations List</a> &raquo; Immigration Summery</div>
       <input type="hidden" id = "candidateID" value = "${candidateId}">
@@ -28,12 +28,12 @@
   	<div class="immHeadWrap">
   		<div class="immHead clearfix">
   			<div class="col-md-4">
-  				<h2>Mahesh Vannam</h2>
-  				<h3>mahesh.vannam@domain.com</h3>
+  				<h2>${immigration.firstName}&nbsp;${immigration.lastName}</h2>
+  				<h3>${immigration.email}</h3>
   			</div>
   			<div class="col-md-4">
-				<p><strong>Visa Type</strong>: H1B</p>
-				<p><strong>Attorney</strong>: Srinivas</p>
+				<p><strong>Visa Type</strong>: ${immigration.petitionType}</p>
+				<p><strong>Attorney</strong>: ${immigration.attorneyName}</p>
   			</div>
   			<div class="col-md-4 immHeadactions clearfix">
   				<a href="javascript:void(0)">
@@ -46,7 +46,7 @@
   						<li>Status 5</li>
   					</ul>
   				</a>  			
-  				<span>New</span>
+  				<span>${immigration.currUscisStatus}</span>
   			</div>
   		</div>
 	

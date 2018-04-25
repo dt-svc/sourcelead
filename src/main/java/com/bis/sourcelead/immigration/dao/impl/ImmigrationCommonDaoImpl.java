@@ -146,8 +146,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Immigration getImmigrationViewList(String immigrationId) {
-		logger.debug("getImmigrationViewList starts");
+	public Immigration getImmigrationDetails(String immigrationId) {
+		logger.debug("getImmigrationDetails starts");
 		Session session = this.sessionFactory.getCurrentSession();
 		Immigration immigration =  (Immigration) session.get(Immigration.class, Long.parseLong(immigrationId));
 		return immigration;

@@ -12,12 +12,6 @@
 <script type="text/javascript" src="/resources/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script>
 <!-- <script type="text/javascript" src="/resources/js/colResizable-1.6.min.js"></script> -->
-<style type="text/css">
-    .active {
-        color: red !important;
-    }
-
-</style>
 <title>Insert title here</title>
     <section class="content-wraper content-wraperNew">
    

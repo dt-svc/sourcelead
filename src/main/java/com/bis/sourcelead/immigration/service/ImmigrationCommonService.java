@@ -32,7 +32,7 @@ public interface ImmigrationCommonService {
 
 	Immigration savePetitionDetails(ImmigrationDTO immigrationDTO, User user, OrgLocations orgLocations, String[] ids) throws Exception;
 
-	ImmigrationDTO getImmigrationViewList(String immigrationId, OrgLocations orgLocations);
+	ImmigrationDTO getImmigrationDetails(String immigrationId, OrgLocations orgLocations);
 	
 	String saveCandidateFamilyMemberDetails(CandidateFamilyDetailsDTO familyDetailsDTO, OrgLocations orgLocations, User user) throws Exception;
 

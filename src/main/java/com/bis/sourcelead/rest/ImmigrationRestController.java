@@ -89,7 +89,6 @@ public class ImmigrationRestController {
 
     @Value("${sourceleadLoginUrl}")
     private String sourceleadLoginUrl;
-
     @Autowired
     private UserService userService;
 
@@ -269,7 +268,7 @@ public class ImmigrationRestController {
                 "orgLocations");
         ImmigrationDTO immigrationDTO = null;
         if(immigrationId!=null && !StringUtils.isEmpty(immigrationId)) {
-        	immigrationDTO= immigrationCommonService.getImmigrationViewList(immigrationId,orgLocations);
+        	immigrationDTO= immigrationCommonService.getImmigrationDetails(immigrationId,orgLocations);
         }
         model.addObject("immigration", immigrationDTO);
         model.addObject("sourceleadUrl", sourceleadUrl);
@@ -323,7 +322,7 @@ public class ImmigrationRestController {
                 "orgLocations");
         ImmigrationDTO immigrationDTO = null;
         if(immigrationId!=null && !StringUtils.isEmpty(immigrationId)) {
-        	immigrationDTO= immigrationCommonService.getImmigrationViewList(immigrationId,orgLocations);
+        	immigrationDTO= immigrationCommonService.getImmigrationDetails(immigrationId,orgLocations);
         }
         model.addObject("immigration", immigrationDTO);
         model.addObject("sourceleadUrl", sourceleadUrl);
