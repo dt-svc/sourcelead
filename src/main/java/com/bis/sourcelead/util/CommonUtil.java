@@ -2341,9 +2341,6 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 	  
 	     return tempHTML;
   }
-  
-  
-  
-  
+
 		
 }

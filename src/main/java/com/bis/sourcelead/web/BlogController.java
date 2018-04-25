@@ -31,6 +31,9 @@ public class BlogController {
 
 	@Autowired
 	private UserRoleService userRoleService;
+	
+	@Autowired
+	private StaticWebController staticWebController;
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -42,7 +45,10 @@ public class BlogController {
 
 	@RequestMapping("/all")
 	public ModelAndView allBlogs(HttpServletRequest request) throws Exception {
+
 		ModelAndView modal = new ModelAndView();
+
+		modal = staticWebController.setMetaProperties("all-blogs");
 
 		List<SourceleadBlogs> allBlogs = sourceleadBlogService.getAllSourceleadBlogs();
 		modal.addObject("allBlogs", allBlogs);
@@ -55,6 +61,7 @@ public class BlogController {
 	public ModelAndView blogRedirect(@PathVariable String blogTitle, HttpServletRequest request) throws Exception {
 
 		ModelAndView modelAndView = new ModelAndView();
+		modelAndView = staticWebController.setMetaProperties("all-blogs");
 		SourceleadBlogs blogDetails = sourceleadBlogService.getSourceleadBlogsByBlogTitle(blogTitle);
 
 		if (blogDetails.getCategoryId() != null) {
@@ -91,6 +98,7 @@ public class BlogController {
 	public ModelAndView blogCategoryRedirect(@PathVariable String category, HttpServletRequest request)
 			throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
+		modelAndView = staticWebController.setMetaProperties("all-blogs");
 		List<SourceleadBlogs> blogsByCategory = sourceleadBlogService.getAllSourceleadBlogsByCategoryName(category);
 		modelAndView.addObject("allBlogs", blogsByCategory);
 		String sleadUrl = sourceleadUrl.replace("/app", "");
