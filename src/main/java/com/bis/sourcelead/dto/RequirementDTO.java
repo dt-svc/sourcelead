@@ -3,6 +3,7 @@ package com.bis.sourcelead.dto;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.annotations.Required;
 
 public class RequirementDTO extends CommonDTO {
@@ -91,6 +92,7 @@ public class RequirementDTO extends CommonDTO {
 	
 	private List<String> visa;
 
+	@CleanHtml(escape=false)
 	private String description;
 
 	private List<String> noticePeriod;

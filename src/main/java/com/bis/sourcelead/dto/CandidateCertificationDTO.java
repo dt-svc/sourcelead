@@ -2,6 +2,7 @@ package com.bis.sourcelead.dto;
 
 import java.util.Date;
 
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.annotations.Required;
 
 public class CandidateCertificationDTO extends CommonDTO {
@@ -20,6 +21,7 @@ public class CandidateCertificationDTO extends CommonDTO {
 
 	private String scoreType;
 
+	@CleanHtml(escape=false)
 	private String description;
 
 	private String validFrom;

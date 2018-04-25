@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.util.CommonUtil;
 import com.squareup.okhttp.OkHttpClient;
@@ -48,7 +49,7 @@ public class EmailValidatorCommentsRestController {
 		Response<String> response = new Response<>();
 		try {
 			OkHttpClient client = new OkHttpClient();
-			Request req = new Request.Builder().url("https://api.trumail.io/v1/json/" + email).get().build();
+			Request req = new Request.Builder().url(Constants.API_TRUMAIL_URL + email).get().build();
 			com.squareup.okhttp.Response res = client.newCall(req).execute();
 			JSONObject json = new JSONObject(res.body().string());
 			if (json.has("hostExists") && json.getBoolean("hostExists")) {
@@ -58,7 +59,7 @@ public class EmailValidatorCommentsRestController {
 					response.setObject("false");
 				}
 			}else {
-				response.setObject("fakeDomain");
+				response.setObject("invalidDomain");
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
