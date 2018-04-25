@@ -28,13 +28,15 @@
 				<td><div class="tbldata-dotdot-vsm">${canDocList.documentTypeName}</div></td>
 				<td><div class="tbldata-dotdot-vsm">${canDocList.isRequired == 'Y' ? "YES":"NO"}</div></td>
 				<c:if test="${!empty canDocList.upldedFileName}">
-				<td><div class="tbldata-dotdot-me"><span class="fileName">${canDocList.upldedFileName}</span>
-					<a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile('${canDocList.uplodedFileUrl}','${canDocList.upldedFileName}','${canDocList.upldedFileContentType}');" title="View"></a>
+				<td>
 					<c:choose>
 					<c:when test = "${fn:contains(canDocList.docsHistoryList, ',')}">
-					<a class="fa fa-file-archive-o" onclick ="downlaodZipfileByDocId(${canDocList.id})"; title="Download Zip File"></a></div>
+					<div class="tbldata-dotdot-me"><span class="fileName" title="More Records">${canDocList.upldedFileName}.....</span>
+					<a class="fa fa-file-archive-o text-warning" onclick ="downlaodZipfileByDocId(${canDocList.id});" title="Download Zip File"></a></div>
 					</c:when>
 					<c:otherwise>
+					<div class="tbldata-dotdot-me"><span class="fileName">${canDocList.upldedFileName}</span>
+					<a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile('${canDocList.uplodedFileUrl}','${canDocList.upldedFileName}','${canDocList.upldedFileContentType}');" title="View"></a>
 					<a class="glyphicon glyphicon-download-alt" download href="${canDocList.uplodedFileUrl}" title="Download"></a></div>
 					</c:otherwise>
 					</c:choose>
