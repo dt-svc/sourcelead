@@ -577,7 +577,7 @@ function getDocumentType(documentType){
 					dateFormat : 'yyyy/mm/dd' 
 		         }; 
 			 if ($('#documentType_form').validate(false, validationSettings)){
-				
+				 if(document.getElementById("uploadBtn") !== null){
 		        var frm = $('#documentType_form')[0];
 				var formData = new FormData(frm);
 				$("#save_doc").attr("disabled", "disabled");
@@ -642,9 +642,12 @@ function getDocumentType(documentType){
 					},
 				}); 
 			return true;
-		} else { 
+	       }else {
+				showError("Document file is missing");
+		    }
+	      } 
 			return false;
-		} 
+		
 	}
 	$('body').on('blur', '#documentType_form', function() {
 		$("#documentType_form").showHelpOnFocus();
