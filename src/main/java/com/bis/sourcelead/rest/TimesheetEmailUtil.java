@@ -182,8 +182,7 @@ public class TimesheetEmailUtil {
 					.append(Constants.PLACE_UUID).toString();
 		}
 
-		emailScenerioUtil.sendNotification(actionLink, loginUser,
-				projectMember.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,paramList);
+		emailScenerioUtil.sendNotification(actionLink, loginUser,projectMember.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,paramList);
 	}
 
 	
@@ -256,11 +255,6 @@ public class TimesheetEmailUtil {
 						loginUser.getFullName() + "," + (loginOrgLocation.getOrgLocationName()));
 				globalVarsMap.put("reason", rejectedReason);
 
-				// setting the Recipient information
-				InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-
-				// getting the current EmailScenario by EmailScenario unique name and entity
-				// type
 				EmailScenario emailScenario = null;
 				if (status.equals("REJECTED")) {
 					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(
@@ -269,7 +263,7 @@ public class TimesheetEmailUtil {
 					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(
 							Constants.TIMESHEET_APPROVED_EMAIL_TOVENDOR, Constants.ENTITY_TYPE_EMAIL);
 				}
-/*
+
 				// covert subject,body and signature
 				String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
 				String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
@@ -290,12 +284,7 @@ public class TimesheetEmailUtil {
 					}else{
 					 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.TIMESHEET_APPROVED_EMAIL_TOVENDOR);
 					}
-				 
-				 
-			/*	emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray,
-						new ArrayList<EmailAttachment>());*/
-
-				// calling the sendNotification method of emailScenerioUtil
+		
 				EmailScenario notificationScenario = null;
 				if (status.equals("REJECTED")) {
 					notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
@@ -340,8 +329,6 @@ public class TimesheetEmailUtil {
 			}
 		}
 	}
-	
-	
 	
 	/**
 	 * @param masterCanidateId
@@ -404,25 +391,8 @@ public class TimesheetEmailUtil {
 				// getting the current EmailScenario by EmailScenario unique name and entity
 				// type
 				EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(
-						Constants.MAIL_PROJECT_MANAGER_TIMESHEET, Constants.ENTITY_TYPE_EMAIL);
-
-				/*// covert subject,body and signature
-				String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-				String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-				String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-				String url = sourceleadUrl;
-
-				// construct HTML template using required data
-				String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject,
-						body, signature, url, loginOrgLocation.getOrg(), loginOrgLocation);
-				emailMessage.setSubject(subject);
-				emailMessage.setMessageBody(emailTemplate);
-
-				// calling the sendEmail method of emailScenerioUtil
-				 * 
-				 * 
-
-*/			
+				         Constants.MAIL_PROJECT_MANAGER_TIMESHEET, Constants.ENTITY_TYPE_EMAIL);
+			
 				commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAIL_PROJECT_MANAGER_TIMESHEET);
 				
 		
@@ -613,31 +583,12 @@ public class TimesheetEmailUtil {
 				 
 				 //getting the current EmailScenario by EmailScenario unique name and entity type
 				 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_EMAIL);
-				
-				/* //covert subject,body and signature
-				 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-				 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-				 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-				 String url = sourceleadUrl;;
-				 
-				 //construct HTML template using required data
-				 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-				 emailMessage.setSubject(subject);
-				 emailMessage.setMessageBody(emailTemplate);
-				 
-				 //calling the sendEmail method of emailScenerioUtil
-*/				
-				 
+			 
 				 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.MAIL_REOPEN_TIMESHEET);
 				 
-				 
-				 //emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-				 
-			
 				EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION);
 				String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,emailScenario);
 				notificationScenario.setBody(notificationBody);
-				
 				
 				StringBuilder actionLinkBuilder = new StringBuilder();
 				Date startDateFormat = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), weekStartDate);
@@ -717,10 +668,6 @@ public class TimesheetEmailUtil {
 			globalVarsMap.put("projectName", projectMembers.getProjects().getProjectName());
 		}
 
-		// setting the Recipient information
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		// getting the current EmailScenario by EmailScenario unique name and entity
-		// type
 		HashMap<String, String> paramList = new HashMap<>();
 		String actionLink = null;
 		if (null != type && "accept".equalsIgnoreCase(type)) {
@@ -781,27 +728,11 @@ public class TimesheetEmailUtil {
 
 		}
 
-		/*// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
-		;
-
-		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
-				signature, url, orgLocations.getOrg(), orgLocations);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
-
-		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());*/
 		if (null != type && "reject".equalsIgnoreCase(type)) {
 		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.MAIL_REJECT_REOPEN_TIMESHEET);
 		}else{
 			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.MAIL_ACCEPT_REOPEN_TIMESHEET);
 		}
-		
 		// calling the sendNotification method of emailScenerioUtil
 		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,emailScenario);
 		notificationScenario.setBody(notificationBody);
