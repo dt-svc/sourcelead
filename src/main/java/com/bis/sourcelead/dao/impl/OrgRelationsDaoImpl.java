@@ -593,7 +593,9 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 	     for(Roles roles : rolesList){
 	    	 if(null != roles.getActionId()){
 	    		 List<Long> roleActionsList = new ArrayList<Long>();
-	    		 for (String s : roles.getActionId().split(",")){
+	    		 
+	    		 /*Remove/filter null & empty string objects from array-lambda stream*/
+	    		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
 	        		 roleActionsList.add(Long.parseLong(s));
 	        	 }
 	        	 
