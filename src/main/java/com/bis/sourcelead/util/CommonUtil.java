@@ -258,7 +258,7 @@ public class CommonUtil {
               "colgroup", "dd", "div", "dl", "dt", "em", "h1", "h2", "h3", "h4", "h5", "h6",
               "i", "img", "li", "ol", "p", "pre", "q", "small", "strike", "strong",
               "sub", "sup", "table", "tbody", "td", "tfoot", "th", "thead", "tr", "u",
-              "ul","xml");
+              "ul","xml","br");
 	        allowedTags.addAttributes("a", "href", "title");
 	        allowedTags.addAttributes("blockquote", "cite");
 	        allowedTags.addAttributes("col", "span", "width");
@@ -2341,9 +2341,6 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 	  
 	     return tempHTML;
   }
-  
-  
-  
-  
+
 		
 }
