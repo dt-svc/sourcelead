@@ -84,7 +84,9 @@ public class InvoiceDTO extends SearchDTO {
     private String vendorName;
     private String locationdateForList;
     private String orgLocationId;
+    private String paymentAccount;
     private String invoiceUUID;
+
 	public List<InvoiceExpensesDTO> getExpenseInvoice() {
 		return expenseInvoice;
 	}
@@ -482,6 +484,14 @@ public class InvoiceDTO extends SearchDTO {
 		this.orgLocationId = orgLocationId;
 	}
 
+	public String getPaymentAccount() {
+		return paymentAccount;
+	}
+
+	public void setPaymentAccount(String paymentAccount) {
+		this.paymentAccount = paymentAccount;
+	}
+
 	public String getInvoiceUUID()
 	{
 		return invoiceUUID;
@@ -491,5 +501,4 @@ public class InvoiceDTO extends SearchDTO {
 	{
 		this.invoiceUUID = invoiceUUID;
 	}
-	
 }
