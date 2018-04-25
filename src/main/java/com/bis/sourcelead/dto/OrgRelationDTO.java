@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.annotations.CleanHtml;
+
 public class OrgRelationDTO extends SearchDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -30,6 +32,7 @@ public class OrgRelationDTO extends SearchDTO implements Serializable{
 	
 	private String PaymentTerm;
 	
+	@CleanHtml(escape=false)
 	private String billingAddress;
 	
 	private String address;

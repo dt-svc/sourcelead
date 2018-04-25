@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -134,12 +135,12 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
 			projectBudgetDao.saveProjectTaskComments(projectBudget);
 			
 			if(user.getId().longValue() != Long.valueOf(projectBudgetRequestDTO.getBudgetApprover())) {
-				sendBudgetApproverEmail(user,projectBudgetRequestDTO,projects);
+				sendBudgetApproverEmail(user,projectBudget,projects);
 			}
 	}
 	 
-	private void sendBudgetApproverEmail(User loginUser, ProjectBudgetRequestDTO projectBudgetRequestDTO, Projects projects)throws Exception {
-		User approverUse = userService.getUserById(Long.valueOf(projectBudgetRequestDTO.getBudgetApprover()));
+	private void sendBudgetApproverEmail(User loginUser, ProjectBudget projectBudget, Projects projects)throws Exception {
+		User approverUse = userService.getUserById(projectBudget.getApproverUserId().getId());
 		ProjectClients pc = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(),projects.getOrgLocationsId().getId());
 		EmailMessage emailMessage = new EmailMessage();
         emailMessage.setFirstName(loginUser.getFirstName());
@@ -155,9 +156,10 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
         globalVarsMap.put("approverName", approverUse.getFullName());
         globalVarsMap.put("loginUserName", loginUser.getFullName());
         
-        globalVarsMap.put("descrption", projectBudgetRequestDTO.getBaseLine());
-        globalVarsMap.put("estimatedBudget", projectBudgetRequestDTO.getEstimatedBudgetCurrency() +" "+ projectBudgetRequestDTO.getEstimatedBudget());
-        globalVarsMap.put("estimatedHours", String.valueOf(projectBudgetRequestDTO.getEstimatedHours()));
+        globalVarsMap.put("descrption", projectBudget.getBudgetDescription());
+        DecimalFormat df = new DecimalFormat("0.##");   
+        globalVarsMap.put("estimatedBudget", projectBudget.getEstimatedBudgetCurrency() +" "+ BigDecimal.valueOf(projectBudget.getEstimatedBudgetValue()));
+        globalVarsMap.put("estimatedHours", String.valueOf(df.format(projectBudget.getEstimatedHours())));
         
         StringBuilder linkBuild = new StringBuilder();
         globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
@@ -168,8 +170,10 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
         notificationScenario.setBody(notificationbody);
         String actionLink = null;
         StringBuilder actionLinkBuilder = new StringBuilder();
+
         commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,projects.getOrgLocationsId().getOrg(),projects.getOrgLocationsId(),Constants.BUDGET_REQUEST);
         actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+projectBudgetRequestDTO.getProjectUUID()+"&projectClientUUID="+pc.getUuid()+"&tabType=projectMembers").toString();
+
         emailScenerioUtil.sendNotification(actionLink, loginUser, approverUse, projects.getOrgLocationsId(), notificationScenario,new HashMap<String,String>());
 		
 	}
