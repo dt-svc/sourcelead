@@ -216,7 +216,11 @@ public class ImmigrationRestController {
     public @ResponseBody
     ResponseList<ImmigrationListViewDTO> getAllImmigartionList(
     		ImmigrationListViewDTO immigrationListDTO,
-            @RequestParam(value = "searchValue", required = false) String searchValue, HttpServletRequest request) {
+            @RequestParam(value = "searchValue", required = false) String searchValue,
+            @RequestParam(value = "filterAttorneyVal", required = false)  String[] filterAttorneyVal,
+            @RequestParam(value = "filterTypeVal", required = false)  String[] filterTypeVal, 
+            @RequestParam(value = "filterStatusVal", required = false)  String[] filterStatusVal,
+            @RequestParam(value = "filterDurationVal", required = false)  String[] filterDurationVal, HttpServletRequest request) {
         ResponseList<ImmigrationListViewDTO> immigrationListDTOList = null;
         System.out.println("inisde controller  getAllImmigartionList  --> ");
         try {

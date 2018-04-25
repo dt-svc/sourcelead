@@ -58,7 +58,7 @@
 		</div>
    
 		<div class="immigraInnWrap">
-			<div class="timesheet_head">
+			<div class="timesheet_head clearfix">
 			
 			<div class="pull-left colCho">
 				<a href="javascript:void(0)" onclick="columPop();" title="Column Chooser" class="btn btn-sm btn-default"><i class="fa fa-table"></i></a>
@@ -139,160 +139,144 @@
 	</div>
 </div>				
 			</div>
-			
-			
-			  <ul>
+			</div>
+			  <ul class="pull-right">
 			    <sec:authorize access="hasAnyRole('ROLE_ADD_PETITION','ROLE_EDIT_VIEW_PETITION','ROLE_DELETE_PETITION')">
-				  <li>
-					  <a href="${appPath}/immigration/loadNewPetition"><i class="fa fa-plus paddingRight"></i> New </a>
+				  <li class="noPad">
+					  <a href="${appPath}/immigration/loadNewPetition" class="btn btn-success btnSuccess anchorWhite btn-sm"><i class="fa fa-plus paddingRight"></i> New </a>
 				  </li>
                  </sec:authorize>
-				  <li class="dropdown">
-					<span class="dropdown-toggle" id="menu1" data-toggle="dropdown">
-						<i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></span>|
-
-					<div class="dropdown-menu bootstrap_dropdownMenu" role="menu" aria-labelledby="menu1">
-					<ul>
-					  <li>
-						<input value="ch1" name="resourcerequest" id="ch1" type="checkbox">
-						<label for="ch1">Draft</label>
-					  </li>
-					  <li>
-						<input id="ch2" name="resourcerequest" type="checkbox">
-						<label for="ch2">Sent Request</label>
-					  </li>
-					  <li>
-						<input id="ch3" name="resourcerequest" type="checkbox">
-						<label for="ch3">Inprogress</label>
-					  </li>
-					  <li>
-						<input id="ch4" name="resourcerequest" type="checkbox">
-						<label for="ch4">Appoved</label>
-					  </li>
-					  <li>
-						<input id="ch5" name="resourcerequest" type="checkbox">
-						<label for="ch5">Rejected</label>
-					  </li>	
-					   <li>
-						<input id="ch6" name="resourcerequest" type="checkbox">
-						<label for="ch6">Others</label>
-					  </li>						  					  
-					</ul>
-				  </div>
-				</li>
-
-				  <li class="dropdown">
-					<span class="dropdown-toggle" id="" data-toggle="dropdown">
-						<i class="fa fa-filter"></i><span>Attorney</span><i class="glyphicon glyphicon-play"></i></span>|
-
-					<div class="dropdown-menu bootstrap_dropdownMenu" role="menu" aria-labelledby="menu1">
-					<ul>
-					  <li>
-						<input value="ch6" name="resourcerequest" id="ch6" type="checkbox">
-						<label for="ch6">Attorney 1</label>
-					  </li>
-					  <li>
-						<input id="ch7" name="resourcerequest" type="checkbox">
-						<label for="ch7">Attorney 2</label>
-					  </li>
-					  <li>
-						<input id="ch8" name="resourcerequest" type="checkbox">
-						<label for="ch8">Attorney 3</label>
-					  </li>
-					</ul>
-				  </div>
-				</li>
-
-				  <li class="dropdown">
-					<span class="dropdown-toggle" id="" data-toggle="dropdown">
-						<i class="fa fa-filter"></i><span>Type</span><i class="glyphicon glyphicon-play"></i></span>|
-
-					<div class="dropdown-menu bootstrap_dropdownMenu" role="menu" aria-labelledby="menu1">
-					<ul>
-					  <li>
-						<input value="ch11" name="resourcerequest" id="ch11" type="checkbox">
-						<label for="ch11">H1B</label>
-					  </li>
-					  <li>
-						<input id="ch12" name="resourcerequest" type="checkbox">
-						<label for="ch12">H2B</label>
-					  </li>
-					  <li>
-						<input id="ch13" name="resourcerequest" type="checkbox">
-						<label for="ch13">Green card</label>
-					  </li>
-					</ul>
-				  </div>
-				  </li>
-				  <!-- <li class="pull-left">
-                    <div class="dropdown">
-                        <strong>Column Chooser </strong>
-                        <button class="glyphicon glyphicon-plus" type="button" id="menu1" data-toggle="dropdown"></button>
-                        <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-                            <li><a class="toggle-vis " data-column="0">Status</a></li>
-                            <li><a class="toggle-vis" data-column="1">ID</a></li>
-                            <li><a class="toggle-vis" data-column="2">Type</a></li>
-                            <li><a class="toggle-vis" data-column="3">Name</a></li>
-                            <li><a class="toggle-vis" data-column="4">Email</a></li>
-                            <li><a class="toggle-vis" data-column="6">Phone</a></li>
-                            <li><a class="toggle-vis" data-column="7">On Date</a></li>
-                             <li><a class="toggle-vis" data-column="8">Attorney</a></li>
-                        </ul>
-                    </div>
-                </li> -->
-				
-				  <li class="dropdown">
-					<span class="dropdown-toggle" id="" data-toggle="dropdown">
-						<i class="fa fa-filter"></i><span>Duration</span><i class="glyphicon glyphicon-play"></i></span>|
-
-					<div class="dropdown-menu bootstrap_dropdownMenu" role="menu" aria-labelledby="menu1">
-					<ul>
-					  <li>
-						<input value="ch15" name="resourcerequest" id="ch15" type="checkbox">
-						<label for="ch15">This month</label>
-					  </li>
-					  <li>
-						<input id="ch16" name="resourcerequest" type="checkbox">
-						<label for="ch16">This year</label>
-					  </li>
-					  <li>
-						<input id="ch17" name="resourcerequest" type="checkbox">
-						<label for="ch17">Last year</label>
-					  </li>
-					  <li>
-						<input id="ch18" name="resourcerequest" type="checkbox">
-						<label for="ch18">Custom</label>
-					  </li>					  
-					</ul>
-				  </div>
-				</li> 				                                              
-
-				<div class="clearfix"></div>
 			  </ul>
-			  <div class="clearfix"></div>
 			  <div class="remove_search">
 				<input placeholder="Search"  id ="immiListSerach" type="text">
 			  </div>
-			</div>
 			
-			 <div id ="dynamicImmigrationListViewDiv" class="project_wrap_table datatable_filter"></div>
-		
-		</div>   
-   
+			</div> 
+			  
+			 <div id="dynamicImmigrationListViewDiv" class="project_wrap_table datatable_filter"></div>
+			 
     </div>
   </section>
   <!-- Content Area -->
-  
-  <div class="theme-color"> <span class="icon-theme" title="click here"><i class="fa fa-calendar-check-o"></i></span>
-    <ul class="list-unstyled">
-      <li><a href="#" class="" id="btn1"><span class="dark-blue"></span><span class="light-grey"></span></a></li>
-      <li><a href="#" class="" id="btn2"><span class="flat-green"></span><span class="dark-purle"></span></a></li>
-      <li><a href="#" class="" id="btn3"><span class="hdr-blue"></span><span class="sidenav-blue"></span></a></li>
-    </ul>
-  </div>
 </div>
 <div id="popUp"></div>
-    
+
+<div id="immigrationFilterMask" class="advancedsearch-mask"></div>
+<div id="immigrationFilterPopup"  class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
+<h5 class="headerAdsrch">
+	Filters <a href="javascript:void(0)" class="close-div"
+		onclick="closePop()"><i class="fa fa-close"></i></a>
+	</h5>
+		<div class="addInner">
+			<div class="row">
+			 	<div class="col-md-3">
+						<div class="row">
+							<div class="col-md-12">
+								<label><strong>Duration</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="durationFilter">
+			                    	    <li class="checkBox positionRelative"><input type="checkbox" name="userState" id="activeStatus" value="thisYear"><label>&nbsp;This year</label></li>
+										<li class="checkBox positionRelative"><input type="checkbox" name="userState" id="notloggedInStatus" value="lastYear"><label>&nbsp;Last year</label></li>
+										<li class="checkBox positionRelative"><input type="checkbox" name="userState" id="inactiveStatus" value="yearsRange" onClick="durationCustomsearch($(this));"><label>&nbsp;Custom</label></li>
+			                        </ul>
+								 </div>
+							 </div>
+							 <div class="clearfix"></div>
+							 <div class="mb" id="durationCustomsearch" style="display:none;">
+							 	<div class="col-md-6 paddingRight">
+							 		<select placeholder="From Year" id="filterFromYear" class="form-control input-sm"></select>
+							 	</div>
+							 	<div class="col-md-6 paddingLeft">
+							 		<select placeholder="To Year" id="filterToYear" class="form-control input-sm"></select>
+							 	</div>
+							 </div>
+							 
+						</div>
+				</div>
+				
+				<div class="col-md-3">
+						<div class="row">
+							<div class="col-md-12 mb">
+								<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="attorneyFilterInput"  onkeyup="myClientsFunction('attorneyFilterInput','attorneyFilter');" placeholder="Attorney" title="Type in a managers">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+								 <div class="clearfix filterSearch-ul mt5 filterSearch">
+									<ul class="list-unstyled" id="attorneyFilter">
+			                        </ul>
+								 </div>
+							 </div>
+						</div>
+				</div>
+				
+				<div class="col-md-3">
+						<div class="row">
+							<div class="col-md-12 mb">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="typeFilterInput" onkeyup="myClientsFunction('typeFilterInput','typeFilter');" placeholder="Type" title="Type in a managers">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+								 <div class="clearfix filterSearch-ul mt5 filterSearch">
+									<ul class="list-unstyled" id="typeFilter">
+			                        </ul>
+								 </div>
+							 </div>
+						</div>
+				</div>
+			    <div class="col-md-3">
+						<div class="row">
+							<div class="col-md-12 mb">
+								<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="statusFilterInput" onkeyup="myClientsFunction('statusFilterInput','statusFilter');" placeholder="Status" title="Type in a managers">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+								
+								 <div class="clearfix mt5 filterSearch filterSearch-ul">
+									<ul class="list-unstyled" id="statusFilter">
+			                        </ul>
+								 </div>
+							 </div>
+						</div>
+				</div>
+			</div>
+		</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet" onclick="closePop();getDynamicImmigrationsList();" class="btn btn-sm btn-success">
+							<input type="button" value="Reset" id="clear_search" onclick="resetImmigrationFilter();" class="btn btn-sm btn-primary">
+						</div>
+					</div>		
+</div>
+
+<script>
+	// Close Advanced Search
+		function closePop(){
+			$("#immigrationFilterPopup").hide();
+			$("#immigrationFilterMask").fadeOut();
+		}
+		function filterPop(){
+			$("#immigrationFilterPopup").toggle();
+			$("#immigrationFilterMask").fadeIn();
+		}
+		
+		function closeAdsrch(){
+			$("#immigrationFilterPopup").hide();
+			$("#immigrationFilterMask").fadeOut();
+		}
+		
+		function durationCustomsearch(val){
+			if(val.is(':checked')){
+				$("#durationCustomsearch").show();
+			}else{
+				$("#filterToYear, #filterFromYear").val("");
+				$("#durationCustomsearch").hide();
+			}
+		}
+		
+		
+	</script>
+
+
 <!-- Footer Area --> 
 
 <script type="text/javascript">
@@ -315,6 +299,11 @@
         $(".clientDetails").toggleClass('hidden', 500);
         });
 
+    	$('#filterFromYear, #filterToYear').append($('<option />').val("").html("--Select--"));
+        for (i = new Date().getFullYear(); i > 1900; i--)
+        {
+            $('#filterFromYear, #filterToYear').append($('<option />').val(i).html(i));
+        } 
         });
     </script> 
 <script>
@@ -398,7 +387,10 @@
  var hideColumns = [];
  var table = "";
  $(document).ready(function () {
-     getDynamicImmigrationList();
+     getDynamicImmigrationList(null);
+     getPetitionTypeDropDown();
+     getAttorneysByOrgLocation();
+     getUscisTypeDropDown();
      /* getUscisStatusList(); */
      $('label.toggle-vis').on('click', function (e) {
          e.preventDefault();
@@ -408,14 +400,20 @@
          // Toggle the visibility
          column.visible(!column.visible());
      });
-     $("#statusFilter a").on('click', function (e) {
-         alert($(this).data("status"));
-         getDynamicImmigrationList($(this).data("status"));
-     }); 
- });
+});
 
- function getDynamicImmigrationList(status) {
-
+ function getDynamicImmigrationList(filterVal) {
+	 var filterAttorneyVal = [];
+	 var filterTypeVal = [];
+	 var filterStatusVal = [];
+	 var filterDurationVal = [];
+	 if(filterVal !== null){
+		filterAttorneyVal = filterVal[0];
+		filterTypeVal = filterVal[1];
+		filterStatusVal = filterVal[2];
+		filterDurationVal = filterVal[3];
+	 }
+	 
      var result = "";
      result = result + '<table id="dynamicImmigrationListTbl">';
      result = result + '<thead>';
@@ -443,7 +441,7 @@
 //     var statusFilter = $("#statusFilter").val();
      var searchValue = $("#immiListSerach").val();
      searchValue = searchValue ? searchValue : "";
-     var url = sourceleadUrl + "/immigration/getImmigrationViewList?searchValue=" + searchValue;
+     var url = sourceleadUrl + "/immigration/getImmigrationViewList?searchValue=" + searchValue+"&filterAttorneyVal="+filterAttorneyVal+"&filterTypeVal="+filterTypeVal+"&filterStatusVal="+filterStatusVal+"&filterDurationVal="+filterDurationVal;
      dynamicImmigrationListPagination(url);
  }
  //var count = 0;
@@ -483,7 +481,7 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.currUscisStatusId !== null && opt.currUscisStatusId !== '' && opt.currUscisStatusId !== 'undefined') {
-                    	 result = result + "<td><div class='mt5 mb5' style='width:150px;'><select id='currUscisStatus' title='"+opt.currUscisStatus+"' onchange='changeSaveUscisStatus($(this),"+opt.id+");' name='currUscisStatus' class='form-control'>";
+                    	 result = result + "<td><div class='mt5 mb5 dropdown-select' style='width:150px;'><select id='currUscisStatus' title='"+opt.currUscisStatus+"' onchange='changeSaveUscisStatus($(this),"+opt.id+");' name='currUscisStatus' class='form-control'>";
                     	 //alert(opt.currUscisStatusId);
                     	 for(var i=0;i<opt.currUsicisStatusList.length;i++){
                         	data = opt.currUsicisStatusList[i];
@@ -663,7 +661,7 @@
 
      $("#immiListSerach").keyup(function (e) {
          if (e.which === 13) {
-        	 getDynamicImmigrationList();
+        	 getDynamicImmigrationList(null);
         	 for (var i=0; i<hideColumns.length; i++) {
         		 table.column(hideColumns[i]).visible(false); // hide the columns after filters also.
         		}
@@ -711,7 +709,7 @@
 	}
 	function columPop(){
 		$(".colPop").show();
-	}s
+	}
 	function columClose(){
 		$(".colPop").hide();
 	}
@@ -740,6 +738,112 @@
 		else if(id =='columnsPickerUnCheckAll'){
 			$('.toggle-vis:input:checkbox').prop('checked',false);
 		}
+	}
+	
+	function getPetitionTypeDropDown(){
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+immiModulePath+"/getPetitionTypeDropDown", 
+		        success: function(data) {
+		        	$('#typeFilter').empty();
+		            for(var i=0;i<data.length;i++){
+	    	        	var opt = data[i];
+		           		$('#typeFilter').append('<li class="checkBox positionRelative"><input type="checkbox" name="userState" id="activeStatus" value="'+opt.id+'"><label>&nbsp;'+opt.name+'</label></li>');
+		            }
+		            $('#typeFilter').trigger("chosen:updated");		        	
+		        }
+		 });
+	}
+	
+	function getAttorneysByOrgLocation(){
+			 $.ajax({
+			    	type: "GET",
+			        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
+			        success: function(data) {
+			        	var json = JSON.parse(data);
+			        	$('#attorneyFilter').empty();
+			            for(var i=0;i<json.length;i++){
+			           		var opt = json[i];
+			            	$('#attorneyFilter').append('<li class="checkBox positionRelative"><input type="checkbox" name="userState" id="activeStatus" value="'+opt.id+'"><label>&nbsp;'+opt.orgName+'</label></li>');
+			            }
+			            $('#attorneyFilter').trigger("chosen:updated");
+			            
+			        }
+			 });
+	 }
+	
+	function getUscisTypeDropDown(){
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+immiModulePath+"/getUscisTypeDropDown", 
+		        success: function(data) {
+		        	$('#statusFilter').empty();
+		            for(var i=0;i<data.length;i++){
+		            	var opt = data[i];
+		            	$('#statusFilter').append('<li class="checkBox positionRelative"><input type="checkbox" name="userState" id="activeStatus" value="'+opt.id+'"><label>'+opt.name+'</label></li>');
+		            }
+		            $('#statusFilter').trigger("chosen:updated");		        	
+		        }
+		 });
+	}
+	
+	function getDynamicImmigrationsList(){
+		var filterStatusVal = [];
+		 $('ul#statusFilter').find("input[type='checkbox']:checked").each(function (){
+			filterStatusVal.push($(this).val());
+		 });
+		 var filterAttorneyVal = [];
+		 $('ul#attorneyFilter').find("input[type='checkbox']:checked").each(function (){
+			 filterAttorneyVal.push($(this).val());
+		 });
+		 var filterTypeVal = [];
+		 $('ul#typeFilter').find("input[type='checkbox']:checked").each(function (){
+			 filterTypeVal.push($(this).val());
+		 });
+		 var filterDurationVal = [];
+		 $('ul#durationFilter').find("input[type='checkbox']:checked").each(function (){
+			if($(this).val()=='thisYear'){
+				filterDurationVal.push(((new Date()).getFullYear()));
+			}
+			if($(this).val()=='lastYear'){
+				filterDurationVal.push(((new Date()).getFullYear()-1));
+			}
+			if($(this).val()=='yearsRange'){
+				if($("#filterFromYear").val() !== ""){
+					filterDurationVal.push($("#filterFromYear").val());
+				}
+				if($("#filterToYear").val() !== ""){
+					filterDurationVal.push($("#filterToYear").val());
+				}
+			}
+		});
+		var filterVal = [];
+		filterVal[0] = filterAttorneyVal;
+		filterVal[1] = filterTypeVal;
+		filterVal[2] = filterStatusVal;
+		filterVal[3] = filterDurationVal;
+		getDynamicImmigrationList(filterVal);
+	}
+	function resetImmigrationFilter(){
+		$('ul#typeFilter input:checkbox, ul#attorneyFilter input:checkbox, ul#statusFilter input:checkbox, ul#durationFilter input:checkbox ').attr('checked',false);
+		$("#filterToYear, #filterFromYear").val("");
+		$("#durationCustomsearch").hide();
+	}
+	
+	function myClientsFunction(searchId, uiId) {
+	    var input, filter, ul, li, a, i;
+	    input = document.getElementById(searchId);
+	    filter = input.value.toUpperCase();
+	    ul = document.getElementById(uiId);
+	    li = ul.getElementsByTagName("li");
+	    for (i = 0; i < li.length; i++) {
+	        a = li[i].getElementsByTagName("label")[0];
+	        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+	            li[i].style.display = "";
+	        } else {
+	            li[i].style.display = "none";
+	        }
+	    }
 	}
 </script>
 
