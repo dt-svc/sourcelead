@@ -3,6 +3,7 @@ package com.bis.sourcelead.dto;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.entity.ContractRequestDocuments;
 
 public class VendorContractsDTO {
@@ -26,7 +27,10 @@ public class VendorContractsDTO {
 	private String contractStatus;
 	private String docId;
 	private String envelopId;
+	
+	@CleanHtml(escape=false)
 	private String description;
+	
 	private String billingAmount;
 	private String billingRateType;
 	private String billingRatePer;
