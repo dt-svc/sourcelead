@@ -420,10 +420,10 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 					  userDao.addUser(spocUser);
 					  
 					  globalVarsMap.put("userName",spocUser.getUserName());
-				      globalVarsMap.put("password",password);
+				      globalVarsMap.put("Password",password);
 				  }else{
 					  globalVarsMap.put("userName",spocUser.getEmail());
-					  globalVarsMap.put("password","Login with your existing sourcelead credentials");
+					  globalVarsMap.put("Password","Login with your existing sourcelead credentials");
 					}
 			   
 		 }
@@ -449,10 +449,10 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		 
 		 EntityType entityType=classFieldService.getEntityTypeById(Constants.ACCEPT_VENDOR_INVITATION, Constants.ENTITY_TYPE_EMAIL);
 		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
 		 //String body = emailScenerioUtil.buildTempBody(emailBody,globalVarsMap);
 		 String body = emailScenerioUtil.buildTemplateBody(emailBody,globalVarsMap,emailScenario);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
@@ -464,7 +464,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 emailScenerioUtil.sendEmail(emailMessage,vendorOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
+		 String notificationbody = emailScenerioUtil.buildTemplateBody(noificationEmailScenario.getBody(),globalVarsMap,noificationEmailScenario);
 		 
 		 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(onboarding.getSpocUserId().getId(), onboarding.getVendorLocationId().getId());
 		 if(userRole != null) {

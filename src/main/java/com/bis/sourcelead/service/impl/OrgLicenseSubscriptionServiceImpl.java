@@ -1,11 +1,15 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
@@ -163,6 +167,8 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 	
 	@Autowired
 	OrgLicenseSubscriptionHistoryDao orgLicenseSubscriptionHistoryDao;
+	@Value("${static.path}")
+    private String staticPath;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -637,10 +643,18 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACTIVATE_EMAIL,Constants.ENTITY_TYPE_EMAIL);
-		
+		 String emailBody = null;
+		 String path=staticPath.substring(0, staticPath.lastIndexOf("/"));
+		 try {
+			    BufferedReader lineReader = new BufferedReader(new FileReader(path+emailScenario.getBodyUrl().replace("\\","\\\\")));
+			    emailBody = new Scanner(lineReader).useDelimiter("\\Z").next();
+			   // System.out.println(emailBody);
+			   
+			} catch (IOException ex) {
+			    System.err.println(ex);
+			}
 		 //covert subject,body and signature
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);

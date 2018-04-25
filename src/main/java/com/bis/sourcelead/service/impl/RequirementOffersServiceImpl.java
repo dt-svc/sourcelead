@@ -665,7 +665,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
             String url = sourceleadUrl;
             
-            String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getSubject(), globalVarsMap);
+            String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
             notificationScenario.setBody(notificationbody);
 
 

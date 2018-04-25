@@ -1,10 +1,14 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import javax.mail.internet.InternetAddress;
 
@@ -66,6 +70,9 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 	
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
+	
+	@Value("${static.path}")
+    private String staticPath;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -212,11 +219,12 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		 emailMessage.setUserType(user.getUserType());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 emailMessage.setFromName(loginUser.toString());
+		 emailMessage.setFirstName(professionalName);
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		// globalVarsMap.put("requirementTitle", requirement.getJobTitle());
 		 globalVarsMap.put("professinalName", professionalName);
-		 globalVarsMap.put("referedProfessionalName", user.getUserName());
+		 globalVarsMap.put("professinalName", user.getUserName());
  if(user.getLastName() != null && !"".equalsIgnoreCase(user.getLastName())){
 			 
 			 StringBuilder lname=new StringBuilder();
@@ -271,7 +279,7 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		 }
 		 
 		 globalVarsMap.put("professinalName", professionalName);
-		 globalVarsMap.put("referedProfessionalName", user.getUserName());
+		 globalVarsMap.put("professinalName", user.getUserName());
 		 StringBuilder loginBuilder = new StringBuilder();
 		 globalVarsMap.put("registerLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("referRequirementToProfessional?requirementUUID=").append(requirement.getRequirementUUID()).append("&contactUUID=").append(contactUUID).append("&referUUID=").append(referUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View</div></a>").toString());
 		
@@ -299,10 +307,21 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REFER_REQUIREMENT_TO_PROFESSIONAL,Constants.ENTITY_TYPE_EMAIL);
 		
+		 String emailBody = null;
+		 String path=staticPath.substring(0, staticPath.lastIndexOf("/"));
+		 try {
+			    BufferedReader lineReader = new BufferedReader(new FileReader(path+emailScenario.getBodyUrl().replace("\\","\\\\")));
+			    emailBody = new Scanner(lineReader).useDelimiter("\\Z").next();
+			   // System.out.println(emailBody);
+			   
+			} catch (IOException ex) {
+			    System.err.println(ex);
+			}
+		
 		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+		 String body = emailScenerioUtil.buildTemplateBody(emailBody,globalVarsMap,emailScenario);
+		 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
@@ -312,6 +331,7 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
+		 
 		
 	}
 

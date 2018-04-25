@@ -288,35 +288,17 @@ public void mailToOffboardCandidate(CandidateOffBoarding candidateOffBoarding, U
          StringBuilder linkBuild = new StringBuilder();
          globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
         
-                
-        
-         InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-        
          //getting the current EmailScenario by EmailScenario unique name and entity type
-         EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFBOARDINGPROCESSAPPLICANTTERMINATION,Constants.ENTITY_TYPE_EMAIL);
          EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFBOARDINGPROCESSAPPLICANTTERMINATION,Constants.ENTITY_TYPE_NOTIFICATION);
 
         
-         //covert subject,body and signature
-         String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-         String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-         String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-         String url = sourceleadUrl;
-        
-         String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+         String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
          notificationScenario.setBody(notificationbody);
-
         
         // OrgLocations vendorOrgLoc = requirement.getSpocId().getVendorLocationId();
 
-        
-         //construct HTML template using required data
-         String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-         emailMessage.setSubject(subject);
-         emailMessage.setMessageBody(emailTemplate);
-        
          //calling the sendEmail method of emailScenerioUtil
-         emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+         commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.OFFBOARDINGPROCESSAPPLICANTTERMINATION);
          String actionLink="";
        emailScenerioUtil.sendNotification(actionLink, loginUser, candidateOffBoarding.getUserId(), orgLocations, notificationScenario,new HashMap<String,String>());
 
