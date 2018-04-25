@@ -894,7 +894,6 @@ function validateUploadFile(id)
 			    	    location.href = "/errorPage";
 			    	} else if (response.response === "SUCCESS") {
 			    		var json = response.object;
-			    		alert("1")
 			    		$("#firstName").val(json['firstName']);
 				    	 $("#lastName").val(json['lastName']);
 				    	 
