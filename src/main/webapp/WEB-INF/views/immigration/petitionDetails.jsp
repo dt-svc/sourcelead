@@ -882,25 +882,22 @@ $("#experienceValue").change(function () {
 		  employmentLevelDropDown("${immigrationDTO.employmentLevel}");
 		  jobTitleDropDown("${immigrationDTO.jobId}");
 		  var sizeOfResidence = "${fn:length(immigrationDTO.residenceList)}";
-		  if(sizeOfResidence > 1){
+		  if(sizeOfResidence > 0){
 		  	var count = 1;
 		  	var residenceArr = [];
-		  	
 		  	<c:forEach var='edu' items="${immigrationDTO.residenceList}">
-		  		var currentResidence = "${edu.isCurrResidence}";
-		  		if(currentResidence != 'Y'){
-		  			residenceArr.push("${edu.id == 'undefined' ? '':edu.id}");
-			  		residenceArr.push("${edu.location}");
-			  		residenceArr.push("${edu.address}");
-			  		residenceArr.push("${edu.city}");
-			  		residenceArr.push("${edu.state}");
-			  		residenceArr.push("${edu.country}");
-			  		residenceArr.push("${edu.zipcode}");
-			  		residenceArr.push("${edu.residenceStartDate}");
-			  		residenceArr.push("${edu.residenceEndDate}");
-			  		$("#dynamicResidenceGroupDiv").append(prepareDynamicResidenceDiv(count,residenceArr));
-			  		residenceArr = [];
-		  		}
+		  		alert("${edu.location}");
+		  		residenceArr.push("${edu.id == 'undefined' ? '':edu.id}");
+			  	residenceArr.push("${edu.location}");
+			  	residenceArr.push("${edu.address}");
+			  	residenceArr.push("${edu.city}");
+			  	residenceArr.push("${edu.state}");
+			  	residenceArr.push("${edu.country}");
+			  	residenceArr.push("${edu.zipcode}");
+			  	residenceArr.push("${edu.residenceStartDate}");
+			  	residenceArr.push("${edu.residenceEndDate}");
+			  	$("#dynamicResidenceGroupDiv").append(prepareDynamicResidenceDiv(count,residenceArr));
+			  	residenceArr = [];
 		  		count++;
 		  	</c:forEach>
 		  	var fileNameVal = "${immigrationDTO.fileName}";

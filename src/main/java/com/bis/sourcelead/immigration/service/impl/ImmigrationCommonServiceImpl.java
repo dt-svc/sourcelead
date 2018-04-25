@@ -413,7 +413,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 
 	private Immigration savePetitionImmigration(ImmigrationDTO immigrationDTO, OrgLocations orgLocations, Candidate candidate, Requirement requirement, User user) throws Exception, Exception {
 		Immigration immigration = new Immigration();
-		if(immigrationDTO.getImmigrationId() != null) {
+		if(immigrationDTO.getImmigrationId() != null && StringUtils.isNotEmpty(immigrationDTO.getImmigrationId())) {
 			immigration = immigrationCommonDao.getImmigrationById(Long.parseLong(immigrationDTO.getImmigrationId()));
 		}
 		LookUpData petitionTypeId = new LookUpData();
@@ -445,7 +445,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		immigration.setCandidate(candidate);
 		immigration.setOrgLocationId(orgLocations);
 		immigration.setReceiptNo(immigrationDTO.getReceiptNo());
-		if(immigrationDTO.getImmigrationId() == null) {
+		if(StringUtils.isEmpty(immigrationDTO.getImmigrationId())) {
 			immigration.setGeneratedId(getImmigrationIdForGeneratedId(orgLocations));
 		}
 		immigration.setJob(requirement);
