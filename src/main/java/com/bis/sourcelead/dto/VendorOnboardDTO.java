@@ -3,6 +3,8 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.List;
 
+import com.bis.sourcelead.annotations.CleanHtml;
+
 public class VendorOnboardDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -63,6 +65,7 @@ public class VendorOnboardDTO implements Serializable{
 	
 	private List<VendorDocumentsFileInfo> vendorDocumentsFileInfo;
 	
+	@CleanHtml(escape=false)
 	private String vendorBillingAddress;
 	
 	private String poEmail;

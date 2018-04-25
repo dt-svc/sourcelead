@@ -909,7 +909,7 @@ function validateUploadFile(id)
 				    	 $("#country").val(json['country']);
 				    	 $("#state").val(json['state']);
 				    	 $("#city").val(json['city']);
-				    	 $("#zipCode").val(json['zipCode']);
+				    	 $("#zipCode").val(json['zipcode']);
 				    	 
 				    	 validateOnboardCandidate(json['email']);
 			    	} else if (response.indexOf('Sign In') !== -1) {
@@ -2312,7 +2312,7 @@ function saveAndFinishOnboardTemplate(onboardId){
 			        success: function(response) {
 			        	if (response.response === "AWKWARD") {
 			        	    location.href = "/errorPage";
-			        	} else if (response.response === "SUCCESS") {
+			        	} else if (response.response === "FAILED") {
 			        		 $("#save_onboardUser").attr("disabled", "disabled");
 			    			 $("#saveAndContinue_onboardUser" ).attr("disabled", "disabled");
 			        		 alertMessage(candidateName+" is Already exists as onboard user");	

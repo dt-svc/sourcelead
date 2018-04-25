@@ -19,6 +19,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Table(name = "INVOICE_PAYMENT")
 public class InvoicePayment {
@@ -84,9 +86,11 @@ public class InvoicePayment {
 	private String updatedBy;
 	
 	@Transient
+	@JsonProperty
 	private String paymentDateStr;
 	
 	@Transient
+	@JsonProperty
 	private String createdByName;
 
 	public Long getId() {

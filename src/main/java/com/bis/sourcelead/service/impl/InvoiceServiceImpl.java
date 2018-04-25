@@ -320,19 +320,22 @@ public class InvoiceServiceImpl implements InvoiceService{
 		
 		if(StringUtils.isNotBlank(invoiceDTO.getPaymentFrequency())){
 			invoice.setPaymentFrequency(invoiceDTO.getPaymentFrequency());
+		}else{
+			invoice.setPaymentFrequency(null);
 		}
+		
 		if(StringUtils.isNotBlank(invoiceDTO.getDisCount())){
-			invoice.setDiscountType(invoiceDTO.getDisCount());;
+			invoice.setDiscountType(invoiceDTO.getDisCount());
 		}
 		
 		if(StringUtils.isNotBlank(invoiceDTO.getDiscountValue())){
-			invoice.setDiscountAmount(invoiceDTO.getDiscountValue());;
+			invoice.setDiscountAmount(invoiceDTO.getDiscountValue());
 		}
 		if(StringUtils.isNotBlank(invoiceDTO.getDiscountTotal())){
-			invoice.setDiscountValue(invoiceDTO.getDiscountTotal());;
+			invoice.setDiscountValue(invoiceDTO.getDiscountTotal());
 		}
 		if(StringUtils.isNotBlank(invoiceDTO.getInoviceTotal())){
-			invoice.setSubTotal(invoiceDTO.getInoviceTotal());;
+			invoice.setSubTotal(invoiceDTO.getInoviceTotal());
 		}
 		
 		if(StringUtils.isNotBlank(invoiceDTO.getComment())){
@@ -2376,10 +2379,10 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		return invoiceDao.getInvoicetByParentId(invoiceId);
 	}
 	@Override
-	public boolean deleteInvoice(Long invoiceId,String reason,String invoiceType) throws Exception
+	public boolean deleteInvoice(String invoiceUUID,String reason,String invoiceType) throws Exception
 	{
 		boolean result = false;
-		Invoice invoice = invoiceDao.getInvoicetById(invoiceId);
+		Invoice invoice = invoiceDao.getInvoicetByInvoiceUUID(invoiceUUID);
 		
 		if(invoice.getProjectID() != null){
 				invoice.setRejectReason(reason);

@@ -4,10 +4,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -80,7 +78,7 @@ public class SourceleadBlogServiceImpl implements SourceleadBlogService{
 		
 		if(sourceleadBlogDTO.getPublishOn() != null && !sourceleadBlogDTO.getPublishOn().isEmpty()) {
 			
-			DateFormat dateFormatResult = new SimpleDateFormat ("MM/dd/yyyy HH:mm a");
+			DateFormat dateFormatResult = new SimpleDateFormat ("MM/dd/yyyy hh:mm a");
 			sourceleadBlogs.setPublishOn(dateFormatResult.parse(sourceleadBlogDTO.getPublishOn().toString().trim()));
 		}
 		
@@ -147,10 +145,10 @@ public class SourceleadBlogServiceImpl implements SourceleadBlogService{
 			}
 			
 			sbDTO.setCreatedBy(sb.getCreatedBy().getUserName());
-			
-			if(sb.getPublishOn() != null) {
+			sbDTO.setPublishStatus(sb.getBlogStatus());
+			/*if(sb.getPublishOn() != null) {
 				Date date = sb.getPublishOn();  
-				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");  
 				DateFormat dateFormatResult = new SimpleDateFormat ("MM/dd/yyyy hh:mm a");
 				sbDTO.setPublishOn(dateFormatResult.format(dateFormat.parse(sb.getPublishOn().toString())));
 				Date curentDate = new Date();
@@ -159,8 +157,7 @@ public class SourceleadBlogServiceImpl implements SourceleadBlogService{
 				}else {
 					sbDTO.setPublishStatus("Publish");
 				}
-				
-			}
+			}*/
 			
 			sbDTO.setStatus(sb.getStatus().toString());
 			sbDTOList.add(sbDTO);
@@ -228,6 +225,18 @@ public class SourceleadBlogServiceImpl implements SourceleadBlogService{
 	@Override
 	public Boolean validateSourceleadBlogTitleByBlogTitle(String blogTitle) throws Exception {
 		return sourceleadBlogDao.validateSourceleadBlogTitleByBlogTitle(blogTitle);
+	}
+
+	@Override
+	public boolean publishBlog(Long id) throws Exception {
+		SourceleadBlogs sourceleadBlogs=sourceleadBlogDao.getSourceleadBlogsByBlogId(id);
+		if(sourceleadBlogs!=null){
+			sourceleadBlogs.setBlogStatus("published");
+			sourceleadBlogDao.addBlog(sourceleadBlogs);
+			return true;
+		}
+		
+		return false;
 	}
 
 }

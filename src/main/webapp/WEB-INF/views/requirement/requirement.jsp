@@ -944,7 +944,7 @@ $(document).ready(function () {
 			  <c:when test="${val == 'Y'}">
 			   				<div class="ml">
 			   				<!-- here the isClient checkbox name is changes to isClientEdit because, readonly check box is not working and onclick methods are effected (Venkat Kesav) -->
-					            <input type="checkbox" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
+					            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
 					            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();" hidden="true" checked="checked">
 					            <label>&nbsp;&nbsp;<strong>Is Client Job <i class='fa fa-info-circle' title='Post the job including the related client information'></i>
 					            </strong>
@@ -977,7 +977,7 @@ $(document).ready(function () {
                    <c:set var="val" value="${requirement.isClientJob}"/>
                    <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
-			   				<select class="chosen-select form-control select-bg" disabled="disabled" data-validation-optional="true" field-name = "Client" id="addClientId">
+			   				<select class="chosen-select form-control select-bg"  data-validation-optional="true" field-name =  "Client" name="selectClient" id="addClientId">
                     			<c:set var="report" value="${orgClient}"/>
 							 	<c:if test="${report.locationId.id == loginOrgLocId}">  
 			                    	<option value="${report.id},${report.responderLocationId.id}" selected="selected">${report.responderLocationId.org.orgName}</option>
@@ -1002,11 +1002,13 @@ $(document).ready(function () {
 						  </c:otherwise>
 				</c:choose>
                   </div>
+                  <c:if test="${requirement.isClientJob != 'Y'}"> 
                     <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
                        <span class="col-md-3 noPad clearfix"><a href="<c:url value="/app/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
                        <span class="input-group-addon cursorPointer bg-blue refreshBtn" onclick="refreshRequirementClientList();"><i class="fa fa-refresh "></i></span>
                        </span>
                   </sec:authorize>
+                  </c:if>
                 </div>
               </div>
               <div class="form-group ">
@@ -1017,16 +1019,13 @@ $(document).ready(function () {
                   <div class="col-md-10 noPad">
                   <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
-			   				<select class="chosen-select form-control" disabled="disabled" data-validation-optional="true" field-name = "Client Contact" >
-                      			 <c:if test="${fn:length(clientContactList) gt 0}">
-								   <c:forEach var="report" items="${clientContactList}">
+			   				<select class="chosen-select form-control" name="selectContact" data-validation-optional="true" field-name = "Client Contact" id="selectContact">
+								  <c:forEach var="report" items="${clientContactList}">
 			         		<%-- <option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocId.SpocUser.firstName}&nbsp;${report.spocId.SpocUser.lastName}</option> --%>
-			         				<option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocName} (${report.ownerName})</option> 
+			         				<c:if test="${report.id  == requirement.spocId.id}">
+			         					<option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocName} (${report.ownerName})</option>
+			         				</c:if>
 					    		 </c:forEach>
-								</c:if>
-                      			 <c:if test="${fn:length(clientContactList) lt 1}">
-					    		 	<option >${clientContactWithOwner}</option>
-					    		 </c:if>
                     		</select>
 						 </c:when>
 					<c:otherwise>
@@ -1040,16 +1039,19 @@ $(document).ready(function () {
 				    </c:otherwise>
 				</c:choose>
 				</div>
-				<div class="col-md-2 noPad">
-                    <span class="input-group-addon cursorPointer bg-blue refreshBtn"  onclick="refreshRequirementClientContactList();"><i class="fa fa-refresh "></i></span>
+				<c:if test="${requirement.isClientJob != 'Y'}">
+					<div class="col-md-2 noPad">
+	                    <span class="input-group-addon cursorPointer bg-blue refreshBtn"  onclick="refreshRequirementClientContactList();"><i class="fa fa-refresh "></i></span>
+	                 </div>
+                 </c:if>
                  </div>
-                 </div>
-                  <span class="col-md-2 noPad clearfix" onclick="selectedClient();">
-			         <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
-			              <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
-			      	</sec:authorize>
-			      	
-			  </span>
+                 <c:if test="${requirement.isClientJob != 'Y'}">
+	                 <span class="col-md-2 noPad clearfix" onclick="selectedClient();">
+				         <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
+				              <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+				      	</sec:authorize>
+				  	</span>
+			  	</c:if>
                 </div>
               </div>
               <div class="form-group">
@@ -1170,7 +1172,7 @@ $(document).ready(function () {
                   <c:set var="val" value="${requirement.isClientJob}"/>
                   <c:choose> 
 				 	<c:when test="${val == 'Y'}">
-				   		<select class="chosen-select form-control" onchange="false" id="clientSubmissionForm"  field-name = "Submission Form" data-validation-optional="true" >
+				   		<select class="chosen-select form-control" onchange="false" id="clientSubmissionForm" name="clientSubmissionForm" field-name = "Submission Form" data-validation-optional="true" >
 	                       <c:set var="report" value="${clientSubmissionTemplete}"/>
 				           <option value="${report.id}">${report.templateName}</option>
 						</select>
@@ -2895,32 +2897,39 @@ function removeReqDoc(requirementId){
  <script>
 function refreshRequirementClientList(){
 		 var selectedOrgId = '${contract.orgRelations.id}';
+		 var loginOrgLocId = '${SourceLeadWeb_orgLocationId}';
 		 $.ajax({
 	      type : "POST",
 	       url: sourceleadUrl+"/refreshRequirementClientList",       
-	       success: function(json) {
-	        	var output = "";
-	        	output = output + "<option value=''>Select Client</option>"; 
-	        	for (var i=0; i<json.length; i++)
-				{
-		        		var opt = json[i];
-		        		if(opt.id == selectedOrgId){
-		        			output = output + "<option value='"+opt.id+"' selected>"+opt.orgName+"</option>";
-		        		}else{
-		        			output = output + "<option value='"+opt.id+"' >"+opt.orgName+"</option>";
-		        		}
-		        		
-				}
-	        	$("#addClientId").empty();
-	        	 $("#selectContact").empty();
-	        	 $("#selectContact").trigger("chosen:updated");
-		        $("#addClientId").append(output);
-		        $('#addClientId').trigger("chosen:updated");
-		        
+	       success: function(result) {
+	    	   if (result.response === "SESSION_TIMEDOUT") {
+	  				location.replace(sourceleadUrl);
+               } else if (result.response === "AWKWARD") {
+                   location.href = "/errorPage";
+               } else if (result.response === "SUCCESS") {
+            	    if(result.data != null && result.data != "" && result.data != 'undefined'){
+            	    	var json = result.data;
+			        	var output = "";
+			        	output = output + "<option value=''>--Select Client--</option>"; 
+			        	for (var i=0; i<json.length; i++)
+						{
+			        		var opt = json[i];
+			        		output = output + "<option value='"+opt.id+","+opt.locationID+"' >"+opt.orgName+"</option>";
+						}
+            	    }
+		        	$("#addClientId").empty();
+		        	$("#selectContact").empty();
+		        	$("#selectContact").trigger("chosen:updated");
+			        $("#addClientId").append(output);
+			        $('#addClientId').trigger("chosen:updated");
+               } else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+			   } else {
+                   showError("Operation failed, please try again");
+               }
 	        }
 		 });
-	
-}
+	}
 </script>
 
 <script>

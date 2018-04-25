@@ -119,12 +119,12 @@ function getViewInvoice(){
 	  $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getViewInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID,
-	        success: function(data) {
-	        	var json = JSON.parse(data);
+	        success: function(json) {
+// 	        	var json = JSON.parse(data);
 	        	var result = "";
-	        	for (var i=0; i<json.length; i++)
+	        	for (var i=0; i<json.data.length; i++)
 	    		{  
-	        		var report = json[i];
+	        		var report = json.data[i];
 	        		$("#invoiceIdDiv").val(report.invoiceId)
 	        		$("#billIdDiv").val(report.invoiceId)
 	        		if(report.dueDateStr != null && report.dueDateStr != '' && report.dueDateStr !='undefined'){
@@ -292,7 +292,6 @@ function getViewInvoice(){
 					result = result +'                <p>'+report.paymentAccountDTO.accountType+'</p>';
 					result = result +'              </div>';
 					result = result +'            </div>';
-					
 					if(report.paymentAccountDTO.accountType == "WEPAY"){
 						result = result +'            <div class="col-md-6">                                                 ';
 						result = result +'              <label class="col-md-4 control-label">Email :</label>        ';
@@ -348,7 +347,6 @@ function getViewInvoice(){
 					result = result +'         <table width="100%" cellpadding="0" cellspacing="0">                  ';
 					result = result +'             <thead>                                                           ';
 					result = result +'                 <tr>                                                          ';
-					
 					if(report.invoiceCategory != null && report.invoiceCategory != '' && report.invoiceCategory != 'undefined' && report.invoiceCategory == "expenses"){
                         result = result +'<th>Date</th>';
                         result = result +'<th>Category</th>';
@@ -505,7 +503,6 @@ function getViewInvoice(){
 				}else{
 					discountValue = "0";
 				}
-				
 				result = result +'			<div class="row">';
 				result = result +'	          <div class="col-md-5">';
 				result = result +'	              <div class="col-md-12 mt">';
@@ -556,7 +553,6 @@ function getViewInvoice(){
 					result = result +'	                    </div>                                                                                ';
 					result = result +'	                  </div>                                                                                  ';
 				}
-				
 				
 				
 				result = result +'	                </div>                                                                                    ';
@@ -883,8 +879,8 @@ function paymentHistroy(){
 	  $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getViewPaymentHistory?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID+"&locationId="+locationId,
-	        success: function(data) {
-	        	var json = JSON.parse(data);
+	        success: function(json) {
+// 	        	var json = JSON.parse(data);
 	        	var result = "";                                                                                                
 				result = result +'       	<table width="100%" cellpadding="0" cellspacing="0" id="paymentHistoryPagination"> ';
 				result = result +'           <thead>                                ';
@@ -899,9 +895,9 @@ function paymentHistroy(){
 				result = result +'               </tr>                              ';
 				result = result +'           </thead>                               ';
 				result = result +'           <tbody>                                ';
-				for (var i=0; i<json.length; i++)
+				for (var i=0; i<json.data.length; i++)
 	    		{  
-	        		var report = json[i];
+	        		var report = json.data[i];
 	        		if(report.paymentAmount != null && report.paymentAmount !='' && report.paymentAmount != 'undefined'){
 	        			paymentAmount = report.paymentAmount;
 	        		}else{

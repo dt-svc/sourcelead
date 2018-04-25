@@ -22,6 +22,7 @@ import com.bis.sourcelead.dto.InviteCompanyDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.ScheduleMaintenanceDTO;
+import com.bis.sourcelead.entity.SourceleadBlogs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.InviteCompanyService;
@@ -56,7 +57,6 @@ public class InviteCompanyRestController {
     @RequestMapping(value = "/storeInviteCompany", method = RequestMethod.POST)
 	public @ResponseBody  Response<Void> storeInviteCompany(InviteCompanyDTO inviteCompanyDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-    	/*  String inviteCompany =  inviteCompanyService.saveInviteCompany(inviteCompanyDTO);*/
     	
     	Response<Void> inviteCompanyResponse = new Response<>();
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -85,8 +85,31 @@ public class InviteCompanyRestController {
 	}
    
     @RequestMapping(value = "/storeScheduleMaintenance", method =RequestMethod.POST)
-	public @ResponseBody void storeScheduleMaintenance(ScheduleMaintenanceDTO maintenanceDTO,HttpServletRequest request, HttpServletResponse response) throws Exception{
-    	inviteCompanyService.storeScheduleMaintenance(maintenanceDTO);
+	public @ResponseBody Response<Void> storeScheduleMaintenance(ScheduleMaintenanceDTO maintenanceDTO,HttpServletRequest request, HttpServletResponse response) throws Exception{
+    	Response<Void> responseScheduleMaintenance = new Response<>();
+    	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		try {
+			if (loginUser != null) {
+
+				if (Validator.validate(maintenanceDTO)) {
+					inviteCompanyService.storeScheduleMaintenance(maintenanceDTO);
+					responseScheduleMaintenance.setResponse(Result.SUCCESS.name());
+					responseScheduleMaintenance.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					responseScheduleMaintenance.setResponse(Result.INVALID_DATA.name());
+					responseScheduleMaintenance.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+
+			} else {
+				responseScheduleMaintenance.setResponse(Result.SESSION_TIMEDOUT.name());
+				responseScheduleMaintenance.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			responseScheduleMaintenance.setResponse(Result.AWKWARD.name());
+			responseScheduleMaintenance.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return responseScheduleMaintenance;
 	}
     
     @RequestMapping(value="/loadScheduleMaintenance")
@@ -117,8 +140,32 @@ public class InviteCompanyRestController {
 	}
     
     @RequestMapping(value="/deleteScheduleMaintenance")
-   	public void deleteScheduleMaintenance(@RequestParam(value = "id", required = false) String id,HttpServletRequest request) {
-    	inviteCompanyService.deleteScheduleMaintenance(id);
+   	public Response<Void> deleteScheduleMaintenance(@RequestParam(value = "id", required = false) String id,HttpServletRequest request) {
+    	
+    	Response<Void> response = new Response<>();
+        User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
+		try {
+			if (loginUser != null) {
+			if(id != null) {
+			inviteCompanyService.deleteScheduleMaintenance(id);
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+			}else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());	
+			}
+			}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());	
+			}
+		}catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		
+		return response;
     }
        
 }

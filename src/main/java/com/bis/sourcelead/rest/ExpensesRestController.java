@@ -145,6 +145,7 @@ public class ExpensesRestController {
 		 }catch(Exception e) {
 			  model.addObject("AWKWARD", true);
 			  model.setViewName("expenses/expensesEmployeeRedefined");
+			  e.printStackTrace();
 		 }
 			return model;
 	}
@@ -188,13 +189,23 @@ public class ExpensesRestController {
                         }
                     }
                 }
-                
+        		Submission_Status submissionStatus = eah.getExpenseStatus();
+        		expenses.setExpenseStatus(submissionStatus);
             }
             /*if(expenses.getOrgRelationId() != null && !expenses.getOrgRelationId().isEmpty()){
     			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(Long.parseLong(expenses.getOrgRelationId()));
     			expenses.setOrgRelationUUID(orgRelations.getUUID());
     		}*/
             expensesDTOList.add(ExpensesDTOConverter.getExpensesDTOFromExpenses(expenses,new ExpensesDTO()));
+            for(ExpensesDTO expDate:expensesDTOList) {
+        		if(expenses.getStartDate() != null){
+        			expDate.setStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenses.getStartDate()));	
+        		}
+        		
+        		if(expenses.getEndDate() != null){
+        			expDate.setEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenses.getEndDate()));	
+        		}
+            }
         }
         response.setData(expensesDTOList);
         response.setRecordsFiltered(expensesList.getRecordsFiltered());
@@ -282,6 +293,14 @@ public class ExpensesRestController {
 				ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
 				for (ProjectMembers pm : projectMembersList) {
 					ProjectMembersDTO pmDTO =ProjectMemberDTOConverter.getProjectMembersDTOFromProjectMembers(pm);
+					
+					if(pm.getProjects()!= null) {
+						if(pm.getProjects().getStartDate()!= null){
+							pmDTO.setProjectStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pm.getProjects().getStartDate()));
+						}if(pm.getProjects().getEndDate()!= null){
+							pmDTO.setProjectEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pm.getProjects().getEndDate()));
+						}
+					}
 					List<ExpensesCategory> expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(pm.getProjects().getOrgLocationsId().getId(), "1");
 					if (expensesCategoryList != null && !expensesCategoryList.isEmpty()) {
 						ArrayList<ExpensesCategoryListDTO> ecDTOList = new ArrayList<>();

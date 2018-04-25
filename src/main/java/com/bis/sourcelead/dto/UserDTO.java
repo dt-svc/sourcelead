@@ -39,10 +39,13 @@ public class UserDTO extends SearchDTO implements Serializable {
 	private String email;
 	private String fullName;
 	private String unSubscribeTabIds;
+	private String fromDate;
+	private String toDate;
 	private String isPrimaryAdmin;
 	private String role;
 	private String subscribedOrgLocationRoles;
 	private String userloggedInStatus;
+
 
 	
 	public String getUnSubscribeTabIds()
@@ -345,6 +348,26 @@ public class UserDTO extends SearchDTO implements Serializable {
 		this.customDates = customDates;
 	}
 
+	public String getFromDate()
+	{
+		return fromDate;
+	}
+
+	public void setFromDate(String fromDate)
+	{
+		this.fromDate = fromDate;
+	}
+
+	public String getToDate()
+	{
+		return toDate;
+	}
+
+	public void setToDate(String toDate)
+	{
+		this.toDate = toDate;
+	}
+
 	public String getIsPrimaryAdmin() {
 		return isPrimaryAdmin;
 	}
@@ -375,6 +398,7 @@ public class UserDTO extends SearchDTO implements Serializable {
 
 	public void setUserloggedInStatus(String userloggedInStatus) {
 		this.userloggedInStatus = userloggedInStatus;
+
 	}
 
 	

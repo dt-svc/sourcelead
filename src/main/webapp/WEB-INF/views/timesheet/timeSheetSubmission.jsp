@@ -488,6 +488,9 @@
 							<div class="clearfix"></div>
 						</div>
 					</div>
+					<div id="activityDiv">
+						<%-- <jsp:include page="timesheetActivity.jsp"></jsp:include> --%>
+					</div>					
 	            </div>
 		    </div>
 	    </div>
@@ -501,6 +504,39 @@
 <script>
 /* this script is for calculate total hours */
 $(document).ready(function() {
+	
+	var invalidDate = "${INVALID_DATA}";
+	var emptyData = "${INVALID_DATA_EMPTY}"
+		var outPut;
+		if(invalidDate != "" && invalidDate != null && invalidDate != 'undefined'){
+			outPut = "<p>"+invalidDate+" hours should not be more than 24<b>X</b></p>";
+		}
+		if(emptyData != "" && emptyData != null && emptyData != 'undefined'){
+			outPut = "<p>"+emptyData+"<b>X</b></p>";
+		}
+	if((invalidDate != "" && invalidDate != null && invalidDate != 'undefined')|| (emptyData != "" && emptyData != null && emptyData != 'undefined')){
+		outPut = outPut;
+		$("#timeSheetErrorMsg").removeAttr('style');
+		$("#timeSheetErrorMsg").attr('style','display:block;');
+		$("#timeSheetErrorMsg").empty();
+		$("#timeSheetErrorMsg").append(outPut);
+		var error = "<input  type='hidden' name='timesheetHiddenError' id='timesheetHiddenError'  data-validation='required' />";
+		$("#hideError").empty();
+		$("#hideError").append(error);
+	 }else{
+	    $("#timeSheetErrorMsg").removeAttr('style');
+	    $("#timeSheetErrorMsg").attr('style','display:none;');
+		$("#timeSheetErrorMsg").empty();
+		$("#hideError").empty();
+	} 
+	
+	$(".time_pop b").click(function(){
+		$("#timeSheetErrorMsg").removeAttr('style');
+		$("#timeSheetErrorMsg").attr('style','display:none;');
+	    $("#timeSheetErrorMsg").empty();
+	}); 
+	
+	
 	maskme();
 	if($("#timesheet_form input[data-id*=docFile]").length > 0) {
 		$("#timesheet_form input[data-id*=docFile]").remove();
@@ -1434,31 +1470,32 @@ function checkHours(){
 	    	 
 	 }else{
 	    	if(i == '1'){
-	    		result = result+"Monday ,";
+	    		result = result+"Mon ,";
 	    	}
 	    	if(i == '2'){  
-	    		result = result+"Tuesday ,";
+	    		result = result+"Tue ,";
 	    	}
 	    	if(i == '3'){  
-	    		result = result+"Wednesday ,";
+	    		result = result+"Wed ,";
 	    	}
 	    	if(i == '4'){  
-	    		result = result+"Thursday ,";
+	    		result = result+"Thu ,";
 	    	}
 	    	if(i == '5'){
-	    		result = result+"Friday ,";
+	    		result = result+"Fri ,";
 	    	}
 	    	if(i == '6'){
-	    		result = result+"Saturday ,";
+	    		result = result+"Sat ,";
 	    	}
 	    	if(i == '7'){
-	    		result = result+"Sunday ,";
+	    		result = result+"Sun ,";
 	    	}
 	    	
 	 }
    }
 }   
-	if(result != "" && result != null && result != 'undefined'){   
+	if(result != "" && result != null && result != 'undefined'){
+		//showError(result+" hours should not be more than 24");
 		var outPut = "<p>"+result+" hours should not be more than 24<b>X</b></p>";
 		$("#timeSheetErrorMsg").removeAttr('style');
 		$("#timeSheetErrorMsg").attr('style','display:block;');

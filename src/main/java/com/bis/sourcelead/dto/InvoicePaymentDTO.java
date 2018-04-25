@@ -2,12 +2,22 @@ package com.bis.sourcelead.dto;
 
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class InvoicePaymentDTO {
 	private String invoiceId;
+	
+	@Required (desc = "paymentDate")
 	private String paymentDate;
+	
 	private String staticPath;
+	
+	@Required (desc = "paymentMethod")
 	private String paymentMethod;
+	
+	@Required (desc = "referenceNumber")
 	private String referenceNumber;
+	
 	private String totalAmount;
 	private String paymentAmount;
 	private String customeAmount;

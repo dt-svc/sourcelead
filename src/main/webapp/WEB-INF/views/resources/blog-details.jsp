@@ -50,11 +50,13 @@
        
        <h2>Recent Posts<i class="fa fa-caret-down"></i></h2>
         <div class="resSlide">
+        
     	<div class="blogRight recentPost">
     		<c:forEach var="relatedBlogs" items="${relatedBlogs}">
-    		<a href="/blog/${relatedBlogs.href}.html"><i class="fa fa-caret-right"></i>${relatedBlogs.href}</a>
-    	</c:forEach>
-        </div>                      
+    		<a class="linDotDot"  onclick="recentPosts('${relatedBlogs.href}');"><i class="fa fa-caret-right"></i>${relatedBlogs.blogTitle}</a>
+    	  </c:forEach>
+        </div>    
+                          
         <div class="blogRightBot hidden">
         	<p>Ready to Learn More?</p>
             <span>Let us help you choose the perfect solution for your firm.</span>
@@ -80,14 +82,14 @@
         <form:form id="blog_subscription_form" name="blog_subscription_form" method="post">
        		<div class="subscribe" id="emailError" >
 			    <input type="text" class="form-control" name="email" id="email" placeholder="Subscribe News Letter" field-name="Email"
-								data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateBlogSubscriptionEmail();" onkeyup="validateBlogSubscriptionEmail();">
+								data-validation="required validate_Space validate_length length2-100 validate_email">
 			    <input type="button" value="Subscribe" class="btn btn-danger pull-right" id="saveSubscription" onclick="saveBlogSubscription(${blogDetails.id});" >
   			</div>
   			
   			<div class="clearfix"></div>
   			 <div class="success_pop text-success text-center panel-heading bg-success" id="selector4" style="display: none;"> 
 		     <i class="fa fa-check-circle mr"></i><span id="subMsgDiv"></span> 
-		   </div>
+		    </div>
 		   
 		  
   	   </form:form>		
@@ -177,9 +179,15 @@ function validateBlogSubscriptionEmail(){
 
 </script>  
 
-
+<script>
+	function recentPosts(href){
+		var sourceleadUrl = '${sourceleadUrl}';
+		href = encodeURIComponent(href);
+		var url = sourceleadUrl.split("/app");
+		window.location.href = url[0] + "/blog/"+href+".html";
+	}
+</script>
 
 <jsp:include page="../staticFooter.jsp" />
-
 <script type="text/javascript" src="http://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5a60382a93e935c2"></script>
 <jsp:include page="../socialinviterscripts.jsp" />

@@ -78,7 +78,10 @@
 <script
 	src="/resources/js/jobs/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 <!-- <script src="/resources/staic-web/js/customscripts.js" type="text/javascript"></script> -->
-
+<div class="location-alert alert alert-danger alert-dismissable zInPop" id="locationAlert">
+    <a href="#" class="loc-alertclose close">&times;</a>
+    <strong>Alert !</strong> <span>Your are not able to Save Required data is Missing.</span>
+  </div>
  <title>.:: Jobs ::.</title>
  <style>
  .navbar-default {
@@ -148,6 +151,9 @@ window.onload = function () {
 		getOrgsList('none','main');
 	}
  };
+ $(".loc-alertclose").click(function(){
+	 $(".location-alert").fadeOut();
+})	
 </script>
 
 
@@ -947,7 +953,7 @@ top: 21px;height: 32px; line-height: 18px;
     <div class="copyrightOut">
         <div class="copyright">
             <b>� 2018 SourceLead. All rights reserved.</b> <span> <a
-                href="/privacypolicy.html">Privacy Policy</a> <a href="/termsofuse.html">Terms
+                href="/privacy-policy.html">Privacy Policy</a> <a href="/terms-of-use.html">Terms
                     of Use</a>
             </span>
             <div class="clear"></div>
@@ -2449,6 +2455,7 @@ function createAlert(requirementUUID){
         	  }
         	 result = "";
         	 result = result +' <form id="create_alert_form" name="create_alert_form" method="post">';
+        	 result = result+ '<input type = "hidden" name="tabType" value="openjobsForm"/>';
         	 result = result +'	 <div class="modal-dialog modal-lg">';
         	 result = result +'     <div class="modal-content">';
         	 result = result +'       <div class="modal-header">';
@@ -2781,7 +2788,6 @@ var validationSettings = {
    };  
 var sourceleadUrl ='${sourceleadUrl}';
          $('body').on('submit', '#create_alert_form', function(e){
-        	  
         	  if ($(this).validate(false, validationSettings)){
         		
         		e.preventDefault();
@@ -2794,7 +2800,23 @@ var sourceleadUrl ='${sourceleadUrl}';
 			  		        contentType:false, 
         					url : sourceleadUrl + "/ws/storeJobAlert?${_csrf.parameterName}=${_csrf.token}",
         					success : function(result) {
-        							location.replace("/jobs");
+        						if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+        							showError(result.responseMessage);
+        							 $("#loadinggif").removeAttr('style');
+        	        	    		}
+        	                  		else if (result.response === "AWKWARD") {
+        	                  			location.href = "/errorPage";
+        	        	    		}
+        	                  		else if(result.response === "SUCCESS"){
+        	                  			 $("#loadinggif").removeAttr('style');
+        	                  			location.replace("/jobs"); 
+        				        	    }
+        	                  		else if (result.indexOf('Sign In') !== -1) {
+        	                  			location.replace(sourceleadUrl);
+        	        				} else {
+        	        					showError("Operation failed, please try again");
+        	        					 $("#loadinggif").removeAttr('style');
+        	        				}
         					},
         				});
                 

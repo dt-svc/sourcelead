@@ -24,8 +24,8 @@ $(document).ready(function(){
 <script>
 function checkBox(){
 	var invoiceforexpenses = $("#invoiceforexpenses").val();
-	if(invoiceforexpenses == 'Y'){
-		$('#projectIdDiv').find('p.jquery_form_error_message').remove();
+	 if(invoiceforexpenses == 'Y'){
+	    $('#projectIdDiv').find('p.jquery_form_error_message').remove();
 		$('#projectMemberIdDiv').find('p.jquery_form_error_message').remove();
 		$('#expensesIdDiv').find('p.jquery_form_error_message').remove();
 		$('#projectId').removeAttr('data-validation');
@@ -180,7 +180,7 @@ function checkBox(){
                   <div class="form-group">
               <label class="col-md-3">Associate<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field" id="projectMemberIdDiv">
-                <select class="chosen-select form-control" id="projectMemberId" name="projectMemberId" onchange="getExpenses();" field-name="projectMemberId Name">
+                <select class="chosen-select form-control" id="projectMemberId" name="projectMemberId" onchange="getExpenses();" field-name="Associate">
                 </select>
               </div>
             </div>
@@ -308,13 +308,13 @@ function getClientContacts(){
 	$.ajax({
 	type : "GET",
 	url: sourceleadUrl+"/getClientContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
-	success :function(data) {
-	var json = JSON.parse(data);
+	success :function(json) {
+// 	var json = JSON.parse(data);
 	var output = "";
 	output = output + "<option value=''>Select Client Contact</option>";
-	for (var i=0; i<json.length; i++)
+	for (var i=0; i<json.data.length; i++)
 	{
-	var opt = json[i];
+	var opt = json.data[i];
 	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"</option>";
 	$("#clientCurrency").val(opt.clientCurrency);
 	}
@@ -339,9 +339,9 @@ function getProjectsList(projectName){
 // 	var json = JSON.parse(data);
 	var output = "";
 	output = output + "<option value=''>Select Project</option>";
-	for (var i=0; i<json.length; i++)
+	for (var i=0; i<json.data.length; i++)
 	{
-	var opt = json[i];
+	var opt = json.data[i];
 	var selected = "";
 	if(projectName != null && projectName != "" && projectName !="undefined" && projectName == opt.projectName){
 		selected = 'selected';
@@ -367,7 +367,12 @@ function getExpensesDetails(expId){
 		type : "GET",
 		url: sourceleadUrl+"/getExpensesEntries?"+tokenParamName+"="+tokenValue+"&expensesId="+expensesId,
 		success :function(data) {
+			if(data !=null && data !=''){
 			populateExpensesDetailsGrid(data);
+			}else{
+                  alertMessageInExpense();
+            }
+			
 		},
 		});	
 }
@@ -377,7 +382,7 @@ function getExpensesDetails(expId){
 
 <script>
 function populateExpensesDetailsGrid(data){
-	var currencyCode = '${SourceLeadWeb_currencyCode}';
+  var currencyCode = '${SourceLeadWeb_currencyCode}';
            var result = '';
            var subTotal = 0;
             result = result +'<input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber" value='+data.length+' />';
@@ -435,8 +440,6 @@ function populateExpensesDetailsGrid(data){
          		      result = result +' </tr>';
          		      
                  }	
-            }else{
-                  alertMessageInExpense();
             }
            
             
@@ -641,13 +644,13 @@ function getProjectFrequency(invoiceFrequency){
 	$.ajax({
 	type : "GET",
 	url: sourceleadUrl+"/getProjectFrequency?"+tokenParamName+"="+tokenValue+"&projectId="+projectId,
-	success :function(data) {
-		var json = JSON.parse(data);
+	success :function(json) {
+// 		var json = JSON.parse(data);
 		var output = "";
 		output = output + "<option value=''>Select Frequency</option>";
-		for (var i=0; i<json.length; i++)
+		for (var i=0; i<json.data.length; i++)
 		{
-		var opt = json[i];
+		var opt = json.data[i];
 		var convertOpt = opt.replace(/\//g, " to ");
 		var selected = "";
 		if(invoiceFrequency != null && invoiceFrequency != "" && invoiceFrequency !="undefined" && invoiceFrequency == opt){
@@ -924,9 +927,9 @@ function cancelReceivableAlert(){
 		   $.ajax({
 				type : "GET",
 				url: sourceleadUrl+"/getConversionExchangeRate?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
-				success :function(data) {
-					if(data !='' && data != 'undefined' && data != null){
-						var json = JSON.parse(data);
+				success :function(json) {
+					if(json.data !='' && json.data != 'undefined' && json.data != null){
+// 						var json = JSON.parse(data);
 						$("#exchangeRate").html(json.exchangeRate);
 						$("#exchangeCurrency").html(json.exchangeCurrency);
 						$("#vendorCurrencyCode").html(json.vendorCurrencyCode);
@@ -1045,7 +1048,7 @@ function calculateDisCount(){
   <div id="divTaxTd1" style="display: none; float: left;">
 	<div class="select-field tblminwidth-75">
 		  <div class="tblminwidth-50">
-		        <input type="text" class="form-control input-sm" value="" placeholder="Tax type" name='invoiceTax[REPLACEROWID].taxType' id='REPLACEROWIDtaxType'>
+		        <input type="text" class="form-control input-sm" value="" placeholder="Tax type" name='invoiceTax[REPLACEROWID].taxType' id='REPLACEROWIDtaxType' data-validation="required" field-name="Tax Type">
 		         <input type="hidden" name="REPLACEROWIDinvoiceTaxId" id="REPLACEROWIDinvoiceTaxId">
 		  </div>
 	 </div>
@@ -1264,7 +1267,7 @@ function calculateTaxDiscount(){
          //$("#create_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateInvoiceId?"+tokenParamName+"="+tokenValue+"&invoiceId="+invoiceId, 
+		        url: sourceleadUrl+"/validateInvoiceId?"+tokenParamName+"="+tokenValue+"&invoiceId="+invoiceId+"&invoiceType=Receivable", 
 		        success: function(data) {
 		        	 if(data == true){
 		        		  $('#invoiceIdDiv').find('p.jquery_form_error_message').remove();
@@ -1493,13 +1496,13 @@ function getClientContactsExisted(clientContactId){
 	$.ajax({
 	type : "GET",
 	url: sourceleadUrl+"/getClientContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
-	success :function(data) {
-	var json = JSON.parse(data);
+	success :function(json) {
+// 	var json = JSON.parse(data);
 	var output = "";
 	output = output + "<option value=''>Select Client Contact</option>";
-	for (var i=0; i<json.length; i++)
+	for (var i=0; i<json.data.length; i++)
 	{
-	var opt = json[i];
+	var opt = json.data[i];
 	var selected = "";
 	if(clientContactId != null && clientContactId != "" && clientContactId !="undefined" && clientContactId == opt.spocUserId){
 		selected = 'selected';

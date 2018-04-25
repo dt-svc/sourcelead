@@ -6,7 +6,6 @@
 
 <link href="/resources/css/summernote-new.css" rel="stylesheet" type="text/css">
 
-
 <div class="wraper">
 <!-- Content Area -->
 <section class="content-wraper">
@@ -135,7 +134,7 @@
         <div class="pull-right">
           <input type="button" value="Publish" class="btn btn-primary" id="publish" onclick="saveBlog('published');">
            <input type="hidden" value="${sourceleadBlog.blogUUID}" id="blogUUID">
-          <input type="button" value="Save" class="btn btn-info ml mr" id="save" onclick="saveBlog('saved');">
+          <input type="button" value="Save" class="btn btn-info ml mr" id="save" onclick="saveBlog('Publish');">
           <input type="button" value="Cancel" id="cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/blogs'/>'" class="btn btn-default">
         </div>
       </div>
@@ -214,8 +213,9 @@ function uploadFileDoc(){
    $("#blogKeywords").trigger("chosen:updated");
    // current Date And Time Script.
 	$('#publishOn').datetimepicker({
+		//useCurrent: false,
 		minDate: new Date()
-	});
+	}).val('');
 
 </script>
 	
@@ -256,8 +256,8 @@ function removeBlogImg(blogId){
 </script>
   
 <script type="text/javascript">
-$(function() { 
-	tagIt("blogKeywords", 'Enter Keywords And Press Enter-Key Or Comma(,) Or Space To Add New Keywords', 'tagItBykeyForEmails','skills');
+$(function() {
+	tagIt("blogKeywords", 'Enter Keywords And Press Enter-Key Or Comma(,) Or Space To Add New Keywords', 'tagItBykeyForSkills','skills');
 });
 </script>
  
@@ -276,7 +276,7 @@ function validateBlogTitle(blogUUID){
 			success : function(data) {
 				if(data == true){
 	        		  $('#blogTitleDiv').find('p.jquery_form_error_message').remove();
-					  $("input#blogTitle").after("<p class='jquery_form_error_message'>"+blogTitle+" is Already Existed</span>");
+					  $("input#blogTitle").after("<p class='jquery_form_error_message' style='align:right'  title="+blogTitle+"> <span> "+blogTitle+" </span> is Already Existed</p>");
 					  document.getElementById("blogTitle").setAttribute('record-exist','yes');
 					  document.getElementById("blogTitle").setAttribute('record-exist-errorMsg',blogTitle+' is Already Existed'); 
 	        	}
@@ -292,6 +292,7 @@ function validateBlogTitle(blogUUID){
 <script src="/resources/js/summernote.min.js"></script>
 <script>
 $(function() { 
+  $('#publishOn').empty().val('${publishon}');
   setTimeout(function () {
     var description = '${sourceleadBlog.description}';
 	 $("textarea[name=description]").val(description);
@@ -307,7 +308,6 @@ $(function() {
     $('.note-editable').attr("data-validation","required"); 
  	$('.note-editor').css({"min-height":"200px"});
 	$('.note-editable').css({"min-height":"200px", "max-height":"200px"});
-	
 });
 </script>
 

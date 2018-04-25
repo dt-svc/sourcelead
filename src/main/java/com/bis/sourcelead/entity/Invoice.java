@@ -229,6 +229,7 @@ public class Invoice {
 	private String clientContactName;
 	
 	@Transient
+	@JsonProperty
 	private String clientContactEmail;
 	
 	@Transient
@@ -244,21 +245,27 @@ public class Invoice {
 	private String dueDateStr;
 
 	@Transient
+	@JsonProperty
 	private Long vendorOrgRelationId;
 	
 	@Transient
+	@JsonProperty
 	private Long vendorContactId;
 	
 	@Transient
+	@JsonProperty
 	private String orgName;
 	
+	@JsonProperty
 	@Transient
 	List<InvoiceLineItems> invoiceLineItemsList;
 	
 	@Transient
+	@JsonProperty
 	List<InvoiceDocument> invoiceDocumentsList;
 	
 	@Transient
+	@JsonProperty
 	List<InvoiceTax> invoiceTaxList;
 
 	@Transient
@@ -303,26 +310,33 @@ public class Invoice {
 	private Integer dueBeforeInvoiceCount;
 	
 	@Transient
+	@JsonProperty
 	private Long invoiceParentId;
 	
 	@Transient
+	@JsonProperty
 	private List<String> submissionApproverHierarchyIds;
 	
 //	  
 	
 	@Transient
+	@JsonProperty
 	private float netIncome;
 	
 	@Transient
+	@JsonProperty
 	private float recievableAmount;
 	
 	@Transient
+	@JsonProperty
 	private float payableAmount;
 	
 	@Transient
+	@JsonProperty
 	private String vendorCurrency;
 	
 	@Transient
+	@JsonProperty
 	private String clientCurrency;
 	
 	@Transient

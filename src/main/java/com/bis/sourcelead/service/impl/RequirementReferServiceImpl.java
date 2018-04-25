@@ -28,10 +28,12 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Contact_Source;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementReferService;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -61,6 +63,9 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 	
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
+	
+	@Autowired
+	RequirementLocationsService requirementLocationsService;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -230,9 +235,28 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		 if(requirement.getDescription() !=null && !"".equalsIgnoreCase(requirement.getDescription())){
 			 globalVarsMap.put("jobDescription", requirement.getDescription()); 
 		 }
-		 
-		 if(requirement.getLocation() !=null && !"".equalsIgnoreCase(requirement.getLocation())){
-			 globalVarsMap.put("jobLocation", requirement.getLocation()); 
+		 List<String> requirementLocationsList = new ArrayList<>();
+			List<RequirementLocations> locationsList;
+			String location = "";
+			StringBuilder requirementBuilder=new StringBuilder();
+			try {
+				locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+				if(locationsList != null && !locationsList.isEmpty()) {
+					for(RequirementLocations locationsJob : locationsList) {
+						requirementLocationsList.add(locationsJob.getLocation());
+						if(locationsJob.getLocation() !=null && locationsJob.getLocation() !=null){
+							location = requirementBuilder.append(locationsJob.getLocation()).toString();
+						}else{
+							location = "--";
+						}
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		 if(location !=null && !"".equalsIgnoreCase(location)){
+			 globalVarsMap.put("jobLocation", location); 
 		 }
 		 
 		 if(requirement.getJobId() !=null && !"".equalsIgnoreCase(requirement.getJobId())){
@@ -246,13 +270,18 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 			 
 		 }
 		 
+		 String sourceleadUrlWithoutApp = sourceleadUrl;
+		 sourceleadUrlWithoutApp = sourceleadUrlWithoutApp.split("/app")[0];
+			
+		 
 		 globalVarsMap.put("professinalName", professionalName);
 		 globalVarsMap.put("referedProfessionalName", user.getUserName());
 		 StringBuilder loginBuilder = new StringBuilder();
 		 globalVarsMap.put("registerLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("referRequirementToProfessional?requirementUUID=").append(requirement.getRequirementUUID()).append("&contactUUID=").append(contactUUID).append("&referUUID=").append(referUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View</div></a>").toString());
 		
 		 StringBuilder professionalReg = new StringBuilder();
-		 globalVarsMap.put("professionalReg",professionalReg.append("<a href='").append(sourceleadUrl).append("/register?requirementUUID=").append(requirement.getRequirementUUID()).append("&contactUUID=").append(contactUUID).append("&referUUID=").append(referUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Register</div></a>").toString());
+		 globalVarsMap.put("professionalReg",professionalReg.append("<a href='").append(sourceleadUrlWithoutApp).append("/register").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Register</div></a>").toString());
+		 
 		 
 		 StringBuilder linkBuilder = new StringBuilder();
 		 globalVarsMap.put("supportLink",linkBuilder.append("<a href='http://www.sourcelead.com/contact.html' target='_blank' style='outline:none; border:none;'>http://www.sourcelead.com/contact.html</a>").toString());
@@ -446,6 +475,32 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		 globalVarsMap.put("requirementTitle", requirement.getJobTitle());
 		 globalVarsMap.put("professinalName", professionalName);
 		 globalVarsMap.put("referedProfessionalName", user.getUserName());
+		 if(requirement.getDescription() !=null && !"".equalsIgnoreCase(requirement.getDescription())){
+			 globalVarsMap.put("jobDescription", requirement.getDescription()); 
+		 }
+		 List<String> requirementLocationsList = new ArrayList<>();
+			List<RequirementLocations> locationsList;
+			String location = "";
+			StringBuilder requirementBuilder=new StringBuilder();
+			try {
+				locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+				if(locationsList != null && !locationsList.isEmpty()) {
+					for(RequirementLocations locationsJob : locationsList) {
+						requirementLocationsList.add(locationsJob.getLocation());
+						if(locationsJob.getLocation() !=null && locationsJob.getLocation() !=null){
+							location = requirementBuilder.append(locationsJob.getLocation()).toString();
+						}else{
+							location = "--";
+						}
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		 if(location !=null && !"".equalsIgnoreCase(location)){
+			 globalVarsMap.put("jobLocation", location); 
+		 }
 		 StringBuilder loginBuilder = new StringBuilder();
 		 globalVarsMap.put("registerLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("referRequirementToProfessional?requirementUUID=").append(requirement.getRequirementUUID()).append("&contactUUID=").append(contactUUID).append("&referUUID=").append(referUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View</div></a>").toString());
 		
