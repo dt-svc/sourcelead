@@ -1,7 +1,9 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,18 +11,23 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AssetDao;
+import com.bis.sourcelead.dto.AssetAssignDTO;
 import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.AssetCustomFieldData;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationFormFields;
+import com.bis.sourcelead.entity.ProjectDocumentFolder;
+import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserCustomFieldData;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.AssetCustomFieldService;
 import com.bis.sourcelead.service.AssetService;
@@ -256,27 +263,34 @@ public class AssetServiceImpl implements AssetService{
 			 FileUploadUtil.moveFile(assetDTO.getStaticPath(), fileInfo, "assetDocuments");
 		 }
 		 
-		 if(assetDTO.getUploadBtndskAUpload() != null){
-			 FileInfo fileInfo1 = assetDTO.getUploadBtndskAUpload().get(0);
-			 asset.setShiftAFileUrl(fileInfo1.getFileURL());
-			 asset.setShiftAFileName(fileInfo1.getFileName());
-			 asset.setShiftAFileContentType(fileInfo1.getContentType());
-			 FileUploadUtil.moveFile(assetDTO.getStaticPath(), fileInfo1, "assetDocuments");
-			 }
-			 
-			 if(assetDTO.getUploadBtndskBUpload()!= null){
-			 FileInfo fileInfo2 = assetDTO.getUploadBtndskBUpload().get(0);
-			 asset.setShiftBFileUrl(fileInfo2.getFileURL());
-			 asset.setShiftBFileName(fileInfo2.getFileName());
-			 asset.setShiftBFileContentType(fileInfo2.getContentType());
-			 FileUploadUtil.moveFile(assetDTO.getStaticPath(), fileInfo2, "assetDocuments");
-			 }
+		 Set<AssetAssign> assetAssignDBList = new HashSet<>();
+		 if(assetDTO .getAssignAsset() != null &&  !assetDTO .getAssignAsset().isEmpty()) {
+			 if(assetDTO.getShiftAEmp() != null) {
+				 for(AssetAssignDTO aad : assetDTO .getAssignAsset()) {
+					 AssetAssign aa  = new AssetAssign();
+					 aa.setAsset(asset);
+					 UserRole  userRole = new UserRole();
+					 userRole.setId(Long.valueOf(aad.getShiftEmp()));
+					 aa.setUserRole(userRole);
+					 aa.setStatus(Constants.RECORD_ACTIVE);
+						List<FileInfo> assetAssignDocumentsList = aad .getFileInfo();
+						for(FileInfo fileInfo : assetAssignDocumentsList){
+							aa.setFileName(fileInfo.getFileName());
+							aa.setFileType(fileInfo.getContentType());
+							aa.setFileURL(fileInfo.getFileURL());
+							FileUploadUtil.moveFile(assetDTO.getStaticPath(), fileInfo, "assetDocuments");
+							assetAssignDBList.add(aa);
+						}
+						
+					}
+				     asset.setAssetAssign(assetAssignDBList); 
+			   }
+		 }
 		    		 
 		 asset.setOrgLocations(orgLocations);
 		 asset.setUpdatedBy(user.getUserCode());
 		 asset.setUpdatedDate(new Date());
 		 asset.setStatus(Constants.RECORD_ACTIVE);
-		 
 		 Asset savedAsset = assetDao.saveAsset(asset);		
 
 			if(assetDTO.getCustomFormData() !=null) {

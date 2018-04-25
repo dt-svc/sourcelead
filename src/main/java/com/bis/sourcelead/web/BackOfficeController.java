@@ -37,8 +37,10 @@ import com.bis.sourcelead.entity.BoPaymentTypes;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.AmexFileUploadService;
 import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.AssetService;
@@ -49,8 +51,10 @@ import com.bis.sourcelead.service.ChaseUploadFileService;
 import com.bis.sourcelead.service.ComericaFileUploadService;
 
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.UploadFileService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -101,6 +105,12 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	UserRoleService userRoleService;
+	
+	@Autowired
+	ShiftService shiftService;
 	
 	@RequestMapping(value = "/finance")
 	public ModelAndView finance(HttpServletRequest request) throws Exception {
@@ -225,6 +235,12 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 		
 		List<Employees> employeesList = employeesService.getEmployeesByLocationId(orgLocations.getId());
 		model.addObject("employeesList", employeesList);
+		
+		List<UserRole> userRoleList = userRoleService.getAllUsersBasedOrgLocationIdAndActiveAndNotLogin(orgLocations.getId());
+		model.addObject("userRoleList", userRoleList);
+		
+		List<Shift> siftList = shiftService.getShiftList(orgLocations.getId());
+		model.addObject("siftList", siftList);
 		
 	     SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_ADD_ASSET);
 	     model.addObject("actionId",action.getId());
@@ -352,6 +368,25 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 			response.getOutputStream().flush();	
 	}
 	
+	@RequestMapping(value = "/addAndEditAssetAssign", method = RequestMethod.POST)
+	public ModelAndView addAndEditAssetAssign(@RequestParam(value="assetId", required=false) Long assetId,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		Asset asset = assetService.getAssetById(assetId);
+		model.addObject("assetAssignData",asset);model.addObject("sourceleadUrl", sourceleadUrl);
+		
+		List<AssetCategory> assetCategoriesList = assetCategoryService.getAssetCategoryListByLocationId(orgLocations.getId());
+		model.addObject("assetCategoriesList", assetCategoriesList);
+		
+		List<UserRole> userRoleList = userRoleService.getAllUsersBasedOrgLocationIdAndActiveAndNotLogin(orgLocations.getId());
+		model.addObject("userRoleList", userRoleList);
+		
+		List<Shift> siftList = shiftService.getShiftList(orgLocations.getId());
+		model.addObject("siftList", siftList);
+		
+		model.setViewName("backOffice/addAssetPopup");
+		return model;
+	}
 	
 	private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

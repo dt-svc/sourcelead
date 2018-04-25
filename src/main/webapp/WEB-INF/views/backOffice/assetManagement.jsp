@@ -53,162 +53,9 @@ $(document).ready(function(){
       
       <ul>
         <li>
-          <a href="javascript:void(0)" class="addcon-pop"><i class="fa fa-plus"></i>Add Asset</a> 
+          <a href="javascript:void(0)" class="addcon-pop"  onClick="addAssetManagementPopup();"><i class="fa fa-plus"></i>Add Asset</a> 
            <li title="Import"><a href="<c:url value='${appPath}/uploadassetManagement'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
          <!-- Add Asset Popup -->
-          <div class="collapse-div-adduser pop-div col-md-12 assetaddpop">
-          <div id="loading"></div>
-          <form:form id="addAsset_form"  name="addAsset_form"> 
-           <i class="fa fa-close close-div"></i>
-			 
-			 <div class="popinnerdiv"> 
-			  <div class="clearfix">
-            <div class="clearfix assetaddpop-ul col-md-6" id="categoryDiv">
-				<select class="chosen-select" id="category" name="category" onChange="assetCategory(this);" data-validation="required" field-name="Asset Category">
-				<option selected value="">-Select Category-</option>
-					<c:forEach var="option" items="${assetCategoriesList}">
-							<option value="${option.id}">${option.categoryName}</option>
-					</c:forEach>
-				</select>	
-            </div>
-            <div class="clearfix assetaddpop-ul col-md-6" id="workingStatusDiv">
-				<select class="chosen-select" id="workingStatus" name="workingStatus" data-validation="required" field-name="Working Status">
-					<option selected value="">-Select Working Status-</option>
-					<option value="Working">Working</option>
-					<option value="Out Of Service">Out Of Service</option>
-				</select>	
-            </div>
-            </div>
-			  <div class="clearfix mb10"></div>
-         
-            <div class="clearfix">
-              <div class="form-horizontal clearfix">
-                <div class="clearfix mb10">
-                  <div class="col-md-6" id="snoDiv">
-                    <input type="text" class="form-control input-sm" id="sno" name="sno" placeholder="Serial / Port Number *" field-name="Serial / Port Number" onkeyup="validateAssetSno();" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length1-200">
-                  </div>
-                  <div class="col-md-6" id="makeDiv">
-                    <input type="text" class="form-control input-sm" id="make" name="make" placeholder="Make" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
-                  </div>
-                </div>
-                <div class="clearfix">
-                  <div class="col-md-4 mb10" id="modelDiv">
-                    <input type="text" class="form-control input-sm" id="model" name="model" placeholder="Model"  data-validation-optional="true" data-validation="validate_Space validate_length length2-100" >
-                  </div>
-                  <!-- <div class="col-md-4 mb10" id="nameDiv">
-                    <input type="text" class="form-control input-sm" name="name" id="name" placeholder="Name" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
-                  </div> -->
-                  <div class="col-md-4 mb10" id="memoryDiv"  style="display: none;" >
-                    <input type="text" class="form-control input-sm" name="memory" id="memory" placeholder="Memory"  data-validation-optional="true" data-validation="validate_Space validate_NumberAndAlphabet validate_length length2-50">
-                  </div>
-                  <div class="col-md-4 mb10" id="cpuDiv"  style="display: none;" >
-                    <input type="text" class="form-control input-sm" name="cpu" id="cpu" placeholder="CPU" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
-                  </div>
-                  <div class="col-md-4 mb10" id="harddiskDiv"  style="display: none;">
-                    <input type="text" class="form-control input-sm" name="harddisk" id="harddisk" placeholder="Hard Disk" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
-                  </div>
-                  
-                  
-                         <div class="col-md-4 mb10">
-                         <div class="">
-                           <div class="input-group">
-                              <input type="text" value="" name="issueDate" placeholder = "Issue Date" class="form-control calendar input-sm" id="issueDate" readonly="readonly">
-                              <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
-                           </div>
-                        </div>
-                  </div>
-                  <div class="col-md-4 mb10" id="monitorDiv" style="display: none;">
-                    <input type="text" class="form-control input-sm" id="monitor" name="monitor" placeholder="Monitor"  data-validation-optional="true" data-validation="validate_Space validate_NumberAndAlphabet validate_length length2-100">
-                  </div>
-                </div>
-                
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" id="macAddress" name="macAddress" placeholder="MAC Address" field-name="MAC Address"  data-validation="validate_length length8-50" data-validation-optional="true">
-                  </div>
-                </div>
-                
-                <div class="clearfix mb10">
-                  <div class="col-md-6" id="attachmentDiv">
-                    <div class="input-group attachfile-error" >
-                      <label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFile();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                        <input type="file" id="attachment"   style="display: none;" class="upload">
-                        </b> </label>
-                      <input type="text" class="form-control" name="abc" data-validation = "validatedoc" data-validation-optional="true"  readonly id="uploadFileAttachment" placeholder="Files are not selected...">
-                    </div>
-                  </div>
-                  <div class="col-md-6" id="descriptionDiv">
-                    <textarea class="form-control" rows="2" name="description" id="description" placeholder="Description" data-validation-optional="true" data-validation="validate_Space"></textarea>
-                  </div>
-                   <c:if test="${!empty sourceleadSectionList}">
-	            	<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
-	               		<c:if test="${sectionOrder.index == 0}">
-	                		  <div id="customDiv${section.id}" class="col-md-6 columnfields-custom"></div>
-	              		 </c:if>
-	            	</c:forEach>
-	   			</c:if>
-                </div>
-                <!-- Shift A Fields -->
-                <div class="clearfix" id="shiftADetails" style="display: none;">
-                <div class="clearfix">
-                  <h4 class="col-md-12">Shift A</h4>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6" id="uploadFile-dskADiv">
-                    <select class="form-control chosen-select" id="shiftAEmp" name="shiftAEmp">
-                      <option selected value="">-Select Employee-</option>
-                      <c:forEach var="option" items="${employeesList}">
-					     <option value="${option.user.id}">${option.user.firstName} ${option.user.lastName}</option>
-					  </c:forEach>
-                    </select>
-                  </div>
-                  <div class="col-md-6" id="uploadFile-dskBDiv">
-                    <div class="input-group attachfile-error">
-                      <label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFileShiftA();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                        <input type="file"id="uploadBtn-dskA"  style="display: none;" class="upload">
-                        </b> </label>
-                      <input type="text"  class="form-control" data-validation = "validatedoc" data-validation-optional="true"  name="shiftAAttachment" readonly id="uploadFileShiftA" placeholder="Files are not selected...">
-                    </div>
-                  </div>
-                </div>
-                </div>
-                <!-- Shift A Fields --> 
-                
-                <!-- Shift B Fields -->
-               <div class="clearfix" id="shiftBDetails" style="display: none;">
-                <div class="clearfix">
-                  <h4 class="col-md-12">Shift B</h4>
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-6">
-                    <select class="form-control chosen-select" id="shiftBEmp" name="shiftBEmp">
-                      <option selected value="">-Select Employee-</option>
-                      <c:forEach var="option" items="${employeesList}">
-					     <option value="${option.id}">${option.user.firstName} ${option.user.lastName}</option>
-					  </c:forEach>
-                    </select>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="input-group attachfile-error">
-                      <label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFileShiftB();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                         <input type="file" id="uploadBtn-dskB"  style="display: none;" class="upload">
-                        </b> </label>
-                      <input type="text"  class="form-control" data-validation = "validatedoc" data-validation-optional="true"  name="shiftBAttachment" readonly id="uploadFileShiftB" placeholder="Files are not selected...">
-                    </div>
-                  </div>
-                </div>
-                </div>
-                </div>
-                </div>
-                <!-- Shift A Fields -->
-                <div class="clearfix mr">
-                  <div class="pull-right">
-                   <input type="button" value="Add" id="add_asset" onclick="storeAsset();" class="btn btn-sm btn-primary">
-                  </div>
-              </div>
-            </div>
-            </form:form>
-          </div>
         </li>
         <li>
         <a href="<c:url value='${appPath}/assetCategory'/>" class=""><i class="fa fa-plus"></i>Categories</a>
@@ -222,11 +69,11 @@ $(document).ready(function(){
     <div id= "assetManagementLoderDiv"></div>
     <table id="assetManagementList" class="display" cellspacing="0" width="100%"> </table>
     <div id="dynamicAssetManagementList"></div>
-      
     </div>
     
     <!-- list Table -->
-  </div></div>
+  </div>
+  </div>
   <div class="side_mask">
     <div class="proj_close"></div>
   </div>
@@ -249,20 +96,38 @@ $(document).ready(function(){
   </div>
   </section>
   
+   <div class="comMask"></div>
+  		<div class="modal assetManagementPopup" id="assetManagementPopup" style="display: none;">
+ 		<jsp:include page="addAssetPopup.jsp"></jsp:include> 
+ 	</div>
   <script>
-  $( function() {
-	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	  // written common method in slead-common.js for date formats start
-	  var finalDateFormat = getJSDateFormat(locationDate);
-	  //end
-	  $('#issueDate').datepicker({
-	      dateFormat: finalDateFormat,
-	      changeMonth: true,
-	  	  changeYear: true, 
-	      //minDate: 0  this line for to restrict selection of previous dates
-	  });
-	  
-  } );
+  function addAndEditAssetAssign(assetId){
+	  $.ajax({
+	    	type: "POST",
+	    	url: sourceleadUrl+"/addAndEditAssetAssign?&assetId="+assetId, 
+	        success: function(result) {
+	        	$(".assetManagementPopup, .comMask").fadeIn();
+	        	$('#assetManagementPopup').empty();
+	        	$('#assetManagementPopup').append(result);
+		        
+	        },
+	    }); 
+  }
+  
+  </script>
+  
+   
+  <script>
+  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+  // written common method in slead-common.js for date formats start
+  var finalDateFormat = getJSDateFormat(locationDate);
+  //end
+  $('#issueDate').datepicker({
+      dateFormat: finalDateFormat,
+      changeMonth: true,
+  	  changeYear: true, 
+      //minDate: 0  this line for to restrict selection of previous dates
+  });
   
   function clearDate(){
   	$("#issueDate").val("");
@@ -611,7 +476,7 @@ function projectAssetPaginations(url){
 			  	"sortable": false,
 			  	"render": function(data, type, report) {
 			  		var result = "";
-				   	result = result+'<td><div class="tblminwidth-50"><i class="fa fa-trash-o text-danger" onClick="deleteAsset(\''+report.id+'\')";></i></div></td>';
+				   	result = result+'<td><div class="tblminwidth-50"><a class="glyphicon glyphicon-edit" title="Edit" onclick="addAndEditAssetAssign(\''+report.id+'\');"></a> <i class="fa fa-trash-o text-danger" onClick="deleteAsset(\''+report.id+'\')";></i></div></td>';
 		           return result;
 		  	  }
 	  		} ],
@@ -1020,10 +885,7 @@ $(".addcon-pop").click(function(){
  });
 
  
-//upload file script -Desktop-shiftA
- document.getElementById("uploadBtn-dskA").onchange = function () {
- $('#uploadFileShiftA').val($(this).val().replace(/C:\\fakepath\\/i, ''))
- };
+
 
 //upload file script -Desktop-shiftB
  document.getElementById("uploadBtn-dskB").onchange = function () {
@@ -1150,14 +1012,26 @@ function uploadFile(){
 </script>
 
 <script>
-function uploadFileShiftA(){
-	fileUpload("uploadBtn-dskA", "assetDocuments", "addAsset_form","uploadBtndskAUpload");
+function setFilePath(shiftIndex){
+	$('#shiftFile'+shiftIndex).val($('#uploadBtn-dskA'+shiftIndex).val().replace(/C:\\fakepath\\/i, ''));
+}
+function uploadShiftFile(shiftIndex){
+	fileUpload("uploadBtn-dskA"+shiftIndex, "assetDocuments", "addAsset_form","assignAsset["+shiftIndex+"].fileInfo","","");
 }
 </script>
 
 <script>
 function uploadFileShiftB(){
 	fileUpload("uploadBtn-dskB", "assetDocuments", "addAsset_form","uploadBtndskBUpload");
+}
+</script>
+<script>
+function closeassetManagementPopup() {
+	$(".assetManagementPopup, .comMask").fadeOut();
+}
+function addAssetManagementPopup() {
+	$(".assetManagementPopup, .comMask").fadeIn();
+	addAndEditAssetAssign();
 }
 </script>
 <%-- <jsp:include page="assetManagementDetails.jsp" />

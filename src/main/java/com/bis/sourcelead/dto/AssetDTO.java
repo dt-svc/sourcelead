@@ -90,6 +90,8 @@ public class AssetDTO extends SearchDTO implements Serializable {
 		
 		private String categoryIds;
 		
+		private List<AssetAssignDTO> assignAsset;
+		
 
 		public List<CustomFormFieldDTO> getCustomFormData() {
 			return customFormData;
@@ -402,6 +404,12 @@ public class AssetDTO extends SearchDTO implements Serializable {
 		public void setCatagoryHiddenId(Long catagoryHiddenId) {
 			this.catagoryHiddenId = catagoryHiddenId;
 		}
-		
-		
+
+		public List<AssetAssignDTO> getAssignAsset() {
+			return assignAsset;
+		}
+
+		public void setAssignAsset(List<AssetAssignDTO> assignAsset) {
+			this.assignAsset = assignAsset;
+		}
 }

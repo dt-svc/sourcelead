@@ -3,7 +3,9 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,17 +15,22 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import cucumber.deps.difflib.Delta.TYPE;
 
 @Entity
 @Table(name = "ASSET")
@@ -48,6 +55,7 @@ public class Asset implements Serializable{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ASSET_CATEGORY_ID")
 	@JsonBackReference
+	@JsonProperty
 	private AssetCategory assetCategory;
 	
 	@Column(name = "MAKE")
@@ -133,6 +141,12 @@ public class Asset implements Serializable{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID")
 	private OrgLocations orgLocations;
+	
+	
+	@OneToMany(mappedBy="asset",cascade=CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+    @JsonBackReference
+    private Set<AssetAssign> assetAssign;
 	
 	@Column(name = "DESCRIPTION")
 	@Type(type="text")
@@ -498,4 +512,13 @@ public class Asset implements Serializable{
 	public void setMacAddress(String macAddress) {
 		this.macAddress = macAddress;
 	}
+
+	public Set<AssetAssign> getAssetAssign() {
+		return assetAssign;
+	}
+
+	public void setAssetAssign(Set<AssetAssign> assetAssign) {
+		this.assetAssign = assetAssign;
+	}
+	
 }
