@@ -255,7 +255,7 @@
 									<c:set var="entryIndex" value="0"/>
 									<c:forEach var="entry" items="${entriesMap}" varStatus="entryCount">
 									    <tr id="timesheetRow${entryCount.index+1}">
-									      <td>
+									      <td id="${entryCount.index+1}taskTd">
 											<div class="taskDropDown">
 											  <c:set var="taskType" value=""/>
 											  <c:set var="taskId" value=""/>
@@ -1426,6 +1426,7 @@ function editMe(local){
 		 }else if(isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
 		     $("#"+id).val("00:00");
 		     setTotals();
+		     checkHours(); 
 		 }
 		 
 		 /* else{
@@ -1437,6 +1438,10 @@ function editMe(local){
 }
 
 function checkHours(){ 
+	rowRemoveError();
+	 if ($('#timesheet_form').validate(false, validationSettings)){ 
+		 rowValidation();
+	 }
 	 var result = "";		
 	 var total; 
 	 var rowNum = $("#maxRowNumber").val();
@@ -1517,7 +1522,44 @@ function checkHours(){
 	    $("#timeSheetErrorMsg").empty();
 	}); 
 	
+	
 }
+</script>
+<script>
+   function rowValidation(){ 
+	     var rowNum = $("#maxRowNumber").val();
+		 var jValue = parseInt(rowNum)+1;
+		 for (var j = 1; j < jValue; j++){
+			 var isEmpty = true;
+			 for (var i = 1; i < 8; i++){
+				 var btemp = $("#"+j+"timeSheetDay"+i+"Id").val();
+				 if (btemp !== undefined && btemp !=='####' && btemp !=='') {
+					 isEmpty = false;
+					 break;
+				 }
+			 }
+			 if(isEmpty == true){
+				 $("#"+j+"taskTd").find('p.jquery_form_error_message').remove(); 
+				 $("#"+j+"task1Id").after("<p class='jquery_form_error_message'>Atleat One Date Should Be Filled</span>");
+				 $("#"+j+"task1Id").attr('record-exist','yes');
+				 $("#"+j+"task1Id").attr('record-exist-errorMsg','Atleat One Date Should Be Filled');
+			 }else{
+				 $("#"+j+"task1Id").removeAttr( "record-exist record-exist-errormsg");
+				 $("#"+j+"taskTd").find('p.jquery_form_error_message').remove();  
+			 }
+		 }
+   }
+
+</script>
+<script>
+   function rowRemoveError(){ 
+	     var rowNum = $("#maxRowNumber").val();
+		 var jValue = parseInt(rowNum)+1;
+		 for (var j = 1; j < jValue; j++){
+			 $("#"+j+"task1Id").removeAttr( "record-exist record-exist-errormsg");
+			 $("#"+j+"taskTd").find('p.jquery_form_error_message').remove();  
+		 }
+   }
 </script>
 <script>
 function addAttachment(){  
