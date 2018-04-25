@@ -33,11 +33,11 @@ public class SourceleadBlogDTO extends SearchDTO implements Serializable{
 	private String imgFileUrl;
 	
 	@Required(desc = "description")
-	@CleanHtml(escape=true)
+	@CleanHtml(escape=false)
 	private String description;
 	
 	@Required(desc = "short description")
-	@CleanHtml(escape=true)
+	@CleanHtml(escape=false)
 	private String shortDescription;
 
 	private String status;
