@@ -167,10 +167,7 @@ public class TimesheetEmailUtil {
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		Date startDateFormat = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), startDate);
 		Date endDateFormat = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), endDate);
-		SubmissionApproverHierarchy sah = submissionApproverHierarchyService
-				.getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(startDateFormat,
-						endDateFormat, projectMember.getProjects().getId(),
-						projectMember.getMasterCandidateId().getId());
+		SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(startDateFormat,endDateFormat, projectMember.getProjects().getId(),projectMember.getMasterCandidateId().getId());
 		HashMap<String, String> paramList = new HashMap<>();
 		String actionLink = null;
 		if (sah != null && sah.getSubmissionId() != null && sah.getSubmissionId().getProjectMembers() != null) {
@@ -178,8 +175,7 @@ public class TimesheetEmailUtil {
 			paramList.put("endDateStr", endDate);
 			paramList.put("dateFormat", loginOrgLocation.getDateFormat());
 			paramList.put("projectMemberId", projectMember.getId().toString());
-			actionLink = actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheet/")
-					.append(Constants.PLACE_UUID).toString();
+			actionLink = actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheet/").append(Constants.PLACE_UUID).toString();
 		}
 
 		emailScenerioUtil.sendNotification(actionLink, loginUser,projectMember.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,paramList);
@@ -210,10 +206,8 @@ public class TimesheetEmailUtil {
 
 		for (ProjectApproverHierarchy approver : approverHierarchyList) {
 			// Sending Mail to Low-Level Org Approvers(Vendor Approvers)
-			if (approver.getProjectClientsId() != null && approver.getProjectClientsId().getOrgLocationsId() != null
-					&& projectClients != null
-					&& !projectClients.getOrgLocationsId().getLocationCode()
-							.equalsIgnoreCase(approver.getProjectClientsId().getOrgLocationsId().getLocationCode())
+			if (approver.getProjectClientsId() != null && approver.getProjectClientsId().getOrgLocationsId() != null && projectClients != null
+            && !projectClients.getOrgLocationsId().getLocationCode().equalsIgnoreCase(approver.getProjectClientsId().getOrgLocationsId().getLocationCode())
 					&& projectClients.getLevel() < approver.getProjectClientsId().getLevel()) {
 
 				EmailMessage emailMessage = new EmailMessage();
@@ -234,8 +228,7 @@ public class TimesheetEmailUtil {
 				StringBuilder loginName = new StringBuilder();
 				if (null != projectMember.getProjectMemberCandidteId().getLastName()
 						&& !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getLastName())) {
-					globalVarsMap.put("employeename",
-							loginName.append(projectMember.getProjectMemberCandidteId().getFirstName()).append(" ")
+					globalVarsMap.put("employeename",loginName.append(projectMember.getProjectMemberCandidteId().getFirstName()).append(" ")
 									.append(projectMember.getProjectMemberCandidteId().getLastName()).toString());
 				} else {
 					globalVarsMap.put("employeename", projectMember.getProjectMemberCandidteId().getFirstName());
@@ -243,16 +236,14 @@ public class TimesheetEmailUtil {
 				StringBuilder managerName = new StringBuilder();
 				if (null != approver.getApproverUserId().getLastName()
 						&& !"".equalsIgnoreCase(approver.getApproverUserId().getLastName())) {
-					globalVarsMap.put("vendorcontactname",
-							managerName.append(approver.getApproverUserId().getFirstName()).append(" ")
+					globalVarsMap.put("vendorcontactname",managerName.append(approver.getApproverUserId().getFirstName()).append(" ")
 									.append(approver.getApproverUserId().getLastName()).toString());
 				} else {
 					globalVarsMap.put("vendorcontactname", approver.getApproverUserId().getFirstName());
 				}
 				globalVarsMap.put("projectname", projectMember.getProjects().getProjectName());
 				globalVarsMap.put("frequency", startDateStr + " to " + endDateStr);
-				globalVarsMap.put("clientName",
-						loginUser.getFullName() + "," + (loginOrgLocation.getOrgLocationName()));
+				globalVarsMap.put("clientName",loginUser.getFullName() + "," + (loginOrgLocation.getOrgLocationName()));
 				globalVarsMap.put("reason", rejectedReason);
 
 				EmailScenario emailScenario = null;
@@ -271,8 +262,7 @@ public class TimesheetEmailUtil {
 				String url = sourceleadUrl;
 
 				// construct HTML template using required data
-				String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject,
-						body, signature, url, loginOrgLocation.getOrg(), loginOrgLocation);
+				String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject,body, signature, url, loginOrgLocation.getOrg(), loginOrgLocation);
 				emailMessage.setSubject(subject);
 				emailMessage.setMessageBody(emailTemplate);
 
@@ -301,8 +291,7 @@ public class TimesheetEmailUtil {
 				StringBuilder actionLinkBuilder = new StringBuilder();
 				Date startDateFormat = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), startDateStr);
 				Date endDateFormat = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), endDateStr);
-				SubmissionApproverHierarchy sah = submissionApproverHierarchyService
-						.getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(startDateFormat,
+				SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(startDateFormat,
 								endDateFormat, projectMember.getProjects().getId(),
 								projectMember.getMasterCandidateId().getId());
 				HashMap<String, String> paramList = new HashMap<>();
@@ -315,12 +304,9 @@ public class TimesheetEmailUtil {
 					paramList.put("endDateStr", endDate);
 					paramList.put("dateFormat", loginOrgLocation.getDateFormat());
 					paramList.put("timesheetFrequency", projectMember.getProjects().getInvoiceFrequency());
-					paramList.put("searchData",
-							sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getEmail());
-					paramList.put("projectName",
-							sah.getSubmissionId().getProjectMembers().getProjects().getProjectName());
-					actionLink = actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheetApproval/")
-							.append(Constants.PLACE_UUID).toString();
+					paramList.put("searchData",sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getEmail());
+					paramList.put("projectName",sah.getSubmissionId().getProjectMembers().getProjects().getProjectName());
+					actionLink = actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheetApproval/").append(Constants.PLACE_UUID).toString();
 				}
 
 				emailScenerioUtil.sendNotification(actionLink, loginUser, approver.getApproverUserId(),
@@ -342,8 +328,7 @@ public class TimesheetEmailUtil {
 	 * @Description send email  to manager.
 	 */
 	void sendEmailToManagerAtTimesheetSubmissions(Long masterCanidateId, Long projectId,
-			Date frequencyStartDate, Date frequencyEndDate, User loginUser, OrgLocations loginOrgLocation,
-			String loginOrgCode) throws Exception {
+			Date frequencyStartDate, Date frequencyEndDate, User loginUser, OrgLocations loginOrgLocation,String loginOrgCode) throws Exception {
 		List<ProjectApproverHierarchy> approverHierarchyList = projectApproverHierarchyService
 				.getActiveOrgApproverUsersByProjectMemberMasterCandidateIdAndProjectId(masterCanidateId, projectId);
 		for (ProjectApproverHierarchy approver : approverHierarchyList) {
@@ -359,10 +344,8 @@ public class TimesheetEmailUtil {
 				emailMessage.setToEmail(projectManager.getEmail());
 				emailMessage.setFromEmail(loginUser.getEmail());
 				emailMessage.setCreatedBy(loginUser.getUserCode());
-				String startDateStr = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),
-						frequencyStartDate);
-				String endDateStr = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),
-						frequencyEndDate);
+				String startDateStr = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),frequencyStartDate);
+				String endDateStr = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),frequencyEndDate);
 
 				// setting the class filed values
 				Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -420,12 +403,9 @@ public class TimesheetEmailUtil {
 					paramList.put("endDateStr", endDateStr);
 					paramList.put("dateFormat", loginOrgLocation.getDateFormat());
 					paramList.put("timesheetFrequency", approver.getProjectId().getInvoiceFrequency());
-					paramList.put("searchData",
-							sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getEmail());
-					paramList.put("projectName",
-							sah.getSubmissionId().getProjectMembers().getProjects().getProjectName());
-					actionLink = actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheetApproval/")
-							.append(Constants.PLACE_UUID).toString();
+					paramList.put("searchData",sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getEmail());
+					paramList.put("projectName",sah.getSubmissionId().getProjectMembers().getProjects().getProjectName());
+					actionLink = actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheetApproval/").append(Constants.PLACE_UUID).toString();
 				}
 				emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager,
 						approver.getProjectClientsId().getOrgLocationsId(), notificationScenario, paramList);
@@ -649,11 +629,9 @@ public class TimesheetEmailUtil {
 				+ "' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
 
 		if (projectMembers.getProjectMemberCandidteId() != null
-				&& projectMembers.getProjectMemberCandidteId().getConsultantUser() != null && !"".equalsIgnoreCase(
-						projectMembers.getProjectMemberCandidteId().getConsultantUser().getFullName())) {
+				&& projectMembers.getProjectMemberCandidteId().getConsultantUser() != null && !"".equalsIgnoreCase(projectMembers.getProjectMemberCandidteId().getConsultantUser().getFullName())) {
 
-			globalVarsMap.put("employeeName",
-					projectMembers.getProjectMemberCandidteId().getConsultantUser().getFullName());
+			globalVarsMap.put("employeeName",projectMembers.getProjectMemberCandidteId().getConsultantUser().getFullName());
 		}
 		if (projectMembers.getProjects().getProjectSequeneNumber() != null
 				&& !"".equalsIgnoreCase(projectMembers.getProjects().getProjectSequeneNumber())) {
@@ -678,11 +656,8 @@ public class TimesheetEmailUtil {
 			StringBuilder actionLinkBuilder = new StringBuilder();
 			Date startDateFormat = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), weekStartDate);
 			Date endDateFormat = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), weekEndDate);
-			SubmissionApproverHierarchy sah = submissionApproverHierarchyService
-					.getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(startDateFormat,
-							endDateFormat, projectMembers.getProjects().getId(),
-							projectMembers.getMasterCandidateId().getId());
-
+			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(startDateFormat,
+					endDateFormat, projectMembers.getProjects().getId(),	projectMembers.getMasterCandidateId().getId());
 			if (sah != null && sah.getSubmissionId() != null && sah.getSubmissionId().getProjectMembers() != null) {
 				String frequencyMonth = CalendarUtil.getMonthFromGivenDate(startDateFormat);
 				String frequencyYear = CalendarUtil.getYearFromGivenDate(endDateFormat);
@@ -691,8 +666,7 @@ public class TimesheetEmailUtil {
 				paramList.put("endDateStr", weekEndDate);
 				paramList.put("dateFormat", orgLocations.getDateFormat());
 				paramList.put("timesheetFrequency", projectMembers.getProjects().getInvoiceFrequency());
-				paramList.put("searchData",
-						sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getEmail());
+				paramList.put("searchData",sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getEmail());
 				paramList.put("projectName", sah.getSubmissionId().getProjectMembers().getProjects().getProjectName());
 				actionLink = actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheetApproval/")
 						.append(Constants.PLACE_UUID).toString();
@@ -707,10 +681,8 @@ public class TimesheetEmailUtil {
 			StringBuilder actionLinkBuilder = new StringBuilder();
 			Date startDateFormat = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), weekStartDate);
 			Date endDateFormat = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), weekEndDate);
-			SubmissionApproverHierarchy sah = submissionApproverHierarchyService
-					.getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(startDateFormat,
-							endDateFormat, projectMembers.getProjects().getId(),
-							projectMembers.getMasterCandidateId().getId());
+			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(startDateFormat,
+							endDateFormat, projectMembers.getProjects().getId(),projectMembers.getMasterCandidateId().getId());
 			if (sah != null && sah.getSubmissionId() != null && sah.getSubmissionId().getProjectMembers() != null) {
 				String frequencyMonth = CalendarUtil.getMonthFromGivenDate(startDateFormat);
 				String frequencyYear = CalendarUtil.getYearFromGivenDate(endDateFormat);
@@ -719,17 +691,15 @@ public class TimesheetEmailUtil {
 				paramList.put("endDateStr", weekEndDate);
 				paramList.put("dateFormat", orgLocations.getDateFormat());
 				paramList.put("timesheetFrequency", projectMembers.getProjects().getInvoiceFrequency());
-				paramList.put("searchData",
-						sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getEmail());
+				paramList.put("searchData",sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getEmail());
 				paramList.put("projectName", sah.getSubmissionId().getProjectMembers().getProjects().getProjectName());
-				actionLink = actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheetApproval/")
-						.append(Constants.PLACE_UUID).toString();
+				actionLink = actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheetApproval/").append(Constants.PLACE_UUID).toString();
 			}
 
 		}
 
 		if (null != type && "reject".equalsIgnoreCase(type)) {
-		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.MAIL_REJECT_REOPEN_TIMESHEET);
+		    commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.MAIL_REJECT_REOPEN_TIMESHEET);
 		}else{
 			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.MAIL_ACCEPT_REOPEN_TIMESHEET);
 		}
