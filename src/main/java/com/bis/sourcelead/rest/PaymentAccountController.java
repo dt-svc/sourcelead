@@ -23,6 +23,8 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,6 +35,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author Raja Gopal Reddy P
  */
 @Controller
+@PropertySource(value = { "${propertyLocation:app.properties}" })
 public class PaymentAccountController {
 
     @Autowired
@@ -40,6 +43,30 @@ public class PaymentAccountController {
 
     @Autowired
     private OrgLocationService orgLocationService;
+    
+    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    public static final MediaType PLAIN = MediaType.parse("application/x-www-form-urlencoded");
+    
+    @Value("${wepay.clientid}")
+    private long wepayClientID;
+    
+    @Value("${wepay.accountid}")
+    private String wepayAccountID;
+    
+    @Value("${wepay.secret}")
+    private String wepaySecret;
+    
+    @Value("${wepay.url}")
+    private String WEPAY_URL;
+    
+    @Value("${sourceleadUrl}")
+    private String sourceleadURL;
+    
+    private final String wepaySuccessLink = "/ws/account/access/success";
+    
+    @Value("${wepay.accesstoken}")
+    private String wepayAccessToken;
+
 
     @RequestMapping(value = "/app/org-location-list", method = RequestMethod.POST)
     @ResponseBody
@@ -209,21 +236,13 @@ public class PaymentAccountController {
         return response;
     }
 
-    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    public static final MediaType PLAIN = MediaType.parse("application/x-www-form-urlencoded");
-    public static final long WEPAY_CLIENT_ID = 78923;
-    public static final String WEPAY_ACCOUNT_ID = "1763149678";
-    public static final String WEPAY_SECRET = "d8d698b795";
-    public static final String WEPAY_URL = "https://stage.wepayapi.com";
-    public static final String WEPAY_LINK_SUCCESS = "http://localhost:8084/ws/account/access/success";
-    public static final String WEPAY_ACCESS_TOKEN = "STAGE_d106fa327866f6e19d6b2e15e4f5018dd6de3dd95f7f9540ecb9853858a5504c";
-
     public boolean initWePayAccount(String ip, String device, PaymentAccountDTO account, long orgId, boolean sendMail) {
         try {
+            
             OkHttpClient client = new OkHttpClient();
             JSONObject json = new JSONObject();
-            json.put("client_id", WEPAY_CLIENT_ID);
-            json.put("client_secret", WEPAY_SECRET);
+            json.put("client_id", wepayClientID);
+            json.put("client_secret", wepaySecret);
             json.put("email", account.getEmail());
             json.put("first_name", account.getFirstName());
             json.put("last_name", account.getLastName());
@@ -231,10 +250,10 @@ public class PaymentAccountController {
             json.put("original_ip", ip);
             json.put("original_device", device);
             json.put("tos_acceptance_time", 1209600);
-            json.put("redirect_uri", WEPAY_LINK_SUCCESS + "?id=" + account.getId() + "&orgId=" + orgId);
+            json.put("redirect_uri", sourceleadURL.replace("/app", "") + wepaySuccessLink + "?id=" + account.getId() + "&orgId=" + orgId);
             RequestBody body = RequestBody.create(JSON, json.toString());
             Request req = new Request.Builder().url(WEPAY_URL + "/v2/user/register")
-                    .addHeader("Authorization", "Bearer " + WEPAY_ACCESS_TOKEN)
+                    .addHeader("Authorization", "Bearer " + wepayAccessToken)
                     .addHeader("Content-Type", "application/json")
                     .post(body)
                     .build();
