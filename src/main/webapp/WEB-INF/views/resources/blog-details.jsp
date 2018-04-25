@@ -52,7 +52,7 @@
         <div class="resSlide">
     	<div class="blogRight recentPost">
     		<c:forEach var="relatedBlogs" items="${relatedBlogs}">
-    		<a href="/blog/${relatedBlogs.href}.html"><i class="fa fa-caret-right"></i>${relatedBlogs.blogTitle}</a>
+    		<a class="linDotDot" href="/blog/${relatedBlogs.href}.html"><i class="fa fa-caret-right"></i>${relatedBlogs.blogTitle}</a>
     	</c:forEach>
         </div>                      
         <div class="blogRightBot hidden">

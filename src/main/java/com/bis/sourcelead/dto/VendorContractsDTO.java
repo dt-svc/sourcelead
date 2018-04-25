@@ -93,7 +93,9 @@ public class VendorContractsDTO {
 	private String spocUUID;
 	private String templateFileURL;
 	private String billingCycle;
-	
+	private String isOwner;
+	private List<Long> ownerUserIds;
+	private String revisedReason;
 	
 	public String getTemplateId()
 	{
@@ -958,6 +960,36 @@ public class VendorContractsDTO {
 
 	public void setBillingCycle(String billingCycle) {
 		this.billingCycle = billingCycle;
+	}
+
+	public String getIsOwner()
+	{
+		return isOwner;
+	}
+
+	public void setIsOwner(String isOwner)
+	{
+		this.isOwner = isOwner;
+	}
+
+	public List<Long> getOwnerUserIds()
+	{
+		return ownerUserIds;
+	}
+
+	public void setOwnerUserIds(List<Long> ownerUserIds)
+	{
+		this.ownerUserIds = ownerUserIds;
+	}
+
+	public String getRevisedReason()
+	{
+		return revisedReason;
+	}
+
+	public void setRevisedReason(String revisedReason)
+	{
+		this.revisedReason = revisedReason;
 	}
 	
 }

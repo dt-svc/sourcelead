@@ -313,7 +313,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 		
 		if(StringUtils.isNotBlank(invoiceDTO.getPaymentFrequency())){
 			invoice.setPaymentFrequency(invoiceDTO.getPaymentFrequency());
+		}else{
+			invoice.setPaymentFrequency(null);
 		}
+		
 		if(StringUtils.isNotBlank(invoiceDTO.getDisCount())){
 			invoice.setDiscountType(invoiceDTO.getDisCount());
 		}

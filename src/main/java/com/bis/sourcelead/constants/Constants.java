@@ -240,6 +240,7 @@ public class Constants {
 	public static final String SOW_CONTRACT_FINALIZED = "SOWFinalizeEmail";
 	public static final String SOW_FINALIZED_NOTIFICATION = "SowFinalizedNotification";
 	public static final String NDA_NSA_CONTRACT_FINALIZED = "NDAOrNSAFinalizeEmail";
+	public static final String REVISE_CONTRACT_EMAIL = "ReviseContractEmail";
 	public static final String NDA_NSA_CONTRACT_FINALIZED_NOTIFICATION = "NDAOrNSAFinalizeNotification";
 	public static final String APPLICANT_ACCEPTMAILTO_INTERVIEW_CREATOR = "ApplicantAcceptMailToInterviewCreator";
 	public static final String APPLICANT_REJECT_MAILTO_INTERVIEW_CREATOR = "ApplicantRejectMailToInterviewCreator";
@@ -878,6 +879,10 @@ public class Constants {
     public static final String WAITING_TO_BE_SIGNED = "WAITING_TO_BE_SIGNED";
     public static final String DELETED = "DELETED";   
     public static final String APPROVED = "APPROVED";  
+    public static final String SEQUENTIAL = "Sequential";  
+    public static final String PARALLEL = "Parallel";  
+    public static final String WAITING_TO_SEND = "WAITING_TO_SEND";  
+    public static final String WAITING = "WAITING";  
     
     public static final String PENDING = "PENDING";
 

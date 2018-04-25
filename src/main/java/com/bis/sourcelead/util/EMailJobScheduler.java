@@ -53,6 +53,7 @@ import com.bis.sourcelead.entity.CampaignStats;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.CandidatesHotListDummy;
+import com.bis.sourcelead.entity.ContractOwnerHierarchy;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -1367,8 +1368,9 @@ public class EMailJobScheduler {
 	
 	public void contractSignedByReceiver(Contracts contracts) throws Exception
 	{
+		for(ContractOwnerHierarchy coh : contracts.getParentContractId().getOwnerHierarchyList()){
 			User owner = userService.getUserByUserCode(contracts.getOwnerUserId().getUserCode());
-			User receiver = userService.getUserByUserCode(contracts.getContactUser().getUserCode());
+			User receiver = coh.getOwnerUserId();
 			EmailMessage emailMessage = new EmailMessage();
 			 emailMessage.setFirstName(owner.getFirstName());
 			 if(owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
@@ -1444,7 +1446,7 @@ public class EMailJobScheduler {
 			 emailScenerioUtil.sendEmail(emailMessage,contracts.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
 			 
 		 emailScenerioUtil.sendNotification(actionLink,receiver,owner, contracts.getOrgLocationId(), notificationScenario,new HashMap<String,String>());
-		
+		}
 	}
 	
 	/**
