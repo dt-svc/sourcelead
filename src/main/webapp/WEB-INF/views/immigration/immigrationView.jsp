@@ -52,7 +52,7 @@
 	
 		<div class="immigraHead">
 			<ul class="immigraTabs">
-              <li class="current"><a href="#detailsTab">Details</a></li>
+              <li class="current"><a href="#detailsTab"><i class="fa fa-check-circle-o"></i>Details</a></li>
               <li><a href="#passportsTab">Passport</a></li>
               <li><a href="#visasTab">Visa</a></li>
               <li><a href="#employersTab">Employers</a></li>
