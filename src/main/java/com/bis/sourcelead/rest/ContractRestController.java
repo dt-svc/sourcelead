@@ -1161,27 +1161,23 @@ public class ContractRestController {
 			 
 	 }
 	 
-	 @RequestMapping(value = "/refreshVendorList" , method = RequestMethod.GET)
-	 public @ResponseBody List<OrgRelations> refreshVendorList(HttpServletRequest request) throws Exception {
-	 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	 List<OrgRelations> orgRelationsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
-	 for (OrgRelations orgRelations : orgRelationsList) {
+	@RequestMapping(value = "/refreshVendorList", method = RequestMethod.GET)
+	public @ResponseBody List<OrgRelations> refreshVendorList(HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<OrgRelations> orgRelationsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
+		for (OrgRelations orgRelations : orgRelationsList) {
 			String orgName = "";
-			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+			if (orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()) {
 				orgName = orgRelations.getLocationId().getOrgLocationName();
-			}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+			}
+			if (orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()) {
 				orgName = orgRelations.getResponderLocationId().getOrgLocationName();
 			}
 			orgRelations.setOrgName(orgName);
- }
-	return orgRelationsList;
-	 
-	 }
-	 
-	 
-	 
-	 
-	 
+		}
+		return orgRelationsList;
+	}
 	 
 	 @RequestMapping(value = "/rest/getContractRequestDocumentsById")
 	 public ContractRequestDocuments getContractRequestDocumentsById(@RequestParam(value = "docId", required = true) Long docId) throws Exception {
@@ -1222,7 +1218,8 @@ public class ContractRestController {
 	public boolean reviseContract(ContractsDTO contractsDTO,HttpServletRequest request) throws Exception
 	{
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		return contractsTemplateService.reviseContract(contractsDTO,loginOrgLocation);
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		return contractsTemplateService.reviseContract(contractsDTO,loginOrgLocation,loginUser);
 	}
 	 
 }

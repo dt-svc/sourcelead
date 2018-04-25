@@ -3166,7 +3166,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	}
 
 	@Override
-	public boolean reviseContract(ContractsDTO contractsDTO, OrgLocations loginOrgLocation) throws Exception
+	public boolean reviseContract(ContractsDTO contractsDTO, OrgLocations loginOrgLocation, User loginUser) throws Exception
 	{
 		boolean flag = false;
 		Contracts childcontract = getContractByContractUUID(contractsDTO.getContractUUID());
@@ -3174,12 +3174,117 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			Contracts parentContract = childcontract.getParentContractId();
 			parentContract.setRevisedReason(contractsDTO.getRevisedReason());
 			parentContract.setUpdatedDate(new Date());
+			parentContract.setUpdatedBy(loginUser.getUserCode());
 			parentContract = saveNewContract(parentContract);
+			sendReviseContractEmailToOwner(parentContract,loginOrgLocation,loginUser);
 			if(parentContract != null){
 				flag = true;
 			}
 		}
 		return flag;
+	}
+
+	private void sendReviseContractEmailToOwner(Contracts contracts,OrgLocations orgLocation, User loginUser) throws Exception
+	{
+		Timezone timezone = null;
+		if(null != orgLocation.getTimezone()){
+	    	 timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+		 }
+//		User createdUser = userService.getUserByUserCode(contracts.getCreatedBy());
+		for(ContractOwnerHierarchy coh : contracts.getOwnerHierarchyList()){
+			EmailMessage emailMessage = new EmailMessage();
+			 emailMessage.setFirstName(loginUser.getFirstName());
+			 emailMessage.setLastName(loginUser.getLastName());
+			 emailMessage.setToEmail(coh.getOwnerUserId().getEmail());
+			 emailMessage.setFromEmail(loginUser.getEmail());
+			 emailMessage.setCreatedBy(loginUser.getUserCode());
+			// SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
+			 
+			 if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
+				 StringBuilder msgBuild = new StringBuilder();
+				 emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString()); 
+			 }else{
+				 emailMessage.setFromName(loginUser.getFirstName()); 
+			 }
+			 
+			//setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 
+			 if(contracts.getContractTitle()!= null && !"".equalsIgnoreCase(contracts.getContractTitle())){
+				 globalVarsMap.put("contractTitle", contracts.getContractTitle());
+				 }else{
+					 globalVarsMap.put("contractTitle","--");
+				 }
+			 
+			 globalVarsMap.put("loginUser",emailMessage.getFromName());
+			 
+			 StringBuilder durationSb = new StringBuilder();
+				if(contracts.getStartDate() != null){
+					String currentTimeStr = Constants.TZ_DF.format(contracts.getStartDate());
+					if(null != timezone && null != timezone.getTimeZoneId()){
+						String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+						DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+						Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+						currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),converteDate);
+						globalVarsMap.put("contractStartDate",currentDateInTimezone);	
+						durationSb.append(currentDateInTimezone);
+					}
+				}
+				
+				if(contracts.getEndDate() != null){
+					String currentTimeStr = Constants.TZ_DF.format(contracts.getEndDate());
+					if(null != timezone && null != timezone.getTimeZoneId()){
+						String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+						DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+						Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+						currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),converteDate);
+						globalVarsMap.put("contractEndDate",currentDateInTimezone);
+						durationSb.append(" - ").append(currentDateInTimezone);
+					}
+			    }
+			
+				globalVarsMap.put("contractDuration",durationSb.toString());
+				globalVarsMap.put("contractType",contracts.getContractType());
+				globalVarsMap.put("loginOrg",orgLocation.getOrgLocationName());
+				
+				if(StringUtils.isNotBlank(coh.getOwnerUserId().getLastName())){
+					 StringBuilder msgBuild = new StringBuilder();
+					 globalVarsMap.put("contractOwner",msgBuild.append(coh.getOwnerUserId().getFirstName()).append(" ").append(coh.getOwnerUserId().getLastName()).toString()); 
+				 }else{
+					 globalVarsMap.put("contractOwner",coh.getOwnerUserId().getFirstName()); 
+				 }
+				StringBuilder urlBuild = new StringBuilder();
+				 globalVarsMap.put("reviseLink",urlBuild.append("<a href='").append(sourceleadUrl).append("/addNewContract?contractUUID=").append(contracts.getContractUUID()).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Revise</div></a>").toString());
+			 
+			 //getting the current EmailScenario by EmailScenario unique name and entity type
+			EmailScenario  emailScenario = null;
+//			EmailScenario  notificationScenario = null;
+			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REVISE_CONTRACT_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+//			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.NDA_NSA_CONTRACT_FINALIZED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+			 
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+			 String url = sourceleadUrl;
+			 
+//			 String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+//			 notificationScenario.setBody(notificationbody);
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocation.getOrg(),orgLocation);
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			
+			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+//			 StringBuilder notificationLink = new StringBuilder();
+//			 String notificationActionLink="";
+//		     notificationActionLink = notificationLink.append(sourceleadUrl).append("/").append("viewContract?"+"contractUUID="+contracts.getContractUUID()).toString();
+
+			 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+//			 emailScenerioUtil.sendNotification(notificationActionLink, loginUser,contracts.getContactUser(), contracts.getContractOrgLocationId(), notificationScenario,new HashMap<String,String>());
+		}
+		
 	}
 	
 }

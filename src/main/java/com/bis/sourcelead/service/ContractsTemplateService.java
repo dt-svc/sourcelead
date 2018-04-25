@@ -84,7 +84,7 @@ public interface ContractsTemplateService {
 
 	List<Contracts> validateAlreadyGeneratedContract(ContractsDTO contractsDTO, OrgLocations loginOrgLocation) throws Exception;
 
-	boolean reviseContract(ContractsDTO contractsDTO, OrgLocations loginOrgLocation) throws Exception;
+	boolean reviseContract(ContractsDTO contractsDTO, OrgLocations loginOrgLocation, User loginUser) throws Exception;
 
 
 	

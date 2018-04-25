@@ -240,6 +240,7 @@ public class Constants {
 	public static final String SOW_CONTRACT_FINALIZED = "SOWFinalizeEmail";
 	public static final String SOW_FINALIZED_NOTIFICATION = "SowFinalizedNotification";
 	public static final String NDA_NSA_CONTRACT_FINALIZED = "NDAOrNSAFinalizeEmail";
+	public static final String REVISE_CONTRACT_EMAIL = "ReviseContractEmail";
 	public static final String NDA_NSA_CONTRACT_FINALIZED_NOTIFICATION = "NDAOrNSAFinalizeNotification";
 	public static final String APPLICANT_ACCEPTMAILTO_INTERVIEW_CREATOR = "ApplicantAcceptMailToInterviewCreator";
 	public static final String APPLICANT_REJECT_MAILTO_INTERVIEW_CREATOR = "ApplicantRejectMailToInterviewCreator";
