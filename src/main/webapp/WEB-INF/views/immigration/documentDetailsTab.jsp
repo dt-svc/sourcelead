@@ -93,18 +93,20 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Document Type<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-					<select class="chosen-select form-control" name = "documentType" field-name="Document Type" data-validation="required" id = "documentType" onchange="getDocumentTypeDiv(this);">
+					<select class="sel chosen-select form-control" name = "documentType" field-name="Document Type" data-validation="required" id="documentType" onchange="getDocumentTypeDiv(this);">
 					  <option value = "">Select Document Type</option>
 					   <c:forEach var="docs" items="${documentsList}">
 											<option value="${docs.id}">${docs.name}</option>
 										</c:forEach>
 					</select>
+				<div class="clearfix"></div>
+			<div class="clearfix mt" id="documentOtherTypeDiv" style="display:none">
+				<input type="text" class="form-control" name="otherType"  id="documentOtherType" value="" placeholder="Document Other Type" field-name="Document Other Type" data-validation="required validate_Space validate_length length1-250">
+			</div>
 				</div>
 			</div>
 			
-			<div class="col-md-8" id="documentOtherTypeDiv" style="display:none">
-	<input type="text" class="form-control" name="otherType"  id="documentOtherType" value="" placeholder="Document Other Type" field-name="Document Other Type" data-validation="required validate_Space validate_length length1-250">
-	</div>
+			
           		          
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Description</label>
@@ -469,7 +471,6 @@ $("#immigraDocTabSerach").keyup(function (e) {
 function downlaodZipfileByDocId(docId){
 	if(docId == "")
 		return;
-    alert("Doc Id --->"+docId);
 	$.post("downloadImmigrationDocsZip",{immigrationId: '', docId: docId}, function(data) { //  passing empty value for immigrationId to do doc level zip download
 		if(data !== "" && data.indexOf("Documents Found") === -1)
 			location.href = '/app/downloadFile.html?file='+encodeURI(data); // encodeURI used for encoding file path in request parameter.
@@ -484,7 +485,6 @@ function downlaodZipfileByDocId(docId){
 <script>
 function getDocumentTypeDiv(documentTypes){
 	 var existingDocumentType = $('#documentType').val(); 
-	 alert(documentTypes.value.name);
 	if(documentTypes.value == '940'){
 		  document.getElementById("documentOtherTypeDiv").style.display="block";
 		  $("#documentOtherType").attr("data-validation-optional", "false");
@@ -498,5 +498,9 @@ function getDocumentTypeDiv(documentTypes){
 		  }
 	}
 }
+
+//chosen script
+//$("#documentType").chosen();
+//$("#documentType").trigger("chosen:updated");
 </script>
 
