@@ -162,14 +162,21 @@ public class PayrollDeductionServiceImpl  implements PayrollDeductionService{
 	}
 
 	@Override
-	public boolean isValidDeductionType(String payrollDeductionType)
+	public boolean isValidDeductionType(String payrollDeductionType,OrgLocations orgLocation)
 	{
 		boolean isValid = false;
-		PayrollDeduction payrollDeduction = payrollDeductionDao.isValidDeductionType(payrollDeductionType);
+		PayrollDeduction payrollDeduction = payrollDeductionDao.isValidDeductionType(payrollDeductionType,orgLocation);
 		if (payrollDeduction != null) {
 			isValid = true;
 		}
 		return isValid;
+	}
+
+	@Override
+	public PayrollDeduction getPayrollDeductionTypeById(long deductionId)
+	{
+		PayrollDeduction payrollDeduction = payrollDeductionDao.getPayrollDeductionTypeById(deductionId);
+		return payrollDeduction;
 	}
 
 	

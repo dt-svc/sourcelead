@@ -119,6 +119,9 @@ public class UserController {
 		     
 		     model.addObject("averageWorkingHours",orgLocations.getAverageWorkingHours());
 		   		    
+		     StringBuilder sb = new StringBuilder();
+		     sb.append(orgLocations.getState()).append(",").append(orgLocations.getCity());
+		     model.addObject("location",sb.toString());
 		    commonUtil.highLightMenu(Constants.Users, request);
 		    
 			model.setViewName("users/userCreation");

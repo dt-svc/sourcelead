@@ -1,5 +1,7 @@
 package com.bis.sourcelead.payroll.service;
 
+import java.util.List;
+
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -16,5 +18,10 @@ public interface PayrollContributionService {
 	
 	boolean deleteContributionById(long contributionId);
 
-	boolean isValidContributionType(long deductionTypeId);
+	boolean isValidContributionType(long deductionTypeId, OrgLocations orgLocation);
+
+	List<PayrollContributionDTO> getAllContributionTypeByLocationId(OrgLocations orgLocation);
+
+	PayrollContributionDTO getContributionAmount(long contributionId);
+	
 }

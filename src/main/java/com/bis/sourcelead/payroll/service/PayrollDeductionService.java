@@ -18,6 +18,8 @@ public interface PayrollDeductionService {
 	
 	boolean deleteDeductionById(Long deductionId);
 
-	boolean isValidDeductionType(String payrollDeductionType);
+	boolean isValidDeductionType(String payrollDeductionType, OrgLocations orgLocation);
+
+	PayrollDeduction getPayrollDeductionTypeById(long parseLong);
 
 }

@@ -63,7 +63,7 @@ $(document).ready(function(){
 				<select class="form-control" id="payrollContributionMethod" name="payrollContributionMethod">
 				<option>Select Method</option>
 				 <option ${payrollContribution.payrollContributionMethod == 'Fixed' ? 'selected' : ''} value = "Fixed">Fixed</option>
-				  <option ${payrollContribution.payrollContributionMethod == 'Percent' ? 'selected' : ''} value = "Percent">Fixed</option>
+				  <option ${payrollContribution.payrollContributionMethod == 'Percent' ? 'selected' : ''} value = "Percent">Percent</option>
 				</select>
 			</div>
 			</div>
@@ -132,7 +132,7 @@ function saveContribution(){
 		        		  location.replace(sourceleadUrl+ "/payrollContribution");
 		        		  $("#selector2").removeAttr("style");
 			     		  $("#selector2").css({ display: "block" });
-			     		  $("#addContributeMsgDiv").html("Deleted Successfully");
+			     		  $("#addContributeMsgDiv").html("Added Successfully");
 			     		   addContributeMsgFadein();
 		  			   }); 
 		    	         return true; 

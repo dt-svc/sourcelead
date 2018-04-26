@@ -35,6 +35,8 @@ public class PayrollContributionDTO extends SearchDTO{
 	
 	private String contributionUUID;
 	
+	private String contributionType;
+	
 	public long getContributionId()
 	{
 		return contributionId;
@@ -153,6 +155,16 @@ public class PayrollContributionDTO extends SearchDTO{
 	public void setContributionUUID(String contributionUUID)
 	{
 		this.contributionUUID = contributionUUID;
+	}
+
+	public String getContributionType()
+	{
+		return contributionType;
+	}
+
+	public void setContributionType(String contributionType)
+	{
+		this.contributionType = contributionType;
 	}
 
 

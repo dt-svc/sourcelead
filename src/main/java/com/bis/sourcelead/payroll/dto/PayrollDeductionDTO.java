@@ -6,6 +6,11 @@ import com.bis.sourcelead.dto.SearchDTO;
 
 public class PayrollDeductionDTO  extends SearchDTO{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private long id;
 	
 	private long orgLocationId;

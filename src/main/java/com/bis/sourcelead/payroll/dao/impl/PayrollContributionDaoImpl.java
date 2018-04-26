@@ -149,13 +149,13 @@ private static final Logger logger = LoggerFactory.getLogger(PayrollContribution
 
 	@Override
 	@Transactional
-	public PayrollContribution findPayrollContributionByDeductionTypeId(long deductionTypeId)
+	public PayrollContribution findPayrollContributionByDeductionTypeId(long deductionTypeId,OrgLocations orgLocation)
 	{
 		PayrollContribution payrollContribution = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from PayrollContribution payrollCon where payrollCon.deductionTypeId.id =:deductionTypeId";
-			List<PayrollContribution> payrollContributionList = session.createQuery(query).setLong("deductionTypeId", deductionTypeId).list();
+			String query = "from PayrollContribution payrollCon where payrollCon.deductionTypeId.id =:deductionTypeId and payrollCon.orgLocationId.id=:orgLocationId";
+			List<PayrollContribution> payrollContributionList = session.createQuery(query).setLong("deductionTypeId", deductionTypeId).setLong("orgLocationId", orgLocation.getId()).list();
 			if (payrollContributionList != null && payrollContributionList.size() > 0) {
 				payrollContribution = payrollContributionList.get(0);
 			}
@@ -163,5 +163,15 @@ private static final Logger logger = LoggerFactory.getLogger(PayrollContribution
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return payrollContribution;
+	}
+
+	@Override
+	@Transactional
+	public List<PayrollContribution> getAllContributionTypeByLocationId(OrgLocations orgLocation)
+	{
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from PayrollContribution payrollCon where payrollCon.orgLocationId.id =:orgLocationId";
+			List<PayrollContribution> payrollContributionList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).list();
+			return payrollContributionList;
 	}
 }

@@ -1,5 +1,7 @@
 package com.bis.sourcelead.payroll.rest;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,15 +15,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.dao.AssociateDeductionDao;
 import com.bis.sourcelead.payroll.dao.impl.USPayrollDaoImpl;
+import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
+import com.bis.sourcelead.payroll.dto.AssociateContributionDTO;
+import com.bis.sourcelead.payroll.dto.AssociateDeductionDTO;
+import com.bis.sourcelead.payroll.dto.AssociateTaxDTO;
 import com.bis.sourcelead.payroll.dto.PayrollContributionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
 import com.bis.sourcelead.payroll.entity.PayrollContribution;
 import com.bis.sourcelead.payroll.entity.PayrollDeduction;
+import com.bis.sourcelead.payroll.service.AssociateBankDataService;
+import com.bis.sourcelead.payroll.service.AssociateContributionService;
+import com.bis.sourcelead.payroll.service.AssociateDeductionService;
+import com.bis.sourcelead.payroll.service.AssociateTaxService;
 import com.bis.sourcelead.payroll.service.PayrollContributionService;
 import com.bis.sourcelead.payroll.service.PayrollDeductionService;
 import com.bis.sourcelead.payroll.service.USPayrollService;
@@ -45,6 +56,18 @@ public class USPayrollRestController {
 	
 	@Autowired
 	PayrollContributionService payrollContributionService;
+	
+	@Autowired
+	AssociateBankDataService associateBankDataService;
+	
+	@Autowired
+	AssociateTaxService associateTaxService;
+	
+	@Autowired
+	AssociateDeductionService associateDeductionService;
+	
+	@Autowired
+	AssociateContributionService associateContributionService;
 	
 	/**
 	 * find all deduction types from lookup_data table 
@@ -240,17 +263,168 @@ public class USPayrollRestController {
 	@ResponseBody
 	public boolean isValidDeductionType(PayrollDeductionDTO payrollDeductionDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		if (StringUtils.isNoneBlank(payrollDeductionDTO.getPayrollDeductionType())) {
-			return payrollDeductionService.isValidDeductionType(payrollDeductionDTO.getPayrollDeductionType());
+			return payrollDeductionService.isValidDeductionType(payrollDeductionDTO.getPayrollDeductionType(),orgLocation);
 		}
 		return false;
 	}
 	
-	
+	/**
+	 * Is Valid Contribution Type
+	 * @param payrollContributionDTO
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = { "/isValidContributionType","/rest/isValidContributionType" }, method = RequestMethod.POST)
 	@ResponseBody
 	public boolean isValidContributionType(PayrollContributionDTO payrollContributionDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-			return payrollContributionService.isValidContributionType(payrollContributionDTO.getDeductionTypeId());
+		    OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			return payrollContributionService.isValidContributionType(payrollContributionDTO.getDeductionTypeId(),orgLocation);
 	}
+	
+	
+	/**
+	 * to save associate bank details
+	 * @param associateBankDataDTO
+	 * @param request
+	 * @param response
+	 * @return Response<AssociateBankDataDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/saveAssociateBankData","/rest/saveAssociateBankData" }, method = RequestMethod.POST)
+	@ResponseBody
+	public Response<AssociateBankDataDTO> saveAssociateBankData(AssociateBankDataDTO associateBankDataDTO , HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Response<AssociateBankDataDTO>  resObj = associateBankDataService.saveAssociateBankData(associateBankDataDTO,orgLocation,loginUser);	
+		return resObj;
+	}
+	
+	/**
+	 * save associate tax
+	 * @param associateTaxDTO
+	 * @param request
+	 * @param response
+	 * @return Response<AssociateTaxDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/saveAssociateTax","/rest/saveAssociateTax" }, method = RequestMethod.POST)
+	@ResponseBody
+	public Response<AssociateTaxDTO> saveAssociateTax(AssociateTaxDTO associateTaxDTO , HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Response<AssociateTaxDTO>  resObj = associateTaxService.saveAssociateTax(associateTaxDTO,orgLocation,loginUser);	
+		return resObj;
+	}
+	
+	/**
+	 * check state has Local tax or not
+	 * @param associateTaxDTO
+	 * @param request
+	 * @param response
+	 * @return Response<AssociateTaxDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/isLocalTaxYes","/rest/isLocalTaxYes" }, method = RequestMethod.POST)
+	@ResponseBody
+	public Response<AssociateTaxDTO> isLocalTaxYes(AssociateTaxDTO associateTaxDTO , HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Response<AssociateTaxDTO>  resObj = associateTaxService.isLocalTaxYes(associateTaxDTO,orgLocation,loginUser);	
+		return resObj;
+	}
+	
+	/**
+	 * save Associate Deduction
+	 * @param associateDeductionDTO
+	 * @param request
+	 * @param response
+	 * @return Response<AssociateDeductionDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/saveAssociateDeduction","/rest/saveAssociateDeduction" }, method = RequestMethod.POST)
+	@ResponseBody
+	public Response<AssociateDeductionDTO> saveAssociateDeduction(AssociateDeductionDTO associateDeductionDTO , HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Response<AssociateDeductionDTO>  resObj = associateDeductionService.saveAssociateDeduction(associateDeductionDTO,orgLocation,loginUser);	
+		return resObj;
+	}
+	
+	/**
+	 * Get Deduction methdo and amount by Id
+	 * @param associateDeductionDTO
+	 * @param request
+	 * @param response
+	 * @return PayrollDeductionDTO
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getDeductionAmount","/rest/getDeductionAmount" }, method = RequestMethod.POST)
+	@ResponseBody
+	public PayrollDeductionDTO getDeductionAmount(AssociateDeductionDTO associateDeductionDTO , HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		PayrollDeductionDTO  resObj = associateDeductionService.getDeductionAmount(Long.parseLong(associateDeductionDTO.getDedType()));	
+		return resObj;
+	}
+	
+	/**
+	 * Gat all Contribution types by loaction Id
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getAllContributionType","/rest/getAllContributionType" }, method = RequestMethod.POST)
+	@ResponseBody
+	public List<PayrollContributionDTO> getAllContributionType(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<PayrollContributionDTO>  resObj = payrollContributionService.getAllContributionTypeByLocationId(orgLocation);	
+		return resObj;
+	}
+	
+	
+	 /**
+	  * Get Contribution Amount and Method by Id
+	  * @param payrollContributionDTO
+	  * @param request
+	  * @param response
+	  * @return PayrollContributionDTO
+	  * @throws Exception
+	  */
+		@RequestMapping(value = { "/getContributionAmount","/rest/getContributionAmount" }, method = RequestMethod.POST)
+		@ResponseBody
+		public PayrollContributionDTO getContributionAmount(PayrollContributionDTO payrollContributionDTO , HttpServletRequest request, HttpServletResponse response) throws Exception
+		{
+			PayrollContributionDTO  resObj = payrollContributionService.getContributionAmount(payrollContributionDTO.getContributionId());	
+			return resObj;
+		}
+		
+		
+		/**
+		 * save Associate Contribution
+		 * @param associateDeductionDTO
+		 * @param request
+		 * @param response
+		 * @return Response<AssociateDeductionDTO>
+		 * @throws Exception
+		 */
+		@RequestMapping(value = { "/saveAssociateContribution","/rest/saveAssociateContribution" }, method = RequestMethod.POST)
+		@ResponseBody
+		public Response<AssociateContributionDTO> saveAssociateContribution(AssociateContributionDTO associateContributionDTO , HttpServletRequest request, HttpServletResponse response) throws Exception
+		{
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Response<AssociateContributionDTO>  resObj = associateContributionService.saveAssociateContribution(associateContributionDTO,orgLocation,loginUser);	
+			return resObj;
+		}
+		
 }

@@ -29,6 +29,10 @@ private static final long serialVersionUID = 1L;
 	@JoinColumn(name = "DEDUCTION_TYPE_ID", nullable = false)
 	private PayrollDeduction deductionTypeId;
 	
+	@ManyToOne
+	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
+	private OrgLocations orgLocationId;
+	
 	@Column(name = "PAYROLL_CONTRIBUTION_METHOD")
 	private String payrollContributionMethod;
 	
@@ -169,6 +173,16 @@ private static final long serialVersionUID = 1L;
 	public void setContributionUUID(String contributionUUID)
 	{
 		this.contributionUUID = contributionUUID;
+	}
+
+	public OrgLocations getOrgLocationId()
+	{
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(OrgLocations orgLocationId)
+	{
+		this.orgLocationId = orgLocationId;
 	}
 	
 	

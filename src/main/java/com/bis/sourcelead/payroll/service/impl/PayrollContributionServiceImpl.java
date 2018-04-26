@@ -52,6 +52,7 @@ public class PayrollContributionServiceImpl implements PayrollContributionServic
 			payrollContribution.setUpdatedDate(new Date());
 			payrollContribution.setStatus(1);
 			payrollContribution.setContributionUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			payrollContribution.setOrgLocationId(orgLocation);
 			PayrollContribution savedPayrollContribution = payrollContributionDao.savePayrollContribution(payrollContribution);
 			if (savedPayrollContribution != null) {
 				payrollContributionList.add(payrollContributionDTO);
@@ -125,14 +126,39 @@ public class PayrollContributionServiceImpl implements PayrollContributionServic
 	}
 
 	@Override
-	public boolean isValidContributionType(long deductionTypeId)
+	public boolean isValidContributionType(long deductionTypeId,OrgLocations orgLocation)
 	{
 		boolean isValid = false; 
-		PayrollContribution payrollContribution = payrollContributionDao.findPayrollContributionByDeductionTypeId(deductionTypeId);
+		PayrollContribution payrollContribution = payrollContributionDao.findPayrollContributionByDeductionTypeId(deductionTypeId,orgLocation);
 		if(payrollContribution != null) {
 			isValid = true;
 		}
 		return isValid;
+	}
+
+	@Override
+	public List<PayrollContributionDTO> getAllContributionTypeByLocationId(OrgLocations orgLocation)
+	{
+		List<PayrollContribution> list = payrollContributionDao.getAllContributionTypeByLocationId(orgLocation);
+		List<PayrollContributionDTO> resObj = new ArrayList<>();
+		list.forEach(contr -> {
+			PayrollContributionDTO payrollContributionDTO = new PayrollContributionDTO();
+			payrollContributionDTO.setContributionUUID(contr.getContributionUUID());
+			payrollContributionDTO.setContributionId(contr.getId());
+			payrollContributionDTO.setContributionType(contr.getDeductionTypeId().getPayrollDeductionType());
+			resObj.add(payrollContributionDTO);
+		});
+		return resObj;
+	}
+
+	@Override
+	public PayrollContributionDTO getContributionAmount(long contributionId)
+	{
+		PayrollContribution payrollContribution = payrollContributionDao.findPayrollContributionByID(contributionId);
+		PayrollContributionDTO PayrollContributionDTO = new PayrollContributionDTO();
+		PayrollContributionDTO.setContributionAmount(payrollContribution.getContributionAmount());
+		PayrollContributionDTO.setPayrollContributionMethod(payrollContribution.getPayrollContributionMethod());
+		return PayrollContributionDTO;
 	}
 
 

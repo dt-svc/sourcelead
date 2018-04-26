@@ -166,7 +166,6 @@ function validateDeductionType(){
 	var payrollDeductionType = $("#deductionType").val();
 	$('#deductionNameDive').find('p.jquery_form_error_message').remove();
 	if (payrollDeductionType != null && payrollDeductionType != '') {
-		alert("1");
 		$.ajax({
 			type : "POST",
 			url : sourceleadUrl + "/isValidDeductionType?"+tokenParamName+"="+tokenValue+"&payrollDeductionType="+payrollDeductionType,

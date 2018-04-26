@@ -1090,5 +1090,7 @@ public class Constants {
 	
 	public static final String LICENSE_PAYMENT_ACKNOWLEDGEMENT_DETAILS = "licensePaymentAcknowledgementDetails";
 
-
+    public static final String BOOLEAN_TRUE = "true";
+    public static final String LOCAL_TAX_YES = "YES";
+    public static final String LOCAL_TAX_NO = "NO";
 }
