@@ -4,6 +4,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.annotations.Email;
 import com.bis.sourcelead.annotations.Phone;
 import com.bis.sourcelead.annotations.Required;
@@ -100,6 +101,7 @@ public class CandidateDTO extends SearchDTO{
 
 	private String expectedRateCurrencey;
 
+	@CleanHtml(escape=false)
 	private String summary;
 
 	private String visaType;

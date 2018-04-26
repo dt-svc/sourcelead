@@ -953,7 +953,7 @@ top: 21px;height: 32px; line-height: 18px;
     <div class="copyrightOut">
         <div class="copyright">
             <b>� 2018 SourceLead. All rights reserved.</b> <span> <a
-                href="/privacypolicy.html">Privacy Policy</a> <a href="/termsofuse.html">Terms
+                href="/privacy-policy.html">Privacy Policy</a> <a href="/terms-of-use.html">Terms
                     of Use</a>
             </span>
             <div class="clear"></div>
