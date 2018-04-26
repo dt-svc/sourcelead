@@ -88,6 +88,9 @@ public class ImmigrationListView implements Serializable {
 
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
+
+	@Column(name = "PETITION_TYPE")
+	private Long petitionTypeId;
 	
 	public Long getId() {
 		return id;
@@ -264,6 +267,14 @@ public class ImmigrationListView implements Serializable {
 
 	public void setAttorneyOrgLocationId(Long attorneyOrgLocationId) {
 		this.attorneyOrgLocationId = attorneyOrgLocationId;
+	}
+
+	public Long getPetitionTypeId() {
+		return petitionTypeId;
+	}
+
+	public void setPetitionTypeId(Long petitionTypeId) {
+		this.petitionTypeId = petitionTypeId;
 	}
 
 }

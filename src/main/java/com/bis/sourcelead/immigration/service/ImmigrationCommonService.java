@@ -1,6 +1,8 @@
 package com.bis.sourcelead.immigration.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.bis.sourcelead.dto.CandidateFamilyDetailsDTO;
 import com.bis.sourcelead.dto.ImmigrationDTO;
@@ -84,7 +86,7 @@ public interface ImmigrationCommonService {
 
 	ImmigrationCandidateForms uploadRequstedFormForCandidate(ImmigrationTemplateFormDTO immigrationTemplateFormDTO, Long id,	Long candidateId, Long immigrationId, User user, OrgLocations orgLocations);
 
-	ResponseList<ImmigrationListViewDTO> getImmigrationsList(ImmigrationListViewDTO immigrationListDTO, String searchValue,  OrgLocations orgLocations) throws Exception;
+	ResponseList<ImmigrationListViewDTO> getImmigrationsList(ImmigrationListViewDTO immigrationListDTO, String searchValue,  OrgLocations orgLocations, Map<String, Long[]> filterVal) throws Exception;
 
 	String updateUscisTypeDropDown(Long templateId, Long uscisId);
 
