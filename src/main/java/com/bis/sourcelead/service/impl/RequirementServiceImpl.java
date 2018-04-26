@@ -1229,26 +1229,16 @@ public class RequirementServiceImpl implements RequirementService {
 		else {
 			globalVarsMap.put("LoginOrgName", "--");
 		}
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
 		// using same migration which has been already used in
 		// updatedRequirementMailToManager method
-		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATED_REQUIREMENT_EMAIL_TO_MANAGER, Constants.ENTITY_TYPE_EMAIL);
 		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATED_REQUIREMENT_NOTIFICATION_TO_MANAGER, Constants.ENTITY_TYPE_NOTIFICATION);
 		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
-		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationbody);
-		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(), loginOrgLocation);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.UPDATED_REQUIREMENT_EMAIL_TO_MANAGER);
 		String actionLink = "";
 		emailScenerioUtil.sendNotification(actionLink, loginUser, assUser, loginOrgLocation, notificationScenario,new HashMap<String,String>());
 	}
@@ -1354,24 +1344,12 @@ public class RequirementServiceImpl implements RequirementService {
 		else {
 			globalVarsMap.put("LoginOrgName", "--");
 		}
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		// getting the current EmailScenario by EmailScenario unique name and
-		// entity type
-		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATED_REQUIREMENT_EMAIL_TO_MANAGER, Constants.ENTITY_TYPE_EMAIL);
 		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATED_REQUIREMENT_NOTIFICATION_TO_MANAGER, Constants.ENTITY_TYPE_NOTIFICATION);
-		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
 		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
 		notificationScenario.setBody(notificationbody);
 		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(), loginOrgLocation);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.UPDATED_REQUIREMENT_EMAIL_TO_MANAGER);
 		 StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
 	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();
@@ -1707,7 +1685,7 @@ public class RequirementServiceImpl implements RequirementService {
 			globalVarsMap.put("loginUserName", userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		}
 		else {
-			globalVarsMap.put("loginUserName", loginUser.getLastName());
+			globalVarsMap.put("loginUserName", loginUser.getFirstName());
 		}
 		if (loginOrgLocation.getOrgLocationName() != null
 				&& !"".equalsIgnoreCase(loginOrgLocation.getOrgLocationName())) {
@@ -1734,29 +1712,20 @@ public class RequirementServiceImpl implements RequirementService {
 		 * .append(" ").append(emailMessage.getLastName()).toString());
 		 * emailRecipientList.add(emailRecipient);
 		 */
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
-		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_EMAIL_NOTIFICATION, Constants.ENTITY_TYPE_EMAIL);
 		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_EMAIL_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
 		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
-		String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(), globalVarsMap);
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationbody);
 		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(), loginOrgLocation);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
 		StringBuilder actionLinkStringBuilder = new StringBuilder();
 		String actionLink = actionLinkStringBuilder.append(sourceleadUrl).append("/requirementSummary?requirementUUID=").append(requirement.getRequirementUUID()).toString();
 		// String actionLink=
 		// sourceleadUrl"/requirementSummary?requirementUUID="+requirement.getRequirementUUID()+"";
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendNotification(actionLink, loginUser, approverUser, loginOrgLocation, notificationScenario,new HashMap<String,String>());
-		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.REQUIREMENT_EMAIL_NOTIFICATION);
 	}
 	
 	@Override
@@ -3790,22 +3759,12 @@ public class RequirementServiceImpl implements RequirementService {
 		
 		StringBuilder linkBuild = new StringBuilder();
 		globalVarsMap.put("viewJobLink", linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("jobCampaignSummary?requirementUUID=").append(requirement.getRequirementUUID()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View Job</div></a>").toString());
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SHARE_RECOMENDED_APPLICANT, Constants.ENTITY_TYPE_EMAIL);
 		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SHARE_RECOMENDED_APPLICANT_NOTIFICATION,
 				Constants.ENTITY_TYPE_NOTIFICATION);
 		 
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
- 
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, orgLocation.getOrg(), orgLocation);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
-		emailScenerioUtil.sendEmail(emailMessage, orgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocation.getOrg(),orgLocation,Constants.SHARE_RECOMENDED_APPLICANT);
 		// calling the sendNotification method of emailScenerioUtil
-		String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(), globalVarsMap);
+		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationBody);
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink = actionLinkBuilder.append(sourceleadUrl).append("/jobCampaignSummary?requirementUUID=").append(requirement.getRequirementUUID()).toString();

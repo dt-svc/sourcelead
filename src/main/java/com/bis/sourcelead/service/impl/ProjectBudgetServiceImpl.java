@@ -172,7 +172,7 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
         StringBuilder actionLinkBuilder = new StringBuilder();
 
         commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,projects.getOrgLocationsId().getOrg(),projects.getOrgLocationsId(),Constants.BUDGET_REQUEST);
-        actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+projectBudgetRequestDTO.getProjectUUID()+"&projectClientUUID="+pc.getUuid()+"&tabType=projectMembers").toString();
+        actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+projectBudget.getProjectId().getProjectUUID()+"&projectClientUUID="+pc.getUuid()+"&tabType=projectMembers").toString();
 
         emailScenerioUtil.sendNotification(actionLink, loginUser, approverUse, projects.getOrgLocationsId(), notificationScenario,new HashMap<String,String>());
 		

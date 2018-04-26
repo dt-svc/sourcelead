@@ -1091,20 +1091,27 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.NOTIFY_APPLICANT_MAILABOUT_REQUIREMENT,Constants.ENTITY_TYPE_EMAIL);
 
-		
+		 String emailBody = null;
+		 String path=staticPath.substring(0, staticPath.lastIndexOf("/"));
+		 try {
+			    BufferedReader lineReader = new BufferedReader(new FileReader(path+emailScenario.getBodyUrl().replace("\\","\\\\")));
+			    emailBody = new Scanner(lineReader).useDelimiter("\\Z").next();
+			   // System.out.println(emailBody);
+			   
+			} catch (IOException ex) {
+			    System.err.println(ex);
+			}
 		 //covert subject,body and signature
 		 String subject = "";
 		 if(submissionType.equalsIgnoreCase("EditSubmission")) {
 			 subject = "Application details are updated";
 		}else {
-			subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+			subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
 		}
-		 
-		 
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 //covert subject,body and signature
+		 String body = emailScenerioUtil.buildTemplateBody(emailBody,globalVarsMap,emailScenario);
+		 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
 		 String url = sourceleadUrl;
-		 
 		 
 		 //construct HTML template using required data
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
@@ -1868,27 +1875,14 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 if(null !=tempHTML){
 		 globalVarsMap.put("negotiationLink", tempHTML.toString());
 		 }
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_REJECT_MAILABOUT_REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_REJECT_MAILABOUT_REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
 
 		
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
 		 
-		String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationbody);
 		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
 		  
 		 User fromUser = userService.getUserById(Constants.USERID);
 		 
@@ -1897,7 +1891,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendNotification(actionLink, fromUser,initiatorUser, orgLocations, notificationScenario,new HashMap<String,String>());
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.APPLICANT_REJECT_MAILABOUT_REQUIREMENT_EMAIL_NOTIFICATION);
 	}
 	
 	
@@ -1957,34 +1951,21 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 globalVarsMap.put("negotiationTable",tempHTML.toString());
 		 }
 		 
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_NEGOTIATE_REQUIREMENT,Constants.ENTITY_TYPE_EMAIL);
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_NEGOTIATE_REQUIREMENT,Constants.ENTITY_TYPE_NOTIFICATION);
 
-		
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
 		 
-		String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationbody);
 		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
 		  
 		 User fromUser = userService.getUserById(Constants.USERID);
 		 
 		 String actionLink="";
 		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendNotification(actionLink, fromUser,initiatorUser, orgLocations, notificationScenario,new HashMap<String,String>());
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.APPLICANT_NEGOTIATE_REQUIREMENT);
 	}
 	
 	@Override
@@ -2522,7 +2503,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			}*/
 
 			// construct HTML template using required data
-			String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getSubject(),globalVarsMap);
+			String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 			notificationScenario.setBody(notificationbody);
 			
 			String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, null, sourceleadUrl, loginOrgLocation.getOrg(),loginOrgLocation);
@@ -2772,27 +2753,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 globalVarsMap.put("negotiationTable",tempHTML.toString());
 		 }
 		 
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
-		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USER_RATE_NEGOTIATION,Constants.ENTITY_TYPE_EMAIL);
 //		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_NEGOTIATE_REQUIREMENT,Constants.ENTITY_TYPE_NOTIFICATION);
 
-		
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 
-		/*String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		 /*String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 		notificationScenario.setBody(notificationbody);*/
 		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
 		  
 		
 		  // Unused Code
@@ -2800,7 +2766,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 String actionLink="";*/
 		 
 		//calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());		
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.USER_RATE_NEGOTIATION);
 	}
 
 	@Override
@@ -2960,28 +2926,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 }
 		 
 		 globalVarsMap.put("loginOrgName", orgLocations.getOrg().getOrgName());
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
-		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USER_ACCEPT_RATE_NEGOTIATION,Constants.ENTITY_TYPE_EMAIL);
-		
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		  
 		 User toUser = orgLocations.getUser();
 		 
 		 String actionLink="";
 		//calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.USER_ACCEPT_RATE_NEGOTIATION);
 		
 
 	}
@@ -3430,34 +3380,19 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 globalVarsMap.put("negotiationTable",tempHTML.toString());
 		 }
 		 
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CLIENT_RATE_NEGOTIATION,Constants.ENTITY_TYPE_EMAIL);
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CLIENT_RATE_NEGOTIATION,Constants.ENTITY_TYPE_NOTIFICATION);
 
-		
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 
-		 String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		 String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		 notificationScenario.setBody(notificationbody);
 		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrg,orgLocations);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		  
 		 StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
 	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirementSubmission.getSourceSubmission().getRequirement().getRequirementUUID()+"&submissionId="+requirementSubmission.getId()+"&candidateUUID="+requirementSubmissionTemplateFields.getRequirementSubmission().getCandidate().getCandidateUUID()+"&submissionStatus=SUBMIT_TO_CLIENT").toString();
 
 		//calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.CLIENT_RATE_NEGOTIATION);
 		 emailScenerioUtil.sendNotification(actionLink, users, pastUser, requirementSubmission.getVendorLocationId(), notificationScenario,new HashMap<String,String>());
 	}
 
@@ -3517,28 +3452,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 globalVarsMap.put("rejectedReason","--");
 			 }
 		 
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		
-		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USER_REJECT_RATE_NEGOTIATION,Constants.ENTITY_TYPE_EMAIL);
-		
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		  
 		 User toUser = orgLocations.getUser();
 		 
 		 String actionLink="";
 		//calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.USER_REJECT_RATE_NEGOTIATION);
 		
 	}
 
@@ -4342,29 +4260,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 globalVarsMap.put("negotiationTable",tempHTML.toString());
 		 }
 		 
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
-		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_ACCEPT_RATE,Constants.ENTITY_TYPE_EMAIL);
-
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 
-		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
 		  
 		 User toUser = orgLocations.getUser();
 		 
 		 String actionLink="";
 		//calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.APPLICANT_ACCEPT_RATE);
 	}
 
 	@Override
@@ -4433,27 +4335,14 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 emailRecipientList.add(emailRecipient);
 	
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		 
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECTMAILFROMCLIENT_TO_VENDOR,Constants.ENTITY_TYPE_EMAIL);
 		 EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECTMAILFROMCLIENT_TO_VENDOR,Constants.ENTITY_TYPE_NOTIFICATION);
 		 
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.REJECTMAILFROMCLIENT_TO_VENDOR);
 		 
-		String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationBody);
 		StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
@@ -4543,11 +4432,30 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 								 /*if(reqsub.getRequirement().getState() != null && !"".equalsIgnoreCase(reqsub.getRequirement().getState())){
 									 globalVarsMap.put("RequirementLocation", location.append(reqsub.getRequirement().getCountry()).append(",").append(reqsub.getRequirement().getState()).toString());
 								 }*/
-								 if(orgLocations.getCity() != null && !"".equalsIgnoreCase(reqsub.getRequirement().getCity())){
-									 globalVarsMap.put("RequirementLocation",location.append(reqsub.getRequirement().getCountry()).append(",").append(reqsub.getRequirement().getState()).append(",").append(reqsub.getRequirement().getCity()).toString());
-								 }else{
-									 globalVarsMap.put("RequirementLocation", reqsub.getRequirement().getCountry());
-								 }
+								 
+								 List<String> requirementLocationsList = new ArrayList<>();
+									List<RequirementLocations> locationsList;
+									String Reqlocation = "";
+									StringBuilder requirementBuilder=new StringBuilder();
+									try {
+										locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(reqsub.getRequirementId());
+										if(locationsList != null && !locationsList.isEmpty()) {
+											for(RequirementLocations locationsJob : locationsList) {
+												requirementLocationsList.add(locationsJob.getLocation());
+												if(locationsJob.getLocation() !=null && locationsJob.getLocation() !=null){
+													Reqlocation = requirementBuilder.append(locationsJob.getLocation()).toString();
+												}else{
+													Reqlocation = "--";
+												}
+											}
+										}
+									} catch (Exception e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+								 
+								 
+									 globalVarsMap.put("RequirementLocation", Reqlocation);
 								 
 								 if(null != reqsub.getOrgLocations().getOrgLocationName() && !"".equalsIgnoreCase(reqsub.getOrgLocations().getOrgLocationName())){
 								 globalVarsMap.put("clientOrgName", reqsub.getOrgLocations().getOrgLocationName());
@@ -4568,27 +4476,16 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 								 emailRecipient.setName(recipBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 								 emailRecipientList.add(emailRecipient);
 							
-								 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 								 
 								 //getting the current EmailScenario by EmailScenario unique name and entity type
-								 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SHORTLISTMAILFROMCLIENT_TO_VENDOR,Constants.ENTITY_TYPE_EMAIL);
 								 EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SHORTLISTMAILFROMCLIENT_TO_VENDOR,Constants.ENTITY_TYPE_NOTIFICATION);
 								 
-								 //covert subject,body and signature
-								 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-								 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-								 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-								 String url = sourceleadUrl;
 								 
-								 //construct HTML template using required data
-								 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-								 emailMessage.setSubject(subject);
-								 emailMessage.setMessageBody(emailTemplate);
 								 
 								 //calling the sendEmail method of emailScenerioUtil
-								 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,attachmentList);
+								 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.SHORTLISTMAILFROMCLIENT_TO_VENDOR);
 								 
-								String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+								String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 								notificationScenario.setBody(notificationBody);
 								StringBuilder notificationLink = new StringBuilder();
 								 String actionLink="";
