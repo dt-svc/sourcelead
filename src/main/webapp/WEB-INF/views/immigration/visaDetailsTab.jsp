@@ -23,9 +23,9 @@
 				<td><div class="tbldata-dotdot-sm">${!empty visadetails.validFromDateStr ? visadetails.validFromDateStr : '---'}</div></td>
 				<td><div class="tbldata-dotdot-sm">${!empty visadetails.validToDateStr ? visadetails.validToDateStr : '---'}</div></td>
 				<td><div><i id="edit" onclick="immigration.editPassportVisaDetailsByRowId(${visadetails.id},'${visadetails.idType}');"
-				class="glyphicon glyphicon-pencil"></i><i id="delete" 
+				class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
 				 onclick="immigration.deletePassportVisaDetailsById(${visadetails.id},'${visadetails.idType}');" 
-				 class="glyphicon glyphicon-trash ml10"></i></div></td>
+				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 				<!-- <td class="immigraAction">
 					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
 					<div class="mmigraActionInn">
