@@ -571,7 +571,7 @@
 	   prepareResidencediv =prepareResidencediv+ "<div id ='dynamicResidenceDiv"+rowId+"'>";
 	   prepareResidencediv =prepareResidencediv+ "   <div class='clearfix'></div>";
 	   prepareResidencediv =prepareResidencediv+ "     	<div class='col-md-12 mb margin-top0'>";
-	   prepareResidencediv =prepareResidencediv+ "   <h4 class='pull-left'>Residence</h4> <button type='button' class='btn btn-default pull-right' onclick='removeDynamicResidenceDiv("+rowId,(typeof residenceVal[0]==="undefined"?"":residenceVal[0])+")'><i class='fa fa-remove text-danger paddingRight'></i>Remove Residence</button>";
+	   prepareResidencediv =prepareResidencediv+ "   <h4 class='pull-left'>Residence</h4> <button type='button' class='btn btn-default pull-right' onclick='removeDynamicResidenceDiv("+rowId+","+(typeof residenceVal[0]==="undefined"?"":residenceVal[0])+")'><i class='fa fa-remove text-danger paddingRight'></i>Remove Residence</button>";
 	   prepareResidencediv =prepareResidencediv+ "   </div><input type='hidden' name='residenceList["+rowId+"].id' value='"+(typeof residenceVal[0]==="undefined"?"":residenceVal[0])+"'>";
 	   prepareResidencediv =prepareResidencediv+ "   <div class='clearfix'></div>";
 	   prepareResidencediv =prepareResidencediv+ " <div class='form-group'>";
@@ -655,7 +655,8 @@
    }
    //var deletedResicenceListIds = new Array();
    var removedResidenceIds = [];
-   function removeDynamicResidenceDiv(id){
+   function removeDynamicResidenceDiv(id,residenceId){
+	   removedResidenceIds.push(residenceId);
 	   /* if($("#templateId"+id).val() !==  undefined ){
 		   deletedResicenceListIds.push($("#templateId"+id).val());   
 	   } */
@@ -881,25 +882,22 @@ $("#experienceValue").change(function () {
 		  employmentLevelDropDown("${immigrationDTO.employmentLevel}");
 		  jobTitleDropDown("${immigrationDTO.jobId}");
 		  var sizeOfResidence = "${fn:length(immigrationDTO.residenceList)}";
-		  if(sizeOfResidence > 1){
+		  if(sizeOfResidence > 0){
 		  	var count = 1;
 		  	var residenceArr = [];
-		  	
 		  	<c:forEach var='edu' items="${immigrationDTO.residenceList}">
-		  		var currentResidence = "${edu.isCurrResidence}";
-		  		if(currentResidence != 'Y'){
-		  			residenceArr.push("${edu.id == 'undefined' ? '':edu.id}");
-			  		residenceArr.push("${edu.location}");
-			  		residenceArr.push("${edu.address}");
-			  		residenceArr.push("${edu.city}");
-			  		residenceArr.push("${edu.state}");
-			  		residenceArr.push("${edu.country}");
-			  		residenceArr.push("${edu.zipcode}");
-			  		residenceArr.push("${edu.residenceStartDate}");
-			  		residenceArr.push("${edu.residenceEndDate}");
-			  		$("#dynamicResidenceGroupDiv").append(prepareDynamicResidenceDiv(count,residenceArr));
-			  		residenceArr = [];
-		  		}
+		  		alert("${edu.location}");
+		  		residenceArr.push("${edu.id == 'undefined' ? '':edu.id}");
+			  	residenceArr.push("${edu.location}");
+			  	residenceArr.push("${edu.address}");
+			  	residenceArr.push("${edu.city}");
+			  	residenceArr.push("${edu.state}");
+			  	residenceArr.push("${edu.country}");
+			  	residenceArr.push("${edu.zipcode}");
+			  	residenceArr.push("${edu.residenceStartDate}");
+			  	residenceArr.push("${edu.residenceEndDate}");
+			  	$("#dynamicResidenceGroupDiv").append(prepareDynamicResidenceDiv(count,residenceArr));
+			  	residenceArr = [];
 		  		count++;
 		  	</c:forEach>
 		  	var fileNameVal = "${immigrationDTO.fileName}";

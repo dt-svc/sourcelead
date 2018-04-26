@@ -50,4 +50,9 @@
 			  						
 			</tbody>
 		  </table>
+		  <div class="immFoot clearfix">
+			<div class="pull-right text-right">
+				<input type="button" value="Back" onclick="goToSummaryTab('#notesTab');" class="btn btn-default btn-sm">
+            </div>
+		</div>
 		</div>

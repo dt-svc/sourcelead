@@ -100,7 +100,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	}
 	
 	@Override
-	public Immigration savePetitionDetails(ImmigrationDTO immigrationDTO, User user,OrgLocations orgLocations){
+	public Immigration savePetitionDetails(ImmigrationDTO immigrationDTO, User user,OrgLocations orgLocations, String[] ids){
 		Immigration immigrationObj = null;
 		try {
 			
@@ -123,6 +123,11 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		
 		List<CandidateLcaI94Summary> lcaSummaryLst  = new ArrayList<CandidateLcaI94Summary>();
 		lcaSummaryLst = savePetitionLcaSummaryList(immigrationDTO, candidate, user, requirement, orgLocations);
+		if(ids.length != 0) {
+			for(String id: ids) {
+				immigrationCommonDao.deleteCandidateResidenceDetails(Long.parseLong(id), Long.parseLong("0"));
+			}
+		}
 		
 		List<CandidateResidence> residenceList = new ArrayList<CandidateResidence>(); // add residences to immigration candidate tables
 		residenceList = savePetitionResidenceList(immigrationDTO,candidate, user, orgLocations);
@@ -282,8 +287,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 		lcaSummaryCurr.setCreatedDate(currentDate);
 		lcaSummaryCurr.setUpdatedDate(currentDate);
-		lcaSummaryCurr.setJobStartDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationDTO.getJobStartDate()));
-		lcaSummaryCurr.setJobEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationDTO.getJobEndDate()));
+		if(immigrationDTO.getJobStartDate() != null && StringUtils.isNotEmpty(immigrationDTO.getJobStartDate())) {
+			lcaSummaryCurr.setJobStartDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationDTO.getJobStartDate()));
+		}
+		if(immigrationDTO.getJobEndDate() != null && StringUtils.isNotEmpty(immigrationDTO.getJobEndDate())) {
+			lcaSummaryCurr.setJobEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationDTO.getJobEndDate()));
+		}
 		lcaSummaryLst.add(lcaSummaryCurr); // add current lca
 		
 		CandidateLcaI94Summary lcaSummaryPrev  = null;
@@ -404,6 +413,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 
 	private Immigration savePetitionImmigration(ImmigrationDTO immigrationDTO, OrgLocations orgLocations, Candidate candidate, Requirement requirement, User user) throws Exception, Exception {
 		Immigration immigration = new Immigration();
+		if(immigrationDTO.getImmigrationId() != null && StringUtils.isNotEmpty(immigrationDTO.getImmigrationId())) {
+			immigration = immigrationCommonDao.getImmigrationById(Long.parseLong(immigrationDTO.getImmigrationId()));
+		}
 		LookUpData petitionTypeId = new LookUpData();
 		petitionTypeId.setId(Long.parseLong(immigrationDTO.getPetitionType()));
 		immigration.setPetitionType(petitionTypeId);
@@ -433,7 +445,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		immigration.setCandidate(candidate);
 		immigration.setOrgLocationId(orgLocations);
 		immigration.setReceiptNo(immigrationDTO.getReceiptNo());
-		immigration.setGeneratedId(getImmigrationIdForGeneratedId(orgLocations));
+		if(StringUtils.isEmpty(immigrationDTO.getImmigrationId())) {
+			immigration.setGeneratedId(getImmigrationIdForGeneratedId(orgLocations));
+		}
 		immigration.setJob(requirement);
 		immigration.setStatus(Constants.RECORD_ACTIVE);
 		immigration.setCreatedBy(user);
@@ -445,11 +459,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	}
 
 	@Override
-	public ImmigrationDTO getImmigrationViewList(String immigrationId, OrgLocations orgLocations) {
+	public ImmigrationDTO getImmigrationDetails(String immigrationId, OrgLocations orgLocations) {
 		ImmigrationDTO dto = new ImmigrationDTO();
 		try {
-		Immigration immigration = immigrationCommonDao.getImmigrationViewList(immigrationId);
+		Immigration immigration = immigrationCommonDao.getImmigrationDetails(immigrationId);
 		dto.setPetitionType(immigration.getPetitionType().getName());
+		dto.setGeneratedId(immigration.getGeneratedId());
 		dto.setOpenDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),immigration.getOpenDate()));
 		dto.setCurrUscisStatus(immigrationCommonDao.getPetitionTypeById(immigration.getCurrUscisStauts().getId(), Constants.USCIS_STATUS));
 		if(immigration.getDateOfArrival() != null) {
@@ -1114,11 +1129,21 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	}
 	
 	@Override
-	public List<ImmigrationCandidateDocumentsHistory> getImmigrationCandidateDocumentHistoryListByImmigrationId(Long immigrationId) throws Exception {
+	public List<ImmigrationCandidateDocumentsHistory> getImmigrationCandidateDocumentHistoryListByImmigrationId(Long immigrationId, Long docId) throws Exception {
 		
-		List <ImmigrationCandidateDocumentsHistory> immigrationCanididateDocHistoryList =immigrationCommonDao.getImmigrationCandidateDocumentHistoryListByImmigrationId(immigrationId);
+		List <ImmigrationCandidateDocumentsHistory> immigrationCanididateDocHistoryList =immigrationCommonDao.getImmigrationCandidateDocumentHistoryListByImmigrationId(immigrationId, docId);
 		
 		return immigrationCanididateDocHistoryList;
+	}
+
+	@Override
+	public String deleteImmigrationDetailsById(Long immigrationId) {
+		return immigrationCommonDao.deleteImmigrationDetailsById(immigrationId);
+	}
+
+	@Override
+	public List<ImmigrationCandidateForms> getImmigrationCandidateFormsByImmigrationId(Long immigrationId) {
+		return immigrationCommonDao.getImmigrationCandidateFormsByImmigrationId(immigrationId);
 	}
 
 }

@@ -89,7 +89,6 @@ public class ImmigrationRestController {
 
     @Value("${sourceleadLoginUrl}")
     private String sourceleadLoginUrl;
-
     @Autowired
     private UserService userService;
 
@@ -216,7 +215,11 @@ public class ImmigrationRestController {
     public @ResponseBody
     ResponseList<ImmigrationListViewDTO> getAllImmigartionList(
     		ImmigrationListViewDTO immigrationListDTO,
-            @RequestParam(value = "searchValue", required = false) String searchValue, HttpServletRequest request) {
+            @RequestParam(value = "searchValue", required = false) String searchValue,
+            @RequestParam(value = "filterAttorneyVal", required = false)  String[] filterAttorneyVal,
+            @RequestParam(value = "filterTypeVal", required = false)  String[] filterTypeVal, 
+            @RequestParam(value = "filterStatusVal", required = false)  String[] filterStatusVal,
+            @RequestParam(value = "filterDurationVal", required = false)  String[] filterDurationVal, HttpServletRequest request) {
         ResponseList<ImmigrationListViewDTO> immigrationListDTOList = null;
         System.out.println("inisde controller  getAllImmigartionList  --> ");
         try {
@@ -269,7 +272,7 @@ public class ImmigrationRestController {
                 "orgLocations");
         ImmigrationDTO immigrationDTO = null;
         if(immigrationId!=null && !StringUtils.isEmpty(immigrationId)) {
-        	immigrationDTO= immigrationCommonService.getImmigrationViewList(immigrationId,orgLocations);
+        	immigrationDTO= immigrationCommonService.getImmigrationDetails(immigrationId,orgLocations);
         }
         model.addObject("immigration", immigrationDTO);
         model.addObject("sourceleadUrl", sourceleadUrl);
@@ -323,7 +326,7 @@ public class ImmigrationRestController {
                 "orgLocations");
         ImmigrationDTO immigrationDTO = null;
         if(immigrationId!=null && !StringUtils.isEmpty(immigrationId)) {
-        	immigrationDTO= immigrationCommonService.getImmigrationViewList(immigrationId,orgLocations);
+        	immigrationDTO= immigrationCommonService.getImmigrationDetails(immigrationId,orgLocations);
         }
         model.addObject("immigration", immigrationDTO);
         model.addObject("sourceleadUrl", sourceleadUrl);
@@ -896,13 +899,13 @@ public class ImmigrationRestController {
     }
 
     @RequestMapping(value = {"/savePetitionDetailsPage"}, method = RequestMethod.POST)
-    public String  savePetitionDetailsPage(ImmigrationDTO immigrationDTO, HttpServletRequest request) {
+    public String  savePetitionDetailsPage(ImmigrationDTO immigrationDTO,@RequestParam(value = "removedResidenceIds", required = false) String[] ids, HttpServletRequest request) {
         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
         immigrationDTO.setStaticPath(staticPath);
 		Immigration immigration = null;
         try {
-        	immigration = immigrationCommonService.savePetitionDetails(immigrationDTO, user, orgLocations);
+        	immigration = immigrationCommonService.savePetitionDetails(immigrationDTO, user, orgLocations,ids);
         } catch (Exception e) {
             logger.error("Exception caugth in savePetitionDetailsPage controller" + e.getMessage());
             e.printStackTrace();
@@ -1455,7 +1458,7 @@ public class ImmigrationRestController {
 	
 	@RequestMapping("/downloadImmigrationDocsZip")	
 	@ResponseBody
-	public String exportImmigrationDocuments(HttpServletRequest request,Long immigrationId) throws Exception {
+	public String exportImmigrationDocuments(HttpServletRequest request,Long immigrationId, Long docId) throws Exception {
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
@@ -1466,8 +1469,35 @@ public class ImmigrationRestController {
 		if (loginOrgLocation != null) {
 			orgLocationId = loginOrgLocation.getId();
 		}
-		List <ImmigrationCandidateDocumentsHistory> immigrationCanididateDocHistoryList =immigrationCommonService.getImmigrationCandidateDocumentHistoryListByImmigrationId(immigrationId);
-		return FileUploadUtil.getImmigrationZipFiles(staticPath, orgId, orgLocationId,immigrationId, immigrationCanididateDocHistoryList);
+		List <ImmigrationCandidateDocumentsHistory> immigrationCanididateDocHistoryList =immigrationCommonService.getImmigrationCandidateDocumentHistoryListByImmigrationId(immigrationId,docId);
+		return FileUploadUtil.getImmigrationZipFiles(staticPath, orgId, orgLocationId,immigrationId, docId, immigrationCanididateDocHistoryList);
+	}
+	
+	
+	@RequestMapping(value = { "/deleteImmigrationDetailsById" })
+	public String deleteImmigrationDetailsById(
+			@RequestParam(value = "immigrationId", required = false) Long immigrationId,
+			HttpServletRequest request) throws Exception {
+		String result = immigrationCommonService.deleteImmigrationDetailsById(immigrationId);
+		return result;
+		
+	}
+	
+	@RequestMapping("/downloadImmigrationFormZip")	
+	@ResponseBody
+	public String exportImmigrationForms(HttpServletRequest request,Long immigrationId) throws Exception {
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		long orgId = 0, orgLocationId = 0;
+		if (org != null) {
+			orgId = org.getId();
+		}
+		if (loginOrgLocation != null) {
+			orgLocationId = loginOrgLocation.getId();
+		}
+		List <ImmigrationCandidateForms> immigrationCandidateForms =immigrationCommonService.getImmigrationCandidateFormsByImmigrationId(immigrationId);
+		return FileUploadUtil.getImmigrationFormZipFiles(staticPath, orgId, orgLocationId,immigrationId, immigrationCandidateForms);
 	}
 
 }

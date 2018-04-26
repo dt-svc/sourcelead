@@ -30,7 +30,7 @@ public interface ImmigrationCommonDao {
 	Immigration savePetitionDetails(Immigration immigration, Candidate candidate, CandidateIdendities candidateIdendities,
 			CandidateResumes candidateResume, List<CandidateLcaI94Summary> lcaSummaryLst, List<CandidateResidence> residenceEntityLst) throws Exception;
 
-	Immigration getImmigrationViewList(String immigrationId);
+	Immigration getImmigrationDetails(String immigrationId);
 
 	String getPetitionTypeById(Long petitionType, String petitionTypeConstant);
 	
@@ -98,5 +98,10 @@ public interface ImmigrationCommonDao {
 	
 	List<ImmigrationCandidateDocumentsHistory> getImmigrationCandidateDocumentHistoryList(Long immigrationId,Long candidateId,Long immigrationCanDocid) throws Exception;
 
-	List<ImmigrationCandidateDocumentsHistory> getImmigrationCandidateDocumentHistoryListByImmigrationId(Long immigrationId) throws Exception;
+	List<ImmigrationCandidateDocumentsHistory> getImmigrationCandidateDocumentHistoryListByImmigrationId(Long immigrationId, Long docId) throws Exception;
+
+	String deleteImmigrationDetailsById(Long immigrationId);
+
+	List<ImmigrationCandidateForms> getImmigrationCandidateFormsByImmigrationId(Long immigrationId);
+
 }

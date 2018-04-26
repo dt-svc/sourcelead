@@ -30,9 +30,9 @@ public interface ImmigrationCommonService {
 	
 	List<ImmigrationTemplate> getImmigrationTemplateList(OrgLocations orgLocations);
 
-	Immigration savePetitionDetails(ImmigrationDTO immigrationDTO, User user, OrgLocations orgLocations) throws Exception;
+	Immigration savePetitionDetails(ImmigrationDTO immigrationDTO, User user, OrgLocations orgLocations, String[] ids) throws Exception;
 
-	ImmigrationDTO getImmigrationViewList(String immigrationId, OrgLocations orgLocations);
+	ImmigrationDTO getImmigrationDetails(String immigrationId, OrgLocations orgLocations);
 	
 	String saveCandidateFamilyMemberDetails(CandidateFamilyDetailsDTO familyDetailsDTO, OrgLocations orgLocations, User user) throws Exception;
 
@@ -94,7 +94,11 @@ public interface ImmigrationCommonService {
 	
 	List<ImmigrationCandidateDocumentsHistory> getImmigrationCandidateDocumentHistoryList(Long immigrationId,Long candidateId,Long immigrationCanDocid) throws Exception;
 
-	List<ImmigrationCandidateDocumentsHistory> getImmigrationCandidateDocumentHistoryListByImmigrationId(Long immigrationId) throws Exception;
+	List<ImmigrationCandidateDocumentsHistory> getImmigrationCandidateDocumentHistoryListByImmigrationId(Long immigrationId, Long docId) throws Exception;
+
+	String deleteImmigrationDetailsById(Long immigrationId);
+
+	List<ImmigrationCandidateForms> getImmigrationCandidateFormsByImmigrationId(Long immigrationId);
 
 	
 }

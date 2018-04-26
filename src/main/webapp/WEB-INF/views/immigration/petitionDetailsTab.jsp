@@ -60,7 +60,13 @@
 			  </div>	
 			  </div>		  			  			  
 			  <div class="clearfix"></div>
-		  </div>		  		  		  
+		  </div>	
+		  
+		<div class="immFoot clearfix">
+			<div class="pull-right text-right">
+              <input type="button" value="Continue"  onclick="goToSummaryTab('#passportsTab');" class="btn btn-primary btn-sm ml10">
+            </div>
+		</div>		  		  		  
 	 
 	  
 	 <script>

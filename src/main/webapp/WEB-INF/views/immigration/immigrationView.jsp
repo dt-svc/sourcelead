@@ -14,34 +14,63 @@
    
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Immigrations</h2>
+        <h2>${immigration.generatedId}</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/viewImmigrationList">Immigrations List</a> &raquo; Immigration Summery</div>
       <input type="hidden" id = "candidateID" value = "${candidateId}">
 		<input type="hidden" id = "immigrationID" value = "${immigrationId}">
 		<input type="hidden" id = "templateID" value = "${templateId}">
-		
-		<div class="clearfix"></div>
-		<div class="immigraHead">
-			<ul class="immigraTabs">
-              <li class="current"><a href="#detailsTab">Details</a></li>
-              <li><a href="#passportsTab">Passport</a></li>
-              <li><a href="#visasTab">Visa</a></li>
-              <li><a href="#employersTab">Employers</a></li>
-              <li><a href="#residencesTab">Residence</a></li>
-              <li><a href="#educationsTab">Educations</a></li>
-              <li><a href="#familiesTab">Family</a></li>
-              <li><a href="#formsTab">Forms</a></li>
-              <li><a href="#docsTab">Documents</a></li>
-              <li><a href="#notesTab">Notes</a></li>
-              <li><a href="#activitiesTab">Activities</a></li>
-              <div class="clearfix"></div>
-            </ul>
-		</div>
       
     </section>
     
 	<section class="immigraTabsWrap">
+	
+  	<div class="immHeadWrap">
+  		<div class="immHead clearfix">
+  			<div class="col-md-4">
+  				<h2>${immigration.firstName}&nbsp;${immigration.lastName}</h2>
+  				<h3>${immigration.email}</h3>
+  			</div>
+  			<div class="col-md-4">
+				<p><strong>Visa Type</strong>: ${immigration.petitionType}</p>
+				<p><strong>Attorney</strong>: ${immigration.attorneyName}</p>
+  			</div>
+  			<div class="col-md-4 immHeadactions clearfix">
+  				<a href="javascript:void(0)">
+  					<i class="fa fa-caret-down"></i>
+  					<ul>
+  						<li>Status 1</li>
+  						<li>Status 2</li>
+  						<li>Status 3</li>
+  						<li>Status 4</li>
+  						<li>Status 5</li>
+  					</ul>
+  				</a>  			
+  				<span>${immigration.currUscisStatus}</span>
+  			</div>
+  		</div>
+	
+		<div class="immigraHead">
+			<ul class="immigraTabs">
+              <li class="current"><a href="#detailsTab"><i class="fa fa-check-circle-o"></i>Details</a></li>
+              <li><a href="#passportsTab"><i class="fa fa-check-circle-o"></i>Passport</a></li>
+              <li><a href="#visasTab"><i class="fa fa-check-circle-o"></i>Visa</a></li>
+              <li><a href="#employersTab"><i class="fa fa-check-circle-o"></i>Employers</a></li>
+              <li><a href="#residencesTab"><i class="fa fa-check-circle-o"></i>Residence</a></li>
+              <li><a href="#educationsTab"><i class="fa fa-check-circle-o"></i>Educations</a></li>
+              <li><a href="#familiesTab"><i class="fa fa-check-circle-o"></i>Family</a></li>
+              <li><a href="#formsTab"><i class="fa fa-check-circle-o"></i>Forms</a></li>
+              <li><a href="#docsTab"><i class="fa fa-check-circle-o"></i>Documents</a></li>
+              <li><a href="#notesTab">Notes</a></li>
+              <li><a href="#activitiesTab">Activities</a></li>
+              <div class="clearfix"></div>
+            </ul>
+		</div>	
+		
+		</div>
+		
+	
+	
   
 	  <div id="detailsTab" class="immigraTabs_inn">
 		 	<jsp:include page="petitionDetailsTab.jsp" />	  		  		  
@@ -215,6 +244,18 @@ $(document).ready(function() {
    }
    </script>
    
-    <!-- Script for Linked Invoice pop -->
+<script>
+$(document).ready(function(){
+	$(".immHeadactions i").click(function(){
+		$(".immHeadactions ul").slideToggle(0);
+	});
+});	
+</script>
+<script>
+	function goToSummaryTab(tabname) {
+		$("a[href='"+tabname+"']").click();
+	}
+</script>
+
 <jsp:include page="../masterFooter.jsp" />
  
