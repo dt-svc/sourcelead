@@ -879,11 +879,15 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		immigrationCandidateDocuments.setCandidateId(candidate);
 		immigrationCandidateDocuments.setImmigrationTemplateId(immigrationTemplate);
 		immigrationCandidateDocuments.setImmigrationId(immigration);
+		
 		LookUpData documentTypeId = new LookUpData();
 		documentTypeId.setId(immigrationTemplateDocDTO.getDocumentType());
 		immigrationCandidateDocuments.setDocumentType(documentTypeId);
 		immigrationCandidateDocuments.setDocUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		immigrationCandidateDocuments.setDescription(immigrationTemplateDocDTO.getDescription());
+		if(immigrationTemplateDocDTO.getOtherType() != null){
+			immigrationCandidateDocuments.setDocumentOtherType(immigrationTemplateDocDTO.getOtherType());
+			}
 		immigrationCandidateDocuments.setIsTemplateConfigured(Constants.NO);
 		if(immigrationTemplateDocDTO.getIsRequired() != null && "Y".equalsIgnoreCase(immigrationTemplateDocDTO.getIsRequired())){
 		immigrationCandidateDocuments.setIsRequired(immigrationTemplateDocDTO.getIsRequired());

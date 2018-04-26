@@ -93,7 +93,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Document Type<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-					<select class="chosen-select form-control" name = "documentType" field-name="Document Type" data-validation="required" id = "documentType">
+					<select class="chosen-select form-control" name = "documentType" field-name="Document Type" data-validation="required" id = "documentType" onchange="getDocumentTypeDiv(this);">
 					  <option value = "">Select Document Type</option>
 					   <c:forEach var="docs" items="${documentsList}">
 											<option value="${docs.id}">${docs.name}</option>
@@ -101,6 +101,10 @@
 					</select>
 				</div>
 			</div>
+			
+			<div class="col-md-8" id="documentOtherTypeDiv" style="display:none">
+	<input type="text" class="form-control" name="otherType"  id="documentOtherType" value="" placeholder="Document Other Type" field-name="Document Other Type" data-validation="required validate_Space validate_length length1-250">
+	</div>
           		          
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Description</label>
@@ -475,4 +479,24 @@ function downlaodZipfileByDocId(docId){
 	
 }
 </script>	
+
+
+<script>
+function getDocumentTypeDiv(documentTypes){
+	 var existingDocumentType = $('#documentType').val(); 
+	 alert(documentTypes.value.name);
+	if(documentTypes.value == '940'){
+		  document.getElementById("documentOtherTypeDiv").style.display="block";
+		  $("#documentOtherType").attr("data-validation-optional", "false");
+		  $("#documentOtherType").attr("data-validation", "required validate_Space validate_length length2-250");
+	}else{
+		  document.getElementById("documentOtherTypeDiv").style.display="none";
+		  $("#documentOtherType").attr("data-validation-optional", "true");
+		  $("#documentOtherType").find('p.jquery_form_error_message').remove();
+		  if(existingDocumentType == null || existingDocumentType == "" || existingDocumentType == "undefined" || existingDocumentType != 'Other'){
+			  $("#documentOtherType").val('');
+		  }
+	}
+}
+</script>
 

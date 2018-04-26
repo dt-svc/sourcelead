@@ -46,6 +46,9 @@ public class ImmigrationCandidateDocuments implements Serializable {
 	@JoinColumn(name = "DOCUMENT_TYPE")
 	private LookUpData documentType;
 	
+	@Column(name = "DOCUMENT_OTHER_TYPE ")
+	private String documentOtherType;
+	
 	@Column(name = "DOCUMENT_UUID ")
 	private String docUUID;
 	
@@ -297,6 +300,14 @@ public class ImmigrationCandidateDocuments implements Serializable {
 
 	public void setDocsHistoryList(JSONArray docsHistoryList) {
 		this.docsHistoryList = docsHistoryList;
+	}
+
+	public String getDocumentOtherType() {
+		return documentOtherType;
+	}
+
+	public void setDocumentOtherType(String documentOtherType) {
+		this.documentOtherType = documentOtherType;
 	}
 
 

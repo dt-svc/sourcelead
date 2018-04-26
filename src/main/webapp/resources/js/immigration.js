@@ -1086,6 +1086,12 @@ function editDocumentDetailsByRowId(id){
      		/*	$('#eduName').val(data.name); // to select the dropdwon value based on id value.
      			$('#scoreEducationType').val(data.gradeType);*/
      			$('#documentType').val(data.documentType.id);
+     			if(data.documentOtherType){
+     			document.getElementById("documentOtherTypeDiv").style.display="block";
+     			$('#documentOtherType').val(data.documentOtherType);
+     			}else{
+     			document.getElementById("documentOtherTypeDiv").style.display="none";
+     			}
      			$('#description1').text(data.description);
      			if(data.allowMultiple == 'Y'){
      				$('#candidate_Immigration_Doc input[name="multiple"]').prop('checked', true);
