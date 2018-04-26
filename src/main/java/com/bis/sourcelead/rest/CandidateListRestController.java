@@ -897,6 +897,10 @@ public class CandidateListRestController {
 				candidateDTO.setState(can.getState());
 				candidateDTO.setFirstName(can.getFirstName());
 				candidateDTO.setLastName(can.getLastName());
+				candidateDTO.setMiddleName(can.getMiddelName());
+				candidateDTO.setGender(can.getGender());
+				candidateDTO.setMaritalStatus(can.getMaritalStatus());
+				candidateDTO.setDateofBirth(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), can.getDateOfBirth()));
 				candidateDTO.setLocation(can.getLocation());
 				candidateDTO.setSummary(can.getSummary());
 				candidateDTO.setFileUrl(can.getFileUrl());
