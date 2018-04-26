@@ -1108,6 +1108,8 @@ public class Constants {
 	public static final String LICENSE_PAYMENT_ACKNOWLEDGEMENT = "licensePaymentAcknowledgement";
 	
 	public static final String LICENSE_PAYMENT_ACKNOWLEDGEMENT_DETAILS = "licensePaymentAcknowledgementDetails";
+	
+	public static final String API_TRUMAIL_URL = "https://api.trumail.io/v1/json/";
 
 
 }

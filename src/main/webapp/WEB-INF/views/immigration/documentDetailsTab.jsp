@@ -3,13 +3,13 @@
 		<div class="immigraTabsHead">
 		<!-- <a href="javascript:void(0)" id="immDocu"><i class="glyphicon glyphicon-plus"></i> Request Document</a> 		 -->	  	
 		  	<a href="javascript:void(0)" id="addDocu"><i class="glyphicon glyphicon-plus"></i> Add Document</a> 
-		  	<ul>
-		  	<li id='docZipfile'>Download All Documents</li> 
-		  	</ul>
+		  	
+		  	<span id='docZipfile' class="cursorPointer"><i class="glyphicon glyphicon-download-alt paddingRight"></i>Download All Documents</span> 
+		  	
 		  	<span><input class="immigraTabSerach" id="immigraDocTabSerach" placeholder="Document Type/Description/Status" type="text"></span>
 		</div>
 		
-	  	<div class="immigraTable">
+	  	<div class="immigraTable overflow_Auto">
 	  	<!-- <ul>
 		<li id='docZipfile'>Download All Documents</li> 
 	</ul> -->
@@ -17,16 +17,17 @@
 			<tbody>
 			  <tr>
 				<th>Document Type</th>
+				<th>Description</th>
 				<th>Required</th>
 				<th>Document</th>
 				<th>Status</th>
-				<th>Description</th>
 				<th>Action</th>
 			  </tr>
 			  <c:forEach var="canDocList" items="${immigrationCanDocList}" varStatus="rows">			  			  
 			<tr docid="${canDocList.id}" allowMultpleDocs= "${canDocList.allowMultiple}" docsHistoryList = "${fn:escapeXml(canDocList.docsHistoryList)}">
 				<td><div class="tbldata-dotdot-vsm">${canDocList.documentTypeName}</div></td>
-				<td><div class="tbldata-dotdot-vsm">${canDocList.isRequired == 'Y' ? "YES":"NO"}</div></td>
+				<td><div class="tbldata-dotdot-me">${canDocList.description}</div></td>
+				<td><div class="tblminwidth-50">${canDocList.isRequired == 'Y' ? "YES":"NO"}</div></td>
 				<c:if test="${!empty canDocList.upldedFileName}">
 				<td>
 					<c:choose>
@@ -47,8 +48,7 @@
 					</div>
 				</td>
 				</c:if>
-				<td><div class="tbldata-dotdot-vsm">${canDocList.documentStatus}</div></td>
-				<td><div class="tbldata-dotdot-big">${canDocList.description}</div></td>
+				<td><div class="tblminwidth-50">${canDocList.documentStatus}</div></td>
 				<!-- <td class="immigraAction">
 					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
 					<div class="mmigraActionInn">
@@ -64,8 +64,8 @@
 				<div class="tblminwidth-90">
 					<a id= "upload" title="Upload" class="fa fa-upload uploadForm"></a>
 					<c:if test="${canDocList.isTemplateConfigured eq 'N'}">
-					<i id="edit" class="glyphicon glyphicon-pencil ml10" onclick="editDocumentDetailsByRowId(${canDocList.id});"></i>
-					<i id="delete" class="glyphicon glyphicon-trash ml10" onclick="deleteDocumentDetailsByRowId(${canDocList.id});" ></i>
+					<i id="edit" class="glyphicon glyphicon-pencil ml10 cursorPointer" onclick="editDocumentDetailsByRowId(${canDocList.id});"></i>
+					<i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteDocumentDetailsByRowId(${canDocList.id});" ></i>
 				 </c:if>
 					</div>
 				</td>
@@ -195,8 +195,8 @@
           <div class="row mt clearfix" id ="dynamicUplodDiv">
 				
               	<div class="col-md-10" id= "uploadDocSaveDiv">
+              	<div class="row">
               	<label class="col-md-2">File<span class="text-danger">&nbsp;*</span></label>
-					<div class="row">
 					<div class="col-md-10 paddingRight">
 					<div class="input-group validation_p">
 					<label class="input-group-btn"> <span class="btn btn-primary" onchange="uploadRerqDocsList(0);"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
@@ -205,15 +205,16 @@
 					<input type="text" class="form-control" readonly id="uploadFile0" name = "docFile0" field-name ="Document" data-validation = "required" placeholder="Upload Document ...">
 					 </div>
 					 </div>
-					 
-				  </div>
+					 </div>
 				</div>
 				
-				<div class="col-sm-12 noPad mt clearfix" id="uploadDocEditDiv" style="display: none">
-			<label class="col-md-4 padding_left">File<span class="text-danger">&nbsp;*</span></label>
-			 <div class="col-md-8">
-				  <label id="uploadDocumentName0" name="uploadDocumentName0" class="text-primary tbldata-dotdot-200 pull-left" title=""></label>&nbsp;&nbsp;<span id="delete_immiDocFile" onclick="removeImmigDocumrntDynamic(0);"><i class="fa fa-trash removeIcon text-danger cursorPointer pull-right"></i></span>
+				<div class="col-md-10" id="uploadDocEditDiv" style="display: none">
+				<div class="row">
+			<label class="col-md-2">File<span class="text-danger">&nbsp;*</span></label>
+			 <div class="col-md-10 paddingRight">
+				  <label id="uploadDocumentName0" name="uploadDocumentName0" class="text-primary tbldata-dotdot-custom pull-left" title=""></label>&nbsp;&nbsp;<span id="delete_immiDocFile" onclick="removeImmigDocumrntDynamic(0);"><i class="fa fa-trash removeIcon text-danger cursorPointer pull-right"></i></span>
 				<input type="hidden" id="uploadDocumentNameExisitngFile" name="uploadDocumentNameExisitngFile" value="">
+				  </div>
 				  </div>			          	
 			</div>	
 			<div id="divAddButton" class="col-md-2" style="display:none">
@@ -400,11 +401,11 @@ function prepareDynamicUploadRow(rowId){
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<div class='clearfix'></div>";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<div id='dynamicRow"+rowId+"' class='mt clearfix'>";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<label class='col-md-2'>File<span class='text-danger'>&nbsp;*</span></label>";
-	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<div class='col-md-10'>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<div class='col-md-10 paddingLeft'>";
 	  
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<div class='row'>";
 
-	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<div class='col-md-10 paddingRight' id= 'uploadDocSaveDiv"+rowId+"'>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<div class='col-md-10' id= 'uploadDocSaveDiv"+rowId+"'>";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	<div class='input-group validation_p'>";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	<label class='input-group-btn'> <span class='btn btn-primary' onchange='uploadRerqDocsList("+rowId+")'><i class='fa fa-folder-open-o'></i>&nbsp;Browse File";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	<input type='file' style='display:none'; onchange='uploadBtnFilesList(" + rowId + ");' multiple id='uploadBtn"+rowId+"'  class='upload'>";
@@ -413,23 +414,23 @@ function prepareDynamicUploadRow(rowId){
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"			  </div>";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"			  </div>";
 	  
-	dynamicUploadRowHtml= dynamicUploadRowHtml+'<div class="col-sm-12 noPad mt clearfix" id="uploadDocEditDiv'+rowId+'" style="display: none"> ';
+	dynamicUploadRowHtml= dynamicUploadRowHtml+'<div class="col-md-10" id="uploadDocEditDiv'+rowId+'" style="display: none"> ';
 	//dynamicUploadRowHtml=dynamicUploadRowHtml+'	<label class="col-md-4 padding_left">File<span class="text-danger">&nbsp;*</span></label> ';
-	dynamicUploadRowHtml=dynamicUploadRowHtml+'	 <div class="col-md-8"> ';
-	dynamicUploadRowHtml=dynamicUploadRowHtml+'	  <label id="uploadDocumentName'+rowId+'" name="uploadDocumentName'+rowId+'" class="text-primary tbldata-dotdot-200 pull-left" title=""></label>&nbsp;&nbsp;<span id="delete_immiDocFile" onclick="removeImmigDocumrntDynamic('+rowId+');"><i class="fa fa-trash removeIcon text-danger cursorPointer pull-right"></i></span>';
+	dynamicUploadRowHtml=dynamicUploadRowHtml+'	 <div class="clearfix"> ';
+	dynamicUploadRowHtml=dynamicUploadRowHtml+'	  <label id="uploadDocumentName'+rowId+'" name="uploadDocumentName'+rowId+'" class="text-primary tbldata-dotdot-custom pull-left" title=""></label>&nbsp;&nbsp;<span id="delete_immiDocFile" onclick="removeImmigDocumrntDynamic('+rowId+');"><i class="fa fa-trash removeIcon text-danger cursorPointer pull-right"></i></span>';
 	dynamicUploadRowHtml=dynamicUploadRowHtml+'	<input type="hidden" id="uploadDocumentNameExisitngFile" name="uploadDocumentNameExisitngFile" value="">';
 	dynamicUploadRowHtml=dynamicUploadRowHtml+'	  </div>';		          	
 	dynamicUploadRowHtml=dynamicUploadRowHtml+'	</div>	';
 
-	  dynamicUploadRowHtml =dynamicUploadRowHtml+"				 <div id='divAddButton' class='col-md-2'>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<div id='divAddButton' class='col-md-2 paddingLeft'>";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<button type='button' class='btn btm-sm' id='btnDynamicRow"+rowId+"' onclick='removeDynamicUploaRow("+rowId+");' ><i class='fa fa-remove text-danger'></i></button>";
-	  dynamicUploadRowHtml =dynamicUploadRowHtml+"			  </div>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"</div>";
 	  
-	  dynamicUploadRowHtml =dynamicUploadRowHtml+"			  </div>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"</div>";
 	  
 	  
-	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	  </div>"; 
-	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	  </div>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"</div>"; 
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"</div>";
 	 return dynamicUploadRowHtml;
 }
 function appendDynamicUploaRow(){

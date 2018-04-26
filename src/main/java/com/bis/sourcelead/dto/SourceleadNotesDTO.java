@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dto;
 
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.annotations.Required;
 
 public class SourceleadNotesDTO {
@@ -15,6 +16,7 @@ public class SourceleadNotesDTO {
 	private String categoryType;
 	
 	@Required(desc = "noteDescription")
+	@CleanHtml(escape=false)
 	private String noteDescription;
 	
 	private String invoiceUUID;

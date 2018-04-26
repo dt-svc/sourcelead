@@ -3,6 +3,7 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.annotations.Required;
 
 public class AddTaskDTO implements Serializable{
@@ -21,6 +22,7 @@ public class AddTaskDTO implements Serializable{
 	
 	private String repeat;
 	
+	@CleanHtml(escape=false)
 	private String description;
 	
 	@Required(desc="subject")

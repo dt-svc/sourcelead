@@ -1,6 +1,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <div class="immigraTabsHead">
-		  	<a href="javascript:void(0)" class="immMenuClick">Add Family <i class="fa fa-plus"></i>
+		  	<a href="javascript:void(0)" class="immMenuClick"><i class="glyphicon glyphicon-plus"></i> Add Family 
 				<div class="immiSubMenu">
 					<ul>
 						<li id="addSpou"><i class="fa fa-plus"></i> Add Spouse</li>
@@ -30,8 +30,8 @@
 				<td><div class="tbldata-dotdot-vsm">${items.dateOfBirthStr}</div></td>
 				<td><div class="tbldata-dotdot-vsm">${!empty items.placeOfBirth ? items.placeOfBirth : '---'}</div></td>
 				<td><div class="tbldata-dotdot-me">${!empty items.currentAddress ? items.currentAddress : '---'}</div></td>
-				<td><div><i id="edit" class="glyphicon glyphicon-pencil"onclick="immigration.editFamilyDetailsById(${items.id},'${items.relation}');"
-				></i><i id="delete" class="glyphicon glyphicon-trash ml10"
+				<td><div><i id="edit" class="glyphicon glyphicon-pencil cursorPointer"onclick="immigration.editFamilyDetailsById(${items.id},'${items.relation}');"
+				></i><i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer"
 				 onclick="immigration.deleteFamilyDetailsById(${items.id});" 
 				 ></i></div></td>
 			  </tr> 

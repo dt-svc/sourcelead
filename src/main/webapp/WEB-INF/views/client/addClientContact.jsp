@@ -192,12 +192,16 @@ function getOrgDetails()
           
            <div class="form-group" id="EmailIdDiv">
 					<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
-					
-			        	<div class="col-md-9">
+			       <div class="col-md-9">
+			       <div class="input-group errorInptgroup">
 					  <input type="text" class="form-control" id="emailId" name="email" value="${emailId}" field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateEmail();getSpocUserDetails();getOwnersList();">
-	                            <span class="hidden">Valid Email</span>
+	                   <span class="hidden">Valid Email</span>
+	                   <span id="emailStatusIconDiv" class="input-group-addon">
+	                    	<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>
+	                  	</span>
 			     	</div>
-					</div>
+			     	</div>
+			</div>
                 <div class="form-group">
 	              <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
 	              <div class="col-md-9">
@@ -358,11 +362,15 @@ function validateEmail(){
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
 					$('input#emailId').removeAttr("class record-exist record-exist-errormsg");
 					$('input#emailId').attr('class','valid form-control');
+					 validateEmailForExistenceUniversally(emailId, "input#emailId");
 					
 				}
 			},
 
 		});
+	}else{
+		$("#emailStatusIconDiv").find("i").remove();
+  		$("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>');
 	}
 }
 </script>
@@ -750,21 +758,30 @@ function refreshClientList(){
 		 $.ajax({
 	      type : "POST",
 	       url: sourceleadUrl+"/refreshRequirementClientList",       
-	       success: function(json) {
-	        	var output = "";
-	        	output = output + "<option value=''>Select Client</option>"; 
-	        	for (var i=0; i<json.length; i++)
-				{
-		        		var opt = json[i];
-		        		if(opt.id == selectedOrgId){
-		        			output = output + "<option value='"+opt.id+","+opt.orgid+"' selected>"+opt.orgName+"</option>";
-		        		}else{
-		        			output = output + "<option value='"+opt.id+","+opt.orgid+"'>"+opt.orgName+"</option>";
-		        		}
-				}
-	        	$("#vendorName").empty();
-		        $("#vendorName").append(output);
-		        $('#vendorName').trigger("chosen:updated");
+	       success: function(result) {
+	    	   	  if (result.response === "SESSION_TIMEDOUT") {
+	  				 location.replace(sourceleadUrl);
+	              } else if (result.response === "AWKWARD") {
+	                  location.href = "/errorPage";
+	              } else if (result.response === "SUCCESS") {
+	           	    if(result.data != null && result.data != "" && result.data != 'undefined'){
+	           	    	var json = result.data;
+				        	var output = "";
+				        	output = output + "<option value=''>Select Client</option>"; 
+				        	for (var i=0; i<json.length; i++)
+							{
+				        		var opt = json[i];
+				        		output = output + "<option value='"+opt.id+","+opt.locationID+"' >"+opt.orgName+"</option>";
+							}
+	           	    }
+	           	 	$("#vendorName").empty();
+			        $("#vendorName").append(output);
+			        $('#vendorName').trigger("chosen:updated");
+	              } else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+				  } else {
+	                  showError("Operation failed, please try again");
+	              }
 	        }
 		 });
 }

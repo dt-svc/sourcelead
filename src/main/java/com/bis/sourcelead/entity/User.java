@@ -232,9 +232,11 @@ public class User implements Serializable{
 	private String assignedTeamId;
 	
 	@Transient
+	@JsonProperty
 	private String assignedTeam;
 	
 	@Transient
+	@JsonProperty
 	private String isAssignedOwner;
 	
 	@Transient

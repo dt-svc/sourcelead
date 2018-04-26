@@ -4,7 +4,7 @@
 		  	<span><input class="immigraTabSerach"  id = "searchValuePassport" placeholder="Passport Id/Country" type="text"></span>
 		</div>
 		
-	  	<div class="immigraTable">
+	  	<div class="immigraTable overflow_Auto">
 		  <table>
 			<tbody>
 			  <tr>
@@ -16,14 +16,14 @@
 			  </tr>
 			  <c:forEach var="passportdetails" items="${PassportList}" varStatus="rows">
 			  <tr>
-				<td><div class="tbldata-dotdot-big">${!empty passportdetails.idNumber ? passportdetails.idNumber : '---'}</div></td>
+				<td><div class="tbldata-dotdot-custom">${!empty passportdetails.idNumber ? passportdetails.idNumber : '---'}</div></td>
 				<td><div class="tbldata-dotdot-me">${!empty passportdetails.country ? passportdetails.country : '---'}</div></td>
 				<td><div class="tbldata-dotdot-me">${!empty passportdetails.validFromDateStr ? passportdetails.validFromDateStr : '---'}</div></td>
 				<td><div class="tbldata-dotdot-me">${!empty passportdetails.validToDateStr ? passportdetails.validToDateStr : '---'}</div></td>
          		<td><div><i id="edit" onclick="immigration.editPassportVisaDetailsByRowId(${passportdetails.id},'${passportdetails.idType}');"
-				class="glyphicon glyphicon-pencil"></i><i id="delete" 
+				class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
 				 onclick="immigration.deletePassportVisaDetailsById(${passportdetails.id},'${passportdetails.idType}');" 
-				 class="glyphicon glyphicon-trash ml10"></i></div></td>
+				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 			  </tr>  
 			  </c:forEach>			 				
 			</tbody>

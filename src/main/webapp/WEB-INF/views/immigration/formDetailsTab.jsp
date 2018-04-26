@@ -1,9 +1,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <div class="immigraTabsHead">			  	
 		  	<a href="javascript:void(0)" id="addForm"><i class="glyphicon glyphicon-plus"></i> Add Form</a>
-		  	<ul>
-		  	<li id='formZipfile'>Download All Documents</li> 
-		  	</ul> 
+		  	<span id='formZipfile' class="cursorPointer"><i class="glyphicon glyphicon-download-alt paddingRight"></i>Download All Documents</span> 
 		  	<span><input class="immigraTabSerach" id="immigraFormTabSerach" placeholder="Form Name/Status" type="text"></span>
 		</div>
 		
@@ -33,8 +31,8 @@
 				 <td><div>
 				 <a title="Upload" class="fa fa-upload uploadForm" onclick=""></a>
 				 <c:if test="${items.isTemplateConfigured =='N'}">
-				 <i id="edit" class="glyphicon glyphicon-pencil ml10" onclick="immigration.editImmigrationCandidateForm(${items.id});"></i>
-				 <i id="delete" class="glyphicon glyphicon-trash ml10" onclick="immigration.deleteImmigrationCandidateForm(${items.id});" ></i>
+				 <i id="edit" class="glyphicon glyphicon-pencil ml10 cursorPointer" onclick="immigration.editImmigrationCandidateForm(${items.id});"></i>
+				 <i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="immigration.deleteImmigrationCandidateForm(${items.id});" ></i>
 				 </c:if>
 				 </div>
 				 </td>

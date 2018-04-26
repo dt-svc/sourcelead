@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.entity.Candidate;
 
 public class CandidateResumeDTO {
@@ -20,6 +21,7 @@ public class CandidateResumeDTO {
 	
 	private String title ;
 	
+	@CleanHtml(escape=false)
 	private String description ;
 	
 	private String fileContentType;
