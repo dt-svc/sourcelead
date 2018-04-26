@@ -7,8 +7,11 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
@@ -629,7 +632,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public ResponseList<ImmigrationListViewDTO> getImmigrationsList(ImmigrationListViewDTO immigrationListDTO,
-			String searchValue, OrgLocations orgLocations) throws Exception
+			String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Long> countlist = null;
@@ -668,6 +671,18 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			// query1.append(" or (tempView.status like '%" + searchValue + "%'
 			// )");
 		}
+		 StringBuilder query2 = new StringBuilder("");
+		if(filterVal.size() != 0) {
+			if(filterVal.get("type") != null) {
+				query2.append(" and ((immView.petitionTypeId IN ( :petitionTypeList )))");
+			}
+			if(filterVal.get("status") != null) {
+				query2.append(" and ((immView.currUscisStatusId IN ( :uscisStatusList )))");
+			}
+			if(filterVal.get("attorney") != null) {
+				query2.append(" and ((immView.attorneyOrgLocationId IN ( :attorneyList )))");
+			}
+		}
         // usertList sorting order
         String sortingQry = "";
         if (StringUtils.isNotBlank(immigrationListDTO.getSortColumn())) {
@@ -679,7 +694,26 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		
 	System.out.println(" latest code deployed 6666 --->"+orgLocations.getId());
         listQuery = "from ImmigrationListView immView  where immView.status = 1  and (immView.orgLocationId=:orgLocationId or immView.attorneyOrgLocationId =:orgLocationId) ";
-        ImmigrationViewLst = session.createQuery(listQuery + query1 + sortingQry).setLong("orgLocationId", orgLocations.getId()).list();
+        String resultQuery = null;
+        Query hqlQuery = null;
+        if(filterVal.size() != 0) {
+        	resultQuery = listQuery + query1 + query2 + sortingQry;
+        	hqlQuery = session.createQuery(resultQuery);
+        	if(filterVal.get("type") != null) {
+        		hqlQuery.setParameterList("petitionTypeList", filterVal.get("type"));
+        	}
+        	if(filterVal.get("status") != null) {
+        		hqlQuery.setParameterList("uscisStatusList", filterVal.get("status"));
+        	}
+        	if(filterVal.get("attorney") != null) {
+        		hqlQuery.setParameterList("attorneyList", filterVal.get("attorney"));
+        	}
+        	hqlQuery = hqlQuery.setLong("orgLocationId", orgLocations.getId());
+        }else {
+        	resultQuery = listQuery + query1 + sortingQry;
+        	hqlQuery = session.createQuery(resultQuery).setLong("orgLocationId", orgLocations.getId());
+        }
+        ImmigrationViewLst = hqlQuery.list();
           
         String listQueryCount = "select count(*) from ImmigrationListView immView where  immView.status = 1  and (immView.orgLocationId=:orgLocationId or immView.attorneyOrgLocationId =:orgLocationId)  ";
         countlist = session.createQuery(listQueryCount + query1).setLong("orgLocationId", orgLocations.getId()).setFirstResult(immigrationListDTO.getStart())

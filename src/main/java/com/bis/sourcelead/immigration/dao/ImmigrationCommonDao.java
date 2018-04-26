@@ -1,6 +1,8 @@
 package com.bis.sourcelead.immigration.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -90,7 +92,7 @@ public interface ImmigrationCommonDao {
 
 	ImmigrationCandidateForms getImmigrationCandidateFormsById(Long id, Long candidateId, Long immigrationId) throws Exception;
 
-	ResponseList<ImmigrationListViewDTO> getImmigrationsList(ImmigrationListViewDTO immigrationListDTO,	String searchValue, OrgLocations orgLocations)throws Exception;
+	ResponseList<ImmigrationListViewDTO> getImmigrationsList(ImmigrationListViewDTO immigrationListDTO,	String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal)throws Exception;
 
 	String updateUscisTypeDropDown(Long templateId, Long uscisId);
 
