@@ -133,16 +133,32 @@
 				 }
 				 
 				    result = result + '<div class="project_details_cta project_details_view clearfix">';
-					result = result + '	<strong>Employment Type:</strong>';
-					 if(null != json.jobType && json.jobType !='' && json.jobType !='undefined'){
-                    	 if(json.jobType=='Other'){
-                    		 result = result +'<span class="fix">'+json.otherJobType+'</span>';
-                    	 }else{
-                    		 result = result +'<span class="fix">'+json.jobType+'</span>'
-                    	 }
-                     }					 
+					result = result + '	<strong>Project Duration:</strong>';
+					 if(null != json.projectDurationYears && json.projectDurationYears !='' && json.projectDurationYears !='undefined'){
+                    	
+                    		 result = result +'<span class="fix">'+json.projectDurationYears+" years  ";
+                    		 
+                    	
+                     }
+					 if(null != json.projectDurationMonths && json.projectDurationMonths !='' && json.projectDurationMonths !='undefined'){
+	                    	
+                		 result = result +json.projectDurationMonths+" months"+'</span>';
+                		 
+                	}	
+					 
 					result = result + '</div>';
-				 
+					
+					 result = result + '<div class="project_details_cta project_details_view clearfix">';
+						result = result + '	<strong>Employment Type:</strong>';
+						 if(null != json.jobType && json.jobType !='' && json.jobType !='undefined'){
+	                    	 if(json.jobType=='Other'){
+	                    		 result = result +'<span class="fix">'+json.otherJobType+'</span>';
+	                    	 }else{
+	                    		 result = result +'<span class="fix">'+json.jobType+'</span>'
+	                    	 }
+	                     }					 
+						result = result + '</div>';
+					
 						result = result + '<div class="project_details_cta clearfix">';
 						result = result + '	<strong>Min Experience :</strong>';
 						if(json.minExp != null && json.minExp != "" && json.minExp != 'undefined'){
