@@ -1,6 +1,7 @@
 package com.bis.sourcelead.immigration.dao.impl;
 
 import java.math.BigInteger;
+import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -8,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -674,13 +676,16 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		 StringBuilder query2 = new StringBuilder("");
 		if(filterVal.size() != 0) {
 			if(filterVal.get("type") != null) {
-				query2.append(" and ((immView.petitionTypeId IN ( :petitionTypeList )))");
+				query2.append(" and (immView.petitionTypeId IN ( :petitionTypeList ))");
 			}
 			if(filterVal.get("status") != null) {
-				query2.append(" and ((immView.currUscisStatusId IN ( :uscisStatusList )))");
+				query2.append(" and (immView.currUscisStatusId IN ( :uscisStatusList ))");
 			}
 			if(filterVal.get("attorney") != null) {
-				query2.append(" and ((immView.attorneyOrgLocationId IN ( :attorneyList )))");
+				query2.append(" and (immView.attorneyOrgLocationId IN ( :attorneyList ))");
+			}
+			if(filterVal.get("duration") != null) {
+				query2.append(" and (year(immView.openDate) <= :highestDuration AND year(immView.openDate) >= :lowestDuration) ");
 			}
 		}
         // usertList sorting order
@@ -707,6 +712,16 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         	}
         	if(filterVal.get("attorney") != null) {
         		hqlQuery.setParameterList("attorneyList", filterVal.get("attorney"));
+        	}
+        	if(filterVal.get("duration") != null) {
+        		List<Long> durationDates = new ArrayList<Long>();
+        		for(Long date: filterVal.get("duration")) {
+        			durationDates.add(date);
+        		}
+        		Integer highestDate = (int)(long)Collections.max(durationDates);
+        		Integer lowestDate = (int)(long)Collections.min(durationDates);
+        		hqlQuery.setParameter("highestDuration", highestDate);
+        		hqlQuery.setParameter("lowestDuration", lowestDate);
         	}
         	hqlQuery = hqlQuery.setLong("orgLocationId", orgLocations.getId());
         }else {
