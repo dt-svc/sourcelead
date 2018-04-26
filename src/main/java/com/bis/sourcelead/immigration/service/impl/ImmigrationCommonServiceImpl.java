@@ -7,7 +7,9 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -976,8 +978,8 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	
 	@Override
 	public ResponseList<ImmigrationListViewDTO> getImmigrationsList(ImmigrationListViewDTO immigrationListDTO,
-			String searchValue,  OrgLocations orgLocations)  throws Exception{
-		   ResponseList<ImmigrationListViewDTO> immigartionList = immigrationCommonDao.getImmigrationsList(immigrationListDTO, searchValue, orgLocations);
+			String searchValue,  OrgLocations orgLocations, Map<String, Long[]> filterVal)  throws Exception{
+		   ResponseList<ImmigrationListViewDTO> immigartionList = immigrationCommonDao.getImmigrationsList(immigrationListDTO, searchValue, orgLocations, filterVal);
 		  
 		   
 		return immigartionList;

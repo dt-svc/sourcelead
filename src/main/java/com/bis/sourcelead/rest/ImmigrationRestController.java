@@ -3,6 +3,7 @@ package com.bis.sourcelead.rest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -75,6 +76,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+
 import  org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 
@@ -216,10 +218,10 @@ public class ImmigrationRestController {
     ResponseList<ImmigrationListViewDTO> getAllImmigartionList(
     		ImmigrationListViewDTO immigrationListDTO,
             @RequestParam(value = "searchValue", required = false) String searchValue,
-            @RequestParam(value = "filterAttorneyVal", required = false)  String[] filterAttorneyVal,
-            @RequestParam(value = "filterTypeVal", required = false)  String[] filterTypeVal, 
-            @RequestParam(value = "filterStatusVal", required = false)  String[] filterStatusVal,
-            @RequestParam(value = "filterDurationVal", required = false)  String[] filterDurationVal, HttpServletRequest request) {
+            @RequestParam(value = "filterAttorneyVal", required = false)  Long[] filterAttorneyVal,
+            @RequestParam(value = "filterTypeVal", required = false)  Long[] filterTypeVal, 
+            @RequestParam(value = "filterStatusVal", required = false)  Long[] filterStatusVal,
+            @RequestParam(value = "filterDurationVal", required = false)  Long[] filterDurationVal, HttpServletRequest request) {
         ResponseList<ImmigrationListViewDTO> immigrationListDTOList = null;
         System.out.println("inisde controller  getAllImmigartionList  --> ");
         try {
@@ -232,11 +234,24 @@ public class ImmigrationRestController {
                 sortColumnOrder = immigrationListDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means direction
                 // of the sorting.
             }
+            Map<String, Long[]> filterVal = new HashMap<String, Long[]>();
+            if(filterAttorneyVal.length != 0) {
+            	filterVal.put("attorney", filterAttorneyVal);
+            }
+            if(filterTypeVal.length != 0) {
+            	filterVal.put("type", filterTypeVal);
+            }
+            if(filterStatusVal.length != 0) {
+            	filterVal.put("status", filterStatusVal);
+            }
+            if(filterDurationVal.length != 0) {
+            	filterVal.put("duration",filterDurationVal);
+            }
             immigrationListDTO.setSortColumn(tableColumns[sortColumnIndex]);
             immigrationListDTO.setSortOrder(sortColumnOrder);
             OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
                     "orgLocations");
-            immigrationListDTOList= immigrationCommonService.getImmigrationsList(immigrationListDTO, searchValue , orgLocations);
+            immigrationListDTOList= immigrationCommonService.getImmigrationsList(immigrationListDTO, searchValue , orgLocations, filterVal);
             commonUtil.highLightMenu(Constants.Immigration, request);
         } catch (Exception e) {
             e.printStackTrace();
