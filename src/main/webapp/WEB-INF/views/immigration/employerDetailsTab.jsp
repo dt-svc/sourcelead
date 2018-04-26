@@ -23,9 +23,9 @@
 				<td><div class="">${empItems.startMonth} ${empItems.startYear}</div></td>
 				<td><div class="">${empItems.endMonth} ${empItems.endYear}</div></td>
 				<td><div><i id="edit" onclick="editEmpDetailsByRowId(${empItems.id});"
-				class="glyphicon glyphicon-pencil"></i><i id="delete" 
+				class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
 				 onclick="deleteEmpDetailsById(${empItems.id});" 
-				 class="glyphicon glyphicon-trash ml10"></i></div></td>
+				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 				<!-- <td class="immigraAction">
 					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
 					<div class="mmigraActionInn">

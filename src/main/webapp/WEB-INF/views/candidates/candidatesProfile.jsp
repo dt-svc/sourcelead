@@ -976,7 +976,7 @@ function candidateProfile(candidateId,candidateType){
 							$("#tab-1").append(result);  
 							employeeSubmissionProfile(candidateId);
 							educationSubmissionProfile(candidateId);
-							/* certificationSubmissionProfile(candidateId); */
+							 certificationSubmissionProfile(candidateId); 
 							$("#tab-1").show();
 							$(".project-tabs-menu a").click(function(event) {
 							     event.preventDefault();
@@ -1484,8 +1484,8 @@ function educationSubmissionProfile(candidateId){
 						result = result +'          <div class="row">';
 						result = result +'            <div class="col-md-12">';
 						result = result +'              <ul class="list-unstyled personal-info">';
-	                     for (var i = 0; i < json.data.length; i++) { 
-	                    	 var opt = json.data[i];  
+	                     for (var i = 0; i < response.data.length; i++) { 
+	                    	 var opt = response.data[i];  
 	                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
                    		        EducationName = opt.name;
 	                    	    }else{
@@ -1558,20 +1558,20 @@ function educationSubmissionProfile(candidateId){
 
 <script>
 function certificationSubmissionProfile(candidateId) {
+	
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
-        	  if (data && (data.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
-				    $("#update_candidate").removeAttr("disabled");
-				    $("#update_candidate").removeAttr('button').val('Save');
-				    showError(data.responseMessage);
-				} else if (data.response === "AWKWARD") {
-				    location.href = "/errorPage";
+        	  if (data && data.response === "INVALID_DATA") {
+      		    showError(data.responseMessage);
+      		} else if (data && data.response === "INVALID_USER") {
+      		    showError(data.responseMessage);
+      		} else if (data.response === "AWKWARD") {
+      		    location.href = "/errorPage";
 				} else if (data.response === "SUCCESS") {
 					$("#certificationSubmissionProfile").empty();
                	 	var result = "";
-               	 
                	 	result = result +'<div class="clearfix design-view">';
 					result = result +'<h2 class="education"><i class="fa fa-certificate"></i>&nbsp;&nbsp;Certification</h2>';
 					result = result +'<div class="row">';

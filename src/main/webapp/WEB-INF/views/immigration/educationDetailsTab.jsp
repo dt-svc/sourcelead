@@ -29,9 +29,9 @@
 				<td><div class="tbldata-dotdot-vsm">${!empty eduItems.institute ? eduItems.institute : '---'}</div></td>
 				<td><div class="tbldata-dotdot-vsm">${!empty eduItems.address ? eduItems.address : '---'}</div></td>
 				<td><div><i id="edit" onclick="editEducationDEtailsByRowId(${eduItems.id});"
-				class="glyphicon glyphicon-pencil"></i><i id="delete" 
+				class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
 				 onclick="deleteEDucationDetailsById(${eduItems.id});" 
-				 class="glyphicon glyphicon-trash ml10"></i></div></td>
+				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 			  </tr>  			  			  
 			   </c:forEach>
 			  						
