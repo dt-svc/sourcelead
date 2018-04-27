@@ -146,9 +146,9 @@ public class TimesheetEmailUtil {
 					Constants.MAIL_TEAM_MEMBERS_APPROVED_TIMESHEET, Constants.ENTITY_TYPE_EMAIL);
 		}
 		if ("REJECTED".equalsIgnoreCase(status)) {
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAIL_TEAM_MEMBERS_REJECTED_TIMESHEET);
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAIL_TEAM_MEMBERS_REJECTED_TIMESHEET,new ArrayList<EmailAttachment>());
 		}else{
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAIL_TEAM_MEMBERS_APPROVED_TIMESHEET);
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAIL_TEAM_MEMBERS_APPROVED_TIMESHEET,new ArrayList<EmailAttachment>());
 		}
 		
 		EmailScenario notificationScenario = null;
@@ -270,9 +270,9 @@ public class TimesheetEmailUtil {
 				 
 				 
 				if ("REJECTED".equalsIgnoreCase(status)) {
-					 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.TIMESHEET_REJECTED_EMAIL_TOVENDOR);
+					 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.TIMESHEET_REJECTED_EMAIL_TOVENDOR,new ArrayList<EmailAttachment>());
 					}else{
-					 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.TIMESHEET_APPROVED_EMAIL_TOVENDOR);
+					 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.TIMESHEET_APPROVED_EMAIL_TOVENDOR,new ArrayList<EmailAttachment>());
 					}
 		
 				EmailScenario notificationScenario = null;
@@ -327,7 +327,7 @@ public class TimesheetEmailUtil {
 	 * @throws Exception
 	 * @Description send email  to manager.
 	 */
-	void sendEmailToManagerAtTimesheetSubmissions(Long masterCanidateId, Long projectId,
+	void sendEmailToManagerAtTimesheetSubmissionsNew(Long masterCanidateId, Long projectId,
 			Date frequencyStartDate, Date frequencyEndDate, User loginUser, OrgLocations loginOrgLocation,String loginOrgCode) throws Exception {
 		List<ProjectApproverHierarchy> approverHierarchyList = projectApproverHierarchyService
 				.getActiveOrgApproverUsersByProjectMemberMasterCandidateIdAndProjectId(masterCanidateId, projectId);
@@ -376,7 +376,7 @@ public class TimesheetEmailUtil {
 				EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(
 				         Constants.MAIL_PROJECT_MANAGER_TIMESHEET, Constants.ENTITY_TYPE_EMAIL);
 			
-				commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAIL_PROJECT_MANAGER_TIMESHEET);
+				commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAIL_PROJECT_MANAGER_TIMESHEET,new ArrayList<EmailAttachment>());
 				
 		
 				// calling the sendNotification method of emailScenerioUtil
@@ -428,7 +428,7 @@ public class TimesheetEmailUtil {
 	 * @return void 
 	 * @throws NullPointer
 	 */
-	/*public void sendEmailToManagerAtTimesheetSubmissions(TimesheetSubmissions timesheetSubmissions, User loginUser,
+	public void sendEmailToManagerAtTimesheetSubmissions(TimesheetSubmissions timesheetSubmissions, User loginUser,
 			OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
 		List<ProjectApproverHierarchy> approverHierarchyList = projectApproverHierarchyService
 				.getApproverUsersByProjectId(timesheetSubmissions.getProjectMembers().getProjects().getId());
@@ -502,7 +502,7 @@ public class TimesheetEmailUtil {
 			}
 		}
 	}
-	*/
+	
 	
 	/**
 	 * @param projectMemberId
@@ -564,7 +564,7 @@ public class TimesheetEmailUtil {
 				 //getting the current EmailScenario by EmailScenario unique name and entity type
 				 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_EMAIL);
 			 
-				 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.MAIL_REOPEN_TIMESHEET);
+				 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.MAIL_REOPEN_TIMESHEET,new ArrayList<EmailAttachment>());
 				 
 				EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION);
 				String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,emailScenario);
@@ -699,9 +699,9 @@ public class TimesheetEmailUtil {
 		}
 
 		if (null != type && "reject".equalsIgnoreCase(type)) {
-		    commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.MAIL_REJECT_REOPEN_TIMESHEET);
+		    commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.MAIL_REJECT_REOPEN_TIMESHEET,new ArrayList<EmailAttachment>());
 		}else{
-			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.MAIL_ACCEPT_REOPEN_TIMESHEET);
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.MAIL_ACCEPT_REOPEN_TIMESHEET,new ArrayList<EmailAttachment>());
 		}
 		// calling the sendNotification method of emailScenerioUtil
 		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,emailScenario);

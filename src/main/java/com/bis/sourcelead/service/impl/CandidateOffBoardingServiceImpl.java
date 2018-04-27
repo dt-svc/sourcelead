@@ -298,7 +298,7 @@ public void mailToOffboardCandidate(CandidateOffBoarding candidateOffBoarding, U
         // OrgLocations vendorOrgLoc = requirement.getSpocId().getVendorLocationId();
 
          //calling the sendEmail method of emailScenerioUtil
-         commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.OFFBOARDINGPROCESSAPPLICANTTERMINATION,null);
+         commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.OFFBOARDINGPROCESSAPPLICANTTERMINATION,new ArrayList<EmailAttachment>());
          String actionLink="";
        emailScenerioUtil.sendNotification(actionLink, loginUser, candidateOffBoarding.getUserId(), orgLocations, notificationScenario,new HashMap<String,String>());
 

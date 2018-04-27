@@ -111,17 +111,17 @@ public class ProjectPlanningNewResourceRequestServiceImpl implements ProjectPlan
         EmailScenario  notificationScenario  = null;
         if(projectPlanningRequest.getResourceStatus().equalsIgnoreCase("Approved")){
    		   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_SINGLE_NEW_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
-           commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.ACCEPT_SINGLE_NEW_RESOURCE_REQUEST,null);       
+           commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.ACCEPT_SINGLE_NEW_RESOURCE_REQUEST,new ArrayList<EmailAttachment>());       
 
            }else if(projectPlanningRequest.getResourceStatus().equalsIgnoreCase("On hold")){
           	globalVarsMap.put("rejectReason", projectPlanningRequest.getRejectedReason());
    		   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ONHOLD_BULK_NEW_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
-           commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.ONHOLD_BULK_NEW_RESOURCE_REQUEST,null);       
+           commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.ONHOLD_BULK_NEW_RESOURCE_REQUEST,new ArrayList<EmailAttachment>());       
 
           }else if(projectPlanningRequest.getResourceStatus().equalsIgnoreCase("Rejected")){
           	 globalVarsMap.put("rejectReason", projectPlanningRequest.getRejectedReason());
      		   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_SINGLE_NEW_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
-     	        commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.REJECT_SINGLE_NEW_RESOURCE_REQUEST,null);       
+     	        commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.REJECT_SINGLE_NEW_RESOURCE_REQUEST,new ArrayList<EmailAttachment>());       
 
           }
      

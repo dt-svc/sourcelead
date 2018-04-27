@@ -294,9 +294,9 @@ public class ExpensesApprovalRestController {
 			 globalVarsMap.put("reason",rejectedReason);
 	
 			 if(status.equals("REJECTED")){
-				 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLoc.getOrg(),orgLoc,Constants.EXPENSES_REJECTED_EMAIL_TOVENDOR);
+				 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLoc.getOrg(),orgLoc,Constants.EXPENSES_REJECTED_EMAIL_TOVENDOR,new ArrayList<EmailAttachment>());
 			 }else{
-				 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLoc.getOrg(),orgLoc,Constants.EXPENSES_APPROVED_EMAIL_TOVENDOR);
+				 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLoc.getOrg(),orgLoc,Constants.EXPENSES_APPROVED_EMAIL_TOVENDOR,new ArrayList<EmailAttachment>());
 			 }
 			
 			//calling the sendNotification method of emailScenerioUtil
@@ -376,10 +376,10 @@ public class ExpensesApprovalRestController {
 		 globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadLoginUrl).append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		 
 		 if("REJECTED".equalsIgnoreCase(status)){
-			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAIL_TEAM_MANAGER_REJECTED_EXPENSE);
+			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAIL_TEAM_MANAGER_REJECTED_EXPENSE,new ArrayList<EmailAttachment>());
 		 }
 		 if("APPROVED".equalsIgnoreCase(status)){
-			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAIL_TEAM_MANAGER_APPROVED_EXPENSE);
+			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAIL_TEAM_MANAGER_APPROVED_EXPENSE,new ArrayList<EmailAttachment>());
 		 }
 		
 		 EmailScenario  notificationScenario = null;

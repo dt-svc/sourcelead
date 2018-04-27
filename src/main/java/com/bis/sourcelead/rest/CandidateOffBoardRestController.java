@@ -1592,7 +1592,7 @@ public class CandidateOffBoardRestController {
 
 
 		// calling the sendEmail method of emailScenerioUtil
-		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.OFFBOARDINGPROCESSAPPLICANTTERMINATIONMAILTOREPORTINGMANAGER,null);
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.OFFBOARDINGPROCESSAPPLICANTTERMINATIONMAILTOREPORTINGMANAGER,new ArrayList<EmailAttachment>());
 		String actionLink = "";
 		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, orgLocations, notificationScenario,
 				new HashMap<String, String>());

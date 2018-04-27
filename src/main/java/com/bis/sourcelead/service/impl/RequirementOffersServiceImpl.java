@@ -528,7 +528,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             
             try {
     			
-            	 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocations.getOrg(),loginOrgLocations,Constants.OFFER_MAIL_TO_VENDORS);
+            	 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocations.getOrg(),loginOrgLocations,Constants.OFFER_MAIL_TO_VENDORS,new ArrayList<EmailAttachment>());
             	
                // emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
                 StringBuilder actionLinkBuilder = new StringBuilder();
@@ -636,7 +636,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ADD_OFFER_MAIL, Constants.ENTITY_TYPE_EMAIL);
             EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ADD_OFFER_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
 
-            commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.ADD_OFFER_MAIL);
+            commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.ADD_OFFER_MAIL,new ArrayList<EmailAttachment>());
 
             String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,emailScenario);
             notificationScenario.setBody(notificationbody);
@@ -1202,7 +1202,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 				 
 		 requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getClientUser();
 		 //calling the sendEmail method of emailScenerioUtil
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.OFFER_ACCEPTED);
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.OFFER_ACCEPTED,new ArrayList<EmailAttachment>());
 		 StringBuilder actionLinkBuilder = new StringBuilder();                          
 		 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirementOffers.getSubmissionId().getRequirement().getRequirementUUID()).toString();	 
 		 emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario,new HashMap<String,String>());
@@ -1262,7 +1262,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		 requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getClientUser();
 		 //calling the sendEmail method of emailScenerioUtil
 
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.OFFER_REJECTED,null);
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.OFFER_REJECTED,new ArrayList<EmailAttachment>());
 
 		 StringBuilder actionLinkBuilder = new StringBuilder();
 		 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getRequirementUUID()).toString();	 

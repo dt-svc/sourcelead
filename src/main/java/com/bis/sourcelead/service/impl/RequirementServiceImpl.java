@@ -2771,7 +2771,7 @@ public class RequirementServiceImpl implements RequirementService {
 		//emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
 		
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.RELEASEMECHANISM_EMAIL_NOTIFICATION);
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.RELEASEMECHANISM_EMAIL_NOTIFICATION,null);
 		
 		//emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 		StringBuilder actionLinkBuilder = new StringBuilder();

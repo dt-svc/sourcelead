@@ -412,7 +412,7 @@ public void sendMailToNewResourceRequestApprover(ProjectPlanningRequest projectP
         
         String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
         notificationScenario.setBody(notificationbody);
-        commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.NEW_RESOURCE_REQUEST,null);
+        commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.NEW_RESOURCE_REQUEST,new ArrayList<EmailAttachment>());
         StringBuilder notificationLink = new StringBuilder();
         String actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewNewResourceRequestDashborad?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
          

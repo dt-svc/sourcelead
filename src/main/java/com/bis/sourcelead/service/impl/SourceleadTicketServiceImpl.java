@@ -145,7 +145,7 @@ public class SourceleadTicketServiceImpl implements SourceleadTicketService{
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocation.getOrg(),orgLocation,Constants.SOURCLEAD_TICKET_EMAIL,null);
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocation.getOrg(),orgLocation,Constants.SOURCLEAD_TICKET_EMAIL,new ArrayList<EmailAttachment>());
 		 
 		 /*EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.ORGREQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION); 
 		 String actionLink = "";

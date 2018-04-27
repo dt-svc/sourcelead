@@ -2910,7 +2910,7 @@ public class TimesheetRestController {
 					if (!"Draft".equalsIgnoreCase(status) && projectMember != null
 							&& projectMember.getProjects() != null && frequencyStartDate != null
 							&& frequencyEndDate != null) {
-						    timesheetEmailUtil.sendEmailToManagerAtTimesheetSubmissions(projectMember.getMasterCandidateId().getId(),
+						    timesheetEmailUtil.sendEmailToManagerAtTimesheetSubmissionsNew(projectMember.getMasterCandidateId().getId(),
 								projectMember.getProjects().getId(), frequencyStartDate, frequencyEndDate, loginUser,
 								loginOrgLocation, loginOrgLocation.getOrgCode());
 					}

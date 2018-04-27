@@ -1089,7 +1089,7 @@ public class EMailJobScheduler {
 			 
 		 //calling the sendEmail method of emailScenerioUtil
 		 
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.HOTLIST_ALERT_EMAIL,null);
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.HOTLIST_ALERT_EMAIL,new ArrayList<EmailAttachment>());
 
 		 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.HOTLIST_ALERT_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION); 
 		 StringBuilder actionLinkBuilder = new StringBuilder();
@@ -2088,7 +2088,7 @@ public class EMailJobScheduler {
 	        
 	        
 	         //calling the sendEmail method of emailScenerioUtil
-	         commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.OFFBOARDINGAPPLICANTDELAYPROCESS,null);
+	         commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.OFFBOARDINGAPPLICANTDELAYPROCESS,new ArrayList<EmailAttachment>());
 	         String actionLink="";
 	     // emailScenerioUtil.sendNotification(actionLink, loginUser, candidateOffBoarding.getUserId(), orgLocations, notificationScenario);
 			}

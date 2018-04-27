@@ -1421,7 +1421,7 @@ public class UsersListRestController {
 	         notificationScenario.setBody(notificationbody);
 	        
 	         //calling the sendEmail method of emailScenerioUtil
-	         commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.USERTERMINATEDEMAIL,null);
+	         commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.USERTERMINATEDEMAIL,new ArrayList<EmailAttachment>());
 
 	         String actionLink="";
 	       emailScenerioUtil.sendNotification(actionLink, userRole.getUser(), user, orgLocations, notificationScenario,new HashMap<String,String>());
@@ -1889,7 +1889,7 @@ public class UsersListRestController {
 		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
 		notificationScenario.setBody(notificationbody);
 		// calling the sendEmail method of emailScenerioUtil
-		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, userRole.getOrgLocations().getOrg(), userRole.getOrgLocations(), Constants.UPDATED_USER_ROLE_EMAIL,null);
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, userRole.getOrgLocations().getOrg(), userRole.getOrgLocations(), Constants.UPDATED_USER_ROLE_EMAIL,new ArrayList<EmailAttachment>());
 		String actionLink = "";
 		emailScenerioUtil.sendNotification(actionLink, loginUser, userRole.getUser(), loginOrgLocation, notificationScenario, new HashMap<String, String>());
 	}		
