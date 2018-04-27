@@ -15,7 +15,10 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
+import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Component
 public class CandidateIndexHelper {
@@ -23,15 +26,30 @@ public class CandidateIndexHelper {
 	@Autowired
     CandidateResumesService candidateResumesService;
 	
+	@Autowired
+	UserService userService;
+	
+	@Autowired
+	private CommonUtil commonUtil;
+	
 	public CandidateIndex getCandidateIndexFromCandidate(Candidate candidate) throws Exception{
 		CandidateIndex candidateIndex = null;
 		if(null != candidate && null != candidate.getId()){
 			candidateIndex = new CandidateIndex();
 			candidateIndex.setCandidateId(candidate.getId());
 			candidateIndex.setOrgLocationId(candidate.getOrgLocationId().getId());
-			candidateIndex.setFirstName(candidate.getFirstName());
-			candidateIndex.setLastName(candidate.getLastName());
-			candidateIndex.setEmail(candidate.getEmail());
+			candidateIndex.setFirstName(commonUtil.firstLetterCapitalizedString(candidate.getFirstName()));
+			candidateIndex.setLastName(commonUtil.firstLetterCapitalizedString(candidate.getLastName()));
+			
+			if(StringUtils.isNoneBlank(candidate.getLastName())) {
+				StringBuilder fullName = new StringBuilder();
+				fullName = fullName.append(commonUtil.firstLetterCapitalizedString(candidate.getFirstName())).append(" ").append(commonUtil.firstLetterCapitalizedString(candidate.getLastName()));
+				candidateIndex.setFullName(fullName.toString());
+			}else {
+				candidateIndex.setFullName(commonUtil.firstLetterCapitalizedString(candidate.getFirstName()));
+			}
+			
+			candidateIndex.setEmail(candidate.getEmail().toLowerCase());
 			candidateIndex.setAlternateEmail(candidate.getAlternateEmail());
 			candidateIndex.setMobilePhone(candidate.getMobilePhone());
 			candidateIndex.setAlternateMobilePhone(candidate.getAlternateMobilePhone());
@@ -48,6 +66,7 @@ public class CandidateIndexHelper {
 			candidateIndex.setLongitude(candidate.getLongitude());		
 			candidateIndex.setGeneratedId(candidate.getGeneratedId());
 			
+			
 		if(null != candidate.getConsultantUser()){
 				candidateIndex.setUserId(candidate.getConsultantUser().getId());
 			}
@@ -63,7 +82,7 @@ public class CandidateIndexHelper {
 				candidateIndex.setRecruiterUserId(0L);
 			}
 			
-			if(null != candidate.getSkillsName() && !candidate.getSkillsName().isEmpty()){
+			if(null != candidate.getSkillsName()){
 				candidateIndex.setSkillsName(candidate.getSkillsName());
 			}
 			
@@ -108,6 +127,9 @@ public class CandidateIndexHelper {
 			if(null != candidateResumes){
 				candidateIndex.setCurrentResumeId(candidateResumes.getId());
 				candidateIndex.setCurrentResumeName(candidateResumes.getFileName());
+				candidateIndex.setFileContentType(candidateResumes.getFileContentType());
+				//candidateIndex.setRecommendationFileUrl(candidateResumes.getFileURL());
+				candidateIndex.setFileUrl(candidateResumes.getFileURL());
 				candidateIndex.setResumeContent("");
 			}
 			if(StringUtils.isNotEmpty(candidate.getExperienceYears())){
@@ -181,7 +203,19 @@ public class CandidateIndexHelper {
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 				candidateIndex.setCreatedDate(df.format(new Date(candidate.getCreatedDate().getTime())));
 			}
-			candidateIndex.setCreatedBy(candidate.getCreatedBy());
+			
+			
+			if(candidate.getCreatedBy() != null && !candidate.getCreatedBy().isEmpty()) {
+				User user = userService.getUserByUserCode(candidate.getCreatedBy());
+				StringBuilder sb = new StringBuilder();
+				if(user.getLastName() != null){
+					candidateIndex.setCreatedBy(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+				}else{
+					candidateIndex.setCreatedBy(sb.append(user.getFirstName()).append(" ").toString());
+				}
+			}
+			
+			
 			if(candidate.getUpdatedDate() != null){
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 				candidateIndex.setUpdatedDate(df.format(new Date(candidate.getUpdatedDate().getTime())));

@@ -22,9 +22,11 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
-@Table(name = "ASSET", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "asset")
+@Table(name = "ASSET")
 public class Asset implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -43,8 +45,9 @@ public class Asset implements Serializable{
 	private String name;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ASSET_CATEGORY_ID")
+	@JsonBackReference
 	private AssetCategory assetCategory;
 	
 	@Column(name = "MAKE")
@@ -69,6 +72,8 @@ public class Asset implements Serializable{
 	@Column(name = "MONITOR")
 	private String monitor;
 	
+	@Column(name = "ISSUE_DATE")
+	private Date issueDate;
 
 	@Column(name = "ATTACHMENT",columnDefinition="mediumblob")
 	@Lob
@@ -77,12 +82,19 @@ public class Asset implements Serializable{
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	
+	@Column(name = "MAC_ADDRESS")
+	private String macAddress;
+	
 	@Column(name = "FILE_NAME")
 	private String fileName;
 	
+	@Column(name = "FILE_URL")
+	private String fileUrl;
+	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SHIFT_A_EMPLOYEE")
+	@JsonProperty
 	private Employees shiftAEmployee;
 	
 	@Column(name = "SHIFT_A_ATTACHMENT",columnDefinition="mediumblob")
@@ -95,9 +107,13 @@ public class Asset implements Serializable{
 	@Column(name = "SHIFT_A_FILE_NAME")
 	private String shiftAFileName;
 	
+	@Column(name = "SHIFT_A_FILE_URL")
+	private String shiftAFileUrl;
+	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SHIFT_B_EMPLOYEE")
+	@JsonProperty
 	private Employees shiftBEmployee;
 	
 	@Column(name = "SHIFT_B_ATTACHMENT",columnDefinition="mediumblob")
@@ -110,8 +126,11 @@ public class Asset implements Serializable{
 	@Column(name = "SHIFT_B_FILE_NAME")
 	private String shiftBFileName;
 	
+	@Column(name = "SHIFT_B_FILE_URL")
+	private String shiftBFileUrl;
+	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID")
 	private OrgLocations orgLocations;
 	
@@ -135,12 +154,15 @@ public class Asset implements Serializable{
 	private String updatedBy;
 	
 	@Transient
+	@JsonProperty
 	private String shiftAEmpName;
 	
 	@Transient 
+	@JsonProperty
 	private String shiftBEmpName;
 	
 	@Transient 
+	@JsonProperty
 	private String categoryName;
 	
 	@Transient 
@@ -245,14 +267,6 @@ public class Asset implements Serializable{
 		this.shiftAEmployee = shiftAEmployee;
 	}
 
-	public byte[] getShiftADocFile() {
-		return shiftADocFile;
-	}
-
-	public void setShiftADocFile(byte[] shiftADocFile) {
-		this.shiftADocFile = shiftADocFile;
-	}
-
 	public String getShiftAFileContentType() {
 		return shiftAFileContentType;
 	}
@@ -275,14 +289,6 @@ public class Asset implements Serializable{
 
 	public void setShiftBEmployee(Employees shiftBEmployee) {
 		this.shiftBEmployee = shiftBEmployee;
-	}
-
-	public byte[] getShiftBDocFile() {
-		return shiftBDocFile;
-	}
-
-	public void setShiftBDocFile(byte[] shiftBDocFile) {
-		this.shiftBDocFile = shiftBDocFile;
 	}
 
 	public String getShiftBFileContentType() {
@@ -358,6 +364,14 @@ public class Asset implements Serializable{
 	}
 
 	public String getShiftAEmpName() {
+		if(shiftAEmployee != null){
+			if(shiftAEmployee.getUser().getLastName() != null) {
+				shiftAEmpName = shiftAEmployee.getUser().getFirstName() +" "+shiftAEmployee.getUser().getLastName();
+			}else {
+				shiftAEmpName = shiftAEmployee.getUser().getFirstName();
+			}
+			
+		}
 		return shiftAEmpName;
 	}
 
@@ -366,19 +380,18 @@ public class Asset implements Serializable{
 	}
 
 	public String getShiftBEmpName() {
+		if(shiftBEmployee != null){
+			if(shiftBEmployee.getUser().getLastName() != null) {
+				shiftBEmpName = shiftBEmployee.getUser().getFirstName() +" "+ shiftBEmployee.getUser().getLastName();
+			}else {
+				shiftBEmpName = shiftBEmployee.getUser().getFirstName();
+			}
+		}
 		return shiftBEmpName;
 	}
 
 	public void setShiftBEmpName(String shiftBEmpName) {
 		this.shiftBEmpName = shiftBEmpName;
-	}
-
-	public byte[] getDocFile() {
-		return docFile;
-	}
-
-	public void setDocFile(byte[] docFile) {
-		this.docFile = docFile;
 	}
 
 	public String getFileContentType() {
@@ -398,6 +411,9 @@ public class Asset implements Serializable{
 	}
 
 	public String getCategoryName() {
+		if(assetCategory !=null) {
+			categoryName = assetCategory.getCategoryName();
+		}
 		return categoryName;
 	}
 
@@ -411,5 +427,75 @@ public class Asset implements Serializable{
 
 	public void setEmployeesList(List<Employees> employeesList) {
 		this.employeesList = employeesList;
+	}
+
+	public byte[] getDocFile()
+	{
+		return docFile;
+	}
+
+	public void setDocFile(byte[] docFile)
+	{
+		this.docFile = docFile;
+	}
+
+	public byte[] getShiftADocFile()
+	{
+		return shiftADocFile;
+	}
+
+	public void setShiftADocFile(byte[] shiftADocFile)
+	{
+		this.shiftADocFile = shiftADocFile;
+	}
+
+	public byte[] getShiftBDocFile()
+	{
+		return shiftBDocFile;
+	}
+
+	public void setShiftBDocFile(byte[] shiftBDocFile)
+	{
+		this.shiftBDocFile = shiftBDocFile;
+	}
+
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
+	}
+
+	public String getShiftAFileUrl() {
+		return shiftAFileUrl;
+	}
+
+	public void setShiftAFileUrl(String shiftAFileUrl) {
+		this.shiftAFileUrl = shiftAFileUrl;
+	}
+
+	public String getShiftBFileUrl() {
+		return shiftBFileUrl;
+	}
+
+	public void setShiftBFileUrl(String shiftBFileUrl) {
+		this.shiftBFileUrl = shiftBFileUrl;
+	}
+
+	public Date getIssueDate() {
+		return issueDate;
+	}
+
+	public void setIssueDate(Date issueDate) {
+		this.issueDate = issueDate;
+	}
+
+	public String getMacAddress() {
+		return macAddress;
+	}
+
+	public void setMacAddress(String macAddress) {
+		this.macAddress = macAddress;
 	}
 }

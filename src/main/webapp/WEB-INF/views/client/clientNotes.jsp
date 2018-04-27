@@ -107,7 +107,11 @@ function clientNotes(orgRelationId){
    	    output = output+'    <div class="commentsimg">';
    	    output = output+'    <i class="fa fa-comments"></i>';
    	    output = output+'        <div class="commentsimg-inner">';
+   	    if(report.commentAuthorImage != null && report.commentAuthorImage !='' && report.commentAuthorImage != 'undefined'){
    	    output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorImage+'"/>';
+   	    }else{
+   	   	output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg"/>';
+   	    }
    	    output = output+'        </div>';
    	    output = output+'    </div>';
    	    output = output+'     <div class="comments-content">';
@@ -153,7 +157,7 @@ output  = output + '        </div>';
 function documentpagination(){  
     $('#clientDocumentsPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -312,9 +316,19 @@ var validationSettings = {
 		    	        contentType:false,
 						url : sourceleadUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&locationCode="+locationCode,
 						success : function(result) {
-							closeDocPopup();
-							clientNotes(orgRelationId);
 							
+							if (result && result.response === "INVALID_DATA") {
+							    showError(result.responseMessage);
+							} else if (result.response === "AWKWARD") {
+							    location.href = "/errorPage";
+							} else if (result.response === "SUCCESS") {
+								closeDocPopup();
+								clientNotes(orgRelationId);
+							} else if (result.indexOf('Sign In') !== -1) {
+								location.replace(sourceleadUrl);
+							} else {
+							    showError("Operation failed, please try again");
+							}
 						},
 					});
 					$('.add-comment').toggle(200);
@@ -362,12 +376,12 @@ function selectCategory(){
 			$.ajax({
 		    	type: "POST",
 		    	url : sourceleadUrl+"/getClientReleasedRequirementList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&status="+status, 
-		        success: function(data) {
-		        	 var json = JSON.parse(data);
+		        success: function(json) {
+		        	 //var json = JSON.parse(data);
 		        	 var result ="";
 		        	 result = result +"<select id='vendorcontact' name='vendorcontact' class='chosen-select form-control'  data-validation='required' field-name='Category'>";
-		        	 for(var i=0;i<json.length;i++){
-		        		 var opt = json[i];
+		        	 for(var i=0;i<json.data.length;i++){
+		        		 var opt = json.data[i];
 		        		 result = result +"<option value="+opt.id+">"+opt.jobTitle+"</option>";
 		             }
 		        	 result = result +"</select>";
@@ -383,12 +397,12 @@ function selectCategory(){
 			$.ajax({
 		    	type: "POST",
 		    	url : sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&type=Client", 
-		        success: function(data) {
-		        	 var json = JSON.parse(data);
+		        success: function(json) {
+		        	// var json = JSON.parse(data);
 		        	 var result ="";
 		        	 result = result +"<select id='vendorcontact' name='vendorcontact' class='chosen-select form-control'  data-validation='required' field-name='Category'>";
-		        	 for(var i=0;i<json.length;i++){
-		        		 var opt = json[i];
+		        	 for(var i=0;i<json.data.length;i++){
+		        		 var opt = json.data[i];
 		        		 result = result +"<option value="+opt.id+">"+opt.spocName+"</option>";
 		             }
 		        	 result = result +"</select>";
@@ -433,13 +447,13 @@ function selectCategory(){
 				$.ajax({
 			    	type: "POST",
 			    	url : sourceleadUrl+"/getInvoiceListBasedOnOrgrelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&clientLocationId="+clientLocationId+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceStatus="+invoice+"&paymentStatus="+payment+"&invoiceType=receivable", 
-			        success: function(data) {
-		        	  var json = JSON.parse(data);
+			        success: function(json) {
+// 		        	  var json = JSON.parse(data);
 		        	  var result ="";
 		        	  result = result +"<select id='vendorcontact' name='vendorcontact' class='chosen-select form-control'  data-validation='required' field-name='Category'>";
 		        	
-              		    for (var i = 0; i < json.length; i++) {
-              		    	var opt= json[i];
+              		    for (var i = 0; i < json.data.length; i++) {
+              		    	var opt= json.data[i];
               		    	 result = result +"<option value="+opt.id+">"+opt.invoiceId+"</option>";
               		    }
               		  result = result +"</select>";

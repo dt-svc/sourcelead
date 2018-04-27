@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
+@RequestMapping("/app")
 public class TimesheetReportsController {
 	
 	@Value("${sourceleadUrl}")
@@ -16,8 +17,8 @@ public class TimesheetReportsController {
 	@RequestMapping(value = "/timeSheetReports")
 	public ModelAndView timeSheetReports(HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
-		model.setViewName("timesheet/timesheetReports");
-		model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("timesheet/timesheetReports");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 
 	}

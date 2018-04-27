@@ -5,70 +5,69 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ page trimDirectiveWhitespaces="true" %>
 
+<style type="text/css">
+.columnfields-custom .col-md-9 {
+	width: 100%;
+}
+.popinnerdiv  {
+min-height: 100px; max-height: 450px; overflow-y:auto; 
+}
+</style>
+
 <script type="text/javascript" src="jquery-1.2.6.min.js"></script>
 
 <script>
 $(document).ready(function(){
-	getAssetList();
+	getDynamicAssetList();
 	loadCategory();
 });
 </script> 
 
+<script>
+	$(document).ready(function() {
+		document.getElementById("addAsset_form").reset();
+		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		  var sectionId = '${section.id}';
+		  getCustomDependentField(sectionId);
+		 </c:forEach>
+	});
+</script>
 <section class="content-wraper">
 <section class="content-header clearfix">
   <div class="pull-left">
     <h2>Asset Management</h2>
   </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Asset Management</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Asset Management</div>
 </section>
 <div class="timesheet_out">
   <div class="vendor_wrap">
     <div class="timesheet_head">
+    <div class="pull-left cand-advsrch advsrch_chosen">
+	     <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetAssetFilter();" title="Refresh">
+		    <span class="fa fa-refresh"></span>
+		</button>
+		
+		<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filter Search" onclick="openAssetFilterPop();"><i class="fa fa-filter faFilter padding_right" style="color: #909090!important"></i>
+		</a>
+      </div>
+      
       <ul>
-        <li><i class="fa fa-filter"></i><span>Category</span><i class="glyphicon glyphicon-play" id="category"></i>|
-          <div class="approved_pop">
-            <ul>
-                   <c:forEach var="report" items="${assetCategoriesList}">  
-		               <li><input  id="category${report.id}" name="categoryId" value ="${report.id}"  onclick="getAssetList();"  type="checkbox"><label>${report.categoryName}</label></li>
-				   </c:forEach>
-            </ul>
-          </div>
-        </li>
-        
-         <li><i class="fa fa-filter"></i><span>Working Status</span><i class="glyphicon glyphicon-play" id="workingStatus"></i>|
-          <div class="approved_pop">
-            <ul>
-                    <li><input id="c1" type="checkbox"  name="workingStatus"  value ="Working"  onclick="getAssetList();"  ><label>Working</label></li>
-				    <li><input id="c2" type="checkbox"  name="workingStatus"  value ="Out Of Service"   onclick="getAssetList();"><label>Out Of Service</label></li>
-            </ul>
-          </div>
-        </li>
-        
-         <!-- <li><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>|
-          <div class="export_pop">
-            <ul>
-              <li><i class="fa fa-file-pdf-o"></i>&nbsp;PDF</li>
-              <li><i class="fa fa-file-excel-o"></i>&nbsp;Excel</li>
-              <li><i class="fa fa-file-word-o"></i>&nbsp;Word</li>
-            </ul>
-          </div>
-        </li> -->
-       <!--  <li><i class="glyphicon glyphicon-save"></i><span>Import</span>|</li> -->
-            
-              
         <li>
           <a href="javascript:void(0)" class="addcon-pop"><i class="fa fa-plus"></i>Add Asset</a> 
-          <!-- Add Asset Popup -->
+           <li title="Import"><a href="<c:url value='${appPath}/uploadassetManagement'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
+         <!-- Add Asset Popup -->
           <div class="collapse-div-adduser pop-div col-md-12 assetaddpop">
           <div id="loading"></div>
-          <form:form id="addAsset_form"  name="addAsset_form" enctype='multipart/form-data'> 
-           <i class="fa fa-close close-div" onclick="flushAsset();"></i>
+          <form:form id="addAsset_form"  name="addAsset_form"> 
+           <i class="fa fa-close close-div"></i>
+			 
+			 <div class="popinnerdiv"> 
 			  <div class="clearfix">
             <div class="clearfix assetaddpop-ul col-md-6" id="categoryDiv">
 				<select class="chosen-select" id="category" name="category" onChange="assetCategory(this);" data-validation="required" field-name="Asset Category">
 				<option selected value="">-Select Category-</option>
 					<c:forEach var="option" items="${assetCategoriesList}">
-							<option value="${option.categoryName},${option.id}">${option.categoryName}</option>
+							<option value="${option.id}">${option.categoryName}</option>
 					</c:forEach>
 				</select>	
             </div>
@@ -86,47 +85,68 @@ $(document).ready(function(){
               <div class="form-horizontal clearfix">
                 <div class="clearfix mb10">
                   <div class="col-md-6" id="snoDiv">
-                    <input type="text" class="form-control input-sm" id="sno" name="sno" placeholder="Serial Number *" field-name="Sl No" data-validation="required validate_Space validate_length length2-200">
+                    <input type="text" class="form-control input-sm" id="sno" name="sno" placeholder="Serial / Port Number *" field-name="Serial / Port Number" onkeyup="validateAssetSno();" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length1-200">
                   </div>
                   <div class="col-md-6" id="makeDiv">
                     <input type="text" class="form-control input-sm" id="make" name="make" placeholder="Make" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
                   </div>
                 </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-4" id="modelDiv">
+                <div class="clearfix">
+                  <div class="col-md-4 mb10" id="modelDiv">
                     <input type="text" class="form-control input-sm" id="model" name="model" placeholder="Model"  data-validation-optional="true" data-validation="validate_Space validate_length length2-100" >
                   </div>
-                  <div class="col-md-4" id="nameDiv">
+                  <!-- <div class="col-md-4 mb10" id="nameDiv">
                     <input type="text" class="form-control input-sm" name="name" id="name" placeholder="Name" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
+                  </div> -->
+                  <div class="col-md-4 mb10" id="memoryDiv"  style="display: none;" >
+                    <input type="text" class="form-control input-sm" name="memory" id="memory" placeholder="Memory"  data-validation-optional="true" data-validation="validate_Space validate_NumberAndAlphabet validate_length length2-50">
                   </div>
-                  <div class="col-md-4" id="memoryDiv">
-                    <input type="text" class="form-control input-sm" name="memory" id="memory" placeholder="Memory" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-50">
+                  <div class="col-md-4 mb10" id="cpuDiv"  style="display: none;" >
+                    <input type="text" class="form-control input-sm" name="cpu" id="cpu" placeholder="CPU" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
+                  </div>
+                  <div class="col-md-4 mb10" id="harddiskDiv"  style="display: none;">
+                    <input type="text" class="form-control input-sm" name="harddisk" id="harddisk" placeholder="Hard Disk" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
                   </div>
                   
+                  
+                         <div class="col-md-4 mb10">
+                         <div class="">
+                           <div class="input-group">
+                              <input type="text" value="" name="issueDate" placeholder = "Issue Date" class="form-control calendar input-sm" id="issueDate" readonly="readonly">
+                              <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+                           </div>
+                        </div>
+                  </div>
+                  <div class="col-md-4 mb10" id="monitorDiv" style="display: none;">
+                    <input type="text" class="form-control input-sm" id="monitor" name="monitor" placeholder="Monitor"  data-validation-optional="true" data-validation="validate_Space validate_NumberAndAlphabet validate_length length2-100">
+                  </div>
                 </div>
+                
                 <div class="clearfix mb10">
-                  <div class="col-md-4" id="cpuDiv">
-                    <input type="text" class="form-control input-sm" name="cpu" id="cpu" placeholder="CPU" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
-                  </div>
-                  <div class="col-md-4" id="harddiskDiv">
-                    <input type="text" class="form-control input-sm" name="harddisk" id="harddisk" placeholder="Hard Disk" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
-                  </div>
-                  <div class="col-md-4" id="monitorDiv">
-                    <input type="text" class="form-control input-sm" id="monitor" name="monitor" placeholder="Monitor" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
+                  <div class="col-md-6">
+                    <input type="text" class="form-control input-sm" id="macAddress" name="macAddress" placeholder="MAC Address" field-name="MAC Address"  data-validation="validate_length length8-50" data-validation-optional="true">
                   </div>
                 </div>
+                
                 <div class="clearfix mb10">
                   <div class="col-md-6" id="attachmentDiv">
                     <div class="input-group attachfile-error" >
-                      <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                        <input type="file" name="attachment" id="attachment"  class="hidden upload">
+                      <label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFile();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                        <input type="file" id="attachment"   style="display: none;" class="upload">
                         </b> </label>
-                      <input type="text" class="form-control" name="attachment" data-validation-optional="true" data-validation="validatedoc" readonly id="uploadFileAttachment" placeholder="Files are not selected...">
+                      <input type="text" class="form-control" name="abc" data-validation = "validatedoc" data-validation-optional="true"  readonly id="uploadFileAttachment" placeholder="Files are not selected...">
                     </div>
                   </div>
                   <div class="col-md-6" id="descriptionDiv">
                     <textarea class="form-control" rows="2" name="description" id="description" placeholder="Description" data-validation-optional="true" data-validation="validate_Space"></textarea>
                   </div>
+                   <c:if test="${!empty sourceleadSectionList}">
+	            	<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	               		<c:if test="${sectionOrder.index == 0}">
+	                		  <div id="customDiv${section.id}" class="col-md-6 columnfields-custom"></div>
+	              		 </c:if>
+	            	</c:forEach>
+	   			</c:if>
                 </div>
                 <!-- Shift A Fields -->
                 <div class="clearfix" id="shiftADetails" style="display: none;">
@@ -138,16 +158,16 @@ $(document).ready(function(){
                     <select class="form-control chosen-select" id="shiftAEmp" name="shiftAEmp">
                       <option selected value="">-Select Employee-</option>
                       <c:forEach var="option" items="${employeesList}">
-					     <option value="${option.id}">${option.user.firstName} ${option.user.lastName}</option>
+					     <option value="${option.user.id}">${option.user.firstName} ${option.user.lastName}</option>
 					  </c:forEach>
                     </select>
                   </div>
                   <div class="col-md-6" id="uploadFile-dskBDiv">
                     <div class="input-group attachfile-error">
-                      <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                        <input type="file" name="uploadBtn-dskA" id="uploadBtn-dskA"  class="hidden upload">
+                      <label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFileShiftA();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                        <input type="file"id="uploadBtn-dskA"  style="display: none;" class="upload">
                         </b> </label>
-                      <input type="text"  class="form-control" data-validation-optional="true" data-validation="validatedoc" name="shiftAAttachment" readonly id="uploadFileShiftA" placeholder="Files are not selected...">
+                      <input type="text"  class="form-control" data-validation = "validatedoc" data-validation-optional="true"  name="shiftAAttachment" readonly id="uploadFileShiftA" placeholder="Files are not selected...">
                     </div>
                   </div>
                 </div>
@@ -170,36 +190,38 @@ $(document).ready(function(){
                   </div>
                   <div class="col-md-6">
                     <div class="input-group attachfile-error">
-                      <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                         <input type="file" name="uploadBtn-dskB" id="uploadBtn-dskB"  class="hidden upload">
+                      <label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFileShiftB();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                         <input type="file" id="uploadBtn-dskB"  style="display: none;" class="upload">
                         </b> </label>
-                      <input type="text"  class="form-control" data-validation-optional="true" data-validation="validatedoc" name="shiftBAttachment" readonly id="uploadFileShiftB" placeholder="Files are not selected...">
+                      <input type="text"  class="form-control" data-validation = "validatedoc" data-validation-optional="true"  name="shiftBAttachment" readonly id="uploadFileShiftB" placeholder="Files are not selected...">
                     </div>
                   </div>
                 </div>
                 </div>
-                
+                </div>
+                </div>
                 <!-- Shift A Fields -->
                 <div class="clearfix mr">
                   <div class="pull-right">
-                   <button type="submit" id="add_asset" onclick="checkAttachment();checkShiftAAttachment();checkShiftBAttachment();" class="btn btn-sm btn-primary">Add</button>
+                   <input type="button" value="Add" id="add_asset" onclick="storeAsset();" class="btn btn-sm btn-primary">
                   </div>
-                </div>
               </div>
             </div>
             </form:form>
           </div>
         </li>
         <li>
-        <a href="<c:url value='/assetCategory'/>" class=""><i class="fa fa-plus"></i>Categories</a>
+        <a href="<c:url value='${appPath}/assetCategory'/>" class=""><i class="fa fa-plus"></i>Categories</a>
         </li>
         <div class="clearfix"></div>
       </ul>
       <div class="clearfix"></div>
       
     <!-- list Table -->
-    <div class="require_wrap_table table-wrap">
+    <div class="require_wrap_table table-wrap datatable_filter overflow_inherint">
+    <div id= "assetManagementLoderDiv"></div>
     <table id="assetManagementList" class="display" cellspacing="0" width="100%"> </table>
+    <div id="dynamicAssetManagementList"></div>
       
     </div>
     
@@ -227,44 +249,63 @@ $(document).ready(function(){
   </div>
   </section>
   
+  <script>
+  $( function() {
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  // written common method in slead-common.js for date formats start
+	  var finalDateFormat = getJSDateFormat(locationDate);
+	  //end
+	  $('#issueDate').datepicker({
+	      dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	      //minDate: 0  this line for to restrict selection of previous dates
+	  });
+	  
+  } );
   
+  function clearDate(){
+  	$("#issueDate").val("");
+  	};
+  
+</script>
   
   <script type="text/javascript">
-var validationSettings = {
-        errorMessagePosition : 'element',
-       borderColorOnError : '',
-		scrollToTopOnError : true,
-		dateFormat : 'yyyy/mm/dd' 
-   };  
-         $('body').on('submit', '#addAsset_form', function(e){
-        	  if ($(this).validate(false, validationSettings)){
-        		    e.preventDefault(); 
-	          		
-        		    var frm = $('#addAsset_form').serializeFormJSON();
-        	        var con = JSON.stringify(frm);
-        	        con = con.replace(/[{}]/g, "");
-        	        
-        	        //It will escape all the special characters
-        	        var jsonData = encodeURIComponent(con);
+  function storeAsset() {
+			var validationSettings = {
+			        errorMessagePosition : 'element',
+			       borderColorOnError : '',
+					scrollToTopOnError : true,
+					dateFormat : 'yyyy/mm/dd' 
+			   };  
+			   if ($('#addAsset_form').validate(false, validationSettings)){
         	        var form = $('#addAsset_form')[0];
 	           		var formData = new FormData(form);
 	           		
 	          		 $("#add_asset").attr("disabled", "disabled");
-	          		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	          		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	          		
 	          	      $.ajax({
 	     		    	type: "POST",
 	     		    	data: formData,
-              	        contentType : 'application/json; charset=utf-8',
-              	        enctype: 'multipart/form-data',
-          	            processData: false,
-          	            contentType:false,
-              	        dataType : 'json',
-	     		    	 url: sourceleadUrl+"/addCategoryAssets?"+tokenParamName+"="+tokenValue+"&json="+jsonData, 
+		    	        processData: false,
+		    	        contentType:false,
+		        	    dataType : 'json',
+	     		    	 url: sourceleadUrl+"/addCategoryAssets?"+tokenParamName+"="+tokenValue+"", 
 	     		        success: function(result) {
-	     		        	if(result == 'home'){
-	     	   	        	    location.replace(sourceleadUrl+ "/assetManagement");
-	     		        	}
+	     		        	
+	     		       	if (result && result.response === "INVALID_DATA") {
+						    showError(result.responseMessage);
+						    $("#loading").hide();
+						} else if (result.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (result.response === "SUCCESS") {
+							location.replace(sourceleadUrl+ "/assetManagement");
+						} else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
+						}
 	     			        
 	     		        },
 	     		    }); 
@@ -274,13 +315,43 @@ var validationSettings = {
             else{
             	return false;	
                }
-            });
-         $('#addAsset_form').showHelpOnFocus();
-         $('#addAsset_form').validateOnBlur(false, validationSettings); 
-            
-     
+         }
+         
+         $('body').on('blur', '#addAsset_form', function() {
+     		$("#addAsset_form").showHelpOnFocus();
+     		$("#addAsset_form").validateOnBlur(false, validationSettings);
+     	});
 </script> 
 
+
+ <script type="text/javascript">
+ function validateAssetSno() {
+	 var assetSno = document.getElementById("sno").value; 
+	var assetId = '';
+	 if(assetSno != null && assetSno != ""){
+		 $("#add_asset").attr("disabled", "disabled");
+         //$("#create_user" ).addClass('button').val('Processing..');
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateAssetSno?"+tokenParamName+"="+tokenValue+"&assetSno="+assetSno+"&assetId="+assetId, 
+		        success: function(data) {
+		        	if(data == true){
+		        		  $('#snoDiv').find('p.jquery_form_error_message').remove();
+						  $("input#sno").after("<p class='jquery_form_error_message'>"+assetSno+" is Already Existed</span>");
+						  document.getElementById("sno").setAttribute('record-exist','yes');
+						  document.getElementById("sno").setAttribute('record-exist-errorMsg',assetSno+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#sno').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#snoDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#add_asset" ).addClass('us-btn').val('Add');
+                         $("#add_asset").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>  
 
 <script type="text/javascript">
 (function ($) {
@@ -305,156 +376,274 @@ var validationSettings = {
   
   <script>
   function flushAsset(){
-	  
-	    $('#snoDiv').find('p.jquery_form_error_message').remove();
-		$('#modelDiv').find('p.jquery_form_error_message').remove();
-		$("#monitorDiv").find('p.jquery_form_error_message').remove();
-	    $("#nameDiv").find('p.jquery_form_error_message').remove();
-	    $("#makeDiv").find('p.jquery_form_error_message').remove();
-	    $("#memoryDiv").find('p.jquery_form_error_message').remove();
-	    $("#descriptionDiv").find('p.jquery_form_error_message').remove();
-	    $("#cpuDiv").find('p.jquery_form_error_message').remove();
-	    $("#harddiskDiv").find('p.jquery_form_error_message').remove();
-	    $('#categoryDiv').find('p.jquery_form_error_message').remove();
-		$('#workingStatusDiv').find('p.jquery_form_error_message').remove();
-		$("#attachmentDiv").find('p.jquery_form_error_message').remove();
-	    $("#uploadFile-dskADiv").find('p.jquery_form_error_message').remove();
-	    $("#uploadFile-dskDiv").find('p.jquery_form_error_message').remove();
-	    
-	  $("#sno").val('');
-	  $("#model").val('');
-	  $("#monitor").val('');
-	  $("#name").val('');
-	  $("#make").val('');
-	  $("#memory").val('');
-	  $("#description").val('');
-	  $("#cpu").val('');
-	  $("#harddisk").val('');
-	  $("#uploadFile-dskA").val('');
-	  $("#uploadFile-dskB").val('');
-	  $("#uploadFileAttachment").val('');
-	  $("#shiftAAttachment").val('');
-	  $("#shiftBAttachment").val('');
-        
-	  
+	  $('#addAsset_form')[0].reset();
+	  $("#addAsset_form").find("#category").val("");
+	  $("#addAsset_form").find("#category").trigger("chosen:updated");
+	  $("#addAsset_form").find("#workingStatus").val("");
+	  $("#addAsset_form").find("#workingStatus").trigger("chosen:updated");
+	  $("#addAsset_form").find("#shiftAEmp").val("");
+	  $("#addAsset_form").find("#shiftAEmp").trigger("chosen:updated");
+	  $("#addAsset_form").find("#shiftBEmp").val("");
+	  $("#addAsset_form").find("#shiftBEmp").trigger("chosen:updated");
+	  $("addAsset_form").validate().resetForm();
   }
   
   </script>
   
-  <script>
-	function getAssetList(){
-		var categoryIds = [];
-		$('input:checkbox[name=categoryId]:checked').each(function() 
-	    {
-			categoryIds.push($(this).val());
-	    });
-		
-		var workingStatus = [];
-		$('input:checkbox[name=workingStatus]:checked').each(function() 
-	    {
-			workingStatus.push($(this).val());
-	    });
-		
-		  $.ajax({
-			   	type: "POST",
-			    url: sourceleadUrl+"/getAssetList?"+tokenParamName+"="+tokenValue+"&categoryIds="+categoryIds+"&workingStatus="+workingStatus, 	   
-	   		    success: function(data) {
-	   		    	
-	   		    	
-	   		    	var json = JSON.parse(data);
-	   	        	var result = "";
-	   	        	result = result +'<thead>';
-	   	        	result = result +'<tr>';
-	   	        	result = result +'	<th>S.No</th>';
-	   	        	result = result +'  <th>Category</th>';
-	   	        	result = result +'  <th>Model</th>';
-	   	        	result = result +'  <th>Shift-A</th>';
-	   	        	result = result +'  <th>Shift-B</th>';
-	   	        	result = result +' <th>Status</th>';
-	   	        	result = result +' <th>Action</th>';
-	   	        	result = result +'</tr>';
-	   	        	result = result +'	</thead>';
-	   	        	result = result +'<tbody>';
-	   	        	
-		   	     	for (var i=0; i<json.length; i++)
-	   				{  
-		   	     	    var shiftAEmpName = "--- ";
-					    var shiftBEmpName = "--- ";
-					    var model = "---";
-					    var selected1 = '';
-	   					var selected2 = '';
-					    
-					    var report = json[i];
-					    
-					    if (report.shiftAEmpName != null && report.shiftAEmpName != '' && report.shiftAEmpName != 'undefined') {
-							shiftAEmpName = report.shiftAEmpName;
-						}
-						
-						if (report.shiftBEmpName != null && report.shiftBEmpName != '' && report.shiftBEmpName != 'undefined') {
-							shiftBEmpName = report.shiftBEmpName;
-						}
-						
-						if (report.model != null && report.model != '' && report.model != 'undefined') {
-							model = report.model;
-						}
-						
-						if(report.workingStatus == 'Working'){
-							selected1 = 'selected';
-						} 
-					
-						if(report.workingStatus == 'Out Of Service'){
-							selected2 = 'selected';
-						} 
-
-						result = result+'<tr id="asset'+report.id+'">';
-			   	        result = result+'<td><a href="javascript:void(0)" class="tbldata-dotdot-sm">';
-					   	result = result+'<div class="proj_show" onclick="assetSideBar('+report.id+');" title="'+report.slno+'"> <span class="tbldata-dotdot-100">'+report.slno+'</span> <i class="fa fa-binoculars"></i> </div>';
-					   	result = result+'</a></td>';
-					   	result = result+'<td><div class="tbldata-dotdot-sm" title="'+report.categoryName+'">'+report.categoryName+'</div></td>';
-						result = result+'<td><div class="tbldata-dotdot-vsm" title="'+model+'">'+model+'</div></td>';
-					   	result = result+'<td><div class="tbldata-dotdot-vsm" title="'+shiftAEmpName+'" >'+shiftAEmpName+'</div></td>';
-					   	result = result+'<td><div class="tbldata-dotdot-vsm" title="'+shiftBEmpName+'">'+shiftBEmpName+'</div></td>';
-					   	
-					   	result = result + ' <td><div class="tbldata-dotdot-100">';
-						result = result + ' <select id="workingStatus'+report.id+'" name="workingStatus" onChange="updateWorkingStatus(\''+report.id+'\');">';
-						result = result + ' <option '+selected1+'>Working</option>';
-						result = result + ' <option '+selected2+'>Out Of Service</option>';
-						result = result + ' </select>';
-						result = result + ' </div></td>';
-					   	
-					   	result = result+'<td><div class="tblminwidth-50"><i class="fa fa-trash-o text-danger" onClick="deleteAsset(\''+report.id+'\')";></i></div></td>';
-			   	        result = result +'</tr>';
-	   				}
-		   	     	
-	   	        	result = result +'</tbody>';
-	   	    	    $("#assetManagementList").empty();  
-	   	    	    $("#assetManagementList").append(result)
-	   	    	    pagination1();
-	   	    	     
-	   	    	    
-	   		    	
-	   		    }
-		  });
-	}
-</script>
-
-
 <script>
-function pagination1(){ 
-    $('#assetManagementList').DataTable( { 
-    	"scrollCollapse": false,
-    	"chosen-select": true,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
-    	"bDestroy": true,
-    	"ordering": false,
-    	"oLanguage": {
-     		"sSearch": "",
-     		 "sZeroRecords": "", "sEmptyTable": ""
-     	}
-    })
+function closeAssetFilterPop(){
+	$("#assetFilterId").hide();
+	$(".advancedsearch-mask").fadeOut();
 }
+function openAssetFilterPop(){
+	 $("#assetFilterId").toggle();
+	 $(".advancedsearch-mask").fadeIn();
+}
+
 </script>
+<div class="advancedsearch-mask"></div>
+          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small" id="assetFilterId">
+				<h5 class="headerAdsrch">Filter Search
+					<a href="javascript:void(0)" class="close-div" onClick="closeAssetFilterPop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+						<div class="col-md-4">
+						<div class="row">
+						<div class="col-md-12 mb">
+							<label><strong>Working Status</strong></label>
+							 <div class="clearfix">
+								<ul class="list-unstyled" id="workStatusFilter">
+				                    <li class="checkBox positionRelative"><input id="c1" type="checkbox"  name="workingStatus"  value ="Working" ><label>Working</label></li>
+                                    <li class="checkBox positionRelative"><input id="c2" type="checkbox"  name="workingStatus"  value ="Out Of Service" ><label>Out Of Service</label></li>
+		                        </ul>
+							 </div>
+						</div> 
+						 </div>
+						</div>
+						
+						<div class="col-md-4 mb positionRelative">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myCategoryInput" onkeyup="myCategoryFunction()" placeholder="Category" title="Type in a clients">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myCategoryUL">
+								    <c:forEach var="report" items="${assetCategoriesList}">
+									     <li class="checkBox positionRelative"><input  id="category${report.id}" name="categoryId" value ="${report.id}"  type="checkbox"><label>${report.categoryName}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+					   </div> 
+						
+					</div>
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet" onclick="closeAssetFilterPop();getDynamicAssetList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetAssetFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+				</div>
+<!-- ========================================== Dynamic pageLoading in AssetManegment written By Laxman  Start============================== -->
+<script>
+function resetAssetFilter(){
+	$("ul#workStatusFilter > li input:checkbox").prop("checked",false);
+	$("ul#myCategoryUL > li input:checkbox").prop("checked",false);
+	getDynamicAssetList();
+	
+}
+
+function myCategoryFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myCategoryInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myCategoryUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+function getDynamicAssetList(){
+	
+	var categoryIds = [];
+	$('input:checkbox[name=categoryId]:checked').each(function() 
+    {
+		categoryIds.push($(this).val());
+    });
+	
+	var workingStatus = [];
+	$('input:checkbox[name=workingStatus]:checked').each(function() 
+    {
+		workingStatus.push($(this).val());
+    });
+	
+	var searchValue = $("#assetDataTableSearch").val();
+	 searchValue = searchValue ? searchValue : "";
+	var url = sourceleadUrl	+"/getAssetDynamicList?searchValue="+searchValue+"&categoryIds="+categoryIds+"&workingStatus="+workingStatus;
+	prepareDynamicAssetList(url);	
+}
+function prepareDynamicAssetList(url){
+	var result = "";
+    result = result	+ '<div class="remove_search">';
+    result = result +" <input type='text' placeholder='Search' id='assetDataTableSearch'/>";
+	result = result	+ '</div><div class="project_tabs_inn_table project_tabs_inn_table_a">';
+	result = result	+ '<div id="tasksLoadingImg"></div>';
+	result = result + '<table id="assetPagination" class="display" cellspacing="0" width="100%">';
+	result = result + '<thead>';
+	result = result + '<tr">';
+	result = result +'	<th>Serial / Port Number</th>';
+   	result = result +'  <th>Category</th>';
+   	result = result +'  <th>Model</th>';
+   	result = result +'  <th>Shift-A</th>';
+   	result = result +'  <th>Shift-B</th>';
+   	result = result +' <th>Status</th>';
+   	result = result +' <th>Action</th>';
+	result = result + '</tr>';
+	result = result + '</thead>';
+	result = result + '</table>';
+	result = result	+ '</div>';
+	$("#dynamicAssetManagementList").empty();  
+	$("#dynamicAssetManagementList").append(result);  
+	projectAssetPaginations(url);
+}
+function projectAssetPaginations(url){
+	var colIndex = 0;
+    $('#assetPagination').DataTable( { 
+	  "processing": true,
+      "serverSide": true,
+      "searching": false,
+      "ajax": $.fn.dataTable.pipeline( {
+          url: url,
+          method: 'POST',
+          pages: 10
+        }),
+        
+        "columnDefs": [{
+    	  	"targets": colIndex++,
+    	  	"data": "",
+    	  	"render": function(data, type, report) {
+    	  		var result = "";
+    	  	    result = result+'<td><a href="javascript:void(0)" class="tbldata-dotdot-sm">';
+   		       	result = result +"<a href='<c:url value='/app/assetManagementSummary?assetId="+report.id+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+report.slno+"'>"+report.slno+"</span><i class='fa fa-binoculars'></i></div></a>";
+			   	result = result+'</a></td>';
+	             return result;
+    	  	}
+        },{
+	  	  	"targets": colIndex++,
+		  	"data": "",
+		  	"render": function(data, type, report) {
+		  		var result = "";
+			   	result = result+'<td><div class="tbldata-dotdot-sm" title="'+report.categoryName+'">'+report.categoryName+'</div></td>';
+
+	             return result;
+	  	      }
+	  		},{
+		  	  	"targets": colIndex++,
+			  	"data": "",
+			  	"render": function(data, type, report) {
+			  		var result = "";
+			  		if (report.model != null && report.model != '' && report.model != 'undefined') {
+						result = result+'<td><div class="tbldata-dotdot-vsm" title="'+report.model+'">'+report.model+'</div></td>';
+					}else{
+						result = result+'<td><div class="tbldata-dotdot-vsm" >--</div></td>';
+					}
+		           return result;
+		  	  }
+	  		},{
+		  	  	"targets": colIndex++,
+			  	"data": "",
+			  	"render": function(data, type, report) {
+			  		var result = "";
+			  		 if (report.shiftAEmpName != null && report.shiftAEmpName != '' && report.shiftAEmpName != 'undefined') {
+					   	result = result+'<td><div class="tbldata-dotdot-vsm" title="'+report.shiftAEmpName+'" >'+report.shiftAEmpName+'</div></td>';
+					}else{
+					   	result = result+'<td><div class="tbldata-dotdot-vsm">--</div></td>';
+					}
+		           return result;
+		  	  }
+	  		},{
+		  	  	"targets": colIndex++,
+			  	"data": "",
+			  	"render": function(data, type, report) {
+			  		var result = "";
+			  		 if (report.shiftBEmpName != null && report.shiftBEmpName != '' && report.shiftBEmpName != 'undefined') {
+						   	result = result+'<td><div class="tbldata-dotdot-vsm" title="'+report.shiftBEmpName+'">'+report.shiftBEmpName+'</div></td>';
+					}else{
+					   	result = result+'<td><div class="tbldata-dotdot-vsm">--</div></td>';
+					}
+		           return result;
+		  	  }
+	  		},{
+		  	  	"targets": colIndex++,
+			  	"data": "",
+			  	"render": function(data, type, report) {
+			  		var result = "";
+			  		 var selected1 = '';
+	   				 var selected2 = '';
+			  		 if(report.workingStatus == 'Working'){
+						selected1 = 'selected';
+					 } 
+				
+					 if(report.workingStatus == 'Out Of Service'){
+						selected2 = 'selected';
+					 } 
+					
+			  	 	result = result + ' <td><div class="tbldata-dotdot-100">';
+					result = result + ' <select id="workingStatus'+report.id+'" name="workingStatus" onChange="updateWorkingStatus(\''+report.id+'\');">';
+					result = result + ' <option '+selected1+'>Working</option>';
+					result = result + ' <option '+selected2+'>Out Of Service</option>';
+					result = result + ' </select>';
+					result = result + ' </div></td>';
+		           return result;
+		  	  }
+	  		},{
+		  	  	"targets": colIndex++,
+			  	"data": "",
+			  	"sortable": false,
+			  	"render": function(data, type, report) {
+			  		var result = "";
+				   	result = result+'<td><div class="tblminwidth-50"><i class="fa fa-trash-o text-danger" onClick="deleteAsset(\''+report.id+'\')";></i></div></td>';
+		           return result;
+		  	  }
+	  		} ],
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     }
+    } );
+    $("assetPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("input[type=search]").hide();
+    $("#assetDataTableSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+    		   getDynamicAssetList();
+    	   }
+    	});
+}
+ 
+</script>
+
+
+
+
+
+
+
+<!-- ===================================================Dynamic pageLoading End ================================== -->
 
 <script>
 function updateWorkingStatus(assetId){
@@ -463,7 +652,7 @@ function updateWorkingStatus(assetId){
 	
 	 $("#asset"+assetId).empty();
 	 $("#asset"+assetId).html("<td colspan='7'  id='loading"+assetId+"'></td>");
-	 $("#loading"+assetId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+	 $("#loading"+assetId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/updateAssetWorkingStatus?"+tokenParamName+"="+tokenValue+"&assetId="+assetId+"&workingStatus="+workingStatus,	    	   
@@ -508,14 +697,25 @@ function removeAssetManagement(assetId){
 	
 	 $("#asset"+assetId).empty();
 	 $("#asset"+assetId).html("<td colspan='7'  id='loading"+assetId+"'></td>");
-	 $("#loading"+assetId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+	 $("#loading"+assetId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 	
 	 $.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/removeAssetManagement?"+tokenParamName+"="+tokenValue+"&assetId="+assetId,	    	   
-	    success: function(data) {
-	    	 var table = $('#assetManagementList').DataTable();
-  		     table.row("#asset"+assetId).remove().draw( false );
+	    success: function(result) {
+  			if (result && result.response === "INVALID_DATA") {
+			    showError(result.responseMessage);
+			} else if (result.response === "AWKWARD") {
+			    location.href = "/errorPage";
+			} else if (result.response === "SUCCESS") {
+				location.replace(sourceleadUrl + "/assetManagement");
+				/*  var table = $('#assetManagementList').DataTable();
+	  		     table.row("#asset"+assetId).remove().draw( false );  */
+			} else if (result.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+			    showError("Operation failed, please try again");
+			}
 	    }
    });
 }
@@ -534,56 +734,50 @@ function removeAssetManagement(assetId){
    <script>
   function assetCategory(category){
 	  var selectedCategory = category.value;
-	  if(selectedCategory){
-		  var  assestCategory = selectedCategory.split(",");
-		
-		   if(assestCategory[0] == 'Desktop'){
-			  document.getElementById("monitor").style.display="";
+	    if(selectedCategory == '2'){
+			  document.getElementById("monitorDiv").style.display="";
 			  document.getElementById("name").style.display="";
-			  document.getElementById("memory").style.display="";
-			  document.getElementById("cpu").style.display="";
-			  document.getElementById("harddisk").style.display="";
+			  document.getElementById("memoryDiv").style.display="";
+			  document.getElementById("cpuDiv").style.display="";
+			  document.getElementById("harddiskDiv").style.display="";
 			  document.getElementById("shiftADetails").style.display="";
 			  document.getElementById("shiftBDetails").style.display="";
 			  
-		  }else if((assestCategory[0] != 'Desktop' && assestCategory[0] == 'Laptop') || category == 'Laptop'){
-			  document.getElementById("monitor").style.display="none";
+		  }else if((selectedCategory != 'Desktop' && selectedCategory == '1') || category == '1'){
+			  document.getElementById("monitorDiv").style.display="none";
 			  document.getElementById("name").style.display="";
-			  document.getElementById("memory").style.display="";
-			  document.getElementById("cpu").style.display="";
-			  document.getElementById("harddisk").style.display="";
+			  document.getElementById("memoryDiv").style.display="";
+			  document.getElementById("cpuDiv").style.display="";
+			  document.getElementById("harddiskDiv").style.display="";
 			  document.getElementById("shiftADetails").style.display="";
 			  document.getElementById("shiftBDetails").style.display="";
 			  
 			  $("#monitor").val('');
 		  }else{
-			  document.getElementById("monitor").style.display="none";
-			  document.getElementById("memory").style.display="none";
-			  document.getElementById("cpu").style.display="none";
-			  document.getElementById("harddisk").style.display="none";
-			  document.getElementById("shiftADetails").style.display="none";
-			  document.getElementById("shiftBDetails").style.display="none";
+			  document.getElementById("monitorDiv").style.display="none";
+			  document.getElementById("memoryDiv").style.display="none";
+			  document.getElementById("cpuDiv").style.display="none";
+			  document.getElementById("harddiskDiv").style.display="none";
+			  document.getElementById("shiftADetails").style.display="";
+			  document.getElementById("shiftBDetails").style.display="";
 			  $("#monitor").val('');
 			  $("#name").val('');
 			  $("#memory").val('');
 			  $("#cpu").val('');
 			  $("#harddisk").val('');
-			  $("#uploadFile-dskA").val('');
-			  $("#uploadFile-dskB").val('');
+			 
 		  } 
-	  }
   }
   </script>
   
   
   <script>
   function loadCategory(){
-	  document.getElementById("monitor").style.display="none";
+	  document.getElementById("monitorDiv").style.display="none";
 	  document.getElementById("name").style.display="";
-	  document.getElementById("memory").style.display="";
-	  document.getElementById("cpu").style.display="";
-	  document.getElementById("harddisk").style.display="";
-	  document.getElementById("harddisk").style.display="";
+	  document.getElementById("memoryDiv").style.display="";
+	  document.getElementById("cpuDiv").style.display="";
+	  document.getElementById("harddiskDiv").style.display="";
 	  document.getElementById("shiftADetails").style.display="";
 	  document.getElementById("shiftBDetails").style.display="";
   }
@@ -664,7 +858,9 @@ function removeAssetManagement(assetId){
 
 // Approved Popup
     $("#category").click(function(){
-    	$(this).next(".approved_pop").toggle();
+    	$('#category').find(".approved_pop").toggle();
+    	$("#workingStatus").find(".approved_pop").slideUp();
+    	$(".collapse-div-adduser").removeClass("show-div");
 	});
     $("html").click(function() {
         $(".approved_pop").slideUp();
@@ -674,7 +870,9 @@ function removeAssetManagement(assetId){
     });
     
     $("#workingStatus").click(function(){
-		$(this).next(".approved_pop").toggle();
+		$("#workingStatus").find(".approved_pop").toggle();
+		$("#category").find(".approved_pop").slideUp();
+		$(".collapse-div-adduser").removeClass("show-div");
 	});
     $("html").click(function() {
         $(".approved_pop").slideUp();
@@ -808,18 +1006,11 @@ $(document).ready(function(){
                 });
             });
         </script>
-  <!-- <div class="theme-color"> <span class="icon-theme" title="click here"><i class="fa fa-gears"></i></span>
-    <ul class="list-unstyled">
-      <li><a href="#" class="" id="btn1"><span class="dark-blue"></span><span class="light-grey"></span></a></li>
-      <li><a href="#" class="" id="btn2"><span class="flat-green"></span><span class="dark-purle"></span></a></li>
-      <li><a href="#" class="" id="btn3"><span class="hdr-blue"></span><span class="sidenav-blue"></span></a></li>
-    </ul>
-  </div> -->
-</div>
 <script>
 $(".addcon-pop").click(function(){
 	 $(".collapse-div-adduser").toggleClass("show-div");
 	 $(".collapse-div").removeClass("show-div");
+	 flushAsset();
  });
  $(".close-div").click(function(){
 	 $(this).parent().removeClass("show-div");
@@ -929,10 +1120,22 @@ $(".addcon-pop").click(function(){
   };
 </script>
 
-
+<script>
+function getCustomDependentField(sectionId){
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 success: function(data) {
+		        	$('#customDiv'+sectionId).empty();
+		        	$('#customDiv'+sectionId).append(data);
+				 }
+		  });
+}
+</script>
 
 
 <script type="text/javascript">
+        
         var validationSettings = {
             errorMessagePosition : 'element',
             borderColorOnError : '',
@@ -940,7 +1143,23 @@ $(".addcon-pop").click(function(){
 			dateFormat : 'yyyy/mm/dd' 
             };
 </script> 
+<script>
+function uploadFile(){
+	fileUpload("attachment", "assetDocuments", "addAsset_form","attachmentUpload");
+}
+</script>
 
+<script>
+function uploadFileShiftA(){
+	fileUpload("uploadBtn-dskA", "assetDocuments", "addAsset_form","uploadBtndskAUpload");
+}
+</script>
 
-<jsp:include page="assetManagementDetails.jsp" />
+<script>
+function uploadFileShiftB(){
+	fileUpload("uploadBtn-dskB", "assetDocuments", "addAsset_form","uploadBtndskBUpload");
+}
+</script>
+<%-- <jsp:include page="assetManagementDetails.jsp" />
+<jsp:include page="assetManagementSummary.jsp" /> --%>
 <jsp:include page="../masterFooter.jsp" />

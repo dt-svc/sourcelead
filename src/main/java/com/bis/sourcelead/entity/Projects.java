@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -22,6 +23,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
@@ -29,14 +31,15 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECTS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projects")
 public class Projects implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -49,12 +52,18 @@ public class Projects implements Serializable{
 	@Column(name = "PROJECT_SEQUENCE_NUMBER")
 	private String projectSequeneNumber;
 	
+    @Column(name = "IS_CLIENT_PROJECT")
+    private String isClientProject;
+	
     @Column(name = "PROJECT_NAME")
     private String projectName;
  
     @Column(name = "DESCRIPTION", columnDefinition = "TEXT default NULL")
     private String description;
  
+    @Column(name = "WEEK_START_DATE")
+    private Date weekStartDate;
+    
     @Column(name = "START_DATE")
     private Date startDate;
     
@@ -97,11 +106,10 @@ public class Projects implements Serializable{
     @Column(name="OVERTIME_RATE_TYPE")
     private String overtimeRateType;
 
-    @NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne(fetch = FetchType.EAGER)
+    
+    @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SUPERIOR_USER_ID")
    	private User superiorUser;
-    
     
 	@Column(name = "PROJECT_STATUS")
 	@Enumerated(EnumType.STRING)
@@ -121,18 +129,21 @@ public class Projects implements Serializable{
 	@Column(name = "IS_TIMESHEET_ATTACHMENT_REQUIRED")
 	private Integer isTimesheetAttachmentRequired;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne(fetch = FetchType.EAGER)
+	
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_RELATION_ID")
     private OrgRelations orgRelationId;
    
-	@NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne
+	
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_LOCATIONS_ID")
     private OrgLocations orgLocationsId;
-    
+	
     @Column(name = "STATUS")
     private String status;
+    
+    @Column(name = "IS_DEFAULT_PROJECT")
+    private String isDefaultProject;
     
     @Column(name = "PROJECT_UUID")
 	private String projectUUID;
@@ -149,26 +160,74 @@ public class Projects implements Serializable{
     @Column(name = "UPDATED_BY")
     private String updatedBy;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    @Column(name = "PROJECT_SHORT_CODE")
+    private String projectShortCode;
+    
+    @Column(name = "PROJECT_MODE")
+    private String projectMode;
+    
+    @Column(name = "IS_PROJECT_DETAILS_FILLED")
+    private String isProjectDetailsFilled;
+    
+    @Column(name = "IS_PROJECT_MEMBERS_FILLED")
+    private String isProjectMembersFilled;
+    
+    @Column(name = "IS_PROJECT_ADDITIONAL_DETAILS_FILLED")
+    private String isProjectAdditionalDetailsFilled;
+    
+    @Column(name = "NOTIFY_BUDGET_AT")
+   	private String notifyBudgetAt;
+	
+     
+    
+	@OneToMany(mappedBy = "projectId",cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
+	private Set<ProjectBudget> projectBudget = new HashSet<ProjectBudget>(0);
+    
+    @Transient
+    @JsonProperty
+    Set<ProjectBudget>  projectBudgetList;
+    
+    
     @OneToMany(mappedBy="projects",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
+    @JsonBackReference
     private Set<ProjectMembers> projectMembers;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
+    @JsonBackReference
     private Set<ProjectApproverHierarchy> projectApprovers;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
+    @JsonBackReference
     private Set<ProjectTasks> projectTasks;
     
-    @NotFound(action=NotFoundAction.IGNORE)
-    @OneToMany(mappedBy="projects",cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
-    private Set<ProjectDocuments> projectDocuments = new HashSet<>();
+    @JsonBackReference
+    private Set<ProjectClients> projectClients;
+  
+
     
+    @OneToMany(mappedBy="projects")
+    @Fetch(FetchMode.SELECT)
+    @JsonBackReference
+    private Set<ProjectDocuments> projectDocuments;
+    
+    
+    @OneToMany(mappedBy="projectId")
+    @Fetch(FetchMode.SELECT)
+    @JsonBackReference
+    private Set<ProjectDocumentFolder> ProjectDocumentFolder;
+    
+    
+    @Column(name="CURRENCY")
+    private String currency;
     
     public Set<ProjectDocuments> getProjectDocuments() {
 		return projectDocuments;
@@ -179,9 +238,11 @@ public class Projects implements Serializable{
 	}
 
 	@Transient
+	@JsonProperty
     private String managerLevel1;
     
     @Transient
+    @JsonProperty
     private String managerLevel2;
     
     @Transient
@@ -205,12 +266,18 @@ public class Projects implements Serializable{
     private String endDateStr;
     
     @Transient
+    @JsonProperty
+    private String projStatus;
+    
+    
+    @Transient
     private String[] projectManagerName;
     
     @Transient
     private String[] clientName;
     
     @Transient
+    @JsonProperty
     private String client;
     
     @Transient
@@ -233,11 +300,16 @@ public class Projects implements Serializable{
     Collection<OrgRelations> clientList;
     
     @Transient
+    @JsonProperty
     Collection<User> managersList;
     
     
     @Transient
     Collection<User> managersListwithoutManager1;
+    
+    @Transient
+    @JsonProperty
+    Set<ProjectApproverHierarchy>  approverHierarchyList;
     
     @Transient
     private String employeeStartDateStr;
@@ -253,6 +325,23 @@ public class Projects implements Serializable{
 
     @Transient
     private String expensesClientName;
+    
+    @Transient
+	@JsonProperty
+    private String projectClientUUID;
+    
+    @Transient
+   	@JsonProperty
+    private Double projectbudgetAmount;
+    
+    @Transient
+   	@JsonProperty
+    private String projectbudgetCurrency;
+    
+    @Transient
+    @JsonProperty
+    Set<ProjectDocuments>  projectDocumentsList;
+    
     
     @Column(name = "GENERATED_ID")
 	private String generatedId;
@@ -324,7 +413,8 @@ public class Projects implements Serializable{
 		this.timesheetFrequency = timesheetFrequency;
 	}
 	
-	
+
+
 	@JsonIgnore
 	public User getSuperiorUser() {
 		return superiorUser;
@@ -425,6 +515,14 @@ public class Projects implements Serializable{
 		this.updatedBy = updatedBy;
 	}
 	
+	public String getProjectShortCode() {
+		return projectShortCode;
+	}
+
+	public void setProjectShortCode(String projectShortCode) {
+		this.projectShortCode = projectShortCode;
+	}
+
 	@JsonIgnore
 	public Set<ProjectMembers> getProjectMembers() {
 		return projectMembers;
@@ -484,13 +582,19 @@ public class Projects implements Serializable{
 
 	public String getStartDateStr() {
 		if(startDate != null){
-			SimpleDateFormat dateFormat = orgLocationsId.getLocFullFormDateFormatter();
+			SimpleDateFormat dateFormat = null;
+			if(orgLocationsId != null && orgLocationsId.getDateFormat() != null && StringUtils.isNotEmpty(orgLocationsId.getDateFormat())){
+				dateFormat = new SimpleDateFormat(orgLocationsId.getDateFormat());
+			}
+			else{
+				dateFormat = (SimpleDateFormat) Constants.DF_YMD;
+			}
 			startDateStr = dateFormat.format(startDate);	
 		}
 		return startDateStr;
 	}
 
-	public void setStartDateStr(String startDateStr) {
+	public void setStartDateStr(String startDateStr) { 
 		this.startDateStr = startDateStr;
 	}
 
@@ -754,6 +858,174 @@ public class Projects implements Serializable{
 	public void setGeneratedId(String generatedId)
 	{
 		this.generatedId = generatedId;
+	}
+
+	public String getIsClientProject() {
+		return isClientProject;
+	}
+
+	public void setIsClientProject(String isClientProject) {
+		this.isClientProject = isClientProject;
+	}
+
+	public String getProjectMode() {
+		return projectMode;
+	}
+
+	public void setProjectMode(String projectMode) {
+		this.projectMode = projectMode;
+	}
+
+	public String getIsProjectDetailsFilled() {
+		return isProjectDetailsFilled;
+	}
+
+	public void setIsProjectDetailsFilled(String isProjectDetailsFilled) {
+		this.isProjectDetailsFilled = isProjectDetailsFilled;
+	}
+
+	public String getIsProjectMembersFilled() {
+		return isProjectMembersFilled;
+	}
+
+	public void setIsProjectMembersFilled(String isProjectMembersFilled) {
+		this.isProjectMembersFilled = isProjectMembersFilled;
+	}
+
+	public String getIsProjectAdditionalDetailsFilled() {
+		return isProjectAdditionalDetailsFilled;
+	}
+
+	public void setIsProjectAdditionalDetailsFilled(String isProjectAdditionalDetailsFilled) {
+		this.isProjectAdditionalDetailsFilled = isProjectAdditionalDetailsFilled;
+	}
+
+	public Set<ProjectClients> getProjectClients() {
+		return projectClients;
+	}
+
+	public void setProjectClients(Set<ProjectClients> projectClients) {
+		this.projectClients = projectClients;
+	}
+
+	public Set<ProjectApproverHierarchy> getApproverHierarchyList() {
+	   /*  if(projectClients != null){
+	    	 for(ProjectClients projectClients : projectClients){
+	    		 if(projectClients.getProjectApproverHierarchyList() != null && 
+	    				 !projectClients.getProjectApproverHierarchyList().isEmpty()){
+	    			 Set<ProjectApproverHierarchy> hirearchySet = new LinkedHashSet<ProjectApproverHierarchy>();
+	    			 for(ProjectApproverHierarchy hierarcy : projectClients.getProjectApproverHierarchyList()){
+	    				 hirearchySet.add(hierarcy);
+		    		 }
+	    			 if(hirearchySet != null && !hirearchySet.isEmpty()){
+	    				 approverHierarchyList = hirearchySet;
+	    			 }
+	    		 }
+	    	 }
+	     }*/
+		return approverHierarchyList;
+	}
+
+	public void setApproverHierarchyList(Set<ProjectApproverHierarchy> approverHierarchyList) {
+		this.approverHierarchyList = approverHierarchyList;
+	}
+
+	public Set<ProjectDocuments> getProjectDocumentsList() {
+		return projectDocumentsList;
+	}
+
+	public void setProjectDocumentsList(Set<ProjectDocuments> projectDocumentsList) {
+		this.projectDocumentsList = projectDocumentsList;
+	}
+
+	public String getProjStatus() {
+		return projStatus;
+	}
+
+	public void setProjStatus(String projStatus) {
+		this.projStatus = projStatus;
+	}
+
+	public String getIsDefaultProject() {
+		return isDefaultProject;
+	}
+
+	public void setIsDefaultProject(String isDefaultProject) {
+		this.isDefaultProject = isDefaultProject;
+	}
+
+
+	public String getProjectClientUUID() {
+		return projectClientUUID;
+	}
+
+	public void setProjectClientUUID(String projectClientUUID) {
+		this.projectClientUUID = projectClientUUID;
+	}
+
+
+	public String getNotifyBudgetAt() {
+		return notifyBudgetAt;
+	}
+
+	public void setNotifyBudgetAt(String notifyBudgetAt) {
+		this.notifyBudgetAt = notifyBudgetAt;
+	}
+
+	public Set<ProjectBudget> getProjectBudget() {
+		return projectBudget;
+	}
+
+	public void setProjectBudget(Set<ProjectBudget> projectBudget) {
+		this.projectBudget = projectBudget;
+	}
+
+	public Set<ProjectBudget> getProjectBudgetList() {
+		return projectBudgetList;
+	}
+
+	public void setProjectBudgetList(Set<ProjectBudget> projectBudgetList) {
+		this.projectBudgetList = projectBudgetList;
+	}
+
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
+ 
+	public Double getProjectbudgetAmount() {
+		return projectbudgetAmount;
+	}
+
+	public void setProjectbudgetAmount(Double projectbudgetAmount) {
+		this.projectbudgetAmount = projectbudgetAmount;
+	}
+
+	public String getProjectbudgetCurrency() {
+		return projectbudgetCurrency;
+	}
+
+	public void setProjectbudgetCurrency(String projectbudgetCurrency) {
+		this.projectbudgetCurrency = projectbudgetCurrency;
+	}
+
+	public Set<ProjectDocumentFolder> getProjectDocumentFolder() {
+		return ProjectDocumentFolder;
+	}
+
+	public void setProjectDocumentFolder(Set<ProjectDocumentFolder> projectDocumentFolder) {
+		ProjectDocumentFolder = projectDocumentFolder;
+	}
+
+	public Date getWeekStartDate() {
+		return weekStartDate;
+	}
+
+	public void setWeekStartDate(Date weekStartDate) {
+		this.weekStartDate = weekStartDate;
 	}
 	
 }

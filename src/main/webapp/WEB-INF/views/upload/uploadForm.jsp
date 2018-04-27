@@ -20,11 +20,11 @@ margin:10px 220px 0;
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Import Users</h2>
+        <h2>Import Associates</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="usersList">Users List</a> &raquo; Import Users </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Associates List</a> &raquo; Import Associates </div>
     </section>
-    <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="fileUpload?${_csrf.parameterName}=${_csrf.token}">
+    <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="${appPath}/fileUpload?${_csrf.parameterName}=${_csrf.token}">
     <div class="content-area clearfix">
     <div id="loading"></div> 
       <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
@@ -32,9 +32,9 @@ margin:10px 220px 0;
           <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
 		  <!-- Download File button -->
 		  <div class="clearfix mb">
-			 <a href="<c:url value='/downloadCreateUserTemplate'/>"> <button class="btn btn-info btn-block" type="button">
+			 <a href="<c:url value='${appPath}/downloadCreateUserTemplate'/>" class="btn btn-info btn-block">
 					<i class="fa fa-download"></i>&nbsp;&nbsp;Download Template
-			</button></a>
+			</a>
 			</div>
 			<!-- Attach File button -->
 			
@@ -44,7 +44,7 @@ margin:10px 220px 0;
 			  <button class="btn btn-sm btn-primary" id="upload_button" type="submit" onclick = "check();uploadSave();checkFile()" ">
 				<i aria-hidden="true" class="fa fa-upload"></i>&nbsp;&nbsp;&nbsp;Import
 			  </button>
-			  <button class="btn btn-sm btn-danger" type="reset" onClick="javascript:window.location.href = '<c:url value='/usersList'/>'">
+			  <button class="btn btn-sm btn-danger" type="reset" onClick="javascript:window.location.href = '<c:url value='${appPath}/usersList'/>'">
 				<i aria-hidden="true" class="fa fa-times"></i>&nbsp;&nbsp;&nbsp;Cancel
 			  </button>
 			  </div>
@@ -81,12 +81,14 @@ margin:10px 220px 0;
 			 <span class="pull-left"><i class="fa fa-question" aria-hidden="true"></i></span>
 			  <span class="info-msg pull-left">
 			  <p>
-			  According to this template, the Users need to <span class="text-danger"><strong>Import Required Fields</strong></span></p>
+			  According to this template, the Associates need to <span class="text-danger"><strong>Import Required Fields</strong></span></p>
 			  </p>
 			  <p>
 			  <label><i class="fa fa-user"></i>&nbsp;&nbsp;First Name</label>
 			  <label><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</label>
 			  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Role</label>
+			  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Manager(Email)</label>
+			  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Employment Type</label>
 			  </p>
 			  </span>
             </div>
@@ -97,10 +99,10 @@ margin:10px 220px 0;
 		  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 		  <div class="errInfo clearfix">
 		  <div id="errorFileDiv"  style="display: none;">
-		  <p class="text-danger"><strong>Error File Dowload</strong></p>
+		  <p class="text-danger"><strong>Error File Download</strong></p>
 		      <c:if test="${!empty errorMessage}">
 				   <div class="file-upload"> 
-				  <a href="<c:url value='/download/${fileName}'/>" onclick="errorMsgAppend();"> 
+				  <a href="<c:url value='${appPath}/download/${fileName}'/>" onclick="errorMsgAppend();"> 
 					<label class="btn btn-block">
 					<i class="fa fa-download" aria-hidden="true"></i> <br>
 		               ${errorMessage}
@@ -171,7 +173,7 @@ function errorMsgAppend(){
 function uploadSave() {
 	$('#upload_form').submit(function() {
           if (($(this).validate(false, validationSettings))){
-        	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+        	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
             	return true;  
           }
           else{

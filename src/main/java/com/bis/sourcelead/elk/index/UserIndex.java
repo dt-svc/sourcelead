@@ -1,9 +1,6 @@
 package com.bis.sourcelead.elk.index;
 
 import java.io.Serializable;
-import java.util.Date;
-
-import javax.persistence.Column;
 
 public class UserIndex implements Serializable {
 
@@ -24,6 +21,8 @@ public class UserIndex implements Serializable {
 	private String email; 
 
 	private String mobilePhone;
+	
+	private String extensionNumber;
 
 	private String userType;
 
@@ -118,6 +117,16 @@ public class UserIndex implements Serializable {
 
 	public void setMobilePhone(String mobilePhone) {
 		this.mobilePhone = mobilePhone;
+	}
+
+	public String getExtensionNumber()
+	{
+		return extensionNumber;
+	}
+
+	public void setExtensionNumber(String extensionNumber)
+	{
+		this.extensionNumber = extensionNumber;
 	}
 
 	public String getUserType() {

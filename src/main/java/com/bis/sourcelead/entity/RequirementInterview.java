@@ -25,9 +25,10 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 	@Entity
-	@Table(name = "REQUIREMENT_INTERVIEW", catalog = "sourcelead")
-	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirmentInterview")
+	@Table(name = "REQUIREMENT_INTERVIEW")
 	public class RequirementInterview implements Serializable{
 
 	
@@ -38,8 +39,8 @@ import org.hibernate.annotations.NotFoundAction;
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="SUBMISSION_ID", nullable=false )        
     private RequirementSubmission submissionId;
 	
@@ -55,8 +56,8 @@ import org.hibernate.annotations.NotFoundAction;
 	@Column(name = "END_TIME")
 	private Date endTime;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="TIME_ZONE", nullable=false )
 	private Timezone timezone;
 	
@@ -90,8 +91,8 @@ import org.hibernate.annotations.NotFoundAction;
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "INTERVIEW_TEMPLATE_ID")
     private SubmissionTemplate interviewTemplateId;
 	
@@ -117,18 +118,22 @@ import org.hibernate.annotations.NotFoundAction;
 	private String interviewersList;
 	
 	@Transient
+	@JsonProperty
 	private String candidateName;
 	
 	@Transient
+	@JsonProperty
 	private String requirementTitle;
 	
 	@Transient
    	private String requirementId;
 	
 	@Transient
+	@JsonProperty
 	private String interviewStartDateTimeStr;
 	
 	@Transient
+	@JsonProperty
 	private String interviewEndtDateTimeStr;
 	
 	@Transient
@@ -137,8 +142,8 @@ import org.hibernate.annotations.NotFoundAction;
 	@Transient
 	private String scheduleType;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@OneToMany(mappedBy = "requirementInterview",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+	
+	@OneToMany(mappedBy = "requirementInterview",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementInterviewer> requirementInterviewers = new HashSet<RequirementInterviewer>(0);
 

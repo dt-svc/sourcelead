@@ -29,15 +29,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.AmexUploadFile;
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.BoPaymentTypes;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.AmexFileUploadService;
 import com.bis.sourcelead.service.AssetCategoryService;
+import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.BoComericaTransService;
 import com.bis.sourcelead.service.BoPaymentTypesService;
 import com.bis.sourcelead.service.BoUploadedFilesService;
@@ -45,8 +49,9 @@ import com.bis.sourcelead.service.ChaseUploadFileService;
 import com.bis.sourcelead.service.ComericaFileUploadService;
 
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.UploadFileService;
-
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.validation.FileValidator;
@@ -56,6 +61,7 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Controller
+@RequestMapping("/app")
 public class BackOfficeController {
 	
 private static final Logger logger = LoggerFactory.getLogger(BackOfficeController.class);
@@ -86,6 +92,15 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 	
 	@Autowired
 	AssetCategoryService assetCategoryService;
+	
+	@Autowired
+	private AssetService assetService;
+	
+	@Autowired
+	private SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
 	@RequestMapping(value = "/finance")
 	public ModelAndView finance(HttpServletRequest request) throws Exception {
@@ -211,6 +226,12 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 		List<Employees> employeesList = employeesService.getEmployeesByLocationId(orgLocations.getId());
 		model.addObject("employeesList", employeesList);
 		
+	     SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_ADD_ASSET);
+	     model.addObject("actionId",action.getId());
+	     List<SourceleadSectionDTO> sections = commonUtil.getSourceleadFormSectionsByActionId(request, action.getId());
+	     model.addObject("sourceleadSectionList",sections); 
+	     
+		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{
@@ -224,6 +245,41 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 		
 	}
 	
+	
+	@RequestMapping(value = "/assetManagementSummary")
+	public ModelAndView assetManagementSummary(@RequestParam(value="assetId", required=false) Long assetId,HttpServletRequest request) throws Exception {
+	
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		ModelAndView model = new ModelAndView();
+		model.setViewName("backOffice/assetManagementSummary");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		
+		List<AssetCategory> assetCategoriesList = assetCategoryService.getAssetCategoryListByLocationId(orgLocations.getId());
+		model.addObject("assetCategoriesList", assetCategoriesList);
+		
+		List<Employees> employeesList = employeesService.getEmployeesByLocationId(orgLocations.getId());
+		model.addObject("employeesList", employeesList);
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.AssetManagement);
+		
+		 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_ADD_ASSET);
+	     model.addObject("actionId",action.getId());
+	     List<SourceleadSectionDTO> sections = commonUtil.getSourceleadFormSectionsByActionId(request, action.getId());
+	     model.addObject("sourceleadSectionList",sections);
+		
+		request.getSession().setAttribute("sessionData",sessionData);
+		Asset asset = assetService.getAssetById(assetId);
+		model.addObject("asset",asset);
+		
+		return model;
+		
+	}
 	
 	  @RequestMapping(value = "/getAssetCategories")
 	    public String getAssetCategories(HttpServletRequest request) throws Exception {

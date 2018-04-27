@@ -17,6 +17,13 @@ public class RequirementSearchDTO extends SearchDTO implements Serializable {
 	private String filterStatus;
 	private String filterClients;
 	private String generatedId;
+	private String filterPriority;
+	private String filterJobType;
+	private String filterAssignTo;
+	private String visaType;
+	private String requirementSkills;
+	private String filterSpecJobs;
+	private String filterProjectId;
 	
 	public String getStatus() {
 		return status;
@@ -92,7 +99,49 @@ public class RequirementSearchDTO extends SearchDTO implements Serializable {
 	public void setSearchType(String searchType) {
 		this.searchType = searchType;
 	}
-	
-
+	public String getFilterPriority() {
+		return filterPriority;
+	}
+	public void setFilterPriority(String filterPriority) {
+		this.filterPriority = filterPriority;
+	}
+	public String getFilterJobType() {
+		return filterJobType;
+	}
+	public void setFilterJobType(String filterJobType) {
+		this.filterJobType = filterJobType;
+	}
+	public String getFilterAssignTo()
+	{
+		return filterAssignTo;
+	}
+	public void setFilterAssignTo(String filterAssignTo)
+	{
+		this.filterAssignTo = filterAssignTo;
+	}
+	public String getVisaType() {
+		return visaType;
+	}
+	public String getRequirementSkills() {
+		return requirementSkills;
+	}
+	public void setVisaType(String visaType) {
+		this.visaType = visaType;
+	}
+	public void setRequirementSkills(String requirementSkills) {
+		this.requirementSkills = requirementSkills;
+	}
+	public String getFilterSpecJobs() {
+		return filterSpecJobs;
+	}
+	public void setFilterSpecJobs(String filterSpecJobs) {
+		this.filterSpecJobs = filterSpecJobs;
+	}
+	public String getFilterProjectId() {
+		return filterProjectId;
+	}
+	public void setFilterProjectId(String filterProjectId) {
+		this.filterProjectId = filterProjectId;
+	}
 	
 }

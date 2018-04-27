@@ -21,6 +21,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  *  to handle the documents of the client and vendors
  * @author Prasanna Vadla
@@ -28,8 +30,7 @@ import org.hibernate.annotations.NotFoundAction;
  */
 
 @Entity
-@Table(name = "ORG_DOCUMENTS", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orgDocuments")
+@Table(name = "ORG_DOCUMENTS")
 public class OrgDocuments implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -39,13 +40,13 @@ public class OrgDocuments implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="RESPONDER_LOCATION_ID", nullable=false )        
     private OrgLocations responderLocationId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations locationId;	
 	
@@ -58,23 +59,19 @@ public class OrgDocuments implements Serializable{
 	@Column(name = "FILE_NAME", columnDefinition = "TEXT default NULL")
 	private String fileName;
 	
-	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] docFile;
-	
 	@Column(name = "FILE_TYPE")
 	private String fileType;
 	
 	@Column(name = "FILE_URL")
 	private String fileUrl;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SPOC_ID")
 	private User spocUser;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "OWNER_ID")
 	private User ownerUser;
 	
@@ -125,6 +122,10 @@ public class OrgDocuments implements Serializable{
 	
 	@Transient
 	private Long ownerId;
+	
+	@Transient
+	@JsonProperty
+	private Long spocId;
 	
 	@Transient
 	private List<OrgSpoc> orgSpocsList;
@@ -182,14 +183,6 @@ public class OrgDocuments implements Serializable{
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
-	}
-
-	public byte[] getDocFile() {
-		return docFile;
-	}
-
-	public void setDocFile(byte[] docFile) {
-		this.docFile = docFile;
 	}
 
 	public String getFileType() {
@@ -378,6 +371,16 @@ public class OrgDocuments implements Serializable{
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public Long getSpocId()
+	{
+		return spocId;
+	}
+
+	public void setSpocId(Long spocId)
+	{
+		this.spocId = spocId;
 	}
 	
 	

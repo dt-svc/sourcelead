@@ -10,6 +10,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,7 +35,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "TIMESHEET_SUBMISSIONS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="timeSheetSubmissions")
 public class TimesheetSubmissions implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -44,10 +44,23 @@ public class TimesheetSubmissions implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_MEMBER_ID", nullable=false)
 	private ProjectMembers projectMembers;
+	
+	
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PROJECT_ID", nullable=false)
+	private Projects projects;
+	
+	
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false)        
+    private MasterCandidate masterCandidateId;
+	
 	
 	@NotNull
     @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
@@ -80,7 +93,7 @@ public class TimesheetSubmissions implements Serializable{
 	@Enumerated(EnumType.STRING)
     private Submission_ApprovalStatus submissionApprovalStatus;*/
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@OneToMany(mappedBy = "submissionId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<SubmissionApproverHierarchy> approverHierarchyList = new HashSet<SubmissionApproverHierarchy>(0);
@@ -93,8 +106,8 @@ public class TimesheetSubmissions implements Serializable{
 	@Column(name = "LEVEL_OF_APPROVER")
 	private Integer levelOfApprover;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "APPROVER_USER_ID", nullable=false)
 	private User approverUserId;
 	
@@ -436,6 +449,22 @@ public class TimesheetSubmissions implements Serializable{
 
 	public void setApproverHierarchyList(Set<SubmissionApproverHierarchy> approverHierarchyList) {
 		this.approverHierarchyList = approverHierarchyList;
+	}
+
+	public Projects getProjects() {
+		return projects;
+	}
+
+	public void setProjects(Projects projects) {
+		this.projects = projects;
+	}
+
+	public MasterCandidate getMasterCandidateId() {
+		return masterCandidateId;
+	}
+
+	public void setMasterCandidateId(MasterCandidate masterCandidateId) {
+		this.masterCandidateId = masterCandidateId;
 	}
 	
 	

@@ -3,6 +3,11 @@ package com.bis.sourcelead.dto;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Transient;
+
+import com.bis.sourcelead.annotations.CleanHtml;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ContractsDTO {
 	private String staticPath;
 	private String contrId;
@@ -22,6 +27,7 @@ public class ContractsDTO {
 	private String candiRateType;
 	private String candiFlatReward;
 	private String candiRatePer;
+	@CleanHtml(escape=false)
 	private String description;
 	private String workLocation;
 	private String joinDate;
@@ -46,7 +52,23 @@ public class ContractsDTO {
 	private String percentageReward;
 	private String flatRateType;
 	
+	private List<VendorContractsDTO> vendorcontractsList;
+	private List<ClientContractsDTO> clientcontractsList;
+	private List<FullTimeContractsDTO> fullTimeoffercontractsList;
+	
 	private List<FileInfo> reqDocs;
+	
+	private String orgRelationUUID;
+	
+	private String spocUUID;
+	
+	private List<CustomFormFieldDTO> customFormData;
+	
+	private String joinedDateStr;
+	
+	private long parallelSigner1;
+	
+	private long parallelSigner2;
 	
 	public String getStaticPath()
 	{
@@ -471,6 +493,92 @@ public class ContractsDTO {
 	public void setReqDocs(List<FileInfo> reqDocs) {
 		this.reqDocs = reqDocs;
 	}
-	
-	
+
+	public List<VendorContractsDTO> getVendorcontractsList()
+	{
+		return vendorcontractsList;
+	}
+
+	public void setVendorcontractsList(List<VendorContractsDTO> vendorcontractsList)
+	{
+		this.vendorcontractsList = vendorcontractsList;
+	}
+
+	public List<ClientContractsDTO> getClientcontractsList()
+	{
+		return clientcontractsList;
+	}
+
+	public void setClientcontractsList(List<ClientContractsDTO> clientcontractsList)
+	{
+		this.clientcontractsList = clientcontractsList;
+	}
+
+	public List<FullTimeContractsDTO> getFullTimeoffercontractsList()
+	{
+		return fullTimeoffercontractsList;
+	}
+
+	public void setFullTimeoffercontractsList(List<FullTimeContractsDTO> fullTimeoffercontractsList)
+	{
+		this.fullTimeoffercontractsList = fullTimeoffercontractsList;
+	}
+
+	public String getOrgRelationUUID()
+	{
+		return orgRelationUUID;
+	}
+
+	public void setOrgRelationUUID(String orgRelationUUID)
+	{
+		this.orgRelationUUID = orgRelationUUID;
+	}
+
+	public String getSpocUUID()
+	{
+		return spocUUID;
+	}
+
+	public void setSpocUUID(String spocUUID)
+	{
+		this.spocUUID = spocUUID;
+	}
+
+	public List<CustomFormFieldDTO> getCustomFormData() {
+		return customFormData;
+	}
+
+	public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
+		this.customFormData = customFormData;
+	}
+
+	public String getJoinedDateStr()
+	{
+		return joinedDateStr;
+	}
+
+	public void setJoinedDateStr(String joinedDateStr)
+	{
+		this.joinedDateStr = joinedDateStr;
+	}
+
+	public long getParallelSigner1()
+	{
+		return parallelSigner1;
+	}
+
+	public void setParallelSigner1(long parallelSigner1)
+	{
+		this.parallelSigner1 = parallelSigner1;
+	}
+
+	public long getParallelSigner2()
+	{
+		return parallelSigner2;
+	}
+
+	public void setParallelSigner2(long parallelSigner2)
+	{
+		this.parallelSigner2 = parallelSigner2;
+	}
 }

@@ -2,6 +2,8 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.AssetDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Asset;
 
 public interface AssetDao {
@@ -31,5 +33,15 @@ public interface AssetDao {
 	List<Asset> getAssetFilterListByLocationId(Long orgLocationId, String categoryIds, String workingStatus) throws Exception;
 	
 	List<Asset> getAssetListByLocationId(Long orgLocationId) throws Exception;
+	
+	ResponseList<Asset> getDynamicAssetFilterListByLocationId(Long orgLocationId,AssetDTO assetDTO) throws Exception;
+	
+	List<Asset> getUserBasedAssetManagementListandOrgLocation(Long orgLocationId, Long UserId) throws Exception;
+	
+	public Asset getAssetByAssetSnoAndId(String assetSno, Long assetId, Long orgLocationsId) throws Exception;
+	
+	public Asset validateAssetSno(String assetSno, Long orgLocationsId) throws Exception;
+	
+	public Boolean validateAssetId(String assetSno, Long orgLocationsId) throws Exception;
 
 }

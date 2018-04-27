@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +30,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
@@ -38,6 +40,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.itextpdf.text.log.SysoCounter;
 
 @Controller
+@RequestMapping("/app")
 public class InvoiceController {
 	private static final Logger logger = LoggerFactory.getLogger(InvoiceController.class);
 	@Value("${sourceleadUrl}")
@@ -51,6 +54,9 @@ public class InvoiceController {
 	
 	@Autowired
 	OrgRelationsService orgRelationsService;
+        
+    @Autowired
+	private OrgService orgService;
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -74,6 +80,7 @@ public class InvoiceController {
  * @return model
  * @throws Exception
  */
+	@PreAuthorize("hasAnyRole('ROLE_ADD_INVOICE','ROLE_VIEW_EDIT_INVOICE')")
 	@RequestMapping(value = "/createInvoice")
 	public ModelAndView invoiceList(@RequestParam(value="type", required=false) String type , @RequestParam(value="orgRelationId", required=false) Long orgRelationId ,HttpServletRequest request) throws Exception {
 		
@@ -99,6 +106,7 @@ public class InvoiceController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		Date currentDate = new Date();
 		String convertedDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),currentDate);
+        model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
 		model.addObject("currentDate", convertedDate);
 		sessionData.setNav(Constants.Receivable);
 		request.getSession().setAttribute("sessionData",sessionData);
@@ -119,6 +127,7 @@ public class InvoiceController {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
+		model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		if(null != countries){
         model.addObject("loginCountryName", countries.getName());
@@ -131,6 +140,10 @@ public class InvoiceController {
 		}
 		
 		Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
+		if(invoice.getParentInvoiceId() != null) {
+			List<InvoiceDocument> docs = invoiceDocumentsService.getInvoiceDocumentsListByInvoiceId(invoice.getParentInvoiceId().getId());
+			model.addObject("documents" , docs);
+		}
 		if(invoice.getInvoiceCategory() !=null && Constants.EXPENSES.equalsIgnoreCase(invoice.getInvoiceCategory())) {
 			model.setViewName("billing/createExpensesReceivableInvoice");
 		}else if((invoice.getInvoiceCategory() !=null && Constants.EXPENSES.equalsIgnoreCase(invoice.getInvoiceCategory())) && invoice.getProjectID() !=null) {
@@ -141,6 +154,7 @@ public class InvoiceController {
 			model.setViewName("billing/createInvoice");
 		}
 		model.addObject("isGenerateAutomaticInvoice",invoice.getIsAutomaticGenerateInvoice());
+		model.addObject("isDraft",invoice.getId());
 		model.addObject("invoiceUUID", invoiceUUID);
 		model.addObject("projectId", projectId);
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -156,6 +170,7 @@ public class InvoiceController {
 	 * @return modelView
 	 * @throws Exception
 	 */
+//	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_INVOICE')")
 	@RequestMapping(value = "/viewInvoice")
 	public ModelAndView viewInvoice(@RequestParam(value="invoiceUUID", required=false) String invoiceUUID,@RequestParam(value="invoiceType", required=false) String invoiceType,HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -183,7 +198,7 @@ public class InvoiceController {
 	return model;
 	}
 	
-	
+	@PreAuthorize("hasAnyRole('ROLE_ADD_INVOICE')")
 	@RequestMapping(value = "/invoiceList")
 	public ModelAndView createInvoice(@RequestParam(value="type", required=false) String type ,HttpServletRequest request) throws Exception {
 		
@@ -241,7 +256,7 @@ public class InvoiceController {
 	
 	
 	
-
+//	@PreAuthorize("hasAnyRole('ROLE_ADD_INVOICE')")
 	@RequestMapping(value = "/createInvoiceProjectBased")
 	public ModelAndView createInvoiceProjectBased(HttpServletRequest request,@RequestParam(value="orgRelationId", required=false) Long orgRelationId) throws Exception {
 		
@@ -266,6 +281,7 @@ public class InvoiceController {
 		
 		Date currentDate = new Date();
 		String convertedDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),currentDate);
+        model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
 		model.addObject("currentDate", convertedDate);
 		model.setViewName("billing/createProjectReceivableInvoice");
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -274,7 +290,7 @@ public class InvoiceController {
 	return model;
 	}
 
-	
+//	@PreAuthorize("hasAnyRole('ROLE_ADD_INVOICE')")
 	@RequestMapping(value = "/createInvoiceProjectPayableBased")
 	public ModelAndView createInvoiceProjectPayableBased(@RequestParam(value="orgRelationId", required=false) Long orgRelationId,HttpServletRequest request) throws Exception {
 		
@@ -325,6 +341,7 @@ public class InvoiceController {
 		model.setViewName("billing/createExpensesReceivableInvoice");
 		model.addObject("currentDate", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
 		model.addObject("sourceleadUrl", sourceleadUrl);
+                model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
 		sessionData.setNav(Constants.Receivable);
 		request.getSession().setAttribute("sessionData",sessionData);
 	return model;
@@ -356,7 +373,7 @@ public class InvoiceController {
 	
 	
 	
-	 @RequestMapping(value = "/viewInvoiceDocView/{title}", method = RequestMethod.GET)
+	 /*@RequestMapping(value = "/viewInvoiceDocView/{title}", method = RequestMethod.GET)
 	    public void viewInvoiceDocView(@RequestParam(value="documentId", required=false) String documentId,
 	    		@PathVariable(value="title") String title
 	    		,HttpServletResponse response) throws Exception {
@@ -380,6 +397,6 @@ public class InvoiceController {
 		          sos.flush();
 		          sos.close();
 
-		} 
+		}*/ 
 	
 }

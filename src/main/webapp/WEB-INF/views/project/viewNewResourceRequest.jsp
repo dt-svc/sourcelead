@@ -16,13 +16,13 @@
       <div class="pull-left">
         <h2>View New Request Resources</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/projectDashboard'/>">Home</a> &raquo; <a href="<c:url value='/projectSummary?projectUUID=${projectUUID}&tabType=resources'/>">Planning</a> &raquo; View New Request Resources</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/projectDashboard'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=resources'/>">Planning</a> &raquo; View New Request Resources</div>
 </section>
 
  <div class="content-area content-new clearfix">
    <div id="requestedAssociatesList"></div>
    <div class="modal-footer">
-   <button class="btn btn-primary" type="button" value="Back to list" onClick="javascript:window.location.href = '<c:url value='/projectSummary?projectUUID=${projectUUID}&tabType=resources'/>'" >Back to list</button>
+   <button class="btn btn-primary" type="button" value="Back to list" onClick="javascript:window.location.href = '<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=resources'/>'" >Back to list</button>
    </div>
 					
  </div>
@@ -85,13 +85,7 @@ function getRequestedAssociatesList(){
 				result = result +' </div>';    
 				result = result +'</div>';
 				
-				result = result +'<div class="col-md-6">'; 
-				result = result +'<label class="col-md-4 control-label">Status :</label>';
-				result = result +'<div class="col-md-8">';
-				result = result +'<label><strong>'+json.requestStatus+'</strong></label>  ';
-				result = result +' </div>';    
-				result = result +'</div>';
-				
+ 
 				result = result +'</div>';
 				result = result +'</div> ';  
 				
@@ -108,9 +102,11 @@ function getRequestedAssociatesList(){
 				result = result +'                     <th>Consulting</th>';
 				result = result +'                     <th>Est Hours</th>';
 				result = result +'                     <th>Est Budget</th>';
+				result = result +'                     <th>Status</th>';
 				result = result +'                 </tr>';
 				result = result +'             </thead>';
 				result = result +'             <tbody>';
+				
 				
 				
 				 for(var i=0; i<json.newResourceRequestList.length; i++){
@@ -125,6 +121,7 @@ function getRequestedAssociatesList(){
 					 var skills = '';
 					 var billRate = '';
 					 var payRate = '';
+					 var rateType='';
 					 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
 						 startDate = opt.startDateStr;
 					 }else{
@@ -157,12 +154,15 @@ function getRequestedAssociatesList(){
 						 estimatedBudget = '--';
 					 }
 					 if(opt.minExperience != null && opt.minExperience != '' && opt.minExperience != 'undefined'){
-						 minExperience = opt.minExperience;
+						 minExperience = "Min Exp."+opt.minExperience;
+					 }else if(opt.minExperience == 0){
+						 minExperience = "Min Exp."+opt.minExperience;
 					 }else{
 						 minExperience = '--';
 					 }
+					 
 					if(opt.maxExperience != null && opt.maxExperience != '' && opt.maxExperience !='undefined'){
-						maxExperience = opt.maxExperience;
+						maxExperience = "Max Exp."+opt.maxExperience;
 					}else{
 						maxExperience = '--';
 					}
@@ -182,6 +182,11 @@ function getRequestedAssociatesList(){
 					 }else{
 						 payRate = '--';
 					 }
+					 if(opt.rateType != null && opt.rateType != '' && opt.rateType != 'undefined'){
+						 rateType = opt.rateType;
+						 }else{
+							 rateType = '--';
+						 }
 					 result = result +'<tr>';
 					    
 					    result = result +'<td>';
@@ -194,6 +199,7 @@ function getRequestedAssociatesList(){
 						
 						result = result +'<td>';
 						result = result +'<div class="width90px inr_values">';
+						
 						result = result +'<small>'+minExperience+'</small> <small>'+maxExperience+'</small>';
 						result = result +'</div>';
 						result = result +'</td>';
@@ -210,7 +216,7 @@ function getRequestedAssociatesList(){
 							result = result +'        <div class="clearfix"></div>';
 							result = result +'        <small>'+payRate+'</small>';
 						    result = result +'    </div>';
-						    result = result +'    <small class="text-muted pull-right paddingLeft payrateType mt10" id="rateTypeRow1" title="Hourly">Hourly</small>';
+						    result = result +'    <small class="text-muted pull-right paddingLeft payrateType mt10" id="rateTypeRow1" title="Hourly">'+rateType+'</small>';
 						    result = result +' </div>';
 						result = result +'</td>';
 						
@@ -229,6 +235,18 @@ function getRequestedAssociatesList(){
 
 						result = result +'<td>';
 					 	result = result +'<div class="tbldata-dotdot_80" title="'+estimatedBudget+'">'+estimatedBudget+'</div>';
+						result = result +'</td>';
+						
+						result = result +'<td>';
+						if(opt.rejectedReason==null){
+						result = result +'<div class="tbldata-dotdot-vsm paTp">';
+			     		result = result +'<b class="text-success" title="'+opt.resourceStatus+'" >'+opt.resourceStatus+'</b>';
+						result = result +'</div>';}
+						if(opt.rejectedReason!=null){
+						result = result +'<div class="tbldata-dotdot-vsm paTp">';
+			     		result = result +"<i class='glyphicon glyphicon-comment edit-reason colB'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i>";
+	    				result = result +'<b class="holdPro" title="'+opt.resourceStatus+'" >'+opt.resourceStatus+'</b>';
+						result = result +'</div>';}
 						result = result +'</td>';
 						
 					 result = result +'</tr>';

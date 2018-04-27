@@ -13,15 +13,16 @@
           <div class="pull-left">
             <h2>Expenses Category</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Expenses Category</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Expenses Category</div>
         </section>
         
 		<!-- Timesheet -->
-
+<div class="success_pop" id="selector10" style="display: none;">
+<i class="fa fa-check-circle"></i><span id="expMsgDiv"></span>
+</div>
 <div class="timesheet_out">
 
 <div class="project_wrap">
-
 	<div class="timesheet_head candidateHead">
 	  <ul class="mt10">
 	  <sec:authorize access="hasAnyRole('ROLE_ADD_EXPENSE_TYPE')">
@@ -41,7 +42,13 @@
   
 </section>
       <!-- Content Area Ends--> 
-
+<script>
+$(document).ready(function(){
+	if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	 }
+});
+</script>
 
 <script>
  window.onload = function() {
@@ -186,89 +193,96 @@ function closePopup(){
 <script>
 function expenseCategoryList(){  
 
-	  $("#expenseCategoryLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	 
+	  $("#expenseCategoryLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
-           type : "GET",
-           url: sourceleadUrl+"/getExpensesCategoryList",    
-            success :function(json) {
-			    	     $("#expenseCategoryLoading").removeAttr("style");
-	                	 $("#expenseCategoryList").empty();
-	                	 var result = "";
-	                	 result = result +"<table id='expenseCategoryPagenation' class='display' cellspacing='0' width='99.9%' >"; 
-	                     result = result +"<thead>"; 
-	                     result = result +"  <tr>"; 
-	                     result = result +"    <th>Category Name</th>";
-	                     result = result +"    <th>Amount</th>";
-	                     result = result +"    <th>Type</th>";
-	                     result = result +"    <th>Descrption</th>"; 
-	                     result = result +"    <th>Status</th>"; 
-	                     result = result +"    <th>Actions</th>";
-	                     result = result +"  </tr>"; 
-	                     result = result +"</thead>";
-	                     result = result +"<tbody>"; 
-	                     
-	                     /* var json = JSON.parse(data); */
-	                    	for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i]; 
-	                    	 result = result +"<tr>";
-	                    	 
-	                    	    if(opt.expensesName != null && opt.expensesName !='' && opt.expensesName !='undefined'){
-	                    		 result = result +"<td><div class='tbldata-dotdot-sm'><span title='"+opt.expensesName+"'>"+opt.expensesName+"</span></div></td>";
-	                    	     }else{
-	                    	     result = result +"<td><div class='tbldata-dotdot-sm'><span title=''>---</span></div></td>"; 
-	                    	     }
-	                    	    
-	                    	    if(opt.allowedAmount != null && opt.allowedAmount !='' && opt.allowedAmount !='undefined'){
-	                    		 result = result +"<td><div><span title=''>"+opt.allowedAmount+"</span></div></td>";
-	                    	    }else{
-	                    	     result = result +"<td><div><span title=''>---</span></div></td>";	
-	                    	    }
-	                    	    
-	                    	    if(opt.amountType != null && opt.amountType !='' && opt.amountType !='undefined'){
-	                    		 result = result +"<td><div><span>"+opt.amountType+"</span></div></td>";
-	                    	    }else{
-	                    	     result = result +"<td><div><span>---</span></div></td>";
-	                    	    }
-	                    	    
-	                    	    if(opt.description != null && opt.description !='' && opt.description !='undefined'){
-	                    		 result = result +"<td><div><span title='"+opt.description+"'>"+opt.description+"</span></div></td>"; 
-	                    	    }else{
-	                    	     result = result +"<td><div><span>---</span></div></td>"; 
-	                    	    }
-	                    	    
-	                    		 if(opt.status == 0){
-	                    		 result = result +"<td><div><span>In Active</span></div></td>"; 
-	                    		 }else{
-	                    			 result = result +"<td><div><span>Active</span></div></td>"; 
-	                    		 }
-			                    result = result+' <td><div class="tblicons tblminwidth-75">';
-			                    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EXPENSE_TYPE\')">'
-			                    result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onclick ="editExpenseCategory('+opt.id+');" title="Edit"></a>';
-			                    '</sec:authorize>';
-			                    if(opt.status == '0'){
-			                    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EXPENSE_TYPE\')">'
-			                    	result = result+'<a onclick="reActiveExpenseCategory('+opt.id+');" title="Remove">Re-Active</a></div></td>';
-			                    	'</sec:authorize>';
-			                    }else{
-			                    	'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_EXPENSE_TYPE\')">'
-			                    	result = result+'<i class="glyphicon glyphicon-trash" onclick="deleteExpenseCategory('+opt.id+');" title="Remove"></i></div></td>';
-			                    	'</sec:authorize>';
-			                    }
-			                    
-		                     result = result +"</tr>";
-	                     }
-	                     result = result +" </tbody>";
-	                     result = result +"</table>"; 
-	                     $("#expenseCategoryLoading").removeAttr("style");
-	                     $("#expenseCategoryList").append(result); 
-	                     
-	                     expenseCategoryPagenation(); 
-                    
-          },
-            
-       });  
-  } 
+          type : "GET",
+          url: sourceleadUrl+"/getExpensesCategoryList",    
+           success :function(result) {
+           	var json = result.data;
+           	if (result.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (result.response === "SUCCESS") {
+		    	     $("#expenseCategoryLoading").removeAttr("style");
+              	 $("#expenseCategoryList").empty();
+              	 var result = "";
+              	 result = result +"<table id='expenseCategoryPagenation' class='display' cellspacing='0' width='99.9%' >"; 
+                   result = result +"<thead>"; 
+                   result = result +"  <tr>"; 
+                   result = result +"    <th>Category Name</th>";
+                   result = result +"    <th>Amount</th>";
+                   result = result +"    <th>Type</th>";
+                   result = result +"    <th>Descrption</th>"; 
+                   result = result +"    <th>Status</th>"; 
+                   result = result +"    <th>Actions</th>";
+                   result = result +"  </tr>"; 
+                   result = result +"</thead>";
+                   result = result +"<tbody>"; 
+                   
+                   /* var json = JSON.parse(data); */
+                  	for (var i = 0; i < json.length; i++) { 
+                  	 var opt = json[i]; 
+                  	 result = result +"<tr>";
+                  	 
+                  	    if(opt.expensesName != null && opt.expensesName !='' && opt.expensesName !='undefined'){
+                  		 result = result +"<td><div class='tbldata-dotdot-sm'><span title='"+opt.expensesName+"'>"+opt.expensesName+"</span></div></td>";
+                  	     }else{
+                  	     result = result +"<td><div class='tbldata-dotdot-sm'><span title=''>---</span></div></td>"; 
+                  	     }
+                  	    
+                  	    if(opt.allowedAmount != null && opt.allowedAmount !='' && opt.allowedAmount !='undefined'){
+                  		 result = result +"<td><div><span title=''>"+opt.allowedAmount+"</span></div></td>";
+                  	    }else{
+                  	     result = result +"<td><div><span title=''>---</span></div></td>";	
+                  	    }
+                  	    
+                  	    if(opt.amountType != null && opt.amountType !='' && opt.amountType !='undefined'){
+                  		 result = result +"<td><div><span>"+opt.amountType+"</span></div></td>";
+                  	    }else{
+                  	     result = result +"<td><div><span>---</span></div></td>";
+                  	    }
+                  	    
+                  	    if(opt.description != null && opt.description !='' && opt.description !='undefined'){
+                  		 result = result +"<td><div><span title='"+opt.description+"'>"+opt.description+"</span></div></td>"; 
+                  	    }else{
+                  	     result = result +"<td><div><span>---</span></div></td>"; 
+                  	    }
+                  	    
+                  		 if(opt.status == 0){
+                  		 result = result +"<td><div><span>In Active</span></div></td>"; 
+                  		 }else{
+                  			 result = result +"<td><div><span>Active</span></div></td>"; 
+                  		 }
+		                    result = result+' <td><div class="tblicons tblminwidth-75">';
+		                    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EXPENSE_TYPE\')">'
+		                    result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onclick ="editExpenseCategory('+opt.id+');" title="Edit"></a>';
+		                    '</sec:authorize>';
+		                    if(opt.status == '0'){
+		                    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EXPENSE_TYPE\')">'
+		                    	result = result+'<a onclick="reActiveExpenseCategory('+opt.id+');" title="Remove">Re-Active</a></div></td>';
+		                    	'</sec:authorize>';
+		                    }else{
+		                    	'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_EXPENSE_TYPE\')">'
+		                    	result = result+'<i class="glyphicon glyphicon-trash" onclick="deleteExpenseCategory('+opt.id+');" title="Remove"></i></div></td>';
+		                    	'</sec:authorize>';
+		                    }
+		                    
+	                     result = result +"</tr>";
+                   }
+                   result = result +" </tbody>";
+                   result = result +"</table>"; 
+                   $("#expenseCategoryLoading").removeAttr("style");
+                   $("#expenseCategoryList").append(result); 
+                   
+                   expenseCategoryPagenation(); 
+	        		
+	        	} else if (result.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
+           }  	 
+      });  
+ } 
 </script>   
 
 <script>
@@ -297,6 +311,12 @@ var validationSettings = {
 </script>
 <script>
 function storeExpensesCategory(){
+	var validationSettings = {
+			errorMessagePosition : 'element',
+			borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd'
+		};
 	  if ($('#expenseCategory_form').validate(false, validationSettings)) {
 		  
 			 var frm = $('#expenseCategory_form').serializeFormJSON();
@@ -305,26 +325,27 @@ function storeExpensesCategory(){
 		     var jsonData = encodeURIComponent(con);
 			 $("#expenseCategory_form").attr("disabled", "disabled");
 			 $("#save_button").attr("disabled", "disabled");
-
-			$.ajax({
+			 $.ajax({
 					type : "POST",
 					url : sourceleadUrl+"/storeExpensesCategory?"+tokenParamName+"="+tokenValue+"&json="+con,
-					success :function(data) {  
-				                 if(data != null && data != 'undefined' && data != ""){
-				               		if( data.indexOf('Sign In') >= 0){
-							    		location.replace(sourceleadUrl);
-							    	}
-				               		else if (data.indexOf('exception') >= 0) {
-				               			 location.replace(sourceleadUrl+"/errorPage");
-				               		}
-				               		else{
-				               		    $("#popUpDiv").removeClass("edit-details-active");
-			            				$("#eduMsgDiv").html("Success!! New Expenses Category added");
-			            				expenseCategoryList();
-				               			eduMsgFadeinFunction();
-							    	}
-				                 }   
+					success :function(result) { 
+						if (result.response === "AWKWARD") {
+			        	    location.href = "/errorPage";
+			        	} else if (result.response === "SUCCESS") {
+			        		 closePopup();
+		   		        	 $("#popUpDiv").removeClass("edit-details-active");
+		   					 $("#selector10").removeAttr("style");
+		   					 $("#selector10").css({display : "block"	});
+		               		 $("#expMsgDiv").html("Success!! New Expenses Category added");
+	            			 expenseCategoryList();
+		               		 eduMsgFadeinFunction();
+			        	} else if (result.indexOf('Sign In') !== -1) {
+			        		location.replace(sourceleadUrl);
+			        	} else {
+			        	    showError("Operation failed, please try again");
+			        	}
 				      }, 
+				     
 		    });
 			return true; 
 		} else {
@@ -339,7 +360,13 @@ $('body').on('blur', '#expenseCategory_form', function() {
 
 </script>            
           
-
+<script>
+	function eduMsgFadeinFunction() {
+		$("#selector10").fadeIn(200);
+		$('#selector10').delay(2000).fadeOut('slow');
+	}
+</script>
+<!-- End -->
 <script type="text/javascript">
 	(function($) {
 		$.fn.serializeFormJSON = function() {
@@ -437,20 +464,33 @@ function getTaxPercentageValue(){
 
 <script>
 function deleteExpenseCategory(categoryId){
+	var validationSettings = {
+			errorMessagePosition : 'element',
+			borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd'
+		};
+	
 	  $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/removeExpensesCategoryByCategoryId?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId,        
-          success :function(data) {
+          success :function(result) {
 
-				if(data != null && data != 'undefined' && data != ""){
-             		if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	}else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		}else{
-             			expenseCategoryList()
-			    	}
-               } 
+        	  if (result.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (result.response === "SUCCESS") {
+	        		 closePopup();
+  		        	  $("#popUpDiv").removeClass("edit-details-active");
+  					 $("#selector10").removeAttr("style");
+  					 $("#selector10").css({display : "block"	});
+              		  $("#expMsgDiv").html("Success!! Expenses Category Deleted");
+      				expenseCategoryList();
+      				eduMsgFadeinFunction();
+	        	} else if (result.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
         },
           
      }); 
@@ -460,11 +500,31 @@ function deleteExpenseCategory(categoryId){
 
 <script>
 function reActiveExpenseCategory(categoryId){
+	var validationSettings = {
+			errorMessagePosition : 'element',
+			borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd'
+		};
 	  $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/reActiveExpenseCategoryByCategoryId?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId,        
-          success :function(data) {
-        	  expenseCategoryList()
+          success :function(result) {
+        	  if (result.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (result.response === "SUCCESS") {
+	        		  closePopup();
+		        	  $("#popUpDiv").removeClass("edit-details-active");
+					 $("#selector10").removeAttr("style");
+					 $("#selector10").css({display : "block"	});
+	       		  $("#expMsgDiv").html("Success!! Expenses Category Re-Activated");
+					expenseCategoryList();
+					eduMsgFadeinFunction();
+	        	} else if (result.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
         },
           
      }); 
@@ -477,173 +537,178 @@ function reActiveExpenseCategory(categoryId){
 		$.ajax({	type : "POST",
 					url : sourceleadUrl+ "/getExpensesCategoryByCategoryId?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId,
 					success : function(data) {
-						var json = JSON.parse(data);
-						var expensesName = "";
-						var allowedAmount = "";
-						var amountType =""
-						var description = "";
 						
-						if(json.expensesName !=null && json.expensesName !='undefined' && json.expensesName !=''){
-							expensesName = json.expensesName;
-						}
+						var json = data.object;
+						//var json = JSON.parse(data);
 						
-						if(json.allowedAmount !=null && json.allowedAmount !='undefined' && json.allowedAmount !='' && json.allowedAmount !='0'){
-							allowedAmount = json.allowedAmount;
-						}
-						
-						if(json.amountType !=null && json.amountType !='undefined' && json.amountType !=''){
-							amountType = json.amountType;
-						}else{
-							amountType ="Flat";
-						}
-						
-						if(json.description !=null && json.description !='undefined' && json.description !=''){
-							description = json.description;
-						}
-						
-						
-						if (data != null && data != 'undefined' && data != "") {
-							if (data.indexOf('Sign In') >= 0) {
-								location.replace(sourceleadUrl);
-							} else if (data.indexOf('exception') >= 0) {
-								location.replace(sourceleadUrl + "/errorPage");
-							} else {	
-		
-								var result = "";
-								result = result  +'<!-- Popup Div -->';
-								result = result  +'          <form role="form"  id="expenseCategory_form" name="expenseCategory_form" method="post" > ';
-								result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
-								result = result  +'                <div class="form-horizontal clearfix"> ';
-								result = result + '<input type="hidden" class="form-control input-sm" name="categoryId"  value="'+categoryId+'">';
-								result = result  +'   ';
-								/* result = result  +'      <div class="clearfix mb10 col-md-12" id="nameIdDiv"> ';
-								result = result  +'		 <select label=" " class="chosen-select form-control" field-name="Expense Category Name" data-placeholder = "Select Expense Category" name="expensesName" id="expensesName" data-validation="required" onchange="validateExpenseCategoryType();" onkeyup ="validateExpenseCategoryType();">';
-								                	       for (var j = 0; j < json.expenseCategoryList.length; j++) {
-																var epxCat = json.expenseCategoryList[j];
-																   if(epxCat.name == expensesName){
-																	   result = result+'<option value=\"'+epxCat.name+'\" selected >'+epxCat.name+'</option>';
-																  }else{
-																	   result = result+'<option value=\"'+epxCat.name+'\" >'+epxCat.name+'</option>';
-												   		 	      } 
-															}
-								                	       
-							    result = result + '		</select>';
-							    
-								result = result  +'</div>'; */
-								
-								result = result  +'<div class="clearfix mb10" id="nameIdDiv">'  ;
-								result = result  +'<div class="col-md-12 mt">' ;
-							    
-							    result = result  +'<input type="text" name="expensesName" field-name="expensesName" value="'+expensesName+'" data-validation="required validate_Space validate_length length1-100" id="expensesName" data-validation="required"  onchange="validateExpenseCategoryType();" onkeyup ="validateExpenseCategoryType();" class="form-control">';
-							    
-								result = result  +'</div>';
-								result = result  +'</div>';
-								
-								result = result  +'';
-								result = result  +'<div class="clearfix mb10" id="errTax">';
-								result = result  +'<div class="col-md-5" >';
-								result = result  +'<div class="btn-group btn_Block pull-left">';
-								
-								if(amountType == "Flat"){
-								result = result  +' <button type="button" class="btn btn-sm btn-primary active" id="taxflatBtn" value="flat" onClick="getTaxRewardType(this)">Flat</button>';
-								
-								result = result  +'<button type="button" class="btn btn-sm btn-primary " id="taxPercentageBtn" value="percentage" onClick="getTaxRewardType(this)">%</button>';
-								result = result  +'<input type="hidden" name="taxRewardType" id="taxRewardType" value="Flat"/>';
-								}
-								if(amountType == "Percentage"){
-									result = result  +' <button type="button" class="btn btn-sm btn-primary" id="taxflatBtn" value="flat" onClick="getTaxRewardType(this)">Flat</button>';
+						if (data.response === "AWKWARD") {
+			        	    location.href = "/errorPage";
+			        	} else if (data.response === "SUCCESS") {
+			        		
+							var expensesName = "";
+							var allowedAmount = "";
+							var amountType =""
+							var description = "";
+							
+							if(json.expensesName !=null && json.expensesName !='undefined' && json.expensesName !=''){
+								expensesName = json.expensesName;
+							}
+							
+							if(json.allowedAmount !=null && json.allowedAmount !='undefined' && json.allowedAmount !='' && json.allowedAmount !='0'){
+								allowedAmount = json.allowedAmount;
+							}
+							
+							if(json.amountType !=null && json.amountType !='undefined' && json.amountType !=''){
+								amountType = json.amountType;
+							}else{
+								amountType ="Flat";
+							}
+							
+							if(json.description !=null && json.description !='undefined' && json.description !=''){
+								description = json.description;
+							}
+							
+							
+							if (data != null && data != 'undefined' && data != "") {
+									var result = "";
+									result = result  +'<!-- Popup Div -->';
+									result = result  +'          <form role="form"  id="expenseCategory_form" name="expenseCategory_form" method="post" > ';
+									result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
+									result = result  +'                <div class="form-horizontal clearfix"> ';
+									result = result + '<input type="hidden" class="form-control input-sm" name="categoryId"  value="'+categoryId+'">';
+									result = result  +'   ';
+									/* result = result  +'      <div class="clearfix mb10 col-md-12" id="nameIdDiv"> ';
+									result = result  +'		 <select label=" " class="chosen-select form-control" field-name="Expense Category Name" data-placeholder = "Select Expense Category" name="expensesName" id="expensesName" data-validation="required" onchange="validateExpenseCategoryType();" onkeyup ="validateExpenseCategoryType();">';
+									                	       for (var j = 0; j < json.expenseCategoryList.length; j++) {
+																	var epxCat = json.expenseCategoryList[j];
+																	   if(epxCat.name == expensesName){
+																		   result = result+'<option value=\"'+epxCat.name+'\" selected >'+epxCat.name+'</option>';
+																	  }else{
+																		   result = result+'<option value=\"'+epxCat.name+'\" >'+epxCat.name+'</option>';
+													   		 	      } 
+																}
+									                	       
+								    result = result + '		</select>';
+								    
+									result = result  +'</div>'; */
 									
-									result = result  +'<button type="button" class="btn btn-sm btn-primary active" id="taxPercentageBtn" value="percentage" onClick="getTaxRewardType(this)">%</button>';
-									result = result  +'<input type="hidden" name="taxRewardType" id="taxRewardType" value="Percentage"/>';
+									result = result  +'<div class="clearfix mb10" id="nameIdDiv">'  ;
+									result = result  +'<div class="col-md-12 mt">' ;
+								    
+								    result = result  +'<input type="text" name="expensesName" field-name="expensesName" value="'+expensesName+'" data-validation="required validate_Space validate_length length1-100" id="expensesName" data-validation="required"  onchange="validateExpenseCategoryType();"  class="form-control">';
+								    
+									result = result  +'</div>';
+									result = result  +'</div>';
+									
+									result = result  +'';
+									result = result  +'<div class="clearfix mb10" id="errTax">';
+									result = result  +'<div class="col-md-5" >';
+									result = result  +'<div class="btn-group btn_Block pull-left">';
+									
+									if(amountType == "Flat"){
+									result = result  +' <button type="button" class="btn btn-sm btn-primary active" id="taxflatBtn" value="flat" onClick="getTaxRewardType(this)">Flat</button>';
+									
+									result = result  +'<button type="button" class="btn btn-sm btn-primary " id="taxPercentageBtn" value="percentage" onClick="getTaxRewardType(this)">%</button>';
+									result = result  +'<input type="hidden" name="taxRewardType" id="taxRewardType" value="Flat"/>';
 									}
-								
-								result = result  +' </div>';
-								result = result  +'</div>';
-								
-								if(amountType == "Percentage" && allowedAmount != null){
-								result = result  +'<div class="col-md-7 paddingLeft" id="taxPercentageReward">';
-								result = result  +'<div class="positionRelative iconHolder percentage fullWid" >'; 
-								result = result  +'<input type="text" class="form-control input-sm" field-name="Percentage"  id="taxPercentageRewardValue" value="'+json.allowedAmount+'" name="taxPercentageReward" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true"  onblur="getTaxPercentageValue()" placeholder="Percentage">';
-								result = result  +' <i class="fa fa-percent"></i>'; 
-								result = result  +' </div>';
-								result = result  +' </div>';
-								
-								result = result  +'<div class="col-md-7 paddingLeft" id="taxFlatReward"  style="display: none">';
-								result = result  +'<div class="row flat">';
-								result = result  +' <div class="form-group col-md-8 paddingRight positionRelative iconHolder" >';
-								result = result  +'<input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue" value="" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true" name="taxFlatReward" placeholder="Flat">';
-								result = result  +'<i class="fa fa-money" id="taxFlatRewardIcon"></i>';
-								result = result  +' </div>';
-								result = result  +' </div>';
-								result = result  +' </div>';
-								}
-								
-								if(amountType == "Flat" && allowedAmount != null){
-									result = result  +'<div class="col-md-7 paddingLeft" id="taxPercentageReward" style="display: none">';
+									if(amountType == "Percentage"){
+										result = result  +' <button type="button" class="btn btn-sm btn-primary" id="taxflatBtn" value="flat" onClick="getTaxRewardType(this)">Flat</button>';
+										
+										result = result  +'<button type="button" class="btn btn-sm btn-primary active" id="taxPercentageBtn" value="percentage" onClick="getTaxRewardType(this)">%</button>';
+										result = result  +'<input type="hidden" name="taxRewardType" id="taxRewardType" value="Percentage"/>';
+										}
+									
+									result = result  +' </div>';
+									result = result  +'</div>';
+									
+									if(amountType == "Percentage" && allowedAmount != null){
+									result = result  +'<div class="col-md-7 paddingLeft" id="taxPercentageReward">';
 									result = result  +'<div class="positionRelative iconHolder percentage fullWid" >'; 
-									result = result  +'<input type="text" class="form-control input-sm" field-name="Percentage"  id="taxPercentageRewardValue" value="" name="taxPercentageReward" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true"  onblur="getTaxPercentageValue()" placeholder="Percentage">';
+									result = result  +'<input type="text" class="form-control input-sm" field-name="Percentage"  id="taxPercentageRewardValue" value="'+json.allowedAmount+'" name="taxPercentageReward" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true"  onblur="getTaxPercentageValue()" placeholder="Percentage">';
 									result = result  +' <i class="fa fa-percent"></i>'; 
 									result = result  +' </div>';
 									result = result  +' </div>';
 									
-									result = result  +'<div class="col-md-7 paddingLeft" id="taxFlatReward"  ">';
+									result = result  +'<div class="col-md-7 paddingLeft" id="taxFlatReward"  style="display: none">';
 									result = result  +'<div class="row flat">';
 									result = result  +' <div class="form-group col-md-8 paddingRight positionRelative iconHolder" >';
-									result = result  +'<input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue" value="'+json.allowedAmount+'" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true" name="taxFlatReward" placeholder="Flat">';
+									result = result  +'<input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue" value="" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true" name="taxFlatReward" placeholder="Flat">';
 									result = result  +'<i class="fa fa-money" id="taxFlatRewardIcon"></i>';
 									result = result  +' </div>';
 									result = result  +' </div>';
 									result = result  +' </div>';
 									}
-								result = result  +' </div>';
-								result = result  +' </div>';
-								
-								result = result  +' <div class="clearfix"></div>';	
-								
-								result = result  +'<div class="clearfix mb10">';
-								result = result  +'<div class="col-md-12 mt">';
-								result = result + '<textarea placeholder="Description" class="form-control input-sm" id="description" name="description" rows="2" cols="5" data-validation="validate_Space validate_length length1-500" data-validation-optional="true">'+description+'</textarea>';
-								result = result  +' </div>';
-								result = result  +' </div>';
-								result = result  +'';
-								result = result  +'<div class="clearfix mr">';
-								result = result	+ '<input type="hidden"  value="'+categoryId+'" id="categoryId" >';
-							    result  = result + '<button type="button"  id="save_button"  onClick ="updateExpenseCategory('+categoryId+');" class="btn btn-sm btn-primary pull-right">Update</button>';
-								result = result  +' </div> ';
-								result = result  +' </div> ';
-								
-								result = result  +' </form>';
-								
-		$("#popUpDiv").empty();
-		$("#popUpDiv").append(result);
-		
-		$(".edit-details").toggleClass("edit-details-active");
-		 $(".close-div").click(function(){ 
-			 $(this).parent("div.edit-details").removeClass("edit-details-active");
-			 });
-		 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
-			 e.stopPropagation();
-		 });
-		
-		 <%-- Expense Category Autocomplete Scripts Starts Here --%>
-		 var config = {
-				  '.chosen-select'           : {},
-				  '.chosen-select-deselect'  : {allow_single_deselect:true},
-				  '.chosen-select-no-single' : {disable_search_threshold:10},
-				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-				  '.chosen-select-width'     : {width:"95%"}
-				}
-				for (var selector in config) {
-				  $(selector).chosen(config[selector]);
-				}
-				$('.chosen-select').each(function() {
-					var $this = $(this);
-					$this.next().css({'width': '100%'});
-					})
-			<%--  Expense Category Autocomplete Scripts Ends Here --%>
+									
+									if(amountType == "Flat" && allowedAmount != null){
+										result = result  +'<div class="col-md-7 paddingLeft" id="taxPercentageReward" style="display: none">';
+										result = result  +'<div class="positionRelative iconHolder percentage fullWid" >'; 
+										result = result  +'<input type="text" class="form-control input-sm" field-name="Percentage"  id="taxPercentageRewardValue" value="" name="taxPercentageReward" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true"  onblur="getTaxPercentageValue()" placeholder="Percentage">';
+										result = result  +' <i class="fa fa-percent"></i>'; 
+										result = result  +' </div>';
+										result = result  +' </div>';
+										
+										result = result  +'<div class="col-md-7 paddingLeft" id="taxFlatReward"  ">';
+										result = result  +'<div class="row flat">';
+										result = result  +' <div class="form-group col-md-8 paddingRight positionRelative iconHolder" >';
+										result = result  +'<input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue" value="'+json.allowedAmount+'" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true" name="taxFlatReward" placeholder="Flat">';
+										result = result  +'<i class="fa fa-money" id="taxFlatRewardIcon"></i>';
+										result = result  +' </div>';
+										result = result  +' </div>';
+										result = result  +' </div>';
+										}
+									result = result  +' </div>';
+									result = result  +' </div>';
+									
+									result = result  +' <div class="clearfix"></div>';	
+									
+									result = result  +'<div class="clearfix mb10">';
+									result = result  +'<div class="col-md-12 mt">';
+									result = result + '<textarea placeholder="Description" class="form-control input-sm" id="description" name="description" rows="2" cols="5" data-validation="validate_Space validate_length length1-500" data-validation-optional="true">'+description+'</textarea>';
+									result = result  +' </div>';
+									result = result  +' </div>';
+									result = result  +'';
+									result = result  +'<div class="clearfix mr">';
+									result = result	+ '<input type="hidden"  value="'+categoryId+'" id="categoryId" >';
+								    result  = result + '<button type="button"  id="save_button"  onClick ="updateExpenseCategory('+categoryId+');" class="btn btn-sm btn-primary pull-right">Update</button>';
+									result = result  +' </div> ';
+									result = result  +' </div> ';
+									
+									result = result  +' </form>';
+									
+			$("#popUpDiv").empty();
+			$("#popUpDiv").append(result);
 			
-	}
-						}
+			$(".edit-details").toggleClass("edit-details-active");
+			 $(".close-div").click(function(){ 
+				 $(this).parent("div.edit-details").removeClass("edit-details-active");
+				 });
+			 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
+				 e.stopPropagation();
+			 });
+			
+			 <%-- Expense Category Autocomplete Scripts Starts Here --%>
+			 var config = {
+					  '.chosen-select'           : {},
+					  '.chosen-select-deselect'  : {allow_single_deselect:true},
+					  '.chosen-select-no-single' : {disable_search_threshold:10},
+					  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+					  '.chosen-select-width'     : {width:"95%"}
+					}
+					for (var selector in config) {
+					  $(selector).chosen(config[selector]);
+					}
+					$('.chosen-select').each(function() {
+						var $this = $(this);
+						$this.next().css({'width': '100%'});
+						})
+				<%--  Expense Category Autocomplete Scripts Ends Here --%>
+				
+				}
+			        	} else if (data.indexOf('Sign In') !== -1) {
+			        		location.replace(sourceleadUrl);
+			        	} else {
+			        	    showError("Operation failed, please try again");
+			        	}
 				},
 
 			});
@@ -654,6 +719,12 @@ function reActiveExpenseCategory(categoryId){
  
  <script type="text/javascript">
 	function updateExpenseCategory(categoryId) {
+		var validationSettings = {
+				errorMessagePosition : 'element',
+				borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd'
+			};
 		
 		if ($('#expenseCategory_form').validate(false,
 				validationSettings)) {
@@ -669,8 +740,21 @@ function reActiveExpenseCategory(categoryId){
 						url : sourceleadUrl
 								+ "/upDateExpensesCategoryByCategoryId?"+tokenParamName+"="+tokenValue+"&json="+ jsonData + "&categoryId="+categoryId,
 						success : function(result) {
-							closePopup();
-							expenseCategoryList();
+							if (result.response === "AWKWARD") {
+				        	    location.href = "/errorPage";
+				        	} else if (result.response === "SUCCESS") {
+								 closePopup();
+			   		        	  $("#popUpDiv").removeClass("edit-details-active");
+			   					 $("#selector10").removeAttr("style");
+			   					 $("#selector10").css({display : "block"	});
+			               		  $("#expMsgDiv").html("Success!! Expenses Category details updated");
+		            				expenseCategoryList();
+		            				eduMsgFadeinFunction();
+				        	} else if (result.indexOf('Sign In') !== -1) {
+				        		location.replace(sourceleadUrl);
+				        	} else {
+				        	    showError("Operation failed, please try again");
+				        	}
 						},
 					});
 			return true;
@@ -693,17 +777,26 @@ function reActiveExpenseCategory(categoryId){
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/validateExpenseCategoryType?name="+name, 
-		        success: function(data) {
-		        	if(data == true){
-		        		  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
-		        		  
-						   $("#expensesName").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
-						  $("#save_button").attr('disabled','disabled');
-		        	}
-		        	else{
-		        		 $('#nameIdDiv').removeAttr( "record-exist record-exist-errormsg");
-		        		 $('#nameIdDiv').find('p.jquery_form_error_message').remove(); 
-                         $("#save_button").removeAttr("disabled");
+		        success: function(result) {
+		        	if (result.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (result.response === "SUCCESS") {
+						
+		        		if(result.object == "true"){
+			        		  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
+							   $("#nameIdDiv").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
+							  $("#save_button").attr('disabled','disabled');
+			        	}
+			        	else{
+			        		 $('#nameIdDiv').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#nameIdDiv').find('p.jquery_form_error_message').remove(); 
+	                         $("#save_button").removeAttr("disabled");
+			        	}
+		        		
+		        	} else if (result.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
 		        	}
 		        },
 		    });

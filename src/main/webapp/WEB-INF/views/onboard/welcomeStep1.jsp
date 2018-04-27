@@ -1,26 +1,33 @@
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<c:if test="${staticTime == null || staticTime == 0 }">
+    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+ </c:if>
+
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
 <title>Welcome to Source Lead :: The Recruitment Application</title>
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
 <!-- Bootstrap -->
 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/bootstrap-select.css" rel="stylesheet">
-<link href="resources/css/jquery.dataTables.min.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/jquery-ui.css">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<link href="resources/css/font-awesome.min.css" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css" rel="stylesheet" id="myStyleSheet">
-<link href="resources/css/timesheet.css" rel="stylesheet">
 
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/bootstrap-select.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/jquery.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/jquery-ui.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
+<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet" id="myStyleSheet">
+<link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/bootstrap-select.min.css?staticTime=${staticTime}">
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
 
-
+<script type="text/javascript">
+ var sourceleadUrl ='${sourceleadUrl}';
+</script>
 
 <script>
 	function predefineProfileImage(imageId){
-		$(imageId).attr('src','resources/images/userprofileImg.jpg');
+		$(imageId).attr('src','/resources/images/userprofileImg.jpg');
 	}
 </script>
 
@@ -73,7 +80,7 @@ $(function(){
   
  <script>
 	function predefineOrgImage(imageId){
-		$(imageId).attr('src','resources/images/office-image.jpg');
+		$(imageId).attr('src','/resources/images/office-image.jpg');
 	}
 </script>
     
@@ -93,7 +100,7 @@ $(function(){
 				                <div class="clearfix">
 				                   <div class="pull-left image-parent positionRelative">
 				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
-				                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+				                     <img onerror='predefineOrgImage(this);'data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
 				                     </div>
 				                   </div>
 				                   <div class="pull-left mt5">
@@ -112,7 +119,7 @@ $(function(){
 				 
 				 <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
 					<div class="welLogo">
-					<img class="logo" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" />
+					<img class="logo" data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" title="${SourceLeadWeb_orgName}" />
 					</div>
 				</c:if>
 				
@@ -149,7 +156,7 @@ $(function(){
 				<div class="welCoInn">
 					<div class="welCoInnLeft">
 						<c:if test="${!empty SourceLeadWeb_org.fileContentType}">
-							<img class="logo" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" />
+							<img class="logo" data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" title="${SourceLeadWeb_orgName}" />
 						</c:if>
 						
 						<c:if test="${empty SourceLeadWeb_org.fileContentType}">
@@ -218,14 +225,14 @@ $(function(){
 		<br><h4>Support Documents</h4>
 		<div class="docu">
 		<c:forEach var="docFiles" items="${SourceLeadWeb_supportedDocumentsList}">
-					<a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${docFiles.documentUUID}"><i class="fa fa-file-text" aria-hidden="true"></i><span class="tbldata-dotdot_80">${docFiles.fileName}</span></a>
+					<a  href="${docFiles.fileURL}"><i class="fa fa-file-text" aria-hidden="true"></i><span class="tbldata-dotdot_80">${docFiles.fileName}</span></a>
 		</c:forEach>
 	    </div>	
 	    </c:if>						
   </div>		  
 		  
 <div class="welBtns">
-<input type="button"  value="Proceed to next step"  onClick="javascript:window.location.href = '<c:url value='/onboardingCandidateSetp2'/>'"  class="Brig">
+<input type="button"  value="Proceed to next step"  onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/onboardingCandidateStep2'/>'"  class="Brig">
 <div class="clearfix"></div>
 </div>
 		  
@@ -235,8 +242,8 @@ $(function(){
 </div>
 
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
- <script type="text/javascript" src="resources/js/jquery-1.11.0.min.js"></script>
- <script type="text/javascript" src="resources/js/jquery.liquidcarousel.pack.js"></script>	
+ <script type="text/javascript" src="/resources/js/jquery-1.11.0.min.js?staticTime=${staticTime}"></script>
+ <script type="text/javascript" src="/resources/js/jquery.liquidcarousel.pack.js?staticTime=${staticTime}"></script>	
 <script>
 	$(document).ready(function() {
 		$('#liquid1').liquidcarousel({height:129, duration:100, hidearrows:false});

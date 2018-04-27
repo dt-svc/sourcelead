@@ -10,7 +10,7 @@
  <c:if test="${staticTime == null || staticTime == 0 }">
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
-<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
+<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
 
   <section class="content-wraper">
     <section class="content-header clearfix">
@@ -19,15 +19,15 @@
       </div>
       
      <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Account Settings</div>
+       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Account Settings</div>
      </c:if>
      
       <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-      <div class="pull-right brud-crum"><a href="<c:url value='/professionalDashboard'/>">Home</a> &raquo; Account Settings</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/professionalDashboard'/>">Home</a> &raquo; Account Settings</div>
       </c:if>
       
        <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-      <div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home</a> &raquo; Account Settings</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard'/>">Home</a> &raquo; Account Settings</div>
       </c:if>
     </section>
     <div class="content-area clearfix">
@@ -57,7 +57,8 @@
 			   <div class="row mt">
 				<div class="col-md-6">
 					<div class="form-group">
-					<label class="col-md-4">A/C Holder Name</label>
+					<label class="col-md-4">A/C Holder Name<span
+							class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-8">
 					  <input type="text" name="accountHolderName" value="${bankAccounts.accountHolderName}" field-name="A/C Holder Name" class="form-control" data-validation="required validate_Alphanumeric validate_Space validate_length length2-100"  >
 					</div>
@@ -90,19 +91,22 @@
 		
 				<div class="col-md-6">
 						  <div class="form-group">
-							<label class="col-md-4">Bank Name</label>
+							<label class="col-md-4">Bank Name<span
+							class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-8">
 							  <input type="text" name="bankName" field-name="Bank Name" value="${bankAccounts.bankName}" class="form-control" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length2-100" />
 							</div>
 						  </div>
 						  <div class="form-group">
-							<label class="col-md-4">Account Number</label>
+							<label class="col-md-4">Account Number<span
+							class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-8">
 							  <input type="text" name="accountNumber" field-name="Account Number" value="${bankAccounts.accountNumber}" class="form-control" data-validation="required validate_Space validate_int validate_length length2-100" />
 							</div>
 						  </div>
 						  <div class="form-group">
-							<label class="col-md-4" id="code">Code</label>
+							<label class="col-md-4" id="code">Code<span
+							class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-8">
 							   <input type="text" name="bankCode" id="bankCode" field-name="Bank Code" value="${bankAccounts.bankCode}" class="form-control"  />
 							</div>
@@ -116,11 +120,11 @@
 							  <input type="submit" class="btn btn-primary mr" id="profile_submit" value="Save">
 							  
 							  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-							    <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/professionalDashboard'" >
+							    <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/app/professionalDashboard'" >
 							  </c:if>
 							  
 							   <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-							    <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/recruiterDashboard'" >
+							    <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/app/recruiterDashboard'" >
 							   </c:if>
 							  
 							</div>
@@ -172,33 +176,48 @@ function getCurrency(){
 </script>
 
 <script type="text/javascript">
-var validationSettings = {
-        errorMessagePosition : 'element',
-       borderColorOnError : '',
-		scrollToTopOnError : true,
-		dateFormat : 'yyyy/mm/dd' 
-   };  
+		var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+		   };  
          $('body').on('submit', '#bankAccount_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
+        		
         		e.preventDefault();
-            	
-        		var frm = $('#bankAccount_form').serializeFormJSON();
-            	var con = JSON.stringify(frm);
-			    con = con.replace(/[{}]/g, ""); 
-			    var jsonData = encodeURIComponent(con);
-         		
-         		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-         		  	$.ajax({
+         		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+         		var formData = getFormData1("bankAccount_form");
+  
+         		$.ajax({
           	      type: "POST",
-          	      contentType : 'application/json; charset=utf-8',
-          	      dataType : 'json',
-                	  url: sourceleadUrl+"/saveBankAccountDetails?&${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
-                  	success: function(result) {
-                  		location.replace(sourceleadUrl+"/bankAccountDetails");
+          	      data: formData,
+ 		          processData: false,
+ 		          contentType:false, 
+                	  url: sourceleadUrl+"/saveBankAccountDetails?"+tokenParamName+"="+tokenValue+"",
+                  	success: function(data) {
+                  		
+                  		if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
+     		        		showError(data.responseMessage);
+          	    		    $("#loading").removeAttr('style');
+          	    		}
+                    		else if (data.response === "AWKWARD") {
+                    			location.href = "/errorPage";
+          	    		}
+                    		else if(data.response === "SUCCESS"){
+                    			$("#loading").removeAttr('style');
+                    			location.replace(sourceleadUrl+"/bankAccountDetails"); 
+    			        	    }
+                    		else if (data.indexOf('Sign In') !== -1) {
+                    			location.replace(sourceleadUrl);
+          				} else {
+          					showError("Operation failed, please try again");
+          				    $("#loading").removeAttr('style');
+          				}
+                  		
 			        },  
                }); 
-                
-            	    return true;
+            	  return true;
             }
             else{
             	return false;	

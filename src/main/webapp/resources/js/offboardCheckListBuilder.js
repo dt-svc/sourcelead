@@ -22,7 +22,7 @@ function customizeFields(templateId,sourceleadUrl,type){
     	var result = "";
     	result = result +"<div class='project_inn_mask'></div>";
     	result = result +"<div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-    	result = result +"<p>Are you sure to delete ?</p>";
+    	result = result +"<p>Are you sure you want to delete?</p>";
     	result = result +"<div>&nbsp;&nbsp;&nbsp;</div>";
     	result = result +"<b href='javascript:void(0)'><input type='button' class='nomr' id='deleteCustomField'  value='Ok' /><input class='u_can_color nomr' type='button' id='cancelDelete' value='Cancel'></b>";
     	result = result +"</div>";
@@ -251,109 +251,96 @@ function loadSavedTemplateForm(templateId,sourceleadUrl) {
     $.ajax({
     	type: "GET",
         url: sourceleadUrl+"/loadOffboardCheckListByTemplateId?templateId="+templateId, 
-        success: function(data) {
-        	 var data = eval(data);
-        	 if (data) {
-                 //go through each saved field object and render the builder
-                 $.each( data, function( k, v ) {
-                     //Add the field
-                     $(addField(v['type'],v['isRemoved'],v['isLabelModified'],sourceleadUrl,'N')).appendTo('#form-fields').hide().slideDown('fast');
-                     var $currentField = $('#form-fields .field').last();
-
-                     //Add the label
-                     $currentField.find('.field-label').val(v['label']);
-
-                     //Is it required?
-                     if (v['req']) {
-                         requiredField($currentField.find('.toggle-required'));
-                     }
-
-                     //Any choices?
-                     if (v['choices']) {
-                         $.each( v['choices'], function( k, v ) {
-                             //add the choices
-                             $currentField.find('.choices ul').append(addChoice(v['isLabelModified']));
-
-                             //Add the label
-                             $currentField.find('.choice-label').last().val(v['label']);
-
-                             //Is it selected?
-                             if (v['sel']) {
-                                 selectedChoice($currentField.find('.toggle-selected').last());
-                             }
-                         });
-                     }
-
-                 });
-
-                 $('#form-fields').sortable();
-                 $('.choices ul').sortable();
-             }
+        success: function(response) {
+        	if (response.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (response.response === "SUCCESS") {
+        		var data = eval(response.object);
+           	 	if (data) {
+                    //go through each saved field object and render the builder
+                    $.each(data, function( k, v ) {
+                        //Add the field
+                        $(addField(v['type'],v['isRemoved'],v['isLabelModified'],sourceleadUrl,'N')).appendTo('#form-fields').hide().slideDown('fast');
+                        var $currentField = $('#form-fields .field').last();
+                        //Add the label
+                        $currentField.find('.field-label').val(v['label']);
+                        //Is it required?
+                        if (v['req']) {
+                            requiredField($currentField.find('.toggle-required'));
+                        }
+                        //Any choices?
+                        if (v['choices']) {
+                            $.each( v['choices'], function( k, v ) {
+                                //add the choices
+                                $currentField.find('.choices ul').append(addChoice(v['isLabelModified']));
+                                //Add the label
+                                $currentField.find('.choice-label').last().val(v['label']);
+                                //Is it selected?
+                                if (v['sel']) {
+                                    selectedChoice($currentField.find('.toggle-selected').last());
+                                }
+                            });
+                        }
+                    });
+                    $('#form-fields').sortable();
+                    $('.choices ul').sortable();
+                }
+        	} else if (response.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
         },
     });
-   
 }
-
-
 
 function loadOffboardTemplateForm(offboardingId,sourceleadUrl) {
     $.ajax({
     	type: "GET",
         url: sourceleadUrl+"/loadOffboardCheckListByOffboardingId?offboardingId="+offboardingId, 
-        success: function(data) {
-        	
-        	
-        	var json = JSON.parse(data);
-        	 for (var i = 0; i < json.length; i++) { 
-        		 
-        		 var opt = json[i]; 
-        		 var jsonStringData = eval(opt.checkListJsonString);
-        		 
-            	 if (jsonStringData) {
-                     //go through each saved field object and render the builder
-                     $.each( jsonStringData, function( k, v ) {
-                         //Add the field
-                         $(addField(v['type'],v['isRemoved'],v['isLabelModified'],sourceleadUrl,'N')).appendTo('#form-fields').hide().slideDown('fast');
-                         var $currentField = $('#form-fields .field').last();
-                         
-                         //Add the label
-                         $currentField.find('.field-label').val(v['label']);
-
-                         //Is it required?
-                         if (v['req']) {
-                             requiredField($currentField.find('.toggle-required'));
-                         }
-
-                         //Any choices?
-                         if (v['choices']) {
-                             $.each( v['choices'], function( k, v ) {
-                                 //add the choices
-                                 $currentField.find('.choices ul').append(addChoice(v['isLabelModified']));
-
-                                 //Add the label
-                                 $currentField.find('.choice-label').last().val(v['label']);
-
-                                 //Is it selected?
-                                 if (v['sel']) {
-                                     selectedChoice($currentField.find('.toggle-selected').last());
-                                 }
-                             });
-                         }
-
-                     });
-
-                     $('#form-fields').sortable();
-                     $('.choices ul').sortable();
-                 }
-        		 
-        	 }
-        	
-        	
+        success: function(response) {
+        	 	if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+        			 var json = JSON.parse(response.object);
+            	 	 for (var i = 0; i < json.length; i++) {
+	            		 var opt = json[i]; 
+	            		 var jsonStringData = eval(opt.checkListJsonString);
+	                	 if (jsonStringData) {
+	                         //go through each saved field object and render the builder
+	                         $.each( jsonStringData, function( k, v ) {
+	                             //Add the field
+	                             $(addField(v['type'],v['isRemoved'],v['isLabelModified'],sourceleadUrl,'N')).appendTo('#form-fields').hide().slideDown('fast');
+	                             var $currentField = $('#form-fields .field').last();
+	                             //Add the label
+	                             $currentField.find('.field-label').val(v['label']);
+	                             //Is it required?
+	                             if (v['req']) {
+	                                 requiredField($currentField.find('.toggle-required'));
+	                             }
+	                             //Any choices?
+	                             if (v['choices']) {
+	                                 $.each( v['choices'], function( k, v ) {
+	                                     //add the choices
+	                                     $currentField.find('.choices ul').append(addChoice(v['isLabelModified']));
+	                                     //Add the label
+	                                     $currentField.find('.choice-label').last().val(v['label']);
+	                                     //Is it selected?
+	                                     if (v['sel']) {
+	                                         selectedChoice($currentField.find('.toggle-selected').last());
+	                                     }
+	                                 });
+	                             }
+	                         });
+	                         $('#form-fields').sortable();
+	                         $('.choices ul').sortable();
+	                     }
+            	 	 }	
+        		} else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
         },
     });
-   
 }
-
-
-
-

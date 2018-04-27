@@ -36,7 +36,7 @@ public class DatabaseConnectionConfig {
 
 	@Value("${jdbc.url}")
 	private String jdbcUrl;
-
+	
 	@Value("${jdbc.username}")
 	private String user;
 
@@ -115,6 +115,6 @@ public class DatabaseConnectionConfig {
 	{
 		this.staticPath = staticPath;
 	}
-	
+
 	
 }

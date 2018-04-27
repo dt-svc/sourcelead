@@ -1,7 +1,6 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
@@ -30,7 +29,8 @@ window.onload = function() {
 function getRequirementList(){
 	    var status = "";
 	    var clients = "";
-		$.ajax({
+		$("#reqStagesLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	    $.ajax({
 	         type : "POST",
 	          url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients,    
 	          success :function(data) {
@@ -115,6 +115,8 @@ function prepareReportDataDiv(data){
 	result = result + '</table>';
 	  $("#requirementReportsDiv12").empty();
     $("#requirementReportsDiv12").append(result);
+    $("#reqStagesLoderDiv").empty();
+    $("#reqStagesLoderDiv").removeAttr('style');
     requirementReportPagination(SourceLeadWeb_loginOrg);
 }
 
@@ -168,6 +170,7 @@ function getRequirementStageCounts(){
 		        	var  filledclosedRequirementsCount = json.filledclosedRequirementsCount;
 		        	var  unfilledclosedRequirementsCount = json.unfilledclosedRequirementsCount;
 		        	var  rejectedRequirementsCount = json.rejectedRequirementsCount;
+		        	var  closedRequirementsCount = json.closedRequirementsCount;
 		        	
 		        	
 		        	if(newRequirementCount>0){
@@ -214,9 +217,13 @@ function getRequirementStageCounts(){
 	                      $("#unfilledclosedRequirementsCount").text("("+unfilledclosedRequirementsCount+")");
 	                  }else{
 	                      $("#unfilledclosedRequirementsCount").html("(0)");
+	                  }if(closedRequirementsCount>0){
+	                      $("#closedRequirementsCount").text("("+closedRequirementsCount+")");
+	                  }else{
+	                      $("#closedRequirementsCount").html("(0)");
 	                  }
 	        	  
-		        	getrequirementStagePieChat(newRequirementCount,draftRequirementCount,submittedRequirementCount,openRequirementCount,onHoldRequirementCount,cancelRequirementCount,filledclosedRequirementsCount,unfilledclosedRequirementsCount,rejectedRequirementsCount);
+		        	getrequirementStagePieChat(newRequirementCount,draftRequirementCount,submittedRequirementCount,openRequirementCount,onHoldRequirementCount,cancelRequirementCount,filledclosedRequirementsCount,unfilledclosedRequirementsCount,rejectedRequirementsCount,closedRequirementsCount);
 	          },
 	          
 	     }); 
@@ -278,24 +285,10 @@ function getRequirementStageList(){
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
-      <h2 class="pull-left">Reports</h2>
-		<div class=" pull-left reportsH">
-			<a title="Reports"><i class="fa fa-pie-chart"></i>Jobs Stages</a>
-			<div class="RePop">
-				<ul>
-					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Posted</a></li>
-					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Stages</a></li>
-<%-- 					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li> --%>
-<%-- 				    <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li> --%>
-				    <li><a href="<c:url value='/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Submitted</a></li>
-<%-- 				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Job Assign To</a></li> --%>
-				    <li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
-				    <li><a href="<c:url value='/timeSheetReports'/>"><span><i class="fa fa-briefcase"></i></span>TimeSheet Reports</a></li>
-				</ul>
-			</div>
-		</div>
+      <h2 class="pull-left">Job Stages Reports</h2>
+		
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&nbsp;&raquo;&nbsp;<a href="<c:url value='/recruitersReports'/>">Reports</a>&nbsp;&raquo; Jobs Stages</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&nbsp;&raquo;&nbsp;<a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a>&nbsp;&raquo; Jobs Stages</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
@@ -347,6 +340,8 @@ function getRequirementStageList(){
                				<li><input type="checkbox" name="requirementStatus"  value ="FILLEDCLOSED"  onclick="getRequirementStageList();">Filled Closed</li>
                				<li><input type="checkbox" name="requirementStatus"  value ="UNFILLEDCLOSED"  onclick="getRequirementStageList();">Unfilled Closed</li>
                				<li><input type="checkbox" name="requirementStatus"  value ="REJECTED"  onclick="getRequirementStageList();">Rejected</li>
+               				<li><input type="checkbox" name="requirementStatus"  value ="CLOSED"  onclick="getRequirementStageList();">Closed</li>
+               				
 		              </ul>
 		    </div>
         </li>
@@ -356,7 +351,7 @@ function getRequirementStageList(){
   
  <div class="repTab1">  
       
-	<div class="reportsCount reportsCountNew">
+	<div class="reportsCount reportsCountNew reportsCount_New">
 		<ul>
 			<li title="NEW">
 				<span><i class="fa fa-pencil"></i></span><b id="newRequirementCount"></b>
@@ -385,11 +380,15 @@ function getRequirementStageList(){
 			<li title="REJECTED">
 				<span><i class="fa fa-ban"></i></span><b id="rejectedRequirementsCount"></b>
 			</li>
+			<li title="CLOSED">
+				<span><i class="fa fa-window-close"></i></span><b id="closedRequirementsCount"></b>
+			</li>
 					<div class="clearfix"></div>
 		</ul>
 	</div>
 
-  <div class="project_tabs_inn_table vendor_wrap_inn_table">
+  <div class="project_tabs_inn_table vendor_wrap_inn_table"> 
+  <div id="reqStagesLoderDiv"></div>
                  <div id="requirementReportsDiv12" class="repoPositi"></div>
                 </div>      
 </div>
@@ -699,14 +698,16 @@ function getCustomReports(){
 	});		
 	</script>
 	
-<script src="resources/reports/amcharts.js"></script>
+	
+	
+<!-- <script src="resources/reports/amcharts.js"></script>
 <script src="resources/reports/piechart.js"></script>
 <script src="resources/reports/export.min.js"></script>
 <link rel="stylesheet" href="resources/reports/export.css" type="text/css" media="all" /> 
-<script src="resources/reports/light.js"></script> 
+<script src="resources/reports/light.js"></script>  -->
 
 <script>
-function getrequirementStagePieChat(newCount,draftCount,submittedCount,openCount,onHoldCount,cancelCount,filledclosedCount,unfilledclosedCount,rejectedCount){
+function getrequirementStagePieChat(newCount,draftCount,submittedCount,openCount,onHoldCount,cancelCount,filledclosedCount,unfilledclosedCount,rejectedCount,closedCount){
 	var chart = AmCharts.makeChart( "chartdiva", {
 		  "type": "pie",
 		  "theme": "light",
@@ -755,6 +756,11 @@ function getrequirementStagePieChat(newCount,draftCount,submittedCount,openCount
 			  "value": rejectedCount,
 			  "color":"#da3838",
 			  "black":"#000"
+		  },{
+			  "Stage": "Closed ("+closedCount+")",
+			  "value": closedCount,
+			  "color":"#C62828",
+			  "black":"#000"
 		  } ],
 		  "valueField": "value",
 		  "titleField": "Stage",
@@ -785,3 +791,4 @@ $("#filter2ApprovedPop, #filter2ApprovePop").click(function(e) {
     e.stopPropagation();
 });	
 </script>  	
+<jsp:include page="../masterFooter.jsp" />
