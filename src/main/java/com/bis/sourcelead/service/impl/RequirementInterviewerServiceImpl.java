@@ -152,7 +152,7 @@ public class RequirementInterviewerServiceImpl implements RequirementInterviewer
 		OrgLocations OrgLoc = requirement.getOrgLocationId();
 
 		 //calling the sendEmail method of emailScenerioUtil
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,OrgLoc.getOrg(),OrgLoc,Constants.UPDATED_FEEDBACK_NOTIFICATIONTO_REQUIREMENTOWNER);
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,OrgLoc.getOrg(),OrgLoc,Constants.UPDATED_FEEDBACK_NOTIFICATIONTO_REQUIREMENTOWNER,null);
 		 
 		 StringBuilder actionLinkBuilder = new StringBuilder();
 		 String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()+"&submissionId="+requirementSubmission.getId()+"&candidateUUID="+requirementSubmission.getCandidate().getCandidateUUID()).toString();		 

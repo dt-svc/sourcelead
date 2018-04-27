@@ -1540,7 +1540,7 @@ public class ClientServiceImpl implements ClientService {
 		
 
 		// calling the sendEmail method of emailScenerioUtil
-		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocation.getOrg(),orgLocation,Constants.CLIENT_OWNER_UPDATEMAIL);
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocation.getOrg(),orgLocation,Constants.CLIENT_OWNER_UPDATEMAIL,null);
 
 		EmailScenario noificationEmailScenario = emailScenarioService
 				.getEmailScenarioByUniqueName(Constants.CLIENT_OWNER_UPDATEMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
@@ -1602,7 +1602,7 @@ public class ClientServiceImpl implements ClientService {
 
 
 		// calling the sendEmail method of emailScenerioUtil
-		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocation.getOrg(),orgLocation,Constants.EDIT_CLIENTCONTACT);
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocation.getOrg(),orgLocation,Constants.EDIT_CLIENTCONTACT,null);
 
 		EmailScenario noificationEmailScenario = emailScenarioService
 				.getEmailScenarioByUniqueName(Constants.EDIT_CLIENTCONTACT, Constants.ENTITY_TYPE_NOTIFICATION);

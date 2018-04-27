@@ -1239,7 +1239,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 			 User toUser = pmh.getProjectMemberId().getEmployee().getUser();
 			 
 			 //calling the sendEmail method of emailScenerioUtil
-			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.EMPLOYEE_REASSIGN);
+			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.EMPLOYEE_REASSIGN,null);
 			 StringBuilder notificationLink = new StringBuilder();
 			 String actionLink="";
 		     actionLink = notificationLink.append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+pmh.getProjectMemberId().getProjects().getProjectUUID()+"&projectClientUUID="+pmh.getProjectMemberId().getProjectClientUUID()).toString();

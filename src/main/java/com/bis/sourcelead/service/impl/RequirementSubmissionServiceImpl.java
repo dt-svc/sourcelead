@@ -1891,7 +1891,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendNotification(actionLink, fromUser,initiatorUser, orgLocations, notificationScenario,new HashMap<String,String>());
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.APPLICANT_REJECT_MAILABOUT_REQUIREMENT_EMAIL_NOTIFICATION);
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.APPLICANT_REJECT_MAILABOUT_REQUIREMENT_EMAIL_NOTIFICATION,null);
 	}
 	
 	
@@ -1965,7 +1965,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 String actionLink="";
 		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendNotification(actionLink, fromUser,initiatorUser, orgLocations, notificationScenario,new HashMap<String,String>());
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.APPLICANT_NEGOTIATE_REQUIREMENT);
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.APPLICANT_NEGOTIATE_REQUIREMENT,null);
 	}
 	
 	@Override
@@ -2766,7 +2766,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 String actionLink="";*/
 		 
 		//calling the sendEmail method of emailScenerioUtil
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.USER_RATE_NEGOTIATION);
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.USER_RATE_NEGOTIATION,null);
 	}
 
 	@Override
@@ -2931,7 +2931,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 
 		 String actionLink="";
 		//calling the sendEmail method of emailScenerioUtil
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.USER_ACCEPT_RATE_NEGOTIATION);
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.USER_ACCEPT_RATE_NEGOTIATION,null);
 		
 
 	}
@@ -3392,7 +3392,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirementSubmission.getSourceSubmission().getRequirement().getRequirementUUID()+"&submissionId="+requirementSubmission.getId()+"&candidateUUID="+requirementSubmissionTemplateFields.getRequirementSubmission().getCandidate().getCandidateUUID()+"&submissionStatus=SUBMIT_TO_CLIENT").toString();
 
 		//calling the sendEmail method of emailScenerioUtil
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.CLIENT_RATE_NEGOTIATION);
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.CLIENT_RATE_NEGOTIATION,null);
 		 emailScenerioUtil.sendNotification(actionLink, users, pastUser, requirementSubmission.getVendorLocationId(), notificationScenario,new HashMap<String,String>());
 	}
 
@@ -3456,7 +3456,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 
 		 String actionLink="";
 		//calling the sendEmail method of emailScenerioUtil
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.USER_REJECT_RATE_NEGOTIATION);
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.USER_REJECT_RATE_NEGOTIATION,null);
 		
 	}
 
@@ -4266,7 +4266,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 
 		 String actionLink="";
 		//calling the sendEmail method of emailScenerioUtil
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.APPLICANT_ACCEPT_RATE);
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.APPLICANT_ACCEPT_RATE,null);
 	}
 
 	@Override
@@ -4340,7 +4340,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECTMAILFROMCLIENT_TO_VENDOR,Constants.ENTITY_TYPE_NOTIFICATION);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.REJECTMAILFROMCLIENT_TO_VENDOR);
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.REJECTMAILFROMCLIENT_TO_VENDOR,null);
 		 
 		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationBody);
@@ -4483,7 +4483,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 								 
 								 
 								 //calling the sendEmail method of emailScenerioUtil
-								 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.SHORTLISTMAILFROMCLIENT_TO_VENDOR);
+								 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.SHORTLISTMAILFROMCLIENT_TO_VENDOR,null);
 								 
 								String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 								notificationScenario.setBody(notificationBody);

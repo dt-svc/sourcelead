@@ -746,7 +746,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		 }
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.INVITE_USER);
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.INVITE_USER,null);
 		
 	}
 	

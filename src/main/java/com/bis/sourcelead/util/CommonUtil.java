@@ -618,7 +618,7 @@ public class CommonUtil {
 		 User toUser = pmh.getProjectMemberId().getEmployee().getUser();
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.EMPLOYEE_TERMINATION);
+		 sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.EMPLOYEE_TERMINATION,null);
 		 String actionLink="";
 		emailScenerioUtil.sendNotification(actionLink, loginUser,toUser, pmh.getProjectMemberId().getEmployee().getOrgLocations(), notificationScenario,new HashMap<String,String>());
 
@@ -2182,7 +2182,7 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		 //construct HTML template using required data
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.EMPLOYEE_TERMINATION_MAIL_TO_MANAGER);
+		 sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.EMPLOYEE_TERMINATION_MAIL_TO_MANAGER,null);
 		 StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
 	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+pmh.getProjectMemberId().getProjects().getProjectUUID()+"&projectClientUUID="+pmh.getProjectMemberId().getProjectClientUUID()+"&tabType=team").toString();

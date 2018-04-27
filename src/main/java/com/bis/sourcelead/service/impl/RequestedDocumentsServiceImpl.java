@@ -225,7 +225,7 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.REQUESTED_DOCUMENTS);
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.REQUESTED_DOCUMENTS,null);
 		
 	}
 	
@@ -271,7 +271,7 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 		 //construct HTML template using required data
 		 User fromUser = userService.getUserById(Constants.USERID);
 		 //calling the sendEmail method of emailScenerioUtil
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,requestedDocuments.getOrgLocationId().getOrg(),requestedDocuments.getOrgLocationId(),Constants.UPLOADED_REQUESTED_DOCUMENTS);
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,requestedDocuments.getOrgLocationId().getOrg(),requestedDocuments.getOrgLocationId(),Constants.UPLOADED_REQUESTED_DOCUMENTS,null);
 		 StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
 	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("candidatesList?&candidateIdSearchId="+requestedDocuments.getCandidateId().getId()+"&candidateKeyword=requestedDocumentNotification").toString();

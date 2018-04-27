@@ -171,7 +171,8 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
         String actionLink = null;
         StringBuilder actionLinkBuilder = new StringBuilder();
 
-        commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,projects.getOrgLocationsId().getOrg(),projects.getOrgLocationsId(),Constants.BUDGET_REQUEST);
+        commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,projects.getOrgLocationsId().getOrg(),projects.getOrgLocationsId(),Constants.BUDGET_REQUEST,null);
+//        commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.INVITE_USER);
         actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+projectBudget.getProjectId().getProjectUUID()+"&projectClientUUID="+pc.getUuid()+"&tabType=projectMembers").toString();
 
         emailScenerioUtil.sendNotification(actionLink, loginUser, approverUse, projects.getOrgLocationsId(), notificationScenario,new HashMap<String,String>());
@@ -204,18 +205,18 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
         if(projectBudget.getBudgetStatus().equalsIgnoreCase(Constants.BUDGET_REQUEST_APPROVED)) {
             notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.BUDGET_REQUEST_ACCEPTED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
 			actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+projectBudget.getProjectId().getProjectUUID()+"&projectClientUUID="+pc.getUuid()+"&tabType=projectMembers").toString();
-	        commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,projectBudget.getProjectId().getOrgLocationsId().getOrg(),projectBudget.getProjectId().getOrgLocationsId(),Constants.BUDGET_REQUEST_ACCEPTED);
+	        commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,projectBudget.getProjectId().getOrgLocationsId().getOrg(),projectBudget.getProjectId().getOrgLocationsId(),Constants.BUDGET_REQUEST_ACCEPTED,null);
         }else if(projectBudget.getBudgetStatus().equalsIgnoreCase(Constants.BUDGET_REQUEST_REJECTED)) {
         	globalVarsMap.put("reason", projectBudget.getRejectedReason());
             notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.BUDGET_REQUEST_REJECTED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
             actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+projectBudget.getProjectId().getProjectUUID()+"&projectClientUUID="+pc.getUuid()+"&tabType=projectMembers").toString();
-	        commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,projectBudget.getProjectId().getOrgLocationsId().getOrg(),projectBudget.getProjectId().getOrgLocationsId(),Constants.BUDGET_REQUEST_REJECTED_EMAIL);
+	        commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,projectBudget.getProjectId().getOrgLocationsId().getOrg(),projectBudget.getProjectId().getOrgLocationsId(),Constants.BUDGET_REQUEST_REJECTED_EMAIL,null);
 
         }else if(projectBudget.getBudgetStatus().equalsIgnoreCase(Constants.BUDGET_REQUEST_ON_HOLD)) {
         	globalVarsMap.put("reason", projectBudget.getRejectedReason());
         	emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.BUDGET_REQUEST_ONHOLD_EMAIL,Constants.ENTITY_TYPE_EMAIL);
             notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.BUDGET_REQUEST_ONHOLD_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
-	        commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,projectBudget.getProjectId().getOrgLocationsId().getOrg(),projectBudget.getProjectId().getOrgLocationsId(),Constants.BUDGET_REQUEST_ONHOLD_EMAIL);
+	        commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,projectBudget.getProjectId().getOrgLocationsId().getOrg(),projectBudget.getProjectId().getOrgLocationsId(),Constants.BUDGET_REQUEST_ONHOLD_EMAIL,null);
 
         }
         String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);

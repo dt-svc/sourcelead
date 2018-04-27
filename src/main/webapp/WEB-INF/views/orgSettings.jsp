@@ -187,7 +187,7 @@ function cancelOrgImg(){
 
         <li><a data-toggle="tab" href="#emailNotifications">Email Configuration</a></li>
          <%-- <li><a href="${appPath}/emailNontificationConfigure" >Email Notifications</a></li> --%>
-        <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
+<%--         <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}"> --%>
 
 <%--         <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}"> --%>
 

@@ -810,7 +810,7 @@ public class CandidateServiceImpl implements CandidateService {
          globalVarsMap.put("registerURL",loginBuilder.append("<a href='").append(sourceleadRegisterUrl).append("/register").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Register</div></a>").toString());
         
         //calling the sendEmail method of emailScenerioUtil
-         commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.CANDIDATE_INVITATION);
+         commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.CANDIDATE_INVITATION,null);
         
     }
 

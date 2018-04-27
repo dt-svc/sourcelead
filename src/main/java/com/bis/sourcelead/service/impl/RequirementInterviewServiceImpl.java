@@ -497,7 +497,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			
 		 //calling the sendEmail method of emailScenerioUtil
 		 
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.INTERVIEWER_INVITATION_REDIFINED);
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.INTERVIEWER_INVITATION_REDIFINED,null);
 
 		 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.INTERVIEWER_INVITATION_REDIFINED,Constants.ENTITY_TYPE_NOTIFICATION); 
 		 StringBuilder actionLinkBuilder = new StringBuilder();
@@ -761,7 +761,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.RESCHEDULED_EMAIL);
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.RESCHEDULED_EMAIL,null);
 
 //		 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.INTERVIEWER_INVITATION,Constants.ENTITY_TYPE_NOTIFICATION); 
 //		 String actionLink = "";
@@ -913,7 +913,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 //globalVarsMap.put("proposeNewTime",tentativeBuilder.append("<a href='").append(sourceleadUrl).append("/ws/acceptOrRejectInterview?interviewStatus=Maybe&requirementInterviewId=").append(requirementInterview.getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Tentative</div></a>").toString());
 			 
 		 //calling the sendEmail method of emailScenerioUtil
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocations.getOrg(),loginOrgLocations,Constants.INTERVIEW_RESCHEDULEMAIL_TO_APPLICANT);
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocations.getOrg(),loginOrgLocations,Constants.INTERVIEW_RESCHEDULEMAIL_TO_APPLICANT,null);
 		}
 
 
@@ -1431,10 +1431,10 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		// emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_INTERVIEW,Constants.ENTITY_TYPE_EMAIL);
 		if (requirementInterview.getScheduleType() != null
 				&& requirementInterview.getScheduleType().equalsIgnoreCase("reschedule")) {
-			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocations.getOrg(), loginOrgLocations, Constants.VENDOR_INTERVIEW_RESCHEDULE);
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocations.getOrg(), loginOrgLocations, Constants.VENDOR_INTERVIEW_RESCHEDULE,null);
 		}
 		else {
-			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocations.getOrg(), loginOrgLocations, Constants.VENDOR_INTERVIEW);
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocations.getOrg(), loginOrgLocations, Constants.VENDOR_INTERVIEW,null);
 		}
 		EmailScenario noificationEmailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_INTERVIEW, Constants.ENTITY_TYPE_NOTIFICATION);
 		StringBuilder notificationLink = new StringBuilder();
@@ -1954,10 +1954,10 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	    			 EmailScenario  emailScenario = null;
 	    			 EmailScenario noificationEmailScenario =null;
 	    			 if(null != requirementSubmission.getVendorLocationId()){
-	    				 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.VENDOR_PROPOSE_NEW_TIME);
+	    				 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.VENDOR_PROPOSE_NEW_TIME,null);
 	    					noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_PROPOSE_NEW_TIME,Constants.ENTITY_TYPE_NOTIFICATION);
 	    			 }else{
-	    				 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.PROPOSE_NEW_TIME);
+	    				 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.PROPOSE_NEW_TIME,null);
 	    				noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.PROPOSE_NEW_TIME,Constants.ENTITY_TYPE_NOTIFICATION);
 	    			 }
 	    			 
