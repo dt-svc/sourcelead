@@ -18,6 +18,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateEmployersDao;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateEmployerDTO;
+import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -27,6 +28,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 
 /**
  * @author Ajith Matta
@@ -163,6 +165,15 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
         		candidateEmployers.setEndMonth("");
         	  }
         	
+            if(candidateEmployerDTO.getFileInfo() != null){
+    			FileInfo fileinfo = candidateEmployerDTO.getFileInfo().get(0);
+    			candidateEmployers.setEmployerFileUrl(fileinfo.getFileURL());
+    			candidateEmployers.setEmployerFileName(fileinfo.getFileName());
+    			candidateEmployers.setEmployerFileContentType(fileinfo.getContentType());
+    			FileUploadUtil.moveFile(candidateEmployerDTO.getStaticPath(), fileinfo, "candidateDocuments");
+    			
+    		}
+            
         	candidateEmployers.setStatus(Constants.CANDIDATE_ACTIVE);
         	candidateEmployers.setCreatedBy(user.getUserCode());
         	candidateEmployers.setOrgLocationId(orgLocationId);

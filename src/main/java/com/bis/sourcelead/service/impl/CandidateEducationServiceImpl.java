@@ -20,6 +20,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateEducationDao;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateEducationDTO;
+import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -30,6 +31,7 @@ import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 
 @Service
 public class CandidateEducationServiceImpl implements CandidateEducationService {
@@ -155,6 +157,17 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 			candidateEducation.setGradeType(candidateEducationDTO.getGradeType());
 		}else{
 			candidateEducation.setGradeType("");
+		}
+		
+		// this for only immigration purpose
+		
+		if(candidateEducationDTO.getFileInfo() != null){
+			FileInfo fileinfo = candidateEducationDTO.getFileInfo().get(0);
+			candidateEducation.setEducationFileUrl(fileinfo.getFileURL());
+			candidateEducation.setEducationFileName(fileinfo.getFileName());
+			candidateEducation.setEducationFileContentType(fileinfo.getContentType());
+			FileUploadUtil.moveFile(candidateEducationDTO.getStaticPath(), fileinfo, "candidateDocuments");
+			
 		}
 		
 		if(StringUtils.isNotBlank(candidateEducationDTO.getInstitute())){

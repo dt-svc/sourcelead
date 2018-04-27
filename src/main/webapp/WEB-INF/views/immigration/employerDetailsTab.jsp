@@ -142,7 +142,19 @@
 						data-validation-optional="true">
 				</div>
 				</div>
-			</div>			
+			</div>	
+			<div class="col-sm-12 noPad mt clearfix" id="immigrationEmployerDiv">
+				<label class="col-md-4 padding_left">File<span class="text-danger">&nbsp;*</span></label> 
+              	<div class="col-md-8 padding_right">
+					<div class="input-group col-md-12 validation_p" style="margin:0 auto">
+					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+					  <input type="file" style="display: none;" multiple id="uploadBtnEmployer"  class="upload">
+					  </span> </label>
+					<input type="text" class="form-control" name="docFile" id ="uploadFileEmployer" readonly placeholder="Attachment" field-name="Attachment" data-validation-optional = "true" data-validation = "validatepdf">
+				  </div>
+				</div>
+			</div>	
+					
 		</div>
 		
 		<div class="clearfix"></div>
@@ -181,4 +193,17 @@
 	});
 	
 </script>	
+
+<script type="text/javascript">
+$(function() {
+	$("#uploadBtnEmployer").change(function() {
+	fileUpload("uploadBtnEmployer", "candidateDocuments", "employerDetails_form");
+});
+});
+
+document.getElementById("uploadBtnEmployer").onchange = function () {
+ 	$('#uploadFileEmployer').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+
+}; 
+</script>
 		

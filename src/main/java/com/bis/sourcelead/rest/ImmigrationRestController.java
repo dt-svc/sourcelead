@@ -538,6 +538,7 @@ public class ImmigrationRestController {
             User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
             OrgLocations  loginOrglocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
            // immigrationTemplateService.savePetitionTemplateTaskDetails(templateDTO, user);
+            candidateEmployerDTO.setStaticPath(staticPath);
             candidateEmployersService.storeCandidateEmployers(candidateEmployerDTO,user,loginOrglocation,Long.parseLong(candidateId));
             System.out.println("Template Task Details saved succesfully --> ");
        
@@ -1047,6 +1048,7 @@ public class ImmigrationRestController {
     		@RequestParam(value = "immigrationId", required = false) String immigrationId) {
         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+        candidateEducationDTO.setStaticPath(staticPath);
         try {
         	candidateEducationService.storeCandidateEducation(candidateEducationDTO, Long.parseLong(candidateId), orgLocations.getId(), user);
          } catch (Exception e) {

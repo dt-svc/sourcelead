@@ -35,6 +35,9 @@ public class CandidateEmployerDTO {
 
 	private String candidateEmployeeId;
 
+	private String staticPath;
+	
+	private List<FileInfo> fileInfo;
 	
 	private String taxId;
 	
@@ -231,6 +234,22 @@ public class CandidateEmployerDTO {
 
 	public String getLoginUserId() {
 		return loginUserId;
+	}
+
+	public String getStaticPath() {
+		return staticPath;
+	}
+
+	public void setStaticPath(String staticPath) {
+		this.staticPath = staticPath;
+	}
+
+	public List<FileInfo> getFileInfo() {
+		return fileInfo;
+	}
+
+	public void setFileInfo(List<FileInfo> fileInfo) {
+		this.fileInfo = fileInfo;
 	}
 
 
