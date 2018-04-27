@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -20,16 +22,19 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateEducationDao;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateEducationDTO;
+import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
+import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 
 @Service
 public class CandidateEducationServiceImpl implements CandidateEducationService {
@@ -42,6 +47,9 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Value("${static.path}")
+	private String staticPath;
  
 	 @Autowired
 	 private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
@@ -155,6 +163,17 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 			candidateEducation.setGradeType(candidateEducationDTO.getGradeType());
 		}else{
 			candidateEducation.setGradeType("");
+		}
+		
+		// this for only immigration purpose
+		
+		if(candidateEducationDTO.getFileInfo() != null){
+			FileInfo fileinfo = candidateEducationDTO.getFileInfo().get(0);
+			candidateEducation.setEducationFileUrl(fileinfo.getFileURL());
+			candidateEducation.setEducationFileName(fileinfo.getFileName());
+			candidateEducation.setEducationFileContentType(fileinfo.getContentType());
+			FileUploadUtil.moveFile(candidateEducationDTO.getStaticPath(), fileinfo, "candidateDocuments");
+			
 		}
 		
 		if(StringUtils.isNotBlank(candidateEducationDTO.getInstitute())){
@@ -382,4 +401,32 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		return candidateEducationDao.getCandidateEducationNamesByCandidateId(candidateId);
 	}
 
+	
+	@Override
+	public String removeCandidateEucationrDocById(Long candidateEmployerId) throws Exception {
+		CandidateEducation candidateEducation = candidateEducationDao.getCandidateEducationById(candidateEmployerId);
+		if(candidateEducation != null){
+		try {
+			String rootPath = StringUtils.removeEnd(staticPath, staticPath.substring(staticPath.lastIndexOf("/")));
+			File file = new File(rootPath + candidateEducation.getEducationFileUrl());
+			
+			if (file.delete()) {
+				logger.debug(file.getName() + " is deleted!");
+			} else {
+				logger.error(file.getName() + " is deleted!");
+			}
+			
+			
+				candidateEducation.setEducationFileName(null);
+				candidateEducation.setEducationFileUrl(null);
+				candidateEducation.setEducationFileContentType(null);
+		
+			candidateEducationDao.storeCandidateEducation(candidateEducation);
+
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+		return "success";
+	}
 }

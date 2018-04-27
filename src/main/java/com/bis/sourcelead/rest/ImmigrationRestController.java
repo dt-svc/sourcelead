@@ -289,6 +289,8 @@ public class ImmigrationRestController {
         if(immigrationId!=null && !StringUtils.isEmpty(immigrationId)) {
         	immigrationDTO= immigrationCommonService.getImmigrationDetails(immigrationId,orgLocations);
         }
+        List<LookUpData> uscisStatusList = immigrationTemplateService.getLookupDataByType(Constants.USCIS_STATUS);
+        model.addObject("uscisStatusList",uscisStatusList);        
         model.addObject("immigration", immigrationDTO);
         model.addObject("sourceleadUrl", sourceleadUrl);
         model.setViewName("/immigration/immigrationView");
@@ -538,6 +540,7 @@ public class ImmigrationRestController {
             User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
             OrgLocations  loginOrglocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
            // immigrationTemplateService.savePetitionTemplateTaskDetails(templateDTO, user);
+            candidateEmployerDTO.setStaticPath(staticPath);
             candidateEmployersService.storeCandidateEmployers(candidateEmployerDTO,user,loginOrglocation,Long.parseLong(candidateId));
             System.out.println("Template Task Details saved succesfully --> ");
        
@@ -1047,6 +1050,7 @@ public class ImmigrationRestController {
     		@RequestParam(value = "immigrationId", required = false) String immigrationId) {
         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+        candidateEducationDTO.setStaticPath(staticPath);
         try {
         	candidateEducationService.storeCandidateEducation(candidateEducationDTO, Long.parseLong(candidateId), orgLocations.getId(), user);
          } catch (Exception e) {
@@ -1495,6 +1499,22 @@ public class ImmigrationRestController {
 			HttpServletRequest request) throws Exception {
 		String result = immigrationCommonService.deleteImmigrationDetailsById(immigrationId);
 		return result;
+		
+	}
+	
+	@RequestMapping(value = { "/deleteImmigrationEmployerDocumentById" })
+	public String deleteImmigrationEmployerDocumentById(@RequestParam(value = "id", required = false) Long id,
+			HttpServletRequest request) throws Exception {
+		String status = candidateEmployersService.removeCandidateEmployerDocById(id);
+		return status;
+		
+	}
+	
+	@RequestMapping(value = { "/deleteImmigrationEducationDocumentById" })
+	public String deleteImmigrationEducationDocumentById(@RequestParam(value = "id", required = false) Long id,
+			HttpServletRequest request) throws Exception {
+		String status = candidateEducationService.removeCandidateEucationrDocById(id);
+		return status;
 		
 	}
 	

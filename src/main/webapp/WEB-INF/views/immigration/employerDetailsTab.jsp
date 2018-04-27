@@ -142,7 +142,27 @@
 						data-validation-optional="true">
 				</div>
 				</div>
-			</div>			
+			</div>	
+			<div class="col-sm-12 noPad mt clearfix" id="immigrationEmpDocDiv">
+				<label class="col-md-4 padding_left">File</label> 
+              	<div class="col-md-8 padding_right">
+					<div class="input-group col-md-12 validation_p" style="margin:0 auto">
+					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+					  <input type="file" style="display: none;" multiple id="uploadBtnEmployer"  class="upload">
+					  </span> </label>
+					<input type="text" class="form-control" name="docFile" id ="uploadFileEmployer" readonly placeholder="Attachment" field-name="Attachment" data-validation-optional = "true" data-validation = "validatepdf">
+				  </div>
+				</div>
+			</div>	
+			
+			<div class="col-sm-12 noPad mt clearfix" id="immigrationEmpDocDivEdit" style="display: none">
+			<label class="col-md-4 padding_left">File</label>
+			 <div class="col-md-8">
+				  <label id="immigrationEmpDocName" name="immigrationEmpDocName" class="text-primary tbldata-dotdot-200 pull-left" title=""></label>&nbsp;&nbsp;<span id="delete_immiEmpDocFile" onclick="removeImmiEmpDocFile();"><i class="fa fa-trash removeIcon text-danger cursorPointer pull-right"></i></span>
+				<input type="hidden" id="immigrationEmpDocNameExisitngFile" name="immigrationEmpDocNameExisitngFile" value="">
+				  </div>			          	
+			</div>
+					
 		</div>
 		
 		<div class="clearfix"></div>
@@ -181,4 +201,34 @@
 	});
 	
 </script>	
+
+<script type="text/javascript">
+$(function() {
+	$("#uploadBtnEmployer").change(function() {
+	fileUpload("uploadBtnEmployer", "candidateDocuments", "employerDetails_form");
+});
+});
+
+document.getElementById("uploadBtnEmployer").onchange = function () {
+ 	$('#uploadFileEmployer').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+
+}; 
+</script>
+
+<script type="text/javascript">
+function removeImmiEmpDocFile(){
+	var id = $("#candidateEmpId").val();
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/deleteImmigrationEmployerDocumentById?id="+id,
+        type: "GET",
+        success: function (result) {
+        if(result=='success'){
+        	$("#immigrationEmpDocDivEdit").hide();
+        	$("#immigrationEmpDocDiv").show();
+        	 
+        	} 
+        }
+    });
+}
+</script>
 		

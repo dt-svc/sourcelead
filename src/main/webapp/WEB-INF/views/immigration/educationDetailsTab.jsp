@@ -125,7 +125,27 @@
               	<div class="col-md-8 padding_right">
               		<input type="text" class="form-control" id = "address" name = "address" placeholder="Address"/>
 				</div>
-			</div>											
+			</div>	
+			
+			<div class="col-sm-12 noPad mt clearfix" id="immigrationEduDocDiv">
+				<label class="col-md-4 padding_left">File</label>
+              	<div class="col-md-8 padding_right">
+					<div class="input-group col-md-12 validation_p" style="margin:0 auto">
+					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+					  <input type="file" style="display: none;" multiple id="uploadBtnEducation"  class="upload">
+					  </span> </label>
+					<input type="text" class="form-control" name="docFile" id ="uploadFileEducation" readonly placeholder="Attachment" field-name="Attachment" data-validation-optional = "true" data-validation = "validatepdf">
+				  </div>
+				</div>
+			</div>	
+			
+			<div class="col-sm-12 noPad mt clearfix" id="immigrationEduDocDivEdit" style="display: none">
+			<label class="col-md-4 padding_left">File</label>
+			 <div class="col-md-8">
+				  <label id="immigrationEduDocName" name="immigrationEduDocName" class="text-primary tbldata-dotdot-200 pull-left" title=""></label>&nbsp;&nbsp;<span id="delete_immiEduDocFile" onclick="removeImmiEduDocFile();"><i class="fa fa-trash removeIcon text-danger cursorPointer pull-right"></i></span>
+				<input type="hidden" id="immigrationEduDocExisitngFile" name="immigrationEduDocExisitngFile" value="">
+				  </div>			          	
+			</div>										
 									
 		</div>
 		
@@ -198,3 +218,33 @@
 	});
 	
 		</script>
+		
+<script type="text/javascript">
+$(function() {
+	$("#uploadBtnEducation").change(function() {
+	fileUpload("uploadBtnEducation", "candidateDocuments", "eduSave_Form");
+});
+});
+
+document.getElementById("uploadBtnEducation").onchange = function () {
+ 	$('#uploadFileEducation').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+
+}; 
+</script>
+
+<script type="text/javascript">
+function removeImmiEduDocFile(){
+	var id = $("#candidateEducationId").val();
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/deleteImmigrationEducationDocumentById?id="+id,
+        type: "GET",
+        success: function (result) {
+        if(result=='success'){
+        	$("#immigrationEduDocDivEdit").hide();
+        	$("#immigrationEduDocDiv").show();
+        	 
+        	} 
+        }
+    });
+}
+</script>

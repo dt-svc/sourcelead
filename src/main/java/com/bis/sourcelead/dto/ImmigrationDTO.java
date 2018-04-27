@@ -195,6 +195,8 @@ public class ImmigrationDTO extends SearchDTO {
     
     private String[] removedResidenceIds;
     
+    private Long currUscisStatusId;
+    
 	public Long getId() {
 		return id;
 	}
@@ -861,6 +863,14 @@ public class ImmigrationDTO extends SearchDTO {
 
 	public void setRemovedResidenceIds(String[] removedResidenceIds) {
 		this.removedResidenceIds = removedResidenceIds;
+	}
+
+	public Long getCurrUscisStatusId() {
+		return currUscisStatusId;
+	}
+
+	public void setCurrUscisStatusId(Long currUscisStatusId) {
+		this.currUscisStatusId = currUscisStatusId;
 	}
 	
 }
