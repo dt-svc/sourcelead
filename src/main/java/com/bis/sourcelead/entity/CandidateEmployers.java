@@ -82,6 +82,19 @@ public class CandidateEmployers implements Serializable{
 	// immigration column start
 	@Column(name = " TAX_ID")
 	private String taxId;
+	
+	// immigration related files purpose start
+	
+	@Column(name = "EMPLOYER_FILE_CONTENT_TYPE")
+	private String employerFileContentType;
+		
+	@Column(name = "EMPLOYER_FILE_URL",columnDefinition = "TEXT default NULL")
+	private String employerFileUrl;
+		
+	@Column(name = "EMPLOYER_FILE_NAME")
+	private String employerFileName;
+		
+	// immigration related files purpose end
 
 	@Column(name = " EMPLOYMENT_TYPE")
 	private String employmentType;
@@ -299,6 +312,30 @@ public class CandidateEmployers implements Serializable{
 
 	public void setMsg(String msg) {
 		this.msg = msg;
+	}
+
+	public String getEmployerFileContentType() {
+		return employerFileContentType;
+	}
+
+	public void setEmployerFileContentType(String employerFileContentType) {
+		this.employerFileContentType = employerFileContentType;
+	}
+
+	public String getEmployerFileUrl() {
+		return employerFileUrl;
+	}
+
+	public void setEmployerFileUrl(String employerFileUrl) {
+		this.employerFileUrl = employerFileUrl;
+	}
+
+	public String getEmployerFileName() {
+		return employerFileName;
+	}
+
+	public void setEmployerFileName(String employerFileName) {
+		this.employerFileName = employerFileName;
 	}
 	
 }
