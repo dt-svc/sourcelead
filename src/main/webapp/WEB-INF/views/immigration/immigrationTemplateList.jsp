@@ -41,11 +41,11 @@
 		<div class="row">
 				<div class="col-md-10 mb10 mt5 col-md-offset-2">
 				<div class="checkbox-new  pull-left mr">
-					<input id="columnsPickerUnCheckAll" class="radio-custom toggle-vis" name="columnsPicker" onclick="checkAllColumns(this);"  type="radio">
+					<input id="columnsPickerUnCheckAll" class="radio-custom" name="columnsPicker" onclick="checkAllColumns(this);"  type="radio">
 					<label for="columnsPickerUnCheckAll" class="radio-custom-label">Uncheck All</label>
 				</div>
 				<div class="checkbox-new pull-left">
-					<input id="columnsPickerCheckAll" class="radio-custom toggle-vis" name="columnsPicker" onclick="checkAllColumns(this);"  type="radio" checked="">
+					<input id="columnsPickerCheckAll" class="radio-custom" name="columnsPicker" onclick="checkAllColumns(this);"  type="radio" checked="">
 					<label for="columnsPickerCheckAll" class="radio-custom-label" >Check All</label>
 				</div>
 			</div>
@@ -193,7 +193,7 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
 
         getDynamicTemplateList("","");
 
-        $('a.toggle-vis').on('click', function (e) {
+/*         $('a.toggle-vis').on('click', function (e) {
             e.preventDefault();
             // Get the column API object
             var column = table.column($(this).attr('data-column'));
@@ -201,7 +201,7 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
             // Toggle the visibility
             column.visible(!column.visible());
         });
-
+ */
         $("#statusFilter a").on('click', function (e) {
             alert($(this).data("status"));
             getDynamicTemplateList($(this).data("status"));
@@ -430,6 +430,9 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
         $("#immiTemplateSerach").keyup(function (e) {
             if (e.which === 13) {
                 getDynamicTemplateList( $("#statusFilter").val(),"");
+                for (var i=0; i<hideColumns.length; i++) {
+           		 table.column(hideColumns[i]).visible(false); // hide the columns after filters also.
+           		}
             }
         });
 
