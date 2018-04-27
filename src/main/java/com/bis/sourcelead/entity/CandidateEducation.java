@@ -67,6 +67,19 @@ public class CandidateEducation implements Serializable{
 	@Column(name = "ADDRESS")
 	private String address;
 	
+	// immigration related files purpose start
+	
+	@Column(name = "EDUCATION_FILE_CONTENT_TYPE")
+	private String educationFileContentType;
+	
+	@Column(name = "EDUCATION_FILE_URL",columnDefinition = "TEXT default NULL")
+	private String educationFileUrl;
+	
+	@Column(name = "EDUCATION_FILE_NAME")
+	private String educationFileName;
+	
+	// immigration related files purpose end
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -277,6 +290,31 @@ public class CandidateEducation implements Serializable{
 	public void setAllAndCandidateEducations(LinkedHashSet<String> allAndCandidateEducations) {
 		this.allAndCandidateEducations = allAndCandidateEducations;
 	}
+
+	public String getEducationFileContentType() {
+		return educationFileContentType;
+	}
+
+	public void setEducationFileContentType(String educationFileContentType) {
+		this.educationFileContentType = educationFileContentType;
+	}
+
+	public String getEducationFileUrl() {
+		return educationFileUrl;
+	}
+
+	public void setEducationFileUrl(String educationFileUrl) {
+		this.educationFileUrl = educationFileUrl;
+	}
+
+	public String getEducationFileName() {
+		return educationFileName;
+	}
+
+	public void setEducationFileName(String educationFileName) {
+		this.educationFileName = educationFileName;
+	}
+	
 	
 	
 }
