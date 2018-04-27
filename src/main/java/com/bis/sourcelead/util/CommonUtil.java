@@ -2322,6 +2322,7 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 	     return tempHTML;
   }
 
+
   
   
   public void sendTemplateEmail(EmailMessage emailMessage,Map<String, String> globalVarsMap,Org org,OrgLocations orgLocations,String uniqueScenerioName,List<EmailAttachment> attachmentList){

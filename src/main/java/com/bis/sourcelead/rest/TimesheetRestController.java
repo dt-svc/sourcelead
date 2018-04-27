@@ -3761,8 +3761,8 @@ public class TimesheetRestController {
 
 		}
 		// Send Emails & Notifications to vendors
-		timesheetEmailUtil.sendEmailToVendorAtTimesheetApprovalStatus(projectMember, loginUser, loginOrgLocation, loginOrgCode, startDate,
-				endDate, status, submissionStatusStr);
+		timesheetEmailUtil.sendEmailToVendorAtTimesheetApprovalStatus(projectMember, loginUser, loginOrgLocation, startDate,
+				endDate, status, rejectedReason);
 
 	}
 
