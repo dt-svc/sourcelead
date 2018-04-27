@@ -110,10 +110,14 @@
           
             <div class="form-group" id="EmailIdDiv">
 					<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
-					
-			        	<div class="col-md-9">
+			        <div class="col-md-9">
+					  <div class="input-group errorInptgroup">
 					  <input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateEmail();">
-	                            <span class="hidden">Valid Email</span>
+	                   <span class="hidden">Valid Email</span>
+	                    <span id="emailStatusIconDiv" class="input-group-addon">
+	                    	<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>
+	                  	</span>
+	                   </div>
 			     	</div>
 					</div>
                 <div class="form-group">
@@ -531,11 +535,14 @@ function validateEmail(){
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
 					getSpocUserDetails();
 					getOwnersList();
-					
+					validateEmailForExistenceUniversally(email, "input#email");
 				}
 			},
 
 		});
+	}else{
+		 $("#emailStatusIconDiv").find("i").remove();
+  		 $("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>');
 	}
 }
 </script>

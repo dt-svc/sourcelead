@@ -389,7 +389,7 @@ $(document).ready(function () {
             </div>
             
         <div class="form-group" >
-            <label class="col-md-3">Experience Level ${requirement.experienceLevel.name}</label>
+            <label class="col-md-3">Experience Level</label>
             <div class="col-md-9 dropdown-select"> 
             <select name="experienceLevel" id="experienceLevel">
             	<option value="">--Select Level--</option>

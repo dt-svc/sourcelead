@@ -3186,11 +3186,14 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getJobType())) {
 			reqTemplate.setJobType(requirementDTO.getJobType());
+		}else {
+			reqTemplate.setJobType(null);
+			reqTemplate.setOtherJobType(null);
 		}
-		if (StringUtils.isNotBlank(requirementDTO.getOtherJobType())
+		if (StringUtils.isNotBlank(requirementDTO.getJobOtherType())
 				&& StringUtils.isNotBlank(requirementDTO.getJobType())
 				&& "Other".equalsIgnoreCase(requirementDTO.getJobType())) {
-			reqTemplate.setOtherJobType(requirementDTO.getOtherJobType());
+			reqTemplate.setOtherJobType(requirementDTO.getJobOtherType());
 		}
 		else {
 			reqTemplate.setOtherJobType(null);
@@ -3209,9 +3212,13 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getProjectDurationYears())) {
 			reqTemplate.setProjectDurationYears(requirementDTO.getProjectDurationYears());
+		}else {
+			reqTemplate.setProjectDurationYears(null);
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getProjectDurationMonths())) {
 			reqTemplate.setProjectDurationMonths(requirementDTO.getProjectDurationMonths());
+		}else {
+			reqTemplate.setProjectDurationMonths(null);
 		}
 	
 		if (StringUtils.isNotBlank(requirementDTO.getRate())) {

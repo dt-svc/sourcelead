@@ -597,7 +597,6 @@ function professionalProfile(candidateId){
               		if(json != null ){  
 							var result ="";
 							var checked = "";
-							
 							if(json.isProfilePublic == 'Y'){
     							checked = "checked"+" "+"value = 'Y'";
     						}else{

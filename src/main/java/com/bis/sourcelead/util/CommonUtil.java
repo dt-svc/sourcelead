@@ -263,7 +263,7 @@ public class CommonUtil {
 	        allowedTags.addAttributes("blockquote", "cite");
 	        allowedTags.addAttributes("col", "span", "width");
 	        allowedTags.addAttributes("colgroup", "span", "width");
-	        allowedTags.addAttributes("img", "align", "alt", "height", "src", "title", "width");
+	        allowedTags.addAttributes("img", "align", "alt", "height", "src", "title", "width","style","class");
 	        allowedTags.addAttributes("ol", "start", "type");
 	        allowedTags.addAttributes("q", "cite");
 	        allowedTags.addAttributes("table", "summary", "width");
@@ -272,7 +272,7 @@ public class CommonUtil {
 	        allowedTags.addAttributes("ul", "type");
 	       /* allowedTags.addProtocols("a", "href", "//", "#","ftp", "http", "https", "mailto");*/
 	        
-	        allowedTags.addProtocols("blockquote", "cite", "http", "https");
+	        allowedTags.addProtocols("blockquote", "cite", "http", "https","style");
 	        allowedTags.addProtocols("cite", "cite", "http", "https");
 	        allowedTags.addProtocols("img", "src", "http", "https");
 	        allowedTags.addProtocols("q", "cite", "http", "https");
