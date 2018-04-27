@@ -65,11 +65,14 @@ public interface OrgDao {
 
     public long savePaymentAccount(PaymentAccountDTO account);
     
-    public List<PaymentAccountDTO> getPaymentAccountList(long orgId, long orgLocactionId);
+    public List<PaymentAccountDTO> getPaymentAccountList(long orgId, long orgLocactionId,boolean onlyEnabledAccounts);
 
     public long changePaymentAccountToAccess(long id, long orgId);
 
     public PaymentAccountDTO getPaymentAccount(long id, Long orgId);
 
     public int changeDefaultPaymentAccount(long id, long orgId, boolean defaultAccount);
+    
+    public int changePaymentAccountStatus(long id, long orgId);
+
 }

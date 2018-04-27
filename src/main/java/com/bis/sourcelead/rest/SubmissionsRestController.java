@@ -834,12 +834,15 @@ public class SubmissionsRestController {
 				requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 				requirementSubmission.setUpdatedDate(new Date());
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-				requirementSubmissionService.sendRejectionMailToVendorContact(user, requirementSubmission.getRejectedReason(), submissionId, orgLocations);
+				if(orgLocations.getId() != requirementSubmission.getCandidate().getOrgLocationId().getId() && !requirementSubmission.getCandidate().getCandidateType().equalsIgnoreCase("Professional")) {
+					requirementSubmissionService.sendRejectionMailToVendorContact(user, requirementSubmission.getRejectedReason(), submissionId, orgLocations);
+				}
 				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 				response.setObject("success");
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			}catch(Exception e) {
+				e.printStackTrace();
 				response.setResponse(Result.AWKWARD.name());
 				response.setResponseMessage(Result.AWKWARD.getValue());
 			}

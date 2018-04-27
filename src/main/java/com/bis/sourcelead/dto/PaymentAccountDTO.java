@@ -33,6 +33,7 @@ public class PaymentAccountDTO {
     private String accountNumber;
     @Required(desc = "routingNumber", dependsOn = "accountType", parentValue = {"SAVINGS", "ROUTING"})
     private String routingNumber;
+    private boolean disabled;
 
     /**
      * @return the id
@@ -257,4 +258,13 @@ public class PaymentAccountDTO {
     public void setBankName(String bankName) {
         this.bankName = bankName;
     }
+
+	public boolean isDisabled() {
+		return disabled;
+	}
+
+	public void setDisabled(boolean disabled) {
+		this.disabled = disabled;
+	}
+    
 }

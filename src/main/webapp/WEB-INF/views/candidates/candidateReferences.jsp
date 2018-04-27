@@ -636,15 +636,22 @@
 						result = result + '</div>';
 						result = result + '</div>';
 
-						result = result
-								+ '<div class="clearfix mb10">';
-						result = result
-								+ '<div class="col-md-12" id="emailDivId">';
-						result = result
-								+ '<input type="text" name="email" id="email" field-name="Email" value="'+json.email+'" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *" onblur="validateReferenceEmail('+candidateId+','+json.id+');">';
+						
+						result = result+ '<div class="clearfix mb10">';
+						result = result+ '<div class="col-md-12" id="emailDivId">';
+						result = result + '<div class="input-group errorInptgroup">';
+						result = result+ '<input type="text" name="email" id="email" field-name="Email" value="'+json.email+'" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *" onblur="validateReferenceEmail('+candidateId+','+json.id+');">';
+						result = result + ' <span id="emailStatusIconDiv" class="input-group-addon">';
+						result = result + '<i class="fa fa-check text-muted" style="color:#f6f6f6">';
+						result = result + '</i>';
+						result = result + '</span>';
+						result = result + '</div>';
 						result = result + '</div>';
 						result = result + '</div>';
 
+						
+						
+						
 						result = result
 								+ '<div class="clearfix mb10">';
 						result = result
