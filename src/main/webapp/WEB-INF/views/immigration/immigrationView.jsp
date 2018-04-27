@@ -35,18 +35,15 @@
 				<p><strong>Visa Type</strong>: ${immigration.petitionType}</p>
 				<p><strong>Attorney</strong>: ${immigration.attorneyName}</p>
   			</div>
-  			<div class="col-md-4 immHeadactions clearfix">
-  				<a href="javascript:void(0)">
-  					<i class="fa fa-caret-down"></i>
-  					<ul>
-  						<li>Status 1</li>
-  						<li>Status 2</li>
-  						<li>Status 3</li>
-  						<li>Status 4</li>
-  						<li>Status 5</li>
-  					</ul>
-  				</a>  			
-  				<span>${immigration.currUscisStatus}</span>
+  			<div class="col-md-2 immHeadactions clearfix col-md-offset-2">
+  			
+  			
+  			<select id="uscisStatusId" onchange="changeUscisStatusForImmigration($(this).val());" class="form-control selstyles-new">
+  				<option selected value="">--Select Option--</option>
+  				<c:forEach var="item" items="${uscisStatusList}">
+  					<option ${immigration.currUscisStatusId == item.id ? 'selected' : '' } value="${item.id}">${item.name}</option>
+  				</c:forEach>
+  			</select>
   			</div>
   		</div>
 	
@@ -254,6 +251,18 @@ $(document).ready(function(){
 <script>
 	function goToSummaryTab(tabname) {
 		$("a[href='"+tabname+"']").click();
+	}
+	
+	function changeUscisStatusForImmigration(uscisStatusId){
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/immigration/updateUscisTypeDropDown?templateId="+immigrationId+"&uscisId="+uscisStatusId, 
+		        success: function(data) {
+		        	if(data == "success"){
+		        		location.reload();
+		        	}
+		        }
+		 });
 	}
 </script>
 

@@ -289,6 +289,8 @@ public class ImmigrationRestController {
         if(immigrationId!=null && !StringUtils.isEmpty(immigrationId)) {
         	immigrationDTO= immigrationCommonService.getImmigrationDetails(immigrationId,orgLocations);
         }
+        List<LookUpData> uscisStatusList = immigrationTemplateService.getLookupDataByType(Constants.USCIS_STATUS);
+        model.addObject("uscisStatusList",uscisStatusList);        
         model.addObject("immigration", immigrationDTO);
         model.addObject("sourceleadUrl", sourceleadUrl);
         model.setViewName("/immigration/immigrationView");
