@@ -792,6 +792,7 @@ $( "#orgLocationId" ).val( '' );
 
 <script type="text/javascript">
 function validateEmail(){
+	alert("DSADDADA");
 	var email = document.getElementById("email").value;
 	if(email != null){
 		$.ajax({
