@@ -236,15 +236,19 @@ function reactiveLeaveType(typeId, from){
 		$.ajax({
 		   	type: "POST",
 		   	url: sourceleadUrl+"/deleteLeaveType?"+tokenParamName+"="+tokenValue+"&leaveTypeUUID="+typeId+"&status=reactive",	    	   
-		    success: function(data) {
-	             if(data == true){
-	            	 if(from == "summary"){
+		    success: function(result) {
+		    	  if(result.response === "SUCCESS"){
+	                if(from == "summary"){
 	            		 openLeaveTypeSummary(typeId);
 	            		 getLeaveTypesList();
 	            	 }else{
 	 				 	location.replace(sourceleadUrl+ "/viewLeaveTypes");
 	            	 }
-	             }
+	             }else if (result.indexOf('Sign In') !== -1) {
+		 				location.replace(sourceleadUrl);
+		 		  } else {
+		 			    showError("Operation failed, please try again");
+		 		  }
 		    }
 		
 		});

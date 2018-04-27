@@ -618,6 +618,7 @@ public class OrgDaoImpl implements OrgDao {
             pay.setBankName(account.getBankName());
             pay.setAccountNumber(account.getAccountNumber());
             pay.setRoutingNumber(account.getRoutingNumber());
+            pay.setDisabled(account.isDisabled());
             session.saveOrUpdate(pay);
             return pay.getId();
         } catch (Exception ex) {
@@ -628,13 +629,16 @@ public class OrgDaoImpl implements OrgDao {
 
     @Override
     @Transactional
-    public List<PaymentAccountDTO> getPaymentAccountList(long orgId, long orgLocactionId) {
+    public List<PaymentAccountDTO> getPaymentAccountList(long orgId, long orgLocactionId, boolean onlyEnabledAccounts) {
         List<PaymentAccountDTO> resultList = new ArrayList<>();
         try {
             Session session = this.sessionFactory.getCurrentSession();
             String query = "from PaymentAccount p where p.org.id = :orgId";
             if (orgLocactionId > 0) {
                 query += " and p.orgLocation.id = :orgLocationId";
+            }
+            if(onlyEnabledAccounts) {
+            	query += " and p.disabled = 0";
             }
             Query queryObj = session.createQuery(query);
             queryObj.setLong("orgId", orgId);
@@ -701,6 +705,7 @@ public class OrgDaoImpl implements OrgDao {
             if (Objects.equals(pay.getOrg().getId(), orgId)) {
                 pay.setDefaultAccount(defaultAccount);
                 if(defaultAccount) {
+                	pay.setDisabled(false);
                     String query = "from PaymentAccount p where p.org.id = :orgId";
                     query += " and p.orgLocation.id = :orgLocationId and p.id != :pid";
                     Query queryObj = session.createQuery(query);
@@ -739,8 +744,31 @@ public class OrgDaoImpl implements OrgDao {
         pay.setAccountNumber(p.getAccountNumber());
         pay.setRoutingNumber(p.getRoutingNumber());
         pay.setEmail(p.getEmail());
+        pay.setDisabled(p.isDisabled());
         pay.setUserId(p.getUserId());
         pay.setOrgLocationName(p.getOrgLocation().getOrgLocationName());
     }
+
+	@Override
+	@Transactional(rollbackFor = {Exception.class})
+	public int changePaymentAccountStatus(long id, long orgId) {
+		try {
+            Session session = this.sessionFactory.getCurrentSession();
+            PaymentAccount pay = session.get(PaymentAccount.class, id);
+            if (Objects.equals(pay.getOrg().getId(), orgId)) {
+            	pay.setDisabled(!pay.isDisabled());
+            	if(pay.isDisabled())
+            		pay.setDefaultAccount(false);
+                session.saveOrUpdate(pay);
+                return 1;
+            } else {
+                return -1;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+	}
+
 }
 
