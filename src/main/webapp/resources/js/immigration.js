@@ -705,6 +705,11 @@ function editEducationDEtailsByRowId(id){
         			$('#scoreEducationType').val(data.gradeType);
         			$('#immigrationEduStartDate12').val(data.startDateStr);
         			$('#immigrationEduEndDate').val(data.endDateStr);
+        			if(data.educationFileName != null){
+        			$('#immigrationEduDocDivEdit').show();
+    	        	$('#immigrationEduDocDiv').hide();
+        			$('#immigrationEduDocName').text(data.educationFileName);
+        			}
         			$('#candidateEducationId').val(data.id);
         	
         	   
@@ -732,6 +737,11 @@ function editEmpDetailsByRowId(id){
         			udpateEduFormdata(formObj,fomValues,data);
         			$('#startMonth').val(data.startMonth); // to select the dropdwon value based on id value.
         			$('#endMonth').val(data.endMonth);
+        			if(data.employerFileName != null){
+        			$('#immigrationEmpDocDivEdit').show();
+	        		$('#immigrationEmpDocDiv').hide();
+        			$('#immigrationEmpDocName').text(data.employerFileName);	
+        			}
         			$('#candidateEmpId').val(data.id);
         	
         	   

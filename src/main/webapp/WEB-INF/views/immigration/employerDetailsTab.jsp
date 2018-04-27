@@ -143,8 +143,8 @@
 				</div>
 				</div>
 			</div>	
-			<div class="col-sm-12 noPad mt clearfix" id="immigrationEmployerDiv">
-				<label class="col-md-4 padding_left">File<span class="text-danger">&nbsp;*</span></label> 
+			<div class="col-sm-12 noPad mt clearfix" id="immigrationEmpDocDiv">
+				<label class="col-md-4 padding_left">File</label> 
               	<div class="col-md-8 padding_right">
 					<div class="input-group col-md-12 validation_p" style="margin:0 auto">
 					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
@@ -154,6 +154,14 @@
 				  </div>
 				</div>
 			</div>	
+			
+			<div class="col-sm-12 noPad mt clearfix" id="immigrationEmpDocDivEdit" style="display: none">
+			<label class="col-md-4 padding_left">File</label>
+			 <div class="col-md-8">
+				  <label id="immigrationEmpDocName" name="immigrationEmpDocName" class="text-primary tbldata-dotdot-200 pull-left" title=""></label>&nbsp;&nbsp;<span id="delete_immiDocFile" onclick="removeImmigFormDoc1();"><i class="fa fa-trash removeIcon text-danger cursorPointer pull-right"></i></span>
+				<input type="hidden" id="immigrationEmpDocNameExisitngFile" name="immigrationEmpDocNameExisitngFile" value="">
+				  </div>			          	
+			</div>
 					
 		</div>
 		
