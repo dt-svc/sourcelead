@@ -32,33 +32,94 @@
         <div class="cusFielInn">
 
             <div class="immigraTabsHead">
-                <div class="pull-left">
-                    <div class="dropdown">
-                        <strong>Column Chooser </strong>
-                        <button class="glyphicon glyphicon-plus" type="button" id="menu1" data-toggle="dropdown"></button>
-                        <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-                            <li><a class="toggle-vis " data-column="0">Name</a></li>
-                            <li><a class="toggle-vis" data-column="1">Description</a></li>
-                            <li><a class="toggle-vis" data-column="2">No. of Docs</a></li>
-                            <li><a class="toggle-vis" data-column="3">No. of Forms</a></li>
-                            <li><a class="toggle-vis" data-column="4">No. of Tasks</a></li>
-                            <li><a class="toggle-vis" data-column="6">Status</a></li>
-                            <li><a class="toggle-vis" data-column="7">Action</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <!--                <div class="pull-left">
-                                    <div class="dropdown">
-                                        <strong>Status</strong>
-                                        <button class="glyphicon glyphicon-plus" type="button"
-                                                data-toggle="dropdown"></button>
-                                        <ul class="dropdown-menu" role="menu" aria-labelledby="menu1" id="statusFilter">
-                                            <li><a class="" data-status="-1">All</a></li>
-                                            <li><a class="" data-status="1">Active</a></li>
-                                            <li><a class="" data-status="0">Inactive</a></li>
-                                        </ul>
-                                    </div>
-                                </div>-->
+            <div class="pull-left">
+				<div onclick="columPop();" title="Column Chooser" class="btn btn-sm btn-default pull-left"><i class="fa fa-table"></i></div>
+			</div>
+			<div class="colPop">
+	<div class="colPopMid">
+	<div class="clearfix">
+		<div class="row">
+				<div class="col-md-10 mb10 mt5 col-md-offset-2">
+				<div class="checkbox-new  pull-left mr">
+					<input id="columnsPickerUnCheckAll" class="radio-custom toggle-vis" name="columnsPicker" onclick="checkAllColumns(this);"  type="radio">
+					<label for="columnsPickerUnCheckAll" class="radio-custom-label">Uncheck All</label>
+				</div>
+				<div class="checkbox-new pull-left">
+					<input id="columnsPickerCheckAll" class="radio-custom toggle-vis" name="columnsPicker" onclick="checkAllColumns(this);"  type="radio" checked="">
+					<label for="columnsPickerCheckAll" class="radio-custom-label" >Check All</label>
+				</div>
+			</div>
+		</div>
+	<div class="clearfix"></div>
+		<ul>
+			<!-- <li>
+				<div class="checkbox-new clearfix">
+					<input id="a" class="checkbox-custom toggle-vis" name="paidComponent" data-column="0" type="checkbox" checked="">
+					<label for="a" class="checkbox-custom-label" >Name</label>
+				</div>
+			</li> -->
+			<li>
+				<div class="checkbox-new clearfix">
+					<input id="c" class="checkbox-custom toggle-vis" name="paidComponent" data-column="1" type="checkbox" checked="">
+					<label for="c" class="checkbox-custom-label" >Country</label>
+				</div>
+			</li>
+			<li>
+				<div class="checkbox-new clearfix">
+					<input id="d" class="checkbox-custom toggle-vis" name="paidComponent" data-column="2" type="checkbox" checked="">
+					<label for="d" class="checkbox-custom-label" >Petition Type</label>
+				</div>
+			</li>
+			<li>
+				<div class="checkbox-new clearfix">
+					<input id="f" class="checkbox-custom toggle-vis" name="paidComponent" data-column="3" type="checkbox" checked="">
+					<label for="f" class="checkbox-custom-label" >Description</label>
+				</div>
+			</li>
+			<li>
+				<div class="checkbox-new clearfix">
+					<input id="g" class="checkbox-custom toggle-vis" name="paidComponent" data-column="4" type="checkbox" checked="">
+					<label for="g" class="checkbox-custom-label" >No. of Docs</label>
+				</div>
+			</li>
+			<li>
+				<div class="checkbox-new clearfix">
+					<input id="h" class="checkbox-custom toggle-vis" name="paidComponent" data-column="5" type="checkbox" checked="">
+					<label for="h" class="checkbox-custom-label" >No. of Forms</label>
+				</div>
+			</li>
+			<li>
+				<div class="checkbox-new clearfix">
+					<input id="i" class="checkbox-custom toggle-vis" name="paidComponent" data-column="6" type="checkbox" checked="">
+					<label for="i" class="checkbox-custom-label" >No. of Tasks</label>
+				</div>
+			</li>
+			<li>
+				<div class="checkbox-new clearfix">
+					<input id="j" class="checkbox-custom toggle-vis" name="paidComponent" data-column="7" type="checkbox" checked="">
+					<label for="j" class="checkbox-custom-label" >Status</label>
+				</div>
+			</li>
+			<!-- <li>
+				<div class="checkbox-new clearfix">
+					<input id="j" class="checkbox-custom toggle-vis" name="paidComponent" data-column="7"  type="checkbox" checked="">
+					<label for="j" class="checkbox-custom-label" >Action</label>
+				</div>
+			</li> -->
+			<!-- <li>
+				<div class="checkbox-new clearfix">
+					<input id="k" class="checkbox-custom toggle-vis" name="paidComponent" type="checkbox"  data-column="10" checked="">
+					<label for="k" class="checkbox-custom-label" >LCA End Date</label>
+				</div>
+			</li> -->
+		</ul>
+	</div>
+	<div class="colPopFot">
+		<a href="javascript:void(0)" onclick="columHide();">Apply</a>
+		<a href="javascript:void(0)" onclick="columClose();">Cancel</a>
+	</div>
+</div>				
+			</div>
 						<span>
 						<div class="dropdown mr">
 					<span class="dropdown-toggle" id="" data-toggle="dropdown" aria-expanded="false">
@@ -111,6 +172,7 @@
 </section>
 <jsp:include page="../masterFooter.jsp" />
 <script>
+var hideColumns = [];
 var checkedCountries = [];
 $(document).on('change', "#showListCountry ul li input[type=checkbox]", function(){
 	if($(this).prop('checked')==true){
@@ -395,4 +457,36 @@ function disableTemplateStatus(templateId){ // only stauts updated with reason. 
 	$("#remove_template_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 }
+
+function columPop(){
+	$(".colPop").show();
+}
+function columClose(){
+	$(".colPop").hide();
+}
+function columHide(){
+	hideColumns=[]; // reset the array object.
+	$(".toggle-vis").each(function() {
+	   var chkdVal= $(this).prop('checked');
+	   var column = table.column($(this).attr('data-column'));
+		  if(chkdVal == true){
+		         column.visible(true);
+		    }
+		    else{
+		      column.visible(false);
+		      hideColumns.push($(this).attr('data-column')); // used for hiding the columns when user searched the data.
+		  }
+    });
+   
+}
+function checkAllColumns(obj){
+	var id = obj.id;
+	if(id =='columnsPickerCheckAll'){
+		$('.toggle-vis:input:checkbox').prop('checked',true);
+	}
+	else if(id =='columnsPickerUnCheckAll'){
+		$('.toggle-vis:input:checkbox').prop('checked',false);
+	}
+}
+
 </script>
