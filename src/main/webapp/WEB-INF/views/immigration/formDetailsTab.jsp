@@ -77,7 +77,7 @@
 					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 					  <input type="file" style="display: none;" multiple id="uploadBtnForm"  class="upload">
 					  </span> </label>
-					<input type="text" class="form-control" name="docFile" id ="uploadFileForm" readonly placeholder="Attachment" field-name="Attachment" data-validation="required">
+					<input type="text" class="form-control" name="docFile" id ="uploadFileForm" readonly placeholder="Attachment" field-name="Attachment" data-validation="required validatepdf">
 				  </div>
 				</div>
 			</div>	
@@ -130,7 +130,7 @@
 					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 					  <input type="file" style="display: none;" multiple id="uploadFormBtn"  class="upload">
 					  </span> </label>
-					<input type="text" class="form-control" readonly id="uploadFormFile" field-name = "Document" placeholder="Upload Form ..." data-validation="required">
+					<input type="text" class="form-control" readonly id="uploadFormFile" field-name = "Document" placeholder="Upload Form ..." data-validation="required validatepdf">
 				  </div>
 				</div>
 			</div>		
