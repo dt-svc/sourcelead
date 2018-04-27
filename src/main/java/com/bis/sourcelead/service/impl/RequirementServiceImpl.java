@@ -1238,7 +1238,7 @@ public class RequirementServiceImpl implements RequirementService {
 		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationbody);
 		// calling the sendEmail method of emailScenerioUtil
-		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.UPDATED_REQUIREMENT_EMAIL_TO_MANAGER,null);
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.UPDATED_REQUIREMENT_EMAIL_TO_MANAGER,new ArrayList<EmailAttachment>());
 		String actionLink = "";
 		emailScenerioUtil.sendNotification(actionLink, loginUser, assUser, loginOrgLocation, notificationScenario,new HashMap<String,String>());
 	}
@@ -1725,7 +1725,7 @@ public class RequirementServiceImpl implements RequirementService {
 		// sourceleadUrl"/requirementSummary?requirementUUID="+requirement.getRequirementUUID()+"";
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendNotification(actionLink, loginUser, approverUser, loginOrgLocation, notificationScenario,new HashMap<String,String>());
-		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.REQUIREMENT_EMAIL_NOTIFICATION,null);
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.REQUIREMENT_EMAIL_NOTIFICATION,new ArrayList<EmailAttachment>());
 	}
 	
 	@Override
@@ -1828,7 +1828,7 @@ public class RequirementServiceImpl implements RequirementService {
 		notificationScenario.setBody(notificationbody);
 		// construct HTML template using required data
 		// calling the sendEmail method of emailScenerioUtil
-		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.REQUIREMENT_SEQUENTIAL_EMAIL_NOTIFICATION,null);
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.REQUIREMENT_SEQUENTIAL_EMAIL_NOTIFICATION,new ArrayList<EmailAttachment>());
 		StringBuilder notificationLink = new StringBuilder();
 		 String actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();
 
@@ -1927,7 +1927,7 @@ public class RequirementServiceImpl implements RequirementService {
 		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationbody);
 		// calling the sendEmail method of emailScenerioUtil
-		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.APPROVED_EMAIL_NOTIFICATION,null);
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.APPROVED_EMAIL_NOTIFICATION,new ArrayList<EmailAttachment>());
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();
 		emailScenerioUtil.sendNotification(actionLink, loginUser, intiatorUser, orgLocations, notificationScenario,new HashMap<String,String>());
@@ -2248,7 +2248,7 @@ public class RequirementServiceImpl implements RequirementService {
 		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationbody);
 		// calling the sendEmail method of emailScenerioUtil
-		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAILREQUIREMENTTOMANAGER,null);
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAILREQUIREMENTTOMANAGER,new ArrayList<EmailAttachment>());
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();		 
 		emailScenerioUtil.sendNotification(actionLink, loginUser, managerUser, loginOrgLocation, notificationScenario,new HashMap<String,String>());
@@ -2509,7 +2509,7 @@ public class RequirementServiceImpl implements RequirementService {
 		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationbody);
 		// calling the sendEmail method of emailScenerioUtil
-		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.REJECTED_EMAIL_NOTIFICATION,null);
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.REJECTED_EMAIL_NOTIFICATION,new ArrayList<EmailAttachment>());
 
 		StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
@@ -2771,7 +2771,7 @@ public class RequirementServiceImpl implements RequirementService {
 		//emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
 		
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.RELEASEMECHANISM_EMAIL_NOTIFICATION,null);
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.RELEASEMECHANISM_EMAIL_NOTIFICATION,new ArrayList<EmailAttachment>());
 		
 		//emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 		StringBuilder actionLinkBuilder = new StringBuilder();
@@ -3767,7 +3767,7 @@ public class RequirementServiceImpl implements RequirementService {
 		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SHARE_RECOMENDED_APPLICANT_NOTIFICATION,
 				Constants.ENTITY_TYPE_NOTIFICATION);
 		 
-		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocation.getOrg(),orgLocation,Constants.SHARE_RECOMENDED_APPLICANT,null);
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocation.getOrg(),orgLocation,Constants.SHARE_RECOMENDED_APPLICANT,new ArrayList<EmailAttachment>());
 		// calling the sendNotification method of emailScenerioUtil
 		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationBody);

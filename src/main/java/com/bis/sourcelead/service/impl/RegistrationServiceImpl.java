@@ -957,7 +957,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 StringBuilder resetPasswordURLStringBuilder=new StringBuilder();
 		 String mailUrl = sourceleadUrl.replace("/app", "");
 		 globalVarsMap.put("ResetPasswordURL",resetPasswordURLStringBuilder.append("<a href=").append(mailUrl).append("/resetPassword").append(" style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reset Password</div></a>").toString());
-		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.FORGOT_PASSWORD,null);
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.FORGOT_PASSWORD,new ArrayList<EmailAttachment>());
 
 		
 	}
@@ -991,7 +991,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 globalVarsMap.put("supportLink",linkBuilder.append("<a href='support@sourcelead.com' target='_blank' style='outline:none; border:none;'>support@sourcelead.com</a>").toString());
 		 StringBuilder sourceLink = new StringBuilder();
 		 globalVarsMap.put("sourceleadLink",sourceLink.append("<a href='http://www.sourcelead.com/' target='_blank' style='outline:none; border:none;'>http://www.sourcelead.com/</a>").toString());
-			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.UPDATE_PASSWORD,null);
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.UPDATE_PASSWORD,new ArrayList<EmailAttachment>());
 
 		
 	}
@@ -1204,7 +1204,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 }else{
 			 globalVarsMap.put("Password","<font color='green'><b>Login with your existing Sourcelead password.</b></font>");
 		 }
-			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.INVITE_USER,null);
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.INVITE_USERnew ArrayList<EmailAttachment>());
 
 		 
 		
@@ -2176,7 +2176,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 OrgLocations orgloc = orgLocationService.getOrgLocations(1l);
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, new Org(), orgloc, Constants.LOGIN_OTP_EMAIL,null);
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, new Org(), orgloc, Constants.LOGIN_OTP_EMAIL,new ArrayList<EmailAttachment>());
 		 
 		 return token;
 				

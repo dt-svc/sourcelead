@@ -1363,7 +1363,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 globalVarsMap.put("loginOrgName",loginOrgLocation.getOrgLocationName());
 		 //calling the sendEmail method of emailScenerioUtil
 		 if(null != projects.getOrgLocationsId())
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.EDITPROJECT_MAIL_MANAGER,null);
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.EDITPROJECT_MAIL_MANAGER,new ArrayList<EmailAttachment>());
 		 
 		//calling the sendNotification method of emailScenerioUtil
 		EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EDITPROJECT_MAIL_MANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
@@ -1417,7 +1417,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 if(null != projects.getOrgLocationsId())
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.EDITPROJECT_MAIL_TEAMMEMBER,null);
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.EDITPROJECT_MAIL_TEAMMEMBER,new ArrayList<EmailAttachment>());
 		 
 		//calling the sendNotification method of emailScenerioUtil
 		EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EDITPROJECT_MAIL_TEAMMEMBER,Constants.ENTITY_TYPE_NOTIFICATION);
@@ -2430,7 +2430,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
 		notificationScenario.setBody(notificationbody);
 		// calling the sendEmail method of emailScenerioUtil
-		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.USER_NEW_ACTION_ASSIGNED_As_A_PROJECT_APROVER,null);
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.USER_NEW_ACTION_ASSIGNED_As_A_PROJECT_APROVER,new ArrayList<EmailAttachment>());
 		String actionLink = "";
 		emailScenerioUtil.sendNotification(actionLink, loginUser, assUserName, orgLocations, notificationScenario, new HashMap<String, String>());
 	}

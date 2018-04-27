@@ -1784,29 +1784,29 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();
 		 }else if(reqnterview.getInterviewStatus().equalsIgnoreCase("Attending")){
 			 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_ACCEPTMAILTO_INTERVIEW_CREATOR,Constants.ENTITY_TYPE_EMAIL);
-			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orglo.getOrg(),orglo,Constants.APPLICANT_ACCEPTMAILTO_INTERVIEW_CREATOR,null);
+			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orglo.getOrg(),orglo,Constants.APPLICANT_ACCEPTMAILTO_INTERVIEW_CREATOR,new ArrayList<EmailAttachment>());
 			 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_ACCEPTMAILTO_INTERVIEW_CREATOR,Constants.ENTITY_TYPE_NOTIFICATION);
 			 actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();
 		 }
 		 if(reqnterview.getInterviewStatus().equalsIgnoreCase("Not_Attending") && null != reqSubmission.getVendorLocationId()){
 		    emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_APPLICANT_REJECTMAIL_TO_INTERVIEWCREATOR,Constants.ENTITY_TYPE_EMAIL);
-		    commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orglo.getOrg(),orglo,Constants.VENDOR_APPLICANT_REJECTMAIL_TO_INTERVIEWCREATOR,null);
+		    commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orglo.getOrg(),orglo,Constants.VENDOR_APPLICANT_REJECTMAIL_TO_INTERVIEWCREATOR,new ArrayList<EmailAttachment>());
 		    notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_APPLICANT_REJECTMAIL_TO_INTERVIEWCREATOR,Constants.ENTITY_TYPE_NOTIFICATION);
 		    actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();
 		 }else if(reqnterview.getInterviewStatus().equalsIgnoreCase("Not_Attending")){
 		    emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_REJECT_MAILTO_INTERVIEW_CREATOR,Constants.ENTITY_TYPE_EMAIL);
-		    commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orglo.getOrg(),orglo,Constants.APPLICANT_REJECT_MAILTO_INTERVIEW_CREATOR,null);
+		    commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orglo.getOrg(),orglo,Constants.APPLICANT_REJECT_MAILTO_INTERVIEW_CREATOR,new ArrayList<EmailAttachment>());
 		    notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_REJECT_MAILTO_INTERVIEW_CREATOR,Constants.ENTITY_TYPE_NOTIFICATION);
 		    actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();	 
 		 }
 		 if(reqnterview.getInterviewStatus().equalsIgnoreCase("Maybe") && null != reqSubmission.getVendorLocationId()){
 		   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_APPLICANT_TENTATIVE_MAILTO_INTERVIEWCREATOR,Constants.ENTITY_TYPE_EMAIL);
-		   commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orglo.getOrg(),orglo,Constants.VENDOR_APPLICANT_TENTATIVE_MAILTO_INTERVIEWCREATOR,null);
+		   commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orglo.getOrg(),orglo,Constants.VENDOR_APPLICANT_TENTATIVE_MAILTO_INTERVIEWCREATOR,new ArrayList<EmailAttachment>());
 		   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_APPLICANT_TENTATIVE_MAILTO_INTERVIEWCREATOR,Constants.ENTITY_TYPE_NOTIFICATION);
 		   actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();
 		 }else if(reqnterview.getInterviewStatus().equalsIgnoreCase("Maybe")){
 		   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_TENTATIVE_MAILTO_INTERVIEWCREATOR,Constants.ENTITY_TYPE_EMAIL);
-		   commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orglo.getOrg(),orglo,Constants.APPLICANT_TENTATIVE_MAILTO_INTERVIEWCREATOR,null);
+		   commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orglo.getOrg(),orglo,Constants.APPLICANT_TENTATIVE_MAILTO_INTERVIEWCREATOR,new ArrayList<EmailAttachment>());
 		   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_TENTATIVE_MAILTO_INTERVIEWCREATOR,Constants.ENTITY_TYPE_NOTIFICATION);
 		   actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();
 		 }
@@ -1966,10 +1966,10 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	    			 EmailScenario  emailScenario = null;
 	    			 EmailScenario noificationEmailScenario =null;
 	    			 if(null != requirementSubmission.getVendorLocationId()){
-	    				 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.VENDOR_PROPOSE_NEW_TIME,null);
+	    				 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.VENDOR_PROPOSE_NEW_TIME,new ArrayList<EmailAttachment>());
 	    					noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_PROPOSE_NEW_TIME,Constants.ENTITY_TYPE_NOTIFICATION);
 	    			 }else{
-	    				 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.PROPOSE_NEW_TIME,null);
+	    				 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.PROPOSE_NEW_TIME,new ArrayList<EmailAttachment>());
 	    				noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.PROPOSE_NEW_TIME,Constants.ENTITY_TYPE_NOTIFICATION);
 	    			 }
 
