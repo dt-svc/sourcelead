@@ -1,4 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+ <c:set var ="passListCount" value ="${fn:length(PassportList)}"/>
+ 
 <div class="immigraTabsHead">			  	
 		  	<a href="javascript:void(0)" id="addPass"><i class="glyphicon glyphicon-plus"></i> Add Passport</a> 
 		  	<span><input class="immigraTabSerach"  id = "searchValuePassport" placeholder="Passport Id/Country" type="text"></span>
@@ -142,7 +145,14 @@
 			    }
 			});
 		</script>
-		
-		
-		
-		
+
+<script>
+  var passListCount = '<c:out value ="${passListCount}"/>';
+  if(passListCount>0){
+        $('#passportfilled').show() // show and hides circle icon.
+    }
+	else {
+        $('#passportfilled').hide()
+	}
+</script>
+

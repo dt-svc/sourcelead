@@ -66,11 +66,11 @@
 		<div class="row">
 				<div class="col-md-10 mb10 mt5 col-md-offset-2">
 				<span class="checkbox-new  pull-left mr">
-					<input id="columnsPickerUnCheckAll" class="radio-custom toggle-vis" name="columnsPicker" onclick="checkAllColumns(this);"  type="radio">
+					<input id="columnsPickerUnCheckAll" class="radio-custom" name="columnsPicker" onclick="checkAllColumns(this);"  type="radio">
 					<label for="columnsPickerUnCheckAll" class="radio-custom-label">Uncheck All</label>
 				</span>
 				<span class="checkbox-new pull-left">
-					<input id="columnsPickerCheckAll" class="radio-custom toggle-vis" name="columnsPicker" onclick="checkAllColumns(this);"  type="radio" checked="">
+					<input id="columnsPickerCheckAll" class="radio-custom" name="columnsPicker" onclick="checkAllColumns(this);"  type="radio" checked="">
 					<label for="columnsPickerCheckAll" class="radio-custom-label" >Check All</label>
 				</span>
 			</div>

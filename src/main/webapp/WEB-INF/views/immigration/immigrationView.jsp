@@ -50,7 +50,7 @@
 		<div class="immigraHead">
 			<ul class="immigraTabs">
               <li class="current"><a href="#detailsTab"><i class="fa fa-check-circle-o"></i>Details</a></li>
-              <li><a href="#passportsTab"><i class="fa fa-check-circle-o"></i>Passport</a></li>
+              <li><a href="#passportsTab"><i id ="passportfilled" class="fa fa-check-circle-o"></i>Passport</a></li>
               <li><a href="#visasTab"><i class="fa fa-check-circle-o"></i>Visa</a></li>
               <li><a href="#employersTab"><i class="fa fa-check-circle-o"></i>Employers</a></li>
               <li><a href="#residencesTab"><i class="fa fa-check-circle-o"></i>Residence</a></li>
