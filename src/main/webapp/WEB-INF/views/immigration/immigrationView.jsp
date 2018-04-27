@@ -39,7 +39,6 @@
   			
   			
   			<select id="uscisStatusId" onchange="changeUscisStatusForImmigration($(this).val());" class="form-control selstyles-new">
-  				<option selected value="">--Select Option--</option>
   				<c:forEach var="item" items="${uscisStatusList}">
   					<option ${immigration.currUscisStatusId == item.id ? 'selected' : '' } value="${item.id}">${item.name}</option>
   				</c:forEach>
