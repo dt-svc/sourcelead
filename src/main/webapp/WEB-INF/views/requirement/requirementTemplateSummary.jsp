@@ -126,6 +126,7 @@
 				 }
 				 
 				    result = result + '<div class="project_details_cta project_details_view clearfix">';
+
 					result = result + '	<strong>Employment Type:</strong>';
 					 if(null != json.jobType && json.jobType !='' && json.jobType !='undefined'){
                     	 if(json.jobType=='Other'){
@@ -158,6 +159,7 @@
 					}
 					
 				 
+
 						result = result + '<div class="project_details_cta clearfix">';
 						result = result + '	<strong>Min Experience :</strong>';
 						if(json.minExp != null && json.minExp != "" && json.minExp != 'undefined'){
