@@ -1128,10 +1128,10 @@ public class ContractRestController {
 			 	contracts.setUpdatedBy(user.getUserCode());
 				contractsTemplateDao.saveNewContract(contracts);
 				if(contracts.getContractType().equalsIgnoreCase(Constants.CLIENT_MSA) || contracts.getContractType().equalsIgnoreCase(Constants.VENDOR_MSA)){
-				contractsTemplateService.sendMSAEndDateModifiedMail(contracts,orgLocation,previousEndDate);
+				contractsTemplateService.sendMSAEndDateModifiedMail(contracts,orgLocation,previousEndDate,user);
 				}
 				if(contracts.getContractType().equalsIgnoreCase(Constants.Client_SOW) || contracts.getContractType().equalsIgnoreCase(Constants.Vendor_SOW)){
-				contractsTemplateService.sendSOWEndDateModifiedMail(contracts,orgLocation);
+				contractsTemplateService.sendSOWEndDateModifiedMail(contracts,orgLocation,user);
 				}
 		 	}
 			
@@ -1203,7 +1203,8 @@ public class ContractRestController {
 	{
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		boolean flag = contractsTemplateService.sendContractFromOwnertoReceiver(contractsDTO,loginUser,loginOrgLocation);
+		String roleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "displayName");
+		boolean flag = contractsTemplateService.sendContractFromOwnertoReceiver(contractsDTO,loginUser,loginOrgLocation,roleName);
 		return "success";
 	}
 	

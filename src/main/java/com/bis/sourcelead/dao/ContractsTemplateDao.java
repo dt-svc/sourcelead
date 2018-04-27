@@ -63,4 +63,6 @@ public interface ContractsTemplateDao {
 	List<User> getSigningAuthoritiesForContract(Long orgLocationsId, Long tabId);
 
 	List<Contracts> validateAlreadyGeneratedContract(ContractsDTO contractsDTO, OrgLocations loginOrgLocation) throws Exception;
+
+	List<Contracts> getContractsBylocationIdForReminder(Long locationId, String status, Date date);
 }

@@ -8,7 +8,7 @@
   <div class="accountsettings-tab">
 	<div class="tab-content panel-body">
 		<div class="clearfix">
-			<a href="javascript:void(0)" class="btn btn-primary pull-right" onclick="addSignatoryDiv()"><i class="fa fa-plus paddingRight"></i> Signatory</a>
+			<a href="javascript:void(0)" class="btn btn-primary pull-right" onclick="addOrgLocationSignatoryDiv()"><i class="fa fa-plus paddingRight"></i> Signatory</a>
 		</div>
 		
 		<!--  Table starts -->
@@ -524,7 +524,7 @@ function saveSignatory(){
   
   <script>
   //addSignatoryDiv
-  function addSignatoryDiv(){
+  function addOrgLocationSignatoryDiv(){
 	  $(".signatoryFormDiv").fadeIn();
 	  $(".sideMask").fadeIn();
 	  loadLeagelSignerForm();
@@ -540,7 +540,7 @@ function saveSignatory(){
   
   <script>
   function editSignatory(signatoryUUID){
-	  addSignatoryDiv();
+	  addOrgLocationSignatoryDiv();
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  $.get( sourceleadUrl+ "/getSignatoriesByUUID?${_csrf.parameterName}=${_csrf.token}&uuid="+signatoryUUID, function(data) {
 		  if(data != null){

@@ -1907,14 +1907,21 @@ function hideCommonSOWFields(){
 <script type="text/javascript">
 	function saveNewContract(saveType) {
 		if ($('#newcontract_form').validate(false, validationSettings)) {
-			  var formData = getFormData('newcontract_form');
+			var formData = getFormData1("newcontract_form");
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#contractLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-            $.post( sourceleadUrl+ "/saveNewContract?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType, formData, function(data) {
-                       if(data == true){
-                    	   location.replace(sourceleadUrl+"/contractListbyStatus");
-                       }
-                    });
+			$.ajax({
+				type : "POST",
+				data: formData,
+  		        processData: false,
+  		        contentType:false, 
+				url : sourceleadUrl+ "/saveNewContract?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType,
+				success : function(data) {
+					  if(data == true){
+                   	   location.replace(sourceleadUrl+"/contractListbyStatus");
+                      }
+				  }
+              });
             
 			return true;
 		} else {

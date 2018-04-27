@@ -397,7 +397,21 @@ public class Contracts {
 	@JsonProperty
 	private Map<Long,String> newContractCustomFieldlabelNameAndValue;
 	
+	@Transient
+	@JsonProperty
+	private String autoGenId;
 	
+	
+	public String getAutoGenId()
+	{
+		return autoGenId;
+	}
+
+	public void setAutoGenId(String autoGenId)
+	{
+		this.autoGenId = autoGenId;
+	}
+
 	public List<ContractRequestDocuments> getContractRequestDocumentsList()
 	{
 		return contractRequestDocumentsList;
