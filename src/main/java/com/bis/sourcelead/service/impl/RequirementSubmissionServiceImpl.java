@@ -4438,7 +4438,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 									String Reqlocation = "";
 									StringBuilder requirementBuilder=new StringBuilder();
 									try {
-										locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(reqsub.getRequirementId());
+										locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(reqsub.getRequirement().getId());
 										if(locationsList != null && !locationsList.isEmpty()) {
 											for(RequirementLocations locationsJob : locationsList) {
 												requirementLocationsList.add(locationsJob.getLocation());
