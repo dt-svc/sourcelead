@@ -106,6 +106,10 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 					}
 					
 				}
+				
+				if(StringUtils.isNotBlank(referContactsDTO.getEmail())) {
+					referContacts.setContactUserEmail(referContactsDTO.getEmail());
+				}
 				if(StringUtils.isNoneBlank(referContactsDTO.getCompanyName())){
 					referContacts.setCompanyName(referContactsDTO.getCompanyName());
 				}

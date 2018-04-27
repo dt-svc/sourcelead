@@ -66,7 +66,7 @@ public class BlogController {
 
 		if (blogDetails.getCategoryId() != null) {
 			List<SourceleadBlogs> relatedBlogs = sourceleadBlogService
-					.getRelatedSourceleadBlogs(blogDetails.getCategoryId().getId());
+					.getRelatedSourceleadBlogs(blogDetails.getId());
 			modelAndView.addObject("relatedBlogs", relatedBlogs);
 		}
 

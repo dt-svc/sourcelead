@@ -1776,7 +1776,14 @@ $("#searchType").selectpicker('refresh');
                 <label class="col-md-4 paddingRight">
                     <i class="fa fa-envelope paddingRight text-info"></i>Email<span class="text-danger paddingLeft">*</span></label>
                 <div class="col-md-8 paddingLeft">
-                    <input type="text" class="form-control input-sm" placeholder="Email" id="inviteCompanyemail" name="email" field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">
+                <div class="input-group errorInptgroup">
+                    <input type="text" class="form-control input-sm" placeholder="Email" id="inviteCompanyemail" name="email" field-name="Email"  onblur="verifyEmail2();"  data-validation="required validate_Space validate_length length2-100 validate_email">
+                        <span id="emailStatusIconDiv" class="input-group-addon">
+	                    	<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>
+	                  	</span>
+                
+                </div>
+                
                 </div>
             </div>
                         <div class="form-group clearfix">
@@ -2143,8 +2150,21 @@ function zipcodeMask(country,zipCodeId){
 <script>
   var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 </script>
+
+
 <script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
 <script src="/resources/js/zipcodeMaskedinput-1.3.min.js?staticTime=${staticTime}"></script>
 
 
+<script type="text/javascript">
+function verifyEmail2() {
+	var email = document.getElementById("inviteCompanyemail").value;
+	if(email != null && email != ''){
+	      validateEmailForExistenceUniversally(email, '#inviteCompanyemail');
+	}else{
+		 $("#emailStatusIconDiv").find("i").remove();
+   		 $("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>');
+	}
+}
 
+</script>
