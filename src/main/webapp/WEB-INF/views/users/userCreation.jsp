@@ -120,10 +120,17 @@
                         </div>
                   </div>
                   
-                 <div class="col-md-5" id="EmailIdDiv">
-                  <label class="clearfix">Email Id<span class="text-danger">&nbsp;*</span></label>
-                  <div class="clearfix">
-                    <input type="text" class="form-control" id="EmailId" name="email" value="" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email"  onblur="getUserByUserEmail(); validateUserEmail();" onKeyUp="validateUserEmail();" >
+
+                 <div class="form-group" id="EmailIdDiv">
+                  <label class="col-md-3">Email Id<span class="text-danger">&nbsp;*</span></label>
+                  <div class="col-md-9">
+	                  <div class="input-group errorInptgroup">
+	                    <input type="text" class="form-control" id="EmailId" name="email" value="" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email"  onblur="getUserByUserEmail(); validateUserEmail();" onKeyUp="validateUserEmail();" >
+	                    <span id="emailStatusIconDiv" class="input-group-addon">
+	                    	<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>
+	                  	</span>
+	                  </div>
+
                   </div>
                   </div>
                   
@@ -699,11 +706,10 @@ function getEmployeementType(designationType){
 		        			 $("#phone").removeAttr("readonly", "readonly");
 		        			 //$("#phone").val('');
 		        		}
-		        		
 		        		$("#loading").removeAttr('style');
-		        		if(validateEmailForExistenceUniversally(EmailId) === false){
-		        			$("input#EmailId").after("<p class='jquery_form_error_message textWarning'><i class='fa fa-exclamation-triangle' aria-hidden='true'></i>This email universally not existed</span>");
-		        		}
+		        		
+		        		validateEmailForExistenceUniversally(EmailId, "input#EmailId");
+		        		
 		        },
 		    });
 	 }else{
@@ -727,7 +733,8 @@ function getEmployeementType(designationType){
 		 $("#employeementType").val('');
 	     $('#employeementType').trigger("chosen:updated");
 	     
-		 
+	     $("#emailStatusIconDiv").find("i").remove();
+		 $("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>');
 	 }
  }
  </script>   

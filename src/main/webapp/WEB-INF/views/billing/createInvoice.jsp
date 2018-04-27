@@ -157,12 +157,24 @@ function errRemoveClientContact(){
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3">Account Details</label>
-							<div class="col-md-9">
-								<textarea class="form-control" rows="2" id="accountDetails"
-									name="accountDetails" placeholder="Account Details"></textarea>
-							</div>
-						</div>
+			              <label class="col-md-3">Payment Account</label>
+			              <div class="col-md-9 select-field" id="projectMemberIdDiv">
+			                <select class="form-control" id="paymentAccountId"  field-name="paymentAccountId Name" name="paymentAccount">
+			                   <option>--Select Account--</option>
+			                    <c:forEach items="${paymentAccountList}" var="p">
+			                        <option value="${p.id}" ${p.defaultAccount ? 'selected="selected"' : ""}>${p.accountType == "WEPAY" ? p.email.concat(" (WePay)") : p.accountNumber.concat(" (").concat(p.bankName).concat(")")}</option>
+			                    </c:forEach>
+			                </select>
+			              </div>
+			            </div>
+			            
+<!-- 						<div class="form-group"> -->
+<!-- 							<label class="col-md-3">Account Details</label> -->
+<!-- 							<div class="col-md-9"> -->
+<!-- 								<textarea class="form-control" rows="2" id="accountDetails" -->
+<!-- 									name="accountDetails" placeholder="Account Details"></textarea> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
 					</div>
 				</div>
 
@@ -487,8 +499,11 @@ if(selectedTextInvoice =='percentage'){
 		    	 url: sourceleadUrl+"/getInvoiceDetailsByInvoiceUUID?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
 		         success: function(data) {
 		        	 var json = JSON.parse(data);
-		        	 
 		        	 var result = '';
+		        	 if(json.paymentAccountId > 0) {
+		        		 $("#paymentAccountId").val(json.paymentAccountId);
+		        	 }
+		        	 
 		        	 var selected = 'selected';
 		        	 result = result +'<option disabled selected>--Select Vendor--</option>';
 		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' >'+json['orgName']+'</option>';
@@ -510,9 +525,9 @@ if(selectedTextInvoice =='percentage'){
 		           	if(json['billingAddress'] != null && json['billingAddress'] != '' && json['billingAddress'] != 'undefined'){
 		           		$("#billingAddress").val(json['billingAddress']);
 		           	}
-		           	if(json['accountDetails'] != null && json['accountDetails'] != '' && json['accountDetails'] != 'undefined'){
+		           	/* if(json['accountDetails'] != null && json['accountDetails'] != '' && json['accountDetails'] != 'undefined'){
 		           		$("#accountDetails").val(json['accountDetails']);
-		           	}
+		           	} */
 		           	buildLineItemAndTaxAddRows();
 		           	
 		           	editInvoice(json['invoiceLineItemsList']);

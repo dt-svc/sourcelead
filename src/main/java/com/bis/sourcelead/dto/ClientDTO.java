@@ -2,6 +2,7 @@ package com.bis.sourcelead.dto;
 
 import java.util.List;
 
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.annotations.Email;
 import com.bis.sourcelead.annotations.Required;
 
@@ -45,6 +46,7 @@ public class ClientDTO {
 	
 	private String address;
 	
+	@CleanHtml(escape=false)
 	private String billingAddress;
 	
 	private String paymentTerms;

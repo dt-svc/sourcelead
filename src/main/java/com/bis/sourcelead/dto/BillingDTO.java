@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.Transient;
 
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.InvoiceTax;
@@ -27,7 +28,9 @@ public class BillingDTO {
 	private Long linkInvoiceReferenceId;
 	private Date invoiceDate;
 	private Date dueDate;
+	@CleanHtml(escape=false)
 	private String billingAddress;
+	@CleanHtml(escape=false)
 	private String accountDetails;
 	private String discountAmount;
 	private String afterDiscountValue;

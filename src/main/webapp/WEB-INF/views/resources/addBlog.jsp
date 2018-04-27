@@ -6,6 +6,7 @@
 
 <link href="/resources/css/summernote-new.css" rel="stylesheet" type="text/css">
 
+
 <div class="wraper">
 <!-- Content Area -->
 <section class="content-wraper">
@@ -56,6 +57,8 @@
 				</select>
 			</div>
 		</div>
+		
+		<input type="hidden" id="href" name="href"/>
 		
 		<c:if test="${empty sourceleadBlog.fileName}">			
 	        <div class="form-group" >
@@ -150,6 +153,7 @@ function saveBlog(saveType) {
 	var blogUUID = $("#blogUUID").val();
 	var ee = $("#summernote").val($('.note-editable').html()); 
 	if ($('#add_blog_form').validate(false, validationSettings)) {
+		setBlogHref();
 	  	var formData = $($('#add_blog_form')[0]).serialize();
 		$("#blogLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.post(sourceleadUrl+"/addBlog?"+tokenParamName+"="+tokenValue+"&blogUUID="+blogUUID+"&blogStatus="+saveType, formData, function(result) {
@@ -171,6 +175,16 @@ function saveBlog(saveType) {
 		} else {
 			return false;
 		}
+}
+
+function setBlogHref(){
+	var title = $("#blogTitle").val();
+	var name = title.replace(/[-]/gi, '_');
+	name = name.replace(/[^\w\s]/gi, '');
+	name = name.replace(/[ ]/gi, '-');
+	name = name.replace(/[_]/gi, '-');
+	name = name.lastIndexOf("-") === name.length -1 ? name.substring(0, name.length-1) : name;
+	$("#href").val(name);
 }
 
 $('body').on('blur', '#add_blog_form', function() {
@@ -295,7 +309,7 @@ $(function() {
   $('#publishOn').empty().val('${publishon}');
   setTimeout(function () {
     var description = '${sourceleadBlog.description}';
-	 $("textarea[name=description]").val(description);
+	 $("textarea[name=description]").html(description);
 	 $('.note-editable').html(description);
 	
 	}, 100); 

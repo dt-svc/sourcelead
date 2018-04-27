@@ -337,12 +337,12 @@ width: 100% !important;
 		 
 		 
 		 <!--  Radio Buttons -->
-					<div class="form-group" id="jobTypeDiv" style="display: none">
+					<%-- <div class="form-group" id="jobTypeDiv" style="display: none">
 							<label class="col-md-3">Employment Type</label>
 								<div class="col-md-9">
 									<input type="text" class="form-control" id="jobOtherType" name="jobOtherType" value="${requirement.otherJobType}" field-name="Job Type" value="">
 								</div>
-					</div>
+					</div> --%>
 					
 					</div>
 	
@@ -598,24 +598,22 @@ function getJobType(jobType){
 		  document.getElementById("jobTypeDiv").style.display="block";
 		  $("#jobOtherType").attr("data-validation-optional", "true");
 		  $("#jobOtherType").attr("data-validation", "validate_Space validate_length length2-250");
+		  document.getElementById("projectDurationYearsDiv").style.display="none";
+		  document.getElementById("projectDurationMonthsDiv").style.display="none";
 	}else{
-		document.getElementById("jobTypeDiv").style.display="none";
+		  document.getElementById("jobTypeDiv").style.display="none";
 		  $("#jobOtherType").attr("data-validation-optional", "true");
 		  $("#jobTypeDiv").find('p.jquery_form_error_message').remove();
 		  if(existingJobType ==null || existingJobType == "" || existingJobType == "undefined" || existingJobType != 'Other'){
 			  $("#jobOtherType").val('');
 		  }
 		  if(jobType.value == 'C2C' || jobType.value == 'C2H' || jobType.value == 'Contract'){
-				
 				 document.getElementById("projectDurationYearsDiv").style.display="block";
 				 document.getElementById("projectDurationMonthsDiv").style.display="block";
-			  
 			}else{
 				document.getElementById("projectDurationYearsDiv").style.display="none";
 				document.getElementById("projectDurationMonthsDiv").style.display="none";
-				
 			}
-		 
 	}
 }
 </script>
