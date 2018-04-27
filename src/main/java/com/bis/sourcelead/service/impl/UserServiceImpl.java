@@ -727,8 +727,9 @@ public class UserServiceImpl implements UserService {
 		 }else{
 			 globalVarsMap.put("Password","Login with your existing sourcelead credentials");
 		 }
+		List<EmailAttachment> attachmentList=new ArrayList<EmailAttachment>();
 		
-		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.INVITE_USER);
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.INVITE_USER,attachmentList);
 		
 	}
 

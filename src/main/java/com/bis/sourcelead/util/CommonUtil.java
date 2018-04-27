@@ -2324,7 +2324,7 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 
   
   
-  public void sendTemplateEmail(EmailMessage emailMessage,Map<String, String> globalVarsMap,Org org,OrgLocations orgLocations,String uniqueScenerioName){
+  public void sendTemplateEmail(EmailMessage emailMessage,Map<String, String> globalVarsMap,Org org,OrgLocations orgLocations,String uniqueScenerioName,List<EmailAttachment> attachmentList){
 	  
 	  try{
 		//setting the Recipient information
@@ -2332,6 +2332,7 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 			 
 			//getting the current EmailScenario by EmailScenario unique name and entity type
 			 EmailScenario  emailScenario = null;
+			 if(orgLocations != null)
 			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(uniqueScenerioName,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
 			  if(emailScenario == null){
 					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(uniqueScenerioName,Constants.ENTITY_TYPE_EMAIL);
@@ -2360,7 +2361,7 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 			 emailMessage.setMessageBody(emailTemplate);
 			 
 			 //calling the sendEmail method of emailScenerioUtil
-			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,attachmentList);
 	  }catch (Exception e) {
 		  e.printStackTrace();
 	}
