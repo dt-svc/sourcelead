@@ -131,7 +131,7 @@ $('body').on('blur', '#associate_contribution_form', function() {
  function saveAssociateContribution(){
 	 var userId = $("#associateId").val();  
 	 var contributionType = $("#contributionType").val();
-	 if(contributionType != null && contributionType != '' && contributionType == 'undefined'){
+	 if(contributionType != null && contributionType != '' && contributionType != 'undefined'){
 		 var formData = getFormData("associate_contribution_form"); 
 			$("#contribution_save_button").attr("disabled", "disabled");
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');

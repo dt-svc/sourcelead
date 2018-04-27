@@ -1140,6 +1140,26 @@ function clearDate(){
 
 <script>
 // script for tabs
+
+			/* 	var associateBanking = document.getElementById("associateBanking");
+				if(associateBanking){
+					associateBanking.href = "#";
+					associateBanking.className = "disabledLink";
+				}
+				var associateTax = document.getElementById("associateTax");
+				if(associateTax){
+					associateTax.href = "#";
+					associateTax.className = "disabledLink";
+				}
+				
+				var associateDeduction = document.getElementById("associateDeduction");
+				if(associateDeduction){
+					associateDeduction.href = "#";
+					associateDeduction.className = "disabledLink";
+				} */
+				
+				// associateContribution associateAdvances
+
 $(document).ready(function() {
 	$("#tab-1").show()
     $(".tabsMenu a").click(function(event) {
