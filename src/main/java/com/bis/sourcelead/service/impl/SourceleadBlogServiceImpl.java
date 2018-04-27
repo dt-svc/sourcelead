@@ -84,7 +84,8 @@ public class SourceleadBlogServiceImpl implements SourceleadBlogService{
 		
 		if(sourceleadBlogDTO.getBlogTitle() != null) {
 			sourceleadBlogs.setBlogTitle(sourceleadBlogDTO.getBlogTitle());
-			sourceleadBlogs.setHref(sourceleadBlogDTO.getBlogTitle().toLowerCase().replaceAll(" ", "-").replaceAll(" & ", "-and-"));
+//			sourceleadBlogs.setHref(sourceleadBlogDTO.getBlogTitle().toLowerCase().replaceAll(" ", "-").replaceAll(" & ", "-and-"));
+			sourceleadBlogs.setHref(sourceleadBlogDTO.getHref().toLowerCase().replaceAll(" ", "-").replaceAll(" & ", "-and-"));
 		}
 		
 		if(sourceleadBlogDTO.getCategoryId() != null) {
