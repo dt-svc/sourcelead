@@ -1502,6 +1502,22 @@ public class ImmigrationRestController {
 		
 	}
 	
+	@RequestMapping(value = { "/deleteImmigrationEmployerDocumentById" })
+	public String deleteImmigrationEmployerDocumentById(@RequestParam(value = "id", required = false) Long id,
+			HttpServletRequest request) throws Exception {
+		String status = candidateEmployersService.removeCandidateEmployerDocById(id);
+		return status;
+		
+	}
+	
+	@RequestMapping(value = { "/deleteImmigrationEducationDocumentById" })
+	public String deleteImmigrationEducationDocumentById(@RequestParam(value = "id", required = false) Long id,
+			HttpServletRequest request) throws Exception {
+		String status = candidateEducationService.removeCandidateEucationrDocById(id);
+		return status;
+		
+	}
+	
 	@RequestMapping("/downloadImmigrationFormZip")	
 	@ResponseBody
 	public String exportImmigrationForms(HttpServletRequest request,Long immigrationId) throws Exception {

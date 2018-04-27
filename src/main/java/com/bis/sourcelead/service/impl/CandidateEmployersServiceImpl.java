@@ -339,4 +339,17 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 		return candidateEmployersDao.getCandidateLastCompanyEmployer(candidateId, orgLocationId);
 	}
 
+	@Override
+	public String removeCandidateEmployerDocById(Long candidateEmployerId) throws Exception {
+		CandidateEmployers candidateEmployers = candidateEmployersDao.getCandidateEmployerById(candidateEmployerId);
+		if(candidateEmployers != null){
+			candidateEmployers.setEmployerFileName(null);
+			candidateEmployers.setEmployerFileUrl(null);
+			candidateEmployers.setEmployerFileContentType(null);
+		}
+		candidateEmployersDao.storeCandidateEmployers(candidateEmployers);
+		
+		return "success";
+	}
+
 }

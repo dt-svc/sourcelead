@@ -5,6 +5,7 @@ import java.util.List;
 import org.json.JSONObject;
 
 import com.bis.sourcelead.entity.CandidateEducation;
+import com.bis.sourcelead.entity.CandidateEmployers;
 
 	/**
 	 * 
@@ -34,6 +35,9 @@ public interface CandidateEducationDao {
 	public Boolean validateEducationName(Long candidateId, String candidateEducation) throws Exception;
 	
 	public List<String> getCandidateEducationNamesByCandidateId(Long candidateId) throws Exception;
+	
+	CandidateEducation getCandidateEducationById(Long candidateEduId) throws Exception;
+	
 
 
 }

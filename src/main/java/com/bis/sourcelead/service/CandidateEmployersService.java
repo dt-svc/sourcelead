@@ -71,6 +71,8 @@ public interface CandidateEmployersService {
 	
 	CandidateEmployers getCandidateCurrentEmployer(Long candidateId, Long orgLocationId) throws Exception;
 	
+	String removeCandidateEmployerDocById(Long candidateEmployerId) throws Exception;
+	
 	CandidateEmployers getCandidateLastCompanyEmployer(Long candidateId, Long orgLocationId) throws Exception;
 	
 	public List<CandidateEmployers>   getCandidatesEmployersListByCandidateIdAndOrgLocationIDImmigration(Long candidateId, Long orgLocationId, String searchVal) throws Exception;

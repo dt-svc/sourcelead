@@ -158,7 +158,7 @@
 			<div class="col-sm-12 noPad mt clearfix" id="immigrationEmpDocDivEdit" style="display: none">
 			<label class="col-md-4 padding_left">File</label>
 			 <div class="col-md-8">
-				  <label id="immigrationEmpDocName" name="immigrationEmpDocName" class="text-primary tbldata-dotdot-200 pull-left" title=""></label>&nbsp;&nbsp;<span id="delete_immiDocFile" onclick="removeImmigFormDoc1();"><i class="fa fa-trash removeIcon text-danger cursorPointer pull-right"></i></span>
+				  <label id="immigrationEmpDocName" name="immigrationEmpDocName" class="text-primary tbldata-dotdot-200 pull-left" title=""></label>&nbsp;&nbsp;<span id="delete_immiEmpDocFile" onclick="removeImmiEmpDocFile();"><i class="fa fa-trash removeIcon text-danger cursorPointer pull-right"></i></span>
 				<input type="hidden" id="immigrationEmpDocNameExisitngFile" name="immigrationEmpDocNameExisitngFile" value="">
 				  </div>			          	
 			</div>
@@ -213,5 +213,22 @@ document.getElementById("uploadBtnEmployer").onchange = function () {
  	$('#uploadFileEmployer').val($(this).val().replace(/C:\\fakepath\\/i, ''))
 
 }; 
+</script>
+
+<script type="text/javascript">
+function removeImmiEmpDocFile(){
+	var id = $("#candidateEmpId").val();
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/deleteImmigrationEmployerDocumentById?id="+id,
+        type: "GET",
+        success: function (result) {
+        if(result=='success'){
+        	$("#immigrationEmpDocDivEdit").hide();
+        	$("#immigrationEmpDocDiv").show();
+        	 
+        	} 
+        }
+    });
+}
 </script>
 		

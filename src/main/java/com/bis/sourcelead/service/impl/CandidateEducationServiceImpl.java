@@ -25,6 +25,7 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
+import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEducationService;
@@ -395,4 +396,17 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		return candidateEducationDao.getCandidateEducationNamesByCandidateId(candidateId);
 	}
 
+	
+	@Override
+	public String removeCandidateEucationrDocById(Long candidateEmployerId) throws Exception {
+		CandidateEducation candidateEducation = candidateEducationDao.getCandidateEducationById(candidateEmployerId);
+		if(candidateEducation != null){
+			candidateEducation.setEducationFileName(null);
+			candidateEducation.setEducationFileUrl(null);
+			candidateEducation.setEducationFileContentType(null);
+		}
+		candidateEducationDao.storeCandidateEducation(candidateEducation);
+		
+		return "success";
+	}
 }
