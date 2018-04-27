@@ -178,7 +178,7 @@
 							 <div class="clearfix"></div>
 							 <div class="mb" id="durationCustomsearch" style="display:none;">
 							 	<div class="col-md-6 paddingRight">
-							 		<select placeholder="From Year" id="filterFromYear" class="form-control input-sm"></select>
+							 		<select placeholder="From Year" id="filterFromYear" onchange="getFilterTwoYear($(this).val());" class="form-control input-sm"></select>
 							 	</div>
 							 	<div class="col-md-6 paddingLeft">
 							 		<select placeholder="To Year" id="filterToYear" class="form-control input-sm"></select>
@@ -293,12 +293,21 @@
         $(".clientDetails").toggleClass('hidden', 500);
         });
 
-    	$('#filterFromYear, #filterToYear').append($('<option />').val("").html("--Select--"));
+    	$('#filterFromYear').append($('<option />').val("").html("--Select--"));
         for (i = new Date().getFullYear(); i > 1900; i--)
         {
-            $('#filterFromYear, #filterToYear').append($('<option />').val(i).html(i));
+            $('#filterFromYear').append($('<option />').val(i).html(i));
         } 
         });
+        
+        function getFilterTwoYear(selectedFrmYear){
+        	$('#filterToYear').empty();
+        	$('#filterToYear').append($('<option />').val("").html("--Select--"));
+        	for (i = new Date().getFullYear(); i >= selectedFrmYear ; i--)
+            {
+                $('#filterToYear').append($('<option />').val(i).html(i));
+            } 
+        }
     </script> 
 <script>
     // Script for tabs next pre button
@@ -803,11 +812,12 @@
 				filterDurationVal.push(((new Date()).getFullYear()-1));
 			}
 			if($(this).val()=='yearsRange'){
-				if($("#filterFromYear").val() !== ""){
-					filterDurationVal.push($("#filterFromYear").val());
-				}
 				if($("#filterToYear").val() !== ""){
-					filterDurationVal.push($("#filterToYear").val());
+					if($("#filterFromYear").val() !== ""){
+						for(var i = $("#filterFromYear").val();i<=$("#filterToYear").val();i++){
+							filterDurationVal.push(i);
+						}
+					}
 				}
 			}
 		});

@@ -239,7 +239,7 @@
 			<div class="pull-right text-right">
 				<input type="button" value="Back" onclick="goToSummaryTab('#formsTab');" class="btn btn-default btn-sm">
              	<input type="button" value="Skip" onclick="goToSummaryTab('#notesTab');" class="btn btn-default btn-sm"> 
-              	<input type="button" value="Continue" onclick="goToSummaryTab('#notesTab');" class="btn btn-primary btn-sm ml10">
+              	<input type="button" value="Submit" onclick="javascript:void(0);" class="btn btn-primary btn-sm ml10">
             </div>
 		</div>
 	</form>	
@@ -485,7 +485,10 @@ function downlaodZipfileByDocId(docId){
 <script>
 function getDocumentTypeDiv(documentTypes){
 	 var existingDocumentType = $('#documentType').val(); 
-	if(documentTypes.value == '940'){
+	 
+	 var selText= $(documentTypes).find("option:selected").text();
+	 
+	if(selText == 'Other'){
 		  document.getElementById("documentOtherTypeDiv").style.display="block";
 		  $("#documentOtherType").attr("data-validation-optional", "false");
 		  $("#documentOtherType").attr("data-validation", "required validate_Space validate_length length2-250");
