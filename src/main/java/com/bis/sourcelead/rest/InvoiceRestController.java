@@ -46,6 +46,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.dto.PaymentAccountDTO;
+import com.bis.sourcelead.entity.PaymentAccount;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.beans.BillingReportDTO;
 import com.bis.sourcelead.beans.CurrencyConversionResponse;
@@ -115,6 +118,8 @@ import com.bis.sourcelead.web.LoginSessionController;
 public class InvoiceRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(InvoiceRestController.class);
+	@Autowired
+	private OrgService orgService;
 	@Autowired
 	private CommonUtil commonUtil;
 	@Autowired
@@ -672,6 +677,9 @@ public class InvoiceRestController {
 			invoice.setCurrencyCode(invoice.getCurrencyCode());
 			invoice.setDueDateStr(formatter.format(invoice.getDueDate()));
 			invoice.setInvoiceDateStr(formatter.format(invoice.getInvoiceDate()));
+			if(invoice.getPaymentAccount() != null) {
+				invoice.setPaymentAccountDTO(orgService.getPaymentAccount(invoice.getPaymentAccount().getId(), null));
+			}
 			// get the Invoice Items List
 			List<InvoiceLineItems> invoiceLineItemsList = invoiceLineItemService.invoiceLineItemsByInvoiceIdAndOrglocationId(Id, orgLocations.getId());
 			for (InvoiceLineItems inviceLine : invoiceLineItemsList) {
@@ -1916,5 +1924,13 @@ public class InvoiceRestController {
 		List<ProjectMembers> associatesList = projectMembersService.getVendorAssignedMembersForProjects(projectId, orgLocationId, orgRelationId);
 		responseList.setData(associatesList);
 		return responseList;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/getAllPaymentAccountList", method = RequestMethod.GET)
+	public List<PaymentAccountDTO> getAllPaymentAccountList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
+		OrgRelations orgRealation =  orgRelationsService.getOrgRelationById(orgRelationId); 
+		List<PaymentAccountDTO> paymentAccountList = orgService.getPaymentAccountList(orgRealation.getResponderLocationId().getOrg().getId(), orgRealation.getResponderLocationId().getId(),true);
+		return paymentAccountList;
 	}
 }

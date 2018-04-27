@@ -85,8 +85,8 @@ gtag('config', 'UA-115098165-1');
 				<li><a href="/ims.html" id="imsID">IMS</a></li>
 			</ul>
 	</li>
-	<li><a href="/sourceleadJobPage.html" id="searchjobID">Search Job</a></li>
-	<li><a href="/marketplace.html" id="marketplaceID">Marketplace</a></li>
+	<li><a href="/search-jobs.html" id="searchjobID">Search Job</a></li>
+	<li><a href="/market-place.html" id="marketplaceID">Marketplace</a></li>
 	<li><a href="/about-us.html" id="aboutusID">About Us</a></li>
 	<!--<li><a href="helpManuals.html">Help</a></li>-->
 
@@ -96,7 +96,7 @@ gtag('config', 'UA-115098165-1');
 	 <a data-target="#featureshome" href="javascript:void(0)" id="resourcesID">Resources
 			  <span class="fa fa-angle-down"></span></a>
 			<ul id="featureshome" class="collapse list-unstyled dropdownmenu-custom">
-				<li><a class="helpbtn" href="/sourcelead_help.html">Help Manuals</a></li>
+				<li><a class="helpbtn" href="/help-manuals.html">Help Manuals</a></li>
 				<li><a href="/blog/all.html" id="blogID">Blog</a></li>
 			</ul>
 	</li>

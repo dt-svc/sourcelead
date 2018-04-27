@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.annotations.Required;
-import com.bis.sourcelead.entity.User;
 
 @SuppressWarnings("serial")
 public class SourceleadTicketDTO extends SearchDTO implements Serializable{

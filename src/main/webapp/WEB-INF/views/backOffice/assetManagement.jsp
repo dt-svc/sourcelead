@@ -416,7 +416,7 @@ function projectAssetPaginations(url){
 			  	"render": function(data, type, report) {
 			  		var result = "";
 			  		if (report.model != null && report.model != '' && report.model != 'undefined') {
-						result = result+'<td><div class="tbldata-dotdot-vsm" title="'+model+'">'+report.model+'</div></td>';
+						result = result+'<td><div class="tbldata-dotdot-vsm" title="'+report.model+'">'+report.model+'</div></td>';
 					}else{
 						result = result+'<td><div class="tbldata-dotdot-vsm" >--</div></td>';
 					}

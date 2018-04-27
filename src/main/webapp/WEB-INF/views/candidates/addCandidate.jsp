@@ -99,14 +99,22 @@
 					</div>
 					<div class="form-group" id="emailDiv">
 						<label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
-						<div class="col-md-9">
-							<input type="text" class="form-control" id="email" name="email"
+						<div class="col-md-9 ">
+							<div class="input-group errorInptgroup">
+	                    <input type="text" class="form-control" id="email" name="email"
 								value="${email}" field-name="Email"
 								data-validation="required validate_length length2-100 validate_email"
 								onblur="validateCandidateEmail();"
-								onmouseout="validateCandidateEmail();" value=""> <span
+								 value=""> <span
 								class="hidden">Valid Email</span>
+	                    <span id="emailStatusIconDiv" class="input-group-addon">
+	                    	<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>
+	                  	</span>
+	                  </div>
 						</div>
+						
+						 
+	                  
 					</div>
 
 					<div class="form-group">
@@ -808,6 +816,7 @@
                             $('#emailDiv').find('p.jquery_form_error_message').remove();
                             $("#store_candidate").addClass('button').val('Save');
                             $("#store_candidate").removeAttr("disabled");
+                            validateEmailForExistenceUniversally(email, "input#email");
                         }
                 	} else if (response.indexOf('Sign In') !== -1) {
                 		location.replace(sourceleadUrl);
@@ -816,6 +825,9 @@
                 	}
                 },
             });
+         }else{
+         $("#emailStatusIconDiv").find("i").remove();
+   		 $("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>');
         }
     }
 </script>
@@ -886,7 +898,6 @@
             }
         }
 
-      alert(designationType.value)
         if (designationType.value == 'C2C') {
         	alert("1")
             document.getElementById("hideVendor").style.display = "block";
