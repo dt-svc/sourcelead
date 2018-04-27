@@ -699,19 +699,27 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		
 	System.out.println(" latest code deployed 6666 --->"+orgLocations.getId());
         listQuery = "from ImmigrationListView immView  where immView.status = 1  and (immView.orgLocationId=:orgLocationId or immView.attorneyOrgLocationId =:orgLocationId) ";
+        String listQueryCount = "select count(*) from ImmigrationListView immView where  immView.status = 1  and (immView.orgLocationId=:orgLocationId or immView.attorneyOrgLocationId =:orgLocationId)  ";
         String resultQuery = null;
+        String resultCountQuery = null;
+        Query hqlQuery1 = null;
         Query hqlQuery = null;
         if(filterVal.size() != 0) {
+        	resultCountQuery = listQueryCount + query1 +query2;
         	resultQuery = listQuery + query1 + query2 + sortingQry;
         	hqlQuery = session.createQuery(resultQuery);
+        	hqlQuery1 = session.createQuery(resultCountQuery);
         	if(filterVal.get("type") != null) {
         		hqlQuery.setParameterList("petitionTypeList", filterVal.get("type"));
+        		hqlQuery1.setParameterList("petitionTypeList", filterVal.get("type"));
         	}
         	if(filterVal.get("status") != null) {
         		hqlQuery.setParameterList("uscisStatusList", filterVal.get("status"));
+        		hqlQuery1.setParameterList("uscisStatusList", filterVal.get("status"));
         	}
         	if(filterVal.get("attorney") != null) {
         		hqlQuery.setParameterList("attorneyList", filterVal.get("attorney"));
+        		hqlQuery1.setParameterList("attorneyList", filterVal.get("attorney"));
         	}
         	if(filterVal.get("duration") != null) {
         		List<Long> durationDates = new ArrayList<Long>();
@@ -722,16 +730,22 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         		Integer lowestDate = (int)(long)Collections.min(durationDates);
         		hqlQuery.setParameter("highestDuration", highestDate);
         		hqlQuery.setParameter("lowestDuration", lowestDate);
+        		hqlQuery1.setParameter("highestDuration", highestDate);
+        		hqlQuery1.setParameter("lowestDuration", lowestDate);
+        		
         	}
         	hqlQuery = hqlQuery.setLong("orgLocationId", orgLocations.getId());
+        	hqlQuery1 = hqlQuery1.setLong("orgLocationId", orgLocations.getId());
         }else {
         	resultQuery = listQuery + query1 + sortingQry;
+        	resultCountQuery = listQueryCount + query1;
         	hqlQuery = session.createQuery(resultQuery).setLong("orgLocationId", orgLocations.getId());
+        	hqlQuery1 = session.createQuery(resultCountQuery).setLong("orgLocationId", orgLocations.getId());
         }
         ImmigrationViewLst = hqlQuery.list();
           
-        String listQueryCount = "select count(*) from ImmigrationListView immView where  immView.status = 1  and (immView.orgLocationId=:orgLocationId or immView.attorneyOrgLocationId =:orgLocationId)  ";
-        countlist = session.createQuery(listQueryCount + query1).setLong("orgLocationId", orgLocations.getId()).setFirstResult(immigrationListDTO.getStart())
+        
+        countlist = hqlQuery1.setFirstResult(immigrationListDTO.getStart())
                 .setMaxResults(immigrationListDTO.getLength()).list();
         int totalCount = 0;
         if (immigrationListDTO != null) {
