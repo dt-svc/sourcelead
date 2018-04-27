@@ -27,6 +27,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
+import com.bis.sourcelead.constants.Constants;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -179,6 +180,10 @@ public class Asset implements Serializable{
 	@JsonProperty
 	private String categoryName;
 	
+	@Transient
+    @JsonProperty
+    private String issueDateStr;
+  
 	@Transient 
 	private List<Employees> employeesList;
 
@@ -520,5 +525,12 @@ public class Asset implements Serializable{
 	public void setAssetAssign(Set<AssetAssign> assetAssign) {
 		this.assetAssign = assetAssign;
 	}
-	
+
+	public String getIssueDateStr() {
+		return issueDateStr;
+	}
+
+	public void setIssueDateStr(String issueDateStr) {
+		this.issueDateStr = issueDateStr;
+	}
 }

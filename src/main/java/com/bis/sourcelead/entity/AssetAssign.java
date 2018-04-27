@@ -12,6 +12,10 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
 
+/**
+ * @author Laxman
+ *
+ */
 @Entity
 @Table(name = "ASSET_ASSIGN")
 public class AssetAssign {
@@ -28,6 +32,11 @@ public class AssetAssign {
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="USER_ROLE_ID")        
     private UserRole userRole;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="SHIFT_ID")        
+    private Shift shift;
+	
 	
 	@Column(name = "FILE_URL")
 	@Type(type="text")
@@ -52,6 +61,14 @@ public class AssetAssign {
 
 	public UserRole getUserRole() {
 		return userRole;
+	}
+
+	public Shift getShift() {
+		return shift;
+	}
+
+	public void setShift(Shift shift) {
+		this.shift = shift;
 	}
 
 	public String getFileURL() {

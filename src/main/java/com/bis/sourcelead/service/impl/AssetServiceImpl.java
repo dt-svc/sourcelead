@@ -25,6 +25,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.ProjectDocumentFolder;
 import com.bis.sourcelead.entity.ProjectDocuments;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
@@ -136,11 +137,11 @@ public class AssetServiceImpl implements AssetService{
 	
 	
 	@Override
-	public Asset saveAssetDetails(AssetDTO assetDTO,String assetId, User user, OrgLocations orgLocations) throws Exception {
+	public Asset saveAssetDetails(AssetDTO assetDTO, User user, OrgLocations orgLocations) throws Exception {
 		
 		Asset asset ;
-		if(assetId != null && !"".equals(assetId)){
-			asset = assetDao.getAssetById(Long.parseLong(assetId));
+		if(assetDTO.getAssetId() != null && !"".equals(assetDTO.getAssetId())){
+			asset = assetDao.getAssetById(Long.parseLong(assetDTO.getAssetId()));
 		}else{
 			asset = new Asset();
 			asset.setCreatedBy(user.getUserCode());
@@ -265,28 +266,47 @@ public class AssetServiceImpl implements AssetService{
 		 
 		 Set<AssetAssign> assetAssignDBList = new HashSet<>();
 		 if(assetDTO .getAssignAsset() != null &&  !assetDTO .getAssignAsset().isEmpty()) {
-			 if(assetDTO.getShiftAEmp() != null) {
 				 for(AssetAssignDTO aad : assetDTO .getAssignAsset()) {
+					if(aad.getShiftEmp() != null && !aad.getShiftEmp().isEmpty()) {
 					 AssetAssign aa  = new AssetAssign();
+					 if(aad.getId() != null) {
+						 aa.setId(aad.getId());
+						 aa = assetDao.getAssignAssetByAssetId(Long.valueOf(aad.getId()));
+						 if(aa.getFileName() != null && aa.getFileName() != "") {
+							 aa.setFileName(aa.getFileName());
+							 aa.setFileType(aa.getFileType());
+							 aa.setFileURL(aa.getFileURL());
+						 }
+					 }
 					 aa.setAsset(asset);
+					 
+					 //userRole id saving
 					 UserRole  userRole = new UserRole();
 					 userRole.setId(Long.valueOf(aad.getShiftEmp()));
 					 aa.setUserRole(userRole);
+					 
+					 //shift id saving
+					 Shift shift = new Shift();
+					 shift.setId(Long.valueOf(aad.getShift()));
+					 aa.setShift(shift);
+					 
 					 aa.setStatus(Constants.RECORD_ACTIVE);
+					 if(aad .getFileInfo() != null) {
 						List<FileInfo> assetAssignDocumentsList = aad .getFileInfo();
 						for(FileInfo fileInfo : assetAssignDocumentsList){
 							aa.setFileName(fileInfo.getFileName());
 							aa.setFileType(fileInfo.getContentType());
 							aa.setFileURL(fileInfo.getFileURL());
 							FileUploadUtil.moveFile(assetDTO.getStaticPath(), fileInfo, "assetDocuments");
-							assetAssignDBList.add(aa);
 						}
-						
-					}
-				     asset.setAssetAssign(assetAssignDBList); 
-			   }
+					  }
+						assetAssignDBList.add(aa);
+				    }
+				 }
+				  asset.setAssetAssign(assetAssignDBList); 
 		 }
 		    		 
+		 
 		 asset.setOrgLocations(orgLocations);
 		 asset.setUpdatedBy(user.getUserCode());
 		 asset.setUpdatedDate(new Date());
@@ -344,6 +364,24 @@ public class AssetServiceImpl implements AssetService{
 	@Override
 	public List<Asset> getUserBasedAssetManagementListandOrgLocation(Long orgLocationId, Long UserId) throws Exception {
 		return assetDao.getUserBasedAssetManagementListandOrgLocation(orgLocationId, UserId);
+	}
+
+
+	@Override
+	public List<AssetAssign> getAssignAssetListByAssetId(Long assetId) {
+		return assetDao.getAssignAssetListByAssetId(assetId);
+	}
+
+
+	@Override
+	public AssetAssign getAssignAssetByAssetId(Long assetId) throws Exception {
+		return assetDao.getAssignAssetByAssetId(assetId);
+	}
+
+
+	@Override
+	public AssetAssign saveAssetAssign(AssetAssign assetAssign) throws Exception {
+		return assetDao.saveAssetAssign(assetAssign);
 	}
 	
 	

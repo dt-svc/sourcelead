@@ -20,6 +20,7 @@ import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -289,4 +290,35 @@ public class AssetDaoImpl implements AssetDao{
       return assetList;
 	}
 
+	@Override
+	@SuppressWarnings("unchecked")
+	@Transactional
+	public List<AssetAssign> getAssignAssetListByAssetId(Long assetId) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from AssetAssign assetAssign where assetAssign.asset.id = :assetId and status = '1'";
+		List<AssetAssign> assignAssetList = session.createQuery(query).setLong("assetId", assetId).list();
+		return assignAssetList;
+	}
+
+	@Override
+	@Transactional
+	public AssetAssign getAssignAssetByAssetId(Long assetId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		return (AssetAssign) session.get(AssetAssign.class, assetId);
+	}
+
+	@Override
+	@Transactional
+	public AssetAssign saveAssetAssign(AssetAssign assetAssign) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (assetAssign != null) {
+				session.saveOrUpdate(assetAssign);
+			}
+		} catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ASSET_ASSIGN"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return assetAssign;
+	}
 }

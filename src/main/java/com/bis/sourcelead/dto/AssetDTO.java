@@ -12,6 +12,8 @@ public class AssetDTO extends SearchDTO implements Serializable {
 	    @Required(desc="sno")
 		private String sno;
 	    
+	    private String assetId;
+	    
 		private String make;
 		
 		private String model;
@@ -412,4 +414,13 @@ public class AssetDTO extends SearchDTO implements Serializable {
 		public void setAssignAsset(List<AssetAssignDTO> assignAsset) {
 			this.assignAsset = assignAsset;
 		}
+
+		public String getAssetId() {
+			return assetId;
+		}
+
+		public void setAssetId(String assetId) {
+			this.assetId = assetId;
+		}
+		
 }

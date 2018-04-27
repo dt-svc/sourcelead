@@ -41,6 +41,7 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.BoAmexTrans;
 import com.bis.sourcelead.entity.BoComericaTrans;
@@ -737,7 +738,7 @@ public class BackOfficeRestController {
 		}
 
 	@RequestMapping(value = "/addCategoryAssets" , method = RequestMethod.POST)
-	   public Response<String> addCategoryAssets(AssetDTO assetDTO,@RequestParam(value="assetId", required=false) String assetId,HttpServletRequest request) throws Exception {
+	   public Response<String> addCategoryAssets(AssetDTO assetDTO,HttpServletRequest request) throws Exception {
 			
 		Response<String> response = new Response<>();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -748,7 +749,7 @@ public class BackOfficeRestController {
 				if (Validator.validate(assetDTO)) {
 					assetDTO.setStaticPath(staticPath);
 					assetDTO.setDateFormat(orgLocations.getDateFormat());
-					assetService.saveAssetDetails(assetDTO, assetId, user, orgLocations);
+					assetService.saveAssetDetails(assetDTO, user, orgLocations);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				} else {
@@ -837,6 +838,21 @@ public class BackOfficeRestController {
 		
 		return response;
 	} 
+	
+	
+	@RequestMapping(value = "/deleteAssignAssetDoc", method = RequestMethod.POST)
+	public String deleteAssignAssetDoc(@RequestParam(value="assetAssignId", required=false) Long assetAssignId,HttpServletRequest request) throws Exception {
+		AssetAssign assetAssign = assetService.getAssignAssetByAssetId(assetAssignId);
+		if(assetAssign != null) {
+			assetAssign.setFileName(null);
+			assetAssign.setFileType(null);
+			assetAssign.setFileURL(null);
+			assetService.saveAssetAssign(assetAssign);
+		} 
+		return "success";
+
+	}
+	
 	
 	private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

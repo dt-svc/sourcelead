@@ -109,26 +109,25 @@ $(document).ready(function(){
 	        	$(".assetManagementPopup, .comMask").fadeIn();
 	        	$('#assetManagementPopup').empty();
 	        	$('#assetManagementPopup').append(result);
+	        	issueDateScript();
+	        	populateDropdownValues();
 		        
 	        },
 	    }); 
   }
-  
   </script>
   
    
   <script>
+  function issueDateScript(){
   var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-  // written common method in slead-common.js for date formats start
   var finalDateFormat = getJSDateFormat(locationDate);
-  //end
   $('#issueDate').datepicker({
       dateFormat: finalDateFormat,
       changeMonth: true,
   	  changeYear: true, 
-      //minDate: 0  this line for to restrict selection of previous dates
   });
-  
+  }
   function clearDate(){
   	$("#issueDate").val("");
   	};
@@ -883,20 +882,7 @@ $(".addcon-pop").click(function(){
  $(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div").click(function(e){
 	 e.stopPropagation();
  });
-
- 
-
-
-//upload file script -Desktop-shiftB
- document.getElementById("uploadBtn-dskB").onchange = function () {
- $('#uploadFileShiftB').val($(this).val().replace(/C:\\fakepath\\/i, ''))
- };
- 
- document.getElementById("attachment").onchange = function () {
-	 $('#uploadFileAttachment').val($(this).val().replace(/C:\\fakepath\\/i, ''))
-  };
-	
-	</script>
+</script>
 
 
 
@@ -1008,6 +994,7 @@ function getCustomDependentField(sectionId){
 <script>
 function uploadFile(){
 	fileUpload("attachment", "assetDocuments", "addAsset_form","attachmentUpload");
+	$('#uploadFileAttachment').val($('#attachment').val().replace(/C:\\fakepath\\/i, ''))
 }
 </script>
 
@@ -1028,12 +1015,39 @@ function uploadFileShiftB(){
 <script>
 function closeassetManagementPopup() {
 	$(".assetManagementPopup, .comMask").fadeOut();
+	document.getElementById("addAsset_form").reset();
+	$(".selectpicker").selectpicker('refresh');
 }
 function addAssetManagementPopup() {
 	$(".assetManagementPopup, .comMask").fadeIn();
-	addAndEditAssetAssign();
+	addAndEditAssetAssign('');
 }
 </script>
+
+<!-- =============================================================================== -->
+
+
+<script>
+function deleteDocument(assetId,url){
+	document.getElementById("normalUploadFile").style.display="inline-table";
+	document.getElementById("dbUploadFile").style.display="none";
+	 $.ajax({
+   	  type: "POST",
+      url: sourceleadUrl+"/deleteDoc?"+tokenParamName+"="+tokenValue+"&assetId="+assetId+"&url="+url, 	   
+ 	  success: function(data) {  },
+	   });	
+	}
+</script>	
+
+<script>
+function uploadFileAttachment(){
+	fileUpload("fileAttachment", "assetDocuments", "addAsset_form","attachmentUpload");
+	$('#dbUploadFileAttachment').val($('#fileAttachment').val().replace(/C:\\fakepath\\/i, ''))
+}
+
+</script>
+
+
 <%-- <jsp:include page="assetManagementDetails.jsp" />
 <jsp:include page="assetManagementSummary.jsp" /> --%>
 <jsp:include page="../masterFooter.jsp" />

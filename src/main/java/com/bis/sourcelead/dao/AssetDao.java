@@ -5,6 +5,7 @@ import java.util.List;
 import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.AssetAssign;
 
 public interface AssetDao {
 	
@@ -43,5 +44,10 @@ public interface AssetDao {
 	public Asset validateAssetSno(String assetSno, Long orgLocationsId) throws Exception;
 	
 	public Boolean validateAssetId(String assetSno, Long orgLocationsId) throws Exception;
+	
+	List<AssetAssign> getAssignAssetListByAssetId(Long assetId);
+	
+	AssetAssign saveAssetAssign(AssetAssign assetAssign) throws Exception;
 
+	AssetAssign getAssignAssetByAssetId(Long assetId)throws Exception;
 }

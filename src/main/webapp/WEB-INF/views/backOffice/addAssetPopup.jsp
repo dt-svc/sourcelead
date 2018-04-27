@@ -1,9 +1,9 @@
- <!--  Asset Management Popup Start-->
-  <!-- <div class="collapse-div-adduser pop-div col-md-12 assetaddpop"> -->
- 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
- 
+ <c:set var = "dropDownSelFlag" value="false"/>
+ <script>
+ var dropdownSelectedUserIds = []; 
+ </script>
 	  <div class="modal-dialog modal-lg">
 		  <div class="modal-content">
 		        <div class="modal-header">
@@ -14,8 +14,8 @@
 		          <form:form id="addAsset_form"  name="addAsset_form"> 
 		           <!-- <i class="fa fa-close close-div"></i> -->
 					 
-					 <div class="popinnerdiv minHeightcol5"> 
-		            
+					<div class="popinnerdiv minHeightcol5"> 
+		            <input type="hidden" name="assetId" value="${assetAssignData.id}">
 		            <div class="clearfix assetaddpop-ul col-md-5" id="categoryDiv">
 		            <label class="clearfix">Category</label>
 		            <div class="clearfix">
@@ -33,8 +33,8 @@
 		            <div class="clearfix">
 						<select class="chosen-select" id="workingStatus" name="workingStatus" data-validation="required" field-name="Working Status">
 							<option selected value="">-Select Working Status-</option>
-							<option value="Working">Working</option>
-							<option value="Out Of Service">Out Of Service</option>
+							<option value="Working" ${assetAssignData.workingStatus eq "Working" ? 'selected' : ''}>Working</option>
+							<option value="Out Of Service" ${assetAssignData.workingStatus eq "Out Of Service" ? 'selected' : ''}>Out Of Service</option>
 						</select>	
 		            </div>
 		            </div>
@@ -96,7 +96,7 @@
 							<label class="clearfix">Issue Date</label>
 								<div class="clearfix">
 									<div class="input-group">
-									<input type="text" value="" name="issueDate" placeholder = "Issue Date" class="form-control calendar input-sm" value="${assetAssignData.issueDate}" id="issueDate" readonly="readonly">
+									<input type="text"  name="issueDate" placeholder = "Issue Date" class="form-control calendar input-sm" value="${issueDateStr}" id="issueDate" readonly="readonly">
 									<span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
 									</div>
 								</div>
@@ -112,7 +112,7 @@
 				        <div class="col-md-5">
 			              	<label class="clearfix">MAC Address</label>
 							<div class="clearfix">
-			                	<input type="text" class="form-control input-sm" id="macAddress" name="macAddress" placeholder="MAC Address" field-name="MAC Address"  data-validation="validate_length length8-50" data-validation-optional="true">
+			                	<input type="text" class="form-control input-sm" id="macAddress" name="macAddress" placeholder="MAC Address" field-name="MAC Address"  value="${assetAssignData.macAddress}" data-validation="validate_length length8-50" data-validation-optional="true">
 			              	</div>
 				          </div>
 		                
@@ -121,19 +121,39 @@
 		                  <div class="col-md-5" id="attachmentDiv">
 		                  <label class="clearfix">Attachment</label>
 							<div class="clearfix">
+							<c:if test="${empty assetAssignData.fileName}">
 		                    <div class="input-group attachfile-error" >
 		                      <label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFile();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 		                        <input type="file" id="attachment"   style="display: none;" class="upload">
 		                        </b> </label>
 		                      <input type="text" class="form-control" name="abc" data-validation = "validatedoc" data-validation-optional="true"  readonly id="uploadFileAttachment" placeholder="Files are not selected...">
 		                    </div>
+		                    </c:if>
+		                    <c:if test="${!empty assetAssignData.fileName}">
+		                    <div class="input-group attachfile-error" id="normalUploadFile" style="display:none" >
+		                      <label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFileAttachment();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+		                        <input type="file" id="fileAttachment"   style="display: none;" class="upload">
+		                        </b> </label>
+		                      <input type="text" class="form-control" name="abc" data-validation = "validatedoc" data-validation-optional="true"  readonly id="dbUploadFileAttachment" placeholder="Files are not selected...">
+		                    </div>
+
+		                    <div class="timesheet_week_comm invoiceDocs sizeInputfield" id="dbUploadFile" style="display:block">
+				               <span>
+						         <strong id="ticketDocument16">
+				    		     <i class=""><a class="glyphicon glyphicon-save" href="${assetAssignData.fileUrl}" title="download"></a></i>
+								 <input type="button" title="${assetAssignData.fileName}" value="${assetAssignData.fileName}">
+								 <input class="dele" type="button" onclick="deleteDocument(${assetAssignData.id},'${assetAssignData.fileUrl}');">
+								 </strong>
+				              </span>
+			                </div>
+		                    </c:if>
 		                    </div>
 		                  </div>
 		                  
 		                  <div class="col-md-5" id="descriptionDiv">
 		                   <label class="clearfix">Description</label>
 		                   <div class="clearfix">
-		                    <textarea class="form-control" rows="2" name="description" id="description" placeholder="Description" data-validation-optional="true" data-validation="validate_Space"></textarea>
+		                    <textarea class="form-control" rows="2" name="description" id="description" value="${assetAssignData.description}" placeholder="Description" data-validation-optional="true" data-validation="validate_length length2-250">${assetAssignData.description}</textarea>
 		                  </div>
 		                   </div>
 		                  
@@ -149,31 +169,65 @@
 		                <div class="clearfix">
 		                  <h4 class="col-md-12">Assing Asset</h4>
 		                </div>
+		                
 		                 <c:forEach var="shift" items="${siftList}" varStatus="shiftOrder">
 			                <div class="clearfix mb10">
 			                  <div class="col-md-5" id="uploadFile-dskADiv">
 			                   <label class="clearfix">${shift.shiftName}</label>
-			                    <select class="width100percnt selectpicker" id="shiftAEmp" name="assignAsset[${shiftOrder.index}].shiftEmp" data-live-search="true">
-			                      <option selected value="">-Select Employee-</option>
+			                    <input type="hidden" name="assignAsset[${shiftOrder.index}].shift" value="${shift.id}"/>
+			                    <input type="hidden" id="assetAssignId${shiftOrder.index}" name="assignAsset[${shiftOrder.index}].id"/>
+			                    <select class="width100percnt selectpicker" id="shiftAEmp${shiftOrder.index}" name="assignAsset[${shiftOrder.index}].shiftEmp" data-live-search="true">
+			                      <option  value="">-Select Employee-</option>
 			                      <c:forEach var="userRole" items="${userRoleList}">
-								     <option value="${userRole.id}">${userRole.user.fullName} (${userRole.userType})</option>
+			                        <c:set var = "NUM" value = "${0}"/>
+			                        <c:forEach var="existedAsset" items="${assignAssetList}">
+		                              <script>
+								        var assetAssignId='<c:out value="${existedAsset.id}"/>';
+								        if(dropdownSelectedUserIds.indexOf(assetAssignId)<0){
+								          dropdownSelectedUserIds.push(assetAssignId);
+								        }
+								      </script>
+									    <c:if test="${(userRole.id eq existedAsset.userRole.id) && (existedAsset.shift.id eq shift.id)}">
+									    	<c:set var = "NUM" value = "${1}"/>
+									       <option selected value="${userRole.id}" >${userRole.user.fullName} (${userRole.userType})</option>
+									    </c:if>
+									</c:forEach>
+									<c:if test="${NUM == 0}">
+			                      		<option value="${userRole.id}" >${userRole.user.fullName} (${userRole.userType})</option>
+									</c:if>
 								  </c:forEach>
 			                    </select>
 			                  </div>
 			                  <div class="col-md-5" id="uploadFile-dskBDiv">
 			                  <label class="clearfix">Attachment</label>
-			                    <div class="input-group attachfile-error">
+			                  <c:forEach var="existedAssetDocuments" items="${assignAssetList}">
+							    <c:if test="${(existedAssetDocuments.shift.id eq shift.id) && (!empty existedAssetDocuments.fileName)}">
+							    	<c:set var = "NUM" value = "${1}"/>
+							    	 <div id="downloadFile${shiftOrder.index}">
+                                      <div class="timesheet_week_comm invoiceDocs sizeInputfield">
+						               <span>
+								         <strong id="ticketDocument16">
+						    		     <i class=""><a class="glyphicon glyphicon-save" href="${existedAssetDocuments.fileURL}" title="download"></a></i>
+										 <input type="button" title="${existedAssetDocuments.fileName}" value="${existedAssetDocuments.fileName}">
+										 <input class="dele" type="button" onclick="deleteAssignDocument('${shiftOrder.index}',${existedAssetDocuments.id});">
+										 </strong>
+						              </span>
+					                </div>
+					               </div>
+							    </c:if>
+							</c:forEach>
+							<c:if test="${NUM == 0}">
+	                      		<div class="input-group attachfile-error">
 			                      <label class="input-group-btn"> <b class="btn btn-primary" onchange="setFilePath('${shiftOrder.index}');uploadShiftFile('${shiftOrder.index}');"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 			                        <input type="file" id="uploadBtn-dskA${shiftOrder.index}"   style="display: none;" class="upload">
 			                        </b> </label>
 			                      <input type="text"  class="form-control" id="shiftFile${shiftOrder.index}" data-validation = "validatedoc" data-validation-optional="true"   readonly  placeholder="Files are not selected...">
 			                    </div>
-			                  </div>
-			                  <button type="button" class="btn btn-primary" style="position:relative; top:22px;">
-			                  	<i class="fa fa-refresh cursorPointer" title="Clear"></i>
-			                  </button>
+							</c:if>
 			                </div>
-		                 </c:forEach>
+			              </div>
+		                </c:forEach>
+		                 
 		                </div>
 		                </div>
 		            </div>
@@ -187,8 +241,40 @@
 		   		</div>
 		   </div>
 	   </div>
+	    <div id="divAssignAtt" style="display:none;" > 
+		   <div class="input-group attachfile-error">
+	          <label class="input-group-btn"> <b class="btn btn-primary" onchange="setFilePath('REPLACEROWID');uploadShiftFile('REPLACEROWID');"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+	            <input type="file" id="uploadBtn-dskAREPLACEROWID"   style="display: none;" class="upload">
+	            </b> </label>
+	          <input type="text"  class="form-control" id="shiftFileREPLACEROWID" data-validation = "validatedoc" data-validation-optional="true"   readonly  placeholder="Files are not selected...">
+	        </div>
+        </div>
   <!--  Asset Management Popup Ends -->
 
+<script>
+function populateDropdownValues(){
+for (i = 0; i < dropdownSelectedUserIds.length; i++) { // to populate dropdown values.
+	   $('#assetAssignId'+i).val(dropdownSelectedUserIds[i]);
+	}
+}
+</script>
+
+<script>
+function deleteAssignDocument(index,id){
+	var divadttStr = document.getElementById("divAssignAtt").innerHTML;
+	divadttStr = divadttStr.replace(/REPLACEROWID/g, (index));
+	$('#downloadFile'+index).empty();
+	$('#downloadFile'+index).html(divadttStr);
+	
+   $.ajax({
+  	  type: "POST",
+     url: sourceleadUrl+"/deleteAssignAssetDoc?"+tokenParamName+"="+tokenValue+"&assetAssignId="+id, 	   
+	  success: function(data) {  },
+   });
+	   
+}
+
+</script>
  <script type="text/javascript">
 	var config = {
 	  '.chosen-select'           : {},

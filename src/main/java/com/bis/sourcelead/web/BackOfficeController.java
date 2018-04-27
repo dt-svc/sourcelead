@@ -32,6 +32,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.AmexUploadFile;
 import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.BoPaymentTypes;
 import com.bis.sourcelead.entity.CandidateResumes;
@@ -372,8 +373,17 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 	public ModelAndView addAndEditAssetAssign(@RequestParam(value="assetId", required=false) Long assetId,HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
-		Asset asset = assetService.getAssetById(assetId);
-		model.addObject("assetAssignData",asset);model.addObject("sourceleadUrl", sourceleadUrl);
+		if(assetId != null) {
+			Asset asset = assetService.getAssetById(assetId);
+			model.addObject("assetAssignData",asset);
+			
+			String issueDateStr = commonUtil.dateStrFromOrgDateFormatter(asset.getOrgLocations().getDateFormat(),asset.getIssueDate());
+			model.addObject("issueDateStr",issueDateStr);
+			
+			List<AssetAssign> assignAssetList = assetService.getAssignAssetListByAssetId(assetId);
+			model.addObject("assignAssetList",assignAssetList);
+		}
+		model.addObject("sourceleadUrl", sourceleadUrl);
 		
 		List<AssetCategory> assetCategoriesList = assetCategoryService.getAssetCategoryListByLocationId(orgLocations.getId());
 		model.addObject("assetCategoriesList", assetCategoriesList);
@@ -383,6 +393,8 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 		
 		List<Shift> siftList = shiftService.getShiftList(orgLocations.getId());
 		model.addObject("siftList", siftList);
+		
+		
 		
 		model.setViewName("backOffice/addAssetPopup");
 		return model;

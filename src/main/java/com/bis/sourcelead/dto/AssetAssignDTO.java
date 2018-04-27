@@ -7,12 +7,24 @@ public class AssetAssignDTO extends SearchDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	    private Long id;
+	    
+	    private String shift;
+	
 		private String shiftEmp;
 		 
 		private List<FileInfo> fileInfo;
 
 		private String staticPath;
 		
+		public String getShift() {
+			return shift;
+		}
+
+		public void setShift(String shift) {
+			this.shift = shift;
+		}
+
 		public String getShiftEmp() {
 			return shiftEmp;
 		}
@@ -35,6 +47,14 @@ public class AssetAssignDTO extends SearchDTO implements Serializable {
 
 		public void setStaticPath(String staticPath) {
 			this.staticPath = staticPath;
+		}
+
+		public Long getId() {
+			return id;
+		}
+
+		public void setId(Long id) {
+			this.id = id;
 		}
 
 }
