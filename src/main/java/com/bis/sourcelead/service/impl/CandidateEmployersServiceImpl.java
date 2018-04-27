@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,7 +11,10 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -38,11 +42,16 @@ import com.bis.sourcelead.util.FileUploadUtil;
 @Service
 public class CandidateEmployersServiceImpl implements CandidateEmployersService {
 	
+	private static final Logger logger = LoggerFactory.getLogger(CandidateEmployersServiceImpl.class);
+	
 	@Autowired
 	CandidateEmployersDao candidateEmployersDao;
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Value("${static.path}")
+	private String staticPath;
 	
 	 @Autowired
 	 private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
@@ -337,6 +346,32 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	@Override
 	public CandidateEmployers getCandidateLastCompanyEmployer(Long candidateId, Long orgLocationId) throws Exception {
 		return candidateEmployersDao.getCandidateLastCompanyEmployer(candidateId, orgLocationId);
+	}
+
+	@Override
+	public String removeCandidateEmployerDocById(Long candidateEmployerId) throws Exception {
+		CandidateEmployers candidateEmployers = candidateEmployersDao.getCandidateEmployerById(candidateEmployerId);
+		if(candidateEmployers != null){
+		try {
+			String rootPath = StringUtils.removeEnd(staticPath, staticPath.substring(staticPath.lastIndexOf("/")));
+			File file = new File(rootPath + candidateEmployers.getEmployerFileUrl());
+			
+			if (file.delete()) {
+				logger.debug(file.getName() + " is deleted!");
+			} else {
+				logger.error(file.getName() + " is deleted!");
+			}
+				candidateEmployers.setEmployerFileName(null);
+				candidateEmployers.setEmployerFileUrl(null);
+				candidateEmployers.setEmployerFileContentType(null);
+			
+			candidateEmployersDao.storeCandidateEmployers(candidateEmployers);
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+		return "success";
 	}
 
 }

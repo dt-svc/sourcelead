@@ -79,5 +79,7 @@ public interface CandidateEducationService {
 
 	List<CandidateEducation> getCandidateEducationListByCandidateIdAndOrgLocationIDImmigration(Long candidateId,
 			Long orgLocationId, String searchVal) throws Exception;
+	
+	String removeCandidateEucationrDocById(Long candidateEduId) throws Exception;
 
 }

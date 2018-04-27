@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateEmployersDao;
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -192,6 +194,20 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 			canEMp = (CandidateEmployers) employersList.iterator().next();
 		}
 		return canEMp;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public CandidateEmployers getCandidateEmployerById(Long candidateEmployersId) throws Exception {
+		CandidateEmployers candidateEmployer= null;
+        try {
+			Session session = this.sessionFactory.getCurrentSession();
+			candidateEmployer = (CandidateEmployers)session.get(CandidateEmployers.class,candidateEmployersId);
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing getting record -->"+e.getMessage());
+			e.printStackTrace();
+		}
+		return candidateEmployer;
 	}
 
 
