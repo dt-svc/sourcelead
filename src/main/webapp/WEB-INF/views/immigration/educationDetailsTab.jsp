@@ -142,7 +142,7 @@
 			<div class="col-sm-12 noPad mt clearfix" id="immigrationEduDocDivEdit" style="display: none">
 			<label class="col-md-4 padding_left">File</label>
 			 <div class="col-md-8">
-				  <label id="immigrationEduDocName" name="immigrationEduDocName" class="text-primary tbldata-dotdot-200 pull-left" title=""></label>&nbsp;&nbsp;<span id="delete_immiDocFile" onclick="removeImmigFormDoc1();"><i class="fa fa-trash removeIcon text-danger cursorPointer pull-right"></i></span>
+				  <label id="immigrationEduDocName" name="immigrationEduDocName" class="text-primary tbldata-dotdot-200 pull-left" title=""></label>&nbsp;&nbsp;<span id="delete_immiEduDocFile" onclick="removeImmiEduDocFile();"><i class="fa fa-trash removeIcon text-danger cursorPointer pull-right"></i></span>
 				<input type="hidden" id="immigrationEduDocExisitngFile" name="immigrationEduDocExisitngFile" value="">
 				  </div>			          	
 			</div>										
@@ -230,4 +230,21 @@ document.getElementById("uploadBtnEducation").onchange = function () {
  	$('#uploadFileEducation').val($(this).val().replace(/C:\\fakepath\\/i, ''))
 
 }; 
+</script>
+
+<script type="text/javascript">
+function removeImmiEduDocFile(){
+	var id = $("#candidateEducationId").val();
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/deleteImmigrationEducationDocumentById?id="+id,
+        type: "GET",
+        success: function (result) {
+        if(result=='success'){
+        	$("#immigrationEduDocDivEdit").hide();
+        	$("#immigrationEduDocDiv").show();
+        	 
+        	} 
+        }
+    });
+}
 </script>
