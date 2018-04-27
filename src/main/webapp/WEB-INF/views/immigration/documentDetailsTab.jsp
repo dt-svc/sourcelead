@@ -208,7 +208,7 @@
 					<label class="input-group-btn"> <span class="btn btn-primary" onchange="uploadRerqDocsList(0);"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 					  <input type="file" style="display: none;" multiple id="uploadBtn0" onchange="uploadBtnFilesList(0);" class="upload">
 					  </span> </label>
-					<input type="text" class="form-control" readonly id="uploadFile0" name = "docFile0" field-name ="Document" data-validation = "required" placeholder="Upload Document ...">
+					<input type="text" class="form-control" readonly id="uploadFile0" name = "docFile0" field-name ="Document" data-validation = "required validatepdf" placeholder="Upload Document ...">
 					 </div>
 					 </div>
 					 </div>

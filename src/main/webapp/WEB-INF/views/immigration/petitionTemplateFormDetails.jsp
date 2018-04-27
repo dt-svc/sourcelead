@@ -41,7 +41,7 @@
                                             <label class="input-group-btn"> <span class="btn btn-primary" onchange="uploadFormDocs(0);"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                                                     <input style="display: none;" onchange="uploadBtnFile(0);"  id="uploadBtn0"  class="upload" type="file">
                                                 </span></label>
-                                            <input type="text" class="form-control" readonly id="uploadFile0" name = "immigrationFormList[0].immigrationFormFileInfo[0].docFile"  placeholder="Attachment" field-name="Attachment" data-validation="required">
+                                            <input type="text" class="form-control" readonly id="uploadFile0" name = "immigrationFormList[0].immigrationFormFileInfo[0].docFile"  placeholder="Attachment" field-name="Attachment" data-validation="required validatepdf">
                                             <!-- 						<input class="form-control" id="uploadFile0" placeholder="Attachment" type="text"> -->
                                         </div>		  	
                                     </div>
@@ -208,7 +208,7 @@
         result = result + " <label class='input-group-btn'> <span class='btn btn-primary' onchange='uploadFormDocs(" + rowId + ");'><i class='fa fa-folder-open-o'></i>&nbsp;Browse File";
         result = result + " <input style='display: none;' multiple onchange='uploadBtnFile(" + rowId + ");' id='uploadBtn" + rowId + "' class='upload' type='file'>";
         result = result + " </span></label>";
-        result = result + '<input type="text" class="form-control" readonly id="uploadFile' + rowId + '" name = "immigrationFormList[' + rowId + '].immigrationFormFileInfo[0].docFile"  placeholder="Attachment" field-name="Attachment" data-validation="required">';
+        result = result + '<input type="text" class="form-control" readonly id="uploadFile' + rowId + '" name = "immigrationFormList[' + rowId + '].immigrationFormFileInfo[0].docFile"  placeholder="Attachment" field-name="Attachment" data-validation="required validatepdf">';
         result = result + "</div>";
         result = result + "</div>";
         result = result + "<div class='col-md-5 noPad'>";
