@@ -13,7 +13,7 @@
 	  	<!-- <ul>
 		<li id='docZipfile'>Download All Documents</li> 
 	</ul> -->
-		  <table>
+		  <table id="documentsTbl">
 			<tbody>
 			  <tr>
 				<th>Document Type</th>
@@ -239,7 +239,7 @@
 			<div class="pull-right text-right">
 				<input type="button" value="Back" onclick="goToSummaryTab('#formsTab');" class="btn btn-default btn-sm">
              	<input type="button" value="Skip" onclick="goToSummaryTab('#notesTab');" class="btn btn-default btn-sm"> 
-              	<input type="button" value="Submit" onclick="javascript:void(0);" class="btn btn-primary btn-sm ml10">
+              	<input type="button" value="Submit" onclick="immigration.updateImmigrationStatus(immigrationId);" class="btn btn-primary btn-sm ml10">
             </div>
 		</div>
 	</form>	

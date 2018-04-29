@@ -1153,4 +1153,10 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		return immigrationCommonDao.getImmigrationCandidateFormsByImmigrationId(immigrationId);
 	}
 
+	@Override
+	public Integer getTableRecordCountByCandidateId(String entityName, Long candidateId, String condition) {
+		// TODO Auto-generated method stub
+		return immigrationCommonDao.getTableRecordCountByCandidateId(entityName,candidateId,condition);
+	}
+
 }

@@ -1291,42 +1291,56 @@ public class ImmigrationRestController {
 		}
 		return model;
 	}
-	
-	/*@RequestMapping(value = { "/getCandidatePassportVisaSearchDetails" })
-	public ModelAndView getCandidatePassportVisaSearchDetails(@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request, @RequestParam(value = "idType", required = true) String idType,@RequestParam(value = "searchValue", required = true) String searchValue) throws Exception
+
+	@RequestMapping(value = { "/updateImmigrationStatus" })
+	public String checkDataAndUpdateImmigrationStatus(@RequestParam(value = "id", required = true) Long immigrationId
+			,@RequestParam(value = "candidateId", required = true) Long candidateId,HttpServletRequest request) throws Exception
 	{
-		ModelAndView model = new ModelAndView();
-		System.out.println(" inisde getCandidatePassportDetails controller test -->");
-		List<CandidatePassportVisa> PassportList = new ArrayList<CandidatePassportVisa>();
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		String result = "{status:'success'}";
+		// HashMap<String, Integer> immiStatusMap = (HashMap)
+		// request.getSession().getAttribute("immiStatusMap");
+
+		System.out.println(" inisde getCandidatePassportDetails controller TEST 123455 -->");
 		try {
-			PassportList = immigrationCommonService.getCandidatePassportVisaSearchDetails(candidateId, idType,searchValue);
-			for(CandidatePassportVisa canPassportVisa : PassportList){
-				canPassportVisa.setValidFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),canPassportVisa.getValidFromDate()));
-				canPassportVisa.setValidToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),canPassportVisa.getValidToDate()));
-				
+			// CandidatePassportVisa candidate
+			// CandidateEmployers candidateId
+			// CandidateResidence candidate
+			// CandidateEducation candidateId
+			// CandidateFamilyDetails candidate
+			String entityArray[] = new String[] { "CandidatePassportVisa", "CandidatePassportVisa",
+					"CandidateEmployers", "CandidateResidence", "CandidateEducation", "CandidateFamilyDetails" };
+			String tabNameArray[] = new String[] { "Passport", "Visa", "Employers", "Residence", "Education","Family" };
+			// Integer count =
+			// immigrationCommonService.getTableRecordCountByCandidateId("CandidatePassportVisa",
+			// candidateId,"idType='Passport'");
+			Integer count = 0;
+			for (int i = 0; i < entityArray.length; i++) {
+				if (i == 0) { // CandidatePassportVisa for passport
+					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where candidate.id=:candidateId and idType='Passport'");
+				} else if (i == 1) {// CandidatePassportVisa for Visa
+					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where candidate.id=:candidateId and idType='Visa'");
+				} else if (i == 2) { // CandidateEmployers
+					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where candidateId.id=:candidateId");
+				} else if (i == 3) { // CandidateResidence
+					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where candidate.id=:candidateId");
+				} else if (i == 4) {// CandidateEducation
+					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where candidateId.id=:candidateId");
+				} else if (i == 5) {// CandidateFamilyDetails
+					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where candidate.id=:candidateId");
+				}
+				if (count == null || count == 0) {
+					result = "{errorMsg:'" + tabNameArray[i] + "'}";
+					System.out.println(" Record not found for the Tab Nme:::--> : " + tabNameArray[i]);
+					return result;
+				}
 			}
-			
-			
-			List<Countries> countryList = countriesService.getAllCountries();
-			model.addObject("PassportList", PassportList);
-			model.addObject("countryList", countryList);
 		} catch (Exception e) {
 			logger.error("Exception caught in controller --->" + e.getMessage());
 			e.printStackTrace();
 		}
-		System.out.println(" after getCandidatePassportVisaDetails controller -->");
-		if (idType.equalsIgnoreCase("Passport")) {
-			model.setViewName("/immigration/passportDetailsTab");
-		}
-		else {
-			List<String> visaList = lookUpDataService.getAllVisaByCategory();
-			model.addObject("visaList", visaList);	
-			model.setViewName("/immigration/visaDetailsTab");
-		}
-		return model;
+		return result;
 	}
-	*/
 	
 	
 	@RequestMapping(value = { "/deleteCandidatePassportVisaDetails" })
