@@ -285,16 +285,16 @@ public class FileUploadUtil {
 	}
 	
 	
-	public static String getImmigrationZipFiles(String staticPath, Long orgId, Long orgLocationId,Long immigrationId,  Long docId , List <ImmigrationCandidateDocumentsHistory> docsList) {
+	public static String getImmigrationZipFiles(String staticPath, Long orgId, Long orgLocationId,Long immigrationId,  Long docId , List <ImmigrationCandidateDocumentsHistory> docsList, Map<String, String> fileNameParameters) {
 		File file = null;
 		FileOutputStream fos = null;
 		ZipOutputStream zos = null;
 	    try {
 			if(docId == null) {
-	    	file = new File(com.google.common.io.Files.createTempDir(),"ImmigrationCandidateDocuments_ImmigrationID_"+ immigrationId+".zip");
+	    	file = new File(com.google.common.io.Files.createTempDir(), fileNameParameters.get("immiUUID")+"_"+fileNameParameters.get("firstName")+"_"+fileNameParameters.get("lastName")+"_Docs"+".zip");
 			}
 			else if(immigrationId == null) {
-				file =  new File(com.google.common.io.Files.createTempDir(),"ImmigrationCandidateDocuments_DocID_"+ docId+".zip");
+				file =  new File(com.google.common.io.Files.createTempDir(), fileNameParameters.get("firstName")+"_"+fileNameParameters.get("lastName")+"_Passport"+".zip");
 			}
 	    	fos = new FileOutputStream(file);
 			zos = new ZipOutputStream(fos);
@@ -343,12 +343,13 @@ public class FileUploadUtil {
 	}
 	
 	
-	public static String getImmigrationFormZipFiles(String staticPath, Long orgId, Long orgLocationId,Long immigrationId, List <ImmigrationCandidateForms> formsList) {
+	public static String getImmigrationFormZipFiles(String staticPath, Long orgId, Long orgLocationId,Long immigrationId, List <ImmigrationCandidateForms> formsList, Map<String, String> fileNameParameters) {
 		File file = null;
 		FileOutputStream fos = null;
 		ZipOutputStream zos = null;
 	    try {
-	    	file = new File(com.google.common.io.Files.createTempDir(),"ImmigrationCandidateForms_ImmigrationID_"+ immigrationId+".zip");
+	    	
+	    	file = new File(com.google.common.io.Files.createTempDir(),fileNameParameters.get("immiUUID")+"_"+fileNameParameters.get("firstName")+"_"+fileNameParameters.get("lastName")+"_Forms"+".zip");
 	    	fos = new FileOutputStream(file);
 			zos = new ZipOutputStream(fos);
 			File folder = new File(staticPath, orgId+"/"+orgLocationId+"/immigrationCandidateForms");

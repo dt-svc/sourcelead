@@ -1529,6 +1529,7 @@ public class ImmigrationRestController {
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		long orgId = 0, orgLocationId = 0;
 		if (org != null) {
 			orgId = org.getId();
@@ -1537,7 +1538,12 @@ public class ImmigrationRestController {
 			orgLocationId = loginOrgLocation.getId();
 		}
 		List <ImmigrationCandidateDocumentsHistory> immigrationCanididateDocHistoryList =immigrationCommonService.getImmigrationCandidateDocumentHistoryListByImmigrationId(immigrationId,docId);
-		return FileUploadUtil.getImmigrationZipFiles(staticPath, orgId, orgLocationId,immigrationId, docId, immigrationCanididateDocHistoryList);
+		Map<String, String> fileNameParameters = new HashMap<>();
+		Immigration immigration = immigrationCommonService.getImmigrationById(immigrationId);
+		fileNameParameters.put("immiUUID", immigration.getGeneratedId());
+		fileNameParameters.put("firstName", loginUser.getFirstName());
+		fileNameParameters.put("lastName", loginUser.getLastName());
+		return FileUploadUtil.getImmigrationZipFiles(staticPath, orgId, orgLocationId,immigrationId, docId, immigrationCanididateDocHistoryList, fileNameParameters);
 	}
 	
 	
@@ -1572,6 +1578,7 @@ public class ImmigrationRestController {
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		long orgId = 0, orgLocationId = 0;
 		if (org != null) {
 			orgId = org.getId();
@@ -1580,7 +1587,12 @@ public class ImmigrationRestController {
 			orgLocationId = loginOrgLocation.getId();
 		}
 		List <ImmigrationCandidateForms> immigrationCandidateForms =immigrationCommonService.getImmigrationCandidateFormsByImmigrationId(immigrationId);
-		return FileUploadUtil.getImmigrationFormZipFiles(staticPath, orgId, orgLocationId,immigrationId, immigrationCandidateForms);
+		Map<String, String> fileNameParameters = new HashMap<>();
+		Immigration immigration = immigrationCommonService.getImmigrationById(immigrationId);
+		fileNameParameters.put("immiUUID", immigration.getGeneratedId());
+		fileNameParameters.put("firstName", loginUser.getFirstName());
+		fileNameParameters.put("lastName", loginUser.getLastName());
+		return FileUploadUtil.getImmigrationFormZipFiles(staticPath, orgId, orgLocationId,immigrationId, immigrationCandidateForms, fileNameParameters);
 	}
 
 }
