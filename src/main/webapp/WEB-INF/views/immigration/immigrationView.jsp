@@ -50,11 +50,11 @@
 			<ul class="immigraTabs">
               <li class="current"><a href="#detailsTab"><i class="fa fa-check-circle-o"></i>Details</a></li>
               <li><a href="#passportsTab"><i id ="passportfilled" class="fa fa-check-circle-o"></i>Passport</a></li>
-              <li><a href="#visasTab"><i class="fa fa-check-circle-o"></i>Visa</a></li>
-              <li><a href="#employersTab"><i class="fa fa-check-circle-o"></i>Employers</a></li>
-              <li><a href="#residencesTab"><i class="fa fa-check-circle-o"></i>Residence</a></li>
-              <li><a href="#educationsTab"><i class="fa fa-check-circle-o"></i>Educations</a></li>
-              <li><a href="#familiesTab"><i class="fa fa-check-circle-o"></i>Family</a></li>
+              <li><a href="#visasTab"><i id ="visafilled" class="fa fa-check-circle-o"></i>Visa</a></li>
+              <li><a href="#employersTab"><i id ="employersfilled" class="fa fa-check-circle-o"></i>Employers</a></li>
+              <li><a href="#residencesTab"><i id ="residencefilled" class="fa fa-check-circle-o"></i>Residence</a></li>
+              <li><a href="#educationsTab"><i id ="educationfilled" class="fa fa-check-circle-o"></i>Educations</a></li>
+              <li><a href="#familiesTab"><i id ="familyfilled" class="fa fa-check-circle-o"></i>Family</a></li>
               <li><a href="#formsTab"><i class="fa fa-check-circle-o"></i>Forms</a></li>
               <li><a href="#docsTab"><i class="fa fa-check-circle-o"></i>Documents</a></li>
               <li><a href="#notesTab">Notes</a></li>
