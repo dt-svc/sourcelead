@@ -1878,20 +1878,10 @@ public class EMailJobScheduler {
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.JOB_ALERTS,Constants.ENTITY_TYPE_EMAIL);
 		
-		 String emailBody = null;
-		 String path=staticPath.substring(0, staticPath.lastIndexOf("/"));
-		 try {
-			    BufferedReader lineReader = new BufferedReader(new FileReader(path+emailScenario.getBodyUrl().replace("\\","\\\\")));
-			    emailBody = new Scanner(lineReader).useDelimiter("\\Z").next();
-			   // System.out.println(emailBody);
-			   
-			} catch (IOException ex) {
-			    System.err.println(ex);
-			}
 		
 		 //covert subject,body and signature
 		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
-		 String body = emailScenerioUtil.buildTemplateBody(emailBody,globalVarsMap,emailScenario);
+		 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
 		 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
 		 String url = sourceleadUrl;
 		 
@@ -2162,7 +2152,7 @@ public class EMailJobScheduler {
 							commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), holidayEndDate));
 					globalVarsMap.put("holidayname", holidayNames);
 					InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-					commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.HOLIDAY_REMAINDER);
+					commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.HOLIDAY_REMAINDER,new ArrayList<EmailAttachment>());
 					EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
 							Constants.HOLIDAY_REMAINDER_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
 					String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);

@@ -347,20 +347,9 @@ public class TaskServiceImpl implements TaskService{
 			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TASK_MECHANISM_EMAIL,Constants.ENTITY_TYPE_EMAIL);
 			 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TASK_MECHANISM_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
 
-			 String emailBody = null;
-			 String path=staticPath.substring(0, staticPath.lastIndexOf("/"));
-			 try {
-				    BufferedReader lineReader = new BufferedReader(new FileReader(path+emailScenario.getBodyUrl().replace("\\","\\\\")));
-				    emailBody = new Scanner(lineReader).useDelimiter("\\Z").next();
-				   // System.out.println(emailBody);
-				   
-				} catch (IOException ex) {
-				    System.err.println(ex);
-				}
-			
 			 //covert subject,body and signature
 			 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
-			 String body = emailScenerioUtil.buildTemplateBody(emailBody,globalVarsMap,emailScenario);
+			 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
 			 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
 			 String url = sourceleadUrl;
 			 
