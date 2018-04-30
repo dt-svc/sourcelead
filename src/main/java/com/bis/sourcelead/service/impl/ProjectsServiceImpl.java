@@ -1622,7 +1622,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    			}
 			    		}
 			    		
-			    		if(templist != null && !templist.isEmpty()){
+			    	
+		    		/*if(templist != null && !templist.isEmpty()){
 			    			//getting projectmember userId's who are added to the project
 			    			freshlist.removeAll(templist);
 			    			if(freshlist != null && !freshlist.isEmpty()){
@@ -1634,7 +1635,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    				}
 			    			}
 			    			
-			    		}
+			    		}*/
+			    		
+			    		
+			    		
 			    		 /**
 			    		  * Storing Submission Approver Hierarchy Records based on Changes Made Against Level1 and Level2 Approvers
 			    		  */
