@@ -1168,4 +1168,14 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		return immigrationCommonDao.getTableRecordCountByCandidateId(entityName,candidateId,condition);
 	}
 
+	@Override
+	public Immigration getImmigrationById(Long immigrationId) {
+		return immigrationCommonDao.getImmigrationById(immigrationId);
+	}
+
+	@Override
+	public Immigration updateImigrationDetatils(Immigration immigration) {
+		return immigrationCommonDao.updateImigrationDetatils(immigration);
+	}
+
 }
