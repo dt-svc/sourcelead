@@ -29,11 +29,11 @@ public class AssetAssign {
     @JoinColumn(name="ASSET_ID")        
     private Asset asset;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="USER_ROLE_ID")        
     private UserRole userRole;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="SHIFT_ID")        
     private Shift shift;
 	

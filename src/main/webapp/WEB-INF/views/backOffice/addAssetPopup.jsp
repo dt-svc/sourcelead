@@ -17,7 +17,7 @@
 					<div class="popinnerdiv minHeightcol5"> 
 		            <input type="hidden" name="assetId" value="${assetAssignData.id}">
 		            <div class="clearfix assetaddpop-ul col-md-5" id="categoryDiv">
-		            <label class="clearfix">Category</label>
+		            <label class="clearfix">Category<span class="text-danger paddingLeft">*</span></label>
 		            <div class="clearfix">
 						<select class="chosen-select" id="category" name="category" onChange="assetCategory(this);" data-validation="required" field-name="Asset Category">
 						<option selected value="">-Select Category-</option>
@@ -29,7 +29,7 @@
 		            </div>
 		            
 		            <div class="clearfix assetaddpop-ul col-md-5" id="workingStatusDiv">
-		            <label class="clearfix">Working Status</label>
+		            <label class="clearfix">Working Status<span class="text-danger paddingLeft">*</span></label>
 		            <div class="clearfix">
 						<select class="chosen-select" id="workingStatus" name="workingStatus" data-validation="required" field-name="Working Status">
 							<option selected value="">-Select Working Status-</option>
@@ -47,7 +47,7 @@
 		                  <div class="col-md-5" id="snoDiv">
 		                  <label class="clearfix">Serial / Port Number<span class="text-danger paddingLeft">*</span></label>
 		                  <div class="clearfix">
-		                    <input type="text" class="form-control input-sm" id="sno" name="sno" value="${assetAssignData.slno}" placeholder="Serial / Port Number" field-name="Serial / Port Number" onkeyup="validateAssetSno();" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length1-200">
+		                    <input type="text" class="form-control input-sm" id="sno" name="sno" value="${assetAssignData.slno}" placeholder="Serial / Port Number" field-name="Serial / Port Number" onblur="validateAssetSno('${assetAssignData.id}');" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length1-200">
 		                  </div>
 		                  </div>
 		                  
@@ -160,7 +160,7 @@
 		                   <c:if test="${!empty sourceleadSectionList}">
 			            	<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 			               		<c:if test="${sectionOrder.index == 0}">
-			                		  <div id="customDiv${section.id}" class="col-md-6 columnfields-custom"></div>
+			                		  <div id="customDiv${section.id}" class="col-md-5 columnfields-custom"></div>
 			              		 </c:if>
 			            	</c:forEach>
 			   			</c:if>
@@ -275,6 +275,47 @@ function deleteAssignDocument(index,id){
 }
 
 </script>
+
+<script>
+function getCustomDependentField(sectionId){
+	var assetId = '${assetAssignData.id}';
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId+"&assetId="+assetId+"&requestFrom=asset",
+				 success: function(data) {
+		        	$('#customDiv'+sectionId).empty();
+		        	$('#customDiv'+sectionId).append(data);
+				 }
+		  });
+}
+</script>
+
+<script type="text/javascript">
+ function validateAssetSno(assetId) {
+	 var assetSno = $("#sno").val(); 
+	 if(assetSno != null && assetSno != ""){
+		 $("#add_asset").attr("disabled", "disabled");
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateAssetSno?"+tokenParamName+"="+tokenValue+"&assetSno="+assetSno+"&assetId="+assetId, 
+		        success: function(data) {
+		        	if(data == true){
+		        		  $('#snoDiv').find('p.jquery_form_error_message').remove();
+						  $("input#sno").after ("<p class='jquery_form_error_message'>"+assetSno+" is Already Existed</span>");
+						  document.getElementById("sno").setAttribute('record-exist','yes');
+						  document.getElementById("sno").setAttribute('record-exist-errorMsg',assetSno+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#sno').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#snoDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#add_asset" ).addClass('us-btn').val('Add');
+                         $("#add_asset").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 } 
+ }
+ </script>  
  <script type="text/javascript">
 	var config = {
 	  '.chosen-select'           : {},

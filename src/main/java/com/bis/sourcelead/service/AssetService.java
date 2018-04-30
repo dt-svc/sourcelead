@@ -58,4 +58,6 @@ public interface AssetService {
 	AssetAssign saveAssetAssign(AssetAssign assetAssign) throws Exception;
 	
 	AssetAssign getAssignAssetByAssetId(Long assetId)throws Exception;
+	
+	List<AssetAssign> getAssignAssetListByShiftId(Long shiftId)throws Exception;
 }

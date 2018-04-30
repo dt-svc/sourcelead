@@ -21,16 +21,6 @@ public interface AssetDao {
 	 */
 	Asset getAssetById(Long Id) throws Exception;
 	
-	/**
-	 * 
-	 * @param orgLocationId
-	 * @param categoryIds
-	 * @param workingStatus 
-	 * @return
-	 * @throws Exception
-	 * To get the asset list with filters.
-	 * This method used in BackOfficeRestController
-	 */
 	List<Asset> getAssetFilterListByLocationId(Long orgLocationId, String categoryIds, String workingStatus) throws Exception;
 	
 	List<Asset> getAssetListByLocationId(Long orgLocationId) throws Exception;
@@ -50,4 +40,10 @@ public interface AssetDao {
 	AssetAssign saveAssetAssign(AssetAssign assetAssign) throws Exception;
 
 	AssetAssign getAssignAssetByAssetId(Long assetId)throws Exception;
+	
+	AssetAssign getAssignAssetById(Long id)throws Exception;
+	
+	List<AssetAssign> getAssignAssetListByShiftId(Long shiftId)throws Exception;
+
+	void deleteAssignAssetByAssignId(AssetAssign assetAssign) throws Exception;
 }

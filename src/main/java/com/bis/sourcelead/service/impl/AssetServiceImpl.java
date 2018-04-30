@@ -73,7 +73,6 @@ public class AssetServiceImpl implements AssetService{
 	@Override
 	public Asset getAssetById(Long Id) throws Exception {
 		 Asset asset = assetDao.getAssetById(Id);
-		 asset = getEmpNames(asset);
 		 return asset;
 	}
 
@@ -89,45 +88,7 @@ public class AssetServiceImpl implements AssetService{
 	@Override
 	public List<Asset> getAssetFilterListByLocationId(Long orgLocationId, String categoryIds, String workingStatus) throws Exception {
 		List<Asset> assetsList =  assetDao.getAssetFilterListByLocationId(orgLocationId, categoryIds,workingStatus);
-		if(assetsList != null && !assetsList.isEmpty()){
-			for (Asset asset : assetsList) {
-				asset = getEmpNames(asset);
-			}
-		}
 		return assetsList;
-	}
-	
-	/**
-	 * @author Prasad Salina
-	 * @param asset
-	 * @return
-	 * To set the Shift A and Shift B emp names
-	 */
-	private Asset getEmpNames(Asset asset) {
-		if(asset.getShiftAEmployee() != null && asset.getShiftAEmployee().getUser() != null){
-			   String shiftAEmpName = "";
-	  		   if(StringUtils.isNotEmpty(asset.getShiftAEmployee().getUser().getFirstName())){
-	  			 shiftAEmpName = asset.getShiftAEmployee().getUser().getFirstName();
-	  		   }
-	  		   if(StringUtils.isNotEmpty(asset.getShiftAEmployee().getUser().getLastName()) && StringUtils.isNotBlank(asset.getShiftAEmployee().getUser().getLastName())){
-	  			 StringBuilder shiftABuilder = new StringBuilder();
-	  			 shiftAEmpName = shiftABuilder.append(shiftAEmpName).append(" ").append(asset.getShiftAEmployee().getUser().getLastName()).toString();
-	  		   }
-	  		   asset.setShiftAEmpName(shiftAEmpName);
-		 }
-		 
-		 if(asset.getShiftBEmployee() != null && asset.getShiftBEmployee().getUser() != null){
-			   String shiftBEmpName = "";
-	  		   if(StringUtils.isNotEmpty(asset.getShiftBEmployee().getUser().getFirstName())){
-	  			 shiftBEmpName = asset.getShiftBEmployee().getUser().getFirstName();
-	  		   }
-	  		   if(StringUtils.isNotEmpty(asset.getShiftBEmployee().getUser().getLastName()) && StringUtils.isNotBlank(asset.getShiftBEmployee().getUser().getLastName())){
-	  			 StringBuilder shiftBBuilder = new StringBuilder();
-	  		     shiftBEmpName=shiftBBuilder.append(shiftBEmpName).append(" ").append(asset.getShiftBEmployee().getUser().getLastName()).toString();
-	  		   }
-	  		   asset.setShiftBEmpName(shiftBEmpName);
-		 }
-		return asset;
 	}
 
 	@Override
@@ -154,48 +115,36 @@ public class AssetServiceImpl implements AssetService{
 		 
 		 if(StringUtils.isNotBlank(assetDTO.getMake())){
 			 asset.setMake(assetDTO.getMake());
-		 }
-		 
-		 else{
-			 
+		 }else{
 			 asset.setMake(null);
 		 }
 		 
 		 if(StringUtils.isNotBlank(assetDTO.getModel())){
 			 asset.setModel(assetDTO.getModel());
-		 }
-		 else{
+		 } else{
 			 asset.setModel(null);
-			 
 		 }
 		 
 		 if(StringUtils.isNotBlank(assetDTO.getName())){
 			 asset.setName(assetDTO.getName());
-		 }
-		 
-		 else{
+		 } else{
 			 asset.setName(null);
 		 }
 		 
 		 if(StringUtils.isNotBlank(assetDTO.getMemory())){
 			 asset.setMemory(assetDTO.getMemory());
-		 }
-		 else{
-			 
+		 } else{
 			 asset.setMemory(null);
 		 }
 		 
 		 if(StringUtils.isNotBlank(assetDTO.getCpu())){
 			 asset.setCpu(assetDTO.getCpu());
-		 }
-		 else{
+		 } else{
 			 asset.setCpu(null);
 		 }
 		 if(StringUtils.isNotBlank(assetDTO.getHarddisk())){
 			 asset.setHardDisk(assetDTO.getHarddisk());
-		 }
-		 
-		 else{
+		 } else{
 			 asset.setHardDisk(null);
 		 }
 		 
@@ -203,13 +152,9 @@ public class AssetServiceImpl implements AssetService{
 			 asset.setMacAddress(assetDTO.getMacAddress());
 		 } 
 		 
-		 
 		 if(StringUtils.isNotBlank(assetDTO.getMonitor())){
 			 asset.setMonitor(assetDTO.getMonitor());
-		 }
-		 
-		 else{
-			 
+		 } else{
 			 asset.setMonitor(null);
 		 }
 		 
@@ -231,28 +176,10 @@ public class AssetServiceImpl implements AssetService{
 		 if(StringUtils.isNotBlank(assetDTO.getWorkingStatus())){
 			 asset.setWorkingStatus(assetDTO.getWorkingStatus());
 		 }
-		 if(StringUtils.isNotBlank(assetDTO.getShiftAEmp())){
-			 Employees shiftAEmp = new Employees();
-			 shiftAEmp.setId(Long.parseLong(assetDTO.getShiftAEmp()));
-			 asset.setShiftAEmployee(shiftAEmp);
-		 }else{
-			 asset.setShiftAEmployee(null);
-		 }
-		 
-		 if(StringUtils.isNotBlank(assetDTO.getShiftBEmp())){
-			 Employees shiftBEmp = new Employees();
-			 shiftBEmp.setId(Long.parseLong(assetDTO.getShiftBEmp()));
-			 asset.setShiftBEmployee(shiftBEmp);
-		 }else{
-			 asset.setShiftBEmployee(null);
-		 }
 		 
 		 if(StringUtils.isNotBlank(assetDTO.getDescription())){
 			 asset.setDescription(assetDTO.getDescription());
-		 }
-		 
-		 else{
-			 
+		 } else{
 			 asset.setDescription(null);
 		 }
 		 
@@ -266,9 +193,10 @@ public class AssetServiceImpl implements AssetService{
 		 
 		 Set<AssetAssign> assetAssignDBList = new HashSet<>();
 		 if(assetDTO .getAssignAsset() != null &&  !assetDTO .getAssignAsset().isEmpty()) {
-				 for(AssetAssignDTO aad : assetDTO .getAssignAsset()) {
+			 AssetAssign aa = null;
+			 for(AssetAssignDTO aad : assetDTO .getAssignAsset()) {
 					if(aad.getShiftEmp() != null && !aad.getShiftEmp().isEmpty()) {
-					 AssetAssign aa  = new AssetAssign();
+					  aa  = new AssetAssign();
 					 if(aad.getId() != null) {
 						 aa.setId(aad.getId());
 						 aa = assetDao.getAssignAssetByAssetId(Long.valueOf(aad.getId()));
@@ -301,6 +229,10 @@ public class AssetServiceImpl implements AssetService{
 						}
 					  }
 						assetAssignDBList.add(aa);
+				    }else {
+				    	if(aad.getId() != null && aad.getShiftEmp().isEmpty())
+				    		 aa = assetDao.getAssignAssetById(aad.getId());
+				    		assetDao.deleteAssignAssetByAssignId(aa);
 				    }
 				 }
 				  asset.setAssetAssign(assetAssignDBList); 
@@ -383,7 +315,10 @@ public class AssetServiceImpl implements AssetService{
 	public AssetAssign saveAssetAssign(AssetAssign assetAssign) throws Exception {
 		return assetDao.saveAssetAssign(assetAssign);
 	}
-	
-	
 
+
+	@Override
+	public List<AssetAssign> getAssignAssetListByShiftId(Long shiftId) throws Exception {
+		return assetDao.getAssignAssetListByShiftId(shiftId);
+	}
 }
