@@ -477,7 +477,7 @@ $("#immigraDocTabSerach").keyup(function (e) {
 function downlaodZipfileByDocId(docId){
 	if(docId == "")
 		return;
-	$.post("downloadImmigrationDocsZip",{immigrationId: '', docId: docId}, function(data) { //  passing empty value for immigrationId to do doc level zip download
+	$.post("downloadImmigrationDocsZip",{immigrationId: immigrationId, docId: docId}, function(data) { //  passing empty value for immigrationId to do doc level zip download
 		if(data !== "" && data.indexOf("Documents Found") === -1)
 			location.href = '/app/downloadFile.html?file='+encodeURI(data); // encodeURI used for encoding file path in request parameter.
 		else

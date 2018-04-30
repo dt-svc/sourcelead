@@ -293,8 +293,8 @@ public class FileUploadUtil {
 			if(docId == null) {
 	    	file = new File(com.google.common.io.Files.createTempDir(), fileNameParameters.get("immiUUID")+"_"+fileNameParameters.get("firstName")+"_"+fileNameParameters.get("lastName")+"_Docs"+".zip");
 			}
-			else if(immigrationId == null) {
-				file =  new File(com.google.common.io.Files.createTempDir(), fileNameParameters.get("firstName")+"_"+fileNameParameters.get("lastName")+"_Passport"+".zip");
+			else if(docId != null && immigrationId != null) {
+				file =  new File(com.google.common.io.Files.createTempDir(), fileNameParameters.get("firstName")+"_"+fileNameParameters.get("lastName")+"_"+fileNameParameters.get("docName")+".zip");
 			}
 	    	fos = new FileOutputStream(file);
 			zos = new ZipOutputStream(fos);
