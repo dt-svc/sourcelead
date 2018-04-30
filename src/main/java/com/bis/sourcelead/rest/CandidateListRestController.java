@@ -919,6 +919,7 @@ public class CandidateListRestController {
 				candidateDTO.setStatus(can.getStatus().toString());
 				candidateDTO.setTerminateReason(can.getTerminateReason());
 				candidateDTO.setIsAssociate(can.getIsAssociate());
+				candidateDTO.setIsProfilePublic(can.getIsProfilePublic());
 				candidateDTO.setId(can.getId());
 				candidateDTO.setCandidateId(String.valueOf(can.getId()));
 				SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CANDIDATE);
