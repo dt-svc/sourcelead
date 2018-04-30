@@ -1297,27 +1297,21 @@ public class ImmigrationRestController {
 
 	@RequestMapping(value = { "/updateImmigrationStatus" })
 	public String checkDataAndUpdateImmigrationStatus(@RequestParam(value = "id", required = true) Long immigrationId
-			,@RequestParam(value = "candidateId", required = true) Long candidateId,HttpServletRequest request) throws Exception
+			,@RequestParam(value = "candidateId", required = true) Long candidateId,
+			@RequestParam(value = "templateId", required = true) Long templateId,
+			HttpServletRequest request) throws Exception
 	{
-
 		String result = "{status:'success'}";
-		// HashMap<String, Integer> immiStatusMap = (HashMap)
-		// request.getSession().getAttribute("immiStatusMap");
 
-		System.out.println(" inisde getCandidatePassportDetails controller TEST 123455 -->");
+		System.out.println(" inisde updateImmigrationStatus controller -->");
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 		try {
-			// CandidatePassportVisa candidate
-			// CandidateEmployers candidateId
-			// CandidateResidence candidate
-			// CandidateEducation candidateId
-			// CandidateFamilyDetails candidate
 			String entityArray[] = new String[] { "CandidatePassportVisa", "CandidatePassportVisa",
 					"CandidateEmployers", "CandidateResidence", "CandidateEducation", "CandidateFamilyDetails" };
 			String tabNameArray[] = new String[] { "Passport", "Visa", "Employers", "Residence", "Education","Family" };
-			// Integer count =
-			// immigrationCommonService.getTableRecordCountByCandidateId("CandidatePassportVisa",
-			// candidateId,"idType='Passport'");
 			Integer count = 0;
+			
 			for (int i = 0; i < entityArray.length; i++) {
 				if (i == 0) { // CandidatePassportVisa for passport
 					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where candidate.id=:candidateId and idType='Passport'");
@@ -1337,6 +1331,42 @@ public class ImmigrationRestController {
 					System.out.println(" Record not found for the Tab Nme:::--> : " + tabNameArray[i]);
 					return result;
 				}
+				
+				// check  required column value in Forms tab.
+				List<ImmigrationCandidateForms> formsList=  immigrationCommonService.getCandidateImmigartionFormsDetails(candidateId , templateId, immigrationId,"");
+				System.out.println(" formsList:::--> : " + formsList.size());
+				for(ImmigrationCandidateForms form: formsList) {
+					if(form.getIsRequired().equalsIgnoreCase(Constants.YES)) {
+						if(!form.getFormStatus().equalsIgnoreCase(ImmigrationConstants.FILE_UPLOADED) || StringUtils.isEmpty(form.getUploadedFileUrl())) {
+						result = "{errorMsg:'forms'}";
+						System.out.println("form.getIsRequired() : "+form.getIsRequired()+", form.getFormStatus() : "+form.getFormStatus()+", form.getUploadedFileUrl():  "+form.getUploadedFileUrl());
+						System.out.println("Required found for the form Tab for the form ID:::--> : " + form.getId());
+						return result;
+						}
+					}
+				}
+				// check is required in in DocumentsTab
+				 List<ImmigrationCandidateDocuments> docsList= immigrationCommonService.getImmigrationCandidateDocs(immigrationId, templateId,candidateId, user, orgLocations, "");
+				 for(ImmigrationCandidateDocuments doc: docsList) {
+						if(doc.getIsRequired().equalsIgnoreCase(Constants.YES)) {
+							if(!doc.getDocumentStatus().equalsIgnoreCase(ImmigrationConstants.FILE_UPLOADED) || StringUtils.isEmpty(doc.getUplodedFileUrl())) {
+							result = "{errorMsg:'Documents'}";
+							System.out.println("Required found for the Documents Tab for the Doc ID :::--> : " + doc.getId());
+							return result;
+							}
+						}
+					}
+				 // if no error message means all required information is filled.
+				 // then update immigration petition status to request to fill.
+				 
+				 LookUpData data = lookUpDataService.getLookUpdataByCategoryAndName(ImmigrationConstants.PETITION_STATUS,ImmigrationConstants.PETITION_STATUS_FILLED);
+				 Immigration immigration = new Immigration();	
+				 if(immigrationId!= null) {
+					 immigration = immigrationCommonService.getImmigrationById(immigrationId);
+					}
+				 immigration.setCurrUscisStauts(data); // updating with Filled status.
+				 immigrationCommonService.updateImigrationDetatils(immigration);
+				 System.out.println("Immigartion details udated successfully for the immigration id ID :::--> : " + immigration.getId());
 			}
 		} catch (Exception e) {
 			logger.error("Exception caught in controller --->" + e.getMessage());

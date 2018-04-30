@@ -941,5 +941,19 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		}
 		return null;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Immigration updateImigrationDetatils(Immigration immigration) {
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			session.saveOrUpdate(immigration);
+			return immigration;
+		} catch (Exception e) {
+			System.out.println("Exception caught  while updating immigration entity " + immigration.getId());
+			e.printStackTrace();
+		}
+		return null;
+	}
 }
 	
