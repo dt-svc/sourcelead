@@ -29,6 +29,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
@@ -764,7 +765,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         
         List<ImmigrationListViewDTO> ImmigarionDTOList = new ArrayList<ImmigrationListViewDTO>();
         if(!ImmigrationViewLst.isEmpty()) {
-        	 List<LookUpData> caEmployerDTOs = immigrationTemplateDao.getLookupDataByType(Constants.USCIS_STATUS);
+        	 List<LookUpData> caEmployerDTOs = immigrationTemplateDao.getLookupDataByType(ImmigrationConstants.PETITION_STATUS);
 	        for (ImmigrationListView source : ImmigrationViewLst) {
 	            //System.out.println(" DocsCount"+source.getDocsCount());
 	        	ImmigrationListViewDTO target = new ImmigrationListViewDTO();
