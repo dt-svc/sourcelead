@@ -108,4 +108,6 @@ public interface ImmigrationCommonDao {
 
 	Integer getTableRecordCountByCandidateId(String entityName, Long candidateId, String condition);
 
+	Immigration updateImigrationDetatils(Immigration immigration);
+
 }

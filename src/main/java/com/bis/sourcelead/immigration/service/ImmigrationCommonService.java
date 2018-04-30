@@ -103,4 +103,8 @@ public interface ImmigrationCommonService {
 	List<ImmigrationCandidateForms> getImmigrationCandidateFormsByImmigrationId(Long immigrationId);
 
 	Integer getTableRecordCountByCandidateId(String entityName,Long candidateId, String condition);
+	
+	Immigration getImmigrationById(Long immigrationId);
+
+	Immigration updateImigrationDetatils(Immigration immigration);
 }
