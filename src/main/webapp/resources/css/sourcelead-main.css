@@ -9105,6 +9105,10 @@ z-index: -800;
 .remove_uservalidation p.jquery_form_error_message {
 	position: absolute; bottom: 32px;
 }
+.teHeight {
+	min-height: 300px !important;
+}
+
 
 .view-count{
     font-size: 20px; text-align: center; font-weight: 500; border-bottom: 1px solid #bdbdbd; padding: 2px;color: #00488B;
