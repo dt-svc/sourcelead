@@ -1097,7 +1097,7 @@ function addTimeSheetRow(projectId) {
 		    var cell2 = row.insertCell(2);
 			var isCell1Disabled = $("#1timeSheetDay1Id").prop('disabled');
 			if(isCell1Disabled){
-				$("#divadttTd3 :input").attr('disabled','disabled');
+				$("#divadttTd3 :input[type=text]").attr('disabled','disabled');
 				$('.timesheet_comm','#divadttTd3').find('i').attr('class','glyphicon');
 			}
 			else{
@@ -1119,7 +1119,7 @@ function addTimeSheetRow(projectId) {
 			var cell3 = row.insertCell(3);
 			var isCell2Disabled = $("#1timeSheetDay2Id").prop('disabled');
 			if(isCell2Disabled){
-				$("#divadttTd4 :input").attr('disabled','disabled');
+				$("#divadttTd4 :input[type=text]").attr('disabled','disabled');
 				$('.timesheet_comm','#divadttTd4').find('i').attr('class','glyphicon');
 			}
 			else{
@@ -1141,7 +1141,7 @@ function addTimeSheetRow(projectId) {
 			var cell4 = row.insertCell(4);
 			var isCell3Disabled = $("#1timeSheetDay3Id").prop('disabled');
 			if(isCell3Disabled){
-				$("#divadttTd5 :input").attr('disabled','disabled');
+				$("#divadttTd5 :input[type=text]").attr('disabled','disabled');
 				$('.timesheet_comm','#divadttTd5').find('i').attr('class','glyphicon');
 			}
 			else{
@@ -1163,7 +1163,7 @@ function addTimeSheetRow(projectId) {
 			var cell5= row.insertCell(5);
 			 var isCell4Disabled = $("#1timeSheetDay4Id").prop('disabled');
 			if(isCell4Disabled){
-				$("#divadttTd6 :input").attr("disabled", "disabled");
+				$("#divadttTd6 :input[type=text]").attr("disabled", "disabled");
 				$('.timesheet_comm','#divadttTd6').find('i').attr('class','glyphicon');
 			}else{
 				$("#divadttTd6 :input").removeAttr('disabled');
@@ -1184,7 +1184,7 @@ function addTimeSheetRow(projectId) {
 			var cell6 = row.insertCell(6);
 			var isCell5Disabled = $("#1timeSheetDay5Id").prop('disabled'); 
 			 if(isCell5Disabled){
-				$("#divadttTd7 :input").attr("disabled", "disabled");
+				$("#divadttTd7 :input[type=text]").attr("disabled", "disabled");
 				$('.timesheet_comm','#divadttTd7').find('i').attr('class','glyphicon');
 			}
 			else{
@@ -1206,7 +1206,7 @@ function addTimeSheetRow(projectId) {
 			var cell7 = row.insertCell(7);
 			var isCell6Disabled = $("#1timeSheetDay6Id").prop('disabled');
 			if(isCell6Disabled){
-				$("#divadttTd8 :input").attr("disabled", "disabled");
+				$("#divadttTd8 :input[type=text]").attr("disabled", "disabled");
 				$('.timesheet_comm','#divadttTd8').find('i').attr('class','glyphicon');
 			}
 			else{
@@ -1228,7 +1228,7 @@ function addTimeSheetRow(projectId) {
 			var cell8 = row.insertCell(8);
 		    var isCell7Disabled = $("#1timeSheetDay7Id").prop('disabled');
 			if(isCell7Disabled){
-				$("#divadttTd9 :input").attr("disabled", "disabled");
+				$("#divadttTd9 :input[type=text]").attr("disabled", "disabled");
 				$('.timesheet_comm','#divadttTd9').find('i').attr('class','glyphicon');
 			}else{
 				$("#divadttTd9 :input").removeAttr('disabled');

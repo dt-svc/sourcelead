@@ -2454,10 +2454,13 @@ public class TimesheetRestController {
 				if (Validator.validate(tedDTO)) {
 					if (Validator.validate(tedDTO.getTimesheetSubmission())) {
 						for (TimesheetEntriesDTO entries : tedDTO.getTimesheetSubmission().getTimesheetEntries()) {
-							if (!Validator.validate(entries)) {
-								model.addObject("INVALID_DATA", entries.getDayOfTheDate());
-								break outerLoop;
+							if(StringUtils.isNotEmpty(entries.getDayOfTheDate()) && StringUtils.isNotEmpty(entries.getDate())) {
+								if (!Validator.validate(entries)) {
+									model.addObject("INVALID_DATA", entries.getDayOfTheDate());
+									break outerLoop;
+								}
 							}
+							
 						}
 						isValid = true;
 						/*if valid Data*/
