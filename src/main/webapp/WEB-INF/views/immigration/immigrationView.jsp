@@ -55,8 +55,8 @@
               <li><a href="#residencesTab"><i id ="residencefilled" class="fa fa-check-circle-o"></i>Residence</a></li>
               <li><a href="#educationsTab"><i id ="educationfilled" class="fa fa-check-circle-o"></i>Educations</a></li>
               <li><a href="#familiesTab"><i id ="familyfilled" class="fa fa-check-circle-o"></i>Family</a></li>
-              <li><a href="#formsTab"><i class="fa fa-check-circle-o"></i>Forms</a></li>
-              <li><a href="#docsTab"><i class="fa fa-check-circle-o"></i>Documents</a></li>
+              <li><a href="#formsTab"><i id="allFormsfilled" class="fa fa-check-circle-o"></i>Forms</a></li>
+              <li><a href="#docsTab"><i id="allDocsfilled" class="fa fa-check-circle-o"></i>Documents</a></li>
               <li><a href="#notesTab">Notes</a></li>
               <li><a href="#activitiesTab">Activities</a></li>
               <div class="clearfix"></div>
