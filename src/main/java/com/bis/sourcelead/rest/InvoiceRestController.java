@@ -1135,36 +1135,24 @@ public class InvoiceRestController {
 		StringBuilder stringBuildforLink = new StringBuilder();
 		globalVarsMap.put("loginLink", stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		EmailScenario emailScenario = null;
+		
+		//send mail logic
+		List<EmailAttachment> attachmentList = new ArrayList<>();
+		
+		//send notification logic
 		EmailScenario notificationScenario = null;
-		// getting the current EmailScenario by EmailScenario unique name and
-		// entity type
-		// using same migration which has been already used in
-		// updatedRequirementMailToManager method
 		if (invoiceType.equalsIgnoreCase("Payables")) {
-			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_ACCEPT_MAIL_VENDOR_EMAIL, Constants.ENTITY_TYPE_EMAIL);
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.INVOICE_ACCEPT_MAIL_VENDOR_EMAIL,attachmentList);
 			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_ACCEPT_MAIL_VENDOR_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
 		}
 		else {
-			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_ACCEPT_MAIL_CLIENT_EMAIL, Constants.ENTITY_TYPE_EMAIL);
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.INVOICE_ACCEPT_MAIL_CLIENT_EMAIL,attachmentList);
 			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_ACCEPT_MAIL_CLIENT_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
 		}
-		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
-		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
 		notificationScenario.setBody(notificationbody);
-		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(), loginOrgLocation);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
-		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-		StringBuilder notificationLink = new StringBuilder();
 		String actionLink = "";
-		// Invoice invoice2=getInvoicetByParentId(invoice.getId());
+		StringBuilder notificationLink = new StringBuilder();
 		if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
 			actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
 					+ invoice.getInvoiceUUID() + "&invoiceType=Payables").toString();
@@ -1174,6 +1162,8 @@ public class InvoiceRestController {
 					+ invoice.getInvoiceUUID() + "&invoiceType=Receivable").toString();
 		}
 		emailScenerioUtil.sendNotification(actionLink, loginUser, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario, new HashMap<String, String>());
+		
+		
 	}
 	
 	@RequestMapping(value = "/rejectInvoice", method = RequestMethod.POST)
@@ -1248,44 +1238,33 @@ public class InvoiceRestController {
 		StringBuilder stringBuildforLink = new StringBuilder();
 		globalVarsMap.put("loginLink", stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		EmailScenario emailScenario = null;
-		EmailScenario notificationScenario = null;
-		// getting the current EmailScenario by EmailScenario unique name and
-		// entity type
-		// using same migration which has been already used in
-		// updatedRequirementMailToManager method
-		if (invoiceType.equalsIgnoreCase("Payables")) {
-			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_VENDOR_EMAIL, Constants.ENTITY_TYPE_EMAIL);
-			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_VENDOR_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
-		}
-		else {
-			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_CLIENT_EMAIL, Constants.ENTITY_TYPE_EMAIL);
-			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_CLIENT_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
-		}
-		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
-		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
-		notificationScenario.setBody(notificationbody);
-		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(), loginOrgLocation);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
-		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-		StringBuilder notificationLink = new StringBuilder();
-		String actionLink = "";
-		if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
-			actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
-					+ invoice.getInvoiceUUID() + "&invoiceType=Payables").toString();
-		}
-		else {
-			actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
-					+ invoice.getInvoiceUUID() + "&invoiceType=Receivable").toString();
-		}
-		emailScenerioUtil.sendNotification(actionLink, loginUser, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario, new HashMap<String, String>());
+		
+			    //send mail logic
+		        List<EmailAttachment> attachmentList = new ArrayList<>();
+			    commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.INVOICE_REJECT_MAIL_VENDOR_EMAIL,attachmentList);
+		
+		        //send notification logic
+				EmailScenario notificationScenario = null;
+				if (invoiceType.equalsIgnoreCase("Payables")) {
+					notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_VENDOR_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+				}
+				else {
+					notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_CLIENT_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+				}
+				String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+				notificationScenario.setBody(notificationbody);
+				String actionLink = "";
+				StringBuilder notificationLink = new StringBuilder();
+				if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
+					actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
+							+ invoice.getInvoiceUUID() + "&invoiceType=Payables").toString();
+				}
+				else {
+					actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
+							+ invoice.getInvoiceUUID() + "&invoiceType=Receivable").toString();
+				}
+				emailScenerioUtil.sendNotification(actionLink, loginUser, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario, new HashMap<String, String>());
+		
 	}
 	
 	/**

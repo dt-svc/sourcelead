@@ -1044,7 +1044,7 @@ function preparedContractListWFA(json){
 	        		  if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == report.approverUserId){
 		      	        	 result = result +' <div><div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+report.id+',\'REJECTED\');"></i></div></div>';
 		      	         }
-	        	  }else if(report.templateSubmissionStatus == "WAITING_TO_SEND" && report.isOwner == "Y"){
+	        	  }else if(report.templateSubmissionStatus == "WAITING_TO_SEND" && (report.isOwner == "Y" || '${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN")){
 	        		  result = result + '<a title="Send Contract"><i class="fa fa-share-square" onclick="sendContractFromOwner(\''+report.contractUUID+'\');"></i></a>';
 	        	  }
 	        		  
@@ -1159,12 +1159,11 @@ function preparedContractListWFA(json){
 	         
 	         opt = opt + '<td>';//Waiting to be signed
 	         opt = opt + '<div class="tbldata-dotdot-vsm">';
-	         
         	  if(output.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
         		  if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == output.approverUserId){
       	        	 opt = opt +' <div><div class="CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+output.id+',\'REJECTED\');"></i></div></div>';
       	         }
-        	  }else if(output.templateSubmissionStatus == "WAITING_TO_SEND" && output.isOwner == "Y"){
+        	  }else if(output.templateSubmissionStatus == "WAITING_TO_SEND" && (output.isOwner == "Y" || '${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN")){
         		  opt = opt + '<a title="Send Contract"><i class="fa fa-share-square" onclick="sendContractFromOwner(\''+output.contractUUID+'\');"></i></a>';
         	  }
         		  
@@ -3648,7 +3647,6 @@ function finalizeContract(recordId,status){
 
 <script>
 function sendContractFromOwner(contractUUID){
-	alert(contractUUID);
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
       type : "POST",

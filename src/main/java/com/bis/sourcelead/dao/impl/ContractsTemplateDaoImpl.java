@@ -274,8 +274,13 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
 			userRoleCondition = "";
 		}else{
-			userRoleCondition = "and (contracts.approverUser.id =:userId OR contracts.ownerUserId.id =:userId OR contracts.createdBy =:userCode) ";
+			userRoleCondition = "and (contracts.approverUser.id =:userId OR contracts.createdBy =:userCode or (contracts.id IN (select coh.contract.id from ContractOwnerHierarchy coh where coh.ownerUserId.id =:userId)) or contracts.ownerUserId.id = :userId) ";
 		}
+		
+		/*String ownerCondition = "";
+		if(!(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName))){
+			ownerCondition = "or (contracts.id IN (select coh.contract.id from ContractOwnerHierarchy coh where coh.ownerUserId.id =:userId))";
+		}*/
 		
 		String[] type = contractsType.split(",");
 		
@@ -830,5 +835,16 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 			return contractsList.get(0);
 		else
 			return null;
+	}
+
+	@Override
+	@Transactional
+	public List<Contracts> getContractsBylocationIdForReminder(Long locationId, String status, Date date)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Contracts> contractList = null;
+		String query = "from Contracts contracts where contracts.orgLocationId.id =:orgLocationId and contracts.templateSubmissionStatus =:status and contracts.id IN (select contractHistory.contractsId.id from ContractsHistory contractHistory where contractHistory.contractsId.id = contracts.id and contractHistory.createdDate <= :date)";
+		contractList = session.createQuery(query).setLong("orgLocationId", locationId).setString("status", status).setParameter("date", date).list();
+		return contractList;
 	}
 }

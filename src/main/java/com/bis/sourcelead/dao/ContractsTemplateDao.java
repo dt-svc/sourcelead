@@ -68,4 +68,6 @@ public interface ContractsTemplateDao {
 	ContractEditHistory saveContractEditHistory(ContractEditHistory contractEditHistory);
 
 	Contracts getMaxNoOfContract(Long locationId);
+
+	List<Contracts> getContractsBylocationIdForReminder(Long locationId, String status, Date date);
 }

@@ -73,19 +73,21 @@ public interface ContractsTemplateService {
 
 	Boolean getVendorMsaCreatedOrNot(Long vendorLocationId, Long loginLocatonId);
 
-	void sendMSAEndDateModifiedMail(Contracts contracts, OrgLocations orgLocation, Date previousEndDate) throws Exception;
+	void sendMSAEndDateModifiedMail(Contracts contracts, OrgLocations orgLocation, Date previousEndDate, User user) throws Exception;
 
-	void sendSOWEndDateModifiedMail(Contracts contracts, OrgLocations orgLocation) throws Exception;
+	void sendSOWEndDateModifiedMail(Contracts contracts, OrgLocations orgLocation, User user) throws Exception;
 
 	List<Contracts> getContractByLocationId(Long orgLocationId);
 
 	List<User> getSigningAuthoritiesForContract(Long locationId, Long tabId) throws Exception;
 
-	boolean sendContractFromOwnertoReceiver(ContractsDTO contractsDTO, User loginUser, OrgLocations loginOrgLocation) throws Exception;
+	boolean sendContractFromOwnertoReceiver(ContractsDTO contractsDTO, User loginUser, OrgLocations loginOrgLocation, String roleName) throws Exception;
 
 	List<Contracts> validateAlreadyGeneratedContract(ContractsDTO contractsDTO, OrgLocations loginOrgLocation) throws Exception;
 
 	boolean reviseContract(ContractsDTO contractsDTO, OrgLocations loginOrgLocation, User loginUser) throws Exception;
+	
+	List<Contracts> getContractsBylocationIdForReminder(Long locationId, String status, Date date);
 
 	ContractEditHistory saveContractEditHistory(ContractEditHistory contractEditHistory);
 	
