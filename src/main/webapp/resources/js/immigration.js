@@ -243,7 +243,7 @@ function Immigration() {
             if ($("#petitionDetailsForm").validate(false, validationSettings)) {
                 var formData = getFormData("petitionDetailsForm");
                 $.ajax({
-                    url: sourceleadUrl + immiModulePath + "/savePetitionDetailsPage?removedResidenceIds="+removedResidenceIds,
+                    url: sourceleadUrl + immiModulePath + "/savePetitionDetailsPage?removedResidenceIds="+removedResidenceIds+"&status="+status,
                     type: "POST",
                     data: formData,
                     success: function (data) {
@@ -264,7 +264,31 @@ function Immigration() {
                 return false;
             }
             $("#newPetitionTemplateDiv").load("/app" + immiModulePath + "/loadNewPetitionPage?forward=two");
-        } else if (status == 'three') {
+        }else if(status == 'save'){
+        	if ($("#petitionDetailsForm").validate(false, validationSettings)) {
+                var formData = getFormData("petitionDetailsForm");
+                $.ajax({
+                    url: sourceleadUrl + immiModulePath + "/savePetitionDetailsPage?removedResidenceIds="+removedResidenceIds+"&status="+status,
+                    type: "POST",
+                    data: formData,
+                    success: function (data) {
+                    	eval("dataObj="+data)
+                    	immigrationId = dataObj.id;
+                    	candidateId = dataObj.candidateId;
+                    	templateId= dataObj.immTemplateId;
+                    	
+                         /*if(status == 'saveContinue'){// redirect to petition details tab page.
+                         window.location.href = sourceleadUrl + immiModulePath + "/viewImmigration?immigrationId="+immigrationId+"&candidateId="+candidateId+"&templateId="+templateId;
+                         }*/
+                        
+                      }
+                    
+                });
+                return true;
+            } else {
+                return false;
+            }
+        }else if (status == 'three') {
             $("#newPetitionTemplateDiv").load("/app" + immiModulePath + "/loadNewPetitionPage?forward=three");
         } else if (status == 'four') {
             $("#newPetitionTemplateDiv").load("/app" + immiModulePath + "/loadNewPetitionPage?forward=four");
