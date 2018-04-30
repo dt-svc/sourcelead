@@ -4,6 +4,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +45,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
@@ -63,6 +65,7 @@ import com.bis.sourcelead.service.InterviewFeedbackTemplateService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementInterviewService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
@@ -154,6 +157,9 @@ public class SubmissionsRestController {
 	
 	@Autowired
 	CandidateCommentsService candidateCommentsService;
+	
+	@Autowired
+	RequirementLocationsService requirementLocationsService;
 
 	@RequestMapping(value = "/app/getCandidateResumes")
 	@ResponseBody ResponseList<CandidateResumes> getCandidateResumes(@RequestParam(value = "candidateId", required = false) Long candidateId,
@@ -414,6 +420,9 @@ public class SubmissionsRestController {
 			Integer totalApplicatsCountForRequirement = 0;
 		   //updating total number of applicants for requrement
 			totalApplicatsCountForRequirement = requirementSubmissionService.getNumberOfApplicantsForRequirement(requirement.getOrgLocationId().getId(), requirement.getId());
+			
+			requirement.setRequirementLocations(new HashSet<RequirementLocations>(requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId())));
+			
 			if(totalApplicatsCountForRequirement > 0){
 				requirement.setTotalApplicants(totalApplicatsCountForRequirement); 
 				requirementService.updateRequirement(requirement);
@@ -825,12 +834,15 @@ public class SubmissionsRestController {
 				requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 				requirementSubmission.setUpdatedDate(new Date());
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-				requirementSubmissionService.sendRejectionMailToVendorContact(user, requirementSubmission.getRejectedReason(), submissionId, orgLocations);
+				if(orgLocations.getId() != requirementSubmission.getCandidate().getOrgLocationId().getId() && !requirementSubmission.getCandidate().getCandidateType().equalsIgnoreCase("Professional")) {
+					requirementSubmissionService.sendRejectionMailToVendorContact(user, requirementSubmission.getRejectedReason(), submissionId, orgLocations);
+				}
 				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 				response.setObject("success");
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			}catch(Exception e) {
+				e.printStackTrace();
 				response.setResponse(Result.AWKWARD.name());
 				response.setResponseMessage(Result.AWKWARD.getValue());
 			}
