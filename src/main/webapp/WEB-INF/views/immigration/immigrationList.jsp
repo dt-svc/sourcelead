@@ -187,7 +187,7 @@
 							 
 						</div>
 				</div>
-				
+				<input type="hidden" id="orgType" value="">
 				<div class="col-md-3">
 						<div class="row">
 							<div class="col-md-12 mb">
@@ -416,7 +416,7 @@
 		filterStatusVal = filterVal[2];
 		filterDurationVal = filterVal[3];
 	 }
-	 
+	 var orgTypeVal =  $("#orgType").val();
      var result = "";
      result = result + '<table id="dynamicImmigrationListTbl">';
      result = result + '<thead>';
@@ -444,7 +444,7 @@
 //     var statusFilter = $("#statusFilter").val();
      var searchValue = $("#immiListSerach").val();
      searchValue = searchValue ? searchValue : "";
-     var url = sourceleadUrl + "/immigration/getImmigrationViewList?searchValue=" + searchValue+"&filterAttorneyVal="+filterAttorneyVal+"&filterTypeVal="+filterTypeVal+"&filterStatusVal="+filterStatusVal+"&filterDurationVal="+filterDurationVal;
+     var url = sourceleadUrl + "/immigration/getImmigrationViewList?searchValue=" + searchValue+"&filterAttorneyVal="+filterAttorneyVal+"&filterTypeVal="+filterTypeVal+"&filterStatusVal="+filterStatusVal+"&filterDurationVal="+filterDurationVal+"&orgTypeVal="+orgTypeVal;
      dynamicImmigrationListPagination(url);
  }
  //var count = 0;
@@ -639,6 +639,9 @@
                  "targets": colIndex++,
                  /*"data": "formsCount",*/
                  "render": function (data, type, opt, meta) {
+                	 if( $("#orgType").val() == ""){
+                	 	$("#orgType").val(opt.orgNameSel);
+                	 }
                      var result = "";
                      result = result + '<td><div><a href=/app/immigration/editImmigrationDetails?immigrationId='+opt.id+'><i id="edit' + opt.id + '" class="glyphicon glyphicon-pencil"></i></a><i id="delete' + opt.id + '" onclick="deleteImmigrationListId(' + opt.id + ');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
                      return result;

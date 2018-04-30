@@ -92,7 +92,7 @@ public interface ImmigrationCommonDao {
 
 	ImmigrationCandidateForms getImmigrationCandidateFormsById(Long id, Long candidateId, Long immigrationId) throws Exception;
 
-	ResponseList<ImmigrationListViewDTO> getImmigrationsList(ImmigrationListViewDTO immigrationListDTO,	String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal)throws Exception;
+	ResponseList<ImmigrationListViewDTO> getImmigrationsList(ImmigrationListViewDTO immigrationListDTO,	String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal, String orgTypeVal)throws Exception;
 
 	String updateUscisTypeDropDown(Long templateId, Long uscisId);
 
