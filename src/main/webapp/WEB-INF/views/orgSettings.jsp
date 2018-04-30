@@ -1282,6 +1282,7 @@ function getPaymentAccounts(flag) {
             result = result + '    <th>Last Name</th>';
             result = result + '    <th>Location</th>';
             result = result + '    <th>Default</th>';
+            result = result + '    <th>Active</th>';
             result = result + '    <th></th>';
             result = result + '   </tr>';
             result = result + '	</thead>';
@@ -1317,6 +1318,10 @@ function getPaymentAccounts(flag) {
                 result = result + '<td>';
                 result = result + '<div class="tblminwidth-50"><div class="toggle-button"><label class="switch" style="top: 5px;"><input onclick="changeDefaultPaymentAccount(this, '+report.id+')" type="checkbox" '+(report.defaultAccount ? 'checked' : '')+'/> <div class="slider round"></div> </label> </div></div>';
                 result = result + '</td>';
+                result = result + '<td>';
+                result = result + '<div class="tblminwidth-50"><div class="toggle-button"><label class="switch" style="top: 5px;"><input onclick="changeActivePaymentAccount('+report.id+')" type="checkbox" '+(!report.disabled ? 'checked' : '')+'/> <div class="slider round"></div> </label> </div></div>';
+                result = result + '</td>';
+                
                 if(report.accountType !== 'WEPAY') {
                     result = result + '<td>';
                     result = result + '<div class="tblminwidth-50"><a href="javascript:void(0)" onclick="editPaymentAccount(\''+report.accountType+'\','+ report.id+','+report.orgLocationId+',\''+report.firstName+'\',\''+report.lastName+'\',\''+report.accountNumber+'\',\''+report.routingNumber+'\',\''+report.bankName+'\')">Edit</a></div>';
@@ -1366,6 +1371,12 @@ function changeDefaultPaymentAccount(ele, id) {
         showError(data.responseMessage);
         getPaymentAccounts();
     });
+}
+function changeActivePaymentAccount(id){
+	 $.post(sourceleadUrl+"/change-active-payment-account", {id: id}, function(data) {
+	        showError(data.responseMessage);
+	        getPaymentAccounts();
+	    });
 }
 
 function editPaymentAccount(type, id, locationId, firstName, lastName, accountNumber, routingNumber, bankName) {

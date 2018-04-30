@@ -84,7 +84,8 @@ public class SourceleadBlogServiceImpl implements SourceleadBlogService{
 		
 		if(sourceleadBlogDTO.getBlogTitle() != null) {
 			sourceleadBlogs.setBlogTitle(sourceleadBlogDTO.getBlogTitle());
-			sourceleadBlogs.setHref(sourceleadBlogDTO.getBlogTitle().toLowerCase().replaceAll(" ", "-").replaceAll(" & ", "-and-"));
+//			sourceleadBlogs.setHref(sourceleadBlogDTO.getBlogTitle().toLowerCase().replaceAll(" ", "-").replaceAll(" & ", "-and-"));
+			sourceleadBlogs.setHref(sourceleadBlogDTO.getHref().toLowerCase().replaceAll(" ", "-").replaceAll(" & ", "-and-"));
 		}
 		
 		if(sourceleadBlogDTO.getCategoryId() != null) {
@@ -207,8 +208,8 @@ public class SourceleadBlogServiceImpl implements SourceleadBlogService{
 	}
 
 	@Override
-	public List<SourceleadBlogs> getRelatedSourceleadBlogs(Long categoryId) throws Exception {
-		return sourceleadBlogDao.getRelatedSourceleadBlogs(categoryId);
+	public List<SourceleadBlogs> getRelatedSourceleadBlogs(Long blogId) throws Exception {
+		return sourceleadBlogDao.getRelatedSourceleadBlogs(blogId);
 	}
 
 	@Override
