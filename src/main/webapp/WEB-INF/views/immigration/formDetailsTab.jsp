@@ -10,6 +10,7 @@
 			<tbody>
 			  <tr>
 				<th>Form Name</th>
+				<th>Required</th>
 				<th>File</th>
 				<th>Uploaded File</th>
 				<th>Status</th>
@@ -18,6 +19,7 @@
 			  <c:forEach var="items" items="${formsList}" varStatus="rows">
 			  <tr formid ="${items.id}" savedFormDocName = "${items.uploadFileName}">
 				<td><div class="tbldata-dotdot-me">${items.formName}</div></td>
+				<td><div class="tblminwidth-50">${items.isRequired == 'Y' ? "YES":"NO"}</div></td>
 				<td><div class="tbldata-dotdot-me"><span class="fileName">${items.fileName}</span>
 				<a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile('${items.fileUrl}','${items.fileName}','${items.fileContentType}');" title="View"></a>
 					<a class="glyphicon glyphicon-download-alt" title="Download" download href="${items.fileUrl}"></a></div>
@@ -27,7 +29,7 @@
 				<a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile('${items.uploadedFileUrl}','${items.uploadFileName}','${items.uploadedFileContentType}');" title="View"></a>
 					<a class="glyphicon glyphicon-download-alt" title="Download" download href="${items.uploadedFileUrl}"></a></c:if></div>
 				</td>
-				<td><div class="tbldata-dotdot-sm">${items.formStatus}</div></td>
+				<td><div class="tblminwidth-50">${items.formStatus}</div></td>
 				 <td><div>
 				 <a title="Upload" class="fa fa-upload uploadForm" onclick=""></a>
 				 <c:if test="${items.isTemplateConfigured =='N'}">
