@@ -72,13 +72,13 @@ public class PaymentController {
 	@Autowired
 	private CommonUtil commonUtil;
 	
-	@Value("${clientId}")
+	@Value("${paypal.clientId}")
 	private String clientId;
 	
-	@Value("${clientSecret}")
+	@Value("${paypal.clientSecret}")
 	private String clientSecret;
 	
-	@Value("${paymentMode}")
+	@Value("${paypal.paymentMode}")
 	private String paymentMode;
 	
 	@Value("${env}")
