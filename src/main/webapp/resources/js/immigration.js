@@ -440,7 +440,26 @@ function Immigration() {
 	        }
 	    });
 	}
+	this.updateImmigrationStatus = function(immigrationId) {
 
+		console.log("inside updateImmigrationStatus function call  -->"+immigrationId)
+
+		$.ajax({
+			url : sourceleadUrl + immiModulePath+"/updateImmigrationStatus?id=" + immigrationId+"&candidateId="+candidateId,
+			type : "GET",
+			success : function(data) {
+				console.log(" inside success" + data);
+				eval("jsonObj=" + data);
+				console.log(jsonObj);
+				if (typeof jsonObj.errorMsg != 'undefined') {
+					alert(" error Msg"+jsonObj.errorMsg);
+					console.log(" inside !jsonObj.errorMsg" + data);
+				} else {
+					console.log(" inside jsonObj.errorMsg" + data);
+				}
+			}
+		});
+	}
     this.displayPassportDetails=function(candidateId,Passport,searchValue){
    	console.log("inside displayPassportDetails function call  -->")
    		$.ajax({
