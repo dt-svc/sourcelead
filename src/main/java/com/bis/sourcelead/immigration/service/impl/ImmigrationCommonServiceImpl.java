@@ -992,8 +992,8 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	
 	@Override
 	public ResponseList<ImmigrationListViewDTO> getImmigrationsList(ImmigrationListViewDTO immigrationListDTO,
-			String searchValue,  OrgLocations orgLocations, Map<String, Long[]> filterVal)  throws Exception{
-		   ResponseList<ImmigrationListViewDTO> immigartionList = immigrationCommonDao.getImmigrationsList(immigrationListDTO, searchValue, orgLocations, filterVal);
+			String searchValue,  OrgLocations orgLocations, Map<String, Long[]> filterVal, String orgTypeVal)  throws Exception{
+		   ResponseList<ImmigrationListViewDTO> immigartionList = immigrationCommonDao.getImmigrationsList(immigrationListDTO, searchValue, orgLocations, filterVal, orgTypeVal);
 		  
 		   
 		return immigartionList;

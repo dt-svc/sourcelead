@@ -86,7 +86,7 @@ public interface ImmigrationCommonService {
 
 	ImmigrationCandidateForms uploadRequstedFormForCandidate(ImmigrationTemplateFormDTO immigrationTemplateFormDTO, Long id,	Long candidateId, Long immigrationId, User user, OrgLocations orgLocations);
 
-	ResponseList<ImmigrationListViewDTO> getImmigrationsList(ImmigrationListViewDTO immigrationListDTO, String searchValue,  OrgLocations orgLocations, Map<String, Long[]> filterVal) throws Exception;
+	ResponseList<ImmigrationListViewDTO> getImmigrationsList(ImmigrationListViewDTO immigrationListDTO, String searchValue,  OrgLocations orgLocations, Map<String, Long[]> filterVal, String orgTypeVal) throws Exception;
 
 	String updateUscisTypeDropDown(Long templateId, Long uscisId);
 

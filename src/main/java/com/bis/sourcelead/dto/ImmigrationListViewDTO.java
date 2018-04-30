@@ -35,6 +35,7 @@ public class ImmigrationListViewDTO extends SearchDTO implements Serializable {
     private List<LookUpData> currUsicisStatusList;
 	private Long currUscisStatusId;
 	private String generatedId;
+	private String orgNameSel;
     
 	public Long getId() {
 		return id;
@@ -169,6 +170,13 @@ public class ImmigrationListViewDTO extends SearchDTO implements Serializable {
 	public void setGeneratedId(String generatedId) {
 		this.generatedId = generatedId;
 	}
+	public String getOrgNameSel() {
+		return orgNameSel;
+	}
+	public void setOrgNameSel(String orgNameSel) {
+		this.orgNameSel = orgNameSel;
+	}
+	
 
   
 }

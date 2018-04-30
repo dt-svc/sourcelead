@@ -222,7 +222,8 @@ public class ImmigrationRestController {
             @RequestParam(value = "filterAttorneyVal", required = false)  Long[] filterAttorneyVal,
             @RequestParam(value = "filterTypeVal", required = false)  Long[] filterTypeVal, 
             @RequestParam(value = "filterStatusVal", required = false)  Long[] filterStatusVal,
-            @RequestParam(value = "filterDurationVal", required = false)  Long[] filterDurationVal, HttpServletRequest request) {
+            @RequestParam(value = "filterDurationVal", required = false)  Long[] filterDurationVal,
+            @RequestParam(value = "orgTypeVal", required = false)  String orgTypeVal, HttpServletRequest request) {
         ResponseList<ImmigrationListViewDTO> immigrationListDTOList = null;
         System.out.println("inisde controller  getAllImmigartionList  --> ");
         try {
@@ -250,9 +251,9 @@ public class ImmigrationRestController {
             }
             immigrationListDTO.setSortColumn(tableColumns[sortColumnIndex]);
             immigrationListDTO.setSortOrder(sortColumnOrder);
-            OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-                    "orgLocations");
-            immigrationListDTOList= immigrationCommonService.getImmigrationsList(immigrationListDTO, searchValue , orgLocations, filterVal);
+            OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,   "orgLocations");
+            immigrationListDTO.setOrgLocationId(orgLocations.getId());
+            immigrationListDTOList= immigrationCommonService.getImmigrationsList(immigrationListDTO, searchValue , orgLocations, filterVal,orgTypeVal);
             commonUtil.highLightMenu(Constants.Immigration, request);
         } catch (Exception e) {
             e.printStackTrace();

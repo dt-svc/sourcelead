@@ -641,9 +641,6 @@
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
 	   prepareResidencediv =prepareResidencediv+ "   </div>";
 	   prepareResidencediv =prepareResidencediv+ "   </div>";
-	     
-	  
-	   
 		return prepareResidencediv; 
    }
 	
@@ -886,7 +883,6 @@ $("#experienceValue").change(function () {
 		  	var count = 1;
 		  	var residenceArr = [];
 		  	<c:forEach var='edu' items="${immigrationDTO.residenceList}">
-		  		alert("${edu.location}");
 		  		residenceArr.push("${edu.id == 'undefined' ? '':edu.id}");
 			  	residenceArr.push("${edu.location}");
 			  	residenceArr.push("${edu.address}");
@@ -910,10 +906,6 @@ $("#experienceValue").change(function () {
         		$("#docNameDiv").hide();
         		$("#resumeEmpty").show();
         	}
-			/* $.each(list, function( index, value ) {
-				alert("The address is :");
-				$("#dynamicResidenceGroupDiv").append(prepareDynamicResidenceDiv(count,value));	
-			}); */
 		  }
 		  
 		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
