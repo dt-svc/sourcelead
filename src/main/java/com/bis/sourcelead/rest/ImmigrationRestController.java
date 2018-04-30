@@ -7,6 +7,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import  org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
 //import org.jadira.usertype.spi.utils.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +23,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.dto.CandidateEducationDTO;
 import com.bis.sourcelead.dto.CandidateEmployerDTO;
 import com.bis.sourcelead.dto.CandidateFamilyDetailsDTO;
@@ -76,9 +80,6 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-
-import  org.apache.commons.lang3.StringUtils;
-import org.json.JSONArray;
 
 @RestController
 @RequestMapping("/app/immigration")
@@ -270,7 +271,7 @@ public class ImmigrationRestController {
     @RequestMapping(value = {"/getEmploymentTypeList"})
     public List<LookUpData> getEmploymentTypeList(HttpServletRequest request) {
         List<LookUpData> caEmployerDTOs = immigrationTemplateService
-                .getLookupDataByType(Constants.EMPLOYMENT_TYPE_PETITION);
+                .getLookupDataByType(ImmigrationConstants.EMPLOYMENT_TYPE);
         return caEmployerDTOs;
     }
 
@@ -289,7 +290,7 @@ public class ImmigrationRestController {
         if(immigrationId!=null && !StringUtils.isEmpty(immigrationId)) {
         	immigrationDTO= immigrationCommonService.getImmigrationDetails(immigrationId,orgLocations);
         }
-        List<LookUpData> uscisStatusList = immigrationTemplateService.getLookupDataByType(Constants.USCIS_STATUS);
+        List<LookUpData> uscisStatusList = immigrationTemplateService.getLookupDataByType(ImmigrationConstants.PETITION_STATUS);
         model.addObject("uscisStatusList",uscisStatusList);        
         model.addObject("immigration", immigrationDTO);
         model.addObject("sourceleadUrl", sourceleadUrl);
@@ -898,13 +899,13 @@ public class ImmigrationRestController {
 
     @RequestMapping(value = {"/getUscisTypeDropDown"})
     public List<LookUpData> getUscisTypeDropDown(HttpServletRequest request) {
-        List<LookUpData> caEmployerDTOs = immigrationTemplateService.getLookupDataByType(Constants.USCIS_STATUS);
+        List<LookUpData> caEmployerDTOs = immigrationTemplateService.getLookupDataByType(ImmigrationConstants.PETITION_STATUS);
         return caEmployerDTOs;
     }
 
     @RequestMapping(value = {"/getEmploymentLevelDropDown"})
     public List<LookUpData> getEmploymentLevelDropDown(HttpServletRequest request) {
-        List<LookUpData> caEmployerDTOs = immigrationTemplateService.getLookupDataByType(Constants.EMPLOYMENT_LEVEL);
+        List<LookUpData> caEmployerDTOs = immigrationTemplateService.getLookupDataByType(ImmigrationConstants.EMPLOYMENT_LEVEL);
         return caEmployerDTOs;
     }
 
@@ -917,13 +918,15 @@ public class ImmigrationRestController {
     }
 
     @RequestMapping(value = {"/savePetitionDetailsPage"}, method = RequestMethod.POST)
-    public String  savePetitionDetailsPage(ImmigrationDTO immigrationDTO,@RequestParam(value = "removedResidenceIds", required = false) String[] ids, HttpServletRequest request) {
+    public String  savePetitionDetailsPage(ImmigrationDTO immigrationDTO,@RequestParam(value = "removedResidenceIds", required = false) String[] ids, 
+    		@RequestParam(value = "status", required = false) String status,
+    		HttpServletRequest request) {
         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
         immigrationDTO.setStaticPath(staticPath);
 		Immigration immigration = null;
         try {
-        	immigration = immigrationCommonService.savePetitionDetails(immigrationDTO, user, orgLocations,ids);
+        	immigration = immigrationCommonService.savePetitionDetails(immigrationDTO, user, orgLocations,ids,status);
         } catch (Exception e) {
             logger.error("Exception caugth in savePetitionDetailsPage controller" + e.getMessage());
             e.printStackTrace();
